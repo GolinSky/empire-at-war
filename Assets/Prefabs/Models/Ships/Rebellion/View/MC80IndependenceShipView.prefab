@@ -84,6 +84,64 @@ MonoBehaviour:
   healthWeight: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 19
+--- !u!1 &246562056610942927
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3501254400975785385}
+  - component: {fileID: 1940892426179745541}
+  m_Layer: 0
+  m_Name: Added_14_3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3501254400975785385
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246562056610942927}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 18.720911, y: -4.3178935, z: 25.598618}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 236508493914151147}
+  m_Father: {fileID: 9144886091832500809}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1940892426179745541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246562056610942927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 236508493914151147}
+  destroyedVfxScale: 3.3843534
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 45
+  yAxisRange:
+    <Min>k__BackingField: -80
+    <Max>k__BackingField: 80
+  mainBattery: 0
+  <WeaponType>k__BackingField: 14
 --- !u!1 &266914096903886392
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,6 +276,10 @@ Transform:
   - {fileID: 970409074911077613}
   - {fileID: 2784337515827254036}
   - {fileID: 8961781237243606490}
+  - {fileID: 2985536951212661180}
+  - {fileID: 601091205650474297}
+  - {fileID: 3501254400975785385}
+  - {fileID: 5800493320771169749}
   m_Father: {fileID: 876958530588266346}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &499211321153879142
@@ -277,8 +339,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 69
 --- !u!1 &530903314264858987
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,8 +397,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 89
 --- !u!1 &720853039549241450
 GameObject:
   m_ObjectHideFlags: 0
@@ -488,8 +548,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 69
 --- !u!1 &1322127209259230238
 GameObject:
   m_ObjectHideFlags: 0
@@ -631,8 +690,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 89
 --- !u!1 &1546690931145531772
 GameObject:
   m_ObjectHideFlags: 0
@@ -721,8 +779,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 89
 --- !u!1 &1844947086473460742
 GameObject:
   m_ObjectHideFlags: 0
@@ -873,8 +930,65 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 69
+--- !u!1 &2233245076380459383
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5800493320771169749}
+  - component: {fileID: 874735731960389865}
+  m_Layer: 0
+  m_Name: Added_14_4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5800493320771169749
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2233245076380459383}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 18.2924, y: 3.3115745, z: -17.406979}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2018321918357417494}
+  m_Father: {fileID: 9144886091832500809}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &874735731960389865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2233245076380459383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 2018321918357417494}
+  destroyedVfxScale: 3.3843534
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 46
+  yAxisRange:
+    <Min>k__BackingField: -80
+    <Max>k__BackingField: 80
+  mainBattery: 0
+  <WeaponType>k__BackingField: 14
 --- !u!1 &2243611636188413771
 GameObject:
   m_ObjectHideFlags: 0
@@ -906,6 +1020,64 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1902044413516654632}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2344903243796401393
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 601091205650474297}
+  - component: {fileID: 4052276192300696200}
+  m_Layer: 0
+  m_Name: Added_14_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &601091205650474297
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2344903243796401393}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -14.461784, y: 3.193156, z: 29.805605}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8684050666656194760}
+  m_Father: {fileID: 9144886091832500809}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4052276192300696200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2344903243796401393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 8684050666656194760}
+  destroyedVfxScale: 3.3843534
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 44
+  yAxisRange:
+    <Min>k__BackingField: -80
+    <Max>k__BackingField: 80
+  mainBattery: 0
+  <WeaponType>k__BackingField: 14
 --- !u!1 &2358098237880845518
 GameObject:
   m_ObjectHideFlags: 0
@@ -994,7 +1166,6 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 55
 --- !u!1 &2636328998193101145
 GameObject:
@@ -1084,7 +1255,6 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 55
 --- !u!1 &2829220079145863230
 GameObject:
@@ -1143,8 +1313,96 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 55
+--- !u!1 &2968714202715128932
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8684050666656194760}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8684050666656194760
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2968714202715128932}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.1368684e-13, y: 1.3058395, z: -0.0000009536744}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 601091205650474297}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2980198216243752652
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2985536951212661180}
+  - component: {fileID: 8622840707846781831}
+  m_Layer: 0
+  m_Name: Added_14_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2985536951212661180
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2980198216243752652}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -6.4655676, y: 2.519723, z: 91.25893}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8124187482387301611}
+  m_Father: {fileID: 9144886091832500809}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8622840707846781831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2980198216243752652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 8124187482387301611}
+  destroyedVfxScale: 3.3843534
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 43
+  yAxisRange:
+    <Min>k__BackingField: -80
+    <Max>k__BackingField: 80
+  mainBattery: 0
+  <WeaponType>k__BackingField: 14
 --- !u!1 &3120446593140378204
 GameObject:
   m_ObjectHideFlags: 0
@@ -1238,8 +1496,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 69
 --- !u!1 &3164029382215217634
 GameObject:
   m_ObjectHideFlags: 0
@@ -2584,7 +2841,6 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 56
 --- !u!1 &3836414433286542297
 GameObject:
@@ -2674,8 +2930,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 89
 --- !u!1 &3908731266151573695
 GameObject:
   m_ObjectHideFlags: 0
@@ -2733,8 +2988,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 89
 --- !u!1 &3996069233837343435
 GameObject:
   m_ObjectHideFlags: 0
@@ -2823,7 +3077,6 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 56
 --- !u!1 &4153163459749003661
 GameObject:
@@ -2966,7 +3219,6 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 56
 --- !u!1 &4464860910562493143
 GameObject:
@@ -3360,6 +3612,10 @@ MonoBehaviour:
   - {fileID: 811673951664682633}
   - {fileID: 6881617816432878741}
   - {fileID: 2373453882966981109}
+  - {fileID: 8622840707846781831}
+  - {fileID: 4052276192300696200}
+  - {fileID: 1940892426179745541}
+  - {fileID: 874735731960389865}
 --- !u!114 &6698126527802799869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3542,6 +3798,10 @@ MonoBehaviour:
   - {fileID: 811673951664682633}
   - {fileID: 6881617816432878741}
   - {fileID: 2373453882966981109}
+  - {fileID: 8622840707846781831}
+  - {fileID: 4052276192300696200}
+  - {fileID: 1940892426179745541}
+  - {fileID: 874735731960389865}
 --- !u!1 &4598064445572580561
 GameObject:
   m_ObjectHideFlags: 0
@@ -3599,8 +3859,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 32
+  <WeaponType>k__BackingField: 91
 --- !u!1 &4677961040152949379
 GameObject:
   m_ObjectHideFlags: 0
@@ -3658,8 +3917,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 69
 --- !u!1 &4843162185176955162
 GameObject:
   m_ObjectHideFlags: 0
@@ -3717,8 +3975,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 89
 --- !u!1 &4863474651775083015
 GameObject:
   m_ObjectHideFlags: 0
@@ -3922,8 +4179,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 89
 --- !u!1 &5264171494297483504
 GameObject:
   m_ObjectHideFlags: 0
@@ -3981,7 +4237,6 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 55
 --- !u!1 &5268474285465259693
 GameObject:
@@ -4071,7 +4326,6 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 56
 --- !u!1 &5616025508906224972
 GameObject:
@@ -4130,7 +4384,6 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 55
 --- !u!1 &5682248806775504420
 GameObject:
@@ -4349,7 +4602,6 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 56
 --- !u!1 &5991318335290998755
 GameObject:
@@ -4561,6 +4813,37 @@ MonoBehaviour:
   healthWeight: 1
   <HardPointType>k__BackingField: 1
   <Id>k__BackingField: 17
+--- !u!1 &6119347456565865626
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2018321918357417494}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2018321918357417494
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6119347456565865626}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.4977963, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5800493320771169749}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6333768615776491283
 GameObject:
   m_ObjectHideFlags: 0
@@ -4618,7 +4901,6 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 55
 --- !u!1 &6438726008162821369
 GameObject:
@@ -4708,8 +4990,38 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 32
+  <WeaponType>k__BackingField: 91
+--- !u!1 &6810520211167234160
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 236508493914151147}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &236508493914151147
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6810520211167234160}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 5.289728, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3501254400975785385}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6927867917354416482
 GameObject:
   m_ObjectHideFlags: 0
@@ -4767,8 +5079,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 69
 --- !u!1 &6982920503843378314
 GameObject:
   m_ObjectHideFlags: 0
@@ -4857,7 +5168,6 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 56
 --- !u!1 &7363496187947304128
 GameObject:
@@ -5031,8 +5341,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 32
+  <WeaponType>k__BackingField: 91
 --- !u!1 &7728964756786985688
 GameObject:
   m_ObjectHideFlags: 0
@@ -5183,8 +5492,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 89
 --- !u!1 &8227612168681381795
 GameObject:
   m_ObjectHideFlags: 0
@@ -5304,7 +5612,6 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 55
 --- !u!1 &8343143700015427852
 GameObject:
@@ -5394,8 +5701,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 32
+  <WeaponType>k__BackingField: 91
 --- !u!1 &8869782192770501499
 GameObject:
   m_ObjectHideFlags: 0
@@ -5477,6 +5783,10 @@ MonoBehaviour:
   - {fileID: 7915670715757970775}
   - {fileID: 811673951664682633}
   - {fileID: 6881617816432878741}
+  - {fileID: 8622840707846781831}
+  - {fileID: 4052276192300696200}
+  - {fileID: 1940892426179745541}
+  - {fileID: 874735731960389865}
   rangeMultiplier: 1
 --- !u!1 &8935509987024643992
 GameObject:
@@ -5535,8 +5845,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 69
 --- !u!1 &8953719319766988740
 GameObject:
   m_ObjectHideFlags: 0
@@ -5625,7 +5934,6 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 55
 --- !u!1 &9015720638181288416
 GameObject:
@@ -5684,8 +5992,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 69
 --- !u!1 &9064381438227783349
 GameObject:
   m_ObjectHideFlags: 0
@@ -5716,6 +6023,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4806133153452965931}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9105666157430402542
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8124187482387301611}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8124187482387301611
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9105666157430402542}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.7274191, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2985536951212661180}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9130461819773229114
 GameObject:
@@ -5825,8 +6163,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 32
+  <WeaponType>k__BackingField: 91
 --- !u!1 &9160443731142364339
 GameObject:
   m_ObjectHideFlags: 0
@@ -5915,8 +6252,7 @@ MonoBehaviour:
     <Min>k__BackingField: -80
     <Max>k__BackingField: 80
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 32
+  <WeaponType>k__BackingField: 91
 --- !u!1001 &1545718542174955107
 PrefabInstance:
   m_ObjectHideFlags: 0
