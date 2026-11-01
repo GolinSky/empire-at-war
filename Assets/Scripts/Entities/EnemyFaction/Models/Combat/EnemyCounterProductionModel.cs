@@ -19,6 +19,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         private readonly IShipClassMatchups _matchups;
         private readonly ForceComposition _candidateForce = new ForceComposition();
 
+        public double SelectedScore { get; private set; }
+
         public EnemyCounterProductionModel(IShipClassMatchups matchups)
         {
             _matchups = matchups;
@@ -28,9 +30,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             ForceComposition own,
             ForceComposition hostile,
             IReadOnlyList<ProductionCandidate> candidates,
-            out int selectedIndex)
+            out int selectedIndex,
+            float availableCredits = 1f,
+            int availableCapacity = int.MaxValue)
         {
             selectedIndex = -1;
+            SelectedScore = 0.0;
             if (hostile.IsEmpty)
             {
                 return false;
@@ -49,12 +54,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                     continue;
                 }
 
-                double score = gain / Math.Max(1, candidate.Price) *
+                // Price scarce credits and scarce fleet slots together. A rich, nearly full fleet
+                // should replace losses with effective combat power per slot, not cheap hulls.
+                double resourceCost = Math.Max(
+                    Math.Max(1, candidate.Price) / (double)Math.Max(1f, availableCredits),
+                    candidate.UnitCapacity / (double)Math.Max(1, availableCapacity));
+                double score = gain / resourceCost *
                                _matchups.GetPreference(candidate.Profile.ShipClass, hostile) /
                                Math.Sqrt(1 + candidate.OwnedCount);
                 if (score > bestScore)
                 {
                     bestScore = score;
+                    SelectedScore = score;
                     selectedIndex = i;
                 }
             }

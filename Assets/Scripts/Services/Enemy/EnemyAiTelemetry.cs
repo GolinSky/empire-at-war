@@ -134,6 +134,21 @@ namespace EmpireAtWar.Services.Enemy
 #endif
         }
 
+        public static void RecordEvent(PlayerId player, FactionType faction, string kind, string reason)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (!Application.isPlaying) return;
+            string[] columns = new string[20];
+            columns[0] = Time.time.ToString("F1", CultureInfo.InvariantCulture);
+            columns[1] = kind;
+            columns[2] = player.ToString();
+            columns[3] = faction.ToString();
+            columns[19] = "\"" + reason.Replace("\"", "\"\"").Replace("\r", " ").Replace("\n", " ") + "\"";
+            _lines.AppendLine(string.Join(",", columns));
+            FlushIfDue();
+#endif
+        }
+
         public static void RecordPurchase(PlayerId player, FactionType faction, EnemyStrategicState state,
             EnemyProductionCategory category, bool counter, string unit, int price, float money)
         {

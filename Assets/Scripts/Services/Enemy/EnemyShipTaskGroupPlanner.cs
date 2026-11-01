@@ -9,12 +9,14 @@ namespace EmpireAtWar.Services.Enemy
 {
     public sealed class EnemyShipTaskGroupPlanner
     {
+        private const int MAIN_FORCE_SHIP_COUNT = 6;
         private readonly EnemyStrategicContextBuilder _contextBuilder;
         private readonly IUnitOrderService _orders;
         private readonly List<EnemyShipTaskGroup> _groups = new List<EnemyShipTaskGroup>();
         private readonly List<IShipEntity> _unassigned = new List<IShipEntity>();
         private readonly HashSet<IShipEntity> _members = new HashSet<IShipEntity>();
         private EnemyShipTaskGroup _captureGroup;
+        private EnemyShipTaskGroup _mainGroup;
         private readonly EnemyShipTaskGroup _idleGroup;
 
         public IReadOnlyList<EnemyShipTaskGroup> Groups => _groups;
@@ -29,20 +31,20 @@ namespace EmpireAtWar.Services.Enemy
             _groups.Add(_idleGroup);
         }
 
-        public void Reconcile(IReadOnlyList<IShipEntity> ships)
+        public void Reconcile(IReadOnlyList<IShipEntity> ships, bool stationPressure = false)
         {
             _members.Clear();
             foreach (IShipEntity ship in ships) _members.Add(ship);
             foreach (EnemyShipTaskGroup group in _groups)
                 group.Ships.RemoveAll(ship => !_members.Contains(ship));
-            if (_captureGroup != null && (ships.Count < 2 || _captureGroup.Ships.Count == 0 ||
+            if (_captureGroup != null && (stationPressure || ships.Count < 2 || _captureGroup.Ships.Count == 0 ||
                 _captureGroup.Context != null && !_captureGroup.Context.Snapshot.HasCaptureTarget &&
                 !_captureGroup.DecisionModel.IsRecovering))
             {
                 _groups.Remove(_captureGroup);
                 _captureGroup = null;
             }
-            if (_captureGroup == null && ships.Count > 1) TryCreateCaptureGroup(ships);
+            if (!stationPressure && _captureGroup == null && ships.Count > 1) TryCreateCaptureGroup(ships);
 
             _members.Clear();
             foreach (EnemyShipTaskGroup group in _groups)
@@ -51,7 +53,7 @@ namespace EmpireAtWar.Services.Enemy
                 // Keep travel companions stable until they are clearly outside the cohesion envelope.
                 Vector3 anchor = group.Ships[0].WorldPosition;
                 for (int i = group.Ships.Count - 1; i > 0; i--)
-                    if (DistanceSquared(anchor, group.Ships[i].WorldPosition) >
+                    if (group != _mainGroup && DistanceSquared(anchor, group.Ships[i].WorldPosition) >
                         4f * FleetCohesion.RADIUS * FleetCohesion.RADIUS)
                         group.Ships.RemoveAt(i);
                 foreach (IShipEntity ship in group.Ships) _members.Add(ship);
@@ -78,8 +80,37 @@ namespace EmpireAtWar.Services.Enemy
                 closest.Ships.Add(ship);
             }
             MergeNearbyGroups();
+            AssembleMainForce(stationPressure);
             _groups.RemoveAll(group => group.Ships.Count == 0);
             if (_groups.Count == 0) _groups.Add(_idleGroup);
+        }
+
+        private void AssembleMainForce(bool stationPressure)
+        {
+            int available = 0;
+            foreach (EnemyShipTaskGroup group in _groups)
+                if (!group.IsCaptureDetachment && (stationPressure || !group.DecisionModel.IsRecovering))
+                    available += group.Ships.Count;
+            if (_mainGroup != null && !_groups.Contains(_mainGroup)) _mainGroup = null;
+            if (_mainGroup == null && (stationPressure || available >= MAIN_FORCE_SHIP_COUNT))
+            {
+                foreach (EnemyShipTaskGroup group in _groups)
+                    if (!group.IsCaptureDetachment && (stationPressure || !group.DecisionModel.IsRecovering) &&
+                        (_mainGroup == null || group.Ships.Count > _mainGroup.Ships.Count))
+                        _mainGroup = group;
+                if (_mainGroup != null) _mainGroup.IsMainForce = true;
+            }
+            if (_mainGroup == null || !stationPressure && _mainGroup.DecisionModel.IsRecovering) return;
+            for (int i = _groups.Count - 1; i >= 0; i--)
+            {
+                EnemyShipTaskGroup group = _groups[i];
+                if (group == _mainGroup || group.IsCaptureDetachment ||
+                    !stationPressure && group.DecisionModel.IsRecovering) continue;
+                _mainGroup.Ships.AddRange(group.Ships);
+                _groups.RemoveAt(i);
+            }
+            _groups.Remove(_mainGroup);
+            _groups.Insert(0, _mainGroup);
         }
 
         private void TryCreateCaptureGroup(IReadOnlyList<IShipEntity> ships)
@@ -113,6 +144,7 @@ namespace EmpireAtWar.Services.Enemy
                 for (int j = _groups.Count - 1; j > i; j--)
                 {
                     EnemyShipTaskGroup second = _groups[j];
+                    if (second == _mainGroup) continue;
                     if (second.IsCaptureDetachment || second.Ships.Count == 0 ||
                         first.DecisionModel.IsRecovering != second.DecisionModel.IsRecovering ||
                         first.Decision.State != second.Decision.State) continue;

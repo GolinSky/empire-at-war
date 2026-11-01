@@ -8,6 +8,7 @@ using EmpireAtWar.Ship;
 using UnityEngine;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -25,6 +26,10 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly IUnitOrderService _unitOrderService;
         private GameEntity _battleTarget;
+        private GameEntity _defenseStation;
+        private readonly EnemyAttackTaskForce _attackForce = new EnemyAttackTaskForce();
+        private readonly List<IShipEntity> _supportShips = new List<IShipEntity>();
+        private readonly List<IShipEntity> _strikeShips = new List<IShipEntity>();
 
         private readonly List<IShipEntity> _captureShips = new List<IShipEntity>();
         private readonly List<FormationPoint> _positions = new List<FormationPoint>();
@@ -57,6 +62,19 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Committed ships still rallying to the main body after the last offensive order.</summary>
         public int RallyingCount => _stragglers.Count;
 
+        public bool CanAssemble(EnemyStrategicDecision decision, EnemyStrategicContext context)
+        {
+            GameEntity target;
+            switch (decision.State)
+            {
+                case EnemyStrategicState.HuntFleet: target = context.EnemyFleetTarget; break;
+                case EnemyStrategicState.AssaultBase: target = context.EnemyBaseTarget; break;
+                case EnemyStrategicState.RaidStructures: target = context.RaidTarget; break;
+                default: return true;
+            }
+            return target == null || _attackForce.Assemble(context, target, decision.CommittedShipCount);
+        }
+
         public void Execute(EnemyStrategicDecision decision, EnemyStrategicContext context)
         {
             if (_lastState != decision.State)
@@ -65,6 +83,8 @@ namespace EmpireAtWar.Services.Enemy
                 _rallyAnchors.Clear();
                 _captureDistances.Clear();
                 _hasCaptureTarget = false;
+                _defenseStation = null;
+                _attackForce.Clear();
             }
             _lastState = decision.State;
             ActionReason = decision.Reason;
@@ -90,14 +110,31 @@ namespace EmpireAtWar.Services.Enemy
                     IssueAttackOrHunt(context, decision.CommittedShipCount, context.EnemyBaseTarget, allowHunt: false);
                     return;
                 case EnemyStrategicState.EngageLocal:
-                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.LocalThreatTarget, allowHunt: false);
+                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.LocalThreatTarget, allowHunt: false, assemble: false);
                     return;
                 case EnemyStrategicState.RaidStructures:
                     IssueAttackOrHunt(context, decision.CommittedShipCount, context.RaidTarget, allowHunt: false);
                     return;
                 case EnemyStrategicState.DefendBase:
                     ActionReason = context.StationPressureReason;
-                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.DefenseTarget, allowHunt: false);
+                    if (context.OwnBase != null)
+                    {
+                        List<GameEntity> defenders = new List<GameEntity>();
+                        int defenseCount = Math.Min(decision.CommittedShipCount, context.Ships.Count);
+                        for (int i = 0; i < defenseCount; i++)
+                        {
+                            IShipEntity ship = context.Ships[i];
+                            if (_defenseStation != context.OwnBase || ship.CurrentOrder != UnitOrderType.AttackMove)
+                                defenders.Add(context.Receivers[ship]);
+                        }
+                        _defenseStation = context.OwnBase;
+                        if (defenders.Count > 0)
+                            _unitOrderService.IssueAttackMove(defenders,
+                                context.OwnBase.GetFacade<IEntityTransformFacade>().Transform.position);
+                        StopRemaining(context, context.Ships, defenseCount);
+                        return;
+                    }
+                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.DefenseTarget, allowHunt: false, assemble: false);
                     return;
                 case EnemyStrategicState.RetreatValue:
                     ExecuteRetreat(context);
@@ -132,6 +169,12 @@ namespace EmpireAtWar.Services.Enemy
             _captureObjective = objective;
             _hasCaptureTarget = true;
             IShipEntity anchor = SplitBody(_captureShips, count);
+            if (count >= 6 && _body.Count * 4 < count * 3)
+            {
+                RallyBody(context, anchor);
+                ActionReason = $"Assembling capture force: {_body.Count}/{count} ships in the body.";
+                return;
+            }
             List<GameEntity> approaching = new List<GameEntity>();
             float radius = context.CaptureObjective == null ? 1f : context.CaptureObjective.Radius;
             foreach (IShipEntity ship in _body)
@@ -167,6 +210,25 @@ namespace EmpireAtWar.Services.Enemy
             _assignedShips.UnionWith(_body);
             RallyStragglers(context, anchor);
             StopRemaining(context, _captureShips, count);
+        }
+
+        public void Rally(EnemyStrategicContext context)
+        {
+            if (context.Ships.Count == 0) return;
+            IShipEntity anchor = SplitBody(context.Ships, context.Ships.Count);
+            RallyBody(context, anchor);
+            ActionReason = $"Assembling main force: {_body.Count}/{context.Ships.Count} ships in the body.";
+        }
+
+        private void RallyBody(EnemyStrategicContext context, IShipEntity anchor)
+        {
+            if (anchor.CurrentOrder != UnitOrderType.None)
+                _unitOrderService.IssueStop(new[] { context.Receivers[anchor] });
+            _supportShips.Clear();
+            foreach (IShipEntity ship in _body)
+                if (ship != anchor) _supportShips.Add(ship);
+            GuardSupport(context, _supportShips, anchor);
+            RallyStragglers(context, anchor, releaseBody: false);
         }
 
         private void ExecuteRetreat(EnemyStrategicContext context)
@@ -205,22 +267,82 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         private void IssueAttackOrHunt(EnemyStrategicContext context,
-            int committed, GameEntity target, bool allowHunt = true)
+            int committed, GameEntity target, bool allowHunt = true, bool assemble = true)
         {
             int count = Math.Min(committed, context.Ships.Count);
             if (target == null && !allowHunt)
             {
+                _attackForce.Clear();
                 StopRemaining(context, context.Ships, 0);
                 return;
             }
-            IShipEntity anchor = SplitBody(context.Ships, count);
-            List<GameEntity> receivers = Resolve(context, _body, _body.Count);
-            if (target != null)
-                _unitOrderService.IssueAttack(receivers, target,
-                    BattleOffsets(_body, _body.Count, target));
-            else _unitOrderService.IssueHunt(receivers);
-            RallyStragglers(context, anchor);
-            StopRemaining(context, context.Ships, count);
+            IReadOnlyList<IShipEntity> attackers = context.Ships;
+            bool targeted = assemble && target != null;
+            if (targeted)
+            {
+                _attackForce.Assemble(context, target, count);
+                attackers = _attackForce.Ships;
+                count = attackers.Count;
+                if (count == 0)
+                {
+                    ActionReason = "No available ship can damage the target or its defenders.";
+                    StopRemaining(context, context.Ships, 0);
+                    return;
+                }
+            }
+            else _attackForce.Clear();
+            IShipEntity anchor = SplitBody(attackers, count);
+            bool ready = !targeted || _body.Count * 4 >= count * 3 && _attackForce.IsReady(context, _body);
+            if (targeted && ready)
+                foreach (IShipEntity ship in _body)
+                    if (_attackForce.TargetDps(context, ship) > _attackForce.TargetDps(context, anchor)) anchor = ship;
+            RallyStragglers(context, anchor, releaseBody: !targeted);
+            if (ready)
+            {
+                bool sameBattleTarget = _battleTarget == target;
+                _strikeShips.Clear();
+                _supportShips.Clear();
+                if (targeted) _attackForce.AssignScreens(context, _body, anchor);
+                foreach (IShipEntity ship in _body)
+                    if (!targeted || !_attackForce.IsScreen(ship)) _strikeShips.Add(ship);
+                    else _supportShips.Add(ship);
+                List<GameEntity> receivers = Resolve(context, _strikeShips, _strikeShips.Count);
+                if (target != null)
+                    _unitOrderService.IssueAttack(receivers, target, BattleOffsets(_strikeShips, _strikeShips.Count, target));
+                else _unitOrderService.IssueHunt(receivers);
+                if (_supportShips.Count > 0)
+                {
+                    List<GameEntity> screens = new List<GameEntity>();
+                    foreach (IShipEntity ship in _supportShips)
+                        if (!sameBattleTarget || ship.CurrentOrder != UnitOrderType.AttackMove)
+                            screens.Add(context.Receivers[ship]);
+                    if (screens.Count > 0)
+                        _unitOrderService.IssueAttackMove(screens,
+                            target.GetFacade<IEntityTransformFacade>().Transform.position);
+                }
+            }
+            else
+            {
+                // The anchor waits while required counters assemble instead of attacking piecemeal.
+                if (anchor.CurrentOrder != UnitOrderType.None)
+                    _unitOrderService.IssueStop(new[] { context.Receivers[anchor] });
+                _supportShips.Clear();
+                foreach (IShipEntity ship in _body)
+                    if (ship != anchor) _supportShips.Add(ship);
+                GuardSupport(context, _supportShips, anchor);
+            }
+            if (targeted)
+            {
+                int screeningCount = ready ? _supportShips.Count : 0;
+                _supportShips.Clear();
+                foreach (IShipEntity ship in context.Ships)
+                    if (!_attackForce.Ships.Contains(ship)) _supportShips.Add(ship);
+                GuardSupport(context, _supportShips, anchor);
+                ActionReason = ready
+                    ? $"Target-specific force: {_strikeShips.Count} strike ships; {screeningCount} active screens; {_stragglers.Count} rallying; {_supportShips.Count} reserve."
+                    : $"Assembling target counters: {_body.Count}/{count} ships in the body; {_supportShips.Count} reserve.";
+            }
+            else StopRemaining(context, context.Ships, count);
         }
 
         private List<Vector3> BattleOffsets(IReadOnlyList<IShipEntity> ships,
@@ -281,11 +403,25 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>Stragglers guard the anchor; a guard order is re-issued only when the anchor changes.</summary>
-        private void RallyStragglers(EnemyStrategicContext context, IShipEntity anchor)
+        private void RallyStragglers(EnemyStrategicContext context, IShipEntity anchor, bool releaseBody = true)
         {
-            foreach (IShipEntity ship in _body) _rallyAnchors.Remove(ship);
+            if (releaseBody)
+                foreach (IShipEntity ship in _body) _rallyAnchors.Remove(ship);
             List<GameEntity> receivers = new List<GameEntity>();
             foreach (IShipEntity ship in _stragglers)
+            {
+                if (_rallyAnchors.TryGetValue(ship, out IShipEntity current) && current == anchor &&
+                    ship.CurrentOrder == UnitOrderType.Guard) continue;
+                _rallyAnchors[ship] = anchor;
+                receivers.Add(context.Receivers[ship]);
+            }
+            if (receivers.Count > 0) _unitOrderService.IssueGuard(receivers, context.Receivers[anchor]);
+        }
+
+        private void GuardSupport(EnemyStrategicContext context, IReadOnlyList<IShipEntity> ships, IShipEntity anchor)
+        {
+            List<GameEntity> receivers = new List<GameEntity>();
+            foreach (IShipEntity ship in ships)
             {
                 if (_rallyAnchors.TryGetValue(ship, out IShipEntity current) && current == anchor &&
                     ship.CurrentOrder == UnitOrderType.Guard) continue;

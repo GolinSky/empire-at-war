@@ -229,6 +229,24 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(index, Is.EqualTo(-1));
         }
 
+        [TestCase(1000f, 120, 0)]
+        [TestCase(100000f, 2, 1)]
+        public void CounterProduction_PricesTheScarceResource(float credits, int capacity, int expected)
+        {
+            UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f, (ShipClass.Capital, 60f));
+            ProductionCandidate[] candidates =
+            {
+                new ProductionCandidate(capital, 1000, unitCapacity: 8),
+                new ProductionCandidate(capital, 4000, unitCapacity: 2)
+            };
+
+            bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
+                Force(capital), Force(capital, capital), candidates, out int index, credits, capacity);
+
+            Assert.That(selected, Is.True);
+            Assert.That(index, Is.EqualTo(expected));
+        }
+
         [Test]
         public void CarrierCandidate_CountsItsHangarSquadrons()
         {

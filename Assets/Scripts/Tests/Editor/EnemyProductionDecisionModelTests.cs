@@ -709,12 +709,14 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase(5000f, ShipType.Recusant)]
-        [TestCase(1500f, null)]
-        [TestCase(0f, null)]
+        [TestCase(5000f, ShipType.Recusant, false)]
+        [TestCase(1500f, null, false)]
+        [TestCase(0f, null, false)]
+        [TestCase(5000f, null, true)]
         public void UltraHardRebuild_SavesForPriorityShipAndRechecksLosses(
             float money,
-            ShipType? expectedShip)
+            ShipType? expectedShip,
+            bool capacityBlocked)
         {
             ReinforcementData reinforcementData =
                 ScriptableObject.CreateInstance<ReinforcementData>();
@@ -770,6 +772,16 @@ namespace EmpireAtWar.Tests.Editor
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner);
 
+                UnitLimitKey capacityHolder = GetUnitId<ShipUnitRequest>("capacity-holder");
+                int heldCapacity = MAX_UNIT_CAPACITY - unitLimitModel.CurrentUnitCapacity -
+                    existingShipData.UnitCapacity;
+                if (capacityBlocked)
+                {
+                    Assert.That(factionModel.ShipFactionData[ShipType.Recusant].UnitCapacity,
+                        Is.GreaterThan(existingShipData.UnitCapacity));
+                    unitLimitModel.Adopt(capacityHolder, heldCapacity);
+                }
+
                 strategy.Start();
                 strategy.Tick(0f);
 
@@ -798,6 +810,14 @@ namespace EmpireAtWar.Tests.Editor
                 else
                 {
                     Assert.That(purchaseProcessor.LastRequest, Is.Null);
+                    if (capacityBlocked)
+                    {
+                        unitLimitModel.Release(capacityHolder, heldCapacity);
+                        strategy.Tick(0f);
+                        Assert.That(purchaseProcessor.LastRequest, Is.TypeOf<ShipUnitRequest>());
+                        Assert.That(((ShipUnitRequest)purchaseProcessor.LastRequest).Key,
+                            Is.EqualTo(ShipType.Recusant));
+                    }
                 }
             }
             finally
@@ -1024,6 +1044,13 @@ namespace EmpireAtWar.Tests.Editor
             public int ActiveShipCount => 1;
             public EnemyStrategicState CurrentState =>
                 EnemyStrategicState.RebuildFleet;
+
+            public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
+            {
+                rally = default;
+                defendHome = false;
+                return false;
+            }
         }
 
         private sealed class StructurePlacementServiceStub :

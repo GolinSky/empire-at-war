@@ -39,6 +39,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
         private readonly IShipSpawnPoints _shipSpawnPoints;
+        private readonly IEnemyAiStateProvider _aiState;
+        private float _stationTelemetryAt;
+        private bool _hadStation;
         private readonly IEnemyStructurePlacementService _enemyStructurePlacementService;
         private readonly IProductionAccess _productionAccess;
         private readonly ISquadronLauncher _squadronLauncher;
@@ -87,9 +90,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             FactionResearchModel research,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
-            PlayerSlot owner) : base(model)
+            PlayerSlot owner,
+            IEnemyAiStateProvider aiState) : base(model)
         {
             _owner = owner;
+            _aiState = aiState;
             _playerRegistry = playerRegistry;
             _shipFactory = shipFactory;
             _miningFacilityFactory = miningFacilityFactory;
@@ -155,6 +160,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 !_productionAccess.CanProduce ||
                 unitRequest is LevelUnitRequest && _productionAccess.ProductionHost != Owner)
             {
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "purchaseRejected",
+                    $"unit={unitRequest.Id};reason=queue or production unavailable");
                 return;
             }
 
@@ -183,13 +190,28 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     return;
             }
 
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "purchaseAccepted",
+                $"unit={unitRequest.Id};population={_unitLimitModel.CurrentUnitCapacity}");
             if (unitRequest is MiningFacilityUnitRequest or DefendPlatformUnitRequest)
                 ExecuteBuild(unitRequest);
             else
                 _builds.Add(unitRequest, unitRequest.FactionData.BuildTime);
         }
 
-        public void Tick() => Advance(Time.deltaTime);
+        public void Tick()
+        {
+            bool hasRally = _aiState.TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
+            _squadronCommander.SetStationDefense(hasRally && defendHome ? rally : (Vector3?)null);
+            bool hasStation = _productionAccess.TryGetProductionBase(out var station);
+            if (Time.time >= _stationTelemetryAt || hasStation != _hadStation)
+            {
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "station",
+                    hasStation ? $"entity={station.Id};hull={station.HealthModel.Hull};shields={station.HealthModel.Shields};defendHome={defendHome}" : "No living production station.");
+                _stationTelemetryAt = Time.time + 15f;
+                _hadStation = hasStation;
+            }
+            Advance(Time.deltaTime);
+        }
 
         public void Advance(float deltaTime) => _builds.Advance(deltaTime, ExecuteBuild);
 
@@ -242,12 +264,21 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     ReleaseUnit(researchUnitRequest);
                     break;
                 case ShipUnitRequest shipUnitRequest:
-                    if (!_shipSpawnPoints.TryGetRandomSpawnPosition(
-                            _productionAccess.ProductionHost, shipUnitRequest.Key, out Vector3 position))
+                    bool hasRally = _aiState.TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
+                    Vector3 position;
+                    bool foundPosition = hasRally
+                        ? defendHome
+                            ? _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(_productionAccess.ProductionHost, shipUnitRequest.Key, out position)
+                            : _shipSpawnPoints.TryGetSpawnPositionNear(_productionAccess.ProductionHost, shipUnitRequest.Key, rally, out position)
+                        : _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(_productionAccess.ProductionHost, shipUnitRequest.Key, out position) ||
+                          _shipSpawnPoints.TryGetRandomSpawnPosition(_productionAccess.ProductionHost, shipUnitRequest.Key, out position);
+                    if (!foundPosition)
                     {
                         if (_productionAccess.CanProduce)
                         {
                             // Keep the completed ship paid and reserved while its arrival area is blocked.
+                            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deploymentBlocked",
+                                $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally}");
                             _builds.Add(shipUnitRequest, DEPLOYMENT_RETRY_INTERVAL);
                             return;
                         }
@@ -257,6 +288,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                             $"No open enemy spawn position is available near a held relay or home for {shipUnitRequest.Key}.");
                     }
 
+                    EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deployment",
+                        $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally};spawn={position}");
                     Track(_shipFactory.Create(Owner, shipUnitRequest.Key, position), shipUnitRequest);
                     break;
                 case SquadronUnitRequest squadronUnitRequest:
@@ -282,6 +315,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         defendPlatformUnitRequest);
                     break;
             }
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "buildCompleted", $"unit={unitRequest.Id}");
         }
 
         private void Track(ShipEntity ship, ShipUnitRequest unitRequest) =>
@@ -325,6 +359,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     factionData.UnitCapacity,
                     _reinforcementData.MaxUnitCapacity))
             {
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "purchaseRejected",
+                    $"unit={unitRequest.Id};reason=capacity or unit limit;population={_unitLimitModel.CurrentUnitCapacity};required={factionData.UnitCapacity}");
                 return false;
             }
 
@@ -333,6 +369,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 return true;
             }
 
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "purchaseRejected",
+                $"unit={unitRequest.Id};reason=insufficient credits");
             ReleaseUnit(unitRequest);
             return false;
         }

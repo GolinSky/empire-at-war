@@ -63,14 +63,84 @@ commit: 6babee5e1
 - Team income: Mining Facility / Asteroid Mine / Battle Asteroid income is split evenly between team economies (`Income / _teamEconomies.Count`). Before, every ally received the full amount → team mining ×team size; the human's wallet also got ally-built mines in full.
 - Not changed: hosted AI ally still earns station income `3 + 15 × host level` with no station of its own; station income keeps flowing after the station dies.
 
+## Implementation — Mining Objectives (2026-11-01)
+
+- Scout assignment preserves the final eligible capture squadron while capture objectives remain; carrier guards and escorts are excluded.
+- Mining raid utility `0.66` beats expansion `0.6 + 0.05` hysteresis. Threatened-site defense disables this rule; base defense, retreat and decisive attack retain priority.
+- Raid selection prefers visible hostile mining facades over other structures, including previously retained non-mining targets.
+- Raid safety compares this group's strength against known defenders within 1000 units using the difficulty's attack threshold; remembered strikecraft count too.
+- Captured uncontested mines can be built before owning two warships. The two-warship guard remains for satellite defense.
+- Built mines require destruction before site recapture. Capture detachments continue expanding while combat groups can raid.
+- Original EaW comparison and ship counter formulas → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Research]].
+- Reusable rules → [[Architecture/Enemy_AI_Objectives]]. Broader faction balance and Fleet Command decision remain outside this fix.
+
+## Implementation — Target-Specific Task Forces (2026-11-01)
+
+- Existing geographic groups remain recruitment boundaries. `EnemyAttackTaskForce` maintains a stable strike subset for each group's current target.
+- `EnemyTaskForceSelectionModel` rates actual current-health weapon forces against target class/hull/shields and known defending units within 1000 units. Dedicated defender counters can join even without primary-target DPS.
+- Select up to the strategic committed count; aim for 30 s target clear time. This is sizing only: a larger target does not prevent a viable attack.
+- Reuse viable members; rebuild inadequate composition after losses or changing defenders. Visible fleet targets persist until invalid/hidden/hazardous.
+- Entire available strike force insufficient → reevaluate existing non-offensive goals before issuing orders; capture/defense/local action/hold remain available.
+- Launch only when the cohesive body can damage the target and meets difficulty attack advantage; distant selected ships rally while the anchor waits. Surplus ships Guard the strike anchor.
+- Defender specialists Guard the strongest primary-target attacker instead of receiving an ineffective primary-target Attack order; role selection compares class-effective DPS. Guard orders persist while role/anchor remains valid.
+- Base defense and immediate local engagement bypass assembly waiting. Capture/retreat state changes discard strike assignment.
+- Reuses `ForceComposition`, `CombatMatchup`, `FleetCohesion`, existing order APIs and production. No cross-map recruitment or task-specific production queue added.
+- Remaining estimate limits: structure health counts for weapon suitability, but static structure weapon DPS, range/arcs and abilities are not added to the existing unit-intel model.
+- Reusable guidance → [[Architecture/Enemy_AI_Objectives]]. User battle acceptance: counter composition, rally completion, screening and emergency response; no automated tests run.
+
+## Implementation — Battle Follow-up (2026-11-01)
+
+- Weapon profiles now apply caliber accuracy and damage biases. Counter production prices credit and population scarcity; rank before free-capacity filtering and wait for the selected reinforcement.
+- Preserve early small-group activity; six available combat ships form a persistent main force with distant recruitment. Station pressure immediately concentrates combat ships and recalls ship capture detachments.
+- Main force commits all ships and reserves its capture objective first. Central-relay scoring uses the station midpoint; capture detachment continues other expansion.
+- Attacks fill the useful committed budget. At least 75% must assemble; large captures use the same gate. A scattered main force with no viable attack rallies rather than idling.
+- Defender-specialist screens use active AttackMove with demand bounds; other capable ships attack the primary target.
+- Station defense stays at home under station coverage; retain recent pressure for 20 s, recall purchased/nonhangar squadrons, prioritize home arrivals. Blocked arrivals retain paid reservations and retry.
+- Other reinforcements choose the valid home/held-relay anchor nearest the fleet rally. Telemetry records selections, acceptance/rejection, completion, deployment/blockage, capacity waits and station health/loss.
+- Static station DPS is not fabricated: actual defensive positioning supplies support; numeric combat estimates still exclude runtime station hardpoints.
+- Reusable rules updated → [[Architecture/Enemy_AI_Objectives]]. Tests authored, not executed under checkout policy. No gameplay/win-rate claim until fresh battle evidence.
+
 ## Verification
+
+- Battle follow-up 2026-11-01: Unity refreshed/imported scripts; compilation and updating finished, `scriptCompilationFailed=false`, error console empty. New rally/deployment methods loaded. Scoped `git diff --check` clean; independent integration review completed. Authored regression categories: EnemyAi, Combat, Ships; Abilities fixture updated for interface compatibility. Tests and Play Mode not run under checkout override.
+
+- Target-force update 2026-11-01: Unity compilation/import complete, new runtime types loaded, error console empty and scoped diff checks clean. Regression cases authored for counter selection, force caps, retained membership, dedicated screens, assembly readiness, guard-order stability, emergency bypass and insufficient-force fallback. Tests not run.
+
+- 2026-11-01 mining fixes: source diagnostics and scoped diff checks clean; regression cases authored, not run (local test override). Unity refresh/compilation completed; Editor idle and error console empty. No Play Mode run.
+- Remaining battle gate: Ultra Hard captures/builds mines, destroys visible hostile mines after relay capture, and still responds to base pressure. This is not a claim of improved win rate.
 
 - EditMode: all 183 enemy-AI tests, cohesion, intel-strength and counter-production tests pass (2026-10-27).
 - Battle after fixes 1–5 (player Republic): AI squadron shots per loss 64→83; exchange still 2.0 → led to fixes 7–8.
 - Fixes 7–8: unit tests only; not yet verified in a battle.
 - Unrelated EditMode failures at commit time belong to concurrent work (Recalcitrant, Wavecrest, ship value rebalance, audio cues, selection markers, survival waves, ISD II).
 
+## Latest Battle Findings (2026-11-01)
+
+- Early capture/economy behavior improved; midgame still loses initiative. Battle evidence → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Research#Battle 2026-11-01 — Empire vs Republic]].
+- Confirmed defects/gaps: caliber modifiers missing from AI profiles; credit-only counter value with no capital capacity reserve; random relay deployment during station defense; no cross-group offensive assembly; excessive guarding in one-target raids.
+- 58 CR70 /31 Centax /20 Carrack lost versus2 Venator /1 VenatorII; purchases often had ample credits. No HuntFleet/AssaultBase in group summaries.
+- Defense orders exist but defenders/reinforcements are remote, and pressure interruptions cancel response. Exact120-cap use and station-death time are not available in current telemetry.
+- Follow-up implemented 2026-11-01; fresh battle acceptance remains pending. Broader faction balance/Fleet Command decisions keep this parent plan active.
+
+## Latest Battle Acceptance — 17:27 Session (2026-11-01)
+
+- User: overall good; late-game failure remains. Full assessment and change-purpose table → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review]].
+- Confirmed:205 deployed warships,36 Venator variants;122 ready targeted attacks average8.02 strike ships;81 home-defense deployments. Centre not secured; late siege defeated station.
+- Fresh evidence supersedes the earlier pending-battle gate only for production/concentration/deployment. Central capture and endgame defense remain unresolved.
+- Original attachment preserved → [[GameDesign/References/EaW_Global_AI_Original_Attachment]]. Reusable implementation guidance remains [[Architecture/Enemy_AI_Objectives]].
+
 ## TODO
+
+- [ ] Keep station defense active from observed station damage; use threat-facing siege interception instead of unconditional station-centre orders.
+- [ ] Add emergency production deadline/queue-travel valuation and suspend nonessential economy spending during critical siege.
+- [ ] Evaluate capture clearance for capturing units; place capital escorts outside the circle; stabilize detachment objective ownership.
+- [ ] Review range-aware escort demand and local/route danger before distant raids.
+
+- [x] Correct combat profile caliber fidelity and population-aware capital replacement selection.
+- [x] Add defense/task-force-aware deployment, persistent station defense and emergency capture recall.
+- [x] Assemble combat groups for a shared main objective; bound screen demand and reassign surplus.
+- [x] Extend telemetry with purchase success/rejections/capacity, spawn anchors and station lifecycle.
+
 
 - [ ] Play 2–3 battles on Ultra Hard (both factions) with the fixes 7–8 build; compare via [[Tooling/Battle_Telemetry]].
 - [ ] Check `_ai.csv`: attack states > 0%, capture ↔ retreat flips well below 35, early lead converted.

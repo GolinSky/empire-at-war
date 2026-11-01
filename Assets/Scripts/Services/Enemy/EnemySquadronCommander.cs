@@ -60,6 +60,10 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IEnemyStructurePlacementService _structurePlacement;
         private readonly HostileIntelModel _intel;
 
+        private Vector3? _stationDefense;
+
+        public void SetStationDefense(Vector3? position) => _stationDefense = position;
+
         private int _nextEscortTarget;
 
         /// <summary>Squadron revealing fog because no build space is visible; null when none is needed.</summary>
@@ -119,7 +123,6 @@ namespace EmpireAtWar.Services.Enemy
             TrackOwnedSquadrons();
             AssessThreats();
             AssignEscorts();
-            AssignScout();
             AssignCaptureTargets();
             _orderBuffer.Clear();
             _orderBuffer.AddRange(_squadrons.Keys);
@@ -176,17 +179,19 @@ namespace EmpireAtWar.Services.Enemy
         private void AssignScout()
         {
             _scout = null;
-            // Squadrons exist only after the battle map has loaded, and without one there is nobody to send.
-            if (_squadrons.Count == 0 || !TryGetScoutTarget(out _scoutTarget))
+            // Keep one available squadron capturing; only surplus squadrons scout while objectives remain.
+            if (_captureSquadrons.Count == 0 ||
+                _captureAssignments.HasTargets && _captureSquadrons.Count == 1 ||
+                !TryGetScoutTarget(out _scoutTarget))
             {
                 return;
             }
 
             float closest = float.MaxValue;
-            foreach (ISquadron squadron in _squadrons.Keys)
+            foreach (ISquadron squadron in _captureSquadrons)
             {
                 float distance = (squadron.WorldPosition - _scoutTarget).sqrMagnitude;
-                if (!_escorts.Contains(squadron) && !_squadrons[squadron].IsHangarLaunched && distance < closest)
+                if (!_squadrons[squadron].IsHangarLaunched && distance < closest)
                 {
                     closest = distance;
                     _scout = squadron;
@@ -246,6 +251,12 @@ namespace EmpireAtWar.Services.Enemy
 
         private void IssueOrder(ISquadron squadron)
         {
+            if (_stationDefense.HasValue && !_squadrons[squadron].IsHangarLaunched)
+            {
+                squadron.AttackMoveTo(_stationDefense.Value);
+                return;
+            }
+
             if (squadron == _scout)
             {
                 squadron.AttackMoveTo(_scoutTarget);
@@ -385,10 +396,12 @@ namespace EmpireAtWar.Services.Enemy
             _captureSquadrons.Clear();
             foreach (KeyValuePair<ISquadron, CommandedSquadron> pair in _squadrons)
             {
-                if (pair.Key == _scout || _escorts.Contains(pair.Key) ||
+                if (_escorts.Contains(pair.Key) ||
                     pair.Value.IsHangarLaunched && pair.Value.Orders.CurrentOrder == UnitOrderType.Guard) continue;
                 _captureSquadrons.Add(pair.Key);
             }
+            AssignScout();
+            if (_scout != null) _captureSquadrons.Remove(_scout);
             _captureAssignments.Assign(_captureSquadrons);
         }
 

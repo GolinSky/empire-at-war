@@ -9,6 +9,8 @@ namespace EmpireAtWar.Services.ShipSpawning
     {
         bool TryGetRandomSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position);
 
+        bool TryGetSpawnPositionNear(PlayerId owner, ShipType shipType, Vector3 target, out Vector3 position);
+
         bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position);
     }
 }

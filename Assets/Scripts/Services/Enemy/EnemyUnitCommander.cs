@@ -33,6 +33,7 @@ namespace EmpireAtWar.Services.Enemy
     {
         EnemyStrategicState CurrentState { get; }
         int ActiveShipCount { get; }
+        bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
     }
 
     public sealed class EnemyUnitCommander :
@@ -50,6 +51,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly PlayerSlot _owner;
         private readonly EnemyShipTaskGroupPlanner _taskGroups;
+        private readonly EnemyStrategicContextBuilder _contextBuilder;
         private readonly List<IShipEntity> _ships = new List<IShipEntity>();
         private readonly HashSet<string> _reservedCaptureObjectives = new HashSet<string>();
         private readonly Dictionary<IShipEntity, Vector3> _zoneExitTargets =
@@ -72,6 +74,30 @@ namespace EmpireAtWar.Services.Enemy
             _hasDecision ? LastDecision.State : EnemyStrategicState.RebuildFleet;
         public int ActiveShipCount => _ships.Count;
 
+        public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
+        {
+            rally = default;
+            defendHome = false;
+            if (!_hasDecision) return false;
+            foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
+            {
+                if (group.Context == null || !group.Context.Snapshot.HasStationPressure) continue;
+                defendHome = true;
+                rally = group.Context.OwnBase.GetFacade<EmpireAtWar.Entities.BaseEntity.EntityFacades.IEntityTransformFacade>()
+                    .Transform.position;
+                return true;
+            }
+            // Deploy with the assembled fleet, not at an isolated relay beside its distant objective.
+            foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
+            {
+                if (group.IsCaptureDetachment || group.Ships.Count == 0) continue;
+                foreach (IShipEntity ship in group.Ships) rally += ship.WorldPosition;
+                rally /= group.Ships.Count;
+                return true;
+            }
+            return false;
+        }
+
         public EnemyUnitCommander(
             IShipService shipService,
             IReinforcementZonesSystem reinforcementZonesSystem,
@@ -88,6 +114,7 @@ namespace EmpireAtWar.Services.Enemy
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _entityLocator = entityLocator;
             _gameModel = gameModel;
+            _contextBuilder = contextBuilder;
             _taskGroups = new EnemyShipTaskGroupPlanner(contextBuilder, decisionModel, taskForceExecutor, unitOrderService);
             _unitOrderService = unitOrderService;
         }
@@ -167,7 +194,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IShipEntity ship in _shipService.Ships)
                 if (ship.Owner == _owner.Id && _entityLocator.TryGetEntity(ship.EntityId, out GameEntity _))
                     _ships.Add(ship);
-            _taskGroups.Reconcile(_ships);
+            _taskGroups.Reconcile(_ships, _contextBuilder.Build(_ships).Snapshot.HasStationPressure);
             _reservedCaptureObjectives.Clear();
             EnemyShipTaskGroup primary = null;
             int bodyCount = 0;
@@ -177,7 +204,8 @@ namespace EmpireAtWar.Services.Enemy
             {
                 group.Evaluate(_reservedCaptureObjectives, Time.time);
                 if (group.Decision.State == EnemyStrategicState.RebuildFleet ||
-                    group.Decision.State == EnemyStrategicState.Hold)
+                    group.Decision.State == EnemyStrategicState.Hold &&
+                    (!group.IsMainForce || group.Context.Snapshot.IsRegrouped))
                     MoveShipsOutOfDefaultZone(group.Ships);
                 else
                     foreach (IShipEntity ship in group.Ships) _zoneExitTargets.Remove(ship);
@@ -186,7 +214,7 @@ namespace EmpireAtWar.Services.Enemy
                 if (primary == null || primary.IsCaptureDetachment && !group.IsCaptureDetachment ||
                     primary.IsCaptureDetachment == group.IsCaptureDetachment && group.Ships.Count > primary.Ships.Count)
                     primary = group;
-                groupSummary += $" {(group.IsCaptureDetachment ? "Capture" : "Combat")} group: " +
+                groupSummary += $" {(group.IsCaptureDetachment ? "Capture" : group.IsMainForce ? "Main" : "Combat")} group: " +
                     $"{group.Ships.Count} ships, {group.Decision.State}.";
             }
             _lastContext = primary.Context;
@@ -196,7 +224,8 @@ namespace EmpireAtWar.Services.Enemy
                 snapshot.FleetAdvantage, snapshot.BaseThreatRatio, snapshot.HasCaptureTarget,
                 snapshot.HasEnemyBaseTarget, snapshot.HasOwnBase, snapshot.HasThreatenedSite,
                 snapshot.LocalAdvantage, snapshot.HasLocalThreat, snapshot.HasRaidTarget,
-                snapshot.IsRegrouped, snapshot.HasStationPressure, snapshot.HasSafeRetreat);
+                snapshot.IsRegrouped, snapshot.HasStationPressure, snapshot.HasSafeRetreat,
+                snapshot.HasEconomyRaidTarget);
             _recoveryStartedAt = primary.RecoveryStartedAt;
             _actionReason = primary.Executor.ActionReason + groupSummary;
             PublishDecision(primary.Decision, bodyCount, rallyingCount);

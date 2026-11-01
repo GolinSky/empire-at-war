@@ -54,6 +54,13 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
+        public void AddUnit(ForceComposition force, GameEntity entity)
+        {
+            IHealthModelObserver health = entity.HealthModel;
+            force.Add(_catalog.Get(entity.GetFacade<IUnitTypeFacade>().UnitTypeId),
+                health.Hull, health.Shields, GetOffenseScale(health));
+        }
+
         /// <summary>
         /// Clears <paramref name="force"/> and fills it with the hostile units the team still remembers, at the strength
         /// they were last seen with. This is how the AI sees hostiles: through intel, not the map. Age makes a sighting's

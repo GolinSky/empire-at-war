@@ -119,6 +119,9 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
+            public bool TryGetSpawnPositionNear(PlayerId owner, ShipType shipType, Vector3 target, out Vector3 position) =>
+                TryGetRandomSpawnPosition(owner, shipType, out position);
+
             public bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
             {
                 position = default;

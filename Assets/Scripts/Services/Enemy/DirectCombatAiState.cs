@@ -10,6 +10,12 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IEntityLocator _entities;
         private readonly PlayerSlot _owner;
         public EnemyStrategicState CurrentState => EnemyStrategicState.AssaultBase;
+        public bool TryGetReinforcementRally(out UnityEngine.Vector3 rally, out bool defendHome)
+        {
+            rally = default;
+            defendHome = false;
+            return false;
+        }
         public int ActiveShipCount => _entities.Entities.Count(entity =>
             entity.Owner == _owner.Id && !entity.HealthModel.IsDestroyed);
         public DirectCombatAiState(IEntityLocator entities, PlayerSlot owner) { _entities = entities; _owner = owner; }

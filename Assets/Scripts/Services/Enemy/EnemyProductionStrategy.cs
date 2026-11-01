@@ -173,7 +173,15 @@ namespace EmpireAtWar.Services.Enemy
             bool hasShipOption = hasCounter || hasShip || hasSquadronFallback;
             FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
             DefenseReserve = hasShipOption ? shipChoice.Price : 0f;
-            bool canBuildShip = hasShipOption && IsAffordable(shipChoice);
+            bool canBuildShip = hasShipOption && IsAffordable(shipChoice) &&
+                _unitLimitModel.CurrentUnitCapacity + shipChoice.UnitCapacity <= _reinforcementData.MaxUnitCapacity;
+            if (hasShipOption && !canBuildShip)
+            {
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "production-wait",
+                    $"unit={(hasCounter ? counterId.ToString() : hasShip ? ship.Key.ToString() : squadron.Key.ToString())};" +
+                    $"capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};" +
+                    $"required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money}");
+            }
             FactionData levelData = _productionAccess.ProductionHost == _owner.Id &&
                                     !_purchaseProcessor.IsUpgradingStation
                 ? _factionModel.GetCurrentLevelFactionData() : null;
@@ -375,13 +383,19 @@ namespace EmpireAtWar.Services.Enemy
                     option.Value, !shipsOnly, hasSquadronRoom);
             }
 
-            if (!_counterModel.TrySelect(_ownForce, _hostileForce, _candidates, out int index))
+            if (!_counterModel.TrySelect(_ownForce, _hostileForce, _candidates, out int index,
+                    _economyModel.Money,
+                    _reinforcementData.MaxUnitCapacity - _unitLimitModel.CurrentUnitCapacity))
             {
                 return false;
             }
 
             selectedId = _candidateIds[index];
             selectedData = _candidateData[index];
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "counter-selection",
+                $"unit={selectedId};candidates={_candidates.Count};score={_counterModel.SelectedScore:F6};" +
+                $"capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};" +
+                $"required={selectedData.UnitCapacity};cost={selectedData.Price};money={_economyModel.Money}");
             return true;
         }
 
@@ -405,13 +419,15 @@ namespace EmpireAtWar.Services.Enemy
                 _ownForce.AddNew(_profileCatalog.Get(unitTypeId), true);
             }
 
-            if (!isSelectable || !IsAvailable(data) || !CanReserve<TRequest>(requestId, data))
+            // Select the next reinforcement before checking free population. Otherwise every small
+            // loss gets replaced by a cheap ship and a selected capital can never fit.
+            if (!isSelectable || !IsAvailable(data) || !CanReserve<TRequest>(requestId, data, true))
             {
                 return;
             }
 
             _candidates.Add(new ProductionCandidate(_profileCatalog.Get(unitTypeId), data.Price,
-                Math.Max(reservedCount, liveCount), hasSquadronRoom));
+                Math.Max(reservedCount, liveCount), hasSquadronRoom, data.UnitCapacity));
             _candidateIds.Add(unitTypeId);
             _candidateData.Add(data);
         }
@@ -430,7 +446,7 @@ namespace EmpireAtWar.Services.Enemy
                 if (!IsAvailable(option.Value) ||
                     !CanReserve<ShipUnitRequest>(
                         option.Key.ToString(),
-                        option.Value))
+                        option.Value, true))
                 {
                     continue;
                 }
@@ -499,7 +515,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
             {
-                if (IsAvailable(option.Value) && CanReserve<ShipUnitRequest>(option.Key.ToString(), option.Value))
+                if (IsAvailable(option.Value) && CanReserve<ShipUnitRequest>(option.Key.ToString(), option.Value, true))
                 {
                     return true;
                 }
@@ -653,14 +669,12 @@ namespace EmpireAtWar.Services.Enemy
                 _research.GetCompletedTiers(researchType) + 1);
         }
 
-        private bool CanReserve<TRequest>(string requestId, FactionData data)
+        private bool CanReserve<TRequest>(string requestId, FactionData data, bool ignoreUsedCapacity = false)
         {
             return _purchaseProcessor.CanQueue(requestId, data.MaxCount) &&
-                _unitLimitModel.CanReserve<TRequest>(
-                requestId,
-                data.MaxCount,
-                data.UnitCapacity,
-                _reinforcementData.MaxUnitCapacity);
+                _unitLimitModel.GetReservedCount<TRequest>(requestId) < data.MaxCount &&
+                data.UnitCapacity <= _reinforcementData.MaxUnitCapacity -
+                    (ignoreUsedCapacity ? 0 : _unitLimitModel.CurrentUnitCapacity);
         }
 
         private bool IsAvailable(FactionData data)

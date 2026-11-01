@@ -473,6 +473,61 @@ namespace EmpireAtWar.Tests.Editor
                 Is.EqualTo(EnemyStrategicState.RetreatValue));
         }
 
+        [Test]
+        public void ExposedMine_InterruptsExpansionDespiteCaptureHysteresis()
+        {
+            EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
+            Assert.That(model.Evaluate(CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase,
+                EnemyAiDifficulty.UltraHard, 3, 3, 1, 1f)).State,
+                Is.EqualTo(EnemyStrategicState.CaptureZone));
+
+            Assert.That(model.Evaluate(CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase,
+                EnemyAiDifficulty.UltraHard, 3, 3, 1, 1f,
+                hasRaidTarget: true, hasEconomyRaidTarget: true)).State,
+                Is.EqualTo(EnemyStrategicState.RaidStructures));
+        }
+
+        [TestCase(true, false, 100f, 1f, EnemyStrategicState.DefendBase)]
+        [TestCase(false, true, 100f, 1f, EnemyStrategicState.CaptureZone)]
+        [TestCase(false, false, 0.5f, 1f, EnemyStrategicState.RetreatValue)]
+        [TestCase(false, false, 100f, 3f, EnemyStrategicState.AssaultBase)]
+        public void MiningRaid_DoesNotOverrideEmergencyOrDecisiveAttack(bool stationPressure,
+            bool threatenedSite, float localAdvantage, float fleetAdvantage, EnemyStrategicState expected)
+        {
+            EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
+            model.Evaluate(CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase,
+                EnemyAiDifficulty.UltraHard, 3, 3, 1, 1f,
+                hasRaidTarget: true, hasEconomyRaidTarget: true));
+
+            Assert.That(model.Evaluate(CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase,
+                EnemyAiDifficulty.UltraHard, 3, 3, 1, fleetAdvantage,
+                hasRaidTarget: true, hasEconomyRaidTarget: true, hasStationPressure: stationPressure,
+                hasThreatenedSite: threatenedSite, localAdvantage: localAdvantage)).State, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void CaptureDetachment_KeepsCapturingWhileCombatGroupCanRaidMines()
+        {
+            EnemyStrategicSnapshot snapshot = CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase,
+                EnemyAiDifficulty.UltraHard, 1, 3, 1, 1f,
+                hasRaidTarget: true, hasEconomyRaidTarget: true);
+
+            Assert.That(new EnemyStrategicDecisionModel().Evaluate(snapshot, captureDetachment: true).State,
+                Is.EqualTo(EnemyStrategicState.CaptureZone));
+        }
+
+        [TestCase(true, EnemyStrategicState.CaptureZone)]
+        [TestCase(false, EnemyStrategicState.Hold)]
+        public void InsufficientTargetForce_ReconsidersNonOffensiveObjectives(bool capture, EnemyStrategicState expected)
+        {
+            EnemyStrategicSnapshot snapshot = CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase,
+                EnemyAiDifficulty.UltraHard, 3, 3, 1, 3f, hasCaptureTarget: capture,
+                hasRaidTarget: true, hasEconomyRaidTarget: true);
+            EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
+            Assert.That(model.Evaluate(snapshot).State, Is.EqualTo(EnemyStrategicState.AssaultBase));
+            Assert.That(model.Evaluate(snapshot, allowOffense: false).State, Is.EqualTo(expected));
+        }
+
         private static EnemyStrategicSnapshot CreateSnapshot(
             BattleVictoryCondition victoryCondition,
             EnemyAiDifficulty difficulty,
@@ -489,7 +544,8 @@ namespace EmpireAtWar.Tests.Editor
             bool hasRaidTarget = false,
             bool isRegrouped = true,
             bool hasStationPressure = false,
-            bool hasSafeRetreat = true)
+            bool hasSafeRetreat = true,
+            bool hasEconomyRaidTarget = false)
         {
             return new EnemyStrategicSnapshot(
                 victoryCondition: victoryCondition,
@@ -508,7 +564,8 @@ namespace EmpireAtWar.Tests.Editor
                 hasRaidTarget: hasRaidTarget,
                 isRegrouped: isRegrouped,
                 hasStationPressure: hasStationPressure,
-                hasSafeRetreat: hasSafeRetreat);
+                hasSafeRetreat: hasSafeRetreat,
+                hasEconomyRaidTarget: hasEconomyRaidTarget);
         }
     }
 }

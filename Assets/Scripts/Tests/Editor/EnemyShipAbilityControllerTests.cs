@@ -345,6 +345,12 @@ namespace EmpireAtWar.Tests.Editor
         {
             public EnemyStrategicState CurrentState { get; set; } = EnemyStrategicState.Hold;
             public int ActiveShipCount => 1;
+            public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
+            {
+                rally = default;
+                defendHome = false;
+                return false;
+            }
         }
 
         private sealed class FakeCommand : IShipAbilityFacade

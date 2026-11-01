@@ -36,8 +36,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// <summary>A known hostile ship or squadron is within engagement range of the fleet.</summary>
         public bool HasLocalThreat { get; }
 
-        /// <summary>A known hostile structure (not a base) has no known hostile ships near it.</summary>
+        /// <summary>A visible hostile structure (not a base) has defenders this group can beat.</summary>
         public bool HasRaidTarget { get; }
+        public bool HasEconomyRaidTarget { get; }
         /// <summary>Every own ship is within <see cref="FleetCohesion.RADIUS"/> of the fleet's anchor ship.</summary>
         public bool IsRegrouped { get; }
 
@@ -67,7 +68,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasRaidTarget = false,
             bool isRegrouped = true,
             bool hasStationPressure = false,
-            bool hasSafeRetreat = true)
+            bool hasSafeRetreat = true,
+            bool hasEconomyRaidTarget = false)
         {
             VictoryCondition = victoryCondition;
             Difficulty = difficulty;
@@ -83,6 +85,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             HasThreatenedSite = hasThreatenedSite;
             HasLocalThreat = hasLocalThreat;
             HasRaidTarget = hasRaidTarget;
+            HasEconomyRaidTarget = hasEconomyRaidTarget;
             IsRegrouped = isRegrouped;
             HasStationPressure = hasStationPressure;
             HasSafeRetreat = hasSafeRetreat;
@@ -144,6 +147,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.7f,
                 "Enemy ships are contesting an owned capture site.",
                 (s, p) => ResponseCurve.When(s.HasThreatenedSite)),
+            new EnemyStrategicRule(EnemyStrategicState.RaidStructures, 0.66f,
+                "Destroy exposed hostile income before expanding to another objective.",
+                (s, p) => ResponseCurve.When(s.HasRaidTarget && s.HasEconomyRaidTarget && !s.HasThreatenedSite)),
             new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.6f,
                 "Expanding map control to the next closest relay or site.",
                 (s, p) => ResponseCurve.When(s.HasCaptureTarget)),
@@ -189,7 +195,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         private bool _isRecovering;
         public bool IsRecovering => _isRecovering;
 
-        public EnemyStrategicDecision Evaluate(EnemyStrategicSnapshot snapshot, bool captureDetachment = false)
+        public EnemyStrategicDecision Evaluate(EnemyStrategicSnapshot snapshot, bool captureDetachment = false,
+            bool allowOffense = true)
         {
             if (snapshot.OwnShipCount < 0)
                 throw new ArgumentOutOfRangeException(nameof(snapshot.OwnShipCount));
@@ -203,6 +210,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             float bestScore = 0f;
             foreach (EnemyStrategicRule rule in _rules)
             {
+                if (!allowOffense && (rule.State == EnemyStrategicState.HuntFleet ||
+                    rule.State == EnemyStrategicState.AssaultBase || rule.State == EnemyStrategicState.RaidStructures)) continue;
                 if (captureDetachment &&
                     rule.State != EnemyStrategicState.CaptureZone &&
                     rule.State != EnemyStrategicState.RetreatValue &&
