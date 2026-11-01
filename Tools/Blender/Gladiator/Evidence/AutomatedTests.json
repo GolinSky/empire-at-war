@@ -1,0 +1,277 @@
+{
+  "date": "2026-11-01",
+  "scope": "Nine relevant EditMode categories, not full project suite. Some fixtures enter Play Mode internally; no manual battle run.",
+  "summary": {
+    "total": 1532,
+    "passed": 1512,
+    "failed": 20
+  },
+  "categories": {
+    "Ships": {
+      "total": 141,
+      "passed": 128,
+      "failed": 13,
+      "skipped": 0,
+      "inconclusive": 0,
+      "returnedLeafResults": 141,
+      "failures": [
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.Registrations_ResolveOwnAssetsAndRequestedEconomy",
+          "Status": "Failed",
+          "Duration": 0.0040429,
+          "Message": "  Expected: 9200\r\n  But was:  10000\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.AllegianceShipTests.Registrations_ResolveOwnAssetsAndRequestedEconomy () [0x00121] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\AllegianceShipTests.cs:107\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.AllegianceShipTests.SavedShip_HasRequestedBalanceAndNoSquadrons",
+          "Status": "Failed",
+          "Duration": 0.0023128,
+          "Message": "  Expected: 12\r\n  But was:  16.0f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.AllegianceShipTests.SavedShip_HasRequestedBalanceAndNoSquadrons () [0x00042] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\AllegianceShipTests.cs:54\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedShip_MatchesRequestedStatsAndTargetability",
+          "Status": "Failed",
+          "Duration": 0.0007547,
+          "Message": "  Expected: 15\r\n  But was:  10.0f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.ExecutorShipTests.SavedShip_MatchesRequestedStatsAndTargetability () [0x00042] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\ExecutorShipTests.cs:29\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.ISDIIShipTests.SavedShip_HasRequestedStatsWeaponsAndTargetableSystems",
+          "Status": "Failed",
+          "Duration": 0.0006928,
+          "Message": "  Expected: 25\r\n  But was:  18.0f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.ISDIIShipTests.SavedShip_HasRequestedStatsWeaponsAndTargetableSystems () [0x00042] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\ISDIIShipTests.cs:30\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.ProcursatorShipTests.SavedShip_HasRequestedStatsAndNoInjectableHangar",
+          "Status": "Failed",
+          "Duration": 0.000512,
+          "Message": "  Expected: 19\r\n  But was:  20.0f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.ProcursatorShipTests.SavedShip_HasRequestedStatsAndNoInjectableHangar () [0x00053] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\ProcursatorShipTests.cs:31\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.RaiderCorvetteTests.SavedUnit_HasCurrentStatsTargetableWeaponsAndNoHangar",
+          "Status": "Failed",
+          "Duration": 0.0007005,
+          "Message": "  Expected: 17.5f\r\n  But was:  35.0f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.RaiderCorvetteTests.SavedUnit_HasCurrentStatsTargetableWeaponsAndNoHangar () [0x00042] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\RaiderCorvetteTests.cs:37\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.ShipEngineHardpointTests.TwoEngines_EitherDestructionSlowsShipAndBothReachMinimum(0)",
+          "Status": "Failed",
+          "Duration": 0.0254081,
+          "Message": "  Expected: 15.0f\r\n  But was:  10.0f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.ShipEngineHardpointTests.TwoEngines_EitherDestructionSlowsShipAndBothReachMinimum (System.Int32 first) [0x00184] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\ShipEngineHardpointTests.cs:52\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.ShipEngineHardpointTests.TwoEngines_EitherDestructionSlowsShipAndBothReachMinimum(1)",
+          "Status": "Failed",
+          "Duration": 0.0004363,
+          "Message": "  Expected: 15.0f\r\n  But was:  10.0f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.ShipEngineHardpointTests.TwoEngines_EitherDestructionSlowsShipAndBothReachMinimum (System.Int32 first) [0x00184] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\ShipEngineHardpointTests.cs:52\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.TartanTests.SavedUnit_HasRequestedStatsAndNoHangar",
+          "Status": "Failed",
+          "Duration": 0.0004643,
+          "Message": "  Expected: 70\r\n  But was:  35.0f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.TartanTests.SavedUnit_HasRequestedStatsAndNoHangar () [0x00042] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\TartanTests.cs:36\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.FourEngines_DestructionReducesSpeedAndAllDestroyedReachMinimum(0)",
+          "Status": "Failed",
+          "Duration": 0.0009915,
+          "Message": "  Expected: 16.0f\r\n  But was:  14.0f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.TitanShipTests.FourEngines_DestructionReducesSpeedAndAllDestroyedReachMinimum (System.Int32 first) [0x00195] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\TitanShipTests.cs:161\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.FourEngines_DestructionReducesSpeedAndAllDestroyedReachMinimum(1)",
+          "Status": "Failed",
+          "Duration": 0.0003726,
+          "Message": "  Expected: 16.0f\r\n  But was:  14.0f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.TitanShipTests.FourEngines_DestructionReducesSpeedAndAllDestroyedReachMinimum (System.Int32 first) [0x00195] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\TitanShipTests.cs:161\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.FourEngines_DestructionReducesSpeedAndAllDestroyedReachMinimum(2)",
+          "Status": "Failed",
+          "Duration": 0.000294,
+          "Message": "  Expected: 16.0f\r\n  But was:  14.0f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.TitanShipTests.FourEngines_DestructionReducesSpeedAndAllDestroyedReachMinimum (System.Int32 first) [0x00195] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\TitanShipTests.cs:161\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.TitanShipTests.FourEngines_DestructionReducesSpeedAndAllDestroyedReachMinimum(3)",
+          "Status": "Failed",
+          "Duration": 0.0002724,
+          "Message": "  Expected: 16.0f\r\n  But was:  14.0f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.TitanShipTests.FourEngines_DestructionReducesSpeedAndAllDestroyedReachMinimum (System.Int32 first) [0x00195] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\TitanShipTests.cs:161\r\n"
+        }
+      ]
+    },
+    "Combat": {
+      "total": 225,
+      "passed": 220,
+      "failed": 5,
+      "skipped": 0,
+      "inconclusive": 0,
+      "returnedLeafResults": 225,
+      "failures": [
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Executor_WeaponProfilesMatchBaseline(HeavyArtilleryRocket,93.75f,1.2f,4,20.0f,1072.5f)",
+          "Status": "Failed",
+          "Duration": 0.0084105,
+          "Message": "  Expected: 112.500008f +/- 0.00100000005f\r\n  But was:  146.25f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Executor_WeaponProfilesMatchBaseline (EmpireAtWar.Components.AttackComponent.WeaponType type, System.Single baselineDamage, System.Single foldedAccuracy, System.Int32 shots, System.Single reload, System.Single range) [0x0003c] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\WeaponTaxonomyTests.cs:169\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Executor_WeaponProfilesMatchBaseline(ExecutorHeavyTurbolaser,37.5f,1.2f,3,8.0f,877.5f)",
+          "Status": "Failed",
+          "Duration": 0.0002642,
+          "Message": "  Expected: 45.0f +/- 0.00100000005f\r\n  But was:  58.5f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Executor_WeaponProfilesMatchBaseline (EmpireAtWar.Components.AttackComponent.WeaponType type, System.Single baselineDamage, System.Single foldedAccuracy, System.Int32 shots, System.Single reload, System.Single range) [0x0003c] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\WeaponTaxonomyTests.cs:169\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Executor_WeaponProfilesMatchBaseline(ExecutorHeavyDualTurbolaser,75.0f,1.2f,3,8.0f,877.5f)",
+          "Status": "Failed",
+          "Duration": 0.0001685,
+          "Message": "  Expected: 90.0f +/- 0.00100000005f\r\n  But was:  117.0f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Executor_WeaponProfilesMatchBaseline (EmpireAtWar.Components.AttackComponent.WeaponType type, System.Single baselineDamage, System.Single foldedAccuracy, System.Int32 shots, System.Single reload, System.Single range) [0x0003c] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\WeaponTaxonomyTests.cs:169\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Executor_WeaponProfilesMatchBaseline(ExecutorHeavyDualIonCannon,140.625f,1.2f,2,12.0f,975.0f)",
+          "Status": "Failed",
+          "Duration": 0.0001495,
+          "Message": "  Expected: 168.75f +/- 0.00100000005f\r\n  But was:  219.375f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Executor_WeaponProfilesMatchBaseline (EmpireAtWar.Components.AttackComponent.WeaponType type, System.Single baselineDamage, System.Single foldedAccuracy, System.Int32 shots, System.Single reload, System.Single range) [0x0003c] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\WeaponTaxonomyTests.cs:169\r\n"
+        },
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Executor_WeaponProfilesMatchBaseline(ExecutorHeavyLaser,9.375f,1.0f,3,1.5f,390.0f)",
+          "Status": "Failed",
+          "Duration": 0.000141,
+          "Message": "  Expected: 9.375f +/- 0.00100000005f\r\n  But was:  12.1875f\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.WeaponTaxonomyTests.Executor_WeaponProfilesMatchBaseline (EmpireAtWar.Components.AttackComponent.WeaponType type, System.Single baselineDamage, System.Single foldedAccuracy, System.Int32 shots, System.Single reload, System.Single range) [0x0003c] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\WeaponTaxonomyTests.cs:169\r\n"
+        }
+      ]
+    },
+    "Health": {
+      "total": 343,
+      "passed": 342,
+      "failed": 1,
+      "skipped": 0,
+      "inconclusive": 0,
+      "returnedLeafResults": 343,
+      "failures": [
+        {
+          "FullName": "EmpireAtWar.Tests.Editor.HealthModelTests.PointDefense_WhileCloakedPreservesMissileAndCanFireAfterDecloaking",
+          "Status": "Failed",
+          "Duration": 0.0036896,
+          "Message": "  Expected: True\r\n  But was:  False\r\n",
+          "StackTrace": "at EmpireAtWar.Tests.Editor.HealthModelTests.PointDefense_WhileCloakedPreservesMissileAndCanFireAfterDecloaking () [0x00187] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\HealthModelTests.cs:73\r\n"
+        }
+      ]
+    },
+    "Squadrons": {
+      "total": 81,
+      "passed": 81,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "returnedLeafResults": 81,
+      "failures": []
+    },
+    "Economy": {
+      "total": 75,
+      "passed": 75,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "returnedLeafResults": 75,
+      "failures": []
+    },
+    "Ui": {
+      "total": 232,
+      "passed": 232,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "returnedLeafResults": 218,
+      "failures": []
+    },
+    "Navigation": {
+      "total": 164,
+      "passed": 164,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "returnedLeafResults": 164,
+      "failures": []
+    },
+    "Audio": {
+      "total": 137,
+      "passed": 136,
+      "failed": 1,
+      "skipped": 0,
+      "inconclusive": 0,
+      "returnedLeafResults": 41,
+      "failures": []
+    },
+    "Core": {
+      "total": 134,
+      "passed": 134,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "returnedLeafResults": 134,
+      "failures": []
+    }
+  },
+  "audioFailureDetail": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.FactionAnnouncementTests.UnitLossUsesFiveSecondCameraMemory(5.0f,True)",
+      "Status": "Failed",
+      "Duration": 0.0024999,
+      "Message": "  Expected: 1\r\n  But was:  0\r\n",
+      "StackTrace": "at EmpireAtWar.Tests.Editor.FactionAnnouncementTests.UnitLossUsesFiveSecondCameraMemory (System.Single secondsSinceSeen, System.Boolean expected) [0x00098] in F:\\Private\\empire-at-war\\Assets\\Scripts\\Tests\\Editor\\FactionAnnouncementTests.cs:292\r\n"
+    }
+  ],
+  "gladiatorNamedCases": [
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.HealthOverlayAnchorTests.ShipSelectionRing_InitializationFitsHullWithoutMovingHealthAnchor(\"Assets/Prefabs/Models/Ships\\\\Empire\\\\View\\\\GladiatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0078977,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.ShipExplosionPrefabTests.ExplosionHullRenderers_AreAssignedAndBoundsAreReadable(\"Assets/Prefabs/Models/Ships/Empire/View/GladiatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0060009,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.Wreck_MatchesViewScaleAndMeshes(\"Assets/Prefabs/Models/Ships/Empire/View/GladiatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0034226,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "EmpireAtWar.Tests.Editor.WreckMaterialSyncTests.WreckMaterials_MatchSourceMaterials(\"Assets/Prefabs/Models/Ships/Empire/View/GladiatorShipView.prefab\")",
+      "Status": "Passed",
+      "Duration": 0.0366512,
+      "Message": null,
+      "StackTrace": null
+    }
+  ],
+  "fixed": [
+    "Selection ring accounts for sprite transparent padding and centers on visible renderer bounds.",
+    "Team-stripe rebuild refreshes Ship.explosionHullRenderers to remove stale references."
+  ],
+  "savedAssetVerification": "passed",
+  "limitations": [
+    "No dedicated Gladiator fixture exists; shared catalog tests plus four parametrized Health cases and model-specific saved asset verifier cover it.",
+    "Audio and Ui result-detail lists are partial after domain reload; aggregate summaries retained. Audio failure separately reproduced by FactionAnnouncementTests fixture.",
+    "Remaining failures were not fixed: other-ship stats/engine expectations, Executor weapon baselines, cloaked point defense, faction-announcement timing."
+  ]
+}

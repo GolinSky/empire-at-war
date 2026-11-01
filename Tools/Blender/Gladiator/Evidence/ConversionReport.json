@@ -1,0 +1,1129 @@
+{
+  "models": {
+    "Gladiator": {
+      "variant": "Gladiator",
+      "before": {
+        "meshes": {
+          "Shield": {
+            "vertices": 376,
+            "triangles": 624,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Gladiator_M011"
+            ]
+          },
+          "Lights": {
+            "vertices": 330,
+            "triangles": 182,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M012"
+            ]
+          },
+          "Hull": {
+            "vertices": 10910,
+            "triangles": 5318,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M013"
+            ]
+          },
+          "Hangar_Mesh": {
+            "vertices": 302,
+            "triangles": 118,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M014"
+            ]
+          },
+          "Hangar_Lights": {
+            "vertices": 292,
+            "triangles": 118,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M015"
+            ]
+          },
+          "Engine_Glow": {
+            "vertices": 797,
+            "triangles": 1144,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M016"
+            ]
+          },
+          "Engine_Exhaust": {
+            "vertices": 728,
+            "triangles": 1168,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M017"
+            ]
+          },
+          "Shadow": {
+            "vertices": 3075,
+            "triangles": 5645,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Gladiator_M018"
+            ]
+          },
+          "Col": {
+            "vertices": 2217,
+            "triangles": 3862,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Gladiator_M019"
+            ]
+          },
+          "Engine_Glow_Small": {
+            "vertices": 428,
+            "triangles": 728,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M020"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Shield": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Lights": {
+            "parent": "Root",
+            "head": [
+              0,
+              -6.835939529992174e-06,
+              0
+            ]
+          },
+          "pe_gladiator_star_destroyer_large": {
+            "parent": "Root",
+            "head": [
+              21.570524215698242,
+              94.15467071533203,
+              -0.14662030339241028
+            ]
+          },
+          "pe_gladiator_star_destroyer_large.001": {
+            "parent": "Root",
+            "head": [
+              -21.453218460083008,
+              94.15467071533203,
+              -0.14662030339241028
+            ]
+          },
+          "pe_gladiator_star_destroyer_small": {
+            "parent": "Root",
+            "head": [
+              0.184760183095932,
+              95.95904541015625,
+              10.8955078125
+            ]
+          },
+          "pe_gladiator_star_destroyer_small.001": {
+            "parent": "Root",
+            "head": [
+              0.1850000023841858,
+              95.95904541015625,
+              -11.051520347595215
+            ]
+          },
+          "Shield_Gen": {
+            "parent": "Root",
+            "head": [
+              5.13719078298891e-06,
+              50.66655349731445,
+              27.616302490234375
+            ]
+          },
+          "ML_01": {
+            "parent": "Root",
+            "head": [
+              -16.951271057128906,
+              -152.77606201171875,
+              0.010271078906953335
+            ]
+          },
+          "ML_02": {
+            "parent": "Root",
+            "head": [
+              16.951000213623047,
+              -152.77606201171875,
+              0.010271078906953335
+            ]
+          },
+          "LC_01": {
+            "parent": "Root",
+            "head": [
+              -23.164592742919922,
+              -86.99082946777344,
+              0.010271078906953335
+            ]
+          },
+          "LC_01_FP_01": {
+            "parent": "Root",
+            "head": [
+              -40.31137466430664,
+              -75.85801696777344,
+              0.010271078906953335
+            ]
+          },
+          "LC_01_FP_02": {
+            "parent": "Root",
+            "head": [
+              -27.897808074951172,
+              -121.80146789550781,
+              0.010271481238305569
+            ]
+          },
+          "LC_02": {
+            "parent": "Root",
+            "head": [
+              23.165000915527344,
+              -86.99082946777344,
+              0.010271078906953335
+            ]
+          },
+          "LC_02_FP_01": {
+            "parent": "Root",
+            "head": [
+              40.31100082397461,
+              -75.85801696777344,
+              0.010271078906953335
+            ]
+          },
+          "LC_02_FP_02": {
+            "parent": "Root",
+            "head": [
+              27.898000717163086,
+              -121.80146789550781,
+              0.010271481238305569
+            ]
+          },
+          "TL_01": {
+            "parent": "Root",
+            "head": [
+              -58.05986022949219,
+              45.69742965698242,
+              0.010271078906953335
+            ]
+          },
+          "TL_01_FP_01": {
+            "parent": "Root",
+            "head": [
+              -77.88936614990234,
+              69.04620361328125,
+              0.010271078906953335
+            ]
+          },
+          "TL_01_FP_02": {
+            "parent": "Root",
+            "head": [
+              -65.47579956054688,
+              23.10274887084961,
+              0.010271481238305569
+            ]
+          },
+          "TL_02": {
+            "parent": "Root",
+            "head": [
+              58.05999755859375,
+              45.69742965698242,
+              0.010271078906953335
+            ]
+          },
+          "TL_02_FP_02": {
+            "parent": "Root",
+            "head": [
+              65.47599792480469,
+              23.10274887084961,
+              0.010271481238305569
+            ]
+          },
+          "TL_02_FP_01": {
+            "parent": "Root",
+            "head": [
+              77.88899993896484,
+              69.04620361328125,
+              0.010271078906953335
+            ]
+          },
+          "Hull": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Hangar_Mesh": {
+            "parent": "Root",
+            "head": [
+              4.893946652373415e-07,
+              11.196044921875,
+              4.893946652373415e-07
+            ]
+          },
+          "Hangar_Lights": {
+            "parent": "Root",
+            "head": [
+              4.893946652373415e-07,
+              11.196044921875,
+              4.893946652373415e-07
+            ]
+          },
+          "Engine_Glow": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Engine_Exhaust": {
+            "parent": "Root",
+            "head": [
+              3.7481297567865113e-06,
+              0,
+              3.7481297567865113e-06
+            ]
+          },
+          "Shadow": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "TL_01_Fire": {
+            "parent": "Root",
+            "head": [
+              -62.01890563964844,
+              45.69742965698242,
+              0.010271078906953335
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion": {
+            "parent": "TL_01_Fire",
+            "head": [
+              -62.729896545410156,
+              87.07869720458984,
+              9.313225746154785e-10
+            ]
+          },
+          "P_Ship_Fire_Small_Explosion": {
+            "parent": "TL_01_Fire",
+            "head": [
+              -61.4738655090332,
+              12.062251091003418,
+              9.313225746154785e-10
+            ]
+          },
+          "TL_02_Fire": {
+            "parent": "Root",
+            "head": [
+              61.9052848815918,
+              45.69742965698242,
+              0.010271078906953335
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion.001": {
+            "parent": "TL_02_Fire",
+            "head": [
+              79.16455841064453,
+              73.22533416748047,
+              0
+            ]
+          },
+          "LC_02_Fire": {
+            "parent": "Root",
+            "head": [
+              26.064048767089844,
+              -86.99082946777344,
+              0.010271078906953335
+            ]
+          },
+          "P_Ship_Fire_Small_Explosion.001": {
+            "parent": "LC_02_Fire",
+            "head": [
+              21.728694915771484,
+              -78.2787857055664,
+              6.654991149902344
+            ]
+          },
+          "LC_01_Fire": {
+            "parent": "Root",
+            "head": [
+              -25.661605834960938,
+              -86.99082946777344,
+              0.010271078906953335
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion.002": {
+            "parent": "LC_01_Fire",
+            "head": [
+              -29.385757446289062,
+              -120.55864715576172,
+              9.543262422084808e-06
+            ]
+          },
+          "Shield_Gen_Fire": {
+            "parent": "Root",
+            "head": [
+              5.13719078298891e-06,
+              50.66655349731445,
+              29.426233291625977
+            ]
+          },
+          "P_Ship_Fire_Explosion": {
+            "parent": "Shield_Gen_Fire",
+            "head": [
+              -25.081592559814453,
+              56.78582000732422,
+              36.71875
+            ]
+          },
+          "Hangar": {
+            "parent": "Root",
+            "head": [
+              9.837596053330344e-07,
+              -14.970376968383789,
+              -8.97452163696289
+            ]
+          },
+          "DTL_01": {
+            "parent": "Root",
+            "head": [
+              24.96092414855957,
+              -48.60649108886719,
+              10.072834968566895
+            ]
+          },
+          "DTL_02": {
+            "parent": "Root",
+            "head": [
+              28.376449584960938,
+              -23.606491088867188,
+              10.91818904876709
+            ]
+          },
+          "DTL_03": {
+            "parent": "Root",
+            "head": [
+              31.81524658203125,
+              1.3935089111328125,
+              11.755709648132324
+            ]
+          },
+          "DTL_04": {
+            "parent": "Root",
+            "head": [
+              -24.96099853515625,
+              -48.60649108886719,
+              10.072834968566895
+            ]
+          },
+          "DTL_05": {
+            "parent": "Root",
+            "head": [
+              -28.375999450683594,
+              -23.606491088867188,
+              10.91818904876709
+            ]
+          },
+          "DTL_06": {
+            "parent": "Root",
+            "head": [
+              -31.81500244140625,
+              1.3935089111328125,
+              11.755709648132324
+            ]
+          },
+          "Col": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Pi_Damage_Elec_small_sparse": {
+            "parent": "Col",
+            "head": [
+              140.21888732910156,
+              -1.9563576358905266e-07,
+              1.2570818662643433
+            ]
+          },
+          "Engine_Glow_Small": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "bounds_min": [
+          -82.84674072265625,
+          -151.38531494140625,
+          -23.9184513092041
+        ],
+        "bounds_max": [
+          82.84674072265625,
+          106.16940307617188,
+          44.56150436401367
+        ]
+      },
+      "after": {
+        "meshes": {
+          "Shield": {
+            "vertices": 376,
+            "triangles": 624,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Gladiator_M011.001"
+            ]
+          },
+          "Lights": {
+            "vertices": 330,
+            "triangles": 182,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M012.001"
+            ]
+          },
+          "Hull": {
+            "vertices": 10910,
+            "triangles": 5318,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M013.001"
+            ]
+          },
+          "Hangar_Mesh": {
+            "vertices": 302,
+            "triangles": 118,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M014.001"
+            ]
+          },
+          "Hangar_Lights": {
+            "vertices": 292,
+            "triangles": 118,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M015.001"
+            ]
+          },
+          "Engine_Glow": {
+            "vertices": 797,
+            "triangles": 1144,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M016.001"
+            ]
+          },
+          "Engine_Exhaust": {
+            "vertices": 728,
+            "triangles": 1168,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M017.001"
+            ]
+          },
+          "Shadow": {
+            "vertices": 3075,
+            "triangles": 5645,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Gladiator_M018.001"
+            ]
+          },
+          "Col": {
+            "vertices": 2217,
+            "triangles": 3862,
+            "uv_layers": 1,
+            "hidden": true,
+            "materials": [
+              "Gladiator_M019.001"
+            ]
+          },
+          "Engine_Glow_Small": {
+            "vertices": 428,
+            "triangles": 728,
+            "uv_layers": 1,
+            "hidden": false,
+            "materials": [
+              "Gladiator_M020.001"
+            ]
+          }
+        },
+        "bones": {
+          "Root": {
+            "parent": null,
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Shield": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Lights": {
+            "parent": "Root",
+            "head": [
+              0,
+              -6.794929504394531e-06,
+              1.107034494456094e-12
+            ]
+          },
+          "pe_gladiator_star_destroyer_large": {
+            "parent": "Root",
+            "head": [
+              21.570524215698242,
+              94.15467071533203,
+              -0.14663563668727875
+            ]
+          },
+          "pe_gladiator_star_destroyer_large.001": {
+            "parent": "Root",
+            "head": [
+              -21.453218460083008,
+              94.15467071533203,
+              -0.14663563668727875
+            ]
+          },
+          "pe_gladiator_star_destroyer_small": {
+            "parent": "Root",
+            "head": [
+              0.184760183095932,
+              95.95904541015625,
+              10.895492553710938
+            ]
+          },
+          "pe_gladiator_star_destroyer_small.001": {
+            "parent": "Root",
+            "head": [
+              0.1850000023841858,
+              95.95904541015625,
+              -11.051535606384277
+            ]
+          },
+          "Shield_Gen": {
+            "parent": "Root",
+            "head": [
+              5.13719078298891e-06,
+              50.66655731201172,
+              27.616294860839844
+            ]
+          },
+          "ML_01": {
+            "parent": "Root",
+            "head": [
+              -16.951271057128906,
+              -152.77606201171875,
+              0.010295969434082508
+            ]
+          },
+          "ML_02": {
+            "parent": "Root",
+            "head": [
+              16.951000213623047,
+              -152.77606201171875,
+              0.010295969434082508
+            ]
+          },
+          "LC_01": {
+            "parent": "Root",
+            "head": [
+              -23.164592742919922,
+              -86.99082946777344,
+              0.010285251773893833
+            ]
+          },
+          "LC_01_FP_01": {
+            "parent": "Root",
+            "head": [
+              -40.31137466430664,
+              -75.85801696777344,
+              0.010283437557518482
+            ]
+          },
+          "LC_01_FP_02": {
+            "parent": "Root",
+            "head": [
+              -27.897808074951172,
+              -121.80146789550781,
+              0.0102913249284029
+            ]
+          },
+          "LC_02": {
+            "parent": "Root",
+            "head": [
+              23.165000915527344,
+              -86.99082946777344,
+              0.010285251773893833
+            ]
+          },
+          "LC_02_FP_01": {
+            "parent": "Root",
+            "head": [
+              40.31100082397461,
+              -75.85801696777344,
+              0.010283437557518482
+            ]
+          },
+          "LC_02_FP_02": {
+            "parent": "Root",
+            "head": [
+              27.898000717163086,
+              -121.80146789550781,
+              0.0102913249284029
+            ]
+          },
+          "TL_01": {
+            "parent": "Root",
+            "head": [
+              -58.05986022949219,
+              45.69742965698242,
+              0.010263633914291859
+            ]
+          },
+          "TL_01_FP_01": {
+            "parent": "Root",
+            "head": [
+              -77.88936614990234,
+              69.04620361328125,
+              0.010259829461574554
+            ]
+          },
+          "TL_01_FP_02": {
+            "parent": "Root",
+            "head": [
+              -65.47579956054688,
+              23.10274887084961,
+              0.010267717763781548
+            ]
+          },
+          "TL_02": {
+            "parent": "Root",
+            "head": [
+              58.05999755859375,
+              45.69742965698242,
+              0.010263633914291859
+            ]
+          },
+          "TL_02_FP_02": {
+            "parent": "Root",
+            "head": [
+              65.47599792480469,
+              23.10274887084961,
+              0.010267717763781548
+            ]
+          },
+          "TL_02_FP_01": {
+            "parent": "Root",
+            "head": [
+              77.88899993896484,
+              69.04620361328125,
+              0.010259829461574554
+            ]
+          },
+          "Hull": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Hangar_Mesh": {
+            "parent": "Root",
+            "head": [
+              4.893946652373415e-07,
+              11.196044921875,
+              -1.3346724472285132e-06
+            ]
+          },
+          "Hangar_Lights": {
+            "parent": "Root",
+            "head": [
+              4.893946652373415e-07,
+              11.196044921875,
+              -1.3346724472285132e-06
+            ]
+          },
+          "Engine_Glow": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Engine_Exhaust": {
+            "parent": "Root",
+            "head": [
+              3.7481297567865113e-06,
+              6.106478170342378e-13,
+              3.7481297567865113e-06
+            ]
+          },
+          "Shadow": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "TL_01_Fire": {
+            "parent": "Root",
+            "head": [
+              -62.01890563964844,
+              45.69742965698242,
+              0.010263633914291859
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion": {
+            "parent": "TL_01_Fire",
+            "head": [
+              -62.72988510131836,
+              87.07870483398438,
+              -1.4185990039550234e-05
+            ]
+          },
+          "P_Ship_Fire_Small_Explosion": {
+            "parent": "TL_01_Fire",
+            "head": [
+              -61.47386932373047,
+              12.062248229980469,
+              -1.964258217412862e-06
+            ]
+          },
+          "TL_02_Fire": {
+            "parent": "Root",
+            "head": [
+              61.9052848815918,
+              45.69742965698242,
+              0.010263633914291859
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion.001": {
+            "parent": "TL_02_Fire",
+            "head": [
+              79.16456604003906,
+              73.22533416748047,
+              -1.1930851542274468e-05
+            ]
+          },
+          "LC_02_Fire": {
+            "parent": "Root",
+            "head": [
+              26.064048767089844,
+              -86.99082946777344,
+              0.010285251773893833
+            ]
+          },
+          "P_Ship_Fire_Small_Explosion.001": {
+            "parent": "LC_02_Fire",
+            "head": [
+              21.72869300842285,
+              -78.2787857055664,
+              6.655004024505615
+            ]
+          },
+          "LC_01_Fire": {
+            "parent": "Root",
+            "head": [
+              -25.661605834960938,
+              -86.99082946777344,
+              0.010285251773893833
+            ]
+          },
+          "P_Ship_Fire_Very_Small_Explosion.002": {
+            "parent": "LC_01_Fire",
+            "head": [
+              -29.385774612426758,
+              -120.55865478515625,
+              2.9184759114286862e-05
+            ]
+          },
+          "Shield_Gen_Fire": {
+            "parent": "Root",
+            "head": [
+              5.13719078298891e-06,
+              50.66655731201172,
+              29.426225662231445
+            ]
+          },
+          "P_Ship_Fire_Explosion": {
+            "parent": "Shield_Gen_Fire",
+            "head": [
+              -25.081592559814453,
+              56.785831451416016,
+              36.71874237060547
+            ]
+          },
+          "Hangar": {
+            "parent": "Root",
+            "head": [
+              9.837596053330344e-07,
+              -14.970378875732422,
+              -8.974518775939941
+            ]
+          },
+          "DTL_01": {
+            "parent": "Root",
+            "head": [
+              24.96092414855957,
+              -48.60649108886719,
+              10.072842597961426
+            ]
+          },
+          "DTL_02": {
+            "parent": "Root",
+            "head": [
+              28.376449584960938,
+              -23.606489181518555,
+              10.918192863464355
+            ]
+          },
+          "DTL_03": {
+            "parent": "Root",
+            "head": [
+              31.81524658203125,
+              1.3935108184814453,
+              11.755709648132324
+            ]
+          },
+          "DTL_04": {
+            "parent": "Root",
+            "head": [
+              -24.96099853515625,
+              -48.60649108886719,
+              10.072842597961426
+            ]
+          },
+          "DTL_05": {
+            "parent": "Root",
+            "head": [
+              -28.375999450683594,
+              -23.606489181518555,
+              10.918192863464355
+            ]
+          },
+          "DTL_06": {
+            "parent": "Root",
+            "head": [
+              -31.81500244140625,
+              1.3935108184814453,
+              11.755709648132324
+            ]
+          },
+          "Col": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          },
+          "Pi_Damage_Elec_small_sparse": {
+            "parent": "Col",
+            "head": [
+              140.21888732910156,
+              -3.3613957839406794e-08,
+              1.2570818662643433
+            ]
+          },
+          "Engine_Glow_Small": {
+            "parent": "Root",
+            "head": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "bounds_min": [
+          -82.84674072265625,
+          -151.38531494140625,
+          -23.91845703125
+        ],
+        "bounds_max": [
+          82.84674072265625,
+          106.1694107055664,
+          44.561492919921875
+        ]
+      },
+      "materials": [
+        {
+          "name": "Gladiator_M013",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Gladiator_Empire_Gladiator",
+          "normal": "Gladiator_Empire_Gladiator_B"
+        },
+        {
+          "name": "Gladiator_M011",
+          "shader": "MeshShield.fx",
+          "base": "Gladiator_Engine_Glow_Fancy_Blue",
+          "normal": null
+        },
+        {
+          "name": "Gladiator_M019",
+          "shader": "MeshCollision.fx",
+          "base": null,
+          "normal": null
+        },
+        {
+          "name": "Gladiator_M014",
+          "shader": "MeshBumpColorize.fx",
+          "base": "Gladiator_Hanger",
+          "normal": "Gladiator_Hanger_B"
+        },
+        {
+          "name": "Gladiator_M012",
+          "shader": "MeshAdditive.fx",
+          "base": "Gladiator_Hull_Lights_Grid",
+          "normal": null
+        },
+        {
+          "name": "Gladiator_M016",
+          "shader": "MeshShield.fx",
+          "base": "Gladiator_Engine_Glow_Fancy_Blue",
+          "normal": null
+        },
+        {
+          "name": "Gladiator_M020",
+          "shader": "MeshShield.fx",
+          "base": "Gladiator_Engine_Glow_Fancy_White",
+          "normal": null
+        },
+        {
+          "name": "Gladiator_M017",
+          "shader": "MeshAdditive.fx",
+          "base": "Gladiator_Engine_Exhaust",
+          "normal": null
+        },
+        {
+          "name": "Gladiator_M018",
+          "shader": "MeshShadowVolume.fx",
+          "base": null,
+          "normal": null
+        },
+        {
+          "name": "Gladiator_M015",
+          "shader": "MeshAdditive.fx",
+          "base": "Gladiator_Hanger",
+          "normal": null
+        }
+      ],
+      "bone_error": 2.717852728741433e-05,
+      "geometry_error": 4.3588237312417754e-05
+    }
+  },
+  "materials": [
+    {
+      "name": "Gladiator_M013",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Gladiator_Empire_Gladiator",
+      "normal": "Gladiator_Empire_Gladiator_B"
+    },
+    {
+      "name": "Gladiator_M011",
+      "shader": "MeshShield.fx",
+      "base": "Gladiator_Engine_Glow_Fancy_Blue",
+      "normal": null
+    },
+    {
+      "name": "Gladiator_M019",
+      "shader": "MeshCollision.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "Gladiator_M014",
+      "shader": "MeshBumpColorize.fx",
+      "base": "Gladiator_Hanger",
+      "normal": "Gladiator_Hanger_B"
+    },
+    {
+      "name": "Gladiator_M012",
+      "shader": "MeshAdditive.fx",
+      "base": "Gladiator_Hull_Lights_Grid",
+      "normal": null
+    },
+    {
+      "name": "Gladiator_M016",
+      "shader": "MeshShield.fx",
+      "base": "Gladiator_Engine_Glow_Fancy_Blue",
+      "normal": null
+    },
+    {
+      "name": "Gladiator_M020",
+      "shader": "MeshShield.fx",
+      "base": "Gladiator_Engine_Glow_Fancy_White",
+      "normal": null
+    },
+    {
+      "name": "Gladiator_M017",
+      "shader": "MeshAdditive.fx",
+      "base": "Gladiator_Engine_Exhaust",
+      "normal": null
+    },
+    {
+      "name": "Gladiator_M018",
+      "shader": "MeshShadowVolume.fx",
+      "base": null,
+      "normal": null
+    },
+    {
+      "name": "Gladiator_M015",
+      "shader": "MeshAdditive.fx",
+      "base": "Gladiator_Hanger",
+      "normal": null
+    }
+  ]
+}

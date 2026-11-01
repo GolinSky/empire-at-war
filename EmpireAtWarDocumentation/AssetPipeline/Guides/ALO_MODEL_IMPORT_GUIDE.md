@@ -123,7 +123,7 @@ bpy.ops.import_scene.fbx(
 3. Map each weapon/system to actual attachment positions. Preserve reference weapon counts even when ALO bone names differ; document the mapping.
 4. Place hardpoints under the banking body pivot. Calculate muzzle/world positions correctly; imported bone rotation is not automatically Unity yaw.
 5. Assign unique hardpoint IDs, health ordering, weapon profiles/arcs, fog references and hangar dependencies. A twin barrel pair need not represent two separate gameplay weapons.
-6. **Hardpoints must be visible/targetable.** Add every weapon hardpoint to `HealthComponent.ShipUnits` and give each used `HardPointType` a `ShipData.hardPointHealth` entry — even when the source XML says `Is_Targetable=No` / `Is_Destroyable=No` (common in AOTR). Hull-only targeting needs explicit user approval.
+6. **Hardpoints must be visible/targetable.** Bind every weapon/system hardpoint to `HealthComponent.ShipUnits`, including source `Is_Targetable=No` / `Is_Destroyable=No` entries. Current health uses `HardPointHealthBudget` + shared `HardPointHealthSettings`: set `healthOverride = 0`, normally `healthWeight = 1`; `ShipData.hardPointHealth` was removed. Verify live settings and class floors; see [[TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan]]. Hull-only targeting needs explicit user approval.
 7. Use available fighter types only with an approved substitution. Fit the launch point outside the hull and record reserves, simultaneous capacity and launch delays.
 
 | Component | Explicit bindings to rebuild |
@@ -251,3 +251,8 @@ bpy.ops.import_scene.fbx(
 - `Assets/Settings/Data/Ship/RothanaShipData.asset` — ship values and dependencies; `Assets/Settings/Data/Reinforcement/ReinforcementData.asset` — preview registry.
 - `Assets/Art/Shaders/Units/ShipLitInput.hlsl`, `Assets/Scripts/Components/TeamColor/TeamColorView.cs`, `Assets/Scripts/Editor/Rendering/TeamLiveryAnalyzer.cs` — livery contract and detection limits.
 - `Assets/Scripts/Editor/ShipIconGenerator.cs`, `Assets/Scripts/Editor/Rendering/ShipWreckBuilder.cs` — generators must preserve hidden-renderer state.
+
+### Gladiator regression checks — 2026-11-01
+
+- Selection sizing must account for the shared sprite's visible fraction (`1038 / 1254`); fit `ringSize` to visible renderer bounds × `1.15 / visibleFraction`, and center marker XZ without moving the health anchor. Verified by `HealthOverlayAnchorTests` for Gladiator.
+- Replacing derived stripe GameObjects can invalidate `Ship.explosionHullRenderers`; rebuild that explicit list from current opaque hull renderers before saving. Verified by `ShipExplosionPrefabTests`; reusable example: `Tools/Blender/Gladiator/BuildLivery.cs`.

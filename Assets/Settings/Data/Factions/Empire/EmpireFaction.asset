@@ -289,6 +289,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: a18de04525e87254ebd6a359e39a58ba,
           type: 3}
+    - key: 216
+      value:
+        matchups: {fileID: 11400000, guid: 16ec1784ca6e7fc4d842d982fde86b5c, type: 2}
+        description: 6,000 hull and 5,000 shields with capital shield regeneration.
+          Four dual medium turbolasers, two concussion missile launchers and two
+          point defense lasers. Deploys TIE Fighter, TIE Bomber, TIE Avenger, TIE
+          Interceptor, TIE Brute and TIE Punisher squadrons. One squadron of each
+          type can be active, with ten carried per type and sixty total.
+        role: Capital / Assault carrier
+        iconKey: f38f2a09297bc734d89c94affa2d83f6:21300000
+        isHero: 0
+        <Name>k__BackingField: Gladiator-class Star Destroyer
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 4000
+        <BuildTime>k__BackingField: 40
+        <UnitCapacity>k__BackingField: 8
+        <Icon>k__BackingField: {fileID: 21300000, guid: f38f2a09297bc734d89c94affa2d83f6,
+          type: 3}
   squadrons:
     keyValue:
     - key: 200

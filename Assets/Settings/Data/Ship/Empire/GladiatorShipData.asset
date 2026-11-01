@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e580e579044741caae6ff7662bce890d, type: 3}
+  m_Name: GladiatorShipData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
+  <MinMoveCoefficient>k__BackingField: 0.4
+  <Speed>k__BackingField: 25
+  heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
+  <HeightTier>k__BackingField: 2
+  <HullBottom>k__BackingField: -13.623514
+  <HullTop>k__BackingField: 12.951649
+  <RotationSpeed>k__BackingField: 7.5
+  <TurnAcceleration>k__BackingField: 7.5
+  <HyperSpaceDuration>k__BackingField: 0.6
+  <BodyRotationMaxAngle>k__BackingField: 10
+  <NavigationRadius>k__BackingField: 55
+  <DestroyDelay>k__BackingField: 0.35
+  <Wreck>k__BackingField: {fileID: 11400000, guid: 37a29ab02145beb4396d4d4104af7412,
+    type: 2}
+  <ShipClass>k__BackingField: 4
+  <Hull>k__BackingField: 6000
+  <Shields>k__BackingField: 5000
+  shieldRegenTiers: {fileID: 11400000, guid: 3425d6ddc79a6b649990974111258ac9, type: 2}
+  <ShieldRegenTier>k__BackingField: 3
+  <ShieldRegenerateDelay>k__BackingField: 1
+  <Range>k__BackingField: 600
+  <Delay>k__BackingField: 0.25
+  abilities: 
+  hangarBays:
+  - squadronType: 200
+    reserve: 10
+    maxActive: 1
+  - squadronType: 201
+    reserve: 10
+    maxActive: 1
+  - squadronType: 202
+    reserve: 10
+    maxActive: 1
+  - squadronType: 203
+    reserve: 10
+    maxActive: 1
+  - squadronType: 204
+    reserve: 10
+    maxActive: 1
+  - squadronType: 205
+    reserve: 10
+    maxActive: 1
+  <HangarInitialDelay>k__BackingField: 4
+  <HangarLaunchInterval>k__BackingField: 8
+  weaponLoadout:
+  - weaponType: 5
+    count: 4
+  - weaponType: 13
+    count: 2
+  - weaponType: 14
+    count: 2
