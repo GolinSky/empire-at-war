@@ -82,8 +82,11 @@ namespace EmpireAtWar.Services.Enemy
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
             {
                 if (group.Context == null || !group.Context.Snapshot.HasStationPressure) continue;
+                // Cached decisions can outlive entities while world-change reevaluation is deferred.
+                if (group.Context.OwnBase == null ||
+                    !_entityLocator.TryGetEntity(group.Context.OwnBase.Id, out GameEntity ownBase)) continue;
                 defendHome = true;
-                rally = group.Context.OwnBase.GetFacade<EmpireAtWar.Entities.BaseEntity.EntityFacades.IEntityTransformFacade>()
+                rally = ownBase.GetFacade<EmpireAtWar.Entities.BaseEntity.EntityFacades.IEntityTransformFacade>()
                     .Transform.position;
                 return true;
             }
@@ -91,8 +94,15 @@ namespace EmpireAtWar.Services.Enemy
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
             {
                 if (group.IsCaptureDetachment || group.Ships.Count == 0) continue;
-                foreach (IShipEntity ship in group.Ships) rally += ship.WorldPosition;
-                rally /= group.Ships.Count;
+                int shipCount = 0;
+                foreach (IShipEntity ship in group.Ships)
+                {
+                    if (!_entityLocator.TryGetEntity(ship.EntityId, out GameEntity _)) continue;
+                    rally += ship.WorldPosition;
+                    shipCount++;
+                }
+                if (shipCount == 0) continue;
+                rally /= shipCount;
                 return true;
             }
             return false;

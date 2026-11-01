@@ -43,6 +43,61 @@ namespace EmpireAtWar.Tests.Editor
     [Category("EnemyAi")]
     public sealed class EnemyUnitCommanderTests
     {
+        [TestCase(false, true)]
+        [TestCase(true, true)]
+        [TestCase(true, false)]
+        public void ReinforcementRally_CachedDecisionSkipsRemovedEntities(bool removeStation, bool keepFleet)
+        {
+            GameObject stationView = new GameObject("Reinforcement rally station");
+            try
+            {
+                stationView.transform.position = Vector3.forward * 100f;
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                EntityLocator locator = new EntityLocator();
+                FakeEntity station = new FakeEntity(new FakeHealthModel(stationView.transform), TestPlayers.Enemy, 1);
+                FakeEntity survivor = new FakeEntity(new FakeHealthModel(null), TestPlayers.Enemy, 2);
+                locator.AddEntity(station);
+                locator.AddEntity(survivor);
+                EnemyStrategicContextBuilder builder = CaptureBuilder(roster, new ZoneSource(roster),
+                    new SiteSource(), new TestHazards());
+                FakeOrderService orders = new FakeOrderService();
+                EnemyUnitCommander commander = new EnemyUnitCommander(null, null, locator, null, orders,
+                    new EnemyStrategicDecisionModel(), builder, new EnemyTaskForceExecutor(orders),
+                    roster.Get(TestPlayers.Enemy));
+                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                var planner = (EnemyShipTaskGroupPlanner)typeof(EnemyUnitCommander)
+                    .GetField("_taskGroups", flags).GetValue(commander);
+                EnemyShipTaskGroup group = planner.Groups[0];
+                group.Ships.Add(new FakeShip(Vector3.right * 20f, survivor.Id));
+                group.Ships.Add(new FakeShip(Vector3.right * 1000f, 3));
+                var snapshot = new EnemyStrategicSnapshot(BattleVictoryCondition.DestroyEnemyFleet,
+                    EnemyAiDifficulty.UltraHard, 2, 1, 0, 1f, 1f, false, false, true,
+                    hasStationPressure: true);
+                var context = new EnemyStrategicContext(group.Ships, null, null, station, snapshot,
+                    Vector3.zero, null, null);
+                typeof(EnemyShipTaskGroup).GetProperty(nameof(EnemyShipTaskGroup.Context)).SetValue(group, context);
+                typeof(EnemyUnitCommander).GetField("_hasDecision", flags).SetValue(commander, true);
+
+                if (removeStation)
+                {
+                    locator.RemoveEntity(station);
+                    UnityEngine.Object.DestroyImmediate(stationView);
+                }
+                if (!keepFleet) locator.RemoveEntity(survivor);
+
+                bool hasRally = commander.TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
+
+                Assert.That(hasRally, Is.EqualTo(!removeStation || keepFleet));
+                Assert.That(defendHome, Is.EqualTo(!removeStation));
+                Assert.That(rally, Is.EqualTo(!removeStation ? Vector3.forward * 100f :
+                    keepFleet ? Vector3.right * 20f : Vector3.zero));
+            }
+            finally
+            {
+                if (stationView != null) UnityEngine.Object.DestroyImmediate(stationView);
+            }
+        }
+
         [TestCase("FindClosestKnownShip")]
         [TestCase("FindLocalThreat")]
         public void TargetSelection_PrefersSafeShipOverCloserIonStormTarget(string selector)
