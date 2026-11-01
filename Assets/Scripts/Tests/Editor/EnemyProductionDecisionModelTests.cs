@@ -27,6 +27,20 @@ namespace EmpireAtWar.Tests.Editor
     [Category("EnemyAi")]
     public sealed class EnemyProductionDecisionModelTests
     {
+        [TestCase(EnemyAiDifficulty.Easy, true)]
+        [TestCase(EnemyAiDifficulty.Hard, true)]
+        [TestCase(EnemyAiDifficulty.UltraHard, true)]
+        [TestCase(EnemyAiDifficulty.UltraHard, false)]
+        public void CriticalStation_OnlyBuysCombatShips(EnemyAiDifficulty difficulty, bool canBuildShip)
+        {
+            var snapshot = new EnemyProductionSnapshot(EnemyStrategicState.Hold, difficulty,
+                0, 10, 100, 0, 5, 10, 5, true, true, canBuildShip, true, true, true, true, true,
+                canResearchIncome: true, canResearchCombat: true, isStationCritical: true);
+
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(canBuildShip
+                ? EnemyProductionCategory.Ship : EnemyProductionCategory.None));
+        }
+
         [TestCase(EnemyAiDifficulty.Easy, 0)]
         [TestCase(EnemyAiDifficulty.Medium, 1)]
         [TestCase(EnemyAiDifficulty.Hard, 2)]
@@ -690,7 +704,7 @@ namespace EmpireAtWar.Tests.Editor
                     profileCatalog: UniformValueCatalog(definition),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
-                    owner: owner);
+                    owner: owner, stationPressure: new EnemyStationPressureTracker());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -770,7 +784,7 @@ namespace EmpireAtWar.Tests.Editor
                     profileCatalog: UniformValueCatalog(definition),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
-                    owner: owner);
+                    owner: owner, stationPressure: new EnemyStationPressureTracker());
 
                 UnitLimitKey capacityHolder = GetUnitId<ShipUnitRequest>("capacity-holder");
                 int heldCapacity = MAX_UNIT_CAPACITY - unitLimitModel.CurrentUnitCapacity -
@@ -866,7 +880,7 @@ namespace EmpireAtWar.Tests.Editor
                     profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
-                    owner: owner);
+                    owner: owner, stationPressure: new EnemyStationPressureTracker());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -1094,6 +1108,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsUpgradingStation => false;
 
             public bool CanQueue(string requestId, int maxCount) => true;
+            public float GetQueueRemainingTime(string requestId) => 0f;
 
             public void ReserveExternalPipeline(string requestId) { }
             public void ReleaseExternalPipeline(string requestId) { }

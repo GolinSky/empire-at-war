@@ -57,6 +57,9 @@
   - Target-specific task forces implemented 2026-11-01: counter-based strike selection, assembly readiness, retained membership and guard screen. Runtime acceptance pending; tests authored, not run.
   - Battle follow-up implemented 2026-11-01: caliber/population valuation, home defense deployment, persistent main-force assembly and active bounded screens. Latest 17:27 battle: capital buying and main-force attacks improved; siege response, emergency production and capture clearance remain open; parent retains broader balance scope. Evidence/priorities → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review]].
 
+- [ ] **Fix enemy AI endgame siege defense, emergency production and capture oscillation** → [[TODOs/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix|Endgame Defense and Capture Fix]]; parent: [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]
+  - 2026-11-01: phases 1–4 implemented: shared damage pressure, threat-facing defense, emergency arrival valuation and stable capture membership. Compilation/import and scoped diff checks passed; runtime acceptance pending. Phase 5 deferred until fresh battle evidence. Tests are not executed under the checkout override.
+
 - [ ] **Replace silent null returns with fail-fast/Try APIs** (Wave 1) → [[TODOs/Bugs/Fail_Fast_Null_Returns|Fail-Fast Null Returns]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
 

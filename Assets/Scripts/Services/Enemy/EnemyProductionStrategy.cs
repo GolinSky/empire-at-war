@@ -2,6 +2,7 @@ using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
@@ -45,6 +46,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly UnitCombatProfileCatalog _profileCatalog;
         private readonly EnemyCounterProductionModel _counterModel;
         private readonly HostileIntelModel _intel;
+        private readonly EnemyStationPressureTracker _stationPressure;
 
         private readonly ForceComposition _ownForce = new ForceComposition();
         private readonly ForceComposition _hostileForce = new ForceComposition();
@@ -77,9 +79,11 @@ namespace EmpireAtWar.Services.Enemy
             UnitCombatProfileCatalog profileCatalog,
             EnemyCounterProductionModel counterModel,
             TeamIntelRegistry intelRegistry,
-            PlayerSlot owner)
+            PlayerSlot owner,
+            EnemyStationPressureTracker stationPressure)
         {
             _owner = owner;
+            _stationPressure = stationPressure;
             _playerRoster = playerRoster;
             _forceBuilder = forceBuilder;
             _profileCatalog = profileCatalog;
@@ -163,24 +167,33 @@ namespace EmpireAtWar.Services.Enemy
             bool canOrderShips = CanOrderAnyShip();
             bool hasSquadronRoom = HasSquadronRoom(shipCount);
             bool hasCounter = TrySelectCounterUnit(
+                _stationPressure.IsStationCritical ||
                 canOrderShips && (_decisionModel.NeedsMinimumFleet(shipCount) || !hasSquadronRoom),
                 hasSquadronRoom,
                 out UnitTypeId counterId,
                 out FactionData counterData);
             bool hasShip = !hasCounter && TrySelectShip(shipCount, out ship);
-            bool hasSquadronFallback = !hasCounter && !hasShip && !canOrderShips &&
+            bool hasSquadronFallback = !_stationPressure.IsStationCritical && !hasCounter && !hasShip && !canOrderShips &&
                                        TrySelectSquadron(shipCount, true, out squadron);
             bool hasShipOption = hasCounter || hasShip || hasSquadronFallback;
             FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
             DefenseReserve = hasShipOption ? shipChoice.Price : 0f;
             bool canBuildShip = hasShipOption && IsAffordable(shipChoice) &&
                 _unitLimitModel.CurrentUnitCapacity + shipChoice.UnitCapacity <= _reinforcementData.MaxUnitCapacity;
+            if (_stationPressure.IsStationCritical && !hasShipOption)
+            {
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "production-wait",
+                    $"critical=True;etaSeconds=Infinity;timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};" +
+                    "reason=no affordable ship with available population and production lane");
+            }
             if (hasShipOption && !canBuildShip)
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "production-wait",
                     $"unit={(hasCounter ? counterId.ToString() : hasShip ? ship.Key.ToString() : squadron.Key.ToString())};" +
                     $"capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};" +
-                    $"required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money}");
+                    $"required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money};" +
+                    $"critical={_stationPressure.IsStationCritical};etaSeconds={GetArrivalSeconds(hasCounter ? counterId : UnitTypeId.Ship(ship.Key), shipChoice):F1};" +
+                    $"timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1}");
             }
             FactionData levelData = _productionAccess.ProductionHost == _owner.Id &&
                                     !_purchaseProcessor.IsUpgradingStation
@@ -204,7 +217,7 @@ namespace EmpireAtWar.Services.Enemy
                 ? 1 + _stateProvider.ActiveShipCount / 3
                 : 1;
 
-            if (TryBuyScout(shipCount,
+            if (!_stationPressure.IsStationCritical && TryBuyScout(shipCount,
                     hasMiningSelection && miningFacilityCount < miningFacilityTarget,
                     canPlaceStructure))
             {
@@ -232,9 +245,10 @@ namespace EmpireAtWar.Services.Enemy
                     canLevelUp,
                     canResearchIncome,
                     canResearchCombat,
-                    canOrderShips));
+                    canOrderShips,
+                    _stationPressure.IsStationCritical));
 
-            bool buildSquadron = !hasCounter &&
+            bool buildSquadron = !_stationPressure.IsStationCritical && !hasCounter &&
                                  category == EnemyProductionCategory.Ship &&
                                  (hasSquadronFallback ||
                                   TrySelectSquadron(shipCount, false, out squadron) &&
@@ -278,7 +292,11 @@ namespace EmpireAtWar.Services.Enemy
                 $"Cost={request.FactionData.Price}, " +
                 $"Money={_economyModel.Money}");
             EnemyAiTelemetry.RecordPurchase(_owner.Id, _owner.Faction, _stateProvider.CurrentState, category,
-                hasCounter, request.Id, request.FactionData.Price, _economyModel.Money);
+                hasCounter, request.Id, request.FactionData.Price, _economyModel.Money,
+                _stationPressure.IsStationCritical,
+                category == EnemyProductionCategory.Ship ? GetArrivalSeconds(
+                    hasCounter ? counterId : UnitTypeId.Ship(ship.Key), request.FactionData) : 0f,
+                _stationPressure.EstimatedTimeToLossSeconds);
             _purchaseProcessor.Purchase(request);
         }
 
@@ -385,7 +403,8 @@ namespace EmpireAtWar.Services.Enemy
 
             if (!_counterModel.TrySelect(_ownForce, _hostileForce, _candidates, out int index,
                     _economyModel.Money,
-                    _reinforcementData.MaxUnitCapacity - _unitLimitModel.CurrentUnitCapacity))
+                    _reinforcementData.MaxUnitCapacity - _unitLimitModel.CurrentUnitCapacity,
+                    _stationPressure.IsStationCritical, _stationPressure.EstimatedTimeToLossSeconds))
             {
                 return false;
             }
@@ -426,8 +445,12 @@ namespace EmpireAtWar.Services.Enemy
                 return;
             }
 
+            if (_stationPressure.IsStationCritical && (!IsAffordable(data) ||
+                _unitLimitModel.CurrentUnitCapacity + data.UnitCapacity > _reinforcementData.MaxUnitCapacity)) return;
+
             _candidates.Add(new ProductionCandidate(_profileCatalog.Get(unitTypeId), data.Price,
-                Math.Max(reservedCount, liveCount), hasSquadronRoom, data.UnitCapacity));
+                Math.Max(reservedCount, liveCount), hasSquadronRoom, data.UnitCapacity,
+                GetArrivalSeconds(unitTypeId, data)));
             _candidateIds.Add(unitTypeId);
             _candidateData.Add(data);
         }
@@ -439,6 +462,7 @@ namespace EmpireAtWar.Services.Enemy
             selected = default;
             bool found = false;
             float bestPriority = float.MaxValue;
+            float selectedArrival = float.PositiveInfinity;
             foreach (KeyValuePair<ShipType, FactionData> option
                      in _factionModel.ShipFactionData)
             {
@@ -451,6 +475,9 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 }
 
+                if (_stationPressure.IsStationCritical && (!IsAffordable(option.Value) ||
+                    _unitLimitModel.CurrentUnitCapacity + option.Value.UnitCapacity > _reinforcementData.MaxUnitCapacity)) continue;
+
                 int reservedCount = _unitLimitModel.GetReservedCount<ShipUnitRequest>(
                     option.Key.ToString());
                 float priority = _decisionModel.CalculateShipPriority(
@@ -461,16 +488,43 @@ namespace EmpireAtWar.Services.Enemy
                     option.Value.UnitCapacity,
                     option.Value.MaxCount,
                     _profileCatalog.Get(UnitTypeId.Ship(option.Key)).GetCombatValue() / Math.Max(1, option.Value.Price));
+                if (_stationPressure.IsStationCritical)
+                {
+                    float combatValue = _profileCatalog.Get(UnitTypeId.Ship(option.Key)).GetCombatValue();
+                    if (combatValue <= 0f) continue;
+                    float arrival = GetArrivalSeconds(UnitTypeId.Ship(option.Key), option.Value);
+                    bool timely = arrival <= _stationPressure.EstimatedTimeToLossSeconds;
+                    bool selectedTimely = found && selectedArrival <= _stationPressure.EstimatedTimeToLossSeconds;
+                    if (selectedTimely && !timely) continue;
+                    if (timely && !selectedTimely) found = false;
+                    priority = arrival / combatValue;
+                }
                 if (!found || priority < bestPriority ||
                     priority == bestPriority && option.Value.Price < selected.Value.Price)
                 {
                     selected = option;
+                    selectedArrival = GetArrivalSeconds(UnitTypeId.Ship(option.Key), option.Value);
                     bestPriority = priority;
                     found = true;
                 }
             }
 
             return found;
+        }
+
+        private float GetArrivalSeconds(UnitTypeId unitTypeId, FactionData data)
+        {
+            if (!_stationPressure.IsStationCritical) return 0f;
+            float travel = 0f;
+            if (unitTypeId.IsShip && _stationPressure.HasThreatPosition &&
+                _productionAccess.TryGetProductionBase(out var productionBase))
+            {
+                Vector3 threat = new Vector3(_stationPressure.ThreatX, _stationPressure.ThreatY, _stationPressure.ThreatZ);
+                Vector3 offset = threat - productionBase.GetFacade<IEntityTransformFacade>().Transform.position;
+                offset.y = 0f;
+                travel = _profileCatalog.GetShipTravelTime(unitTypeId.ShipType, offset.magnitude);
+            }
+            return _purchaseProcessor.GetQueueRemainingTime(unitTypeId.ToString()) + data.BuildTime + travel;
         }
 
         /// <summary>True while bought squadrons number fewer than one per <see cref="SHIPS_PER_SQUADRON"/> ships.</summary>

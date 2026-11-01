@@ -194,7 +194,8 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IShipEntity ship in _shipService.Ships)
                 if (ship.Owner == _owner.Id && _entityLocator.TryGetEntity(ship.EntityId, out GameEntity _))
                     _ships.Add(ship);
-            _taskGroups.Reconcile(_ships, _contextBuilder.Build(_ships).Snapshot.HasStationPressure);
+            bool stationPressure = _contextBuilder.Build(_ships).Snapshot.HasStationPressure;
+            _taskGroups.Reconcile(_ships, stationPressure);
             _reservedCaptureObjectives.Clear();
             EnemyShipTaskGroup primary = null;
             int bodyCount = 0;
@@ -229,6 +230,7 @@ namespace EmpireAtWar.Services.Enemy
             _recoveryStartedAt = primary.RecoveryStartedAt;
             _actionReason = primary.Executor.ActionReason + groupSummary;
             PublishDecision(primary.Decision, bodyCount, rallyingCount);
+            _taskGroups.TryCreateCaptureGroup(_ships, _reservedCaptureObjectives, stationPressure);
         }
 
         private void MoveShipsOutOfDefaultZone(IReadOnlyList<IShipEntity> ships)

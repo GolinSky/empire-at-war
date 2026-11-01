@@ -14,9 +14,9 @@ verification: Live-source review, Unity compilation/import, new runtime types
 ## Rules
 
 - `EnemyShipTaskGroupPlanner` owns stable ship membership. Each group has its own `EnemyStrategicContextBuilder`, `EnemyStrategicDecisionModel` and `EnemyTaskForceExecutor`: objective safety, strategy/recovery and orders.
-- Station pressure is independent of hostile/own strength ratio. Visible, alive, uncloaked ship/squadron threats can trigger `DefendBase` even at a low ratio.
+- Station pressure is per player and independent of hostile/own strength ratio; every group builder shares `EnemyStationPressureTracker`. Visible threats or own-station durability loss can trigger `DefendBase`.
 - Direct/weapon-tracked station attacks use effective weapon range + station footprint + attacker footprint. Other visible contacts use the narrower center/contact envelope.
-- Station defense issues AttackMove at the station to fight under its coverage; recent pressure persists for 20 s across brief visibility/range loss. Destroyed threats clear immediately.
+- Station pressure latches after ≥0.5% maximum shields+hull loss within 5 s, or a visible threatening contact. Release requires 30 s without contact or durability loss; hidden attackers supply no live target or updated position.
 - Retreat recovery requires cohesion for normal local action, not global parity. Ordinary offensive rules retain their fleet-advantage thresholds.
 - Lost home + scattered fleet + viable local objective → rally through capture/local engagement. No safe anchor or viable action → explicit Hold/rebuild.
 
@@ -47,8 +47,8 @@ verification: Live-source review, Unity compilation/import, new runtime types
 
 ### Independent task groups (2026-10-31)
 
-- With more than one ship, reserve the fastest eligible ship with a safe capture target as a capture detachment. Ships on Attack or Retreat are excluded from initial selection.
-- Capture detachment keeps its own capture/retreat/hold/rebuild policy; station pressure recalls it into the main force. No target and not recovering → release on the next reconciliation.
+- With more than one ship, reserve the fastest eligible ship with a safe, unreserved capture target as a capture detachment. Combat groups reserve objectives before extraction; the reused detachment executes next decision tick. Attack/Retreat ships are excluded from initial selection.
+- Capture detachment keeps its own capture/retreat/hold/rebuild policy; station pressure recalls it. Release requires 10 s with no viable objective and no recovery; reservations by another group do not consume that grace period.
 - Opening combat groups join within 800 and split beyond 1600. At six available combat ships, retain one main force and recruit distant nonrecovering groups; station pressure concentrates available ships immediately. Main-force membership survives travel separation.
 - Group origin, local force, offensive strength, route safety, capture stall budget and recovery state are independent. Distant or nonassigned ships do not lend strength to a detached capture route.
 - Executed capture objectives reserve their IDs for the decision pass; later ship groups select other objectives. Main force evaluates first once formed; capture detachment chooses another objective.
@@ -100,3 +100,15 @@ verification: Live-source review, Unity compilation/import, new runtime types
 - 2026-10-31 recovery fixes: retreat anchor checks ignore transient destination reservations through `IsPositionClear(..., includeReservations: false)` while retaining map-obstacle, ion-cost and known hostile-force checks. Formation placement still resolves ship reservations.
 - Executed capture stall time pauses during other strategies; candidate selection alone never consumes the `20 s` budget. Cooldown remains `20 s` of wall time.
 - Fix implementation and verification → [[Done/Bugs/Enemy_AI_Recovery_Review_Fixes]]. Runtime acceptance and authored regression execution remain pending.
+
+### Endgame defense and capture (2026-11-01)
+
+- Defense line faces visible or last known threat intel; no bearing → four-point station ring. Line distance includes station/ship clearance and weapon reach, bounded by station radius + 1,500 units.
+- Useful counter ships intercept visible targets inside that leash without assembly waiting. Contact loss/leash exit ends interception; completed defense-point orders are retained until the target changes or the point moves >200 units.
+- Ongoing station damage with no defender target in range for 8 s → advance the line 250 units, bounded by the leash. Static clearance checks ignore transient navigation reservations.
+- Critical = latched pressure AND (durability <50% maximum OR estimated loss time <120 s). Critical production buys only affordable ships fitting available population; site mines/satellites and new superweapon charging purchases pause. Paid charging and firing continue.
+- Emergency ranking uses useful combat value / arrival seconds; useful candidates arriving before station loss outrank late candidates. Arrival = matching request-ID queue delay + build time + base-speed travel to last known threat; no bearing → queue + build only.
+- `EnemyBuildQueue` serializes identical request IDs; different IDs advance in parallel. Human `ProductionQueueSnapshot` is not the AI queue. Normal capital reservations remain unchanged outside critical pressure.
+- Minimum-radius committed ships capture; larger escorts AttackMove to perimeter points at objective radius + their own navigation radius. Strategic fit uses capturer clearance and ignores transient reservations; obstacle, ion and known hostile-route checks remain.
+- Reservation API cannot identify owners; `transientReservation` means a ship reservation blocked the sampled point, not proof of a hostile or friendly owner. Tactical order placement still applies clearance.
+- Implementation/remaining secondary tuning → [[TODOs/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]]. Tests authored; runtime battle acceptance remains pending.

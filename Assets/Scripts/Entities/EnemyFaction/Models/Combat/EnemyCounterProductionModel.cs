@@ -32,7 +32,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             IReadOnlyList<ProductionCandidate> candidates,
             out int selectedIndex,
             float availableCredits = 1f,
-            int availableCapacity = int.MaxValue)
+            int availableCapacity = int.MaxValue,
+            bool isStationCritical = false,
+            float timeToLossSeconds = float.PositiveInfinity)
         {
             selectedIndex = -1;
             SelectedScore = 0.0;
@@ -43,6 +45,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
 
             double baseline = Math.Log(CombatMatchup.Advantage(own, hostile));
             double bestScore = 0.0;
+            bool hasTimelyCandidate = false;
             for (int i = 0; i < candidates.Count; i++)
             {
                 ProductionCandidate candidate = candidates[i];
@@ -62,6 +65,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                 double score = gain / resourceCost *
                                _matchups.GetPreference(candidate.Profile.ShipClass, hostile) /
                                Math.Sqrt(1 + candidate.OwnedCount);
+                if (isStationCritical)
+                {
+                    bool isTimely = candidate.ArrivalSeconds <= timeToLossSeconds;
+                    if (hasTimelyCandidate && !isTimely) continue;
+                    if (isTimely && !hasTimelyCandidate)
+                    {
+                        bestScore = 0.0;
+                        hasTimelyCandidate = true;
+                    }
+                    score = gain * _matchups.GetPreference(candidate.Profile.ShipClass, hostile) /
+                            Math.Max(1f, candidate.ArrivalSeconds);
+                }
                 if (score > bestScore)
                 {
                     bestScore = score;

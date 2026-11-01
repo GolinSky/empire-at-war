@@ -33,6 +33,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IEnemyPurchaseProcessor _production;
         private readonly SuperWeaponData _data;
         private readonly IPlayerRelations _relations;
+        private readonly EnemyStationPressureTracker _stationPressure;
 
         private readonly SuperWeaponModel _model;
         private readonly PlayerSlot _owner;
@@ -53,7 +54,7 @@ namespace EmpireAtWar.Services.Enemy
             IProductionAccess productionAccess, SuperWeaponModel model, EnemyFactionModel factionModel,
             EconomyModel economyModel,
             PlayerSlot owner, IEnemyPurchaseProcessor production, SuperWeaponData data,
-            IPlayerRelations relations)
+            IPlayerRelations relations, EnemyStationPressureTracker stationPressure)
         {
             _owner = owner;
             _model = model;
@@ -66,6 +67,7 @@ namespace EmpireAtWar.Services.Enemy
             _production = production;
             _data = data;
             _relations = relations;
+            _stationPressure = stationPressure;
         }
 
         public void Tick()
@@ -131,7 +133,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool TryPurchase(SuperWeaponType type, FactionData data)
         {
-            if (!_productionAccess.CanProduce ||
+            if (_stationPressure.IsStationCritical || !_productionAccess.CanProduce ||
                 !_production.CanQueue(type.ToString(), data.MaxCount) ||
                 data.AvailableLevel > _factionModel.CurrentLevel ||
                 _economyModel.Money < data.Price * MONEY_RESERVE_MULTIPLIER ||

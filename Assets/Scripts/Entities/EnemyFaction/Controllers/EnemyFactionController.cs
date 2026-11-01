@@ -67,6 +67,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         public IReadOnlyList<EnemyPendingBuild> PendingBuilds => _builds.Builds;
 
         public bool CanQueue(string requestId, int maxCount) => _builds.CanAdd(requestId, maxCount);
+        public float GetQueueRemainingTime(string requestId) => _builds.GetRemainingTime(requestId);
 
         public void ReserveExternalPipeline(string requestId) => _builds.ReserveExternalPipeline(requestId);
 

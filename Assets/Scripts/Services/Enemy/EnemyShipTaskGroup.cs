@@ -16,6 +16,7 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyStrategicContext Context { get; private set; }
         public EnemyStrategicDecision Decision { get; private set; }
         public float RecoveryStartedAt { get; private set; } = -1f;
+        public float NoViableCaptureSince { get; internal set; } = -1f;
 
         public EnemyShipTaskGroup(EnemyStrategicContextBuilder contextBuilder,
             EnemyStrategicDecisionModel decisionModel, EnemyTaskForceExecutor executor,
@@ -30,6 +31,9 @@ namespace EmpireAtWar.Services.Enemy
         public void Evaluate(ISet<string> reservedObjectives, float now)
         {
             Context = ContextBuilder.Build(Ships, reservedObjectives, preferStrategicObjectives: IsMainForce);
+            if (Context.Snapshot.HasCaptureTarget || ContextBuilder.CaptureReservedByOtherGroup)
+                NoViableCaptureSince = -1f;
+            else if (NoViableCaptureSince < 0f) NoViableCaptureSince = now;
             EnemyStrategicDecision next = DecisionModel.Evaluate(Context.Snapshot, IsCaptureDetachment);
             if (IsMainForce || next.State == EnemyStrategicState.DefendBase)
                 next = new EnemyStrategicDecision(next.Reason, next.State, Ships.Count);

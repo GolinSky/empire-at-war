@@ -10,6 +10,7 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class EnemyShipTaskGroupPlanner
     {
         private const int MAIN_FORCE_SHIP_COUNT = 6;
+        private const float DETACHMENT_GRACE_SECONDS = 10f;
         private readonly EnemyStrategicContextBuilder _contextBuilder;
         private readonly IUnitOrderService _orders;
         private readonly List<EnemyShipTaskGroup> _groups = new List<EnemyShipTaskGroup>();
@@ -18,6 +19,7 @@ namespace EmpireAtWar.Services.Enemy
         private EnemyShipTaskGroup _captureGroup;
         private EnemyShipTaskGroup _mainGroup;
         private readonly EnemyShipTaskGroup _idleGroup;
+        private readonly EnemyShipTaskGroup _captureCandidate;
 
         public IReadOnlyList<EnemyShipTaskGroup> Groups => _groups;
 
@@ -28,6 +30,7 @@ namespace EmpireAtWar.Services.Enemy
             _contextBuilder = contextBuilder;
             _orders = orders;
             _idleGroup = new EnemyShipTaskGroup(contextBuilder, decisionModel, executor);
+            _captureCandidate = CreateGroup(true);
             _groups.Add(_idleGroup);
         }
 
@@ -38,13 +41,14 @@ namespace EmpireAtWar.Services.Enemy
             foreach (EnemyShipTaskGroup group in _groups)
                 group.Ships.RemoveAll(ship => !_members.Contains(ship));
             if (_captureGroup != null && (stationPressure || ships.Count < 2 || _captureGroup.Ships.Count == 0 ||
-                _captureGroup.Context != null && !_captureGroup.Context.Snapshot.HasCaptureTarget &&
+                _captureGroup.NoViableCaptureSince >= 0f &&
+                Time.time - _captureGroup.NoViableCaptureSince >= DETACHMENT_GRACE_SECONDS &&
                 !_captureGroup.DecisionModel.IsRecovering))
             {
                 _groups.Remove(_captureGroup);
+                _captureGroup.Ships.Clear();
                 _captureGroup = null;
             }
-            if (!stationPressure && _captureGroup == null && ships.Count > 1) TryCreateCaptureGroup(ships);
 
             _members.Clear();
             foreach (EnemyShipTaskGroup group in _groups)
@@ -113,26 +117,31 @@ namespace EmpireAtWar.Services.Enemy
             _groups.Insert(0, _mainGroup);
         }
 
-        private void TryCreateCaptureGroup(IReadOnlyList<IShipEntity> ships)
+        public void TryCreateCaptureGroup(IReadOnlyList<IShipEntity> ships,
+            ISet<string> reservedObjectives, bool stationPressure)
         {
+            if (stationPressure || _captureGroup != null || ships.Count < 2) return;
             _unassigned.Clear();
             foreach (IShipEntity ship in ships)
                 if (ship.CurrentOrder != UnitOrderType.Retreat && ship.CurrentOrder != UnitOrderType.Attack)
                     _unassigned.Add(ship);
             _unassigned.Sort((a, b) => b.NavigationSpeed.CompareTo(a.NavigationSpeed));
-            EnemyShipTaskGroup candidate = CreateGroup(true);
+            EnemyShipTaskGroup candidate = _captureCandidate;
             foreach (IShipEntity ship in _unassigned)
             {
                 candidate.Ships.Clear();
                 candidate.Ships.Add(ship);
-                EnemyStrategicSnapshot snapshot = candidate.ContextBuilder.Build(candidate.Ships).Snapshot;
+                EnemyStrategicSnapshot snapshot = candidate.ContextBuilder.Build(candidate.Ships,
+                    reservedObjectives).Snapshot;
                 if (!snapshot.HasCaptureTarget || snapshot.LocalAdvantage <=
                     EnemyAiDifficultyProfile.Get(snapshot.Difficulty).RetreatAdvantage) continue;
                 foreach (EnemyShipTaskGroup group in _groups) group.Ships.Remove(ship);
+                candidate.NoViableCaptureSince = -1f;
                 _captureGroup = candidate;
-                _groups.Insert(0, candidate);
+                _groups.Add(candidate);
                 return;
             }
+            candidate.Ships.Clear();
         }
 
         private void MergeNearbyGroups()

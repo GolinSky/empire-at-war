@@ -41,6 +41,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         /// <summary>At least one ship type (not squadron) is unlocked and within its limits.</summary>
         public bool CanOrderShips { get; }
+        public bool IsStationCritical { get; }
 
         public EnemyProductionSnapshot(
             EnemyStrategicState strategicState,
@@ -62,7 +63,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool canLevelUp,
             bool canResearchIncome = false,
             bool canResearchCombat = false,
-            bool canOrderShips = true)
+            bool canOrderShips = true,
+            bool isStationCritical = false)
         {
             StrategicState = strategicState;
             Difficulty = difficulty;
@@ -84,6 +86,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             CanResearchIncome = canResearchIncome;
             CanResearchCombat = canResearchCombat;
             CanOrderShips = canOrderShips;
+            IsStationCritical = isStationCritical;
         }
     }
 
@@ -131,6 +134,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             if (snapshot.MiningFacilityCount < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(snapshot.MiningFacilityCount));
+            }
+
+            if (snapshot.IsStationCritical)
+            {
+                return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
             }
 
             // No ship type is unlocked (Empire at level 1): levelling up is the only way to a fleet.

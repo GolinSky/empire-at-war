@@ -27,6 +27,13 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IUnitOrderService _unitOrderService;
         private GameEntity _battleTarget;
         private GameEntity _defenseStation;
+        private const float INTERCEPT_DISTANCE = 1500f;
+        private const float NO_FIRING_SECONDS = 8f;
+        private const float DEFENSE_POINT_CHANGE_SQUARED = 200f * 200f;
+        private readonly Dictionary<IShipEntity, Vector3> _defensePoints = new Dictionary<IShipEntity, Vector3>();
+        private readonly Dictionary<IShipEntity, GameEntity> _defenseTargets = new Dictionary<IShipEntity, GameEntity>();
+        private float _noFiringSince = -1f;
+        private float _defenseAdvance;
         private readonly EnemyAttackTaskForce _attackForce = new EnemyAttackTaskForce();
         private readonly List<IShipEntity> _supportShips = new List<IShipEntity>();
         private readonly List<IShipEntity> _strikeShips = new List<IShipEntity>();
@@ -43,6 +50,7 @@ namespace EmpireAtWar.Services.Enemy
         private bool _hasCaptureTarget;
         private EnemyCaptureObjective _captureObjective;
         private readonly Dictionary<IShipEntity, float> _captureDistances = new Dictionary<IShipEntity, float>();
+        private readonly Dictionary<IShipEntity, Vector3> _captureEscortPoints = new Dictionary<IShipEntity, Vector3>();
         private Vector3? _retreatAnchor;
         public string ActionReason { get; private set; } = "";
         private EnemyStrategicState _lastState;
@@ -84,6 +92,10 @@ namespace EmpireAtWar.Services.Enemy
                 _captureDistances.Clear();
                 _hasCaptureTarget = false;
                 _defenseStation = null;
+                _defensePoints.Clear();
+                _defenseTargets.Clear();
+                _noFiringSince = -1f;
+                _defenseAdvance = 0f;
                 _attackForce.Clear();
             }
             _lastState = decision.State;
@@ -116,25 +128,7 @@ namespace EmpireAtWar.Services.Enemy
                     IssueAttackOrHunt(context, decision.CommittedShipCount, context.RaidTarget, allowHunt: false);
                     return;
                 case EnemyStrategicState.DefendBase:
-                    ActionReason = context.StationPressureReason;
-                    if (context.OwnBase != null)
-                    {
-                        List<GameEntity> defenders = new List<GameEntity>();
-                        int defenseCount = Math.Min(decision.CommittedShipCount, context.Ships.Count);
-                        for (int i = 0; i < defenseCount; i++)
-                        {
-                            IShipEntity ship = context.Ships[i];
-                            if (_defenseStation != context.OwnBase || ship.CurrentOrder != UnitOrderType.AttackMove)
-                                defenders.Add(context.Receivers[ship]);
-                        }
-                        _defenseStation = context.OwnBase;
-                        if (defenders.Count > 0)
-                            _unitOrderService.IssueAttackMove(defenders,
-                                context.OwnBase.GetFacade<IEntityTransformFacade>().Transform.position);
-                        StopRemaining(context, context.Ships, defenseCount);
-                        return;
-                    }
-                    IssueAttackOrHunt(context, decision.CommittedShipCount, context.DefenseTarget, allowHunt: false, assemble: false);
+                    ExecuteDefense(decision, context);
                     return;
                 case EnemyStrategicState.RetreatValue:
                     ExecuteRetreat(context);
@@ -148,11 +142,112 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
+        private void ExecuteDefense(EnemyStrategicDecision decision, EnemyStrategicContext context)
+        {
+            ActionReason = context.StationPressureReason;
+            if (context.OwnBase == null)
+            {
+                IssueAttackOrHunt(context, decision.CommittedShipCount, context.DefenseTarget, allowHunt: false, assemble: false);
+                return;
+            }
+            if (_defenseStation != context.OwnBase)
+            {
+                _defenseStation = context.OwnBase;
+                _defensePoints.Clear();
+                _defenseTargets.Clear();
+                _defenseAdvance = 0f;
+                _noFiringSince = -1f;
+            }
+            Vector3 center = context.OwnBase.GetFacade<IEntityTransformFacade>().Transform.position;
+            float stationRadius = context.OwnBase.GetFacade<INavigationFootprintFacade>().NavigationRadius;
+            float leash = stationRadius + INTERCEPT_DISTANCE;
+            EnemyStationPressureTracker pressure = context.StationPressure;
+            Vector3 known = new Vector3(pressure.ThreatX, pressure.ThreatY, pressure.ThreatZ);
+            Vector3 bearing = known - center;
+            bearing.y = 0f;
+            float gap = bearing.magnitude;
+            bool hasBearing = pressure.HasThreatPosition && gap > 0f;
+            if (hasBearing) bearing /= gap;
+            int count = Math.Min(decision.CommittedShipCount, context.Ships.Count);
+            bool firing = false;
+            for (int i = 0; i < count; i++)
+            {
+                GameEntity entity = context.Receivers[context.Ships[i]];
+                if (!entity.TryGetFacade(out IUnitCombatObserverFacade combat) || combat.Target == null) continue;
+                Vector3 targetPosition = combat.Target.GetFacade<IEntityTransformFacade>().Transform.position;
+                firing |= PlanarDistance(context.Ships[i].WorldPosition, targetPosition) <= combat.WeaponRange;
+            }
+            if (firing || Time.time - pressure.LastDamageTime > 5f || !hasBearing) _noFiringSince = -1f;
+            else if (_noFiringSince < 0f) _noFiringSince = Time.time;
+            else if (Time.time - _noFiringSince >= NO_FIRING_SECONDS)
+            {
+                _defenseAdvance = Mathf.Min(INTERCEPT_DISTANCE, _defenseAdvance + 250f);
+                _noFiringSince = Time.time;
+            }
+            GameEntity target = context.DefenseTarget;
+            bool intercept = target != null && PlanarDistance(center,
+                target.GetFacade<IEntityTransformFacade>().Transform.position) <= leash;
+            if (intercept) _attackForce.Assemble(context, target, count);
+            else _attackForce.Clear();
+            context.DefensePointReason = hasBearing
+                ? _defenseAdvance > 0f ? "Advance toward known threat: station damaged without defenders in range." :
+                    "Threat-facing defense line from visible or last known intel."
+                : "No known threat bearing; defend four points around the station.";
+            for (int i = 0; i < count; i++)
+            {
+                IShipEntity ship = context.Ships[i];
+                if (intercept && _attackForce.Ships.Contains(ship) && _attackForce.TargetDps(context, ship) > 0f)
+                {
+                    if (!_defenseTargets.TryGetValue(ship, out GameEntity previous) || previous != target)
+                        _unitOrderService.IssueAttack(new[] { context.Receivers[ship] }, target,
+                            BattleOffsets(new[] { ship }, 1, target));
+                    _defenseTargets[ship] = target;
+                    _defensePoints.Remove(ship);
+                    context.OrderDestination = target.GetFacade<IEntityTransformFacade>().Transform.position;
+                    continue;
+                }
+                float range = context.Receivers[ship].GetFacade<IUnitCombatObserverFacade>().WeaponRange;
+                float distance = Mathf.Min(leash, stationRadius + ship.NavigationRadius +
+                    (hasBearing ? Mathf.Min(range, 0.6f * gap) + _defenseAdvance : 200f));
+                Vector3 direction = hasBearing ? bearing :
+                    new Vector3(Mathf.Cos(i % 4 * Mathf.PI * 0.5f), 0f, Mathf.Sin(i % 4 * Mathf.PI * 0.5f));
+                Vector3 point = center + direction * distance;
+                bool clear = false;
+                for (int attempt = 0; attempt < 8; attempt++)
+                {
+                    float angle = (attempt % 2 == 0 ? 1f : -1f) * ((attempt + 1) / 2) * 15f;
+                    point = center + Quaternion.Euler(0f, angle, 0f) * direction * distance;
+                    if (!context.IsDefensePointClear(point, ship.NavigationRadius)) continue;
+                    clear = true;
+                    break;
+                }
+                if (!clear)
+                {
+                    if (_defenseTargets.Remove(ship))
+                        _unitOrderService.IssueStop(new[] { context.Receivers[ship] });
+                    context.DefensePointReason = "No clear defense point on the threat-facing arc; stop interception and retain safe positions.";
+                    continue;
+                }
+                if (!_defensePoints.TryGetValue(ship, out Vector3 previousPoint) ||
+                    (previousPoint - point).sqrMagnitude > DEFENSE_POINT_CHANGE_SQUARED)
+                {
+                    _unitOrderService.IssueAttackMove(new[] { context.Receivers[ship] }, point);
+                    _defensePoints[ship] = point;
+                }
+                _defenseTargets.Remove(ship);
+                context.OrderDestination = _defensePoints[ship];
+            }
+            ActionReason += "; " + context.DefensePointReason;
+            StopRemaining(context, context.Ships, count);
+        }
+
         private void ExecuteCapture(EnemyStrategicDecision decision, EnemyStrategicContext context)
         {
             _captureShips.Clear();
             _captureShips.AddRange(context.Ships);
-            _captureShips.Sort((a, b) => b.NavigationSpeed.CompareTo(a.NavigationSpeed));
+            _captureShips.Sort((a, b) => a.NavigationRadius != b.NavigationRadius
+                ? a.NavigationRadius.CompareTo(b.NavigationRadius)
+                : b.NavigationSpeed.CompareTo(a.NavigationSpeed));
             int count = Math.Min(decision.CommittedShipCount, _captureShips.Count);
             EnemyCaptureObjective objective = context.CaptureObjective;
             bool sameObjective = objective == null ? _captureObjective == null :
@@ -164,6 +259,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 _assignedShips.Clear();
                 _captureDistances.Clear();
+                _captureEscortPoints.Clear();
             }
             _captureTarget = context.CaptureTarget;
             _captureObjective = objective;
@@ -177,8 +273,24 @@ namespace EmpireAtWar.Services.Enemy
             }
             List<GameEntity> approaching = new List<GameEntity>();
             float radius = context.CaptureObjective == null ? 1f : context.CaptureObjective.Radius;
+            float captureClearance = _captureShips[0].NavigationRadius;
+            int escortIndex = 0;
             foreach (IShipEntity ship in _body)
             {
+                if (ship.NavigationRadius > captureClearance)
+                {
+                    float angle = escortIndex++ * Mathf.PI * 0.5f;
+                    Vector3 point = _captureTarget + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) *
+                        (radius + ship.NavigationRadius);
+                    bool retain = sameTarget && _captureEscortPoints.TryGetValue(ship, out Vector3 previous) &&
+                        (previous - point).sqrMagnitude <= CAPTURE_TARGET_EPSILON_SQUARED &&
+                        (ship.CurrentOrder == UnitOrderType.AttackMove ||
+                         ship.CurrentOrder == UnitOrderType.None && (ship.WorldPosition - point).sqrMagnitude <=
+                         ship.NavigationRadius * ship.NavigationRadius);
+                    if (!retain) _unitOrderService.IssueAttackMove(new[] { context.Receivers[ship] }, point);
+                    _captureEscortPoints[ship] = point;
+                    continue;
+                }
                 Vector3 offset = ship.WorldPosition - _captureTarget;
                 offset.y = 0f;
                 float distance = offset.magnitude;

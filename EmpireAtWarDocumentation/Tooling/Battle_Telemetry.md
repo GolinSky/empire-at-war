@@ -97,3 +97,9 @@ verification: Historical battle evidence plus 2026-10-31 live-source review and
 - `deployment` / `deploymentBlocked`: unit, home-defense intent, rally and actual spawn position or blocked retry. Spawn coordinate identifies placement; relay ID is not serialized.
 - `station`: production-station entity/health/shields and defense intent every 15 s or station-presence transition.
 - Group summaries distinguish `Main`, `Combat`, `Capture`; attack reasons include strike, active screens, rallying and reserve counts.
+
+### Endgame fields (2026-11-01)
+
+- Decision `reason`: `orderDestination` records the issued defense destination and `defensePointReason` records threat-facing/ring/advance/blocked positioning. Mixed ship orders require the per-ship order CSV for exact destinations.
+- Purchase/production-wait `reason`: `critical`, `etaSeconds`, `timeToLoss`. Infinite loss time means no current damage-rate estimate; ETA is an estimate, not a deployment guarantee.
+- Capture selection reasons distinguish `ReservedByOtherGroup`, `NoViableObjective`, `transientReservation`, `obstacle`, and `hostile`. Reservation ownership is unavailable through the navigation clearance API.

@@ -21,21 +21,25 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ITimer _decisionTimer = TimerFactory.ConstructTimer(DECISION_INTERVAL);
         private readonly PlayerSlot _owner;
         private readonly EnemyDefenseSnapshotBuilder _snapshotBuilder;
+        private readonly EnemyStationPressureTracker _stationPressure;
         private readonly EmpireAtWar.Entities.EnemyFaction.Models.EnemyDefenseStrategy _defense;
 
         public EnemySiteConstructionController(ICaptureSitesSystem captureSites, IShipService shipService,
             PlayerSlot owner, EnemyDefenseSnapshotBuilder snapshotBuilder,
-            EmpireAtWar.Entities.EnemyFaction.Models.EnemyDefenseStrategy defense)
+            EmpireAtWar.Entities.EnemyFaction.Models.EnemyDefenseStrategy defense,
+            EnemyStationPressureTracker stationPressure)
         {
             _owner = owner;
             _captureSites = captureSites;
             _shipService = shipService;
             _snapshotBuilder = snapshotBuilder;
             _defense = defense;
+            _stationPressure = stationPressure;
         }
 
         public void Tick()
         {
+            if (_stationPressure.IsStationCritical) return;
             if (!_decisionTimer.IsComplete) return;
             _decisionTimer.StartTimer();
             // Mines fund everything else, so an empty owned mine keeps the credits until it is built.

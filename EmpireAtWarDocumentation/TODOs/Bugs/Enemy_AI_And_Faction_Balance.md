@@ -131,9 +131,10 @@ commit: 6babee5e1
 
 ## TODO
 
-- [ ] Keep station defense active from observed station damage; use threat-facing siege interception instead of unconditional station-centre orders.
-- [ ] Add emergency production deadline/queue-travel valuation and suspend nonessential economy spending during critical siege.
-- [ ] Evaluate capture clearance for capturing units; place capital escorts outside the circle; stabilize detachment objective ownership.
+- Endgame implementation and deferred secondary tuning → [[TODOs/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] (2026-11-01).
+- [x] Keep station defense active from observed station damage; use threat-facing siege interception instead of unconditional station-centre orders. Implemented 2026-11-01; runtime acceptance pending.
+- [x] Add emergency production deadline/queue-travel valuation and suspend nonessential economy spending during critical siege. Implemented 2026-11-01; runtime acceptance pending.
+- [x] Evaluate capture clearance for capturing units; place capital escorts outside the circle; stabilize detachment objective ownership. Implemented 2026-11-01; runtime acceptance pending.
 - [ ] Review range-aware escort demand and local/route danger before distant raids.
 
 - [x] Correct combat profile caliber fidelity and population-aware capital replacement selection.

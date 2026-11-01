@@ -70,6 +70,12 @@ namespace EmpireAtWar.Services.Enemy
                 data.WeaponLoadout, _weaponsData, _damageMatrix, hangar);
         }
 
+        public float GetShipTravelTime(ShipType shipType, float distance)
+        {
+            ShipData data = _assetService.Load<ShipData>(_shipsData.GetShipDataPath(shipType));
+            return distance / data.Speed;
+        }
+
         private UnitCombatProfile CreateSquadron(SquadronType squadronType)
         {
             SquadronData data = _assetService.Load<SquadronData>(squadronType + SQUADRON_DATA_POSTFIX);

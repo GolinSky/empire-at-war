@@ -34,6 +34,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         public void Add(UnitRequest request, float timeLeft) => _builds.Add(new EnemyPendingBuild(request, timeLeft));
 
+        public float GetRemainingTime(string requestId)
+        {
+            float remaining = 0f;
+            foreach (EnemyPendingBuild build in _builds)
+                if (build.Request.Id == requestId) remaining += build.TimeLeft;
+            return remaining;
+        }
+
         public void ReserveExternalPipeline(string requestId) => _externalPipelines.Add(requestId);
 
         public void ReleaseExternalPipeline(string requestId) => _externalPipelines.Remove(requestId);
