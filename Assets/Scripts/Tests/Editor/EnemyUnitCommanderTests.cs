@@ -1032,7 +1032,9 @@ private sealed class ZoneSource : IReinforcementZoneSource
 
             public void SetVisibility(bool isVisible, bool showCaptureUi) { }
 
-            public void Render(OwnerRelation owner, OwnerRelation capturer, float captureProgress, bool isContested) { }
+            public void Render(OwnerRelation owner, OwnerRelation capturer, float captureProgress, bool isContested,
+                OwnerRelation contestingFirst = OwnerRelation.Neutral,
+                OwnerRelation contestingSecond = OwnerRelation.Neutral) { }
         }
 
         private sealed class CaptureSiteStub : ICaptureSite

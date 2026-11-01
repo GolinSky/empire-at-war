@@ -17,6 +17,7 @@ namespace EmpireAtWar.Tests.Editor
                 (new PlayerId(0), 1f), (new PlayerId(1), 4f), (new PlayerId(2), 3f));
 
             Assert.That(tally.LeadingPlayer, Is.EqualTo(new PlayerId(1)));
+            Assert.That(tally.OpposingPlayer, Is.EqualTo(new PlayerId(2)));
             Assert.That(tally.Advantage, Is.EqualTo(1f).Within(0.001f));
             Assert.That(tally.PresentTeamCount, Is.EqualTo(3));
             Assert.That(tally.IsContested, Is.False);
@@ -30,6 +31,8 @@ namespace EmpireAtWar.Tests.Editor
             CaptureStrength tally = TestPlayers.Tally(freeForAll, (new PlayerId(0), 2f), (new PlayerId(2), 2f));
 
             Assert.That(tally.IsTied, Is.True);
+            Assert.That(tally.LeadingPlayer, Is.EqualTo(new PlayerId(0)));
+            Assert.That(tally.OpposingPlayer, Is.EqualTo(new PlayerId(2)));
             Assert.That(tally.IsContested, Is.True);
         }
 
@@ -40,6 +43,7 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(tally.HasUnits, Is.False);
             Assert.That(tally.LeadingPlayer, Is.EqualTo(PlayerId.None));
+            Assert.That(tally.OpposingPlayer, Is.EqualTo(PlayerId.None));
             Assert.That(tally.IsContested, Is.False);
         }
 

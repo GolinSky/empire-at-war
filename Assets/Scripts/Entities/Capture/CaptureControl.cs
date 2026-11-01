@@ -11,6 +11,8 @@ namespace EmpireAtWar.Entities.Capture
         public PlayerId CapturingPlayer { get; private set; }
         public float CaptureProgress { get; private set; }
         public bool IsContested { get; private set; }
+        public PlayerId ContestingFirst { get; private set; }
+        public PlayerId ContestingSecond { get; private set; }
 
         public CaptureControl(IPlayerRelations relations, PlayerId startingOwner, float captureDuration,
             float captureSpeedPerNetShip)
@@ -24,6 +26,8 @@ namespace EmpireAtWar.Entities.Capture
         public bool Tick(float deltaTime, CaptureStrength tally, bool isCapturable)
         {
             IsContested = tally.IsContested;
+            ContestingFirst = isCapturable && tally.PresentTeamCount >= 2 ? tally.LeadingPlayer : PlayerId.None;
+            ContestingSecond = isCapturable && tally.PresentTeamCount >= 2 ? tally.OpposingPlayer : PlayerId.None;
             if (!isCapturable) return false;
             if (!tally.HasUnits)
             {
@@ -51,6 +55,8 @@ namespace EmpireAtWar.Entities.Capture
             CapturingPlayer = capturingPlayer;
             CaptureProgress = captureProgress;
             IsContested = isContested;
+            ContestingFirst = PlayerId.None;
+            ContestingSecond = PlayerId.None;
         }
 
         public void SetOwner(PlayerId owner)
@@ -63,6 +69,8 @@ namespace EmpireAtWar.Entities.Capture
         {
             SetOwner(PlayerId.None);
             IsContested = false;
+            ContestingFirst = PlayerId.None;
+            ContestingSecond = PlayerId.None;
         }
 
         public void ResetCapture()

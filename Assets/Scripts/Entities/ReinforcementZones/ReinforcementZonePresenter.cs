@@ -65,7 +65,9 @@ namespace EmpireAtWar.Presenters.ReinforcementZones
                 _localPlayer.GetRelation(_model.Owner),
                 _localPlayer.GetRelation(_model.CapturingPlayer),
                 _model.CaptureProgress,
-                _model.IsContested);
+                _model.IsContested,
+                _localPlayer.GetRelation(_model.ContestingFirst),
+                _localPlayer.GetRelation(_model.ContestingSecond));
         }
     }
 }

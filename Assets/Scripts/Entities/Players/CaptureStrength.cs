@@ -10,6 +10,7 @@ namespace EmpireAtWar.Models.Players
 
         /// <summary>Strongest player of the strongest team; <see cref="PlayerId.None"/> when the circle is empty.</summary>
         public PlayerId LeadingPlayer { get; }
+        public PlayerId OpposingPlayer { get; }
         /// <summary>Leading team strength minus the runner-up team strength (ship = 1).</summary>
         public float Advantage { get; }
         public int PresentTeamCount { get; }
@@ -18,9 +19,11 @@ namespace EmpireAtWar.Models.Players
         /// <summary>Two or more teams hold the circle with equal strength.</summary>
         public bool IsContested => PresentTeamCount >= 2 && IsTied;
 
-        public CaptureStrength(PlayerId leadingPlayer, float advantage, int presentTeamCount)
+        public CaptureStrength(PlayerId leadingPlayer, float advantage, int presentTeamCount,
+            PlayerId opposingPlayer = default)
         {
             LeadingPlayer = leadingPlayer;
+            OpposingPlayer = opposingPlayer;
             Advantage = advantage;
             PresentTeamCount = presentTeamCount;
         }

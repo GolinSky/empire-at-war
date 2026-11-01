@@ -20,6 +20,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         public PlayerId Owner => _capture.Owner;
         public CaptureSiteState State { get; private set; } = CaptureSiteState.Neutral;
         public PlayerId CapturingPlayer => _capture.CapturingPlayer;
+        public PlayerId ContestingFirst => IsCapturable ? _capture.ContestingFirst : PlayerId.None;
+        public PlayerId ContestingSecond => IsCapturable ? _capture.ContestingSecond : PlayerId.None;
         public float CaptureProgress => _capture.CaptureProgress;
         public SiteFacilityType FacilityType { get; private set; }
         public float ConstructionProgress { get; private set; }

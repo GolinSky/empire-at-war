@@ -17,7 +17,9 @@ namespace EmpireAtWar.Views.ReinforcementZones
 
         void SetVisibility(bool isVisible, bool showCaptureUi);
 
-        void Render(OwnerRelation owner, OwnerRelation capturer, float captureProgress, bool isContested);
+        void Render(OwnerRelation owner, OwnerRelation capturer, float captureProgress, bool isContested,
+            OwnerRelation contestingFirst = OwnerRelation.Neutral,
+            OwnerRelation contestingSecond = OwnerRelation.Neutral);
     }
 
     public sealed class ReinforcementZoneView : MonoBehaviour, IReinforcementZoneView
@@ -52,15 +54,18 @@ namespace EmpireAtWar.Views.ReinforcementZones
         {
             if (captureCanvas != null)
             {
+                captureCanvas.gameObject.SetActive(false);
                 captureCanvas.overrideSorting = true;
                 captureCanvas.sortingOrder = 100;
                 captureCanvasScaler.dynamicPixelsPerUnit = 10f;
             }
         }
 
-        public void Render(OwnerRelation owner, OwnerRelation capturer, float captureProgress, bool isContested)
+        public void Render(OwnerRelation owner, OwnerRelation capturer, float captureProgress, bool isContested,
+            OwnerRelation contestingFirst = OwnerRelation.Neutral,
+            OwnerRelation contestingSecond = OwnerRelation.Neutral)
         {
-            captureRing.Render(owner, isContested, false, false);
+            captureRing.Render(owner, isContested, false, false, capturer, contestingFirst, contestingSecond);
 
             if (this.captureProgress != null)
             {
@@ -84,7 +89,7 @@ namespace EmpireAtWar.Views.ReinforcementZones
         public void SetVisibility(bool isVisible, bool showCaptureUi)
         {
             captureRing.SetVisibility(isVisible);
-            captureCanvas.gameObject.SetActive(showCaptureUi);
+            captureCanvas.gameObject.SetActive(false);
         }
 
         private void LateUpdate()
