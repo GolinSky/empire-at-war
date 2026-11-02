@@ -43,6 +43,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         void SetAutoPowerAbilities(bool isOn);
 
+        void SetShareUsageData(bool isOn);
+
         void StartRebind(int row);
 
         void ResetBinding(int row);

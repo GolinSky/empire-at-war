@@ -32,6 +32,7 @@ tags:
 
 - Release builds report; Editor never reports (avoid dashboard noise). Development builds report to a separate UGS environment (`development`).
 - Respect player consent from [[TODOs/Features/Gameplay_Analytics|Gameplay Analytics]] Phase 1; no upload before consent is known.
+  - One combined consent: `SettingsData.Privacy.ShareUsageData` / `HasAnsweredConsent`. Unity `ConsentState` only has `AnalyticsIntent` + `AdsIntent` (6000.4) → verify how Diagnostics honours consent; gate it from `Privacy` if not via `AnalyticsIntent`.
 - No personal data in reports: no machine name, user name, file paths with user folders, save names.
 - Every build carries `Application.version` = `bundleVersion` + build number from Jenkins.
 

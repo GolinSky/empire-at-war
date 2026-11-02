@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
 using EmpireAtWar.Entities.Saves;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
 using NUnit.Framework;
@@ -32,7 +33,7 @@ namespace EmpireAtWar.Tests.Editor
                 UiServiceStub uiService = new UiServiceStub(view);
                 RouteStub routes = new RouteStub();
                 controller = new MainMenuUiController(uiService, new CancelRouterStub(),
-                    routes, routes, new TooltipServiceStub());
+                    routes, routes, CreateSettings(), new TooltipServiceStub());
                 controller.Open();
                 controller.Open();
                 Button start = (Button)new SerializedObject(view)
@@ -62,7 +63,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_PATH));
             MainMenuUiController controller = new MainMenuUiController(
                 new UiServiceStub(root.GetComponent<MainMenuUi>()), new CancelRouterStub(),
-                new RouteStub(), new RouteStub(), new TooltipServiceStub());
+                new RouteStub(), new RouteStub(), CreateSettings(), new TooltipServiceStub());
             try
             {
                 controller.Open();
@@ -181,7 +182,7 @@ namespace EmpireAtWar.Tests.Editor
                 var saveView = saveRoot.GetComponent<SaveBrowserUi>();
                 var playRoute = new RouteStub();
                 mainMenu = new MainMenuUiController(new UiServiceStub(mainView), new CancelRouterStub(),
-                    playRoute, new RouteStub(), new TooltipServiceStub());
+                    playRoute, new RouteStub(), CreateSettings(), new TooltipServiceStub());
                 var saves = new EmptySaves();
                 loadRoute = new LoadGameRouteUiController(new UiServiceStub(saveView), new CancelRouterStub(),
                     saves, null, gameData);
@@ -308,6 +309,28 @@ namespace EmpireAtWar.Tests.Editor
             public int OpenCount { get; private set; }
             public void Open() => OpenCount++;
             public void Close() { }
+        }
+
+        private static ISettingsService CreateSettings()
+        {
+            EmpireAtWar.Services.Settings.SettingsService settings =
+                new EmpireAtWar.Services.Settings.SettingsService(new AnsweredConsentRepository(), new ISettingsApplier[0]);
+            settings.Initialize();
+            return settings;
+        }
+
+        private sealed class AnsweredConsentRepository : ISettingsRepository
+        {
+            public SettingsLoadStatus Load(out SettingsData data)
+            {
+                data = new SettingsData();
+                data.Privacy.Answer(false);
+                return SettingsLoadStatus.Loaded;
+            }
+
+            public void Save(SettingsData data)
+            {
+            }
         }
 
         private sealed class CancelRouterStub : IUiCancelRouter

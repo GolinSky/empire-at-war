@@ -201,6 +201,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         public void SetAutoPowerAbilities(bool isOn) => _draftEditor.SetAutoPowerAbilities(isOn);
 
+        public void SetShareUsageData(bool isOn) => _draftEditor.SetShareUsageData(isOn);
+
         public void StartRebind(int row) => _keyBindingEditor.StartRebind(row);
 
         public void ResetBinding(int row) => _keyBindingEditor.ResetBinding(row);

@@ -28,6 +28,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         bool InvertZoom { get; }
 
         bool AutoPowerAbilities { get; }
+        bool ShareUsageData { get; }
 
         IReadOnlyList<KeyBindingRowState> Bindings { get; }
 

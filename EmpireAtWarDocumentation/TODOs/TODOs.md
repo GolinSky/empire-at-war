@@ -11,7 +11,7 @@
 
 
 - [ ] **Gameplay analytics (UGS Analytics: match wins, factions, duration, performance)** → [[TODOs/Features/Gameplay_Analytics|Gameplay Analytics]]
-  - Status: todo 2026-11-02. Next: Phase 0 foundation + consent; UGS chosen; open decisions: consent toggles, include `BattleSimulation`.
+  - Status: in progress 2026-11-02; Phases 0–3 code done (packages, `IAnalyticsService`, UGS adapter, consent popup + Settings toggle, match/abandon/survival-wave tracking, per-minute performance samples; `BattleSimulation` excluded). Next: user links UGS project + checks popup in-game; Phase 4 schemas/dashboards/dev-build verification.
 
 - [ ] **Import Empire fleet: Procursator, Allegiance, Titan and Tartan** → [[TODOs/Features/Empire_Fleet_Import|Empire Fleet Import]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.

@@ -8,6 +8,7 @@ using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
+using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Versioning;
 
 namespace EmpireAtWar.Entities.MainMenu.Main
@@ -16,6 +17,7 @@ namespace EmpireAtWar.Entities.MainMenu.Main
     {
         private readonly IPlayRoute _playRoute;
         private readonly ISettingsRoute _settingsRoute;
+        private readonly ISettingsService _settingsService;
         private MainMenuUi _ui;
 
         private readonly TooltipRequests _tooltips;
@@ -26,10 +28,12 @@ namespace EmpireAtWar.Entities.MainMenu.Main
             IUiCancelRouter cancelRouter,
             IPlayRoute playRoute,
             ISettingsRoute settingsRoute,
+            ISettingsService settingsService,
             ITooltipService tooltipService) : base(uiService, cancelRouter)
         {
             _playRoute = playRoute;
             _settingsRoute = settingsRoute;
+            _settingsService = settingsService;
             _tooltips = new TooltipRequests(tooltipService);
         }
 
@@ -52,6 +56,7 @@ namespace EmpireAtWar.Entities.MainMenu.Main
                 _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover,
                     HandleTooltipHover, _tooltips);
             }
+            _ui.SetUsageConsentPromptVisible(!_settingsService.Saved.Privacy.HasAnsweredConsent);
             _ui.Show();
         }
 
@@ -65,6 +70,13 @@ namespace EmpireAtWar.Entities.MainMenu.Main
         {
             _tooltips.HideAll();
             _settingsRoute.Open();
+        }
+
+        public void AnswerUsageDataConsent(bool isShared)
+        {
+            // A failed save is logged by the settings service; the prompt then returns on the next launch.
+            _settingsService.AnswerUsageDataConsent(isShared);
+            _ui.SetUsageConsentPromptVisible(false);
         }
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>

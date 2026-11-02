@@ -1,6 +1,6 @@
 ---
 category: Features
-status: todo
+status: in-progress
 created: 2026-11-02
 tags:
   - analytics
@@ -26,7 +26,7 @@ tags:
 - Match result already exists: `BattleVictoryService` (`Services/BattleService`) is `INotifier<BattleResult>`; observed by `EndGameUiController`, `SkirmishOrchestrator`.
 - `BattleResult`: `Outcome` (`PlayerVictory`/`EnemyVictory`/`Draw`), `Mode` (`Skirmish`/`Survival`/`BattleSimulation`), `VictoryCondition`, `Planet`, `PlayerFaction`, `EnemyFactions`, `PlayerShipCount`, `EnemyShipCount`, base-alive flags.
 - Battle setup: `BattleDefinition` (mode, `MapSpec`, players, features, starting money, station level); start → `BattleStartupSequence.RunAsync`.
-- No central "unit destroyed" event found; kills/losses counter needs a source (verify `IEntityLocator` removal or health death path).
+- Kill/loss source: `IShipService.ShipRemoved` (fired by `Ship.Release`: death, or scope teardown after the match). Ships only; squadrons/structures not counted.
 - DI: VContainer scopes `ProjectScope`, `MainMenuScope`, `SkirmishScope` in `Services/VContainer/Scopes`.
 - Settings persisted by `JsonSettingsRepository` / `SettingsData`; consent can live there.
 
@@ -36,7 +36,7 @@ tags:
 - No events before consent; consent default = not granted.
 - Event names `snake_case`; parameters typed and declared in UGS event schema before shipping.
 - One event per meaningful moment; no per-frame events. Performance sampled every `60 s` max.
-- `BattleSimulation` mode excluded from win-rate events (dev tool) — tag `game_mode` and filter, or skip entirely (decide).
+- `BattleSimulation` sends nothing: tracker not registered for that mode (dev balance tool).
 - No PII: installation ID only; no names, paths, save names.
 
 ## Event Schema (v1)
@@ -48,8 +48,8 @@ match_completed  match_id, game_mode, result(win|loss|draw), victory_condition, 
                  opponent_factions, duration_seconds, player_ships_left, enemy_ships_left,
                  player_base_alive, enemy_base_alive, units_destroyed, units_lost
 match_abandoned  match_id, game_mode, duration_seconds, reason(quit_menu|quit_app|restart)
-survival_wave    match_id, wave_index, duration_seconds, player_ships_left   (Survival only)
-performance_sample match_id, avg_fps, p5_fps, memory_mb, unit_count, quality_level
+survival_wave    match_id, wave_index, battle_seconds, player_ships_left   (Survival only)
+performance_sample match_id, avg_fps, p5_fps (95th-pct frame time → fps), memory_mb (allocated), unit_count (IEntityLocator entities), quality_level (index 0–5)
 session context  game_version (Application.version), graphics_tier, os  (UGS standard events cover most)
 ```
 
@@ -58,30 +58,35 @@ session context  game_version (Application.version), graphics_tier, os  (UGS sta
 ### Phase 0 — Foundation
 
 - [ ] Shared with crash plan Phase 0: UGS project link, environments, `companyName`, version scheme.
-- [ ] Add `com.unity.services.core` + `com.unity.services.analytics` (verify latest compatible versions via Context7 / package search).
-- [ ] `IAnalyticsService` (`Services/Analytics`): `RecordMatchStarted(...)`, `RecordMatchCompleted(...)`, `RecordMatchAbandoned(...)`, `RecordPerformanceSample(...)`; typed args, no strings dictionary.
-- [ ] `UgsAnalyticsService` adapter: `UnityServices.InitializeAsync` at boot, custom `Event` subclasses, `Flush` on match end + quit.
-- [ ] `NullAnalyticsService` only for Editor/tests (explicit registration, not silent fallback).
-- [ ] Register in `ProjectScope` (lives across scenes).
+- [x] Add `com.unity.services.core` `1.18.0` + `com.unity.services.analytics` `6.3.0` (latest in registry 2026-11-02).
+- [x] `IAnalyticsService` (`Services/Analytics`): `RecordMatchStarted`, `RecordMatchCompleted`, `RecordMatchAbandoned`, `RecordPerformanceSample`, `Flush`; typed data classes `MatchStartedData`, `MatchCompletedData`, `MatchAbandonedData` (+ `MatchAbandonReason`), `PerformanceSampleData`.
+- [x] `UgsAnalyticsService` adapter: `IInitializable` → `UnityServices.InitializeAsync` with environment `development` (`Debug.isDebugBuild`) / `production`; one `UgsAnalyticsEvent : Event` with `Set(name, value)`; event/param names = Event Schema v1. Calling `Flush` on match end is Phase 2.
+- [x] `DisabledAnalyticsService` registered in Editor unless scripting define `ANALYTICS_EDITOR`.
+- [x] Registered in `ProjectScope` (`#if UNITY_EDITOR && !ANALYTICS_EDITOR`). Verified 2026-11-02: Assembly-CSharp compiles, `scriptCompilationFailed=False`; tests not run (local override).
 
 ### Phase 1 — Consent
 
-- [ ] Add `shareAnalytics` / `shareCrashReports` to settings data (or one combined toggle — decide).
-- [ ] First-launch consent prompt in main menu + toggle in Settings (read `UI_UX_GUIDELINES` + `UI_CODE_BUILD_GUIDE` first).
-- [ ] Apply via `EndUserConsent.SetConsentState(...)` with `AnalyticsIntent` (Unity 6.2+ flow). Revoke → deny consent, then `RequestDataDeletion`.
+- [x] One combined consent (user decision 2026-11-02): `PrivacySettingsData` (`shareUsageData`, `hasAnsweredConsent`) as `SettingsData.Privacy`; covers analytics + crash reports.
+- [x] First-launch prompt: `UsageConsentPrompt` child of `MainMenuUi.prefab` (cloned from `SettingsUi` `Prompt` styling; Allow/Decline) shown by `MainMenuUiController.Open` while `!HasAnsweredConsent`; answer → `ISettingsService.AnswerUsageDataConsent` (saves + applies, leaves other draft edits).
+- [x] Settings toggle: `ShareUsageDataRow` in Gameplay panel of `SettingsUi.prefab` → `ISettingsPresenter.SetShareUsageData` → draft, saved on Apply.
+- [x] `AnalyticsConsentApplier : ISettingsApplier` → `IAnalyticsService.SetConsent`; UGS adapter sets `EndUserConsent` `AnalyticsIntent`, revoke of a granted consent → `RequestDataDeletion` (only when UGS is initialized). Unanswered → stays `Unspecified`.
+- Verified 2026-11-02: compile clean (incl. test assembly; `MainMenuUiControllerLifecycleTests` updated for new ctor arg), prefab refs non-null, buttons Color Tint. Tests not run (local override). In-game popup/toggle check pending user.
 
 ### Phase 2 — Match events
 
-- [ ] `MatchAnalyticsTracker` in `SkirmishScope`: observes battle start and `INotifier<BattleResult>`; owns `match_id` (GUID) and battle duration.
-- [ ] Abandon: scene unload / quit before `BattleResult` → `match_abandoned`.
-- [ ] Loaded saves: keep `match_id` in save header (`BattleSaveHeader`) or mark `is_loaded_save` — decide.
-- [ ] Kills/losses counter: find authoritative unit death source; aggregate per team.
-- [ ] Survival wave events from `SurvivalWaveDirector`.
+- [x] `MatchAnalyticsTracker` (`Services/Analytics`, `SkirmishScope`, skipped for `BattleSimulation`): first `BattleState.Running` → new `match_id` (GUID N) + `match_started`; `INotifier<BattleResult>` → `match_completed` + `Flush`. Durations = `BattleClock.Elapsed` (battle seconds, game-speed scaled, paused excluded).
+- [x] Abandon: `LateDispose` with started && no result → `match_abandoned` + `Flush`; reason from `IUserStateNotifier`: `RestartBattle` → `Restart`, `ExitGame` → `QuitToMenu`, none → `QuitApplication`. No mid-battle load route exists.
+- [x] Loaded saves (decision 2026-11-02): new `match_id` + `is_loaded_save=true` (`GameData.PendingBattleSave != null` at `Initialize`); `duration_seconds` = total battle clock incl. time before the save. No save-format change.
+- [x] Kills/losses: `IShipService.ShipRemoved` between start and result; `ILocalPlayer.IsFriendly(owner)` → `units_lost`, else `units_destroyed` (ships only; AI allies count as own).
+- [x] Survival: `SurvivalWaveAnalytics` (registered in `SurvivalMode`) → `survival_wave` per cleared wave via `SurvivalModel.Changed`; starts at `Running`, so restored cleared waves are not re-sent.
+- Verified 2026-11-02: Assembly-CSharp + tests compile, `scriptCompilationFailed=False`; no test builds battle containers. Tests not run (local override). Events not observed end-to-end: needs linked UGS project + consent.
 
 ### Phase 3 — Performance sampling
 
-- [ ] `PerformanceSampler`: rolling FPS avg + p5, `Profiler.GetTotalAllocatedMemoryLong` → MB, live unit count; one sample per `60 s` + one at match end.
-- [ ] Read `Rules/BATTLE_PERFORMANCE_GUIDELINES`; sampler must allocate nothing per frame.
+- [x] `PerformanceAnalyticsSampler` (`SkirmishScope`, skipped for `BattleSimulation`): `ITickable` adds `Time.unscaledDeltaTime` only while `BattleState.Running`; sample per `60 s` of running frames + final partial on `Ended` or scene close.
+- [x] `FrameTimeHistogram` (pure C#): 400 × `0.25 ms` buckets + >100 ms overflow, no per-frame allocation; avg fps = frames ÷ seconds; low fps = bucket upper bound of 95th percentile (conservative, ≤0.25 ms quantization).
+- [x] Read `Rules/BATTLE_PERFORMANCE_GUIDELINES`. Values are field telemetry per build/quality, not matched captures; do not use them as optimization acceptance evidence.
+- Verified 2026-11-02: compile clean; Editor eval sanity check (95×10 ms + 5×50 ms → avg 83.3, low 100; all 200 ms → 5/5). Tests not run (local override).
 
 ### Phase 4 — Dashboards and verification
 
@@ -101,10 +106,12 @@ session context  game_version (Application.version), graphics_tier, os  (UGS sta
 
 ## Open Decisions
 
-- One consent toggle or separate analytics/crash toggles.
-- Include `BattleSimulation` mode or not.
 - Steamworks Stats/achievements — out of scope; separate plan if wanted.
 
 ## TODO
 
-- Implementation not started.
+- Phase 0 code done 2026-11-02; UGS project link (user) still open → player builds throw `UnityProjectNotLinkedException` from `Initialize` until linked.
+- Phase 1 consent done 2026-11-02; user check pending: first launch shows popup once, Settings > Gameplay toggle reflects/changes answer.
+- Phase 2 match events done 2026-11-02 (code); end-to-end check in UGS Event Browser is Phase 4.
+- Phase 3 performance sampling done 2026-11-02 (code).
+- Next: Phase 4 (user links UGS project, define schemas, dashboards, dev-build event check, `Tooling/Analytics` guidance note).

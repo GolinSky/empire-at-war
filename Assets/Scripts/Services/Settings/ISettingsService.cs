@@ -30,5 +30,8 @@ namespace EmpireAtWar.Services.Settings
 
         /// <summary>Replaces the draft with defaults; nothing is applied until <see cref="Apply"/>.</summary>
         void ResetDraftToDefaults();
+
+        /// <summary>Saves and applies the usage-data consent answer without touching other pending draft edits.</summary>
+        SettingsApplyResult AnswerUsageDataConsent(bool isShared);
     }
 }

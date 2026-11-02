@@ -98,6 +98,22 @@ namespace EmpireAtWar.Services.Settings
             Draft = new SettingsData();
         }
 
+        public SettingsApplyResult AnswerUsageDataConsent(bool isShared)
+        {
+            SettingsData answered = Saved.Clone();
+            answered.Privacy.Answer(isShared);
+            if (!TrySave(answered))
+            {
+                return SettingsApplyResult.SaveFailed;
+            }
+
+            Saved = answered;
+            Draft.Privacy.Answer(isShared);
+            ApplyAll(Saved);
+            SavedChanged?.Invoke();
+            return SettingsApplyResult.Committed;
+        }
+
         // Save before promoting, so a failed write never reports the draft as saved.
         private SettingsApplyResult Commit()
         {
