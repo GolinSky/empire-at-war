@@ -110,6 +110,9 @@ created: 2026-10-29
 
 ## Core Refactors
 
+- [[Done/Refactoring/Auto_Power_Refactor]]
+  - [ ] Run EditMode `Abilities`, `Ships`, `Core`, `EnemyAi`, `Balance`; skirmish check that auto power still fires shields/weapons/laser beams as before.
+
 - [[Done/Refactoring/Capture_Reinforcement_Tally_Dedup]]
   - [ ] Skirmish check: capture-site and reinforcement squadron strength behave as before.
 - [[Done/Refactoring/Unit_Request_Identity_Keys]]

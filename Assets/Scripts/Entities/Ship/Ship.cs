@@ -107,7 +107,6 @@ namespace EmpireAtWar.Ship
             ShipOrderRunner orders,
             long entityId,
             IShipAbilityFacade abilityFacade,
-            ShipAutoPowerFacade autoPower, IAutoPowerWeaponObserver autoPowerWeapons,
             ContainerLocal<IReadOnlyList<IMonoComponent>> monoComponents,
             LifetimeScope scope,
             PlayerId owner, IShipService shipService, IShipData data, ShipType shipType)
@@ -121,7 +120,6 @@ namespace EmpireAtWar.Ship
             _orders = orders;
             _entityId = entityId;
             _audioAbilities = abilityFacade.Slots;
-            autoPower.BindWeapons(autoPowerWeapons);
             _owner = owner;
             _audioShipComponent = audioShipComponent;
             _weaponFireEvents = weaponFireEvents;

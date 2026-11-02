@@ -438,6 +438,9 @@
 - [x] **Finish ship movement simplification verification and remaining phases** → [[Done/Refactoring/Ship_Movement_Simplification_Plan|Ship Movement Simplification Plan]]
   - **Remaining**: reconcile the recorded initialization-order retry and later phases against current behavior.
   - Closed 2026-10-29 by user decision; see plan banner for unfinished scope.
+- [x] **Auto power refactor (data eligibility, remove static rules, dedupe snapshot/monitor)** → [[Done/Refactoring/Auto_Power_Refactor|Auto Power Refactor]]
+  - Completed 2026-11-02, `acceptance: pending-user`. All 5 phases; compiles; EditMode tests not run (`Abilities`, `Ships`, `Core`, `EnemyAi`, `Balance`).
+
 
 - [x] **Reconcile SkirmishOrchestrator refactor acceptance** → [[Done/Refactoring/SkirmishOrchestrator_Refactoring_Plan|SkirmishOrchestrator Refactoring Plan]]
   - **Remaining**: route, visibility, teardown, and prefab verification; implementation exists despite the historical proposed status.
