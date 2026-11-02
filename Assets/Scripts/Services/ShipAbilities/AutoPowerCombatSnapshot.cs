@@ -53,6 +53,24 @@ namespace EmpireAtWar.Services.ShipAbilities
                 }
         }
 
+        public IEntity FindBeamTarget(IShipAbilityFacade caster, float range)
+        {
+            IEntity target = null;
+            float nearest = range;
+            foreach (var unit in _units)
+            {
+                IEntity entity = unit.Entity;
+                if (!_entities.TryGetEntity(entity.Id, out IEntity registered) || !ReferenceEquals(entity, registered) ||
+                    entity.HealthModel.IsDestroyed || !_player.IsHostile(entity.Owner) || entity.IsCloaked()) continue;
+                Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
+                float distance = PlanarGeometry.Distance(caster.WorldPosition, position);
+                if (distance > nearest || !_vision.IsVisible(_player.Id, position)) continue;
+                target = entity;
+                nearest = distance;
+            }
+            return target;
+        }
+
         public AutoPowerDecision Decide(IShipAbilityFacade caster, IShipAutoPowerFacade automation, bool heavyLoss,
             AutoPowerTuning tuning)
         {

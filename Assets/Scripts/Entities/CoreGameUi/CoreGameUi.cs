@@ -17,7 +17,6 @@ namespace EmpireAtWar.Entities.CoreGameUi
     {
         private ICoreGamePresenter _presenter;
         private const float REINFORCEMENT_PULSE_DURATION = 0.9f;
-        private const float REINFORCEMENT_PULSE_MIN_ALPHA = 0.4f;
         private Tween _reinforcementPulse;
         private Color _reinforcementColor;
 
@@ -91,11 +90,15 @@ namespace EmpireAtWar.Entities.CoreGameUi
             if (ready)
             {
                 if (_reinforcementPulse != null) return;
-                reinforcementButton.targetGraphic.color = new Color(56f / 255f, 189f / 255f, 248f / 255f, 1f);
-                _reinforcementPulse = reinforcementButton.targetGraphic
-                    .DOFade(REINFORCEMENT_PULSE_MIN_ALPHA, REINFORCEMENT_PULSE_DURATION)
-                    .SetEase(Ease.InOutSine)
-                    .SetLoops(-1, LoopType.Yoyo)
+                Color readyColor = new Color(34f / 255f, 197f / 255f, 94f / 255f, _reinforcementColor.a);
+                _reinforcementPulse = DOTween.Sequence()
+                    .Append(reinforcementButton.targetGraphic
+                        .DOColor(readyColor, REINFORCEMENT_PULSE_DURATION)
+                        .SetEase(Ease.InOutSine))
+                    .Append(reinforcementButton.targetGraphic
+                        .DOColor(_reinforcementColor, REINFORCEMENT_PULSE_DURATION)
+                        .SetEase(Ease.InOutSine))
+                    .SetLoops(-1, LoopType.Restart)
                     .SetUpdate(true);
                 return;
             }

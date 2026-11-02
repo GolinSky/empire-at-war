@@ -92,9 +92,15 @@ namespace EmpireAtWar.Services.ShipAbilities
                 bool matches = decision == AutoPowerDecision.Shields
                     ? slot.Definition.Settings is BoostShieldPowerSettings
                     : slot.Definition.Settings is BoostWeaponPowerSettings ||
-                      slot.Definition.Settings is PowerToMainBatteriesSettings;
+                      slot.Definition.Settings is PowerToMainBatteriesSettings ||
+                      AutoPowerEligibility.IsLaserBeam(slot.Id);
                 if (!matches) continue;
-                if (slot.CanActivate) _abilities.TryActivate(caster, slot.Id, null);
+                if (slot.CanActivate)
+                {
+                    IEntity target = AutoPowerEligibility.IsLaserBeam(slot.Id)
+                        ? _combat.FindBeamTarget(caster, slot.Definition.Range) : null;
+                    _abilities.TryActivate(caster, slot.Id, target);
+                }
                 monitor.ResetConfirmation();
                 return;
             }
