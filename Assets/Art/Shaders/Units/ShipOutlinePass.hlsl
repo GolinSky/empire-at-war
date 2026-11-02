@@ -72,4 +72,25 @@ half4 ShipOutlineFragment(OutlineVaryings input) : SV_Target
     return half4(MixFog(input.color.rgb, input.fogFactor), input.color.a);
 }
 
+struct OutlineMaskVaryings
+{
+    float4 positionCS : SV_POSITION;
+    UNITY_VERTEX_OUTPUT_STEREO
+};
+
+OutlineMaskVaryings ShipOutlineMaskVertex(OutlineAttributes input)
+{
+    OutlineMaskVaryings output = (OutlineMaskVaryings)0;
+    UNITY_SETUP_INSTANCE_ID(input);
+    UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
+    output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+    return output;
+}
+
+// Stencil-only: the pass writes no color.
+half4 ShipOutlineMaskFragment(OutlineMaskVaryings input) : SV_Target
+{
+    return 0;
+}
+
 #endif // SHIP_OUTLINE_PASS_INCLUDED
