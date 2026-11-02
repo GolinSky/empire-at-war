@@ -10,6 +10,9 @@
 ### Features
 
 
+- [ ] **Gameplay analytics (UGS Analytics: match wins, factions, duration, performance)** → [[TODOs/Features/Gameplay_Analytics|Gameplay Analytics]]
+  - Status: todo 2026-11-02. Next: Phase 0 foundation + consent; UGS chosen; open decisions: consent toggles, include `BattleSimulation`.
+
 - [ ] **Import Empire fleet: Procursator, Allegiance, Titan and Tartan** → [[TODOs/Features/Empire_Fleet_Import|Empire Fleet Import]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
 
@@ -132,6 +135,9 @@
   - **Remaining**: Phase 1 playtest; Phases 2–5.
 
 ### Tooling
+
+- [ ] **Crash and error reporting (Unity Diagnostics)** → [[TODOs/Tooling/Crash_And_Error_Reporting|Crash And Error Reporting]]
+  - Status: todo 2026-11-02. Next: user links UGS project (`cloudProjectId` empty); Diagnostics chosen; open decision: dev-build reporting.
 
 - [ ] **Unify ALO imports with recipe-driven tools and concurrent-agent coordination** → [[TODOs/Tooling/Unified_ALO_Import_Pipeline|Unified ALO Import Pipeline]]; [[TODOs/Tooling/Unified_ALO_Import_Pipeline - Research|Tooling audit and reuse candidates]]
   - Status: in progress 2026-10-28; job/lock/journal infrastructure and Rothana recipe implemented; `apply` disabled.

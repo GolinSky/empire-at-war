@@ -81,7 +81,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 664.5
+    "width": 200
   },
   "right": {
     "id": "5211f2974bfd8b63",
@@ -186,8 +186,16 @@
       "bases:Create new base": false
     }
   },
-  "active": "1b8f675cc8021f42",
+  "active": "fd4544b14efb9af5",
   "lastOpenFiles": [
+    "TODOs/Features/Gameplay_Analytics.md",
+    "TODOs/Tooling/Crash_And_Error_Reporting.md",
+    "Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix.md",
+    "TODOs/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix.md",
+    "TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review.md",
+    "GameDesign/References/EaW_Global_AI_Original_Attachment.md",
+    "AssetPipeline/Imports/Gladiator Import.md",
+    "TODOs/Bugs/Enemy_AI_And_Faction_Balance - Research.md",
     "Done/Bugs/Shader_Warmup_Keyword_Errors.md",
     "TODOs/Bugs/Shader_Warmup_Keyword_Errors.md",
     "Done/Optimization/Mac_GPU_Frame_Budget_Plan.md",
@@ -213,14 +221,6 @@
     "AssetPipeline/Imports/sedAFtn17",
     "AssetPipeline/Imports/sedrPbomK",
     "Rules/AGENTS.md.tmp.10036.941724027e1d",
-    "Done/Optimization/Projectile_VFX_PC_Optimization_Plan - Research.md",
-    "Done/Optimization/Projectile_VFX_PC_Optimization_Plan.md",
-    "Done/Optimization/Battle_Particle_Rendering_Optimization_Plan - Research.md",
-    "Done/Optimization/Battle_Particle_Rendering_Optimization_Plan.md",
-    "Done/Optimization/Battle_Rendering_Performance_Audit - Research.md",
-    "Done/Optimization/Battle_Rendering_Performance_Audit.md",
-    "Done/Optimization/Burst_Jobs_Optimization_Plan - Research.md",
-    "Done/Optimization/Burst_Jobs_Optimization_Plan.md",
     "Done/Features/sedgp5bGS",
     "Done/Optimization",
     "Done/Bugs"
