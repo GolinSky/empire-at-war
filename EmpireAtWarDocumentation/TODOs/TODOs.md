@@ -137,7 +137,7 @@
 ### Tooling
 
 - [ ] **Crash and error reporting (Unity Diagnostics)** → [[TODOs/Tooling/Crash_And_Error_Reporting|Crash And Error Reporting]]
-  - Status: todo 2026-11-02. Next: user links UGS project (`cloudProjectId` empty); Diagnostics chosen; open decision: dev-build reporting.
+  - Status: in progress 2026-11-02; user chose Diagnostics independent of usage consent. Local capture/context, consent wording, development probes and optional Jenkins symbols implemented; Editor/player-branch compilation clean, tests not run. Setup rechecked 2026-11-02: Cloud linked, effective Diagnostics enabled, Editor exceptions disabled, compilation clean. Company set to `GolinSkyCompany` and saved 2026-11-02; symbol credential, installed uploader and live job upload stage absent. Standalone upload verification remains pending. Guidance → [[Tooling/Crash_Reporting]].
 
 - [ ] **Unify ALO imports with recipe-driven tools and concurrent-agent coordination** → [[TODOs/Tooling/Unified_ALO_Import_Pipeline|Unified ALO Import Pipeline]]; [[TODOs/Tooling/Unified_ALO_Import_Pipeline - Research|Tooling audit and reuse candidates]]
   - Status: in progress 2026-10-28; job/lock/journal infrastructure and Rothana recipe implemented; `apply` disabled.

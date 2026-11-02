@@ -23266,7 +23266,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Share anonymous usage and crash data
+  m_text: Share gameplay statistics
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f9193e97902a74542bb3bb8ea0a4ef8d, type: 2}
   m_sharedMaterial: {fileID: 7231912859836816641, guid: f9193e97902a74542bb3bb8ea0a4ef8d,

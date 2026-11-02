@@ -26,6 +26,20 @@
 - Test scripts remain under `Assets/Scripts/Tests/Editor` in `Assembly-CSharp-Editor` because they reference runtime code in `Assembly-CSharp`; an isolated test asmdef requires a separate runtime assembly migration. The test framework is an explicit manifest dependency. The player validation rejects an accidentally packaged `Assembly-CSharp-Editor.dll`.
 - Acceptance still requires cold/warm builds and a manual extracted-player check.
 
+## Diagnostics symbols
+
+- `UPLOAD_DIAGNOSTICS_SYMBOLS` defaults to `false` while the Unity Cloud project and upload credentials are unconfigured. When selected, the Pipeline uploads after a successful Windows build and before packaging; upload failure fails the job and preserves the player for recovery.
+- Link the committed Unity project and enable Diagnostic Data before using this stage. No live job configuration, build or upload is changed by editing these files.
+- Add Jenkins **Secret text** credential `unity-diagnostics-upload-token` containing the `AuthToken` for that same Unity Cloud project. The Pipeline binds it only during upload; do not enter credentials in parameters or source.
+- This is an upload token, **not** the service-account Basic Authorization header. Tokens expire after **7 days**. Obtain a current token through Unity's official Windows CI script downloaded from the linked project's **Diagnostics → Debugging Symbols → Download CI script**.
+- Automatic token renewal remains pending that official script and a service account with the project's **Observability Symbols Uploader** role. The public docs describe the token response but do not specify its request endpoint; this integration does not invent one.
+- `Upload-DiagnosticsSymbols.ps1` uses the committed Editor version's `Editor/Data/Tools/usymtool.exe`, `$WORKSPACE/player-symbols/GameAssembly.pdb`, and retained `il2cppOutput`. It passes `-il2cppFileRoot .` for Unity 6/Bee mapping; verify C# file/line resolution in a matching player crash before release.
+- The `Symbols` phase uses the existing monitored Windows Job Object, resource checks and kill-on-close behavior; the stage has a `20 min` timeout.
+- The token selects the destination project; it must match committed `cloudProjectId`. Never add `-projectId`: that selects the tool's different cloud-storage credential mode.
+- `artifacts/symbol-upload.json` records command completion, project/build/commit and PDB SHA-256. Raw tool output stays at `$WORKSPACE/symbol-upload.log`; it is not archived. A successful command alone does not prove resolved stacks.
+- Verify a fresh standalone native crash after symbol processing: native function names plus C# file names/line numbers. CI uploads do not appear in the Dashboard's manually uploaded symbol list.
+- Setup reference: [Unity CI symbol upload](https://docs.unity.com/en-us/cloud/developer-data/upload-symbol-files-ci); [environment variables and flags](https://docs.unity.com/en-us/cloud/developer-data/upload-symbol-files-ci-reference).
+
 ## Resource policy
 
 - `ResourcePolicy.json`: disk reserve 20 GiB per used volume. Available RAM is recorded; RAM start/stop restrictions are disabled by user request.

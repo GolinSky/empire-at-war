@@ -30,6 +30,7 @@ using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Analytics;
+using EmpireAtWar.Services.Diagnostics;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
@@ -204,6 +205,9 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<BattleAssetWarmup>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(assets);
             builder.Register<SkirmishOrchestrator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SkirmishFlowSubscriptions>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+#if !UNITY_EDITOR
+            builder.Register<BattleCrashContextTracker>(Lifetime.Singleton).AsImplementedInterfaces();
+#endif
             // Simulations are a balance tool, not matches players play.
             if (Battle.Mode != GameMode.BattleSimulation)
             {

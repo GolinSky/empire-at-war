@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.Settings
 {
-    /// <summary>One consent covers gameplay analytics and crash reports; nothing is shared until the player answers.</summary>
+    /// <summary>Controls gameplay analytics consent; crash diagnostics are collected independently.</summary>
     [Serializable]
     public sealed class PrivacySettingsData
     {

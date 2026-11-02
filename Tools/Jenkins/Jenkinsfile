@@ -7,6 +7,9 @@ pipeline {
         timeout(time: 120, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '3'))
     }
+    parameters {
+        booleanParam(name: 'UPLOAD_DIAGNOSTICS_SYMBOLS', defaultValue: false, description: 'Upload IL2CPP symbols using a current token for the linked Unity Cloud project.')
+    }
     stages {
         stage('Prepare committed main') {
             steps {
@@ -20,6 +23,15 @@ pipeline {
         }
         stage('Build Windows x64') {
             steps { powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase Build' }
+        }
+        stage('Upload Diagnostics symbols') {
+            when { expression { params.UPLOAD_DIAGNOSTICS_SYMBOLS } }
+            options { timeout(time: 20, unit: 'MINUTES') }
+            steps {
+                withCredentials([string(credentialsId: 'unity-diagnostics-upload-token', variable: 'USYM_UPLOAD_AUTH_TOKEN')]) {
+                    powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase Symbols'
+                }
+            }
         }
         stage('Package player') {
             steps { powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase Package' }

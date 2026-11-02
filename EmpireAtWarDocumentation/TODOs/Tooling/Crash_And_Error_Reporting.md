@@ -1,6 +1,6 @@
 ---
 category: Tooling
-status: todo
+status: in-progress
 created: 2026-11-02
 tags:
   - analytics
@@ -10,69 +10,66 @@ tags:
 
 ## Goal
 
-- Collect native crashes, unhandled C# exceptions and `LogError`s from player builds with stack traces, build version and match context.
-- See crash-free session rate per build before and after each release.
-- Companion: [[TODOs/Features/Gameplay_Analytics|Gameplay Analytics]] (shares UGS project link + consent).
+- Collect native crashes, managed exceptions and error logs from player builds with build identity and battle context.
+- Review crash-free sessions by build before and after releases.
+- Companion → [[TODOs/Features/Gameplay_Analytics]]. Guidance → [[Tooling/Crash_Reporting]].
 
 ## Decision
 
-- **Chosen (user-confirmed 2026-11-02):** Unity Diagnostics (built into Unity 6.2+; project is `6000.4.7f1`). No deprecated Cloud Diagnostics package.
-- Why: zero extra SDK, Windows native crash + exception capture, symbol upload, same UGS dashboard/consent as Analytics.
-- Fallback: Sentry Unity SDK if Diagnostics lacks needed context (breadcrumbs, custom tags, attachments) after Phase 2.
-- Avoid: home-grown crash uploader; logging gameplay statistics through the crash channel.
-
-## Current State (2026-11-02)
-
-- `ProjectSettings.asset`: `cloudProjectId` empty, `companyName: DefaultCompany`, `bundleVersion: 0.1.0`.
-- `Packages/manifest.json`: only `com.unity.modules.unityanalytics`; no `com.unity.services.*`.
-- Existing dev telemetry (`BattleTelemetry`, `EnemyAiTelemetry`, `ShipOrderTelemetry`) is Editor/`DEVELOPMENT_BUILD` CSV only → [[Tooling/Battle_Telemetry]]. Keep separate.
-- No `Application.logMessageReceived` hook in `Assets/Scripts`.
-
-## Rules
-
-- Release builds report; Editor never reports (avoid dashboard noise). Development builds report to a separate UGS environment (`development`).
-- Respect player consent from [[TODOs/Features/Gameplay_Analytics|Gameplay Analytics]] Phase 1; no upload before consent is known.
-  - One combined consent: `SettingsData.Privacy.ShareUsageData` / `HasAnsweredConsent`. Unity `ConsentState` only has `AnalyticsIntent` + `AdsIntent` (6000.4) → verify how Diagnostics honours consent; gate it from `Privacy` if not via `AnalyticsIntent`.
-- No personal data in reports: no machine name, user name, file paths with user folders, save names.
-- Every build carries `Application.version` = `bundleVersion` + build number from Jenkins.
+- **User-confirmed 2026-11-02:** keep built-in Unity Diagnostics; diagnostic collection is independent of the gameplay statistics toggle.
+- Diagnostics does not use `EndUserConsent`. Analytics retains opt-in; diagnostics can collect before the player answers and after they decline.
+- No deprecated Cloud Diagnostics package, Sentry SDK or custom upload transport.
+- Preserve release version semantics: `Application.version` remains `bundleVersion`; attach existing `BuildInfo` version, Jenkins build number and commit separately. Jenkins release-tag validation expects the base version.
+- Development/release distinction is `build_channel` metadata. UGS `SetEnvironmentName` does not establish Diagnostics routing; separate UGS environment routing is not implemented or claimed.
 
 ## Implementation
 
-### Phase 0 — Project link (user + agent)
+### Phase 0 — Cloud prerequisites
 
-- [ ] User: create/link UGS project in Unity Cloud; set `cloudProjectId`; create `production` and `development` environments.
-- [ ] Set real `companyName` (changes `LocalLow` path → also update [[Tooling/Battle_Telemetry]] Files path).
-- [ ] Decide versioning scheme: `0.1.0+<jenkinsBuild>`.
+- [x] Cloud project link verified live and on disk 2026-11-02: `23aa8f08-7eb2-4bfc-880c-1060be169147`. User requested setup recheck; no settings changed by that check.
+- [x] User supplied `GolinSkyCompany`; applied through Unity API and saved 2026-11-02. Live persistent-data path: `C:/Users/golin/AppData/LocalLow/GolinSkyCompany/EmpireAtWar`. Updated [[Tooling/Battle_Telemetry]] path. Existing data under `DefaultCompany` was not moved; migration is a separate decision.
+- [x] Reuse `BuildInfo` version/build/commit instead of rewriting release versions.
 
-### Phase 1 — Enable Diagnostics
+### Phase 1 — Diagnostics configuration
 
-- [ ] Enable Diagnostics in Project Settings → Services; verify Windows standalone support for current Mono/IL2CPP backend.
-- [ ] Verify against current docs (Context7 `/websites/unity_en-us_services`): consent intent API for Diagnostics under `EndUserConsent`, exception sampling, log capture limits.
-- [ ] Symbol upload for IL2CPP/native crashes in Jenkins build step → [[TODOs/Tooling/Jenkins_GitHub_Releases]].
+- [x] Applied `EngineDiagnosticsSettings.enabled = true` through the live Editor API; saved `InsightsSettings.m_EngineDiagnosticsEnabled: 1` in `ProjectSettings/UnityConnectSettings.asset`.
+- [x] Effective activation rechecked 2026-11-02: live `EngineDiagnosticsSettings.enabled=true`; Editor exception capture remains `false`. This verifies configuration, not successful standalone uploads.
+- [x] Disabled `CrashReportingSettings.captureEditorExceptions`; legacy Cloud Diagnostics reporting remains disabled.
+- [x] `UnityCrashContext.InitializeCapture` runs before scene load: player exception capture enabled, Editor exception capture disabled; no Editor metadata uploads from project code.
+- [x] Consent wording corrected: `MainMenuUi.prefab` discloses separate Diagnostics; `SettingsUi.prefab` toggle controls gameplay statistics only. `PrivacySettingsData` summary updated.
+- [x] Current API verified with Context7, official Unity docs and installed `6000.4.7f1` API XML. Metadata limit `64`; native log buffer default `10`, max `50`. Existing default retained.
+- [ ] Validate managed exception/error sampling, `LogError` visibility, repetition behavior and offline delivery in a linked standalone build. No custom log forwarder added, to avoid double-submitting native captures.
 
-### Phase 2 — Context
+### Phase 2 — Context and build support
 
-- [ ] Attach custom metadata: build version, `GameMode`, map/`PlanetType`, player faction, battle seconds, unit count.
-- [ ] Source of context: thin `ICrashContext` service updated on battle start/end (reuses events from Gameplay Analytics Phase 2); no gameplay class references Diagnostics API directly.
-- [ ] Deduplicate repeated per-frame `LogError` spam (rate limit per message hash) if Diagnostics does not.
+- [x] `ICrashContext` / `UnityCrashContext` in `Assets/Scripts/Services/Diagnostics`; no gameplay classes call the Diagnostics API.
+- [x] Build fields: `build_version`, `build_number`, `build_commit`, `build_channel` (`development`/`production`); loaded before the first scene from existing build stamp.
+- [x] `BattleCrashContextTracker` observes battle lifecycle, including simulations; sets mode, map type, planet, player faction, state, battle seconds and entity count. Refresh every `5 s` of running real time and on state transitions; clear on scene disposal.
+- [x] Tracker registered only in player builds; custom context uses enum values and numeric counts, no player/machine/save names or paths. Built-in log/path content is not scrubbed by this adapter; inspect payloads before shipping.
+- [x] Jenkins optional `UPLOAD_DIAGNOSTICS_SYMBOLS` stage + `Symbols` phase + `Upload-DiagnosticsSymbols.ps1`; uses retained `player-symbols/GameAssembly.pdb` and `il2cppOutput`, Editor-bundled `usymtool`, existing process/resource monitoring. Disabled by default.
+- [ ] Configure Jenkins secret-text credential `unity-diagnostics-upload-token`; token belongs to the linked project and expires after `7 days`. Recheck 2026-11-02: credential ID absent from global credentials, live job lacks upload stage, installed build tools lack uploader. Download official Windows CI script from Diagnostics dashboard to implement service-account token renewal; no endpoint invented.
+- [ ] Install/update committed Jenkins tools and job configuration after review; live Jenkins was not changed. Details → repository `Tools/Jenkins/README.md`.
+- [ ] Commit prerequisite (recheck 2026-11-02): Diagnostics code, Cloud link (`cloudProjectId`, company) and Jenkins scripts are uncommitted. Jenkins builds committed `main` (CI snapshot `3d1437761`, last build `21`), so no CI player contains them yet.
 
 ### Phase 3 — Verification
 
-- [ ] Dev build: forced exception (cheat/debug command) + forced native crash (`Utils.ForceCrash`) appear in `development` dashboard with symbols resolved.
-- [ ] Release build without consent → nothing uploaded (proxy/network check).
-- [ ] Document dashboard links + triage routine in canonical guidance note (`Tooling/Crash_Reporting`).
+- [x] Development-only standalone command-line probes: `--eaw-diagnostics-exception`, `--eaw-diagnostics-error`, `--eaw-diagnostics-native-crash`; compiled out of Editor and release. Never launch the working Editor with a native-crash probe.
+- [x] Unity imported scripts/metas and saved both edited prefabs; explicit reserialization of only those prefabs. `scriptCompilationFailed=false`, Editor idle, no new Console errors.
+- [x] Player-only Diagnostics sources + `SkirmishScope` compiled in memory with `DEVELOPMENT_BUILD` / without `UNITY_EDITOR`: zero compiler errors. Compilation only; no probe or gameplay executed.
+- [x] Jenkins PowerShell syntax parsing and `git diff --check` passed.
+- [ ] User-linked standalone: exception/error/native crash reports visible, matching symbols resolve native/C# stacks, metadata correct, development channel distinguishable.
+- [ ] Confirm Diagnostics continues after declining gameplay analytics, while gameplay events stay opted out.
+- [ ] Validate menu disclosure layout, logs for unintended personal data, offline/cache behavior and repeated-error handling.
+- [ ] Add actual dashboard link and release triage evidence to [[Tooling/Crash_Reporting]].
 
 ## Edge Cases
 
-- Offline play → reports cached and sent next launch (verify Diagnostics behaviour).
-- Crash during boot before consent load → treat as no consent; drop.
-- Exceptions in `EditMode` tests must never upload (Editor excluded).
-
-## Open Decisions
-
-- Report from development builds? (default: yes, separate environment).
-- Distribution channel (Steam/itch/standalone) — affects consent wording and symbol storage.
+- Unlinked project → serialized enable intent saved, effective Diagnostics disabled; existing UGS Analytics initialization also needs Cloud link.
+- Early native crash before C# initialization → only Unity-provided context is available.
+- Context counters may lag by up to `5 s` of running time; transitions refresh immediately.
+- No tests, builds, forced exceptions, native crashes, network uploads or Play Mode were run. Local test execution override remains in force.
 
 ## TODO
 
-- Implementation not started.
+- Local implementation/source checks complete; Cloud link and effective Diagnostics activation verified 2026-11-02. Keep active: company identity set to `GolinSkyCompany`; symbol credential/automatic renewal and live Jenkins installation remain unresolved; standalone reporting is unverified.
+- Reusable guidance extracted → [[Tooling/Crash_Reporting]].

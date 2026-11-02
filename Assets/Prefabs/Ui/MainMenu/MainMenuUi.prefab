@@ -962,11 +962,11 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Help improve Empire at War?
 
-    Share anonymous gameplay statistics and
-    crash reports. No personal data is collected.
+    Share gameplay statistics? Change this
+    in Settings > Gameplay.
 
-    You can change this anytime
-    in Settings > Gameplay.'
+    Crash diagnostics are collected separately and are
+    not controlled by this choice.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f9193e97902a74542bb3bb8ea0a4ef8d, type: 2}
   m_sharedMaterial: {fileID: 7231912859836816641, guid: f9193e97902a74542bb3bb8ea0a4ef8d,

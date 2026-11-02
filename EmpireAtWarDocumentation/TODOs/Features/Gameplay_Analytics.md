@@ -11,7 +11,7 @@ tags:
 
 - Track core game statistics from player builds: matches started/finished, win/loss/draw per faction, mode, map, duration, abandon rate, performance per build.
 - Dashboards: faction win rates, average match length, popular modes/maps, FPS/memory by build.
-- Companion: [[TODOs/Tooling/Crash_And_Error_Reporting|Crash And Error Reporting]] (crashes/exceptions).
+- Companion: [[TODOs/Tooling/Crash_And_Error_Reporting|Crash And Error Reporting]] (crashes/exceptions; Diagnostics collection is independent of Analytics consent, user decision 2026-11-02).
 
 ## Decision
 
@@ -66,7 +66,7 @@ session context  game_version (Application.version), graphics_tier, os  (UGS sta
 
 ### Phase 1 — Consent
 
-- [x] One combined consent (user decision 2026-11-02): `PrivacySettingsData` (`shareUsageData`, `hasAnsweredConsent`) as `SettingsData.Privacy`; covers analytics + crash reports.
+- [x] `PrivacySettingsData` (`shareUsageData`, `hasAnsweredConsent`) as `SettingsData.Privacy` controls gameplay analytics. User decision 2026-11-02 in [[TODOs/Tooling/Crash_And_Error_Reporting]]: built-in Diagnostics is independent of this consent; prompt/toggle wording updated accordingly.
 - [x] First-launch prompt: `UsageConsentPrompt` child of `MainMenuUi.prefab` (cloned from `SettingsUi` `Prompt` styling; Allow/Decline) shown by `MainMenuUiController.Open` while `!HasAnsweredConsent`; answer → `ISettingsService.AnswerUsageDataConsent` (saves + applies, leaves other draft edits).
 - [x] Settings toggle: `ShareUsageDataRow` in Gameplay panel of `SettingsUi.prefab` → `ISettingsPresenter.SetShareUsageData` → draft, saved on Apply.
 - [x] `AnalyticsConsentApplier : ISettingsApplier` → `IAnalyticsService.SetConsent`; UGS adapter sets `EndUserConsent` `AnalyticsIntent`, revoke of a granted consent → `RequestDataDeletion` (only when UGS is initialized). Unanswered → stays `Unspecified`.

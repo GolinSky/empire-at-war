@@ -24,7 +24,7 @@ verification: Historical battle evidence plus 2026-10-31 live-source review and
 
 ## Files
 
-- Output folder: `C:/Users/<user>/AppData/LocalLow/DefaultCompany/EmpireAtWar/BattleTelemetry/`
+- Output folder: `C:/Users/<user>/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/BattleTelemetry/`
 - `<scene>_<yyyyMMdd_HHmmss>.csv` — damage telemetry (`BattleTelemetry`).
 - `<scene>_<yyyyMMdd_HHmmss>_ai.csv` — AI decision/purchase timeline (`EnemyAiTelemetry`).
 - `<scene>_<yyyyMMdd_HHmmss>_ai_orders.csv` — per-ship order/contact timeline (`ShipOrderTelemetry`).
