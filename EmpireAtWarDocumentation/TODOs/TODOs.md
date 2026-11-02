@@ -57,11 +57,6 @@
   - Target-specific task forces implemented 2026-11-01: counter-based strike selection, assembly readiness, retained membership and guard screen. Runtime acceptance pending; tests authored, not run.
   - Battle follow-up implemented 2026-11-01: caliber/population valuation, home defense deployment, persistent main-force assembly and active bounded screens. Latest 17:27 battle: capital buying and main-force attacks improved; siege response, emergency production and capture clearance remain open; parent retains broader balance scope. Evidence/priorities → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review]].
 
-- [ ] **Fix enemy AI endgame siege defense, emergency production and capture oscillation** → [[TODOs/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix|Endgame Defense and Capture Fix]]; parent: [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]
-  - 2026-11-01: phases 1–4 implemented: shared damage pressure, threat-facing defense, emergency arrival valuation and stable capture membership. Compilation/import and scoped diff checks passed; runtime acceptance pending. Phase 5 deferred until fresh battle evidence. Tests are not executed under the checkout override.
-  - 2026-11-01: Phase 4b C1–C6 implemented: per-ship interior capture fit, siege-range interception and first-step advance, sustained-damage latch, spaced defenders, emergency squadrons and 10 s reserved-objective grace. Unity compilation/import and scoped diff checks passed; EnemyAi/Combat regressions authored, not run. Phase 5 remains deferred; runtime acceptance pending.
-  - 2026-11-01: Phase 4c implemented: capture orders batched per fitted point; defense uses explicit slots in one shared engagement. Early plan steps reconciled; Phase 5 remains deferred. Unity compilation/import and scoped diff checks passed; tests not run.
-
 - [ ] **Replace silent null returns with fail-fast/Try APIs** (Wave 1) → [[TODOs/Bugs/Fail_Fast_Null_Returns|Fail-Fast Null Returns]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
 
@@ -204,6 +199,9 @@
   - Closed 2026-10-29 by backlog triage; user gates → [[TODOs/User_Acceptance_Queue]].
 
 ### Bugs
+
+- [x] **Fix enemy AI endgame siege defense, emergency production and capture oscillation** → [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix|Endgame Defense and Capture Fix]]; parent: [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]
+  - Completed 2026-11-02, `acceptance: pending-user`. Phases 1–4 (`cf4a22850`), 4b (`1dff4330e`), 4c (`aa7fcaffa`), Phase 5 (strikecraft-specialist cap, raid route safety). Compilation/diff checks passed; tests not run. Gates → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Independent AI ship groups and squadron capture distribution** → [[Done/Bugs/Enemy_AI_Independent_Task_Groups]]
   - Completed 2026-10-31: group-local retreat/capture and distributed squadron objectives; Unity compilation passed. User gates → [[TODOs/User_Acceptance_Queue]].

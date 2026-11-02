@@ -12,6 +12,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
     {
         private static readonly ShipClass[] _warshipClasses =
             { ShipClass.Corvette, ShipClass.Frigate, ShipClass.Cruiser, ShipClass.Capital, ShipClass.HeavyCapital };
+        private static readonly ShipClass[] _strikecraftClasses =
+            { ShipClass.Fighter, ShipClass.Bomber, ShipClass.Interceptor };
 
         private readonly float[] _hullDps;
         private readonly float[] _shieldDps;
@@ -55,6 +57,16 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             float dps = 0f;
             AddCombatValue(ref durability, ref dps);
             return (float)Math.Sqrt(durability * dps / _warshipClasses.Length);
+        }
+
+        /// <summary>Its own weapons deal more average hull damage to strikecraft than to warships (hangar excluded).</summary>
+        public bool IsStrikecraftSpecialist()
+        {
+            float strikecraftDps = 0f;
+            float warshipDps = 0f;
+            foreach (ShipClass target in _strikecraftClasses) strikecraftDps += HullDps(target) + PiercingDps(target);
+            foreach (ShipClass target in _warshipClasses) warshipDps += HullDps(target) + PiercingDps(target);
+            return strikecraftDps / _strikecraftClasses.Length > warshipDps / _warshipClasses.Length;
         }
 
         private void AddCombatValue(ref float durability, ref float dps)

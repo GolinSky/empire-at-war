@@ -131,11 +131,12 @@ commit: 6babee5e1
 
 ## TODO
 
-- Endgame implementation and deferred secondary tuning → [[TODOs/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] (2026-11-01).
+- Endgame implementation and secondary tuning → [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] (done 2026-11-02, in-game acceptance pending).
 - [x] Keep station defense active from observed station damage; use threat-facing siege interception instead of unconditional station-centre orders. Implemented 2026-11-01; runtime acceptance pending.
 - [x] Add emergency production deadline/queue-travel valuation and suspend nonessential economy spending during critical siege. Implemented 2026-11-01; runtime acceptance pending.
 - [x] Evaluate capture clearance for capturing units; place capital escorts outside the circle; stabilize detachment objective ownership. Implemented 2026-11-01; runtime acceptance pending.
-- [ ] Review range-aware escort demand and local/route danger before distant raids.
+- [x] Strikecraft-specialist demand cap and raid route/local danger (2026-11-02) → [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]].
+- [ ] Range/arrival factor in counter scoring (deliberately not implemented; revisit if the next battle still shows low in-range samples).
 
 - [x] Correct combat profile caliber fidelity and population-aware capital replacement selection.
 - [x] Add defense/task-force-aware deployment, persistent station defense and emergency capture recall.

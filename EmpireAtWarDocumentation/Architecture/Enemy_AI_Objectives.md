@@ -40,6 +40,7 @@ verification: Live-source review, Unity compilation/import, new runtime types
 - Visible hostile mining facilities outrank other raid structures; cached non-mining targets yield to eligible mines.
 - Mining raid utility `0.66` exceeds ordinary capture plus hysteresis (`0.65`). Threatened-site defense disables the mining rule; base defense, retreat and decisive attack remain higher.
 - Raid defenders: known ships and squadrons within `1000`; evaluate this group's `CombatMatchup.Advantage` against difficulty `RequiredAttackRatio`, not presence of any ship.
+- Raid route: new and retained raids also pass `IsRouteSafe` (known hostiles at origin, within `1000` of the route, or near target vs `RetreatAdvantage`). Same check as capture/retreat objectives, without footprint clearance.
 - Built/construction mines must be destroyed before capture becomes eligible. Site location/ownership is globally known; direct building raids require current visibility.
 - At least one eligible squadron remains available to capture while objectives exist. Scouts use surplus; carrier guards and escorts do not count as available.
 - Safe owned empty mines may build with fewer than two warships; ownership, contesting and affordability remain checked by capture construction. The two-warship gate still applies to satellite construction.
@@ -74,6 +75,8 @@ verification: Live-source review, Unity compilation/import, new runtime types
 
 - Combat profiles apply weapon caliber accuracy/damage modifiers, matching actual combat.
 - Counter score uses matchup gain divided by max(price / available credits, capacity / free capacity), with existing preference/variety weights.
+- Strikecraft cap: own force (live + pending) clears known hostile strikecraft in ≤ `30 s` → skip `UnitCombatProfile.IsStrikecraftSpecialist()` candidates (own-weapon average hull DPS vs strikecraft > vs warships). Current specialists: Carrack, CR70, Centax; not Venator/Resolute. Telemetry `counter-selection` → `strikecraftCovered`.
+- Cap applies to counter selection only; the size-based `TrySelectShip` fallback is unchanged.
 - Rank unlocked, type-limit-eligible ships before checking free population; wait for the chosen reinforcement instead of filling smaller gaps. Queue reservations count toward used population.
 - Home defense → default-home deployment only; blocked arrivals stay paid/reserved and retry. Otherwise choose valid home/held relay nearest the main fleet rally.
 - Main capture scoring favors relays near the midpoint of home/enemy stations; detached captures retain distance/ion scoring.
@@ -111,4 +114,4 @@ verification: Live-source review, Unity compilation/import, new runtime types
 - `EnemyBuildQueue` serializes identical request IDs; different IDs advance in parallel. Human `ProductionQueueSnapshot` is not the AI queue. Normal capital reservations remain unchanged outside critical pressure.
 - Each committed ship captures if its clearance fits the centre or one of four half-radius interior samples; only failed-fit ships AttackMove to perimeter points at objective radius + their own navigation radius. Capture receivers are batched per identical fitted point through `IssueAttackMove`, preserving compact formation and shared contacts/target distribution. A new/recovering member regroups its point's eligible ships; unchanged groups retain orders. Failed-fit escorts rejoin capture when fit becomes available. Strategic fit uses minimum clearance to admit any fitting capturer and ignores transient reservations; obstacle, ion and known hostile-route checks remain.
 - Reservation API cannot identify owners; `transientReservation` means a ship reservation blocked the sampled point, not proof of a hostile or friendly owner. Tactical order placement still applies clearance.
-- Implementation/remaining secondary tuning → [[TODOs/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]]. Tests authored; runtime battle acceptance remains pending.
+- Implementation → [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]]. Tests authored; runtime battle acceptance remains pending.

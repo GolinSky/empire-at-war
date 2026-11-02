@@ -92,7 +92,7 @@ verification: Historical battle evidence plus 2026-10-31 live-source review and
 
 - Existing `purchase` rows are selection/attempt events, not proof of payment or deployment.
 - New `kind` values reuse the 20-column AI schema; event details are CSV-quoted in `reason`.
-- `counter-selection`: chosen unit, candidate count, score, population, required capacity, cost and money. `production-wait`: selected reinforcement awaiting credits/capacity.
+- `counter-selection`: chosen unit, candidate count, score, `strikecraftCovered` (anti-fighter specialists skipped), population, required capacity, cost and money. `production-wait`: selected reinforcement awaiting credits/capacity.
 - `purchaseAccepted` / `purchaseRejected`: actual controller outcome; rejection includes queue/access, population/type limit or credits. `buildCompleted`: completed request.
 - `deployment` / `deploymentBlocked`: unit, home-defense intent, rally and actual spawn position or blocked retry. Spawn coordinate identifies placement; relay ID is not serialized.
 - `station`: production-station entity/health/shields and defense intent every 15 s or station-presence transition.

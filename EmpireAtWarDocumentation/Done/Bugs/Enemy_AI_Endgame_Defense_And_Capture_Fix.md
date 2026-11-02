@@ -1,11 +1,13 @@
 ---
 category: Bugs
-status: in-progress
+status: done
 created: 2026-11-01
 system:
   - ai
 parent: TODOs/Bugs/Enemy_AI_And_Faction_Balance
 base_commit: 9b7c225d7
+completed: 2026-11-02
+acceptance: pending-user
 ---
 # Enemy AI — Endgame Defense and Capture Fix
 
@@ -73,8 +75,8 @@ base_commit: 9b7c225d7
 
 ### Phase 5 — Secondary (Battle Review §6)
 
-- [ ] Cap anti-fighter (Carrack) demand by observed hostile strikecraft minus existing screens.
-- [ ] Before retaining a distant raid, check route/local danger at current position, not only destination.
+- [x] Cap anti-fighter (Carrack) demand by observed hostile strikecraft minus existing screens.
+- [x] Before retaining a distant raid, check route/local danger at current position, not only destination.
 
 ### Phase 4b — Review of cf4a22850 (2026-11-01, source review only)
 
@@ -162,3 +164,19 @@ base_commit: 9b7c225d7
 - O2: early implementation descriptions reconciled; completed `Enemy_AI_Objectives` TODO preserved. Reusable grouping rule → [[Architecture/Enemy_AI_Objectives]].
 - Coverage authored/updated: common-centre batching, separate fit points, reinforcement/recovery regrouping, one defense call with distinct slots, explicit destinations preserving one shared engagement and receiver indexing. Tests not run under checkout override; categories `EnemyAi`, `BattleInput`; `Simulation` fake signature updated.
 - Verification: Unity compilation/import completed (`isCompiling=false`, `isUpdating=false`, `scriptCompilationFailed=false`); scoped diff checks passed. Tests and Play Mode not run. Phase 5 remains deferred; plan stays `in-progress`.
+
+## Phase 5 Outcome — 2026-11-02
+
+- Evidence: all 63 Carracks in `Loading_20261101_172750_ai.csv` were counter purchases (`counter=1`) → cap belongs in `EnemyCounterProductionModel`, not the size-based fallback.
+- Anti-fighter cap: `UnitCombatProfile.IsStrikecraftSpecialist()` = own-weapon average hull+piercing DPS vs Fighter/Bomber/Interceptor > vs Corvette…HeavyCapital (hangar excluded). `EnemyCounterProductionModel` computes own (live + pending) kill time for known hostile strikecraft only; ≤ `STRIKECRAFT_CLEAR_SECONDS` 30 s → specialists skipped. No known strikecraft → covered.
+- Real profiles (Unity eval): Carrack 276.5 vs fighter / 38.9 vs capital → specialist; CR70, Centax specialist; Venator, Resolute not.
+- Raid route: route section of `IsObjectiveSafe` extracted to `IsRouteSafe`; `FindRaidTarget` requires it for new and retained raids (origin, route ±1000, target vs `RetreatAdvantage`). Final-survivor case (21 contacts nearby) → no raid target.
+- Telemetry: `counter-selection` adds `strikecraftCovered`.
+- Not done (deliberate): range/arrival factor for counters; cap does not affect `TrySelectShip` fallback.
+- Tests authored, not run: `StrikecraftSpecialist_ComparesAverageStrikecraftAndWarshipDamage`, `CounterProduction_SkipsStrikecraftSpecialistOnceScreensClearKnownStrikecraft` (`Combat`); `RaidSelection_RejectsUndefendedTargetBehindStrongerRouteForce` (`EnemyAi`).
+- Verification: Unity recompile completed, `failed=false`, error console empty; scoped `git diff --check` clean. Tests/Play Mode not run under checkout override.
+- Reusable rules → [[Architecture/Enemy_AI_Objectives]]; telemetry → [[Tooling/Battle_Telemetry]].
+
+## Closure — 2026-11-02
+
+- All agreed scope (Phases 1–5, 4b, 4c) implemented and source-verified. Remaining gates are user in-game acceptance → [[TODOs/User_Acceptance_Queue]].
