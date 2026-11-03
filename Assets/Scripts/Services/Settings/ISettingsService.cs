@@ -3,6 +3,8 @@ using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Services.Settings
 {
+
+    //todo: check if saving operation run async
     /// <summary>
     /// Owns the saved settings and the editable draft. Knows no consumer: engine state is pushed through
     /// <see cref="ISettingsApplier"/> implementations, gameplay reads narrow interfaces such as <see cref="ICameraPreferences"/>.
@@ -11,8 +13,8 @@ namespace EmpireAtWar.Services.Settings
     {
         event Action SavedChanged;
 
-        SettingsData Saved { get; }
-        SettingsData Draft { get; }
+        SettingsData Saved { get; } // todo: don't share data - share behaviour
+        SettingsData Draft { get; } // todo: don't share data - share behaviour
         bool IsDirty { get; }
         bool IsAwaitingDisplayConfirmation { get; }
 
