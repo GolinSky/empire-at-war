@@ -110,7 +110,8 @@ if (-not $publishExists) { $publishPath = "createItem?name=$publishJob" } else {
 
 $sourceReadback = Read-JobXml (Invoke-JenkinsRequest "job/$sourceJob/config.xml").Content
 $publishReadback = Read-JobXml (Invoke-JenkinsRequest "job/$publishJob/config.xml").Content
-if ($sourceReadback.SelectSingleNode('/flow-definition/definition/script').InnerText -cne $buildPipeline -or $publishReadback.SelectSingleNode('/flow-definition/definition/script').InnerText -cne $publishPipeline) { throw 'Installed Pipeline readback does not match source.' }
+# Jenkins stores job XML with LF line endings; git checkout/archive may use CRLF. Compare content only.
+if (($sourceReadback.SelectSingleNode('/flow-definition/definition/script').InnerText -replace "`r", '') -cne ($buildPipeline -replace "`r", '') -or ($publishReadback.SelectSingleNode('/flow-definition/definition/script').InnerText -replace "`r", '') -cne ($publishPipeline -replace "`r", '')) { throw 'Installed Pipeline readback does not match source.' }
 if ($sourceReadback.SelectSingleNode("/flow-definition/properties/hudson.plugins.copyartifact.CopyArtifactPermissionProperty/projectNameList/string[text()='$publishJob']") -eq $null) { throw 'Artifact-copy permission was not saved.' }
 if ($sourceReadback.SelectSingleNode('/flow-definition/properties/jenkins.model.BuildDiscarderProperty').OuterXml -cne $sourceXml.SelectSingleNode('/flow-definition/properties/jenkins.model.BuildDiscarderProperty').OuterXml) { throw 'Source build retention changed unexpectedly.' }
 $parameterPath = '/flow-definition/properties/hudson.model.ParametersDefinitionProperty/parameterDefinitions'
@@ -126,10 +127,9 @@ for ($index = 0; $index -lt $expectedParameters.Count; $index++) {
 }
 if ($publishReadback.SelectSingleNode('/flow-definition/properties/org.jenkinsci.plugins.workflow.job.properties.DisableConcurrentBuildsJobProperty/abortPrevious').InnerText -ne 'false') { throw 'Concurrent publishing configuration was not saved.' }
 $fileHashes = @(foreach ($name in $files) {
-    $sourceHash = (Get-FileHash -LiteralPath "$PSScriptRoot\$name" -Algorithm SHA256).Hash
-    $installedHash = (Get-FileHash -LiteralPath "$installed\$name" -Algorithm SHA256).Hash
-    if ($sourceHash -ne $installedHash) { throw "Installed hash mismatch: $name" }
-    @{File=$name; SHA256=$sourceHash}
+    # git archive applies core.autocrlf, so the installed copy may differ from the working tree only in line endings.
+    if (([IO.File]::ReadAllText("$PSScriptRoot\$name") -replace "`r", '') -cne ([IO.File]::ReadAllText("$installed\$name") -replace "`r", '')) { throw "Installed content mismatch: $name" }
+    @{File=$name; SHA256=(Get-FileHash -LiteralPath "$installed\$name" -Algorithm SHA256).Hash}
 })
 $sourceCommit = (& git -C $PSScriptRoot rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Could not record source revision.' }
