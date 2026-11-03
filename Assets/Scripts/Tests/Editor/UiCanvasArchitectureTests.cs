@@ -164,6 +164,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("EndGameUi", "endGameSlot")]
         [TestCase("PauseMenuUi", "modalSlot")]
         [TestCase("SettingsUi", "modalSlot")]
+        [TestCase("AcceptPopupUi", "modalSlot")]
         [TestCase("TooltipUi", "tooltipSlot")]
         [TestCase("FadeUi", "fadeSlot")]
         public void UiPlacement_PreservesEveryScreenParent(string screenName, string field)

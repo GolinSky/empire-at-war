@@ -7,7 +7,5 @@ namespace EmpireAtWar.Entities.MainMenu.Main
         void OpenSettings();
 
         void ExitApplication();
-
-        void AnswerUsageDataConsent(bool isShared);
     }
 }

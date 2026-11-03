@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.MainMenu.Main;
 using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
 using EmpireAtWar.Entities.Saves;
+using EmpireAtWar.Services.Popups;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Tooltip;
@@ -33,7 +34,7 @@ namespace EmpireAtWar.Tests.Editor
                 UiServiceStub uiService = new UiServiceStub(view);
                 RouteStub routes = new RouteStub();
                 controller = new MainMenuUiController(uiService, new CancelRouterStub(),
-                    routes, routes, CreateSettings(), new TooltipServiceStub());
+                    routes, routes, CreateSettings(), new PopupServiceStub(), new TooltipServiceStub());
                 controller.Open();
                 controller.Open();
                 Button start = (Button)new SerializedObject(view)
@@ -63,7 +64,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_PATH));
             MainMenuUiController controller = new MainMenuUiController(
                 new UiServiceStub(root.GetComponent<MainMenuUi>()), new CancelRouterStub(),
-                new RouteStub(), new RouteStub(), CreateSettings(), new TooltipServiceStub());
+                new RouteStub(), new RouteStub(), CreateSettings(), new PopupServiceStub(), new TooltipServiceStub());
             try
             {
                 controller.Open();
@@ -182,7 +183,7 @@ namespace EmpireAtWar.Tests.Editor
                 var saveView = saveRoot.GetComponent<SaveBrowserUi>();
                 var playRoute = new RouteStub();
                 mainMenu = new MainMenuUiController(new UiServiceStub(mainView), new CancelRouterStub(),
-                    playRoute, new RouteStub(), CreateSettings(), new TooltipServiceStub());
+                    playRoute, new RouteStub(), CreateSettings(), new PopupServiceStub(), new TooltipServiceStub());
                 var saves = new EmptySaves();
                 loadRoute = new LoadGameRouteUiController(new UiServiceStub(saveView), new CancelRouterStub(),
                     saves, null, gameData);
@@ -338,6 +339,12 @@ namespace EmpireAtWar.Tests.Editor
             public event Action CancelUnhandled { add { } remove { } }
             public void Focus(IUiCancelHandler handler) { }
             public void Unfocus(IUiCancelHandler handler) { }
+        }
+
+        private sealed class PopupServiceStub : IPopupService
+        {
+            public void ShowAccept(AcceptPopupContent content, Action<bool> answered) =>
+                throw new InvalidOperationException("Consent is already answered in this test.");
         }
 
         private sealed class TooltipServiceStub : ITooltipService
