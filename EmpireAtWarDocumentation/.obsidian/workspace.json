@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "TODOs/Optimization/Battle_FPS_Recovery_Plan.md",
+                "file": "TODOs/Tooling/Crash_And_Error_Reporting.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Battle_FPS_Recovery_Plan"
+              "title": "Crash_And_Error_Reporting"
             }
           }
         ]
@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "Crash And Error Reporting",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": true,
@@ -188,6 +188,13 @@
   },
   "active": "fd4544b14efb9af5",
   "lastOpenFiles": [
+    "TODOs/Optimization/Battle_FPS_Recovery_Plan.md",
+    "Tooling/Crash_Reporting.md",
+    "TODOs/sedHoE5uX",
+    "Done/Refactoring/Auto_Power_Refactor.md",
+    "TODOs/Refactoring/Auto_Power_Refactor.md",
+    "TODOs/Features/Multiplayer_Plan - Research.md",
+    "TODOs/Features/Multiplayer_Plan.md",
     "TODOs/Features/Gameplay_Analytics.md",
     "TODOs/Tooling/Crash_And_Error_Reporting.md",
     "Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix.md",
@@ -209,20 +216,13 @@
     "Rules/BATTLE_PERFORMANCE_GUIDELINES.md",
     "AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE.md",
     "Rules/NOTE_FLAGS.md",
-    "TODOs/Optimization/Mac_Nebula_Hazard_GPU_Plan.md",
-    "TODOs/Documentation/Note_Flags_And_Durable_Guidance_Plan.md",
     "TODOs/Documentation",
-    "Done/Features/Main_Relay_Zone_Map_Rework.md",
-    "Done/Features/Battle_Session_Save.md",
-    "Done/Documentation/Vault_Guidance_And_Backlog_Cleanup - Research.md",
-    "Done/Documentation/Vault_Guidance_And_Backlog_Cleanup.md",
     "TODOs/Documentation/sedEi1wmg",
     "TODOs/Documentation/sedJUugEI",
     "AssetPipeline/Imports/sedAFtn17",
     "AssetPipeline/Imports/sedrPbomK",
     "Rules/AGENTS.md.tmp.10036.941724027e1d",
     "Done/Features/sedgp5bGS",
-    "Done/Optimization",
-    "Done/Bugs"
+    "Done/Optimization"
   ]
 }

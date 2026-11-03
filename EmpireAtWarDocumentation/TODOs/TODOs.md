@@ -10,6 +10,9 @@
 ### Features
 
 
+- [ ] **Online multiplayer (Mirror host-authoritative, 20 Hz tick, Steam relay via FizzySteamworks) alongside offline** → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]; [[TODOs/Features/Multiplayer_Plan - Research|Research]]
+  - Status: todo 2026-11-02. Scope: Skirmish (PvP/co-op, AI slots) + Survival co-op; 2–4 friends. Next: Phase 0 spike (KCP direct IP → FizzySteamworks App 480 lobby join, tick round-trip, bandwidth). 12 readiness issues listed.
+
 - [ ] **Gameplay analytics (UGS Analytics: match wins, factions, duration, performance)** → [[TODOs/Features/Gameplay_Analytics|Gameplay Analytics]]
   - Status: in progress 2026-11-02; Phases 0–3 code done (packages, `IAnalyticsService`, UGS adapter, consent popup + Settings toggle, match/abandon/survival-wave tracking, per-minute performance samples; `BattleSimulation` excluded). Next: user links UGS project + checks popup in-game; Phase 4 schemas/dashboards/dev-build verification.
 
@@ -435,12 +438,12 @@
 
 ### Refactoring
 
-- [x] **Finish ship movement simplification verification and remaining phases** → [[Done/Refactoring/Ship_Movement_Simplification_Plan|Ship Movement Simplification Plan]]
-  - **Remaining**: reconcile the recorded initialization-order retry and later phases against current behavior.
-  - Closed 2026-10-29 by user decision; see plan banner for unfinished scope.
 - [x] **Auto power refactor (data eligibility, remove static rules, dedupe snapshot/monitor)** → [[Done/Refactoring/Auto_Power_Refactor|Auto Power Refactor]]
   - Completed 2026-11-02, `acceptance: pending-user`. All 5 phases; compiles; EditMode tests not run (`Abilities`, `Ships`, `Core`, `EnemyAi`, `Balance`).
 
+- [x] **Finish ship movement simplification verification and remaining phases** → [[Done/Refactoring/Ship_Movement_Simplification_Plan|Ship Movement Simplification Plan]]
+  - **Remaining**: reconcile the recorded initialization-order retry and later phases against current behavior.
+  - Closed 2026-10-29 by user decision; see plan banner for unfinished scope.
 
 - [x] **Reconcile SkirmishOrchestrator refactor acceptance** → [[Done/Refactoring/SkirmishOrchestrator_Refactoring_Plan|SkirmishOrchestrator Refactoring Plan]]
   - **Remaining**: route, visibility, teardown, and prefab verification; implementation exists despite the historical proposed status.
