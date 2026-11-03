@@ -110,6 +110,9 @@ created: 2026-10-29
 
 ## Core Refactors
 
+- [[Done/Refactoring/Auto_Power_Refactor]]
+  - [ ] Run EditMode `Abilities`, `Ships`, `Core`, `EnemyAi`, `Balance`; skirmish check that auto power still fires shields/weapons/laser beams as before.
+
 - [[Done/Refactoring/Capture_Reinforcement_Tally_Dedup]]
   - [ ] Skirmish check: capture-site and reinforcement squadron strength behave as before.
 - [[Done/Refactoring/Unit_Request_Identity_Keys]]
@@ -197,3 +200,17 @@ created: 2026-10-29
 - [ ] [[Done/Bugs/Enemy_AI_Independent_Task_Groups]] — In-game: threatened combat group retreats while a safe capture detachment continues; verify group split/merge, objective handoff, home loss and destruction/reinforcement changes.
 - [ ] [[Done/Bugs/Enemy_AI_Independent_Task_Groups]] — In-game: available squadrons spread across capture objectives; scouts, escorts and active carrier guards keep their assignments.
 - [ ] [[Done/Bugs/Enemy_AI_Independent_Task_Groups]] — On explicit request, execute EnemyAi regressions (11 new cases); tests were not run under the local override.
+
+## Enemy AI Endgame Defense and Capture
+
+- [ ] [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] — Siege: no defense gap > 5 s while the station loses durability; defenders have targets in range within 15 s of latch; single superweapon hit does not recall the fleet.
+- [ ] [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] — Critical station: no Mining/Defense/satellite purchases; first emergency unit deploys before station loss when credits allow.
+- [ ] [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] — Centre: main force reaches 100% capture at least once with capitals present; < 5 Capture↔Hold changes per 30 s.
+- [ ] [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] — Phase 5: Carrack/CR70/Centax share drops versus the 17:27 battle (63/205 Carrack); `strikecraftCovered` appears in `counter-selection`; no distant raid while a stronger known force sits on the route.
+- [ ] [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] — Run authored EnemyAi/Combat regressions only on explicit request; tests not run by agents.
+
+## Reinforcement Drag Batch Spawn
+
+- [ ] [[Done/Features/Reinforcement_Drag_Batch_Spawn]] — Deploy one ship, immediately drag another → preview appears and deploys.
+- [ ] [[Done/Features/Reinforcement_Drag_Batch_Spawn]] — Shift-drag with reserve 4, room for 3 → 3 deploy in a grid, panel shows `x1`; blocked slots stay in reserve.
+- [ ] [[Done/Features/Reinforcement_Drag_Batch_Spawn]] — Batch slot spacing looks right for small and large hulls (`SLOT_SPACING_FACTOR` 2.2).

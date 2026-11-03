@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([Parameter(Mandatory)][ValidateSet('Prepare','Test','Build','Package','ArchiveMonitor','ArchiveComplete')][string]$Phase)
+param([Parameter(Mandatory)][ValidateSet('Prepare','Test','Build','Symbols','Package','ArchiveMonitor','ArchiveComplete')][string]$Phase)
 $ErrorActionPreference = 'Stop'
 . "$PSScriptRoot\BuildResources.ps1"
 $workspace = 'F:\Jenkins\data\workspace\EmpireAtWar-Windows-Local'

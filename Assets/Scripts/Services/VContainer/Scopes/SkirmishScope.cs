@@ -29,6 +29,8 @@ using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Repository;
+using EmpireAtWar.Services.Analytics;
+using EmpireAtWar.Services.Diagnostics;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
@@ -173,6 +175,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ShipAbilityFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipAbilityService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitCombatProfileCatalog>(Lifetime.Singleton);
+            builder.Register<ForceCompositionBuilder>(Lifetime.Singleton);
             builder.Register<AutoPowerCombatSnapshot>(Lifetime.Singleton);
             if (Battle.Mode != GameMode.BattleSimulation)
                 builder.Register<PlayerAutoPowerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
@@ -202,6 +205,15 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<BattleAssetWarmup>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(assets);
             builder.Register<SkirmishOrchestrator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SkirmishFlowSubscriptions>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+#if !UNITY_EDITOR
+            builder.Register<BattleCrashContextTracker>(Lifetime.Singleton).AsImplementedInterfaces();
+#endif
+            // Simulations are a balance tool, not matches players play.
+            if (Battle.Mode != GameMode.BattleSimulation)
+            {
+                builder.Register<MatchAnalyticsTracker>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+                builder.Register<PerformanceAnalyticsSampler>(Lifetime.Singleton).AsImplementedInterfaces();
+            }
             builder.Register<CoreGameUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitActionsPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             BattleDataRegistrations.Register(builder, Assets);

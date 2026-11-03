@@ -34,7 +34,7 @@ namespace EmpireAtWar.Tests.Editor
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             Assert.That(data.Hull, Is.EqualTo(600));
             Assert.That(data.Shields, Is.EqualTo(600));
-            Assert.That(data.Speed, Is.EqualTo(17.5f));
+            Assert.That(data.Speed, Is.EqualTo(35f));
             Assert.That(data.Range, Is.EqualTo(500f));
             Assert.That(data.Abilities, Is.EqualTo(new[] { ShipAbilityId.Pursuit }));
             Assert.That(data.HangarBays, Is.Empty);

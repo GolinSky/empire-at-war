@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([Parameter(Mandatory)][ValidateSet('Prepare','Test','Build','Package')][string]$Phase)
+param([Parameter(Mandatory)][ValidateSet('Prepare','Test','Build','Symbols','Package')][string]$Phase)
 $ErrorActionPreference = 'Stop'
 try {
     if ($Phase -eq 'Prepare') { & "$PSScriptRoot\Prepare-Snapshot.ps1"; exit 0 }
@@ -7,6 +7,12 @@ try {
     $ci = 'F:\UnityCI\empire-at-war'
     $player = "$env:WORKSPACE\player"
     $artifacts = "$env:WORKSPACE\artifacts"
+    if ($Phase -eq 'Symbols') {
+        Write-ResourceSample -Preflight -Stage $Phase
+        Assert-CiIdle
+        & "$PSScriptRoot\Upload-DiagnosticsSymbols.ps1"
+        exit 0
+    }
     if ($Phase -in @('Test','Build')) {
         Write-ResourceSample -Preflight -Stage $Phase
         Assert-CiIdle

@@ -10,6 +10,12 @@
 ### Features
 
 
+- [ ] **Online multiplayer (Mirror host-authoritative, 20 Hz tick, Steam relay via FizzySteamworks) alongside offline** → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]; [[TODOs/Features/Multiplayer_Plan - Research|Research]]
+  - Status: todo 2026-11-02. Scope: Skirmish (PvP/co-op, AI slots) + Survival co-op; 2–4 friends. Next: Phase 0 spike (KCP direct IP → FizzySteamworks App 480 lobby join, tick round-trip, bandwidth). 12 readiness issues listed.
+
+- [ ] **Gameplay analytics (UGS Analytics: match wins, factions, duration, performance)** → [[TODOs/Features/Gameplay_Analytics|Gameplay Analytics]]
+  - Status: in progress 2026-11-02; Phases 0–3 code done (packages, `IAnalyticsService`, UGS adapter, consent popup + Settings toggle, match/abandon/survival-wave tracking, per-minute performance samples; `BattleSimulation` excluded). Next: user links UGS project + checks popup in-game; Phase 4 schemas/dashboards/dev-build verification.
+
 - [ ] **Import Empire fleet: Procursator, Allegiance, Titan and Tartan** → [[TODOs/Features/Empire_Fleet_Import|Empire Fleet Import]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
 
@@ -56,11 +62,6 @@
   - 2026-11-01: mining raid priority/strength checks, capture-squadron reservation and early captured-mine construction fixed; tests authored, not run. Comparison → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Research]].
   - Target-specific task forces implemented 2026-11-01: counter-based strike selection, assembly readiness, retained membership and guard screen. Runtime acceptance pending; tests authored, not run.
   - Battle follow-up implemented 2026-11-01: caliber/population valuation, home defense deployment, persistent main-force assembly and active bounded screens. Latest 17:27 battle: capital buying and main-force attacks improved; siege response, emergency production and capture clearance remain open; parent retains broader balance scope. Evidence/priorities → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review]].
-
-- [ ] **Fix enemy AI endgame siege defense, emergency production and capture oscillation** → [[TODOs/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix|Endgame Defense and Capture Fix]]; parent: [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]
-  - 2026-11-01: phases 1–4 implemented: shared damage pressure, threat-facing defense, emergency arrival valuation and stable capture membership. Compilation/import and scoped diff checks passed; runtime acceptance pending. Phase 5 deferred until fresh battle evidence. Tests are not executed under the checkout override.
-  - 2026-11-01: Phase 4b C1–C6 implemented: per-ship interior capture fit, siege-range interception and first-step advance, sustained-damage latch, spaced defenders, emergency squadrons and 10 s reserved-objective grace. Unity compilation/import and scoped diff checks passed; EnemyAi/Combat regressions authored, not run. Phase 5 remains deferred; runtime acceptance pending.
-  - 2026-11-01: Phase 4c implemented: capture orders batched per fitted point; defense uses explicit slots in one shared engagement. Early plan steps reconciled; Phase 5 remains deferred. Unity compilation/import and scoped diff checks passed; tests not run.
 
 - [ ] **Replace silent null returns with fail-fast/Try APIs** (Wave 1) → [[TODOs/Bugs/Fail_Fast_Null_Returns|Fail-Fast Null Returns]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
@@ -138,6 +139,9 @@
 
 ### Tooling
 
+- [ ] **Crash and error reporting (Unity Diagnostics)** → [[TODOs/Tooling/Crash_And_Error_Reporting|Crash And Error Reporting]]
+  - Status: in progress 2026-11-02; user chose Diagnostics independent of usage consent. Local capture/context, consent wording, development probes and optional Jenkins symbols implemented; Editor/player-branch compilation clean, tests not run. Setup rechecked 2026-11-02: Cloud linked, effective Diagnostics enabled, Editor exceptions disabled, compilation clean. Company set to `GolinSkyCompany` and saved 2026-11-02; symbol credential, installed uploader and live job upload stage absent. Standalone upload verification remains pending. Guidance → [[Tooling/Crash_Reporting]].
+
 - [ ] **Unify ALO imports with recipe-driven tools and concurrent-agent coordination** → [[TODOs/Tooling/Unified_ALO_Import_Pipeline|Unified ALO Import Pipeline]]; [[TODOs/Tooling/Unified_ALO_Import_Pipeline - Research|Tooling audit and reuse candidates]]
   - Status: in progress 2026-10-28; job/lock/journal infrastructure and Rothana recipe implemented; `apply` disabled.
   - Next: production conversion + Editor acceptance; Endurance/Rebel recipes; station/derivative adapters; concurrency recovery acceptance.
@@ -205,6 +209,9 @@
 
 ### Bugs
 
+- [x] **Fix enemy AI endgame siege defense, emergency production and capture oscillation** → [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix|Endgame Defense and Capture Fix]]; parent: [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]
+  - Completed 2026-11-02, `acceptance: pending-user`. Phases 1–4 (`cf4a22850`), 4b (`1dff4330e`), 4c (`aa7fcaffa`), Phase 5 (strikecraft-specialist cap, raid route safety). Compilation/diff checks passed; tests not run. Gates → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **Independent AI ship groups and squadron capture distribution** → [[Done/Bugs/Enemy_AI_Independent_Task_Groups]]
   - Completed 2026-10-31: group-local retreat/capture and distributed squadron objectives; Unity compilation passed. User gates → [[TODOs/User_Acceptance_Queue]].
 
@@ -243,6 +250,9 @@
 - [x] **Implement Game Design Balance Editor** → [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]; [[Done/Tooling/GameDesign_Balance_Editor - Research|Data ownership and feasibility]]
 
 ### Features
+
+- [x] **Reinforcement drag fix (second drag does nothing) + Shift-drag deploy-all** → [[Done/Features/Reinforcement_Drag_Batch_Spawn|Reinforcement Drag Batch Spawn]]
+  - 2026-11-03: silent 1 s `SPAWN_COOLDOWN` removed; Shift-drag deploys min(reserve, population fit) in a grid. Compile clean; tests authored, not run; in-game gate queued.
 
 - [x] **Auto power abilities: player ships auto-use Power to Shields / Power to Weapons / Power to Main Batteries; global + per-ship "A" toggle; one Power to Shields for all ships** → [[Done/Features/Auto_Power_Abilities_Plan|Auto Power Abilities Plan]]
   - 2026-11-01: Main Batteries enabled for Allegiance / ISD II; source diagnostics and Unity refresh clean; two Core lifecycle regressions authored, not run under checkout override.
@@ -430,6 +440,9 @@
 - [x] **Implement unit actions (ship orders)** → [[Done/Features/SHIP_ACTIONS_PLAN|Unit Actions (Ship Orders) implementation plan]]
 
 ### Refactoring
+
+- [x] **Auto power refactor (data eligibility, remove static rules, dedupe snapshot/monitor)** → [[Done/Refactoring/Auto_Power_Refactor|Auto Power Refactor]]
+  - Completed 2026-11-02, `acceptance: pending-user`. All 5 phases; compiles; EditMode tests not run (`Abilities`, `Ships`, `Core`, `EnemyAi`, `Balance`).
 
 - [x] **Finish ship movement simplification verification and remaining phases** → [[Done/Refactoring/Ship_Movement_Simplification_Plan|Ship Movement Simplification Plan]]
   - **Remaining**: reconcile the recorded initialization-order retry and later phases against current behavior.

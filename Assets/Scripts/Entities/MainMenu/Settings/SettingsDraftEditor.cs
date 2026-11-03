@@ -97,6 +97,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                 camera.EdgeScrolling,
                 camera.InvertZoom);
             _model.SetGameplay(Draft.Gameplay.AutoPowerAbilities);
+            _model.SetPrivacy(Draft.Privacy.ShareUsageData);
             _model.SetDirty(_settingsService.IsDirty);
         }
 
@@ -213,6 +214,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public void SetAutoPowerAbilities(bool isOn)
         {
             Draft.Gameplay.AutoPowerAbilities = isOn;
+            Refresh();
+        }
+
+        public void SetShareUsageData(bool isOn)
+        {
+            Draft.Privacy.Answer(isOn);
             Refresh();
         }
 

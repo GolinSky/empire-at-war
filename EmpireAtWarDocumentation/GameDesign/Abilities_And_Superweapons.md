@@ -38,7 +38,8 @@ verification: source-and-assets
 
 ### Automatic player ship powers
 
-- Local human ships only; `BoostShieldPowerSettings`, `BoostWeaponPowerSettings` and `PowerToMainBatteriesSettings`. Main Batteries id `24` uses weapon decisions, including Allegiance and ISD II. Exclude squadrons and id `35`; shared id `20` remains eligible on ships.
+- Local human ships only. Eligibility is data: `ShipAbilityDefinition.autoPower` (`AutoPowerRole` None/Shields/Weapons) in `ShipAbilityCatalog`. Current: Shields `3`; Weapons `5, 10, 12, 20, 23, 24, 31, 32, 33, 38` (Boost Weapon, Main Batteries `24` incl. Allegiance/ISD II, laser beams `10`/`33`). Squadrons excluded; new abilities default `None`.
+- Abilities with `requiresEnemyTarget` (laser beams) auto-target the nearest visible uncloaked hostile within ability range.
 - Settings → Gameplay → “Ships use power abilities automatically”: default on, applied through saved settings. A controls per-ship preference; global off retains it.
 - Single selected ship → automatic starts paused; multi-selection → automatic starts continue. Group A: any eligible ship off → all on; otherwise all off.
 - Automatic decisions run in `IPostTickable`, after UI input; manual intent wins within the frame. Automatic starts call `TryActivate`; ordinary duration, cancellation and recovery apply. Never cancel/replace active effects; turning A/global off affects future starts.

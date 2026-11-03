@@ -584,10 +584,13 @@ MonoBehaviour:
         quantity: 3
       - isSquadron: 0
         unitId: 201
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 213
-        quantity: 3
+        quantity: 2
+      - isSquadron: 0
+        unitId: 216
+        quantity: 2
       - isSquadron: 1
         unitId: 204
         quantity: 5
@@ -622,10 +625,13 @@ MonoBehaviour:
         quantity: 3
       - isSquadron: 0
         unitId: 201
-        quantity: 3
+        quantity: 2
       - isSquadron: 0
         unitId: 213
-        quantity: 3
+        quantity: 2
+      - isSquadron: 0
+        unitId: 216
+        quantity: 2
       - isSquadron: 0
         unitId: 205
         quantity: 3

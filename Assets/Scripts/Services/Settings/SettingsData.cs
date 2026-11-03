@@ -17,6 +17,7 @@ namespace EmpireAtWar.Services.Settings
         [SerializeField] private CameraSettingsData camera = new CameraSettingsData();
         [SerializeField] private InputSettingsData input = new InputSettingsData();
         [SerializeField] private GameplaySettingsData gameplay = new GameplaySettingsData();
+        [SerializeField] private PrivacySettingsData privacy = new PrivacySettingsData();
 
         [SerializeField] private int schemaVersion = CURRENT_SCHEMA_VERSION;
 
@@ -27,6 +28,7 @@ namespace EmpireAtWar.Services.Settings
         public CameraSettingsData Camera => camera;
         public InputSettingsData Input => input;
         public GameplaySettingsData Gameplay => gameplay;
+        public PrivacySettingsData Privacy => privacy;
 
         public string ToJson()
         {
@@ -50,7 +52,8 @@ namespace EmpireAtWar.Services.Settings
         public bool Matches(SettingsData other)
         {
             return display.Matches(other.display) && graphics.Matches(other.graphics) &&
-                   audio.Matches(other.audio) && camera.Matches(other.camera) && input.Matches(other.input) && gameplay.Matches(other.gameplay);
+                   audio.Matches(other.audio) && camera.Matches(other.camera) && input.Matches(other.input) && gameplay.Matches(other.gameplay) &&
+                   privacy.Matches(other.privacy);
         }
 
         public SettingsData Clone()

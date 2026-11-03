@@ -26,7 +26,7 @@ namespace EmpireAtWar.Tests.Editor
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             Assert.That(data.Hull, Is.EqualTo(300000));
             Assert.That(data.Shields, Is.EqualTo(400000));
-            Assert.That(data.Speed, Is.EqualTo(15));
+            Assert.That(data.Speed, Is.EqualTo(10));
             Assert.That(data.Abilities, Is.EquivalentTo(new[] { ShipAbilityId.ExecutorLaserBeam, ShipAbilityId.TractorBeam }));
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             HealthComponent health = view.GetComponentsInChildren<HealthComponent>(true).Single();

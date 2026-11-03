@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
@@ -16,10 +17,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         /// <summary>Smallest log-advantage gain worth a purchase; below it the force is already saturated.</summary>
         private const double MINIMUM_GAIN = 0.001;
 
+        /// <summary>
+        /// Known hostile strikecraft the own force already clears this fast need no further strikecraft
+        /// specialists; existing screens and pending units are part of the own force.
+        /// </summary>
+        private const float STRIKECRAFT_CLEAR_SECONDS = 30f;
+
         private readonly IShipClassMatchups _matchups;
         private readonly ForceComposition _candidateForce = new ForceComposition();
 
         public double SelectedScore { get; private set; }
+        public bool StrikecraftCovered { get; private set; }
 
         public EnemyCounterProductionModel(IShipClassMatchups matchups)
         {
@@ -38,6 +46,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         {
             selectedIndex = -1;
             SelectedScore = 0.0;
+            StrikecraftCovered = StrikecraftClearSeconds(own, hostile) <= STRIKECRAFT_CLEAR_SECONDS;
             if (hostile.IsEmpty && !isStationCritical)
             {
                 return false;
@@ -49,6 +58,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             for (int i = 0; i < candidates.Count; i++)
             {
                 ProductionCandidate candidate = candidates[i];
+                if (StrikecraftCovered && candidate.Profile.IsStrikecraftSpecialist()) continue;
                 _candidateForce.CopyFrom(own);
                 _candidateForce.AddNew(candidate.Profile, candidate.IncludeHangar);
                 double gain = hostile.IsEmpty
@@ -88,6 +98,19 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             }
 
             return selectedIndex >= 0;
+        }
+
+        /// <summary>Seconds <paramref name="own"/> needs to destroy only the known hostile strikecraft.</summary>
+        private static float StrikecraftClearSeconds(ForceComposition own, ForceComposition hostile)
+        {
+            float time = 0f;
+            foreach (ShipClass target in ForceComposition.Classes)
+            {
+                if (!target.IsStrikecraft() || hostile.Hull(target) <= 0f) continue;
+                time += CombatMatchup.TimeToDestroyClass(hostile.Hull(target), hostile.Shields(target),
+                    own.HullDps(target), own.ShieldDps(target), own.PiercingDps(target));
+            }
+            return time;
         }
     }
 }

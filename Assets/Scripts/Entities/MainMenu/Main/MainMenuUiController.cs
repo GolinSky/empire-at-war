@@ -8,6 +8,8 @@ using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
+using EmpireAtWar.Services.Popups;
+using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Versioning;
 
 namespace EmpireAtWar.Entities.MainMenu.Main
@@ -16,6 +18,8 @@ namespace EmpireAtWar.Entities.MainMenu.Main
     {
         private readonly IPlayRoute _playRoute;
         private readonly ISettingsRoute _settingsRoute;
+        private readonly ISettingsService _settingsService;
+        private readonly IPopupService _popupService;
         private MainMenuUi _ui;
 
         private readonly TooltipRequests _tooltips;
@@ -26,10 +30,14 @@ namespace EmpireAtWar.Entities.MainMenu.Main
             IUiCancelRouter cancelRouter,
             IPlayRoute playRoute,
             ISettingsRoute settingsRoute,
+            ISettingsService settingsService,
+            IPopupService popupService,
             ITooltipService tooltipService) : base(uiService, cancelRouter)
         {
             _playRoute = playRoute;
             _settingsRoute = settingsRoute;
+            _settingsService = settingsService;
+            _popupService = popupService;
             _tooltips = new TooltipRequests(tooltipService);
         }
 
@@ -51,6 +59,7 @@ namespace EmpireAtWar.Entities.MainMenu.Main
                 _ui.Initialize();
                 _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover,
                     HandleTooltipHover, _tooltips);
+                if (!_settingsService.Saved.Privacy.HasAnsweredConsent) RequestUsageDataConsent();
             }
             _ui.Show();
         }
@@ -65,6 +74,18 @@ namespace EmpireAtWar.Entities.MainMenu.Main
         {
             _tooltips.HideAll();
             _settingsRoute.Open();
+        }
+
+        private void RequestUsageDataConsent()
+        {
+            // A failed save is logged by the settings service; the popup then returns on the next launch.
+            _popupService.ShowAccept(new AcceptPopupContent(
+                    title: "Help improve Empire at War?",
+                    message: "Share gameplay statistics? Change this in Settings > Gameplay.\n\n" +
+                        "Crash diagnostics are collected separately and are not controlled by this choice.",
+                    acceptLabel: "Allow",
+                    declineLabel: "Decline"),
+                isShared => _settingsService.AnswerUsageDataConsent(isShared));
         }
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>

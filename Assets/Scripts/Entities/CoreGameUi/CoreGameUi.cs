@@ -90,15 +90,12 @@ namespace EmpireAtWar.Entities.CoreGameUi
             if (ready)
             {
                 if (_reinforcementPulse != null) return;
-                Color readyColor = new Color(34f / 255f, 197f / 255f, 94f / 255f, _reinforcementColor.a);
-                _reinforcementPulse = DOTween.Sequence()
-                    .Append(reinforcementButton.targetGraphic
-                        .DOColor(readyColor, REINFORCEMENT_PULSE_DURATION)
-                        .SetEase(Ease.InOutSine))
-                    .Append(reinforcementButton.targetGraphic
-                        .DOColor(_reinforcementColor, REINFORCEMENT_PULSE_DURATION)
-                        .SetEase(Ease.InOutSine))
-                    .SetLoops(-1, LoopType.Restart)
+                Color readyColor = new Color(57f / 255f, 1f, 20f / 255f, _reinforcementColor.a);
+                reinforcementButton.targetGraphic.color = _reinforcementColor;
+                _reinforcementPulse = reinforcementButton.targetGraphic
+                    .DOColor(readyColor, REINFORCEMENT_PULSE_DURATION)
+                    .SetEase(Ease.InOutSine)
+                    .SetLoops(-1, LoopType.Yoyo)
                     .SetUpdate(true);
                 return;
             }

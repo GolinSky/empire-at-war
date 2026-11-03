@@ -75,6 +75,7 @@ namespace EmpireAtWar.Ui.Base
                     { typeof(PauseMenuUi), modalSlot },
                     { typeof(EmpireAtWar.Entities.Saves.SaveBrowserUi), modalSlot },
                     { typeof(SettingsUi), modalSlot },
+                    { typeof(EmpireAtWar.Entities.Popups.AcceptPopupUi), modalSlot },
                     { typeof(TooltipUi), tooltipSlot },
                     { typeof(FadeUi), fadeSlot }
                 };

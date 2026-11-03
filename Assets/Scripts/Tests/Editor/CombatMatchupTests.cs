@@ -117,6 +117,42 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void StrikecraftSpecialist_ComparesAverageStrikecraftAndWarshipDamage()
+        {
+            UnitCombatProfile corvette = Profile(ShipClass.Corvette, 800f, 400f,
+                (ShipClass.Bomber, 40f), (ShipClass.Capital, 2f));
+            UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f,
+                (ShipClass.Capital, 60f), (ShipClass.Bomber, 2f));
+
+            Assert.That(corvette.IsStrikecraftSpecialist(), Is.True);
+            Assert.That(capital.IsStrikecraftSpecialist(), Is.False);
+        }
+
+        [TestCase(1, true)]
+        [TestCase(0, false)]
+        public void CounterProduction_SkipsStrikecraftSpecialistOnceScreensClearKnownStrikecraft(
+            int existingScreens, bool expectedCovered)
+        {
+            UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f,
+                (ShipClass.Capital, 60f), (ShipClass.Bomber, 2f));
+            UnitCombatProfile corvette = Profile(ShipClass.Corvette, 800f, 400f,
+                (ShipClass.Bomber, 40f), (ShipClass.Capital, 2f));
+            UnitCombatProfile bombers = Profile(ShipClass.Bomber, 300f, 100f,
+                (ShipClass.Capital, 40f), (ShipClass.Corvette, 5f));
+            ForceComposition own = Force(capital, capital);
+            for (int i = 0; i < existingScreens; i++) own.AddNew(corvette, false);
+            var model = new EnemyCounterProductionModel(new NeutralShipClassMatchups());
+
+            bool selected = model.TrySelect(own, Force(bombers, capital),
+                new[] { new ProductionCandidate(corvette, 1500) }, out int index);
+
+            // One screen kills the single known bomber in about 9 s; without it, two capitals need 100 s.
+            Assert.That(model.StrikecraftCovered, Is.EqualTo(expectedCovered));
+            Assert.That(selected, Is.EqualTo(!expectedCovered));
+            Assert.That(index, Is.EqualTo(expectedCovered ? -1 : 0));
+        }
+
+        [Test]
         public void CounterProduction_BuildsCapitalsAgainstCapitals()
         {
             UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f,

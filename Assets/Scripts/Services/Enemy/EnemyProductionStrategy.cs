@@ -413,6 +413,7 @@ namespace EmpireAtWar.Services.Enemy
             selectedData = _candidateData[index];
             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "counter-selection",
                 $"unit={selectedId};candidates={_candidates.Count};score={_counterModel.SelectedScore:F6};" +
+                $"strikecraftCovered={_counterModel.StrikecraftCovered};" +
                 $"capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};" +
                 $"required={selectedData.UnitCapacity};cost={selectedData.Price};money={_economyModel.Money}");
             return true;

@@ -10,6 +10,8 @@ using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Repository;
+using EmpireAtWar.Services.Analytics;
+using EmpireAtWar.Services.Diagnostics;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Graphics;
 using EmpireAtWar.Services.IdGeneration;
@@ -104,6 +106,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<DisplaySettingsApplier>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<GraphicsSettingsApplier>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<AudioSettingsApplier>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<AnalyticsConsentApplier>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<UnityCrashContext>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SettingsService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<AudioService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<MusicService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
@@ -111,6 +115,11 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<InputActionsProvider>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<InputBindingService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CancelInput>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+#if UNITY_EDITOR && !ANALYTICS_EDITOR
+            builder.Register<DisabledAnalyticsService>(Lifetime.Singleton).AsImplementedInterfaces();
+#else
+            builder.Register<UgsAnalyticsService>(Lifetime.Singleton).AsImplementedInterfaces();
+#endif
             builder.RegisterLifecycle();
         }
 

@@ -21,6 +21,8 @@ namespace EmpireAtWar.Services.ShipAbilities
         [SerializeField] private float range;
         [Header("Ai")]
         [SerializeField] private ShipAbilityAiUse aiUse;
+        [Header("Auto Power")]
+        [SerializeField] private AutoPowerRole autoPower;
         [Header("Ability")]
         [SerializeReference, SubclassSelector] private ShipAbilitySettings settings;
 
@@ -34,6 +36,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         public bool RequiresEnemyTarget => requiresEnemyTarget;
         public float Range => range;
         public ShipAbilityAiUse AiUse => aiUse;
+        public AutoPowerRole AutoPower => autoPower;
         public ShipAbilitySettings Settings => settings;
     }
 }

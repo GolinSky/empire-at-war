@@ -395,13 +395,14 @@ namespace EmpireAtWar.Tests.Editor
             ILocalPlayer local = _battle.Container.Resolve<ILocalPlayer>();
             ISettingsService settings = _project.Container.Resolve<ISettingsService>();
             settings.Saved.Gameplay.AutoPowerAbilities = true;
+            var catalog = _battle.Container.Resolve<ShipAbilityCatalog>();
+            var profiles = _battle.Container.Resolve<EmpireAtWar.Services.Enemy.UnitCombatProfileCatalog>();
             var combat = new AutoPowerCombatSnapshot(entities, local,
                 new EmpireAtWar.Services.Vision.VisionService(_battle.Container.Resolve<IPlayerRoster>(), fogEnabled: false),
-                _battle.Container.Resolve<EmpireAtWar.Services.Enemy.UnitCombatProfileCatalog>());
-            var catalog = _battle.Container.Resolve<ShipAbilityCatalog>();
+                profiles, new EmpireAtWar.Services.Enemy.ForceCompositionBuilder(entities, profiles), catalog);
             combat.Capture();
             Assert.That(combat.Decide(caster.GetFacade<IShipAbilityFacade>(), caster.GetFacade<IShipAutoPowerFacade>(),
-                false, catalog.AutoPower), Is.EqualTo(AutoPowerDecision.Weapons), "The fixture must establish a useful engagement.");
+                false), Is.EqualTo(AutoPowerRole.Weapons), "The fixture must establish a useful engagement.");
             var selection = new SelectionService(null, null, null, entities, null, null, local);
             var abilities = _battle.Container.Resolve<ShipAbilityService>();
             var battle = _battle.Container.Resolve<SkirmishStateModel>();

@@ -780,7 +780,8 @@ MonoBehaviour:
   body: {fileID: 5237495051144676427}
   hitCollider: {fileID: 7490275668731905776}
   gun: {fileID: 1256288030112164449}
-  additionalGuns: []
+  additionalGuns:
+  - {fileID: 7759409866603898232}
   engineTrails:
   - {fileID: 3786588916656474602}
   - {fileID: 7550201773469409962}
@@ -1947,7 +1948,8 @@ MonoBehaviour:
   body: {fileID: 5221476317475049443}
   hitCollider: {fileID: 1541530949993698516}
   gun: {fileID: 6248682979103973531}
-  additionalGuns: []
+  additionalGuns:
+  - {fileID: 7916159621544245076}
   engineTrails:
   - {fileID: 2775268260290520032}
   - {fileID: 6875671221286762040}
@@ -2441,7 +2443,8 @@ MonoBehaviour:
   body: {fileID: 483891661248689046}
   hitCollider: {fileID: 1487042648701967732}
   gun: {fileID: 7704824913167511506}
-  additionalGuns: []
+  additionalGuns:
+  - {fileID: 7404202522498894492}
   engineTrails:
   - {fileID: 390787831882812876}
   - {fileID: 815234912163013714}
@@ -2520,7 +2523,8 @@ MonoBehaviour:
   body: {fileID: 1986493402761766347}
   hitCollider: {fileID: 2991243860804908937}
   gun: {fileID: 201109220880786781}
-  additionalGuns: []
+  additionalGuns:
+  - {fileID: 6578138432709303839}
   engineTrails:
   - {fileID: 606863071345330450}
   - {fileID: 666429310324060326}
@@ -2599,7 +2603,8 @@ MonoBehaviour:
   body: {fileID: 7489307672971344597}
   hitCollider: {fileID: 645461401261600352}
   gun: {fileID: 2438295677250294922}
-  additionalGuns: []
+  additionalGuns:
+  - {fileID: 1901200804043931282}
   engineTrails:
   - {fileID: 9094367015929545131}
   - {fileID: 6255718930847917942}

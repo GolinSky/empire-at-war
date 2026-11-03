@@ -413,7 +413,9 @@ namespace EmpireAtWar.Services.Enemy
                 }
 
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (!_vision.IsVisible(_owner.Id, position) || IsDefended(position, now)) continue;
+                // A retained or new raid also needs a survivable position and route, not only a safe target.
+                if (!_vision.IsVisible(_owner.Id, position) || IsDefended(position, now) ||
+                    !IsRouteSafe(origin, position, 0f, false)) continue;
                 bool isMine = entity.TryGetFacade(out IMiningFacilityFacade _);
                 if (ReferenceEquals(entity, _raidTarget) && GetIonCost(position) == 0f)
                     keepsPrevious = true;
@@ -737,6 +739,12 @@ namespace EmpireAtWar.Services.Enemy
                 _objectiveSafetyReason = "destination ion cost exceeds the current position.";
                 return false;
             }
+            return IsRouteSafe(origin, destination, radius, escaping);
+        }
+
+        /// <summary>Known hostiles at the origin, along the route or near the destination are beatable.</summary>
+        private bool IsRouteSafe(Vector3 origin, Vector3 destination, float radius, bool escaping)
+        {
             Vector3 segment = destination - origin;
             segment.y = 0f;
             _forceBuilder.BuildKnown(_objectiveThreat, _intel, Time.time, sighting =>

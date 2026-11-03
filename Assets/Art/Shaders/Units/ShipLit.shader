@@ -70,16 +70,6 @@ Shader "EmpireAtWar/Ship Lit"
             Cull Back
             ZWrite On
 
-            // Reserve user stencil mask 8 for visible ship surfaces. The outline pass
-            // excludes this interior, including hard-normal seams and overlapping parts.
-            Stencil
-            {
-                Ref 8
-                WriteMask 8
-                Comp Always
-                Pass Replace
-            }
-
             HLSLPROGRAM
             #pragma target 3.5
             #pragma vertex ShipLitPassVertex
@@ -112,7 +102,43 @@ Shader "EmpireAtWar/Ship Lit"
         }
 
         // ---------------------------------------------------------------------
-        // Drawn after opaque surfaces by the Ship Outline Render Objects feature.
+        // Drawn by UnitOutlineRenderPass for highlighted ships only, right before ShipOutline.
+        // Marks user stencil mask 8 over the ship's whole silhouette so its outline skips the
+        // interior (hard-normal seams, overlapping parts). Unhighlighted ships never write it,
+        // so an outline stays visible over neighbouring hulls.
+        // ---------------------------------------------------------------------
+        Pass
+        {
+            Name "ShipOutlineMask"
+            Tags { "LightMode" = "ShipOutlineMask" }
+
+            Cull Off
+            ZWrite Off
+            ZTest Always
+            ColorMask 0
+
+            Stencil
+            {
+                Ref 8
+                WriteMask 8
+                Comp Always
+                Pass Replace
+            }
+
+            HLSLPROGRAM
+            #pragma target 3.5
+            #pragma vertex ShipOutlineMaskVertex
+            #pragma fragment ShipOutlineMaskFragment
+            #pragma multi_compile_instancing
+            #pragma instancing_options renderinglayer
+            #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
+            #include "ShipLitInput.hlsl"
+            #include "ShipOutlinePass.hlsl"
+            ENDHLSL
+        }
+
+        // ---------------------------------------------------------------------
+        // Drawn after ShipOutlineMask by UnitOutlineRenderPass.
         // The expanded back faces form a depth-tested silhouette without relighting the hull.
         // ---------------------------------------------------------------------
         Pass

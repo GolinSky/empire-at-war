@@ -12,7 +12,7 @@ namespace EmpireAtWar
     {
         UnitRequest Request { get; }
 
-        void DecreaseUnitCount();
+        void DecreaseUnitCount(int amount);
 
         void AddUnit();
 

@@ -22,6 +22,7 @@ namespace EmpireAtWar.Tests.Editor
         private const string MATRIX = "Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset";
         private const string SFX = "Assets/Settings/Data/Models/Audio/ShipSfxData.asset";
         private const string FACTIONS = "Assets/Settings/Data/Factions";
+        private const float HEAVY_CALIBER_RAISE = 2.86f / 2.2f;
 
         // Orbital super weapons fire from SuperWeaponData, not from hardpoints.
         private static readonly WeaponType[] SUPER_WEAPONS =
@@ -152,21 +153,22 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         // Phase 0 baseline (2f45f1371): the former Long range class gave the Long guns ×1.2 accuracy, now folded into damage.
-        [TestCase(WeaponType.HeavyArtilleryRocket, 93.75f, 1.2f, 4, 20f, 1072.5f)]
-        [TestCase(WeaponType.ExecutorHeavyTurbolaser, 37.5f, 1.2f, 3, 8f, 877.5f)]
-        [TestCase(WeaponType.ExecutorHeavyDualTurbolaser, 75f, 1.2f, 3, 8f, 877.5f)]
-        [TestCase(WeaponType.ExecutorHeavyDualIonCannon, 140.625f, 1.2f, 2, 12f, 975f)]
-        [TestCase(WeaponType.ExecutorMediumDualTurbolaser, 60f, 1.2f, 3, 8f, 776.25f)]
-        [TestCase(WeaponType.ExecutorHeavyLaser, 9.375f, 1f, 3, 1.5f, 390f)]
-        [TestCase(WeaponType.ExecutorPointDefense, 5f, 1f, 8, 2f, 230f)]
+        // Heavy caliber damage multiplier later raised 2.2 → 2.86 (aae27525d): ×1.3 on heavy guns.
+        [TestCase(WeaponType.HeavyArtilleryRocket, 93.75f, 1.2f, HEAVY_CALIBER_RAISE, 4, 20f, 1072.5f)]
+        [TestCase(WeaponType.ExecutorHeavyTurbolaser, 37.5f, 1.2f, HEAVY_CALIBER_RAISE, 3, 8f, 877.5f)]
+        [TestCase(WeaponType.ExecutorHeavyDualTurbolaser, 75f, 1.2f, HEAVY_CALIBER_RAISE, 3, 8f, 877.5f)]
+        [TestCase(WeaponType.ExecutorHeavyDualIonCannon, 140.625f, 1.2f, HEAVY_CALIBER_RAISE, 2, 12f, 975f)]
+        [TestCase(WeaponType.ExecutorMediumDualTurbolaser, 60f, 1.2f, 1f, 3, 8f, 776.25f)]
+        [TestCase(WeaponType.ExecutorHeavyLaser, 9.375f, 1f, HEAVY_CALIBER_RAISE, 3, 1.5f, 390f)]
+        [TestCase(WeaponType.ExecutorPointDefense, 5f, 1f, 1f, 8, 2f, 230f)]
         public void Executor_WeaponProfilesMatchBaseline(WeaponType type, float baselineDamage, float foldedAccuracy,
-            int shots, float reload, float range)
+            float caliberRaise, int shots, float reload, float range)
         {
             WeaponDefinition definition = Weapons.GetDefinition(type);
             WeaponProfile profile = Weapons.GetProfile(type);
             if (definition.Scope == WeaponScope.Unit) Assert.That(definition.Unit, Is.EqualTo(nameof(ShipType.Executor)));
 
-            Assert.That(profile.Damage, Is.EqualTo(baselineDamage * foldedAccuracy).Within(0.001f));
+            Assert.That(profile.Damage, Is.EqualTo(baselineDamage * foldedAccuracy * caliberRaise).Within(0.001f));
             Assert.That(profile.ShotsPerSalvo, Is.EqualTo(shots));
             Assert.That(profile.Reload, Is.EqualTo(reload).Within(0.001f));
             Assert.That(profile.Range, Is.EqualTo(range).Within(0.01f));

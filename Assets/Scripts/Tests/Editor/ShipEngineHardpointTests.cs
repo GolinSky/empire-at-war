@@ -49,13 +49,13 @@ namespace EmpireAtWar.Tests.Editor
                 }
 
                 changed();
-                Assert.That(model.Speed, Is.EqualTo(15f));
+                Assert.That(model.Speed, Is.EqualTo(data.Speed));
                 engines[first].ApplyDamage(4000);
-                Assert.That(model.Speed, Is.EqualTo(15f * (1f + data.MinMoveCoefficient) / 2f).Within(.001f));
+                Assert.That(model.Speed, Is.EqualTo(data.Speed * (1f + data.MinMoveCoefficient) / 2f).Within(.001f));
                 engines[1 - first].ApplyDamage(100);
-                Assert.That(model.Speed, Is.GreaterThan(15f * data.MinMoveCoefficient));
+                Assert.That(model.Speed, Is.GreaterThan(data.Speed * data.MinMoveCoefficient));
                 engines[1 - first].ApplyDamage(3900);
-                Assert.That(model.Speed, Is.EqualTo(15f * data.MinMoveCoefficient).Within(.001f));
+                Assert.That(model.Speed, Is.EqualTo(data.Speed * data.MinMoveCoefficient).Within(.001f));
             }
             finally
             {

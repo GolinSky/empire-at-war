@@ -411,6 +411,47 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(defended.Invoke(builder, new object[] { Vector3.zero, 0f }), Is.EqualTo(expectedDefended));
         }
 
+        [TestCase(0f, false)]
+        [TestCase(3000f, true)]
+        public void RaidSelection_RejectsUndefendedTargetBehindStrongerRouteForce(float hostileZ, bool expectedRaid)
+        {
+            GameObject mineView = new GameObject("Mine");
+            try
+            {
+                mineView.transform.position = Vector3.right * 3000f;
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                PlayerSlot owner = roster.Get(TestPlayers.Enemy);
+                EntityLocator locator = new EntityLocator();
+                var mine = new FakeEntity(new FakeHealthModel(mineView.transform), TestPlayers.Human, 2)
+                    { IsUnit = false, IsMine = true };
+                locator.AddEntity(mine);
+                var catalog = new UnitCombatProfileCatalog(null, null, null, null);
+                float[] damage = Enumerable.Repeat(10f, ForceComposition.ClassSlots).ToArray();
+                var profile = new UnitCombatProfile(ShipClass.Capital, 100f, 0f,
+                    damage, damage, new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>());
+                var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                    .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
+                profiles.Add(UnitTypeId.Ship(ShipType.Venator), profile);
+                var registry = new TeamIntelRegistry();
+                // Three hostiles midway: beyond the target's defense radius, but on or off the raid route.
+                for (int i = 0; i < 3; i++)
+                    registry.Get(owner.Team).Report(new HostileSighting(10 + i, UnitTypeId.Ship(ShipType.Venator),
+                        TestPlayers.Human, new FormationPoint(1500f, hostileZ), 100f, 0f, 1f, 0f));
+                var builder = new EnemyStrategicContextBuilder(null, null, null, locator, null, roster,
+                    new ForceCompositionBuilder(locator, catalog), registry, new VisionService(roster, fogEnabled: false),
+                    owner, null, new TestHazards(), null, null, null, new EnemyStationPressureTracker());
+                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                ((ForceComposition)typeof(EnemyStrategicContextBuilder).GetField("_localOwnForce", flags)
+                    .GetValue(builder)).AddNew(profile, false);
+                MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod("FindRaidTarget", flags);
+
+                object raid = find.Invoke(builder, new object[] { Vector3.zero, 0f });
+
+                Assert.That(raid, expectedRaid ? Is.SameAs(mine) : Is.Null);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(mineView); }
+        }
+
 [TestCase(false)]
         [TestCase(true)]
         public void RaidSelection_ExposedMineOutranksCloserStructureAndCachedRaid(bool cacheStructure)

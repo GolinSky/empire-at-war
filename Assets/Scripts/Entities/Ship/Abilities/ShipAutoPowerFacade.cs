@@ -12,7 +12,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
     {
         private readonly HealthModel _health;
         private readonly IHealthTooltipObserver _regeneration;
-        private IAutoPowerWeaponObserver _weapons;
+        private readonly IAutoPowerWeaponObserver _weapons;
         private bool _lastSuppressed;
         private float _lastMaximum;
 
@@ -23,15 +23,16 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public int ShieldRevision { get; private set; }
         public bool CanRegenerateShields => _health.MaxShields > 0f && _regeneration.ShieldRegeneration > 0f;
 
-        public ShipAutoPowerFacade(HealthModel health, IHealthTooltipObserver regeneration, IShipAbilityFacade abilities)
+        public ShipAutoPowerFacade(HealthModel health, IHealthTooltipObserver regeneration, IShipAbilityFacade abilities,
+            IAutoPowerWeaponObserver weapons)
         {
             _health = health;
             _regeneration = regeneration;
+            _weapons = weapons;
             foreach (ShipAbilitySlot slot in abilities.Slots)
-                if (AutoPowerEligibility.IsEligible(slot)) Eligible = true;
+                if (slot.Definition.AutoPower != AutoPowerRole.None) Eligible = true;
         }
 
-        public void BindWeapons(IAutoPowerWeaponObserver weapons) => _weapons = weapons;
         public void SetEnabled(bool enabled) => Enabled = enabled;
         public bool CanEngage(ShipClass targetClass, Vector3 position) => _weapons.CanEngageMainWeapon(targetClass, position);
 

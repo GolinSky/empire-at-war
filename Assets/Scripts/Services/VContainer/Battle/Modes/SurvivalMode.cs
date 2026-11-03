@@ -1,6 +1,7 @@
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Analytics;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.StationFacing;
@@ -28,6 +29,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SurvivalWaveDirector>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SurvivalSaveSource>(Lifetime.Singleton).As<IBattleSaveSource>();
             builder.Register<SurvivalHudUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<SurvivalWaveAnalytics>(Lifetime.Singleton).AsImplementedInterfaces();
         }
     }
 }

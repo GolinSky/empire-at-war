@@ -1140,7 +1140,10 @@ MonoBehaviour:
   body: {fileID: 4090108115306622836}
   hitCollider: {fileID: 4830937023392647767}
   gun: {fileID: 6584362067966682015}
-  additionalGuns: []
+  additionalGuns:
+  - {fileID: 8132144679252666810}
+  - {fileID: 4201612710212762961}
+  - {fileID: 4722835685450364195}
   engineTrails:
   - {fileID: 6766153079863420958}
   - {fileID: 4962430032508698015}
@@ -1966,7 +1969,10 @@ MonoBehaviour:
   body: {fileID: 2095515130934004834}
   hitCollider: {fileID: 2237055634915048667}
   gun: {fileID: 7004971821444454309}
-  additionalGuns: []
+  additionalGuns:
+  - {fileID: 5489090526351313521}
+  - {fileID: 1102910151192510393}
+  - {fileID: 5151234943389792419}
   engineTrails:
   - {fileID: 8035681137306499559}
   - {fileID: 1354834643269262254}
@@ -2444,7 +2450,10 @@ MonoBehaviour:
   body: {fileID: 1962614423042312278}
   hitCollider: {fileID: 4281187247579022972}
   gun: {fileID: 974313326794447085}
-  additionalGuns: []
+  additionalGuns:
+  - {fileID: 7337468114757369637}
+  - {fileID: 3014485795999797188}
+  - {fileID: 6750528331093976381}
   engineTrails:
   - {fileID: 413165124451568066}
   - {fileID: 5667981988307249740}
@@ -2746,7 +2755,10 @@ MonoBehaviour:
   body: {fileID: 1925352452154194041}
   hitCollider: {fileID: 3941475463941606038}
   gun: {fileID: 1325516598412317492}
-  additionalGuns: []
+  additionalGuns:
+  - {fileID: 3205868085252468773}
+  - {fileID: 5752505099893749850}
+  - {fileID: 1137039412536072382}
   engineTrails:
   - {fileID: 798417003836554671}
   - {fileID: 5070044157948058942}
@@ -3515,7 +3527,10 @@ MonoBehaviour:
   body: {fileID: 4724444318840413234}
   hitCollider: {fileID: 1699766420713808826}
   gun: {fileID: 8941275558573365735}
-  additionalGuns: []
+  additionalGuns:
+  - {fileID: 2093132493521299280}
+  - {fileID: 3286010056145936230}
+  - {fileID: 45710617092735454}
   engineTrails:
   - {fileID: 7522326641344912228}
   - {fileID: 8212483368581999250}
@@ -4076,7 +4091,10 @@ MonoBehaviour:
   body: {fileID: 5717878848678600937}
   hitCollider: {fileID: 8195632082794388210}
   gun: {fileID: 4385073137062113055}
-  additionalGuns: []
+  additionalGuns:
+  - {fileID: 5280836100362931983}
+  - {fileID: 5119899298335716930}
+  - {fileID: 4670882092909849149}
   engineTrails:
   - {fileID: 3581737004161802071}
   - {fileID: 2843888282646616377}

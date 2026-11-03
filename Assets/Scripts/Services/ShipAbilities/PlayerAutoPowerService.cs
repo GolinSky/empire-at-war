@@ -7,7 +7,6 @@ using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Settings;
-using EmpireAtWar.Services.ShipAbilities.Abilities;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities
@@ -32,8 +31,14 @@ namespace EmpireAtWar.Services.ShipAbilities
             ISelectionService selection, SkirmishStateModel battle, ShipAbilityService abilities,
             AutoPowerCombatSnapshot combat, ShipAbilityCatalog catalog)
         {
-            _entities = entities; _player = player; _settings = settings; _selection = selection;
-            _battle = battle; _abilities = abilities; _combat = combat; _tuning = catalog.AutoPower;
+            _entities = entities;
+            _player = player;
+            _settings = settings;
+            _selection = selection;
+            _battle = battle;
+            _abilities = abilities;
+            _combat = combat;
+            _tuning = catalog.AutoPower;
             _abilities.ManualAction += HandleManualAction;
             _entities.EntityRemoved += HandleRemoved;
         }
@@ -80,28 +85,22 @@ namespace EmpireAtWar.Services.ShipAbilities
             }
             AutoPowerMonitor monitor = GetMonitor(entity.Id);
             bool heavyLoss = monitor.Sample(_now, caster.Health.Shields, automation.MaxShields, automation.ShieldSuppressed,
-                _tuning, automation.ShieldRevision);
+                automation.ShieldRevision);
             foreach (ShipAbilitySlot slot in caster.Slots)
                 if (slot.State == ShipAbilityState.Active) { monitor.ResetConfirmation(); return; }
-            if (_now < monitor.ManualUntil) { monitor.ResetConfirmation(); return; }
-            AutoPowerDecision decision = _combat.Decide(caster, automation, heavyLoss, _tuning);
-            if (!monitor.Confirm(decision, _tuning.ConfirmationChecks)) return;
+            if (monitor.IsHeld(_now)) return;
+            AutoPowerRole decision = _combat.Decide(caster, automation, heavyLoss);
+            if (!monitor.Confirm(decision)) return;
+            monitor.ResetConfirmation();
             foreach (ShipAbilitySlot slot in caster.Slots)
             {
-                if (!AutoPowerEligibility.IsEligible(slot)) continue;
-                bool matches = decision == AutoPowerDecision.Shields
-                    ? slot.Definition.Settings is BoostShieldPowerSettings
-                    : slot.Definition.Settings is BoostWeaponPowerSettings ||
-                      slot.Definition.Settings is PowerToMainBatteriesSettings ||
-                      AutoPowerEligibility.IsLaserBeam(slot.Id);
-                if (!matches) continue;
+                if (slot.Definition.AutoPower != decision) continue;
                 if (slot.CanActivate)
                 {
-                    IEntity target = AutoPowerEligibility.IsLaserBeam(slot.Id)
+                    IEntity target = slot.Definition.RequiresEnemyTarget
                         ? _combat.FindBeamTarget(caster, slot.Definition.Range) : null;
                     _abilities.TryActivate(caster, slot.Id, target);
                 }
-                monitor.ResetConfirmation();
                 return;
             }
         }
@@ -110,7 +109,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         {
             if (!_monitors.TryGetValue(id, out AutoPowerMonitor monitor))
             {
-                monitor = new AutoPowerMonitor();
+                monitor = new AutoPowerMonitor(_tuning);
                 _monitors.Add(id, monitor);
             }
             return monitor;
@@ -119,12 +118,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         private void HandleManualAction(IReadOnlyList<IEntity> casters)
         {
             foreach (IEntity entity in casters)
-                if (_player.IsLocal(entity.Owner))
-                {
-                    AutoPowerMonitor monitor = GetMonitor(entity.Id);
-                    monitor.ManualUntil = _now + _tuning.ManualActionDelay;
-                    monitor.ResetConfirmation();
-                }
+                if (_player.IsLocal(entity.Owner)) GetMonitor(entity.Id).HoldManual(_now);
         }
 
         private void HandleRemoved(IEntity entity) => _monitors.Remove(entity.Id);

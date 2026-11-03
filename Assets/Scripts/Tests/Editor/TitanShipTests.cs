@@ -158,11 +158,11 @@ namespace EmpireAtWar.Tests.Editor
                     engine.OnHardPointHealthChanged += changed;
                 }
                 changed();
-                Assert.That(model.Speed, Is.EqualTo(16f));
+                Assert.That(model.Speed, Is.EqualTo(data.Speed));
                 engines[first].ApplyDamage(2000);
-                Assert.That(model.Speed, Is.EqualTo(16f * (3f + data.MinMoveCoefficient) / 4f).Within(.001f));
+                Assert.That(model.Speed, Is.EqualTo(data.Speed * (3f + data.MinMoveCoefficient) / 4f).Within(.001f));
                 foreach (var engine in engines.Where((_, index) => index != first)) engine.ApplyDamage(2000);
-                Assert.That(model.Speed, Is.EqualTo(16f * data.MinMoveCoefficient).Within(.001f));
+                Assert.That(model.Speed, Is.EqualTo(data.Speed * data.MinMoveCoefficient).Within(.001f));
             }
             finally { UnityEngine.Object.DestroyImmediate(root); }
         }

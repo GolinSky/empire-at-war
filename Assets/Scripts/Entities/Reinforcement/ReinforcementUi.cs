@@ -114,11 +114,11 @@ namespace EmpireAtWar.Entities.Reinforcement
             }
         }
 
-        private void HandleSpawning(bool success)
+        private void HandleSpawning(int deployedCount)
         {
-            if (success)
+            if (deployedCount > 0)
             {
-                _currentSpawnUnitUi.DecreaseUnitCount();
+                _currentSpawnUnitUi.DecreaseUnitCount(deployedCount);
             }
 
             _presenter.Show();
@@ -150,9 +150,13 @@ namespace EmpireAtWar.Entities.Reinforcement
                 return;
             }
 
-            _presenter.Hide();
             _currentSpawnUnitUi = spawnShipUi;
             _presenter.TrySpawnReinforcement(spawnShipUi.Request);
+            // A rejected drag keeps the panel open instead of flickering it closed and open again.
+            if (_model.IsTrySpawning)
+            {
+                _presenter.Hide();
+            }
         }
 
         public void OnRelease(ISpawnShipUi spawnShipUi)
