@@ -47,9 +47,11 @@ tags:
 - [x] `BattleCrashContextTracker` observes battle lifecycle, including simulations; sets mode, map type, planet, player faction, state, battle seconds and entity count. Refresh every `5 s` of running real time and on state transitions; clear on scene disposal.
 - [x] Tracker registered only in player builds; custom context uses enum values and numeric counts, no player/machine/save names or paths. Built-in log/path content is not scrubbed by this adapter; inspect payloads before shipping.
 - [x] Jenkins optional `UPLOAD_DIAGNOSTICS_SYMBOLS` stage + `Symbols` phase + `Upload-DiagnosticsSymbols.ps1`; uses retained `player-symbols/GameAssembly.pdb` and `il2cppOutput`, Editor-bundled `usymtool`, existing process/resource monitoring. Disabled by default.
-- [ ] Configure Jenkins secret-text credential `unity-diagnostics-upload-token`; token belongs to the linked project and expires after `7 days`. Recheck 2026-11-02: credential ID absent from global credentials, live job lacks upload stage, installed build tools lack uploader. Download official Windows CI script from Diagnostics dashboard to implement service-account token renewal; no endpoint invented.
+- [x] Service account `jenkins-symbol-upload` created 2026-11-03 with project role **Observability Symbols Uploader** on `EmpireAtWar` (user screenshot).
+- [x] Token renewal 2026-11-03: `Upload-DiagnosticsSymbols.ps1` requests a fresh token per run from the endpoint in the official `usymtool.ps1` (`services.unity.com/.../projects/<id>/symbols/token`); args aligned with official script (`-filter GameAssembly.pdb`, Bee `-il2cppFileRoot`). Jenkinsfile binds `unity-diagnostics-service-account` as `UNITY_SA_AUTH_HEADER`. PowerShell parse clean; not run.
+- [x] Jenkins global secret-text credential `unity-diagnostics-service-account` present (verified in `F:\Jenkins\data\credentials.xml` by ID, 2026-11-03; secret not read).
 - [ ] Install/update committed Jenkins tools and job configuration after review; live Jenkins was not changed. Details → repository `Tools/Jenkins/README.md`.
-- [ ] Commit prerequisite (recheck 2026-11-02): Diagnostics code, Cloud link (`cloudProjectId`, company) and Jenkins scripts are uncommitted. Jenkins builds committed `main` (CI snapshot `3d1437761`, last build `21`), so no CI player contains them yet.
+- [x] Committed to `main` 2026-11-02 as `93c9b72ed` (Diagnostics code, Cloud link, company, Jenkins scripts). Not pushed; no Jenkins build has run from it yet.
 
 ### Phase 3 — Verification
 

@@ -30,14 +30,15 @@ verification: Official Unity documentation, live settings, Editor compilation,
 - Engine enable intent: `ProjectSettings/UnityConnectSettings.asset` → `InsightsSettings.m_EngineDiagnosticsEnabled: 1`.
 - Effective getter rechecked 2026-11-02: `UnityEditor.EngineDiagnostics.EngineDiagnosticsSettings.enabled=true`; linked `cloudProjectId=23aa8f08-7eb2-4bfc-880c-1060be169147` confirmed live and on disk. Standalone uploads remain unverified.
 - Windows backend verified `IL2CPP` on `6000.4.7f1`.
-- Optional Jenkins parameter `UPLOAD_DIAGNOSTICS_SYMBOLS`, default `false`; secret-text credential `unity-diagnostics-upload-token`; token expires after `7 days`.
-- Upload script uses bundled `usymtool`, retained `player-symbols/GameAssembly.pdb` + `il2cppOutput`; no `-projectId` flag. Token selects the project.
-- Automatic token renewal still requires official dashboard CI script/service-account setup. Configuration/how-to → repository `Tools/Jenkins/README.md`.
+- Optional Jenkins parameter `UPLOAD_DIAGNOSTICS_SYMBOLS`, default `false`; secret-text credential `unity-diagnostics-service-account` = service-account Authorization header → `UNITY_SA_AUTH_HEADER`.
+- Service account `jenkins-symbol-upload`, project role **Observability Symbols Uploader** on `EmpireAtWar`. Key values shown once.
+- Each upload fetches a fresh token (valid `7 days`): `GET https://services.unity.com/api/cloud-diagnostics/crash-service/v1/projects/<cloudProjectId>/symbols/token` → `AuthToken` → `USYM_UPLOAD_AUTH_TOKEN`. Source: official `usymtool.ps1` from Debugging Symbols → Download CI script.
+- Upload args match official script: `-symbolPath player-symbols -filter GameAssembly.pdb`, `-il2cppOutputPath player-symbols/il2cppOutput`, `-il2cppFileRoot <project>/Library/Bee/artifacts/WinPlayerBuildProgram/il2cppOutput/cpp`; no `-projectId`. Configuration/how-to → repository `Tools/Jenkins/README.md`.
 
 ### Activate and inspect
 
 1. Link the intended project in Unity Cloud/Editor. Enable Diagnostics under Services; recheck the effective getter and any Build Profile override.
-2. Update/install committed Jenkins tools/job using the existing documented workflow; configure current token and opt into symbol upload. No live job update was performed by this implementation.
+2. Update/install committed Jenkins tools/job using the existing documented workflow; configure the service-account credential and opt into symbol upload. No live job update was performed by this implementation.
 3. Build a disposable Development player. Launch once per probe: `--eaw-diagnostics-exception`, `--eaw-diagnostics-error`, `--eaw-diagnostics-native-crash`. Probes are excluded from Editor/release.
 4. Check upload output, then matching Diagnostics reports for native/C# function/file/line resolution. A successful tool exit alone is not end-to-end proof.
 5. Confirm crash diagnostics still work after declining gameplay statistics; inspect logs for unintended personal data, repeated errors, offline/cache behavior and consent UI layout.
@@ -53,7 +54,7 @@ verification: Official Unity documentation, live settings, Editor compilation,
 
 - Cloud project ID verified `23aa8f08-7eb2-4bfc-880c-1060be169147`; actual dashboard URL/organization not inspected. Jenkins recheck: live job lacks upload stage, global upload credential ID absent, installed uploader absent. Company set to `GolinSkyCompany` through Unity API on 2026-11-02; persistent data now uses `LocalLow/GolinSkyCompany/EmpireAtWar`. Existing `DefaultCompany` data was not moved.
 - Native crash before managed initialization → no custom context yet. Periodic counters can lag by `5 s`.
-- Symbol token expiry → explicit CI failure; renew securely. CI uploads may not appear in the manually uploaded symbols list.
+- Token request failure (revoked key, missing role) → explicit CI failure; add a new service-account key and update the Jenkins credential. CI uploads may not appear in the manually uploaded symbols list.
 - Jenkins currently replaces retained debug files on the next build; durable per-release symbol retention remains a release-operations decision.
 - Tests, players, network uploads and forced crashes were not executed. Source/API verification does not prove log sampling, offline persistence, deduplication or stack resolution.
 
