@@ -26,6 +26,25 @@ namespace EmpireAtWar.Entities.Reinforcement
         public bool CanSpawn => _triggeredCollider.Count == 0 && _isPlacementValid;
         public Vector3 Position => transform.position;
 
+        /// <summary>Largest planar distance from the pivot to the edge of the rendered bounds.</summary>
+        public float PlanarRadius
+        {
+            get
+            {
+                Vector3 pivot = transform.position;
+                float radius = 0f;
+                foreach (MeshRenderer meshRenderer in meshRenderers)
+                {
+                    Bounds bounds = meshRenderer.bounds;
+                    radius = Mathf.Max(radius,
+                        Mathf.Abs(bounds.max.x - pivot.x), Mathf.Abs(bounds.min.x - pivot.x),
+                        Mathf.Abs(bounds.max.z - pivot.z), Mathf.Abs(bounds.min.z - pivot.z));
+                }
+
+                return radius;
+            }
+        }
+
         private void Awake()
         {
             _propertyBlock = new MaterialPropertyBlock();

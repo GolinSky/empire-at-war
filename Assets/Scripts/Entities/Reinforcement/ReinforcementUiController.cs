@@ -132,6 +132,12 @@ namespace EmpireAtWar.Entities.Reinforcement
             }
         }
 
+        private string DeployAllHint(UnitRequest request)
+        {
+            int count = _model.GetDeployableCount(request);
+            return count > 1 ? $" Shift + drag deploys all ({count})." : string.Empty;
+        }
+
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)
         {
             if (key is UnitRequest request)
@@ -142,8 +148,9 @@ namespace EmpireAtWar.Entities.Reinforcement
                         new TooltipStat(label: "Population", current: request.FactionData.UnitCapacity),
                         new TooltipStat(label: "Used population", current: _model.CurrentUnitCapacity, max: _model.MaxUnitCapacity)
                     }, status: request.FactionData.UnitCapacity > _model.CapacityLeft
-                        ? "Population limit reached" : request is ShipUnitRequest || request is EmpireAtWar.Controllers.Factions.SquadronUnitRequest
-                            ? "Drag into an allied reinforcement zone. Ships need clear space. Release to deploy immediately."
+                        ? "Population limit reached" : ReinforcementModel.UsesCapacity(request)
+                            ? "Drag into an allied reinforcement zone. Ships need clear space. Release to deploy immediately." +
+                              DeployAllHint(request)
                             : "Drag to visible terrain outside reinforcement zones and capture sites. Release to deploy."));
             else
                 _tooltips.Show(source, key, anchor, () => _isTooltipActive,

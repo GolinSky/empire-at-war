@@ -52,9 +52,9 @@ namespace EmpireAtWar
             UpdateUnitCountText();
         }
 
-        void ISpawnShipUi.DecreaseUnitCount()
+        void ISpawnShipUi.DecreaseUnitCount(int amount)
         {
-            _count--;
+            _count -= amount;
             UpdateUnitCountText();
             if (_count <= 0)
             {

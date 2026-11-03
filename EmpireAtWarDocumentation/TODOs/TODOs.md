@@ -251,6 +251,9 @@
 
 ### Features
 
+- [x] **Reinforcement drag fix (second drag does nothing) + Shift-drag deploy-all** → [[Done/Features/Reinforcement_Drag_Batch_Spawn|Reinforcement Drag Batch Spawn]]
+  - 2026-11-03: silent 1 s `SPAWN_COOLDOWN` removed; Shift-drag deploys min(reserve, population fit) in a grid. Compile clean; tests authored, not run; in-game gate queued.
+
 - [x] **Auto power abilities: player ships auto-use Power to Shields / Power to Weapons / Power to Main Batteries; global + per-ship "A" toggle; one Power to Shields for all ships** → [[Done/Features/Auto_Power_Abilities_Plan|Auto Power Abilities Plan]]
   - 2026-11-01: Main Batteries enabled for Allegiance / ISD II; source diagnostics and Unity refresh clean; two Core lifecycle regressions authored, not run under checkout override.
   - Completed 2026-10-30: ordinary-lifecycle automation, shared shield id 3/save migration, Gameplay setting, per-ship persistence and single/group A controls.

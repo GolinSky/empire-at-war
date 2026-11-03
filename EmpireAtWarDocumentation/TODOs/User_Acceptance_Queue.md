@@ -208,3 +208,9 @@ created: 2026-10-29
 - [ ] [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] — Centre: main force reaches 100% capture at least once with capitals present; < 5 Capture↔Hold changes per 30 s.
 - [ ] [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] — Phase 5: Carrack/CR70/Centax share drops versus the 17:27 battle (63/205 Carrack); `strikecraftCovered` appears in `counter-selection`; no distant raid while a stronger known force sits on the route.
 - [ ] [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] — Run authored EnemyAi/Combat regressions only on explicit request; tests not run by agents.
+
+## Reinforcement Drag Batch Spawn
+
+- [ ] [[Done/Features/Reinforcement_Drag_Batch_Spawn]] — Deploy one ship, immediately drag another → preview appears and deploys.
+- [ ] [[Done/Features/Reinforcement_Drag_Batch_Spawn]] — Shift-drag with reserve 4, room for 3 → 3 deploy in a grid, panel shows `x1`; blocked slots stay in reserve.
+- [ ] [[Done/Features/Reinforcement_Drag_Batch_Spawn]] — Batch slot spacing looks right for small and large hulls (`SLOT_SPACING_FACTOR` 2.2).

@@ -44,6 +44,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ReinforcementModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ReinforcementPreviewFactory>(Lifetime.Singleton);
             builder.Register<ReinforcementPlacementFactory>(Lifetime.Singleton);
+            builder.Register<ReinforcementDeployInput>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ReinforcementService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ReinforcementUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FactionRoster>(Lifetime.Singleton)

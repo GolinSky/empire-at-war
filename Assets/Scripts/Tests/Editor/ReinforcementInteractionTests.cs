@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using EmpireAtWar.Entities.Reinforcement;
@@ -47,13 +48,15 @@ namespace EmpireAtWar.Tests.Editor
             _overlay = new FakeOverlay();
             _placementLock = new PlacementLock();
             _service = new ReinforcementService(_inputLock, null, null, null,
-                _overlay, _model, null, null, null, _hitTest, _router, null, null);
-            SetField("_preview", preview);
+                _overlay, _model, null, null, null, _hitTest, _router, null, null, null);
+            ((List<UnitSpawnView>)typeof(ReinforcementService)
+                .GetField("_previews", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetValue(_service)).Add(preview);
             SetField("_placementLock", _placementLock);
             _router.Focus(_service);
-            _model.OnSpawnUnit += success =>
+            _model.OnSpawnUnit += deployedCount =>
             {
-                Assert.That(success, Is.False);
+                Assert.That(deployedCount, Is.Zero);
                 _failedPlacements++;
             };
             _pauseRequests = 0;

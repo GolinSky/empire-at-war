@@ -11,7 +11,8 @@ namespace EmpireAtWar.Models.Reinforcement
     {
         event Action<int> OnCapacityChanged;
 
-        event Action<bool> OnSpawnUnit;
+        /// <summary>A placement ended; the argument is how many units it deployed (0 when rejected or cancelled).</summary>
+        event Action<int> OnSpawnUnit;
 
         event Action<UnitRequest> OnReinforcementAdded;
 
@@ -38,7 +39,7 @@ namespace EmpireAtWar.Models.Reinforcement
 
         public event Action<int> OnCapacityChanged;
 
-        public event Action<bool> OnSpawnUnit;
+        public event Action<int> OnSpawnUnit;
 
         public event Action<UnitRequest> OnReinforcementAdded;
 
@@ -62,9 +63,23 @@ namespace EmpireAtWar.Models.Reinforcement
             _data = data;
         }
 
-        public void InvokeSpawnShipEvent(bool success)
+        public void InvokeSpawnShipEvent(int deployedCount)
         {
-            OnSpawnUnit?.Invoke(success);
+            OnSpawnUnit?.Invoke(deployedCount);
+        }
+
+        /// <summary>Ships and squadrons count against population; structures never do.</summary>
+        public static bool UsesCapacity(UnitRequest request) =>
+            request is ShipUnitRequest || request is SquadronUnitRequest;
+
+        public bool HasRoomFor(UnitRequest request) => request.FactionData.UnitCapacity <= CapacityLeft;
+
+        /// <summary>How many reserve units of this kind fit under the population limit right now.</summary>
+        public int GetDeployableCount(UnitRequest request)
+        {
+            int reserve = GetReserveCount(request);
+            int cost = request.FactionData.UnitCapacity;
+            return cost > 0 ? Math.Min(reserve, CapacityLeft / cost) : reserve;
         }
 
         public bool CanSpawnUnit(ShipType shipType)
