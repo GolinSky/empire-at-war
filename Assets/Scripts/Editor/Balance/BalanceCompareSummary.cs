@@ -51,7 +51,7 @@ namespace EmpireAtWar.Editor.Balance
             VisualElement card = new VisualElement { userData = unit.Id, focusable = true };
             card.AddToClassList("balance-compare-card");
             slot.Add(card);
-            card.tooltip = "Click to select; Ctrl+click to toggle; Shift+click to select a range. Ctrl+A selects all; Delete removes selected units. Drag the background to reorder.";
+            card.tooltip = "Click to select; Ctrl+click to toggle; Shift+click to select a range. Ctrl+A selects all; Delete or Backspace (Mac Delete) removes selected units. Drag the background to reorder.";
             BalanceCompareDrag.Bind(card, slot, grid, controller,
                 (additive, range) => BalanceCompareSelection.Select(grid, controller, unit.Id, additive, range));
             Heading(card, unit, controller);

@@ -23,7 +23,8 @@ namespace EmpireAtWar.Editor.Balance
                     controller.SelectAllCompared(Order(grid));
                     Update(grid, controller.State);
                 }
-                else if (evt.keyCode == KeyCode.Delete && controller.State.CompareSelection.Count > 0)
+                else if ((evt.keyCode == KeyCode.Delete || evt.keyCode == KeyCode.Backspace)
+                    && controller.State.CompareSelection.Count > 0)
                 {
                     controller.RemoveSelectedPins();
                     Update(grid, controller.State);
