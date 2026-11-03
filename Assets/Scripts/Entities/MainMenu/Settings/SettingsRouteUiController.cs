@@ -275,6 +275,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                     "Zoom speed" => $"Camera zoom speed: {_model.ZoomSpeed:0.#}.",
                     "Edge scrolling" => $"Move the camera at screen edges. Currently {(_model.EdgeScrolling ? "On" : "Off")}.",
                     "Ships use power abilities automatically" => "Automatically use eligible ship power abilities. Individual selection pauses new automatic starts; running abilities keep their ordinary duration and cooldown.",
+                    "Share gameplay statistics" => $"Send gameplay statistics such as match results and performance. Crash diagnostics are collected separately. Currently {(_model.ShareUsageData ? "On" : "Off")}.",
                     "Invert zoom" => $"Reverse camera zoom input. Currently {(_model.InvertZoom ? "On" : "Off")}.",
                     "Master volume" => "Overall game volume. Changes are heard immediately.",
                     "Music volume" => "Volume of the soundtrack.",

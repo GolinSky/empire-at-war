@@ -13129,6 +13129,7 @@ MonoBehaviour:
   - {fileID: 4075453958800839625}
   - {fileID: 4565228248967507453}
   - {fileID: 5123758544705823086}
+  - {fileID: 278625904998370057}
 --- !u!1 &4100595712599618371
 GameObject:
   m_ObjectHideFlags: 0
@@ -14672,7 +14673,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 1244231142935811119}
-  key: Ships use power abilities automatically
+  key: Share gameplay statistics
 --- !u!222 &7596545912164588116
 CanvasRenderer:
   m_ObjectHideFlags: 0

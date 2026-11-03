@@ -38,7 +38,8 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(ShipClass.Fighter, 600f, 0f, 800f, 0.8f, 0f, SiteFacilityType.QuadLaserSatellite)]
         [TestCase(ShipClass.Frigate, 3000f, 1000f, 1800f, 0.6f, 0f, SiteFacilityType.TurbolaserSatellite)]
         [TestCase(ShipClass.Cruiser, 5000f, 15000f, 2000f, 0.6f, 0f, SiteFacilityType.IonSatellite)]
-        [TestCase(ShipClass.Capital, 10000f, 30000f, 12000f, 0.1f, 2f, SiteFacilityType.MassDriverSatellite)]
+        // Heavy caliber damage ×1.3 (aae27525d) made heavy missiles outscore mass drivers against besieging capitals.
+        [TestCase(ShipClass.Capital, 10000f, 30000f, 12000f, 0.1f, 2f, SiteFacilityType.MissileSatellite)]
         [TestCase(ShipClass.Cruiser, 10000f, 30000f, 7000f, 0.9f, 0f, SiteFacilityType.MissileSatellite)]
         public void KnownComposition_SelectsAppropriateDefense(ShipClass target, float hull, float shields,
             float money, float exposure, float baseThreat, SiteFacilityType expected)

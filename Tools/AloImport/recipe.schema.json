@@ -1,0 +1,1917 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:empire-at-war:alo-recipe:1",
+  "title": "Unified ALO Import Recipe v1",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "modelId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+    },
+    "kind": {
+      "enum": [
+        "ship",
+        "station"
+      ]
+    },
+    "operation": {
+      "enum": [
+        "create",
+        "update"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "root": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        },
+        "alo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "xml": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variant": {
+          "type": "string",
+          "minLength": 1
+        },
+        "archives": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        },
+        "textureDirectory": {
+          "type": "string",
+          "minLength": 1
+        },
+        "textureOverrides": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string",
+                "minLength": 1
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "source",
+              "path"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "xmlFiles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "definitionOverrides": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "file": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "name",
+              "file"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "archiveEntries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "archive": {
+                "type": "string",
+                "minLength": 1
+              },
+              "member": {
+                "type": "string",
+                "minLength": 1
+              },
+              "root": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              }
+            },
+            "required": [
+              "path",
+              "archive",
+              "member"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "root",
+        "alo"
+      ],
+      "additionalProperties": false
+    },
+    "pieces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "alo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "purpose": {
+            "enum": [
+              "hull",
+              "attachment",
+              "damaged",
+              "level"
+            ]
+          },
+          "transportRigName": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "alo",
+          "purpose"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "piece": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "parentPiece": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "boneIndex": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sourceHardpoint": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parentInstance": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          }
+        },
+        "required": [
+          "id",
+          "piece",
+          "parentPiece",
+          "boneIndex"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "identity": {
+      "type": "object",
+      "properties": {
+        "faction": {
+          "enum": [
+            "Empire",
+            "Rebellion",
+            "Republic",
+            "Separatist"
+          ]
+        },
+        "unit": {
+          "type": "object",
+          "properties": {
+            "enum": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "name": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "value": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "enum",
+            "name",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "faction",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "integration": {
+      "type": "object",
+      "properties": {
+        "templateGuid": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "bindingProfile": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        },
+        "retainedDependencyGuids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$"
+          },
+          "minItems": 0
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "guid": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{32}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "role",
+              "path",
+              "guid"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "component": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "fileId": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "role",
+                  "fileId"
+                ],
+                "additionalProperties": false
+              },
+              "property": {
+                "type": "string",
+                "minLength": 1
+              },
+              "targetGuid": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$"
+              },
+              "target": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "fileId": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "role",
+                  "fileId"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "component",
+              "property"
+            ],
+            "additionalProperties": false,
+            "oneOf": [
+              {
+                "required": [
+                  "targetGuid"
+                ],
+                "not": {
+                  "required": [
+                    "target"
+                  ]
+                }
+              },
+              {
+                "required": [
+                  "target"
+                ],
+                "not": {
+                  "required": [
+                    "targetGuid"
+                  ]
+                }
+              }
+            ]
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "templateGuid",
+        "bindingProfile",
+        "retainedDependencyGuids",
+        "outputs",
+        "bindings"
+      ],
+      "additionalProperties": false
+    },
+    "dimensions": {
+      "type": "object",
+      "properties": {
+        "targetLength": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "targetDiameter": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "sizeRule": {
+          "enum": [
+            "visible-length",
+            "common-diameter",
+            "reference-level-diameter"
+          ]
+        },
+        "orientationEulerDegrees": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "pivot": {
+          "enum": [
+            "source-root",
+            "visible-center",
+            "alignment-anchor"
+          ]
+        },
+        "bankingDegrees": {
+          "type": "number",
+          "minimum": 0
+        },
+        "margins": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "value": {
+                "type": "number",
+                "minimum": 0
+              },
+              "unit": {
+                "enum": [
+                  "project-units",
+                  "source-units",
+                  "degrees",
+                  "pixels",
+                  "seconds",
+                  "ratio"
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "value",
+              "unit"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        },
+        "referenceLevel": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "sizeRule",
+        "orientationEulerDegrees",
+        "pivot",
+        "bankingDegrees",
+        "margins"
+      ],
+      "additionalProperties": false
+    },
+    "materials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "object",
+            "properties": {
+              "piece": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "shader": {
+                "type": "string",
+                "minLength": 1
+              },
+              "parameters": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "value": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 1
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 0
+              },
+              "meshIndex": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "slot": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "piece",
+              "shader",
+              "parameters"
+            ],
+            "additionalProperties": false,
+            "oneOf": [
+              {
+                "required": [
+                  "meshIndex",
+                  "slot"
+                ]
+              },
+              {
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "meshIndex"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "slot"
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "surface": {
+            "enum": [
+              "opaque",
+              "additive",
+              "cutout",
+              "alpha"
+            ]
+          },
+          "textures": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "semantic": {
+                  "enum": [
+                    "albedo",
+                    "normal",
+                    "emissive",
+                    "specular",
+                    "opacity",
+                    "mask"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "targetGuid": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{32}$"
+                }
+              },
+              "required": [
+                "semantic",
+                "source"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0
+          },
+          "normalConvention": {
+            "enum": [
+              "none",
+              "directx",
+              "opengl"
+            ]
+          },
+          "livery": {
+            "type": "object",
+            "properties": {
+              "policy": {
+                "enum": [
+                  "none",
+                  "alpha",
+                  "inverse-alpha",
+                  "hsv"
+                ]
+              },
+              "parameters": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "value": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 1
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 0
+              }
+            },
+            "required": [
+              "policy",
+              "parameters"
+            ],
+            "additionalProperties": false
+          },
+          "targetGuid": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$"
+          }
+        },
+        "required": [
+          "selector",
+          "surface",
+          "textures",
+          "normalConvention",
+          "livery"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "hardpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "kind": {
+            "enum": [
+              "weapon",
+              "hangar",
+              "shield",
+              "engine",
+              "tractor",
+              "system"
+            ]
+          },
+          "profileGuid": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "anchor": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "piece": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                  },
+                  "boneIndex": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "piece",
+                  "boneIndex"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "localPosition": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "localEulerDegrees": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  }
+                },
+                "required": [
+                  "localPosition",
+                  "localEulerDegrees"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "muzzles": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "piece": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                    },
+                    "boneIndex": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "piece",
+                    "boneIndex"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "localPosition": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 3,
+                      "maxItems": 3
+                    },
+                    "localEulerDegrees": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 3,
+                      "maxItems": 3
+                    }
+                  },
+                  "required": [
+                    "localPosition",
+                    "localEulerDegrees"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "minItems": 0
+          },
+          "health": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "targetable": {
+            "type": "boolean"
+          },
+          "profileKey": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "yawRangeDegrees": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "component": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string",
+                "minLength": 1
+              },
+              "fileId": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "role",
+              "fileId"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "profileGuid",
+          "anchor",
+          "muzzles",
+          "health",
+          "targetable",
+          "yawRangeDegrees"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "hangar": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "squadronGuid": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$",
+            "description": "Existing AssetMappingData catalog GUID. Resolve typed squadronKey using the SquadronFactory runtime address <SquadronType>SquadronData; this is not an individual SquadronData GUID."
+          },
+          "launchAnchors": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "piece": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                    },
+                    "boneIndex": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "piece",
+                    "boneIndex"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "localPosition": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 3,
+                      "maxItems": 3
+                    },
+                    "localEulerDegrees": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 3,
+                      "maxItems": 3
+                    }
+                  },
+                  "required": [
+                    "localPosition",
+                    "localEulerDegrees"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "minItems": 1
+          },
+          "capacity": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "reserve": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "initialDelaySeconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "intervalSeconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "squadronKey": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "squadronGuid",
+          "launchAnchors",
+          "capacity",
+          "reserve",
+          "initialDelaySeconds",
+          "intervalSeconds",
+          "squadronKey"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "gameplay": {
+      "type": "object",
+      "properties": {
+        "baselineGuid": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "value": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 1
+                  }
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        },
+        "abilityGuids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "baselineGuid",
+        "values",
+        "abilityGuids"
+      ],
+      "additionalProperties": false
+    },
+    "station": {
+      "type": "object",
+      "properties": {
+        "levels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "level": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "piece": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "gameplayDataGuid": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{32}$"
+              },
+              "sourceUnit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "component": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "fileId": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "role",
+                  "fileId"
+                ],
+                "additionalProperties": false
+              },
+              "alignmentPoint": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "fileId": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "role",
+                  "fileId"
+                ],
+                "additionalProperties": false
+              },
+              "launchExit": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "fileId": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "role",
+                  "fileId"
+                ],
+                "additionalProperties": false
+              },
+              "hullRenderers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "role": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "fileId": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "role",
+                    "fileId"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "level",
+              "piece",
+              "gameplayDataGuid"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "alignmentAnchor": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "piece": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                },
+                "boneIndex": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "piece",
+                "boneIndex"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "localPosition": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "localEulerDegrees": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              },
+              "required": [
+                "localPosition",
+                "localEulerDegrees"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "mounts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "hardpoint": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "unlockLevel": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "artPiece": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "anchors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "level": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "piece": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                    },
+                    "boneIndex": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "point": {
+                      "type": "object",
+                      "properties": {
+                        "role": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "fileId": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "role",
+                        "fileId"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "art": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "role": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "fileId": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "role",
+                            "fileId"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "level",
+                    "piece",
+                    "boneIndex"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "id",
+              "hardpoint",
+              "unlockLevel",
+              "artPiece",
+              "anchors"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        },
+        "viewComponent": {
+          "type": "object",
+          "properties": {
+            "role": {
+              "type": "string",
+              "minLength": 1
+            },
+            "fileId": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "role",
+            "fileId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "levels",
+        "alignmentAnchor",
+        "mounts"
+      ],
+      "additionalProperties": false
+    },
+    "derivatives": {
+      "type": "object",
+      "properties": {
+        "placement": {
+          "type": "boolean"
+        },
+        "wreckPieces": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "minItems": 0
+        },
+        "icon": {
+          "type": "object",
+          "properties": {
+            "resolution": {
+              "const": 512
+            },
+            "transparent": {
+              "const": true
+            },
+            "framingMargin": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "resolution",
+            "transparent",
+            "framingMargin"
+          ],
+          "additionalProperties": false
+        },
+        "helperPolicy": {
+          "enum": [
+            "retain",
+            "explicit-exclusions"
+          ]
+        },
+        "helperExclusions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "piece": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "meshIndex": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "piece",
+              "meshIndex",
+              "reason"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        },
+        "shieldPolicy": {
+          "enum": [
+            "retain-baseline",
+            "fit-visible-hull"
+          ]
+        },
+        "generation": {
+          "type": "object",
+          "properties": {
+            "sourceRole": {
+              "type": "string",
+              "minLength": 1
+            },
+            "root": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "fileId": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "role",
+                "fileId"
+              ],
+              "additionalProperties": false
+            },
+            "renderers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "fileId": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "role",
+                  "fileId"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1
+            },
+            "placementRole": {
+              "type": "string",
+              "minLength": 1
+            },
+            "hologramMaterialGuid": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$"
+            },
+            "wreckRole": {
+              "type": "string",
+              "minLength": 1
+            },
+            "wreckShaderGuid": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$"
+            },
+            "wreckMaterials": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "sourceGuid": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{32}$"
+                  },
+                  "outputRole": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "sourceGuid",
+                  "outputRole"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "iconRole": {
+              "type": "string",
+              "minLength": 1
+            },
+            "viewEulerDegrees": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "palette": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 4,
+                "maxItems": 4
+              },
+              "minItems": 8,
+              "maxItems": 8
+            }
+          },
+          "required": [
+            "sourceRole",
+            "root",
+            "renderers",
+            "viewEulerDegrees",
+            "palette"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "required": [
+                  "placementRole"
+                ]
+              },
+              "then": {
+                "required": [
+                  "hologramMaterialGuid"
+                ]
+              }
+            },
+            {
+              "if": {
+                "required": [
+                  "wreckRole"
+                ]
+              },
+              "then": {
+                "required": [
+                  "wreckShaderGuid",
+                  "wreckMaterials"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "placement",
+        "wreckPieces",
+        "icon",
+        "helperPolicy",
+        "helperExclusions",
+        "shieldPolicy"
+      ],
+      "additionalProperties": false
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 0
+              }
+            ]
+          },
+          "provenance": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "resolved",
+              "unresolved"
+            ]
+          }
+        },
+        "required": [
+          "key",
+          "value",
+          "provenance",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ruleId": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+          },
+          "sourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "approval": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "ruleId",
+          "sourceIds",
+          "reason",
+          "evidence"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "verification": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "static-source-fidelity-v1"
+        },
+        "overrides": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+              },
+              "value": {
+                "type": "number",
+                "minimum": 0
+              },
+              "unit": {
+                "enum": [
+                  "project-units",
+                  "source-units",
+                  "degrees",
+                  "pixels",
+                  "seconds",
+                  "ratio"
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "value",
+              "unit"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        },
+        "renders": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "model",
+              "placement",
+              "wreck",
+              "owned-colors"
+            ]
+          },
+          "minItems": 1
+        },
+        "checkGroups": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "source",
+              "geometry",
+              "materials",
+              "bindings",
+              "registrations",
+              "derivatives",
+              "runtime"
+            ]
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "profile",
+        "overrides",
+        "renders",
+        "checkGroups"
+      ],
+      "additionalProperties": false
+    },
+    "registrations": {
+      "type": "object",
+      "properties": {
+        "factionGuid": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "shipsDataGuid": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "assetMappingGuid": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "shipUiGuid": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "tooltipGuid": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "reinforcementGuid": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "viewGroupGuid": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "dataGroupGuid": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "viewRole": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dataRole": {
+          "type": "string",
+          "minLength": 1
+        },
+        "placementRole": {
+          "type": "string",
+          "minLength": 1
+        },
+        "iconRole": {
+          "type": "string",
+          "minLength": 1
+        },
+        "iconFileId": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "addressableSettingsGuid": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        }
+      },
+      "required": [
+        "factionGuid",
+        "shipsDataGuid",
+        "assetMappingGuid",
+        "shipUiGuid",
+        "tooltipGuid",
+        "reinforcementGuid",
+        "viewGroupGuid",
+        "dataGroupGuid",
+        "viewRole",
+        "dataRole",
+        "placementRole",
+        "iconRole",
+        "iconFileId",
+        "addressableSettingsGuid"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "modelId",
+    "kind",
+    "operation",
+    "source",
+    "pieces",
+    "attachments",
+    "identity",
+    "integration",
+    "dimensions",
+    "materials",
+    "hardpoints",
+    "hangar",
+    "gameplay",
+    "derivatives",
+    "decisions",
+    "exceptions",
+    "verification"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "station"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "station"
+        ],
+        "properties": {
+          "dimensions": {
+            "required": [
+              "targetDiameter"
+            ],
+            "properties": {
+              "sizeRule": {
+                "enum": [
+                  "common-diameter",
+                  "reference-level-diameter"
+                ]
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "sizeRule": {
+                      "const": "reference-level-diameter"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "referenceLevel"
+                  ]
+                },
+                "else": {
+                  "not": {
+                    "required": [
+                      "referenceLevel"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "else": {
+        "not": {
+          "required": [
+            "station"
+          ]
+        },
+        "properties": {
+          "dimensions": {
+            "required": [
+              "targetLength"
+            ],
+            "properties": {
+              "sizeRule": {
+                "const": "visible-length"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

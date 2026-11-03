@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "modelId": "Fixture",
+  "kind": "ship",
+  "operation": "update",
+  "source": {
+    "root": "fixture",
+    "alo": "Models/Hull.ALO"
+  },
+  "pieces": [
+    {
+      "id": "hull",
+      "alo": "Models/Hull.ALO",
+      "purpose": "hull"
+    }
+  ],
+  "attachments": [],
+  "identity": {
+    "faction": "Republic",
+    "unit": {
+      "enum": "ShipType",
+      "name": "Fixture",
+      "value": 9999
+    }
+  },
+  "integration": {
+    "templateGuid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "bindingProfile": "ship-v1",
+    "retainedDependencyGuids": [],
+    "outputs": [
+      {
+        "role": "model",
+        "path": "Assets/Art/Models/Fixture.fbx",
+        "guid": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    ],
+    "bindings": []
+  },
+  "dimensions": {
+    "targetLength": 160,
+    "sizeRule": "visible-length",
+    "orientationEulerDegrees": [
+      0,
+      0,
+      0
+    ],
+    "pivot": "source-root",
+    "bankingDegrees": 5,
+    "margins": []
+  },
+  "materials": [
+    {
+      "selector": {
+        "piece": "hull",
+        "shader": "FixtureShader",
+        "parameters": []
+      },
+      "surface": "opaque",
+      "textures": [],
+      "normalConvention": "none",
+      "livery": {
+        "policy": "none",
+        "parameters": []
+      }
+    }
+  ],
+  "hardpoints": [],
+  "hangar": [],
+  "gameplay": {
+    "baselineGuid": "cccccccccccccccccccccccccccccccc",
+    "values": [],
+    "abilityGuids": []
+  },
+  "derivatives": {
+    "placement": true,
+    "wreckPieces": [
+      "hull"
+    ],
+    "icon": {
+      "resolution": 512,
+      "transparent": true,
+      "framingMargin": 0.1
+    },
+    "helperPolicy": "retain",
+    "helperExclusions": [],
+    "shieldPolicy": "retain-baseline"
+  },
+  "decisions": [
+    {
+      "key": "fixture",
+      "value": "synthetic",
+      "provenance": "unit-test",
+      "status": "resolved"
+    }
+  ],
+  "exceptions": [],
+  "verification": {
+    "profile": "static-source-fidelity-v1",
+    "overrides": [],
+    "renders": [
+      "model"
+    ],
+    "checkGroups": [
+      "source"
+    ]
+  }
+}
