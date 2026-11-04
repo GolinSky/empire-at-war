@@ -29,6 +29,10 @@ namespace EmpireAtWar.Entities.Map.Generation
             _reservedNodes.Clear();
             Vector3 main = PlanarGeometry.GetCenter(size.Bounds);
             float mainClearance = GetMainClearance(size, nodes);
+            int mainPointId = -1;
+            foreach (MapNode node in nodes)
+                if (node.IsMain)
+                    mainPointId = node.PointId;
             for (int i = 0; i < nodes.Count; i++)
             {
                 MapNode node = nodes[i];
@@ -48,9 +52,9 @@ namespace EmpireAtWar.Entities.Map.Generation
                     List<FieldVolume> wall = CreateWall(position, node.Center - main, size);
                     bool clear = true;
                     foreach (FieldVolume volume in wall)
-                        if (!Fits(volume.Center, volume.Radius, size, stations, nodes, hazards) ||
+                        if (!Fits(volume.Center, volume.Radius, size, stations, nodes, mainPointId, hazards) ||
                             !Fits(PlanarGeometry.Reflect(volume.Center, main), volume.Radius,
-                                size, stations, nodes, hazards))
+                                size, stations, nodes, mainPointId, hazards))
                         {
                             clear = false;
                             break;
@@ -176,8 +180,8 @@ namespace EmpireAtWar.Entities.Map.Generation
             return false;
         }
 
-        private bool Fits(Vector3 position, float radius, MapSizeSettings size,
-            IReadOnlyList<MapStation> stations, IReadOnlyList<MapNode> nodes, IReadOnlyList<HazardShape> hazards)
+        private bool Fits(Vector3 position, float radius, MapSizeSettings size, IReadOnlyList<MapStation> stations,
+            IReadOnlyList<MapNode> nodes, int mainPointId, IReadOnlyList<HazardShape> hazards)
         {
             if (position.x - radius < size.Bounds.Min.x || position.x + radius > size.Bounds.Max.x ||
                 position.z - radius < size.Bounds.Min.y || position.z + radius > size.Bounds.Max.y) return false;
@@ -187,7 +191,9 @@ namespace EmpireAtWar.Entities.Map.Generation
             foreach (MapNode node in nodes)
             {
                 float distance = PlanarGeometry.Distance(position, node.Center);
-                if (distance < radius + size.MinLaneWidth * 0.5f + 2f ||
+                // Lanes leave the main relay's own sites inside the wall ring, so those need a full lane between walls.
+                bool mainSite = node.PointId >= 0 && node.PointId == mainPointId && node.Kind != MapNodeKind.CapturableZone;
+                if (distance < radius + size.MinLaneWidth * (mainSite ? 1f : 0.5f) + 2f ||
                     distance < node.Radius + _settings.ZoneClearance +
                     (node.HasPocket ? size.PocketThickness : 0f) + radius) return false;
             }

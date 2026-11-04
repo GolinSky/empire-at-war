@@ -95,7 +95,8 @@ namespace EmpireAtWar.Entities.Map.Generation
                 new MapNode(MapNodeKind.CapturableZone, position, PlayerId.None, _radii.Zone, pointId),
                 new MapNode(MapNodeKind.MiningSite, position, PlayerId.None, _radii.MiningSite, pointId)
             };
-            float spread = _radii.MiningSite + _settings.SatellitePadOffset;
+            // Pads sit evenly around the mine, inside the relay's capture area.
+            float spread = _radii.MiningSite + _settings.SatelliteFootprintRadius + _settings.ZoneClearance;
             for (int i = 0; i < _settings.AdditionalZoneSatelliteCount; i++)
             {
                 Vector3 offset = Quaternion.Euler(0f, turn + i * FULL_TURN /

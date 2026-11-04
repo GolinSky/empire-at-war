@@ -36,9 +36,11 @@ namespace EmpireAtWar.Entities.Map.Generation
                 new MapNode(MapNodeKind.CapturableZone, position, PlayerId.None, _radii.MainZone, pointId)
                 { Mirror = 0, IsMain = true }
             };
+            float miningDistance = _radii.MainZone * _settings.MainZoneMiningRadiusShare;
             AddRing(group, position, pointId, MapNodeKind.MiningSite, _settings.MainZoneMiningCount,
-                _radii.MainZone * _settings.MainZoneMiningRadiusShare, _radii.MiningSite, turn);
-            float satelliteDistance = _radii.MainZone + _radii.MiningSite +
+                miningDistance, _radii.MiningSite, turn);
+            // Pads ring the mines just inside the relay's capture area.
+            float satelliteDistance = miningDistance + _radii.MiningSite +
                 _settings.SatelliteFootprintRadius + _settings.ZoneClearance;
             AddRing(group, position, pointId, MapNodeKind.SatelliteSite, _settings.MainZoneSatelliteCount,
                 satelliteDistance, _settings.SatelliteFootprintRadius, turn + FULL_TURN / 12f);

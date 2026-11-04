@@ -108,7 +108,9 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (MapNode pad in mainPads)
                 {
                     float radius = PlanarGeometry.Distance(pad.Center, main.Center);
-                    Assert.That(radius - pad.Radius, Is.GreaterThanOrEqualTo(_radii.MainZone - TOLERANCE), context);
+                    Assert.That(radius + pad.Radius, Is.LessThanOrEqualTo(_radii.MainZone + TOLERANCE), context);
+                    Assert.That(radius, Is.EqualTo(miningRadius + _radii.MiningSite + pad.Radius +
+                        _settings.ZoneClearance).Within(TOLERANCE), context);
                     float nearest = mainPads.Where(other => other != pad)
                         .Min(other => PlanarGeometry.Distance(pad.Center, other.Center));
                     Assert.That(nearest, Is.EqualTo(radius).Within(TOLERANCE), context);
@@ -131,8 +133,19 @@ namespace EmpireAtWar.Tests.Editor
                         Is.GreaterThanOrEqualTo(size.AdditionalZoneMainDistance), context);
                     Assert.That(nodes.Count(node => node.PointId == zone.PointId &&
                         node.Kind == MapNodeKind.MiningSite), Is.EqualTo(1), context);
-                    Assert.That(nodes.Count(node => node.PointId == zone.PointId &&
-                        node.Kind == MapNodeKind.SatelliteSite), Is.EqualTo(2), context);
+                    MapNode[] zonePads = nodes.Where(node => node.PointId == zone.PointId &&
+                        node.Kind == MapNodeKind.SatelliteSite).ToArray();
+                    Assert.That(zonePads.Length, Is.EqualTo(2), context);
+                    foreach (MapNode pad in zonePads)
+                    {
+                        float padDistance = PlanarGeometry.Distance(pad.Center, zone.Center);
+                        Assert.That(padDistance + pad.Radius, Is.LessThanOrEqualTo(zone.Radius + TOLERANCE), context);
+                        Assert.That(padDistance, Is.EqualTo(_radii.MiningSite + pad.Radius +
+                            _settings.ZoneClearance).Within(TOLERANCE), context);
+                    }
+                    Assert.That(PlanarGeometry.Distance(zonePads[0].Center, zonePads[1].Center),
+                        Is.EqualTo(2f * (_radii.MiningSite + zonePads[0].Radius + _settings.ZoneClearance))
+                            .Within(TOLERANCE), context);
                     Assert.That(GetNearestTeam(zone.Center, stations, players),
                         Is.Not.EqualTo(GetNearestTeam(nodes[zone.Mirror].Center, stations, players)), context);
                 }
