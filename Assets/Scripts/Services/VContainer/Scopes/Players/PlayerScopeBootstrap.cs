@@ -22,13 +22,15 @@ namespace EmpireAtWar.Services.VContainer
     {
         private readonly SkirmishScope _owner;
         private readonly IPlayerRoster _roster;
+        private readonly PlayerFactoryLookup _factoryLookup;
         private readonly List<AssetLifetimeScope> _players = new List<AssetLifetimeScope>();
         private readonly List<HostedFactionLevel> _hostedLevels = new List<HostedFactionLevel>();
 
-        public PlayerScopeBootstrap(SkirmishScope owner, IPlayerRoster roster)
+        public PlayerScopeBootstrap(SkirmishScope owner, IPlayerRoster roster, PlayerFactoryLookup factoryLookup)
         {
             _owner = owner;
             _roster = roster;
+            _factoryLookup = factoryLookup;
         }
 
         public void Initialize()
@@ -56,13 +58,10 @@ namespace EmpireAtWar.Services.VContainer
                 player.parentReference.Object = _owner;
                 _players.Add(player);
                 player.Build();
-                _owner.Container.Resolve<PlayerFactoryLookup>().Register(slot.Id,
+                _factoryLookup.Register(slot.Id, new PlayerUnitFactories(
                     player.Container.Resolve<ShipFactory>(), player.Container.Resolve<ISquadronSpawner>(),
-                    new StructureFactories(player.Container.Resolve<SpaceStationFactory>(),
-                        player.Container.Resolve<MiningFacilityFactory>(),
-                        player.Container.Resolve<AsteroidMiningFacilityFactory>(),
-                        player.Container.Resolve<DefendPlatformFactory>(),
-                        player.Container.Resolve<AsteroidDefendPlatformFactory>()));
+                    player.Container.Resolve<SpaceStationFactory>(), player.Container.Resolve<MiningFacilityFactory>(),
+                    player.Container.Resolve<DefendPlatformFactory>()));
                 playerRoot.SetActive(true);
             }
 
@@ -80,6 +79,7 @@ namespace EmpireAtWar.Services.VContainer
         {
             foreach (HostedFactionLevel level in _hostedLevels) level.Dispose();
             _hostedLevels.Clear();
+            _factoryLookup.Clear();
             for (int index = _players.Count - 1; index >= 0; index--)
             {
                 AssetLifetimeScope player = _players[index];

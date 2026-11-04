@@ -17,7 +17,6 @@ namespace EmpireAtWar.Services.Battle
     {
         private readonly PlayerScopeBootstrap _players;
         private readonly PlayerRoster _roster;
-        private readonly PlayerFactoryLookup _spawner;
         private readonly ShotPoolPrewarmer _shots;
         private readonly BoltFlightBatch _bolts;
         private readonly IncomingMissileRegistry _missiles;
@@ -31,13 +30,13 @@ namespace EmpireAtWar.Services.Battle
         private readonly ShipAbilityService _abilities;
         private readonly CombatAttackCoordinator _attacks;
 
-        public SimulationResetService(PlayerScopeBootstrap players, PlayerRoster roster, PlayerFactoryLookup spawner,
-            ShotPoolPrewarmer shots, BoltFlightBatch bolts, IncomingMissileRegistry missiles, UnitWreckService wrecks,
+        public SimulationResetService(PlayerScopeBootstrap players, PlayerRoster roster, ShotPoolPrewarmer shots,
+            BoltFlightBatch bolts, IncomingMissileRegistry missiles, UnitWreckService wrecks,
             UnitExplosionService explosions, FighterExplosionPool fighters, HardPointExplosionPool hardPoints,
             ImpactEffectView impacts, BattleVictoryService victory, TeamIntelRegistry intel, ShipAbilityService abilities,
             CombatAttackCoordinator attacks)
         {
-            _players = players; _roster = roster; _spawner = spawner; _shots = shots; _bolts = bolts;
+            _players = players; _roster = roster; _shots = shots; _bolts = bolts;
             _missiles = missiles; _wrecks = wrecks; _explosions = explosions; _fighters = fighters;
             _hardPoints = hardPoints; _impacts = impacts; _victory = victory;
             _intel = intel; _abilities = abilities; _attacks = attacks;
@@ -49,7 +48,6 @@ namespace EmpireAtWar.Services.Battle
             _players.Dispose();
             _attacks.ClearPendingAttacks();
             _intel.Clear();
-            _spawner.Clear();
             _shots.Clear(); _bolts.Clear(); _missiles.Clear();
             _wrecks.Clear(); _explosions.Clear(); _fighters.Clear(); _hardPoints.Clear(); _impacts.Clear();
             await Awaitable.NextFrameAsync(cancellationToken);

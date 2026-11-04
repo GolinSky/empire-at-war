@@ -17,10 +17,7 @@ namespace EmpireAtWar.Services.Factory
             builder.Register<SquadronFactory>(Lifetime.Singleton);
             builder.Register<SpaceStationFactory>(Lifetime.Singleton);
             builder.Register<MiningFacilityFactory>(Lifetime.Singleton);
-            builder.Register<AsteroidMiningFacilityFactory>(Lifetime.Singleton);
             builder.Register<DefendPlatformFactory>(Lifetime.Singleton);
-            builder.Register<AsteroidDefendPlatformFactory>(Lifetime.Singleton);
-            builder.Register<SatelliteDefendPlatformFactory>(Lifetime.Singleton);
         }
     }
 }

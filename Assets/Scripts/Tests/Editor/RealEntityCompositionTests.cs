@@ -1038,20 +1038,20 @@ namespace EmpireAtWar.Tests.Editor
                 EntityLifetimeScope mining = AssertEntity(player.Container.Resolve<MiningFacilityFactory>()
                     .Create(slot.Id, MiningFacilityType.CommonMiner, origin + Vector3.forward * 200f), player, slot);
                 AssertDecoratedHealth(mining, mining.Container.Resolve<MiningFacilityData>().ComponentData);
-                EntityLifetimeScope asteroidMining = AssertEntity(player.Container.Resolve<AsteroidMiningFacilityFactory>()
+                EntityLifetimeScope asteroidMining = AssertEntity(player.Container.Resolve<MiningFacilityFactory>()
                     .Create(slot.Id, MiningFacilityType.AsteroidMiner, origin + Vector3.forward * 250f), player, slot);
                 AssertDecoratedHealth(asteroidMining, asteroidMining.Container.Resolve<MiningFacilityData>().ComponentData);
                 EntityLifetimeScope platform = AssertEntity(player.Container.Resolve<DefendPlatformFactory>()
                     .Create(slot.Id, DefendPlatformType.Xq6, origin + Vector3.forward * 300f), player, slot);
                 AssertDecoratedHealth(platform, platform.Container.Resolve<DefendPlatformData>().ComponentData);
-                EntityLifetimeScope asteroidPlatform = AssertEntity(player.Container.Resolve<AsteroidDefendPlatformFactory>()
+                EntityLifetimeScope asteroidPlatform = AssertEntity(player.Container.Resolve<DefendPlatformFactory>()
                     .Create(slot.Id, DefendPlatformType.BattleAsteroid, origin + Vector3.forward * 350f), player, slot);
                 AssertDecoratedHealth(asteroidPlatform, asteroidPlatform.Container.Resolve<DefendPlatformData>().ComponentData);
                 foreach (DefendPlatformType type in new[] { DefendPlatformType.QuadLaserSatellite,
                     DefendPlatformType.TurbolaserSatellite, DefendPlatformType.IonSatellite,
                     DefendPlatformType.MassDriverSatellite, DefendPlatformType.MissileSatellite })
                 {
-                    EntityLifetimeScope satellite = AssertEntity(player.Container.Resolve<SatelliteDefendPlatformFactory>()
+                    EntityLifetimeScope satellite = AssertEntity(player.Container.Resolve<DefendPlatformFactory>()
                         .Create(slot.Id, type, origin + Vector3.forward * (400f + (int)type * 30f)), player, slot);
                     AssertDecoratedHealth(satellite, satellite.Container.Resolve<DefendPlatformData>().ComponentData);
                     Assert.That(satellite.Container.Resolve<HealthModel>().HardPointModels.Length, Is.EqualTo(6));

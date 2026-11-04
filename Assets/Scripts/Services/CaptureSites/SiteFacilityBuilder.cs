@@ -20,10 +20,9 @@ namespace EmpireAtWar.Services.CaptureSites
         private readonly IPlayerRegistry _playerRegistry;
 
         private readonly EconomyModel _economyModel;
-        private readonly AsteroidMiningFacilityFactory _miningFacilityFactory;
-        private readonly AsteroidDefendPlatformFactory _battleAsteroidFactory;
+        private readonly MiningFacilityFactory _miningFacilityFactory;
+        private readonly DefendPlatformFactory _defendPlatformFactory;
         private readonly IUniqueIdGenerator _ids;
-        private readonly SatelliteDefendPlatformFactory _satellites;
         private readonly CaptureSiteData _data;
 
         private readonly PlayerId _owner;
@@ -32,20 +31,18 @@ namespace EmpireAtWar.Services.CaptureSites
             IPlayerRegistry playerRegistry,
             PlayerSlot owner,
             EconomyModel economyModel,
-            AsteroidMiningFacilityFactory miningFacilityFactory,
-            AsteroidDefendPlatformFactory battleAsteroidFactory,
+            MiningFacilityFactory miningFacilityFactory,
+            DefendPlatformFactory defendPlatformFactory,
             IUniqueIdGenerator ids,
-            SatelliteDefendPlatformFactory satellites,
             CaptureSiteData data)
         {
             _ids = ids;
             _data = data;
-            _satellites = satellites;
             _owner = owner.Id;
             _playerRegistry = playerRegistry;
             _economyModel = economyModel;
             _miningFacilityFactory = miningFacilityFactory;
-            _battleAsteroidFactory = battleAsteroidFactory;
+            _defendPlatformFactory = defendPlatformFactory;
         }
 
         public void Initialize()
@@ -96,7 +93,7 @@ namespace EmpireAtWar.Services.CaptureSites
                     onConstructionProgress(facility.ConstructionProgress);
                     break;
                 case SiteFacilityType.BattleAsteroid:
-                    DefendPlatformEntity battleAsteroid = _battleAsteroidFactory.Create(
+                    DefendPlatformEntity battleAsteroid = _defendPlatformFactory.Create(
                         _owner, DefendPlatformType.BattleAsteroid, position, entityId, buildDuration: _data.GetCost(facilityType).BuildTime);
                     battleAsteroid.OnRelease += onDestroyed;
                     battleAsteroid.ConstructionProgressChanged += onConstructionProgress;
@@ -107,7 +104,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 case SiteFacilityType.IonSatellite:
                 case SiteFacilityType.MassDriverSatellite:
                 case SiteFacilityType.MissileSatellite:
-                    var satellite = _satellites.Create(_owner, SatelliteType(facilityType), position, entityId,
+                    var satellite = _defendPlatformFactory.Create(_owner, SatelliteType(facilityType), position, entityId,
                         buildDuration: _data.GetCost(facilityType).BuildTime);
                     satellite.OnRelease += onDestroyed;
                     satellite.ConstructionProgressChanged += onConstructionProgress;

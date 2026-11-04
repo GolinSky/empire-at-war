@@ -186,18 +186,8 @@ namespace EmpireAtWar.Services.Saves
                         (!siteFacilities.Contains(structure.Id) && rosters.TryGetValue(structure.Owner, out FactionRoster platRoster) &&
                          !platRoster.DefendPlatforms.ContainsKey(platformType)))
                         throw new InvalidDataException($"Defense platform {platformType} cannot be restored for {structure.Owner}.");
-                    string prefab = (platformType == DefendPlatformType.BattleAsteroid ? "Asteroid" : "") + (platformType switch
-                    {
-                        DefendPlatformType.GolanIII => "AotrGolanIIIDefensePlatformView",
-                        DefendPlatformType.Empress => "AotrEmpressDefensePlatformView",
-                        DefendPlatformType.QuadLaserSatellite => "QuadLaserSatelliteView",
-                        DefendPlatformType.TurbolaserSatellite => "TurbolaserSatelliteView",
-                        DefendPlatformType.IonSatellite => "IonSatelliteView",
-                        DefendPlatformType.MassDriverSatellite => "MassDriverSatelliteView",
-                        DefendPlatformType.MissileSatellite => "MissileSatelliteView",
-                        _ => "DefendPlatformView"
-                    });
-                    ValidateHardPoints(_assets.LoadComponent<DefendPlatformEntity>(prefab), structure.Health, structure.Id);
+                    ValidateHardPoints(_assets.LoadComponent<DefendPlatformEntity>(
+                        DefendPlatformAssets.GetViewName(platformType)), structure.Health, structure.Id);
                     ValidateHangar(structure.Hangar, 0, squadrons, adoptedSquadrons, structure.Id);
                     break;
                 default:
