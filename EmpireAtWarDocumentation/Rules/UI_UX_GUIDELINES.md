@@ -86,7 +86,7 @@
 ## 6. Class Inheritance & Serialized Image Binding Safety
 
 - **BaseUi Inheritance**: Only top-level MVP view containers (such as `CoreGameUi`, `EconomyUi`, `FactionUi`, `MenuUi`, `MiniMapUi`, `ReinforcementUi`, `ShipUi`, `SkirmishPopupUi`) inherit from the non-generic `BaseUi` (generic `BaseUi<TModel, TCommand>` no longer exists).
-  - Sub-item components (`FactionUnitUi`, `PipelineView`, `MarkView`, `FpsCounter`) MUST inherit directly from `MonoBehaviour` to keep feature dependency setup owned by the top-level view controller.
+  - Sub-item components (`FactionUnitUi`, `PipelineView`, `MarkView`) MUST inherit directly from `MonoBehaviour` to keep feature dependency setup owned by the top-level view controller.
 - **Serialized Image & DOTween Safety**: Do NOT replace standard `UnityEngine.UI.Image` components with `MPImage` on GameObjects where C# scripts have serialized `[SerializeField] private Image ...` fields (e.g. `ReinforcementUi.signalImage`, `CoreGameUi.timeImage`, `ShipUi.shipIconImage`) or DOTween animation calls (`signalImage.DOColor(...)`).
   - Replacing serialized `Image` components breaks script inspector references and causes `NullReferenceException` at runtime.
 - **Root GameObject & Icon Preservation**: NEVER add an `Image` or `MPImage` background component directly to the ROOT GameObject of a UI view prefab (`FpsUi`, `ShipSystemUi`, `FactionUi`, `MiniMapUi`).
@@ -103,7 +103,7 @@
 - [ ] Are root GameObjects kept free of background `MPImage` overlays?
 - [ ] Are pre-existing icon GameObjects (`Your icon`, `Icon`, `MoneyIcon`, `ShipIcon`) kept 100% intact?
 - [ ] Have serialized `[SerializeField] Image` fields on gameplay views (`ReinforcementUi`, `CoreGameUi`, `ShipUi`) been preserved as standard `Image`?
-- [ ] Do sub-item views (`FactionUnitUi`, `PipelineView`, `MarkView`, `FpsCounter`) inherit from `MonoBehaviour`?
+- [ ] Do sub-item views (`FactionUnitUi`, `PipelineView`, `MarkView`) inherit from `MonoBehaviour`?
 - [ ] Does the UI follow the 3-Color Wheel Harmony System (Dark Base, Muted Accent, Bright Text)?
 - [ ] Are dropdown preview values bright crisp white (`#F8FAFC`), not greyed out?
 - [ ] Does `HeaderBanner` look like a clean title label with a divider line (and not a button box)?

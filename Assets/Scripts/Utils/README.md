@@ -9,7 +9,7 @@
 | `Conversion/` | `NumericsConversionExtensions` | Unity → System.Numerics vectors; bidirectional Vector3/quaternion conversion |
 | `Math/` | `PlanarGeometry`, `Vector2Range`, `VelocitySmoothing` | XZ geometry, rectangular bounds, velocity changes |
 | `Notifications/` | `ReplayNotifier` | Observer notification with initial state replay |
-| `Random/` | `RandomValue`, `RandomFloat`, `RandomFromArray`, `RandomAudioClips` | Serialized random ranges and array selection |
+| `Random/` | `RandomFromArray`, `RandomAudioClips` | Serialized random ranges and array selection |
 | `Tweening/` | `SequenceExtensions` | Optional sequence cancellation |
 
 - General helpers belong here when their behavior is shared across systems.
@@ -42,7 +42,7 @@
 | `Services/ShipNavigation/` | `ShipRoutePlanner` | Navigation planning; generic direction math extracted |
 | `Components/Selection/Marquee/` | `MarqueeSelectionUtility` | Marquee-specific rectangle and point types |
 | `Components/Weapon/` | `WeaponTargetSelector`, `AttackSequenceDiagnostics` | Weapon aim rules and counters |
-| `Components/Health/` | `ShipClassExtensions`, `HardPointOverlayGraphics` | Ship class and overlay behavior |
+| `Components/Health/` | `ShipClassExtensions` | Ship class behavior |
 | `Services/Cheats/` | `DebugRangeCircle`, `DebugRangeCircleFactory` | Selection-gated range debug rendering; moved out of Utils |
 | `Components/ViewComponents/Rendering/` | `DrawCircle` | Serialized fixed-circle component; moved out of Utils |
 | `Components/Ui/Layout/` | `SafeAreaHelper` | UI safe-area component; moved out of Utils |
@@ -60,7 +60,7 @@
 
 - `DrawCircle` creates `segments + 1` points at the Transform's height; `DebugRangeCircle` uses 96 local points with renderer looping and changes radius on demand. Their lifecycles and rendering contracts differ.
 - `SequenceExtensions.KillExt` cancels an optional sequence and reports whether it existed. Package `DotweenExtensions.KillIfExist` also checks active/playing state; these contracts are distinct. `DotweenExtensions_v2` renamed to `SequenceExtensions`.
-- `RandomFloat` uses Unity's random state; `RandomFromArray` owns a System.Random instance. `RandomAudioClips` is a serialized concrete specialization, not a second selection algorithm.
+- `RandomFromArray` owns a System.Random instance. `RandomAudioClips` is a serialized concrete specialization, not a second selection algorithm.
 - `AttackMoveEngagement.IsAlive` excludes cloaked entities; `SquadronTargetSelector.IsAlive` permits cloaked entities and handles absent targets. Keep those policies separate.
 - Unity/System.Numerics/Unity.Mathematics geometry stays in its existing execution domain. Pure models and Burst jobs must not acquire UnityEngine dependencies just to share arithmetic.
 - Bezier evaluation in `CubicBezierSegment` supplies tangents and integrates with route arc lengths. Package `PathCalculationUtils` samples positions; replacing route behavior with that helper would lose its contract.
