@@ -6,6 +6,10 @@ using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Services.Input;
+using EmpireAtWar.Entities.MiniMap;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace EmpireAtWar.Entities.CaptureSites
 {
@@ -16,13 +20,20 @@ namespace EmpireAtWar.Entities.CaptureSites
         private readonly CaptureSiteData _data;
         private readonly EmpireAtWar.Services.Audio.IInterfaceSfxService _interfaceAudio;
         private readonly TooltipRequests _tooltips;
+        private readonly IPointerInput _pointer;
+        private readonly IUiPlacement _placement;
+        private readonly InputAction _command;
         private CaptureSiteBuildUi _ui;
         private TooltipHoverSubscription _tooltipHover;
 
         public CaptureSiteBuildUiController(IUiService uiService, ICaptureSiteBuildSelection selection,
             CaptureSiteData data, ITooltipService tooltipService,
-            EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio) : base(uiService, null)
+            EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio,
+            IPointerInput pointer, IUiPlacement placement, InputActionsProvider inputActions) : base(uiService, null)
         {
+            _command = inputActions.Actions.Battle.Command;
+            _pointer = pointer;
+            _placement = placement;
             _interfaceAudio = interfaceAudio;
             _selection = selection;
             _data = data;
@@ -32,17 +43,22 @@ namespace EmpireAtWar.Entities.CaptureSites
         public void Initialize()
         {
             _ui = CreateUi<CaptureSiteBuildUi>();
+            _ui.SetMiniMapSlot((RectTransform)_placement.GetParent<MiniMapUi>());
             _ui.SetData(_data);
             _ui.AssignPresenter(this);
             _ui.Initialize();
             _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover, HandleTooltipHover, _tooltips);
             _selection.SelectionChanged += RefreshSelection;
+            _pointer.PrimaryPressed += HandlePointerPressed;
+            _command.started += HandleCommandPressed;
             RefreshSelection();
         }
 
         public void LateDispose()
         {
             _selection.SelectionChanged -= RefreshSelection;
+            _pointer.PrimaryPressed -= HandlePointerPressed;
+            _command.started -= HandleCommandPressed;
             _tooltipHover.Dispose();
             if (_ui != null)
             {
@@ -50,6 +66,14 @@ namespace EmpireAtWar.Entities.CaptureSites
                 _ui.Dispose();
             }
         }
+
+        private void HandlePointerPressed(Vector2 position)
+        {
+            if (_selection.SelectedSite != null && !_ui.ContainsScreenPoint(position))
+                _selection.ClearSelection();
+        }
+
+        private void HandleCommandPressed(InputAction.CallbackContext context) => HandlePointerPressed(_pointer.Position);
 
         public void Build(SiteFacilityType type)
         {
@@ -67,8 +91,8 @@ namespace EmpireAtWar.Entities.CaptureSites
             if (_selection.SelectedSite == null) _ui.Hide();
             else
             {
-                _ui.SetPosition(_selection.SelectionScreenPosition);
                 _ui.SetFacilities(_data.GetAllowedFacilities(_selection.SelectedSite.Kind));
+                _ui.SetPosition(_selection.SelectionScreenPosition);
                 Tick();
                 _ui.Show();
             }

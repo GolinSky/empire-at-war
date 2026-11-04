@@ -287,7 +287,7 @@ namespace EmpireAtWar.Services.CaptureSites
             }
         }
 
-        private void ClearSelection()
+        public void ClearSelection()
         {
             if (_selectedSite == null)
             {

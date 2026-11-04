@@ -24,9 +24,15 @@ namespace EmpireAtWar.Entities.CaptureSites
         private int _visibleOptionCount;
         private Vector3 _panelScale;
         private Vector2 _screenPosition;
-        private Vector2 _lastParentSize;
+        private RectTransform _miniMapSlot;
+        private Rect _layoutBounds;
 
         public TooltipHoverView TooltipHover => tooltipHover;
+
+        public void SetMiniMapSlot(RectTransform miniMapSlot) => _miniMapSlot = miniMapSlot;
+
+        public bool ContainsScreenPoint(Vector2 position) =>
+            IsVisible && RectTransformUtility.RectangleContainsScreenPoint(panel, position, null);
 
         public void SetData(CaptureSiteData data) => _data = data;
         public void AssignPresenter(ICaptureSiteBuildPresenter presenter)
@@ -93,8 +99,8 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         private void LayoutOptions()
         {
-            Vector2 available = ((RectTransform)panel.parent).rect.size;
-            _lastParentSize = available;
+            _layoutBounds = GetLayoutBounds();
+            Vector2 available = _layoutBounds.size;
             int columns = Mathf.Clamp(Mathf.FloorToInt(available.x / (CARD_WIDTH * _panelScale.x)),
                 1, _visibleOptionCount);
             int rows = Mathf.CeilToInt((float)_visibleOptionCount / columns);
@@ -129,7 +135,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             RectTransform parent = (RectTransform)panel.parent;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(parent, _screenPosition, null,
                 out Vector2 anchor);
-            Rect bounds = parent.rect;
+            Rect bounds = _layoutBounds;
             Vector2 size = Vector2.Scale(panel.rect.size, panel.localScale);
             float halfWidth = size.x * .5f;
             float x = anchor.x + SIDE_OFFSET + halfWidth;
@@ -146,11 +152,25 @@ namespace EmpireAtWar.Entities.CaptureSites
                 if (option.FacilityType == type) option.SetInteractable(available);
         }
 
+        private Rect GetLayoutBounds()
+        {
+            RectTransform parent = (RectTransform)panel.parent;
+            Rect bounds = parent.rect;
+            // The minimap occupies the HUD's bottom-left corner. Keep cards in the
+            // larger remaining region, and size them to fit that same region.
+            Vector3 corner = parent.InverseTransformPoint(_miniMapSlot.TransformPoint(_miniMapSlot.rect.max));
+            Rect above = bounds;
+            above.yMin = Mathf.Clamp(corner.y, bounds.yMin, bounds.yMax);
+            Rect right = bounds;
+            right.xMin = Mathf.Clamp(corner.x, bounds.xMin, bounds.xMax);
+            return above.width * above.height >= right.width * right.height ? above : right;
+        }
+
         private void OnDestroy() => Dispose();
 
         private void LateUpdate()
         {
-            if (!IsVisible || ((RectTransform)panel.parent).rect.size == _lastParentSize) return;
+            if (!IsVisible || GetLayoutBounds() == _layoutBounds) return;
             LayoutOptions();
             ApplyPosition();
         }

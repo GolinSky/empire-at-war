@@ -11,5 +11,6 @@ namespace EmpireAtWar.Services.CaptureSites
         Vector2 SelectionScreenPosition { get; }
         bool CanAfford(float price);
         void BuildSelected(SiteFacilityType facilityType);
+        void ClearSelection();
     }
 }

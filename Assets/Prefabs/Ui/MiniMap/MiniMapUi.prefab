@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 7054577458487647260}
   - component: {fileID: 8632742744362913578}
   - component: {fileID: 3001803444985430447}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HudFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}

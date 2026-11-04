@@ -23,6 +23,7 @@ namespace EmpireAtWar.Tests.Editor
         private InputSettings _originalSettings;
         private InputSettings _testSettings;
         private PointerStub _pointer;
+        private UiHitTestStub _uiHitTest;
         private AbilityStub _abilities;
         private UnitActionTargetingModel _targeting;
         private SuperWeaponTargetingModel _superWeapons;
@@ -51,7 +52,8 @@ namespace EmpireAtWar.Tests.Editor
             _abilities = new AbilityStub();
             _targeting = new UnitActionTargetingModel();
             _superWeapons = new SuperWeaponTargetingModel();
-            _gestures = new PointerGestures(_pointer, new UiHitTestStub(), _provider,
+            _uiHitTest = new UiHitTestStub();
+            _gestures = new PointerGestures(_pointer, _uiHitTest, _provider,
                 _abilities, _targeting, _superWeapons);
             _view = new MarqueeViewStub();
             _marquee = new MarqueeSelectionPresenter(_gestures, _view,
@@ -115,6 +117,29 @@ namespace EmpireAtWar.Tests.Editor
             MouseFrame(2, Vector2.zero);
             MouseFrame(0, Vector2.zero);
             Assert.That(_commanded, Is.EqualTo(1));
+        }
+
+        [TestCase(false, true, false, 0)]
+        [TestCase(false, false, true, 0)]
+        [TestCase(false, false, false, 1)]
+        [TestCase(true, true, false, 0)]
+        [TestCase(true, false, true, 0)]
+        [TestCase(true, false, false, 1)]
+        public void Command_RequiresWorldPressAndRelease(bool attackMove, bool pressOverUi,
+            bool releaseOverUi, int expectedCommands)
+        {
+            if (attackMove) Arm("AttackMove");
+            _uiHitTest.OverUi = pressOverUi;
+            MouseFrame(2, Vector2.zero);
+            _uiHitTest.OverUi = releaseOverUi;
+            MouseFrame(0, new Vector2(100f, 100f));
+            Assert.That(_commanded, Is.EqualTo(expectedCommands));
+
+            _uiHitTest.OverUi = false;
+            MouseFrame(2, Vector2.zero);
+            MouseFrame(0, Vector2.zero);
+            Assert.That(_commanded, Is.EqualTo(expectedCommands + 1),
+                "The previous gesture must not suppress a subsequent world command.");
         }
 
         [Test]
@@ -220,7 +245,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class UiHitTestStub : IUiHitTest
         {
-            public bool IsOverUi(Vector2 position) => false;
+            public bool OverUi { get; set; }
+            public bool IsOverUi(Vector2 position) => OverUi;
         }
 
         private sealed class HudStub : IHudVisibilityObserver

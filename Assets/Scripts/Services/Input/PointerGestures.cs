@@ -20,6 +20,7 @@ namespace EmpireAtWar.Services.Input
         private readonly MouseDragState _drag = new MouseDragState();
 
         private readonly GameInputActions.BattleActions _battle;
+        private bool _commandPressedInWorld;
 
         public event Action<Vector2> WorldPressed;
 
@@ -49,11 +50,17 @@ namespace EmpireAtWar.Services.Input
         {
             if (!_battle.Select.enabled)
             {
+                _commandPressedInWorld = false;
                 CancelDrag();
                 return;
             }
 
             Vector2 position = _pointerInput.Position;
+            if (_battle.Command.WasPressedThisFrame())
+                _commandPressedInWorld = !_uiHitTest.IsOverUi(position);
+            bool commandReleased = _battle.Command.WasReleasedThisFrame();
+            bool commandWorld = commandReleased && _commandPressedInWorld && !_uiHitTest.IsOverUi(position);
+            if (commandReleased) _commandPressedInWorld = false;
             if (_abilities.IsWaitingForTarget || _targeting.Pending != null || _superWeapons.Pending != null)
             {
                 CancelDrag();
@@ -62,7 +69,7 @@ namespace EmpireAtWar.Services.Input
                     _abilities.CancelTargeting();
                     return;
                 }
-                if (_battle.Command.WasReleasedThisFrame() && !_uiHitTest.IsOverUi(position))
+                if (commandWorld)
                     WorldCommanded?.Invoke(position);
                 return;
             }
@@ -81,7 +88,7 @@ namespace EmpireAtWar.Services.Input
                 Release(position);
             }
 
-            if (_battle.Command.WasReleasedThisFrame() && !_uiHitTest.IsOverUi(position))
+            if (commandWorld)
             {
                 WorldCommanded?.Invoke(position);
             }
