@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.CaptureSites;
-using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.SuperWeapons;
@@ -32,11 +31,11 @@ namespace EmpireAtWar.Editor.Balance
                 CaptureSiteData sites = BalanceRegistration.One<CaptureSiteData>();
                 foreach (SiteFacilityType type in sites.GetAllowedFacilities(CaptureSiteKind.Satellite))
                 {
-                    string key = SiteFacilityBuilder.SatelliteType(type).ToString();
+                    string key = type.ToSatelliteType().ToString();
                     BalanceUnit satellite = Structure(registry, faction,
                         BalanceAssetResolver.Load<DefendPlatformData>(mapping.GetAssetKey(key + "Data")), key,
                         sites.GetCost(type).Name, key + "View", mapping);
-                    satellite.Icon = BalanceRegistration.One<DefendPlatformCatalog>().Get(SiteFacilityBuilder.SatelliteType(type)).Icon;
+                    satellite.Icon = BalanceRegistration.One<DefendPlatformCatalog>().Get(type.ToSatelliteType()).Icon;
                     using (SerializedObject serialized = new SerializedObject(sites))
                     {
                         SerializedProperty value = BalanceRegistration.Keyed(serialized, "facilityCosts.keyValue")

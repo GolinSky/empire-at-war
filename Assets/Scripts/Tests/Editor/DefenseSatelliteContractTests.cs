@@ -9,7 +9,6 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Services.CaptureSites;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -27,7 +26,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Satellite_HasRegisteredSixWeaponPrefabAndBalancedData(SiteFacilityType facility,
             DefendPlatformType platform, WeaponType weapon, float price, float buildTime)
         {
-            Assert.That(SiteFacilityBuilder.SatelliteType(facility), Is.EqualTo(platform));
+            Assert.That(facility.ToSatelliteType(), Is.EqualTo(platform));
             DefendPlatformData data = LoadData(platform);
             Assert.That(data.ComponentData.Hull, Is.EqualTo(3000f));
             Assert.That(data.ComponentData.Shields, Is.EqualTo(5000f));

@@ -125,7 +125,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             foreach (SiteFacilityType type in _siteData.GetAllowedFacilities(CaptureSiteKind.Satellite))
             {
-                DefendPlatformData data = _assets.Load<DefendPlatformData>(SiteFacilityBuilder.SatelliteType(type) + "Data");
+                DefendPlatformData data = _assets.Load<DefendPlatformData>(type.ToSatelliteType() + "Data");
                 EntityComponentData components = data.ComponentData;
                 UnitCombatProfile profile = UnitCombatProfileFactory.Create(components.ShipClass, components.Hull,
                     components.Shields, data.WeaponLoadout, _weapons, _damage, Array.Empty<UnitCombatProfile>());

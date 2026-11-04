@@ -69,16 +69,6 @@ namespace EmpireAtWar.Services.CaptureSites
             SiteFacilityType.TurbolaserSatellite or SiteFacilityType.IonSatellite or
             SiteFacilityType.MassDriverSatellite or SiteFacilityType.MissileSatellite;
 
-        public static DefendPlatformType SatelliteType(SiteFacilityType type) => type switch
-        {
-            SiteFacilityType.QuadLaserSatellite => DefendPlatformType.QuadLaserSatellite,
-            SiteFacilityType.TurbolaserSatellite => DefendPlatformType.TurbolaserSatellite,
-            SiteFacilityType.IonSatellite => DefendPlatformType.IonSatellite,
-            SiteFacilityType.MassDriverSatellite => DefendPlatformType.MassDriverSatellite,
-            SiteFacilityType.MissileSatellite => DefendPlatformType.MissileSatellite,
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-        };
-
         public long Build(SiteFacilityType facilityType, Vector3 position, Action onDestroyed,
             Action<float> onConstructionProgress)
         {
@@ -104,7 +94,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 case SiteFacilityType.IonSatellite:
                 case SiteFacilityType.MassDriverSatellite:
                 case SiteFacilityType.MissileSatellite:
-                    var satellite = _defendPlatformFactory.Create(_owner, SatelliteType(facilityType), position, entityId,
+                    var satellite = _defendPlatformFactory.Create(_owner, facilityType.ToSatelliteType(), position, entityId,
                         buildDuration: _data.GetCost(facilityType).BuildTime);
                     satellite.OnRelease += onDestroyed;
                     satellite.ConstructionProgressChanged += onConstructionProgress;
