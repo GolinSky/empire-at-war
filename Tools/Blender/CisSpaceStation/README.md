@@ -15,7 +15,7 @@ Dedicated reference: `Architecture/CIS_SPACE_STATION_MODEL_IMPORT_GUIDE.md` in `
 - Source: `D:/SteamLibrary/steamapps/workshop/content/32470/1129810972/Data/Art/Models/`; sibling `Textures/`.
 - Definitions: `Data/XML/StarBases_Cis.xml` → `Hardpoints_CIS_Starbase.xml`. Internal `Rebel_Star_Base_1–5` names mean CIS in this mod.
 - Visual prefabs: `Assets/Prefabs/Models/Stations/`.
-- Gameplay and level mapping: `Assets/Prefabs/Models/Stations/SeparatistSpaceStationView.prefab`, `StationLevelView.levelModels`.
+- Gameplay and level mapping: `Assets/Prefabs/Models/Stations/Separatist/SeparatistSpaceStationView.prefab`, `StationLevelView.levelModels`.
 - Faction routing: `Assets/Settings/AssetMappingData.asset`, key `SeparatistSpaceStationView`; existing Addressables `View` group and original prefab GUID.
 - FBXs: `Assets/Art/Models/SpaceStations/CisSpaceStation/LevelN/CisSpaceStationLevelN.fbx`.
 - Materials/textures: `Assets/Art/{Materials,Textures}/Models/SpaceStations/CisSpaceStation/`.
@@ -62,7 +62,7 @@ uv run --with pillow python -B Tools/Blender/CisSpaceStation/Stage.py
 unity command run_script --file Temp/CisStationImport/BuildArt.cs --timeout_ms 120000 --timeout 180 --json
 unity command run_script --file Temp/CisStationImport/BuildView.cs --json
 unity command run_script --file Tools/Blender/SpaceStations/BuildStationLevels.cs --args '["Separatist"]' --timeout_ms 120000 --timeout 180 --json
-unity command eval --code 'EmpireAtWar.Editor.Rendering.ShipWreckBuilder.Build("Assets/Prefabs/Models/Stations/SeparatistSpaceStationView.prefab");' --json
+unity command eval --code 'EmpireAtWar.Editor.Rendering.ShipWreckBuilder.Build("Assets/Prefabs/Models/Stations/Separatist/SeparatistSpaceStationView.prefab");' --json
 unity command run_script --file Temp/CisStationImport/Verify.cs --json
 uv run --with pillow python -B Temp/CisStationImport/VerifyGeometry.py
 uv run --with pillow python -B Tools/Blender/CisSpaceStation/VerifyNormals.py

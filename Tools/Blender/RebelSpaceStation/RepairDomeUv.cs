@@ -6,7 +6,7 @@ using UnityEngine;
 public static class RepairRebelStationDomeUv
 {
     private const string MODELS = "Assets/Art/Models/SpaceStations/RebelSpaceStation/";
-    private const string PREFABS = "Assets/Prefabs/Models/Stations/";
+    private const string PREFABS = "Assets/Prefabs/Models/Stations/Rebellion/";
 
     public static string Main()
     {

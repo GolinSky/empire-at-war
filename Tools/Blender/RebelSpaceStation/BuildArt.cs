@@ -11,7 +11,7 @@ public static class BuildRebelStationArt
     private const string TASK = "Temp/RebelStationImport/";
     private const string TEXTURES = "Assets/Art/Textures/Models/SpaceStations/RebelSpaceStation/";
     private const string MATERIALS = "Assets/Art/Materials/Models/SpaceStations/RebelSpaceStation/";
-    private const string PREFABS = "Assets/Prefabs/Models/Stations/";
+    private const string PREFABS = "Assets/Prefabs/Models/Stations/Rebellion/";
 
     public static string Main()
     {

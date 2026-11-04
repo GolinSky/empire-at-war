@@ -22,10 +22,10 @@ namespace EmpireAtWar.Tests.Editor
         private const float PIVOT_TOLERANCE = .01f;
         private static readonly int[] ART_PIECES = { 5, 8, 11, 14, 18 };
 
-        private static string ViewPath(string faction) => PREFABS + faction + "SpaceStationView.prefab";
+        private static string ViewPath(string faction) => PREFABS + faction + "/" + faction + "SpaceStationView.prefab";
 
         private static string LevelPath(string faction, int level) =>
-            PREFABS + (faction == "Rebellion" ? "Rebel" : faction == "Separatist" ? "Cis" : faction) + "SpaceStationLevel" + level + ".prefab";
+            PREFABS + faction + "/" + (faction == "Rebellion" ? "Rebel" : faction == "Separatist" ? "Cis" : faction) + "SpaceStationLevel" + level + ".prefab";
 
         private static StationLevelModel LoadModel(string faction, int level) =>
             AssetDatabase.LoadAssetAtPath<GameObject>(LevelPath(faction, level)).GetComponent<StationLevelModel>();

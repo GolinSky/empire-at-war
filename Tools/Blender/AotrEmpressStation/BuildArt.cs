@@ -13,7 +13,7 @@ public static class BuildEmpressArt
     private const string MODELS = "Assets/Art/Models/SpaceStations/AotrEmpressStation/";
     private const string TEXTURES = "Assets/Art/Textures/Models/SpaceStations/AotrEmpressStation/";
     private const string MATERIALS = "Assets/Art/Materials/Models/SpaceStations/AotrEmpressStation/";
-    private const string PREFAB = "Assets/Prefabs/Models/Stations/AotrEmpressStation.prefab";
+    private const string PREFAB = "Assets/Prefabs/Models/Stations/Shared/AotrEmpressStation.prefab";
 
     public static string Main()
     {

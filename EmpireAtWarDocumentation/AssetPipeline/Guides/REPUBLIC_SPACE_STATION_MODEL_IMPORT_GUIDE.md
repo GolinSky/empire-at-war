@@ -132,7 +132,7 @@ unity command run_script --file Temp/RepublicStationImport/Render.cs --json
 ## Files
 - Models: `Assets/Art/Models/SpaceStations/RepublicSpaceStation/LevelN/RepublicSpaceStationLevelN.fbx`.
 - Materials/textures: `Assets/Art/{Materials,Textures}/Models/SpaceStations/RepublicSpaceStation/`.
-- Prefabs: `Assets/Prefabs/Models/Stations/RepublicSpaceStationLevel1–5.prefab`, `RepublicSpaceStationView.prefab`.
+- Prefabs: `Assets/Prefabs/Models/Stations/Republic/RepublicSpaceStationLevel1–5.prefab`, `RepublicSpaceStationView.prefab`.
 - Builders: `Tools/Blender/RepublicSpaceStation/`, `Tools/Blender/SpaceStations/BuildStationLevels.cs`, `Republic.json`.
 - Evidence: `Temp/RepublicStationImport/{SourceAudit,ConversionReport,VerifiedSourceGeometry,VerifiedMapping,StationLevelTests,RepublicTests}.json`.
 

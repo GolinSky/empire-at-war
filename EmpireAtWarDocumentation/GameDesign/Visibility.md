@@ -91,6 +91,6 @@ verification: source-and-assets
 - `Assets/Scripts/Services/ShipAbilities/Abilities/Cloak/CloakAbility.cs`; `Assets/Scripts/Components/ViewComponents/CloakView.cs`.
 - `Assets/Scripts/Entities/MiniMap/Presenter/MiniMapUnitMarkerPresenter.cs`.
 - `Assets/Settings/Data/ReinforcementZones/ReinforcementZoneData.asset`; `Assets/Settings/Data/Ship/Republic/StealthCorvetteShipData.asset`.
-- `Assets/Prefabs/Models/Stations/RepublicSpaceStationView.prefab`; `Assets/Prefabs/Models/Stations/SeparatistSpaceStationView.prefab`.
-- `Assets/Prefabs/Models/Stations/EmpireSpaceStationView.prefab`; `Assets/Prefabs/Models/Stations/RebellionSpaceStationView.prefab`.
+- `Assets/Prefabs/Models/Stations/Republic/RepublicSpaceStationView.prefab`; `Assets/Prefabs/Models/Stations/Separatist/SeparatistSpaceStationView.prefab`.
+- `Assets/Prefabs/Models/Stations/Empire/EmpireSpaceStationView.prefab`; `Assets/Prefabs/Models/Stations/Rebellion/RebellionSpaceStationView.prefab`.
 - [[GameDesign/00_GameDesign]].

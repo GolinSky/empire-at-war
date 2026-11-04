@@ -10,7 +10,7 @@ public static class BuildRebelStationAttachments
 {
     private const string TASK = "Temp/RebelStationImport/";
     private const string MODELS = "Assets/Art/Models/SpaceStations/RebelSpaceStation/Attachments/";
-    private const string PREFABS = "Assets/Prefabs/Models/Stations/";
+    private const string PREFABS = "Assets/Prefabs/Models/Stations/Rebellion/";
     private const string MATERIALS = "Assets/Art/Materials/Models/SpaceStations/RebelSpaceStation/RebelSpaceStation_RebelStationSlot";
 
     public static string Main()

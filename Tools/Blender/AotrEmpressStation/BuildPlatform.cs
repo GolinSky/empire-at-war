@@ -11,7 +11,7 @@ using UnityEngine;
 
 public static class BuildEmpressPlatform
 {
-    private const string VISUAL = "Assets/Prefabs/Models/Stations/AotrEmpressStation.prefab";
+    private const string VISUAL = "Assets/Prefabs/Models/Stations/Shared/AotrEmpressStation.prefab";
     private const string VIEW = "Assets/Prefabs/Models/DefendStation/AotrEmpressDefensePlatformView.prefab";
     private const string PREVIEW = "Assets/Prefabs/Ui/Reinforcement/AotrEmpressDefensePlatformReinforcementView.prefab";
     private const string DATA = "Assets/Settings/Data/Models/DefendPlatform/AotrEmpressDefensePlatformData.asset";

@@ -60,7 +60,7 @@ reviewed: 2026-10-20
 4. Inspect port **9887** and running Blender processes; start/reuse only the isolated CIS session. Keep safe mode enabled and telemetry disabled.
 5. Upload each level's normal chunks in **numeric** order; run its conversion request. All writes go to `Temp/CisStationImport/`.
 6. Run `Stage.py` → generated `BuildArt.cs` → generated `BuildView.cs` → shared `BuildStationLevels.cs` with `["Separatist"]`.
-7. Rebuild the fixed CIS wreck with `ShipWreckBuilder.Build("Assets/Prefabs/Models/Stations/SeparatistSpaceStationView.prefab")`; the shared builder explicitly selects level 5.
+7. Rebuild the fixed CIS wreck with `ShipWreckBuilder.Build("Assets/Prefabs/Models/Stations/Separatist/SeparatistSpaceStationView.prefab")`; the shared builder explicitly selects level 5.
 8. Run `Verify.cs` → `VerifyGeometry.py` → `VerifyNormals.py` → `VerifyCisStationMapping.cs` → `Render.cs`; inspect every level and contrasting team colors.
 9. Station Edit Mode tests (`--filter Station`): Tests only on explicit user request (root `AGENTS.md` → Local Test Execution Override); then follow Unity Test Safety there.
 
@@ -127,7 +127,7 @@ reviewed: 2026-10-20
 
 - `Tools/Blender/CisSpaceStation/` — audit, source normal restoration, staging, baseline/mapping verifiers and exact rebuild procedure.
 - `Tools/Blender/SpaceStations/Separatist.json` — source anchors and level mapping.
-- `Assets/Prefabs/Models/Stations/SeparatistSpaceStationView.prefab` — saved gameplay level configuration.
+- `Assets/Prefabs/Models/Stations/Separatist/SeparatistSpaceStationView.prefab` — saved gameplay level configuration.
 - `Assets/Art/Models/SpaceStations/CisSpaceStation/LevelN/CisSpaceStationLevelN.fbx` — source-derived FBXs.
 - `Assets/Art/{Materials,Textures}/Models/SpaceStations/CisSpaceStation/` — shared art.
 - `Assets/Art/Models/Shields/CisSpaceStationLevelNShield.asset` — per-level shield surfaces.

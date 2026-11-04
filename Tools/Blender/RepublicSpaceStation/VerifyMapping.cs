@@ -12,7 +12,7 @@ using UnityEngine;
 public static class VerifyRepublicStationMapping
 {
     private const string TASK = "Temp/RepublicStationImport/";
-    private const string PREFABS = "Assets/Prefabs/Models/Stations/";
+    private const string PREFABS = "Assets/Prefabs/Models/Stations/Republic/";
     private const string VIEW = PREFABS + "RepublicSpaceStationView.prefab";
     private static readonly string[] PRESERVED = {
         PREFABS + "EmpireSpaceStationView.prefab", PREFABS + "RebellionSpaceStationView.prefab",

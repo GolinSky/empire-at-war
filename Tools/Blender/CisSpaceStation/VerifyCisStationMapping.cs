@@ -12,7 +12,7 @@ using UnityEngine;
 public static class VerifyCisStationMapping
 {
     private const string TASK = "Temp/CisStationImport/";
-    private const string VIEW = "Assets/Prefabs/Models/Stations/SeparatistSpaceStationView.prefab";
+    private const string VIEW = "Assets/Prefabs/Models/Stations/Separatist/SeparatistSpaceStationView.prefab";
 
     public static string Main()
     {

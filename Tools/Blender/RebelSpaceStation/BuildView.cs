@@ -9,7 +9,7 @@ using UnityEngine;
 
 public static class BuildRebelStationView
 {
-    private const string PREFABS = "Assets/Prefabs/Models/Stations/";
+    private const string PREFABS = "Assets/Prefabs/Models/Stations/Rebellion/";
     private const string VIEW = PREFABS + "RebellionSpaceStationView.prefab";
     private const string DONOR = PREFABS + "RepublicSpaceStationView.prefab";
 

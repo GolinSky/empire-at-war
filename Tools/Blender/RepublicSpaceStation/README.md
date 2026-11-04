@@ -4,7 +4,7 @@ Dedicated setup/rebuild guide: [Republic Space Station Model Import Guide](../..
 
 - Source: Republic at War, Workshop `1129810972`, `ReB_Shipyard_Level_01–05.ALO`.
 - Faction: Republic only. Source XML names `Empire_Star_Base_1–5` are Republic units.
-- Prefabs: `Assets/Prefabs/Models/Stations/RepublicSpaceStationLevel1–5.prefab`.
+- Prefabs: `Assets/Prefabs/Models/Stations/Republic/RepublicSpaceStationLevel1–5.prefab`.
 - Runtime mapping: `RepublicSpaceStationView.prefab`, `StationLevelView.levelModels[0..4]`.
 - Build mapping: [Republic.json](../SpaceStations/Republic.json).
 - Reuses the Rebel binary reader/converter and shared station builder. Uses a dedicated Blender MCP process on port `9897` with safe-mode validation.

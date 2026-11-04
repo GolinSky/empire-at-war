@@ -1,11 +1,11 @@
 {
-  "view": "Assets/Prefabs/Models/Stations/RepublicSpaceStationView.prefab",
+  "view": "Assets/Prefabs/Models/Stations/Republic/RepublicSpaceStationView.prefab",
   "levels": [
-    "Assets/Prefabs/Models/Stations/RepublicSpaceStationLevel1.prefab",
-    "Assets/Prefabs/Models/Stations/RepublicSpaceStationLevel2.prefab",
-    "Assets/Prefabs/Models/Stations/RepublicSpaceStationLevel3.prefab",
-    "Assets/Prefabs/Models/Stations/RepublicSpaceStationLevel4.prefab",
-    "Assets/Prefabs/Models/Stations/RepublicSpaceStationLevel5.prefab"
+    "Assets/Prefabs/Models/Stations/Republic/RepublicSpaceStationLevel1.prefab",
+    "Assets/Prefabs/Models/Stations/Republic/RepublicSpaceStationLevel2.prefab",
+    "Assets/Prefabs/Models/Stations/Republic/RepublicSpaceStationLevel3.prefab",
+    "Assets/Prefabs/Models/Stations/Republic/RepublicSpaceStationLevel4.prefab",
+    "Assets/Prefabs/Models/Stations/Republic/RepublicSpaceStationLevel5.prefab"
   ],
   "artPrefix": "ReB_",
   "mounts": [

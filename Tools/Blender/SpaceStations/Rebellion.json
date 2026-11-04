@@ -1,11 +1,11 @@
 {
-  "view": "Assets/Prefabs/Models/Stations/RebellionSpaceStationView.prefab",
+  "view": "Assets/Prefabs/Models/Stations/Rebellion/RebellionSpaceStationView.prefab",
   "levels": [
-    "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel1.prefab",
-    "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel2.prefab",
-    "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel3.prefab",
-    "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel4.prefab",
-    "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel5.prefab"
+    "Assets/Prefabs/Models/Stations/Rebellion/RebelSpaceStationLevel1.prefab",
+    "Assets/Prefabs/Models/Stations/Rebellion/RebelSpaceStationLevel2.prefab",
+    "Assets/Prefabs/Models/Stations/Rebellion/RebelSpaceStationLevel3.prefab",
+    "Assets/Prefabs/Models/Stations/Rebellion/RebelSpaceStationLevel4.prefab",
+    "Assets/Prefabs/Models/Stations/Rebellion/RebelSpaceStationLevel5.prefab"
   ],
   "artPrefix": "RB_Station_",
   "mounts": [

@@ -10,7 +10,7 @@ public static class CaptureCisStationBaseline
 {
     public static string Main()
     {
-        var root = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Stations/SeparatistSpaceStationView.prefab");
+        var root = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Stations/Separatist/SeparatistSpaceStationView.prefab");
         var hardpoints = new JArray(root.GetComponentsInChildren<HardPoint>(true).OrderBy(h => h.Id).Select(h =>
         {
             h.TryGetWeaponType(out var weapon);
@@ -26,7 +26,7 @@ public static class CaptureCisStationBaseline
         }
         var hashes = new JObject();
         foreach (string path in new[] {"Assets/Settings/Data/Factions/Shared/StationLevelData.asset", "Assets/Settings/Data/Models/SpaceStation/SpaceStationData.asset"}
-            .Concat(new[] {"Republic", "Rebellion", "Empire"}.Select(f => "Assets/Prefabs/Models/Stations/" + f + "SpaceStationView.prefab")))
+            .Concat(new[] {"Republic", "Rebellion", "Empire"}.Select(f => "Assets/Prefabs/Models/Stations/" + f + "/" + f + "SpaceStationView.prefab")))
             using (var hash = SHA256.Create()) hashes[path] = System.BitConverter.ToString(hash.ComputeHash(File.ReadAllBytes(path)));
         var renderers = new SerializedObject(root.GetComponent<EmpireAtWar.Entities.SpaceStation.SpaceStation>()).FindProperty("explosionHullRenderers");
         Bounds bounds = ((Renderer)renderers.GetArrayElementAtIndex(0).objectReferenceValue).bounds;

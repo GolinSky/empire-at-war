@@ -38,7 +38,7 @@ public static class RenderRebelStations
             Shader.SetGlobalVectorArray("_TeamColors", colors.Select(c => (Vector4)c).ToArray());
             for (int level = 1; level <= 5; level++)
             {
-                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Stations/RebelSpaceStationLevel" + level + ".prefab");
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Stations/Rebellion/RebelSpaceStationLevel" + level + ".prefab");
                 var root = (GameObject)PrefabUtility.InstantiatePrefab(prefab, scene);
                 foreach (var child in root.GetComponentsInChildren<Transform>(true)) child.gameObject.layer = 30;
                 for (int team = 0; team < 8; team++)

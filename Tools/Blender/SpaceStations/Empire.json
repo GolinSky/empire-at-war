@@ -1,11 +1,11 @@
 {
-  "view": "Assets/Prefabs/Models/Stations/EmpireSpaceStationView.prefab",
+  "view": "Assets/Prefabs/Models/Stations/Empire/EmpireSpaceStationView.prefab",
   "levels": [
-    "Assets/Prefabs/Models/Stations/EmpireSpaceStationLevel1.prefab",
-    "Assets/Prefabs/Models/Stations/EmpireSpaceStationLevel2.prefab",
-    "Assets/Prefabs/Models/Stations/EmpireSpaceStationLevel3.prefab",
-    "Assets/Prefabs/Models/Stations/EmpireSpaceStationLevel4.prefab",
-    "Assets/Prefabs/Models/Stations/EmpireSpaceStationLevel5.prefab"
+    "Assets/Prefabs/Models/Stations/Empire/EmpireSpaceStationLevel1.prefab",
+    "Assets/Prefabs/Models/Stations/Empire/EmpireSpaceStationLevel2.prefab",
+    "Assets/Prefabs/Models/Stations/Empire/EmpireSpaceStationLevel3.prefab",
+    "Assets/Prefabs/Models/Stations/Empire/EmpireSpaceStationLevel4.prefab",
+    "Assets/Prefabs/Models/Stations/Empire/EmpireSpaceStationLevel5.prefab"
   ],
   "artPrefix": "EB_Station_",
   "mounts": [

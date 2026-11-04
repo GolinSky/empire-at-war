@@ -11,7 +11,7 @@
 
 | Asset | Path |
 | --- | --- |
-| Separate station visual | `Assets/Prefabs/Models/Stations/AotrEmpressStation.prefab` |
+| Separate station visual | `Assets/Prefabs/Models/Stations/Shared/AotrEmpressStation.prefab` |
 | Gameplay | `Assets/Prefabs/Models/DefendStation/AotrEmpressDefensePlatformView.prefab` |
 | Data | `Assets/Settings/Data/Models/DefendPlatform/AotrEmpressDefensePlatformData.asset` |
 | Placement | `Assets/Prefabs/Ui/Reinforcement/AotrEmpressDefensePlatformReinforcementView.prefab` |

@@ -1,11 +1,11 @@
 {
-  "view": "Assets/Prefabs/Models/Stations/SeparatistSpaceStationView.prefab",
+  "view": "Assets/Prefabs/Models/Stations/Separatist/SeparatistSpaceStationView.prefab",
   "levels": [
-    "Assets/Prefabs/Models/Stations/CisSpaceStationLevel1.prefab",
-    "Assets/Prefabs/Models/Stations/CisSpaceStationLevel2.prefab",
-    "Assets/Prefabs/Models/Stations/CisSpaceStationLevel3.prefab",
-    "Assets/Prefabs/Models/Stations/CisSpaceStationLevel4.prefab",
-    "Assets/Prefabs/Models/Stations/CisSpaceStationLevel5.prefab"
+    "Assets/Prefabs/Models/Stations/Separatist/CisSpaceStationLevel1.prefab",
+    "Assets/Prefabs/Models/Stations/Separatist/CisSpaceStationLevel2.prefab",
+    "Assets/Prefabs/Models/Stations/Separatist/CisSpaceStationLevel3.prefab",
+    "Assets/Prefabs/Models/Stations/Separatist/CisSpaceStationLevel4.prefab",
+    "Assets/Prefabs/Models/Stations/Separatist/CisSpaceStationLevel5.prefab"
   ],
   "alignmentAnchor": "HP01_SHG",
   "targetDiameter": 380.5378,

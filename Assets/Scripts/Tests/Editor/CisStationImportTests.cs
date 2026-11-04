@@ -32,7 +32,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(((ModelImporter)AssetImporter.GetAtPath(path)).importNormals, Is.EqualTo(ModelImporterNormals.Import));
             Assert.That(raw.GetComponentsInChildren<Transform>(true).Count(t => t.GetComponent<Renderer>() == null) - 2,
                 Is.EqualTo(BONE_COUNTS[level - 1]), "Exclude the FBX and armature object roots.");
-            var visual = AssetDatabase.LoadAssetAtPath<GameObject>(PREFABS + name + ".prefab");
+            var visual = AssetDatabase.LoadAssetAtPath<GameObject>(PREFABS + "Separatist/" + name + ".prefab");
             var visibleHull = visual.GetComponentsInChildren<MeshRenderer>(true).Single(r => r.name == hull.name);
             Assert.That(visibleHull.GetComponent<MeshFilter>().sharedMesh, Is.SameAs(mesh));
             Assert.That(visibleHull.sharedMaterial.shader.name, Is.EqualTo("EmpireAtWar/Ship Lit"));
@@ -42,7 +42,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Girders_UseTheirOwnCutoutTexture([NUnit.Framework.Range(2, 5)] int level)
         {
-            var model = AssetDatabase.LoadAssetAtPath<GameObject>(PREFABS + "CisSpaceStationLevel" + level + ".prefab");
+            var model = AssetDatabase.LoadAssetAtPath<GameObject>(PREFABS + "Separatist/CisSpaceStationLevel" + level + ".prefab");
             var girder = model.GetComponentsInChildren<MeshRenderer>(true).Single(r => r.name == "girders");
             Assert.That(girder.enabled, Is.True);
             Assert.That(girder.sharedMaterial.GetTexture("_BaseMap").name, Is.EqualTo("CisSpaceStation_seb_girder"));
@@ -55,7 +55,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             foreach (string faction in new[] {"Republic", "Separatist", "Rebellion", "Empire"})
             {
-                string path = PREFABS + faction + "SpaceStationView.prefab";
+                string path = PREFABS + faction + "/" + faction + "SpaceStationView.prefab";
                 int cisModels = AssetDatabase.GetDependencies(path, true).Count(p => p.StartsWith(MODELS) && p.EndsWith(".fbx"));
                 Assert.That(cisModels, Is.EqualTo(faction == "Separatist" ? 5 : 0), faction);
             }
@@ -76,7 +76,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void EmbeddedHardPointDamage_KeepsTheHullAndSourceBonesVisible()
         {
-            var root = PrefabUtility.LoadPrefabContents(PREFABS + "SeparatistSpaceStationView.prefab");
+            var root = PrefabUtility.LoadPrefabContents(PREFABS + "Separatist/SeparatistSpaceStationView.prefab");
             try
             {
                 var view = root.GetComponent<StationLevelView>();

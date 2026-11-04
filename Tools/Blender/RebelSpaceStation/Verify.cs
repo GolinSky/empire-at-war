@@ -9,7 +9,7 @@ using UnityEngine;
 public static class VerifyRebelStations
 {
     private const string TASK = "Temp/RebelStationImport/";
-    private const string PREFABS = "Assets/Prefabs/Models/Stations/";
+    private const string PREFABS = "Assets/Prefabs/Models/Stations/Rebellion/";
 
     public static string Main()
     {

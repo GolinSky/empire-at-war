@@ -53,7 +53,7 @@ reviewed: 2026-10-20
 | 5 | `RB_STATION_05.ALO` | `RebelSpaceStationLevel5.prefab` | `levelModels[4]` |
 
 - All visual prefabs: `Assets/Prefabs/Models/Stations/`.
-- All configuration elements: `StationLevelView.levelModels` on `Assets/Prefabs/Models/Stations/RebellionSpaceStationView.prefab`.
+- All configuration elements: `StationLevelView.levelModels` on `Assets/Prefabs/Models/Stations/Rebellion/RebellionSpaceStationView.prefab`.
 
 ### 2. Blender setup and conversion
 
@@ -88,7 +88,7 @@ reviewed: 2026-10-20
 | Materials | `Assets/Art/Materials/Models/SpaceStations/RebelSpaceStation/` |
 | Textures | `Assets/Art/Textures/Models/SpaceStations/RebelSpaceStation/` |
 | Shield, level N | `Assets/Art/Models/Shields/RebelSpaceStationLevelNShield.asset` |
-| Gameplay prefab | `Assets/Prefabs/Models/Stations/RebellionSpaceStationView.prefab` |
+| Gameplay prefab | `Assets/Prefabs/Models/Stations/Rebellion/RebellionSpaceStationView.prefab` |
 
 - Slot `00`: damage overlay / `W_blast00`, disabled in gameplay.
 - Slot `01`: opaque `EmpireAtWar/Ship Lit` hull, `RB_Station` albedo and `RB_Station_Bump` normal.
@@ -155,7 +155,7 @@ reviewed: 2026-10-20
 
 ### Imperial Stations — 2026-10-07
 
-- Empire only: `Assets/Settings/AssetMappingData.asset`, key `EmpireSpaceStationView` → `Assets/Prefabs/Models/Stations/EmpireSpaceStationView.prefab`; existing Addressables `View` group.
+- Empire only: `Assets/Settings/AssetMappingData.asset`, key `EmpireSpaceStationView` → `Assets/Prefabs/Models/Stations/Empire/EmpireSpaceStationView.prefab`; existing Addressables `View` group.
 - Level mapping: `StationLevelView.levelModels` on `EmpireSpaceStationView.prefab`; elements `0..4` map to levels `1..5`.
 - Distinct originals: `EB_STATION_01.ALO` → `EmpireSpaceStationLevel1.prefab`, through `EB_STATION_05.ALO` → `EmpireSpaceStationLevel5.prefab`. All prefabs: `Assets/Prefabs/Models/Stations/`.
 - FBXs: `Assets/Art/Models/SpaceStations/EmpireSpaceStation/LevelN/EmpireSpaceStationLevelN.fbx`; separate artwork in `Attachments/`.

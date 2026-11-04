@@ -15,7 +15,7 @@ public static class VerifyEmpress
 {
     private const string TASK="Temp/AotrEmpressStationImport/";
     private const string MODELS="Assets/Art/Models/SpaceStations/AotrEmpressStation/";
-    private const string VISUAL="Assets/Prefabs/Models/Stations/AotrEmpressStation.prefab";
+    private const string VISUAL="Assets/Prefabs/Models/Stations/Shared/AotrEmpressStation.prefab";
     private const string VIEW="Assets/Prefabs/Models/DefendStation/AotrEmpressDefensePlatformView.prefab";
     private const string DATA="Assets/Settings/Data/Models/DefendPlatform/AotrEmpressDefensePlatformData.asset";
     private const string PREVIEW="Assets/Prefabs/Ui/Reinforcement/AotrEmpressDefensePlatformReinforcementView.prefab";

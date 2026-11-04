@@ -14,8 +14,8 @@ These scripts rebuild the five **vanilla Rebel** station models and their Rebell
 - FBXs: `Assets/Art/Models/SpaceStations/RebelSpaceStation/Level1/` through `Level5/`.
 - Separate hardpoint FBXs: `Assets/Art/Models/SpaceStations/RebelSpaceStation/Attachments/` (20 original models).
 - Corrected display meshes: `LevelN/RebelSpaceStationLevelNHull.asset`; original FBX UVs remain unchanged.
-- Visual prefabs: `Assets/Prefabs/Models/Stations/RebelSpaceStationLevel1.prefab` through `RebelSpaceStationLevel5.prefab`.
-- Gameplay prefab: `Assets/Prefabs/Models/Stations/RebellionSpaceStationView.prefab`.
+- Visual prefabs: `Assets/Prefabs/Models/Stations/Rebellion/RebelSpaceStationLevel1.prefab` through `RebelSpaceStationLevel5.prefab`.
+- Gameplay prefab: `Assets/Prefabs/Models/Stations/Rebellion/RebellionSpaceStationView.prefab`.
 - Material/texture folders: `Assets/Art/{Materials,Textures}/Models/SpaceStations/RebelSpaceStation/`.
 - Shields: `Assets/Art/Models/Shields/RebelSpaceStationLevel1Shield.asset` through `RebelSpaceStationLevel5Shield.asset`.
 
