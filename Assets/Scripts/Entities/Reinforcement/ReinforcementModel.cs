@@ -78,6 +78,7 @@ namespace EmpireAtWar.Models.Reinforcement
         public int GetDeployableCount(UnitRequest request)
         {
             int reserve = GetReserveCount(request);
+            if (!UsesCapacity(request)) return reserve;
             int cost = request.FactionData.UnitCapacity;
             return cost > 0 ? Math.Min(reserve, CapacityLeft / cost) : reserve;
         }

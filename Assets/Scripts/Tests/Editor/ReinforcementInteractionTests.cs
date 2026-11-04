@@ -48,7 +48,7 @@ namespace EmpireAtWar.Tests.Editor
             _overlay = new FakeOverlay();
             _placementLock = new PlacementLock();
             _service = new ReinforcementService(_inputLock, null, null, null,
-                _overlay, _model, null, null, null, _hitTest, _router, null, null, null);
+                _overlay, _model, null, null, null, _hitTest, _router, null, null, null, null);
             ((List<UnitSpawnView>)typeof(ReinforcementService)
                 .GetField("_previews", BindingFlags.Instance | BindingFlags.NonPublic)
                 .GetValue(_service)).Add(preview);

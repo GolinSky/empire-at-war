@@ -151,7 +151,8 @@ namespace EmpireAtWar.Entities.Reinforcement
                         ? "Population limit reached" : ReinforcementModel.UsesCapacity(request)
                             ? "Drag into an allied reinforcement zone. Ships need clear space. Release to deploy immediately." +
                               DeployAllHint(request)
-                            : "Drag to visible terrain outside reinforcement zones and capture sites. Release to deploy."));
+                            : "Drag to visible terrain outside reinforcement zones and capture sites. Release to deploy." +
+                              DeployAllHint(request)));
             else
                 _tooltips.Show(source, key, anchor, () => _isTooltipActive,
                     () => new TooltipContent(title: "Reinforcements", description: "Close the reinforcement panel."));

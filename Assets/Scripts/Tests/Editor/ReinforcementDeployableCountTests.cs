@@ -26,14 +26,20 @@ namespace EmpireAtWar.Tests.Editor
         [TearDown]
         public void TearDown() => Object.DestroyImmediate(_data);
 
-        [TestCase(4, 0, 4, 4)]
-        [TestCase(4, 11, 4, 2)]
-        [TestCase(4, 17, 4, 0)]
-        [TestCase(2, 0, 3, 2)]
-        public void DeployableCount_IsReserveLimitedByPopulation(int reserve, int usedCapacity, int unitCost,
+        [TestCase(false, 4, 0, 4, 4)]
+        [TestCase(false, 4, 11, 4, 2)]
+        [TestCase(false, 4, 17, 4, 0)]
+        [TestCase(false, 2, 0, 3, 2)]
+        [TestCase(true, 4, 0, 4, 4)]
+        [TestCase(true, 4, 11, 4, 2)]
+        [TestCase(true, 4, 17, 4, 0)]
+        [TestCase(true, 2, 0, 3, 2)]
+        public void DeployableCount_IsReserveLimitedByPopulation(bool isSquadron, int reserve, int usedCapacity, int unitCost,
             int expected)
         {
-            ShipUnitRequest request = new ShipUnitRequest(Faction(unitCost), default);
+            UnitRequest request = isSquadron
+                ? new SquadronUnitRequest(Faction(unitCost), default)
+                : new ShipUnitRequest(Faction(unitCost), default);
             for (int i = 0; i < reserve; i++) _model.AddReinforcement(request);
             SetField(_model, "_currentUnitCapacity", usedCapacity);
 
@@ -50,12 +56,29 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_model.GetDeployableCount(request), Is.EqualTo(3));
         }
 
+        [TestCase(false, 0)]
+        [TestCase(false, 1)]
+        [TestCase(true, 0)]
+        [TestCase(true, 1)]
+        public void DeployableCount_StructuresUseWholeReserveAtFullPopulation(bool isPlatform, int unitCost)
+        {
+            UnitRequest request = isPlatform
+                ? new DefendPlatformUnitRequest(Faction(unitCost), default)
+                : new MiningFacilityUnitRequest(Faction(unitCost), default);
+            for (int i = 0; i < 3; i++) _model.AddReinforcement(request);
+            SetField(_model, "_currentUnitCapacity", MAX_CAPACITY);
+
+            Assert.That(_model.GetDeployableCount(request), Is.EqualTo(3));
+        }
+
         [Test]
         public void UsesCapacity_OnlyShipsAndSquadrons()
         {
             Assert.That(ReinforcementModel.UsesCapacity(new ShipUnitRequest(Faction(1), default)), Is.True);
             Assert.That(ReinforcementModel.UsesCapacity(new SquadronUnitRequest(Faction(1), default)), Is.True);
             Assert.That(ReinforcementModel.UsesCapacity(new MiningFacilityUnitRequest(Faction(0), default)),
+                Is.False);
+            Assert.That(ReinforcementModel.UsesCapacity(new DefendPlatformUnitRequest(Faction(0), default)),
                 Is.False);
         }
 

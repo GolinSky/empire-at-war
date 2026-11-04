@@ -41,6 +41,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly ISpawnAreaOverlay _spawnAreaOverlay;
         private readonly IReinforcementDeployInput _deployInput;
+        private readonly IStructureSpawnClearance _structureClearance;
         private IDisposable _placementLock;
         private IReinforcementPlacement _placement;
 
@@ -73,7 +74,8 @@ namespace EmpireAtWar.Services.Reinforcement
             IUiCancelRouter cancelRouter,
             IHazardService hazards,
             ITooltipService tooltipService,
-            IReinforcementDeployInput deployInput)
+            IReinforcementDeployInput deployInput,
+            IStructureSpawnClearance structureClearance)
         {
             _playerRegistry = playerRegistry;
             _owner = owner;
@@ -89,6 +91,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _hazards = hazards;
             _tooltips = new TooltipRequests(tooltipService);
             _deployInput = deployInput;
+            _structureClearance = structureClearance;
         }
 
         public void Initialize()
@@ -186,12 +189,14 @@ namespace EmpireAtWar.Services.Reinforcement
             // Battle input only: the camera stays movable so the player can pan to a drop point.
             _placementLock = _inputLock.AcquireBattle();
             _model.IsTrySpawning = true;
-            int count = _deployInput.IsDeployAllHeld && ReinforcementModel.UsesCapacity(request)
+            int count = _deployInput.IsDeployAllHeld
                 ? _model.GetDeployableCount(request)
                 : 1;
             for (int i = 0; i < count; i++)
                 _previews.Add(placement.CreatePreview());
             _slotSpacing = _previews[0].PlanarRadius * SLOT_SPACING_FACTOR;
+            if (!ReinforcementModel.UsesCapacity(request))
+                _slotSpacing = Mathf.Max(_slotSpacing, _structureClearance.Radius * SLOT_SPACING_FACTOR);
             _spawnAreaOverlay.Show(_owner.Id);
             _cancelRouter.Focus(this);
         }
