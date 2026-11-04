@@ -109,7 +109,7 @@ public static class BuildRebelStationArt
                 model.transform.localPosition = -bounds.center * commonScale;
                 PrefabUtility.RecordPrefabInstancePropertyModifications(model.transform);
                 bounds = BoundsOf(root);
-                var levelModel = root.AddComponent<StationLevelModel>();
+                var levelModel = root.AddComponent<StationLevelArt>();
                 var serialized = new SerializedObject(levelModel);
                 var hull = root.GetComponentsInChildren<MeshRenderer>(true).Where(r => r.enabled && r.sharedMaterials.Any(m => m.shader.name == "EmpireAtWar/Ship Lit")).ToArray();
                 Assign(serialized.FindProperty("<HullRenderers>k__BackingField"), hull);

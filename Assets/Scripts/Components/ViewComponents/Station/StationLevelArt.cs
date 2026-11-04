@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.ViewComponents.Station
 {
-    public sealed class StationLevelModel : MonoBehaviour
+    public sealed class StationLevelArt : MonoBehaviour
     {
         [field: SerializeField] public Renderer[] HullRenderers { get; private set; }
         [Tooltip("Visible hull in station space. Levels share one source pivot, so the center is not zero.")]

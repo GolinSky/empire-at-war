@@ -47,7 +47,7 @@ public static class VerifyCisStationMapping
         try
         {
             var view = root.GetComponent<StationLevelView>();
-            var models = root.GetComponentsInChildren<StationLevelModel>(true);
+            var models = root.GetComponentsInChildren<StationLevelArt>(true);
             if (root.transform.localScale != Vector3.one || root.transform.localRotation != Quaternion.identity || models.Length != 5) throw new InvalidOperationException("CIS station model/root setup is incomplete.");
             foreach (int level in new[] {1, 5, 2, 3, 4, 5, 1})
             {

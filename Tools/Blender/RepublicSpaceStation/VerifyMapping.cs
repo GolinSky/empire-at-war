@@ -44,7 +44,7 @@ public static class VerifyRepublicStationMapping
             if (levelView != null)
             {
                 var levels = new SerializedObject(levelView).FindProperty("levelModels");
-                bounds = ((StationLevelModel)levels.GetArrayElementAtIndex(levels.arraySize - 1).objectReferenceValue).HullBounds;
+                bounds = ((StationLevelArt)levels.GetArrayElementAtIndex(levels.arraySize - 1).objectReferenceValue).HullBounds;
             }
             var profiles = new JArray(station.GetComponentsInChildren<HardPoint>(true).OrderBy(h => h.Id).Select(h => new JObject { ["id"] = h.Id, ["unlock"] = h.UnlockLevel }));
             File.WriteAllText(TASK + "Before.json", new JObject { ["mappings"] = mappings, ["hashes"] = hashes, ["targetWidth"] = Mathf.Max(bounds.size.x, bounds.size.z), ["hardpoints"] = profiles }.ToString());
@@ -89,11 +89,11 @@ public static class VerifyRepublicStationMapping
             foreach (int level in new[] { 1, 5, 2, 3, 4, 5, 1 })
             {
                 view.ApplyLevel(level);
-                var model = (StationLevelModel)levels.GetArrayElementAtIndex(level - 1).objectReferenceValue;
+                var model = (StationLevelArt)levels.GetArrayElementAtIndex(level - 1).objectReferenceValue;
                 string path = PREFABS + "RepublicSpaceStationLevel" + level + ".prefab";
                 if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(model.gameObject) != path)
                     throw new InvalidOperationException("Level does not use its own prefab: " + level);
-                if (view.CurrentModel != model || root.GetComponentsInChildren<StationLevelModel>(true).Count(m => m.gameObject.activeSelf) != 1)
+                if (view.CurrentModel != model || root.GetComponentsInChildren<StationLevelArt>(true).Count(m => m.gameObject.activeSelf) != 1)
                     throw new InvalidOperationException("More than one station level active.");
                 if (collider.center != model.HullBounds.center || collider.size != model.HullBounds.size)
                     throw new InvalidOperationException("Collider does not follow level.");

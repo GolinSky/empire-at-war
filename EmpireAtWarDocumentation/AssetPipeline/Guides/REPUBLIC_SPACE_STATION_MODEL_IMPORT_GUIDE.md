@@ -87,7 +87,7 @@ unity command run_script --file Tools/Blender/RepublicSpaceStation/BuildWreck.cs
 - Six original texture references: `ReB_shipyards`, `ReB_Shipyards_B`, `ReB_shipyards_L`, `NB_SHIELDBASE`, `NB_SHIELDRIPPLE`, `NB_SHIELDWAVE`. All were present; staged PNG pixels equal decoded DDS pixels.
 
 ### Gameplay setup
-- `BuildStationLevels` assigns hull renderers/bounds, typed mounts, a launch exit, and each fitted shield to `StationLevelModel`.
+- `BuildStationLevels` assigns hull renderers/bounds, typed mounts, a launch exit, and each fitted shield to `StationLevelArt`.
 - `StationLevelView` enables exactly one level, updates the collider, mounts, launch point, selection marker, and shield. Entity integration updates explosion and ionization hull renderers.
 - Team/fog bindings include every nested level renderer; fog reveal bounds contain the maximum-level hull.
 - Launch anchor: `HP_Spawn_01`; `GameplayLaunchExit` lies 8 units below each hull's collider.

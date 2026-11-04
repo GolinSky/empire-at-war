@@ -78,11 +78,11 @@ public static class VerifyEmpireStationMapping
             foreach (int level in new[] { 1, 5, 2, 3, 4, 5, 1 })
             {
                 view.ApplyLevel(level);
-                var model = (StationLevelModel)levels.GetArrayElementAtIndex(level - 1).objectReferenceValue;
+                var model = (StationLevelArt)levels.GetArrayElementAtIndex(level - 1).objectReferenceValue;
                 string path = PREFABS + "EmpireSpaceStationLevel" + level + ".prefab";
                 if (PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(model.gameObject) != path)
                     throw new InvalidOperationException("Level does not use its own prefab: " + level);
-                if (view.CurrentModel != model || root.GetComponentsInChildren<StationLevelModel>(true).Count(m => m.gameObject.activeSelf) != 1)
+                if (view.CurrentModel != model || root.GetComponentsInChildren<StationLevelArt>(true).Count(m => m.gameObject.activeSelf) != 1)
                     throw new InvalidOperationException("More than one station level active.");
                 if (collider.center != model.HullBounds.center || collider.size != model.HullBounds.size)
                     throw new InvalidOperationException("Collider does not follow level.");

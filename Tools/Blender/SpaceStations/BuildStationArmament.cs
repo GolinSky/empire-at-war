@@ -62,7 +62,7 @@ public static class BuildStationArmament
             }
             var points = view.GetComponentsInChildren<HardPoint>(true).OrderBy(h => h.Id).ToArray();
             var weaponById = weapons.ToDictionary(h => h.Id);
-            var donorModel = AssetDatabase.LoadAssetAtPath<GameObject>(levels[4]).GetComponent<StationLevelModel>();
+            var donorModel = AssetDatabase.LoadAssetAtPath<GameObject>(levels[4]).GetComponent<StationLevelArt>();
             var donorMounts = donorModel.Mounts.Where(m => m.HardPointId > 0 && m.HardPointId < 17).ToArray();
             var placed = new Dictionary<int, Vector3>();
             // Every level is open at once: a new mount must sit on the hull of its unlock level and of every later level.
@@ -74,7 +74,7 @@ public static class BuildStationArmament
             {
                 for (int level = 1; level <= levels.Length; level++)
                 {
-                    var model = roots[level - 1].GetComponent<StationLevelModel>();
+                    var model = roots[level - 1].GetComponent<StationLevelArt>();
                     var sourceIds = config["mounts"].Where(m => ((JObject)m["anchors"]).Properties().Min(p => int.Parse(p.Name)) <= level)
                         .Select(m => (int)m["hardPoint"]).ToArray();
                     var oldMounts = model.Mounts.Where(m => sourceIds.Contains(m.HardPointId)).ToArray();
@@ -93,7 +93,7 @@ public static class BuildStationArmament
                 for (int level = 1; level <= levels.Length; level++)
                 {
                     var root = roots[level - 1];
-                    var model = root.GetComponent<StationLevelModel>();
+                    var model = root.GetComponent<StationLevelArt>();
                     var oldMounts = levelOldMounts[level - 1];
                     var hull = levelHulls[level - 1];
                     var plating = levelPlating[level - 1];

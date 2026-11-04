@@ -89,7 +89,7 @@ public static class BuildStationLevels
                 ShieldHullBaker.Bake(root.transform, shield);
                 var planes = new SerializedObject(shield).FindProperty("hullPlanes");
 
-                var model = new SerializedObject(root.GetComponent<StationLevelModel>());
+                var model = new SerializedObject(root.GetComponent<StationLevelArt>());
                 Assign(model.FindProperty("<HullRenderers>k__BackingField"),
                     visible.Where(r => r.sharedMaterials.Any(m => m.shader.name == "EmpireAtWar/Ship Lit")).ToArray());
                 model.FindProperty("<HullBounds>k__BackingField").boundsValue = bounds;
@@ -121,7 +121,7 @@ public static class BuildStationLevels
         var view = PrefabUtility.LoadPrefabContents(viewPath);
         try
         {
-            var nested = view.GetComponentsInChildren<StationLevelModel>(true);
+            var nested = view.GetComponentsInChildren<StationLevelArt>(true);
             var models = levels.Select(path => nested.Single(m => PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(m.gameObject) == path)).ToArray();
             var levelView = view.GetComponent<StationLevelView>();
             var shield = view.GetComponentInChildren<Shield>(true);

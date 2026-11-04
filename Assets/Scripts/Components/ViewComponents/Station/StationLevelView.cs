@@ -6,7 +6,7 @@ namespace EmpireAtWar.ViewComponents.Station
     public sealed class StationLevelView : MonoBehaviour
     {
         [Tooltip("Explicit model mapping: element 0 is level 1, through element 4 for level 5.")]
-        [SerializeField] private StationLevelModel[] levelModels;
+        [SerializeField] private StationLevelArt[] levelModels;
         [SerializeField] private BoxCollider hullCollider;
         [Tooltip("Gameplay hardpoints; each model's mounts place them by hardpoint id.")]
         [SerializeField] private HardPoint[] hardPoints;
@@ -17,7 +17,7 @@ namespace EmpireAtWar.ViewComponents.Station
 
         private HardPointHealthObserver[] _observers;
 
-        public StationLevelModel CurrentModel { get; private set; }
+        public StationLevelArt CurrentModel { get; private set; }
 
         private void Awake()
         {
@@ -39,8 +39,8 @@ namespace EmpireAtWar.ViewComponents.Station
 
         public void ApplyLevel(int level)
         {
-            StationLevelModel next = levelModels[level - 1];
-            foreach (StationLevelModel model in levelModels)
+            StationLevelArt next = levelModels[level - 1];
+            foreach (StationLevelArt model in levelModels)
             {
                 model.gameObject.SetActive(model == next);
             }

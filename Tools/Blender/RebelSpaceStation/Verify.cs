@@ -45,7 +45,7 @@ public static class VerifyRebelStations
                 };
             }
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PREFABS + name + ".prefab");
-            var model = prefab.GetComponent<StationLevelModel>();
+            var model = prefab.GetComponent<StationLevelArt>();
             foreach (var transform in prefab.GetComponentsInChildren<Transform>(true))
             {
                 if (GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(transform.gameObject) != 0)

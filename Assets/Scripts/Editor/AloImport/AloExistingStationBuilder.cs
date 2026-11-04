@@ -62,8 +62,8 @@ namespace EmpireAtWar.Editor.AloImport
                 int number = (int)level["level"];
                 if ((string)level["gameplayDataGuid"] != baselineGuid) throw new InvalidOperationException("Station level data differs from its shared baseline.");
                 data.GetLevelStats(number);
-                var model = objects.Resolve(level["component"]) as StationLevelModel;
-                var runtime = routed.GetArrayElementAtIndex(number - 1).objectReferenceValue as StationLevelModel;
+                var model = objects.Resolve(level["component"]) as StationLevelArt;
+                var runtime = routed.GetArrayElementAtIndex(number - 1).objectReferenceValue as StationLevelArt;
                 if (model == null || runtime == null || (runtime != model && PrefabUtility.GetCorrespondingObjectFromSource(runtime) != model))
                     throw new InvalidOperationException("Station level routing does not identify its declared saved model.");
                 Matrix4x4 toView = view.transform.worldToLocalMatrix * runtime.transform.localToWorldMatrix;
@@ -139,7 +139,7 @@ namespace EmpireAtWar.Editor.AloImport
             return new JObject { ["levels"] = levels.Length, ["savedRoles"] = new JArray(written), ["fittedShields"] = "retained-under-candidate-geometry-parity" };
         }
 
-        private static T Counterpart<T>(T source, StationLevelModel runtime, AloAssetObjectMap objects, string role) where T : Object =>
+        private static T Counterpart<T>(T source, StationLevelArt runtime, AloAssetObjectMap objects, string role) where T : Object =>
             objects.All(role).OfType<T>().Single(item => PrefabUtility.GetCorrespondingObjectFromSource(item) == source &&
                 (item is Component component ? component.transform.IsChildOf(runtime.transform) : ((GameObject)(Object)item).transform.IsChildOf(runtime.transform)));
 
@@ -158,7 +158,7 @@ namespace EmpireAtWar.Editor.AloImport
             return bounds;
         }
 
-        private static void WriteModel(StationLevelModel model, Bounds bounds, Renderer[] renderers, Transform launch, List<(int Id, Transform Point, GameObject Art)> mounts)
+        private static void WriteModel(StationLevelArt model, Bounds bounds, Renderer[] renderers, Transform launch, List<(int Id, Transform Point, GameObject Art)> mounts)
         {
             var serialized = new SerializedObject(model);
             serialized.FindProperty("<HullBounds>k__BackingField").boundsValue = bounds;

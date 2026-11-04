@@ -97,7 +97,7 @@ namespace EmpireAtWar.Editor.Rendering
             if (levelView != null)
             {
                 var levels = new SerializedObject(levelView).FindProperty("levelModels");
-                var model = (EmpireAtWar.ViewComponents.Station.StationLevelModel)levels.GetArrayElementAtIndex(levels.arraySize - 1).objectReferenceValue;
+                var model = (EmpireAtWar.ViewComponents.Station.StationLevelArt)levels.GetArrayElementAtIndex(levels.arraySize - 1).objectReferenceValue;
                 sources = model.HullRenderers;
             }
             else

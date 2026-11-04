@@ -95,7 +95,7 @@ public static class BuildRebelStationAttachments
                 model.localPosition -= bounds.center;
                 PrefabUtility.RecordPrefabInstancePropertyModifications(model);
                 bounds.center = Vector3.zero;
-                var serialized = new SerializedObject(root.GetComponent<StationLevelModel>());
+                var serialized = new SerializedObject(root.GetComponent<StationLevelArt>());
                 var hull = renderers.Where(r => r.sharedMaterials.Any(m => m.shader.name == "EmpireAtWar/Ship Lit")).ToArray();
                 var property = serialized.FindProperty("<HullRenderers>k__BackingField");
                 property.arraySize = hull.Length;

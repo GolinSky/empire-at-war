@@ -27,8 +27,8 @@ namespace EmpireAtWar.Tests.Editor
         private static string LevelPath(string faction, int level) =>
             PREFABS + faction + "/" + (faction == "Rebellion" ? "Rebel" : faction == "Separatist" ? "Cis" : faction) + "SpaceStationLevel" + level + ".prefab";
 
-        private static StationLevelModel LoadModel(string faction, int level) =>
-            AssetDatabase.LoadAssetAtPath<GameObject>(LevelPath(faction, level)).GetComponent<StationLevelModel>();
+        private static StationLevelArt LoadModel(string faction, int level) =>
+            AssetDatabase.LoadAssetAtPath<GameObject>(LevelPath(faction, level)).GetComponent<StationLevelArt>();
 
         [TestCase(1, 3656)]
         [TestCase(2, 4235)]
@@ -80,7 +80,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             var station = AssetDatabase.LoadAssetAtPath<GameObject>(ViewPath("Republic"));
             var levels = new SerializedObject(station.GetComponent<StationLevelView>()).FindProperty("levelModels");
-            var finalModel = (StationLevelModel)levels.GetArrayElementAtIndex(LEVELS - 1).objectReferenceValue;
+            var finalModel = (StationLevelArt)levels.GetArrayElementAtIndex(LEVELS - 1).objectReferenceValue;
             var sources = EmpireAtWar.Editor.Rendering.ShipWreckBuilder.GetSourceRenderers(station);
             Assert.That(sources, Is.EquivalentTo(finalModel.HullRenderers));
             var wreck = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Wrecks/RepublicSpaceStationWreckView.prefab");
@@ -202,7 +202,7 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(SpaceStationEntity).GetField("_ionField", PRIVATE_INSTANCE).SetValue(station, ionField);
                 typeof(SpaceStationEntity).GetField("<Data>k__BackingField", PRIVATE_INSTANCE).SetValue(station, data);
                 MethodInfo apply = typeof(SpaceStationEntity).GetMethod("ApplyLevel", PRIVATE_INSTANCE);
-                var models = root.GetComponentsInChildren<StationLevelModel>(true);
+                var models = root.GetComponentsInChildren<StationLevelArt>(true);
                 var hardpoints = root.GetComponentsInChildren<HardPoint>(true).OrderBy(h => h.Id).ToArray();
                 var shield = root.GetComponentInChildren<Shield>(true);
                 var launch = root.transform.Find("HangarLaunchPoint");
@@ -285,7 +285,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(root.GetComponent<StationLevelView>() != null, Is.EqualTo(leveled));
                 if (!leveled) continue;
                 Assert.That(new SerializedObject(root.GetComponent<StationLevelView>()).FindProperty("levelModels").arraySize, Is.EqualTo(levels.MaxLevel));
-                Assert.That(root.GetComponentsInChildren<StationLevelModel>(true).Count(m => m.gameObject.activeSelf), Is.EqualTo(1));
+                Assert.That(root.GetComponentsInChildren<StationLevelArt>(true).Count(m => m.gameObject.activeSelf), Is.EqualTo(1));
             }
         }
 

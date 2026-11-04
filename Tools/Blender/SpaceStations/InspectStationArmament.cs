@@ -44,10 +44,10 @@ public static class InspectStationArmament
         for (int level = 1; level <= 5; level++)
         {
             string path = (string)config["levels"][level - 1];
-            var model = AssetDatabase.LoadAssetAtPath<GameObject>(path).GetComponent<StationLevelModel>();
+            var model = AssetDatabase.LoadAssetAtPath<GameObject>(path).GetComponent<StationLevelArt>();
             int[] installed = points.Where(h => h.UnlockLevel <= level).Select(h => h.Id).OrderBy(i => i).ToArray();
             Require(model.Mounts.Select(m => m.HardPointId).OrderBy(i => i).SequenceEqual(installed), "mounted/unlocked IDs at level " + level);
-            var linked = (StationLevelModel)new SerializedObject(view.GetComponent<StationLevelView>()).FindProperty("levelModels")
+            var linked = (StationLevelArt)new SerializedObject(view.GetComponent<StationLevelView>()).FindProperty("levelModels")
                 .GetArrayElementAtIndex(level - 1).objectReferenceValue;
             Require(linked.Mounts.Select(m => m.HardPointId).OrderBy(i => i).SequenceEqual(installed)
                 && linked.Mounts.All(m => m.Point != null), "nested view mounts at level " + level);
@@ -98,7 +98,7 @@ public static class InspectStationArmament
             RenderSettings.ambientLight = new Color(.5f, .52f, .57f);
             Shader.SetGlobalVectorArray("_TeamColors", Enumerable.Repeat((Vector4)Color.white, 8).ToArray());
             var root = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(path), scene);
-            var model = root.GetComponent<StationLevelModel>();
+            var model = root.GetComponent<StationLevelArt>();
             float radius = model.HullBounds.extents.magnitude;
             foreach (var mount in model.Mounts)
             {

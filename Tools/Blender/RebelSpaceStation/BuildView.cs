@@ -38,14 +38,14 @@ public static class BuildRebelStationView
             }
             else
             {
-                foreach (var oldModel in root.GetComponentsInChildren<StationLevelModel>(true)) UnityEngine.Object.DestroyImmediate(oldModel.gameObject);
+                foreach (var oldModel in root.GetComponentsInChildren<StationLevelArt>(true)) UnityEngine.Object.DestroyImmediate(oldModel.gameObject);
             }
             if (root.GetComponent<StationLevelView>() == null) root.AddComponent<StationLevelView>();
-            var models = new StationLevelModel[5];
+            var models = new StationLevelArt[5];
             for (int i = 0; i < models.Length; i++)
             {
                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PREFABS + "RebelSpaceStationLevel" + (i + 1) + ".prefab");
-                models[i] = ((GameObject)PrefabUtility.InstantiatePrefab(prefab, root.transform)).GetComponent<StationLevelModel>();
+                models[i] = ((GameObject)PrefabUtility.InstantiatePrefab(prefab, root.transform)).GetComponent<StationLevelArt>();
                 models[i].gameObject.layer = root.layer;
             }
             var selectedCanvas = (RectTransform)root.transform.Find("SelectedCanvas");
