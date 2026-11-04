@@ -57,6 +57,17 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void LargeFootprint_OutsideGridDoesNotTouchDistantCloud()
+        {
+            HazardShape shape = TestHazards.CreateEllipse(_data, Vector3.zero, Vector3.right, 20f, 20f);
+            Vector3 position = new Vector3(450f, 0f, 450f);
+
+            Assert.That(shape.Spot.GetClearance(position), Is.GreaterThan(500f));
+            Assert.That(shape.Contains(position, 500f, false), Is.False);
+            Assert.That(shape.Contains(position, 650f, false), Is.True);
+        }
+
+        [Test]
         public void Outline_IsTheZeroDistanceAndInsideBounds()
         {
             HazardShape shape = CreateEllipse();

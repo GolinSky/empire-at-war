@@ -62,6 +62,8 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(MissileInterceptorHardPoint).GetMethod("Construct", PRIVATE_INSTANCE)
                     .Invoke(mount, new object[] { missiles, health, modifiers });
                 MethodInfo update = typeof(MissileInterceptorHardPoint).GetMethod("Update", PRIVATE_INSTANCE);
+                object reloadTimer = typeof(MissileInterceptorHardPoint).GetField("_reloadTimer", PRIVATE_INSTANCE).GetValue(mount);
+                reloadTimer.GetType().GetField("_timer", PRIVATE_INSTANCE).SetValue(reloadTimer, float.NegativeInfinity);
 
                 modifiers.SetCloaked(true);
                 update.Invoke(mount, null);

@@ -279,7 +279,6 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(0f, true)]
         [TestCase(4.9f, true)]
-        [TestCase(5f, true)]
         [TestCase(5.1f, false)]
         public void UnitLossUsesFiveSecondCameraMemory(float secondsSinceSeen, bool expected)
         {
@@ -290,6 +289,22 @@ namespace EmpireAtWar.Tests.Editor
             ship.Health.Destroy();
             Invoke("HandleEntityRemoved", ship);
             Assert.That(_audio.Clips.Count, Is.EqualTo(expected ? 1 : 0));
+        }
+
+        [TestCase(4.9f, true)]
+        [TestCase(5f, true)]
+        [TestCase(5.1f, false)]
+        public void CameraMemoryIncludesExactFiveSecondBoundary(float secondsSinceSeen, bool expected)
+        {
+            const float NOW = 10f;
+            var ship = LocalShip(new Vector3(0.5f, 0.5f, 1f));
+            var subscriptions = (System.Collections.IDictionary)GetField(_service, "_subscriptions");
+            SetField(subscriptions[ship], "LastSeenAt", NOW - secondsSinceSeen);
+            ship.GetFacade<IEntityTransformFacade>().Transform.position = new Vector3(2f, 0.5f, 1f);
+            object actual = typeof(FactionAnnouncementService)
+                .GetMethod("WasRecentlyOnCamera", BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(_service, new object[] { ship, NOW });
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         [TestCase(2f, 0.5f, 1f)]

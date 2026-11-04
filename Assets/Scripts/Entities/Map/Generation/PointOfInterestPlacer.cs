@@ -169,9 +169,9 @@ namespace EmpireAtWar.Entities.Map.Generation
             for (int i = 0; i < stations.Count; i++)
             {
                 int mirror = i;
-                Vector3 reflected = PlanarGeometry.Reflect(stations[i].Position, center);
+                Vector3 reflected = PlanarGeometry.Reflect(nodes[firstIndex + i].Center, center);
                 for (int j = 0; j < stations.Count; j++)
-                    if (i != j && PlanarGeometry.Distance(stations[j].Position, reflected) < MIRROR_TOLERANCE)
+                    if (i != j && PlanarGeometry.Distance(nodes[firstIndex + j].Center, reflected) < MIRROR_TOLERANCE)
                         mirror = j;
                 nodes[firstIndex + i].Mirror = firstIndex + mirror;
             }

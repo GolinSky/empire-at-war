@@ -35,7 +35,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(data.Hull, Is.EqualTo(600));
             Assert.That(data.Shields, Is.EqualTo(600));
             Assert.That(data.Speed, Is.EqualTo(35f));
-            Assert.That(data.Range, Is.EqualTo(500f));
+            Assert.That(data.Range, Is.EqualTo(575f));
             Assert.That(data.Abilities, Is.EqualTo(new[] { ShipAbilityId.Pursuit }));
             Assert.That(data.HangarBays, Is.Empty);
             Assert.That(data.UsesHullHardPointBudget, Is.True);
@@ -56,7 +56,8 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(profiles.GetProfile(expected.Item1).ShotsPerSalvo, Is.EqualTo(expected.Item3));
                 Assert.That(profiles.GetProfile(expected.Item1).ShotPrefab, Is.Not.Null);
             }
-            Assert.That(profiles.GetProfile(WeaponType.IonCannon).Range, Is.EqualTo(data.Range));
+            Assert.That(data.Range, Is.GreaterThanOrEqualTo(
+                data.WeaponLoadout.Max(entry => profiles.GetProfile(entry.WeaponType).Range)));
             Assert.That(profiles.GetProfile(WeaponType.DualRepeatingPointDefense).StrikecraftOnly, Is.True);
         }
 

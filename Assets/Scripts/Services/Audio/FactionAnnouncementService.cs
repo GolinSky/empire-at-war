@@ -114,10 +114,10 @@ namespace EmpireAtWar.Services.Audio
                 viewport.y >= 0f && viewport.y <= 1f;
         }
 
-        private bool WasRecentlyOnCamera(IEntity entity)
+        private bool WasRecentlyOnCamera(IEntity entity, float now)
         {
             return _subscriptions.TryGetValue(entity, out EntitySubscription subscription) &&
-                (IsOnCamera(subscription) || Time.unscaledTime - subscription.LastSeenAt <= LOSS_VISIBILITY_MEMORY);
+                (IsOnCamera(subscription) || now - subscription.LastSeenAt <= LOSS_VISIBILITY_MEMORY);
         }
 
         private bool Announce(AudioClip clip, AnnouncementPriority priority, float cooldown = EVENT_COOLDOWN)
@@ -241,7 +241,7 @@ namespace EmpireAtWar.Services.Audio
                 subscription.Health = entity.HealthModel;
                 subscription.Destroyed = () =>
                 {
-                    if (WasRecentlyOnCamera(entity))
+                    if (WasRecentlyOnCamera(entity, Time.unscaledTime))
                         Announce(_clips.UnitDestroyed, AnnouncementPriority.Notification, LOSS_COOLDOWN);
                 };
                 subscription.Health.OnDestroy += subscription.Destroyed;

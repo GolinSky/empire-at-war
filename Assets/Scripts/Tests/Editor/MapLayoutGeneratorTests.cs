@@ -70,12 +70,16 @@ namespace EmpireAtWar.Tests.Editor
                 MapSizeSettings size = _settings.GetSize(mapSize);
                 Random random = new Random(seed);
                 PlayerSlot[] players = CreateRoster(playerCount, FactionType.Separatist, difficulty);
-                MapStation[] stations = new StationPlacer(_settings, _radii).Place(size, players, random);
+                StationPlacer stationPlacer = new StationPlacer(_settings, _radii);
+                MapStation[] stations = null;
                 PointOfInterestPlacer placer = new PointOfInterestPlacer(_settings, _radii);
                 List<MapNode> nodes = new List<MapNode>();
                 bool placed = false;
                 for (int attempt = 0; attempt < 60 && !placed; attempt++)
+                {
+                    stations = stationPlacer.Place(size, players, random);
                     placed = placer.TryPlace(size, stations, players, random, nodes);
+                }
                 string context = $"{mapSize}, {difficulty}, {playerCount} players, seed {seed}";
                 Assert.That(placed, Is.True, context);
                 MapNode main = nodes[0];
@@ -853,7 +857,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private static bool SharesEdge(Vector3 first, Vector3 second)
         {
-            return Mathf.Approximately(first.x, second.x) != Mathf.Approximately(first.z, second.z);
+            return (Mathf.Sign(first.x) == Mathf.Sign(second.x)) !=
+                (Mathf.Sign(first.z) == Mathf.Sign(second.z));
         }
 
         [Test]

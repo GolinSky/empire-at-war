@@ -49,7 +49,8 @@ namespace EmpireAtWar.Tests.Editor
                 _service.Tick();
                 yield return null;
             }
-            Assert.That(_source.volume, Is.GreaterThanOrEqualTo(0.5f), $"First track: {first.loadState}");
+            Assert.That(_source.volume, Is.GreaterThanOrEqualTo(0.5f),
+                $"First track: {first.loadState}, playing: {_source.isPlaying}, samples: {_source.timeSamples}");
             AudioClip next = AssetDatabase.LoadAssetAtPath<AudioClip>(
                 "Assets/Audio/Music/Battle/Ahsoka/A_Open_Fire.mp3");
             Assert.That(next.UnloadAudioData(), Is.True);

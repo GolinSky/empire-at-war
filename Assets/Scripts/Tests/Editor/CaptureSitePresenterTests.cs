@@ -175,7 +175,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private CaptureSitesSystem CreateSystem()
         {
-            var system = new CaptureSitesSystem();
+            var system = _tooltipObject.AddComponent<CaptureSitesSystem>();
             typeof(CaptureSitesSystem).GetField("_data", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(system,
                 AssetDatabase.LoadAssetAtPath<CaptureSiteData>("Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset"));
             typeof(CaptureSitesSystem).GetField("_playerRoster", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(system, _roster);

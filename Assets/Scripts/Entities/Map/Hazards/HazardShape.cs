@@ -103,7 +103,10 @@ namespace EmpireAtWar.Entities.Map.Hazards
                 // The outline sits at least GRID_MARGIN inside the grid edge.
                 float dx = Mathf.Max(0f, Mathf.Max(-x, x - maxX));
                 float dz = Mathf.Max(0f, Mathf.Max(-z, z - maxZ));
-                return GRID_MARGIN + Mathf.Sqrt(dx * dx + dz * dz) * CellSize;
+                // Large footprints can reach beyond the grid. Its rectangular edge alone
+                // underestimates diagonal clearance even more than the enclosing lobe proxy.
+                return Mathf.Max(GRID_MARGIN + Mathf.Sqrt(dx * dx + dz * dz) * CellSize,
+                    Spot.GetClearance(position));
             }
             int column = Mathf.Min((int)x, Columns - 2);
             int row = Mathf.Min((int)z, Rows - 2);
