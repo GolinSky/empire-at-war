@@ -85,7 +85,7 @@ MonoBehaviour:
         <FacilityHeightOffset>k__BackingField: -60
     - key: 2
       value:
-        <Radius>k__BackingField: 100
+        <Radius>k__BackingField: 500
         <CaptureDuration>k__BackingField: 6
         <FacilityHeightOffset>k__BackingField: 0
   <CaptureSpeedPerNetShip>k__BackingField: 1
