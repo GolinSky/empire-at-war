@@ -15,6 +15,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         void SelectWindowMode(int index);
 
         void SelectResolution(int index);
+        void SelectMonitor(int index);
+        void SelectRefreshRate(int index);
 
         void SelectFrameRateLimit(int index);
 

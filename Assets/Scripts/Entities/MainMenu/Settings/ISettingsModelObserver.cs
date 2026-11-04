@@ -10,6 +10,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         SettingsChoice Quality { get; }
         SettingsChoice WindowMode { get; }
         SettingsChoice Resolution { get; }
+        SettingsChoice Monitor { get; }
+        SettingsChoice RefreshRate { get; }
+        bool IsBusy { get; }
         SettingsChoice FrameRateLimit { get; }
         bool VSync { get; }
         bool NebulaEnabled { get; }

@@ -16,6 +16,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private ISettingsPresenter _presenter;
 
         [SerializeField] private Button closeButton;
+        [SerializeField] private CanvasGroup interactionGroup;
         [SerializeField] private TooltipHoverView tooltipHover;
         [SerializeField] private Button applyButton;
         [SerializeField] private Button discardButton;
@@ -23,6 +24,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         [SerializeField] private TMP_Text statusText;
         [SerializeField] private SettingsDropdownRow windowModeRow;
         [SerializeField] private SettingsDropdownRow resolutionRow;
+        [SerializeField] private SettingsDropdownRow monitorRow;
+        [SerializeField] private SettingsDropdownRow refreshRateRow;
         [SerializeField] private SettingsDropdownRow qualityRow;
         [SerializeField] private SettingsDropdownRow frameRateLimitRow;
         [SerializeField] private SettingsToggleRow vSyncRow;
@@ -102,8 +105,11 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         public void Render()
         {
+            interactionGroup.interactable = IsVisible && !_model.IsBusy;
             windowModeRow.Render(_model.WindowMode);
             resolutionRow.Render(_model.Resolution);
+            monitorRow.Render(_model.Monitor);
+            refreshRateRow.Render(_model.RefreshRate);
             qualityRow.Render(_model.Quality);
             frameRateLimitRow.Render(_model.FrameRateLimit);
             vSyncRow.Render(_model.VSync);
@@ -126,8 +132,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
             RenderKeyBindings();
 
-            applyButton.interactable = _model.IsDirty;
-            discardButton.interactable = _model.IsDirty;
+            applyButton.interactable = _model.IsDirty && !_model.IsBusy;
+            discardButton.interactable = _model.IsDirty && !_model.IsBusy;
+            closeButton.interactable = !_model.IsBusy;
+            resetDefaultsButton.interactable = !_model.IsBusy;
             statusText.text = _model.StatusMessage.Length != 0
                 ? _model.StatusMessage
                 : _model.IsDirty ? UNSAVED_CHANGES_MESSAGE : SETTINGS_SCOPE_MESSAGE;
@@ -141,6 +149,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             windowModeRow.ValueChanged += _presenter.SelectWindowMode;
             resolutionRow.Initialize();
             resolutionRow.ValueChanged += _presenter.SelectResolution;
+            monitorRow.Initialize();
+            monitorRow.ValueChanged += _presenter.SelectMonitor;
+            refreshRateRow.Initialize();
+            refreshRateRow.ValueChanged += _presenter.SelectRefreshRate;
             qualityRow.Initialize();
             qualityRow.ValueChanged += _presenter.SelectQualityPreset;
             frameRateLimitRow.Initialize();
@@ -185,6 +197,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             windowModeRow.Dispose();
             resolutionRow.ValueChanged -= _presenter.SelectResolution;
             resolutionRow.Dispose();
+            monitorRow.ValueChanged -= _presenter.SelectMonitor;
+            monitorRow.Dispose();
+            refreshRateRow.ValueChanged -= _presenter.SelectRefreshRate;
+            refreshRateRow.Dispose();
             qualityRow.ValueChanged -= _presenter.SelectQualityPreset;
             qualityRow.Dispose();
             frameRateLimitRow.ValueChanged -= _presenter.SelectFrameRateLimit;

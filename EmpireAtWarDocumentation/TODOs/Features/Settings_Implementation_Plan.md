@@ -19,7 +19,7 @@ status: in-progress
 
 ## Implementation
 
-- `SettingsService` (`ISettingsService`, `ICameraPreferences`): Saved / Draft, `IsDirty => !Draft.Matches(Saved)` (`SettingsService.cs:23`), `Apply` / `KeepDisplay` / `RevertDisplay` / `Discard` / `ResetDraftToDefaults`.
+- `SettingsService` (`ISettingsService`, `ICameraPreferences`): Saved / Draft, `IsDirty => !Draft.Matches(Saved)` (`SettingsService.cs:23`), `ApplyAsync` / `KeepDisplay` / `RevertDisplayAsync` / `DiscardAsync` / `ResetDraftToDefaults`.
 - `JsonSettingsRepository`: `persistentDataPath/settings.json`; temp write → `File.Replace` + `.bak`; unreadable file → `.corrupt` copy + backup load.
 - First run imports legacy PlayerPrefs `QualityPreset`, `InputBindingOverrides`.
 - Applier order = `ProjectContextInstaller` binding order: `DisplaySettingsApplier` → `GraphicsSettingsApplier` → `InputBindingService`.
@@ -60,7 +60,7 @@ status: in-progress
 
 ## TODO
 
-- Display crash-recovery marker; monitor selection; refresh rate.
+- Display crash-recovery marker remains separate; monitor selection + refresh rate completed and prefab/compile/design verified → [[Done/Features/Display_Modes_And_Monitors_Plan|Display Modes and Monitors Plan]].
 - Texture / shadow / AA / render scale rows (needs owned runtime URP asset copies).
 - Required-action protection on Replace; reset-page / profile presets.
 - `SettingsRouteUiController` 324 lines; display countdown already extracted to `DisplayConfirmationCountdown` (2026-10-09). Further simplification optional.

@@ -12,6 +12,32 @@ namespace EmpireAtWar.Tests.Editor
         private static readonly PlayerRoster ROSTER = TestPlayers.CreateDuel();
 
         [Test]
+        public void TickCapture_Neutralization_DoesNotAnnounceCaptureOrFacilityDestruction()
+        {
+            var model = new CaptureSiteModel(ROSTER, CAPTURE_DURATION, 1f, TestPlayers.Enemy);
+            int capturedCount = 0;
+            int lostCount = 0;
+            model.Captured += (previous, owner, type) =>
+            {
+                capturedCount++;
+                Assert.That(previous, Is.EqualTo(PlayerId.None));
+                Assert.That(owner, Is.EqualTo(TestPlayers.Human));
+            };
+            model.Lost += (owner, type) => lostCount++;
+
+            model.TickCapture(CAPTURE_DURATION * 2f, TestPlayers.DuelTally(ROSTER, 1, 0));
+
+            Assert.That(model.State, Is.EqualTo(CaptureSiteState.Neutral));
+            Assert.That(capturedCount, Is.Zero);
+            Assert.That(lostCount, Is.Zero);
+
+            model.TickCapture(CAPTURE_DURATION, TestPlayers.DuelTally(ROSTER, 1, 0));
+
+            Assert.That(capturedCount, Is.EqualTo(1));
+            Assert.That(lostCount, Is.Zero);
+        }
+
+        [Test]
         public void TickCapture_UncontestedShips_CaptureNeutralSite()
         {
             CaptureSiteModel model = new CaptureSiteModel(captureDuration: CAPTURE_DURATION, captureSpeedPerNetShip: 1f, relations: ROSTER);

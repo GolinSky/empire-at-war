@@ -2,6 +2,7 @@ using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
 using System;
+using System.Threading.Tasks;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Ui.Base;
@@ -34,6 +35,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private readonly DisplayConfirmationCountdown _displayCountdown = new DisplayConfirmationCountdown();
 
         private bool _isOpen;
+        private bool _isDisposed;
+        private Task _activeOperation = Task.CompletedTask;
 
         public SettingsRouteUiController(
             IUiService uiService,
@@ -54,6 +57,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         public void LateDispose()
         {
+            _isDisposed = true;
+            if (_settingsService.IsAwaitingDisplayConfirmation || _model.IsBusy) RestoreDisplayOnDispose();
             _model.Changed -= Render;
             if (_tooltipHover != null) _tooltipHover.Dispose();
             if (_ui != null)
@@ -65,8 +70,21 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             Unfocus();
         }
 
-        public void Open()
+        private async void RestoreDisplayOnDispose()
         {
+            try
+            {
+                await _activeOperation;
+                await _settingsService.RevertDisplayAsync();
+            }
+            catch (Exception exception) { Debug.LogException(exception); }
+        }
+
+        public async void Open()
+        {
+            try { await _settingsService.Initialization; }
+            catch (Exception exception) { Debug.LogException(exception); return; }
+            if (_isDisposed) return;
             _model.SetStatus(string.Empty);
             _model.SetPrompt(SettingsPrompt.None);
             _draftEditor.Open();
@@ -95,6 +113,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         /// <summary>Unsaved changes ask Apply / Discard / Stay instead of closing.</summary>
         public void Close()
         {
+            if (_model.IsBusy || _settingsService.IsAwaitingDisplayConfirmation) return;
             if (_settingsService.IsDirty)
             {
                 _model.SetPrompt(new SettingsPrompt(
@@ -111,6 +130,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         // Escape answers the open prompt first; only a screen without a prompt closes.
         protected override bool HandleCancel()
         {
+            if (_model.IsBusy) return true;
             switch (_model.Prompt.Kind)
             {
                 case SettingsPromptKind.ListeningForKey:
@@ -132,7 +152,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             return true;
         }
 
-        public void ApplySettings()
+        public async void ApplySettings() => await RunOperationAsync(ApplySettingsAsync);
+
+        private async Task ApplySettingsAsync()
         {
             if (_bindings.HasConflicts())
             {
@@ -140,26 +162,84 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                 return;
             }
 
-            SettingsApplyResult result = _settingsService.Apply();
+            SettingsApplyResult result = await _settingsService.ApplyAsync();
+            _draftEditor.Open();
             if (result == SettingsApplyResult.AwaitingDisplayConfirmation)
             {
-                _displayCountdown.Start(Time.unscaledTime);
-                UpdateDisplayCountdown();
+                StartDisplayCountdown();
                 return;
             }
 
             ShowApplyResult(result);
         }
 
-        public void DiscardChanges()
+        public async void DiscardChanges() => await RunOperationAsync(DiscardChangesAsync);
+
+        private async Task DiscardChangesAsync()
         {
-            _settingsService.Discard();
+            await _settingsService.DiscardAsync();
+            _draftEditor.Open();
             ShowResult(DISCARDED_MESSAGE);
+        }
+
+        public async void SelectMonitor(int index)
+        {
+            await RunOperationAsync(async () =>
+            {
+                if (_bindings.HasConflicts())
+                {
+                    _model.SetStatus(CONFLICTS_MESSAGE);
+                    return;
+                }
+                await _settingsService.PreviewMonitorAsync(index);
+                _draftEditor.Open();
+                StartDisplayCountdown();
+            });
+        }
+
+        public void SelectRefreshRate(int index) => _draftEditor.SelectRefreshRate(index);
+
+        private void StartDisplayCountdown()
+        {
+            _displayCountdown.Start(Time.unscaledTime,
+                $"{Screen.mainWindowDisplayInfo.name} · {Screen.width} x {Screen.height} · " +
+                $"{Screen.currentResolution.refreshRateRatio.value:0.##} Hz · {Screen.fullScreenMode}");
+            UpdateDisplayCountdown();
+        }
+
+        private async Task RunOperationAsync(Func<Task> operation)
+        {
+            if (_model.IsBusy || _isDisposed) return;
+            TaskCompletionSource<bool> completion = new TaskCompletionSource<bool>();
+            _activeOperation = completion.Task;
+            _model.SetBusy(true);
+            try
+            {
+                await operation();
+            }
+            catch (Exception exception)
+            {
+                Debug.LogException(exception);
+                try
+                {
+                    await _settingsService.RevertDisplayAsync();
+                    _draftEditor.Open();
+                }
+                catch (Exception restoreException) { Debug.LogException(restoreException); }
+                _model.SetPrompt(SettingsPrompt.None);
+                _model.SetStatus("Could not change display settings. See the log for details.");
+            }
+            finally
+            {
+                _model.SetBusy(false);
+                completion.SetResult(true);
+            }
         }
 
         public void ResetToDefaults()
         {
             _settingsService.ResetDraftToDefaults();
+            _draftEditor.Open();
             _draftEditor.PreviewAudio();
             _keyBindingEditor.ResetAll();
             ShowResult(DEFAULTS_MESSAGE);
@@ -207,16 +287,21 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         public void ResetBinding(int row) => _keyBindingEditor.ResetBinding(row);
 
-        public void ChoosePromptAction(SettingsPromptAction action)
+        public async void ChoosePromptAction(SettingsPromptAction action)
         {
+            if (_model.IsBusy) return;
             switch (action)
             {
                 case SettingsPromptAction.Keep:
                     ShowApplyResult(_settingsService.KeepDisplay());
                     break;
                 case SettingsPromptAction.Revert:
-                    _settingsService.RevertDisplay();
-                    ShowResult(DISPLAY_REVERTED_MESSAGE);
+                    await RunOperationAsync(async () =>
+                    {
+                        await _settingsService.RevertDisplayAsync();
+                        _draftEditor.Open();
+                        ShowResult(DISPLAY_REVERTED_MESSAGE);
+                    });
                     break;
                 case SettingsPromptAction.Replace:
                     _keyBindingEditor.ResolveConflict(ConflictResolution.Replace);
@@ -229,12 +314,12 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                     break;
                 case SettingsPromptAction.Apply:
                     _model.SetPrompt(SettingsPrompt.None);
-                    ApplySettings();
+                    await RunOperationAsync(ApplySettingsAsync);
                     CloseIfSaved();
                     break;
                 case SettingsPromptAction.Discard:
-                    DiscardChanges();
-                    Close();
+                    await RunOperationAsync(DiscardChangesAsync);
+                    CloseIfSaved();
                     break;
                 case SettingsPromptAction.Stay:
                     _model.SetPrompt(SettingsPrompt.None);
@@ -246,7 +331,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         public void Tick()
         {
-            if (_settingsService.IsAwaitingDisplayConfirmation)
+            if (_settingsService.IsAwaitingDisplayConfirmation && !_model.IsBusy)
             {
                 UpdateDisplayCountdown();
             }
@@ -284,7 +369,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                     "Mute when unfocused" => $"Silence the game while its window is in the background. Currently {(_model.MuteWhenUnfocused ? "On" : "Off")}.",
                     "VSync" => $"Synchronize presentation with the display refresh rate. Currently {(_model.VSync ? "On" : "Off")}.",
                     "Window mode" => "Choose fullscreen or windowed display mode.",
-                    "Resolution" => "Choose the display resolution.",
+                    "Resolution" => "Choose the output resolution. Borderless scales to fill the monitor and adds letterbox bars when aspect ratios differ.",
+                    "Monitor" => "Move the game to another monitor. Keep the change within 15 seconds or the previous display is restored.",
+                    "Refresh Rate" => "Choose refresh rate in exclusive fullscreen on Windows. Other modes use the monitor refresh rate.",
                     "Quality" => "Choose the graphics quality preset.",
                     "Nebula" => $"Render volumetric nebula clouds. Currently {(_model.NebulaEnabled ? "On" : "Off")}.",
                     "Render resolution" => $"Render the 3D scene at {_model.RenderResolution:P0} of the display resolution; the interface stays sharp.",

@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using EmpireAtWar.Mvc;
 
 namespace EmpireAtWar.Services.Settings
@@ -19,18 +20,20 @@ namespace EmpireAtWar.Services.Settings
         bool IsAwaitingDisplayConfirmation { get; }
 
         /// <summary>Applies the draft. A display change must then be kept or reverted before anything is saved.</summary>
-        SettingsApplyResult Apply();
+        Task<SettingsApplyResult> ApplyAsync();
+        Task PreviewMonitorAsync(int index);
+        Task Initialization { get; }
 
         /// <summary>Returns <see cref="SettingsApplyResult.Committed"/> or <see cref="SettingsApplyResult.SaveFailed"/>.</summary>
         SettingsApplyResult KeepDisplay();
 
         /// <summary>Restores the saved display and aborts this Apply; other draft edits stay pending.</summary>
-        void RevertDisplay();
+        Task RevertDisplayAsync();
 
         /// <summary>Replaces the draft with the saved settings and restores their engine state.</summary>
-        void Discard();
+        Task DiscardAsync();
 
-        /// <summary>Replaces the draft with defaults; nothing is applied until <see cref="Apply"/>.</summary>
+        /// <summary>Replaces the draft with defaults; nothing is applied until <see cref="ApplyAsync"/>.</summary>
         void ResetDraftToDefaults();
 
         /// <summary>Saves and applies the usage-data consent answer without touching other pending draft edits.</summary>

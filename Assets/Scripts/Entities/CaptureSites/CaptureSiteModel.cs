@@ -42,9 +42,9 @@ namespace EmpireAtWar.Entities.CaptureSites
             PlayerId previousOwner = Owner;
             if (!IsCapturable) _capture.ResetCapture();
             if (!_capture.Tick(deltaTime, tally, IsCapturable)) return false;
-            State = CaptureSiteState.Owned;
+            State = Owner == PlayerId.None ? CaptureSiteState.Neutral : CaptureSiteState.Owned;
             ConstructionProgress = 0f;
-            Captured?.Invoke(previousOwner, Owner, FacilityType);
+            if (Owner != PlayerId.None) Captured?.Invoke(previousOwner, Owner, FacilityType);
             return true;
         }
 

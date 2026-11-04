@@ -7,6 +7,7 @@ namespace EmpireAtWar.Services.Settings
     public sealed class GraphicsSettingsData
     {
         public const int UNLIMITED_FRAME_RATE = 0;
+        public const int MONITOR_FRAME_RATE = -1;
 
         /// <summary>Quality level name; empty keeps the project's default level.</summary>
         [SerializeField] private string qualityPreset = string.Empty;
@@ -58,7 +59,7 @@ namespace EmpireAtWar.Services.Settings
             qualityPreset ??= string.Empty;
             renderResolution = float.IsNaN(renderResolution) ? 1f : Mathf.Clamp(renderResolution, 0.5f, 1f);
             if (!Enum.IsDefined(typeof(GraphicsUpscaler), upscaler)) upscaler = GraphicsUpscaler.Bilinear;
-            if (frameRateLimit < UNLIMITED_FRAME_RATE)
+            if (frameRateLimit < MONITOR_FRAME_RATE)
             {
                 frameRateLimit = UNLIMITED_FRAME_RATE;
             }

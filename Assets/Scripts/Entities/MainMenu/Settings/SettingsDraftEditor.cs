@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Graphics;
 using EmpireAtWar.Services.Settings;
-using UnityEngine;
 
 namespace EmpireAtWar.Entities.MainMenu.Settings
 {
@@ -16,24 +14,17 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private readonly IGraphicsOptions _graphicsOptions;
         private readonly IDisplayOptions _displayOptions;
         private readonly IAudioSettingsPreview _audioPreview;
-        private IReadOnlyList<Vector2Int> _resolutions = new Vector2Int[0];
+        private readonly SettingsDisplayEditor _displayEditor;
 
-        private static readonly DisplayWindowMode[] WINDOW_MODES =
-        {
-            DisplayWindowMode.Windowed,
-            DisplayWindowMode.Borderless,
-            DisplayWindowMode.ExclusiveFullscreen,
-        };
-        private static readonly string[] WINDOW_MODE_LABELS = { "Windowed", "Borderless", "Fullscreen" };
         private static readonly int[] FRAME_RATE_LIMITS =
         {
-            GraphicsSettingsData.UNLIMITED_FRAME_RATE, 30, 60, 90, 120, 144, 165, 240,
+            GraphicsSettingsData.UNLIMITED_FRAME_RATE, GraphicsSettingsData.MONITOR_FRAME_RATE, 30, 60, 90, 120, 144, 165, 240,
         };
         private readonly SettingsModel _model;
-        private static readonly string[] FRAME_RATE_LIMIT_LABELS = FormatFrameRateLimits();
+
         private GraphicsUpscaler[] _upscalers = GraphicsUpscalerSupport.Available;
         private string[] _upscalerLabels = Array.ConvertAll(GraphicsUpscalerSupport.Available, GraphicsUpscalerSupport.Label);
-        private string[] _resolutionLabels = new string[0];
+
 
         private SettingsData Draft => _settingsService.Draft;
 
@@ -49,33 +40,30 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             _graphicsOptions = graphicsOptions;
             _displayOptions = displayOptions;
             _model = model;
+            _displayEditor = new SettingsDisplayEditor(displayOptions, settingsService, model);
         }
 
         /// <summary>Reads monitor modes once per screen opening; edits reuse the cached lists.</summary>
         public void Open()
         {
-            _resolutions = _displayOptions.Resolutions;
-            _resolutionLabels = FormatResolutions();
+            _displayEditor.Open();
             Refresh();
         }
 
         public void Refresh()
         {
             GraphicsSettingsData graphics = Draft.Graphics;
-            DisplaySettingsData display = Draft.Display;
+            _displayEditor.Refresh();
 
             _model.SetGraphics(
                 new SettingsChoice(
                     _graphicsOptions.QualityPresets,
                     _graphicsOptions.ResolveQualityLevel(graphics.QualityPreset),
                     true),
-                new SettingsChoice(WINDOW_MODE_LABELS, Array.IndexOf(WINDOW_MODES, display.WindowMode), true),
+                _displayEditor.WindowMode,
+                _displayEditor.Resolution,
                 new SettingsChoice(
-                    _resolutionLabels,
-                    FindResolutionIndex(display),
-                    display.WindowMode != DisplayWindowMode.Borderless),
-                new SettingsChoice(
-                    FRAME_RATE_LIMIT_LABELS,
+                    FormatFrameRateLimits(),
                     Math.Max(0, Array.IndexOf(FRAME_RATE_LIMITS, graphics.FrameRateLimit)),
                     !graphics.VSync),
                 graphics.VSync);
@@ -109,14 +97,19 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         public void SelectWindowMode(int index)
         {
-            Draft.Display.WindowMode = WINDOW_MODES[index];
+            _displayEditor.SelectWindowMode(index);
             Refresh();
         }
 
         public void SelectResolution(int index)
         {
-            Vector2Int size = _resolutions[index];
-            Draft.Display.SetResolution(size.x, size.y);
+            _displayEditor.SelectResolution(index);
+            Refresh();
+        }
+
+        public void SelectRefreshRate(int index)
+        {
+            _displayEditor.SelectRefreshRate(index);
             Refresh();
         }
 
@@ -223,47 +216,16 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             Refresh();
         }
 
-        private string[] FormatResolutions()
-        {
-            string[] labels = new string[_resolutions.Count];
-            for (int i = 0; i < labels.Length; i++)
-            {
-                labels[i] = $"{_resolutions[i].x} x {_resolutions[i].y}";
-            }
-
-            return labels;
-        }
-
-        // A saved size missing on this monitor shows the desktop size, which is what the applier falls back to.
-        private int FindResolutionIndex(DisplaySettingsData display)
-        {
-            Vector2Int desktop = _displayOptions.DesktopResolution;
-            Vector2Int size = display.UsesDesktopResolution ? desktop : new Vector2Int(display.Width, display.Height);
-            int index = IndexOf(size);
-            return index >= 0 ? index : Math.Max(0, IndexOf(desktop));
-        }
-
-        private int IndexOf(Vector2Int size)
-        {
-            for (int i = 0; i < _resolutions.Count; i++)
-            {
-                if (_resolutions[i] == size)
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
-        private static string[] FormatFrameRateLimits()
+        private string[] FormatFrameRateLimits()
         {
             string[] labels = new string[FRAME_RATE_LIMITS.Length];
             for (int i = 0; i < labels.Length; i++)
             {
                 labels[i] = FRAME_RATE_LIMITS[i] == GraphicsSettingsData.UNLIMITED_FRAME_RATE
                     ? UNLIMITED_FRAME_RATE_LABEL
-                    : $"{FRAME_RATE_LIMITS[i]} FPS";
+                    : FRAME_RATE_LIMITS[i] == GraphicsSettingsData.MONITOR_FRAME_RATE
+                        ? $"Monitor ({SettingsDisplayEditor.FormatRate(_displayOptions.CurrentRefreshRate)})"
+                        : $"{FRAME_RATE_LIMITS[i]} FPS";
             }
 
             return labels;

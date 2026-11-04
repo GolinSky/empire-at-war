@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
+using EmpireAtWar.Services.Graphics;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using VContainer;
@@ -17,6 +19,8 @@ namespace EmpireAtWar.Services.Settings
         private readonly ISettingsRepository _repository;
 
         private readonly IReadOnlyList<ISettingsApplier> _appliers;
+        private DisplaySettingsData _displayBeforePreview;
+        public Task Initialization { get; private set; } = Task.CompletedTask;
 
         public event Action SavedChanged;
 
@@ -53,17 +57,32 @@ namespace EmpireAtWar.Services.Settings
             }
 
             Saved = loaded;
+            Draft = Saved.Clone();
+            Initialization = InitializeAppliedAsync(loadStatus);
+            ObserveInitialization();
+        }
+
+        private async Task InitializeAppliedAsync(SettingsLoadStatus loadStatus)
+        {
             GraphicsUpscaler requestedUpscaler = Saved.Graphics.Upscaler;
-            ApplyAll(Saved);
+            await ApplyAllAsync(Saved);
             if (requestedUpscaler != Saved.Graphics.Upscaler && loadStatus != SettingsLoadStatus.Unreadable)
                 TrySave(Saved);
             Draft = Saved.Clone();
         }
 
-        public SettingsApplyResult Apply()
+        private async void ObserveInitialization()
         {
+            try { await Initialization; }
+            catch (Exception exception) { Debug.LogException(exception); }
+        }
+
+        public async Task<SettingsApplyResult> ApplyAsync()
+        {
+            await Initialization;
             bool displayChanged = !Draft.Display.Matches(Saved.Display);
-            ApplyAll(Draft);
+            CaptureDisplayBeforePreview();
+            await ApplyAllAsync(Draft);
             if (displayChanged)
             {
                 IsAwaitingDisplayConfirmation = true;
@@ -76,21 +95,74 @@ namespace EmpireAtWar.Services.Settings
         public SettingsApplyResult KeepDisplay()
         {
             IsAwaitingDisplayConfirmation = false;
-            return Commit();
+            SettingsApplyResult result = Commit();
+            if (result == SettingsApplyResult.Committed) _displayBeforePreview = null;
+            return result;
         }
 
-        public void RevertDisplay()
+        public async Task RevertDisplayAsync()
         {
+            await Initialization;
             IsAwaitingDisplayConfirmation = false;
             Draft.SetDisplay(Saved.Display.Clone());
-            ApplyAll(Draft);
+            await RestoreDisplayAsync(Draft);
         }
 
-        public void Discard()
+        public async Task DiscardAsync()
         {
+            await Initialization;
             IsAwaitingDisplayConfirmation = false;
             Draft = Saved.Clone();
-            ApplyAll(Saved);
+            await RestoreDisplayAsync(Saved);
+        }
+
+        public async Task PreviewMonitorAsync(int index)
+        {
+            await Initialization;
+            CaptureDisplayBeforePreview();
+            foreach (ISettingsApplier applier in _appliers)
+            {
+                if (applier is IDisplayOptions display)
+                {
+                    DisplayInfo monitor = display.Monitors[index];
+                    Draft.Display.SetMonitor(monitor.name, index);
+                    await display.MoveToMonitorAsync(Draft.Display);
+                    if (!Draft.Display.UsesDesktopResolution)
+                    {
+                        Vector2Int size = new Vector2Int(Draft.Display.Width, Draft.Display.Height);
+                        bool supported = false;
+                        foreach (Vector2Int available in display.Resolutions)
+                            supported |= available == size;
+                        if (!supported) Draft.Display.SetResolution(0, 0);
+                    }
+                    break;
+                }
+            }
+            await ApplyAllAsync(Draft);
+            IsAwaitingDisplayConfirmation = true;
+        }
+
+        private void CaptureDisplayBeforePreview()
+        {
+            if (_displayBeforePreview != null) return;
+            foreach (ISettingsApplier applier in _appliers)
+                if (applier is IDisplayOptions display)
+                {
+                    _displayBeforePreview = display.CaptureCurrentDisplay();
+                    return;
+                }
+        }
+
+        private async Task RestoreDisplayAsync(SettingsData settings)
+        {
+            SettingsData restored = settings;
+            if (_displayBeforePreview != null)
+            {
+                restored = settings.Clone();
+                restored.SetDisplay(_displayBeforePreview);
+            }
+            await ApplyAllAsync(restored);
+            _displayBeforePreview = null;
         }
 
         public void ResetDraftToDefaults()
@@ -109,7 +181,8 @@ namespace EmpireAtWar.Services.Settings
 
             Saved = answered;
             Draft.Privacy.Answer(isShared);
-            ApplyAll(Saved);
+            foreach (ISettingsApplier applier in _appliers)
+                if (!(applier is IDisplayOptions)) applier.Apply(Saved);
             SavedChanged?.Invoke();
             return SettingsApplyResult.Committed;
         }
@@ -123,6 +196,7 @@ namespace EmpireAtWar.Services.Settings
             }
 
             Saved = Draft.Clone();
+            _displayBeforePreview = null;
             SavedChanged?.Invoke();
             return SettingsApplyResult.Committed;
         }
@@ -141,11 +215,14 @@ namespace EmpireAtWar.Services.Settings
             }
         }
 
-        private void ApplyAll(SettingsData settings)
+        private async Task ApplyAllAsync(SettingsData settings)
         {
             foreach (ISettingsApplier applier in _appliers)
             {
-                applier.Apply(settings);
+                if (applier is IDisplayOptions display)
+                    await display.ApplyDisplayAsync(settings.Display);
+                else
+                    applier.Apply(settings);
             }
         }
 

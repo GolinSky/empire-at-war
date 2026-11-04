@@ -9,6 +9,59 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Capture")]
     public sealed class CaptureControlTests
     {
+        [TestCase(true)]
+        [TestCase(false)]
+        public void OwnedZone_NeutralizesAtHalfSpeedBeforeCapture_ForBothConsumers(bool playerAttacks)
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            PlayerId attacker = playerAttacks ? TestPlayers.Human : TestPlayers.Enemy;
+            PlayerId defender = playerAttacks ? TestPlayers.Enemy : TestPlayers.Human;
+            CaptureStrength tally = TestPlayers.Tally(roster, (attacker, 1f));
+            var site = new CaptureSiteModel(roster, 10f, 1f, defender);
+            var relay = new ReinforcementZoneModel(roster, defender, 10f, 1f, true);
+
+            Assert.That(site.TickCapture(10f, tally), Is.False);
+            Assert.That(relay.Tick(10f, tally), Is.False);
+            Assert.That(site.Owner, Is.EqualTo(defender));
+            Assert.That(relay.Owner, Is.EqualTo(defender));
+            Assert.That(site.CaptureProgress, Is.EqualTo(0.5f));
+            Assert.That(relay.CaptureProgress, Is.EqualTo(0.5f));
+
+            Assert.That(site.TickCapture(10f, tally), Is.True);
+            Assert.That(relay.Tick(10f, tally), Is.True);
+            Assert.That(site.Owner, Is.EqualTo(PlayerId.None));
+            Assert.That(relay.Owner, Is.EqualTo(PlayerId.None));
+            Assert.That(site.State, Is.EqualTo(CaptureSiteState.Neutral));
+            Assert.That(site.CanStartConstruction, Is.False);
+            Assert.That(site.CaptureProgress, Is.Zero);
+            Assert.That(relay.CaptureProgress, Is.Zero);
+
+            Assert.That(site.TickCapture(5f, tally), Is.False);
+            Assert.That(relay.Tick(5f, tally), Is.False);
+            Assert.That(site.CaptureProgress, Is.EqualTo(0.5f));
+            Assert.That(relay.CaptureProgress, Is.EqualTo(0.5f));
+            Assert.That(site.TickCapture(5f, tally), Is.True);
+            Assert.That(relay.Tick(5f, tally), Is.True);
+            Assert.That(site.Owner, Is.EqualTo(attacker));
+            Assert.That(relay.Owner, Is.EqualTo(attacker));
+            Assert.That(site.CanStartConstruction, Is.True);
+        }
+
+        [Test]
+        public void Restore_NeutralizationInProgress_CompletesBeforeCapture()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            var control = new CaptureControl(roster, PlayerId.None, 10f, 1f);
+            control.Restore(TestPlayers.Enemy, TestPlayers.Human, 0.5f, false);
+            CaptureStrength tally = TestPlayers.Tally(roster, (TestPlayers.Human, 1f));
+
+            Assert.That(control.Tick(10f, tally, true), Is.True);
+            Assert.That(control.Owner, Is.EqualTo(PlayerId.None));
+            Assert.That(control.CaptureProgress, Is.Zero);
+            Assert.That(control.Tick(10f, tally, true), Is.True);
+            Assert.That(control.Owner, Is.EqualTo(TestPlayers.Human));
+        }
+
         [TestCase(1f)]
         [TestCase(2f)]
         public void OpposingTeams_ReportBothVisualParticipantsWithoutChangingCaptureRules(float playerStrength)

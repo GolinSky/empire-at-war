@@ -103,12 +103,82 @@ namespace EmpireAtWar.Tests.Editor
             SettingsData data = new SettingsData();
             data.Display.WindowMode = DisplayWindowMode.ExclusiveFullscreen;
             data.Display.SetResolution(1920, 1080);
+            data.Display.SetRefreshRate(60000, 1001);
+            data.Display.SetMonitor("Same-name display", 1);
             data.Graphics.QualityPreset = "Balanced";
             data.Audio.VoiceVolume = 0.25f;
             data.Camera.ZoomSpeedMultiplier = 1.5f;
             data.Gameplay.AutoPowerAbilities = false;
 
             Assert.That(SettingsData.FromJson(data.ToJson()).Matches(data), Is.True);
+        }
+
+        [Test]
+        public void FromJson_LegacyDisplayDefaultsToCurrentMonitorAndRefreshRate()
+        {
+            SettingsData data = SettingsData.FromJson(
+                "{\"display\":{\"windowMode\":\"Windowed\",\"width\":1280,\"height\":720}}");
+
+            Assert.That(data.Display.Width, Is.EqualTo(1280));
+            Assert.That(data.Display.RefreshNumerator, Is.Zero);
+            Assert.That(data.Display.RefreshDenominator, Is.Zero);
+            Assert.That(data.Display.MonitorName, Is.Empty);
+            Assert.That(data.Display.MonitorIndex, Is.Zero);
+        }
+
+        [TestCase(0u, 1u)]
+        [TestCase(144u, 0u)]
+        public void DisplaySanitize_PartialRefreshRateBecomesMonitorDefault(uint numerator, uint denominator)
+        {
+            DisplaySettingsData data = new DisplaySettingsData();
+            data.SetRefreshRate(numerator, denominator);
+            data.SetMonitor(null, -1);
+            data.Sanitize();
+
+            Assert.That(data.RefreshNumerator, Is.Zero);
+            Assert.That(data.RefreshDenominator, Is.Zero);
+            Assert.That(data.MonitorName, Is.Empty);
+            Assert.That(data.MonitorIndex, Is.Zero);
+        }
+
+        [Test]
+        public void DisplaySanitize_PlatformModesRejectExclusiveAndKeepNativeFullscreen()
+        {
+            DisplayWindowMode[] macModes = { DisplayWindowMode.Windowed, DisplayWindowMode.Borderless,
+                DisplayWindowMode.MaximizedWindow };
+            DisplaySettingsData data = new DisplaySettingsData { WindowMode = DisplayWindowMode.ExclusiveFullscreen };
+            data.Sanitize(macModes);
+            Assert.That(data.WindowMode, Is.EqualTo(DisplayWindowMode.Borderless));
+
+            data.WindowMode = DisplayWindowMode.MaximizedWindow;
+            data.Sanitize(macModes);
+            Assert.That(data.WindowMode, Is.EqualTo(DisplayWindowMode.MaximizedWindow));
+        }
+
+        [Test]
+        public void DisplayClone_PreservesRefreshAndMonitorAndDetectsEachEdit()
+        {
+            DisplaySettingsData original = new DisplaySettingsData();
+            original.SetRefreshRate(60000, 1001);
+            original.SetMonitor("Identical panels", 1);
+            DisplaySettingsData clone = original.Clone();
+            Assert.That(clone.Matches(original), Is.True);
+
+            clone.SetRefreshRate(60000, 1000);
+            Assert.That(clone.Matches(original), Is.False);
+            clone = original.Clone();
+            clone.SetRefreshRate(144000, 1001);
+            Assert.That(clone.Matches(original), Is.False);
+            clone = original.Clone();
+            clone.SetMonitor("Identical panels", 0);
+            Assert.That(clone.Matches(original), Is.False);
+            clone = original.Clone();
+            clone.SetMonitor("Other panel", 1);
+            Assert.That(clone.Matches(original), Is.False);
+            Assert.That(original.RefreshNumerator, Is.EqualTo(60000));
+            Assert.That(original.RefreshDenominator, Is.EqualTo(1001));
+            Assert.That(original.MonitorName, Is.EqualTo("Identical panels"));
+            Assert.That(original.MonitorIndex, Is.EqualTo(1));
         }
     }
 }

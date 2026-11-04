@@ -1,7 +1,7 @@
 ---
 category: Documentation
 status: in-progress
-created: 2026-10-29
+created: "2026-10-29\r"
 ---
 # User Acceptance Queue
 
@@ -77,6 +77,10 @@ created: 2026-10-29
   - [ ] Manual verification (skirmish)
 
 ## UI and Settings
+
+- [ ] [[Done/Features/Display_Modes_And_Monitors_Plan]] — Windows standalone: single/dual monitors at 60/144 Hz; all modes, size/Hz/monitor Keep/Revert, timeout/Escape, unplug fallback, saved-monitor startup and monitor FPS cap.
+- [ ] [[Done/Features/Display_Modes_And_Monitors_Plan]] — macOS standalone: Retina, notch MacBook and external display; Native Fullscreen/Borderless/Windowed, actual-size labels, monitor move/revert and read-only Hz.
+
 
 - [[Done/Features/Settings_Audit_Followups]]
   - [ ] Live settings acceptance: category edits, rebind capture, Keep/Revert display countdown, corrupt-file recovery.

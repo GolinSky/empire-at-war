@@ -42,7 +42,9 @@ namespace EmpireAtWar.Services.Graphics
             Application.targetFrameRate =
                 graphics.VSync || graphics.FrameRateLimit == GraphicsSettingsData.UNLIMITED_FRAME_RATE
                     ? NO_FRAME_RATE_CAP
-                    : graphics.FrameRateLimit;
+                    : graphics.FrameRateLimit == GraphicsSettingsData.MONITOR_FRAME_RATE
+                        ? Mathf.Max(1, Mathf.RoundToInt((float)Screen.currentResolution.refreshRateRatio.value))
+                        : graphics.FrameRateLimit;
 
             if (!_runtimePipelines.TryGetValue(level, out UniversalRenderPipelineAsset pipeline))
             {

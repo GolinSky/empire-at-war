@@ -1,5 +1,7 @@
 namespace EmpireAtWar.Lifecycle
 {
+    //todo: trying to control order is bad - refactor contracts so it must work with order control
+
     /// <summary>Every <see cref="LifecycleOrderAttribute"/> value in one place. Unlisted callbacks run at 0 in
     /// registration order. Initialize and the tick phases run ascending; Dispose and LateDispose run descending.</summary>
     public static class LifecycleOrders

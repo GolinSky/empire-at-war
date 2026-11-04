@@ -6,5 +6,6 @@ namespace EmpireAtWar.Services.Settings
         Windowed = 0,
         Borderless = 1,
         ExclusiveFullscreen = 2,
+        MaximizedWindow = 3,
     }
 }

@@ -8,7 +8,6 @@ using EmpireAtWar.Services.Player;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Mvc;
 using UnityEngine;
-using VContainer;
 using EmpireAtWar.Lifecycle;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.Units;
@@ -31,16 +30,15 @@ namespace EmpireAtWar.Services.Battle
         private readonly INotifier<BattleState> _battleState;
 
         private readonly IBattleOutcomeRule _victoryModel;
-        private readonly List<IObserver<BattleResult>> _observers = new List<IObserver<BattleResult>>();
+        private readonly List<IObserver<BattleResult>> _observers = new();
+        private readonly List<PlayerBattleState> _states = new();
+        private BattleResult _finalResult;
         private readonly int[] _shipCounts = new int[MatchRules.MAX_PLAYERS];
         private readonly int[] _unitCounts = new int[MatchRules.MAX_PLAYERS];
         private readonly bool[] _aliveBases = new bool[MatchRules.MAX_PLAYERS];
-        private readonly List<PlayerBattleState> _states = new List<PlayerBattleState>();
-        private BattleResult _finalResult;
         private bool _isRunning;
 
         public string Id => nameof(BattleVictoryService);
-        public void Reset() => _finalResult = null;
 
         public BattleVictoryService(
             IGameModelObserver gameModel,
@@ -213,5 +211,7 @@ namespace EmpireAtWar.Services.Battle
                 isPlayerBaseAlive: isPlayerBaseAlive,
                 isEnemyBaseAlive: isEnemyBaseAlive, mode: _gameModel.GameMode);
         }
+
+        public void Reset() => _finalResult = null;
     }
 }

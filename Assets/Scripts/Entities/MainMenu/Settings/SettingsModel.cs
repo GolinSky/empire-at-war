@@ -12,6 +12,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public SettingsChoice Quality { get; private set; } = SettingsChoice.Empty;
         public SettingsChoice WindowMode { get; private set; } = SettingsChoice.Empty;
         public SettingsChoice Resolution { get; private set; } = SettingsChoice.Empty;
+        public SettingsChoice Monitor { get; private set; } = SettingsChoice.Empty;
+        public SettingsChoice RefreshRate { get; private set; } = SettingsChoice.Empty;
+        public bool IsBusy { get; private set; }
         public SettingsChoice FrameRateLimit { get; private set; } = SettingsChoice.Empty;
         public bool VSync { get; private set; }
         public bool NebulaEnabled { get; private set; }
@@ -50,6 +53,19 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             Resolution = resolution;
             FrameRateLimit = frameRateLimit;
             VSync = vSync;
+            Changed?.Invoke();
+        }
+
+        public void SetBusy(bool isBusy)
+        {
+            IsBusy = isBusy;
+            Changed?.Invoke();
+        }
+
+        public void SetDisplayOptions(SettingsChoice monitor, SettingsChoice refreshRate)
+        {
+            Monitor = monitor;
+            RefreshRate = refreshRate;
             Changed?.Invoke();
         }
 

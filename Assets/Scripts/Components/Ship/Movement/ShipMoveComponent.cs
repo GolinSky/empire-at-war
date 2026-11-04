@@ -14,7 +14,6 @@ using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Utils;
 using UnityEngine;
-using Utilities.ScriptUtils.Math;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 using NumericsVector3 = System.Numerics.Vector3;

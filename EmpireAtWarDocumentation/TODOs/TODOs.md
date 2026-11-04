@@ -44,9 +44,6 @@
   - Next: IonStorm branches → data/material; SDF bake timing. User review/tests → queue; decor perf → FPS Recovery.
 
 
-
-
-
 ### Bugs
 
 
@@ -250,6 +247,9 @@
 - [x] **Implement Game Design Balance Editor** → [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]; [[Done/Tooling/GameDesign_Balance_Editor - Research|Data ownership and feasibility]]
 
 ### Features
+
+- [x] **Display settings: resolution in all window modes, refresh rate, monitor selection (Win + macOS)** → [[Done/Features/Display_Modes_And_Monitors_Plan|Display Modes and Monitors Plan]]
+  - Completed 2026-11-04: all four phases, macOS native fullscreen and monitor FPS preset. Unity compile/import, saved prefab and Penpot layout verified. Ui 245/245 + Core 136/136 passed on 2026-11-04; no fixes needed. Windows/macOS hardware acceptance → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Reinforcement drag fix (second drag does nothing) + Shift-drag deploy-all** → [[Done/Features/Reinforcement_Drag_Batch_Spawn|Reinforcement Drag Batch Spawn]]
   - 2026-11-03: silent 1 s `SPAWN_COOLDOWN` removed; Shift-drag deploys min(reserve, population fit) in a grid. Compile clean; tests authored, not run; in-game gate queued.

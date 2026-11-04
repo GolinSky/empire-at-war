@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "Crash And Error Reporting",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": true,
@@ -188,6 +188,10 @@
   },
   "active": "fd4544b14efb9af5",
   "lastOpenFiles": [
+    "Done/Features/Display_Modes_And_Monitors_Plan.md",
+    "Rules/DISPLAY_SETTINGS.md",
+    "Done/Features/Reinforcement_Drag_Batch_Spawn.md",
+    "TODOs/Features/Reinforcement_Drag_Batch_Spawn.md",
     "TODOs/Optimization/Battle_FPS_Recovery_Plan.md",
     "Tooling/Crash_Reporting.md",
     "TODOs/sedHoE5uX",
@@ -212,10 +216,6 @@
     "TODOs/Features/Main_Relay_Map_Layout_Adjustments.md",
     "Architecture/Map_Generation.md",
     "TODOs/sed2g2Anb",
-    "Done/Documentation/Note_Flags_And_Durable_Guidance_Plan.md",
-    "Rules/BATTLE_PERFORMANCE_GUIDELINES.md",
-    "AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE.md",
-    "Rules/NOTE_FLAGS.md",
     "TODOs/Documentation",
     "TODOs/Documentation/sedEi1wmg",
     "TODOs/Documentation/sedJUugEI",

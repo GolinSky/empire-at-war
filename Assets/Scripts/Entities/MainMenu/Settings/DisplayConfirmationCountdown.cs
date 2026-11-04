@@ -15,9 +15,11 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private float _revertTime;
 
         private int _shownSeconds;
+        private string _displayDescription = string.Empty;
 
-        public void Start(float now)
+        public void Start(float now, string displayDescription = "")
         {
+            _displayDescription = displayDescription;
             _revertTime = now + DURATION_SECONDS;
             _shownSeconds = 0;
         }
@@ -40,7 +42,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             _shownSeconds = secondsLeft;
             prompt = new SettingsPrompt(
                 kind: SettingsPromptKind.DisplayConfirmation,
-                message: $"Keep these display settings?\nReverting in {secondsLeft} s.",
+                message: $"Keep these display settings?\n{_displayDescription}\nReverting in {secondsLeft} s.",
                 actions: ACTIONS);
             return true;
         }

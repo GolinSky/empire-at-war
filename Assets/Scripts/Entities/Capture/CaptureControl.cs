@@ -4,6 +4,8 @@ namespace EmpireAtWar.Entities.Capture
 {
     public sealed class CaptureControl
     {
+        private const float NEUTRALIZATION_DURATION_MULTIPLIER = 2f;
+
         private readonly IPlayerRelations _relations;
         private readonly float _captureDuration;
         private readonly float _captureSpeedPerNetShip;
@@ -43,9 +45,12 @@ namespace EmpireAtWar.Entities.Capture
             }
             if (!_relations.IsAllied(CapturingPlayer, capturingPlayer)) CaptureProgress = 0f;
             CapturingPlayer = capturingPlayer;
-            CaptureProgress += deltaTime / _captureDuration * tally.Advantage * _captureSpeedPerNetShip;
+            float duration = Owner == PlayerId.None
+                ? _captureDuration
+                : _captureDuration * NEUTRALIZATION_DURATION_MULTIPLIER;
+            CaptureProgress += deltaTime / duration * tally.Advantage * _captureSpeedPerNetShip;
             if (CaptureProgress < 1f) return false;
-            SetOwner(capturingPlayer);
+            SetOwner(Owner == PlayerId.None ? capturingPlayer : PlayerId.None);
             return true;
         }
 
