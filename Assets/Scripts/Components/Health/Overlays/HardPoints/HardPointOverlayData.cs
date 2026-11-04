@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 {
     [CreateAssetMenu(fileName = nameof(HardPointOverlayData), menuName = "Data/Hard Point Overlay Data")]
-    public sealed class HardPointOverlayData : ScriptableObject
+    public sealed class HardPointOverlayData : Data
     {
         [field: SerializeField, Min(0f), Tooltip("Maximum camera-to-unit distance for hardpoint markers, in world units.")]
         public float MaxVisibleDistance { get; private set; } = 1000f;

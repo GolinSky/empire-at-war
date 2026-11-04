@@ -1,10 +1,11 @@
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using Utilities.ScriptUtils.Math;
 
 namespace EmpireAtWar.Services.Camera
 {
     [CreateAssetMenu(fileName = nameof(CameraData), menuName = "Data/Camera Data")]
-    public class CameraData : ScriptableObject
+    public class CameraData : Data
     {
         [field: SerializeField,
                 Tooltip("Camera height limits; zoom dollies along the view ray between them.")]

@@ -1,9 +1,10 @@
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.UnitOrders
 {
     [CreateAssetMenu(menuName = "Empire At War/Unit Order Settings")]
-    public sealed class UnitOrderSettings : ScriptableObject
+    public sealed class UnitOrderSettings : Data
     {
         [SerializeField, Min(0f)] private float guardFollowRadius = 20f;
         [SerializeField, Min(0f)] private float guardChaseDistance = 120f;

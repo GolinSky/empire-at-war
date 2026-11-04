@@ -5,7 +5,7 @@ using Utilities.ScriptUtils.EditorSerialization;
 namespace EmpireAtWar.Repository.Data
 {
     [CreateAssetMenu(fileName = nameof(AssetMappingData), menuName = "Data/Asset Mapping Data")]
-    public class AssetMappingData : ScriptableObject
+    public class AssetMappingData : EmpireAtWar.Mvc.Data
     {
         [Tooltip("Maps the key used by code (usually a C# type name) to an Addressable asset reference.")]
         [SerializeField]

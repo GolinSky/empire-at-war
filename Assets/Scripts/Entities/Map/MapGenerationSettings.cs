@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utilities.ScriptUtils.EditorSerialization;
@@ -10,7 +11,7 @@ using Utilities.ScriptUtils.EditorSerialization;
 namespace EmpireAtWar.Entities.Map
 {
     [CreateAssetMenu(fileName = nameof(MapGenerationSettings), menuName = "Data/Map Generation Settings")]
-    public sealed class MapGenerationSettings : ScriptableObject
+    public sealed class MapGenerationSettings : Data
     {
         [SerializeField] private DictionaryWrapper<MapSize, MapSizeSettings> sizes;
         [SerializeField, Tooltip("XZ footprint radius about each station's pivot, including its model offset.")]

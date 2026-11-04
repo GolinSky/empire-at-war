@@ -3,13 +3,14 @@ using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.SuperWeapons;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Models.Factions
 {
     /// <summary>Everything one faction owns: its units, research and the shared structures it may build.</summary>
     [CreateAssetMenu(fileName = nameof(FactionDefinition), menuName = "Data/Factions/FactionDefinition")]
-    public class FactionDefinition : ScriptableObject
+    public class FactionDefinition : Data
     {
         [SerializeField] private FactionType factionType;
         [SerializeField] private FactionDataWrapper ships;

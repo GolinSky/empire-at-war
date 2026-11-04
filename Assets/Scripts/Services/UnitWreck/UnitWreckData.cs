@@ -1,3 +1,4 @@
+using EmpireAtWar.Mvc;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -8,7 +9,7 @@ namespace EmpireAtWar.Services.UnitWreck
     /// Values are written into the wreck materials on every spawn, so edits apply to the next wreck.
     /// </summary>
     [CreateAssetMenu(fileName = "UnitWreckData", menuName = "Data/UnitWreckData")]
-    public sealed class UnitWreckData : ScriptableObject
+    public sealed class UnitWreckData : Data
     {
         [Tooltip("Copy of the unit view on the Ship Wreck shader. Build with Tools/Rendering/Build Wreck From Selected View.")]
         [SerializeField] private AssetReferenceGameObject prefab;

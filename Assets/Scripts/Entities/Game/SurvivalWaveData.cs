@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Mvc;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Game
 {
     [CreateAssetMenu(fileName = nameof(SurvivalWaveData), menuName = "Data/Battles/Survival Waves")]
-    public sealed class SurvivalWaveData : ScriptableObject
+    public sealed class SurvivalWaveData : Data
     {
         [SerializeField] private float firstPreparationSeconds = 120f;
         [SerializeField] private float preparationSeconds = 60f;
