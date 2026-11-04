@@ -407,11 +407,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8768730661901922601}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 4, y: -108}
-  m_SizeDelta: {x: 72, y: 20}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -8, y: 18}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &21470322496997346
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -621,11 +621,11 @@ RectTransform:
   - {fileID: 1008586361713161582}
   m_Father: {fileID: 1079771970304263130}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 8, y: -76}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 8, y: 20}
   m_SizeDelta: {x: 64, y: 4}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &3130028289044339301
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -898,11 +898,11 @@ RectTransform:
   - {fileID: 8898475632946090842}
   m_Father: {fileID: 1079771970304263130}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 8, y: -70}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 8, y: 26}
   m_SizeDelta: {x: 64, y: 4}
-  m_Pivot: {x: 0, y: 1}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &3040722714895080325
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1056,10 +1056,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1079771970304263130}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 5, y: -0}
-  m_SizeDelta: {x: 70, y: 70}
+  m_SizeDelta: {x: -10, y: -32}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &9096992407391473688
 CanvasRenderer:
@@ -2892,6 +2892,7 @@ MonoBehaviour:
   buttonPrefab: {fileID: 7781393529263135368, guid: 510ea9daac6f23042a99362c4cf1d9f7,
     type: 3}
   buttonParent: {fileID: 2898954827593763386}
+  autoPowerButton: {fileID: 0}
 --- !u!114 &3425778100012065326
 MonoBehaviour:
   m_ObjectHideFlags: 0

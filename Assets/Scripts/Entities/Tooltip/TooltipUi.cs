@@ -63,9 +63,13 @@ namespace EmpireAtWar.Entities.Tooltip
             LayoutRebuilder.ForceRebuildLayoutImmediate(panel);
             RectTransform canvas = (RectTransform)transform.parent;
             float scale = canvas.rect.width / Screen.width;
-            float width = panel.rect.width / scale;
-            float height = panel.rect.height / scale;
             float padding = _settings.ScreenEdgePadding;
+            float fit = Mathf.Min(1f, Mathf.Min(
+                (Screen.width - padding * 2f) * scale / panel.rect.width,
+                (Screen.height - padding * 2f) * scale / panel.rect.height));
+            panel.localScale = new Vector3(fit, fit, 1f);
+            float width = panel.rect.width * fit / scale;
+            float height = panel.rect.height * fit / scale;
             Vector2 offset = anchor.Kind == TooltipAnchorKind.Cursor ? _settings.CursorOffset : Vector2.zero;
             float x = anchor.X + offset.x;
             float y = anchor.Y + anchor.Height + offset.y;
