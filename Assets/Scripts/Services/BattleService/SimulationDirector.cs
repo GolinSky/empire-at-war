@@ -22,7 +22,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly SimulationModel _model;
         private readonly SkirmishStateModel _state;
         private readonly SkirmishOrchestrator _flow;
-        private readonly BattleUnitSpawner _spawner;
+        private readonly PlayerFactoryLookup _spawner;
         private readonly IShipSpawnClearance _clearance;
         private readonly IEntityLocator _entities;
         private readonly SimulationTargeting _targeting;
@@ -40,7 +40,7 @@ namespace EmpireAtWar.Services.Battle
         private float _settleTime;
 
         public SimulationDirector(SimulationModel model, SkirmishStateModel state, SkirmishOrchestrator flow,
-            BattleUnitSpawner spawner, IShipSpawnClearance clearance, IEntityLocator entities,
+            PlayerFactoryLookup spawner, IShipSpawnClearance clearance, IEntityLocator entities,
             SimulationTargeting targeting, SimulationResetService reset,
             IMapModelObserver map, MapLayoutView mapView, ICameraService camera, SquadronLaunchSlots launchSlots)
         {

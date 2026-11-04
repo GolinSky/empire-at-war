@@ -156,7 +156,7 @@ namespace EmpireAtWar.Tests.Editor
                 _state.SetSpeed(GameSpeed.Fast);
                 var clock = new BattleClock(_state);
                 clock.Restore(723f);
-                var units = new UnitSaveService(new EntityLocator(), new BattleUnitSpawner(), null);
+                var units = new UnitSaveService(new EntityLocator(), new PlayerFactoryLookup(), null);
                 var service = new BattleSaveService(SkirmishPreset.Default(), _state, _camera,
                     _cinematic, clock, _repository, units, Array.Empty<IBattleSaveSource>());
                 game.PendingBattleSave = BattleSave.FromJson(service.Capture(BattleSaveSlot.Quicksave).ToJson());
@@ -185,7 +185,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 _state.SetState(BattleState.Running);
                 var clock = new BattleClock(_state);
-                var units = new UnitSaveService(new EntityLocator(), new BattleUnitSpawner(), null);
+                var units = new UnitSaveService(new EntityLocator(), new PlayerFactoryLookup(), null);
                 var service = new BattleSaveService(SkirmishPreset.Default(), _state, _camera,
                     _cinematic, clock, _repository, units, Array.Empty<IBattleSaveSource>());
                 game.PendingBattleSave = service.Capture(BattleSaveSlot.Quicksave);
@@ -342,7 +342,7 @@ namespace EmpireAtWar.Tests.Editor
             using var repository = new BlockingRepository(fail);
             var service = new BattleSaveService(battle, _state, _camera, _cinematic,
                 new BattleClock(_state), repository,
-                new UnitSaveService(new EntityLocator(), new BattleUnitSpawner(), null),
+                new UnitSaveService(new EntityLocator(), new PlayerFactoryLookup(), null),
                 Array.Empty<IBattleSaveSource>());
             using var actions = new BattleSaveActions(service, repository, null, battle);
             var statuses = new List<string>();
@@ -399,7 +399,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private BattleSaveService CreateService(BattleDefinition battle) =>
             new BattleSaveService(battle, _state, _camera, _cinematic, new BattleClock(_state), _repository,
-                new UnitSaveService(new EntityLocator(), new BattleUnitSpawner(), null), Array.Empty<IBattleSaveSource>());
+                new UnitSaveService(new EntityLocator(), new PlayerFactoryLookup(), null), Array.Empty<IBattleSaveSource>());
 
         [TestCase(BattleState.NotInitialized, false)]
         [TestCase(BattleState.Loading, false)]

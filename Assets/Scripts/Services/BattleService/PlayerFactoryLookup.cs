@@ -16,7 +16,11 @@ using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
 namespace EmpireAtWar.Services.Battle
 {
-    public sealed class BattleUnitSpawner
+    /// <summary>
+    /// Routes battle-scope callers to each player's own unit factories; the factories create the units.
+    /// Code inside a player scope calls its factories directly.
+    /// </summary>
+    public sealed class PlayerFactoryLookup
     {
         private readonly Dictionary<PlayerId, (ShipFactory Ships, ISquadronSpawner Squadrons)> _players = new();
         private readonly Dictionary<PlayerId, StructureFactories> _structures = new();

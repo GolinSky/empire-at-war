@@ -4,6 +4,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Analytics;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.StationFacing;
 using global::VContainer;
 
@@ -25,7 +26,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterInstance(new SurvivalModel(waves.FirstPreparationSeconds, waves.PreparationSeconds));
             builder.Register<SurvivalOutcomeRule>(Lifetime.Singleton).As<IBattleOutcomeRule>();
             builder.Register<CenteredStationFacing>(Lifetime.Singleton).AsImplementedInterfaces();
-            builder.Register<EdgeSpawnPointProvider>(Lifetime.Singleton);
+            builder.Register<EdgeSpawnPoints>(Lifetime.Singleton).As<IEdgeSpawnPoints>();
             builder.Register<SurvivalWaveDirector>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SurvivalSaveSource>(Lifetime.Singleton).As<IBattleSaveSource>();
             builder.Register<SurvivalHudUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

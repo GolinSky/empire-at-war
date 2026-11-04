@@ -122,7 +122,7 @@ namespace EmpireAtWar.Services.VContainer
             Factions = Assets.Load<FactionCatalog>(nameof(FactionCatalog));
             builder.RegisterInstance(Factions).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerScopeBootstrap>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<BattleUnitSpawner>(Lifetime.Singleton);
+            builder.Register<PlayerFactoryLookup>(Lifetime.Singleton);
             TooltipRegistrations.Register(builder, Assets);
             builder.Register<TooltipLifecyclePresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(reinforcementZoneData);

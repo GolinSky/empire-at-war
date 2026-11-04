@@ -17,7 +17,7 @@ namespace EmpireAtWar.Services.Battle
     {
         private readonly PlayerScopeBootstrap _players;
         private readonly PlayerRoster _roster;
-        private readonly BattleUnitSpawner _spawner;
+        private readonly PlayerFactoryLookup _spawner;
         private readonly ShotPoolPrewarmer _shots;
         private readonly BoltFlightBatch _bolts;
         private readonly IncomingMissileRegistry _missiles;
@@ -31,7 +31,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly ShipAbilityService _abilities;
         private readonly CombatAttackCoordinator _attacks;
 
-        public SimulationResetService(PlayerScopeBootstrap players, PlayerRoster roster, BattleUnitSpawner spawner,
+        public SimulationResetService(PlayerScopeBootstrap players, PlayerRoster roster, PlayerFactoryLookup spawner,
             ShotPoolPrewarmer shots, BoltFlightBatch bolts, IncomingMissileRegistry missiles, UnitWreckService wrecks,
             UnitExplosionService explosions, FighterExplosionPool fighters, HardPointExplosionPool hardPoints,
             ImpactEffectView impacts, BattleVictoryService victory, TeamIntelRegistry intel, ShipAbilityService abilities,

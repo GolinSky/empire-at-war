@@ -9,6 +9,7 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.UnitOrders;
 using UnityEngine;
@@ -23,8 +24,8 @@ namespace EmpireAtWar.Services.Battle
         private readonly SurvivalWaveData _data;
         private readonly BattleDefinition _battle;
         private readonly SkirmishStateModel _state;
-        private readonly BattleUnitSpawner _spawner;
-        private readonly EdgeSpawnPointProvider _points;
+        private readonly PlayerFactoryLookup _spawner;
+        private readonly IEdgeSpawnPoints _points;
         private readonly IEntityLocator _entities;
         private readonly IStationRegistry _stations;
         private readonly IUnitOrderService _orders;
@@ -40,7 +41,7 @@ namespace EmpireAtWar.Services.Battle
         private float _nextIdleRetryTime;
 
         public SurvivalWaveDirector(SurvivalModel model, SurvivalWaveData data, BattleDefinition battle,
-            SkirmishStateModel state, BattleUnitSpawner spawner, EdgeSpawnPointProvider points,
+            SkirmishStateModel state, PlayerFactoryLookup spawner, IEdgeSpawnPoints points,
             IEntityLocator entities, IStationRegistry stations, IUnitOrderService orders, IMapModelObserver map)
         {
             _model = model; _data = data; _battle = battle; _state = state; _spawner = spawner;
@@ -67,7 +68,7 @@ namespace EmpireAtWar.Services.Battle
             foreach (UnitTypeId unit in pending) _pending.Enqueue(unit);
             _spawned = spawned;
             _settleTime = settleTime;
-            if (_pending.Count > 0) _points.BeginWave();
+            if (_pending.Count > 0) _points.BeginBatch();
         }
 
         /// <summary>Restored attackers already have their attack order; they are not ordered again.</summary>
@@ -86,7 +87,7 @@ namespace EmpireAtWar.Services.Battle
             SurvivalWave wave = _data.GetWave(_battle.Survival.EnemyFaction, _model.WaveIndex);
             if (_wave != _model.WaveIndex)
             {
-                _wave = _model.WaveIndex; _spawned = 0; _points.BeginWave(); _commanded.Clear();
+                _wave = _model.WaveIndex; _spawned = 0; _points.BeginBatch(); _commanded.Clear();
                 foreach (SurvivalWaveEntry entry in wave.Entries)
                     for (int count = 0; count < entry.Quantity; count++) _pending.Enqueue(entry.Unit);
             }

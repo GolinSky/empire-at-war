@@ -845,7 +845,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.AttackMove));
 
             retryTime.SetValue(director, float.PositiveInfinity);
-            _battle.Container.Resolve<BattleUnitSpawner>().Spawn(attacker.Owner,
+            _battle.Container.Resolve<PlayerFactoryLookup>().Spawn(attacker.Owner,
                 attacker.GetFacade<EmpireAtWar.Entities.Units.IUnitTypeFacade>().UnitTypeId,
                 attacker.GetFacade<IEntityTransformFacade>().Transform.position + Vector3.right * 100);
             IEntity reinforcement = _battle.Container.Resolve<IEntityLocator>().Entities

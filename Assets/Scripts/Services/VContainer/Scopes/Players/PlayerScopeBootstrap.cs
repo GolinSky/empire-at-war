@@ -56,7 +56,7 @@ namespace EmpireAtWar.Services.VContainer
                 player.parentReference.Object = _owner;
                 _players.Add(player);
                 player.Build();
-                _owner.Container.Resolve<BattleUnitSpawner>().Register(slot.Id,
+                _owner.Container.Resolve<PlayerFactoryLookup>().Register(slot.Id,
                     player.Container.Resolve<ShipFactory>(), player.Container.Resolve<ISquadronSpawner>(),
                     new StructureFactories(player.Container.Resolve<SpaceStationFactory>(),
                         player.Container.Resolve<MiningFacilityFactory>(),

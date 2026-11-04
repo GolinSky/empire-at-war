@@ -18,10 +18,10 @@ namespace EmpireAtWar.Services.Saves
     public sealed class UnitSaveService
     {
         private readonly IEntityLocator _units;
-        private readonly BattleUnitSpawner _spawner;
+        private readonly PlayerFactoryLookup _spawner;
         private readonly ShipAbilityService _abilities;
 
-        public UnitSaveService(IEntityLocator units, BattleUnitSpawner spawner, ShipAbilityService abilities)
+        public UnitSaveService(IEntityLocator units, PlayerFactoryLookup spawner, ShipAbilityService abilities)
         {
             _units = units;
             _spawner = spawner;

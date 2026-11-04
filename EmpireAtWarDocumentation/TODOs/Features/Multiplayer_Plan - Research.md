@@ -20,7 +20,7 @@ Plan → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]. Audit date 2026-1
 
 - `Time.deltaTime` / `Time.time` / `Time.fixedDeltaTime`: 67 files (e.g. `BattleClock.Tick`, `WeaponComponent` salvo timing `Time.time`).
 - `UnityEngine.Random`: 21 files, including sim code: `WeaponComponent` retry jitter (`Random.Range(MIN_RETRY_INTERVAL, MAX_RETRY_INTERVAL)`) and group-sort offset.
-- `System.Random`: map generation (`BattleMapLoader` seeds `new Random(_battle.Map.Seed)`, so it is deterministic); also `FighterManeuver`, `EdgeSpawnPointProvider`, `UnitWreckService`, `MusicService`, `MatchNebula`.
+- `System.Random`: map generation (`BattleMapLoader` seeds `new Random(_battle.Map.Seed)`, so it is deterministic); also `FighterManeuver`, `EdgeSpawnPoints`, `UnitWreckService`, `MusicService`, `MatchNebula`.
 - Ids: `UniqueIdGenerator.GenerateUniqueId` = `BitConverter.ToInt64(Guid.NewGuid())`. Used by `ShipFactory`, `SquadronFactory`, `SpaceStationFactory`, `MiningFacilityFactory`, `DefendPlatformFactory`, `SiteFacilityBuilder`, `SkirmishPreset`.
 - Speed: `SkirmishOrchestrator.ApplyTimeScale` (`FAST_TIME_SCALE`/`PAUSE_TIME_SCALE`); `GameController` resets `Time.timeScale = 1f`.
 - Physics: 0 `Rigidbody`, 0 `NavMeshAgent`, 1 file with `Physics.*` queries.
