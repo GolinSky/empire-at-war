@@ -63,8 +63,7 @@ namespace EmpireAtWar.Services.Camera
         private readonly CameraZoom _zoom = new CameraZoom();
 
         private Plane _plane = new();
-        private Vector2 _keyboardInput;
-        private Vector2 _keyboardVelocity;
+        private Vector2 _panVelocity;
         // The map bounds exist once the battle runs; the camera stays movable while paused.
         private bool _canMove;
 
@@ -100,8 +99,7 @@ namespace EmpireAtWar.Services.Camera
 
         public void Initialize()
         {
-            _keyboardInput = Vector2.zero;
-            _keyboardVelocity = Vector2.zero;
+            _panVelocity = Vector2.zero;
             _zoom.Reset(CameraPosition.y);
             _cameraInput.Zoomed += ZoomCamera;
             _cameraInput.ZoomScrolled += ScrollZoom;
@@ -115,7 +113,7 @@ namespace EmpireAtWar.Services.Camera
             _canMove = state == BattleState.Running || state == BattleState.Paused;
             if (!_canMove)
             {
-                _keyboardVelocity = Vector2.zero;
+                _panVelocity = Vector2.zero;
                 _zoom.Reset(CameraPosition.y);
             }
         }
@@ -127,8 +125,7 @@ namespace EmpireAtWar.Services.Camera
             _cameraInput.Panned -= PanCamera;
             _inputLock.LockChanged -= OnLockChanged;
             _battleState.RemoveObserver(this);
-            _keyboardInput = Vector2.zero;
-            _keyboardVelocity = Vector2.zero;
+            _panVelocity = Vector2.zero;
         }
 
         public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax)
@@ -186,7 +183,7 @@ namespace EmpireAtWar.Services.Camera
 
         public void SetPose(Vector3 position, Quaternion rotation)
         {
-            _keyboardVelocity = Vector2.zero;
+            _panVelocity = Vector2.zero;
             transform.SetPositionAndRotation(position, rotation);
             _zoom.Reset(position.y);
         }
@@ -215,21 +212,20 @@ namespace EmpireAtWar.Services.Camera
 
         private void TickKeyboardPan()
         {
-            _keyboardInput = _cameraInput.Move;
-            _keyboardVelocity = VelocitySmoothing.MoveTowardsTarget(
-                _keyboardVelocity,
-                _keyboardInput,
+            _panVelocity = VelocitySmoothing.MoveTowardsTarget(
+                _panVelocity,
+                _cameraInput.Move,
                 PanSpeed,
                 _cameraData.PanAcceleration,
                 _cameraData.PanDeceleration,
                 FrameDelta);
-            if (_keyboardVelocity.sqrMagnitude <= Mathf.Epsilon)
+            if (_panVelocity.sqrMagnitude <= Mathf.Epsilon)
             {
-                _keyboardVelocity = Vector2.zero;
+                _panVelocity = Vector2.zero;
                 return;
             }
 
-            Vector3 move = GetPlanarDirection(_keyboardVelocity) * FrameDelta;
+            Vector3 move = GetPlanarDirection(_panVelocity) * FrameDelta;
             SetPosition(ClampPosition(CameraPosition + move));
         }
 
@@ -251,7 +247,7 @@ namespace EmpireAtWar.Services.Camera
         {
             if (isLocked)
             {
-                _keyboardVelocity = Vector2.zero;
+                _panVelocity = Vector2.zero;
                 // A lock can hand the camera to another owner; drop any unfinished zoom.
                 _zoom.Reset(CameraPosition.y);
             }
