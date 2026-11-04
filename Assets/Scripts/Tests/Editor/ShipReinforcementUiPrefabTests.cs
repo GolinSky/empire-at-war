@@ -4,6 +4,10 @@ using NUnit.Framework;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using System.Reflection;
+using EmpireAtWar.Entities.Reinforcement;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -12,6 +16,44 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const string PREFAB_PATH =
             "Assets/Prefabs/Ui/Reinforcement/ShipReinforcementUi.prefab";
+
+        [TestCase(PointerEventData.InputButton.Left, 1)]
+        [TestCase(PointerEventData.InputButton.Right, 0)]
+        [TestCase(PointerEventData.InputButton.Middle, 0)]
+        public void Drag_OnlyLeftButtonStartsPlacement(PointerEventData.InputButton button, int expectedPlacements)
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(PREFAB_PATH);
+            var eventSystemObject = new GameObject("EventSystem", typeof(EventSystem));
+            var scrollObject = new GameObject("Scroll", typeof(RectTransform), typeof(ScrollRect));
+            try
+            {
+                SpawnShipUi view = root.GetComponent<SpawnShipUi>();
+                var visitor = new ReinforcementVisitor();
+                typeof(SpawnShipUi).GetField("_reinforcementVisitor", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(view, visitor);
+                typeof(SpawnShipUi).GetField("_scrollRect", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(view, scrollObject.GetComponent<ScrollRect>());
+                var pointer = new PointerEventData(eventSystemObject.GetComponent<EventSystem>())
+                {
+                    button = button,
+                    pressPosition = Vector2.zero,
+                    position = new Vector2(100f, 0f)
+                };
+
+                ((IInitializePotentialDragHandler)view).OnInitializePotentialDrag(pointer);
+                ((IBeginDragHandler)view).OnBeginDrag(pointer);
+                ((IDragHandler)view).OnDrag(pointer);
+                ((IEndDragHandler)view).OnEndDrag(pointer);
+
+                Assert.That(visitor.Placements, Is.EqualTo(expectedPlacements));
+            }
+            finally
+            {
+                Object.DestroyImmediate(scrollObject);
+                Object.DestroyImmediate(eventSystemObject);
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
 
         [Test]
         public void ShipReinforcementUiPrefab_IsConfiguredCorrectly()
@@ -52,6 +94,13 @@ namespace EmpireAtWar.Tests.Editor
             {
                 PrefabUtility.UnloadPrefabContents(root);
             }
+        }
+
+        private sealed class ReinforcementVisitor : IReinforcementVisitor
+        {
+            public int Placements { get; private set; }
+            public void Handle(ISpawnShipUi view) => Placements++;
+            public void OnRelease(ISpawnShipUi view) { }
         }
     }
 }

@@ -64,7 +64,8 @@ namespace EmpireAtWar.Services.Input
             if (_abilities.IsWaitingForTarget || _targeting.Pending != null || _superWeapons.Pending != null)
             {
                 CancelDrag();
-                if (_abilities.IsWaitingForTarget && _battle.Select.WasPressedThisFrame())
+                if (_abilities.IsWaitingForTarget && _battle.Select.WasPressedThisFrame() &&
+                    !_uiHitTest.IsOverUi(position))
                 {
                     _abilities.CancelTargeting();
                     return;
@@ -123,6 +124,11 @@ namespace EmpireAtWar.Services.Input
 
         private void Release(Vector2 position)
         {
+            if (_uiHitTest.IsOverUi(position))
+            {
+                CancelDrag();
+                return;
+            }
             if (_drag.IsPressed && !_drag.StartedOverUi)
             {
                 if (TryStartDrag(position))

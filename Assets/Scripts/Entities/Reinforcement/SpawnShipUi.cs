@@ -74,11 +74,15 @@ namespace EmpireAtWar
             _isBlocked = !isActive;
         }
 
-        void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData) =>
+        void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
+        {
+            if (eventData.button != PointerEventData.InputButton.Left) return;
             _scrollRect.OnInitializePotentialDrag(eventData);
+        }
 
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left) return;
             Vector2 delta = eventData.position - eventData.pressPosition;
             _isScrolling = Mathf.Abs(delta.y) >= Mathf.Abs(delta.x);
             if (_isScrolling)
@@ -89,6 +93,7 @@ namespace EmpireAtWar
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left) return;
             if (!_isScrolling) return;
 
             // A vertical drag that leaves the list is a placement, not a scroll.
@@ -106,6 +111,7 @@ namespace EmpireAtWar
 
         void IEndDragHandler.OnEndDrag(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left) return;
             if (_isScrolling) _scrollRect.OnEndDrag(eventData);
             _isScrolling = false;
         }

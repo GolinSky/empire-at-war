@@ -97,6 +97,51 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_clicked, Is.EqualTo(1));
         }
 
+        [Test]
+        public void PendingAbility_UiPressDoesNotCancelTargeting()
+        {
+            Arm("ability");
+            _uiHitTest.OverUi = true;
+            MouseFrame(1, Vector2.zero);
+            MouseFrame(0, Vector2.zero);
+            Assert.That(_abilities.IsWaitingForTarget, Is.True);
+            Assert.That(_pressed, Is.Zero);
+            Assert.That(_clicked, Is.Zero);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void WorldPress_ReleasedOverUi_DoesNotCompleteSelection(bool drag)
+        {
+            MouseFrame(1, Vector2.zero);
+            Vector2 end = drag ? new Vector2(100f, 100f) : Vector2.zero;
+            if (drag) MouseFrame(1, end);
+            _uiHitTest.OverUi = true;
+            MouseFrame(0, end);
+            Assert.That(_clicked, Is.Zero);
+            Assert.That(_completed, Is.Zero);
+            Assert.That(_view.Visible, Is.False);
+
+            _uiHitTest.OverUi = false;
+            MouseFrame(1, Vector2.zero);
+            MouseFrame(0, Vector2.zero);
+            Assert.That(_clicked, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void UiPress_ReleasedInWorld_DoesNotSelectOrStartMarquee()
+        {
+            _uiHitTest.OverUi = true;
+            MouseFrame(1, Vector2.zero);
+            _uiHitTest.OverUi = false;
+            MouseFrame(1, new Vector2(100f, 100f));
+            MouseFrame(0, new Vector2(100f, 100f));
+            Assert.That(_pressed, Is.Zero);
+            Assert.That(_clicked, Is.Zero);
+            Assert.That(_completed, Is.Zero);
+            Assert.That(_view.Visible, Is.False);
+        }
+
         [TestCase("ability")]
         [TestCase("superweapon")]
         [TestCase("Attack")]
