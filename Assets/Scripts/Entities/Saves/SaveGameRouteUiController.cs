@@ -62,11 +62,6 @@ namespace EmpireAtWar.Entities.Saves
             Unfocus();
         }
 
-        public void SelectMode(int index)
-        {
-            // A running battle can only save into its own mode.
-        }
-
         public void SelectSave(int index)
         {
             if (!CanSave()) return;

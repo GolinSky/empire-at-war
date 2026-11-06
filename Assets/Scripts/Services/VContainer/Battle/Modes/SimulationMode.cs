@@ -22,7 +22,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SimulationTargeting>(Lifetime.Singleton);
             builder.Register<SimulationDirector>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SimulationDraft>(Lifetime.Singleton);
-            builder.Register<SimulationBattleLauncher>(Lifetime.Singleton).As<ISimulationLauncher>();
+            builder.Register<SimulationBattleLauncher>(Lifetime.Singleton).As<ISimulationLauncher, ISimulationSetupPause>();
             builder.Register<SimulationSetupUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SimulationHudUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }

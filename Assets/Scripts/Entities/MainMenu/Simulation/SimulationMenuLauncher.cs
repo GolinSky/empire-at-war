@@ -8,8 +8,6 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         private readonly IGameCommand _game;
         public SimulationMenuLauncher(IGameCommand game) => _game = game;
         public SimulationSetup Current => null;
-        public void Open() { }
-        public void Cancel() { }
         public void Launch(SimulationSetup setup) => _game.StartBattle(SimulationPreset.Create(setup).Build());
     }
 }

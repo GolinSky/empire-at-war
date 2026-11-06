@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Ui.Base;
 using TMPro;
@@ -27,6 +28,8 @@ namespace EmpireAtWar.Entities.Saves
         private ISaveBrowserPresenter _presenter;
         private bool _isInitialized;
         private int _modeIndex;
+
+        public event Action<int> ModeSelected;
 
         public void AssignPresenter(ISaveBrowserPresenter presenter) => _presenter = presenter;
 
@@ -99,8 +102,8 @@ namespace EmpireAtWar.Entities.Saves
             saveName.ActivateInputField();
         }
 
-        private void SelectSkirmish(bool selected) { if (selected && _modeIndex != 0) _presenter.SelectMode(0); }
-        private void SelectSurvival(bool selected) { if (selected && _modeIndex != 1) _presenter.SelectMode(1); }
+        private void SelectSkirmish(bool selected) { if (selected && _modeIndex != 0) ModeSelected?.Invoke(0); }
+        private void SelectSurvival(bool selected) { if (selected && _modeIndex != 1) ModeSelected?.Invoke(1); }
         private void ConfirmName() => _presenter.ConfirmName(saveName.text);
         private void OnDestroy() => Dispose();
     }

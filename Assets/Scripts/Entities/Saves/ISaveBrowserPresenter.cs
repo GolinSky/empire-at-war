@@ -3,7 +3,6 @@ namespace EmpireAtWar.Entities.Saves
     public interface ISaveBrowserPresenter
     {
         void Close();
-        void SelectMode(int index);
         void SelectSave(int index);
         void RemoveSave(int index);
         void SaveAsNew();

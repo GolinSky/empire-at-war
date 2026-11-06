@@ -148,13 +148,16 @@ namespace EmpireAtWar.Tests.Editor
                 controller = new EmpireAtWar.Entities.Saves.LoadGameRouteUiController(
                     new UiServiceStub(view), new CancelRouterStub(), saves, null);
                 controller.Open();
-                var status = (TMPro.TMP_Text)new SerializedObject(view).FindProperty("status").objectReferenceValue;
+                var fields = new SerializedObject(view);
+                var status = (TMPro.TMP_Text)fields.FindProperty("status").objectReferenceValue;
+                var survival = (Toggle)fields.FindProperty("survivalToggle").objectReferenceValue;
+                var skirmish = (Toggle)fields.FindProperty("skirmishToggle").objectReferenceValue;
                 controller.SelectSave(1);
                 Assert.That(status.text, Does.Contain("not supported"));
-                controller.SelectMode(1);
+                survival.isOn = true;
                 Assert.That(saves.LastMode, Is.EqualTo(EmpireAtWar.Entities.Game.GameMode.Survival));
                 Assert.That(status.text, Does.Contain("No saves"));
-                controller.SelectMode(0);
+                skirmish.isOn = true;
                 controller.SelectSave(0);
                 Assert.That(status.text, Does.Contain("Load failed").And.Contain("Unreadable save"));
                 Assert.That(controller.TryCancel(), Is.True);

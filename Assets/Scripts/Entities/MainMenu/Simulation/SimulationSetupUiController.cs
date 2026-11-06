@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Units;
@@ -13,12 +14,13 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         private readonly SimulationDraft _draft;
         private readonly FactionCatalog _catalog;
         private readonly ISimulationLauncher _launcher;
+        private readonly IReadOnlyList<ISimulationSetupPause> _setupPauses;
         private SimulationSetupUi _ui;
         private readonly UnitTypeId[][] _choices = new UnitTypeId[2][];
         private static readonly FactionType[] FACTIONS = (FactionType[])Enum.GetValues(typeof(FactionType));
         public SimulationSetupUiController(IUiService ui, IUiCancelRouter cancel, SimulationDraft draft,
-            FactionCatalog catalog, ISimulationLauncher launcher) : base(ui, cancel)
-        { _draft = draft; _catalog = catalog; _launcher = launcher; }
+            FactionCatalog catalog, ISimulationLauncher launcher, IReadOnlyList<ISimulationSetupPause> setupPauses) : base(ui, cancel)
+        { _draft = draft; _catalog = catalog; _launcher = launcher; _setupPauses = setupPauses; }
         public void Open()
         {
             if (_ui == null)
@@ -26,9 +28,14 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
                 _ui = CreateUi<SimulationSetupUi>(); _ui.AssignPresenter(this); _ui.Initialize();
             }
             if (_launcher.Current != null) _draft.Load(_launcher.Current);
-            _launcher.Open(); Render(); _ui.Show(); Focus();
+            foreach (var pause in _setupPauses) pause.Pause();
+            Render(); _ui.Show(); Focus();
         }
-        public void Close() { _ui.Hide(); Unfocus(); _launcher.Cancel(); }
+        public void Close()
+        {
+            _ui.Hide(); Unfocus();
+            foreach (var pause in _setupPauses) pause.Resume();
+        }
         protected override bool HandleCancel() { Close(); return true; }
         public void StartBattle()
         {

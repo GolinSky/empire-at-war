@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.MainMenu.Simulation
 {
-    public sealed class SimulationBattleLauncher : ISimulationLauncher
+    public sealed class SimulationBattleLauncher : ISimulationLauncher, ISimulationSetupPause
     {
         private readonly SimulationModel _model;
         private readonly SimulationDirector _director;
@@ -17,12 +17,12 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
             SkirmishOrchestrator flow, SkirmishStateModel state)
         { _model = model; _director = director; _flow = flow; _state = state; }
         public SimulationSetup Current => _model.Setup;
-        public void Open()
+        public void Pause()
         {
             _resume = _state.State == BattleState.Running;
             if (_resume) _flow.TogglePause();
         }
-        public void Cancel() { if (_resume) _flow.TogglePause(); _resume = false; }
+        public void Resume() { if (_resume) _flow.TogglePause(); _resume = false; }
         public void Launch(SimulationSetup setup) { _resume = false; _ = LaunchAsync(setup); }
         private async Awaitable LaunchAsync(SimulationSetup setup)
         {

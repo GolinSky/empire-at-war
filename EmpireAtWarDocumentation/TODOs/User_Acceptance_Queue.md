@@ -78,6 +78,11 @@ created: "2026-10-29\r"
 
 ## UI and Settings
 
+- [ ] [[Done/Refactoring/Empty_Interface_Members]] — Open setup from the main menu and launch a simulation.
+- [ ] [[Done/Refactoring/Empty_Interface_Members]] — Open setup from the battle HUD and cancel while running and while paused. Start a replacement simulation.
+- [ ] [[Done/Refactoring/Empty_Interface_Members]] — Switch Skirmish/Survival tabs on Load, reopen it, and verify Save hides the tabs.
+- [ ] [[Done/Refactoring/Empty_Interface_Members]] — Run the `Ui` and `GameFlow` EditMode categories when authorized.
+
 - [ ] [[Done/Features/Display_Modes_And_Monitors_Plan]] — Windows standalone: single/dual monitors at 60/144 Hz; all modes, size/Hz/monitor Keep/Revert, timeout/Escape, unplug fallback, saved-monitor startup and monitor FPS cap.
 - [ ] [[Done/Features/Display_Modes_And_Monitors_Plan]] — macOS standalone: Retina, notch MacBook and external display; Native Fullscreen/Borderless/Windowed, actual-size labels, monitor move/revert and read-only Hz.
 

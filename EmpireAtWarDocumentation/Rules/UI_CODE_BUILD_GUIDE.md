@@ -38,6 +38,7 @@
    - **Model events — default owner is the view:** the view subscribes to the model's read-only observer interface (`I<Feature>ModelObserver`) and renders from its events; it never mutates the model.
    - A controller or service subscribes instead when the reaction exceeds the view's scope: route/flow changes, gameplay requests, cross-feature or non-visual work. Decide per event by scope and context; one owner per reaction, never both.
    - Control listeners (buttons, sliders) belong to the view, which forwards intents to `I<Feature>Presenter`.
+   - For controls used by only one route on a shared view, raise a view event. The owning route subscribes when it creates the view and unsubscribes on disposal (`SaveBrowserUi.ModeSelected`).
    - Have `OnDestroy()` call `Dispose()` as a safety net.
 5. Register the model, controller, service, and data in the owning **VContainer scope** with the lifetime the feature requires.
    - Do not make a prefab resolve feature-specific dependencies from a different container.

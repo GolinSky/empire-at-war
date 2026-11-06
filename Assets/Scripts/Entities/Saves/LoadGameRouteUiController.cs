@@ -31,6 +31,7 @@ namespace EmpireAtWar.Entities.Saves
             {
                 _ui = CreateUi<SaveBrowserUi>();
                 _ui.AssignPresenter(this);
+                _ui.ModeSelected += SelectMode;
                 _ui.Initialize();
             }
             _ui.SetTitle("LOAD GAME");
@@ -57,7 +58,7 @@ namespace EmpireAtWar.Entities.Saves
             Unfocus();
         }
 
-        public void SelectMode(int index)
+        private void SelectMode(int index)
         {
             _modeIndex = index;
             _ui.SetMode(index, true);
@@ -120,7 +121,11 @@ namespace EmpireAtWar.Entities.Saves
 
         public void LateDispose()
         {
-            if (_ui != null) _ui.Dispose();
+            if (_ui != null)
+            {
+                _ui.ModeSelected -= SelectMode;
+                _ui.Dispose();
+            }
             _ui = null;
             Unfocus();
         }

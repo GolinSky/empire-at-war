@@ -441,6 +441,9 @@
 
 ### Refactoring
 
+- [x] **Remove empty interface members (simulation launcher pause, save-screen SelectMode)** → [[Done/Refactoring/Empty_Interface_Members|Empty Interface Members]]
+  - Completed 2026-11-06. Split battle pause from launch and moved mode selection to the load route. Editor analytics retains its disabled implementation.
+
 - [x] **Delete empty SelectionComponent hooks and empty MenuData** → [[Done/Refactoring/Empty_Code_Cleanup|Empty Code Cleanup]]
   - Completed 2026-11-06. Removed the unused hooks and field from 96 prefabs and retired the menu asset, mapping, preload and registration.
 
