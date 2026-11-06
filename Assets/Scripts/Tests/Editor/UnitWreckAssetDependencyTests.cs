@@ -1,4 +1,6 @@
 using System.Linq;
+using EmpireAtWar.Entities.SpaceStation;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.UnitWreck;
 using EmpireAtWar.ViewComponents.Wreck;
 using NUnit.Framework;
@@ -11,6 +13,18 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Health")]
     public sealed class UnitWreckAssetDependencyTests
     {
+        [TestCase(FactionType.Empire)]
+        [TestCase(FactionType.Republic)]
+        [TestCase(FactionType.Separatist)]
+        public void StationDestruction_SelectsItsFactionWreck(FactionType faction)
+        {
+            var station = AssetDatabase.LoadAssetAtPath<SpaceStationData>(
+                "Assets/Settings/Data/Models/SpaceStation/SpaceStationData.asset");
+            Assert.That(station.TryGetWreck(faction, out var wreck), Is.True);
+            Assert.That(AssetDatabase.GUIDToAssetPath(wreck.PrefabKey),
+                Is.EqualTo($"Assets/Prefabs/Models/Wrecks/{faction}SpaceStationWreckView.prefab"));
+        }
+
         [Test]
         public void WreckData_ReferencesAddressablePrefabsWithoutHardDependencies()
         {

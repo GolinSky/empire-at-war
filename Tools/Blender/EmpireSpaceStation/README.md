@@ -69,7 +69,7 @@ Inspect nested `data.result.success` after every Unity script. Inspect all five 
 - Source UVs are retained, with no Rebel dome repair. Hull uses `EmpireAtWar/Ship Lit`, direct source-alpha team mask, green-flipped normal and existing additive light convention. Team mask coverage: 0.640869%. Set `_TeamRimStrength=0` so team ownership recolors the authored stripes without washing the gray hull in team color.
 - FBX scale `0.02`; common nested scale `9.116956`; gameplay/visual roots scale 1. Level 5 base XZ diameter matches the previous station's `299.3029` units; complete attachment-inclusive diameter is `302.8595` units.
 - Preserve 17 existing gameplay hardpoint profiles/unlock levels and the hangar exit. Imperial anchors (`Tools/Blender/SpaceStations/Empire.json`) use `CM`, retain `HP01_SHG_Bone` at every level and retain `FP02_TBL_00` at level 5. Exit is 8 units below each collider.
-- Shared station levels, economy, combat data and other faction prefab/routing references remain unchanged. Existing Empire wreck configuration remains unchanged; no Imperial wreck was imported.
+- All five Empire station levels use the same wreck, generated from the level-5 Imperial hull by `ShipWreckBuilder`. The Empire entry in `SpaceStationData.asset` selects `EmpireSpaceStationWreckData`.
 
 ## Verification And Limits
 

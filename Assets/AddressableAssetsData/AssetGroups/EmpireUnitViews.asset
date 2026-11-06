@@ -170,6 +170,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8fe5b142872107f439cca7f9b78ad8b2
+    m_Address: EmpireSpaceStationWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 91a5b56b15ee0b94a81a4db37877f9ac
     m_Address: TIEBruteReinforcementView
     m_ReadOnly: 0
