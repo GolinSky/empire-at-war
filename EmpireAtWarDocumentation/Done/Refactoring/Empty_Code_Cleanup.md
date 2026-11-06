@@ -13,6 +13,7 @@ acceptance: pending-user
 - Removed both empty `OnSelected` hooks, `OnSkipSelection`, the serialized `selectionType` field, and the flag used only by those hooks. The model event still drives the selection ring.
 - Removed the squadron prefab builder's field assignment. Unity reserialized all 96 affected prefabs. Each diff deletes one serialized field.
 - Removed the empty menu model and observer, the battle preload and registration, the model asset, its mapping key, and its Addressables entry.
+- 2026-11-06 review fix: deleted the empty `Assets/Settings/Data/Models/SkirmishMenu` folder and its tracked `.meta` via Unity (`9a8654528` left it behind).
 - Updated lane 2a of [[TODOs/Refactoring/Type_File_Split_And_Placement]] to cover the eight remaining data files.
 
 ## Verification
