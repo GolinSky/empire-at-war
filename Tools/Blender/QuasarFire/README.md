@@ -15,7 +15,7 @@
 - Source fidelity: nine meshes, `9684` triangles, `33` bones, preserved UVs/material slots/hierarchy. FBX geometry error `0.0000186`, bone error `0.0000100` source units; Unity bone error `0.000000263` units before gameplay scaling.
 - Source `.blend`/FBX retain authored helpers. Visual/gameplay/preview/wreck prefabs omit hidden `Shield`, `Shadow`, `Col`; gameplay shield has a separately baked hull.
 - `MeshShield` engine/hangar surfaces use additive transport materials. EaW animated shader effects and proxy particle emitters are not recreated.
-- Source hull is neutral; inverse alpha covers approximately `99.999%` of the atlas and is unsuitable as a selective team mask. Use team rim coloring; preserve hull pixels.
+- The neutral source hull's inverse alpha covers approximately `99.999%` of the atlas. Live and wreck materials use `QuasarFire_WornStripeTeamMask.png` instead. Three mirrored forward-deck bands use the ISD I chipped paint pattern.
 - Editable package: `output/eaw-rebel-ships/QuasarFire-Converted/`; Unity art: `Assets/Art/{Models,Materials,Textures}/.../RebellionShips/QuasarFire/`.
 - Saved registrations, material slots, hardpoints, hangar bindings, references, prefab root scales and model fidelity passed `Inspect.cs` on 2026-10-12. Eight palette renders, icon, silhouette, placement and wreck produced; blue/green, placement and wreck inspected.
 - Icon alpha bounds `(39,145)..(474,367)` in `512×512`; all eight team renders differ. Final Unity compilation/import complete, `scriptCompilationFailed=false`; no new Console errors after final compilation. Source hash verification: `15` unchanged files.

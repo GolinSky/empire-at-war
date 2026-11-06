@@ -62,7 +62,7 @@ public static class VerifyCR70
         var fog = References(Config(view, "FogVisibilityComponent").FindProperty("renderers"));
         Check(visible.All(fog.Contains) && fog.Contains(health.FindProperty("shieldView").objectReferenceValue is Component shield ? shield.GetComponents<MeshRenderer>().Single() : null), "Hull and shield fog bindings");
         var hullMaterial = visible[0].sharedMaterial;
-        Check(visible.All(r => r.sharedMaterials.All(m => m.GetTexture("_TeamMaskMap") != null && Mathf.Approximately(m.GetFloat("_TeamMaskStrength"), .35f))), "Reduced source-alpha team tint on both hull pieces");
+        Check(visible.All(r => r.sharedMaterials.All(m => m.GetTexture("_TeamMaskMap") != null && Mathf.Approximately(m.GetFloat("_TeamMaskStrength"), .15f))), "Reduced source-alpha team tint on both hull pieces");
         var maskImporter = (TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(hullMaterial.GetTexture("_TeamMaskMap")));
         Check(!maskImporter.sRGBTexture, "Linear team-mask import");
         var data = Load(DATA);
@@ -77,7 +77,7 @@ public static class VerifyCR70
         Check(loadout.arraySize == 2 && loadout.GetArrayElementAtIndex(0).FindPropertyRelative("weaponType").intValue == 8 && loadout.GetArrayElementAtIndex(0).FindPropertyRelative("count").intValue == 8 && loadout.GetArrayElementAtIndex(1).FindPropertyRelative("weaponType").intValue == 14 && loadout.GetArrayElementAtIndex(1).FindPropertyRelative("count").intValue == 2, "AI weapon loadout");
         Check(data.FindProperty("<Wreck>k__BackingField").objectReferenceValue == Load(WRECK_DATA).targetObject && Load(WRECK_DATA).FindProperty("prefab.m_AssetGUID").stringValue == AssetDatabase.AssetPathToGUID(WRECK), "Own wreck data AssetReference");
         var wreckRenderers = wreck.GetComponentsInChildren<MeshRenderer>(true);
-        Check(wreckRenderers.Length == visible.Length && wreckRenderers.All(r => r.sharedMaterials.All(m => m.shader == AssetDatabase.LoadAssetAtPath<Shader>("Assets/Art/Shaders/Units/ShipWreck.shader") && m.GetTexture("_TeamMaskMap") == hullMaterial.GetTexture("_TeamMaskMap") && Mathf.Approximately(m.GetFloat("_TeamMaskStrength"), .35f))), "Current wreck shader and reduced team tint");
+        Check(wreckRenderers.Length == visible.Length && wreckRenderers.All(r => r.sharedMaterials.All(m => m.shader == AssetDatabase.LoadAssetAtPath<Shader>("Assets/Art/Shaders/Units/ShipWreck.shader") && m.GetTexture("_TeamMaskMap") == hullMaterial.GetTexture("_TeamMaskMap") && Mathf.Approximately(m.GetFloat("_TeamMaskStrength"), .15f))), "Current wreck shader and reduced team tint");
         Check(References(Config(wreck, "UnitWreckView").FindProperty("meshRenderers")).Length == wreckRenderers.Length && References(Config(wreck, "UnitWreckView").FindProperty("meshFilters")).Length == wreckRenderers.Length, "Wreck renderer/filter bindings");
         Check(References(Config(preview, "UnitSpawnView").FindProperty("meshRenderers")).Length == visible.Length && preview.GetComponents<BoxCollider>().Single().isTrigger, "Own placement hull and collider");
         var faction = Entry(Load("Assets/Settings/Data/Factions/Republic/RepublicFaction.asset").FindProperty("ships.keyValue"), SHIP_ID);

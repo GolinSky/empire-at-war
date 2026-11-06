@@ -20,7 +20,7 @@
 - Twelve `DualLaser` weapon mounts at `MuzzleA_00..11`, engine at `Thruster`, generator at `Shieldgen`; 14 unique targetable hardpoints. No hangar.
 - Existing Power to Weapons `20`: active/recovery `10/60 s`, firing delay ×0.5, speed ×0.75, incoming damage ×1.5. These project settings differ from RaW XML.
 - Retained project defaults: speed `40`, turn/acceleration `60/60`, full-circle arcs, range `300`, bank `15°`, height tier `7`; shield regeneration `1000/120` after `1 s`. Gameplay length `24` units.
-- `UnitRenderStateComponent` owns hull/shield rendering. Linear inverse-alpha mask strength `0.35` is retained by the current shader-based wreck; lifetime/dissolve `30/8 s`.
+- `UnitRenderStateComponent` owns hull/shield rendering. Linear inverse-alpha mask strength `0.15` is retained by the current shader-based wreck; lifetime/dissolve `30/8 s`.
 - Own icon, silhouette, placement hologram, shield mesh, wreck, matchups, all runtime mappings and existing Addressables groups are registered.
 
 ## Verification — 2026-10-24

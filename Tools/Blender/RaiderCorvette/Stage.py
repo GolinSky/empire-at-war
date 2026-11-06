@@ -1,8 +1,8 @@
-"""Stage converted art, retaining exact DDS pixels and authored alpha team masks."""
+"""Stage converted art with worn team paint inside the authored alpha mask."""
 import json
 import shutil
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageChops
 
 TASK = Path('Temp/RaiderCorvetteImport')
 SOURCE = Path('D:/SteamLibrary/steamapps/workshop/content/32470/1397421866/Data/ART/TEXTURES')
@@ -27,7 +27,11 @@ for report in reports:
             assert Image.open(path).convert('RGBA').tobytes() == image.tobytes()
             material[key + 'Map'] = path.as_posix()
             if key == 'base' and 'Colorize' in material['shader']:
-                mask = image.getchannel('A')
+                alpha = image.getchannel('A')
+                wear_path = Path('Assets/Art/Textures/Models/EmpireShips/ISDI/ISDI_TeamStripes_TeamMask.png')
+                with Image.open(wear_path) as wear:
+                    swatch = wear.getchannel('R').crop((110, 140, 1000, 1030))
+                    mask = ImageChops.multiply(alpha, swatch.resize(alpha.size, Image.Resampling.LANCZOS))
                 path = folders['Textures'] / f'{name}_{Path(filename).stem}_TeamMask.png'
                 mask.save(path)
                 material['maskMap'] = path.as_posix()

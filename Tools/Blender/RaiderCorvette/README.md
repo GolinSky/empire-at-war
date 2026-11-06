@@ -5,7 +5,7 @@
 - `Prepare.py` audits model, DDS/XML files, binary bones, projectile inheritance and original SHA-256 hashes.
 - Run `Convert.py` through the existing Blender 3.6.23 MCP connection. It creates fresh source/validation scenes and preserves other scenes. Save the printed `CONVERSION_JSON` payload to `Temp/RaiderCorvetteImport/ConversionReport.json`.
 - `VerifyGeometry.py` compares both scenes; save `GEOMETRY_JSON` to `GeometryVerification.json`. Safe mode and telemetry settings remain unchanged.
-- Run `Stage.py` with `uv run --with pillow python Tools/Blender/RaiderCorvette/Stage.py`; lossless PNGs and the authored alpha team mask enter the type-first art folders.
+- Run `Stage.py` with `uv run --with pillow python Tools/Blender/RaiderCorvette/Stage.py`. It preserves source albedo and normal pixels and applies ISD I paint wear inside the Raider's authored alpha team stripes.
 - Unity order: `BuildArt.cs` → `BuildShip.cs` → `Render.cs` → `Register.cs` → `Verify.cs`. Use `unity command run_script --file <path> --entry <Class>.Main --timeout_ms 60000 --json`; inspect nested `result.success`.
 - `TrimBlend.py` runs in a separate background Blender process on the saved `RaiderCorvette.blend`; it removes unrelated scene data only from that output file. `Package.py` retains Raider-only editable art, credits, hashes, geometry/reference reports and eight live/wreck palettes.
 - Source/FBX/Unity: four meshes, 10,301 triangles, 31 bones. Binary-verified identity Root restoration. FBX corner/UV error ≤0.00001526/0; Unity bone error ≤0.0000001245 units.
