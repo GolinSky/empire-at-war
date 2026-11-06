@@ -126,6 +126,8 @@ tags:
 
 ## Files
 
+- [[Rules/EMPIRE_AT_WAR_OPTIMIZATION_COOKBOOK]] — plan inventory and recipes. [[Artifacts/Audits/Optimization_2026-11-06/Optimization_Audit]] — November 6 source, VFX and camera checks.
+
 - Provenance: [[TODOs/Optimization/Battle_FPS_Recovery_Plan]]; [[TODOs/Optimization/Battle_FPS_Recovery_Plan - Research]].
 - Culling: `Assets/Scripts/Components/Environment/DecorAsteroidRenderer.cs`, `DecorAsteroidCell.cs`.
 - Quality: `Assets/Scripts/Components/Environment/MatchNebula.cs`, `PerformantPostProcessing.cs`.

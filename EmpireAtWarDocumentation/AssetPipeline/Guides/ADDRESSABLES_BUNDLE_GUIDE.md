@@ -70,6 +70,8 @@ verification: Read live mapping, preview/preload, cached-load and music-routing
 
 ## Files
 
+- [[Rules/EMPIRE_AT_WAR_OPTIMIZATION_COOKBOOK]] — compression gates and plan inventory. [[Artifacts/Audits/Optimization_2026-11-06/Optimization_Audit]] — November 6 ownership and importer checks.
+
 - Provenance/remaining work: [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan]]; [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan - Research]].
 - Ownership/schema source: `Assets/AddressableAssetsData/AssetGroups/*.asset`; `Assets/AddressableAssetsData/AssetGroups/Schemas/*UnitViews_BundledAssetGroupSchema.asset`.
 - Registry/load source: `Assets/Scripts/Editor/AssetMappingContextMenu.cs`; `Assets/Scripts/Entities/Reinforcement/ReinforcementData.cs`; `Assets/Scripts/Services/Repository/BattleAssetPreload.cs`; `Assets/Scripts/Services/Repository/CachedAssetService.cs`.

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "TODOs/Tooling/Crash_And_Error_Reporting.md",
+                "file": "TODOs/Optimization/Battle_FPS_Recovery_Plan.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Crash_And_Error_Reporting"
+              "title": "Battle_FPS_Recovery_Plan"
             }
           }
         ]
@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "battle_fps",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": true,
@@ -81,7 +81,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 664.5
   },
   "right": {
     "id": "5211f2974bfd8b63",
@@ -188,41 +188,43 @@
   },
   "active": "fd4544b14efb9af5",
   "lastOpenFiles": [
-    "Done/Features/Display_Modes_And_Monitors_Plan.md",
+    "TODOs/Optimization/Optimization_Audit_Fix_Plan.md",
+    "Artifacts/Audits/Optimization_2026-11-06/Optimization_Audit.md",
+    "Artifacts/Audits/Optimization_2026-11-06/Station_destruction.png",
+    "Artifacts/Audits/Optimization_2026-11-06/Station_camera.png",
+    "Artifacts/Audits/Optimization_2026-11-06",
+    "Rules/EMPIRE_AT_WAR_OPTIMIZATION_COOKBOOK.md",
+    "Rules/UNITY_OPTIMIZATION_COOKBOOK.md",
+    "Done/Refactoring/Fog_Disabled_Stand_Ins.md",
+    "Done/Refactoring/Empty_Interface_Members.md",
+    "Done/Refactoring/Empty_Code_Cleanup.md",
+    "Done/Refactoring/Battle_Area_Access.md",
+    "Done/Refactoring/Battle_Area_Access - Research.md",
+    "Done/Refactoring/DI_Container_Failure_Handling.md",
     "Rules/DISPLAY_SETTINGS.md",
-    "Done/Features/Reinforcement_Drag_Batch_Spawn.md",
-    "TODOs/Features/Reinforcement_Drag_Batch_Spawn.md",
-    "TODOs/Optimization/Battle_FPS_Recovery_Plan.md",
+    "Done/Features/Display_Modes_And_Monitors_Plan.md",
     "Tooling/Crash_Reporting.md",
-    "TODOs/sedHoE5uX",
-    "Done/Refactoring/Auto_Power_Refactor.md",
-    "TODOs/Refactoring/Auto_Power_Refactor.md",
-    "TODOs/Features/Multiplayer_Plan - Research.md",
-    "TODOs/Features/Multiplayer_Plan.md",
-    "TODOs/Features/Gameplay_Analytics.md",
     "TODOs/Tooling/Crash_And_Error_Reporting.md",
+    "TODOs/Features/Multiplayer_Plan.md",
+    "TODOs/Features/Multiplayer_Plan - Research.md",
+    "TODOs/Features/Gameplay_Analytics.md",
+    "Done/Refactoring/Auto_Power_Refactor.md",
+    "Done/Features/Reinforcement_Drag_Batch_Spawn.md",
     "Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix.md",
     "TODOs/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix.md",
+    "TODOs/Bugs/Enemy_AI_And_Faction_Balance - Research.md",
     "TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review.md",
     "GameDesign/References/EaW_Global_AI_Original_Attachment.md",
     "AssetPipeline/Imports/Gladiator Import.md",
-    "TODOs/Bugs/Enemy_AI_And_Faction_Balance - Research.md",
-    "Done/Bugs/Shader_Warmup_Keyword_Errors.md",
-    "TODOs/Bugs/Shader_Warmup_Keyword_Errors.md",
-    "Done/Optimization/Mac_GPU_Frame_Budget_Plan.md",
-    "TODOs/Optimization/Mac_GPU_Frame_Budget_Plan.md",
     "TODOs/Optimization/Late_Battle_CPU_Fix_Plan.md",
-    "Done/Features/Main_Relay_Map_Layout_Adjustments.md",
-    "TODOs/Features/Main_Relay_Map_Layout_Adjustments.md",
-    "Architecture/Map_Generation.md",
-    "TODOs/sed2g2Anb",
     "TODOs/Documentation",
-    "TODOs/Documentation/sedEi1wmg",
-    "TODOs/Documentation/sedJUugEI",
-    "AssetPipeline/Imports/sedAFtn17",
-    "AssetPipeline/Imports/sedrPbomK",
-    "Rules/AGENTS.md.tmp.10036.941724027e1d",
-    "Done/Features/sedgp5bGS",
-    "Done/Optimization"
+    "TODOs/Features/Space_Hazards_Plan.md.tmp.44224.4577b7ad24c9",
+    "TODOs/Features/Space_Hazards_Plan.md.tmp.44224.a3b33f88e911",
+    "TODOs/TODOs.md.tmp.44224.3776755caf3d",
+    "TODOs/Features/Space_Hazards_Plan.md.tmp.44224.bd608bfd9f91",
+    "TODOs/Features/Space_Hazards_Plan.md.tmp.44224.e25d73996c93",
+    "TODOs/Features/Space_Hazards_Plan.md.tmp.44224.7cea3a4a14fc",
+    "TODOs/Refactoring/Original_Values_Rebalance.md.tmp.58140.eafd188b3532",
+    "TODOs/Refactoring/Original_Values_Rebalance.md.tmp.58140.e21ec1234590"
   ]
 }

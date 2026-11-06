@@ -14,6 +14,8 @@ updated: 2026-10-20
 
 ## Files
 
+- [[Artifacts/Audits/Optimization_2026-11-06/Optimization_Audit|Optimization audit · 2026-11-06]] — current-at-revision asset, code, battle timing and visual findings.
+
 - [[Artifacts/Audits/Scripts_2026-09-12/SCRIPTS_CODE_AUDIT_2026-09-12]]; [[Artifacts/Audits/Scripts_2026-09-12/SCRIPTS_CODE_AUDIT_2026-09-12 - Research]].
 - [[Artifacts/Audits/Ship_Squadron_2026-09-25/SHIP_SQUADRON_ENTITY_ANALYSIS]]; [[Artifacts/Audits/Ship_Squadron_2026-09-25/SHIP_SQUADRON_ENTITY_ANALYSIS - Research]].
 - [[Artifacts/Audits/Unit_Stats_2026-09-27/Unit Stats Comparison - 2026-09-27]] — roster snapshot, not current balance.

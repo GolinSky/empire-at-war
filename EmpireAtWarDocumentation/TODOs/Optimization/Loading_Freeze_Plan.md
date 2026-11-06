@@ -141,6 +141,10 @@ tags:
   - Fix: `Install-BuildTools.ps1` + `Configure-GitHubPublish.ps1` (updates job XML via authenticated API). The latter refuses while `Tools/Jenkins` has uncommitted changes (in-progress versioning work: `Invoke-BuildPhase.ps1`, `README.md`, `Jenkinsfile.Publish`, `Publish-GitHubRelease.ps1`).
 - [ ] Update installed Jenkins tools + job pipeline, rerun, player smoke check.
 
+## November 6 cold first-spawn check
+
+- [ ] P2 · In a packed Player, request an eligible deferred ship before the four-in-flight warmup finishes, then repeat warm. Trace the consumer’s typed key, unfinished handle and time in `CachedAssetService.Load`. If the wait recurs, trial advancing only that preload. Verify cold/warm spawn, startup cost, preview, save restore and cancellation. Feed results back to [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan|Addressables remediation]]. [[TODOs/Optimization/Optimization_Audit_Fix_Plan|November 6 fix order and verification]].
+
 ## Edge Cases
 
 - `CachedAssetService` keys by `(Type, key)`; preload must use the same `TSource` type or the miss still blocks.

@@ -65,6 +65,9 @@
 
 ### Optimization
 
+- [ ] **Prioritized fixes from the November 6 optimization audit** → [[TODOs/Optimization/Optimization_Audit_Fix_Plan|Fix order, owners and verification]]
+  - First fix capture dimensions, then isolate fleet hitches in the M2 Editor and Development Player. Next, measure off-camera hardpoint smoke and destruction readability. Start the Providence texture pilot after a valid content baseline.
+
 - [ ] **Recover battle FPS lost after the hazard-system decor asteroids (decor culling/LOD, field rock LOD, nebula, presets, particles)** → [[TODOs/Optimization/Battle_FPS_Recovery_Plan|Battle FPS Recovery Plan]]; [[TODOs/Optimization/Battle_FPS_Recovery_Plan - Research|PC capture 2026-10-29 vs Mac audits]]
   - 2026-10-29: Phase 0 tool and Phases 1–6 implementations source-verified. Builds/performance runs deferred by user; absorbed attribution/experiments and visual/performance acceptance remain open.
   - 2026-10-29: re-verified against committed `76e7222f8` (code, prefabs, SceneContext, volume profile, materials); no defects found. Tests/captures not run.
@@ -109,11 +112,12 @@
 
 - [ ] **Shrink remaining build size and runtime memory (textures, UI, music, SFX, Read/Write, player build)** → [[TODOs/Optimization/Asset_Size_Followup_Plan|Asset Size Follow-up]]
   - Start 2026-10-24: 989.8 MB bundles, payload 2,564 MB (textures 90 %). Top levers: unused alpha → DXT1 (≤ −400 MB est.), texel-density resolution caps, 45 restored sharp-alpha textures, music out of `Model` bundle.
-  - **Next**: item 2 (Providence RGBA32 anomaly) and item 1 (alpha-aware retry).
+  - Next size fix → pilot the four Providence hull maps against a successful current layout. Their explicit RGBA32 default format is verified. The sharp-alpha retry follows its own visual gates.
 
 - [ ] **Remove Addressables bundle duplication and fix asset-mapping tools** → [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan|Addressables Bundle Remediation]]; [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan - Research|Audit 2026-10-24 findings]]
   - Status: Phases 0–6 done 2026-10-24; 0 duplicated payload (1.53 GB content). Phases 3–6 + music fix uncommitted.
   - Next: commit; user packed-player placement, audio mix/ducking, early-spawn sync-load timing.
+  - November 6 audit → produce a valid current layout for the Providence pilot, then trial the five shared View entries against that baseline.
 
 ### Refactoring
 

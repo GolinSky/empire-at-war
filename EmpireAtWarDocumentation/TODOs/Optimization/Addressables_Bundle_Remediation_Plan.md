@@ -123,7 +123,7 @@ tags:
 - **Sync load**: `CachedAssetService.Load` calls `WaitForCompletion` if warmup (`BattleAssetWarmup`, 4 in flight after `Running`) hasn't finished; early reinforcement/`ShipSpawnClearance` can hit it. Check in packed build; coordinate with Loading Freeze plan.
 - [ ] Mixer identity verified/fixed in packed player (user).
 - Code fix 2026-10-24: `MusicService` injects bootstrap `AudioMixer` and rebinds instantiated music output to its `Music` group. True independent-mixer EditMode regression test **1/1 passed**; compile clean. Bundled dormant `AudioDialogSource` mixer route retained intentionally; no live consumer. Packed-player master mute/music/SFX/ducking check remains required.
-- [ ] Early-spawn sync-load hitch measured.
+- [ ] Early-spawn sync-load hitch measured. Use the cold/warm spawn comparison in [[TODOs/Optimization/Loading_Freeze_Plan|Loading freezes]] for this acceptance gate.
 
 ### Independent verification — 2026-10-24
 - Final layout `buildlayout_2026.10.24.18.35.02.json` re-analysed: no error, 579 explicit, 18 bundles, **1,534,762,737 B**, duplicated assets/objects/payload **0/0/0**. Bundle files on disk match (18:35).
@@ -155,6 +155,11 @@ tags:
 - Code: `Assets/Scripts/Entities/Reinforcement/ReinforcementData.cs`, `Assets/Scripts/Services/Repository/BattleAssetPreload.cs`, `Assets/Scripts/Services/Reinforcement/ReinforcementPlacementFactory.cs`, `Assets/Scripts/Editor/AssetMappingContextMenu.cs`, `Assets/Scripts/Services/Repository/CachedAssetService.cs`
 - Data: `Assets/Settings/Data/Reinforcement/ReinforcementData.asset`, `Assets/Settings/AssetMappingData.asset`, `Assets/AddressableAssetsData/AssetGroups/{View,Model,Data}.asset`
 - Backlog: [[TODOs/TODOs]]
+
+## November 6 bundle checks
+
+- [ ] P1 prerequisite · Save a successful current content layout and matching catalog for the same target and revision before the Providence pilot or ownership trial. Check build error, populated groups, explicit rows, file sizes and duplicate payload. The two October 29 failed local layouts cannot serve as a baseline. [[TODOs/Optimization/Optimization_Audit_Fix_Plan|November 6 fix order and verification]].
+- [ ] P2 · Trial moving `RecalcitrantWreckView`, `PelesetWreckView`, `BulwarkWreckView`, `BulwarkReinforcementView` and `WavecrestWreckView` from `View` to `SeparatistUnitViews`. Preserve GUIDs, addresses, labels, aliases, packing and CRC. Compare common-facility and faction bundle closures in isolation. Recheck packed preview/spawn/wreck behavior. Revert if the common route gains no benefit or duplicated bytes increase.
 
 ## Guidance extraction — 2026-10-29
 

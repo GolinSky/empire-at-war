@@ -21,7 +21,9 @@ created: 2026-10-24
 - Importer changes through Unity APIs; reconcile `.meta` on disk after each pass (file locks seen on 2026-10-24).
 - No agent Play Mode; user does visual/listening acceptance. No Crunch, no global texture limits, no mesh decimation.
 
-## Items (priority order; savings are estimates until rebuilt)
+## Items (October 24 estimates)
+
+- November 6 execution order → [[TODOs/Optimization/Optimization_Audit_Fix_Plan|November 6 fix order and verification]]. Pilot item 2 first once a successful same-target baseline layout and catalog exist. Items 6 and 8 remain later measurement candidates.
 
 ### 1. Restored sharp-alpha textures — est. −150 to −250 MB payload
 - 45 textures restored in pass 2, incl. 12 still at 22.4 MB (lights/additive/hangar glow, Providence/Pelta hulls). Gate failure was max alpha error 10–24/255 on hard edges.
@@ -29,7 +31,7 @@ created: 2026-10-24
 - Alternative for additive textures: alpha unused by `Particles/Unlit` additive blend → verify shader/blend mode, then DXT1.
 
 ### 2. Compressed-but-RGBA32 anomaly — est. −50 MB
-- `Providence_Hull_Albedo/Normal/Emissive.png`: importer `Compressed`, imported format **RGBA32** (44.7 MB editor each). Find cause (source bit depth, NPOT, platform format) before changing.
+- [x] Cause verified November 6. Albedo, Normal, Emissive and Specular are all ship dependencies with explicit RGBA32 default format and Standalone override off. The four resolved formats and Editor memory readings are in [[Artifacts/Audits/Optimization_2026-11-06/Optimization_Audit|the audit]].
 
 ### 3. Unused alpha → DXT1 — est. up to −400 MB payload/VRAM
 - 524 DXT5 textures; 162 are normal maps (need DXT5). ~362 color/mask textures use DXT5 because the source has an alpha channel.
@@ -71,13 +73,13 @@ created: 2026-10-24
 
 ## TODO
 - [ ] 1. Alpha-aware retry for 45 restored textures.
-- [ ] 2. Diagnose Providence RGBA32 anomaly.
+- [ ] 2. P1 · Pilot the four Providence maps individually. Use [[TODOs/Optimization/Desktop_Asset_Compression_Plan|desktop compression gates]]. Read back the effective format, compare packed bytes and matched Player texture memory, and review closest-zoom team colors, normal seams and emissive alpha. Restore failures.
 - [ ] 3. Unused-alpha scan → DXT1.
 - [ ] 4. Texel-density resolution rule + pilot.
 - [ ] 5. UI texture compression/atlas.
-- [ ] 6. Music group split + quality test.
+- [ ] 6. P3 · Trial playlist lifetime separately from codec quality. Compare catalog/bundle closure, Player memory, first play, looping and crossfades before retaining a split.
 - [ ] 7. SFX load/format pass.
-- [ ] 8. Mesh Read/Write audit.
+- [ ] 8. P3 · Filter readable meshes to shipped dependencies. Trace CPU readers, pilot safe meshes and measure Player RAM. Check wreck cutting, shield generation and collider cooking.
 - [ ] 9. Player build size report + shader stripping.
 - [ ] 10. Leftovers and hygiene.
 - [ ] 11. Matched runtime memory/loading capture.

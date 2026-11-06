@@ -212,6 +212,10 @@ created: "2026-10-29\r"
 
 ## TODO
 
+### November 6 disabled-nebula startup
+
+- [ ] P2 · Cold-start with the saved nebula setting off. Record `Match Nebula Bake` allocation, 128-sample bake submission and frame timings. Pilot lazy creation, verify zero textures/submissions until enable, then verify one bake, correct quality/cinematic output and release on teardown. Compare first-enable hitch to baseline before retaining. [[TODOs/Optimization/Optimization_Audit_Fix_Plan|November 6 fix order and verification]].
+
 ### Part 1 — PC
 
 - [x] [PC] Phase 1 implementation — `BuildInfoWriter` macOS path and hazard pose/coverage in ablation tool.
