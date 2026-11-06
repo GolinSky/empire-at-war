@@ -68,7 +68,7 @@ namespace EmpireAtWar.Services.Battle
 
         public void Initialize()
         {
-            _gestures.WorldPressed += HandleWorldPressed;
+            _gestures.WorldClicked += HandleWorldClicked;
             _selectionInput.SelectAllRequested += HandleSelectAllUnitsPressed;
             _selectionInput.SelectVisibleRequested += HandleSelectVisibleUnitsPressed;
             _marqueeSelectionPresenter.Completed += HandleMarqueeCompleted;
@@ -77,7 +77,7 @@ namespace EmpireAtWar.Services.Battle
 
         public void LateDispose()
         {
-            _gestures.WorldPressed -= HandleWorldPressed;
+            _gestures.WorldClicked -= HandleWorldClicked;
             _selectionInput.SelectAllRequested -= HandleSelectAllUnitsPressed;
             _selectionInput.SelectVisibleRequested -= HandleSelectVisibleUnitsPressed;
             _marqueeSelectionPresenter.Completed -= HandleMarqueeCompleted;
@@ -121,7 +121,7 @@ namespace EmpireAtWar.Services.Battle
             SetSelection(SelectionScope.Local, _selectionBuffer);
         }
 
-        private void HandleWorldPressed(Vector2 screenPosition)
+        private void HandleWorldClicked(Vector2 screenPosition)
         {
             ResetAllSelections();
             SelectAt(screenPosition);
@@ -205,6 +205,8 @@ namespace EmpireAtWar.Services.Battle
             _lastTappedEntityId = null;
             _selectionBuffer.Clear();
             _selectionQuery.CollectInside(rectangle, _selectionBuffer);
+            if (_otherSelectionContext.HasSelectable)
+                ClearSelection(SelectionScope.Other);
             SetSelection(SelectionScope.Local, _selectionBuffer);
         }
 

@@ -22,7 +22,7 @@ namespace EmpireAtWar.Tests.Editor
         private Mouse _mouse;
         private InputSettings _originalSettings;
         private InputSettings _testSettings;
-        private PointerStub _pointer;
+        private PointerInput _pointer;
         private UiHitTestStub _uiHitTest;
         private AbilityStub _abilities;
         private UnitActionTargetingModel _targeting;
@@ -48,13 +48,16 @@ namespace EmpireAtWar.Tests.Editor
             _provider = new InputActionsProvider();
             _provider.Actions.devices = new InputDevice[] { _mouse };
             _provider.Actions.Battle.Enable();
-            _pointer = new PointerStub();
+            _provider.Actions.Pointer.Enable();
+            _pointer = new PointerInput(_provider);
+            _pointer.Initialize();
             _abilities = new AbilityStub();
             _targeting = new UnitActionTargetingModel();
             _superWeapons = new SuperWeaponTargetingModel();
             _uiHitTest = new UiHitTestStub();
             _gestures = new PointerGestures(_pointer, _uiHitTest, _provider,
                 _abilities, _targeting, _superWeapons);
+            _gestures.Initialize();
             _view = new MarqueeViewStub();
             _marquee = new MarqueeSelectionPresenter(_gestures, _view,
                 new MarqueeSelectionModel(), new HudStub());
@@ -70,6 +73,8 @@ namespace EmpireAtWar.Tests.Editor
         public void TearDown()
         {
             _marquee.LateDispose();
+            _gestures.LateDispose();
+            _pointer.Dispose();
             _provider.Dispose();
             InputSystem.RemoveDevice(_mouse);
             InputSystem.settings = _originalSettings;
@@ -111,7 +116,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(false)]
         [TestCase(true)]
-        public void WorldPress_ReleasedOverUi_DoesNotCompleteSelection(bool drag)
+        public void WorldPress_ReleasedOverUi_CompletesOnlyAnEstablishedDrag(bool drag)
         {
             MouseFrame(1, Vector2.zero);
             Vector2 end = drag ? new Vector2(100f, 100f) : Vector2.zero;
@@ -119,7 +124,7 @@ namespace EmpireAtWar.Tests.Editor
             _uiHitTest.OverUi = true;
             MouseFrame(0, end);
             Assert.That(_clicked, Is.Zero);
-            Assert.That(_completed, Is.Zero);
+            Assert.That(_completed, Is.EqualTo(drag ? 1 : 0));
             Assert.That(_view.Visible, Is.False);
 
             _uiHitTest.OverUi = false;
@@ -255,6 +260,25 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_view.Visible, Is.False);
         }
 
+        [Test]
+        public void FirstDrag_BatchedBeforeOneTick_SelectsThePressToReleaseRectangle()
+        {
+            MarqueeRectangle selected = default;
+            _marquee.Completed += rectangle => selected = rectangle;
+            InputSystem.QueueStateEvent(_mouse, new MouseState { buttons = 1, position = new Vector2(140f, 120f) });
+            InputSystem.QueueStateEvent(_mouse, new MouseState { position = new Vector2(20f, 30f) });
+            InputSystem.QueueStateEvent(_mouse, new MouseState { position = new Vector2(10f, 10f) });
+            InputSystem.Update();
+            _gestures.Tick();
+
+            Assert.That(_clicked, Is.Zero);
+            Assert.That(_completed, Is.EqualTo(1));
+            Assert.That(selected.MinX, Is.EqualTo(20f));
+            Assert.That(selected.MinY, Is.EqualTo(30f));
+            Assert.That(selected.MaxX, Is.EqualTo(140f));
+            Assert.That(selected.MaxY, Is.EqualTo(120f));
+        }
+
         private void Arm(string mode)
         {
             if (mode == "ability") _abilities.IsWaitingForTarget = true;
@@ -264,19 +288,9 @@ namespace EmpireAtWar.Tests.Editor
 
         private void MouseFrame(ushort buttons, Vector2 position)
         {
-            _pointer.Position = position;
             InputSystem.QueueStateEvent(_mouse, new MouseState { buttons = buttons, position = position });
             InputSystem.Update();
             _gestures.Tick();
-        }
-
-        private sealed class PointerStub : IPointerInput
-        {
-            public event Action<Vector2> PrimaryPressed { add { } remove { } }
-            public event Action<Vector2> PrimaryReleased { add { } remove { } }
-            public Vector2 Position { get; set; }
-            public bool HasPosition => true;
-            public int ClickCount => 1;
         }
 
         private sealed class AbilityStub : IShipAbilityTargeting

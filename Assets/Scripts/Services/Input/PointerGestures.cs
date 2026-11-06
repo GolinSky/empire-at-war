@@ -4,12 +4,13 @@ using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Utils;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Input
 {
-    public sealed class PointerGestures : IPointerGestures, ITickable
+    public sealed class PointerGestures : IPointerGestures, IInitializable, ITickable, ILateDisposable
     {
         private readonly IPointerInput _pointerInput;
         private readonly IUiHitTest _uiHitTest;
@@ -21,6 +22,8 @@ namespace EmpireAtWar.Services.Input
 
         private readonly GameInputActions.BattleActions _battle;
         private bool _commandPressedInWorld;
+        private Vector2 _selectPressPosition;
+        private Vector2 _selectReleasePosition;
 
         public event Action<Vector2> WorldPressed;
 
@@ -46,6 +49,28 @@ namespace EmpireAtWar.Services.Input
             _superWeapons = superWeapons;
         }
 
+        public void Initialize()
+        {
+            _battle.Select.performed += CaptureSelectPress;
+            _battle.Select.canceled += CaptureSelectRelease;
+        }
+
+        public void LateDispose()
+        {
+            _battle.Select.performed -= CaptureSelectPress;
+            _battle.Select.canceled -= CaptureSelectRelease;
+        }
+
+        // A single input update can process a whole drag before the gameplay tick.
+        private void CaptureSelectPress(InputAction.CallbackContext context) =>
+            _selectPressPosition = EventPosition(context);
+
+        private void CaptureSelectRelease(InputAction.CallbackContext context) =>
+            _selectReleasePosition = EventPosition(context);
+
+        private Vector2 EventPosition(InputAction.CallbackContext context) =>
+            context.control.device is Pointer pointer ? pointer.position.ReadValue() : _pointerInput.Position;
+
         public void Tick()
         {
             if (!_battle.Select.enabled)
@@ -65,7 +90,7 @@ namespace EmpireAtWar.Services.Input
             {
                 CancelDrag();
                 if (_abilities.IsWaitingForTarget && _battle.Select.WasPressedThisFrame() &&
-                    !_uiHitTest.IsOverUi(position))
+                    !_uiHitTest.IsOverUi(_selectPressPosition))
                 {
                     _abilities.CancelTargeting();
                     return;
@@ -76,17 +101,18 @@ namespace EmpireAtWar.Services.Input
             }
             if (_battle.Select.WasPressedThisFrame())
             {
-                Press(position);
+                Press(_selectPressPosition);
             }
 
-            if (_drag.IsPressed && !_drag.StartedOverUi)
+            bool selectReleased = _battle.Select.WasReleasedThisFrame();
+            if (_drag.IsPressed && !_drag.StartedOverUi && !selectReleased)
             {
                 Track(position);
             }
 
-            if (_battle.Select.WasReleasedThisFrame())
+            if (selectReleased)
             {
-                Release(position);
+                Release(_selectReleasePosition);
             }
 
             if (commandWorld)
@@ -124,11 +150,6 @@ namespace EmpireAtWar.Services.Input
 
         private void Release(Vector2 position)
         {
-            if (_uiHitTest.IsOverUi(position))
-            {
-                CancelDrag();
-                return;
-            }
             if (_drag.IsPressed && !_drag.StartedOverUi)
             {
                 if (TryStartDrag(position))
@@ -140,7 +161,7 @@ namespace EmpireAtWar.Services.Input
                 {
                     DragEnded?.Invoke(position);
                 }
-                else
+                else if (!_uiHitTest.IsOverUi(position))
                 {
                     WorldClicked?.Invoke(position);
                 }

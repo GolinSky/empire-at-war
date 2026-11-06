@@ -41,7 +41,7 @@ namespace EmpireAtWar.Tests.Selection
             service.Initialize();
             try
             {
-                input.RaiseSelectionBegan(Vector2.zero);
+                input.RaiseWorldClick(Vector2.zero);
                 Assert.That(command.IsSelected, Is.True);
                 Assert.That(entity.Health.DeathSubscribers, Is.EqualTo(1));
 
@@ -73,10 +73,10 @@ namespace EmpireAtWar.Tests.Selection
             service.Initialize();
             try
             {
-                input.RaiseSelectionBegan(Vector2.zero);
-                input.RaiseSelectionBegan(Vector2.one);
+                input.RaiseWorldClick(Vector2.zero);
+                input.RaiseWorldClick(Vector2.one);
                 Assert.That(entity.Health.DeathSubscribers, Is.Zero);
-                input.RaiseSelectionBegan(Vector2.zero);
+                input.RaiseWorldClick(Vector2.zero);
                 Assert.That(entity.Health.DeathSubscribers, Is.EqualTo(1));
             }
             finally
@@ -87,7 +87,7 @@ namespace EmpireAtWar.Tests.Selection
         }
 
         [Test]
-        public void SelectionBegan_ClearsPreviousSelectionBeforeApplyingHit()
+        public void WorldClick_ClearsPreviousSelectionBeforeApplyingHit()
         {
             Vector2 playerPosition = new Vector2(10f, 10f);
             Vector2 opponentPosition = new Vector2(20f, 20f);
@@ -122,8 +122,8 @@ namespace EmpireAtWar.Tests.Selection
             selectionService.Initialize();
             try
             {
-                inputService.RaiseSelectionBegan(playerPosition);
-                inputService.RaiseSelectionBegan(opponentPosition);
+                inputService.RaiseWorldClick(playerPosition);
+                inputService.RaiseWorldClick(opponentPosition);
 
                 Assert.That(playerCommand.IsSelected, Is.False);
                 Assert.That(opponentCommand.IsSelected, Is.True);
@@ -134,7 +134,7 @@ namespace EmpireAtWar.Tests.Selection
                     selectionService.OtherSelectionContext.HasSelectable,
                     Is.True);
 
-                inputService.RaiseSelectionBegan(emptyPosition);
+                inputService.RaiseWorldClick(emptyPosition);
 
                 Assert.That(opponentCommand.IsSelected, Is.False);
                 Assert.That(
@@ -179,15 +179,15 @@ namespace EmpireAtWar.Tests.Selection
             selectionService.Initialize();
             try
             {
-                inputService.RaiseSelectionBegan(position);
+                inputService.RaiseWorldClick(position);
                 Assert.That(shipCommand.IsSelected, Is.EqualTo(shipFirst));
                 Assert.That(stationCommand.IsSelected, Is.EqualTo(!shipFirst));
 
-                inputService.RaiseSelectionBegan(position);
+                inputService.RaiseWorldClick(position);
                 Assert.That(shipCommand.IsSelected, Is.EqualTo(!shipFirst));
                 Assert.That(stationCommand.IsSelected, Is.EqualTo(shipFirst));
 
-                inputService.RaiseSelectionBegan(position);
+                inputService.RaiseWorldClick(position);
                 Assert.That(shipCommand.IsSelected, Is.EqualTo(shipFirst));
                 Assert.That(stationCommand.IsSelected, Is.EqualTo(!shipFirst));
             }
@@ -250,9 +250,9 @@ namespace EmpireAtWar.Tests.Selection
 
         private sealed class FakeInputService : IPointerGestures, IPointerInput, ISelectionInput
         {
-            public event Action<Vector2> WorldPressed;
+            public event Action<Vector2> WorldPressed { add { } remove { } }
 
-            public event Action<Vector2> WorldClicked { add { } remove { } }
+            public event Action<Vector2> WorldClicked;
 
             public event Action<Vector2> WorldCommanded { add { } remove { } }
 
@@ -275,9 +275,9 @@ namespace EmpireAtWar.Tests.Selection
             public int ClickCount => 1;
             public bool HasPosition => true;
 
-            public void RaiseSelectionBegan(Vector2 position)
+            public void RaiseWorldClick(Vector2 position)
             {
-                WorldPressed?.Invoke(position);
+                WorldClicked?.Invoke(position);
             }
         }
 
