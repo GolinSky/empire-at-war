@@ -30,7 +30,8 @@ namespace EmpireAtWar.Services.Graphics
                 !UnityEngine.NVIDIA.NVUnityPlugin.IsLoaded())
                 return false;
 
-            var device = UnityEngine.NVIDIA.GraphicsDevice.CreateGraphicsDevice();
+            // Recreating an existing NVIDIA device invalidates URP's live DLSS context.
+            var device = UnityEngine.NVIDIA.GraphicsDevice.device ?? UnityEngine.NVIDIA.GraphicsDevice.CreateGraphicsDevice();
             return device != null && device.IsFeatureAvailable(UnityEngine.NVIDIA.GraphicsDeviceFeature.DLSS);
         }
 #endif
