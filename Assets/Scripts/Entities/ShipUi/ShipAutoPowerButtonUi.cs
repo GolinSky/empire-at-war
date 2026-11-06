@@ -27,7 +27,7 @@ namespace EmpireAtWar.Entities.ShipUi
             tooltipTrigger.SetKey(state);
             button.interactable = state.GlobalEnabled;
             activeHighlight.SetActive(state.GlobalEnabled && (state.Enabled || state.Mixed));
-            label.text = "A<size=8>\n" + (state.Mixed ? "MIX" : state.Enabled ? "ON" : "OFF") + "</size>";
+            label.text = state.Mixed ? "AUTO MIX" : state.Enabled ? "AUTO ON" : "AUTO OFF";
             label.color = state.GlobalEnabled
                 ? new Color(0.97f, 0.98f, 0.99f, 1f)
                 : new Color(0.45f, 0.5f, 0.6f, 1f);
