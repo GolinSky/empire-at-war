@@ -1,4 +1,4 @@
-﻿namespace EmpireAtWar.Components.AttackComponent
+namespace EmpireAtWar.Components.AttackComponent
 {
     public enum WeaponType
     {
@@ -71,7 +71,7 @@
         RepublicMediumProtonTorpedo = 121,
         BelbullabTripleLaser = 122,
         JangoFettLaser = 125,
-        FalconQuadLaser = 123,
         BobaFettTwinLaser = 126,
+        FalconQuadLaser = 123,
     }
 }

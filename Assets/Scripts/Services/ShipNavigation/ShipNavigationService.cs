@@ -2,6 +2,7 @@ using static EmpireAtWar.Utils.FormationConversion;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Services.Hazards;
+using EmpireAtWar.Entities.Map.Hazards;
 using System.Diagnostics;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
@@ -125,6 +126,10 @@ namespace EmpireAtWar.Services.ShipNavigation
         }
 
         public void RequestPlan(IShipPlanRequester requester) => _planQueue.Enqueue(requester);
+
+        // Samples the hazard cost raster while the map loads instead of on the battle's first plan.
+        internal void PrepareMap(Vector2Range mapRange, IReadOnlyList<IHazardSource> hazards) =>
+            _cache.GetRaster(mapRange, hazards);
 
         public void Dispose() => _cache.Dispose();
 

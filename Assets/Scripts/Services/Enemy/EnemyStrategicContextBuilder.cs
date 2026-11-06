@@ -845,6 +845,25 @@ namespace EmpireAtWar.Services.Enemy
             return target;
         }
 
+        public bool ShouldGatherReinforcements(EnemyStrategicContext fleet)
+        {
+            if (fleet.OwnBase == null || _stationPressure.IsStationCritical ||
+                Time.time - _stationPressure.LastDamageTime < 5f ||
+                fleet.DefenseTarget != null && fleet.DefenseTarget.GetFacade<IUnitCombatObserverFacade>().IsAttacking(fleet.OwnBase))
+                return false;
+
+            Vector3 home = fleet.OwnBase.GetFacade<IEntityTransformFacade>().Transform.position;
+            float radius = LOCAL_ENGAGEMENT_RADIUS + fleet.OwnBase.GetFacade<INavigationFootprintFacade>().NavigationRadius;
+            foreach (HostileSighting sighting in _intel.Sightings)
+            {
+                if (sighting.UnitTypeId.IsShip && _playerRoster.IsHostile(_owner.Id, sighting.Owner) &&
+                    _intel.GetConfidence(sighting, Time.time) > 0f &&
+                    PlanarDistance(home, ToVector(sighting.Position)) <= radius)
+                    return true;
+            }
+            return false;
+        }
+
         public static bool CanThreatenStation(float distance, float stationRadius, float hostileRadius, float weaponRange)
         {
             return weaponRange > 0f && distance <= stationRadius + hostileRadius + weaponRange;

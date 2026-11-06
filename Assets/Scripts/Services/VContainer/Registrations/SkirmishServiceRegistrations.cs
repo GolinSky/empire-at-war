@@ -45,6 +45,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterComponent(sources);
             builder.Register<ShipSfxService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<InterfaceSfxService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<AbilityTargetingSfx>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipAmbienceService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             ImpactEffectView impactView = Object.Instantiate(impactEffectPrefab, owner);
             builder.RegisterComponent(impactView).AsImplementedInterfaces().AsSelf();
@@ -93,6 +94,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<HazardEffectsPresenter>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<ShipNavigationService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<ShipNavigationMapPreparer>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<RadarScanService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitWreckService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitExplosionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

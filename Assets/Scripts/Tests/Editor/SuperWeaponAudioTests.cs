@@ -33,11 +33,13 @@ namespace EmpireAtWar.Tests.Editor
                 AudioSource voice = root.AddComponent<AudioSource>();
                 SetField(sources, "voice", voice);
                 ShipAbilityService abilities = new ShipAbilityService(null, TestPlayers.CreateDuel());
-                InterfaceSfxService service = new InterfaceSfxService(data, shipData, sources, abilities,
+                InterfaceSfxService service = new InterfaceSfxService(data, shipData, sources);
+                AbilityTargetingSfx targeting = new AbilityTargetingSfx(abilities, service,
                     TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
                 LifecycleOrderAttribute order = typeof(InterfaceSfxService).GetCustomAttribute<LifecycleOrderAttribute>();
                 Assert.That(order.Initialize, Is.LessThan(LifecycleOrders.PLAYER_SCOPES_INITIALIZE));
                 service.Initialize();
+                targeting.Initialize();
                 Assert.That(service.IsAnnouncing, Is.False);
                 AudioSource[] created =
                 {
@@ -52,6 +54,7 @@ namespace EmpireAtWar.Tests.Editor
                 }
                 Assert.That(GetEvent(abilities, "TargetRejected").GetInvocationList(), Has.Length.EqualTo(1));
                 Assert.That(GetEvent(abilities, "TargetingCanceled").GetInvocationList(), Has.Length.EqualTo(1));
+                targeting.LateDispose();
                 service.LateDispose();
                 Assert.That(root.transform.childCount, Is.Zero);
                 Assert.That(GetEvent(abilities, "TargetRejected"), Is.Null);
@@ -79,9 +82,7 @@ namespace EmpireAtWar.Tests.Editor
             AudioClip defeat = AudioClip.Create("Defeat", 441000, 1, 44100, false);
             ShipSfxSources sources = root.AddComponent<ShipSfxSources>();
             SetField(sources, "voice", root.AddComponent<AudioSource>());
-            InterfaceSfxService service = new InterfaceSfxService(data, shipData, sources,
-                new ShipAbilityService(null, TestPlayers.CreateDuel()),
-                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+            InterfaceSfxService service = new InterfaceSfxService(data, shipData, sources);
             service.Initialize();
             try
             {
@@ -130,9 +131,7 @@ namespace EmpireAtWar.Tests.Editor
             AudioClip interrupt = AudioClip.Create("Interrupt", 441000, 1, 44100, false);
             ShipSfxSources sources = root.AddComponent<ShipSfxSources>();
             SetField(sources, "voice", root.AddComponent<AudioSource>());
-            InterfaceSfxService service = new InterfaceSfxService(data, shipData, sources,
-                new ShipAbilityService(null, TestPlayers.CreateDuel()),
-                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+            InterfaceSfxService service = new InterfaceSfxService(data, shipData, sources);
             service.Initialize();
             try
             {

@@ -158,6 +158,31 @@ namespace EmpireAtWar.Tests.Movement
             }
         }
 
+        [Test]
+        public void PreparedHazardRasterIsReusedByFirstPlanningLayer()
+        {
+            var data = ScriptableObject.CreateInstance<SpaceHazardData>();
+            try
+            {
+                using var cache = new ShipNavigationCache();
+                var origin = new Vector3(-60f, 0f, 0f);
+                var crossing = new CountingHazard(data, 0f);
+                NavigationHazardRaster prepared = cache.GetRaster(_mapRange, new[] { crossing });
+                int preparedPass = crossing.ContainsCalls;
+                Assert.That(preparedPass, Is.GreaterThan(0));
+
+                IShipPathGraph graph = cache.GetGraph(System.Array.Empty<RadarContact>(), _mapRange, origin, 3f,
+                    new[] { crossing });
+                Assert.That(graph.IsUnpenalizedSegment(origin, new Vector3(60f, 0f, 0f)), Is.False);
+                Assert.That(crossing.ContainsCalls, Is.EqualTo(preparedPass));
+                Assert.That(cache.GetRaster(_mapRange, new[] { crossing }), Is.SameAs(prepared));
+            }
+            finally
+            {
+                Object.DestroyImmediate(data);
+            }
+        }
+
         private sealed class CountingHazard : IHazardSource
         {
             private readonly float _centerZ;

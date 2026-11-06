@@ -70,6 +70,15 @@ Shader "EmpireAtWar/Ship Lit"
             Cull Back
             ZWrite On
 
+            // ReinforcementZone uses bit 4 to keep zone graphics behind visible hulls.
+            Stencil
+            {
+                Ref 4
+                WriteMask 4
+                Comp Always
+                Pass Replace
+            }
+
             HLSLPROGRAM
             #pragma target 3.5
             #pragma vertex ShipLitPassVertex

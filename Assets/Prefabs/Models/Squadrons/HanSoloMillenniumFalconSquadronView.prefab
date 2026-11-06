@@ -202,6 +202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Squadron
   bindings: {fileID: 4367784233773025253}
+  playDestructionSound: 1
 --- !u!114 &7195306732457242226
 MonoBehaviour:
   m_ObjectHideFlags: 0

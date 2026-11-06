@@ -30,6 +30,28 @@ namespace EmpireAtWar.Tests.Editor
         private const BindingFlags PRIVATE_INSTANCE =
             BindingFlags.Instance | BindingFlags.NonPublic;
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void GatherShips_HoldsFinishedShipUntilSupportOrImmediateDefense(bool immediateDefense)
+        {
+            EnemyBuildQueue queue = new EnemyBuildQueue();
+            FactionData data = new FactionData();
+            var flagship = new ShipUnitRequest(data, ShipType.Tector);
+            var escort = new ShipUnitRequest(data, ShipType.Venator);
+            List<UnitRequest> arrived = new List<UnitRequest>();
+            queue.Add(flagship, 2f);
+            queue.Advance(2f, arrived.Add, gatherShips: true);
+            Assert.That(arrived, Is.Empty);
+            Assert.That(queue.Builds[0].TimeLeft, Is.Zero);
+
+            queue.Add(escort, 5f);
+            queue.Advance(1f, arrived.Add, gatherShips: !immediateDefense);
+            Assert.That(arrived.Count, Is.EqualTo(immediateDefense ? 1 : 0));
+            queue.Advance(4f, arrived.Add, gatherShips: !immediateDefense);
+            Assert.That(arrived, Is.EqualTo(new UnitRequest[] { flagship, escort }));
+            Assert.That(queue.Builds, Is.Empty);
+        }
+
         [Test]
         public void LateDispose_CancelsPendingBuildAndIsIdempotent()
         {

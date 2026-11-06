@@ -96,6 +96,24 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void GoalInsideInflatedDiskIsUnreachableWhileGoalJustOutsideIsReachable()
+        {
+            Vector2Range bounds = Bounds(100f, 100f);
+            var obstacles = new[] { new RadarContact(Vector3.zero, 12f, false) };
+            var origin = new Vector3(-75f, HEIGHT, 0f);
+            using var cache = new ShipNavigationCache();
+            IShipPathGraph graph = cache.GetGraph(obstacles, bounds, origin, CLEARANCE, _noHazards);
+            var path = new List<Vector3>();
+            var inside = new Vector3(12f + CLEARANCE - 0.5f, HEIGHT, 0f);
+            var outside = new Vector3(12f + CLEARANCE + 2f, HEIGHT, 0f);
+            Assert.That(graph.TryFindPath(inside, HEIGHT, path), Is.False);
+            Assert.That(graph.IsKnownUnreachable(inside), Is.True);
+            Assert.That(graph.TryFindPath(outside, HEIGHT, path), Is.True);
+            Assert.That(graph.IsKnownUnreachable(outside), Is.False);
+            AssertClear(path, obstacles, CLEARANCE);
+        }
+
+        [Test]
         public void EmbeddedOriginEscapesOutwardBeforeRoutingAroundObstacle()
         {
             Vector2Range bounds = Bounds(100f, 100f);

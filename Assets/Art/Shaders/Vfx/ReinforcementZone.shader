@@ -23,6 +23,15 @@ Shader "EmpireAtWar/ReinforcementZone"
             Name "Zone"
             Tags { "LightMode" = "UniversalForward" }
 
+            // Ship Lit marks hull pixels even where the zone plane passes through the ship.
+            Stencil
+            {
+                Ref 4
+                ReadMask 4
+                WriteMask 0
+                Comp NotEqual
+            }
+
             HLSLPROGRAM
             #pragma vertex Vert
             #pragma fragment Frag

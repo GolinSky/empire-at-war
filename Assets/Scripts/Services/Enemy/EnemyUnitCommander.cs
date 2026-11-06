@@ -33,6 +33,7 @@ namespace EmpireAtWar.Services.Enemy
     {
         EnemyStrategicState CurrentState { get; }
         int ActiveShipCount { get; }
+        bool GatherReinforcements => false;
         bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
     }
 
@@ -73,6 +74,7 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyStrategicState CurrentState =>
             _hasDecision ? LastDecision.State : EnemyStrategicState.RebuildFleet;
         public int ActiveShipCount => _ships.Count;
+        public bool GatherReinforcements { get; private set; }
 
         public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
         {
@@ -204,7 +206,9 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IShipEntity ship in _shipService.Ships)
                 if (ship.Owner == _owner.Id && _entityLocator.TryGetEntity(ship.EntityId, out GameEntity _))
                     _ships.Add(ship);
-            bool stationPressure = _contextBuilder.Build(_ships).Snapshot.HasStationPressure;
+            EnemyStrategicContext fleet = _contextBuilder.Build(_ships);
+            bool stationPressure = fleet.Snapshot.HasStationPressure;
+            GatherReinforcements = _contextBuilder.ShouldGatherReinforcements(fleet);
             _taskGroups.Reconcile(_ships, stationPressure);
             _reservedCaptureObjectives.Clear();
             EnemyShipTaskGroup primary = null;

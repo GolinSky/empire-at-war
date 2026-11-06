@@ -32,7 +32,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             return created;
         }
 
-        private NavigationHazardRaster GetRaster(Vector2Range mapRange, IReadOnlyList<IHazardSource> hazards)
+        public NavigationHazardRaster GetRaster(Vector2Range mapRange, IReadOnlyList<IHazardSource> hazards)
         {
             foreach (NavigationHazardRaster raster in _rasters)
                 if (raster.Matches(mapRange, hazards)) return raster;

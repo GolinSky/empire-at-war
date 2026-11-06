@@ -3261,8 +3261,8 @@ MonoBehaviour:
           clip: {fileID: 0}
           clips:
             array:
-            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
-            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+            - {fileID: 8300000, guid: 014be0ea7a7f42fabe1de22b2a657342, type: 3}
+            - {fileID: 8300000, guid: 55c809c0f6b34d40897dc7d14eb0200b, type: 3}
           volume: 0.65
           priority: 65
           cooldown: 0
@@ -3407,8 +3407,8 @@ MonoBehaviour:
           clip: {fileID: 0}
           clips:
             array:
-            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
-            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+            - {fileID: 8300000, guid: 014be0ea7a7f42fabe1de22b2a657342, type: 3}
+            - {fileID: 8300000, guid: 55c809c0f6b34d40897dc7d14eb0200b, type: 3}
           volume: 0.65
           priority: 65
           cooldown: 0

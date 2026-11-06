@@ -1,8 +1,4 @@
-using System.Collections.Generic;
-using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Lifecycle;
-using EmpireAtWar.Models.Players;
-using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.Audio
@@ -14,8 +10,6 @@ namespace EmpireAtWar.Services.Audio
         private readonly InterfaceSfxData _data;
         private readonly ShipSfxData _shipData;
         private readonly ShipSfxSources _sources;
-        private readonly ShipAbilityService _abilities;
-        private readonly ILocalPlayer _localPlayer;
         private GameObject _root;
         private AudioSource _ui;
         private AudioSource _announcer;
@@ -28,14 +22,11 @@ namespace EmpireAtWar.Services.Audio
         private bool IsPlayingAnnouncement => _announcer.isPlaying ||
             _announcer.clip != null && _announcer.clip.loadState == AudioDataLoadState.Loading;
 
-        public InterfaceSfxService(InterfaceSfxData data, ShipSfxData shipData, ShipSfxSources sources,
-            ShipAbilityService abilities, ILocalPlayer localPlayer)
+        public InterfaceSfxService(InterfaceSfxData data, ShipSfxData shipData, ShipSfxSources sources)
         {
             _data = data;
             _shipData = shipData;
             _sources = sources;
-            _abilities = abilities;
-            _localPlayer = localPlayer;
         }
 
         public void Initialize()
@@ -53,8 +44,6 @@ namespace EmpireAtWar.Services.Audio
                 source.outputAudioMixerGroup = _sources.Voice.outputAudioMixerGroup;
                 source.volume = _shipData.VoiceVolume;
             }
-            _abilities.TargetRejected += HandleRejected;
-            _abilities.TargetingCanceled += HandleTargetingCanceled;
         }
 
         public void PlayRejected()
@@ -102,28 +91,9 @@ namespace EmpireAtWar.Services.Audio
             StartAnnouncement(_pendingConstruction, AnnouncementPriority.Notification);
         }
 
-        private void HandleRejected(IReadOnlyList<IEntity> casters)
-        {
-            if (HasLocalCaster(casters)) PlayRejected();
-        }
-
-        private void HandleTargetingCanceled(IReadOnlyList<IEntity> casters)
-        {
-            if (HasLocalCaster(casters)) PlayAbilityTargetingCanceled();
-        }
-
-        private bool HasLocalCaster(IReadOnlyList<IEntity> casters)
-        {
-            foreach (IEntity caster in casters)
-                if (caster.Owner == _localPlayer.Id) return true;
-            return false;
-        }
-
         public void LateDispose()
         {
             _pendingConstruction = null;
-            _abilities.TargetRejected -= HandleRejected;
-            _abilities.TargetingCanceled -= HandleTargetingCanceled;
             if (Application.isPlaying) UnityEngine.Object.Destroy(_root);
             else UnityEngine.Object.DestroyImmediate(_root);
         }

@@ -214,7 +214,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             Advance(Time.deltaTime);
         }
 
-        public void Advance(float deltaTime) => _builds.Advance(deltaTime, ExecuteBuild);
+        public void Advance(float deltaTime) => _builds.Advance(deltaTime, ExecuteBuild,
+            _aiState.GatherReinforcements && _productionAccess.CanProduce);
 
         /// <summary>Puts back a saved build: its reservation is taken again and it keeps its time left.</summary>
         public void RestorePendingBuild(UnitRequest unitRequest, float timeLeft)

@@ -93,11 +93,25 @@ namespace EmpireAtWar.Services.ShipNavigation
         private int FindReachableGoal(float2 goal, out float2 exit)
         {
             exit = goal;
-            if (_originTriangle < 0) return -1;
+            // A goal inside an inflated disk always fails the exit leg check below; reject it
+            // before the locator falls back to scanning every triangle.
+            if (_originTriangle < 0 || IsInsideObstacle(goal)) return -1;
             int originRegion = _mesh.Regions[_originTriangle];
             int triangle = _mesh.FindNearest(goal, 0, out exit, originRegion);
             if (triangle < 0 || _mesh.Regions[triangle] != originRegion) return -1;
             return NavMeshEscapeJob.CanConnect(exit, goal, _obstacles, _clearance, false) ? triangle : -1;
+        }
+
+        // Same strict test as NavMeshEscapeJob.CanConnect, so the early rejection never changes its answer.
+        private bool IsInsideObstacle(float2 point)
+        {
+            for (int i = 0; i < _obstacles.Length; i++)
+            {
+                float3 disk = _obstacles[i];
+                double radius = disk.z + _clearance;
+                if (math.lengthsq((double2)point - disk.xy) < radius * radius) return true;
+            }
+            return false;
         }
 
         public bool TryGetNearestReachable(Vector3 position, float height, out Vector3 nearest)
