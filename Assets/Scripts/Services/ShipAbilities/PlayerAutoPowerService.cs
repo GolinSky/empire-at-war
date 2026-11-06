@@ -7,6 +7,7 @@ using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Settings;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities
@@ -21,6 +22,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         private readonly ShipAbilityService _abilities;
         private readonly AutoPowerCombatSnapshot _combat;
         private readonly AutoPowerTuning _tuning;
+        private readonly HarmonicBombService _bombs;
         private readonly Dictionary<long, AutoPowerMonitor> _monitors = new Dictionary<long, AutoPowerMonitor>();
         private readonly List<IEntity> _casters = new List<IEntity>();
         private int _nextCaster;
@@ -29,7 +31,7 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public PlayerAutoPowerService(IEntityLocator entities, ILocalPlayer player, ISettingsService settings,
             ISelectionService selection, SkirmishStateModel battle, ShipAbilityService abilities,
-            AutoPowerCombatSnapshot combat, ShipAbilityCatalog catalog)
+            AutoPowerCombatSnapshot combat, ShipAbilityCatalog catalog, HarmonicBombService bombs)
         {
             _entities = entities;
             _player = player;
@@ -39,6 +41,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             _abilities = abilities;
             _combat = combat;
             _tuning = catalog.AutoPower;
+            _bombs = bombs;
             _abilities.ManualAction += HandleManualAction;
             _entities.EntityRemoved += HandleRemoved;
         }
@@ -71,24 +74,39 @@ namespace EmpireAtWar.Services.ShipAbilities
             caster = null; automation = null;
             return _entities.TryGetEntity(entity.Id, out IEntity registered) && ReferenceEquals(entity, registered) &&
                 _player.IsLocal(entity.Owner) && !entity.HealthModel.IsDestroyed &&
-                entity.TryGetFacade(out automation) && automation.Eligible &&
-                entity.TryGetFacade(out caster);
+                entity.TryGetFacade(out caster) &&
+                (entity.TryGetFacade(out automation) && automation.Eligible || HasBomb(caster));
+        }
+
+        private static bool HasBomb(IShipAbilityFacade caster)
+        {
+            for (int i = 0; i < caster.Slots.Count; i++)
+                if (caster.Slots[i].Id == ShipAbilityId.HarmonicBomb) return true;
+            return false;
         }
 
         private void Check(IEntity entity)
         {
             if (!CanMonitor(entity, out IShipAbilityFacade caster, out IShipAutoPowerFacade automation)) return;
-            if (!automation.Enabled || (_selection.PlayerSelectionContext.Count == 1 && _selection.PlayerSelectionContext.Contains(entity)))
+            if ((automation != null && !automation.Enabled) ||
+                (_selection.PlayerSelectionContext.Count == 1 && _selection.PlayerSelectionContext.Contains(entity)))
             {
                 GetMonitor(entity.Id).Suspend();
                 return;
             }
             AutoPowerMonitor monitor = GetMonitor(entity.Id);
-            bool heavyLoss = monitor.Sample(_now, caster.Health.Shields, automation.MaxShields, automation.ShieldSuppressed,
-                automation.ShieldRevision);
+            bool heavyLoss = automation != null && monitor.Sample(_now, caster.Health.Shields, automation.MaxShields,
+                automation.ShieldSuppressed, automation.ShieldRevision);
             foreach (ShipAbilitySlot slot in caster.Slots)
                 if (slot.State == ShipAbilityState.Active) { monitor.ResetConfirmation(); return; }
             if (monitor.IsHeld(_now)) return;
+            for (int i = 0; i < caster.Slots.Count; i++)
+            {
+                ShipAbilitySlot slot = caster.Slots[i];
+                if (slot.CanActivate && slot.Definition.Settings is HarmonicBombSettings bomb &&
+                    bomb.ShouldAutoDrop(_bombs, caster) && _abilities.TryActivate(caster, slot.Id, null)) return;
+            }
+            if (automation == null || !automation.Eligible) return;
             AutoPowerRole decision = _combat.Decide(caster, automation, heavyLoss);
             if (!monitor.Confirm(decision)) return;
             monitor.ResetConfirmation();

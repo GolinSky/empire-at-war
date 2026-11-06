@@ -39,5 +39,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         CD273PowerToEngines = 37,
         NebulaOverchargeWeapons = 38,
         FighterCoordination = 52,
+        HarmonicBomb = 54,
     }
 }

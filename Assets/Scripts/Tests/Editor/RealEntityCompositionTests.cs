@@ -443,7 +443,7 @@ namespace EmpireAtWar.Tests.Editor
             var abilities = _battle.Container.Resolve<ShipAbilityService>();
             var battle = _battle.Container.Resolve<SkirmishStateModel>();
             battle.SetState(BattleState.Running);
-            var service = new PlayerAutoPowerService(entities, local, settings, selection, battle, abilities, combat, catalog);
+            var service = new PlayerAutoPowerService(entities, local, settings, selection, battle, abilities, combat, catalog, null);
             return new AutoPowerRuntime(service, abilities, entities, caster, entities.GetEntity(hostile.EntityId), settings,
                 (SelectionContext)selection.PlayerSelectionContext);
         }

@@ -70,7 +70,7 @@ namespace EmpireAtWar.Components.Ship.Audio
         private void HandleAbilityStateChanged()
         {
             if (_voicedSlot.State == ShipAbilityState.Active)
-                _shipSfxService.TryPlayVoice(abilityVoice);
+                _shipSfxService.TryPlayVoice(abilityVoice, interruptChatter: _voicedSlot.Id == ShipAbilityId.HarmonicBomb);
         }
 
         public void Release()
