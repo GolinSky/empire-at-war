@@ -183,17 +183,17 @@ namespace EmpireAtWar.Services.ShipNavigation
                 requestedDestination, mapRange, heightTolerance, clearance, _destinationRegistry.Version);
             if (canReuseStationary && _cache.TryGetStationary(agent, request, _mapObstacleContacts,
                     out ShipNavigationPlan cachedPlan)) return cachedPlan;
-            ShipPathGrid pathGrid = _cache.GetGrid(_mapObstacleContacts, mapRange, origin, clearance, _hazards.Sources);
+            IShipPathGraph pathGraph = _cache.GetGraph(_mapObstacleContacts, mapRange, origin, clearance, _hazards.Sources);
             {
                 // An unreachable order is not a failure: the ship heads for the
                 // reachable spot closest to what was asked for.
                 if (TryPlanNear(agent, registrationId, forward, requestedDestination,
-                        DESTINATION_CANDIDATE_RING_COUNT, pathGrid, heightTolerance, clearance, mapRange,
+                        DESTINATION_CANDIDATE_RING_COUNT, pathGraph, heightTolerance, clearance, mapRange,
                         out ShipRoutePlan routePlan) ||
-                    pathGrid.TryGetNearestReachable(GetFallbackProbe(agent, requestedDestination),
+                    pathGraph.TryGetNearestReachable(GetFallbackProbe(agent, requestedDestination),
                         agent.NavigationHeight, out Vector3 nearestReachable) &&
                     TryPlanNear(agent, registrationId, forward, nearestReachable,
-                        FALLBACK_CANDIDATE_RING_COUNT, pathGrid, heightTolerance, clearance, mapRange,
+                        FALLBACK_CANDIDATE_RING_COUNT, pathGraph, heightTolerance, clearance, mapRange,
                         out routePlan))
                 {
                     bool isDeferred = reserveAsPending ||
@@ -250,7 +250,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         }
 
         // Destination candidates ring out from the center; reachability of each is
-        // answered by the single flood of the path grid, so failures cost no search.
+        // answered by the cached graph regions, so failures cost no search.
         // Each ring is tried from the slot facing the ship outward and the first routable
         // slot wins, so a blocked order ends on the ship's side of the obstacle.
         private bool TryPlanNear(
@@ -259,7 +259,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             Vector3 forward,
             Vector3 center,
             int ringCount,
-            ShipPathGrid pathGrid,
+            IShipPathGraph pathGraph,
             float heightTolerance,
             float clearance,
             Vector2Range mapRange,
@@ -268,7 +268,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             using (BattleProfilerMarkers.NavigationCandidates.Auto())
             {
                 return TryPlanNearCandidates(agent, registrationId, forward, center, ringCount,
-                    pathGrid, heightTolerance, clearance, mapRange, out routePlan);
+                    pathGraph, heightTolerance, clearance, mapRange, out routePlan);
             }
         }
 
@@ -278,7 +278,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             Vector3 forward,
             Vector3 center,
             int ringCount,
-            ShipPathGrid pathGrid,
+            IShipPathGraph pathGraph,
             float heightTolerance,
             float clearance,
             Vector2Range mapRange,
@@ -330,7 +330,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                         registrationId,
                         ToPoint(destination),
                         clearance) ||
-                    pathGrid.IsKnownUnreachable(destination))
+                    pathGraph.IsKnownUnreachable(destination))
                 {
                     continue;
                 }
@@ -343,7 +343,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                         forward,
                         destination,
                         _mapObstacleContacts,
-                        pathGrid,
+                        pathGraph,
                         _waypoints,
                         heightTolerance,
                         clearance);

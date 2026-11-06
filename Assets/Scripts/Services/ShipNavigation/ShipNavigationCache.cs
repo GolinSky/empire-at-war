@@ -11,23 +11,34 @@ namespace EmpireAtWar.Services.ShipNavigation
     internal sealed class ShipNavigationCache : IDisposable
     {
         // Keep every clearance and hull-height obstacle set for the battle: mixed fleets
-        // must not evict each other's grids on every planning round.
-        private readonly List<ShipPathGrid> _grids = new List<ShipPathGrid>();
+        // must not evict each other's graphs on every planning round.
+        private readonly List<IShipPathGraph> _graphs = new List<IShipPathGraph>();
+        private readonly List<NavigationHazardRaster> _rasters = new List<NavigationHazardRaster>();
         private readonly Dictionary<IShipNavigationAgent, StationaryEntry> _stationary =
             new Dictionary<IShipNavigationAgent, StationaryEntry>();
 
-        public ShipPathGrid GetGrid(IReadOnlyList<RadarContact> contacts, Vector2Range mapRange,
+        public IShipPathGraph GetGraph(IReadOnlyList<RadarContact> contacts, Vector2Range mapRange,
             Vector3 origin, float clearance, IReadOnlyList<IHazardSource> hazards)
         {
-            for (int i = 0; i < _grids.Count; i++)
+            for (int i = 0; i < _graphs.Count; i++)
             {
-                ShipPathGrid grid = _grids[i];
-                if (!grid.Matches(contacts, mapRange, clearance, hazards)) continue;
-                grid.SetOrigin(origin);
-                return grid;
+                IShipPathGraph graph = _graphs[i];
+                if (!graph.Matches(contacts, mapRange, clearance, hazards)) continue;
+                graph.SetOrigin(origin);
+                return graph;
             }
-            ShipPathGrid created = new ShipPathGrid(contacts, mapRange, origin, clearance, hazards);
-            _grids.Add(created);
+            var created = new ShipNavMesh(contacts, origin, clearance, GetRaster(mapRange, hazards));
+            _graphs.Add(created);
+            return created;
+        }
+
+        private NavigationHazardRaster GetRaster(Vector2Range mapRange, IReadOnlyList<IHazardSource> hazards)
+        {
+            foreach (NavigationHazardRaster raster in _rasters)
+                if (raster.Matches(mapRange, hazards)) return raster;
+            using var marker = BattleProfilerMarkers.NavigationGridBuild.Auto();
+            var created = new NavigationHazardRaster(mapRange, hazards);
+            _rasters.Add(created);
             return created;
         }
 
@@ -75,8 +86,10 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void Dispose()
         {
-            for (int i = 0; i < _grids.Count; i++) _grids[i].Dispose();
-            _grids.Clear();
+            foreach (IShipPathGraph graph in _graphs) graph.Dispose();
+            _graphs.Clear();
+            foreach (NavigationHazardRaster raster in _rasters) raster.Dispose();
+            _rasters.Clear();
             _stationary.Clear();
         }
 

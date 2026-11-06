@@ -1,9 +1,8 @@
-using Unity.Collections;
 using Unity.Mathematics;
 
 namespace EmpireAtWar.Services.ShipNavigation
 {
-    /// <summary>Cell layout of the navigation grid, shared by the Burst jobs and the managed planner.</summary>
+    /// <summary>World coordinates and nearest-sample indexing for the shared navigation hazard raster.</summary>
     internal readonly struct NavigationGridCells
     {
         public float2 Origin { get; }
@@ -25,107 +24,11 @@ namespace EmpireAtWar.Services.ShipNavigation
             return Origin + new float2(cell % Width, cell / Width) * CellSize;
         }
 
-        public bool IsWalkable(NativeArray<byte> blocked, int x, int y)
-        {
-            return x >= 0 && y >= 0 && x < Width && y < Height &&
-                   blocked[y * Width + x] == 0;
-        }
-
         public int GetCell(float2 position)
         {
             int2 cell = (int2)math.round((position - Origin) / CellSize);
             cell = math.clamp(cell, int2.zero, new int2(Width - 1, Height - 1));
             return cell.y * Width + cell.x;
-        }
-
-        public int FindNearestWalkableCell(NativeArray<byte> blocked, float2 position)
-        {
-            return FindNearestCell(new WalkableCells { Blocked = blocked }, position);
-        }
-
-        /// <summary>The node nearest to <paramref name="position"/> whose region label is <paramref name="label"/>.</summary>
-        public int FindNearestCellInRegion(NativeArray<int> regions, int label, float2 position)
-        {
-            return FindNearestCell(new RegionCells { Regions = regions, Label = label }, position);
-        }
-
-        private int FindNearestCell<TFilter>(TFilter filter, float2 position) where TFilter : struct, ICellFilter
-        {
-            int index = GetCell(position);
-            if (filter.Accepts(index))
-            {
-                return index;
-            }
-
-            // Rings of growing Chebyshev radius around the clamped cell. A ring can only hold a closer node while
-            // its inner edge is nearer than the best found so far, so the search stops long before a full-grid scan.
-            // Ties keep the lowest index, which is what scanning every cell in order returns.
-            int centerX = index % Width;
-            int centerY = index / Width;
-            float centerOffset = math.distance(GetNodePosition(index), position);
-            int maxRadius = math.max(math.max(centerX, Width - 1 - centerX), math.max(centerY, Height - 1 - centerY));
-            int best = -1;
-            float bestDistance = float.PositiveInfinity;
-            for (int radius = 1; radius <= maxRadius; radius++)
-            {
-                float ringGap = radius * CellSize - centerOffset;
-                if (best >= 0 && ringGap > 0f && ringGap * ringGap > bestDistance)
-                {
-                    break;
-                }
-
-                for (int y = centerY - radius; y <= centerY + radius; y++)
-                {
-                    if (y < 0 || y >= Height)
-                    {
-                        continue;
-                    }
-
-                    int step = y == centerY - radius || y == centerY + radius ? 1 : 2 * radius;
-                    for (int x = centerX - radius; x <= centerX + radius; x += step)
-                    {
-                        if (x < 0 || x >= Width)
-                        {
-                            continue;
-                        }
-
-                        int cell = y * Width + x;
-                        if (!filter.Accepts(cell))
-                        {
-                            continue;
-                        }
-
-                        float distance = math.distancesq(GetNodePosition(cell), position);
-                        if (distance < bestDistance || distance == bestDistance && cell < best)
-                        {
-                            bestDistance = distance;
-                            best = cell;
-                        }
-                    }
-                }
-            }
-
-            return best;
-        }
-
-        private interface ICellFilter
-        {
-            bool Accepts(int cell);
-        }
-
-        private struct WalkableCells : ICellFilter
-        {
-            public NativeArray<byte> Blocked;
-
-            public bool Accepts(int cell) => Blocked[cell] == 0;
-        }
-
-        private struct RegionCells : ICellFilter
-        {
-            public NativeArray<int> Regions;
-            public int Label;
-
-            public bool Accepts(int cell) => Regions[cell] == Label;
         }
     }
 }

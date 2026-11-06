@@ -167,6 +167,9 @@
 
 ### Optimization
 
+- [x] **Switch ship pathfinding from raster grid to Burst triangle graph (BurstTriangulator + triangle A* + funnel)** → [[Done/Optimization/Graph_Pathfinding_Plan|Graph Pathfinding Plan]]; [[Done/Optimization/Graph_Pathfinding_Plan - Research|Verified data and package research]]
+  - 2026-11-06: switched the runtime planner to the triangle graph and moved the raster baseline into Editor parity fixtures. Unity compiled both assemblies and Burst emitted native code for eight jobs. Navigation acceptance pending → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **Mac GPU fixes: 77% + FSR 1 Mac default, FXAA off, hazard tight mesh, shader prewarm, Mac re-sign** → [[Done/Optimization/Mac_GPU_Frame_Budget_Plan|Mac GPU Frame Budget Plan]]
   - 2026-10-30 fix plan from existing Mac Metal trace (2940×1846, MSAA 2× + FXAA, 452 ms hitch). No code changed yet.
   - Implemented 2026-10-30; Unity compile/import and diff checks passed. No tests, measurements or Mac build. User acceptance → [[TODOs/User_Acceptance_Queue]].

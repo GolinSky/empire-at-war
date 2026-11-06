@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Components.Ship.Movement;
@@ -14,7 +13,7 @@ namespace EmpireAtWar.Services.ShipNavigation
 {
     // One obstacle raster and its region labels, kept across frames while the obstacles stay the same.
     // Searches are specific to the current origin. Jobs complete before reuse; the navigation cache disposes buffers.
-    internal sealed class ShipPathGrid : IDisposable
+    internal sealed class ShipPathGrid : IShipPathGraph
     {
         private const float MINIMUM_CELL_SIZE = 4f;
 

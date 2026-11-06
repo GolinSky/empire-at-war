@@ -78,6 +78,12 @@ tags:
 - `FogOfWarSystem.Update` schedules the write; `LateUpdate` completes it before texture Apply. `FogVisibilityGridModel` completes pending work before direct access and disposal.
 - A synchronous grid read between scheduling/upload forces completion and can reduce worker overlap; preserve correctness and measure callers before changing scheduling.
 
+### Ship pathfinding
+
+- Cache each triangle graph by map bounds, exact clearance, height-filtered obstacle disks and hazard-source identities. Movement-only changes reuse that graph with a new origin.
+- Share the hazard cost raster across clearance layers. Keep raw ship height filtering and destination reservations in `ShipNavigationService`.
+- Compare graph builds, A* searches and nearest-reachable queries with the existing `NavigationGridBuild`, `NavigationPathSearch` and `NavigationNearestReachable` markers. Record layer count, triangles, persistent memory and frame times before changing clearance grouping.
+
 ### CPU scheduling and snapshots
 
 - Capture-strength predicates snapshot center/radius once per due area via the sampler preparation callback. Refresh on each scan so moved/resized geometry remains correct; do not repeat Unity site-transform reads per unit.

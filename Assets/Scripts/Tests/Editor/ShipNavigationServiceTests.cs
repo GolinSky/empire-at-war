@@ -51,6 +51,7 @@ namespace EmpireAtWar.Tests.Movement
                 FakeAgent agent = new FakeAgent(new Vector3(-80f, 0f, 0f), 0f, 4f, 10f, 30f);
                 ShipNavigationPlan around = Plan(service, agent, new Vector3(80f, 0f, 0f));
                 Assert.That(around.IsStationary, Is.False);
+                Assert.That(around.Destination, Is.EqualTo(new Vector3(80f, 0f, 0f)));
                 Assert.That(around.Route.Length, Is.GreaterThan(160f));
                 for (int i = 0; i <= 100; i++)
                     Assert.That(zone.Contains(around.Route.EvaluateNormalizedDistance(i / 100f, out _), 0f, false),
@@ -111,23 +112,99 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void Plan_MixedFleetReusesMoreThanEightClearanceGrids()
+        public void MixedFleetReusesMoreThanEightClearanceLayers()
         {
-            ShipNavigationService service = CreateService();
-            object cache = typeof(ShipNavigationService).GetField("_cache",
-                BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service);
-            MethodInfo getGrid = cache.GetType().GetMethod("GetGrid");
-            var grids = new object[12];
-            for (int i = 0; i < grids.Length; i++)
-                grids[i] = getGrid.Invoke(cache, new object[]
-                    { System.Array.Empty<RadarContact>(), _mapRange, Vector3.zero, (float)i + 1f,
-                        System.Array.Empty<IHazardSource>() });
+            using var cache = new ShipNavigationCache();
+            var graphs = new IShipPathGraph[12];
+            for (int i = 0; i < graphs.Length; i++)
+                graphs[i] = cache.GetGraph(System.Array.Empty<RadarContact>(), _mapRange,
+                    Vector3.zero, i + 1f, System.Array.Empty<IHazardSource>());
 
-            for (int i = 0; i < grids.Length; i++)
-                Assert.That(getGrid.Invoke(cache, new object[]
-                    { System.Array.Empty<RadarContact>(), _mapRange, Vector3.zero, (float)i + 1f,
-                        System.Array.Empty<IHazardSource>() }),
-                    Is.SameAs(grids[i]));
+            for (int i = 0; i < graphs.Length; i++)
+                Assert.That(cache.GetGraph(System.Array.Empty<RadarContact>(), _mapRange,
+                    Vector3.zero, i + 1f, System.Array.Empty<IHazardSource>()), Is.SameAs(graphs[i]));
+        }
+
+        [Test]
+        public void ClearanceLayersShareOneHazardSamplingPassPerSourceSet()
+        {
+            var data = ScriptableObject.CreateInstance<SpaceHazardData>();
+            try
+            {
+                using var cache = new ShipNavigationCache();
+                var origin = new Vector3(-60f, 0f, 0f);
+                var goal = new Vector3(60f, 0f, 0f);
+                var contacts = System.Array.Empty<RadarContact>();
+                var crossing = new CountingHazard(data, 0f);
+                IShipPathGraph first = cache.GetGraph(contacts, _mapRange, origin, 3f, new[] { crossing });
+                Assert.That(first.IsUnpenalizedSegment(origin, goal), Is.False);
+                int firstPass = crossing.ContainsCalls;
+                Assert.That(firstPass, Is.GreaterThan(0));
+
+                IShipPathGraph larger = cache.GetGraph(contacts, _mapRange, origin, 8f, new[] { crossing });
+                Assert.That(larger, Is.Not.SameAs(first));
+                Assert.That(larger.IsUnpenalizedSegment(origin, goal), Is.False);
+                Assert.That(crossing.ContainsCalls, Is.EqualTo(firstPass));
+
+                var offCourse = new CountingHazard(data, 50f);
+                IShipPathGraph changed = cache.GetGraph(contacts, _mapRange, origin, 8f, new[] { offCourse });
+                Assert.That(changed.IsUnpenalizedSegment(origin, goal), Is.True);
+                Assert.That(offCourse.ContainsCalls, Is.EqualTo(firstPass));
+                Assert.That(crossing.ContainsCalls, Is.EqualTo(firstPass));
+            }
+            finally
+            {
+                Object.DestroyImmediate(data);
+            }
+        }
+
+        private sealed class CountingHazard : IHazardSource
+        {
+            private readonly float _centerZ;
+            public SpaceHazardData Data { get; }
+            public int ContainsCalls { get; private set; }
+
+            public CountingHazard(SpaceHazardData data, float centerZ)
+            {
+                Data = data;
+                _centerZ = centerZ;
+            }
+
+            public bool Contains(Vector3 position, float footprintRadius, bool wasInside)
+            {
+                ContainsCalls++;
+                return Mathf.Abs(position.z - _centerZ) <= 4f;
+            }
+        }
+
+        [Test]
+        public void Plan_QuasarTitanAndExecutorShareClickAcrossHullLayers()
+        {
+            SetRangeValue("<Min>k__BackingField", new Vector2(-5000f, -5000f));
+            SetRangeValue("<Max>k__BackingField", new Vector2(5000f, 5000f));
+            var obstacle = new RadarContact(new Vector3(0f, -270f, 0f), 120f, false, -275f, -265f);
+            var service = CreateService(new[] { obstacle });
+            var destination = new Vector3(2400f, -241f, 0f);
+            var quasar = new FakeAgent(new Vector3(-2400f, -241f, 0f), -241f, 22.751286f, 10f, 30f,
+                new ShipHullSpan(-251f, -231f));
+            var titan = new FakeAgent(new Vector3(-3200f, -241f, 0f), -241f, 265.9348f, 10f, 30f,
+                new ShipHullSpan(-291f, -201f));
+            var executor = new FakeAgent(new Vector3(-2400f, -341f, 0f), -341f, 1059.4355f, 10f, 30f,
+                new ShipHullSpan(-370f, -310f));
+
+            ShipNavigationPlan quasarPlan = Plan(service, quasar, destination);
+            ShipNavigationPlan titanPlan = Plan(service, titan, destination);
+            ShipNavigationPlan executorPlan = Plan(service, executor, destination);
+
+            Assert.That(quasarPlan.Destination, Is.EqualTo(destination));
+            Assert.That(quasarPlan.Route.Length, Is.EqualTo(4800f).Within(0.05f));
+            Assert.That(titanPlan.IsStationary, Is.False);
+            Assert.That(Vector3.Distance(titanPlan.Destination, destination),
+                Is.InRange(titan.NavigationRadius + quasar.NavigationRadius, 2f * titan.NavigationRadius + 0.01f));
+            Assert.That(ShipAvoidancePlanner.IsRouteClear(titanPlan.Route, new[] { obstacle },
+                titan.NavigationHeight, 0.5f, titan.NavigationRadius), Is.True);
+            Assert.That(executorPlan.Destination, Is.EqualTo(new Vector3(2400f, -341f, 0f)));
+            Assert.That(executorPlan.Route.Length, Is.EqualTo(4800f).Within(0.05f));
         }
 
         [Test]
@@ -919,7 +996,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             public Vector3 NavigationPosition { get; }
             public float NavigationHeight { get; }
-            public ShipHullSpan NavigationHullSpan => ShipHullSpan.Unbounded;
+            public ShipHullSpan NavigationHullSpan { get; }
             public float NavigationRadius { get; }
             public float NavigationSpeed { get; }
             public float NavigationRotationSpeed { get; }
@@ -929,13 +1006,15 @@ namespace EmpireAtWar.Tests.Movement
                 float height,
                 float radius,
                 float speed,
-                float rotationSpeed)
+                float rotationSpeed,
+                ShipHullSpan? hullSpan = null)
             {
                 NavigationPosition = position;
                 NavigationHeight = height;
                 NavigationRadius = radius;
                 NavigationSpeed = speed;
                 NavigationRotationSpeed = rotationSpeed;
+                NavigationHullSpan = hullSpan ?? ShipHullSpan.Unbounded;
             }
         }
 

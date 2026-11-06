@@ -166,6 +166,7 @@ created: "2026-10-29\r"
 
 ## Visuals and Performance
 
+- [ ] [[Done/Optimization/Graph_Pathfinding_Plan]] — Run the Unity EditMode `Navigation` category. Confirm grid parity, disk clearance, overlapping-disk escape, hazard detours and Quasar/Titan/Executor destination reservations. Retain the Editor grid oracle until the parity results are accepted.
 - [[Done/Refactoring/ShipLit_Autodesk_Material_Conversion_Plan]]
   - [ ] Visual approval of `Logs/ShipLitConversion/2026-09-28/review.html` before/after gallery.
 - [[Done/Optimization/Squadron_Pooling_Plan]]

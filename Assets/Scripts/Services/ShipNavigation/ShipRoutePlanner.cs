@@ -39,7 +39,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             Vector3 forward,
             Vector3 destination,
             IReadOnlyList<RadarContact> contacts,
-            ShipPathGrid pathGrid,
+            IShipPathGraph pathGraph,
             List<Vector3> waypoints,
             float heightTolerance,
             float clearance)
@@ -53,12 +53,12 @@ namespace EmpireAtWar.Services.ShipNavigation
             waypoints.Clear();
             if (IsSegmentClear(
                     origin, destination, contacts, agent.NavigationHeight,
-                    heightTolerance, clearance, allowEscape) && pathGrid.IsUnpenalizedSegment(origin, destination))
+                    heightTolerance, clearance, allowEscape) && pathGraph.IsUnpenalizedSegment(origin, destination))
             {
                 waypoints.Add(origin);
                 waypoints.Add(destination);
             }
-            else if (!pathGrid.TryFindPath(
+            else if (!pathGraph.TryFindPath(
                          destination, agent.NavigationHeight, waypoints))
             {
                 return BuildStationaryPlan(origin, forward);
@@ -79,7 +79,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             {
                 ShipBezierRoute courseRoute = BuildSmoothRoute(
                     waypoints, forward, minimumTurnRadius, HANDLE_SCALE);
-                if (pathGrid.ContainsRoute(courseRoute) && pathGrid.PreservesTravelCost(courseRoute, waypoints) &&
+                if (pathGraph.ContainsRoute(courseRoute) && pathGraph.PreservesTravelCost(courseRoute, waypoints) &&
                     IsRouteClear(courseRoute, contacts, agent, heightTolerance,
                         clearance, allowEscape))
                 {
@@ -90,7 +90,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             // 2) Turn in place towards the first leg, then follow a smooth route.
             ShipBezierRoute turnedRoute = BuildSmoothRoute(
                 waypoints, firstLeg, minimumTurnRadius, HANDLE_SCALE);
-            if (pathGrid.ContainsRoute(turnedRoute) && pathGrid.PreservesTravelCost(turnedRoute, waypoints) &&
+            if (pathGraph.ContainsRoute(turnedRoute) && pathGraph.PreservesTravelCost(turnedRoute, waypoints) &&
                 IsRouteClear(turnedRoute, contacts, agent, heightTolerance,
                     clearance, allowEscape))
             {
@@ -100,9 +100,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             }
 
             // 3) Straight legs between waypoints. Clear by construction of the path
-            // grid; a ship that starts inside an obstacle's clearance uses it to escape.
+            // graph; a ship that starts inside an obstacle's clearance uses it to escape.
             ShipBezierRoute polylineRoute = ShipBezierPath.BuildPolylineRoute(waypoints);
-            if (pathGrid.ContainsRoute(polylineRoute) && (!isOriginClear ||
+            if (pathGraph.ContainsRoute(polylineRoute) && (!isOriginClear ||
                 IsRouteClear(polylineRoute, contacts, agent, heightTolerance, clearance)))
             {
                 return new ShipRoutePlan(

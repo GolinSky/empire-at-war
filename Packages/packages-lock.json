@@ -1,5 +1,15 @@
 {
   "dependencies": {
+    "com.andywiecko.burst.triangulator": {
+      "version": "https://github.com/andywiecko/BurstTriangulator.git#v3.10.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.burst": "1.8.7",
+        "com.unity.collections": "2.2.0"
+      },
+      "hash": "ecb14bf2d2c413c87af0363efbce6565a9303d2d"
+    },
     "com.script-utils.dotween": {
       "version": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Dotween#7a93f802d01050cefcf30d558675244434035e97",
       "depth": 0,
