@@ -9,9 +9,9 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
     public sealed class UnitOrderFeedbackUi : BaseUi
     {
         private const float ATTACK_FADE_IN = 0.09f;
-        private const float ATTACK_SETTLE = 0.22f;
-        private const float ATTACK_FADE_START = 0.46f;
-        private const float ATTACK_FADE_OUT = 0.32f;
+        private const float ATTACK_SETTLE = 0.5f;
+        private const float ATTACK_FADE_START = 1.05f;
+        private const float ATTACK_FADE_OUT = 0.5f;
         private const float WAVE_DURATION = 0.68f;
         private const float ECHO_DELAY = 0.12f;
 
@@ -67,8 +67,8 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
                 .Insert(0f, attackRing.rectTransform.DOLocalRotate(new Vector3(0f, 0f, -135f),
                     ATTACK_FADE_START + ATTACK_FADE_OUT).SetEase(Ease.OutQuad))
                 .Insert(0.06f, attackPulse.DOFade(0.75f, ATTACK_FADE_IN))
-                .Insert(0.06f, attackPulse.rectTransform.DOScale(1.55f, WAVE_DURATION).SetEase(Ease.OutQuad))
-                .Insert(0.15f, attackPulse.DOFade(0f, 0.55f).SetEase(Ease.InQuad))
+                .Insert(0.06f, attackPulse.rectTransform.DOScale(1.55f, ATTACK_FADE_START).SetEase(Ease.OutQuad))
+                .Insert(0.25f, attackPulse.DOFade(0f, 0.8f).SetEase(Ease.InQuad))
                 .Insert(ATTACK_FADE_START, attackImage.DOFade(0f, ATTACK_FADE_OUT).SetEase(Ease.InQuad))
                 .Insert(ATTACK_FADE_START, attackRing.DOFade(0f, ATTACK_FADE_OUT).SetEase(Ease.InQuad))
                 .Insert(ATTACK_FADE_START, attackImage.rectTransform.DOScale(1.08f, ATTACK_FADE_OUT)

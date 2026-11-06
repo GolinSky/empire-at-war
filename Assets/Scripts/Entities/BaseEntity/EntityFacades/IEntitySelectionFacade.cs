@@ -7,8 +7,5 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
         SelectionType SelectionType { get; set; }
 
         void Select(bool isSelected);
-
-        void PlayAttackFeedback(UnityEngine.Transform target);
-        void StopAttackFeedback();
     }
 }

@@ -119,8 +119,6 @@ namespace EmpireAtWar.Tests.Editor
             public SelectionType SelectionType { get; set; }
             public Vector3 WorldPosition { get; }
 
-            public void PlayAttackFeedback(UnityEngine.Transform target) => throw new NotSupportedException();
-            public void StopAttackFeedback() => throw new NotSupportedException();
 
             public FakeSelection(SelectionType selectionType, Vector3 worldPosition)
             {

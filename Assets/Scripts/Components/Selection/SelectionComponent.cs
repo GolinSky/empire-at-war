@@ -1,5 +1,4 @@
 using System;
-using DG.Tweening;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
@@ -22,9 +21,6 @@ namespace EmpireAtWar.Components.Ship.Selection
         Vector3 WorldPosition { get; }
 
         void SetActive(bool isActive);
-
-        void PlayAttackFeedback(Transform target);
-        void StopAttackFeedback();
     }
 
     public class SelectionComponent : MonoComponent<SelectionModel>, ISelectionComponent,
@@ -32,10 +28,6 @@ namespace EmpireAtWar.Components.Ship.Selection
     {
         private const float SINGLE_SELECTION_SCALE = 0.8f;
         private const float MULTISELECT_SCALE = 0.6f;
-        private const float ATTACK_HOLD = 0.1f;
-        private const float ATTACK_LOCK = 0.55f;
-        private const float ATTACK_FADE = 0.2f;
-        private static readonly int ATTACK_ANGLE_ID = Shader.PropertyToID("_AttackAngle");
 
         // A sprite renderer, not a world canvas: a selected unit moves every frame, and a canvas under it
         // would rebuild its batch every frame (one per selected unit).
@@ -50,13 +42,6 @@ namespace EmpireAtWar.Components.Ship.Selection
         private Transform _markerTransform;
         private bool _hasMarkerScale;
         private bool _isMultipleSelection;
-        private MaterialPropertyBlock _attackProperties;
-        private Sequence _attackSequence;
-        private Transform _attackTarget;
-        private Vector3 _markerLocalPosition;
-        private Vector3 _attackStartScale;
-        private Color _markerColor;
-        private float _attackProgress;
 
         [SerializeField] private SelectionType selectionType;
 
@@ -80,7 +65,6 @@ namespace EmpireAtWar.Components.Ship.Selection
         public void Initialize()
         {
             _markerTransform = selectedRenderer.transform;
-            enabled = false;
             _hasMarkerScale = false;
             Model.OnSelected += HandleSelection;
             Sprite sprite = _sharedSelectionData.SelectionSprite;
@@ -107,7 +91,6 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         public override void Release()
         {
-            StopAttackFeedback();
             OnSkipSelection(selectionType);
             Model.OnSelected -= HandleSelection;
             _selectionService.RemoveObserver(this);
@@ -156,22 +139,6 @@ namespace EmpireAtWar.Components.Ship.Selection
             selectedRenderer.enabled = isActive;
         }
 
-        private void LateUpdate()
-        {
-            if (_attackTarget == null)
-            {
-                StopAttackFeedback();
-                return;
-            }
-            _markerTransform.position = Vector3.Lerp(
-                _markerTransform.parent.TransformPoint(_markerLocalPosition),
-                _attackTarget.position, _attackProgress);
-            _attackProperties.SetFloat(ATTACK_ANGLE_ID, 180f * _attackProgress * Mathf.Deg2Rad);
-            selectedRenderer.SetPropertyBlock(_attackProperties);
-            _markerTransform.localScale = Vector3.Lerp(
-                _attackStartScale, _attackStartScale * 0.2f, _attackProgress);
-        }
-
         public void UpdateState(ISelectionSubject subject)
         {
             if (subject.UpdatedScope == SelectionScope.Local)
@@ -180,7 +147,6 @@ namespace EmpireAtWar.Components.Ship.Selection
 
         private void UpdateMarkerScale(int selectedCount)
         {
-            if (_attackSequence != null) return;
             bool isMultiple = selectedCount > 1;
             if (_hasMarkerScale && _isMultipleSelection == isMultiple) return;
             _hasMarkerScale = true;
@@ -189,7 +155,7 @@ namespace EmpireAtWar.Components.Ship.Selection
             _markerTransform.localScale = new Vector3(
                 _singleSelectionScale.x * scale, _singleSelectionScale.y * scale, 1f);
             // The shader ignores rotation. A conservative cube encloses its world-aligned quad
-            // through parent pitch/roll as well as the attack spin.
+            // through parent pitch and roll.
             Vector3 worldScale = _markerTransform.lossyScale;
             float largestScale = Mathf.Max(Mathf.Abs(worldScale.x), Mathf.Abs(worldScale.y));
             float smallestScale = Mathf.Min(Mathf.Abs(worldScale.x),
@@ -197,45 +163,5 @@ namespace EmpireAtWar.Components.Ship.Selection
             float radius = selectedRenderer.sprite.bounds.extents.magnitude * largestScale / smallestScale;
             selectedRenderer.localBounds = new Bounds(Vector3.zero, Vector3.one * (radius * 2f));
         }
-
-        public void PlayAttackFeedback(Transform target)
-        {
-            StopAttackFeedback();
-            _attackProperties ??= new MaterialPropertyBlock();
-            _attackTarget = target;
-            _markerLocalPosition = _markerTransform.localPosition;
-            _attackStartScale = _markerTransform.localScale;
-            _markerColor = selectedRenderer.color;
-            _attackProgress = 0f;
-            enabled = true;
-            selectedRenderer.color = Color.red;
-            selectedRenderer.enabled = true;
-            _attackSequence = DOTween.Sequence()
-                .AppendInterval(ATTACK_HOLD)
-                .Append(DOTween.To(() => _attackProgress, value => _attackProgress = value,
-                    1f, ATTACK_LOCK).SetEase(Ease.InOutCubic))
-                .AppendInterval(0.12f)
-                .Append(selectedRenderer.DOFade(0f, ATTACK_FADE))
-                .SetUpdate(true)
-                .OnComplete(StopAttackFeedback);
-        }
-
-        public void StopAttackFeedback()
-        {
-            if (_attackSequence == null) return;
-            _attackSequence.Kill();
-            _attackSequence = null;
-            _attackTarget = null;
-            _markerTransform.localPosition = _markerLocalPosition;
-            _attackProperties.Clear();
-            selectedRenderer.SetPropertyBlock(null);
-            selectedRenderer.color = _markerColor;
-            _hasMarkerScale = false;
-            UpdateMarkerScale(_selectionService.PlayerSelectionContext.Count);
-            HandleSelection(Model.IsSelected);
-            enabled = false;
-        }
-
-        private void OnDisable() => StopAttackFeedback();
     }
 }

@@ -30,7 +30,6 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         private readonly IPointerInput _pointerInput;
         private UnitOrderFeedbackUi _ui;
         private IEntity _attackTarget;
-        private IEntitySelectionFacade _attackSelection;
 
         private readonly UnitActionTargetingModel _targeting;
 
@@ -72,7 +71,6 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             _targeting.Changed -= HandleTargetingChanged;
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
             if (_ui != null) _ui.Dispose();
-            StopAttackSelection();
             _attackTarget = null;
             _movementPoint = null;
         }
@@ -87,15 +85,13 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             if (_attackTarget == null) return;
             if (_attackTarget.HealthModel.IsDestroyed)
             {
-                StopAttackSelection();
                 _ui.StopAttack();
                 _attackTarget = null;
                 return;
             }
 
-            if (_attackSelection == null)
-                _ui.SetAttackPosition(_cameraService.WorldToScreenPoint(
-                    _attackTarget.GetFacade<IEntityTransformFacade>().Transform.position));
+            _ui.SetAttackPosition(_cameraService.WorldToScreenPoint(
+                _attackTarget.GetFacade<IEntityTransformFacade>().Transform.position));
         }
 
         private void AttackFeedbackCompleted() => _attackTarget = null;
@@ -124,14 +120,9 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             if (!_localPlayer.IsLocal(order.Issuer)) return;
             if (order.Action == UnitActionId.Attack && order.Target != null)
             {
-                StopAttackSelection();
-                _ui.StopAttack();
                 _attackTarget = order.Target;
                 Transform target = _attackTarget.GetFacade<IEntityTransformFacade>().Transform;
-                if (_attackTarget.TryGetFacade(out _attackSelection))
-                    _attackSelection.PlayAttackFeedback(target);
-                else
-                    _ui.PlayAttack(_cameraService.WorldToScreenPoint(target.position), AttackFeedbackCompleted);
+                _ui.PlayAttack(_cameraService.WorldToScreenPoint(target.position), AttackFeedbackCompleted);
             }
             else if (order.Action == UnitActionId.WaypointMove &&
                      order.Waypoints != null)
@@ -155,16 +146,8 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         private void HandleEntityRemoved(IEntity entity)
         {
             if (entity != _attackTarget) return;
-            StopAttackSelection();
             _ui.StopAttack();
             _attackTarget = null;
-        }
-
-        private void StopAttackSelection()
-        {
-            if (_attackSelection == null) return;
-            _attackSelection.StopAttackFeedback();
-            _attackSelection = null;
         }
 
         private void HandleTargetingChanged()
