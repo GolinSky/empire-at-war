@@ -13,7 +13,10 @@ namespace EmpireAtWar.Lifecycle
 
         public void Add(Exception exception)
         {
-            (_exceptions ??= new List<Exception>()).Add(exception);
+            _exceptions ??= new List<Exception>();
+            // A nested scope's teardown already aggregates its failures; keep one flat list.
+            if (exception is AggregateException aggregate) _exceptions.AddRange(aggregate.InnerExceptions);
+            else _exceptions.Add(exception);
         }
 
         public void Attempt(Action cleanup)

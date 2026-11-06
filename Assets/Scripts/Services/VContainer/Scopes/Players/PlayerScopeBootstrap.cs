@@ -36,9 +36,6 @@ namespace EmpireAtWar.Services.VContainer
 
         public void Initialize()
         {
-            if (_players.Count != 0)
-                throw new InvalidOperationException("Dispose the existing player scopes before initializing them again.");
-
             try
             {
                 BuildPlayers();
