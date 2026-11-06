@@ -54,11 +54,11 @@ namespace EmpireAtWar.Editor.Balance
 
         public BalanceSnapshot Snapshot() => new BalanceSnapshot(Key, Schema, Read());
 
-        public string DraftValue(BalanceDraft draft)
+        public string DraftValue(BalanceDraft draft, string saved = null)
         {
             BalanceChange local = draft.Changes.FirstOrDefault(change => change.Key == Key);
             BalanceChange source = InheritsSource ? draft.Changes.FirstOrDefault(change => change.Key == SourceKey) : null;
-            return local != null ? local.After : source != null ? source.After : Read();
+            return local != null ? local.After : source != null ? source.After : saved ?? Read();
         }
 
         public string Read()

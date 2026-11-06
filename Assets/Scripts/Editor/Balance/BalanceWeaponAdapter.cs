@@ -18,7 +18,7 @@ namespace EmpireAtWar.Editor.Balance
 
         public static void Register(BalanceRegistration registry)
         {
-            WeaponsData weapons = BalanceRegistration.One<WeaponsData>();
+            WeaponsData weapons = registry.Resolve<WeaponsData>();
             using (SerializedObject serialized = new SerializedObject(weapons))
             {
                 Dictionary<WeaponType, List<BalanceUnit>> users = weapons.Weapons.ToDictionary(definition => definition.WeaponType,

@@ -15,9 +15,9 @@ namespace EmpireAtWar.Editor.Balance
         public static void Register(BalanceRegistration registry)
         {
             BalanceStructureAdapter.Register(registry);
-            Object economy = BalanceRegistration.One<EconomyData>();
+            Object economy = registry.Resolve<EconomyData>();
             registry.AutoFields(economy, "", "", "IncomeDelay StartMoneyAmount", BalanceFieldGroup.GlobalData, "Economy", BalanceFieldOwner.SharedProfile, true, registry.Units);
-            Object matchups = BalanceRegistration.One<ShipClassMatchupData>();
+            Object matchups = registry.Resolve<ShipClassMatchupData>();
             registry.Add(matchups, "strongBonus", "strongBonus", BalanceFieldGroup.GlobalData, "Class production preference", BalanceFieldOwner.SharedProfile, true, registry.Units);
             registry.Add(matchups, "weakPenalty", "weakPenalty", BalanceFieldGroup.GlobalData, "Class production preference",
                 BalanceFieldOwner.SharedProfile, true, registry.Units, maximum: 1);
@@ -28,15 +28,15 @@ namespace EmpireAtWar.Editor.Balance
                     foreach (string name in new[] { "strongAgainst", "weakAgainst" })
                         registry.Add(matchups, "class/" + id + "/" + name, row.propertyPath + "." + name, BalanceFieldGroup.GlobalData,
                             ((ShipClass)id) + " production preference", BalanceFieldOwner.SharedProfile, true,
-                            registry.Units.Where(unit => unit.Class == ((ShipClass)id).ToString()), typeof(ShipClass));
+                            registry.Units.Where(unit => unit.Class == ((ShipClass)id).ToString()), typeof(ShipClass), serializedTarget: serialized);
                 }
             Matrix(registry);
-            foreach (FactionDefinition faction in BalanceRegistration.One<FactionCatalog>().Factions) Research(registry, faction);
+            foreach (FactionDefinition faction in registry.Resolve<FactionCatalog>().Factions) Research(registry, faction);
         }
 
         public static void Matrix(BalanceRegistration registry)
         {
-            DamageMatrixData matrix = BalanceRegistration.One<DamageMatrixData>();
+            DamageMatrixData matrix = registry.Resolve<DamageMatrixData>();
             registry.Add(matrix, "missSpread", "missSpread", BalanceFieldGroup.GlobalData, "Damage matrix", BalanceFieldOwner.SharedProfile, true, registry.Units);
             using (SerializedObject serialized = new SerializedObject(matrix))
                 foreach (SerializedProperty row in BalanceRegistration.Elements(serialized.FindProperty("damageTypes")))
@@ -45,7 +45,7 @@ namespace EmpireAtWar.Editor.Balance
                     string key = "matrix/" + id + "/";
                     string context = ((DamageType)id).ToString();
                     foreach (string name in new[] { "vsShield", "squadronShieldMultiplier", "shieldPiercing" })
-                        registry.Add(matrix, key + name, row.propertyPath + "." + name, BalanceFieldGroup.GlobalData, context, BalanceFieldOwner.SharedProfile, true, registry.Units);
+                        registry.Add(matrix, key + name, row.propertyPath + "." + name, BalanceFieldGroup.GlobalData, context, BalanceFieldOwner.SharedProfile, true, registry.Units, serializedTarget: serialized);
                     foreach (string kind in new[] { "damage", "accuracy" })
                         foreach (ShipClass shipClass in Enum.GetValues(typeof(ShipClass)))
                         {
@@ -70,14 +70,14 @@ namespace EmpireAtWar.Editor.Balance
                         string key = "research/" + id + "/level/" + level + "/";
                         BalanceUnit owner = new BalanceUnit { Id = faction.FactionType + "/research/" + id + "/level/" + level,
                             Name = faction.FactionType + " / " + (ResearchType)id + " / Tier " + level, Faction = faction.FactionType.ToString(), Kind = BalanceUnitKind.Research };
-                        BalanceUnitAdapter.Economy(registry, faction, tier.propertyPath + ".factionData.", key, owner, false);
+                        BalanceUnitAdapter.Economy(registry, serialized, tier.propertyPath + ".factionData.", key, owner, false);
                         foreach (SerializedProperty effect in BalanceRegistration.Elements(tier.FindPropertyRelative("effects")))
                         {
                             int stat = effect.FindPropertyRelative("stat").intValue;
                             string classes = BalanceValue.Read(effect.FindPropertyRelative("shipClasses"), BalanceValueKind.EnumSet);
                             string effectKey = key + "effect/" + stat + "/" + string.Join("+", classes.Split(',').OrderBy(value => value)) + "/multiplier";
                             registry.Add(faction, effectKey, effect.propertyPath + ".multiplier", BalanceFieldGroup.GlobalData, owner.Name + " / " + (ResearchStat)stat,
-                                BalanceFieldOwner.FactionEntry, false, new[] { owner }, positive: true, dependency: "classes:" + classes);
+                                BalanceFieldOwner.FactionEntry, false, new[] { owner }, positive: true, dependency: "classes:" + classes, serializedTarget: serialized);
                         }
                     }
                 }

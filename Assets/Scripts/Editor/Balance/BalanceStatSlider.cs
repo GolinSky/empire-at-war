@@ -9,20 +9,22 @@ namespace EmpireAtWar.Editor.Balance
     {
         public static float Maximum(BalanceField field, BalanceDraft draft)
         {
-            float saved = float.Parse(field.Read(), CultureInfo.InvariantCulture);
-            float value = float.Parse(field.DraftValue(draft), CultureInfo.InvariantCulture);
-            double maximum = Math.Max(100, saved * 2d);
+            string saved = field.Read();
+            float value = float.Parse(field.DraftValue(draft, saved), CultureInfo.InvariantCulture);
+            double maximum = Math.Max(100, float.Parse(saved, CultureInfo.InvariantCulture) * 2d);
             if (float.IsFinite(value)) maximum = Math.Max(maximum, value);
             return (float)Math.Min(maximum, Math.Min(field.Maximum, float.MaxValue));
         }
 
         public static VisualElement Create(BalanceField field, BalanceDraft draft, Action<string> edit, float maximum)
         {
-            float initial = float.Parse(field.DraftValue(draft), CultureInfo.InvariantCulture);
+            string saved = field.Read();
+            string staged = field.DraftValue(draft, saved);
+            float initial = float.Parse(staged, CultureInfo.InvariantCulture);
             VisualElement control = new VisualElement { userData = field.Key };
             control.AddToClassList("balance-stat-editor");
             control.AddToClassList(field.Stat.Contains("Shield") ? "balance-shield-editor" : "balance-hull-editor");
-            control.EnableInClassList("balance-changed", field.DraftValue(draft) != field.Read());
+            control.EnableInClassList("balance-changed", staged != saved);
             VisualElement row = new VisualElement();
             row.AddToClassList("balance-stat-inputs");
             control.Add(row);
@@ -32,7 +34,7 @@ namespace EmpireAtWar.Editor.Balance
             FloatField input = new FloatField { name = "stat-value", isDelayed = true };
             input.AddToClassList("balance-stat-input");
             row.Add(input);
-            input.tooltip = field.Label + " · saved value: " + field.Read();
+            input.tooltip = field.Label + " · saved value: " + saved;
             VisualElement fill = new VisualElement { pickingMode = PickingMode.Ignore };
             fill.AddToClassList("balance-stat-fill");
             slider.Q("unity-tracker").Add(fill);

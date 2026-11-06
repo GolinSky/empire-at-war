@@ -20,7 +20,7 @@ namespace EmpireAtWar.Editor.Balance
 
         public BalanceWeaponPreview(BalanceRegistration registry)
         {
-            _source = BalanceRegistration.One<WeaponsData>();
+            _source = registry.Resolve<WeaponsData>();
             _fields = registry.FieldsFor(_source).ToArray();
         }
 
@@ -52,12 +52,18 @@ namespace EmpireAtWar.Editor.Balance
 
         private WeaponsData Apply(BalanceDraft draft)
         {
+            if (draft.Changes.Count == 0 && _copy == null) return _source;
             // Only staged fields can differ from the asset; reading all of WeaponsData per lookup made every redraw slow.
             HashSet<string> staged = draft.Changes.Select(change => change.Key).ToHashSet();
             List<(BalanceField field, string value)> edits = _fields
                 .Where(field => staged.Contains(field.Key) || field.InheritsSource && staged.Contains(field.SourceKey))
                 .Select(field => (field, value: field.DraftValue(draft)))
                 .Where(edit => edit.value != edit.field.Read()).ToList();
+            if (edits.Count == 0)
+            {
+                Dispose();
+                return _source;
+            }
             string signature = string.Join("|", edits.Select(edit => edit.field.Key + "=" + edit.value));
             if (_copy != null && signature == _appliedSignature) return _copy;
 

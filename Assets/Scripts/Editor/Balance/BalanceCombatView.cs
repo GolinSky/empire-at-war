@@ -61,6 +61,7 @@ namespace EmpireAtWar.Editor.Balance
                 Label empty = new Label("Add units to inspect and edit their hardpoints.");
                 empty.AddToClassList("balance-muted");
                 scroll.Add(empty);
+                return;
             }
 
             VisualElement grid = new VisualElement { name = "combat-grid" };

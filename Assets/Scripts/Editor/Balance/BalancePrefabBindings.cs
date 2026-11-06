@@ -39,48 +39,79 @@ namespace EmpireAtWar.Editor.Balance
 
         public static string Topology(BalanceUnit unit)
         {
-            string topology = string.Join(";", unit.Components.Select(component =>
-                GlobalObjectId.GetGlobalObjectIdSlow(component).ToString() + (component is Transform transform
-                    ? "/parent:" + (transform.parent != null ? GlobalObjectId.GetGlobalObjectIdSlow(transform.parent).ToString() : "root") : "")).OrderBy(id => id)) + "|mounts:"
-                + string.Join(";", unit.Mounts.Select(mount => GlobalObjectId.GetGlobalObjectIdSlow(mount).ToString()).OrderBy(id => id));
+            var parents = unit.Components.OfType<Transform>().Select(transform => transform.parent).Where(parent => parent != null);
+            Object[] objects = unit.Components.Concat(unit.Mounts).Concat(parents).Distinct().ToArray();
+            GlobalObjectId[] identifiers = new GlobalObjectId[objects.Length];
+            GlobalObjectId.GetGlobalObjectIdsSlow(objects, identifiers);
+            var ids = new Dictionary<Object, string>(objects.Length);
+            for (int i = 0; i < objects.Length; i++) ids.Add(objects[i], identifiers[i].ToString());
+
+            string topology = string.Join(";", OrderIds(unit.Components.Select(component =>
+                ids[component] + (component is Transform transform
+                    ? "/parent:" + (transform.parent != null ? ids[transform.parent] : "root") : "")))) + "|mounts:"
+                + string.Join(";", OrderIds(unit.Mounts.Select(mount => ids[mount])));
             using (SHA256 hash = SHA256.Create()) return Convert.ToBase64String(hash.ComputeHash(Encoding.UTF8.GetBytes(topology)));
+        }
+
+        private static IEnumerable<string> OrderIds(IEnumerable<string> ids)
+        {
+            // Existing draft and preset hashes use culture ordering. Most prefab IDs have the same ordinal order.
+            string[] original = ids.ToArray();
+            string[] ordered = original.OrderBy(id => id, StringComparer.Ordinal).ToArray();
+            for (int i = 1; i < ordered.Length; i++)
+                if (ordered[i - 1] != ordered[i] && string.Compare(ordered[i - 1], ordered[i], StringComparison.CurrentCulture) >= 0)
+                    return original.OrderBy(id => id);
+            return ordered;
         }
 
         public static string Register(BalanceRegistration registry, BalanceUnit unit)
         {
-            unit.Components.AddRange(Components(unit.Prefab));
-            foreach (Object health in unit.Components.Where(component => component is HealthComponent))
-                unit.Mounts.AddRange(References(health, BalanceRegistration.Auto("ShipUnits")));
-            foreach (Object weapons in unit.Components.Where(component => component is WeaponComponent))
-                unit.Mounts.AddRange(References(weapons, "hardPoints"));
-            string topology = Topology(unit);
+            string topology;
+            if (registry.PrefabBindings.TryGetValue(unit.Prefab, out var bindings))
+            {
+                unit.Components.AddRange(bindings.Unit.Components);
+                unit.Mounts.AddRange(bindings.Unit.Mounts);
+                topology = bindings.Topology;
+            }
+            else
+            {
+                unit.Components.AddRange(Components(unit.Prefab));
+                foreach (Object health in unit.Components.Where(component => component is HealthComponent))
+                    unit.Mounts.AddRange(References(health, BalanceRegistration.Auto("ShipUnits")));
+                foreach (Object weapons in unit.Components.Where(component => component is WeaponComponent))
+                    unit.Mounts.AddRange(References(weapons, "hardPoints"));
+                topology = Topology(unit);
+            }
+
             foreach (Object mount in unit.Mounts.Distinct())
             {
+                using SerializedObject serialized = new SerializedObject(mount);
                 string context = unit.Name + " / " + ((Component)mount).gameObject.name;
                 registry.Add(mount, "unlockLevel", "unlockLevel", BalanceFieldGroup.Hardpoints, context, BalanceFieldOwner.PrefabOverride, false,
-                    new[] { unit }, minimum: 1, dependency: topology);
+                    new[] { unit }, minimum: 1, dependency: topology, serializedTarget: serialized);
                 if (unit.Kind == BalanceUnitKind.Ship)
                     registry.Add(mount, "healthWeight", "healthWeight", BalanceFieldGroup.Hardpoints, context, BalanceFieldOwner.PrefabOverride, false,
-                        new[] { unit }, positive: true, dependency: topology);
+                        new[] { unit }, positive: true, dependency: topology, serializedTarget: serialized);
                 if (mount is WeaponHardPoint)
                 {
                     registry.Add(mount, "WeaponType", BalanceRegistration.Auto("WeaponType"), BalanceFieldGroup.Hardpoints, context,
-                        BalanceFieldOwner.PrefabOverride, false, new[] { unit }, typeof(WeaponType), dependency: topology);
+                        BalanceFieldOwner.PrefabOverride, false, new[] { unit }, typeof(WeaponType), dependency: topology, serializedTarget: serialized);
                     registry.Add(mount, "MinYaw", "yAxisRange." + BalanceRegistration.Auto("Min"), BalanceFieldGroup.Hardpoints, context,
-                        BalanceFieldOwner.PrefabOverride, false, new[] { unit }, minimum: double.NegativeInfinity, dependency: topology);
+                        BalanceFieldOwner.PrefabOverride, false, new[] { unit }, minimum: double.NegativeInfinity, dependency: topology, serializedTarget: serialized);
                     registry.Add(mount, "MaxYaw", "yAxisRange." + BalanceRegistration.Auto("Max"), BalanceFieldGroup.Hardpoints, context,
-                        BalanceFieldOwner.PrefabOverride, false, new[] { unit }, minimum: double.NegativeInfinity, dependency: topology);
-                    registry.Add(mount, "mainBattery", "mainBattery", BalanceFieldGroup.Hardpoints, context, BalanceFieldOwner.PrefabOverride, false, new[] { unit }, dependency: topology);
+                        BalanceFieldOwner.PrefabOverride, false, new[] { unit }, minimum: double.NegativeInfinity, dependency: topology, serializedTarget: serialized);
+                    registry.Add(mount, "mainBattery", "mainBattery", BalanceFieldGroup.Hardpoints, context, BalanceFieldOwner.PrefabOverride, false, new[] { unit }, dependency: topology, serializedTarget: serialized);
                 }
                 if (mount is MissileInterceptorHardPoint)
                 {
                     foreach (string name in new[] { "range", "reload", "interceptChance" })
                         registry.Add(mount, name, name, BalanceFieldGroup.Hardpoints, context, BalanceFieldOwner.PrefabOverride, false, new[] { unit }, positive: name == "reload",
-                            maximum: name == "interceptChance" ? 1 : double.PositiveInfinity, dependency: topology);
+                            maximum: name == "interceptChance" ? 1 : double.PositiveInfinity, dependency: topology, serializedTarget: serialized);
                 }
                 foreach (BalanceField field in registry.FieldsFor(mount))
                     unit.Fields["mount/" + field.Key] = field.Key;
             }
+            registry.PrefabBindings.TryAdd(unit.Prefab, (unit, topology));
             return topology;
         }
 

@@ -21,9 +21,9 @@ namespace EmpireAtWar.Editor.Balance
     {
         public static void Register(BalanceRegistration registry, bool combatOnly = false)
         {
-            FactionCatalog catalog = BalanceRegistration.One<FactionCatalog>();
-            ShipsData ships = BalanceRegistration.One<ShipsData>();
-            AssetMappingData mapping = BalanceRegistration.One<AssetMappingData>();
+            FactionCatalog catalog = registry.Resolve<FactionCatalog>();
+            ShipsData ships = registry.Resolve<ShipsData>();
+            AssetMappingData mapping = registry.Resolve<AssetMappingData>();
             foreach (FactionDefinition faction in catalog.Factions)
             {
                 using (SerializedObject serialized = new SerializedObject(faction))
@@ -59,7 +59,7 @@ namespace EmpireAtWar.Editor.Balance
                     Class = data is ShipData ship ? ship.ShipClass.ToString() : ((SquadronData)data).ShipClass.ToString()
                 };
                 registry.Units.Add(unit);
-                Economy(registry, faction, value.propertyPath + ".", roster + "/" + id + "/", unit, false);
+                Economy(registry, serialized, value.propertyPath + ".", roster + "/" + id + "/", unit, false);
                 RegisterData(registry, unit, combatOnly);
                 string topology = BalancePrefabBindings.Register(registry, unit);
                 foreach (BalanceField field in registry.FieldsFor(data))
@@ -67,12 +67,11 @@ namespace EmpireAtWar.Editor.Balance
             }
         }
 
-        public static void Economy(BalanceRegistration registry, Object target, string path, string key, BalanceUnit unit, bool shared)
+        public static void Economy(BalanceRegistration registry, SerializedObject serialized, string path, string key, BalanceUnit unit, bool shared)
         {
-            using (SerializedObject serialized = new SerializedObject(target))
             foreach (string name in new[] { "Price", "BuildTime", "UnitCapacity", "MaxCount", "AvailableLevel" })
             {
-                BalanceField field = registry.Add(target, key + name, path + BalanceRegistration.Auto(name), BalanceFieldGroup.Economy, unit.Name,
+                BalanceField field = registry.Add(serialized.targetObject, key + name, path + BalanceRegistration.Auto(name), BalanceFieldGroup.Economy, unit.Name,
                     shared ? BalanceFieldOwner.SharedProfile : BalanceFieldOwner.FactionEntry, shared, new[] { unit }, serializedTarget: serialized);
                 unit.Fields[name] = field.Key;
             }
@@ -128,7 +127,7 @@ namespace EmpireAtWar.Editor.Balance
             HardPointModel[] models = points.Select((point, index) => new HardPointModel(point.HardPointType, index,
                 int.Parse(registry.FieldsFor(point).Single(field => field.Stat == "unlockLevel" && !field.SharedMountSource).DraftValue(draft), CultureInfo.InvariantCulture),
                 healthWeight: float.Parse(registry.FieldsFor(point).Single(field => field.Stat == "healthWeight" && !field.SharedMountSource).DraftValue(draft), CultureInfo.InvariantCulture))).ToArray();
-            float[] values = BalanceRegistration.One<HardPointHealthSettings>().CreateBudget().Calculate(hull, data.ShipClass, models);
+            float[] values = registry.Resolve<HardPointHealthSettings>().CreateBudget().Calculate(hull, data.ShipClass, models);
             return points.Select((point, index) => (point, value: values[index])).ToDictionary(entry => entry.point, entry => entry.value);
         }
 

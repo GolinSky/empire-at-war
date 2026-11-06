@@ -14,7 +14,7 @@ namespace EmpireAtWar.Editor.Balance
             VisualElement card = new VisualElement { userData = field.Key };
             card.AddToClassList("balance-card");
             string current = field.Read();
-            string value = field.DraftValue(draft);
+            string value = field.DraftValue(draft, current);
             bool changed = value != current;
             card.EnableInClassList("balance-changed", changed);
 

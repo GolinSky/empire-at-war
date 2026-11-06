@@ -58,8 +58,6 @@ namespace EmpireAtWar.Editor.Balance
 
         public void CreateGUI()
         {
-            _refreshPending = false;
-            if (_registry == null) _registry = BalanceInventory.Build();
             RememberScroll();
             rootVisualElement.Clear();
             rootVisualElement.AddToClassList("balance-root");
@@ -68,11 +66,28 @@ namespace EmpireAtWar.Editor.Balance
             if (!rootVisualElement.styleSheets.Contains(sheet)) rootVisualElement.styleSheets.Add(sheet);
             AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UI_PATH + ".uxml").CloneTree(rootVisualElement);
             minSize = new Vector2(960, 550);
-            rootVisualElement.Q<Label>("draft-status").text = "Draft · " + state.Draft.Changes.Count + " changes";
             ToolbarActions(rootVisualElement.Q<Toolbar>("actions"));
             Navigation(rootVisualElement.Q<Toolbar>("navigation"));
-            Messages(rootVisualElement.Q("messages"));
-            Workspace(rootVisualElement.Q("workspace"));
+            Redraw();
+        }
+
+        private void Redraw()
+        {
+            _refreshPending = false;
+            if (_registry == null) _registry = BalanceInventory.Build();
+            RememberScroll();
+            rootVisualElement.Q<Label>("draft-status").text = "Draft · " + state.Draft.Changes.Count + " changes";
+            Toolbar navigation = rootVisualElement.Q<Toolbar>("navigation");
+            foreach (ToolbarButton button in navigation.Children().OfType<ToolbarButton>())
+                button.EnableInClassList("balance-tab-active", button.name == "workflow-" + state.Tab);
+            navigation.Q<Label>("inventory").text = _registry.Units.Count + " units · " + _registry.Fields.Count + " fields";
+            rootVisualElement.Q<ObjectField>("preset-picker").SetValueWithoutNotify(preset);
+            VisualElement messages = rootVisualElement.Q("messages");
+            messages.Clear();
+            Messages(messages);
+            VisualElement workspace = rootVisualElement.Q("workspace");
+            workspace.Clear();
+            Workspace(workspace);
             RestoreScroll();
             hasUnsavedChanges = state.Draft.Changes.Count != 0;
             Persist();
@@ -84,11 +99,10 @@ namespace EmpireAtWar.Editor.Balance
             {
                 ToolbarButton button = new ToolbarButton(() => _controller.ShowTab(tab)) { text = tab.ToString(), name = "workflow-" + tab };
                 button.AddToClassList("balance-workflow");
-                button.EnableInClassList("balance-tab-active", state.Tab == tab);
                 tabs.Add(button);
             }
 
-            Label inventory = new Label(_registry.Units.Count + " units · " + _registry.Fields.Count + " fields");
+            Label inventory = new Label { name = "inventory" };
             inventory.AddToClassList("balance-inventory");
             tabs.Add(inventory);
         }
@@ -246,7 +260,7 @@ namespace EmpireAtWar.Editor.Balance
         {
             if (_refreshPending) return;
             _refreshPending = true;
-            rootVisualElement.schedule.Execute(CreateGUI);
+            rootVisualElement.schedule.Execute(Redraw);
         }
 
         private void Run(Action action)

@@ -38,6 +38,10 @@ namespace EmpireAtWar.Editor.Balance
         public static void Register(BalanceRegistration registry)
         {
             ShipAbilityCatalog catalog = BalanceRegistration.One<ShipAbilityCatalog>();
+            var usersByAbility = registry.Units.Where(unit => unit.Fields.ContainsKey("Abilities"))
+                .SelectMany(unit => registry.Fields[unit.Fields["Abilities"]].Read().Split(',')
+                    .Where(id => id.Length != 0).Distinct().Select(id => (Id: id, Unit: unit)))
+                .ToLookup(entry => entry.Id, entry => entry.Unit);
             using (SerializedObject serialized = new SerializedObject(catalog))
             {
                 List<SerializedProperty> definitions = BalanceRegistration.Keyed(serialized, "definitions.keyValue").ToList();
@@ -46,11 +50,11 @@ namespace EmpireAtWar.Editor.Balance
                     int id = entry.FindPropertyRelative("key").intValue;
                     SerializedProperty value = entry.FindPropertyRelative("value");
                     string context = value.FindPropertyRelative("displayName").stringValue;
-                    List<BalanceUnit> users = Users(registry, id);
+                    IEnumerable<BalanceUnit> users = usersByAbility[id.ToString()];
                     string key = "ability/" + id + "/";
                     foreach (string field in new[] { "duration", "recoveryDelay", "range", "aiUse" })
                         registry.Add(catalog, key + field, value.propertyPath + "." + field, BalanceFieldGroup.Abilities, context, BalanceFieldOwner.SharedProfile, true, users,
-                            field == "aiUse" ? typeof(ShipAbilityAiUse) : null);
+                            field == "aiUse" ? typeof(ShipAbilityAiUse) : null, serializedTarget: serialized);
                     SerializedProperty settings = value.FindPropertyRelative("settings");
                     if (settings.managedReferenceValue == null) throw new InvalidOperationException($"Missing settings: {context}");
                     Type settingsType = settings.managedReferenceValue.GetType();
@@ -64,7 +68,7 @@ namespace EmpireAtWar.Editor.Balance
                     string aliasIds = string.Join("+", aliases.Select(other => other.FindPropertyRelative("key").intValue));
                     IEnumerable<string> aliasNames = aliases.Select(other => other.FindPropertyRelative("value.displayName").stringValue);
                     string warning = aliases.Count > 1 ? "Shared settings — " + string.Join(" + ", aliasNames) : "";
-                    List<BalanceUnit> aliasUsers = aliases.SelectMany(other => Users(registry, other.FindPropertyRelative("key").intValue)).Distinct().ToList();
+                    List<BalanceUnit> aliasUsers = aliases.SelectMany(other => usersByAbility[other.FindPropertyRelative("key").intValue.ToString()]).Distinct().ToList();
                     foreach (string field in allowed)
                         RegisterSetting(registry, catalog, settings, "settings/" + aliasIds + "/", field, context, aliasUsers, warning, subtype);
                 }
@@ -72,9 +76,6 @@ namespace EmpireAtWar.Editor.Balance
             foreach (BalanceField field in registry.Fields.Values.Where(field => field.Group == BalanceFieldGroup.Abilities))
                 foreach (BalanceUnit unit in field.Users) unit.Fields[field.Stat] = field.Key;
         }
-
-        private static List<BalanceUnit> Users(BalanceRegistration registry, int id) => registry.Units.Where(unit =>
-            unit.Fields.TryGetValue("Abilities", out string key) && registry.Fields[key].Read().Split(',').Contains(id.ToString())).ToList();
 
         private static void RegisterSetting(BalanceRegistration registry, ShipAbilityCatalog catalog, SerializedProperty settings,
             string key, string name, string context, List<BalanceUnit> users, string alias, string subtype)
@@ -84,7 +85,7 @@ namespace EmpireAtWar.Editor.Balance
             {
                 foreach (string member in new[] { "damageMultiplier", "fireDelayMultiplier", "speedMultiplier", "shieldRegenMultiplier", "damageTakenMultiplier" })
                     registry.Add(catalog, key + name + "/" + member, property.propertyPath + "." + member, BalanceFieldGroup.Abilities, context, BalanceFieldOwner.SharedProfile, true, users,
-                        positive: member == "fireDelayMultiplier", alias: alias, dependency: subtype);
+                        positive: member == "fireDelayMultiplier", alias: alias, dependency: subtype, serializedTarget: settings.serializedObject);
             }
             else if (name == "beam" || name == "projectile")
                 BalanceWeaponAdapter.Profile(registry, catalog, property, key + name + "/", BalanceFieldGroup.Abilities, context, users, alias, subtype);
@@ -93,7 +94,8 @@ namespace EmpireAtWar.Editor.Balance
                     name == "damageType" ? typeof(EmpireAtWar.Components.AttackComponent.DamageType)
                     : name == "targetClasses" ? typeof(EmpireAtWar.Components.Ship.Health.ShipClass) : null,
                     maximum: name == "malfunctionChance" ? 1 : double.PositiveInfinity,
-                    minimum: name == "minimumTargets" ? 1 : 0, positive: name == "radius" || name == "waveSpeed" || name.EndsWith("FireDelayMultiplier"), alias: alias, dependency: subtype);
+                    minimum: name == "minimumTargets" ? 1 : 0, positive: name == "radius" || name == "waveSpeed" || name.EndsWith("FireDelayMultiplier"),
+                    alias: alias, dependency: subtype, serializedTarget: settings.serializedObject);
         }
     }
 }
