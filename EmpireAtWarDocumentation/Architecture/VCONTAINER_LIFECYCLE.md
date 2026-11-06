@@ -20,7 +20,9 @@
 - Initialize, Tick, FixedTick, LateTick → ascending order. Dispose, LateDispose → descending (higher first). Ties → registration order (stable sort).
 - `[LifecycleOrder]` read once per type (static cache); profiler markers cached per type and phase: `<Type.FullName>.Tick()`.
 - `LifecycleTickGate.SetTicking(false)` stops all ticks of one scope (pooled squadrons).
-- Coordinator ignores ticks after `Dispose`.
+- Coordinator ignores ticks after `Dispose`. Run every ordered callback before the late phase, both in reverse order. One failure → rethrow the original. Multiple failures → `AggregateException` in call order.
+- `CleanupFailures.DisposeContainer` resumes teardown after a callback throws. VContainer 1.19.0 pops each disposable before invoking it; verify that behavior on upgrade. Release owned assets after the container drains.
+- Failed entity or planet creation → dispose and destroy the new scope. Failed player bootstrap → release hosted levels, clear factory lookup, then release player roots in reverse order.
 
 ## Important Values
 

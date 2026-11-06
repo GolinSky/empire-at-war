@@ -441,6 +441,9 @@
 
 ### Refactoring
 
+- [x] **Harden DI scope teardown and build rollback (VContainer)** → [[Done/Refactoring/DI_Container_Failure_Handling|DI Container Failure Handling]]
+  - Completed 2026-11-06. Ordered cleanup, child rollback, shared AI combat data and entity decoupling compiled. EditMode verification is queued.
+
 - [x] **Auto power refactor (data eligibility, remove static rules, dedupe snapshot/monitor)** → [[Done/Refactoring/Auto_Power_Refactor|Auto Power Refactor]]
   - Completed 2026-11-02, `acceptance: pending-user`. All 5 phases; compiles; EditMode tests not run (`Abilities`, `Ships`, `Core`, `EnemyAi`, `Balance`).
 

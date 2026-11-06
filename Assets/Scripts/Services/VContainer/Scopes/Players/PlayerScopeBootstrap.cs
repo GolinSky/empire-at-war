@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Game;
@@ -34,6 +35,24 @@ namespace EmpireAtWar.Services.VContainer
         }
 
         public void Initialize()
+        {
+            if (_players.Count != 0)
+                throw new InvalidOperationException("Dispose the existing player scopes before initializing them again.");
+
+            try
+            {
+                BuildPlayers();
+            }
+            catch (Exception exception)
+            {
+                var failures = new CleanupFailures();
+                failures.Add(exception);
+                ReleasePlayers(failures);
+                failures.ThrowIfAny();
+            }
+        }
+
+        private void BuildPlayers()
         {
             foreach (PlayerSlot slot in _roster.Players)
             {
@@ -77,22 +96,19 @@ namespace EmpireAtWar.Services.VContainer
 
         public void Dispose()
         {
-            foreach (HostedFactionLevel level in _hostedLevels) level.Dispose();
+            var failures = new CleanupFailures();
+            ReleasePlayers(failures);
+            failures.ThrowIfAny();
+        }
+
+        private void ReleasePlayers(CleanupFailures failures)
+        {
+            for (int index = _hostedLevels.Count - 1; index >= 0; index--)
+                failures.Attempt(_hostedLevels[index].Dispose);
             _hostedLevels.Clear();
             _factoryLookup.Clear();
             for (int index = _players.Count - 1; index >= 0; index--)
-            {
-                AssetLifetimeScope player = _players[index];
-                try
-                {
-                    player.DisposeCore();
-                }
-                finally
-                {
-                    if (Application.isPlaying) Object.Destroy(player.gameObject);
-                    else Object.DestroyImmediate(player.gameObject);
-                }
-            }
+                failures.DisposeScope(_players[index]);
             _players.Clear();
         }
     }

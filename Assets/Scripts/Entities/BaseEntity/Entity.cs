@@ -4,8 +4,6 @@ using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Lifecycle;
-using VContainer;
-using VContainer.Internal;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,13 +32,6 @@ namespace EmpireAtWar.Entities.BaseEntity
 
         public IHealthModelObserver HealthModel { get; }
         public PlayerId Owner { get; }
-
-        [Inject]
-        public Entity(IHealthModelObserver healthModel, IEntityLocator entityLocator,
-            ContainerLocal<IReadOnlyList<IEntityFacade>> facades, PlayerId owner, long id,
-            ContainerLocal<IReadOnlyList<IPooledEntityEvents>> poolEvents,
-            ContainerLocal<IReadOnlyList<IHangarLaunchEvents>> hangarEvents)
-            : this(healthModel, entityLocator, facades.Value, owner, id, poolEvents.Value, hangarEvents.Value) { }
 
         public Entity(
             IHealthModelObserver healthModel,

@@ -14,7 +14,15 @@ namespace EmpireAtWar.Services.Stations
             _host = host;
             _ally = ally;
             _host.OnLevelUpgraded += UpdateLevel;
-            UpdateLevel(_host.CurrentLevel);
+            try
+            {
+                UpdateLevel(_host.CurrentLevel);
+            }
+            catch
+            {
+                Dispose();
+                throw;
+            }
         }
 
         public void Dispose() => _host.OnLevelUpgraded -= UpdateLevel;

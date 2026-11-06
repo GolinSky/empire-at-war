@@ -36,8 +36,6 @@ namespace EmpireAtWar.Services.VContainer
             if (player.IsHosted)
                 builder.Register<HostedSquadronLauncher>(Lifetime.Singleton).As<ISquadronLauncher>();
             builder.Register<EnemyStrategicDecisionModel>(Lifetime.Singleton);
-            builder.Register<UnitCombatProfileCatalog>(Lifetime.Singleton);
-            builder.Register<ForceCompositionBuilder>(Lifetime.Singleton);
             builder.Register<HostileIntelGatherer>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EnemyStrategicContextBuilder>(Lifetime.Singleton);
             builder.Register<EnemyStationPressureTracker>(Lifetime.Singleton);

@@ -44,6 +44,20 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void HostedLevel_InitialSyncFailureUnsubscribesFromHost()
+        {
+            var host = new PlayerFactionModel(null, null) { CurrentLevel = 5 };
+            var ally = new EnemyFactionModel(null, null);
+            var failure = new InvalidOperationException("Initial ally level update failed");
+            ally.OnLevelUpgraded += _ => throw failure;
+            Assert.That(Assert.Throws<InvalidOperationException>(() => new HostedFactionLevel(host, ally)),
+                Is.SameAs(failure));
+
+            host.CurrentLevel = 4;
+            Assert.That(ally.CurrentLevel, Is.EqualTo(5));
+        }
+
+        [Test]
         public void HostedLevel_CopiesInitialLevelAndChangesUntilDisposed()
         {
             PlayerFactionModel host = new PlayerFactionModel(null, null) { CurrentLevel = 5 };

@@ -19,6 +19,7 @@ using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Entities.UnitActions.Controller;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Entities.UnitOrderFeedback;
+using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -234,9 +235,14 @@ namespace EmpireAtWar.Services.VContainer
 
         protected override void OnDestroy()
         {
-            base.OnDestroy();
-            if (Application.isPlaying) Object.Destroy(_miniMapData);
-            else Object.DestroyImmediate(_miniMapData);
+            var failures = new CleanupFailures();
+            failures.Attempt(base.OnDestroy);
+            failures.Attempt(() =>
+            {
+                if (Application.isPlaying) Object.Destroy(_miniMapData);
+                else Object.DestroyImmediate(_miniMapData);
+            });
+            failures.ThrowIfAny();
         }
     }
 }

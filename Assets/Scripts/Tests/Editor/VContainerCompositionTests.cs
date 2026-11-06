@@ -6,6 +6,8 @@ using EmpireAtWar.Extensions;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Repository;
+using EmpireAtWar.Services.VContainer;
 using NUnit.Framework;
 using UnityEngine;
 using VContainer;
@@ -66,6 +68,53 @@ namespace EmpireAtWar.Tests.Editor
                 "release:combat", "release:health", "release:pose", "release:flight", "release:sfx",
                 "release:navigation"
             }));
+        }
+
+        [Test]
+        public void AssetScope_ReleasesOwnedAssetsAfterContainerDisposersThrow()
+        {
+            using var settings = new PopulatedVContainerSettings();
+            var root = new GameObject("Asset teardown fixture");
+            root.SetActive(false);
+            var scope = root.AddComponent<AssetProbeScope>();
+            var first = new InvalidOperationException("first");
+            var second = new InvalidOperationException("second");
+            try
+            {
+                using (LifetimeScope.EnqueueParent(null))
+                    scope.Build();
+                scope.Container.Resolve<RawDisposable>("first").Failure = first;
+                scope.Container.Resolve<RawDisposable>("second").Failure = second;
+
+                var failure = Assert.Throws<AggregateException>(scope.Release);
+                Assert.That(failure.InnerExceptions, Is.EqualTo(new[] { second, first }));
+                Assert.That(scope.Container, Is.Null);
+                Assert.Throws<ObjectDisposedException>(() => scope.Assets.Load<GameObject>("released"));
+            }
+            finally { Object.DestroyImmediate(root); }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Lifecycle_FinishesBothCleanupPhasesBeforeReportingFailures(bool failLate)
+        {
+            var calls = new List<string>();
+            var ordered = new InvalidOperationException("ordered");
+            var late = new InvalidOperationException("late");
+            var callbacks = new[]
+            {
+                new RecordingCallbacks(calls, "first") { LateFailure = failLate ? late : null },
+                new RecordingCallbacks(calls, "last") { DisposeFailure = ordered }
+            };
+            var coordinator = CreateCoordinator(callbacks, new LifecycleTickGate());
+
+            if (failLate)
+                Assert.That(Assert.Throws<AggregateException>(coordinator.Dispose).InnerExceptions,
+                    Is.EqualTo(new[] { ordered, late }));
+            else
+                Assert.That(Assert.Throws<InvalidOperationException>(coordinator.Dispose), Is.SameAs(ordered));
+            coordinator.Dispose();
+            Assert.That(calls, Is.EqualTo(new[] { "dispose:last", "dispose:first", "release:last", "release:first" }));
         }
 
         [Test]
@@ -244,8 +293,18 @@ namespace EmpireAtWar.Tests.Editor
             public void Tick() => _calls.Add("tick:" + _name);
             public void FixedTick() => _calls.Add("fixed:" + _name);
             public void LateTick() => _calls.Add("late:" + _name);
-            public void Dispose() => _calls.Add("dispose:" + _name);
-            public void LateDispose() => _calls.Add("release:" + _name);
+            public Exception DisposeFailure { get; set; }
+            public Exception LateFailure { get; set; }
+            public void Dispose()
+            {
+                _calls.Add("dispose:" + _name);
+                if (DisposeFailure != null) throw DisposeFailure;
+            }
+            public void LateDispose()
+            {
+                _calls.Add("release:" + _name);
+                if (LateFailure != null) throw LateFailure;
+            }
         }
 
         [LifecycleOrder(Initialize = LifecycleOrders.HEALTH_INITIALIZE)]
@@ -277,6 +336,25 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class ProbeScope : LifetimeScope
         { protected override void Awake() { } }
+
+        private sealed class RawDisposable : IDisposable
+        {
+            public Exception Failure { get; set; }
+            public void Dispose() => throw Failure;
+        }
+
+        private sealed class AssetProbeScope : AssetLifetimeScope
+        {
+            protected override void Awake() { }
+            protected override void Configure(IContainerBuilder builder)
+            {
+                OwnAssets(new CachedAssetService(null));
+                builder.Register(_ => new RawDisposable(), Lifetime.Singleton).Keyed("first");
+                builder.Register(_ => new RawDisposable(), Lifetime.Singleton).Keyed("second");
+            }
+
+            public void Release() => base.OnDestroy();
+        }
 
         private sealed class ProbeView : MonoBehaviour, IInitializable, ITickable, ILateDisposable
         {

@@ -39,6 +39,7 @@ using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.FogOfWar;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Saves;
@@ -157,6 +158,39 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(wave.Container.TryGetRegistration(typeof(FactionResearchModel), out _), Is.False);
             Assert.That(wave.Container.TryGetRegistration(typeof(EmpireAtWar.Models.Economy.EconomyModel), out _), Is.False);
             Assert.That(_battle.Container.Resolve<IBattleOutcomeRule>(), Is.TypeOf<SurvivalOutcomeRule>());
+        }
+
+        [Test]
+        public void PlayerBootstrap_SecondPlayerBuildFailureRollsBackBothRootsAndFactoryLookup()
+        {
+            BuildSaveProject();
+            var failure = new InvalidOperationException("Forced player build failure");
+            using (LifetimeScope.Enqueue(builder =>
+            {
+                if (!(builder.ApplicationOrigin is AiPlayerScope)) return;
+                LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+                Assert.That(human.gameObject.activeSelf, Is.True);
+                throw failure;
+            }))
+                Assert.That(Assert.Throws<InvalidOperationException>(() => BuildSaveBattle()), Is.SameAs(failure));
+
+            Assert.That(_battle.GetComponentsInChildren<LocalPlayerScope>(true), Is.Empty);
+            Assert.That(_battle.GetComponentsInChildren<AiPlayerScope>(true), Is.Empty);
+            PlayerFactoryLookup lookup = _battle.Container.Resolve<PlayerFactoryLookup>();
+            foreach (BattlePlayer player in _project.GameData.Battle.Players)
+                Assert.Throws<KeyNotFoundException>(() => lookup.Spawn(player.Slot.Id, default, Vector3.zero));
+        }
+
+        [Test, Category("EnemyAi")]
+        public void AiPlayer_ResolvesBattleCombatProfilesAndForceComposition()
+        {
+            BuildSaveProject();
+            BuildSaveBattle();
+            AiPlayerScope ai = _battle.GetComponentsInChildren<AiPlayerScope>(true).Single();
+            Assert.That(ai.Container.Resolve<UnitCombatProfileCatalog>(),
+                Is.SameAs(_battle.Container.Resolve<UnitCombatProfileCatalog>()));
+            Assert.That(ai.Container.Resolve<ForceCompositionBuilder>(),
+                Is.SameAs(_battle.Container.Resolve<ForceCompositionBuilder>()));
         }
 
         [Test]

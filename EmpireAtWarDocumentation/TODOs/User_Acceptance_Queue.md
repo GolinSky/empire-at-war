@@ -114,6 +114,8 @@ created: "2026-10-29\r"
 
 ## Core Refactors
 
+- [ ] [[Done/Refactoring/DI_Container_Failure_Handling]] → Run the DI failure-handling regression cases in `Core`, `Map`, `EnemyAi`, and `Economy` when test execution is authorized.
+
 - [[Done/Refactoring/Auto_Power_Refactor]]
   - [ ] Run EditMode `Abilities`, `Ships`, `Core`, `EnemyAi`, `Balance`; skirmish check that auto power still fires shields/weapons/laser beams as before.
 

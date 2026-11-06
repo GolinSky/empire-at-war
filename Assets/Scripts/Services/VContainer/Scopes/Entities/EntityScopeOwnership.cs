@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using EmpireAtWar.Lifecycle;
-using UnityEngine;
 
 namespace EmpireAtWar.Services.VContainer
 {
@@ -19,19 +18,10 @@ namespace EmpireAtWar.Services.VContainer
         {
             EntityLifetimeScope[] scopes = _scopes.ToArray();
             _scopes.Clear();
+            var failures = new CleanupFailures();
             for (int index = scopes.Length - 1; index >= 0; index--)
-            {
-                EntityLifetimeScope scope = scopes[index];
-                try
-                {
-                    scope.DisposeCore();
-                }
-                finally
-                {
-                    if (Application.isPlaying) Object.Destroy(scope.gameObject);
-                    else Object.DestroyImmediate(scope.gameObject);
-                }
-            }
+                failures.DisposeScope(scopes[index]);
+            failures.ThrowIfAny();
         }
     }
 }

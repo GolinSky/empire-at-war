@@ -25,7 +25,6 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using EmpireAtWar.Lifecycle;
 using VContainer;
-using LifetimeScope = VContainer.Unity.LifetimeScope;
 using VContainer.Internal;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
@@ -70,7 +69,7 @@ namespace EmpireAtWar.Ship
         private ShipOrderRunner _orders;
         private long _entityId;
         private EntityComponentLifecycle _componentLifecycle;
-        private LifetimeScope _scope;
+        private IEntityScopeRelease _scopeRelease;
 
         private PlayerId _owner;
 
@@ -108,7 +107,7 @@ namespace EmpireAtWar.Ship
             long entityId,
             IShipAbilityFacade abilityFacade,
             ContainerLocal<IReadOnlyList<IMonoComponent>> monoComponents,
-            LifetimeScope scope,
+            IEntityScopeRelease scopeRelease,
             PlayerId owner, IShipService shipService, IShipData data, ShipType shipType)
         {
             _healthComponent = healthComponent;
@@ -128,7 +127,7 @@ namespace EmpireAtWar.Ship
             _layerService = layerService;
             _unitWreckService = unitWreckService;
             _unitExplosionService = unitExplosionService;
-            _scope = scope;
+            _scopeRelease = scopeRelease;
             ShipService = shipService;
             Data = data;
             ShipType = shipType;
@@ -231,7 +230,7 @@ namespace EmpireAtWar.Ship
                     _unitWreckService.Spawn(Data.Wreck, transform, _owner, Data.DestroyDelay);
                 }
 
-                Destroy(_scope.gameObject, Data.DestroyDelay);
+                _scopeRelease.Destroy(Data.DestroyDelay);
             }
         }
 

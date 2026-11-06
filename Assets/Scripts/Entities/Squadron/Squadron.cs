@@ -30,7 +30,6 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using EmpireAtWar.Lifecycle;
 using VContainer;
-using LifetimeScope = VContainer.Unity.LifetimeScope;
 using VContainer.Internal;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
@@ -69,7 +68,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private SquadronTargetSelector _targetSelector;
         private SquadronOrderScheduler _orderScheduler;
         private UnitOrderSettings _orderSettings;
-        private LifetimeScope _scope;
+        private IEntityPoolActivation _poolActivation;
         private LifecycleTickGate _tickGate;
         private FighterPoseBatch _poseBatch;
         private ShipSfxHandle _audioHandle;
@@ -126,7 +125,7 @@ namespace EmpireAtWar.Entities.Squadrons
             IWeaponComponent weapon, IAttackDataFactory attackDataFactory, ICameraService cameraService,
             ILayerService layerService, UnitOrderModel orders,
             SquadronPilot pilot, SquadronTargetSelector targetSelector, UnitOrderSettings orderSettings,
-            LifetimeScope scope, ShipSfxHandle audioHandle, ContainerLocal<IReadOnlyList<IMonoComponent>> monoComponents,
+            IEntityPoolActivation poolActivation, ShipSfxHandle audioHandle, ContainerLocal<IReadOnlyList<IMonoComponent>> monoComponents,
             IWeaponFireEvents weaponFireEvents, IShipSfxService shipSfxService, ShipSfxData sfxData, SquadronType squadronType,
             SFoilsModel sFoils, ContainerLocal<IReadOnlyList<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView>> sFoilsViews,
             ShipAbilityService abilities, IShipAbilityFacade abilityCaster, ISelectionModelObserver selectionModel,
@@ -161,7 +160,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _respawnables = respawnables.Value;
             _despawnables = despawnables.Value;
             _orderSettings = orderSettings;
-            _scope = scope;
+            _poolActivation = poolActivation;
             _tickGate = tickGate;
             _poseBatch = poseBatch;
             Data = data;
@@ -202,14 +201,14 @@ namespace EmpireAtWar.Entities.Squadrons
             _tickGate.SetTicking(false);
             Despawned?.Invoke();
             foreach (IDespawnable part in _despawnables) part.Despawn();
-            _scope.gameObject.SetActive(false);
+            _poolActivation.SetActive(false);
         }
 
         /// <summary>Brings a despawned squadron back as a fresh one; listeners of the previous life are dropped.</summary>
         public void Respawn(Vector3 position, Quaternion rotation)
         {
             _poseBatch.CompletePlacement();
-            _scope.gameObject.SetActive(true);
+            _poolActivation.SetActive(true);
             // Health first: restoring the fighters' views must precede the formation and trail reset.
             _health.Respawn();
             _flight.Respawn(position, rotation);

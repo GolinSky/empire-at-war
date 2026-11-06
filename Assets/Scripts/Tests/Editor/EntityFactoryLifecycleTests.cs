@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Players;
@@ -8,6 +10,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Factory;
 using EmpireAtWar.Services.VContainer;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using VContainer;
 using VContainer.Internal;
@@ -97,11 +100,80 @@ namespace EmpireAtWar.Tests.Editor
             TestScope parent = CreateParent();
             ProbeEntity prefab = CreatePrefab();
             ProbeFactory factory = new ProbeFactory(parent.Assets, parent, parent.Ownership);
-            Assert.Throws<InvalidOperationException>(() => factory.CreateInvalid(prefab));
+            Assert.Throws<InvalidOperationException>(() => factory.CreateWithInstall(prefab,
+                _ => throw new InvalidOperationException("Fixture installation failed.")));
             Assert.That(parent.transform.childCount, Is.Zero);
             Assert.That(parent.Ownership.Count, Is.Zero);
             Assert.That(prefab.ConstructCount, Is.Zero);
             Assert.That(prefab.gameObject.activeSelf, Is.False);
+        }
+
+        [Test]
+        public void Create_FailedBuildDrainsRawDisposablesAndPreservesBothFailures()
+        {
+            TestScope parent = CreateParent();
+            ProbeEntity prefab = CreatePrefab();
+            var factory = new ProbeFactory(parent.Assets, parent, parent.Ownership);
+            var buildFailure = new InvalidOperationException("Build failed.");
+            var cleanupFailure = new InvalidOperationException("Cleanup failed.");
+            var earlier = new RawDisposableProbe();
+            var later = new RawDisposableProbe { Failure = cleanupFailure };
+
+            AggregateException failure = Assert.Throws<AggregateException>(() =>
+                factory.CreateWithInstall(prefab, builder =>
+                {
+                    builder.Register(_ => earlier, Lifetime.Singleton).Keyed("earlier");
+                    builder.Register(_ => later, Lifetime.Singleton).Keyed("later");
+                    builder.RegisterBuildCallback(resolver =>
+                    {
+                        resolver.Resolve<RawDisposableProbe>("earlier");
+                        resolver.Resolve<RawDisposableProbe>("later");
+                        throw buildFailure;
+                    });
+                }));
+
+            CollectionAssert.AreEqual(new[] { buildFailure, cleanupFailure }, failure.InnerExceptions);
+            Assert.That(earlier.DisposeCount, Is.EqualTo(1));
+            Assert.That(later.DisposeCount, Is.EqualTo(1));
+            Assert.That(parent.transform.childCount, Is.Zero);
+            Assert.That(parent.Ownership.Count, Is.Zero);
+        }
+
+        [Test, Category("Map")]
+        public void CreatePlanet_FailedBuildRemovesChildAndLeavesFactoryDisposable()
+        {
+            TestScope parent = CreateParent();
+            var settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(
+                "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset");
+            var factory = new PlanetFactory(parent, settings);
+
+            // The test scope's asset service rejects the PlanetData load during Configure.
+            Assert.Throws<NotSupportedException>(() =>
+                factory.Create(PlanetType.Coruscant, MapSize.Small, Vector3.zero));
+            Assert.That(parent.transform.childCount, Is.Zero);
+            Assert.DoesNotThrow(factory.Dispose);
+        }
+
+        [Test]
+        public void DisposeOwnership_ThrowingChildStillReleasesAndDestroysEarlierChild()
+        {
+            TestScope parent = CreateParent();
+            ProbeEntity prefab = CreatePrefab();
+            var factory = new ProbeFactory(parent.Assets, parent, parent.Ownership);
+            ProbeEntity first = factory.Create(prefab, TestPlayers.Human, 31, Vector3.zero);
+            ProbeEntity last = factory.Create(prefab, TestPlayers.Human, 32, Vector3.zero);
+            LifetimeScope firstScope = first.Scope;
+            LifetimeScope lastScope = last.Scope;
+            var failure = new InvalidOperationException("Child teardown failed.");
+            last.DisposeFailure = failure;
+
+            Assert.That(Assert.Throws<InvalidOperationException>(parent.Ownership.Dispose), Is.SameAs(failure));
+            Assert.That(first.DisposeCount, Is.EqualTo(1));
+            Assert.That(last.DisposeCount, Is.EqualTo(1));
+            Assert.That(firstScope == null && lastScope == null, Is.True);
+            Assert.That(parent.transform.childCount, Is.Zero);
+            Assert.That(parent.Ownership.Count, Is.Zero);
+            Assert.DoesNotThrow(parent.Ownership.Dispose);
         }
 
         [Test]
@@ -169,9 +241,20 @@ namespace EmpireAtWar.Tests.Editor
                     EntityFeatureBindings.RegisterComponent(builder, view.Owned);
                 });
 
-            public ProbeEntity CreateInvalid(ProbeEntity prefab) =>
-                Spawn(prefab, Vector3.zero, Quaternion.identity,
-                    (builder, view) => throw new InvalidOperationException("Fixture installation failed."));
+            public ProbeEntity CreateWithInstall(ProbeEntity prefab, Action<IContainerBuilder> install) =>
+                Spawn(prefab, Vector3.zero, Quaternion.identity, (builder, view) => install(builder));
+        }
+
+        private sealed class RawDisposableProbe : IDisposable
+        {
+            public int DisposeCount { get; private set; }
+            public Exception Failure { get; set; }
+
+            public void Dispose()
+            {
+                DisposeCount++;
+                if (Failure != null) throw Failure;
+            }
         }
 
         private sealed class TestScope : AssetLifetimeScope
@@ -206,6 +289,7 @@ namespace EmpireAtWar.Tests.Editor
             public int InitializeCount { get; private set; }
             public int TickCount { get; private set; }
             public int DisposeCount { get; private set; }
+            public Exception DisposeFailure { get; set; }
             public bool InitializedBeforeActivation { get; private set; }
             public long EntityId { get; private set; }
             public PlayerId Owner { get; private set; }
@@ -241,6 +325,7 @@ namespace EmpireAtWar.Tests.Editor
                     "The entity must release before its parent's resources are disposed.");
                 DisposeCount++;
                 _components.Release();
+                if (DisposeFailure != null) throw DisposeFailure;
             }
         }
 

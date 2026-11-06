@@ -136,11 +136,16 @@ namespace EmpireAtWar.Services.VContainer
 
         protected override void OnDestroy()
         {
-            base.OnDestroy();
-            if (BattlePreloader != null) BattlePreloader.Dispose();
-            if (_assetLoader != null) _assetLoader.Dispose();
-            if (Application.isPlaying) Object.Destroy(GameData);
-            else Object.DestroyImmediate(GameData);
+            var failures = new CleanupFailures();
+            failures.Attempt(base.OnDestroy);
+            if (BattlePreloader != null) failures.Attempt(BattlePreloader.Dispose);
+            if (_assetLoader != null) failures.Attempt(_assetLoader.Dispose);
+            failures.Attempt(() =>
+            {
+                if (Application.isPlaying) Object.Destroy(GameData);
+                else Object.DestroyImmediate(GameData);
+            });
+            failures.ThrowIfAny();
         }
     }
 }

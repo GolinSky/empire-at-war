@@ -38,9 +38,10 @@ namespace EmpireAtWar.Services.VContainer
 
         protected override void OnDestroy()
         {
-            base.OnDestroy();
-            // Released after container disposal, which destroys this scope's child scopes, pools and instances.
-            if (_ownedAssets != null) _ownedAssets.Dispose();
+            var failures = new CleanupFailures();
+            failures.DisposeContainer(this);
+            if (_ownedAssets != null) failures.Attempt(_ownedAssets.Dispose);
+            failures.ThrowIfAny();
         }
     }
 }

@@ -107,10 +107,12 @@ namespace EmpireAtWar.Lifecycle
             if (_isDisposed) return;
             _isDisposed = true;
 
+            var failures = new CleanupFailures();
             for (int i = _disposables.Length - 1; i >= 0; i--)
-                _disposables[i].Dispose();
+                failures.Attempt(_disposables[i].Dispose);
             for (int i = _lateDisposables.Length - 1; i >= 0; i--)
-                _lateDisposables[i].LateDispose();
+                failures.Attempt(_lateDisposables[i].LateDispose);
+            failures.ThrowIfAny();
         }
 
         private static ProfilerMarker[] Markers<T>(T[] callbacks, string method)

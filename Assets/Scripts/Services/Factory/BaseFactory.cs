@@ -47,25 +47,13 @@ namespace EmpireAtWar.Services.Factory
             }
             catch (Exception spawnException)
             {
-                try
-                {
-                    if (child != null)
-                    {
-                        try
-                        {
-                            child.DisposeCore();
-                        }
-                        finally
-                        {
-                            _ownership.Unregister(child);
-                            DestroyObject(child.gameObject);
-                        }
-                    }
-                }
-                catch (Exception cleanupException)
-                {
-                    throw new AggregateException(spawnException, cleanupException);
-                }
+                if (child == null) throw;
+                var failures = new CleanupFailures();
+                failures.Add(spawnException);
+                failures.DisposeContainer(child);
+                _ownership.Unregister(child);
+                failures.Attempt(() => DestroyObject(child.gameObject));
+                failures.ThrowIfAny();
                 throw;
             }
             finally

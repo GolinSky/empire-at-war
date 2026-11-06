@@ -1,6 +1,9 @@
+using EmpireAtWar.Entities.BaseEntity;
+using VContainer;
+
 namespace EmpireAtWar.Services.VContainer
 {
-    public sealed class EntityLifetimeScope : AssetLifetimeScope
+    public sealed class EntityLifetimeScope : AssetLifetimeScope, IEntityScopeRelease, IEntityPoolActivation
     {
         private EntityScopeOwnership _ownership;
         private bool _isOwned;
@@ -8,8 +11,13 @@ namespace EmpireAtWar.Services.VContainer
         protected override void Configure(global::VContainer.IContainerBuilder builder)
         {
             Assets = ((AssetLifetimeScope)Parent).Assets;
+            builder.RegisterInstance<IEntityScopeRelease, IEntityPoolActivation>(this);
             // BaseFactory registers lifecycle after the entity's component injection callbacks.
         }
+
+        void IEntityScopeRelease.Destroy(float delay) => Destroy(gameObject, delay);
+
+        void IEntityPoolActivation.SetActive(bool active) => gameObject.SetActive(active);
 
         public void SetOwnership(EntityScopeOwnership ownership)
         {
