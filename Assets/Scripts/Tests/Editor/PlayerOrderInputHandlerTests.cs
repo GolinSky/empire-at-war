@@ -14,6 +14,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Layer;
@@ -61,7 +62,8 @@ namespace EmpireAtWar.Tests.Editor
             _handler = new PlayerOrderInputHandler(gestures: _input, orderInput: _input, selectionService: _selection, query: _query,
                 cameraService: _camera, layerService: null, abilities: _abilities, targeting: _targeting, unitOrderService: _orders, superWeapons: new SuperWeaponTargetingModel(),
                 hardPointHover: new HardPointOverlayModel(),
-                localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), battleAreas: _areas);
+                localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), battleAreas: _areas,
+                siteDirectories: Array.Empty<ICaptureSiteDirectory>());
             _handler.Initialize();
         }
 

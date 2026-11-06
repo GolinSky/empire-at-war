@@ -6,6 +6,8 @@ using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.OwnedAreas;
+using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
@@ -26,6 +28,10 @@ namespace EmpireAtWar.Services.UnitOrders
     public sealed class PlayerOrderInputHandler : IInitializable, ILateDisposable,
         IPlayerOrderInputHandler
     {
+        private const float SATELLITE_TAP_PADDING_PIXELS = 4f;
+        private static readonly Vector2[] SatelliteTapOffsets =
+            { Vector2.zero, Vector2.left, Vector2.right, Vector2.up, Vector2.down };
+        private readonly IReadOnlyList<ICaptureSiteDirectory> _siteDirectories;
         private readonly IPointerGestures _gestures;
         private readonly IUnitOrderInput _orderInput;
         private readonly ILocalPlayer _localPlayer;
@@ -47,8 +53,10 @@ namespace EmpireAtWar.Services.UnitOrders
             IShipAbilityTargeting abilities, IUnitOrderService unitOrderService,
             IHardPointHoverObserver hardPointHover, ILocalPlayer localPlayer,
             UnitActionTargetingModel targeting,
-            SuperWeaponTargetingModel superWeapons, IBattleAreaService battleAreas)
+            SuperWeaponTargetingModel superWeapons, IBattleAreaService battleAreas,
+            IReadOnlyList<ICaptureSiteDirectory> siteDirectories)
         {
+            _siteDirectories = siteDirectories;
             _localPlayer = localPlayer;
             _gestures = gestures;
             _orderInput = orderInput;
@@ -176,12 +184,25 @@ namespace EmpireAtWar.Services.UnitOrders
             }
             // Friendly hulls can cover a site without blocking commands to its center.
             if (!hasHardPoint && !IsEnemy(target))
+            {
+                foreach (ICaptureSiteDirectory directory in _siteDirectories)
+                {
+                    foreach (Vector2 offset in SatelliteTapOffsets)
+                    {
+                        Ray ray = _cameraService.SceneCamera.ScreenPointToRay(screen + offset * SATELLITE_TAP_PADDING_PIXELS);
+                        ICaptureSite site = CaptureSitePointerQuery.Find(directory.Sites, ray, CaptureSiteKind.Satellite);
+                        if (site == null) continue;
+                        TryIssueMove(site.Center);
+                        return;
+                    }
+                }
                 foreach (OwnedCircle area in _battleAreas.Get(BattleAreaLayer.OrderSnap))
                     if (area.Contains(_cameraService.GetWorldPoint(screen, area.Transform.position), 0f))
                     {
                         TryIssueMove(area.Transform.position);
                         return;
                     }
+            }
             bool isFriendlyShip = hasUnit && !hasHardPoint && _localPlayer.IsFriendly(target.Owner) &&
                 hit.Command.SelectionType == SelectionType.Ship;
             if (pending != null)

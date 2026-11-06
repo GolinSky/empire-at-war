@@ -30,6 +30,7 @@ namespace EmpireAtWar.Services.CaptureSites
         ICaptureSitePresence, ICaptureSiteConstruction, ICaptureSiteSaveState, IInitializable, ITickable,
         ILateDisposable, IUiCancelHandler, IObserver<BattleMap>, ICaptureSiteBuildSelection
     {
+        private const float SATELLITE_ORDER_RADIUS = 2f;
         private static readonly ProfilerMarker CaptureMarker = new ProfilerMarker("Battle.Capture.Site.Model");
         private static readonly ProfilerMarker RenderMarker = new ProfilerMarker("Battle.Capture.Site.Render");
         private static readonly ProfilerMarker VisibilityMarker = new ProfilerMarker("Battle.Capture.Site.Visibility");
@@ -121,7 +122,8 @@ namespace EmpireAtWar.Services.CaptureSites
                 Transform source = view.transform;
                 _areaSources.Add(source);
                 _areaWriter.Register(BattleAreaLayer.StructureExclusion, PlayerId.None, source, site.Radius);
-                _areaWriter.Register(BattleAreaLayer.OrderSnap, PlayerId.None, source, site.Radius);
+                float orderRadius = view.Kind == CaptureSiteKind.Satellite ? SATELLITE_ORDER_RADIUS : site.Radius;
+                _areaWriter.Register(BattleAreaLayer.OrderSnap, PlayerId.None, source, orderRadius);
                 site.ConstructionCompleted += HandleConstructionCompleted;
                 Vector3 center = default;
                 float radius = 0f;
