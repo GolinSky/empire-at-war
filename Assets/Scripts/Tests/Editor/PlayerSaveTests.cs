@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.SuperWeapons;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Players;
@@ -73,7 +74,7 @@ namespace EmpireAtWar.Tests.Editor
             });
 
             Assert.That(faction.QueuedItems.Select(item => item.RemainingBuildTime), Is.EqualTo(new[] { 12f, 5f }));
-            Assert.That(faction.IsHeroReserved(ShipType.HomeOne), Is.True);
+            Assert.That(faction.IsHeroReserved(UnitTypeId.Ship(ShipType.HomeOne)), Is.True);
             Assert.That(faction.CanQueueUnit(mine), Is.False, "The queued facility holds the only structure slot.");
         }
 

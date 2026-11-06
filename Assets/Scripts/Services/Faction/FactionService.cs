@@ -133,7 +133,7 @@ namespace EmpireAtWar.Services.Factions
                 (_productionAccess.ProductionHost != _owner.Id || unitRequest is LevelUnitRequest ||
                     unitRequest is SuperWeaponUnitRequest))
             {
-                if (PlayerFactionModel.IsHeroRequest(unitRequest, out ShipType hero))
+                if (PlayerFactionModel.IsHeroRequest(unitRequest, out UnitTypeId hero))
                     _model.SetHeroReserved(hero, false);
                 if (unitRequest is MiningFacilityUnitRequest ||
                     unitRequest is DefendPlatformUnitRequest)
@@ -191,23 +191,22 @@ namespace EmpireAtWar.Services.Factions
             PurchaseAccepted?.Invoke(unitRequest);
         }
 
-        private bool IsOwnedHero(IEntity entity, out ShipType hero)
+        private bool IsOwnedHero(IEntity entity, out UnitTypeId hero)
         {
             hero = default;
-            if (entity.Owner != _owner.Id || !entity.TryGetFacade(out IUnitTypeFacade type) ||
-                !type.UnitTypeId.IsShip) return false;
-            hero = type.UnitTypeId.ShipType;
-            return _model.IsHeroShip(hero);
+            if (entity.Owner != _owner.Id || !entity.TryGetFacade(out IUnitTypeFacade type)) return false;
+            hero = type.UnitTypeId;
+            return _model.IsHeroUnit(hero);
         }
 
         private void HandleEntityAdded(IEntity entity)
         {
-            if (IsOwnedHero(entity, out ShipType hero)) _model.SetHeroReserved(hero, true);
+            if (IsOwnedHero(entity, out UnitTypeId hero)) _model.SetHeroReserved(hero, true);
         }
 
         private void HandleEntityRemoved(IEntity entity)
         {
-            if (IsOwnedHero(entity, out ShipType hero) && entity.HealthModel.IsDestroyed)
+            if (IsOwnedHero(entity, out UnitTypeId hero) && entity.HealthModel.IsDestroyed)
                 _model.SetHeroReserved(hero, false);
         }
 

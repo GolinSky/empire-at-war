@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Mvc;
 
@@ -13,7 +14,7 @@ namespace EmpireAtWar.Models.Factions
         event Action<SelectionType> OnSelectionTypeChanged;
 
         SelectionType SelectionType { get; }
-        bool IsHeroReserved(ShipType shipType);
+        bool IsHeroReserved(UnitTypeId unitType);
         bool IsUnitLimitReached(UnitRequest unitRequest);
         FactionType FactionType { get; }
 
@@ -32,8 +33,8 @@ namespace EmpireAtWar.Models.Factions
         private readonly Dictionary<(Type, string), int> _structureCounts = new();
 
         private SelectionType _selectionType;
-        // Hero ships queued, in reserve or alive; each may exist only once until destroyed.
-        private readonly HashSet<ShipType> _reservedHeroes = new();
+        // Hero ships and squadrons queued, in reserve or alive; each may exist only once until destroyed.
+        private readonly HashSet<UnitTypeId> _reservedHeroes = new();
 
         private int _currentLevel = 1;
 
@@ -102,7 +103,7 @@ namespace EmpireAtWar.Models.Factions
                 throw new ArgumentNullException(nameof(unitRequest));
             }
 
-            if (IsHeroRequest(unitRequest, out ShipType hero) && _reservedHeroes.Contains(hero)) return true;
+            if (IsHeroRequest(unitRequest, out UnitTypeId hero) && _reservedHeroes.Contains(hero)) return true;
 
             if (IsStructureRequest(unitRequest) &&
                 GetStructureCount(unitRequest.GetType(), unitRequest.Id) >=
@@ -141,7 +142,7 @@ namespace EmpireAtWar.Models.Factions
             }
 
             queue.Enqueue(new ProductionQueueItem(unitRequest));
-            if (IsHeroRequest(unitRequest, out ShipType hero)) _reservedHeroes.Add(hero);
+            if (IsHeroRequest(unitRequest, out UnitTypeId hero)) _reservedHeroes.Add(hero);
             NotifyProductionChanged();
         }
 
@@ -172,7 +173,7 @@ namespace EmpireAtWar.Models.Factions
                 }
 
                 queue.Enqueue(item);
-                if (IsHeroRequest(unitRequest, out ShipType hero)) _reservedHeroes.Add(hero);
+                if (IsHeroRequest(unitRequest, out UnitTypeId hero)) _reservedHeroes.Add(hero);
                 if (IsStructureRequest(unitRequest)) ReserveStructure(unitRequest);
             }
 
@@ -194,7 +195,7 @@ namespace EmpireAtWar.Models.Factions
             }
 
             unitRequest = queue.Dequeue().UnitRequest;
-            if (IsHeroRequest(unitRequest, out ShipType hero)) _reservedHeroes.Remove(hero);
+            if (IsHeroRequest(unitRequest, out UnitTypeId hero)) _reservedHeroes.Remove(hero);
             if (IsStructureRequest(unitRequest))
             {
                 ReleaseStructure(unitRequest);
@@ -213,21 +214,39 @@ namespace EmpireAtWar.Models.Factions
             ReleaseStructure(unitRequest.GetType(), unitRequest.Id);
         }
 
-        public bool IsHeroReserved(ShipType shipType) => _reservedHeroes.Contains(shipType);
+        public bool IsHeroReserved(UnitTypeId unitType) => _reservedHeroes.Contains(unitType);
 
-        public bool IsHeroShip(ShipType shipType) =>
-            _roster.Ships.TryGetValue(shipType, out FactionData data) && data.IsHero;
-
-        public void SetHeroReserved(ShipType shipType, bool reserved)
+        public bool IsHeroUnit(UnitTypeId unitType)
         {
-            if (reserved ? _reservedHeroes.Add(shipType) : _reservedHeroes.Remove(shipType))
+            FactionData data = null;
+            bool found = unitType.IsShip
+                ? _roster.Ships.TryGetValue(unitType.ShipType, out data)
+                : _roster.Squadrons.TryGetValue(unitType.SquadronType, out data);
+            return found && data.IsHero;
+        }
+
+        public void SetHeroReserved(UnitTypeId unitType, bool reserved)
+        {
+            if (reserved ? _reservedHeroes.Add(unitType) : _reservedHeroes.Remove(unitType))
                 NotifyProductionChanged();
         }
 
-        public static bool IsHeroRequest(UnitRequest unitRequest, out ShipType shipType)
+        public static bool IsHeroRequest(UnitRequest unitRequest, out UnitTypeId unitType)
         {
-            shipType = unitRequest is ShipUnitRequest ship ? ship.Key : default;
-            return unitRequest is ShipUnitRequest && unitRequest.FactionData.IsHero;
+            switch (unitRequest)
+            {
+                case ShipUnitRequest ship:
+                    unitType = UnitTypeId.Ship(ship.Key);
+                    break;
+                case SquadronUnitRequest squadron:
+                    unitType = UnitTypeId.Squadron(squadron.Key);
+                    break;
+                default:
+                    unitType = default;
+                    return false;
+            }
+
+            return unitRequest.FactionData.IsHero;
         }
 
         public void ReleaseStructure<TRequest>(string id) where TRequest : UnitRequest

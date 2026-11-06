@@ -3,6 +3,7 @@ using System.Linq;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
@@ -53,8 +54,8 @@ namespace EmpireAtWar.Services.Saves
                 // A built structure keeps its limit slot while it waits to be placed.
                 if (request is MiningFacilityUnitRequest || request is DefendPlatformUnitRequest)
                     _faction.ReserveStructure(request);
-                // So does a built hero ship: only one may be queued, in reserve or deployed.
-                if (PlayerFactionModel.IsHeroRequest(request, out ShipType hero))
+                // So does a built hero ship or squadron: only one may be queued, in reserve or deployed.
+                if (PlayerFactionModel.IsHeroRequest(request, out UnitTypeId hero))
                     _faction.SetHeroReserved(hero, true);
                 _reinforcementService.Add(request);
             }

@@ -3,6 +3,7 @@ using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.Faction.Ui;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Selection;
 using NUnit.Framework;
@@ -177,7 +178,7 @@ namespace EmpireAtWar.Tests.Editor
                     "Completed structures and heroes retain their reservation; ordinary queues release capacity.");
 
                 if (kind == "Structure") model.ReleaseStructure(request);
-                if (kind == "Hero") model.SetHeroReserved(ShipType.HomeOne, false);
+                if (kind == "Hero") model.SetHeroReserved(UnitTypeId.Ship(ShipType.HomeOne), false);
                 view.RefreshAvailability(0f, false);
                 Assert.That(card.gameObject.activeSelf, Is.True, "Releasing a lifetime reservation restores the card.");
             }

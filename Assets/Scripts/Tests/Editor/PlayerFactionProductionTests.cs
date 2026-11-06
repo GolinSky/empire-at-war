@@ -3,6 +3,7 @@ using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using NUnit.Framework;
 
@@ -129,7 +130,7 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(model.GetProductionQueueSnapshots(), Is.Empty);
             Assert.That(model.CanQueueUnit(request), Is.False, "A built hero is in reserve or deployed.");
-            model.SetHeroReserved(ShipType.HomeOne, false);
+            model.SetHeroReserved(UnitTypeId.Ship(ShipType.HomeOne), false);
             Assert.That(model.CanQueueUnit(request), Is.True, "A destroyed hero can be rebuilt.");
         }
 
