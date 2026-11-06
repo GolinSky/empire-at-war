@@ -29,13 +29,14 @@ namespace EmpireAtWar.Entities.Menu
         private TooltipHoverSubscription _tooltipHover;
 
         private BattleState _state;
+        private readonly BattleDefinition _battle;
         private readonly BattleSaveActions _saves;
         private readonly ISaveGameRoute _saveGameRoute;
         private readonly IInputLock _inputLock;
         private IDisposable _menuInputLock;
 
-        // Escape is ignored while the battle loads and after it ends.
-        private bool CanOpen => _state == BattleState.Running || _state == BattleState.Paused;
+        private bool CanOpen => _state == BattleState.Running || _state == BattleState.Paused ||
+            (_state == BattleState.Ended && _battle.Mode == GameMode.BattleSimulation);
 
         public PauseMenuRouteUiController(
             IUiService uiService,
@@ -43,11 +44,12 @@ namespace EmpireAtWar.Entities.Menu
             ISettingsRoute settingsRoute,
             INotifier<BattleState> battleState,
             ITooltipService tooltipService, BattleSaveActions saves,
-            ISaveGameRoute saveGameRoute, IInputLock inputLock) : base(uiService, cancelRouter)
+            ISaveGameRoute saveGameRoute, IInputLock inputLock, BattleDefinition battle) : base(uiService, cancelRouter)
         {
             _cancelRouter = cancelRouter;
             _settingsRoute = settingsRoute;
             _battleState = battleState;
+            _battle = battle;
             _saves = saves;
             _saveGameRoute = saveGameRoute;
             _inputLock = inputLock;
@@ -155,7 +157,7 @@ namespace EmpireAtWar.Entities.Menu
         }
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
-            _tooltips.Show(source, key, anchor, () => _state != BattleState.Ended, () =>
+            _tooltips.Show(source, key, anchor, () => CanOpen, () =>
                 new TooltipContent(title: (string)key, description: (string)key switch
                 {
                     "Resume" => "Close the pause menu and resume the battle.",
@@ -168,7 +170,7 @@ namespace EmpireAtWar.Entities.Menu
         public void UpdateState(BattleState state)
         {
             _state = state;
-            if (state == BattleState.Ended)
+            if (state == BattleState.Ended && !CanOpen)
             {
                 _ui.SetMenuVisible(false);
                 Unfocus();

@@ -38,9 +38,7 @@ namespace EmpireAtWar.Tests.Editor
             _ui = new PrefabUiService();
             _state = new SkirmishStateModel();
             _state.SetState(BattleState.Running);
-            BattleDefinition battle = new BattleDefinition(GameMode.Skirmish, null,
-                Array.Empty<BattlePlayer>(), BattleFeatures.None, OutcomeRule.Skirmish,
-                BattleVictoryCondition.DestroyEnemyFleet, 0f);
+            BattleDefinition battle = CreateBattle(GameMode.Skirmish, OutcomeRule.Skirmish);
             EmptyRepository repository = new EmptyRepository();
             BattleSaveService service = new BattleSaveService(battle, _state, null, null,
                 null, repository, null, Array.Empty<IBattleSaveSource>());
@@ -48,10 +46,18 @@ namespace EmpireAtWar.Tests.Editor
             _save = new SaveGameRouteUiController(_ui, _cancelRouter, battle, repository,
                 _saveActions, _inputLock);
             _save.Initialize();
+            InitializePauseMenu(battle);
+        }
+
+        private static BattleDefinition CreateBattle(GameMode mode, OutcomeRule outcome) =>
+            new BattleDefinition(mode, null, Array.Empty<BattlePlayer>(), BattleFeatures.None, outcome,
+                BattleVictoryCondition.DestroyEnemyFleet, 0f);
+
+        private void InitializePauseMenu(BattleDefinition battle)
+        {
             _pause = new PauseMenuRouteUiController(_ui, _cancelRouter, null, _state,
-                null, _saveActions, _save, _inputLock);
+                null, _saveActions, _save, _inputLock, battle);
             _pause.Initialize();
-            _pause.UpdateState(BattleState.Running);
         }
 
         [TearDown]
@@ -131,6 +137,23 @@ namespace EmpireAtWar.Tests.Editor
             _state.SetState(BattleState.Ended);
             AssertGameplayEnabled(true);
             Assert.That(_pause.IsFocused, Is.False);
+            _cancel.Press();
+            Assert.That(_pause.IsFocused, Is.False);
+        }
+
+        [Test]
+        public void SimulationResult_EscapeOpensAndClosesMenu()
+        {
+            _pause.LateDispose();
+            InitializePauseMenu(CreateBattle(GameMode.BattleSimulation, OutcomeRule.Simulation));
+            _state.SetState(BattleState.Ended);
+            _cancel.Press();
+            Assert.That(_pause.IsFocused, Is.True);
+            AssertGameplayEnabled(false);
+            _cancel.Press();
+            Assert.That(_pause.IsFocused, Is.False);
+            AssertGameplayEnabled(true);
+            Assert.That(_state.State, Is.EqualTo(BattleState.Ended));
         }
 
         private void AssertGameplayEnabled(bool enabled)
