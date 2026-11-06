@@ -24,8 +24,8 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedShip_MatchesRequestedStatsAndTargetability()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.Hull, Is.EqualTo(300000));
-            Assert.That(data.Shields, Is.EqualTo(400000));
+            Assert.That(data.Hull, Is.EqualTo(150000));
+            Assert.That(data.Shields, Is.EqualTo(200000));
             Assert.That(data.Speed, Is.EqualTo(10));
             Assert.That(data.Abilities, Is.EquivalentTo(new[] { ShipAbilityId.ExecutorLaserBeam, ShipAbilityId.TractorBeam }));
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
