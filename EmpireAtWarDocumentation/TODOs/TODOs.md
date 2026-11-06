@@ -97,6 +97,8 @@
   - Remaining: historical M2 shot/capture root causes and matched Editor + Development Player acceptance. New evidence → `Docs/Audits/2026-10-30-Late-Battle-CPU/analysis.md`; tests not run. Plan remains active.
 - [ ] **Attribute and reduce remaining battle CPU cost** → [[TODOs/Optimization/Battle_CPU_Performance_Plan|CPU profiling and follow-up]]; [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research|2026-10-11 capture comparison and agent findings]]
   - 2026-11-06 M2 Editor: FPS history and hitch rows verified live. Detailed summaries misreported Game view resolution; follow-up recorded in the plan.
+  - Frame 41354 follow-up: a reproduced 2.040 s Editor hitch traced to GC during Unity Pipeline command-list encoding. Original 721.25 ms cause remains unconfirmed. See the CPU plan.
+  - Experimental catalog patch reverted; project uses the official registry package. Editor GC hitches persisted during the patched fleet run; see the CPU plan for the GUI allocation stack.
   - **Next**: fixed-camera matched workload + Development Player acceptance and longer repair/respawn coverage. Current frame median **33.76 ms** vs 36.10, with more squadrons and different rendering workload; no isolated speedup claim. Broader attribution remains open.
   - Single CPU owner since 2026-10-29: absorbed open items of Battle CPU Fixes, Battle Attack and Burst Jobs plans.
   - 2026-10-29 live audit: M2 Editor/Performant/1× conventional median 264.521 ms, p95 411.922 ms; prewarm Awake 27.244 ms/frame in later Profiler window. CSV + CPU/allocation ancestry + graph/debug evidence → repository `Docs/Audits/2026-10-29-Live-Battle-CPU/analysis.md`. No stop/pause, tests or gameplay edits; broader optimization remains active.

@@ -279,6 +279,8 @@ updated: 2026-10-12
 
 - M2, High Fidelity, 2560×1440. Opening → fleet: 197.94 → 126.98 average FPS, p95 6.48 → 10.68 ms in separate 60 s windows with different workloads. All 10 detailed-capture hitches matched rolling rows across three captures. [Local audit](../../../Logs/BattleAudit/20261106T172531Z-live-hitch/analysis.md)
 - Profiler exports coincided with stalls of 14.97 s and 15.55 s. Exclude both from gameplay baselines.
+- Frame 41354 (721.25 ms): no original CPU stack. In reproduction, Unity Pipeline command-list encoding triggered managed GC during a 2.040 s hitch; main thread waited for the GC lock in `ShotEffectPool.Detach`. With native profiling off, collections coincided with 951/885 ms hitches, but not a separate 645 ms interval. [Trace evidence](../../../Docs/Audits/2026-11-06-Battle-Hitch/analysis.md)
+- 2026-11-06 Pipeline catalog experiment (reverted; project uses registry `0.6.0-exp.1`): repeated full polls reused the 309,524-byte response in 76 blocks. Matched-seed fleet, 208 successful requests. A 1,705 ms GC hitch remained with the Profiler off; a separately traced 1,350 ms hitch started collection in Editor GUI layout. [Rerun evidence](../../../Docs/Audits/2026-11-06-Pipeline-Catalog-Fix/analysis.md)
 - [ ] Fix resolution in menu-started detailed summaries: reported 1406×894 vs Game view, Main Camera and FPS history at 2560×1440.
 
 ## Files
