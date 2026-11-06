@@ -59,7 +59,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             _selection.SelectionChanged -= RefreshSelection;
             _pointer.PrimaryPressed -= HandlePointerPressed;
             _command.started -= HandleCommandPressed;
-            _tooltipHover.Dispose();
+            if (_tooltipHover != null) _tooltipHover.Dispose();
             if (_ui != null)
             {
                 _ui.Hide();

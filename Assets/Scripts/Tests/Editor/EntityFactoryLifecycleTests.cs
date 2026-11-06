@@ -67,6 +67,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(first.OwnTransform, Is.SameAs(first.transform));
             Assert.That(first.Scope, Is.Not.SameAs(second.Scope));
             Assert.That(first.Scope.Parent, Is.SameAs(parent));
+            Assert.That(first.Scope.Container.Resolve<IEntityScopeRelease>(), Is.SameAs(first.Scope));
+            Assert.That(first.Scope.Container.Resolve<IEntityPoolActivation>(), Is.SameAs(first.Scope));
             Assert.That(first.Gate, Is.Not.SameAs(second.Gate));
             Assert.That(parent.Ownership.Count, Is.EqualTo(2));
 

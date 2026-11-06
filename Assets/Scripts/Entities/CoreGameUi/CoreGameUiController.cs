@@ -151,7 +151,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             }
 
             _routes.Clear();
-            _tooltipHover.Dispose();
+            if (_tooltipHover != null) _tooltipHover.Dispose();
             if (_ui != null)
             {
                 _ui.Dispose();

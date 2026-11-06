@@ -180,10 +180,10 @@ namespace EmpireAtWar.Services.Audio
             _locator.EntityAdded -= Add;
             _locator.EntityRemoved -= Remove;
             if (_pending) _job.Complete();
-            _transforms.Dispose();
-            _positions.Dispose();
-            _audible.Dispose();
-            _distance.Dispose();
+            if (_transforms.isCreated) _transforms.Dispose();
+            if (_positions.IsCreated) _positions.Dispose();
+            if (_audible.IsCreated) _audible.Dispose();
+            if (_distance.IsCreated) _distance.Dispose();
             _audio.Stop(_source);
             if (Application.isPlaying) Object.Destroy(_source.gameObject);
             else Object.DestroyImmediate(_source.gameObject);

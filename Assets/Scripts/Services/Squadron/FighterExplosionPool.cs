@@ -45,7 +45,7 @@ namespace EmpireAtWar.Services.Squadrons
         {
             // In play the unloading battle scene destroys the scene-root pool in no guaranteed order; only an edit-mode
             // scope, which has no scene unload, must remove it.
-            if (!Application.isPlaying) Object.DestroyImmediate(_root.gameObject);
+            if (!Application.isPlaying && _root != null) Object.DestroyImmediate(_root.gameObject);
         }
 
         public void Play(Vector3 position)

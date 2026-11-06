@@ -11,7 +11,9 @@ namespace EmpireAtWar.Services.VContainer
         protected override void Configure(global::VContainer.IContainerBuilder builder)
         {
             Assets = ((AssetLifetimeScope)Parent).Assets;
-            builder.RegisterInstance<IEntityScopeRelease, IEntityPoolActivation>(this);
+            // LifetimeScope registers this instance by concrete type; expose its operations without taking ownership.
+            builder.Register<IEntityScopeRelease>(_ => this, Lifetime.Transient);
+            builder.Register<IEntityPoolActivation>(_ => this, Lifetime.Transient);
             // BaseFactory registers lifecycle after the entity's component injection callbacks.
         }
 

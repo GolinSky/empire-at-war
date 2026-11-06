@@ -3,7 +3,7 @@ category: Refactoring
 status: done
 created: 2026-11-06
 completed: 2026-11-06
-acceptance: pending-user
+acceptance: passed
 ---
 # DI Container Failure Handling
 
@@ -28,4 +28,4 @@ acceptance: pending-user
 
 - Unity 6000.4.7f1 Roslyn compiler with project Bee response files compiled runtime and Editor assemblies, including regression fixtures, with zero errors.
 - Coverage authored in `VContainerCompositionTests`, `EntityFactoryLifecycleTests`, `RealEntityCompositionTests`, and `ProductionAccessTests`. Cases cover ordered and late failures, continued raw disposal, cache release, failed entity/planet/player creation, hosted subscriptions, and AI singleton identity.
-- EditMode execution remains in [[TODOs/User_Acceptance_Queue]]. No tests ran under the local override.
+- Unity 6000.4.7f1 EditMode rerun, 2026-11-06: 62/62 targeted cases passed in an isolated checkout of `01f7aa7b1` with the fixes applied. Entity scopes expose release/activation without duplicate ownership. Teardown releases only acquired native buffers, UI subscriptions/views, and pool roots after a skipped or interrupted initialization.

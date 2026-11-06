@@ -82,14 +82,14 @@ namespace EmpireAtWar.Services.Radar
         {
             _entityLocator.EntityAdded -= HandleEntityAdded;
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
-            _targetTransforms.Dispose();
-            _targetPositionX.Dispose();
-            _targetPositionZ.Dispose();
-            _targetStates.Dispose();
-            _queries.Dispose();
-            _hostility.Dispose();
-            _eligibleBits.Dispose();
-            _detectedBits.Dispose();
+            if (_targetTransforms.isCreated) _targetTransforms.Dispose();
+            if (_targetPositionX.IsCreated) _targetPositionX.Dispose();
+            if (_targetPositionZ.IsCreated) _targetPositionZ.Dispose();
+            if (_targetStates.IsCreated) _targetStates.Dispose();
+            if (_queries.IsCreated) _queries.Dispose();
+            if (_hostility.IsCreated) _hostility.Dispose();
+            if (_eligibleBits.IsCreated) _eligibleBits.Dispose();
+            if (_detectedBits.IsCreated) _detectedBits.Dispose();
         }
 
         public void Register(IRadarScanner scanner)

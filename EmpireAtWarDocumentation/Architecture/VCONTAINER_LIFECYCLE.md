@@ -22,6 +22,8 @@
 - `LifecycleTickGate.SetTicking(false)` stops all ticks of one scope (pooled squadrons).
 - Coordinator ignores ticks after `Dispose`. Run every ordered callback before the late phase, both in reverse order. One failure → rethrow the original. Multiple failures → `AggregateException` in call order.
 - `CleanupFailures.DisposeContainer` resumes teardown after a callback throws. VContainer 1.19.0 pops each disposable before invoking it; verify that behavior on upgrade. Release owned assets after the container drains.
+- Initialization can stop before later callbacks run. Release each allocated native buffer, created pool root, and acquired subscription independently. Constructor-owned resources still require teardown.
+- `LifetimeScope` registers its concrete instance. Expose additional operations on that same instance through interface-typed transient factories to avoid a duplicate concrete registration and container disposal of the scope itself.
 - Failed entity or planet creation → dispose and destroy the new scope. Failed player bootstrap → release hosted levels, clear factory lookup, then release player roots in reverse order.
 
 ## Important Values

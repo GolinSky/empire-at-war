@@ -74,6 +74,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
 
         public void LateDispose()
         {
+            if (_view == null) return;
             _battleState.RemoveObserver(this);
             if (_tooltipHover != null) _tooltipHover.Dispose();
             _view.ActionPressed -= HandleAction;
