@@ -311,7 +311,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 997cc1b8ed373fe4fbe4d556a811f3b0, type: 2}
         description: Jango Fett pilots Slave I alone. Twin laser cannons and a reinforced
-          hull make it a durable fighter hunter at close range.
+          hull make it a durable fighter hunter at close range. Drops a harmonic
+          bomb that damages nearby enemy fighters after 1.5 seconds.
         role: Hero / Fighter hunter
         iconKey: f3ead6a21f6b16e43b11d8b28a159db2:21300000
         isHero: 1

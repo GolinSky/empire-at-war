@@ -114,6 +114,13 @@ created: "2026-10-29\r"
 
 ## Gameplay and Balance
 
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — In skirmish, verify the stationary drop, ring visibility and per-member falloff with a Fett, including caster death during the fuse.
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Verify player autofire and AI with two versus three nearby visible enemies.
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Count members actually hit per autofire drop in a moving dogfight. Enemy fighters at 58–92 u/s can leave the 35-unit radius during the 1.5 s fuse; if most drops hit nothing, tune radius, fuse or trigger before damage.
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Save during the fuse and reload. Confirm the bomb disappears and the surviving Fett retains the remaining fuse plus recharge.
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Run the focused `HarmonicBombTests` fixture when test execution is enabled.
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Listen to both pilots on drop and the single positional seismic blast at fuse expiry, including empty and overlapping drops.
+
 - [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — Battle: player-only automatic starts, individual selection pause, multi-selection use, manual cancellation/non-cancellable effects, settings and saved per-ship preferences; include Allegiance / ISD II Main Batteries auto-start and normal 20 s active → 60 s recovery (2026-11-01 extension; Core regressions authored, not run).
 - [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — Balance: shared shield regeneration ×4 and initial automatic weapon/shield thresholds across fleet matchups.
 - [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — UI: single/group A, mixed/disabled/paused tooltips, active duration and cooldown feedback at the user's game resolution.

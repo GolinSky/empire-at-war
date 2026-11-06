@@ -252,6 +252,8 @@
 - [x] **Jango Fett — Slave I — single-fighter skirmish hero for CIS (`Separatist`)** → [[Done/Features/Jango_Fett_Slave_I|Implementation plan]] · [[Done/Features/Skirmish_Hero_Fighters - Research|Balance research]]
   - Ship, guns, recruitment, audio and Harmonic Bomb equipped. In-game flight, balance and lifecycle checks → [[TODOs/User_Acceptance_Queue]].
 
+- [x] **Harmonic bomb — shared Slave I ability (per-fighter area damage with falloff)** → [[Done/Features/Harmonic_Bomb_Ability|Implementation plan]]
+  - Completed 2026-11-06. Both Fetts equip the bomb with their pilot voices and the shared seismic detonation. In-game and fixture verification → [[TODOs/User_Acceptance_Queue]].
 - [x] **Han Solo & Chewbacca — Millennium Falcon — single-fighter skirmish hero for Rebellion** → [[Done/Features/Han_Solo_Millennium_Falcon|Completed plan]] · [[Done/Features/Skirmish_Hero_Fighters - Research|Balance research]]
   - Completed 2026-11-06. Unity wiring and 40 stationary matchups verified. Flight, audio and live skirmish acceptance → [[TODOs/User_Acceptance_Queue]].
 

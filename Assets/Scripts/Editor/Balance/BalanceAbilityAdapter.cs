@@ -26,6 +26,7 @@ namespace EmpireAtWar.Editor.Balance
             [typeof(FighterCoordinationSettings)] = new[] { "commandRadius" },
             [typeof(FullSalvoSettings)] = new[] { "projectileFireDelayMultiplier", "otherFireDelayMultiplier" },
             [typeof(CompositeBeamSettings)] = new[] { "damage" },
+            [typeof(HarmonicBombSettings)] = new[] { "radius", "centerDamage", "minimumTargets" },
             [typeof(ProtonBeamSettings)] = new[] { "damage", "damageType" },
             [typeof(TractorBeamSettings)] = new[] { "speedMultiplier", "targetClasses", "beam" },
             [typeof(IonShotSettings)] = new[] { "disableDuration", "projectile" },
@@ -92,7 +93,7 @@ namespace EmpireAtWar.Editor.Balance
                     name == "damageType" ? typeof(EmpireAtWar.Components.AttackComponent.DamageType)
                     : name == "targetClasses" ? typeof(EmpireAtWar.Components.Ship.Health.ShipClass) : null,
                     maximum: name == "malfunctionChance" ? 1 : double.PositiveInfinity,
-                    positive: name == "waveSpeed" || name.EndsWith("FireDelayMultiplier"), alias: alias, dependency: subtype);
+                    minimum: name == "minimumTargets" ? 1 : 0, positive: name == "radius" || name == "waveSpeed" || name.EndsWith("FireDelayMultiplier"), alias: alias, dependency: subtype);
         }
     }
 }

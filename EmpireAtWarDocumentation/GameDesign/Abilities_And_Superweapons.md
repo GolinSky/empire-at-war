@@ -38,7 +38,7 @@ verification: source-and-assets
 
 ### Automatic player ship powers
 
-- Local human ships only. Eligibility is data: `ShipAbilityDefinition.autoPower` (`AutoPowerRole` None/Shields/Weapons) in `ShipAbilityCatalog`. Current: Shields `3`; Weapons `5, 10, 12, 20, 23, 24, 31, 32, 33, 38` (Boost Weapon, Main Batteries `24` incl. Allegiance/ISD II, laser beams `10`/`33`). Squadrons excluded; new abilities default `None`.
+- Standard shield/weapon automation applies to local human ships. Eligibility is data: `ShipAbilityDefinition.autoPower` (`AutoPowerRole` None/Shields/Weapons) in `ShipAbilityCatalog`. Current: Shields `3`; Weapons `5, 10, 12, 20, 23, 24, 31, 32, 33, 38` (Boost Weapon, Main Batteries `24` incl. Allegiance/ISD II, laser beams `10`/`33`). Squadrons with Harmonic Bomb use its separate member-count rule. New abilities default to `None`.
 - Abilities with `requiresEnemyTarget` (laser beams) auto-target the nearest visible uncloaked hostile within ability range.
 - Settings → Gameplay → “Ships use power abilities automatically”: default on, applied through saved settings. A controls per-ship preference; global off retains it.
 - Single selected ship → automatic starts paused; multi-selection → automatic starts continue. Group A: any eligible ship off → all on; otherwise all off.
@@ -55,6 +55,15 @@ verification: source-and-assets
 - Battle simulation does not register the human automation service; enemy AI remains unchanged.
 - Shared Power to Shields id `3`: `15 s` active, `40 s` recovery, regeneration `×4`, damage/speed `×0.75`, cancellable. Removed IDs `13,15,17,26,34,45,53` remap in `AbilitySlotSave.Id` before validation/restore.
 - Preserve saved remaining recovery, even above `40 s`; reject multiple saved shield slots after remap instead of deduplicating. `UnitSave.autoPowerDisabled` defaults false in older saves.
+
+### Harmonic Bomb
+
+- Jango and Boba Fett share catalog ID `54`. Manual activation drops a stationary charge at the squadron centroid. Fuse 1.5 s, recovery 20 s.
+- At detonation, each live hostile squadron member within 35 XZ units takes one hit. Equal thirds of the radius deal 120, 72 and 30 base damage. Ships, structures and friendly members are immune.
+- The existing `HypervelocityGun` profile deals 1× strikecraft hull damage or 2× shield damage. A hit absorbed by shields does not spill into hull or use laser-specific mitigation.
+- AI and player autofire require three visible, uncloaked hostile members in range. The blast can hit unseen members. The pooled ring follows local area visibility.
+- Successful local activation plays the activating pilot’s voice line. Each detonation requests `EXP_SIZEMIC_CHARGE_2.WAV` once at its fixed world position even when it hits zero members. There is no extra event predelay.
+- The battle owns dropped charges across caster death, despawn and movement. Loading drops in-flight effects and restores the surviving caster’s saved recovery timer. See [[Done/Features/Harmonic_Bomb_Ability]].
 
 ### Checked current ability examples
 
