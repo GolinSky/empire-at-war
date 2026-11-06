@@ -9,6 +9,9 @@
 
 ### Features
 
+- [ ] **Jango Fett — Slave I — single-fighter skirmish hero for CIS (`Separatist`)** → [[TODOs/Features/Jango_Fett_Slave_I|Implementation plan]] · [[TODOs/Features/Skirmish_Hero_Fighters - Research|Balance research]]
+  - Ship, guns, recruitment and audio implemented. Harmonic bomb deferred; in-game flight, balance and lifecycle checks pending.
+
 
 - [ ] **Online multiplayer (Mirror host-authoritative, 20 Hz tick, Steam relay via FizzySteamworks) alongside offline** → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]; [[TODOs/Features/Multiplayer_Plan - Research|Research]]
   - Status: todo 2026-11-02. Scope: Skirmish (PvP/co-op, AI slots) + Survival co-op; 2–4 friends. Next: Phase 0 spike (KCP direct IP → FizzySteamworks App 480 lobby join, tick round-trip, bandwidth). 12 readiness issues listed.

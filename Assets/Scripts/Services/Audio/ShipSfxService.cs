@@ -98,9 +98,9 @@ namespace EmpireAtWar.Services.Audio
         }
 
         private bool Request(ShipSfxHandle ship, SfxProfile sound, Vector3 position, Transform emitter,
-            bool loop, float scale, float pitch, float lease, bool isEngine = false)
+            bool loop, float scale, float pitch, float lease, bool isEngine = false, bool destruction = false)
         {
-            if (_disposed || ship.IsDestroyed) return false;
+            if (_disposed || ship.IsDestroyed && !destruction) return false;
             if (sound.LocalFeedback && !_localPlayer.IsLocal(ship.Owner)) return false;
             UpdateTime();
             float pan = 0f;
@@ -269,7 +269,7 @@ namespace EmpireAtWar.Services.Audio
             return gain * Mathf.Lerp(1f, isEngine ? _data.EngineMinZoomGain : _data.MinZoomGain, zoom);
         }
 
-        public void ReleaseShip(ShipSfxHandle ship)
+        public void ReleaseShip(ShipSfxHandle ship, SfxProfile explosion = null, Vector3 position = default)
         {
             if (_disposed) return;
             for (int i = 0; i < _slots.Length; i++)
@@ -280,6 +280,8 @@ namespace EmpireAtWar.Services.Audio
                 _slots[i].FollowsEmitter = false;
                 _slots[i].Emitter = null;
             }
+            if (explosion != null)
+                Request(ship, explosion, position, null, false, 1f, 1f, 0f, destruction: true);
         }
 
         private void Stop(int index)

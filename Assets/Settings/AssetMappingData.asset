@@ -1519,6 +1519,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: JangoFettSlaveISquadronData
+      value:
+        m_AssetGUID: 558fdbf9ee4423c45bb36b2586770f0c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: JangoFettSlaveISquadronView
+      value:
+        m_AssetGUID: 6de9f98faed790a4cb59f19bb9de45b7
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: BobaFettSlaveISquadronData
       value:
         m_AssetGUID: 0a722e975fd631d4da31e2fd3b35bd82

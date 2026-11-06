@@ -475,6 +475,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3ead6a21f6b16e43b11d8b28a159db2
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Separatist/JangoFettSlaveIIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f71730a251297854b97875858cdb2249
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/HomeOneIcon.png
     m_ReadOnly: 0
