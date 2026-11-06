@@ -275,6 +275,12 @@ updated: 2026-10-12
 - [ ] Attribute individual prewarm Awake, capture-site spike descendants and telemetry/hazard/AI allocation expressions; validate fixes only in matched captures. Existing broader scope stays in progress.
 - Guidance extraction: no new universal production rule; workload-specific findings remain with this plan/research and repository evidence.
 
+### Live Editor capture verification · 2026-11-06
+
+- M2, High Fidelity, 2560×1440. Opening → fleet: 197.94 → 126.98 average FPS, p95 6.48 → 10.68 ms in separate 60 s windows with different workloads. All 10 detailed-capture hitches matched rolling rows across three captures. [Local audit](../../../Logs/BattleAudit/20261106T172531Z-live-hitch/analysis.md)
+- Profiler exports coincided with stalls of 14.97 s and 15.55 s. Exclude both from gameplay baselines.
+- [ ] Fix resolution in menu-started detailed summaries: reported 1406×894 vs Game view, Main Camera and FPS history at 2560×1440.
+
 ## Files
 - [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research]]
 - `Assets/Scripts/Services/Timing/BattlePerformanceCapture.cs`

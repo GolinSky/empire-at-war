@@ -13,11 +13,38 @@ How to measure a running battle, find what costs CPU or allocates, and where res
 ## Files
 - `Assets/Scripts/Editor/RenderAuditAblation.cs` — rendering ablation menu/CLI; camera and input stay pinned, runtime toggles restore on completion, cancellation, Play Mode exit and assembly reload.
 - `Tools/BattleAudit/battle_audit.py` — CSV comparison, Profiler summary, decoder script generator.
-- `Assets/Scripts/Services/Timing/BattlePerformanceCapture.cs` — 10 s battle CSV recorder.
+- `Assets/Scripts/Services/Timing/BattlePerformanceCapture.cs` — opt-in, per-frame battle CSV recorder (10 s or 60 s).
+- `Assets/Scripts/Services/Analytics/BattleFpsHistory.cs` — local full-match FPS history from the existing running-battle sampler, independent of cloud analytics.
 - `Assets/Scripts/Services/Timing/BattleProfilerMarkers.cs` — `Battle.*` markers used in captures.
 - Unity MCP tools: `eval`, `eval_file`, `render_audit_profiler`, `get_console_logs`, `editor_status`.
 
 ## Procedure
+
+### Full-match FPS history
+
+- Normal Editor and Development Player battles automatically append one row per 60 sampled seconds and a final partial window on end/teardown. Loading, in-game pauses and the transition into running are excluded. Balance simulations are excluded. An unclean exit loses the unfinished window.
+- **Tools → Empire At War → Diagnostics → Performance → Open FPS History Folder** opens `Application.persistentDataPath/BattleCaptures`. Open `fps_history_editor.csv` or `fps_history_player.csv`; filter by `run_id` and plot `avg_fps` or `max_ms` against `end_running_s`. For a spike, read its `worst_at_running_s` and count of frames strictly over 50 ms. Running seconds exclude paused time.
+- Average FPS = sampled frames ÷ sum of their unscaled durations. For a whole match, divide total frames by total `window_s`; never average window FPS or percentiles. Window p95/p99 are nearest-rank frame times: upper bounds in 0.25 ms buckets below 100 ms, measured durations for the slow tail. Max is measured directly.
+- Use `worst_observed_utc` and `worst_completed_unity_frame` to find the corresponding `completed_unity_frame` in an overlapping detailed battle CSV. Unity frame numbers are not native Profiler indices. Hardware, revision/build, map seed, resolution, quality, VSync, target FPS, memory and entity count give comparison context. Settings and workload are end-of-window snapshots. `profiler_frames` and `detail_capture_frames` identify overlap. Different cameras, rendering ablation or Inspector activity can still invalidate a comparison.
+- To include previous captures, run the following with one or more capture/archive directories. It writes one row per detailed capture or automatic window, sorts chronologically, and deduplicates copies. Older CSVs cannot reconstruct unrecorded gameplay. `kind` distinguishes detailed windows from the automatic series; don't add overlapping windows together.
+
+```sh
+python3 Tools/BattleAudit/battle_audit.py history "/path/to/BattleCaptures" Docs/Audits > fps-history-export.csv
+```
+
+### Rolling hitch capture
+
+- Ordinary Editor and Development Player battles automatically save `BattleCaptures/Hitches/hitch_<run_id>.csv` when a completed frame's unscaled duration **exceeds 50 ms**. Open the FPS History Folder and use the `run_id` from the history row. No hitch → no file. Release Players and balance simulations do not run this capture.
+- Each trigger (`is_hitch=1`) keeps up to 30 preceding and 30 following frames of running gameplay. Overlapping intervals are merged; frames appear once, in order. A gap means those frames were outside the selected intervals or the battle was paused. Starting or ending a battle can shorten a window. Pausing flushes available context; FPS history and hitch capture both skip the interval spent arming or resuming the recorder.
+- `frame` is the **completed Unity frame number**: match it to `worst_completed_unity_frame` in FPS history. `seconds` is the observation time since application startup. The remaining columns use the detailed capture's units and marker names. Missing supported-counter samples are `unavailable`. `completed_unity_frame` is supplied by the combat coordinator; a missing workload sample has zero-filled workload columns.
+- For the ten slowest triggers, inspect CPU main/render time, GPU time, GC bytes, and the largest custom marker scopes relative to preceding non-hitch frames:
+
+```sh
+python3 Tools/BattleAudit/battle_audit.py hitches "/path/to/BattleCaptures/Hitches/hitch_<run_id>.csv"
+```
+
+- Marker times are inclusive, CPU times can include waits, and GPU samples can arrive late. Use the native Profiler for call stacks or uninstrumented work. A hitch CSV is a selected sample: never use it for average battle FPS.
+- Formatting and file writes run off-thread. One 64-frame batch can write while the next fills. If both fill, `capture_write_wait_ms` shows how much of the completed frame the sampling thread spent waiting for the writer. Isolated windows flush after their tail; a normal pause/teardown drains pending writes. An abrupt process exit can lose the unfinished batch.
 
 ### Rendering ablation
 
@@ -45,14 +72,14 @@ return new {
     utc = System.DateTime.UtcNow };
 ```
 
-### 2. Battle CSV (10 s, no Profiler)
-1. Wait for `%USERPROFILE%/AppData/LocalLow/DefaultCompany/EmpireAtWar/BattleCaptures/battle_<yyyyMMdd_HHmmss_fff>_summary.txt` (UTC timestamp of step 1).
+### 2. Detailed battle CSV (10 s or 60 s, no Profiler)
+1. From the same Performance menu choose **Capture Battle (60 Seconds)** for intermittent problems, or **Capture Battle (10 Seconds)** for a focused snapshot. **Stop and Save Battle Capture** exports a partial run. From code: `BattlePerformanceCapture.StartCapture(60)`. Wait for `battle_<yyyyMMdd_HHmmss_fff>_summary.txt` in the FPS history folder (UTC timestamp of step 1).
 2. Create `Logs/BattleAudit/<yyyyMMddTHHmmZ>/` (UTC) and copy the `.csv` and `_summary.txt` there.
 3. Compare with the audit baseline and the previous run:
    ```bash
    python Tools/BattleAudit/battle_audit.py csv Logs/BattleAudit/<run>/battle_<id>.csv Logs/BattleAudit/<previous>/battle_<id>.csv Logs/BattleAudit/20261011T1412Z/battle_20261011_141152_737.csv
    ```
-   Output: median/mean/p95/max per column and spike frames (frame > 50 ms, navigation > 10 ms, squadron/ship orders > 6 ms, GC > 1 MB). The last CSV frame includes the recorder writing its file.
+   Output: nearest-rank median/p95, mean, max, and spike frames (frame > 50 ms, navigation > 10 ms, squadron/ship orders > 6 ms, GC > 1 MB). Export starts after the last frame is sampled. The export itself can slow a subsequent frame in the automatic history.
 
 ### 3. Profiler (90 frames, regular)
 1. `render_audit_profiler` with `frames: 90`, `timeout_seconds: 120`. Output: `Logs/RenderAudit/<timestamp>-profiler/` (`profiler.data`, `profiler-summary.json`, `capture-status.json`).
@@ -100,5 +127,6 @@ return new {
 3. Report to the user: headline frame time vs baseline, what changed, new bugs found, decisions needed.
 
 ## Baselines
+- Known exclusion: `battle_20261029_213652_704` contains a 4.138 s outlier from a contaminated Editor capture. Keep the row for auditability; exclude it from gameplay baselines. The [retained investigation](../../Docs/Audits/2026-10-29-Live-Battle-CPU/analysis.md) identifies `battle_20261029_213712_952` as the main sample.
 - Audit: `Logs/BattleAudit/20261011T1412Z/battle_20261011_141152_737.csv` — 105 ms frame median, 52,310 candidates/frame.
 - Run history: `Logs/BattleAudit/2026101*` folders, each with `analysis.md` or `recapture.md`.

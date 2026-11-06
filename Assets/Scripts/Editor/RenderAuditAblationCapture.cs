@@ -243,7 +243,7 @@ namespace EmpireAtWar.Editor
                 }
             return (float)covered / (COLUMNS * ROWS);
         }
-        private static double Percentile(List<double> values, double p) => values.OrderBy(v => v).ElementAt(Math.Min(values.Count - 1, (int)(values.Count * p)));
+        private static double Percentile(List<double> values, double p) => values.OrderBy(v => v).ElementAt((int)Math.Ceiling(values.Count * p) - 1);
 
         private void Restore()
         {

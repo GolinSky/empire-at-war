@@ -222,7 +222,7 @@ namespace EmpireAtWar.Components.Weapon
                 }
             }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (BattlePerformanceCapture.IsCapturing)
+            if (BattlePerformanceCapture.IsSampling)
             {
                 int currentTargetInputCapacity = _targetSelection.InputCapacity;
                 int currentTargetPositionCapacity = _targetSelection.PositionCapacity;

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using EmpireAtWar.Services.Timing;
 using NUnit.Framework;
@@ -9,6 +10,39 @@ namespace EmpireAtWar.Tests.Timing
     [Category("Core")]
     public sealed class BattlePerformanceCaptureReportTests
     {
+        [Test]
+        public void RollingCapture_MergesNearbyHitchesAndDoesNotCarryContextAcrossPause()
+        {
+            string directory = Path.Combine(Path.GetTempPath(), "battle-hitch-" + Guid.NewGuid());
+            string path = Path.Combine(directory, "hitch.csv");
+            var capture = new BattleHitchCapture(path, new[] { "frame_duration_ns" }, Array.Empty<string>(), 1, long.MinValue);
+            var frame = new BattleCaptureFrame(1, 0, 0);
+            void Observe(int id, bool hitch)
+            {
+                frame.UnityFrame = id;
+                frame.IsHitch = hitch;
+                frame.Metrics[0] = hitch ? 60000000 : 10000000;
+                capture.Observe(frame);
+            }
+
+            try
+            {
+                for (int i = 0; i < 115; i++) Observe(i, i == 40 || i == 55);
+                capture.FinishWindow();
+                for (int i = 200; i < 210; i++) Observe(i, i == 204);
+                capture.FinishWindow();
+
+                var rows = File.ReadLines(path).Skip(1).Select(line => line.Split(',')).ToArray();
+                Assert.That(rows.Select(row => int.Parse(row[0])), Is.EqualTo(Enumerable.Range(10, 76).Concat(Enumerable.Range(200, 10))));
+                Assert.That(rows.Where(row => row[2] == "1").Select(row => row[0]), Is.EqualTo(new[] { "40", "55", "204" }));
+            }
+            finally
+            {
+                capture.FinishWindow();
+                if (Directory.Exists(directory)) Directory.Delete(directory, true);
+            }
+        }
+
         [Test]
         public void CombatWorkload_MapsValuesToNamedColumns()
         {
