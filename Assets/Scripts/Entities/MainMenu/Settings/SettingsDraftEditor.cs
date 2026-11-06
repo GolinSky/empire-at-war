@@ -22,8 +22,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         };
         private readonly SettingsModel _model;
 
-        private GraphicsUpscaler[] _upscalers = GraphicsUpscalerSupport.Available;
-        private string[] _upscalerLabels = Array.ConvertAll(GraphicsUpscalerSupport.Available, GraphicsUpscalerSupport.Label);
+        private GraphicsUpscaler[] _upscalers = Array.Empty<GraphicsUpscaler>();
+        private string[] _upscalerLabels = Array.Empty<string>();
 
 
         private SettingsData Draft => _settingsService.Draft;
@@ -47,6 +47,13 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public void Open()
         {
             _displayEditor.Open();
+            RefreshUpscalerOptions();
+        }
+
+        public void RefreshUpscalerOptions()
+        {
+            _upscalers = GraphicsUpscalerSupport.Available;
+            _upscalerLabels = Array.ConvertAll(_upscalers, GraphicsUpscalerSupport.Label);
             Refresh();
         }
 

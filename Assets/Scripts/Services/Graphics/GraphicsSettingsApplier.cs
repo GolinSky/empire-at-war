@@ -4,13 +4,43 @@ using EmpireAtWar.Services.Settings;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using EmpireAtWar.Components.Environment;
+using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Graphics
 {
     /// <summary>Applies quality, frame pacing and user scaling to runtime pipeline copies.</summary>
-    public sealed class GraphicsSettingsApplier : ISettingsApplier, IGraphicsOptions, IDisposable
+    public sealed class GraphicsSettingsApplier : ISettingsApplier, IGraphicsOptions, IDisposable, ITickable
     {
         private const int NO_FRAME_RATE_CAP = -1;
+#if UNITY_STANDALONE_WIN && ENABLE_UPSCALER_FRAMEWORK && ENABLE_NVIDIA
+        private const string DLSS_FRAME_SKIPPED = "[NVAPI] DLSS execute data pool exhausted - frame will be skipped";
+        private volatile bool _dlssFrameSkipped;
+
+        public GraphicsSettingsApplier()
+        {
+            Application.logMessageReceivedThreaded += OnLogMessage;
+        }
+
+        private void OnLogMessage(string message, string stackTrace, LogType type)
+        {
+            if (message == DLSS_FRAME_SKIPPED) _dlssFrameSkipped = true;
+        }
+#endif
+
+        public void Tick()
+        {
+#if UNITY_STANDALONE_WIN && ENABLE_UPSCALER_FRAMEWORK && ENABLE_NVIDIA
+            if (!_dlssFrameSkipped) return;
+            _dlssFrameSkipped = false;
+            foreach (var entry in _runtimePipelines)
+            {
+                if (entry.Value.upscalingFilter != UpscalingFilterSelection.IUpscaler) continue;
+                entry.Value.upscalingFilter = UpscalingFilterSelection.Linear;
+                entry.Value.msaaSampleCount = _originalPipelines[entry.Key].msaaSampleCount;
+            }
+            GraphicsUpscalerSupport.DisableDlss();
+#endif
+        }
 
         // QualitySettings.names allocates a new array per read; the levels never change at runtime.
         private readonly string[] _qualityPresets = QualitySettings.names;
@@ -80,6 +110,9 @@ namespace EmpireAtWar.Services.Graphics
 
         public void Dispose()
         {
+#if UNITY_STANDALONE_WIN && ENABLE_UPSCALER_FRAMEWORK && ENABLE_NVIDIA
+            Application.logMessageReceivedThreaded -= OnLogMessage;
+#endif
             int currentLevel = QualitySettings.GetQualityLevel();
             foreach (var entry in _runtimePipelines)
             {

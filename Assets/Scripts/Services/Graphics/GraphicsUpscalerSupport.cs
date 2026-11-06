@@ -7,6 +7,17 @@ namespace EmpireAtWar.Services.Graphics
 {
     public static class GraphicsUpscalerSupport
     {
+        public static event System.Action DlssDisabled;
+#if UNITY_STANDALONE_WIN && ENABLE_UPSCALER_FRAMEWORK && ENABLE_NVIDIA
+        private static bool? _dlssCanRender;
+
+        internal static void DisableDlss()
+        {
+            if (_dlssCanRender == false) return;
+            _dlssCanRender = false;
+            DlssDisabled?.Invoke();
+        }
+#endif
         public static GraphicsUpscaler[] Available
         {
             get
@@ -25,6 +36,7 @@ namespace EmpireAtWar.Services.Graphics
 #if UNITY_STANDALONE_WIN && ENABLE_UPSCALER_FRAMEWORK && ENABLE_NVIDIA
         private static bool SupportsDlss()
         {
+            if (_dlssCanRender.HasValue) return _dlssCanRender.Value;
             if (SystemInfo.graphicsDeviceVendorID != 0x10DE ||
                 !UpscalerRegistry.s_RegisteredUpscalers.ContainsKey(typeof(DLSSIUpscaler)) ||
                 !UnityEngine.NVIDIA.NVUnityPlugin.IsLoaded())
@@ -32,7 +44,12 @@ namespace EmpireAtWar.Services.Graphics
 
             // Recreating an existing NVIDIA device invalidates URP's live DLSS context.
             var device = UnityEngine.NVIDIA.GraphicsDevice.device ?? UnityEngine.NVIDIA.GraphicsDevice.CreateGraphicsDevice();
-            return device != null && device.IsFeatureAvailable(UnityEngine.NVIDIA.GraphicsDeviceFeature.DLSS);
+            if (device == null || !device.IsFeatureAvailable(UnityEngine.NVIDIA.GraphicsDeviceFeature.DLSS))
+                return false;
+            _dlssCanRender = SystemInfo.supportsAsyncGPUReadback && DlssExecutionProbe.CanRender(device);
+            if (!_dlssCanRender.Value)
+                Debug.LogWarning("DLSS produced no usable output. It is disabled for this session.");
+            return _dlssCanRender.Value;
         }
 #endif
 
