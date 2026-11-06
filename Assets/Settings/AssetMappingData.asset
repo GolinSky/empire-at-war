@@ -1505,6 +1505,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: HanSoloMillenniumFalconSquadronData
+      value:
+        m_AssetGUID: f0d84e8477339ce489ec877caa7904c4
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: HanSoloMillenniumFalconSquadronView
+      value:
+        m_AssetGUID: 8568b3f7949d8fd4a95ad27b137f4b42
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: BobaFettSlaveISquadronData
       value:
         m_AssetGUID: 0a722e975fd631d4da31e2fd3b35bd82

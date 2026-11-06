@@ -17,6 +17,12 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Boba_Fett_Slave_I]] — Check placement silhouette, one target/portrait, local order and ready cues in skirmish.
 - [ ] [[Done/Features/Boba_Fett_Slave_I]] — Measure overshoot, reacquisition, mixed-fleet and moving-wing duels; check AI rebuy frequency.
 - [ ] [[Done/Features/Boba_Fett_Slave_I]] — Verify independent owner limits across queue, cancel, reserve, death, repurchase, pooled spawn and save/load.
+- [[Done/Features/Han_Solo_Millennium_Falcon]]
+  - [ ] Check silhouette, preview, one target and portrait, pursuit, overshoot, reacquisition time and broadside fire at 116 u/s.
+  - [ ] Fly specials-off duels versus A-wing and X-wing, then specials-on versus two wings. Record win rates, remaining health, hits and elapsed time.
+  - [ ] Verify player and AI reservations through queue, cancellation, deployment, death and repurchase; record AI rebuy frequency and independent owner limits.
+  - [ ] Check 8 s immunity, 60 s recovery, save/load and fresh pooled deployment.
+  - [ ] Listen to Ready, selection, move, attack, activation, engine and destruction in a skirmish.
 - [[Done/Features/MC80Independence_Import]]
   - [ ] Clean-skirmish acceptance: construction, placement, combat, shield power, bay destruction/replacement, engine damage, death/wreck and teardown.
   - [ ] Review provisional economy, weapon damage/range, movement, flight height and matchup balance.

@@ -415,6 +415,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0d84e8477339ce489ec877caa7904c4
+    m_Address: HanSoloMillenniumFalconSquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f0fe1152d97de994f8491771788e65e7
     m_Address: MC75ProfundityShipData
     m_ReadOnly: 0

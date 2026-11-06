@@ -1631,3 +1631,21 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 123
+    displayName: Falcon Quad Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 4
+    scope: 2
+    faction: 2
+    unit: HanSoloMillenniumFalcon
+    damageMultiplier: 4.21875
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Dorsal and ventral quad turrets deliver 375 raw DPS together.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}

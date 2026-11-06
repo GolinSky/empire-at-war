@@ -28,5 +28,6 @@ namespace EmpireAtWar.Entities.Squadrons
         //rebellion
         XWing = 300,
         YWingBomber = 301,
+        HanSoloMillenniumFalcon = 302,
     }
 }

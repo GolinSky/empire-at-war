@@ -248,6 +248,9 @@
 
 ### Features
 
+- [x] **Han Solo & Chewbacca — Millennium Falcon — single-fighter skirmish hero for Rebellion** → [[Done/Features/Han_Solo_Millennium_Falcon|Completed plan]] · [[TODOs/Features/Skirmish_Hero_Fighters - Research|Balance research]]
+  - Completed 2026-11-06. Unity wiring and 40 stationary matchups verified. Flight, audio and live skirmish acceptance → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **Boba Fett — Slave I — single-fighter skirmish hero for Empire** → [[Done/Features/Boba_Fett_Slave_I|Implementation plan]] · [[TODOs/Features/Skirmish_Hero_Fighters - Research|Balance research]]
   - Hero, primary guns, shop and audio verified. Stationary duel results recorded; live checks → [[TODOs/User_Acceptance_Queue]].
 

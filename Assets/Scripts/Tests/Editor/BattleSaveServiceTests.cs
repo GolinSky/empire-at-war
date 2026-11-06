@@ -8,8 +8,11 @@ using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.CinematicCamera.Controller;
+using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
@@ -17,6 +20,7 @@ using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.ShipAbilities;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -256,6 +260,30 @@ namespace EmpireAtWar.Tests.Editor
             badPlayer.Research = new[] { ResearchSave.Create((ResearchType)int.MaxValue, 1) };
             Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(badPlayerSave, definition)).Message,
                 Does.Contain("Saved research"));
+        }
+
+        [Test]
+        public void Validator_RequiresTheFalconsConfiguredInvulnerabilitySlot()
+        {
+            using var assets = new CachedAssetService(new AddressableHandleLoader());
+            BattleDefinition defaults = SkirmishPreset.Default();
+            var rebel = new PlayerSlot(TestPlayers.Human, new TeamId(0), FactionType.Rebellion,
+                PlayerController.Human, EnemyAiDifficulty.Medium, 0);
+            BattleDefinition battle = SkirmishPreset.Create(new[] { rebel, defaults.Slots[1] }, defaults.Map.Planet,
+                defaults.Map.Size, defaults.VictoryCondition, defaults.StartingMoney, true, 0).Build();
+            UnitSave falcon = UnitSave.Create(1, rebel.Id, UnitTypeId.Squadron(SquadronType.HanSoloMillenniumFalcon),
+                Vector3.zero, Quaternion.identity, UnitHealthSave.ForSquadron(new[] { 1f }, new[] { 1f }), null);
+            ShipAbilityDefinition definition = assets.Load<ShipAbilityCatalog>(nameof(ShipAbilityCatalog)).Get(ShipAbilityId.Invulnerability);
+            falcon.WithAbilities(new[] { AbilitySlotSave.From(new ShipAbilitySlot(null, definition, ShipAbilityId.Invulnerability)) });
+            BattleSave save = BattleSave.Create(BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave,
+                DateTime.UtcNow, 0f, GameSpeed.Normal), BattleSetupSave.From(battle),
+                CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 500f), new[] { falcon }, Array.Empty<StructureSave>());
+            var validator = new BattleSaveValidator(assets);
+
+            Assert.DoesNotThrow(() => validator.Validate(BattleSave.FromJson(save.ToJson()), battle));
+            falcon.WithAbilities(Array.Empty<AbilitySlotSave>());
+            Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(save, battle)).Message,
+                Does.Contain("Saved 0 ability slots"));
         }
 
         [TestCase(MapSize.Small, 2, 20, 3)]

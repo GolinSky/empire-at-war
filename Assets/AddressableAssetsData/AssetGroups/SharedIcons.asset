@@ -310,6 +310,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f32a100b6e975d4a87b27720fad62f6
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Rebellion/HanSoloMillenniumFalconIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 937b502e2d2d8684ca9920ab2b5d9a0d
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/EnduranceIcon.png
     m_ReadOnly: 0

@@ -3355,6 +3355,42 @@ MonoBehaviour:
           localFeedback: 0
         useAlarmOverride: 0
         ready: {fileID: 8300000, guid: bf97d8acdbe04caebadbe7dd43d394e5, type: 3}
+    - key: 302
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: c968cc3eb309438294172d68f4ae1fa3, type: 3}
+          clips:
+            array: []
+          volume: 0.24
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+          localFeedback: 0
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: f2a8f2acedadb9a479bd5133eb1e92f6, type: 3}
+            - {fileID: 8300000, guid: 2bcac80618b6842429ae67c39122997b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+          localFeedback: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 5
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+          localFeedback: 0
+        useAlarmOverride: 0
+        ready: {fileID: 8300000, guid: de50f4dd4b85464abcb7e5cb491accb8, type: 3}
   abilityActivated:
     clip: {fileID: 8300000, guid: 196314a27370f86468e5cf6135952eda, type: 3}
     clips:
@@ -4963,6 +4999,25 @@ MonoBehaviour:
           - {fileID: 8300000, guid: c07dbf6866ad3744687da3b117d30bff, type: 3}
           - {fileID: 8300000, guid: c9df553c0dea4c74ca2411fa033d01d4, type: 3}
           - {fileID: 8300000, guid: 8a13b7f77fac68b4eb0d580fc0f240e5, type: 3}
+        alarm:
+          array:
+          - {fileID: 8300000, guid: d975b2e1a886b1348a78db7301d2176a, type: 3}
+        damage:
+          array:
+          - {fileID: 8300000, guid: 96ef609b1201c654092c01302c6ae0ad, type: 3}
+          - {fileID: 8300000, guid: 6b830248691abaa4f9a9caf0a88e0d80, type: 3}
+    - key: 302
+      value:
+        selection:
+          array:
+          - {fileID: 8300000, guid: bf4ad58c49e04d9e8888fa658315718b, type: 3}
+        move:
+          array:
+          - {fileID: 8300000, guid: 1ebab78bdfd2424da0ecb7f898250358, type: 3}
+        attack:
+          array:
+          - {fileID: 8300000, guid: 4196e8a1e5fc4022abe792c0d5ede1f0, type: 3}
+          - {fileID: 8300000, guid: b3f84f6679464e55aff962e0c8d0886d, type: 3}
         alarm:
           array:
           - {fileID: 8300000, guid: d975b2e1a886b1348a78db7301d2176a, type: 3}
