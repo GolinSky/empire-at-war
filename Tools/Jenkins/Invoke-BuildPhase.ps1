@@ -62,6 +62,7 @@ try {
         if (-not (Test-Path -LiteralPath "$artifacts\build-provenance.json")) { throw 'CLI provenance is missing.' }
         $buildInfo = Get-Content -LiteralPath "$player\EmpireAtWar_Data\StreamingAssets\build-info.json" -Raw | ConvertFrom-Json
         if ($buildInfo.commit -ne $sha -or $buildInfo.build -ne $env:BUILD_NUMBER) { throw 'Player build-info.json does not match this commit and build number.' }
+        if ($buildInfo.version -notmatch "^[0-9]+\.[0-9]+\.$($env:BUILD_NUMBER)(?:[-+]|$)") { throw "Player version '$($buildInfo.version)' does not have Jenkins patch $env:BUILD_NUMBER." }
         Copy-Item -LiteralPath "$player\EmpireAtWar_Data\StreamingAssets\build-info.json" -Destination "$artifacts\build-info.json"
         @{LibraryGiB=(Get-DirectoryGiB "$ci\Library");PlayerGiB=(Get-DirectoryGiB $player);AddressablesBundles=$bundles.Count} | ConvertTo-Json | Set-Content -LiteralPath "$artifacts\output-sizes.json"
         @{Commit=$sha;Build=$env:BUILD_NUMBER;State='PlayerReady'} | ConvertTo-Json | Set-Content -LiteralPath "$env:WORKSPACE\archive-pending.json"

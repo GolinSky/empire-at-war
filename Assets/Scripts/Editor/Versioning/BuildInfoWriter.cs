@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 using EmpireAtWar.Services.Versioning;
 using UnityEditor;
 using UnityEditor.Build;
@@ -13,13 +14,28 @@ namespace EmpireAtWar.Editor.Versioning
     /// Stamps every player with its version, Jenkins build number and commit.
     /// Writes straight into the player's StreamingAssets so the project tree stays clean.
     /// </summary>
-    public sealed class BuildInfoWriter : IPostprocessBuildWithReport
+    public sealed class BuildInfoWriter : IPreprocessBuildWithReport, IPostprocessBuildWithReport
     {
         private const string BUILD_NUMBER_VARIABLE = "BUILD_NUMBER";
         private const string COMMIT_VARIABLE = "EAW_BUILD_COMMIT";
         private const string LOCAL_BUILD = "local";
 
         public int callbackOrder => 0;
+
+        public void OnPreprocessBuild(BuildReport report)
+        {
+            string build = Environment.GetEnvironmentVariable(BUILD_NUMBER_VARIABLE);
+            if (string.IsNullOrEmpty(build)) return;
+
+            string version = PlayerSettings.bundleVersion;
+            Match parts = Regex.Match(version, @"^(?<prefix>[0-9]+\.[0-9]+\.)[0-9]+(?<suffix>[-+].*)?$");
+            if (!parts.Success || !Regex.IsMatch(build, @"^[1-9][0-9]*$"))
+            {
+                throw new BuildFailedException($"Cannot version Jenkins build '{build}' from bundle version '{version}'.");
+            }
+
+            PlayerSettings.bundleVersion = parts.Groups["prefix"].Value + build + parts.Groups["suffix"].Value;
+        }
 
         public void OnPostprocessBuild(BuildReport report)
         {

@@ -64,7 +64,7 @@
 
 ## Versioning
 
-- Source of truth: `PlayerSettings.bundleVersion` (SemVer, e.g. `0.2.0-beta.1`). Bump it manually in a commit before a release build; CI never commits versions.
+- Set the major, minor, and optional prerelease suffix in Unity’s `PlayerSettings.bundleVersion`. Before building the player, Jenkins replaces the patch in its isolated checkout with `BUILD_NUMBER`. For example, build 26 turns `0.1.0` into `0.1.26`, or `0.2.0-beta.1` into `0.2.26-beta.1`. Local builds use the configured version.
 - `Assets/Scripts/Editor/Versioning/BuildInfoWriter.cs` writes `EmpireAtWar_Data/StreamingAssets/build-info.json` into the player after every build: `version`, `build` (`BUILD_NUMBER`, else `local`), `commit` (`EAW_BUILD_COMMIT`, else `git rev-parse HEAD`), `builtAtUtc`.
 - The build phase sets `EAW_BUILD_COMMIT`, rejects a player whose stamp does not match the commit/build number, and archives `artifacts/build-info.json`.
 - The main menu shows `v<version> | Build <n> | <short sha>` (Editor: `Build Editor | dev`).
@@ -100,7 +100,7 @@
 
 1. Download and manually verify a retained successful build from `EmpireAtWar-Windows-Local`.
 2. Open the publish job → **Build with Parameters**.
-3. Enter `SOURCE_BUILD` (a positive build number, never `latest`) and `RELEASE_TAG` (for example `v0.1.0` or `v0.1.0-beta.1`). `PRERELEASE` defaults to `true`.
+3. Enter `SOURCE_BUILD` (a positive build number, never `latest`) and `RELEASE_TAG` from that build’s archived version (for example `v0.1.26` for build 26). `PRERELEASE` defaults to `true`.
 4. Run the job. Follow the release URL in its description, console, or archived `release-url.txt`.
 5. Confirm `release-result.json` reports `VerifiedDraft`, inspect the draft on GitHub, then publish manually when ready.
 
