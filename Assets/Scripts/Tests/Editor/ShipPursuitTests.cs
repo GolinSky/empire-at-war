@@ -473,7 +473,6 @@ namespace EmpireAtWar.Tests.Movement
         {
             public int StartCount { get; private set; }
             public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target) => StartCount++;
-            public void Stop() { }
         }
 
         private sealed class Movement : IShipMovement

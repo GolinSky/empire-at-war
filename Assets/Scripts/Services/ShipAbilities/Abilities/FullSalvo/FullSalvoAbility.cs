@@ -4,7 +4,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class FullSalvoAbility : IShipAbility
+    public sealed class FullSalvoAbility : IStoppableShipAbility
     {
         private readonly FullSalvoSettings _settings;
         private CombatModifiers _modifiers;

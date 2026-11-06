@@ -11,6 +11,7 @@ using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.Services.Vision;
 using NUnit.Framework;
 using UnityEngine;
@@ -164,6 +165,7 @@ namespace EmpireAtWar.Tests.Editor
                     { ShipClass = hasEligibleTarget ? ShipClass.Frigate : ShipClass.Corvette },
                     null, TestPlayers.Human, 3);
                 entities.AddEntity(eligible);
+                type.GetField("settings", flags).SetValue(definition, new CompositeBeamSettings());
                 TargetedFactory factory = new TargetedFactory();
                 PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
                 ShipAbilityService service = new ShipAbilityService(factory, roster);
@@ -172,7 +174,7 @@ namespace EmpireAtWar.Tests.Editor
 
                 controller.Tick();
 
-                Assert.That(factory.Attempts, Is.EqualTo(new long[] { 2, 3 }));
+                Assert.That(factory.CreatedCount, Is.EqualTo(hasEligibleTarget ? 1 : 0));
                 Assert.That(factory.ActivatedTarget, Is.SameAs(hasEligibleTarget ? eligible : null));
                 Assert.That(caster.Slots[0].State, Is.EqualTo(hasEligibleTarget
                     ? ShipAbilityState.Active : ShipAbilityState.Ready));
@@ -244,6 +246,7 @@ namespace EmpireAtWar.Tests.Editor
                 IEntity target = new FakeEntity(new FakeHealth(targetView.transform, 1f)
                     { ShipClass = ShipClass.Frigate }, null, TestPlayers.Human, 2);
                 entities.AddEntity(target);
+                type.GetField("settings", flags).SetValue(definition, new CompositeBeamSettings());
                 TargetedFactory factory = new TargetedFactory();
                 PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
                 VisionService vision = new VisionService(roster);
@@ -255,7 +258,7 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(EnemyShipAbilityController).GetMethod("StartDecision", flags).Invoke(controller, null);
                 vision.Unregister(scoutView.transform);
                 typeof(EnemyShipAbilityController).GetMethod("UseNextCasters", flags).Invoke(controller, null);
-                Assert.That(factory.Attempts, Is.Empty);
+                Assert.That(factory.CreatedCount, Is.Zero);
                 Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
 
                 vision.Register(TestPlayers.Enemy, scoutView.transform, 10f);
@@ -273,10 +276,14 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class TargetedFactory : IShipAbilityFactory
         {
-            public List<long> Attempts { get; } = new List<long>();
+            public int CreatedCount { get; private set; }
             public IEntity ActivatedTarget { get; private set; }
 
-            public IShipAbility Create(ShipAbilityDefinition definition) => new TargetedAbility(this);
+            public IShipAbility Create(ShipAbilityDefinition definition)
+            {
+                CreatedCount++;
+                return new TargetedAbility(this);
+            }
 
             private sealed class TargetedAbility : IPhasedShipAbility
             {
@@ -286,12 +293,6 @@ namespace EmpireAtWar.Tests.Editor
                 public bool SurvivesCasterDeath => false;
 
                 public TargetedAbility(TargetedFactory factory) => _factory = factory;
-
-                public bool CanStart(IShipAbilityFacade caster, IEntity target)
-                {
-                    _factory.Attempts.Add(target.Id);
-                    return target.HealthModel.ShipClass == ShipClass.Frigate;
-                }
 
                 public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition,
                     IEntity target) => _factory.ActivatedTarget = target;
@@ -324,7 +325,7 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class RecordingAbility : IShipAbility
+        private sealed class RecordingAbility : IStoppableShipAbility
         {
             private readonly Action _onStart;
             private readonly Action _onStop;

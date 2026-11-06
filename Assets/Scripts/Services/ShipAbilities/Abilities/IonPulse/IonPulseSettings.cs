@@ -1,3 +1,6 @@
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using System;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
@@ -5,7 +8,7 @@ using UnityEngine;
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
     [Serializable]
-    public sealed class IonPulseSettings : ShipAbilitySettings
+    public sealed class IonPulseSettings : ShipAbilitySettings, IShipAbilityTargetRule
     {
         [SerializeField] private IonPulseView viewPrefab;
         [SerializeField] private float chargeDuration = 4f;
@@ -28,6 +31,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public float MalfunctionChance => malfunctionChance;
 
         public override float GetEffectDuration(float activeDuration) => disableDuration;
+
+        public bool CanTarget(IShipAbilityFacade caster, IEntity target) => !target.HealthModel.ShipClass.IsStrikecraft();
 
         public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
             new IonPulseAbility(this, dependencies.Entities, dependencies.Relations);

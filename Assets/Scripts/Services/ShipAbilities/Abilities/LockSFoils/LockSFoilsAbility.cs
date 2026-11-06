@@ -6,7 +6,7 @@ using EmpireAtWar.Entities.Squadrons.EntityFacades;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class LockSFoilsAbility : IShipAbility
+    public sealed class LockSFoilsAbility : IStoppableShipAbility
     {
         private readonly LockSFoilsSettings _settings;
         private CombatModifiers _modifiers;

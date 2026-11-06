@@ -4,7 +4,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class CloakAbility : IShipAbility
+    public sealed class CloakAbility : IStoppableShipAbility
     {
         private CombatModifiers _modifiers;
 

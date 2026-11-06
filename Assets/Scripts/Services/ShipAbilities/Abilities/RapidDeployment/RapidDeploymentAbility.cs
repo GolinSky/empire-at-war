@@ -12,9 +12,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public bool IsComplete => _remaining == 0;
         public bool SurvivesCasterDeath => false;
 
-        public bool CanStart(IShipAbilityFacade caster, IEntity target) =>
-            caster.Entity.GetFacade<IHangarCommand>().CanLaunchImmediately;
-
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
             _hangar = caster.Entity.GetFacade<IHangarCommand>();

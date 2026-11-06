@@ -7,7 +7,7 @@ using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class ConcentrateFireAbility : IShipAbility
+    public sealed class ConcentrateFireAbility : IStoppableShipAbility
     {
         private readonly IEntityLocator _entities;
 

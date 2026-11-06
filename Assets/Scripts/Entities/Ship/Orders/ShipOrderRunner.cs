@@ -39,7 +39,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly GuardState _guardState;
         private readonly HuntState _huntState;
         private readonly AbilityApproachState _abilityApproachState;
-        private AttackMoveEngagement _attackMoveEngagement;
         private ShipAbilityId _pendingAbilityId;
         private IEntity _pendingAbilityTarget;
 
@@ -159,10 +158,9 @@ namespace EmpireAtWar.Entities.Ship.Orders
         {
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint point = ToPoint(destination);
-            if (_pendingAbilityTarget == null && _attackMoveEngagement == engagement &&
+            if (_pendingAbilityTarget == null && _orders.Engagement == engagement &&
                 _orders.Matches(UnitOrderType.AttackMove, point)) return;
-            _attackMoveEngagement = engagement;
-            Issue(UnitOrderType.AttackMove, point);
+            Issue(UnitOrderType.AttackMove, point, engagement: engagement);
         }
 
         public void Guard(IEntity friendly, Vector3 offset)
@@ -215,13 +213,14 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         private void Issue(UnitOrderType type, FormationPoint destination = default,
             IEntity target = null, FormationPoint offset = default,
-            IReadOnlyList<FormationPoint> waypoints = null, int targetHardPointId = UnitOrderModel.NO_HARD_POINT)
+            IReadOnlyList<FormationPoint> waypoints = null, int targetHardPointId = UnitOrderModel.NO_HARD_POINT,
+            AttackMoveEngagement engagement = null)
         {
             if (_orders.Current != UnitOrderType.None || _pendingAbilityTarget != null)
                 RecordOrder("cancel", $"Replaced by {type}.");
             IsAbilityFacing = false;
             _pendingAbilityTarget = null;
-            _orders.Replace(type, destination, target, offset, waypoints, targetHardPointId);
+            _orders.Replace(type, destination, target, offset, waypoints, targetHardPointId, engagement);
             RecordOrder("issued", "Requested order before state entry.");
             StartOrder();
         }
@@ -248,7 +247,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
                     _stateMachine.SetState(_attackTargetState);
                     break;
                 case UnitOrderType.AttackMove:
-                    _attackMoveState.SetData(ToVector(_orders.Destination), _attackMoveEngagement);
+                    _attackMoveState.SetData(ToVector(_orders.Destination), _orders.Engagement);
                     _stateMachine.SetState(_attackMoveState);
                     break;
                 case UnitOrderType.Guard:

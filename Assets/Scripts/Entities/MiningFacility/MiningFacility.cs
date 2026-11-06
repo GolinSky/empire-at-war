@@ -24,10 +24,7 @@ namespace EmpireAtWar.Entities.MiningFacility
     public class MiningFacility : EntityView, IController, IIncomeProvider,
         IInitializable, ILateDisposable
     {
-        private IPlayerRoster _playerRoster;
-        private IPlayerRegistry _playerRegistry;
-        // The owner's and every ally's economy: the team splits this facility's income evenly.
-        private readonly List<IEconomyProvider> _teamEconomies = new();
+        private TeamIncomeSource _teamIncome;
         private IHealthComponent _healthComponent;
         private HealthModel _healthModel;
         private CombatModifiers _combatModifiers;
@@ -47,7 +44,6 @@ namespace EmpireAtWar.Entities.MiningFacility
         private IUnitExplosionService _unitExplosionService;
         private IUnitWreckService _unitWreckService;
         private ILayerService _layerService;
-        private IFactionResearchModelObserver _research;
 
         [SerializeField] private Renderer[] explosionHullRenderers;
         private EntityComponentLifecycle _componentLifecycle;
@@ -59,11 +55,10 @@ namespace EmpireAtWar.Entities.MiningFacility
         public event Action OnRelease;
 
         private MiningFacilityData Data { get; set; }
-        private MiningFacilityModel RootModel { get; set; }
 
         public override string Id => GetType().Name;
         /// <summary>One team member's share; every allied economy receives this amount.</summary>
-        public float Income => IsConstructing ? 0f : RootModel.BaseIncome * _research.IncomeMultiplier / _teamEconomies.Count;
+        public float Income => _teamIncome.Income;
 
         [Inject]
         private void Construct(
@@ -82,8 +77,6 @@ namespace EmpireAtWar.Entities.MiningFacility
             Vector3 startPosition,
             PlayerId owner, MiningFacilityData data, MiningFacilityModel rootModel)
         {
-            _playerRoster = playerRoster;
-            _playerRegistry = playerRegistry;
             _healthComponent = healthComponent;
             _healthModel = healthModel;
             _combatModifiers = combatModifiers;
@@ -95,9 +88,8 @@ namespace EmpireAtWar.Entities.MiningFacility
             _scope = scope;
             _owner = owner;
             _layerService = layerService;
-            _research = research;
             Data = data;
-            RootModel = rootModel;
+            _teamIncome = new TeamIncomeSource(rootModel.BaseIncome, construction, research, playerRoster, playerRegistry, owner);
         }
 
         public void Initialize()
@@ -105,21 +97,8 @@ namespace EmpireAtWar.Entities.MiningFacility
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             transform.position = _startPosition;
             construction.ProgressChanged += HandleConstructionProgress;
-            construction.Completed += HandleConstructionCompleted;
             construction.Begin(_buildTime);
-            foreach (PlayerSlot player in _playerRoster.Players)
-            {
-                if (_playerRoster.IsAllied(_owner, player.Id))
-                {
-                    _teamEconomies.Add(_playerRegistry.GetEconomy(player.Id));
-                }
-            }
-            // Registered only once the team is known, so every economy totals the final share.
-            foreach (IEconomyProvider economy in _teamEconomies)
-            {
-                economy.AddProvider(this);
-            }
-            _research.OnResearchCompleted += HandleResearchCompleted;
+            _teamIncome.Register();
         }
 
         public void LateDispose()
@@ -133,7 +112,6 @@ namespace EmpireAtWar.Entities.MiningFacility
         {
             _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroyed;
             construction.ProgressChanged -= HandleConstructionProgress;
-            construction.Completed -= HandleConstructionCompleted;
             if (!_componentLifecycle.Release())
             {
                 return;
@@ -143,12 +121,7 @@ namespace EmpireAtWar.Entities.MiningFacility
                 _layerService.Apply(gameObject, LayerKey.Dead, true);
             }
 
-            _research.OnResearchCompleted -= HandleResearchCompleted;
-            foreach (IEconomyProvider economy in _teamEconomies)
-            {
-                economy.RemoveProvider(this);
-            }
-            _teamEconomies.Clear();
+            _teamIncome.Release();
             if (playDeathEffects)
             {
                 OnRelease?.Invoke();
@@ -168,20 +141,6 @@ namespace EmpireAtWar.Entities.MiningFacility
         {
             _healthModel.SetConstructionProgress(progress);
             _combatModifiers.SetConstructionActive(progress < 1f);
-        }
-
-        private void HandleConstructionCompleted()
-        {
-            foreach (IEconomyProvider economy in _teamEconomies)
-                economy.RecalculateIncome(this);
-        }
-
-        private void HandleResearchCompleted(ResearchType researchType)
-        {
-            foreach (IEconomyProvider economy in _teamEconomies)
-            {
-                economy.RecalculateIncome(this);
-            }
         }
     }
 }

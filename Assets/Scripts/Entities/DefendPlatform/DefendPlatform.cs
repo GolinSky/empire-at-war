@@ -23,10 +23,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
 {
     public class DefendPlatform : EntityView, IController, IIncomeProvider, IInitializable, ILateDisposable
     {
-        private IPlayerRoster _playerRoster;
-        private IPlayerRegistry _playerRegistry;
-        private IFactionResearchModelObserver _research;
-        private readonly List<IEconomyProvider> _teamEconomies = new();
+        private TeamIncomeSource _teamIncome;
         private IHealthComponent _healthComponent;
         private HealthModel _healthModel;
         private CombatModifiers _combatModifiers;
@@ -60,7 +57,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
 
         public override string Id => GetType().Name;
         /// <summary>One team member's share; every allied economy receives this amount.</summary>
-        public float Income => IsConstructing ? 0f : Data.Income * _research.IncomeMultiplier / _teamEconomies.Count;
+        public float Income => _teamIncome.Income;
 
         [Inject]
         private void Construct(
@@ -79,9 +76,6 @@ namespace EmpireAtWar.Entities.DefendPlatform
             Vector3 startPosition,
             PlayerId owner, DefendPlatformData data)
         {
-            _playerRoster = playerRoster;
-            _playerRegistry = playerRegistry;
-            _research = research;
             _healthComponent = healthComponent;
             _healthModel = healthModel;
             _combatModifiers = combatModifiers;
@@ -94,6 +88,7 @@ namespace EmpireAtWar.Entities.DefendPlatform
             _owner = owner;
             _layerService = layerService;
             Data = data;
+            _teamIncome = new TeamIncomeSource(data.Income, construction, research, playerRoster, playerRegistry, owner);
         }
 
         public void Initialize()
@@ -101,24 +96,8 @@ namespace EmpireAtWar.Entities.DefendPlatform
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
             transform.position = _startPosition;
             construction.ProgressChanged += HandleConstructionProgress;
-            construction.Completed += HandleConstructionCompleted;
             construction.Begin(_buildTime);
-            if (Data.Income > 0f)
-            {
-                foreach (PlayerSlot player in _playerRoster.Players)
-                {
-                    if (_playerRoster.IsAllied(_owner, player.Id))
-                    {
-                        _teamEconomies.Add(_playerRegistry.GetEconomy(player.Id));
-                    }
-                }
-                // Registered only once the team is known, so every economy totals the final share.
-                foreach (IEconomyProvider economy in _teamEconomies)
-                {
-                    economy.AddProvider(this);
-                }
-                _research.OnResearchCompleted += HandleResearchCompleted;
-            }
+            _teamIncome.Register();
         }
 
         public void LateDispose()
@@ -130,20 +109,11 @@ namespace EmpireAtWar.Entities.DefendPlatform
         {
             _healthComponent.HealthModelObserver.OnDestroy -= HandleDestroyed;
             construction.ProgressChanged -= HandleConstructionProgress;
-            construction.Completed -= HandleConstructionCompleted;
             if (!_componentLifecycle.Release())
             {
                 return;
             }
-            if (Data.Income > 0f)
-            {
-                _research.OnResearchCompleted -= HandleResearchCompleted;
-                foreach (IEconomyProvider economy in _teamEconomies)
-                {
-                    economy.RemoveProvider(this);
-                }
-                _teamEconomies.Clear();
-            }
+            _teamIncome.Release();
             if (playDeathEffects)
             {
                 _layerService.Apply(gameObject, LayerKey.Dead, true);
@@ -166,20 +136,6 @@ namespace EmpireAtWar.Entities.DefendPlatform
         {
             _healthModel.SetConstructionProgress(progress);
             _combatModifiers.SetConstructionActive(progress < 1f);
-        }
-
-        private void HandleConstructionCompleted()
-        {
-            foreach (IEconomyProvider economy in _teamEconomies)
-                economy.RecalculateIncome(this);
-        }
-
-        private void HandleResearchCompleted(ResearchType researchType)
-        {
-            foreach (IEconomyProvider economy in _teamEconomies)
-            {
-                economy.RecalculateIncome(this);
-            }
         }
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class AssaultAbility : IShipAbility
+    public sealed class AssaultAbility : IStoppableShipAbility
     {
         private readonly AssaultSettings _settings;
         private CombatModifiers _modifiers;

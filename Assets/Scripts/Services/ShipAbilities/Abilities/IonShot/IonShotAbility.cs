@@ -30,14 +30,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _boltFlights = boltFlights;
         }
 
-        public bool CanStart(IShipAbilityFacade caster, IEntity target)
-        {
-            if (!target.TryGetFacade(out ICombatModifiersFacade combat)) return false;
-            foreach (IHardPointModel member in caster.Health.GetShipUnits(HardPointType.Any))
-                if (!member.IsDestroyed) return true;
-            return false;
-        }
-
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
             _target = target;

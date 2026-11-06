@@ -4,6 +4,7 @@ using System.Linq;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Services.Battle;
@@ -97,7 +98,8 @@ namespace EmpireAtWar.Services.Saves
             foreach (CaptureSiteSave site in save.CaptureSites)
                 if (site.State == CaptureSiteState.Operational || site.State == CaptureSiteState.Constructing)
                     context.SiteFacilities.Add(site.FacilityId);
-            foreach (UnitSave unit in save.Units) unit.Order.Apply(_units.GetEntity(unit.Id), _units);
+            var attackMoveGroups = new Dictionary<string, AttackMoveEngagement>();
+            foreach (UnitSave unit in save.Units) unit.Order.Apply(_units.GetEntity(unit.Id), _units, attackMoveGroups);
             return context;
         }
 

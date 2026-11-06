@@ -45,15 +45,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _relations = relations;
         }
 
-        public bool CanStart(IShipAbilityFacade caster, IEntity target)
-        {
-            if (target.HealthModel.ShipClass.IsStrikecraft())
-                return false;
-            foreach (IHardPointModel cannon in caster.Health.GetShipUnits(HardPointType.IonPulseCannon))
-                if (IsLiveCannon(cannon)) return true;
-            return false;
-        }
-
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
             _caster = caster;

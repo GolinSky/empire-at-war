@@ -23,6 +23,12 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         private readonly Dictionary<IEntity, int> _attackers = new Dictionary<IEntity, int>();
 
         private int _nextMemberId;
+        private string _groupId;
+
+        // Only engagements included in a save need a serialized identity.
+        public string GroupId => _groupId ??= Guid.NewGuid().ToString("N");
+
+        public AttackMoveEngagement(string groupId = null) => _groupId = groupId;
 
         public int Join()
         {

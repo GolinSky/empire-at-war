@@ -1,13 +1,9 @@
-using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-
 namespace EmpireAtWar.Services.ShipAbilities
 {
-    public interface IPhasedShipAbility : IShipAbility
+    public interface IPhasedShipAbility : IStoppableShipAbility
     {
         bool IsComplete { get; }
         bool SurvivesCasterDeath { get; }
-        bool CanStart(IShipAbilityFacade caster, IEntity target);
         void Advance(float deltaTime);
     }
 }
