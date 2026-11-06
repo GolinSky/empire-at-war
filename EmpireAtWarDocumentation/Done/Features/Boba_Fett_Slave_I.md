@@ -32,7 +32,7 @@ acceptance: pending-user
 1. [x] **Import.** Use vanilla `EV_SLAVE1_SPACE.ALO` and the vanilla `EV_SLAVE1.DDS` hull. Reuse Jango’s verified geometry, UVs and sockets with an independent material binding. Follow [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]] and [[AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE]]. Verify source visibility, barrel locations, fighter-scale bounds, axes, textures and in-game silhouette. Create a fighter visual, squadron view, placement preview and faction icon.
 2. [x] **Build one fighter.** Add `SquadronType.BobaFettSlaveI` (candidate 206; recheck availability). Create `BobaFettSlaveISquadronData` and `BobaFettSlaveISquadronView` using a one-member `SquadronViewSpec`. Wire exactly one `FighterView` into flight and health. Fit collision and muzzle positions to the visible hull.
 3. [x] **Arm and tune.** Create a hero-specific weapon profile for the primary gun rather than stacking standard light guns (425 DPS ≈ 38 light guns at 11.11 DPS). Keep the hardpoint count small and its sustained profile DPS summing to 425. Re-bake `MemberCount` and weapon loadout from the prefab for AI. Verify firing passes and shot arcs as well as the balance estimate.
-4. [x] **Signature ability.** Unity verified ID 54 on `BobaFettSlaveISquadronData.asset`. Shared implementation and in-game acceptance → [[TODOs/Features/Harmonic_Bomb_Ability]].
+4. [x] **Signature ability.** Unity loaded Boba’s sole ability slot (ID 54), its Harmonic Bomb prefab, and activation voice `U000_BFT1612_ENG` from the saved squadron view. Fuse 1.5 s; recovery 20 s. Shared implementation and in-game acceptance → [[Done/Features/Harmonic_Bomb_Ability]].
 5. [x] **Register.** Add the faction’s squadron row (`isHero=true`, `MaxCount=1`), exact data/view address keys, icon and `ReinforcementData.spawnSquadronWrapper` preview reference. Verify the faction’s skirmish reinforcement shop, AI purchase eligibility and single portrait. Keep this hero out of hangar complements.
    - One-at-a-time limit: player side already supports hero squadrons (commit `d15d88277`, `PlayerFactionModel` keyed by `UnitTypeId`); AI side relies on `MaxCount: 1` in `EnemyUnitLimitModel`, held until the squadron is released. Verify only.
    - AI pick rate: `EnemyProductionStrategy.AddCounterOption<SquadronUnitRequest>` treats the hero as an anti-fighter counter. Check how often the AI rebuys it, not only whether it can.
@@ -69,6 +69,6 @@ acceptance: pending-user
 
 ## TODO
 
-- Shared bomb integration completed separately in [[TODOs/Features/Harmonic_Bomb_Ability]].
+- Shared bomb integration completed separately in [[Done/Features/Harmonic_Bomb_Ability]].
 - Reusable balance evidence → [[Done/Features/Skirmish_Hero_Fighters - Research]].
 - Live skirmish acceptance → [[TODOs/User_Acceptance_Queue]]: silhouette and placement, overshoot/reacquisition and moving-target duels, AI purchase frequency, queue/cancel/death/repurchase for independent owners, pool reuse, save/load and listening. Automated tests were not run under the checkout override.

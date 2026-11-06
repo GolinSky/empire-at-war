@@ -620,8 +620,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
-  voicedAbility: 0
-  abilityVoice: {fileID: 0}
+  voicedAbility: 54
+  abilityVoice: {fileID: 8300000, guid: df4d24b0414c44d7813596932c5fd27a, type: 3}
 --- !u!114 &8757905093602500677
 MonoBehaviour:
   m_ObjectHideFlags: 0

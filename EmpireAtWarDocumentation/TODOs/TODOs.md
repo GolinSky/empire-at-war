@@ -256,7 +256,7 @@
   - Completed 2026-11-06. Unity wiring and 40 stationary matchups verified. Flight, audio and live skirmish acceptance → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Boba Fett — Slave I — single-fighter skirmish hero for Empire** → [[Done/Features/Boba_Fett_Slave_I|Implementation plan]] · [[Done/Features/Skirmish_Hero_Fighters - Research|Balance research]]
-  - Hero, primary guns, shop and audio verified. Stationary duel results recorded; live checks → [[TODOs/User_Acceptance_Queue]].
+  - Hero, primary guns, shop, Harmonic Bomb slot and activation voice verified. Stationary duel results recorded; live checks → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Display settings: resolution in all window modes, refresh rate, monitor selection (Win + macOS)** → [[Done/Features/Display_Modes_And_Monitors_Plan|Display Modes and Monitors Plan]]
   - Completed 2026-11-04: all four phases, macOS native fullscreen and monitor FPS preset. Unity compile/import, saved prefab and Penpot layout verified. Ui 245/245 + Core 136/136 passed on 2026-11-04; no fixes needed. Windows/macOS hardware acceptance → [[TODOs/User_Acceptance_Queue]].
