@@ -59,7 +59,7 @@ The normal `IGameCommand.StartGame` route successfully loaded `Assets/Scenes/Pla
 
 Fleet benchmarking remains pending. The current-scene checks below validate the capture tools only.
 
-While playing the desired scene, use **Tools → Render Audit → Capture All (2 frames)**. Separate Profiler and Frame Debugger menu actions are also available, with **Cancel Capture** to restore capture-owned state. Output is written to `Logs/RenderAudit/<UTC timestamp>-capture/`.
+For FPS history across whole battles, use the [battle audit tools](../Tools/BattleAudit/README.md#full-match-fps-history). For a rendering snapshot, while playing the desired scene use **Tools → Empire At War → Diagnostics → Render Audit → Capture All (2 frames, 1 Frame Debugger frame)**. Separate Profiler and Frame Debugger menu actions are also available, with **Cancel Capture** to restore capture-owned state. Output is written to `Logs/RenderAudit/<UTC timestamp>-capture/`.
 
 - `profiler-summary.json`: `profiler_frame_summaries[].rendering_metrics` contains recorded-frame draw calls, instancing/BRG counts, batch categories, SetPass calls, triangles, vertices, and shadow casters. All available raw rendering counters are retained. Unity 6.4 draw-call totals are derived from the eight disjoint categories used by UnityStats when a total counter is absent.
 - `rendered_frame_identities[].unity_stats` contains a separately identified end-of-render snapshot, including the legacy total batches field. These snapshots are not asserted to match the recorded Profiler frame indices. A missing Profiler total-batches counter stays null; batch categories remain available. Legacy batch counts do not describe SRP/BRG draw submissions.

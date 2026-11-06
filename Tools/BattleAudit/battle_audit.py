@@ -2,6 +2,8 @@
 
 Commands:
   csv <capture.csv> [<baseline.csv> ...]       Compare battle CSV captures and list spike frames of the first.
+  history <capture-directory> [<dir> ...]      Export saved FPS windows and detailed captures to stdout as CSV.
+  hitches <hitch.csv>                          Inspect the ten slowest triggers, counters and custom marker times.
   profiler <profiler-summary.json>             Frame range, CPU/GPU medians and top main-thread self markers.
   decoder allocations <first> <last> <out.cs> <result.json>
                                                Write a Unity eval script: GC.Alloc bytes per frame and by first
@@ -13,9 +15,11 @@ Commands:
 Run the eval scripts with the Unity MCP `eval_file` tool while the frames are still in the Profiler.
 """
 import csv
+import gzip
 import json
 import statistics
 import sys
+from battle_history import nearest_rank, write_history
 
 CSV_COLUMNS = [
     'frame_duration_ms', 'main_thread_ms', 'gpu_frame_ms',
@@ -45,8 +49,7 @@ def value(row, column):
 
 def describe(values):
     ordered = sorted(values)
-    p95 = ordered[max(0, int(0.95 * len(ordered)) - 1)]
-    return f'{statistics.median(values):.2f}/{statistics.mean(values):.2f}/{p95:.2f}/{ordered[-1]:.1f}'
+    return f'{nearest_rank(ordered, .50):.2f}/{statistics.mean(values):.2f}/{nearest_rank(ordered, .95):.2f}/{ordered[-1]:.1f}'
 
 
 def compare_csv(paths):
@@ -60,15 +63,47 @@ def compare_csv(paths):
             cells.append((describe(values) if values else 'n/a').rjust(36))
         print(column.ljust(40) + ''.join(cells))
     rows = runs[0][1]
-    print(f'\nspikes in {runs[0][0]} (last frame includes the capture writing its CSV):')
+    print(f'\nspikes in {runs[0][0]}:')
     for column, threshold in SPIKES:
         hits = [(row['frame'], round(value(row, column), 1)) for row in rows
                 if value(row, column) is not None and value(row, column) > threshold]
         print(f'  {column} > {threshold:g}: {len(hits)} frames {hits[:25]}')
 
 
+def summarize_hitches(path):
+    def timing(row, column):
+        ms = value(row, column)
+        return 'unavailable' if ms is None else f'{ms:.2f} ms'
+
+    rows = read_csv(path)
+    by_frame = {int(row['frame']): row for row in rows}
+    triggers = sorted((row for row in rows if row['is_hitch'] == '1'),
+                      key=lambda row: value(row, 'frame_duration_ms'), reverse=True)
+    print(f'{len(triggers)} frames >50 ms; {len(rows)} context + trigger frames saved. Slowest ten:')
+    for row in triggers[:10]:
+        frame = int(row['frame'])
+        before = [by_frame[i] for i in range(frame - 30, frame) if i in by_frame and by_frame[i]['is_hitch'] == '0']
+        print(f"frame {frame}: {timing(row, 'frame_duration_ms')} | CPU main {timing(row, 'main_thread_ms')} | "
+              f"render {timing(row, 'render_thread_ms')} | GPU {timing(row, 'gpu_frame_ms')} | "
+              f"GC bytes {row['gc_allocated_bytes']} | capture write wait {timing(row, 'capture_write_wait_ms')}")
+        markers = []
+        for column in row:
+            if not column.endswith('_ms') or column[:-3] + '_sample_count' not in row:
+                continue
+            ms = value(row, column)
+            if ms is None or ms <= 0:
+                continue
+            prior = [v for v in (value(other, column) for other in before) if v is not None]
+            delta = f', {ms - statistics.median(prior):+.2f} ms vs prior median' if prior else ''
+            markers.append((ms, f'{column[:-3]} {ms:.2f} ms{delta}'))
+        print('  Largest measured scopes: ' + ('; '.join(label for _, label in sorted(markers, reverse=True)[:3])
+                                                or 'none measured'))
+    print('Scopes can nest; do not add them. Thread time may include waits; GPU samples can lag.')
+
+
 def summarize_profiler(path):
-    with open(path, encoding='utf-8') as handle:
+    opener = gzip.open if path.endswith('.gz') else open
+    with opener(path, 'rt', encoding='utf-8-sig') as handle:
         frames = json.load(handle)['profiler_frame_summaries']
     indices = [frame['profiler_frame_index'] for frame in frames]
     print(f'frames {min(indices)}-{max(indices)} ({len(frames)})')
@@ -76,7 +111,8 @@ def summarize_profiler(path):
         values = [frame['rendering_counters'][counter] / 1e6 for frame in frames
                   if frame['rendering_counters'].get(counter)]
         if values:
-            print(f'{counter}: median {statistics.median(values):.2f} ms, p95 {sorted(values)[int(0.95 * len(values)) - 1]:.2f} ms')
+            ordered = sorted(values)
+            print(f'{counter}: median {nearest_rank(ordered, .50):.2f} ms, p95 {nearest_rank(ordered, .95):.2f} ms ({len(values)}/{len(frames)} frames)')
     totals = {}
     for frame in frames:
         main = next(thread for thread in frame['threads'] if thread['thread_name'] == 'Main Thread')
@@ -200,6 +236,10 @@ def main():
     command, arguments = sys.argv[1], sys.argv[2:]
     if command == 'csv':
         compare_csv(arguments)
+    elif command == 'history':
+        write_history(arguments, sys.stdout)
+    elif command == 'hitches':
+        summarize_hitches(arguments[0])
     elif command == 'profiler':
         summarize_profiler(arguments[0])
     elif command == 'decoder':

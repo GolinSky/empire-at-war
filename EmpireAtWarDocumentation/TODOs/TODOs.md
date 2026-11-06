@@ -66,6 +66,8 @@
 
 ### Optimization
 
+- [ ] **Prioritized fixes from the November 6 optimization audit** → [[TODOs/Optimization/Optimization_Audit_Fix_Plan|Fix order, owners and verification]]
+  - First fix capture dimensions, then isolate fleet hitches in the M2 Editor and Development Player. Next, measure off-camera hardpoint smoke and destruction readability. Start the Providence texture pilot after a valid content baseline.
 
 - [ ] **Recover battle FPS lost after the hazard-system decor asteroids (decor culling/LOD, field rock LOD, nebula, presets, particles)** → [[TODOs/Optimization/Battle_FPS_Recovery_Plan|Battle FPS Recovery Plan]]; [[TODOs/Optimization/Battle_FPS_Recovery_Plan - Research|PC capture 2026-10-29 vs Mac audits]]
   - 2026-10-29: Phase 0 tool and Phases 1–6 implementations source-verified. Builds/performance runs deferred by user; absorbed attribution/experiments and visual/performance acceptance remain open.
@@ -98,6 +100,9 @@
   - Review fixes 2026-10-30: roster/completion prewarm share a 4 ms loading budget; Add/Invalidate refresh all capture areas on the next tick. Added unrun Capture regressions; scripts imported/compiled, diff check passed. Mac/Metal + PC multi-selection/attack visual checks remain open.
   - Remaining: historical M2 shot/capture root causes and matched Editor + Development Player acceptance. New evidence → `Docs/Audits/2026-10-30-Late-Battle-CPU/analysis.md`; tests not run. Plan remains active.
 - [ ] **Attribute and reduce remaining battle CPU cost** → [[TODOs/Optimization/Battle_CPU_Performance_Plan|CPU profiling and follow-up]]; [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research|2026-10-11 capture comparison and agent findings]]
+  - 2026-11-06 M2 Editor: FPS history and hitch rows verified live. Detailed summaries misreported Game view resolution; follow-up recorded in the plan.
+  - Frame 41354 follow-up: a reproduced 2.040 s Editor hitch traced to GC during Unity Pipeline command-list encoding. Original 721.25 ms cause remains unconfirmed. See the CPU plan.
+  - Experimental catalog patch reverted; project uses the official registry package. Editor GC hitches persisted during the patched fleet run; see the CPU plan for the GUI allocation stack.
   - **Next**: fixed-camera matched workload + Development Player acceptance and longer repair/respawn coverage. Current frame median **33.76 ms** vs 36.10, with more squadrons and different rendering workload; no isolated speedup claim. Broader attribution remains open.
   - Single CPU owner since 2026-10-29: absorbed open items of Battle CPU Fixes, Battle Attack and Burst Jobs plans.
   - 2026-10-29 live audit: M2 Editor/Performant/1× conventional median 264.521 ms, p95 411.922 ms; prewarm Awake 27.244 ms/frame in later Profiler window. CSV + CPU/allocation ancestry + graph/debug evidence → repository `Docs/Audits/2026-10-29-Live-Battle-CPU/analysis.md`. No stop/pause, tests or gameplay edits; broader optimization remains active.
@@ -108,11 +113,12 @@
 
 - [ ] **Shrink remaining build size and runtime memory (textures, UI, music, SFX, Read/Write, player build)** → [[TODOs/Optimization/Asset_Size_Followup_Plan|Asset Size Follow-up]]
   - Start 2026-10-24: 989.8 MB bundles, payload 2,564 MB (textures 90 %). Top levers: unused alpha → DXT1 (≤ −400 MB est.), texel-density resolution caps, 45 restored sharp-alpha textures, music out of `Model` bundle.
-  - **Next**: item 2 (Providence RGBA32 anomaly) and item 1 (alpha-aware retry).
+  - Next size fix → pilot the four Providence hull maps against a successful current layout. Their explicit RGBA32 default format is verified. The sharp-alpha retry follows its own visual gates.
 
 - [ ] **Remove Addressables bundle duplication and fix asset-mapping tools** → [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan|Addressables Bundle Remediation]]; [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan - Research|Audit 2026-10-24 findings]]
   - Status: Phases 0–6 done 2026-10-24; 0 duplicated payload (1.53 GB content). Phases 3–6 + music fix uncommitted.
   - Next: commit; user packed-player placement, audio mix/ducking, early-spawn sync-load timing.
+  - November 6 audit → produce a valid current layout for the Providence pilot, then trial the five shared View entries against that baseline.
 
 ### Refactoring
 

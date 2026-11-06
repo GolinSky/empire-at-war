@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Services.Analytics;
+using EmpireAtWar.Services.Versioning;
 using Unity.Profiling;
 using UnityEngine;
 
@@ -9,8 +11,9 @@ namespace EmpireAtWar.Services.Timing
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
     public sealed class BattlePerformanceCapture : MonoBehaviour
     {
-        private const int CAPTURE_SECONDS = 10;
-        private const int MAX_CAPTURE_FRAMES = 3000;
+        private const int QUICK_SECONDS = 10;
+        public const int EXTENDED_SECONDS = 60;
+        private const int BUFFERED_FRAMES_PER_SECOND = 300;
 
         private const long UNAVAILABLE = long.MinValue;
 
@@ -179,6 +182,9 @@ namespace EmpireAtWar.Services.Timing
         private static BattlePerformanceCapture _instance;
         private readonly ProfilerRecorder[] _recorders = new ProfilerRecorder[METRIC_COUNT];
         private readonly bool[] _recorderAvailable = new bool[METRIC_COUNT];
+        private readonly BattleCaptureFrame _latest = new BattleCaptureFrame(METRIC_COUNT, _markerNames.Length, _workloadNames.Length);
+        private BattleHitchCapture _hitches;
+        private bool _skipFirstHitchFrame;
         private long[] _samples;
         private long[] _markerSampleCounts;
         private long[] _workloadSamples;
@@ -192,28 +198,73 @@ namespace EmpireAtWar.Services.Timing
         private float _captureStartTime;
 
         private int _frameCount;
+        private int _frameLimit;
 
         private bool _capturing;
         private bool _quitting;
         private bool _skipFirstFrame;
 
         public static bool IsCapturing => _instance != null && _instance._capturing;
+        internal static bool IsSampling => _instance != null && (_instance._capturing || _instance._hitches != null);
+        public static string CaptureDirectory => Path.Combine(Application.persistentDataPath, "BattleCaptures");
 
         internal static void RecordCombatWorkload(CombatWorkload workload)
         {
-            if (IsCapturing) _instance._pendingWorkload = workload;
+            if (IsSampling) _instance._pendingWorkload = workload;
         }
 
-        public static void StartCapture()
+        internal static void StartHitchMonitoring(string matchId)
         {
-            GetOrCreateInstance().StartCaptureInternal();
+            var host = GetOrCreateInstance();
+            host.EnsureRecorders();
+            host._hitches = new BattleHitchCapture(Path.Combine(CaptureDirectory, "Hitches", $"hitch_{matchId}.csv"),
+                _metricNames, _workloadNames, FIRST_MARKER_METRIC, UNAVAILABLE);
+            host._skipFirstHitchFrame = true;
         }
 
-        public static void StopCapture()
+        internal static bool TryObserveHitchFrame()
+        {
+            var host = _instance;
+            if (host == null || host._hitches == null) return false; // Editor teardown can precede the final battle tick.
+            if (host._skipFirstHitchFrame)
+            {
+                host._skipFirstHitchFrame = false;
+                return false;
+            }
+            host._hitches.Observe(host.ReadCompletedFrame());
+            return true;
+        }
+
+        internal static void InterruptHitchWindow()
+        {
+            if (_instance == null || _instance._hitches == null) return;
+            _instance._hitches.FinishWindow();
+            _instance._skipFirstHitchFrame = true;
+        }
+
+        internal static void StopHitchMonitoring()
+        {
+            if (_instance == null || _instance._hitches == null) return;
+            _instance._hitches.FinishWindow();
+            _instance._hitches = null;
+            _instance.ReleaseIdleRecorders();
+        }
+
+        public static void StartCapture() => StartCapture(QUICK_SECONDS);
+
+        public static void StartCapture(int seconds)
+        {
+            if (seconds < 1 || seconds > EXTENDED_SECONDS) throw new ArgumentOutOfRangeException(nameof(seconds));
+            GetOrCreateInstance().StartCaptureInternal(seconds);
+        }
+
+        public static void StopCapture() => StopCapture("stopped");
+
+        internal static void StopCapture(string reason)
         {
             if (_instance != null)
             {
-                _instance.StopCaptureInternal("stopped");
+                _instance.StopCaptureInternal(reason);
             }
         }
 
@@ -240,10 +291,6 @@ namespace EmpireAtWar.Services.Timing
 
             _instance = this;
             DontDestroyOnLoad(gameObject);
-            _samples = new long[MAX_CAPTURE_FRAMES * METRIC_COUNT];
-            _markerSampleCounts = new long[MAX_CAPTURE_FRAMES * _markerNames.Length];
-            _workloadSamples = new long[MAX_CAPTURE_FRAMES * _workloadNames.Length];
-            _timestamps = new float[MAX_CAPTURE_FRAMES];
         }
 
         private void Update()
@@ -260,7 +307,7 @@ namespace EmpireAtWar.Services.Timing
             }
 
             CaptureFrame();
-            if (_frameCount >= MAX_CAPTURE_FRAMES)
+            if (_frameCount >= _frameLimit)
             {
                 StopCaptureInternal("frame_limit");
             }
@@ -282,12 +329,14 @@ namespace EmpireAtWar.Services.Timing
                 StopCaptureInternal("play_mode_exit");
             }
 
+            StopHitchMonitoring();
             DisposeRecorders();
             _instance = null;
         }
 
         private void OnApplicationQuit()
         {
+            StopHitchMonitoring();
             if (_capturing)
             {
                 StopCaptureInternal("application_quit");
@@ -297,26 +346,31 @@ namespace EmpireAtWar.Services.Timing
             DisposeRecorders();
         }
 
-        private void StartCaptureInternal()
+        private void StartCaptureInternal(int seconds)
         {
             if (_capturing)
             {
                 StopCaptureInternal("restarted");
             }
 
-            DisposeRecorders();
+            _frameLimit = seconds * BUFFERED_FRAMES_PER_SECOND;
+            if (_timestamps == null || _timestamps.Length < _frameLimit)
+            {
+                _samples = new long[_frameLimit * METRIC_COUNT];
+                _markerSampleCounts = new long[_frameLimit * _markerNames.Length];
+                _workloadSamples = new long[_frameLimit * _workloadNames.Length];
+                _timestamps = new float[_frameLimit];
+            }
             _frameCount = 0;
-            _pendingWorkload = default;
             _metadata = CaptureMetadata();
             _captureStartTime = Time.realtimeSinceStartup;
-            _captureEndTime = _captureStartTime + CAPTURE_SECONDS;
+            _captureEndTime = _captureStartTime + seconds;
             _captureStartUtc = DateTime.UtcNow;
             _skipFirstFrame = true;
 
-            StartRecorders();
-            _recorderAvailable[FRAME_DURATION] = true;
+            EnsureRecorders();
             _capturing = true;
-            Debug.Log($"Battle performance capture started for {CAPTURE_SECONDS} seconds.");
+            Debug.Log($"Battle performance capture started for {seconds} seconds (up to {_frameLimit} frames).");
         }
 
         private void StopCaptureInternal(string reason)
@@ -332,7 +386,7 @@ namespace EmpireAtWar.Services.Timing
             {
                 try
                 {
-                    string directory = Path.Combine(Application.persistentDataPath, "BattleCaptures");
+                    string directory = CaptureDirectory;
                     BattlePerformanceCaptureReport.Write(
                         directory,
                         _captureStartUtc,
@@ -354,13 +408,28 @@ namespace EmpireAtWar.Services.Timing
                 }
                 finally
                 {
-                    DisposeRecorders();
+                    ReleaseIdleRecorders();
                 }
 
                 return;
             }
 
-            DisposeRecorders();
+            Debug.Log($"Battle performance capture ended before the first sample ({reason}); no files written.");
+            ReleaseIdleRecorders();
+        }
+
+        private void EnsureRecorders()
+        {
+            if (_recorderAvailable[FRAME_DURATION]) return;
+            _latest.UnityFrame = -1;
+            _pendingWorkload = default;
+            StartRecorders();
+            _recorderAvailable[FRAME_DURATION] = true;
+        }
+
+        private void ReleaseIdleRecorders()
+        {
+            if (!_capturing && _hitches == null) DisposeRecorders();
         }
 
         private void StartRecorders()
@@ -459,47 +528,52 @@ namespace EmpireAtWar.Services.Timing
 
         private void CaptureFrame()
         {
-            int sampleOffset = _frameCount * METRIC_COUNT;
+            BattleCaptureFrame frame = ReadCompletedFrame();
             _timestamps[_frameCount] = Time.realtimeSinceStartup - _captureStartTime;
-            _samples[sampleOffset + FRAME_DURATION] = (long)(Time.unscaledDeltaTime * 1000000000d);
-            for (int i = MAIN_THREAD; i < METRIC_COUNT; i++)
-            {
-                _samples[sampleOffset + i] = ReadLastValue(i);
-            }
-
-            int markerOffset = _frameCount * _markerNames.Length;
-            for (int i = FIRST_MARKER_METRIC; i < METRIC_COUNT; i++)
-            {
-                _markerSampleCounts[markerOffset + i - FIRST_MARKER_METRIC] = ReadSampleCount(i);
-            }
-
-            _pendingWorkload.WriteTo(_workloadSamples, _frameCount * _workloadNames.Length);
-            _pendingWorkload = default;
-
+            frame.Metrics.CopyTo(_samples, _frameCount * METRIC_COUNT);
+            frame.MarkerCounts.CopyTo(_markerSampleCounts, _frameCount * _markerNames.Length);
+            frame.Workload.CopyTo(_workloadSamples, _frameCount * _workloadNames.Length);
             _frameCount++;
         }
 
-        private long ReadLastValue(int index)
+        private BattleCaptureFrame ReadCompletedFrame()
         {
-            ProfilerRecorder recorder = _recorders[index];
-            // A capacity-one recorder can wrap before Count is observed.
-            if (!recorder.Valid || (recorder.Count == 0 && !recorder.WrappedAround))
+            int frame = Time.frameCount - 1;
+            if (_latest.UnityFrame == frame) return _latest;
+            _latest.UnityFrame = frame;
+            _latest.RealtimeSeconds = Time.realtimeSinceStartupAsDouble;
+            float seconds = Time.unscaledDeltaTime;
+            _latest.IsHitch = seconds > FrameTimeHistogram.HITCH_SECONDS;
+            _latest.Metrics[FRAME_DURATION] = (long)(seconds * 1000000000d);
+            for (int i = MAIN_THREAD; i < METRIC_COUNT; i++)
             {
-                return UNAVAILABLE;
+                ProfilerRecorder recorder = _recorders[i];
+                // A capacity-one recorder can wrap before Count is observed.
+                if (!_recorderAvailable[i] || (recorder.Count == 0 && !recorder.WrappedAround))
+                {
+                    _latest.Metrics[i] = UNAVAILABLE;
+                    if (i >= FIRST_MARKER_METRIC) _latest.MarkerCounts[i - FIRST_MARKER_METRIC] = -1;
+                }
+                else if (i >= FIRST_MARKER_METRIC)
+                {
+                    ProfilerRecorderSample sample = recorder.GetSample(0);
+                    _latest.Metrics[i] = sample.Value;
+                    _latest.MarkerCounts[i - FIRST_MARKER_METRIC] = sample.Count;
+                }
+                else
+                {
+                    long value = recorder.LastValue;
+                    _latest.Metrics[i] = i <= GPU_FRAME && value <= 0 ? UNAVAILABLE : value;
+                }
             }
 
-            long value = recorder.LastValue;
-            return index >= MAIN_THREAD && index <= GPU_FRAME && value <= 0 ? UNAVAILABLE : value;
+            if (_pendingWorkload.CompletedUnityFrame != frame) _pendingWorkload = default;
+            _pendingWorkload.WriteTo(_latest.Workload, 0);
+            _pendingWorkload = default;
+            return _latest;
         }
 
-        private long ReadSampleCount(int index)
-        {
-            ProfilerRecorder recorder = _recorders[index];
-            // A capacity-one recorder can wrap before Count is observed.
-            return recorder.Valid && (recorder.Count > 0 || recorder.WrappedAround) ? recorder.GetSample(0).Count : -1;
-        }
-
-        private static BattlePerformanceCaptureMetadata CaptureMetadata()
+        internal static BattlePerformanceCaptureMetadata CaptureMetadata()
         {
             string[] qualityNames = QualitySettings.names;
             int qualityLevel = QualitySettings.GetQualityLevel();
@@ -515,7 +589,7 @@ namespace EmpireAtWar.Services.Timing
                 targetFrameRate: Application.targetFrameRate,
                 graphicsDevice: SystemInfo.graphicsDeviceName,
                 processor: SystemInfo.processorType,
-                sourceRevision: Application.isEditor ? ReadGit("rev-parse --verify HEAD") : "unavailable_in_player",
+                sourceRevision: Application.isEditor ? ReadGit("rev-parse --verify HEAD") : BuildInfo.LoadCurrent().Commit,
                 sourceState: gitStatus == "unavailable" ? "unavailable" : gitStatus.Length == 0 ? "clean" : "dirty",
                 buildGuid: Application.buildGUID,
                 scenario: "unspecified",
@@ -538,14 +612,14 @@ namespace EmpireAtWar.Services.Timing
                         UseShellExecute = false,
                         CreateNoWindow = true
                     });
-                string output = process.StandardOutput.ReadToEnd().Trim();
+                var readOutput = process.StandardOutput.ReadToEndAsync();
                 if (!process.WaitForExit(2000))
                 {
                     process.Kill();
                     return "unavailable";
                 }
 
-                return process.ExitCode == 0 ? output : "unavailable";
+                return process.ExitCode == 0 ? readOutput.GetAwaiter().GetResult().Trim() : "unavailable";
             }
             catch (Exception)
             {

@@ -275,6 +275,15 @@ updated: 2026-10-12
 - [ ] Attribute individual prewarm Awake, capture-site spike descendants and telemetry/hazard/AI allocation expressions; validate fixes only in matched captures. Existing broader scope stays in progress.
 - Guidance extraction: no new universal production rule; workload-specific findings remain with this plan/research and repository evidence.
 
+### Live Editor capture verification · 2026-11-06
+
+- M2, High Fidelity, 2560×1440. Opening → fleet: 197.94 → 126.98 average FPS, p95 6.48 → 10.68 ms in separate 60 s windows with different workloads. All 10 detailed-capture hitches matched rolling rows across three captures. [Local audit](../../../Logs/BattleAudit/20261106T172531Z-live-hitch/analysis.md)
+- Profiler exports coincided with stalls of 14.97 s and 15.55 s. Exclude both from gameplay baselines.
+- Frame 41354 (721.25 ms): no original CPU stack. In reproduction, Unity Pipeline command-list encoding triggered managed GC during a 2.040 s hitch; main thread waited for the GC lock in `ShotEffectPool.Detach`. With native profiling off, collections coincided with 951/885 ms hitches, but not a separate 645 ms interval. [Trace evidence](../../../Docs/Audits/2026-11-06-Battle-Hitch/analysis.md)
+- 2026-11-06 Pipeline catalog experiment (reverted; project uses registry `0.6.0-exp.1`): repeated full polls reused the 309,524-byte response in 76 blocks. Matched-seed fleet, 208 successful requests. A 1,705 ms GC hitch remained with the Profiler off; a separately traced 1,350 ms hitch started collection in Editor GUI layout. [Rerun evidence](../../../Docs/Audits/2026-11-06-Pipeline-Catalog-Fix/analysis.md)
+- [ ] P0 · Fix menu-started detailed metadata. Record camera output dimensions and effective render scale separately. Compare the saved row to the camera/PNG at 2560×1440, then resize and change scale independently. [[TODOs/Optimization/Optimization_Audit_Fix_Plan|November 6 fix order and verification]].
+- [ ] P0 · Compare matched fleet Editor and Development Player hitch rows before changing gameplay. Save three or more 60 s windows per condition, >50 ms count/minute, p95/p99, worst interval, GC counts and native stacks for recurring stalls. Keep Editor command traffic and Profiler exports outside timed runs. Change an attributed source only after reproduction. Preserve a separate investigation for the 645 ms stall without a GC-count change.
+
 ## Files
 - [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research]]
 - `Assets/Scripts/Services/Timing/BattlePerformanceCapture.cs`

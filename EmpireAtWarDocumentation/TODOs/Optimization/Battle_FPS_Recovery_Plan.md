@@ -104,6 +104,14 @@ tags:
 
 ## TODO
 
+### November 6 audit priorities
+
+- [ ] P1 · Measure `ExplosionVfx/ppfxPipelineFire` at the hardpoint pool. Compare current, reduced off-camera emission and restored settings. Record particle simulation, transparent GPU time and live/draining counts. Verify fog reveal, re-entry, owner death and `IsAlive(true)` pool return. [[TODOs/Optimization/Optimization_Audit_Fix_Plan|November 6 fix order and verification]].
+- [ ] P1 · Capture station destruction as a composited sequence at near/far zoom. Compare fighter tracking, hull outline and the destruction cue. Trial one local change only if the occlusion persists across frames.
+- [ ] P3 · Measure `BeamVisuals.Begin` allocations on repeated uses of one pooled beam. Trial caching the property block on that instance and verify reset, color, width and fade across launches.
+
+### Recovery phases
+
 - [x] Phase 0 tool: `render_audit_ablation` / Editor menu; fixed camera + input lock; invariant JSON; actual seed, quality, resolution, source revision/dirty paths and nebula variant. Runtime acceptance passed: all 21 phases completed; actual field-root discovery, cancellation/restoration, pinned camera and invariant numeric JSON verified.
 - [ ] Phase 0 PC: matched Development Players `b19830c53^` / `b19830c53` / current changes. Deferred by current user instruction: no builds or performance runs; do not resume the historical build.
 - [x] Mac Editor measurements completed 2026-10-29 under new explicit user authorization: two 21-phase ablations, culling sweep, camera pan, three combat CSVs and lifecycle smoke checks. See Mac Validation below. Development Player remains blocked.
@@ -179,9 +187,8 @@ tags:
 - [ ] Use existing complete battle captures to choose candidates. Obtain targeted before/after PC captures for acceptance; no broad idle-scene investigation.
 - [ ] Compare `IonShotHead.mat` ↔ `ImpactFlash.mat`, and `IonShotTrail.mat` ↔ `ProtonTorpedoTrail.mat`: same shader/base texture/active keyword families; serialized emission colors differ while `_EMISSION` is absent.
 - [ ] Check all consumers and effective pass/queue/blend/UV/fade/color state. Share a material only after rendered equivalence is demonstrated; keep GUIDs and unused assets until separately reviewed.
-- [ ] Keep `Projectile.mat` and `DualProjectile.mat` separate initially: clamp versus repeat textures and different multi-bolt shape behavior must survive.
-- [ ] Check all runtime/editor consumers of `BlasterBolt.png` and `BlasterBolt_Tiled.png`; disable Read/Write only when no CPU pixel reader needs them.
-- [ ] Both sources are 1000×50, readable, no mipmaps, bilinear; first clamps and second repeats. Preserve wrap, alpha and current visual footprint.
+- [ ] P3 · Both materials now use `BlasterBolt.png` (1000×50, RGBA32, Clamp, one mip, readable). The tiled source was removed in `db62b55d8`. Trace runtime and Editor pixel readers before trialing Read/Write off.
+- [ ] Measure the surviving texture’s memory. Keep its UV wrap, alpha and distinct 1/2/4/8 patterns in near, far and oblique views before retaining any import or material change.
 - [ ] Inspect effective Standalone GPU format before choosing compression; pilot moderate PC alpha-preserving compression only if memory benefit and thin-bolt quality justify it.
 - [ ] Profile bolt/muzzle/beam draws separately; test soft-particle and camera fading independently on scoped material copies.
 - [ ] Keep fades whenever removing them produces intersection seams or camera popping. Do not disable the camera depth texture globally.

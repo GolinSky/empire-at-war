@@ -188,6 +188,13 @@
   },
   "active": "fd4544b14efb9af5",
   "lastOpenFiles": [
+    "Artifacts/Audits/Optimization_2026-11-06/Station_camera.png",
+    "Artifacts/Audits/Optimization_2026-11-06/Station_destruction.png",
+    "TODOs/Optimization/Optimization_Audit_Fix_Plan.md",
+    "Rules/UNITY_OPTIMIZATION_COOKBOOK.md",
+    "Rules/EMPIRE_AT_WAR_OPTIMIZATION_COOKBOOK.md",
+    "Artifacts/Audits/Optimization_2026-11-06/Optimization_Audit.md",
+    "Artifacts/Audits/Optimization_2026-11-06",
     "Done/Optimization/Graph_Pathfinding_Plan - Research.md",
     "Done/Optimization/Graph_Pathfinding_Plan.md",
     "TODOs/Optimization/Graph_Pathfinding_Plan - Research.md",
@@ -209,11 +216,6 @@
     "Done/Refactoring/Battle_Area_Access.md",
     "Done/Refactoring/DI_Container_Failure_Handling.md",
     "TODOs/Refactoring/Empty_Interface_Members.md",
-    "TODOs/Refactoring/Fog_Disabled_Stand_Ins.md",
-    "TODOs/Refactoring/Empty_Code_Cleanup.md",
-    "TODOs/Refactoring/DI_Container_Failure_Handling.md",
-    "TODOs/Refactoring/Battle_Area_Access.md",
-    "TODOs/Refactoring/Battle_Area_Access - Research.md",
     "TODOs/sedHoE5uX",
     "TODOs/sed2g2Anb",
     "TODOs/Documentation",
@@ -222,7 +224,6 @@
     "AssetPipeline/Imports/sedAFtn17",
     "AssetPipeline/Imports/sedrPbomK",
     "Rules/AGENTS.md.tmp.10036.941724027e1d",
-    "Done/Features/sedgp5bGS",
-    "Done/Optimization"
+    "Done/Features/sedgp5bGS"
   ]
 }

@@ -52,7 +52,21 @@ namespace EmpireAtWar.Services.Timing
             long unavailable)
         {
             using StreamWriter writer = new StreamWriter(path, false, Encoding.UTF8);
-            writer.Write("frame,seconds");
+            WriteCsvHeader(writer, "frame,seconds", metricNames, workloadNames, firstMarkerMetric);
+            for (int frame = 0; frame < frameCount; frame++)
+            {
+                writer.Write(frame.ToString(CultureInfo.InvariantCulture));
+                writer.Write(',');
+                writer.Write(timestamps[frame].ToString("F6", CultureInfo.InvariantCulture));
+                WriteCsvCounters(writer, frame, samples, markerSampleCounts, workloadSamples,
+                    metricNames.Length, workloadNames.Length, firstMarkerMetric, unavailable);
+            }
+        }
+
+        internal static void WriteCsvHeader(TextWriter writer, string columns, string[] metricNames,
+            string[] workloadNames, int firstMarkerMetric)
+        {
+            writer.Write(columns);
             for (int i = 0; i < metricNames.Length; i++)
             {
                 writer.Write(',');
@@ -72,34 +86,33 @@ namespace EmpireAtWar.Services.Timing
             }
 
             writer.WriteLine();
-            for (int frame = 0; frame < frameCount; frame++)
+        }
+
+        internal static void WriteCsvCounters(TextWriter writer, int frame, long[] samples,
+            long[] markerSampleCounts, long[] workloadSamples, int metricCount, int workloadCount,
+            int firstMarkerMetric, long unavailable)
+        {
+            int sampleOffset = frame * metricCount;
+            int markerOffset = frame * (metricCount - firstMarkerMetric);
+            for (int metric = 0; metric < metricCount; metric++)
             {
-                writer.Write(frame.ToString(CultureInfo.InvariantCulture));
                 writer.Write(',');
-                writer.Write(timestamps[frame].ToString("F6", CultureInfo.InvariantCulture));
-                int sampleOffset = frame * metricNames.Length;
-                int markerOffset = frame * (metricNames.Length - firstMarkerMetric);
-                for (int metric = 0; metric < metricNames.Length; metric++)
+                writer.Write(FormatValue(samples[sampleOffset + metric], IsTimingMetric(metric, firstMarkerMetric), unavailable));
+                if (metric >= firstMarkerMetric)
                 {
                     writer.Write(',');
-                    writer.Write(FormatValue(samples[sampleOffset + metric], IsTimingMetric(metric, firstMarkerMetric), unavailable));
-                    if (metric >= firstMarkerMetric)
-                    {
-                        writer.Write(',');
-                        long count = markerSampleCounts[markerOffset + metric - firstMarkerMetric];
-                        writer.Write(count < 0 ? "unavailable" : count.ToString(CultureInfo.InvariantCulture));
-                    }
+                    long count = markerSampleCounts[markerOffset + metric - firstMarkerMetric];
+                    writer.Write(count < 0 ? "unavailable" : count.ToString(CultureInfo.InvariantCulture));
                 }
-
-                int workloadOffset = frame * workloadNames.Length;
-                for (int workload = 0; workload < workloadNames.Length; workload++)
-                {
-                    writer.Write(',');
-                    writer.Write(workloadSamples[workloadOffset + workload].ToString(CultureInfo.InvariantCulture));
-                }
-
-                writer.WriteLine();
             }
+
+            int workloadOffset = frame * workloadCount;
+            for (int workload = 0; workload < workloadCount; workload++)
+            {
+                writer.Write(',');
+                writer.Write(workloadSamples[workloadOffset + workload].ToString(CultureInfo.InvariantCulture));
+            }
+            writer.WriteLine();
         }
 
         private static void WriteSummary(
@@ -241,9 +254,13 @@ namespace EmpireAtWar.Services.Timing
         private static void AppendFramePacingSummary(StringBuilder report, int frameCount, int metricCount, long[] samples)
         {
             long[] durations = new long[frameCount];
+            double total = 0d;
+            int over50ms = 0;
             for (int frame = 0; frame < frameCount; frame++)
             {
                 durations[frame] = samples[frame * metricCount + FRAME_DURATION];
+                total += durations[frame];
+                if (durations[frame] > 50000000L) over50ms++;
             }
 
             Array.Sort(durations);
@@ -251,6 +268,7 @@ namespace EmpireAtWar.Services.Timing
             long p95 = durations[PercentileIndex(frameCount, 0.95d)];
             long p99 = durations[PercentileIndex(frameCount, 0.99d)];
             long max = durations[frameCount - 1];
+            report.AppendFormat(CultureInfo.InvariantCulture, "avg_fps={0:F3}\nframes_over_50ms={1}\n", frameCount * 1000000000d / total, over50ms);
             report.AppendFormat(CultureInfo.InvariantCulture, "frame_pacing median={0} p95={1} p99={2} max={3}\n", FormatSummary(median, true), FormatSummary(p95, true), FormatSummary(p99, true), FormatSummary(max, true));
             report.AppendFormat(CultureInfo.InvariantCulture, "fps_at_frame_pacing median={0:F1} p95={1:F1} p99={2:F1} max={3:F1}\n", ToFps(median), ToFps(p95), ToFps(p99), ToFps(max));
         }
@@ -285,7 +303,7 @@ namespace EmpireAtWar.Services.Timing
         private static string FormatSummary(double value, bool timing)
         {
             return timing
-                ? $"{value / 1000000d:F3}ms"
+                ? (value / 1000000d).ToString("F3", CultureInfo.InvariantCulture) + "ms"
                 : value.ToString("F2", CultureInfo.InvariantCulture);
         }
     }

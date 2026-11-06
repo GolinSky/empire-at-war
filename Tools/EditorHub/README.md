@@ -43,7 +43,8 @@ Every path below is relative to `Tools/Empire At War/`.
 | Rendering / Materials | Report Helper Meshes In Unit Prefabs | Current | `Rendering/UnitHelperMeshStripper.cs`; reports helpers without stripping. |
 | Rendering / Materials | Strip Helper Meshes From Unit Prefabs | Maintenance | Same tool; existing removal behavior retained; `UnitHelperMeshTests`. Reorganization itself does not run this command. |
 | Diagnostics / Performance | Audit Battle Instancing | Current | `BattleInstancingAudit.cs`; battle rendering audit. |
-| Diagnostics / Performance | Capture Battle (10 Seconds) | Current | `BattlePerformanceCaptureMenu.cs`; retains Play Mode validation. |
+| Diagnostics / Performance | Capture Battle (10 Seconds) / (60 Seconds); Stop and Save Battle Capture | Current | Per-frame CSV and summary; starting requires unpaused Play Mode. |
+| Diagnostics / Performance | Open FPS History Folder | Current | Local automatic FPS history plus detailed captures; also opens in Edit Mode. |
 | Diagnostics / Render Audit | Capture All (2 frames, 1 Frame Debugger frame) | Current | `RenderAuditOrchestrator.cs`; coordinated capture, including Render Graph and Rendering Debugger. |
 | Diagnostics / Render Audit | Capture Profiler (2 frames) | Current | `RenderAuditProfilerTool.cs`; bounded profiler capture. |
 | Diagnostics / Render Audit | Capture Frame Debugger (1 frame) | Current | `RenderAuditFrameDebuggerTool.cs`; bounded Frame Debugger capture. |
