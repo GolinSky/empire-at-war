@@ -7,7 +7,7 @@ updated: 2026-11-06
 
 ## Decision
 
-- Three independent implementation plans: [[TODOs/Features/Jango_Fett_Slave_I]], [[Done/Features/Boba_Fett_Slave_I]], [[Done/Features/Han_Solo_Millennium_Falcon]]. Shared bomb ability for both Fetts: [[TODOs/Features/Harmonic_Bomb_Ability]]. Shared research stays beside active plans until the last one closes.
+- Three independent implementation plans: [[Done/Features/Jango_Fett_Slave_I]], [[Done/Features/Boba_Fett_Slave_I]], [[Done/Features/Han_Solo_Millennium_Falcon]]. Shared bomb ability for both Fetts: [[Done/Features/Harmonic_Bomb_Ability]]. All three hero plans and their shared research are archived in `Done/Features`.
 - One independently purchased fighter-class squadron with one physical member per hero. Provisional shop values: station level 2, two population, one reserved copy per player, replaceable after destruction. Grant access through each faction’s skirmish shop.
 - Keep existing squadron stats, weapon families and damage matrix unchanged. Apply buffs/debuffs to the heroes. Source stats establish identity. Project targets use project units.
 

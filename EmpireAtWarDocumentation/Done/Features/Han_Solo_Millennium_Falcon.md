@@ -25,7 +25,7 @@ acceptance: pending-user
 
 - 1,450 HP vs an A-wing squadron’s 1,020 (+42%). 116 combat speed vs 91 (+27%). 225°/s vs 155°/s (+45%). 375 raw gun DPS vs 267 (+41%).
 - Rebellion station level 2, 1,800 credits and 33 s follow vanilla. Reuse the existing Invulnerability ability as a first pass (8 s active / 60 s recovery vs source 6 s / 60 s recharge). Never edit the shared ability for this one ship.
-- Original game stats, reference squadron inputs, weapon calculation and shared duel protocol → [[TODOs/Features/Skirmish_Hero_Fighters - Research]].
+- Original game stats, reference squadron inputs, weapon calculation and shared duel protocol → [[Done/Features/Skirmish_Hero_Fighters - Research]].
 
 ## Implementation
 

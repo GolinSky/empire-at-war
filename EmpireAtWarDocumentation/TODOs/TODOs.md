@@ -9,8 +9,6 @@
 
 ### Features
 
-- [ ] **Jango Fett — Slave I — single-fighter skirmish hero for CIS (`Separatist`)** → [[TODOs/Features/Jango_Fett_Slave_I|Implementation plan]] · [[TODOs/Features/Skirmish_Hero_Fighters - Research|Balance research]]
-  - Ship, guns, recruitment and audio implemented. Harmonic bomb deferred; in-game flight, balance and lifecycle checks pending.
 
 
 - [ ] **Online multiplayer (Mirror host-authoritative, 20 Hz tick, Steam relay via FizzySteamworks) alongside offline** → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]; [[TODOs/Features/Multiplayer_Plan - Research|Research]]
@@ -251,10 +249,13 @@
 
 ### Features
 
-- [x] **Han Solo & Chewbacca — Millennium Falcon — single-fighter skirmish hero for Rebellion** → [[Done/Features/Han_Solo_Millennium_Falcon|Completed plan]] · [[TODOs/Features/Skirmish_Hero_Fighters - Research|Balance research]]
+- [x] **Jango Fett — Slave I — single-fighter skirmish hero for CIS (`Separatist`)** → [[Done/Features/Jango_Fett_Slave_I|Implementation plan]] · [[Done/Features/Skirmish_Hero_Fighters - Research|Balance research]]
+  - Ship, guns, recruitment, audio and Harmonic Bomb equipped. In-game flight, balance and lifecycle checks → [[TODOs/User_Acceptance_Queue]].
+
+- [x] **Han Solo & Chewbacca — Millennium Falcon — single-fighter skirmish hero for Rebellion** → [[Done/Features/Han_Solo_Millennium_Falcon|Completed plan]] · [[Done/Features/Skirmish_Hero_Fighters - Research|Balance research]]
   - Completed 2026-11-06. Unity wiring and 40 stationary matchups verified. Flight, audio and live skirmish acceptance → [[TODOs/User_Acceptance_Queue]].
 
-- [x] **Boba Fett — Slave I — single-fighter skirmish hero for Empire** → [[Done/Features/Boba_Fett_Slave_I|Implementation plan]] · [[TODOs/Features/Skirmish_Hero_Fighters - Research|Balance research]]
+- [x] **Boba Fett — Slave I — single-fighter skirmish hero for Empire** → [[Done/Features/Boba_Fett_Slave_I|Implementation plan]] · [[Done/Features/Skirmish_Hero_Fighters - Research|Balance research]]
   - Hero, primary guns, shop and audio verified. Stationary duel results recorded; live checks → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Display settings: resolution in all window modes, refresh rate, monitor selection (Win + macOS)** → [[Done/Features/Display_Modes_And_Monitors_Plan|Display Modes and Monitors Plan]]

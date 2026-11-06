@@ -14,6 +14,10 @@ created: "2026-10-29\r"
 
 ## Imported Units
 
+- [ ] [[Done/Features/Jango_Fett_Slave_I]] — Check placement silhouette, one portrait/target, order and death audio, and Jango’s activation line on a successful bomb drop.
+- [ ] [[Done/Features/Jango_Fett_Slave_I]] — Measure overshoot, firing passes and reacquisition against Belbullab-22 and Vulture wings using the shared duel protocol. Check AI purchase and rebuy frequency.
+- [ ] [[Done/Features/Jango_Fett_Slave_I]] — Verify each owner’s limit across queue, cancellation, holding, deployment, death and repurchase. Check save/load and pooled respawn.
+
 - [ ] [[Done/Features/Boba_Fett_Slave_I]] — Check placement silhouette, one target/portrait, local order and ready cues in skirmish.
 - [ ] [[Done/Features/Boba_Fett_Slave_I]] — Measure overshoot, reacquisition, mixed-fleet and moving-wing duels; check AI rebuy frequency.
 - [ ] [[Done/Features/Boba_Fett_Slave_I]] — Verify independent owner limits across queue, cancel, reserve, death, repurchase, pooled spawn and save/load.

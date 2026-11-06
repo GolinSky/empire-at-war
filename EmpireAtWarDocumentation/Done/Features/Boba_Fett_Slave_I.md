@@ -25,7 +25,7 @@ acceptance: pending-user
 
 - 1,300 HP vs an Interceptor squadron’s 200 (6.5×). 425 raw gun DPS vs 356 (+20%). 112 combat speed vs the Avenger’s 92 (+22%). 240°/s vs 120°/s (+100%).
 - Empire station level 2, 1,700 credits and 28 s follow the vanilla skirmish purchase. Compare cost and sustained all-guns-up damage as well as individual duels.
-- Original game stats, reference squadron inputs, weapon calculation and shared duel protocol → [[TODOs/Features/Skirmish_Hero_Fighters - Research]].
+- Original game stats, reference squadron inputs, weapon calculation and shared duel protocol → [[Done/Features/Skirmish_Hero_Fighters - Research]].
 
 ## Implementation
 
@@ -70,5 +70,5 @@ acceptance: pending-user
 ## TODO
 
 - Shared bomb integration completed separately in [[TODOs/Features/Harmonic_Bomb_Ability]].
-- Reusable balance evidence → [[TODOs/Features/Skirmish_Hero_Fighters - Research]].
+- Reusable balance evidence → [[Done/Features/Skirmish_Hero_Fighters - Research]].
 - Live skirmish acceptance → [[TODOs/User_Acceptance_Queue]]: silhouette and placement, overshoot/reacquisition and moving-target duels, AI purchase frequency, queue/cancel/death/repurchase for independent owners, pool reuse, save/load and listening. Automated tests were not run under the checkout override.

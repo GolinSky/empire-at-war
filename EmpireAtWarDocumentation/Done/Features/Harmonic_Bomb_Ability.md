@@ -9,8 +9,8 @@ acceptance: pending-user
 
 ## Goal
 
-- Shared Slave I signature ability for [[TODOs/Features/Jango_Fett_Slave_I]] and [[Done/Features/Boba_Fett_Slave_I]].
-- Original tuning and source evidence → [[TODOs/Features/Skirmish_Hero_Fighters - Research]]. Source values were 300 damage and 600 source units.
+- Shared Slave I signature ability for [[Done/Features/Jango_Fett_Slave_I]] and [[Done/Features/Boba_Fett_Slave_I]].
+- Original tuning and source evidence → [[Done/Features/Skirmish_Hero_Fighters - Research]]. Source values were 300 damage and 600 source units.
 
 ## Implementation
 
