@@ -11,6 +11,7 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
     public sealed class SimulationSetupUi : BaseUi
     {
         [SerializeField] private TMP_Dropdown[] factions;
+        [SerializeField] private TMP_Dropdown[] unitTypes;
         [SerializeField] private TMP_Dropdown[] units;
         [SerializeField] private RectTransform[] fleetContents;
         [SerializeField] private SimulationFleetRowUi[] fleetRowTemplates;
@@ -30,11 +31,13 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         private readonly List<SimulationFleetRowUi>[] _fleetRows =
             { new List<SimulationFleetRowUi>(), new List<SimulationFleetRowUi>() };
         public void AssignPresenter(ISimulationSetupPresenter presenter) => _presenter = presenter;
-        public void Initialize()
+        public void Initialize(string[] typeNames)
         {
             if (_initialized) return;
             foreach (var dropdown in factions) Fill(dropdown, Enum.GetNames(typeof(FactionType)));
+            foreach (var dropdown in unitTypes) Fill(dropdown, typeNames);
             factions[0].onValueChanged.AddListener(FactionA); factions[1].onValueChanged.AddListener(FactionB);
+            unitTypes[0].onValueChanged.AddListener(TypeA); unitTypes[1].onValueChanged.AddListener(TypeB);
             units[0].onValueChanged.AddListener(AddA); units[1].onValueChanged.AddListener(AddB);
             quantities[0].onValueChanged.AddListener(QuantityA); quantities[1].onValueChanged.AddListener(QuantityB);
             distance.onValueChanged.AddListener(_presenter.SetDistance);
@@ -45,12 +48,21 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
             startButton.onClick.AddListener(_presenter.StartBattle); closeButton.onClick.AddListener(_presenter.Close);
             QuantityA(quantities[0].value); QuantityB(quantities[1].value); _initialized = true;
         }
-        public void RenderSide(int side, int faction, string[] choices, string[] fleet)
+        public void RenderPicker(int side, int faction, int type, IReadOnlyList<FactionData> choices)
         {
             factions[side].SetValueWithoutNotify(faction);
-            Fill(units[side], choices);
-            units[side].SetValueWithoutNotify(-1);
-            units[side].interactable = choices.Length > 0;
+            unitTypes[side].SetValueWithoutNotify(type);
+            TMP_Dropdown dropdown = units[side];
+            dropdown.ClearOptions();
+            foreach (FactionData choice in choices)
+                dropdown.options.Add(new TMP_Dropdown.OptionData(choice.Name, choice.Icon, Color.white));
+            ((TMP_Text)dropdown.placeholder).text = choices.Count == 0 ? "No matching units" : "+ ADD UNIT";
+            dropdown.SetValueWithoutNotify(-1);
+            dropdown.RefreshShownValue();
+            dropdown.interactable = choices.Count > 0;
+        }
+        public void RenderFleet(int side, string[] fleet)
+        {
             foreach (var row in _fleetRows[side])
             {
                 row.gameObject.SetActive(false);
@@ -76,8 +88,15 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         }
         private void FactionA(int index) => _presenter.SelectFaction(0, index);
         private void FactionB(int index) => _presenter.SelectFaction(1, index);
-        private void AddA(int index) => _presenter.AddUnit(0, index, (int)quantities[0].value);
-        private void AddB(int index) => _presenter.AddUnit(1, index, (int)quantities[1].value);
+        private void TypeA(int index) => _presenter.SelectUnitType(0, index);
+        private void TypeB(int index) => _presenter.SelectUnitType(1, index);
+        private void AddA(int index) => AddUnit(0, index);
+        private void AddB(int index) => AddUnit(1, index);
+        private void AddUnit(int side, int index)
+        {
+            _presenter.AddUnit(side, index, (int)quantities[side].value);
+            units[side].SetValueWithoutNotify(-1);
+        }
         private void QuantityA(float value) => quantityLabels[0].text = $"Quantity: {value:0}";
         private void QuantityB(float value) => quantityLabels[1].text = $"Quantity: {value:0}";
         private static void Fill(TMP_Dropdown dropdown, IEnumerable<string> values)
@@ -86,6 +105,7 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         {
             if (!_initialized) return;
             factions[0].onValueChanged.RemoveListener(FactionA); factions[1].onValueChanged.RemoveListener(FactionB);
+            unitTypes[0].onValueChanged.RemoveListener(TypeA); unitTypes[1].onValueChanged.RemoveListener(TypeB);
             units[0].onValueChanged.RemoveListener(AddA); units[1].onValueChanged.RemoveListener(AddB);
             quantities[0].onValueChanged.RemoveListener(QuantityA); quantities[1].onValueChanged.RemoveListener(QuantityB);
             distance.onValueChanged.RemoveListener(_presenter.SetDistance); timeLimit.onValueChanged.RemoveListener(_presenter.SetTimeLimit);
