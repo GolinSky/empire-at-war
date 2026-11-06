@@ -230,6 +230,7 @@ namespace EmpireAtWar.Tests.Editor
             public float ConstructionProgress => 0.5f;
             public Vector3 Center => Vector3.zero;
             public bool IsRevealed => false;
+            public float PointerHitDistance(Ray ray) => float.PositiveInfinity;
             public bool IsOperational => false;
             public IReadOnlyList<ICaptureSite> Sites => new[] { this };
             public bool Contains(Vector3 position, float clearance = 0f) => false;

@@ -37,7 +37,6 @@ namespace EmpireAtWar.Services.CaptureSites
         private ISquadronRegistry _squadronRegistry;
         private IVisionService _visionService;
         private ICameraService _cameraService;
-        private IPointerInput _pointerInput;
         private IPointerGestures _gestures;
         private IUiCancelRouter _cancelRouter;
         private IPlayerRegistry _playerRegistry;
@@ -69,7 +68,6 @@ namespace EmpireAtWar.Services.CaptureSites
             ISquadronRegistry squadronRegistry,
             IVisionService visionService,
             ICameraService cameraService,
-            IPointerInput pointerInput,
             IPointerGestures gestures,
             IUiCancelRouter cancelRouter,
             IPlayerRegistry playerRegistry,
@@ -86,7 +84,6 @@ namespace EmpireAtWar.Services.CaptureSites
             _data = data;
             _visionService = visionService;
             _cameraService = cameraService;
-            _pointerInput = pointerInput;
             _gestures = gestures;
             _cancelRouter = cancelRouter;
             _playerRegistry = playerRegistry;
@@ -97,7 +94,7 @@ namespace EmpireAtWar.Services.CaptureSites
 
         public void Initialize()
         {
-            _gestures.WorldPressed += HandleWorldPressed;
+            _gestures.WorldClicked += HandleWorldClicked;
             _battleMap.AddObserver(this);
         }
 
@@ -128,7 +125,7 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             ClearSelection();
             _battleMap.RemoveObserver(this);
-            _gestures.WorldPressed -= HandleWorldPressed;
+            _gestures.WorldClicked -= HandleWorldClicked;
             _cancelRouter.Unfocus(this);
             foreach (CaptureSitePresenter site in _sites)
             {
@@ -172,11 +169,7 @@ namespace EmpireAtWar.Services.CaptureSites
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 using (VisibilityMarker.Auto())
 #endif
-                {
-                    bool isHovered = isVisible &&
-                        site.Contains(_cameraService.GetWorldPoint(_pointerInput.Position, site.Center));
-                    site.SetVisibility(isVisible, isHovered);
-                }
+                site.SetVisibility(isVisible);
             }
             if (_selectedSite != null && !IsSelectable(_selectedSite))
                 ClearSelection();
@@ -272,19 +265,16 @@ namespace EmpireAtWar.Services.CaptureSites
             return true;
         }
 
-        private void HandleWorldPressed(Vector2 screenPosition)
+        private void HandleWorldClicked(Vector2 screenPosition)
         {
             ClearSelection();
-            foreach (CaptureSitePresenter site in _sites)
-            {
-                if (IsSelectable(site) && site.Contains(_cameraService.GetWorldPoint(screenPosition, site.Center)))
-                {
-                    _selectedSite = site;
-                    SelectionChanged.Invoke();
-                    _cancelRouter.Focus(this);
-                    return;
-                }
-            }
+            Ray ray = _cameraService.SceneCamera.ScreenPointToRay(screenPosition);
+            CaptureSitePresenter site = CaptureSitePointerQuery.Find(_sites, ray);
+            if (site == null || !IsSelectable(site)) return;
+
+            _selectedSite = site;
+            SelectionChanged.Invoke();
+            _cancelRouter.Focus(this);
         }
 
         public void ClearSelection()

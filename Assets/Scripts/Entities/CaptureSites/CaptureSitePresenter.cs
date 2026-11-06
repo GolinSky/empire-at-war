@@ -58,7 +58,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             _tooltipHover = new TooltipHoverSubscription(
                 view.TooltipHover, HandleTooltipHover, _tooltips);
             Render();
-            SetVisibility(false, false);
+            SetVisibility(false);
         }
 
         public void Dispose()
@@ -70,6 +70,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         {
             return _data.GetCost(facilityType);
         }
+
+        public float PointerHitDistance(Ray ray) => _view.PointerHitDistance(ray);
 
         public bool Contains(Vector3 position, float clearance = 0f)
         {
@@ -123,7 +125,7 @@ namespace EmpireAtWar.Entities.CaptureSites
                 _localPlayer.GetRelation(_model.ContestingSecond));
         }
 
-        public void SetVisibility(bool isVisible, bool isHovered)
+        public void SetVisibility(bool isVisible)
         {
             IsRevealed = isVisible;
             bool isCapturing = _model.CapturingPlayer != PlayerId.None || _model.IsContested;

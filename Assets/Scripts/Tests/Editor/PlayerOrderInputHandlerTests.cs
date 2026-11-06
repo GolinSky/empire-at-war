@@ -342,6 +342,7 @@ namespace EmpireAtWar.Tests.Editor
             public float ConstructionProgress => 0f;
             public Vector3 Center => new Vector3(10f, 3f, 20f);
             public bool IsRevealed => true;
+            public float PointerHitDistance(Ray ray) => float.PositiveInfinity;
             public bool IsOperational => false;
             public IReadOnlyList<ICaptureSite> Sites => Enabled ? new ICaptureSite[] { this } : Array.Empty<ICaptureSite>();
 

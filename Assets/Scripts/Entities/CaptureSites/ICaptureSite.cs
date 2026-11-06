@@ -16,6 +16,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         bool IsRevealed { get; }
         bool IsOperational { get; }
 
+        float PointerHitDistance(Ray ray);
+
         bool Contains(Vector3 position, float clearance = 0f);
     }
 }

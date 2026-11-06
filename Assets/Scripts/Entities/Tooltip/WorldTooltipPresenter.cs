@@ -80,10 +80,10 @@ namespace EmpireAtWar.Entities.Tooltip
             }
             else
             {
-                Vector3 world = _cameraService.GetWorldPoint(point, Vector3.zero);
-                foreach (ICaptureSite site in _sites.Sites)
+                Ray ray = _cameraService.SceneCamera.ScreenPointToRay(point);
+                ICaptureSite site = CaptureSitePointerQuery.Find(_sites.Sites, ray);
+                if (site != null)
                 {
-                    if (!site.IsRevealed || !site.Contains(world)) continue;
                     _handle = _tooltipService.Show(new TooltipContentProvider(this, site,
                         () => CanHover && site.IsRevealed, () => new TooltipContent(title: "Capture site",
                             description: "Move ships into the ring to capture it. Select an owned empty site to construct a facility.",

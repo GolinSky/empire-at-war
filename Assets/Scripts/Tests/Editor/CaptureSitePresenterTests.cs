@@ -43,11 +43,26 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void PointerInsideCaptureRadius_RequiresARevealedMeshHit()
+        {
+            var sites = new[] { _presenter };
+            var ray = new Ray(Vector3.up * 10f, Vector3.down);
+            Assert.That(_presenter.Contains(Vector3.zero), Is.True);
+            _presenter.SetVisibility(true);
+            Assert.That(CaptureSitePointerQuery.Find(sites, ray), Is.Null);
+
+            _view.HitDistance = 10f;
+            Assert.That(CaptureSitePointerQuery.Find(sites, ray), Is.SameAs(_presenter));
+            _presenter.SetVisibility(false);
+            Assert.That(CaptureSitePointerQuery.Find(sites, ray), Is.Null);
+        }
+
+        [Test]
         public void EmptySite_RingRemainsAvailableWithoutCaptureStatus()
         {
             Assert.That(_view.IsVisible, Is.True);
             _presenter.TickCapture(1f, TestPlayers.DuelTally(_roster, 0f, 0f));
-            _presenter.SetVisibility(true, true);
+            _presenter.SetVisibility(true);
             Assert.That(_view.IsVisible, Is.True);
         }
 
@@ -57,20 +72,20 @@ namespace EmpireAtWar.Tests.Editor
         public void Capture_StatusRequiresVision_RingRemainsAvailable(float human, float enemy)
         {
             _presenter.TickCapture(1f, TestPlayers.DuelTally(_roster, human, enemy));
-            _presenter.SetVisibility(true, false);
+            _presenter.SetVisibility(true);
             Assert.That(_view.IsVisible, Is.True);
             Assert.That(_view.ShowStatus, Is.True);
 
-            _presenter.SetVisibility(false, true);
+            _presenter.SetVisibility(false);
             Assert.That(_view.IsVisible, Is.True);
             Assert.That(_view.ShowStatus, Is.False);
 
             _presenter.TickCapture(1f, TestPlayers.DuelTally(_roster, 0f, 0f));
-            _presenter.SetVisibility(true, true);
+            _presenter.SetVisibility(true);
             Assert.That(_view.IsVisible, Is.True);
             Assert.That(_view.ShowStatus, Is.False);
 
-            _presenter.SetVisibility(false, true);
+            _presenter.SetVisibility(false);
             Assert.That(_view.IsVisible, Is.True);
             Assert.That(_view.ShowStatus, Is.False);
             Assert.That(_presenter.IsRevealed, Is.False);
@@ -83,7 +98,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             _presenter.Restore(TestPlayers.Human, state, PlayerId.None, 0f,
                 SiteFacilityType.Mining, 0f);
-            _presenter.SetVisibility(true, true);
+            _presenter.SetVisibility(true);
             Assert.That(_view.IsVisible, Is.True);
             Assert.That(_view.ShowStatus, Is.False);
             Assert.That(_presenter.IsRevealed, Is.True);
@@ -93,11 +108,11 @@ namespace EmpireAtWar.Tests.Editor
         public void CaptureCompleted_KeepsEmptySiteRingAndHidesStatus()
         {
             _presenter.TickCapture(1f, TestPlayers.DuelTally(_roster, 1f, 0f));
-            _presenter.SetVisibility(true, false);
+            _presenter.SetVisibility(true);
             Assert.That(_view.IsVisible, Is.True);
 
             _presenter.TickCapture(10f, TestPlayers.DuelTally(_roster, 1f, 0f));
-            _presenter.SetVisibility(true, true);
+            _presenter.SetVisibility(true);
             Assert.That(_presenter.Owner, Is.EqualTo(TestPlayers.Human));
             Assert.That(_view.IsVisible, Is.True);
             Assert.That(_view.ShowStatus, Is.False);
@@ -108,7 +123,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             _presenter.Restore(PlayerId.None, CaptureSiteState.Neutral, TestPlayers.Enemy, 0.2f,
                 SiteFacilityType.Mining, 0f);
-            _presenter.SetVisibility(true, false);
+            _presenter.SetVisibility(true);
             Assert.That(_view.IsVisible, Is.True);
             Assert.That(_view.ShowStatus, Is.True);
         }
@@ -118,7 +133,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             _presenter.Restore(PlayerId.None, CaptureSiteState.Neutral, PlayerId.None, 0f,
                 SiteFacilityType.Mining, 0f);
-            _presenter.SetVisibility(true, true);
+            _presenter.SetVisibility(true);
             Assert.That(_view.IsVisible, Is.True);
         }
 
@@ -250,6 +265,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             public TooltipHoverView TooltipHover { get; }
             public Vector3 Center { get; }
+            public float HitDistance { get; set; } = float.PositiveInfinity;
+            public float PointerHitDistance(Ray ray) => HitDistance;
             public float Radius => 30f;
             public float CaptureDuration => 10f;
             public Vector3 FacilityPosition => Vector3.zero;

@@ -13,6 +13,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         float CaptureDuration { get; }
         Vector3 FacilityPosition { get; }
 
+        float PointerHitDistance(Ray ray);
+
         void Render(
             OwnerRelation owner,
             CaptureSiteState state,

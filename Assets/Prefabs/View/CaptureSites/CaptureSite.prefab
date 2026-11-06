@@ -30,7 +30,8 @@ Transform:
   m_LocalPosition: {x: 0.3218655, y: -4.530252, z: -0.9902993}
   m_LocalScale: {x: 621.54205, y: 621.54193, z: 621.54193}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 948297158877856083}
   m_Father: {fileID: 5036641650661622423}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1523154926750602608
@@ -432,6 +433,60 @@ Transform:
   - {fileID: 9082037229382733003}
   m_Father: {fileID: 872490856487092242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5409806522995343492
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 948297158877856083}
+  - component: {fileID: 3484715797932944033}
+  m_Layer: 2
+  m_Name: PointerCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &948297158877856083
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5409806522995343492}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9082037229382733003}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &3484715797932944033
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5409806522995343492}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 7803778804846005805, guid: 0058a324ddae89b4db4e6ed955c1e481, type: 3}
 --- !u!1 &6135878916390307444
 GameObject:
   m_ObjectHideFlags: 0
@@ -833,6 +888,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.CaptureSites.CaptureSiteView
   captureRing: {fileID: 7854025809125787132}
   asteroidRocks: {fileID: 5036641650661622423}
+  pointerColliders:
+  - {fileID: 3484715797932944033}
   rockObstacles: []
   statusCanvas: {fileID: 1434080349191544781}
   progressFill: {fileID: 2274206431328672243}

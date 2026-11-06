@@ -73,6 +73,8 @@ namespace EmpireAtWar.Editor.CaptureSites
             // Registered MapObstacles steer ship navigation and draw on the minimap.
             SerializedObject serializedSite = new SerializedObject(site);
             SerializedProperty siteObstacles = serializedSite.FindProperty("rockObstacles");
+            SerializedProperty pointerColliders = serializedSite.FindProperty("pointerColliders");
+            pointerColliders.arraySize = 0;
             siteObstacles.arraySize = 0;
             foreach (Transform rock in rocks)
             {
@@ -88,6 +90,9 @@ namespace EmpireAtWar.Editor.CaptureSites
                     serializedObstacle.ApplyModifiedPropertiesWithoutUndo();
                 }
 
+                pointerColliders.arraySize++;
+                pointerColliders.GetArrayElementAtIndex(pointerColliders.arraySize - 1).objectReferenceValue =
+                    rock.GetComponent<MeshCollider>();
                 siteObstacles.arraySize++;
                 siteObstacles.GetArrayElementAtIndex(siteObstacles.arraySize - 1).objectReferenceValue = obstacle;
             }
@@ -143,7 +148,7 @@ namespace EmpireAtWar.Editor.CaptureSites
             SerializedProperty settings = serializedData.FindProperty("siteSettings").FindPropertyRelative("keyValue");
             settings.arraySize = 2;
             SetSettings(settings.GetArrayElementAtIndex(0), CaptureSiteKind.Mining, 60f, 10f, -60f);
-            SetSettings(settings.GetArrayElementAtIndex(1), CaptureSiteKind.Satellite, 100f, 6f, 0f);
+            SetSettings(settings.GetArrayElementAtIndex(1), CaptureSiteKind.Satellite, 500f, 6f, 0f);
             serializedData.ApplyModifiedPropertiesWithoutUndo();
             EditorUtility.SetDirty(data);
             AsteroidMiningFacilityAssetBuilder.AddAddressable(DATA_PATH, "Model");

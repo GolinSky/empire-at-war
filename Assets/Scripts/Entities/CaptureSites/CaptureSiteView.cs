@@ -14,6 +14,7 @@ namespace EmpireAtWar.Entities.CaptureSites
     {
         [SerializeField] private CaptureRingView captureRing;
         [SerializeField] private Transform asteroidRocks;
+        [SerializeField] private MeshCollider[] pointerColliders;
         [SerializeField] private MapObstacle[] rockObstacles = Array.Empty<MapObstacle>();
         [SerializeField] private Canvas statusCanvas;
         [SerializeField] private Image progressFill;
@@ -46,6 +47,17 @@ namespace EmpireAtWar.Entities.CaptureSites
         public float CaptureDuration => _settings.CaptureDuration;
         public Vector3 FacilityPosition => Center + Vector3.up * _settings.FacilityHeightOffset;
         public IReadOnlyList<MapObstacle> RockObstacles => rockObstacles;
+
+        public float PointerHitDistance(Ray ray)
+        {
+            float nearest = float.PositiveInfinity;
+            foreach (MeshCollider collider in pointerColliders)
+            {
+                if (collider.gameObject.activeInHierarchy && collider.Raycast(ray, out RaycastHit hit, nearest))
+                    nearest = hit.distance;
+            }
+            return nearest;
+        }
 
         private void Awake()
         {
