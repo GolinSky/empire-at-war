@@ -18,7 +18,6 @@ using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Models.ShipUi;
@@ -173,7 +172,6 @@ namespace EmpireAtWar.Repository
             assets.BeginPreload<HardPointOverlayData>(nameof(HardPointOverlayData));
             assets.BeginPreload<TooltipSettings>(nameof(TooltipSettings));
             assets.BeginPreload<TooltipIconData>(nameof(TooltipIconData));
-            assets.BeginPreload<MenuData>(nameof(MenuData));
             assets.BeginPreload<ShipUiData>(nameof(ShipUiData));
             assets.BeginPreload<ShipAbilityCatalog>(nameof(ShipAbilityCatalog));
             assets.BeginPreload<MiniMapData>(nameof(MiniMapData));

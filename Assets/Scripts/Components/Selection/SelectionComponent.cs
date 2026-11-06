@@ -43,10 +43,6 @@ namespace EmpireAtWar.Components.Ship.Selection
         private bool _hasMarkerScale;
         private bool _isMultipleSelection;
 
-        [SerializeField] private SelectionType selectionType;
-
-        private bool _canBeSelected = true;
-
         private PlayerId Owner { get; set; }
         private ILocalPlayer LocalPlayer { get; set; }
         public Vector3 WorldPosition => selectionRoot.position;
@@ -85,33 +81,14 @@ namespace EmpireAtWar.Components.Ship.Selection
         public void Respawn()
         {
             Model.IsSelected = false;
-            _canBeSelected = true;
             Initialize();
         }
 
         public override void Release()
         {
-            OnSkipSelection(selectionType);
             Model.OnSelected -= HandleSelection;
             _selectionService.RemoveObserver(this);
             HandleSelection(false);
-            _canBeSelected = false;
-        }
-
-        public void OnSelected()
-        {
-            if (_canBeSelected)
-            {
-                OnSelected(selectionType);
-            }
-        }
-
-        public void OnSelected(SelectionType type)
-        {
-        }
-
-        public void OnSkipSelection(SelectionType type)
-        {
         }
 
         public void SetActive(bool isActive)

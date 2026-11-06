@@ -5833,7 +5833,6 @@ MonoBehaviour:
   selectionRoot: {fileID: 6823356564290352850}
   selectedRenderer: {fileID: 7056994896576359044}
   ringSize: {x: 152.82387, y: 152.82387}
-  selectionType: 3
 --- !u!114 &9099343971920931525
 MonoBehaviour:
   m_ObjectHideFlags: 0

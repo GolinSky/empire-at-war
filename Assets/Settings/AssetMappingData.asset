@@ -119,13 +119,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MenuData
-      value:
-        m_AssetGUID: cec5011cf91f219438a8b647c98b2398
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: LayerData
       value:
         m_AssetGUID: dce26a8d996febd4a8ad15563ab38472

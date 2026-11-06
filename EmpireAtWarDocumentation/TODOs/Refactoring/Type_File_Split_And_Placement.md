@@ -24,12 +24,12 @@ tags:
 - **CO6:** 77 multi-type files at HEAD `7a0f25d0`. Recount before starting.
   - 4 types: `Services/ShipNavigation/ShipNavigationService.cs`, `Entities/EnemyFaction/Models/EnemyStrategicDecisionModel.cs`
   - 3 types: `MapObstacleContactProvider.cs`, `ISkirmishUiRoute.cs`, `EnemyUnitCommander.cs`, `ShipAiDecisionModel.cs`, `EnemyProductionDecisionModel.cs`, `FactionUi.cs`, `ShipBuildUi.cs`, `ReinforcementUi.cs`, `SelectionComponent.cs`, `MarqueeSelectionModel.cs`, `BaseSystem/Views.cs`
-  - Observer interface inside a `*Data.cs`: `GameData`, `LoadingData`, `MenuData` (`IMenuModelModelObserver` → rename typo), `MiniMapData`, `PlanetData`, `SpaceStationData`, `MiningFacilityData`, `DefendPlatformData`, `SceneData`
+  - Observer interface inside a `*Data.cs`: `GameData`, `LoadingData`, `MiniMapData`, `PlanetData`, `SpaceStationData`, `MiningFacilityData`, `DefendPlatformData`, `SceneData`
   - File ≠ type: `Views.cs` (IView/BaseView/ViewComponent), `Controllers.cs` (Controller), `EntityMediator.cs` (IEntityLocator/EntityLocator)
 - **CO7:** empty tracked folders `Components/Commands/Ship`, `Components/Utils/Scenes` (L3 leftover). Loose files `Entities/FogVisibilityModel.cs`, `Entities/FogVisibilityGridModel.cs`, `Components/BaseComponent.cs`. `Components/Commands/` holds only `IGameCommand` + `GameTimeMode` (the name is stale after `6f55a2a2`).
 
 ## Parallel lanes (Wave 2, file-disjoint)
-- **2a Entities data observers:** the 9 `*Data.cs` files + the `IMenuModelModelObserver` rename.
+- **2a Entities data observers:** the 8 `*Data.cs` files.
 - **2b Services:** `ShipNavigation/*`, `Enemy/*`, `UiRouting/*`, `Economy/IIncomeProvider.cs`, + service interface/impl pairs.
 - **2c Components:** `Scripts/BaseSystem/*`, `Selection/*`, `Movement/Formation/*`, `Ship/Movement/*`, `ViewComponents/Health/HardPoint.cs` + component pairs.
 - **2d Entities rest:** `EnemyFaction/Models/*`, `Ship/*`, `Faction/*`, `Reinforcement/*`, `Menu/*`, `MiniMap/Ui/*`, `Economy/*`.

@@ -114,6 +114,10 @@ created: "2026-10-29\r"
 
 ## Core Refactors
 
+- [ ] [[Done/Refactoring/Empty_Code_Cleanup]] — Select and deselect a ship. Confirm its selection ring appears and disappears.
+- [ ] [[Done/Refactoring/Empty_Code_Cleanup]] — Start a skirmish and confirm the battle loads.
+- [ ] [[Done/Refactoring/Empty_Code_Cleanup]] — Run EditMode categories `BattleInput`, `Squadrons`, `GameFlow` and `Core`.
+
 
 - [[Done/Refactoring/Auto_Power_Refactor]]
   - [ ] Run EditMode `Abilities`, `Ships`, `Core`, `EnemyAi`, `Balance`; skirmish check that auto power still fires shields/weapons/laser beams as before.

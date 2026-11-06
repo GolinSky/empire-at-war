@@ -165,11 +165,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cec5011cf91f219438a8b647c98b2398
-    m_Address: MenuData
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: db24ad0f0caa9754ea773ee82300d46d
     m_Address: SurvivalWaveData
     m_ReadOnly: 0

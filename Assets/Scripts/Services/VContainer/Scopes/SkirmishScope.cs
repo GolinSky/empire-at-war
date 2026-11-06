@@ -23,7 +23,6 @@ using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Models.Menu;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.ReinforcementZones;
@@ -162,7 +161,6 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SquadronRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SquadronLauncher>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SquadronLaunchSlots>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            AssetRegistrations.RegisterShared<MenuData>(builder, Assets);
             builder.Register<SettingsModel>(Lifetime.Singleton);
             builder.Register<SettingsDraftEditor>(Lifetime.Singleton);
             builder.Register<KeyBindingEditor>(Lifetime.Singleton);

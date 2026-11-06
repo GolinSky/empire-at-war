@@ -9,7 +9,6 @@ using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Squadrons;
@@ -205,7 +204,6 @@ namespace EmpireAtWar.Editor.Squadrons
             SpriteRenderer ring = canvas.transform.Find("SelectedImage").GetComponent<SpriteRenderer>();
 
             SerializedObject selectionObject = new SerializedObject(selection);
-            selectionObject.FindProperty("selectionType").intValue = (int)SelectionType.Ship;
             selectionObject.FindProperty("selectionRoot").objectReferenceValue = canvas.transform;
             selectionObject.FindProperty("selectedRenderer").objectReferenceValue = ring;
             selectionObject.FindProperty("ringSize").vector2Value = Vector2.one * SELECTION_RING_SIZE;
