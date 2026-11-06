@@ -221,6 +221,24 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test, Category("Squadrons")]
+        public void SquadronPrewarm_LeavesTheFalconAvailableForPurchase()
+        {
+            var setup = new EmpireAtWar.Entities.MainMenu.Skirmish.SkirmishModel();
+            setup.SelectSlotFaction(0, FactionType.Rebellion);
+            BuildSaveProject(setup.CreateBattle());
+            BuildSaveBattle();
+            LocalPlayerScope player = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            var pool = player.Container.Resolve<SquadronPool>();
+            using var slices = GetPrewarmSlices(pool, CancellationToken.None);
+            while (slices.MoveNext())
+                Assert.That(slices.Current.transform.parent.GetComponent<EntityLifetimeScope>().Container.Resolve<SquadronType>(),
+                    Is.Not.EqualTo(SquadronType.HanSoloMillenniumFalcon));
+
+            var model = player.Container.Resolve<PlayerFactionModel>();
+            Assert.That(model.IsHeroReserved(EmpireAtWar.Entities.Units.UnitTypeId.Squadron(SquadronType.HanSoloMillenniumFalcon)), Is.False);
+        }
+
         [Test]
         public void SquadronPrewarm_CancellationStopsCreationAndKeepsBuiltSquadronsReusable()
         {

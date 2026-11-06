@@ -55,6 +55,11 @@ acceptance: pending-user
 - Squadron saves now validate against `SquadronData.Abilities`. Active Invulnerability saves as recovery for remaining active time + 60 s. Stored recovery resumes, and pooled squadron slots clear on respawn. Added a save-validator regression case.
 - Audio import and prefab bindings: `EGL_FALCON_1`, Ready `HAN0601`, select `HAN0102`, move `HAN0202`, attack `HAN0308` / Chewbacca `HAN0304`, activation `HAN0604`; standard roster explosion profile.
 
+### Skirmish shop verification, 2026-11-06
+
+- Reproduced with a Rebellion station upgraded by cheat to level 2. The Falcon was reserved before purchase: `SquadronPool` created it during prewarm and stowed it alive, leaving the hero reservation set.
+- Excluded hero squadrons from startup prewarm. In a fresh live skirmish, verified the Falcon card visible inside the shop viewport for 1,800 credits at level 5. After deployment, its single-copy limit hid the card again.
+
 ### Stationary simulator, 2026-11-06
 
 - Live asset snapshots, seeds 1–10, alternating sides, range 100, full arcs, no specials, research or support. Mean remaining HP includes shields. Shots/hits are Falcon totals over ten runs.
