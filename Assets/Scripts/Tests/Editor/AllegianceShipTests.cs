@@ -49,9 +49,9 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedShip_HasRequestedBalanceAndNoSquadrons()
         {
             var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.Hull, Is.EqualTo(30000));
-            Assert.That(data.Shields, Is.EqualTo(32000));
-            Assert.That(data.Speed, Is.EqualTo(16));
+            Assert.That(data.Hull, Is.EqualTo(15000));
+            Assert.That(data.Shields, Is.EqualTo(15000));
+            Assert.That(data.Speed, Is.EqualTo(14));
             Assert.That(data.Abilities, Is.EquivalentTo(new[] {ShipAbilityId.PowerToMainBatteries, ShipAbilityId.TractorBeam}));
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             Assert.That(view.GetComponentsInChildren<HangarComponent>(true), Is.Empty);
@@ -104,7 +104,7 @@ namespace EmpireAtWar.Tests.Editor
                 .FindProperty("ships.keyValue");
             var unit = Enumerable.Range(0, array.arraySize).Select(i => array.GetArrayElementAtIndex(i))
                 .Single(p => p.FindPropertyRelative("key").intValue == 213).FindPropertyRelative("value");
-            Assert.That(unit.FindPropertyRelative("<Price>k__BackingField").intValue, Is.EqualTo(10000));
+            Assert.That(unit.FindPropertyRelative("<Price>k__BackingField").intValue, Is.EqualTo(15000));
             Assert.That(unit.FindPropertyRelative("<BuildTime>k__BackingField").intValue, Is.EqualTo(85));
             Assert.That(unit.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue,
                 Is.EqualTo(AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/AllegianceIcon.png")));
