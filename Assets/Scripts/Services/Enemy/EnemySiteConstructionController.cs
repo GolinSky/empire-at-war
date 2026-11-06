@@ -16,7 +16,9 @@ namespace EmpireAtWar.Services.Enemy
     {
         private const float DECISION_INTERVAL = 3f;
         private const int MINIMUM_FLEET_SIZE = 2;
-        private readonly ICaptureSitesSystem _captureSites;
+        private readonly ICaptureSiteDirectory _sites;
+        private readonly ICaptureSitePresence _presence;
+        private readonly ICaptureSiteConstruction _construction;
         private readonly IShipService _shipService;
         private readonly ITimer _decisionTimer = TimerFactory.ConstructTimer(DECISION_INTERVAL);
         private readonly PlayerSlot _owner;
@@ -24,13 +26,16 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyStationPressureTracker _stationPressure;
         private readonly EmpireAtWar.Entities.EnemyFaction.Models.EnemyDefenseStrategy _defense;
 
-        public EnemySiteConstructionController(ICaptureSitesSystem captureSites, IShipService shipService,
+        public EnemySiteConstructionController(ICaptureSiteDirectory sites, ICaptureSitePresence presence,
+            ICaptureSiteConstruction construction, IShipService shipService,
             PlayerSlot owner, EnemyDefenseSnapshotBuilder snapshotBuilder,
             EmpireAtWar.Entities.EnemyFaction.Models.EnemyDefenseStrategy defense,
             EnemyStationPressureTracker stationPressure)
         {
             _owner = owner;
-            _captureSites = captureSites;
+            _sites = sites;
+            _presence = presence;
+            _construction = construction;
             _shipService = shipService;
             _snapshotBuilder = snapshotBuilder;
             _defense = defense;
@@ -45,7 +50,7 @@ namespace EmpireAtWar.Services.Enemy
             // Mines fund everything else, so an empty owned mine keeps the credits until it is built.
             if (HasEmptyOwnedMine())
             {
-                _captureSites.TryBuildOnOwnedSite(_owner.Id);
+                _construction.TryBuildOnOwnedSite(_owner.Id);
                 return;
             }
             if (CountOwnShips() < MINIMUM_FLEET_SIZE) return;
@@ -53,15 +58,15 @@ namespace EmpireAtWar.Services.Enemy
             if (!_snapshotBuilder.IsReady) return;
             var snapshot = _snapshotBuilder.Build();
             if (_defense.TrySelect(snapshot, out var choice) &&
-                _captureSites.TryStartConstruction(choice.SiteIndex, _owner.Id, choice.Type))
+                _construction.TryStartConstruction(choice.SiteIndex, _owner.Id, choice.Type))
                 EnemyAiTelemetry.RecordSatellite(_owner.Id, _owner.Faction, choice, snapshot.Money, _defense.TopChoices);
         }
 
         private bool HasEmptyOwnedMine()
         {
-            foreach (ICaptureSite site in _captureSites.Sites)
+            foreach (ICaptureSite site in _sites.Sites)
                 if (site.Kind != CaptureSiteKind.Satellite && site.Owner == _owner.Id &&
-                    site.State == CaptureSiteState.Owned && !_captureSites.HasHostileUnits(site, _owner.Id))
+                    site.State == CaptureSiteState.Owned && !_presence.HasHostileUnits(site, _owner.Id))
                     return true;
             return false;
         }

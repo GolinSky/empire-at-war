@@ -26,7 +26,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         IInitializable, ILateDisposable, ITickable, IObserver<BattleMap>
     {
         private IVisionService _visionService;
-        private ISpawnBlockerService _spawnBlockerService;
+        private IBattleAreaWriter _areas;
         private ICameraService _cameraService;
         private IPointerInput _pointerInput;
         private IMapModelObserver _mapModel;
@@ -53,7 +53,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             ISquadronRegistry squadronRegistry,
             IMapModelObserver mapModel,
             IVisionService visionService,
-            ISpawnBlockerService spawnBlockerService,
+            IBattleAreaWriter areas,
             ICameraService cameraService,
             IPointerInput pointerInput,
             IPlayerRoster playerRoster,
@@ -64,7 +64,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             _data = data;
             _mapModel = mapModel;
             _visionService = visionService;
-            _spawnBlockerService = spawnBlockerService;
+            _areas = areas;
             _cameraService = cameraService;
             _pointerInput = pointerInput;
             _battleMap = battleMap;
@@ -121,7 +121,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 ReinforcementZonePresenter zone = new ReinforcementZonePresenter(model: model, view: view, localPlayer: _localPlayer);
                 _zones.Add(zone);
                 _strengthSampler.Add(zone.Contains);
-                RegisterRelay(view.transform, view.StartingOwner);
+                RegisterRelay(view, view.StartingOwner);
             }
         }
 
@@ -138,7 +138,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
             {
                 ReinforcementZoneSave save = saves[i];
                 _zones[i].Restore(save.Owner, save.CapturingPlayer, save.CaptureProgress, save.IsContested);
-                RegisterRelay(_zoneViews[i].transform, save.Owner);
+                RegisterRelay(_zoneViews[i], save.Owner);
             }
 
             // Visibility waits until every relay is registered: one zone's relay can reveal another.
@@ -157,7 +157,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 ReinforcementZonePresenter zone = _zones[i];
                 if (zone.Tick(deltaTime, _strengthSampler[i]))
                 {
-                    RegisterRelay(_zoneViews[i].transform, zone.Owner);
+                    RegisterRelay(_zoneViews[i], zone.Owner);
                     OwnershipChanged?.Invoke();
                 }
 
@@ -167,19 +167,6 @@ namespace EmpireAtWar.Services.ReinforcementZones
                     zone.Contains(_cameraService.GetWorldPoint(_pointerInput.Position, zone.Center));
                 zone.SetVisibility(isRevealed, isHovered);
             }
-        }
-
-        public bool IsPositionInAnyZone(Vector3 position, float clearance = 0f)
-        {
-            foreach (ReinforcementZonePresenter zone in _zones)
-            {
-                if (PlanarGeometry.ContainsCircle(position, zone.Center, zone.Radius + clearance))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         public int GetOwnedCapturableZoneCount(PlayerId owner)
@@ -277,9 +264,11 @@ namespace EmpireAtWar.Services.ReinforcementZones
         }
 
         // Each zone centre holds a relay: only its owner's team may spawn around it, and an owned relay gives vision.
-        private void RegisterRelay(Transform relay, PlayerId owner)
+        private void RegisterRelay(ReinforcementZoneView view, PlayerId owner)
         {
-            _spawnBlockerService.Register(owner, relay, _data.RelaySpawnBlockRadius);
+            Transform relay = view.transform;
+            _areas.Register(BattleAreaLayer.StructureExclusion, owner, relay, view.Radius);
+            _areas.Register(BattleAreaLayer.SpawnBlock, owner, relay, _data.RelaySpawnBlockRadius);
             if (owner == PlayerId.None)
                 _visionService.Unregister(relay);
             else
@@ -290,7 +279,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
         {
             foreach (ReinforcementZoneView view in _zoneViews)
             {
-                _spawnBlockerService.Unregister(view.transform);
+                _areas.Unregister(BattleAreaLayer.SpawnBlock, view.transform);
+                _areas.Unregister(BattleAreaLayer.StructureExclusion, view.transform);
                 _visionService.Unregister(view.transform);
             }
 

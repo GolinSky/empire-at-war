@@ -8,16 +8,17 @@ namespace EmpireAtWar.Services.Vision
     public sealed class VisionService : IVisionService
     {
         private readonly IPlayerRelations _relations;
-        private readonly bool _fogEnabled;
 
         private readonly OwnedCircleSet _sources = new OwnedCircleSet();
+
+        public bool FogEnabled { get; }
 
         public IReadOnlyList<OwnedCircle> Sources => _sources.Circles;
 
         public VisionService(IPlayerRelations relations, bool fogEnabled = true)
         {
             _relations = relations;
-            _fogEnabled = fogEnabled;
+            FogEnabled = fogEnabled;
         }
 
         public void Register(PlayerId owner, Transform source, float radius) =>
@@ -26,9 +27,9 @@ namespace EmpireAtWar.Services.Vision
         public void Unregister(Transform source) => _sources.Unregister(source);
 
         public bool IsVisible(PlayerId viewer, Vector3 position) =>
-            !_fogEnabled || _sources.AnyContains(position, 0f, _relations, viewer, true);
+            !FogEnabled || _sources.AnyContains(position, 0f, _relations, viewer, true);
 
         public bool IsAreaVisible(PlayerId viewer, Vector3 position, float radius) =>
-            !_fogEnabled || _sources.AnyContains(position, radius, _relations, viewer, true);
+            !FogEnabled || _sources.AnyContains(position, radius, _relations, viewer, true);
     }
 }

@@ -32,7 +32,7 @@ namespace EmpireAtWar.Views.SpawnArea
         [SerializeField] private MeshRenderer fogRenderer;
 
         private IVisionService _vision;
-        private ISpawnBlockerService _blockers;
+        private IBattleAreaService _areas;
         private IPlayerRelations _relations;
         private INotifier<BattleMap> _battleMap;
 
@@ -43,11 +43,11 @@ namespace EmpireAtWar.Views.SpawnArea
         private float _timer;
 
         [Inject]
-        private void Construct(IVisionService vision, ISpawnBlockerService blockers, IPlayerRelations relations,
+        private void Construct(IVisionService vision, IBattleAreaService areas, IPlayerRelations relations,
             INotifier<BattleMap> battleMap)
         {
             _vision = vision;
-            _blockers = blockers;
+            _areas = areas;
             _relations = relations;
             _battleMap = battleMap;
         }
@@ -113,15 +113,22 @@ namespace EmpireAtWar.Views.SpawnArea
 
         private void Redraw()
         {
-            _grid.Clear();
-            foreach (OwnedCircle source in _vision.Sources)
+            if (_vision.FogEnabled)
             {
-                if (!_relations.IsAllied(source.Owner, _team)) continue;
-                Vector3 center = source.Transform.position;
-                _grid.Reveal(center.x, center.z, source.Radius);
+                _grid.Clear();
+                foreach (OwnedCircle source in _vision.Sources)
+                {
+                    if (!_relations.IsAllied(source.Owner, _team)) continue;
+                    Vector3 center = source.Transform.position;
+                    _grid.Reveal(center.x, center.z, source.Radius);
+                }
+            }
+            else
+            {
+                _grid.RevealAll();
             }
 
-            foreach (OwnedCircle blocker in _blockers.Blockers)
+            foreach (OwnedCircle blocker in _areas.Get(BattleAreaLayer.SpawnBlock))
             {
                 if (_relations.IsAllied(blocker.Owner, _team)) continue;
                 Vector3 center = blocker.Transform.position;

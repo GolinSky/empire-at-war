@@ -24,7 +24,8 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class EnemyDefenseSnapshotBuilder
     {
         private const float THREAT_RADIUS = 1000f;
-        private readonly ICaptureSitesSystem _sites;
+        private readonly ICaptureSiteDirectory _sites;
+        private readonly ICaptureSitePresence _presence;
         private readonly ForceCompositionBuilder _forces;
         private readonly HostileIntelModel _intel;
         private readonly IEntityLocator _entities;
@@ -45,7 +46,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<EnemyDefenseOption> _options = new List<EnemyDefenseOption>();
         private readonly List<EnemyDefensePad> _pads = new List<EnemyDefensePad>();
 
-        public EnemyDefenseSnapshotBuilder(ICaptureSitesSystem sites, ForceCompositionBuilder forces,
+        public EnemyDefenseSnapshotBuilder(ICaptureSiteDirectory sites, ICaptureSitePresence presence, ForceCompositionBuilder forces,
             TeamIntelRegistry intel, IEntityLocator entities, IPlayerRoster players, PlayerSlot owner,
             IEconomyModelObserver money, EconomyService economy, EconomyData economyData,
             EnemyProductionStrategy production, IEnemyAiDebugInfo strategy,
@@ -53,6 +54,7 @@ namespace EmpireAtWar.Services.Enemy
             IProductionAccess productionAccess)
         {
             _sites = sites;
+            _presence = presence;
             _forces = forces;
             _intel = intel.Get(owner.Team);
             _entities = entities;
@@ -93,7 +95,7 @@ namespace EmpireAtWar.Services.Enemy
                     if (sibling.IsOperational && sibling.FacilityType == SiteFacilityType.Mining) protectedMines++;
                     if (sibling.Kind == CaptureSiteKind.Satellite &&
                         (sibling.State == CaptureSiteState.Constructing || sibling.IsOperational)) existing.Add(sibling.FacilityType);
-                    if (_sites.HasHostileUnits(sibling, _owner.Id)) threatened = true;
+                    if (_presence.HasHostileUnits(sibling, _owner.Id)) threatened = true;
                 }
                 float lastSeen = float.PositiveInfinity;
                 foreach (HostileSighting sighting in _intel.Sightings)
@@ -114,7 +116,7 @@ namespace EmpireAtWar.Services.Enemy
                 float exposure = float.IsPositiveInfinity(enemyDistance) ? 0f : float.IsPositiveInfinity(ownDistance) ? 1f :
                     ownDistance / Mathf.Max(1f, ownDistance + enemyDistance);
                 _pads.Add(new EnemyDefensePad(i, (float)protectedMines / PointOfInterestPlacer.SITES_PER_MINING_POINT, exposure, lastSeen,
-                    _sites.HasHostileUnits(site, _owner.Id), threatened || lastSeen <= 5f,
+                    _presence.HasHostileUnits(site, _owner.Id), threatened || lastSeen <= 5f,
                     existing));
             }
             return new EnemyDefenseSnapshot(_money.Money, _economy.TotalIncome / _economyData.IncomeDelay,

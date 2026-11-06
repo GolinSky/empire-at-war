@@ -15,15 +15,15 @@ namespace EmpireAtWar.Presenters.MiniMap
     public sealed class CaptureSiteMiniMapPresenter : IInitializable, ILateTickable, ILateDisposable,
         IObserver<BattleState>
     {
-        private readonly ICaptureSitesSystem _captureSitesSystem;
+        private readonly ICaptureSiteDirectory _captureSitesSystem;
 
         private readonly MiniMapMarkerCollection<ICaptureSite> _markers;
         private readonly INotifier<BattleState> _battleState;
 
-        private bool _hasMarkers;
+        private bool _running;
 
         public CaptureSiteMiniMapPresenter(
-            ICaptureSitesSystem captureSitesSystem,
+            ICaptureSiteDirectory captureSitesSystem,
             MiniMapData miniMapData,
             INotifier<BattleState> battleState)
         {
@@ -34,18 +34,26 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         public void Initialize()
         {
+            _captureSitesSystem.SitesChanged += RefreshSites;
             _battleState.AddObserver(this);
         }
 
         // Sites are built from the battle map during loading, so they all exist once the battle runs.
         public void UpdateState(BattleState state)
         {
-            if (state != BattleState.Running || _hasMarkers)
+            if (state != BattleState.Running || _running)
             {
                 return;
             }
 
-            _hasMarkers = true;
+            _running = true;
+            RefreshSites();
+        }
+
+        private void RefreshSites()
+        {
+            if (!_running) return;
+            _markers.Clear();
             foreach (ICaptureSite site in _captureSitesSystem.Sites)
             {
                 MiniMapMarker marker = new MiniMapMarker(site.Kind == CaptureSiteKind.Satellite
@@ -58,6 +66,7 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         public void LateDispose()
         {
+            _captureSitesSystem.SitesChanged -= RefreshSites;
             _battleState.RemoveObserver(this);
             _markers.Clear();
         }

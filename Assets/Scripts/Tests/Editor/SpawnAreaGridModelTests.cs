@@ -20,6 +20,18 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void RevealAll_FogDisabledOpensWholeMapBeforeBlockers()
+        {
+            SpawnAreaGridModel grid = CreateGrid();
+            grid.RevealAll();
+            grid.Block(0f, 0f, 50f);
+
+            Assert.That(grid.GetAt(-495f, -495f), Is.EqualTo(SpawnAreaGridModel.OPEN));
+            Assert.That(grid.GetAt(495f, 495f), Is.EqualTo(SpawnAreaGridModel.OPEN));
+            Assert.That(grid.GetAt(0f, 0f), Is.EqualTo(SpawnAreaGridModel.BLOCKED));
+        }
+
+        [Test]
         public void Reveal_OpensCellsInsideCircleOnly()
         {
             SpawnAreaGridModel grid = CreateGrid();

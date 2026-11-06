@@ -206,7 +206,7 @@ namespace EmpireAtWar.Tests.Editor
             ConstructionSite sites = new ConstructionSite { Owner = new PlayerId(ownerIndex) };
             BattleVictoryService service = new BattleVictoryService(null, new ShipService(), new EntityLocator(),
                 roster, TestPlayers.CreateLocalPlayer(roster), new PlayerRegistry(), null,
-                new BattleVictoryModel(), sites);
+                new BattleVictoryModel(), new[] { new ConstructingSitesSurvival(sites) });
             typeof(BattleVictoryService).GetMethod("CollectStates", BindingFlags.Instance | BindingFlags.NonPublic)
                 .Invoke(service, null);
             List<PlayerBattleState> states = (List<PlayerBattleState>)typeof(BattleVictoryService)
@@ -214,15 +214,11 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(states.Find(state => state.Player == sites.Owner).UnitCount, Is.EqualTo(1));
         }
 
-        private sealed class ConstructionSite : ICaptureSite, ICaptureSitesSystem
+        private sealed class ConstructionSite : ICaptureSite, ICaptureSiteDirectory
         {
             public CaptureSiteKind Kind => CaptureSiteKind.Mining;
             public int PointId => -1;
 
-            public event System.Action<PlayerId, PlayerId, SiteFacilityType> SiteCaptured { add { } remove { } }
-            public event System.Action<PlayerId, SiteFacilityType> SiteLost { add { } remove { } }
-            public event System.Action<PlayerId, SiteFacilityType> ConstructionStarted { add { } remove { } }
-            public event System.Action<PlayerId, SiteFacilityType> ConstructionCompleted { add { } remove { } }
             public PlayerId Owner { get; set; }
             public CaptureSiteState State => CaptureSiteState.Constructing;
             public SiteFacilityType FacilityType => default;
@@ -232,18 +228,9 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsRevealed => false;
             public float PointerHitDistance(Ray ray) => float.PositiveInfinity;
             public bool IsOperational => false;
+            public event System.Action SitesChanged { add { } remove { } }
             public IReadOnlyList<ICaptureSite> Sites => new[] { this };
             public bool Contains(Vector3 position, float clearance = 0f) => false;
-            public bool IsPositionInAnySite(Vector3 position, float clearance = 0f) => false;
-            public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
-            { position = default; return false; }
-            public bool TryGetThreatenedSite(PlayerId owner, out Vector3 position)
-            { position = default; return false; }
-            public bool TryGetRaidTarget(PlayerId attacker, Vector3 origin, out Vector3 position)
-            { position = default; return false; }
-            public bool HasHostileUnits(ICaptureSite site, PlayerId owner) => false;
-            public bool TryStartConstruction(int siteIndex, PlayerId owner, SiteFacilityType type) => false;
-            public bool TryBuildOnOwnedSite(PlayerId owner) => false;
         }
 
         // Keeps the duel cases readable: the human is team 0, the AI team 1.

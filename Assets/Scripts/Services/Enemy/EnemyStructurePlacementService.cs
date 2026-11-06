@@ -34,7 +34,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IReinforcementSpawnRule _spawnRule;
         private readonly IStructureSpawnClearance _structureClearance;
         private readonly IVisionService _vision;
-        private readonly ISpawnBlockerService _blockers;
+        private readonly IBattleAreaService _areas;
 
         private readonly PlayerSlot _owner;
         private readonly IMapModelObserver _mapModel;
@@ -49,7 +49,7 @@ namespace EmpireAtWar.Services.Enemy
             IReinforcementSpawnRule spawnRule,
             IStructureSpawnClearance structureClearance,
             IVisionService vision,
-            ISpawnBlockerService blockers,
+            IBattleAreaService areas,
             IMapModelObserver mapModel,
             PlayerSlot owner,
             BoxCollider stationPrefab,
@@ -62,7 +62,7 @@ namespace EmpireAtWar.Services.Enemy
             _spawnRule = spawnRule;
             _structureClearance = structureClearance;
             _vision = vision;
-            _blockers = blockers;
+            _areas = areas;
             _stationBounds = StructureSpawnClearance.GetSpawnBounds(stationPrefab);
         }
 
@@ -120,7 +120,7 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>Hidden by fog but not covered by a hostile or neutral blocker, so a scout can open it.</summary>
         private bool IsUnexplored(Vector3 candidate) =>
-            !_vision.IsVisible(_owner.Id, candidate) && !_blockers.IsBlocked(_owner.Id, candidate);
+            !_vision.IsVisible(_owner.Id, candidate) && !_areas.IsBlocked(_owner.Id, candidate);
 
         private bool TryGetPositionNear(Vector3 anchor, float anchorRadius, out Vector3 position)
         {

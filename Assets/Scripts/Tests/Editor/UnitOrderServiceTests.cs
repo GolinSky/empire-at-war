@@ -348,8 +348,6 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryGetDefaultZoneCenter(PlayerId side, out Vector3 point)
             { LastSide = side; point = Center; return true; }
 
-            public bool IsPositionInAnyZone(Vector3 point, float clearance = 0f) => false;
-
             public int GetOwnedCapturableZoneCount(PlayerId side) => 0;
 
             public void CopyOwnedCapturableZoneBounds(PlayerId side, List<Bounds> dest)

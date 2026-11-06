@@ -6,7 +6,6 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.MiniMap;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
@@ -15,7 +14,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.Selection;
@@ -39,7 +38,8 @@ namespace EmpireAtWar.Tests.Editor
         private UnitActionTargetingModel _targeting;
         private FakeOrders _orders;
         private FakeCamera _camera;
-        private FakeCaptureSite _captureSite;
+        private BattleAreaService _areas;
+        private GameObject _siteView;
         private PlayerOrderInputHandler _handler;
 
         [SetUp]
@@ -55,11 +55,13 @@ namespace EmpireAtWar.Tests.Editor
             _targeting = new UnitActionTargetingModel();
             _orders = new FakeOrders();
             _camera = new FakeCamera();
-            _captureSite = new FakeCaptureSite();
+            _areas = new BattleAreaService(TestPlayers.CreateDuel());
+            _siteView = new GameObject("Site");
+            _siteView.transform.position = new Vector3(10f, 3f, 20f);
             _handler = new PlayerOrderInputHandler(gestures: _input, orderInput: _input, selectionService: _selection, query: _query,
                 cameraService: _camera, layerService: null, abilities: _abilities, targeting: _targeting, unitOrderService: _orders, superWeapons: new SuperWeaponTargetingModel(),
                 hardPointHover: new HardPointOverlayModel(),
-                localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), captureSites: _captureSite);
+                localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), battleAreas: _areas);
             _handler.Initialize();
         }
 
@@ -67,6 +69,7 @@ namespace EmpireAtWar.Tests.Editor
         public void TearDown()
         {
             _handler.LateDispose();
+            UnityEngine.Object.DestroyImmediate(_siteView);
             UnityEngine.Object.DestroyImmediate(_view);
         }
 
@@ -157,7 +160,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(true)]
         public void CaptureSiteCommand_MovesToSiteCenterAtReceiverHeight(bool minimap)
         {
-            _captureSite.Enabled = true;
+            RegisterSite();
             _query.ReturnEnemy = false;
             _view.transform.position = new Vector3(0f, 15f, 0f);
 
@@ -174,7 +177,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(true)]
         public void CaptureSiteCommand_PreservesAttackMoveMode(bool minimap)
         {
-            _captureSite.Enabled = true;
+            RegisterSite();
             _query.ReturnEnemy = false;
             _targeting.Start(UnitActionId.AttackMove);
 
@@ -192,7 +195,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(true)]
         public void CaptureSiteCommand_DoesNotReplacePendingAttack(bool minimap)
         {
-            _captureSite.Enabled = true;
+            RegisterSite();
             _query.ReturnEnemy = false;
             _targeting.Start(UnitActionId.Attack);
 
@@ -209,7 +212,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(true)]
         public void CaptureSiteCommand_QueuesWaypointWithoutIssuingImmediateMove(bool minimap)
         {
-            _captureSite.Enabled = true;
+            RegisterSite();
             _query.ReturnEnemy = false;
             _targeting.Start(UnitActionId.WaypointMove);
 
@@ -229,7 +232,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(true)]
         public void WorldCaptureSiteCommand_FriendlyFacilityMovesAndEnemyFacilityAttacks(bool enemy)
         {
-            _captureSite.Enabled = true;
+            RegisterSite();
             _query.Target = enemy ? _enemy : _receiver;
             _query.Command = new FakeFacilitySelection();
 
@@ -244,7 +247,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(true)]
         public void WorldCaptureSiteCommand_OverlappingShipDoesNotBlockFriendlyMove(bool enemy)
         {
-            _captureSite.Enabled = true;
+            RegisterSite();
             _query.Target = enemy ? _enemy : _receiver;
             _query.Command = new FakeFacilitySelection { SelectionType = SelectionType.Ship };
             _view.transform.position = new Vector3(0f, 15f, 0f);
@@ -281,7 +284,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(true)]
         public void MinimapObstacle_ForwardsOnlyCaptureSiteCommands(bool insideSite)
         {
-            _captureSite.Enabled = insideSite;
+            if (insideSite) RegisterSite();
             MiniMapData model = ScriptableObject.CreateInstance<MiniMapData>();
             try
             {
@@ -291,7 +294,7 @@ namespace EmpireAtWar.Tests.Editor
                     inputLock: new UnlockedInput(), uiService: null, cancelRouter: null,
                     routeNavigation: null, orderInput: orderInput, tooltipService: null,
                     fogMask: null, model: model, playerColors: null, timerPoolService: null,
-                    captureSites: _captureSite);
+                    battleAreas: _areas);
 
                 controller.OrderMove(new Vector3(11f, 0f, 21f));
 
@@ -325,41 +328,8 @@ namespace EmpireAtWar.Tests.Editor
             public IDisposable AcquireBattle() => throw new NotSupportedException();
         }
 
-        private sealed class FakeCaptureSite : ICaptureSite, ICaptureSitesSystem
-        {
-            public CaptureSiteKind Kind => CaptureSiteKind.Mining;
-            public int PointId => -1;
-
-            public event System.Action<PlayerId, PlayerId, SiteFacilityType> SiteCaptured { add { } remove { } }
-            public event System.Action<PlayerId, SiteFacilityType> SiteLost { add { } remove { } }
-            public event System.Action<PlayerId, SiteFacilityType> ConstructionStarted { add { } remove { } }
-            public event System.Action<PlayerId, SiteFacilityType> ConstructionCompleted { add { } remove { } }
-            public bool Enabled { get; set; }
-            public PlayerId Owner => PlayerId.None;
-            public CaptureSiteState State => CaptureSiteState.Neutral;
-            public SiteFacilityType FacilityType => SiteFacilityType.Mining;
-            public float CaptureProgress => 0f;
-            public float ConstructionProgress => 0f;
-            public Vector3 Center => new Vector3(10f, 3f, 20f);
-            public bool IsRevealed => true;
-            public float PointerHitDistance(Ray ray) => float.PositiveInfinity;
-            public bool IsOperational => false;
-            public IReadOnlyList<ICaptureSite> Sites => Enabled ? new ICaptureSite[] { this } : Array.Empty<ICaptureSite>();
-
-            public bool Contains(Vector3 position, float clearance = 0f) =>
-                Vector2.Distance(new Vector2(position.x, position.z), new Vector2(Center.x, Center.z)) <= 5f + clearance;
-
-            public bool IsPositionInAnySite(Vector3 position, float clearance = 0f) => Enabled && Contains(position, clearance);
-            public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
-            { position = default; return false; }
-            public bool TryGetThreatenedSite(PlayerId owner, out Vector3 position)
-            { position = default; return false; }
-            public bool TryGetRaidTarget(PlayerId attacker, Vector3 origin, out Vector3 position)
-            { position = default; return false; }
-            public bool HasHostileUnits(ICaptureSite site, PlayerId owner) => false;
-            public bool TryStartConstruction(int siteIndex, PlayerId owner, SiteFacilityType type) => false;
-            public bool TryBuildOnOwnedSite(PlayerId owner) => false;
-        }
+        private void RegisterSite() =>
+            _areas.Register(BattleAreaLayer.OrderSnap, PlayerId.None, _siteView.transform, 5f);
 
         private sealed class FakeInput : IPointerGestures, IUnitOrderInput
         {

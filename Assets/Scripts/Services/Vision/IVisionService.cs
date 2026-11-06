@@ -11,6 +11,8 @@ namespace EmpireAtWar.Services.Vision
     /// </summary>
     public interface IVisionService
     {
+        bool FogEnabled { get; }
+
         IReadOnlyList<OwnedCircle> Sources { get; }
 
         /// <summary>Adds a source, or updates the radius of one already registered.</summary>

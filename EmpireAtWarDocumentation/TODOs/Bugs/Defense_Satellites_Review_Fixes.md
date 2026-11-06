@@ -51,7 +51,7 @@ created: 2026-10-28
 - #7 contract test: every prefab mount `TryGetWeaponType` == loadout weapon.
 - #8 `CaptureRingView`: 4 cached `Shader.PropertyToID` fields.
 - #9 `EnemyDefensePad.ProtectedIncome` → `ProtectedMineShare` = operational own mines ÷ `SITES_PER_MINING_POINT` (0–1).
-- #10 new `ICaptureSitesSystem.ConstructionCompleted(owner, type)` raised on build finish; `SiteFacilityBuilder.IsSatellite`; `FactionAnnouncementService` handlers.
+- #10 new `ICaptureSiteEvents.ConstructionCompleted(owner, type)` (was `ICaptureSitesSystem`, split 2026-11-06) raised on build finish; `SiteFacilityBuilder.IsSatellite`; handlers now in `CaptureSiteAnnouncer`.
 - Tests added: `CaptureSitePresenterTests.CaptureSystem_RaidsPreferMinesOverCloserSatellites`, `FactionAnnouncementTests.LocalSatelliteCompletionAndLossReuseConstructionAndUnitLossCues`.
 - No unit test for controller build order (`EnemyDefenseSnapshotBuilder` is concrete, 16 deps).
 - Verified 2026-10-28 (categories only, not full suite): `Capture` 91/91, `EnemyAi` 183/183, `Audio` 139/148.
@@ -64,7 +64,7 @@ created: 2026-10-28
 2. **AI range (#2)**: use `min(weaponRange, ComponentData.Range)` as option range in `LoadOptions`.
 3. **Single weapon source (#7)**: contract test that `weaponLoadout` matches prefab hardpoint `WeaponType` × count (or derive loadout from prefab in `BalanceStructureAdapter`).
 4. **Survival (#3)**: apply user decision; update `BattleSaveValidator` and `MapLayoutGeneratorTests.Survival_*`.
-5. **Build order (#4)**: in `EnemySiteConstructionController.Tick`, try `TryBuildOnOwnedSite` first when fleet gate passes and no urgent pad; otherwise satellite. Test with a fake `ICaptureSitesSystem`.
+5. **Build order (#4)**: in `EnemySiteConstructionController.Tick`, try `TryBuildOnOwnedSite` first when fleet gate passes and no urgent pad; otherwise satellite. Test with fake `ICaptureSiteDirectory` / `ICaptureSitePresence` / `ICaptureSiteConstruction`.
 6. **Raid target (#5)**: filter/prefer `Kind != Satellite` in `TryGetRaidTarget`; EditMode test.
 7. **Snapshot default (#6)**: skip satellite decision until `LastSnapshot` is populated (e.g. `OwnShipCount`/tick flag), or pass configured difficulty directly.
 8. **Ring IDs (#8)**: cache `BORDER_WIDTH_ID`, `OUTLINE_WIDTH_ID`, `BORDER_OPACITY_ID`, `OUTLINE_OPACITY_ID` as `static readonly int`.

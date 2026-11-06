@@ -6,12 +6,10 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
-using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Units;
-using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -34,7 +32,7 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Escorts stop being added once they match the hostile strikecraft (advantage 1).</summary>
         private const float EVEN_FIGHT = 1f;
 
-        private readonly ICaptureSitesSystem _captureSites;
+        private readonly IReadOnlyList<IEnemyCaptureObjectiveSource> _captureSources;
         private readonly IReinforcementZoneSource _zones;
         private readonly IEntityLocator _entityLocator;
         private readonly IPlayerRoster _playerRoster;
@@ -72,7 +70,7 @@ namespace EmpireAtWar.Services.Enemy
         private Vector3 _scoutTarget;
 
         public EnemySquadronCommander(
-            ICaptureSitesSystem captureSites,
+            IReadOnlyList<IEnemyCaptureObjectiveSource> captureSources,
             IReinforcementZoneSource zones,
             IEntityLocator entityLocator,
             IPlayerRoster playerRoster,
@@ -85,7 +83,7 @@ namespace EmpireAtWar.Services.Enemy
             _owner = owner;
             _intel = intelRegistry.Get(owner.Team);
             _structurePlacement = structurePlacement;
-            _captureSites = captureSites;
+            _captureSources = captureSources;
             _zones = zones;
             _entityLocator = entityLocator;
             _playerRoster = playerRoster;
@@ -385,14 +383,8 @@ namespace EmpireAtWar.Services.Enemy
                 if (zone.IsCapturable && !_playerRoster.IsAllied(zone.Owner, _owner.Id))
                     _captureAssignments.AddTarget(ToVector(ToPoint(zone.Center)));
             }
-            foreach (ICaptureSite site in _captureSites.Sites)
-            {
-                bool threatened = site.Owner == _owner.Id && _captureSites.HasHostileUnits(site, _owner.Id);
-                bool capturable = site.State == CaptureSiteState.Neutral || site.State == CaptureSiteState.Owned;
-                if (!threatened && (!capturable || _playerRoster.IsAllied(site.Owner, _owner.Id) ||
-                    site.Kind == CaptureSiteKind.Satellite && !OwnsPointMines(site.PointId))) continue;
-                _captureAssignments.AddTarget(ToVector(ToPoint(site.Center)), threatened);
-            }
+            foreach (IEnemyCaptureObjectiveSource source in _captureSources)
+                source.AddSquadronTargets(_captureAssignments);
             _captureSquadrons.Clear();
             foreach (KeyValuePair<ISquadron, CommandedSquadron> pair in _squadrons)
             {
@@ -403,18 +395,6 @@ namespace EmpireAtWar.Services.Enemy
             AssignScout();
             if (_scout != null) _captureSquadrons.Remove(_scout);
             _captureAssignments.Assign(_captureSquadrons);
-        }
-
-        private bool OwnsPointMines(int pointId)
-        {
-            bool hasMine = false;
-            foreach (ICaptureSite site in _captureSites.Sites)
-            {
-                if (site.Kind != CaptureSiteKind.Mining || site.PointId != pointId) continue;
-                hasMine = true;
-                if (site.Owner != _owner.Id) return false;
-            }
-            return hasMine;
         }
 
         private void Release(ISquadron squadron)

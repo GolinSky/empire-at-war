@@ -224,7 +224,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<HardPointExplosionPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(hardPointExplosion);
             builder.Register<SlowTickService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<SpawnBlockerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<BattleAreaService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterComponent(spawnAreaOverlay).AsImplementedInterfaces().AsSelf();
             SkirmishServiceRegistrations.Register(builder, Assets, transform, impactEffectPrefab,
                 unitExplosionPrefab, rangeDebugLineMaterial, shipSfxData, interfaceSfxData, shipAmbienceData,

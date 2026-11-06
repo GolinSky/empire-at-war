@@ -9,7 +9,6 @@ using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.SpaceStation;
-using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Ship;
 using UnityEngine;
@@ -23,7 +22,6 @@ using EmpireAtWar.Services.Hazards;
 using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Entities.MiningFacility;
@@ -111,7 +109,7 @@ namespace EmpireAtWar.Services.Enemy
         private ISet<string> _reservedCaptureObjectives;
         private bool _groupScoped;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
-        private readonly ICaptureSitesSystem _captureSites;
+        private readonly IReadOnlyList<IEnemyCaptureObjectiveSource> _captureSources;
         private readonly IEntityLocator _entityLocator;
         private readonly IGameModelObserver _gameModel;
         private readonly IPlayerRoster _playerRoster;
@@ -120,7 +118,6 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IVisionService _vision;
         private readonly IHazardService _hazards;
         private readonly IReinforcementZoneSource _zones;
-        private readonly CaptureSiteData _siteData;
         private readonly IShipNavigationService _navigation;
         private readonly ForceComposition _objectiveThreat = new ForceComposition();
         private readonly HashSet<long> _stationThreats = new HashSet<long>();
@@ -160,7 +157,7 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyStrategicContextBuilder(
             IShipService shipService,
             IReinforcementZonesSystem reinforcementZonesSystem,
-            ICaptureSitesSystem captureSites,
+            IReadOnlyList<IEnemyCaptureObjectiveSource> captureSources,
             IEntityLocator entityLocator,
             IGameModelObserver gameModel,
             IPlayerRoster playerRoster,
@@ -171,7 +168,6 @@ namespace EmpireAtWar.Services.Enemy
             IProductionAccess productionAccess,
             IHazardService hazards,
             IReinforcementZoneSource zones,
-            CaptureSiteData siteData,
             IShipNavigationService navigation,
             EnemyStationPressureTracker stationPressure)
         {
@@ -181,14 +177,13 @@ namespace EmpireAtWar.Services.Enemy
             _forceBuilder = forceBuilder;
             _shipService = shipService;
             _reinforcementZonesSystem = reinforcementZonesSystem;
-            _captureSites = captureSites;
+            _captureSources = captureSources;
             _entityLocator = entityLocator;
             _gameModel = gameModel;
             _owner = owner;
             _productionAccess = productionAccess;
             _playerRoster = playerRoster;
             _zones = zones;
-            _siteData = siteData;
             _navigation = navigation;
             _stationPressure = stationPressure;
         }
@@ -198,7 +193,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             _shipService = source._shipService;
             _reinforcementZonesSystem = source._reinforcementZonesSystem;
-            _captureSites = source._captureSites;
+            _captureSources = source._captureSources;
             _entityLocator = source._entityLocator;
             _gameModel = source._gameModel;
             _playerRoster = source._playerRoster;
@@ -207,7 +202,6 @@ namespace EmpireAtWar.Services.Enemy
             _vision = source._vision;
             _hazards = source._hazards;
             _zones = source._zones;
-            _siteData = source._siteData;
             _navigation = source._navigation;
             _owner = source._owner;
             _productionAccess = source._productionAccess;
@@ -546,17 +540,8 @@ namespace EmpireAtWar.Services.Enemy
                 _captureCandidates.Add(new EnemyCaptureObjective($"zone:{i}", EnemyCaptureObjectiveType.ReinforcementZone,
                     zone.Owner, ToVector(ToPoint(zone.Center)), zone.Radius, zone.CaptureProgress));
             }
-            for (int i = 0; i < _captureSites.Sites.Count; i++)
-            {
-                ICaptureSite site = _captureSites.Sites[i];
-                bool threatened = site.Owner == _owner.Id && HasKnownHostileInside(site);
-                bool capturable = site.State == CaptureSiteState.Neutral || site.State == CaptureSiteState.Owned;
-                if (!threatened && (!capturable || _playerRoster.IsAllied(_owner.Id, site.Owner) ||
-                    site.Kind == CaptureSiteKind.Satellite && !OwnsPointMines(site.PointId))) continue;
-                _captureCandidates.Add(new EnemyCaptureObjective($"site:{i}", EnemyCaptureObjectiveType.Facility,
-                    site.Owner, ToVector(ToPoint(site.Center)), _siteData.GetSettings(site.Kind).Radius,
-                    site.CaptureProgress, threatened));
-            }
+            foreach (IEnemyCaptureObjectiveSource source in _captureSources)
+                source.AddStrategicObjectives(_captureCandidates, _intel);
 
             EnemyCaptureObjective best = null;
             EnemyCaptureObjective retained = null;
@@ -674,27 +659,6 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IShipEntity ship in _ownShips)
                 distance = Mathf.Min(distance, Mathf.Max(0f, PlanarDistance(ship.WorldPosition, objective.Position) - objective.Radius));
             return distance;
-        }
-
-        private bool HasKnownHostileInside(ICaptureSite site)
-        {
-            foreach (HostileSighting sighting in _intel.Sightings)
-                if (_playerRoster.IsHostile(_owner.Id, sighting.Owner) &&
-                    _intel.GetConfidence(sighting, Time.time) > 0f && site.Contains(ToVector(sighting.Position)))
-                    return true;
-            return false;
-        }
-
-        private bool OwnsPointMines(int pointId)
-        {
-            bool hasMine = false;
-            foreach (ICaptureSite site in _captureSites.Sites)
-            {
-                if (site.Kind != CaptureSiteKind.Mining || site.PointId != pointId) continue;
-                if (site.Owner != _owner.Id) return false;
-                hasMine = true;
-            }
-            return hasMine;
         }
 
         private bool IsObjectiveSafe(Vector3 origin, Vector3 destination, float radius, bool escaping)

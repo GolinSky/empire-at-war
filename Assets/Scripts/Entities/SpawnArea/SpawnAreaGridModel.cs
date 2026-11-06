@@ -32,6 +32,8 @@ namespace EmpireAtWar.Models.SpawnArea
 
         public void Clear() => Array.Clear(_cells, 0, _cells.Length);
 
+        public void RevealAll() => Array.Fill(_cells, OPEN);
+
         public float Get(int column, int row) => _cells[row * Resolution + column];
 
         public float GetAt(float x, float z) =>

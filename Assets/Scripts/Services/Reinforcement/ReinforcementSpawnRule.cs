@@ -2,8 +2,6 @@ using EmpireAtWar.Services.Hazards;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Services.CaptureSites;
-using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
@@ -14,30 +12,24 @@ namespace EmpireAtWar.Services.Reinforcement
     public sealed class ReinforcementSpawnRule : IReinforcementSpawnRule
     {
         private readonly IVisionService _vision;
-        private readonly ISpawnBlockerService _blockers;
+        private readonly IBattleAreaService _areas;
         private readonly IShipSpawnClearance _shipClearance;
         private readonly IStructureSpawnClearance _structureClearance;
-        private readonly IReinforcementZonesSystem _relays;
-        private readonly ICaptureSitesSystem _captureSites;
         private readonly IMapModelObserver _mapModel;
         private readonly IHazardService _hazards;
 
         public ReinforcementSpawnRule(
             IVisionService vision,
-            ISpawnBlockerService blockers,
+            IBattleAreaService areas,
             IShipSpawnClearance shipClearance,
             IStructureSpawnClearance structureClearance,
-            IReinforcementZonesSystem relays,
-            ICaptureSitesSystem captureSites,
             IMapModelObserver mapModel,
             IHazardService hazards)
         {
             _vision = vision;
-            _blockers = blockers;
+            _areas = areas;
             _shipClearance = shipClearance;
             _structureClearance = structureClearance;
-            _relays = relays;
-            _captureSites = captureSites;
             _mapModel = mapModel;
             _hazards = hazards;
         }
@@ -49,7 +41,7 @@ namespace EmpireAtWar.Services.Reinforcement
             return position.x >= min.x && position.x <= max.x &&
                    position.z >= min.y && position.z <= max.y &&
                    _vision.IsVisible(team, position) &&
-                   !_blockers.IsBlocked(team, position) &&
+                   !_areas.IsBlocked(team, position) &&
                    !_hazards.BlocksReinforcement(position);
         }
 
@@ -60,8 +52,7 @@ namespace EmpireAtWar.Services.Reinforcement
         {
             float radius = _structureClearance.Radius;
             return IsOpen(owner, position) &&
-                   !_relays.IsPositionInAnyZone(position, radius) &&
-                   !_captureSites.IsPositionInAnySite(position, radius) &&
+                   !_areas.IsStructureExcluded(position, radius) &&
                    _structureClearance.IsClear(position);
         }
     }

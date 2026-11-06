@@ -441,6 +441,9 @@
 
 ### Refactoring
 
+- [x] **Remove NoCaptureSites and centralize reinforcement area access** → [[Done/Refactoring/Battle_Area_Access|Battle Area Access]]; [[Done/Refactoring/Battle_Area_Access - Research|Source investigation]]
+  - Completed 2026-11-06. Layered battle areas and capture contributors implemented; Unity compiler verified. Tests and gameplay acceptance queued.
+
 - [x] **Harden DI scope teardown and build rollback (VContainer)** → [[Done/Refactoring/DI_Container_Failure_Handling|DI Container Failure Handling]]
   - Completed 2026-11-06. Ordered cleanup, child rollback, shared AI combat data and entity decoupling verified. Unity EditMode: 62/62 targeted cases passed.
 

@@ -5,13 +5,13 @@ using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Services.OwnedAreas;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.Selection;
@@ -36,7 +36,7 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly IShipAbilityTargeting _abilities;
         private readonly IUnitOrderService _unitOrderService;
         private readonly IHardPointHoverObserver _hardPointHover;
-        private readonly ICaptureSitesSystem _captureSites;
+        private readonly IBattleAreaService _battleAreas;
 
         private readonly UnitActionTargetingModel _targeting;
         private readonly SuperWeaponTargetingModel _superWeapons;
@@ -47,7 +47,7 @@ namespace EmpireAtWar.Services.UnitOrders
             IShipAbilityTargeting abilities, IUnitOrderService unitOrderService,
             IHardPointHoverObserver hardPointHover, ILocalPlayer localPlayer,
             UnitActionTargetingModel targeting,
-            SuperWeaponTargetingModel superWeapons, ICaptureSitesSystem captureSites)
+            SuperWeaponTargetingModel superWeapons, IBattleAreaService battleAreas)
         {
             _localPlayer = localPlayer;
             _gestures = gestures;
@@ -61,7 +61,7 @@ namespace EmpireAtWar.Services.UnitOrders
             _unitOrderService = unitOrderService;
             _superWeapons = superWeapons;
             _hardPointHover = hardPointHover;
-            _captureSites = captureSites;
+            _battleAreas = battleAreas;
         }
 
         public void Initialize()
@@ -98,12 +98,8 @@ namespace EmpireAtWar.Services.UnitOrders
             foreach (IEntity receiver in receivers)
             {
                 if (!receiver.TryGetFacade(out IMoveFacade move)) continue;
-                foreach (ICaptureSite site in _captureSites.Sites)
-                    if (site.Contains(worldPoint))
-                    {
-                        worldPoint = site.Center;
-                        break;
-                    }
+                if (_battleAreas.TryGetOrderSnap(worldPoint, out Vector3 center))
+                    worldPoint = center;
                 worldPoint.y = move.WorldPosition.y;
                 if (_targeting.Pending == UnitActionId.AttackMove)
                 {
@@ -180,10 +176,10 @@ namespace EmpireAtWar.Services.UnitOrders
             }
             // Friendly hulls can cover a site without blocking commands to its center.
             if (!hasHardPoint && !IsEnemy(target))
-                foreach (ICaptureSite site in _captureSites.Sites)
-                    if (site.Contains(_cameraService.GetWorldPoint(screen, site.Center)))
+                foreach (OwnedCircle area in _battleAreas.Get(BattleAreaLayer.OrderSnap))
+                    if (area.Contains(_cameraService.GetWorldPoint(screen, area.Transform.position), 0f))
                     {
-                        TryIssueMove(site.Center);
+                        TryIssueMove(area.Transform.position);
                         return;
                     }
             bool isFriendlyShip = hasUnit && !hasHardPoint && _localPlayer.IsFriendly(target.Owner) &&

@@ -7,7 +7,7 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.UiRouting;
@@ -30,7 +30,7 @@ namespace EmpireAtWar.Entities.MiniMap
         private readonly IInputLock _inputLock;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly IPlayerOrderInputHandler _orderInput;
-        private readonly ICaptureSitesSystem _captureSites;
+        private readonly IBattleAreaService _battleAreas;
         private readonly INotifier<BattleMap> _battleMap;
         private readonly IMiniMapFogMask _fogMask;
         private MiniMapUi _miniMapView;
@@ -56,7 +56,7 @@ namespace EmpireAtWar.Entities.MiniMap
             IMiniMapFogMask fogMask,
             MiniMapData model,
             IPlayerColors playerColors,
-            TimerPoolService timerPoolService, ICaptureSitesSystem captureSites) : base(uiService, cancelRouter)
+            TimerPoolService timerPoolService, IBattleAreaService battleAreas) : base(uiService, cancelRouter)
         {
             _battleMap = battleMap;
             _fogMask = fogMask;
@@ -68,7 +68,7 @@ namespace EmpireAtWar.Entities.MiniMap
             _timerPoolService = timerPoolService;
             _routeNavigation = routeNavigation;
             _orderInput = orderInput;
-            _captureSites = captureSites;
+            _battleAreas = battleAreas;
         }
 
         public void Initialize()
@@ -190,7 +190,7 @@ namespace EmpireAtWar.Entities.MiniMap
         {
             if (_inputLock.IsLocked) return;
             // Site rocks are valid approach targets; navigation finds a nearby reachable position.
-            if (_model.IsObstacleAt(worldPoint) && !_captureSites.IsPositionInAnySite(worldPoint)) return;
+            if (_model.IsObstacleAt(worldPoint) && !_battleAreas.TryGetOrderSnap(worldPoint, out _)) return;
             if (_orderInput.TryIssueMove(worldPoint))
             {
                 _miniMapView.PlayMoveTarget(worldPoint);

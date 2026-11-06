@@ -3,14 +3,12 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
-using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Tooltip;
 using UnityEngine;
@@ -26,7 +24,7 @@ namespace EmpireAtWar.Entities.Tooltip
         private readonly ITooltipService _tooltipService;
         private readonly IVisionService _visionService;
         private readonly ILocalPlayer _local;
-        private readonly ICaptureSitesSystem _sites;
+        private readonly IReadOnlyList<IWorldTooltipSource> _sources;
         private readonly ICameraService _cameraService;
 
         private readonly HardPointOverlayData _hardPointData;
@@ -39,12 +37,12 @@ namespace EmpireAtWar.Entities.Tooltip
 
         public WorldTooltipPresenter(IHoveredEntityObserver hover, IPointerInput pointerInput,
             ITooltipService tooltipService, IVisionService visionService, ILocalPlayer local,
-            ICaptureSitesSystem sites, ICameraService cameraService, HardPointOverlayData hardPointData,
+            IReadOnlyList<IWorldTooltipSource> sources, ICameraService cameraService, HardPointOverlayData hardPointData,
             INotifier<BattleMap> battleMap)
         {
             _hover = hover; _pointerInput = pointerInput; _tooltipService = tooltipService;
             _visionService = visionService; _local = local;
-            _hardPointData = hardPointData; _sites = sites; _cameraService = cameraService;
+            _hardPointData = hardPointData; _sources = sources; _cameraService = cameraService;
             _battleMap = battleMap;
         }
 
@@ -81,15 +79,10 @@ namespace EmpireAtWar.Entities.Tooltip
             else
             {
                 Ray ray = _cameraService.SceneCamera.ScreenPointToRay(point);
-                ICaptureSite site = CaptureSitePointerQuery.Find(_sites.Sites, ray);
-                if (site != null)
+                for (int i = 0; i < _sources.Count; i++)
                 {
-                    _handle = _tooltipService.Show(new TooltipContentProvider(this, site,
-                        () => CanHover && site.IsRevealed, () => new TooltipContent(title: "Capture site",
-                            description: "Move ships into the ring to capture it. Select an owned empty site to construct a facility.",
-                            stats: new[] { new TooltipStat(label: "Capture (%)", current: site.CaptureProgress * 100f),
-                                new TooltipStat(label: "Construction (%)", current: site.ConstructionProgress * 100f) },
-                            status: $"Owner: {site.Owner} · {site.State} · {site.FacilityType}")), anchor);
+                    if (!_sources[i].TryGetTooltip(ray, out ITooltipContentProvider provider)) continue;
+                    _handle = _tooltipService.Show(provider, anchor);
                     return;
                 }
                 RaycastHit hit = _cameraService.ScreenPointToRay(point);

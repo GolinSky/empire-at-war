@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.SkirmishCamera;
-using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Reinforcement;
-using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
@@ -25,11 +20,9 @@ namespace EmpireAtWar.Tests.Editor
 
         private GameObject _root;
         private VisionService _vision;
-        private SpawnBlockerService _blockers;
+        private BattleAreaService _blockers;
         private FixedClearance _clearance;
         private FixedStructureClearance _structureClearance;
-        private FixedRelays _relays;
-        private FixedSites _sites;
         private ReinforcementSpawnRule _rule;
         private TestHazards _hazards;
 
@@ -39,13 +32,11 @@ namespace EmpireAtWar.Tests.Editor
             _root = new GameObject(nameof(ReinforcementSpawnRuleTests));
             PlayerRoster roster = TestPlayers.CreateTeamGame();
             _vision = new VisionService(roster);
-            _blockers = new SpawnBlockerService(roster);
+            _blockers = new BattleAreaService(roster);
             _clearance = new FixedClearance();
             _structureClearance = new FixedStructureClearance();
-            _relays = new FixedRelays();
-            _sites = new FixedSites();
             _hazards = new TestHazards();
-            _rule = new ReinforcementSpawnRule(_vision, _blockers, _clearance, _structureClearance, _relays, _sites,
+            _rule = new ReinforcementSpawnRule(_vision, _blockers, _clearance, _structureClearance,
                 new FixedMap(), _hazards);
             _vision.Register(TestPlayers.Human, CreateTransform(Vector3.zero), 500f);
             _vision.Register(TestPlayers.Enemy, CreateTransform(Vector3.zero), 500f);
@@ -89,7 +80,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void IsOpen_SameRuleForEveryTeam()
         {
-            _blockers.Register(TestPlayers.Enemy, CreateTransform(Vector3.zero), 200f);
+            _blockers.Register(BattleAreaLayer.SpawnBlock, TestPlayers.Enemy, CreateTransform(Vector3.zero), 200f);
 
             Assert.That(_rule.IsOpen(TestPlayers.Human, new Vector3(100f, 0f, 0f)), Is.False);
             Assert.That(_rule.IsOpen(TestPlayers.Enemy, new Vector3(100f, 0f, 0f)), Is.True);
@@ -99,7 +90,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void IsOpen_NeutralAsteroid_BlocksEveryone()
         {
-            _blockers.Register(PlayerId.None, CreateTransform(Vector3.zero), 200f);
+            _blockers.Register(BattleAreaLayer.SpawnBlock, PlayerId.None, CreateTransform(Vector3.zero), 200f);
 
             Assert.That(_rule.IsOpen(TestPlayers.Human, Vector3.zero), Is.False);
             Assert.That(_rule.IsOpen(TestPlayers.Enemy, Vector3.zero), Is.False);
@@ -134,12 +125,16 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void CanSpawnStructure_InsideRelayRingOrSite_False()
         {
-            _relays.Contains = true;
+            Transform relay = CreateTransform(new Vector3(20f, 0f, 0f));
+            Transform site = CreateTransform(new Vector3(20f, 0f, 0f));
+            _blockers.Register(BattleAreaLayer.StructureExclusion, TestPlayers.Human, relay, 10f);
+            _blockers.Register(BattleAreaLayer.StructureExclusion, PlayerId.None, site, 10f);
+
+            Assert.That(_rule.CanSpawnShip(TestPlayers.Human, ShipType.Arquitens, Vector3.zero), Is.True);
 
             Assert.That(_rule.CanSpawnStructure(TestPlayers.Human, Vector3.zero), Is.False);
 
-            _relays.Contains = false;
-            _sites.Contains = true;
+            _blockers.Unregister(BattleAreaLayer.StructureExclusion, relay);
 
             Assert.That(_rule.CanSpawnStructure(TestPlayers.Human, Vector3.zero), Is.False);
         }
@@ -147,7 +142,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void CanSpawnStructure_HostileBlocker_False()
         {
-            _blockers.Register(TestPlayers.Enemy, CreateTransform(Vector3.zero), 200f);
+            _blockers.Register(BattleAreaLayer.SpawnBlock, TestPlayers.Enemy, CreateTransform(Vector3.zero), 200f);
 
             Assert.That(_rule.CanSpawnStructure(TestPlayers.Human, Vector3.zero), Is.False);
         }
@@ -184,73 +179,6 @@ namespace EmpireAtWar.Tests.Editor
             public float Radius => 10f;
 
             public bool IsClear(Vector3 position) => IsClearResult;
-        }
-
-        private sealed class FixedRelays : IReinforcementZonesSystem
-        {
-            public bool Contains { get; set; }
-
-            public event Action OwnershipChanged { add { } remove { } }
-
-            public bool IsPositionInAnyZone(Vector3 position, float clearance = 0f) => Contains;
-
-            public void CopyOwnedCapturableZoneBounds(PlayerId owner, List<Bounds> destination) => destination.Clear();
-
-            public int GetOwnedCapturableZoneCount(PlayerId owner) => 0;
-
-            public bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-
-            public bool TryGetDefaultZoneExitPosition(PlayerId owner, Vector3 shipPosition, float shipRadius,
-                out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-
-            public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-        }
-
-        private sealed class FixedSites : ICaptureSitesSystem
-        {
-            public event System.Action<PlayerId, PlayerId, SiteFacilityType> SiteCaptured { add { } remove { } }
-            public event System.Action<PlayerId, SiteFacilityType> SiteLost { add { } remove { } }
-            public event System.Action<PlayerId, SiteFacilityType> ConstructionStarted { add { } remove { } }
-            public event System.Action<PlayerId, SiteFacilityType> ConstructionCompleted { add { } remove { } }
-            public bool Contains { get; set; }
-
-            public IReadOnlyList<ICaptureSite> Sites => Array.Empty<ICaptureSite>();
-
-            public bool IsPositionInAnySite(Vector3 position, float clearance = 0f) => Contains;
-
-            public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-
-            public bool HasHostileUnits(ICaptureSite site, PlayerId owner) => false;
-            public bool TryStartConstruction(int siteIndex, PlayerId owner, SiteFacilityType type) => false;
-            public bool TryBuildOnOwnedSite(PlayerId owner) => false;
-
-            public bool TryGetThreatenedSite(PlayerId owner, out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-
-            public bool TryGetRaidTarget(PlayerId attacker, Vector3 origin, out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
         }
 
         private sealed class FixedMap : IMapModelObserver

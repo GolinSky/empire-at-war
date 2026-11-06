@@ -20,7 +20,7 @@ namespace EmpireAtWar.Entities.SpaceStation
     public class SpaceStation : EntityView, IController, IInitializable, ILateDisposable
     {
         private IVisionService _visionService;
-        private ISpawnBlockerService _spawnBlockerService;
+        private IBattleAreaWriter _areas;
         private IHealthComponent _healthComponent;
         private IHealthUpgrade _healthUpgrade;
         private IIonFieldShape _ionField;
@@ -45,7 +45,7 @@ namespace EmpireAtWar.Entities.SpaceStation
         [Inject]
         private void Construct(
             IVisionService visionService,
-            ISpawnBlockerService spawnBlockerService,
+            IBattleAreaWriter areas,
             IHealthComponent healthComponent,
             IHealthUpgrade healthUpgrade,
             IIonFieldShape ionField,
@@ -59,7 +59,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             FactionType factionType, SpaceStationData data)
         {
             _visionService = visionService;
-            _spawnBlockerService = spawnBlockerService;
+            _areas = areas;
             _owner = owner;
             _healthComponent = healthComponent;
             _healthUpgrade = healthUpgrade;
@@ -82,7 +82,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             gameObject.name = $"{_owner}_SpaceStation";
             transform.position = _startPosition;
             _visionService.Register(_owner, transform, Data.ComponentData.VisionRange);
-            _spawnBlockerService.Register(_owner, transform, Data.ComponentData.SpawnBlockRadius);
+            _areas.Register(BattleAreaLayer.SpawnBlock, _owner, transform, Data.ComponentData.SpawnBlockRadius);
         }
 
         public void LateDispose()
@@ -115,7 +115,7 @@ namespace EmpireAtWar.Entities.SpaceStation
                 return;
             }
             _visionService.Unregister(transform);
-            _spawnBlockerService.Unregister(transform);
+            _areas.Unregister(BattleAreaLayer.SpawnBlock, transform);
             if (playDeathAnimation)
             {
                 EntityComponentData componentData = Data.ComponentData;

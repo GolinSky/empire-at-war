@@ -34,7 +34,7 @@ namespace EmpireAtWar.Tests.Editor
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
             PlayerRoster roster = TestPlayers.CreateTeamGame();
             VisionService vision = new VisionService(roster);
-            SpawnBlockerService blockers = new SpawnBlockerService(roster);
+            BattleAreaService blockers = new BattleAreaService(roster);
             try
             {
                 ReinforcementZoneView zone = CreateZone(root.transform, PlayerId.None, true, Vector3.zero);
@@ -95,7 +95,7 @@ namespace EmpireAtWar.Tests.Editor
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
             PlayerRoster roster = TestPlayers.CreateTeamGame();
             VisionService vision = new VisionService(roster);
-            SpawnBlockerService blockers = new SpawnBlockerService(roster);
+            BattleAreaService blockers = new BattleAreaService(roster);
             try
             {
                 ReinforcementZoneView zone = CreateZone(root.transform, TestPlayers.Human, true, Vector3.zero);
@@ -154,11 +154,12 @@ namespace EmpireAtWar.Tests.Editor
             {
                 ReinforcementZoneView zone = CreateZone(root.transform, TestPlayers.Enemy,
                     true, Vector3.zero);
-                ReinforcementZonesSystem system = CreateSystem(root, data, zone);
+                BattleAreaService areas = new BattleAreaService(TestPlayers.CreateTeamGame());
+                CreateSystem(root, data, areas, zone);
 
-                Assert.That(system.IsPositionInAnyZone(new Vector3(50f, 0f, 0f)), Is.False);
-                Assert.That(system.IsPositionInAnyZone(new Vector3(50f, 0f, 0f), 16f), Is.True);
-                Assert.That(system.IsPositionInAnyZone(new Vector3(64f, 0f, 0f), 16f), Is.False);
+                Assert.That(areas.IsStructureExcluded(new Vector3(50f, 0f, 0f), 0f), Is.False);
+                Assert.That(areas.IsStructureExcluded(new Vector3(50f, 0f, 0f), 16f), Is.True);
+                Assert.That(areas.IsStructureExcluded(new Vector3(64f, 0f, 0f), 16f), Is.False);
             }
             finally
             {
@@ -202,7 +203,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
-            SpawnBlockerService blockers = new SpawnBlockerService(TestPlayers.CreateTeamGame());
+            BattleAreaService blockers = new BattleAreaService(TestPlayers.CreateTeamGame());
             try
             {
                 ReinforcementZoneView allied = CreateZone(
@@ -224,7 +225,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
-            SpawnBlockerService blockers = new SpawnBlockerService(TestPlayers.CreateTeamGame());
+            BattleAreaService blockers = new BattleAreaService(TestPlayers.CreateTeamGame());
             try
             {
                 ReinforcementZoneView neutral = CreateZone(
@@ -253,7 +254,7 @@ namespace EmpireAtWar.Tests.Editor
                 SetField(data, "<RelaySpawnBlockRadius>k__BackingField", 1234f);
                 ReinforcementZoneView zone = CreateZone(root.transform, TestPlayers.Ally,
                     isCapturable, new Vector3(100f, 200f, -300f));
-                CreateSystem(root, data, new SpawnBlockerService(TestPlayers.CreateTeamGame()), vision, zone);
+                CreateSystem(root, data, new BattleAreaService(TestPlayers.CreateTeamGame()), vision, zone);
                 Vector3 edge = zone.Center + Vector3.right * data.RelaySpawnBlockRadius;
 
                 Assert.That(vision.IsVisible(TestPlayers.Ally, edge), Is.True);
@@ -277,7 +278,7 @@ namespace EmpireAtWar.Tests.Editor
             ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
             PlayerRoster roster = TestPlayers.CreateTeamGame();
             VisionService vision = new VisionService(roster);
-            SpawnBlockerService blockers = new SpawnBlockerService(roster);
+            BattleAreaService blockers = new BattleAreaService(roster);
             try
             {
                 ReinforcementZoneView zone = CreateZone(root.transform,
@@ -329,7 +330,7 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 ReinforcementZonesSystem system = CreateSystem(root, data,
-                    new SpawnBlockerService(TestPlayers.CreateTeamGame()), vision);
+                    new BattleAreaService(TestPlayers.CreateTeamGame()), vision);
                 ZoneSpot[] homes =
                 {
                     new ZoneSpot(new Vector3(-100f, 0f, 0f), TestPlayers.Human, false),
@@ -362,7 +363,7 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 ReinforcementZoneView zone = CreateZone(root.transform, TestPlayers.Human, true, Vector3.zero);
-                SpawnBlockerService blockers = new SpawnBlockerService(TestPlayers.CreateTeamGame());
+                BattleAreaService blockers = new BattleAreaService(TestPlayers.CreateTeamGame());
                 ReinforcementZonesSystem system = CreateSystem(root, data, blockers, vision, zone);
                 BattleMap emptyMap = CreateMap();
                 SetField(system, "_battleMap", new ReplayNotifier<BattleMap>(emptyMap));
@@ -374,7 +375,8 @@ namespace EmpireAtWar.Tests.Editor
 
                 Assert.That(vision.Sources, Is.Empty);
                 Assert.That(vision.IsVisible(TestPlayers.Human, Vector3.zero), Is.False);
-                Assert.That(blockers.Blockers, Is.Empty);
+                Assert.That(blockers.Get(BattleAreaLayer.SpawnBlock), Is.Empty);
+                Assert.That(blockers.Get(BattleAreaLayer.StructureExclusion), Is.Empty);
             }
             finally
             {
@@ -414,14 +416,14 @@ namespace EmpireAtWar.Tests.Editor
 
         private static ReinforcementZonesSystem CreateSystem(GameObject root,
             ReinforcementZoneData data, params ReinforcementZoneView[] zones) =>
-            CreateSystem(root, data, new SpawnBlockerService(TestPlayers.CreateTeamGame()), zones);
+            CreateSystem(root, data, new BattleAreaService(TestPlayers.CreateTeamGame()), zones);
 
         private static ReinforcementZonesSystem CreateSystem(GameObject root,
-            ReinforcementZoneData data, SpawnBlockerService blockers, params ReinforcementZoneView[] zones)
+            ReinforcementZoneData data, BattleAreaService blockers, params ReinforcementZoneView[] zones)
             => CreateSystem(root, data, blockers, new VisionService(TestPlayers.CreateTeamGame()), zones);
 
         private static ReinforcementZonesSystem CreateSystem(GameObject root,
-            ReinforcementZoneData data, SpawnBlockerService blockers, VisionService vision,
+            ReinforcementZoneData data, BattleAreaService blockers, VisionService vision,
             params ReinforcementZoneView[] zones)
         {
             ReinforcementZonesSystem system = root.AddComponent<ReinforcementZonesSystem>();
@@ -431,7 +433,7 @@ namespace EmpireAtWar.Tests.Editor
             PlayerRoster roster = TestPlayers.CreateTeamGame();
             SetField(system, "_playerRoster", roster);
             SetField(system, "_localPlayer", TestPlayers.CreateLocalPlayer(roster));
-            SetField(system, "_spawnBlockerService", blockers);
+            SetField(system, "_areas", blockers);
             SetField(system, "_visionService", vision);
             SetField(system, "_strengthSampler", new CaptureStrengthSampler(new ShipService(), new CaptureSquadrons(), roster, data.SquadronCaptureWeight));
             system.UpdateState(CreateMap(zones));

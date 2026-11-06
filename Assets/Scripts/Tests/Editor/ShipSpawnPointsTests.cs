@@ -144,7 +144,7 @@ namespace EmpireAtWar.Tests.Editor
             SetField(system, "_data", _data);
             SetField(system, "_playerRoster", _roster);
             SetField(system, "_localPlayer", TestPlayers.CreateLocalPlayer(_roster));
-            SetField(system, "_spawnBlockerService", new SpawnBlockerService(_roster));
+            SetField(system, "_areas", new BattleAreaService(_roster));
             SetField(system, "_visionService", _vision);
             SetField(system, "_strengthSampler", new CaptureStrengthSampler(null, null, _roster, _data.SquadronCaptureWeight));
             system.UpdateState(new BattleMap(

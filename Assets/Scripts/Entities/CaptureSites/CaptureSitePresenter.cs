@@ -19,6 +19,16 @@ namespace EmpireAtWar.Entities.CaptureSites
         private SiteFacilityType? _renderedFacilityType;
         private string _facilityName;
 
+        public event Action<PlayerId, PlayerId, SiteFacilityType> Captured
+        {
+            add => _model.Captured += value;
+            remove => _model.Captured -= value;
+        }
+        public event Action<PlayerId, SiteFacilityType> Lost
+        {
+            add => _model.Lost += value;
+            remove => _model.Lost -= value;
+        }
         public event Action<PlayerId, SiteFacilityType> ConstructionCompleted;
 
         public CaptureSiteKind Kind { get; }

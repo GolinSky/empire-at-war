@@ -9,8 +9,6 @@ namespace EmpireAtWar.Services.ReinforcementZones
     {
         event Action OwnershipChanged;
 
-        bool IsPositionInAnyZone(Vector3 position, float clearance = 0f);
-
         void CopyOwnedCapturableZoneBounds(PlayerId owner, List<Bounds> destination);
 
         int GetOwnedCapturableZoneCount(PlayerId owner);

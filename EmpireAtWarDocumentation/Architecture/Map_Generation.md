@@ -22,6 +22,13 @@ verification: Review fixes verified through live source and Unity compilation;
 - Additional relay groups: mirrored edge-band candidates, station exclusion, main-distance exclusion, opposite nearest-team halves. Group members share a `PointId`.
 - Counts stay unchanged; changing generation changes old saved-seed geometry without triggering the count validator. Fresh Skirmish acceptance is required.
 
+### Battle area access
+
+- Register each generated relay footprint and scaled capture site footprint in `BattleAreaLayer.StructureExclusion`. Free structures must clear every footprint, regardless of team. Construction on a captured site uses its own rules.
+- Use `SpawnBlock` for neutral or enemy deployment blockers. Fog-disabled battles grant sight across the map. Hazards, footprints and physical clearance still apply at placement and commit.
+- Capture sites publish `OrderSnap` circles in layout order. On map replacement, unregister the old transforms and rebuild presenters in the new layout order used by save indexes.
+- Capture-disabled composition retains `CaptureSiteData` for generator radii. Capture-enabled modules contribute tooltip, survival, announcement and AI behavior where their player and battle features allow it.
+
 ## Important Values
 
 | Setting | Small | Medium | Large |

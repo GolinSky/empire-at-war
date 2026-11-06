@@ -219,3 +219,8 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Reinforcement_Drag_Batch_Spawn]] — Deploy one ship, immediately drag another → preview appears and deploys.
 - [ ] [[Done/Features/Reinforcement_Drag_Batch_Spawn]] — Shift-drag with reserve 4, room for 3 → 3 deploy in a grid, panel shows `x1`; blocked slots stay in reserve.
 - [ ] [[Done/Features/Reinforcement_Drag_Batch_Spawn]] — Batch slot spacing looks right for small and large hulls (`SLOT_SPACING_FACTOR` 2.2).
+
+## Battle area access
+
+- [ ] [[Done/Refactoring/Battle_Area_Access]] — Compare free structure placement at the same point for player, AI and cheat. Check a friendly relay edge, site order snapping and fog-disabled overlay in battle.
+- [ ] [[Done/Refactoring/Battle_Area_Access]] — Run the plan’s affected EditMode categories when authorized, including capture-disabled composition and overlapping area registrations.

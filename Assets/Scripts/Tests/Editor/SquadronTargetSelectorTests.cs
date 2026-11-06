@@ -311,6 +311,7 @@ namespace EmpireAtWar.Tests.Editor
             public HashSet<Vector3> Hidden { get; } = new HashSet<Vector3>();
             public int Reads { get; private set; }
             public bool IsVisible(PlayerId viewer, Vector3 position) { Reads++; return !Hidden.Contains(position); }
+            public bool FogEnabled => true;
             public IReadOnlyList<OwnedCircle> Sources => throw new NotSupportedException();
             public void Register(PlayerId owner, Transform source, float radius) => throw new NotSupportedException();
             public void Unregister(Transform source) => throw new NotSupportedException();

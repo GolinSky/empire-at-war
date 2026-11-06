@@ -11,31 +11,15 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Battle;
-using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Ships;
 using NUnit.Framework;
-using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
     [Category("GameFlow")]
     public sealed class BattleVictoryServiceTests
     {
-        private CaptureSitesSystem _captureSites;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _captureSites = new GameObject("Capture sites").AddComponent<CaptureSitesSystem>();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            UnityEngine.Object.DestroyImmediate(_captureSites.gameObject);
-        }
-
         [Test]
         public void Collection_SeparatesBasesAndUnits_ExcludesDestroyedEntities_AndRefreshes()
         {
@@ -43,7 +27,7 @@ namespace EmpireAtWar.Tests.Editor
             var entities = new EntityLocator();
             var registry = new PlayerRegistry();
             var service = new BattleVictoryService(null, new ShipService(), entities, roster,
-                TestPlayers.CreateLocalPlayer(roster), registry, null, new BattleVictoryModel(), _captureSites);
+                TestPlayers.CreateLocalPlayer(roster), registry, null, new BattleVictoryModel(), Array.Empty<IBattleSurvivalSource>());
             var humanBase = new Unit(1, TestPlayers.Human, true);
             var enemyBase = new Unit(2, TestPlayers.Enemy, true);
             var humanUnit = new Unit(3, TestPlayers.Human, false);
@@ -74,7 +58,7 @@ namespace EmpireAtWar.Tests.Editor
             registry.RegisterReinforcementReserve(TestPlayers.Enemy, reserve);
             reserve.AddReinforcement(request);
             var service = new BattleVictoryService(null, new ShipService(), new EntityLocator(), roster,
-                TestPlayers.CreateLocalPlayer(roster), registry, null, new BattleVictoryModel(), _captureSites);
+                TestPlayers.CreateLocalPlayer(roster), registry, null, new BattleVictoryModel(), Array.Empty<IBattleSurvivalSource>());
             Assert.That(Collect(service).Find(value => value.Player == TestPlayers.Enemy).HasPendingReinforcement, Is.True);
             Assert.That(Collect(service).Find(value => value.Player == TestPlayers.Human).HasPendingReinforcement, Is.False);
             reserve.ConsumeReinforcement(request);
@@ -109,7 +93,7 @@ namespace EmpireAtWar.Tests.Editor
             }
             var service = new BattleVictoryService(null, ships, entities, roster,
                 TestPlayers.CreateLocalPlayer(roster), new PlayerRegistry(), null,
-                new BattleVictoryModel(), _captureSites);
+                new BattleVictoryModel(), Array.Empty<IBattleSurvivalSource>());
             // Bind once so reflection and harness allocations are outside the measured region.
             var collect = (Action)Delegate.CreateDelegate(typeof(Action), service,
                 typeof(BattleVictoryService).GetMethod("CollectStates", BindingFlags.Instance | BindingFlags.NonPublic));

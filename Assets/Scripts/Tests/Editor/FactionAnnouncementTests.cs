@@ -15,6 +15,7 @@ using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
@@ -32,6 +33,7 @@ namespace EmpireAtWar.Tests.Editor
         private FactionAnnouncerSet _clips;
         private ReinforcementModel _capacity;
         private FactionAnnouncementService _service;
+        private CaptureSiteAnnouncer _siteAnnouncer;
 
         [SetUp]
         public void SetUp()
@@ -53,10 +55,12 @@ namespace EmpireAtWar.Tests.Editor
             SetField(data, "<MaxUnitCapacity>k__BackingField", 20);
             _capacity = new ReinforcementModel(data);
             ShipSfxData ships = AssetDatabase.LoadAssetAtPath<ShipSfxData>("Assets/Settings/Data/Models/Audio/ShipSfxData.asset");
+            var local = TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel());
             _service = new FactionAnnouncementService(_audio, null, ships, null, null, null,
-                null, _capacity, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), null, null, null, null,
+                null, _capacity, local, null, null, null,
                 new CameraStub());
             SetField(_service, "_clips", _clips);
+            _siteAnnouncer = new CaptureSiteAnnouncer(null, local, _service);
         }
 
         [TearDown]
@@ -113,10 +117,10 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(SiteFacilityType.BattleAsteroid)]
         public void LocalConstructionAnnouncesOnceAndEnemyConstructionStaysSilent(SiteFacilityType type)
         {
-            Invoke("HandleConstructionStarted", TestPlayers.Enemy, type);
+            InvokeSite("HandleConstructionStarted", TestPlayers.Enemy, type);
             Assert.That(_audio.Clips, Is.Empty);
-            Invoke("HandleConstructionStarted", TestPlayers.Human, type);
-            Invoke("HandleConstructionStarted", TestPlayers.Human, type);
+            InvokeSite("HandleConstructionStarted", TestPlayers.Human, type);
+            InvokeSite("HandleConstructionStarted", TestPlayers.Human, type);
             Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.BuildingStarted }));
             Assert.That(_audio.Priorities, Is.EqualTo(new[] { AnnouncementPriority.Progress }));
         }
@@ -125,12 +129,12 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(SiteFacilityType.MissileSatellite)]
         public void LocalSatelliteCompletionAndLossReuseConstructionAndUnitLossCues(SiteFacilityType type)
         {
-            Invoke("HandleConstructionCompleted", TestPlayers.Enemy, type);
-            Invoke("HandleLost", TestPlayers.Enemy, type);
-            Invoke("HandleConstructionCompleted", TestPlayers.Human, SiteFacilityType.Mining);
+            InvokeSite("HandleConstructionCompleted", TestPlayers.Enemy, type);
+            InvokeSite("HandleLost", TestPlayers.Enemy, type);
+            InvokeSite("HandleConstructionCompleted", TestPlayers.Human, SiteFacilityType.Mining);
             Assert.That(_audio.Clips, Is.Empty);
-            Invoke("HandleConstructionCompleted", TestPlayers.Human, type);
-            Invoke("HandleLost", TestPlayers.Human, type);
+            InvokeSite("HandleConstructionCompleted", TestPlayers.Human, type);
+            InvokeSite("HandleLost", TestPlayers.Human, type);
             Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.ConstructionComplete, _clips.UnitDestroyed }));
             Assert.That(_audio.Priorities,
                 Is.EqualTo(new[] { AnnouncementPriority.Progress, AnnouncementPriority.Notification }));
@@ -179,11 +183,11 @@ namespace EmpireAtWar.Tests.Editor
             var readyAt = (Dictionary<AudioClip, float>)GetField(_service, "_readyAt");
             Assert.That(readyAt[_clips.ConstructionComplete], Is.EqualTo(Time.unscaledTime + 8f));
             Invoke("HandleUnitProduced", request);
-            Invoke("HandleConstructionCompleted", TestPlayers.Human, SiteFacilityType.QuadLaserSatellite);
+            InvokeSite("HandleConstructionCompleted", TestPlayers.Human, SiteFacilityType.QuadLaserSatellite);
             Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.ConstructionComplete }));
 
             readyAt[_clips.ConstructionComplete] = Time.unscaledTime;
-            Invoke("HandleConstructionCompleted", TestPlayers.Human, SiteFacilityType.QuadLaserSatellite);
+            InvokeSite("HandleConstructionCompleted", TestPlayers.Human, SiteFacilityType.QuadLaserSatellite);
             Assert.That(readyAt[_clips.ConstructionComplete], Is.EqualTo(Time.unscaledTime + 8f));
             Invoke("HandleUnitProduced", request);
             Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.ConstructionComplete, _clips.ConstructionComplete }));
@@ -227,10 +231,10 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void MineCaptureOnlyAnnouncesLocalNeutralCapture()
         {
-            Invoke("HandleCaptured", TestPlayers.Enemy, TestPlayers.Human, SiteFacilityType.Mining);
-            Invoke("HandleCaptured", default(EmpireAtWar.Models.Players.PlayerId), TestPlayers.Enemy, SiteFacilityType.Mining);
+            InvokeSite("HandleCaptured", TestPlayers.Enemy, TestPlayers.Human, SiteFacilityType.Mining);
+            InvokeSite("HandleCaptured", default(EmpireAtWar.Models.Players.PlayerId), TestPlayers.Enemy, SiteFacilityType.Mining);
             Assert.That(_audio.Clips, Is.Empty);
-            Invoke("HandleCaptured", default(EmpireAtWar.Models.Players.PlayerId), TestPlayers.Human, SiteFacilityType.Mining);
+            InvokeSite("HandleCaptured", default(EmpireAtWar.Models.Players.PlayerId), TestPlayers.Human, SiteFacilityType.Mining);
             Assert.That(_audio.Clips.Count, Is.EqualTo(1));
             Assert.That(_audio.Clips[0].name, Is.EqualTo("Captured"));
         }
@@ -429,7 +433,7 @@ namespace EmpireAtWar.Tests.Editor
             var mine = new EntityStub(TestPlayers.Human, new MineFacade(), new DamageEvents());
             Invoke("HandleEntityAdded", mine);
             mine.Health.Destroy();
-            Invoke("HandleLost", TestPlayers.Human, SiteFacilityType.Mining);
+            InvokeSite("HandleLost", TestPlayers.Human, SiteFacilityType.Mining);
             Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.MiningDestroyed }));
             Assert.That(_audio.Priorities, Is.EqualTo(new[] { AnnouncementPriority.Warning }));
             ((Dictionary<AudioClip, float>)GetField(_service, "_readyAt")).Clear();
@@ -440,8 +444,8 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void EnemyMineAndNonMiningSiteLossStaySilent()
         {
-            Invoke("HandleLost", TestPlayers.Enemy, SiteFacilityType.Mining);
-            Invoke("HandleLost", TestPlayers.Human, SiteFacilityType.BattleAsteroid);
+            InvokeSite("HandleLost", TestPlayers.Enemy, SiteFacilityType.Mining);
+            InvokeSite("HandleLost", TestPlayers.Human, SiteFacilityType.BattleAsteroid);
             Assert.That(_audio.Clips, Is.Empty);
         }
 
@@ -497,10 +501,10 @@ namespace EmpireAtWar.Tests.Editor
         public void RefusedCaptureDoesNotConsumeCaptureCooldown()
         {
             _audio.Accept = false;
-            Invoke("HandleCaptured", PlayerId.None, TestPlayers.Human, SiteFacilityType.Mining);
+            InvokeSite("HandleCaptured", PlayerId.None, TestPlayers.Human, SiteFacilityType.Mining);
             _audio.Accept = true;
-            Invoke("HandleCaptured", PlayerId.None, TestPlayers.Human, SiteFacilityType.Mining);
-            Invoke("HandleCaptured", PlayerId.None, TestPlayers.Human, SiteFacilityType.Mining);
+            InvokeSite("HandleCaptured", PlayerId.None, TestPlayers.Human, SiteFacilityType.Mining);
+            InvokeSite("HandleCaptured", PlayerId.None, TestPlayers.Human, SiteFacilityType.Mining);
             Assert.That(_audio.Clips.Count, Is.EqualTo(1));
             Assert.That(_audio.Clips[0].name, Is.EqualTo("Captured"));
         }
@@ -509,9 +513,9 @@ namespace EmpireAtWar.Tests.Editor
         public void RefusedMineDestructionDoesNotSilenceTheNextMine()
         {
             _audio.Accept = false;
-            Invoke("HandleLost", TestPlayers.Human, SiteFacilityType.Mining);
+            InvokeSite("HandleLost", TestPlayers.Human, SiteFacilityType.Mining);
             _audio.Accept = true;
-            Invoke("HandleLost", TestPlayers.Human, SiteFacilityType.Mining);
+            InvokeSite("HandleLost", TestPlayers.Human, SiteFacilityType.Mining);
             Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.MiningDestroyed }));
         }
 
@@ -587,6 +591,9 @@ namespace EmpireAtWar.Tests.Editor
             Invoke("HandleEntityAdded", ship);
             return ship;
         }
+
+        private void InvokeSite(string method, params object[] arguments) => typeof(CaptureSiteAnnouncer)
+            .GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(_siteAnnouncer, arguments);
 
         private void Invoke(string method, params object[] arguments) => typeof(FactionAnnouncementService)
             .GetMethod(method, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(_service, arguments);

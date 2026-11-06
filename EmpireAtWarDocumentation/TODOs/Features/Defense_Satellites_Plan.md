@@ -169,7 +169,7 @@ created: 2026-10-28
 - AI decides **whether**, **where** and **which** satellite each decision tick (existing 3 s `EnemySiteConstructionController` cadence).
 - One build per tick max. Never build on a pad with hostiles inside (`HasHostileUnits`).
 - Decision = argmax over `(pad, type)` of `Score`; build only if best `Score ≥ BuildThreshold` (per difficulty).
-- Everything below is a pure C# model (`EnemyDefenseStrategy`, `Entities/EnemyFaction/Models/`) fed by a snapshot; the controller only gathers inputs and calls `ICaptureSitesSystem`.
+- Everything below is a pure C# model (`EnemyDefenseStrategy`, `Entities/EnemyFaction/Models/`) fed by a snapshot; the controller only gathers inputs and calls `ICaptureSiteConstruction` (reads `ICaptureSiteDirectory`, `ICaptureSitePresence`).
 
 ### Inputs (snapshot)
 
@@ -279,7 +279,7 @@ Score(pad, type) = PadValue(pad) × TypeFit(type) × Affordability(type) × Dive
 ## Files
 
 - Capture: `Assets/Scripts/Entities/ReinforcementZones/{ReinforcementZoneModel,ReinforcementZoneView,ReinforcementZonePresenter}.cs`, `Assets/Scripts/Services/ReinforcementZones/ReinforcementZonesSystem.cs`, `Assets/Scripts/Entities/Players/{CaptureStrength,CaptureStrengthBuilder}.cs`
-- Sites: `Assets/Scripts/Entities/CaptureSites/{CaptureSiteModel,CaptureSiteView,CaptureSiteData,CaptureSitePresenter,CaptureSiteBuildUi,CaptureSiteBuildUiController,SiteFacilityType}.cs`, `Assets/Scripts/Services/CaptureSites/{CaptureSitesSystem,SiteFacilityBuilder,ICaptureSitesSystem}.cs`
+- Sites: `Assets/Scripts/Entities/CaptureSites/{CaptureSiteModel,CaptureSiteView,CaptureSiteData,CaptureSitePresenter,CaptureSiteBuildUi,CaptureSiteBuildUiController,SiteFacilityType}.cs`, `Assets/Scripts/Services/CaptureSites/{CaptureSitesSystem,SiteFacilityBuilder,ICaptureSiteDirectory,ICaptureSitePresence,ICaptureSiteConstruction,ICaptureSiteEvents}.cs`
 - Platform: `Assets/Scripts/Entities/DefendPlatform/*.cs`, `Assets/Scripts/Entities/BaseEntity/EntityComponentData.cs`, `Assets/Scripts/Components/Health/HardPoints/HardPointModel.cs`
 - Map: `Assets/Scripts/Entities/Map/Generation/{PointOfInterestPlacer,MapNodeKind,SurvivalLayoutGenerator}.cs`, `Assets/Scripts/Entities/Map/{MapLayoutView,SiteSpot,MapGenerationSettings}.cs`
 - Minimap: `Assets/Scripts/Entities/MiniMap/Presenter/{CaptureSiteMiniMapPresenter,ReinforcementZoneMiniMapPresenter}.cs`

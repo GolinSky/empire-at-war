@@ -12,9 +12,9 @@ namespace EmpireAtWar.Services.Saves
     /// </summary>
     public sealed class CaptureSitesSaveSource : IBattleSaveSource
     {
-        private readonly CaptureSitesSystem _sites;
+        private readonly ICaptureSiteSaveState _sites;
 
-        public CaptureSitesSaveSource(CaptureSitesSystem sites)
+        public CaptureSitesSaveSource(ICaptureSiteSaveState sites)
         {
             _sites = sites;
         }

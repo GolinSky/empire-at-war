@@ -1013,8 +1013,11 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(planetScope.View, Is.SameAs(planet));
             Assert.That(planetScope.Container.Resolve<PlanetData>(), Is.Not.Null);
             bool fog = (features & BattleFeatures.Fog) != 0;
-            Assert.That(_battle.Container.Resolve<ICaptureSitesSystem>() is NoCaptureSites,
-                Is.EqualTo((features & BattleFeatures.CaptureSites) == 0));
+            bool capture = (features & BattleFeatures.CaptureSites) != 0;
+            Assert.That(_battle.Container.TryResolve(typeof(ICaptureSiteDirectory), out _), Is.EqualTo(capture));
+            Assert.That(_battle.Container.TryResolve(typeof(CaptureSitesSystem), out _), Is.EqualTo(capture));
+            Assert.That(_battle.Container.Resolve<EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule>(), Is.Not.Null);
+            Assert.That(_battle.Container.Resolve<BattleVictoryService>(), Is.Not.Null);
             Assert.That(_battle.Container.Resolve<IFogOfWarSystem>() is NoFogOfWar, Is.EqualTo(!fog));
             Assert.That(_battle.Container.Resolve<IMiniMapFogMask>() is RevealedMiniMapFogMask, Is.EqualTo(!fog));
             if (features != BattleFeatures.All && features != (BattleFeatures.All & ~BattleFeatures.SuperWeapons))

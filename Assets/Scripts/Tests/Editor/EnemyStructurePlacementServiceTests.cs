@@ -2,11 +2,9 @@ using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using System.Reflection;
-using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.SkirmishCamera;
-using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Layer;
 using EmpireAtWar.Services.ReinforcementZones;
@@ -31,6 +29,7 @@ namespace EmpireAtWar.Tests.Editor
         private GameObject _root;
         private MapStub _map;
         private ZonesStub _zones;
+        private BattleAreaService _areas;
         private EnemyStructurePlacementService _enemyStructurePlacementService;
         private BoxCollider _stationPrefab;
         private BoxCollider _structurePrefab;
@@ -54,13 +53,13 @@ namespace EmpireAtWar.Tests.Editor
             vision.Register(TestPlayers.Enemy, _root.transform, 100000f);
             StructureSpawnClearance structureClearance =
                 new StructureSpawnClearance(new LayersStub(), new[] { _structurePrefab });
-            SpawnBlockerService blockers = new SpawnBlockerService(roster);
-            ReinforcementSpawnRule spawnRule = new ReinforcementSpawnRule(vision, blockers,
-                new OpenShipClearance(), structureClearance, _zones, new NoCaptureSites(), _map, new TestHazards());
+            _areas = new BattleAreaService(roster);
+            ReinforcementSpawnRule spawnRule = new ReinforcementSpawnRule(vision, _areas,
+                new OpenShipClearance(), structureClearance, _map, new TestHazards());
             return new EnemyStructurePlacementService(
                 mapModel: _map,
                 zones: _zones, spawnRule: spawnRule, structureClearance: structureClearance,
-                vision: vision, blockers: blockers,
+                vision: vision, areas: _areas,
                 owner: roster.Get(TestPlayers.Enemy), stationPrefab: _stationPrefab,
                 productionAccess: new SelfProductionAccess(TestPlayers.Enemy, new StationRegistry(new EntityLocator())));
         }
@@ -84,7 +83,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void ClearStation_IsPreferredOverCapturedZone()
         {
-            _zones.Centers.Add(new Vector3(-65f, 0f, 45f));
+            AddCapturedZone(new Vector3(-65f, 0f, 45f));
 
             Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 position), Is.True);
 
@@ -99,7 +98,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             Block(_map.Station, new Vector3(210f, 40f, 210f));
             Vector3 capturedZone = new Vector3(-65f, 0f, 45f);
-            _zones.Centers.Add(capturedZone);
+            AddCapturedZone(capturedZone);
 
             Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 position), Is.True);
 
@@ -203,12 +202,21 @@ namespace EmpireAtWar.Tests.Editor
             _map.SetBounds(-1000f, 1000f);
             Block(_map.Station, new Vector3(210f, 40f, 210f));
             _zones.Radius = 270f;
-            _zones.Centers.Add(Vector3.zero);
+            AddCapturedZone(Vector3.zero);
 
             Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 position), Is.True);
 
             Assert.That(position.magnitude, Is.GreaterThan(270f + 16f));
             Assert.That(position.magnitude, Is.LessThanOrEqualTo(270f + 16f + 36f));
+        }
+
+        private void AddCapturedZone(Vector3 center)
+        {
+            _zones.Centers.Add(center);
+            Transform zone = new GameObject("Captured zone").transform;
+            zone.SetParent(_root.transform);
+            zone.position = center;
+            _areas.Register(BattleAreaLayer.StructureExclusion, TestPlayers.Enemy, zone, _zones.Radius);
         }
 
         private GameObject Block(Vector3 position, Vector3 size)
@@ -267,11 +275,6 @@ namespace EmpireAtWar.Tests.Editor
             public List<Vector3> Centers { get; } = new List<Vector3>();
             public float Radius { get; set; }
 
-            public bool IsPositionInAnyZone(Vector3 position, float clearance = 0f)
-            {
-                return Centers.Exists(center => Vector3.Distance(center, position) <= Radius + clearance);
-            }
-
             public int GetOwnedCapturableZoneCount(PlayerId owner) => Centers.Count;
 
             public void CopyOwnedCapturableZoneBounds(PlayerId owner, List<Bounds> destination)
@@ -318,40 +321,6 @@ namespace EmpireAtWar.Tests.Editor
 
             public void ReleaseLanding(object ship)
             {
-            }
-        }
-
-        private sealed class NoCaptureSites : ICaptureSitesSystem
-        {
-            public event System.Action<PlayerId, PlayerId, SiteFacilityType> SiteCaptured { add { } remove { } }
-            public event System.Action<PlayerId, SiteFacilityType> SiteLost { add { } remove { } }
-            public event System.Action<PlayerId, SiteFacilityType> ConstructionStarted { add { } remove { } }
-            public event System.Action<PlayerId, SiteFacilityType> ConstructionCompleted { add { } remove { } }
-            public IReadOnlyList<ICaptureSite> Sites =>
-                Array.Empty<ICaptureSite>();
-
-            public bool IsPositionInAnySite(Vector3 position, float clearance = 0f) => false;
-
-            public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-
-            public bool HasHostileUnits(ICaptureSite site, PlayerId owner) => false;
-            public bool TryStartConstruction(int siteIndex, PlayerId owner, SiteFacilityType type) => false;
-            public bool TryBuildOnOwnedSite(PlayerId owner) => false;
-
-            public bool TryGetThreatenedSite(PlayerId owner, out Vector3 position)
-            {
-                position = default;
-                return false;
-            }
-
-            public bool TryGetRaidTarget(PlayerId attacker, Vector3 origin, out Vector3 position)
-            {
-                position = default;
-                return false;
             }
         }
     }

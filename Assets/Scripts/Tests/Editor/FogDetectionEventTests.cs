@@ -61,6 +61,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class Vision : IVisionService
         {
             public bool Visible;
+            public bool FogEnabled => true;
             public IReadOnlyList<OwnedCircle> Sources => Array.Empty<OwnedCircle>();
             public void Register(PlayerId owner, Transform source, float radius) { }
             public void Unregister(Transform source) { }

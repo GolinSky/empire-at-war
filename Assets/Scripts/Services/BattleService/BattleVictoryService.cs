@@ -12,8 +12,6 @@ using EmpireAtWar.Lifecycle;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.Ships;
-using EmpireAtWar.Entities.CaptureSites;
-using EmpireAtWar.Services.CaptureSites;
 
 namespace EmpireAtWar.Services.Battle
 {
@@ -26,7 +24,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly IPlayerRoster _playerRoster;
         private readonly ILocalPlayer _localPlayer;
         private readonly IPlayerRegistry _playerRegistry;
-        private readonly ICaptureSitesSystem _captureSites;
+        private readonly IReadOnlyList<IBattleSurvivalSource> _survivalSources;
         private readonly INotifier<BattleState> _battleState;
 
         private readonly IBattleOutcomeRule _victoryModel;
@@ -49,9 +47,9 @@ namespace EmpireAtWar.Services.Battle
             IPlayerRegistry playerRegistry,
             INotifier<BattleState> battleState,
             IBattleOutcomeRule victoryModel,
-            ICaptureSitesSystem captureSites)
+            IReadOnlyList<IBattleSurvivalSource> survivalSources)
         {
-            _captureSites = captureSites;
+            _survivalSources = survivalSources;
             _gameModel = gameModel;
             _shipService = shipService;
             _entityLocator = entityLocator;
@@ -151,14 +149,8 @@ namespace EmpireAtWar.Services.Battle
                 }
             }
 
-            // Construction survives station loss and becomes an entity when it completes.
-            IReadOnlyList<ICaptureSite> sites = _captureSites.Sites;
-            for (int i = 0; i < sites.Count; i++)
-            {
-                ICaptureSite site = sites[i];
-                if (site.State == CaptureSiteState.Constructing)
-                    _unitCounts[site.Owner.Index]++;
-            }
+            for (int i = 0; i < _survivalSources.Count; i++)
+                _survivalSources[i].AddUnitCounts(_unitCounts);
 
             _states.Clear();
             IReadOnlyList<PlayerSlot> players = _playerRoster.Players;

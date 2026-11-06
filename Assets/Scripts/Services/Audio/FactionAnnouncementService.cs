@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.SpaceStation;
@@ -13,7 +12,6 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
-using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.Reinforcement;
@@ -22,13 +20,14 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.Audio
 {
-    public sealed class FactionAnnouncementService : IInitializable, ITickable, ILateDisposable, IObserver<BattleResult>
+    public sealed class FactionAnnouncementService : IFactionAnnouncer, IInitializable, ITickable, ILateDisposable,
+        IObserver<BattleResult>
     {
-        private const float EVENT_COOLDOWN = 1.5f;
-        private const float CONSTRUCTION_COOLDOWN = 8f;
+        private const float EVENT_COOLDOWN = AnnouncementCooldowns.EVENT;
+        private const float CONSTRUCTION_COOLDOWN = AnnouncementCooldowns.CONSTRUCTION;
         private const float CAP_COOLDOWN = 3f;
         private const float DAMAGE_COOLDOWN = 20f;
-        private const float LOSS_COOLDOWN = 8f;
+        private const float LOSS_COOLDOWN = AnnouncementCooldowns.LOSS;
         private const float LOSS_VISIBILITY_MEMORY = 5f;
         private const float FLEET_QUIET_PERIOD = 20f;
         private readonly IInterfaceSfxService _audio;
@@ -42,7 +41,6 @@ namespace EmpireAtWar.Services.Audio
         private readonly ILocalPlayer _local;
         private readonly IProductionAccess _production;
         private readonly IEntityLocator _entities;
-        private readonly ICaptureSitesSystem _sites;
         private readonly INotifier<BattleResult> _results;
         private readonly ICameraService _camera;
         private readonly Dictionary<AudioClip, float> _readyAt = new();
@@ -51,13 +49,14 @@ namespace EmpireAtWar.Services.Audio
         private FactionAnnouncerSet _clips;
         private bool _capReached;
         private bool _ended;
-        private float _captureReadyAt;
         private float _fleetQuietSince = float.NegativeInfinity;
+
+        public FactionAnnouncerSet Clips => _clips;
 
         public FactionAnnouncementService(IInterfaceSfxService audio, InterfaceSfxData data, ShipSfxData ships,
             FactionService faction, PlayerFactionModel model, FactionRoster roster,
             ReinforcementService reinforcements, ReinforcementModel capacity, ILocalPlayer local,
-            IProductionAccess production, IEntityLocator entities, ICaptureSitesSystem sites,
+            IProductionAccess production, IEntityLocator entities,
             INotifier<BattleResult> results, ICameraService camera)
         {
             _audio = audio;
@@ -71,7 +70,6 @@ namespace EmpireAtWar.Services.Audio
             _local = local;
             _production = production;
             _entities = entities;
-            _sites = sites;
             _results = results;
             _camera = camera;
         }
@@ -88,10 +86,6 @@ namespace EmpireAtWar.Services.Audio
             _reinforcements.ReinforcementDeployed += HandleDeployed;
             _reinforcements.CapacityRejected += HandleCapacityRejected;
             _capacity.OnCapacityChanged += HandleCapacityChanged;
-            _sites.SiteCaptured += HandleCaptured;
-            _sites.SiteLost += HandleLost;
-            _sites.ConstructionStarted += HandleConstructionStarted;
-            _sites.ConstructionCompleted += HandleConstructionCompleted;
             _entities.EntityAdded += HandleEntityAdded;
             _entities.EntityRemoved += HandleEntityRemoved;
             _results.AddObserver(this);
@@ -120,7 +114,7 @@ namespace EmpireAtWar.Services.Audio
                 (IsOnCamera(subscription) || now - subscription.LastSeenAt <= LOSS_VISIBILITY_MEMORY);
         }
 
-        private bool Announce(AudioClip clip, AnnouncementPriority priority, float cooldown = EVENT_COOLDOWN)
+        public bool Announce(AudioClip clip, AnnouncementPriority priority, float cooldown = EVENT_COOLDOWN)
         {
             if (_ended || _readyAt.TryGetValue(clip, out float ready) && Time.unscaledTime < ready) return false;
             if (!_audio.TryPlayAnnouncement(clip, priority)) return false;
@@ -196,33 +190,6 @@ namespace EmpireAtWar.Services.Audio
         private void HandleCapacityChanged(int capacity)
         {
             if (capacity < _capacity.MaxUnitCapacity) _capReached = false;
-        }
-
-        private void HandleConstructionStarted(PlayerId payer, SiteFacilityType type)
-        {
-            if (payer == _local.Id) Announce(_clips.BuildingStarted, AnnouncementPriority.Progress);
-        }
-
-        private void HandleConstructionCompleted(PlayerId owner, SiteFacilityType type)
-        {
-            if (owner == _local.Id && SiteFacilityBuilder.IsSatellite(type))
-                Announce(_clips.ConstructionComplete, AnnouncementPriority.Progress, CONSTRUCTION_COOLDOWN);
-        }
-
-        private void HandleCaptured(PlayerId previous, PlayerId owner, SiteFacilityType type)
-        {
-            if (type != SiteFacilityType.Mining || owner != _local.Id || !previous.IsNone ||
-                Time.unscaledTime < _captureReadyAt) return;
-            if (Announce(_clips.MiningCaptured, AnnouncementPriority.Notification))
-                _captureReadyAt = Time.unscaledTime + EVENT_COOLDOWN;
-        }
-
-        private void HandleLost(PlayerId owner, SiteFacilityType type)
-        {
-            if (owner != _local.Id) return;
-            if (type == SiteFacilityType.Mining) Announce(_clips.MiningDestroyed, AnnouncementPriority.Warning);
-            else if (SiteFacilityBuilder.IsSatellite(type))
-                Announce(_clips.UnitDestroyed, AnnouncementPriority.Notification, LOSS_COOLDOWN);
         }
 
         private void HandleEntityAdded(IEntity entity)
@@ -314,10 +281,6 @@ namespace EmpireAtWar.Services.Audio
             _reinforcements.ReinforcementDeployed -= HandleDeployed;
             _reinforcements.CapacityRejected -= HandleCapacityRejected;
             _capacity.OnCapacityChanged -= HandleCapacityChanged;
-            _sites.SiteCaptured -= HandleCaptured;
-            _sites.SiteLost -= HandleLost;
-            _sites.ConstructionStarted -= HandleConstructionStarted;
-            _sites.ConstructionCompleted -= HandleConstructionCompleted;
             _entities.EntityAdded -= HandleEntityAdded;
             _entities.EntityRemoved -= HandleEntityRemoved;
             _results.RemoveObserver(this);

@@ -6,6 +6,8 @@ using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.Tooltip;
 using global::VContainer;
 using global::VContainer.Unity;
 using UnityEngine;
@@ -27,6 +29,8 @@ namespace EmpireAtWar.Services.VContainer
         {
             AssetRegistrations.RegisterShared<CaptureSiteData>(builder, _assets);
             builder.RegisterComponent(_sites).AsImplementedInterfaces().AsSelf();
+            builder.Register<CaptureSiteTooltipSource>(Lifetime.Singleton).As<IWorldTooltipSource>();
+            builder.Register<ConstructingSitesSurvival>(Lifetime.Singleton).As<IBattleSurvivalSource>();
             builder.Register<CaptureSiteMiniMapPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CaptureSiteBuildUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CaptureSitesSaveSource>(Lifetime.Singleton).As<IBattleSaveSource>();
@@ -36,12 +40,15 @@ namespace EmpireAtWar.Services.VContainer
         {
             AssetRegistrations.RegisterShared<CaptureSiteData>(builder, _assets);
             _sites.gameObject.SetActive(false);
-            builder.Register<NoCaptureSites>(Lifetime.Singleton).As<ICaptureSitesSystem>();
         }
 
         public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
         {
+            if (player.Slot.IsAi)
+                builder.Register<EnemySiteObjectives>(Lifetime.Singleton).As<IEnemyCaptureObjectiveSource>();
             if (!player.Has(BattleFeatures.Economy)) return;
+            if (!player.Slot.IsAi)
+                builder.Register<CaptureSiteAnnouncer>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SiteFacilityBuilder>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             if (player.Slot.IsAi)
             {
