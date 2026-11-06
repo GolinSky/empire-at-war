@@ -7,6 +7,7 @@ using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Selection;
 using UnityEngine;
 using EmpireAtWar.Entities.Units;
 
@@ -37,8 +38,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly IEntityLocator _entityLocator;
         private readonly ILocalPlayer _localPlayer;
 
-        private readonly List<MarqueeCandidate> _marqueeCandidates = new List<MarqueeCandidate>();
-        private readonly List<MarqueeCandidate> _marqueeResults = new List<MarqueeCandidate>();
+        private readonly List<SelectionEntry> _marqueeResults = new List<SelectionEntry>();
         private readonly RaycastHit[] _raycastHits = new RaycastHit[MAX_RAYCAST_HITS];
         private readonly List<PointCandidate> _pointCandidates = new List<PointCandidate>();
         private readonly List<SelectionEntry> _pointResults = new List<SelectionEntry>();
@@ -216,53 +216,51 @@ namespace EmpireAtWar.Services.Battle
 
         public void CollectInside(MarqueeRectangle rectangle, ICollection<SelectionEntry> results)
         {
-            _marqueeCandidates.Clear();
             _marqueeResults.Clear();
-
+            bool hasUnits = false;
             foreach (IEntity entity in _entityLocator.Entities)
             {
-                if (!_localPlayer.IsLocal(entity.Owner) ||
-                    entity.HealthModel.IsDestroyed ||
+                if (!_localPlayer.IsLocal(entity.Owner) || entity.HealthModel.IsDestroyed ||
                     !entity.TryGetFacade(out IEntitySelectionFacade command) ||
-                    !(command is ISelectionPositionProvider positionProvider))
+                    !IsInsideMarquee(entity, command, rectangle))
                 {
                     continue;
                 }
 
-                Vector3 viewportPoint = _cameraService.WorldToViewportPoint(positionProvider.WorldPosition);
-                if (viewportPoint.z <= 0f)
-                {
-                    continue;
-                }
-
-                Vector2 screenPoint = _cameraService.WorldToScreenPoint(positionProvider.WorldPosition);
-                _marqueeCandidates.Add(new MarqueeCandidate(
-                    new SelectionEntry(entity, command),
-                    new MarqueePoint(screenPoint.x, screenPoint.y)));
+                _marqueeResults.Add(new SelectionEntry(entity, command));
+                hasUnits |= entity.IsUnit();
             }
-
-            MarqueeSelectionUtility.CollectInside(
-                _marqueeCandidates,
-                rectangle,
-                candidate => candidate.ScreenPoint,
-                _marqueeResults);
 
             // Like the select-all shortcuts, a box that catches units selects only the units;
             // structures are box-selected only when nothing else is inside.
-            bool hasUnits = false;
             for (int i = 0; i < _marqueeResults.Count; i++)
             {
-                hasUnits |= _marqueeResults[i].Entry.Entity.IsUnit();
-            }
-
-            for (int i = 0; i < _marqueeResults.Count; i++)
-            {
-                SelectionEntry entry = _marqueeResults[i].Entry;
+                SelectionEntry entry = _marqueeResults[i];
                 if (!hasUnits || entry.Entity.IsUnit())
                 {
                     results.Add(entry);
                 }
             }
+        }
+
+        private bool IsInsideMarquee(IEntity entity, IEntitySelectionFacade command, MarqueeRectangle rectangle)
+        {
+            if (entity.TryGetFacade(out ISquadronIconCommand icon) && icon.OverlapsMarquee(rectangle))
+                return true;
+
+            if (command is ISelectionPositionProvider positionProvider)
+            {
+                Vector3 position = positionProvider.WorldPosition;
+                if (_cameraService.WorldToViewportPoint(position).z > 0f)
+                {
+                    Vector2 screen = _cameraService.WorldToScreenPoint(position);
+                    if (rectangle.Contains(new MarqueePoint(screen.x, screen.y)))
+                        return true;
+                }
+            }
+
+            return entity.TryGetFacade(out ShipMarqueeHull hull) &&
+                   hull.Overlaps(rectangle, _cameraService.SceneCamera);
         }
 
         private readonly struct PointCandidate
@@ -276,18 +274,6 @@ namespace EmpireAtWar.Services.Battle
                 Entry = entry;
                 IsUnit = isUnit;
                 Distance = distance;
-            }
-        }
-
-        private readonly struct MarqueeCandidate
-        {
-            public SelectionEntry Entry { get; }
-            public MarqueePoint ScreenPoint { get; }
-
-            public MarqueeCandidate(SelectionEntry entry, MarqueePoint screenPoint)
-            {
-                Entry = entry;
-                ScreenPoint = screenPoint;
             }
         }
     }

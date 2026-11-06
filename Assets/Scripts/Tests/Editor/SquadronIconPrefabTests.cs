@@ -1,3 +1,5 @@
+using System.Reflection;
+using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Squadrons.Icon;
 using NUnit.Framework;
 using UnityEditor;
@@ -12,6 +14,40 @@ namespace EmpireAtWar.Tests.Editor
         private const string SQUADRON_PREFAB_FOLDER = "Assets/Prefabs/Models/Squadrons";
         private const string FRAME_SHADER = "EmpireAtWar/UI/Squadron Frame";
         private const string ICON_SHADER = "EmpireAtWar/UI/Squadron Icon";
+
+        [Test]
+        public void Marquee_IncludesVisibleZoomedIconEdgeAndExcludesHiddenIcon()
+        {
+            GameObject squadron = new GameObject("Squadron");
+            GameObject marker = new GameObject("Marker", typeof(RectTransform));
+            try
+            {
+                SquadronIconComponent icon = squadron.AddComponent<SquadronIconComponent>();
+                SerializedObject serializedIcon = new SerializedObject(icon);
+                serializedIcon.FindProperty("iconRoot").objectReferenceValue = marker.transform;
+                serializedIcon.ApplyModifiedPropertiesWithoutUndo();
+                typeof(SquadronIconComponent).GetField("_localPlayer", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(icon, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+                typeof(SquadronIconComponent).GetField("_owner", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(icon, TestPlayers.Human);
+
+                // At half zoom the 72 px marker spans [82,118] x [112,148], above the projected unit at (100,100).
+                icon.Project(Matrix4x4.identity, Vector3.back, Vector3.forward, 200, 200, 0.5f, 1f);
+                MarqueePoint outside = new MarqueePoint(135f, 152f);
+                MarqueeRectangle touching = new MarqueeRectangle(outside, new MarqueePoint(118f, 148f));
+                MarqueeRectangle missing = new MarqueeRectangle(outside, new MarqueePoint(119f, 148f));
+                Assert.That(icon.OverlapsMarquee(touching), Is.True);
+                Assert.That(icon.OverlapsMarquee(missing), Is.False);
+
+                icon.Project(Matrix4x4.identity, Vector3.back, Vector3.back, 200, 200, 0.5f, 1f);
+                Assert.That(icon.OverlapsMarquee(touching), Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(marker);
+                Object.DestroyImmediate(squadron);
+            }
+        }
 
         [Test]
         public void SquadronViews_MarkerRootIsAssignedAndHasNoOwnCanvas()

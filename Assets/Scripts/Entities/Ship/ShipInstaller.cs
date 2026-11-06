@@ -2,6 +2,7 @@ using System.Linq;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Ship.Abilities;
@@ -15,6 +16,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
@@ -41,6 +43,12 @@ namespace EmpireAtWar.Ship
             builder.RegisterInstance(_pose);
             builder.RegisterInstance(Data).AsSelf().As<IShipData, IShipMoveData, IRadarData, IHangarData>();
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.Ship, SelectionType.Ship);
+            if (Data.ShipClass == ShipClass.Capital || Data.ShipClass == ShipClass.HeavyCapital)
+            {
+                builder.Register(resolver => new ShipMarqueeHull(View.transform,
+                    resolver.Resolve<ShipSpawnClearance>().GetLocalHullBounds(_shipType)), Lifetime.Singleton)
+                    .AsImplementedInterfaces();
+            }
             EntityFeatureBindings.RegisterHighlight(builder, Bindings);
             EntityFeatureBindings.RegisterCombatModifiers(builder);
             EntityFeatureBindings.RegisterHealth(builder, Bindings, Data);

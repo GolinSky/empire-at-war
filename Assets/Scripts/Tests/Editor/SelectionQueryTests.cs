@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Units;
@@ -42,6 +43,73 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void CollectInside_BoxAroundOffsetIcon_SelectsSquadronOnceAndPrefersItToStructures()
+        {
+            var locator = new EntityLocator();
+            var squadron = new FakeEntity(1, SelectionType.Ship, isUnit: true,
+                extraFacade: new FakeIcon(new MarqueePoint(20f, 80f)));
+            locator.AddEntity(squadron);
+            locator.AddEntity(new FakeEntity(2, SelectionType.MiningFacility, isUnit: false,
+                worldPosition: new Vector3(-30f, 30f, 0f)));
+            var results = new List<SelectionEntry>();
+
+            var box = new MarqueeRectangle(new MarqueePoint(25f, 85f), new MarqueePoint(15f, 75f));
+            SelectionQuery query = CreateQuery(locator);
+            query.CollectInside(box, results);
+            Assert.That(results, Has.Count.EqualTo(1));
+            Assert.That(results[0].Entity, Is.SameAs(squadron));
+
+            results.Clear();
+            query.CollectInside(WHOLE_SCREEN, results);
+            Assert.That(results, Has.Count.EqualTo(1));
+            Assert.That(results[0].Entity, Is.SameAs(squadron));
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void CollectInside_SelectsRotatedCapitalHullTipAndSkipsEmptyBoundingBoxCorner(bool orthographic)
+        {
+            GameObject cameraObject = new GameObject("Selection camera");
+            GameObject ship = new GameObject("Capital ship");
+            try
+            {
+                var camera = cameraObject.AddComponent<UnityEngine.Camera>();
+                camera.pixelRect = new Rect(0f, 0f, 200f, 200f);
+                camera.orthographic = orthographic;
+                camera.orthographicSize = 10f;
+                camera.fieldOfView = 90f;
+                camera.aspect = 1f;
+                ship.transform.SetPositionAndRotation(new Vector3(0f, 0f, 10f), Quaternion.Euler(0f, 0f, 45f));
+                var hull = new ShipMarqueeHull(ship.transform, new Bounds(Vector3.zero, new Vector3(8f, 1f, 1f)));
+                var capital = new FakeEntity(1, SelectionType.Ship, isUnit: true, extraFacade: hull);
+                var locator = new EntityLocator();
+                locator.AddEntity(capital);
+                SelectionQuery query = CreateQuery(locator, camera);
+                var results = new List<SelectionEntry>();
+
+                // At 10 pixels per world unit the tip is near (128,128); the opposite top corner is empty.
+                var tip = new MarqueeRectangle(new MarqueePoint(130f, 130f), new MarqueePoint(125f, 125f));
+                query.CollectInside(tip, results);
+                Assert.That(results, Has.Count.EqualTo(1));
+                Assert.That(results[0].Entity, Is.SameAs(capital));
+
+                results.Clear();
+                var empty = new MarqueeRectangle(new MarqueePoint(70f, 125f), new MarqueePoint(75f, 130f));
+                query.CollectInside(empty, results);
+                Assert.That(results, Is.Empty);
+
+                ship.transform.position = new Vector3(0f, 0f, -10f);
+                query.CollectInside(tip, results);
+                Assert.That(results, Is.Empty);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(ship);
+                UnityEngine.Object.DestroyImmediate(cameraObject);
+            }
+        }
+
+        [Test]
         public void CollectInside_SelectsStructuresWhenNoUnitIsInside()
         {
             EntityLocator locator = new EntityLocator();
@@ -75,10 +143,10 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(results[1].Entity, Is.SameAs(visible));
         }
 
-        private static SelectionQuery CreateQuery(IEntityLocator locator)
+        private static SelectionQuery CreateQuery(IEntityLocator locator, UnityEngine.Camera camera = null)
         {
             return new SelectionQuery(
-                new FakeCamera(),
+                new FakeCamera(camera),
                 locator,
                 TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
         }
@@ -90,7 +158,8 @@ namespace EmpireAtWar.Tests.Editor
             public Transform CameraTransform => null;
             public Vector3 CameraForward => Vector3.forward;
             public float FieldOfView => 60f;
-            public UnityEngine.Camera SceneCamera => null;
+            public UnityEngine.Camera SceneCamera { get; }
+            public FakeCamera(UnityEngine.Camera camera) => SceneCamera = camera;
             public float ZoomTargetHeight => 0f;
 
             public Vector3 GetWorldPoint(Vector2 point, Vector3 origin) => default;
@@ -101,7 +170,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public Vector3 WorldToViewportPoint(Vector3 point) => new Vector3(0.5f + point.x, 0.5f, 1f);
 
-            public Vector2 WorldToScreenPoint(Vector3 point) => new Vector2(50f, 50f);
+            public Vector2 WorldToScreenPoint(Vector3 point) => new Vector2(50f + point.x, 50f + point.y);
 
             public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 min, Vector2 max) =>
                 Array.Empty<Vector3>();
@@ -129,18 +198,30 @@ namespace EmpireAtWar.Tests.Editor
             public void Select(bool isSelected) { }
         }
 
+        private sealed class FakeIcon : ISquadronIconCommand
+        {
+            private readonly MarqueePoint _center;
+
+            public FakeIcon(MarqueePoint center) => _center = center;
+            public bool OverlapsMarquee(MarqueeRectangle rectangle) => rectangle.Contains(_center);
+            public bool ContainsScreenPoint(Vector2 point) => false;
+        }
+
         private sealed class FakeEntity : IEntity
         {
             private readonly FakeSelection _selection;
             private readonly IUnitTypeFacade _unitType;
+            private readonly IEntityFacade _extraFacade;
 
             public long Id { get; }
             public IHealthModelObserver HealthModel { get; } = new FakeHealth();
             public PlayerId Owner => TestPlayers.Human;
 
-            public FakeEntity(long id, SelectionType selectionType, bool isUnit, Vector3 worldPosition = default)
+            public FakeEntity(long id, SelectionType selectionType, bool isUnit, Vector3 worldPosition = default,
+                IEntityFacade extraFacade = null)
             {
                 Id = id;
+                _extraFacade = extraFacade;
                 _selection = new FakeSelection(selectionType, worldPosition);
                 _unitType = isUnit ? new UnitTypeFacade(UnitTypeId.Ship(ShipType.Venator)) : null;
             }
@@ -160,6 +241,12 @@ namespace EmpireAtWar.Tests.Editor
                 if (_unitType is TCommand unitType)
                 {
                     command = unitType;
+                    return true;
+                }
+
+                if (_extraFacade is TCommand extra)
+                {
+                    command = extra;
                     return true;
                 }
 

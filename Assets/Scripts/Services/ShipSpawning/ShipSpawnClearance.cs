@@ -39,6 +39,8 @@ namespace EmpireAtWar.Services.ShipSpawning
                 Mathf.Abs(hull.LocalCenter.z) + hull.HalfExtents.z).magnitude;
         }
 
+        public Bounds GetLocalHullBounds(ShipType shipType) => GetHull(shipType).LocalBounds;
+
         public bool IsClear(PlayerId owner, ShipType shipType, Vector3 position)
         {
             ShipHullFootprint footprint = GetFootprint(owner, shipType, position);
@@ -88,23 +90,22 @@ namespace EmpireAtWar.Services.ShipSpawning
             BoxCollider collider = _assetService.LoadComponent<BoxCollider>(shipType + SHIP_VIEW_SUFFIX);
             Vector3 scale = collider.transform.lossyScale;
             ShipData shipData = _assetService.Load<ShipData>(_shipsData.GetShipDataPath(shipType));
-            hull = new Hull(
-                Vector3.Scale(collider.center, scale),
-                Vector3.Scale(collider.size, scale) * 0.5f,
-                shipData.Height);
+            hull = new Hull(new Bounds(collider.center, collider.size), scale, shipData.Height);
             _hulls.Add(shipType, hull);
             return hull;
         }
 
         private readonly struct Hull
         {
-            public Hull(Vector3 localCenter, Vector3 halfExtents, float height)
+            public Hull(Bounds localBounds, Vector3 scale, float height)
             {
-                LocalCenter = localCenter;
-                HalfExtents = halfExtents;
+                LocalBounds = localBounds;
+                LocalCenter = Vector3.Scale(localBounds.center, scale);
+                HalfExtents = Vector3.Scale(localBounds.extents, scale);
                 Height = height;
             }
 
+            public Bounds LocalBounds { get; }
             public Vector3 LocalCenter { get; }
             public Vector3 HalfExtents { get; }
             public float Height { get; }

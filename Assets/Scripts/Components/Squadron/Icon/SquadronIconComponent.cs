@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
@@ -126,6 +127,17 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             Vector2 delta = _screenPosition - screenPoint;
             float halfSize = clickSize * _zoomScale * 0.5f;
             return Mathf.Abs(delta.x) <= halfSize && Mathf.Abs(delta.y) <= halfSize;
+        }
+
+        public bool OverlapsMarquee(MarqueeRectangle rectangle)
+        {
+            if (_isReleased || !_isShown)
+                return false;
+
+            Vector2 center = iconRoot.anchoredPosition;
+            float halfSize = screenSize * _zoomScale * 0.5f;
+            return rectangle.MinX <= center.x + halfSize && rectangle.MaxX >= center.x - halfSize &&
+                   rectangle.MinY <= center.y + halfSize && rectangle.MaxY >= center.y - halfSize;
         }
 
         public override void Release()
