@@ -66,6 +66,7 @@
 
 ### Optimization
 
+
 - [ ] **Recover battle FPS lost after the hazard-system decor asteroids (decor culling/LOD, field rock LOD, nebula, presets, particles)** → [[TODOs/Optimization/Battle_FPS_Recovery_Plan|Battle FPS Recovery Plan]]; [[TODOs/Optimization/Battle_FPS_Recovery_Plan - Research|PC capture 2026-10-29 vs Mac audits]]
   - 2026-10-29: Phase 0 tool and Phases 1–6 implementations source-verified. Builds/performance runs deferred by user; absorbed attribution/experiments and visual/performance acceptance remain open.
   - 2026-10-29: re-verified against committed `76e7222f8` (code, prefabs, SceneContext, volume profile, materials); no defects found. Tests/captures not run.
@@ -114,6 +115,11 @@
   - Next: commit; user packed-player placement, audio mix/ducking, early-spawn sync-load timing.
 
 ### Refactoring
+
+
+
+
+
 
 - [ ] **Derive hardpoint HP from hull HP (budget ratio, type weights, per-class minimum)** → [[TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan|Hardpoint Health From Hull]]; [[TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan - Research|Current Σ HP / hull table]]
   - Status: implemented 2026-10-29 (`R = 1.15`, 62 data / 61 prefabs migrated); tests not run.
@@ -262,7 +268,6 @@
 
 - [x] **Boba Fett — Slave I — single-fighter skirmish hero for Empire** → [[Done/Features/Boba_Fett_Slave_I|Implementation plan]] · [[Done/Features/Skirmish_Hero_Fighters - Research|Balance research]]
   - Hero, primary guns, shop, Harmonic Bomb slot and activation voice verified. Stationary duel results recorded; live checks → [[TODOs/User_Acceptance_Queue]].
-
 - [x] **Display settings: resolution in all window modes, refresh rate, monitor selection (Win + macOS)** → [[Done/Features/Display_Modes_And_Monitors_Plan|Display Modes and Monitors Plan]]
   - Completed 2026-11-04: all four phases, macOS native fullscreen and monitor FPS preset. Unity compile/import, saved prefab and Penpot layout verified. Ui 245/245 + Core 136/136 passed on 2026-11-04; no fixes needed. Windows/macOS hardware acceptance → [[TODOs/User_Acceptance_Queue]].
 

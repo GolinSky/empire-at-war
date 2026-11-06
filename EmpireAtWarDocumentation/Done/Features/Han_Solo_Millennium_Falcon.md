@@ -53,7 +53,8 @@ acceptance: pending-user
 - Two full-traverse quad laser mounts use weapon 123. Each delivers 2 × 84.375 raw damage per 0.9 s. Baked loadout: one member, two guns, 375 raw DPS. Break / extend: 8 / 45 units. Ideal 180° combat turn: 0.8 s, radius 29.54 units.
 - Source verification: shop and AI use the Rebellion roster, player reservation uses `UnitTypeId.Squadron`, AI reservation uses per-owner `MaxCount`. No hangar row includes the Falcon. Hero UI takes the squadron portrait.
 - Squadron saves now validate against `SquadronData.Abilities`. Active Invulnerability saves as recovery for remaining active time + 60 s. Stored recovery resumes, and pooled squadron slots clear on respawn. Added a save-validator regression case.
-- Audio import and prefab bindings: `EGL_FALCON_1`, Ready `HAN0601`, select `HAN0102`, move `HAN0202`, attack `HAN0308` / Chewbacca `HAN0304`, activation `HAN0604`; standard roster explosion profile.
+- Audio import and prefab bindings: `EGL_FALCON_1`, Ready `HAN0601`, select `HAN0102`, move `HAN0202`, attack `HAN0308` / Chewbacca `HAN0304`, activation `HAN0604`.
+- Review fix 2026-11-06: the explosion entry was the unused roster default (`EXP_CRUISER_1/2`) and the squadron view did not set `playDestructionSound`, so the Falcon had no hero death sound. Now uses the corvette bank (`EXP_CORVETTE_1/2`) with `playDestructionSound: 1`, matching both Slave I heroes; Unity read back the flag.
 
 ### Skirmish shop verification, 2026-11-06
 

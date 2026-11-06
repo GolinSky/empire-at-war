@@ -18,7 +18,7 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Jango_Fett_Slave_I]] — Measure overshoot, firing passes and reacquisition against Belbullab-22 and Vulture wings using the shared duel protocol. Check AI purchase and rebuy frequency.
 - [ ] [[Done/Features/Jango_Fett_Slave_I]] — Verify each owner’s limit across queue, cancellation, holding, deployment, death and repurchase. Check save/load and pooled respawn.
 
-- [ ] [[Done/Features/Boba_Fett_Slave_I]] — Check placement silhouette, one target/portrait, local order and ready cues in skirmish.
+- [ ] [[Done/Features/Boba_Fett_Slave_I]] — Check placement silhouette, one target/portrait, local order, ready and death (corvette explosion) cues in skirmish.
 - [ ] [[Done/Features/Boba_Fett_Slave_I]] — Measure overshoot, reacquisition, mixed-fleet and moving-wing duels; check AI rebuy frequency.
 - [ ] [[Done/Features/Boba_Fett_Slave_I]] — Verify independent owner limits across queue, cancel, reserve, death, repurchase, pooled spawn and save/load.
 - [[Done/Features/Han_Solo_Millennium_Falcon]]
@@ -120,6 +120,7 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Save during the fuse and reload. Confirm the bomb disappears and the surviving Fett retains the remaining fuse plus recharge.
 - [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Run the focused `HarmonicBombTests` fixture when test execution is enabled.
 - [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Listen to both pilots on drop and the single positional seismic blast at fuse expiry, including empty and overlapping drops.
+
 
 - [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — Battle: player-only automatic starts, individual selection pause, multi-selection use, manual cancellation/non-cancellable effects, settings and saved per-ship preferences; include Allegiance / ISD II Main Batteries auto-start and normal 20 s active → 60 s recovery (2026-11-01 extension; Core regressions authored, not run).
 - [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — Balance: shared shield regeneration ×4 and initial automatic weapon/shield thresholds across fleet matchups.

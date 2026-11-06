@@ -52,7 +52,8 @@ acceptance: pending-user
 - Empire squadron key `206` resolves `BobaFettSlaveISquadronData` and `BobaFettSlaveISquadronView`. Both flight and health bind the same single fighter. Two forward gun mounts use `BobaFettTwinLaser` (`126`), 425 raw sustained DPS combined. Each muzzle coincides with its source socket; yaw is ±22.5°.
 - The shop, deployed hero portrait, world icon and tooltip use the vanilla Boba portrait. The placement preview uses the Empire view group. Empire station level 2, 1,700 credits, 28 s, two population, one reserved copy. No hangar complement was edited.
 - `PlayerFactionModel`, `FactionService` and reinforcement save restoration reserve/release the owning player's typed hero across queue, cancellation, reserve, deployment, destruction and reload. `EnemyProductionStrategy` reads the Empire squadron row and `EnemyUnitLimitModel` enforces max one. AI rebuy frequency requires battle telemetry.
-- Unity resolved the Slave I engine loop, Imperial fighter explosion and Boba's ready line (`U000_BFT0801_ENG`). Shop description now mentions the harmonic bomb. Select/move/attack resolve the three planned clips through separate order handlers.
+- Unity resolved the Slave I engine loop and Boba's ready line (`U000_BFT0801_ENG`).
+- Review fix 2026-11-06: the explosion entry was the unused roster default (`EXP_CRUISER_1/2`) and the squadron view had `playDestructionSound: 0`, so Boba had no hero death sound. Now uses Jango's corvette bank (`EXP_CORVETTE_1/2`) with `playDestructionSound: 1`; Unity read back the flag. Shop description now mentions the harmonic bomb. Select/move/attack resolve the three planned clips through separate order handlers.
 
 ### Stationary gun balance
 
