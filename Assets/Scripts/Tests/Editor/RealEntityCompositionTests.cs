@@ -18,6 +18,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
@@ -44,7 +45,9 @@ using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.FogOfWar;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.VContainer;
@@ -112,6 +115,30 @@ namespace EmpireAtWar.Tests.Editor
                 _modifiers.Clear();
                 _health.Clear();
             }
+        }
+
+        [Test, Category("Capture")]
+        public void SatelliteSite_ReservesOnlyItsFootprintForReinforcementStructures()
+        {
+            BuildSaveProject();
+            MapLayout layout = BuildSaveBattle();
+            var sites = _battle.Container.Resolve<CaptureSitesSystem>();
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
+                "Assets/Prefabs/View/CaptureSites/SatelliteCaptureSite.prefab");
+            var view = Object.Instantiate(prefab, _root.transform).GetComponent<CaptureSiteView>();
+            view.Configure(CaptureSiteKind.Satellite, PlayerId.None);
+            view.ConfigureSettings(_battle.Container.Resolve<CaptureSiteData>().GetSettings(view.Kind));
+            sites.UpdateState(new BattleMap(layout, null, new[] { view }, null, null));
+
+            float padRadius = _battle.Container.Resolve<MapGenerationSettings>().SatelliteFootprintRadius;
+            float facilityRadius = _battle.Container.Resolve<IStructureSpawnClearance>().Radius;
+            var exclusion = _battle.Container.Resolve<IBattleAreaService>().Get(BattleAreaLayer.StructureExclusion)
+                .Single(circle => circle.Transform == view.transform);
+            Vector3 touching = view.Center + Vector3.right * (padRadius + facilityRadius);
+            Vector3 clear = touching + Vector3.right;
+            Assert.That(sites.SitePresenters.Single().Contains(clear), Is.True);
+            Assert.That(exclusion.Contains(touching - Vector3.right, facilityRadius), Is.True);
+            Assert.That(exclusion.Contains(clear, facilityRadius), Is.False);
         }
 
         [Test]

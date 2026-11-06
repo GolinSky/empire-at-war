@@ -144,7 +144,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeOverlay : ISpawnAreaOverlay
         {
             public bool Hidden;
-            public void Show(PlayerId team) => Hidden = false;
+            public void Show(PlayerId team, bool placingStructure) => Hidden = false;
             public void Hide() => Hidden = true;
         }
     }

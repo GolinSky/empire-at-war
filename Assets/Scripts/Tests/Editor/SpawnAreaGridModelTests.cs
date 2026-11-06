@@ -69,6 +69,19 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void BlockWhere_OnlyBlocksVisibleCellCentersInsideTheShape()
+        {
+            SpawnAreaGridModel grid = CreateGrid();
+            grid.Reveal(0f, 0f, 20f);
+
+            grid.BlockWhere(-35f, -35f, 35f, 35f, (x, z) => x > z);
+
+            Assert.That(grid.GetAt(5f, -5f), Is.EqualTo(SpawnAreaGridModel.BLOCKED));
+            Assert.That(grid.GetAt(-5f, 5f), Is.EqualTo(SpawnAreaGridModel.OPEN));
+            Assert.That(grid.GetAt(25f, -5f), Is.EqualTo(SpawnAreaGridModel.HIDDEN));
+        }
+
+        [Test]
         public void Stamp_CircleOutsideMap_IsClampedWithoutError()
         {
             SpawnAreaGridModel grid = CreateGrid();

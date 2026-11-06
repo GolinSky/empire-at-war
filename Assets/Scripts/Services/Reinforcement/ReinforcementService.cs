@@ -195,9 +195,10 @@ namespace EmpireAtWar.Services.Reinforcement
             for (int i = 0; i < count; i++)
                 _previews.Add(placement.CreatePreview());
             _slotSpacing = _previews[0].PlanarRadius * SLOT_SPACING_FACTOR;
-            if (!ReinforcementModel.UsesCapacity(request))
+            bool placingStructure = !ReinforcementModel.UsesCapacity(request);
+            if (placingStructure)
                 _slotSpacing = Mathf.Max(_slotSpacing, _structureClearance.Radius * SLOT_SPACING_FACTOR);
-            _spawnAreaOverlay.Show(_owner.Id);
+            _spawnAreaOverlay.Show(_owner.Id, placingStructure);
             _cancelRouter.Focus(this);
         }
 

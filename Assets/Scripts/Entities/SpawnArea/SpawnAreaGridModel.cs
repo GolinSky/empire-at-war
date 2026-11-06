@@ -45,6 +45,23 @@ namespace EmpireAtWar.Models.SpawnArea
         /// <summary>Closes every open cell whose centre lies inside the circle.</summary>
         public void Block(float x, float z, float radius) => Stamp(x, z, radius, OPEN, BLOCKED);
 
+        public void BlockWhere(float minX, float minZ, float maxX, float maxZ, Func<float, float, bool> isBlocked)
+        {
+            int lastRow = ToIndex(maxZ, _minZ, _cellSizeZ);
+            int lastColumn = ToIndex(maxX, _minX, _cellSizeX);
+            int firstColumn = ToIndex(minX, _minX, _cellSizeX);
+            for (int row = ToIndex(minZ, _minZ, _cellSizeZ); row <= lastRow; row++)
+            {
+                float z = _minZ + (row + 0.5f) * _cellSizeZ;
+                for (int column = firstColumn; column <= lastColumn; column++)
+                {
+                    int index = row * Resolution + column;
+                    if (_cells[index] == OPEN && isBlocked(_minX + (column + 0.5f) * _cellSizeX, z))
+                        _cells[index] = BLOCKED;
+                }
+            }
+        }
+
         private void Stamp(float x, float z, float radius, float from, float to)
         {
             int minColumn = ToIndex(x - radius, _minX, _cellSizeX);

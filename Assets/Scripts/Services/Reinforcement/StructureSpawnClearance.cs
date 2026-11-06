@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Services.Layer;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ namespace EmpireAtWar.Services.Reinforcement
     public sealed class StructureSpawnClearance : IStructureSpawnClearance
     {
         private readonly int _obstacleMask;
+        private Collider[] _obstacles = new Collider[32];
 
         public float Radius { get; }
 
@@ -24,6 +26,17 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public bool IsClear(Vector3 position) =>
             !Physics.CheckSphere(position, Radius, _obstacleMask, QueryTriggerInteraction.Ignore);
+
+        // Limit overlay sphere checks to cells near actual colliders, including colliders just outside the map.
+        public ReadOnlySpan<Collider> GetObstacles(Bounds map)
+        {
+            map.Expand(Radius * 2f);
+            int count;
+            while ((count = Physics.OverlapBoxNonAlloc(map.center, map.extents, _obstacles,
+                       Quaternion.identity, _obstacleMask, QueryTriggerInteraction.Ignore)) == _obstacles.Length)
+                Array.Resize(ref _obstacles, _obstacles.Length * 2);
+            return new ReadOnlySpan<Collider>(_obstacles, 0, count);
+        }
 
         /// <summary>Bounds of a prefab collider around the spawn pivot, keeping its rotation and scale.</summary>
         public static Bounds GetSpawnBounds(BoxCollider prefab)

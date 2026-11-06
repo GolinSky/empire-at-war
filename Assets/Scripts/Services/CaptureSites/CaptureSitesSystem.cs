@@ -53,6 +53,7 @@ namespace EmpireAtWar.Services.CaptureSites
         private IBattleAreaWriter _areaWriter;
         private CaptureStrengthSampler _strengthSampler;
         private CaptureSiteData _data;
+        private MapGenerationSettings _mapSettings;
         private CaptureSitePresenter _selectedSite;
 
         public IReadOnlyList<ICaptureSite> Sites => _sites;
@@ -82,6 +83,7 @@ namespace EmpireAtWar.Services.CaptureSites
             ITooltipService tooltipService,
             INotifier<BattleMap> battleMap,
             CaptureSiteData data,
+            MapGenerationSettings mapSettings,
             IBattleAreaWriter areaWriter)
         {
             _areaWriter = areaWriter;
@@ -90,6 +92,7 @@ namespace EmpireAtWar.Services.CaptureSites
             _shipService = shipService;
             _squadronRegistry = squadronRegistry;
             _data = data;
+            _mapSettings = mapSettings;
             _visionService = visionService;
             _cameraService = cameraService;
             _gestures = gestures;
@@ -121,7 +124,8 @@ namespace EmpireAtWar.Services.CaptureSites
                 site.Lost += HandleSiteLost;
                 Transform source = view.transform;
                 _areaSources.Add(source);
-                _areaWriter.Register(BattleAreaLayer.StructureExclusion, PlayerId.None, source, site.Radius);
+                float footprintRadius = view.Kind == CaptureSiteKind.Satellite ? _mapSettings.SatelliteFootprintRadius : site.Radius;
+                _areaWriter.Register(BattleAreaLayer.StructureExclusion, PlayerId.None, source, footprintRadius);
                 float orderRadius = view.Kind == CaptureSiteKind.Satellite ? SATELLITE_ORDER_RADIUS : site.Radius;
                 _areaWriter.Register(BattleAreaLayer.OrderSnap, PlayerId.None, source, orderRadius);
                 site.ConstructionCompleted += HandleConstructionCompleted;
