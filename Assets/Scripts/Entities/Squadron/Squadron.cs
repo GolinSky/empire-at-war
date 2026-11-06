@@ -72,7 +72,8 @@ namespace EmpireAtWar.Entities.Squadrons
         private LifecycleTickGate _tickGate;
         private FighterPoseBatch _poseBatch;
         private ShipSfxHandle _audioHandle;
-        private SfxProfile _engineSound;
+        [SerializeField] private bool playDestructionSound;
+        private ShipUnitAudioProfile _unitAudio;
         private SfxProfile _moveSound;
         private EntityComponentLifecycle _componentLifecycle;
         private IReadOnlyList<IRespawnable> _respawnables;
@@ -141,7 +142,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _weapon = weapon;
             _weaponFireEvents = weaponFireEvents;
             _shipSfxService = shipSfxService;
-            _engineSound = sfxData.GetUnit(squadronType).Engine;
+            _unitAudio = sfxData.GetUnit(squadronType);
             _moveSound = sfxData.Acceleration;
             _selectionModel = selectionModel;
             _audioDialogs = audioDialogs.Value;
@@ -253,7 +254,7 @@ namespace EmpireAtWar.Entities.Squadrons
             {
                 float speed = Vector3.Distance(previousPosition, _flight.Centroid) / Time.deltaTime;
                 if (speed > 0f)
-                    _shipSfxService.TryHoldEngine(_audioHandle, _engineSound, _flight.Centroid,
+                    _shipSfxService.TryHoldEngine(_audioHandle, _unitAudio.Engine, _flight.Centroid,
                         Mathf.Clamp01(speed / _flight.Data.CruiseSpeed), 1f);
             }
         }
@@ -526,7 +527,8 @@ namespace EmpireAtWar.Entities.Squadrons
             _sFoils.Changed -= HandleSFoilsChanged;
             foreach (IAudioDialogShipComponent audioDialog in _audioDialogs)
                 _selectionModel.OnSelected -= audioDialog.HandleSelection;
-            _shipSfxService.ReleaseShip(_audioHandle);
+            _shipSfxService.ReleaseShip(_audioHandle,
+                destroyed && playDestructionSound ? _unitAudio.Explosion : null, _flight.Centroid);
             _orders.Clear();
             _engaged = null;
             _componentLifecycle.Release();

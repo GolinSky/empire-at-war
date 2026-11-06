@@ -73,11 +73,11 @@ public static class VerifyCarrack
         Check(hull.All(fog.Contains) && shield.GetComponents<MeshRenderer>().All(fog.Contains), "Hull and shield fog bindings");
 
         var material = hull[0].sharedMaterial;
-        Check(material.GetTexture("_TeamMaskMap") != null && Mathf.Approximately(material.GetFloat("_TeamMaskStrength"), .35f), "Source-alpha mask and reduced team tint");
+        Check(material.GetTexture("_TeamMaskMap") != null && Mathf.Approximately(material.GetFloat("_TeamMaskStrength"), .15f), "Source-alpha mask and reduced team tint");
         Check(!((TextureImporter)AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(material.GetTexture("_TeamMaskMap")))).sRGBTexture, "Linear team mask");
         var wreckRenderer = wreck.GetComponentsInChildren<MeshRenderer>(true).Single();
         Check(wreckRenderer.sharedMaterials.All(m => m.shader == AssetDatabase.LoadAssetAtPath<Shader>("Assets/Art/Shaders/Units/ShipWreck.shader")
-            && m.GetTexture("_TeamMaskMap") == material.GetTexture("_TeamMaskMap") && Mathf.Approximately(m.GetFloat("_TeamMaskStrength"), .35f)), "Wreck shader retains team tint");
+            && m.GetTexture("_TeamMaskMap") == material.GetTexture("_TeamMaskMap") && Mathf.Approximately(m.GetFloat("_TeamMaskStrength"), .15f)), "Wreck shader retains team tint");
         Check(References(Config(wreck, "UnitWreckView").FindProperty("meshRenderers")).Single() == wreckRenderer
             && References(Config(wreck, "UnitWreckView").FindProperty("meshFilters")).Single() == wreckRenderer.GetComponents<MeshFilter>().Single(), "Wreck mesh bindings");
         var data = Load(DATA);

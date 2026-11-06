@@ -32,7 +32,7 @@ namespace EmpireAtWar.Tests.Editor
                 var entities = new EntityLocator();
                 entities.AddEntity(squadron);
                 IShipAbility ability = new FighterCoordinationSettings().CreateAbility(
-                    new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null));
+                    new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null, null));
 
                 ability.Start(caster, new ShipAbilityDefinition(), null);
                 Assert.That(squadron.Modifiers.AccuracyMultiplier, Is.EqualTo(affected ? 1.2f : 1f));
@@ -56,7 +56,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 var entities = new EntityLocator();
                 entities.AddEntity(ally);
-                var dependencies = new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null);
+                var dependencies = new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null, null);
                 var settings = new FighterCoordinationSettings();
                 IShipAbility first = settings.CreateAbility(dependencies);
                 IShipAbility second = settings.CreateAbility(dependencies);

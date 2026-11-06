@@ -70,5 +70,8 @@
         RepublicLightProtonTorpedo = 120,
         RepublicMediumProtonTorpedo = 121,
         BelbullabTripleLaser = 122,
+        JangoFettLaser = 125,
+        FalconQuadLaser = 123,
+        BobaFettTwinLaser = 126,
     }
 }

@@ -13,15 +13,18 @@ namespace EmpireAtWar.Services.ShipAbilities
         public ImpactEffectPresenter ImpactPresenter { get; }
         public WeaponsData WeaponsData { get; }
         public BoltFlightBatch BoltFlights { get; }
+        public HarmonicBombService HarmonicBombs { get; }
 
         public ShipAbilityDependencies(IEntityLocator entities, IPlayerRelations relations,
-            ImpactEffectPresenter impactPresenter, WeaponsData weaponsData, BoltFlightBatch boltFlights)
+            ImpactEffectPresenter impactPresenter, WeaponsData weaponsData, BoltFlightBatch boltFlights,
+            HarmonicBombService harmonicBombs)
         {
             Entities = entities;
             Relations = relations;
             ImpactPresenter = impactPresenter;
             WeaponsData = weaponsData;
             BoltFlights = boltFlights;
+            HarmonicBombs = harmonicBombs;
         }
     }
 }

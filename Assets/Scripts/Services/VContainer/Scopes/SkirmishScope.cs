@@ -45,6 +45,7 @@ using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Squadrons;
@@ -170,6 +171,8 @@ namespace EmpireAtWar.Services.VContainer
                 .AsImplementedInterfaces().AsSelf();
             AssetRegistrations.RegisterShared<ShipUiData>(builder, Assets);
             AssetRegistrations.RegisterShared<ShipAbilityCatalog>(builder, Assets);
+            builder.Register<HarmonicBombEffects>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<HarmonicBombService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipAbilityDependencies>(Lifetime.Singleton);
             builder.Register<ShipAbilityFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipAbilityService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

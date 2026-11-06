@@ -583,6 +583,27 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: 302
+      value:
+        m_AssetGUID: 8989ee97f4840c04382fc985df8c67b2
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 103
+      value:
+        m_AssetGUID: b5e0d26fbcccd3a48821214458906f57
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 206
+      value:
+        m_AssetGUID: 74024b448248ca24baf84e9c0a36098c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
   spawnFacilityWrapper:
     keyValue:
     - key: 3

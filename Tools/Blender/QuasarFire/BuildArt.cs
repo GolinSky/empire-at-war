@@ -55,10 +55,11 @@ public static class BuildQuasarFireArt
             {
                 material.SetFloat("_Smoothness", .25f);
                 material.SetFloat("_Metallic", .1f);
-                material.SetFloat("_TeamLiveryStrength", 0); material.SetFloat("_TeamRimStrength", .6f);
+                material.SetFloat("_TeamLiveryStrength", 0); material.SetFloat("_TeamRimStrength", 0);
                 string normal = (string)source["normal"];
                 if (normal != null) material.SetTexture("_BumpMap", AssetDatabase.LoadAssetAtPath<Texture2D>(TEXTURES+normal+".png"));
-                material.SetFloat("_TeamMaskStrength", 0); // Source alpha has no usable paint mask.
+                material.SetTexture("_TeamMaskMap", AssetDatabase.LoadAssetAtPath<Texture2D>(TEXTURES+"QuasarFire_WornStripeTeamMask.png"));
+                material.SetFloat("_TeamMaskStrength", 1);
             }
             AssetDatabase.CreateAsset(material, MATERIALS+name+".mat");
             modelImporter.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material),name), material);

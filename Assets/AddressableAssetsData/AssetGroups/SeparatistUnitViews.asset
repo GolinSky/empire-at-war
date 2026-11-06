@@ -115,6 +115,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6de9f98faed790a4cb59f19bb9de45b7
+    m_Address: JangoFettSlaveISquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 76b110f4b976620489e2f84386ec5661
     m_Address: DispatcherWreckView
     m_ReadOnly: 0
@@ -167,6 +172,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b4d889903f7d4224198e7a03e31d86af
     m_Address: PatrolFrigateShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b5e0d26fbcccd3a48821214458906f57
+    m_Address: JangoFettSlaveIReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

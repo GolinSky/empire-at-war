@@ -115,8 +115,8 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryPlayWeaponShot(ShipSfxHandle ship, WeaponProfile weapon, Transform muzzle) => false;
             public bool TryHoldLoop(ShipSfxHandle ship, SfxProfile loop, Vector3 position, float volumeScale, float pitch) => false;
             public bool TryHoldEngine(ShipSfxHandle ship, SfxProfile loop, Vector3 position, float volumeScale, float pitch) => false;
-            public bool TryPlayVoice(AudioClip clip) => false;
-            public void ReleaseShip(ShipSfxHandle ship) { }
+            public bool TryPlayVoice(AudioClip clip, bool interruptChatter = false) => false;
+            public void ReleaseShip(ShipSfxHandle ship, SfxProfile explosion = null, Vector3 position = default) { }
         }
     }
 }

@@ -15,6 +15,7 @@ namespace EmpireAtWar.Entities.Squadrons
         Belbullab22 = 100,
         DroidBomber = 101,
         Vulture = 102,
+        JangoFettSlaveI = 103,
 
         //empire
         TIEFighter = 200,
@@ -23,9 +24,11 @@ namespace EmpireAtWar.Entities.Squadrons
         TIEInterceptor = 203,
         TIEBrute = 204,
         TIEPunisher = 205,
+        BobaFettSlaveI = 206,
 
         //rebellion
         XWing = 300,
         YWingBomber = 301,
+        HanSoloMillenniumFalcon = 302,
     }
 }

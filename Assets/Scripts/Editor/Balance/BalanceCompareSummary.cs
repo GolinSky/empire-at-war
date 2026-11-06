@@ -194,8 +194,8 @@ namespace EmpireAtWar.Editor.Balance
             row.AddToClassList("balance-compare-stat");
             container.Add(row);
             Text(row, title, "balance-compare-label");
-            string value = field.DraftValue(draft);
             string saved = field.Read();
+            string value = field.DraftValue(draft, saved);
             VisualElement control = BalanceFieldView.Control(field, value, usage, next => edit(field, next));
             control.AddToClassList("balance-compare-input");
             control.tooltip = field.Context + " · saved: " + BalanceFieldView.Display(field, saved);

@@ -29,7 +29,7 @@ namespace EmpireAtWar.Tests.Editor
             ShipAbilityDependencies dependencies = new ShipAbilityDependencies(
                 new EntityLocator(), TestPlayers.CreateDuel(), new ImpactEffectPresenter(null, null),
                 AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset"),
-                new BoltFlightBatch());
+                new BoltFlightBatch(), null);
             IShipAbilityFactory factory = new ShipAbilityFactory(dependencies);
 
             foreach (Type settingsType in TypeCache.GetTypesDerivedFrom<ShipAbilitySettings>())

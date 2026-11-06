@@ -4,6 +4,7 @@ namespace EmpireAtWar.Services.ShipAbilities
     {
         Defensive,
         Escape,
-        Offensive
+        Offensive,
+        NearbyStrikecraft
     }
 }

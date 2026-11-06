@@ -31,10 +31,13 @@ namespace EmpireAtWar.Editor.Balance
             Summary(panel, unit, registry, controller);
             Tabs(panel, controller);
             BalanceDraftUsage usage = new BalanceDraftUsage(registry, state.Draft);
-            var fields = registry.Fields.Values
-                .Where(field => !field.SharedMountSource && usage.Users(field).Any(user => user.Id == unit.Id))
-                .Where(field => InTab(field, state.UnitTab, state.UnitGroup))
-                .ToList();
+            IEnumerable<BalanceField> candidates = registry.Fields.Values;
+            // Ship and squadron registrations index their own stat and hardpoint fields. Profiles can gain new users in the draft.
+            if (registry.Errors.Count == 0 && (unit.Kind == BalanceUnitKind.Ship || unit.Kind == BalanceUnitKind.Squadron)
+                && (state.UnitTab == BalanceUnitTab.Stats || state.UnitTab == BalanceUnitTab.Hardpoints))
+                candidates = unit.Fields.Values.Distinct().Select(key => registry.Fields[key]);
+            var fields = candidates.Where(field => !field.SharedMountSource && InTab(field, state.UnitTab, state.UnitGroup)
+                && usage.Users(field).Any(user => user.Id == unit.Id));
             Fields(panel, fields, controller, "unit-" + unit.Id + "-" + state.UnitTab + "-" + state.UnitGroup, usage);
         }
 

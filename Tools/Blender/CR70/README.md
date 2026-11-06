@@ -16,7 +16,7 @@
 - Source has `5` meshes / `4,222` triangles / `14` bones. Opaque `Hull` + `Object02`: `4,161` triangles; visible additive `Engine`: `48`; hidden `Engines` + `Collision`: `13`.
 - Binary-backed bone parents restored after the importer stopped during cleanup. Identity Root already exists; no extra bone added.
 - Source shaders/material slots audited independently; exact five material assignments restored before FBX export. Engine additive tint preserves source RGB `1/0.996078/0.549020`.
-- DDS→PNG conversions are pixel-identical. Hull/normal `1024²`, engine emission `64²`; inverse hull alpha supplies the team mask. Team-mask strength is `0.35` on living and wreck materials, reduced from `1` per user feedback. Normal import flips green; mask uses linear sampling.
+- DDS→PNG conversions are pixel-identical. Hull/normal `1024²`, engine emission `64²`; inverse hull alpha supplies the team mask. Team-mask strength is `0.15` on living and wreck materials, reduced from `1` per user feedback. Normal import flips green; mask uses linear sampling.
 - Gameplay visual: `9.223910 × 2.717261 × 15.749785` units, centered, bow `+Z`/up `+Y`, root identity. Uniform length matches the current Corvette gameplay scale.
 
 ## Integration

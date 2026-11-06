@@ -44,7 +44,7 @@ namespace EmpireAtWar.Tests.Editor
                 PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
                 ShipAbilityService service = new ShipAbilityService(factory, roster);
                 EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                    entities, new FakeState(), roster, service, new VisionService(roster, fogEnabled: false), roster.Get(TestPlayers.Enemy));
+                    entities, new FakeState(), roster, service, new VisionService(roster, fogEnabled: false), roster.Get(TestPlayers.Enemy), null);
 
                 controller.Tick();
 
@@ -84,7 +84,7 @@ namespace EmpireAtWar.Tests.Editor
                 PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
                 ShipAbilityService service = new ShipAbilityService(factory, roster);
                 EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                    entities, new FakeState(), roster, service, new VisionService(roster, fogEnabled: false), roster.Get(TestPlayers.Enemy));
+                    entities, new FakeState(), roster, service, new VisionService(roster, fogEnabled: false), roster.Get(TestPlayers.Enemy), null);
 
                 Assert.DoesNotThrow(controller.Tick);
                 Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
@@ -124,7 +124,7 @@ namespace EmpireAtWar.Tests.Editor
                 PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
                 ShipAbilityService service = new ShipAbilityService(new RecordingFactory(), roster);
                 EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                    entities, new FakeState(), roster, service, new VisionService(roster, fogEnabled: false), roster.Get(TestPlayers.Enemy));
+                    entities, new FakeState(), roster, service, new VisionService(roster, fogEnabled: false), roster.Get(TestPlayers.Enemy), null);
 
                 controller.Tick();
                 entities.RemoveEntity(casters[4].OwnEntity);
@@ -168,7 +168,7 @@ namespace EmpireAtWar.Tests.Editor
                 PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
                 ShipAbilityService service = new ShipAbilityService(factory, roster);
                 EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                    entities, new FakeState(), roster, service, new VisionService(roster, fogEnabled: false), roster.Get(TestPlayers.Enemy));
+                    entities, new FakeState(), roster, service, new VisionService(roster, fogEnabled: false), roster.Get(TestPlayers.Enemy), null);
 
                 controller.Tick();
 
@@ -201,7 +201,7 @@ namespace EmpireAtWar.Tests.Editor
             ShipAbilityService service = new ShipAbilityService(factory, roster);
             FakeState state = new FakeState { CurrentState = EnemyStrategicState.RetreatValue };
             EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                entities, state, roster, service, new VisionService(roster, fogEnabled: false), roster.Get(TestPlayers.Enemy));
+                entities, state, roster, service, new VisionService(roster, fogEnabled: false), roster.Get(TestPlayers.Enemy), null);
 
             controller.Tick();
             service.Advance(60f);
@@ -250,7 +250,7 @@ namespace EmpireAtWar.Tests.Editor
                 if (visibleAtDecision) vision.Register(TestPlayers.Enemy, scoutView.transform, 10f);
                 ShipAbilityService service = new ShipAbilityService(factory, roster);
                 EnemyShipAbilityController controller = new EnemyShipAbilityController(
-                    entities, new FakeState(), roster, service, vision, roster.Get(TestPlayers.Enemy));
+                    entities, new FakeState(), roster, service, vision, roster.Get(TestPlayers.Enemy), null);
 
                 typeof(EnemyShipAbilityController).GetMethod("StartDecision", flags).Invoke(controller, null);
                 vision.Unregister(scoutView.transform);

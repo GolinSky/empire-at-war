@@ -18,24 +18,24 @@ namespace EmpireAtWar.Editor.Balance
     {
         public static void Register(BalanceRegistration registry)
         {
-            AssetMappingData mapping = BalanceRegistration.One<AssetMappingData>();
-            foreach (FactionDefinition faction in BalanceRegistration.One<FactionCatalog>().Factions)
+            AssetMappingData mapping = registry.Resolve<AssetMappingData>();
+            foreach (FactionDefinition faction in registry.Resolve<FactionCatalog>().Factions)
             {
-                Structure(registry, faction, BalanceRegistration.One<SpaceStationData>(), "Station", "Space station", faction.FactionType + "SpaceStationView", mapping);
+                Structure(registry, faction, registry.Resolve<SpaceStationData>(), "Station", "Space station", faction.FactionType + "SpaceStationView", mapping);
                 foreach (MiningFacilityType id in faction.MiningFacilities)
-                    Buildable(registry, faction, BalanceRegistration.One<MiningFacilityCatalog>(), (int)id,
+                    Buildable(registry, faction, registry.Resolve<MiningFacilityCatalog>(), (int)id,
                         BalanceAssetResolver.Load<MiningFacilityData>(mapping.GetAssetKey(nameof(MiningFacilityData))), "Mining facility", "MiningFacilityView", mapping);
                 foreach (DefendPlatformType id in faction.DefendPlatforms)
-                    Buildable(registry, faction, BalanceRegistration.One<DefendPlatformCatalog>(), (int)id,
+                    Buildable(registry, faction, registry.Resolve<DefendPlatformCatalog>(), (int)id,
                         BalanceAssetResolver.Load<DefendPlatformData>(mapping.GetAssetKey(nameof(DefendPlatformData))), "Defense platform", "DefendPlatformView", mapping);
-                CaptureSiteData sites = BalanceRegistration.One<CaptureSiteData>();
+                CaptureSiteData sites = registry.Resolve<CaptureSiteData>();
                 foreach (SiteFacilityType type in sites.GetAllowedFacilities(CaptureSiteKind.Satellite))
                 {
                     string key = type.ToSatelliteType().ToString();
                     BalanceUnit satellite = Structure(registry, faction,
                         BalanceAssetResolver.Load<DefendPlatformData>(mapping.GetAssetKey(key + "Data")), key,
                         sites.GetCost(type).Name, key + "View", mapping);
-                    satellite.Icon = BalanceRegistration.One<DefendPlatformCatalog>().Get(type.ToSatelliteType()).Icon;
+                    satellite.Icon = registry.Resolve<DefendPlatformCatalog>().Get(type.ToSatelliteType()).Icon;
                     using (SerializedObject serialized = new SerializedObject(sites))
                     {
                         SerializedProperty value = BalanceRegistration.Keyed(serialized, "facilityCosts.keyValue")
@@ -46,7 +46,7 @@ namespace EmpireAtWar.Editor.Balance
                     }
                 }
                 foreach (SuperWeaponType id in faction.SuperWeapons)
-                    Buildable(registry, faction, BalanceRegistration.One<SuperWeaponCatalog>(), (int)id, BalanceRegistration.One<SuperWeaponData>(), "Super weapon", "", mapping);
+                    Buildable(registry, faction, registry.Resolve<SuperWeaponCatalog>(), (int)id, registry.Resolve<SuperWeaponData>(), "Super weapon", "", mapping);
             }
             StationLevels(registry);
             SuperWeapons(registry);
@@ -71,7 +71,7 @@ namespace EmpireAtWar.Editor.Balance
             }
             if (data is MiningFacilityData)
                 registry.AutoFields(data, "", "", "Income", BalanceFieldGroup.GlobalData, name, BalanceFieldOwner.SharedProfile, true, new[] { unit });
-            foreach (BalanceField field in registry.Fields.Values.Where(field => field.Target == data)) unit.Fields[field.Stat] = field.Key;
+            foreach (BalanceField field in registry.FieldsFor(data)) unit.Fields[field.Stat] = field.Key;
             return unit;
         }
 
@@ -85,14 +85,14 @@ namespace EmpireAtWar.Editor.Balance
                 BalanceUnit unit = Structure(registry, faction, data, catalog.GetType().Name + "/" + id,
                     value.FindPropertyRelative(BalanceRegistration.Auto("Name")).stringValue, prefabKey, mapping);
                 unit.Icon = (Sprite)value.FindPropertyRelative(BalanceRegistration.Auto("Icon")).objectReferenceValue;
-                BalanceUnitAdapter.Economy(registry, catalog, value.propertyPath + ".", "entry/" + id + "/", unit, true);
+                BalanceUnitAdapter.Economy(registry, serialized, value.propertyPath + ".", "entry/" + id + "/", unit, true);
             }
         }
 
         private static void StationLevels(BalanceRegistration registry)
         {
-            Object levels = BalanceRegistration.One<StationLevelData>();
-            SpaceStationData station = BalanceRegistration.One<SpaceStationData>();
+            Object levels = registry.Resolve<StationLevelData>();
+            SpaceStationData station = registry.Resolve<SpaceStationData>();
             List<BalanceUnit> users = registry.Units.Where(unit => unit.Data == station).ToList();
             foreach (BalanceUnit unit in users)
                 registry.AutoFields(station, "", "", "HangarInitialDelay HangarLaunchInterval", BalanceFieldGroup.Hangar, "Station hangar",
@@ -124,7 +124,7 @@ namespace EmpireAtWar.Editor.Balance
 
         private static void SuperWeapons(BalanceRegistration registry)
         {
-            SuperWeaponData data = BalanceRegistration.One<SuperWeaponData>();
+            SuperWeaponData data = registry.Resolve<SuperWeaponData>();
             using (SerializedObject serialized = new SerializedObject(data))
                 foreach (SerializedProperty entry in BalanceRegistration.Keyed(serialized, "profiles.keyValue"))
                 {

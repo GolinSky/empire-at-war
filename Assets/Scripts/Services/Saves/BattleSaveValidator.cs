@@ -11,6 +11,7 @@ using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
@@ -216,7 +217,8 @@ namespace EmpireAtWar.Services.Saves
             SquadronType squadronType = unit.UnitType.SquadronType;
             if (!Enum.IsDefined(typeof(SquadronType), squadronType))
                 throw new InvalidDataException($"Squadron {unit.Id} has unknown squadron type {squadronType}.");
-            ValidateAbilities(unit.Abilities, Array.Empty<ShipAbilityId>(), unit.Id);
+            SquadronData squadronData = _assets.Load<SquadronData>(squadronType + "SquadronData");
+            ValidateAbilities(unit.Abilities, squadronData.Abilities, unit.Id);
             ValidateHangar(unit.Hangar, 0, squadrons, adoptedSquadrons, unit.Id);
             int fighters = _assets.LoadComponent<Squadron>(squadronType + "SquadronView").Bindings.SquadronHealth.FighterCount;
             if (unit.Health == null || unit.Health.MemberHull.Length != fighters || unit.Health.MemberShields.Length != fighters)

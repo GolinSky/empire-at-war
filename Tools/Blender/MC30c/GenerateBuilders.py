@@ -15,7 +15,7 @@ end = art.index('            var bounds=BoundsOf(root)', start)
 art = art[:start] + art[end:]
 art = art.replace('importer.assetPath.Contains("Normal")', '(importer.assetPath.EndsWith("_BC.png") || importer.assetPath.EndsWith("_B.png"))')
 art = art.replace('texture.Contains("CorBC_") && texture.Contains("diffuse")', 'texture.Contains("Cruiser_AllMC30C_CL") && !texture.EndsWith("_BC")')
-art = art.replace('material.SetFloat("_TeamMaskStrength",0);', 'material.SetFloat("_TeamMaskStrength",hullPaint?1:0); if(hullPaint) material.SetTexture("_TeamMaskMap",AssetDatabase.LoadAssetAtPath<Texture2D>(TEXTURES+texture+"_TeamMask.png"));')
+art = art.replace('material.SetFloat("_TeamMaskStrength",0);', 'material.SetFloat("_TeamMaskStrength",hullPaint ? .18f : 0); if(hullPaint) material.SetTexture("_TeamMaskMap",AssetDatabase.LoadAssetAtPath<Texture2D>(TEXTURES+texture+"_TeamMask.png"));')
 art = art.replace('material.SetFloat("_TeamLiveryStrength",hullPaint?1:0)', 'material.SetFloat("_TeamLiveryStrength",0)')
 art = art.replace('Saved Battlecruiser hull + four source turret models', 'Saved MC30c hull')
 (ROOT/'BuildArt.cs').write_text(art)

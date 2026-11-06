@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Editor.Balance
@@ -11,8 +12,10 @@ namespace EmpireAtWar.Editor.Balance
         public readonly Dictionary<string, BalanceField> Fields = new Dictionary<string, BalanceField>();
         public readonly List<BalanceUnit> Units = new List<BalanceUnit>();
         public readonly List<string> Errors = new List<string>();
+        internal readonly Dictionary<GameObject, (BalanceUnit Unit, string Topology)> PrefabBindings = new();
         private readonly Dictionary<Object, string> _targetIdentities = new Dictionary<Object, string>();
         private readonly Dictionary<Object, List<BalanceField>> _targetFields = new Dictionary<Object, List<BalanceField>>();
+        private readonly Dictionary<Type, Object> _settings = new Dictionary<Type, Object>();
 
         public IEnumerable<BalanceField> FieldsFor(Object target) => _targetFields.TryGetValue(target, out List<BalanceField> fields)
             ? fields : Enumerable.Empty<BalanceField>();
@@ -90,6 +93,16 @@ namespace EmpireAtWar.Editor.Balance
             string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name, new[] { "Assets/Settings" });
             if (guids.Length != 1) throw new InvalidOperationException($"Expected one {typeof(T).Name}, found {guids.Length}.");
             return AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(guids[0]));
+        }
+
+        public T Resolve<T>() where T : Object
+        {
+            if (!_settings.TryGetValue(typeof(T), out Object asset))
+            {
+                asset = One<T>();
+                _settings.Add(typeof(T), asset);
+            }
+            return (T)asset;
         }
 
         public void AutoFields(Object target, string path, string key, string names, BalanceFieldGroup group, string context,

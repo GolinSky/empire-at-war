@@ -145,6 +145,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8568b3f7949d8fd4a95ad27b137f4b42
+    m_Address: HanSoloMillenniumFalconSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 869c8abfc930a964892aef3ee3c9f4a6
     m_Address: EnduranceShipView
     m_ReadOnly: 0
@@ -157,6 +162,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8888b5efaabc0404bb04e740e25c8372
     m_Address: LiberatorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8989ee97f4840c04382fc985df8c67b2
+    m_Address: HanSoloMillenniumFalconReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

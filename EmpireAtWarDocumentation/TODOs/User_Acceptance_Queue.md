@@ -14,6 +14,19 @@ created: "2026-10-29\r"
 
 ## Imported Units
 
+- [ ] [[Done/Features/Jango_Fett_Slave_I]] — Check placement silhouette, one portrait/target, order and death audio, and Jango’s activation line on a successful bomb drop.
+- [ ] [[Done/Features/Jango_Fett_Slave_I]] — Measure overshoot, firing passes and reacquisition against Belbullab-22 and Vulture wings using the shared duel protocol. Check AI purchase and rebuy frequency.
+- [ ] [[Done/Features/Jango_Fett_Slave_I]] — Verify each owner’s limit across queue, cancellation, holding, deployment, death and repurchase. Check save/load and pooled respawn.
+
+- [ ] [[Done/Features/Boba_Fett_Slave_I]] — Check placement silhouette, one target/portrait, local order and ready cues in skirmish.
+- [ ] [[Done/Features/Boba_Fett_Slave_I]] — Measure overshoot, reacquisition, mixed-fleet and moving-wing duels; check AI rebuy frequency.
+- [ ] [[Done/Features/Boba_Fett_Slave_I]] — Verify independent owner limits across queue, cancel, reserve, death, repurchase, pooled spawn and save/load.
+- [[Done/Features/Han_Solo_Millennium_Falcon]]
+  - [ ] Check silhouette, preview, one target and portrait, pursuit, overshoot, reacquisition time and broadside fire at 116 u/s.
+  - [ ] Fly specials-off duels versus A-wing and X-wing, then specials-on versus two wings. Record win rates, remaining health, hits and elapsed time.
+  - [ ] Verify player and AI reservations through queue, cancellation, deployment, death and repurchase; record AI rebuy frequency and independent owner limits.
+  - [ ] Check 8 s immunity, 60 s recovery, save/load and fresh pooled deployment.
+  - [ ] Listen to Ready, selection, move, attack, activation, engine and destruction in a skirmish.
 - [[Done/Features/MC80Independence_Import]]
   - [ ] Clean-skirmish acceptance: construction, placement, combat, shield power, bay destruction/replacement, engine damage, death/wreck and teardown.
   - [ ] Review provisional economy, weapon damage/range, movement, flight height and matchup balance.
@@ -100,6 +113,13 @@ created: "2026-10-29\r"
   - [ ] Manual: start cinematic in skirmish → shot lengths 3–8 s; resized ships fit the frame through all shot types.
 
 ## Gameplay and Balance
+
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — In skirmish, verify the stationary drop, ring visibility and per-member falloff with a Fett, including caster death during the fuse.
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Verify player autofire and AI with two versus three nearby visible enemies.
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Count members actually hit per autofire drop in a moving dogfight. Enemy fighters at 58–92 u/s can leave the 35-unit radius during the 1.5 s fuse; if most drops hit nothing, tune radius, fuse or trigger before damage.
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Save during the fuse and reload. Confirm the bomb disappears and the surviving Fett retains the remaining fuse plus recharge.
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Run the focused `HarmonicBombTests` fixture when test execution is enabled.
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Listen to both pilots on drop and the single positional seismic blast at fuse expiry, including empty and overlapping drops.
 
 - [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — Battle: player-only automatic starts, individual selection pause, multi-selection use, manual cancellation/non-cancellable effects, settings and saved per-ship preferences; include Allegiance / ISD II Main Batteries auto-start and normal 20 s active → 60 s recovery (2026-11-01 extension; Core regressions authored, not run).
 - [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — Balance: shared shield regeneration ×4 and initial automatic weapon/shield thresholds across fleet matchups.

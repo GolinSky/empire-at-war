@@ -1,8 +1,12 @@
+using System.Linq;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.ShipAbilities;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
@@ -15,6 +19,10 @@ namespace EmpireAtWar.Components.Ship.Audio
         private const float MIN_ALARM_DELAY = 30f;
         private const float MAX_ALARM_DELAY = 60f;
 
+        [SerializeField] private ShipAbilityId voicedAbility;
+        [SerializeField] private AudioClip abilityVoice;
+
+        private ShipAbilitySlot _voicedSlot;
         private IShipSfxService _shipSfxService;
 
         private ShipVoiceSet _voices;
@@ -27,11 +35,13 @@ namespace EmpireAtWar.Components.Ship.Audio
 
         [Inject]
         private void Construct(IShipSfxService shipSfxService, IPlayerRoster playerRoster, ShipSfxData data, PlayerId owner,
-            IUnitTypeFacade unitType)
+            IUnitTypeFacade unitType, IShipAbilityFacade abilities)
         {
             _voices = data.GetVoiceSet(playerRoster.Get(owner).Faction, unitType.UnitTypeId);
             _shipSfxService = shipSfxService;
-            _alarmReadyAt = Time.time + Random.Range(MIN_ALARM_DELAY, MAX_ALARM_DELAY);
+            if (voicedAbility != ShipAbilityId.None)
+                _voicedSlot = abilities.Slots.Single(slot => slot.Id == voicedAbility);
+            Respawn();
         }
 
         public void HandleEnemyDetected()
@@ -57,8 +67,22 @@ namespace EmpireAtWar.Components.Ship.Audio
             if (isSelected) _shipSfxService.TryPlayVoice(_voices.Selection);
         }
 
-        public void Release() => _isSelected = false;
+        private void HandleAbilityStateChanged()
+        {
+            if (_voicedSlot.State == ShipAbilityState.Active)
+                _shipSfxService.TryPlayVoice(abilityVoice, interruptChatter: _voicedSlot.Id == ShipAbilityId.HarmonicBomb);
+        }
 
-        public void Respawn() => _alarmReadyAt = Time.time + Random.Range(MIN_ALARM_DELAY, MAX_ALARM_DELAY);
+        public void Release()
+        {
+            _isSelected = false;
+            if (_voicedSlot != null) _voicedSlot.StateChanged -= HandleAbilityStateChanged;
+        }
+
+        public void Respawn()
+        {
+            _alarmReadyAt = Time.time + Random.Range(MIN_ALARM_DELAY, MAX_ALARM_DELAY);
+            if (_voicedSlot != null) _voicedSlot.StateChanged += HandleAbilityStateChanged;
+        }
     }
 }

@@ -10,6 +10,7 @@
 ### Features
 
 
+
 - [ ] **Online multiplayer (Mirror host-authoritative, 20 Hz tick, Steam relay via FizzySteamworks) alongside offline** → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]; [[TODOs/Features/Multiplayer_Plan - Research|Research]]
   - Status: todo 2026-11-02. Scope: Skirmish (PvP/co-op, AI slots) + Survival co-op; 2–4 friends. Next: Phase 0 spike (KCP direct IP → FizzySteamworks App 480 lobby join, tick round-trip, bandwidth). 12 readiness issues listed.
 
@@ -254,6 +255,17 @@
 - [x] **Implement Game Design Balance Editor** → [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]; [[Done/Tooling/GameDesign_Balance_Editor - Research|Data ownership and feasibility]]
 
 ### Features
+
+- [x] **Jango Fett — Slave I — single-fighter skirmish hero for CIS (`Separatist`)** → [[Done/Features/Jango_Fett_Slave_I|Implementation plan]] · [[Done/Features/Skirmish_Hero_Fighters - Research|Balance research]]
+  - Ship, guns, recruitment, audio and Harmonic Bomb equipped. In-game flight, balance and lifecycle checks → [[TODOs/User_Acceptance_Queue]].
+
+- [x] **Harmonic bomb — shared Slave I ability (per-fighter area damage with falloff)** → [[Done/Features/Harmonic_Bomb_Ability|Implementation plan]]
+  - Completed 2026-11-06. Both Fetts equip the bomb with their pilot voices and the shared seismic detonation. In-game and fixture verification → [[TODOs/User_Acceptance_Queue]].
+- [x] **Han Solo & Chewbacca — Millennium Falcon — single-fighter skirmish hero for Rebellion** → [[Done/Features/Han_Solo_Millennium_Falcon|Completed plan]] · [[Done/Features/Skirmish_Hero_Fighters - Research|Balance research]]
+  - Completed 2026-11-06. Unity wiring, 40 stationary matchups and live shop visibility after the hero prewarm fix verified. Remaining flight, audio and skirmish acceptance → [[TODOs/User_Acceptance_Queue]].
+
+- [x] **Boba Fett — Slave I — single-fighter skirmish hero for Empire** → [[Done/Features/Boba_Fett_Slave_I|Implementation plan]] · [[Done/Features/Skirmish_Hero_Fighters - Research|Balance research]]
+  - Hero, primary guns, shop, Harmonic Bomb slot and activation voice verified. Stationary duel results recorded; live checks → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Display settings: resolution in all window modes, refresh rate, monitor selection (Win + macOS)** → [[Done/Features/Display_Modes_And_Monitors_Plan|Display Modes and Monitors Plan]]
   - Completed 2026-11-04: all four phases, macOS native fullscreen and monitor FPS preset. Unity compile/import, saved prefab and Penpot layout verified. Ui 245/245 + Core 136/136 passed on 2026-11-04; no fixes needed. Windows/macOS hardware acceptance → [[TODOs/User_Acceptance_Queue]].

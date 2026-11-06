@@ -71,7 +71,7 @@ public static class BuildCarrackArt
             if (material.HasProperty("_TeamMaskStrength"))
             {
                 material.SetTexture("_TeamMaskMap", maskMap != null ? AssetDatabase.LoadAssetAtPath<Texture2D>(TEXTURES + maskMap + ".png") : null);
-                material.SetFloat("_TeamMaskStrength", maskMap != null ? .35f : 0);
+                material.SetFloat("_TeamMaskStrength", maskMap != null ? .15f : 0);
                 material.SetFloat("_TeamLiveryStrength", 0);
                 material.SetFloat("_Metallic", .1f); material.SetFloat("_Smoothness", .3f);
             }

@@ -600,6 +600,23 @@ MonoBehaviour:
         autoPower: 0
         settings:
           rid: 6801467062609510488
+    - key: 54
+      value:
+        icon: {fileID: 21300000, guid: ee7b79f13d927674cb535bcd3d3a2042, type: 3}
+        displayName: Harmonic Bomb
+        description: Drop a stationary charge. After 1.5 seconds it hits enemy squadron
+          members within 35 units for 120, 72 or 30 damage before defenses, depending
+          on distance. Recharges in 20 seconds.
+        duration: 1.5
+        recoveryDelay: 20
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 3
+        autoPower: 0
+        settings:
+          rid: 7607833764655792235
   autoPower:
     decisionInterval: 0.5
     castersPerFrame: 4
@@ -942,3 +959,12 @@ MonoBehaviour:
       data:
         damageType: 7
         damage: 1500
+    - rid: 7607833764655792235
+      type: {class: HarmonicBombSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        radius: 35
+        centerDamage: 120
+        minimumTargets: 3
+        viewPrefab: {fileID: 2672410178665344242, guid: bc5edc30e2c06774dbe9b04d9ffdecbf,
+          type: 3}

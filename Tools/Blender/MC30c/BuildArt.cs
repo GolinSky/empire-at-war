@@ -47,7 +47,7 @@ public static class BuildMC30cArt
                 if (normal != null) { material.SetTexture("_BumpMap",AssetDatabase.LoadAssetAtPath<Texture2D>(TEXTURES+normal+".png")); material.EnableKeyword("_NORMALMAP"); }
                 // Original alpha masks are empty. Recolor authored red hull markings instead.
                 bool hullPaint = texture != null && texture.Contains("Cruiser_AllMC30C_CL") && !texture.EndsWith("_BC");
-                material.SetFloat("_TeamMaskStrength",hullPaint?1:0); if(hullPaint) material.SetTexture("_TeamMaskMap",AssetDatabase.LoadAssetAtPath<Texture2D>(TEXTURES+texture+"_TeamMask.png")); material.SetFloat("_TeamLiveryHue",0); material.SetFloat("_TeamLiveryHueRange",.07f);
+                material.SetFloat("_TeamMaskStrength",hullPaint ? .18f : 0); if(hullPaint) material.SetTexture("_TeamMaskMap",AssetDatabase.LoadAssetAtPath<Texture2D>(TEXTURES+texture+"_TeamMask.png")); material.SetFloat("_TeamLiveryHue",0); material.SetFloat("_TeamLiveryHueRange",.07f);
                 material.SetFloat("_TeamLiveryMinSaturation",.3f); material.SetFloat("_TeamLiveryStrength",0); material.SetFloat("_TeamRimStrength",.6f);
             }
             EditorUtility.SetDirty(material);

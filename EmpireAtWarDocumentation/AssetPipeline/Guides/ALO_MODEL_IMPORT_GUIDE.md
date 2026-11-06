@@ -207,6 +207,8 @@ bpy.ops.import_scene.fbx(
 
 ## Edge Cases
 
+- For a fighter hero, verify that the flight and health arrays reference the same member, and bake its weapon loadout from the combat prefab. Validate saved ability slots against `SquadronData.Abilities`. Active timed effects save as recovery for remaining active time plus the recovery delay. Example → [[Done/Features/Han_Solo_Millennium_Falcon]].
+
 ### What I missed on Rothana and how to prevent it
 
 | Miss or problem | Observed result | Required prevention |

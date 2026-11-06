@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.Squadrons.EntityFacades;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Squadrons;
@@ -19,7 +20,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
     /// </summary>
     [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = EmpireAtWar.Lifecycle.LifecycleOrders.HEALTH_INITIALIZE)]
     public sealed class SquadronHealthComponent : MonoComponent<SquadronHealthModel>, ISquadronHealthComponent,
-        IHealthModelObserver, IHealthTooltipObserver, IInitializable, ITickable, ILateDisposable
+        IHealthModelObserver, IHealthTooltipObserver, ISquadronMembersFacade, IInitializable, ITickable, ILateDisposable
     {
         private ITimer _regenerateShieldsTimer;
         private readonly ITimer _shieldRecoveryTimer = TimerFactory.ConstructTimer();
@@ -49,6 +50,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
         private EmpireAtWar.Entities.Squadrons.Data.SquadronData Data { get; set; }
 
         public int FighterCount => fighters.Count;
+        public IReadOnlyList<IHardPointModel> Members => _adapters;
         public bool Destroyed => Model.IsDestroyed;
         public IHealthModelObserver HealthModelObserver => this;
         public ShipClass ShipClass => Model.ShipClass;

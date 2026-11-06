@@ -18,9 +18,8 @@ namespace EmpireAtWar.Services.Squadrons
     /// <summary>
     /// Reuses destroyed squadrons instead of building a new squadron context per launch, which costs several
     /// milliseconds. Owner and type change the installed bindings, so squadrons are pooled per owner and type.
-    /// Despawned squadrons are destroyed with the battle scene. Every type the owner's faction can launch is
-    /// built while the battle loads, so early launches do not pay for a new context mid-battle; types launched
-    /// by many hangars get more.
+    /// Despawned squadrons are destroyed with the battle scene. Regular squadrons are built while the battle
+    /// loads; types launched by many hangars get more.
     /// </summary>
     public sealed class SquadronPool : ISquadronSpawner, ISquadronPrewarmer, IInitializable, ITickable, ILateDisposable
     {
@@ -175,6 +174,9 @@ namespace EmpireAtWar.Services.Squadrons
                 }
 
                 AddBay(counts, _assetService.Load<SpaceStationData>(nameof(SpaceStationData)).GetHangarBay(_owner.Faction));
+                // Creating a hero registers it as owned. Create its first instance only on a real deployment.
+                foreach (var entry in faction.Squadrons)
+                    if (entry.Value.IsHero) counts.Remove(entry.Key);
                 return counts;
             }
         }

@@ -13,8 +13,8 @@ namespace EmpireAtWar.Services.Audio
 
         bool TryHoldEngine(ShipSfxHandle ship, SfxProfile loop, Vector3 position, float volumeScale, float pitch);
 
-        bool TryPlayVoice(AudioClip clip);
+        bool TryPlayVoice(AudioClip clip, bool interruptChatter = false);
 
-        void ReleaseShip(ShipSfxHandle ship);
+        void ReleaseShip(ShipSfxHandle ship, SfxProfile explosion = null, Vector3 position = default);
     }
 }

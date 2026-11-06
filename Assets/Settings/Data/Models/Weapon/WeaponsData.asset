@@ -720,6 +720,24 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 126
+    displayName: Slave I Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: BobaFettSlaveI
+    damageMultiplier: 19.125
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Two independently firing Slave I cannons deliver a combined 425 raw DPS.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 19
     displayName: Medium Mass Driver Cannon
     family: 3
@@ -1102,6 +1120,24 @@ MonoBehaviour:
     rangeMultiplier: 1
     reason: Republic torpedoes pierce shields that CIS ships depend on; 30% less
       damage keeps Republic launchers from outclassing CIS warships.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 125
+    displayName: Slave I Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: JangoFettSlaveI
+    damageMultiplier: 18
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Jango's two cannons each fire two 90-damage pulses per 0.9-second salvo.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -1607,6 +1643,24 @@ MonoBehaviour:
     rangeMultiplier: 1
     reason: 'Executor stays overpowered: keeps its heavy laser damage and reload
       after the heavy caliber and laser reload changes.'
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 123
+    displayName: Falcon Quad Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 4
+    scope: 2
+    faction: 2
+    unit: HanSoloMillenniumFalcon
+    damageMultiplier: 4.21875
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Dorsal and ventral quad turrets deliver 375 raw DPS together.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
