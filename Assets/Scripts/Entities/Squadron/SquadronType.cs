@@ -23,6 +23,7 @@ namespace EmpireAtWar.Entities.Squadrons
         TIEInterceptor = 203,
         TIEBrute = 204,
         TIEPunisher = 205,
+        BobaFettSlaveI = 206,
 
         //rebellion
         XWing = 300,

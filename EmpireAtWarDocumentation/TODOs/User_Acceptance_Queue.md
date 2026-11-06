@@ -14,6 +14,9 @@ created: "2026-10-29\r"
 
 ## Imported Units
 
+- [ ] [[Done/Features/Boba_Fett_Slave_I]] — Check placement silhouette, one target/portrait, local order and ready cues in skirmish.
+- [ ] [[Done/Features/Boba_Fett_Slave_I]] — Measure overshoot, reacquisition, mixed-fleet and moving-wing duels; check AI rebuy frequency.
+- [ ] [[Done/Features/Boba_Fett_Slave_I]] — Verify independent owner limits across queue, cancel, reserve, death, repurchase, pooled spawn and save/load.
 - [[Done/Features/MC80Independence_Import]]
   - [ ] Clean-skirmish acceptance: construction, placement, combat, shield power, bay destruction/replacement, engine damage, death/wreck and teardown.
   - [ ] Review provisional economy, weapon damage/range, movement, flight height and matchup balance.

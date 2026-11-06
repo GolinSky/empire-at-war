@@ -720,6 +720,24 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 126
+    displayName: Slave I Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: BobaFettSlaveI
+    damageMultiplier: 19.125
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Two independently firing Slave I cannons deliver a combined 425 raw DPS.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 19
     displayName: Medium Mass Driver Cannon
     family: 3

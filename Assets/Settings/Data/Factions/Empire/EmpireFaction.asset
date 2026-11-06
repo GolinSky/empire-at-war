@@ -412,6 +412,22 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: fe8c1e85b0bf680479b5946516c3041f,
           type: 3}
+    - key: 206
+      value:
+        matchups: {fileID: 11400000, guid: 606a86b08cc7a5e4eb247e01d41aa404, type: 2}
+        description: Boba Fett pilots Slave I alone. Its twin laser cannons hunt
+          fighters and bombers. Slave I has 820 hull and 480 shields.
+        role: Hero / Fighter
+        iconKey: 8ed5c98fc325a8d4c9c82c74f72e7bd0:21300000
+        isHero: 1
+        <Name>k__BackingField: "Boba Fett \u2014 Slave I"
+        <MaxCount>k__BackingField: 1
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 1700
+        <BuildTime>k__BackingField: 28
+        <UnitCapacity>k__BackingField: 2
+        <Icon>k__BackingField: {fileID: 21300000, guid: 8ed5c98fc325a8d4c9c82c74f72e7bd0,
+          type: 3}
   research:
     keyValue:
     - key: 0

@@ -300,6 +300,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ed5c98fc325a8d4c9c82c74f72e7bd0
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/BobaFettSlaveIIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8ee3ff50731492c43b11469ff405c5d6
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ResoluteIcon.png
     m_ReadOnly: 0

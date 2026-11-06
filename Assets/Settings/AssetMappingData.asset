@@ -1505,3 +1505,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: BobaFettSlaveISquadronData
+      value:
+        m_AssetGUID: 0a722e975fd631d4da31e2fd3b35bd82
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: BobaFettSlaveISquadronView
+      value:
+        m_AssetGUID: 98bcc4d760171d44a9e3fc2cd0a16560
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
