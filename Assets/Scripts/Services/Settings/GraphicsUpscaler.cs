@@ -5,5 +5,6 @@ namespace EmpireAtWar.Services.Settings
         Bilinear,
         Fsr1,
         Stp,
+        Dlss,
     }
 }

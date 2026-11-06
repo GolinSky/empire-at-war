@@ -59,10 +59,18 @@ namespace EmpireAtWar.Services.Graphics
             if (Array.IndexOf(GraphicsUpscalerSupport.Available, graphics.Upscaler) < 0)
                 graphics.Upscaler = GraphicsUpscaler.Bilinear;
             pipeline.renderScale = graphics.RenderResolution;
+#if UNITY_STANDALONE_WIN && ENABLE_UPSCALER_FRAMEWORK && ENABLE_NVIDIA
+            // URP's temporal DLSS pass requires single-sample rendering.
+            pipeline.msaaSampleCount = graphics.Upscaler == GraphicsUpscaler.Dlss
+                ? 1 : _originalPipelines[level].msaaSampleCount;
+#endif
             pipeline.upscalingFilter = graphics.Upscaler switch
             {
                 GraphicsUpscaler.Fsr1 => UpscalingFilterSelection.FSR,
                 GraphicsUpscaler.Stp => UpscalingFilterSelection.STP,
+#if UNITY_STANDALONE_WIN && ENABLE_UPSCALER_FRAMEWORK && ENABLE_NVIDIA
+                GraphicsUpscaler.Dlss => UpscalingFilterSelection.IUpscaler,
+#endif
                 _ => UpscalingFilterSelection.Linear,
             };
             pipeline.fsrOverrideSharpness = true;
