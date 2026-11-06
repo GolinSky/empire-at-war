@@ -26,8 +26,6 @@ namespace EmpireAtWar.Services.VContainer
         {
             RegisterVision(builder, false);
             _fog.gameObject.SetActive(false);
-            builder.Register<NoFogOfWar>(Lifetime.Singleton).As<IFogOfWarSystem>();
-            builder.Register<RevealedMiniMapFogMask>(Lifetime.Singleton).As<IMiniMapFogMask>();
         }
 
         public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot) { }

@@ -22,6 +22,7 @@ using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Map.Generation;
+using EmpireAtWar.Entities.MiniMap;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Entities.Ship.Abilities;
@@ -41,6 +42,7 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.FogOfWar;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Squadrons;
@@ -1018,8 +1020,15 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_battle.Container.TryResolve(typeof(CaptureSitesSystem), out _), Is.EqualTo(capture));
             Assert.That(_battle.Container.Resolve<EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule>(), Is.Not.Null);
             Assert.That(_battle.Container.Resolve<BattleVictoryService>(), Is.Not.Null);
-            Assert.That(_battle.Container.Resolve<IFogOfWarSystem>() is NoFogOfWar, Is.EqualTo(!fog));
-            Assert.That(_battle.Container.Resolve<IMiniMapFogMask>() is RevealedMiniMapFogMask, Is.EqualTo(!fog));
+            Assert.That(_battle.Container.Resolve<IVisionService>(), Is.Not.Null);
+            Assert.That(_battle.Container.TryResolve(typeof(FogOfWarSystem), out var fogSystem), Is.EqualTo(fog));
+            Assert.That(_battle.Container.TryResolve(typeof(MiniMapFogMask), out var fogMask), Is.EqualTo(fog));
+            var revealSteps = _battle.Container.Resolve<IReadOnlyList<IBattleRevealStep>>();
+            var boundsListeners = _battle.Container.Resolve<IReadOnlyList<IMapBoundsListener>>();
+            var overlays = _battle.Container.Resolve<IReadOnlyList<IMiniMapOverlaySource>>();
+            Assert.That(revealSteps.OfType<FogOfWarSystem>(), Is.EquivalentTo(fog ? new[] { fogSystem } : Array.Empty<object>()));
+            Assert.That(boundsListeners.OfType<FogOfWarSystem>(), Is.EquivalentTo(fog ? new[] { fogSystem } : Array.Empty<object>()));
+            Assert.That(overlays, Is.EquivalentTo(fog ? new[] { fogMask } : Array.Empty<object>()));
             if (features != BattleFeatures.All && features != (BattleFeatures.All & ~BattleFeatures.SuperWeapons))
             {
                 foreach (AssetLifetimeScope player in players)

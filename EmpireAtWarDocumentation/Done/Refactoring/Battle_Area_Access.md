@@ -17,7 +17,7 @@ acceptance: pending-user
 - `NoCaptureSites` exists because 8 always-registered services inject the whole feature. Dependency points shared → feature; it must point feature → shared.
 - `ICaptureSitesSystem` is a fat interface: 4 events, `Sites`, 6 queries, 2 commands. Each shared consumer uses 1–2 members.
 - Asymmetry: relays already **push** blocker/vision circles (`ReinforcementZonesSystem.cs:282–286`); capture sites are **pulled** (`ReinforcementSpawnRule.cs:62`).
-- Same smell elsewhere (out of scope): `NoFogOfWar`, `RevealedMiniMapFogMask` in `FogModule.ConfigureDisabled` → [[TODOs/Refactoring/Fog_Disabled_Stand_Ins]].
+- Fog uses the same optional contributor pattern → [[Done/Refactoring/Fog_Disabled_Stand_Ins]].
 
 ## Decision
 - **Chosen:** grow `SpawnBlockerService` into `BattleAreaService` (`IBattleAreaService` reader + `IBattleAreaWriter`). Storage stays `OwnedCircleSet` keyed by `Transform`; each layer is a separate set.

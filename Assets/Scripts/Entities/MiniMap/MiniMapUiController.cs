@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
 using System.Collections.Generic;
+using System.Linq;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Presenters.MiniMap;
@@ -32,7 +33,7 @@ namespace EmpireAtWar.Entities.MiniMap
         private readonly IPlayerOrderInputHandler _orderInput;
         private readonly IBattleAreaService _battleAreas;
         private readonly INotifier<BattleMap> _battleMap;
-        private readonly IMiniMapFogMask _fogMask;
+        private readonly IReadOnlyList<IMiniMapOverlaySource> _overlaySources;
         private MiniMapUi _miniMapView;
         private readonly IPlayerColors _playerColors;
 
@@ -53,13 +54,13 @@ namespace EmpireAtWar.Entities.MiniMap
             ISkirmishRouteNavigation routeNavigation,
             IPlayerOrderInputHandler orderInput,
             ITooltipService tooltipService,
-            IMiniMapFogMask fogMask,
+            IReadOnlyList<IMiniMapOverlaySource> overlaySources,
             MiniMapData model,
             IPlayerColors playerColors,
             TimerPoolService timerPoolService, IBattleAreaService battleAreas) : base(uiService, cancelRouter)
         {
             _battleMap = battleMap;
-            _fogMask = fogMask;
+            _overlaySources = overlaySources;
             _cameraService = cameraService;
             _tooltips = new TooltipRequests(tooltipService);
             _model = model;
@@ -147,7 +148,10 @@ namespace EmpireAtWar.Entities.MiniMap
                 _miniMapView.Initialize();
                 _tooltipHover = new TooltipHoverSubscription(
                     _miniMapView.TooltipHover, HandleTooltipHover, _tooltips);
-                _miniMapView.SetFog(_fogMask.Mask);
+                if (_overlaySources.SingleOrDefault() is IMiniMapOverlaySource overlay)
+                {
+                    _miniMapView.SetFog(overlay.Mask);
+                }
             }
 
             if (isActive)

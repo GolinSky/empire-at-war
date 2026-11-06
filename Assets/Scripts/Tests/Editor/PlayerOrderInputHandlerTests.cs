@@ -293,7 +293,7 @@ namespace EmpireAtWar.Tests.Editor
                 var controller = new MiniMapUiController(battleMap: null, cameraService: null,
                     inputLock: new UnlockedInput(), uiService: null, cancelRouter: null,
                     routeNavigation: null, orderInput: orderInput, tooltipService: null,
-                    fogMask: null, model: model, playerColors: null, timerPoolService: null,
+                    overlaySources: Array.Empty<IMiniMapOverlaySource>(), model: model, playerColors: null, timerPoolService: null,
                     battleAreas: _areas);
 
                 controller.OrderMove(new Vector3(11f, 0f, 21f));

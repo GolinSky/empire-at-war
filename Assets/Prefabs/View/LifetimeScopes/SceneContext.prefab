@@ -243,6 +243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.FogOfWar.FogOfWarSystem
   meshFilter: {fileID: 2777577976553343944}
   fogRenderer: {fileID: 8093512405509483612}
+  fogReferenceSide: 600
   textureResolution: 1024
   autoDetectBounds: 1
   mapWorldSize: {x: 500, y: 500}
@@ -470,7 +471,6 @@ MonoBehaviour:
     type: 3}
   decorRenderer: {fileID: 312690830002158774}
   borderHeight: 0
-  fogReferenceSide: 600
 --- !u!114 &1561019271551565166
 MonoBehaviour:
   m_ObjectHideFlags: 0

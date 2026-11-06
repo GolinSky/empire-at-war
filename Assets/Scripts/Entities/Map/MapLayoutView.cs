@@ -7,13 +7,13 @@ using EmpireAtWar.Entities.Map.Generation;
 using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Views.ReinforcementZones;
 using UnityEngine;
-using EmpireAtWar.Services.FogOfWar;
+using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.Camera;
 using VContainer;
 
 namespace EmpireAtWar.Entities.Map
 {
-    /// <summary>Spawns a generated <see cref="MapLayout"/>: relays, capture sites, asteroid fields, border and fog area.
+    /// <summary>Spawns a generated <see cref="MapLayout"/>: relays, capture sites, asteroid fields and border.
     /// Home (non-capturable) zones stay layout data only; nothing is spawned for them.</summary>
     public sealed class MapLayoutView : MonoBehaviour
     {
@@ -37,15 +37,13 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField] private HazardCloudView hazardPrefab;
         [SerializeField] private DecorAsteroidRenderer decorRenderer;
         private ICameraService _camera;
-        private IFogOfWarSystem _fog;
+        private IReadOnlyList<IMapBoundsListener> _boundsListeners;
         private MapGenerationSettings _generationSettings;
         private CaptureSiteData _siteData;
         private readonly List<MapObstacle> _obstacles = new List<MapObstacle>();
         private readonly List<ReinforcementZoneView> _zoneViews = new List<ReinforcementZoneView>();
 
         [SerializeField] private float borderHeight;
-        [SerializeField, Min(1f), Tooltip("Map side the fog plane was authored for.")]
-        private float fogReferenceSide = 600f;
 
         public MapFeatureRadii FeatureRadii =>
             new MapFeatureRadii(zonePrefab.Radius,
@@ -56,10 +54,10 @@ namespace EmpireAtWar.Entities.Map
         public IReadOnlyList<MapObstacle> Obstacles => _obstacles;
 
         [Inject]
-        private void Construct(IFogOfWarSystem fog, MapGenerationSettings generationSettings, ICameraService camera,
+        private void Construct(IReadOnlyList<IMapBoundsListener> boundsListeners, MapGenerationSettings generationSettings, ICameraService camera,
             CaptureSiteData siteData)
         {
-            _fog = fog;
+            _boundsListeners = boundsListeners;
             _generationSettings = generationSettings;
             _camera = camera;
             _siteData = siteData;
@@ -156,9 +154,10 @@ namespace EmpireAtWar.Entities.Map
             instance.transform.localScale = prefab.transform.localScale * rock.Scale;
         }
 
-        public void UpdateBounds(EmpireAtWar.Models.SkirmishCamera.Vector2Range bounds)
+        public void UpdateBounds(Vector2Range bounds)
         {
-            _fog.InitializeArea((bounds.Max.x - bounds.Min.x) / fogReferenceSide);
+            foreach (IMapBoundsListener listener in _boundsListeners)
+                listener.OnBoundsChanged(bounds);
             Vector2 min = bounds.Min;
             Vector2 max = bounds.Max;
             spaceDust.Configure(min, max, 0f);

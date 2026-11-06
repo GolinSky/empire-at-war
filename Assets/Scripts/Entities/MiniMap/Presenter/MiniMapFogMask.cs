@@ -1,4 +1,5 @@
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.MiniMap;
 using EmpireAtWar.Models.FogOfWar;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.OwnedAreas;
@@ -13,7 +14,7 @@ namespace EmpireAtWar.Presenters.MiniMap
     /// Flat fog for the minimap, built from the local team's vision sources at their true XZ positions.
     /// The 3D fog projects its holes along camera rays, so it cannot be reused here: its holes move with the camera.
     /// </summary>
-    public sealed class MiniMapFogMask : IMiniMapFogMask, ITickable, IInitializable, ILateDisposable,
+    public sealed class MiniMapFogMask : IMiniMapOverlaySource, ITickable, IInitializable, ILateDisposable,
         IObserver<BattleMap>
     {
         private const int RESOLUTION = 128;

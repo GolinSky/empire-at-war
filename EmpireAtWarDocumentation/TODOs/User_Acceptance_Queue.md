@@ -228,3 +228,10 @@ created: "2026-10-29\r"
 
 - [ ] [[Done/Refactoring/Battle_Area_Access]] — Compare free structure placement at the same point for player, AI and cheat. Check a friendly relay edge, site order snapping and fog-disabled overlay in battle.
 - [ ] [[Done/Refactoring/Battle_Area_Access]] — Run the plan’s affected EditMode categories when authorized, including capture-disabled composition and overlapping area registrations.
+
+## Fog feature access
+
+- [ ] [[Done/Refactoring/Fog_Disabled_Stand_Ins]] — Start a fog-enabled battle. Check reveal before fade-out and visibility on the minimap.
+- [ ] [[Done/Refactoring/Fog_Disabled_Stand_Ins]] — Start a fog-disabled battle. Check fade timing and a fully revealed minimap.
+- [ ] [[Done/Refactoring/Fog_Disabled_Stand_Ins]] — Restart or restore with different bounds. Check the fog plane fits the new map.
+- [ ] [[Done/Refactoring/Fog_Disabled_Stand_Ins]] — Run Vision, Map, Ui, GameFlow, Core and BattleInput when authorized.

@@ -1,21 +1,25 @@
+using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.FogOfWar;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.OwnedAreas;
 using EmpireAtWar.Services.Vision;
 using UnityEngine;
 using VContainer;
-using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.FogOfWar
 {
-    public class FogOfWarSystem : MonoBehaviour, IFogOfWarSystem
+    public class FogOfWarSystem : MonoBehaviour, IBattleRevealStep, IMapBoundsListener
     {
         private const int MAX_TEXTURE_RESOLUTION = 512;
 
         [SerializeField] private MeshFilter meshFilter;
         [SerializeField] private Renderer fogRenderer;
         [Header("Fog Map Settings")]
+        [SerializeField, Min(1f), Tooltip("Map side the fog plane was authored for.")]
+        private float fogReferenceSide = 600f;
         [Tooltip("Resolution of the dynamic mask texture")]
         public int textureResolution = 256;
 
@@ -44,6 +48,7 @@ namespace EmpireAtWar.Services.FogOfWar
 
         private Texture2D _fogTexture;
         private FogVisibilityGridModel _grid;
+        private Vector3 _authoredScale;
 
         private float _timer;
         private Material _fogMaterial;
@@ -59,17 +64,19 @@ namespace EmpireAtWar.Services.FogOfWar
             _localPlayer = localPlayer;
         }
 
-        // The mask exists only after InitializeArea, so the fog stays idle until the map is built.
+        // The mask exists only after map bounds arrive.
         private void Awake()
         {
+            _authoredScale = transform.localScale;
             enabled = false;
         }
 
         /// <summary>Stretches the fog plane and its mask for the battlefield, then creates the mask.</summary>
-        public void InitializeArea(float scale)
+        public void OnBoundsChanged(Vector2Range bounds)
         {
-            transform.localScale = Vector3.Scale(transform.localScale, new Vector3(scale, 1f, scale));
-            textureResolution = Mathf.Min(MAX_TEXTURE_RESOLUTION, Mathf.RoundToInt(textureResolution * scale));
+            float scale = (bounds.Max.x - bounds.Min.x) / fogReferenceSide;
+            transform.localScale = Vector3.Scale(_authoredScale, new Vector3(scale, 1f, scale));
+            int resolution = Mathf.Min(MAX_TEXTURE_RESOLUTION, Mathf.RoundToInt(textureResolution * scale));
 
             Bounds meshBounds = meshFilter.sharedMesh.bounds;
             if (autoDetectBounds)
@@ -85,11 +92,16 @@ namespace EmpireAtWar.Services.FogOfWar
             _fogMaterial = fogRenderer.material;
             // The shader reads only .r; a one-byte mask written in place avoids building
             // and copying a full Color[] of the map every frame the fog fades.
-            _fogTexture = new Texture2D(textureResolution, textureResolution, TextureFormat.R8, false);
+            if (_grid != null)
+            {
+                _grid.Dispose();
+                Destroy(_fogTexture);
+            }
+            _fogTexture = new Texture2D(resolution, resolution, TextureFormat.R8, false);
             _fogTexture.wrapMode = TextureWrapMode.Clamp;
             _fogTexture.filterMode = FilterMode.Bilinear;
 
-            _grid = new FogVisibilityGridModel(textureResolution);
+            _grid = new FogVisibilityGridModel(resolution);
             WritePixels();
             _fogMaterial.SetTexture("_MainTex", _fogTexture);
             enabled = true;
@@ -159,8 +171,8 @@ namespace EmpireAtWar.Services.FogOfWar
             // Prevent division by zero
             float safeMapX = Mathf.Max(mapWorldSize.x, 0.1f);
             float safeMapY = Mathf.Max(mapWorldSize.y, 0.1f);
-            int radiusPxX = Mathf.RoundToInt(radius / safeMapX * textureResolution);
-            int radiusPxY = Mathf.RoundToInt(radius / safeMapY * textureResolution);
+            int radiusPxX = Mathf.RoundToInt(radius / safeMapX * _grid.Resolution);
+            int radiusPxY = Mathf.RoundToInt(radius / safeMapY * _grid.Resolution);
 
             // Ensure a minimum of at least 1 pixel radius if there is supposed to be a hole
             return Mathf.Max(1, Mathf.Max(radiusPxX, radiusPxY));
@@ -180,8 +192,8 @@ namespace EmpireAtWar.Services.FogOfWar
             if (flipZ) normalizedZ = 1f - normalizedZ;
 
             inside = normalizedX >= 0f && normalizedX <= 1f && normalizedZ >= 0f && normalizedZ <= 1f;
-            return new Vector2Int(Mathf.RoundToInt(normalizedX * textureResolution),
-                Mathf.RoundToInt(normalizedZ * textureResolution));
+            return new Vector2Int(Mathf.RoundToInt(normalizedX * _grid.Resolution),
+                Mathf.RoundToInt(normalizedZ * _grid.Resolution));
         }
 
         /// <summary>

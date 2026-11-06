@@ -14,6 +14,8 @@
 - Order values live in `LifecycleOrders` constants only; no numeric literals in `[LifecycleOrder]` outside tests.
 - Every scope derives `AssetLifetimeScope` and calls `base.Configure(builder)` → registers the coordinator. Root scopes that skip the base (`ProjectScope`) call `builder.RegisterLifecycle()` themselves. Never call it twice in one scope → callbacks run twice.
 
+- Optional battle modules register contributors only when enabled. Shared callers inject `IReadOnlyList<T>` and handle zero contributors. Fog supplies `IBattleRevealStep`, `IMapBoundsListener` and `IMiniMapOverlaySource` at battle scope. Gameplay visibility stays in `IVisionService` for both modes.
+
 ## Implementation
 
 - `RegisterLifecycle()` → `OrderedLifecycleCoordinator` entry point + `LifecycleTickGate` + rethrowing entry-point exception handler (fail fast).

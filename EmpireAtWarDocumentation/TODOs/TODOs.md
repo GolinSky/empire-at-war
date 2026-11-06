@@ -444,6 +444,9 @@
 - [x] **Delete empty SelectionComponent hooks and empty MenuData** → [[Done/Refactoring/Empty_Code_Cleanup|Empty Code Cleanup]]
   - Completed 2026-11-06. Removed the unused hooks and field from 96 prefabs and retired the menu asset, mapping, preload and registration.
 
+- [x] **Remove NoFogOfWar and RevealedMiniMapFogMask** → [[Done/Refactoring/Fog_Disabled_Stand_Ins|Fog Disabled Stand-Ins]]
+  - Completed 2026-11-06. Startup reveal, map bounds and minimap overlay use optional contributors. Unity compilation verified; gameplay and targeted test checks queued.
+
 - [x] **Remove NoCaptureSites and centralize reinforcement area access** → [[Done/Refactoring/Battle_Area_Access|Battle Area Access]]; [[Done/Refactoring/Battle_Area_Access - Research|Source investigation]]
   - Completed 2026-11-06. Layered battle areas and capture contributors implemented; Unity compiler verified. Tests and gameplay acceptance queued.
 

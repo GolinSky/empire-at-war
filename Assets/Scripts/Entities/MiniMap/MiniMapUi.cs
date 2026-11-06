@@ -62,6 +62,7 @@ namespace EmpireAtWar.Entities.MiniMap
             if (_isInitialized) return;
             _isInitialized = true;
             _mapRange = _model.MapRange;
+            fogImage.enabled = false;
             cameraFootprintView.SetData(_model.CameraMark, _model.MapRange);
             obstacleView.SetData(_model.Obstacles, _model.MapRange);
             hazardView.SetData(_model.Hazards, _model.MapRange);
@@ -104,6 +105,7 @@ namespace EmpireAtWar.Entities.MiniMap
         public void SetFog(Texture mask)
         {
             fogImage.texture = mask;
+            fogImage.enabled = true;
         }
 
         private void AddMark(MarkData markData)

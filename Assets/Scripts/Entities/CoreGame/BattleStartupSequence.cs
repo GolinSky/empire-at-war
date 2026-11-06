@@ -1,12 +1,12 @@
-using EmpireAtWar.Entities.Game;
+using System.Collections.Generic;
 using System.Threading;
+using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Fade;
 using EmpireAtWar.Services.Player;
 using UnityEngine;
-using EmpireAtWar.Services.FogOfWar;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Weapon;
@@ -24,7 +24,7 @@ namespace EmpireAtWar.Controllers.Game
         private readonly IPlayerRoster _playerRoster;
         private readonly ILocalPlayer _localPlayer;
         private readonly ICameraService _cameraService;
-        private readonly IFogOfWarSystem _fogOfWarSystem;
+        private readonly IReadOnlyList<IBattleRevealStep> _revealSteps;
         private readonly IFadeService _fadeService;
         private readonly BattleDefinition _battle;
         private readonly BattleRestoreStep _restore;
@@ -38,7 +38,7 @@ namespace EmpireAtWar.Controllers.Game
             IPlayerRoster playerRoster,
             ILocalPlayer localPlayer,
             ICameraService cameraService,
-            IFogOfWarSystem fogOfWarSystem,
+            IReadOnlyList<IBattleRevealStep> revealSteps,
             IFadeService fadeService, BattleDefinition battle, BattleRestoreStep restore,
             ShotPoolPrewarmer shots, IAssetService assets)
         {
@@ -48,7 +48,7 @@ namespace EmpireAtWar.Controllers.Game
             _playerRoster = playerRoster;
             _localPlayer = localPlayer;
             _cameraService = cameraService;
-            _fogOfWarSystem = fogOfWarSystem;
+            _revealSteps = revealSteps;
             _fadeService = fadeService;
             _battle = battle;
             _restore = restore;
@@ -79,7 +79,8 @@ namespace EmpireAtWar.Controllers.Game
             await Awaitable.NextFrameAsync(cancellationToken);
             await Awaitable.NextFrameAsync(cancellationToken);
             await _shots.CompletePrewarmAsync(cancellationToken);
-            _fogOfWarSystem.RevealImmediately();
+            foreach (IBattleRevealStep step in _revealSteps)
+                step.RevealImmediately();
             // Render the revealed battle once while the loading cover is still visible.
             await Awaitable.NextFrameAsync(cancellationToken);
             await _fadeService.FadeOutAsync(FADE_OUT_DURATION, cancellationToken);

@@ -7,7 +7,6 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Services.FogOfWar;
 using EmpireAtWar.Services.ShipSpawning;
 using NUnit.Framework;
 using UnityEditor;
@@ -55,7 +54,7 @@ namespace EmpireAtWar.Tests.Editor
                     "Assets/Prefabs/View/LifetimeScopes/SceneContext.prefab"), root.transform);
                 MapLayoutView view = scene.GetComponentInChildren<MapLayoutView>(true);
                 typeof(MapLayoutView).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(view, new object[] { new NoFogOfWar(), settings, scene.GetComponentInChildren<EmpireAtWar.Services.Camera.CameraService>(true),
+                    .Invoke(view, new object[] { System.Array.Empty<IMapBoundsListener>(), settings, scene.GetComponentInChildren<EmpireAtWar.Services.Camera.CameraService>(true),
                         AssetDatabase.LoadAssetAtPath<EmpireAtWar.Entities.CaptureSites.CaptureSiteData>("Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset") });
                 BattleDefinitionBuilder builder = SkirmishPreset.Create(TestPlayers.CreateTeamGame().Players,
                     PlanetType.Coruscant, MapSize.Medium, BattleVictoryCondition.DestroyEnemyFleet, 1000f, true, 7919);
