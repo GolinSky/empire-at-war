@@ -15,30 +15,348 @@ MonoBehaviour:
   m_GroupName: Audio
   m_GUID: 755137ef93843ef4f8032c8dc9cd87c5
   m_SerializeEntries:
+  - m_GUID: 034aebee4df8f6740b10f5fdaea6e739
+    m_Address: Assets/Audio/Music/Battle/Other/space_battle2.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 13f17b0e7ab1cb347808b6e4561b6563
     m_Address: mixkit-cinematic-impact-thunder-1286
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 191760ae18cd1c84aaa64271a8bf9212
+    m_Address: Assets/Audio/Music/Menu/Revenge_of_the_Sith/ROTS_Yoda_And_The_Younglings.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 203ebff283bd2ba4584da040462516fe
+    m_Address: Assets/Audio/Music/Battle/The_Clone_Wars/TCW_Y_Wing.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a42d5c3d57ed534a9490a04a90e6ecc
+    m_Address: Assets/Audio/Music/Battle/Other/space_ambient2.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b4dea94496eec4438973b9d79c1e620
+    m_Address: Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_Jar_Jars_Introduction.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d8fd887bac02b0489c6685e2ea4b3d7
+    m_Address: Assets/Audio/Music/Battle/The_Clone_Wars/TCW_Ahsoka_vs_Maul.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ed8b22a3566f5543bd01436dcd8d6a8
+    m_Address: Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_He_Is_the_Chosen_One.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 41d73a8198e6a0248a72f9f830bd9ec8
     m_Address: Assets/Prefabs/View/ViewComponents/AudioViewComponent.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43ce5384ebeff134c927bbc8e4e8edd7
+    m_Address: Assets/Audio/Music/Battle/Ahsoka/A_Not_the_Time_for_a_Lesson.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 49c358ed5250a074d984e3433efba71b
+    m_Address: Assets/Audio/Music/Menu/Obi_Wan_Kenobi/OW_Obi_Wan.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4acc679668bc14744bf10e4c6ff2b932
+    m_Address: Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_The_Trip_to_the_Naboo_Temple_and.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51cf9f5c370a9c74a9ad57f1c47d51f0
+    m_Address: Assets/Audio/Music/Menu/Other/gc_ambient2.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5df912fe18fe58a4eac76cd2886d673a
+    m_Address: Assets/Audio/Music/Battle/Revenge_of_the_Sith/ROTS_Grievous_Speaks_to_Lord_Sidious_Edit.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65e522c8e0c788b4d9944230237a8179
+    m_Address: Assets/Audio/Music/Battle/Other/space_ambient1.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67bb12199424d9b4380c3fefea7797b1
+    m_Address: Assets/Audio/Music/Menu/Ahsoka/A_Senate_Hearing.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 693b64db7aea4874f90edc2bee068be3
+    m_Address: Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Different_Perspectives.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6a07f8cdfb8c2934dbfe5fa1326268c4
     m_Address: MusicSource
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ba7e66f7b71fb94d996cad3c6409b05
+    m_Address: Assets/Audio/Music/Battle/Other/space_battle4.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 723af9cf374900c4a9cf00dc6a73e3f5
+    m_Address: Assets/Audio/Music/Menu/Tales_of_the_Jedi/TOTJ_Fall_Of_Dooku.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 744355451e04f5b4cb82228129923e8f
+    m_Address: Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Outpost.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74e2e1144b7f1d04e8297e14d8923ade
+    m_Address: Assets/Audio/Music/Battle/Ahsoka/A_Loyalists.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76ec7ead0b398a74ca869870ecb2315a
+    m_Address: Assets/Audio/Music/Menu/Revenge_of_the_Sith/ROTS_The_Immolation_Scene.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c2908dc4fdeddf4f809ce3c7ffcf7bb
+    m_Address: Assets/Audio/Music/Battle/Other/space_battle5.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7cc640af18ffb7743aeb2c6607924d40
+    m_Address: Assets/Audio/Music/Battle/The_Bad_Batch/TBB_Plan_99.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82b6134f2fe790e4f91f4a5b802edc70
+    m_Address: Assets/Audio/Music/Battle/Clone_Wars/CW_destroying_the_shield.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86a25419949842c4ca8a457bdc6d2a01
+    m_Address: Assets/Audio/Music/Menu/Attack_of_the_Clones/AOTC_Across_The_Stars.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e5afd4ade02bbc409d8a7ae88a12a14
+    m_Address: Assets/Audio/Music/Menu/Ahsoka/A_The_Space_Whales.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9081c058a1614ed45931d99533c32314
+    m_Address: Assets/Audio/Music/Battle/Revenge_of_the_Sith/ROTS_Grievous_and_the_droids_Edit.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93de6889027c1fd45ac8714e730d1860
+    m_Address: Assets/Audio/Music/Menu/Clone_Wars/CW_the_jedi_council.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9cc8eaac827a46e4b96be5bd6cb86b5c
+    m_Address: Assets/Audio/Music/Menu/Ahsoka/A_They_are_all_Connected.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9eca64980e1c8bf41960bcd7588504fd
+    m_Address: Assets/Audio/Music/Battle/Ahsoka/A_Loyalists_Edit.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a441226e010b1454c86c9cf5b7322bd8
+    m_Address: Assets/Audio/Music/Menu/Revenge_of_the_Sith/ROTS_The_Birth_Of_The_Twins_And_Padme.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8ddc549ecdf20641bbd9f4a8f45fe1b
+    m_Address: Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_The_Arrival_at_Tatooine.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9644eff64b980e428eb847e5713c286
+    m_Address: Assets/Audio/Music/Battle/The_Clone_Wars/TCW_Battle_Of_Quell.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac4cbf236dc3bdc4cabe8272a60681b4
+    m_Address: Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_Passage_Through_the_Planet_Core_Edit.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0529f70e0bee5741b14a25cbcb3038e
+    m_Address: Assets/Audio/Music/Menu/Other/gc_ambient1.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b95aa6da00e2fcb408c0c94b3fdcdce5
+    m_Address: Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_The_High_Council_Meeting.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bbcf2519fd05b5e42afb2cba8dfdca52
+    m_Address: Assets/Audio/Music/Battle/Other/space_battle6.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd8c4995cf1cbe14c8aa2b8977efcccc
+    m_Address: Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Where_I_Fit.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c00718c0656a6ea4caf2cca205622ff2
+    m_Address: Assets/Audio/Music/Battle/Attack_of_the_Clones/AOTC_Bounty_Hunters_Pursuit_Edit.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c491dda270b4ccd40ab1b06501103a20
+    m_Address: Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Worth_More_Than_Jewels.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c78f441d1fa017a4682990f4d57e435b
+    m_Address: Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Mayday.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf96106299bafc945ae087b0966f2405
+    m_Address: Assets/Audio/Music/Menu/The_Phantom_Menace/TPM_Anakins_Theme.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d105f3706327c274db845257a59e3bdf
     m_Address: SHIP_ALARM
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2d26e495f0632a45b6fb8b473794774
+    m_Address: Assets/Audio/Music/Menu/Revenge_of_the_Sith/ROTS_Padmes_Ruminations.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d59e33f3bd3054946aa3d9c5949a56b3
+    m_Address: Assets/Audio/Music/Battle/Other/space_battle3.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7a8c0271275e244292d5cfe9c02ee76
+    m_Address: Assets/Audio/Music/Battle/The_Bad_Batch/TBB_Walker_Chase.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ddafd43ab5971d8479fb9c64c8db2f19
+    m_Address: Assets/Audio/Music/Battle/Other/space_battle1.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e118c1010075e5e4f8338d3298c20b50
     m_Address: Assets/Audio/AudioMixer.mixer
     m_ReadOnly: 0
     m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e42fd674c66bdb44e958b7507e0fed39
+    m_Address: Assets/Audio/Music/Menu/The_Bad_Batch/TBB_So_Much_For_Peace.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e460b832156e4654aa63903096f450ed
+    m_Address: Assets/Audio/Music/Battle/Ahsoka/A_Open_Fire.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e49a741ebf278b148a8a937618770bc2
+    m_Address: Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Civil_War_About_to_Begin.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb03053de1f04fc4f8d2f043ef860936
+    m_Address: Assets/Audio/Music/Battle/Ahsoka/A_Floating.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicBattle
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f1769c4a9b1ffda4188c2b29ba202335
+    m_Address: Assets/Audio/Music/Menu/Revenge_of_the_Sith/ROTS_Palpatines_Teachings.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f34fbefcc6ad804479379f5aa3b4b691
+    m_Address: Assets/Audio/Music/Menu/The_Bad_Batch/TBB_First_Time_in_Space.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f93bbefc2c831134d9930028b880073b
+    m_Address: Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Debriefed.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fce15a1c6a6a96646b07017934af0d47
+    m_Address: Assets/Audio/Music/Menu/The_Bad_Batch/TBB_Raxus_Under_The_Empire.mp3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - MusicMenu
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 047fa9cc3c5486249abbfc6c5974195d, type: 2}

@@ -66,8 +66,9 @@
 
 ### Optimization
 
-- [ ] **Prioritized fixes from the November 6 optimization audit** → [[TODOs/Optimization/Optimization_Audit_Fix_Plan|Fix order, owners and verification]]
-  - First fix capture dimensions, then isolate fleet hitches in the M2 Editor and Development Player. Next, measure off-camera hardpoint smoke and destruction readability. Start the Providence texture pilot after a valid content baseline.
+- [ ] **November 6 optimization fixes — P0 hitch attribution remains** → [[TODOs/Optimization/Optimization_Audit_Fix_Plan|Retained fixes, evidence and next action]]. Mac content −48.7 MB; 54 duplicates → 0; packed memory, loading, smoke, music and nebula fixes verified. Rare large fleet stalls remain unresolved.
+  - 2026-11-07: capture metadata and scoped retained fixes verified. P0 native 296 ms stall attributed to synchronous AssetBundle waiting; exact key and other stalls remain open. Separate satellite warmup omission fixed (43–50 ms → 0.0022 ms in isolated packed probe). No general FPS improvement established; tests disabled.
+  - Follow-up: new 576 ms / 1.8 s stalls traced to synchronous Metal GPU-program creation. Original 296 ms asset key and historical 198 ms cause remain unresolved. [[TODOs/Optimization/Optimization_Audit_Fix_Plan - Research|All findings, fixes and evidence]].
 
 - [ ] **Remove battle-start stutter at reveal (deferred asset warm-up after `Running`)** → [[TODOs/Optimization/Battle_Start_Hitch_Plan|Battle Start Hitch Plan]]
   - 2026-11-06: Editor Profiler skirmish start: 25 frames > 25 ms between −2.6 s and +4.4 s around activation; visible window +3.9–4.4 s = Addressables integration (35–117 ms) matching `BattleAssetWarmup`. Next: Phase 0 markers, then Development Player baseline. Nothing implemented.

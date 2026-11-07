@@ -6,6 +6,7 @@ namespace EmpireAtWar.Services.Timing
         public string Runtime { get; }
         public string Quality { get; }
         public string Resolution { get; }
+        public float RenderScale { get; }
         public float TimeScale { get; }
         public int VSyncCount { get; }
         public int TargetFrameRate { get; }
@@ -37,12 +38,14 @@ namespace EmpireAtWar.Services.Timing
             int targetThreshold,
             int targetBatchSize,
             int dueThreshold,
-            int dueBatchSize)
+            int dueBatchSize,
+            float renderScale)
         {
             UnityVersion = unityVersion;
             Runtime = runtime;
             Quality = quality;
             Resolution = resolution;
+            RenderScale = renderScale;
             TimeScale = timeScale;
             VSyncCount = vSyncCount;
             TargetFrameRate = targetFrameRate;

@@ -380,6 +380,58 @@ namespace EmpireAtWar.Tests.Editor
             finally { UnityEngine.Object.DestroyImmediate(view); }
         }
 
+        [TestCase("FindLocalThreat", "removed")]
+        [TestCase("FindLocalThreat", "destroyed")]
+        [TestCase("FindLocalThreat", "replaced")]
+        [TestCase("FindClosestKnownShip", "removed")]
+        [TestCase("FindClosestKnownShip", "destroyed")]
+        [TestCase("FindClosestKnownShip", "replaced")]
+        public void StrategicTarget_InvalidCachedEntityIsNotRetained(string selector, string change)
+        {
+            GameObject view = new GameObject("Targets");
+            try
+            {
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                PlayerSlot owner = roster.Get(TestPlayers.Enemy);
+                EntityLocator locator = new EntityLocator();
+                FakeEntity first = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Human, 1);
+                FakeEntity second = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Human, 2);
+                locator.AddEntity(first);
+                locator.AddEntity(second);
+                TeamIntelRegistry registry = new TeamIntelRegistry();
+                HostileIntelModel intel = registry.Get(owner.Team);
+                intel.Report(new HostileSighting(1, UnitTypeId.Ship(ShipType.Venator), TestPlayers.Human,
+                    new FormationPoint(10f, 0f), 1f, 0f, 1f, 0f));
+                intel.Report(new HostileSighting(2, UnitTypeId.Ship(ShipType.Venator), TestPlayers.Human,
+                    new FormationPoint(20f, 0f), 1f, 0f, 1f, 0f));
+                EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
+                    null, null, Array.Empty<IEnemyCaptureObjectiveSource>(), locator, null, roster, null, registry,
+                    new VisionService(roster, fogEnabled: false), owner, null, new TestHazards(), null, null, new EnemyStationPressureTracker());
+                MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector,
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                object[] args = { Vector3.zero, 0f };
+                Assert.That(find.Invoke(builder, args), Is.SameAs(first));
+                // Build stores this result between decisions. Exercise the same cached-target path.
+                typeof(EnemyStrategicContextBuilder).GetField("_localThreat",
+                    BindingFlags.Instance | BindingFlags.NonPublic).SetValue(builder, first);
+
+                typeof(EnemyStrategicContextBuilder).GetField("_fleetTarget",
+                    BindingFlags.Instance | BindingFlags.NonPublic).SetValue(builder, first);
+                if (change == "destroyed")
+                    ((FakeHealthModel)first.HealthModel).IsDestroyed = true;
+                else locator.RemoveEntity(first);
+                if (change == "replaced")
+                {
+                    FakeEntity replacement = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Human, 1);
+                    locator.AddEntity(replacement);
+                    Assert.That(find.Invoke(builder, args), Is.SameAs(replacement));
+                }
+                else
+                    Assert.That(find.Invoke(builder, args), Is.SameAs(second));
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
 [TestCase(0, 100f, true)]
         [TestCase(3, 100f, false)]
         [TestCase(0, 2000f, false)]
@@ -1608,6 +1660,79 @@ namespace EmpireAtWar.Tests.Editor
             planner.Reconcile(new IShipEntity[] { threatened, distant });
             Assert.That(planner.Groups[0], Is.SameAs(first));
             Assert.That(planner.Groups[1], Is.SameAs(second));
+        }
+
+        [Test]
+        public void TaskGroups_MergedIdleGroupDoesNotRestoreDestroyedShips()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            EnemyStrategicContextBuilder builder = CaptureBuilder(roster, new ZoneSource(roster),
+                new SiteSource(), new TestHazards());
+            FakeOrderService orders = new FakeOrderService();
+            var planner = new EnemyShipTaskGroupPlanner(builder,
+                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders), orders);
+            EnemyShipTaskGroup idle = planner.Groups.Single();
+            IShipEntity[] ships = {
+                new FakeShip(Vector3.zero, 1),
+                new FakeShip(Vector3.right * 5000f, 2),
+                new FakeShip(Vector3.right * 5010f, 3)
+            };
+
+            planner.Reconcile(ships, stationPressure: true);
+
+            Assert.That(planner.Groups.Single(), Is.Not.SameAs(idle));
+            Assert.That(planner.Groups.Single().Ships, Is.EquivalentTo(ships));
+            Assert.That(idle.Ships, Is.Empty);
+
+            planner.Reconcile(Array.Empty<IShipEntity>());
+
+            Assert.That(planner.Groups.Single(), Is.SameAs(idle));
+            Assert.That(planner.Groups.Single().Ships, Is.Empty);
+            IShipEntity replacement = new FakeShip(Vector3.zero, 4);
+            planner.Reconcile(new[] { replacement });
+            Assert.That(planner.Groups.SelectMany(group => group.Ships), Is.EqualTo(new[] { replacement }));
+        }
+
+        [Test]
+        public void TaskGroups_NearbyMergeReleasesDonorMembership()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            EnemyStrategicContextBuilder builder = CaptureBuilder(roster, new ZoneSource(roster),
+                new SiteSource(), new TestHazards());
+            FakeOrderService orders = new FakeOrderService();
+            var planner = new EnemyShipTaskGroupPlanner(builder,
+                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders), orders);
+            FakeShip first = new FakeShip(Vector3.zero, 1);
+            FakeShip second = new FakeShip(Vector3.right * 5000f, 2);
+            IShipEntity[] ships = { first, second };
+            planner.Reconcile(ships);
+            EnemyShipTaskGroup donor = planner.Groups[1];
+
+            second.WorldPosition = Vector3.right;
+            planner.Reconcile(ships);
+
+            Assert.That(planner.Groups.Single().Ships, Is.EquivalentTo(ships));
+            Assert.That(donor.Ships, Is.Empty);
+        }
+
+        [Test]
+        public void TaskGroups_DestroyedMainForceDoesNotPromoteReplacementShip()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            EnemyStrategicContextBuilder builder = CaptureBuilder(roster, new ZoneSource(roster),
+                new SiteSource(), new TestHazards());
+            FakeOrderService orders = new FakeOrderService();
+            var planner = new EnemyShipTaskGroupPlanner(builder,
+                new EnemyStrategicDecisionModel(), new EnemyTaskForceExecutor(orders), orders);
+            planner.Reconcile(new IShipEntity[] { new FakeShip(Vector3.zero, 1) }, stationPressure: true);
+            EnemyShipTaskGroup main = planner.Groups.Single();
+            Assert.That(main.IsMainForce, Is.True);
+
+            planner.Reconcile(Array.Empty<IShipEntity>());
+
+            Assert.That(main.IsMainForce, Is.False);
+            planner.Reconcile(new IShipEntity[] { new FakeShip(Vector3.zero, 2) });
+            Assert.That(planner.Groups.Single().IsMainForce, Is.False);
         }
 
         [Test]

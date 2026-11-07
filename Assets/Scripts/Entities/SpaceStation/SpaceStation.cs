@@ -19,6 +19,8 @@ namespace EmpireAtWar.Entities.SpaceStation
 {
     public class SpaceStation : EntityView, IController, IInitializable, ILateDisposable
     {
+        private const float DESTRUCTION_BURST_SCALE = 0.75f;
+
         private IVisionService _visionService;
         private IBattleAreaWriter _areas;
         private IHealthComponent _healthComponent;
@@ -119,7 +121,7 @@ namespace EmpireAtWar.Entities.SpaceStation
             if (playDeathAnimation)
             {
                 EntityComponentData componentData = Data.ComponentData;
-                _unitExplosionService.Spawn(explosionHullRenderers);
+                _unitExplosionService.Spawn(explosionHullRenderers, DESTRUCTION_BURST_SCALE);
                 // The explosion hides the swap: the wreck appears as the station entity is destroyed.
                 if (Data.TryGetWreck(_factionType, out UnitWreckData wreck))
                 {

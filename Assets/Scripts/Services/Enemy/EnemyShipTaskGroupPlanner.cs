@@ -86,6 +86,11 @@ namespace EmpireAtWar.Services.Enemy
             MergeNearbyGroups();
             AssembleMainForce(stationPressure);
             _groups.RemoveAll(group => group.Ships.Count == 0);
+            if (_mainGroup != null && !_groups.Contains(_mainGroup))
+            {
+                _mainGroup.IsMainForce = false;
+                _mainGroup = null;
+            }
             if (_groups.Count == 0) _groups.Add(_idleGroup);
         }
 
@@ -95,7 +100,6 @@ namespace EmpireAtWar.Services.Enemy
             foreach (EnemyShipTaskGroup group in _groups)
                 if (!group.IsCaptureDetachment && (stationPressure || !group.DecisionModel.IsRecovering))
                     available += group.Ships.Count;
-            if (_mainGroup != null && !_groups.Contains(_mainGroup)) _mainGroup = null;
             if (_mainGroup == null && (stationPressure || available >= MAIN_FORCE_SHIP_COUNT))
             {
                 foreach (EnemyShipTaskGroup group in _groups)
@@ -111,6 +115,7 @@ namespace EmpireAtWar.Services.Enemy
                 if (group == _mainGroup || group.IsCaptureDetachment ||
                     !stationPressure && group.DecisionModel.IsRecovering) continue;
                 _mainGroup.Ships.AddRange(group.Ships);
+                group.Ships.Clear();
                 _groups.RemoveAt(i);
             }
             _groups.Remove(_mainGroup);
@@ -163,6 +168,7 @@ namespace EmpireAtWar.Services.Enemy
                             FleetCohesion.RADIUS * FleetCohesion.RADIUS;
                     if (!fits) continue;
                     first.Ships.AddRange(second.Ships);
+                    second.Ships.Clear();
                     _groups.RemoveAt(j);
                 }
             }

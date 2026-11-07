@@ -48,6 +48,17 @@ tags:
 - Exercise 1/2/4/8 bolts, faction and override colors, shield/armor hits, misses, interception, owner death, pool reuse, pause and scene exit. `LaserProjectile` now has five heavy-beam systems. The saved `ProtonBeamView` still has a 50/s smoke override. Scope a new reduction to the actual effect that owns the cost.
 - Benchmark fixed camera/seed/preset/scale, 1× then accelerated combat, at least three matched firing windows of ≥10 s per variant. Capture p95/p99, maximum and hitch rows as well as median. Check CPU, render submission and GPU counters separately. Render the composited Game view for HUD/decor acceptance.
 
+### Verified fixes · 2026-11-07
+
+- Mac retained content result: 1,096,866,097 → 1,048,201,156 B (original font data restored); 54 duplicated assets → 0. Keep faction wreck/preview ownership together and the 13 proven shared icons explicit. Do not generalize these bytes to Windows.
+- Providence ships three of the four source-discovered maps. Keep BC7 Albedo/Emissive and DXT5 Normal; leave the unshipped Specular importer unchanged. Validate packed presence before optimizing an exception.
+- Music configuration holds typed references, not clips. Existing Audio packing uses `MusicMenu`/`MusicBattle` labels; the service owns one selected-track handle and releases it on transition/cancellation/disposal.
+- CPU readability decisions belong to verified consumers. Thirty render-only satellite FBXs are non-readable; collider base, shields and wreck geometry are excluded. Measure Player memory; Editor readings did not reveal the CPU-copy saving.
+- Preload the actual consumer key: CR70/Providence ship names and Recalcitrant/Peleset `UnitWreckData.PrefabKey` GUIDs. Friendly wreck aliases can have separate cache slots. Other types stay in paced warmup.
+- Suppressed hardpoint loops keep their live owner lease; stopped effects continue simulation until drained. Disabled nebula creates no bake texture; first enable still has a measured one-time cost.
+- Incremental-GC trial did not establish a hitch improvement and was reverted. Rare long-frame attribution stays P0; do not claim the allocation-site fix resolves every stall.
+- Measurements and remaining gates → [[TODOs/Optimization/Optimization_Audit_Fix_Plan]].
+
 ## Files
 
 ### Active plans

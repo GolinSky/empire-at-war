@@ -80,7 +80,7 @@ namespace EmpireAtWar.Tests.Timing
                     new[] { "Battle.Attack.TargetBatch", "Battle.Attack.DueBatch" },
                     new[] { "completed_unity_frame", "target_requests", "due_records" },
                     1,
-                    new BattlePerformanceCaptureMetadata(unityVersion: "6000.4", runtime: "Editor", quality: "High", resolution: "100x100", timeScale: 1f,
+                    new BattlePerformanceCaptureMetadata(unityVersion: "6000.4", runtime: "Editor", quality: "High", resolution: "100x100", renderScale: 0.77f, timeScale: 1f,
                         vSyncCount: 0, targetFrameRate: 60, graphicsDevice: "GPU", processor: "CPU", sourceRevision: "abc123", sourceState: "dirty", buildGuid: "build", scenario: "test", targetThreshold: 8, targetBatchSize: 1, dueThreshold: 64, dueBatchSize: 32),
                     long.MinValue);
 
@@ -91,6 +91,7 @@ namespace EmpireAtWar.Tests.Timing
                 Assert.That(csv, Does.Contain("completed_unity_frame,target_requests,due_records"));
                 Assert.That(summary, Does.Contain("completed_unity_frame first=42 last=42"));
                 Assert.That(summary, Does.Contain("source_revision=abc123"));
+                Assert.That(summary, Does.Contain("render_scale=0.770"));
                 Assert.That(summary, Does.Contain("target_job_threshold=8"));
                 Assert.That(summary, Does.Contain("due_job_batch_size=32"));
             }

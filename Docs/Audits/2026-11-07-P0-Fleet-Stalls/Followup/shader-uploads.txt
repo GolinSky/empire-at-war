@@ -1,0 +1,149 @@
+Uploaded shader variant to the GPU driver: Hidden/ViewSpaceNormals (instance 0x30), pass: ShadowCaster, stage: vertex, keywords <no keywords>, time: 9.7 ms
+Uploaded shader variant to the GPU driver: Hidden/ViewSpaceNormals (instance 0x30), pass: ShadowCaster, stage: fragment, keywords <no keywords>, time: 0.093 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/LutBuilderLdr (instance 0x154), pass: LutBuilderLdr, stage: vertex, keywords <no keywords>, time: 13 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/LutBuilderLdr (instance 0x154), pass: LutBuilderLdr, stage: fragment, keywords <no keywords>, time: 34 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/CopyDepth (instance 0x1BC), pass: CopyDepth, stage: vertex, keywords <no keywords>, time: 0.4 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/CopyDepth (instance 0x1BC), pass: CopyDepth, stage: fragment, keywords <no keywords>, time: 18 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/ScreenSpaceAmbientOcclusion (instance 0x1C4), pass: SSAO_Occlusion, stage: vertex, keywords <no keywords>, time: 0.48 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/ScreenSpaceAmbientOcclusion (instance 0x1C4), pass: SSAO_Occlusion, stage: fragment, keywords _INTERLEAVED_GRADIENT _SAMPLE_COUNT_HIGH _SOURCE_DEPTH_MEDIUM, time: 46 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/ScreenSpaceAmbientOcclusion (instance 0x1C4), pass: SSAO_Gaussian_HorizontalBlur, stage: vertex, keywords <no keywords>, time: 0.28 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/ScreenSpaceAmbientOcclusion (instance 0x1C4), pass: SSAO_Gaussian_HorizontalBlur, stage: fragment, keywords <no keywords>, time: 18 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/ScreenSpaceAmbientOcclusion (instance 0x1C4), pass: SSAO_Gaussian_VerticalBlur_AfterOpaque, stage: vertex, keywords <no keywords>, time: 2.2 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/ScreenSpaceAmbientOcclusion (instance 0x1C4), pass: SSAO_Gaussian_VerticalBlur_AfterOpaque, stage: fragment, keywords <no keywords>, time: 18 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/UberPost (instance 0x1B2), pass: UberPost, stage: vertex, keywords <no keywords>, time: 0.19 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/UberPost (instance 0x1B2), pass: UberPost, stage: fragment, keywords _TONEMAP_ACES, time: 29 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/FinalPost (instance 0x1BA), pass: FinalPost, stage: vertex, keywords <no keywords>, time: 0.19 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/FinalPost (instance 0x1BA), pass: FinalPost, stage: fragment, keywords _FILM_GRAIN _FXAA, time: 35 ms
+Uploaded shader variant to the GPU driver: Hidden/InternalClear (instance 0x8A), pass: <Unnamed Pass 6>, stage: vertex, keywords <no keywords>, time: 3.4 ms
+Uploaded shader variant to the GPU driver: Hidden/InternalClear (instance 0x8A), pass: <Unnamed Pass 6>, stage: fragment, keywords <no keywords>, time: 2.9 ms
+Uploaded shader variant to the GPU driver: UI/Default (instance 0x2A), pass: Default, stage: vertex, keywords <no keywords>, time: 5.8 ms
+Uploaded shader variant to the GPU driver: UI/Default (instance 0x2A), pass: Default, stage: fragment, keywords <no keywords>, time: 17 ms
+Uploaded shader variant to the GPU driver: TextMeshPro/Mobile/Distance Field (instance 0x1CC), pass: <Unnamed Pass 0>, stage: vertex, keywords <no keywords>, time: 8.4 ms
+Uploaded shader variant to the GPU driver: TextMeshPro/Mobile/Distance Field (instance 0x1CC), pass: <Unnamed Pass 0>, stage: fragment, keywords <no keywords>, time: 16 ms
+Uploaded shader variant to the GPU driver: TextMeshPro/Mobile/Distance Field (instance 0x3948), pass: <Unnamed Pass 0>, stage: vertex, keywords <no keywords>, time: 0.35 ms
+Uploaded shader variant to the GPU driver: TextMeshPro/Mobile/Distance Field (instance 0x3948), pass: <Unnamed Pass 0>, stage: fragment, keywords <no keywords>, time: 0.077 ms
+Uploaded shader variant to the GPU driver: MPUI/Procedural Image (instance 0x16C), pass: Default, stage: vertex, keywords GRADIENT_CORNER OUTLINED RECTANGLE, time: 6.2 ms
+Uploaded shader variant to the GPU driver: MPUI/Procedural Image (instance 0x16C), pass: Default, stage: fragment, keywords GRADIENT_CORNER OUTLINED RECTANGLE, time: 20 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/Scaling Setup (instance 0x172), pass: ScalingSetup, stage: vertex, keywords <no keywords>, time: 0.19 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/Scaling Setup (instance 0x172), pass: ScalingSetup, stage: fragment, keywords _FXAA _GAMMA_20, time: 35 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/Edge Adaptive Spatial Upsampling (instance 0x17A), pass: EASU, stage: vertex, keywords <no keywords>, time: 0.5 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/Edge Adaptive Spatial Upsampling (instance 0x17A), pass: EASU, stage: fragment, keywords <no keywords>, time: 29 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/FinalPost (instance 0x1BA), pass: FinalPost, stage: fragment, keywords _FILM_GRAIN _RCAS, time: 23 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal/CoreBlit (instance 0x1AA), pass: BilinearDebugDraw, stage: vertex, keywords <no keywords>, time: 0.2 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal/CoreBlit (instance 0x1AA), pass: BilinearDebugDraw, stage: fragment, keywords <no keywords>, time: 24 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x395A), pass: ShadowCaster, stage: vertex, keywords INSTANCING_ON, time: 8.2 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x395A), pass: ShadowCaster, stage: fragment, keywords INSTANCING_ON, time: 0.065 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Simple Lit (instance 0x396C), pass: ShadowCaster, stage: vertex, keywords INSTANCING_ON, time: 0.1 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Simple Lit (instance 0x396C), pass: ShadowCaster, stage: fragment, keywords INSTANCING_ON, time: 0.039 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x395A), pass: ShadowCaster, stage: vertex, keywords <no keywords>, time: 7.3 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x395A), pass: ShadowCaster, stage: fragment, keywords <no keywords>, time: 0.1 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Wreck (instance 0x396A), pass: ShadowCaster, stage: vertex, keywords <no keywords>, time: 17 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Wreck (instance 0x396A), pass: ShadowCaster, stage: fragment, keywords <no keywords>, time: 12 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Lit (instance 0x3962), pass: ShadowCaster, stage: vertex, keywords <no keywords>, time: 0.085 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Lit (instance 0x3962), pass: ShadowCaster, stage: fragment, keywords <no keywords>, time: 0.068 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x164), pass: ShadowCaster, stage: vertex, keywords <no keywords>, time: 0.098 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x164), pass: ShadowCaster, stage: fragment, keywords <no keywords>, time: 0.08 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Autodesk Interactive/AutodeskInteractive (instance 0x156), pass: ShadowCaster, stage: vertex, keywords <no keywords>, time: 0.056 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Autodesk Interactive/AutodeskInteractive (instance 0x156), pass: ShadowCaster, stage: fragment, keywords <no keywords>, time: 0.045 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Lit (instance 0x178), pass: ShadowCaster, stage: vertex, keywords <no keywords>, time: 0.035 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Lit (instance 0x178), pass: ShadowCaster, stage: fragment, keywords <no keywords>, time: 0.047 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Lit (instance 0x178), pass: ShadowCaster, stage: vertex, keywords INSTANCING_ON, time: 0.055 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Lit (instance 0x178), pass: ShadowCaster, stage: fragment, keywords INSTANCING_ON _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A, time: 0.033 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Autodesk Interactive/AutodeskInteractive (instance 0x156), pass: ShadowCaster, stage: vertex, keywords INSTANCING_ON, time: 7.1 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Autodesk Interactive/AutodeskInteractive (instance 0x156), pass: ShadowCaster, stage: fragment, keywords INSTANCING_ON, time: 0.064 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/ScreenSpaceAmbientOcclusion (instance 0x1C4), pass: SSAO_Occlusion, stage: fragment, keywords _INTERLEAVED_GRADIENT _ORTHOGRAPHIC _SAMPLE_COUNT_HIGH _SOURCE_DEPTH_MEDIUM, time: 48 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Vfx/Nebula Filament Volume (instance 0x1A4), pass: FilamentVolume, stage: vertex, keywords <no keywords>, time: 5.1 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Vfx/Nebula Filament Volume (instance 0x1A4), pass: FilamentVolume, stage: fragment, keywords <no keywords>, time: 44 ms
+Uploaded shader variant to the GPU driver: Skybox/6 Sided (instance 0x152), pass: <Unnamed Pass 0>, stage: vertex, keywords <no keywords>, time: 4.7 ms
+Uploaded shader variant to the GPU driver: Skybox/6 Sided (instance 0x152), pass: <Unnamed Pass 0>, stage: fragment, keywords <no keywords>, time: 17 ms
+Uploaded shader variant to the GPU driver: Skybox/6 Sided (instance 0x152), pass: <Unnamed Pass 1>, stage: vertex, keywords <no keywords>, time: 0.5 ms
+Uploaded shader variant to the GPU driver: Skybox/6 Sided (instance 0x152), pass: <Unnamed Pass 1>, stage: fragment, keywords <no keywords>, time: 17 ms
+Uploaded shader variant to the GPU driver: Skybox/6 Sided (instance 0x152), pass: <Unnamed Pass 2>, stage: vertex, keywords <no keywords>, time: 0.16 ms
+Uploaded shader variant to the GPU driver: Skybox/6 Sided (instance 0x152), pass: <Unnamed Pass 2>, stage: fragment, keywords <no keywords>, time: 16 ms
+Uploaded shader variant to the GPU driver: Skybox/6 Sided (instance 0x152), pass: <Unnamed Pass 3>, stage: vertex, keywords <no keywords>, time: 0.16 ms
+Uploaded shader variant to the GPU driver: Skybox/6 Sided (instance 0x152), pass: <Unnamed Pass 3>, stage: fragment, keywords <no keywords>, time: 17 ms
+Uploaded shader variant to the GPU driver: Skybox/6 Sided (instance 0x152), pass: <Unnamed Pass 4>, stage: vertex, keywords <no keywords>, time: 0.12 ms
+Uploaded shader variant to the GPU driver: Skybox/6 Sided (instance 0x152), pass: <Unnamed Pass 4>, stage: fragment, keywords <no keywords>, time: 17 ms
+Uploaded shader variant to the GPU driver: Skybox/6 Sided (instance 0x152), pass: <Unnamed Pass 5>, stage: vertex, keywords <no keywords>, time: 0.14 ms
+Uploaded shader variant to the GPU driver: Skybox/6 Sided (instance 0x152), pass: <Unnamed Pass 5>, stage: fragment, keywords <no keywords>, time: 17 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Vfx/Nebula Stars (instance 0x18A), pass: <Unnamed Pass 0>, stage: vertex, keywords <no keywords>, time: 3.5 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Vfx/Nebula Stars (instance 0x18A), pass: <Unnamed Pass 0>, stage: fragment, keywords <no keywords>, time: 5.1 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Vfx/Nebula Impostor (instance 0x196), pass: <Unnamed Pass 0>, stage: vertex, keywords <no keywords>, time: 3.4 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Vfx/Nebula Impostor (instance 0x196), pass: <Unnamed Pass 0>, stage: fragment, keywords <no keywords>, time: 16 ms
+Uploaded shader variant to the GPU driver: Custom/URP_FogOfWar (instance 0x15A), pass: ForwardLit, stage: vertex, keywords <no keywords>, time: 3.9 ms
+Uploaded shader variant to the GPU driver: Custom/URP_FogOfWar (instance 0x15A), pass: ForwardLit, stage: fragment, keywords <no keywords>, time: 18 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/CameraMotionBlur (instance 0x15E), pass: Camera Motion Blur - High Quality, stage: vertex, keywords <no keywords>, time: 5.8 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/CameraMotionBlur (instance 0x15E), pass: Camera Motion Blur - High Quality, stage: fragment, keywords <no keywords>, time: 24 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/Bloom (instance 0x1B4), pass: Bloom Prefilter, stage: vertex, keywords <no keywords>, time: 0.29 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/Bloom (instance 0x1B4), pass: Bloom Prefilter, stage: fragment, keywords <no keywords>, time: 18 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/Bloom (instance 0x1B4), pass: Bloom Blur Horizontal, stage: vertex, keywords <no keywords>, time: 0.2 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/Bloom (instance 0x1B4), pass: Bloom Blur Horizontal, stage: fragment, keywords <no keywords>, time: 23 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/Bloom (instance 0x1B4), pass: Bloom Blur Vertical, stage: vertex, keywords <no keywords>, time: 0.22 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/Bloom (instance 0x1B4), pass: Bloom Blur Vertical, stage: fragment, keywords <no keywords>, time: 20 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/Bloom (instance 0x1B4), pass: Bloom Upsample, stage: vertex, keywords <no keywords>, time: 0.55 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/Bloom (instance 0x1B4), pass: Bloom Upsample, stage: fragment, keywords <no keywords>, time: 18 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/UberPost (instance 0x1B2), pass: UberPost, stage: fragment, keywords _BLOOM_LQ, time: 24 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/Scaling Setup (instance 0x172), pass: ScalingSetup, stage: fragment, keywords _GAMMA_20, time: 18 ms
+Uploaded shader variant to the GPU driver: Hidden/Universal Render Pipeline/FinalPost (instance 0x1BA), pass: FinalPost, stage: fragment, keywords _RCAS, time: 17 ms
+Uploaded shader variant to the GPU driver: MPUI/Procedural Image (instance 0x16C), pass: Default, stage: vertex, keywords GRADIENT_CORNER OUTLINED RECTANGLE, time: 0.15 ms
+Uploaded shader variant to the GPU driver: MPUI/Procedural Image (instance 0x16C), pass: Default, stage: fragment, keywords GRADIENT_CORNER OUTLINED RECTANGLE, time: 0.083 ms
+Uploaded shader variant to the GPU driver: MPUI/Procedural Image (instance 0x16C), pass: Default, stage: vertex, keywords OUTLINED RECTANGLE, time: 0.17 ms
+Uploaded shader variant to the GPU driver: MPUI/Procedural Image (instance 0x16C), pass: Default, stage: fragment, keywords OUTLINED RECTANGLE, time: 19 ms
+Uploaded shader variant to the GPU driver: TextMeshPro/Distance Field (instance 0x394C), pass: <Unnamed Pass 0>, stage: vertex, keywords <no keywords>, time: 7.4 ms
+Uploaded shader variant to the GPU driver: TextMeshPro/Distance Field (instance 0x394C), pass: <Unnamed Pass 0>, stage: fragment, keywords <no keywords>, time: 18 ms
+Uploaded shader variant to the GPU driver: Hidden/Internal-GUITextureClip (instance 0x42), pass: <Unnamed Pass 0>, stage: vertex, keywords <no keywords>, time: 3.9 ms
+Uploaded shader variant to the GPU driver: Hidden/Internal-GUITextureClip (instance 0x42), pass: <Unnamed Pass 0>, stage: fragment, keywords <no keywords>, time: 17 ms
+Uploaded shader variant to the GPU driver: Hidden/TextCore/Distance Field SSD (instance 0x64), pass: <Unnamed Pass 0>, stage: vertex, keywords <no keywords>, time: 6.6 ms
+Uploaded shader variant to the GPU driver: Hidden/TextCore/Distance Field SSD (instance 0x64), pass: <Unnamed Pass 0>, stage: fragment, keywords <no keywords>, time: 18 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Vfx/Map Space Dust (instance 0x1C8), pass: <Unnamed Pass 0>, stage: vertex, keywords <no keywords>, time: 8.6 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Vfx/Map Space Dust (instance 0x1C8), pass: <Unnamed Pass 0>, stage: fragment, keywords <no keywords>, time: 21 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Unlit (instance 0x168), pass: Unlit, stage: vertex, keywords <no keywords>, time: 4.1 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Unlit (instance 0x168), pass: Unlit, stage: fragment, keywords _SURFACE_TYPE_TRANSPARENT, time: 17 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x164), pass: ShadowCaster, stage: vertex, keywords DOTS_INSTANCING_ON, time: 23 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x164), pass: ShadowCaster, stage: fragment, keywords DOTS_INSTANCING_ON, time: 0.052 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x164), pass: ForwardLit, stage: vertex, keywords DOTS_INSTANCING_ON _CLUSTER_LIGHT_LOOP _MAIN_LIGHT_SHADOWS_CASCADE, time: 9.2 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x164), pass: ForwardLit, stage: fragment, keywords DOTS_INSTANCING_ON _ADDITIONAL_LIGHT_SHADOWS _CLUSTER_LIGHT_LOOP _MAIN_LIGHT_SHADOWS_CASCADE _REFLECTION_PROBE_ATLAS _REFLECTION_PROBE_BLENDING _REFLECTION_PROBE_BOX_PROJECTION _SHADOWS_SOFT, time: 1.3e+02 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/ReinforcementZone (instance 0x176), pass: Zone, stage: vertex, keywords <no keywords>, time: 4.7 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/ReinforcementZone (instance 0x176), pass: Zone, stage: fragment, keywords <no keywords>, time: 21 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Unlit (instance 0x168), pass: Unlit, stage: vertex, keywords DOTS_INSTANCING_ON, time: 6 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Unlit (instance 0x168), pass: Unlit, stage: fragment, keywords DOTS_INSTANCING_ON _SURFACE_TYPE_TRANSPARENT, time: 18 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Planet Lit (instance 0x1A8), pass: ForwardLit, stage: vertex, keywords INSTANCING_ON USE_LEGACY_LIGHTMAPS _CLUSTER_LIGHT_LOOP _MAIN_LIGHT_SHADOWS_CASCADE _RECEIVE_SHADOWS_OFF, time: 8.4 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Planet Lit (instance 0x1A8), pass: ForwardLit, stage: fragment, keywords INSTANCING_ON USE_LEGACY_LIGHTMAPS _ADDITIONAL_LIGHT_SHADOWS _CLUSTER_LIGHT_LOOP _EMISSION _ENVIRONMENTREFLECTIONS_OFF _MAIN_LIGHT_SHADOWS_CASCADE _PLANET_CITY_DETAIL _RECEIVE_SHADOWS_OFF _REFLECTION_PROBE_ATLAS _REFLECTION_PROBE_BLENDING _REFLECTION_PROBE_BOX_PROJECTION _SHADOWS_SOFT _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A _SPECULARHIGHLIGHTS_OFF _SPECULAR_SETUP, time: 36 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Planet Atmosphere (instance 0x190), pass: Atmosphere, stage: vertex, keywords <no keywords>, time: 4 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Planet Atmosphere (instance 0x190), pass: Atmosphere, stage: fragment, keywords <no keywords>, time: 7.4 ms
+Uploaded shader variant to the GPU driver: Custom/UI_MiniMapFog (instance 0x6BA4), pass: <Unnamed Pass 0>, stage: vertex, keywords <no keywords>, time: 3.7 ms
+Uploaded shader variant to the GPU driver: Custom/UI_MiniMapFog (instance 0x6BA4), pass: <Unnamed Pass 0>, stage: fragment, keywords <no keywords>, time: 18 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x395A), pass: ShadowCaster, stage: vertex, keywords DOTS_INSTANCING_ON, time: 0.14 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x395A), pass: ShadowCaster, stage: fragment, keywords DOTS_INSTANCING_ON, time: 0.08 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x395A), pass: ForwardLit, stage: vertex, keywords DOTS_INSTANCING_ON _CLUSTER_LIGHT_LOOP _MAIN_LIGHT_SHADOWS_CASCADE, time: 0.29 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x395A), pass: ForwardLit, stage: fragment, keywords DOTS_INSTANCING_ON _ADDITIONAL_LIGHT_SHADOWS _CLUSTER_LIGHT_LOOP _MAIN_LIGHT_SHADOWS_CASCADE _REFLECTION_PROBE_ATLAS _REFLECTION_PROBE_BLENDING _REFLECTION_PROBE_BOX_PROJECTION _SHADOWS_SOFT, time: 0.22 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Unlit (instance 0x395E), pass: Unlit, stage: vertex, keywords DOTS_INSTANCING_ON, time: 0.27 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Unlit (instance 0x395E), pass: Unlit, stage: fragment, keywords DOTS_INSTANCING_ON _SURFACE_TYPE_TRANSPARENT, time: 0.063 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Lit (instance 0x3962), pass: ShadowCaster, stage: vertex, keywords INSTANCING_ON, time: 0.19 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Lit (instance 0x3962), pass: ShadowCaster, stage: fragment, keywords INSTANCING_ON, time: 0.055 ms
+Uploaded shader variant to the GPU driver: MPUI/Procedural Image (instance 0x16C), pass: Default, stage: vertex, keywords CIRCLE STROKE, time: 0.45 ms
+Uploaded shader variant to the GPU driver: MPUI/Procedural Image (instance 0x16C), pass: Default, stage: fragment, keywords CIRCLE STROKE, time: 20 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Particles/Unlit (instance 0x34AA), pass: ForwardLit, stage: vertex, keywords DOTS_INSTANCING_ON, time: 11 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Particles/Unlit (instance 0x34AA), pass: ForwardLit, stage: fragment, keywords DOTS_INSTANCING_ON _SURFACE_TYPE_TRANSPARENT, time: 18 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Wreck (instance 0x396A), pass: ShadowCaster, stage: vertex, keywords INSTANCING_ON, time: 16 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Wreck (instance 0x396A), pass: ShadowCaster, stage: fragment, keywords INSTANCING_ON, time: 10 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Unlit (instance 0x395E), pass: Unlit, stage: fragment, keywords DOTS_INSTANCING_ON, time: 0.26 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/UI/Squadron Frame (instance 0x3958), pass: <Unnamed Pass 0>, stage: vertex, keywords <no keywords>, time: 7.9 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/UI/Squadron Frame (instance 0x3958), pass: <Unnamed Pass 0>, stage: fragment, keywords <no keywords>, time: 7 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/UI/Squadron Icon (instance 0x3964), pass: <Unnamed Pass 0>, stage: vertex, keywords <no keywords>, time: 0.39 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/UI/Squadron Icon (instance 0x3964), pass: <Unnamed Pass 0>, stage: fragment, keywords <no keywords>, time: 22 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Particles/Unlit (instance 0x34AA), pass: ForwardLit, stage: vertex, keywords <no keywords>, time: 6.1 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Particles/Unlit (instance 0x34AA), pass: ForwardLit, stage: fragment, keywords _ALPHAMODULATE_ON _COLORADDSUBDIFF_ON _SURFACE_TYPE_TRANSPARENT, time: 18 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Particles/Unlit (instance 0x1A0), pass: ForwardLit, stage: vertex, keywords <no keywords>, time: 2.7 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Particles/Unlit (instance 0x1A0), pass: ForwardLit, stage: fragment, keywords _SURFACE_TYPE_TRANSPARENT, time: 1.6 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ion Glow (instance 0x38AA), pass: <Unnamed Pass 0>, stage: vertex, keywords <no keywords>, time: 2e+02 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ion Glow (instance 0x38AA), pass: <Unnamed Pass 0>, stage: fragment, keywords <no keywords>, time: 15 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Particles/Unlit (instance 0x34AA), pass: ForwardLit, stage: vertex, keywords _FADING_ON _SOFTPARTICLES_ON, time: 20 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Particles/Unlit (instance 0x34AA), pass: ForwardLit, stage: fragment, keywords _FADING_ON _SOFTPARTICLES_ON _SURFACE_TYPE_TRANSPARENT, time: 50 ms
+Uploaded shader variant to the GPU driver: Universal Render Pipeline/Particles/Unlit (instance 0x34AA), pass: ForwardLit, stage: fragment, keywords _SURFACE_TYPE_TRANSPARENT, time: 0.67 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x395A), pass: ShipOutlineMask, stage: vertex, keywords DOTS_INSTANCING_ON, time: 3.4e+02 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x395A), pass: ShipOutlineMask, stage: fragment, keywords DOTS_INSTANCING_ON, time: 7.8 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x395A), pass: ShipOutline, stage: vertex, keywords DOTS_INSTANCING_ON, time: 32 ms
+Uploaded shader variant to the GPU driver: EmpireAtWar/Ship Lit (instance 0x395A), pass: ShipOutline, stage: fragment, keywords DOTS_INSTANCING_ON, time: 7.7 ms
+Uploaded shader variant to the GPU driver: MPUI/Procedural Image (instance 0x16C), pass: Default, stage: vertex, keywords RECTANGLE, time: 2.1 ms
+Uploaded shader variant to the GPU driver: MPUI/Procedural Image (instance 0x16C), pass: Default, stage: fragment, keywords RECTANGLE, time: 67 ms

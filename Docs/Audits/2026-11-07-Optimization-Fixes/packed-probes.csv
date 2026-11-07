@@ -1,0 +1,86 @@
+stage,observation
+probe-before,CR70ShipView hadHandle=False completed=False firstMs=26.900 warmMs=0.022 same=True
+probe-before,ProvidenceShipView hadHandle=False completed=False firstMs=43.947 warmMs=0.009 same=True
+probe-before,RecalcitrantWreckView hadHandle=False completed=False firstMs=61.496 warmMs=0.006 same=True
+probe-before,PelesetWreckView hadHandle=False completed=False firstMs=31.206 warmMs=0.008 same=True
+probe-before,BulwarkWreckView hadHandle=False completed=False firstMs=12.004 warmMs=0.005 same=True
+probe-before,BulwarkReinforcementView hadHandle=False completed=False firstMs=14.083 warmMs=0.004 same=True
+probe-before,WavecrestWreckView hadHandle=False completed=False firstMs=10.215 warmMs=0.004 same=True
+probe-before,MiningFacilityView hadHandle=True completed=True firstMs=0.001 warmMs=0.001 same=True
+probe-before,phase=hidden loops=68 emitting=68 particles=11930
+probe-before,phase=visible loops=68 emitting=68 particles=12717
+probe-before,phase=fog loops=68 emitting=68 particles=12746
+probe-before,phase=revealed loops=68 emitting=68 particles=12671
+probe-before,phase=stopped loops=68 emitting=0 particles=0
+probe-after,CR70ShipView hadHandle=True completed=True firstMs=0.019 warmMs=0.006 same=True
+probe-after,ProvidenceShipView hadHandle=True completed=True firstMs=0.001 warmMs=0.001 same=True
+probe-after,RecalcitrantWreckView hadHandle=False completed=False firstMs=89.794 warmMs=0.005 same=True
+probe-after,PelesetWreckView hadHandle=False completed=False firstMs=32.357 warmMs=0.006 same=True
+probe-after,BulwarkWreckView hadHandle=False completed=False firstMs=11.468 warmMs=0.006 same=True
+probe-after,BulwarkReinforcementView hadHandle=False completed=False firstMs=7.124 warmMs=0.002 same=True
+probe-after,WavecrestWreckView hadHandle=False completed=False firstMs=9.396 warmMs=0.004 same=True
+probe-after,MiningFacilityView hadHandle=True completed=True firstMs=0.000 warmMs=0.001 same=True
+probe-after,phase=hidden loops=68 emitting=0 particles=0
+probe-after,phase=visible loops=68 emitting=68 particles=12810
+probe-after,phase=fog loops=68 emitting=0 particles=0
+probe-after,phase=revealed loops=68 emitting=68 particles=12713
+probe-after,phase=stopped loops=68 emitting=0 particles=0
+probe-after,pool_active=0
+probe-after,pool_fading=0
+probe-after,pool_idle=34
+probe-after,metadata actual=2940x1846 recorded=2940x1846 scale=0.77
+probe-after,metadata actual=1470x923 recorded=1470x923 scale=0.77
+probe-after,nebulaDisabled=0
+probe-after,nebulaEnabled=1 firstEnableWallMs=43.03
+probe-after,nebulaReenabled=1
+probe-after,music clip=CW_destroying_the_shield playing=True sample=0
+probe-final,CR70ShipView hadHandle=True completed=True firstMs=0.026 warmMs=0.006 same=True
+probe-final,ProvidenceShipView hadHandle=True completed=True firstMs=0.001 warmMs=0.001 same=True
+probe-final,RecalcitrantWreckView hadHandle=False completed=False firstMs=0.020 warmMs=0.001 same=True
+probe-final,PelesetWreckView hadHandle=False completed=False firstMs=0.007 warmMs=0.001 same=True
+probe-final,BulwarkWreckView hadHandle=False completed=False firstMs=53.266 warmMs=0.009 same=True
+probe-final,BulwarkReinforcementView hadHandle=False completed=False firstMs=11.810 warmMs=0.006 same=True
+probe-final,WavecrestWreckView hadHandle=False completed=False firstMs=9.183 warmMs=0.005 same=True
+probe-final,MiningFacilityView hadHandle=True completed=True firstMs=0.001 warmMs=0.001 same=True
+probe-final,phase=hidden loops=68 emitting=0 particles=0
+probe-final,phase=visible loops=68 emitting=68 particles=12698
+probe-final,phase=fog loops=68 emitting=0 particles=0
+probe-final,phase=revealed loops=68 emitting=68 particles=12761
+probe-final,phase=stopped loops=68 emitting=0 particles=0
+probe-final,pool_active=0
+probe-final,pool_fading=0
+probe-final,pool_idle=34
+probe-final,metadata actual=2940x1846 recorded=2940x1846 scale=0.77
+probe-final,metadata actual=1470x923 recorded=1470x923 scale=0.5
+probe-final,nebulaDisabled=0
+probe-final,nebulaEnabled=1 firstEnableWallMs=23.66
+probe-final,nebulaReenabled=1
+probe-final,music clip=A_Not_the_Time_for_a_Lesson playing=True sample=1771526
+probe-final,finishedMusic=A_Not_the_Time_for_a_Lesson oldHandleValid=False nextMusic=space_battle1 playing=True
+probe-final,nebulaAfterBattleExit=0
+probe-retained,CR70ShipView hadHandle=True completed=True firstMs=0.020 warmMs=0.007 same=True
+probe-retained,ProvidenceShipView hadHandle=True completed=True firstMs=0.001 warmMs=0.002 same=True
+probe-retained,RecalcitrantWreckView hadHandle=False completed=False firstMs=0.017 warmMs=0.001 same=True
+probe-retained,PelesetWreckView hadHandle=False completed=False firstMs=0.005 warmMs=0.003 same=True
+probe-retained,BulwarkWreckView hadHandle=False completed=False firstMs=28.529 warmMs=0.007 same=True
+probe-retained,BulwarkReinforcementView hadHandle=False completed=False firstMs=12.191 warmMs=0.005 same=True
+probe-retained,WavecrestWreckView hadHandle=False completed=False firstMs=8.017 warmMs=0.005 same=True
+probe-retained,MiningFacilityView hadHandle=True completed=True firstMs=0.001 warmMs=0.001 same=True
+probe-retained,consumerWreck=Recalcitrant key=307f0b7a8c1ef47489c641ddd8996aa6 cached=True completed=True wallMs=0.010
+probe-retained,consumerWreck=Peleset key=35b4f59dbc461a94e93e44211485a393 cached=True completed=True wallMs=0.001
+probe-retained,phase=hidden loops=68 emitting=0 particles=0
+probe-retained,phase=visible loops=68 emitting=68 particles=12730
+probe-retained,phase=fog loops=68 emitting=0 particles=0
+probe-retained,phase=revealed loops=68 emitting=68 particles=12821
+probe-retained,phase=stopped loops=68 emitting=0 particles=0
+probe-retained,pool_active=0
+probe-retained,pool_fading=0
+probe-retained,pool_idle=34
+probe-retained,metadata actual=2940x1846 recorded=2940x1846 scale=0.77
+probe-retained,metadata actual=1470x923 recorded=1470x923 scale=0.5
+probe-retained,nebulaDisabled=0
+probe-retained,nebulaEnabled=1 firstEnableWallMs=14.20
+probe-retained,nebulaReenabled=1
+probe-retained,music clip=space_battle5 playing=True sample=1764940
+probe-retained,finishedMusic=space_battle5 oldHandleValid=False nextMusic=space_battle5 playing=True
+probe-retained,nebulaAfterBattleExit=0

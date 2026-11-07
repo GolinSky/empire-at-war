@@ -32,7 +32,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         public void Begin(float width, Vector3 origin)
         {
             ResetVisuals();
-            _properties = new MaterialPropertyBlock();
+            _properties ??= new MaterialPropertyBlock();
             _width = width;
             _startedAt = Time.time;
             _active = true;

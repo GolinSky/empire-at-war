@@ -60,7 +60,7 @@ verification: Read live mapping, preview/preload, cached-load and music-routing
 
 ## Edge Cases
 
-- **Ownership review open:** `View.asset` currently holds `RecalcitrantWreckView`, `PelesetWreckView`, `BulwarkWreckView`, `BulwarkReinforcementView`, `WavecrestWreckView`; corresponding main entries are in `SeparatistUnitViews`. Serialized ownership is confirmed; residency/duplication impact is unmeasured. Next: review lifetime intent and reconcile ownership with a matching layout under [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan]]. This is a concern, not a proven runtime failure.
+- **Verified 2026-11-06, StandaloneOSX:** keep `RecalcitrantWreckView`, `PelesetWreckView`, `BulwarkWreckView`, `BulwarkReinforcementView` and `WavecrestWreckView` in `SeparatistUnitViews`. Promote the 13 duplicated icons to `SharedIcons`. Same-target layout: 54 duplicated assets / 90 duplicated objects → 0 / 0; generic `View` closure 119,130,974 → 83,960,560 B. See [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan]].
 - **Resolved mapping regression (2026-10-24; source rechecked 2026-10-29):** rebuild formerly discarded aliases and type-derived keys collided → `BuildMappings` retains aliases whose GUID still has an entry; existing address wins; conflicting selected keys are skipped with an error. Saved alias identity checked; historical tests remain historical, not rerun.
 - **Resolved preview dependency coupling (2026-10-24; source rechecked 2026-10-29):** global hard preview refs pulled unit art into data → AssetReferences plus human/hosted faction preload; historical layout removed Model+View duplication. Runtime placement remains an open user gate in the owning plan.
 - **Mixer identity, code fix verified; packed-player check open:** `MusicService` rebinds the cloned source to the injected bootstrap mixer's exact `Music` group via `FindMatchingGroups("Music").Single()`. Remaining master mute/music/SFX/ducking validation → [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan]].
@@ -78,3 +78,9 @@ verification: Read live mapping, preview/preload, cached-load and music-routing
 - Mixer source: `Assets/Scripts/Services/Audio/MusicService.cs`; serialized mapping: `Assets/Settings/AssetMappingData.asset`.
 - Historical evidence: `Logs/AddressablesAudit/2026-10-24-phase5-final/{layout-summary.json,verification-result.json,catalog.bin,buildlayout_2026.10.24.18.35.02.json}`; `Logs/AddressablesAudit/2026-10-24-phase6/{current-overlap-decisions.csv,overlap-review.md}`.
 - Installed package behavior: `Library/PackageCache/com.unity.addressables@8460f1c9c927/Editor/Settings/{AddressableAssetSettings.cs,GroupSchemas/BundledAssetGroupSchema.cs}` (local cache path; resolve installed package before reuse).
+
+### Fleet stall attribution · 2026-11-07
+
+- Captured Player stall: synchronous `AssetBundleRequest.asset` / preload-manager waits can block the main thread while the GPU is idle. Align raw observer gaps, native wait stacks and scheduling; GC-count coincidence alone is insufficient. [Native evidence](../../../Docs/Audits/2026-11-07-P0-Fleet-Stalls/native-evidence.json).
+- Keep platform preload/warmup coverage tied to `DefendPlatformType` and factory `DefendPlatformAssets` mapping. The old prefix list omitted five satellites; AI Turbolaser construction waited 43–50 ms. Source fixed; equivalent packed warmup probe reduced the actual factory cache request to 0.0022 ms. Core coverage authored, not run; full Unity rebuild not performed in this investigation.
+- This scoped result does not close other large stalls or prove broad FPS improvement. Owner → [[TODOs/Optimization/Optimization_Audit_Fix_Plan]].

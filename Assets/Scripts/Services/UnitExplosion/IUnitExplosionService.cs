@@ -6,6 +6,6 @@ namespace EmpireAtWar.Services.UnitExplosion
 {
     public interface IUnitExplosionService : IService
     {
-        void Spawn(IReadOnlyList<Renderer> hullRenderers);
+        void Spawn(IReadOnlyList<Renderer> hullRenderers, float coverageScale = 1f);
     }
 }

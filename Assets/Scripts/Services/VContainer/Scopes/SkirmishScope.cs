@@ -223,7 +223,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<FighterExplosionPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(fighterExplosion);
             builder.Register<HardPointExplosionPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
-                .WithParameter(hardPointExplosion);
+                .WithParameter(hardPointExplosion).WithParameter(cameraService.SceneCamera);
             builder.Register<SlowTickService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<BattleAreaService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterComponent(spawnAreaOverlay).AsImplementedInterfaces().AsSelf();

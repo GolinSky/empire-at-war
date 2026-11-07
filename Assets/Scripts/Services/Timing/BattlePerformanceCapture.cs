@@ -573,6 +573,15 @@ namespace EmpireAtWar.Services.Timing
             return _latest;
         }
 
+        internal static string CameraResolution
+        {
+            get
+            {
+                UnityEngine.Camera camera = UnityEngine.Camera.main;
+                return camera != null ? $"{camera.pixelWidth}x{camera.pixelHeight}" : "unavailable";
+            }
+        }
+
         internal static BattlePerformanceCaptureMetadata CaptureMetadata()
         {
             string[] qualityNames = QualitySettings.names;
@@ -583,7 +592,9 @@ namespace EmpireAtWar.Services.Timing
                 unityVersion: Application.unityVersion,
                 runtime: Application.isEditor ? "Editor" : "Development Player",
                 quality: quality,
-                resolution: $"{Screen.width}x{Screen.height}",
+                resolution: CameraResolution,
+                renderScale: UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline is
+                    UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset pipeline ? pipeline.renderScale : 1f,
                 timeScale: Time.timeScale,
                 vSyncCount: QualitySettings.vSyncCount,
                 targetFrameRate: Application.targetFrameRate,

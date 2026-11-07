@@ -8,6 +8,8 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.SceneService;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 
@@ -27,7 +29,9 @@ namespace EmpireAtWar.Services.Audio
         private readonly MusicAudioData _musicAudioData;
         private readonly AudioSource _audioSource;
         private readonly System.Random _random = new System.Random();
-        private List<AudioClip> _clips;
+        private List<AssetReferenceT<AudioClip>> _clips;
+        private AssetReferenceT<AudioClip> _track;
+        private AsyncOperationHandle<AudioClip> _load;
 
         private readonly float _volume;
         private float _fadeDuration;
@@ -64,6 +68,7 @@ namespace EmpireAtWar.Services.Audio
             // The project context only disposes on quit or Play Mode exit, when Unity also destroys the
             // DontDestroyOnLoad source in no guaranteed order; touching it here can hit a destroyed object.
             _sceneService.OnSceneActivation -= OnSceneLoad;
+            ReleaseTrack();
             if (!Application.isPlaying) Object.DestroyImmediate(_audioSource.gameObject);
         }
 
@@ -81,15 +86,38 @@ namespace EmpireAtWar.Services.Audio
         private void PlayNext()
         {
             _audioService.Stop(_audioSource);
+            _audioSource.clip = null;
+            ReleaseTrack();
             _playing = false;
             _started = false;
             _fadingOut = false;
             if (_clips.Count == 0) return;
-            AudioClip clip = _clips[_random.Next(_clips.Count)];
+            _track = _clips[_random.Next(_clips.Count)];
+            _load = _track.LoadAssetAsync();
+            if (_load.IsDone) BeginLoadedTrack();
+        }
+
+        private void BeginLoadedTrack()
+        {
+            if (_load.Status != AsyncOperationStatus.Succeeded)
+            {
+                var error = new System.InvalidOperationException($"Failed to load music track '{_track.AssetGUID}'.", _load.OperationException);
+                ReleaseTrack();
+                throw error;
+            }
+            AudioClip clip = _load.Result;
             _fadeDuration = Mathf.Min(MUSIC_FADE_DURATION, clip.length * 0.5f);
             _audioService.Play(_audioSource, clip, 0f, false);
             _fadeVolume = 0f;
             _playing = true;
+        }
+
+        private void ReleaseTrack()
+        {
+            if (_track == null) return;
+            _track.ReleaseAsset();
+            _track = null;
+            _load = default;
         }
 
         public void SetVoiceDucking(bool active)
@@ -100,7 +128,11 @@ namespace EmpireAtWar.Services.Audio
 
         public void Tick()
         {
-            if (!_playing) return;
+            if (!_playing)
+            {
+                if (_track == null || !_load.IsDone) return;
+                BeginLoadedTrack();
+            }
             AudioClip clip = _audioSource.clip;
             if (clip.loadState == AudioDataLoadState.Failed)
                 throw new System.InvalidOperationException($"Failed to load music clip '{clip.name}'.");

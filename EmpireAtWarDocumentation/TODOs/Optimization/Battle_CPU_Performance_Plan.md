@@ -2,7 +2,7 @@
 category: Optimization
 status: in-progress
 created: 2026-10-11
-updated: 2026-10-12
+updated: 2026-11-07
 ---
 # Battle CPU performance follow-up
 
@@ -281,7 +281,7 @@ updated: 2026-10-12
 - Profiler exports coincided with stalls of 14.97 s and 15.55 s. Exclude both from gameplay baselines.
 - Frame 41354 (721.25 ms): no original CPU stack. In reproduction, Unity Pipeline command-list encoding triggered managed GC during a 2.040 s hitch; main thread waited for the GC lock in `ShotEffectPool.Detach`. With native profiling off, collections coincided with 951/885 ms hitches, but not a separate 645 ms interval. [Trace evidence](../../../Docs/Audits/2026-11-06-Battle-Hitch/analysis.md)
 - 2026-11-06 Pipeline catalog experiment (reverted; project uses registry `0.6.0-exp.1`): repeated full polls reused the 309,524-byte response in 76 blocks. Matched-seed fleet, 208 successful requests. A 1,705 ms GC hitch remained with the Profiler off; a separately traced 1,350 ms hitch started collection in Editor GUI layout. [Rerun evidence](../../../Docs/Audits/2026-11-06-Pipeline-Catalog-Fix/analysis.md)
-- [ ] P0 · Fix menu-started detailed metadata. Record camera output dimensions and effective render scale separately. Compare the saved row to the camera/PNG at 2560×1440, then resize and change scale independently. [[TODOs/Optimization/Optimization_Audit_Fix_Plan|November 6 fix order and verification]].
+- [x] P0 · Correct detailed metadata: battle-camera output dimensions and effective render scale recorded separately. Packed resize/scale probe verified November 7; menu-started Editor visual acceptance remains. [[TODOs/Optimization/Optimization_Audit_Fix_Plan|November 6 fix order and verification]].
 - [ ] P0 · Compare matched fleet Editor and Development Player hitch rows before changing gameplay. Save three or more 60 s windows per condition, >50 ms count/minute, p95/p99, worst interval, GC counts and native stacks for recurring stalls. Keep Editor command traffic and Profiler exports outside timed runs. Change an attributed source only after reproduction. Preserve a separate investigation for the 645 ms stall without a GC-count change.
 
 ## Files
@@ -301,3 +301,25 @@ updated: 2026-10-12
 - `Assets/Scripts/Services/ShipNavigation/ShipPathGrid.cs`
 - `Assets/Scripts/Components/ViewComponents/Weapon/ShotEffectPool.cs`
 - `Assets/Scripts/Components/ViewComponents/Weapon/BoltShot.cs`
+
+### Implementation · 2026-11-07
+
+- Capture metadata now records battle-camera pixel dimensions and active render scale independently; packed resized-camera probe matches at 2940×1846 / 0.77 and 1470×923 / 0.5. `BattleFpsHistory` uses camera output too; absent battle camera → unavailable.
+- Cache the shot-pool completion/destruction delegates, removing repeated method-group creation at the previously observed allocation site. This is not proof that the entire collector-lock stall is fixed.
+- Unprofiled 3 × 60 s: original Player max 28/193/134 ms; Editor 60/628/70 ms. The outputs/scales differ. Record them as separate baselines.
+- Incremental-GC trial max 656/244/169 ms did not establish improvement → original setting restored. Another run used the wrong scale and overlapped an OS scan → excluded.
+- Native waiting-thread trace: timed maxima 77.760/43.405/62.246 ms; the large stall did not occur. Do not assign its cause from normal waiting stacks in this recording.
+- Final retained GC-off Player, scale 1, 3 × 60 s: p95 21.529/25.730/25.433 ms; p99 25.669/28.120/29.604 ms; maxima 48.389/86.557/49.646 ms; >50 ms counts 0/1/0. Large stalls were absent but sustained frame times were worse. Visual variant/background load were uncontrolled → no general FPS improvement or causal regression claim.
+- P0 stays open: November 7 native capture identifies synchronous AssetBundle waiting; resolve its exact managed request and the separate unattributed interval. Repeat with synchronized native stacks, render/GPU waits and OS scheduling. [Measurements and method](../../../Docs/Audits/2026-11-07-Optimization-Fixes/README.md).
+
+### P0 native attribution · 2026-11-07
+
+- Native 296.146 ms event, frame 11598: 260.103 ms blocked under synchronous AssetBundle loading; matching 281.889 ms Player GPU idle gap. Exact request/key unresolved; another 198.608 ms interval occurred outside measured cached loads.
+- Fixed separate satellite warmup omission: use factory type/asset mapping for all platforms. AI Turbolaser load 43.034/50.416 ms before → 0.0022 ms after equivalent packed key expansion. Changed source compiled outside Unity; Core coverage authored, not run.
+- User requires concurrent work to continue. No controlled FPS claim or full Unity rebuild; P0 remains open. [Evidence and remaining work](../../../Docs/Audits/2026-11-07-P0-Fleet-Stalls/README.md); coordination → [[TODOs/Optimization/Optimization_Audit_Fix_Plan]].
+
+### P0 follow-up · 2026-11-07
+
+- New 576 ms / 1.8 s native captures: main-thread `GfxDeviceClient::CreateGpuProgram` waits; render-worker `MTLCompilerScheduler::buildRequest`. Synchronous Metal GPU-program creation is now proven for these events.
+- Historical 198 ms event localized but not retroactively attributed; original 296 ms AssetBundle key/caller unresolved. Mono JIT also appears in a separate ~48 ms LateTick event; do not generalize it to IL2CPP.
+- Evidence, all earlier fixes and remaining work → [[TODOs/Optimization/Optimization_Audit_Fix_Plan - Research]]. Tests disabled; P0 open; no new production change or general FPS claim.

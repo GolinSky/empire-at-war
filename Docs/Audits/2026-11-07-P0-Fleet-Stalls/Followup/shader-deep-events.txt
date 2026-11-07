@@ -1,0 +1,1114 @@
+startUTC=2026-11-07T10:53:59.6295480Z stopwatch=133052357045 frequency=10000000
+method frame=1 rt=2.21452546480272 start=133052595151 end=133052653440 ms=5.8289 key=UnityEngine.ResourceManagement.ResourceManager.Update
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.ResourceManagement.ResourceManager.Update (System.Single unscaledDeltaTime) [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at MonoBehaviourCallbackHooks.Update () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+probeCost frame=1 ms=2.6714 label=UnityEngine.ResourceManagement.ResourceManager.Update
+method frame=1 rt=2.21717633980272 start=133052593128 end=133052680262 ms=8.7134 key=MonoBehaviourCallbackHooks.Update
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at MonoBehaviourCallbackHooks.Update () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+method frame=2 rt=2.78689300680272 start=133058293943 end=133058377411 ms=8.3468 key=UnityEngine.ResourceManagement.ResourceManager.Update
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.ResourceManagement.ResourceManager.Update (System.Single unscaledDeltaTime) [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at MonoBehaviourCallbackHooks.Update () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+method frame=2 rt=2.78696200680272 start=133058293940 end=133058378118 ms=8.4178 key=MonoBehaviourCallbackHooks.Update
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at MonoBehaviourCallbackHooks.Update () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+frameGap frame=2 rt=2.78699200680272 ms=568.389083 gcDelta=1 utc=2026-11-07T10:54:00.2324500Z
+frameGap frame=28 rt=3.02984033980272 ms=165.740832999999 gcDelta=3 utc=2026-11-07T10:54:00.4752900Z
+frameGap frame=29 rt=3.14267079880272 ms=112.830459 gcDelta=0 utc=2026-11-07T10:54:00.5881250Z
+method frame=1035 rt=5.74403225680272 start=133087874052 end=133087948815 ms=7.4763 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1035 rt=5.74410142380272 start=133087815407 end=133087949512 ms=13.4105 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+frameGap frame=1035 rt=5.74421142380272 ms=184.443209 gcDelta=0 utc=2026-11-07T10:54:03.1896730Z
+frameGap frame=1036 rt=6.81224471480272 ms=1068.033291 gcDelta=0 utc=2026-11-07T10:54:04.2577170Z
+frameGap frame=1038 rt=6.87291546480272 ms=52.8885830000014 gcDelta=0 utc=2026-11-07T10:54:04.3183930Z
+frameGap frame=1075 rt=7.09995788180272 ms=82.7846670000003 gcDelta=1 utc=2026-11-07T10:54:04.5454330Z
+frameGap frame=1076 rt=7.33906979880272 ms=239.111916999999 gcDelta=0 utc=2026-11-07T10:54:04.7845470Z
+frameGap frame=1077 rt=7.46481900680272 ms=125.749208 gcDelta=0 utc=2026-11-07T10:54:04.9102960Z
+method frame=1238 rt=8.47868704880272 start=133115244097 end=133115295355 ms=5.1258 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1238 rt=8.49694592380272 start=133115331956 end=133115477951 ms=14.5995 key=EmpireAtWar.Services.Enemy.EnemyProductionStrategy.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.Enemy.EnemyProductionStrategy.Tick (System.Single deltaTime) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Enemy.EnemyService.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1238 rt=8.49707779880272 start=133115330755 end=133115479276 ms=14.8521 key=EmpireAtWar.Services.Enemy.EnemyService.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.Enemy.EnemyService.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1238 rt=8.49713004880272 start=133115330731 end=133115479800 ms=14.9069 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1238 rt=8.50288354880272 start=133115480159 end=133115537327 ms=5.7168 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1238 rt=8.50299029880272 start=133115329154 end=133115538378 ms=20.9224 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+frameGap frame=1238 rt=8.50419196480272 ms=58.4436660000005 gcDelta=0 utc=2026-11-07T10:54:05.9496720Z
+method frame=1241 rt=8.54638017380272 start=133115764421 end=133115972292 ms=20.7871 key=AssetBundleRequest.asset:StealthCorvetteShipView
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at DeepProbe.EndAsset (UnityEngine.Object asset, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.AssetBundleRequest.get_asset () [0x00000] in <69bbe9c0d8db4fe8bd8508a565238d1b>:0
+  at UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider+InternalOp.WaitForCompletionHandler () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.ProviderOperation`1[TObject].InvokeWaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[TObject].WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle.WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetHull (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetFootprint (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.IsClear (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule.CanSpawnShip (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryFindOpenPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, System.Single searchRadius, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryGetDefaultZoneSpawnPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Cheats.CheatService.ForceSpawnShipAtDefaultZone (EmpireAtWar.Controllers.Factions.ShipUnitRequest request) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at SetupCrowdedBattle.Prepare () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at UnityEngine.Awaitable.RunOrScheduleContinuation (UnityEngine.Awaitable+AwaiterCompletionThreadAffinity awaiterCompletionThreadAffinity, System.Action continuation) [0x00008] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:160
+  at UnityEngine.Awaitable.RaiseManagedCompletion () [0x00048] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:201
+  at UnityEngine.Awaitable+DoubleBufferedAwaitableList.SwapAndComplete () [0x00053] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:129
+  at UnityEngine.Awaitable.OnUpdate () [0x00000] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:161
+method frame=1241 rt=8.54732688180272 start=133115764419 end=133115981766 ms=21.7347 key=UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider/InternalOp.WaitForCompletionHandler
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider+InternalOp.WaitForCompletionHandler () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.ProviderOperation`1[TObject].InvokeWaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[TObject].WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle.WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetHull (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetFootprint (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.IsClear (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule.CanSpawnShip (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryFindOpenPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, System.Single searchRadius, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryGetDefaultZoneSpawnPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Cheats.CheatService.ForceSpawnShipAtDefaultZone (EmpireAtWar.Controllers.Factions.ShipUnitRequest request) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at SetupCrowdedBattle.Prepare () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at UnityEngine.Awaitable.RunOrScheduleContinuation (UnityEngine.Awaitable+AwaiterCompletionThreadAffinity awaiterCompletionThreadAffinity, System.Action continuation) [0x00008] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:160
+  at UnityEngine.Awaitable.RaiseManagedCompletion () [0x00048] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:201
+  at UnityEngine.Awaitable+DoubleBufferedAwaitableList.SwapAndComplete () [0x00053] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:129
+  at UnityEngine.Awaitable.OnUpdate () [0x00000] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:161
+method frame=1241 rt=8.54759133980272 start=133115763695 end=133115984412 ms=22.0717 key=StealthCorvetteShipView
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetHull (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetFootprint (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.IsClear (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule.CanSpawnShip (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryFindOpenPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, System.Single searchRadius, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryGetDefaultZoneSpawnPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Cheats.CheatService.ForceSpawnShipAtDefaultZone (EmpireAtWar.Controllers.Factions.ShipUnitRequest request) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at SetupCrowdedBattle.Prepare () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at UnityEngine.Awaitable.RunOrScheduleContinuation (UnityEngine.Awaitable+AwaiterCompletionThreadAffinity awaiterCompletionThreadAffinity, System.Action continuation) [0x00008] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:160
+  at UnityEngine.Awaitable.RaiseManagedCompletion () [0x00048] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:201
+  at UnityEngine.Awaitable+DoubleBufferedAwaitableList.SwapAndComplete () [0x00053] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:129
+  at UnityEngine.Awaitable.OnUpdate () [0x00000] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:161
+method frame=1243 rt=8.65774479880272 start=133116248424 end=133117085918 ms=83.7494 key=AssetBundleRequest.asset:PeltaShipView
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at DeepProbe.EndAsset (UnityEngine.Object asset, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.AssetBundleRequest.get_asset () [0x00000] in <69bbe9c0d8db4fe8bd8508a565238d1b>:0
+  at UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider+InternalOp.WaitForCompletionHandler () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.ProviderOperation`1[TObject].InvokeWaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[TObject].WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle.WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetHull (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetFootprint (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.IsClear (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule.CanSpawnShip (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryFindOpenPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, System.Single searchRadius, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryGetDefaultZoneSpawnPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Cheats.CheatService.ForceSpawnShipAtDefaultZone (EmpireAtWar.Controllers.Factions.ShipUnitRequest request) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at SetupCrowdedBattle.Prepare () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at UnityEngine.Awaitable.RunOrScheduleContinuation (UnityEngine.Awaitable+AwaiterCompletionThreadAffinity awaiterCompletionThreadAffinity, System.Action continuation) [0x00008] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:160
+  at UnityEngine.Awaitable.RaiseManagedCompletion () [0x00048] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:201
+  at UnityEngine.Awaitable+DoubleBufferedAwaitableList.SwapAndComplete () [0x00053] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:129
+  at UnityEngine.Awaitable.OnUpdate () [0x00000] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:161
+method frame=1243 rt=8.65822954880272 start=133116248422 end=133117090792 ms=84.237 key=UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider/InternalOp.WaitForCompletionHandler
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider+InternalOp.WaitForCompletionHandler () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.ProviderOperation`1[TObject].InvokeWaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[TObject].WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle.WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetHull (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetFootprint (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.IsClear (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule.CanSpawnShip (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryFindOpenPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, System.Single searchRadius, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryGetDefaultZoneSpawnPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Cheats.CheatService.ForceSpawnShipAtDefaultZone (EmpireAtWar.Controllers.Factions.ShipUnitRequest request) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at SetupCrowdedBattle.Prepare () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at UnityEngine.Awaitable.RunOrScheduleContinuation (UnityEngine.Awaitable+AwaiterCompletionThreadAffinity awaiterCompletionThreadAffinity, System.Action continuation) [0x00008] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:160
+  at UnityEngine.Awaitable.RaiseManagedCompletion () [0x00048] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:201
+  at UnityEngine.Awaitable+DoubleBufferedAwaitableList.SwapAndComplete () [0x00053] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:129
+  at UnityEngine.Awaitable.OnUpdate () [0x00000] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:161
+method frame=1243 rt=8.65847163180272 start=133116247774 end=133117093215 ms=84.5441 key=PeltaShipView
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetHull (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetFootprint (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.IsClear (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule.CanSpawnShip (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryFindOpenPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, System.Single searchRadius, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryGetDefaultZoneSpawnPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Cheats.CheatService.ForceSpawnShipAtDefaultZone (EmpireAtWar.Controllers.Factions.ShipUnitRequest request) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at SetupCrowdedBattle.Prepare () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at UnityEngine.Awaitable.RunOrScheduleContinuation (UnityEngine.Awaitable+AwaiterCompletionThreadAffinity awaiterCompletionThreadAffinity, System.Action continuation) [0x00008] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:160
+  at UnityEngine.Awaitable.RaiseManagedCompletion () [0x00048] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:201
+  at UnityEngine.Awaitable+DoubleBufferedAwaitableList.SwapAndComplete () [0x00053] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:129
+  at UnityEngine.Awaitable.OnUpdate () [0x00000] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:161
+frameGap frame=1244 rt=8.66574846480272 ms=91.8685410000002 gcDelta=0 utc=2026-11-07T10:54:06.1112350Z
+method frame=1244 rt=8.69227550680272 start=133117167740 end=133117431229 ms=26.3489 key=AssetBundleRequest.asset:CentaxShipView
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at DeepProbe.EndAsset (UnityEngine.Object asset, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.AssetBundleRequest.get_asset () [0x00000] in <69bbe9c0d8db4fe8bd8508a565238d1b>:0
+  at UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider+InternalOp.WaitForCompletionHandler () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.ProviderOperation`1[TObject].InvokeWaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[TObject].WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle.WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetHull (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetFootprint (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.IsClear (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule.CanSpawnShip (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryFindOpenPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, System.Single searchRadius, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryGetDefaultZoneSpawnPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Cheats.CheatService.ForceSpawnShipAtDefaultZone (EmpireAtWar.Controllers.Factions.ShipUnitRequest request) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at SetupCrowdedBattle.Prepare () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at UnityEngine.Awaitable.RunOrScheduleContinuation (UnityEngine.Awaitable+AwaiterCompletionThreadAffinity awaiterCompletionThreadAffinity, System.Action continuation) [0x00008] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:160
+  at UnityEngine.Awaitable.RaiseManagedCompletion () [0x00048] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:201
+  at UnityEngine.Awaitable+DoubleBufferedAwaitableList.SwapAndComplete () [0x00053] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:129
+  at UnityEngine.Awaitable.OnUpdate () [0x00000] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:161
+method frame=1244 rt=8.69272150680272 start=133117167738 end=133117435712 ms=26.7974 key=UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider/InternalOp.WaitForCompletionHandler
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider+InternalOp.WaitForCompletionHandler () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.ProviderOperation`1[TObject].InvokeWaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[TObject].WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle.WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetHull (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetFootprint (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.IsClear (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule.CanSpawnShip (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryFindOpenPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, System.Single searchRadius, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryGetDefaultZoneSpawnPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Cheats.CheatService.ForceSpawnShipAtDefaultZone (EmpireAtWar.Controllers.Factions.ShipUnitRequest request) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at SetupCrowdedBattle.Prepare () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at UnityEngine.Awaitable.RunOrScheduleContinuation (UnityEngine.Awaitable+AwaiterCompletionThreadAffinity awaiterCompletionThreadAffinity, System.Action continuation) [0x00008] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:160
+  at UnityEngine.Awaitable.RaiseManagedCompletion () [0x00048] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:201
+  at UnityEngine.Awaitable+DoubleBufferedAwaitableList.SwapAndComplete () [0x00053] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:129
+  at UnityEngine.Awaitable.OnUpdate () [0x00000] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:161
+method frame=1244 rt=8.69298450680272 start=133117166855 end=133117438344 ms=27.1489 key=CentaxShipView
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetHull (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetFootprint (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.IsClear (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule.CanSpawnShip (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryFindOpenPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, System.Single searchRadius, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryGetDefaultZoneSpawnPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Cheats.CheatService.ForceSpawnShipAtDefaultZone (EmpireAtWar.Controllers.Factions.ShipUnitRequest request) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at SetupCrowdedBattle.Prepare () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at UnityEngine.Awaitable.RunOrScheduleContinuation (UnityEngine.Awaitable+AwaiterCompletionThreadAffinity awaiterCompletionThreadAffinity, System.Action continuation) [0x00008] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:160
+  at UnityEngine.Awaitable.RaiseManagedCompletion () [0x00048] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:201
+  at UnityEngine.Awaitable+DoubleBufferedAwaitableList.SwapAndComplete () [0x00053] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:129
+  at UnityEngine.Awaitable.OnUpdate () [0x00000] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:161
+method frame=1247 rt=8.73605075680272 start=133117603984 end=133117868995 ms=26.5011 key=AssetBundleRequest.asset:CarrackShipView
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at DeepProbe.EndAsset (UnityEngine.Object asset, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.AssetBundleRequest.get_asset () [0x00000] in <69bbe9c0d8db4fe8bd8508a565238d1b>:0
+  at UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider+InternalOp.WaitForCompletionHandler () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.ProviderOperation`1[TObject].InvokeWaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[TObject].WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle.WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetHull (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetFootprint (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.IsClear (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule.CanSpawnShip (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryFindOpenPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, System.Single searchRadius, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryGetDefaultZoneSpawnPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Cheats.CheatService.ForceSpawnShipAtDefaultZone (EmpireAtWar.Controllers.Factions.ShipUnitRequest request) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at SetupCrowdedBattle.Prepare () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at UnityEngine.Awaitable.RunOrScheduleContinuation (UnityEngine.Awaitable+AwaiterCompletionThreadAffinity awaiterCompletionThreadAffinity, System.Action continuation) [0x00008] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:160
+  at UnityEngine.Awaitable.RaiseManagedCompletion () [0x00048] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:201
+  at UnityEngine.Awaitable+DoubleBufferedAwaitableList.SwapAndComplete () [0x00053] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:129
+  at UnityEngine.Awaitable.OnUpdate () [0x00000] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:161
+method frame=1247 rt=8.73658921480272 start=133117603963 end=133117874390 ms=27.0427 key=UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider/InternalOp.WaitForCompletionHandler
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider+InternalOp.WaitForCompletionHandler () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.ProviderOperation`1[TObject].InvokeWaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[TObject].WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle.WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetHull (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetFootprint (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.IsClear (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule.CanSpawnShip (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryFindOpenPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, System.Single searchRadius, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryGetDefaultZoneSpawnPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Cheats.CheatService.ForceSpawnShipAtDefaultZone (EmpireAtWar.Controllers.Factions.ShipUnitRequest request) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at SetupCrowdedBattle.Prepare () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at UnityEngine.Awaitable.RunOrScheduleContinuation (UnityEngine.Awaitable+AwaiterCompletionThreadAffinity awaiterCompletionThreadAffinity, System.Action continuation) [0x00008] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:160
+  at UnityEngine.Awaitable.RaiseManagedCompletion () [0x00048] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:201
+  at UnityEngine.Awaitable+DoubleBufferedAwaitableList.SwapAndComplete () [0x00053] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:129
+  at UnityEngine.Awaitable.OnUpdate () [0x00000] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:161
+method frame=1247 rt=8.73683204880272 start=133117603870 end=133117876819 ms=27.2949 key=CarrackShipView
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetHull (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.GetFootprint (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnClearance.IsClear (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Reinforcement.ReinforcementSpawnRule.CanSpawnShip (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3 position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryFindOpenPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, System.Single searchRadius, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipSpawning.ShipSpawnPoints.TryGetDefaultZoneSpawnPosition (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Models.Factions.ShipType shipType, UnityEngine.Vector3& position) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Cheats.CheatService.ForceSpawnShipAtDefaultZone (EmpireAtWar.Controllers.Factions.ShipUnitRequest request) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at SetupCrowdedBattle.Prepare () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at UnityEngine.Awaitable.RunOrScheduleContinuation (UnityEngine.Awaitable+AwaiterCompletionThreadAffinity awaiterCompletionThreadAffinity, System.Action continuation) [0x00008] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:160
+  at UnityEngine.Awaitable.RaiseManagedCompletion () [0x00048] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.cs:201
+  at UnityEngine.Awaitable+DoubleBufferedAwaitableList.SwapAndComplete () [0x00053] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:129
+  at UnityEngine.Awaitable.OnUpdate () [0x00000] in /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Awaitable.DelayedCall.cs:161
+method frame=1261 rt=8.87944354880272 start=133119234402 end=133119302925 ms=6.8523 key=EmpireAtWar.Services.ShipNavigation.ShipNavigationService.LateTick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.ShipNavigation.ShipNavigationService.LateTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.LateTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.LateTickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1261 rt=8.87952263180272 start=133119233192 end=133119303725 ms=7.0533 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.LateTick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.LateTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.LateTickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1261 rt=8.87957525680272 start=133119233159 end=133119304252 ms=7.1093 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1262 rt=8.88994575680272 start=133119345242 end=133119407942 ms=6.27 key=EmpireAtWar.Services.ShipNavigation.ShipNavigationService.LateTick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.ShipNavigation.ShipNavigationService.LateTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.LateTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.LateTickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1262 rt=8.89009179880272 start=133119344325 end=133119409415 ms=6.509 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.LateTick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.LateTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.LateTickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1262 rt=8.89018433980272 start=133119344302 end=133119410342 ms=6.604 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1271 rt=9.02098988180272 start=133120341142 end=133120718315 ms=37.7173 key=AssetBundleRequest.asset:CorellianCorvetteShipData
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at DeepProbe.EndAsset (UnityEngine.Object asset, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.AssetBundleRequest.get_asset () [0x00000] in <69bbe9c0d8db4fe8bd8508a565238d1b>:0
+  at UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider+InternalOp.WaitForCompletionHandler () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.ProviderOperation`1[TObject].InvokeWaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[TObject].WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle.WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Enemy.UnitCombatProfileCatalog.CreateShip (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Enemy.UnitCombatProfileCatalog.Get (EmpireAtWar.Entities.Units.UnitTypeId unitTypeId) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipAbilities.AutoPowerCombatSnapshot.Decide (EmpireAtWar.Entities.BaseEntity.EntityFacades.IShipAbilityFacade caster, EmpireAtWar.Entities.BaseEntity.EntityFacades.IShipAutoPowerFacade automation, System.Boolean heavyLoss) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipAbilities.PlayerAutoPowerService.Check (EmpireAtWar.Entities.BaseEntity.IEntity entity) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipAbilities.PlayerAutoPowerService.PostTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.PostTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.PostTickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1271 rt=9.02140142380272 start=133120341142 end=133120722511 ms=38.1369 key=UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider/InternalOp.WaitForCompletionHandler
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider+InternalOp.WaitForCompletionHandler () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.ProviderOperation`1[TObject].InvokeWaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[TObject].WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle.WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Enemy.UnitCombatProfileCatalog.CreateShip (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Enemy.UnitCombatProfileCatalog.Get (EmpireAtWar.Entities.Units.UnitTypeId unitTypeId) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipAbilities.AutoPowerCombatSnapshot.Decide (EmpireAtWar.Entities.BaseEntity.EntityFacades.IShipAbilityFacade caster, EmpireAtWar.Entities.BaseEntity.EntityFacades.IShipAutoPowerFacade automation, System.Boolean heavyLoss) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipAbilities.PlayerAutoPowerService.Check (EmpireAtWar.Entities.BaseEntity.IEntity entity) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipAbilities.PlayerAutoPowerService.PostTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.PostTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.PostTickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1271 rt=9.02152833980272 start=133120340491 end=133120723775 ms=38.3284 key=58340a4c5b9423642b9ff2b84cda03c3
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Enemy.UnitCombatProfileCatalog.CreateShip (EmpireAtWar.Models.Factions.ShipType shipType) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Enemy.UnitCombatProfileCatalog.Get (EmpireAtWar.Entities.Units.UnitTypeId unitTypeId) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipAbilities.AutoPowerCombatSnapshot.Decide (EmpireAtWar.Entities.BaseEntity.EntityFacades.IShipAbilityFacade caster, EmpireAtWar.Entities.BaseEntity.EntityFacades.IShipAutoPowerFacade automation, System.Boolean heavyLoss) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipAbilities.PlayerAutoPowerService.Check (EmpireAtWar.Entities.BaseEntity.IEntity entity) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.ShipAbilities.PlayerAutoPowerService.PostTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.PostTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.PostTickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1271 rt=9.02231546480272 start=133120304784 end=133120731652 ms=42.6868 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=1324 rt=9.45551733980272 start=133125012815 end=133125063653 ms=5.0838 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=5848 rt=46.5742448398027 start=133496159913 end=133496250937 ms=9.1024 key=EmpireAtWar.Entities.EnemyFaction.Controllers.EnemyFactionController.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Entities.EnemyFaction.Controllers.EnemyFactionController.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=5848 rt=46.5744470488027 start=133496159891 end=133496252967 ms=9.3076 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=5848 rt=46.5767077148027 start=133496159567 end=133496275557 ms=11.599 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=5867 rt=46.7388549238027 start=133497750809 end=133497897036 ms=14.6227 key=EmpireAtWar.Services.Enemy.EnemyUnitCommander.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.Enemy.EnemyUnitCommander.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=5867 rt=46.7389351318027 start=133497750690 end=133497897850 ms=14.716 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=5867 rt=46.7399408818027 start=133497750464 end=133497907906 ms=15.7442 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=6549 rt=52.5498771738027 start=133555825416 end=133556007204 ms=18.1788 key=EmpireAtWar.Entities.Ship.Orders.ShipOrderRunner.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Entities.Ship.Orders.ShipOrderRunner.Tick (System.Single deltaTime) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Ship.Ship.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=6549 rt=52.5501032988027 start=133555825414 end=133556009531 ms=18.4117 key=EmpireAtWar.Ship.Ship.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Ship.Ship.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=6549 rt=52.5501700488027 start=133555825413 end=133556010199 ms=18.4786 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=6549 rt=52.5502366318027 start=133555816145 end=133556010864 ms=19.4719 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7023 rt=56.5833930898027 start=133596223454 end=133596342421 ms=11.8967 key=EmpireAtWar.Entities.EnemyFaction.Controllers.EnemyFactionController.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Entities.EnemyFaction.Controllers.EnemyFactionController.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7023 rt=56.5835042988027 start=133596223372 end=133596343539 ms=12.0167 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7023 rt=56.5846098818027 start=133596222867 end=133596354595 ms=13.1728 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7025 rt=56.6004375068027 start=133596422396 end=133596512862 ms=9.0466 key=EmpireAtWar.Services.Enemy.EnemyProductionStrategy.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.Enemy.EnemyProductionStrategy.Tick (System.Single deltaTime) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Enemy.EnemyService.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7025 rt=56.6005377988027 start=133596422395 end=133596513877 ms=9.1482 key=EmpireAtWar.Services.Enemy.EnemyService.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.Enemy.EnemyService.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7025 rt=56.6006042568027 start=133596422379 end=133596514541 ms=9.2162 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7025 rt=56.6033849648027 start=133596422200 end=133596542344 ms=12.0144 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7355 rt=59.5232824648027 start=133625675790 end=133625741300 ms=6.551 key=EmpireAtWar.Services.Enemy.EnemySiteConstructionController.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.Enemy.EnemySiteConstructionController.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7355 rt=59.5236147148027 start=133625675626 end=133625744639 ms=6.9013 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7355 rt=59.5247211738027 start=133625675331 end=133625755705 ms=8.0374 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7536 rt=61.0918839648027 start=133641358246 end=133641427328 ms=6.9082 key=EmpireAtWar.Components.Weapon.WeaponComponent.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Components.Weapon.WeaponComponent.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7536 rt=61.0920253398027 start=133641358107 end=133641428750 ms=7.0643 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7536 rt=61.0926499648027 start=133641349401 end=133641434996 ms=8.5595 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=7595 rt=61.5979150068027 start=133646424492 end=133646487637 ms=6.3145 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=8171 rt=66.5633917988027 start=133696082559 end=133696142397 ms=5.9838 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=8399 rt=68.5632177568027 start=133715816200 end=133716140665 ms=32.4465 key=AssetBundleRequest.asset:TurbolaserSatelliteView
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at DeepProbe.EndAsset (UnityEngine.Object asset, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.AssetBundleRequest.get_asset () [0x00000] in <69bbe9c0d8db4fe8bd8508a565238d1b>:0
+  at UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider+InternalOp.WaitForCompletionHandler () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.ProviderOperation`1[TObject].InvokeWaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[TObject].WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle.WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Entities.DefendPlatform.DefendPlatformFactory.Create (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Entities.DefendPlatform.DefendPlatformType type, UnityEngine.Vector3 position, System.Int64 entityId, System.Nullable`1[T] buildDuration) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.CaptureSites.SiteFacilityBuilder.Build (EmpireAtWar.Entities.CaptureSites.SiteFacilityType facilityType, UnityEngine.Vector3 position, System.Action onDestroyed, System.Action`1[T] onConstructionProgress) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.TryStartConstruction (EmpireAtWar.Entities.CaptureSites.CaptureSitePresenter site, EmpireAtWar.Entities.CaptureSites.SiteFacilityType facilityType, EmpireAtWar.Models.Players.PlayerId payer) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.TryStartConstruction (System.Int32 siteIndex, EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Entities.CaptureSites.SiteFacilityType type) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Enemy.EnemySiteConstructionController.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=8399 rt=68.5636815068027 start=133715816199 end=133716145308 ms=32.9109 key=UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider/InternalOp.WaitForCompletionHandler
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider+InternalOp.WaitForCompletionHandler () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.ProviderOperation`1[TObject].InvokeWaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase`1[TObject].WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle.WaitForCompletion () [0x00000] in <2767ba6720f14524938b2f606057aeb8>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Entities.DefendPlatform.DefendPlatformFactory.Create (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Entities.DefendPlatform.DefendPlatformType type, UnityEngine.Vector3 position, System.Int64 entityId, System.Nullable`1[T] buildDuration) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.CaptureSites.SiteFacilityBuilder.Build (EmpireAtWar.Entities.CaptureSites.SiteFacilityType facilityType, UnityEngine.Vector3 position, System.Action onDestroyed, System.Action`1[T] onConstructionProgress) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.TryStartConstruction (EmpireAtWar.Entities.CaptureSites.CaptureSitePresenter site, EmpireAtWar.Entities.CaptureSites.SiteFacilityType facilityType, EmpireAtWar.Models.Players.PlayerId payer) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.TryStartConstruction (System.Int32 siteIndex, EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Entities.CaptureSites.SiteFacilityType type) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Enemy.EnemySiteConstructionController.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=8399 rt=68.5638682148027 start=133715814217 end=133716147181 ms=33.2964 key=TurbolaserSatelliteView
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Repository.CachedAssetService.Load[TSource] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadPrefab (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Repository.CachedAssetService.LoadComponent[TComponent] (System.String key) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Entities.DefendPlatform.DefendPlatformFactory.Create (EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Entities.DefendPlatform.DefendPlatformType type, UnityEngine.Vector3 position, System.Int64 entityId, System.Nullable`1[T] buildDuration) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.CaptureSites.SiteFacilityBuilder.Build (EmpireAtWar.Entities.CaptureSites.SiteFacilityType facilityType, UnityEngine.Vector3 position, System.Action onDestroyed, System.Action`1[T] onConstructionProgress) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.TryStartConstruction (EmpireAtWar.Entities.CaptureSites.CaptureSitePresenter site, EmpireAtWar.Entities.CaptureSites.SiteFacilityType facilityType, EmpireAtWar.Models.Players.PlayerId payer) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.TryStartConstruction (System.Int32 siteIndex, EmpireAtWar.Models.Players.PlayerId owner, EmpireAtWar.Entities.CaptureSites.SiteFacilityType type) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Enemy.EnemySiteConstructionController.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=8399 rt=68.5674875488027 start=133715799509 end=133716183372 ms=38.3863 key=EmpireAtWar.Services.Enemy.EnemySiteConstructionController.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.Enemy.EnemySiteConstructionController.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=8399 rt=68.5676569238027 start=133715799368 end=133716185067 ms=38.5699 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=8399 rt=68.5687184238027 start=133715799138 end=133716195680 ms=39.6542 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=10286 rt=85.2640673818027 start=133883088165 end=133883149160 ms=6.0995 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=10625 rt=88.6066802148027 start=133916416732 end=133916575213 ms=15.8481 key=EmpireAtWar.Entities.EnemyFaction.Controllers.EnemyFactionController.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Entities.EnemyFaction.Controllers.EnemyFactionController.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=10625 rt=88.6069306318027 start=133916416667 end=133916577798 ms=16.1131 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=10625 rt=88.6084873398027 start=133916416372 end=133916593367 ms=17.6995 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=11047 rt=92.6161786318027 start=133956569727 end=133956670269 ms=10.0542 key=EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.LateTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.LateTickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=11047 rt=92.6163135488027 start=133956569714 end=133956671632 ms=10.1918 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.LateTick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.LateTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.LateTickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=11047 rt=92.6163852568027 start=133956569688 end=133956672351 ms=10.2663 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=13329 rt=113.967821381803 start=134170135219 end=134170186693 ms=5.1474 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=13831 rt=118.564015881803 start=134216084526 end=134216148634 ms=6.4108 key=EmpireAtWar.Services.Enemy.EnemySuperWeaponController.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.Enemy.EnemySuperWeaponController.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=13831 rt=118.564157256803 start=134216084524 end=134216150069 ms=6.5545 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=13831 rt=118.565501214803 start=134216084142 end=134216163507 ms=7.9365 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+frameGap frame=13881 rt=119.221646423803 ms=217.525167000005 gcDelta=0 utc=2026-11-07T10:55:56.6677840Z
+frameGap frame=15985 rt=138.659320256803 ms=75.5032080000149 gcDelta=0 utc=2026-11-07T10:56:16.1055760Z
+method frame=17834 rt=158.726942631803 start=134617727476 end=134617777895 ms=5.0419 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18226 rt=163.609314839803 start=134666522397 end=134666601570 ms=7.9173 key=EmpireAtWar.Services.Enemy.EnemySuperWeaponController.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.Enemy.EnemySuperWeaponController.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18226 rt=163.609625631803 start=134666522393 end=134666604747 ms=8.2354 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18226 rt=163.612295589803 start=134666521975 end=134666631446 ms=10.9471 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18495 rt=167.187967964803 start=134702330520 end=134702388130 ms=5.761 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18585 rt=168.616719506803 start=134716623102 end=134716675653 ms=5.2551 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18689 rt=170.219036714803 start=134732647450 end=134732698818 ms=5.1368 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18690 rt=170.235257464803 start=134732805316 end=134732861031 ms=5.5715 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18708 rt=171.163948714803 start=134742038938 end=134742147558 ms=10.862 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+probeCost frame=18708 ms=1.6518 label=VContainer.Unity.PlayerLoopRunner.Run
+method frame=18708 rt=171.191404964803 start=134742367413 end=134742422490 ms=5.5077 key=EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.CaptureSites.CaptureSitesSystem.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18708 rt=171.212988506803 start=134742468844 end=134742638289 ms=16.9445 key=EmpireAtWar.Services.Battle.UnitHoverService.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.Battle.UnitHoverService.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18708 rt=171.218748381803 start=134742362915 end=134742695894 ms=33.2979 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+probeCost frame=18708 ms=83.5301 label=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+method frame=18708 rt=171.328126839803 start=134743712221 end=134743789642 ms=7.7421 key=EmpireAtWar.Components.Weapon.WeaponComponent.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Components.Weapon.WeaponComponent.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18708 rt=171.329080381803 start=134743711763 end=134743799282 ms=8.7519 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18708 rt=171.334483881803 start=134742326856 end=134743853287 ms=152.6431 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+frameGap frame=18708 rt=171.341255881803 ms=846.002792000007 gcDelta=0 utc=2026-11-07T10:56:48.7877250Z
+method frame=18709 rt=171.468818923803 start=134745117547 end=134745196563 ms=7.9016 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+frameGap frame=18709 rt=171.470106798803 ms=128.850916999994 gcDelta=0 utc=2026-11-07T10:56:48.9165660Z
+method frame=18710 rt=171.498549548803 start=134745414480 end=134745493955 ms=7.9475 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18711 rt=171.525008339803 start=134745680880 end=134745758535 ms=7.7655 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+probeCost frame=18711 ms=2.0566 label=VContainer.Unity.PlayerLoopRunner.Run
+method frame=18712 rt=171.561215214803 start=134746043849 end=134746120588 ms=7.6739 key=EmpireAtWar.Components.Ship.Movement.ShipMovementTweenPlayer.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Components.Ship.Movement.ShipMovementTweenPlayer.Tick (System.Single deltaTime) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Components.Ship.Movement.ShipMoveComponent.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+probeCost frame=18712 ms=3.2037 label=EmpireAtWar.Components.Ship.Movement.ShipMovementTweenPlayer.Tick
+method frame=18712 rt=171.564429131803 start=134746043845 end=134746152770 ms=10.8925 key=EmpireAtWar.Components.Ship.Movement.ShipMoveComponent.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Components.Ship.Movement.ShipMoveComponent.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18712 rt=171.564624048803 start=134746043317 end=134746154725 ms=11.1408 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18712 rt=171.566642756803 start=134745981916 end=134746174888 ms=19.2972 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+probeCost frame=18712 ms=2.9824 label=VContainer.Unity.PlayerLoopRunner.Run
+method frame=18714 rt=171.634614423803 start=134746792030 end=134746854584 ms=6.2554 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18715 rt=171.666615006803 start=134747116732 end=134747173532 ms=5.68 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18715 rt=171.669856798803 start=134747114685 end=134747207021 ms=9.2336 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18716 rt=171.700668839803 start=134747444322 end=134747515152 ms=7.083 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18718 rt=171.737524339803 start=134747831200 end=134747883703 ms=5.2503 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18727 rt=171.873965506803 start=134749191087 end=134749248107 ms=5.702 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18734 rt=171.979505756803 start=134750250004 end=134750303503 ms=5.3499 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18739 rt=172.093684506803 start=134751376884 end=134751445300 ms=6.8416 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18741 rt=172.123632089803 start=134751684550 end=134751744571 ms=6.0021 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18742 rt=172.148613506803 start=134751939023 end=134751994570 ms=5.5547 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18743 rt=172.328584881803 start=134752272822 end=134753794244 ms=152.1422 key=EmpireAtWar.Services.Timing.BattleHitchCapture.Flush
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.Timing.BattleHitchCapture.Flush () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Timing.BattleHitchCapture.Observe (EmpireAtWar.Services.Timing.BattleCaptureFrame frame) [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Timing.BattlePerformanceCapture.TryObserveHitchFrame () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Services.Analytics.PerformanceAnalyticsSampler.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+probeCost frame=18743 ms=1.1758 label=EmpireAtWar.Services.Timing.BattleHitchCapture.Flush
+method frame=18743 rt=172.329778423803 start=134752271438 end=134753806267 ms=153.4829 key=EmpireAtWar.Services.Analytics.PerformanceAnalyticsSampler.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.Analytics.PerformanceAnalyticsSampler.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18743 rt=172.331569714803 start=134752184294 end=134753824140 ms=163.9846 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+probeCost frame=18743 ms=2.8795 label=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+method frame=18743 rt=172.336535464803 start=134752183117 end=134753873810 ms=169.0693 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+frameGap frame=18743 rt=172.337305589803 ms=188.188125000011 gcDelta=0 utc=2026-11-07T10:56:49.7837670Z
+method frame=18744 rt=172.360387881803 start=134754061169 end=134754112318 ms=5.1149 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18744 rt=172.362577089803 start=134754052367 end=134754134208 ms=8.1841 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18749 rt=172.474184881803 start=134755149962 end=134755250285 ms=10.0323 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+probeCost frame=18749 ms=2.7703 label=VContainer.Unity.PlayerLoopRunner.Run
+method frame=18762 rt=172.668374673803 start=134757140927 end=134757192201 ms=5.1274 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18774 rt=172.814129589803 start=134758587947 end=134758649770 ms=6.1823 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18820 rt=173.526417964803 start=134765718227 end=134765772470 ms=5.4243 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18821 rt=173.544070423803 start=134765898161 end=134765949044 ms=5.0883 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+frameGap frame=18823 rt=173.618397173803 ms=51.3071249999939 gcDelta=0 utc=2026-11-07T10:56:51.0648730Z
+method frame=18824 rt=173.652508048803 start=134766976612 end=134767033520 ms=5.6908 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18824 rt=173.654846798803 start=134766953457 end=134767056932 ms=10.3475 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18828 rt=173.728222339803 start=134767728316 end=134767790673 ms=6.2357 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18830 rt=173.770449839803 start=134768142715 end=134768212947 ms=7.0232 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18835 rt=173.854767131803 start=134769004029 end=134769056134 ms=5.2105 key=EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Components.Weapon.CombatAttackCoordinator.LateTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.LateTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.LateTickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18835 rt=173.855491048803 start=134769004000 end=134769063389 ms=5.9389 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.LateTick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.LateTick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.LateTickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18835 rt=173.855909381803 start=134769003930 end=134769067542 ms=6.3612 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18836 rt=173.875715506803 start=134769173378 end=134769265600 ms=9.2222 key=EmpireAtWar.Services.Hazards.HazardService.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Services.Hazards.HazardService.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18836 rt=173.876849131803 start=134769159070 end=134769276955 ms=11.7885 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18836 rt=173.878493131803 start=134769157220 end=134769293412 ms=13.6192 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+frameGap frame=18842 rt=174.047063923803 ms=68.2449589999976 gcDelta=0 utc=2026-11-07T10:56:51.4935400Z
+method frame=18859 rt=174.356567964803 start=134774024116 end=134774074125 ms=5.0009 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18894 rt=175.219044589803 start=134782643904 end=134782698890 ms=5.4986 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18894 rt=175.221919548803 start=134782640259 end=134782727170 ms=8.6911 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+frameGap frame=18894 rt=175.267463048803 ms=220.839334000004 gcDelta=0 utc=2026-11-07T10:56:52.7139490Z
+method frame=18909 rt=175.544422464803 start=134785899771 end=134785952556 ms=5.2785 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=18910 rt=175.565831048803 start=134786092825 end=134786166773 ms=7.3948 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=19039 rt=177.468825881803 start=134805143985 end=134805196710 ms=5.2725 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=19047 rt=177.632793464803 start=134806385296 end=134806836401 ms=45.1105 key=EmpireAtWar.Components.Ship.Health.HardPointOverlay.HardPointOverlayPresenter.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Components.Ship.Health.HardPointOverlay.HardPointOverlayPresenter.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=19047 rt=177.636615798803 start=134806382175 end=134806874638 ms=49.2463 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=19047 rt=177.637662631803 start=134806380656 end=134806885116 ms=50.446 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+frameGap frame=19047 rt=177.637849548803 ms=63.3148339999821 gcDelta=0 utc=2026-11-07T10:56:55.0843350Z
+method frame=19048 rt=178.129500506803 start=134811746979 end=134811803480 ms=5.6501 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+frameGap frame=19048 rt=178.129734131803 ms=491.884583000001 gcDelta=0 utc=2026-11-07T10:56:55.5762220Z
+method frame=19161 rt=179.633888131803 start=134826785370 end=134826847336 ms=6.1966 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=19161 rt=179.635248381803 start=134826784080 end=134826860959 ms=7.6879 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=19448 rt=183.950709173803 start=134869958777 end=134870015550 ms=5.6773 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=19676 rt=187.358269423803 start=134904032131 end=134904091143 ms=5.9012 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=19697 rt=187.669519964803 start=134907153461 end=134907203662 ms=5.0201 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=19705 rt=187.792020089803 start=134908340837 end=134908428657 ms=8.782 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=19723 rt=188.059017506803 start=134911033710 end=134911098636 ms=6.4926 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=19728 rt=188.132141798803 start=134911765203 end=134911829823 ms=6.462 key=EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at EmpireAtWar.Lifecycle.OrderedLifecycleCoordinator.Tick () [0x00000] in <4218f57f583542c18be4abdf97dc370a>:0
+  at VContainer.Unity.TickableLoopItem.MoveNext () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=19728 rt=188.133441506803 start=134911763000 end=134911842896 ms=7.9896 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0
+method frame=19782 rt=188.942460964803 start=134919873242 end=134919933060 ms=5.9818 key=VContainer.Unity.PlayerLoopRunner.Run
+  at System.Environment.get_StackTrace () [0x00000] in <fbb6d000788b43d18d38fde1c9cc38e7>:0
+  at DeepProbe.End (System.String label, System.Int64 start) [0x00000] in <c8b219fc93144f63ad6574f28019fd88>:0
+  at VContainer.Unity.PlayerLoopRunner.Run () [0x00000] in <cfd32367bc854ba9b99032e57774587c>:0

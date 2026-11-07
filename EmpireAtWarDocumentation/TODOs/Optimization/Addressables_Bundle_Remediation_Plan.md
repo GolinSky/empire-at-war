@@ -158,8 +158,8 @@ tags:
 
 ## November 6 bundle checks
 
-- [ ] P1 prerequisite · Save a successful current content layout and matching catalog for the same target and revision before the Providence pilot or ownership trial. Check build error, populated groups, explicit rows, file sizes and duplicate payload. The two October 29 failed local layouts cannot serve as a baseline. [[TODOs/Optimization/Optimization_Audit_Fix_Plan|November 6 fix order and verification]].
-- [ ] P2 · Trial moving `RecalcitrantWreckView`, `PelesetWreckView`, `BulwarkWreckView`, `BulwarkReinforcementView` and `WavecrestWreckView` from `View` to `SeparatistUnitViews`. Preserve GUIDs, addresses, labels, aliases, packing and CRC. Compare common-facility and faction bundle closures in isolation. Recheck packed preview/spawn/wreck behavior. Revert if the common route gains no benefit or duplicated bytes increase.
+- [x] Mac content baseline, `3cdc86cba`, 19 groups / 18 bundles / 625 explicit assets / 54 duplicates, 195,947,527 redundant serialized + streamed bytes. Catalog 124,765 B. Post-ownership only: 18 bundles / 638 explicit / zero duplicates; total 1,096,866,097 → 1,058,655,633 B.
+- [x] Move the five wreck/preview entries to `SeparatistUnitViews` and promote 13 duplicated icons to `SharedIcons`. Existing GUIDs, addresses, labels, aliases and faction packing/CRC retained. Duplicate assets/objects → 0/0. The ownership-stage total fell 38,210,464 B but also contains temporary font build effects; do not claim an isolated ownership saving. Final combined content after restoring fonts is 1,048,201,156 B (−48,664,941 B against baseline). Packed alias loads succeed. See [measured stages](../../../Docs/Audits/2026-11-07-Optimization-Fixes/content.csv). Full placement/wreck visual gates remain in Phase 7.
 
 ## Guidance extraction — 2026-10-29
 
