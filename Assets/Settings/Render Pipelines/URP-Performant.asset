@@ -1,5 +1,20 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8402190895652163958
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ab39fa771a44b24dbb8b50975da8a5c, type: 3}
+  m_Name: FSR 3.1
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Graphics.Fsr3UpscalerOptions
+  m_UpscalerName: FSR 3.1
+  m_InjectionPoint: 0
+  assets: {fileID: 11400000, guid: ff0d038186a70d34c8fb175ef58a0065, type: 2}
 --- !u!114 &-5368106575014794612
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -67,6 +82,7 @@ MonoBehaviour:
   m_UpscalerOptions:
   - {fileID: -5368106575014794612}
   - {fileID: -4802297852297135797}
+  - {fileID: -8402190895652163958}
   m_FsrOverrideSharpness: 0
   m_FsrSharpness: 0.92
   m_EnableLODCrossFade: 1

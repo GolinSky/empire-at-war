@@ -26,6 +26,11 @@ namespace EmpireAtWar.Services.Graphics
                 bool supportsStp = STP.IsSupported();
                 if (supportsStp || SystemInfo.graphicsShaderLevel >= 45) options.Add(GraphicsUpscaler.Fsr1);
                 if (supportsStp) options.Add(GraphicsUpscaler.Stp);
+#if ENABLE_UPSCALER_FRAMEWORK
+                if (Fsr3Upscaler.IsSupported() &&
+                    UpscalerRegistry.s_RegisteredUpscalers.ContainsKey(typeof(Fsr3Upscaler)))
+                    options.Add(GraphicsUpscaler.Fsr3);
+#endif
 #if UNITY_STANDALONE_WIN && ENABLE_UPSCALER_FRAMEWORK && ENABLE_NVIDIA
                 if (SupportsDlss()) options.Add(GraphicsUpscaler.Dlss);
 #endif
@@ -58,6 +63,7 @@ namespace EmpireAtWar.Services.Graphics
             GraphicsUpscaler.Fsr1 => "FSR 1",
             GraphicsUpscaler.Stp => "STP",
             GraphicsUpscaler.Dlss => "DLSS",
+            GraphicsUpscaler.Fsr3 => "FSR 3.1",
             _ => "Bilinear",
         };
     }

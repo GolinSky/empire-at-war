@@ -6,5 +6,6 @@ namespace EmpireAtWar.Services.Settings
         Fsr1,
         Stp,
         Dlss,
+        Fsr3,
     }
 }

@@ -46,6 +46,7 @@ MonoBehaviour:
   m_UpscalerOptions:
   - {fileID: -2611274080400371602}
   - {fileID: 3823200825501063959}
+  - {fileID: 4897515124066669792}
   m_FsrOverrideSharpness: 0
   m_FsrSharpness: 0.92
   m_EnableLODCrossFade: 1
@@ -181,3 +182,18 @@ MonoBehaviour:
   DLSSRenderPresetPerformance: 0
   DLSSRenderPresetUltraPerformance: 0
   DLSSRenderPresetDLAA: 0
+--- !u!114 &4897515124066669792
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ab39fa771a44b24dbb8b50975da8a5c, type: 3}
+  m_Name: FSR 3.1
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Graphics.Fsr3UpscalerOptions
+  m_UpscalerName: FSR 3.1
+  m_InjectionPoint: 0
+  assets: {fileID: 11400000, guid: ff0d038186a70d34c8fb175ef58a0065, type: 2}

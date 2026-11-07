@@ -34,7 +34,8 @@ namespace EmpireAtWar.Services.Graphics
             _dlssFrameSkipped = false;
             foreach (var entry in _runtimePipelines)
             {
-                if (entry.Value.upscalingFilter != UpscalingFilterSelection.IUpscaler) continue;
+                if (entry.Value.upscalingFilter != UpscalingFilterSelection.IUpscaler ||
+                    entry.Value.upscalerName != DLSSIUpscaler.UPSCALER_NAME) continue;
                 entry.Value.upscalingFilter = UpscalingFilterSelection.Linear;
                 entry.Value.msaaSampleCount = _originalPipelines[entry.Key].msaaSampleCount;
             }
@@ -89,15 +90,30 @@ namespace EmpireAtWar.Services.Graphics
             if (Array.IndexOf(GraphicsUpscalerSupport.Available, graphics.Upscaler) < 0)
                 graphics.Upscaler = GraphicsUpscaler.Bilinear;
             pipeline.renderScale = graphics.RenderResolution;
-#if UNITY_STANDALONE_WIN && ENABLE_UPSCALER_FRAMEWORK && ENABLE_NVIDIA
-            // URP's temporal DLSS pass requires single-sample rendering.
-            pipeline.msaaSampleCount = graphics.Upscaler == GraphicsUpscaler.Dlss
+#if ENABLE_UPSCALER_FRAMEWORK
+            // URP's temporal upscalers require single-sample rendering.
+            pipeline.msaaSampleCount = graphics.Upscaler == GraphicsUpscaler.Dlss || graphics.Upscaler == GraphicsUpscaler.Fsr3
                 ? 1 : _originalPipelines[level].msaaSampleCount;
+            pipeline.supportsCameraOpaqueTexture = graphics.Upscaler == GraphicsUpscaler.Fsr3 ||
+                _originalPipelines[level].supportsCameraOpaqueTexture;
+            // URP 17.4 exposes these settings as read-only; edit only the runtime clone.
+            int opaqueDownsampling = graphics.Upscaler == GraphicsUpscaler.Fsr3
+                ? (int)Downsampling.None : (int)_originalPipelines[level].opaqueDownsampling;
+            JsonUtility.FromJsonOverwrite("{\"m_OpaqueDownsampling\":" + opaqueDownsampling + "}", pipeline);
+            if (graphics.Upscaler == GraphicsUpscaler.Fsr3)
+                JsonUtility.FromJsonOverwrite("{\"m_IUpscalerName\":\"" + Fsr3Upscaler.UPSCALER_NAME + "\"}", pipeline);
+#if UNITY_STANDALONE_WIN && ENABLE_NVIDIA
+            else if (graphics.Upscaler == GraphicsUpscaler.Dlss)
+                JsonUtility.FromJsonOverwrite("{\"m_IUpscalerName\":\"" + DLSSIUpscaler.UPSCALER_NAME + "\"}", pipeline);
+#endif
 #endif
             pipeline.upscalingFilter = graphics.Upscaler switch
             {
                 GraphicsUpscaler.Fsr1 => UpscalingFilterSelection.FSR,
                 GraphicsUpscaler.Stp => UpscalingFilterSelection.STP,
+#if ENABLE_UPSCALER_FRAMEWORK
+                GraphicsUpscaler.Fsr3 => UpscalingFilterSelection.IUpscaler,
+#endif
 #if UNITY_STANDALONE_WIN && ENABLE_UPSCALER_FRAMEWORK && ENABLE_NVIDIA
                 GraphicsUpscaler.Dlss => UpscalingFilterSelection.IUpscaler,
 #endif

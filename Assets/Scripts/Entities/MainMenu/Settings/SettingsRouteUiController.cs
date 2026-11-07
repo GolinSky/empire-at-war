@@ -61,7 +61,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         {
             if (!_isOpen) return;
             _draftEditor.RefreshUpscalerOptions();
-            _model.SetStatus("DLSS stopped producing frames. Using Bilinear for this session.");
+            if (_settingsService.Draft.Graphics.Upscaler == GraphicsUpscaler.Dlss)
+                _model.SetStatus("DLSS stopped producing frames. Using Bilinear for this session.");
         }
 
         public void LateDispose()
