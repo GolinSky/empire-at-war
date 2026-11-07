@@ -203,9 +203,15 @@ namespace EmpireAtWar.Components.Combat
         public bool IsDamageTakenModified() => DamageTakenMultiplier != UNMODIFIED_MULTIPLIER;
 
         /// <summary>Applies the modifier; pass the returned handle to <see cref="Remove"/> to end this application.</summary>
-        public CombatModifierHandle Add(CombatStatModifier modifier)
+        public CombatModifierHandle Add(CombatStatModifier modifier) => Add(modifier, null);
+
+        /// <summary>
+        /// Applies the modifier under a stack key: while another application with the same key is active,
+        /// this one counts only after that one is removed.
+        /// </summary>
+        public CombatModifierHandle Add(CombatStatModifier modifier, object stackKey)
         {
-            var handle = new CombatModifierHandle(modifier);
+            var handle = new CombatModifierHandle(modifier, stackKey);
             _active.Add(handle);
             Recalculate();
             return handle;
@@ -227,9 +233,10 @@ namespace EmpireAtWar.Components.Combat
             float shieldRegen = UNMODIFIED_MULTIPLIER;
             // Defense is represented by incoming damage reduction in this combat system.
             float damageTaken = _fleetCommandActive ? FLEET_COMMAND_DAMAGE_TAKEN_MULTIPLIER : UNMODIFIED_MULTIPLIER;
-            foreach (CombatModifierHandle handle in _active)
+            for (int i = 0; i < _active.Count; i++)
             {
-                CombatStatModifier modifier = handle.Modifier;
+                if (IsStackedDuplicate(i)) continue;
+                CombatStatModifier modifier = _active[i].Modifier;
                 damage *= modifier.DamageMultiplier;
                 fireDelay *= modifier.FireDelayMultiplier;
                 speed *= modifier.SpeedMultiplier;
@@ -243,6 +250,15 @@ namespace EmpireAtWar.Components.Combat
             ShieldRegenMultiplier = shieldRegen;
             DamageTakenMultiplier = damageTaken;
             Changed?.Invoke();
+        }
+
+        private bool IsStackedDuplicate(int index)
+        {
+            object key = _active[index].StackKey;
+            if (key == null) return false;
+            for (int i = 0; i < index; i++)
+                if (ReferenceEquals(_active[i].StackKey, key)) return true;
+            return false;
         }
     }
 }

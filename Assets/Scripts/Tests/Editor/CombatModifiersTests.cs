@@ -131,5 +131,23 @@ namespace EmpireAtWar.Tests.Editor
             modifiers.Remove(applied);
             Assert.That(modifiers.IsFireDelayModified(), Is.False);
         }
+
+        [Test]
+        public void Add_SameStackKey_CountsOnceUntilEveryApplicationIsRemoved()
+        {
+            CombatModifiers modifiers = new CombatModifiers();
+            object aura = new object();
+            var modifier = new CombatStatModifier(1f, 0.6f, 1f, 1f, 1f);
+
+            CombatModifierHandle first = modifiers.Add(modifier, aura);
+            CombatModifierHandle second = modifiers.Add(modifier, aura);
+            Assert.That(modifiers.FireDelayMultiplier, Is.EqualTo(0.6f).Within(0.0001f));
+
+            modifiers.Remove(first);
+            Assert.That(modifiers.FireDelayMultiplier, Is.EqualTo(0.6f).Within(0.0001f));
+
+            modifiers.Remove(second);
+            Assert.That(modifiers.FireDelayMultiplier, Is.EqualTo(1f));
+        }
     }
 }

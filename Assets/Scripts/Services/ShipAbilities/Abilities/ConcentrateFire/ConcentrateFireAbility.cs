@@ -48,7 +48,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                     PlanarGeometry.Distance(caster.WorldPosition, ally.WorldPosition) > _settings.CommandRadius)
                     continue;
 
-                _affected.Add((ally.Modifiers, ally.Modifiers.Add(_settings.AllyStatModifier)));
+                _affected.Add((ally.Modifiers, ally.Modifiers.Add(_settings.AllyStatModifier, _settings)));
                 attack.Attack(target, Vector3.zero);
             }
         }
