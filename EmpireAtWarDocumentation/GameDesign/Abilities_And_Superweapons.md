@@ -39,7 +39,10 @@ verification: source-and-assets
 ### Automatic player ship powers
 
 - Standard shield/weapon automation applies to local human ships. Eligibility is data: `ShipAbilityDefinition.autoPower` (`AutoPowerRole` None/Shields/Weapons) in `ShipAbilityCatalog`. Current: Shields `3`; Weapons `5, 10, 12, 20, 23, 24, 31, 32, 33, 38` (Boost Weapon, Main Batteries `24` incl. Allegiance/ISD II, laser beams `10`/`33`). Squadrons with Harmonic Bomb use its separate member-count rule. New abilities default to `None`.
-- Abilities with `requiresEnemyTarget` (laser beams) auto-target the nearest visible uncloaked hostile within ability range.
+- 2026-11-07 extension (ships only): every catalog ability has a role. Target `1,6,7,8,9,16,22,25`; Engage `19,35,36,42,50,51,52`; Defensive `2,39`; Cloak `11`; Travel `4,14,21,30,37,40`. `18` Lock S-Foils (squadron toggle) and `54` Harmonic Bomb stay `None`.
+- Role conditions (`AutoPowerSituation.Wants`): Cloak → heavy shield loss + hull <`35%` + visible hostile in radar; Defensive → heavy loss + shields <`60%` + hostile; Target → acceptable hostile in ability range; Engage → meaningful engaged force (heavy loss does not block); Travel → Move/WaypointMove/Retreat order and no visible hostile in radar.
+- Selection: first wanted role in `Cloak → Defensive → Shields/Weapons → Target → Engage → Travel` with a ready slot. A recovering Shields/Weapons power never swaps to the other power, but lower non-power roles may still fire.
+- Abilities with `requiresEnemyTarget` auto-target the nearest visible uncloaked hostile in ability range that passes the ability's `IShipAbilityTargetRule`; warships before strikecraft.
 - Settings → Gameplay → “Ships use power abilities automatically”: default on, applied through saved settings. A controls per-ship preference; global off retains it.
 - Single selected ship → automatic starts paused; multi-selection → automatic starts continue. Group A: any eligible ship off → all on; otherwise all off.
 - Automatic decisions run in `IPostTickable`, after UI input; manual intent wins within the frame. Automatic starts call `TryActivate`; ordinary duration, cancellation and recovery apply. Never cancel/replace active effects; turning A/global off affects future starts.
