@@ -1,0 +1,126 @@
+{
+  "mainThreadIntervalSeconds": [
+    0.268848,
+    0.567532
+  ],
+  "mainThreadStateMilliseconds": {
+    "Running": 35.058835999999864,
+    "Blocked": 260.1032819999998,
+    "Runnable": 1.2404640000004963,
+    "Preempted": 2.281417999999924
+  },
+  "mainThreadWakersMilliseconds": {
+    "": 260.1032819999998
+  },
+  "gpuProcesses": {
+    "EmpireAtWar (24672)": 1346
+  },
+  "largestGpuIdleGapSeconds": [
+    0.2818887919999993,
+    4.793327666000001,
+    5.075216458
+  ],
+  "nativeStackOccurrences": [
+    {
+      "address": "0x10bfda46c",
+      "occurrences": 195,
+      "symbol": "scripting_method_invoke(ScriptingMethodPtr, ScriptingObjectPtr, ScriptingArguments&, ScriptingExceptionPtr*, bool) (in UnityPlayer.dylib) + 72"
+    },
+    {
+      "address": "0x10bfbcd84",
+      "occurrences": 195,
+      "symbol": "ScriptingInvocation::Invoke(ScriptingExceptionPtr*, bool) (in UnityPlayer.dylib) + 172"
+    },
+    {
+      "address": "0x10bb14c84",
+      "occurrences": 195,
+      "symbol": "ExecutePlayerLoop(NativePlayerLoopSystem*) (in UnityPlayer.dylib) + 452"
+    },
+    {
+      "address": "0x10bb14bcc",
+      "occurrences": 195,
+      "symbol": "ExecutePlayerLoop(NativePlayerLoopSystem*) (in UnityPlayer.dylib) + 268"
+    },
+    {
+      "address": "0x10bb14fbc",
+      "occurrences": 195,
+      "symbol": "PlayerLoop() (in UnityPlayer.dylib) + 324"
+    },
+    {
+      "address": "0x10c46f7c8",
+      "occurrences": 195,
+      "symbol": "-[PlayerAppDelegate UpdatePlayer] (in UnityPlayer.dylib) + 1372"
+    },
+    {
+      "address": "0x10c46f0ec",
+      "occurrences": 195,
+      "symbol": "-[PlayerAppDelegate TimerTick] (in UnityPlayer.dylib) + 156"
+    },
+    {
+      "address": "0x10c46eb70",
+      "occurrences": 195,
+      "symbol": "PlayerMain(int, char const**) (in UnityPlayer.dylib) + 1188"
+    },
+    {
+      "address": "0x10ac07674",
+      "occurrences": 188,
+      "symbol": "AssetBundleLoadAssetOperation::GetLoadedAssets(core::vector<Object*, core::allocator<Object*, 0ul>>&, bool) (in UnityPlayer.dylib) + 372"
+    },
+    {
+      "address": "0x10ac07468",
+      "occurrences": 188,
+      "symbol": "AssetBundleLoadAssetOperation::GetLoadedAsset() (in UnityPlayer.dylib) + 328"
+    },
+    {
+      "address": "0x10ac22040",
+      "occurrences": 188,
+      "symbol": "AssetBundleRequest_CUSTOM_GetResult(void*) (in UnityPlayer.dylib) + 48"
+    },
+    {
+      "address": "0x10a40a66c",
+      "occurrences": 183,
+      "symbol": "UnityClassic::Baselib_SystemSemaphore_TryTimedAcquire(UnityClassic::Baselib_SystemSemaphore_Handle, unsigned int) (in UnityPlayer.dylib) + 48"
+    },
+    {
+      "address": "0x10bb6b428",
+      "occurrences": 183,
+      "symbol": "PreloadManager::WaitForAllAsyncOperationsToComplete() (in UnityPlayer.dylib) + 376"
+    },
+    {
+      "address": "0x10ac20a0c",
+      "occurrences": 6,
+      "symbol": "AssetBundle_CUSTOM_LoadAssetAsync_Internal(void*, BindingsManagedSpan*, ScriptingBackendNativeObjectPtrOpaque*) (in UnityPlayer.dylib) + 304"
+    },
+    {
+      "address": "0x10ac05c68",
+      "occurrences": 5,
+      "symbol": "AssetBundleLoadAssetOperation::LoadAsset(AssetBundle&, core::basic_string<char, core::StringStorageDefault<char>> const&, ScriptingClassPtr, bool) (in UnityPlayer.dylib) + 116"
+    },
+    {
+      "address": "0x10bb6b3c8",
+      "occurrences": 4,
+      "symbol": "PreloadManager::WaitForAllAsyncOperationsToComplete() (in UnityPlayer.dylib) + 280"
+    },
+    {
+      "address": "0x10bb6a818",
+      "occurrences": 4,
+      "symbol": "PreloadManager::UpdatePreloadingSingleStep(PreloadManager::UpdatePreloadingFlags, int) (in UnityPlayer.dylib) + 260"
+    },
+    {
+      "address": "0x10ac071f8",
+      "occurrences": 2,
+      "symbol": "AssetBundleLoadAssetOperation::AssetBundleLoadAssetOperation(MemLabelId, AssetBundle&, core::basic_string<char, core::StringStorageDefault<char>> const&, ScriptingClassPtr, bool) (in UnityPlayer.dylib) + 1580"
+    },
+    {
+      "address": "0x10c0337e4",
+      "occurrences": 2,
+      "symbol": "AwakeFromLoadQueue::PersistentManagerAwakeSingleObject(Object&, AwakeFromLoadMode) (in UnityPlayer.dylib) + 96"
+    },
+    {
+      "address": "0x10c0381a0",
+      "occurrences": 2,
+      "symbol": "PersistentManager::IntegrateObjectAndUnlockIntegrationMutexInternal(EntityId) (in UnityPlayer.dylib) + 100"
+    }
+  ],
+  "symbolication": "UnityPlayer image base inferred as 0x10a400000, independently corroborated by PlayerMain and semaphore frames. Retained exact binary used for atos; original trace lacks saved image/JIT maps. Managed callers of this particular event are not resolved."
+}

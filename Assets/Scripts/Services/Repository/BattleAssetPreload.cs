@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using EmpireAtWar.Components.AttackComponent;
@@ -40,10 +41,8 @@ namespace EmpireAtWar.Repository
             "ShipGroupUi", "EconomyUi", "MiniMapUi", "ReinforcementUi", "UnitOrderFeedbackUi",
             "TooltipUi", "PauseMenuUi", "SettingsUi", "SaveBrowserUi", "EndGameUi", "HeroUi"
         };
-        private static readonly string[] STRUCTURE_PREFIXES = { "", "Asteroid" };
         private static readonly MiningFacilityType[] MINING_FACILITIES =
             { MiningFacilityType.CommonMiner, MiningFacilityType.AsteroidMiner, MiningFacilityType.TibannaGasStation };
-        private static readonly string[] PLATFORMS = { "DefendPlatform", "AotrGolanIIIDefensePlatform", "AotrEmpressDefensePlatform" };
 
         public static async Awaitable LoadAsync(CachedAssetService assets, BattleDefinition battle, bool restoresSave,
             CancellationToken cancellationToken)
@@ -110,13 +109,10 @@ namespace EmpireAtWar.Repository
                 if (type != MiningFacilityType.CommonMiner) views.Add(assetName + "View");
                 AddWreck(wrecks, assets.Load<MiningFacilityData>(assetName + "Data").Wreck);
             }
-            foreach (string prefix in STRUCTURE_PREFIXES)
+            foreach (DefendPlatformType type in Enum.GetValues(typeof(DefendPlatformType)))
             {
-                foreach (string key in PlatformKeys(prefix))
-                {
-                    if (key != "DefendPlatform") views.Add(key + "View");
-                    AddWreck(wrecks, assets.Load<DefendPlatformData>(key + "Data").Wreck);
-                }
+                if (type != DefendPlatformType.Xq6) views.Add(DefendPlatformAssets.GetViewName(type));
+                AddWreck(wrecks, assets.Load<DefendPlatformData>(DefendPlatformAssets.GetDataName(type)).Wreck);
             }
             views.AddRange(wrecks);
             return views;
@@ -205,17 +201,10 @@ namespace EmpireAtWar.Repository
                 assets.BeginPreload<GameObject>("SimulationHudUi");
         }
 
-        // Asteroid variants exist only for the mining facility and the basic platform.
-        private static IEnumerable<string> PlatformKeys(string prefix)
-        {
-            foreach (string platform in PLATFORMS)
-                if (prefix.Length == 0 || platform == "DefendPlatform") yield return prefix + platform;
-        }
-
         internal static IEnumerable<string> PlatformDataKeys()
         {
-            foreach (string prefix in STRUCTURE_PREFIXES)
-                foreach (string key in PlatformKeys(prefix)) yield return key + "Data";
+            foreach (DefendPlatformType type in Enum.GetValues(typeof(DefendPlatformType)))
+                yield return DefendPlatformAssets.GetDataName(type);
         }
 
         // SkirmishScope reads the basic platform and facility colliders while it builds.

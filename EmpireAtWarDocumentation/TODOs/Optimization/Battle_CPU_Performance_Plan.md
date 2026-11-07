@@ -2,7 +2,7 @@
 category: Optimization
 status: in-progress
 created: 2026-10-11
-updated: 2026-10-12
+updated: 2026-11-07
 ---
 # Battle CPU performance follow-up
 
@@ -310,4 +310,10 @@ updated: 2026-10-12
 - Incremental-GC trial max 656/244/169 ms did not establish improvement → original setting restored. Another run used the wrong scale and overlapped an OS scan → excluded.
 - Native waiting-thread trace: timed maxima 77.760/43.405/62.246 ms; the large stall did not occur. Do not assign its cause from normal waiting stacks in this recording.
 - Final retained GC-off Player, scale 1, 3 × 60 s: p95 21.529/25.730/25.433 ms; p99 25.669/28.120/29.604 ms; maxima 48.389/86.557/49.646 ms; >50 ms counts 0/1/0. Large stalls were absent but sustained frame times were worse. Visual variant/background load were uncontrolled → no general FPS improvement or causal regression claim.
-- P0 stays open: capture a recurrent large Player interval with synchronized native stacks, render/GPU waits and OS scheduling, then change only the attributable source. [Measurements and method](../../../Docs/Audits/2026-11-07-Optimization-Fixes/README.md).
+- P0 stays open: November 7 native capture identifies synchronous AssetBundle waiting; resolve its exact managed request and the separate unattributed interval. Repeat with synchronized native stacks, render/GPU waits and OS scheduling. [Measurements and method](../../../Docs/Audits/2026-11-07-Optimization-Fixes/README.md).
+
+### P0 native attribution · 2026-11-07
+
+- Native 296.146 ms event, frame 11598: 260.103 ms blocked under synchronous AssetBundle loading; matching 281.889 ms Player GPU idle gap. Exact request/key unresolved; another 198.608 ms interval occurred outside measured cached loads.
+- Fixed separate satellite warmup omission: use factory type/asset mapping for all platforms. AI Turbolaser load 43.034/50.416 ms before → 0.0022 ms after equivalent packed key expansion. Changed source compiled outside Unity; Core coverage authored, not run.
+- User requires concurrent work to continue. No controlled FPS claim or full Unity rebuild; P0 remains open. [Evidence and remaining work](../../../Docs/Audits/2026-11-07-P0-Fleet-Stalls/README.md); coordination → [[TODOs/Optimization/Optimization_Audit_Fix_Plan]].

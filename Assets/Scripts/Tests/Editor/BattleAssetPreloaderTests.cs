@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
@@ -77,6 +78,12 @@ namespace EmpireAtWar.Tests.Editor
                             assets.LoadComponent<UnitWreckView>(stationWreck.PrefabKey);
                     }
                     assets.LoadPrefab("CoreGameUi");
+                    foreach (DefendPlatformType platform in Enum.GetValues(typeof(DefendPlatformType)))
+                    {
+                        DefendPlatformData data = assets.Load<DefendPlatformData>(DefendPlatformAssets.GetDataName(platform));
+                        assets.LoadComponent<DefendPlatform>(DefendPlatformAssets.GetViewName(platform));
+                        if (data.Wreck != null) assets.LoadComponent<UnitWreckView>(data.Wreck.PrefabKey);
+                    }
                     if (mode == GameMode.Survival) assets.LoadPrefab("SurvivalHudUi");
                     if (mode == GameMode.BattleSimulation) assets.LoadPrefab("SimulationHudUi");
                     Assert.That(loader.Handles.Count, Is.EqualTo(loadedCount), "Factory keys and types must hit the preload cache.");
@@ -131,6 +138,12 @@ namespace EmpireAtWar.Tests.Editor
                             assets.LoadComponent<ShipEntity>(ship + "ShipView");
                     }
                     assets.LoadComponent<BoxCollider>("MiningFacilityView");
+                    foreach (DefendPlatformType platform in Enum.GetValues(typeof(DefendPlatformType)))
+                    {
+                        DefendPlatformData data = assets.Load<DefendPlatformData>(DefendPlatformAssets.GetDataName(platform));
+                        assets.LoadComponent<DefendPlatform>(DefendPlatformAssets.GetViewName(platform));
+                        if (data.Wreck != null) assets.LoadComponent<UnitWreckView>(data.Wreck.PrefabKey);
+                    }
                     Assert.That(loader.Handles.Count, Is.EqualTo(warmedCount), "Factory keys must hit the warmed cache.");
                 }
                 Assert.That(loader.Handles.All(handle => !handle.IsValid()), Is.True);

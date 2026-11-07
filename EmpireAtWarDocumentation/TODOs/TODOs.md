@@ -67,7 +67,7 @@
 ### Optimization
 
 - [ ] **November 6 optimization fixes — P0 hitch attribution remains** → [[TODOs/Optimization/Optimization_Audit_Fix_Plan|Retained fixes, evidence and next action]]. Mac content −48.7 MB; 54 duplicates → 0; packed memory, loading, smoke, music and nebula fixes verified. Rare large fleet stalls remain unresolved.
-  - First fix capture dimensions, then isolate fleet hitches in the M2 Editor and Development Player. Next, measure off-camera hardpoint smoke and destruction readability. Start the Providence texture pilot after a valid content baseline.
+  - 2026-11-07: capture metadata and scoped retained fixes verified. P0 native 296 ms stall attributed to synchronous AssetBundle waiting; exact key and other stalls remain open. Separate satellite warmup omission fixed (43–50 ms → 0.0022 ms in isolated packed probe). No general FPS improvement established; tests disabled.
 
 - [ ] **Recover battle FPS lost after the hazard-system decor asteroids (decor culling/LOD, field rock LOD, nebula, presets, particles)** → [[TODOs/Optimization/Battle_FPS_Recovery_Plan|Battle FPS Recovery Plan]]; [[TODOs/Optimization/Battle_FPS_Recovery_Plan - Research|PC capture 2026-10-29 vs Mac audits]]
   - 2026-10-29: Phase 0 tool and Phases 1–6 implementations source-verified. Builds/performance runs deferred by user; absorbed attribution/experiments and visual/performance acceptance remain open.

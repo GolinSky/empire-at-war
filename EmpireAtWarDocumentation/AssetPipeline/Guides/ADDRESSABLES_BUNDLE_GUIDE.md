@@ -78,3 +78,9 @@ verification: Read live mapping, preview/preload, cached-load and music-routing
 - Mixer source: `Assets/Scripts/Services/Audio/MusicService.cs`; serialized mapping: `Assets/Settings/AssetMappingData.asset`.
 - Historical evidence: `Logs/AddressablesAudit/2026-10-24-phase5-final/{layout-summary.json,verification-result.json,catalog.bin,buildlayout_2026.10.24.18.35.02.json}`; `Logs/AddressablesAudit/2026-10-24-phase6/{current-overlap-decisions.csv,overlap-review.md}`.
 - Installed package behavior: `Library/PackageCache/com.unity.addressables@8460f1c9c927/Editor/Settings/{AddressableAssetSettings.cs,GroupSchemas/BundledAssetGroupSchema.cs}` (local cache path; resolve installed package before reuse).
+
+### Fleet stall attribution · 2026-11-07
+
+- Captured Player stall: synchronous `AssetBundleRequest.asset` / preload-manager waits can block the main thread while the GPU is idle. Align raw observer gaps, native wait stacks and scheduling; GC-count coincidence alone is insufficient. [Native evidence](../../../Docs/Audits/2026-11-07-P0-Fleet-Stalls/native-evidence.json).
+- Keep platform preload/warmup coverage tied to `DefendPlatformType` and factory `DefendPlatformAssets` mapping. The old prefix list omitted five satellites; AI Turbolaser construction waited 43–50 ms. Source fixed; equivalent packed warmup probe reduced the actual factory cache request to 0.0022 ms. Core coverage authored, not run; full Unity rebuild not performed in this investigation.
+- This scoped result does not close other large stalls or prove broad FPS improvement. Owner → [[TODOs/Optimization/Optimization_Audit_Fix_Plan]].
