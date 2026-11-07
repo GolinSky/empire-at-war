@@ -33,6 +33,9 @@ namespace EmpireAtWar.Components.Weapon
             public double Shield;
             public double Hull;
             public int Kills;
+            // Hits that arrived after their target had already died.
+            public int WastedImpacts;
+            public double WastedRaw;
         }
 
         private static readonly Dictionary<(FactionType, string), ShooterRow> _shooters =
@@ -116,6 +119,20 @@ namespace EmpireAtWar.Components.Weapon
 #endif
         }
 
+        /// <summary>A hit that arrived after its target died: the damage went nowhere.</summary>
+        public static void RecordWastedImpact(FactionType faction, string unit, DamageType damageType,
+            FactionType targetFaction, string target, float raw)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            EnsureSession();
+            var key = (faction, unit, damageType, targetFaction, target);
+            if (!_impacts.TryGetValue(key, out ImpactRow row)) _impacts.Add(key, row = new ImpactRow());
+            row.WastedImpacts++;
+            row.WastedRaw += raw;
+            Touch();
+#endif
+        }
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private static void Touch()
         {
@@ -129,17 +146,17 @@ namespace EmpireAtWar.Components.Weapon
             CultureInfo invariant = CultureInfo.InvariantCulture;
             var text = new StringBuilder();
             text.AppendLine(string.Format(invariant, "# battle seconds (unscaled),{0:F0}", Time.unscaledTime - _startTime));
-            text.AppendLine("section,faction,unit,damageType,targetFaction,target,impacts,fleetCommandImpacts,rawDamage,shieldLoss,hullLoss,effective/raw,kills,shots,activeSeconds");
+            text.AppendLine("section,faction,unit,damageType,targetFaction,target,impacts,fleetCommandImpacts,rawDamage,shieldLoss,hullLoss,effective/raw,kills,shots,activeSeconds,wastedImpacts,wastedRawDamage");
             foreach (KeyValuePair<(FactionType, string), ShooterRow> pair in _shooters)
-                text.AppendLine(string.Format(invariant, "shots,{0},{1},,,,,,,,,,,{2},{3:F0}",
+                text.AppendLine(string.Format(invariant, "shots,{0},{1},,,,,,,,,,,{2},{3:F0},,",
                     pair.Key.Item1, pair.Key.Item2, pair.Value.Shots, pair.Value.LastShot - pair.Value.FirstShot));
             foreach (KeyValuePair<(FactionType, string, DamageType, FactionType, string), ImpactRow> pair in _impacts)
             {
                 ImpactRow row = pair.Value;
-                text.AppendLine(string.Format(invariant, "impact,{0},{1},{2},{3},{4},{5},{6},{7:F0},{8:F0},{9:F0},{10:F3},{11},,",
+                text.AppendLine(string.Format(invariant, "impact,{0},{1},{2},{3},{4},{5},{6},{7:F0},{8:F0},{9:F0},{10:F3},{11},,,{12},{13:F0}",
                     pair.Key.Item1, pair.Key.Item2, pair.Key.Item3, pair.Key.Item4, pair.Key.Item5, row.Impacts,
                     row.FleetCommandImpacts, row.Raw, row.Shield, row.Hull,
-                    row.Raw > 0 ? (row.Shield + row.Hull) / row.Raw : 0, row.Kills));
+                    row.Raw > 0 ? (row.Shield + row.Hull) / row.Raw : 0, row.Kills, row.WastedImpacts, row.WastedRaw));
             }
 
             Directory.CreateDirectory(Path.GetDirectoryName(_path));

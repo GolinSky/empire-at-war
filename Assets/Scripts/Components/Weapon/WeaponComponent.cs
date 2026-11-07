@@ -454,12 +454,16 @@ namespace EmpireAtWar.Components.Weapon
         internal int[] CandidateGroupIndices => _candidateGroupIndices;
         internal byte[] GroupEligibility => _groupEligibility;
 
+        /// <summary>Whether the last prepared eligibility marked any group doomed.</summary>
+        internal bool HasDoomedCandidates { get; private set; }
+
         internal AttackData GetCandidateGroup(int index) => _candidateGroups[index];
 
         /// <summary>Readies this frame's candidates: rebuilds stale ones and decides each group's eligibility once.</summary>
         internal void PrepareTargetSelection(TargetSelectionCapture capture)
         {
             EnsureCandidates();
+            HasDoomedCandidates = false;
             for (int i = 0; i < _candidateGroups.Count; i++)
             {
                 AttackData group = _candidateGroups[i];
@@ -470,9 +474,17 @@ namespace EmpireAtWar.Components.Weapon
                     AttackSequenceDiagnostics.RecordTargetInvalidation();
                     InvalidateCandidates();
                 }
-                _groupEligibility[i] = canAcquire ? (byte)1 : (byte)0;
+                byte eligibility = !canAcquire ? WeaponTargetSelectionJob.GROUP_INELIGIBLE
+                    : IsDoomed(group) ? WeaponTargetSelectionJob.GROUP_DOOMED
+                    : WeaponTargetSelectionJob.GROUP_ELIGIBLE;
+                if (eligibility == WeaponTargetSelectionJob.GROUP_DOOMED) HasDoomedCandidates = true;
+                _groupEligibility[i] = eligibility;
             }
         }
+
+        // An ordered target is never skipped: the player's or AI's explicit order wins over overkill avoidance.
+        private bool IsDoomed(AttackData group) =>
+            !ReferenceEquals(group, _mainAttackData) && _attackCoordinator.IsDoomed(group.TargetHealth);
 
         private bool TryFireWeapon(WeaponHardPoint weapon)
         {
@@ -492,7 +504,8 @@ namespace EmpireAtWar.Components.Weapon
             // Preferred targets first, the main target first among them; the rest only when none is in reach.
             // The first group with a hardpoint in reach is the target; its nearest reachable hardpoint is hit.
             TargetPreference preference = weapon.PreferredTarget;
-            int passes = preference == TargetPreference.Any ? 1 : 2;
+            // Rare serial path: doomed groups are checked live, so the fallback passes are always available.
+            int passes = WeaponTargetSelectionJob.GetPassCount((int)preference, true);
             AttackData bestGroup = null;
             IHardPointModel bestUnit = null;
             float bestDistanceSquared = float.PositiveInfinity;
@@ -502,9 +515,14 @@ namespace EmpireAtWar.Components.Weapon
                 AttackData group = _candidateGroups[_candidateGroupIndices[i]];
                 // A group's candidates are contiguous, so leaving the chosen group ends the search.
                 if (bestUnit != null && !ReferenceEquals(group, bestGroup)) break;
-                if (preference.Prefers(group.TargetClass) != (pass == 0)) continue;
+                if (!WeaponTargetSelectionJob.MatchesPreference(pass, true, preference.Prefers(group.TargetClass)))
+                    continue;
                 IHardPointModel unit = targets.GetUnit(_candidateSlots[i]);
                 if (!CanAcquire(group)) continue;
+                byte eligibility = IsDoomed(group)
+                    ? WeaponTargetSelectionJob.GROUP_DOOMED
+                    : WeaponTargetSelectionJob.GROUP_ELIGIBLE;
+                if (!WeaponTargetSelectionJob.MatchesDoomedTier(pass, true, eligibility)) continue;
                 if (!group.CanTarget(unit)) continue;
 
                 if (!weapon.CanEngage(group.TargetClass)) continue;
@@ -899,10 +917,11 @@ namespace EmpireAtWar.Components.Weapon
             float damage = profile.Damage * profile.GetDamageBias(attackData.TargetClass) *
                            _modifiers.GetDamageMultiplier(attackData.TargetEntity);
             int ticks = Mathf.Max(1, Mathf.CeilToInt(damageDuration / DAMAGE_TICK_INTERVAL));
+            float expectedLoss = EstimateLoss(attackData, damage, profile.DamageType) / ticks;
             for (int i = 0; i < ticks; i++)
             {
                 _attackCoordinator.ScheduleImpact(this, attackData, hardPointModel, damage / ticks, profile.DamageType,
-                    attackDelay + damageDuration * i / ticks, missile);
+                    attackDelay + damageDuration * i / ticks, missile, expectedLoss);
             }
         }
 
@@ -912,6 +931,11 @@ namespace EmpireAtWar.Components.Weapon
             // A hardpoint destroyed mid-flight still takes the hit; the health model spreads it over the live ones.
             if (hardPointModel.Id != targetId || attackData.IsDestroyed || !attackData.Contains(hardPointModel))
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                if (attackData.IsDestroyed)
+                    BattleTelemetry.RecordWastedImpact(_faction, _telemetryName, damageType,
+                        _playerRoster.Get(attackData.TargetEntity.Owner).Faction, GetTelemetryTarget(attackData), damage);
+#endif
                 return false;
             }
 
@@ -922,11 +946,26 @@ namespace EmpireAtWar.Components.Weapon
             attackData.ApplyDamage(damage, damageType, targetId);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             BattleTelemetry.RecordImpact(_faction, _telemetryName, damageType, _modifiers.HullMultiplier > 1f,
-                _playerRoster.Get(attackData.TargetEntity.Owner).Faction,
-                attackData.TargetEntity.TryGetFacade(out IUnitTypeFacade type) ? type.UnitTypeId.ToString() : "Structure",
+                _playerRoster.Get(attackData.TargetEntity.Owner).Faction, GetTelemetryTarget(attackData),
                 damage, shields - target.Shields, hull - target.Hull, target.IsDestroyed);
 #endif
             return true;
+        }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private static string GetTelemetryTarget(AttackData attackData) =>
+            attackData.TargetEntity.TryGetFacade(out IUnitTypeFacade type) ? type.UnitTypeId.ToString() : "Structure";
+#endif
+
+        // Expected shield or hull loss of one hit on a ship, so targets already receiving a killing volley can be
+        // skipped. Strikecraft are never tracked: their damage spreads over many small members.
+        private float EstimateLoss(AttackData attackData, float damage, DamageType damageType)
+        {
+            if (attackData.TargetClass.IsStrikecraft()) return 0f;
+            IHealthModelObserver target = attackData.TargetHealth;
+            return target.HasShields && !target.IsLostShieldGenerator && !_damageMatrix.IsShieldPiercing(damageType)
+                ? damage * _damageMatrix.GetShipShieldMultiplier(damageType)
+                : damage * _damageMatrix.GetDamageMultiplier(damageType, attackData.TargetClass);
         }
 
         private static bool IsTargetValid(AttackData attackData, IHardPointModel hardPointModel) =>

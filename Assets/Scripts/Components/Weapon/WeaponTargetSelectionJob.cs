@@ -21,6 +21,12 @@ namespace EmpireAtWar.Components.Weapon
         internal const int FALLBACK_INVALID_CANDIDATE = 6;
         internal const int FALLBACK_OUT_OF_SPAN = 7;
 
+        // Group eligibility values. A doomed group already has a killing volley in flight; it is picked only when
+        // no other group of the same preference is in reach.
+        internal const byte GROUP_INELIGIBLE = 0;
+        internal const byte GROUP_ELIGIBLE = 1;
+        internal const byte GROUP_DOOMED = 2;
+
         [ReadOnly] public NativeArray<Input> Inputs;
         // Each candidate is a hardpoint slot plus its target group, local to the owner's group block.
         [ReadOnly] public NativeArray<int> CandidateSlots;
@@ -52,7 +58,8 @@ namespace EmpireAtWar.Components.Weapon
             quaternion inverseParentRotation = math.inverse(input.ParentRotation);
             // Preferred targets first; the rest only when none is in reach. Each candidate is visited once.
             // The first group with a hardpoint in reach is the target; its nearest reachable hardpoint is hit.
-            int passes = input.Preference == (int)TargetPreference.Any ? 1 : 2;
+            bool hasDoomed = input.HasDoomed != 0;
+            int passes = GetPassCount(input.Preference, hasDoomed);
             int bestGroup = -1;
             float bestDistanceSquared = float.PositiveInfinity;
             for (int pass = 0; pass < passes && result.CandidateIndex < 0; pass++)
@@ -60,13 +67,14 @@ namespace EmpireAtWar.Components.Weapon
             {
                 // A group's candidates are contiguous, so leaving the chosen group ends the search.
                 if (result.CandidateIndex >= 0 && CandidateGroups[i] != bestGroup) break;
-                if (GroupEligible[input.GroupStart + CandidateGroups[i]] == 0) continue;
+                byte eligibility = GroupEligible[input.GroupStart + CandidateGroups[i]];
+                if (eligibility == GROUP_INELIGIBLE) continue;
                 int slot = CandidateSlots[i];
                 byte flags = SlotFlags[slot];
                 if ((flags & TargetSelectionCapture.SLOT_VALID) == 0) continue;
                 if (input.StrikecraftOnly != 0 && (flags & TargetSelectionCapture.SLOT_STRIKECRAFT) == 0) continue;
                 if (input.ShipsOnly != 0 && (flags & TargetSelectionCapture.SLOT_STRIKECRAFT) != 0) continue;
-                if (IsPreferred(input.Preference, flags) != (pass == 0)) continue;
+                if (!MatchesPass(pass, hasDoomed, IsPreferred(input.Preference, flags), eligibility)) continue;
                 result.Visited++;
                 float3 direction = SlotPositions[slot] - input.Origin;
                 // Planar, like WeaponTargetSelector: ships on different height tiers must stay in range.
@@ -131,6 +139,20 @@ namespace EmpireAtWar.Components.Weapon
             Results[index] = result;
         }
 
+        /// <summary>One pass per preference tier, doubled when doomed groups need their own fallback pass.</summary>
+        internal static int GetPassCount(int preference, bool hasDoomed) =>
+            (preference == (int)TargetPreference.Any ? 1 : 2) * (hasDoomed ? 2 : 1);
+
+        // Pass order: preferred live, preferred doomed, other live, other doomed.
+        internal static bool MatchesPass(int pass, bool hasDoomed, bool preferred, byte eligibility) =>
+            MatchesPreference(pass, hasDoomed, preferred) && MatchesDoomedTier(pass, hasDoomed, eligibility);
+
+        internal static bool MatchesPreference(int pass, bool hasDoomed, bool preferred) =>
+            preferred == (pass / (hasDoomed ? 2 : 1) == 0);
+
+        internal static bool MatchesDoomedTier(int pass, bool hasDoomed, byte eligibility) =>
+            (eligibility == GROUP_DOOMED) == (hasDoomed && pass % 2 == 1);
+
         internal static bool IsPreferred(int preference, byte slotFlags) =>
             preference == (int)TargetPreference.Any ||
             preference == (int)TargetPreference.Strikecraft == ((slotFlags & TargetSelectionCapture.SLOT_STRIKECRAFT) != 0);
@@ -151,6 +173,8 @@ namespace EmpireAtWar.Components.Weapon
             public int ShipsOnly;
             // A TargetPreference value.
             public int Preference;
+            // Nonzero when any of the owner's groups is doomed, which adds the fallback passes.
+            public int HasDoomed;
         }
 
         internal struct Result

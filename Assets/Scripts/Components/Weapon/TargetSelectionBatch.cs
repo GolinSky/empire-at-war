@@ -118,7 +118,8 @@ namespace EmpireAtWar.Components.Weapon
                         GroupStart = request.GroupStart,
                         StrikecraftOnly = request.CandidateCount > 0 && request.HardPoint.StrikecraftOnly ? 1 : 0,
                         ShipsOnly = request.HardPoint.ShipsOnly ? 1 : 0,
-                        Preference = (int)request.HardPoint.PreferredTarget
+                        Preference = (int)request.HardPoint.PreferredTarget,
+                        HasDoomed = request.Weapon.HasDoomedCandidates ? 1 : 0
                     };
                 }
             }
@@ -273,7 +274,8 @@ namespace EmpireAtWar.Components.Weapon
             NativeArray<byte> flags = _capture.Flags;
             NativeArray<float3> positions = _capture.Positions;
             int preference = (int)request.HardPoint.PreferredTarget;
-            int passes = preference == (int)TargetPreference.Any ? 1 : 2;
+            bool hasDoomed = request.Weapon.HasDoomedCandidates;
+            int passes = WeaponTargetSelectionJob.GetPassCount(preference, hasDoomed);
             int bestGroup = -1;
             float bestDistanceSquared = float.PositiveInfinity;
             for (int pass = 0; pass < passes && result.CandidateIndex < 0; pass++)
@@ -281,13 +283,15 @@ namespace EmpireAtWar.Components.Weapon
             {
                 // Same choice as WeaponTargetSelectionJob: the nearest reachable hardpoint of the first group in reach.
                 if (result.CandidateIndex >= 0 && _candidateGroups[i] != bestGroup) break;
-                if (_groupEligible[request.GroupStart + _candidateGroups[i]] == 0) continue;
+                byte eligibility = _groupEligible[request.GroupStart + _candidateGroups[i]];
+                if (eligibility == WeaponTargetSelectionJob.GROUP_INELIGIBLE) continue;
                 int slot = _candidateSlots[i];
                 byte slotFlags = flags[slot];
                 if ((slotFlags & TargetSelectionCapture.SLOT_VALID) == 0) continue;
                 if (request.HardPoint.StrikecraftOnly && (slotFlags & TargetSelectionCapture.SLOT_STRIKECRAFT) == 0) continue;
                 if (request.HardPoint.ShipsOnly && (slotFlags & TargetSelectionCapture.SLOT_STRIKECRAFT) != 0) continue;
-                if (WeaponTargetSelectionJob.IsPreferred(preference, slotFlags) != (pass == 0)) continue;
+                if (!WeaponTargetSelectionJob.MatchesPass(pass, hasDoomed,
+                        WeaponTargetSelectionJob.IsPreferred(preference, slotFlags), eligibility)) continue;
                 result.Visited++;
                 float3 position = positions[slot];
                 result.NearestDistance = Mathf.Min(result.NearestDistance,

@@ -19,6 +19,11 @@ namespace EmpireAtWar.Components.Weapon
         internal const int JOB_PROGRESSION_THRESHOLD = 64;
         internal const int TARGET_JOB_BATCH_SIZE = TargetSelectionBatch.TARGET_JOB_BATCH_SIZE;
         internal const int DUE_JOB_BATCH_SIZE = 32;
+        // A ship is doomed once in-flight hits are expected to remove this much more than its shields and hull;
+        // the margin covers intercepted missiles, shield regeneration and damage reduction.
+        internal const float DOOMED_MARGIN = 1.25f;
+        // Leftover float error below this is dropped so finished targets leave the table.
+        private const float INCOMING_EPSILON = 0.5f;
 
         private readonly Dictionary<IWeaponPresenter, int> _owners = new Dictionary<IWeaponPresenter, int>();
         private readonly List<SequenceRecord> _sequences = new List<SequenceRecord>();
@@ -26,6 +31,9 @@ namespace EmpireAtWar.Components.Weapon
         private readonly Dictionary<long, int> _sequenceIndices = new Dictionary<long, int>();
         private readonly Dictionary<long, int> _impactIndices = new Dictionary<long, int>();
         private readonly List<DueEvent> _dueEvents = new List<DueEvent>();
+        // Expected shield and hull loss of scheduled, not yet landed hits, per target ship.
+        private readonly Dictionary<IHealthModelObserver, float> _incomingLoss =
+            new Dictionary<IHealthModelObserver, float>();
         private static readonly Comparison<DueEvent> _compareDueEvents = CompareDueEvents;
         private readonly TargetSelectionBatch _targetSelection;
 
@@ -58,6 +66,7 @@ namespace EmpireAtWar.Components.Weapon
             _sequences.Clear();
             _sequenceIndices.Clear();
             _impactIndices.Clear();
+            _incomingLoss.Clear();
             _owners.Clear();
             _targetSelection.Dispose();
             _dueEvents.Clear();
@@ -74,8 +83,14 @@ namespace EmpireAtWar.Components.Weapon
             _impacts.Clear();
             _sequenceIndices.Clear();
             _impactIndices.Clear();
+            _incomingLoss.Clear();
             _dueEvents.Clear();
         }
+
+        /// <summary>True when hits already in flight are expected to destroy the target with margin to spare.</summary>
+        public bool IsDoomed(IHealthModelObserver target) =>
+            _incomingLoss.TryGetValue(target, out float incoming) &&
+            incoming >= (target.Shields + target.Hull) * DOOMED_MARGIN;
 
         public void Register(IWeaponPresenter owner)
         {
@@ -160,7 +175,8 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         public void ScheduleImpact(IWeaponPresenter owner, AttackData targetGroup,
-            IHardPointModel target, float damage, DamageType damageType, float delay, IncomingMissile missile)
+            IHardPointModel target, float damage, DamageType damageType, float delay, IncomingMissile missile,
+            float expectedLoss = 0f)
         {
             if (!_owners.ContainsKey(owner))
                 throw new InvalidOperationException("Weapon must be registered before scheduling damage.");
@@ -175,12 +191,18 @@ namespace EmpireAtWar.Components.Weapon
                 Damage = damage,
                 DamageType = damageType,
                 Missile = missile,
+                ExpectedLoss = expectedLoss,
                 DueTime = Time.time + delay,
                 EarliestFrame = Time.frameCount + 1,
                 EventSequence = ++_nextEventSequence
             };
             _impactIndices.Add(impact.EventSequence, _impacts.Count);
             _impacts.Add(impact);
+            if (expectedLoss > 0f)
+            {
+                _incomingLoss.TryGetValue(targetGroup.TargetHealth, out float incoming);
+                _incomingLoss[targetGroup.TargetHealth] = incoming + expectedLoss;
+            }
             AttackSequenceDiagnostics.RecordScheduledImpact();
         }
 
@@ -498,6 +520,7 @@ namespace EmpireAtWar.Components.Weapon
 
         private void RemoveImpactAt(int index)
         {
+            ReleaseIncomingLoss(_impacts[index]);
             int last = _impacts.Count - 1;
             _impactIndices.Remove(_impacts[index].EventSequence);
             if (index != last)
@@ -506,6 +529,17 @@ namespace EmpireAtWar.Components.Weapon
                 _impactIndices[_impacts[index].EventSequence] = index;
             }
             _impacts.RemoveAt(last);
+        }
+
+        private void ReleaseIncomingLoss(ImpactRecord impact)
+        {
+            if (impact.ExpectedLoss <= 0f) return;
+            IHealthModelObserver health = impact.TargetGroup.TargetHealth;
+            // A total trimmed below the epsilon may already be gone while its last small hits are still pending.
+            if (!_incomingLoss.TryGetValue(health, out float incoming)) return;
+            incoming -= impact.ExpectedLoss;
+            if (incoming <= INCOMING_EPSILON) _incomingLoss.Remove(health);
+            else _incomingLoss[health] = incoming;
         }
 
         private struct DueEvent
@@ -547,6 +581,7 @@ namespace EmpireAtWar.Components.Weapon
             public DamageType DamageType;
 
             public float Damage;
+            public float ExpectedLoss;
             public float DueTime;
 
             public long EventSequence;
