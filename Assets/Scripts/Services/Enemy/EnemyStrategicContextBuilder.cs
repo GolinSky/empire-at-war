@@ -351,13 +351,14 @@ namespace EmpireAtWar.Services.Enemy
                 float distance = offset.sqrMagnitude;
                 float score = GetTargetScore(origin, ToVector(sighting.Position));
                 bool isShip = sighting.UnitTypeId.IsShip;
-                if (!_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) || entity.IsCloaked() ||
+                if (!_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) ||
+                    entity.HealthModel.IsDestroyed || !entity.HealthModel.HasUnits || entity.IsCloaked() ||
                     !_vision.IsVisible(_owner.Id, entity.GetFacade<IEntityTransformFacade>().Transform.position))
                 {
                     continue;
                 }
 
-                if (_localThreat != null && sighting.EntityId == _localThreat.Id && distance <= radiusSquared &&
+                if (ReferenceEquals(entity, _localThreat) && distance <= radiusSquared &&
                     _intel.GetConfidence(sighting, now) > 0f)
                 {
                     keepsPrevious = GetIonCost(ToVector(sighting.Position)) == 0f;
@@ -482,6 +483,7 @@ namespace EmpireAtWar.Services.Enemy
                 if (!sighting.UnitTypeId.IsShip ||
                     _intel.GetConfidence(sighting, now) <= 0f ||
                     !_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) ||
+                    entity.HealthModel.IsDestroyed || !entity.HealthModel.HasUnits ||
                     entity.IsCloaked() ||
                     !_vision.IsVisible(_owner.Id, entity.GetFacade<IEntityTransformFacade>().Transform.position))
                 {

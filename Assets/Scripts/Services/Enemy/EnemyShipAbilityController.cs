@@ -35,8 +35,8 @@ namespace EmpireAtWar.Services.Enemy
         // which throws once the unit has left the battle.
         private readonly List<(IEntity Entity, IShipAbilityFacade Caster)> _casters =
             new List<(IEntity, IShipAbilityFacade)>();
-        // Hostile units and where they were when the decision started; every caster searches this one list.
-        private readonly List<(IEntity Entity, Vector3 Position)> _hostiles = new List<(IEntity, Vector3)>();
+        // Membership is snapshotted; lifetime and position are checked when each caster acts.
+        private readonly List<IEntity> _hostiles = new List<IEntity>();
         private EnemyAiDifficultyProfile _profile;
         private int _nextCaster;
 
@@ -90,7 +90,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
                 else if (_relations.IsHostile(_owner.Id, entity.Owner))
                 {
-                    _hostiles.Add((entity, entity.GetFacade<IEntityTransformFacade>().Transform.position));
+                    _hostiles.Add(entity);
                 }
             }
         }
@@ -101,7 +101,8 @@ namespace EmpireAtWar.Services.Enemy
             for (; _nextCaster < end; _nextCaster++)
             {
                 (IEntity entity, IShipAbilityFacade caster) = _casters[_nextCaster];
-                if (!_entities.TryGetEntity(entity.Id, out _) || entity.HealthModel.IsDestroyed) continue;
+                if (!_entities.TryGetEntity(entity.Id, out IEntity current) ||
+                    !ReferenceEquals(current, entity) || entity.HealthModel.IsDestroyed) continue;
                 for (int i = 0; i < caster.Slots.Count; i++)
                 {
                     ShipAbilitySlot slot = caster.Slots[i];
@@ -159,10 +160,13 @@ namespace EmpireAtWar.Services.Enemy
         private void CollectTargets(IShipAbilityFacade caster, float range)
         {
             _targets.Clear();
-            foreach ((IEntity entity, Vector3 position) in _hostiles)
+            foreach (IEntity entity in _hostiles)
             {
-                if (entity.HealthModel.IsDestroyed || entity.IsCloaked() ||
-                    !_vision.IsVisible(_owner.Id, entity.GetFacade<IEntityTransformFacade>().Transform.position) ||
+                if (!_entities.TryGetEntity(entity.Id, out IEntity current) ||
+                    !ReferenceEquals(current, entity) || entity.HealthModel.IsDestroyed || entity.IsCloaked())
+                    continue;
+                Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
+                if (!_vision.IsVisible(_owner.Id, position) ||
                     PlanarGeometry.Distance(caster.WorldPosition, position) > range)
                     continue;
                 _targets.Add(entity);

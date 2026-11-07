@@ -97,8 +97,9 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [Test]
-        public void CasterRemovedBeforeItsTurn_IsSkipped()
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CasterRemovedBeforeItsTurn_IsSkipped(bool replaceEntity)
         {
             GameObject playerView = new GameObject("Player");
             try
@@ -129,6 +130,8 @@ namespace EmpireAtWar.Tests.Editor
 
                 controller.Tick();
                 entities.RemoveEntity(casters[4].OwnEntity);
+                if (replaceEntity)
+                    entities.AddEntity(new FakeEntity(new FakeHealth(null, 1f), null, TestPlayers.Enemy, 5));
 
                 Assert.DoesNotThrow(controller.Tick);
                 Assert.That(casters[4].Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
@@ -137,6 +140,55 @@ namespace EmpireAtWar.Tests.Editor
             finally
             {
                 UnityEngine.Object.DestroyImmediate(playerView);
+            }
+        }
+
+        [TestCase("removed", false)]
+        [TestCase("replaced", false)]
+        [TestCase("moved-out", false)]
+        [TestCase("moved-in", true)]
+        public void CachedHostile_IsValidatedWhenCasterActs(string change, bool shouldActivate)
+        {
+            GameObject targetView = new GameObject("Cached hostile");
+            try
+            {
+                targetView.transform.position = Vector3.right * (change == "moved-in" ? 100f : 5f);
+                ShipAbilityDefinition definition = new ShipAbilityDefinition();
+                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                typeof(ShipAbilityDefinition).GetField("aiUse", flags).SetValue(definition, ShipAbilityAiUse.Defensive);
+                typeof(ShipAbilityDefinition).GetField("duration", flags).SetValue(definition, 5f);
+                FakeCommand caster = new FakeCommand(definition);
+                EntityLocator entities = new EntityLocator();
+                entities.AddEntity(caster.Entity);
+                IEntity target = new FakeEntity(new FakeHealth(targetView.transform, 1f), null, TestPlayers.Human, 2);
+                entities.AddEntity(target);
+                RecordingFactory factory = new RecordingFactory();
+                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+                ShipAbilityService service = new ShipAbilityService(factory, roster);
+                EnemyShipAbilityController controller = new EnemyShipAbilityController(
+                    entities, new FakeState(), roster, service, new VisionService(roster, fogEnabled: false),
+                    roster.Get(TestPlayers.Enemy), null);
+                typeof(EnemyShipAbilityController).GetMethod("StartDecision", flags).Invoke(controller, null);
+
+                if (change == "removed" || change == "replaced")
+                {
+                    entities.RemoveEntity(target);
+                    if (change == "replaced")
+                        entities.AddEntity(new FakeEntity(new FakeHealth(null, 1f), null, TestPlayers.Human, 2));
+                    UnityEngine.Object.DestroyImmediate(targetView);
+                }
+                else targetView.transform.position = Vector3.right * (change == "moved-in" ? 5f : 100f);
+
+                Assert.DoesNotThrow(() => typeof(EnemyShipAbilityController).GetMethod("UseNextCasters", flags)
+                    .Invoke(controller, null));
+                Assert.That(factory.CreatedCount, Is.EqualTo(shouldActivate ? 1 : 0));
+                Assert.That(caster.Slots[0].State, Is.EqualTo(shouldActivate
+                    ? ShipAbilityState.Active : ShipAbilityState.Ready));
+                service.LateDispose();
+            }
+            finally
+            {
+                if (targetView != null) UnityEngine.Object.DestroyImmediate(targetView);
             }
         }
 
