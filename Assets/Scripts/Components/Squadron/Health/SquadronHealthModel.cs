@@ -121,14 +121,26 @@ namespace EmpireAtWar.Components.Squadrons.Health
             }
 
             damage *= _modifiers.DamageTakenMultiplier;
+            bool absorbed = false;
             if (!IsShieldSuppressed && _shields[memberId] > 0f && !_damageMatrix.IsShieldPiercing(damageType))
             {
-                if (damageType == DamageType.Laser || damageType == DamageType.FighterLaser)
-                    damage *= _data.LaserShieldDamageMultiplier;
-                _shields[memberId] = Math.Max(0f,
-                    _shields[memberId] - damage * _damageMatrix.GetSquadronShieldMultiplier(damageType));
+                // The part of the hit the member's shield could not hold carries on to its hull.
+                float shieldMultiplier = _damageMatrix.GetSquadronShieldMultiplier(damageType) *
+                    (damageType == DamageType.Laser || damageType == DamageType.FighterLaser
+                        ? _data.LaserShieldDamageMultiplier
+                        : 1f);
+                float shieldDamage = damage * shieldMultiplier;
+                absorbed = shieldDamage <= _shields[memberId];
+                if (absorbed)
+                    _shields[memberId] -= shieldDamage;
+                else
+                {
+                    damage = (shieldDamage - _shields[memberId]) / shieldMultiplier;
+                    _shields[memberId] = 0f;
+                }
             }
-            else
+
+            if (!absorbed)
             {
                 member.ApplyDamage(damage * _damageMatrix.GetDamageMultiplier(damageType, ShipClass));
                 if (member.IsDestroyed)

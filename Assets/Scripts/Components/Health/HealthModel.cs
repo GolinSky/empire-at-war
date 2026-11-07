@@ -198,23 +198,32 @@ namespace EmpireAtWar.Models.Health
             damage *= _modifiers.DamageTakenMultiplier;
             if (AbsorbsDamage(damageType))
             {
-                Shields = Math.Max(0f, Shields - damage * _damageMatrix.GetShipShieldMultiplier(damageType));
+                // The part of the hit the shields could not hold carries on to the hull.
+                float shieldMultiplier = _damageMatrix.GetShipShieldMultiplier(damageType);
+                float shieldDamage = damage * shieldMultiplier;
+                if (shieldDamage <= Shields)
+                {
+                    Shields -= shieldDamage;
+                    OnValueChanged?.Invoke();
+                    return;
+                }
+
+                damage = (shieldDamage - Shields) / shieldMultiplier;
+                Shields = 0f;
+            }
+
+            float hullDamage = damage * _damageMatrix.GetDamageMultiplier(damageType, ShipClass);
+            if (HardPointModels.Length == 0)
+            {
+                DamageHull(hullDamage);
+            }
+            else if (HardPointModels[hardPointId].IsDestroyed && HasLiveHardPoints)
+            {
+                DamageLiveHardPoints(hullDamage);
             }
             else
             {
-                float hullDamage = damage * _damageMatrix.GetDamageMultiplier(damageType, ShipClass);
-                if (HardPointModels.Length == 0)
-                {
-                    DamageHull(hullDamage);
-                }
-                else if (HardPointModels[hardPointId].IsDestroyed && HasLiveHardPoints)
-                {
-                    DamageLiveHardPoints(hullDamage);
-                }
-                else
-                {
-                    DamageHardPoint(HardPointModels[hardPointId], hullDamage);
-                }
+                DamageHardPoint(HardPointModels[hardPointId], hullDamage);
             }
 
             OnValueChanged?.Invoke();
