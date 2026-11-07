@@ -1,0 +1,4 @@
+device=Apple M2 camera=2940x1846 quality=High Fidelity gc=False scale=1
+window=0 frames=6752 p95ms=10.3059999999999 p99ms=12.1192909999976 maxms=83.5236659999978 hitches=1 collections=1 gcCoincidentOver50ms=[] state=Running fleet={ scene = Battle, state = Running, time = 65.33519, ships = 22, squadrons = 24, weapons = 49, local = True, enemy = True }
+window=1 frames=4638 p95ms=18.6090830000012 p99ms=26.7932919999936 maxms=66.6708749999998 hitches=2 collections=1 gcCoincidentOver50ms=[] state=Running fleet={ scene = Battle, state = Running, time = 125.3663, ships = 22, squadrons = 21, weapons = 47, local = True, enemy = True }
+window=2 frames=4721 p95ms=18.076624999992 p99ms=26.3877499999978 maxms=53.2110409999973 hitches=1 collections=2 gcCoincidentOver50ms=[53.2110409999973] state=Running fleet={ scene = Battle, state = Running, time = 185.398, ships = 17, squadrons = 20, weapons = 41, local = True, enemy = True }

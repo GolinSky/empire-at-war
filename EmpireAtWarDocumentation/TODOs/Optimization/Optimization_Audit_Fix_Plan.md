@@ -16,7 +16,7 @@ tags:
 
 ## Decision
 
-- **Fix next: recurring large fleet stalls.** The capture metadata is corrected and a known shot-pool allocation site is removed. A new 296 ms Player stall is attributed to a synchronous AssetBundle wait. A separate satellite warmup omission is fixed; the exact request for that native event and other long intervals remain unresolved.
+- **Fix next: recurring large fleet stalls.** The capture metadata is corrected and a known shot-pool allocation site is removed. The 296 ms Player stall is attributed to a synchronous AssetBundle wait. Follow-up 576 ms / 1.8 s stalls are attributed to synchronous Metal GPU-program creation. Satellite warmup is fixed; the original asset key, historical 198 ms cause and exact long-stall shader variants remain unresolved.
 - Retain the measured ownership, texture, readability, music, preload, nebula and VFX changes. Incremental GC did not establish an improvement → original setting restored.
 - Evidence → [builds, memory, probes and visual comparisons](../../../Docs/Audits/2026-11-07-Optimization-Fixes/README.md). Base `3cdc86cba` + local fixes; Unity 6000.4.7f1 / StandaloneOSX / Apple M2. Diagnostic Players used Mono; project backend remains IL2CPP.
 
@@ -25,7 +25,7 @@ tags:
 | Priority | Finding | Result | Owner / next verification |
 |---|---|---|---|
 | P0 | Incorrect output dimensions | Implemented. Packed output 2940×1846 / scale 0.77, then 1470×923 / 0.5; metadata matches camera pixels. Missing camera reports unavailable. | [[TODOs/Optimization/Battle_CPU_Performance_Plan\|Battle CPU]]. Menu-started Editor capture acceptance remains. |
-| P0 | Large fleet stalls | **Open.** Baseline Player maxima 28/193/134 ms; Editor 60/628/70 ms. GC trial still reached 656/244/169 ms, so reverted. New native capture: 296 ms with 260 ms blocked in synchronous AssetBundle loading and 282 ms GPU idle. Satellite warmup fix verified separately; not every stall is attributed. | [[TODOs/Optimization/Battle_CPU_Performance_Plan\|Battle CPU]]. Resolve the exact asset/caller for the native 296 ms event and the separate 198.6 ms interval outside measured cached loads; repeat under controlled conditions. |
+| P0 | Large fleet stalls | **Open.** Baseline Player maxima 28/193/134 ms; Editor 60/628/70 ms. GC trial still reached 656/244/169 ms, so reverted. New native capture: 296 ms with 260 ms blocked in synchronous AssetBundle loading and 282 ms GPU idle. Satellite warmup fix verified separately; not every stall is attributed. | [[TODOs/Optimization/Battle_CPU_Performance_Plan\|Battle CPU]]. Resolve the original 296 ms asset/caller and historical 198.6 ms event; new 576 ms / 1.8 s captures prove a separate Metal shader-program stall mechanism. Identify exact variants before scoped warmup. |
 | P1 | Hardpoint smoke off-camera/fog | Implemented. Both loops explicitly bound; emission suppressed while owner lease remains. Packed hidden particles 11,930 → 0; reveal resumes; stop drains to active 0 / fading 0 / idle 34. Isolated simulation 0.221–0.247 → 0.072–0.080 ms/step. | [[TODOs/Optimization/Battle_FPS_Recovery_Plan\|FPS recovery]]. Full crowded visual/GPU-pass acceptance remains; simulation saving is measured. |
 | P1 | Station destruction obscures scene | Station-only scale 0.75. Other deaths retain 1.0. Near/far, fixed-age captures saved. | [[TODOs/Optimization/Battle_FPS_Recovery_Plan\|FPS recovery]]. Perceptual tracking of nearby fighters, hull and HUD remains a user gate. |
 | P1 | Providence RGBA32 | Three shipped maps retained compressed: Albedo/Emissive BC7, Normal DXT5; all numerical gates pass. Player object memory 67,110,444 → 16,778,880 B. | [[TODOs/Optimization/Asset_Size_Followup_Plan\|Asset size]]. Specular is absent from packed layouts → restored, not counted as a saving. Windows/close-zoom user approval remains. |
@@ -74,3 +74,14 @@ tags:
 - Reported `DLSSIUpscaler.cs` CS1069: the DLSS prototype commit `7df3fb0c1` forced `ENABLE_NVIDIA` in shared Standalone scripting defines. Mac compilation included DLSS code without a NVIDIA module reference; the built-in NVIDIA package was already enabled.
 - Removed only the manually forced `ENABLE_NVIDIA` through Unity PlayerSettings; retained `ENABLE_UPSCALER_FRAMEWORK` and the NVIDIA package. Do not force platform capability symbols globally.
 - Unity 6000.4.7f1 Editor recompile completed with `failed: false`, `errors: []`. Settings persisted; tests not run. Windows DLSS compilation/runtime not verified by this Mac correction. P0 fleet attribution remains open.
+
+- Consolidated findings, causal evidence, fixes, verification limits and current probes → [[TODOs/Optimization/Optimization_Audit_Fix_Plan - Research]].
+
+### Follow-up native attribution · 2026-11-07
+
+- Captured 576.310 ms and 1797.483 ms harness gaps. Main thread waits in `GfxDeviceClient::CreateGpuProgram`; graphics worker waits in `MTLCompilerScheduler::buildRequest`. These new events establish runtime Metal shader/program creation as a second stall mechanism.
+- Historical 198.608 ms event localized to rolling frame 12691 / UTC `09:35:26.831144`; its native stack was not recorded. Similar timing/counters do not prove the same cause.
+- Original 296 ms asset key/caller remains unavailable in retained symbol data. No new production patch yet; broad shader warmup previously caused keyword-space errors. Tests remain disabled; overall FPS improvement unestablished.
+- Full previous findings, fixes, exact measurements, diagnostic scripts and remaining attribution work → [[TODOs/Optimization/Optimization_Audit_Fix_Plan - Research]].
+
+- Shader-log repeat completed: 149 variant-upload messages, but native messages bypass managed frame callbacks; exact long-stall variants still unproven. Also captured a separate 150.927 ms capture-writer wait and up to 83.530 ms probe stack-formatting cost. Full classifications → research decision matrix. No new production patch; tests not run.

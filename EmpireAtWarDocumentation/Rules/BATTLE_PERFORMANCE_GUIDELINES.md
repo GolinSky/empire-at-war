@@ -158,3 +158,11 @@ tags:
 - `BeamVisuals` owns one reusable `MaterialPropertyBlock`; `ShotEffectPool` owns cached event delegates. Preserve reset/release behavior when removing allocations.
 - Disabled nebula startup: no impostor allocation or bake. First enable pays the one-time bake; retain its measured wall time separately from startup and GPU submission time.
 - Evidence and remaining gates → [[TODOs/Optimization/Optimization_Audit_Fix_Plan]].
+
+### Fleet shader stalls · 2026-11-07
+
+- Runtime Metal GPU-program creation can block the main thread outside gameplay Tick/load markers: captured 576 ms / 1.8 s gaps show `GfxDeviceClient::CreateGpuProgram → ShaderLab::SubProgram::Compile`; graphics worker waits in `MTLCompilerScheduler::buildRequest`.
+- `GraphicsSettings.logWhenShaderIsCompiled = true` in a Development Player records shader/pass/stage/keywords and driver upload time. Correlate records with frame/UTC; a later repeat does not identify an earlier unlogged shader.
+- Identify exact variants and rendering state before targeted warmup. Do not restore broad `Shader.WarmupAllShaders()`; prior keyword-space errors remain relevant. Mono JIT costs are separate from IL2CPP runtime behavior.
+- Native waiting/context-switch captures can generate gigabytes and perturb an 8 GB host. Preserve complete symbolication, attach to verified PID, and check for owned orphan Players after capture. Mechanism attribution does not establish clean FPS/duration improvement.
+- Evidence/remaining work → [[TODOs/Optimization/Optimization_Audit_Fix_Plan - Research]].

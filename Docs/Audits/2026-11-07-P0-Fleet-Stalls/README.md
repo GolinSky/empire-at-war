@@ -45,3 +45,8 @@
 - A separate 198.608 ms probe interval had no ≥5 ms `CachedAssetService.Load` call. It is not attributed to the satellite omission or claimed fixed. The exact managed asset/caller for the original native 296 ms event remains unproven.
 
 - Final isolated packed verification completed all three 60 s windows: maxima 34.015 / 29.608 / 44.940 ms. Actual AI construction requested `TurbolaserSatelliteView` in 0.0022 ms at frame 14360, realtime 133.468 s. [Managed probe records and timings](managed-probe-evidence.json) preserve the before/after call stacks. This verifies the narrow cache-coverage change, not the absence of rare stalls or a general FPS gain.
+
+## Follow-up
+
+- [Further captures, native shader attribution, historical 198 ms localization, and capture-overhead findings](Followup/README.md). New 576 ms / 1.8 s stalls are synchronous Metal GPU-program creation; original 296 ms key/caller and historical 198 ms cause remain unresolved.
+- Consolidated Obsidian reference: `TODOs/Optimization/Optimization_Audit_Fix_Plan - Research.md`.

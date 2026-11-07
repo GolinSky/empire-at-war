@@ -317,3 +317,9 @@ updated: 2026-11-07
 - Native 296.146 ms event, frame 11598: 260.103 ms blocked under synchronous AssetBundle loading; matching 281.889 ms Player GPU idle gap. Exact request/key unresolved; another 198.608 ms interval occurred outside measured cached loads.
 - Fixed separate satellite warmup omission: use factory type/asset mapping for all platforms. AI Turbolaser load 43.034/50.416 ms before → 0.0022 ms after equivalent packed key expansion. Changed source compiled outside Unity; Core coverage authored, not run.
 - User requires concurrent work to continue. No controlled FPS claim or full Unity rebuild; P0 remains open. [Evidence and remaining work](../../../Docs/Audits/2026-11-07-P0-Fleet-Stalls/README.md); coordination → [[TODOs/Optimization/Optimization_Audit_Fix_Plan]].
+
+### P0 follow-up · 2026-11-07
+
+- New 576 ms / 1.8 s native captures: main-thread `GfxDeviceClient::CreateGpuProgram` waits; render-worker `MTLCompilerScheduler::buildRequest`. Synchronous Metal GPU-program creation is now proven for these events.
+- Historical 198 ms event localized but not retroactively attributed; original 296 ms AssetBundle key/caller unresolved. Mono JIT also appears in a separate ~48 ms LateTick event; do not generalize it to IL2CPP.
+- Evidence, all earlier fixes and remaining work → [[TODOs/Optimization/Optimization_Audit_Fix_Plan - Research]]. Tests disabled; P0 open; no new production change or general FPS claim.
