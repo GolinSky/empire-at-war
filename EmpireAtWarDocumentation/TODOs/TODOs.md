@@ -69,6 +69,9 @@
 - [ ] **Prioritized fixes from the November 6 optimization audit** → [[TODOs/Optimization/Optimization_Audit_Fix_Plan|Fix order, owners and verification]]
   - First fix capture dimensions, then isolate fleet hitches in the M2 Editor and Development Player. Next, measure off-camera hardpoint smoke and destruction readability. Start the Providence texture pilot after a valid content baseline.
 
+- [ ] **Remove battle-start stutter at reveal (deferred asset warm-up after `Running`)** → [[TODOs/Optimization/Battle_Start_Hitch_Plan|Battle Start Hitch Plan]]
+  - 2026-11-06: Editor Profiler skirmish start: 25 frames > 25 ms between −2.6 s and +4.4 s around activation; visible window +3.9–4.4 s = Addressables integration (35–117 ms) matching `BattleAssetWarmup`. Next: Phase 0 markers, then Development Player baseline. Nothing implemented.
+
 - [ ] **Recover battle FPS lost after the hazard-system decor asteroids (decor culling/LOD, field rock LOD, nebula, presets, particles)** → [[TODOs/Optimization/Battle_FPS_Recovery_Plan|Battle FPS Recovery Plan]]; [[TODOs/Optimization/Battle_FPS_Recovery_Plan - Research|PC capture 2026-10-29 vs Mac audits]]
   - 2026-10-29: Phase 0 tool and Phases 1–6 implementations source-verified. Builds/performance runs deferred by user; absorbed attribution/experiments and visual/performance acceptance remain open.
   - 2026-10-29: re-verified against committed `76e7222f8` (code, prefabs, SceneContext, volume profile, materials); no defects found. Tests/captures not run.

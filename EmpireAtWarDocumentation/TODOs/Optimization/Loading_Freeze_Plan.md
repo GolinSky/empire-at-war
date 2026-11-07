@@ -164,6 +164,7 @@ tags:
 
 ## Related
 
+- [[TODOs/Optimization/Battle_Start_Hitch_Plan]] — owns post-activation/reveal hitches, incl. `BattleAssetWarmup` pacing (2026-11-06 Editor profile).
 - [[Done/Refactoring/Battle_Startup_Sequence_Plan]] — `BattleState.Loading` sequence hosts step 3.
 - [[Done/Optimization/Squadron_Pooling_Plan]] — origin of prewarm.
 - [[TODOs/Optimization/Desktop_Asset_Compression_Plan]] — loading captures overlap.
