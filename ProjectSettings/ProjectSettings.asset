@@ -886,7 +886,7 @@ PlayerSettings:
     QNX: 
     ReservedCFE: 
     Stadia: 
-    Standalone: 
+    Standalone: ENABLE_UPSCALER_FRAMEWORK;ENABLE_NVIDIA
     VisionOS: 
     WebGL: 
     XboxOne: 

@@ -15,6 +15,7 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         public UnitOrderType Current { get; private set; }
         public FormationPoint Destination { get; private set; }
         public IEntity Target { get; private set; }
+        public AttackMoveEngagement Engagement { get; private set; }
         public int TargetHardPointId { get; private set; } = NO_HARD_POINT;
         public FormationPoint Offset { get; private set; }
         public IReadOnlyList<FormationPoint> Waypoints => _waypoints;
@@ -22,11 +23,13 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
 
         public void Replace(UnitOrderType type, FormationPoint destination = default,
             IEntity target = null, FormationPoint offset = default,
-            IReadOnlyList<FormationPoint> waypoints = null, int targetHardPointId = NO_HARD_POINT)
+            IReadOnlyList<FormationPoint> waypoints = null, int targetHardPointId = NO_HARD_POINT,
+            AttackMoveEngagement engagement = null)
         {
             Current = type;
             Destination = destination;
             Target = target;
+            Engagement = engagement;
             TargetHardPointId = targetHardPointId;
             Offset = offset;
             _waypoints.Clear();

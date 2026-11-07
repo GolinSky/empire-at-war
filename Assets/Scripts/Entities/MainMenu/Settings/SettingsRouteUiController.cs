@@ -4,6 +4,7 @@ using EmpireAtWar.Services.Tooltip;
 using System;
 using System.Threading.Tasks;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.Graphics;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
@@ -53,11 +54,20 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             _keyBindingEditor = keyBindingEditor;
             _model = model;
             _tooltips = new TooltipRequests(tooltipService);
+            GraphicsUpscalerSupport.DlssDisabled += OnDlssDisabled;
+        }
+
+        private void OnDlssDisabled()
+        {
+            if (!_isOpen) return;
+            _draftEditor.RefreshUpscalerOptions();
+            _model.SetStatus("DLSS stopped producing frames. Using Bilinear for this session.");
         }
 
         public void LateDispose()
         {
             _isDisposed = true;
+            GraphicsUpscalerSupport.DlssDisabled -= OnDlssDisabled;
             if (_settingsService.IsAwaitingDisplayConfirmation || _model.IsBusy) RestoreDisplayOnDispose();
             _model.Changed -= Render;
             if (_tooltipHover != null) _tooltipHover.Dispose();

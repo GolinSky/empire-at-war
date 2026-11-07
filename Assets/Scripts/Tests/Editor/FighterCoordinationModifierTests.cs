@@ -31,7 +31,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 var entities = new EntityLocator();
                 entities.AddEntity(squadron);
-                IShipAbility ability = new FighterCoordinationSettings().CreateAbility(
+                IStoppableShipAbility ability = (IStoppableShipAbility)new FighterCoordinationSettings().CreateAbility(
                     new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null, null));
 
                 ability.Start(caster, new ShipAbilityDefinition(), null);
@@ -58,8 +58,8 @@ namespace EmpireAtWar.Tests.Editor
                 entities.AddEntity(ally);
                 var dependencies = new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null, null);
                 var settings = new FighterCoordinationSettings();
-                IShipAbility first = settings.CreateAbility(dependencies);
-                IShipAbility second = settings.CreateAbility(dependencies);
+                IStoppableShipAbility first = (IStoppableShipAbility)settings.CreateAbility(dependencies);
+                IStoppableShipAbility second = (IStoppableShipAbility)settings.CreateAbility(dependencies);
                 first.Start(caster, new ShipAbilityDefinition(), null);
                 second.Start(ally, new ShipAbilityDefinition(), null);
                 first.Stop();

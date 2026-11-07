@@ -29,9 +29,9 @@ namespace EmpireAtWar.Entities.Ship.Abilities
                 HasLiveHardPoint(HardPointType.SensorArray)) &&
             (Id != ShipAbilityId.FighterCoordination ||
                 HasLiveHardPoint(HardPointType.CommandArray));
-        public bool CanActivate => IsAvailable && State == ShipAbilityState.Ready;
-        public bool CanPress => IsAvailable && (State == ShipAbilityState.Ready ||
-            State == ShipAbilityState.Active && Definition.CanCancel);
+        public bool CanActivate => State == ShipAbilityState.Ready && IsAvailable &&
+            (!(Definition.Settings is IShipAbilityReadiness readiness) || readiness.IsReady(Owner));
+        public bool CanPress => CanActivate || State == ShipAbilityState.Active && Definition.CanCancel && IsAvailable;
         public float Progress01 => State switch
         {
             ShipAbilityState.Active => Definition.Duration > 0f ? TimeLeft / Definition.Duration : 0f,

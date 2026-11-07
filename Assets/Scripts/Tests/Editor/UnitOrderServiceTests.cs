@@ -8,6 +8,7 @@ using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using NUnit.Framework;
@@ -111,6 +112,41 @@ namespace EmpireAtWar.Tests.Editor
             _unitOrderService.IssueMove(new IEntity[] { first, second }, slots);
             Assert.That(first.Command.LastPoint, Is.EqualTo(slots[0]));
             Assert.That(second.Command.LastPoint, Is.EqualTo(slots[1]));
+        }
+
+        [Test]
+        public void AttackMove_SaveRoundTrip_RestoresOnlyMembersOfTheSameGroupTogether()
+        {
+            var restoredGroups = new Dictionary<string, AttackMoveEngagement>();
+            var fleet = new AttackMoveEngagement();
+            AttackMoveEngagement Restore(AttackMoveEngagement original)
+            {
+                var order = new UnitOrderModel();
+                order.Replace(UnitOrderType.AttackMove, engagement: original);
+                var loaded = JsonUtility.FromJson<UnitOrderSave>(JsonUtility.ToJson(UnitOrderSave.From(order)));
+                FakeEntity ship = Entity(1, TestPlayers.Human);
+                loaded.Apply(ship, _locator, restoredGroups);
+                return ship.Command.LastEngagement;
+            }
+
+            AttackMoveEngagement first = Restore(fleet);
+            Assert.That(first, Is.Not.SameAs(fleet));
+            Assert.That(first.GroupId, Is.EqualTo(fleet.GroupId));
+            Assert.That(Restore(fleet), Is.SameAs(first));
+            Assert.That(Restore(new AttackMoveEngagement()), Is.Not.SameAs(first));
+        }
+
+        [Test]
+        public void AttackMove_OldSaveWithoutGroup_RestoresIndependentEngagements()
+        {
+            var order = JsonUtility.FromJson<UnitOrderSave>($"{{\"type\":{(int)UnitOrderType.AttackMove}}}");
+            var groups = new Dictionary<string, AttackMoveEngagement>();
+            FakeEntity first = Entity(1, TestPlayers.Human);
+            FakeEntity second = Entity(2, TestPlayers.Human);
+            order.Apply(first, _locator, groups);
+            order.Apply(second, _locator, groups);
+            Assert.That(first.Command.LastEngagement, Is.Not.Null);
+            Assert.That(second.Command.LastEngagement, Is.Not.Null.And.Not.SameAs(first.Command.LastEngagement));
         }
 
         [Test]

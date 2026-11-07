@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
@@ -21,6 +22,7 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private bool hasTarget;
         [SerializeField] private long targetId;
         [SerializeField] private int targetHardPointId = UnitOrderModel.NO_HARD_POINT;
+        [SerializeField] private string attackMoveGroupId;
         [SerializeField] private Vector3[] waypoints = Array.Empty<Vector3>();
 
         public UnitOrderType Type => type;
@@ -36,12 +38,13 @@ namespace EmpireAtWar.Services.Saves
                 hasTarget = order.Target != null,
                 targetId = order.Target != null ? order.Target.Id : 0,
                 targetHardPointId = order.TargetHardPointId,
+                attackMoveGroupId = order.Engagement?.GroupId,
                 waypoints = order.Waypoints.Skip(order.WaypointIndex).Select(ToVector).ToArray()
             };
         }
 
         /// <summary>Re-issues the order; an order whose target was not restored leaves the unit idle.</summary>
-        public void Apply(IEntity unit, IEntityLocator units)
+        public void Apply(IEntity unit, IEntityLocator units, Dictionary<string, AttackMoveEngagement> attackMoveGroups)
         {
             IEntity target = null;
             if (hasTarget && !units.TryGetEntity(targetId, out target)) return;
@@ -57,8 +60,15 @@ namespace EmpireAtWar.Services.Saves
                     unit.GetFacade<IAttackFacade>().Attack(target, offset);
                     break;
                 case UnitOrderType.AttackMove:
-                    // Each unit gets its own engagement: the group that shared one is not saved.
-                    unit.GetFacade<IAttackMoveFacade>().AttackMoveTo(destination, new AttackMoveEngagement());
+                    AttackMoveEngagement engagement;
+                    if (string.IsNullOrEmpty(attackMoveGroupId))
+                        engagement = new AttackMoveEngagement(); // Older saves have no group identity.
+                    else if (!attackMoveGroups.TryGetValue(attackMoveGroupId, out engagement))
+                    {
+                        engagement = new AttackMoveEngagement(attackMoveGroupId);
+                        attackMoveGroups.Add(attackMoveGroupId, engagement);
+                    }
+                    unit.GetFacade<IAttackMoveFacade>().AttackMoveTo(destination, engagement);
                     break;
                 case UnitOrderType.Guard:
                     unit.GetFacade<IGuardFacade>().Guard(target, offset);

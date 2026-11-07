@@ -47,7 +47,7 @@ namespace EmpireAtWar.Tests.Editor
 
             ability.Start(caster, new ShipAbilityDefinition(), null);
             Assert.That(caster.Modifiers.DamageMultiplier, Is.EqualTo(1.5f));
-            ability.Stop();
+            ((IStoppableShipAbility)ability).Stop();
             AssertNeutral(caster.Modifiers);
         }
 
@@ -62,7 +62,7 @@ namespace EmpireAtWar.Tests.Editor
             ConcentrateFireSettings settings = CreateSettings<ConcentrateFireSettings>(
                 "allyStatModifier", _testModifier);
             SetField(settings, "commandRadius", 100f);
-            IShipAbility ability = new ConcentrateFireAbility(settings: settings, entities: entities);
+            IStoppableShipAbility ability = new ConcentrateFireAbility(settings: settings, entities: entities);
 
             ability.Start(caster, new ShipAbilityDefinition(), null);
             Assert.That(caster.Modifiers.DamageMultiplier, Is.EqualTo(1.5f));

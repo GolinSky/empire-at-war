@@ -1,5 +1,40 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5368106575014794612
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03be459180a06974d8583254adb17471, type: 3}
+  m_Name: STP (IUpscaler)
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::STPOptions
+  m_UpscalerName: STP (IUpscaler)
+  m_InjectionPoint: 0
+--- !u!114 &-4802297852297135797
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dffd75c6cf5e26843be8893fada27a36, type: 3}
+  m_Name: DLSS (IUpscaler)
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::DLSSOptions
+  m_UpscalerName: DLSS (IUpscaler)
+  m_InjectionPoint: 0
+  DLSSQualityMode: 2
+  FixedResolutionMode: 0
+  DLSSRenderPresetQuality: 0
+  DLSSRenderPresetBalanced: 0
+  DLSSRenderPresetPerformance: 0
+  DLSSRenderPresetUltraPerformance: 0
+  DLSSRenderPresetDLAA: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28,6 +63,10 @@ MonoBehaviour:
   m_MSAA: 2
   m_RenderScale: 1
   m_UpscalingFilter: 0
+  m_IUpscalerName: DLSS (IUpscaler)
+  m_UpscalerOptions:
+  - {fileID: -5368106575014794612}
+  - {fileID: -4802297852297135797}
   m_FsrOverrideSharpness: 0
   m_FsrSharpness: 0.92
   m_EnableLODCrossFade: 1

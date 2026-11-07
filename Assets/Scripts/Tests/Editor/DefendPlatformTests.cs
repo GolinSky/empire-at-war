@@ -38,12 +38,15 @@ namespace EmpireAtWar.Tests.Editor
                 SetField(platform, "_healthComponent", healthComponent);
                 SetField(platform, "_startPosition", startPosition);
                 AttachCompletedConstruction(platform);
+                SetField(platform, "_teamIncome", new TeamIncomeSource(0f, platform.Construction,
+                    new ResearchStub(), TestPlayers.CreateTeamGame(), new PlayerRegistry(), TestPlayers.Human));
                 typeof(DefendPlatform).GetProperty("Data", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(platform, data);
 
                 platform.Initialize();
 
                 Assert.That(platform.transform.position, Is.EqualTo(startPosition));
+                Assert.That(platform.Income, Is.Zero);
             }
             finally
             {
@@ -71,12 +74,11 @@ namespace EmpireAtWar.Tests.Editor
                 registry.RegisterEconomy(TestPlayers.Ally, ally);
                 registry.RegisterEconomy(TestPlayers.Enemy, enemy);
                 SetField(platform, "_healthComponent", new HealthComponentStub());
-                SetField(platform, "_playerRoster", TestPlayers.CreateTeamGame());
-                SetField(platform, "_playerRegistry", registry);
                 SetField(platform, "_owner", TestPlayers.Human);
-                SetField(platform, "_research", research);
                 SetField(platform, "_componentLifecycle", new EntityComponentLifecycle(Array.Empty<IMonoComponent>()));
                 AttachCompletedConstruction(platform);
+                SetField(platform, "_teamIncome", new TeamIncomeSource(data.Income, platform.Construction,
+                    research, TestPlayers.CreateTeamGame(), registry, TestPlayers.Human));
                 typeof(DefendPlatform).GetProperty("Data", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(platform, data);
 

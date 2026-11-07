@@ -1,3 +1,5 @@
+using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Components.Hangar;
 using System;
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
@@ -130,7 +132,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static void SetBeamField(IPhasedShipAbility beam, string name, object value) =>
-            beam.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).SetValue(beam, value);
+            typeof(SustainedBeamAbility).GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).SetValue(beam, value);
 
         [TearDown]
         public void TearDown()
@@ -196,7 +198,7 @@ namespace EmpireAtWar.Tests.Editor
             FakeCommand target = new FakeCommand(new ShipAbilityDefinition(), _targetView.transform);
             caster.FakeHealth.Units = new IHardPointModel[] { new IonCannonStub() };
             IonPulseAbility ability = new IonPulseAbility(new IonPulseSettings(), new EntityLocator(), TestPlayers.CreateDuel());
-            Assert.That(ability.CanStart(caster, target.Entity), Is.True);
+            Assert.That(new IonPulseSettings().CanTarget(caster, target.Entity), Is.True);
             ability.Start(caster, caster.Slots[0].Definition, target.Entity);
             ability.Advance(0.1f);
             Assert.That(ability.IsComplete, Is.False);
@@ -306,6 +308,8 @@ namespace EmpireAtWar.Tests.Editor
             service.Press(new IEntity[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
             Assert.That(service.IsWaitingForTarget, Is.True);
             _targetView.transform.position = Vector3.right * 11f;
+            Assert.That(service.IsValidTarget(target), Is.True);
+            Assert.That(factory.Created, Is.Empty, "Hovering a target must not construct an ability.");
             service.SubmitTarget(target);
             Assert.That(service.IsWaitingForTarget, Is.True);
             Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
@@ -316,6 +320,34 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
             Assert.That(cancellations, Is.Zero, "An accepted target must not play the targeting-canceled cue.");
             service.LateDispose();
+        }
+
+        [Test]
+        public void FighterReinforcements_RequiresAnAvailableReplacementForReadinessAndActivation()
+        {
+            var definition = new ShipAbilityDefinition();
+            SetField(definition, "settings", new FighterReinforcementsSettings());
+            SetField(definition, "recoveryDelay", 30f);
+            var caster = new FakeCommand(definition, id: ShipAbilityId.FighterReinforcements);
+            var service = new ShipAbilityService(new ShipAbilityFactory(null), TestPlayers.CreateDuel());
+            int rejections = 0;
+            service.TargetRejected += _ => rejections++;
+            ShipAbilitySlot slot = caster.Slots[0];
+
+            Assert.That(slot.CanPress, Is.False);
+            Assert.That(slot.CanActivate, Is.False);
+            service.Press(new[] { caster.Entity }, slot.Id);
+            Assert.That(rejections, Is.EqualTo(1));
+            Assert.That(slot.State, Is.EqualTo(ShipAbilityState.Ready));
+
+            caster.CanLaunchReplacement = true;
+            Assert.That(slot.CanPress, Is.True);
+            service.Press(new[] { caster.Entity }, slot.Id);
+            Assert.That(caster.CanLaunchReplacement, Is.False);
+            service.Advance(0.1f);
+            Assert.That(slot.State, Is.EqualTo(ShipAbilityState.Recovering));
+            Assert.That(rejections, Is.EqualTo(1));
+            service.Clear();
         }
 
         [Test]
@@ -704,7 +736,7 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class RecordingAbility : IShipAbility
+        private sealed class RecordingAbility : IStoppableShipAbility
         {
             public int StopCount { get; private set; }
 
@@ -735,7 +767,6 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsComplete => _complete || CancelOnIonDisable && _caster.Modifiers.IsIonDisabled;
             public bool SurvivesCasterDeath { get; set; }
 
-            public bool CanStart(IShipAbilityFacade caster, IEntity target) => true;
             public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target) => _caster = caster;
             public void Advance(float deltaTime)
             {
@@ -759,7 +790,7 @@ namespace EmpireAtWar.Tests.Editor
             public Transform Pivot => null;
         }
 
-        private sealed class FakeCommand : IShipAbilityFacade, ICombatModifiersFacade, IAbilityFacingFacade
+        private sealed class FakeCommand : IShipAbilityFacade, ICombatModifiersFacade, IAbilityFacingFacade, IHangarCommand
         {
             public IReadOnlyList<ShipAbilitySlot> Slots { get; }
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
@@ -774,11 +805,23 @@ namespace EmpireAtWar.Tests.Editor
             public void FaceAbility(Vector3 direction) { }
             public void EndAbilityFacing() => IsAbilityFacing = false;
 
-            public FakeCommand(ShipAbilityDefinition definition, Transform transform = null)
+            public bool CanLaunchReplacement { get; set; }
+            public bool TryLaunchReplacement()
+            {
+                if (!CanLaunchReplacement) return false;
+                CanLaunchReplacement = false;
+                return true;
+            }
+            public ISquadron Launch(SquadronType type) => throw new NotSupportedException();
+            public bool CanLaunchImmediately => throw new NotSupportedException();
+            public bool TryLaunchImmediately() => throw new NotSupportedException();
+
+            public FakeCommand(ShipAbilityDefinition definition, Transform transform = null,
+                ShipAbilityId id = ShipAbilityId.BoostEnginePower)
             {
                 FakeHealth = new FakeHealth(transform);
                 Entity = new FakeEntity(command: this, owner: TestPlayers.Human, health: FakeHealth);
-                Slots = new[] { new ShipAbilitySlot(id: ShipAbilityId.BoostEnginePower,
+                Slots = new[] { new ShipAbilitySlot(id: id,
                     definition: definition, owner: this) };
             }
         }

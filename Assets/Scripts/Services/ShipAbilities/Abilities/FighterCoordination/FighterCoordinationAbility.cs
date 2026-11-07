@@ -52,10 +52,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             }
         }
 
-        public bool CanStart(IShipAbilityFacade caster, IEntity target) =>
-            caster.Health.GetShipUnits(HardPointType.CommandArray)
-                .Any(point => point.HardPointType == HardPointType.CommandArray && !point.IsDestroyed);
-
         public void Advance(float deltaTime) { }
 
         public void Stop()

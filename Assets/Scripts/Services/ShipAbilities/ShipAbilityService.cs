@@ -87,11 +87,13 @@ namespace EmpireAtWar.Services.ShipAbilities
             }
 
             CancelTargeting();
+            bool accepted = false;
             for (int i = 0; i < casters.Count; i++)
             {
                 if (casters[i].TryGetFacade(out IShipAbilityFacade command))
-                    TryActivate(command, id, null);
+                    accepted |= TryActivate(command, id, null);
             }
+            if (!accepted) TargetRejected?.Invoke(casters);
         }
 
         public bool IsValidTarget(IEntity target)
@@ -101,8 +103,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             {
                 // Out-of-range casters still count: SubmitTarget sends them to the target.
                 if (_pendingCasters[i].TryGetFacade(out IShipAbilityFacade command) &&
-                    TryFindUsableSlot(command, PendingAbilityId, target, out ShipAbilitySlot slot) &&
-                    CanStart(command, slot.Definition, target))
+                    TryFindUsableSlot(command, PendingAbilityId, target, out _))
                     return true;
             }
             return false;
@@ -123,7 +124,6 @@ namespace EmpireAtWar.Services.ShipAbilities
 
                 // Out-of-range casters fly to the target and use the ability on arrival.
                 if (TryFindUsableSlot(command, PendingAbilityId, target, out ShipAbilitySlot slot) &&
-                    CanStart(command, slot.Definition, target) &&
                     _pendingCasters[i].TryGetFacade(out IShipAbilityCastFacade cast))
                 {
                     cast.CastAbility(PendingAbilityId, target, slot.Definition.Range);
@@ -185,7 +185,6 @@ namespace EmpireAtWar.Services.ShipAbilities
                 return false;
 
             IShipAbility ability = _shipAbilityFactory.Create(definition);
-            if (ability is IPhasedShipAbility phased && !phased.CanStart(caster, target)) return false;
             ability.Start(caster, definition, target);
             slot.Activate(ability);
             _running.Add(slot);
@@ -255,15 +254,11 @@ namespace EmpireAtWar.Services.ShipAbilities
             }
         }
 
-        // Ineligible targets are rejected outright instead of sending the caster to them.
-        private bool CanStart(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target) =>
-            !(_shipAbilityFactory.Create(definition) is IPhasedShipAbility phased) || phased.CanStart(caster, target);
-
         private void Stop(ShipAbilitySlot slot)
         {
             IShipAbility ability = slot.RunningAbility;
             slot.Recover();
-            ability.Stop();
+            if (ability is IStoppableShipAbility stoppable) stoppable.Stop();
         }
 
         private bool TryFindUsableSlot(IShipAbilityFacade caster, ShipAbilityId id, IEntity target,
@@ -274,7 +269,8 @@ namespace EmpireAtWar.Services.ShipAbilities
             if (!TryFindSlot(caster, id, out slot) || !slot.CanActivate) return false;
             return !slot.Definition.RequiresEnemyTarget ||
                    (target != null && !target.HealthModel.IsDestroyed && !target.IsCloaked() &&
-                    _relations.IsHostile(caster.Entity.Owner, target.Owner));
+                    _relations.IsHostile(caster.Entity.Owner, target.Owner) &&
+                    (!(slot.Definition.Settings is IShipAbilityTargetRule rule) || rule.CanTarget(caster, target)));
         }
 
         private static bool TryFindSlot(IShipAbilityFacade caster, ShipAbilityId id, out ShipAbilitySlot slot)

@@ -210,6 +210,13 @@ namespace EmpireAtWar.Services.Enemy
 
         public EnemyStrategicContextBuilder CreateGroupBuilder() => new EnemyStrategicContextBuilder(this);
 
+        public (bool HasPressure, bool GatherReinforcements) AssessStation(IReadOnlyList<IShipEntity> ships)
+        {
+            GameEntity ownBase = FindOwnBase(ToVector(CalculateFleetCenter(ships)));
+            GameEntity defenseTarget = BuildBaseThreat(ownBase);
+            return (_stationPressure.HasPressure, ShouldGatherReinforcements(ownBase, defenseTarget));
+        }
+
         public EnemyStrategicContext Build(IReadOnlyList<IShipEntity> ships = null,
             ISet<string> reservedCaptureObjectives = null, bool preferStrategicObjectives = false)
         {
@@ -235,8 +242,7 @@ namespace EmpireAtWar.Services.Enemy
                 _ionRiskWeight = Mathf.Max(_ionRiskWeight, 1f + capitalWeight * health.Shields / durability);
             }
             Vector3 origin = ToVector(CalculateFleetCenter(ownShips));
-            PlayerId productionHost = _productionAccess.ProductionHost;
-            GameEntity ownBase = FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == productionHost, origin);
+            GameEntity ownBase = FindOwnBase(origin);
             Vector3 home = ownBase != null ? ownBase.GetFacade<IEntityTransformFacade>().Transform.position : origin;
             PlayerId focusEnemy = FindFocusEnemy(home);
             GameEntity enemyBaseTarget = FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == focusEnemy, origin);
@@ -254,6 +260,7 @@ namespace EmpireAtWar.Services.Enemy
             _forceBuilder.BuildKnown(_focusTeamForce, _intel, now,
                 sighting => focusEnemy != PlayerId.None && _playerRoster.IsAllied(focusEnemy, sighting.Owner));
             GameEntity defenseTarget = BuildBaseThreat(ownBase);
+            _forceBuilder.BuildKnown(_baseThreatForce, _intel, now, sighting => _stationThreats.Contains(sighting.EntityId));
             BuildHostilesNear(_localThreatForce, origin, LOCAL_ENGAGEMENT_RADIUS);
             BuildOwnNear(_localOwnForce, origin, LOCAL_ENGAGEMENT_RADIUS);
             _localThreat = FindLocalThreat(origin, now);
@@ -841,19 +848,24 @@ namespace EmpireAtWar.Services.Enemy
                     _stationPressure.ObserveThreatPosition(knownPosition.x, knownPosition.y, knownPosition.z);
                 }
             }
-            _forceBuilder.BuildKnown(_baseThreatForce, _intel, Time.time, sighting => _stationThreats.Contains(sighting.EntityId));
             return target;
         }
 
-        public bool ShouldGatherReinforcements(EnemyStrategicContext fleet)
+        private GameEntity FindOwnBase(Vector3 origin)
         {
-            if (fleet.OwnBase == null || _stationPressure.IsStationCritical ||
+            PlayerId productionHost = _productionAccess.ProductionHost;
+            return FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == productionHost, origin);
+        }
+
+        private bool ShouldGatherReinforcements(GameEntity ownBase, GameEntity defenseTarget)
+        {
+            if (ownBase == null || _stationPressure.IsStationCritical ||
                 Time.time - _stationPressure.LastDamageTime < 5f ||
-                fleet.DefenseTarget != null && fleet.DefenseTarget.GetFacade<IUnitCombatObserverFacade>().IsAttacking(fleet.OwnBase))
+                defenseTarget != null && defenseTarget.GetFacade<IUnitCombatObserverFacade>().IsAttacking(ownBase))
                 return false;
 
-            Vector3 home = fleet.OwnBase.GetFacade<IEntityTransformFacade>().Transform.position;
-            float radius = LOCAL_ENGAGEMENT_RADIUS + fleet.OwnBase.GetFacade<INavigationFootprintFacade>().NavigationRadius;
+            Vector3 home = ownBase.GetFacade<IEntityTransformFacade>().Transform.position;
+            float radius = LOCAL_ENGAGEMENT_RADIUS + ownBase.GetFacade<INavigationFootprintFacade>().NavigationRadius;
             foreach (HostileSighting sighting in _intel.Sightings)
             {
                 if (sighting.UnitTypeId.IsShip && _playerRoster.IsHostile(_owner.Id, sighting.Owner) &&

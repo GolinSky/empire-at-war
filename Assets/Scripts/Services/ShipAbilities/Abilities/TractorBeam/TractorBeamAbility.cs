@@ -34,12 +34,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _movementPenalty = new CombatStatModifier(1f, 1f, settings.SpeedMultiplier, 1f, 1f);
         }
 
-        public bool CanStart(IShipAbilityFacade caster, IEntity target) =>
-            _settings.CanTarget(target.HealthModel.ShipClass) &&
-            target.TryGetFacade(out ICombatModifiersFacade _) &&
-            caster.Health.GetShipUnits(HardPointType.TractorBeam)
-                .Any(point => point.HardPointType == HardPointType.TractorBeam && !point.IsDestroyed);
-
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
             _caster = caster;
