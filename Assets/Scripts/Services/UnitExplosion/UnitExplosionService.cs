@@ -42,7 +42,7 @@ namespace EmpireAtWar.Services.UnitExplosion
             _active.Clear();
         }
 
-        public void Spawn(IReadOnlyList<Renderer> hullRenderers)
+        public void Spawn(IReadOnlyList<Renderer> hullRenderers, float coverageScale = 1f)
         {
             Bounds bounds = hullRenderers[0].bounds;
             for (int i = 1; i < hullRenderers.Count; i++)
@@ -51,7 +51,7 @@ namespace EmpireAtWar.Services.UnitExplosion
             }
 
             // The enclosing sphere covers every corner, even for a long or rotated hull.
-            float diameter = bounds.extents.magnitude * 2f * COVERAGE_PADDING;
+            float diameter = bounds.extents.magnitude * 2f * COVERAGE_PADDING * coverageScale;
             UnitExplosionView view = _pool.Get();
             view.Play(bounds.center, diameter / _prefab.Diameter);
             _active.Add(view);

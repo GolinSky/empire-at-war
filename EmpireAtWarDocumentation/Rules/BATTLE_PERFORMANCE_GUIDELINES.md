@@ -150,3 +150,11 @@ tags:
 - Hazard sheets retain cells where any RHalf corner distance ≤90 m; bilinear interpolation cannot fall below all four corners. Preserve UV grid mapping, old outer bounds and shader SDF math.
 - `BattleStartupSequence` keeps a covered frame after fog reveal before fade-out. Broad `Shader.WarmupAllShaders()` was removed: Windows `6000.4.7f1` / URP `17.4.0` startup reproduced 28 native keyword-space errors; fresh/restored startup after removal produced 0 new errors. Keep material keywords/package shaders unchanged. Covered rendering does not prepare offscreen/future variants or guarantee Metal PSO readiness. Fix → [[Done/Bugs/Shader_Warmup_Keyword_Errors]].
 - Source/import/Unity compilation verified; no tests, new trace or Mac build. Savings and shader-compilation cause remain unconfirmed. Owner → [[Done/Optimization/Mac_GPU_Frame_Budget_Plan]].
+
+### Verified recipes · 2026-11-07
+
+- Hardpoint pooled VFX: `ExplosionVfx.sustainedEmitters` explicitly binds both looping emitters. Use battle-camera bounds + fog to gate emission; preserve the lease while suppressed. `AlwaysSimulate` lets stopped particles drain off-camera. Never return a live owner’s suppressed effect just because `IsAlive` is false.
+- Camera metadata: record `Camera.main.pixelWidth`/`pixelHeight`; report `unavailable` when the battle camera is absent. Record active URP `renderScale` separately. Desktop window dimensions are not evidence of the battle output.
+- `BeamVisuals` owns one reusable `MaterialPropertyBlock`; `ShotEffectPool` owns cached event delegates. Preserve reset/release behavior when removing allocations.
+- Disabled nebula startup: no impostor allocation or bake. First enable pays the one-time bake; retain its measured wall time separately from startup and GPU submission time.
+- Evidence and remaining gates → [[TODOs/Optimization/Optimization_Audit_Fix_Plan]].

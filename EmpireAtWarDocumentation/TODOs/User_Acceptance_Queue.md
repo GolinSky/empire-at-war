@@ -167,6 +167,9 @@ created: "2026-10-29\r"
 
 ## Visuals and Performance
 
+- [ ] [[TODOs/Optimization/Battle_FPS_Recovery_Plan]] — November 7 implemented phase: review station-only burst scale 0.75 at near/far zoom with nearby fighters and HUD. [Matched captures](../../Docs/Audits/2026-11-07-Optimization-Fixes/station-comparison.png); packed smoke/fog/pool lifecycle already verified.
+- [ ] [[TODOs/Optimization/Asset_Size_Followup_Plan]] — November 7 implemented phase: approve three compressed Providence maps at closest zoom/team colors on Windows and Mac; listen to menu/battle transitions and voice ducking. Numeric gates, Mac packed playback and handle release already verified.
+
 - [ ] [[Done/Optimization/Graph_Pathfinding_Plan]] — Run the Unity EditMode `Navigation` category. Confirm grid parity, disk clearance, overlapping-disk escape, hazard detours and Quasar/Titan/Executor destination reservations. Retain the Editor grid oracle until the parity results are accepted.
 - [[Done/Refactoring/ShipLit_Autodesk_Material_Conversion_Plan]]
   - [ ] Visual approval of `Logs/ShipLitConversion/2026-09-28/review.html` before/after gallery.

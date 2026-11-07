@@ -268,3 +268,11 @@ created: "2026-10-29\r"
 - Limitations: exact seed/preset/render scale/camera coordinates were not independently verified; last Player-log surface size `2940×1846` differs from requested `2560×1440`. Workload was the user's prepared hazard skirmish, not a verified standard combat scenario. No before/off/restored comparison or ≥60 FPS acceptance claim.
 - Per-draw nebula and individual hazard-sheet costs remain unresolved: shared Unity encoder groups do not isolate those draws. Native UI automation failed player clicks (`noWindowsAvailable`) and Xcode screenshot/debugger control; no `.gputrace` frame capture produced. Do not choose H3 or new defaults from these aggregate pass values.
 - Evidence: `Logs/RenderAudit/20261029-Mac-GPU-Profiling/{menu-connection-check.trace,hazard-battle.trace,hazard-toc.xml,hazard-gpu.xml,hazard-summary.json,analyze_trace.py}`. Tests not run; source/presets unchanged. Next: verified fixed-resolution A/B/hazard/combat captures plus Xcode per-draw frame capture.
+
+### Implementation · 2026-11-07
+
+- `MatchNebula` creates/bakes its impostor lazily in `LateUpdate`; disabled startup does neither. Variant changes while disabled discard a stale cached bake.
+- Packed Player: disabled startup 0 `Match Nebula Bake` textures; first enable 1; disable/re-enable still 1; battle exit 0. Metadata probe verifies output dimensions independently from render scale.
+- First-enable wall time 23.66 ms in the final probe; an earlier probe took 43.03 ms. Startup work is deferred, not eliminated. These include waiting/rendering, not isolated GPU submission measurements.
+- Existing normal/cinematic camera routing and disposal remain. Further smoothing of the user-triggered first enable needs a measured budget or pre-baked assets; do not disguise this cost as a startup speedup.
+- Evidence → [packed probes](../../../Docs/Audits/2026-11-07-Optimization-Fixes/packed-probes.csv). Broader hazards/upscaler work stays active.

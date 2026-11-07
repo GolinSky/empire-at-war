@@ -18,15 +18,18 @@ namespace EmpireAtWar.Services.UnitExplosion
         private const int PREWARM_COUNT = 16;
 
         private readonly ExplosionVfx _prefab;
+        private readonly UnityEngine.Camera _camera;
+        private readonly Plane[] _planes = new Plane[6];
         private readonly List<ExplosionVfx> _idle = new List<ExplosionVfx>();
         private readonly List<ActiveExplosion> _active = new List<ActiveExplosion>();
         private readonly List<ExplosionVfx> _fading = new List<ExplosionVfx>();
 
         private Transform _root;
 
-        public HardPointExplosionPool(ExplosionVfx prefab)
+        public HardPointExplosionPool(ExplosionVfx prefab, UnityEngine.Camera camera)
         {
             _prefab = prefab;
+            _camera = camera;
         }
 
         public void Initialize()
@@ -50,7 +53,8 @@ namespace EmpireAtWar.Services.UnitExplosion
             ExplosionVfx explosion = TakeIdle();
             explosion.transform.localScale = Vector3.one * scale;
             ActiveExplosion active = new ActiveExplosion(explosion, anchor, fogVisibility);
-            active.Follow();
+            GeometryUtility.CalculateFrustumPlanes(_camera, _planes);
+            active.Follow(_planes);
             explosion.Play();
             _active.Add(active);
         }
@@ -75,6 +79,7 @@ namespace EmpireAtWar.Services.UnitExplosion
 
         public void Tick()
         {
+            if (_active.Count > 0) GeometryUtility.CalculateFrustumPlanes(_camera, _planes);
             for (int i = _active.Count - 1; i >= 0; i--)
             {
                 ActiveExplosion active = _active[i];
@@ -89,14 +94,14 @@ namespace EmpireAtWar.Services.UnitExplosion
                     continue;
                 }
 
-                if (!active.Explosion.IsPlaying)
+                if (!active.Explosion.HasSustainedEmission && !active.Explosion.IsPlaying)
                 {
                     _idle.Add(active.Explosion);
                     _active.RemoveAt(i);
                     continue;
                 }
 
-                active.Follow();
+                active.Follow(_planes);
             }
 
             for (int i = _fading.Count - 1; i >= 0; i--)
@@ -152,15 +157,19 @@ namespace EmpireAtWar.Services.UnitExplosion
 
             public Transform Anchor => _anchor;
 
-            public void Follow()
+            public void Follow(Plane[] planes)
             {
                 Explosion.transform.position = _anchor.position;
                 bool isHidden = _fogVisibility != null && _fogVisibility.IsHiddenByFog;
                 IReadOnlyList<Renderer> renderers = Explosion.Renderers;
+                bool visible = !isHidden && GeometryUtility.TestPlanesAABB(planes, new Bounds(_anchor.position, Vector3.zero));
                 for (int i = 0; i < renderers.Count; i++)
                 {
-                    renderers[i].forceRenderingOff = isHidden;
+                    Renderer renderer = renderers[i];
+                    renderer.forceRenderingOff = isHidden;
+                    if (!isHidden && !visible) visible = GeometryUtility.TestPlanesAABB(planes, renderer.bounds);
                 }
+                Explosion.SetSustainedEmission(visible);
             }
         }
     }

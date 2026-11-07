@@ -65,8 +65,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24f8965bbafc2b848a0264f86b98ec21
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/PelesetIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2556b3b94de26234e872c9e6cc31a730
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/StealthCorvetteIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 26f532f229fa8e64a8505e23c65bd5cf
+    m_Address: Assets/Art/Textures/Ui/Icons/DefendPlatform/MassDriverSatelliteIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -77,6 +87,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 28476024afa7c5f47bd010e6e4460dc4
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ThrantaIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 288617a7a5fb04cdbaa3bf9ce791ba44
+    m_Address: Assets/Art/Textures/Ui/Icons/FacilityIcon/MiningAsteroidIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -102,6 +117,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2e88496bcd539524c9cf43ae79b88a88
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/CD273Icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3285d703aec4dab419f58b760f903d38
+    m_Address: Assets/Art/Textures/Ui/Icons/DefendPlatform/MissileSatelliteIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -155,6 +175,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f34eb7cb55a9c24abc10d378515d62e
+    m_Address: Assets/Art/Textures/Ui/Icons/DefendPlatform/QuadLaserSatelliteIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 514bfb32fe0d62847bd99758ec3b05bd
+    m_Address: Assets/Art/Textures/Ui/Icons/DefendPlatform/TurbolaserSatelliteIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 524d65b06058f0a428ee3d2a9b9b78e9
     m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/AWingIcon.png
     m_ReadOnly: 0
@@ -167,6 +197,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5491174c7918a494cb8e2898869953fd
     m_Address: Assets/Art/Textures/Ui/Icons/ShipAbilities/InvulnerabilityIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54f42405bb0527345bfb83f05f0d3496
+    m_Address: Assets/Art/Textures/Ui/Icons/Ui/TibannaGasStationIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -212,6 +247,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 653b257a6a126934d96618b6c8874dae
     m_Address: Assets/Art/Textures/Ui/Icons/Ui/AotrEmpressDefensePlatformIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6659a938f240057468564cb0ee980865
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/WavecrestIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -315,6 +355,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 929de4fd7db737646a0df2a72d3404af
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/BulwarkIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 937b502e2d2d8684ca9920ab2b5d9a0d
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/EnduranceIcon.png
     m_ReadOnly: 0
@@ -410,6 +455,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc08d3ef304a00a4999b7602cc4d17d0
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/RecalcitrantIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d1df96d57bfbbb049952971439112bf5
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/MC80IndependenceIcon.png
     m_ReadOnly: 0
@@ -450,6 +500,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea3a41aea9ac2814f8151acea48c72a0
+    m_Address: Assets/Art/Textures/Ui/Icons/DefendPlatform/IonSatelliteIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ea53c8c126651444aaedb6d6761e02b3
     m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/XWingIcon.png
     m_ReadOnly: 0
@@ -475,8 +530,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f38f2a09297bc734d89c94affa2d83f6
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/GladiatorIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f3ead6a21f6b16e43b11d8b28a159db2
     m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Separatist/JangoFettSlaveIIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4308d6ba01d34f25bb6e197b56f9bb4
+    m_Address: Assets/Art/Textures/Ui/Icons/FacilityIcon/BattleAsteroidIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

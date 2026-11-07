@@ -97,3 +97,9 @@ tags:
 
 - The local October 29 Mac Player identifies revision `2aa218c52`. Its 18 bundle files total 1,080,715,031 B. Catalog 121,342 B. Both local `Library/com.unity.addressables/BuildReports/buildlayout_2026.10.29.*.json` files contain `SBP ErrorException` and empty groups. The packaged output exists. Neither failed report can establish current duplication. The October 24 Windows result belongs to its own platform/content revision.
 - This was a read-only project audit. Verification used source, effective assets, existing builds and live camera/particle inspection. Tests and new Player/content builds were not run. Screenshot and particle samples were taken from the existing battle without changing its camera or playback.
+
+## Recheck · 2026-11-07
+
+- Follow-up implementation and measurements → [[TODOs/Optimization/Optimization_Audit_Fix_Plan]]. Preserve this note as the November 6 snapshot.
+- Current successful Mac layouts prove 54 duplicated assets, now removed. Three Providence maps actually ship; Specular was present in source dependency discovery but absent from both packed layouts, so its pilot was restored.
+- Confirmed preload, smoke, music, mesh/bolt memory, capture and disabled-nebula defects are addressed. Rare large fleet stalls remain unassigned; no blanket FPS or hitch-resolution claim.

@@ -102,6 +102,21 @@ namespace EmpireAtWar.Tests.Editor
                     List<string> deferred = BattleAssetPreload.DeferredPrefabKeys(assets, battle);
                     Assert.That(loader.Handles.Count, Is.EqualTo(requiredCount), "Deferred keys come from preloaded data.");
                     Assert.That(deferred, Has.Some.EndsWith("ShipView"));
+                    if (first == FactionType.Republic)
+                    {
+                        Assert.That(deferred, Does.Not.Contain("CR70ShipView"));
+                        Assert.That(deferred, Does.Not.Contain("ProvidenceShipView"));
+                        assets.LoadComponent<ShipEntity>("CR70ShipView");
+                        assets.LoadComponent<ShipEntity>("ProvidenceShipView");
+                        ShipsData ships = assets.Load<ShipsData>(nameof(ShipsData));
+                        foreach (ShipType ship in new[] { ShipType.Recalcitrant, ShipType.Peleset })
+                        {
+                            string wreckKey = assets.Load<ShipData>(ships.GetShipDataPath(ship)).Wreck.PrefabKey;
+                            Assert.That(deferred, Does.Not.Contain(wreckKey));
+                            assets.Load<GameObject>(wreckKey);
+                        }
+                        Assert.That(loader.Handles.Count, Is.EqualTo(requiredCount));
+                    }
 
                     foreach (string key in deferred) assets.BeginPreload<GameObject>(key);
                     assets.CompletePreloadsAsync(CancellationToken.None).GetAwaiter().GetResult();

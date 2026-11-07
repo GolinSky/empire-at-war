@@ -168,3 +168,11 @@ tags:
 - [[Done/Optimization/Squadron_Pooling_Plan]] — origin of prewarm.
 - [[TODOs/Optimization/Desktop_Asset_Compression_Plan]] — loading captures overlap.
 - Hangar launch-point exception: separate bug, not in scope.
+
+### Implementation · 2026-11-07
+
+- Packed first requests at `Running`: CR70 26.900 ms, Providence 43.947 ms; repeated requests <0.03 ms.
+- Advance only these participating-faction ship views into the required parallel preload. Final retained Player: completed typed handles; first calls 0.020/0.001 ms. Actual Recalcitrant/Peleset GUID consumers also have completed cached handles: 0.010/0.001 ms.
+- Recalcitrant/Peleset wreck alias loads exposed 61.496/31.206 ms waits; a later run reached 89.794/32.357 ms. Advance their actual `UnitWreckData.PrefabKey` GUIDs into batch 3. Alias lookup uses a different cache key; its `hadHandle` flag does not verify the consumer key.
+- Keep other ships, structures and wrecks in `BattleAssetWarmup`. Restore/simulation still preload the complete required set. Updated existing fixture assertions use the same GUID keys as `UnitWreckService`; tests not run under the local override.
+- Evidence → [packed probes](../../../Docs/Audits/2026-11-07-Optimization-Fixes/packed-probes.csv). Broader startup, save restore and other first-use paths remain in this plan.

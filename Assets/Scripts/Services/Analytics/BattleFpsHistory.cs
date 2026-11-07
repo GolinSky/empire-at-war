@@ -52,7 +52,7 @@ namespace EmpireAtWar.Services.Analytics
                 using var writer = new StreamWriter(path, true);
                 if (writer.BaseStream.Length == 0) writer.WriteLine(HEADER);
                 writer.Write(FormattableString.Invariant($"{_startedUtc:O},{sample.MatchId},battle_window,{_runningSeconds:F6},{frames.TotalSeconds:F6},{frames.Count},{sample.AverageFps:F3},{1000 * frames.PercentileSeconds(0.95):F3},{1000 * frames.PercentileSeconds(0.99):F3},{1000 * frames.WorstSeconds:F3},{frames.HitchCount},{worstAt:F6},"));
-                writer.Write(FormattableString.Invariant($"{_worstObservedUtc:O},{_worstCompletedFrame},{sample.MemoryMb},{sample.UnitCount},{Quote(QualitySettings.names[sample.QualityLevel])},{Screen.width}x{Screen.height},{QualitySettings.vSyncCount},{Application.targetFrameRate},{Time.timeScale:F3},"));
+                writer.Write(FormattableString.Invariant($"{_worstObservedUtc:O},{_worstCompletedFrame},{sample.MemoryMb},{sample.UnitCount},{Quote(QualitySettings.names[sample.QualityLevel])},{BattlePerformanceCapture.CameraResolution},{QualitySettings.vSyncCount},{Application.targetFrameRate},{Time.timeScale:F3},"));
                 writer.WriteLine(FormattableString.Invariant($"{_metadata.Runtime},{_metadata.UnityVersion},{Quote(_metadata.GraphicsDevice)},{Quote(_metadata.Processor)},{_metadata.SourceRevision},{_metadata.SourceState},{_metadata.BuildGuid},{_battle.Mode},{_battle.Map.Type},{_battle.Map.Size},{_battle.Map.Seed},{_profilerFrames},{_detailCaptureFrames}"));
             }
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)

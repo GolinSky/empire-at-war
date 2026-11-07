@@ -29,19 +29,17 @@ namespace EmpireAtWar.Components.Environment
             _previousVariant = index;
         }
 
-        private void Start()
+        private void LateUpdate()
         {
+            if (_qualityLevel != QualitySettings.GetQualityLevel()) ApplyQuality();
+            if (!NebulaEnabled || _impostor != null) return;
             _impostor = new NebulaImpostor(volumeRenderer, impostorShader);
             Bake();
         }
 
-        private void LateUpdate()
-        {
-            if (_qualityLevel != QualitySettings.GetQualityLevel()) ApplyQuality();
-        }
-
         private void OnEnable()
         {
+            volumeRenderer.enabled = false;
             UnityEngine.Rendering.RenderPipelineManager.beginCameraRendering += OnBeginCameraRendering;
         }
 
@@ -62,7 +60,15 @@ namespace EmpireAtWar.Components.Environment
             volumeRenderer.sharedMaterial = variants[index];
             SelectedVariant = index;
             ApplyQuality();
-            if (_impostor != null) Bake();
+            if (_impostor != null)
+            {
+                if (NebulaEnabled) Bake();
+                else
+                {
+                    _impostor.Dispose();
+                    _impostor = null;
+                }
+            }
         }
 
         private void ApplyQuality()

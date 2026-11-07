@@ -119,6 +119,8 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - MusicBattle
+    - MusicMenu
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: eb078b9670591b14b89b80c59f301e67, type: 2}

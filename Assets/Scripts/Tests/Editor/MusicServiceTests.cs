@@ -9,6 +9,8 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
@@ -26,6 +28,8 @@ namespace EmpireAtWar.Tests.Editor
         [TearDown]
         public void TearDown()
         {
+            if (_service != null)
+                typeof(MusicService).GetMethod("ReleaseTrack", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(_service, null);
             if (_source != null) Object.DestroyImmediate(_source.gameObject);
             if (_clip != null) Object.DestroyImmediate(_clip);
         }
@@ -55,7 +59,7 @@ namespace EmpireAtWar.Tests.Editor
                 "Assets/Audio/Music/Battle/Ahsoka/A_Open_Fire.mp3");
             Assert.That(next.UnloadAudioData(), Is.True);
             typeof(MusicService).GetField("_clips", BindingFlags.Instance | BindingFlags.NonPublic)
-                .SetValue(_service, new List<AudioClip> { next });
+                .SetValue(_service, new List<AssetReferenceT<AudioClip>> { new LoadedTrack(next) });
             _source.timeSamples = first.samples - first.frequency / 4;
             deadline = Time.realtimeSinceStartup + 10f;
             while ((_audio.PlayCount < 2 || _source.volume < 0.5f) && Time.realtimeSinceStartup < deadline)
@@ -182,7 +186,7 @@ namespace EmpireAtWar.Tests.Editor
                 Object.DestroyImmediate(template);
             }
             _source = (AudioSource)typeof(MusicService).GetField("_audioSource", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(_service);
-            typeof(MusicService).GetField("_clips", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(_service, new List<AudioClip> { clip });
+            typeof(MusicService).GetField("_clips", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(_service, new List<AssetReferenceT<AudioClip>> { new LoadedTrack(clip) });
             typeof(MusicService).GetMethod("PlayNext", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(_service, null);
         }
 
@@ -194,6 +198,19 @@ namespace EmpireAtWar.Tests.Editor
                 AssetDatabase.LoadAssetAtPath<TSource>("Assets/Settings/Data/Models/Audio/MusicAudioData.asset");
             public TComponent LoadComponent<TComponent>(string key) where TComponent : Component => (TComponent)(Component)_source;
             public GameObject LoadPrefab(string key) => throw new NotSupportedException();
+        }
+
+        private sealed class LoadedTrack : AssetReferenceT<AudioClip>
+        {
+            private readonly AudioClip _clip;
+            private AsyncOperationHandle<AudioClip> _handle;
+
+            public LoadedTrack(AudioClip clip) : base(string.Empty) => _clip = clip;
+
+            public override AsyncOperationHandle<AudioClip> LoadAssetAsync() =>
+                _handle = Addressables.ResourceManager.CreateCompletedOperation(_clip, null);
+
+            public override void ReleaseAsset() => _handle.Release();
         }
 
         private sealed class RecordingAudioService : Service, IAudioService

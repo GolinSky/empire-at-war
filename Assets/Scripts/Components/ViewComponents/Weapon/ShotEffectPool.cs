@@ -20,6 +20,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private readonly ShotEffectCache _cache;
         private readonly bool _ownsCache;
         private readonly Dictionary<ShotEffect, int> _active = new Dictionary<ShotEffect, int>();
+        private readonly Action<ShotEffect, int> _onCompleted;
+        private readonly Action<ShotEffect, int> _onDestroyed;
         private Action<int> _effectCompleted;
         private bool _released;
 
@@ -41,6 +43,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _impactPresenter = impactPresenter;
             _boltFlights = boltFlights;
             _cache = cache;
+            _onCompleted = OnEffectCompleted;
+            _onDestroyed = OnEffectDestroyed;
         }
 
         /// <returns>Seconds until the shot reaches the target.</returns>
@@ -68,8 +72,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private ShotEffect Acquire()
         {
             ShotEffect effect = _cache.Acquire();
-            effect.EffectCompleted += OnEffectCompleted;
-            effect.EffectDestroyed += OnEffectDestroyed;
+            effect.EffectCompleted += _onCompleted;
+            effect.EffectDestroyed += _onDestroyed;
             return effect;
         }
 
@@ -116,8 +120,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private void Detach(ShotEffect effect)
         {
-            effect.EffectCompleted -= OnEffectCompleted;
-            effect.EffectDestroyed -= OnEffectDestroyed;
+            effect.EffectCompleted -= _onCompleted;
+            effect.EffectDestroyed -= _onDestroyed;
         }
 
         private void CompleteOwner(int sequenceGeneration)

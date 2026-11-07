@@ -66,7 +66,7 @@
 
 ### Optimization
 
-- [ ] **Prioritized fixes from the November 6 optimization audit** → [[TODOs/Optimization/Optimization_Audit_Fix_Plan|Fix order, owners and verification]]
+- [ ] **November 6 optimization fixes — P0 hitch attribution remains** → [[TODOs/Optimization/Optimization_Audit_Fix_Plan|Retained fixes, evidence and next action]]. Mac content −48.7 MB; 54 duplicates → 0; packed memory, loading, smoke, music and nebula fixes verified. Rare large fleet stalls remain unresolved.
   - First fix capture dimensions, then isolate fleet hitches in the M2 Editor and Development Player. Next, measure off-camera hardpoint smoke and destruction readability. Start the Providence texture pilot after a valid content baseline.
 
 - [ ] **Recover battle FPS lost after the hazard-system decor asteroids (decor culling/LOD, field rock LOD, nebula, presets, particles)** → [[TODOs/Optimization/Battle_FPS_Recovery_Plan|Battle FPS Recovery Plan]]; [[TODOs/Optimization/Battle_FPS_Recovery_Plan - Research|PC capture 2026-10-29 vs Mac audits]]

@@ -58,7 +58,7 @@ namespace EmpireAtWar.Tests.Editor
             string[] expectedBattle = manifest["tracks"].Where(track => (string)track["role"] == "Battle")
                 .Select(track => (string)track["destination"]).ToArray();
             Assert.That(menu, Is.Unique.And.EquivalentTo(expectedMenu));
-            Assert.That(data.GetMusicList(SceneType.MainMenu, default).Select(AssetDatabase.GetAssetPath), Is.EquivalentTo(expectedMenu));
+            Assert.That(data.GetMusicList(SceneType.MainMenu, default).Select(track => AssetDatabase.GUIDToAssetPath(track.AssetGUID)), Is.EquivalentTo(expectedMenu));
             Assert.That(menu.Intersect(expectedBattle), Is.Empty);
 
             SerializedProperty factions = serialized.FindProperty("battleMusicData.keyValue");
@@ -70,7 +70,7 @@ namespace EmpireAtWar.Tests.Editor
                 keys[index] = entry.FindPropertyRelative("key").intValue;
                 string[] battle = PlaylistPaths(entry.FindPropertyRelative("value"));
                 Assert.That(battle, Is.Unique.And.EquivalentTo(expectedBattle), $"Faction {keys[index]}");
-                Assert.That(data.GetMusicList(SceneType.Battle, (FactionType)keys[index]).Select(AssetDatabase.GetAssetPath),
+                Assert.That(data.GetMusicList(SceneType.Battle, (FactionType)keys[index]).Select(track => AssetDatabase.GUIDToAssetPath(track.AssetGUID)),
                     Is.EquivalentTo(expectedBattle), $"Runtime faction {keys[index]}");
             }
             Assert.That(keys, Is.EquivalentTo(new[] { 0, 1, 2, 3 }));
@@ -129,7 +129,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(AssetDatabase.AssetPathToGUID(path, AssetPathToGUIDOptions.OnlyExistingAssets), Is.Empty, path);
             }
 
-            var guidPattern = new Regex(@"guid:\s*([a-fA-F0-9]{32})");
+            var guidPattern = new Regex(@"(?:guid|m_AssetGUID):\s*([a-fA-F0-9]{32})");
             foreach (string path in Directory.EnumerateFiles("Assets", "*", SearchOption.AllDirectories))
             {
                 bool isMeta = path.EndsWith(".meta", StringComparison.OrdinalIgnoreCase);
@@ -150,9 +150,9 @@ namespace EmpireAtWar.Tests.Editor
             string[] paths = new string[playlist.arraySize];
             for (int index = 0; index < paths.Length; index++)
             {
-                UnityEngine.Object clip = playlist.GetArrayElementAtIndex(index).objectReferenceValue;
-                Assert.That(clip, Is.Not.Null, playlist.propertyPath);
-                paths[index] = AssetDatabase.GetAssetPath(clip);
+                string guid = playlist.GetArrayElementAtIndex(index).FindPropertyRelative("m_AssetGUID").stringValue;
+                paths[index] = AssetDatabase.GUIDToAssetPath(guid);
+                Assert.That(AssetDatabase.LoadAssetAtPath<AudioClip>(paths[index]), Is.Not.Null, playlist.propertyPath);
             }
             return paths;
         }

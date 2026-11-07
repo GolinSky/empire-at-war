@@ -134,6 +134,7 @@ namespace EmpireAtWar.Services.Timing
         {
             StringBuilder report = new StringBuilder(4096);
             report.AppendLine("Battle performance capture");
+            report.AppendFormat(CultureInfo.InvariantCulture, "render_scale={0:F3}\n", metadata.RenderScale);
             report.AppendFormat(CultureInfo.InvariantCulture, "started_utc={0:O}\nframes={1}\nduration_seconds={2:F3}\nstop_reason={3}\n", captureStartUtc, frameCount, durationSeconds, stopReason);
             report.AppendFormat(CultureInfo.InvariantCulture, "unity={0}\nruntime={1}\nquality={2}\nresolution={3}\ntime_scale={4:F3}\nvsync_count={5}\ntarget_frame_rate={6}\ngraphics_device={7}\nprocessor={8}\n", metadata.UnityVersion, metadata.Runtime, metadata.Quality, metadata.Resolution, metadata.TimeScale, metadata.VSyncCount, metadata.TargetFrameRate, metadata.GraphicsDevice, metadata.Processor);
             report.AppendFormat(CultureInfo.InvariantCulture,

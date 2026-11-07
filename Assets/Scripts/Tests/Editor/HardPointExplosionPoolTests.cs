@@ -35,7 +35,8 @@ namespace EmpireAtWar.Tests.Editor
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
             _anchor = Track(new GameObject("HardPoint")).transform;
-            _pool = new HardPointExplosionPool(explosion);
+            var camera = Track(new GameObject("Battle Camera")).AddComponent<UnityEngine.Camera>();
+            _pool = new HardPointExplosionPool(explosion, camera);
             _pool.Initialize();
             Track(Root().gameObject);
         }

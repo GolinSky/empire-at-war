@@ -1,0 +1,5 @@
+map,source_format,trial_format,rgb_rmse_8bit,max_alpha_8bit,normal_mean_degrees,normal_p99_degrees,editor_before_B,editor_trial_B,decision
+Albedo,RGBA32,BC7,0.5071964537495568,8,,,44740216,11185840,kept
+Emissive,RGBA32,BC7,0.4109178042798659,1,,,44740216,11185840,kept
+Normal,RGBA32,DXT5,,,0.6754477735236009,4.4,44740216,11185840,kept
+Specular,RGBA32,BC7,0.036397974822889284,1,,,44740216,11185840,restored: absent from packed layouts

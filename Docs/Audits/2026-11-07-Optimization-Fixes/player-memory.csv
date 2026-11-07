@@ -1,0 +1,11 @@
+stage,type,asset,format_or_readability,native_object_bytes,vertices
+before,bolt,BlasterBolt,True,400864,
+before,texture,Providence_Hull_Albedo,RGBA32,22370148,
+before,texture,Providence_Hull_Normal,RGBA32,22370148,
+before,texture,Providence_Hull_Emissive,RGBA32,22370148,
+before,mesh,5 satellite prefabs,248 readable of 248,32741320,329046
+after,bolt,BlasterBolt,False,200528,
+after,texture,Providence_Hull_Albedo,BC7,5592960,
+after,texture,Providence_Hull_Normal,DXT5,5592960,
+after,texture,Providence_Hull_Emissive,BC7,5592960,
+after,mesh,5 satellite prefabs,8 readable of 248,13821774,329046

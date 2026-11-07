@@ -265,3 +265,13 @@ tags:
 - `flag/broken`: live `Assets/Scripts/Editor/Versioning/BuildInfoWriter.cs` rejects every non-Windows target; Mac Player acceptance cannot complete through that callback. No verified workaround; next action → this plan's Mac follow-up handoff. Remove after implementation and actual build verification.
 - Selected guidance reconciled against live source, saved assets and existing PC preset/profiler JSON; extraction-only `flag/revisit` removed. Raw Mac reports are unavailable in this checkout; Mac metrics remain research-recorded history.
 - Plan remains `in-progress`: unfinished investigations, experiments, matched Player comparisons and visual/VFX acceptance keep their existing owners. No tests, builds, Play Mode or profiling run for extraction.
+
+### Implementation · 2026-11-07
+
+- Hardpoints: explicitly bind the two looping smoke/fire emitters. Suspend emission outside the battle-camera frustum or under fog; keep simulations advancing so existing particles drain. Preserve the active lease until its owner stops it.
+- Packed probe with 34 hardpoints: off-camera 11,930 → 0 particles; visible/revealed emission resumes on all 68 looping systems; fog returns them to zero. Owner stop → active 0, fading 0, idle 34.
+- Isolated 34-effect simulation, original/disabled/restored repeats: 0.221–0.247 → 0.072–0.080 ms/step. This measures particle simulation, not transparent GPU time.
+- Station-only destruction coverage scale 1 → 0.75. Ship/facility/platform calls retain 1.0. Captured fixed-seed burst ages 0.12/0.4/0.8 s at near/far zoom; final perceptual acceptance remains open.
+- `BeamVisuals` reuses its property block. `ShotEffectPool` caches completion/destruction delegates, removing repeated method-group creation during acquire/detach.
+- Bolt: remove CPU readability only. Packed texture native object memory 400,864 → 200,528 B; source image, format, size, alpha, clamp/mips and 1/2/4/8-bolt prefabs unchanged.
+- Evidence → [optimization verification](../../../Docs/Audits/2026-11-07-Optimization-Fixes/README.md). Tests not run under the local override.
