@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Vision;
@@ -60,22 +61,33 @@ namespace EmpireAtWar.Services.ShipAbilities
                 }
         }
 
-        public IEntity FindBeamTarget(IShipAbilityFacade caster, float range)
+        /// <summary>Nearest acceptable visible hostile in ability range; warships before strikecraft.</summary>
+        public IEntity FindTarget(IShipAbilityFacade caster, ShipAbilityDefinition definition)
         {
+            IShipAbilityTargetRule rule = definition.Settings as IShipAbilityTargetRule;
             IEntity target = null;
-            float nearest = range;
-            CollectNearby(caster.WorldPosition, range);
+            bool targetStrikecraft = true;
+            float nearest = float.PositiveInfinity;
+            CollectNearby(caster.WorldPosition, definition.Range);
             foreach ((IEntity entity, Vector3 position) in _nearby)
             {
+                if (!IsVisibleHostile(entity, position) || rule != null && !rule.CanTarget(caster, entity)) continue;
+                bool strikecraft = entity.HealthModel.ShipClass.IsStrikecraft();
                 float distance = PlanarGeometry.Distance(caster.WorldPosition, position);
-                if (distance > nearest || !IsVisibleHostile(entity, position)) continue;
+                if (strikecraft && !targetStrikecraft || strikecraft == targetStrikecraft && distance >= nearest)
+                    continue;
                 target = entity;
+                targetStrikecraft = strikecraft;
                 nearest = distance;
             }
             return target;
         }
 
-        public AutoPowerRole Decide(IShipAbilityFacade caster, IShipAutoPowerFacade automation, bool heavyLoss)
+        public AutoPowerRole Decide(IShipAbilityFacade caster, IShipAutoPowerFacade automation, bool heavyLoss) =>
+            Assess(caster, automation, heavyLoss, travelling: false).Power;
+
+        public AutoPowerSituation Assess(IShipAbilityFacade caster, IShipAutoPowerFacade automation, bool heavyLoss,
+            bool travelling)
         {
             _own.Clear();
             _hostile.Clear();
@@ -101,8 +113,12 @@ namespace EmpireAtWar.Services.ShipAbilities
             float minimumDps = (reference.HullDps(targetClass) + reference.PiercingDps(targetClass)) * _tuning.MinimumCorvetteForce;
             bool meaningful = (hostileWarship || _engagedHostile.UnitCount > 1) &&
                 _engagedHostile.HullDps(targetClass) + _engagedHostile.PiercingDps(targetClass) >= minimumDps;
-            return ChooseRole(caster.Health.HullPercentage, caster.Health.Shields, caster.Health.ShieldPercentage,
+            IHealthModelObserver health = caster.Health;
+            AutoPowerRole power = ChooseRole(health.HullPercentage, health.Shields, health.ShieldPercentage,
                 automation.CanRegenerateShields, heavyLoss, meaningful, canAttack, CombatMatchup.Advantage(_hostile, _own));
+            return new AutoPowerSituation(power, hostileNearby: !_hostile.IsEmpty, engaged: meaningful && canAttack,
+                endangered: heavyLoss && health.ShieldPercentage < _tuning.LowShields,
+                cornered: heavyLoss && health.HullPercentage < _tuning.LastStandHull, travelling);
         }
 
         /// <summary>Priority: last-stand Weapons → Shields → normal Weapons.</summary>

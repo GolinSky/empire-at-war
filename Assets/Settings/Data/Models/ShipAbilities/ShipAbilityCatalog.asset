@@ -28,7 +28,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 500
         aiUse: 2
-        autoPower: 0
+        autoPower: 3
         settings:
           rid: 6801466862182334539
     - key: 10
@@ -77,7 +77,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 375
         aiUse: 2
-        autoPower: 0
+        autoPower: 3
         settings:
           rid: 6801466921437888600
     - key: 1
@@ -93,7 +93,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 500
         aiUse: 2
-        autoPower: 0
+        autoPower: 3
         settings:
           rid: 7607833764655792203
     - key: 2
@@ -108,7 +108,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 0
-        autoPower: 0
+        autoPower: 5
         settings:
           rid: 7607833764655792204
     - key: 39
@@ -125,7 +125,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 500
         aiUse: 0
-        autoPower: 0
+        autoPower: 5
         settings:
           rid: 6801467062609510483
     - key: 42
@@ -141,7 +141,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 2
-        autoPower: 0
+        autoPower: 4
         settings:
           rid: 6801467062609510486
     - key: 3
@@ -173,7 +173,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 1
-        autoPower: 0
+        autoPower: 7
         settings:
           rid: 6801467062609510479
     - key: 14
@@ -189,7 +189,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 1
-        autoPower: 0
+        autoPower: 7
         settings:
           rid: 6801466898397790287
     - key: 18
@@ -222,7 +222,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 1
-        autoPower: 0
+        autoPower: 7
         settings:
           rid: 6801466921437888596
     - key: 40
@@ -238,7 +238,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 1
-        autoPower: 0
+        autoPower: 7
         settings:
           rid: 6801467062609510481
     - key: 4
@@ -253,7 +253,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 1
-        autoPower: 0
+        autoPower: 7
         settings:
           rid: 7607833764655792206
     - key: 12
@@ -382,7 +382,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 500
         aiUse: 2
-        autoPower: 0
+        autoPower: 7
         settings:
           rid: 6801466944227639371
     - key: 6
@@ -398,7 +398,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 500
         aiUse: 2
-        autoPower: 0
+        autoPower: 3
         settings:
           rid: 7607833764655792208
     - key: 16
@@ -415,7 +415,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 500
         aiUse: 2
-        autoPower: 0
+        autoPower: 3
         settings:
           rid: 6801466898397790289
     - key: 7
@@ -431,7 +431,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 500
         aiUse: 2
-        autoPower: 0
+        autoPower: 3
         settings:
           rid: 7607833764655792209
     - key: 9
@@ -447,7 +447,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 100
         aiUse: 2
-        autoPower: 0
+        autoPower: 3
         settings:
           rid: 6801466898397790283
     - key: 11
@@ -464,7 +464,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 0
-        autoPower: 0
+        autoPower: 6
         settings:
           rid: 6801466898397790284
     - key: 35
@@ -481,7 +481,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 2
-        autoPower: 0
+        autoPower: 4
         settings:
           rid: 6801466989490733131
     - key: 19
@@ -498,7 +498,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 2
-        autoPower: 0
+        autoPower: 4
         settings:
           rid: 6801466921437888590
     - key: 20
@@ -532,7 +532,7 @@ MonoBehaviour:
         requiresEnemyTarget: 1
         range: 500
         aiUse: 2
-        autoPower: 0
+        autoPower: 3
         settings:
           rid: 6801466921437888597
     - key: 36
@@ -548,7 +548,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 2
-        autoPower: 0
+        autoPower: 4
         settings:
           rid: 6801467062609510478
     - key: 50
@@ -565,7 +565,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 0
-        autoPower: 0
+        autoPower: 4
         settings:
           rid: 6801467062609510480
     - key: 51
@@ -581,7 +581,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 2
-        autoPower: 0
+        autoPower: 4
         settings:
           rid: 6801467062609510485
     - key: 52
@@ -597,7 +597,7 @@ MonoBehaviour:
         requiresEnemyTarget: 0
         range: 0
         aiUse: 2
-        autoPower: 0
+        autoPower: 4
         settings:
           rid: 6801467062609510488
     - key: 54

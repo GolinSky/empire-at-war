@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Players;
@@ -107,20 +108,39 @@ namespace EmpireAtWar.Services.ShipAbilities
                     bomb.ShouldAutoDrop(_bombs, caster) && _abilities.TryActivate(caster, slot.Id, null)) return;
             }
             if (automation == null || !automation.Eligible) return;
-            AutoPowerRole decision = _combat.Decide(caster, automation, heavyLoss);
+            AutoPowerSituation situation = _combat.Assess(caster, automation, heavyLoss, IsTravelling(entity));
+            AutoPowerRole decision = Choose(caster, situation, out _, out _);
             if (!monitor.Confirm(decision)) return;
             monitor.ResetConfirmation();
-            foreach (ShipAbilitySlot slot in caster.Slots)
+            // Recheck right before spending: the target or readiness can change between checks.
+            if (Choose(caster, situation, out ShipAbilitySlot chosen, out IEntity target) == decision)
+                _abilities.TryActivate(caster, chosen.Id, target);
+        }
+
+        // First wanted role with a ready slot; a recovering power never swaps Shields for Weapons or back.
+        private AutoPowerRole Choose(IShipAbilityFacade caster, AutoPowerSituation situation,
+            out ShipAbilitySlot chosen, out IEntity target)
+        {
+            foreach (AutoPowerRole role in AutoPowerSituation.Priority)
             {
-                if (slot.Definition.AutoPower != decision) continue;
-                if (slot.CanActivate)
+                if (!situation.Wants(role)) continue;
+                foreach (ShipAbilitySlot slot in caster.Slots)
                 {
-                    IEntity target = slot.Definition.RequiresEnemyTarget
-                        ? _combat.FindBeamTarget(caster, slot.Definition.Range) : null;
-                    _abilities.TryActivate(caster, slot.Id, target);
+                    if (slot.Definition.AutoPower != role || !slot.CanActivate) continue;
+                    target = slot.Definition.RequiresEnemyTarget ? _combat.FindTarget(caster, slot.Definition) : null;
+                    if (slot.Definition.RequiresEnemyTarget && target == null) continue;
+                    chosen = slot;
+                    return role;
                 }
-                return;
             }
+            chosen = null; target = null;
+            return AutoPowerRole.None;
+        }
+
+        private static bool IsTravelling(IEntity entity)
+        {
+            UnitOrderType order = entity.GetFacade<IUnitOrderObserverFacade>().CurrentOrder;
+            return order == UnitOrderType.Move || order == UnitOrderType.WaypointMove || order == UnitOrderType.Retreat;
         }
 
         private AutoPowerMonitor GetMonitor(long id)
