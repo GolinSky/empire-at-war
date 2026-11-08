@@ -137,6 +137,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<PlayerUnitOrders>(Lifetime.Singleton).As<IPlayerUnitOrders>();
             builder.Register<UnitActionTargetingModel>(Lifetime.Singleton);
             builder.Register<PlayerOrderInputHandler>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<OrderCursorService>(Lifetime.Singleton).As<IOrderCursorService>();
             AssetRegistrations.RegisterShared<HardPointOverlayData>(builder, Assets);
             builder.Register<HardPointOverlayModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             GameObject overlayRoot = new GameObject(nameof(HardPointOverlayView));

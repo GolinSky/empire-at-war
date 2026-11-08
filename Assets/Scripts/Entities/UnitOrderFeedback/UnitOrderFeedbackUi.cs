@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         [SerializeField] private RectTransform attackAnchor;
         [SerializeField] private RectTransform movementAnchor;
         [SerializeField] private RectTransform invalidTargetAnchor;
+        [SerializeField] private RectTransform attackCursorAnchor;
         [SerializeField] private Image attackImage;
         [SerializeField] private Image movementWave;
         [SerializeField] private Image movementEcho;
@@ -32,6 +34,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             attackAnchor.gameObject.SetActive(false);
             movementAnchor.gameObject.SetActive(false);
             invalidTargetAnchor.gameObject.SetActive(false);
+            attackCursorAnchor.gameObject.SetActive(false);
         }
 
         public void Dispose()
@@ -101,13 +104,11 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             attackAnchor.gameObject.SetActive(false);
         }
 
-        public void ShowInvalidTarget(Vector2 screenPosition)
+        public void SetCursor(OrderCursor cursor, Vector2 screenPosition)
         {
-            SetPosition(invalidTargetAnchor, screenPosition);
-            invalidTargetAnchor.gameObject.SetActive(true);
+            SetCursorAnchor(attackCursorAnchor, cursor == OrderCursor.Attack, screenPosition);
+            SetCursorAnchor(invalidTargetAnchor, cursor == OrderCursor.Invalid, screenPosition);
         }
-
-        public void HideInvalidTarget() => invalidTargetAnchor.gameObject.SetActive(false);
 
         private void OnDestroy() => Dispose();
 
@@ -127,6 +128,12 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 screenRect, screenPosition, null, out Vector2 position);
             anchor.anchoredPosition = position;
+        }
+
+        private void SetCursorAnchor(RectTransform anchor, bool isShown, Vector2 screenPosition)
+        {
+            if (isShown) SetPosition(anchor, screenPosition);
+            anchor.gameObject.SetActive(isShown);
         }
 
         private static void AddWave(Sequence sequence, Image image, float delay, float opacity)
