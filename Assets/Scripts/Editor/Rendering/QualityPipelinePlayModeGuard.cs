@@ -29,7 +29,10 @@ namespace EmpireAtWar.Editor.Rendering
             else if (change == PlayModeStateChange.EnteredEditMode) Restore();
         }
 
-        /// <summary>Remembers each level's pipeline asset path; survives the domain reload into play mode.</summary>
+        /// <summary>
+        /// Remembers each level's pipeline asset path (empty when the level holds a runtime clone or nothing);
+        /// survives the domain reload into play mode.
+        /// </summary>
         public static void Capture()
         {
             string[] paths = new string[QualitySettings.count];
@@ -50,13 +53,13 @@ namespace EmpireAtWar.Editor.Rendering
             List<string> restored = new List<string>();
             for (int level = 0; level < paths.Length && level < QualitySettings.count; level++)
             {
-                RenderPipelineAsset expected = paths[level].Length == 0
-                    ? null
-                    : AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>(paths[level]);
+                // A level that held a runtime clone or nothing at capture has no known asset: never write it.
+                if (paths[level].Length == 0) continue;
+                RenderPipelineAsset expected = AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>(paths[level]);
                 if (QualitySettings.GetRenderPipelineAssetAt(level) == expected) continue;
                 QualitySettings.SetQualityLevel(level, false);
                 QualitySettings.renderPipeline = expected;
-                restored.Add($"{QualitySettings.names[level]} → {(expected == null ? "none" : expected.name)}");
+                restored.Add($"{QualitySettings.names[level]} → {expected.name}");
             }
 
             QualitySettings.SetQualityLevel(currentLevel, false);

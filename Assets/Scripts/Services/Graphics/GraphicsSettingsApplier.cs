@@ -49,6 +49,7 @@ namespace EmpireAtWar.Services.Graphics
         private readonly int _defaultQualityLevel = QualitySettings.GetQualityLevel();
         private readonly Dictionary<int, UniversalRenderPipelineAsset> _originalPipelines = new();
         private readonly Dictionary<int, UniversalRenderPipelineAsset> _runtimePipelines = new();
+        private bool _isDisposed;
 
         public IReadOnlyList<string> QualityPresets => _qualityPresets;
 
@@ -60,6 +61,9 @@ namespace EmpireAtWar.Services.Graphics
 
         public void Apply(SettingsData settings)
         {
+            // SettingsService applies asynchronously; a late call after Dispose would leave a DontSave clone in
+            // QualitySettings that nothing restores (Editor then saves the level's pipeline as empty).
+            if (_isDisposed) return;
             GraphicsSettingsData graphics = settings.Graphics;
             int level = ResolveQualityLevel(graphics.QualityPreset);
             if (QualitySettings.GetQualityLevel() != level)
@@ -126,6 +130,7 @@ namespace EmpireAtWar.Services.Graphics
 
         public void Dispose()
         {
+            _isDisposed = true;
 #if UNITY_STANDALONE_WIN && ENABLE_UPSCALER_FRAMEWORK && ENABLE_NVIDIA
             Application.logMessageReceivedThreaded -= OnLogMessage;
 #endif

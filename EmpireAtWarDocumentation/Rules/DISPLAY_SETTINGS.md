@@ -37,6 +37,9 @@ verification: "Source review, Unity compilation/import, persisted prefab
 - Editor play mode: `GraphicsSettingsApplier` assigns a DontSave URP clone to `QualitySettings.renderPipeline`. A settings save during play, or play ending with the clone still assigned → `QualitySettings.asset` gets `customRenderPipeline: {fileID: 0}` → next start throws `ArgumentException: The Object you want to instantiate is null` at `GraphicsSettingsApplier.Apply` (seen 2026-11-08 on High Fidelity; drifted `antiAliasing` too).
   - Guards (Editor only): `QualityPipelinePlayModeGuard` captures each level's pipeline on `ExitingEditMode` (`SessionState`) and restores + saves on `EnteredEditMode`, logging a warning; `QualitySettingsPlayModeSaveFilter` drops `ProjectSettings/QualitySettings.asset` from saves while playing.
   - Manual repair: set the level's pipeline to its `URP-*.asset` (e.g. High Fidelity → `URP-HighFidelity.asset`) via `QualitySettings.renderPipeline`, then save.
+  - Root cause (2026-11-08, recurred after EditMode runs): `SettingsService` applies asynchronously (`DisplaySettingsApplier.ApplyQueuedAsync` → `ApplyAllAsync`), so `GraphicsSettingsApplier.Apply` could run **after** `Dispose` — e.g. `RealEntityCompositionTests` building a real `ProjectScope`, or play stopping during settings load → clone stays assigned, nothing restores it. Fix: `Apply` returns after `Dispose` (`_isDisposed`).
+  - Guard bug fixed: `QualityPipelinePlayModeGuard.Capture` recorded a clone-holding level as empty and `Restore` wrote **none**. Restore now skips levels without a captured asset path.
+  - `antiAliasing` on High Fidelity flips 0 → 2 when `URP-HighFidelity` is active (URP syncs MSAA into QualitySettings); not caused by the guard.
 
 ## Files
 
