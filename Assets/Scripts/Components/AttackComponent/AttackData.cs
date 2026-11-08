@@ -121,7 +121,8 @@ namespace EmpireAtWar.Components.AttackComponent
         public bool IsFrom(IHealthFacade healthFacade) =>
             HealthFacade != null && HealthFacade == healthFacade;
 
+        // The health model, not the facade: online clients share one no-damage facade across every target.
         public bool SameSource(AttackData other) =>
-            HealthFacade != null && HealthFacade == other?.HealthFacade;
+            other != null && ReferenceEquals(_shipUnitsProvider, other._shipUnitsProvider);
     }
 }

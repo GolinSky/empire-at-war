@@ -358,6 +358,20 @@ namespace EmpireAtWar.Tests.Weapon
             Assert.That(((List<AttackData>)Field("_attackDataList")).Contains(respawned), Is.True);
         }
 
+        // Online clients build every target with one shared no-damage facade; each target must still be listed.
+        [Test]
+        public void TargetsSharingAHealthFacade_AreAllListed()
+        {
+            HealthFacadeStub shared = new HealthFacadeStub();
+            AttackData first = new AttackData(new HealthStub(Units(1)), shared, HardPointType.Any, null);
+            AttackData second = new AttackData(new HealthStub(Units(1)), shared, HardPointType.Any, null);
+            _weapon.AddTarget(first, AttackType.Base);
+            _weapon.AddTarget(second, AttackType.Base);
+
+            List<AttackData> listed = (List<AttackData>)Field("_attackDataList");
+            Assert.That(listed, Has.Member(first).And.Member(second));
+        }
+
         private AttackData Group(int units)
         {
             HealthStub health = new HealthStub(Units(units));
