@@ -120,7 +120,7 @@
 4. Run the job. Follow the release URL in its description, console, or archived `release-url.txt`.
 5. Confirm `release-result.json` reports `VerifiedDraft`, inspect the draft on GitHub, then publish manually when ready.
 
-Before changing GitHub, the job requires SUCCESS, all four archived inputs, matching clean Windows build provenance/commit, the ZIP's archived SHA-256, and nonempty assets below 2 GiB. The archived commit must already exist in GitHub; push the intended commit separately if needed.
+Before changing GitHub, the job requires SUCCESS, all four archived inputs, matching Windows build provenance/commit (CLI `source.dirty` is ignored: version stamping and Unity reserialization always dirty the snapshot; preparation already rejects a dirty snapshot before building), the ZIP's archived SHA-256, and nonempty assets below 2 GiB. The archived commit must already exist in GitHub; push the intended commit separately if needed.
 
 - Uploaded assets: `EmpireAtWar-win-Setup.exe`, `EmpireAtWar-<version>-full.nupkg`, `EmpireAtWar-<version>-delta.nupkg` (when a published Velopack release exists), `EmpireAtWar-win-Portable.zip`, `releases.win.json`, `commit.txt`, `zip-sha256.json`. The raw player ZIP is not uploaded; `zip-sha256.json` still identifies the Jenkins archive. Unity provenance is used for validation and remains in Jenkins.
 - The tag resolves to the archived commit. An existing tag pointing elsewhere is rejected, including annotated tags after dereferencing.

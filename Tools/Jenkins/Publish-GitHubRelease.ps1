@@ -64,8 +64,10 @@ try {
     if ($sha -notmatch '^[0-9a-fA-F]{40}$') { throw 'Archived commit.txt must contain a full Git commit SHA.' }
     $sha = $sha.ToLowerInvariant()
     $provenance = Get-Content -LiteralPath "$artifacts\build-provenance.json" -Raw | ConvertFrom-Json
-    if ($provenance.outcome -ne 'success' -or $provenance.exitCode -ne 0 -or $provenance.source.revision -ine $sha -or $provenance.source.dirty -ne $false -or $provenance.build.target -ne 'StandaloneWindows64') {
-        throw 'Archived provenance must describe a successful, clean Windows x64 build at the archived commit.'
+    # source.dirty is always true: CI stamps bundleVersion and Unity reserializes assets inside the snapshot.
+    # Cleanliness is enforced before the build by Prepare-Snapshot.ps1 (clean snapshot at the archived commit).
+    if ($provenance.outcome -ne 'success' -or $provenance.exitCode -ne 0 -or $provenance.source.revision -ine $sha -or $provenance.build.target -ne 'StandaloneWindows64') {
+        throw 'Archived provenance must describe a successful Windows x64 build at the archived commit.'
     }
     $buildInfo = Get-Content -LiteralPath "$artifacts\build-info.json" -Raw | ConvertFrom-Json
     if ($buildInfo.commit -ine $sha -or $buildInfo.build -cne $sourceBuild) { throw 'Archived build-info.json does not match the archived commit and source build.' }
