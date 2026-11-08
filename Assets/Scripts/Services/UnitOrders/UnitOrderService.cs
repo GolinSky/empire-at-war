@@ -21,6 +21,8 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly UnitOrderSettings _settings;
 
         public event Action<UnitOrder> OrderIssued;
+        /// <summary>Every attack order (players and AI) with its receivers; the online host relays the target.</summary>
+        public event Action<IReadOnlyList<IEntity>, IEntity, int> AttackIssued;
 
         public UnitOrderService(IEntityLocator entityLocator,
             IReinforcementZonesSystem zones, UnitOrderSettings settings)
@@ -120,6 +122,7 @@ namespace EmpireAtWar.Services.UnitOrders
             Publish(UnitActionId.Attack, receivers, issued,
                 target.GetFacade<IEntityTransformFacade>().Transform.position, target,
                 targetHardPointId: hardPointId);
+            if (issued > 0) AttackIssued?.Invoke(receivers, target, hardPointId);
         }
 
         public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point)

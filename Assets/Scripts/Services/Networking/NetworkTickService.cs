@@ -25,6 +25,7 @@ namespace EmpireAtWar.Services.Networking
         private readonly HostTickReplicator _replicator;
         private readonly HostTickOutput _output = new HostTickOutput();
         private readonly Dictionary<long, Vector2> _sentHealth = new Dictionary<long, Vector2>();
+        private readonly HashSet<long> _announcedDeaths = new HashSet<long>();
         private float _healthTimer;
 
         public NetworkTickService(IEntityLocator entities, OnlineMatchService online)
@@ -40,9 +41,10 @@ namespace EmpireAtWar.Services.Networking
         {
             _replicator.Advance(Time.deltaTime, NetworkTime.time, _output);
             if (!_online.HasBegun) return;
-            foreach (EntitySpawnMessage spawn in _output.Spawns) NetworkServer.SendToAll(spawn);
-            foreach (EntityDespawnMessage despawn in _output.Despawns) NetworkServer.SendToAll(despawn);
-            foreach (EntityKeyframesMessage chunk in _output.Keyframes) NetworkServer.SendToAll(chunk, Channels.Unreliable);
+            // Despawns first: a pooled squadron can leave and come back under the same id in one tick.
+            foreach (EntityDespawnMessage despawn in _output.Despawns) HostBroadcast.ToClients(despawn);
+            foreach (EntitySpawnMessage spawn in _output.Spawns) HostBroadcast.ToClients(spawn);
+            foreach (EntityKeyframesMessage chunk in _output.Keyframes) HostBroadcast.ToClients(chunk, Channels.Unreliable);
             _healthTimer -= Time.unscaledDeltaTime;
             if (_healthTimer > 0f) return;
             _healthTimer = HEALTH_INTERVAL_SECONDS;
@@ -58,16 +60,29 @@ namespace EmpireAtWar.Services.Networking
 
         public void LateDispose() => _replicator.Dispose();
 
+        /// <summary>See <see cref="HostTickReplicator.BeginHandover"/>.</summary>
+        public void BeginHandover() => _replicator.BeginHandover();
+
+        public void EndHandover() => _replicator.EndHandover();
+
         private void SendChangedHealth()
         {
             foreach (IEntity entity in _entities.Entities)
             {
-                if (entity.HealthModel.IsDestroyed || !_replicator.TryGetIndex(entity.Id, out ushort index)) continue;
+                if (!_replicator.TryGetIndex(entity.Id, out ushort index)) continue;
+                if (entity.HealthModel.IsDestroyed)
+                {
+                    // Dead units stay in the locator through their death presentation; announce the death once.
+                    if (_announcedDeaths.Add(entity.Id)) HostBroadcast.ToClients(new EntityDiedMessage { Index = index });
+                    continue;
+                }
+
+                _announcedDeaths.Remove(entity.Id);
                 Vector2 health = new Vector2(entity.HealthModel.HullPercentage, entity.HealthModel.ShieldPercentage);
                 if (_sentHealth.TryGetValue(entity.Id, out Vector2 sent) && sent == health) continue;
                 if (!TryCaptureHealth(entity, out UnitHealthSave save)) continue;
                 _sentHealth[entity.Id] = health;
-                NetworkServer.SendToAll(new EntityHealthMessage { Index = index, HealthJson = JsonUtility.ToJson(save) });
+                HostBroadcast.ToClients(new EntityHealthMessage { Index = index, HealthJson = JsonUtility.ToJson(save) });
             }
         }
 

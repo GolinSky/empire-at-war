@@ -1,6 +1,7 @@
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Services.Factory;
+using EmpireAtWar.Services.Networking.States;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.SpawnBlocking;
@@ -20,6 +21,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<BattleMapLoader>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterComponent(reinforcementZonesSystem).AsImplementedInterfaces().AsSelf();
             builder.Register<ReinforcementZonesSaveSource>(Lifetime.Singleton).As<IBattleSaveSource>();
+            builder.Register<ReinforcementZonesReplicatedState>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<PlanetFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PlanetSpawner>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<AsteroidSpawnBlockers>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

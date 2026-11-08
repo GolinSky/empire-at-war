@@ -9,7 +9,10 @@ namespace EmpireAtWar.Services.Squadrons
     {
         Squadron Spawn(PlayerId owner, SquadronType squadronType, Vector3 position, Quaternion rotation);
 
-        /// <summary>Builds a new squadron with a saved id; pooled squadrons keep their own ids, so none is reused.</summary>
+        /// <summary>
+        /// Places a squadron with a given id (save load, online replica). Pooled squadrons keep their own ids, so
+        /// only a dead or despawned squadron with that same id is reused; otherwise a new one is built.
+        /// </summary>
         Squadron SpawnRestored(PlayerId owner, SquadronType squadronType, Vector3 position, Quaternion rotation,
             long entityId);
     }

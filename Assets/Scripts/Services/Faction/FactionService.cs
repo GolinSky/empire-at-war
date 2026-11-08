@@ -48,6 +48,7 @@ namespace EmpireAtWar.Services.Factions
         private readonly SuperWeaponModel _superWeapons;
 
         private bool _isInitialized;
+        private bool _followsHost;
 
         public event System.Action<UnitRequest> PurchaseAccepted;
         public event System.Action<UnitRequest> PurchaseCanceled;
@@ -248,9 +249,12 @@ namespace EmpireAtWar.Services.Factions
             return true;
         }
 
+        /// <summary>Online client: production and its completions happen on the host; the queue is replicated.</summary>
+        public void FollowHost() => _followsHost = true;
+
         public void Tick()
         {
-            if (_isInitialized)
+            if (_isInitialized && !_followsHost)
             {
                 _model.Advance(Time.deltaTime);
             }

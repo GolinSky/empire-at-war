@@ -25,6 +25,9 @@ namespace EmpireAtWar.Services.Battle
 
         public void Register(PlayerId owner, PlayerUnitFactories factories) => _players.Add(owner, factories);
 
+        /// <summary>An AI takeover rebuilds the player's scope and registers its new factories.</summary>
+        public void Unregister(PlayerId owner) => _players.Remove(owner);
+
         public void Clear() => _players.Clear();
 
         public void Spawn(PlayerId owner, UnitTypeId unit, Vector3 position)

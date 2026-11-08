@@ -32,6 +32,7 @@ namespace EmpireAtWar.Services.Networking
             NetworkClient.RegisterHandler<EntityDespawnMessage>(OnDespawn);
             NetworkClient.RegisterHandler<EntityKeyframesMessage>(OnKeyframes);
             NetworkClient.RegisterHandler<EntityHealthMessage>(OnHealth);
+            NetworkClient.RegisterHandler<EntityDiedMessage>(OnDied);
             NetworkClient.RegisterHandler<MatchStateMessage>(OnMatchState);
         }
 
@@ -41,6 +42,7 @@ namespace EmpireAtWar.Services.Networking
             NetworkClient.UnregisterHandler<EntityDespawnMessage>();
             NetworkClient.UnregisterHandler<EntityKeyframesMessage>();
             NetworkClient.UnregisterHandler<EntityHealthMessage>();
+            NetworkClient.UnregisterHandler<EntityDiedMessage>();
             NetworkClient.UnregisterHandler<MatchStateMessage>();
         }
 
@@ -65,8 +67,20 @@ namespace EmpireAtWar.Services.Networking
         {
             if (!_replica.TryGetEntityId(message.Index, out long entityId)) return;
             _replica.OnDespawn(message);
-            if (message.Destroyed && _entities.TryGetEntity(entityId, out IEntity entity))
-                entity.GetFacade<IEntityDestroyFacade>().Destroy();
+            if (message.Destroyed) Die(entityId);
+        }
+
+        private void OnDied(EntityDiedMessage message)
+        {
+            if (_replica.TryGetEntityId(message.Index, out long entityId)) Die(entityId);
+        }
+
+        // The local death presentation then removes the entity, as offline; a pooled squadron the host brings
+        // back under the same id is reused by the squadron pool.
+        private void Die(long entityId)
+        {
+            if (_entities.TryGetEntity(entityId, out IEntity entity) && !entity.HealthModel.IsDestroyed)
+                entity.GetFacade<IReplicaDeathFacade>().Die();
         }
 
         private void OnKeyframes(EntityKeyframesMessage message) => _replica.OnKeyframes(message, NetworkTime.localTime);

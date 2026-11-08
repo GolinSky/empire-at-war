@@ -155,6 +155,12 @@ namespace EmpireAtWar.Models.Reinforcement
         public int GetReserveCount(UnitRequest request) =>
             _reserveCounts.TryGetValue(UnitLimitKey.From(request), out int count) ? count : 0;
 
+        /// <summary>Online client: the host's population count; the client places no units itself.</summary>
+        public void RestoreUnitCapacity(int current)
+        {
+            if (current != _currentUnitCapacity) CurrentUnitCapacity = current;
+        }
+
         public void ConsumeReinforcement(UnitRequest request)
         {
             UnitLimitKey key = UnitLimitKey.From(request);

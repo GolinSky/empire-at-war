@@ -59,6 +59,8 @@ namespace EmpireAtWar.Services.Networking.Online
         public int LocalSlotIndex { get; private set; } = -1;
         public bool IsInBattle { get; private set; }
         public bool HasBegun { get; private set; }
+        /// <summary>A restart is reloading the battle scene; the closing scene keeps the session.</summary>
+        public bool IsReloading { get; private set; }
         public bool CanStart => Role == OnlineRole.Host && (_lobby.AllReady || _forceStart);
 
         public bool AllClientsLoaded
@@ -98,6 +100,8 @@ namespace EmpireAtWar.Services.Networking.Online
             {
                 if (Time.unscaledTime - entry.Value < RECONNECT_GRACE_SECONDS) continue;
                 _disconnectedAt.Remove(entry.Key);
+                _lobby.RemoveAbandoned(entry.Key);
+                BroadcastLobby();
                 PlayerAbandoned?.Invoke(new PlayerId(entry.Key));
             }
         }
@@ -185,10 +189,22 @@ namespace EmpireAtWar.Services.Networking.Online
             Changed?.Invoke();
         }
 
-        /// <summary>Host: assigns human slots, sends every client its slot and loads the battle locally.</summary>
-        public bool TryStartMatch(BattleDefinition battle)
+        /// <summary>
+        /// Host: fits a Human slot to every lobby member (<see cref="OnlineLineup"/>), assigns them, sends every
+        /// client its slot and loads the battle locally.
+        /// </summary>
+        public bool TryStartMatch(BattleDefinition setup)
         {
-            if (!CanStart || !_lobby.TryAssignSlots(battle.Slots)) return false;
+            if (!CanStart) return false;
+            if (!OnlineLineup.TryFit(setup, _lobby.Members.Count, out BattleDefinition battle, out OnlineError error))
+            {
+                Fail(error);
+                return false;
+            }
+
+            if (!_lobby.TryAssignSlots(battle.Slots)) throw new InvalidOperationException(
+                "The fitted line-up must hold a Human slot for every lobby member.");
+            ClearError();
             _setupJson = JsonUtility.ToJson(BattleSetupSave.From(battle));
             foreach (LobbyMember member in _lobby.Members)
             {
@@ -201,6 +217,28 @@ namespace EmpireAtWar.Services.Networking.Online
             BeginBattleLoad();
             _gameCommand.StartBattle(battle);
             return true;
+        }
+
+        /// <summary>
+        /// Host, in battle: every connected member reloads the same battle with its slot; members still in their
+        /// reconnect grace get it when they rejoin.
+        /// </summary>
+        public void RestartMatch(BattleDefinition battle)
+        {
+            if (Role != OnlineRole.Host || !IsInBattle)
+                throw new InvalidOperationException("Only the host restarts an online battle.");
+            _setupJson = JsonUtility.ToJson(BattleSetupSave.From(battle));
+            foreach (LobbyMember member in _lobby.Members)
+            {
+                if (member.ConnectionId == OnlineLobby.HOST_CONNECTION_ID ||
+                    !NetworkServer.connections.TryGetValue(member.ConnectionId, out NetworkConnectionToClient connection))
+                    continue;
+                connection.Send(new BattleStartMessage { SetupJson = _setupJson, LocalSlotIndex = member.SlotIndex });
+            }
+
+            IsReloading = true;
+            BeginBattleLoad();
+            _gameCommand.StartBattle(battle);
         }
 
         /// <summary>The battle scope's session; the offline one when no online match is loading.</summary>
@@ -216,6 +254,7 @@ namespace EmpireAtWar.Services.Networking.Online
         /// <summary>Host: clients have loaded (or Force Start); client: the host's begin message arrived.</summary>
         public void MarkBegun()
         {
+            IsReloading = false;
             HasBegun = true;
             BattleBegun?.Invoke();
         }
@@ -321,6 +360,8 @@ namespace EmpireAtWar.Services.Networking.Online
         private void OnBattleStart(BattleStartMessage message)
         {
             BattleDefinition battle = JsonUtility.FromJson<BattleSetupSave>(message.SetupJson).Rebuild();
+            // A start that arrives during a battle is the host's restart.
+            IsReloading = IsInBattle;
             LocalSlotIndex = message.LocalSlotIndex;
             BeginBattleLoad();
             _gameCommand.StartBattle(battle);
@@ -379,6 +420,7 @@ namespace EmpireAtWar.Services.Networking.Online
             Role = role;
             IsInBattle = false;
             HasBegun = false;
+            IsReloading = false;
             _forceStart = false;
             LocalSlotIndex = -1;
             _loaded.Clear();

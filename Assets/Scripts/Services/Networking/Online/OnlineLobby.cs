@@ -42,6 +42,10 @@ namespace EmpireAtWar.Services.Networking.Online
 
         public bool Remove(int connectionId) => _members.RemoveAll(member => member.ConnectionId == connectionId) > 0;
 
+        /// <summary>The slot's player stayed away past the grace period; the AI keeps the slot, so no rejoin.</summary>
+        public void RemoveAbandoned(int slotIndex) =>
+            _members.RemoveAll(member => !member.Connected && member.SlotIndex == slotIndex);
+
         public void SetReady(int connectionId, bool ready)
         {
             int index = IndexOf(connectionId);

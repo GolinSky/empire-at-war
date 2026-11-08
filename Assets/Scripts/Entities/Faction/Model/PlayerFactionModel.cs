@@ -180,6 +180,23 @@ namespace EmpireAtWar.Models.Factions
             NotifyProductionChanged();
         }
 
+        /// <summary>
+        /// Online client: replaces the queue with the host's. The current items' hero and structure reservations
+        /// are released first; <see cref="RestoreQueue"/> takes them again for the new items.
+        /// </summary>
+        public void ReplaceQueue(IEnumerable<ProductionQueueItem> items)
+        {
+            foreach (ProductionQueueItem item in QueuedItems)
+            {
+                UnitRequest unitRequest = item.UnitRequest;
+                if (IsHeroRequest(unitRequest, out UnitTypeId hero)) _reservedHeroes.Remove(hero);
+                if (IsStructureRequest(unitRequest)) ReleaseStructure(unitRequest.GetType(), unitRequest.Id);
+            }
+
+            _productionQueues.Clear();
+            RestoreQueue(items);
+        }
+
         public void ReserveStructure(UnitRequest request)
         {
             var key = (request.GetType(), request.Id);

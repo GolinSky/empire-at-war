@@ -40,6 +40,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         private readonly List<ZoneSpot> _homes = new List<ZoneSpot>();
         private readonly List<Transform> _homeVisionAnchors = new List<Transform>();
         private CaptureStrengthSampler _strengthSampler;
+        private bool _followsHost;
 
         [SerializeField, FormerlySerializedAs("_spawnEdgePadding"), Min(0f)] private float spawnEdgePadding = 3f;
 
@@ -125,6 +126,9 @@ namespace EmpireAtWar.Services.ReinforcementZones
             }
         }
 
+        /// <summary>Online client: zone capture comes from the host (<see cref="RestoreZones"/>); zones only render.</summary>
+        public void FollowHost() => _followsHost = true;
+
         public void Tick() => TickZones(Time.deltaTime);
 
         public void RestoreZones(IReadOnlyList<ReinforcementZoneSave> saves)
@@ -150,12 +154,12 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         private void TickZones(float deltaTime)
         {
-            _strengthSampler.Tick(deltaTime);
+            if (!_followsHost) _strengthSampler.Tick(deltaTime);
 
             for (int i = 0; i < _zones.Count; i++)
             {
                 ReinforcementZonePresenter zone = _zones[i];
-                if (zone.Tick(deltaTime, _strengthSampler[i]))
+                if (!_followsHost && zone.Tick(deltaTime, _strengthSampler[i]))
                 {
                     RegisterRelay(_zoneViews[i], zone.Owner);
                     OwnershipChanged?.Invoke();

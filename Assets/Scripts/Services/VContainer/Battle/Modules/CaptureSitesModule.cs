@@ -5,6 +5,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Services.Networking.States;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Tooltip;
@@ -34,6 +35,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<CaptureSiteMiniMapPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CaptureSiteBuildUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CaptureSitesSaveSource>(Lifetime.Singleton).As<IBattleSaveSource>();
+            builder.Register<CaptureSitesReplicatedState>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
         public void ConfigureDisabled(IContainerBuilder builder)

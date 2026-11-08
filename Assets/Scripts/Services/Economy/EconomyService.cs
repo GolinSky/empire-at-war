@@ -29,6 +29,7 @@ namespace EmpireAtWar.Services.Economy
         private float _commonIncome;
         // Income is paid only while the battle runs, never during loading.
         private bool _isRunning;
+        private bool _followsHost;
 
         public float Income => DEFAULT_INCOME * _research.StationIncomeMultiplier;
         public float TotalIncome => _commonIncome;
@@ -70,9 +71,12 @@ namespace EmpireAtWar.Services.Economy
             _isRunning = state == BattleState.Running;
         }
 
+        /// <summary>Online client: income is paid on the host; credits are replicated.</summary>
+        public void FollowHost() => _followsHost = true;
+
         public void Tick()
         {
-            if (_isRunning && _model.AdvanceIncomeTimer(Time.deltaTime, _data.IncomeDelay))
+            if (_isRunning && !_followsHost && _model.AdvanceIncomeTimer(Time.deltaTime, _data.IncomeDelay))
             {
                 _model.AddMoney(_commonIncome);
             }

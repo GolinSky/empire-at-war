@@ -133,7 +133,11 @@ namespace EmpireAtWar.Entities.OnlineMenu
             OnlineError.HostLeft => "The host left.",
             OnlineError.Kicked => "You were removed from the lobby.",
             OnlineError.BattleInProgress => "That battle is already running.",
-            _ => "Could not connect."
+            OnlineError.NotEnoughSlots => "Not enough player slots: add an AI slot for every lobby member.",
+            OnlineError.SurvivalCoopNeedsLargerMap => "Survival co-op needs a Medium or Large map.",
+            OnlineError.SurvivalLobbyTooLarge => "Survival co-op holds at most 3 players.",
+            OnlineError.ConnectionFailed => "Could not connect.",
+            _ => throw new System.ArgumentOutOfRangeException(nameof(error), error, "No text for this error.")
         };
     }
 }

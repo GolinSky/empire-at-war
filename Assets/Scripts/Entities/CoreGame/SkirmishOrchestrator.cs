@@ -3,6 +3,7 @@ using System.Threading;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Entities.Menu;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Input;
 using UnityEngine;
 using EmpireAtWar.Lifecycle;
@@ -22,6 +23,7 @@ namespace EmpireAtWar.Controllers.Game
         private readonly IGameCommand _gameCommand;
         private readonly IBattleStartupSequence _startupSequence;
         private readonly IInputLock _inputLock;
+        private readonly IMatchSession _session;
 
         private readonly SkirmishStateModel _stateModel;
         private readonly BattleDefinition _battle;
@@ -35,11 +37,13 @@ namespace EmpireAtWar.Controllers.Game
             IGameCommand gameCommand,
             IBattleStartupSequence startupSequence,
             IInputLock inputLock,
-            SkirmishStateModel stateModel, BattleDefinition battle)
+            SkirmishStateModel stateModel, BattleDefinition battle,
+            IMatchSession session)
         {
             _gameCommand = gameCommand;
             _startupSequence = startupSequence;
             _inputLock = inputLock;
+            _session = session;
             _stateModel = stateModel;
             _battle = battle;
         }
@@ -100,6 +104,12 @@ namespace EmpireAtWar.Controllers.Game
             if (notifierState == UserNotifierState.ExitGame)
             {
                 ExitSkirmish();
+                return;
+            }
+
+            // Online battles share one time scale: the menu never pauses them.
+            if (_session.IsOnline)
+            {
                 return;
             }
 

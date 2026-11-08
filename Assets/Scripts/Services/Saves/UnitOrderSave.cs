@@ -27,6 +27,8 @@ namespace EmpireAtWar.Services.Saves
 
         public UnitOrderType Type => type;
 
+        public bool TargetsAny(ICollection<long> entityIds) => hasTarget && entityIds.Contains(targetId);
+
         public static UnitOrderSave From(UnitOrderModel order)
         {
             if (order.Current == UnitOrderType.UseAbility) return new UnitOrderSave { type = UnitOrderType.None };

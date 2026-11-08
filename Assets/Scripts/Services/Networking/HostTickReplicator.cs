@@ -24,6 +24,8 @@ namespace EmpireAtWar.Services.Networking
         private readonly List<EntityKeyframe> _pending = new List<EntityKeyframe>();
         private readonly List<IEntity> _pendingSpawns = new List<IEntity>();
         private readonly List<EntityDespawnMessage> _despawns = new List<EntityDespawnMessage>();
+        private readonly Dictionary<long, IEntity> _handedOver = new Dictionary<long, IEntity>();
+        private bool _isHandingOver;
         private double _time;
 
         public HostTickReplicator(IEntityLocator entities)
@@ -121,13 +123,38 @@ namespace EmpireAtWar.Services.Networking
             return true;
         }
 
+        /// <summary>
+        /// An AI takeover rebuilds a player's units under the same ids. Between begin and end, a removed entity keeps
+        /// its net index and clients keep their copy; one that does not come back is despawned at the end.
+        /// </summary>
+        public void BeginHandover() => _isHandingOver = true;
+
+        public void EndHandover()
+        {
+            _isHandingOver = false;
+            foreach (IEntity entity in _handedOver.Values) Remove(entity);
+            _handedOver.Clear();
+        }
+
         private void HandleAdded(IEntity entity)
         {
+            if (_handedOver.Remove(entity.Id)) return;
             _indices.Assign(entity.Id);
             _pendingSpawns.Add(entity);
         }
 
         private void HandleRemoved(IEntity entity)
+        {
+            if (_isHandingOver && _indices.TryGetIndex(entity.Id, out _) && !_pendingSpawns.Contains(entity))
+            {
+                _handedOver[entity.Id] = entity;
+                return;
+            }
+
+            Remove(entity);
+        }
+
+        private void Remove(IEntity entity)
         {
             if (!_indices.TryGetIndex(entity.Id, out ushort index)) return;
             // Never announced: clients have nothing to remove.

@@ -49,6 +49,7 @@ namespace EmpireAtWar.Entities.BaseEntity
             RegisterComponents(builder, bindings.Health);
             builder.Register<HealthFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<HardPointsFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<HealthReplicaDeathFacade>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
         public static void RegisterRadar(IContainerBuilder builder, EntityBindings bindings)

@@ -29,8 +29,7 @@ namespace EmpireAtWar.Services.Networking.Online
             }
 
             if (!_online.TryStartMatch(definition))
-                Debug.LogWarning("[Online] Cannot start: every player must be ready (or Force Start) and the line-up " +
-                    "needs one Human slot per lobby member.");
+                Debug.LogWarning($"[Online] Cannot start: every player must be ready (or Force Start); line-up: {_online.LastError}.");
         }
 
         public void LoadBattle(BattleSave save) => _offline.LoadBattle(save);

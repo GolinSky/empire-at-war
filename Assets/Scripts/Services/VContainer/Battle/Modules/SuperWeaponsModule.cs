@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.SuperWeapons.Controller;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Services.Networking;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.Saves;
 using global::VContainer;
@@ -25,6 +26,7 @@ namespace EmpireAtWar.Services.VContainer
             AssetRegistrations.RegisterShared<SuperWeaponData>(builder, _assets);
             builder.Register<SuperWeaponFireService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SuperWeaponCombatSaveSource>(Lifetime.Singleton).As<IBattleSaveSource>();
+            builder.Register<SuperWeaponReplication>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
         public void ConfigureDisabled(IContainerBuilder builder) { }

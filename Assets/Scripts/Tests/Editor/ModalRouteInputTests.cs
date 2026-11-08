@@ -4,6 +4,7 @@ using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Menu;
 using EmpireAtWar.Entities.Saves;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Ui.Base;
@@ -56,7 +57,7 @@ namespace EmpireAtWar.Tests.Editor
         private void InitializePauseMenu(BattleDefinition battle)
         {
             _pause = new PauseMenuRouteUiController(_ui, _cancelRouter, null, _state,
-                null, _saveActions, _save, _inputLock, battle);
+                null, _saveActions, _save, _inputLock, battle, new OfflineSession(PlayerId.None));
             _pause.Initialize();
         }
 

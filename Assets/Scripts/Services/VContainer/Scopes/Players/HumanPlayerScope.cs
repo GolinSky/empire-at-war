@@ -7,6 +7,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Factory;
+using EmpireAtWar.Services.Networking.States;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.Saves;
@@ -42,6 +43,8 @@ namespace EmpireAtWar.Services.VContainer
             battleScope.Modules.ConfigurePlayer(builder, player, transform);
             builder.RegisterInstance(new UnitRequestFactory(player.Has(BattleFeatures.SuperWeapons)))
                 .AsImplementedInterfaces().AsSelf();
+            builder.Register<PlayerReserveReplicatedState>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<StationLevelReplicatedState>(Lifetime.Singleton).AsImplementedInterfaces();
             if (!_isLocal) return;
             RegisterLocalPlayerServices(builder, player.Features);
             battleScope.Modules.ConfigureLocalPlayer(builder, player, transform);

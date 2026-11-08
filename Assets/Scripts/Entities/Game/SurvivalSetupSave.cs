@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
@@ -17,6 +18,8 @@ namespace EmpireAtWar.Entities.Game
         [SerializeField] private MapSize mapSize;
         [SerializeField] private EnemyAiDifficulty difficulty;
         [SerializeField] private bool superWeapons;
+        // Online co-op humans; older saves have none.
+        [SerializeField] private List<FactionType> coopHumanFactions = new List<FactionType>();
 
         public static SurvivalSetupSave From(SurvivalSettings settings) => new SurvivalSetupSave
         {
@@ -26,10 +29,12 @@ namespace EmpireAtWar.Entities.Game
             enemyFaction = settings.EnemyFaction,
             mapSize = settings.MapSize,
             difficulty = settings.Difficulty,
-            superWeapons = settings.SuperWeapons
+            superWeapons = settings.SuperWeapons,
+            coopHumanFactions = new List<FactionType>(settings.CoopHumanFactions)
         };
 
         public BattleDefinition Rebuild() => SurvivalPreset.Create(new SurvivalSettings(playerFaction,
-            hasAlly ? allyFaction : (FactionType?)null, enemyFaction, mapSize, difficulty, superWeapons)).Build();
+            hasAlly ? allyFaction : (FactionType?)null, enemyFaction, mapSize, difficulty, superWeapons,
+            coopHumanFactions)).Build();
     }
 }

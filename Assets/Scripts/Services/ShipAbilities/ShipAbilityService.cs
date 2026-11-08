@@ -30,6 +30,9 @@ namespace EmpireAtWar.Services.ShipAbilities
         public event Action<IReadOnlyList<IEntity>> ManualAction;
         public event Action<IReadOnlyList<IEntity>> TargetRejected;
         public event Action<IReadOnlyList<IEntity>> TargetingCanceled;
+        /// <summary>Any ability start (players and AI); the online host relays it to clients.</summary>
+        public event Action<IShipAbilityFacade, ShipAbilityId, IEntity> Activated;
+        public event Action<IShipAbilityFacade, ShipAbilityId> Canceled;
 
         public bool IsWaitingForTarget { get; private set; }
         public ShipAbilityId PendingAbilityId { get; private set; }
@@ -228,6 +231,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             if (!TryFindSlot(caster, id, out ShipAbilitySlot slot) ||
                 slot.State != ShipAbilityState.Active || !slot.Definition.CanCancel) return false;
             Stop(slot);
+            Canceled?.Invoke(caster, id);
             return true;
         }
 
@@ -239,11 +243,34 @@ namespace EmpireAtWar.Services.ShipAbilities
                 PlanarGeometry.Distance(caster.WorldPosition, target.GetFacade<IEntityTransformFacade>().Transform.position) > definition.Range)
                 return false;
 
-            IShipAbility ability = _shipAbilityFactory.Create(definition);
-            ability.Start(caster, definition, target);
+            Start(slot, caster, target);
+            Activated?.Invoke(caster, id, target);
+            return true;
+        }
+
+        /// <summary>
+        /// Online client: the host started this ability. Range and readiness were checked there; replicated
+        /// positions and cooldowns can differ slightly, so only a slot that is already running is skipped.
+        /// </summary>
+        public void ActivateReplica(IShipAbilityFacade caster, ShipAbilityId id, IEntity target)
+        {
+            if (!TryFindSlot(caster, id, out ShipAbilitySlot slot) || slot.State == ShipAbilityState.Active) return;
+            if (_running.Contains(slot)) _running.Remove(slot);
+            Start(slot, caster, target);
+        }
+
+        /// <summary>Online client: the host canceled this ability.</summary>
+        public void CancelReplica(IShipAbilityFacade caster, ShipAbilityId id)
+        {
+            if (TryFindSlot(caster, id, out ShipAbilitySlot slot) && slot.State == ShipAbilityState.Active) Stop(slot);
+        }
+
+        private void Start(ShipAbilitySlot slot, IShipAbilityFacade caster, IEntity target)
+        {
+            IShipAbility ability = _shipAbilityFactory.Create(slot.Definition);
+            ability.Start(caster, slot.Definition, target);
             slot.Activate(ability);
             _running.Add(slot);
-            return true;
         }
 
         /// <summary>Loads a saved slot state; a recovering slot resumes counting down.</summary>

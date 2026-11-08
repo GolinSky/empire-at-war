@@ -59,6 +59,7 @@ namespace EmpireAtWar.Services.CaptureSites
         private CaptureSiteData _data;
         private MapGenerationSettings _mapSettings;
         private CaptureSitePresenter _selectedSite;
+        private bool _followsHost;
 
         public IReadOnlyList<ICaptureSite> Sites => _sites;
         /// <summary>In map layout order, so a seeded rebuild matches saved sites by index.</summary>
@@ -181,18 +182,24 @@ namespace EmpireAtWar.Services.CaptureSites
             _strengthSampler.Clear();
         }
 
+        /// <summary>Online client: capture progress comes from the host; sites only render.</summary>
+        public void FollowHost() => _followsHost = true;
+
         public void Tick()
         {
             float deltaTime = Time.deltaTime;
-            _strengthSampler.Tick(deltaTime);
+            if (!_followsHost) _strengthSampler.Tick(deltaTime);
 
             for (int i = 0; i < _sites.Count; i++)
             {
                 CaptureSitePresenter site = _sites[i];
+                if (!_followsHost)
+                {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-                using (CaptureMarker.Auto())
+                    using (CaptureMarker.Auto())
 #endif
-                site.TickCapture(deltaTime, _strengthSampler[i]);
+                    site.TickCapture(deltaTime, _strengthSampler[i]);
+                }
 
                 bool isVisible;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

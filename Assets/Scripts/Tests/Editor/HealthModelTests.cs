@@ -7,6 +7,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEngine;
@@ -122,7 +123,7 @@ namespace EmpireAtWar.Tests.Editor
                 HealthComponent health = owner.AddComponent<HealthComponent>();
                 typeof(HealthComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
                     .Invoke(health, new object[] { model, new CombatModifiers(), owner.transform, TestPlayers.Human });
-                HealthFacade facade = new HealthFacade(health);
+                HealthFacade facade = new HealthFacade(health, new OfflineSession(TestPlayers.Human));
                 int damageEvents = 0;
                 facade.Damaged += () => damageEvents++;
 

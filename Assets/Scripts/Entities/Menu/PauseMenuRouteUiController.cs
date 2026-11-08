@@ -10,6 +10,7 @@ using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Ui.Base;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using UnityEngine;
 using VContainer;
@@ -33,6 +34,7 @@ namespace EmpireAtWar.Entities.Menu
         private readonly BattleSaveActions _saves;
         private readonly ISaveGameRoute _saveGameRoute;
         private readonly IInputLock _inputLock;
+        private readonly IMatchSession _session;
         private IDisposable _menuInputLock;
 
         private bool CanOpen => _state == BattleState.Running || _state == BattleState.Paused ||
@@ -44,8 +46,10 @@ namespace EmpireAtWar.Entities.Menu
             ISettingsRoute settingsRoute,
             INotifier<BattleState> battleState,
             ITooltipService tooltipService, BattleSaveActions saves,
-            ISaveGameRoute saveGameRoute, IInputLock inputLock, BattleDefinition battle) : base(uiService, cancelRouter)
+            ISaveGameRoute saveGameRoute, IInputLock inputLock, BattleDefinition battle,
+            IMatchSession session) : base(uiService, cancelRouter)
         {
+            _session = session;
             _cancelRouter = cancelRouter;
             _settingsRoute = settingsRoute;
             _battleState = battleState;
@@ -62,6 +66,8 @@ namespace EmpireAtWar.Entities.Menu
             _ui.AssignPresenter(this);
             _ui.Initialize();
             _ui.SetSavingAvailable(_saves.IsSupported);
+            // Online, only the host restarts; every client then reloads with it.
+            _ui.SetRestartAvailable(_session.IsAuthority);
             _tooltipHover = new TooltipHoverSubscription(
                 _ui.TooltipHover, HandleTooltipHover, _tooltips);
             _ui.SetMenuVisible(false);

@@ -17,11 +17,13 @@ namespace EmpireAtWar.Services.Networking
 
         private readonly OnlineMatchService _online;
         private readonly NetworkTickService _ticks;
+        private readonly HostReplicatedStateSender _states;
 
-        public HostBattleStartGate(OnlineMatchService online, NetworkTickService ticks)
+        public HostBattleStartGate(OnlineMatchService online, NetworkTickService ticks, HostReplicatedStateSender states)
         {
             _online = online;
             _ticks = ticks;
+            _states = states;
         }
 
         public void Initialize() => _online.ClientLoaded += OnClientLoaded;
@@ -50,6 +52,7 @@ namespace EmpireAtWar.Services.Networking
         private void Begin(NetworkConnectionToClient connection)
         {
             _ticks.SendBaseline(connection);
+            _states.SendBaseline(connection);
             connection.Send(new BattleBeginMessage());
         }
     }

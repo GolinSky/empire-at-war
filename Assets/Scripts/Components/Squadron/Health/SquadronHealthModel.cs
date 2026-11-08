@@ -112,6 +112,22 @@ namespace EmpireAtWar.Components.Squadrons.Health
             OnValueChanged?.Invoke();
         }
 
+        /// <summary>Destroys every fighter at once (online clients follow the host's death this way).</summary>
+        public void Kill()
+        {
+            if (IsDestroyed) return;
+            for (int i = 0; i < Members.Length; i++)
+            {
+                Members[i].Restore(0f);
+                _shields[i] = 0f;
+            }
+
+            Recalculate();
+            OnValueChanged?.Invoke();
+            IsDestroyed = true;
+            OnDestroy?.Invoke();
+        }
+
         public void ApplyDamage(float damage, DamageType damageType, int memberId)
         {
             HardPointModel member = Members[memberId];

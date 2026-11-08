@@ -73,6 +73,8 @@ namespace EmpireAtWar.Entities.Menu
 
         public void SetSavingAvailable(bool available) => saveButton.gameObject.SetActive(available);
 
+        public void SetRestartAvailable(bool available) => restartButton.interactable = available;
+
         public void SetMenuVisible(bool isVisible)
         {
             menuPanel.SetActive(isVisible);

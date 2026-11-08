@@ -10,6 +10,7 @@ using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.UiRouting;
@@ -35,6 +36,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         private ISelectionContext _lastSelectionContext;
         private readonly ITooltipService _tooltipService;
         private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
+        private readonly IMatchSession _session;
 
         private readonly Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>> _routes = new();
         private readonly Dictionary<SkirmishUiRoutePosition, bool> _routeStates = new();
@@ -75,7 +77,8 @@ namespace EmpireAtWar.Entities.CoreGameUi
             INotifier<BattleResult> battleVictoryNotifier,
             ICinematicCameraController cinematicCamera,
             ITooltipService tooltipService,
-            EmpireAtWar.Services.Input.IInputBindings bindings) : base(uiService, cancelRouter)
+            EmpireAtWar.Services.Input.IInputBindings bindings,
+            IMatchSession session) : base(uiService, cancelRouter)
         {
             _placement = placement;
             _cancelRouter = cancelRouter;
@@ -88,6 +91,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _tooltips = new TooltipRequests(tooltipService);
             _tooltipService = tooltipService;
             _bindings = bindings;
+            _session = session;
         }
 
         public void Initialize()
@@ -97,6 +101,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _ui.ContextualPopup.SetParent(_placement.ContextualSlot, false);
             _ui.AssignPresenter(this);
             _ui.Initialize();
+            if (_session.IsOnline) _ui.DisableTimeControls();
             _ui.SetReinforcementReady(_hasReadyReinforcement);
             if (_populationCapacity.HasValue)
                 _ui.SetPopulationCapacity(_populationCapacity.Value.current, _populationCapacity.Value.max);

@@ -6,10 +6,11 @@ namespace EmpireAtWar.Services.Stations
 {
     public sealed class HostedFactionLevel : IDisposable
     {
-        private readonly PlayerFactionModel _host;
+        private readonly IFactionLevelObserver _host;
         private readonly EnemyFactionModel _ally;
 
-        public HostedFactionLevel(PlayerFactionModel host, EnemyFactionModel ally)
+        /// <param name="host">The hosting human, or the AI that took over that human's slot.</param>
+        public HostedFactionLevel(IFactionLevelObserver host, EnemyFactionModel ally)
         {
             _host = host;
             _ally = ally;

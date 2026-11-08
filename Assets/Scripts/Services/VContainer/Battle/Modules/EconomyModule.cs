@@ -13,6 +13,7 @@ using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Factions;
+using EmpireAtWar.Services.Networking.States;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Views.Cheats;
 using global::VContainer;
@@ -60,6 +61,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<FactionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HumanProductionSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<HumanProductionCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<PlayerEconomyReplicatedState>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
         private static void ConfigureAi(IContainerBuilder builder, Transform playerRoot)

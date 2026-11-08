@@ -39,7 +39,8 @@ namespace EmpireAtWar.Tests.Editor
                 gameCommand: _gameCommand,
                 startupSequence: new CompletedStartupStub(),
                 inputLock: _inputLock,
-                stateModel: _stateModel, battle: SkirmishPreset.Default());
+                stateModel: _stateModel, battle: SkirmishPreset.Default(),
+                session: new OfflineSession(PlayerId.None));
             _userStateNotifier = new UserStateNotifierStub();
             _battleVictoryNotifier = new NotifierStub<BattleResult>();
             _subscriptions = new SkirmishFlowSubscriptions(
@@ -66,7 +67,7 @@ namespace EmpireAtWar.Tests.Editor
                 new[] { entry }, new[] { entry }, 1000, 30, true);
             var state = new SkirmishStateModel();
             var flow = new SkirmishOrchestrator(_gameCommand, new CompletedStartupStub(), _inputLock,
-                state, SimulationPreset.Create(setup).Build());
+                state, SimulationPreset.Create(setup).Build(), new OfflineSession(PlayerId.None));
             try
             {
                 state.SetState(BattleState.Ended);
@@ -104,7 +105,7 @@ namespace EmpireAtWar.Tests.Editor
             var startup = new PendingStartupStub();
             var state = new SkirmishStateModel();
             var flow = new SkirmishOrchestrator(_gameCommand, startup, _inputLock,
-                state, SkirmishPreset.Default());
+                state, SkirmishPreset.Default(), new OfflineSession(PlayerId.None));
             try
             {
                 flow.Initialize();
@@ -125,7 +126,7 @@ namespace EmpireAtWar.Tests.Editor
             var startup = new PendingStartupStub();
             var state = new SkirmishStateModel();
             var flow = new SkirmishOrchestrator(_gameCommand, startup, _inputLock,
-                state, SkirmishPreset.Default());
+                state, SkirmishPreset.Default(), new OfflineSession(PlayerId.None));
             bool observedUnobservedException = false;
             LogAssert.ignoreFailingMessages = true;
             try
@@ -163,7 +164,7 @@ namespace EmpireAtWar.Tests.Editor
                 new[] { entry }, new[] { entry }, 1000, 30, false);
             var state = new SkirmishStateModel();
             var flow = new SkirmishOrchestrator(_gameCommand, new CompletedStartupStub(), _inputLock,
-                state, SimulationPreset.Create(setup).Build());
+                state, SimulationPreset.Create(setup).Build(), new OfflineSession(PlayerId.None));
             var director = new EmpireAtWar.Services.Battle.SimulationDirector(null, state, flow,
                 null, null, null, null, null, null, null, null, null);
             try

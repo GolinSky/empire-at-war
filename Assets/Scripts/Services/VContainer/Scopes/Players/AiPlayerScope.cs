@@ -6,6 +6,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Factory;
+using EmpireAtWar.Services.Networking.States;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Squadrons;
@@ -18,15 +19,21 @@ namespace EmpireAtWar.Services.VContainer
     public sealed class AiPlayerScope : AssetLifetimeScope
     {
         private PlayerSlot _owner;
+        private BattlePlayer _player;
 
-        public void ConfigurePlayer(PlayerSlot owner) => _owner = owner;
+        /// <param name="player">The line-up's AI player, or an AI version of a human slot taken over online.</param>
+        public void ConfigurePlayer(BattlePlayer player)
+        {
+            _player = player;
+            _owner = player.Slot;
+        }
 
         protected override void Configure(IContainerBuilder builder)
         {
             base.Configure(builder);
             builder.RegisterInstance(_owner);
             SkirmishScope battleScope = (SkirmishScope)Parent;
-            BattlePlayer player = battleScope.Battle.GetPlayer(_owner.Id);
+            BattlePlayer player = _player;
             ProductionAccessRegistrations.Register(builder, battleScope.Battle, player);
             battleScope.Modules.ConfigurePlayer(builder, player, transform);
             builder.RegisterInstance(new UnitRequestFactory(player.Has(BattleFeatures.SuperWeapons)))
@@ -61,6 +68,7 @@ namespace EmpireAtWar.Services.VContainer
                 .WithParameter(battleScope.Factions.Get(_owner.Faction))
                 .WithParameter(player.Features);
             builder.Register<EnemyFactionModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<AiStationLevelReplicatedState>(Lifetime.Singleton).AsImplementedInterfaces();
             // With an economy, EnemyService spawns the station; without one only the station spawner remains.
             if (player.OwnsStation && !player.Has(BattleFeatures.Economy))
                 builder.Register<PlayerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

@@ -47,6 +47,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         private bool _hasContentLayout;
         private bool _isFactionLayout;
         private bool _isShipGroupLayout;
+        private bool _hasTimeControls = true;
         private (string faction, bool ended, bool factionLayout, bool visible)? _lastHudStatus;
 
         public TooltipHoverView TooltipHover => tooltipHover;
@@ -115,8 +116,8 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _lastHudStatus = status;
             factionText.text = faction.ToUpperInvariant();
             contentTitle.text = _isFactionLayout ? $"{faction.ToUpperInvariant()} STARBASE" : "FLEET SELECTION";
-            timeButton.interactable = !battleEnded;
-            speedUpButton.interactable = !battleEnded;
+            timeButton.interactable = !battleEnded && _hasTimeControls;
+            speedUpButton.interactable = !battleEnded && _hasTimeControls;
             reinforcementButton.interactable = !battleEnded;
             videoModeButton.interactable = !battleEnded;
             clearFleetButton.interactable = !battleEnded;
@@ -128,6 +129,14 @@ namespace EmpireAtWar.Entities.CoreGameUi
         {
             timeImage.sprite = timeSprites.Dictionary[isPaused];
             speedUpImage.sprite = speedUpSprites.Dictionary[speed];
+        }
+
+        /// <summary>Online battles share one time scale, so a client cannot pause or speed it up.</summary>
+        public void DisableTimeControls()
+        {
+            _hasTimeControls = false;
+            timeButton.interactable = false;
+            speedUpButton.interactable = false;
         }
 
         public void SetMode(string label, bool spectator)

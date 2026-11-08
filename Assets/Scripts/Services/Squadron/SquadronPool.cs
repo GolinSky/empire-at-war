@@ -123,9 +123,33 @@ namespace EmpireAtWar.Services.Squadrons
             long entityId)
         {
             (PlayerId, SquadronType) key = (owner, squadronType);
-            Squadron squadron = _factory.Create(owner, squadronType, position, rotation, entityId);
+            Squadron squadron;
+            if (TryTakeWithId(key, entityId, out squadron)) squadron.Respawn(position, rotation);
+            else squadron = _factory.Create(owner, squadronType, position, rotation, entityId);
             squadron.Released += () => HandleReleased(squadron, key);
             return squadron;
+        }
+
+        // Online client: the host reuses a pooled squadron under its id, so the local copy with that id comes back.
+        // A copy still in its death presentation is despawned first; it leaves the locator before re-entering it.
+        private bool TryTakeWithId((PlayerId, SquadronType) key, long entityId, out Squadron squadron)
+        {
+            for (int i = 0; i < _dying.Count; i++)
+            {
+                if (_dying[i].Squadron.EntityId != entityId) continue;
+                squadron = _dying[i].Squadron;
+                _dying.RemoveAt(i);
+                squadron.Despawn();
+                return true;
+            }
+
+            squadron = null;
+            if (!_despawned.TryGetValue(key, out List<Squadron> squadrons)) return false;
+            int index = squadrons.FindIndex(candidate => candidate.EntityId == entityId);
+            if (index < 0) return false;
+            squadron = squadrons[index];
+            squadrons.RemoveAt(index);
+            return true;
         }
 
         public void Tick()

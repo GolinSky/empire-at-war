@@ -23,7 +23,7 @@ namespace EmpireAtWar.Services.Networking
         {
             if (!_online.HasBegun || Mathf.Approximately(_sentScale, Time.timeScale)) return;
             _sentScale = Time.timeScale;
-            NetworkServer.SendToAll(new MatchStateMessage { Tick = _ticks.CurrentTick, TimeScale = _sentScale });
+            HostBroadcast.ToClients(new MatchStateMessage { Tick = _ticks.CurrentTick, TimeScale = _sentScale });
         }
     }
 }

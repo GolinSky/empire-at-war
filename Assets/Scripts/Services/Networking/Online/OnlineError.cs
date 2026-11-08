@@ -10,6 +10,9 @@ namespace EmpireAtWar.Services.Networking.Online
         HostLeft,
         Kicked,
         ConnectionFailed,
-        BattleInProgress
+        BattleInProgress,
+        NotEnoughSlots,
+        SurvivalCoopNeedsLargerMap,
+        SurvivalLobbyTooLarge
     }
 }
