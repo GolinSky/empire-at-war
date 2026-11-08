@@ -29,6 +29,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         public void Show(List<string> names, string message)
         {
+            friends.Hide();
+            ReleaseAvatars();
             friends.ClearOptions();
             friends.AddOptions(names.Count > 0 ? names : new List<string> { "No online friends" });
             friends.SetValueWithoutNotify(0);
@@ -40,6 +42,33 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         public void ShowStatus(string message) => status.text = message;
 
+        public bool SetAvatar(int index, Texture2D avatar)
+        {
+            TMP_Dropdown.OptionData option = friends.options[index];
+            if (option.image != null) return false;
+            option.image = Sprite.Create(avatar, new Rect(0, 0, avatar.width, avatar.height),
+                new Vector2(0.5f, 0.5f));
+            return true;
+        }
+
+        public void RefreshAvatars()
+        {
+            friends.RefreshShownValue();
+            if (!friends.IsExpanded) return;
+            friends.Hide();
+            friends.Show();
+        }
+
+        private void ReleaseAvatars()
+        {
+            foreach (TMP_Dropdown.OptionData option in friends.options)
+            {
+                if (option.image == null) continue;
+                Destroy(option.image);
+                option.image = null;
+            }
+        }
+
         public void Hide()
         {
             friends.Hide();
@@ -49,6 +78,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Dispose()
         {
             if (!_initialized) return;
+            ReleaseAvatars();
             inviteButton.onClick.RemoveListener(Invite);
             refreshButton.onClick.RemoveListener(_presenter.Refresh);
             closeButton.onClick.RemoveListener(_presenter.Close);

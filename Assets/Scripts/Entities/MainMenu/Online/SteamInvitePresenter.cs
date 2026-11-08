@@ -15,8 +15,17 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             _view = view;
         }
 
-        public void Initialize() => _view.Initialize(this);
-        public void Dispose() => _view.Dispose();
+        public void Initialize()
+        {
+            _view.Initialize(this);
+            _steam.AvatarLoaded += UpdateAvatars;
+        }
+
+        public void Dispose()
+        {
+            _steam.AvatarLoaded -= UpdateAvatars;
+            _view.Dispose();
+        }
 
         public void Open()
         {
@@ -33,6 +42,17 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             foreach (SteamFriend friend in _friends) names.Add(friend.Name);
             _view.Show(names, names.Count > 0 ? "Choose an online friend, then press INVITE."
                 : "No friends are online. Refresh after your friend signs in to Steam.");
+            UpdateAvatars();
+        }
+
+        private void UpdateAvatars()
+        {
+            if (!_view.IsOpen) return;
+            bool changed = false;
+            for (int index = 0; index < _friends.Count; index++)
+                if (_steam.TryGetAvatar(_friends[index].Id.m_SteamID, out var avatar))
+                    changed |= _view.SetAvatar(index, avatar);
+            if (changed) _view.RefreshAvatars();
         }
 
         public void Invite(int index)

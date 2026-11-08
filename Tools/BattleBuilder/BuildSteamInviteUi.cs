@@ -15,6 +15,63 @@ public static class BuildSteamInviteUi
     private static TMP_Text _text;
     private static TMP_Dropdown _dropdown;
 
+    public static string UpgradeAvatars()
+    {
+        UpgradeAvatars<SkirmishUi>(SKIRMISH_PATH);
+        UpgradeAvatars<SurvivalUi>(SURVIVAL_PATH);
+        AssetDatabase.SaveAssets();
+        return "Saved avatar bindings and friend row layout in both lobby prefabs.";
+    }
+
+    private static void UpgradeAvatars<T>(string path) where T : Component
+    {
+        GameObject root = PrefabUtility.LoadPrefabContents(path);
+        try
+        {
+            var owner = new SerializedObject(RootView<T>(root));
+            var view = new SerializedObject(owner.FindProperty("steamInvites").objectReferenceValue);
+            ConfigureAvatars((TMP_Dropdown)view.FindProperty("friends").objectReferenceValue);
+            PrefabUtility.SaveAsPrefabAsset(root, path);
+        }
+        finally { PrefabUtility.UnloadPrefabContents(root); }
+    }
+
+    private static void ConfigureAvatars(TMP_Dropdown friends)
+    {
+        friends.captionImage = Avatar(friends.transform, friends.captionImage, 12);
+        friends.itemImage = Avatar(friends.itemText.transform.parent, friends.itemImage, 36);
+        FriendLabel(friends.captionText, 56);
+        FriendLabel(friends.itemText, 80);
+        var item = (RectTransform)friends.itemText.transform.parent;
+        item.sizeDelta = new Vector2(item.sizeDelta.x, 48);
+    }
+
+    private static Image Avatar(Transform parent, Image existing, float left)
+    {
+        Image image = existing != null ? existing : Rect(parent, "Avatar").gameObject.AddComponent<Image>();
+        RectTransform rect = image.rectTransform;
+        rect.anchorMin = rect.anchorMax = new Vector2(0, 0.5f);
+        rect.pivot = new Vector2(0, 0.5f);
+        rect.anchoredPosition = new Vector2(left, 0);
+        rect.sizeDelta = new Vector2(32, 32);
+        image.preserveAspect = true;
+        image.raycastTarget = false;
+        return image;
+    }
+
+    private static void FriendLabel(TMP_Text label, float left)
+    {
+        label.rectTransform.anchorMin = Vector2.zero;
+        label.rectTransform.anchorMax = Vector2.one;
+        label.rectTransform.offsetMin = new Vector2(left, 4);
+        label.rectTransform.offsetMax = new Vector2(-36, -4);
+        label.enableAutoSizing = true;
+        label.fontSizeMin = 6;
+        label.fontSizeMax = label.fontSize = 20;
+        label.textWrappingMode = TextWrappingModes.NoWrap;
+        label.alignment = TextAlignmentOptions.MidlineLeft;
+    }
+
     public static string Run()
     {
         var donor = new SerializedObject(AssetDatabase.LoadAssetAtPath<SurvivalUi>(SURVIVAL_PATH));
@@ -61,6 +118,7 @@ public static class BuildSteamInviteUi
             friends.captionText.richText = false;
             friends.itemText.richText = false;
             Place((RectTransform)friends.transform, 28, -108, 644, 52);
+            ConfigureAvatars(friends);
             TMP_Text status = Label(panel, "Status", "Choose an online friend to invite.", 28, -180, 644, 80, 22);
             status.richText = false;
             Button refresh = Button(panel, "REFRESH", 28, -290, 220, false);
