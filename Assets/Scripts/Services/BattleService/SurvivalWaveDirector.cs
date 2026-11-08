@@ -32,6 +32,8 @@ namespace EmpireAtWar.Services.Battle
         private readonly IMapModelObserver _map;
         private readonly PlayerId _enemy;
         private readonly PlayerId[] _humans;
+        // Co-op humans and the AI ally; every defender beyond the first enlarges each wave.
+        private readonly int _defenders;
         private readonly Queue<UnitTypeId> _pending = new();
         private readonly HashSet<long> _commanded = new();
         private readonly List<IEntity> _newUnits = new();
@@ -48,6 +50,7 @@ namespace EmpireAtWar.Services.Battle
             _points = points; _entities = entities; _stations = stations; _orders = orders; _map = map;
             _enemy = battle.Players.Single(player => player.Role == PlayerRole.WaveAttacker).Slot.Id;
             _humans = battle.Humans.Select(human => human.Slot.Id).ToArray();
+            _defenders = battle.Players.Count(player => player.Role != PlayerRole.WaveAttacker);
         }
 
         /// <summary>The wave whose units have been queued; it trails <see cref="SurvivalModel.WaveIndex"/> between waves.</summary>
@@ -89,7 +92,10 @@ namespace EmpireAtWar.Services.Battle
             {
                 _wave = _model.WaveIndex; _spawned = 0; _points.BeginBatch(); _commanded.Clear();
                 foreach (SurvivalWaveEntry entry in wave.Entries)
-                    for (int count = 0; count < entry.Quantity; count++) _pending.Enqueue(entry.Unit);
+                {
+                    int quantity = _data.ScaleQuantity(entry.Quantity, _defenders);
+                    for (int count = 0; count < quantity; count++) _pending.Enqueue(entry.Unit);
+                }
             }
             if (_pending.Count > 0)
             {

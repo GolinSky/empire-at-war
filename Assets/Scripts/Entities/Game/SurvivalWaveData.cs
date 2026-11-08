@@ -11,6 +11,8 @@ namespace EmpireAtWar.Entities.Game
     {
         [SerializeField] private float firstPreparationSeconds = 120f;
         [SerializeField] private float preparationSeconds = 60f;
+        [Tooltip("Extra share of every wave entry per defender beyond the first (co-op human or AI ally).")]
+        [SerializeField] private float extraDefenderWaveShare = 0.5f;
         [SerializeField] private SurvivalFactionWaves[] factions;
         public float FirstPreparationSeconds => firstPreparationSeconds;
         public float PreparationSeconds => preparationSeconds;
@@ -22,5 +24,9 @@ namespace EmpireAtWar.Entities.Game
                 if (entry.Faction == faction) return entry.Waves[index - 1];
             throw new InvalidOperationException($"No Survival waves configured for {faction}.");
         }
+
+        /// <summary>A wave entry's unit count for <paramref name="defenders"/> defending players, rounded up.</summary>
+        public int ScaleQuantity(int quantity, int defenders) =>
+            Mathf.CeilToInt(quantity * (1f + extraDefenderWaveShare * (defenders - 1)));
     }
 }
