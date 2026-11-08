@@ -107,11 +107,12 @@ namespace EmpireAtWar.Services.Networking.Online
             // The overlay is injected only into processes Steam can hook (usually not the Unity Editor).
             if (!SteamUtils.IsOverlayEnabled())
             {
-                Status = "Steam overlay is not attached to this process (usual in the Editor); friends can join by IP.";
+                Status = "Steam overlay unavailable. Choose a friend below to send an invite.";
                 return;
             }
 
             SteamFriends.ActivateGameOverlayInviteDialog(_lobby);
+            Status = "Choose a friend below or in the Steam invite window.";
         }
 
         /// <summary>

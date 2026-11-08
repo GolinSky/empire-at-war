@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.MainMenu.Online;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Ui.Base;
@@ -25,12 +26,15 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         [SerializeField] private TMP_Text matchSummaryText;
         [SerializeField] private CanvasGroup startContent;
         [SerializeField] private Button inviteButton;
+        [SerializeField] private SteamInviteView steamInvites;
         private SurvivalModel _model;
         private ISurvivalPresenter _presenter;
         private bool _initialized;
 
         /// <summary>Online lobby route only.</summary>
         public event Action InviteRequested;
+
+        public SteamInviteView SteamInvites => steamInvites;
 
         public void SetModel(SurvivalModel model) => _model = model;
         public void AssignPresenter(ISurvivalPresenter presenter) => _presenter = presenter;

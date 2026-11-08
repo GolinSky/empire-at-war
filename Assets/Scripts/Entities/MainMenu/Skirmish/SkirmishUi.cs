@@ -9,6 +9,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.MainMenu.Online;
 
 namespace EmpireAtWar.Entities.MainMenu.Skirmish
 {
@@ -38,6 +39,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private Button startGameButton;
         [SerializeField] private TMP_Text startGameLabel;
         [SerializeField] private Button inviteButton;
+        [SerializeField] private SteamInviteView steamInvites;
         [SerializeField] private SkirmishSlotRowView[] slotRows;
         [SerializeField] private TMP_Dropdown planetsDropdown;
         [SerializeField] private RawImage planetPreviewImage;
@@ -63,6 +65,8 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         /// <summary>Online lobby route only.</summary>
         public event Action InviteRequested;
+
+        public SteamInviteView SteamInvites => steamInvites;
 
         public TooltipHoverView TooltipHover => tooltipHover;
 

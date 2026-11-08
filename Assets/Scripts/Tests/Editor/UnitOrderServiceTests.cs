@@ -8,6 +8,8 @@ using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.Networking;
+using EmpireAtWar.Services.Networking.Messages;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Entities.BaseEntity.Orders;
@@ -75,6 +77,64 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(first.Command.CallCount, Is.EqualTo(1));
             Assert.That(second.Command.CallCount, Is.Zero);
             Assert.That(third.Command.CallCount, Is.EqualTo(1));
+        }
+
+        [TestCase(UnitActionId.Move)]
+        [TestCase(UnitActionId.Attack)]
+        [TestCase(UnitActionId.AttackMove)]
+        [TestCase(UnitActionId.Stop)]
+        [TestCase(UnitActionId.Guard)]
+        [TestCase(UnitActionId.WaypointMove)]
+        [TestCase(UnitActionId.Hunt)]
+        [TestCase(UnitActionId.Retreat)]
+        public void ClientFeedback_PreservesAcceptedOrderWithoutExecutingCommands(UnitActionId action)
+        {
+            FakeEntity ship = Entity(1, TestPlayers.Human);
+            FakeEntity enemy = Entity(2, TestPlayers.Enemy);
+            FakeEntity friendly = Entity(3, TestPlayers.Human);
+            _locator.AddEntity(ship);
+            _locator.AddEntity(enemy);
+            _locator.AddEntity(friendly);
+            UnitOrder accepted = default;
+            _unitOrderService.OrderIssued += order => accepted = order;
+            Issue(action, new IEntity[] { ship }, enemy, friendly);
+            ship.Command.CallCount = 0;
+
+            var clientOrders = new UnitOrderService(_locator, _zones, _settings);
+            var receiver = new ClientCombatEventReceiver(_locator, null, clientOrders);
+            UnitOrder feedback = default;
+            int notifications = 0;
+            int attacks = 0;
+            clientOrders.OrderIssued += order => { feedback = order; notifications++; };
+            clientOrders.AttackIssued += (_, _, _) => attacks++;
+
+            receiver.ReceiveOrderFeedback(new OrderFeedbackMessage(accepted));
+
+            Assert.That(notifications, Is.EqualTo(1));
+            Assert.That(feedback.Action, Is.EqualTo(action));
+            Assert.That(feedback.Issuer, Is.EqualTo(accepted.Issuer));
+            Assert.That(feedback.Point, Is.EqualTo(accepted.Point));
+            Assert.That(feedback.Target, Is.SameAs(accepted.Target));
+            Assert.That(feedback.TargetHardPointId, Is.EqualTo(accepted.TargetHardPointId));
+            Assert.That(feedback.Waypoints, Is.EqualTo(accepted.Waypoints));
+            Assert.That(ship.Command.CallCount, Is.Zero);
+            Assert.That(enemy.Command.CallCount, Is.Zero);
+            Assert.That(friendly.Command.CallCount, Is.Zero);
+            Assert.That(attacks, Is.Zero);
+        }
+
+        [Test]
+        public void ClientFeedback_SkipsTargetRemovedBeforeDelivery()
+        {
+            FakeEntity enemy = Entity(2, TestPlayers.Enemy);
+            var receiver = new ClientCombatEventReceiver(_locator, null, _unitOrderService);
+            int notifications = 0;
+            _unitOrderService.OrderIssued += _ => notifications++;
+
+            receiver.ReceiveOrderFeedback(new OrderFeedbackMessage(
+                new UnitOrder(UnitActionId.Attack, TestPlayers.Human, Vector3.zero, enemy)));
+
+            Assert.That(notifications, Is.Zero);
         }
 
         [Test]

@@ -178,38 +178,52 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public void TrySpawnReinforcement(UnitRequest request)
         {
+            CancelPlacement();
             // Units already in the pool stay deployable after the station falls.
             if (_hasBattleEnded || _inputLock.IsLocked)
             {
-                _model.InvokeSpawnShipEvent(0);
+                _model.InvokePlacementEnded();
+                return;
+            }
+
+            int available = _model.GetDeployableCount(request);
+            if (available <= 0)
+            {
+                if (_model.GetReserveCount(request) > 0)
+                    CapacityRejected?.Invoke();
+                _model.InvokePlacementEnded();
                 return;
             }
 
             if (!_placementFactory.TryCreate(request, out IReinforcementPlacement placement))
             {
                 CapacityRejected?.Invoke();
-                _model.InvokeSpawnShipEvent(0);
+                _model.InvokePlacementEnded();
                 return;
             }
 
-            // A placement that is still running would otherwise keep its input lock forever.
-            CancelPlacement();
             _currentRequest = request;
             _placement = placement;
             // Battle input only: the camera stays movable so the player can pan to a drop point.
             _placementLock = _inputLock.AcquireBattle();
             _model.IsTrySpawning = true;
-            int count = _deployInput.IsDeployAllHeld
-                ? _model.GetDeployableCount(request)
-                : 1;
-            for (int i = 0; i < count; i++)
-                _previews.Add(placement.CreatePreview());
-            _slotSpacing = _previews[0].PlanarRadius * SLOT_SPACING_FACTOR;
-            bool placingStructure = !ReinforcementModel.UsesCapacity(request);
-            if (placingStructure)
-                _slotSpacing = Mathf.Max(_slotSpacing, _structureClearance.Radius * SLOT_SPACING_FACTOR);
-            _spawnAreaOverlay.Show(_owner.Id, placingStructure);
-            _cancelRouter.Focus(this);
+            try
+            {
+                int count = _deployInput.IsDeployAllHeld ? available : 1;
+                for (int i = 0; i < count; i++)
+                    _previews.Add(placement.CreatePreview());
+                _slotSpacing = _previews[0].PlanarRadius * SLOT_SPACING_FACTOR;
+                bool placingStructure = !ReinforcementModel.UsesCapacity(request);
+                if (placingStructure)
+                    _slotSpacing = Mathf.Max(_slotSpacing, _structureClearance.Radius * SLOT_SPACING_FACTOR);
+                _spawnAreaOverlay.Show(_owner.Id, placingStructure);
+                _cancelRouter.Focus(this);
+            }
+            catch
+            {
+                CancelPlacement();
+                throw;
+            }
         }
 
         public bool TryCancel()
@@ -229,10 +243,10 @@ namespace EmpireAtWar.Services.Reinforcement
 
             _model.IsTrySpawning = false;
             _cancelRouter.Unfocus(this);
+            _placementLock.Dispose();
             DestroyPreviews();
             _spawnAreaOverlay.Hide();
-            _placementLock.Dispose();
-            _model.InvokeSpawnShipEvent(0);
+            _model.InvokePlacementEnded();
         }
 
         private void Interrupt(Vector2 screenPosition)
@@ -242,27 +256,27 @@ namespace EmpireAtWar.Services.Reinforcement
                 return;
             }
 
-            if (_inputLock.IsLocked || _uiHitTest.IsOverUi(screenPosition))
+            try
             {
+                if (_inputLock.IsLocked || _uiHitTest.IsOverUi(screenPosition))
+                    return;
+
+                Vector3 dropPoint = _cameraService.GetWorldPoint(screenPosition, _previews[0].Position);
+                // Previews flag locally blocked slots; the authority re-checks every slot it receives.
+                List<Vector3> slots = new List<Vector3>(_previews.Count);
+                for (int i = 0; i < _previews.Count; i++)
+                {
+                    if (_previews[i].CanSpawn) slots.Add(GetSlotPosition(dropPoint, i));
+                }
+
+                UnitRequestSave key = UnitRequestSave.From(_currentRequest);
+                _commands.Submit(new DeployReinforcementCommand(_owner.Id, key.Kind, key.Key, slots.ToArray()));
+            }
+            finally
+            {
+                // Submission is asynchronous on clients; ending the local drag must not wait for the host.
                 CancelPlacement();
-                return;
             }
-
-            _model.IsTrySpawning = false;
-            _cancelRouter.Unfocus(this);
-            Vector3 dropPoint = _cameraService.GetWorldPoint(screenPosition, _previews[0].Position);
-            // Previews flag locally blocked slots; the authority re-checks every slot it receives.
-            List<Vector3> slots = new List<Vector3>(_previews.Count);
-            for (int i = 0; i < _previews.Count; i++)
-            {
-                if (_previews[i].CanSpawn) slots.Add(GetSlotPosition(dropPoint, i));
-            }
-
-            UnitRequestSave key = UnitRequestSave.From(_currentRequest);
-            _commands.Submit(new DeployReinforcementCommand(_owner.Id, key.Kind, key.Key, slots.ToArray()));
-            DestroyPreviews();
-            _spawnAreaOverlay.Hide();
-            _placementLock.Dispose();
         }
 
         /// <summary>Authority side of a drop: blocked slots are skipped and their units stay in the reserve.</summary>
@@ -271,7 +285,6 @@ namespace EmpireAtWar.Services.Reinforcement
             if (!TryFindReserve(command.Kind, command.Key, out UnitRequest request) ||
                 !_placementFactory.TryCreate(request, out IReinforcementPlacement placement))
             {
-                _model.InvokeSpawnShipEvent(0);
                 return;
             }
 
@@ -298,8 +311,6 @@ namespace EmpireAtWar.Services.Reinforcement
             {
                 CapacityRejected?.Invoke();
             }
-
-            _model.InvokeSpawnShipEvent(deployedCount);
         }
 
         private bool TryFindReserve(UnitRequestKind kind, int key, out UnitRequest request)

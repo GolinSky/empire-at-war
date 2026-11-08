@@ -3,7 +3,9 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Networking.Messages;
+using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.UnitOrders;
 using Mirror;
 using UnityEngine;
 
@@ -11,22 +13,25 @@ namespace EmpireAtWar.Services.Networking
 {
     /// <summary>
     /// Client: gives local units the host's attack targets and plays the host's abilities on them. Facades are
-    /// called directly, not through the order service, so no local order feedback or highlights appear.
+    /// called directly; accepted orders publish separate feedback only to the issuing player's UI.
     /// Movement from these orders is overwritten by replication; damage is ignored on clients.
     /// </summary>
     public sealed class ClientCombatEventReceiver : IInitializable, ILateDisposable
     {
         private readonly IEntityLocator _entities;
         private readonly ShipAbilityService _abilities;
+        private readonly UnitOrderService _orders;
 
-        public ClientCombatEventReceiver(IEntityLocator entities, ShipAbilityService abilities)
+        public ClientCombatEventReceiver(IEntityLocator entities, ShipAbilityService abilities, UnitOrderService orders)
         {
             _entities = entities;
             _abilities = abilities;
+            _orders = orders;
         }
 
         public void Initialize()
         {
+            NetworkClient.RegisterHandler<OrderFeedbackMessage>(ReceiveOrderFeedback);
             NetworkClient.RegisterHandler<AttackTargetMessage>(OnAttack);
             NetworkClient.RegisterHandler<ShipAbilityEventMessage>(OnAbility);
             NetworkClient.RegisterHandler<WeaponTargetMessage>(OnWeaponTarget);
@@ -34,9 +39,19 @@ namespace EmpireAtWar.Services.Networking
 
         public void LateDispose()
         {
+            NetworkClient.UnregisterHandler<OrderFeedbackMessage>();
             NetworkClient.UnregisterHandler<AttackTargetMessage>();
             NetworkClient.UnregisterHandler<ShipAbilityEventMessage>();
             NetworkClient.UnregisterHandler<WeaponTargetMessage>();
+        }
+
+        public void ReceiveOrderFeedback(OrderFeedbackMessage message)
+        {
+            IEntity target = null;
+            if (message.TargetId != UnitOrderCommand.NO_TARGET &&
+                !_entities.TryGetEntity(message.TargetId, out target)) return;
+            _orders.PublishReplicaFeedback(new UnitOrder(message.Action, message.Issuer, message.Point,
+                target, message.Waypoints, message.TargetHardPointId));
         }
 
         // An entity the client has not spawned yet (or already removed) is skipped.

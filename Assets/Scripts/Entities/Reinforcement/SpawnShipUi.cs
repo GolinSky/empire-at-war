@@ -52,20 +52,14 @@ namespace EmpireAtWar
             UpdateUnitCountText();
         }
 
-        void ISpawnShipUi.DecreaseUnitCount(int amount)
+        void ISpawnShipUi.SetUnitCount(int count)
         {
-            _count -= amount;
+            _count = count;
             UpdateUnitCountText();
             if (_count <= 0)
             {
                 Destroy();
             }
-        }
-
-        void ISpawnShipUi.AddUnit()
-        {
-            _count++;
-            UpdateUnitCountText();
         }
 
         void ISpawnShipUi.Activate(bool isActive)
@@ -129,6 +123,7 @@ namespace EmpireAtWar
 
         private void Destroy()
         {
+            _isBlocked = true;
             _reinforcementVisitor.OnRelease(this);
             _reinforcementVisitor = null;
             Destroy(gameObject);

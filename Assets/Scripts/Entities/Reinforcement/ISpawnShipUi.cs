@@ -12,9 +12,7 @@ namespace EmpireAtWar
     {
         UnitRequest Request { get; }
 
-        void DecreaseUnitCount(int amount);
-
-        void AddUnit();
+        void SetUnitCount(int count);
 
         void Activate(bool isActive);
 

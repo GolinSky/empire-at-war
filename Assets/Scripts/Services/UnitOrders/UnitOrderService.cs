@@ -32,6 +32,9 @@ namespace EmpireAtWar.Services.UnitOrders
             _settings = settings;
         }
 
+        // Accepted host orders update client presentation without invoking any unit commands.
+        public void PublishReplicaFeedback(UnitOrder order) => OrderIssued?.Invoke(order);
+
         public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point)
         {
             List<IMoveFacade> commands = Collect<IMoveFacade>(receivers);

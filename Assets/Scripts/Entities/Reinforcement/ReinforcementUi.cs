@@ -15,7 +15,6 @@ namespace EmpireAtWar.Entities.Reinforcement
     {
         private IReinforcementModelObserver _model;
         private IReinforcementPresenter _presenter;
-        private ISpawnShipUi _currentSpawnUnitUi;
 
         [SerializeField] private Transform spawnTransform;
         [SerializeField] private ScrollRect unitScroll;
@@ -38,13 +37,15 @@ namespace EmpireAtWar.Entities.Reinforcement
                 throw new InvalidOperationException("Reinforcement UI dependencies must be set before initialization.");
             }
 
-            UpdateCapacityData(0);
+            UpdateCapacityData(_model.CurrentUnitCapacity);
 
             closeButton.onClick.AddListener(_presenter.Hide);
 
-            _model.OnSpawnUnit += HandleSpawning;
-            _model.OnReinforcementAdded += AddUi;
+            _model.OnPlacementEnded += HandlePlacementEnded;
+            _model.OnReserveCountChanged += UpdateReserve;
             _model.OnCapacityChanged += UpdateCapacityData;
+            foreach (KeyValuePair<UnitRequest, int> entry in _model.Reserve)
+                UpdateReserve(entry.Key, entry.Value);
             _isInitialized = true;
         }
 
@@ -57,8 +58,8 @@ namespace EmpireAtWar.Entities.Reinforcement
 
             closeButton.onClick.RemoveListener(_presenter.Hide);
 
-            _model.OnSpawnUnit -= HandleSpawning;
-            _model.OnReinforcementAdded -= AddUi;
+            _model.OnPlacementEnded -= HandlePlacementEnded;
+            _model.OnReserveCountChanged -= UpdateReserve;
             _model.OnCapacityChanged -= UpdateCapacityData;
             _isInitialized = false;
         }
@@ -85,19 +86,20 @@ namespace EmpireAtWar.Entities.Reinforcement
             Dispose();
         }
 
-        private void AddUi(UnitRequest request)
+        private void UpdateReserve(UnitRequest request, int count)
         {
             UnitLimitKey key = UnitLimitKey.From(request);
             if (_spawnUnitUiDictionary.TryGetValue(key, out ISpawnShipUi shipUi))
             {
-                shipUi.AddUnit();
+                shipUi.SetUnitCount(count);
             }
-            else
+            else if (count > 0)
             {
                 ISpawnShipUi spawnShipUi = Instantiate(_data.ReinforcementButton, spawnTransform);
                 spawnShipUi.Init(this, request, unitScroll);
                 tooltipHover.Register(((SpawnShipUi)spawnShipUi).TooltipTrigger);
                 _spawnUnitUiDictionary.Add(key, spawnShipUi);
+                spawnShipUi.SetUnitCount(count);
                 ActivateUnitUi(spawnShipUi);
             }
         }
@@ -114,13 +116,8 @@ namespace EmpireAtWar.Entities.Reinforcement
             }
         }
 
-        private void HandleSpawning(int deployedCount)
+        private void HandlePlacementEnded()
         {
-            if (deployedCount > 0)
-            {
-                _currentSpawnUnitUi.DecreaseUnitCount(deployedCount);
-            }
-
             _presenter.Show();
         }
 
@@ -150,7 +147,6 @@ namespace EmpireAtWar.Entities.Reinforcement
                 return;
             }
 
-            _currentSpawnUnitUi = spawnShipUi;
             _presenter.TrySpawnReinforcement(spawnShipUi.Request);
             // A rejected drag keeps the panel open instead of flickering it closed and open again.
             if (_model.IsTrySpawning)

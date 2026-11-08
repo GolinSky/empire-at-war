@@ -2,16 +2,18 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Networking.Messages;
 using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
+using Mirror;
 
 namespace EmpireAtWar.Services.Networking
 {
     /// <summary>
     /// Host: relays attack targets and ability starts/cancels (players and AI) so clients aim their weapons and
-    /// play abilities like the host. Damage stays on the host.
+    /// play abilities like the host. Accepted order feedback goes only to its issuer. Damage stays on the host.
     /// </summary>
     public sealed class HostCombatEventSender : IInitializable, ILateDisposable
     {
@@ -30,6 +32,7 @@ namespace EmpireAtWar.Services.Networking
 
         public void Initialize()
         {
+            _orders.OrderIssued += OnOrder;
             _orders.AttackIssued += OnAttack;
             _abilities.Activated += OnActivated;
             _abilities.Canceled += OnCanceled;
@@ -37,9 +40,21 @@ namespace EmpireAtWar.Services.Networking
 
         public void LateDispose()
         {
+            _orders.OrderIssued -= OnOrder;
             _orders.AttackIssued -= OnAttack;
             _abilities.Activated -= OnActivated;
             _abilities.Canceled -= OnCanceled;
+        }
+
+        private void OnOrder(UnitOrder order)
+        {
+            if (!_online.HasBegun) return;
+            foreach (NetworkConnectionToClient connection in NetworkServer.connections.Values)
+            {
+                if (connection.connectionId != OnlineLobby.HOST_CONNECTION_ID && _online.IsBattleLoaded(connection) &&
+                    _online.TryGetPlayer(connection.connectionId, out PlayerId player) && player == order.Issuer)
+                    connection.Send(new OrderFeedbackMessage(order));
+            }
         }
 
         private void OnAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId)

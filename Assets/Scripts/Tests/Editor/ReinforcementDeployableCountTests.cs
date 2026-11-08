@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
@@ -80,6 +81,52 @@ namespace EmpireAtWar.Tests.Editor
                 Is.False);
             Assert.That(ReinforcementModel.UsesCapacity(new DefendPlatformUnitRequest(Faction(0), default)),
                 Is.False);
+        }
+
+        [Test]
+        public void ReserveChanges_PublishCurrentCountsPerKindIncludingLastRemoval()
+        {
+            UnitRequest facility = new MiningFacilityUnitRequest(Faction(0), default);
+            UnitRequest platform = new DefendPlatformUnitRequest(Faction(0), default);
+            var changes = new List<(UnitRequest Request, int Count)>();
+            IReinforcementModelObserver observer = _model;
+            observer.OnReserveCountChanged += (request, count) =>
+            {
+                Assert.That(_model.GetReserveCount(request), Is.EqualTo(count));
+                changes.Add((request, count));
+            };
+
+            _model.AddReinforcement(facility);
+            _model.AddReinforcement(platform);
+            _model.AddReinforcement(facility);
+            _model.ConsumeReinforcement(facility);
+            _model.ConsumeReinforcement(facility);
+
+            Assert.That(changes, Is.EqualTo(new[]
+            {
+                (facility, 1), (platform, 1), (facility, 2), (facility, 1), (facility, 0)
+            }));
+            Assert.That(observer.Reserve, Is.EqualTo(new[]
+            {
+                new KeyValuePair<UnitRequest, int>(platform, 1)
+            }));
+        }
+
+        [Test]
+        public void PlacementEnded_DoesNotConsumeReserveOrPublishAnotherCount()
+        {
+            UnitRequest request = new MiningFacilityUnitRequest(Faction(0), default);
+            _model.AddReinforcement(request);
+            int changes = 0;
+            int placementsEnded = 0;
+            _model.OnReserveCountChanged += (_, _) => changes++;
+            _model.OnPlacementEnded += () => placementsEnded++;
+
+            _model.InvokePlacementEnded();
+
+            Assert.That(placementsEnded, Is.EqualTo(1));
+            Assert.That(changes, Is.Zero);
+            Assert.That(_model.GetReserveCount(request), Is.EqualTo(1));
         }
 
         private static FactionData Faction(int unitCapacity)

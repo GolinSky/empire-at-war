@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.Reinforcement;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
@@ -54,11 +55,7 @@ namespace EmpireAtWar.Tests.Editor
                 .GetValue(_service)).Add(preview);
             SetField("_placementLock", _placementLock);
             _router.Focus(_service);
-            _model.OnSpawnUnit += deployedCount =>
-            {
-                Assert.That(deployedCount, Is.Zero);
-                _failedPlacements++;
-            };
+            _model.OnPlacementEnded += () => _failedPlacements++;
             _pauseRequests = 0;
             _failedPlacements = 0;
         }
@@ -97,6 +94,40 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_service.TryCancel(), Is.False);
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Start_EmptyReserve_RejectsBeforeCreatingPreviewOrLockingInput(bool deployAll)
+        {
+            var model = new ReinforcementModel(null);
+            int placementEnded = 0;
+            model.OnPlacementEnded += () => placementEnded++;
+            var service = new ReinforcementService(_inputLock, null, null, null,
+                _overlay, model, null, null, null, _hitTest, _router, null, null,
+                new FakeDeployInput(deployAll), null, null, null);
+            var request = new MiningFacilityUnitRequest(null, default);
+
+            service.TrySpawnReinforcement(request);
+
+            Assert.That(model.IsTrySpawning, Is.False);
+            Assert.That(service.TryCancel(), Is.False);
+            Assert.That(placementEnded, Is.EqualTo(1));
+            Assert.That(_inputLock.BattleLockRequests, Is.Zero);
+        }
+
+        [Test]
+        public void Release_WhenWorldProjectionThrows_ReleasesPlacementBeforeRethrowing()
+        {
+            // The unavailable camera simulates failure before a deploy command can be submitted.
+            ExpectPreviewDestroy();
+            TargetInvocationException exception = Assert.Throws<TargetInvocationException>(Release);
+
+            Assert.That(exception.InnerException, Is.TypeOf<NullReferenceException>());
+            AssertCancelled();
+            Assert.That(_service.TryCancel(), Is.False);
+            _cancelInput.Press();
+            Assert.That(_pauseRequests, Is.EqualTo(1));
+        }
+
         private void AssertCancelled()
         {
             Assert.That(_model.IsTrySpawning, Is.False);
@@ -131,8 +162,19 @@ namespace EmpireAtWar.Tests.Editor
         {
             public event Action<bool> LockChanged { add { } remove { } }
             public bool IsLocked { get; set; }
+            public int BattleLockRequests { get; private set; }
             public IDisposable Acquire() => throw new NotSupportedException();
-            public IDisposable AcquireBattle() => throw new NotSupportedException();
+            public IDisposable AcquireBattle()
+            {
+                BattleLockRequests++;
+                throw new NotSupportedException();
+            }
+        }
+
+        private sealed class FakeDeployInput : IReinforcementDeployInput
+        {
+            public bool IsDeployAllHeld { get; }
+            public FakeDeployInput(bool deployAll) => IsDeployAllHeld = deployAll;
         }
 
         private sealed class PlacementLock : IDisposable

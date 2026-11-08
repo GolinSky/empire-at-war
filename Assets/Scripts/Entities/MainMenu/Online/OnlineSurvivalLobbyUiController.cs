@@ -27,6 +27,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         // The lobby keeps its own setup so the offline Survival screen is untouched.
         private readonly SurvivalModel _model = new SurvivalModel();
         private SurvivalUi _ui;
+        private SteamInvitePresenter _invites;
         private bool _isOpen;
         private string _appliedSetup = string.Empty;
 
@@ -51,6 +52,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             if (_ui != null)
             {
                 _ui.InviteRequested -= InviteFriends;
+                _invites.Dispose();
                 _ui.Dispose();
             }
 
@@ -66,6 +68,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 _ui.SetModel(_model);
                 _ui.AssignPresenter(this);
                 _ui.Initialize();
+                _invites = new SteamInvitePresenter(_online.Steam, _ui.SteamInvites);
+                _invites.Initialize();
                 _ui.InviteRequested += InviteFriends;
             }
 
@@ -80,6 +84,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Hide()
         {
             _isOpen = false;
+            _invites.Close();
             _ui.Hide();
             Unfocus();
         }
@@ -89,6 +94,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         protected override bool HandleCancel()
         {
+            if (_invites.TryClose()) return true;
             Close();
             return true;
         }
@@ -145,7 +151,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private bool IsLocalReady() =>
             _online.Members.Any(member => member.ConnectionId == _online.LocalConnectionId && member.Ready);
 
-        private void InviteFriends() => _online.Steam.InviteFriends();
+        private void InviteFriends() => _invites.Open();
 
         private static FactionType FactionAt(int index) =>
             (FactionType)Enum.GetValues(typeof(FactionType)).GetValue(index);

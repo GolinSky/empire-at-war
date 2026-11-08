@@ -11,8 +11,9 @@ namespace EmpireAtWar.Models.Reinforcement
     {
         event Action<int> OnCapacityChanged;
 
-        /// <summary>A placement ended; the argument is how many units it deployed (0 when rejected or cancelled).</summary>
-        event Action<int> OnSpawnUnit;
+        event Action OnPlacementEnded;
+
+        event Action<UnitRequest, int> OnReserveCountChanged;
 
         event Action<UnitRequest> OnReinforcementAdded;
 
@@ -20,6 +21,7 @@ namespace EmpireAtWar.Models.Reinforcement
         int MaxUnitCapacity { get; }
         int CurrentUnitCapacity { get; }
         int CapacityLeft { get; }
+        IEnumerable<KeyValuePair<UnitRequest, int>> Reserve { get; }
 
         bool CanSpawnUnit(ShipType shipType);
 
@@ -39,7 +41,9 @@ namespace EmpireAtWar.Models.Reinforcement
 
         public event Action<int> OnCapacityChanged;
 
-        public event Action<int> OnSpawnUnit;
+        public event Action OnPlacementEnded;
+
+        public event Action<UnitRequest, int> OnReserveCountChanged;
 
         public event Action<UnitRequest> OnReinforcementAdded;
 
@@ -63,9 +67,9 @@ namespace EmpireAtWar.Models.Reinforcement
             _data = data;
         }
 
-        public void InvokeSpawnShipEvent(int deployedCount)
+        public void InvokePlacementEnded()
         {
-            OnSpawnUnit?.Invoke(deployedCount);
+            OnPlacementEnded?.Invoke();
         }
 
         /// <summary>Ships and squadrons count against population; structures never do.</summary>
@@ -139,6 +143,7 @@ namespace EmpireAtWar.Models.Reinforcement
             UnitLimitKey key = UnitLimitKey.From(unitRequest);
             _reserveCounts[key] = GetReserveCount(unitRequest) + 1;
             _reserveRequests[key] = unitRequest;
+            OnReserveCountChanged?.Invoke(unitRequest, _reserveCounts[key]);
             OnReinforcementAdded?.Invoke(unitRequest);
         }
 
@@ -171,6 +176,7 @@ namespace EmpireAtWar.Models.Reinforcement
                 _reserveRequests.Remove(key);
             }
             else _reserveCounts[key] = remaining;
+            OnReserveCountChanged?.Invoke(request, remaining);
         }
     }
 }

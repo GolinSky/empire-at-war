@@ -9,6 +9,7 @@ using EmpireAtWar.Services.Networking;
 using EmpireAtWar.Services.Networking.Messages;
 using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.UnitOrders;
 using Mirror;
 using NUnit.Framework;
 using UnityEngine;
@@ -147,6 +148,28 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(readDeploy.DeployReinforcement.Kind, Is.EqualTo(UnitRequestKind.Squadron));
             Assert.That(readDeploy.DeployReinforcement.Slots, Is.EqualTo(new[] { Vector3.one }));
             Assert.That(HostCommandReceiver.IssuerOf(readDeploy), Is.EqualTo(TestPlayers.Human));
+        }
+
+        [Test]
+        public void OrderFeedback_RoundTripsResolvedPointTargetAndWaypoints()
+        {
+            var target = new FakeEntity(77, null);
+            var waypoints = new[] { Vector3.left, Vector3.forward };
+            var accepted = new UnitOrder(UnitActionId.Attack, TestPlayers.Enemy, new Vector3(15f, 2f, 90f),
+                target, waypoints, 3);
+            var message = new OrderFeedbackMessage(accepted);
+            waypoints[0] = Vector3.zero;
+            using NetworkWriterPooled writer = NetworkWriterPool.Get();
+            writer.Write(message);
+            using NetworkReaderPooled reader = NetworkReaderPool.Get(writer.ToArraySegment());
+            OrderFeedbackMessage decoded = reader.Read<OrderFeedbackMessage>();
+
+            Assert.That(decoded.Action, Is.EqualTo(accepted.Action));
+            Assert.That(decoded.Issuer, Is.EqualTo(TestPlayers.Enemy));
+            Assert.That(decoded.Point, Is.EqualTo(accepted.Point));
+            Assert.That(decoded.TargetId, Is.EqualTo(77));
+            Assert.That(decoded.TargetHardPointId, Is.EqualTo(3));
+            Assert.That(decoded.Waypoints, Is.EqualTo(new[] { Vector3.left, Vector3.forward }));
         }
 
         [Test]
