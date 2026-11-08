@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "com.andywiecko.burst.triangulator": "https://github.com/andywiecko/BurstTriangulator.git#v3.10.0",
-    "com.rlabrecque.steamworks.net": "https://github.com/rlabrecque/Steamworks.NET.git?path=/com.rlabrecque.steamworks.net#2025.164.1",
+    "com.andywiecko.burst.triangulator": "https://github.com/andywiecko/BurstTriangulator.git#ecb14bf2d2c413c87af0363efbce6565a9303d2d",
+    "com.rlabrecque.steamworks.net": "https://github.com/rlabrecque/Steamworks.NET.git?path=/com.rlabrecque.steamworks.net#c21a8f0e31c56ae8707130967faf491f7dd7c0d8",
     "com.script-utils.dotween": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Dotween#7a93f802d01050cefcf30d558675244434035e97",
     "com.script-utils.editor-serialization": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/EditorSerialization#386e2d982ca7b37a27b48fd133169360c8a83271",
     "com.script-utils.layer": "https://github.com/GolinSky/ScriptUtilities.git?path=/Assets/ScriptUtils/Layer#d40aedeb3476a7eea9abd89d381645cf37a1f9a5",

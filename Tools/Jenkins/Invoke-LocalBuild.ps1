@@ -65,6 +65,7 @@ $timer = [Diagnostics.Stopwatch]::StartNew()
 $peakWorkingSet = 0L
 $peakPrivate = 0L
 $maximumProcesses = 0
+$phaseFailed = $false
 try {
     do {
         Write-ResourceSample -Stage $Phase
@@ -83,10 +84,15 @@ try {
     } while ($true)
     if ($group.ExitCode -ne 0) { throw "$Phase failed: exit $($group.ExitCode). Read $Phase-process.log." }
 } catch {
+    $phaseFailed = $true
     $_.ToString() | Set-Content -LiteralPath "$workspace\artifacts\failure.txt"
     throw
 } finally {
     $group.Dispose()
+    if ($phaseFailed -and $Phase -ne 'Symbols') {
+        Write-Host "Failed $Phase phase output:"
+        Get-Content -LiteralPath "$workspace\artifacts\$Phase-process.log" -ErrorAction Continue | ForEach-Object { Write-Host $_ }
+    }
     @{Phase=$Phase;DurationSeconds=$timer.Elapsed.TotalSeconds;PeakWorkingSetGiB=$peakWorkingSet/1GB;PeakPrivateGiB=$peakPrivate/1GB;MaximumJobProcesses=$maximumProcesses} | ConvertTo-Json | Set-Content -LiteralPath "$workspace\artifacts\$Phase-measurements.json"
     Assert-CiIdle
 }

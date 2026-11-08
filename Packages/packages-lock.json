@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.andywiecko.burst.triangulator": {
-      "version": "https://github.com/andywiecko/BurstTriangulator.git#v3.10.0",
+      "version": "https://github.com/andywiecko/BurstTriangulator.git#ecb14bf2d2c413c87af0363efbce6565a9303d2d",
       "depth": 0,
       "source": "git",
       "dependencies": {
@@ -11,7 +11,7 @@
       "hash": "ecb14bf2d2c413c87af0363efbce6565a9303d2d"
     },
     "com.rlabrecque.steamworks.net": {
-      "version": "https://github.com/rlabrecque/Steamworks.NET.git?path=/com.rlabrecque.steamworks.net#2025.164.1",
+      "version": "https://github.com/rlabrecque/Steamworks.NET.git?path=/com.rlabrecque.steamworks.net#c21a8f0e31c56ae8707130967faf491f7dd7c0d8",
       "depth": 0,
       "source": "git",
       "dependencies": {},
