@@ -13,7 +13,9 @@ namespace EmpireAtWar.Entities.Game
         private SurvivalModel _model;
         private ISurvivalHudPresenter _presenter;
         private bool _initialized;
+        private bool _canStartWave = true;
         public void SetModel(SurvivalModel model) => _model = model;
+        public void SetStartWaveAvailable(bool available) => _canStartWave = available;
         public void AssignPresenter(ISurvivalHudPresenter presenter) => _presenter = presenter;
         public void Initialize()
         {
@@ -28,7 +30,7 @@ namespace EmpireAtWar.Entities.Game
             waveText.text = $"WAVE {_model.WaveIndex}/5";
             statusText.text = _model.Phase == SurvivalPhase.Preparation
                 ? $"Prepare defenses · {Mathf.CeilToInt(_model.PreparationTimeLeft)}s" : _model.Phase.ToString();
-            startWaveButton.gameObject.SetActive(_model.Phase == SurvivalPhase.Preparation);
+            startWaveButton.gameObject.SetActive(_canStartWave && _model.Phase == SurvivalPhase.Preparation);
         }
         public void Dispose()
         {

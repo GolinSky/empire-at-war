@@ -27,6 +27,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         [SerializeField] private CanvasGroup startContent;
         [SerializeField] private Button inviteButton;
         [SerializeField] private SteamInviteView steamInvites;
+        [SerializeField] private SurvivalLobbyMemberView[] memberViews;
         private SurvivalModel _model;
         private ISurvivalPresenter _presenter;
         private bool _initialized;
@@ -60,6 +61,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
             superWeapons.onValueChanged.AddListener(_presenter.SelectSuperWeapons);
             inviteButton.onClick.AddListener(RaiseInviteRequested);
             SetInviteAvailable(false);
+            foreach (SurvivalLobbyMemberView view in memberViews) view.Hide();
             _initialized = true;
             Render();
         }
@@ -93,12 +95,18 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         public void SetInviteAvailable(bool available) => inviteButton.gameObject.SetActive(available);
 
         /// <summary>
-        /// Online lobby: settings are the host's; the start button starts (host) or toggles ready (client); the
-        /// footer lists the members.
+        /// Online lobby: settings are the host's; the start button starts (host) or toggles ready (client); one chip
+        /// per member (avatar, name, ready).
         /// </summary>
         public void RenderLobby(bool canEditSettings, string startText, bool startInteractable, string readiness,
-            string summary)
+            string summary, IReadOnlyList<SurvivalLobbyMemberState> members)
         {
+            for (int i = 0; i < memberViews.Length; i++)
+            {
+                if (i < members.Count) memberViews[i].Render(members[i]);
+                else memberViews[i].Hide();
+            }
+
             playerFaction.interactable = canEditSettings;
             allyFaction.interactable = canEditSettings;
             enemyFaction.interactable = canEditSettings;

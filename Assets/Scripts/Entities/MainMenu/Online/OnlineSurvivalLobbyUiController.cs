@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
@@ -139,13 +140,20 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             int count = _online.Members.Count;
             string startText = IsHost ? _online.AllReady ? START_LABEL : FORCE_START_LABEL
                 : IsLocalReady() ? CANCEL_READY_LABEL : READY_LABEL;
-            string members = string.Join("   /   ", _online.Members.Select(member =>
-                $"{member.Name} {(member.ConnectionId == OnlineLobby.HOST_CONNECTION_ID ? "(host)" : member.Ready ? "(ready)" : "(not ready)")}"));
+            List<SurvivalLobbyMemberState> members = _online.Members.Select(CreateMemberState).ToList();
             string status = _online.LastError != OnlineError.None ? OnlineErrorText.Describe(_online.LastError)
                 : IsHost ? "Every member defends as a co-op commander of your faction."
                 : "The host picks the settings. Press READY when set.";
             _ui.RenderLobby(IsHost, startText, IsHost || _online.IsInLobby,
-                $"{ready} / {count} COMMANDERS READY   -   {status}", members);
+                $"{ready} / {count} COMMANDERS READY", status, members);
+        }
+
+        private SurvivalLobbyMemberState CreateMemberState(LobbyMember member)
+        {
+            bool isHost = member.ConnectionId == OnlineLobby.HOST_CONNECTION_ID;
+            _online.Steam.TryGetAvatar(member.SteamId, out Texture2D avatar);
+            return new SurvivalLobbyMemberState(member.Name,
+                isHost ? "HOST" : member.Ready ? "READY" : "NOT READY", isHost || member.Ready, avatar);
         }
 
         private bool IsLocalReady() =>

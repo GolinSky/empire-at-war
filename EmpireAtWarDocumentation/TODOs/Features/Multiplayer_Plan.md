@@ -216,7 +216,8 @@ Play
     - Host listens on KCP + FizzySteamworks at once (`MultiplexTransport`; Steam only when initialized) → no "via Steam" toggle. Status shows local IPv4:port.
     - Skirmish start: `StartSkirmish(battle, memberSlots)`; `OnlineLineup` is Survival-only; `OnlineGameCommand`, `NotEnoughSlots`, `CanStart`/`ArmForceStart` removed.
   - 2026-11-08 polish (compiles; not run): Steam avatars on Skirmish lobby rows (`SteamPlatform.TryGetAvatar` small avatar → `Texture2D`, `AvatarImageLoaded_t` re-renders; `LobbyHello/LobbyMember.SteamId`; row `Avatar` RawImage replaces the slot number); lobby tooltips (`OnlineSkirmishLobbyUiController`); rich presence `connect` on host and members + `status` ("In Skirmish lobby 2/4", "Skirmish battle"), cleared on leave; `GameRichPresenceJoinRequested_t` → join. Seating rules moved to `SkirmishLobbySeating`.
-  - Known: overlay invite usually unavailable in the Editor (join by IP there); Survival lobby shows no avatars (no rows).
+  - Editor invites: overlay usually does not attach to the Editor → in-game friend picker (`SteamInvitePresenter`/`SteamInviteView`, `SteamMatchmaking.InviteUserToLobby`) in both lobbies; receiver gets `LobbyInvite_t` → accept popup. Already in source (verified 2026-11-08).
+  - 2026-11-08 Survival lobby avatars (compiles; not run): 4 `SurvivalLobbyMemberView` chips (`SurvivalUi.memberViews`, prefab `BattleSettings/LobbyMembers` at (920,-440), 200×64 each): Steam avatar or name initial, name, HOST/READY/NOT READY. Footer: readiness count + status line (member list text removed). Avatars refresh on `AvatarLoaded` via `OnlineMatchService.Changed`.
   - 2026-11-08 (compiles; not run): `OnlineLineup.TryFit` at Start → Skirmish turns AI slots into Human slots in slot order until every member has one (else `OnlineError.NotEnoughSlots`); Survival adds co-op humans of the host's faction (`SurvivalSetupSave.coopHumanFactions` now saved/sent), drops the AI ally if > 4 players, errors `SurvivalCoopNeedsLargerMap` (Small) / `SurvivalLobbyTooLarge`. Errors show on the online panel.
   - 2026-11-08 restart: host's battle `IGameCommand` = `OnlineHostGameCommand` → `OnlineMatchService.RestartMatch` resends `BattleStartMessage` to connected members and reloads; `IsReloading` keeps `OnlineBattleLifetime` from leaving (cleared on `MarkBegun`). Clients: pause-menu Restart non-interactable (`PauseMenuUi.SetRestartAvailable`).
 - [x] Persistent `OnlineNetwork` root owned by `OnlineMatchService` (ProjectScope), created only on Host/Join; no Mirror scenes.
@@ -238,8 +239,16 @@ Play
 - [x] Client `ClientReplicaBuffer` (Mirror `SnapshotInterpolation`, 150 ms buffer).
 
 ### Phase 4 — Client mode per system (issue #7)
-- [ ] Gate authority-only work: AI, economy, production advance, capture, weapon targeting/damage, ability effects, super-weapon damage, `SurvivalWaveDirector`.
-- [ ] Order: movement → weapons/bolts → health/hardpoints/death (explosions and wrecks stay client cosmetic) → squadrons/hangars → abilities → super weapons → capture/economy/reinforcement → Survival HUD/waves.
+- [x] Gate authority-only work (source audit 2026-11-08): AI (`PlayerScopeBootstrap` builds AI slots only when `IsAuthority`), economy (`EconomyService.FollowHost`), production (`FactionService.FollowHost`), capture/zones (`CaptureSitesSystem`/`ReinforcementZonesSystem.FollowHost`), weapon targeting (`WeaponComponent._followsHost`), damage (`HealthFacade.ApplyDamage` authority-only; `ClientAttackDataFactory`), ability effects (`ActivateReplica`; damage blocked by `HealthFacade`, health resynced), super-weapon damage (same), `SurvivalWaveDirector` (client registers it `AsSelf` only → not ticked).
+- [x] Per-system order — audit 2026-11-08:
+  - [x] Movement (keyframes + `ClientReplicationReceiver`, routes via `HostShipRouteSender`).
+  - [x] Weapons/bolts (`HostWeaponTargetSender`, `AttackTargetMessage`; bolts client-local).
+  - [x] Health/hardpoints/death: `EntityHealthMessage` carries `UnitHealthSave` (hull, shields, hardpoints, squadron member hull/shields); `EntityDiedMessage` + local explosion/wreck.
+  - [x] Squadrons/hangars (host spawns; client `ClosedSquadronLaunchSlots`; `SquadronPool.SpawnRestored`).
+  - [x] Abilities (`ShipAbilityEventMessage`), super weapons (`SuperWeaponFiredMessage`).
+  - [x] Capture/economy/reinforcement (replicated states: capture sites, zones, economy, reserve, station levels).
+  - [x] Survival HUD/waves (2026-11-08; compiles, not run, tests not run). Gap found by the audit: client `SurvivalModel` never advanced (HUD frozen at wave 1, client never reached `Won`). Fix: `SurvivalReplicatedState` (`Services/Networking/States`, key `survival`, all players; `WaveIndex`, `Phase`, preparation countdown ceiled to whole seconds → ≤ 1 message/s) → client `SurvivalModel.Restore`; registered in `SurvivalMode`. HUD \"start wave now\" is host-only (`SurvivalHudUi.SetStartWaveAvailable(IMatchSession.IsAuthority)`); clients follow the host's countdown.
+  - Note: battle outcome is evaluated per machine from replicated state (`BattleVictoryService` has no authority gate); `MatchStateMessage` carries only `TimeScale`, not victory/wave as Sync Inventory planned. OK for Skirmish; Survival needs the state above.
 
 - Code 2026-11-08 (compiles; not run):
   - Spawn: `EntitySpawnMessage.Kind` + `Payload` (`UnitSave`/`StructureSave` JSON, captured at the next host tick); client `ReplicaEntitySpawner` uses the save-restore factories with the host id + health. Client `OnSpawn` idempotent (rejoin baseline).
@@ -339,5 +348,6 @@ Play
 
 ## TODO / Open Questions
 
-- Remaining v1 work is user acceptance (two-PC checks above, offline smoke test, spike bandwidth numbers) → then move Phase 6 (online saving) into its own plan or close v1.
+- Remaining v1 work is user acceptance: two-PC checks above (add: Survival client sees wave number/countdown advance, wins after wave 5, no start-wave button), Survival lobby avatar chips, offline smoke test, spike bandwidth numbers.
+- Phase 6 (online saving): deferred by user 2026-11-08; not v1.
 - Own Steam App ID before any distribution beyond play-test groups.

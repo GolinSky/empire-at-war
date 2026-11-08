@@ -1,6 +1,7 @@
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.CoreGameUi;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Ui.Base;
 
 namespace EmpireAtWar.Entities.Game
@@ -11,15 +12,19 @@ namespace EmpireAtWar.Entities.Game
         private readonly SkirmishStateModel _state;
         private SurvivalHudUi _ui;
         private readonly CoreGameUiController _core;
+        private readonly IMatchSession _session;
         public SurvivalHudUiController(IUiService uiService, IUiCancelRouter cancelRouter,
-            SurvivalModel model, SkirmishStateModel state, CoreGameUiController core) : base(uiService, cancelRouter)
-        { _model = model; _state = state; _core = core; }
+            SurvivalModel model, SkirmishStateModel state, CoreGameUiController core, IMatchSession session)
+            : base(uiService, cancelRouter)
+        { _model = model; _state = state; _core = core; _session = session; }
         public void Initialize()
         {
             _core.SetMode("SURVIVAL", false);
             _ui = CreateUi<SurvivalHudUi>();
             _ui.SetModel(_model);
             _ui.AssignPresenter(this);
+            // Waves run on the host; an online client follows the host's countdown.
+            _ui.SetStartWaveAvailable(_session.IsAuthority);
             _ui.Initialize();
             _ui.Show();
         }
