@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Settings;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace EmpireAtWar.Services.Graphics
     /// <summary>
     /// Applies monitor placement before querying its modes and changing output size.
     /// </summary>
-    public sealed class DisplaySettingsApplier : ISettingsApplier, IDisplayOptions
+    public sealed class DisplaySettingsApplier : ISettingsApplier, IDisplayOptions, ITickable
     {
         private bool _windowNeedsCentering;
         public Task PendingApply { get; private set; } = Task.CompletedTask;
@@ -91,6 +92,18 @@ namespace EmpireAtWar.Services.Graphics
         public void Apply(SettingsData settings)
         {
             ApplyDisplayAsync(settings.Display);
+        }
+
+        public void Tick()
+        {
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+            // Follow the actual mode after deferred display changes and restore confinement after focus changes.
+            CursorLockMode lockMode = Application.isFocused &&
+                Screen.fullScreenMode == FullScreenMode.ExclusiveFullScreen
+                ? CursorLockMode.Confined : CursorLockMode.None;
+            if (Cursor.lockState != lockMode)
+                Cursor.lockState = lockMode;
+#endif
         }
 
         public Task ApplyDisplayAsync(DisplaySettingsData display)
