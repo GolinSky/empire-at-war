@@ -2,7 +2,6 @@ using static EmpireAtWar.Utils.FormationConversion;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Services.Battle;
@@ -90,8 +89,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
                 return;
             }
 
-            _ui.SetAttackPosition(_cameraService.WorldToScreenPoint(
-                _attackTarget.GetFacade<IEntityTransformFacade>().Transform.position));
+            _ui.SetAttackPosition(_pointerInput.Position);
         }
 
         private void AttackFeedbackCompleted() => _attackTarget = null;
@@ -121,8 +119,7 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
             if (order.Action == UnitActionId.Attack && order.Target != null)
             {
                 _attackTarget = order.Target;
-                Transform target = _attackTarget.GetFacade<IEntityTransformFacade>().Transform;
-                _ui.PlayAttack(_cameraService.WorldToScreenPoint(target.position), AttackFeedbackCompleted);
+                _ui.PlayAttack(_pointerInput.Position, AttackFeedbackCompleted);
             }
             else if (order.Action == UnitActionId.WaypointMove &&
                      order.Waypoints != null)
