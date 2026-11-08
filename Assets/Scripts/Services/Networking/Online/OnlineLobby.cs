@@ -12,7 +12,9 @@ namespace EmpireAtWar.Services.Networking.Online
         private readonly List<LobbyMember> _members = new List<LobbyMember>();
 
         public IReadOnlyList<LobbyMember> Members => _members;
-        public bool IsFull => _members.Count >= MAX_MEMBERS;
+        /// <summary>Members the hosted mode can seat (Survival holds fewer than <see cref="MAX_MEMBERS"/>).</summary>
+        public int Capacity { get; private set; } = MAX_MEMBERS;
+        public bool IsFull => _members.Count >= Capacity;
 
         public bool AllReady
         {
@@ -24,8 +26,9 @@ namespace EmpireAtWar.Services.Networking.Online
             }
         }
 
-        public void Reset(string hostName, ulong hostSteamId)
+        public void Reset(string hostName, ulong hostSteamId, int capacity)
         {
+            Capacity = capacity;
             _members.Clear();
             _members.Add(new LobbyMember
             {

@@ -30,6 +30,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         [SerializeField] private SurvivalLobbyMemberView[] memberViews;
         private SurvivalModel _model;
         private ISurvivalPresenter _presenter;
+        private MapSize[] _mapSizes = (MapSize[])Enum.GetValues(typeof(MapSize));
         private bool _initialized;
 
         /// <summary>Online lobby route only.</summary>
@@ -40,6 +41,9 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         public void SetModel(SurvivalModel model) => _model = model;
         public void AssignPresenter(ISurvivalPresenter presenter) => _presenter = presenter;
 
+        /// <summary>Map sizes offered in the dropdown; call before <see cref="Initialize"/>.</summary>
+        public void SetMapSizes(MapSize[] sizes) => _mapSizes = sizes;
+
         public void Initialize()
         {
             if (_initialized) return;
@@ -48,7 +52,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
             List<string> allies = new List<string> { "None" };
             allies.AddRange(Enum.GetNames(typeof(FactionType)));
             Fill(allyFaction, allies);
-            Fill(mapSize, Enum.GetNames(typeof(MapSize)));
+            Fill(mapSize, Array.ConvertAll(_mapSizes, size => size.ToString()));
             Fill(difficulty, Enum.GetNames(typeof(EnemyAiDifficulty)));
             startButton.interactable = true;
             startButton.onClick.AddListener(_presenter.StartBattle);
@@ -56,7 +60,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
             playerFaction.onValueChanged.AddListener(_presenter.SelectPlayer);
             allyFaction.onValueChanged.AddListener(_presenter.SelectAlly);
             enemyFaction.onValueChanged.AddListener(_presenter.SelectEnemy);
-            mapSize.onValueChanged.AddListener(_presenter.SelectMapSize);
+            mapSize.onValueChanged.AddListener(SelectMapSize);
             difficulty.onValueChanged.AddListener(_presenter.SelectDifficulty);
             superWeapons.onValueChanged.AddListener(_presenter.SelectSuperWeapons);
             inviteButton.onClick.AddListener(RaiseInviteRequested);
@@ -72,7 +76,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
             allyFaction.SetValueWithoutNotify(_model.AllyFaction.HasValue
                 ? Array.IndexOf((FactionType[])Enum.GetValues(typeof(FactionType)), _model.AllyFaction.Value) + 1 : 0);
             enemyFaction.SetValueWithoutNotify(Array.IndexOf((FactionType[])Enum.GetValues(typeof(FactionType)), _model.EnemyFaction));
-            mapSize.SetValueWithoutNotify((int)_model.MapSize);
+            mapSize.SetValueWithoutNotify(Array.IndexOf(_mapSizes, _model.MapSize));
             difficulty.SetValueWithoutNotify((int)_model.Difficulty);
             superWeapons.SetIsOnWithoutNotify(_model.SuperWeapons);
         }
@@ -85,7 +89,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
             playerFaction.onValueChanged.RemoveListener(_presenter.SelectPlayer);
             allyFaction.onValueChanged.RemoveListener(_presenter.SelectAlly);
             enemyFaction.onValueChanged.RemoveListener(_presenter.SelectEnemy);
-            mapSize.onValueChanged.RemoveListener(_presenter.SelectMapSize);
+            mapSize.onValueChanged.RemoveListener(SelectMapSize);
             difficulty.onValueChanged.RemoveListener(_presenter.SelectDifficulty);
             superWeapons.onValueChanged.RemoveListener(_presenter.SelectSuperWeapons);
             inviteButton.onClick.RemoveListener(RaiseInviteRequested);
@@ -121,6 +125,8 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         }
 
         private void RaiseInviteRequested() => InviteRequested?.Invoke();
+
+        private void SelectMapSize(int index) => _presenter.SelectMapSize(_mapSizes[index]);
 
         private static void Fill(TMP_Dropdown dropdown, IEnumerable<string> options)
         {

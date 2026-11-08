@@ -1,3 +1,5 @@
+using EmpireAtWar.Entities.Map;
+
 namespace EmpireAtWar.Entities.MainMenu.Survival
 {
     public interface ISurvivalPresenter
@@ -7,7 +9,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         void SelectPlayer(int index);
         void SelectAlly(int index);
         void SelectEnemy(int index);
-        void SelectMapSize(int index);
+        void SelectMapSize(MapSize size);
         void SelectDifficulty(int index);
         void SelectSuperWeapons(bool enabled);
     }

@@ -15,6 +15,8 @@ namespace EmpireAtWar.Services.Networking.Online
     {
         // Survival: humans, optional AI ally and the wave attacker share the four slots.
         private const int MAX_SURVIVAL_PLAYERS = 4;
+        // The wave attacker always keeps one slot.
+        public const int MAX_SURVIVAL_HUMANS = MAX_SURVIVAL_PLAYERS - 1;
 
         public static bool TryFit(BattleDefinition battle, int humans, out BattleDefinition fitted, out OnlineError error) =>
             TryFitSurvival(battle.Survival, humans, out fitted, out error);

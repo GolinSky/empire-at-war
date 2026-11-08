@@ -50,7 +50,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         }
         public void SelectAlly(int index) => _model.SelectAlly(index == 0 ? null : FactionAt(index - 1));
         public void SelectEnemy(int index) => _model.SelectEnemy(FactionAt(index));
-        public void SelectMapSize(int index) => _model.SelectMapSize((MapSize)index);
+        public void SelectMapSize(MapSize size) => _model.SelectMapSize(size);
         public void SelectDifficulty(int index) => _model.SelectDifficulty((EnemyAiDifficulty)index);
         public void SelectSuperWeapons(bool enabled) => _model.SelectSuperWeapons(enabled);
         private static FactionType FactionAt(int index) => (FactionType)Enum.GetValues(typeof(FactionType)).GetValue(index);

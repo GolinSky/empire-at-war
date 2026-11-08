@@ -23,6 +23,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private const string FORCE_START_LABEL = "FORCE START";
         private const string READY_LABEL = "READY";
         private const string CANCEL_READY_LABEL = "NOT READY";
+        // Co-op stations plus the mining ring do not fit on a Small map (SurvivalPreset rejects it).
+        private static readonly MapSize[] COOP_MAP_SIZES = { MapSize.Medium, MapSize.Large };
 
         private readonly OnlineMatchService _online;
         // The lobby keeps its own setup so the offline Survival screen is untouched.
@@ -42,6 +44,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         public void Initialize()
         {
+            _model.SelectMapSize(MapSize.Medium);
             _online.Changed += Sync;
             _model.Changed += OnModelChanged;
         }
@@ -67,6 +70,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             {
                 _ui = CreateUi<SurvivalUi>();
                 _ui.SetModel(_model);
+                _ui.SetMapSizes(COOP_MAP_SIZES);
                 _ui.AssignPresenter(this);
                 _ui.Initialize();
                 _invites = new SteamInvitePresenter(_online.Steam, _ui.SteamInvites);
@@ -110,7 +114,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void SelectPlayer(int index) => _model.SelectPlayer(FactionAt(index));
         public void SelectAlly(int index) => _model.SelectAlly(index == 0 ? null : FactionAt(index - 1));
         public void SelectEnemy(int index) => _model.SelectEnemy(FactionAt(index));
-        public void SelectMapSize(int index) => _model.SelectMapSize((MapSize)index);
+        public void SelectMapSize(MapSize size) => _model.SelectMapSize(size);
         public void SelectDifficulty(int index) => _model.SelectDifficulty((EnemyAiDifficulty)index);
         public void SelectSuperWeapons(bool enabled) => _model.SelectSuperWeapons(enabled);
 

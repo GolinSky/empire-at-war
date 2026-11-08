@@ -164,10 +164,11 @@ namespace EmpireAtWar.Services.Networking.Online
             EnterOnline();
             ResetMatch(OnlineRole.Host);
             Mode = mode;
-            _lobby.Reset(_steam.PersonaName, _steam.LocalSteamId);
+            int capacity = mode == LobbyMode.Survival ? OnlineLineup.MAX_SURVIVAL_HUMANS : OnlineLobby.MAX_MEMBERS;
+            _lobby.Reset(_steam.PersonaName, _steam.LocalSteamId, capacity);
             _manager.UseTransport(_multiplex);
             _manager.StartHost();
-            if (_steam.IsInitialized) _steam.CreateLobby();
+            if (_steam.IsInitialized) _steam.CreateLobby(capacity);
             Changed?.Invoke();
         }
 
@@ -484,7 +485,7 @@ namespace EmpireAtWar.Services.Networking.Online
             _pendingKicks.Add((connection, Time.unscaledTime + KICK_DISCONNECT_DELAY));
         }
 
-        private string LobbyStatus() => $"In {Mode} lobby {_lobby.Members.Count}/{OnlineLobby.MAX_MEMBERS}";
+        private string LobbyStatus() => $"In {Mode} lobby {_lobby.Members.Count}/{_lobby.Capacity}";
 
         private void BroadcastLobby()
         {

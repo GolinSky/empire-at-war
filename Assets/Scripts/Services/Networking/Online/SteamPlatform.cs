@@ -16,7 +16,6 @@ namespace EmpireAtWar.Services.Networking.Online
         private const string CONNECT_LOBBY_ARG = "+connect_lobby";
         private const string CONNECT_PRESENCE = "connect";
         private const string STATUS_PRESENCE = "status";
-        private const int MAX_MEMBERS = 4;
         /// <summary>Spacewar while developing; replace with the game's own App ID.</summary>
         private const string STEAM_APP_ID = "480";
 
@@ -98,10 +97,10 @@ namespace EmpireAtWar.Services.Networking.Online
                 SteamAPI.RunCallbacks();
         }
 
-        public void CreateLobby()
+        public void CreateLobby(int maxMembers)
         {
             _isHost = true;
-            _lobbyCreated.Set(SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, MAX_MEMBERS));
+            _lobbyCreated.Set(SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, maxMembers));
             Status = "Creating lobby...";
         }
 
