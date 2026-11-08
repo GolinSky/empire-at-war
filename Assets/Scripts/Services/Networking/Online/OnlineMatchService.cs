@@ -216,8 +216,10 @@ namespace EmpireAtWar.Services.Networking.Online
 
         public bool TryGetLocalSlot(out PlayerId player)
         {
+            player = PlayerId.None;
+            if (!IsInBattle) return false;
             player = new PlayerId(LocalSlotIndex);
-            return IsInBattle;
+            return true;
         }
 
         /// <summary>Host: this PC's IPv4 addresses, shown so friends can Join by IP.</summary>

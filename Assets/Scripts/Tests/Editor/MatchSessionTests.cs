@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Networking.Online;
 using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
@@ -37,6 +38,16 @@ namespace EmpireAtWar.Tests.Editor
             OfflineSession session = OfflineSession.ForHuman(TestPlayers.CreateDuel());
             Assert.That(session.LocalPlayerId, Is.EqualTo(TestPlayers.Human));
             Assert.That(session.IsAuthority && !session.IsOnline, Is.True);
+        }
+
+        [Test]
+        [Category("Networking")]
+        public void OnlineLocalSlot_OutsideBattle_ReturnsFalseAndNoPlayer()
+        {
+            IOnlineLocalSlot online = new OnlineMatchService(null);
+
+            Assert.That(online.TryGetLocalSlot(out PlayerId player), Is.False);
+            Assert.That(player, Is.EqualTo(PlayerId.None));
         }
 
         [Test]
