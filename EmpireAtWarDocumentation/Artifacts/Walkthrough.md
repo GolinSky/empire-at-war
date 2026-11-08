@@ -20,4 +20,4 @@
 3. Select: `F:\Private\empire-at-war\EmpireAtWarDocumentation`
 4. Go to **Settings -> Community Plugins**, turn off Restricted Mode, and ensure **Local REST API** (`obsidian-local-rest-api`) is enabled.
 5. In Local REST API settings, verify the API key is:
-   `1c49d8b5597a92eb7b3001058807174c50fab29ebf60feaf509126440e02a9b2`
+   `<redacted: retired Obsidian REST API key>`

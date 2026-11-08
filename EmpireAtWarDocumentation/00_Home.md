@@ -26,4 +26,4 @@
 
 - **Plugin:** `obsidian-local-rest-api`
 - **Port:** `https://127.0.0.1:27124/`
-- **API Key:** `1c49d8b5597a92eb7b3001058807174c50fab29ebf60feaf509126440e02a9b2`
+- **API Key:** `<redacted: retired Obsidian REST API key>`

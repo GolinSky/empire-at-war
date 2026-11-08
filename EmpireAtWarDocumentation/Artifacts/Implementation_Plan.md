@@ -11,7 +11,7 @@
 > [!NOTE]
 > - The Obsidian Vault is initialized in `f:\Private\empire-at-war\EmpireAtWarDocumentation`.
 > - The Obsidian Local REST API plugin (`obsidian-local-rest-api`) is used by `@oleksandrkucherenko/mcp-obsidian` to allow AI assistants to interact with your vault while Obsidian is running on HTTPS port 27124.
-> - The API key used across Codex and Antigravity: `1c49d8b5597a92eb7b3001058807174c50fab29ebf60feaf509126440e02a9b2`.
+> - The API key used across Codex and Antigravity: `<redacted: retired Obsidian REST API key>`.
 
 ## Proposed Changes
 
@@ -34,7 +34,7 @@
     "@oleksandrkucherenko/mcp-obsidian"
   ],
   "env": {
-    "API_KEY": "1c49d8b5597a92eb7b3001058807174c50fab29ebf60feaf509126440e02a9b2",
+    "API_KEY": "<redacted: retired Obsidian REST API key>",
     "API_URLS": "[\"https://127.0.0.1:27124/\"]"
   }
 }
