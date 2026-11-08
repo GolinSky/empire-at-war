@@ -209,6 +209,12 @@ Play
 - [ ] Steam join paths: overlay invite, `+connect_lobby` launch arg, `GameLobbyJoinRequested_t`/`GameRichPresenceJoinRequested_t`, rich presence `connect` + status.
 
 ### Phase 3 — Tick replication
+- Code 2026-11-08 (`Services/Networking/`, compiles, weaver ran on Assembly-CSharp; tests written, not run; not wired into DI — needs the Phase 2 online session):
+  - Pure: `NetworkTickSettings` (20 Hz, 1000 B chunks, 2 m / 5°, refresh 1 s moving / 3 s idle, 3-tick = 150 ms buffer), `NetworkTickClock`, `EntityMotion` (arc + climb extrapolation, rates from two samples), `EntityKeyframe` 14 B (0.25 m pos ±8192 m, 16-bit heading, speed 0.5 m/s, turn 1°/s, climb 0.25 m/s), `EntityKeyframeCodec`, `NetIndexMap` (long id → ushort, reuse after release), `DeadReckoningSender`, `KeyframeChunker` (69 keyframes/chunk, ≥ 1 chunk per tick), `ClientKeyframeTrack` (extrapolate + blend into next keyframe).
+  - `HostTickReplicator`: spawn/despawn from `IEntityLocator`, motion from `IEntityTransformFacade` sampled per tick, `CreateBaselineSpawns` for join/reconnect. `ClientReplicaBuffer`: Mirror `SnapshotInterpolation` timeline + per-entity tracks, `TrySample(entityId)`.
+  - Mirror: `EntityKeyframesMessage` (unreliable), `EntitySpawnMessage`/`EntityDespawnMessage`/`MatchStateMessage` (reliable), `PlayerCommandMessage` with custom writer (kind + one command) in `PlayerCommandSerialization`; `NetworkTickService` (host send), `HostCommandReceiver` (drops commands whose issuer ≠ the connection's slot via `INetworkPlayerDirectory`, then `AuthorityCommandSink`), `NetworkCommandSink` (client).
+  - Open: spawn message has no unit type yet (client spawn path = Phase 4); `MatchStateMessage` not sent yet; health/weapon-target/event messages (Sync Inventory) not yet.
+  - Tests: `NetworkTickReplicationTests` [Category `Networking`] — clock, codec, extrapolation, dead reckoning, chunking, index map, command serialization round trip, host→client spawn/move/despawn.
 - [ ] Host `NetworkTickService` (20 Hz accumulator, command queue, change collection, MTU chunking).
 - [ ] Messages: `CommandMessage`, `TickMessage` (spawns, despawns, deltas, events), `PlayerStateMessage` (owner only), `MatchStateMessage`; custom `NetworkWriter`/`NetworkReader` extensions for quantized values.
 - [ ] Client `SnapshotBuffer` + `SnapshotInterpolation` (`INTERPOLATION_DELAY`).
@@ -284,6 +290,17 @@ Play
 - 2026-11-07 re-check vs `26f718498`: nothing implemented (no Mirror/Steam packages, no session/command/tick types, no Sandbox spike). Issues #1–#14 all still present in source. Only counts corrected.
 - 2026-11-07: added Lobby UI and Join Flow, Online Saving, Phase 6 (proposals; not yet user-confirmed in detail).
 - 2026-11-07 started: packages + Phase 0 spike code + Phase 1 session seam. Verification: Unity compile clean, Mirror weaver ran (`Mirror.GeneratedNetworkCode` in `Sandbox.Multiplayer`), 0 console errors/warnings. Tests not run (local override); spike not run (needs two machines / Play Mode by user). `TestPlayers.CreateLocalPlayer` updated for the new ctor.
+
+## Lobby Decisions (user, 2026-11-08)
+
+- Menu: Play → Online → Host Skirmish | Host Survival | Join by IP. **Join by IP stays in release builds.**
+- Lobby screen: reuse the Skirmish setup screen (`SkirmishUi`) with extra columns (Steam name/avatar, ready, kick).
+- Edit rights: each human edits own faction/team/color; host edits AI slots, map, money, victory, super weapons.
+- Start: enabled when all humans are ready **and** host can force-start.
+- Survival co-op: max 3 humans now (Medium/Large maps). Future: multiple stations near each other or one shared station per side.
+- Disconnect: AI takes over, match continues, **not instantly — reconnect must be possible** (needs the full-state baseline on join, moved from Phase 6 into v1). Host leaves → match ends after the same grace window.
+- Look: build straight in the existing UI style per `UI_UX_GUIDELINES` / `UI_CODE_BUILD_GUIDE`; no Penpot mock first.
+- Fog: v1 sends all unit data; a cheating (modified) client could read hidden units. Pending user answer on acceptability.
 
 ## TODO / Open Questions
 
