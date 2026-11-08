@@ -20,9 +20,17 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         [SerializeField] private TMP_Dropdown mapSize;
         [SerializeField] private TMP_Dropdown difficulty;
         [SerializeField] private Toggle superWeapons;
+        [SerializeField] private TMP_Text startLabel;
+        [SerializeField] private TMP_Text readinessText;
+        [SerializeField] private TMP_Text matchSummaryText;
+        [SerializeField] private CanvasGroup startContent;
+        [SerializeField] private Button inviteButton;
         private SurvivalModel _model;
         private ISurvivalPresenter _presenter;
         private bool _initialized;
+
+        /// <summary>Online lobby route only.</summary>
+        public event Action InviteRequested;
 
         public void SetModel(SurvivalModel model) => _model = model;
         public void AssignPresenter(ISurvivalPresenter presenter) => _presenter = presenter;
@@ -46,6 +54,8 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
             mapSize.onValueChanged.AddListener(_presenter.SelectMapSize);
             difficulty.onValueChanged.AddListener(_presenter.SelectDifficulty);
             superWeapons.onValueChanged.AddListener(_presenter.SelectSuperWeapons);
+            inviteButton.onClick.AddListener(RaiseInviteRequested);
+            SetInviteAvailable(false);
             _initialized = true;
             Render();
         }
@@ -72,8 +82,33 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
             mapSize.onValueChanged.RemoveListener(_presenter.SelectMapSize);
             difficulty.onValueChanged.RemoveListener(_presenter.SelectDifficulty);
             superWeapons.onValueChanged.RemoveListener(_presenter.SelectSuperWeapons);
+            inviteButton.onClick.RemoveListener(RaiseInviteRequested);
             _initialized = false;
         }
+
+        public void SetInviteAvailable(bool available) => inviteButton.gameObject.SetActive(available);
+
+        /// <summary>
+        /// Online lobby: settings are the host's; the start button starts (host) or toggles ready (client); the
+        /// footer lists the members.
+        /// </summary>
+        public void RenderLobby(bool canEditSettings, string startText, bool startInteractable, string readiness,
+            string summary)
+        {
+            playerFaction.interactable = canEditSettings;
+            allyFaction.interactable = canEditSettings;
+            enemyFaction.interactable = canEditSettings;
+            mapSize.interactable = canEditSettings;
+            difficulty.interactable = canEditSettings;
+            superWeapons.interactable = canEditSettings;
+            startLabel.text = startText;
+            startButton.interactable = startInteractable;
+            startContent.alpha = startInteractable ? 1f : 0.38f;
+            readinessText.text = readiness;
+            matchSummaryText.text = summary;
+        }
+
+        private void RaiseInviteRequested() => InviteRequested?.Invoke();
 
         private static void Fill(TMP_Dropdown dropdown, IEnumerable<string> options)
         {

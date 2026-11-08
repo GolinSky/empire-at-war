@@ -22,5 +22,17 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         float StartingMoney { get; }
         bool CanStart { get; }
         bool SuperWeapons { get; }
+
+        bool IsOnline { get; }
+        bool IsHost { get; }
+        int LocalMemberId { get; }
+        bool CanEditSettings { get; }
+        int HumanCount { get; }
+        int ReadyHumanCount { get; }
+        bool AllHumansReady { get; }
+        bool IsLocalReady { get; }
+        bool IsLocalSlot(int slotIndex);
+        bool CanEditOccupant(int slotIndex);
+        bool CanEditDetails(int slotIndex);
     }
 }

@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Lifecycle;
@@ -15,9 +18,11 @@ namespace EmpireAtWar.Services.Networking.Online
 {
     /// <summary>
     /// Project-lifetime online coordinator: Steam, the Mirror manager (created only on <see cref="EnterOnline"/>),
-    /// the lobby, the battle start handshake and disconnect grace. Offline play never touches Mirror.
+    /// the lobby (members, ready ticks, the host's setup snapshot), the battle start handshake and disconnect
+    /// grace. Offline play never touches Mirror.
     /// </summary>
-    public sealed class OnlineMatchService : IInitializable, ITickable, ILateDisposable, INetworkPlayerDirectory
+    public sealed class OnlineMatchService : IInitializable, ITickable, ILateDisposable, INetworkPlayerDirectory,
+        IOnlineLocalSlot
     {
         public const float RECONNECT_GRACE_SECONDS = 60f;
         private const float KICK_DISCONNECT_DELAY = 0.5f;
@@ -33,9 +38,10 @@ namespace EmpireAtWar.Services.Networking.Online
         private OnlineNetworkManager _manager;
         private KcpTransport _kcp;
         private FizzySteamworks _fizzy;
-        private string _setupJson;
+        private MultiplexTransport _multiplex;
+        private string _battleJson;
         private bool _leaving;
-        private bool _forceStart;
+        private bool _inLobby;
 
         public OnlineMatchService(IGameCommand gameCommand)
         {
@@ -50,6 +56,8 @@ namespace EmpireAtWar.Services.Networking.Online
         public event Action<NetworkConnectionToClient> ClientLoaded;
         /// <summary>Host: a player stayed away past <see cref="RECONNECT_GRACE_SECONDS"/>; AI takes their slot.</summary>
         public event Action<PlayerId> PlayerAbandoned;
+        /// <summary>Host: a client asked to change its own Skirmish row.</summary>
+        public event Action<int, LobbySlotEditMessage> SlotEditRequested;
 
         public OnlineRole Role { get; private set; }
         public OnlineError LastError { get; private set; }
@@ -57,12 +65,20 @@ namespace EmpireAtWar.Services.Networking.Online
         public IReadOnlyList<LobbyMember> Members => _lobby.Members;
         public int LocalConnectionId { get; private set; }
         public int LocalSlotIndex { get; private set; } = -1;
+        /// <summary>The setup screen the host picked; clients learn it from the first lobby state.</summary>
+        public LobbyMode Mode { get; private set; }
+        /// <summary>The host setup screen's lobby snapshot (JSON); empty until the host publishes one.</summary>
+        public string SetupJson { get; private set; } = string.Empty;
+        /// <summary>Client: the host accepted this PC and sent the lobby; host: always once hosting.</summary>
+        public bool IsInLobby => Role == OnlineRole.Host || _inLobby;
+        public bool AllReady => _lobby.AllReady;
+        public bool IsSteamLobby => _steam.InLobby;
+        /// <summary>Host: the KCP port friends use with Join by IP.</summary>
+        public ushort Port => _kcp.Port;
         public bool IsInBattle { get; private set; }
         public bool HasBegun { get; private set; }
         /// <summary>A restart is reloading the battle scene; the closing scene keeps the session.</summary>
         public bool IsReloading { get; private set; }
-        public bool CanStart => Role == OnlineRole.Host && (_lobby.AllReady || _forceStart);
-
         public bool AllClientsLoaded
         {
             get
@@ -82,6 +98,9 @@ namespace EmpireAtWar.Services.Networking.Online
             if (!_steam.TryInitialize()) return;
             _steam.JoinedHost += JoinSteamHost;
             _steam.Failed += Fail;
+            // The Steam lobby (invite button) and in-game invites arrive later through Steam callbacks.
+            _steam.HostLobbyReady += OnSteamLobbyReady;
+            _steam.InviteReceived += NotifyChanged;
             _steam.TryJoinFromLaunchArgs();
         }
 
@@ -123,6 +142,9 @@ namespace EmpireAtWar.Services.Networking.Online
             _kcp = _root.AddComponent<KcpTransport>();
             _fizzy = _root.AddComponent<FizzySteamworks>();
             _fizzy.enabled = _steam.IsInitialized;
+            // The host listens on direct IP and, with Steam running, on the Steam relay at once.
+            _multiplex = _root.AddComponent<MultiplexTransport>();
+            _multiplex.transports = _steam.IsInitialized ? new Transport[] { _kcp, _fizzy } : new Transport[] { _kcp };
             _manager = _root.AddComponent<OnlineNetworkManager>();
             _manager.autoCreatePlayer = false;
             _manager.maxConnections = OnlineLobby.MAX_MEMBERS;
@@ -134,20 +156,16 @@ namespace EmpireAtWar.Services.Networking.Online
             _root.SetActive(true);
         }
 
-        public void HostLobby(bool viaSteam)
+        /// <summary>Hosts a lobby reachable by IP and, with Steam running, by Steam invite.</summary>
+        public void HostLobby(LobbyMode mode)
         {
-            if (viaSteam && !_steam.IsInitialized)
-            {
-                Fail(OnlineError.SteamNotRunning);
-                return;
-            }
-
             EnterOnline();
             ResetMatch(OnlineRole.Host);
+            Mode = mode;
             _lobby.Reset(_steam.PersonaName);
-            _manager.UseTransport(viaSteam ? _fizzy : _kcp);
+            _manager.UseTransport(_multiplex);
             _manager.StartHost();
-            if (viaSteam) _steam.CreateLobby();
+            if (_steam.IsInitialized) _steam.CreateLobby();
             Changed?.Invoke();
         }
 
@@ -175,13 +193,38 @@ namespace EmpireAtWar.Services.Networking.Online
 
         public void SetReady(bool ready) => NetworkClient.Send(new LobbyReadyMessage { Ready = ready });
 
-        public void ArmForceStart() => _forceStart = true;
+        /// <summary>Client: asks the host to change this PC's Skirmish row.</summary>
+        public void SendSlotEdit(int faction, int team, int color) =>
+            NetworkClient.Send(new LobbySlotEditMessage { Faction = faction, Team = team, Color = color });
 
+        /// <summary>Host: the setup screen changed; every client gets the new snapshot.</summary>
+        public void PublishSetup(string setupJson)
+        {
+            if (setupJson == SetupJson) return;
+            SetupJson = setupJson;
+            BroadcastLobby();
+        }
+
+        /// <summary>The member leaves the lobby at once, so its row frees before the delayed disconnect.</summary>
         public void Kick(int connectionId)
         {
-            if (NetworkServer.connections.TryGetValue(connectionId, out NetworkConnectionToClient connection))
-                Reject(connection, OnlineError.Kicked);
+            if (!NetworkServer.connections.TryGetValue(connectionId, out NetworkConnectionToClient connection)) return;
+            _lobby.Remove(connectionId);
+            Reject(connection, OnlineError.Kicked);
+            BroadcastLobby();
         }
+
+        public bool TryGetLocalSlot(out PlayerId player)
+        {
+            player = new PlayerId(LocalSlotIndex);
+            return IsInBattle;
+        }
+
+        /// <summary>Host: this PC's IPv4 addresses, shown so friends can Join by IP.</summary>
+        public IReadOnlyList<string> LocalAddresses() => Dns.GetHostAddresses(Dns.GetHostName())
+            .Where(address => address.AddressFamily == AddressFamily.InterNetwork)
+            .Select(address => address.ToString())
+            .ToArray();
 
         public void ClearError()
         {
@@ -190,12 +233,18 @@ namespace EmpireAtWar.Services.Networking.Online
         }
 
         /// <summary>
-        /// Host: fits a Human slot to every lobby member (<see cref="OnlineLineup"/>), assigns them, sends every
-        /// client its slot and loads the battle locally.
+        /// Host, Skirmish: every member already sits in a Human row; <paramref name="memberSlots"/> maps each
+        /// member's connection id to its slot index in <paramref name="battle"/>.
         /// </summary>
-        public bool TryStartMatch(BattleDefinition setup)
+        public void StartSkirmish(BattleDefinition battle, IReadOnlyDictionary<int, int> memberSlots)
         {
-            if (!CanStart) return false;
+            _lobby.AssignSlots(memberSlots);
+            StartBattle(battle);
+        }
+
+        /// <summary>Host, Survival: adds a co-op human per member (<see cref="OnlineLineup"/>), host first.</summary>
+        public bool TryStartSurvival(BattleDefinition setup)
+        {
             if (!OnlineLineup.TryFit(setup, _lobby.Members.Count, out BattleDefinition battle, out OnlineError error))
             {
                 Fail(error);
@@ -204,19 +253,24 @@ namespace EmpireAtWar.Services.Networking.Online
 
             if (!_lobby.TryAssignSlots(battle.Slots)) throw new InvalidOperationException(
                 "The fitted line-up must hold a Human slot for every lobby member.");
+            StartBattle(battle);
+            return true;
+        }
+
+        private void StartBattle(BattleDefinition battle)
+        {
             ClearError();
-            _setupJson = JsonUtility.ToJson(BattleSetupSave.From(battle));
+            _battleJson = JsonUtility.ToJson(BattleSetupSave.From(battle));
             foreach (LobbyMember member in _lobby.Members)
             {
                 if (member.ConnectionId == OnlineLobby.HOST_CONNECTION_ID) LocalSlotIndex = member.SlotIndex;
                 else
                     NetworkServer.connections[member.ConnectionId].Send(
-                        new BattleStartMessage { SetupJson = _setupJson, LocalSlotIndex = member.SlotIndex });
+                        new BattleStartMessage { SetupJson = _battleJson, LocalSlotIndex = member.SlotIndex });
             }
 
             BeginBattleLoad();
             _gameCommand.StartBattle(battle);
-            return true;
         }
 
         /// <summary>
@@ -227,13 +281,13 @@ namespace EmpireAtWar.Services.Networking.Online
         {
             if (Role != OnlineRole.Host || !IsInBattle)
                 throw new InvalidOperationException("Only the host restarts an online battle.");
-            _setupJson = JsonUtility.ToJson(BattleSetupSave.From(battle));
+            _battleJson = JsonUtility.ToJson(BattleSetupSave.From(battle));
             foreach (LobbyMember member in _lobby.Members)
             {
                 if (member.ConnectionId == OnlineLobby.HOST_CONNECTION_ID ||
                     !NetworkServer.connections.TryGetValue(member.ConnectionId, out NetworkConnectionToClient connection))
                     continue;
-                connection.Send(new BattleStartMessage { SetupJson = _setupJson, LocalSlotIndex = member.SlotIndex });
+                connection.Send(new BattleStartMessage { SetupJson = _battleJson, LocalSlotIndex = member.SlotIndex });
             }
 
             IsReloading = true;
@@ -271,6 +325,7 @@ namespace EmpireAtWar.Services.Networking.Online
         {
             NetworkServer.RegisterHandler<LobbyHelloMessage>(OnHello);
             NetworkServer.RegisterHandler<LobbyReadyMessage>(OnReady);
+            NetworkServer.RegisterHandler<LobbySlotEditMessage>(OnSlotEdit);
             NetworkServer.RegisterHandler<BattleLoadedMessage>(OnClientLoaded);
         }
 
@@ -306,7 +361,7 @@ namespace EmpireAtWar.Services.Networking.Online
                 }
 
                 _disconnectedAt.Remove(slot);
-                connection.Send(new BattleStartMessage { SetupJson = _setupJson, LocalSlotIndex = slot });
+                connection.Send(new BattleStartMessage { SetupJson = _battleJson, LocalSlotIndex = slot });
                 BroadcastLobby();
                 return;
             }
@@ -326,6 +381,9 @@ namespace EmpireAtWar.Services.Networking.Online
             _lobby.SetReady(connection.connectionId, message.Ready);
             BroadcastLobby();
         }
+
+        private void OnSlotEdit(NetworkConnectionToClient connection, LobbySlotEditMessage message) =>
+            SlotEditRequested?.Invoke(connection.connectionId, message);
 
         private void OnClientLoaded(NetworkConnectionToClient connection, BattleLoadedMessage _)
         {
@@ -354,6 +412,9 @@ namespace EmpireAtWar.Services.Networking.Online
         {
             _lobby.Replace(message.Members);
             LocalConnectionId = message.YourConnectionId;
+            Mode = message.Mode;
+            SetupJson = message.SetupJson;
+            _inLobby = true;
             Changed?.Invoke();
         }
 
@@ -371,7 +432,8 @@ namespace EmpireAtWar.Services.Networking.Online
         {
             if (_leaving || Role != OnlineRole.Client) return;
             bool wasInBattle = IsInBattle;
-            if (LastError == OnlineError.None) LastError = OnlineError.HostLeft;
+            // No lobby state yet: the host was never reached.
+            if (LastError == OnlineError.None) LastError = _inLobby ? OnlineError.HostLeft : OnlineError.ConnectionFailed;
             _steam.Leave();
             ResetMatch(OnlineRole.None);
             Changed?.Invoke();
@@ -402,7 +464,10 @@ namespace EmpireAtWar.Services.Networking.Online
             foreach (NetworkConnectionToClient connection in NetworkServer.connections.Values)
             {
                 if (connection == NetworkServer.localConnection) continue;
-                connection.Send(new LobbyStateMessage { Members = members, YourConnectionId = connection.connectionId });
+                connection.Send(new LobbyStateMessage
+                {
+                    Members = members, YourConnectionId = connection.connectionId, Mode = Mode, SetupJson = SetupJson
+                });
             }
 
             Changed?.Invoke();
@@ -421,12 +486,18 @@ namespace EmpireAtWar.Services.Networking.Online
             IsInBattle = false;
             HasBegun = false;
             IsReloading = false;
-            _forceStart = false;
+            _inLobby = false;
+            Mode = LobbyMode.None;
+            SetupJson = string.Empty;
             LocalSlotIndex = -1;
             _loaded.Clear();
             _disconnectedAt.Clear();
             if (role != OnlineRole.None) LastError = OnlineError.None;
         }
+
+        private void OnSteamLobbyReady(string hostSteamId) => NotifyChanged();
+
+        private void NotifyChanged() => Changed?.Invoke();
 
         private void Fail(OnlineError error)
         {

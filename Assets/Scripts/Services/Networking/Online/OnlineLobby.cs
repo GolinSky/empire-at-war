@@ -98,6 +98,17 @@ namespace EmpireAtWar.Services.Networking.Online
             return true;
         }
 
+        /// <summary>Skirmish: the setup screen already seated every member; <paramref name="memberSlots"/> maps connection id → slot index.</summary>
+        public void AssignSlots(IReadOnlyDictionary<int, int> memberSlots)
+        {
+            for (int i = 0; i < _members.Count; i++)
+            {
+                LobbyMember member = _members[i];
+                member.SlotIndex = memberSlots[member.ConnectionId];
+                _members[i] = member;
+            }
+        }
+
         public bool TryGetMember(int connectionId, out LobbyMember member)
         {
             foreach (LobbyMember candidate in _members)

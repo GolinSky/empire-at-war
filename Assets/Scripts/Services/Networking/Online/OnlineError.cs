@@ -11,7 +11,6 @@ namespace EmpireAtWar.Services.Networking.Online
         Kicked,
         ConnectionFailed,
         BattleInProgress,
-        NotEnoughSlots,
         SurvivalCoopNeedsLargerMap,
         SurvivalLobbyTooLarge
     }

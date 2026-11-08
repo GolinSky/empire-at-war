@@ -2,6 +2,7 @@ using EmpireAtWar.Entities.Saves;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
 using EmpireAtWar.Entities.MainMenu.Survival;
 using EmpireAtWar.Entities.MainMenu.Simulation;
+using EmpireAtWar.Entities.MainMenu.Online;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Ui.Base;
 
@@ -13,16 +14,18 @@ namespace EmpireAtWar.Entities.MainMenu.Play
         private readonly ISurvivalRoute _survivalRoute;
         private readonly ISimulationRoute _simulationRoute;
         private readonly ILoadGameRoute _loadGameRoute;
+        private readonly IOnlineRoute _onlineRoute;
         private PlayUi _ui;
 
         public PlayRouteUiController(IUiService uiService, IUiCancelRouter cancelRouter,
             ISkirmishRoute skirmishRoute, ISurvivalRoute survivalRoute, ISimulationRoute simulationRoute,
-            ILoadGameRoute loadGameRoute) : base(uiService, cancelRouter)
+            ILoadGameRoute loadGameRoute, IOnlineRoute onlineRoute) : base(uiService, cancelRouter)
         {
             _skirmishRoute = skirmishRoute;
             _survivalRoute = survivalRoute;
             _simulationRoute = simulationRoute;
             _loadGameRoute = loadGameRoute;
+            _onlineRoute = onlineRoute;
         }
 
         public void Open()
@@ -47,6 +50,7 @@ namespace EmpireAtWar.Entities.MainMenu.Play
         public void OpenSurvival() => _survivalRoute.Open();
         public void OpenSimulation() => _simulationRoute.Open();
         public void OpenLoadGame() => _loadGameRoute.Open();
+        public void OpenOnline() => _onlineRoute.Open();
 
         protected override bool HandleCancel()
         {

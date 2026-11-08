@@ -5,6 +5,7 @@ namespace EmpireAtWar.Entities.MainMenu.Play
         void OpenSkirmish();
         void OpenSurvival();
         void OpenSimulation();
+        void OpenOnline();
         void Close();
         void OpenLoadGame();
     }

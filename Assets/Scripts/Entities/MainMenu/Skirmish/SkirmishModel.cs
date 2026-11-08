@@ -13,6 +13,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 {
     public class SkirmishModel : Model, ISkirmishModelObserver
     {
+        public const int NO_MEMBER = -1;
         private const float MIN_STARTING_MONEY = 500f;
         private const float MAX_STARTING_MONEY = 10000f;
         private const float DEFAULT_STARTING_MONEY = 2000f;
@@ -43,6 +44,30 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         public bool CanStart => ActiveTeamCount >= 2;
         public bool SuperWeapons { get; private set; } = true;
 
+        public bool IsOnline { get; private set; }
+        public bool IsHost { get; private set; }
+        public int LocalMemberId { get; private set; } = NO_MEMBER;
+        public bool CanEditSettings => !IsOnline || IsHost;
+        public int HumanCount => _slots.Count(slot => slot.IsHuman);
+        public int ReadyHumanCount => _slots.Count(slot => slot.IsHuman && slot.Ready);
+        public bool AllHumansReady => ReadyHumanCount == HumanCount;
+        public bool IsLocalReady => _slots.Any(slot => slot.IsHuman && IsLocal(slot) && slot.Ready);
+
+        /// <summary>Offline: the human row; online: the row this PC's member sits in.</summary>
+        public bool IsLocalSlot(int slotIndex) => IsLocal(_slots[slotIndex]);
+
+        /// <summary>Offline: AI rows; online: the host changes every row but its own (a member's row: kick).</summary>
+        public bool CanEditOccupant(int slotIndex) =>
+            IsOnline ? IsHost && !IsLocalSlot(slotIndex) : !_slots[slotIndex].IsHuman;
+
+        /// <summary>Faction, team and color: each human picks their own; the host also picks for AI rows.</summary>
+        public bool CanEditDetails(int slotIndex)
+        {
+            SkirmishSlotSetup slot = _slots[slotIndex];
+            if (!slot.IsOpen) return false;
+            return !IsOnline || IsLocal(slot) || IsHost && !slot.IsHuman;
+        }
+
         public void SelectSuperWeapons(bool enabled)
         {
             SuperWeapons = enabled;
@@ -55,15 +80,150 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
                 VictoryCondition, StartingMoney, SuperWeapons, SkirmishPreset.NewMapSeed()).Build();
         }
 
-        /// <param name="occupant">Row 0 always stays the human; other rows pick Closed or an AI level.</param>
+        /// <param name="occupant">
+        /// Offline, row 0 always stays the human; other rows pick Closed or an AI level. Online, the host may also
+        /// open a seat (<see cref="SkirmishSlotOccupant.Vacant"/>); a member's row loses its member.
+        /// </param>
         public void SelectSlotOccupant(int slotIndex, SkirmishSlotOccupant occupant)
         {
-            if (slotIndex == HUMAN_SLOT_INDEX || occupant == SkirmishSlotOccupant.Human)
+            if (!CanEditOccupant(slotIndex) || occupant == SkirmishSlotOccupant.Human ||
+                occupant == SkirmishSlotOccupant.Vacant && !IsOnline)
             {
-                throw new ArgumentException("Only the first row holds the human player.", nameof(slotIndex));
+                throw new ArgumentException($"Row {slotIndex} cannot become {occupant}.", nameof(slotIndex));
             }
 
             _slots[slotIndex].Occupant = occupant;
+            _slots[slotIndex].ClearMember();
+            Changed?.Invoke();
+        }
+
+        /// <summary>Host: the lobby opens with the host in row 0, an open seat in row 1 and the rest closed.</summary>
+        public void BeginHostLobby(int hostMemberId, string hostName)
+        {
+            IsOnline = true;
+            IsHost = true;
+            LocalMemberId = hostMemberId;
+            foreach (SkirmishSlotSetup slot in _slots)
+            {
+                slot.Occupant = SkirmishSlotOccupant.Closed;
+                slot.ClearMember();
+            }
+
+            SkirmishSlotSetup host = _slots[HUMAN_SLOT_INDEX];
+            host.Occupant = SkirmishSlotOccupant.Human;
+            host.MemberId = hostMemberId;
+            host.PlayerName = hostName;
+            host.Ready = true;
+            _slots[HUMAN_SLOT_INDEX + 1].Occupant = SkirmishSlotOccupant.Vacant;
+            Changed?.Invoke();
+        }
+
+        /// <summary>Client: rows come from the host's snapshots (<see cref="ApplyLobby"/>).</summary>
+        public void BeginClientLobby()
+        {
+            IsOnline = true;
+            IsHost = false;
+            LocalMemberId = NO_MEMBER;
+        }
+
+        /// <summary>
+        /// Host: a joining member takes the first open seat, else a closed row, else an AI row; a member who left
+        /// leaves an open seat. Raises <see cref="Changed"/> only when a row changed.
+        /// </summary>
+        public void SeatMembers(IReadOnlyList<SkirmishLobbySeat> members)
+        {
+            bool changed = false;
+            foreach (SkirmishSlotSetup slot in _slots)
+            {
+                if (slot.MemberId == NO_MEMBER || members.Any(member => member.MemberId == slot.MemberId)) continue;
+                slot.Occupant = SkirmishSlotOccupant.Vacant;
+                slot.ClearMember();
+                changed = true;
+            }
+
+            foreach (SkirmishLobbySeat member in members)
+            {
+                SkirmishSlotSetup slot = _slots.FirstOrDefault(row => row.MemberId == member.MemberId);
+                if (slot == null)
+                {
+                    slot = FindFreeSeat();
+                    slot.Occupant = SkirmishSlotOccupant.Human;
+                    slot.MemberId = member.MemberId;
+                    changed = true;
+                }
+
+                if (slot.PlayerName == member.Name && slot.Ready == member.Ready) continue;
+                slot.PlayerName = member.Name;
+                slot.Ready = member.Ready;
+                changed = true;
+            }
+
+            if (changed) Changed?.Invoke();
+        }
+
+        /// <summary>Host: a member's own row choices; false when no row holds the member or a value is invalid.</summary>
+        public bool TryEditMemberSlot(int memberId, FactionType faction, int team, int colorIndex)
+        {
+            int slotIndex = Array.FindIndex(_slots, slot => slot.MemberId == memberId);
+            if (slotIndex < 0 || !Enum.IsDefined(typeof(FactionType), faction) || team < 0 || team >= TeamCount ||
+                colorIndex < 0 || colorIndex >= MatchRules.MAX_TEAM_COLORS) return false;
+            _slots[slotIndex].Faction = faction;
+            _slots[slotIndex].Team = team;
+            SelectSlotColor(slotIndex, colorIndex);
+            return true;
+        }
+
+        /// <summary>Host: member connection id to its slot index in <see cref="CreatePlayers"/>.</summary>
+        public IReadOnlyDictionary<int, int> CreateMemberSlots()
+        {
+            Dictionary<int, int> memberSlots = new Dictionary<int, int>();
+            int playerIndex = 0;
+            foreach (SkirmishSlotSetup slot in _slots)
+            {
+                if (!slot.IsOpen) continue;
+                if (slot.MemberId != NO_MEMBER) memberSlots.Add(slot.MemberId, playerIndex);
+                playerIndex++;
+            }
+
+            return memberSlots;
+        }
+
+        public SkirmishLobbySnapshot CaptureLobby() => new SkirmishLobbySnapshot
+        {
+            slots = _slots.Select(slot => new SkirmishLobbySlotSnapshot
+            {
+                occupant = (int)slot.Occupant, faction = (int)slot.Faction, team = slot.Team,
+                color = slot.ColorIndex, memberId = slot.MemberId, name = slot.PlayerName, ready = slot.Ready
+            }).ToArray(),
+            planet = (int)Planet,
+            mapSize = (int)MapSize,
+            victoryCondition = (int)VictoryCondition,
+            startingMoney = StartingMoney,
+            superWeapons = SuperWeapons
+        };
+
+        /// <summary>Client: shows the host's setup; <paramref name="localMemberId"/> marks this PC's row.</summary>
+        public void ApplyLobby(SkirmishLobbySnapshot snapshot, int localMemberId)
+        {
+            LocalMemberId = localMemberId;
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                SkirmishLobbySlotSnapshot row = snapshot.slots[i];
+                SkirmishSlotSetup slot = _slots[i];
+                slot.Occupant = (SkirmishSlotOccupant)row.occupant;
+                slot.Faction = (FactionType)row.faction;
+                slot.Team = row.team;
+                slot.ColorIndex = row.color;
+                slot.MemberId = row.memberId;
+                slot.PlayerName = row.name;
+                slot.Ready = row.ready;
+            }
+
+            Planet = (PlanetType)snapshot.planet;
+            MapSize = (MapSize)snapshot.mapSize;
+            VictoryCondition = (BattleVictoryCondition)snapshot.victoryCondition;
+            StartingMoney = snapshot.startingMoney;
+            SuperWeapons = snapshot.superWeapons;
             Changed?.Invoke();
         }
 
@@ -109,11 +269,13 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         public void SelectMapSize(MapSize mapSize)
         {
             MapSize = mapSize;
+            Changed?.Invoke();
         }
 
         public void SelectVictoryCondition(BattleVictoryCondition condition)
         {
             VictoryCondition = condition;
+            Changed?.Invoke();
         }
 
         public void SelectStartingMoney(float rawValue)
@@ -146,6 +308,13 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
             return players;
         }
+
+        private bool IsLocal(SkirmishSlotSetup slot) => IsOnline ? slot.MemberId == LocalMemberId : slot.IsHuman;
+
+        private SkirmishSlotSetup FindFreeSeat() =>
+            _slots.FirstOrDefault(slot => slot.Occupant == SkirmishSlotOccupant.Vacant) ??
+            _slots.FirstOrDefault(slot => slot.Occupant == SkirmishSlotOccupant.Closed) ??
+            _slots.First(slot => !slot.IsHuman);
 
         private int CountOpenTeams()
         {

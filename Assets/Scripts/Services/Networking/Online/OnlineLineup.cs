@@ -8,8 +8,8 @@ using EmpireAtWar.Models.Players;
 namespace EmpireAtWar.Services.Networking.Online
 {
     /// <summary>
-    /// Host: gives every lobby member a Human slot so the host does not set them by hand.
-    /// Skirmish turns AI slots into Human slots in slot order; Survival adds co-op humans of the host's faction.
+    /// Host, Survival: gives every lobby member a co-op Human slot of the host's faction. (Skirmish members sit in
+    /// setup rows already.)
     /// </summary>
     public static class OnlineLineup
     {
@@ -17,36 +17,7 @@ namespace EmpireAtWar.Services.Networking.Online
         private const int MAX_SURVIVAL_PLAYERS = 4;
 
         public static bool TryFit(BattleDefinition battle, int humans, out BattleDefinition fitted, out OnlineError error) =>
-            battle.Mode == GameMode.Survival
-                ? TryFitSurvival(battle.Survival, humans, out fitted, out error)
-                : TryFitSkirmish(battle, humans, out fitted, out error);
-
-        private static bool TryFitSkirmish(BattleDefinition battle, int humans, out BattleDefinition fitted,
-            out OnlineError error)
-        {
-            List<PlayerSlot> slots = battle.Slots.ToList();
-            int missing = humans - slots.Count(slot => slot.Controller == PlayerController.Human);
-            for (int i = 0; i < slots.Count && missing > 0; i++)
-            {
-                PlayerSlot slot = slots[i];
-                if (slot.Controller != PlayerController.Ai) continue;
-                slots[i] = new PlayerSlot(slot.Id, slot.Team, slot.Faction, PlayerController.Human, slot.Difficulty,
-                    slot.ColorIndex);
-                missing--;
-            }
-
-            fitted = null;
-            if (missing > 0)
-            {
-                error = OnlineError.NotEnoughSlots;
-                return false;
-            }
-
-            error = OnlineError.None;
-            fitted = SkirmishPreset.Create(slots, battle.Map.Planet, battle.Map.Size, battle.VictoryCondition,
-                battle.StartingMoney, battle.HasFeature(BattleFeatures.SuperWeapons), battle.Map.Seed).Build();
-            return true;
-        }
+            TryFitSurvival(battle.Survival, humans, out fitted, out error);
 
         // An AI ally gives up its slot when the humans need it.
         private static bool TryFitSurvival(SurvivalSettings settings, int humans, out BattleDefinition fitted,

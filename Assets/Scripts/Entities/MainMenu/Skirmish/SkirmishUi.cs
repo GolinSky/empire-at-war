@@ -17,13 +17,27 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         private ISkirmishModelObserver _model;
         private ISkirmishPresenter _presenter;
 
+        private const string HUMAN_OCCUPANT_LABEL = "Human";
+        private const string KICK_OPTION_LABEL = "Kick";
+        private const string FORCE_START_LABEL = "FORCE START";
+        private const string READY_LABEL = "READY";
+        private const string CANCEL_READY_LABEL = "NOT READY";
+        // Online AI rows list the open seat after the AI levels.
+        private const int VACANT_OPTION_INDEX = 5;
+
         // Labels for the AI rows, in SkirmishSlotOccupant order (Closed .. AiUltraHard).
         private static readonly string[] AI_OCCUPANT_OPTIONS =
         {
             "Closed", "AI Easy", "AI Medium", "AI Hard", "AI Ultra Hard"
         };
+        private static readonly string[] ONLINE_AI_OCCUPANT_OPTIONS =
+        {
+            "Closed", "AI Easy", "AI Medium", "AI Hard", "AI Ultra Hard", "Open"
+        };
         [SerializeField] private Button closeButton;
         [SerializeField] private Button startGameButton;
+        [SerializeField] private TMP_Text startGameLabel;
+        [SerializeField] private Button inviteButton;
         [SerializeField] private SkirmishSlotRowView[] slotRows;
         [SerializeField] private TMP_Dropdown planetsDropdown;
         [SerializeField] private RawImage planetPreviewImage;
@@ -41,8 +55,13 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private CanvasGroup startGameContent;
         [SerializeField] private TooltipHoverView tooltipHover;
         private TeamColorPalette _palette;
+        private string _offlineStartLabel;
+        private string _lobbyStatus = string.Empty;
 
         private bool _isInitialized;
+
+        /// <summary>Online lobby route only.</summary>
+        public event Action InviteRequested;
 
         public TooltipHoverView TooltipHover => tooltipHover;
 
@@ -64,8 +83,8 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             for (int i = 0; i < slotRows.Length; i++)
             {
                 SkirmishSlotRowView row = slotRows[i];
-                row.Initialize(i, _model.Slots[i].IsHuman, AI_OCCUPANT_OPTIONS, factionOptions, teamOptions, colorOptions);
-                row.OccupantChanged += _presenter.SelectSlotOccupant;
+                row.Initialize(i, factionOptions, teamOptions, colorOptions);
+                row.OccupantChanged += HandleOccupantChanged;
                 row.FactionChanged += _presenter.SelectSlotFaction;
                 row.TeamChanged += _presenter.SelectSlotTeam;
                 row.ColorChanged += _presenter.SelectSlotColor;
@@ -78,9 +97,12 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             victoryConditionDropdown.options[(int)BattleVictoryCondition.DestroyOpponentBase].text = "Destroy opponent base";
             victoryConditionDropdown.RefreshShownValue();
             SetStartingMoneySliderData();
+            _offlineStartLabel = startGameLabel.text;
+            SetInviteAvailable(false);
             Render();
             closeButton.onClick.AddListener(_presenter.Close);
             startGameButton.onClick.AddListener(_presenter.StartGame);
+            inviteButton.onClick.AddListener(RaiseInviteRequested);
             planetsDropdown.onValueChanged.AddListener(_presenter.SelectPlanet);
             mapSizeDropdown.onValueChanged.AddListener(_presenter.SelectMapSize);
             victoryConditionDropdown.onValueChanged.AddListener(_presenter.SelectVictoryCondition);
@@ -97,7 +119,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             }
             foreach (SkirmishSlotRowView row in slotRows)
             {
-                row.OccupantChanged -= _presenter.SelectSlotOccupant;
+                row.OccupantChanged -= HandleOccupantChanged;
                 row.FactionChanged -= _presenter.SelectSlotFaction;
                 row.TeamChanged -= _presenter.SelectSlotTeam;
                 row.ColorChanged -= _presenter.SelectSlotColor;
@@ -106,6 +128,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
             closeButton.onClick.RemoveListener(_presenter.Close);
             startGameButton.onClick.RemoveListener(_presenter.StartGame);
+            inviteButton.onClick.RemoveListener(RaiseInviteRequested);
             planetsDropdown.onValueChanged.RemoveListener(_presenter.SelectPlanet);
             mapSizeDropdown.onValueChanged.RemoveListener(_presenter.SelectMapSize);
             victoryConditionDropdown.onValueChanged.RemoveListener(_presenter.SelectVictoryCondition);
@@ -131,6 +154,20 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         public void SetData(TeamColorPalette palette)
         {
             _palette = palette;
+        }
+
+        /// <summary>Online lobby: the Steam invite button replaces the active slot count.</summary>
+        public void SetInviteAvailable(bool available)
+        {
+            inviteButton.gameObject.SetActive(available);
+            activeSlotsText.gameObject.SetActive(!available);
+        }
+
+        /// <summary>Online lobby: how friends reach this lobby, or the last error; replaces the match summary.</summary>
+        public void ShowLobbyStatus(string status)
+        {
+            _lobbyStatus = status;
+            if (_isInitialized) Render();
         }
 
         private static string[] CreateTeamOptions(int teamCount)
@@ -184,11 +221,15 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         {
             for (int i = 0; i < slotRows.Length; i++)
             {
-                slotRows[i].Render(_model.Slots[i], _palette.GetColor(_model.Slots[i].ColorIndex));
+                slotRows[i].Render(_model.Slots[i], _palette.GetColor(_model.Slots[i].ColorIndex), CreateRowState(i));
             }
 
-            // A match needs at least two opposing teams among the open rows.
-            startGameButton.interactable = _model.CanStart;
+            bool canEditSettings = _model.CanEditSettings;
+            planetsDropdown.interactable = canEditSettings;
+            mapSizeDropdown.interactable = canEditSettings;
+            victoryConditionDropdown.interactable = canEditSettings;
+            startingMoneySlider.interactable = canEditSettings;
+            superWeaponsToggle.interactable = canEditSettings;
             planetsDropdown.SetValueWithoutNotify((int)_model.Planet);
             planetPreviewImage.texture = _model.Planet switch
             {
@@ -202,13 +243,66 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             superWeaponsToggle.SetIsOnWithoutNotify(_model.SuperWeapons);
             startingMoneyText.text = $"${(int)_model.StartingMoney:N0}";
             activeSlotsText.text = $"{_model.ActivePlayerCount} / {slotRows.Length} SLOTS ACTIVE";
-            readinessText.text = _model.CanStart ? "READY TO DEPLOY" : "OPPOSING TEAM REQUIRED";
-            matchSummaryText.text = _model.CanStart
-                ? $"{_model.ActivePlayerCount} players   /   {_model.ActiveTeamCount} opposing teams   /   ${_model.StartingMoney:N0} per player"
-                : "Enable at least two opposing teams to start.";
-            readinessIndicator.color = _model.CanStart ? new Color32(105, 199, 157, 255) : new Color32(245, 184, 76, 255);
-            startGameContent.alpha = _model.CanStart ? 1f : 0.38f;
+            // A match needs at least two opposing teams among the open rows.
+            bool ready = _model.CanStart && (!_model.IsOnline || _model.AllHumansReady);
+            readinessText.text = !_model.CanStart ? "OPPOSING TEAM REQUIRED"
+                : !_model.IsOnline ? "READY TO DEPLOY"
+                : _model.AllHumansReady ? "ALL COMMANDERS READY"
+                : $"{_model.ReadyHumanCount} / {_model.HumanCount} COMMANDERS READY";
+            matchSummaryText.text = _model.IsOnline && _lobbyStatus.Length > 0 ? _lobbyStatus
+                : _model.CanStart
+                    ? $"{_model.ActivePlayerCount} players   /   {_model.ActiveTeamCount} opposing teams   /   ${_model.StartingMoney:N0} per player"
+                    : "Enable at least two opposing teams to start.";
+            readinessIndicator.color = ready ? new Color32(105, 199, 157, 255) : new Color32(245, 184, 76, 255);
+            RenderStartButton();
         }
+
+        // Offline and host: start (forced while a member is not ready). Lobby client: toggles its ready tick.
+        private void RenderStartButton()
+        {
+            bool isClient = _model.IsOnline && !_model.IsHost;
+            bool interactable = isClient ? _model.LocalMemberId != SkirmishModel.NO_MEMBER : _model.CanStart;
+            startGameButton.interactable = interactable;
+            startGameLabel.text = isClient ? _model.IsLocalReady ? CANCEL_READY_LABEL : READY_LABEL
+                : _model.IsOnline && !_model.AllHumansReady ? FORCE_START_LABEL
+                : _offlineStartLabel;
+            startGameContent.alpha = interactable ? 1f : 0.38f;
+        }
+
+        private SkirmishSlotRowState CreateRowState(int slotIndex)
+        {
+            SkirmishSlotSetup slot = _model.Slots[slotIndex];
+            bool occupantEditable = _model.CanEditOccupant(slotIndex);
+            bool detailsEditable = _model.CanEditDetails(slotIndex);
+            if (slot.IsHuman)
+            {
+                string name = _model.IsOnline ? slot.PlayerName : HUMAN_OCCUPANT_LABEL;
+                string title = !_model.IsOnline ? "COMMANDER"
+                    : $"{slot.PlayerName.ToUpperInvariant()}   /   {(slot.Ready ? "READY" : "NOT READY")}";
+                string[] options = occupantEditable ? new[] { name, KICK_OPTION_LABEL } : new[] { name };
+                return new SkirmishSlotRowState(title, _model.IsLocalSlot(slotIndex) ? "YOU" : "HUMAN", options, 0,
+                    occupantEditable, detailsEditable);
+            }
+
+            bool isVacant = slot.Occupant == SkirmishSlotOccupant.Vacant;
+            return new SkirmishSlotRowState(
+                isVacant ? "OPEN SEAT   /   WAITING FOR A PLAYER" : $"PLAYER {slotIndex + 1}",
+                isVacant ? "OPEN" : slot.IsOpen ? "AI" : "OFF",
+                _model.IsOnline ? ONLINE_AI_OCCUPANT_OPTIONS : AI_OCCUPANT_OPTIONS,
+                isVacant ? VACANT_OPTION_INDEX : (int)slot.Occupant,
+                occupantEditable, detailsEditable);
+        }
+
+        // A member's row offers only Kick, which frees the seat; AI rows map option index to occupant.
+        private void HandleOccupantChanged(int slotIndex, int optionIndex)
+        {
+            SkirmishSlotOccupant occupant = _model.Slots[slotIndex].IsHuman || optionIndex == VACANT_OPTION_INDEX
+                ? SkirmishSlotOccupant.Vacant
+                : (SkirmishSlotOccupant)optionIndex;
+            _presenter.SelectSlotOccupant(slotIndex, (int)occupant);
+        }
+
+        private void RaiseInviteRequested() => InviteRequested?.Invoke();
 
         private void OnDestroy()
         {

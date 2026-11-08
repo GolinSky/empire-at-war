@@ -90,7 +90,7 @@ namespace EmpireAtWar.Tests.Editor
                 source.outputAudioMixerGroup = bundledMixer.FindMatchingGroups("Music").Single();
                 Assert.That(source.outputAudioMixerGroup.audioMixer, Is.Not.SameAs(mixer));
 
-                _service = new MusicService(null, new SourceAssets(source), null, new RecordingAudioService(), mixer);
+                _service = new MusicService(null, new SourceAssets(source), null, new RecordingAudioService(), mixer, null);
                 _source = (AudioSource)typeof(MusicService).GetField("_audioSource", BindingFlags.Instance | BindingFlags.NonPublic)
                     .GetValue(_service);
 
@@ -179,7 +179,7 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 _service = new MusicService(null, new SourceAssets(source), null, _audio,
-                    AssetDatabase.LoadAssetAtPath<AudioMixer>("Assets/Audio/AudioMixer.mixer"));
+                    AssetDatabase.LoadAssetAtPath<AudioMixer>("Assets/Audio/AudioMixer.mixer"), null);
             }
             finally
             {

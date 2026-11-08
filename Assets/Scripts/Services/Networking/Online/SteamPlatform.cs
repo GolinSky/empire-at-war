@@ -29,6 +29,8 @@ namespace EmpireAtWar.Services.Networking.Online
         public event Action<string> HostLobbyReady;
         public event Action<string> JoinedHost;
         public event Action<OnlineError> Failed;
+        /// <summary>An in-game lobby invite arrived (<see cref="HasPendingInvite"/>).</summary>
+        public event Action InviteReceived;
 
         public bool IsInitialized { get; private set; }
         private string _status = "Steam not initialized";
@@ -93,7 +95,7 @@ namespace EmpireAtWar.Services.Networking.Online
             // The overlay is injected only into processes Steam can hook (usually not the Unity Editor).
             if (!SteamUtils.IsOverlayEnabled())
             {
-                Status = "Steam overlay is not attached to this process; use the friend buttons below.";
+                Status = "Steam overlay is not attached to this process (usual in the Editor); friends can join by IP.";
                 return;
             }
 
@@ -210,6 +212,7 @@ namespace EmpireAtWar.Services.Networking.Online
             PendingInviteLobby = new CSteamID(invite.m_ulSteamIDLobby);
             PendingInviteFrom = SteamFriends.GetFriendPersonaName(new CSteamID(invite.m_ulSteamIDUser));
             Status = $"Invite from {PendingInviteFrom}";
+            InviteReceived?.Invoke();
         }
 
         private void OnLobbyEntered(LobbyEnter_t entered)

@@ -58,6 +58,7 @@ namespace EmpireAtWar.Ui.Base
                     { typeof(EmpireAtWar.Entities.MainMenu.Simulation.SimulationSetupUi), modalSlot },
                     { typeof(MainMenuUi), defaultCanvas.transform },
                     { typeof(EmpireAtWar.Entities.MainMenu.Play.PlayUi), defaultCanvas.transform },
+                    { typeof(EmpireAtWar.Entities.MainMenu.Online.OnlineUi), defaultCanvas.transform },
                     { typeof(SkirmishUi), defaultCanvas.transform },
                     { typeof(EmpireAtWar.Entities.MainMenu.Survival.SurvivalUi), defaultCanvas.transform },
                     { typeof(ReinforcementUi), defaultCanvas.transform },

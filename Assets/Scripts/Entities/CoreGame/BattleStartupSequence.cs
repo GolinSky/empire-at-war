@@ -69,8 +69,13 @@ namespace EmpireAtWar.Controllers.Game
             await Awaitable.NextFrameAsync(cancellationToken);
             await _mapLoader.LoadAsync(cancellationToken);
             await _shots.PrewarmRosterAsync(_assets, _battle, cancellationToken);
-            foreach (PlayerSlot player in _playerRoster.Players)
-                await _playerRegistry.GetSquadronPrewarmer(player.Id).PrewarmAsync(cancellationToken);
+            // Prewarmed squadrons take entity ids, which only the authority allocates; a client builds the
+            // host's squadrons on demand under the host's ids.
+            if (_session.IsAuthority)
+            {
+                foreach (PlayerSlot player in _playerRoster.Players)
+                    await _playerRegistry.GetSquadronPrewarmer(player.Id).PrewarmAsync(cancellationToken);
+            }
             // Online clients get the host's stations as replicated spawns.
             if (!_restore.TryRestore())
             {

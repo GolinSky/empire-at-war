@@ -9,9 +9,7 @@ using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
 using EmpireAtWar.Entities.MainMenu.Survival;
 using EmpireAtWar.Entities.Saves;
-using EmpireAtWar.Entities.OnlineMenu;
-using EmpireAtWar.Services.Networking.Online;
-using EmpireAtWar.Commands.Game;
+using EmpireAtWar.Entities.MainMenu.Online;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Fade;
 using EmpireAtWar.Services.Audio;
@@ -57,9 +55,12 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SettingsDraftEditor>(Lifetime.Singleton);
             builder.Register<KeyBindingEditor>(Lifetime.Singleton);
             builder.Register<SkirmishRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            // While hosting, the setup screens' Start launches the online match.
-            builder.Register<OnlineGameCommand>(Lifetime.Singleton).As<IGameCommand>();
-            builder.Register<OnlineMenuLauncher>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<OnlineRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            // Lobby screens reuse the setup views; their presenter interfaces stay unregistered.
+            builder.Register<OnlineSkirmishLobbyUiController>(Lifetime.Singleton)
+                .As<IOnlineSkirmishLobbyScreen, EmpireAtWar.Lifecycle.IInitializable, EmpireAtWar.Lifecycle.ILateDisposable>();
+            builder.Register<OnlineSurvivalLobbyUiController>(Lifetime.Singleton)
+                .As<IOnlineSurvivalLobbyScreen, EmpireAtWar.Lifecycle.IInitializable, EmpireAtWar.Lifecycle.ILateDisposable>();
             builder.Register<SettingsRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
     }

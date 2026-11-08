@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,8 +13,6 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
     /// </summary>
     public class SkirmishSlotRowView : MonoBehaviour
     {
-        private const string HUMAN_OCCUPANT_LABEL = "Human";
-
         [SerializeField] private TMP_Text titleText;
         [SerializeField] private TMP_Dropdown occupantDropdown;
         [SerializeField] private TMP_Dropdown factionDropdown;
@@ -25,8 +24,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private CanvasGroup slotLabelGroup;
 
         private int _rowIndex;
-
-        private bool _isHumanRow;
+        private readonly List<string> _occupantOptions = new List<string>();
 
         public event Action<int, int> OccupantChanged;
 
@@ -38,18 +36,11 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         public void Initialize(
             int rowIndex,
-            bool isHumanRow,
-            IReadOnlyList<string> aiOccupantOptions,
             IReadOnlyList<string> factionOptions,
             IReadOnlyList<string> teamOptions,
             IReadOnlyList<string> colorOptions)
         {
             _rowIndex = rowIndex;
-            _isHumanRow = isHumanRow;
-            titleText.text = isHumanRow ? "COMMANDER" : $"PLAYER {rowIndex + 1}";
-            SetOptions(occupantDropdown, isHumanRow ? new[] { HUMAN_OCCUPANT_LABEL } : aiOccupantOptions);
-            // The human row always plays; only AI rows can be opened, closed or re-levelled.
-            occupantDropdown.interactable = !isHumanRow;
             SetOptions(factionDropdown, factionOptions);
             SetOptions(teamDropdown, teamOptions);
             SetOptions(colorDropdown, colorOptions);
@@ -68,21 +59,29 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             colorDropdown.onValueChanged.RemoveListener(HandleColorChanged);
         }
 
-        public void Render(SkirmishSlotSetup slot, Color playerColor)
+        public void Render(SkirmishSlotSetup slot, Color playerColor, SkirmishSlotRowState state)
         {
-            // AI occupant options follow the SkirmishSlotOccupant order, so the enum value is the option index.
-            occupantDropdown.SetValueWithoutNotify(_isHumanRow ? 0 : (int)slot.Occupant);
+            if (!_occupantOptions.SequenceEqual(state.OccupantOptions))
+            {
+                _occupantOptions.Clear();
+                _occupantOptions.AddRange(state.OccupantOptions);
+                SetOptions(occupantDropdown, _occupantOptions);
+            }
+
+            titleText.text = state.Title;
+            roleText.text = state.Role;
+            occupantDropdown.SetValueWithoutNotify(state.OccupantIndex);
             factionDropdown.SetValueWithoutNotify((int)slot.Faction);
             teamDropdown.SetValueWithoutNotify(slot.Team);
             colorDropdown.SetValueWithoutNotify(slot.ColorIndex);
-            factionDropdown.interactable = slot.IsOpen;
-            teamDropdown.interactable = slot.IsOpen;
-            colorDropdown.interactable = slot.IsOpen;
+            occupantDropdown.interactable = state.OccupantEditable;
+            factionDropdown.interactable = state.DetailsEditable;
+            teamDropdown.interactable = state.DetailsEditable;
+            colorDropdown.interactable = state.DetailsEditable;
             occupantDropdown.RefreshShownValue();
             factionDropdown.RefreshShownValue();
             teamDropdown.RefreshShownValue();
             colorDropdown.RefreshShownValue();
-            roleText.text = slot.IsHuman ? "YOU" : slot.IsOpen ? "AI" : "OFF";
             colorEdge.color = playerColor;
             colorEdge.enabled = slot.IsOpen;
             configurationGroup.alpha = slot.IsOpen ? 1f : 0.38f;

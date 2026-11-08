@@ -25,6 +25,7 @@ namespace EmpireAtWar.Services.Audio
         private readonly ISceneService _sceneService;
         private readonly IGameModelObserver _gameModelObserver;
         private readonly IAudioService _audioService;
+        private readonly IOnlineLocalSlot _onlineSlot;
 
         private readonly MusicAudioData _musicAudioData;
         private readonly AudioSource _audioSource;
@@ -43,8 +44,9 @@ namespace EmpireAtWar.Services.Audio
         private bool _fadingOut;
 
         public MusicService(ISceneService sceneService, IAssetService assetService, IGameModelObserver gameModelObserver,
-            IAudioService audioService, AudioMixer mixer)
+            IAudioService audioService, AudioMixer mixer, IOnlineLocalSlot onlineSlot)
         {
+            _onlineSlot = onlineSlot;
             _sceneService = sceneService;
             _gameModelObserver = gameModelObserver;
             _audioService = audioService;
@@ -75,12 +77,19 @@ namespace EmpireAtWar.Services.Audio
         private void OnSceneLoad(SceneType scene)
         {
             if (scene == SceneType.Loading) return;
-            FactionType faction = scene == SceneType.MainMenu
-                ? default : _gameModelObserver.GameMode == GameMode.BattleSimulation
-                    ? _gameModelObserver.Players[0].Faction : MatchRules.FindHuman(_gameModelObserver.Players).Faction;
+            FactionType faction = scene == SceneType.MainMenu ? default : LocalFaction();
             _clips = _musicAudioData.GetMusicList(scene, faction);
             if (_playing) _fadingOut = true;
             else PlayNext();
+        }
+
+        // Online line-ups hold several humans; this PC plays the faction of its own slot.
+        private FactionType LocalFaction()
+        {
+            IReadOnlyList<PlayerSlot> players = _gameModelObserver.Players;
+            if (_gameModelObserver.GameMode == GameMode.BattleSimulation) return players[0].Faction;
+            if (_onlineSlot.TryGetLocalSlot(out PlayerId local)) return players.First(slot => slot.Id == local).Faction;
+            return MatchRules.FindHuman(players).Faction;
         }
 
         private void PlayNext()
