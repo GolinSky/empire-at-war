@@ -32,12 +32,15 @@ namespace EmpireAtWar.Tests.Editor
             DetonationAudio audio = new DetonationAudio();
             _bombs = new HarmonicBombService(_entities, roster, vision,
                 new HarmonicBombEffects(vision, TestPlayers.CreateLocalPlayer(roster), audio));
-            Wing enemy = AddWing(TestPlayers.Enemy, 0f, 12f, 35f, 35.1f, 100f);
-            Wing ally = AddWing(TestPlayers.Ally, 0f);
-            Wing own = AddWing(TestPlayers.Human, 0f);
             ShipAbilityDefinition definition = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(
                 "Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset").Get(ShipAbilityId.HarmonicBomb);
             var settings = (HarmonicBombSettings)definition.Settings;
+            // Distances scale with the authored radius: inner band, middle band, edge, just outside, far outside.
+            float radius = settings.Radius;
+            Wing enemy = AddWing(TestPlayers.Enemy, 0f, radius * 12f / 35f, radius, radius * 35.1f / 35f,
+                radius * 100f / 35f);
+            Wing ally = AddWing(TestPlayers.Ally, 0f);
+            Wing own = AddWing(TestPlayers.Human, 0f);
             Vector3 emptyDrop = new Vector3(500f, 4f, -250f);
             _bombs.Drop(TestPlayers.Enemy, emptyDrop, definition.Duration, settings.Radius,
                 settings.CenterDamage, settings.ViewPrefab);
@@ -52,8 +55,11 @@ namespace EmpireAtWar.Tests.Editor
             enemy.Units[4].Position = Vector3.up * 200f;
             _bombs.Advance(0.5f);
             _bombs.Advance(5f);
-            Assert.That(enemy.Hits, Is.EqualTo(new[] { (0, 120f), (1, 72f), (2, 30f), (4, 120f),
-                (0, 120f), (1, 72f), (2, 30f), (4, 120f) }));
+            float full = settings.CenterDamage;
+            float middle = settings.CenterDamage * 0.6f;
+            float edge = settings.CenterDamage * 0.25f;
+            Assert.That(enemy.Hits, Is.EqualTo(new[] { (0, full), (1, middle), (2, edge), (4, full),
+                (0, full), (1, middle), (2, edge), (4, full) }));
             Assert.That(ally.Hits, Is.Empty);
             Assert.That(own.Hits, Is.Empty);
             Assert.That(audio.Cues, Is.EquivalentTo(new[] { (TestPlayers.Enemy, emptyDrop),

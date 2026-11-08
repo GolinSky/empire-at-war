@@ -101,7 +101,7 @@ namespace EmpireAtWar.Tests.Editor
             _renderer.transform.hasChanged = false;
             _service.SetCount(4);
 
-            Assert.That(_selection.enabled, Is.False, "Steady markers must have no Unity update callback.");
+            AssertNoPerFrameCallback();
             Assert.That(_renderer.enabled, Is.True);
             Assert.That(_renderer.sharedMaterial.GetTag("DisableBatching", false), Is.EqualTo("True").IgnoreCase);
             Assert.That(_renderer.transform.hasChanged, Is.False,
@@ -110,6 +110,16 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_selection.WorldPosition, Is.EqualTo(anchor));
             Assert.That(Quaternion.Angle(_root.transform.rotation, Quaternion.Euler(pitch, yaw, roll)),
                 Is.LessThan(0.01f));
+        }
+
+        // Markers are static: SelectionComponent must not declare a Unity per-frame callback (2becef1fd).
+        private static void AssertNoPerFrameCallback()
+        {
+            foreach (string callback in new[] { "Update", "LateUpdate", "FixedUpdate" })
+                Assert.That(typeof(SelectionComponent).GetMethod(callback,
+                        System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public |
+                        System.Reflection.BindingFlags.NonPublic), Is.Null,
+                    $"Steady markers must have no Unity {callback} callback.");
         }
 
         [Test]
@@ -122,12 +132,12 @@ namespace EmpireAtWar.Tests.Editor
             _service.SetCount(2);
 
             Assert.That(_service.ObserverCount, Is.Zero);
-            Assert.That(_selection.enabled, Is.False);
+            AssertNoPerFrameCallback();
             Assert.That(_renderer.transform.hasChanged, Is.False);
             _selection.SetActive(true);
             Assert.That(_service.ObserverCount, Is.EqualTo(1));
             Assert.That(_renderer.enabled, Is.True);
-            Assert.That(_selection.enabled, Is.False);
+            AssertNoPerFrameCallback();
         }
 
         [Test]

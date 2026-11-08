@@ -58,7 +58,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(targets.All(h => h.Health > 0), Is.True);
             var generator = targets.Single(h => h.HardPointType == HardPointType.ShieldGenerator);
             float multiplier = matrix.GetDamageMultiplier(DamageType.ProtonTorpedo, data.ShipClass);
-            model.ApplyDamage(generator.Health / multiplier, DamageType.ProtonTorpedo, generator.Id);
+            // One point over the remaining health: Health / multiplier * multiplier can round just short of zero.
+            model.ApplyDamage((generator.Health + 1f) / multiplier, DamageType.ProtonTorpedo, generator.Id);
             Assert.That(model.IsLostShieldGenerator, Is.True);
             Assert.That(model.Shields, Is.Zero);
             foreach (var target in targets)

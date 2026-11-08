@@ -133,7 +133,10 @@ namespace EmpireAtWar.Tests.Editor
             Vector3 scale = view.transform.localScale;
             Assert.That(scale.x, Is.GreaterThan(0f).And.LessThan(float.PositiveInfinity));
             Assert.That(scale, Is.EqualTo(Vector3.one * scale.x));
-            if (path != VIEW && !path.Contains("Wrecks/"))
+            // Deploy previews are scaled to match the deployed ship view (cdc68d97a).
+            if (path.Contains("/Reinforcement/"))
+                Assert.That(scale, Is.EqualTo(AssetDatabase.LoadAssetAtPath<GameObject>(VIEW).transform.localScale));
+            else if (path != VIEW && !path.Contains("Wrecks/"))
                 Assert.That(scale, Is.EqualTo(Vector3.one));
             foreach (Transform transform in view.GetComponentsInChildren<Transform>(true))
                 Assert.That(GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(transform.gameObject), Is.Zero, transform.name);

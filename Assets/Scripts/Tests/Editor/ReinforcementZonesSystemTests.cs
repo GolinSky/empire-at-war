@@ -45,7 +45,8 @@ namespace EmpireAtWar.Tests.Editor
                 strength.Clear();
                 strength.Add(TestPlayers.Human, 2f);
                 strength.Add(TestPlayers.Enemy, 1f);
-                system.Zones[0].Tick(zone.CaptureDuration * 0.25f / data.CaptureSpeedPerNetShip, strength.Build());
+                // Contesting an owned zone neutralizes it at half speed, so a quarter of progress takes half a duration.
+                system.Zones[0].Tick(zone.CaptureDuration * 0.5f / data.CaptureSpeedPerNetShip, strength.Build());
                 strength.Add(TestPlayers.Enemy, 1f);
                 system.Zones[0].Tick(1f, strength.Build());
                 ReinforcementZonesSaveSource source = new ReinforcementZonesSaveSource(system);
@@ -77,9 +78,12 @@ namespace EmpireAtWar.Tests.Editor
 
                 strength.Clear();
                 strength.Add(TestPlayers.Human, 1f);
-                system.Zones[0].Tick(zone.CaptureDuration * 0.75f / data.CaptureSpeedPerNetShip, strength.Build());
-                Assert.That(system.Zones[0].Owner, Is.EqualTo(TestPlayers.Human),
-                    "Capture must continue from saved progress.");
+                // The remaining three quarters of the neutralization run at half speed (1.5 durations, margin for float), then capture starts afresh.
+                system.Zones[0].Tick(zone.CaptureDuration * 1.6f / data.CaptureSpeedPerNetShip, strength.Build());
+                Assert.That(system.Zones[0].Owner, Is.EqualTo(PlayerId.None),
+                    "Neutralization must continue from saved progress.");
+                system.Zones[0].Tick(zone.CaptureDuration * 1.1f / data.CaptureSpeedPerNetShip, strength.Build());
+                Assert.That(system.Zones[0].Owner, Is.EqualTo(TestPlayers.Human));
             }
             finally
             {
@@ -292,22 +296,30 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(vision.IsVisible(TestPlayers.Human, edge), Is.EqualTo(initiallyOwned));
                 Assert.That(vision.IsVisible(TestPlayers.Enemy, edge), Is.False);
                 if (!initiallyOwned) Assert.That(vision.Sources, Is.Empty);
-                int changes = 0;
+                int enemyCaptures = 0;
                 system.OwnershipChanged += () =>
                 {
-                    changes++;
+                    if (system.Zones[0].Owner != TestPlayers.Enemy) return;
+                    enemyCaptures++;
                     Assert.That(vision.IsVisible(TestPlayers.Enemy, edge), Is.True);
                     Assert.That(vision.IsVisible(TestPlayers.Human, edge), Is.False);
                     Assert.That(blockers.IsBlocked(TestPlayers.Enemy, edge), Is.False);
                 };
 
                 MethodInfo tick = typeof(ReinforcementZonesSystem).GetMethod("TickZones", PRIVATE_INSTANCE);
+                // An owned zone is first neutralized, which takes twice the capture duration (099d52650).
+                if (initiallyOwned)
+                {
+                    tick.Invoke(system, new object[] { 2f * zone.CaptureDuration / data.SquadronCaptureWeight });
+                    Assert.That(system.Zones[0].Owner, Is.EqualTo(PlayerId.None));
+                    Assert.That(vision.IsVisible(TestPlayers.Human, edge), Is.False, "A neutralized relay stops spotting.");
+                }
                 tick.Invoke(system, new object[] { zone.CaptureDuration / data.SquadronCaptureWeight });
                 Assert.That(system.Zones[0].Owner, Is.EqualTo(TestPlayers.Enemy));
                 squadrons.Owner = PlayerId.None;
                 tick.Invoke(system, new object[] { zone.CaptureDuration });
 
-                Assert.That(changes, Is.EqualTo(1));
+                Assert.That(enemyCaptures, Is.EqualTo(1));
                 Assert.That(vision.IsVisible(TestPlayers.Enemy, edge), Is.True);
                 Assert.That(vision.IsVisible(TestPlayers.SecondEnemy, edge), Is.True);
                 Assert.That(vision.IsVisible(TestPlayers.Human, edge), Is.False);
@@ -435,6 +447,8 @@ namespace EmpireAtWar.Tests.Editor
             SetField(system, "_localPlayer", TestPlayers.CreateLocalPlayer(roster));
             SetField(system, "_areas", blockers);
             SetField(system, "_visionService", vision);
+            SetField(system, "_cameraService", new FarCamera());
+            SetField(system, "_pointerInput", new IdlePointer());
             SetField(system, "_strengthSampler", new CaptureStrengthSampler(new ShipService(), new CaptureSquadrons(), roster, data.SquadronCaptureWeight));
             system.UpdateState(CreateMap(zones));
             return system;
@@ -501,6 +515,37 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasSquadronInside(System.Func<Vector3, bool> contains,
                 System.Predicate<PlayerId> isOwnerIncluded) =>
                 Owner != PlayerId.None && contains(Vector3.zero) && isOwnerIncluded(Owner);
+        }
+
+        /// <summary>The pointer projects far from every zone, so nothing is hovered.</summary>
+        private sealed class FarCamera : EmpireAtWar.Services.Camera.ICameraService
+        {
+            public string Id => nameof(FarCamera);
+            public Vector3 CameraPosition => Vector3.zero;
+            public Transform CameraTransform => throw new System.NotSupportedException();
+            public Vector3 CameraForward => Vector3.forward;
+            public float FieldOfView => 60f;
+            public UnityEngine.Camera SceneCamera => throw new System.NotSupportedException();
+            public float ZoomTargetHeight => 0f;
+            public Vector3 GetWorldPoint(Vector2 screenPoint, Vector3 position) => new Vector3(1e6f, 0f, 1e6f);
+            public RaycastHit ScreenPointToRay(Vector2 screenPoint) => default;
+            public int ScreenPointRaycastAll(Vector2 screenPoint, RaycastHit[] results) => 0;
+            public Vector3 WorldToViewportPoint(Vector3 currentPosition) => Vector3.zero;
+            public Vector2 WorldToScreenPoint(Vector3 position) => Vector2.zero;
+            public IReadOnlyList<Vector3> GetGroundFootprint(Vector2 mapMin, Vector2 mapMax) => new List<Vector3>();
+            public void MoveTo(Vector3 worldPoint) { }
+            public void SetPose(Vector3 position, Quaternion rotation) { }
+            public void RestorePose(Vector3 position, Quaternion rotation, float zoomTargetHeight) { }
+            public void SetCullingMask(LayerMask mask) { }
+        }
+
+        private sealed class IdlePointer : EmpireAtWar.Services.Input.IPointerInput
+        {
+            public event System.Action<Vector2> PrimaryPressed { add { } remove { } }
+            public event System.Action<Vector2> PrimaryReleased { add { } remove { } }
+            public Vector2 Position => Vector2.zero;
+            public bool HasPosition => false;
+            public int ClickCount => 0;
         }
 
         private sealed class FakeMapModel : IMapModelObserver

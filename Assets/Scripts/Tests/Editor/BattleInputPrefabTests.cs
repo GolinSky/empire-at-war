@@ -12,46 +12,80 @@ namespace EmpireAtWar.Tests.Editor
     [Category("BattleInput")]
     public sealed class BattleInputPrefabTests
     {
-        [TestCase(0)]
-        [TestCase(5)]
-        public void UiHitTest_BlocksGraphicsOnAnyLayerAndRespectsRaycastVisibility(int layer)
+        // Edit mode never assigns graphic depth (it stays -1), so a real GraphicRaycaster cannot hit anything here.
+        // Stub raycasters exercise UiHitTest's own rule: only UI (GraphicRaycaster) hits block world input.
+        [Test]
+        public void UiHitTest_BlocksOnlyGraphicRaycasterHits()
         {
             BaseRaycaster[] existing = RaycasterManager.GetRaycasters()
                 .Where(raycaster => raycaster.isActiveAndEnabled).ToArray();
             EventSystem previous = EventSystem.current;
             var events = new GameObject("InputTestEvents", typeof(EventSystem));
-            var canvasRoot = new GameObject("InputTestCanvas", typeof(RectTransform), typeof(Canvas),
-                typeof(GraphicRaycaster), typeof(CanvasGroup));
+            var canvas = new GameObject("InputTestCanvas", typeof(RectTransform), typeof(Canvas));
+            var world = new GameObject("InputTestWorld");
+            StubGraphicRaycaster ui = canvas.AddComponent<StubGraphicRaycaster>();
+            StubWorldRaycaster physics = world.AddComponent<StubWorldRaycaster>();
+            EventSystem system = events.GetComponent<EventSystem>();
+            bool systemEnabled = true;
             try
             {
                 foreach (BaseRaycaster raycaster in existing) raycaster.enabled = false;
-                EventSystem.current = events.GetComponent<EventSystem>();
-                canvasRoot.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
-                var control = new GameObject("Control", typeof(RectTransform), typeof(Image));
-                control.layer = layer;
-                control.transform.SetParent(canvasRoot.transform, false);
-                Image graphic = control.GetComponent<Image>();
-                graphic.rectTransform.sizeDelta = new Vector2(100f, 100f);
-                Canvas.ForceUpdateCanvases();
-                Vector2 point = RectTransformUtility.WorldToScreenPoint(null, graphic.rectTransform.position);
+                // EventSystem and raycasters are not ExecuteAlways, so edit mode never enables them.
+                SetEnabledInEditMode(system, true);
+                SetEnabledInEditMode(ui, true);
+                SetEnabledInEditMode(physics, true);
+                EventSystem.current = system;
                 var hitTest = new UiHitTest();
-                Assert.That(hitTest.IsOverUi(point), Is.True);
 
-                CanvasGroup group = canvasRoot.GetComponent<CanvasGroup>();
-                group.interactable = false;
-                Assert.That(hitTest.IsOverUi(point), Is.True, "Disabled UI still blocks world clicks.");
-                group.blocksRaycasts = false;
-                Assert.That(hitTest.IsOverUi(point), Is.False, "Hidden UI must not block the world.");
-                group.blocksRaycasts = true;
-                graphic.raycastTarget = false;
-                Assert.That(hitTest.IsOverUi(point), Is.False, "Decorative graphics must remain transparent to input.");
+                ui.Hit = true;
+                Assert.That(hitTest.IsOverUi(Vector2.one), Is.True, "A UI graphic under the pointer blocks the world.");
+                ui.Hit = false;
+                physics.Hit = true;
+                Assert.That(hitTest.IsOverUi(Vector2.one), Is.False, "World colliders are not UI.");
+                physics.Hit = false;
+                Assert.That(hitTest.IsOverUi(Vector2.one), Is.False);
+
+                SetEnabledInEditMode(system, false);
+                systemEnabled = false;
+                Assert.That(hitTest.IsOverUi(Vector2.one), Is.False, "No event system means no UI.");
             }
             finally
             {
-                Object.DestroyImmediate(canvasRoot);
+                SetEnabledInEditMode(physics, false);
+                SetEnabledInEditMode(ui, false);
+                if (systemEnabled) SetEnabledInEditMode(system, false);
+                Object.DestroyImmediate(world);
+                Object.DestroyImmediate(canvas);
                 Object.DestroyImmediate(events);
                 foreach (BaseRaycaster raycaster in existing) raycaster.enabled = true;
-                EventSystem.current = previous;
+                // The getter only returns registered systems, so restoring a non-null previous is always valid.
+                if (previous != null) EventSystem.current = previous;
+            }
+        }
+
+        private static void SetEnabledInEditMode(UIBehaviour behaviour, bool enabled) =>
+            typeof(UIBehaviour).GetMethod(enabled ? "OnEnable" : "OnDisable",
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .Invoke(behaviour, null);
+
+        private sealed class StubGraphicRaycaster : GraphicRaycaster
+        {
+            public bool Hit { get; set; }
+
+            public override void Raycast(PointerEventData eventData, System.Collections.Generic.List<RaycastResult> resultAppendList)
+            {
+                if (Hit) resultAppendList.Add(new RaycastResult { module = this, gameObject = gameObject });
+            }
+        }
+
+        private sealed class StubWorldRaycaster : BaseRaycaster
+        {
+            public bool Hit { get; set; }
+            public override UnityEngine.Camera eventCamera => null;
+
+            public override void Raycast(PointerEventData eventData, System.Collections.Generic.List<RaycastResult> resultAppendList)
+            {
+                if (Hit) resultAppendList.Add(new RaycastResult { module = this, gameObject = gameObject });
             }
         }
 
