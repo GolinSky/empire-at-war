@@ -29,6 +29,8 @@ namespace EmpireAtWar.Sandbox.Multiplayer
         private SpikeClientReplica _replica;
         private SpikeBandwidthMeter _meter;
         private string _address = "localhost";
+        private string _lobbyIdInput = string.Empty;
+        private Vector2 _friendScroll;
         private string _message = string.Empty;
         private ushort _commandSequence;
         private double _commandSentAt;
@@ -150,14 +152,23 @@ namespace EmpireAtWar.Sandbox.Multiplayer
 
             if (!_steam.IsInitialized && GUILayout.Button("Init Steam (to accept invites)"))
                 InitializeSteam();
+
+            if (!_steam.IsInitialized) return;
+            if (_steam.HasPendingInvite && GUILayout.Button($"Accept invite from {_steam.PendingInviteFrom}"))
+                _steam.AcceptInvite();
+            GUILayout.BeginHorizontal();
+            _lobbyIdInput = GUILayout.TextField(_lobbyIdInput);
+            if (GUILayout.Button("Join lobby ID", GUILayout.Width(110)) && !_steam.TryJoinById(_lobbyIdInput))
+                _message = "Lobby ID must be a number.";
+            GUILayout.EndHorizontal();
         }
 
         private void DrawSessionPanel()
         {
             string role = NetworkServer.active ? (NetworkClient.active ? "Host" : "Server") : "Client";
             GUILayout.Label($"{role} via {Transport.active.GetType().Name}");
-            if (_steam.InLobby && NetworkServer.active && GUILayout.Button("Invite friends (Steam overlay)"))
-                _steam.InviteFriends();
+            if (_steam.InLobby && NetworkServer.active)
+                DrawSteamInvites();
             if (GUILayout.Button("Stop"))
                 StopSession();
 
@@ -187,6 +198,27 @@ namespace EmpireAtWar.Sandbox.Multiplayer
                 GUILayout.Label($"Command #{_commandSequence}: ack {_ackLatency * 1000:0} ms, visible {_visibleLatency * 1000:0} ms");
                 GUILayout.Label("Right-click the map to move your side.");
             }
+        }
+
+        private void DrawSteamInvites()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"Lobby ID {_steam.LobbyId}");
+            if (GUILayout.Button("Copy", GUILayout.Width(60)))
+                GUIUtility.systemCopyBuffer = _steam.LobbyId.ToString();
+            GUILayout.EndHorizontal();
+            if (GUILayout.Button("Invite friends (Steam overlay)"))
+                _steam.InviteFriends();
+
+            GUILayout.Label("Online friends (direct invite):");
+            _friendScroll = GUILayout.BeginScrollView(_friendScroll, GUILayout.Height(120));
+            foreach (SpikeSteamFriend friend in _steam.RefreshOnlineFriends())
+            {
+                if (GUILayout.Button($"Invite {friend.Name}"))
+                    _steam.InviteFriend(friend);
+            }
+            GUILayout.EndScrollView();
+            GUILayout.Label(_steam.Status);
         }
 
         private bool InitializeSteam()

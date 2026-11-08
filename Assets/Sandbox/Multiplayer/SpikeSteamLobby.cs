@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Steamworks;
 using UnityEngine;
 
@@ -18,6 +19,8 @@ namespace EmpireAtWar.Sandbox.Multiplayer
         private CallResult<LobbyCreated_t> _lobbyCreated;
         private Callback<LobbyEnter_t> _lobbyEntered;
         private Callback<GameLobbyJoinRequested_t> _joinRequested;
+        private Callback<LobbyInvite_t> _lobbyInvite;
+        private readonly List<SpikeSteamFriend> _friends = new List<SpikeSteamFriend>();
         private CSteamID _lobby = CSteamID.Nil;
         private bool _isHost;
 
@@ -28,6 +31,11 @@ namespace EmpireAtWar.Sandbox.Multiplayer
         public bool IsInitialized { get; private set; }
         public string Status { get; private set; } = "Steam not initialized";
         public bool InLobby => _lobby != CSteamID.Nil;
+        public ulong LobbyId => _lobby.m_SteamID;
+        /// <summary>Invite received in-game (no overlay needed); accept with <see cref="AcceptInvite"/>.</summary>
+        public bool HasPendingInvite => PendingInviteLobby != CSteamID.Nil;
+        public CSteamID PendingInviteLobby { get; private set; } = CSteamID.Nil;
+        public string PendingInviteFrom { get; private set; } = string.Empty;
 
         public bool TryInitialize()
         {
@@ -45,6 +53,7 @@ namespace EmpireAtWar.Sandbox.Multiplayer
             _lobbyCreated = CallResult<LobbyCreated_t>.Create(OnLobbyCreated);
             _lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
             _joinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequested);
+            _lobbyInvite = Callback<LobbyInvite_t>.Create(OnLobbyInvite);
             Status = $"Steam ready as {SteamFriends.GetPersonaName()}";
             return true;
         }
@@ -62,7 +71,56 @@ namespace EmpireAtWar.Sandbox.Multiplayer
             Status = "Creating lobby...";
         }
 
-        public void InviteFriends() => SteamFriends.ActivateGameOverlayInviteDialog(_lobby);
+        public void InviteFriends()
+        {
+            // The overlay is injected only into processes Steam can hook (usually not the Unity Editor).
+            if (!SteamUtils.IsOverlayEnabled())
+            {
+                Status = "Steam overlay is not attached to this process; use the friend buttons below.";
+                return;
+            }
+
+            SteamFriends.ActivateGameOverlayInviteDialog(_lobby);
+        }
+
+        /// <summary>
+        /// Online friends for in-game invites. The Steam overlay often does not attach to the Unity Editor,
+        /// so the overlay invite dialog may never open there.
+        /// </summary>
+        public IReadOnlyList<SpikeSteamFriend> RefreshOnlineFriends()
+        {
+            _friends.Clear();
+            int count = SteamFriends.GetFriendCount(EFriendFlags.k_EFriendFlagImmediate);
+            for (int i = 0; i < count; i++)
+            {
+                CSteamID friend = SteamFriends.GetFriendByIndex(i, EFriendFlags.k_EFriendFlagImmediate);
+                if (SteamFriends.GetFriendPersonaState(friend) != EPersonaState.k_EPersonaStateOffline)
+                    _friends.Add(new SpikeSteamFriend(friend, SteamFriends.GetFriendPersonaName(friend)));
+            }
+
+            return _friends;
+        }
+
+        /// <summary>Sends a Steam lobby invite directly; the friend's running game receives <c>LobbyInvite_t</c>.</summary>
+        public void InviteFriend(SpikeSteamFriend friend)
+        {
+            bool sent = SteamMatchmaking.InviteUserToLobby(_lobby, friend.Id);
+            Status = sent ? $"Invite sent to {friend.Name}" : $"Invite to {friend.Name} failed";
+        }
+
+        public void AcceptInvite()
+        {
+            CSteamID lobby = PendingInviteLobby;
+            PendingInviteLobby = CSteamID.Nil;
+            Join(lobby);
+        }
+
+        public bool TryJoinById(string lobbyId)
+        {
+            if (!ulong.TryParse(lobbyId.Trim(), out ulong id)) return false;
+            Join(new CSteamID(id));
+            return true;
+        }
 
         public void Join(CSteamID lobby)
         {
@@ -127,6 +185,14 @@ namespace EmpireAtWar.Sandbox.Multiplayer
         }
 
         private void OnJoinRequested(GameLobbyJoinRequested_t request) => Join(request.m_steamIDLobby);
+
+        private void OnLobbyInvite(LobbyInvite_t invite)
+        {
+            if (_isHost) return;
+            PendingInviteLobby = new CSteamID(invite.m_ulSteamIDLobby);
+            PendingInviteFrom = SteamFriends.GetFriendPersonaName(new CSteamID(invite.m_ulSteamIDUser));
+            Status = $"Invite from {PendingInviteFrom}";
+        }
 
         private void OnLobbyEntered(LobbyEnter_t entered)
         {
