@@ -52,12 +52,14 @@ OutlineVaryings ShipOutlineVertex(OutlineAttributes input)
     float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
     float3 normalWS = TransformObjectToWorldNormal(input.normalOS);
     float4 positionCS = TransformWorldToHClip(positionWS);
-    float4 normalCS = mul(UNITY_MATRIX_VP, float4(normalWS, 0.0));
+    float3 normalVS = mul((float3x3)UNITY_MATRIX_V, normalWS);
 
-    // Project the normal's derivative, then normalize in pixel space. This handles
-    // perspective/orthographic cameras and keeps the width stable as the camera zooms.
+    // Push along the view-space normal, scaled to pixels. Unlike the projected normal
+    // derivative, this direction never depends on w, so it cannot mirror for vertices behind
+    // the camera. Scaling the offset by w then keeps the width exact on triangles clipped by
+    // the near plane (ships only partly on screen) and stable as the camera zooms.
     float2 screenSize = GetScaledScreenParams().xy;
-    float2 directionPixels = (normalCS.xy * positionCS.w - positionCS.xy * normalCS.w) * screenSize;
+    float2 directionPixels = normalVS.xy * float2(UNITY_MATRIX_P[0][0], UNITY_MATRIX_P[1][1]) * screenSize;
     directionPixels *= rsqrt(max(dot(directionPixels, directionPixels), 1e-8));
     positionCS.xy += directionPixels * (2.0 * _UnitOutlineWidth / screenSize) * positionCS.w;
     output.positionCS = positionCS;

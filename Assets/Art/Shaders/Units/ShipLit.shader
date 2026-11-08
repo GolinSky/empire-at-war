@@ -148,14 +148,16 @@ Shader "EmpireAtWar/Ship Lit"
 
         // ---------------------------------------------------------------------
         // Drawn after ShipOutlineMask by UnitOutlineRenderPass.
-        // The expanded back faces form a depth-tested silhouette without relighting the hull.
+        // Both faces are expanded: many imported hulls are open, single-sided meshes, so back
+        // faces alone leave view-dependent gaps. The mask already hides the interior, and the
+        // pass claims each pixel it draws so overlapping expanded faces blend only once.
         // ---------------------------------------------------------------------
         Pass
         {
             Name "ShipOutline"
             Tags { "LightMode" = "ShipOutline" }
 
-            Cull Front
+            Cull Off
             ZWrite Off
             ZTest LEqual
             Blend SrcAlpha OneMinusSrcAlpha
@@ -164,9 +166,9 @@ Shader "EmpireAtWar/Ship Lit"
             {
                 Ref 8
                 ReadMask 8
-                WriteMask 0
+                WriteMask 8
                 Comp NotEqual
-                Pass Keep
+                Pass Replace
             }
 
             HLSLPROGRAM
