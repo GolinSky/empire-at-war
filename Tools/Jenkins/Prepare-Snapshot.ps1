@@ -5,7 +5,10 @@ $ci = 'F:\UnityCI\empire-at-war'
 
 function Invoke-Git {
     $output = & git @args
-    if ($LASTEXITCODE -ne 0) { throw "Git failed: $args" }
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host ($output -join [Environment]::NewLine)
+        throw "Git failed: $args"
+    }
     return $output
 }
 
