@@ -12,7 +12,7 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
     public sealed class ShipOrderFacade : IMoveFacade, IAttackFacade, IHardPointAttackFacade,
         IAttackMoveFacade, IStopFacade, IGuardFacade, IWaypointMoveFacade,
         IHuntFacade, IRetreatFacade, IUnitOrderObserverFacade, IAbilityFacingFacade,
-        IShipAbilityCastFacade, INavigationFootprintFacade, IShipArrivalFacade
+        IShipAbilityCastFacade, INavigationFootprintFacade, IShipArrivalFacade, IUnitOrderReplicaFacade
     {
         private readonly IShipMovement _movement;
         private readonly ShipMoveModel _moveModel;
@@ -27,6 +27,10 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
         public void FaceAbility(Vector3 direction) => _orders.FaceAbility(direction);
         public void EndAbilityFacing() => _orders.EndAbilityFacing();
         public EmpireAtWar.Entities.BaseEntity.Orders.UnitOrderType CurrentOrder => _orders.CurrentOrder;
+        public int OrderRevision => _orders.OrderRevision;
+
+        public void ApplyReplicaOrder(UnitOrderType order, bool isNewOrder) =>
+            _orders.ApplyReplicaOrder(order, isNewOrder);
 
         public ShipOrderFacade(IShipMovement movement, ShipOrderRunner orders, ShipMoveModel moveModel)
         {

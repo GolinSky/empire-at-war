@@ -12,9 +12,9 @@ using UnityEngine;
 namespace EmpireAtWar.Services.Networking
 {
     /// <summary>
-    /// Client: gives local units the host's attack targets and plays the host's abilities on them. Facades are
-    /// called directly; accepted orders publish separate feedback only to the issuing player's UI.
-    /// Movement from these orders is overwritten by replication; damage is ignored on clients.
+    /// Client: gives local squadrons and stations the host's attack targets and plays the host's abilities on
+    /// units. Facades are called directly; accepted orders publish separate feedback only to the issuing player's
+    /// UI. Ships follow the host's routes and orders instead; damage is ignored on clients.
     /// </summary>
     public sealed class ClientCombatEventReceiver : IInitializable, ILateDisposable
     {
@@ -61,7 +61,10 @@ namespace EmpireAtWar.Services.Networking
             bool targetsHardPoint = message.HardPointId != UnitOrderModel.NO_HARD_POINT;
             foreach (long receiverId in message.ReceiverIds)
             {
-                if (!_entities.TryGetEntity(receiverId, out IEntity receiver)) continue;
+                // Ships follow the host's navigation and orders; replaying the attack would make them chase
+                // on their own, long after the host gave another order.
+                if (!_entities.TryGetEntity(receiverId, out IEntity receiver) ||
+                    receiver.TryGetFacade(out IShipRouteReplicaFacade _)) continue;
                 if (targetsHardPoint && receiver.TryGetFacade(out IHardPointAttackFacade hardPointAttack))
                     hardPointAttack.AttackHardPoint(target, message.HardPointId, Vector3.zero);
                 else if (receiver.TryGetFacade(out IAttackFacade attack))

@@ -38,5 +38,7 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
             UnitOrderSave.From(_orders));
 
         public void RestoreHealth(UnitHealthSave save) => _health.Restore(save.MemberHull, save.MemberShields);
+
+        public void ApplyReplicaHealth(UnitHealthSave save) => _health.ApplyReplica(save.MemberHull, save.MemberShields);
     }
 }

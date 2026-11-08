@@ -42,6 +42,10 @@ namespace EmpireAtWar.Services.Battle
             long entityId) =>
             _players[owner].Ships.Create(owner, shipType, position, entityId, ShipSpawnPose.Restored(rotation));
 
+        /// <summary>Online client: a host ship still jumping in; it lands at <paramref name="position"/>.</summary>
+        public ShipEntity SpawnArrivingShip(PlayerId owner, ShipType shipType, Vector3 position, long entityId) =>
+            _players[owner].Ships.Create(owner, shipType, position, entityId, ShipSpawnPose.Hyperspace);
+
         public Squadron SpawnRestoredSquadron(PlayerId owner, SquadronType squadronType, Vector3 position,
             Quaternion rotation, long entityId) =>
             _players[owner].Squadrons.SpawnRestored(owner, squadronType, position, rotation, entityId);

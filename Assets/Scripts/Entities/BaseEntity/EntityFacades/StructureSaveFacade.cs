@@ -34,5 +34,8 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
                 _health.HardPointModels.Select(point => point.HealthPercentage).ToArray()));
 
         public void RestoreHealth(UnitHealthSave save) => _health.Restore(save.Hull, save.Shields, save.HardPoints);
+
+        public void ApplyReplicaHealth(UnitHealthSave save) =>
+            _health.ApplyReplica(save.Hull, save.Shields, save.HardPoints);
     }
 }

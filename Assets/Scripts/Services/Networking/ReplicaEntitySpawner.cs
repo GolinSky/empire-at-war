@@ -30,7 +30,7 @@ namespace EmpireAtWar.Services.Networking
                 case EntitySpawnKind.Untracked:
                     return;
                 case EntitySpawnKind.Unit:
-                    SpawnUnit(JsonUtility.FromJson<UnitSave>(message.Payload));
+                    SpawnUnit(JsonUtility.FromJson<UnitSave>(message.Payload), message.IsArriving);
                     return;
                 case EntitySpawnKind.Structure:
                     SpawnStructure(JsonUtility.FromJson<StructureSave>(message.Payload));
@@ -43,13 +43,16 @@ namespace EmpireAtWar.Services.Networking
         public void ApplyHealth(long entityId, UnitHealthSave health)
         {
             if (!_entities.TryGetEntity(entityId, out IEntity entity)) return;
-            if (entity.TryGetFacade(out IUnitSaveFacade unit)) unit.RestoreHealth(health);
-            else if (entity.TryGetFacade(out IStructureSaveFacade structure)) structure.RestoreHealth(health);
+            if (entity.TryGetFacade(out IUnitSaveFacade unit)) unit.ApplyReplicaHealth(health);
+            else if (entity.TryGetFacade(out IStructureSaveFacade structure)) structure.ApplyReplicaHealth(health);
         }
 
-        private void SpawnUnit(UnitSave unit)
+        private void SpawnUnit(UnitSave unit, bool isArriving)
         {
-            if (unit.UnitType.IsShip)
+            // The save holds the landing point; the client plays the jump so arrival effects and sounds run.
+            if (unit.UnitType.IsShip && isArriving)
+                _factories.SpawnArrivingShip(unit.Owner, unit.UnitType.ShipType, unit.Position, unit.Id);
+            else if (unit.UnitType.IsShip)
                 _factories.SpawnRestoredShip(unit.Owner, unit.UnitType.ShipType, unit.Position, unit.Rotation, unit.Id);
             else
                 _factories.SpawnRestoredSquadron(unit.Owner, unit.UnitType.SquadronType, unit.Position, unit.Rotation,

@@ -22,12 +22,14 @@ namespace EmpireAtWar.Services.Networking
         private readonly HostMatchStateSender _matchState;
         private readonly HostCombatEventSender _combat;
         private readonly HostShipRouteSender _routes;
+        private readonly HostUnitOrderSender _orders;
 
         public HostBattleStartGate(OnlineMatchService online, NetworkTickService ticks, HostReplicatedStateSender states,
             HostWeaponTargetSender weaponTargets, HostMatchStateSender matchState, HostCombatEventSender combat,
-            HostShipRouteSender routes)
+            HostShipRouteSender routes, HostUnitOrderSender orders)
         {
             _routes = routes;
+            _orders = orders;
             _weaponTargets = weaponTargets;
             _matchState = matchState;
             _combat = combat;
@@ -68,6 +70,7 @@ namespace EmpireAtWar.Services.Networking
             _weaponTargets.SendBaseline(connection);
             _combat.SendBaseline(connection);
             _routes.SendBaseline(connection);
+            _orders.SendBaseline(connection);
             _matchState.SendBaseline(connection);
             connection.Send(new BattleBeginMessage());
         }

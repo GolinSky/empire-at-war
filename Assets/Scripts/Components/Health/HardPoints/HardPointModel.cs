@@ -86,6 +86,19 @@ namespace EmpireAtWar.Models.Health
             OnHardPointHealthChanged?.Invoke();
         }
 
+        /// <summary>
+        /// Online client: the host's health fraction, applied like combat so a hardpoint or fighter the host lost
+        /// plays its destruction here too (<see cref="Restore"/> sets state silently, for loads and spawns).
+        /// </summary>
+        public void ApplyReplicaHealth(float healthPercentage)
+        {
+            bool wasAlive = !IsDestroyed;
+            Health = _originHealth * healthPercentage;
+            HealthPercentage = _originHealth <= 0f ? 0f : healthPercentage;
+            if (wasAlive && IsDestroyed) OnDestroyedByDamage?.Invoke();
+            OnHardPointHealthChanged?.Invoke();
+        }
+
         public void ScaleHealth(float multiplier)
         {
             _originHealth *= multiplier;

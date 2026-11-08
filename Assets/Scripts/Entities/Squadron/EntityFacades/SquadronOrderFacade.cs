@@ -8,11 +8,15 @@ using UnityEngine;
 namespace EmpireAtWar.Entities.Squadrons.EntityFacades
 {
     public sealed class SquadronOrderFacade : IUnitOrderObserverFacade, IMoveFacade, IAttackFacade, IAttackMoveFacade, IStopFacade,
-        IGuardFacade, IWaypointMoveFacade, IHuntFacade, IRetreatFacade, IShipAbilityCastFacade
+        IGuardFacade, IWaypointMoveFacade, IHuntFacade, IRetreatFacade, IShipAbilityCastFacade, IUnitOrderReplicaFacade
     {
         private readonly Squadron _squadron;
 
         public UnitOrderType CurrentOrder => _squadron.CurrentOrder;
+        public int OrderRevision => _squadron.OrderRevision;
+
+        public void ApplyReplicaOrder(UnitOrderType order, bool isNewOrder) =>
+            _squadron.ApplyReplicaOrder(order, isNewOrder);
 
         public Vector3 WorldPosition => _squadron.WorldPosition;
         public float NavigationRadius => _squadron.NavigationRadius;

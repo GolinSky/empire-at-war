@@ -174,18 +174,34 @@ namespace EmpireAtWar.Models.Health
         /// </summary>
         public void Restore(float hullPercentage, float shieldPercentage, IReadOnlyList<float> hardPointPercentages)
         {
+            SetHealth(hullPercentage, shieldPercentage, hardPointPercentages, isReplica: false);
+            OnRestored?.Invoke();
+            OnValueChanged?.Invoke();
+        }
+
+        /// <summary>Online client: the host's health, applied like combat; see <see cref="HardPointModel.ApplyReplicaHealth"/>.</summary>
+        public void ApplyReplica(float hullPercentage, float shieldPercentage, IReadOnlyList<float> hardPointPercentages)
+        {
+            SetHealth(hullPercentage, shieldPercentage, hardPointPercentages, isReplica: true);
+            OnValueChanged?.Invoke();
+        }
+
+        private void SetHealth(float hullPercentage, float shieldPercentage, IReadOnlyList<float> hardPointPercentages,
+            bool isReplica)
+        {
             if (hardPointPercentages.Count != HardPointModels.Length)
                 throw new InvalidOperationException(
                     $"Saved {hardPointPercentages.Count} hardpoints; {ShipClass} has {HardPointModels.Length}.");
             for (int i = 0; i < HardPointModels.Length; i++)
-                HardPointModels[i].Restore(hardPointPercentages[i]);
+            {
+                if (isReplica) HardPointModels[i].ApplyReplicaHealth(hardPointPercentages[i]);
+                else HardPointModels[i].Restore(hardPointPercentages[i]);
+            }
             IsLostShieldGenerator = HardPointModels.Any(point => point.HardPointType == HardPointType.ShieldGenerator) &&
                 HardPointModels.Where(point => point.HardPointType == HardPointType.ShieldGenerator)
                     .All(point => point.IsDestroyed);
             Hull = MaxHull * hullPercentage;
             Shields = IsLostShieldGenerator || IsShieldSuppressed ? 0f : MaxShields * shieldPercentage;
-            OnRestored?.Invoke();
-            OnValueChanged?.Invoke();
         }
 
         public void ApplyDamage(float damage, DamageType damageType, int hardPointId)

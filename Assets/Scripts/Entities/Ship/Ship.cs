@@ -157,6 +157,7 @@ namespace EmpireAtWar.Ship
             _radarComponent.Enemies.ItemAdded += HandleEnemyAdded;
             _selectionModel.OnSelected += _shipMoveComponent.HandleSelection;
             _shipMoveComponent.HyperSpaceCompleted += _audioShipComponent.PlayHyperSpace;
+            _orders.ReplicaOrderIssued += HandleReplicaOrderIssued;
             foreach (IAudioDialogShipComponent audioDialog in _audioDialogShipComponents)
             {
                 _shipMoveComponent.DestinationChanged += audioDialog.HandleMove;
@@ -252,11 +253,22 @@ namespace EmpireAtWar.Ship
             _radarComponent.Enemies.ItemAdded -= HandleEnemyAdded;
             _selectionModel.OnSelected -= _shipMoveComponent.HandleSelection;
             _shipMoveComponent.HyperSpaceCompleted -= _audioShipComponent.PlayHyperSpace;
+            _orders.ReplicaOrderIssued -= HandleReplicaOrderIssued;
             foreach (IAudioDialogShipComponent audioDialog in _audioDialogShipComponents)
             {
                 _shipMoveComponent.DestinationChanged -= audioDialog.HandleMove;
                 _shipMoveComponent.LookingAt -= audioDialog.HandleAttack;
                 _selectionModel.OnSelected -= audioDialog.HandleSelection;
+            }
+        }
+
+        // Online client: the host executes the order, so the voice line plays when its order arrives.
+        private void HandleReplicaOrderIssued(UnitOrderType order)
+        {
+            foreach (IAudioDialogShipComponent audioDialog in _audioDialogShipComponents)
+            {
+                if (order.IsMoveOrder()) audioDialog.HandleMove(transform.position);
+                else if (order.IsAttackOrder()) audioDialog.HandleAttack(transform.position);
             }
         }
 

@@ -80,14 +80,22 @@ namespace EmpireAtWar.Components.Squadrons.Health
         }
 
         /// <summary>Applies saved fractions of each fighter's hull and shields; a fighter at zero hull stays dead.</summary>
-        public void Restore(IReadOnlyList<float> memberHull, IReadOnlyList<float> memberShields)
+        public void Restore(IReadOnlyList<float> memberHull, IReadOnlyList<float> memberShields) =>
+            SetMembers(memberHull, memberShields, isReplica: false);
+
+        /// <summary>Online client: the host's fighter health; a fighter the host lost explodes here too.</summary>
+        public void ApplyReplica(IReadOnlyList<float> memberHull, IReadOnlyList<float> memberShields) =>
+            SetMembers(memberHull, memberShields, isReplica: true);
+
+        private void SetMembers(IReadOnlyList<float> memberHull, IReadOnlyList<float> memberShields, bool isReplica)
         {
             if (memberHull.Count != Members.Length || memberShields.Count != Members.Length)
                 throw new InvalidOperationException(
                     $"Saved {memberHull.Count} fighters; the squadron has {Members.Length}.");
             for (int i = 0; i < Members.Length; i++)
             {
-                Members[i].Restore(memberHull[i]);
+                if (isReplica) Members[i].ApplyReplicaHealth(memberHull[i]);
+                else Members[i].Restore(memberHull[i]);
                 _shields[i] = Members[i].IsDestroyed || IsShieldSuppressed ? 0f : _data.MemberShields * _shieldsMultiplier * memberShields[i];
             }
 

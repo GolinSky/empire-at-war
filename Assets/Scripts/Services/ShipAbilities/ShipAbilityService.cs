@@ -182,6 +182,17 @@ namespace EmpireAtWar.Services.ShipAbilities
             }
         }
 
+        /// <summary>
+        /// Automatic start for a player's ship: goes through the player command path like a press, so an online
+        /// client asks the host instead of starting it only locally. False when it cannot start right now.
+        /// </summary>
+        public bool TryRequestActivation(IShipAbilityFacade caster, ShipAbilityId id, IEntity target)
+        {
+            if (!CanActivateNow(caster, id, target)) return false;
+            _requestExecution(new[] { caster.Entity }, id, target, false);
+            return true;
+        }
+
         private bool CanCancel(IShipAbilityFacade caster, ShipAbilityId id) =>
             TryFindSlot(caster, id, out ShipAbilitySlot slot) &&
             slot.State == ShipAbilityState.Active && slot.Definition.CanCancel;

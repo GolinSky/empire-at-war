@@ -99,7 +99,10 @@ namespace EmpireAtWar.Entities.Squadrons
         public override string Id => GetType().Name;
         public Vector3 WorldPosition => _flight.Centroid;
         public float NavigationRadius => Data.NavigationRadius;
-        public UnitOrderType CurrentOrder => _orders.Current;
+        // Online clients show the host's order (see ApplyReplicaOrder).
+        public UnitOrderType CurrentOrder => _replicaOrder ?? _orders.Current;
+        public int OrderRevision => _orders.Revision;
+        private UnitOrderType? _replicaOrder;
         public bool IsDestroyed => _health.Destroyed;
         public long EntityId { get; private set; }
 
@@ -352,6 +355,20 @@ namespace EmpireAtWar.Entities.Squadrons
             Disengage();
             _pilot.Loiter(_flight.Centroid);
         }
+
+        /// <summary>
+        /// Online client: the host's order. Clients only replay attacks, for the fighters' swarm; once the host
+        /// gives another order the replayed engagement is dropped. New moves get their sound and voice line.
+        /// </summary>
+        public void ApplyReplicaOrder(UnitOrderType order, bool isNewOrder)
+        {
+            _replicaOrder = order;
+            if (!IsEngagingOrder(order) && IsEngagingOrder(_orders.Current)) Stop();
+            if (isNewOrder && order.IsMoveOrder()) PlayMoveAudio(_flight.Centroid);
+        }
+
+        private static bool IsEngagingOrder(UnitOrderType order) =>
+            order.IsAttackOrder() || order == UnitOrderType.UseAbility;
 
         private void PlayMoveAudio(Vector3 destination)
         {

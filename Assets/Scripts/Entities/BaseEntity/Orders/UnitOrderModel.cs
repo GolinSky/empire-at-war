@@ -20,12 +20,15 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         public FormationPoint Offset { get; private set; }
         public IReadOnlyList<FormationPoint> Waypoints => _waypoints;
         public int WaypointIndex { get; private set; }
+        /// <summary>Changes with every replacement, so a repeated order of the same type is still a new order.</summary>
+        public int Revision { get; private set; }
 
         public void Replace(UnitOrderType type, FormationPoint destination = default,
             IEntity target = null, FormationPoint offset = default,
             IReadOnlyList<FormationPoint> waypoints = null, int targetHardPointId = NO_HARD_POINT,
             AttackMoveEngagement engagement = null)
         {
+            Revision++;
             Current = type;
             Destination = destination;
             Target = target;

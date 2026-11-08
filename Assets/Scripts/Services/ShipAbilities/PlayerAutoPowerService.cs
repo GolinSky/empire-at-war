@@ -105,7 +105,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             {
                 ShipAbilitySlot slot = caster.Slots[i];
                 if (slot.CanActivate && slot.Definition.Settings is HarmonicBombSettings bomb &&
-                    bomb.ShouldAutoDrop(_bombs, caster) && _abilities.TryActivate(caster, slot.Id, null)) return;
+                    bomb.ShouldAutoDrop(_bombs, caster) && _abilities.TryRequestActivation(caster, slot.Id, null)) return;
             }
             if (automation == null || !automation.Eligible) return;
             AutoPowerSituation situation = _combat.Assess(caster, automation, heavyLoss, IsTravelling(entity));
@@ -114,7 +114,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             monitor.ResetConfirmation();
             // Recheck right before spending: the target or readiness can change between checks.
             if (Choose(caster, situation, out ShipAbilitySlot chosen, out IEntity target) == decision)
-                _abilities.TryActivate(caster, chosen.Id, target);
+                _abilities.TryRequestActivation(caster, chosen.Id, target);
         }
 
         // First wanted role with a ready slot; a recovering power never swaps Shields for Weapons or back.

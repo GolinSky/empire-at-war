@@ -1,4 +1,5 @@
 using static EmpireAtWar.Utils.FormationConversion;
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
@@ -42,7 +43,20 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private ShipAbilityId _pendingAbilityId;
         private IEntity _pendingAbilityTarget;
 
-        public UnitOrderType CurrentOrder => _pendingAbilityTarget != null ? UnitOrderType.UseAbility : _orders.Current;
+        private UnitOrderType? _replicaOrder;
+
+        // Online clients show the host's order; ships there never run their own (see ApplyReplicaOrder).
+        public UnitOrderType CurrentOrder => _replicaOrder ??
+            (_pendingAbilityTarget != null ? UnitOrderType.UseAbility : _orders.Current);
+        public int OrderRevision => _orders.Revision;
+        /// <summary>Online client: the host just gave this ship a new order.</summary>
+        public event Action<UnitOrderType> ReplicaOrderIssued;
+
+        public void ApplyReplicaOrder(UnitOrderType order, bool isNewOrder)
+        {
+            _replicaOrder = order;
+            if (isNewOrder) ReplicaOrderIssued?.Invoke(order);
+        }
         public bool IsAbilityFacing { get; private set; }
 
         public void BeginAbilityFacing()

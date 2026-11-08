@@ -45,5 +45,8 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
             UnitOrderSave.From(_orders));
 
         public void RestoreHealth(UnitHealthSave save) => _health.Restore(save.Hull, save.Shields, save.HardPoints);
+
+        public void ApplyReplicaHealth(UnitHealthSave save) =>
+            _health.ApplyReplica(save.Hull, save.Shields, save.HardPoints);
     }
 }

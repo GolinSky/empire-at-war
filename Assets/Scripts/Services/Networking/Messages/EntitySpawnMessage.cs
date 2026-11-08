@@ -16,5 +16,7 @@ namespace EmpireAtWar.Services.Networking.Messages
         public EntityKeyframe Keyframe;
         public EntitySpawnKind Kind;
         public string Payload;
+        /// <summary>A ship still in its hyperspace jump; clients play the jump instead of placing it arrived.</summary>
+        public bool IsArriving;
     }
 }

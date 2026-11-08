@@ -187,6 +187,7 @@ namespace EmpireAtWar.Services.Networking
             {
                 spawn.Kind = EntitySpawnKind.Unit;
                 spawn.Payload = JsonUtility.ToJson(unit.Capture());
+                spawn.IsArriving = entity.TryGetFacade(out IShipArrivalFacade arrival) && arrival.IsArriving;
             }
             else if (entity.TryGetFacade(out IStructureSaveFacade structure))
             {
