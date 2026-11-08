@@ -20,7 +20,8 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(true)]
         public void ShipFactory_ISDIII_RejectsSpawnAndRestoreBeforeLoadingAssets(bool restore)
         {
-            var factory = new ShipFactory(null, null, null, null, null, new UniqueIdGenerator());
+            var factory = new ShipFactory(null, null, null, null, null, new UniqueIdGenerator(
+                new OfflineSession(new PlayerId(0)), new EmpireAtWar.Entities.BaseEntity.EntityLocator()));
 
             var exception = Assert.Throws<System.InvalidOperationException>(() =>
             {

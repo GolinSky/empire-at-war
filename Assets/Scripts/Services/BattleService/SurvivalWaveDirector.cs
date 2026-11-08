@@ -31,7 +31,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly IUnitOrderService _orders;
         private readonly IMapModelObserver _map;
         private readonly PlayerId _enemy;
-        private readonly PlayerId _human;
+        private readonly PlayerId[] _humans;
         private readonly Queue<UnitTypeId> _pending = new();
         private readonly HashSet<long> _commanded = new();
         private readonly List<IEntity> _newUnits = new();
@@ -47,7 +47,7 @@ namespace EmpireAtWar.Services.Battle
             _model = model; _data = data; _battle = battle; _state = state; _spawner = spawner;
             _points = points; _entities = entities; _stations = stations; _orders = orders; _map = map;
             _enemy = battle.Players.Single(player => player.Role == PlayerRole.WaveAttacker).Slot.Id;
-            _human = battle.Human.Slot.Id;
+            _humans = battle.Humans.Select(human => human.Slot.Id).ToArray();
         }
 
         /// <summary>The wave whose units have been queued; it trails <see cref="SurvivalModel.WaveIndex"/> between waves.</summary>
@@ -81,7 +81,7 @@ namespace EmpireAtWar.Services.Battle
         public void Tick()
         {
             if (_state.State != BattleState.Running) return;
-            if (!_stations.TryGetLivingStation(_human, out _)) { _model.Lose(); return; }
+            if (!TryGetDefendedStation(out PlayerId defender)) { _model.Lose(); return; }
             _model.Advance(Time.deltaTime);
             if (_model.Phase != SurvivalPhase.WaveActive) return;
             SurvivalWave wave = _data.GetWave(_battle.Survival.EnemyFaction, _model.WaveIndex);
@@ -111,9 +111,23 @@ namespace EmpireAtWar.Services.Battle
                 alive++;
                 if (_commanded.Add(entity.Id) || retryIdle && IsIdleShip(entity)) _newUnits.Add(entity);
             }
-            if (_newUnits.Count > 0) _orders.IssueAttackMove(_newUnits, _map.GetStationPosition(_human));
+            if (_newUnits.Count > 0) _orders.IssueAttackMove(_newUnits, _map.GetStationPosition(defender));
             _settleTime -= Time.deltaTime;
             if (_pending.Count == 0 && alive == 0 && _settleTime <= 0) _model.CompleteWave();
+        }
+
+        // Waves attack the first co-op station still standing; the defenders lose when none is left.
+        private bool TryGetDefendedStation(out PlayerId defender)
+        {
+            foreach (PlayerId human in _humans)
+            {
+                if (!_stations.TryGetLivingStation(human, out _)) continue;
+                defender = human;
+                return true;
+            }
+
+            defender = PlayerId.None;
+            return false;
         }
 
         // An ability cast or a finished attack-move leaves a ship without an order; it resumes the assault.

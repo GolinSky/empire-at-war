@@ -14,6 +14,7 @@ namespace EmpireAtWar.Services.VContainer
 
         public void ConfigureBattle(IContainerBuilder builder)
         {
+            builder.RegisterInstance<IMatchSession>(new OfflineSession(PlayerId.None));
             builder.Register<SimulationLocalPlayer>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.RegisterInstance(new SimulationModel(_battle.Simulation));
             builder.Register<SimulationOutcomeRule>(Lifetime.Singleton).As<IBattleOutcomeRule>();

@@ -6,7 +6,8 @@ using System;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Services.Factions;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using VContainer;
@@ -20,7 +21,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
     public class FactionUiController : UiController, IFactionPresenter, IInitializable,
         ILateDisposable, ISkirmishUiRoute, ITickable, IObserver<BattleState>
     {
-        private readonly IFactionService _factionService;
+        private readonly IPlayerCommandSink _commands;
+        private readonly PlayerSlot _owner;
         private readonly EmpireAtWar.Services.Audio.IInterfaceSfxService _interfaceAudio;
         private readonly IPlayerFactionModelObserver _model;
         private readonly IFactionResearchModelObserver _research;
@@ -48,7 +50,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
             IUiService uiService,
             IUiPlacement placement,
             IUiCancelRouter cancelRouter,
-            IFactionService factionService,
+            IPlayerCommandSink commands,
+            PlayerSlot owner,
             IPlayerFactionModelObserver model,
             IFactionResearchModelObserver research,
             IUnitRequestFactory unitRequestFactory,
@@ -66,7 +69,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
             _placement = placement;
             _assets = assets;
             _shipsData = shipsData;
-            _factionService = factionService;
+            _commands = commands;
+            _owner = owner;
             _model = model;
             _research = research;
             _roster = roster;
@@ -111,7 +115,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 _interfaceAudio.PlayRejected();
                 return;
             }
-            _factionService.TryPurchaseUnit(unitRequest);
+            _commands.Submit(PurchaseUnitCommand.From(_owner.Id, unitRequest));
         }
 
         public bool IsUnitAvailable(FactionData data) => _model.CurrentLevel >= data.AvailableLevel;

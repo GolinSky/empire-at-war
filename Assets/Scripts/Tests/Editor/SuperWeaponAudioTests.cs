@@ -10,6 +10,7 @@ using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.SuperWeapons.Controller;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
 using NUnit.Framework;
@@ -198,12 +199,15 @@ namespace EmpireAtWar.Tests.Editor
                 SuperWeaponModel model = new SuperWeaponModel();
                 RecordingInterfaceAudio audio = new RecordingInterfaceAudio();
                 FireService fire = new FireService();
+                OwnedEntity target = new OwnedEntity(TestPlayers.Enemy);
+                IPlayerCommandSink commands = new DirectSuperWeaponSink(new HumanSuperWeaponCommandHandler(
+                    TestPlayers.Slot(TestPlayers.CreateDuel(), TestPlayers.Human), model, fire, new PlayerCommandHandlers()), target);
                 SuperWeaponPresenter presenter = new SuperWeaponPresenter(
                     superWeaponFireService: fire, viewProvider: null, routeNavigation: null, abilities: null,
                     localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), uiService: null, cancelRouter: null, tooltipService: null,
                     faction: null, bindings: null, battleState: null, model: model,
                     targeting: new SuperWeaponTargetingModel(), unitTargeting: null, data: null,
-                    interfaceAudio: audio, interfaceData: data);
+                    interfaceAudio: audio, interfaceData: data, commands: commands);
                 SetField(presenter, "_view", new View());
                 var states = (Dictionary<SuperWeaponType, SuperWeaponState>)typeof(SuperWeaponPresenter)
                     .GetField("_lastStates", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(presenter);
@@ -234,7 +238,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(model.CanFire(type), Is.True, "Rejected targets must retain the charge.");
                 Assert.That(fire.Shots, Is.Zero);
                 fire.Accept = true;
-                submit.Invoke(presenter, new object[] { type, null });
+                submit.Invoke(presenter, new object[] { type, target });
                 Assert.That(audio.Clips, Is.EqualTo(new[] { bought, ready, firing }));
                 Assert.That(fire.Shots, Is.EqualTo(1));
                 Assert.That(model.CanFire(type), Is.False);
@@ -295,6 +299,26 @@ namespace EmpireAtWar.Tests.Editor
             public void PlayAnnouncement(AudioClip clip) => Clips.Add(clip);
             public bool TryPlayAnnouncement(AudioClip clip, AnnouncementPriority priority) { Clips.Add(clip); return true; }
             public bool TryPlayStationUpgrade(AudioClip clip, AudioClip newConstruction) { Clips.Add(clip); return true; }
+        }
+
+        private sealed class DirectSuperWeaponSink : IPlayerCommandSink
+        {
+            private readonly ISuperWeaponCommandHandler _handler;
+            private readonly IEntity _target;
+
+            public DirectSuperWeaponSink(ISuperWeaponCommandHandler handler, IEntity target)
+            {
+                _handler = handler;
+                _target = target;
+            }
+
+            public void Submit(FireSuperWeaponCommand command) => _handler.Fire(command.Type, _target);
+            public void Submit(UnitOrderCommand command) => throw new NotSupportedException();
+            public void Submit(PurchaseUnitCommand command) => throw new NotSupportedException();
+            public void Submit(CancelPurchaseCommand command) => throw new NotSupportedException();
+            public void Submit(BuildSiteFacilityCommand command) => throw new NotSupportedException();
+            public void Submit(ShipAbilityCommand command) => throw new NotSupportedException();
+            public void Submit(DeployReinforcementCommand command) => throw new NotSupportedException();
         }
 
         private sealed class FireService : ISuperWeaponFireService

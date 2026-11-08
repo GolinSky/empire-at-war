@@ -11,6 +11,9 @@ namespace EmpireAtWar.Services.VContainer
         BattleFeatures Feature { get; }
         void ConfigureBattle(IContainerBuilder builder);
         void ConfigureDisabled(IContainerBuilder builder);
+        /// <summary>Simulation registrations for every player, local or remote.</summary>
         void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot);
+        /// <summary>UI, input and announcements for the human at this machine only.</summary>
+        void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot);
     }
 }

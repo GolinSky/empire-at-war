@@ -4,7 +4,8 @@ using EmpireAtWar.Services.Tooltip;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
-using EmpireAtWar.Services.Factions;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using VContainer;
@@ -15,7 +16,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
     public class ShipBuildUiController : UiController, IShipBuildPresenter, IInitializable,
         ILateDisposable, ISkirmishUiRoute
     {
-        private readonly IFactionService _factionService;
+        private readonly IPlayerCommandSink _commands;
+        private readonly PlayerSlot _owner;
         private readonly IPlayerFactionModelObserver _model;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private ShipBuildUi _ui;
@@ -30,12 +32,14 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public ShipBuildUiController(
             IUiService uiService,
             IUiCancelRouter cancelRouter,
-            IFactionService factionService,
+            IPlayerCommandSink commands,
+            PlayerSlot owner,
             IPlayerFactionModelObserver model,
             ISkirmishRouteNavigation routeNavigation,
             ITooltipService tooltipService) : base(uiService, cancelRouter)
         {
-            _factionService = factionService;
+            _commands = commands;
+            _owner = owner;
             _model = model;
             _routeNavigation = routeNavigation;
             _tooltips = new TooltipRequests(tooltipService);
@@ -116,7 +120,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         public void CancelBuilding(string id)
         {
-            _factionService.CancelBuilding(id);
+            _commands.Submit(new CancelPurchaseCommand(_owner.Id, id));
         }
 
         private void RenderPipelines(IReadOnlyList<ProductionQueueSnapshot> snapshots)

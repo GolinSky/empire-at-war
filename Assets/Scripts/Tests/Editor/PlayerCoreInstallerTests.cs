@@ -44,7 +44,7 @@ namespace EmpireAtWar.Tests.Editor
             using IScopedObjectResolver container = parent.CreateScope(childBuilder =>
             {
                 childBuilder.RegisterInstance<IAssetService>(assets);
-                LocalPlayerScope.RegisterPlayerServices(childBuilder, owner, factions.Get(factionType));
+                HumanPlayerScope.RegisterPlayerServices(childBuilder, owner, factions.Get(factionType));
                 Assert.That(childBuilder.Exists(typeof(IReinforcementService), includeInterfaceTypes: true, findParentScopes: false), Is.True);
             });
             PlayerFactionModel model = container.Resolve<PlayerFactionModel>();

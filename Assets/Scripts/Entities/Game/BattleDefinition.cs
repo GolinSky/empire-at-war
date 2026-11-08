@@ -17,7 +17,7 @@ namespace EmpireAtWar.Entities.Game
         public SurvivalSettings Survival { get; }
         public SimulationSetup Simulation { get; }
         public int InitialStationLevel { get; }
-        public BattlePlayer Human => Players.Single(player => player.Role == PlayerRole.Human);
+        public IReadOnlyList<BattlePlayer> Humans { get; }
 
         public BattleDefinition(GameMode mode, MapSpec map, IReadOnlyList<BattlePlayer> players,
             BattleFeatures features, OutcomeRule outcome, BattleVictoryCondition victoryCondition, float startingMoney,
@@ -27,8 +27,10 @@ namespace EmpireAtWar.Entities.Game
             Map = map;
             // Each player keeps only the features the whole battle enables.
             Players = System.Array.AsReadOnly(players
-                .Select(player => new BattlePlayer(player.Slot, player.Role, player.Features & features)).ToArray());
+                .Select(player => new BattlePlayer(player.Slot, player.Role, player.Features & features,
+                    player.ProductionHostId)).ToArray());
             Slots = System.Array.AsReadOnly(players.Select(player => player.Slot).ToArray());
+            Humans = System.Array.AsReadOnly(Players.Where(player => player.Role == PlayerRole.Human).ToArray());
             Features = features;
             Outcome = outcome;
             VictoryCondition = victoryCondition;
@@ -40,7 +42,7 @@ namespace EmpireAtWar.Entities.Game
 
         public BattlePlayer GetPlayer(PlayerId id) => Players[id.Index];
         /// <summary>The player whose production bases <paramref name="player"/> buys from.</summary>
-        public BattlePlayer GetProductionHost(BattlePlayer player) => player.IsHosted ? Human : player;
+        public BattlePlayer GetProductionHost(BattlePlayer player) => GetPlayer(player.ProductionHostId);
         public bool HasFeature(BattleFeatures feature) => (Features & feature) == feature;
     }
 }

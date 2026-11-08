@@ -34,6 +34,9 @@ verification: "Source review, Unity compilation/import, persisted prefab
 - Move to another monitor → rebuild size/Hz options after movement; unsupported size → desktop.
 - macOS Retina/notch labels and actual applied size require standalone validation. Prompt displays actual screen dimensions.
 - Windows single/dual monitor 60/144 Hz and macOS Retina/notch/external-monitor acceptance remain with [[Done/Features/Display_Modes_And_Monitors_Plan]].
+- Editor play mode: `GraphicsSettingsApplier` assigns a DontSave URP clone to `QualitySettings.renderPipeline`. A settings save during play, or play ending with the clone still assigned → `QualitySettings.asset` gets `customRenderPipeline: {fileID: 0}` → next start throws `ArgumentException: The Object you want to instantiate is null` at `GraphicsSettingsApplier.Apply` (seen 2026-11-08 on High Fidelity; drifted `antiAliasing` too).
+  - Guards (Editor only): `QualityPipelinePlayModeGuard` captures each level's pipeline on `ExitingEditMode` (`SessionState`) and restores + saves on `EnteredEditMode`, logging a warning; `QualitySettingsPlayModeSaveFilter` drops `ProjectSettings/QualitySettings.asset` from saves while playing.
+  - Manual repair: set the level's pipeline to its `URP-*.asset` (e.g. High Fidelity → `URP-HighFidelity.asset`) via `QualitySettings.renderPipeline`, then save.
 
 ## Files
 
@@ -41,3 +44,4 @@ verification: "Source review, Unity compilation/import, persisted prefab
 - `Assets/Scripts/Services/Settings/{DisplaySettingsData,DisplayWindowMode,GraphicsSettingsData,SettingsService,ISettingsService}.cs`
 - `Assets/Scripts/Entities/MainMenu/Settings/{SettingsDisplayEditor,SettingsDraftEditor,SettingsRouteUiController,SettingsUi,DisplayConfirmationCountdown}.cs`
 - `Assets/Prefabs/Ui/MainMenu/SettingsUi.prefab`
+- `Assets/Scripts/Editor/Rendering/{QualityPipelinePlayModeGuard,QualitySettingsPlayModeSaveFilter}.cs`

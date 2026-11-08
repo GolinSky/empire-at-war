@@ -7,10 +7,10 @@ namespace EmpireAtWar.Models.Players
         public PlayerId Id => Slot.Id;
         public PlayerSlot Slot { get; }
 
-        public LocalPlayer(IPlayerRoster playerRoster)
+        public LocalPlayer(IPlayerRoster playerRoster, IMatchSession session)
         {
             _relations = playerRoster;
-            Slot = MatchRules.FindHuman(playerRoster.Players);
+            Slot = playerRoster.Get(session.LocalPlayerId);
         }
 
         public bool IsLocal(PlayerId owner) => owner == Id;

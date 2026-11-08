@@ -25,7 +25,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
         private readonly ISelectionService _selectionService;
         private readonly IShipAbilityTargeting _abilities;
         private readonly IPlayerOrderInputHandler _inputHandler;
-        private readonly IUnitOrderService _unitOrderService;
+        private readonly IPlayerUnitOrders _playerOrders;
         private readonly INotifier<BattleState> _battleState;
         private IUnitActionsView _view;
         private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
@@ -41,7 +41,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
         public UnitActionsPresenter(IUnitActionsViewProvider coreUi,
             ISelectionService selectionService,
             IShipAbilityTargeting abilities, IPlayerOrderInputHandler inputHandler,
-            IUnitOrderService unitOrderService, INotifier<BattleState> battleState,
+            IPlayerUnitOrders playerOrders, INotifier<BattleState> battleState,
             IUiService uiService,
             IUiCancelRouter cancelRouter, ITooltipService tooltipService,
             EmpireAtWar.Services.Input.IInputBindings bindings,
@@ -52,7 +52,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             _abilities = abilities;
             _targeting = targeting;
             _inputHandler = inputHandler;
-            _unitOrderService = unitOrderService;
+            _playerOrders = playerOrders;
             _battleState = battleState;
             _tooltips = new TooltipRequests(tooltipService);
             _bindings = bindings;
@@ -143,21 +143,21 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             if (action == UnitActionId.Stop)
             {
                 _targeting.Cancel();
-                _unitOrderService.IssueStop(Snapshot());
+                _playerOrders.IssueStop(Snapshot());
                 return;
             }
 
             if (action == UnitActionId.Hunt)
             {
                 _targeting.Cancel();
-                _unitOrderService.IssueHunt(Snapshot());
+                _playerOrders.IssueHunt(Snapshot());
                 return;
             }
 
             if (action == UnitActionId.Retreat)
             {
                 _targeting.Cancel();
-                _unitOrderService.IssueRetreat(Snapshot());
+                _playerOrders.IssueRetreat(Snapshot());
                 return;
             }
 

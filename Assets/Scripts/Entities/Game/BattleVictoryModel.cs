@@ -7,7 +7,8 @@ namespace EmpireAtWar.Entities.Game
 {
     /// <summary>
     /// Players drop out one by one; a team loses when all of its players are defeated and the last
-    /// team standing wins. The outcome is reported from the local player's point of view.
+    /// team standing wins. <see cref="EvaluateTeams"/> is the viewer-independent (authority) decision;
+    /// <see cref="OutcomeFor"/> reports it from one team's point of view.
     /// </summary>
     public sealed class BattleVictoryModel : Model, IBattleOutcomeRule
     {
@@ -19,10 +20,38 @@ namespace EmpireAtWar.Entities.Game
 
         public void RestoreObservedBases(IEnumerable<PlayerId> players) => _observedBases.UnionWith(players);
 
+        /// <summary>Teams still in the battle after the last <see cref="EvaluateTeams"/>.</summary>
+        public IReadOnlyCollection<TeamId> SurvivingTeams => _survivingTeams;
+
         public BattleOutcome Evaluate(
             BattleVictoryCondition victoryCondition,
             IReadOnlyList<PlayerBattleState> players,
             TeamId localTeam)
+        {
+            EvaluateTeams(victoryCondition, players);
+            return OutcomeFor(localTeam);
+        }
+
+        /// <summary>Per-viewer result from the surviving teams; a defeated team sees the end before the match is over.</summary>
+        public BattleOutcome OutcomeFor(TeamId team)
+        {
+            if (_survivingTeams.Count == 0)
+            {
+                return BattleOutcome.Draw;
+            }
+
+            if (!_survivingTeams.Contains(team))
+            {
+                return BattleOutcome.EnemyVictory;
+            }
+
+            return _survivingTeams.Count == 1 ? BattleOutcome.PlayerVictory : BattleOutcome.None;
+        }
+
+        /// <summary>Authority side: which teams are still in, independent of who is viewing.</summary>
+        public IReadOnlyCollection<TeamId> EvaluateTeams(
+            BattleVictoryCondition victoryCondition,
+            IReadOnlyList<PlayerBattleState> players)
         {
             foreach (PlayerBattleState player in players)
             {
@@ -46,17 +75,7 @@ namespace EmpireAtWar.Entities.Game
                 }
             }
 
-            if (_survivingTeams.Count == 0)
-            {
-                return BattleOutcome.Draw;
-            }
-
-            if (!_survivingTeams.Contains(localTeam))
-            {
-                return BattleOutcome.EnemyVictory;
-            }
-
-            return _survivingTeams.Count == 1 ? BattleOutcome.PlayerVictory : BattleOutcome.None;
+            return _survivingTeams;
         }
 
         // A player counts only after its station was seen alive, so a slow first spawn is not a defeat.

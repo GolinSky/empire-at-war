@@ -431,7 +431,7 @@ namespace EmpireAtWar.Tests.Editor
                 }
                 pads++;
                 Assert.That(site.Kind, Is.EqualTo(CaptureSiteKind.Satellite));
-                Assert.That(site.Owner, Is.EqualTo(battle.Human.Slot.Id));
+                Assert.That(site.Owner, Is.EqualTo(battle.Humans.Single().Slot.Id));
                 foreach (SiteSpot other in layout.Sites)
                     if (other.Center != site.Center)
                         Assert.That(PlanarGeometry.Distance(site.Center, other.Center),

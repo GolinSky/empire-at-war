@@ -291,7 +291,7 @@ builder.Register<FeatureUiController>(Lifetime.Singleton).AsImplementedInterface
 - Reinforcement dependency flow:
 
 ```text
-LocalPlayerScope
+HumanPlayerScope (UI controller only on the local human; renamed from LocalPlayerScope 2026-11-07)
   -> ReinforcementData
   -> ReinforcementModel(data)
   -> ReinforcementService(model, data, gameplay dependencies)

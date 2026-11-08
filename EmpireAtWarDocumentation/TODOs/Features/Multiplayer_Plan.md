@@ -1,6 +1,6 @@
 ---
 category: Features
-status: todo
+status: in-progress
 created: 2026-11-02
 tags:
   - multiplayer
@@ -28,7 +28,7 @@ tags:
   - Why: Steam relay is free with no quota, so a public repo can't drain a budget. Friends already have Steam. FizzySteamworks is the established Mirror Steam transport. Mirror has built-in `NetworkTime`, `SnapshotInterpolation` and struct messages, which fit our custom-message design.
   - Avoid: shipping under App ID 480 (test app only); NGO + UGS Relay (rejected → Research).
 - **Model: host-authoritative listen server with a fixed 20 Hz network tick.** The host runs the current simulation (incl. all AI) unchanged on `Update`. Clients send commands and render replicated, tick-stamped state.
-  - Why: the sim is not deterministic: `Time.deltaTime`/`Time.time` in 67 files, `UnityEngine.Random` in 21 files (incl. `WeaponComponent`), Guid ids.
+  - Why: the sim is not deterministic: `Time.deltaTime`/`Time.time` in 69 files, `UnityEngine.Random` in 20 files (incl. `WeaponComponent`), Guid ids (re-counted 2026-11-07).
   - Avoid: deterministic lockstep. It needs a fixed-point, fixed-step rewrite of the whole sim.
 - **Offline = authority with no transport.** `OfflineSession` (`IsAuthority = true`, commands run immediately). Offline paths never touch Mirror or Steam types.
 - **Replication: Mirror `NetworkMessage` structs keyed by entity net index.** Not one `NetworkBehaviour`/`NetworkIdentity`/`SyncVar` per ship or component.
@@ -61,6 +61,64 @@ tags:
 - Transport choice at startup: `IMatchTransportConfig` picks `FizzySteamworks` (Steam) or `KcpTransport` (direct IP), so all game code is shared.
 - Ship: replace 480 with own App ID; can stay unreleased and use keys or Steam Playtest for friends.
 
+## Lobby UI and Join Flow
+
+### Menu
+```
+Play
+ ├─ Skirmish        (offline, unchanged)
+ ├─ Survival        (offline, unchanged)
+ ├─ Online ──► Host Skirmish | Host Survival | Join by IP (dev, KCP only)
+ ├─ Simulation
+ └─ Load
+```
+- No server browser. Friends join through Steam (table below).
+- Steam not running → Host buttons disabled with a message; Join by IP stays.
+
+### Host Lobby Screen
+- Reuse the Skirmish setup screen (`SkirmishUi`, `SkirmishSlotRowView`, `SkirmishModel`); Survival lobby reuses `SurvivalUi` + co-op slots.
+- `SkirmishSlotOccupant` gains `Open` (invite) and `RemoteHuman`. A joined row shows Steam name + avatar.
+- Row edit rights: a human edits only their own faction/team/color; the host edits AI rows, map, money, victory, super weapons. Others see them read-only.
+- Per-human **ready** check. **Start** enabled only when all humans are ready (`SkirmishModel.CanStart` + ready).
+- Host: **Invite friends** button, **kick** per remote row. All: **Leave**.
+- Lobby state lives in Steam lobby data/member data; `SkirmishModel` renders it through `IOnlineLobby`.
+
+### How Friends Join (Steam)
+| Path | Steam API | Build |
+|---|---|---|
+| Host invites via overlay | `SteamFriends.ActivateGameOverlayInviteDialog(lobbyId)` | Invite button |
+| Friend list → "Join Game" | Joinable lobby / rich presence `connect` | — |
+| Game not running → started by invite | Launch arg `+connect_lobby <lobbyId>` | Parse at startup → go to lobby |
+| Game running → invite accepted | `GameLobbyJoinRequested_t`, `GameRichPresenceJoinRequested_t` | Callback → `JoinLobby` → `StartClient` |
+| Optional: in-game Friends panel | Friend list + `GetFriendGamePlayed` → `m_steamIDLobby` | Small list with Join |
+| Optional: friends' lobby list | `RequestLobbyList` + `game = empire-at-war` filter | Only if browsing is wanted |
+- Rich presence: `connect` + status ("In lobby 2/4", "Survival — wave 7").
+- Errors: Steam not running, lobby full/closed, version mismatch, host left, kicked.
+
+### App ID 480 Limits
+- Overlay invite and join into a **running** game work.
+- Shows as "Spacewar"; "Join Game" with the game closed launches Spacewar → friends start the game first.
+- Localized rich-presence text needs own App ID (tokens uploaded on Steamworks); `connect` key works under 480.
+- Avoid: Remote Play Together — needs own App ID and local multiplayer, which the game lacks.
+
+## Online Saving (post-v1)
+
+- v1: save/load disabled online (issue #11).
+- **Save (small):** host only. `BattleSaveService.Capture` already covers units, structures, capture sites, zones, super weapons, Survival; `PlayerSave` is per `PlayerId`.
+  - Add slot → Steam ID map to the save header.
+  - Camera pose: host-only, not applied to clients.
+  - Autosave: host only; clients never autosave.
+- **Load (hard):** host restores via `BattleRestorer` → "Resume" lobby reserves slots for the saved Steam IDs (empty slot → AI) → clients join → need a **full-state baseline on join**.
+- Baseline on join = same mechanism as reconnect/late join → build once, use for both.
+- Prereqs: issue #13 (`Humans` list) and `HumanProductionSaveSource` handling 2+ humans.
+
+| Piece | Effort |
+|---|---|
+| Host save + slot → Steam ID map | small |
+| Resume lobby (reserved slots, AI fill) | medium |
+| Full-state baseline on join (shared with reconnect) | medium–large |
+| Multi-human production save sources | small after #13 |
+
 ## Readiness: What Already Helps
 
 - `PlayerId` (slot index) ownership on every `IEntity`; `IPlayerRelations`/`TeamId` relations.
@@ -68,9 +126,9 @@ tags:
 - Per-player DI scopes: `PlayerScopeBootstrap` → `LocalPlayerScope` / `AiPlayerScope`. AI slots run on the host; a disconnected human can be taken over by AI.
 - Central order path: `IUnitOrderService` used by player input and AI.
 - Map from seed (`MapSpec.Seed`). `SkirmishSetupSave` is a serializable match config → each client generates the same map.
-- Restore path: `ShipFactory.Create(owner, type, pos, entityId, ShipSpawnPose)` plus other factories → client spawn path.
+- Restore path: `ShipFactory.Create(owner, type, pos, entityId, ShipSpawnPose)` plus other factories → client spawn path. `SquadronFactory` restore overload takes `Quaternion rotation`, not `ShipSpawnPose`.
 - Save sources (`IBattleSaveSource`, `UnitSave`, `PlayerSave`) list the state that needs replicating.
-- Physics: no `Rigidbody`, no `NavMeshAgent`, 1 `Physics` query file. No mutable static state.
+- Physics: no `Rigidbody`, no `NavMeshAgent`, 2 `Physics` query files (`CameraService`, `StructureSpawnClearance`). No mutable static state.
 - `LifecycleTickGate`, `OrderedLifecycleCoordinator` → central gate for sim ticks on clients.
 
 ## Issues To Fix
@@ -82,7 +140,7 @@ tags:
 | 3 | Player scope mixes sim and local UI | `LocalPlayerScope.RegisterPlayerServices` (`ReinforcementUiController`, `HeroUiController`, `FactionAnnouncementService`) | Split into `HumanPlayerScope` (sim) and local-only UI registrations. |
 | 4 | Player actions call models directly, holding object refs | `UnitOrder` (holds `IEntity`), `FactionService.QueueUnit`, `CaptureSitesSystem.TryStartConstruction`, `ShipAbilityService.Press/SubmitTarget/TryActivate`, `SuperWeaponPresenter` → `SuperWeaponFireService.Fire`, reinforcement placement, research, station upgrade | `IPlayerCommandSink` + serializable `PlayerCommand`s (issuer `PlayerId`, entity ids, points); validate on authority. |
 | 5 | No issuer validation | `UnitOrderService` | Authority drops receivers not owned by the issuer. |
-| 6 | Random Guid-derived ids made on the spawning machine | `UniqueIdGenerator` + 7 factories | Authority-only sequential id allocator; clients spawn only with server ids. |
+| 6 | Random Guid-derived ids made on the spawning machine | `UniqueIdGenerator` + 6 factories/builders | Authority-only sequential id allocator; clients spawn only with server ids. |
 | 7 | Sim and visuals in the same components | `WeaponComponent` (944 lines), `WeaponHardPoint`, movement, squadrons, health | Client mode: no targeting/damage/AI ticks. Visuals come from `WeaponTarget`/launch events; HP and death from snapshots. |
 | 8 | Global pause/speed | `SkirmishOrchestrator.ApplyTimeScale` | Host-only; clients follow `MatchState`. |
 | 9 | Sim decisions use the local player | `CaptureSitesSystem`, `ReinforcementZonesSystem`, `BattleVictoryService` | Authority decides per `PlayerId`; local player only for presentation and the per-viewer result. |
@@ -97,23 +155,58 @@ tags:
 ### Phase 0 — Spike
 - [x] v1 scope: Skirmish + Survival co-op, PvP + co-op, AI slots (2026-11-02).
 - [x] Stack: Mirror + FizzySteamworks (App ID 480 dev) + KcpTransport dev + Steam lobbies (2026-11-02).
-- [ ] In `Assets/Sandbox`: Mirror host/client over `KcpTransport` by direct IP (LAN, then Tailscale).
-- [ ] Switch the same scene to FizzySteamworks: Steam lobby create → invite → join across two networks.
-- [ ] Prove `CommandMessage` → host → 20 Hz `TickMessage` round-trip.
-- [ ] Measure with 50–100 active ships per side: bytes/s per client and host upload against Important Values; check dead-reckoning error on capital ships vs squadrons.
+- [x] Packages (2026-11-07): Mirror `96.11.3` + FizzySteamworks `6.0.1` extracted to `Assets/Plugins/Mirror` (skipped `Examples`, `Hosting`, `Transports/Edgegap`); Steamworks.NET `2025.164.1` as UPM git dep. Mirror added define symbols `MIRROR*`, `STEAMWORKS_NET` (Standalone). `steam_appid.txt` = `480` at project root.
+- [x] Spike code (2026-11-07, compiles, weaver OK; **not run**): `Assets/Sandbox/Multiplayer/MultiplayerSpike.unity`, own asmdef `Sandbox.Multiplayer` (not auto-referenced). See Spike below.
+- [ ] User: KCP host/join by direct IP (LAN, then Tailscale).
+- [ ] User: Steam host lobby → overlay invite → join across two networks.
+- [ ] User: command → host → 20 Hz tick round-trip (panel shows ack ms + visible ms).
+- [ ] User: measure 50 and 100 units/side, both sync modes: per-client KiB/s, host upload, DR error capital vs squadron → record in Important Values.
+
+### Spike (Phase 0)
+- Run: open scene → Play (or build; copy `steam_appid.txt` next to the exe). OnGUI panel, right-click map = move own side.
+- `MultiplayerSpike`: KCP Host / Join IP (port 7777); Steam Host lobby (FriendsOnly, lobby data `game`/`version`/`host`) + Invite; `+connect_lobby <id>` launch arg; `GameLobbyJoinRequested_t` → join → `networkAddress = host SteamID`.
+- `SpikeHostSimulation`: 2 sides × N units (20% capital 8 m/s 15°/s, rest squadron 40 m/s 120°/s), variable-dt `Update`, 20 Hz accumulator → apply commands (issuer side check) → collect → chunk ≤ 1000 B → `SendToAll` unreliable. ≥ 1 chunk per tick (timeline heartbeat).
+- Sync modes: `FullSnapshot` (every unit every tick, client lerps) vs `DeadReckoning` (keyframe when host-predicted error > threshold m, heading > 5°, or 1 s moving / 3 s idle refresh; client extrapolates arc).
+- `SpikeUnitState` 10 B: pos 0.125 m (±4096 m), heading 16-bit, speed 0.25 m/s, turn 1°/s.
+- Client: `SpikeClientReplica` = Mirror `SnapshotInterpolation.InsertAndAdjust`/`Step` for the timeline (buffer = 3 × 50 ms), per-unit keyframe ring `SpikeUnitTrack`.
+- Stats: `SpikeBandwidthMeter` (Mirror `NetworkDiagnostics`, message bytes, no transport headers; per-connection `Send` from host not counted), `SpikeDeadReckoningStats` (host-side mean/max error per kind).
+- Join sends a welcome (side + roster) and forces a full keyframe resend; 3rd+ connection = observer.
 
 ### Phase 1 — Offline-safe seams (no Mirror/Steam dependency; offline unchanged)
-- [ ] `IMatchSession` (`IsOnline`, `IsAuthority`, `LocalPlayerId`) + `OfflineSession`; registered in `ProjectScope`/`SkirmishScope`.
-- [ ] Issues #1, #2, #3, #13: N-human rules, remote-human controller, player scope split, `BattleDefinition.Humans`.
-- [ ] Issues #4, #5: `PlayerCommand` + `IPlayerCommandSink`. UI/input go through it; AI keeps calling services directly on the authority.
-- [ ] Issue #6: authority id allocator (keep the `Create(..., entityId, pose)` overloads).
-- [ ] Issue #9: authority per-`PlayerId` APIs for capture, zones and victory.
-- [ ] Issue #14: Survival co-op slots in `SurvivalPreset`/`SurvivalSettings` (works offline with an AI ally first).
+- [x] `IMatchSession` (`IsOnline`, `IsAuthority`, `LocalPlayerId`) + `OfflineSession(PlayerId)` in `Entities/Players` (2026-11-07). Registered per battle mode (roster lives in the battle scope, not `ProjectScope`): Skirmish/Survival → `OfflineSession.ForHuman(roster)` (throws unless exactly one human = offline one-human rule); Simulation → `OfflineSession(PlayerId.None)`.
+- [x] Issues #1, #2, #3, #13 (2026-11-07; compile clean, rules checked via Editor eval, tests not run):
+  - #1: `MatchRules.Validate` needs ≥ 1 human (was exactly 1). Exactly-one is now enforced only by `OfflineSession.ForHuman` / `MatchRules.FindHuman`. `LocalPlayer(IPlayerRoster, IMatchSession)` takes its slot from `LocalPlayerId`.
+  - #13: `BattleDefinition.Humans` replaces `Human`. `BattlePlayer.ProductionHostId` (AiAlly → given host, else self); `GetProductionHost` uses it; `SurvivalPreset` hosts the ally on player 0. `MatchRules`: AiAlly host must be a human on the ally's team. Survival callers (`SurvivalOutcomeRule`, `SurvivalLayoutGenerator`, `SurvivalWaveDirector`) use `Humans.Single()` until #14.
+  - #2: no new `PlayerController` value. Remote = `Human` slot whose id ≠ `IMatchSession.LocalPlayerId` (per-machine, not serialized). `PlayerScopeBootstrap` passes `isLocal`.
+  - #3: `LocalPlayerScope` → `HumanPlayerScope`. Sim for every human: `RegisterPlayerServices` + `IBattleModule.ConfigurePlayer`. Local only: `RegisterLocalPlayerServices` (`ReinforcementUiController`, `HeroUiController`, `FactionAnnouncementService`) + new `IBattleModule.ConfigureLocalPlayer` (Economy/Faction/ShipBuild UI, cheats, `CaptureSiteAnnouncer`, `SuperWeaponPresenter`).
+  - Offline change: local registrations now come after sim registrations → order-0 lifecycle callbacks of those UI types run after the player's sim services (stable `OrderBy`). User smoke test: Skirmish + Survival start, build UI, reinforcements, heroes, super weapon, cheats.
+  - Still coupled (→ #4): `ReinforcementService` (pointer/camera/input lock, placement previews, `ReinforcementDeployInput`) and `FactionService` (`ISelectionService`) stay in the sim set; a remote human's scope would react to local input until commands exist.
+  - Still open: `MusicService.FindHuman` (project scope; needs the session at project level → Phase 2).
+- [x] Issues #4, #5: `PlayerCommand` + `IPlayerCommandSink`. UI/input go through it; AI keeps calling services directly on the authority. (Completed 2026-11-07, incl. abilities + reinforcement deploy below.)
+  - Abilities: `ShipAbilityCommand` (caster ids, target id, cancel). `ShipAbilityService` keeps the local targeting UI; `Press`/`SubmitTarget` decide accept/reject with read-only checks (`CanCancel`, `CanActivateNow`), then request execution. `[Inject]` ctor → request = command from `ILocalPlayer.Id`, service self-registers as `IShipAbilityCommandHandler`; 2-arg ctor (tests, standalone) → executes at once. Authority `Execute` = cancel / activate / cast-on-arrival. AI and `PlayerAutoPowerService` stay direct (authority automation).
+  - Reinforcements: `DeployReinforcementCommand` (kind + key + slot positions). Previews/placement stay local in `ReinforcementService`; drop sends slots whose preview `CanSpawn`. Authority `Deploy` finds the request in the reserve, re-creates the placement, re-checks reserve count, `IsPositionValid`, capacity; raises `ReinforcementDeployed`/`CapacityRejected` and `InvokeSpawnShipEvent`. Offline order change: deploy now runs before preview teardown (same as before) but the spawn event fires before the lock is released.
+- [x] Issue #6 (2026-11-07): `UniqueIdGenerator` moved to battle scope (`SkirmishScope`), sequential, throws unless `IMatchSession.IsAuthority`; every `EntityAdded` (incl. restored) advances the counter past its id. Known risk: a save made with sequential ids that spawns a new entity before all restored entities are registered would collide (duplicate key fails fast in `EntityLocator.AddEntity`).
+- [x] Issue #9 (2026-11-07): capture/zone sim already per `PlayerId` (construction via issuer command; `_localPlayer` uses there are vision/presentation only). `BattleVictoryModel` split: `EvaluateTeams` (authority, viewer-independent, `SurvivingTeams`) + `OutcomeFor(team)` (per viewer); `Evaluate` = both, so offline unchanged. `BattleVictoryService.CreateResult` stays per viewer.
+- [x] Issue #14 (2026-11-07): `SurvivalSettings.CoopHumanFactions` (new ctor overload; old ctor = empty). `SurvivalPreset`: player 0, co-op humans (team 0), optional AI ally hosted on player 0, wave attacker last. `SurvivalLayoutGenerator`: 1 human → unchanged (center); 2+ humans → stations on a ring `(radius + DefaultZoneGap) / sin(π/n)`, zone per human outward, mining ring pushed out by the ring, satellite pads round-robin between humans; hosted ally shares its host's station. `SurvivalOutcomeRule`: lose when every human station has fallen. `SurvivalWaveDirector`: waves attack the first human with a living station. Max co-op = 4 players incl. attacker (3 humans, or 2 + AI ally). `SurvivalSetupSave` does not store co-op humans (online save is Phase 6).
+- Survival co-op needs a Medium or Large map: `SurvivalPreset.Create` throws for co-op on `MapSize.Small` (2 stations + mining ring do not fit; generator threw "do not fit"). Ring spacing: chord between co-op stations = `2·radius + DefaultZoneGap`.
+- Tests (user-requested run, 2026-11-07): full EditMode 2862 tests → 2844 passed, 18 failed. The same 18 fail on the HEAD baseline without these changes (stash check, 2837/2819/18): prefab scale/UI (`AllegianceShip`, `ISDII`, `Tartan` reinforcement views, `UiPrefabScale`/`BattleInputPrefab` DesktopDebugConsole), `HarmonicBomb`, `HealthOverlayAnchor` (Boba/Jango squadrons), `ProcursatorShip`, `ReinforcementZonesSystem` relay ×2, `SelectionMarker` ×3, `ShipAutoPowerUi`, `SurvivalGameplay.AuthoredWaves`. New fixtures all pass. Explicit map runs: `MapGeneration` 42/42, `MapExhaustive` 42/42 passed.
+- New EditMode fixtures: `PlayerCommandSinkTests` (BattleInput), `MatchSessionTests` + `SurvivalCoopTests` (GameFlow), `UniqueIdGeneratorTests` (Core). `AGENTS.md` test table: `Services/PlayerCommands` → `BattleInput`.
+  - Done 2026-11-07 (compile clean; tests not run), `Services/PlayerCommands/`:
+    - Commands = readonly structs with ids/keys only: `UnitOrderCommand` (issuer, `UnitActionId`, receiver ids, point, target id, hardpoint, waypoints), `PurchaseUnitCommand` (`UnitRequestKind` + key + tier; covers units, research, station level, super weapon charge), `CancelPurchaseCommand` (request id), `BuildSiteFacilityCommand` (site index + facility), `FireSuperWeaponCommand` (type + target id).
+    - `IPlayerCommandSink` → `AuthorityCommandSink` (battle scope; offline and future host). Resolves ids via `IEntityLocator`; **#5: drops receivers whose `Owner != Issuer`**, then calls `IUnitOrderService`. Validation lives in the sink, not `UnitOrderService` (AI calls stay trusted and unchanged).
+    - Per-player/optional handlers self-register into battle-scope `PlayerCommandHandlers` on `Initialize` (no sink → handler dependency, no cycles): `HumanProductionCommandHandler` (EconomyModule, human) → `IFactionService.TryPurchaseUnit`/`CancelBuilding` with the request rebuilt by `UnitRequestSave.CreateRequest`; `HumanSuperWeaponCommandHandler` (SuperWeaponsModule, human) → `CanFire` + `CanTarget` + `Consume` + `Fire`; `CaptureSitesSystem.TryStartAlliedConstruction` (same rules as the old local path: site owner allied with payer, payer pays).
+    - Callers switched: `PlayerOrderInputHandler`, `UnitActionsPresenter` → `IPlayerUnitOrders` (`PlayerUnitOrders` builds `UnitOrderCommand` with `ILocalPlayer.Id`); `FactionUiController` purchase, `ShipBuildUiController` cancel, `SuperWeaponPresenter` fire (consume moved to the handler), `CaptureSitesSystem.BuildSelected`.
+    - Tests updated to compile: `PlayerOrderInputHandlerTests`/`UnitActionsPresenterTests` fakes implement `IPlayerUnitOrders`; `FactionUnitAvailabilityTests` ctor args; `SuperWeaponAudioTests` uses a direct sink + real handler and a non-null target.
+  - Still open for #4: ship abilities (`ShipAbilityService.Press/SubmitTarget/TryActivate` mixes targeting UI state with activation → split first), reinforcement deploy/placement (inside `ReinforcementService` with pointer/camera input), `FactionService.ChangeSelection/CloseSelection` (local selection UI), cheats (local debug, stay direct).
+
 
 ### Phase 2 — Session + lobby
-- [ ] Add Mirror, FizzySteamworks, Steamworks.NET. `NetworkManager` (empty online/offline scenes) lives in a persistent root owned by `ProjectScope`, outside battle scopes; it is not created in offline sessions.
+- [ ] Packages added (Phase 0). Still open: `NetworkManager` (empty online/offline scenes) lives in a persistent root owned by `ProjectScope`, outside battle scopes; it is not created in offline sessions.
 - [ ] `IOnlineLobby` over Steam lobbies: create (friends-only/private), invite, join, slot properties (faction, team, color, AI, ready), host kick. `KcpTransport` path: host IP entry for dev.
 - [ ] Host sends `SkirmishSetupSave` (or a Survival setup) → clients run the existing loading pipeline → ready barrier → host starts.
+- [ ] Menu: `Online` route (Host Skirmish, Host Survival, Join by IP) → Lobby UI and Join Flow.
+- [ ] Lobby screen: `Open`/`RemoteHuman` occupants, Steam name + avatar, per-row edit rights, ready, invite, kick, leave.
+- [ ] Steam join paths: overlay invite, `+connect_lobby` launch arg, `GameLobbyJoinRequested_t`/`GameRichPresenceJoinRequested_t`, rich presence `connect` + status.
 
 ### Phase 3 — Tick replication
 - [ ] Host `NetworkTickService` (20 Hz accumulator, command queue, change collection, MTU chunking).
@@ -126,7 +219,13 @@ tags:
 
 ### Phase 5 — Robustness
 - [ ] Disconnect → `AiPlayerScope` takeover; host leaves → match ends.
-- [ ] Issues #8, #10, #11 v1 rules; online menu entries; error UI (Steam not running, lobby/connection failures, version mismatch).
+- [ ] Issues #8, #10, #11 v1 rules; error UI (Steam not running, lobby full/closed, connection failure, version mismatch, host left, kicked).
+
+### Phase 6 — Online saving (post-v1)
+- [ ] Full-state baseline on join (also enables reconnect and late join).
+- [ ] Host-only save + slot → Steam ID map; host-only autosave.
+- [ ] Resume lobby: host loads save → reserved slots for saved Steam IDs → AI fills empty slots.
+- [ ] Optional: in-game Friends panel / friends' lobby list.
 
 ## Security (public repo)
 
@@ -167,7 +266,8 @@ tags:
 ## Edge Cases
 
 - Host migration: not in v1 (host leaves → match ends).
-- Late join and reconnect: not in v1; baselines + spawn events make them possible later.
+- Late join and reconnect: not in v1; the Phase 6 full-state baseline enables them and online loading.
+- Saved friend not available on resume → slot runs as AI.
 - Survival wave AI and every AI slot run only on the host.
 - Cosmetic randomness (`FighterManeuver`, `ImpactEffectView`, `UnitWreckService`) stays client-local.
 - Fighters: replicate the squadron entity only; individual fighter maneuvers are client cosmetic.
@@ -178,6 +278,12 @@ tags:
 
 - EditMode: command serialization round-trip, issuer validation, N-human `MatchRules`, Survival co-op presets, offline parity, tick message delta encoding. Categories: `GameFlow`, `BattleInput`, `Core` + touched systems.
 - User-only: two machines over Steam (App 480) and over Tailscale/KCP; Multiplayer Play Mode or two builds for local iteration.
+
+## Status
+
+- 2026-11-07 re-check vs `26f718498`: nothing implemented (no Mirror/Steam packages, no session/command/tick types, no Sandbox spike). Issues #1–#14 all still present in source. Only counts corrected.
+- 2026-11-07: added Lobby UI and Join Flow, Online Saving, Phase 6 (proposals; not yet user-confirmed in detail).
+- 2026-11-07 started: packages + Phase 0 spike code + Phase 1 session seam. Verification: Unity compile clean, Mirror weaver ran (`Mirror.GeneratedNetworkCode` in `Sandbox.Multiplayer`), 0 console errors/warnings. Tests not run (local override); spike not run (needs two machines / Play Mode by user). `TestPlayers.CreateLocalPlayer` updated for the new ctor.
 
 ## TODO / Open Questions
 

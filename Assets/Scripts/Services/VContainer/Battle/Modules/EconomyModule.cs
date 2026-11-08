@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Entities.Economy.Ui;
 using EmpireAtWar.Entities.EnemyFaction.Controllers;
 using EmpireAtWar.Entities.EnemyFaction.Models;
@@ -38,15 +39,13 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<EconomyService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EconomySaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
             if (player.Slot.IsAi) ConfigureAi(builder, playerRoot);
-            else ConfigureHuman(builder, playerRoot);
+            else ConfigureHuman(builder);
         }
 
-        private static void ConfigureHuman(IContainerBuilder builder, Transform playerRoot)
+        public void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
         {
             builder.Register<EconomyUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<FactionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FactionUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<HumanProductionSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipBuildUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CheatService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CheatWorldService>(Lifetime.Singleton);
@@ -54,6 +53,13 @@ namespace EmpireAtWar.Services.VContainer
             GameObject cheatRoot = new GameObject(nameof(CheatView));
             cheatRoot.transform.SetParent(playerRoot, false);
             builder.RegisterComponent(cheatRoot.AddComponent<CheatView>()).AsImplementedInterfaces().AsSelf();
+        }
+
+        private static void ConfigureHuman(IContainerBuilder builder)
+        {
+            builder.Register<FactionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<HumanProductionSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<HumanProductionCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
         private static void ConfigureAi(IContainerBuilder builder, Transform playerRoot)

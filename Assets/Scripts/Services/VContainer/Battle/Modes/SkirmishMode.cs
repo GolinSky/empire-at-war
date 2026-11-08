@@ -10,6 +10,8 @@ namespace EmpireAtWar.Services.VContainer
     {
         public void ConfigureBattle(IContainerBuilder builder)
         {
+            builder.Register<IMatchSession>(resolver => OfflineSession.ForHuman(resolver.Resolve<IPlayerRoster>()),
+                Lifetime.Singleton);
             builder.Register<LocalPlayer>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<BattleSaveInput>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<BattleAutosave>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

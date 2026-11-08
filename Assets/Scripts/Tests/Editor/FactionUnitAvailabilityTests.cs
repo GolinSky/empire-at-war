@@ -207,7 +207,7 @@ namespace EmpireAtWar.Tests.Editor
         private static FactionUiController CreatePresenter(PlayerFactionModel model)
         {
             return new FactionUiController(
-                uiService: null, placement: null, cancelRouter: null, factionService: null,
+                uiService: null, placement: null, cancelRouter: null, commands: null, owner: null,
                 model: model, research: null, unitRequestFactory: null, routeNavigation: null,
                 tooltipService: null, economy: null, hud: null, battleState: null, roster: null,
                 reinforcements: null, assets: null, shipsData: null, interfaceAudio: null);

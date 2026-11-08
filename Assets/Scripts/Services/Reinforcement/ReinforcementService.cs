@@ -17,6 +17,8 @@ using EmpireAtWar.Services.Player;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Services.Hazards;
 using EmpireAtWar.Services.Tooltip;
+using EmpireAtWar.Services.PlayerCommands;
+using EmpireAtWar.Services.Saves;
 
 namespace EmpireAtWar.Services.Reinforcement
 {
@@ -28,7 +30,7 @@ namespace EmpireAtWar.Services.Reinforcement
     /// <summary>Runs the drag-to-place flow: input lock, preview, validation and release.
     /// What may be placed where is decided by the request's <see cref="IReinforcementPlacement"/>.
     /// Holding deploy-all at drag start places every reserve unit of that kind that fits, in a grid around the cursor.</summary>
-    public class ReinforcementService : Service, IReinforcementService, ILateTickable, IInitializable,
+    public class ReinforcementService : Service, IReinforcementService, IReinforcementCommandHandler, ILateTickable, IInitializable,
         ILateDisposable, IReinforcementPool, IObserver<BattleResult>, IUiCancelHandler
     {
         // Gap between batch slots, relative to the preview's planar radius.
@@ -42,6 +44,8 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly ISpawnAreaOverlay _spawnAreaOverlay;
         private readonly IReinforcementDeployInput _deployInput;
         private readonly IStructureSpawnClearance _structureClearance;
+        private readonly IPlayerCommandSink _commands;
+        private readonly PlayerCommandHandlers _commandHandlers;
         private IDisposable _placementLock;
         private IReinforcementPlacement _placement;
 
@@ -75,8 +79,12 @@ namespace EmpireAtWar.Services.Reinforcement
             IHazardService hazards,
             ITooltipService tooltipService,
             IReinforcementDeployInput deployInput,
-            IStructureSpawnClearance structureClearance)
+            IStructureSpawnClearance structureClearance,
+            IPlayerCommandSink commands,
+            PlayerCommandHandlers commandHandlers)
         {
+            _commands = commands;
+            _commandHandlers = commandHandlers;
             _playerRegistry = playerRegistry;
             _owner = owner;
             _model = model;
@@ -97,6 +105,7 @@ namespace EmpireAtWar.Services.Reinforcement
         public void Initialize()
         {
             _playerRegistry.RegisterReinforcementReserve(_owner.Id, _model);
+            _commandHandlers.RegisterReinforcements(_owner.Id, this);
             _pointerInput.PrimaryReleased += Interrupt;
             _battleVictoryNotifier.AddObserver(this);
         }
@@ -105,6 +114,7 @@ namespace EmpireAtWar.Services.Reinforcement
         {
             CancelPlacement();
             _playerRegistry.UnregisterReinforcementReserve(_owner.Id);
+            _commandHandlers.UnregisterReinforcements(_owner.Id);
             _pointerInput.PrimaryReleased -= Interrupt;
             _battleVictoryNotifier.RemoveObserver(this);
         }
@@ -241,35 +251,69 @@ namespace EmpireAtWar.Services.Reinforcement
             _model.IsTrySpawning = false;
             _cancelRouter.Unfocus(this);
             Vector3 dropPoint = _cameraService.GetWorldPoint(screenPosition, _previews[0].Position);
-            bool usesCapacity = ReinforcementModel.UsesCapacity(_currentRequest);
-            bool isCapacityBlocked = false;
-            int deployedCount = 0;
-            // Blocked slots are skipped; their units stay in the reserve.
+            // Previews flag locally blocked slots; the authority re-checks every slot it receives.
+            List<Vector3> slots = new List<Vector3>(_previews.Count);
             for (int i = 0; i < _previews.Count; i++)
             {
-                Vector3 slot = GetSlotPosition(dropPoint, i);
-                if (!_previews[i].CanSpawn || !_placement.IsPositionValid(slot)) continue;
-                if (usesCapacity && !_model.HasRoomFor(_currentRequest))
+                if (_previews[i].CanSpawn) slots.Add(GetSlotPosition(dropPoint, i));
+            }
+
+            UnitRequestSave key = UnitRequestSave.From(_currentRequest);
+            _commands.Submit(new DeployReinforcementCommand(_owner.Id, key.Kind, key.Key, slots.ToArray()));
+            DestroyPreviews();
+            _spawnAreaOverlay.Hide();
+            _placementLock.Dispose();
+        }
+
+        /// <summary>Authority side of a drop: blocked slots are skipped and their units stay in the reserve.</summary>
+        public void Deploy(DeployReinforcementCommand command)
+        {
+            if (!TryFindReserve(command.Kind, command.Key, out UnitRequest request) ||
+                !_placementFactory.TryCreate(request, out IReinforcementPlacement placement))
+            {
+                _model.InvokeSpawnShipEvent(0);
+                return;
+            }
+
+            bool usesCapacity = ReinforcementModel.UsesCapacity(request);
+            bool isCapacityBlocked = false;
+            int deployedCount = 0;
+            foreach (Vector3 slot in command.Slots)
+            {
+                if (_model.GetReserveCount(request) == 0) break;
+                if (!placement.IsPositionValid(slot)) continue;
+                if (usesCapacity && !_model.HasRoomFor(request))
                 {
                     isCapacityBlocked = true;
                     break;
                 }
 
-                _placement.Spawn(slot);
-                _model.ConsumeReinforcement(_currentRequest);
+                placement.Spawn(slot);
+                _model.ConsumeReinforcement(request);
                 deployedCount++;
-                ReinforcementDeployed?.Invoke(_currentRequest);
+                ReinforcementDeployed?.Invoke(request);
             }
 
-            if (isCapacityBlocked || deployedCount == 0 && usesCapacity && !_model.HasRoomFor(_currentRequest))
+            if (isCapacityBlocked || deployedCount == 0 && usesCapacity && !_model.HasRoomFor(request))
             {
                 CapacityRejected?.Invoke();
             }
 
-            DestroyPreviews();
-            _spawnAreaOverlay.Hide();
-            _placementLock.Dispose();
             _model.InvokeSpawnShipEvent(deployedCount);
+        }
+
+        private bool TryFindReserve(UnitRequestKind kind, int key, out UnitRequest request)
+        {
+            foreach (KeyValuePair<UnitRequest, int> entry in _model.Reserve)
+            {
+                UnitRequestSave candidate = UnitRequestSave.From(entry.Key);
+                if (candidate.Kind != kind || candidate.Key != key) continue;
+                request = entry.Key;
+                return true;
+            }
+
+            request = null;
+            return false;
         }
 
         private Vector3 GetSlotPosition(Vector3 dropPoint, int index)

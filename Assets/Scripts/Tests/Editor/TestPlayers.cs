@@ -58,7 +58,7 @@ namespace EmpireAtWar.Tests.Editor
 
         public static LocalPlayer CreateLocalPlayer(IPlayerRoster playerRoster)
         {
-            return new LocalPlayer(playerRoster);
+            return new LocalPlayer(playerRoster, OfflineSession.ForHuman(playerRoster));
         }
 
         public static PlayerSlot Slot(IPlayerRoster playerRoster, PlayerId id)

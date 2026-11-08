@@ -23,7 +23,7 @@ tags:
 - Two owners, both inside VContainer `Configure` (synchronous, runs in scope `Awake`):
   - `ProjectScope.Configure:35-36` → mapping data + `GameData` (+ `SceneData` via `AssetRegistrations.RegisterShared`).
   - `SkirmishScope.Configure:95` → own `CachedAssetService`; loads `FactionCatalog`, modules, tooltips, `HardPointOverlayData`, battle modes during scope build.
-- `SquadronPool.Initialize:51-67`: synchronous loop, up to `MAX_PREWARM_PER_TYPE = 12` full squadrons per type per player; registered in both `LocalPlayerScope:42` and `AiPlayerScope:35`.
+- `SquadronPool.Initialize:51-67`: synchronous loop, up to `MAX_PREWARM_PER_TYPE = 12` full squadrons per type per player; registered in both `LocalPlayerScope:42` (now `HumanPlayerScope`, 2026-11-07) and `AiPlayerScope:35`.
 - `SquadronPool.CountPrewarm:128-141` loads `ShipData` for every ship of the owner's faction + `SpaceStationData`.
 - **New:** `ShipData.Wreck` → `UnitWreckData` → hard ref to wreck view prefab (e.g. `TartanWreckData` → `TartanWreckView.prefab`). 59 wreck prefabs; not Addressable entries → implicit deps of the Data group. `CountPrewarm` therefore pulls every faction wreck prefab + meshes/textures synchronously. Likely contributor to Data bundle size; confirm with build layout.
 - `SceneService.LoadScene:65` → `SceneManager.LoadScene` (sync) for the loading scene; target scene via `LoadSceneAsync` + `allowSceneActivation = false` (`:89-90`), loaded 1 s after loading scene (`TimerPoolService.Invoke(..., 1f)`). Scope build on activation still hits the blocking loads above.
@@ -156,7 +156,7 @@ tags:
 ## Files
 
 - `Assets/Scripts/Services/Repository/CachedAssetService.cs`, `AddressableHandleLoader.cs`, `BattleAssetPreloader.cs`, `BattleAssetPreload.cs`
-- `Assets/Scripts/Services/VContainer/Scopes/ProjectScope.cs`, `SkirmishScope.cs`, `AssetLifetimeScope.cs`, `Players/LocalPlayerScope.cs`, `Players/AiPlayerScope.cs`
+- `Assets/Scripts/Services/VContainer/Scopes/ProjectScope.cs`, `SkirmishScope.cs`, `AssetLifetimeScope.cs`, `Players/HumanPlayerScope.cs`, `Players/AiPlayerScope.cs`
 - `Assets/Scripts/Services/Squadron/SquadronPool.cs`, `ISquadronPrewarmer.cs`; `Services/Player/IPlayerRegistry.cs`, `PlayerRegistry.cs`; `Entities/CoreGame/BattleStartupSequence.cs`
 - `Assets/Scripts/Services/SceneService/SceneService.cs`
 - `Assets/Scripts/Entities/Ship/Data/ShipData.cs`, `Assets/Scripts/Services/UnitWreck/UnitWreckData.cs`

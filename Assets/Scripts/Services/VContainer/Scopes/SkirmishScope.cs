@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Controllers.Game;
@@ -129,6 +130,9 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterInstance(reinforcementZoneData);
             builder.RegisterInstance(unitOrderSettings);
             builder.Register<UnitOrderService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<PlayerCommandHandlers>(Lifetime.Singleton);
+            builder.Register<AuthorityCommandSink>(Lifetime.Singleton).As<IPlayerCommandSink>();
+            builder.Register<PlayerUnitOrders>(Lifetime.Singleton).As<IPlayerUnitOrders>();
             builder.Register<UnitActionTargetingModel>(Lifetime.Singleton);
             builder.Register<PlayerOrderInputHandler>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             AssetRegistrations.RegisterShared<HardPointOverlayData>(builder, Assets);
@@ -158,6 +162,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<FpsModel>(Lifetime.Singleton);
             builder.Register<FpsUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EntityLocator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<EmpireAtWar.Services.IdGeneration.UniqueIdGenerator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<StationRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SquadronRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SquadronLauncher>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

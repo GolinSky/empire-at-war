@@ -47,8 +47,6 @@ namespace EmpireAtWar.Services.VContainer
             if (player.Slot.IsAi)
                 builder.Register<EnemySiteObjectives>(Lifetime.Singleton).As<IEnemyCaptureObjectiveSource>();
             if (!player.Has(BattleFeatures.Economy)) return;
-            if (!player.Slot.IsAi)
-                builder.Register<CaptureSiteAnnouncer>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SiteFacilityBuilder>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             if (player.Slot.IsAi)
             {
@@ -56,6 +54,12 @@ namespace EmpireAtWar.Services.VContainer
                 builder.Register<EnemyDefenseSnapshotBuilder>(Lifetime.Singleton);
                 builder.Register<EnemySiteConstructionController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             }
+        }
+
+        public void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
+        {
+            if (player.Has(BattleFeatures.Economy))
+                builder.Register<CaptureSiteAnnouncer>(Lifetime.Singleton).AsImplementedInterfaces();
         }
     }
 }

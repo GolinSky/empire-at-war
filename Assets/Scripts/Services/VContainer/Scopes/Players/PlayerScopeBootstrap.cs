@@ -24,14 +24,17 @@ namespace EmpireAtWar.Services.VContainer
         private readonly SkirmishScope _owner;
         private readonly IPlayerRoster _roster;
         private readonly PlayerFactoryLookup _factoryLookup;
+        private readonly IMatchSession _session;
         private readonly List<AssetLifetimeScope> _players = new List<AssetLifetimeScope>();
         private readonly List<HostedFactionLevel> _hostedLevels = new List<HostedFactionLevel>();
 
-        public PlayerScopeBootstrap(SkirmishScope owner, IPlayerRoster roster, PlayerFactoryLookup factoryLookup)
+        public PlayerScopeBootstrap(SkirmishScope owner, IPlayerRoster roster, PlayerFactoryLookup factoryLookup,
+            IMatchSession session)
         {
             _owner = owner;
             _roster = roster;
             _factoryLookup = factoryLookup;
+            _session = session;
         }
 
         public void Initialize()
@@ -65,9 +68,9 @@ namespace EmpireAtWar.Services.VContainer
                 }
                 else
                 {
-                    LocalPlayerScope local = playerRoot.AddComponent<LocalPlayerScope>();
-                    local.ConfigurePlayer(slot);
-                    player = local;
+                    HumanPlayerScope human = playerRoot.AddComponent<HumanPlayerScope>();
+                    human.ConfigurePlayer(slot, slot.Id == _session.LocalPlayerId);
+                    player = human;
                 }
 
                 player.autoRun = false;

@@ -57,7 +57,7 @@ namespace EmpireAtWar.Tests.Editor
             _orders = new FakeOrders();
             _battleState = new FakeBattleState();
             _presenter = new UnitActionsPresenter(coreUi: new FakeProvider(_view),
-                selectionService: _selection, abilities: _abilities, targeting: _targeting, inputHandler: _handler, unitOrderService: _orders, battleState: _battleState,
+                selectionService: _selection, abilities: _abilities, targeting: _targeting, inputHandler: _handler, playerOrders: _orders, battleState: _battleState,
                 uiService: new FakeUiService(), cancelRouter: _cancelRouter, tooltipService: null, bindings: null);
             _presenter.Initialize();
         }
@@ -292,9 +292,8 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryIssueMove(Vector3 worldPoint) => false;
         }
 
-        private sealed class FakeOrders : IUnitOrderService
+        private sealed class FakeOrders : IPlayerUnitOrders
         {
-            public event Action<UnitOrder> OrderIssued { add { } remove { } }
 
             public UnitActionId? LastAction { get; private set; }
 

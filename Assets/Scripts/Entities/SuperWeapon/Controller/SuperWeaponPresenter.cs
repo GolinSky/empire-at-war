@@ -7,6 +7,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Model;
+using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.UiRouting;
@@ -39,6 +40,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         private readonly INotifier<BattleState> _battleState;
 
         private readonly SuperWeaponModel _model;
+        private readonly IPlayerCommandSink _commands;
         private readonly SuperWeaponTargetingModel _targeting;
         private readonly UnitActionTargetingModel _unitTargeting;
         private readonly TooltipRequests _tooltips;
@@ -57,9 +59,10 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             SuperWeaponTargetingModel targeting,
             UnitActionTargetingModel unitTargeting,
             SuperWeaponData data, EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio,
-            EmpireAtWar.Services.Audio.InterfaceSfxData interfaceData)
+            EmpireAtWar.Services.Audio.InterfaceSfxData interfaceData, IPlayerCommandSink commands)
             : base(uiService, cancelRouter)
         {
+            _commands = commands;
             _localPlayer = localPlayer;
             _interfaceAudio = interfaceAudio;
             _interfaceData = interfaceData;
@@ -206,8 +209,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 return;
             }
             _targeting.Cancel();
-            _model.Consume(type);
-            _superWeaponFireService.Fire(type, target);
+            _commands.Submit(new FireSuperWeaponCommand(_localPlayer.Id, type, target.Id));
             _interfaceAudio.PlayAnnouncement(_interfaceData.GetOrbitalFiring(type));
         }
 

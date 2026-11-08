@@ -16,6 +16,7 @@ using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.SpawnBlocking;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Services.Ships;
 using Unity.Profiling;
 using EmpireAtWar.Utils;
@@ -28,7 +29,8 @@ namespace EmpireAtWar.Services.CaptureSites
     /// </summary>
     public sealed class CaptureSitesSystem : MonoBehaviour, ICaptureSiteDirectory, ICaptureSiteEvents,
         ICaptureSitePresence, ICaptureSiteConstruction, ICaptureSiteSaveState, IInitializable, ITickable,
-        ILateDisposable, IUiCancelHandler, IObserver<BattleMap>, ICaptureSiteBuildSelection
+        ILateDisposable, IUiCancelHandler, IObserver<BattleMap>, ICaptureSiteBuildSelection,
+        ISiteConstructionCommandHandler
     {
         private const float SATELLITE_ORDER_RADIUS = 2f;
         private static readonly ProfilerMarker CaptureMarker = new ProfilerMarker("Battle.Capture.Site.Model");
@@ -47,6 +49,8 @@ namespace EmpireAtWar.Services.CaptureSites
         private ILocalPlayer _localPlayer;
         private ITooltipService _tooltipService;
         private INotifier<BattleMap> _battleMap;
+        private IPlayerCommandSink _commands;
+        private PlayerCommandHandlers _commandHandlers;
 
         private readonly List<CaptureSitePresenter> _sites = new List<CaptureSitePresenter>();
         private readonly List<Transform> _areaSources = new List<Transform>();
@@ -84,8 +88,12 @@ namespace EmpireAtWar.Services.CaptureSites
             INotifier<BattleMap> battleMap,
             CaptureSiteData data,
             MapGenerationSettings mapSettings,
-            IBattleAreaWriter areaWriter)
+            IBattleAreaWriter areaWriter,
+            IPlayerCommandSink commands,
+            PlayerCommandHandlers commandHandlers)
         {
+            _commands = commands;
+            _commandHandlers = commandHandlers;
             _areaWriter = areaWriter;
             _battleMap = battleMap;
             _tooltipService = tooltipService;
@@ -107,6 +115,7 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             _gestures.WorldClicked += HandleWorldClicked;
             _battleMap.AddObserver(this);
+            _commandHandlers.RegisterSiteConstruction(this);
         }
 
         public void UpdateState(BattleMap battleMap)
@@ -146,6 +155,7 @@ namespace EmpireAtWar.Services.CaptureSites
             _battleMap.RemoveObserver(this);
             _gestures.WorldClicked -= HandleWorldClicked;
             _cancelRouter.Unfocus(this);
+            _commandHandlers.UnregisterSiteConstruction();
         }
 
         private void ClearSites()
@@ -269,7 +279,7 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             if (_selectedSite != null && IsSelectable(_selectedSite))
             {
-                TryStartConstruction(_selectedSite, facilityType, _localPlayer.Id);
+                _commands.Submit(new BuildSiteFacilityCommand(_localPlayer.Id, _sites.IndexOf(_selectedSite), facilityType));
             }
         }
 
@@ -278,6 +288,9 @@ namespace EmpireAtWar.Services.CaptureSites
             CaptureSitePresenter site = _sites[siteIndex];
             return site.Owner == owner && !HasHostileUnits(site, owner) && TryStartConstruction(site, type, owner);
         }
+
+        public bool TryStartAlliedConstruction(int siteIndex, PlayerId payer, SiteFacilityType facilityType) =>
+            TryStartConstruction(_sites[siteIndex], facilityType, payer);
 
         private bool TryStartConstruction(CaptureSitePresenter site, SiteFacilityType facilityType, PlayerId payer)
         {

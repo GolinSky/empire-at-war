@@ -32,5 +32,12 @@ namespace EmpireAtWar.Services.VContainer
                 if (player.Has(module.Feature))
                     module.ConfigurePlayer(builder, player, playerRoot);
         }
+
+        public void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
+        {
+            foreach (IBattleModule module in Enabled)
+                if (player.Has(module.Feature))
+                    module.ConfigureLocalPlayer(builder, player, playerRoot);
+        }
     }
 }

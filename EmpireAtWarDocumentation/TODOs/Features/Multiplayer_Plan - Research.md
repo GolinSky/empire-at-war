@@ -8,7 +8,7 @@ tags:
 ---
 # Multiplayer Plan - Research
 
-Plan → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]. Audit date 2026-11-02, commit `549d4c2ab`. Counts exclude `Tests/` and `Editor/`.
+Plan → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]. Audit date 2026-11-02, commit `549d4c2ab`; counts re-checked 2026-11-07 at `26f718498`. Counts exclude `Tests/` and `Editor/`.
 
 ## Current Networking State
 
@@ -18,12 +18,12 @@ Plan → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]. Audit date 2026-1
 
 ## Determinism Audit (why not lockstep)
 
-- `Time.deltaTime` / `Time.time` / `Time.fixedDeltaTime`: 67 files (e.g. `BattleClock.Tick`, `WeaponComponent` salvo timing `Time.time`).
-- `UnityEngine.Random`: 21 files, including sim code: `WeaponComponent` retry jitter (`Random.Range(MIN_RETRY_INTERVAL, MAX_RETRY_INTERVAL)`) and group-sort offset.
+- `Time.deltaTime` / `Time.time` / `Time.fixedDeltaTime`: 69 files (e.g. `BattleClock.Tick`, `WeaponComponent` salvo timing `Time.time`).
+- `UnityEngine.Random`: 20 files, including sim code: `WeaponComponent` retry jitter (`Random.Range(MIN_RETRY_INTERVAL, MAX_RETRY_INTERVAL)`) and group-sort offset.
 - `System.Random`: map generation (`BattleMapLoader` seeds `new Random(_battle.Map.Seed)`, so it is deterministic); also `FighterManeuver`, `EdgeSpawnPoints`, `UnitWreckService`, `MusicService`, `MatchNebula`.
-- Ids: `UniqueIdGenerator.GenerateUniqueId` = `BitConverter.ToInt64(Guid.NewGuid())`. Used by `ShipFactory`, `SquadronFactory`, `SpaceStationFactory`, `MiningFacilityFactory`, `DefendPlatformFactory`, `SiteFacilityBuilder`, `SkirmishPreset`.
+- Ids: `UniqueIdGenerator.GenerateUniqueId` = `BitConverter.ToInt64(Guid.NewGuid())`. Used by `ShipFactory`, `SquadronFactory`, `SpaceStationFactory`, `MiningFacilityFactory`, `DefendPlatformFactory`, `SiteFacilityBuilder`. `SkirmishPreset` uses `Guid` only for `NewMapSeed()`, not entity ids.
 - Speed: `SkirmishOrchestrator.ApplyTimeScale` (`FAST_TIME_SCALE`/`PAUSE_TIME_SCALE`); `GameController` resets `Time.timeScale = 1f`.
-- Physics: 0 `Rigidbody`, 0 `NavMeshAgent`, 1 file with `Physics.*` queries.
+- Physics: 0 `Rigidbody`, 0 `NavMeshAgent`, 2 files with `Physics.*` queries (`CameraService`, `StructureSpawnClearance`).
 
 ## Ownership / Local Player
 

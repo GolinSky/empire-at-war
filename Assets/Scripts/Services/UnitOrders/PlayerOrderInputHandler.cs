@@ -40,7 +40,7 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly ICameraService _cameraService;
         private readonly ILayerService _layerService;
         private readonly IShipAbilityTargeting _abilities;
-        private readonly IUnitOrderService _unitOrderService;
+        private readonly IPlayerUnitOrders _playerOrders;
         private readonly IHardPointHoverObserver _hardPointHover;
         private readonly IBattleAreaService _battleAreas;
 
@@ -50,7 +50,7 @@ namespace EmpireAtWar.Services.UnitOrders
         public PlayerOrderInputHandler(IPointerGestures gestures, IUnitOrderInput orderInput,
             ISelectionService selectionService,
             ISelectionQuery query, ICameraService cameraService, ILayerService layerService,
-            IShipAbilityTargeting abilities, IUnitOrderService unitOrderService,
+            IShipAbilityTargeting abilities, IPlayerUnitOrders playerOrders,
             IHardPointHoverObserver hardPointHover, ILocalPlayer localPlayer,
             UnitActionTargetingModel targeting,
             SuperWeaponTargetingModel superWeapons, IBattleAreaService battleAreas,
@@ -66,7 +66,7 @@ namespace EmpireAtWar.Services.UnitOrders
             _layerService = layerService;
             _abilities = abilities;
             _targeting = targeting;
-            _unitOrderService = unitOrderService;
+            _playerOrders = playerOrders;
             _superWeapons = superWeapons;
             _hardPointHover = hardPointHover;
             _battleAreas = battleAreas;
@@ -92,7 +92,7 @@ namespace EmpireAtWar.Services.UnitOrders
                 List<Vector3> points = new List<Vector3>(_targeting.Waypoints.Count);
                 foreach (FormationPoint waypoint in _targeting.Waypoints)
                     points.Add(ToVector(waypoint));
-                _unitOrderService.IssueWaypointMove(Snapshot(), points);
+                _playerOrders.IssueWaypointMove(Snapshot(), points);
             }
             _targeting.Cancel();
         }
@@ -111,13 +111,13 @@ namespace EmpireAtWar.Services.UnitOrders
                 worldPoint.y = move.WorldPosition.y;
                 if (_targeting.Pending == UnitActionId.AttackMove)
                 {
-                    _unitOrderService.IssueAttackMove(receivers, worldPoint);
+                    _playerOrders.IssueAttackMove(receivers, worldPoint);
                     _targeting.Cancel();
                 }
                 else if (_targeting.Pending == UnitActionId.WaypointMove)
                     _targeting.AddWaypoint(ToPoint(worldPoint));
                 else
-                    _unitOrderService.IssueMove(receivers, worldPoint);
+                    _playerOrders.IssueMove(receivers, worldPoint);
                 return true;
             }
             return false;
@@ -177,7 +177,7 @@ namespace EmpireAtWar.Services.UnitOrders
                 if (target != null && _localPlayer.IsFriendly(target.Owner) &&
                     target.TryGetFacade(out IEntitySelectionFacade _))
                 {
-                    _unitOrderService.IssueGuard(receivers, target);
+                    _playerOrders.IssueGuard(receivers, target);
                     _targeting.Cancel();
                 }
                 return;
@@ -212,7 +212,7 @@ namespace EmpireAtWar.Services.UnitOrders
                 switch (pending.Value)
                 {
                     case UnitActionId.AttackMove:
-                        _unitOrderService.IssueAttackMove(receivers, point);
+                        _playerOrders.IssueAttackMove(receivers, point);
                         _targeting.Cancel();
                         break;
                     case UnitActionId.WaypointMove:
@@ -224,14 +224,14 @@ namespace EmpireAtWar.Services.UnitOrders
 
             if (IsEnemy(target)) IssueAttack(receivers, target, hasHardPoint, hardPointId);
             else if ((!hasUnit || isFriendlyShip) && !IsObstacle(screen))
-                _unitOrderService.IssueMove(receivers,
+                _playerOrders.IssueMove(receivers,
                     _cameraService.GetWorldPoint(screen, ReferencePosition(receivers)));
         }
 
         private void IssueAttack(List<IEntity> receivers, IEntity target, bool hasHardPoint, int hardPointId)
         {
-            if (hasHardPoint) _unitOrderService.IssueHardPointAttack(receivers, target, hardPointId);
-            else _unitOrderService.IssueAttack(receivers, target);
+            if (hasHardPoint) _playerOrders.IssueHardPointAttack(receivers, target, hardPointId);
+            else _playerOrders.IssueAttack(receivers, target);
         }
 
         private List<IEntity> Snapshot()

@@ -42,7 +42,12 @@ namespace EmpireAtWar.Services.Saves
             return save;
         }
 
-        public UnitRequest ToRequest(IUnitRequestFactory factory, FactionRoster roster, StationLevelData levels) => kind switch
+        public UnitRequest ToRequest(IUnitRequestFactory factory, FactionRoster roster, StationLevelData levels) =>
+            CreateRequest(kind, key, tier, factory, roster, levels);
+
+        /// <summary>Rebuilds a purchase from its kind and key; shared by save restore and player commands.</summary>
+        public static UnitRequest CreateRequest(UnitRequestKind kind, int key, int tier, IUnitRequestFactory factory,
+            FactionRoster roster, StationLevelData levels) => kind switch
         {
             UnitRequestKind.Ship => factory.ConstructUnitRequest(roster.Ships[(ShipType)key], (ShipType)key),
             UnitRequestKind.Squadron => factory.ConstructUnitRequest(roster.Squadrons[(SquadronType)key], (SquadronType)key),

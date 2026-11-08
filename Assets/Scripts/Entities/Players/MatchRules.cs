@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace EmpireAtWar.Models.Players
 {
-    /// <summary>Limits of a skirmish line-up: one station per map corner and exactly one human.</summary>
+    /// <summary>Limits of a skirmish line-up: one station per map corner and at least one human.</summary>
     public static class MatchRules
     {
         public static void Validate(BattleDefinition definition)
@@ -29,9 +29,8 @@ namespace EmpireAtWar.Models.Players
                 if (definition.Outcome == OutcomeRule.Simulation &&
                     player.Role != PlayerRole.SimulationSide)
                     throw new ArgumentException("Simulation requires SimulationSide roles.", nameof(definition));
-                if (player.Role == PlayerRole.AiAlly &&
-                    player.Slot.Team != FindHuman(definition.Slots).Team)
-                    throw new ArgumentException("An AI ally must belong to the human's team.", nameof(definition));
+                if (player.Role == PlayerRole.AiAlly && !IsValidProductionHost(definition, player))
+                    throw new ArgumentException("An AI ally must be hosted by a human on its team.", nameof(definition));
             }
         }
 
@@ -40,7 +39,15 @@ namespace EmpireAtWar.Models.Players
         /// <summary>Size of the team color palette; must match MAX_TEAM_COLORS in ShipLitInput.hlsl.</summary>
         public const int MAX_TEAM_COLORS = 8;
 
-        /// <summary>The one human of a line-up; throws when there is none or more than one.</summary>
+        private static bool IsValidProductionHost(BattleDefinition definition, BattlePlayer ally)
+        {
+            PlayerId host = ally.ProductionHostId;
+            if (host.IsNone || host.Index >= definition.Players.Count) return false;
+            BattlePlayer hostPlayer = definition.GetPlayer(host);
+            return hostPlayer.Role == PlayerRole.Human && hostPlayer.Slot.Team == ally.Slot.Team;
+        }
+
+        /// <summary>The one human of an offline line-up; throws when there is none or more than one.</summary>
         public static PlayerSlot FindHuman(IReadOnlyList<PlayerSlot> players)
         {
             PlayerSlot human = null;
@@ -95,9 +102,10 @@ namespace EmpireAtWar.Models.Players
                 }
             }
 
-            if (humanCount != 1)
+            // Online line-ups may hold several humans; an offline session still requires exactly one (FindHuman).
+            if (humanCount < 1)
             {
-                throw new ArgumentException("A skirmish supports exactly one human player.", nameof(players));
+                throw new ArgumentException("A skirmish needs at least one human player.", nameof(players));
             }
 
             if (teams.Count < 2)

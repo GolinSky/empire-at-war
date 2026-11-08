@@ -16,11 +16,20 @@ using global::VContainer;
 
 namespace EmpireAtWar.Services.VContainer
 {
-    public sealed class LocalPlayerScope : AssetLifetimeScope
+    /// <summary>
+    /// A human slot. Every machine builds the simulation services; only the machine where this human sits
+    /// (<see cref="IMatchSession.LocalPlayerId"/>) adds UI, input and announcements.
+    /// </summary>
+    public sealed class HumanPlayerScope : AssetLifetimeScope
     {
         private PlayerSlot _owner;
+        private bool _isLocal;
 
-        public void ConfigurePlayer(PlayerSlot owner) => _owner = owner;
+        public void ConfigurePlayer(PlayerSlot owner, bool isLocal)
+        {
+            _owner = owner;
+            _isLocal = isLocal;
+        }
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -33,6 +42,9 @@ namespace EmpireAtWar.Services.VContainer
             battleScope.Modules.ConfigurePlayer(builder, player, transform);
             builder.RegisterInstance(new UnitRequestFactory(player.Has(BattleFeatures.SuperWeapons)))
                 .AsImplementedInterfaces().AsSelf();
+            if (!_isLocal) return;
+            RegisterLocalPlayerServices(builder, player.Features);
+            battleScope.Modules.ConfigureLocalPlayer(builder, player, transform);
         }
 
         public static void RegisterPlayerServices(IContainerBuilder builder, PlayerSlot owner, FactionDefinition faction,
@@ -42,11 +54,11 @@ namespace EmpireAtWar.Services.VContainer
             UnitFactoryRegistrations.Register(builder);
             builder.Register<SquadronPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ReinforcementModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            // Placement and deploy input still live inside ReinforcementService; they move out with player commands.
             builder.Register<ReinforcementPreviewFactory>(Lifetime.Singleton);
             builder.Register<ReinforcementPlacementFactory>(Lifetime.Singleton);
             builder.Register<ReinforcementDeployInput>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ReinforcementService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<ReinforcementUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<FactionRoster>(Lifetime.Singleton)
                 .WithParameter(faction).WithParameter(features);
             builder.Register(resolver => new PlayerFactionModel(resolver.Resolve<StationLevelData>(), resolver.Resolve<FactionRoster>())
@@ -56,8 +68,13 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SuperWeaponModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SuperWeaponSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ReinforcementSaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
-            builder.Register<HeroUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+        }
+
+        public static void RegisterLocalPlayerServices(IContainerBuilder builder, BattleFeatures features)
+        {
+            builder.Register<ReinforcementUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<HeroUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             if ((features & BattleFeatures.Economy) != 0)
                 builder.Register<FactionAnnouncementService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }

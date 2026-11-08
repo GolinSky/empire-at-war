@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.SuperWeapons.Controller;
@@ -31,9 +32,12 @@ namespace EmpireAtWar.Services.VContainer
         public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
         {
             if (!player.Slot.IsAi)
-                builder.Register<SuperWeaponPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+                builder.Register<HumanSuperWeaponCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             else if (player.Has(BattleFeatures.Economy))
                 builder.Register<EnemySuperWeaponController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
+
+        public void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot) =>
+            builder.Register<SuperWeaponPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
     }
 }

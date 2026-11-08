@@ -14,7 +14,6 @@ using EmpireAtWar.Services.Analytics;
 using EmpireAtWar.Services.Diagnostics;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Graphics;
-using EmpireAtWar.Services.IdGeneration;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Services.Saves;
@@ -111,7 +110,6 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SettingsService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<AudioService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<MusicService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<UniqueIdGenerator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<InputActionsProvider>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<InputBindingService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CancelInput>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

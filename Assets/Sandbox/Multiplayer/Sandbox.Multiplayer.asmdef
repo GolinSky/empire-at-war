@@ -1,0 +1,25 @@
+{
+    "name": "Sandbox.Multiplayer",
+    "rootNamespace": "EmpireAtWar.Sandbox.Multiplayer",
+    "references": [
+        "Mirror",
+        "Mirror.Transports",
+        "kcp2k",
+        "FizzySteamworks",
+        "com.rlabrecque.steamworks.net"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "WindowsStandalone64",
+        "LinuxStandalone64",
+        "macOSStandalone"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

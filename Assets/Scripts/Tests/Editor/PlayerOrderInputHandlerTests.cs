@@ -60,7 +60,7 @@ namespace EmpireAtWar.Tests.Editor
             _siteView = new GameObject("Site");
             _siteView.transform.position = new Vector3(10f, 3f, 20f);
             _handler = new PlayerOrderInputHandler(gestures: _input, orderInput: _input, selectionService: _selection, query: _query,
-                cameraService: _camera, layerService: null, abilities: _abilities, targeting: _targeting, unitOrderService: _orders, superWeapons: new SuperWeaponTargetingModel(),
+                cameraService: _camera, layerService: null, abilities: _abilities, targeting: _targeting, playerOrders: _orders, superWeapons: new SuperWeaponTargetingModel(),
                 hardPointHover: new HardPointOverlayModel(),
                 localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), battleAreas: _areas,
                 siteDirectories: Array.Empty<ICaptureSiteDirectory>());
@@ -465,9 +465,8 @@ namespace EmpireAtWar.Tests.Editor
             public void CancelTargeting() { IsWaitingForTarget = false; }
         }
 
-        private sealed class FakeOrders : IUnitOrderService
+        private sealed class FakeOrders : IPlayerUnitOrders
         {
-            public event Action<UnitOrder> OrderIssued { add { } remove { } }
 
             public UnitActionId? LastAction { get; set; }
             public Vector3 LastPoint { get; private set; }

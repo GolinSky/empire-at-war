@@ -174,7 +174,7 @@ namespace EmpireAtWar.Tests.Editor
                 builder.RegisterInstance<IBattleStartupSequence>(new CompletedStartup());
             })) _battle.Build();
             var players = _battle.GetComponentsInChildren<AssetLifetimeScope>(true)
-                .Where(scope => scope is LocalPlayerScope || scope is AiPlayerScope).ToArray();
+                .Where(scope => scope is HumanPlayerScope || scope is AiPlayerScope).ToArray();
             Assert.That(players.Length, Is.EqualTo(3));
             Assert.That(_battle.Container.Resolve<BattleSaveService>(), Is.Not.Null);
             var human = players.Single(scope => scope.Container.Resolve<PlayerSlot>().Id == new PlayerId(0));
@@ -197,13 +197,13 @@ namespace EmpireAtWar.Tests.Editor
             using (LifetimeScope.Enqueue(builder =>
             {
                 if (!(builder.ApplicationOrigin is AiPlayerScope)) return;
-                LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+                HumanPlayerScope human = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
                 Assert.That(human.gameObject.activeSelf, Is.True);
                 throw failure;
             }))
                 Assert.That(Assert.Throws<InvalidOperationException>(() => BuildSaveBattle()), Is.SameAs(failure));
 
-            Assert.That(_battle.GetComponentsInChildren<LocalPlayerScope>(true), Is.Empty);
+            Assert.That(_battle.GetComponentsInChildren<HumanPlayerScope>(true), Is.Empty);
             Assert.That(_battle.GetComponentsInChildren<AiPlayerScope>(true), Is.Empty);
             PlayerFactoryLookup lookup = _battle.Container.Resolve<PlayerFactoryLookup>();
             foreach (BattlePlayer player in _project.GameData.Battle.Players)
@@ -227,7 +227,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BuildSaveProject();
             BuildSaveBattle();
-            LocalPlayerScope player = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            HumanPlayerScope player = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             PlayerSlot owner = player.Container.Resolve<PlayerSlot>();
             SquadronPool pool = player.Container.Resolve<SquadronPool>();
             Assert.That(_battle.Container.Resolve<IPlayerRegistry>().GetSquadronPrewarmer(owner.Id), Is.SameAs(pool));
@@ -255,7 +255,7 @@ namespace EmpireAtWar.Tests.Editor
             setup.SelectSlotFaction(0, FactionType.Rebellion);
             BuildSaveProject(setup.CreateBattle());
             BuildSaveBattle();
-            LocalPlayerScope player = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            HumanPlayerScope player = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             var pool = player.Container.Resolve<SquadronPool>();
             using var slices = GetPrewarmSlices(pool, CancellationToken.None);
             while (slices.MoveNext())
@@ -271,7 +271,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BuildSaveProject();
             BuildSaveBattle();
-            LocalPlayerScope player = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            HumanPlayerScope player = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             PlayerSlot owner = player.Container.Resolve<PlayerSlot>();
             SquadronPool pool = player.Container.Resolve<SquadronPool>();
             using (var cancellation = new CancellationTokenSource())
@@ -297,7 +297,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BuildSaveProject();
             BuildSaveBattle();
-            LocalPlayerScope player = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            HumanPlayerScope player = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             SquadronPool pool = player.Container.Resolve<SquadronPool>();
             using (var cancellation = new CancellationTokenSource())
             {
@@ -348,7 +348,7 @@ namespace EmpireAtWar.Tests.Editor
             runtime.TickAt(1.5f);
             Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Ready));
 
-            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            HumanPlayerScope human = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             ShipEntity second = human.Container.Resolve<ShipFactory>().Create(runtime.Caster.Owner,
                 ShipType.Acclamator, runtime.Caster.GetFacade<IEntityTransformFacade>().Transform.position);
             IEntity secondEntity = runtime.Entities.GetEntity(second.EntityId);
@@ -460,7 +460,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BuildSaveProject();
             MapLayout layout = BuildSaveBattle();
-            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            HumanPlayerScope human = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             AiPlayerScope enemy = _battle.GetComponentsInChildren<AiPlayerScope>(true).Single();
             PlayerSlot humanSlot = human.Container.Resolve<PlayerSlot>();
             PlayerSlot enemySlot = enemy.Container.Resolve<PlayerSlot>();
@@ -540,7 +540,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BuildSaveProject();
             MapLayout layout = BuildSaveBattle();
-            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            HumanPlayerScope human = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             PlayerSlot owner = human.Container.Resolve<PlayerSlot>();
             ShipEntity ship = human.Container.Resolve<ShipFactory>().Create(owner.Id, ShipType.Acclamator,
                 layout.GetStationPosition(owner.Id));
@@ -570,7 +570,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BuildSaveProject();
             MapLayout layout = BuildSaveBattle();
-            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            HumanPlayerScope human = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             PlayerSlot slot = human.Container.Resolve<PlayerSlot>();
             IEntityLocator locator = _battle.Container.Resolve<IEntityLocator>();
             ShipAbilityService abilities = _battle.Container.Resolve<ShipAbilityService>();
@@ -653,7 +653,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             BuildSaveProject();
             MapLayout layout = BuildSaveBattle();
-            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            HumanPlayerScope human = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             AiPlayerScope ai = _battle.GetComponentsInChildren<AiPlayerScope>(true).Single();
             PlayerSlot humanSlot = human.Container.Resolve<PlayerSlot>();
             PlayerSlot aiSlot = ai.Container.Resolve<PlayerSlot>();
@@ -714,7 +714,7 @@ namespace EmpireAtWar.Tests.Editor
                 _battle.Container.Resolve<BattleSaveService>().Capture(BattleSaveSlot.Quicksave).ToJson());
             DisposeRoot(_battle);
             BuildSaveBattle();
-            human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            human = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             ai = _battle.GetComponentsInChildren<AiPlayerScope>(true).Single();
             locator = _battle.Container.Resolve<IEntityLocator>();
             Assert.That(locator.Entities, Is.Empty);
@@ -764,7 +764,7 @@ namespace EmpireAtWar.Tests.Editor
                 FactionType.Separatist, MapSize.Small, EmpireAtWar.Entities.EnemyFaction.Models.EnemyAiDifficulty.Medium,
                 false)).Build());
             MapLayout layout = BuildSaveBattle();
-            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            HumanPlayerScope human = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             PlayerSlot humanSlot = human.Container.Resolve<PlayerSlot>();
             human.Container.Resolve<SpaceStationFactory>()
                 .Create(humanSlot.Id, humanSlot.Faction, layout.GetStationPosition(humanSlot.Id));
@@ -805,7 +805,7 @@ namespace EmpireAtWar.Tests.Editor
                 FactionType.Separatist, MapSize.Small, EmpireAtWar.Entities.EnemyFaction.Models.EnemyAiDifficulty.Medium,
                 false)).Build());
             MapLayout layout = BuildSaveBattle();
-            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            HumanPlayerScope human = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             PlayerSlot slot = human.Container.Resolve<PlayerSlot>();
             human.Container.Resolve<SpaceStationFactory>().Create(slot.Id, slot.Faction, layout.GetStationPosition(slot.Id));
             var model = _battle.Container.Resolve<EmpireAtWar.Entities.Game.SurvivalModel>();
@@ -841,7 +841,7 @@ namespace EmpireAtWar.Tests.Editor
                 FactionType.Separatist, MapSize.Small, EmpireAtWar.Entities.EnemyFaction.Models.EnemyAiDifficulty.Medium,
                 false)).Build());
             MapLayout layout = BuildSaveBattle();
-            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            HumanPlayerScope human = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             PlayerSlot slot = human.Container.Resolve<PlayerSlot>();
             human.Container.Resolve<SpaceStationFactory>().Create(slot.Id, slot.Faction, layout.GetStationPosition(slot.Id));
             var model = _battle.Container.Resolve<SurvivalModel>();
@@ -943,7 +943,7 @@ namespace EmpireAtWar.Tests.Editor
                 FactionType.Separatist, MapSize.Small, EmpireAtWar.Entities.EnemyFaction.Models.EnemyAiDifficulty.Medium,
                 false)).Build());
             MapLayout layout = BuildSaveBattle();
-            LocalPlayerScope human = _battle.GetComponentsInChildren<LocalPlayerScope>(true).Single();
+            HumanPlayerScope human = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
             PlayerSlot humanSlot = human.Container.Resolve<PlayerSlot>();
             human.Container.Resolve<SpaceStationFactory>()
                 .Create(humanSlot.Id, humanSlot.Faction, layout.GetStationPosition(humanSlot.Id));
@@ -1046,9 +1046,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(repository.SaveCount, Is.Zero, "The real settings repository must stay outside this fixture.");
             Assert.That(startup.CallCount, Is.EqualTo(1));
             AssetLifetimeScope[] players = _battle.GetComponentsInChildren<AssetLifetimeScope>(true)
-                .Where(scope => scope is LocalPlayerScope || scope is AiPlayerScope).ToArray();
+                .Where(scope => scope is HumanPlayerScope || scope is AiPlayerScope).ToArray();
             Assert.That(players.Length, Is.EqualTo(2));
-            Assert.That(players.OfType<LocalPlayerScope>().Count(), Is.EqualTo(1));
+            Assert.That(players.OfType<HumanPlayerScope>().Count(), Is.EqualTo(1));
             Assert.That(players.OfType<AiPlayerScope>().Count(), Is.EqualTo(1));
             PlanetView planet = _battle.Container.Resolve<PlanetFactory>().Create(
                 _project.GameData.PlanetType, _project.GameData.MapSize, layout.PlanetPosition);
