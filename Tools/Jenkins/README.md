@@ -61,6 +61,22 @@
 - `archive-pending.json` blocks a new snapshot when the only output copy still needs recovery. Recover/archive that output before removing the marker.
 - Cancellation closes the monitor's Job Object and kills only its CI group. Preparation refuses to reuse a worktree with an active CI Editor or held Unity lock.
 - Sign-in startup remains disabled until cold/warm builds, player navigation, cancellation, queued builds and resource rejection pass acceptance.
+- Local install: `Deploy-Player.ps1 [-Build <n>] [-Destination <dir>] [-Launch]` extracts the archived ZIP (default: last successful build) into `<Destination>\Game`. It replaces only a `Game` folder carrying its `eaw-deployment.json` marker and refuses while that copy is running.
+
+## Velopack installer and launcher
+
+- Players install with `EmpireAtWar-win-Setup.exe` (per-user, no admin) into `%LocalAppData%\EmpireAtWar`. `current\` is replaced on every update; saves/settings/telemetry live in `AppData\LocalLow\GolinSkyCompany\EmpireAtWar` and survive updates and uninstall.
+- Main exe: `EmpireAtWarLauncher.exe` from `Tools/Launcher` (.NET 10 WinForms, self-contained single file, ~50 MB, `Velopack` NuGet `1.2.161` = `vpk` version). It handles Velopack hooks, checks GitHub Releases (prereleases included), downloads delta/full, restarts on the new version, then starts `EmpireAtWar.exe`. Offline/GitHub failure → log + Play button; never blocks play. Log: `LocalLow\GolinSkyCompany\EmpireAtWar\launcher.log`.
+- Launchers only see **published** releases; the manual GitHub Publish stays the release gate.
+- `New-VelopackRelease.ps1` (called by `Publish-GitHubRelease.ps1` after the commit check, before any GitHub mutation):
+  1. Publishes the launcher from `Tools/Launcher` at the **source commit** (`git archive`); commits without `Tools/Launcher` are rejected.
+  2. Extracts the archived player ZIP, adds the launcher.
+  3. Downloads the newest published release's `*-full.nupkg` anonymously (size + SHA-256 checked) as delta base; none → full-only release.
+  4. `vpk pack --packId EmpireAtWar --packVersion <tag without v> --mainExe EmpireAtWarLauncher.exe --runtime win-x64`.
+  5. Rewrites `releases.win.json` to this version's entries only (`GithubSource` resolves each feed entry inside the release hosting the feed).
+- Output cache: `F:\Jenkins\velopack-cache\<tag>`, reused on resume when tag/commit/ZIP hash match so re-uploaded assets stay byte-identical; deleted after `VerifiedDraft`.
+- Binaries are unsigned → SmartScreen "Unknown publisher" on `Setup.exe` until `vpk pack --signParams` gets a certificate.
+- Changing the Velopack version: bump `Tools/Launcher/EmpireAtWarLauncher.csproj` and reinstall `vpk` at the same version together.
 
 ## Versioning
 
@@ -85,7 +101,7 @@
 - Destination: `GolinSky/empire-at-war`. Always a draft; review and publish manually on GitHub.
 - Copies the selected successful build's archived ZIP and metadata. Never rebuilds Unity or pushes local commits.
 - Workspace: Jenkins assigns the separate `EmpireAtWar-Publish-GitHub` workspace. Copied files are removed after the run; original build archives are unchanged.
-- Installed dependencies: GitHub CLI `2.102.0` at `F:\Jenkins\app\gh\bin\gh.exe`; Copy Artifact `805.v9d1393350780` in Production mode. Versions, official download URLs, and SHA-256 values: `F:\Jenkins\app\release-installation.json`.
+- Installed dependencies: GitHub CLI `2.102.0` at `F:\Jenkins\app\gh\bin\gh.exe`; Copy Artifact `805.v9d1393350780` in Production mode; Velopack `vpk` `1.2.161` (`dotnet tool install vpk --version 1.2.161 --tool-path F:\Jenkins\app\vpk`); .NET SDK `10.0.103` (system install) for the launcher. Versions, official download URLs, and SHA-256 values: `F:\Jenkins\app\release-installation.json`.
 - Build retention remains 10 run records / artifacts from 3 runs. Mark a release candidate **Keep this build forever** before its artifacts expire.
 
 ### Add the credential once
@@ -106,7 +122,7 @@
 
 Before changing GitHub, the job requires SUCCESS, all four archived inputs, matching clean Windows build provenance/commit, the ZIP's archived SHA-256, and nonempty assets below 2 GiB. The archived commit must already exist in GitHub; push the intended commit separately if needed.
 
-- Uploaded assets: `EmpireAtWar-Windows.zip`, `commit.txt`, `zip-sha256.json`. Unity provenance is used for validation and remains in Jenkins.
+- Uploaded assets: `EmpireAtWar-win-Setup.exe`, `EmpireAtWar-<version>-full.nupkg`, `EmpireAtWar-<version>-delta.nupkg` (when a published Velopack release exists), `EmpireAtWar-win-Portable.zip`, `releases.win.json`, `commit.txt`, `zip-sha256.json`. The raw player ZIP is not uploaded; `zip-sha256.json` still identifies the Jenkins archive. Unity provenance is used for validation and remains in Jenkins.
 - The tag resolves to the archived commit. An existing tag pointing elsewhere is rejected, including annotated tags after dereferencing.
 - Draft notes identify the source build, commit, and ZIP hash. Keep the embedded provenance marker when editing notes if you intend to resume the job.
 - Uploaded asset names, sizes, states, and SHA-256 digests must match before the job succeeds.
@@ -118,7 +134,7 @@ Before changing GitHub, the job requires SUCCESS, all four archived inputs, matc
 - Published releases, conflicting source markers/tags, and mismatched/incomplete assets are never overwritten or deleted. Inspect the draft and resolve conflicts manually before retrying.
 - Expired artifacts fail explicitly; the job does not substitute a newer build. Preserve the source build while publishing or recovering an upload.
 - A failed upload leaves its tag/draft on GitHub. The archived report includes the release URL once resolved and the failure reason; failures before credential binding can leave the earlier `ArtifactsValidated` report.
-- Job timeout: 60 minutes; concurrent publish runs queue. The existing single Windows executor serializes copying/uploading with Unity builds.
+- Job timeout: 180 minutes (pack + ~3.5 GiB upload); concurrent publish runs queue. The existing single Windows executor serializes copying/uploading with Unity builds.
 
 ### Update the publishing job
 

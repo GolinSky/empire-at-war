@@ -92,6 +92,13 @@ try {
     $commit = Invoke-GitHubApi -Resource "commits/$sha" -AllowMissing
     if ($commit.Status -eq 404) { throw "Commit $sha is unavailable in $repo. Check token access and push the intended source commit before retrying; Jenkins will not push local commits." }
     if ($commit.Data.sha -ine $sha) { throw 'GitHub returned a different source commit.' }
+    # The raw player ZIP is replaced by Velopack's Setup.exe, packages, feed and portable ZIP.
+    $packed = @(& "$PSScriptRoot\New-VelopackRelease.ps1" -Tag $tag -Commit $sha -ZipPath $files[0].Path -ZipSha256 $zipHash)
+    $files = @(foreach ($file in @($packed) + @($files | Select-Object -Skip 1 | ForEach-Object { Get-Item -LiteralPath $_.Path })) {
+        if ($file.Length -le 0 -or $file.Length -ge 2GB) { throw "Release asset must be nonempty and smaller than 2 GiB: $($file.Name)" }
+        [pscustomobject]@{ Name=$file.Name; Path=$file.FullName; Size=$file.Length; Sha256=(Get-FileHash -LiteralPath $file.FullName -Algorithm SHA256).Hash.ToLowerInvariant() }
+    })
+    $report.Assets = @($files | Select-Object Name,Size,Sha256)
     $marker = "<!-- empire-at-war:source=EmpireAtWar-Windows-Local#$sourceBuild;commit=$sha;zip-sha256=$zipHash -->"
     $releases = @(Get-GitHubCollection -Resource 'releases' | Where-Object { $_.tag_name -ceq $tag })
     if ($releases.Count -gt 1) { throw 'Multiple releases use this tag; resolve the ambiguity manually.' }
@@ -143,6 +150,7 @@ try {
     }
     $report.Status = 'VerifiedDraft'
     $report | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $reportPath -Encoding UTF8
+    Remove-Item -LiteralPath "F:\Jenkins\velopack-cache\$tag" -Recurse -Force
     Write-Host "Verified draft: $($release.html_url). Review and publish manually on GitHub."
     exit 0
 } catch {

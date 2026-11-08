@@ -39,6 +39,7 @@ foreach ($name in @('copyartifact','pipeline-build-step','credentials-binding','
     if (-not @($plugins | Where-Object { $_.shortName -eq $name -and $_.active }).Count) { throw "Required plugin is not active: $name" }
 }
 if (-not (Test-Path -LiteralPath "$app\gh\bin\gh.exe" -PathType Leaf)) { throw 'Install GitHub CLI before configuring publishing.' }
+if (-not (Test-Path -LiteralPath "$app\vpk\vpk.exe" -PathType Leaf)) { throw 'Install the pinned vpk CLI before configuring publishing.' }
 
 $buildPipeline = Get-Content -LiteralPath "$PSScriptRoot\Jenkinsfile" -Raw
 $publishPipeline = Get-Content -LiteralPath "$PSScriptRoot\Jenkinsfile.Publish" -Raw
@@ -81,7 +82,7 @@ if (@($allowed.SelectNodes('string') | Where-Object { $_.InnerText -eq $publishJ
 }
 $publishXml.SelectSingleNode('/flow-definition/definition/script').InnerText = $publishPipeline
 $publishXml.SelectSingleNode('/flow-definition/definition/sandbox').InnerText = 'true'
-$publishXml.SelectSingleNode('/flow-definition/description').InnerText = 'Uploads a selected successful EmpireAtWar-Windows-Local archive to a verified GitHub draft. Requires Secret Text credential github-releases. Never builds Unity or publishes the draft.'
+$publishXml.SelectSingleNode('/flow-definition/description').InnerText = 'Packs a selected successful EmpireAtWar-Windows-Local archive with the launcher into a Velopack release and uploads it to a verified GitHub draft. Requires Secret Text credential github-releases. Never builds Unity or publishes the draft.'
 $propertyXml = @'
 <properties>
   <hudson.model.ParametersDefinitionProperty>
@@ -102,7 +103,7 @@ foreach ($property in $properties.DocumentElement.ChildNodes) {
     if ($null -ne $previous) { [void]$parent.RemoveChild($previous) }
     [void]$parent.AppendChild($publishXml.ImportNode($property, $true))
 }
-$files = @('Jenkinsfile','Jenkinsfile.Publish','Publish-GitHubRelease.ps1','Configure-GitHubPublish.ps1')
+$files = @('Jenkinsfile','Jenkinsfile.Publish','Publish-GitHubRelease.ps1','New-VelopackRelease.ps1','Configure-GitHubPublish.ps1')
 & "$PSScriptRoot\Install-BuildTools.ps1" -Revision $sourceCommit
 if (-not $publishExists) { $publishPath = "createItem?name=$publishJob" } else { $publishPath = "job/$publishJob/config.xml" }
 [void](Invoke-JenkinsRequest $publishPath -Method POST -Body $publishXml.OuterXml -ContentType 'application/xml; charset=utf-8')
@@ -133,7 +134,7 @@ $fileHashes = @(foreach ($name in $files) {
 })
 $sourceCommit = (& git -C $PSScriptRoot rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Could not record source revision.' }
-$sourceChanges = @(& git -C $PSScriptRoot status --porcelain -- Jenkinsfile Jenkinsfile.Publish Publish-GitHubRelease.ps1 Configure-GitHubPublish.ps1)
+$sourceChanges = @(& git -C $PSScriptRoot status --porcelain -- Jenkinsfile Jenkinsfile.Publish Publish-GitHubRelease.ps1 New-VelopackRelease.ps1 Configure-GitHubPublish.ps1)
 if ($LASTEXITCODE -ne 0) { throw 'Could not record source working-tree state.' }
 @{
     JobUrl="${baseUrl}job/$publishJob/"; InstalledAtUtc=[DateTime]::UtcNow.ToString('o'); SourceCommit=$sourceCommit
