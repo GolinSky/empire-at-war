@@ -201,6 +201,13 @@ Play
 
 
 ### Phase 2 — Session + lobby
+- Code 2026-11-08 (compiles; not run, no tests; `Services/Networking/Online/`, `Entities/OnlineMenu/`):
+  - `OnlineMatchService` (ProjectScope): Steam init at startup (`SteamPlatform`, App 480, `+connect_lobby`), `EnterOnline` creates the `DontDestroyOnLoad` `OnlineNetwork` root (`OnlineNetworkManager` + `KcpTransport` + `FizzySteamworks`) only on Host/Join. Implements `INetworkPlayerDirectory`.
+  - Lobby protocol: `LobbyHello` (name + version) → `LobbyState` broadcast; `LobbyReady`; `LobbyRejected` (full / version / kicked / battle running) then disconnect after 0.5 s. `OnlineLobby` model: max 4, host = connection 0, members take Human slots in line-up order.
+  - Start: `OnlineGameCommand` replaces `IGameCommand` in MainMenuScope → while hosting, setup screens' Start → `TryStartMatch` → `BattleStartMessage` (`BattleSetupSave` JSON + slot) per client → existing loading screen.
+  - Battle: `IMatchSession` = `OnlineSession` via `CreateSession` in Skirmish/Survival modes; `NetworkBattleRegistrations` picks per role. `IBattleStartGate` awaited in `BattleStartupSequence` before fade-out: client sends `BattleLoaded` and waits for `BattleBegin`; host waits all loaded (60 s timeout) → baseline + begin per client. `OnlineBattleLifetime` leaves the session when the battle scene closes.
+  - UI is interim IMGUI `OnlineMenuPanel` (Online button top-right of main menu): host via Steam/IP, join by IP, accept invite, members, ready, kick, friend invite list, Battle setup, Start/Force Start.
+  - Open: uGUI lobby prefab per `UI_UX_GUIDELINES`; host must set one Human slot per member manually (Survival menu has no extra Human slot → online Survival cannot start yet); online restart unsupported; avatars/edit rights per row.
 - [ ] Packages added (Phase 0). Still open: `NetworkManager` (empty online/offline scenes) lives in a persistent root owned by `ProjectScope`, outside battle scopes; it is not created in offline sessions.
 - [ ] `IOnlineLobby` over Steam lobbies: create (friends-only/private), invite, join, slot properties (faction, team, color, AI, ready), host kick. `KcpTransport` path: host IP entry for dev.
 - [ ] Host sends `SkirmishSetupSave` (or a Survival setup) → clients run the existing loading pipeline → ready barrier → host starts.
@@ -223,9 +230,15 @@ Play
 - [ ] Gate authority-only work: AI, economy, production advance, capture, weapon targeting/damage, ability effects, super-weapon damage, `SurvivalWaveDirector`.
 - [ ] Order: movement → weapons/bolts → health/hardpoints/death (explosions and wrecks stay client cosmetic) → squadrons/hangars → abilities → super weapons → capture/economy/reinforcement → Survival HUD/waves.
 
-### Phase 5 — Robustness
+- Code 2026-11-08 (compiles; not run):
+  - Spawn: `EntitySpawnMessage.Kind` + `Payload` (`UnitSave`/`StructureSave` JSON, captured at the next host tick); client `ReplicaEntitySpawner` uses the save-restore factories with the host id + health. Client `OnSpawn` idempotent (rejoin baseline).
+  - `ClientReplicationReceiver`: sets transforms from the interpolated timeline in `LateTick`; despawn `Destroyed` → `IEntityDestroyFacade.Destroy` (local explosion/wreck); `EntityHealthMessage` (host sends changed hull/shield every 0.25 s) → `RestoreHealth`; `MatchStateMessage` → `Time.timeScale` (host `HostMatchStateSender`).
+  - Client gates: AI slots built as remote human scopes; no hosted faction levels; no station spawn at startup; `ClosedSquadronLaunchSlots` (no hangar launches); `ClientAttackDataFactory` (weapons fire visually, `ReplicaHealthFacade` = no damage); `SurvivalWaveDirector` not ticked; commands via `NetworkCommandSink`.
+  - Open: non-destroyed despawn (squadron docking) leaves the client copy; weapon target events (client weapons pick targets locally); ability / super-weapon effects not replicated; credits + build queue per player not synced (client economy ticks locally); capture runs locally; client pause/speed buttons act locally.
 - [ ] Disconnect → `AiPlayerScope` takeover; host leaves → match ends.
 - [ ] Issues #8, #10, #11 v1 rules; error UI (Steam not running, lobby full/closed, connection failure, version mismatch, host left, kicked).
+
+- Code 2026-11-08 (compiles; not run): host keeps a disconnected member's slot; rejoin by same Steam name within `RECONNECT_GRACE_SECONDS` = 60 → `BattleStartMessage` → load → baseline + begin. Past grace → `PlayerAbandoned` → `AbandonedPlayerTakeover` only logs (runtime `AiPlayerScope` swap still open). Client: host drop → `HostLeftBattleExit` → menu shows "The host left". Errors in `OnlineError` + panel text: Steam not running, lobby full, version mismatch, host left, kicked, battle running, connection failed.
 
 ### Phase 6 — Online saving (post-v1)
 - [ ] Full-state baseline on join (also enables reconnect and late join).

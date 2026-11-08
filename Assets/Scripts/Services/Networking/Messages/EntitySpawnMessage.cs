@@ -4,7 +4,7 @@ namespace EmpireAtWar.Services.Networking.Messages
 {
     /// <summary>
     /// Host → all, reliable: binds an entity id to its net index with its first keyframe.
-    /// What to spawn on the client (unit type, structure kind) is added with Phase 4's client spawn path.
+    /// <see cref="Payload"/> is the unit's or structure's save JSON; clients spawn from it like a loaded save.
     /// </summary>
     public struct EntitySpawnMessage : NetworkMessage
     {
@@ -14,5 +14,7 @@ namespace EmpireAtWar.Services.Networking.Messages
         public uint Tick;
         public double Time;
         public EntityKeyframe Keyframe;
+        public EntitySpawnKind Kind;
+        public string Payload;
     }
 }

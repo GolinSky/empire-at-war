@@ -41,6 +41,7 @@ using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Fade;
 using EmpireAtWar.Services.FogOfWar;
 using EmpireAtWar.Services.Layer;
+using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.ReinforcementZones;
@@ -131,7 +132,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterInstance(unitOrderSettings);
             builder.Register<UnitOrderService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerCommandHandlers>(Lifetime.Singleton);
-            builder.Register<AuthorityCommandSink>(Lifetime.Singleton).As<IPlayerCommandSink>();
+            OnlineMatchService online = Parent.Container.Resolve<OnlineMatchService>();
+            NetworkBattleRegistrations.Register(builder, online);
             builder.Register<PlayerUnitOrders>(Lifetime.Singleton).As<IPlayerUnitOrders>();
             builder.Register<UnitActionTargetingModel>(Lifetime.Singleton);
             builder.Register<PlayerOrderInputHandler>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
@@ -144,9 +146,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<HardPointOverlayPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitHoverService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<WorldTooltipPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<AttackDataFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             // Mode services keep their entry-point order: after the player scopes, before the battle UI.
-            BattleModes.Create(Battle, Assets).ConfigureBattle(builder);
+            BattleModes.Create(Battle, Assets, online).ConfigureBattle(builder);
             builder.Register<BattleVictoryService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<BattleClock>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitSaveService>(Lifetime.Singleton);
@@ -166,7 +167,6 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<StationRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SquadronRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SquadronLauncher>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<SquadronLaunchSlots>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SettingsModel>(Lifetime.Singleton);
             builder.Register<SettingsDraftEditor>(Lifetime.Singleton);
             builder.Register<KeyBindingEditor>(Lifetime.Singleton);

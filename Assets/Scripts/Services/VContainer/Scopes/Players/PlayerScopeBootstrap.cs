@@ -60,7 +60,8 @@ namespace EmpireAtWar.Services.VContainer
                 playerRoot.SetActive(false);
                 playerRoot.transform.SetParent(_owner.transform, false);
                 AssetLifetimeScope player;
-                if (slot.IsAi)
+                // AI runs only on the authority; a client mirrors AI slots as remote players.
+                if (slot.IsAi && _session.IsAuthority)
                 {
                     AiPlayerScope ai = playerRoot.AddComponent<AiPlayerScope>();
                     ai.ConfigurePlayer(slot);
@@ -86,7 +87,7 @@ namespace EmpireAtWar.Services.VContainer
 
             foreach (BattlePlayer player in _owner.Battle.Players)
             {
-                if (!player.IsHosted) continue;
+                if (!player.IsHosted || !_session.IsAuthority) continue;
                 PlayerId host = _owner.Battle.GetProductionHost(player).Slot.Id;
                 _hostedLevels.Add(new HostedFactionLevel(
                     _players[host.Index].Container.Resolve<PlayerFactionModel>(),

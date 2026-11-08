@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.Networking.Messages;
+using EmpireAtWar.Services.Saves;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.Networking
@@ -21,7 +22,7 @@ namespace EmpireAtWar.Services.Networking
         private readonly Dictionary<long, Pose> _previousPoses = new Dictionary<long, Pose>();
         private readonly Dictionary<long, double> _previousTimes = new Dictionary<long, double>();
         private readonly List<EntityKeyframe> _pending = new List<EntityKeyframe>();
-        private readonly List<EntitySpawnMessage> _spawns = new List<EntitySpawnMessage>();
+        private readonly List<IEntity> _pendingSpawns = new List<IEntity>();
         private readonly List<EntityDespawnMessage> _despawns = new List<EntityDespawnMessage>();
         private double _time;
 
@@ -35,14 +36,22 @@ namespace EmpireAtWar.Services.Networking
 
         public uint Tick => _clock.Tick;
 
+        public bool TryGetIndex(long entityId, out ushort index) => _indices.TryGetIndex(entityId, out index);
+
         /// <summary>Advances the clock and fills <paramref name="output"/> with every message due this frame.</summary>
         public void Advance(float deltaTime, double now, HostTickOutput output)
         {
             _time = now;
             output.Clear();
-            output.Spawns.AddRange(_spawns);
+            // Spawns are built here, not in EntityAdded, so the unit save captures a fully initialized entity.
+            foreach (IEntity entity in _pendingSpawns)
+            {
+                if (_indices.TryGetIndex(entity.Id, out ushort index) && TrySampleMotion(entity, now, false, out EntityMotion motion))
+                    output.Spawns.Add(CreateSpawn(entity, index, motion, now));
+            }
+
             output.Despawns.AddRange(_despawns);
-            _spawns.Clear();
+            _pendingSpawns.Clear();
             _despawns.Clear();
             int due = _clock.Advance(deltaTime);
             if (due == 0) return;
@@ -114,35 +123,51 @@ namespace EmpireAtWar.Services.Networking
 
         private void HandleAdded(IEntity entity)
         {
-            ushort index = _indices.Assign(entity.Id);
-            if (TrySampleMotion(entity, _time, false, out EntityMotion motion))
-                _spawns.Add(CreateSpawn(entity, index, motion, _time));
+            _indices.Assign(entity.Id);
+            _pendingSpawns.Add(entity);
         }
 
         private void HandleRemoved(IEntity entity)
         {
             if (!_indices.TryGetIndex(entity.Id, out ushort index)) return;
-            _despawns.Add(new EntityDespawnMessage
-            {
-                Index = index,
-                Tick = _clock.Tick,
-                Destroyed = entity.HealthModel.IsDestroyed
-            });
+            // Never announced: clients have nothing to remove.
+            if (!_pendingSpawns.Remove(entity))
+                _despawns.Add(new EntityDespawnMessage
+                {
+                    Index = index,
+                    Tick = _clock.Tick,
+                    Destroyed = entity.HealthModel.IsDestroyed
+                });
             _sender.Forget(index);
             _previousPoses.Remove(entity.Id);
             _previousTimes.Remove(entity.Id);
             _indices.Release(entity.Id);
         }
 
-        private EntitySpawnMessage CreateSpawn(IEntity entity, ushort index, EntityMotion motion, double now) =>
-            new EntitySpawnMessage
+        private EntitySpawnMessage CreateSpawn(IEntity entity, ushort index, EntityMotion motion, double now)
+        {
+            EntitySpawnMessage spawn = new EntitySpawnMessage
             {
                 Index = index,
                 EntityId = entity.Id,
                 OwnerIndex = entity.Owner.IsNone ? -1 : entity.Owner.Index,
                 Tick = _clock.Tick,
                 Time = now,
-                Keyframe = EntityKeyframeCodec.Encode(index, motion)
+                Keyframe = EntityKeyframeCodec.Encode(index, motion),
+                Kind = EntitySpawnKind.Untracked
             };
+            if (entity.TryGetFacade(out IUnitSaveFacade unit))
+            {
+                spawn.Kind = EntitySpawnKind.Unit;
+                spawn.Payload = JsonUtility.ToJson(unit.Capture());
+            }
+            else if (entity.TryGetFacade(out IStructureSaveFacade structure))
+            {
+                spawn.Kind = EntitySpawnKind.Structure;
+                spawn.Payload = JsonUtility.ToJson(structure.Capture());
+            }
+
+            return spawn;
+        }
     }
 }

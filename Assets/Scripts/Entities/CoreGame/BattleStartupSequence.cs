@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Fade;
+using EmpireAtWar.Services.Networking;
 using EmpireAtWar.Services.Player;
 using UnityEngine;
 using EmpireAtWar.Services.Saves;
@@ -30,6 +31,8 @@ namespace EmpireAtWar.Controllers.Game
         private readonly BattleRestoreStep _restore;
         private readonly ShotPoolPrewarmer _shots;
         private readonly IAssetService _assets;
+        private readonly IMatchSession _session;
+        private readonly IBattleStartGate _startGate;
 
         public BattleStartupSequence(
             IBattleMapLoader mapLoader,
@@ -40,7 +43,7 @@ namespace EmpireAtWar.Controllers.Game
             ICameraService cameraService,
             IReadOnlyList<IBattleRevealStep> revealSteps,
             IFadeService fadeService, BattleDefinition battle, BattleRestoreStep restore,
-            ShotPoolPrewarmer shots, IAssetService assets)
+            ShotPoolPrewarmer shots, IAssetService assets, IMatchSession session, IBattleStartGate startGate)
         {
             _mapLoader = mapLoader;
             _mapModel = mapModel;
@@ -54,6 +57,8 @@ namespace EmpireAtWar.Controllers.Game
             _restore = restore;
             _shots = shots;
             _assets = assets;
+            _session = session;
+            _startGate = startGate;
         }
 
         public async Awaitable RunAsync(CancellationToken cancellationToken)
@@ -66,11 +71,12 @@ namespace EmpireAtWar.Controllers.Game
             await _shots.PrewarmRosterAsync(_assets, _battle, cancellationToken);
             foreach (PlayerSlot player in _playerRoster.Players)
                 await _playerRegistry.GetSquadronPrewarmer(player.Id).PrewarmAsync(cancellationToken);
+            // Online clients get the host's stations as replicated spawns.
             if (!_restore.TryRestore())
             {
                 foreach (PlayerSlot player in _playerRoster.Players)
                 {
-                    if (_battle.GetPlayer(player.Id).OwnsStation)
+                    if (_session.IsAuthority && _battle.GetPlayer(player.Id).OwnsStation)
                         _playerRegistry.GetStationSpawner(player.Id).Spawn();
                 }
                 _cameraService.MoveTo(_mapModel.GetStationPosition(_localPlayer.Id));
@@ -81,6 +87,8 @@ namespace EmpireAtWar.Controllers.Game
             await _shots.CompletePrewarmAsync(cancellationToken);
             foreach (IBattleRevealStep step in _revealSteps)
                 step.RevealImmediately();
+            // Online: every PC has loaded before the cover lifts; clients have the host's baseline by then.
+            await _startGate.WaitAsync(cancellationToken);
             // Render the revealed battle once while the loading cover is still visible.
             await Awaitable.NextFrameAsync(cancellationToken);
             await _fadeService.FadeOutAsync(FADE_OUT_DURATION, cancellationToken);

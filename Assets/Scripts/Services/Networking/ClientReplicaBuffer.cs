@@ -7,7 +7,7 @@ namespace EmpireAtWar.Services.Networking
     /// <summary>
     /// Client side of tick replication: binds net indices, buffers keyframes per entity and keeps a render
     /// timeline <see cref="NetworkTickSettings.INTERPOLATION_BUFFER_TICKS"/> ticks behind the host
-    /// (Mirror <see cref="SnapshotInterpolation"/>). Applying the sampled motion to client entities is Phase 4.
+    /// (Mirror <see cref="SnapshotInterpolation"/>). <see cref="ClientReplicationReceiver"/> applies the sampled motion to client entities.
     /// </summary>
     public sealed class ClientReplicaBuffer
     {
@@ -35,13 +35,20 @@ namespace EmpireAtWar.Services.Networking
         public uint LastReceivedTick { get; private set; }
         public int EntityCount => _tracks.Count;
 
-        public void OnSpawn(EntitySpawnMessage message, double localTime)
+        public IEnumerable<long> EntityIds => _tracks.Keys;
+
+        public bool TryGetEntityId(ushort index, out long entityId) => _indices.TryGetEntityId(index, out entityId);
+
+        /// <summary>False when the entity is already tracked (a rejoin baseline can repeat a same-frame spawn).</summary>
+        public bool OnSpawn(EntitySpawnMessage message, double localTime)
         {
+            if (_tracks.ContainsKey(message.EntityId)) return false;
             _indices.Bind(message.Index, message.EntityId);
             ClientKeyframeTrack track = new ClientKeyframeTrack();
             track.Add(message.Time, EntityKeyframeCodec.Decode(message.Keyframe));
             _tracks.Add(message.EntityId, track);
             AdvanceTimeline(message.Tick, message.Time, localTime);
+            return true;
         }
 
         public void OnDespawn(EntityDespawnMessage message)
