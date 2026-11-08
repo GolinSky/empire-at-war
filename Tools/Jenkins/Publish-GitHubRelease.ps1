@@ -121,7 +121,12 @@ try {
         if ($prerelease) { $arguments += '--prerelease' }
         & $gh @arguments
         if ($LASTEXITCODE -ne 0) { throw 'Draft creation failed. Inspect GitHub state and rerun with the same build and tag to resume.' }
-        $releases = @(Get-GitHubCollection -Resource 'releases' | Where-Object { $_.tag_name -ceq $tag })
+        # The release list is eventually consistent; a new draft can be missing for a few seconds.
+        for ($attempt = 1; $attempt -le 12; $attempt++) {
+            $releases = @(Get-GitHubCollection -Resource 'releases' | Where-Object { $_.tag_name -ceq $tag })
+            if ($releases.Count -ne 0) { break }
+            Start-Sleep -Seconds 5
+        }
         if ($releases.Count -ne 1) { throw 'Created draft could not be uniquely resolved.' }
     }
     $release = $releases[0]
