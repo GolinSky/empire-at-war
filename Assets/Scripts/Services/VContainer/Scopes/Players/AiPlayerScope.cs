@@ -35,7 +35,7 @@ namespace EmpireAtWar.Services.VContainer
             SkirmishScope battleScope = (SkirmishScope)Parent;
             BattlePlayer player = _player;
             ProductionAccessRegistrations.Register(builder, battleScope.Battle, player);
-            battleScope.Modules.ConfigurePlayer(builder, player, transform);
+            battleScope.Modules.ConfigurePlayer(builder, player, transform, runsAi: true);
             builder.RegisterInstance(new UnitRequestFactory(player.Has(BattleFeatures.SuperWeapons)))
                 .AsImplementedInterfaces().AsSelf();
             UnitFactoryRegistrations.Register(builder);

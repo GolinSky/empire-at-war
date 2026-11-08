@@ -29,12 +29,14 @@ namespace EmpireAtWar.Services.Networking
         {
             NetworkClient.RegisterHandler<AttackTargetMessage>(OnAttack);
             NetworkClient.RegisterHandler<ShipAbilityEventMessage>(OnAbility);
+            NetworkClient.RegisterHandler<WeaponTargetMessage>(OnWeaponTarget);
         }
 
         public void LateDispose()
         {
             NetworkClient.UnregisterHandler<AttackTargetMessage>();
             NetworkClient.UnregisterHandler<ShipAbilityEventMessage>();
+            NetworkClient.UnregisterHandler<WeaponTargetMessage>();
         }
 
         // An entity the client has not spawned yet (or already removed) is skipped.
@@ -52,6 +54,21 @@ namespace EmpireAtWar.Services.Networking
                 else if (receiver.TryGetFacade(out IFocusFireFacade focus))
                     focus.FocusFire(target);
             }
+        }
+
+        // Client weapons ignore their own picks and engage what the host's weapons engage.
+        private void OnWeaponTarget(WeaponTargetMessage message)
+        {
+            if (!_entities.TryGetEntity(message.ShooterId, out IEntity shooter) ||
+                !shooter.TryGetFacade(out IWeaponTargetReplicaFacade weapon)) return;
+            if (message.Reset)
+            {
+                weapon.ResetTarget();
+                return;
+            }
+
+            if (_entities.TryGetEntity(message.TargetId, out IEntity target))
+                weapon.AddTarget(target, message.AttackType, message.HardPointId, message.HardPointType);
         }
 
         private void OnAbility(ShipAbilityEventMessage message)

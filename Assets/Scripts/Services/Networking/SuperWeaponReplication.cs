@@ -45,7 +45,7 @@ namespace EmpireAtWar.Services.Networking
 
         private void OnFired(SuperWeaponType type, IEntity target)
         {
-            if (_online.HasBegun) HostBroadcast.ToClients(new SuperWeaponFiredMessage { Type = type, TargetId = target.Id });
+            if (_online.HasBegun) HostBroadcast.ToClients(_online, new SuperWeaponFiredMessage { Type = type, TargetId = target.Id });
         }
 
         private void OnHostFired(SuperWeaponFiredMessage message)

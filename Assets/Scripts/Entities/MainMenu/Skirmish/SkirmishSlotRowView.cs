@@ -22,6 +22,8 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private Graphic colorEdge;
         [SerializeField] private CanvasGroup configurationGroup;
         [SerializeField] private CanvasGroup slotLabelGroup;
+        [SerializeField] private TMP_Text slotIndexText;
+        [SerializeField] private RawImage avatarImage;
 
         private int _rowIndex;
         private readonly List<string> _occupantOptions = new List<string>();
@@ -68,6 +70,10 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
                 SetOptions(occupantDropdown, _occupantOptions);
             }
 
+            bool hasAvatar = state.Avatar != null;
+            avatarImage.gameObject.SetActive(hasAvatar);
+            avatarImage.texture = state.Avatar;
+            slotIndexText.gameObject.SetActive(!hasAvatar);
             titleText.text = state.Title;
             roleText.text = state.Role;
             occupantDropdown.SetValueWithoutNotify(state.OccupantIndex);

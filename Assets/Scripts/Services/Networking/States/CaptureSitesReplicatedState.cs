@@ -13,6 +13,8 @@ namespace EmpireAtWar.Services.Networking.States
     public sealed class CaptureSitesReplicatedState : ReplicatedState
     {
         private readonly CaptureSitesSystem _sites;
+        // The join baseline only sets the scene; later snapshots replay the host's capture events.
+        private bool _hasBaseline;
 
         public CaptureSitesReplicatedState(ReplicatedStateRegistry registry, IMatchSession session,
             CaptureSitesSystem sites) : base(registry, session)
@@ -38,10 +40,17 @@ namespace EmpireAtWar.Services.Networking.States
             for (int i = 0; i < sites.Count; i++)
             {
                 CaptureSiteSave save = saves[i];
-                sites[i].Restore(save.Owner, save.State, save.CapturingPlayer, save.CaptureProgress, save.FacilityType,
+                CaptureSitePresenter site = sites[i];
+                PlayerId previousOwner = site.Owner;
+                CaptureSiteState previousState = site.State;
+                SiteFacilityType previousType = site.FacilityType;
+                site.Restore(save.Owner, save.State, save.CapturingPlayer, save.CaptureProgress, save.FacilityType,
                     save.ConstructionProgress);
-                sites[i].SetFacility(save.FacilityId);
+                site.SetFacility(save.FacilityId);
+                if (_hasBaseline) _sites.ReplayHostChange(site, previousOwner, previousState, previousType);
             }
+
+            _hasBaseline = true;
         }
 
         protected override void FollowHost() => _sites.FollowHost();

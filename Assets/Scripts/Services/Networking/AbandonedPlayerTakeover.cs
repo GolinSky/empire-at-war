@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Game;
@@ -9,6 +10,8 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.VContainer;
 using UnityEngine;
 
@@ -31,11 +34,17 @@ namespace EmpireAtWar.Services.Networking
         private readonly NetworkTickService _ticks;
         private readonly IEntityLocator _entities;
         private readonly IReadOnlyList<ICaptureSiteSaveState> _captureSites;
+        private readonly ShipAbilityService _abilities;
+        // Empty when the battle has no superweapons.
+        private readonly IReadOnlyList<SuperWeaponFireService> _superWeapons;
 
         public AbandonedPlayerTakeover(OnlineMatchService online, BattleDefinition battle, BattleSaveService saves,
             UnitSaveService units, PlayerSaveRegistry players, PlayerScopeBootstrap scopes, NetworkTickService ticks,
-            IEntityLocator entities, IReadOnlyList<ICaptureSiteSaveState> captureSites)
+            IEntityLocator entities, IReadOnlyList<ICaptureSiteSaveState> captureSites, ShipAbilityService abilities,
+            IReadOnlyList<SuperWeaponFireService> superWeapons)
         {
+            _abilities = abilities;
+            _superWeapons = superWeapons;
             _online = online;
             _battle = battle;
             _saves = saves;
@@ -75,6 +84,7 @@ namespace EmpireAtWar.Services.Networking
             _ticks.BeginHandover();
             try
             {
+                _abilities.StopForRebuild(rebuilt);
                 _scopes.ReplaceWithAi(CreateAiPlayer(_battle.GetPlayer(player)));
                 _players.RestoreBeforeUnits(save);
                 BattleRestoreContext context = _units.Restore(save);
@@ -86,6 +96,9 @@ namespace EmpireAtWar.Services.Networking
                     if (_entities.TryGetEntity(unit.Id, out IEntity entity))
                         unit.Order.Apply(entity, _entities, attackMoveGroups);
                 }
+
+                RetargetWeapons(rebuilt);
+                foreach (SuperWeaponFireService superWeapon in _superWeapons) superWeapon.RetargetRebuilt(rebuilt);
             }
             finally
             {
@@ -93,6 +106,20 @@ namespace EmpireAtWar.Services.Networking
             }
 
             Debug.Log($"[Online] Player {player} did not reconnect within {OnlineMatchService.RECONNECT_GRACE_SECONDS}s; an AI took over.");
+        }
+
+        // Turrets and stations of other players (radar and AI targets, not only orders) aim at the rebuilt entities.
+        private void RetargetWeapons(HashSet<long> rebuilt)
+        {
+            List<IEntity> rebuiltEntities = new List<IEntity>();
+            foreach (long id in rebuilt)
+                if (_entities.TryGetEntity(id, out IEntity entity)) rebuiltEntities.Add(entity);
+            foreach (IEntity shooter in _entities.Entities.ToList())
+            {
+                if (rebuilt.Contains(shooter.Id) ||
+                    !shooter.TryGetFacade(out IWeaponTargetReplicaFacade weapon)) continue;
+                foreach (IEntity target in rebuiltEntities) weapon.RetargetRebuilt(target);
+            }
         }
 
         private static BattlePlayer CreateAiPlayer(BattlePlayer human)

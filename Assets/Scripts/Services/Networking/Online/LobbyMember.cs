@@ -8,5 +8,7 @@ namespace EmpireAtWar.Services.Networking.Online
         public bool Ready;
         public int SlotIndex;
         public bool Connected;
+        /// <summary>0 when the member plays without Steam.</summary>
+        public ulong SteamId;
     }
 }

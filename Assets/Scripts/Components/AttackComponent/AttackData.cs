@@ -30,6 +30,9 @@ namespace EmpireAtWar.Components.AttackComponent
         public ShipClass TargetClass => _shipUnitsProvider.ShipClass;
         public IHealthModelObserver TargetHealth => _shipUnitsProvider;
         public IEntity TargetEntity => _targetEntity;
+        /// <summary>Fire focused on one hardpoint (<see cref="Units"/>[0]) rather than <see cref="HardPointType"/>.</summary>
+        public bool IsFocused => _isFocused;
+        public HardPointType HardPointType => _hardPointType;
         public List<IHardPointModel> Units { get; }
 
         public AttackData(IHealthModelObserver shipUnitsProvider, IHealthFacade healthFacade, HardPointType hardPointType, IEntity targetEntity)

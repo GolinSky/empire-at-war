@@ -62,6 +62,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         {
             builder.Register<WeaponModel>(Lifetime.Singleton);
             RegisterComponents(builder, bindings.Weapons);
+            builder.Register<WeaponTargetReplicaFacade>(Lifetime.Singleton).AsImplementedInterfaces();
         }
 
         public static void RegisterCombatModifiers(IContainerBuilder builder)

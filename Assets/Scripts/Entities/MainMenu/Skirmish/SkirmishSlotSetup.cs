@@ -16,6 +16,8 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         public string PlayerName { get; set; } = string.Empty;
         /// <summary>Online lobby: the seated member ticked ready (the host always is).</summary>
         public bool Ready { get; set; }
+        /// <summary>Online lobby: the seated member's Steam id for the avatar; 0 without Steam.</summary>
+        public ulong SteamId { get; set; }
         /// <summary>The row plays in the battle (a human or an AI).</summary>
         public bool IsOpen => Occupant != SkirmishSlotOccupant.Closed && Occupant != SkirmishSlotOccupant.Vacant;
         public bool IsHuman => Occupant == SkirmishSlotOccupant.Human;
@@ -33,6 +35,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             MemberId = SkirmishModel.NO_MEMBER;
             PlayerName = string.Empty;
             Ready = false;
+            SteamId = 0UL;
         }
     }
 }

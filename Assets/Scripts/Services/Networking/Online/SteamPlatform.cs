@@ -14,6 +14,8 @@ namespace EmpireAtWar.Services.Networking.Online
         private const string VERSION_DATA = "version";
         private const string HOST_DATA = "host";
         private const string CONNECT_LOBBY_ARG = "+connect_lobby";
+        private const string CONNECT_PRESENCE = "connect";
+        private const string STATUS_PRESENCE = "status";
         private const int MAX_MEMBERS = 4;
         /// <summary>Spacewar while developing; replace with the game's own App ID.</summary>
         private const string STEAM_APP_ID = "480";
@@ -22,6 +24,10 @@ namespace EmpireAtWar.Services.Networking.Online
         private Callback<LobbyEnter_t> _lobbyEntered;
         private Callback<GameLobbyJoinRequested_t> _joinRequested;
         private Callback<LobbyInvite_t> _lobbyInvite;
+        private Callback<GameRichPresenceJoinRequested_t> _presenceJoinRequested;
+        private Callback<AvatarImageLoaded_t> _avatarLoaded;
+        private readonly System.Collections.Generic.Dictionary<ulong, Texture2D> _avatars =
+            new System.Collections.Generic.Dictionary<ulong, Texture2D>();
         private readonly List<SteamFriend> _friends = new List<SteamFriend>();
         private CSteamID _lobby = CSteamID.Nil;
         private bool _isHost;
@@ -31,11 +37,15 @@ namespace EmpireAtWar.Services.Networking.Online
         public event Action<OnlineError> Failed;
         /// <summary>An in-game lobby invite arrived (<see cref="HasPendingInvite"/>).</summary>
         public event Action InviteReceived;
+        /// <summary>A friend's avatar finished downloading; <see cref="TryGetAvatar"/> now has it.</summary>
+        public event Action AvatarLoaded;
 
         public bool IsInitialized { get; private set; }
         private string _status = "Steam not initialized";
 
         public string PersonaName => IsInitialized ? SteamFriends.GetPersonaName() : System.Environment.UserName;
+        /// <summary>0 without Steam (direct-IP play): no avatar.</summary>
+        public ulong LocalSteamId => IsInitialized ? SteamUser.GetSteamID().m_SteamID : 0UL;
 
         public string Status
         {
@@ -73,6 +83,8 @@ namespace EmpireAtWar.Services.Networking.Online
             _lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
             _joinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequested);
             _lobbyInvite = Callback<LobbyInvite_t>.Create(OnLobbyInvite);
+            _presenceJoinRequested = Callback<GameRichPresenceJoinRequested_t>.Create(OnPresenceJoinRequested);
+            _avatarLoaded = Callback<AvatarImageLoaded_t>.Create(OnAvatarLoaded);
             Status = $"Steam ready as {SteamFriends.GetPersonaName()}";
             return true;
         }
@@ -164,6 +176,43 @@ namespace EmpireAtWar.Services.Networking.Online
             return false;
         }
 
+        /// <summary>Friends-list status, e.g. "In lobby 2/4" or "In battle".</summary>
+        public void SetStatus(string status)
+        {
+            if (IsInitialized) SteamFriends.SetRichPresence(STATUS_PRESENCE, status);
+        }
+
+        /// <summary>
+        /// The player's small Steam avatar; false while Steam still downloads it (<see cref="AvatarLoaded"/> follows)
+        /// or without Steam.
+        /// </summary>
+        public bool TryGetAvatar(ulong steamId, out Texture2D avatar)
+        {
+            if (_avatars.TryGetValue(steamId, out avatar)) return true;
+            avatar = null;
+            if (!IsInitialized || steamId == 0UL) return false;
+            int image = SteamFriends.GetSmallFriendAvatar(new CSteamID(steamId));
+            // 0: no avatar set; -1: downloading, AvatarImageLoaded_t follows.
+            if (image <= 0 || !SteamUtils.GetImageSize(image, out uint width, out uint height)) return false;
+            byte[] rgba = new byte[width * height * 4];
+            if (!SteamUtils.GetImageRGBA(image, rgba, rgba.Length)) return false;
+            avatar = new Texture2D((int)width, (int)height, TextureFormat.RGBA32, false);
+            // Steam rows run top-down; textures bottom-up.
+            int row = (int)width * 4;
+            byte[] flipped = new byte[rgba.Length];
+            for (int y = 0; y < height; y++)
+                Array.Copy(rgba, y * row, flipped, ((int)height - 1 - y) * row, row);
+            avatar.LoadRawTextureData(flipped);
+            avatar.Apply();
+            _avatars.Add(steamId, avatar);
+            return true;
+        }
+
+        public void ClearPresence()
+        {
+            if (IsInitialized) SteamFriends.ClearRichPresence();
+        }
+
         public void Leave()
         {
             if (!InLobby)
@@ -199,12 +248,25 @@ namespace EmpireAtWar.Services.Networking.Online
             SteamMatchmaking.SetLobbyData(_lobby, GAME_DATA, GAME_KEY);
             SteamMatchmaking.SetLobbyData(_lobby, VERSION_DATA, Application.version);
             SteamMatchmaking.SetLobbyData(_lobby, HOST_DATA, hostId);
-            SteamFriends.SetRichPresence("connect", $"{CONNECT_LOBBY_ARG} {_lobby.m_SteamID}");
+            SteamFriends.SetRichPresence(CONNECT_PRESENCE, $"{CONNECT_LOBBY_ARG} {_lobby.m_SteamID}");
             Status = $"Hosting lobby {_lobby.m_SteamID}";
             HostLobbyReady?.Invoke(hostId);
         }
 
         private void OnJoinRequested(GameLobbyJoinRequested_t request) => Join(request.m_steamIDLobby);
+
+        // Friends list "Join Game" while the game runs: the friend's "connect" rich presence.
+        private void OnPresenceJoinRequested(GameRichPresenceJoinRequested_t request)
+        {
+            string[] parts = request.m_rgchConnect.Split(' ');
+            if (parts.Length == 2 && parts[0] == CONNECT_LOBBY_ARG && ulong.TryParse(parts[1], out ulong lobbyId))
+                Join(new CSteamID(lobbyId));
+        }
+
+        private void OnAvatarLoaded(AvatarImageLoaded_t loaded)
+        {
+            if (loaded.m_iImage > 0) AvatarLoaded?.Invoke();
+        }
 
         private void OnLobbyInvite(LobbyInvite_t invite)
         {
@@ -241,6 +303,8 @@ namespace EmpireAtWar.Services.Networking.Online
             }
 
             _lobby = lobby;
+            // Friends of a member can join the same lobby from the friends list.
+            SteamFriends.SetRichPresence(CONNECT_PRESENCE, $"{CONNECT_LOBBY_ARG} {lobby.m_SteamID}");
             Status = $"In lobby {lobby.m_SteamID} ({SteamMatchmaking.GetNumLobbyMembers(lobby)} members)";
             JoinedHost?.Invoke(SteamMatchmaking.GetLobbyData(lobby, HOST_DATA));
         }

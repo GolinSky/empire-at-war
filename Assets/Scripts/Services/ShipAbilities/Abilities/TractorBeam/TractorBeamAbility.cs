@@ -10,12 +10,13 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class TractorBeamAbility : IPhasedShipAbility
+    public sealed class TractorBeamAbility : IPhasedShipAbility, ITargetedShipAbility
     {
         private readonly TractorBeamSettings _settings;
         private readonly CombatStatModifier _movementPenalty;
         private IShipAbilityFacade _caster;
         private IEntity _target;
+        public IEntity Target => _target;
         private IHardPointModel _hardPoint;
         private CombatModifiers _targetModifiers;
         private CombatModifierHandle _applied;

@@ -39,6 +39,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<HostMatchStateSender>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<HostReplicatedStateSender>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HostCombatEventSender>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<HostWeaponTargetSender>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<OnlineHostGameCommand>(Lifetime.Singleton).As<IGameCommand>();
             builder.Register<AbandonedPlayerTakeover>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<OnlineBattleLifetime>(Lifetime.Singleton).AsImplementedInterfaces();

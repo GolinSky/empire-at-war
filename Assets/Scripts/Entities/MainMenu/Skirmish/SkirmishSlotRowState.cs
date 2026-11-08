@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace EmpireAtWar.Entities.MainMenu.Skirmish
 {
@@ -6,8 +7,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
     public readonly struct SkirmishSlotRowState
     {
         public SkirmishSlotRowState(string title, string role, IReadOnlyList<string> occupantOptions,
-            int occupantIndex, bool occupantEditable, bool detailsEditable)
+            int occupantIndex, bool occupantEditable, bool detailsEditable, Texture avatar)
         {
+            Avatar = avatar;
             Title = title;
             Role = role;
             OccupantOptions = occupantOptions;
@@ -22,5 +24,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         public int OccupantIndex { get; }
         public bool OccupantEditable { get; }
         public bool DetailsEditable { get; }
+        /// <summary>Online: the member's Steam avatar in place of the slot number; null shows the number.</summary>
+        public Texture Avatar { get; }
     }
 }

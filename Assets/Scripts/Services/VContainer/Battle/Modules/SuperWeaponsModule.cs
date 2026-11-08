@@ -31,9 +31,9 @@ namespace EmpireAtWar.Services.VContainer
 
         public void ConfigureDisabled(IContainerBuilder builder) { }
 
-        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
+        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot, bool runsAi)
         {
-            if (!player.Slot.IsAi)
+            if (!runsAi)
                 builder.Register<HumanSuperWeaponCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             else if (player.Has(BattleFeatures.Economy))
                 builder.Register<EnemySuperWeaponController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

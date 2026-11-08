@@ -55,10 +55,10 @@ namespace EmpireAtWar.Services.Networking
             }
         }
 
-        // The host's own connection runs the simulation and needs nothing.
+        // The host's own connection runs the simulation and needs nothing; a loading client has no handlers yet.
         private bool IsAudience(NetworkConnectionToClient connection, PlayerId audience)
         {
-            if (connection == NetworkServer.localConnection) return false;
+            if (!_online.IsBattleLoaded(connection)) return false;
             if (audience == PlayerId.None) return true;
             return _online.TryGetPlayer(connection.connectionId, out PlayerId player) && player == audience;
         }

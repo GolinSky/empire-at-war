@@ -47,13 +47,13 @@ namespace EmpireAtWar.Services.Networking
             if (!_online.HasBegun) return;
             long[] ids = new long[receivers.Count];
             for (int i = 0; i < ids.Length; i++) ids[i] = receivers[i].Id;
-            HostBroadcast.ToClients(new AttackTargetMessage { ReceiverIds = ids, TargetId = target.Id, HardPointId = hardPointId });
+            HostBroadcast.ToClients(_online, new AttackTargetMessage { ReceiverIds = ids, TargetId = target.Id, HardPointId = hardPointId });
         }
 
         private void OnActivated(IShipAbilityFacade caster, ShipAbilityId id, IEntity target)
         {
             if (!_online.HasBegun) return;
-            HostBroadcast.ToClients(new ShipAbilityEventMessage
+            HostBroadcast.ToClients(_online, new ShipAbilityEventMessage
             {
                 CasterId = caster.Entity.Id,
                 Ability = id,
@@ -64,7 +64,7 @@ namespace EmpireAtWar.Services.Networking
         private void OnCanceled(IShipAbilityFacade caster, ShipAbilityId id)
         {
             if (!_online.HasBegun) return;
-            HostBroadcast.ToClients(new ShipAbilityEventMessage { CasterId = caster.Entity.Id, Ability = id, Canceled = true });
+            HostBroadcast.ToClients(_online, new ShipAbilityEventMessage { CasterId = caster.Entity.Id, Ability = id, Canceled = true });
         }
     }
 }

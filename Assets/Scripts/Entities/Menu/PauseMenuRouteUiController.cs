@@ -65,7 +65,8 @@ namespace EmpireAtWar.Entities.Menu
             _ui = CreateUi<PauseMenuUi>();
             _ui.AssignPresenter(this);
             _ui.Initialize();
-            _ui.SetSavingAvailable(_saves.IsSupported);
+            // Online battles cannot be saved yet: a load would need every PC to rejoin the restored battle.
+            _ui.SetSavingAvailable(_saves.IsSupported && !_session.IsOnline);
             // Online, only the host restarts; every client then reloads with it.
             _ui.SetRestartAvailable(_session.IsAuthority);
             _tooltipHover = new TooltipHoverSubscription(

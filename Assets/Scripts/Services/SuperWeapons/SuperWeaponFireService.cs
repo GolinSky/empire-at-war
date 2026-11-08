@@ -47,6 +47,33 @@ namespace EmpireAtWar.Services.SuperWeapons
 
         public void RestoreSalvo(SuperWeaponSalvo salvo) => _salvos.Add(salvo);
 
+        /// <summary>
+        /// Host AI takeover rebuilt these entities under the same ids: salvos in flight and running stuns follow the
+        /// new entities (the old ones' modifiers went with them).
+        /// </summary>
+        public void RetargetRebuilt(ICollection<long> rebuiltIds)
+        {
+            for (int i = 0; i < _salvos.Count; i++)
+            {
+                SuperWeaponSalvo salvo = _salvos[i];
+                if (!rebuiltIds.Contains(salvo.Target.Id)) continue;
+                SuperWeaponSalvo moved = new SuperWeaponSalvo(salvo.Type, _entities.GetEntity(salvo.Target.Id),
+                    salvo.Profile, salvo.Origin) { ShotsFired = salvo.ShotsFired, NextShotTime = salvo.NextShotTime };
+                moved.ImpactTimes.AddRange(salvo.ImpactTimes);
+                _salvos[i] = moved;
+            }
+
+            for (int i = _stuns.Count - 1; i >= 0; i--)
+            {
+                SuperWeaponStun stun = _stuns[i];
+                if (!rebuiltIds.Contains(stun.Target.Id)) continue;
+                _stuns.RemoveAt(i);
+                IEntity target = _entities.GetEntity(stun.Target.Id);
+                RestoreStun(new SuperWeaponStun(target, target.GetFacade<ICombatModifiersFacade>().Modifiers,
+                    stun.Modifier, stun.TimeLeft));
+            }
+        }
+
         public void RestoreStun(SuperWeaponStun stun)
         {
             stun.Applied = stun.Modifiers.Add(stun.Modifier);

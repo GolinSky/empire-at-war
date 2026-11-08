@@ -12,7 +12,9 @@ namespace EmpireAtWar.Services.VContainer
         void ConfigureBattle(IContainerBuilder builder);
         void ConfigureDisabled(IContainerBuilder builder);
         /// <summary>Simulation registrations for every player, local or remote.</summary>
-        void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot);
+        /// <param name="runsAi">True only where this machine runs the slot's AI. A client mirrors AI slots as
+        /// remote players, so <c>player.Slot.IsAi</c> alone must not add AI services.</param>
+        void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot, bool runsAi);
         /// <summary>UI, input and announcements for the human at this machine only.</summary>
         void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot);
     }

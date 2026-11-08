@@ -13,5 +13,6 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         public int memberId;
         public string name;
         public bool ready;
+        public ulong steamId;
     }
 }

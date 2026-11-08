@@ -215,15 +215,16 @@ Play
     - Survival lobby = `SurvivalUi` + `OnlineSurvivalLobbyUiController` (`SurvivalLobbySnapshot`); host-only settings, footer lists members + ready.
     - Host listens on KCP + FizzySteamworks at once (`MultiplexTransport`; Steam only when initialized) → no "via Steam" toggle. Status shows local IPv4:port.
     - Skirmish start: `StartSkirmish(battle, memberSlots)`; `OnlineLineup` is Survival-only; `OnlineGameCommand`, `NotEnoughSlots`, `CanStart`/`ArmForceStart` removed.
-  - Open: Steam avatars; tooltips on the lobby screen; overlay invite usually unavailable in the Editor (join by IP there).
+  - 2026-11-08 polish (compiles; not run): Steam avatars on Skirmish lobby rows (`SteamPlatform.TryGetAvatar` small avatar → `Texture2D`, `AvatarImageLoaded_t` re-renders; `LobbyHello/LobbyMember.SteamId`; row `Avatar` RawImage replaces the slot number); lobby tooltips (`OnlineSkirmishLobbyUiController`); rich presence `connect` on host and members + `status` ("In Skirmish lobby 2/4", "Skirmish battle"), cleared on leave; `GameRichPresenceJoinRequested_t` → join. Seating rules moved to `SkirmishLobbySeating`.
+  - Known: overlay invite usually unavailable in the Editor (join by IP there); Survival lobby shows no avatars (no rows).
   - 2026-11-08 (compiles; not run): `OnlineLineup.TryFit` at Start → Skirmish turns AI slots into Human slots in slot order until every member has one (else `OnlineError.NotEnoughSlots`); Survival adds co-op humans of the host's faction (`SurvivalSetupSave.coopHumanFactions` now saved/sent), drops the AI ally if > 4 players, errors `SurvivalCoopNeedsLargerMap` (Small) / `SurvivalLobbyTooLarge`. Errors show on the online panel.
   - 2026-11-08 restart: host's battle `IGameCommand` = `OnlineHostGameCommand` → `OnlineMatchService.RestartMatch` resends `BattleStartMessage` to connected members and reloads; `IsReloading` keeps `OnlineBattleLifetime` from leaving (cleared on `MarkBegun`). Clients: pause-menu Restart non-interactable (`PauseMenuUi.SetRestartAvailable`).
-- [ ] Packages added (Phase 0). Still open: `NetworkManager` (empty online/offline scenes) lives in a persistent root owned by `ProjectScope`, outside battle scopes; it is not created in offline sessions.
-- [ ] `IOnlineLobby` over Steam lobbies: create (friends-only/private), invite, join, slot properties (faction, team, color, AI, ready), host kick. `KcpTransport` path: host IP entry for dev.
-- [ ] Host sends `SkirmishSetupSave` (or a Survival setup) → clients run the existing loading pipeline → ready barrier → host starts.
-- [ ] Menu: `Online` route (Host Skirmish, Host Survival, Join by IP) → Lobby UI and Join Flow.
-- [ ] Lobby screen: `Open`/`RemoteHuman` occupants, Steam name + avatar, per-row edit rights, ready, invite, kick, leave.
-- [ ] Steam join paths: overlay invite, `+connect_lobby` launch arg, `GameLobbyJoinRequested_t`/`GameRichPresenceJoinRequested_t`, rich presence `connect` + status.
+- [x] Persistent `OnlineNetwork` root owned by `OnlineMatchService` (ProjectScope), created only on Host/Join; no Mirror scenes.
+- [x] Lobby: Steam lobby (friends-only, game/version data) for invites; slot state is Mirror lobby messages (`LobbyStateMessage.SetupJson`), not Steam lobby data. KCP direct IP always available.
+- [x] Host sends `BattleSetupSave` → clients load → ready barrier (`IBattleStartGate`) → begin.
+- [x] Menu: Play → Online → Host Skirmish / Host Survival / Join by IP.
+- [x] Lobby screen: Vacant (Open) seats, Steam name + avatar, per-row edit rights, ready, invite, kick, leave.
+- [x] Steam join paths: overlay invite, `+connect_lobby`, `GameLobbyJoinRequested_t`, `GameRichPresenceJoinRequested_t`, in-game `LobbyInvite_t` (Join Invite button), rich presence `connect` + status.
 
 ### Phase 3 — Tick replication
 - Code 2026-11-08 (`Services/Networking/`, compiles, weaver ran on Assembly-CSharp; tests written, not run; not wired into DI — needs the Phase 2 online session):
@@ -232,9 +233,9 @@ Play
   - Mirror: `EntityKeyframesMessage` (unreliable), `EntitySpawnMessage`/`EntityDespawnMessage`/`MatchStateMessage` (reliable), `PlayerCommandMessage` with custom writer (kind + one command) in `PlayerCommandSerialization`; `NetworkTickService` (host send), `HostCommandReceiver` (drops commands whose issuer ≠ the connection's slot via `INetworkPlayerDirectory`, then `AuthorityCommandSink`), `NetworkCommandSink` (client).
   - Open: spawn message has no unit type yet (client spawn path = Phase 4); `MatchStateMessage` not sent yet; health/weapon-target/event messages (Sync Inventory) not yet.
   - Tests: `NetworkTickReplicationTests` [Category `Networking`] — clock, codec, extrapolation, dead reckoning, chunking, index map, command serialization round trip, host→client spawn/move/despawn. Run 2026-11-08: full EditMode 2871 → 2853 passed, 18 failed (same pre-existing 18), all 9 Networking tests passed. Committed `b9b738321`.
-- [ ] Host `NetworkTickService` (20 Hz accumulator, command queue, change collection, MTU chunking).
-- [ ] Messages: `CommandMessage`, `TickMessage` (spawns, despawns, deltas, events), `PlayerStateMessage` (owner only), `MatchStateMessage`; custom `NetworkWriter`/`NetworkReader` extensions for quantized values.
-- [ ] Client `SnapshotBuffer` + `SnapshotInterpolation` (`INTERPOLATION_DELAY`).
+- [x] Host `NetworkTickService` (20 Hz, change collection, MTU chunking); commands via `HostCommandReceiver`.
+- [x] Messages: keyframes, spawn/despawn/death, health, match state, replicated state (owner-only economy/reserve), commands (`PlayerCommandSerialization`).
+- [x] Client `ClientReplicaBuffer` (Mirror `SnapshotInterpolation`, 150 ms buffer).
 
 ### Phase 4 — Client mode per system (issue #7)
 - [ ] Gate authority-only work: AI, economy, production advance, capture, weapon targeting/damage, ability effects, super-weapon damage, `SurvivalWaveDirector`.
@@ -249,14 +250,16 @@ Play
     - Replicated state: `IReplicatedState` (key, audience, JSON capture/apply) + `ReplicatedStateRegistry` + `HostReplicatedStateSender` (0.5 s, on change, baseline on join) + `ClientReplicatedStateReceiver`. Base `ReplicatedState` calls `FollowHost()` on non-authority. States: capture sites, reinforcement zones (all), `player-N-economy` (credits, income timer, queue via `PlayerFactionModel.ReplaceQueue`, research; owner only), `player-N-reserve` (reserve diff, `ReinforcementModel.RestoreUnitCapacity`, superweapon states; owner only), `player-N-level` (human + `AiStationLevelReplicatedState`; all). Client stops: capture/zone ticking, income (`EconomyService.FollowHost`), production (`FactionService.FollowHost`).
     - Combat: `HealthFacade.ApplyDamage` ignores damage when `!IsAuthority`. `HostCombatEventSender` relays `UnitOrderService.AttackIssued` (`AttackTargetMessage`) and `ShipAbilityService.Activated/Canceled` (`ShipAbilityEventMessage`); `ClientCombatEventReceiver` calls attack facades directly and `ActivateReplica`/`CancelReplica`. `SuperWeaponReplication` relays `Fired` → client `Fire` (visual shots, stun).
     - Bug fix: `NetworkServer.SendToAll` also reached the host's own local client, which has no replication handlers → Mirror disconnects it on unknown messages. All host sends use `HostBroadcast.ToClients` (remote only).
-  - Still open: automatic per-hardpoint targets stay local (only explicit attack orders replicate); capture-site announcements on clients (restore fires no Captured/Lost). AI takeover: implemented 2026-11-08 (Phase 5 below).
+  - ~~Still open: automatic targets local; capture announcements~~ done 2026-11-08 (compiles; not run, tests not run):
+    - Weapon targets: `WeaponComponent` raises `TargetAdded`/`TargetReset` (`IWeaponTargetReplica`) for every pick (radar, AI states, orders). Client weapons (`!IsAuthority`, set in `Construct` from `IMatchSession`) ignore local `AddTarget`/`ResetTarget` and take the host's via `IWeaponTargetReplicaFacade` (`WeaponTargetReplicaFacade`, registered in `EntityFeatureBindings.RegisterWeapons`). Host `HostWeaponTargetSender` + `WeaponTargetRecord` (per shooter: base list + main, pruned of dead targets at 32) → `WeaponTargetMessage`; baseline sent after spawns in `HostBattleStartGate.Begin`. Group-level (which ships to engage), not per hardpoint; per-hardpoint picks inside a group stay local.
+    - Capture announcements: `CaptureSitesReplicatedState.Apply` diffs each site and calls `CaptureSitesSystem.ReplayHostChange` (Lost / Captured / ConstructionStarted / Completed); the first snapshot (join baseline) is silent. Construction "payer" = site owner on clients (an ally paying is announced to the owner).
   - User checks (two PCs): squadron death/relaunch, capture + relay sync, credits/queue/reserve on client, abilities + superweapon visuals, Skirmish auto Human slots, Survival co-op start (Medium/Large), host restart, client leaves > 60 s → AI plays on with the same units.
   - 2026-11-08: online battles disable the HUD pause + speed buttons on every machine, host included (`CoreGameUiController` checks `IMatchSession.IsOnline` → `CoreGameUi.DisableTimeControls`; compiles, not run). Esc menu: `SkirmishOrchestrator` (now takes `IMatchSession`) skips the menu pause when online → battle keeps running behind the menu on every machine (compiles, not run).
-- [ ] Disconnect → `AiPlayerScope` takeover; host leaves → match ends.
-- [ ] Issues #8, #10, #11 v1 rules; error UI (Steam not running, lobby full/closed, connection failure, version mismatch, host left, kicked).
+- [x] Disconnect → `AiPlayerScope` takeover after 60 s grace; host leaves → match ends (`HostLeftBattleExit`).
+- [x] Issues #8 (host-only time scale; HUD speed off online), #10 (send all; user accepted 2026-11-08), #11 (2026-11-08: pause-menu Save hidden online, `BattleAutosave` skips online); error UI on the Online screen.
 
 - Code 2026-11-08 (compiles; not run): host keeps a disconnected member's slot; rejoin by same Steam name within `RECONNECT_GRACE_SECONDS` = 60 → `BattleStartMessage` → load → baseline + begin. Past grace → `PlayerAbandoned` → `AbandonedPlayerTakeover` only logs (runtime `AiPlayerScope` swap still open). 2026-11-08 full AI swap (user choice; compiles, not run, tests not run): `AbandonedPlayerTakeover` (host) → `BattleSaveService.Capture` → keeps the player's units/structures + converted `PlayerSave` (queue + reserve → AI `PendingBuilds`, reserve finishing at once; money, level, research, paid squadrons, superweapons kept) → `NetworkTickService.BeginHandover` → `PlayerScopeBootstrap.ReplaceWithAi` (disposes human scope + its entity scopes, builds `AiPlayerScope` with an `AiOpponent` `BattlePlayer`, re-registers factories, relinks hosted AI allies via `HostedFactionLevel(IFactionLevelObserver, …)`) → `PlayerSaveRegistry` + `UnitSaveService.Restore` (same ids) → capture-site facility relink → other units' orders targeting the rebuilt ids re-applied → `EndHandover`. During handover the replicator keeps net indices and sends no despawn/spawn, so clients see nothing. Station is restored, not spawned (stations spawn only at startup). Abandoned member removed from the lobby (`OnlineLobby.RemoveAbandoned`) → rejoin rejected. Skipped when the battle is not running.
-  - Known gaps: superweapon salvos and running abilities aimed at the rebuilt units keep the old entity; turret targets re-acquire via radar. Client: host drop → `HostLeftBattleExit` → menu shows "The host left". Errors in `OnlineError` + panel text: Steam not running, lobby full, version mismatch, host left, kicked, battle running, connection failed.
+  - ~~Known gaps: salvos/abilities/turrets keep the old entity~~ fixed 2026-11-08 (compiles; not run): before the swap `ShipAbilityService.StopForRebuild` stops abilities of and aimed at rebuilt units (`ITargetedShipAbility` on IonPulse/IonShot/SustainedBeam/TractorBeam; clients told via `Canceled`); after restore every other armed entity's `IWeaponTargetReplicaFacade.RetargetRebuilt` swaps target groups to the new entity (focused hardpoint → whole target), and `SuperWeaponFireService.RetargetRebuilt` moves salvos in flight and stuns. Client: host drop → `HostLeftBattleExit` → menu shows "The host left". Errors in `OnlineError` + panel text: Steam not running, lobby full, version mismatch, host left, kicked, battle running, connection failed.
 
 ### Phase 6 — Online saving (post-v1)
 - [ ] Full-state baseline on join (also enables reconnect and late join).
@@ -331,10 +334,10 @@ Play
 - Survival co-op: max 3 humans now (Medium/Large maps). Future: multiple stations near each other or one shared station per side.
 - Disconnect: AI takes over, match continues, **not instantly — reconnect must be possible** (needs the full-state baseline on join, moved from Phase 6 into v1). Host leaves → match ends after the same grace window.
 - Look: build straight in the existing UI style per `UI_UX_GUIDELINES` / `UI_CODE_BUILD_GUIDE`; no Penpot mock first.
-- Fog: v1 sends all unit data; a cheating (modified) client could read hidden units. Pending user answer on acceptability.
+- Fog: v1 sends all unit data; a modified client could read hidden units. **Accepted by user 2026-11-08** (friends-only).
+- Steam App ID: user is play-testing with groups now under 480 (2026-11-08); own App ID before wider distribution.
 
 ## TODO / Open Questions
 
-- Max humans in Survival co-op (2? up to 3 with the wave attacker slot)?
-- Fog cheating: acceptable for friends-only v1?
-- Own Steam App ID: decide before any distribution beyond development testing.
+- Remaining v1 work is user acceptance (two-PC checks above, offline smoke test, spike bandwidth numbers) → then move Phase 6 (online saving) into its own plan or close v1.
+- Own Steam App ID before any distribution beyond play-test groups.

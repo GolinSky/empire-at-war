@@ -1,3 +1,4 @@
+using EmpireAtWar.Models.Players;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -38,7 +39,8 @@ namespace EmpireAtWar.Tests.Weapon
                     typeof(WeaponComponent).GetField("hardPoints", BindingFlags.Instance | BindingFlags.NonPublic)
                         .SetValue(weapon, new List<WeaponHardPoint> { hardPoint });
                     typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                        .Invoke(weapon, new object[] { null, null, coordinator, new CombatModifiers(), null, null, null, null, null, null, null, null, null, null, weapon.transform });
+                        .Invoke(weapon, new object[] { null, null, coordinator, new CombatModifiers(), null, null, null, null, null, null, null, null, null, null, weapon.transform,
+                        new OfflineSession(PlayerId.None) });
                     coordinator.Register(weapon);
                     coordinator.QueueTargetSelection(weapon, hardPoint);
                 }
@@ -80,7 +82,8 @@ namespace EmpireAtWar.Tests.Weapon
                 typeof(WeaponComponent).GetField("hardPoints", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(weapon, new List<WeaponHardPoint> { hardPoint });
                 typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(weapon, new object[] { null, null, coordinator, new CombatModifiers(), null, null, null, null, null, null, null, null, null, null, weapon.transform });
+                    .Invoke(weapon, new object[] { null, null, coordinator, new CombatModifiers(), null, null, null, null, null, null, null, null, null, null, weapon.transform,
+                        new OfflineSession(PlayerId.None) });
                 coordinator.Register(weapon);
                 coordinator.QueueTargetSelection(weapon, hardPoint);
                 weapon.Release();

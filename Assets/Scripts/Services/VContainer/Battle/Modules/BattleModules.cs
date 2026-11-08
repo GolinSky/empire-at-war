@@ -26,11 +26,11 @@ namespace EmpireAtWar.Services.VContainer
             foreach (IBattleModule module in _disabled) module.ConfigureDisabled(builder);
         }
 
-        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
+        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot, bool runsAi)
         {
             foreach (IBattleModule module in Enabled)
                 if (player.Has(module.Feature))
-                    module.ConfigurePlayer(builder, player, playerRoot);
+                    module.ConfigurePlayer(builder, player, playerRoot, runsAi);
         }
 
         public void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)

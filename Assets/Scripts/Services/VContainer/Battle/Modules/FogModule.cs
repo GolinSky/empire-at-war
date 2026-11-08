@@ -28,7 +28,7 @@ namespace EmpireAtWar.Services.VContainer
             _fog.gameObject.SetActive(false);
         }
 
-        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot) { }
+        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot, bool runsAi) { }
 
         public void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot) { }
 

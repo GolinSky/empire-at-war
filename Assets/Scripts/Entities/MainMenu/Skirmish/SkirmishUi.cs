@@ -57,6 +57,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         private TeamColorPalette _palette;
         private string _offlineStartLabel;
         private string _lobbyStatus = string.Empty;
+        private ISkirmishAvatarSource _avatars;
 
         private bool _isInitialized;
 
@@ -155,6 +156,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         {
             _palette = palette;
         }
+
+        /// <summary>Online lobby: Steam avatars for the members' rows.</summary>
+        public void SetAvatarSource(ISkirmishAvatarSource avatars) => _avatars = avatars;
 
         /// <summary>Online lobby: the Steam invite button replaces the active slot count.</summary>
         public void SetInviteAvailable(bool available)
@@ -280,8 +284,10 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
                 string title = !_model.IsOnline ? "COMMANDER"
                     : $"{slot.PlayerName.ToUpperInvariant()}   /   {(slot.Ready ? "READY" : "NOT READY")}";
                 string[] options = occupantEditable ? new[] { name, KICK_OPTION_LABEL } : new[] { name };
+                Texture2D avatar = null;
+                if (_model.IsOnline && slot.SteamId != 0UL) _avatars.TryGetAvatar(slot.SteamId, out avatar);
                 return new SkirmishSlotRowState(title, _model.IsLocalSlot(slotIndex) ? "YOU" : "HUMAN", options, 0,
-                    occupantEditable, detailsEditable);
+                    occupantEditable, detailsEditable, avatar);
             }
 
             bool isVacant = slot.Occupant == SkirmishSlotOccupant.Vacant;
@@ -290,7 +296,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
                 isVacant ? "OPEN" : slot.IsOpen ? "AI" : "OFF",
                 _model.IsOnline ? ONLINE_AI_OCCUPANT_OPTIONS : AI_OCCUPANT_OPTIONS,
                 isVacant ? VACANT_OPTION_INDEX : (int)slot.Occupant,
-                occupantEditable, detailsEditable);
+                occupantEditable, detailsEditable, null);
         }
 
         // A member's row offers only Kick, which frees the seat; AI rows map option index to occupant.

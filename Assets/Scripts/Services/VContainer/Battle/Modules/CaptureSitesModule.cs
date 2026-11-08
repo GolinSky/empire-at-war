@@ -44,13 +44,13 @@ namespace EmpireAtWar.Services.VContainer
             _sites.gameObject.SetActive(false);
         }
 
-        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
+        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot, bool runsAi)
         {
-            if (player.Slot.IsAi)
+            if (runsAi)
                 builder.Register<EnemySiteObjectives>(Lifetime.Singleton).As<IEnemyCaptureObjectiveSource>();
             if (!player.Has(BattleFeatures.Economy)) return;
             builder.Register<SiteFacilityBuilder>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            if (player.Slot.IsAi)
+            if (runsAi)
             {
                 builder.Register<EnemyDefenseStrategy>(Lifetime.Singleton);
                 builder.Register<EnemyDefenseSnapshotBuilder>(Lifetime.Singleton);

@@ -34,12 +34,12 @@ namespace EmpireAtWar.Services.VContainer
 
         public void ConfigureDisabled(IContainerBuilder builder) { }
 
-        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
+        public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot, bool runsAi)
         {
             builder.Register<EconomyModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EconomyService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EconomySaveSource>(Lifetime.Singleton).AsImplementedInterfaces();
-            if (player.Slot.IsAi) ConfigureAi(builder, playerRoot);
+            if (runsAi) ConfigureAi(builder, playerRoot);
             else ConfigureHuman(builder);
         }
 

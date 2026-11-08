@@ -42,9 +42,9 @@ namespace EmpireAtWar.Services.Networking
             _replicator.Advance(Time.deltaTime, NetworkTime.time, _output);
             if (!_online.HasBegun) return;
             // Despawns first: a pooled squadron can leave and come back under the same id in one tick.
-            foreach (EntityDespawnMessage despawn in _output.Despawns) HostBroadcast.ToClients(despawn);
-            foreach (EntitySpawnMessage spawn in _output.Spawns) HostBroadcast.ToClients(spawn);
-            foreach (EntityKeyframesMessage chunk in _output.Keyframes) HostBroadcast.ToClients(chunk, Channels.Unreliable);
+            foreach (EntityDespawnMessage despawn in _output.Despawns) HostBroadcast.ToClients(_online, despawn);
+            foreach (EntitySpawnMessage spawn in _output.Spawns) HostBroadcast.ToClients(_online, spawn);
+            foreach (EntityKeyframesMessage chunk in _output.Keyframes) HostBroadcast.ToClients(_online, chunk, Channels.Unreliable);
             _healthTimer -= Time.unscaledDeltaTime;
             if (_healthTimer > 0f) return;
             _healthTimer = HEALTH_INTERVAL_SECONDS;
@@ -73,7 +73,7 @@ namespace EmpireAtWar.Services.Networking
                 if (entity.HealthModel.IsDestroyed)
                 {
                     // Dead units stay in the locator through their death presentation; announce the death once.
-                    if (_announcedDeaths.Add(entity.Id)) HostBroadcast.ToClients(new EntityDiedMessage { Index = index });
+                    if (_announcedDeaths.Add(entity.Id)) HostBroadcast.ToClients(_online, new EntityDiedMessage { Index = index });
                     continue;
                 }
 
@@ -82,7 +82,7 @@ namespace EmpireAtWar.Services.Networking
                 if (_sentHealth.TryGetValue(entity.Id, out Vector2 sent) && sent == health) continue;
                 if (!TryCaptureHealth(entity, out UnitHealthSave save)) continue;
                 _sentHealth[entity.Id] = health;
-                HostBroadcast.ToClients(new EntityHealthMessage { Index = index, HealthJson = JsonUtility.ToJson(save) });
+                HostBroadcast.ToClients(_online, new EntityHealthMessage { Index = index, HealthJson = JsonUtility.ToJson(save) });
             }
         }
 

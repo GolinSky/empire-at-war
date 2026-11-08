@@ -10,7 +10,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public abstract class SustainedBeamAbility : IPhasedShipAbility
+    public abstract class SustainedBeamAbility : IPhasedShipAbility, ITargetedShipAbility
     {
         private const float DAMAGE_TICK_INTERVAL = 0.2f;
         private readonly ImpactEffectPresenter _impactPresenter;
@@ -20,6 +20,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private BeamShot _view;
         private IShipAbilityFacade _caster;
         private IEntity _target;
+        public IEntity Target => _target;
         private IHealthFacade _health;
         private float _damagePerSecond;
         private float _timeLeft;

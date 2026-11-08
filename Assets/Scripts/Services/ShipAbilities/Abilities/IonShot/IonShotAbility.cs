@@ -8,12 +8,13 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class IonShotAbility : IPhasedShipAbility
+    public sealed class IonShotAbility : IPhasedShipAbility, ITargetedShipAbility
     {
         private readonly IonShotSettings _settings;
         private readonly BoltFlightBatch _boltFlights;
         private readonly CombatStatModifier _disable = new CombatStatModifier(1f, 1f, 0f, 1f, 1f);
         private IEntity _target;
+        public IEntity Target => _target;
         private CombatModifiers _targetModifiers;
         private CombatModifierHandle _applied;
         private float _remaining;

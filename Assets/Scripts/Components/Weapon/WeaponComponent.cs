@@ -26,7 +26,7 @@ using EmpireAtWar.Lifecycle;
 namespace EmpireAtWar.Components.Weapon
 {
     public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponPresenter,
-        IWeaponFireEvents, IWeaponFacing, IRespawnable, IAutoPowerWeaponObserver
+        IWeaponFireEvents, IWeaponFacing, IRespawnable, IAutoPowerWeaponObserver, IWeaponTargetReplica
     {
         // The ship stops a bit inside its range so hardpoints on the far side of the hull still reach.
         private const float ENGAGE_RANGE_FACTOR = 0.8f;
@@ -110,8 +110,12 @@ namespace EmpireAtWar.Components.Weapon
 
         private bool _isReleased;
         private bool _isInitialized;
+        // Online client: targets come from the host (IWeaponTargetReplica); local AI, radar and order picks are ignored.
+        private bool _followsHost;
 
         public event Action<WeaponProfile, Transform> ShotEmitted;
+        public event Action<AttackData, AttackType> TargetAdded;
+        public event Action TargetReset;
 
         public float AttackDistance => Model.MaxWeaponRange * _modifiers.VisionMultiplier;
 
@@ -123,8 +127,9 @@ namespace EmpireAtWar.Components.Weapon
             DamageMatrixData damageMatrix, DebugRangeCircleFactory rangeCircleFactory, IncomingMissileRegistry missiles,
             IVisionService visionService, IPlayerRoster playerRoster, PlayerId owner,
             ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, ShotPoolPrewarmer poolPrewarmer,
-            [Key(EntityBindType.ViewTransform)] Transform viewTransform)
+            [Key(EntityBindType.ViewTransform)] Transform viewTransform, IMatchSession session)
         {
+            _followsHost = !session.IsAuthority;
             _impactPresenter = impactPresenter;
             _boltFlights = boltFlights;
             _poolPrewarmer = poolPrewarmer;
@@ -248,6 +253,38 @@ namespace EmpireAtWar.Components.Weapon
 
         public void AddTarget(AttackData attackData, AttackType attackType)
         {
+            if (_followsHost) return;
+            ApplyTarget(attackData, attackType);
+            if (TargetAdded != null) TargetAdded.Invoke(attackData, attackType);
+        }
+
+        public void AddReplicaTarget(AttackData attackData, AttackType attackType) =>
+            ApplyTarget(attackData, attackType);
+
+        public void ResetReplicaTarget() => ApplyReset();
+
+        public bool RemoveTargetsOf(long entityId, out bool wasMain)
+        {
+            AttackData main = _mainAttackData;
+            wasMain = main != null && main.TargetEntity.Id == entityId;
+            if (wasMain) _mainAttackData = null;
+            bool removed = wasMain;
+            for (int i = _attackDataList.Count - 1; i >= 0; i--)
+            {
+                AttackData group = _attackDataList[i];
+                if (group.TargetEntity.Id != entityId) continue;
+                _attackDataList.RemoveAt(i);
+                UnsubscribeIfUnused(group);
+                removed = true;
+            }
+
+            if (wasMain) UnsubscribeIfUnused(main);
+            if (removed) InvalidateCandidates();
+            return removed;
+        }
+
+        private void ApplyTarget(AttackData attackData, AttackType attackType)
+        {
             if (_isReleased) return;
 
             switch (attackType)
@@ -353,6 +390,13 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         public void ResetTarget()
+        {
+            if (_followsHost) return;
+            ApplyReset();
+            if (TargetReset != null) TargetReset.Invoke();
+        }
+
+        private void ApplyReset()
         {
             AttackData previousMain = _mainAttackData;
             _mainAttackData = null;

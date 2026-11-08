@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class IonPulseAbility : IPhasedShipAbility
+    public sealed class IonPulseAbility : IPhasedShipAbility, ITargetedShipAbility
     {
         private readonly IonPulseSettings _settings;
         private readonly IEntityLocator _entities;
@@ -23,6 +23,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private IAbilityFacingFacade _facing;
         private IHardPointModel _cannon;
         private IEntity _target;
+        public IEntity Target => _target;
         private PlayerId _owner;
         private IonPulseModel _model;
         private IIonPulseView _view;

@@ -40,7 +40,7 @@ namespace EmpireAtWar.Services.VContainer
             ProductionAccessRegistrations.Register(builder, battleScope.Battle, player);
             RegisterPlayerServices(builder, _owner, battleScope.Factions.Get(_owner.Faction), player.Features,
                 battleScope.Battle.InitialStationLevel);
-            battleScope.Modules.ConfigurePlayer(builder, player, transform);
+            battleScope.Modules.ConfigurePlayer(builder, player, transform, runsAi: false);
             builder.RegisterInstance(new UnitRequestFactory(player.Has(BattleFeatures.SuperWeapons)))
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerReserveReplicatedState>(Lifetime.Singleton).AsImplementedInterfaces();

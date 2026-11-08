@@ -19,8 +19,6 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         private const float DEFAULT_STARTING_MONEY = 2000f;
         private const float MONEY_STEP = 100f;
 
-        private const int HUMAN_SLOT_INDEX = 0;
-
         private readonly SkirmishSlotSetup[] _slots =
         {
             new SkirmishSlotSetup(SkirmishSlotOccupant.Human, FactionType.Republic, 0, 0),
@@ -103,18 +101,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             IsOnline = true;
             IsHost = true;
             LocalMemberId = hostMemberId;
-            foreach (SkirmishSlotSetup slot in _slots)
-            {
-                slot.Occupant = SkirmishSlotOccupant.Closed;
-                slot.ClearMember();
-            }
-
-            SkirmishSlotSetup host = _slots[HUMAN_SLOT_INDEX];
-            host.Occupant = SkirmishSlotOccupant.Human;
-            host.MemberId = hostMemberId;
-            host.PlayerName = hostName;
-            host.Ready = true;
-            _slots[HUMAN_SLOT_INDEX + 1].Occupant = SkirmishSlotOccupant.Vacant;
+            SkirmishLobbySeating.SeatHost(_slots, hostMemberId, hostName);
             Changed?.Invoke();
         }
 
@@ -132,33 +119,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         /// </summary>
         public void SeatMembers(IReadOnlyList<SkirmishLobbySeat> members)
         {
-            bool changed = false;
-            foreach (SkirmishSlotSetup slot in _slots)
-            {
-                if (slot.MemberId == NO_MEMBER || members.Any(member => member.MemberId == slot.MemberId)) continue;
-                slot.Occupant = SkirmishSlotOccupant.Vacant;
-                slot.ClearMember();
-                changed = true;
-            }
-
-            foreach (SkirmishLobbySeat member in members)
-            {
-                SkirmishSlotSetup slot = _slots.FirstOrDefault(row => row.MemberId == member.MemberId);
-                if (slot == null)
-                {
-                    slot = FindFreeSeat();
-                    slot.Occupant = SkirmishSlotOccupant.Human;
-                    slot.MemberId = member.MemberId;
-                    changed = true;
-                }
-
-                if (slot.PlayerName == member.Name && slot.Ready == member.Ready) continue;
-                slot.PlayerName = member.Name;
-                slot.Ready = member.Ready;
-                changed = true;
-            }
-
-            if (changed) Changed?.Invoke();
+            if (SkirmishLobbySeating.SeatMembers(_slots, members)) Changed?.Invoke();
         }
 
         /// <summary>Host: a member's own row choices; false when no row holds the member or a value is invalid.</summary>
@@ -174,27 +135,11 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         }
 
         /// <summary>Host: member connection id to its slot index in <see cref="CreatePlayers"/>.</summary>
-        public IReadOnlyDictionary<int, int> CreateMemberSlots()
-        {
-            Dictionary<int, int> memberSlots = new Dictionary<int, int>();
-            int playerIndex = 0;
-            foreach (SkirmishSlotSetup slot in _slots)
-            {
-                if (!slot.IsOpen) continue;
-                if (slot.MemberId != NO_MEMBER) memberSlots.Add(slot.MemberId, playerIndex);
-                playerIndex++;
-            }
-
-            return memberSlots;
-        }
+        public IReadOnlyDictionary<int, int> CreateMemberSlots() => SkirmishLobbySeating.CreateMemberSlots(_slots);
 
         public SkirmishLobbySnapshot CaptureLobby() => new SkirmishLobbySnapshot
         {
-            slots = _slots.Select(slot => new SkirmishLobbySlotSnapshot
-            {
-                occupant = (int)slot.Occupant, faction = (int)slot.Faction, team = slot.Team,
-                color = slot.ColorIndex, memberId = slot.MemberId, name = slot.PlayerName, ready = slot.Ready
-            }).ToArray(),
+            slots = _slots.Select(SkirmishLobbySeating.Capture).ToArray(),
             planet = (int)Planet,
             mapSize = (int)MapSize,
             victoryCondition = (int)VictoryCondition,
@@ -206,18 +151,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         public void ApplyLobby(SkirmishLobbySnapshot snapshot, int localMemberId)
         {
             LocalMemberId = localMemberId;
-            for (int i = 0; i < _slots.Length; i++)
-            {
-                SkirmishLobbySlotSnapshot row = snapshot.slots[i];
-                SkirmishSlotSetup slot = _slots[i];
-                slot.Occupant = (SkirmishSlotOccupant)row.occupant;
-                slot.Faction = (FactionType)row.faction;
-                slot.Team = row.team;
-                slot.ColorIndex = row.color;
-                slot.MemberId = row.memberId;
-                slot.PlayerName = row.name;
-                slot.Ready = row.ready;
-            }
+            for (int i = 0; i < _slots.Length; i++) SkirmishLobbySeating.Apply(_slots[i], snapshot.slots[i]);
 
             Planet = (PlanetType)snapshot.planet;
             MapSize = (MapSize)snapshot.mapSize;
@@ -310,11 +244,6 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         }
 
         private bool IsLocal(SkirmishSlotSetup slot) => IsOnline ? slot.MemberId == LocalMemberId : slot.IsHuman;
-
-        private SkirmishSlotSetup FindFreeSeat() =>
-            _slots.FirstOrDefault(slot => slot.Occupant == SkirmishSlotOccupant.Vacant) ??
-            _slots.FirstOrDefault(slot => slot.Occupant == SkirmishSlotOccupant.Closed) ??
-            _slots.First(slot => !slot.IsHuman);
 
         private int CountOpenTeams()
         {

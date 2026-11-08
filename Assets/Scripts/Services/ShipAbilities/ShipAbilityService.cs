@@ -226,6 +226,29 @@ namespace EmpireAtWar.Services.ShipAbilities
             return false;
         }
 
+        /// <summary>
+        /// Host AI takeover: these entities are about to be rebuilt under the same ids. Their own abilities end with
+        /// the old entities; abilities aimed at them stop (clients are told through <see cref="Canceled"/>).
+        /// </summary>
+        public void StopForRebuild(ICollection<long> rebuiltIds)
+        {
+            for (int i = _running.Count - 1; i >= 0; i--)
+            {
+                ShipAbilitySlot slot = _running[i];
+                bool ownRebuilt = rebuiltIds.Contains(slot.Owner.Entity.Id);
+                bool aimedAtRebuilt = slot.State == ShipAbilityState.Active &&
+                    slot.RunningAbility is ITargetedShipAbility targeted && rebuiltIds.Contains(targeted.Target.Id);
+                if (!ownRebuilt && !aimedAtRebuilt) continue;
+                if (slot.State == ShipAbilityState.Active)
+                {
+                    Stop(slot);
+                    Canceled?.Invoke(slot.Owner, slot.Id);
+                }
+
+                if (ownRebuilt) _running.RemoveAt(i);
+            }
+        }
+
         public bool TryCancel(IShipAbilityFacade caster, ShipAbilityId id)
         {
             if (!TryFindSlot(caster, id, out ShipAbilitySlot slot) ||

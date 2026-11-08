@@ -1,5 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
@@ -21,11 +25,13 @@ namespace EmpireAtWar.Entities.MainMenu.Online
     /// renders the host's snapshot; its Start button toggles ready and Close leaves the lobby.
     /// </summary>
     public sealed class OnlineSkirmishLobbyUiController : UiController, ISkirmishPresenter, IOnlineSkirmishLobbyScreen,
-        IInitializable, ILateDisposable
+        ISkirmishAvatarSource, IInitializable, ILateDisposable
     {
         private readonly OnlineMatchService _online;
         private readonly TeamColorPalette _palette;
         private readonly IMenuFactionSfxService _factionAudio;
+        private readonly TooltipRequests _tooltips;
+        private TooltipHoverSubscription _tooltipHover;
         // The lobby keeps its own setup so the offline Skirmish screen is untouched.
         private readonly SkirmishModel _model = new SkirmishModel();
         private SkirmishUi _ui;
@@ -33,9 +39,11 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private string _appliedSetup = string.Empty;
 
         public OnlineSkirmishLobbyUiController(IUiService uiService, IUiCancelRouter cancelRouter,
-            OnlineMatchService online, TeamColorPalette palette, IMenuFactionSfxService factionAudio)
+            OnlineMatchService online, TeamColorPalette palette, IMenuFactionSfxService factionAudio,
+            ITooltipService tooltipService)
             : base(uiService, cancelRouter)
         {
+            _tooltips = new TooltipRequests(tooltipService);
             _online = online;
             _palette = palette;
             _factionAudio = factionAudio;
@@ -55,6 +63,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             _online.Changed -= Sync;
             _online.SlotEditRequested -= ApplyMemberEdit;
             _model.Changed -= OnModelChanged;
+            if (_tooltipHover != null) _tooltipHover.Dispose();
+            _tooltipHover = null;
             if (_ui != null)
             {
                 _ui.InviteRequested -= InviteFriends;
@@ -73,8 +83,10 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 _ui.SetModel(_model);
                 _ui.AssignPresenter(this);
                 _ui.SetData(_palette);
+                _ui.SetAvatarSource(this);
                 _ui.Initialize();
                 _ui.InviteRequested += InviteFriends;
+                _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover, HandleTooltipHover, _tooltips);
             }
 
             _isOpen = true;
@@ -89,6 +101,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Hide()
         {
             _isOpen = false;
+            _tooltips.HideAll();
             _ui.Hide();
             Unfocus();
         }
@@ -180,10 +193,31 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         private void InviteFriends() => _online.Steam.InviteFriends();
 
+        public bool TryGetAvatar(ulong steamId, out Texture2D avatar) => _online.Steam.TryGetAvatar(steamId, out avatar);
+
         private List<SkirmishLobbySeat> CreateSeats() => _online.Members
             .Where(member => member.Connected)
-            .Select(member => new SkirmishLobbySeat(member.ConnectionId, member.Name, member.Ready))
+            .Select(member => new SkirmishLobbySeat(member.ConnectionId, member.Name, member.Ready, member.SteamId))
             .ToList();
+
+        private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
+            _tooltips.Show(source, key, anchor, () => _isOpen, () => new TooltipContent(title: (string)key,
+                description: (string)key switch
+                {
+                    "Start battle" => IsHost
+                        ? _model.AllHumansReady ? "Start the battle for every player."
+                            : "Start now, even though not every player is ready."
+                        : _model.IsLocalReady ? "Tell the host you are not ready yet." : "Tell the host you are ready.",
+                    "Close" => "Leave the lobby.",
+                    "Planet" => $"The battlefield, picked by the host. Current: {_model.Planet}.",
+                    "Map size" => $"The generated battlefield size, picked by the host. Current: {_model.MapSize}.",
+                    "Victory condition" => $"The battle objective, picked by the host. Current: {_model.VictoryCondition}.",
+                    "Starting credits" => $"Credits per player at battle start: {_model.StartingMoney:0}.",
+                    "Player" => IsHost
+                        ? "Players pick their own faction, team and colour. You set AI rows, open seats and can kick a player."
+                        : "Pick your own faction, team and colour. The host sets the other rows.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(key))
+                }));
 
         private string CreateStatus()
         {

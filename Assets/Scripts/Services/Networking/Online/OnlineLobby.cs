@@ -24,11 +24,14 @@ namespace EmpireAtWar.Services.Networking.Online
             }
         }
 
-        public void Reset(string hostName)
+        public void Reset(string hostName, ulong hostSteamId)
         {
             _members.Clear();
             _members.Add(new LobbyMember
-                { ConnectionId = HOST_CONNECTION_ID, Name = hostName, Ready = true, SlotIndex = -1, Connected = true });
+            {
+                ConnectionId = HOST_CONNECTION_ID, Name = hostName, Ready = true, SlotIndex = -1, Connected = true,
+                SteamId = hostSteamId
+            });
         }
 
         public void Replace(LobbyMember[] members)
@@ -37,8 +40,9 @@ namespace EmpireAtWar.Services.Networking.Online
             _members.AddRange(members);
         }
 
-        public void Add(int connectionId, string name) =>
-            _members.Add(new LobbyMember { ConnectionId = connectionId, Name = name, SlotIndex = -1, Connected = true });
+        public void Add(int connectionId, string name, ulong steamId) =>
+            _members.Add(new LobbyMember
+                { ConnectionId = connectionId, Name = name, SlotIndex = -1, Connected = true, SteamId = steamId });
 
         public bool Remove(int connectionId) => _members.RemoveAll(member => member.ConnectionId == connectionId) > 0;
 

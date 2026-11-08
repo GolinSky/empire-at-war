@@ -101,6 +101,7 @@ namespace EmpireAtWar.Services.Networking.Online
             // The Steam lobby (invite button) and in-game invites arrive later through Steam callbacks.
             _steam.HostLobbyReady += OnSteamLobbyReady;
             _steam.InviteReceived += NotifyChanged;
+            _steam.AvatarLoaded += NotifyChanged;
             _steam.TryJoinFromLaunchArgs();
         }
 
@@ -162,7 +163,7 @@ namespace EmpireAtWar.Services.Networking.Online
             EnterOnline();
             ResetMatch(OnlineRole.Host);
             Mode = mode;
-            _lobby.Reset(_steam.PersonaName);
+            _lobby.Reset(_steam.PersonaName, _steam.LocalSteamId);
             _manager.UseTransport(_multiplex);
             _manager.StartHost();
             if (_steam.IsInitialized) _steam.CreateLobby();
@@ -186,6 +187,7 @@ namespace EmpireAtWar.Services.Networking.Online
             if (Role == OnlineRole.Host) _manager.StopHost();
             else _manager.StopClient();
             _steam.Leave();
+            _steam.ClearPresence();
             _leaving = false;
             ResetMatch(OnlineRole.None);
             Changed?.Invoke();
@@ -310,10 +312,15 @@ namespace EmpireAtWar.Services.Networking.Online
         /// <summary>Host: clients have loaded (or Force Start); client: the host's begin message arrived.</summary>
         public void MarkBegun()
         {
+            _steam.SetStatus(Mode == LobbyMode.Survival ? "Survival co-op battle" : "Skirmish battle");
             IsReloading = false;
             HasBegun = true;
             BattleBegun?.Invoke();
         }
+
+        /// <summary>Host: this remote client reported the battle scene loaded, so it has the battle handlers.
+        /// Never true for the host's own local connection.</summary>
+        public bool IsBattleLoaded(NetworkConnectionToClient connection) => _loaded.Contains(connection.connectionId);
 
         public bool TryGetPlayer(int connectionId, out PlayerId player)
         {
@@ -343,7 +350,8 @@ namespace EmpireAtWar.Services.Networking.Online
         private void SendHello()
         {
             NetworkClient.OnConnectedEvent -= SendHello;
-            NetworkClient.Send(new LobbyHelloMessage { Name = _steam.PersonaName, Version = Application.version });
+            NetworkClient.Send(new LobbyHelloMessage
+                { Name = _steam.PersonaName, Version = Application.version, SteamId = _steam.LocalSteamId });
         }
 
         private void OnHello(NetworkConnectionToClient connection, LobbyHelloMessage hello)
@@ -374,7 +382,7 @@ namespace EmpireAtWar.Services.Networking.Online
                 return;
             }
 
-            _lobby.Add(connection.connectionId, hello.Name);
+            _lobby.Add(connection.connectionId, hello.Name, hello.SteamId);
             BroadcastLobby();
         }
 
@@ -417,6 +425,7 @@ namespace EmpireAtWar.Services.Networking.Online
             Mode = message.Mode;
             SetupJson = message.SetupJson;
             _inLobby = true;
+            if (!IsInBattle) _steam.SetStatus(LobbyStatus());
             Changed?.Invoke();
         }
 
@@ -437,6 +446,7 @@ namespace EmpireAtWar.Services.Networking.Online
             // No lobby state yet: the host was never reached.
             if (LastError == OnlineError.None) LastError = _inLobby ? OnlineError.HostLeft : OnlineError.ConnectionFailed;
             _steam.Leave();
+            _steam.ClearPresence();
             ResetMatch(OnlineRole.None);
             Changed?.Invoke();
             if (wasInBattle) HostLeft?.Invoke();
@@ -459,8 +469,11 @@ namespace EmpireAtWar.Services.Networking.Online
             _pendingKicks.Add((connection, Time.unscaledTime + KICK_DISCONNECT_DELAY));
         }
 
+        private string LobbyStatus() => $"In {Mode} lobby {_lobby.Members.Count}/{OnlineLobby.MAX_MEMBERS}";
+
         private void BroadcastLobby()
         {
+            if (Role == OnlineRole.Host && !IsInBattle) _steam.SetStatus(LobbyStatus());
             LobbyMember[] members = new LobbyMember[_lobby.Members.Count];
             for (int i = 0; i < members.Length; i++) members[i] = _lobby.Members[i];
             foreach (NetworkConnectionToClient connection in NetworkServer.connections.Values)

@@ -185,6 +185,23 @@ namespace EmpireAtWar.Services.CaptureSites
         /// <summary>Online client: capture progress comes from the host; sites only render.</summary>
         public void FollowHost() => _followsHost = true;
 
+        /// <summary>
+        /// Online client: a host snapshot moved <paramref name="site"/> from the given previous values; raises the
+        /// events the host raised, so announcements play. The host's payer is not replicated: the site owner stands in.
+        /// </summary>
+        public void ReplayHostChange(CaptureSitePresenter site, PlayerId previousOwner, CaptureSiteState previousState,
+            SiteFacilityType previousType)
+        {
+            if (previousOwner != PlayerId.None && site.Owner == PlayerId.None)
+                SiteLost?.Invoke(previousOwner, previousType);
+            if (site.Owner != PlayerId.None && site.Owner != previousOwner)
+                SiteCaptured?.Invoke(previousOwner, site.Owner, site.FacilityType);
+            if (site.State == CaptureSiteState.Constructing && previousState != CaptureSiteState.Constructing)
+                ConstructionStarted?.Invoke(site.Owner, site.FacilityType);
+            if (site.State == CaptureSiteState.Operational && previousState != CaptureSiteState.Operational)
+                ConstructionCompleted?.Invoke(site.Owner, site.FacilityType);
+        }
+
         public void Tick()
         {
             float deltaTime = Time.deltaTime;
