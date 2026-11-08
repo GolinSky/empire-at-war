@@ -109,6 +109,31 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_targeting.Pending, Is.Null);
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Attack_FriendlyShipDoesNotBlockEnemyUnderneath(bool explicitAttack)
+        {
+            _query.Target = _receiver;
+            _query.BehindTarget = _enemy;
+            if (explicitAttack) _targeting.Start(UnitActionId.Attack);
+
+            _input.RightClick(Vector2.zero);
+
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(_orders.LastTarget, Is.SameAs(_enemy));
+            Assert.That(_targeting.Pending, Is.Null);
+        }
+
+        [Test]
+        public void Attack_PreservesFirstEnemyWhenAnotherEnemyIsUnderneath()
+        {
+            _query.BehindTarget = new FakeEntity(_view.transform, TestPlayers.Enemy, 3);
+
+            _input.RightClick(Vector2.zero);
+
+            Assert.That(_orders.LastTarget, Is.SameAs(_enemy));
+        }
+
         [Test]
         public void PendingAttack_IgnoresInvalidClickWithoutMoving()
         {
@@ -261,12 +286,15 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(_orders.LastPoint, Is.EqualTo(new Vector3(10f, 15f, 20f)));
         }
 
-        [TestCase(null)]
-        [TestCase(UnitActionId.AttackMove)]
-        [TestCase(UnitActionId.WaypointMove)]
-        public void FriendlyShipHull_AllowsMovementCommands(UnitActionId? action)
+        [TestCase(null, false)]
+        [TestCase(UnitActionId.AttackMove, false)]
+        [TestCase(UnitActionId.WaypointMove, false)]
+        [TestCase(UnitActionId.AttackMove, true)]
+        [TestCase(UnitActionId.WaypointMove, true)]
+        public void FriendlyShipHull_AllowsMovementCommands(UnitActionId? action, bool enemyUnderneath)
         {
             _query.Target = _receiver;
+            _query.BehindTarget = enemyUnderneath ? _enemy : null;
             _query.Command = new FakeFacilitySelection { SelectionType = SelectionType.Ship };
             _view.transform.position = new Vector3(0f, 15f, 0f);
             if (action.HasValue) _targeting.Start(action.Value);
@@ -387,6 +415,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeQuery : ISelectionQuery
         {
             public IEntity Target { get; set; }
+            public IEntity BehindTarget { get; set; }
             public IEntitySelectionFacade Command { get; set; }
 
             public bool ReturnEnemy { get; set; } = true;
@@ -404,6 +433,8 @@ namespace EmpireAtWar.Tests.Editor
                 if (ReturnEnemy)
                 {
                     result.Add(new SelectionEntry(Target, Command));
+                    if (BehindTarget != null)
+                        result.Add(new SelectionEntry(BehindTarget, Command));
                 }
             }
 
@@ -469,6 +500,7 @@ namespace EmpireAtWar.Tests.Editor
         {
 
             public UnitActionId? LastAction { get; set; }
+            public IEntity LastTarget { get; private set; }
             public Vector3 LastPoint { get; private set; }
             public int WaypointCount { get; private set; }
 
@@ -477,7 +509,8 @@ namespace EmpireAtWar.Tests.Editor
 
             public void IssueMove(IReadOnlyList<IEntity> units, IReadOnlyList<Vector3> points) => LastAction = UnitActionId.Move;
 
-            public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Attack;
+            public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target)
+            { LastAction = UnitActionId.Attack; LastTarget = target; }
 
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target,
                 IReadOnlyList<Vector3> offsets) => LastAction = UnitActionId.Attack;

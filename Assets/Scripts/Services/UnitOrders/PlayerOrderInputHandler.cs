@@ -43,6 +43,7 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly IPlayerUnitOrders _playerOrders;
         private readonly IHardPointHoverObserver _hardPointHover;
         private readonly IBattleAreaService _battleAreas;
+        private readonly List<SelectionEntry> _attackCandidates = new List<SelectionEntry>();
 
         private readonly UnitActionTargetingModel _targeting;
         private readonly SuperWeaponTargetingModel _superWeapons;
@@ -162,6 +163,21 @@ namespace EmpireAtWar.Services.UnitOrders
                     }
             }
             UnitActionId? pending = _targeting.Pending;
+            if (!hasHardPoint && !IsEnemy(target) &&
+                (pending == null || pending == UnitActionId.Attack))
+            {
+                // Friendly hulls must not block attacks on an enemy underneath them.
+                _attackCandidates.Clear();
+                _query.CollectAt(screen, _attackCandidates);
+                foreach (SelectionEntry candidate in _attackCandidates)
+                {
+                    if (!IsEnemy(candidate.Entity)) continue;
+                    hit = candidate;
+                    target = candidate.Entity;
+                    hasUnit = true;
+                    break;
+                }
+            }
             if (pending == UnitActionId.Attack)
             {
                 if (IsEnemy(target))
