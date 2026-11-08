@@ -1,5 +1,6 @@
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Networking.Online;
+using EmpireAtWar.Services.Popups;
 using EmpireAtWar.Ui.Base;
 
 namespace EmpireAtWar.Entities.MainMenu.Online
@@ -14,22 +15,26 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private readonly OnlineMatchService _online;
         private readonly IOnlineSkirmishLobbyScreen _skirmishLobby;
         private readonly IOnlineSurvivalLobbyScreen _survivalLobby;
+        private readonly IPopupService _popupService;
         private OnlineUi _ui;
         private bool _isOpen;
         private LobbyMode _shownLobby;
 
         public OnlineRouteUiController(IUiService uiService, IUiCancelRouter cancelRouter, OnlineMatchService online,
-            IOnlineSkirmishLobbyScreen skirmishLobby, IOnlineSurvivalLobbyScreen survivalLobby)
+            IOnlineSkirmishLobbyScreen skirmishLobby, IOnlineSurvivalLobbyScreen survivalLobby,
+            IPopupService popupService)
             : base(uiService, cancelRouter)
         {
             _online = online;
             _skirmishLobby = skirmishLobby;
             _survivalLobby = survivalLobby;
+            _popupService = popupService;
         }
 
         public void Initialize()
         {
             _online.Changed += Route;
+            _online.Steam.InviteReceived += ShowInvitePopup;
             // A Steam join from the launch arguments may already be connecting.
             Route();
             // Back from a battle the host left: say why.
@@ -39,6 +44,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void LateDispose()
         {
             _online.Changed -= Route;
+            _online.Steam.InviteReceived -= ShowInvitePopup;
             if (_ui != null) _ui.Dispose();
             _ui = null;
             Unfocus();
@@ -82,6 +88,21 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         {
             _online.ClearError();
             _online.Steam.AcceptInvite();
+        }
+
+        private void ShowInvitePopup()
+        {
+            string from = _online.Steam.PendingInviteFrom;
+            _popupService.ShowAccept(new AcceptPopupContent(
+                    title: "Game invite",
+                    message: $"{from} invited you to join their online lobby.",
+                    acceptLabel: "Join",
+                    declineLabel: "Later"),
+                isAccepted =>
+                {
+                    // "Later" keeps the invite on the Online screen; it may already be accepted there.
+                    if (isAccepted && _online.Steam.HasPendingInvite) AcceptInvite();
+                });
         }
 
         protected override bool HandleCancel()
