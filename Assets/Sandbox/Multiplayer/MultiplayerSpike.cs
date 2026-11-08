@@ -39,6 +39,10 @@ namespace EmpireAtWar.Sandbox.Multiplayer
         private double _ackLatency;
         private double _visibleLatency;
         private bool _awaitingVisible;
+        private SpikeStatsLog _statsLog;
+        private double _nextStatsTime;
+        private string _loggedMessage = string.Empty;
+        private const double STATS_INTERVAL_SECONDS = 1.0;
 
         private void Awake()
         {
@@ -66,6 +70,8 @@ namespace EmpireAtWar.Sandbox.Multiplayer
             _meter.Update(Time.unscaledTimeAsDouble);
             if (_host != null)
                 _host.Update(Time.deltaTime);
+            LogMessageChange();
+            UpdateStatsLog();
 
             if (_replica == null)
                 return;
@@ -81,8 +87,66 @@ namespace EmpireAtWar.Sandbox.Multiplayer
 
         private void OnDestroy()
         {
+            if (_statsLog != null) _statsLog.Dispose();
             _meter.Dispose();
             _steam.Shutdown();
+        }
+
+        private void LogMessageChange()
+        {
+            if (_message == _loggedMessage) return;
+            _loggedMessage = _message;
+            if (_message.Length > 0) Debug.Log($"[MultiplayerSpike] {_message}");
+        }
+
+        // One CSV row per second while hosting or connected; a new file per session.
+        private void UpdateStatsLog()
+        {
+            bool inSession = NetworkServer.active || NetworkClient.isConnected;
+            if (!inSession)
+            {
+                if (_statsLog == null) return;
+                _statsLog.Dispose();
+                _statsLog = null;
+                return;
+            }
+
+            double now = Time.unscaledTimeAsDouble;
+            if (_statsLog == null)
+            {
+                string role = NetworkServer.active ? "host" : "client";
+                _statsLog = new SpikeStatsLog(role, Transport.active.GetType().Name, now);
+                _nextStatsTime = now;
+            }
+
+            if (now < _nextStatsTime) return;
+            _nextStatsTime = now + STATS_INTERVAL_SECONDS;
+            SpikeDeadReckoningStats dr = _host != null ? _host.Stats : null;
+            const float KIB = 1024f;
+            _statsLog.Write(now,
+                NetworkServer.active ? "host" : "client",
+                Transport.active.GetType().Name,
+                _host != null ? _host.Mode.ToString() : _replica != null ? _replica.Mode.ToString() : "?",
+                _host != null ? _host.UnitCount : _replica != null ? _replica.UnitSides.Length : 0,
+                NetworkServer.active ? NetworkServer.connections.Count - 1 : 0,
+                _host != null ? _host.CurrentTick : _replica != null ? _replica.LastReceivedTick : 0u,
+                (float)(_meter.PerClientBytesPerSecond / KIB),
+                (float)(_meter.PeakPerClientBytesPerSecond / KIB),
+                (float)(_meter.UploadBytesPerSecond / KIB),
+                (float)(_meter.InBytesPerSecond / KIB),
+                (float)(_meter.PeakInBytesPerSecond / KIB),
+                (float)(NetworkTime.rtt * 1000),
+                _replica != null ? (float)((NetworkTime.time - _replica.RenderTime) * 1000) : 0f,
+                _replica != null ? _replica.TimelineBufferCount : 0,
+                dr != null ? dr.KeyframesPerTick : 0f,
+                dr != null ? dr.MeanError(SpikeUnitKind.Capital) : 0f,
+                dr != null ? dr.MaxError(SpikeUnitKind.Capital) : 0f,
+                dr != null ? dr.MeanError(SpikeUnitKind.Squadron) : 0f,
+                dr != null ? dr.MaxError(SpikeUnitKind.Squadron) : 0f,
+                _commandSequence,
+                (float)(_ackLatency * 1000),
+                (float)(_visibleLatency * 1000),
+                1f / Mathf.Max(Time.unscaledDeltaTime, 0.0001f));
         }
 
         private void OnGUI()
@@ -280,12 +344,17 @@ namespace EmpireAtWar.Sandbox.Multiplayer
 
         private void OnServerClientConnected(NetworkConnectionToClient connection)
         {
+            Debug.Log($"[MultiplayerSpike] Connection {connection.connectionId} joined ({connection.address}).");
             byte side = _host.AssignSide(connection);
             connection.Send(_host.CreateWelcome(side));
             _host.ForceFullResend();
         }
 
-        private void OnServerClientDisconnected(NetworkConnectionToClient connection) => _host.ReleaseSide(connection);
+        private void OnServerClientDisconnected(NetworkConnectionToClient connection)
+        {
+            Debug.Log($"[MultiplayerSpike] Connection {connection.connectionId} left.");
+            _host.ReleaseSide(connection);
+        }
 
         private void OnClientStarted()
         {
@@ -296,6 +365,7 @@ namespace EmpireAtWar.Sandbox.Multiplayer
 
         private void OnClientStopped()
         {
+            Debug.Log("[MultiplayerSpike] Client stopped.");
             NetworkClient.UnregisterHandler<SpikeWelcomeMessage>();
             NetworkClient.UnregisterHandler<SpikeTickMessage>();
             NetworkClient.UnregisterHandler<SpikeCommandAckMessage>();

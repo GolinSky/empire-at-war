@@ -29,7 +29,17 @@ namespace EmpireAtWar.Sandbox.Multiplayer
         public event Action<string> Failed;
 
         public bool IsInitialized { get; private set; }
-        public string Status { get; private set; } = "Steam not initialized";
+        private string _status = "Steam not initialized";
+
+        public string Status
+        {
+            get => _status;
+            private set
+            {
+                _status = value;
+                Debug.Log($"[MultiplayerSpike][Steam] {value}");
+            }
+        }
         public bool InLobby => _lobby != CSteamID.Nil;
         public ulong LobbyId => _lobby.m_SteamID;
         /// <summary>Invite received in-game (no overlay needed); accept with <see cref="AcceptInvite"/>.</summary>
