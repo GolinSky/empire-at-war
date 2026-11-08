@@ -15,6 +15,8 @@ namespace EmpireAtWar.Services.Networking.Online
         private const string HOST_DATA = "host";
         private const string CONNECT_LOBBY_ARG = "+connect_lobby";
         private const int MAX_MEMBERS = 4;
+        /// <summary>Spacewar while developing; replace with the game's own App ID.</summary>
+        private const string STEAM_APP_ID = "480";
 
         private CallResult<LobbyCreated_t> _lobbyCreated;
         private Callback<LobbyEnter_t> _lobbyEntered;
@@ -54,6 +56,9 @@ namespace EmpireAtWar.Services.Networking.Online
             if (IsInitialized)
                 return true;
 
+            // Steam reads the App ID from these variables when no steam_appid.txt sits beside the executable.
+            Environment.SetEnvironmentVariable("SteamAppId", STEAM_APP_ID);
+            Environment.SetEnvironmentVariable("SteamGameId", STEAM_APP_ID);
             ESteamAPIInitResult result = SteamAPI.InitEx(out string error);
             if (result != ESteamAPIInitResult.k_ESteamAPIInitResult_OK)
             {
