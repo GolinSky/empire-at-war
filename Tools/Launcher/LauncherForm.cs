@@ -26,6 +26,7 @@ internal sealed class LauncherForm : Form
         _updateManager = new UpdateManager(new GithubSource(REPOSITORY_URL, accessToken: null, prerelease: true));
 
         Text = $"Empire at War {_updateManager.CurrentVersion}";
+        Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
         ClientSize = new Size(420, 130);
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;

@@ -7,6 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>EmpireAtWarLauncher</AssemblyName>
     <RootNamespace>EmpireAtWar.Launcher</RootNamespace>
+    <!-- Generated from Assets/Art/Textures/Ui/EmpireAtWarAppIcon.png (the player's Standalone icon). -->
+    <ApplicationIcon>EmpireAtWar.ico</ApplicationIcon>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile>
