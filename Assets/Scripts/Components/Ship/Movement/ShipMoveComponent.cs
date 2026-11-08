@@ -4,6 +4,7 @@ using DG.Tweening;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Models.Factions;
@@ -21,7 +22,7 @@ using NumericsVector3 = System.Numerics.Vector3;
 namespace EmpireAtWar.Components.Ship.Movement
 {
     public class ShipMoveComponent : MonoComponent<ShipMoveModel>, IShipMoveComponent,
-        IShipNavigationAgent, IShipPlanRequester, IInitializable, ITickable, ILateDisposable
+        IShipNavigationAgent, IShipPlanRequester, IShipRouteReplicaFacade, IInitializable, ITickable, ILateDisposable
     {
         private const float MINIMUM_NAVIGATION_RADIUS = 1f;
         private const float HEIGHT_TOLERANCE = 0.5f;
@@ -73,6 +74,10 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public event Action HyperSpaceCompleted;
 
+        public event Action<Vector3[]> RouteChanged;
+
+        public Vector3[] Route => _motion.DisplayedRoute;
+
         public Vector3 NavigationPosition => transform.position;
         public float NavigationHeight => Model.Height;
         public ShipHullSpan NavigationHullSpan =>
@@ -117,6 +122,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                 throw new InvalidOperationException($"{name} has missing ship movement references.");
             _motion = new ShipMovementTweenPlayer(transform, bodyTransform,
                 lineRenderer, hyperSpaceEase);
+            _motion.RouteDisplayChanged += HandleRouteDisplayChanged;
             _modifiers.Changed += UpdateRouteSpeed;
             // The spawner already validated this point; the ship lands exactly where it was placed.
             Quaternion rotation = _spawnPose.IsRestored ? _spawnPose.Rotation : _stationFacingService.GetRotation(_owner);
@@ -165,6 +171,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
             _visionService.Unregister(transform);
             _motion.Release();
+            _motion.RouteDisplayChanged -= HandleRouteDisplayChanged;
         }
 
         public void MoveToPosition(Vector3 position, bool preserveCourse = false) =>
@@ -294,6 +301,10 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void HandleSelection(bool isSelected) =>
             _motion.SetSelected(isSelected, IsMoving);
+
+        public void ShowReplicaRoute(Vector3[] route) => _motion.ShowReplicaRoute(route);
+
+        private void HandleRouteDisplayChanged() => RouteChanged?.Invoke(_motion.DisplayedRoute);
 
         private void FinishHyperSpaceJump()
         {

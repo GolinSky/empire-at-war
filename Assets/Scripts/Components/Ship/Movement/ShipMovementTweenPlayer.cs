@@ -43,6 +43,12 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _hasLookDirection;
         private bool _isTurningToRoute;
         private bool _isBraking;
+        private bool _isReplicaRoute;
+        private Vector3[] _displayedRoute = Array.Empty<Vector3>();
+
+        /// <summary>The route the line shows; empty when there is none.</summary>
+        public Vector3[] DisplayedRoute => _displayedRoute;
+        public event Action RouteDisplayChanged;
 
         public Vector3? CurrentPathTangent => _currentPathTangent;
         public bool IsBraking => _isBraking;
@@ -74,7 +80,15 @@ namespace EmpireAtWar.Components.Ship.Movement
         {
             _isSelected = isSelected;
             _lineRenderer.enabled =
-                isSelected && isMoving && _lineRenderer.positionCount > 1;
+                isSelected && (isMoving || _isReplicaRoute) && _lineRenderer.positionCount > 1;
+        }
+
+        /// <summary>Online client: shows the host's route without moving the hull, which follows replication.</summary>
+        public void ShowReplicaRoute(Vector3[] waypoints)
+        {
+            _isReplicaRoute = waypoints.Length > 1;
+            if (_isReplicaRoute) DisplayRoute(waypoints);
+            else ClearRoute();
         }
 
         public void PlayLookAt(
@@ -310,6 +324,8 @@ public void Tick(float deltaTime)
             }
 
             _lineRenderer.enabled = _isSelected && waypoints.Length > 1;
+            _displayedRoute = waypoints;
+            RouteDisplayChanged?.Invoke();
         }
 
         private void ClearRoute()
@@ -317,6 +333,8 @@ public void Tick(float deltaTime)
             _currentPathTangent = null;
             _lineRenderer.positionCount = 0;
             _lineRenderer.enabled = false;
+            _displayedRoute = Array.Empty<Vector3>();
+            RouteDisplayChanged?.Invoke();
         }
     }
 }

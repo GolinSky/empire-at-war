@@ -191,7 +191,11 @@ namespace EmpireAtWar.Services.Networking
             else if (entity.TryGetFacade(out IStructureSaveFacade structure))
             {
                 spawn.Kind = EntitySpawnKind.Structure;
-                spawn.Payload = JsonUtility.ToJson(structure.Capture());
+                StructureSave save = structure.Capture();
+                // Without it clients restore a structure under construction as already built.
+                if (entity.TryGetFacade(out IConstructionFacade construction))
+                    save.WithConstruction(construction.Progress, construction.BuildTime);
+                spawn.Payload = JsonUtility.ToJson(save);
             }
 
             return spawn;
