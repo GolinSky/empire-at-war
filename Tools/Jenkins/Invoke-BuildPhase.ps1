@@ -29,7 +29,7 @@ try {
             }
             # This launches a separate batch Editor on the clean, idle CI snapshot.
             # It never runs tests in the developer's open Editor or scenes.
-            & unity test $ci --mode EditMode --editor-path $editor --output "$artifacts\EditMode-results.xml" --timeout $policy.BuildTimeoutSeconds --non-interactive
+            & unity test $ci --mode EditMode --editor-path $editor --output "$artifacts\EditMode-results.xml" --timeout $policy.BuildTimeoutSeconds --non-interactive -- -logFile "$artifacts\EditMode.log"
             if ($LASTEXITCODE -ne 0) { throw "EditMode tests failed: exit $LASTEXITCODE" }
             & "$PSScriptRoot\Assert-TestResults.ps1" -Path "$artifacts\EditMode-results.xml"
             @{
