@@ -47,7 +47,7 @@ namespace EmpireAtWar
             _reinforcementVisitor = reinforcementVisitor;
             _scrollRect = scrollRect;
             iconImage.sprite = request.FactionData.Icon;
-            unitCapacityText.text = $"{request.FactionData.UnitCapacity} CAP";
+            unitCapacityText.text = request.FactionData.UnitCapacity.ToString();
             _count = DEFAULT_COUNT_VALUE;
             UpdateUnitCountText();
         }

@@ -145,14 +145,15 @@ namespace EmpireAtWar.Entities.Reinforcement
                     () => UnitTooltipContent.Build(request.FactionData, new[]
                     {
                         new TooltipStat(label: "Available reserves", current: _model.GetReserveCount(request)),
-                        new TooltipStat(label: "Population", current: request.FactionData.UnitCapacity),
-                        new TooltipStat(label: "Used population", current: _model.CurrentUnitCapacity, max: _model.MaxUnitCapacity)
-                    }, status: request.FactionData.UnitCapacity > _model.CapacityLeft
-                        ? "Population limit reached" : ReinforcementModel.UsesCapacity(request)
+                        new TooltipStat(label: "Fleet capacity", current: request.FactionData.UnitCapacity),
+                        new TooltipStat(label: "Used fleet capacity", current: _model.CurrentUnitCapacity, max: _model.MaxUnitCapacity)
+                    }, status: $"Uses {request.FactionData.UnitCapacity} fleet capacity.\n" +
+                        (request.FactionData.UnitCapacity > _model.CapacityLeft
+                        ? "Fleet capacity limit reached" : ReinforcementModel.UsesCapacity(request)
                             ? "Drag into an allied reinforcement zone. Ships need clear space. Release to deploy immediately." +
                               DeployAllHint(request)
                             : "Drag to visible terrain outside reinforcement zones and capture sites. Release to deploy." +
-                              DeployAllHint(request)));
+                              DeployAllHint(request))));
             else
                 _tooltips.Show(source, key, anchor, () => _isTooltipActive,
                     () => new TooltipContent(title: "Reinforcements", description: "Close the reinforcement panel."));
