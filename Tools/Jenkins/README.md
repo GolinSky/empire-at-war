@@ -119,6 +119,7 @@
 3. Enter `SOURCE_BUILD` (a positive build number, never `latest`) and `RELEASE_TAG` from that build’s archived version (for example `v0.1.26` for build 26). `PRERELEASE` defaults to `true`.
 4. Run the job. Follow the release URL in its description, console, or archived `release-url.txt`.
 5. Confirm `release-result.json` reports `VerifiedDraft`, inspect the draft on GitHub, then publish manually when ready.
+   - Publish from the draft's own page (release URL from the job → **Edit** → **Publish release**). Never use **Create release** on the tag page: drafts live at `untagged-…` URLs, so the tag page creates a second, empty release with the same tag. Launchers then read that release and fail to update, and `gh release upload` (which resolves by tag) can send assets into it. Uploads now refuse while another release uses the tag.
 
 Before changing GitHub, the job requires SUCCESS, all four archived inputs, matching Windows build provenance/commit (CLI `source.dirty` is ignored: version stamping and Unity reserialization always dirty the snapshot; preparation already rejects a dirty snapshot before building), the ZIP's archived SHA-256, and nonempty assets below 2 GiB. The archived commit must already exist in GitHub; push the intended commit separately if needed.
 

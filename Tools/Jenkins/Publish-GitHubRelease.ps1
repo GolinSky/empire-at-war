@@ -45,6 +45,15 @@ function Assert-MatchingDraft {
     }
 }
 
+function Assert-OnlyReleaseForTag {
+    param($ReleaseId)
+    # gh release upload resolves the release by tag; another release with this tag would receive the assets instead.
+    $others = @(Get-GitHubCollection -Resource 'releases' | Where-Object { $_.tag_name -ceq $tag -and $_.id -ne $ReleaseId })
+    if ($others.Count) {
+        throw "Another release also uses tag ${tag}: $($others[0].html_url). Delete it on GitHub (keep the tag), then rerun to resume this draft."
+    }
+}
+
 function Assert-MatchingAsset {
     param($Asset, $File)
     if ($Asset.state -ne 'uploaded' -or $Asset.name -cne $File.Name -or [long]$Asset.size -ne $File.Size -or $Asset.digest -ine "sha256:$($File.Sha256)") {
@@ -145,6 +154,7 @@ try {
     foreach ($file in $files) {
         if (@($assets | Where-Object { $_.name -ceq $file.Name }).Count -eq 1) { Write-Host "Already verified: $($file.Name)"; continue }
         Assert-MatchingDraft (Invoke-GitHubApi -Resource "releases/$($release.id)").Data
+        Assert-OnlyReleaseForTag $release.id
         & $gh release upload $tag $file.Path --repo $repo
         if ($LASTEXITCODE -ne 0) { throw "Upload failed for $($file.Name). The draft is preserved; rerun with the same build and tag to resume, or inspect incomplete assets." }
     }
