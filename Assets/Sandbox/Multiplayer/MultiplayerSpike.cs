@@ -55,11 +55,13 @@ namespace EmpireAtWar.Sandbox.Multiplayer
             _steam.HostLobbyReady += hostId => _message = $"Lobby ready. Host SteamID {hostId}. Use Invite.";
             _steam.JoinedHost += OnJoinedSteamHost;
             _steam.Failed += reason => _message = reason;
-            _meter = new SpikeBandwidthMeter(Time.unscaledTimeAsDouble);
         }
 
         private void Start()
         {
+            // Mirror's NetworkDiagnostics.ResetStatics runs after scene Awake and clears subscribers,
+            // so the meter subscribes here.
+            _meter = new SpikeBandwidthMeter(Time.unscaledTimeAsDouble);
             if (System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "+connect_lobby") >= 0 && InitializeSteam())
                 _steam.TryJoinFromLaunchArgs();
         }
