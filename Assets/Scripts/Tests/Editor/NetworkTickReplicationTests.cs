@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.UnitActions;
@@ -170,6 +171,46 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(decoded.TargetId, Is.EqualTo(77));
             Assert.That(decoded.TargetHardPointId, Is.EqualTo(3));
             Assert.That(decoded.Waypoints, Is.EqualTo(new[] { Vector3.left, Vector3.forward }));
+        }
+
+        [TestCase(0f)]
+        [TestCase(4f)]
+        public void MatchBaseline_SurvivesStartupScaleResetAndDoesNotOverrideLoadingOrEnd(float hostScale)
+        {
+            float original = Time.timeScale;
+            try
+            {
+                var state = new SkirmishStateModel();
+                var receiver = new ClientReplicationReceiver(new ClientReplicaBuffer(), null, new EntityLocator(), state);
+                state.SetState(BattleState.Loading);
+                Time.timeScale = 0f;
+                receiver.OnMatchState(new MatchStateMessage { TimeScale = hostScale });
+                receiver.LateTick();
+                Assert.That(Time.timeScale, Is.Zero);
+
+                state.SetState(BattleState.Running);
+                Time.timeScale = 1f;
+                receiver.LateTick();
+                Assert.That(Time.timeScale, Is.EqualTo(hostScale));
+                state.SetState(BattleState.Ended);
+                Time.timeScale = 0f;
+                receiver.LateTick();
+                Assert.That(Time.timeScale, Is.Zero);
+            }
+            finally { Time.timeScale = original; }
+        }
+
+        [Test]
+        public void CombatBaseline_SupersedesOlderQueuedEventsOnlyForThatClient()
+        {
+            var events = new NetworkEventSequence();
+            long beforeBaseline = events.Next();
+            events.MarkBaseline(7);
+            long afterBaseline = events.Next();
+
+            Assert.That(events.IsAfterBaseline(7, beforeBaseline), Is.False);
+            Assert.That(events.IsAfterBaseline(7, afterBaseline), Is.True);
+            Assert.That(events.IsAfterBaseline(9, beforeBaseline), Is.True);
         }
 
         [Test]

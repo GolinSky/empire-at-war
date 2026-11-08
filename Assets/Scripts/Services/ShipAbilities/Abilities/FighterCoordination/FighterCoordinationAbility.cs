@@ -11,7 +11,7 @@ using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class FighterCoordinationAbility : IPhasedShipAbility
+    public sealed class FighterCoordinationAbility : IPhasedShipAbility, IReplicaPersistentShipAbility
     {
         private readonly IEntityLocator _entities;
         private readonly FighterCoordinationSettings _settings;

@@ -4,7 +4,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class TorpedoSalvoAbility : IStoppableShipAbility
+    public sealed class TorpedoSalvoAbility : IStoppableShipAbility, IReplicaPersistentShipAbility
     {
         private readonly TorpedoSalvoSettings _settings;
         private CombatModifiers _modifiers;

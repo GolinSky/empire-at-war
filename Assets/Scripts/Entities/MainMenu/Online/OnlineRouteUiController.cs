@@ -99,6 +99,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private void Route()
         {
             if (_online.IsInBattle) return;
+            if (!_isOpen && _online.Role == OnlineRole.Client && !_online.IsInLobby) Open();
             LobbyMode lobby = _online.IsInLobby ? _online.Mode : LobbyMode.None;
             if (lobby != _shownLobby)
             {

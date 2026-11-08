@@ -5,7 +5,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
     /// <summary>Applies one stat modifier to the caster while active.</summary>
-    public sealed class StatModifierAbility : IStoppableShipAbility
+    public sealed class StatModifierAbility : IStoppableShipAbility, IReplicaPersistentShipAbility
     {
         private readonly CombatStatModifier _modifier;
         private CombatModifiers _modifiers;

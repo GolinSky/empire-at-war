@@ -1,3 +1,4 @@
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Lifecycle;
@@ -17,13 +18,16 @@ namespace EmpireAtWar.Services.Networking
         private readonly ClientReplicaBuffer _replica;
         private readonly ReplicaEntitySpawner _spawner;
         private readonly IEntityLocator _entities;
+        private readonly SkirmishStateModel _state;
+        private float _hostTimeScale = 1f;
 
         public ClientReplicationReceiver(ClientReplicaBuffer replica, ReplicaEntitySpawner spawner,
-            IEntityLocator entities)
+            IEntityLocator entities, SkirmishStateModel state)
         {
             _replica = replica;
             _spawner = spawner;
             _entities = entities;
+            _state = state;
         }
 
         public void Initialize()
@@ -48,6 +52,9 @@ namespace EmpireAtWar.Services.Networking
 
         public void LateTick()
         {
+            // Startup sets its own scale after the baseline arrives; reapply the host once gameplay starts.
+            if (_state.State == BattleState.Running || _state.State == BattleState.Paused)
+                Time.timeScale = _hostTimeScale;
             _replica.Update(Time.unscaledDeltaTime);
             foreach (long entityId in _replica.EntityIds)
             {
@@ -91,6 +98,6 @@ namespace EmpireAtWar.Services.Networking
                 _spawner.ApplyHealth(entityId, JsonUtility.FromJson<UnitHealthSave>(message.HealthJson));
         }
 
-        private static void OnMatchState(MatchStateMessage message) => Time.timeScale = message.TimeScale;
+        public void OnMatchState(MatchStateMessage message) => _hostTimeScale = message.TimeScale;
     }
 }

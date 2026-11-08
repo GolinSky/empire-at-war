@@ -8,6 +8,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Factory;
 using EmpireAtWar.Services.Networking.States;
+using EmpireAtWar.Services.Networking;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.Saves;
@@ -45,6 +46,8 @@ namespace EmpireAtWar.Services.VContainer
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerReserveReplicatedState>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<StationLevelReplicatedState>(Lifetime.Singleton).AsImplementedInterfaces();
+            if (player.Has(BattleFeatures.Economy))
+                builder.Register<HostPlayerEconomyFeedback>(Lifetime.Singleton).AsImplementedInterfaces();
             if (!_isLocal) return;
             RegisterLocalPlayerServices(builder, player.Features);
             battleScope.Modules.ConfigureLocalPlayer(builder, player, transform);
@@ -79,7 +82,10 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ReinforcementUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HeroUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             if ((features & BattleFeatures.Economy) != 0)
+            {
                 builder.Register<FactionAnnouncementService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+                builder.Register<ClientPlayerEconomyFeedback>(Lifetime.Singleton).AsImplementedInterfaces();
+            }
         }
     }
 }

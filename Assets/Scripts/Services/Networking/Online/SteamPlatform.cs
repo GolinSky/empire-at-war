@@ -21,7 +21,8 @@ namespace EmpireAtWar.Services.Networking.Online
         private const string STEAM_APP_ID = "480";
 
         private CallResult<LobbyCreated_t> _lobbyCreated;
-        private Callback<LobbyEnter_t> _lobbyEntered;
+        private readonly Dictionary<CSteamID, CallResult<LobbyEnter_t>> _lobbyJoins =
+            new Dictionary<CSteamID, CallResult<LobbyEnter_t>>();
         private Callback<GameLobbyJoinRequested_t> _joinRequested;
         private Callback<LobbyInvite_t> _lobbyInvite;
         private Callback<GameRichPresenceJoinRequested_t> _presenceJoinRequested;
@@ -30,10 +31,12 @@ namespace EmpireAtWar.Services.Networking.Online
             new System.Collections.Generic.Dictionary<ulong, Texture2D>();
         private readonly List<SteamFriend> _friends = new List<SteamFriend>();
         private CSteamID _lobby = CSteamID.Nil;
+        private CSteamID _requestedLobby = CSteamID.Nil;
         private bool _isHost;
 
         public event Action<string> HostLobbyReady;
         public event Action<string> JoinedHost;
+        public event Action JoinStarting;
         public event Action<OnlineError> Failed;
         /// <summary>An in-game lobby invite arrived (<see cref="HasPendingInvite"/>).</summary>
         public event Action InviteReceived;
@@ -57,6 +60,7 @@ namespace EmpireAtWar.Services.Networking.Online
             }
         }
         public bool InLobby => _lobby != CSteamID.Nil;
+        public bool IsJoiningLobby => _requestedLobby != CSteamID.Nil;
         public ulong LobbyId => _lobby.m_SteamID;
         /// <summary>Invite received in-game (no overlay needed); accept with <see cref="AcceptInvite"/>.</summary>
         public bool HasPendingInvite => PendingInviteLobby != CSteamID.Nil;
@@ -80,7 +84,6 @@ namespace EmpireAtWar.Services.Networking.Online
 
             IsInitialized = true;
             _lobbyCreated = CallResult<LobbyCreated_t>.Create(OnLobbyCreated);
-            _lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
             _joinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequested);
             _lobbyInvite = Callback<LobbyInvite_t>.Create(OnLobbyInvite);
             _presenceJoinRequested = Callback<GameRichPresenceJoinRequested_t>.Create(OnPresenceJoinRequested);
@@ -156,8 +159,16 @@ namespace EmpireAtWar.Services.Networking.Online
 
         public void Join(CSteamID lobby)
         {
+            JoinStarting?.Invoke();
             _isHost = false;
-            SteamMatchmaking.JoinLobby(lobby);
+            _requestedLobby = lobby;
+            // Reuse an unfinished request for this lobby instead of issuing overlapping joins to it.
+            if (!_lobbyJoins.ContainsKey(lobby))
+            {
+                var result = CallResult<LobbyEnter_t>.Create((entered, failed) => OnLobbyEntered(lobby, entered, failed));
+                _lobbyJoins.Add(lobby, result);
+                result.Set(SteamMatchmaking.JoinLobby(lobby));
+            }
             Status = $"Joining lobby {lobby}...";
         }
 
@@ -216,6 +227,8 @@ namespace EmpireAtWar.Services.Networking.Online
 
         public void Leave()
         {
+            _isHost = false;
+            _requestedLobby = CSteamID.Nil;
             if (!InLobby)
                 return;
 
@@ -231,12 +244,21 @@ namespace EmpireAtWar.Services.Networking.Online
                 return;
 
             Leave();
+            foreach (CallResult<LobbyEnter_t> join in _lobbyJoins.Values) join.Dispose();
+            _lobbyJoins.Clear();
             SteamAPI.Shutdown();
             IsInitialized = false;
         }
 
         private void OnLobbyCreated(LobbyCreated_t result, bool ioFailure)
         {
+            if (!_isHost)
+            {
+                if (!ioFailure && result.m_eResult == EResult.k_EResultOK)
+                    SteamMatchmaking.LeaveLobby(new CSteamID(result.m_ulSteamIDLobby));
+                return;
+            }
+
             if (ioFailure || result.m_eResult != EResult.k_EResultOK)
             {
                 Status = $"Lobby creation failed: {result.m_eResult}";
@@ -278,16 +300,25 @@ namespace EmpireAtWar.Services.Networking.Online
             InviteReceived?.Invoke();
         }
 
-        private void OnLobbyEntered(LobbyEnter_t entered)
+        private void OnLobbyEntered(CSteamID requestedLobby, LobbyEnter_t entered, bool ioFailure)
         {
-            if (_isHost)
-                return;
-
+            _lobbyJoins[requestedLobby].Dispose();
+            _lobbyJoins.Remove(requestedLobby);
             CSteamID lobby = new CSteamID(entered.m_ulSteamIDLobby);
-            if (entered.m_EChatRoomEnterResponse != (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess)
+            bool enteredLobby = !ioFailure &&
+                entered.m_EChatRoomEnterResponse == (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess;
+            if (requestedLobby != _requestedLobby)
+            {
+                // A cancelled/superseded operation may still join Steam; do not reopen its game session.
+                if (enteredLobby && lobby != _lobby) SteamMatchmaking.LeaveLobby(lobby);
+                return;
+            }
+
+            _requestedLobby = CSteamID.Nil;
+            if (!enteredLobby)
             {
                 Status = $"Lobby join failed: {(EChatRoomEnterResponse)entered.m_EChatRoomEnterResponse}";
-                Failed?.Invoke(entered.m_EChatRoomEnterResponse == (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseFull
+                Failed?.Invoke(!ioFailure && entered.m_EChatRoomEnterResponse == (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseFull
                     ? OnlineError.LobbyFull
                     : OnlineError.ConnectionFailed);
                 return;

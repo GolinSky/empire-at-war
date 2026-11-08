@@ -20,6 +20,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public ShipAbilityState State { get; private set; } = ShipAbilityState.Ready;
         public float TimeLeft { get; private set; }
         public IShipAbility RunningAbility { get; private set; }
+        internal bool IsReplicaState { get; private set; }
         public bool IsAvailable => !Owner.Health.IsDestroyed && !Owner.Modifiers.AbilitiesSuppressed &&
             (Id != ShipAbilityId.IonPulse ||
                 HasLiveHardPoint(HardPointType.IonPulseCannon)) &&
@@ -57,6 +58,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
 
         internal void Activate(IShipAbility ability)
         {
+            IsReplicaState = false;
             RunningAbility = ability;
             State = ShipAbilityState.Active;
             TimeLeft = Definition.Duration;
@@ -66,6 +68,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
 
         internal void Recover()
         {
+            IsReplicaState = false;
             RunningAbility = null;
             State = ShipAbilityState.Recovering;
             TimeLeft = Definition.RecoveryDelay;
@@ -79,12 +82,24 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         {
             if (state == ShipAbilityState.Active)
                 throw new ArgumentException("Active abilities are restored as recovering.", nameof(state));
+            IsReplicaState = false;
             RunningAbility = null;
             State = state;
             TimeLeft = state == ShipAbilityState.Recovering ? timeLeft : 0f;
             _recoveryTotal = Math.Max(Definition.RecoveryDelay, TimeLeft);
             Changed?.Invoke();
             StateChanged?.Invoke();
+        }
+
+        // No activation voice/event for a historical baseline. A transient phase has state but no restarted effect.
+        internal void RestoreReplicaState(ShipAbilityState state, float timeLeft, IShipAbility runningAbility)
+        {
+            IsReplicaState = true;
+            RunningAbility = runningAbility;
+            State = state;
+            TimeLeft = state == ShipAbilityState.Ready ? 0f : timeLeft;
+            _recoveryTotal = Math.Max(Definition.RecoveryDelay, TimeLeft);
+            Changed?.Invoke();
         }
 
         internal void Ready()

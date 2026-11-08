@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.MiningFacility;
@@ -6,6 +7,8 @@ using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using NUnit.Framework;
+using UnityEditor;
+using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -212,6 +215,97 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(cancelled, Is.SameAs(structure));
             Assert.That(model.GetProductionQueueSnapshots(), Is.Empty);
             Assert.That(model.CanQueueUnit(structure), Is.True);
+        }
+
+        [TestCase("Mining")]
+        [TestCase("Platform")]
+        [TestCase("Hero")]
+        public void ReplicaQueueCompletion_KeepsAuthorityReservationUntilHostReleasesIt(string kind)
+        {
+            PlayerFactionModel model = CreateModel();
+            FactionData data = CreateFactionData(maxCount: 1, buildTime: 10);
+            typeof(FactionData).GetField("isHero", PRIVATE_INSTANCE).SetValue(data, kind == "Hero");
+            UnitRequest request = kind switch
+            {
+                "Mining" => new MiningFacilityUnitRequest(data, MiningFacilityType.CommonMiner),
+                "Platform" => new DefendPlatformUnitRequest(data, DefendPlatformType.Xq6),
+                _ => new ShipUnitRequest(data, ShipType.HomeOne)
+            };
+            model.QueueUnit(request);
+            bool limitDuringNotification = false;
+            model.OnProductionChanged += _ => limitDuringNotification = model.IsUnitLimitReached(request);
+
+            model.ReplaceQueue(System.Array.Empty<ProductionQueueItem>(), new[] { request });
+
+            Assert.That(model.GetProductionQueueSnapshots(), Is.Empty);
+            Assert.That(model.CanQueueUnit(request), Is.False);
+            Assert.That(limitDuringNotification, Is.True, "Availability must not briefly enable during snapshot restore.");
+            model.ReplaceQueue(System.Array.Empty<ProductionQueueItem>(), new[] { request });
+            Assert.That(model.CanQueueUnit(request), Is.False, "Unchanged snapshots retain the same limit.");
+            model.ReplaceQueue(System.Array.Empty<ProductionQueueItem>(), System.Array.Empty<UnitRequest>());
+            Assert.That(model.CanQueueUnit(request), Is.True);
+        }
+
+        [Test]
+        public void ReplicaQueueAndReservations_DoNotCountQueuedStructuresTwice()
+        {
+            PlayerFactionModel model = CreateModel();
+            UnitRequest request = new MiningFacilityUnitRequest(
+                CreateFactionData(maxCount: 2, buildTime: 10), MiningFacilityType.CommonMiner);
+            var queue = new[] { new ProductionQueueItem(request) };
+
+            model.ReplaceQueue(queue, new[] { request });
+            model.ReplaceQueue(queue, new[] { request });
+
+            Assert.That(model.CanQueueUnit(request), Is.True, "One authoritative slot is occupied, not two.");
+            Assert.That(model.GetProductionQueueSnapshots()[0].Count, Is.EqualTo(1));
+            model.ReplaceQueue(queue, new[] { request, request });
+            Assert.That(model.CanQueueUnit(request), Is.False, "The second slot may belong to reserve or a deployed structure.");
+        }
+
+        [Test]
+        public void PurchaseReservations_PreserveCompletedStructuresAndHeroAcrossSnapshot()
+        {
+            FactionDefinition definition = Object.Instantiate(AssetDatabase.LoadAssetAtPath<FactionDefinition>(
+                "Assets/Settings/Data/Factions/Republic/RepublicFaction.asset"));
+            try
+            {
+                definition.Ships.Clear();
+                definition.Squadrons.Clear();
+                typeof(FactionDefinition).GetField("miningFacilities", PRIVATE_INSTANCE)
+                    .SetValue(definition, System.Array.Empty<MiningFacilityType>());
+                typeof(FactionDefinition).GetField("defendPlatforms", PRIVATE_INSTANCE)
+                    .SetValue(definition, System.Array.Empty<DefendPlatformType>());
+                typeof(FactionDefinition).GetField("superWeapons", PRIVATE_INSTANCE)
+                    .SetValue(definition, System.Array.Empty<EmpireAtWar.Entities.SuperWeapons.SuperWeaponType>());
+                var roster = new FactionRoster(definition, null, null, null);
+                FactionData structureData = CreateFactionData(1, 1);
+                FactionData heroData = CreateFactionData(1, 1);
+                typeof(FactionData).GetField("isHero", PRIVATE_INSTANCE).SetValue(heroData, true);
+                roster.MiningFacilities.Add(MiningFacilityType.CommonMiner, structureData);
+                roster.DefendPlatforms.Add(DefendPlatformType.Xq6, structureData);
+                roster.Ships.Add(ShipType.HomeOne, heroData);
+                UnitRequest[] requests =
+                {
+                    new MiningFacilityUnitRequest(structureData, MiningFacilityType.CommonMiner),
+                    new DefendPlatformUnitRequest(structureData, DefendPlatformType.Xq6),
+                    new ShipUnitRequest(heroData, ShipType.HomeOne)
+                };
+                var host = new PlayerFactionModel(null, roster);
+                foreach (UnitRequest request in requests) host.QueueUnit(request);
+                host.Advance(1f);
+
+                var client = new PlayerFactionModel(null, roster);
+                client.ReplaceQueue(host.QueuedItems.ToArray(), host.PurchaseReservations.ToArray());
+
+                Assert.That(client.GetProductionQueueSnapshots(), Is.Empty);
+                foreach (UnitRequest request in requests)
+                    Assert.That(client.IsUnitLimitReached(request), Is.True, request.Id);
+            }
+            finally
+            {
+                Object.DestroyImmediate(definition);
+            }
         }
 
         private static PlayerFactionModel CreateModel()

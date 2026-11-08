@@ -172,10 +172,13 @@ namespace EmpireAtWar.Services.Audio
             return false;
         }
 
-        private void HandleDeployed(UnitRequest request)
+        private void HandleDeployed(UnitRequest request) =>
+            AnnounceDeployed(request, _capacity.CurrentUnitCapacity);
+
+        private void AnnounceDeployed(UnitRequest request, int unitCapacity)
         {
             if (!(request is ShipUnitRequest) && !(request is SquadronUnitRequest)) return;
-            if (!_capReached && _capacity.CurrentUnitCapacity >= _capacity.MaxUnitCapacity)
+            if (!_capReached && unitCapacity >= _capacity.MaxUnitCapacity)
             {
                 _capReached = true;
                 HandleCapacityRejected();
@@ -190,6 +193,22 @@ namespace EmpireAtWar.Services.Audio
         private void HandleCapacityChanged(int capacity)
         {
             if (capacity < _capacity.MaxUnitCapacity) _capReached = false;
+        }
+
+        /// <summary>Owner-only live feedback; restoring replicated state never calls this path.</summary>
+        public void AnnounceReplicated(FactionFeedbackKind kind, UnitRequest request, int unitCapacity, int stationLevel)
+        {
+            switch (kind)
+            {
+                case FactionFeedbackKind.PurchaseAccepted: HandlePurchaseAccepted(request); break;
+                case FactionFeedbackKind.PurchaseCanceled: HandlePurchaseCanceled(request); break;
+                case FactionFeedbackKind.UnitProduced: HandleUnitProduced(request); break;
+                case FactionFeedbackKind.ResearchCompleted: HandleResearchCompleted(default); break;
+                case FactionFeedbackKind.StationUpgraded: AnnounceStationUpgrade(stationLevel); break;
+                case FactionFeedbackKind.ReinforcementDeployed: AnnounceDeployed(request, unitCapacity); break;
+                case FactionFeedbackKind.CapacityRejected: HandleCapacityRejected(); break;
+                default: throw new ArgumentOutOfRangeException(nameof(kind), kind, "Unknown faction feedback.");
+            }
         }
 
         private void HandleEntityAdded(IEntity entity)

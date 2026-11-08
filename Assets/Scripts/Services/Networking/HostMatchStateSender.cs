@@ -25,5 +25,8 @@ namespace EmpireAtWar.Services.Networking
             _sentScale = Time.timeScale;
             HostBroadcast.ToClients(_online, new MatchStateMessage { Tick = _ticks.CurrentTick, TimeScale = _sentScale });
         }
+
+        public void SendBaseline(NetworkConnectionToClient connection) =>
+            connection.Send(new MatchStateMessage { Tick = _ticks.CurrentTick, TimeScale = Time.timeScale });
     }
 }

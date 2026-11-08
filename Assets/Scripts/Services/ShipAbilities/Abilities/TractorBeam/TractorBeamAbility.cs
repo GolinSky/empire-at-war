@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class TractorBeamAbility : IPhasedShipAbility, ITargetedShipAbility
+    public sealed class TractorBeamAbility : IPhasedShipAbility, ITargetedShipAbility, IReplicaPersistentShipAbility
     {
         private readonly TractorBeamSettings _settings;
         private readonly CombatStatModifier _movementPenalty;

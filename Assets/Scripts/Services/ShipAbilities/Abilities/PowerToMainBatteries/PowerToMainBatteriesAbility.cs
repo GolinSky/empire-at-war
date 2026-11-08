@@ -4,7 +4,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class PowerToMainBatteriesAbility : IStoppableShipAbility
+    public sealed class PowerToMainBatteriesAbility : IStoppableShipAbility, IReplicaPersistentShipAbility
     {
         private readonly PowerToMainBatteriesSettings _settings;
         private CombatModifiers _modifiers;

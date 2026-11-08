@@ -86,7 +86,7 @@ namespace EmpireAtWar.Services.Networking
                 weapon.AddTarget(target, message.AttackType, message.HardPointId, message.HardPointType);
         }
 
-        private void OnAbility(ShipAbilityEventMessage message)
+        public void OnAbility(ShipAbilityEventMessage message)
         {
             if (!_entities.TryGetEntity(message.CasterId, out IEntity casterEntity) ||
                 !casterEntity.TryGetFacade(out IShipAbilityFacade caster)) return;
@@ -98,6 +98,11 @@ namespace EmpireAtWar.Services.Networking
 
             IEntity target = null;
             if (message.TargetId != 0 && !_entities.TryGetEntity(message.TargetId, out target)) return;
+            if (message.RestoreState)
+            {
+                _abilities.RestoreReplicaState(caster, message.Ability, message.State, message.TimeLeft, target);
+                return;
+            }
             _abilities.ActivateReplica(caster, message.Ability, target);
         }
     }

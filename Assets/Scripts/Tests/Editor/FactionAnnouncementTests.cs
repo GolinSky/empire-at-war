@@ -17,6 +17,8 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Networking;
+using EmpireAtWar.Services.Networking.Messages;
 using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
 using UnityEditor;
@@ -149,6 +151,40 @@ namespace EmpireAtWar.Tests.Editor
             Invoke("HandlePurchaseCanceled", request);
             Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.UpgradeProgress, _clips.UpgradeCanceled }));
             Assert.That(_audio.Priorities, Is.All.EqualTo(AnnouncementPriority.Progress));
+        }
+
+        [Test]
+        public void ReplicatedFeedback_OnlyLocalClientReceivesLiveResearchAnnouncement()
+        {
+            var message = new PlayerEconomyFeedbackMessage
+            {
+                Owner = TestPlayers.Enemy,
+                Kind = FactionFeedbackKind.ResearchCompleted
+            };
+            var receiver = new ClientPlayerEconomyFeedback(new OnlineSession(false, TestPlayers.Human),
+                _service, null, null, null);
+
+            receiver.Receive(message);
+            Assert.That(_audio.Clips, Is.Empty);
+            message.Owner = TestPlayers.Human;
+            var hostReceiver = new ClientPlayerEconomyFeedback(new OnlineSession(true, TestPlayers.Human),
+                _service, null, null, null);
+            hostReceiver.Receive(message);
+            Assert.That(_audio.Clips, Is.Empty, "The host already announces its local service events.");
+
+            receiver.Receive(message);
+            Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.UpgradeComplete }));
+        }
+
+        [Test]
+        public void ReplicatedDeployment_UsesAcceptedPopulationWithoutChangingClientState()
+        {
+            var request = new ShipUnitRequest(new FactionData(), default);
+
+            _service.AnnounceReplicated(FactionFeedbackKind.ReinforcementDeployed, request, 20, 1);
+
+            Assert.That(_audio.Clips, Is.EqualTo(new[] { _clips.UnitCapReached }));
+            Assert.That(_capacity.CurrentUnitCapacity, Is.Zero, "Audio must not simulate or restore gameplay state.");
         }
 
         [TestCase(false)]

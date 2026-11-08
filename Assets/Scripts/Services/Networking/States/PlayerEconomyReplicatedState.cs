@@ -54,6 +54,7 @@ namespace EmpireAtWar.Services.Networking.States
             IncomeTimeLeft = _economy.IncomeTimeLeft,
             Production = _faction.QueuedItems
                 .Select(item => UnitRequestSave.From(item.UnitRequest, item.RemainingBuildTime)).ToArray(),
+            Reservations = _faction.PurchaseReservations.Select(request => UnitRequestSave.From(request)).ToArray(),
             Research = ResearchSave.CaptureAll(_research)
         });
 
@@ -63,7 +64,8 @@ namespace EmpireAtWar.Services.Networking.States
             _economy.Restore(snapshot.Money, snapshot.IncomeTimeLeft);
             ResearchSave.RestoreAll(snapshot.Research, _research);
             _faction.ReplaceQueue(snapshot.Production.Select(item =>
-                new ProductionQueueItem(item.ToRequest(_requests, _roster, _levels), item.TimeLeft)));
+                new ProductionQueueItem(item.ToRequest(_requests, _roster, _levels), item.TimeLeft)),
+                snapshot.Reservations.Select(item => item.ToRequest(_requests, _roster, _levels)));
         }
 
         protected override void FollowHost()
@@ -78,6 +80,7 @@ namespace EmpireAtWar.Services.Networking.States
             public float Money;
             public float IncomeTimeLeft;
             public UnitRequestSave[] Production;
+            public UnitRequestSave[] Reservations;
             public ResearchSave[] Research;
         }
     }

@@ -9,7 +9,7 @@ using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class SensorJammingAbility : IPhasedShipAbility
+    public sealed class SensorJammingAbility : IPhasedShipAbility, IReplicaPersistentShipAbility
     {
         private readonly IEntityLocator _entities;
         private readonly IPlayerRelations _relations;

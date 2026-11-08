@@ -12,6 +12,7 @@ using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.Networking.Messages;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using NUnit.Framework;
@@ -682,6 +683,72 @@ namespace EmpireAtWar.Tests.Editor
             Assert.Throws<ArgumentException>(() => service.Restore(caster.Slots[0], ShipAbilityState.Active, 1f));
         }
 
+        [Test]
+        public void ReplicaSnapshot_KeepsTransientActiveWithoutReplayingItsAction()
+        {
+            var factory = new FakeFactory();
+            var service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+            ShipAbilitySlot slot = caster.Slots[0];
+            int activationNotifications = 0;
+            slot.StateChanged += () => activationNotifications++;
+
+            service.RestoreReplicaState(caster, slot.Id, ShipAbilityState.Active, 2f, null);
+            service.Advance(10f);
+
+            Assert.That(factory.Created[0].StartCount, Is.Zero);
+            Assert.That(slot.State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(slot.CanActivate, Is.False);
+            Assert.That(activationNotifications, Is.Zero);
+            service.RestoreReplicaState(caster, slot.Id, ShipAbilityState.Recovering, 3f, null);
+            service.Advance(10f);
+            Assert.That(slot.State, Is.EqualTo(ShipAbilityState.Recovering));
+            service.RestoreReplicaState(caster, slot.Id, ShipAbilityState.Ready, 0f, null);
+            Assert.That(slot.CanActivate, Is.True);
+            Assert.That(service.TryActivate(caster, slot.Id, null), Is.True);
+            Assert.That(factory.Created[1].StartCount, Is.EqualTo(1), "A subsequent live action must still execute.");
+            service.Clear();
+        }
+
+        [Test]
+        public void ReplicaSnapshot_RestoresPersistentEffectOnceAndStopsAtHostRecovery()
+        {
+            var service = new ShipAbilityService(new CloakFactory(), TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+            ShipAbilitySlot slot = caster.Slots[0];
+            service.RestoreReplicaState(caster, slot.Id, ShipAbilityState.Active, 2f, null);
+            IShipAbility running = slot.RunningAbility;
+            service.RestoreReplicaState(caster, slot.Id, ShipAbilityState.Active, 1f, null);
+
+            Assert.That(caster.Modifiers.IsCloaked, Is.True);
+            Assert.That(slot.RunningAbility, Is.SameAs(running));
+            Assert.That(slot.TimeLeft, Is.EqualTo(1f));
+            ShipAbilityEventMessage snapshot = ShipAbilityEventMessage.Capture(slot);
+            Assert.That(snapshot.RestoreState, Is.True);
+            Assert.That(snapshot.State, Is.EqualTo(ShipAbilityState.Active));
+            Assert.That(snapshot.TimeLeft, Is.EqualTo(1f));
+            service.RestoreReplicaState(caster, slot.Id, ShipAbilityState.Recovering, 6f, null);
+            Assert.That(caster.Modifiers.IsCloaked, Is.False);
+            Assert.That(slot.TimeLeft, Is.EqualTo(6f));
+            service.Clear();
+        }
+
+        [Test]
+        public void AuthorityAbility_ReportsAutomaticRecoveryAndReadyForClientSnapshots()
+        {
+            var service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            FakeCommand caster = CreateCaster();
+            var states = new List<ShipAbilityState>();
+            service.StateChanged += slot => states.Add(slot.State);
+            service.TryActivate(caster, caster.Slots[0].Id, null);
+            service.Advance(5f);
+            service.Advance(6f);
+
+            Assert.That(states, Is.EqualTo(new[]
+                { ShipAbilityState.Active, ShipAbilityState.Recovering, ShipAbilityState.Ready }));
+            service.Clear();
+        }
+
         private static FakeCommand CreateCaster(bool canCancel = true, bool targeted = false,
             float recoveryDelay = 6f)
         {
@@ -736,12 +803,18 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        private sealed class CloakFactory : IShipAbilityFactory
+        {
+            public IShipAbility Create(ShipAbilityDefinition definition) => new CloakAbility();
+        }
+
         private sealed class RecordingAbility : IStoppableShipAbility
         {
             public int StopCount { get; private set; }
+            public int StartCount { get; private set; }
 
             public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition,
-                IEntity target) { }
+                IEntity target) => StartCount++;
 
             public void Stop() => StopCount++;
         }

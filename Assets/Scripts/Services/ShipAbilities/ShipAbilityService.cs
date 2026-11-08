@@ -33,6 +33,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         /// <summary>Any ability start (players and AI); the online host relays it to clients.</summary>
         public event Action<IShipAbilityFacade, ShipAbilityId, IEntity> Activated;
         public event Action<IShipAbilityFacade, ShipAbilityId> Canceled;
+        public event Action<ShipAbilitySlot> StateChanged;
 
         public bool IsWaitingForTarget { get; private set; }
         public ShipAbilityId PendingAbilityId { get; private set; }
@@ -288,12 +289,37 @@ namespace EmpireAtWar.Services.ShipAbilities
             if (TryFindSlot(caster, id, out ShipAbilitySlot slot) && slot.State == ShipAbilityState.Active) Stop(slot);
         }
 
+        public void RestoreReplicaState(IShipAbilityFacade caster, ShipAbilityId id, ShipAbilityState state,
+            float timeLeft, IEntity target)
+        {
+            if (!TryFindSlot(caster, id, out ShipAbilitySlot slot)) return;
+            IShipAbility running = slot.RunningAbility;
+            if (state != ShipAbilityState.Active)
+            {
+                if (running is IStoppableShipAbility stoppable) stoppable.Stop();
+                running = null;
+            }
+            else if (slot.State != ShipAbilityState.Active)
+            {
+                IShipAbility ability = _shipAbilityFactory.Create(slot.Definition);
+                if (ability is IReplicaPersistentShipAbility)
+                {
+                    ability.Start(caster, slot.Definition, target);
+                    running = ability;
+                }
+            }
+            slot.RestoreReplicaState(state, timeLeft, running);
+            _running.Remove(slot);
+            if (state != ShipAbilityState.Ready) _running.Add(slot);
+        }
+
         private void Start(ShipAbilitySlot slot, IShipAbilityFacade caster, IEntity target)
         {
             IShipAbility ability = _shipAbilityFactory.Create(slot.Definition);
             ability.Start(caster, slot.Definition, target);
             slot.Activate(ability);
             _running.Add(slot);
+            StateChanged?.Invoke(slot);
         }
 
         /// <summary>Loads a saved slot state; a recovering slot resumes counting down.</summary>
@@ -301,6 +327,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         {
             slot.Restore(state, timeLeft);
             if (state == ShipAbilityState.Recovering && !_running.Contains(slot)) _running.Add(slot);
+            StateChanged?.Invoke(slot);
         }
 
         public void Tick() => Advance(Time.deltaTime);
@@ -310,6 +337,14 @@ namespace EmpireAtWar.Services.ShipAbilities
             for (int i = _running.Count - 1; i >= 0; i--)
             {
                 ShipAbilitySlot slot = _running[i];
+                // Baselines do not replay transient phases. Only the host decides when their active state ends.
+                if (slot.IsReplicaState)
+                {
+                    if (slot.RunningAbility is IPhasedShipAbility replica && !replica.IsComplete)
+                        replica.Advance(deltaTime);
+                    slot.Elapse(deltaTime);
+                    continue;
+                }
                 if (slot.Owner.Health.IsDestroyed &&
                     !(slot.State == ShipAbilityState.Active && slot.RunningAbility is IPhasedShipAbility persistent && persistent.SurvivesCasterDeath))
                 {
@@ -355,6 +390,7 @@ namespace EmpireAtWar.Services.ShipAbilities
 
                 // A Ready slot must leave the running list, otherwise a re-activation adds it twice.
                 slot.Ready();
+                StateChanged?.Invoke(slot);
                 _running.RemoveAt(i);
             }
         }
@@ -364,6 +400,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             IShipAbility ability = slot.RunningAbility;
             slot.Recover();
             if (ability is IStoppableShipAbility stoppable) stoppable.Stop();
+            StateChanged?.Invoke(slot);
         }
 
         private bool TryFindUsableSlot(IShipAbilityFacade caster, ShipAbilityId id, IEntity target,

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -36,6 +37,7 @@ namespace EmpireAtWar.Services.Networking
         }
 
         public uint CurrentTick => _replicator.Tick;
+        public event Action SpawnsSent;
 
         public void Tick()
         {
@@ -44,6 +46,7 @@ namespace EmpireAtWar.Services.Networking
             // Despawns first: a pooled squadron can leave and come back under the same id in one tick.
             foreach (EntityDespawnMessage despawn in _output.Despawns) HostBroadcast.ToClients(_online, despawn);
             foreach (EntitySpawnMessage spawn in _output.Spawns) HostBroadcast.ToClients(_online, spawn);
+            SpawnsSent?.Invoke();
             foreach (EntityKeyframesMessage chunk in _output.Keyframes) HostBroadcast.ToClients(_online, chunk, Channels.Unreliable);
             _healthTimer -= Time.unscaledDeltaTime;
             if (_healthTimer > 0f) return;

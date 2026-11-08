@@ -181,20 +181,56 @@ namespace EmpireAtWar.Models.Factions
         }
 
         /// <summary>
-        /// Online client: replaces the queue with the host's. The current items' hero and structure reservations
-        /// are released first; <see cref="RestoreQueue"/> takes them again for the new items.
+        /// Online client: restores the host's queue and complete purchase reservations atomically.
+        /// Queue removal may mean completion, so it cannot release a reserved or deployed unit's slot.
         /// </summary>
-        public void ReplaceQueue(IEnumerable<ProductionQueueItem> items)
+        public void ReplaceQueue(IEnumerable<ProductionQueueItem> items, IEnumerable<UnitRequest> reservations)
         {
-            foreach (ProductionQueueItem item in QueuedItems)
+            _productionQueues.Clear();
+            _structureCounts.Clear();
+            _reservedHeroes.Clear();
+            foreach (UnitRequest request in reservations)
             {
-                UnitRequest unitRequest = item.UnitRequest;
-                if (IsHeroRequest(unitRequest, out UnitTypeId hero)) _reservedHeroes.Remove(hero);
-                if (IsStructureRequest(unitRequest)) ReleaseStructure(unitRequest.GetType(), unitRequest.Id);
+                if (IsHeroRequest(request, out UnitTypeId hero)) _reservedHeroes.Add(hero);
+                if (IsStructureRequest(request)) ReserveStructure(request);
             }
 
-            _productionQueues.Clear();
-            RestoreQueue(items);
+            foreach (ProductionQueueItem item in items)
+            {
+                string id = item.UnitRequest.Id;
+                if (!_productionQueues.TryGetValue(id, out Queue<ProductionQueueItem> queue))
+                {
+                    queue = new Queue<ProductionQueueItem>();
+                    _productionQueues.Add(id, queue);
+                }
+                queue.Enqueue(item);
+            }
+
+            NotifyProductionChanged();
+        }
+
+        /// <summary>Purchase slots retained by queued, reserve and deployed structures or heroes.</summary>
+        public IEnumerable<UnitRequest> PurchaseReservations
+        {
+            get
+            {
+                foreach (UnitTypeId hero in _reservedHeroes)
+                    yield return hero.IsShip
+                        ? new ShipUnitRequest(_roster.Ships[hero.ShipType], hero.ShipType)
+                        : new SquadronUnitRequest(_roster.Squadrons[hero.SquadronType], hero.SquadronType);
+                foreach (var entry in _roster.MiningFacilities)
+                {
+                    var request = new MiningFacilityUnitRequest(entry.Value, entry.Key);
+                    for (int i = 0; i < GetStructureCount(request.GetType(), request.Id); i++)
+                        yield return request;
+                }
+                foreach (var entry in _roster.DefendPlatforms)
+                {
+                    var request = new DefendPlatformUnitRequest(entry.Value, entry.Key);
+                    for (int i = 0; i < GetStructureCount(request.GetType(), request.Id); i++)
+                        yield return request;
+                }
+            }
         }
 
         public void ReserveStructure(UnitRequest request)

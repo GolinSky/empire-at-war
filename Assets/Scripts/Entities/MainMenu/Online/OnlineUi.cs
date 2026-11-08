@@ -41,6 +41,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             joinButton.interactable = !busy;
             addressInput.interactable = !busy;
             acceptInviteButton.gameObject.SetActive(inviteFrom.Length > 0);
+            acceptInviteButton.interactable = !busy;
             acceptInviteLabel.text = $"JOIN {inviteFrom.ToUpperInvariant()}";
         }
 

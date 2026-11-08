@@ -97,7 +97,8 @@ namespace EmpireAtWar.Services.Networking.Online
         {
             if (!_steam.TryInitialize()) return;
             _steam.JoinedHost += JoinSteamHost;
-            _steam.Failed += Fail;
+            _steam.JoinStarting += BeginSteamJoin;
+            _steam.Failed += OnSteamFailed;
             // The Steam lobby (invite button) and in-game invites arrive later through Steam callbacks.
             _steam.HostLobbyReady += OnSteamLobbyReady;
             _steam.InviteReceived += NotifyChanged;
@@ -461,6 +462,20 @@ namespace EmpireAtWar.Services.Networking.Online
             _manager.networkAddress = hostSteamId;
             _manager.StartClient();
             Changed?.Invoke();
+        }
+
+        private void BeginSteamJoin()
+        {
+            Leave();
+            EnterOnline();
+            ResetMatch(OnlineRole.Client);
+            Changed?.Invoke();
+        }
+
+        private void OnSteamFailed(OnlineError error)
+        {
+            if (Role == OnlineRole.Client) Leave();
+            Fail(error);
         }
 
         private void Reject(NetworkConnectionToClient connection, OnlineError reason)
