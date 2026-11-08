@@ -100,8 +100,8 @@ namespace EmpireAtWar.Entities.Economy.Ui
                     description: $"Income is paid every {_data.IncomeDelay:0.#} s. Station levels and your team's mining facilities increase income.",
                     stats: new[]
                     {
-                        new TooltipStat(label: "Credits", current: _model.Money),
-                        new TooltipStat(label: "Income per payment", current: _economy.TotalIncome),
+                        new TooltipStat(label: "Credits", current: _model.Money, format: "0"),
+                        new TooltipStat(label: "Income per payment", current: _economy.TotalIncome, format: "0"),
                         new TooltipStat(label: "Population", current: _reinforcements.CurrentUnitCapacity,
                             max: _reinforcements.MaxUnitCapacity)
                     }));

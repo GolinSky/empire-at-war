@@ -59,7 +59,7 @@ namespace EmpireAtWar.Entities.Economy.Ui
 
         private void UpdateMoneyText(float money)
         {
-            moneyText.text = money.ToString(CultureInfo.InvariantCulture);
+            moneyText.text = money.ToString("0", CultureInfo.InvariantCulture);
         }
     }
 }
