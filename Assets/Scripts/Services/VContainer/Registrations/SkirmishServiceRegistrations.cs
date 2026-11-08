@@ -81,6 +81,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<UiHitTest>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<InputLockService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PointerInput>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<PointerOverUiService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PointerGestures>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CameraInput>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SelectionInput>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

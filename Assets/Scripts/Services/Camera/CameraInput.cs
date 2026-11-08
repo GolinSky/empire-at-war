@@ -13,6 +13,7 @@ namespace EmpireAtWar.Services.Camera
         private const float MAX_PAN_DELTA = 10f;
 
         private readonly IPointerInput _pointerInput;
+        private readonly IPointerOverUi _pointerOverUi;
         private readonly ICameraPreferences _preferences;
 
         private readonly GameInputActions.CameraActions _camera;
@@ -42,12 +43,14 @@ namespace EmpireAtWar.Services.Camera
             }
         }
 
-        public CameraInput(IPointerInput pointerInput, ICameraPreferences preferences, InputActionsProvider provider)
+        public CameraInput(IPointerInput pointerInput, IPointerOverUi pointerOverUi, ICameraPreferences preferences,
+            InputActionsProvider provider)
         {
             _preferences = preferences;
             _camera = provider.Actions.Camera;
             _battle = provider.Actions.Battle;
             _pointerInput = pointerInput;
+            _pointerOverUi = pointerOverUi;
         }
 
         public void Tick()
@@ -65,7 +68,12 @@ namespace EmpireAtWar.Services.Camera
             }
 
             RaiseZoom(Zoomed, _camera.Zoom.ReadValue<float>());
-            RaiseZoom(ZoomScrolled, _camera.ZoomScroll.ReadValue<float>());
+            // The wheel over UI belongs to that UI (shop scroll lists); it must not also zoom the camera.
+            float scroll = _camera.ZoomScroll.ReadValue<float>();
+            if (!Mathf.Approximately(scroll, 0f) && !_pointerOverUi.IsPointerOverUi)
+            {
+                ZoomScrolled?.Invoke(scroll);
+            }
         }
 
         private static void RaiseZoom(Action<float> zoomEvent, float direction)

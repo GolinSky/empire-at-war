@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Services.Input
 {
+    /// <summary>
+    /// UI counts exactly when the EventSystem would deliver pointer events to it, so a fully transparent
+    /// raycast-target image (such as a scroll viewport) blocks the world while non-raycast graphics do not.
+    /// </summary>
     public sealed class UiHitTest : IUiHitTest
     {
         private readonly List<RaycastResult> _results = new List<RaycastResult>();

@@ -39,8 +39,9 @@ namespace EmpireAtWar.Tests.Editor
 
                 ui.Hit = true;
                 Assert.That(hitTest.IsOverUi(Vector2.one), Is.True, "A UI graphic under the pointer blocks the world.");
-                ui.Hit = false;
                 physics.Hit = true;
+                Assert.That(hitTest.IsOverUi(Vector2.one), Is.True, "UI still blocks when a world collider is also hit.");
+                ui.Hit = false;
                 Assert.That(hitTest.IsOverUi(Vector2.one), Is.False, "World colliders are not UI.");
                 physics.Hit = false;
                 Assert.That(hitTest.IsOverUi(Vector2.one), Is.False);
