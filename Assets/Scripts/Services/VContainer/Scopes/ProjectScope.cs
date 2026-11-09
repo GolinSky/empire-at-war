@@ -104,6 +104,8 @@ namespace EmpireAtWar.Services.VContainer
                 .WithParameter(Application.persistentDataPath);
             builder.Register<JsonBattleSaveRepository>(Lifetime.Singleton).AsImplementedInterfaces()
                 .WithParameter(Application.persistentDataPath);
+            builder.Register<EmpireAtWar.Services.Tutorial.JsonHintProgressRepository>(Lifetime.Singleton)
+                .AsImplementedInterfaces().WithParameter(Application.persistentDataPath);
             builder.Register<DisplaySettingsApplier>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<GraphicsSettingsApplier>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<AudioSettingsApplier>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

@@ -1,0 +1,42 @@
+namespace EmpireAtWar.Services.Tutorial
+{
+    /// <summary>What a hint waits for. <see cref="None"/> as a trigger shows the hint as soon as pacing allows.</summary>
+    public enum HintConditionId
+    {
+        None = 0,
+        ShipSelected = 1,
+        UnitQueued = 2,
+        UnitCompleted = 3,
+        LevelUpgraded = 4,
+        ResearchCompleted = 5,
+        CameraPanned = 6,
+        CameraZoomed = 7,
+        MultipleShipsSelected = 8,
+        MoveOrdered = 9,
+        AttackOrdered = 10,
+        AttackMoveOrdered = 11,
+        WaypointMoveOrdered = 12,
+        StopOrdered = 13,
+        GuardOrdered = 14,
+        MiniMapCameraMoved = 15,
+        MiniMapMoveOrdered = 16,
+        MatchupTooltipViewed = 17,
+        SeveralUnitsQueued = 18,
+        ShipWithAbilitiesSelected = 19,
+        AbilityUsed = 20,
+        AutoPowerToggled = 21,
+        LevelUpAffordable = 22,
+        ResearchAffordable = 23,
+        EnemySeen = 24,
+        MiningSiteSeen = 25,
+        MiningSiteOwned = 26,
+        SatelliteSiteSeen = 27,
+        ReinforcementAvailable = 28,
+        SuperWeaponReady = 29,
+        HeroAvailable = 30,
+        SquadronAvailable = 31,
+        HazardEntered = 32,
+        FogActive = 33,
+        SurvivalPreparation = 34,
+    }
+}

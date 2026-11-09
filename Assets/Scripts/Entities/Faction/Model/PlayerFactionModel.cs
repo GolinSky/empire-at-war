@@ -11,6 +11,8 @@ namespace EmpireAtWar.Models.Factions
     {
         event Action<IReadOnlyList<ProductionQueueSnapshot>> OnProductionChanged;
 
+        event Action<UnitRequest> OnUnitCompleted;
+
         event Action<SelectionType> OnSelectionTypeChanged;
 
         SelectionType SelectionType { get; }

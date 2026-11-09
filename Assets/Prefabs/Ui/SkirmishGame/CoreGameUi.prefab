@@ -1020,6 +1020,7 @@ GameObject:
   - component: {fileID: 2591209763938939738}
   - component: {fileID: 3541190701135461418}
   - component: {fileID: 4289944301593697967}
+  - component: {fileID: 8531957578444454071}
   m_Layer: 5
   m_Name: MiddlePanel
   m_TagString: Untagged
@@ -1232,6 +1233,20 @@ MonoBehaviour:
   - {fileID: 3693921003757912117}
   - {fileID: 1654875771341575954}
   - {fileID: 3048946918515453318}
+--- !u!114 &8531957578444454071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162768269563589737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 14
+  target: {fileID: 5552737442985809816}
 --- !u!1 &196347665789258203
 GameObject:
   m_ObjectHideFlags: 0
@@ -4161,6 +4176,7 @@ GameObject:
   - component: {fileID: 6901855868808459465}
   - component: {fileID: 6279476445373224307}
   - component: {fileID: 1550726972890745879}
+  - component: {fileID: 2266147586916006693}
   m_Layer: 5
   m_Name: Stop
   m_TagString: Untagged
@@ -4396,6 +4412,20 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &2266147586916006693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1701635127886825044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 8
+  target: {fileID: 5389128858640901650}
 --- !u!1 &1707023356019334359
 GameObject:
   m_ObjectHideFlags: 0
@@ -4484,6 +4514,7 @@ GameObject:
   - component: {fileID: 9160219314195454050}
   - component: {fileID: 9145638867057370855}
   - component: {fileID: 387100526782414334}
+  - component: {fileID: 6899525790282662992}
   m_Layer: 5
   m_Name: ReinforcementButton
   m_TagString: Untagged
@@ -4689,6 +4720,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 8622812822377810143}
   key: Reinforcements
+--- !u!114 &6899525790282662992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849125934167112248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 13
+  target: {fileID: 8622812822377810143}
 --- !u!1 &2013190141996966548
 GameObject:
   m_ObjectHideFlags: 0
@@ -5278,6 +5323,7 @@ GameObject:
   - component: {fileID: 2350330958337464455}
   - component: {fileID: 2560201736738306958}
   - component: {fileID: 4403145952244914514}
+  - component: {fileID: 7101417135144367652}
   m_Layer: 5
   m_Name: ShipActions
   m_TagString: Untagged
@@ -5497,6 +5543,20 @@ MonoBehaviour:
   - {fileID: 3346102657621965520}
   - {fileID: 7796795077040124622}
   - {fileID: 7688922078490027224}
+--- !u!114 &7101417135144367652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2183157686645413793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 5
+  target: {fileID: 3976019959470191957}
 --- !u!1 &2390274390531866964
 GameObject:
   m_ObjectHideFlags: 0
@@ -14653,6 +14713,7 @@ GameObject:
   - component: {fileID: 5668186735554291184}
   - component: {fileID: 4587566095480695659}
   - component: {fileID: 9091332662612190809}
+  - component: {fileID: 3864348784432386230}
   m_Layer: 5
   m_Name: Guard
   m_TagString: Untagged
@@ -14888,6 +14949,20 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &3864348784432386230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6761756589406138234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 9
+  target: {fileID: 1046726105455099981}
 --- !u!1 &6799241407036644376
 GameObject:
   m_ObjectHideFlags: 0
@@ -15507,6 +15582,7 @@ GameObject:
   - component: {fileID: 3722000221507276972}
   - component: {fileID: 6782033110817232630}
   - component: {fileID: 42949581127564754}
+  - component: {fileID: 3560184551233638853}
   m_Layer: 5
   m_Name: AttackMove
   m_TagString: Untagged
@@ -15742,6 +15818,20 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &3560184551233638853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7171089084275579912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 7
+  target: {fileID: 1251064690854716885}
 --- !u!1 &7250814461985284798
 GameObject:
   m_ObjectHideFlags: 0

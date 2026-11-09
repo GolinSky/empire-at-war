@@ -51,6 +51,9 @@ namespace EmpireAtWar.Services.VContainer
             if (!_isLocal) return;
             RegisterLocalPlayerServices(builder, player.Features);
             battleScope.Modules.ConfigureLocalPlayer(builder, player, transform);
+            // Simulations are a balance tool, not matches players play.
+            if (battleScope.Battle.Mode != GameMode.BattleSimulation)
+                HintRegistrations.Register(builder, Assets);
         }
 
         public static void RegisterPlayerServices(IContainerBuilder builder, PlayerSlot owner, FactionDefinition faction,

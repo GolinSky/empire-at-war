@@ -23,6 +23,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private const string CONFLICTS_MESSAGE = "Resolve key binding conflicts before applying.";
 
         private readonly ISettingsService _settingsService;
+        private readonly EmpireAtWar.Services.Tutorial.IHintProgressRepository _hintProgress;
         private readonly IInputBindings _bindings;
         private SettingsUi _ui;
 
@@ -46,8 +47,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             IInputBindings bindings,
             ITooltipService tooltipService,
             SettingsDraftEditor draftEditor,
-            KeyBindingEditor keyBindingEditor, SettingsModel model) : base(uiService, cancelRouter)
+            KeyBindingEditor keyBindingEditor, SettingsModel model,
+            EmpireAtWar.Services.Tutorial.IHintProgressRepository hintProgress) : base(uiService, cancelRouter)
         {
+            _hintProgress = hintProgress;
             _settingsService = settingsService;
             _bindings = bindings;
             _draftEditor = draftEditor;
@@ -292,6 +295,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         public void SetAutoPowerAbilities(bool isOn) => _draftEditor.SetAutoPowerAbilities(isOn);
 
+        public void SetShowHints(bool isOn) => _draftEditor.SetShowHints(isOn);
+
+        public void ResetHints() => _hintProgress.Reset();
+
         public void SetShareUsageData(bool isOn) => _draftEditor.SetShareUsageData(isOn);
 
         public void StartRebind(int row) => _keyBindingEditor.StartRebind(row);
@@ -370,7 +377,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                     "Pan speed" => $"Camera pan speed: {_model.PanSpeed:0.#}.",
                     "Zoom speed" => $"Camera zoom speed: {_model.ZoomSpeed:0.#}.",
                     "Edge scrolling" => $"Move the camera at screen edges. Currently {(_model.EdgeScrolling ? "On" : "Off")}.",
-                    "Ships use power abilities automatically" => "Automatically use eligible ship power abilities. Individual selection pauses new automatic starts; running abilities keep their ordinary duration and cooldown.",
+                    "Show tutorial hints" => $"Show short in-match hints for controls and new situations. Currently {(_model.ShowHints ? "On" : "Off")}.",
+                    "Reset hints" => "Show every hint again from the next match. Applies immediately.",
+                    "Ships use power abilities automatically" =>"Automatically use eligible ship power abilities. Individual selection pauses new automatic starts; running abilities keep their ordinary duration and cooldown.",
                     "Share gameplay statistics" => $"Send gameplay statistics such as match results and performance. Crash diagnostics are collected separately. Currently {(_model.ShareUsageData ? "On" : "Off")}.",
                     "Invert zoom" => $"Reverse camera zoom input. Currently {(_model.InvertZoom ? "On" : "Off")}.",
                     "Master volume" => "Overall game volume. Changes are heard immediately.",

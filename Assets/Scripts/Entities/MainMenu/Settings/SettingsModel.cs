@@ -33,6 +33,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         public bool InvertZoom { get; private set; }
 
         public bool AutoPowerAbilities { get; private set; }
+        public bool ShowHints { get; private set; }
         public bool ShareUsageData { get; private set; }
 
         public IReadOnlyList<KeyBindingRowState> Bindings { get; private set; } = new KeyBindingRowState[0];
@@ -101,9 +102,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             Changed?.Invoke();
         }
 
-        public void SetGameplay(bool autoPowerAbilities)
+        public void SetGameplay(bool autoPowerAbilities, bool showHints)
         {
             AutoPowerAbilities = autoPowerAbilities;
+            ShowHints = showHints;
             Changed?.Invoke();
         }
 

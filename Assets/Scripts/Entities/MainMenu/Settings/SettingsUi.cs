@@ -42,6 +42,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         [SerializeField] private SettingsToggleRow edgeScrollingRow;
         [SerializeField] private SettingsToggleRow invertZoomRow;
         [SerializeField] private SettingsToggleRow autoPowerAbilitiesRow;
+        [SerializeField] private SettingsToggleRow showHintsRow;
+        [SerializeField] private Button resetHintsButton;
         [SerializeField] private SettingsToggleRow shareUsageDataRow;
         [Tooltip("Inactive row cloned once per rebindable binding into its parent.")]
         [SerializeField] private KeyBindingRow keyBindingRowTemplate;
@@ -128,6 +130,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             edgeScrollingRow.Render(_model.EdgeScrolling);
             invertZoomRow.Render(_model.InvertZoom);
             autoPowerAbilitiesRow.Render(_model.AutoPowerAbilities);
+            showHintsRow.Render(_model.ShowHints);
             shareUsageDataRow.Render(_model.ShareUsageData);
 
             RenderKeyBindings();
@@ -187,6 +190,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             invertZoomRow.ValueChanged += _presenter.SetInvertZoom;
             autoPowerAbilitiesRow.Initialize();
             autoPowerAbilitiesRow.ValueChanged += _presenter.SetAutoPowerAbilities;
+            showHintsRow.Initialize();
+            showHintsRow.ValueChanged += _presenter.SetShowHints;
+            resetHintsButton.onClick.AddListener(_presenter.ResetHints);
             shareUsageDataRow.Initialize();
             shareUsageDataRow.ValueChanged += _presenter.SetShareUsageData;
         }
@@ -234,6 +240,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             invertZoomRow.ValueChanged -= _presenter.SetInvertZoom;
             invertZoomRow.Dispose();
             autoPowerAbilitiesRow.ValueChanged -= _presenter.SetAutoPowerAbilities;
+            showHintsRow.ValueChanged -= _presenter.SetShowHints;
+            showHintsRow.Dispose();
+            resetHintsButton.onClick.RemoveListener(_presenter.ResetHints);
             autoPowerAbilitiesRow.Dispose();
             shareUsageDataRow.ValueChanged -= _presenter.SetShareUsageData;
             shareUsageDataRow.Dispose();

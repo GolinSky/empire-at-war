@@ -88,8 +88,15 @@ namespace EmpireAtWar.Services.Input
                 }
             }
 
-            // A chord's composite binding formats every part, e.g. "Ctrl+Shift+A".
-            return slot.Action.GetBindingDisplayString(slot.BindingIndex);
+            // A chord joins its modifiers and key, e.g. "Ctrl+Shift+A".
+            string label = string.Empty;
+            for (int i = slot.FirstPartIndex; i < slot.FirstPartIndex + slot.PartCount; i++)
+            {
+                if (label.Length > 0) label += "+";
+                label += BindingPathNames.Readable(slot.Action.bindings[i].effectivePath);
+            }
+
+            return label;
         }
 
         public void StartRebind(BindingSlot slot, Action<RebindResult> completed)

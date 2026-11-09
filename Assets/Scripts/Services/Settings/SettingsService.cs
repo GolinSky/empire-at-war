@@ -187,6 +187,21 @@ namespace EmpireAtWar.Services.Settings
             return SettingsApplyResult.Committed;
         }
 
+        public SettingsApplyResult SetShowHints(bool isOn)
+        {
+            SettingsData changed = Saved.Clone();
+            changed.Gameplay.ShowHints = isOn;
+            if (!TrySave(changed))
+            {
+                return SettingsApplyResult.SaveFailed;
+            }
+
+            Saved = changed;
+            Draft.Gameplay.ShowHints = isOn;
+            SavedChanged?.Invoke();
+            return SettingsApplyResult.Committed;
+        }
+
         // Save before promoting, so a failed write never reports the draft as saved.
         private SettingsApplyResult Commit()
         {

@@ -120,6 +120,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4086fad246aaa84bb371bca9df55354
+    m_Address: HintUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: be1435167784ad440ae92fdff96a1daa
     m_Address: PauseMenuUi
     m_ReadOnly: 0

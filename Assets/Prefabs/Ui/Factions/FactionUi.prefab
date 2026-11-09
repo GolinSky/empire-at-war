@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5558452487761606446}
   - component: {fileID: 3866793413560333406}
   - component: {fileID: 2389064610875496454}
+  - component: {fileID: 6811276773287361835}
   m_Layer: 5
   m_Name: FactionUi
   m_TagString: Untagged
@@ -151,3 +152,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
   m_HorizontalFit: 0
   m_VerticalFit: 0
+--- !u!114 &6811276773287361835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7111893382535395372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 2
+  target: {fileID: 7826620417224372875}

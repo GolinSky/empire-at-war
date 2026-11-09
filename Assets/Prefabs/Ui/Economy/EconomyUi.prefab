@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8879219678879860384}
   - component: {fileID: 7608207804413390026}
   - component: {fileID: 598200728392410401}
+  - component: {fileID: 1525288567489076405}
   m_Layer: 5
   m_Name: EconomyUi
   m_TagString: Untagged
@@ -80,6 +81,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipHoverView
   triggers:
   - {fileID: 6076563903796576126}
+--- !u!114 &1525288567489076405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491582524155302127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 4
+  target: {fileID: 6397796856056037375}
 --- !u!1 &2412095293360848161
 GameObject:
   m_ObjectHideFlags: 0

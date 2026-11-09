@@ -7,6 +7,7 @@ namespace EmpireAtWar.Services.Settings
     public sealed class GameplaySettingsData
     {
         [SerializeField] private bool autoPowerAbilities = true;
+        [SerializeField] private bool showHints = true;
 
         public bool AutoPowerAbilities
         {
@@ -14,9 +15,15 @@ namespace EmpireAtWar.Services.Settings
             set => autoPowerAbilities = value;
         }
 
+        public bool ShowHints
+        {
+            get => showHints;
+            set => showHints = value;
+        }
+
         public bool Matches(GameplaySettingsData other)
         {
-            return autoPowerAbilities == other.autoPowerAbilities;
+            return autoPowerAbilities == other.autoPowerAbilities && showHints == other.showHints;
         }
     }
 }

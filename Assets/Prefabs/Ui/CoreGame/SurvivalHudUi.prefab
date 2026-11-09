@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4045954393798797513}
   - component: {fileID: 5190681056807299437}
   - component: {fileID: 9009248079656480940}
+  - component: {fileID: 6289192627032857748}
   m_Layer: 0
   m_Name: START WAVE NOW
   m_TagString: Untagged
@@ -121,6 +122,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6289192627032857748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 101224754080764634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 16
+  target: {fileID: 2300365351898516826}
 --- !u!1 &391554262047070339
 GameObject:
   m_ObjectHideFlags: 0

@@ -25,8 +25,11 @@ namespace EmpireAtWar.Entities.MiniMap
 {
     public class MiniMapUiController : UiController,
         IInitializable, ILateTickable, ILateDisposable,
-        ISkirmishUiRoute, IObserver<BattleMap>, IMiniMapPresenter
+        ISkirmishUiRoute, IObserver<BattleMap>, IMiniMapPresenter, IMiniMapInputObserver
     {
+        public event System.Action CameraMoved;
+        public event System.Action MoveOrdered;
+
         private readonly ICameraService _cameraService;
         private readonly IInputLock _inputLock;
         private readonly ISkirmishRouteNavigation _routeNavigation;
@@ -188,6 +191,7 @@ namespace EmpireAtWar.Entities.MiniMap
         {
             if (_inputLock.IsLocked) return;
             _cameraService.MoveTo(worldPoint);
+            CameraMoved?.Invoke();
         }
 
         public void OrderMove(Vector3 worldPoint)
@@ -198,6 +202,7 @@ namespace EmpireAtWar.Entities.MiniMap
             if (_orderInput.TryIssueMove(worldPoint))
             {
                 _miniMapView.PlayMoveTarget(worldPoint);
+                MoveOrdered?.Invoke();
             }
         }
 

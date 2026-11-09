@@ -38,5 +38,8 @@ namespace EmpireAtWar.Services.Settings
 
         /// <summary>Saves and applies the usage-data consent answer without touching other pending draft edits.</summary>
         SettingsApplyResult AnswerUsageDataConsent(bool isShared);
+
+        /// <summary>Saves the show-hints flag at once (in-match "Turn off hints") without touching other draft edits.</summary>
+        SettingsApplyResult SetShowHints(bool isOn);
     }
 }

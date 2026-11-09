@@ -25,8 +25,10 @@ using EmpireAtWar.Lifecycle;
 namespace EmpireAtWar.Entities.ShipUi
 {
     public class ShipUiController : UiController, IShipUiPresenter, IInitializable,
-        ILateDisposable, ISkirmishUiRoute, EmpireAtWar.IObserver<ISelectionSubject>
+        ILateDisposable, ISkirmishUiRoute, EmpireAtWar.IObserver<ISelectionSubject>, IAutoPowerToggleObserver
     {
+        public event System.Action AutoPowerToggled;
+
         private readonly ISelectionService _selectionService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly ICameraService _cameraService;
@@ -332,6 +334,7 @@ namespace EmpireAtWar.Entities.ShipUi
                 if (IsAutoPowerEligible(entity, out IShipAutoPowerFacade autoPower))
                     autoPower.SetEnabled(enable);
             RefreshSelection();
+            AutoPowerToggled?.Invoke();
         }
 
         private bool HasMovableSelection()

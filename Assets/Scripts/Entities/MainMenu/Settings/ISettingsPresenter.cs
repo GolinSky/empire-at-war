@@ -45,6 +45,11 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         void SetAutoPowerAbilities(bool isOn);
 
+        void SetShowHints(bool isOn);
+
+        /// <summary>Forgets which hints were seen; applies at once, from the next match.</summary>
+        void ResetHints();
+
         void SetShareUsageData(bool isOn);
 
         void StartRebind(int row);

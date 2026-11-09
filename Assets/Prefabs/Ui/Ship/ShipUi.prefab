@@ -2826,6 +2826,7 @@ GameObject:
   - component: {fileID: 7363475597430516931}
   - component: {fileID: 8962644063851557097}
   - component: {fileID: 3425778100012065326}
+  - component: {fileID: 4049703506247195748}
   m_Layer: 5
   m_Name: AbilityBar
   m_TagString: Untagged
@@ -2925,6 +2926,20 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4049703506247195748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7422184043045789584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 10
+  target: {fileID: 7655814840572190640}
 --- !u!1 &8509528688143724624
 GameObject:
   m_ObjectHideFlags: 0
@@ -3121,6 +3136,7 @@ GameObject:
   - component: {fileID: 7150696360012671229}
   - component: {fileID: 1278354831791627814}
   - component: {fileID: 5577681926343855480}
+  - component: {fileID: 164364705633753181}
   m_Layer: 5
   m_Name: AutoPowerButton
   m_TagString: Untagged
@@ -3362,6 +3378,20 @@ MonoBehaviour:
   label: {fileID: 1182901814059561422}
   activeHighlight: {fileID: 9048021374583775034}
   tooltipTrigger: {fileID: 1278354831791627814}
+--- !u!114 &164364705633753181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8833400398573079220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 11
+  target: {fileID: 7230994320167110634}
 --- !u!1 &9048021374583775034
 GameObject:
   m_ObjectHideFlags: 0

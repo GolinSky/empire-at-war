@@ -90,6 +90,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48816e9dc3fab5e468bae9b25e2be5e8
+    m_Address: HintTrack
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4c82cfd092878f14087ee2689ea29b7f
     m_Address: AsteroidMiningFacilityData
     m_ReadOnly: 0
