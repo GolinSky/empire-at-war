@@ -2,6 +2,7 @@ using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Models.Factions;
@@ -23,6 +24,7 @@ namespace EmpireAtWar.Entities.ShipUi
         private IReadOnlyList<ShipUiEntry> _ships;
         private readonly List<ShipUi> _entries = new List<ShipUi>();
         private readonly List<ShipAbilitySlot> _slots = new List<ShipAbilitySlot>();
+        private readonly List<IUnitOrderObserverFacade> _orders = new List<IUnitOrderObserverFacade>();
 
         [SerializeField] private Button button;
         [SerializeField] private RectTransform groupRect;
@@ -31,6 +33,7 @@ namespace EmpireAtWar.Entities.ShipUi
         [SerializeField] private ShipAbilityBarUi abilityBar;
         [SerializeField] private RectTransform abilityBarRect;
         [SerializeField] private GameObject summaryCard;
+        [SerializeField] private ShipStateUi summaryStateIndicators;
         [SerializeField] private Image summaryIcon;
         [SerializeField] private TMP_Text summaryCount;
         [SerializeField] private Image summaryHealthFill;
@@ -76,6 +79,8 @@ namespace EmpireAtWar.Entities.ShipUi
                 _entries[i].TooltipHover.ForwardTo(_tooltipHover, null);
             }
             _slots.Clear();
+            _orders.Clear();
+            summaryStateIndicators.Clear();
             abilityBar.SetSlots(_slots, null);
         }
 
@@ -111,7 +116,11 @@ namespace EmpireAtWar.Entities.ShipUi
             foreach (ShipUiEntry ship in ships)
             {
                 if (collapsed)
+                {
                     ship.Health.OnValueChanged += UpdateSummaryHealth;
+                    if (ship.Entity.TryGetFacade(out IUnitOrderObserverFacade orders))
+                        _orders.Add(orders);
+                }
                 else
                 {
                     if (entryIndex == _entries.Count)
@@ -127,6 +136,7 @@ namespace EmpireAtWar.Entities.ShipUi
             {
                 summaryIcon.sprite = icon;
                 summaryCount.text = $"×{_shipCount}";
+                summaryStateIndicators.Configure(_orders, _slots);
                 UpdateSummaryHealth();
             }
             abilityBar.SetModel(model);

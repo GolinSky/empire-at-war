@@ -246,6 +246,10 @@ namespace EmpireAtWar.Entities.ShipUi
                 }
             }
             _shipUi.SetAbilitySlots(_abilitySlots);
+            IUnitOrderObserverFacade orders = null;
+            if (_model.HasShips && !hasGroup)
+                _playerSelectionContext.Entity.TryGetFacade(out orders);
+            _shipUi.SetState(orders, !hasGroup ? _abilitySlots : Array.Empty<ShipAbilitySlot>());
             IReadOnlyList<IEntity> selected = _model.HasShips
                 ? _playerSelectionContext.Entities : Array.Empty<IEntity>();
             _shipUi.SetAutoPower(GetAutoPowerState(selected, individuallySelected: !hasGroup),

@@ -5,6 +5,7 @@ using EmpireAtWar.Models.ShipUi;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
@@ -24,6 +25,7 @@ namespace EmpireAtWar.Entities.ShipUi
         [SerializeField] private Button disableSelectionButton;
         [SerializeField] private Button focusButton;
         [SerializeField] private ShipAbilityBarUi abilityBar;
+        [SerializeField] private ShipStateUi stateIndicators;
         [SerializeField] private Image healthFill;
         [SerializeField] private Image shieldFill;
         [SerializeField] private TooltipHoverView tooltipHover;
@@ -54,6 +56,7 @@ namespace EmpireAtWar.Entities.ShipUi
             if (!_isInitialized) return;
             SetHealth(null);
             SetModifiers(null);
+            stateIndicators.Clear();
             if (!_isEntry) _model.OnSelectionChanged -= UpdateVisibility;
             disableSelectionButton.onClick.RemoveListener(HandleSelection);
             focusButton.onClick.RemoveListener(HandleFocus);
@@ -95,6 +98,10 @@ namespace EmpireAtWar.Entities.ShipUi
         public void SetAutoPower(ShipAutoPowerUiState state, Action onPressed) =>
             abilityBar.SetAutoPower(state, onPressed);
 
+        public void SetState(IUnitOrderObserverFacade orders, IReadOnlyList<ShipAbilitySlot> slots) =>
+            stateIndicators.Configure(orders != null
+                ? new[] { orders } : Array.Empty<IUnitOrderObserverFacade>(), slots);
+
         public void SetHealth(IHealthModelObserver health)
         {
             if (_health != null) _health.OnValueChanged -= UpdateHealth;
@@ -112,6 +119,8 @@ namespace EmpireAtWar.Entities.ShipUi
             shipIconImage.sprite = icon;
             shipIconImage.enabled = icon != null;
             abilityBar.gameObject.SetActive(false);
+            entry.Entity.TryGetFacade(out IUnitOrderObserverFacade orders);
+            SetState(orders, entry.AbilitySlots);
             SetHealth(entry.Health);
             disableSelectionButton.onClick.AddListener(HandleSelection);
             focusButton.onClick.AddListener(HandleFocus);
