@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Entities.TutorialUi;
 using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Services.Tutorial;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 
@@ -21,6 +23,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
         [SerializeField] private TooltipHoverView tooltipHover;
         [SerializeField] private UnityEngine.UI.GridLayoutGroup layoutGrid;
         [SerializeField] private UnityEngine.UI.ContentSizeFitter layoutFitter;
+        [Tooltip("The panel's BuildPanel anchor; it also marks the level-up, research and first ship buttons.")]
+        [SerializeField] private TutorialAnchor tutorialAnchor;
         private readonly List<FactionUnitUi> _factionUnitsUi =
             new List<FactionUnitUi>();
         private readonly Dictionary<ResearchType, FactionUnitUi> _researchUnitsUi =
@@ -284,14 +288,42 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 _isRouteActive && selectionType == SelectionType.Base;
             int siblingIndex = 0;
 
+            FactionUnitUi firstShip = null, firstScout = null, firstResearch = null, level = null;
             foreach (FactionUnitUi unitUi in _factionUnitsUi
                          .OrderBy(unit => _presenter.GetUnitSortOrder(unit.Request))
                          .ThenByDescending(unit => _presenter.IsUnitAvailable(unit.FactionData)))
             {
                 unitUi.transform.SetSiblingIndex(siblingIndex++);
-                unitUi.SetActive(isSelectionVisible && _presenter.IsUnitAvailable(unitUi.FactionData) &&
-                    !_presenter.IsUnitLimitReached(unitUi.Request));
+                bool isShown = isSelectionVisible && _presenter.IsUnitAvailable(unitUi.FactionData) &&
+                               !_presenter.IsUnitLimitReached(unitUi.Request);
+                unitUi.SetActive(isShown);
+                if (!isShown) continue;
+                switch (unitUi.Request)
+                {
+                    case ShipUnitRequest:
+                        if (firstShip == null) firstShip = unitUi;
+                        // Sort orders 0–1 are fighters, interceptors and corvettes: the fast scouts.
+                        if (firstScout == null && _presenter.GetUnitSortOrder(unitUi.Request) <= 1) firstScout = unitUi;
+                        break;
+                    case ResearchUnitRequest:
+                        if (firstResearch == null) firstResearch = unitUi;
+                        break;
+                    case LevelUnitRequest:
+                        level = unitUi;
+                        break;
+                }
             }
+            MarkTutorialButton(TutorialAnchorId.BuildShipButton, firstShip);
+            MarkTutorialButton(TutorialAnchorId.ScoutShipButton, firstScout);
+            MarkTutorialButton(TutorialAnchorId.ResearchButton, firstResearch);
+            MarkTutorialButton(TutorialAnchorId.LevelUpButton, level);
+        }
+
+        // Tutorial hints point at one deterministic button: the first shown in panel order.
+        private void MarkTutorialButton(TutorialAnchorId id, FactionUnitUi unitUi)
+        {
+            if (unitUi == null) tutorialAnchor.Unmark(id);
+            else tutorialAnchor.Mark(id, (RectTransform)unitUi.transform);
         }
     }
 }

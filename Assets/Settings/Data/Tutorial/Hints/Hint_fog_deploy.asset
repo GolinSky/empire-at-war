@@ -10,16 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 843a2fdd59d09604a874eb556c56c86e, type: 3}
-  m_Name: Hint_fog_of_war
+  m_Name: Hint_fog_deploy
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
-  id: fog_of_war
-  title: Fog of war
-  body: You only see what your units see. Scout ahead to find the enemy.
+  id: fog_deploy
+  title: Deploy the scout
+  body: Your scout waits in reinforcements. Place it on the map.
   inputActions: []
-  anchor: 0
-  trigger: 33
-  completion: 0
-  priority: 0
+  inputControls:
+  - <Mouse>/leftButton
+  anchor: 13
+  trigger: 44
+  completion: 45
+  priority: 2
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 11400000, guid: 6c927864083e15e409baf91d6d50a8e6, type: 2}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

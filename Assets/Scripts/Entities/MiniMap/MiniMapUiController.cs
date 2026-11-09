@@ -25,8 +25,12 @@ namespace EmpireAtWar.Entities.MiniMap
 {
     public class MiniMapUiController : UiController,
         IInitializable, ILateTickable, ILateDisposable,
-        ISkirmishUiRoute, IObserver<BattleMap>, IMiniMapPresenter, IMiniMapInputObserver
+        ISkirmishUiRoute, IObserver<BattleMap>, IMiniMapPresenter, IMiniMapInputObserver, IMiniMapTargetMarker
     {
+        public void ShowTarget(Vector3 worldPoint) => _miniMapView.ShowTarget(worldPoint);
+
+        public void HideTarget() => _miniMapView.HideTarget();
+
         public event System.Action CameraMoved;
         public event System.Action MoveOrdered;
 

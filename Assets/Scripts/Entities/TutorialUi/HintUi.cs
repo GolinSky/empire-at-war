@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Services.Tutorial;
 using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
@@ -17,7 +18,6 @@ namespace EmpireAtWar.Entities.TutorialUi
         private const float SLIDE_DISTANCE = 40f;
         private const float PULSE_SPEED = 5f;
         private const float FRAME_PADDING = 6f;
-        private const float EDGE_MARGIN = 48f;
 
         [SerializeField] private RectTransform root;
         [SerializeField] private RectTransform card;
@@ -30,9 +30,9 @@ namespace EmpireAtWar.Entities.TutorialUi
         [SerializeField] private Button turnOffButton;
         [SerializeField] private RectTransform anchorFrame;
         [SerializeField] private CanvasGroup anchorFrameGroup;
-        [SerializeField] private RectTransform worldMarker;
-        [SerializeField] private CanvasGroup worldMarkerGroup;
-        [SerializeField] private RectTransform edgeArrow;
+        [SerializeField] private HintWorldMarkerView worldMarker;
+        [SerializeField] private HintDragSelectDemoView dragSelectDemo;
+        [SerializeField] private HintElementPreviewView elementPreview;
         [SerializeField] private RectTransform inputRow;
         [SerializeField] private HintInputGlyph inputTemplate;
 
@@ -125,27 +125,26 @@ namespace EmpireAtWar.Entities.TutorialUi
         /// <param name="screenPoint">Projected world point; z below zero means behind the camera.</param>
         public void SetWorldMarker(bool isVisible, Vector3 screenPoint)
         {
-            worldMarker.gameObject.SetActive(isVisible);
-            if (!isVisible) return;
-            Vector2 point = screenPoint;
-            if (screenPoint.z < 0f) point = new Vector2(Screen.width, Screen.height) - point;
-            Rect inner = new Rect(EDGE_MARGIN, EDGE_MARGIN, Screen.width - EDGE_MARGIN * 2f,
-                Screen.height - EDGE_MARGIN * 2f);
-            bool isOnScreen = screenPoint.z >= 0f && inner.Contains(point);
-            Vector2 clamped = new Vector2(Mathf.Clamp(point.x, inner.xMin, inner.xMax),
-                Mathf.Clamp(point.y, inner.yMin, inner.yMax));
-            worldMarker.anchoredPosition = ToLocal(clamped);
-            edgeArrow.gameObject.SetActive(!isOnScreen);
-            if (isOnScreen) return;
-            Vector2 direction = point - new Vector2(Screen.width, Screen.height) * 0.5f;
-            edgeArrow.localRotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+            if (isVisible) worldMarker.Show(screenPoint, root);
+            else worldMarker.Hide();
+        }
+
+        public void SetDemo(HintDemo demo)
+        {
+            if (demo == HintDemo.DragSelect) dragSelectDemo.Play();
+            else dragSelectDemo.Stop();
+        }
+
+        /// <param name="source">HUD element to copy onto the card; null hides the preview.</param>
+        public void SetPreview(RectTransform source)
+        {
+            if (source != null) elementPreview.Show(source);
+            else elementPreview.Hide();
         }
 
         private void Update()
         {
-            float pulse = 0.55f + 0.45f * Mathf.Sin(Time.unscaledTime * PULSE_SPEED);
-            anchorFrameGroup.alpha = pulse;
-            worldMarkerGroup.alpha = pulse;
+            anchorFrameGroup.alpha = 0.55f + 0.45f * Mathf.Sin(Time.unscaledTime * PULSE_SPEED);
             if (_isOpen)
             {
                 if (_slide < 1f)

@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: mining_income
   title: Mining income
-  body: Your mining facility adds credits over time.
+  body: Your mine now adds credits over time.
   inputActions: []
+  inputControls: []
   anchor: 4
   trigger: 26
   completion: 0
@@ -23,3 +24,7 @@ MonoBehaviour:
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 5
+  demo: 0
+  previewAnchor: 0

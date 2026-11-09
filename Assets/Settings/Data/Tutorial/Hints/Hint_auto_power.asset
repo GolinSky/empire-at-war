@@ -14,14 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: auto_power
   title: Auto abilities
-  body: Click A on the ability bar to let this ship use its power abilities by itself.
+  body: Turn this button on and the ship uses its power abilities by itself.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
   anchor: 11
-  trigger: 20
+  trigger: 0
   completion: 21
   priority: 7
   showDuringCombat: 1
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 11400000, guid: 5566c63385d2c0b47a107543e1ef6b37, type: 2}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 1

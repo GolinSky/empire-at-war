@@ -21,6 +21,7 @@ namespace EmpireAtWar.Models.Reinforcement
         int MaxUnitCapacity { get; }
         int CurrentUnitCapacity { get; }
         int CapacityLeft { get; }
+        bool HasReserve { get; }
         IEnumerable<KeyValuePair<UnitRequest, int>> Reserve { get; }
 
         bool CanSpawnUnit(ShipType shipType);

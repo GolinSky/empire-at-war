@@ -17,6 +17,7 @@ MonoBehaviour:
   body: Click one of your ships ({0}) to select it.
   inputActions:
   - Battle/Select
+  inputControls: []
   anchor: 0
   trigger: 0
   completion: 1
@@ -24,3 +25,7 @@ MonoBehaviour:
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

@@ -14,14 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: build_unit
   title: Build a ship
-  body: Click a ship in the build panel to queue it. Its cost comes from your credits.
+  body: Click the highlighted ship to queue it.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
-  anchor: 2
+  anchor: 19
   trigger: 0
   completion: 2
   priority: 0
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 1
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

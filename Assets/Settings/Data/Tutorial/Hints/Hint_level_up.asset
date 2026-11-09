@@ -13,16 +13,19 @@ MonoBehaviour:
   m_Name: Hint_level_up
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: level_up
-  title: Upgrade your station
-  body: You can afford the next station level. Select your station and buy the upgrade
-    in its build panel.
+  title: Station upgrade
+  body: Buy the highlighted upgrade to unlock new ships.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
-  anchor: 2
+  anchor: 17
   trigger: 22
   completion: 36
   priority: 6
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 1
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

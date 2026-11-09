@@ -26,5 +26,8 @@ namespace EmpireAtWar.Services.Tutorial
 
         /// <summary>Forgets every seen hint and starts the track again from the first basic, in this match.</summary>
         void Restart();
+
+        /// <summary>Replaces [token] placeholders with names from the visible hint's trigger (ship, hazard…).</summary>
+        string ResolveText(string text);
     }
 }

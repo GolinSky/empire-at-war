@@ -14,12 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: research_building
   title: Research in the queue
-  body: Research builds in your queue like a ship. Its bonus applies when it finishes.
+  body: Research builds in your queue. Its bonus applies when it finishes.
   inputActions: []
+  inputControls: []
   anchor: 3
   trigger: 37
-  completion: 5
+  completion: 0
   priority: 5
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 4
+  demo: 0
+  previewAnchor: 0

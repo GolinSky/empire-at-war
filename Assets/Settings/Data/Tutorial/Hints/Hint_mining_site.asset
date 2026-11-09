@@ -16,6 +16,7 @@ MonoBehaviour:
   title: Capture site
   body: Keep ships inside the ring around this asteroid to capture it.
   inputActions: []
+  inputControls: []
   anchor: 0
   trigger: 25
   completion: 38
@@ -23,3 +24,7 @@ MonoBehaviour:
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

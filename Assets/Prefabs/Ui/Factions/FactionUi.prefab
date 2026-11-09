@@ -69,6 +69,7 @@ MonoBehaviour:
   tooltipHover: {fileID: 5558452487761606446}
   layoutGrid: {fileID: 3866793413560333406}
   layoutFitter: {fileID: 2389064610875496454}
+  tutorialAnchor: {fileID: 6811276773287361835}
 --- !u!114 &9220919144486463678
 MonoBehaviour:
   m_ObjectHideFlags: 0

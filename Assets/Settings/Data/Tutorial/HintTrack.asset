@@ -27,7 +27,9 @@ MonoBehaviour:
   events:
   - {fileID: 11400000, guid: 887ce3c39d466af46b66996cb8abed68, type: 2}
   - {fileID: 11400000, guid: aaeb11bb7c3f9b2428c519e6fff3f954, type: 2}
-  - {fileID: 11400000, guid: 4fd25eb1b8ea1aa4081d5bdee25bcecb, type: 2}
+  - {fileID: 11400000, guid: 438a51b80f6d8b3428141b3ab34d287d, type: 2}
+  - {fileID: 11400000, guid: 825636f72cae6ca46990434ca820f588, type: 2}
+  - {fileID: 11400000, guid: 5566c63385d2c0b47a107543e1ef6b37, type: 2}
   - {fileID: 11400000, guid: b8f635e0da5abc9448a82233a82e7818, type: 2}
   - {fileID: 11400000, guid: dbf34ba78521ccf4fbe8bc352d6d4a7e, type: 2}
   - {fileID: 11400000, guid: 576516fb40e82f44cb2637a50d712424, type: 2}
@@ -35,17 +37,21 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5b2a2130943ca504c85b59f6647bdc89, type: 2}
   - {fileID: 11400000, guid: 94e0a674912d39e478e6f5de2e424727, type: 2}
   - {fileID: 11400000, guid: e49f4e822ea606b4680f89f693e76a41, type: 2}
-  - {fileID: 11400000, guid: 438a51b80f6d8b3428141b3ab34d287d, type: 2}
+  - {fileID: 11400000, guid: fe654976668d2354f9c15d47c7f7e14d, type: 2}
   - {fileID: 11400000, guid: 018a39ac7d1f86349be6c3ecc2e14bd2, type: 2}
   - {fileID: 11400000, guid: 3f6f2af4ca8d6054392971e5c1c78ef2, type: 2}
-  - {fileID: 11400000, guid: fe654976668d2354f9c15d47c7f7e14d, type: 2}
   - {fileID: 11400000, guid: 6b52a8f0cf55aa543bd98089442bdb92, type: 2}
   - {fileID: 11400000, guid: 148ccd61b10c0854b83588eb1faf72e5, type: 2}
   - {fileID: 11400000, guid: cb700e825ff2db0458664a3582c389fd, type: 2}
-  - {fileID: 11400000, guid: 6f12c4e48495c144d9b964aa1033e7f3, type: 2}
+  - {fileID: 11400000, guid: 6c927864083e15e409baf91d6d50a8e6, type: 2}
+  - {fileID: 11400000, guid: 2d0e313a247806c4098bb66055e6fc23, type: 2}
+  - {fileID: 11400000, guid: d9b29a77ac44e9246aeab03acd9eb599, type: 2}
+  - {fileID: 11400000, guid: 6965d19c6d8e54e44b748b1ad3fe7fc1, type: 2}
+  - {fileID: 11400000, guid: 3e8ea5cc7954e4a4cb86e33dfedd8692, type: 2}
+  - {fileID: 11400000, guid: 1683cedfae0690941b73320e9b2b08d0, type: 2}
   - {fileID: 11400000, guid: 0b886541b7ecc224a971555c11801375, type: 2}
-  - {fileID: 11400000, guid: aab06932665bb9844a5fcaaeb1da6cba, type: 2}
-  - {fileID: 11400000, guid: 924f9b91efc4f3f499b2f91482ed5476, type: 2}
+  - {fileID: 11400000, guid: 2aaffb5d225f75f408bd8172cb36469e, type: 2}
+  - {fileID: 11400000, guid: f6d20cb3363758b46b5eb7502b3b709a, type: 2}
   minimumGapSeconds: 3
   combatQuietSeconds: 5
   maxCombatHoldSeconds: 20

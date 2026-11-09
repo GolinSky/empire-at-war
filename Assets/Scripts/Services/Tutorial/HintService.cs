@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Settings;
@@ -14,6 +15,8 @@ namespace EmpireAtWar.Services.Tutorial
     /// </summary>
     public sealed class HintService : IHintService, ITickable, ILateDisposable
     {
+        private static readonly Regex TOKEN = new Regex(@"\[(\w+)\]");
+
         private readonly HintTrack _track;
         private readonly HintConditionFactory _conditions;
         private readonly IHintProgressRepository _repository;
@@ -30,6 +33,7 @@ namespace EmpireAtWar.Services.Tutorial
         private float _gapEnd;
         private float _lastDamage = float.NegativeInfinity;
         private float _combatHoldStart = -1f;
+        private float _currentShownAt;
 
         public event Action<HintDefinition> Shown;
         public event Action<HintDefinition, bool> Closed;
@@ -102,7 +106,8 @@ namespace EmpireAtWar.Services.Tutorial
             }
             if (_current != null)
             {
-                if (_current.Condition.IsMet) Close(true);
+                float autoClose = _current.Definition.AutoCloseSeconds;
+                if (_current.Condition.IsMet || autoClose > 0f && _now - _currentShownAt >= autoClose) Close(true);
                 return;
             }
             PromoteTriggered();
@@ -128,10 +133,19 @@ namespace EmpireAtWar.Services.Tutorial
             return _now - _combatHoldStart >= _track.MaxCombatHoldSeconds;
         }
 
+        // Triggers keep the unit or site they saw, so a moving ship stays marked.
         public bool TryGetWorldTarget(out Vector3 position)
         {
-            position = _current != null ? _current.WorldTarget : default;
-            return _current != null && _current.HasWorldTarget;
+            position = default;
+            return _current != null && _current.Source is IHintWorldTarget target &&
+                   target.TryGetWorldTarget(out position);
+        }
+
+        public string ResolveText(string text)
+        {
+            if (_current == null || !(_current.Source is IHintTextSource source)) return text;
+            return TOKEN.Replace(text, match =>
+                source.TryGetText(match.Groups[1].Value, out string value) ? value : match.Value);
         }
 
         public void Dismiss()
@@ -159,11 +173,10 @@ namespace EmpireAtWar.Services.Tutorial
             for (int i = _waiting.Count - 1; i >= 0; i--)
             {
                 PendingHint waiting = _waiting[i];
-                if (!waiting.Condition.IsMet) continue;
+                HintDefinition after = waiting.Definition.After;
+                if (!waiting.Condition.IsMet || after != null && !_progress.IsDone(after.Id)) continue;
                 PendingHint ready = new PendingHint(waiting.Definition,
-                    _conditions.CreateCompletion(waiting.Definition.Completion), 0);
-                if (waiting.Condition is IHintWorldTarget target && target.TryGetWorldTarget(out Vector3 position))
-                    ready.SetWorldTarget(position);
+                    _conditions.CreateCompletion(waiting.Definition.Completion), 0) { Source = waiting.Condition };
                 waiting.Condition.Dispose();
                 _waiting.RemoveAt(i);
                 _ready.Add(ready);
@@ -203,6 +216,7 @@ namespace EmpireAtWar.Services.Tutorial
             else _ready.Remove(hint);
             _current = hint;
             _currentIsBasic = isBasic;
+            _currentShownAt = _now;
             _combatHoldStart = -1f;
             Shown?.Invoke(hint.Definition);
         }
@@ -258,20 +272,14 @@ namespace EmpireAtWar.Services.Tutorial
             /// <summary>1-based position in the basics track; 0 for event hints.</summary>
             public int BasicNumber { get; }
 
-            public bool HasWorldTarget { get; private set; }
-            public Vector3 WorldTarget { get; private set; }
+            /// <summary>The trigger that fired; it may name a unit (text) or mark a place (world target).</summary>
+            public IHintCondition Source { get; set; }
 
             public PendingHint(HintDefinition definition, IHintCondition condition, int basicNumber)
             {
                 Definition = definition;
                 Condition = condition;
                 BasicNumber = basicNumber;
-            }
-
-            public void SetWorldTarget(Vector3 position)
-            {
-                WorldTarget = position;
-                HasWorldTarget = true;
             }
         }
     }

@@ -17,6 +17,7 @@ MonoBehaviour:
   body: Press {0} or push the mouse to a screen edge to move the camera.
   inputActions:
   - Camera/Move
+  inputControls: []
   anchor: 0
   trigger: 0
   completion: 6
@@ -24,3 +25,7 @@ MonoBehaviour:
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

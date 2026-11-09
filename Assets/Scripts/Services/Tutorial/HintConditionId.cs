@@ -43,5 +43,12 @@ namespace EmpireAtWar.Services.Tutorial
         ResearchQueued = 37,
         MiningSiteCaptured = 38,
         MiningSiteBuilding = 39,
+        SatelliteSiteBuilding = 40,
+        CarrierOwned = 41,
+        SquadronOrdered = 42,
+        ShipWithAbilitiesOwned = 43,
+        ReinforcementReady = 44,
+        ReinforcementDeployed = 45,
+        MoveIntoFog = 46,
     }
 }

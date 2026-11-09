@@ -14,15 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: reinforcements
   title: Reinforcements
-  body: Reinforcements are waiting. Open reinforcements and place them in a zone
-    you control.
+  body: Built ships wait in reinforcements. Open them and place a ship in your zone.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
   anchor: 13
-  trigger: 28
-  completion: 0
+  trigger: 44
+  completion: 45
   priority: 4
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

@@ -2896,6 +2896,7 @@ MonoBehaviour:
     type: 3}
   buttonParent: {fileID: 2898954827593763386}
   autoPowerButton: {fileID: 5577681926343855480}
+  tutorialAnchor: {fileID: 4049703506247195748}
 --- !u!114 &3425778100012065326
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: hazard
   title: Space hazard
-  body: Your ship entered a hazard. Nebulae and ion storms affect ships inside them;
-    hover the area for details.
+  body: '[unit] entered [hazard]: [effects].'
   inputActions: []
+  inputControls: []
   anchor: 0
   trigger: 32
   completion: 0
@@ -24,3 +24,7 @@ MonoBehaviour:
   showDuringCombat: 1
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 6
+  demo: 0
+  previewAnchor: 0

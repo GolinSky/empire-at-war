@@ -10,18 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 843a2fdd59d09604a874eb556c56c86e, type: 3}
-  m_Name: Hint_stop_guard
+  m_Name: Hint_ability_ship
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
-  id: stop_guard
-  title: Stop and Guard
-  body: Stop halts your ships. Guard makes them protect a friendly unit.
-  inputActions: []
-  inputControls:
-  - <Mouse>/leftButton
-  anchor: 5
-  trigger: 12
-  completion: 0
-  priority: 1
+  id: ability_ship
+  title: Ship abilities
+  body: Select [unit] ({0}). It has special abilities.
+  inputActions:
+  - Battle/Select
+  inputControls: []
+  anchor: 0
+  trigger: 43
+  completion: 19
+  priority: 8
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

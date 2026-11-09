@@ -30,6 +30,7 @@ namespace EmpireAtWar.Entities.MiniMap
         [SerializeField] private MiniMapHazardView hazardView;
         [SerializeField] private MiniMapMoveTargetView moveTargetView;
         [SerializeField] private RawImage fogImage;
+        [SerializeField] private MiniMapTargetView targetView;
         private List<Image> _mapMarkers = new List<Image>();
         private Dictionary<MiniMapMarker, MarkView> _markerViews =
             new Dictionary<MiniMapMarker, MarkView>();
@@ -141,6 +142,10 @@ namespace EmpireAtWar.Entities.MiniMap
                 else DestroyImmediate(view.gameObject);
             }
         }
+
+        public void ShowTarget(Vector3 worldPoint) => targetView.Show(GetPosition(worldPoint));
+
+        public void HideTarget() => targetView.Hide();
 
         public Vector2 GetPosition(Vector3 worldPos)
         {

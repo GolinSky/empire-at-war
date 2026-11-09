@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843a2fdd59d09604a874eb556c56c86e, type: 3}
+  m_Name: Hint_ability_use
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
+  id: ability_use
+  title: Use an ability
+  body: Click the highlighted ability. Some need a target, and each has a cooldown.
+  inputActions: []
+  inputControls:
+  - <Mouse>/leftButton
+  anchor: 21
+  trigger: 0
+  completion: 20
+  priority: 8
+  showDuringCombat: 1
+  interruptsBasics: 0
+  needsStationSelected: 0
+  after: {fileID: 11400000, guid: 825636f72cae6ca46990434ca820f588, type: 2}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

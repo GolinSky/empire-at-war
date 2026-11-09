@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: select_group
   title: Select a fleet
-  body: Drag a box around several ships ({0}) to select them all.
+  body: Hold {0} and drag a box around several ships to select them all.
   inputActions:
   - Battle/Select
+  inputControls: []
   anchor: 0
   trigger: 0
   completion: 8
@@ -24,3 +25,7 @@ MonoBehaviour:
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 1
+  previewAnchor: 0

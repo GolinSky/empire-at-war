@@ -14,12 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: level_building
   title: Upgrade in the queue
-  body: Your station upgrade is building in the queue. New ships unlock when it finishes.
+  body: The station upgrade is building in your queue.
   inputActions: []
+  inputControls: []
   anchor: 3
   trigger: 36
-  completion: 4
+  completion: 0
   priority: 6
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 4
+  demo: 0
+  previewAnchor: 0

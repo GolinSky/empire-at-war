@@ -14,14 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: research
   title: Research
-  body: You can afford research. Select your station and buy it in the build panel.
+  body: Buy the highlighted research to improve your fleet.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
-  anchor: 2
+  anchor: 18
   trigger: 23
   completion: 37
   priority: 5
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 1
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

@@ -20,5 +20,10 @@ namespace EmpireAtWar.Services.Tutorial
         SuperWeapons = 14,
         Heroes = 15,
         SurvivalHud = 16,
+        LevelUpButton = 17,
+        ResearchButton = 18,
+        BuildShipButton = 19,
+        ScoutShipButton = 20,
+        AbilityButton = 21,
     }
 }

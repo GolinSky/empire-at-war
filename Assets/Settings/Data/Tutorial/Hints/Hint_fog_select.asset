@@ -10,17 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 843a2fdd59d09604a874eb556c56c86e, type: 3}
-  m_Name: Hint_squadrons
+  m_Name: Hint_fog_select
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
-  id: squadrons
-  title: Squadrons
-  body: Fighters and bombers launch from carriers and stations. Select and order
-    them like ships.
-  inputActions: []
+  id: fog_select
+  title: Select the scout
+  body: Select your new ship ({0}).
+  inputActions:
+  - Battle/Select
+  inputControls: []
   anchor: 0
-  trigger: 31
-  completion: 0
+  trigger: 0
+  completion: 1
   priority: 2
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 11400000, guid: 2d0e313a247806c4098bb66055e6fc23, type: 2}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

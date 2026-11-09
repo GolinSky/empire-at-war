@@ -17,6 +17,7 @@ MonoBehaviour:
   body: Hold {0} while giving move orders to queue a path of waypoints.
   inputActions:
   - Battle/QueueWaypoint
+  inputControls: []
   anchor: 0
   trigger: 9
   completion: 12
@@ -24,3 +25,7 @@ MonoBehaviour:
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

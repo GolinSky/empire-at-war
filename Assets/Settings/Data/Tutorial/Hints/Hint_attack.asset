@@ -17,6 +17,7 @@ MonoBehaviour:
   body: Press {0} on an enemy to attack it. Attack-move fights anything on the way.
   inputActions:
   - Battle/Command
+  inputControls: []
   anchor: 7
   trigger: 24
   completion: 10
@@ -24,3 +25,7 @@ MonoBehaviour:
   showDuringCombat: 1
   interruptsBasics: 1
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

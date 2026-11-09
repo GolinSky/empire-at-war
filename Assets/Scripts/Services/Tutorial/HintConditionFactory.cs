@@ -135,11 +135,16 @@ namespace EmpireAtWar.Services.Tutorial
                 case HintConditionId.ReinforcementAvailable:
                     return new ReinforcementAvailableHintCondition(_reinforcements);
                 case HintConditionId.SuperWeaponReady: return new SuperWeaponReadyHintCondition(_superWeapons);
-                case HintConditionId.HeroAvailable:
-                    return new LocalUnitAddedHintCondition(_entities, _player, _factions, false);
+                case HintConditionId.HeroAvailable: return LocalUnit(LocalUnitKind.Hero);
                 case HintConditionId.SquadronAvailable:
-                    return new LocalUnitAddedHintCondition(_entities, _player, _factions, true);
-                case HintConditionId.HazardEntered: return new HazardEnteredHintCondition(_hazards, _player);
+                case HintConditionId.CarrierOwned: return LocalUnit(LocalUnitKind.Carrier);
+                case HintConditionId.ShipWithAbilitiesOwned: return LocalUnit(LocalUnitKind.AbilityShip);
+                case HintConditionId.SquadronOrdered: return new SquadronOrderedHintCondition(_orders, _selection, _player);
+                case HintConditionId.ReinforcementReady: return new ReinforcementReadyHintCondition(_reinforcements);
+                case HintConditionId.ReinforcementDeployed: return new ReinforcementDeployedHintCondition(_reinforcements);
+                case HintConditionId.MoveIntoFog: return new MoveIntoFogHintCondition(_orders, _player, _vision);
+                case HintConditionId.SatelliteSiteBuilding: return Site(CaptureSiteKind.Satellite, CaptureSiteStage.Building);
+                case HintConditionId.HazardEntered: return new HazardEnteredHintCondition(_hazards, _player, _factions);
                 case HintConditionId.FogActive: return new FogActiveHintCondition(_vision);
                 case HintConditionId.SurvivalPreparation:
                     return _survival == null
@@ -148,6 +153,8 @@ namespace EmpireAtWar.Services.Tutorial
                 default: throw new ArgumentOutOfRangeException(nameof(id), id, "No hint condition for this id.");
             }
         }
+
+        private IHintCondition LocalUnit(LocalUnitKind kind) => new LocalUnitHintCondition(_entities, _player, _factions, kind);
 
         private IHintCondition Order(UnitActionId action) => new OrderIssuedHintCondition(_orders, _player, action);
 

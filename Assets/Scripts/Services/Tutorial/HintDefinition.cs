@@ -9,7 +9,8 @@ namespace EmpireAtWar.Services.Tutorial
         [Tooltip("Stable id stored in hint progress. Never rename after release.")]
         [SerializeField] private string id;
         [SerializeField] private string title;
-        [Tooltip("{0}, {1}… are replaced by the current key binding of each Input Action below.")]
+        [Tooltip("{0}, {1}… are replaced by the current key binding of each Input Action below. " +
+                 "[unit], [hazard], [effects] come from the trigger.")]
         [TextArea(2, 4)]
         [SerializeField] private string body;
         [Tooltip("Input action paths such as Camera/Move or Battle/Command.")]
@@ -29,6 +30,14 @@ namespace EmpireAtWar.Services.Tutorial
         [SerializeField] private bool interruptsBasics;
         [Tooltip("The anchor lives in the station's build panel: until the station is selected, mark the station instead.")]
         [SerializeField] private bool needsStationSelected;
+        [Tooltip("Event hints only: waits until this hint is done, so several hints form one lesson step by step.")]
+        [SerializeField] private HintDefinition after;
+        [Tooltip("Information hint that closes by itself after this many seconds; 0 keeps it until its completion.")]
+        [Min(0f)] [SerializeField] private float autoCloseSeconds;
+        [Tooltip("Short animation shown on the card.")]
+        [SerializeField] private HintDemo demo;
+        [Tooltip("Shows a copy of the highlighted HUD element on the card, so the player knows what it looks like.")]
+        [SerializeField] private bool previewAnchor;
 
         public string Id => id;
         public string Title => title;
@@ -42,5 +51,9 @@ namespace EmpireAtWar.Services.Tutorial
         public bool ShowDuringCombat => showDuringCombat;
         public bool InterruptsBasics => interruptsBasics;
         public bool NeedsStationSelected => needsStationSelected;
+        public HintDefinition After => after;
+        public float AutoCloseSeconds => autoCloseSeconds;
+        public HintDemo Demo => demo;
+        public bool PreviewAnchor => previewAnchor;
     }
 }

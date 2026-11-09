@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: Hint_hero
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: hero
-  title: Heroes
-  body: Heroes are strong, unique units. Click a hero portrait to jump the camera
-    to it.
+  title: Your hero
+  body: '[unit] is a hero: a strong, unique unit. Click its portrait to find it.'
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
@@ -26,3 +25,7 @@ MonoBehaviour:
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 6
+  demo: 0
+  previewAnchor: 0

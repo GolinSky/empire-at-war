@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: site_build
   title: Build on your site
-  body: Select your captured asteroid ({0}) to open the Mine and Battle Asteroid
-    choices.
+  body: Select your captured asteroid ({0}) and choose Mine or Battle Asteroid.
   inputActions:
   - Battle/Select
   inputControls: []
@@ -26,3 +25,7 @@ MonoBehaviour:
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

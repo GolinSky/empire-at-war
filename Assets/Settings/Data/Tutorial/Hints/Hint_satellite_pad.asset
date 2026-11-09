@@ -14,12 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: satellite_pad
   title: Defense satellite pad
-  body: Capture this pad to build a defense satellite that guards the area.
+  body: Capture this pad, then build a defense satellite on it.
   inputActions: []
+  inputControls: []
   anchor: 0
   trigger: 27
-  completion: 0
+  completion: 40
   priority: 3
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

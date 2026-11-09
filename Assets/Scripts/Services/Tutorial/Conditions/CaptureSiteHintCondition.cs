@@ -47,7 +47,7 @@ namespace EmpireAtWar.Services.Tutorial
                     return _player.IsLocal(site.Owner) && site.State != CaptureSiteState.Owned &&
                            site.State != CaptureSiteState.Neutral;
                 default:
-                    return _player.IsLocal(site.Owner) && site.IsOperational &&
+                    return _player.IsLocal(site.Owner) && site.State == CaptureSiteState.Operational &&
                            site.FacilityType == SiteFacilityType.Mining;
             }
         }

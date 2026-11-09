@@ -17,6 +17,7 @@ MonoBehaviour:
   body: With ships selected, press {0} on open space to move them.
   inputActions:
   - Battle/Command
+  inputControls: []
   anchor: 5
   trigger: 0
   completion: 9
@@ -24,3 +25,7 @@ MonoBehaviour:
   showDuringCombat: 0
   interruptsBasics: 0
   needsStationSelected: 0
+  after: {fileID: 0}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

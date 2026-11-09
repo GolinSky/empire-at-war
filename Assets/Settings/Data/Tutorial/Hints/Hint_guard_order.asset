@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843a2fdd59d09604a874eb556c56c86e, type: 3}
+  m_Name: Hint_guard_order
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
+  id: guard_order
+  title: Guard
+  body: Press Guard, then click a friendly unit. Your ships will protect it.
+  inputActions: []
+  inputControls:
+  - <Mouse>/leftButton
+  anchor: 9
+  trigger: 0
+  completion: 14
+  priority: 1
+  showDuringCombat: 0
+  interruptsBasics: 0
+  needsStationSelected: 0
+  after: {fileID: 11400000, guid: 2aaffb5d225f75f408bd8172cb36469e, type: 2}
+  autoCloseSeconds: 0
+  demo: 0
+  previewAnchor: 0

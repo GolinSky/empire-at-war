@@ -1,5 +1,6 @@
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.MiniMap;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Battle;
@@ -24,14 +25,18 @@ namespace EmpireAtWar.Entities.TutorialUi
         private readonly ISelectionService _selection;
         private readonly IStationRegistry _stations;
         private readonly ILocalPlayer _player;
+        private readonly IMiniMapTargetMarker _miniMap;
         private readonly Vector3[] _corners = new Vector3[4];
         private HintUi _ui;
         private bool _isStationSelectionPrompt;
+        private bool _isPreviewShown;
 
         public HintUiController(IUiService uiService, IHintService hints, ISettingsService settings,
             ICameraService camera, InputActionsProvider input, ISelectionService selection,
-            IStationRegistry stations, ILocalPlayer player, IInputBindings bindings) : base(uiService)
+            IStationRegistry stations, ILocalPlayer player, IInputBindings bindings,
+            IMiniMapTargetMarker miniMap) : base(uiService)
         {
+            _miniMap = miniMap;
             _hints = hints;
             _settings = settings;
             _camera = camera;
@@ -65,8 +70,15 @@ namespace EmpireAtWar.Entities.TutorialUi
             bool hasAnchor = !markStation && TutorialAnchor.TryFind(hint.Anchor, out anchor) &&
                              anchor.gameObject.activeInHierarchy;
             _ui.SetAnchorFrame(hasAnchor, hasAnchor ? ScreenRect(anchor) : default);
+            if (hint.PreviewAnchor && hasAnchor && !_isPreviewShown)
+            {
+                _ui.SetPreview(anchor);
+                _isPreviewShown = true;
+            }
             bool hasTarget = markStation ? TryGetStation(out Vector3 position) : _hints.TryGetWorldTarget(out position);
             _ui.SetWorldMarker(hasTarget, hasTarget ? _camera.SceneCamera.WorldToScreenPoint(position) : default);
+            if (hasTarget) _miniMap.ShowTarget(position);
+            else _miniMap.HideTarget();
         }
 
         private bool TryGetStation(out Vector3 position)
@@ -89,19 +101,29 @@ namespace EmpireAtWar.Entities.TutorialUi
         {
             int number = _hints.CurrentBasicNumber;
             string progress = number > 0 ? $"{number}/{_hints.BasicCount}" : string.Empty;
-            _ui.OpenHint(hint.Title, HintInputFormatter.FormatBody(hint, _input.Actions.asset), progress);
+            _ui.OpenHint(hint.Title, Body(hint), progress);
+            _ui.SetDemo(hint.Demo);
+            _ui.SetPreview(null);
+            _isPreviewShown = false;
             SetInputPrompts(hint, hint.NeedsStationSelected &&
                 _selection.PlayerSelectionContext.SelectionType != SelectionType.Base);
         }
 
-        private void HandleClosed(HintDefinition hint, bool completed) => _ui.CloseHint(completed);
+        private void HandleClosed(HintDefinition hint, bool completed)
+        {
+            _ui.CloseHint(completed);
+            _miniMap.HideTarget();
+        }
+
+        private string Body(HintDefinition hint) =>
+            _hints.ResolveText(HintInputFormatter.FormatBody(hint, _input.Actions.asset));
 
         // Settings edits update the open card without restarting its animation.
         private void RefreshInputs()
         {
             HintDefinition hint = _hints.Current;
             if (hint == null) return;
-            _ui.SetBody(HintInputFormatter.FormatBody(hint, _input.Actions.asset));
+            _ui.SetBody(Body(hint));
             SetInputPrompts(hint, hint.NeedsStationSelected &&
                 _selection.PlayerSelectionContext.SelectionType != SelectionType.Base);
         }
