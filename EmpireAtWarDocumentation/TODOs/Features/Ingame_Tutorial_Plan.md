@@ -125,6 +125,83 @@ Each hint: card → highlight → completion condition → short confirm feedbac
 - Verified: compiles clean, 38 hints validate. Tests not run; not run in-game; not committed. Parallel session committed round 1 as `3c8f24fee` (with its input glyphs).
 - Rejected 2026-11-09: pausing enemy attacks while basics run (user: skip). Avoid re-proposing.
 
+## Onboarding Redesign (playtest round 3, 2026-11-09) — implemented, in-game check pending
+### Implemented (2026-11-09; compiles clean, console clean, content validated; tests not run; not run in-game; not committed)
+- Data: `HintLesson` SO (id, steps, trigger, priority, interruptsOnboarding) in `Assets/Settings/Data/Tutorial/Lessons/`; `HintTrack` = `onboarding` + `events` lessons, `stepGapSeconds = 0.6`. `HintDefinition` = step: adds `target` (`HintTargetId`), `requires` (`HintRequirement` state → fix step), `skipUnless` (`HintStateId`), `listenFromShown`, `anchorFallback`; drops trigger/after/priority/interruptsBasics/needsStationSelected.
+- `HintService`: one lesson at a time; onboarding = first lesson in track order whose trigger fired (waiting ones never block); events wait unless `interruptsOnboarding`. Fix steps never recorded; prerequisite lost mid-step → fix step again. Skip rules judged only once prerequisites hold. Dismiss skips the whole lesson. Ticks while Paused on unscaled time (pause lesson). Already-done lessons finish silently with no gap. Progress ids: step ids + `lesson_<id>`.
+- `HintStates` (live: UnitSelected, StationSelected, AbilityUnitSelected, AutoPowerOn, AbilityNeedsMove = `AutoPowerRole.Travel`, AbilityNeedsTarget = `RequiresEnemyTarget`, AbilityInstant; `[ability]` token). `HintTargets` (OwnUnit nearest station, OwnStation, MiningSite/SatelliteSite = own unbuilt else free nearest station, OwnMine, Trigger). Station marking moved out of `HintUiController` into `select_station` fix steps.
+- New conditions: `UnitInSiteHintCondition`, `GameTimeHintCondition` (Paused/Resumed/SpeedUp via `SkirmishStateModel`), `SelectionShortcutHintCondition` (`ISelectionInput`), `ReinforcementPanelHintCondition` (new `IReinforcementPanelObserver.Opened` on `ReinforcementUiController.Activate(true)`), `SeveralDeployedHintCondition` (reserve drops ≥ 2 in one placement), `ResearchQueuedHintCondition` + group filter on `ResearchAffordableHintCondition` (`ResearchGroup.IsEconomy` = IncreasedProduction, IncreasedStationIncome), `NewUnitQueuedHintCondition` (AvailableLevel == current level, level above start), `AnyAttackOrdered` (Attack or AttackMove), `SeveralInReserve`, `UnitOwned`, site `Exists` stage.
+- Anchors: `PauseButton`/`SpeedButton` (CoreGameUi `UpperPanel/PlayButton`, `SpeedUpButton`); `TooltipMatchups` moved from tooltip Panel to `Strong Against` + `Weak Against` rows, frame = union of all visible anchors with one id (`TutorialAnchor.TryFindAll`); FactionUi marks `EconomyResearchButton`, `FleetResearchButton`, `NewShipButton` (`IFactionPresenter.IsUnlockedAtCurrentLevel`). Drag-select demo box fill alpha 0 (outline only).
+- Content: 50 steps, onboarding: camera → time → mine (trigger MiningSiteExists) → fleet → minimap → satellite (SatelliteSiteExists) → station → level_up (LevelUpAffordable) → new_units (LevelUpgraded) → reinforcements (ReinforcementReady) → deploy_all (SeveralInReserve) → research_economy → research_fleet → shortcuts. Events: attack, superweapon, abilities (select → auto off → move if travel ability → targeted or instant use), hazard, survival, hero, fog, carrier.
+- Deleted steps: `Hint_auto_power`, `Hint_move_fleet`, `Hint_reinforcements`, `Hint_research`, `Hint_select_ship`. Old saved progress → Settings ▸ Reset hints or Cheats ▸ Tutorial to replay.
+- `HintService.cs` ≈ 370 lines (> 200): candidate split = lesson picking vs step runner; not done (out of scope).
+- Open: guard targets the station (mine guardability not checked); `level_unlocked` waits for a fresh station selection; deploy step marks the station (no reinforcement-zone target).
+
+### Playtest round 4 (2026-11-09) — fixed, in-game check pending
+- Research lessons end on any research purchase: new `ResearchBought` (queued research count grows; research already queued does not count), `listenFromShown`; `research_building` step deleted. `ResearchQueuedHintCondition` now counts increases (group or any).
+- Stall after research: shortcuts trigger `UnitOwned` used `LocalUnitHintCondition` (event latch + catalog lookup) and never fired in play → new polled `LocalUnitOwnedHintCondition` (any living local unit with `IMoveFacade`). `LocalUnitKind.Ship` removed.
+- Squadrons: `HintTargetId.OwnUnit` now picks any local movable unit (ships and squadrons), nearest the station.
+- Minimap vs screen marker: same world point and same math as minimap icons; off-screen the edge indicator also drew the target ring at the screen edge → now arrow only. Re-check in game; if still offset, note which marker is wrong.
+- Played with old saved progress (old ids such as `site_build`, `research_building`, `level_unlocked` were recorded, so those steps were skipped). Reset hints before testing.
+- Compiles clean, console clean; tests not run; not run in-game.
+
+### Order change round 5 (2026-11-09) — implemented, in-game check pending
+- Onboarding: camera → time (pause, resume, speed up, normal speed) → facility (trigger `MiningFacilityAffordable`) → level_up (`LevelUpAffordable`) → mine → fleet → minimap → satellite → station → new_units → reinforcements → deploy_all → research_economy → research_fleet → shortcuts.
+- Facility lesson: `facility_build` (marked `MiningFacilityButton`, done = `MiningFacilityQueued`) → `facility_place` (reinforcement button, station marked, done = `MiningFacilityPlaced` = local `IMiningFacilityFacade` entity). Requires `HintStateId.MiningFacilityReady` (in reserve or placed) → fix `facility_wait` (build queue note).
+- New units: `NewShipButton` = carrier first (`IFactionPresenter.IsCarrier` = ShipData.HangarBays > 0), else most expensive ship unlocked at the current level. User examples: Acclamator, Munificent.
+- Fog: `fog_move` targets `HintTargetId.FoggedMiningSite` = hidden (not revealed), not owned mining site nearest the station; picked once and kept. Completion still `MoveIntoFog`.
+- `GameTimeHintCondition.Kind.NormalSpeed` (Normal after Fast). 53 steps, 15 onboarding + 8 event lessons. Compiles clean, console clean, content validated; tests not run; not run in-game.
+
+### Playtest round 6 (2026-11-09) — implemented, in-game check pending
+- User: tutorial too slow; no waiting cards, no delays. `HintDefinition.waitSilently` replaces `backgroundAfterSeconds`: waiting steps (`mining_site`, `satellite_capture`) and waiting fix steps (`facility_wait`, `fog_wait`) never show a card; lesson parks at once and resumes when done. Pacing: lesson gap 0.5 s, step gap 0.4 s, combat hold off (`combatQuietSeconds = 0`, `maxCombatHoldSeconds = 0`).
+- Removed: waypoints step (useless, broke the mine flow), `level_building` card. Research lessons now right after level up (one by one, single step each).
+- Build queue: only once, in the station lesson after build/counters: 4 s info on `BuildQueue`, cancel counts as done (`UnitCancelled` via new `IBuildQueueCancelObserver.Canceled` on `ShipBuildUiController.CancelBuilding`).
+- Reinforcement drag was skipped (open/deploy completions latched from earlier deploys) → `listenFromShown`; `ReinforcementUi` marks `ReinforcementUnit` (first card) and `ReinforcementNewUnit` (card that got a unit last) through a new `ReinforcementPanel` anchor; drag steps frame the card, fallback the reinforcement button.
+- Scout flow: `fog_build` = marked fighter (`ScoutShipButton` = first squadron or ship with sort order 0; `ScoutUnits.IsScout` = squadron or Fighter/Bomber/Interceptor), done = `ScoutQueued` → silent `fog_wait` until `ScoutReady` → `fog_deploy` drags the marked new card → `fog_select` marks `HintTargetId.NewestUnit` (highest local movable entity id), done = `NewestUnitSelected` → `fog_move` to the marked site.
+- Fog target: `FoggedMiningSite` = free mining site in the outer half by distance from the middle of all sites (never the center), nearest the station; picked once.
+- `TutorialAnchor.TryFindAll(None)` returns nothing (anchors without a step id never frame).
+- Compiles clean, console clean, 52 steps validated; tests not run; not run in-game.
+
+### Background waits (2026-11-09) — superseded by round 6 (silent waits)
+- `HintDefinition.backgroundAfterSeconds`: a waiting step (or waiting fix step) shows that long, then the lesson parks (`HintService._parked`) and other lessons run. Parked lesson resumes first, between lessons, once its step is done or the step to show changes (`CanResume`).
+- Set on `mining_site` capture 5 s, `satellite_capture` 6 s, `facility_wait` 5 s; texts say "carry on meanwhile". Mine lesson resumes at Build Mine after capture.
+- Compiles clean, console clean; tests not run; not run in-game.
+
+### Proposal (accepted 2026-11-09; user moved level up right after the station lesson)
+### Decisions (user)
+- Stays in Skirmish with hints on; no Tutorial mode.
+- Onboarding teaches economy first: capture the mining site nearest the station and build a Mine as one of the first lessons. Not a balance change; nobody gets free mines.
+- Missing prerequisite (no ship selected, station not selected) → insert a reusable small step, then return to the original step.
+- Goal: by the end the player has a mine, a satellite, levelled station, research, built ships — not dead.
+- Text: 1 short line; step 2+ of a lesson relies on markers, not prose. Never say "ship" when any unit works.
+
+### Engine changes
+- `HintLesson` SO = ordered steps + trigger + priority + flags. `HintTrack`: onboarding lessons (ordered) + event lessons. `HintDefinition` = one step (drops `after`/`trigger`).
+- Prerequisites: step lists `requires` (live state id → reusable fix step). State conditions are live (`IsSatisfied`), not one-shot latches. Fix steps are never recorded as done.
+  - Library: `SelectUnit` (mark own unit), `SelectStation` (mark station), `OwnUnit` (no units → station → build), `OpenReinforcements`.
+  - Prereq lost mid-step (deselect) → back to the fix step.
+- World targets per step (`HintTargetId`): OwnUnit, OwnStation, MiningSiteNearStation, SatellitePadNearest, OwnMine, ReinforcementZone. Target picked once per lesson and shared by its steps (same site for move → capture → build).
+- Completion "move into marked ring" (order destination inside target site radius).
+- Anchors: matchup rows only (not whole tooltip), pause button, speed button, reinforcement zone, all newly unlocked build buttons.
+
+### Onboarding order
+1. Camera: pan → zoom.
+2. Time: pause/resume → speed up.
+3. Mine: select unit (marked) → move to marked mining site → capture → select site → build Mine → income note (auto-close).
+4. Fleet: drag-select (transparent box demo) → waypoints → guard the mine (marked) → stop.
+5. Minimap: click marked satellite pad on minimap → [unit selected] right-click it on minimap → capture → build satellite.
+6. Station: select station → build unit (no gap) → counters (mark matchup rows) → queue.
+7. Level up (right after station): buy → queue note; after it completes: mark station → select → mark new unit → build it.
+8. Reinforcements: open → drag unit near station → Shift+drag deploys all (own lesson, when 2+ of one kind wait).
+9. Research: economy research (income/production) and fleet research (weapons/shields) as two lessons.
+10. Shortcuts: select visible, select all.
+
+### Event lessons
+- Attack: completion = Attack or AttackMove (bug: attack-move to the suggested place left card open).
+- Abilities: auto-power off first → use ability; step depends on ability (engines → move first, targeted → pick target, instant → click).
+- Fog: info only right after the scout reaches the dark (no detached card).
+- Hero, hazard, super weapon, Survival: unchanged.
+
 ## Input glyphs (2026-11-09)
 - Implemented: `TutorialInputAtlas.png` (transparent 1536×1024; neutral/LMB/RMB/wheel/both mouse variants + blank keycap), sliced sprites in `Assets/Art/Textures/Ui/`; `HintUi.prefab` explicitly wires the input row and inactive glyph template.
 - `HintInputFormatter` resolves primary `InputBinding.effectivePath`; axis keys use `/`, modifier chords use `+`, alternative actions use `or`, missing bindings show `Unbound`. `HintInputGlyph` overlays dynamic letters on the white keycap; active mouse controls are red.

@@ -188,6 +188,11 @@
   },
   "active": "fd4544b14efb9af5",
   "lastOpenFiles": [
+    "Done/Features/Battle_Notifications_Plan.md",
+    "TODOs/Features/Battle_Notifications_Plan.md",
+    "sed59Mdr7",
+    "TODOs/Features/Ingame_Tutorial_Plan.md",
+    "TODOs/Tooling/Game_Installer_Velopack.md",
     "TODOs/Optimization/Optimization_Audit_Fix_Plan - Research.md",
     "TODOs/Optimization/Battle_Start_Hitch_Plan.md",
     "Artifacts/Audits/Optimization_2026-11-06/Station_camera.png",
@@ -213,10 +218,6 @@
     "TODOs/Features/Skirmish_Hero_Fighters - Research.md",
     "Done/Refactoring/Fog_Disabled_Stand_Ins.md",
     "Done/Refactoring/Empty_Code_Cleanup.md",
-    "Done/Refactoring/Empty_Interface_Members.md",
-    "Done/Refactoring/Battle_Area_Access - Research.md",
-    "Done/Refactoring/Battle_Area_Access.md",
-    "Done/Refactoring/DI_Container_Failure_Handling.md",
     "TODOs/sedHoE5uX",
     "TODOs/sed2g2Anb",
     "TODOs/Documentation",
@@ -224,7 +225,6 @@
     "TODOs/Documentation/sedJUugEI",
     "AssetPipeline/Imports/sedAFtn17",
     "AssetPipeline/Imports/sedrPbomK",
-    "Rules/AGENTS.md.tmp.10036.941724027e1d",
-    "Done/Features/sedgp5bGS"
+    "Rules/AGENTS.md.tmp.10036.941724027e1d"
   ]
 }

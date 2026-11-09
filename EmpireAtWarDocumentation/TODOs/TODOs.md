@@ -13,7 +13,8 @@
 
 - [ ] **Dynamic in-game tutorial (in-match hints: camera, select, move, minimap, build, counters tooltip, build queue, abilities + auto-power, level up, research, map systems)** → [[TODOs/Features/Ingame_Tutorial_Plan|In-Game Tutorial Plan]]
   - Status: in progress. Phase 0 decided 2026-11-09: in-match hints only (guided battle deferred), plain text, text-only coach card (layout A) + pulsing ring, 3 s gap, basics pause during combat. Phases 1–7 + settings done 2026-11-09 (compiles clean; tests not run; not run in-game): hint card UI, HUD anchors, 10 basics + 18 event hints, Show/Reset hints in Settings, Turn off on card. Remaining: audio cue (needs clip), optional analytics, tests, user in-game check.
-  - Input glyphs added 2026-11-09: white mouse/keycaps, red active mouse control, live settings bindings and station-selection prerequisite prompts. Imported/saved and visually previewed; tests not run. Current content: 11 basics + 21 events; audio cue remains open.
+  - Input glyphs added 2026-11-09: white mouse/keycaps, red active mouse control, live settings bindings and station-selection prerequisite prompts. Imported/saved and visually previewed; tests not run.
+  - Onboarding redesign 2026-11-09: lessons of small steps, auto-inserted prerequisite steps (select unit / station), world targets (mine near station, satellite pad), mine-first order, pause/speed, shortcuts, split research, level up after station. 50 steps, 14 onboarding + 8 event lessons. Compiles clean; tests not run; in-game check pending; audio cue remains open.
 
 - [ ] **Online multiplayer (Mirror host-authoritative, 20 Hz tick, Steam relay via FizzySteamworks) alongside offline** → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]; [[TODOs/Features/Multiplayer_Plan - Research|Research]]
   - Status: in progress 2026-11-07. Scope: Skirmish (PvP/co-op, AI slots) + Survival co-op; 2–4 friends. Done: Mirror 96.11.3 + FizzySteamworks 6.0.1 in `Assets/Plugins/Mirror`, Steamworks.NET 2025.164.1 (UPM); Phase 0 spike scene `Assets/Sandbox/Multiplayer/MultiplayerSpike.unity` (code compiles; not run); Phase 1 `IMatchSession`/`OfflineSession`, issues #1, #2, #3, #13 (N-human rules, `Humans`, AI-ally production host, `HumanPlayerScope` sim/local split). Phase 1 code complete 2026-11-07 (#1–#6, #9, #13, #14): command sink for every player action (orders, production, construction, super weapons, abilities, reinforcement deploy), sequential authority ids, per-team victory, Survival co-op (Medium/Large). EditMode: no new failures vs baseline (18 pre-existing). Next: user smoke-tests offline Skirmish/Survival + runs the Phase 0 spike on two machines; then Phase 2 (needs lobby UI design sign-off) and Phase 3 (needs spike bandwidth numbers).
@@ -166,6 +167,10 @@
 
 - [ ] **Add Jenkins GitHub draft releases** → [[TODOs/Tooling/Jenkins_GitHub_Releases|Jenkins GitHub Releases]]
   - **Remaining**: user adds `github-releases` credential and selects source build/tag; first live upload and recovery acceptance.
+  - Rechecked 2026-11-08: installed tools match `main`; only `github-releases` credential missing (Jenkins has `unity-diagnostics-service-account` only). Build 37 (`v0.1.37`, commit pushed) is a valid source.
+
+- [ ] **Game installer and auto-updater (Velopack + GitHub Releases)** → [[TODOs/Tooling/Game_Installer_Velopack|Game Installer Velopack]]
+  - Status: in progress 2026-11-08. Launcher (`Tools/Launcher`, Velopack 1.2.161) and Jenkins pack stage (`New-VelopackRelease.ps1`) implemented and dry-run verified locally. Committed `b532d9bad`, publish job installed and `github-releases` credential present (2026-11-08). Remaining: push, new player build with launcher, install/update acceptance.
 
 - [ ] **Set up Jenkins local Windows builds**
   - Ownership/acceptance gate remains unassigned; retained as an open backlog item.
@@ -271,6 +276,9 @@
 - [x] **Implement Game Design Balance Editor** → [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]; [[Done/Tooling/GameDesign_Balance_Editor - Research|Data ownership and feasibility]]
 
 ### Features
+
+- [x] **Battle notifications (dismissible top-center text cards for urgent, tactical, progress, feedback and outcome events)** → [[Done/Features/Battle_Notifications_Plan|Battle Notifications Plan]]
+  - Done 2026-11-09: feed + `BattleNotificationUi` prefab/Addressable, 9 event sources, rejection reasons, survival and outcome cards. Compiled clean; tests authored, not run. In-game checks → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Jango Fett — Slave I — single-fighter skirmish hero for CIS (`Separatist`)** → [[Done/Features/Jango_Fett_Slave_I|Implementation plan]] · [[Done/Features/Skirmish_Hero_Fighters - Research|Balance research]]
   - Ship, guns, recruitment, audio and Harmonic Bomb equipped. In-game flight, balance and lifecycle checks → [[TODOs/User_Acceptance_Queue]].
