@@ -152,6 +152,10 @@ Each hint: card → highlight → completion condition → short confirm feedbac
 - Fog: `fog_move` targets `HintTargetId.FoggedMiningSite` = hidden (not revealed), not owned mining site nearest the station; picked once and kept. Completion still `MoveIntoFog`.
 - `GameTimeHintCondition.Kind.NormalSpeed` (Normal after Fast). 53 steps, 15 onboarding + 8 event lessons. Compiles clean, console clean, content validated; tests not run; not run in-game.
 
+### Disabled lessons (2026-11-09, user request)
+- `lesson_mine` (go to and capture the mining site, build Mine) and `lesson_fog` (scout into the fog) removed from `HintTrack`; assets kept (`Lessons/Lesson_mine.asset`, `Lessons/Lesson_fog.asset` and their `Hint_*` steps). Re-enable by adding them back to `HintTrack.onboarding` / `events`.
+- Avoid: deleting their step assets as "unused".
+
 ### Playtest round 6 (2026-11-09) — implemented, in-game check pending
 - User: tutorial too slow; no waiting cards, no delays. `HintDefinition.waitSilently` replaces `backgroundAfterSeconds`: waiting steps (`mining_site`, `satellite_capture`) and waiting fix steps (`facility_wait`, `fog_wait`) never show a card; lesson parks at once and resumes when done. Pacing: lesson gap 0.5 s, step gap 0.4 s, combat hold off (`combatQuietSeconds = 0`, `maxCombatHoldSeconds = 0`).
 - Removed: waypoints step (useless, broke the mine flow), `level_building` card. Research lessons now right after level up (one by one, single step each).
