@@ -34,12 +34,21 @@ tags:
   - Victory/Defeat/Draw kept as `Outcome` card (12 s) — check against `EndGameUi` in acceptance.
 
 ## Important Values
-- Stack: anchor top-center, pos (0, −80) below `SurvivalHudUi` (Wave/Status occupy −8…−70), width 460, card height 44, spacing 6.
+- Stack: anchor top-center, y −12 (`topOffset`); Survival y −78 (`survivalTopOffset`, below Wave/Status rows −8…−70). Width 460, card 44 + 6 gap inside a collapsing slot.
 - Max visible 3, max pending 8; Urgent replaces the least important visible Progress/Feedback card.
 - Lifetime: Outcome 12 s, Urgent 8 s, Tactical 6 s, Progress 4 s, Feedback 3 s (unscaled time).
-- Group window 3 s: same `GroupKey` → counted card ("3 squadrons lost").
+- Grouping: a visible/waiting card with the same `GroupKey` absorbs posts (count +1); repeats extend it to at most 2× lifetime (`MAX_AGE_FACTOR`).
+- `Hold(...)`: keep-alive without counting, no age cap (station/mine under attack stays while hits continue, leaves 8 s after the last).
+- Dismissed group key muted 15 s (`DISMISS_MUTE_SECONDS`).
+- Card motion: open grows slot + fades/slides in (0.15 s / 0.18 s); close fades out, then collapses the slot.
+
+### Fix 2026-11-09 (user report: cards stuck / flicker)
+- Stuck: grouped repeats reset the timer forever → age cap.
+- Duplicates: posts after the 3 s window opened a second card of the same group → visible card absorbs.
+- Flicker: attack card 8 s vs 20 s repost cooldown; dismissed cards reappeared → `Hold` + dismiss mute.
+- Jumps: closing card kept its slot then snapped; merge scale pulse → collapsing slot, pulse removed.
 - Accents: Outcome `#F8FAFC`, Urgent `#EF4444`, Tactical `#F59E0B`, Feedback `#94A3B8`, Progress `#38BDF8`. Body `#080C14F5`, outline `#1E293B99`.
-- Station hull critical at ≤25%, re-armed above 50%. Attack card cooldown 20 s per structure. Enemy fleet quiet period 20 s.
+- Station hull critical at ≤25%, re-armed above 50%. Enemy fleet quiet period 20 s.
 
 ## Implementation
 
