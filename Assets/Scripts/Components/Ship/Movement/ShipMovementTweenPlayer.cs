@@ -17,6 +17,11 @@ namespace EmpireAtWar.Components.Ship.Movement
         private const float MINIMUM_SPEED_FACTOR = 0.1f;
 
         private const int ROUTE_STEP_SEARCH_ITERATIONS = 8;
+        // Heading lag the hull may keep behind the route tangent, so it can hold its turn rate through a bend.
+        private const float MAXIMUM_TURN_LEAD = 10f;
+        // Bends are looked for as far ahead as the hull travels while turning this much at full speed.
+        private const float CORNER_LOOK_AHEAD_TURN = 90f;
+        private const int CORNER_SAMPLE_COUNT = 8;
 
         private readonly Transform _rootTransform;
         private readonly Transform _bodyTransform;
@@ -36,6 +41,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         private float _rotationSpeed;
         private float _turnAcceleration;
         private float _maximumBankAngle;
+        private float _turnLead;
+        private float _cornerTurnRate;
         private float _angularVelocity;
         private float _bankVelocity;
 
@@ -155,6 +162,11 @@ namespace EmpireAtWar.Components.Ship.Movement
             _rotationSpeed = rotationSpeed;
             _turnAcceleration = turnAcceleration;
             _maximumBankAngle = maximumBankAngle;
+            // StepYaw holds a yaw rate w only while the target leads by w^2 / (2 * acceleration).
+            _turnLead = Mathf.Min(MAXIMUM_TURN_LEAD,
+                rotationSpeed * rotationSpeed / (2f * turnAcceleration));
+            _cornerTurnRate = Mathf.Max(Mathf.Min(rotationSpeed,
+                Mathf.Sqrt(2f * turnAcceleration * (ROUTE_HEADING_TOLERANCE + _turnLead))), Mathf.Epsilon);
             _isTurningToRoute = plan.TurnDuration > Mathf.Epsilon;
             if (_isTurningToRoute)
             {
@@ -222,7 +234,8 @@ public void Tick(float deltaTime)
             float acceleration = _routeSpeed / SPEED_RAMP_TIME;
             float remainingDistance = (1f - _routeProgress) * _route.Length;
             float targetSpeed = _isBraking ? 0f : Mathf.Max(
-                Mathf.Min(_routeSpeed, Mathf.Sqrt(2f * acceleration * remainingDistance)),
+                Mathf.Min(_routeSpeed, Mathf.Sqrt(2f * acceleration * remainingDistance),
+                    GetCornerSpeedLimit(remainingDistance)),
                 _routeSpeed * MINIMUM_SPEED_FACTOR);
             _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acceleration * deltaTime);
             if (_isBraking && _currentSpeed <= Mathf.Epsilon)
@@ -236,7 +249,7 @@ public void Tick(float deltaTime)
             float allowedTurn = Mathf.Max(
                 MINIMUM_TANGENT_STEP,
                 Mathf.Abs(_angularVelocity) * deltaTime +
-                0.5f * _turnAcceleration * deltaTime * deltaTime);
+                0.5f * _turnAcceleration * deltaTime * deltaTime) + _turnLead;
             float low = _routeProgress;
             float high = nextProgress;
             _route.EvaluateNormalizedDistance(high, out Vector3 nextTangent);
@@ -281,6 +294,28 @@ public void Tick(float deltaTime)
             Action completed = _pathCompleted;
             StopPath();
             completed?.Invoke();
+        }
+
+        // Highest speed at which the hull still turns onto every tangent within the look-ahead before reaching it.
+        private float GetCornerSpeedLimit(float remainingDistance)
+        {
+            // Time lost ramping the yaw rate from its current value up to the corner rate.
+            float rampDeficit = Mathf.Max(0f, _cornerTurnRate - Mathf.Abs(_angularVelocity));
+            float rampTime = rampDeficit * rampDeficit / (2f * _turnAcceleration * _cornerTurnRate);
+            float lookAhead = Mathf.Min(remainingDistance,
+                _routeSpeed * (CORNER_LOOK_AHEAD_TURN / _cornerTurnRate + rampTime));
+            if (lookAhead <= Mathf.Epsilon) return _routeSpeed;
+            float limit = _routeSpeed;
+            Vector3 forward = _rootTransform.forward;
+            for (int i = 1; i <= CORNER_SAMPLE_COUNT; i++)
+            {
+                float distance = lookAhead * i / CORNER_SAMPLE_COUNT;
+                _route.EvaluateNormalizedDistance(_routeProgress + distance / _route.Length, out Vector3 tangent);
+                float turn = Vector3.Angle(forward, tangent) - ROUTE_HEADING_TOLERANCE - _turnLead;
+                if (turn <= 0f) continue;
+                limit = Mathf.Min(limit, distance / (turn / _cornerTurnRate + rampTime));
+            }
+            return limit;
         }
 
         private void StepRotation(Vector3 direction, float deltaTime)
