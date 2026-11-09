@@ -19,7 +19,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a7317cb3380c108438fe4eea207101fc, type: 2}
   - {fileID: 11400000, guid: f9b7f9dc744713b4e9502a28fdb62049, type: 2}
   - {fileID: 11400000, guid: 2e160e02f872a8e48b0eafa581095004, type: 2}
-  - {fileID: 11400000, guid: 6c7f64ed75ff3e14082c38d09e4462b7, type: 2}
   - {fileID: 11400000, guid: 23f083c1f5eb1944ca1610c8287b062e, type: 2}
   - {fileID: 11400000, guid: 1dbd22770ee09a24a956e6ebba0ffb50, type: 2}
   - {fileID: 11400000, guid: ce6a2efa979e0b1459185d205903bafb, type: 2}
@@ -35,7 +34,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3f11d5ed27dfc2747b4aa2995ea16c3c, type: 2}
   - {fileID: 11400000, guid: ed4cfcde7d0489344b741ee60966f192, type: 2}
   - {fileID: 11400000, guid: 175cbffddb6abe64e8120cdf9efdbbb2, type: 2}
-  - {fileID: 11400000, guid: 603108a852acb514cb14dcb25a74ed7b, type: 2}
   - {fileID: 11400000, guid: 6fab96d437e6ef64ebb93470a8883631, type: 2}
   minimumGapSeconds: 0.5
   stepGapSeconds: 0.4
