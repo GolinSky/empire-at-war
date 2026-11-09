@@ -30,7 +30,7 @@ namespace EmpireAtWar.Services.Battle
 
     public sealed class SelectionQuery : ISelectionQuery
     {
-        private const int MAX_RAYCAST_HITS = 32;
+        private const int INITIAL_RAYCAST_CAPACITY = 32;
 
         private static readonly Comparison<PointCandidate> COMPARE_POINT_CANDIDATES = ComparePointCandidates;
 
@@ -39,7 +39,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly ILocalPlayer _localPlayer;
 
         private readonly List<SelectionEntry> _marqueeResults = new List<SelectionEntry>();
-        private readonly RaycastHit[] _raycastHits = new RaycastHit[MAX_RAYCAST_HITS];
+        private RaycastHit[] _raycastHits = new RaycastHit[INITIAL_RAYCAST_CAPACITY];
         private readonly List<PointCandidate> _pointCandidates = new List<PointCandidate>();
         private readonly List<SelectionEntry> _pointResults = new List<SelectionEntry>();
 
@@ -76,6 +76,12 @@ namespace EmpireAtWar.Services.Battle
             // along the ray come before structures; within the same rank the closest hit comes first.
             _pointCandidates.Clear();
             int hitCount = _cameraService.ScreenPointRaycastAll(screenPosition, _raycastHits);
+            // A full buffer may have dropped hits, including the hull under a squadron.
+            while (hitCount == _raycastHits.Length)
+            {
+                _raycastHits = new RaycastHit[_raycastHits.Length * 2];
+                hitCount = _cameraService.ScreenPointRaycastAll(screenPosition, _raycastHits);
+            }
             for (int i = 0; i < hitCount; i++)
             {
                 RaycastHit hit = _raycastHits[i];

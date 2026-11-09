@@ -197,6 +197,39 @@ namespace EmpireAtWar.Tests.Selection
             }
         }
 
+        [TestCase(SelectionType.Ship)]
+        [TestCase(SelectionType.Base)]
+        public void WorldClick_PrefersLocalEntityUnderEnemyHits(SelectionType localType)
+        {
+            FakeInputService input = new FakeInputService();
+            FakeSelectionQuery query = new FakeSelectionQuery();
+            SelectionService service = new SelectionService(input, input, input, new EntityLocator(), query,
+                new FakeMarqueeSelectionPresenter(), TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+            FakeSelectionCommand firstEnemy = new FakeSelectionCommand(SelectionType.Ship);
+            FakeSelectionCommand secondEnemy = new FakeSelectionCommand(SelectionType.Ship);
+            FakeSelectionCommand local = new FakeSelectionCommand(localType);
+            query.Add(Vector2.zero, new SelectionEntry(new FakeEntity(firstEnemy, TestPlayers.Enemy, 1), firstEnemy));
+            query.Add(Vector2.zero, new SelectionEntry(new FakeEntity(secondEnemy, TestPlayers.Enemy, 2), secondEnemy));
+            query.Add(Vector2.zero, new SelectionEntry(new FakeEntity(local, TestPlayers.Human, 3), local));
+
+            service.Initialize();
+            try
+            {
+                input.RaiseWorldClick(Vector2.zero);
+                Assert.That(local.IsSelected, Is.True);
+                Assert.That(service.OtherSelectionContext.HasSelectable, Is.False);
+
+                input.RaiseWorldClick(Vector2.zero);
+                Assert.That(firstEnemy.IsSelected, Is.True);
+                input.RaiseWorldClick(Vector2.zero);
+                Assert.That(secondEnemy.IsSelected, Is.True);
+            }
+            finally
+            {
+                service.LateDispose();
+            }
+        }
+
         [Test]
         public void MiniMapPointerExit_KeepsMapVisible()
         {

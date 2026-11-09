@@ -165,24 +165,11 @@ namespace EmpireAtWar.Services.Battle
 
             // A slow repeated click on the same spot cycles through everything under the cursor,
             // so a structure hidden behind a ship (or the other way round) stays selectable.
-            int index = 0;
-            if (lastIndex >= 0)
-            {
-                index = isDoubleClick ? lastIndex : (lastIndex + 1) % _pointBuffer.Count;
-            }
-            else if (_pointBuffer[0].Command.SelectionType == SelectionType.Ship &&
-                     _localPlayer.IsFriendly(_pointBuffer[0].Entity.Owner))
-            {
-                // A friendly capital ship's hull must not hide a mine's selection target.
-                for (int i = 1; i < _pointBuffer.Count; i++)
-                {
-                    if (_pointBuffer[i].Command.SelectionType == SelectionType.MiningFacility)
-                    {
-                        index = i;
-                        break;
-                    }
-                }
-            }
+            int index = lastIndex;
+            if (lastIndex < 0)
+                index = FindInitialSelectionIndex();
+            else if (!isDoubleClick)
+                index = (lastIndex + 1) % _pointBuffer.Count;
 
             SelectionEntry selection = _pointBuffer[index];
             _lastTappedEntityId = selection.Entity.Id;
@@ -190,6 +177,29 @@ namespace EmpireAtWar.Services.Battle
             _selectionBuffer.Clear();
             _selectionBuffer.Add(selection);
             SetSelection(GetScope(selection.Entity), _selectionBuffer);
+        }
+
+        private int FindInitialSelectionIndex()
+        {
+            int index = _pointBuffer.FindIndex(entry => _localPlayer.IsLocal(entry.Entity.Owner));
+            bool hasLocalHit = index >= 0;
+            if (!hasLocalHit)
+                index = 0;
+
+            SelectionEntry first = _pointBuffer[index];
+            if (first.Command.SelectionType == SelectionType.Ship && _localPlayer.IsFriendly(first.Entity.Owner))
+            {
+                // A friendly capital ship's hull must not hide a mine's selection target.
+                for (int i = index + 1; i < _pointBuffer.Count; i++)
+                {
+                    SelectionEntry candidate = _pointBuffer[i];
+                    if (candidate.Command.SelectionType == SelectionType.MiningFacility &&
+                        (!hasLocalHit || _localPlayer.IsLocal(candidate.Entity.Owner)))
+                        return i;
+                }
+            }
+
+            return index;
         }
 
         private static int IndexOf(IReadOnlyList<SelectionEntry> entries, long? entityId)
