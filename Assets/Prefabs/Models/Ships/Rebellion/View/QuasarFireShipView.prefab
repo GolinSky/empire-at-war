@@ -96,8 +96,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
   yAxisRange:
-    <Min>k__BackingField: -180
-    <Max>k__BackingField: 180
+    <Min>k__BackingField: -22
+    <Max>k__BackingField: 154
   mainBattery: 0
   <WeaponType>k__BackingField: 1
 --- !u!135 &3943979551800374726
@@ -260,7 +260,7 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
   yAxisRange:
-    <Min>k__BackingField: -180
+    <Min>k__BackingField: -2
     <Max>k__BackingField: 180
   mainBattery: 0
   <WeaponType>k__BackingField: 14
@@ -1953,7 +1953,7 @@ MonoBehaviour:
   <Id>k__BackingField: 3
   yAxisRange:
     <Min>k__BackingField: -180
-    <Max>k__BackingField: 180
+    <Max>k__BackingField: 3
   mainBattery: 0
   <WeaponType>k__BackingField: 14
 --- !u!135 &8745698558766467645
@@ -2680,8 +2680,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
   yAxisRange:
-    <Min>k__BackingField: -180
-    <Max>k__BackingField: 180
+    <Min>k__BackingField: -153
+    <Max>k__BackingField: 23
   mainBattery: 0
   <WeaponType>k__BackingField: 1
 --- !u!135 &4331821870926914831

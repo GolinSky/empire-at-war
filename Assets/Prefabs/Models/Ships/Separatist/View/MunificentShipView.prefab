@@ -152,8 +152,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 9
   yAxisRange:
-    <Min>k__BackingField: -160
-    <Max>k__BackingField: -20
+    <Min>k__BackingField: -180
+    <Max>k__BackingField: -64
   mainBattery: 0
   <WeaponType>k__BackingField: 4
 --- !u!1 &1842263571844599681
@@ -303,8 +303,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 13
   yAxisRange:
-    <Min>k__BackingField: -60
-    <Max>k__BackingField: 60
+    <Min>k__BackingField: 50
+    <Max>k__BackingField: 180
   mainBattery: 0
   <WeaponType>k__BackingField: 32
 --- !u!1 &2399948611010859533
@@ -392,8 +392,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 11
   yAxisRange:
-    <Min>k__BackingField: -180
-    <Max>k__BackingField: 180
+    <Min>k__BackingField: 47
+    <Max>k__BackingField: 135
   mainBattery: 0
   <WeaponType>k__BackingField: 4
 --- !u!1 &3104654033550967829
@@ -450,8 +450,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 12
   yAxisRange:
-    <Min>k__BackingField: -60
-    <Max>k__BackingField: 60
+    <Min>k__BackingField: -179
+    <Max>k__BackingField: -49
   mainBattery: 0
   <WeaponType>k__BackingField: 32
 --- !u!1 &3547677607207876355
@@ -632,8 +632,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 10
   yAxisRange:
-    <Min>k__BackingField: 20
-    <Max>k__BackingField: 160
+    <Min>k__BackingField: 64
+    <Max>k__BackingField: 180
   mainBattery: 0
   <WeaponType>k__BackingField: 4
 --- !u!1 &5313313202031803145
@@ -1422,7 +1422,7 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 8
   <Id>k__BackingField: 7
   yAxisRange:
-    <Min>k__BackingField: -180
+    <Min>k__BackingField: -6
     <Max>k__BackingField: 180
   mainBattery: 0
   <WeaponType>k__BackingField: 62
@@ -2697,7 +2697,7 @@ MonoBehaviour:
   <Id>k__BackingField: 5
   yAxisRange:
     <Min>k__BackingField: -180
-    <Max>k__BackingField: 180
+    <Max>k__BackingField: 7
   mainBattery: 0
   <WeaponType>k__BackingField: 62
 --- !u!1 &7961858299998561771
@@ -3078,12 +3078,12 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
-      value: -20
+      value: -24
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Min>k__BackingField
-      value: -149
+      value: -116
       objectReference: {fileID: 0}
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3811,12 +3811,12 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
-      value: 160
+      value: 71
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Min>k__BackingField
-      value: 20
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4642,12 +4642,12 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
-      value: -20
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Min>k__BackingField
-      value: -160
+      value: -70
       objectReference: {fileID: 0}
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4900,12 +4900,12 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
-      value: 160
+      value: 154
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Min>k__BackingField
-      value: 20
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
