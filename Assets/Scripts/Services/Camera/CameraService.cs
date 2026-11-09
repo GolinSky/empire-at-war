@@ -64,6 +64,7 @@ namespace EmpireAtWar.Services.Camera
 
         private Plane _plane = new();
         private Vector2 _panVelocity;
+        private float _defaultZoomHeight;
         // The map bounds exist once the battle runs; the camera stays movable while paused.
         private bool _canMove;
 
@@ -100,9 +101,11 @@ namespace EmpireAtWar.Services.Camera
         public void Initialize()
         {
             _panVelocity = Vector2.zero;
+            _defaultZoomHeight = CameraPosition.y;
             _zoom.Reset(CameraPosition.y);
             _cameraInput.Zoomed += ZoomCamera;
             _cameraInput.ZoomScrolled += ScrollZoom;
+            _cameraInput.ZoomReset += ResetZoom;
             _cameraInput.Panned += PanCamera;
             _inputLock.LockChanged += OnLockChanged;
             _battleState.AddObserver(this);
@@ -122,6 +125,7 @@ namespace EmpireAtWar.Services.Camera
         {
             _cameraInput.Zoomed -= ZoomCamera;
             _cameraInput.ZoomScrolled -= ScrollZoom;
+            _cameraInput.ZoomReset -= ResetZoom;
             _cameraInput.Panned -= PanCamera;
             _inputLock.LockChanged -= OnLockChanged;
             _battleState.RemoveObserver(this);
@@ -283,6 +287,16 @@ namespace EmpireAtWar.Services.Camera
             }
 
             DollyZoomTarget(notches * _cameraData.ZoomStepDistance);
+        }
+
+        private void ResetZoom()
+        {
+            if (!_canMove || _inputLock.IsLocked)
+            {
+                return;
+            }
+
+            _zoom.Reset(Mathf.Clamp(_defaultZoomHeight, _cameraData.ZoomRange.Min, _cameraData.ZoomRange.Max));
         }
 
         private void DollyZoomTarget(float viewDistance)

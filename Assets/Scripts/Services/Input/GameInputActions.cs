@@ -206,6 +206,33 @@ namespace EmpireAtWar.Services.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ZoomIn"",
+                    ""type"": ""Button"",
+                    ""id"": ""f3f0a0de-29ff-4433-bf7d-228883f6f009"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ZoomOut"",
+                    ""type"": ""Button"",
+                    ""id"": ""8ad8dd9f-f1a5-487f-b908-75785dfc698b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ResetZoom"",
+                    ""type"": ""Button"",
+                    ""id"": ""6c94815a-c2d1-452a-93e8-c06ee6cf0115"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -415,6 +442,116 @@ namespace EmpireAtWar.Services.Input
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""DragDelta"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Alt+W"",
+                    ""id"": ""cc87a5c7-10aa-4a24-b5c4-4d8e1e23eaa6"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomIn"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""dc2a80ee-2eea-401d-b480-0fb148ddb02c"",
+                    ""path"": ""<Keyboard>/alt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ZoomIn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""3ff122eb-551b-44f4-b4f8-e9ba8a395f02"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ZoomIn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Alt+S"",
+                    ""id"": ""6512cfa9-94c2-43c3-ae38-49dc0ed398fc"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomOut"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""c34d1cc4-8172-4432-869a-52e211689ab6"",
+                    ""path"": ""<Keyboard>/alt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ZoomOut"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""30a2e4aa-99a1-4b17-ae1e-39e97b8bae79"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ZoomOut"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Page Keys"",
+                    ""id"": ""82d348cf-83f6-4b8e-8930-739800076cee"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""be748da1-de25-4398-be4c-6a2f465511cb"",
+                    ""path"": ""<Keyboard>/pageUp"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""01c892b1-da4f-4067-8e2d-84fb792f3c2f"",
+                    ""path"": ""<Keyboard>/pageDown"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""97dca594-0686-4c10-bbe0-4776cacc1bc6"",
+                    ""path"": ""<Keyboard>/home"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ResetZoom"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -683,6 +820,9 @@ namespace EmpireAtWar.Services.Input
             m_Camera_ZoomScroll = m_Camera.FindAction("ZoomScroll", throwIfNotFound: true);
             m_Camera_DragPan = m_Camera.FindAction("DragPan", throwIfNotFound: true);
             m_Camera_DragDelta = m_Camera.FindAction("DragDelta", throwIfNotFound: true);
+            m_Camera_ZoomIn = m_Camera.FindAction("ZoomIn", throwIfNotFound: true);
+            m_Camera_ZoomOut = m_Camera.FindAction("ZoomOut", throwIfNotFound: true);
+            m_Camera_ResetZoom = m_Camera.FindAction("ResetZoom", throwIfNotFound: true);
             // Battle
             m_Battle = asset.FindActionMap("Battle", throwIfNotFound: true);
             m_Battle_Select = m_Battle.FindAction("Select", throwIfNotFound: true);
@@ -901,6 +1041,9 @@ namespace EmpireAtWar.Services.Input
         private readonly InputAction m_Camera_ZoomScroll;
         private readonly InputAction m_Camera_DragPan;
         private readonly InputAction m_Camera_DragDelta;
+        private readonly InputAction m_Camera_ZoomIn;
+        private readonly InputAction m_Camera_ZoomOut;
+        private readonly InputAction m_Camera_ResetZoom;
         /// <summary>
         /// Provides access to input actions defined in input action map "Camera".
         /// </summary>
@@ -932,6 +1075,18 @@ namespace EmpireAtWar.Services.Input
             /// Provides access to the underlying input action "Camera/DragDelta".
             /// </summary>
             public InputAction @DragDelta => m_Wrapper.m_Camera_DragDelta;
+            /// <summary>
+            /// Provides access to the underlying input action "Camera/ZoomIn".
+            /// </summary>
+            public InputAction @ZoomIn => m_Wrapper.m_Camera_ZoomIn;
+            /// <summary>
+            /// Provides access to the underlying input action "Camera/ZoomOut".
+            /// </summary>
+            public InputAction @ZoomOut => m_Wrapper.m_Camera_ZoomOut;
+            /// <summary>
+            /// Provides access to the underlying input action "Camera/ResetZoom".
+            /// </summary>
+            public InputAction @ResetZoom => m_Wrapper.m_Camera_ResetZoom;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -973,6 +1128,15 @@ namespace EmpireAtWar.Services.Input
                 @DragDelta.started += instance.OnDragDelta;
                 @DragDelta.performed += instance.OnDragDelta;
                 @DragDelta.canceled += instance.OnDragDelta;
+                @ZoomIn.started += instance.OnZoomIn;
+                @ZoomIn.performed += instance.OnZoomIn;
+                @ZoomIn.canceled += instance.OnZoomIn;
+                @ZoomOut.started += instance.OnZoomOut;
+                @ZoomOut.performed += instance.OnZoomOut;
+                @ZoomOut.canceled += instance.OnZoomOut;
+                @ResetZoom.started += instance.OnResetZoom;
+                @ResetZoom.performed += instance.OnResetZoom;
+                @ResetZoom.canceled += instance.OnResetZoom;
             }
 
             /// <summary>
@@ -999,6 +1163,15 @@ namespace EmpireAtWar.Services.Input
                 @DragDelta.started -= instance.OnDragDelta;
                 @DragDelta.performed -= instance.OnDragDelta;
                 @DragDelta.canceled -= instance.OnDragDelta;
+                @ZoomIn.started -= instance.OnZoomIn;
+                @ZoomIn.performed -= instance.OnZoomIn;
+                @ZoomIn.canceled -= instance.OnZoomIn;
+                @ZoomOut.started -= instance.OnZoomOut;
+                @ZoomOut.performed -= instance.OnZoomOut;
+                @ZoomOut.canceled -= instance.OnZoomOut;
+                @ResetZoom.started -= instance.OnResetZoom;
+                @ResetZoom.performed -= instance.OnResetZoom;
+                @ResetZoom.canceled -= instance.OnResetZoom;
             }
 
             /// <summary>
@@ -1374,6 +1547,27 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnDragDelta(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ZoomIn" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnZoomIn(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ZoomOut" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnZoomOut(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ResetZoom" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnResetZoom(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Battle" which allows adding and removing callbacks.

@@ -25,6 +25,8 @@ namespace EmpireAtWar.Services.Camera
 
         public event Action<float> ZoomScrolled;
 
+        public event Action ZoomReset;
+
         public Vector2 Move
         {
             get
@@ -33,8 +35,9 @@ namespace EmpireAtWar.Services.Camera
                 Vector2 direction = _preferences.EdgeScrolling && _pointerInput.HasPosition && Application.isFocused
                     ? GetEdgeScrollDirection(_pointerInput.Position)
                     : Vector2.zero;
-                // Ctrl+A selects units; its A key must not also move the camera.
-                if (!_battle.SelectVisible.IsPressed() && !_battle.SelectAll.IsPressed())
+                // Selection and zoom shortcuts must not also move the camera.
+                if (!_battle.SelectVisible.IsPressed() && !_battle.SelectAll.IsPressed() &&
+                    !_camera.ZoomIn.IsPressed() && !_camera.ZoomOut.IsPressed())
                 {
                     direction += _camera.Move.ReadValue<Vector2>();
                 }
@@ -67,7 +70,13 @@ namespace EmpireAtWar.Services.Camera
                 }
             }
 
-            RaiseZoom(Zoomed, _camera.Zoom.ReadValue<float>());
+            float zoom = _camera.Zoom.ReadValue<float>() +
+                (_camera.ZoomOut.IsPressed() ? 1f : 0f) - (_camera.ZoomIn.IsPressed() ? 1f : 0f);
+            RaiseZoom(Zoomed, zoom);
+            if (_camera.ResetZoom.WasPressedThisFrame())
+            {
+                ZoomReset?.Invoke();
+            }
             // The wheel over UI belongs to that UI (shop scroll lists); it must not also zoom the camera.
             float scroll = _camera.ZoomScroll.ReadValue<float>();
             if (!Mathf.Approximately(scroll, 0f) && !_pointerOverUi.IsPointerOverUi)

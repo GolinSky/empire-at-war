@@ -13,6 +13,9 @@ namespace EmpireAtWar.Services.Camera
         /// <summary>Mouse-wheel notches this frame; one notch is ±1.</summary>
         event Action<float> ZoomScrolled;
 
+        /// <summary>Return to the starting zoom height.</summary>
+        event Action ZoomReset;
+
         /// <summary>Keyboard and screen-edge movement, clamped to unit length.</summary>
         Vector2 Move { get; }
     }
