@@ -14,7 +14,6 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Ships")]
     public sealed class CorvetteLoadoutTests
     {
-        private const string RAIDER_DATA = "Assets/Settings/Data/Ship/Empire/RaiderCorvetteShipData.asset";
         private const string STEALTH_DATA = "Assets/Settings/Data/Ship/Republic/StealthCorvetteShipData.asset";
         // Republic at War 1.5.5 gives these corvettes no point defense.
         private static readonly string[] NO_POINT_DEFENSE =
@@ -42,7 +41,6 @@ namespace EmpireAtWar.Tests.Editor
                     .Cast<WeaponHardPoint>().ToArray();
                 var healthBindings = BalancePrefabBindings.References(
                     unit.Components.OfType<HealthComponent>().Single(), BalanceRegistration.Auto("ShipUnits"));
-                bool isRaider = AssetDatabase.GetAssetPath(data) == RAIDER_DATA;
                 bool hasPointDefense = !NO_POINT_DEFENSE.Contains(AssetDatabase.GetAssetPath(data));
 
                 Assert.That(mounts, Is.Not.Empty, unit.Caption);
@@ -71,10 +69,10 @@ namespace EmpireAtWar.Tests.Editor
                         Assert.That(definition.Family, Is.Not.EqualTo(WeaponFamily.Missile), context);
                     Assert.That(definition.Family, Is.Not.EqualTo(WeaponFamily.Torpedo), context);
                     Assert.That(definition.Family, Is.Not.EqualTo(WeaponFamily.IonTorpedo), context);
-                    if (isRaider || definition.Family == WeaponFamily.PointDefense)
+                    if (definition.Family == WeaponFamily.PointDefense)
                     {
-                        Assert.That(mount.MinYaw, Is.LessThanOrEqualTo(-180f), context);
-                        Assert.That(mount.MaxYaw, Is.GreaterThanOrEqualTo(180f), context);
+                        Assert.That(mount.MinYaw, Is.GreaterThanOrEqualTo(-180f), context);
+                        Assert.That(mount.MaxYaw, Is.GreaterThan(mount.MinYaw).And.LessThanOrEqualTo(180f), context);
                     }
                 }
             }

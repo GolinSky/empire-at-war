@@ -104,7 +104,7 @@ namespace EmpireAtWar.Tests.Editor
             _uiHitTest.UiArea = SHOP_POSITION;
             MoveMouse(SHOP_POSITION);
 
-            InputSystem.QueueStateEvent(_keyboard, new KeyboardState(Key.R));
+            InputSystem.QueueStateEvent(_keyboard, new KeyboardState(Key.PageUp));
             InputSystem.Update();
             _cameraInput.Tick();
 

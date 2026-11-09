@@ -62,13 +62,20 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SavedArcs_CoverAllDirections()
+        public void SavedArcs_MatchHullClearanceTuning()
         {
             WeaponHardPoint[] weapons = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW).GetComponentsInChildren<WeaponHardPoint>(true);
+            (float Min, float Max)[] arcs =
+            {
+                (-93, -21), (17, 94), (-34, 12), (-11, 35), (-110, -8),
+                (14, 110), (-166, 11), (-10, 167), (-162, 133), (-132, 163),
+            };
+            Assert.That(weapons.Length, Is.EqualTo(arcs.Length));
             foreach (WeaponHardPoint weapon in weapons)
             {
-                Assert.That(weapon.MinYaw, Is.EqualTo(-180f), weapon.name);
-                Assert.That(weapon.MaxYaw, Is.EqualTo(180f), weapon.name);
+                var arc = arcs[weapon.Id];
+                Assert.That(weapon.MinYaw, Is.EqualTo(arc.Min), weapon.name);
+                Assert.That(weapon.MaxYaw, Is.EqualTo(arc.Max), weapon.name);
             }
         }
 

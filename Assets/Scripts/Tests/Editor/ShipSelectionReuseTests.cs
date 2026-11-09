@@ -2,8 +2,10 @@ using EmpireAtWar.Entities.ShipUi;
 using System;
 using System.Linq;
 using System.Reflection;
+using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ui.Tooltip;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -69,7 +71,9 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static ShipUiEntry[] Entries(HealthStub health, int count) => Enumerable.Range(0, count)
-            .Select(_ => new ShipUiEntry(Array.Empty<ShipAbilitySlot>(), health, null, () => { })).ToArray();
+            .Select(id => new ShipUiEntry(Array.Empty<ShipAbilitySlot>(), health,
+                new Entity(health, null, Array.Empty<IEntityFacade>(), health.Owner, id,
+                    Array.Empty<IPooledEntityEvents>(), Array.Empty<IHangarLaunchEvents>()), () => { })).ToArray();
 
         private sealed class HealthStub : IHealthModelObserver
         {

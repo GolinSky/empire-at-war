@@ -27,9 +27,9 @@ namespace EmpireAtWar.Tests.Editor
             FactionUnitUi prefab = AssetDatabase.LoadAssetAtPath<FactionUnitUi>(
                 "Assets/Prefabs/Ui/Factions/FactionUnit.prefab");
             Assert.That(prefab, Is.Not.Null);
-            GameObject root = new GameObject("Faction availability test");
-            FactionUi view = root.AddComponent<FactionUi>();
-            FactionUnitUi card = Object.Instantiate(prefab, root.transform);
+            FactionUi view = Object.Instantiate(AssetDatabase.LoadAssetAtPath<FactionUi>(
+                "Assets/Prefabs/Ui/Factions/FactionUi.prefab"));
+            FactionUnitUi card = Object.Instantiate(prefab, view.transform);
 
             try
             {
@@ -64,7 +64,7 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
-                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(view.gameObject);
             }
         }
 
@@ -75,9 +75,9 @@ namespace EmpireAtWar.Tests.Editor
             FactionUnitUi prefab = AssetDatabase.LoadAssetAtPath<FactionUnitUi>(
                 "Assets/Prefabs/Ui/Factions/FactionUnit.prefab");
             Assert.That(prefab, Is.Not.Null);
-            GameObject root = new GameObject("Faction visibility test");
-            FactionUi view = root.AddComponent<FactionUi>();
-            FactionUnitUi card = Object.Instantiate(prefab, root.transform);
+            FactionUi view = Object.Instantiate(AssetDatabase.LoadAssetAtPath<FactionUi>(
+                "Assets/Prefabs/Ui/Factions/FactionUi.prefab"));
+            FactionUnitUi card = Object.Instantiate(prefab, view.transform);
             var model = new PlayerFactionModel(null, null) { SelectionType = SelectionType.Base };
             var presenter = new AvailabilityPresenter { Unlocked = unlocked, HeroReserved = heroReserved };
             var data = new FactionData();
@@ -113,7 +113,7 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
-                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(view.gameObject);
             }
         }
 

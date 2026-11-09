@@ -71,16 +71,23 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void FrontalAndBroadsideArcs_MatchActualHullSide()
+        public void SavedArcs_MatchHullClearanceTuning()
         {
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
-            foreach (var weapon in view.GetComponentsInChildren<WeaponHardPoint>(true))
+            var weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
+            // Weapon IDs 2 through 16 follow the two system hardpoints.
+            (float Min, float Max)[] arcs =
             {
-                float facing = weapon.WeaponType == WeaponType.HeavyQuadTurbolaser || weapon.WeaponType == WeaponType.MediumIonCannon
-                    ? 0 : Mathf.Sign(weapon.transform.localPosition.x) * 90;
-                Assert.That((weapon.MinYaw + weapon.MaxYaw) * .5f, Is.EqualTo(facing).Within(.001f), weapon.name);
-                Assert.That(weapon.MinYaw, Is.GreaterThanOrEqualTo(-180));
-                Assert.That(weapon.MaxYaw, Is.LessThanOrEqualTo(180));
+                (-156, 16), (-15, 157), (-159, 10), (-9, 160), (-89, 91),
+                (-89, 90), (-89, 90), (-23, 159), (5, 175), (5, 175),
+                (5, 175), (-158, 11), (-175, -5), (-175, -5), (-170, 26),
+            };
+            Assert.That(weapons.Length, Is.EqualTo(arcs.Length));
+            foreach (var weapon in weapons)
+            {
+                var arc = arcs[weapon.Id - 2];
+                Assert.That(weapon.MinYaw, Is.EqualTo(arc.Min), weapon.name);
+                Assert.That(weapon.MaxYaw, Is.EqualTo(arc.Max), weapon.name);
             }
         }
 

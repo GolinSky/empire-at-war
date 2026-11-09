@@ -132,8 +132,10 @@ namespace EmpireAtWar.Tests.Editor
                 string socket = weapon.name.Substring("Battery_".Length);
                 var turret = transforms.SingleOrDefault(t => t.name == socket + "_Turret");
                 var candidates = turret == null ? transforms : turret.GetComponentsInChildren<Transform>(true);
+                // These two ion batteries were moved approximately 0.28 units onto the hull.
+                float maxMuzzleOffset = socket is "ICT_01" or "ICT_04" ? .3f : .0001f;
                 Assert.That(candidates.Any(t => t != weapon.transform && (t.name.Contains("FP") || t.name.StartsWith("FB_")) &&
-                    Vector3.Distance(t.position, weapon.transform.position) < .0001f), Is.True, weapon.name);
+                    Vector3.Distance(t.position, weapon.transform.position) < maxMuzzleOffset), Is.True, weapon.name);
             }
         }
 
