@@ -49,18 +49,62 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Post_SameGroupWithinWindow_MergesIntoCountedCard()
+        public void Post_SameGroupWhileVisible_UpdatesOneCountedCard()
         {
             var updated = new List<string>();
             _feed.Updated += notification => updated.Add(notification.Text);
 
             _feed.Post(BattleNotificationPriority.Tactical, "X-wing squadron lost", "loss", "{0} squadrons lost");
             _feed.Post(BattleNotificationPriority.Tactical, "Y-wing squadron lost", "loss", "{0} squadrons lost");
-            _feed.Advance(BattleNotificationFeed.GROUP_WINDOW + 0.1f);
+            _feed.Advance(4f);
             _feed.Post(BattleNotificationPriority.Tactical, "Z-95 squadron lost", "loss", "{0} squadrons lost");
 
-            Assert.That(updated, Is.EqualTo(new[] { "2 squadrons lost" }));
-            Assert.That(_shown, Is.EqualTo(new[] { "X-wing squadron lost", "Z-95 squadron lost" }));
+            Assert.That(updated, Is.EqualTo(new[] { "2 squadrons lost", "3 squadrons lost" }));
+            Assert.That(_shown, Is.EqualTo(new[] { "X-wing squadron lost" }));
+        }
+
+        [Test]
+        public void Post_RepeatsForever_CardStillExpiresAtMaxAge()
+        {
+            // Tactical lives 6 s; repeats extend it to at most 12 s.
+            for (int i = 0; i < 12; i++)
+            {
+                _feed.Post(BattleNotificationPriority.Tactical, "Ship lost", "loss", "{0} ships lost");
+                _feed.Advance(1.05f);
+            }
+
+            Assert.That(_hidden, Has.Count.EqualTo(1));
+        }
+
+        [Test]
+        public void Hold_RepeatedHits_KeepsOneCardWithoutCounting()
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                _feed.Hold(BattleNotificationPriority.Urgent, "Station under attack", "attack");
+                _feed.Advance(1f);
+            }
+
+            Assert.That(_shown, Is.EqualTo(new[] { "Station under attack" }));
+            Assert.That(_hidden, Is.Empty);
+            Assert.That(_feed.Visible[0].Text, Is.EqualTo("Station under attack"));
+
+            _feed.Advance(8.1f);
+            Assert.That(_hidden, Is.EqualTo(new[] { "Station under attack" }));
+        }
+
+        [Test]
+        public void Dismiss_GroupedCard_MutesItsGroupForAWhile()
+        {
+            _feed.Hold(BattleNotificationPriority.Urgent, "Station under attack", "attack");
+            _feed.Dismiss(_feed.Visible[0].Id);
+
+            _feed.Hold(BattleNotificationPriority.Urgent, "Station under attack", "attack");
+            Assert.That(_feed.Visible, Is.Empty);
+
+            _feed.Advance(BattleNotificationFeed.DISMISS_MUTE_SECONDS);
+            _feed.Hold(BattleNotificationPriority.Urgent, "Station under attack", "attack");
+            Assert.That(_feed.Visible, Has.Count.EqualTo(1));
         }
 
         [Test]

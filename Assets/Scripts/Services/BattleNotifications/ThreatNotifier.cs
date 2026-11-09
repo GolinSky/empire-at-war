@@ -20,7 +20,6 @@ namespace EmpireAtWar.Services.BattleNotifications
     /// </summary>
     public sealed class ThreatNotifier : IInitializable, ILateDisposable
     {
-        private const float ATTACK_COOLDOWN = 20f;
         private const float CRITICAL_HULL = 0.25f;
         private const float CRITICAL_REARM_HULL = 0.5f;
         private const float FLEET_QUIET_PERIOD = 20f;
@@ -89,12 +88,12 @@ namespace EmpireAtWar.Services.BattleNotifications
         private void WatchStructure(IEntity entity, Subscription subscription, bool isStation)
         {
             subscription.Damage = entity.GetFacade<IHealthDamageFacade>();
+            // Held, not posted: the card stays while hits keep coming and leaves a lifetime after the last one.
             subscription.Damaged = () =>
             {
-                if (entity.HealthModel.IsDestroyed || Time.unscaledTime < subscription.AttackReadyAt) return;
-                subscription.AttackReadyAt = Time.unscaledTime + ATTACK_COOLDOWN;
-                _notifications.Post(BattleNotificationPriority.Urgent,
-                    isStation ? "Station under attack" : "Mining facility under attack");
+                if (entity.HealthModel.IsDestroyed) return;
+                if (isStation) _notifications.Hold(BattleNotificationPriority.Urgent, "Station under attack", "attack.station");
+                else _notifications.Hold(BattleNotificationPriority.Urgent, "Mining facility under attack", "attack.mine");
             };
             subscription.Damage.Damaged += subscription.Damaged;
             if (!isStation) return;
@@ -162,7 +161,6 @@ namespace EmpireAtWar.Services.BattleNotifications
             public Action<int> LevelChanged;
             public IHealthDamageFacade Damage;
             public Action Damaged;
-            public float AttackReadyAt;
             public IHealthModelObserver Health;
             public Action HealthChanged;
             public bool IsCriticalArmed;

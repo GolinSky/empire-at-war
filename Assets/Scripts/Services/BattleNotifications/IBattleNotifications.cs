@@ -3,8 +3,11 @@ namespace EmpireAtWar.Services.BattleNotifications
     /// <summary>Entry point for gameplay sources that want a text card shown to the local player.</summary>
     public interface IBattleNotifications
     {
-        /// <param name="groupKey">Cards with the same key posted close together merge into one counted card.</param>
-        /// <param name="groupFormat">Text for a merged card, with {0} as the count; null appends " ×N".</param>
+        /// <param name="groupKey">While a card with this key is on screen or waiting, new posts add to its count.</param>
+        /// <param name="groupFormat">Text for a counted card, with {0} as the count; null appends " ×N".</param>
         void Post(BattleNotificationPriority priority, string text, string groupKey = null, string groupFormat = null);
+
+        /// <summary>Shows the card, or keeps the card with this key on screen, without counting repeats.</summary>
+        void Hold(BattleNotificationPriority priority, string text, string key);
     }
 }

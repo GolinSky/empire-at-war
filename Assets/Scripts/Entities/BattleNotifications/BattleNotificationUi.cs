@@ -11,6 +11,11 @@ namespace EmpireAtWar.Entities.BattleNotifications
         [SerializeField] private RectTransform stack;
         [SerializeField] private BattleNotificationCardView cardTemplate;
 
+        [Header("Placement")]
+        [SerializeField] private float topOffset = 12f;
+        [Tooltip("Survival keeps its wave and status rows at the top, so the cards start below them.")]
+        [SerializeField] private float survivalTopOffset = 78f;
+
         [Header("Priority Accents")]
         [SerializeField] private Color outcomeColor = new Color32(0xF8, 0xFA, 0xFC, 0xFF);
         [SerializeField] private Color urgentColor = new Color32(0xEF, 0x44, 0x44, 0xFF);
@@ -26,6 +31,9 @@ namespace EmpireAtWar.Entities.BattleNotifications
         public void AssignPresenter(IBattleNotificationPresenter presenter) => _presenter = presenter;
 
         public void SetFeed(IBattleNotificationFeedObserver feed) => _feed = feed;
+
+        public void SetSurvivalLayout(bool isSurvival) =>
+            stack.anchoredPosition = new Vector2(0f, -(isSurvival ? survivalTopOffset : topOffset));
 
         public void Initialize()
         {

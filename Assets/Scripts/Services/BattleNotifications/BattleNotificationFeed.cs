@@ -5,13 +5,15 @@ namespace EmpireAtWar.Services.BattleNotifications
 {
     /// <summary>
     /// Text cards for the local player: at most <see cref="MAX_VISIBLE"/> shown, the rest wait by priority.
-    /// A more important card replaces a visible progress or feedback card. Cards expire or are dismissed.
+    /// A more important card replaces a visible progress or feedback card. Repeats of a grouped card update it
+    /// in place for up to <see cref="MAX_AGE_FACTOR"/> lifetimes; a dismissed group stays quiet for a while.
     /// </summary>
     public sealed class BattleNotificationFeed : IBattleNotifications, IBattleNotificationFeedObserver
     {
         public const int MAX_VISIBLE = 3;
         public const int MAX_PENDING = 8;
-        public const float GROUP_WINDOW = 3f;
+        public const float MAX_AGE_FACTOR = 2f;
+        public const float DISMISS_MUTE_SECONDS = 15f;
         private const float OUTCOME_SECONDS = 12f;
         private const float URGENT_SECONDS = 8f;
         private const float TACTICAL_SECONDS = 6f;
@@ -20,7 +22,9 @@ namespace EmpireAtWar.Services.BattleNotifications
 
         private readonly List<BattleNotification> _visible = new List<BattleNotification>();
         private readonly List<BattleNotification> _pending = new List<BattleNotification>();
+        private readonly Dictionary<string, float> _mutedUntil = new Dictionary<string, float>();
         private int _nextId;
+        private float _clock;
         private bool _isAccepting;
 
         public event Action<BattleNotification> Shown;
@@ -30,26 +34,11 @@ namespace EmpireAtWar.Services.BattleNotifications
         public IReadOnlyList<BattleNotification> Visible => _visible;
         public IReadOnlyList<BattleNotification> Pending => _pending;
 
-        public void Post(BattleNotificationPriority priority, string text, string groupKey = null, string groupFormat = null)
-        {
-            if (!_isAccepting && priority != BattleNotificationPriority.Outcome) return;
-            float lifetime = Lifetime(priority);
-            if (groupKey != null && TryMerge(groupKey, lifetime)) return;
-            var notification = new BattleNotification(++_nextId, priority, text, groupKey, groupFormat, lifetime);
-            if (_visible.Count < MAX_VISIBLE)
-            {
-                Show(notification);
-                return;
-            }
-            int replaceable = LeastImportantReplaceable();
-            if (replaceable >= 0 && _visible[replaceable].Priority > priority)
-            {
-                Hide(replaceable);
-                Show(notification);
-                return;
-            }
-            Enqueue(notification);
-        }
+        public void Post(BattleNotificationPriority priority, string text, string groupKey = null, string groupFormat = null) =>
+            Add(priority, text, groupKey, groupFormat, true);
+
+        public void Hold(BattleNotificationPriority priority, string text, string key) =>
+            Add(priority, text, key, null, false);
 
         /// <summary>
         /// Gameplay cards are accepted only while the battle runs, so loading and save restore stay silent.
@@ -71,6 +60,8 @@ namespace EmpireAtWar.Services.BattleNotifications
         {
             int index = _visible.FindIndex(notification => notification.Id == id);
             if (index < 0) return;
+            string groupKey = _visible[index].GroupKey;
+            if (groupKey != null) _mutedUntil[groupKey] = _clock + DISMISS_MUTE_SECONDS;
             Hide(index);
             ShowPending();
         }
@@ -78,6 +69,7 @@ namespace EmpireAtWar.Services.BattleNotifications
         public void Advance(float seconds)
         {
             if (seconds < 0f) throw new ArgumentOutOfRangeException(nameof(seconds));
+            _clock += seconds;
             for (int i = _visible.Count - 1; i >= 0; i--)
             {
                 _visible[i].Advance(seconds);
@@ -86,20 +78,50 @@ namespace EmpireAtWar.Services.BattleNotifications
             ShowPending();
         }
 
-        private bool TryMerge(string groupKey, float lifetime)
+        private void Add(BattleNotificationPriority priority, string text, string groupKey, string groupFormat,
+            bool counts)
+        {
+            if (!_isAccepting && priority != BattleNotificationPriority.Outcome) return;
+            if (groupKey != null && (IsMuted(groupKey) || TryRepeat(groupKey, counts))) return;
+            float lifetime = Lifetime(priority);
+            var notification = new BattleNotification(++_nextId, priority, text, groupKey, groupFormat, lifetime,
+                lifetime * MAX_AGE_FACTOR);
+            if (_visible.Count < MAX_VISIBLE)
+            {
+                Show(notification);
+                return;
+            }
+            int replaceable = LeastImportantReplaceable();
+            if (replaceable >= 0 && _visible[replaceable].Priority > priority)
+            {
+                Hide(replaceable);
+                Show(notification);
+                return;
+            }
+            Enqueue(notification);
+        }
+
+        private bool IsMuted(string groupKey)
+        {
+            if (!_mutedUntil.TryGetValue(groupKey, out float until)) return false;
+            if (_clock < until) return true;
+            _mutedUntil.Remove(groupKey);
+            return false;
+        }
+
+        private bool TryRepeat(string groupKey, bool counts)
         {
             foreach (BattleNotification notification in _visible)
             {
-                if (notification.GroupKey != groupKey || notification.SinceLastMerge > GROUP_WINDOW) continue;
-                notification.Merge(lifetime);
-                Updated?.Invoke(notification);
+                if (notification.GroupKey != groupKey) continue;
+                notification.Repeat(counts);
+                if (counts) Updated?.Invoke(notification);
                 return true;
             }
-            // Waiting cards have not been read yet, so they keep absorbing their group.
             foreach (BattleNotification notification in _pending)
             {
                 if (notification.GroupKey != groupKey) continue;
-                notification.Merge(lifetime);
+                notification.Repeat(counts);
                 return true;
             }
             return false;

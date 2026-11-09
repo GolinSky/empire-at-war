@@ -5,14 +5,19 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Entities.BattleNotifications
 {
-    /// <summary>One notification card: slides down and fades in, pulses when merged, fades out when closed.</summary>
+    /// <summary>
+    /// One notification card. Opening grows its slot while the body slides down and fades in; closing fades the
+    /// body out first, then collapses the slot, so the cards below move up smoothly instead of jumping.
+    /// </summary>
     public sealed class BattleNotificationCardView : MonoBehaviour
     {
-        private const float SLIDE_SECONDS = 0.2f;
-        private const float SLIDE_DISTANCE = 24f;
-        private const float PULSE_SECONDS = 0.25f;
-        private const float PULSE_SCALE = 0.06f;
+        private const float FADE_SECONDS = 0.18f;
+        private const float COLLAPSE_SECONDS = 0.15f;
+        private const float SLIDE_DISTANCE = 16f;
+        // The gap to the next card is part of the slot, so it collapses with the card.
+        private const float CARD_GAP = 6f;
 
+        [SerializeField] private LayoutElement slot;
         [SerializeField] private RectTransform body;
         [SerializeField] private CanvasGroup bodyGroup;
         [SerializeField] private Image accent;
@@ -20,8 +25,9 @@ namespace EmpireAtWar.Entities.BattleNotifications
         [SerializeField] private Button dismissButton;
 
         private Action<int> _dismiss;
-        private float _slide;
-        private float _pulse;
+        private float _height;
+        private float _fade;
+        private float _size;
         private bool _isClosing;
 
         public int NotificationId { get; private set; }
@@ -31,6 +37,7 @@ namespace EmpireAtWar.Entities.BattleNotifications
         public void Initialize(Action<int> dismiss)
         {
             _dismiss = dismiss;
+            _height = body.rect.height + CARD_GAP;
             dismissButton.onClick.AddListener(HandleDismissClicked);
         }
 
@@ -41,44 +48,53 @@ namespace EmpireAtWar.Entities.BattleNotifications
             NotificationId = notificationId;
             messageText.text = message;
             accent.color = accentColor;
-            _slide = 0f;
-            _pulse = 0f;
+            _fade = 0f;
+            _size = 0f;
             _isClosing = false;
             dismissButton.interactable = true;
+            bodyGroup.blocksRaycasts = true;
             transform.SetAsLastSibling();
             gameObject.SetActive(true);
             Apply();
         }
 
-        public void SetMessage(string message)
-        {
-            messageText.text = message;
-            _pulse = PULSE_SECONDS;
-        }
+        public void SetMessage(string message) => messageText.text = message;
 
         public void Close()
         {
             _isClosing = true;
             dismissButton.interactable = false;
+            bodyGroup.blocksRaycasts = false;
         }
 
         private void HandleDismissClicked() => _dismiss(NotificationId);
 
         private void Update()
         {
-            float step = Time.unscaledDeltaTime / SLIDE_SECONDS;
-            _slide = _isClosing ? Mathf.Max(0f, _slide - step) : Mathf.Min(1f, _slide + step);
-            _pulse = Mathf.Max(0f, _pulse - Time.unscaledDeltaTime);
+            float fadeStep = Time.unscaledDeltaTime / FADE_SECONDS;
+            float sizeStep = Time.unscaledDeltaTime / COLLAPSE_SECONDS;
+            if (_isClosing)
+            {
+                if (_fade > 0f) _fade = Mathf.Max(0f, _fade - fadeStep);
+                else _size = Mathf.Max(0f, _size - sizeStep);
+            }
+            else
+            {
+                _size = Mathf.Min(1f, _size + sizeStep);
+                _fade = Mathf.Min(1f, _fade + fadeStep);
+            }
             Apply();
-            if (_isClosing && _slide <= 0f) gameObject.SetActive(false);
+            if (_isClosing && _size <= 0f) gameObject.SetActive(false);
         }
 
         private void Apply()
         {
-            float eased = 1f - (1f - _slide) * (1f - _slide);
-            body.anchoredPosition = Vector2.up * (SLIDE_DISTANCE * (1f - eased));
-            bodyGroup.alpha = eased;
-            body.localScale = Vector3.one * (1f + PULSE_SCALE * (_pulse / PULSE_SECONDS));
+            float fade = Ease(_fade);
+            slot.preferredHeight = _height * Ease(_size);
+            body.anchoredPosition = Vector2.up * (SLIDE_DISTANCE * (1f - fade));
+            bodyGroup.alpha = fade;
         }
+
+        private static float Ease(float value) => 1f - (1f - value) * (1f - value);
     }
 }
