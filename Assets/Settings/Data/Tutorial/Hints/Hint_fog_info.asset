@@ -14,18 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: fog_info
   title: Fog of war
-  body: You see only what your units see. Enemies hide in the dark until you scout
-    them.
+  body: You see only what your units see. Enemies hide in the dark.
   inputActions: []
   inputControls: []
   anchor: 0
-  trigger: 0
+  anchorFallback: 0
+  target: 0
   completion: 0
-  priority: 2
+  listenFromShown: 0
+  requires: []
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 0
-  after: {fileID: 11400000, guid: 6965d19c6d8e54e44b748b1ad3fe7fc1, type: 2}
-  autoCloseSeconds: 7
+  autoCloseSeconds: 4
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

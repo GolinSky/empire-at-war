@@ -14,7 +14,7 @@ using EmpireAtWar.Lifecycle;
 namespace EmpireAtWar.Entities.Faction.Ui
 {
     public class ShipBuildUiController : UiController, IShipBuildPresenter, IInitializable,
-        ILateDisposable, ISkirmishUiRoute
+        ILateDisposable, ISkirmishUiRoute, IBuildQueueCancelObserver
     {
         private readonly IPlayerCommandSink _commands;
         private readonly PlayerSlot _owner;
@@ -28,6 +28,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private bool _isTooltipActive;
 
         private bool _isDisposed;
+
+        public event System.Action Canceled;
 
         public ShipBuildUiController(
             IUiService uiService,
@@ -121,6 +123,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public void CancelBuilding(string id)
         {
             _commands.Submit(new CancelPurchaseCommand(_owner.Id, id));
+            Canceled?.Invoke();
         }
 
         private void RenderPipelines(IReadOnlyList<ProductionQueueSnapshot> snapshots)

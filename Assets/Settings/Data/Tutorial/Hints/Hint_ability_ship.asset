@@ -19,13 +19,14 @@ MonoBehaviour:
   - Battle/Select
   inputControls: []
   anchor: 0
-  trigger: 43
+  anchorFallback: 0
+  target: 1
   completion: 19
-  priority: 8
-  showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 0
-  after: {fileID: 0}
+  listenFromShown: 0
+  requires: []
+  skipUnless: 0
+  showDuringCombat: 1
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

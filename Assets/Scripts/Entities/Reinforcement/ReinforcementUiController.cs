@@ -14,7 +14,7 @@ using EmpireAtWar.Lifecycle;
 namespace EmpireAtWar.Entities.Reinforcement
 {
     public class ReinforcementUiController : UiController, IReinforcementPresenter,
-        IInitializable, ILateDisposable, ISkirmishUiRoute
+        IInitializable, ILateDisposable, ISkirmishUiRoute, IReinforcementPanelObserver
     {
         private readonly IReinforcementService _reinforcementService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
@@ -29,6 +29,8 @@ namespace EmpireAtWar.Entities.Reinforcement
         private bool _isTooltipActive;
 
         private bool _isDisposed;
+
+        public event Action Opened;
 
         public ReinforcementUiController(
             IUiService uiService,
@@ -125,6 +127,7 @@ namespace EmpireAtWar.Entities.Reinforcement
             if (isActive)
             {
                 _ui.Show();
+                Opened?.Invoke();
             }
             else
             {

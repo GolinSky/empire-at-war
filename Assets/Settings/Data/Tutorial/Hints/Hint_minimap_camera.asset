@@ -14,18 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: minimap_camera
   title: Minimap
-  body: Click the minimap to jump the camera there.
+  body: Click the marked spot on the minimap.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
   anchor: 1
-  trigger: 0
+  anchorFallback: 0
+  target: 6
   completion: 15
-  priority: 0
+  listenFromShown: 0
+  requires: []
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 0
-  after: {fileID: 0}
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

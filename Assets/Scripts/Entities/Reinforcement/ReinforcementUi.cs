@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Reinforcement;
+using EmpireAtWar.Entities.TutorialUi;
 using EmpireAtWar.Patterns.Visitor;
+using EmpireAtWar.Services.Tutorial;
 using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
@@ -23,7 +25,12 @@ namespace EmpireAtWar.Entities.Reinforcement
         [SerializeField] private CanvasGroup panelCanvasGroup;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
         [SerializeField] private UnityEngine.UI.Image capacityFill;
+        [Tooltip("Marks the first unit card and the card that got a unit last, for the tutorial's drag steps.")]
+        [SerializeField] private TutorialAnchor tutorialAnchor;
         private readonly Dictionary<UnitLimitKey, ISpawnShipUi> _spawnUnitUiDictionary = new();
+        private readonly Dictionary<UnitLimitKey, int> _counts = new();
+        private UnitLimitKey _newestKey;
+        private bool _hasNewest;
         private ReinforcementData _data;
 
         private bool _isInitialized;
@@ -89,6 +96,13 @@ namespace EmpireAtWar.Entities.Reinforcement
         private void UpdateReserve(UnitRequest request, int count)
         {
             UnitLimitKey key = UnitLimitKey.From(request);
+            _counts.TryGetValue(key, out int previous);
+            _counts[key] = count;
+            if (count > previous)
+            {
+                _newestKey = key;
+                _hasNewest = true;
+            }
             if (_spawnUnitUiDictionary.TryGetValue(key, out ISpawnShipUi shipUi))
             {
                 shipUi.SetUnitCount(count);
@@ -102,6 +116,28 @@ namespace EmpireAtWar.Entities.Reinforcement
                 spawnShipUi.SetUnitCount(count);
                 ActivateUnitUi(spawnShipUi);
             }
+            RefreshTutorialMarks();
+        }
+
+        private void RefreshTutorialMarks()
+        {
+            SpawnShipUi first = null;
+            foreach (ISpawnShipUi shipUi in _spawnUnitUiDictionary.Values)
+            {
+                SpawnShipUi card = (SpawnShipUi)shipUi;
+                if (first == null || card.transform.GetSiblingIndex() < first.transform.GetSiblingIndex()) first = card;
+            }
+            Mark(TutorialAnchorId.ReinforcementUnit, first);
+            Mark(TutorialAnchorId.ReinforcementNewUnit,
+                _hasNewest && _spawnUnitUiDictionary.TryGetValue(_newestKey, out ISpawnShipUi newest)
+                    ? (SpawnShipUi)newest
+                    : null);
+        }
+
+        private void Mark(TutorialAnchorId id, SpawnShipUi card)
+        {
+            if (card == null) tutorialAnchor.Unmark(id);
+            else tutorialAnchor.Mark(id, (RectTransform)card.transform);
         }
 
         private void UpdateCapacityData(int capacity)
@@ -158,6 +194,7 @@ namespace EmpireAtWar.Entities.Reinforcement
         public void OnRelease(ISpawnShipUi spawnShipUi)
         {
             _spawnUnitUiDictionary.Remove(UnitLimitKey.From(spawnShipUi.Request));
+            RefreshTutorialMarks();
         }
 
         // Structures have no unit capacity cost, so only ships and squadrons are gated.

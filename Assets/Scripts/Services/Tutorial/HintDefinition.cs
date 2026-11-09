@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.Tutorial
 {
+    /// <summary>One small step of a lesson: one action, one marked place or button, one short line.</summary>
     [CreateAssetMenu(menuName = "EmpireAtWar/Tutorial/Hint Definition", fileName = "HintDefinition")]
     public sealed class HintDefinition : ScriptableObject
     {
@@ -10,7 +11,7 @@ namespace EmpireAtWar.Services.Tutorial
         [SerializeField] private string id;
         [SerializeField] private string title;
         [Tooltip("{0}, {1}… are replaced by the current key binding of each Input Action below. " +
-                 "[unit], [hazard], [effects] come from the trigger.")]
+                 "[unit], [hazard], [effects] come from the lesson trigger; [ability] from the selected unit.")]
         [TextArea(2, 4)]
         [SerializeField] private string body;
         [Tooltip("Input action paths such as Camera/Move or Battle/Command.")]
@@ -18,22 +19,26 @@ namespace EmpireAtWar.Services.Tutorial
         [Tooltip("Fixed controls for UI gestures, such as <Mouse>/leftButton. These do not follow battle bindings.")]
         [SerializeField] private string[] inputControls = new string[0];
         [SerializeField] private TutorialAnchorId anchor;
-        [Tooltip("Event hints only: shows the hint the first time this happens. None: as soon as pacing allows.")]
-        [SerializeField] private HintConditionId trigger;
-        [Tooltip("Closes the hint as done; a hint completed before it is shown is never shown. None: only Dismiss closes it.")]
+        [Tooltip("Framed while the anchor is not on screen, such as the unit button to hover before its tooltip opens.")]
+        [SerializeField] private TutorialAnchorId anchorFallback;
+        [Tooltip("Place in the world to mark (and mirror on the minimap).")]
+        [SerializeField] private HintTargetId target;
+        [Tooltip("Closes the step as done; a step done before it is shown is skipped. None: only Dismiss or auto close.")]
         [SerializeField] private HintConditionId completion;
-        [Tooltip("Higher shows first when several event hints are ready.")]
-        [SerializeField] private int priority;
+        [Tooltip("Start listening for the completion only when the step shows, for actions the player repeats " +
+                 "(move, queue a unit).")]
+        [SerializeField] private bool listenFromShown;
+        [Tooltip("States the step needs; while one is missing its small fix step shows first.")]
+        [SerializeField] private HintRequirement[] requires = new HintRequirement[0];
+        [Tooltip("Shown only while this state holds when the step comes up; otherwise skipped. None: always shown.")]
+        [SerializeField] private HintStateId skipUnless;
         [Tooltip("Shown while the player's units are fighting (attack, abilities). Others wait for a quiet moment.")]
         [SerializeField] private bool showDuringCombat;
-        [Tooltip("Event hint that may jump ahead of unfinished basics (enemy contact, Survival). Others wait for the basics.")]
-        [SerializeField] private bool interruptsBasics;
-        [Tooltip("The anchor lives in the station's build panel: until the station is selected, mark the station instead.")]
-        [SerializeField] private bool needsStationSelected;
-        [Tooltip("Event hints only: waits until this hint is done, so several hints form one lesson step by step.")]
-        [SerializeField] private HintDefinition after;
-        [Tooltip("Information hint that closes by itself after this many seconds; 0 keeps it until its completion.")]
+        [Tooltip("Information step that closes by itself after this many seconds; 0 keeps it until its completion.")]
         [Min(0f)] [SerializeField] private float autoCloseSeconds;
+        [Tooltip("Waiting step (capture, construction): never shows a card; other lessons run and this lesson " +
+                 "resumes once the step is done.")]
+        [SerializeField] private bool waitSilently;
         [Tooltip("Short animation shown on the card.")]
         [SerializeField] private HintDemo demo;
         [Tooltip("Shows a copy of the highlighted HUD element on the card, so the player knows what it looks like.")]
@@ -45,14 +50,15 @@ namespace EmpireAtWar.Services.Tutorial
         public IReadOnlyList<string> InputActions => inputActions;
         public IReadOnlyList<string> InputControls => inputControls;
         public TutorialAnchorId Anchor => anchor;
-        public HintConditionId Trigger => trigger;
+        public TutorialAnchorId AnchorFallback => anchorFallback;
+        public HintTargetId Target => target;
         public HintConditionId Completion => completion;
-        public int Priority => priority;
+        public bool ListenFromShown => listenFromShown;
+        public IReadOnlyList<HintRequirement> Requires => requires;
+        public HintStateId SkipUnless => skipUnless;
         public bool ShowDuringCombat => showDuringCombat;
-        public bool InterruptsBasics => interruptsBasics;
-        public bool NeedsStationSelected => needsStationSelected;
-        public HintDefinition After => after;
         public float AutoCloseSeconds => autoCloseSeconds;
+        public bool WaitSilently => waitSilently;
         public HintDemo Demo => demo;
         public bool PreviewAnchor => previewAnchor;
     }

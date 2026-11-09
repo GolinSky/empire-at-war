@@ -14,18 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: select_station
   title: Your station
-  body: Select your space station ({0}) to buy ships, upgrades and research.
+  body: Click your station ({0}).
   inputActions:
   - Battle/Select
   inputControls: []
-  anchor: 2
-  trigger: 0
+  anchor: 0
+  anchorFallback: 0
+  target: 3
   completion: 35
-  priority: 0
+  listenFromShown: 0
+  requires: []
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 1
-  after: {fileID: 0}
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

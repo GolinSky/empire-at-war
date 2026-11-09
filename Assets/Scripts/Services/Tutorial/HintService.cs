@@ -10,43 +10,55 @@ using UnityEngine;
 namespace EmpireAtWar.Services.Tutorial
 {
     /// <summary>
-    /// Decides which hint is visible. Basics run in order; event hints wait for their trigger. One hint at a time,
-    /// a minimum gap between hints, and only Show During Combat hints while a local unit was hit recently.
+    /// Runs one lesson at a time, one step at a time. Onboarding lessons run in track order once their trigger
+    /// happened; event lessons wait for theirs. A step whose prerequisite is missing shows its small fix step first.
+    /// Pacing runs on real time, so the pause lesson can go on while the battle is paused.
     /// </summary>
     public sealed class HintService : IHintService, ITickable, ILateDisposable
     {
+        private const int MAX_FIX_DEPTH = 4;
+        private const string ABILITY_TOKEN = "ability";
         private static readonly Regex TOKEN = new Regex(@"\[(\w+)\]");
 
         private readonly HintTrack _track;
         private readonly HintConditionFactory _conditions;
+        private readonly HintStates _states;
+        private readonly HintTargets _targets;
         private readonly IHintProgressRepository _repository;
         private readonly ISettingsService _settings;
         private readonly SkirmishStateModel _battle;
         private readonly LocalUnitDamageTracker _damage;
         private readonly HintProgress _progress;
-        private readonly List<PendingHint> _waiting = new List<PendingHint>();
-        private readonly List<PendingHint> _ready = new List<PendingHint>();
-        private readonly List<PendingHint> _basics = new List<PendingHint>();
-        private PendingHint _current;
-        private bool _currentIsBasic;
+        private readonly List<LessonRun> _onboarding = new List<LessonRun>();
+        private readonly List<LessonRun> _events = new List<LessonRun>();
+        private readonly List<LessonRun> _parked = new List<LessonRun>();
+        private LessonRun _lesson;
+        private HintDefinition _shown;
+        private bool _shownIsFix;
         private float _now;
         private float _gapEnd;
         private float _lastDamage = float.NegativeInfinity;
         private float _combatHoldStart = -1f;
-        private float _currentShownAt;
+        private float _shownAt;
 
         public event Action<HintDefinition> Shown;
         public event Action<HintDefinition, bool> Closed;
 
-        public HintDefinition Current => _current?.Definition;
-        public int CurrentBasicNumber => _current != null && _currentIsBasic ? _current.BasicNumber : 0;
-        public int BasicCount => _track.Basics.Count;
+        public HintDefinition Current => _shown;
 
-        public HintService(HintTrack track, HintConditionFactory conditions, IHintProgressRepository repository,
-            ISettingsService settings, SkirmishStateModel battle, LocalUnitDamageTracker damage)
+        public string CurrentProgress =>
+            _lesson == null || _shownIsFix || _lesson.Lesson.Steps.Count < 2
+                ? string.Empty
+                : $"{_lesson.StepNumber}/{_lesson.Lesson.Steps.Count}";
+
+        public HintService(HintTrack track, HintConditionFactory conditions, HintStates states, HintTargets targets,
+            IHintProgressRepository repository, ISettingsService settings, SkirmishStateModel battle,
+            LocalUnitDamageTracker damage)
         {
             _track = track;
             _conditions = conditions;
+            _states = states;
+            _targets = targets;
             _repository = repository;
             _settings = settings;
             _battle = battle;
@@ -56,16 +68,12 @@ namespace EmpireAtWar.Services.Tutorial
             _damage.LocalUnitDamaged += HandleLocalUnitDamaged;
         }
 
-        /// <summary>Forgets every seen hint and starts the track again from the first basic, in this match.</summary>
+        /// <summary>Forgets every seen lesson and starts onboarding again, in this match.</summary>
         public void Restart()
         {
-            if (_current != null)
-            {
-                HintDefinition hidden = _current.Definition;
-                _current.Condition.Dispose();
-                _current = null;
-                Closed?.Invoke(hidden, false);
-            }
+            HideShown();
+            if (_lesson != null) _lesson.Dispose();
+            _lesson = null;
             DisposeQueues();
             _repository.Reset();
             BuildQueues();
@@ -75,53 +83,181 @@ namespace EmpireAtWar.Services.Tutorial
 
         private void BuildQueues()
         {
-            foreach (HintDefinition hint in _track.Events)
-                if (!_progress.IsDone(hint.Id))
-                    _waiting.Add(new PendingHint(hint, _conditions.CreateTrigger(hint.Trigger), 0));
-            for (int i = 0; i < _track.Basics.Count; i++)
-                if (!_progress.IsDone(_track.Basics[i].Id))
-                    _basics.Add(new PendingHint(_track.Basics[i], _conditions.CreateCompletion(_track.Basics[i].Completion), i + 1));
+            foreach (HintLesson lesson in _track.Onboarding)
+                if (!_progress.IsDone(lesson.Id)) _onboarding.Add(CreateRun(lesson));
+            foreach (HintLesson lesson in _track.Events)
+                if (!_progress.IsDone(lesson.Id)) _events.Add(CreateRun(lesson));
+        }
+
+        private LessonRun CreateRun(HintLesson lesson)
+        {
+            LessonRun run = new LessonRun(lesson, _conditions.CreateTrigger(lesson.Trigger));
+            foreach (HintDefinition step in lesson.Steps)
+                if (!_progress.IsDone(step.Id))
+                    run.Steps.Add(new StepRun(step,
+                        step.ListenFromShown ? null : _conditions.CreateCompletion(step.Completion)));
+            return run;
         }
 
         private void DisposeQueues()
         {
-            foreach (PendingHint hint in _basics) hint.Condition.Dispose();
-            foreach (PendingHint hint in _waiting) hint.Condition.Dispose();
-            foreach (PendingHint hint in _ready) hint.Condition.Dispose();
-            _basics.Clear();
-            _waiting.Clear();
-            _ready.Clear();
+            foreach (LessonRun run in _onboarding) run.Dispose();
+            foreach (LessonRun run in _events) run.Dispose();
+            foreach (LessonRun run in _parked) run.Dispose();
+            _onboarding.Clear();
+            _events.Clear();
+            _parked.Clear();
         }
 
         public void Tick()
         {
-            if (_battle.State != BattleState.Running) return;
-            float deltaTime = Time.deltaTime;
+            if (_battle.State != BattleState.Running && _battle.State != BattleState.Paused) return;
+            float deltaTime = Time.unscaledDeltaTime;
             _now += deltaTime;
             PollConditions(deltaTime);
             if (!_settings.Saved.Gameplay.ShowHints)
             {
-                if (_current != null) Hide();
+                HideShown();
                 return;
             }
-            if (_current != null)
-            {
-                float autoClose = _current.Definition.AutoCloseSeconds;
-                if (_current.Condition.IsMet || autoClose > 0f && _now - _currentShownAt >= autoClose) Close(true);
-                return;
-            }
-            PromoteTriggered();
-            DropCompletedBeforeShown();
-            if (_now < _gapEnd) return;
-            bool isQuiet = IsQuiet();
-            bool hasBasics = _basics.Count > 0;
-            // Basics come first; only urgent event hints jump ahead of them.
-            PendingHint next = PickReady(isQuiet, hasBasics);
-            if (next != null) Show(next, false);
-            else if (isQuiet && hasBasics) Show(_basics[0], true);
+            if (_lesson == null) StartNextLesson();
+            if (_lesson != null) RunLesson();
         }
 
-        // A long fight must not stall the tutorial: after the hold limit the waiting hint shows anyway.
+        private void StartNextLesson()
+        {
+            if (_now < _gapEnd) return;
+            LessonRun next = PickLesson();
+            if (next == null) return;
+            if (!_parked.Remove(next) && !_onboarding.Remove(next)) _events.Remove(next);
+            next.ParkedOn = null;
+            _lesson = next;
+        }
+
+        // A parked lesson whose wait is over goes first; then onboarding; only urgent event lessons jump ahead of it.
+        private LessonRun PickLesson()
+        {
+            foreach (LessonRun run in _parked)
+                if (CanResume(run))
+                    return run;
+            LessonRun onboarding = null;
+            foreach (LessonRun run in _onboarding)
+                if (run.Trigger.IsMet)
+                {
+                    onboarding = run;
+                    break;
+                }
+            LessonRun urgent = null;
+            foreach (LessonRun run in _events)
+                if (run.Trigger.IsMet && (onboarding == null || run.Lesson.InterruptsOnboarding) &&
+                    (urgent == null || run.Lesson.Priority > urgent.Lesson.Priority))
+                    urgent = run;
+            return urgent ?? onboarding;
+        }
+
+        private void RunLesson()
+        {
+            StepRun step = _lesson.Head;
+            if (_shown != null)
+            {
+                if (_shownIsFix)
+                {
+                    // A fix step closes once the state it fixes holds, or swaps to a deeper fix.
+                    bool isStepDone = step.Condition != null && step.Condition.IsMet;
+                    HintDefinition wanted = Resolve(step.Definition, 0);
+                    if (wanted == _shown && !isStepDone) return;
+                    CloseShown(isStepDone || wanted == step.Definition);
+                }
+                else
+                {
+                    float autoClose = _shown.AutoCloseSeconds;
+                    if (step.Condition.IsMet || autoClose > 0f && _now - _shownAt >= autoClose)
+                    {
+                        CompleteHead();
+                        CloseShown(true);
+                    }
+                    else if (Resolve(step.Definition, 0) != step.Definition)
+                        HideShown(); // Prerequisite lost (deselected): show the fix step again.
+                    else return;
+                }
+                _gapEnd = _now + _track.StepGapSeconds;
+            }
+            if (_now < _gapEnd) return;
+            SkipFinishedSteps();
+            step = _lesson.Head;
+            if (step == null)
+            {
+                FinishLesson();
+                return;
+            }
+            HintDefinition show = Resolve(step.Definition, 0);
+            if (step.Condition == null) step.Condition = _conditions.CreateCompletion(step.Definition.Completion);
+            if (show.WaitSilently)
+            {
+                Park(show);
+                return;
+            }
+            if (!IsQuiet() && !show.ShowDuringCombat) return;
+            Show(show, show != step.Definition);
+        }
+
+        // A capture or construction takes a while: other lessons run meanwhile and this one comes back when it is done.
+        private void Park(HintDefinition waitingOn)
+        {
+            _lesson.ParkedOn = waitingOn;
+            _parked.Add(_lesson);
+            _lesson = null;
+        }
+
+        // The parked step is done, or the step to show changed (its prerequisite now holds, or was lost).
+        private bool CanResume(LessonRun run)
+        {
+            StepRun head = run.Head;
+            return head == null || head.Condition != null && head.Condition.IsMet ||
+                   Resolve(head.Definition, 0) != run.ParkedOn;
+        }
+
+        // The player already did it, or the step does not apply to this unit: record it and move on.
+        private void SkipFinishedSteps()
+        {
+            while (_lesson.Head != null)
+            {
+                StepRun head = _lesson.Head;
+                bool isDone = head.Condition != null && head.Condition.IsMet;
+                // Skip rules read the selection, so they apply only once the step's prerequisites hold.
+                bool canJudge = Resolve(head.Definition, 0) == head.Definition;
+                if (!isDone && (!canJudge || _states.IsSatisfied(head.Definition.SkipUnless))) return;
+                CompleteHead();
+            }
+        }
+
+        /// <summary>The step to show for <paramref name="step"/>: itself, or the fix step of its first missing state.</summary>
+        private HintDefinition Resolve(HintDefinition step, int depth)
+        {
+            if (depth >= MAX_FIX_DEPTH) throw new InvalidOperationException($"Hint fix steps loop at '{step.Id}'.");
+            foreach (HintRequirement requirement in step.Requires)
+                if (!_states.IsSatisfied(requirement.State)) return Resolve(requirement.Step, depth + 1);
+            return step;
+        }
+
+        private void CompleteHead()
+        {
+            StepRun head = _lesson.Head;
+            _lesson.Steps.RemoveAt(0);
+            head.Condition?.Dispose();
+            Record(head.Definition.Id);
+        }
+
+        private void FinishLesson()
+        {
+            Record(_lesson.Lesson.Id);
+            // A lesson the player had already done shows nothing and costs no pause.
+            if (_lesson.HasShown) _gapEnd = _now + _track.MinimumGapSeconds;
+            _lesson.Dispose();
+            _lesson = null;
+        }
+
+        // A long fight must not stall the tutorial: after the hold limit the waiting step shows anyway.
         private bool IsQuiet()
         {
             if (_now - _lastDamage >= _track.CombatQuietSeconds)
@@ -133,118 +269,71 @@ namespace EmpireAtWar.Services.Tutorial
             return _now - _combatHoldStart >= _track.MaxCombatHoldSeconds;
         }
 
-        // Triggers keep the unit or site they saw, so a moving ship stays marked.
         public bool TryGetWorldTarget(out Vector3 position)
         {
             position = default;
-            return _current != null && _current.Source is IHintWorldTarget target &&
-                   target.TryGetWorldTarget(out position);
+            return _shown != null && _targets.TryGet(_shown.Target, _lesson.Trigger, out position);
         }
 
         public string ResolveText(string text)
         {
-            if (_current == null || !(_current.Source is IHintTextSource source)) return text;
-            return TOKEN.Replace(text, match =>
-                source.TryGetText(match.Groups[1].Value, out string value) ? value : match.Value);
+            if (_lesson == null) return text;
+            return TOKEN.Replace(text, match => TryGetToken(match.Groups[1].Value, out string value) ? value : match.Value);
         }
 
+        private bool TryGetToken(string token, out string value)
+        {
+            if (token == ABILITY_TOKEN) return _states.TryGetSelectedAbilityName(out value);
+            value = null;
+            return _lesson.Trigger is IHintTextSource source && source.TryGetText(token, out value);
+        }
+
+        /// <summary>Skips the whole lesson and never shows it again.</summary>
         public void Dismiss()
         {
-            if (_current == null) throw new InvalidOperationException("No hint is visible to dismiss.");
-            Close(false);
+            if (_shown == null) throw new InvalidOperationException("No hint is visible to dismiss.");
+            HintDefinition dismissed = _shown;
+            _shown = null;
+            while (_lesson.Head != null) CompleteHead();
+            FinishLesson();
+            Closed?.Invoke(dismissed, false);
         }
 
-        // Conditions keep listening while hints are hidden or turned off, so finished lessons are never shown later.
+        // Conditions keep listening while hints are hidden or turned off, so finished steps are never shown later.
         private void PollConditions(float deltaTime)
         {
-            Poll(_current, deltaTime);
-            foreach (PendingHint hint in _basics) Poll(hint, deltaTime);
-            foreach (PendingHint hint in _waiting) Poll(hint, deltaTime);
-            foreach (PendingHint hint in _ready) Poll(hint, deltaTime);
+            if (_lesson != null) _lesson.Poll(deltaTime);
+            foreach (LessonRun run in _onboarding) run.Poll(deltaTime);
+            foreach (LessonRun run in _events) run.Poll(deltaTime);
+            foreach (LessonRun run in _parked) run.Poll(deltaTime);
         }
 
-        private static void Poll(PendingHint hint, float deltaTime)
+        private void Show(HintDefinition step, bool isFix)
         {
-            if (hint != null && hint.Condition is IPolledHintCondition polled) polled.Poll(deltaTime);
-        }
-
-        private void PromoteTriggered()
-        {
-            for (int i = _waiting.Count - 1; i >= 0; i--)
-            {
-                PendingHint waiting = _waiting[i];
-                HintDefinition after = waiting.Definition.After;
-                if (!waiting.Condition.IsMet || after != null && !_progress.IsDone(after.Id)) continue;
-                PendingHint ready = new PendingHint(waiting.Definition,
-                    _conditions.CreateCompletion(waiting.Definition.Completion), 0) { Source = waiting.Condition };
-                waiting.Condition.Dispose();
-                _waiting.RemoveAt(i);
-                _ready.Add(ready);
-            }
-        }
-
-        // The player already did what the hint teaches: record it and never show it.
-        private void DropCompletedBeforeShown()
-        {
-            for (int i = _basics.Count - 1; i >= 0; i--)
-            {
-                if (!_basics[i].Condition.IsMet) continue;
-                Retire(_basics[i]);
-                _basics.RemoveAt(i);
-            }
-            for (int i = _ready.Count - 1; i >= 0; i--)
-            {
-                if (!_ready[i].Condition.IsMet) continue;
-                Retire(_ready[i]);
-                _ready.RemoveAt(i);
-            }
-        }
-
-        private PendingHint PickReady(bool isQuiet, bool hasBasics)
-        {
-            PendingHint best = null;
-            foreach (PendingHint hint in _ready)
-                if ((isQuiet || hint.Definition.ShowDuringCombat) && (!hasBasics || hint.Definition.InterruptsBasics) &&
-                    (best == null || hint.Definition.Priority > best.Definition.Priority))
-                    best = hint;
-            return best;
-        }
-
-        private void Show(PendingHint hint, bool isBasic)
-        {
-            if (isBasic) _basics.Remove(hint);
-            else _ready.Remove(hint);
-            _current = hint;
-            _currentIsBasic = isBasic;
-            _currentShownAt = _now;
+            _shown = step;
+            _shownIsFix = isFix;
+            _lesson.HasShown = true;
+            _shownAt = _now;
             _combatHoldStart = -1f;
-            Shown?.Invoke(hint.Definition);
+            Shown?.Invoke(step);
         }
 
-        private void Close(bool completed)
+        private void CloseShown(bool completed)
         {
-            PendingHint closed = _current;
-            _current = null;
-            Retire(closed);
-            _gapEnd = _now + _track.MinimumGapSeconds;
-            Closed?.Invoke(closed.Definition, completed);
+            HintDefinition closed = _shown;
+            _shown = null;
+            Closed?.Invoke(closed, completed);
         }
 
-        // Hints were turned off: the visible hint goes back to its queue unrecorded.
-        private void Hide()
+        // Hints were turned off or the step must wait: the card closes, the lesson keeps its place.
+        private void HideShown()
         {
-            PendingHint hidden = _current;
-            _current = null;
-            if (_currentIsBasic) _basics.Insert(0, hidden);
-            else _ready.Add(hidden);
-            Closed?.Invoke(hidden.Definition, false);
+            if (_shown != null) CloseShown(false);
         }
 
-
-        private void Retire(PendingHint hint)
+        private void Record(string id)
         {
-            hint.Condition.Dispose();
-            if (!_progress.MarkDone(hint.Definition.Id)) return;
+            if (!_progress.MarkDone(id)) return;
             try
             {
                 _repository.Save(_progress);
@@ -260,26 +349,66 @@ namespace EmpireAtWar.Services.Tutorial
         public void LateDispose()
         {
             _damage.LocalUnitDamaged -= HandleLocalUnitDamaged;
-            _current?.Condition.Dispose();
+            if (_lesson != null) _lesson.Dispose();
             DisposeQueues();
         }
 
-        private sealed class PendingHint
+        private sealed class LessonRun
+        {
+            public HintLesson Lesson { get; }
+
+            /// <summary>Kept after it fires: it may name a unit (text) or mark a place (world target).</summary>
+            public IHintCondition Trigger { get; }
+
+            /// <summary>Steps not done yet, in order.</summary>
+            public List<StepRun> Steps { get; } = new List<StepRun>();
+
+            /// <summary>1-based number of the head step within the whole lesson, for the card's progress.</summary>
+            public int StepNumber => Lesson.Steps.Count - Steps.Count + 1;
+
+            public bool HasShown { get; set; }
+
+            /// <summary>The waiting step the lesson stepped aside on; null while the lesson is not parked.</summary>
+            public HintDefinition ParkedOn { get; set; }
+
+            public StepRun Head => Steps.Count > 0 ? Steps[0] : null;
+
+            public LessonRun(HintLesson lesson, IHintCondition trigger)
+            {
+                Lesson = lesson;
+                Trigger = trigger;
+            }
+
+            public void Poll(float deltaTime)
+            {
+                PollCondition(Trigger, deltaTime);
+                foreach (StepRun step in Steps) PollCondition(step.Condition, deltaTime);
+            }
+
+            private static void PollCondition(IHintCondition condition, float deltaTime)
+            {
+                if (condition is IPolledHintCondition polled) polled.Poll(deltaTime);
+            }
+
+            public void Dispose()
+            {
+                Trigger.Dispose();
+                foreach (StepRun step in Steps) step.Condition?.Dispose();
+                Steps.Clear();
+            }
+        }
+
+        private sealed class StepRun
         {
             public HintDefinition Definition { get; }
-            public IHintCondition Condition { get; }
 
-            /// <summary>1-based position in the basics track; 0 for event hints.</summary>
-            public int BasicNumber { get; }
+            /// <summary>Null until the step shows, for steps that listen from shown.</summary>
+            public IHintCondition Condition { get; set; }
 
-            /// <summary>The trigger that fired; it may name a unit (text) or mark a place (world target).</summary>
-            public IHintCondition Source { get; set; }
-
-            public PendingHint(HintDefinition definition, IHintCondition condition, int basicNumber)
+            public StepRun(HintDefinition definition, IHintCondition condition)
             {
                 Definition = definition;
                 Condition = condition;
-                BasicNumber = basicNumber;
             }
         }
     }

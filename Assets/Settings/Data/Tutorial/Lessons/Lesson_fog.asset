@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9ddcac7e310c7a43badee4eb8515b66, type: 3}
+  m_Name: Lesson_fog
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintLesson
+  id: lesson_fog
+  steps:
+  - {fileID: 11400000, guid: 6c927864083e15e409baf91d6d50a8e6, type: 2}
+  - {fileID: 11400000, guid: 2d0e313a247806c4098bb66055e6fc23, type: 2}
+  - {fileID: 11400000, guid: d9b29a77ac44e9246aeab03acd9eb599, type: 2}
+  - {fileID: 11400000, guid: 6965d19c6d8e54e44b748b1ad3fe7fc1, type: 2}
+  - {fileID: 11400000, guid: 3e8ea5cc7954e4a4cb86e33dfedd8692, type: 2}
+  trigger: 33
+  priority: 2
+  interruptsOnboarding: 0

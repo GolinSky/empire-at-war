@@ -19,13 +19,14 @@ MonoBehaviour:
   inputControls:
   - <Mouse>/leftButton
   anchor: 15
-  trigger: 30
+  anchorFallback: 0
+  target: 1
   completion: 0
-  priority: 3
+  listenFromShown: 0
+  requires: []
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 0
-  after: {fileID: 0}
   autoCloseSeconds: 6
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

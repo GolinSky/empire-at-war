@@ -13,18 +13,20 @@ MonoBehaviour:
   m_Name: Hint_level_unlocked
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: level_unlocked
-  title: New ships unlocked
-  body: Your station levelled up. New ships are in the build panel.
-  inputActions: []
+  title: New units
+  body: Your station levelled up. Select it to see what is new.
+  inputActions:
+  - Battle/Select
   inputControls: []
   anchor: 0
-  trigger: 4
-  completion: 0
-  priority: 6
+  anchorFallback: 0
+  target: 3
+  completion: 35
+  listenFromShown: 1
+  requires: []
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 0
-  after: {fileID: 0}
-  autoCloseSeconds: 4
+  autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

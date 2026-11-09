@@ -10,5 +10,7 @@ namespace EmpireAtWar.Services.Tutorial
         Building = 2,
         /// <summary>A local mining facility is running.</summary>
         MiningOperational = 3,
+        /// <summary>The map has a site of this kind at all.</summary>
+        Exists = 4,
     }
 }

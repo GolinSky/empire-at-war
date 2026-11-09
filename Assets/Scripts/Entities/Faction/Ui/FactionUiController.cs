@@ -120,6 +120,11 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         public bool IsUnitAvailable(FactionData data) => _model.CurrentLevel >= data.AvailableLevel;
 
+        public bool IsUnlockedAtCurrentLevel(FactionData data) => _model.CurrentLevel == data.AvailableLevel;
+
+        public bool IsCarrier(UnitRequest request) => request is ShipUnitRequest ship &&
+            _assets.Load<ShipData>(_shipsData.GetShipDataPath(ship.Key)).HangarBays.Count > 0;
+
         public int GetUnitSortOrder(UnitRequest request) => request switch
         {
             SquadronUnitRequest => 0,

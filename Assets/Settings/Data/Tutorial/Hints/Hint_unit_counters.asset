@@ -14,19 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: unit_counters
   title: Know your counters
-  body: Hover the highlighted ship. Strong against and Weak against show what it
-    beats and what beats it.
+  body: Hover the marked unit. Read Strong against and Weak against.
   inputActions: []
   inputControls:
   - <Mouse>/position
-  anchor: 19
-  trigger: 0
+  anchor: 12
+  anchorFallback: 19
+  target: 0
   completion: 17
-  priority: 0
+  listenFromShown: 0
+  requires:
+  - state: 2
+    step: {fileID: 11400000, guid: c152b637ff1e65340a8086aa0196dcb8, type: 2}
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 1
-  after: {fileID: 0}
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

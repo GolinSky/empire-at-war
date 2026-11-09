@@ -289,6 +289,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
             int siblingIndex = 0;
 
             FactionUnitUi firstShip = null, firstScout = null, firstResearch = null, level = null;
+            FactionUnitUi economyResearch = null, fleetResearch = null, newShip = null, miningFacility = null;
+            bool isNewShipCarrier = false;
             foreach (FactionUnitUi unitUi in _factionUnitsUi
                          .OrderBy(unit => _presenter.GetUnitSortOrder(unit.Request))
                          .ThenByDescending(unit => _presenter.IsUnitAvailable(unit.FactionData)))
@@ -302,14 +304,29 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 {
                     case ShipUnitRequest:
                         if (firstShip == null) firstShip = unitUi;
-                        // Sort orders 0–1 are fighters, interceptors and corvettes: the fast scouts.
-                        if (firstScout == null && _presenter.GetUnitSortOrder(unitUi.Request) <= 1) firstScout = unitUi;
+                        if (_presenter.IsUnlockedAtCurrentLevel(unitUi.FactionData) &&
+                            IsBetterNewShip(unitUi, newShip, isNewShipCarrier, out bool isCarrier))
+                        {
+                            newShip = unitUi;
+                            isNewShipCarrier = isCarrier;
+                        }
+                        // Sort order 0 is fighters, bombers and interceptors: the scouts.
+                        if (firstScout == null && _presenter.GetUnitSortOrder(unitUi.Request) == 0) firstScout = unitUi;
                         break;
-                    case ResearchUnitRequest:
+                    case SquadronUnitRequest:
+                        if (firstScout == null) firstScout = unitUi;
+                        break;
+                    case ResearchUnitRequest research:
                         if (firstResearch == null) firstResearch = unitUi;
+                        bool isEconomy = ResearchGroup.IsEconomy(research.Key);
+                        if (isEconomy && economyResearch == null) economyResearch = unitUi;
+                        if (!isEconomy && fleetResearch == null) fleetResearch = unitUi;
                         break;
                     case LevelUnitRequest:
                         level = unitUi;
+                        break;
+                    case MiningFacilityUnitRequest:
+                        if (miningFacility == null) miningFacility = unitUi;
                         break;
                 }
             }
@@ -317,6 +334,18 @@ namespace EmpireAtWar.Entities.Faction.Ui
             MarkTutorialButton(TutorialAnchorId.ScoutShipButton, firstScout);
             MarkTutorialButton(TutorialAnchorId.ResearchButton, firstResearch);
             MarkTutorialButton(TutorialAnchorId.LevelUpButton, level);
+            MarkTutorialButton(TutorialAnchorId.EconomyResearchButton, economyResearch);
+            MarkTutorialButton(TutorialAnchorId.FleetResearchButton, fleetResearch);
+            MarkTutorialButton(TutorialAnchorId.NewShipButton, newShip);
+            MarkTutorialButton(TutorialAnchorId.MiningFacilityButton, miningFacility);
+        }
+
+        // The tutorial's new unit: a carrier first, otherwise the most expensive (strongest) new ship.
+        private bool IsBetterNewShip(FactionUnitUi candidate, FactionUnitUi best, bool isBestCarrier, out bool isCarrier)
+        {
+            isCarrier = _presenter.IsCarrier(candidate.Request);
+            if (best == null || isCarrier != isBestCarrier) return best == null || isCarrier;
+            return candidate.FactionData.Price > best.FactionData.Price;
         }
 
         // Tutorial hints point at one deterministic button: the first shown in panel order.

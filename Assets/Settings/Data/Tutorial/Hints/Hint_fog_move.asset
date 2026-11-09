@@ -14,18 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: fog_move
   title: Into the dark
-  body: Press {0} on a dark area of the map to send the scout there.
+  body: Press {0} on the marked asteroid to scout it.
   inputActions:
   - Battle/Command
   inputControls: []
-  anchor: 1
-  trigger: 0
+  anchor: 0
+  anchorFallback: 0
+  target: 7
   completion: 46
-  priority: 2
+  listenFromShown: 0
+  requires:
+  - state: 1
+    step: {fileID: 11400000, guid: 88d73ac2a2895c445bb1f34c29c24bc3, type: 2}
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 0
-  after: {fileID: 11400000, guid: d9b29a77ac44e9246aeab03acd9eb599, type: 2}
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

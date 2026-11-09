@@ -14,18 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: attack
   title: Attack
-  body: Press {0} on an enemy to attack it. Attack-move fights anything on the way.
+  body: Press {0} on an enemy, or click Attack-move to fight on the way.
   inputActions:
   - Battle/Command
   inputControls: []
   anchor: 7
-  trigger: 24
-  completion: 10
-  priority: 9
+  anchorFallback: 0
+  target: 1
+  completion: 63
+  listenFromShown: 0
+  requires:
+  - state: 1
+    step: {fileID: 11400000, guid: 88d73ac2a2895c445bb1f34c29c24bc3, type: 2}
+  skipUnless: 0
   showDuringCombat: 1
-  interruptsBasics: 1
-  needsStationSelected: 0
-  after: {fileID: 0}
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

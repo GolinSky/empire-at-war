@@ -25,5 +25,16 @@ namespace EmpireAtWar.Services.Tutorial
         BuildShipButton = 19,
         ScoutShipButton = 20,
         AbilityButton = 21,
+        PauseButton = 22,
+        SpeedButton = 23,
+        EconomyResearchButton = 24,
+        FleetResearchButton = 25,
+        NewShipButton = 26,
+        MiningFacilityButton = 27,
+        /// <summary>First unit card in the open reinforcement panel.</summary>
+        ReinforcementUnit = 28,
+        /// <summary>Card of the unit added to reinforcements last (the scout, the facility).</summary>
+        ReinforcementNewUnit = 29,
+        ReinforcementPanel = 30,
     }
 }

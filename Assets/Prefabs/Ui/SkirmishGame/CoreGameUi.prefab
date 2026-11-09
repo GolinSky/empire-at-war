@@ -8638,6 +8638,7 @@ GameObject:
   - component: {fileID: 5777167146786445496}
   - component: {fileID: 5382548466387303350}
   - component: {fileID: 5604789532887592279}
+  - component: {fileID: 3764875454028592717}
   m_Layer: 5
   m_Name: PlayButton
   m_TagString: Untagged
@@ -8842,6 +8843,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 5473847299449607039}
   key: Pause
+--- !u!114 &3764875454028592717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4346056497533933648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 22
+  target: {fileID: 5473847299449607039}
+  visibility: {fileID: 8287887705338463486}
 --- !u!1 &4371565528217293792
 GameObject:
   m_ObjectHideFlags: 0
@@ -11356,6 +11372,7 @@ GameObject:
   - component: {fileID: 2890997073092841685}
   - component: {fileID: 4369815565643574192}
   - component: {fileID: 5689801481578850855}
+  - component: {fileID: 3003171321667207652}
   m_Layer: 5
   m_Name: SpeedUpButton
   m_TagString: Untagged
@@ -11560,6 +11577,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 3625719964432818466}
   key: Speed
+--- !u!114 &3003171321667207652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5750591646876322053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 23
+  target: {fileID: 3625719964432818466}
+  visibility: {fileID: 8287887705338463486}
 --- !u!1 &5799103129801799090
 GameObject:
   m_ObjectHideFlags: 0

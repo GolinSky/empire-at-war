@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.Tutorial
 {
-    /// <summary>Read side for the hint card. At most one hint is visible.</summary>
+    /// <summary>Read side for the hint card. At most one step is visible.</summary>
     public interface IHintService
     {
         event Action<HintDefinition> Shown;
@@ -13,21 +13,19 @@ namespace EmpireAtWar.Services.Tutorial
 
         HintDefinition Current { get; }
 
-        /// <summary>1-based position of the visible hint in the basics track; 0 for event hints.</summary>
-        int CurrentBasicNumber { get; }
+        /// <summary>Step progress in the lesson, such as "2/5"; empty for one-step lessons and fix steps.</summary>
+        string CurrentProgress { get; }
 
-        int BasicCount { get; }
-
-        /// <summary>Where the visible hint's trigger happened, when it has a place in the world.</summary>
+        /// <summary>The place the visible step marks, when it has one.</summary>
         bool TryGetWorldTarget(out Vector3 position);
 
-        /// <summary>Closes the visible hint and never shows it again. Throws when no hint is visible.</summary>
+        /// <summary>Skips the visible step's whole lesson and never shows it again. Throws when no step is visible.</summary>
         void Dismiss();
 
-        /// <summary>Forgets every seen hint and starts the track again from the first basic, in this match.</summary>
+        /// <summary>Forgets every seen lesson and starts onboarding again, in this match.</summary>
         void Restart();
 
-        /// <summary>Replaces [token] placeholders with names from the visible hint's trigger (ship, hazard…).</summary>
+        /// <summary>Replaces [unit], [hazard], [effects] (lesson trigger) and [ability] (selected unit) placeholders.</summary>
         string ResolveText(string text);
     }
 }

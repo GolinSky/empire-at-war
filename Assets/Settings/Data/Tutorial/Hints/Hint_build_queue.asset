@@ -14,19 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: build_queue
   title: Build queue
-  body: Queue another ship. Several build at once; cancel a queued ship to get its
-    credits back.
+  body: Your builds wait here. Click one to cancel it and get the credits back.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
   anchor: 3
-  trigger: 0
-  completion: 18
-  priority: 0
+  anchorFallback: 0
+  target: 0
+  completion: 72
+  listenFromShown: 1
+  requires: []
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 1
-  after: {fileID: 0}
-  autoCloseSeconds: 0
+  autoCloseSeconds: 4
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

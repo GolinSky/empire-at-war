@@ -14,18 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: stop_order
   title: Stop
-  body: Press the highlighted Stop button to halt the selected ships.
+  body: Click Stop to halt your units.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
   anchor: 8
-  trigger: 12
+  anchorFallback: 0
+  target: 0
   completion: 13
-  priority: 1
+  listenFromShown: 0
+  requires:
+  - state: 1
+    step: {fileID: 11400000, guid: 88d73ac2a2895c445bb1f34c29c24bc3, type: 2}
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 0
-  after: {fileID: 11400000, guid: 0b886541b7ecc224a971555c11801375, type: 2}
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

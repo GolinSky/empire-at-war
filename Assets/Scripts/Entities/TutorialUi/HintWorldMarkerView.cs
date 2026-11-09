@@ -3,8 +3,8 @@ using UnityEngine;
 namespace EmpireAtWar.Entities.TutorialUi
 {
     /// <summary>
-    /// Marks a world point for a hint: a pulsing ring with a bobbing chevron above it. Off screen it sticks to the
-    /// screen edge and an arrow points toward the target.
+    /// Marks a world point for a hint: a pulsing ring with a bobbing chevron above it. Off screen only an arrow
+    /// at the screen edge shows, pointing toward the target.
     /// </summary>
     public sealed class HintWorldMarkerView : MonoBehaviour
     {
@@ -38,6 +38,8 @@ namespace EmpireAtWar.Entities.TutorialUi
                 Mathf.Clamp(point.y, inner.yMin, inner.yMax));
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRoot, clamped, null, out Vector2 local);
             marker.anchoredPosition = local;
+            // Off screen only the arrow shows: a ring at the screen edge would read as a second target.
+            ring.gameObject.SetActive(isOnScreen);
             chevron.gameObject.SetActive(isOnScreen);
             edgeArrow.gameObject.SetActive(!isOnScreen);
             if (isOnScreen) return;

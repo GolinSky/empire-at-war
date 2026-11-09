@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4658119080979293294}
   - component: {fileID: 4767199979424165482}
   - component: {fileID: 783703316864763069}
+  - component: {fileID: 5705197032812797626}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -174,6 +175,21 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &5705197032812797626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 72894616053550305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 30
+  target: {fileID: 4603508320550710749}
+  visibility: {fileID: 4767199979424165482}
 --- !u!1 &123110571819329846
 GameObject:
   m_ObjectHideFlags: 0
@@ -3161,6 +3177,7 @@ MonoBehaviour:
   panelCanvasGroup: {fileID: 4767199979424165482}
   unitCapacityText: {fileID: 7008870773025925324}
   capacityFill: {fileID: 4315683764056972482}
+  tutorialAnchor: {fileID: 5705197032812797626}
 --- !u!225 &7540030169161493753
 CanvasGroup:
   m_ObjectHideFlags: 0

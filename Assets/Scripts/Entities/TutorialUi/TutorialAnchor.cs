@@ -48,17 +48,18 @@ namespace EmpireAtWar.Entities.TutorialUi
             _marks.Remove(markId);
         }
 
-        /// <summary>First visible anchor with this id; several prefabs may share one (single and group ability bars).</summary>
-        public static bool TryFind(TutorialAnchorId id, out RectTransform target)
+        /// <summary>
+        /// Every visible anchor with this id; the frame covers them all (Strong against + Weak against rows).
+        /// Single and group ability bars share an id but are never visible together.
+        /// </summary>
+        public static bool TryFindAll(TutorialAnchorId id, List<RectTransform> targets)
         {
+            targets.Clear();
+            if (id == TutorialAnchorId.None) return false;
             foreach (TutorialAnchor anchor in ACTIVE)
                 if (anchor.id == id && anchor.visibility.alpha > VISIBLE_ALPHA && anchor.target.gameObject.activeInHierarchy)
-                {
-                    target = anchor.target;
-                    return true;
-                }
-            target = null;
-            return false;
+                    targets.Add(anchor.target);
+            return targets.Count > 0;
         }
     }
 }

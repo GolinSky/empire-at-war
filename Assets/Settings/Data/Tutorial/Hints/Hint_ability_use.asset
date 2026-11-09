@@ -14,18 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: ability_use
   title: Use an ability
-  body: Click the highlighted ability. Some need a target, and each has a cooldown.
+  body: Click [ability]. It has a cooldown.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
   anchor: 21
-  trigger: 0
+  anchorFallback: 0
+  target: 0
   completion: 20
-  priority: 8
+  listenFromShown: 0
+  requires:
+  - state: 3
+    step: {fileID: 11400000, guid: 825636f72cae6ca46990434ca820f588, type: 2}
+  skipUnless: 7
   showDuringCombat: 1
-  interruptsBasics: 0
-  needsStationSelected: 0
-  after: {fileID: 11400000, guid: 825636f72cae6ca46990434ca820f588, type: 2}
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

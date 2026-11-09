@@ -8,21 +8,21 @@ namespace EmpireAtWar.Services.Tutorial
     {
         private readonly IUnitOrderService _orders;
         private readonly ILocalPlayer _player;
-        private readonly UnitActionId _action;
+        private readonly UnitActionId[] _actions;
 
         public bool IsMet { get; private set; }
 
-        public OrderIssuedHintCondition(IUnitOrderService orders, ILocalPlayer player, UnitActionId action)
+        public OrderIssuedHintCondition(IUnitOrderService orders, ILocalPlayer player, params UnitActionId[] actions)
         {
             _orders = orders;
             _player = player;
-            _action = action;
+            _actions = actions;
             _orders.OrderIssued += HandleOrderIssued;
         }
 
         private void HandleOrderIssued(UnitOrder order)
         {
-            if (order.Action == _action && _player.IsLocal(order.Issuer)) IsMet = true;
+            if (System.Array.IndexOf(_actions, order.Action) >= 0 && _player.IsLocal(order.Issuer)) IsMet = true;
         }
 
         public void Dispose() => _orders.OrderIssued -= HandleOrderIssued;

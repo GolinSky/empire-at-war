@@ -14,6 +14,9 @@ namespace EmpireAtWar.Services.VContainer
             if (hasCheatPanel) builder.Register<HintCheatPresenter>(Lifetime.Singleton).AsImplementedInterfaces();
             AssetRegistrations.RegisterShared<HintTrack>(builder, assets);
             builder.Register<HintConditionFactory>(Lifetime.Singleton);
+            builder.Register<ScoutUnits>(Lifetime.Singleton);
+            builder.Register<HintStates>(Lifetime.Singleton);
+            builder.Register<HintTargets>(Lifetime.Singleton);
             builder.Register<LocalUnitDamageTracker>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HintService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HintUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

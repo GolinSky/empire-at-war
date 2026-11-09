@@ -14,18 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: fog_deploy
   title: Deploy the scout
-  body: Your scout waits in reinforcements. Place it on the map.
+  body: Drag the marked scout onto the map.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
-  anchor: 13
-  trigger: 44
+  anchor: 29
+  anchorFallback: 13
+  target: 3
   completion: 45
-  priority: 2
+  listenFromShown: 1
+  requires:
+  - state: 9
+    step: {fileID: 11400000, guid: 92f1bf959dd308842a1baf3c6550e7f8, type: 2}
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 0
-  after: {fileID: 11400000, guid: 6c927864083e15e409baf91d6d50a8e6, type: 2}
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

@@ -7,13 +7,6 @@ namespace EmpireAtWar.Entities.TutorialUi
 {
     public static class HintInputFormatter
     {
-        public static List<HintInputPrompt> CreateActionPrompts(InputAction action)
-        {
-            List<HintInputPrompt> prompts = new List<HintInputPrompt>();
-            AddAction(prompts, action);
-            return prompts;
-        }
-
         public static List<HintInputPrompt> CreatePrompts(HintDefinition hint, InputActionAsset actions)
         {
             List<HintInputPrompt> prompts = new List<HintInputPrompt>();

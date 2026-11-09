@@ -14,18 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: camera_pan
   title: Move the camera
-  body: Press {0} or push the mouse to a screen edge to move the camera.
+  body: Press {0} or push the mouse to a screen edge.
   inputActions:
   - Camera/Move
   inputControls: []
   anchor: 0
-  trigger: 0
+  anchorFallback: 0
+  target: 0
   completion: 6
-  priority: 0
+  listenFromShown: 0
+  requires: []
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 0
-  after: {fileID: 0}
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

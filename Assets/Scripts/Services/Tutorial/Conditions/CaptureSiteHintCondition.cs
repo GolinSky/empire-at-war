@@ -41,6 +41,7 @@ namespace EmpireAtWar.Services.Tutorial
         {
             switch (_stage)
             {
+                case CaptureSiteStage.Exists: return true;
                 case CaptureSiteStage.Revealed: return site.IsRevealed;
                 case CaptureSiteStage.Captured: return _player.IsLocal(site.Owner);
                 case CaptureSiteStage.Building:

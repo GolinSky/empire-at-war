@@ -14,18 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: fog_select
   title: Select the scout
-  body: Select your new ship ({0}).
+  body: Click the marked scout ({0}).
   inputActions:
   - Battle/Select
   inputControls: []
   anchor: 0
-  trigger: 0
-  completion: 1
-  priority: 2
+  anchorFallback: 0
+  target: 8
+  completion: 74
+  listenFromShown: 1
+  requires: []
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 0
-  after: {fileID: 11400000, guid: 2d0e313a247806c4098bb66055e6fc23, type: 2}
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

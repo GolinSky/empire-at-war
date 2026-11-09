@@ -14,18 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: survival_prepare
   title: Survival
-  body: Build up before the wave arrives. Press Start wave now when you're ready.
+  body: Build up before the wave arrives. Press Start wave now when ready.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
   anchor: 16
-  trigger: 34
+  anchorFallback: 0
+  target: 0
   completion: 0
-  priority: 5
+  listenFromShown: 0
+  requires: []
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 1
-  needsStationSelected: 0
-  after: {fileID: 0}
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

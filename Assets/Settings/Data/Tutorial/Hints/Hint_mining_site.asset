@@ -13,18 +13,19 @@ MonoBehaviour:
   m_Name: Hint_mining_site
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: mining_site
-  title: Capture site
-  body: Keep ships inside the ring around this asteroid to capture it.
+  title: Capture
+  body: 'Keep units in the ring. Capturing takes a while: carry on meanwhile.'
   inputActions: []
   inputControls: []
   anchor: 0
-  trigger: 25
+  anchorFallback: 0
+  target: 4
   completion: 38
-  priority: 4
+  listenFromShown: 0
+  requires: []
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 0
-  after: {fileID: 0}
   autoCloseSeconds: 0
+  waitSilently: 1
   demo: 0
   previewAnchor: 0

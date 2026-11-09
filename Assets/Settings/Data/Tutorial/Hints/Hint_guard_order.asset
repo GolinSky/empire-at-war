@@ -14,18 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: guard_order
   title: Guard
-  body: Press Guard, then click a friendly unit. Your ships will protect it.
+  body: Click Guard, then click your station.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
   anchor: 9
-  trigger: 0
+  anchorFallback: 0
+  target: 3
   completion: 14
-  priority: 1
+  listenFromShown: 0
+  requires:
+  - state: 1
+    step: {fileID: 11400000, guid: 88d73ac2a2895c445bb1f34c29c24bc3, type: 2}
+  skipUnless: 0
   showDuringCombat: 0
-  interruptsBasics: 0
-  needsStationSelected: 0
-  after: {fileID: 11400000, guid: 2aaffb5d225f75f408bd8172cb36469e, type: 2}
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0

@@ -3,18 +3,20 @@ using EmpireAtWar.Models.Factions;
 
 namespace EmpireAtWar.Services.Tutorial
 {
-    /// <summary>Met when any next research tier is unlocked at the current station level and affordable.</summary>
+    /// <summary>Met when a next research tier (of one group, or any when null) is unlocked and affordable.</summary>
     public sealed class ResearchAffordableHintCondition : IPolledHintCondition
     {
         private readonly IFactionResearchModelObserver _research;
         private readonly IPlayerFactionModelObserver _faction;
         private readonly IEconomyModelObserver _economy;
+        private readonly bool? _isEconomy;
 
         public bool IsMet { get; private set; }
 
         public ResearchAffordableHintCondition(IFactionResearchModelObserver research,
-            IPlayerFactionModelObserver faction, IEconomyModelObserver economy)
+            IPlayerFactionModelObserver faction, IEconomyModelObserver economy, bool? isEconomy)
         {
+            _isEconomy = isEconomy;
             _research = research;
             _faction = faction;
             _economy = economy;
@@ -24,7 +26,8 @@ namespace EmpireAtWar.Services.Tutorial
         {
             if (IsMet) return;
             foreach (ResearchType type in _research.ResearchTypes)
-                if (_research.TryGetNextTier(type, out ResearchTierData tier) &&
+                if ((!_isEconomy.HasValue || ResearchGroup.IsEconomy(type) == _isEconomy.Value) &&
+                    _research.TryGetNextTier(type, out ResearchTierData tier) &&
                     tier.FactionData.AvailableLevel <= _faction.CurrentLevel &&
                     _economy.Money >= tier.FactionData.Price)
                 {

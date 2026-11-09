@@ -14,18 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: superweapon_ready
   title: Super weapon ready
-  body: Your super weapon is charged. Select it and pick a target.
+  body: Your super weapon is charged. Click it, then pick a target.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
   anchor: 14
-  trigger: 29
+  anchorFallback: 0
+  target: 0
   completion: 0
-  priority: 8
+  listenFromShown: 0
+  requires: []
+  skipUnless: 0
   showDuringCombat: 1
-  interruptsBasics: 1
-  needsStationSelected: 0
-  after: {fileID: 0}
   autoCloseSeconds: 0
+  waitSilently: 0
   demo: 0
   previewAnchor: 0
