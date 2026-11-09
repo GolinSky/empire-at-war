@@ -39,9 +39,13 @@ namespace EmpireAtWar.Models.Health
             HealthWeight = healthWeight;
         }
 
+        /// <summary>
+        /// A new life (first setup, unlocked or rebuilt) gets a new <see cref="Generation"/>, so shots aimed at the
+        /// old one are dropped; a live hardpoint refilled by an upgrade keeps it, so hits in flight still land.
+        /// </summary>
         public void SetHealth(float health, float hullDamageMultiplier)
         {
-            Generation++;
+            if (!IsInstalled || _originHealth <= 0f || IsDestroyed) Generation++;
             IsInstalled = true;
             _originHealth = health;
             Health = health;

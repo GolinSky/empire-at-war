@@ -131,7 +131,8 @@ namespace EmpireAtWar.Components.Ship.Audio
 
         public void HandleHealthChanged(IHealthModelObserver health)
         {
-            if (!_initialized) return;
+            // The death cue covers the killing hit; host (ApplyDamage) and client (Kill) both report it here first.
+            if (!_initialized || health.IsDestroyed) return;
             int transition = _shields.Advance(health.Shields, health.ShieldPercentage, Time.time, _data.ShieldUpThreshold, _data.ShieldCueCooldown);
             if (transition != 0)
                 _shipSfxService.TryPlayOneShot(_ship, transition < 0 ? _data.ShieldsDown : _data.ShieldsUp,

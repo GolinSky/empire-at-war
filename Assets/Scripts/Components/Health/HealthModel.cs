@@ -237,12 +237,19 @@ namespace EmpireAtWar.Models.Health
             {
                 DamageLiveHardPoints(hullDamage);
             }
+            else if (!HardPointModels[hardPointId].IsInstalled)
+            {
+                // A locked hardpoint has no hull multiplier; on a wreck the hit goes straight to the hull.
+                DamageHull(hullDamage);
+            }
             else
             {
                 DamageHardPoint(HardPointModels[hardPointId], hullDamage);
             }
 
+            // Listeners see the final health before death handlers release the unit.
             OnValueChanged?.Invoke();
+            if (IsDestroyed) OnDestroy?.Invoke();
         }
 
         /// <summary>Destroys the unit at once, ignoring shields and hardpoints (cheats and debugging).</summary>
@@ -314,14 +321,11 @@ namespace EmpireAtWar.Models.Health
             DamageHull(damage * hardPoint.HullDamageMultiplier);
         }
 
+        // Only marks the death; ApplyDamage raises OnDestroy after OnValueChanged.
         private void DamageHull(float damage)
         {
             Hull = Math.Max(0f, Hull - damage);
-            if (Hull <= 0f)
-            {
-                IsDestroyed = true;
-                OnDestroy?.Invoke();
-            }
+            if (Hull <= 0f) IsDestroyed = true;
         }
 
         private HardPointHealth GetHardPointHealth(HardPointType hardPointType)

@@ -961,7 +961,7 @@ namespace EmpireAtWar.Components.Weapon
             float damage = profile.Damage * profile.GetDamageBias(attackData.TargetClass) *
                            _modifiers.GetDamageMultiplier(attackData.TargetEntity);
             int ticks = Mathf.Max(1, Mathf.CeilToInt(damageDuration / DAMAGE_TICK_INTERVAL));
-            float expectedLoss = EstimateLoss(attackData, damage, profile.DamageType) / ticks;
+            float expectedLoss = EstimateLoss(attackData, hardPointModel, damage, profile.DamageType) / ticks;
             for (int i = 0; i < ticks; i++)
             {
                 _attackCoordinator.ScheduleImpact(this, attackData, hardPointModel, damage / ticks, profile.DamageType,
@@ -973,10 +973,11 @@ namespace EmpireAtWar.Components.Weapon
             DamageType damageType, int targetId)
         {
             // A hardpoint destroyed mid-flight still takes the hit; the health model spreads it over the live ones.
-            if (hardPointModel.Id != targetId || attackData.IsDestroyed || !attackData.Contains(hardPointModel))
+            if (hardPointModel.Id != targetId || attackData.IsDestroyed || !attackData.Contains(hardPointModel) ||
+                !attackData.CanStillHit(hardPointModel))
             {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-                if (attackData.IsDestroyed)
+                if (attackData.IsDestroyed || !attackData.CanStillHit(hardPointModel))
                     BattleTelemetry.RecordWastedImpact(_faction, _telemetryName, damageType,
                         _playerRoster.Get(attackData.TargetEntity.Owner).Faction, GetTelemetryTarget(attackData), damage);
 #endif
@@ -1001,15 +1002,36 @@ namespace EmpireAtWar.Components.Weapon
             attackData.TargetEntity.TryGetFacade(out IUnitTypeFacade type) ? type.UnitTypeId.ToString() : "Structure";
 #endif
 
-        // Expected shield or hull loss of one hit on a ship, so targets already receiving a killing volley can be
-        // skipped. Strikecraft are never tracked: their damage spreads over many small members.
-        private float EstimateLoss(AttackData attackData, float damage, DamageType damageType)
+        // Expected shield plus hull loss of one hit on a ship, so targets already receiving a killing volley can be
+        // skipped. Mirrors HealthModel.ApplyDamage: damage taken modifier, shield overflow, hardpoint hull multiplier.
+        // Strikecraft are never tracked: their damage spreads over many small members.
+        private float EstimateLoss(AttackData attackData, IHardPointModel hardPointModel, float damage,
+            DamageType damageType)
         {
             if (attackData.TargetClass.IsStrikecraft()) return 0f;
             IHealthModelObserver target = attackData.TargetHealth;
-            return target.HasShields && !target.IsLostShieldGenerator && !_damageMatrix.IsShieldPiercing(damageType)
-                ? damage * _damageMatrix.GetShipShieldMultiplier(damageType)
-                : damage * _damageMatrix.GetDamageMultiplier(damageType, attackData.TargetClass);
+            damage *= attackData.TargetEntity.GetFacade<ICombatModifiersFacade>().Modifiers.DamageTakenMultiplier;
+            float shieldLoss = 0f;
+            if (target.HasShields && !target.IsLostShieldGenerator && !_damageMatrix.IsShieldPiercing(damageType))
+            {
+                float shieldMultiplier = _damageMatrix.GetShipShieldMultiplier(damageType);
+                float shieldDamage = damage * shieldMultiplier;
+                if (shieldDamage <= target.Shields) return shieldDamage;
+                shieldLoss = target.Shields;
+                damage = (shieldDamage - target.Shields) / shieldMultiplier;
+            }
+
+            return shieldLoss + damage * _damageMatrix.GetDamageMultiplier(damageType, attackData.TargetClass) *
+                GetHullDamageMultiplier(target, hardPointModel);
+        }
+
+        // A live installed hardpoint scales hull damage; hits spread from a dead one or on a locked one count at 1.
+        private static float GetHullDamageMultiplier(IHealthModelObserver target, IHardPointModel hardPointModel)
+        {
+            HardPointModel[] hardPoints = target.HardPointModels;
+            if (hardPoints.Length == 0) return 1f;
+            HardPointModel hardPoint = hardPoints[hardPointModel.Id];
+            return hardPoint.IsInstalled && !hardPoint.IsDestroyed ? hardPoint.HullDamageMultiplier : 1f;
         }
 
         private static bool IsTargetValid(AttackData attackData, IHardPointModel hardPointModel) =>

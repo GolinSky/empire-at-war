@@ -69,6 +69,13 @@ namespace EmpireAtWar.Components.AttackComponent
         }
 
         /// <summary>
+        /// A ship spreads hits on a dead hardpoint over its live ones, so shots at it still count.
+        /// A fighter has its own hull: once it dies, shots at it hit nothing.
+        /// </summary>
+        public bool CanStillHit(IHardPointModel hardPointModel) =>
+            !hardPointModel.IsDestroyed || !TargetClass.IsStrikecraft();
+
+        /// <summary>
         /// Re-reads the target's hardpoints once none of the listed ones can be hit while the target still has
         /// live ones elsewhere, e.g. hardpoints restored or installed by a station upgrade.
         /// </summary>

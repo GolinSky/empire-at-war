@@ -448,11 +448,13 @@ namespace EmpireAtWar.Components.Weapon
             }
 
             // A salvo started on a live hardpoint finishes even if that hardpoint dies; the health model spreads the hits.
+            // A salvo at a fighter stops when the fighter dies, freeing the weapon for a live one.
             if (sequence.ShotsRemaining == 0 ||
                 !sequence.TargetGroup.CanAcquireTarget ||
                 sequence.Target.Generation != sequence.TargetGeneration ||
                 sequence.TargetGroup.IsDestroyed ||
-                !sequence.TargetGroup.Contains(sequence.Target))
+                !sequence.TargetGroup.Contains(sequence.Target) ||
+                !sequence.TargetGroup.CanStillHit(sequence.Target))
             {
                 sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);
                 return;
