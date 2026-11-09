@@ -47,6 +47,12 @@ try {
       Run('npm', ['ci', '--prefix', directory, '--ignore-scripts', '--no-fund', '--no-audit']);
     }
 
+    if (WINDOWS) {
+      Run('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', 'Tools/McpVault/Setup-Service.ps1']);
+    } else {
+      Run(process.execPath, ['Tools/McpVault/start.mjs']);
+    }
+
     // Read the shared mirror so package pins remain in the MCP configuration.
     const servers = JSON.parse(readFileSync(new URL('../.mcp.json', import.meta.url), 'utf8')).mcpServers;
     for (const [name, requirement] of [

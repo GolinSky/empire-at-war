@@ -2,6 +2,8 @@
   "name": "empire-at-war-vault-mcp",
   "private": true,
   "dependencies": {
-    "@bitbonsai/mcpvault": "0.16.0"
+    "@bitbonsai/mcpvault": "0.16.0",
+    "@modelcontextprotocol/node": "2.1.1",
+    "@modelcontextprotocol/server": "2.3.1"
   }
 }

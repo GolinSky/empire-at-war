@@ -25,11 +25,7 @@ startup_timeout_sec = 60
 tool_timeout_sec = 120
 
 [mcp_servers.empire-vault]
-command = "node"
-args = [
-  "Tools/McpVault/node_modules/@bitbonsai/mcpvault/dist/server.js",
-  "EmpireAtWarDocumentation",
-]
+url = "http://127.0.0.1:9123/mcp"
 
 [mcp_servers.graphify]
 enabled = true
