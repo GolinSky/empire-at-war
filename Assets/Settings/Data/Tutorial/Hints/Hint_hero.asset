@@ -17,8 +17,12 @@ MonoBehaviour:
   body: Heroes are strong, unique units. Click a hero portrait to jump the camera
     to it.
   inputActions: []
+  inputControls:
+  - <Mouse>/leftButton
   anchor: 15
   trigger: 30
   completion: 0
   priority: 3
   showDuringCombat: 0
+  interruptsBasics: 0
+  needsStationSelected: 0

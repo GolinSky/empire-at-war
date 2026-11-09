@@ -16,8 +16,12 @@ MonoBehaviour:
   title: Order from the minimap
   body: With ships selected, right-click the minimap to send them there.
   inputActions: []
+  inputControls:
+  - <Mouse>/rightButton
   anchor: 1
   trigger: 0
   completion: 16
   priority: 0
   showDuringCombat: 0
+  interruptsBasics: 0
+  needsStationSelected: 0

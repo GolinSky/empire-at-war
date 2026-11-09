@@ -17,8 +17,12 @@ MonoBehaviour:
   body: Reinforcements are waiting. Open reinforcements and place them in a zone
     you control.
   inputActions: []
+  inputControls:
+  - <Mouse>/leftButton
   anchor: 13
   trigger: 28
   completion: 0
   priority: 4
   showDuringCombat: 0
+  interruptsBasics: 0
+  needsStationSelected: 0

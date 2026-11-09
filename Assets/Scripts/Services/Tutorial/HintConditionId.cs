@@ -38,5 +38,10 @@ namespace EmpireAtWar.Services.Tutorial
         HazardEntered = 32,
         FogActive = 33,
         SurvivalPreparation = 34,
+        StationSelected = 35,
+        LevelUpQueued = 36,
+        ResearchQueued = 37,
+        MiningSiteCaptured = 38,
+        MiningSiteBuilding = 39,
     }
 }

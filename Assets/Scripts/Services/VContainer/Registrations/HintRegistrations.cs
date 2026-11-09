@@ -8,8 +8,10 @@ namespace EmpireAtWar.Services.VContainer
     /// <summary>In-match hints for the local human player. Hint progress lives in the project scope.</summary>
     public static class HintRegistrations
     {
-        public static void Register(IContainerBuilder builder, IAssetService assets)
+        /// <param name="hasCheatPanel">The economy module registers the cheat panel; its Tutorial tab restarts hints.</param>
+        public static void Register(IContainerBuilder builder, IAssetService assets, bool hasCheatPanel)
         {
+            if (hasCheatPanel) builder.Register<HintCheatPresenter>(Lifetime.Singleton).AsImplementedInterfaces();
             AssetRegistrations.RegisterShared<HintTrack>(builder, assets);
             builder.Register<HintConditionFactory>(Lifetime.Singleton);
             builder.Register<LocalUnitDamageTracker>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

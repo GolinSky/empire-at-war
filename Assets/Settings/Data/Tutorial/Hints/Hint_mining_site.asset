@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: mining_site
   title: Capture site
-  body: Keep ships inside the ring to capture this asteroid, then build a mining
-    facility or a battle asteroid on it.
+  body: Keep ships inside the ring around this asteroid to capture it.
   inputActions: []
   anchor: 0
   trigger: 25
-  completion: 26
+  completion: 38
   priority: 4
   showDuringCombat: 0
+  interruptsBasics: 0
+  needsStationSelected: 0

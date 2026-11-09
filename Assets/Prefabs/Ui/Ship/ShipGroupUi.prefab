@@ -1001,6 +1001,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 10
   target: {fileID: 6937444896489646621}
+  visibility: {fileID: 4003304680418406474}
 --- !u!1 &3708447864550003833
 GameObject:
   m_ObjectHideFlags: 0
@@ -2465,6 +2466,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 11
   target: {fileID: 1247235163403009163}
+  visibility: {fileID: 4003304680418406474}
 --- !u!1 &6021901704220572516
 GameObject:
   m_ObjectHideFlags: 0

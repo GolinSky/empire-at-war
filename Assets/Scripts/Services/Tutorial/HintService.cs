@@ -29,6 +29,7 @@ namespace EmpireAtWar.Services.Tutorial
         private float _now;
         private float _gapEnd;
         private float _lastDamage = float.NegativeInfinity;
+        private float _combatHoldStart = -1f;
 
         public event Action<HintDefinition> Shown;
         public event Action<HintDefinition, bool> Closed;
@@ -47,13 +48,45 @@ namespace EmpireAtWar.Services.Tutorial
             _battle = battle;
             _damage = damage;
             _progress = _repository.Load();
+            BuildQueues();
+            _damage.LocalUnitDamaged += HandleLocalUnitDamaged;
+        }
+
+        /// <summary>Forgets every seen hint and starts the track again from the first basic, in this match.</summary>
+        public void Restart()
+        {
+            if (_current != null)
+            {
+                HintDefinition hidden = _current.Definition;
+                _current.Condition.Dispose();
+                _current = null;
+                Closed?.Invoke(hidden, false);
+            }
+            DisposeQueues();
+            _repository.Reset();
+            BuildQueues();
+            _gapEnd = _now;
+            _combatHoldStart = -1f;
+        }
+
+        private void BuildQueues()
+        {
             foreach (HintDefinition hint in _track.Events)
                 if (!_progress.IsDone(hint.Id))
                     _waiting.Add(new PendingHint(hint, _conditions.CreateTrigger(hint.Trigger), 0));
             for (int i = 0; i < _track.Basics.Count; i++)
                 if (!_progress.IsDone(_track.Basics[i].Id))
                     _basics.Add(new PendingHint(_track.Basics[i], _conditions.CreateCompletion(_track.Basics[i].Completion), i + 1));
-            _damage.LocalUnitDamaged += HandleLocalUnitDamaged;
+        }
+
+        private void DisposeQueues()
+        {
+            foreach (PendingHint hint in _basics) hint.Condition.Dispose();
+            foreach (PendingHint hint in _waiting) hint.Condition.Dispose();
+            foreach (PendingHint hint in _ready) hint.Condition.Dispose();
+            _basics.Clear();
+            _waiting.Clear();
+            _ready.Clear();
         }
 
         public void Tick()
@@ -75,10 +108,24 @@ namespace EmpireAtWar.Services.Tutorial
             PromoteTriggered();
             DropCompletedBeforeShown();
             if (_now < _gapEnd) return;
-            bool isQuiet = _now - _lastDamage >= _track.CombatQuietSeconds;
-            PendingHint next = PickReady(isQuiet);
+            bool isQuiet = IsQuiet();
+            bool hasBasics = _basics.Count > 0;
+            // Basics come first; only urgent event hints jump ahead of them.
+            PendingHint next = PickReady(isQuiet, hasBasics);
             if (next != null) Show(next, false);
-            else if (isQuiet && _basics.Count > 0) Show(_basics[0], true);
+            else if (isQuiet && hasBasics) Show(_basics[0], true);
+        }
+
+        // A long fight must not stall the tutorial: after the hold limit the waiting hint shows anyway.
+        private bool IsQuiet()
+        {
+            if (_now - _lastDamage >= _track.CombatQuietSeconds)
+            {
+                _combatHoldStart = -1f;
+                return true;
+            }
+            if (_combatHoldStart < 0f) _combatHoldStart = _now;
+            return _now - _combatHoldStart >= _track.MaxCombatHoldSeconds;
         }
 
         public bool TryGetWorldTarget(out Vector3 position)
@@ -140,11 +187,11 @@ namespace EmpireAtWar.Services.Tutorial
             }
         }
 
-        private PendingHint PickReady(bool isQuiet)
+        private PendingHint PickReady(bool isQuiet, bool hasBasics)
         {
             PendingHint best = null;
             foreach (PendingHint hint in _ready)
-                if ((isQuiet || hint.Definition.ShowDuringCombat) &&
+                if ((isQuiet || hint.Definition.ShowDuringCombat) && (!hasBasics || hint.Definition.InterruptsBasics) &&
                     (best == null || hint.Definition.Priority > best.Definition.Priority))
                     best = hint;
             return best;
@@ -156,6 +203,7 @@ namespace EmpireAtWar.Services.Tutorial
             else _ready.Remove(hint);
             _current = hint;
             _currentIsBasic = isBasic;
+            _combatHoldStart = -1f;
             Shown?.Invoke(hint.Definition);
         }
 
@@ -199,12 +247,7 @@ namespace EmpireAtWar.Services.Tutorial
         {
             _damage.LocalUnitDamaged -= HandleLocalUnitDamaged;
             _current?.Condition.Dispose();
-            foreach (PendingHint hint in _basics) hint.Condition.Dispose();
-            foreach (PendingHint hint in _waiting) hint.Condition.Dispose();
-            foreach (PendingHint hint in _ready) hint.Condition.Dispose();
-            _basics.Clear();
-            _waiting.Clear();
-            _ready.Clear();
+            DisposeQueues();
         }
 
         private sealed class PendingHint

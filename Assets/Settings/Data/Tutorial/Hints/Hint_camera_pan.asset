@@ -22,3 +22,5 @@ MonoBehaviour:
   completion: 6
   priority: 0
   showDuringCombat: 0
+  interruptsBasics: 0
+  needsStationSelected: 0

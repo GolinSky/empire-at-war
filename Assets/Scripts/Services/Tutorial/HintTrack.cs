@@ -15,10 +15,13 @@ namespace EmpireAtWar.Services.Tutorial
         [Min(0f)] [SerializeField] private float minimumGapSeconds = 3f;
         [Tooltip("Hints without Show During Combat wait this long after a local unit last took damage.")]
         [Min(0f)] [SerializeField] private float combatQuietSeconds = 5f;
+        [Tooltip("Longest a waiting hint is held back by ongoing combat; long fights would otherwise stall the tutorial.")]
+        [Min(0f)] [SerializeField] private float maxCombatHoldSeconds = 20f;
 
         public IReadOnlyList<HintDefinition> Basics => basics;
         public IReadOnlyList<HintDefinition> Events => events;
         public float MinimumGapSeconds => minimumGapSeconds;
         public float CombatQuietSeconds => combatQuietSeconds;
+        public float MaxCombatHoldSeconds => maxCombatHoldSeconds;
     }
 }

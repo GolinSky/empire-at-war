@@ -17,8 +17,12 @@ MonoBehaviour:
   body: This ship has abilities. Click one in the ability bar to use it; some need
     a target, and each has a cooldown.
   inputActions: []
+  inputControls:
+  - <Mouse>/leftButton
   anchor: 10
   trigger: 19
   completion: 20
   priority: 8
   showDuringCombat: 1
+  interruptsBasics: 0
+  needsStationSelected: 0

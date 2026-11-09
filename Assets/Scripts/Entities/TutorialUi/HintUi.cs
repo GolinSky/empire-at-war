@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
@@ -32,7 +33,10 @@ namespace EmpireAtWar.Entities.TutorialUi
         [SerializeField] private RectTransform worldMarker;
         [SerializeField] private CanvasGroup worldMarkerGroup;
         [SerializeField] private RectTransform edgeArrow;
+        [SerializeField] private RectTransform inputRow;
+        [SerializeField] private HintInputGlyph inputTemplate;
 
+        private readonly List<HintInputGlyph> _inputGlyphs = new List<HintInputGlyph>();
         private IHintPresenter _presenter;
         private Vector2 _cardRestPosition;
         private float _slide;
@@ -74,6 +78,22 @@ namespace EmpireAtWar.Entities.TutorialUi
             _isOpen = true;
             SetCardVisible(true);
             ApplySlide();
+        }
+
+        public void SetBody(string body) => bodyText.text = body;
+
+        public void SetInputs(IReadOnlyList<HintInputPrompt> prompts)
+        {
+            for (int i = 0; i < prompts.Count; i++)
+            {
+                if (i == _inputGlyphs.Count)
+                    _inputGlyphs.Add(Instantiate(inputTemplate, inputRow));
+                _inputGlyphs[i].Render(prompts[i]);
+                _inputGlyphs[i].gameObject.SetActive(true);
+            }
+            for (int i = prompts.Count; i < _inputGlyphs.Count; i++)
+                _inputGlyphs[i].gameObject.SetActive(false);
+            inputRow.gameObject.SetActive(prompts.Count > 0);
         }
 
         /// <param name="completed">True shows a short done mark before the card leaves.</param>

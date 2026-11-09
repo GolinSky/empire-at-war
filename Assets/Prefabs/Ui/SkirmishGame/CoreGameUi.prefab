@@ -1247,6 +1247,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 14
   target: {fileID: 5552737442985809816}
+  visibility: {fileID: 8287887705338463486}
 --- !u!1 &196347665789258203
 GameObject:
   m_ObjectHideFlags: 0
@@ -4426,6 +4427,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 8
   target: {fileID: 5389128858640901650}
+  visibility: {fileID: 8287887705338463486}
 --- !u!1 &1707023356019334359
 GameObject:
   m_ObjectHideFlags: 0
@@ -4734,6 +4736,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 13
   target: {fileID: 8622812822377810143}
+  visibility: {fileID: 8287887705338463486}
 --- !u!1 &2013190141996966548
 GameObject:
   m_ObjectHideFlags: 0
@@ -5557,6 +5560,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 5
   target: {fileID: 3976019959470191957}
+  visibility: {fileID: 8287887705338463486}
 --- !u!1 &2390274390531866964
 GameObject:
   m_ObjectHideFlags: 0
@@ -14963,6 +14967,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 9
   target: {fileID: 1046726105455099981}
+  visibility: {fileID: 8287887705338463486}
 --- !u!1 &6799241407036644376
 GameObject:
   m_ObjectHideFlags: 0
@@ -15832,6 +15837,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 7
   target: {fileID: 1251064690854716885}
+  visibility: {fileID: 8287887705338463486}
 --- !u!1 &7250814461985284798
 GameObject:
   m_ObjectHideFlags: 0

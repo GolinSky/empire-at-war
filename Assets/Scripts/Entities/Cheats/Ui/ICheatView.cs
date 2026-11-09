@@ -18,6 +18,9 @@ namespace EmpireAtWar.Views.Cheats
         event Action<PlayerId> LevelUpEnemyStationRequested;
         event Action LevelUpAllEnemyStationsRequested;
 
+        /// <summary>Handled by the tutorial hints only when they run in this match.</summary>
+        event Action RestartHintsRequested;
+
         void SetEnemies(IReadOnlyList<PlayerSlot> enemies);
         void SetPlatforms(IReadOnlyList<DefendPlatformType> platforms);
 

@@ -23,5 +23,8 @@ namespace EmpireAtWar.Services.Tutorial
 
         /// <summary>Closes the visible hint and never shows it again. Throws when no hint is visible.</summary>
         void Dismiss();
+
+        /// <summary>Forgets every seen hint and starts the track again from the first basic, in this match.</summary>
+        void Restart();
     }
 }

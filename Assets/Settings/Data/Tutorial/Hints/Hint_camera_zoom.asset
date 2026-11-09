@@ -14,10 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: camera_zoom
   title: Zoom
-  body: Scroll the mouse wheel to zoom in and out.
-  inputActions: []
+  body: Scroll the mouse wheel or press {1} to zoom in and out.
+  inputActions:
+  - Camera/ZoomScroll
+  - Camera/Zoom
+  inputControls: []
   anchor: 0
   trigger: 0
   completion: 7
   priority: 0
   showDuringCombat: 0
+  interruptsBasics: 0
+  needsStationSelected: 0

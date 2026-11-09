@@ -16,8 +16,12 @@ MonoBehaviour:
   title: Stop and Guard
   body: Stop halts your ships. Guard makes them protect a friendly unit.
   inputActions: []
+  inputControls:
+  - <Mouse>/leftButton
   anchor: 5
   trigger: 12
   completion: 0
   priority: 1
   showDuringCombat: 0
+  interruptsBasics: 0
+  needsStationSelected: 0

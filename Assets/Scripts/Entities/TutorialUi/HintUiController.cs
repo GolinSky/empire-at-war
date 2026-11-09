@@ -1,11 +1,16 @@
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Tutorial;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace EmpireAtWar.Entities.TutorialUi
 {
@@ -15,16 +20,26 @@ namespace EmpireAtWar.Entities.TutorialUi
         private readonly ISettingsService _settings;
         private readonly ICameraService _camera;
         private readonly InputActionsProvider _input;
+        private readonly IInputBindings _bindings;
+        private readonly ISelectionService _selection;
+        private readonly IStationRegistry _stations;
+        private readonly ILocalPlayer _player;
         private readonly Vector3[] _corners = new Vector3[4];
         private HintUi _ui;
+        private bool _isStationSelectionPrompt;
 
         public HintUiController(IUiService uiService, IHintService hints, ISettingsService settings,
-            ICameraService camera, InputActionsProvider input) : base(uiService)
+            ICameraService camera, InputActionsProvider input, ISelectionService selection,
+            IStationRegistry stations, ILocalPlayer player, IInputBindings bindings) : base(uiService)
         {
             _hints = hints;
             _settings = settings;
             _camera = camera;
             _input = input;
+            _bindings = bindings;
+            _selection = selection;
+            _stations = stations;
+            _player = player;
         }
 
         public void Initialize()
@@ -35,17 +50,31 @@ namespace EmpireAtWar.Entities.TutorialUi
             _ui.Show();
             _hints.Shown += HandleShown;
             _hints.Closed += HandleClosed;
+            _bindings.BindingsChanged += RefreshInputs;
         }
 
         public void LateTick()
         {
             HintDefinition hint = _hints.Current;
             if (hint == null) return;
-            bool hasAnchor = TutorialAnchor.TryFind(hint.Anchor, out RectTransform anchor) &&
+            // Build-panel hints point at the station until it is selected, because the panel only fills then.
+            bool markStation = hint.NeedsStationSelected &&
+                               _selection.PlayerSelectionContext.SelectionType != SelectionType.Base;
+            if (markStation != _isStationSelectionPrompt) SetInputPrompts(hint, markStation);
+            RectTransform anchor = null;
+            bool hasAnchor = !markStation && TutorialAnchor.TryFind(hint.Anchor, out anchor) &&
                              anchor.gameObject.activeInHierarchy;
             _ui.SetAnchorFrame(hasAnchor, hasAnchor ? ScreenRect(anchor) : default);
-            bool hasTarget = _hints.TryGetWorldTarget(out Vector3 position);
+            bool hasTarget = markStation ? TryGetStation(out Vector3 position) : _hints.TryGetWorldTarget(out position);
             _ui.SetWorldMarker(hasTarget, hasTarget ? _camera.SceneCamera.WorldToScreenPoint(position) : default);
+        }
+
+        private bool TryGetStation(out Vector3 position)
+        {
+            position = default;
+            if (!_stations.TryGetLivingStation(_player.Id, out IEntity station)) return false;
+            position = station.GetFacade<IEntityTransformFacade>().Transform.position;
+            return true;
         }
 
         public void Dismiss() => _hints.Dismiss();
@@ -60,33 +89,29 @@ namespace EmpireAtWar.Entities.TutorialUi
         {
             int number = _hints.CurrentBasicNumber;
             string progress = number > 0 ? $"{number}/{_hints.BasicCount}" : string.Empty;
-            _ui.OpenHint(hint.Title, FormatBody(hint), progress);
+            _ui.OpenHint(hint.Title, HintInputFormatter.FormatBody(hint, _input.Actions.asset), progress);
+            SetInputPrompts(hint, hint.NeedsStationSelected &&
+                _selection.PlayerSelectionContext.SelectionType != SelectionType.Base);
         }
 
         private void HandleClosed(HintDefinition hint, bool completed) => _ui.CloseHint(completed);
 
-        // Body placeholders take the live binding text, so rebound keys show correctly.
-        private string FormatBody(HintDefinition hint)
+        // Settings edits update the open card without restarting its animation.
+        private void RefreshInputs()
         {
-            if (hint.InputActions.Count == 0) return hint.Body;
-            object[] keys = new object[hint.InputActions.Count];
-            for (int i = 0; i < keys.Length; i++)
-            {
-                InputAction action = _input.Actions.asset.FindAction(hint.InputActions[i], throwIfNotFound: true);
-                keys[i] = $"<b>{KeyName(action)}</b>";
-            }
-            return string.Format(hint.Body, keys);
+            HintDefinition hint = _hints.Current;
+            if (hint == null) return;
+            _ui.SetBody(HintInputFormatter.FormatBody(hint, _input.Actions.asset));
+            SetInputPrompts(hint, hint.NeedsStationSelected &&
+                _selection.PlayerSelectionContext.SelectionType != SelectionType.Base);
         }
 
-        // First binding only (W/S/A/D, not every alternative); overrides apply.
-        private static string KeyName(InputAction action)
+        private void SetInputPrompts(HintDefinition hint, bool selectStation)
         {
-            InputBinding first = action.bindings[0];
-            if (!first.isComposite) return BindingPathNames.Readable(first.effectivePath);
-            string name = string.Empty;
-            for (int i = 1; i < action.bindings.Count && action.bindings[i].isPartOfComposite; i++)
-                name += (name.Length > 0 ? "/" : string.Empty) + BindingPathNames.Readable(action.bindings[i].effectivePath);
-            return name;
+            _isStationSelectionPrompt = selectStation;
+            _ui.SetInputs(selectStation
+                ? HintInputFormatter.CreateActionPrompts(_input.Actions.Battle.Select)
+                : HintInputFormatter.CreatePrompts(hint, _input.Actions.asset));
         }
 
         private Rect ScreenRect(RectTransform anchor)
@@ -100,6 +125,7 @@ namespace EmpireAtWar.Entities.TutorialUi
         {
             _hints.Shown -= HandleShown;
             _hints.Closed -= HandleClosed;
+            _bindings.BindingsChanged -= RefreshInputs;
             if (!ReferenceEquals(_ui, null)) _ui.Dispose();
         }
     }

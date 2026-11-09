@@ -16,8 +16,12 @@ MonoBehaviour:
   title: Survival
   body: Build up before the wave arrives. Press Start wave now when you're ready.
   inputActions: []
+  inputControls:
+  - <Mouse>/leftButton
   anchor: 16
   trigger: 34
   completion: 0
   priority: 5
   showDuringCombat: 0
+  interruptsBasics: 1
+  needsStationSelected: 0

@@ -26,7 +26,7 @@ created: 2026-11-08
   - Raycasts only on card buttons; no full-screen dim.
   - Target highlight: pulsing cyan ring on UI anchor (only pulsing element); world target → ground ring + bouncing chevron; off-screen target → screen-edge arrow.
   - Completion: ~0.5 s checkmark, card slides out; slide-in ~0.2 s; quiet audio cue.
-  - Avoid: red/yellow (danger/warning) and team colours for hints; Next-button progression; callout bubbles (B) and top banner (C) — rejected.
+  - Red is reserved for the required mouse control (user request 2026-11-09); keep target frames cyan. Avoid: yellow warning accents and team colours for hints; Next-button progression; callout bubbles (B) and top banner (C) — rejected.
 - **Local only.** Hints are local-player UI; nothing goes through the multiplayer command sink. `BattleSimulation` mode excluded.
 - **Plain text** in hint SOs (project has no localisation). Avoid: localisation keys/tables.
 - **Text-only card** — no advisor portrait, no voice.
@@ -103,7 +103,28 @@ Each hint: card → highlight → completion condition → short confirm feedbac
 - [ ] **Phase 8 — settings & polish**: done — `GameplaySettingsData.showHints` toggle row "Show tutorial hints" + "Reset hints" button in `SettingsUi` (tooltips added), `ISettingsService.SetShowHints` for card "Turn off hints", `JsonHintProgressRepository` moved to `ProjectScope` (shared cached instance; Reset applies next match). **Open**: audio cue (no neutral UI clip / one-shot API in `IInterfaceSfxService` — needs a sound choice); analytics funnel (optional, not done).
 - Verification 2026-11-09: compiles clean, console clean, prefab diffs additive, hint ids unique, all input paths resolve. Full EditMode suite (user-requested): run 1 → 8 failures: `BattleHudControls_DoNotAcquireKeyboardFocusOrNavigate` (HintUi buttons had Automatic navigation → fixed to None) + 7 `InputBindingServiceTests` that read localized key names from the active OS keyboard layout (Ukrainian: `Ц` vs `W`; unrelated to hints). Run 2 → **2926/2926 passed**. Not run in-game.
 - Rule: battle HUD `Selectable`s need `Navigation.Mode.None` (enforced by `BattleInputPrefabTests`).
-- Known issue: `InputBindingServiceTests` (and Settings binding labels via `GetBindingDisplayString`) depend on the OS keyboard layout; fail when a non-Latin layout is active.
+- Fixed 2026-11-09: binding labels were OS-layout dependent (`GetBindingDisplayString` asks the device). `InputBindingService.GetBindingDisplayString` + hint card now use `BindingPathNames.Readable` (bound path, short names). Side effect: arrows read "Up Arrow" instead of "Up". `BattleInput` 272/272, `Ui` 249/249 pass (run under a Latin layout; Ukrainian layout not re-tested). Committed `8868fcda0`.
+
+## Playtest fixes (2026-11-09, user feedback)
+- Capture hint showed before ship selection → event hints now wait until basics are finished unless `interruptsBasics` (attack, super weapon ready, Survival prep).
+- Level-up hint had no station marking → new basic `select_station`; `needsStationSelected` hints (build, counters, queue, level up, research) put the world marker on the local station (`IStationRegistry.TryGetLivingStation`) until it is selected.
+- Level/research counted on completion → completion now `LevelUpQueued` / `ResearchQueued` (`QueuedRequestHintCondition`, request enters build queue = bought); follow-ups `level_building` / `research_building` point at the build queue until done.
+- Capture site taught two things at once → `mining_site` (capture, done = `MiningSiteCaptured`) then `site_build` (choose Mine / Battle Asteroid, done = `MiningSiteBuilding`). `CaptureSiteStage`: Revealed, Captured, Building, MiningOperational.
+- Hints stopped after attacking → ongoing combat held every non-combat hint forever; `HintTrack.maxCombatHoldSeconds = 20` caps the hold.
+- `TutorialAnchor.visibility` = owning view's `CanvasGroup`; hidden views (alpha 0) no longer get a frame.
+- Content now 11 basics + 21 events. Old saved progress keeps finished ids → use Settings ▸ Reset hints to replay.
+- Verified: compiles clean, console clean, 32 hints validate. Tests not run for this batch; not run in-game. Not committed.
+- Reset tools (2026-11-09): Cheats ▸ Tutorial ▸ "Reset and Restart Hints" (`HintCheatPresenter` → `IHintService.Restart()`: hides the card, clears progress, rebuilds queues live; registered only when the economy cheat panel exists). Editor: `Tools/Empire At War/Tutorial/Reset Hint Progress` (`HintProgressMenu`, disabled in Play Mode — the match would save its copy back). Settings ▸ Reset hints still applies from the next match. Compiles clean; not run in-game.
+- Rejected 2026-11-09: pausing enemy attacks while basics run (user: skip). Avoid re-proposing.
+
+## Input glyphs (2026-11-09)
+- Implemented: `TutorialInputAtlas.png` (transparent 1536×1024; neutral/LMB/RMB/wheel/both mouse variants + blank keycap), sliced sprites in `Assets/Art/Textures/Ui/`; `HintUi.prefab` explicitly wires the input row and inactive glyph template.
+- `HintInputFormatter` resolves primary `InputBinding.effectivePath`; axis keys use `/`, modifier chords use `+`, alternative actions use `or`, missing bindings show `Unbound`. `HintInputGlyph` overlays dynamic letters on the white keycap; active mouse controls are red.
+- `HintUiController` subscribes/unsubscribes `IInputBindings.BindingsChanged`; open cards refresh without restarting their animation. Station prerequisite → live `Battle/Select`; selected station → configured purchase/hover input.
+- Action-backed prompts: camera pan/zoom, ship/group/station/site selection, movement/attack, waypoints. Fixed `inputControls`: minimap LMB/RMB and UI button clicks. Hover uses neutral mouse; informational hints omit the input row.
+- Copy: auto-power A is a button label, not a key; superweapon prompt explicitly covers clicking its activation button. Fixed minimap controls remain independent of rebinding `Battle/Command`.
+- Verification: Unity imports saved; six sprites and all glyph Inspector references resolve; compilation finished; rendered camera pan, RMB movement, wheel/R/F zoom and LMB selection cards inspected. Preview-only render-target cleanup warning fixed; final Console delta has no errors. Tests not run (`Ui`, `BattleInput`); in-game acceptance pending.
+- Broader plan stays active: audio cue and other existing unimplemented items remain out of this input-glyph task.
 
 ## Edge Cases
 - Rebound or unbound key → glyph from current binding; unbound → action name + "unbound".

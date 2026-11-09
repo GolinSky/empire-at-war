@@ -14,10 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: superweapon_ready
   title: Super weapon ready
-  body: Your super weapon is charged. Select it and pick a target.
+  body: Your super weapon is charged. Click its button to enter targeting mode.
   inputActions: []
+  inputControls:
+  - <Mouse>/leftButton
   anchor: 14
   trigger: 29
   completion: 0
   priority: 8
   showDuringCombat: 1
+  interruptsBasics: 1
+  needsStationSelected: 0

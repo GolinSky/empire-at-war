@@ -16,8 +16,12 @@ MonoBehaviour:
   title: Minimap
   body: Click the minimap to jump the camera there.
   inputActions: []
+  inputControls:
+  - <Mouse>/leftButton
   anchor: 1
   trigger: 0
   completion: 15
   priority: 0
   showDuringCombat: 0
+  interruptsBasics: 0
+  needsStationSelected: 0

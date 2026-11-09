@@ -166,3 +166,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 2
   target: {fileID: 7826620417224372875}
+  visibility: {fileID: 4118319410730507669}

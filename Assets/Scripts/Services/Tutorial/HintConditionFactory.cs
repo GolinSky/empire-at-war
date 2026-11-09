@@ -1,5 +1,7 @@
 using System;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiniMap;
@@ -86,8 +88,17 @@ namespace EmpireAtWar.Services.Tutorial
         {
             switch (id)
             {
-                case HintConditionId.ShipSelected: return new ShipSelectedHintCondition(_selection, 1);
-                case HintConditionId.MultipleShipsSelected: return new ShipSelectedHintCondition(_selection, 2);
+                case HintConditionId.ShipSelected: return new SelectionHintCondition(_selection, SelectionType.Ship, 1);
+                case HintConditionId.MultipleShipsSelected:
+                    return new SelectionHintCondition(_selection, SelectionType.Ship, 2);
+                case HintConditionId.StationSelected:
+                    return new SelectionHintCondition(_selection, SelectionType.Base, 1);
+                case HintConditionId.LevelUpQueued:
+                    return new QueuedRequestHintCondition(_faction, typeof(LevelUnitRequest));
+                case HintConditionId.ResearchQueued:
+                    return new QueuedRequestHintCondition(_faction, typeof(ResearchUnitRequest));
+                case HintConditionId.MiningSiteCaptured: return Site(CaptureSiteKind.Mining, CaptureSiteStage.Captured);
+                case HintConditionId.MiningSiteBuilding: return Site(CaptureSiteKind.Mining, CaptureSiteStage.Building);
                 case HintConditionId.UnitQueued: return new UnitQueuedHintCondition(_faction, 1);
                 case HintConditionId.SeveralUnitsQueued: return new UnitQueuedHintCondition(_faction, 2);
                 case HintConditionId.UnitCompleted: return new UnitCompletedHintCondition(_faction);
@@ -117,9 +128,10 @@ namespace EmpireAtWar.Services.Tutorial
                         ? new NeverHintCondition()
                         : new ResearchAffordableHintCondition(_research, _faction, _economy);
                 case HintConditionId.EnemySeen: return new EnemySeenHintCondition(_entities, _player, _vision);
-                case HintConditionId.MiningSiteSeen: return Site(CaptureSiteKind.Mining, false);
-                case HintConditionId.MiningSiteOwned: return Site(CaptureSiteKind.Mining, true);
-                case HintConditionId.SatelliteSiteSeen: return Site(CaptureSiteKind.Satellite, false);
+                case HintConditionId.MiningSiteSeen: return Site(CaptureSiteKind.Mining, CaptureSiteStage.Revealed);
+                case HintConditionId.MiningSiteOwned:
+                    return Site(CaptureSiteKind.Mining, CaptureSiteStage.MiningOperational);
+                case HintConditionId.SatelliteSiteSeen: return Site(CaptureSiteKind.Satellite, CaptureSiteStage.Revealed);
                 case HintConditionId.ReinforcementAvailable:
                     return new ReinforcementAvailableHintCondition(_reinforcements);
                 case HintConditionId.SuperWeaponReady: return new SuperWeaponReadyHintCondition(_superWeapons);
@@ -139,9 +151,9 @@ namespace EmpireAtWar.Services.Tutorial
 
         private IHintCondition Order(UnitActionId action) => new OrderIssuedHintCondition(_orders, _player, action);
 
-        private IHintCondition Site(CaptureSiteKind kind, bool requireOwned) => _sites == null
+        private IHintCondition Site(CaptureSiteKind kind, CaptureSiteStage stage) => _sites == null
             ? new NeverHintCondition()
-            : new CaptureSiteHintCondition(_sites, _player, kind, requireOwned);
+            : new CaptureSiteHintCondition(_sites, _player, kind, stage);
 
         private static T ResolveOptional<T>(IObjectResolver resolver) where T : class =>
             resolver.TryResolve(typeof(T), out object instance) ? (T)instance : null;

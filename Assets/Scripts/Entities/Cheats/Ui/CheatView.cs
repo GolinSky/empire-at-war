@@ -21,7 +21,7 @@ namespace EmpireAtWar.Views.Cheats
         private const string DEFAULT_MONEY_AMOUNT = "10000";
 
         private static readonly string[] TAB_NAMES =
-            { "Economy", "Ships", "Station", "Defend", "Enemy", "Superweapons", "Debug" };
+            { "Economy", "Ships", "Station", "Defend", "Enemy", "Superweapons", "Debug", "Tutorial" };
         private IReadOnlyList<DefendPlatformType> _platforms = Array.Empty<DefendPlatformType>();
         private static readonly SuperWeaponType[] SUPER_WEAPONS =
             (SuperWeaponType[])Enum.GetValues(typeof(SuperWeaponType));
@@ -58,6 +58,7 @@ namespace EmpireAtWar.Views.Cheats
         public event Action<string> AddAllEnemiesMoneyRequested;
         public event Action<PlayerId> LevelUpEnemyStationRequested;
         public event Action LevelUpAllEnemyStationsRequested;
+        public event Action RestartHintsRequested;
 
         public event Action<string> AddMoneyRequested;
 
@@ -241,6 +242,7 @@ namespace EmpireAtWar.Views.Cheats
                 case 4: DrawEnemyTab(); break;
                 case 5: DrawSuperWeaponsTab(); break;
                 case 6: DrawDebugTab(); break;
+                case 7: DrawTutorialTab(); break;
             }
 
             GUILayout.EndScrollView();
@@ -277,6 +279,13 @@ namespace EmpireAtWar.Views.Cheats
             {
                 GrantAllSuperWeaponsRequested?.Invoke();
             }
+        }
+
+        private void DrawTutorialTab()
+        {
+            GUILayout.Label("Forgets every seen hint and starts again from the first basic hint.");
+            if (GUILayout.Button("Reset and Restart Hints", GUILayout.Height(36f)))
+                RestartHintsRequested?.Invoke();
         }
 
         private void DrawDebugTab()

@@ -3,23 +3,26 @@ using EmpireAtWar.Services.Selection;
 
 namespace EmpireAtWar.Services.Tutorial
 {
-    public sealed class ShipSelectedHintCondition : IHintCondition, IObserver<ISelectionSubject>
+    /// <summary>Met when the player selects at least a number of units of one selection type (ships, station).</summary>
+    public sealed class SelectionHintCondition : IHintCondition, IObserver<ISelectionSubject>
     {
         private readonly ISelectionService _selection;
+        private readonly SelectionType _type;
         private readonly int _minimumCount;
 
         public bool IsMet { get; private set; }
 
-        public ShipSelectedHintCondition(ISelectionService selection, int minimumCount)
+        public SelectionHintCondition(ISelectionService selection, SelectionType type, int minimumCount)
         {
             _selection = selection;
+            _type = type;
             _minimumCount = minimumCount;
             _selection.AddObserver(this);
         }
 
         public void UpdateState(ISelectionSubject value)
         {
-            if (value.PlayerSelectionContext.SelectionType == SelectionType.Ship &&
+            if (value.PlayerSelectionContext.SelectionType == _type &&
                 value.PlayerSelectionContext.Count >= _minimumCount)
                 IsMet = true;
         }
