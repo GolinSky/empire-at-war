@@ -12,7 +12,9 @@ namespace EmpireAtWar.Components.TeamColor
 
         public UnitOutlineRenderPass()
         {
-            renderPassEvent = RenderPassEvent.AfterRenderingOpaques;
+            // Outlines do not write depth; the skybox and transparent nebula would overwrite
+            // their pixels outside the hull if this pass ran before background rendering.
+            renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
             profilingSampler = new ProfilingSampler(PASS_NAME);
         }
 
