@@ -1,9 +1,10 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace EmpireAtWar.Entities.Heroes
 {
-    public sealed class HeroIconUi : MonoBehaviour
+    public sealed class HeroIconUi : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] private Image iconImage;
         [SerializeField] private Button focusButton;
@@ -12,6 +13,7 @@ namespace EmpireAtWar.Entities.Heroes
         private IHeroPresenter _presenter;
         private long _entityId;
         private bool? _canFocus;
+        private bool _isDisposed;
 
         public void Initialize(long entityId, Sprite icon, IHeroPresenter presenter, bool canFocus)
         {
@@ -32,10 +34,20 @@ namespace EmpireAtWar.Entities.Heroes
 
         public void Dispose()
         {
+            _isDisposed = true;
             focusButton.onClick.RemoveListener(HandleClick);
         }
 
-        private void HandleClick() => _presenter.FocusHero(_entityId);
+        private void HandleClick() => _presenter.SelectHero(_entityId);
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (_isDisposed || !focusButton.IsActive() || !focusButton.IsInteractable() ||
+                eventData.button != PointerEventData.InputButton.Left || eventData.clickCount != 2)
+                return;
+
+            _presenter.FocusHero(_entityId);
+        }
 
         private void OnDestroy() => Dispose();
     }

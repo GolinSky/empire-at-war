@@ -236,6 +236,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public void RemoveSelectable(ISelectionContext context) { }
 
+            public void SelectEntity(IEntity entity) => throw new NotSupportedException();
             public void SelectCurrentUnitsByType(EmpireAtWar.Entities.Units.UnitTypeId unitTypeId) { }
 
             public void AddObserver(IObserver<ISelectionSubject> observer) => _observers.Add(observer);

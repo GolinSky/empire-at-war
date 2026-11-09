@@ -42,7 +42,7 @@ namespace EmpireAtWar.Tests.Editor
                 HeroUiController controller = new HeroUiController(
                     new UiServiceStub(ui), entities, factions,
                     TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()),
-                    null, null, battleState);
+                    null, null, battleState, null);
                 Entity hero = new Entity(new LivingHealth(), entities,
                     new IEntityFacade[] { new UnitTypeFacade(UnitTypeId.Ship(heroType)) },
                     TestPlayers.Human, 42, System.Array.Empty<IPooledEntityEvents>(),

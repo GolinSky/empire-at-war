@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Ui.Base;
 using VContainer;
@@ -22,6 +23,7 @@ namespace EmpireAtWar.Entities.Heroes
         private readonly ILocalPlayer _localPlayer;
         private readonly IVisionService _vision;
         private readonly ICameraService _camera;
+        private readonly ISelectionService _selection;
         private readonly INotifier<BattleState> _battleState;
         private readonly List<IEntity> _heroes = new List<IEntity>();
 
@@ -31,13 +33,14 @@ namespace EmpireAtWar.Entities.Heroes
 
         public HeroUiController(IUiService uiService, IEntityLocator entities, FactionCatalog factions,
             ILocalPlayer localPlayer, IVisionService vision, ICameraService camera,
-            INotifier<BattleState> battleState) : base(uiService)
+            INotifier<BattleState> battleState, ISelectionService selection) : base(uiService)
         {
             _entities = entities;
             _factions = factions;
             _localPlayer = localPlayer;
             _vision = vision;
             _camera = camera;
+            _selection = selection;
             _battleState = battleState;
         }
 
@@ -70,6 +73,15 @@ namespace EmpireAtWar.Entities.Heroes
                 else
                     _ui.SetFocusable(hero.Id, CanFocus(hero));
             }
+        }
+
+        public void SelectHero(long entityId)
+        {
+            if (_isDisposed || !_isBattleActive || !_entities.TryGetEntity(entityId, out IEntity hero) ||
+                !_heroes.Contains(hero) || hero.HealthModel.IsDestroyed || !CanFocus(hero))
+                return;
+
+            _selection.SelectEntity(hero);
         }
 
         public void FocusHero(long entityId)

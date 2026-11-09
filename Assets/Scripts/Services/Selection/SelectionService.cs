@@ -99,6 +99,18 @@ namespace EmpireAtWar.Services.Battle
             ClearSelection(context.Scope);
         }
 
+        public void SelectEntity(IEntity entity)
+        {
+            if (entity.HealthModel.IsDestroyed || !entity.TryGetFacade(out IEntitySelectionFacade command))
+                return;
+
+            _lastTappedEntityId = null;
+            ResetAllSelections();
+            _selectionBuffer.Clear();
+            _selectionBuffer.Add(new SelectionEntry(entity, command));
+            SetSelection(GetScope(entity), _selectionBuffer);
+        }
+
         public void SelectCurrentUnitsByType(UnitTypeId unitTypeId)
         {
             _selectionBuffer.Clear();
