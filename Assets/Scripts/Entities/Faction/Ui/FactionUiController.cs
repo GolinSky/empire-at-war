@@ -24,6 +24,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private readonly IPlayerCommandSink _commands;
         private readonly PlayerSlot _owner;
         private readonly EmpireAtWar.Services.Audio.IInterfaceSfxService _interfaceAudio;
+        private readonly EmpireAtWar.Services.BattleNotifications.IBattleNotifications _notifications;
         private readonly IPlayerFactionModelObserver _model;
         private readonly IFactionResearchModelObserver _research;
         private readonly IUnitRequestFactory _unitRequestFactory;
@@ -63,9 +64,11 @@ namespace EmpireAtWar.Entities.Faction.Ui
             FactionRoster roster,
             EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements,
             IAssetService assets,
-            ShipsData shipsData, EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio) : base(uiService, cancelRouter)
+            ShipsData shipsData, EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio,
+            EmpireAtWar.Services.BattleNotifications.IBattleNotifications notifications) : base(uiService, cancelRouter)
         {
             _interfaceAudio = interfaceAudio;
+            _notifications = notifications;
             _placement = placement;
             _assets = assets;
             _shipsData = shipsData;
@@ -113,6 +116,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
             if (_economy.Money < unitRequest.FactionData.Price)
             {
                 _interfaceAudio.PlayRejected();
+                _notifications.Post(EmpireAtWar.Services.BattleNotifications.BattleNotificationPriority.Feedback,
+                    "Insufficient credits", "credits");
                 return;
             }
             _commands.Submit(PurchaseUnitCommand.From(_owner.Id, unitRequest));

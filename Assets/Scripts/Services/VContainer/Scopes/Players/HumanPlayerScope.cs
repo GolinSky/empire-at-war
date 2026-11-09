@@ -88,6 +88,8 @@ namespace EmpireAtWar.Services.VContainer
             if ((features & BattleFeatures.Economy) != 0)
             {
                 builder.Register<FactionAnnouncementService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+                builder.Register<EmpireAtWar.Services.BattleNotifications.EconomyNotifier>(Lifetime.Singleton)
+                    .AsImplementedInterfaces().AsSelf();
                 builder.Register<ClientPlayerEconomyFeedback>(Lifetime.Singleton).AsImplementedInterfaces();
             }
         }

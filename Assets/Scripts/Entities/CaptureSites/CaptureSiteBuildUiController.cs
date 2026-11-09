@@ -1,4 +1,5 @@
 using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Services.BattleNotifications;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Tooltip;
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         private readonly ICaptureSiteBuildSelection _selection;
         private readonly CaptureSiteData _data;
         private readonly EmpireAtWar.Services.Audio.IInterfaceSfxService _interfaceAudio;
+        private readonly IBattleNotifications _notifications;
         private readonly TooltipRequests _tooltips;
         private readonly IPointerInput _pointer;
         private readonly IUiPlacement _placement;
@@ -29,8 +31,10 @@ namespace EmpireAtWar.Entities.CaptureSites
         public CaptureSiteBuildUiController(IUiService uiService, ICaptureSiteBuildSelection selection,
             CaptureSiteData data, ITooltipService tooltipService,
             EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio,
-            IPointerInput pointer, IUiPlacement placement, InputActionsProvider inputActions) : base(uiService, null)
+            IPointerInput pointer, IUiPlacement placement, InputActionsProvider inputActions,
+            IBattleNotifications notifications) : base(uiService, null)
         {
+            _notifications = notifications;
             _command = inputActions.Actions.Battle.Command;
             _pointer = pointer;
             _placement = placement;
@@ -80,6 +84,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             if (!_selection.CanAfford(_data.GetCost(type).Price))
             {
                 _interfaceAudio.PlayRejected();
+                _notifications.Post(BattleNotificationPriority.Feedback, "Insufficient credits", "credits");
                 return;
             }
             _selection.BuildSelected(type);

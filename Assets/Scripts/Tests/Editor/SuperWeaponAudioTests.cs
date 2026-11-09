@@ -207,7 +207,8 @@ namespace EmpireAtWar.Tests.Editor
                     localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), uiService: null, cancelRouter: null, tooltipService: null,
                     faction: null, bindings: null, battleState: null, model: model,
                     targeting: new SuperWeaponTargetingModel(), unitTargeting: null, data: null,
-                    interfaceAudio: audio, interfaceData: data, commands: commands);
+                    interfaceAudio: audio, interfaceData: data, commands: commands,
+                    notifications: new EmpireAtWar.Services.BattleNotifications.BattleNotificationFeed());
                 SetField(presenter, "_view", new View());
                 var states = (Dictionary<SuperWeaponType, SuperWeaponState>)typeof(SuperWeaponPresenter)
                     .GetField("_lastStates", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(presenter);

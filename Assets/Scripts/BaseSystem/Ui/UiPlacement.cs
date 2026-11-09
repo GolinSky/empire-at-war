@@ -71,6 +71,7 @@ namespace EmpireAtWar.Ui.Base
                     { typeof(ShipBuildUi), buildPipelineSlot },
                     { typeof(FpsUi), dynamicCanvas.transform },
                     { typeof(EmpireAtWar.Entities.TutorialUi.HintUi), dynamicCanvas.transform },
+                    { typeof(EmpireAtWar.Entities.BattleNotifications.BattleNotificationUi), dynamicCanvas.transform },
                     { typeof(UnitOrderFeedbackUi), feedbackCanvas.transform },
                     { typeof(CaptureSiteBuildUi), contextualSlot },
                     { typeof(EndGameUi), endGameSlot },

@@ -60,6 +60,8 @@ namespace EmpireAtWar.Services.VContainer
 
         public void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
         {
+            builder.Register<EmpireAtWar.Services.BattleNotifications.CaptureSiteNotifier>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
             if (player.Has(BattleFeatures.Economy))
                 builder.Register<CaptureSiteAnnouncer>(Lifetime.Singleton).AsImplementedInterfaces();
         }

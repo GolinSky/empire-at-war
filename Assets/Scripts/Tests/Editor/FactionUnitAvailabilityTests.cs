@@ -210,7 +210,7 @@ namespace EmpireAtWar.Tests.Editor
                 uiService: null, placement: null, cancelRouter: null, commands: null, owner: null,
                 model: model, research: null, unitRequestFactory: null, routeNavigation: null,
                 tooltipService: null, economy: null, hud: null, battleState: null, roster: null,
-                reinforcements: null, assets: null, shipsData: null, interfaceAudio: null);
+                reinforcements: null, assets: null, shipsData: null, interfaceAudio: null, notifications: null);
         }
 
         private sealed class AvailabilityPresenter : IFactionPresenter

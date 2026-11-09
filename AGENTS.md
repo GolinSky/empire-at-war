@@ -253,7 +253,7 @@ Run the tests for the areas a change touches, not the whole suite. Every EditMod
 | `Entities/EnemyFaction`, `Services/Enemy`, `Editor/AI` | `EnemyAi` |
 | `Components/FogOfWar`, `Components/Radar`, `Entities/FogOfWar`, `Services/FogOfWar`, `Services/Radar`, `Services/Vision` | `Vision` |
 | `Components/Selection`, `Entities/CinematicCamera`, `Entities/UnitActions`, `Entities/UnitOrderFeedback`, `Services/Input`, `Services/Camera`, `Services/Selection`, `Services/UnitOrders`, `Services/PlayerCommands`, `Services/UiRouting` | `BattleInput` |
-| `Components/Ui`, `Components/TeamColor`, `Entities/*Ui`, `Entities/Tooltip`, `Entities/MainMenu`, `Entities/Menu`, `Entities/MiniMap`, `Entities/Loading`, `Entities/Fade`, `Entities/Heroes`, `Services/Tooltip`, `Services/Settings`, `Services/Fade` | `Ui` |
+| `Components/Ui`, `Components/TeamColor`, `Entities/*Ui`, `Entities/BattleNotifications`, `Services/BattleNotifications`, `Entities/Tooltip`, `Entities/MainMenu`, `Entities/Menu`, `Entities/MiniMap`, `Entities/Loading`, `Entities/Fade`, `Entities/Heroes`, `Services/Tooltip`, `Services/Settings`, `Services/Fade` | `Ui` |
 | `Services/Audio` | `Audio` |
 | `Services/Networking` | `Networking` |
 | `Entities/Game`, `Entities/CoreGame`, `Entities/Saves`, `Entities/Players`, `Services/Saves`, `Services/BattleService`, `Services/Player`, `Services/Repository` | `GameFlow` |

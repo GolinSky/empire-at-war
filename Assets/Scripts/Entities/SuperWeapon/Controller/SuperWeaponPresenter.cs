@@ -7,6 +7,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Model;
+using EmpireAtWar.Services.BattleNotifications;
 using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
@@ -28,6 +29,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         private readonly ILocalPlayer _localPlayer;
         private readonly EmpireAtWar.Services.Audio.IInterfaceSfxService _interfaceAudio;
         private readonly EmpireAtWar.Services.Audio.InterfaceSfxData _interfaceData;
+        private readonly IBattleNotifications _notifications;
         private readonly System.Collections.Generic.Dictionary<SuperWeaponType, SuperWeaponState> _lastStates = new();
         private bool _isBattleRunning;
         private readonly ISuperWeaponFireService _superWeaponFireService;
@@ -59,9 +61,11 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             SuperWeaponTargetingModel targeting,
             UnitActionTargetingModel unitTargeting,
             SuperWeaponData data, EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio,
-            EmpireAtWar.Services.Audio.InterfaceSfxData interfaceData, IPlayerCommandSink commands)
+            EmpireAtWar.Services.Audio.InterfaceSfxData interfaceData, IPlayerCommandSink commands,
+            IBattleNotifications notifications)
             : base(uiService, cancelRouter)
         {
+            _notifications = notifications;
             _commands = commands;
             _localPlayer = localPlayer;
             _interfaceAudio = interfaceAudio;
@@ -206,6 +210,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             if (!_superWeaponFireService.CanTarget(_localPlayer.Id, target))
             {
                 _interfaceAudio.PlayRejected();
+                _notifications.Post(BattleNotificationPriority.Feedback, "Invalid target", "invalid-target");
                 return;
             }
             _targeting.Cancel();

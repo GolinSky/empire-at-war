@@ -3,6 +3,7 @@ using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.BattleNotifications;
 using EmpireAtWar.Services.Networking.Messages;
 using EmpireAtWar.Services.Saves;
 using Mirror;
@@ -17,12 +18,14 @@ namespace EmpireAtWar.Services.Networking
         private readonly IUnitRequestFactory _requests;
         private readonly FactionRoster _roster;
         private readonly StationLevelData _levels;
+        private readonly EconomyNotifier _notifications;
 
         public ClientPlayerEconomyFeedback(IMatchSession session, FactionAnnouncementService announcements,
-            IUnitRequestFactory requests, FactionRoster roster, StationLevelData levels)
+            IUnitRequestFactory requests, FactionRoster roster, StationLevelData levels, EconomyNotifier notifications)
         {
             _session = session;
             _announcements = announcements;
+            _notifications = notifications;
             _requests = requests;
             _roster = roster;
             _levels = levels;
@@ -51,6 +54,7 @@ namespace EmpireAtWar.Services.Networking
                 request = UnitRequestSave.CreateRequest(message.RequestKind, message.RequestKey,
                     message.RequestTier, _requests, _roster, _levels);
             _announcements.AnnounceReplicated(message.Kind, request, message.UnitCapacity, message.StationLevel);
+            _notifications.ShowReplicated(message.Kind, request, message.StationLevel);
         }
     }
 }

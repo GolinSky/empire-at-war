@@ -44,6 +44,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SurvivalReplicatedState>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SurvivalSaveSource>(Lifetime.Singleton).As<IBattleSaveSource>();
             builder.Register<SurvivalHudUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<EmpireAtWar.Services.BattleNotifications.SurvivalNotifier>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
             builder.Register<SurvivalWaveAnalytics>(Lifetime.Singleton).AsImplementedInterfaces();
         }
     }

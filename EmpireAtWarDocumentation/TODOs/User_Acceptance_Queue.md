@@ -112,6 +112,10 @@ created: "2026-10-29\r"
   - [ ] Manual: wheel forward zooms in; `R` zooms in; `F` zooms out; `InvertZoom` on reverses wheel + keys.
   - [ ] Manual: start cinematic in skirmish → shot lengths 3–8 s; resized ships fit the frame through all shot types.
 
+- [ ] [[Done/Features/Battle_Notifications_Plan]] — Skirmish: card look/readability at game resolution, slide/fade, ✕ dismiss, no click-through around cards; stack clear of Survival HUD and tutorial card.
+- [ ] [[Done/Features/Battle_Notifications_Plan]] — Trigger each card once (attack, hull 25%, hero/capital loss, grouped losses, fleet, enemy/own station level, sites, zones, hazard, research/unit/superweapon, rejections, survival waves); confirm silence during load/save restore and that the Outcome card does not clash with `EndGameUi`.
+- [ ] [[Done/Features/Battle_Notifications_Plan]] — Run `Ui` (`BattleNotificationFeedTests`) and `Audio` categories when authorized; not run by agents.
+
 ## Gameplay and Balance
 
 - [ ] [[Done/Features/Harmonic_Bomb_Ability]] — In skirmish, verify the stationary drop, ring visibility and per-member falloff with a Fett, including caster death during the fuse.

@@ -158,6 +158,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<BattleRestorer>(Lifetime.Singleton);
             builder.Register<BattleRestoreStep>(Lifetime.Singleton);
             UiRegistrations.Register(builder, Assets, transform);
+            BattleNotificationRegistrations.Register(builder, Battle);
             builder.Register<FadeService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EmpireAtWar.Entities.Fade.FadeUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();

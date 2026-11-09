@@ -39,7 +39,11 @@ namespace EmpireAtWar.Services.VContainer
                 builder.Register<EnemySuperWeaponController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
 
-        public void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot) =>
+        public void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
+        {
             builder.Register<SuperWeaponPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<EmpireAtWar.Services.BattleNotifications.SuperWeaponNotifier>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
+        }
     }
 }
