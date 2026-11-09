@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 85254514926260142}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -35.56534, y: -12.892809, z: -31.406538}
+  m_LocalPosition: {x: -34.661034, y: -12.912665, z: -31.756739}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -58,7 +58,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 14
 --- !u!135 &3987369241989925882
 SphereCollider:
@@ -170,7 +169,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 4
 --- !u!135 &3798494072087654210
 SphereCollider:
@@ -251,7 +249,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 2
 --- !u!135 &6942772357704589892
 SphereCollider:
@@ -363,7 +360,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 11
 --- !u!135 &7951092455702929266
 SphereCollider:
@@ -413,7 +409,7 @@ Transform:
   m_GameObject: {fileID: 547900782891425638}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 33.052784, y: -13.008155, z: -14.923127}
+  m_LocalPosition: {x: 32.897896, y: -12.716601, z: -14.740246}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -444,7 +440,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 32
 --- !u!135 &4427590004043022937
 SphereCollider:
@@ -600,7 +595,7 @@ Transform:
   m_GameObject: {fileID: 1347259950321632337}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -33.08217, y: -13.008155, z: -14.974211}
+  m_LocalPosition: {x: -33.163105, y: -12.716601, z: -15.199792}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -631,7 +626,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 32
 --- !u!135 &2066444728763407820
 SphereCollider:
@@ -5579,7 +5573,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 23
 --- !u!135 &4003378627771429784
 SphereCollider:
@@ -5660,7 +5653,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 23
 --- !u!135 &97305590665542423
 SphereCollider:
@@ -5708,7 +5700,7 @@ Transform:
   m_GameObject: {fileID: 2299973935690985421}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.42137527, y: 1.826314, z: -1.017293}
+  m_LocalPosition: {x: -0.26637268, y: 1.5353136, z: -1.2002935}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5741,7 +5733,7 @@ Transform:
   m_GameObject: {fileID: 2340362303615745363}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -16.032455, y: -13.145405, z: 33.84012}
+  m_LocalPosition: {x: -14.964103, y: -13.3473015, z: 33.519585}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5772,7 +5764,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 14
 --- !u!135 &4181624131138003300
 SphereCollider:
@@ -5820,7 +5811,7 @@ Transform:
   m_GameObject: {fileID: 2741740883600977536}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.3094254, z: 0}
+  m_LocalPosition: {x: -0.9039993, y: 3.3294258, z: 0.35000038}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5884,7 +5875,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 4
 --- !u!135 &2118757405989055179
 SphereCollider:
@@ -5965,7 +5955,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 4
 --- !u!135 &270395685707138467
 SphereCollider:
@@ -6046,7 +6035,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 2
 --- !u!135 &530070976454891432
 SphereCollider:
@@ -6189,7 +6177,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 23
 --- !u!135 &7279041277309850690
 SphereCollider:
@@ -6270,7 +6257,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 23
 --- !u!135 &768566220423822428
 SphereCollider:
@@ -6944,7 +6930,7 @@ Transform:
   m_GameObject: {fileID: 3874312559819077290}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.3094864, z: 0}
+  m_LocalPosition: {x: 0.9039993, y: 3.3294868, z: 0.35000038}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7008,7 +6994,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 4
 --- !u!135 &7439671852275327898
 SphereCollider:
@@ -7089,7 +7074,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 23
 --- !u!135 &6624121844417724778
 SphereCollider:
@@ -12490,7 +12474,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 2
 --- !u!135 &1330893039921218307
 SphereCollider:
@@ -12633,7 +12616,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 2
 --- !u!135 &260785139762009027
 SphereCollider:
@@ -12683,7 +12665,7 @@ Transform:
   m_GameObject: {fileID: 5472578519343062734}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16.032421, y: -13.145405, z: 33.84012}
+  m_LocalPosition: {x: 14.964061, y: -13.3473015, z: 33.519615}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12714,7 +12696,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 14
 --- !u!135 &1598446152282890670
 SphereCollider:
@@ -12869,7 +12850,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 11
 --- !u!135 &2070918640324346603
 SphereCollider:
@@ -13012,7 +12992,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 23
 --- !u!135 &829048179064948668
 SphereCollider:
@@ -13093,7 +13072,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 4
 --- !u!135 &5234639964737289373
 SphereCollider:
@@ -13348,7 +13326,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 4
 --- !u!135 &5192775537757932242
 SphereCollider:
@@ -13396,7 +13373,7 @@ Transform:
   m_GameObject: {fileID: 6750849179522032432}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.1011105, y: 1.9460955, z: 0}
+  m_LocalPosition: {x: 1.182106, y: 1.6550951, z: 0.22599983}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13491,7 +13468,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 4
 --- !u!135 &7421419238237858492
 SphereCollider:
@@ -13572,7 +13548,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 2
 --- !u!135 &7914609496774584479
 SphereCollider:
@@ -14752,7 +14727,7 @@ Transform:
   m_GameObject: {fileID: 7509015714745866982}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.900753, z: 0}
+  m_LocalPosition: {x: 1.0679998, y: 3.1027527, z: 0.3199997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -19843,7 +19818,7 @@ Transform:
   m_GameObject: {fileID: 7818011303314510714}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 35.565296, y: -12.892809, z: -31.406538}
+  m_LocalPosition: {x: 34.66107, y: -12.912812, z: -31.756641}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -19874,7 +19849,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 14
 --- !u!135 &366281468041761637
 SphereCollider:
@@ -20152,7 +20126,7 @@ Transform:
   m_GameObject: {fileID: 8528865296758338974}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.9009361, z: 0}
+  m_LocalPosition: {x: -1.0679998, y: 3.1029358, z: 0.3199997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -20291,7 +20265,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 4
 --- !u!135 &740678788837030541
 SphereCollider:
@@ -20372,7 +20345,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 2
 --- !u!135 &8946801608728561497
 SphereCollider:

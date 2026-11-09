@@ -57,7 +57,6 @@ MonoBehaviour:
     <Min>k__BackingField: -110
     <Max>k__BackingField: 110
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &828530702353715718
 GameObject:
@@ -231,7 +230,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &2393354419923569794
 GameObject:
@@ -290,7 +288,6 @@ MonoBehaviour:
     <Min>k__BackingField: -110
     <Max>k__BackingField: 110
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &3120446593140378204
 GameObject:
@@ -382,7 +379,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 14
 --- !u!1 &3623717812178450207
 GameObject:
@@ -1573,7 +1569,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &3946728022218975876
 GameObject:
@@ -1673,7 +1668,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 14
 --- !u!1 &4574325545387188949
 GameObject:
@@ -2128,7 +2122,7 @@ Transform:
   m_GameObject: {fileID: 5895137685783738845}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.683975, z: 0}
+  m_LocalPosition: {x: 0, y: 0.4280249, z: -0.37599945}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2317,7 +2311,6 @@ MonoBehaviour:
     <Min>k__BackingField: -110
     <Max>k__BackingField: 110
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &7775370771934379326
 GameObject:
@@ -2376,7 +2369,6 @@ MonoBehaviour:
     <Min>k__BackingField: -110
     <Max>k__BackingField: 110
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &8018689604782209503
 GameObject:
@@ -2613,7 +2605,7 @@ Transform:
   m_GameObject: {fileID: 8936184945764004382}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.0415967, z: -9.000001}
+  m_LocalPosition: {x: 0.00000780509, y: 1.9300922, z: -8.624201}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

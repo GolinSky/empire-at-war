@@ -57,7 +57,6 @@ MonoBehaviour:
     <Min>k__BackingField: 0
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 94
 --- !u!1 &15926973625801887
 GameObject:
@@ -84,7 +83,7 @@ Transform:
   m_GameObject: {fileID: 15926973625801887}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.4831076, z: -0.0000019073486}
+  m_LocalPosition: {x: 1.006, y: -1.5191069, z: 0.32699585}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -147,7 +146,6 @@ MonoBehaviour:
     <Min>k__BackingField: 0
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 90
 --- !u!1 &875718239203946682
 GameObject:
@@ -175,7 +173,7 @@ Transform:
   m_GameObject: {fileID: 875718239203946682}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.014347076, y: 12.801359, z: -37.442368}
+  m_LocalPosition: {x: -0.014347089, y: 12.801357, z: -36.850506}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -228,7 +226,7 @@ Transform:
   m_GameObject: {fileID: 1578172708005244920}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6, y: -5.365204, z: 30}
+  m_LocalPosition: {x: 5.371899, y: -7.496257, z: 29.820538}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -259,7 +257,6 @@ MonoBehaviour:
     <Min>k__BackingField: -90
     <Max>k__BackingField: 90
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 95
 --- !u!1 &1592463230248179486
 GameObject:
@@ -287,7 +284,7 @@ Transform:
   m_GameObject: {fileID: 1592463230248179486}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.0143477265, y: -8.881142, z: -52.3083}
+  m_LocalPosition: {x: 0.00003640437, y: -6.949218, z: -52.436867}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5175,7 +5172,7 @@ Transform:
   m_GameObject: {fileID: 2345738463360719309}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.313226e-10, y: -0.9312067, z: 0.0000038146973}
+  m_LocalPosition: {x: 0.0000000018626451, y: -0.93120766, z: -0.590992}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5238,7 +5235,6 @@ MonoBehaviour:
     <Min>k__BackingField: 0
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 90
 --- !u!1 &2863221074785920881
 GameObject:
@@ -5297,7 +5293,7 @@ Transform:
   m_GameObject: {fileID: 3356061450528515506}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.75, y: -7.291806, z: 19.999998}
+  m_LocalPosition: {x: -7.7440467, y: -7.2560234, z: 19.672653}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5328,7 +5324,6 @@ MonoBehaviour:
     <Min>k__BackingField: -90
     <Max>k__BackingField: 90
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 95
 --- !u!1 &3487589206137149362
 GameObject:
@@ -10611,7 +10606,7 @@ Transform:
   m_GameObject: {fileID: 3860619464296757342}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -6.2968817, z: 0.0000019073486}
+  m_LocalPosition: {x: 2.797, y: -4.9898815, z: 1.7570038}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15478,7 +15473,7 @@ Transform:
   m_GameObject: {fileID: 4312339573585609171}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.7068577, y: 2.1577382, z: -0.0000009536743}
+  m_LocalPosition: {x: -0.5418577, y: 2.7837386, z: 0.25099945}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15575,7 +15570,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 0
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 90
 --- !u!1 &4718282758433700144
 GameObject:
@@ -15697,7 +15691,7 @@ Transform:
   m_GameObject: {fileID: 5128799817589393691}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 7.2118855, z: 0.0000038146973}
+  m_LocalPosition: {x: -0.014, y: 5.2798862, z: 0.12900543}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15790,7 +15784,7 @@ Transform:
   m_GameObject: {fileID: 5587611231904160787}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 8.41, z: -29.319998}
+  m_LocalPosition: {x: 0, y: 7.942879, z: -29.784237}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -15821,7 +15815,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 0
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 94
 --- !u!1 &5631694575607817989
 GameObject:
@@ -15848,7 +15841,7 @@ Transform:
   m_GameObject: {fileID: 5631694575607817989}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.4831076, z: -0.0000019073486}
+  m_LocalPosition: {x: 0.6279998, y: 0.6478925, z: 0.17899895}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15911,7 +15904,7 @@ Transform:
   m_GameObject: {fileID: 5853004395117403250}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.74, y: 8.41, z: -29.32}
+  m_LocalPosition: {x: 1.9430248, y: 7.1033044, z: -31.07734}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -15942,7 +15935,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 0
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 94
 --- !u!1 &5895938977360534613
 GameObject:
@@ -16001,7 +15993,7 @@ Transform:
   m_GameObject: {fileID: 5998994348881162668}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -5.365204, z: 29.999998}
+  m_LocalPosition: {x: 0.00000006938201, y: -6.02379, z: 29.944534}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -16032,7 +16024,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 48
 --- !u!1 &6555491409316780655
 GameObject:
@@ -16059,7 +16050,7 @@ Transform:
   m_GameObject: {fileID: 6555491409316780655}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -6.2968817, z: 0.0000019073486}
+  m_LocalPosition: {x: 0, y: -5.8298817, z: 0.4640026}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16091,7 +16082,7 @@ Transform:
   m_GameObject: {fileID: 6583915365765513083}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.5, y: -9.21841, z: 10}
+  m_LocalPosition: {x: 11.664767, y: -9.844493, z: 9.748756}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -16122,7 +16113,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 0
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 90
 --- !u!1 &6633736499701581123
 GameObject:
@@ -16233,7 +16223,6 @@ MonoBehaviour:
     <Min>k__BackingField: -90
     <Max>k__BackingField: 90
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 94
 --- !u!1 &7084892980757991083
 GameObject:
@@ -17393,7 +17382,7 @@ Transform:
   m_GameObject: {fileID: 7187245909647881632}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6, y: -5.365204, z: 30}
+  m_LocalPosition: {x: -5.3719172, y: -7.4962735, z: 29.820545}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -17424,7 +17413,6 @@ MonoBehaviour:
     <Min>k__BackingField: -90
     <Max>k__BackingField: 90
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 95
 --- !u!1 &7330855683336183337
 GameObject:
@@ -17451,7 +17439,7 @@ Transform:
   m_GameObject: {fileID: 7330855683336183337}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.4831076, z: -0.0000019073486}
+  m_LocalPosition: {x: -7.1054274e-15, y: -0.82410717, z: 0.054994583}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17513,7 +17501,7 @@ Transform:
   m_GameObject: {fileID: 7570479761783973485}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7068577, y: 2.159017, z: -0.0000009536743}
+  m_LocalPosition: {x: 0.5418577, y: 2.7850175, z: 0.25099945}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22417,7 +22405,7 @@ Transform:
   m_GameObject: {fileID: 8258635703876640180}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.75, y: -7.291806, z: 19.999998}
+  m_LocalPosition: {x: 7.7440486, y: -7.2560263, z: 19.67278}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -22448,7 +22436,6 @@ MonoBehaviour:
     <Min>k__BackingField: -90
     <Max>k__BackingField: 90
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 95
 --- !u!1 &8370465144851365180
 GameObject:
@@ -22475,7 +22462,7 @@ Transform:
   m_GameObject: {fileID: 8370465144851365180}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.4830542, z: -0.0000019073486}
+  m_LocalPosition: {x: -0.6279998, y: 0.6479454, z: 0.17899704}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22506,7 +22493,7 @@ Transform:
   m_GameObject: {fileID: 8415940733704720511}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.4830542, z: -0.0000019073486}
+  m_LocalPosition: {x: -1.006, y: -1.5190535, z: 0.32699776}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22538,7 +22525,7 @@ Transform:
   m_GameObject: {fileID: 9089632009320910068}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.5, y: -9.21841, z: 10}
+  m_LocalPosition: {x: -11.664709, y: -9.844495, z: 9.748763}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -22569,7 +22556,6 @@ MonoBehaviour:
     <Min>k__BackingField: 0
     <Max>k__BackingField: 180
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 90
 --- !u!1 &9176317912899054886
 GameObject:
@@ -22628,7 +22614,6 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 0
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 90
 --- !u!1001 &2719208954834360553
 PrefabInstance:
