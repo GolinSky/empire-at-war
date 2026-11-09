@@ -51,12 +51,17 @@ namespace EmpireAtWar.Tests.Camera
         }
 
         [Test]
-        public void Zoom_UsesMouseWheelAndLetterKeys()
+        public void Zoom_UsesMouseWheelPageKeysAndAltChords()
         {
             AssertBindings(
                 _inputActions.FindAction("Camera/Zoom", true),
-                "<Keyboard>/r",
-                "<Keyboard>/f");
+                "<Keyboard>/pageUp",
+                "<Keyboard>/pageDown");
+            Assert.That(_inputActions.FindAction("Camera/Zoom", true).bindings
+                .Any(binding => binding.path == "<Keyboard>/r" || binding.path == "<Keyboard>/f"), Is.False);
+            AssertBindings(_inputActions.FindAction("Camera/ZoomIn", true), "<Keyboard>/alt", "<Keyboard>/w");
+            AssertBindings(_inputActions.FindAction("Camera/ZoomOut", true), "<Keyboard>/alt", "<Keyboard>/s");
+            AssertBindings(_inputActions.FindAction("Camera/ResetZoom", true), "<Keyboard>/home");
             AssertBindings(
                 _inputActions.FindAction("Camera/ZoomScroll", true),
                 "<Mouse>/scroll/y");

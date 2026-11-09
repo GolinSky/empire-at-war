@@ -380,39 +380,6 @@ namespace EmpireAtWar.Services.Input
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""RF"",
-                    ""id"": ""89c2454a-20c6-444c-8039-0a6029df3217"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Zoom"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""68b7b4b2-852a-4d6d-844f-00e8ba3e54ff"",
-                    ""path"": ""<Keyboard>/r"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Zoom"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""fb26638f-a662-424e-ace8-fa41b16a851b"",
-                    ""path"": ""<Keyboard>/f"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Zoom"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": """",
                     ""id"": ""1917346b-f29e-47a9-9ece-d888f1a0fc46"",
                     ""path"": ""<Mouse>/scroll/y"",
@@ -448,7 +415,7 @@ namespace EmpireAtWar.Services.Input
                 {
                     ""name"": ""Alt+W"",
                     ""id"": ""cc87a5c7-10aa-4a24-b5c4-4d8e1e23eaa6"",
-                    ""path"": ""ButtonWithOneModifier"",
+                    ""path"": ""OneModifier"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -468,7 +435,7 @@ namespace EmpireAtWar.Services.Input
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""button"",
+                    ""name"": ""binding"",
                     ""id"": ""3ff122eb-551b-44f4-b4f8-e9ba8a395f02"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
@@ -481,7 +448,7 @@ namespace EmpireAtWar.Services.Input
                 {
                     ""name"": ""Alt+S"",
                     ""id"": ""6512cfa9-94c2-43c3-ae38-49dc0ed398fc"",
-                    ""path"": ""ButtonWithOneModifier"",
+                    ""path"": ""OneModifier"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -501,7 +468,7 @@ namespace EmpireAtWar.Services.Input
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""button"",
+                    ""name"": ""binding"",
                     ""id"": ""30a2e4aa-99a1-4b17-ae1e-39e97b8bae79"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",

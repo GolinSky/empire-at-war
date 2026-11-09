@@ -40,6 +40,11 @@ namespace EmpireAtWar.Tests.Editor
         {
             Assert.That(Display("Select Visible"), Is.EqualTo("Ctrl+A"));
             Assert.That(Display("Select All"), Is.EqualTo("Ctrl+Shift+A"));
+            Assert.That(Display("Zoom In"), Is.EqualTo("Alt+W"));
+            Assert.That(Display("Zoom Out"), Is.EqualTo("Alt+S"));
+            Assert.That(Display("Reset Zoom"), Is.EqualTo("Home"));
+            Assert.That(_service.RebindableSlots.Count(slot => slot.Action.name == "ZoomIn"), Is.EqualTo(1));
+            Assert.That(_service.RebindableSlots.Count(slot => slot.Action.name == "ZoomOut"), Is.EqualTo(1));
             Assert.That(_service.RebindableSlots.Count(slot => slot.Action.name == "SelectAll"), Is.EqualTo(1));
         }
 
@@ -51,6 +56,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(labels, Is.Unique);
             Assert.That(labels, Has.None.Contains("WASD").And.None.Contains("Ctrl").And.None.Contains("Modifier"));
             Assert.That(labels, Does.Contain("Move Up").And.Contain("Move Up (Alt)").And.Contain("Move Left (Alt 2)"));
+            Assert.That(labels, Does.Contain("Zoom In (Alt)").And.Contain("Zoom Out (Alt)"));
         }
 
         [Test]

@@ -58,6 +58,10 @@ namespace EmpireAtWar.Services.Input
                 else if (binding.isPartOfComposite)
                 {
                     string label = $"{actionLabel} {Humanize(binding.name)}{compositeSuffix}";
+                    if (action.actionMap.name == "Camera" && action.name == "Zoom")
+                    {
+                        label = binding.name == "negative" ? "Zoom In (Alt)" : "Zoom Out (Alt)";
+                    }
                     slots.Add(new BindingSlot(action: action, label: label, bindingIndex: i));
                 }
                 // Value and pass-through actions without a composite read pointer axes, which are not rebindable.
