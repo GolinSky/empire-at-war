@@ -1,0 +1,785 @@
+{
+  "schemaVersion": 1,
+  "capturedLocalDate": "2026-10-28",
+  "state": "pending-recipe",
+  "sourceRootAlias": "rothana-original",
+  "sourceRelativeAlo": "Models/Rothana_Stardestroyer_Full_Armed.ALO",
+  "evidence": [
+    "Tools/AloImport/Evidence/Baseline.json",
+    "Tools/AloImport/Evidence/RothanaLive.json"
+  ],
+  "outputs": [
+    {
+      "path": "Assets/Art/Models/RepublicShips/Rothana/Rothana.fbx",
+      "guid": "5ebf42897258d9b4da95b30ae3e16b6e"
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/Republic/Rothana.prefab",
+      "guid": "0953bfb937901dd479ddb0204ae44d17"
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/Republic/RothanaShipView.prefab",
+      "guid": "a5fb369e6e2e1954fa87deac0371f5ab"
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/RothanaWreckView.prefab",
+      "guid": "7409ebf06cef23f48b3693bafa443fa7"
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/RothanaReinforcementView.prefab",
+      "guid": "38f8d2aed9401054a90b202ce8246b64"
+    },
+    {
+      "path": "Assets/Settings/Data/Ship/Republic/RothanaShipData.asset",
+      "guid": "c58688ab024a13b4b8952191db292c09"
+    },
+    {
+      "path": "Assets/Settings/Data/Models/Wrecks/Republic/RothanaWreckData.asset",
+      "guid": "0d9ed0af40f2d5c45844478b7a19ecae"
+    },
+    {
+      "path": "Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/RothanaIcon.png",
+      "guid": "677a9fb4a7566e14d932893ee85f3357"
+    }
+  ],
+  "gameplayBaselineGuid": "c58688ab024a13b4b8952191db292c09",
+  "gameplaySerialized": {
+    "m_ObjectHideFlags": 0,
+    "m_CorrespondingSourceObject": {
+      "fileID": 0
+    },
+    "m_PrefabInstance": {
+      "fileID": 0
+    },
+    "m_PrefabAsset": {
+      "fileID": 0
+    },
+    "m_GameObject": {
+      "fileID": 0
+    },
+    "m_Enabled": 1,
+    "m_EditorHideFlags": 0,
+    "m_Script": {
+      "fileID": 11500000,
+      "guid": "e580e579044741caae6ff7662bce890d",
+      "type": 3
+    },
+    "m_Name": "RothanaShipData",
+    "m_EditorClassIdentifier": "Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData",
+    "<MinMoveCoefficient>k__BackingField": 0.4,
+    "<Speed>k__BackingField": 13,
+    "heightTiers": {
+      "fileID": 11400000,
+      "guid": "f4dc0cc9c112ddb4d8209fb4b8d1d9de",
+      "type": 2
+    },
+    "<HeightTier>k__BackingField": 1,
+    "<HullBottom>k__BackingField": -34.825455,
+    "<HullTop>k__BackingField": 35.60246,
+    "<RotationSpeed>k__BackingField": 4.5,
+    "<TurnAcceleration>k__BackingField": 4.5,
+    "<HyperSpaceDuration>k__BackingField": 0.6,
+    "<BodyRotationMaxAngle>k__BackingField": 15,
+    "<NavigationRadius>k__BackingField": 141.76775,
+    "<DestroyDelay>k__BackingField": 0.35,
+    "<Wreck>k__BackingField": {
+      "fileID": 11400000,
+      "guid": "0d9ed0af40f2d5c45844478b7a19ecae",
+      "type": 2
+    },
+    "<ShipClass>k__BackingField": 4,
+    "<Hull>k__BackingField": 15450,
+    "<Shields>k__BackingField": 8000,
+    "shieldRegenTiers": {
+      "fileID": 11400000,
+      "guid": "3425d6ddc79a6b649990974111258ac9",
+      "type": 2
+    },
+    "<ShieldRegenTier>k__BackingField": 3,
+    "<ShieldRegenerateDelay>k__BackingField": 1,
+    "hardPointHealth": [
+      {
+        "hardPointType": 0,
+        "health": 400,
+        "hullDamageMultiplier": 1
+      },
+      {
+        "hardPointType": 1,
+        "health": 600,
+        "hullDamageMultiplier": 1
+      },
+      {
+        "hardPointType": 2,
+        "health": 600,
+        "hullDamageMultiplier": 1
+      },
+      {
+        "hardPointType": 4,
+        "health": 400,
+        "hullDamageMultiplier": 1
+      }
+    ],
+    "<Range>k__BackingField": 750,
+    "<Delay>k__BackingField": 0.25,
+    "abilities": 13194140844032,
+    "hangarBays": [
+      {
+        "squadronType": 2,
+        "reserve": 20,
+        "maxActive": 1
+      },
+      {
+        "squadronType": 3,
+        "reserve": 20,
+        "maxActive": 1
+      }
+    ],
+    "<HangarInitialDelay>k__BackingField": 4,
+    "<HangarLaunchInterval>k__BackingField": 8,
+    "weaponLoadout": [
+      {
+        "weaponType": 5,
+        "count": 2
+      },
+      {
+        "weaponType": 9,
+        "count": 8
+      },
+      {
+        "weaponType": 14,
+        "count": 2
+      },
+      {
+        "weaponType": 37,
+        "count": 2
+      },
+      {
+        "weaponType": 121,
+        "count": 1
+      },
+      {
+        "weaponType": 94,
+        "count": 4
+      }
+    ]
+  },
+  "hardpoints": [
+    {
+      "fileId": 6489407877593308187,
+      "id": 0,
+      "hardPointType": 0,
+      "name": "DBY827_Broadside_1",
+      "localPosition": [
+        -26.079895,
+        1.6163849,
+        -10.901991
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 9,
+      "yawRangeDegrees": [
+        -170,
+        -10
+      ]
+    },
+    {
+      "fileId": 3980309134457433477,
+      "id": 1,
+      "hardPointType": 0,
+      "name": "DBY827_Broadside_2",
+      "localPosition": [
+        -27.319054,
+        1.6163839,
+        -13.957417
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 9,
+      "yawRangeDegrees": [
+        -170,
+        -10
+      ]
+    },
+    {
+      "fileId": 5011632407109467314,
+      "id": 2,
+      "hardPointType": 0,
+      "name": "DBY827_Broadside_3",
+      "localPosition": [
+        -28.54412,
+        1.616383,
+        -16.978115
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 9,
+      "yawRangeDegrees": [
+        -170,
+        -10
+      ]
+    },
+    {
+      "fileId": 491038778748872509,
+      "id": 3,
+      "hardPointType": 0,
+      "name": "DBY827_Broadside_4",
+      "localPosition": [
+        28.565336,
+        1.616316,
+        -16.97918
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 9,
+      "yawRangeDegrees": [
+        10,
+        170
+      ]
+    },
+    {
+      "fileId": 6888389241082585646,
+      "id": 4,
+      "hardPointType": 0,
+      "name": "DBY827_Broadside_5",
+      "localPosition": [
+        27.3262,
+        1.616316,
+        -13.923735
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 9,
+      "yawRangeDegrees": [
+        10,
+        170
+      ]
+    },
+    {
+      "fileId": 5749528391939006226,
+      "id": 5,
+      "hardPointType": 0,
+      "name": "DBY827_Broadside_6",
+      "localPosition": [
+        26.101152,
+        1.616316,
+        -10.903027
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 9,
+      "yawRangeDegrees": [
+        10,
+        170
+      ]
+    },
+    {
+      "fileId": 4618905557867333656,
+      "id": 6,
+      "hardPointType": 0,
+      "name": "DBY827_Dorsal_Aft",
+      "localPosition": [
+        0.010510027,
+        4.395539,
+        8.459388
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 9,
+      "yawRangeDegrees": [
+        -160,
+        160
+      ]
+    },
+    {
+      "fileId": 8523597348643196513,
+      "id": 7,
+      "hardPointType": 0,
+      "name": "DBY827_Dorsal_Forward",
+      "localPosition": [
+        0.010510147,
+        4.0186753,
+        15.899188
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 9,
+      "yawRangeDegrees": [
+        -160,
+        160
+      ]
+    },
+    {
+      "fileId": 6072934535775613152,
+      "id": 8,
+      "hardPointType": 0,
+      "name": "Turbolaser_Port",
+      "localPosition": [
+        -28.579407,
+        -8.747506,
+        -40.05913
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 5,
+      "yawRangeDegrees": [
+        -170,
+        -10
+      ]
+    },
+    {
+      "fileId": 6061315044234874315,
+      "id": 9,
+      "hardPointType": 0,
+      "name": "Turbolaser_Starboard",
+      "localPosition": [
+        28.600428,
+        -8.747506,
+        -40.05913
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 5,
+      "yawRangeDegrees": [
+        10,
+        170
+      ]
+    },
+    {
+      "fileId": 9096267698636447239,
+      "id": 10,
+      "hardPointType": 0,
+      "name": "Laser_Battery_1",
+      "localPosition": [
+        -21.54948,
+        -3.7973351,
+        25.69506
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 94,
+      "yawRangeDegrees": [
+        -175,
+        20
+      ]
+    },
+    {
+      "fileId": 473183790402969848,
+      "id": 11,
+      "hardPointType": 0,
+      "name": "Laser_Battery_2",
+      "localPosition": [
+        -12.072801,
+        -3.834538,
+        55.378754
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 94,
+      "yawRangeDegrees": [
+        -175,
+        20
+      ]
+    },
+    {
+      "fileId": 6185850947772605355,
+      "id": 12,
+      "hardPointType": 0,
+      "name": "Laser_Battery_3",
+      "localPosition": [
+        12.120486,
+        -3.834534,
+        55.370586
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 94,
+      "yawRangeDegrees": [
+        -20,
+        175
+      ]
+    },
+    {
+      "fileId": 527812995287098012,
+      "id": 13,
+      "hardPointType": 0,
+      "name": "Laser_Battery_4",
+      "localPosition": [
+        21.720798,
+        -3.8345394,
+        25.689709
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 94,
+      "yawRangeDegrees": [
+        -20,
+        175
+      ]
+    },
+    {
+      "fileId": 5921249974743197750,
+      "id": 14,
+      "hardPointType": 0,
+      "name": "Point_Defense_Port",
+      "localPosition": [
+        -28.257427,
+        0.06785885,
+        -11.679191
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 14,
+      "yawRangeDegrees": [
+        -180,
+        180
+      ]
+    },
+    {
+      "fileId": 5064541910585289464,
+      "id": 15,
+      "hardPointType": 0,
+      "name": "Point_Defense_Starboard",
+      "localPosition": [
+        28.278461,
+        0.06785885,
+        -11.679198
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 14,
+      "yawRangeDegrees": [
+        -180,
+        180
+      ]
+    },
+    {
+      "fileId": 4175639749370887310,
+      "id": 16,
+      "hardPointType": 0,
+      "name": "Ion_Cannon_Port",
+      "localPosition": [
+        -29.561302,
+        0.024814682,
+        -14.870906
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 37,
+      "yawRangeDegrees": [
+        -170,
+        -10
+      ]
+    },
+    {
+      "fileId": 9220442616916450686,
+      "id": 17,
+      "hardPointType": 0,
+      "name": "Ion_Cannon_Starboard",
+      "localPosition": [
+        29.58242,
+        0.028519101,
+        -14.870871
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 37,
+      "yawRangeDegrees": [
+        10,
+        170
+      ]
+    },
+    {
+      "fileId": 2613206955805012499,
+      "id": 18,
+      "hardPointType": 2,
+      "name": "ShieldGenerator",
+      "localPosition": [
+        0.010510304,
+        7.3593006,
+        -25.146477
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 600
+    },
+    {
+      "fileId": 1223602885689360016,
+      "id": 19,
+      "hardPointType": 1,
+      "name": "Engines",
+      "localPosition": [
+        -0.0053372383,
+        -3.7027886,
+        -45.26232
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 600
+    },
+    {
+      "fileId": 26160967148296332,
+      "id": 20,
+      "hardPointType": 4,
+      "name": "HangarHardPoint",
+      "localPosition": [
+        0.010510304,
+        -8.48958,
+        4.5839505
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400
+    },
+    {
+      "fileId": 7949012638225316501,
+      "id": 21,
+      "hardPointType": 0,
+      "name": "Laser_Battery_2_6",
+      "localPosition": [
+        0.023842812,
+        -3.834536,
+        55.374672
+      ],
+      "localEulerDegrees": [
+        0,
+        0,
+        0
+      ],
+      "health": 400,
+      "profileKey": 121,
+      "yawRangeDegrees": [
+        -180,
+        180
+      ]
+    }
+  ],
+  "currentMaterialRemaps": [
+    {
+      "transportMaterial": "COLLISION",
+      "targetGuid": "9100620c25f42494dadeeef0491da452"
+    },
+    {
+      "transportMaterial": "Hanger Material",
+      "targetGuid": "84de326c4e32382459c612c5d313338e"
+    },
+    {
+      "transportMaterial": "Hull_Lights_Grid_Sparse_Rebel Material",
+      "targetGuid": "dcaebffccc287824caff35b3d0c067c1"
+    },
+    {
+      "transportMaterial": "Nb_shieldbase Material",
+      "targetGuid": "929aa8c614416714ca813bb2e74d097f"
+    },
+    {
+      "transportMaterial": "Rothana_engines Material",
+      "targetGuid": "ab73b79220d6d6b4e8f761b5f62101ba"
+    },
+    {
+      "transportMaterial": "Rothana_engines Material1",
+      "targetGuid": "7b6b8d05a10428442bb4ad2caf0ef36e"
+    },
+    {
+      "transportMaterial": "Rothana_hull_1_Base Material",
+      "targetGuid": "b5923c951d15b0e4daeebe0f21f44884"
+    },
+    {
+      "transportMaterial": "Rothana_hull_2_base Material",
+      "targetGuid": "75c7f3de52b4b894694887087c246dbd"
+    },
+    {
+      "transportMaterial": "Rothana_hull_3_base Material",
+      "targetGuid": "cc8a9a1fb283d2746907130684305693"
+    },
+    {
+      "transportMaterial": "Rothana_reactor Material",
+      "targetGuid": "ca09b103cada45b4c94b55555c88ab77"
+    },
+    {
+      "transportMaterial": "SHADOW",
+      "targetGuid": "560bb395602fd1c46aa513b7b0ae2f8c"
+    }
+  ],
+  "blockers": [
+    {
+      "code": "VISIBLE_BOUNDS_NOT_MEASURED",
+      "field": "dimensions.targetLength",
+      "detail": "Current saved gameplay root scale is 1.492292 per axis. Historical visual length160 is not a current world-space measurement. Editor main thread became unresponsive before enabled-renderer bounds readback."
+    },
+    {
+      "code": "BUILDER_NOT_IMPLEMENTED",
+      "field": "integration.bindingProfile",
+      "detail": "Shared ship apply adapter and its exact binding profile have not passed migration gates; retaining an arbitrary new profile name would not establish support."
+    }
+  ],
+  "checks": {
+    "savedDiskInventory": "passed",
+    "unityComponentReadback": "passed",
+    "worldVisibleBounds": "not-run",
+    "sourceToCurrentFbxParity": "not-run",
+    "recipeExecution": "not-run"
+  },
+  "textureOverrideInputs": [
+    {
+      "source": "Hanger.tga",
+      "path": "Textures/Hanger.dds",
+      "sha256": "5e5898ba087f9734ed6af628b0594139cace3cf89a7d05c68d98b7d5362be0b1"
+    },
+    {
+      "source": "Hanger_B.tga",
+      "path": "Textures/Hanger_B.dds",
+      "sha256": "45cfd594fcd11e0f41e3fd22da5e680333302818b726129c379faeb8298a145d"
+    },
+    {
+      "source": "Hull_Lights_Grid_Sparse_Rebel.tga",
+      "path": "Textures/Hull_Lights_Grid_Sparse_Rebel.dds",
+      "sha256": "42a45c1fd361860d0d1be990e5caaf23ddb1dbf5e4e6a192b401337a63d62054"
+    },
+    {
+      "source": "Nb_shieldbase.tga",
+      "path": "Textures/Nb_shieldbase.dds",
+      "sha256": "73a05dcb82ac6d7b3146c6186a3adba7d3296e83032de816e29affdb2e7bffae"
+    },
+    {
+      "source": "Nb_shieldripple.tga",
+      "path": "Textures/Nb_shieldripple.dds",
+      "sha256": "b6f453b6eee515364b99b459c049ee4c223efaaf80dfa25571a6a22d14a73b28"
+    },
+    {
+      "source": "Nb_shieldwave.tga",
+      "path": "Textures/Nb_shieldwave.dds",
+      "sha256": "a3e912b166845eea30079aa8d318a125df4e9ff7e1bf77a1315dcaa1ac8f6988"
+    },
+    {
+      "source": "Rothana_engines.tga",
+      "path": "Textures/Rothana_engines.dds",
+      "sha256": "f77853eea8ab1694795c6f6c4352b3bbff46518cea23236db95a765b808d4626"
+    },
+    {
+      "source": "Rothana_engines_Normal.tga",
+      "path": "Textures/Rothana_engines_Normal.dds",
+      "sha256": "6c3b30c28b1a21d0202e38a0c441e285b77236126c5b83d2937422e079b7f3e1"
+    },
+    {
+      "source": "Rothana_hull_1_Base.tga",
+      "path": "Textures/Rothana_hull_1_Base.dds",
+      "sha256": "2fa3bb709b1d910b3a367f954b518c3e7207e0c22718ae9b434e3492132cd53a"
+    },
+    {
+      "source": "Rothana_hull_1_norm.tga",
+      "path": "Textures/Rothana_hull_1_norm.dds",
+      "sha256": "85d9827f13e98645d286b844f1e93d34ae43b4b5029f8088292438db5caa0978"
+    },
+    {
+      "source": "Rothana_hull_2_Norm.tga",
+      "path": "Textures/Rothana_hull_2_Norm.dds",
+      "sha256": "e742522c23a1138aca5da6209b979150fee2151823a8e558c88a0c99904e5c73"
+    },
+    {
+      "source": "Rothana_hull_2_base.tga",
+      "path": "Textures/Rothana_hull_2_base.dds",
+      "sha256": "347ac09aad200ff140f00aaf8390453b78d40f0675bea900d3522d0cd9156eab"
+    },
+    {
+      "source": "Rothana_hull_3_base.tga",
+      "path": "Textures/Rothana_hull_3_base.dds",
+      "sha256": "3caf9f39ffc5908de6631eaa5f3109648818c85347deae1b0f263858253bc73d"
+    },
+    {
+      "source": "Rothana_hull_3_norm.tga",
+      "path": "Textures/Rothana_hull_3_norm.dds",
+      "sha256": "45c0f7e20f2b61b9e3a981dcc5b47a6aa238be3aa6e5f5a3b43294a92fb14520"
+    },
+    {
+      "source": "Rothana_reactor.tga",
+      "path": "Textures/Rothana_reactor.dds",
+      "sha256": "31ae22f0ecaef8e42a2c092bbe99b5d083d5dd487b8d104b40b74e3a68165edd"
+    },
+    {
+      "source": "Rothana_reactor_nm.tga",
+      "path": "Textures/Rothana_reactor_nm.dds",
+      "sha256": "3618bdd04f7a1ffaff523d301362bd006dc0d017458684915a47b7c40d377935"
+    }
+  ],
+  "missingTextureInputs": []
+}

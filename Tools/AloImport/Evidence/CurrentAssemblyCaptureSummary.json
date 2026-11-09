@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "state": "succeeded",
+  "dataPath": "Tools/AloImport/.state/Evidence/CurrentAssemblyCapture.json",
+  "sha256": "6903d563a823c9436c90687aabd8aba1d84d454085079c13436adf17259b11a6",
+  "jobId": "ff8d0b7b-eb00-4a02-816c-01a192ee76a6",
+  "operationId": "37f72f70-eaa1-4ddd-93fe-0484683fb766",
+  "assets": [
+    {
+      "path": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+      "visibleVertexCount": 35896,
+      "worldBounds": {
+        "center": [
+          3.81469727e-05,
+          -2.670288e-05,
+          7.62939453e-06
+        ],
+        "size": [
+          93.46152,
+          43.43959,
+          180.0
+        ],
+        "min": [
+          -46.73072,
+          -21.7198219,
+          -89.99999
+        ],
+        "max": [
+          46.7307968,
+          21.7197685,
+          90.00001
+        ]
+      }
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+      "visibleVertexCount": 35896,
+      "worldBounds": {
+        "center": [
+          2.47955322e-05,
+          -1.23977661e-05,
+          7.62939453e-06
+        ],
+        "size": [
+          56.6992149,
+          26.3529968,
+          109.1985
+        ],
+        "min": [
+          -28.3495827,
+          -13.1765108,
+          -54.5992432
+        ],
+        "max": [
+          28.3496323,
+          13.176486,
+          54.59926
+        ]
+      }
+    },
+    {
+      "path": "Assets/Prefabs/Models/Stations/RebellionSpaceStationView.prefab",
+      "visibleVertexCount": 5681,
+      "worldBounds": {
+        "center": [
+          0.0,
+          1.52587891e-05,
+          0.0
+        ],
+        "size": [
+          168.302216,
+          379.462646,
+          163.54306
+        ],
+        "min": [
+          -84.15111,
+          -189.731308,
+          -81.77153
+        ],
+        "max": [
+          84.15111,
+          189.731339,
+          81.77153
+        ]
+      }
+    },
+    {
+      "path": "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel1.prefab",
+      "visibleVertexCount": 5681,
+      "worldBounds": {
+        "center": [
+          0.0,
+          1.52587891e-05,
+          0.0
+        ],
+        "size": [
+          168.302216,
+          379.462646,
+          163.54306
+        ],
+        "min": [
+          -84.15111,
+          -189.731308,
+          -81.77153
+        ],
+        "max": [
+          84.15111,
+          189.731339,
+          81.77153
+        ]
+      }
+    },
+    {
+      "path": "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel2.prefab",
+      "visibleVertexCount": 6760,
+      "worldBounds": {
+        "center": [
+          14.9691315,
+          1.52587891e-05,
+          13.4137878
+        ],
+        "size": [
+          246.931488,
+          379.462646,
+          190.370636
+        ],
+        "min": [
+          -108.496613,
+          -189.731308,
+          -81.77153
+        ],
+        "max": [
+          138.434875,
+          189.731339,
+          108.599106
+        ]
+      }
+    },
+    {
+      "path": "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel3.prefab",
+      "visibleVertexCount": 7773,
+      "worldBounds": {
+        "center": [
+          14.9691315,
+          1.52587891e-05,
+          27.0027466
+        ],
+        "size": [
+          246.931488,
+          379.462646,
+          217.548553
+        ],
+        "min": [
+          -108.496613,
+          -189.731308,
+          -81.77153
+        ],
+        "max": [
+          138.434875,
+          189.731339,
+          135.777023
+        ]
+      }
+    },
+    {
+      "path": "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel4.prefab",
+      "visibleVertexCount": 10643,
+      "worldBounds": {
+        "center": [
+          4.355179,
+          34.38997,
+          6.13491058
+        ],
+        "size": [
+          268.159424,
+          448.2426,
+          259.284241
+        ],
+        "min": [
+          -129.724533,
+          -189.731339,
+          -123.50721
+        ],
+        "max": [
+          138.434891,
+          258.5113,
+          135.777039
+        ]
+      }
+    },
+    {
+      "path": "Assets/Prefabs/Models/Stations/RebelSpaceStationLevel5.prefab",
+      "visibleVertexCount": 12978,
+      "worldBounds": {
+        "center": [
+          11.8175354,
+          34.38997,
+          25.5229568
+        ],
+        "size": [
+          299.302856,
+          448.2426,
+          298.060333
+        ],
+        "min": [
+          -137.8339,
+          -189.731339,
+          -123.50721
+        ],
+        "max": [
+          161.468964,
+          258.5113,
+          174.553131
+        ]
+      }
+    }
+  ],
+  "tests": "not-run",
+  "sceneChanges": "none",
+  "assetMutations": "none; durable pipeline gate/evidence records only"
+}

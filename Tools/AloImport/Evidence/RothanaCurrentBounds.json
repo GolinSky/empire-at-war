@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "method": "Actual saved FBX imported read-only in isolated Blender3.6.23; current saved ModelImporter globalScale and art/gameplay prefab scale composed. Axis extents converted Blender Z-up to Unity Y-up. No historical dimensions used.",
+  "unityReadback": "not-run",
+  "sourceBoundsBlender": {
+    "minimum": [
+      -122.91522216796875,
+      -160.2806396484375,
+      -26.712034225463867
+    ],
+    "maximum": [
+      122.97882080078125,
+      323.71099853515625,
+      62.45341491699219
+    ]
+  },
+  "visibleMeshNames": [
+    "Armor",
+    "Engine_bas",
+    "Engine_Glo",
+    "hangar",
+    "Hull_LOD_0",
+    "Hull_LOD_1",
+    "Lights",
+    "reactor",
+    "SuperStruc",
+    "Weapons"
+  ],
+  "excludedMeshNames": [
+    "Col",
+    "Shield",
+    "Shadow"
+  ],
+  "measurements": {
+    "modelImporterScale": 0.02,
+    "artNestedFbxScale": 16.529213,
+    "gameplayRootScale": 1.492292,
+    "worldSizeProjectUnits": [
+      121.30647704845086,
+      43.98783467596561,
+      238.7667461973518
+    ],
+    "targetLengthProjectUnits": 238.7667461973518
+  },
+  "inputs": [
+    {
+      "path": "Assets/Art/Models/RepublicShips/Rothana/Rothana.fbx",
+      "sha256": "bd9e03534ed424853803cfeb4ac27cc8bda528dce3532dfaa6316d2fbbc24ea3"
+    },
+    {
+      "path": "Assets/Art/Models/RepublicShips/Rothana/Rothana.fbx.meta",
+      "sha256": "53718421208dd65161fb6a3bd81b90d207952469c4650f58d7f87c8a0adc2181"
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/Republic/Rothana.prefab",
+      "sha256": "35aa6c6876fe8ea55dcb2b7b6ebcf24d426c9832f6039ed53390a01cb8b7d73b"
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/Republic/RothanaShipView.prefab",
+      "sha256": "629b94b13e22b44e1a0f5396a02b2da70c5498f7b6f12336889a662faabcd1e5"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "capturedLocalDate": "2026-10-28",
+  "status": "smoke-only",
+  "representativeAcceptance": "not-run",
+  "blenderVersion": "3.6.23",
+  "alamoImporterHash": "c3282dc126ae8589d16bba310b2939d4e0b7262a7525087367c4fa4a199d7b69",
+  "sourceSha256": "42ed134e83e690ec1c4b6eb6b46d3ccb0b3a59ceb1c0cae8fa6acead8e49c108",
+  "bones": 100,
+  "meshes": 13,
+  "triangles": 44313,
+  "skeletonSource": {
+    "bones": 100,
+    "maxSourceError": 1.52587890625e-05,
+    "fullAuthoredMatrixMetadata": "passed",
+    "comparison": "full-matrix-and-parent"
+  },
+  "skeletonFbx": {
+    "bones": 100,
+    "maxSourceError": 6.370551571870562e-05,
+    "fullAuthoredMatrixMetadata": "passed",
+    "comparison": "head-and-parent"
+  },
+  "meshMaximumErrors": {
+    "source": {
+      "geometry": 0,
+      "uvPixels": 0,
+      "normal": 0.0006329039352665614
+    },
+    "fbx": {
+      "geometry": 6.574539751853118e-05,
+      "uvPixels": 0,
+      "normal": 0.0008017937772842555
+    }
+  },
+  "repairs": [
+    {
+      "meshIndex": 5,
+      "repair": "restore-original-helper-topology"
+    },
+    {
+      "meshIndex": 8,
+      "repair": "restore-original-helper-topology"
+    }
+  ],
+  "limitations": [
+    "Synthetic smoke policies used no textures and opaque surfaces to isolate geometry; no livery/material appearance acceptance.",
+    "Temp-only exact helper-normal-representability exclusion hull:mesh:8 required; normal delta before exclusion 1.08368645. This exception is not reviewed representative acceptance.",
+    "Authored original source matrix metadata and FBX bone heads/parents checked; FBX encoding changes bone axes, so full FBX bind matrices not claimed equal.",
+    "No Unity asset mutation, integration, attachment assembly, registrations, derivatives, visual review or runtime acceptance."
+  ],
+  "fullReport": "Temp/AloImport/ConverterSmoke/staging/ConversionReport.json"
+}

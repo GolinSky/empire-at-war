@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "fbxGuid": "5ebf42897258d9b4da95b30ae3e16b6e",
+  "fbxSha256": "bd9e03534ed424853803cfeb4ac27cc8bda528dce3532dfaa6316d2fbbc24ea3",
+  "fbxVersion": 7400,
+  "limitations": [
+    "FBX object IDs are transport IDs, not Unity local fileIDs. Empty importer name table cannot map them conclusively without Unity readback.",
+    "Candidate regeneration must preserve legacy mesh/rig names and path hierarchy; numeric source metadata does not alone guarantee imported Unity fileID parity."
+  ],
+  "rootModels": [
+    {
+      "fbxObjectId": 708684153,
+      "name": "Rothana_Stardestroyer_Full_ArmedRig",
+      "parentFbxObjectId": 0,
+      "path": "Rothana_Stardestroyer_Full_ArmedRig",
+      "properties": {
+        "DefaultAttributeIndex": [
+          0
+        ],
+        "InheritType": [
+          1
+        ],
+        "Lcl Rotation": [
+          -90.00000933466734,
+          0.0,
+          0.0
+        ],
+        "Lcl Scaling": [
+          100.0,
+          100.0,
+          100.0
+        ]
+      },
+      "type": "Null"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "scope": "Unity ALO foundation",
+  "initialFixtureRun": {
+    "fixture": "AloEditorOperationTests",
+    "category": "Core",
+    "total": 5,
+    "passed": 4,
+    "failed": 1,
+    "failure": "RecipeValidator_RejectsUnknownFieldsAndUnsafePaths TearDown DirectoryNotFoundException. Schema assertions passed; fixed by creating test directory in SetUp."
+  },
+  "currentCodeRerun": "not-run; test execution disabled by current AGENTS override",
+  "currentCodeCompile": {
+    "state": "passed",
+    "method": "Unity 6000.4.7 bundled Roslyn standalone compile against existing Unity-generated references",
+    "exitCode": 0,
+    "output": "Tools/AloImport/.state/Compile/AloFoundation.dll",
+    "log": "Tools/AloImport/.state/Compile/Compilation.log",
+    "sourceHashEvidence": "Tools/AloImport/.state/Compile/Compilation.json"
+  },
+  "blocker": {
+    "state": "not-rechecked",
+    "lastObserved": "Shared Editor had a foreign Map request and main-thread timeouts; no test cancellation/restart/scene preparation performed."
+  },
+  "assetPublication": "not-run",
+  "readback": {
+    "path": "Tools/AloImport/Evidence/RothanaLive.json",
+    "rawPath": null,
+    "visibleBounds": "not-run",
+    "rawEvidenceRetained": false
+  },
+  "supportedBridgeStages": [
+    "verify",
+    "apply-update-existing-assets-v1-implemented-but-disabled",
+    "recover-no-original-writes"
+  ],
+  "unimplementedAdapters": [
+    "new-unit create",
+    "full source identity rebind for changed FBX localIDs",
+    "station integration",
+    "render/derivative regeneration"
+  ],
+  "editorImportAndSavedAssetAcceptance": "pending; no real publication performed",
+  "implementedUpdateComponents": [
+    "canonical role/fileID object map",
+    "explicit serialized binding writer",
+    "existing ship baseline/hardpoint/hangar/injection verifier",
+    "candidate FBX localID/hierarchy/material/geometry parity gate",
+    "owned temporary candidate import and cleanup journal",
+    "raw asset/meta publication preimages and postimage checkpoints",
+    "central durable state layout",
+    "existing ship apply orchestration",
+    "bounded no-original-writes recovery with failed terminal receipt and idle Editor gate"
+  ]
+}

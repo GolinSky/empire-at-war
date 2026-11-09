@@ -1,0 +1,3606 @@
+{
+  "schemaVersion": 1,
+  "modelId": "Rothana",
+  "kind": "ship",
+  "operation": "update",
+  "source": {
+    "root": "rothana-original",
+    "alo": "Models/Rothana_Stardestroyer_Full_Armed.ALO",
+    "textureDirectory": "Textures",
+    "textureOverrides": [
+      {
+        "source": "Hanger.tga",
+        "path": "Textures/Hanger.dds"
+      },
+      {
+        "source": "Hanger_B.tga",
+        "path": "Textures/Hanger_B.dds"
+      },
+      {
+        "source": "Hull_Lights_Grid_Sparse_Rebel.tga",
+        "path": "Textures/Hull_Lights_Grid_Sparse_Rebel.dds"
+      },
+      {
+        "source": "Nb_shieldbase.tga",
+        "path": "Textures/Nb_shieldbase.dds"
+      },
+      {
+        "source": "Nb_shieldripple.tga",
+        "path": "Textures/Nb_shieldripple.dds"
+      },
+      {
+        "source": "Nb_shieldwave.tga",
+        "path": "Textures/Nb_shieldwave.dds"
+      },
+      {
+        "source": "Rothana_engines.tga",
+        "path": "Textures/Rothana_engines.dds"
+      },
+      {
+        "source": "Rothana_engines_Normal.tga",
+        "path": "Textures/Rothana_engines_Normal.dds"
+      },
+      {
+        "source": "Rothana_hull_1_Base.tga",
+        "path": "Textures/Rothana_hull_1_Base.dds"
+      },
+      {
+        "source": "Rothana_hull_1_norm.tga",
+        "path": "Textures/Rothana_hull_1_norm.dds"
+      },
+      {
+        "source": "Rothana_hull_2_Norm.tga",
+        "path": "Textures/Rothana_hull_2_Norm.dds"
+      },
+      {
+        "source": "Rothana_hull_2_base.tga",
+        "path": "Textures/Rothana_hull_2_base.dds"
+      },
+      {
+        "source": "Rothana_hull_3_base.tga",
+        "path": "Textures/Rothana_hull_3_base.dds"
+      },
+      {
+        "source": "Rothana_hull_3_norm.tga",
+        "path": "Textures/Rothana_hull_3_norm.dds"
+      },
+      {
+        "source": "Rothana_reactor.tga",
+        "path": "Textures/Rothana_reactor.dds"
+      },
+      {
+        "source": "Rothana_reactor_nm.tga",
+        "path": "Textures/Rothana_reactor_nm.dds"
+      }
+    ]
+  },
+  "pieces": [
+    {
+      "id": "hull",
+      "alo": "Models/Rothana_Stardestroyer_Full_Armed.ALO",
+      "purpose": "hull",
+      "transportRigName": "Rothana_Stardestroyer_Full_ArmedRig"
+    }
+  ],
+  "attachments": [],
+  "identity": {
+    "faction": "Republic",
+    "unit": {
+      "enum": "ShipType",
+      "name": "Rothana",
+      "value": 7
+    }
+  },
+  "integration": {
+    "templateGuid": "a5fb369e6e2e1954fa87deac0371f5ab",
+    "bindingProfile": "existing-assets-v1",
+    "retainedDependencyGuids": [
+      "036f62d612164b9d8fe1a6824537a043",
+      "0406db5a14f94604a8c57ccfbc9f3b46",
+      "12e11f9a6878dc040ba9c051837b41b2",
+      "31c0e7ee7c1c471b9a3c750fed830803",
+      "3425d6ddc79a6b649990974111258ac9",
+      "3689e1878074b314fb187ec6bf183b73",
+      "41d73a8198e6a0248a72f9f830bd9ec8",
+      "4396c7fd45f4a094c9d92689bcbb4b65",
+      "4a28dce88e7c1ee4a97e1b87b8b54550",
+      "5431f40e1692765439cb7ac236d35ce0",
+      "553d1e23eae7824438fd41f0e682b0d4",
+      "5713dcfff75e49e88a1031e6f4445565",
+      "5bb836d356ec0424bbfdd93fd3278b6a",
+      "6535a63451984d3d8510459aec130f3f",
+      "675872bfa3914db5aaf6d0f8c8d65ba8",
+      "6d9590097526c33479a76badf34d18b2",
+      "795c30369df688d4a807b96bc7634754",
+      "894996cee521ab24aa26177f31e25eac",
+      "95ddb46ba62b3544bbfda394a9a3040b",
+      "9dfc825aed78fcd4ba02077103263b40",
+      "9f769ae15a9992341956ef2b7c5e1f78",
+      "a7d45f61744e69244b4b218955389a17",
+      "b0620a0dd7ee4a3dae980f3bfc0f51dd",
+      "b1b0635126764df796ba6194d27372a0",
+      "b53526d91b334c8781d9114e878ca360",
+      "b7e0e0df4c1441440b28f5c91d3d0869",
+      "d0353a89b1f911e48b9e16bdc9f2e058",
+      "dc6da9f12354d5d4780a4aeec9c5dd09",
+      "e22dd2524a2ced64b850f380b8488317",
+      "e580e579044741caae6ff7662bce890d",
+      "f2a9a9f1727de0c4a912563406aea950",
+      "f49dbb9fe33e5814f8900d78fb93f2e9",
+      "f4dc0cc9c112ddb4d8209fb4b8d1d9de",
+      "fb12f863d09d46b085919f1ef65e5d17",
+      "fb4484b8a521b8944bfb7f11e310e2f0",
+      "fc88d67b11ac4163aa0ea4cd65296dce",
+      "fdc63ac8be9e5584199666c03e863491",
+      "ffc91a895051cc84d89f6b03bcad91e0"
+    ],
+    "outputs": [
+      {
+        "role": "model-hull",
+        "path": "Assets/Art/Models/RepublicShips/Rothana/Rothana.fbx",
+        "guid": "5ebf42897258d9b4da95b30ae3e16b6e"
+      },
+      {
+        "role": "art",
+        "path": "Assets/Prefabs/Models/Ships/Republic/Rothana.prefab",
+        "guid": "0953bfb937901dd479ddb0204ae44d17"
+      },
+      {
+        "role": "view",
+        "path": "Assets/Prefabs/Models/Ships/Republic/RothanaShipView.prefab",
+        "guid": "a5fb369e6e2e1954fa87deac0371f5ab"
+      },
+      {
+        "role": "placement",
+        "path": "Assets/Prefabs/Ui/Reinforcement/RothanaReinforcementView.prefab",
+        "guid": "38f8d2aed9401054a90b202ce8246b64"
+      },
+      {
+        "role": "wreck",
+        "path": "Assets/Prefabs/Models/Wrecks/RothanaWreckView.prefab",
+        "guid": "7409ebf06cef23f48b3693bafa443fa7"
+      },
+      {
+        "role": "ship-data",
+        "path": "Assets/Settings/Data/Ship/Republic/RothanaShipData.asset",
+        "guid": "c58688ab024a13b4b8952191db292c09"
+      },
+      {
+        "role": "wreck-data",
+        "path": "Assets/Settings/Data/Models/Wrecks/Republic/RothanaWreckData.asset",
+        "guid": "0d9ed0af40f2d5c45844478b7a19ecae"
+      },
+      {
+        "role": "icon",
+        "path": "Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/RothanaIcon.png",
+        "guid": "677a9fb4a7566e14d932893ee85f3357"
+      },
+      {
+        "role": "material-0",
+        "path": "Assets/Art/Materials/Models/RepublicShips/Rothana/Rothana_COLLISION.mat",
+        "guid": "9100620c25f42494dadeeef0491da452"
+      },
+      {
+        "role": "material-1",
+        "path": "Assets/Art/Materials/Models/RepublicShips/Rothana/Rothana_engines.mat",
+        "guid": "ab73b79220d6d6b4e8f761b5f62101ba"
+      },
+      {
+        "role": "material-2",
+        "path": "Assets/Art/Materials/Models/RepublicShips/Rothana/Rothana_engines1.mat",
+        "guid": "7b6b8d05a10428442bb4ad2caf0ef36e"
+      },
+      {
+        "role": "material-3",
+        "path": "Assets/Art/Materials/Models/RepublicShips/Rothana/Rothana_Hanger.mat",
+        "guid": "84de326c4e32382459c612c5d313338e"
+      },
+      {
+        "role": "material-4",
+        "path": "Assets/Art/Materials/Models/RepublicShips/Rothana/Rothana_hull_1_Base.mat",
+        "guid": "b5923c951d15b0e4daeebe0f21f44884"
+      },
+      {
+        "role": "material-5",
+        "path": "Assets/Art/Materials/Models/RepublicShips/Rothana/Rothana_hull_2_base.mat",
+        "guid": "75c7f3de52b4b894694887087c246dbd"
+      },
+      {
+        "role": "material-6",
+        "path": "Assets/Art/Materials/Models/RepublicShips/Rothana/Rothana_hull_3_base.mat",
+        "guid": "cc8a9a1fb283d2746907130684305693"
+      },
+      {
+        "role": "material-7",
+        "path": "Assets/Art/Materials/Models/RepublicShips/Rothana/Rothana_Hull_Lights_Grid_Sparse_Rebel.mat",
+        "guid": "dcaebffccc287824caff35b3d0c067c1"
+      },
+      {
+        "role": "material-8",
+        "path": "Assets/Art/Materials/Models/RepublicShips/Rothana/Rothana_Nb_shieldbase.mat",
+        "guid": "929aa8c614416714ca813bb2e74d097f"
+      },
+      {
+        "role": "material-9",
+        "path": "Assets/Art/Materials/Models/RepublicShips/Rothana/Rothana_reactor.mat",
+        "guid": "ca09b103cada45b4c94b55555c88ab77"
+      },
+      {
+        "role": "material-10",
+        "path": "Assets/Art/Materials/Models/RepublicShips/Rothana/Rothana_SHADOW.mat",
+        "guid": "560bb395602fd1c46aa513b7b0ae2f8c"
+      },
+      {
+        "role": "texture-0",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Engines_Albedo.png",
+        "guid": "735ce3563fed9a64f86de63d9654d1fb"
+      },
+      {
+        "role": "texture-1",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Engines_Normal.png",
+        "guid": "3f6d08aa652d7ae4795cb7e430581ef9"
+      },
+      {
+        "role": "texture-2",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Hangar_Albedo.png",
+        "guid": "174802972523b2d47916f2e7bb3f86d7"
+      },
+      {
+        "role": "texture-3",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Hangar_Normal.png",
+        "guid": "2f56450fdeb2c84458cd2719cf449f22"
+      },
+      {
+        "role": "texture-4",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Hull01_Albedo.png",
+        "guid": "fd5b1a1a185e1534e938f937d0570f46"
+      },
+      {
+        "role": "texture-5",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Hull01_Normal.png",
+        "guid": "b56cceda87c48934ca494b0df6789986"
+      },
+      {
+        "role": "texture-6",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Hull02_Albedo.png",
+        "guid": "0b7a8b987c9d6c04d845aff3316c5df2"
+      },
+      {
+        "role": "texture-7",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Hull02_Normal.png",
+        "guid": "a732d4707cdf36046ab1190dce3a1c68"
+      },
+      {
+        "role": "texture-8",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Hull03_Albedo.png",
+        "guid": "0f1f43469dd30324fac16b19cf366207"
+      },
+      {
+        "role": "texture-9",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Hull03_Normal.png",
+        "guid": "9974fc2d53caf1c47bb7fe6ecdb289e2"
+      },
+      {
+        "role": "texture-10",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Lights_Emissive.png",
+        "guid": "493a492edc077ef4ebd0175cc05df23e"
+      },
+      {
+        "role": "texture-11",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Reactor_Albedo.png",
+        "guid": "07488dcf699787446a7d2de63360b4c9"
+      },
+      {
+        "role": "texture-12",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Reactor_Normal.png",
+        "guid": "81d67cf777ab5a140916dcf6e4ac7c15"
+      },
+      {
+        "role": "texture-13",
+        "path": "Assets/Art/Textures/Models/RepublicShips/Rothana/Rothana_Shield_Albedo.png",
+        "guid": "04266c31662841047899b23d3db50866"
+      }
+    ],
+    "bindings": [
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8473529630921450983
+        },
+        "property": "shieldRenderer",
+        "target": {
+          "role": "view",
+          "fileId": 842929850475730042
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 5749528391939006226
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 1757597684481047419
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 4338197477975985462
+        },
+        "property": "bindings",
+        "target": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 4338197477975985462
+        },
+        "property": "explosionHullRenderers.Array.data[0]",
+        "target": {
+          "role": "view",
+          "fileId": 1188152516807967770
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 4338197477975985462
+        },
+        "property": "explosionHullRenderers.Array.data[1]",
+        "target": {
+          "role": "view",
+          "fileId": 5732535132558506495
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 4338197477975985462
+        },
+        "property": "explosionHullRenderers.Array.data[2]",
+        "target": {
+          "role": "view",
+          "fileId": 2067789261130643474
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 4338197477975985462
+        },
+        "property": "explosionHullRenderers.Array.data[3]",
+        "target": {
+          "role": "view",
+          "fileId": 6926057727599157024
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 4338197477975985462
+        },
+        "property": "explosionHullRenderers.Array.data[4]",
+        "target": {
+          "role": "view",
+          "fileId": 3922524842532441800
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 4338197477975985462
+        },
+        "property": "explosionHullRenderers.Array.data[5]",
+        "target": {
+          "role": "view",
+          "fileId": 2340190698033240963
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 4338197477975985462
+        },
+        "property": "explosionHullRenderers.Array.data[6]",
+        "target": {
+          "role": "view",
+          "fileId": 7345423154027387301
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 1031746431658216742
+        },
+        "property": "lineRenderer",
+        "target": {
+          "role": "view",
+          "fileId": 404319281634142982
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 1031746431658216742
+        },
+        "property": "bodyTransform",
+        "target": {
+          "role": "view",
+          "fileId": 5157933399027755616
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2578493503462348170
+        },
+        "property": "selectionRoot",
+        "target": {
+          "role": "view",
+          "fileId": 5977027583687282740
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2578493503462348170
+        },
+        "property": "selectedRenderer",
+        "target": {
+          "role": "view",
+          "fileId": 6417787749287188568
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "shieldView",
+        "target": {
+          "role": "view",
+          "fileId": 8473529630921450983
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[0]",
+        "target": {
+          "role": "view",
+          "fileId": 6489407877593308187
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[1]",
+        "target": {
+          "role": "view",
+          "fileId": 3980309134457433477
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[2]",
+        "target": {
+          "role": "view",
+          "fileId": 5011632407109467314
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[3]",
+        "target": {
+          "role": "view",
+          "fileId": 491038778748872509
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[4]",
+        "target": {
+          "role": "view",
+          "fileId": 6888389241082585646
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[5]",
+        "target": {
+          "role": "view",
+          "fileId": 5749528391939006226
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[6]",
+        "target": {
+          "role": "view",
+          "fileId": 4618905557867333656
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[7]",
+        "target": {
+          "role": "view",
+          "fileId": 8523597348643196513
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[8]",
+        "target": {
+          "role": "view",
+          "fileId": 6072934535775613152
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[9]",
+        "target": {
+          "role": "view",
+          "fileId": 6061315044234874315
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[10]",
+        "target": {
+          "role": "view",
+          "fileId": 9096267698636447239
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[11]",
+        "target": {
+          "role": "view",
+          "fileId": 473183790402969848
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[12]",
+        "target": {
+          "role": "view",
+          "fileId": 6185850947772605355
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[13]",
+        "target": {
+          "role": "view",
+          "fileId": 527812995287098012
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[14]",
+        "target": {
+          "role": "view",
+          "fileId": 5921249974743197750
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[15]",
+        "target": {
+          "role": "view",
+          "fileId": 5064541910585289464
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[16]",
+        "target": {
+          "role": "view",
+          "fileId": 4175639749370887310
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[17]",
+        "target": {
+          "role": "view",
+          "fileId": 9220442616916450686
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[18]",
+        "target": {
+          "role": "view",
+          "fileId": 2613206955805012499
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[19]",
+        "target": {
+          "role": "view",
+          "fileId": 1223602885689360016
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[20]",
+        "target": {
+          "role": "view",
+          "fileId": 26160967148296332
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        },
+        "property": "<ShipUnits>k__BackingField.Array.data[21]",
+        "target": {
+          "role": "view",
+          "fileId": 7949012638225316501
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8101683937509795361
+        },
+        "property": "renderers.Array.data[0]",
+        "target": {
+          "role": "view",
+          "fileId": 1188152516807967770
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8101683937509795361
+        },
+        "property": "renderers.Array.data[1]",
+        "target": {
+          "role": "view",
+          "fileId": 7600352431923194612
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8101683937509795361
+        },
+        "property": "renderers.Array.data[2]",
+        "target": {
+          "role": "view",
+          "fileId": 3888058625884465015
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8101683937509795361
+        },
+        "property": "renderers.Array.data[3]",
+        "target": {
+          "role": "view",
+          "fileId": 5732535132558506495
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8101683937509795361
+        },
+        "property": "renderers.Array.data[4]",
+        "target": {
+          "role": "view",
+          "fileId": 2067789261130643474
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8101683937509795361
+        },
+        "property": "renderers.Array.data[5]",
+        "target": {
+          "role": "view",
+          "fileId": 6926057727599157024
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8101683937509795361
+        },
+        "property": "renderers.Array.data[6]",
+        "target": {
+          "role": "view",
+          "fileId": 8990767333336860405
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8101683937509795361
+        },
+        "property": "renderers.Array.data[7]",
+        "target": {
+          "role": "view",
+          "fileId": 3922524842532441800
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8101683937509795361
+        },
+        "property": "renderers.Array.data[8]",
+        "target": {
+          "role": "view",
+          "fileId": 2340190698033240963
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8101683937509795361
+        },
+        "property": "renderers.Array.data[9]",
+        "target": {
+          "role": "view",
+          "fileId": 7345423154027387301
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8101683937509795361
+        },
+        "property": "renderers.Array.data[10]",
+        "target": {
+          "role": "view",
+          "fileId": 842929850475730042
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8101683937509795361
+        },
+        "property": "renderers.Array.data[11]",
+        "target": {
+          "role": "view",
+          "fileId": 404319281634142982
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8024976954023505495
+        },
+        "property": "meshRenderers.Array.data[0]",
+        "target": {
+          "role": "view",
+          "fileId": 1188152516807967770
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8024976954023505495
+        },
+        "property": "meshRenderers.Array.data[1]",
+        "target": {
+          "role": "view",
+          "fileId": 7600352431923194612
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8024976954023505495
+        },
+        "property": "meshRenderers.Array.data[2]",
+        "target": {
+          "role": "view",
+          "fileId": 3888058625884465015
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8024976954023505495
+        },
+        "property": "meshRenderers.Array.data[3]",
+        "target": {
+          "role": "view",
+          "fileId": 5732535132558506495
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8024976954023505495
+        },
+        "property": "meshRenderers.Array.data[4]",
+        "target": {
+          "role": "view",
+          "fileId": 2067789261130643474
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8024976954023505495
+        },
+        "property": "meshRenderers.Array.data[5]",
+        "target": {
+          "role": "view",
+          "fileId": 6926057727599157024
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8024976954023505495
+        },
+        "property": "meshRenderers.Array.data[6]",
+        "target": {
+          "role": "view",
+          "fileId": 8990767333336860405
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8024976954023505495
+        },
+        "property": "meshRenderers.Array.data[7]",
+        "target": {
+          "role": "view",
+          "fileId": 3922524842532441800
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8024976954023505495
+        },
+        "property": "meshRenderers.Array.data[8]",
+        "target": {
+          "role": "view",
+          "fileId": 2340190698033240963
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8024976954023505495
+        },
+        "property": "meshRenderers.Array.data[9]",
+        "target": {
+          "role": "view",
+          "fileId": 7345423154027387301
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8024976954023505495
+        },
+        "property": "meshRenderers.Array.data[10]",
+        "target": {
+          "role": "view",
+          "fileId": 842929850475730042
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Selection>k__BackingField.Array.data[0]",
+        "target": {
+          "role": "view",
+          "fileId": 2578493503462348170
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Health>k__BackingField.Array.data[0]",
+        "target": {
+          "role": "view",
+          "fileId": 2973481010417375070
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Radar>k__BackingField.Array.data[0]",
+        "target": {
+          "role": "view",
+          "fileId": 1489862875720502058
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Weapons>k__BackingField.Array.data[0]",
+        "target": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<FogVisibility>k__BackingField.Array.data[0]",
+        "target": {
+          "role": "view",
+          "fileId": 8101683937509795361
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<ShipMove>k__BackingField",
+        "target": {
+          "role": "view",
+          "fileId": 1031746431658216742
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Hangar>k__BackingField",
+        "target": {
+          "role": "view",
+          "fileId": 3105888239237624588
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<AudioShip>k__BackingField",
+        "target": {
+          "role": "view",
+          "fileId": 6085887392782280531
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<AudioDialog>k__BackingField",
+        "target": {
+          "role": "view",
+          "fileId": 6782100171137208823
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[0]",
+        "target": {
+          "role": "view",
+          "fileId": 8024976954023505495
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[1]",
+        "target": {
+          "role": "view",
+          "fileId": 6489407877593308187
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[2]",
+        "target": {
+          "role": "view",
+          "fileId": 3980309134457433477
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[3]",
+        "target": {
+          "role": "view",
+          "fileId": 5011632407109467314
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[4]",
+        "target": {
+          "role": "view",
+          "fileId": 491038778748872509
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[5]",
+        "target": {
+          "role": "view",
+          "fileId": 6888389241082585646
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[6]",
+        "target": {
+          "role": "view",
+          "fileId": 5749528391939006226
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[7]",
+        "target": {
+          "role": "view",
+          "fileId": 4618905557867333656
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[8]",
+        "target": {
+          "role": "view",
+          "fileId": 8523597348643196513
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[9]",
+        "target": {
+          "role": "view",
+          "fileId": 6072934535775613152
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[10]",
+        "target": {
+          "role": "view",
+          "fileId": 6061315044234874315
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[11]",
+        "target": {
+          "role": "view",
+          "fileId": 9096267698636447239
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[12]",
+        "target": {
+          "role": "view",
+          "fileId": 473183790402969848
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[13]",
+        "target": {
+          "role": "view",
+          "fileId": 6185850947772605355
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[14]",
+        "target": {
+          "role": "view",
+          "fileId": 527812995287098012
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[15]",
+        "target": {
+          "role": "view",
+          "fileId": 5921249974743197750
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[16]",
+        "target": {
+          "role": "view",
+          "fileId": 5064541910585289464
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[17]",
+        "target": {
+          "role": "view",
+          "fileId": 4175639749370887310
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[18]",
+        "target": {
+          "role": "view",
+          "fileId": 9220442616916450686
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[19]",
+        "target": {
+          "role": "view",
+          "fileId": 2613206955805012499
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[20]",
+        "target": {
+          "role": "view",
+          "fileId": 1223602885689360016
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[21]",
+        "target": {
+          "role": "view",
+          "fileId": 26160967148296332
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7750484974646174992
+        },
+        "property": "<Injectables>k__BackingField.Array.data[22]",
+        "target": {
+          "role": "view",
+          "fileId": 7949012638225316501
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 9096267698636447239
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 5396261998725354882
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 8523597348643196513
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 8924803703874046152
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 26160967148296332
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 1601605642092290983
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 6888389241082585646
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 9132753331247674085
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 4618905557867333656
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 6781682987918448996
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 6489407877593308187
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 1703961521766815300
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 527812995287098012
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 6162605732232427153
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[0]",
+        "target": {
+          "role": "view",
+          "fileId": 6489407877593308187
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[1]",
+        "target": {
+          "role": "view",
+          "fileId": 3980309134457433477
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[2]",
+        "target": {
+          "role": "view",
+          "fileId": 5011632407109467314
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[3]",
+        "target": {
+          "role": "view",
+          "fileId": 491038778748872509
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[4]",
+        "target": {
+          "role": "view",
+          "fileId": 6888389241082585646
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[5]",
+        "target": {
+          "role": "view",
+          "fileId": 5749528391939006226
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[6]",
+        "target": {
+          "role": "view",
+          "fileId": 4618905557867333656
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[7]",
+        "target": {
+          "role": "view",
+          "fileId": 8523597348643196513
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[8]",
+        "target": {
+          "role": "view",
+          "fileId": 6072934535775613152
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[9]",
+        "target": {
+          "role": "view",
+          "fileId": 6061315044234874315
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[10]",
+        "target": {
+          "role": "view",
+          "fileId": 9096267698636447239
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[11]",
+        "target": {
+          "role": "view",
+          "fileId": 473183790402969848
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[12]",
+        "target": {
+          "role": "view",
+          "fileId": 6185850947772605355
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[13]",
+        "target": {
+          "role": "view",
+          "fileId": 527812995287098012
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[14]",
+        "target": {
+          "role": "view",
+          "fileId": 5921249974743197750
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[15]",
+        "target": {
+          "role": "view",
+          "fileId": 5064541910585289464
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[16]",
+        "target": {
+          "role": "view",
+          "fileId": 4175639749370887310
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[17]",
+        "target": {
+          "role": "view",
+          "fileId": 9220442616916450686
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2979313234107364091
+        },
+        "property": "hardPoints.Array.data[18]",
+        "target": {
+          "role": "view",
+          "fileId": 7949012638225316501
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 1223602885689360016
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 8630533304177333637
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 2613206955805012499
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 8088164409061223350
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 6061315044234874315
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 4044772749583962204
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 6185850947772605355
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 7525189665456919280
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 3105888239237624588
+        },
+        "property": "launchPoint",
+        "target": {
+          "role": "view",
+          "fileId": 7496005140198288618
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 3105888239237624588
+        },
+        "property": "hangarHardPoint",
+        "target": {
+          "role": "view",
+          "fileId": 26160967148296332
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 6072934535775613152
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 8790971469747489926
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 5064541910585289464
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 8290243690692672824
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 5921249974743197750
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 2953945647548605722
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 3980309134457433477
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 3993816960996206978
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 491038778748872509
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 2900794645970776447
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 473183790402969848
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 3358742443083971808
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 7949012638225316501
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 3020946543929188186
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 5011632407109467314
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 4336521756501922417
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 9220442616916450686
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 4136943090162911171
+        }
+      },
+      {
+        "component": {
+          "role": "view",
+          "fileId": 4175639749370887310
+        },
+        "property": "destroyedVfxAnchor",
+        "target": {
+          "role": "view",
+          "fileId": 6098211074529215544
+        }
+      }
+    ]
+  },
+  "dimensions": {
+    "targetLength": 238.7667461973518,
+    "sizeRule": "visible-length",
+    "orientationEulerDegrees": [
+      0,
+      0,
+      0
+    ],
+    "pivot": "visible-center",
+    "bankingDegrees": 15,
+    "margins": []
+  },
+  "materials": [
+    {
+      "selector": {
+        "piece": "hull",
+        "shader": "MeshBumpColorize.fx",
+        "parameters": [
+          {
+            "name": "Emissive",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Diffuse",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Specular",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Shininess",
+            "value": [
+              0.0
+            ]
+          },
+          {
+            "name": "Colorization",
+            "value": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ]
+          },
+          {
+            "name": "UVOffset",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "BaseTexture",
+            "value": "Rothana_engines.tga"
+          },
+          {
+            "name": "NormalTexture",
+            "value": "Rothana_engines_Normal.tga"
+          }
+        ]
+      },
+      "targetGuid": "ab73b79220d6d6b4e8f761b5f62101ba",
+      "surface": "opaque",
+      "textures": [
+        {
+          "semantic": "albedo",
+          "source": "Textures/Rothana_engines.dds",
+          "targetGuid": "735ce3563fed9a64f86de63d9654d1fb"
+        },
+        {
+          "semantic": "normal",
+          "source": "Textures/Rothana_engines_Normal.dds",
+          "targetGuid": "3f6d08aa652d7ae4795cb7e430581ef9"
+        }
+      ],
+      "normalConvention": "directx",
+      "livery": {
+        "policy": "hsv",
+        "parameters": [
+          {
+            "name": "_TeamEmissionTint",
+            "value": 0.5
+          },
+          {
+            "name": "_TeamLiveryHue",
+            "value": 0
+          },
+          {
+            "name": "_TeamLiveryHueRange",
+            "value": 0.07
+          },
+          {
+            "name": "_TeamLiveryMinSaturation",
+            "value": 0.4
+          },
+          {
+            "name": "_TeamLiveryStrength",
+            "value": 1
+          },
+          {
+            "name": "_TeamMaskStrength",
+            "value": 1
+          },
+          {
+            "name": "_TeamRimPower",
+            "value": 3
+          },
+          {
+            "name": "_TeamRimStrength",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "selector": {
+        "piece": "hull",
+        "shader": "MeshAdditive.fx",
+        "parameters": [
+          {
+            "name": "BaseTexture",
+            "value": "Rothana_engines.tga"
+          },
+          {
+            "name": "UVScrollRate",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Color",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        ]
+      },
+      "targetGuid": "7b6b8d05a10428442bb4ad2caf0ef36e",
+      "surface": "additive",
+      "textures": [
+        {
+          "semantic": "albedo",
+          "source": "Textures/Rothana_engines.dds",
+          "targetGuid": "735ce3563fed9a64f86de63d9654d1fb"
+        }
+      ],
+      "normalConvention": "none",
+      "livery": {
+        "policy": "none",
+        "parameters": []
+      }
+    },
+    {
+      "selector": {
+        "piece": "hull",
+        "shader": "MeshShield.fx",
+        "parameters": [
+          {
+            "name": "Color",
+            "value": [
+              0.0,
+              0.0,
+              1.0,
+              1.0
+            ]
+          },
+          {
+            "name": "EdgeBrightness",
+            "value": [
+              0.5
+            ]
+          },
+          {
+            "name": "BaseUVScale",
+            "value": [
+              1.0
+            ]
+          },
+          {
+            "name": "WaveUVScale",
+            "value": [
+              1.0
+            ]
+          },
+          {
+            "name": "DistortUVScale",
+            "value": [
+              1.0
+            ]
+          },
+          {
+            "name": "BaseUVScrollRate",
+            "value": [
+              -0.15000000596046448
+            ]
+          },
+          {
+            "name": "WaveUVScrollRate",
+            "value": [
+              -0.11999999731779099
+            ]
+          },
+          {
+            "name": "DistortUVScrollRate",
+            "value": [
+              0.20000000298023224
+            ]
+          },
+          {
+            "name": "BaseTexture",
+            "value": "Nb_shieldbase.tga"
+          },
+          {
+            "name": "WaveTexture",
+            "value": "Nb_shieldwave.tga"
+          },
+          {
+            "name": "DistortionTexture",
+            "value": "Nb_shieldripple.tga"
+          }
+        ]
+      },
+      "targetGuid": "929aa8c614416714ca813bb2e74d097f",
+      "surface": "additive",
+      "textures": [
+        {
+          "semantic": "albedo",
+          "source": "Textures/Nb_shieldbase.dds",
+          "targetGuid": "04266c31662841047899b23d3db50866"
+        }
+      ],
+      "normalConvention": "none",
+      "livery": {
+        "policy": "none",
+        "parameters": []
+      }
+    },
+    {
+      "selector": {
+        "piece": "hull",
+        "shader": "MeshBumpColorize.fx",
+        "parameters": [
+          {
+            "name": "Emissive",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Diffuse",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Specular",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Shininess",
+            "value": [
+              0.0
+            ]
+          },
+          {
+            "name": "Colorization",
+            "value": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ]
+          },
+          {
+            "name": "UVOffset",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "BaseTexture",
+            "value": "Hanger.tga"
+          },
+          {
+            "name": "NormalTexture",
+            "value": "Hanger_B.tga"
+          }
+        ]
+      },
+      "targetGuid": "84de326c4e32382459c612c5d313338e",
+      "surface": "opaque",
+      "textures": [
+        {
+          "semantic": "albedo",
+          "source": "Textures/Hanger.dds",
+          "targetGuid": "174802972523b2d47916f2e7bb3f86d7"
+        },
+        {
+          "semantic": "normal",
+          "source": "Textures/Hanger_B.dds",
+          "targetGuid": "2f56450fdeb2c84458cd2719cf449f22"
+        }
+      ],
+      "normalConvention": "directx",
+      "livery": {
+        "policy": "none",
+        "parameters": [
+          {
+            "name": "_TeamEmissionTint",
+            "value": 0.5
+          },
+          {
+            "name": "_TeamLiveryHue",
+            "value": 0
+          },
+          {
+            "name": "_TeamLiveryHueRange",
+            "value": 0.07
+          },
+          {
+            "name": "_TeamLiveryMinSaturation",
+            "value": 0.4
+          },
+          {
+            "name": "_TeamLiveryStrength",
+            "value": 0
+          },
+          {
+            "name": "_TeamMaskStrength",
+            "value": 1
+          },
+          {
+            "name": "_TeamRimPower",
+            "value": 3
+          },
+          {
+            "name": "_TeamRimStrength",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "selector": {
+        "piece": "hull",
+        "shader": "MeshCollision.fx",
+        "parameters": [
+          {
+            "name": "Color",
+            "value": [
+              0.0,
+              0.0,
+              1.0,
+              0.5
+            ]
+          }
+        ]
+      },
+      "targetGuid": "9100620c25f42494dadeeef0491da452",
+      "surface": "opaque",
+      "textures": [],
+      "normalConvention": "none",
+      "livery": {
+        "policy": "none",
+        "parameters": [
+          {
+            "name": "_TeamEmissionTint",
+            "value": 0.5
+          },
+          {
+            "name": "_TeamLiveryHue",
+            "value": 0
+          },
+          {
+            "name": "_TeamLiveryHueRange",
+            "value": 0.07
+          },
+          {
+            "name": "_TeamLiveryMinSaturation",
+            "value": 0.4
+          },
+          {
+            "name": "_TeamLiveryStrength",
+            "value": 0
+          },
+          {
+            "name": "_TeamMaskStrength",
+            "value": 1
+          },
+          {
+            "name": "_TeamRimPower",
+            "value": 3
+          },
+          {
+            "name": "_TeamRimStrength",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "selector": {
+        "piece": "hull",
+        "shader": "MeshAdditive.fx",
+        "parameters": [
+          {
+            "name": "BaseTexture",
+            "value": "Hull_Lights_Grid_Sparse_Rebel.tga"
+          },
+          {
+            "name": "UVScrollRate",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Color",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          }
+        ]
+      },
+      "targetGuid": "dcaebffccc287824caff35b3d0c067c1",
+      "surface": "additive",
+      "textures": [
+        {
+          "semantic": "albedo",
+          "source": "Textures/Hull_Lights_Grid_Sparse_Rebel.dds",
+          "targetGuid": "493a492edc077ef4ebd0175cc05df23e"
+        }
+      ],
+      "normalConvention": "none",
+      "livery": {
+        "policy": "none",
+        "parameters": []
+      }
+    },
+    {
+      "selector": {
+        "piece": "hull",
+        "shader": "MeshBumpColorize.fx",
+        "parameters": [
+          {
+            "name": "Emissive",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Diffuse",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Specular",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Shininess",
+            "value": [
+              0.0
+            ]
+          },
+          {
+            "name": "Colorization",
+            "value": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ]
+          },
+          {
+            "name": "UVOffset",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "BaseTexture",
+            "value": "Rothana_reactor.tga"
+          },
+          {
+            "name": "NormalTexture",
+            "value": "Rothana_reactor_nm.tga"
+          }
+        ]
+      },
+      "targetGuid": "ca09b103cada45b4c94b55555c88ab77",
+      "surface": "opaque",
+      "textures": [
+        {
+          "semantic": "albedo",
+          "source": "Textures/Rothana_reactor.dds",
+          "targetGuid": "07488dcf699787446a7d2de63360b4c9"
+        },
+        {
+          "semantic": "normal",
+          "source": "Textures/Rothana_reactor_nm.dds",
+          "targetGuid": "81d67cf777ab5a140916dcf6e4ac7c15"
+        }
+      ],
+      "normalConvention": "directx",
+      "livery": {
+        "policy": "none",
+        "parameters": [
+          {
+            "name": "_TeamEmissionTint",
+            "value": 0.5
+          },
+          {
+            "name": "_TeamLiveryHue",
+            "value": 0
+          },
+          {
+            "name": "_TeamLiveryHueRange",
+            "value": 0.07
+          },
+          {
+            "name": "_TeamLiveryMinSaturation",
+            "value": 0.4
+          },
+          {
+            "name": "_TeamLiveryStrength",
+            "value": 0
+          },
+          {
+            "name": "_TeamMaskStrength",
+            "value": 1
+          },
+          {
+            "name": "_TeamRimPower",
+            "value": 3
+          },
+          {
+            "name": "_TeamRimStrength",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "selector": {
+        "piece": "hull",
+        "shader": "MeshShadowVolume.fx",
+        "parameters": [
+          {
+            "name": "DebugColor",
+            "value": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        ]
+      },
+      "targetGuid": "560bb395602fd1c46aa513b7b0ae2f8c",
+      "surface": "opaque",
+      "textures": [],
+      "normalConvention": "none",
+      "livery": {
+        "policy": "none",
+        "parameters": [
+          {
+            "name": "_TeamEmissionTint",
+            "value": 0.5
+          },
+          {
+            "name": "_TeamLiveryHue",
+            "value": 0
+          },
+          {
+            "name": "_TeamLiveryHueRange",
+            "value": 0.07
+          },
+          {
+            "name": "_TeamLiveryMinSaturation",
+            "value": 0.4
+          },
+          {
+            "name": "_TeamLiveryStrength",
+            "value": 0
+          },
+          {
+            "name": "_TeamMaskStrength",
+            "value": 1
+          },
+          {
+            "name": "_TeamRimPower",
+            "value": 3
+          },
+          {
+            "name": "_TeamRimStrength",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "selector": {
+        "piece": "hull",
+        "shader": "MeshBumpColorize.fx",
+        "parameters": [
+          {
+            "name": "Emissive",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Diffuse",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Specular",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Shininess",
+            "value": [
+              0.0
+            ]
+          },
+          {
+            "name": "Colorization",
+            "value": [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "UVOffset",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "BaseTexture",
+            "value": "Rothana_hull_1_Base.tga"
+          },
+          {
+            "name": "NormalTexture",
+            "value": "Rothana_hull_1_norm.tga"
+          }
+        ]
+      },
+      "targetGuid": "b5923c951d15b0e4daeebe0f21f44884",
+      "surface": "opaque",
+      "textures": [
+        {
+          "semantic": "albedo",
+          "source": "Textures/Rothana_hull_1_Base.dds",
+          "targetGuid": "fd5b1a1a185e1534e938f937d0570f46"
+        },
+        {
+          "semantic": "normal",
+          "source": "Textures/Rothana_hull_1_norm.dds",
+          "targetGuid": "b56cceda87c48934ca494b0df6789986"
+        }
+      ],
+      "normalConvention": "directx",
+      "livery": {
+        "policy": "hsv",
+        "parameters": [
+          {
+            "name": "_TeamEmissionTint",
+            "value": 0.5
+          },
+          {
+            "name": "_TeamLiveryHue",
+            "value": 0
+          },
+          {
+            "name": "_TeamLiveryHueRange",
+            "value": 0.07
+          },
+          {
+            "name": "_TeamLiveryMinSaturation",
+            "value": 0.4
+          },
+          {
+            "name": "_TeamLiveryStrength",
+            "value": 1
+          },
+          {
+            "name": "_TeamMaskStrength",
+            "value": 1
+          },
+          {
+            "name": "_TeamRimPower",
+            "value": 3
+          },
+          {
+            "name": "_TeamRimStrength",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "selector": {
+        "piece": "hull",
+        "shader": "MeshBumpColorize.fx",
+        "parameters": [
+          {
+            "name": "Emissive",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Diffuse",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Specular",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Shininess",
+            "value": [
+              0.0
+            ]
+          },
+          {
+            "name": "Colorization",
+            "value": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ]
+          },
+          {
+            "name": "UVOffset",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "BaseTexture",
+            "value": "Rothana_hull_3_base.tga"
+          },
+          {
+            "name": "NormalTexture",
+            "value": "Rothana_hull_3_norm.tga"
+          }
+        ]
+      },
+      "targetGuid": "cc8a9a1fb283d2746907130684305693",
+      "surface": "opaque",
+      "textures": [
+        {
+          "semantic": "albedo",
+          "source": "Textures/Rothana_hull_3_base.dds",
+          "targetGuid": "0f1f43469dd30324fac16b19cf366207"
+        },
+        {
+          "semantic": "normal",
+          "source": "Textures/Rothana_hull_3_norm.dds",
+          "targetGuid": "9974fc2d53caf1c47bb7fe6ecdb289e2"
+        }
+      ],
+      "normalConvention": "directx",
+      "livery": {
+        "policy": "hsv",
+        "parameters": [
+          {
+            "name": "_TeamEmissionTint",
+            "value": 0.5
+          },
+          {
+            "name": "_TeamLiveryHue",
+            "value": 0
+          },
+          {
+            "name": "_TeamLiveryHueRange",
+            "value": 0.07
+          },
+          {
+            "name": "_TeamLiveryMinSaturation",
+            "value": 0.4
+          },
+          {
+            "name": "_TeamLiveryStrength",
+            "value": 1
+          },
+          {
+            "name": "_TeamMaskStrength",
+            "value": 1
+          },
+          {
+            "name": "_TeamRimPower",
+            "value": 3
+          },
+          {
+            "name": "_TeamRimStrength",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "selector": {
+        "piece": "hull",
+        "shader": "MeshBumpColorize.fx",
+        "parameters": [
+          {
+            "name": "Emissive",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Diffuse",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          },
+          {
+            "name": "Specular",
+            "value": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          {
+            "name": "Shininess",
+            "value": [
+              32.0
+            ]
+          },
+          {
+            "name": "Colorization",
+            "value": [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "UVOffset",
+            "value": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "name": "BaseTexture",
+            "value": "Rothana_hull_2_base.tga"
+          },
+          {
+            "name": "NormalTexture",
+            "value": "Rothana_hull_2_Norm.tga"
+          }
+        ]
+      },
+      "targetGuid": "75c7f3de52b4b894694887087c246dbd",
+      "surface": "opaque",
+      "textures": [
+        {
+          "semantic": "albedo",
+          "source": "Textures/Rothana_hull_2_base.dds",
+          "targetGuid": "0b7a8b987c9d6c04d845aff3316c5df2"
+        },
+        {
+          "semantic": "normal",
+          "source": "Textures/Rothana_hull_2_Norm.dds",
+          "targetGuid": "a732d4707cdf36046ab1190dce3a1c68"
+        }
+      ],
+      "normalConvention": "directx",
+      "livery": {
+        "policy": "none",
+        "parameters": [
+          {
+            "name": "_TeamEmissionTint",
+            "value": 0.5
+          },
+          {
+            "name": "_TeamLiveryHue",
+            "value": 0
+          },
+          {
+            "name": "_TeamLiveryHueRange",
+            "value": 0.07
+          },
+          {
+            "name": "_TeamLiveryMinSaturation",
+            "value": 0.4
+          },
+          {
+            "name": "_TeamLiveryStrength",
+            "value": 0
+          },
+          {
+            "name": "_TeamMaskStrength",
+            "value": 1
+          },
+          {
+            "name": "_TeamRimPower",
+            "value": 3
+          },
+          {
+            "name": "_TeamRimStrength",
+            "value": 0
+          }
+        ]
+      }
+    }
+  ],
+  "hardpoints": [
+    {
+      "id": 0,
+      "component": {
+        "role": "view",
+        "fileId": 6489407877593308187
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          -26.079895,
+          1.6163849,
+          -10.901991
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -170,
+        -10
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 9
+    },
+    {
+      "id": 1,
+      "component": {
+        "role": "view",
+        "fileId": 3980309134457433477
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          -27.319054,
+          1.6163839,
+          -13.957417
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -170,
+        -10
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 9
+    },
+    {
+      "id": 2,
+      "component": {
+        "role": "view",
+        "fileId": 5011632407109467314
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          -28.54412,
+          1.616383,
+          -16.978115
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -170,
+        -10
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 9
+    },
+    {
+      "id": 3,
+      "component": {
+        "role": "view",
+        "fileId": 491038778748872509
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          28.565336,
+          1.616316,
+          -16.97918
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        10,
+        170
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 9
+    },
+    {
+      "id": 4,
+      "component": {
+        "role": "view",
+        "fileId": 6888389241082585646
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          27.3262,
+          1.616316,
+          -13.923735
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        10,
+        170
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 9
+    },
+    {
+      "id": 5,
+      "component": {
+        "role": "view",
+        "fileId": 5749528391939006226
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          26.101152,
+          1.616316,
+          -10.903027
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        10,
+        170
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 9
+    },
+    {
+      "id": 6,
+      "component": {
+        "role": "view",
+        "fileId": 4618905557867333656
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          0.010510027,
+          4.395539,
+          8.459388
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -160,
+        160
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 9
+    },
+    {
+      "id": 7,
+      "component": {
+        "role": "view",
+        "fileId": 8523597348643196513
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          0.010510147,
+          4.0186753,
+          15.899188
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -160,
+        160
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 9
+    },
+    {
+      "id": 8,
+      "component": {
+        "role": "view",
+        "fileId": 6072934535775613152
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          -28.579407,
+          -8.747506,
+          -40.05913
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -170,
+        -10
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 5
+    },
+    {
+      "id": 9,
+      "component": {
+        "role": "view",
+        "fileId": 6061315044234874315
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          28.600428,
+          -8.747506,
+          -40.05913
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        10,
+        170
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 5
+    },
+    {
+      "id": 10,
+      "component": {
+        "role": "view",
+        "fileId": 9096267698636447239
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          -21.54948,
+          -3.7973351,
+          25.69506
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -175,
+        20
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 94
+    },
+    {
+      "id": 11,
+      "component": {
+        "role": "view",
+        "fileId": 473183790402969848
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          -12.072801,
+          -3.834538,
+          55.378754
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -175,
+        20
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 94
+    },
+    {
+      "id": 12,
+      "component": {
+        "role": "view",
+        "fileId": 6185850947772605355
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          12.120486,
+          -3.834534,
+          55.370586
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -20,
+        175
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 94
+    },
+    {
+      "id": 13,
+      "component": {
+        "role": "view",
+        "fileId": 527812995287098012
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          21.720798,
+          -3.8345394,
+          25.689709
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -20,
+        175
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 94
+    },
+    {
+      "id": 14,
+      "component": {
+        "role": "view",
+        "fileId": 5921249974743197750
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          -28.257427,
+          0.06785885,
+          -11.679191
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -180,
+        180
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 14
+    },
+    {
+      "id": 15,
+      "component": {
+        "role": "view",
+        "fileId": 5064541910585289464
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          28.278461,
+          0.06785885,
+          -11.679198
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -180,
+        180
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 14
+    },
+    {
+      "id": 16,
+      "component": {
+        "role": "view",
+        "fileId": 4175639749370887310
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          -29.561302,
+          0.024814682,
+          -14.870906
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -170,
+        -10
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 37
+    },
+    {
+      "id": 17,
+      "component": {
+        "role": "view",
+        "fileId": 9220442616916450686
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          29.58242,
+          0.028519101,
+          -14.870871
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        10,
+        170
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 37
+    },
+    {
+      "id": 18,
+      "component": {
+        "role": "view",
+        "fileId": 2613206955805012499
+      },
+      "kind": "shield",
+      "profileGuid": null,
+      "anchor": {
+        "localPosition": [
+          0.010510304,
+          7.3593006,
+          -25.146477
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        0,
+        0
+      ],
+      "muzzles": [],
+      "health": 600,
+      "targetable": true
+    },
+    {
+      "id": 19,
+      "component": {
+        "role": "view",
+        "fileId": 1223602885689360016
+      },
+      "kind": "engine",
+      "profileGuid": null,
+      "anchor": {
+        "localPosition": [
+          -0.0053372383,
+          -3.7027886,
+          -45.26232
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        0,
+        0
+      ],
+      "muzzles": [],
+      "health": 600,
+      "targetable": true
+    },
+    {
+      "id": 20,
+      "component": {
+        "role": "view",
+        "fileId": 26160967148296332
+      },
+      "kind": "hangar",
+      "profileGuid": null,
+      "anchor": {
+        "localPosition": [
+          0.010510304,
+          -8.48958,
+          4.5839505
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        0,
+        0
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true
+    },
+    {
+      "id": 21,
+      "component": {
+        "role": "view",
+        "fileId": 7949012638225316501
+      },
+      "kind": "weapon",
+      "profileGuid": "ecc171837acaaa745aebac563ac53363",
+      "anchor": {
+        "localPosition": [
+          0.023842812,
+          -3.834536,
+          55.374672
+        ],
+        "localEulerDegrees": [
+          0,
+          0,
+          0
+        ]
+      },
+      "yawRangeDegrees": [
+        -180,
+        180
+      ],
+      "muzzles": [],
+      "health": 400,
+      "targetable": true,
+      "profileKey": 121
+    }
+  ],
+  "hangar": [
+    {
+      "id": "bay-2",
+      "squadronGuid": "b5889e4bc784b4649a605db9577be9ed",
+      "squadronKey": 2,
+      "launchAnchors": [
+        {
+          "localPosition": [
+            -0.010510304,
+            -10.248774,
+            0
+          ],
+          "localEulerDegrees": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "capacity": 1,
+      "reserve": 20,
+      "initialDelaySeconds": 4,
+      "intervalSeconds": 8
+    },
+    {
+      "id": "bay-3",
+      "squadronGuid": "b5889e4bc784b4649a605db9577be9ed",
+      "squadronKey": 3,
+      "launchAnchors": [
+        {
+          "localPosition": [
+            -0.010510304,
+            -10.248774,
+            0
+          ],
+          "localEulerDegrees": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "capacity": 1,
+      "reserve": 20,
+      "initialDelaySeconds": 4,
+      "intervalSeconds": 8
+    }
+  ],
+  "gameplay": {
+    "baselineGuid": "c58688ab024a13b4b8952191db292c09",
+    "values": [],
+    "abilityGuids": [
+      "31c98b17b46b374458ba8be0c72dff8f"
+    ]
+  },
+  "registrations": {
+    "factionGuid": "e8c9b195b6b249c4e9528ef11dcb0efc",
+    "shipsDataGuid": "56be5b5e32a4f5040bdc4427106e8535",
+    "assetMappingGuid": "b5889e4bc784b4649a605db9577be9ed",
+    "shipUiGuid": "5d122ff846ebd9c42b0d93d92110997b",
+    "tooltipGuid": "f5fb2ca4ac1d3a848a445314158b9a6e",
+    "reinforcementGuid": "1c157dade5de42e4081ffe3ef1dd634f",
+    "viewGroupGuid": "32461b8e25b2de54088abd16d13c9065",
+    "dataGroupGuid": "9c71a107867fe5b43bdb412240236182",
+    "viewRole": "view",
+    "dataRole": "ship-data",
+    "placementRole": "placement",
+    "iconRole": "icon",
+    "iconFileId": 21300000,
+    "addressableSettingsGuid": "047fa9cc3c5486249abbfc6c5974195d"
+  },
+  "derivatives": {
+    "placement": true,
+    "wreckPieces": [
+      "hull"
+    ],
+    "icon": {
+      "resolution": 512,
+      "transparent": true,
+      "framingMargin": 0.04296875
+    },
+    "helperPolicy": "explicit-exclusions",
+    "helperExclusions": [
+      {
+        "piece": "hull",
+        "meshIndex": 3,
+        "reason": "Removed helper in current saved art prefab; retained in source transport."
+      },
+      {
+        "piece": "hull",
+        "meshIndex": 5,
+        "reason": "Removed helper in current saved art prefab; retained in source transport."
+      },
+      {
+        "piece": "hull",
+        "meshIndex": 8,
+        "reason": "Removed helper in current saved art prefab; retained in source transport."
+      }
+    ],
+    "shieldPolicy": "retain-baseline"
+  },
+  "decisions": [
+    {
+      "key": "live-baseline",
+      "value": "Preserve current saved tuning, root scale, component identities, authored hardpoint coordinates, derivative assets and shared references.",
+      "provenance": "Tools/AloImport/Evidence/RothanaRecipeInputs.json",
+      "status": "resolved"
+    },
+    {
+      "key": "current-visible-size",
+      "value": "[121.30647704845086, 43.98783467596561, 238.7667461973518]",
+      "provenance": "Tools/AloImport/Evidence/RothanaCurrentBounds.json; offline actual FBX measurement, Unity readback pending.",
+      "status": "resolved"
+    },
+    {
+      "key": "icon-framing",
+      "value": "Preserve existing icon; measured alpha bounds (22, 175, 422, 386).",
+      "provenance": "Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/RothanaIcon.png",
+      "status": "resolved"
+    },
+    {
+      "key": "source-helper-restoration",
+      "value": "Original ALO has 44,313 triangles; saved legacy FBX has 42,813. Difference is Col mesh5 178 versus176 and Shadow mesh8 1,992 versus494. Preserve original helper topology in source transport; exclude helpers3,5,8 from game derivatives. Eleven other source mesh triangle totals match current FBX.",
+      "provenance": "Tools/AloImport/Evidence/Baseline.json; read-only original/current FBX inspection by source audit. Full corner parity remains separately unverified.",
+      "status": "resolved"
+    },
+    {
+      "key": "legacy-transport-rig",
+      "value": "Rothana_Stardestroyer_Full_ArmedRig",
+      "provenance": "Tools/AloImport/Evidence/RothanaLegacyTransport.json; actual saved FBX root model identity. Raw source numeric bone/mesh metadata remains unchanged.",
+      "status": "resolved"
+    },
+    {
+      "key": "current-hangar-identities",
+      "value": "Saved SquadronType keys2=ARC170,3=YWing; current reserve20/active1 per type. Historical Delta7/AWing complement is not current tuning.",
+      "provenance": "Current SquadronType enum and RothanaShipData.hangarBays; AssetMappingData catalog GUID plus typed key uses the current SquadronFactory runtime address.",
+      "status": "resolved"
+    }
+  ],
+  "exceptions": [
+    {
+      "ruleId": "static-effects",
+      "sourceIds": [
+        "hull:mesh:2",
+        "hull:mesh:3"
+      ],
+      "reason": "Retain current static additive approximation; animated EaW shield wave/distortion is outside adapter capability. Original material parameters remain audited.",
+      "evidence": [
+        "Assets/Art/Models/RepublicShips/Rothana/Rothana.fbx.meta",
+        "Tools/AloImport/Evidence/RothanaRecipeInputs.json"
+      ]
+    }
+  ],
+  "verification": {
+    "profile": "static-source-fidelity-v1",
+    "overrides": [],
+    "renders": [
+      "model",
+      "placement",
+      "wreck",
+      "owned-colors"
+    ],
+    "checkGroups": [
+      "source",
+      "geometry",
+      "materials",
+      "bindings",
+      "registrations",
+      "derivatives"
+    ]
+  }
+}

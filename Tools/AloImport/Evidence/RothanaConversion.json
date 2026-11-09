@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-28",
+  "scope": "production source and Blender/FBX conversion only",
+  "jobId": "b2d5336a-ae74-482c-a463-0a0872eb28dc",
+  "inputHash": "54545a14033f553e220dc249ca0302f06e6b767cfead618203fcdbb1f7704d77",
+  "pipelineHash": "caf65354473c933a77234bc9c96da14584890cafa3dd5f05b6d2d7af74fdf0f8",
+  "planHash": "a6a0a0488ddef16dd53e56f1f1addb578d6d227ec20f8c303f5ddb593ed64b22",
+  "blenderVersion": "3.6.23",
+  "alamoImporterHash": "c3282dc126ae8589d16bba310b2939d4e0b7262a7525087367c4fa4a199d7b69",
+  "meshes": 13,
+  "bones": 100,
+  "triangles": 44313,
+  "slots": 13,
+  "uniqueDecodedTextures": 16,
+  "publicationFiles": 15,
+  "source": {
+    "maxErrors": {
+      "geometry": 0,
+      "uvPixels": 0,
+      "normal": 0.0006329039352665614
+    },
+    "degenerateNormalExclusions": 1497
+  },
+  "fbx": {
+    "maxErrors": {
+      "geometry": 6.574539751853118e-05,
+      "uvPixels": 0,
+      "normal": 0.0008017937772842555
+    },
+    "degenerateNormalExclusions": 1497
+  },
+  "checks": {
+    "animation": "not-run",
+    "fbxRoundTrip": "passed",
+    "materialSlots": "passed",
+    "proxyAnimation": "not-run",
+    "staticMeshGeometry": "passed",
+    "unity": "not-run"
+  },
+  "exceptions": [
+    {
+      "evidence": [
+        "Assets/Art/Models/RepublicShips/Rothana/Rothana.fbx.meta",
+        "Tools/AloImport/Evidence/RothanaRecipeInputs.json"
+      ],
+      "reason": "Retain current static additive approximation; animated EaW shield wave/distortion is outside adapter capability. Original material parameters remain audited.",
+      "ruleId": "static-effects",
+      "sourceIds": [
+        "hull:mesh:2",
+        "hull:mesh:3"
+      ]
+    }
+  ],
+  "skeletons": [
+    {
+      "source": {
+        "bones": 100,
+        "comparison": "full-matrix-and-parent",
+        "fullAuthoredMatrixMetadata": "passed",
+        "maxSourceError": 1.52587890625e-05
+      },
+      "fbx": {
+        "bones": 100,
+        "comparison": "head-and-parent",
+        "fullAuthoredMatrixMetadata": "passed",
+        "maxSourceError": 6.370551571870562e-05
+      }
+    }
+  ],
+  "repairs": [
+    {
+      "meshIndex": 5,
+      "repair": "restore-original-helper-topology"
+    },
+    {
+      "meshIndex": 5,
+      "repair": "retain-authored-flat-helper-shading"
+    },
+    {
+      "meshIndex": 8,
+      "repair": "restore-original-helper-topology"
+    },
+    {
+      "meshIndex": 8,
+      "repair": "retain-authored-flat-helper-shading"
+    }
+  ],
+  "publication": "not-run",
+  "runtime": "not-run",
+  "tests": "not-run after user prohibition",
+  "fullReport": "Tools/AloImport/.state/Jobs/b2d5336a-ae74-482c-a463-0a0872eb28dc/staging/ConversionReport.json"
+}

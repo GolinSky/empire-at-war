@@ -1,0 +1,1225 @@
+{
+  "schemaVersion": 1,
+  "scope": "Read-only material identity audit. No test or model conversion/publication.",
+  "sourceFiles": {
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M005_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "63b8776acb14288e844a70c5143295c13d5be9ac49764bbc40ed0671eb3f044b",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M005_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "a87229cfa1eb789b1c96d7f8d575f8b80d4ab781c8b8541cc21257920653369b",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M006_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "e7cf804f210d2bcfe334c5e887b585f6611751398ed718731e309a5024a32625",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M006_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "d5b5a83894f74bf21da06ec6499cc7a8b9bfba88dc61e1a1fffbc2f6fd746d7b",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M007_Helper.mat": "e8a8a81da4e39559a8c28b0438758c317a673c4379833bc1bbd553926d311de3",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M007_Helper.mat.meta": "4587d9bd0accaf0a59523c6b90075117eec9df1a4751298afc53b56fe30238a2",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M008_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Second.mat": "cd5f66e3a50dcbead4321499eb1e3c88057e114512433130ee165bd5ef32a8b6",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M008_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Second.mat.meta": "20b84cd3507740f9f9e13b891f79f776bd53786287ee9cd1b237abe802213c85",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M009_EndurancePart00_Hull_Lights_Grid.mat": "820c8f6d5d1734bd242914a08b20e311d78bc782cc4b0b4166d910cb75c89869",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M009_EndurancePart00_Hull_Lights_Grid.mat.meta": "c74d2112b1a6b9f2b0ac15490e182103f8ff1ea984f52db5855bd17ea188fa15",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart01_M004_EndurancePart01_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "462ba4a481f2f1f80c589148fa132e1f554e00e12f77b171c3a01e6b2b08280d",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart01_M004_EndurancePart01_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "f2e9e4e61860709e3303b81663dc824aa425cbb407d6e781913bb35296990d4c",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart01_M005_EndurancePart01_Hull_Lights_Grid.mat": "b585d8853ef85a154922c3a7d17c2b0a168cf48d47a222a5beeedc19b83b3e38",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart01_M005_EndurancePart01_Hull_Lights_Grid.mat.meta": "67f3a21a2ae2e6f985d0e3593bee6355f655dae958b246596d2eae71d857ef6f",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart01_M006_Helper.mat": "a8e7715059295cd416f4b8fa126687a1ca609a54105dba0f504cfc88772a5109",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart01_M006_Helper.mat.meta": "2de010e6a86be964a00cc5809736ba65340f8deb2cbc9bbf01158e77e3cc200a",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart02_M003_EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "893db836d410e475f0248b531ca4da5d0262d590880ffd1b98b3145e2b7a01e9",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart02_M003_EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "f054c830f3d61e04d430786f6d25f9d6148cfb7f16dc50b1290ef11413545164",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart02_M004_EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "c8701df1fd57705094b7f6d92b35f02f6236823b8d8f6b15ecd5fce4523ef200",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart02_M004_EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "b2775a0703a056c5b88a60d9955c6b5a2364659265f28adddf985503cbc6dad6",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart02_M005_Helper.mat": "cf7aabdfbecb1070127fd6ab7c0d11545a0bf89e9b3a825e474a424c72587c99",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart02_M005_Helper.mat.meta": "b22960bc8fe7243f83b63cb7e97fd2ba1926b65ad9f96471c5deee62dca062e5",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart02_M006_Helper.mat": "da0bec8f3701a310e508800c1a434e3340e284955a6fa189d4bca58305ad5c09",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart02_M006_Helper.mat.meta": "be8c88515eaf5f66fb81cdf8eaddda690af529970e646161dcc9080bb9b17324",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart03_M003_EndurancePart03_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "588ac797bb842c415507b9c2f96b04eb27a7488b94de250b410c980fcf509c4b",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart03_M003_EndurancePart03_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "ae6fe4c82442851af47df80526f193cb33ffbb237e2491b345be7e24aa5a79c6",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart03_M004_EndurancePart03_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "bd209295bf7b06f0a3bea83c2c04ef7457c7b77c5fe2930da63b3f1fc753a47c",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart03_M004_EndurancePart03_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "0d6b2eaf5115147325245b53bf81e6c1449b3855430fc33c7fe6be22b602498e",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart03_M005_Helper.mat": "953bcae7cf41d32b10ab0c40ff7f3dd995219dc3fb2059d74c346bff62ad8fb9",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart03_M005_Helper.mat.meta": "6c61c05120faf5e2806087a843fb9b8db5e7fe39c675d745d715406f9a826887",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart03_M006_Helper.mat": "1c95fb38ec9a5ffa86955f3180ff415dab7aaf14588c5a543346fcf4821c3cd8",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart03_M006_Helper.mat.meta": "858fe7168e475ec7a532c877550a15abe333cc60f624870f51d4c4d0152e55b0",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart04_M003_EndurancePart04_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "29af196a31662a68a12c1210624a6960bc462b3f8d95dcee9f7ccecac4a136c7",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart04_M003_EndurancePart04_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "1c19c3227bbe0940cc523c045e8d81f5965d82f170c7d661182aeae47c5be894",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart04_M004_EndurancePart04_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "461ded82c14f4beb304bfb7d50aae6ebac7a5e3031667bf2723292d94b6af93b",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart04_M004_EndurancePart04_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "965a64bc87984d1e5080c60650814e793fd7f4097742ec7d46fc85b6a4fd8e72",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart04_M005_Helper.mat": "ac45bfed19f83b995581ca318033cf479785d3d25b9670051902ddae393ff111",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart04_M005_Helper.mat.meta": "8ef2d9012374268111400820f498bb5ab9b3578ab3f6240d693ee37aff5d6997",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart04_M006_Helper.mat": "e61a41ea9a5b97760dea03a0f0834cc6ce97eeef4f35ada2e47b5937aa2b7d91",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart04_M006_Helper.mat.meta": "efb846f95094047afe49248bbc6634bcfbb2ab698cc2fb4367c3a51f103ef6f2",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart05_M003_EndurancePart05_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "0286bb1cdd7a678f73d2513446b4db8713e638febd8abe3803c9f7a028edbabe",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart05_M003_EndurancePart05_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "6bf6599d6d5fda5bd7180c3c079c3dcca58f9a0efa0314139632e6c759f26250",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart05_M004_EndurancePart05_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "8231a7aa270d190c254577d4e81015113c3f83b4f3473564da47c938f18e5302",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart05_M004_EndurancePart05_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "8b591b0eeac05fd970620a0d46e8c5d0f742517880b3f9258d10bb7460c8548a",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart05_M005_Helper.mat": "8ebd6098f501f9de63d427042cdebf664adc21fa032c22a6aab6a927d996b86c",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart05_M005_Helper.mat.meta": "c6643e81646d1e5057c944bc9700859f216489949c8eeefd3cdcddaa5d6d618e",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart05_M006_Helper.mat": "93a65427bfaa9e386c7c6030910a56cf9f41c5cb6f53f3e0d673a2fcc578fbbb",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart05_M006_Helper.mat.meta": "131b4275268044dea26aca4730c18af28436fdb69244257a627473cdadd4c2aa",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart06_M003_EndurancePart06_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "27f7cada8b872531359418f6a886e124dafba74729ae459a285203bc69fc7d9f",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart06_M003_EndurancePart06_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "3b2573bdff219daa03ff538f14296cec4c79f884eb19affda8475e1ca775a477",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart06_M004_Helper.mat": "345d611eaac63db94473660d032c130f2b77273d826ef9a64e3ceb80e2e9f748",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart06_M004_Helper.mat.meta": "27683c810e5ef79a449e3415176e96bd04de4543d4c45827a1d76235d302f872",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart07_M003_EndurancePart07_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "ee74b32cc6360b9f7bad42073e55df1684c41c03b9cf73c13a8b13c6527a8e89",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart07_M003_EndurancePart07_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "9fa2a82f70bf94d7dd110b5c9f6dce9606ebdcfb723f080b9003f4147241812b",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart07_M004_Helper.mat": "a77787b96526f89a30567b0392f430c5e1e29d21424676aa18ceb134cdbf01f6",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart07_M004_Helper.mat.meta": "f401c7cdf57c5e73f85bee752271744b336a78c76940f1e83dd7003abf4d7afc",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart08_M003_EndurancePart08_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "d66ebc8ed6a6700baaedbca0d579bb32c0aa516026300a8cc6ae2ae268733759",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart08_M003_EndurancePart08_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "8842e7613f9846a725a98d4d3c8d3b2200709b39e40e56e9ab840058b275a113",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart08_M004_Helper.mat": "22e07ba6d3d078e76183bb5624b8e3360892932cb0f29ae78ce1c1adb15e0fa8",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart08_M004_Helper.mat.meta": "fb3740f743fcd96660182f5c92e54f912e0157204a96c7396b9655e2a2f26bfa",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart09_M003_EndurancePart09_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "eaa802436d1b66e0fcb3ed237549bcfba6a1061fca7ad5df821c457582704f35",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart09_M003_EndurancePart09_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "f837a6c9be42745446c613ec2ebc6b35b1cb90680585f618020742899c7eab1f",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart09_M004_Helper.mat": "9cf8c06a723bb0b3335a03409743e67194b528ead759e472b1ab14cba92f5598",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart09_M004_Helper.mat.meta": "7302ec2a0438a468160f29defb83d55395f0c59b4bd9ce723b044b7a18e3c427",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart10_M003_EndurancePart10_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "a670222e9729552e0c5f62bba1ca9fafe4cab36139e30adf980f294e5558dc30",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart10_M003_EndurancePart10_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "87d2c8f5b7f7d53ec061545c197f65c4485def0cbaac0246f507ae9e9809385b",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart10_M004_Helper.mat": "7c114441299e110b728c87cd23564a24fa554db4aedd671667e9b7724d068204",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart10_M004_Helper.mat.meta": "67635f995253bc204567895aa78bc7c2206fc9e1c866ce02c1dee6d194a2354c",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart11_M003_EndurancePart11_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "424962033b2281e90d489e1029db24c7609c2a5563eecc2debbde65f7047c108",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart11_M003_EndurancePart11_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "509bd6312c671c72ca7aa85d3cd1197cb387f32384f2fbd14eef6b51f7795753",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart11_M004_Helper.mat": "ec30b8588449969f9baae3a60e7b59177fde80f89a7ba5c44078433d555296f2",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart11_M004_Helper.mat.meta": "36f0134fdc9d826751b8f7791f81c8e264524c4cde013053655238d28d329143",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart12_M003_EndurancePart12_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "c9b464c8baae00ed51e493809ef6deba53606a79ffb5dcb02b367380b5bf913d",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart12_M003_EndurancePart12_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "0b404a753256590b687bb7deb9e030463a37915dc947d07b743faf4ae7fed5ff",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart12_M004_Helper.mat": "206c54d3d32a51f66d2f9d05fc998c5875e52cbc11c86234a56ff5050a85fc95",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart12_M004_Helper.mat.meta": "49aa4d9b12d0813510b59469c45442e722241d0fd9a0ee4ddc56ebbf0e665c20",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart13_M003_EndurancePart13_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "6b554e77eb0b2b9ee63006c5674383faa7fc55428a2a65ef327d965f93d1d598",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart13_M003_EndurancePart13_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "c37824e93b9973e57b23e71106191cd70cdfe07c33768113572c87eca6aac52b",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart13_M004_Helper.mat": "2e2670199518cc073433855fd82403d59a24572d940b28120db36870f78a737f",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart13_M004_Helper.mat.meta": "623b1d8736717e4e52591ab69dc4eba53c6b0558c31f6191fe53d8ec4d2810eb",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M013_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "bd806799d09955dd1c80ecc559650e34dd58cfdfb09125cd413a393796cd715c",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M013_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "c34ad5c0dec02dafd68abb55bcccd7365ef0b0fb5ac9ef37bef8e18845aa0a39",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M014_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Engines.mat": "91f0b500b4973dafc616a3e4228675390036e16dcca60f9a3330add65d7773dd",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M014_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Engines.mat.meta": "2e32dcf9d105521df59919d3b45c45bc31b0d0a111ac337bd1d8b0aa72e9e947",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M015_Endurance_Hull_Lights_Grid.mat": "45600a12ff09532d6441781b86e9d50bf0cdf13c7d8901fd72cd8eafc634a823",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M015_Endurance_Hull_Lights_Grid.mat.meta": "d6955990461b93b076bfbfed7f46474b6f0e8a8143f3c14e7b6470547cbb1b47",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M016_Endurance_Rebel_Mon_Calamari_Cruisers_L.mat": "0b92aa099b03dd717c55fc0d577f96a592fc1e9d84db0345239b5fc245b4392e",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M016_Endurance_Rebel_Mon_Calamari_Cruisers_L.mat.meta": "50ebed51ca92cbbe1295f10da5756e7ecd980fe030b26e0d6c91dbd17601e911",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M017_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "73884a9ee2320b624b9c2abd38583ff9fb931a732072b0fbc955a6b1199f87da",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M017_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "6350a476ad808894402a5b98f46aac8d9a250f3c0a4c0f718d87dff160ba9030",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M018_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Second.mat": "f556bbc313f5bbfce9198af8ddf36667565401d41adb8b5210800bddd06ad193",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M018_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Second.mat.meta": "883891de25a2780a2f0cdf9ad8c71f6562607049f7af6ff7d26fd80ef6c4ef24",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M019_Helper.mat": "3a3eb16344f53a3a3b5b68993c706c3e0e9c93186728d78fbf28543d98bffa1a",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M019_Helper.mat.meta": "d036e47c120a5d722e04c4d5142b0428a9ee1aae97e006b67b504d1b07d9d688",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M020_Helper.mat": "e70dc3ccb8a7d0852bc251a7d6d561966b2c92ab9d54ab786cdd2801a4a8b52c",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M020_Helper.mat.meta": "74342c576e27c50896b1c7625ae973d69c64a80a65cfc571d5183c227f6a99c9",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M021_Endurance_Nb_shieldbase_Blue.mat": "dfc346f47265ed1213f8e13057848aaa23ea831de2f1e8b162231e2ce15e77c0",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M021_Endurance_Nb_shieldbase_Blue.mat.meta": "d064b8c5d5c61e985c9a8640a5988e53c46d1dee9c869544c4ff5cb868fc07f7",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M022_Endurance_Hull_2_SD.mat": "e26b806addeed0d147980a6015e8d8419773c58c9d2b3a66607bbe33d4082d71",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M022_Endurance_Hull_2_SD.mat.meta": "fa8160253136f84abf9e056fea243a5c66f7c6b0867436ffb4109d42e6ce7ccd",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M023_Endurance_Engine_Glow_Fancy_Blue.mat": "568c1fe13c41d9a6ff46e02492ba87bf31a8ac30139c9ca55e886c91638de57e",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M023_Endurance_Engine_Glow_Fancy_Blue.mat.meta": "755646eb810997c79d7685da44754c9ed9dc30a4a587a22c3202e0a496ed3316",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M024_Endurance_Hull_2_SD.mat": "ab27406d16098bd705cf8d292e6fb148a7752510c6670791893414ffcbe6ce1b",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M024_Endurance_Hull_2_SD.mat.meta": "a3603b8e6788135b8f9405811a69108832bf8c480ff3d9078adc579ff85d0f9a",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M025_Helper.mat": "16e8a14264c29aaa257064a1a7677d84e87845a25e4200cf95fe296b33dc9ab0",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M025_Helper.mat.meta": "ff763db7447ca7a98547da68247da635402376c153beb27e9ef6fedd89e804f5",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M026_Helper.mat": "7ca167cbcdeebc4563279640df9e7f9d408c3f5df3eec320b8a9534d6c8003b4",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M026_Helper.mat.meta": "d849dfcf2e44d83f9303766b3d996666bc02fdb8d2b597ba44bc431a8b45ec84",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M027_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat": "f67336a8b7db0c445ee423f5bc8c1101adb9167339e9d99638349da2f2d266ba",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M027_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat.meta": "6c13b5a0e988ad255f8b1fae273d1643fbbf079370f4c5d0b606f2347d3c7916",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M028_Endurance_Rebel_Mon_Cal_Home_One_3.mat": "23599202e17cd344641fef0d8850b66c6c5a5ddb21ff9cb8414572836162b85d",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M028_Endurance_Rebel_Mon_Cal_Home_One_3.mat.meta": "333f0a5b697c3065547ca77f2a074236daaabfc808b2db5b66e6f9958195290c",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M029_Endurance_Rebel_Mon_Cal_Home_One_1.mat": "f4c3cc0ce8c6c359ad94658d00082a0f58afec9edcefb70d36eed7e7245e301c",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M029_Endurance_Rebel_Mon_Cal_Home_One_1.mat.meta": "f431a0597426ef08ced9defb904a97e11298f53f9d823384d8313a4a0e3f8265",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M030_Endurance_Rebel_Mon_Cal_Home_One_3.mat": "1beafb6ad29b3149e333c0f6274969ac74bfe2f4f96acb6bbbcf6ba361f8701d",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M030_Endurance_Rebel_Mon_Cal_Home_One_3.mat.meta": "345a2dfa414e5d62100cd1ad77c41d30a9db49bc712af31c2c3803efe37ad158",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M031_Helper.mat": "dc2cbcb3278d9acbd746ca2798a0b75308b6516e02d6d2fb3245b8fb67fd3124",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M031_Helper.mat.meta": "22cc6884ae7f586fe1284515839ae2aa304cc0ffbe9141b511de15795ecda35b",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M032_Endurance_Engine_Glow_Fancy_White.mat": "8b9fe2dd0f9f6aa02f3c3257df250ce35b9607960ef880c6cae3b7270d315447",
+    "Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M032_Endurance_Engine_Glow_Fancy_White.mat.meta": "41e8617d5c26f18b88325a5ef816617e046710d5fe8c563226903154f77f0ed7",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\Endurance.fbx.meta": "8823199c2699afb82fa2764215d94680ec6b210327cdd06086a841a904180429",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart00.fbx.meta": "4f7ddf1bff8c8edb0ebfe4bedc034d6a676c96be6129548a991a936e40fa5975",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart01.fbx.meta": "bcb8573ae3224a4204598fb51cc61f236e5fec378db2d869de57a65f2409f879",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart02.fbx.meta": "1dab1a3af48d498e3509c7e8a06d2e3b2eef39961c83f124cac0c8894a072651",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart03.fbx.meta": "62a9e4fb48038f85fb3e640d5321af4e34d49aeb2f0f5aa31bc13651efc95472",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart04.fbx.meta": "78d56c24e9498fc832644e4b075be6acc6fcee7e88623c02564ae5216a995b07",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart05.fbx.meta": "0c8d82f40d7778c74b7b6bf1838f43feab6caed142a44d5635390ec1d5f53bf0",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart06.fbx.meta": "b00dd03d9f0085bb206bcfc687f792906ac73627b1c3e53bb7e42f8e5bc727c3",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart07.fbx.meta": "9b2bddb536eacd954ebf28198ca65a89613563272974b42fbcdcb08fb04f2140",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart08.fbx.meta": "178b8e1eee02fd0c56961d9a0ea9e0367776ee0d11968fd4ca50dce8a7e45256",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart09.fbx.meta": "bc7fc3d457a1d80787a38998d6732c8085a63fad835092b27ce351d31f4a5708",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart10.fbx.meta": "79f01a0f3f9d4281e5b338f36edbde7507c338db3d23d11bc535b1ecb614cbe3",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart11.fbx.meta": "589a9cf3b707ad260095112d8c626de658db95ec676431998e3dc36586212013",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart12.fbx.meta": "8468b21b8f13fb32ea361d425a9cefd78360e6ee6e1ec76dec19a3126733c314",
+    "Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart13.fbx.meta": "3f2fe884509be6bbbe9211ef5ba594489ecc62f99a6e2294e3e54af4313c9c48",
+    "Tools\\AloImport\\.state\\Evidence\\CurrentAssemblyCapture.json": "6903d563a823c9436c90687aabd8aba1d84d454085079c13436adf17259b11a6",
+    "Tools\\Blender\\Endurance\\Evidence\\ArtManifest.json": "698cc66dd94c7bf862cb14ec54ba82bd8b2e1b98fad0e76282e4a2d72de2e8e5"
+  },
+  "rows": [
+    {
+      "piece": "Endurance",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "a6c8239f4e395f14d2c204eb33fb0ebfe42a6fc1b5ad8ac05560b7e6d2d73abf",
+      "targetGuid": "55b70184dff7f834797118447c9b5443",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M013_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "55b70184dff7f834797118447c9b5443",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Hull Primary/Hull Primary",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "55b70184dff7f834797118447c9b5443",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Hull Primary/Hull Primary",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "697a82b4360f0eee3c5f243d8aabbe0b93f7a1e97d110af30cf6254d748e0894",
+      "targetGuid": "5f2b2ffb24590f343b57964bc27c2fae",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M014_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Engines.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "5f2b2ffb24590f343b57964bc27c2fae",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Engines/Engines",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "5f2b2ffb24590f343b57964bc27c2fae",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Engines/Engines",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 2,
+      "slot": 0,
+      "sourceSignature": "de336ff9c26176d0fd6c5ae2d393c4227425d6b4b8260c1aa942589ad71f2921",
+      "targetGuid": "7dfb14f36a2fe0240b2dda84fad780f6",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M015_Endurance_Hull_Lights_Grid.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "7dfb14f36a2fe0240b2dda84fad780f6",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Lights/Lights",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "7dfb14f36a2fe0240b2dda84fad780f6",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Lights/Lights",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 4,
+      "slot": 0,
+      "sourceSignature": "9db5cce46fec9521d9861305b0c1533281e24250d08dbd8a3c4b3a60b8e8e51c",
+      "targetGuid": "d42e8f4c4ebed7c4cb19ee6ec715b3e5",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M016_Endurance_Rebel_Mon_Calamari_Cruisers_L.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "d42e8f4c4ebed7c4cb19ee6ec715b3e5",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Hanger Lights Lights Texture/Hanger Lights Lights Texture",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "d42e8f4c4ebed7c4cb19ee6ec715b3e5",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Hanger Lights Lights Texture/Hanger Lights Lights Texture",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 5,
+      "slot": 0,
+      "sourceSignature": "2c2cc87a251449b5598ef31383f00b6e4e9ec015defb75b8eeb22a3c10b56355",
+      "targetGuid": "494ebc6d1ae95594ba3041dcfa9cc4d2",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M017_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "494ebc6d1ae95594ba3041dcfa9cc4d2",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Hanger Lights Main Texture/Hanger Lights Main Texture",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "494ebc6d1ae95594ba3041dcfa9cc4d2",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Hanger Lights Main Texture/Hanger Lights Main Texture",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 6,
+      "slot": 0,
+      "sourceSignature": "26e9c34c4a9729bf7f9d8613bccf158567e128e00bbc0efa3679b4fff6c5ea09",
+      "targetGuid": "5cf85ceae395c344598824a7fdb33269",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M018_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Second.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "5cf85ceae395c344598824a7fdb33269",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Hull Secondary/Hull Secondary",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "5cf85ceae395c344598824a7fdb33269",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Hull Secondary/Hull Secondary",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 7,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "590ffdefeabd5b94583ac96b52de8f03",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M019_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 8,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "24cc6998e36a31b44bdf3ea29ef927c2",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M020_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 9,
+      "slot": 0,
+      "sourceSignature": "4592ab356b899002eee42e5af6b4e1a81662a6d1db633cffd9261647a4ded30b",
+      "targetGuid": "23acff851efb6244a89afa8a9776cfc2",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M021_Endurance_Nb_shieldbase_Blue.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 10,
+      "slot": 0,
+      "sourceSignature": "beee87bf7f36f284b4611c223275f886fe7e4b5615e922b2bf310f328a386232",
+      "targetGuid": "cee43801ed217654abc70e8008e28502",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M022_Endurance_Hull_2_SD.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "cee43801ed217654abc70e8008e28502",
+          "node": "Geometry/Endurance/EnduranceRig/Root/ISD_Engines/ISD_Engines",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "cee43801ed217654abc70e8008e28502",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/ISD_Engines/ISD_Engines",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 11,
+      "slot": 0,
+      "sourceSignature": "4d091226b7168e94adf166c41709cce5df04cb569d0e0d33f90440714114df1c",
+      "targetGuid": "604e308b467f0ee419f7a01ff20fee0e",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M023_Endurance_Engine_Glow_Fancy_Blue.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "604e308b467f0ee419f7a01ff20fee0e",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Engine_Glow/Engine_Glow",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "604e308b467f0ee419f7a01ff20fee0e",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Engine_Glow/Engine_Glow",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 12,
+      "slot": 0,
+      "sourceSignature": "beee87bf7f36f284b4611c223275f886fe7e4b5615e922b2bf310f328a386232",
+      "targetGuid": "64a8dee4f8df83d42a770a37cfe89285",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M024_Endurance_Hull_2_SD.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "64a8dee4f8df83d42a770a37cfe89285",
+          "node": "Geometry/Endurance/EnduranceRig/Root/ISD_Engines_Small/ISD_Engines_Small",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "64a8dee4f8df83d42a770a37cfe89285",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/ISD_Engines_Small/ISD_Engines_Small",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 13,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "33f316cc1f92c3a47a61146d192d82ac",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M025_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 14,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "4d8e1220d2e0f2849beddeff81299b30",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M026_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 15,
+      "slot": 0,
+      "sourceSignature": "a6c8239f4e395f14d2c204eb33fb0ebfe42a6fc1b5ad8ac05560b7e6d2d73abf",
+      "targetGuid": "88eac745128f42f43980a10d7394da27",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M027_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "88eac745128f42f43980a10d7394da27",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Hull Primary/hull",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "88eac745128f42f43980a10d7394da27",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Hull Primary/hull",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 16,
+      "slot": 0,
+      "sourceSignature": "8a22c0d5c7b55f4a7579d2d3afad552a95363b9f110883cdbe2881b49ae9a7da",
+      "targetGuid": "ca69d3573e54afe44b62400a4742697f",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M028_Endurance_Rebel_Mon_Cal_Home_One_3.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "ca69d3573e54afe44b62400a4742697f",
+          "node": "Geometry/Endurance/3",
+          "rendererEnabled": false,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "ca69d3573e54afe44b62400a4742697f",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/3",
+          "rendererEnabled": false,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 16,
+      "slot": 1,
+      "sourceSignature": "1445bdc667b23e2140ec2ca985d478a067439214bd52f1ac2805282d26d2f915",
+      "targetGuid": "8ef916117eb372f45bf252cdadcbda6d",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M029_Endurance_Rebel_Mon_Cal_Home_One_1.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "8ef916117eb372f45bf252cdadcbda6d",
+          "node": "Geometry/Endurance/3",
+          "rendererEnabled": false,
+          "slot": 1
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "8ef916117eb372f45bf252cdadcbda6d",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/3",
+          "rendererEnabled": false,
+          "slot": 1
+        }
+      ]
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 16,
+      "slot": 2,
+      "sourceSignature": "2dbfb4250b29063014c89436ed3b9615f91540e8458ddfc1703b873ca159c556",
+      "targetGuid": "07ffc2ac26d01a24387d7e32aa234800",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M030_Endurance_Rebel_Mon_Cal_Home_One_3.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "07ffc2ac26d01a24387d7e32aa234800",
+          "node": "Geometry/Endurance/3",
+          "rendererEnabled": false,
+          "slot": 2
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "07ffc2ac26d01a24387d7e32aa234800",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/3",
+          "rendererEnabled": false,
+          "slot": 2
+        }
+      ]
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 17,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "3979d5a89f709a24090cb60484bbfa21",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M031_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "Endurance",
+      "meshIndex": 18,
+      "slot": 0,
+      "sourceSignature": "ecf6ab85e4bd0b32c4abf8352a1ae3a0a15d2255e294853d8d4079124395155f",
+      "targetGuid": "75486cb56ba60d0488824c5d31936456",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/Endurance_M032_Endurance_Engine_Glow_Fancy_White.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "75486cb56ba60d0488824c5d31936456",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Engine_Glow_Sec/Engine_Glow_Sec",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "75486cb56ba60d0488824c5d31936456",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Engine_Glow_Sec/Engine_Glow_Sec",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart00",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "a6c8239f4e395f14d2c204eb33fb0ebfe42a6fc1b5ad8ac05560b7e6d2d73abf",
+      "targetGuid": "4330b3a5e123d0b4084796946c16e84a",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart00_M005_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "4330b3a5e123d0b4084796946c16e84a",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Core/EndurancePart00/EndurancePart00Rig/Root/Core/core",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "4330b3a5e123d0b4084796946c16e84a",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Core/EndurancePart00/EndurancePart00Rig/Root/Core/core",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart00",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "a6c8239f4e395f14d2c204eb33fb0ebfe42a6fc1b5ad8ac05560b7e6d2d73abf",
+      "targetGuid": "d4bd489f1adfaf642965076ec8b25c57",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart00_M006_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "d4bd489f1adfaf642965076ec8b25c57",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Core/EndurancePart00/EndurancePart00Rig/Root/Core/bridge",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "d4bd489f1adfaf642965076ec8b25c57",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Core/EndurancePart00/EndurancePart00Rig/Root/Core/bridge",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart00",
+      "meshIndex": 2,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "2debad06ac5336b4bbdeb474250880a6",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart00_M007_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart00",
+      "meshIndex": 3,
+      "slot": 0,
+      "sourceSignature": "26e9c34c4a9729bf7f9d8613bccf158567e128e00bbc0efa3679b4fff6c5ea09",
+      "targetGuid": "0b1d8ef413178524ca51e6aa5e75baf2",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart00_M008_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Second.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "0b1d8ef413178524ca51e6aa5e75baf2",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Core/EndurancePart00/EndurancePart00Rig/Root/Core/kitbash",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "0b1d8ef413178524ca51e6aa5e75baf2",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Core/EndurancePart00/EndurancePart00Rig/Root/Core/kitbash",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart00",
+      "meshIndex": 4,
+      "slot": 0,
+      "sourceSignature": "de336ff9c26176d0fd6c5ae2d393c4227425d6b4b8260c1aa942589ad71f2921",
+      "targetGuid": "678130acc4822004ba5d7fe757a8d1a7",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart00_M009_EndurancePart00_Hull_Lights_Grid.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "678130acc4822004ba5d7fe757a8d1a7",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Core/EndurancePart00/EndurancePart00Rig/Root/Core/lights",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "678130acc4822004ba5d7fe757a8d1a7",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Core/EndurancePart00/EndurancePart00Rig/Root/Core/lights",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart01",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "a6c8239f4e395f14d2c204eb33fb0ebfe42a6fc1b5ad8ac05560b7e6d2d73abf",
+      "targetGuid": "fe90ee9d09fc631428270542da383fb4",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart01_M004_EndurancePart01_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "fe90ee9d09fc631428270542da383fb4",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Core/EndurancePart01/EndurancePart01Rig/Root/Core/tower",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "fe90ee9d09fc631428270542da383fb4",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Core/EndurancePart01/EndurancePart01Rig/Root/Core/tower",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart01",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "de336ff9c26176d0fd6c5ae2d393c4227425d6b4b8260c1aa942589ad71f2921",
+      "targetGuid": "693233a1a798cbf44a5ecca01b18d313",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart01_M005_EndurancePart01_Hull_Lights_Grid.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "693233a1a798cbf44a5ecca01b18d313",
+          "node": "Geometry/Endurance/EnduranceRig/Root/Core/EndurancePart01/EndurancePart01Rig/Root/Core/lights",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "693233a1a798cbf44a5ecca01b18d313",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/Core/EndurancePart01/EndurancePart01Rig/Root/Core/lights",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart01",
+      "meshIndex": 2,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "0a01f117640f8384ca0de9b4c2bad7ae",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart01_M006_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart02",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "3b2efed5e05941942968319b7ec3ebd0",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart02_M003_EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "3b2efed5e05941942968319b7ec3ebd0",
+          "node": "Geometry/Endurance/EnduranceRig/Root/TL_01/EndurancePart02/EndurancePart02Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "3b2efed5e05941942968319b7ec3ebd0",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/TL_01/EndurancePart02/EndurancePart02Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart02",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "2463f2a57c0e52141ae799e8c49dee54",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart02_M004_EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "2463f2a57c0e52141ae799e8c49dee54",
+          "node": "Geometry/Endurance/EnduranceRig/Root/TL_01/EndurancePart02/EndurancePart02Rig/Root/Turret/Barrel/Barrel",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "2463f2a57c0e52141ae799e8c49dee54",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/TL_01/EndurancePart02/EndurancePart02Rig/Root/Turret/Barrel/Barrel",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart02",
+      "meshIndex": 2,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "46a5e47728d9f7048be0bb25668d002c",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart02_M005_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart02",
+      "meshIndex": 3,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "aec147f55a6ee45409911c40e310b2e4",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart02_M006_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart03",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "7dbae78199df4e84ba5fe0b82d733794",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart03_M003_EndurancePart03_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "7dbae78199df4e84ba5fe0b82d733794",
+          "node": "Geometry/Endurance/EnduranceRig/Root/TL_02/EndurancePart03/EndurancePart03Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "7dbae78199df4e84ba5fe0b82d733794",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/TL_02/EndurancePart03/EndurancePart03Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart03",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "90243769f6cf02e42b9b04186b940e50",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart03_M004_EndurancePart03_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "90243769f6cf02e42b9b04186b940e50",
+          "node": "Geometry/Endurance/EnduranceRig/Root/TL_02/EndurancePart03/EndurancePart03Rig/Root/Turret/Barrel/Barrel",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "90243769f6cf02e42b9b04186b940e50",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/TL_02/EndurancePart03/EndurancePart03Rig/Root/Turret/Barrel/Barrel",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart03",
+      "meshIndex": 2,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "dbb4e5145796e5b4086dfe68229de33b",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart03_M005_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart03",
+      "meshIndex": 3,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "fbea24611ce32554883a3a17c540b9a2",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart03_M006_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart04",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "3a8ccc0409a632b49829f9e73c28b43e",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart04_M003_EndurancePart04_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "3a8ccc0409a632b49829f9e73c28b43e",
+          "node": "Geometry/Endurance/EnduranceRig/Root/TL_03/EndurancePart04/EndurancePart04Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "3a8ccc0409a632b49829f9e73c28b43e",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/TL_03/EndurancePart04/EndurancePart04Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart04",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "4389414be80cbf549b93c45c01735111",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart04_M004_EndurancePart04_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "4389414be80cbf549b93c45c01735111",
+          "node": "Geometry/Endurance/EnduranceRig/Root/TL_03/EndurancePart04/EndurancePart04Rig/Root/Turret/Barrel/Barrel",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "4389414be80cbf549b93c45c01735111",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/TL_03/EndurancePart04/EndurancePart04Rig/Root/Turret/Barrel/Barrel",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart04",
+      "meshIndex": 2,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "566e12f48db584e4598fd5d8d87d9658",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart04_M005_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart04",
+      "meshIndex": 3,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "03951f3d9a17c354db6e626d73a8ce55",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart04_M006_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart05",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "fd49dccaec8d2ee42a5a092187a68cff",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart05_M003_EndurancePart05_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "fd49dccaec8d2ee42a5a092187a68cff",
+          "node": "Geometry/Endurance/EnduranceRig/Root/TL_04/EndurancePart05/EndurancePart05Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "fd49dccaec8d2ee42a5a092187a68cff",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/TL_04/EndurancePart05/EndurancePart05Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart05",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "694d77f9553da67469a255ed4802e90b",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart05_M004_EndurancePart05_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "694d77f9553da67469a255ed4802e90b",
+          "node": "Geometry/Endurance/EnduranceRig/Root/TL_04/EndurancePart05/EndurancePart05Rig/Root/Turret/Barrel/Barrel",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "694d77f9553da67469a255ed4802e90b",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/TL_04/EndurancePart05/EndurancePart05Rig/Root/Turret/Barrel/Barrel",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart05",
+      "meshIndex": 2,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "a17fd51408db31b49b647aab3fc7093f",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart05_M005_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart05",
+      "meshIndex": 3,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "3a91b95a0db89ff4d93ddb7b4ec0c19c",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart05_M006_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart06",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "ae214a44295af824780c9c2c40b5ef91",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart06_M003_EndurancePart06_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "ae214a44295af824780c9c2c40b5ef91",
+          "node": "Geometry/Endurance/EnduranceRig/Root/L_02/EndurancePart06/EndurancePart06Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "ae214a44295af824780c9c2c40b5ef91",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/L_02/EndurancePart06/EndurancePart06Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart06",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "032c9b8ac6d999f4f970c8e4cb54b5e1",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart06_M004_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart07",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "667dc3436190fc340a9d1842e4e4cbcb",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart07_M003_EndurancePart07_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "667dc3436190fc340a9d1842e4e4cbcb",
+          "node": "Geometry/Endurance/EnduranceRig/Root/L_03/EndurancePart07/EndurancePart07Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "667dc3436190fc340a9d1842e4e4cbcb",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/L_03/EndurancePart07/EndurancePart07Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart07",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "234c3b7a9cd08f44e8c286dd86ad150e",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart07_M004_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart08",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "41023277f8079d949a72b9907c408649",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart08_M003_EndurancePart08_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "41023277f8079d949a72b9907c408649",
+          "node": "Geometry/Endurance/EnduranceRig/Root/L_04/EndurancePart08/EndurancePart08Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "41023277f8079d949a72b9907c408649",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/L_04/EndurancePart08/EndurancePart08Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart08",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "5ace157bc92d98d46b72ab27c1362826",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart08_M004_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart09",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "8cab5a582fbbc2a46a5da06d6068975b",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart09_M003_EndurancePart09_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "8cab5a582fbbc2a46a5da06d6068975b",
+          "node": "Geometry/Endurance/EnduranceRig/Root/L_05/EndurancePart09/EndurancePart09Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "8cab5a582fbbc2a46a5da06d6068975b",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/L_05/EndurancePart09/EndurancePart09Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart09",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "375f1661ea932f843b37bb00d952ff04",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart09_M004_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart10",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "ef0a522dcc334bd48bf5f50e19667919",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart10_M003_EndurancePart10_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "ef0a522dcc334bd48bf5f50e19667919",
+          "node": "Geometry/Endurance/EnduranceRig/Root/L_01/EndurancePart10/EndurancePart10Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "ef0a522dcc334bd48bf5f50e19667919",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/L_01/EndurancePart10/EndurancePart10Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart10",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "29c12c8349f718146bf4a355132c668e",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart10_M004_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart11",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "058eb5be547f11d42bb1b59a4d9fd5c9",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart11_M003_EndurancePart11_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "058eb5be547f11d42bb1b59a4d9fd5c9",
+          "node": "Geometry/Endurance/EnduranceRig/Root/L_06/EndurancePart11/EndurancePart11Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "058eb5be547f11d42bb1b59a4d9fd5c9",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/L_06/EndurancePart11/EndurancePart11Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart11",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "b07060ebf54b3354482f32436f6513dd",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart11_M004_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart12",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "9b902eabc3f28e448bc0f63b0beb632e",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart12_M003_EndurancePart12_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "9b902eabc3f28e448bc0f63b0beb632e",
+          "node": "Geometry/Endurance/EnduranceRig/Root/L_09/EndurancePart12/EndurancePart12Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "9b902eabc3f28e448bc0f63b0beb632e",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/L_09/EndurancePart12/EndurancePart12Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart12",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "d9620959a8087d742b8f79292d0ad296",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart12_M004_Helper.mat",
+      "currentRendererProofs": []
+    },
+    {
+      "piece": "EndurancePart13",
+      "meshIndex": 0,
+      "slot": 0,
+      "sourceSignature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+      "targetGuid": "cd3db15cb1312d047b263e2fe7058659",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart13_M003_EndurancePart13_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "currentRendererProofs": [
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+          "materialGuid": "cd3db15cb1312d047b263e2fe7058659",
+          "node": "Geometry/Endurance/EnduranceRig/Root/L_10/EndurancePart13/EndurancePart13Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        },
+        {
+          "asset": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+          "materialGuid": "cd3db15cb1312d047b263e2fe7058659",
+          "node": "BodyPivot/Endurance/Geometry/Endurance/EnduranceRig/Root/L_10/EndurancePart13/EndurancePart13Rig/Root/Turret/Turret",
+          "rendererEnabled": true,
+          "slot": 0
+        }
+      ]
+    },
+    {
+      "piece": "EndurancePart13",
+      "meshIndex": 1,
+      "slot": 0,
+      "sourceSignature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+      "targetGuid": "458b42ae53cbe0149bfca9d313a7c914",
+      "targetPath": "Assets/Art/Materials/Models/RebellionShips/Endurance/EndurancePart13_M004_Helper.mat",
+      "currentRendererProofs": []
+    }
+  ]
+}

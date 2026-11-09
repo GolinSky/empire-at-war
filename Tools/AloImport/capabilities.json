@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "supportedUnityStages": ["verify"],
+  "pendingMigrationGates": ["ship-integration", "station-integration", "registrations", "derivatives", "render"]
+}

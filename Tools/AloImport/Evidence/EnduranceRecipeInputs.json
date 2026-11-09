@@ -1,0 +1,1496 @@
+{
+  "schemaVersion": 1,
+  "capturedLocalDate": "2026-10-28",
+  "state": "inputs-captured",
+  "method": "Read-only current serialized asset capture; no tests or publication.",
+  "view": {
+    "path": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+    "guid": "869c8abfc930a964892aef3ee3c9f4a6",
+    "sha256": "1149b13fba08897e54fcf97de2f50e5aed10c94596ebb2ed1135a2f2c72499b7"
+  },
+  "hardpoints": [
+    {
+      "fileId": 8361830375890813030,
+      "name": "MediumTurbolaser2",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 3875643250528383305
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 0,
+        "<Id>k__BackingField": 1,
+        "yAxisRange": {
+          "<Min>k__BackingField": -180,
+          "<Max>k__BackingField": 180
+        },
+        "mainBattery": 0,
+        "prewarmEffects": 0,
+        "<WeaponType>k__BackingField": 85
+      },
+      "position": {
+        "x": 26.568502,
+        "y": -3.315238,
+        "z": -31.762947
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 540693738299460099,
+      "name": "Hangar_HB_03",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 2025110285646798773
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 4,
+        "<Id>k__BackingField": 20
+      },
+      "position": {
+        "x": -18.174347,
+        "y": -7.5180945,
+        "z": 8.036357
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 476602073454732223,
+      "name": "TractorBeamLeft",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 5130299323523330526
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 7,
+        "<Id>k__BackingField": 15
+      },
+      "position": {
+        "x": 6.811093,
+        "y": -2.002297,
+        "z": 35.302452
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 4868735390026370465,
+      "name": "PointDefense4",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 3342658096819170008
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 0,
+        "<Id>k__BackingField": 9,
+        "yAxisRange": {
+          "<Min>k__BackingField": -180,
+          "<Max>k__BackingField": 180
+        },
+        "mainBattery": 0,
+        "prewarmEffects": 0,
+        "<WeaponType>k__BackingField": 14
+      },
+      "position": {
+        "x": -14.569501,
+        "y": 4.440793,
+        "z": -71.39401
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 3458469712298024996,
+      "name": "PointDefense1",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 7869416361990925444
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 0,
+        "<Id>k__BackingField": 6,
+        "yAxisRange": {
+          "<Min>k__BackingField": -180,
+          "<Max>k__BackingField": 180
+        },
+        "mainBattery": 0,
+        "prewarmEffects": 0,
+        "<WeaponType>k__BackingField": 14
+      },
+      "position": {
+        "x": -24.527582,
+        "y": -11.278604,
+        "z": -6.7244864
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 1371739789609676105,
+      "name": "MediumTurbolaser4",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 3560516733039946643
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 0,
+        "<Id>k__BackingField": 3,
+        "yAxisRange": {
+          "<Min>k__BackingField": -180,
+          "<Max>k__BackingField": 180
+        },
+        "mainBattery": 0,
+        "prewarmEffects": 0,
+        "<WeaponType>k__BackingField": 85
+      },
+      "position": {
+        "x": 35.30226,
+        "y": -1.3419056,
+        "z": -55.75596
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 7857697555438542325,
+      "name": "PointDefense2",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 768606885422057406
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 0,
+        "<Id>k__BackingField": 7,
+        "yAxisRange": {
+          "<Min>k__BackingField": -180,
+          "<Max>k__BackingField": 180
+        },
+        "mainBattery": 0,
+        "prewarmEffects": 0,
+        "<WeaponType>k__BackingField": 14
+      },
+      "position": {
+        "x": 24.536743,
+        "y": -11.278604,
+        "z": -6.765357
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 2964269075520257511,
+      "name": "PointDefense5",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 2822369575941281723
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 0,
+        "<Id>k__BackingField": 10,
+        "yAxisRange": {
+          "<Min>k__BackingField": -180,
+          "<Max>k__BackingField": 180
+        },
+        "mainBattery": 0,
+        "prewarmEffects": 0,
+        "<WeaponType>k__BackingField": 14
+      },
+      "position": {
+        "x": 6.811093,
+        "y": -3.0237427,
+        "z": 39.7268
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 8219955627589813153,
+      "name": "EngineLeft",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 6517395501947005954
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 1,
+        "<Id>k__BackingField": 13
+      },
+      "position": {
+        "x": -18.692308,
+        "y": 0,
+        "z": -84.99999
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 8401106603461986801,
+      "name": "MediumIonCannon2",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 2952904437090087628
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 0,
+        "<Id>k__BackingField": 5,
+        "yAxisRange": {
+          "<Min>k__BackingField": -180,
+          "<Max>k__BackingField": 180
+        },
+        "mainBattery": 0,
+        "prewarmEffects": 0,
+        "<WeaponType>k__BackingField": 11
+      },
+      "position": {
+        "x": 15.476763,
+        "y": -10.205405,
+        "z": 40.325783
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 915698367606352555,
+      "name": "PointDefense6",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 7029650047958020796
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 0,
+        "<Id>k__BackingField": 11,
+        "yAxisRange": {
+          "<Min>k__BackingField": -180,
+          "<Max>k__BackingField": 180
+        },
+        "mainBattery": 0,
+        "prewarmEffects": 0,
+        "<WeaponType>k__BackingField": 14
+      },
+      "position": {
+        "x": -6.811093,
+        "y": -2.002297,
+        "z": 35.302452
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 8039267990893842405,
+      "name": "EngineRight",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 1404203610778903151
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 1,
+        "<Id>k__BackingField": 14
+      },
+      "position": {
+        "x": 18.692308,
+        "y": 0,
+        "z": -84.99999
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 2127184888813454643,
+      "name": "Hangar_HB_02",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 5325858775904739501
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 4,
+        "<Id>k__BackingField": 19
+      },
+      "position": {
+        "x": -2.214451e-06,
+        "y": -2.2205749,
+        "z": 28.228424
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 447588381750164037,
+      "name": "MediumTurbolaser1",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 7981237989194984195
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 0,
+        "<Id>k__BackingField": 0,
+        "yAxisRange": {
+          "<Min>k__BackingField": -180,
+          "<Max>k__BackingField": 180
+        },
+        "mainBattery": 0,
+        "prewarmEffects": 0,
+        "<WeaponType>k__BackingField": 85
+      },
+      "position": {
+        "x": -26.568638,
+        "y": -3.315238,
+        "z": -31.762949
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 135847476263313895,
+      "name": "ShieldGenerator",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 8381000257396443891
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 2,
+        "<Id>k__BackingField": 12
+      },
+      "position": {
+        "x": -2.214451e-06,
+        "y": 20.287773,
+        "z": -16.943283
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 6383760123545963337,
+      "name": "CommandArray",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 3353741573932488935
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 11,
+        "<Id>k__BackingField": 17
+      },
+      "position": {
+        "x": 0,
+        "y": -7.8153896,
+        "z": -3.6877575
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 7722900539907448810,
+      "name": "MediumTurbolaser3",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 5784529341562658225
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 0,
+        "<Id>k__BackingField": 2,
+        "yAxisRange": {
+          "<Min>k__BackingField": -180,
+          "<Max>k__BackingField": 180
+        },
+        "mainBattery": 0,
+        "prewarmEffects": 0,
+        "<WeaponType>k__BackingField": 85
+      },
+      "position": {
+        "x": -35.30208,
+        "y": -1.3487396,
+        "z": -55.64501
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 5322948490048495345,
+      "name": "TractorBeamRight",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 4446338504247939366
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 7,
+        "<Id>k__BackingField": 16
+      },
+      "position": {
+        "x": -6.811093,
+        "y": -3.0237427,
+        "z": 39.7268
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 7060414836898264720,
+      "name": "PointDefense3",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 6558821352019823660
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 0,
+        "<Id>k__BackingField": 8,
+        "yAxisRange": {
+          "<Min>k__BackingField": -180,
+          "<Max>k__BackingField": 180
+        },
+        "mainBattery": 0,
+        "prewarmEffects": 0,
+        "<WeaponType>k__BackingField": 14
+      },
+      "position": {
+        "x": 14.582555,
+        "y": 4.441416,
+        "z": -71.39223
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 8691339575867416240,
+      "name": "Hangar_HB_04",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 247927946977803467
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 4,
+        "<Id>k__BackingField": 21
+      },
+      "position": {
+        "x": 19.676485,
+        "y": -7.518096,
+        "z": 6.6599665
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 2754648621245005750,
+      "name": "MediumIonCannon1",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 5494768321606913541
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 0,
+        "<Id>k__BackingField": 4,
+        "yAxisRange": {
+          "<Min>k__BackingField": -180,
+          "<Max>k__BackingField": 180
+        },
+        "mainBattery": 0,
+        "prewarmEffects": 0,
+        "<WeaponType>k__BackingField": 11
+      },
+      "position": {
+        "x": -15.476732,
+        "y": -10.205405,
+        "z": 40.33387
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "fileId": 1226564849221433517,
+      "name": "Hangar_Hanger",
+      "type": "Assembly-CSharp::EmpireAtWar.ViewComponents.Health.HardPoint",
+      "fields": {
+        "spawnDestroyedExplosion": 1,
+        "destroyedVfxAnchor": {
+          "fileID": 1871006335826322976
+        },
+        "destroyedVfxScale": 1.3770032,
+        "unlockLevel": 1,
+        "healthOverride": 0,
+        "<HardPointType>k__BackingField": 4,
+        "<Id>k__BackingField": 18
+      },
+      "position": {
+        "x": -2.214451e-06,
+        "y": -16.977951,
+        "z": -36.098557
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    }
+  ],
+  "gameplay": [
+    {
+      "asset": {
+        "path": "Assets/Settings/Data/Ship/Rebellion/EnduranceShipData.asset",
+        "guid": "fef3778c9889843489a563dd0efbf27b",
+        "sha256": "6a468ff0bc956bb1038d1b9c9e8153460c86fa6d6c7f42b329b1050e7a5dbe70"
+      },
+      "serialized": {
+        "m_ObjectHideFlags": 0,
+        "m_CorrespondingSourceObject": {
+          "fileID": 0
+        },
+        "m_PrefabInstance": {
+          "fileID": 0
+        },
+        "m_PrefabAsset": {
+          "fileID": 0
+        },
+        "m_GameObject": {
+          "fileID": 0
+        },
+        "m_Enabled": 1,
+        "m_EditorHideFlags": 0,
+        "m_Script": {
+          "fileID": 11500000,
+          "guid": "e580e579044741caae6ff7662bce890d",
+          "type": 3
+        },
+        "m_Name": "EnduranceShipData",
+        "m_EditorClassIdentifier": "Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData",
+        "<MinMoveCoefficient>k__BackingField": 0.4,
+        "<Speed>k__BackingField": 18,
+        "heightTiers": {
+          "fileID": 11400000,
+          "guid": "f4dc0cc9c112ddb4d8209fb4b8d1d9de",
+          "type": 2
+        },
+        "<HeightTier>k__BackingField": 1,
+        "<HullBottom>k__BackingField": -15.068855,
+        "<HullTop>k__BackingField": 13.181149,
+        "<RotationSpeed>k__BackingField": 6,
+        "<TurnAcceleration>k__BackingField": 6,
+        "<HyperSpaceDuration>k__BackingField": 0.6,
+        "<BodyRotationMaxAngle>k__BackingField": 5,
+        "<NavigationRadius>k__BackingField": 63.699127,
+        "<DestroyDelay>k__BackingField": 0.35,
+        "<Wreck>k__BackingField": {
+          "fileID": 11400000,
+          "guid": "a9f3c665f5131814fa5da0d29e6dbe73",
+          "type": 2
+        },
+        "<ShipClass>k__BackingField": 4,
+        "<Hull>k__BackingField": 13500,
+        "<Shields>k__BackingField": 14000,
+        "shieldRegenTiers": {
+          "fileID": 11400000,
+          "guid": "3425d6ddc79a6b649990974111258ac9",
+          "type": 2
+        },
+        "<ShieldRegenTier>k__BackingField": 3,
+        "<ShieldRegenerateDelay>k__BackingField": 1,
+        "hardPointHealth": [
+          {
+            "hardPointType": 0,
+            "health": 400,
+            "hullDamageMultiplier": 1
+          },
+          {
+            "hardPointType": 1,
+            "health": 600,
+            "hullDamageMultiplier": 1
+          },
+          {
+            "hardPointType": 2,
+            "health": 600,
+            "hullDamageMultiplier": 1
+          },
+          {
+            "hardPointType": 4,
+            "health": 600,
+            "hullDamageMultiplier": 1
+          },
+          {
+            "hardPointType": 7,
+            "health": 400,
+            "hullDamageMultiplier": 1
+          },
+          {
+            "hardPointType": 11,
+            "health": 500,
+            "hullDamageMultiplier": 1
+          }
+        ],
+        "<Range>k__BackingField": 750,
+        "<Delay>k__BackingField": 0.25,
+        "abilities": 221360950874750844928,
+        "hangarBays": [
+          {
+            "squadronType": 300,
+            "reserve": 40,
+            "maxActive": 1
+          },
+          {
+            "squadronType": 301,
+            "reserve": 40,
+            "maxActive": 1
+          },
+          {
+            "squadronType": 1,
+            "reserve": 40,
+            "maxActive": 1
+          }
+        ],
+        "<HangarInitialDelay>k__BackingField": 4,
+        "<HangarLaunchInterval>k__BackingField": 8,
+        "weaponLoadout": [
+          {
+            "weaponType": 11,
+            "count": 2
+          },
+          {
+            "weaponType": 14,
+            "count": 6
+          },
+          {
+            "weaponType": 85,
+            "count": 4
+          }
+        ]
+      }
+    },
+    {
+      "asset": {
+        "path": "Assets/Settings/Data/Models/Wrecks/Rebellion/EnduranceWreckData.asset",
+        "guid": "a9f3c665f5131814fa5da0d29e6dbe73",
+        "sha256": "ef28bec6afa59128daf8a3e2cdce71f558a7c9bab39cc2900833aa3ba4b6cebf"
+      },
+      "serialized": {
+        "m_ObjectHideFlags": 0,
+        "m_CorrespondingSourceObject": {
+          "fileID": 0
+        },
+        "m_PrefabInstance": {
+          "fileID": 0
+        },
+        "m_PrefabAsset": {
+          "fileID": 0
+        },
+        "m_GameObject": {
+          "fileID": 0
+        },
+        "m_Enabled": 1,
+        "m_EditorHideFlags": 0,
+        "m_Script": {
+          "fileID": 11500000,
+          "guid": "553d1e23eae7824438fd41f0e682b0d4",
+          "type": 3
+        },
+        "m_Name": "EnduranceWreckData",
+        "m_EditorClassIdentifier": "Assembly-CSharp::EmpireAtWar.Services.UnitWreck.UnitWreckData",
+        "prefab": {
+          "m_AssetGUID": "8d9399b59c088904495f676c8fd57cf7",
+          "m_SubObjectName": null,
+          "m_SubObjectType": null,
+          "m_SubObjectGUID": null,
+          "m_EditorAssetChanged": 0
+        },
+        "<MaxActive>k__BackingField": 32,
+        "<MinParts>k__BackingField": 2,
+        "<MaxParts>k__BackingField": 3,
+        "<MinCutRatio>k__BackingField": 0.5,
+        "<MaxCutRatio>k__BackingField": 0.7,
+        "<Lifetime>k__BackingField": 30,
+        "<DissolveDuration>k__BackingField": 8,
+        "<GlowDuration>k__BackingField": 8,
+        "<SeparationSpeed>k__BackingField": 1.5,
+        "<TiltSpeed>k__BackingField": 2,
+        "<SinkSpeed>k__BackingField": 1,
+        "<TornEdgeWidth>k__BackingField": 4,
+        "<HeatColor>k__BackingField": {
+          "r": 4,
+          "g": 1.2,
+          "b": 0.2,
+          "a": 1
+        },
+        "<DissolveEdgeColor>k__BackingField": {
+          "r": 6,
+          "g": 2,
+          "b": 0.4,
+          "a": 1
+        },
+        "<DissolveEdgeWidth>k__BackingField": 0.08,
+        "<DissolveNoiseScale>k__BackingField": 0.05
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/Endurance.fbx",
+      "guid": "74a917f44df2ff648b2c1239b4fcd922",
+      "sha256": "333df6519877ab4baf2b450d6e57c7b103db8a7f59c3e915f2fc16961bd7cfda"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart00.fbx",
+      "guid": "83d4d34858f4d4848b7f6a6e8b000f87",
+      "sha256": "3fb699c1ff9da5dacc53331b9b5c3135f096c549b68318763042e68d6d8d276e"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart01.fbx",
+      "guid": "75cef640e64bbb94183286d03abca6f9",
+      "sha256": "d7031047ced99b076fe5bb16053cc211f5070e3e60f29282ef4cc8a2f39af615"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart02.fbx",
+      "guid": "e2ec0637546cc8a4e9c50db9eb2b06cb",
+      "sha256": "09e8210fdef03cf46e696764b2e9313b9c36b6341e06cb11bc169569bf92d84b"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart03.fbx",
+      "guid": "ac7c050206543424ca70039a082b1ea8",
+      "sha256": "fdb596b785ae9dc5b965fdc87adc019f704fcc972c3bdd1534fda934d0816a78"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart04.fbx",
+      "guid": "b62ac458a2ae3e44090375a02dbcde55",
+      "sha256": "62f777e4f47dd1ad511de47fe8fbd155ae6cdf5409d281781f1fb5fc4029de82"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart05.fbx",
+      "guid": "b528b407dc47e534681f96acdbdc9a24",
+      "sha256": "20098d82bee6d417d249bf73322e78210cac40cb06f064f2481db272dc6dbf72"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart06.fbx",
+      "guid": "32589890ae87a1748920739ae77b4dc3",
+      "sha256": "d1fb62e918b7faa885c920918f81923c6fd83a7be8b3e7fb94bf1ca31121a183"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart07.fbx",
+      "guid": "8cc2930f86204ed40ba3e6fb71a4f96c",
+      "sha256": "7d34b2237a97942478f756b76f5d3e49e79936da0b73b8efc3671ef1c2bdea9a"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart08.fbx",
+      "guid": "15d77d6b7b790994f90c899bc50b27f3",
+      "sha256": "d36a6b3d990c9882dfc995a6e7e1e7902bf96d7bc068f1652ccfa397236059f4"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart09.fbx",
+      "guid": "57f9e49026c82d847a812c487868916d",
+      "sha256": "aeab9dbb267434c07a59c20b6fb78da7a1fa0a66b0061c696ae5f29b8e039d1b"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart10.fbx",
+      "guid": "00213702eec1fd6408badcae0c284257",
+      "sha256": "c757ceee49735a58df51d4bc07a591eb56efd91fe0aa3b453a51b0ba706267ca"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart11.fbx",
+      "guid": "a21eab3df5a8a404fb952c8d37670ace",
+      "sha256": "d6bd6acaa413ab7f8c806e3bb39b7d2bb6938d4a600cc7814615d589e16d6dc9"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart12.fbx",
+      "guid": "085781d9bfe485c49a46439af3416e61",
+      "sha256": "9b1ad2ad7a950232004ae8f68ce658214e77e93d1824c2e35e6aca957d0b593e"
+    },
+    {
+      "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart13.fbx",
+      "guid": "fda75160700d92e44bd7eacfe6626a72",
+      "sha256": "d4144a153b19b0055eb21e0df5eb96137fd220da206390eaffdfdc16e6fdb0b6"
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+      "guid": "1814173cdc0b0ce4dbb2047811f65d2b",
+      "sha256": "9945ead7915a9bd7b6bb7d76a205d9106ccc265c9171f39e7a97ceffb47fa892"
+    },
+    {
+      "path": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+      "guid": "869c8abfc930a964892aef3ee3c9f4a6",
+      "sha256": "1149b13fba08897e54fcf97de2f50e5aed10c94596ebb2ed1135a2f2c72499b7"
+    },
+    {
+      "path": "Assets/Prefabs/Models/Wrecks/EnduranceWreckView.prefab",
+      "guid": "8d9399b59c088904495f676c8fd57cf7",
+      "sha256": "8ce5c971a67ef9c26fbc3644dded2073e751ca0495127bb25573e8863f821ad2"
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/EnduranceReinforcementView.prefab",
+      "guid": "03937783f671e3344ab62c666dbc3c2b",
+      "sha256": "66ec8ea12d1d022fbf2eaf5d47e920684229cfaf55c9024e00f8fe228374ff77"
+    },
+    {
+      "path": "Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/EnduranceIcon.png",
+      "guid": "937b502e2d2d8684ca9920ab2b5d9a0d",
+      "sha256": "85c168950aa6c407cac1d3bc9a42acbf9c0b3866bcec4b0ce93e02bbc575c4aa"
+    }
+  ],
+  "blockers": [],
+  "checks": {
+    "serializedInputs": "captured",
+    "unityBounds": "captured",
+    "fullRecipe": "pending",
+    "runtime": "not-run",
+    "visualReview": "not-run"
+  },
+  "sourceFields": {
+    "alo": "Art/Models/Endurance_Fleet_Carrier.ALO",
+    "definitionOverrides": [
+      {
+        "file": "Xml/Units/Space/Hardpoints/Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "name": "HP_Nebula_SD_IC_01"
+      },
+      {
+        "file": "Xml/Units/Space/Hardpoints/Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "name": "HP_Nebula_SD_IC_02"
+      },
+      {
+        "file": "Xml/Units/Space/Hardpoints/Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "name": "HP_Nebula_SD_IC_03"
+      },
+      {
+        "file": "Xml/Units/Space/Hardpoints/Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "name": "HP_Nebula_SD_IC_04"
+      },
+      {
+        "file": "Xml/Units/Space/Hardpoints/Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "name": "HP_Nebula_SD_TL_01"
+      },
+      {
+        "file": "Xml/Units/Space/Hardpoints/Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "name": "HP_Nebula_SD_TL_02"
+      },
+      {
+        "file": "Xml/Units/Space/Hardpoints/Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "name": "HP_Nebula_SD_TL_03"
+      },
+      {
+        "file": "Xml/Units/Space/Hardpoints/Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "name": "HP_Nebula_SD_TL_04"
+      },
+      {
+        "file": "Xml/Units/Space/Hardpoints/Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "name": "HP_Nebula_SD_TL_05"
+      },
+      {
+        "file": "Xml/Units/Space/Hardpoints/Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "name": "HP_Nebula_SD_TL_06"
+      }
+    ],
+    "textureDirectory": "Art/Textures",
+    "unit": "Endurance_Fleet_Carrier_MP",
+    "xml": "Xml/Units/Space/Units_Space_Rebel_Endurance_Fleet_Carrier.xml",
+    "xmlFiles": [
+      "Xml/Units/Space/_Default_Base.xml",
+      "Xml/Units/Space/Hardpoints/Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+      "Xml/Units/Space/Hardpoints/Hardpoints_Rebel_Nebula_Star_Destroyer.xml",
+      "Xml/PROJECTILES.XML"
+    ]
+  },
+  "pieces": [
+    {
+      "alo": "Art/Models/Endurance_Fleet_Carrier.ALO",
+      "id": "Endurance",
+      "purpose": "hull",
+      "transportRigName": "EnduranceRig"
+    },
+    {
+      "alo": "Art/Models/Endurance_Command_Bridge.ALO",
+      "id": "EndurancePart00",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart00Rig"
+    },
+    {
+      "alo": "Art/Models/Endurance_Control_Tower.ALO",
+      "id": "EndurancePart01",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart01Rig"
+    },
+    {
+      "alo": "Art/Models/Rebel_Nebula_Star_Destroyer_Prototype_Turbolaser_Turret_01.ALO",
+      "id": "EndurancePart02",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart02Rig"
+    },
+    {
+      "alo": "Art/Models/Rebel_Nebula_Star_Destroyer_Prototype_Turbolaser_Turret_02.ALO",
+      "id": "EndurancePart03",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart03Rig"
+    },
+    {
+      "alo": "Art/Models/Rebel_Nebula_Star_Destroyer_Prototype_Turbolaser_Turret_03.ALO",
+      "id": "EndurancePart04",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart04Rig"
+    },
+    {
+      "alo": "Art/Models/Rebel_Nebula_Star_Destroyer_Prototype_Turbolaser_Turret_04.ALO",
+      "id": "EndurancePart05",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart05Rig"
+    },
+    {
+      "alo": "Art/Models/Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_01.ALO",
+      "id": "EndurancePart06",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart06Rig"
+    },
+    {
+      "alo": "Art/Models/Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_02.ALO",
+      "id": "EndurancePart07",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart07Rig"
+    },
+    {
+      "alo": "Art/Models/Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_03.ALO",
+      "id": "EndurancePart08",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart08Rig"
+    },
+    {
+      "alo": "Art/Models/Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_04.ALO",
+      "id": "EndurancePart09",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart09Rig"
+    },
+    {
+      "alo": "Art/Models/Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_05.ALO",
+      "id": "EndurancePart10",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart10Rig"
+    },
+    {
+      "alo": "Art/Models/Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_06.ALO",
+      "id": "EndurancePart11",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart11Rig"
+    },
+    {
+      "alo": "Art/Models/Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_09.ALO",
+      "id": "EndurancePart12",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart12Rig"
+    },
+    {
+      "alo": "Art/Models/Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_10.ALO",
+      "id": "EndurancePart13",
+      "purpose": "attachment",
+      "transportRigName": "EndurancePart13Rig"
+    }
+  ],
+  "attachments": [
+    {
+      "boneIndex": 94,
+      "id": "HP_Endurance_Command_Bridge",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart00",
+      "sourceHardpoint": "HP_Endurance_Command_Bridge"
+    },
+    {
+      "boneIndex": 94,
+      "id": "HP_Endurance_Control_Tower",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart01",
+      "sourceHardpoint": "HP_Endurance_Control_Tower"
+    },
+    {
+      "boneIndex": 31,
+      "id": "HP_Nebula_SD_TTL_01",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart02",
+      "sourceHardpoint": "HP_Nebula_SD_TTL_01"
+    },
+    {
+      "boneIndex": 34,
+      "id": "HP_Nebula_SD_TTL_02",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart03",
+      "sourceHardpoint": "HP_Nebula_SD_TTL_02"
+    },
+    {
+      "boneIndex": 37,
+      "id": "HP_Nebula_SD_TTL_03",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart04",
+      "sourceHardpoint": "HP_Nebula_SD_TTL_03"
+    },
+    {
+      "boneIndex": 41,
+      "id": "HP_Nebula_SD_TTL_04",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart05",
+      "sourceHardpoint": "HP_Nebula_SD_TTL_04"
+    },
+    {
+      "boneIndex": 12,
+      "id": "HP_Nebula_SD_IC_01",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart06",
+      "sourceHardpoint": "HP_Nebula_SD_IC_01"
+    },
+    {
+      "boneIndex": 15,
+      "id": "HP_Nebula_SD_IC_02",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart07",
+      "sourceHardpoint": "HP_Nebula_SD_IC_02"
+    },
+    {
+      "boneIndex": 18,
+      "id": "HP_Nebula_SD_IC_03",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart08",
+      "sourceHardpoint": "HP_Nebula_SD_IC_03"
+    },
+    {
+      "boneIndex": 22,
+      "id": "HP_Nebula_SD_IC_04",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart09",
+      "sourceHardpoint": "HP_Nebula_SD_IC_04"
+    },
+    {
+      "boneIndex": 9,
+      "id": "HP_Nebula_SD_TL_01",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart10",
+      "sourceHardpoint": "HP_Nebula_SD_TL_01"
+    },
+    {
+      "boneIndex": 24,
+      "id": "HP_Nebula_SD_TL_02",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart11",
+      "sourceHardpoint": "HP_Nebula_SD_TL_02"
+    },
+    {
+      "boneIndex": 26,
+      "id": "HP_Nebula_SD_TL_05",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart12",
+      "sourceHardpoint": "HP_Nebula_SD_TL_05"
+    },
+    {
+      "boneIndex": 28,
+      "id": "HP_Nebula_SD_TL_06",
+      "parentPiece": "Endurance",
+      "piece": "EndurancePart13",
+      "sourceHardpoint": "HP_Nebula_SD_TL_06"
+    }
+  ],
+  "definitionEquivalence": [
+    {
+      "chosen": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+      "equivalentSources": [
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Nebula_Star_Destroyer.xml"
+      ],
+      "name": "HP_Nebula_SD_IC_01",
+      "normalizedDefinitionSha256": "43cf245daba76f705191fe121634526b9c5c05c857298e2bec0cb734cdee2f5c"
+    },
+    {
+      "chosen": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+      "equivalentSources": [
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Nebula_Star_Destroyer.xml"
+      ],
+      "name": "HP_Nebula_SD_IC_02",
+      "normalizedDefinitionSha256": "cdac117268b583ed94b0d148f3bc04247d6dcc23f7bf00640eb0bbc355d0f08a"
+    },
+    {
+      "chosen": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+      "equivalentSources": [
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Nebula_Star_Destroyer.xml"
+      ],
+      "name": "HP_Nebula_SD_IC_03",
+      "normalizedDefinitionSha256": "9817a95b7982e3635e44b6e2475f1971c960c58cab901529ca646a5230833bb7"
+    },
+    {
+      "chosen": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+      "equivalentSources": [
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Nebula_Star_Destroyer.xml"
+      ],
+      "name": "HP_Nebula_SD_IC_04",
+      "normalizedDefinitionSha256": "0fed799cffc4469745311dc1f5b79239bef65ffc1c6f6cebe0f0fd90ad6323aa"
+    },
+    {
+      "chosen": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+      "equivalentSources": [
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Nebula_Star_Destroyer.xml"
+      ],
+      "name": "HP_Nebula_SD_TL_01",
+      "normalizedDefinitionSha256": "96e9ebe30f70d0a5d5db224f0d6c2874581a183e4a2b1fa00627eb1f17211937"
+    },
+    {
+      "chosen": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+      "equivalentSources": [
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Nebula_Star_Destroyer.xml"
+      ],
+      "name": "HP_Nebula_SD_TL_02",
+      "normalizedDefinitionSha256": "e94b2b5f364cd3295f6da91c046b45b912a02c50f997a5369695beef739cbba2"
+    },
+    {
+      "chosen": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+      "equivalentSources": [
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Nebula_Star_Destroyer.xml"
+      ],
+      "name": "HP_Nebula_SD_TL_03",
+      "normalizedDefinitionSha256": "f3c6ec21d50208641fb4ba658484fa8b050d9a658f6d78dfb7886bb6ab3e9c45"
+    },
+    {
+      "chosen": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+      "equivalentSources": [
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Nebula_Star_Destroyer.xml"
+      ],
+      "name": "HP_Nebula_SD_TL_04",
+      "normalizedDefinitionSha256": "c4b0db4f9e3243848547144b4936a4e4d5e6c457ad8e8a0e3c6c397656261917"
+    },
+    {
+      "chosen": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+      "equivalentSources": [
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Nebula_Star_Destroyer.xml"
+      ],
+      "name": "HP_Nebula_SD_TL_05",
+      "normalizedDefinitionSha256": "1726a6569ec0ef92cd2ae4f36ca14f7476ca77feaac1ab55b8176b639d525827"
+    },
+    {
+      "chosen": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+      "equivalentSources": [
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+        "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Nebula_Star_Destroyer.xml"
+      ],
+      "name": "HP_Nebula_SD_TL_06",
+      "normalizedDefinitionSha256": "a37b2497028643f0d1f19c341cbfdf63e132912e43c86320157880f088ae9f75"
+    }
+  ],
+  "sourceAssemblyEvidence": "Tools/AloImport/.state/Evidence/EnduranceAssemblyInputs.json",
+  "sourceAssemblyEvidenceRetained": true,
+  "transportRigEvidence": "Tools/AloImport/Evidence/TransportRigNames.json",
+  "currentAssemblyCapture": "Tools/AloImport/.state/Evidence/CurrentAssemblyCapture.json",
+  "currentAssemblyReceipt": "Tools/AloImport/Evidence/CurrentAssemblyCaptureSummary.json",
+  "currentWorldBounds": {
+    "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab": {
+      "center": [
+        3.81469727e-05,
+        -2.670288e-05,
+        7.62939453e-06
+      ],
+      "size": [
+        93.46152,
+        43.43959,
+        180.0
+      ],
+      "min": [
+        -46.73072,
+        -21.7198219,
+        -89.99999
+      ],
+      "max": [
+        46.7307968,
+        21.7197685,
+        90.00001
+      ]
+    },
+    "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab": {
+      "center": [
+        2.47955322e-05,
+        -1.23977661e-05,
+        7.62939453e-06
+      ],
+      "size": [
+        56.6992149,
+        26.3529968,
+        109.1985
+      ],
+      "min": [
+        -28.3495827,
+        -13.1765108,
+        -54.5992432
+      ],
+      "max": [
+        28.3496323,
+        13.176486,
+        54.59926
+      ]
+    }
+  }
+}

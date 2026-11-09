@@ -1,0 +1,8 @@
+{
+  "sourceRoots": {
+    "rothana-original": "REPLACE_WITH_LOCAL_SOURCE_ROOT"
+  },
+  "blender": "REPLACE_WITH_LOCAL_BLENDER_EXECUTABLE",
+  "alamoAddon": "REPLACE_WITH_LOCAL_ALAMO_ADDON_DIRECTORY",
+  "blenderWorkers": 2
+}

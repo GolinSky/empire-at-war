@@ -1,0 +1,130 @@
+[
+  {
+    "path": "Assets/Art/Models/RepublicShips/Rothana/Rothana.fbx",
+    "piece": "Rothana",
+    "rootNulls": [
+      "Rothana_Stardestroyer_Full_ArmedRig"
+    ],
+    "sha256": "bd9e03534ed424853803cfeb4ac27cc8bda528dce3532dfaa6316d2fbbc24ea3"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/Endurance.fbx",
+    "piece": "Endurance",
+    "rootNulls": [
+      "EnduranceRig"
+    ],
+    "sha256": "333df6519877ab4baf2b450d6e57c7b103db8a7f59c3e915f2fc16961bd7cfda"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart00.fbx",
+    "piece": "EndurancePart00",
+    "rootNulls": [
+      "EndurancePart00Rig"
+    ],
+    "sha256": "3fb699c1ff9da5dacc53331b9b5c3135f096c549b68318763042e68d6d8d276e"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart01.fbx",
+    "piece": "EndurancePart01",
+    "rootNulls": [
+      "EndurancePart01Rig"
+    ],
+    "sha256": "d7031047ced99b076fe5bb16053cc211f5070e3e60f29282ef4cc8a2f39af615"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart02.fbx",
+    "piece": "EndurancePart02",
+    "rootNulls": [
+      "EndurancePart02Rig"
+    ],
+    "sha256": "09e8210fdef03cf46e696764b2e9313b9c36b6341e06cb11bc169569bf92d84b"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart03.fbx",
+    "piece": "EndurancePart03",
+    "rootNulls": [
+      "EndurancePart03Rig"
+    ],
+    "sha256": "fdb596b785ae9dc5b965fdc87adc019f704fcc972c3bdd1534fda934d0816a78"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart04.fbx",
+    "piece": "EndurancePart04",
+    "rootNulls": [
+      "EndurancePart04Rig"
+    ],
+    "sha256": "62f777e4f47dd1ad511de47fe8fbd155ae6cdf5409d281781f1fb5fc4029de82"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart05.fbx",
+    "piece": "EndurancePart05",
+    "rootNulls": [
+      "EndurancePart05Rig"
+    ],
+    "sha256": "20098d82bee6d417d249bf73322e78210cac40cb06f064f2481db272dc6dbf72"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart06.fbx",
+    "piece": "EndurancePart06",
+    "rootNulls": [
+      "EndurancePart06Rig"
+    ],
+    "sha256": "d1fb62e918b7faa885c920918f81923c6fd83a7be8b3e7fb94bf1ca31121a183"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart07.fbx",
+    "piece": "EndurancePart07",
+    "rootNulls": [
+      "EndurancePart07Rig"
+    ],
+    "sha256": "7d34b2237a97942478f756b76f5d3e49e79936da0b73b8efc3671ef1c2bdea9a"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart08.fbx",
+    "piece": "EndurancePart08",
+    "rootNulls": [
+      "EndurancePart08Rig"
+    ],
+    "sha256": "d36a6b3d990c9882dfc995a6e7e1e7902bf96d7bc068f1652ccfa397236059f4"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart09.fbx",
+    "piece": "EndurancePart09",
+    "rootNulls": [
+      "EndurancePart09Rig"
+    ],
+    "sha256": "aeab9dbb267434c07a59c20b6fb78da7a1fa0a66b0061c696ae5f29b8e039d1b"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart10.fbx",
+    "piece": "EndurancePart10",
+    "rootNulls": [
+      "EndurancePart10Rig"
+    ],
+    "sha256": "c757ceee49735a58df51d4bc07a591eb56efd91fe0aa3b453a51b0ba706267ca"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart11.fbx",
+    "piece": "EndurancePart11",
+    "rootNulls": [
+      "EndurancePart11Rig"
+    ],
+    "sha256": "d6bd6acaa413ab7f8c806e3bb39b7d2bb6938d4a600cc7814615d589e16d6dc9"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart12.fbx",
+    "piece": "EndurancePart12",
+    "rootNulls": [
+      "EndurancePart12Rig"
+    ],
+    "sha256": "9b1ad2ad7a950232004ae8f68ce658214e77e93d1824c2e35e6aca957d0b593e"
+  },
+  {
+    "path": "Assets/Art/Models/RebellionShips/Endurance/EndurancePart13.fbx",
+    "piece": "EndurancePart13",
+    "rootNulls": [
+      "EndurancePart13Rig"
+    ],
+    "sha256": "d4144a153b19b0055eb21e0df5eb96137fd220da206390eaffdfdc16e6fdb0b6"
+  }
+]

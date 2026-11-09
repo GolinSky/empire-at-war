@@ -1,0 +1,4626 @@
+{
+  "schemaVersion": 1,
+  "capturedLocalDate": "2026-10-28",
+  "checks": {
+    "diskInventory": "passed",
+    "unityReadback": "not-run",
+    "runtime": "not-run",
+    "visualReview": "not-run"
+  },
+  "models": [
+    {
+      "path": "C:\\Users\\golin\\Downloads\\Rothana.2\\Models\\Rothana_Stardestroyer_Full_Armed.ALO",
+      "exists": true,
+      "sha256": "42ed134e83e690ec1c4b6eb6b46d3ccb0b3a59ceb1c0cae8fa6acead8e49c108",
+      "bytes": 16346816,
+      "pieceId": "Rothana",
+      "bones": 100,
+      "meshes": 13,
+      "triangles": 44313,
+      "materialSlots": 13,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Hull_LOD_1",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "b1a5836d8fd9eb205eb72e018e7716a5744b6594dacebaf9452a13458d1a0d14",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 3436
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Engine_bas",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "843ca437a723a5161bc9ca9cdcc5567de8c2bcc637eefa697c0c1affeec289ea",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 372
+            }
+          ]
+        },
+        {
+          "meshIndex": 2,
+          "mesh": "Engine_Glo",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "a3f7441820af0a6fb25985a45318d3bce9d8697c4975925e3f194b6eb2d9c3ec",
+              "shader": "MeshShield.fx",
+              "triangleCount": 1840
+            }
+          ]
+        },
+        {
+          "meshIndex": 3,
+          "mesh": "Shield",
+          "hidden": true,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "a3f7441820af0a6fb25985a45318d3bce9d8697c4975925e3f194b6eb2d9c3ec",
+              "shader": "MeshShield.fx",
+              "triangleCount": 120
+            }
+          ]
+        },
+        {
+          "meshIndex": 4,
+          "mesh": "hangar",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "737d04c223e58e0e8dd120479a92e561bbe2c2bb4e779fa9c1655a8b7b236985",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 52
+            }
+          ]
+        },
+        {
+          "meshIndex": 5,
+          "mesh": "Col",
+          "hidden": true,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "a4028ae693045c51861978a695439be5c701d14fb628537fb50b299bde26de5e",
+              "shader": "MeshCollision.fx",
+              "triangleCount": 178
+            }
+          ]
+        },
+        {
+          "meshIndex": 6,
+          "mesh": "Lights",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "724127627b278e5c14c4de0fe9951e1927b94f31bfe476e53083e5c3b3831cdc",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 78
+            }
+          ]
+        },
+        {
+          "meshIndex": 7,
+          "mesh": "reactor",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "13d448ead7bb008705fc98c198fc984f1a8da868cf4c80537b293ac59939693c",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 208
+            }
+          ]
+        },
+        {
+          "meshIndex": 8,
+          "mesh": "Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 1992
+            }
+          ]
+        },
+        {
+          "meshIndex": 9,
+          "mesh": "Hull_LOD_0",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "5acc5a37173a6dafd73f945c75a9bf23b12c11046a95713b84ed4dc6cfe07d3c",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 3369
+            }
+          ]
+        },
+        {
+          "meshIndex": 10,
+          "mesh": "SuperStruc",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "4db5c6043b0454a8f0c3c3a1909b3bf952ab21c69f9300c152df12de30a8e7c5",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 7302
+            }
+          ]
+        },
+        {
+          "meshIndex": 11,
+          "mesh": "Armor",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "03b17b0c8611887074a4b91482d9f6e79e15a666fbd176a8d862c38cd9f68683",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 1582
+            }
+          ]
+        },
+        {
+          "meshIndex": 12,
+          "mesh": "Weapons",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "4db5c6043b0454a8f0c3c3a1909b3bf952ab21c69f9300c152df12de30a8e7c5",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 23784
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Endurance_Fleet_Carrier.ALO",
+      "exists": true,
+      "sha256": "01fbfd9277b8ba1a2723072df1acf5a5954a3139ada4e81d3740cebc528a63cb",
+      "bytes": 8189885,
+      "pieceId": "Endurance",
+      "bones": 95,
+      "meshes": 19,
+      "triangles": 55101,
+      "materialSlots": 20,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Hull Primary",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "a6c8239f4e395f14d2c204eb33fb0ebfe42a6fc1b5ad8ac05560b7e6d2d73abf",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 2539
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Engines",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "697a82b4360f0eee3c5f243d8aabbe0b93f7a1e97d110af30cf6254d748e0894",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 1212
+            }
+          ]
+        },
+        {
+          "meshIndex": 2,
+          "mesh": "Lights",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "de336ff9c26176d0fd6c5ae2d393c4227425d6b4b8260c1aa942589ad71f2921",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 300
+            }
+          ]
+        },
+        {
+          "meshIndex": 3,
+          "mesh": "Docking bay lights",
+          "hidden": false,
+          "slots": []
+        },
+        {
+          "meshIndex": 4,
+          "mesh": "Hanger Lights Lights Texture",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "9db5cce46fec9521d9861305b0c1533281e24250d08dbd8a3c4b3a60b8e8e51c",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 164
+            }
+          ]
+        },
+        {
+          "meshIndex": 5,
+          "mesh": "Hanger Lights Main Texture",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "2c2cc87a251449b5598ef31383f00b6e4e9ec015defb75b8eeb22a3c10b56355",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 84
+            }
+          ]
+        },
+        {
+          "meshIndex": 6,
+          "mesh": "Hull Secondary",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "26e9c34c4a9729bf7f9d8613bccf158567e128e00bbc0efa3679b4fff6c5ea09",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 2928
+            }
+          ]
+        },
+        {
+          "meshIndex": 7,
+          "mesh": "Engines_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 4494
+            }
+          ]
+        },
+        {
+          "meshIndex": 8,
+          "mesh": "Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 21610
+            }
+          ]
+        },
+        {
+          "meshIndex": 9,
+          "mesh": "Shield",
+          "hidden": true,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "4592ab356b899002eee42e5af6b4e1a81662a6d1db633cffd9261647a4ded30b",
+              "shader": "MeshShield.fx",
+              "triangleCount": 1680
+            }
+          ]
+        },
+        {
+          "meshIndex": 10,
+          "mesh": "ISD_Engines",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "beee87bf7f36f284b4611c223275f886fe7e4b5615e922b2bf310f328a386232",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 1022
+            }
+          ]
+        },
+        {
+          "meshIndex": 11,
+          "mesh": "Engine_Glow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "4d091226b7168e94adf166c41709cce5df04cb569d0e0d33f90440714114df1c",
+              "shader": "MeshShield.fx",
+              "triangleCount": 476
+            }
+          ]
+        },
+        {
+          "meshIndex": 12,
+          "mesh": "ISD_Engines_Small",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "beee87bf7f36f284b4611c223275f886fe7e4b5615e922b2bf310f328a386232",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 1008
+            }
+          ]
+        },
+        {
+          "meshIndex": 13,
+          "mesh": "Engine_Shadows",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 4370
+            }
+          ]
+        },
+        {
+          "meshIndex": 14,
+          "mesh": "Engine_Shadows",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 3586
+            }
+          ]
+        },
+        {
+          "meshIndex": 15,
+          "mesh": "hull",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "a6c8239f4e395f14d2c204eb33fb0ebfe42a6fc1b5ad8ac05560b7e6d2d73abf",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 1559
+            }
+          ]
+        },
+        {
+          "meshIndex": 16,
+          "mesh": "3",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "8a22c0d5c7b55f4a7579d2d3afad552a95363b9f110883cdbe2881b49ae9a7da",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 745
+            },
+            {
+              "slot": 1,
+              "signature": "1445bdc667b23e2140ec2ca985d478a067439214bd52f1ac2805282d26d2f915",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 40
+            },
+            {
+              "slot": 2,
+              "signature": "2dbfb4250b29063014c89436ed3b9615f91540e8458ddfc1703b873ca159c556",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 604
+            }
+          ]
+        },
+        {
+          "meshIndex": 17,
+          "mesh": "hull_shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 4840
+            }
+          ]
+        },
+        {
+          "meshIndex": 18,
+          "mesh": "Engine_Glow_Sec",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "ecf6ab85e4bd0b32c4abf8352a1ae3a0a15d2255e294853d8d4079124395155f",
+              "shader": "MeshShield.fx",
+              "triangleCount": 1840
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Endurance_Command_Bridge.ALO",
+      "exists": true,
+      "sha256": "741fcae84e871a698a4940280c96dc7e60d34f87bb51751b8e41c926568140a3",
+      "bytes": 834392,
+      "pieceId": "EndurancePart00",
+      "bones": 2,
+      "meshes": 5,
+      "triangles": 5520,
+      "materialSlots": 5,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "core",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "a6c8239f4e395f14d2c204eb33fb0ebfe42a6fc1b5ad8ac05560b7e6d2d73abf",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 496
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "bridge",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "a6c8239f4e395f14d2c204eb33fb0ebfe42a6fc1b5ad8ac05560b7e6d2d73abf",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 502
+            }
+          ]
+        },
+        {
+          "meshIndex": 2,
+          "mesh": "shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 4192
+            }
+          ]
+        },
+        {
+          "meshIndex": 3,
+          "mesh": "kitbash",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "26e9c34c4a9729bf7f9d8613bccf158567e128e00bbc0efa3679b4fff6c5ea09",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 292
+            }
+          ]
+        },
+        {
+          "meshIndex": 4,
+          "mesh": "lights",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "de336ff9c26176d0fd6c5ae2d393c4227425d6b4b8260c1aa942589ad71f2921",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 38
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Endurance_Control_Tower.ALO",
+      "exists": true,
+      "sha256": "98ede490636b21939537c0dfe9ff390a33d856c9b3ecfba5df37920b89ac295c",
+      "bytes": 123960,
+      "pieceId": "EndurancePart01",
+      "bones": 2,
+      "meshes": 3,
+      "triangles": 682,
+      "materialSlots": 3,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "tower",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "a6c8239f4e395f14d2c204eb33fb0ebfe42a6fc1b5ad8ac05560b7e6d2d73abf",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 216
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "lights",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "de336ff9c26176d0fd6c5ae2d393c4227425d6b4b8260c1aa942589ad71f2921",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 18
+            }
+          ]
+        },
+        {
+          "meshIndex": 2,
+          "mesh": "shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 448
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Turbolaser_Turret_01.ALO",
+      "exists": true,
+      "sha256": "ae113545b4bdb3b05cc4c60d046187392845766c2e4d7977ff3bdf8b48c4bafd",
+      "bytes": 410949,
+      "pieceId": "EndurancePart02",
+      "bones": 6,
+      "meshes": 4,
+      "triangles": 2834,
+      "materialSlots": 4,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Turret",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 466
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Barrel",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 96
+            }
+          ]
+        },
+        {
+          "meshIndex": 2,
+          "mesh": "Barrel_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 426
+            }
+          ]
+        },
+        {
+          "meshIndex": 3,
+          "mesh": "Turret_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 1846
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Turbolaser_Turret_02.ALO",
+      "exists": true,
+      "sha256": "ae113545b4bdb3b05cc4c60d046187392845766c2e4d7977ff3bdf8b48c4bafd",
+      "bytes": 410949,
+      "pieceId": "EndurancePart03",
+      "bones": 6,
+      "meshes": 4,
+      "triangles": 2834,
+      "materialSlots": 4,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Turret",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 466
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Barrel",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 96
+            }
+          ]
+        },
+        {
+          "meshIndex": 2,
+          "mesh": "Barrel_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 426
+            }
+          ]
+        },
+        {
+          "meshIndex": 3,
+          "mesh": "Turret_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 1846
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Turbolaser_Turret_03.ALO",
+      "exists": true,
+      "sha256": "ae113545b4bdb3b05cc4c60d046187392845766c2e4d7977ff3bdf8b48c4bafd",
+      "bytes": 410949,
+      "pieceId": "EndurancePart04",
+      "bones": 6,
+      "meshes": 4,
+      "triangles": 2834,
+      "materialSlots": 4,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Turret",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 466
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Barrel",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 96
+            }
+          ]
+        },
+        {
+          "meshIndex": 2,
+          "mesh": "Barrel_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 426
+            }
+          ]
+        },
+        {
+          "meshIndex": 3,
+          "mesh": "Turret_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 1846
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Turbolaser_Turret_04.ALO",
+      "exists": true,
+      "sha256": "ae113545b4bdb3b05cc4c60d046187392845766c2e4d7977ff3bdf8b48c4bafd",
+      "bytes": 410949,
+      "pieceId": "EndurancePart05",
+      "bones": 6,
+      "meshes": 4,
+      "triangles": 2834,
+      "materialSlots": 4,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Turret",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 466
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Barrel",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 96
+            }
+          ]
+        },
+        {
+          "meshIndex": 2,
+          "mesh": "Barrel_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 426
+            }
+          ]
+        },
+        {
+          "meshIndex": 3,
+          "mesh": "Turret_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 1846
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_01.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "pieceId": "EndurancePart06",
+      "bones": 4,
+      "meshes": 2,
+      "triangles": 1292,
+      "materialSlots": 2,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Turret",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 230
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Turret_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 1062
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_02.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "pieceId": "EndurancePart07",
+      "bones": 4,
+      "meshes": 2,
+      "triangles": 1292,
+      "materialSlots": 2,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Turret",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 230
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Turret_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 1062
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_03.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "pieceId": "EndurancePart08",
+      "bones": 4,
+      "meshes": 2,
+      "triangles": 1292,
+      "materialSlots": 2,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Turret",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 230
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Turret_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 1062
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_04.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "pieceId": "EndurancePart09",
+      "bones": 4,
+      "meshes": 2,
+      "triangles": 1292,
+      "materialSlots": 2,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Turret",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 230
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Turret_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 1062
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_05.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "pieceId": "EndurancePart10",
+      "bones": 4,
+      "meshes": 2,
+      "triangles": 1292,
+      "materialSlots": 2,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Turret",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 230
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Turret_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 1062
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_06.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "pieceId": "EndurancePart11",
+      "bones": 4,
+      "meshes": 2,
+      "triangles": 1292,
+      "materialSlots": 2,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Turret",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 230
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Turret_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 1062
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_09.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "pieceId": "EndurancePart12",
+      "bones": 4,
+      "meshes": 2,
+      "triangles": 1292,
+      "materialSlots": 2,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Turret",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 230
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Turret_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 1062
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_10.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "pieceId": "EndurancePart13",
+      "bones": 4,
+      "meshes": 2,
+      "triangles": 1292,
+      "materialSlots": 2,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "Turret",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "567f83be6f33abf977435c0f13f3c2bf94dc29ec8b6624fc08d3e1fb365dbf9e",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 230
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "Turret_Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 1062
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\output\\aotr-space-stations\\preview-selection\\Vanilla\\Data\\ART\\MODELS\\RB_STATION_01.ALO",
+      "exists": true,
+      "sha256": "1abcd9b9fad42c51ca5768462715d6543a9c3afa1c9cd0ca609ad20ff51153e9",
+      "bytes": 1631600,
+      "pieceId": "RebelLevel1",
+      "bones": 88,
+      "meshes": 9,
+      "triangles": 12205,
+      "materialSlots": 9,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "HP01_CA_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 6
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "HP01_CCM_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 48
+            }
+          ]
+        },
+        {
+          "meshIndex": 2,
+          "mesh": "HP01_LC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 70
+            }
+          ]
+        },
+        {
+          "meshIndex": 3,
+          "mesh": "HP01_SHG_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 34
+            }
+          ]
+        },
+        {
+          "meshIndex": 4,
+          "mesh": "HP01_SupD_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 36
+            }
+          ]
+        },
+        {
+          "meshIndex": 5,
+          "mesh": "HP01_TBL_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 22
+            }
+          ]
+        },
+        {
+          "meshIndex": 6,
+          "mesh": "Level_01",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "26f9219ea6bc153008eb1467fd279cbcf70ba50875c541560580d019f86049d8",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 3656
+            }
+          ]
+        },
+        {
+          "meshIndex": 7,
+          "mesh": "Level_01 Lights",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "837f70c5d6bbe81a03a1752ef66aae062666c489bed0c566b9a392c7016a0d20",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 220
+            }
+          ]
+        },
+        {
+          "meshIndex": 8,
+          "mesh": "Level_01 Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 8113
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\output\\aotr-space-stations\\preview-selection\\Vanilla\\Data\\ART\\MODELS\\RB_STATION_02.ALO",
+      "exists": true,
+      "sha256": "487d36214f3b2fce2613ac1d16007d60c87ab6a4f03007159b4ee0e0a8b43a30",
+      "bytes": 1838999,
+      "pieceId": "RebelLevel2",
+      "bones": 103,
+      "meshes": 12,
+      "triangles": 13423,
+      "materialSlots": 12,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "HP01_CA_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 6
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "HP01_CCM_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 48
+            }
+          ]
+        },
+        {
+          "meshIndex": 2,
+          "mesh": "HP01_LC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 70
+            }
+          ]
+        },
+        {
+          "meshIndex": 3,
+          "mesh": "HP01_SHG_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 34
+            }
+          ]
+        },
+        {
+          "meshIndex": 4,
+          "mesh": "HP01_SupD_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 36
+            }
+          ]
+        },
+        {
+          "meshIndex": 5,
+          "mesh": "HP01_TBL_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 22
+            }
+          ]
+        },
+        {
+          "meshIndex": 6,
+          "mesh": "HP02_LC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 22
+            }
+          ]
+        },
+        {
+          "meshIndex": 7,
+          "mesh": "HP02_PRT_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 49
+            }
+          ]
+        },
+        {
+          "meshIndex": 8,
+          "mesh": "HP02_TBL_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 28
+            }
+          ]
+        },
+        {
+          "meshIndex": 9,
+          "mesh": "Level_02",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "26f9219ea6bc153008eb1467fd279cbcf70ba50875c541560580d019f86049d8",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 4235
+            }
+          ]
+        },
+        {
+          "meshIndex": 10,
+          "mesh": "Level_02 Lights",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "837f70c5d6bbe81a03a1752ef66aae062666c489bed0c566b9a392c7016a0d20",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 220
+            }
+          ]
+        },
+        {
+          "meshIndex": 11,
+          "mesh": "Level_02 Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 8653
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\output\\aotr-space-stations\\preview-selection\\Vanilla\\Data\\ART\\MODELS\\RB_STATION_03.ALO",
+      "exists": true,
+      "sha256": "54a48d6b0274f39782e234a9f3faf689cbb53419b75df9352025d88fdb776120",
+      "bytes": 2060710,
+      "pieceId": "RebelLevel3",
+      "bones": 121,
+      "meshes": 15,
+      "triangles": 14829,
+      "materialSlots": 15,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "HP01_CA_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 6
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "HP01_CCM_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 48
+            }
+          ]
+        },
+        {
+          "meshIndex": 2,
+          "mesh": "HP01_LC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 70
+            }
+          ]
+        },
+        {
+          "meshIndex": 3,
+          "mesh": "HP01_SHG_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 34
+            }
+          ]
+        },
+        {
+          "meshIndex": 4,
+          "mesh": "HP01_SupD_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 36
+            }
+          ]
+        },
+        {
+          "meshIndex": 5,
+          "mesh": "HP01_TBL_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 22
+            }
+          ]
+        },
+        {
+          "meshIndex": 6,
+          "mesh": "HP02_LC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 22
+            }
+          ]
+        },
+        {
+          "meshIndex": 7,
+          "mesh": "HP02_PRT_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 49
+            }
+          ]
+        },
+        {
+          "meshIndex": 8,
+          "mesh": "HP02_TBL_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 28
+            }
+          ]
+        },
+        {
+          "meshIndex": 9,
+          "mesh": "HP03_CCM_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 36
+            }
+          ]
+        },
+        {
+          "meshIndex": 10,
+          "mesh": "HP03_IC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 34
+            }
+          ]
+        },
+        {
+          "meshIndex": 11,
+          "mesh": "HP03_PRT_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 10
+            }
+          ]
+        },
+        {
+          "meshIndex": 12,
+          "mesh": "Level_03",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "26f9219ea6bc153008eb1467fd279cbcf70ba50875c541560580d019f86049d8",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 4641
+            }
+          ]
+        },
+        {
+          "meshIndex": 13,
+          "mesh": "Level_03 Lights",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "837f70c5d6bbe81a03a1752ef66aae062666c489bed0c566b9a392c7016a0d20",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 228
+            }
+          ]
+        },
+        {
+          "meshIndex": 14,
+          "mesh": "Level_03 Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 9565
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\output\\aotr-space-stations\\preview-selection\\Vanilla\\Data\\ART\\MODELS\\RB_STATION_04.ALO",
+      "exists": true,
+      "sha256": "dbcbf3d965a0870f97f04fc13649ac69f9e2967bb9bcc1fee44fe8c4d3f75104",
+      "bytes": 2635298,
+      "pieceId": "RebelLevel4",
+      "bones": 141,
+      "meshes": 18,
+      "triangles": 19321,
+      "materialSlots": 18,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "HP01_CA_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 6
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "HP01_CCM_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 48
+            }
+          ]
+        },
+        {
+          "meshIndex": 2,
+          "mesh": "HP01_LC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 70
+            }
+          ]
+        },
+        {
+          "meshIndex": 3,
+          "mesh": "HP01_SupD_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 36
+            }
+          ]
+        },
+        {
+          "meshIndex": 4,
+          "mesh": "HP01_TBL_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 22
+            }
+          ]
+        },
+        {
+          "meshIndex": 5,
+          "mesh": "HP02_LC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 22
+            }
+          ]
+        },
+        {
+          "meshIndex": 6,
+          "mesh": "HP02_PRT_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 49
+            }
+          ]
+        },
+        {
+          "meshIndex": 7,
+          "mesh": "HP02_TBL_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 28
+            }
+          ]
+        },
+        {
+          "meshIndex": 8,
+          "mesh": "HP03_CCM_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 36
+            }
+          ]
+        },
+        {
+          "meshIndex": 9,
+          "mesh": "HP03_IC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 34
+            }
+          ]
+        },
+        {
+          "meshIndex": 10,
+          "mesh": "HP03_PRT_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 10
+            }
+          ]
+        },
+        {
+          "meshIndex": 11,
+          "mesh": "HP04_IC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 16
+            }
+          ]
+        },
+        {
+          "meshIndex": 12,
+          "mesh": "HP04_LC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 24
+            }
+          ]
+        },
+        {
+          "meshIndex": 13,
+          "mesh": "HP04_SHG_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 34
+            }
+          ]
+        },
+        {
+          "meshIndex": 14,
+          "mesh": "HP04_TBL_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 28
+            }
+          ]
+        },
+        {
+          "meshIndex": 15,
+          "mesh": "Level_04",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "26f9219ea6bc153008eb1467fd279cbcf70ba50875c541560580d019f86049d8",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 6001
+            }
+          ]
+        },
+        {
+          "meshIndex": 16,
+          "mesh": "Level_04 Lights",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "837f70c5d6bbe81a03a1752ef66aae062666c489bed0c566b9a392c7016a0d20",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 252
+            }
+          ]
+        },
+        {
+          "meshIndex": 17,
+          "mesh": "Level_04 Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 12605
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\output\\aotr-space-stations\\preview-selection\\Vanilla\\Data\\ART\\MODELS\\RB_STATION_05.ALO",
+      "exists": true,
+      "sha256": "80551bc28bb1505fde50b496c457a80c67c956a124029a5f09cf9c54289ad88c",
+      "bytes": 3298574,
+      "pieceId": "RebelLevel5",
+      "bones": 165,
+      "meshes": 21,
+      "triangles": 24707,
+      "materialSlots": 21,
+      "root": {
+        "index": 0,
+        "name": "Root",
+        "parent_index": 4294967295,
+        "visible": 1,
+        "billboard": 0,
+        "matrix": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      },
+      "slots": [
+        {
+          "meshIndex": 0,
+          "mesh": "HP01_CA_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 6
+            }
+          ]
+        },
+        {
+          "meshIndex": 1,
+          "mesh": "HP01_CCM_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 48
+            }
+          ]
+        },
+        {
+          "meshIndex": 2,
+          "mesh": "HP01_LC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 70
+            }
+          ]
+        },
+        {
+          "meshIndex": 3,
+          "mesh": "HP01_SupD_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 36
+            }
+          ]
+        },
+        {
+          "meshIndex": 4,
+          "mesh": "HP01_TBL_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 22
+            }
+          ]
+        },
+        {
+          "meshIndex": 5,
+          "mesh": "HP02_LC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 22
+            }
+          ]
+        },
+        {
+          "meshIndex": 6,
+          "mesh": "HP02_PRT_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 49
+            }
+          ]
+        },
+        {
+          "meshIndex": 7,
+          "mesh": "HP03_CCM_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 36
+            }
+          ]
+        },
+        {
+          "meshIndex": 8,
+          "mesh": "HP03_IC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 34
+            }
+          ]
+        },
+        {
+          "meshIndex": 9,
+          "mesh": "HP03_PRT_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 10
+            }
+          ]
+        },
+        {
+          "meshIndex": 10,
+          "mesh": "HP04_IC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 16
+            }
+          ]
+        },
+        {
+          "meshIndex": 11,
+          "mesh": "HP04_LC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 24
+            }
+          ]
+        },
+        {
+          "meshIndex": 12,
+          "mesh": "HP04_SHG_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 34
+            }
+          ]
+        },
+        {
+          "meshIndex": 13,
+          "mesh": "HP04_TBL_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 28
+            }
+          ]
+        },
+        {
+          "meshIndex": 14,
+          "mesh": "HP05_CCM_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 22
+            }
+          ]
+        },
+        {
+          "meshIndex": 15,
+          "mesh": "HP05_IC_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 12
+            }
+          ]
+        },
+        {
+          "meshIndex": 16,
+          "mesh": "HP05_TBL2_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 28
+            }
+          ]
+        },
+        {
+          "meshIndex": 17,
+          "mesh": "HP05_TBL_Blast",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "617744b19f8d2aedeb58acb5bc60f39f1251983348c732d0831974812e3345d4",
+              "shader": "MeshAlpha.fx",
+              "triangleCount": 44
+            }
+          ]
+        },
+        {
+          "meshIndex": 18,
+          "mesh": "Level_05",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "26f9219ea6bc153008eb1467fd279cbcf70ba50875c541560580d019f86049d8",
+              "shader": "MeshBumpColorize.fx",
+              "triangleCount": 7407
+            }
+          ]
+        },
+        {
+          "meshIndex": 19,
+          "mesh": "Level_05 Lights",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "837f70c5d6bbe81a03a1752ef66aae062666c489bed0c566b9a392c7016a0d20",
+              "shader": "MeshAdditive.fx",
+              "triangleCount": 278
+            }
+          ]
+        },
+        {
+          "meshIndex": 20,
+          "mesh": "Level_05 Shadow",
+          "hidden": false,
+          "slots": [
+            {
+              "slot": 0,
+              "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+              "shader": "MeshShadowVolume.fx",
+              "triangleCount": 16481
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "enduranceOriginalFiles": [
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Endurance_Fleet_Carrier.ALO",
+      "exists": true,
+      "sha256": "01fbfd9277b8ba1a2723072df1acf5a5954a3139ada4e81d3740cebc528a63cb",
+      "bytes": 8189885,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue_dist.tga",
+      "exists": true,
+      "sha256": "1350923773197367e0f33863e88adcbfc1e52d6e9c89ff3c347d9fe41b7d2c83",
+      "bytes": 1000044,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Blue_wave.tga",
+      "exists": true,
+      "sha256": "6d8d9fb3d488cac71c38d30434ee7f98ea7e86491f460402a78963b38cb77513",
+      "bytes": 1048620,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Fancy_Blue.tga",
+      "exists": true,
+      "sha256": "2144816c33c7fced5a1de03476cbeb8bf10ca413b02c222a582f304fdff138bb",
+      "bytes": 500044,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Engine_Glow_Fancy_White.tga",
+      "exists": true,
+      "sha256": "c985b69fed5c007c76a9ea9f8f95cc8073a4ee15e6ebe223c3dacf40529de3f5",
+      "bytes": 500044,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Hull_2_B.dds",
+      "exists": true,
+      "sha256": "abeb18f6aa02afc024f284ff836909a5062de8a81b19c84f4a6404a7f554d309",
+      "bytes": 4194432,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Hull_2_SD.dds",
+      "exists": true,
+      "sha256": "0b763b84bacdab59c5be47b8a3e2afd587c4de367671851e0376817a21fb0f5f",
+      "bytes": 4194432,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Hull_Lights_Grid.dds",
+      "exists": true,
+      "sha256": "4db44b1aae46f1b27410acaa42edcc54728b6c919a9030178557bd4294783b0d",
+      "bytes": 1048704,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Nb_shieldwave.dds",
+      "exists": true,
+      "sha256": "0c792d8c9fe76662a66ac3e9b7b9112ed6429e8745ebd8e6fbd55ddc83ab5c03",
+      "bytes": 349680,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Nb_shieldbase_Blue.dds",
+      "exists": true,
+      "sha256": "1ae7d7b5ead7b370739fac6f710aa65bb22050db0f55c89a7c83257144002392",
+      "bytes": 349680,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Nb_shieldripple.dds",
+      "exists": true,
+      "sha256": "8f9e6463e174ff56d0b6d45cb43deb4aff54249ee40b8980ca7b427f0d6693f8",
+      "bytes": 349680,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_Mon_Cal_Home_One_1.dds",
+      "exists": true,
+      "sha256": "3b4d64aa55989694e482a6d4bd8bf4e73cfc9bce38b69948b86ce086ee2fb7bb",
+      "bytes": 4194432,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_Mon_Cal_Home_One_3.dds",
+      "exists": true,
+      "sha256": "c74a0fa38ecb0c139958cbc9b54b613b523d43ca54cba61668e6cecac45c84ff",
+      "bytes": 4194432,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_Mon_Cal_Home_One_3_B.dds",
+      "exists": true,
+      "sha256": "087bcb9493efdc46e50d2923d4c2444dbcbe153ad0cf0632ef306c3a5fbf8aec",
+      "bytes": 1048704,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_Mon_Calamari_Cruisers_L.dds",
+      "exists": true,
+      "sha256": "3d00f5c2574afac2f6d3a525af51e18385afd1df0a95941eda6f9fdeec139c32",
+      "bytes": 349680,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_Nebula_Star_Destroyer_Prototype_Engines.dds",
+      "exists": true,
+      "sha256": "6662d6f306e3b995ba82ee4d65ed72618427538bcb76b4f94636bf031702c8e9",
+      "bytes": 1398256,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_Nebula_Star_Destroyer_Prototype_Engines_B.dds",
+      "exists": true,
+      "sha256": "fe4c0889a35d21083e855c2cdfc3657fd735c3b7dbbca87458f6fd6f8a439b67",
+      "bytes": 1398256,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_Nebula_Star_Destroyer_Prototype_Main.dds",
+      "exists": true,
+      "sha256": "4cb524af3f5628cb0e6b28273233507a1b601e296cbb1cc05398cb7ed706ce05",
+      "bytes": 4194432,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_Nebula_Star_Destroyer_Prototype_Main_B.dds",
+      "exists": true,
+      "sha256": "48fe872188262870f9857bfd14e268df749cea9b38f1a14b8c284759f55f1234",
+      "bytes": 5592560,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_Nebula_Star_Destroyer_Prototype_Second.dds",
+      "exists": true,
+      "sha256": "599a12e8ed593bede70bf5b4d9b209edad8ffceed45f70eae6f09ad55ceb66dd",
+      "bytes": 4194432,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Textures\\Rebel_Nebula_Star_Destroyer_Prototype_Second_B.dds",
+      "exists": true,
+      "sha256": "5b8d5252cc8138b1a7ff92c596798711a1c4b8453031ad23aa336e948f079b77",
+      "bytes": 5592560,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Endurance_Command_Bridge.ALO",
+      "exists": true,
+      "sha256": "741fcae84e871a698a4940280c96dc7e60d34f87bb51751b8e41c926568140a3",
+      "bytes": 834392,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Endurance_Control_Tower.ALO",
+      "exists": true,
+      "sha256": "98ede490636b21939537c0dfe9ff390a33d856c9b3ecfba5df37920b89ac295c",
+      "bytes": 123960,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Turbolaser_Turret_01.ALO",
+      "exists": true,
+      "sha256": "ae113545b4bdb3b05cc4c60d046187392845766c2e4d7977ff3bdf8b48c4bafd",
+      "bytes": 410949,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Turbolaser_Turret_02.ALO",
+      "exists": true,
+      "sha256": "ae113545b4bdb3b05cc4c60d046187392845766c2e4d7977ff3bdf8b48c4bafd",
+      "bytes": 410949,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Turbolaser_Turret_03.ALO",
+      "exists": true,
+      "sha256": "ae113545b4bdb3b05cc4c60d046187392845766c2e4d7977ff3bdf8b48c4bafd",
+      "bytes": 410949,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Turbolaser_Turret_04.ALO",
+      "exists": true,
+      "sha256": "ae113545b4bdb3b05cc4c60d046187392845766c2e4d7977ff3bdf8b48c4bafd",
+      "bytes": 410949,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_01.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_02.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_03.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_04.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_05.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_06.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_09.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Rebel_Nebula_Star_Destroyer_Prototype_Laser_Cannon_10.ALO",
+      "exists": true,
+      "sha256": "d0ecb79fdc416f1b0d14830d8dcddbec7eb6e44ad1cf1317ee6979c89e117f28",
+      "bytes": 188916,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Units_Space_Rebel_Endurance_Fleet_Carrier.xml",
+      "exists": true,
+      "sha256": "46ca0a4267881a0499eeca41d6ae0194ebce449d06c186a3f0f4a217f15ff38f",
+      "bytes": 21921,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\_Default_Base.xml",
+      "exists": true,
+      "sha256": "9d08a195a90be2e34c9ac0fe06e83343c90e594b28b8d1c6a653bceac4e6803e",
+      "bytes": 28251,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Endurance_Fleet_Carrier.xml",
+      "exists": true,
+      "sha256": "b29f1e6c166f2cc0035c1a1cc39e2937fa7b3553a7a70955524825fd3065a1cb",
+      "bytes": 30892,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\Units\\Space\\Hardpoints\\Hardpoints_Rebel_Nebula_Star_Destroyer.xml",
+      "exists": true,
+      "sha256": "3791c2dfac6da4e89cc3e11c53585a7f51376908fe13635546c21bbedf705e92",
+      "bytes": 46263,
+      "historicalHashMatches": true
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Xml\\PROJECTILES.XML",
+      "exists": true,
+      "sha256": "4514777f4cfa04beb78e784f097e8a5b6ca982f9fb72057a10cf684c508c04f7",
+      "bytes": 428753,
+      "historicalHashMatches": true
+    }
+  ],
+  "assets": [
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Tooltip\\Matchups\\EnduranceMatchups.asset",
+      "exists": true,
+      "sha256": "a11fd544a1a3132e57c2235b8f67f5d2e85ea01ed58d0fe70589a0a5b54b9c82",
+      "bytes": 1046,
+      "guid": "7eb5d1258f2de8349b775004d6a5899b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Tooltip\\Matchups\\RothanaMatchups.asset",
+      "exists": true,
+      "sha256": "674586654f9191ae1623ef381ee5c6e536a0d00341af867fee7d52aaabea675f",
+      "bytes": 1041,
+      "guid": "522ba884f3c6d224cb19c7a59f5dd39b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Ship\\Rebellion\\EnduranceShipData.asset",
+      "exists": true,
+      "sha256": "6a468ff0bc956bb1038d1b9c9e8153460c86fa6d6c7f42b329b1050e7a5dbe70",
+      "bytes": 2219,
+      "guid": "fef3778c9889843489a563dd0efbf27b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Ship\\Republic\\RothanaShipData.asset",
+      "exists": true,
+      "sha256": "61c68aed408725eb984a8b8a09c4ab29d375c8179a4a91348d62a889275ee3cd",
+      "bytes": 2119,
+      "guid": "c58688ab024a13b4b8952191db292c09"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Models\\Wrecks\\Rebellion\\EnduranceWreckData.asset",
+      "exists": true,
+      "sha256": "ef28bec6afa59128daf8a3e2cdce71f558a7c9bab39cc2900833aa3ba4b6cebf",
+      "bytes": 1246,
+      "guid": "a9f3c665f5131814fa5da0d29e6dbe73"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Models\\Wrecks\\Republic\\RothanaWreckData.asset",
+      "exists": true,
+      "sha256": "d057f6ed97648108f066f02ae6912458fedba691b61db59bb666db828319e605",
+      "bytes": 1244,
+      "guid": "0d9ed0af40f2d5c45844478b7a19ecae"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Ui\\Reinforcement\\EnduranceReinforcementView.prefab",
+      "exists": true,
+      "sha256": "66ec8ea12d1d022fbf2eaf5d47e920684229cfaf55c9024e00f8fe228374ff77",
+      "bytes": 285784,
+      "guid": "03937783f671e3344ab62c666dbc3c2b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Ui\\Reinforcement\\RothanaReinforcementView.prefab",
+      "exists": true,
+      "sha256": "cb824010bf9ec3abffab06a1ddacd8a6fffd216387b5eff175dbd75485ece847",
+      "bytes": 14615,
+      "guid": "38f8d2aed9401054a90b202ce8246b64"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Models\\Stations\\RebellionSpaceStationView.prefab",
+      "exists": true,
+      "sha256": "38f73055752107359083e075aa26fc1aa9b255bed5c0297080e6184311f9f056",
+      "bytes": 226459,
+      "guid": "fcc3274cbaf8b934aad8621c60702a8f"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Models\\Stations\\RebelSpaceStationLevel1.prefab",
+      "exists": true,
+      "sha256": "c64d8bd9ffa2febf03e5906d1d08cc22f29e09200b0544d2c1521b81f4950875",
+      "bytes": 98752,
+      "guid": "343f09f54e57ac647b05f94c92d931ff"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Models\\Stations\\RebelSpaceStationLevel2.prefab",
+      "exists": true,
+      "sha256": "ed21be4ced2beba3898d46a52eda28ec1d95c46fd1c0268f8d2db16a019d7984",
+      "bytes": 113770,
+      "guid": "756842ac29d04a24cba35d3cf2c22a50"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Models\\Stations\\RebelSpaceStationLevel3.prefab",
+      "exists": true,
+      "sha256": "3dc4586c8b04bba10ae188a84d90e0a2bd90aec950e7ec7cc06f86f0ab5e31ee",
+      "bytes": 131225,
+      "guid": "4d588feac7c2a11419a10a89dcf4d7ec"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Models\\Stations\\RebelSpaceStationLevel4.prefab",
+      "exists": true,
+      "sha256": "9075c081fc752f946151251d0d7bd51798a3329567330e09c5ed8985d7b2059e",
+      "bytes": 149098,
+      "guid": "dfcd40df037ef9849b43841573baa01e"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Models\\Stations\\RebelSpaceStationLevel5.prefab",
+      "exists": true,
+      "sha256": "eca2434b324c8f347ae9e9dcd35eeb7e64086d59d49a1cfb32ff6b662cedb093",
+      "bytes": 177416,
+      "guid": "f6c0085e164c5ac46887910601893c91"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Models\\Wrecks\\EnduranceWreckView.prefab",
+      "exists": true,
+      "sha256": "8ce5c971a67ef9c26fbc3644dded2073e751ca0495127bb25573e8863f821ad2",
+      "bytes": 285256,
+      "guid": "8d9399b59c088904495f676c8fd57cf7"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Models\\Wrecks\\RothanaWreckView.prefab",
+      "exists": true,
+      "sha256": "b8546aad1b5fd22b0e95a6fab97150d2eeee9f4d6045a4affb0ce77bb2a65bcb",
+      "bytes": 21002,
+      "guid": "7409ebf06cef23f48b3693bafa443fa7"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Models\\Ships\\Rebellion\\Endurance.prefab",
+      "exists": true,
+      "sha256": "9945ead7915a9bd7b6bb7d76a205d9106ccc265c9171f39e7a97ceffb47fa892",
+      "bytes": 72725,
+      "guid": "1814173cdc0b0ce4dbb2047811f65d2b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Models\\Ships\\Rebellion\\EnduranceShipView.prefab",
+      "exists": true,
+      "sha256": "1149b13fba08897e54fcf97de2f50e5aed10c94596ebb2ed1135a2f2c72499b7",
+      "bytes": 188256,
+      "guid": "869c8abfc930a964892aef3ee3c9f4a6"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Models\\Ships\\Republic\\Rothana.prefab",
+      "exists": true,
+      "sha256": "35aa6c6876fe8ea55dcb2b7b6ebcf24d426c9832f6039ed53390a01cb8b7d73b",
+      "bytes": 4513,
+      "guid": "0953bfb937901dd479ddb0204ae44d17"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Prefabs\\Models\\Ships\\Republic\\RothanaShipView.prefab",
+      "exists": true,
+      "sha256": "629b94b13e22b44e1a0f5396a02b2da70c5498f7b6f12336889a662faabcd1e5",
+      "bytes": 159379,
+      "guid": "a5fb369e6e2e1954fa87deac0371f5ab"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Ui\\Icons\\ShipIcon\\Rebellion\\EnduranceIcon.png",
+      "exists": true,
+      "sha256": "85c168950aa6c407cac1d3bc9a42acbf9c0b3866bcec4b0ce93e02bbc575c4aa",
+      "bytes": 76293,
+      "guid": "937b502e2d2d8684ca9920ab2b5d9a0d"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Ui\\Icons\\ShipIcon\\Republic\\RothanaIcon.png",
+      "exists": true,
+      "sha256": "9caec500575e4f1b4387953d9c93b7546b6832c3bca27d592fbb88677a019047",
+      "bytes": 94881,
+      "guid": "677a9fb4a7566e14d932893ee85f3357"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\SpaceStations\\RebelSpaceStation\\RebelSpaceStation_Hull_TeamMask.png",
+      "exists": true,
+      "sha256": "1f904797fcecb27f39037c7836f53a770d4889324fc35f3685096f34e317e1ba",
+      "bytes": 386,
+      "guid": "dbb42c32538627f4cbd69386610cdea3"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\SpaceStations\\RebelSpaceStation\\RebelSpaceStation_RB_Station.png",
+      "exists": true,
+      "sha256": "c48bed093727e800650c72653e881ee9a6e08c09e1bb5f62d8de125a03026694",
+      "bytes": 387330,
+      "guid": "77b1e6cc13362a5498f17eca1d79b954"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\SpaceStations\\RebelSpaceStation\\RebelSpaceStation_RB_Stationlights.png",
+      "exists": true,
+      "sha256": "59f9fdd6948b9651066a1a512a06d3d0370c7c919bc3ed57d6c8e462aa59e58a",
+      "bytes": 6164,
+      "guid": "836ee451cba3ec0409d9252fd33ab706"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\SpaceStations\\RebelSpaceStation\\RebelSpaceStation_RB_Station_Bump.png",
+      "exists": true,
+      "sha256": "2f1fc35a3c90991be46f0811316829fb66dd5b7cfe883eb13b05b14aa50a65f9",
+      "bytes": 281846,
+      "guid": "cda616e4fb1638047b989ed9ad7b4959"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\SpaceStations\\RebelSpaceStation\\RebelSpaceStation_W_blast00.png",
+      "exists": true,
+      "sha256": "67bb1a64aa154cb21d1e7a64ef3d74c76d3148b9526993b6fe448db7c320bf3f",
+      "bytes": 10023,
+      "guid": "caa569599d8f54c4bb729988e4857dae"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Engines_Albedo.png",
+      "exists": true,
+      "sha256": "ee0149ecb30f622416fb7e91ccca5de8f0152c78b6458cf93af52a911b7c16d1",
+      "bytes": 295706,
+      "guid": "735ce3563fed9a64f86de63d9654d1fb"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Engines_Normal.png",
+      "exists": true,
+      "sha256": "5e159926c8ea754ffac08e71244d2838b38cc305748fd8946502ce824d316b89",
+      "bytes": 284743,
+      "guid": "3f6d08aa652d7ae4795cb7e430581ef9"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Hangar_Albedo.png",
+      "exists": true,
+      "sha256": "2447fe71abc74c68d44f62ed4ba5dd12f4c078f6a7d169eeb478c9a7ff987517",
+      "bytes": 60141,
+      "guid": "174802972523b2d47916f2e7bb3f86d7"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Hangar_Normal.png",
+      "exists": true,
+      "sha256": "21ff95930d51c8deb7a209e541dca86db464dd4e496235bb07814c68e60240e6",
+      "bytes": 79496,
+      "guid": "2f56450fdeb2c84458cd2719cf449f22"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Hull01_Albedo.png",
+      "exists": true,
+      "sha256": "5b20b335a6357f0493d48d2be1622d7935ec014ca4b3f5bfdf5f2749d01a9e63",
+      "bytes": 1610772,
+      "guid": "fd5b1a1a185e1534e938f937d0570f46"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Hull01_Normal.png",
+      "exists": true,
+      "sha256": "bd471c13182d9a83cdd97c7c4d6b964ba3fcee5167cf8504c8765b6871703efb",
+      "bytes": 1478634,
+      "guid": "b56cceda87c48934ca494b0df6789986"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Hull02_Albedo.png",
+      "exists": true,
+      "sha256": "de987ddde7f96071c7d18dd32c50f482a6fe77846d11ae30aa097209a537a3ba",
+      "bytes": 1150803,
+      "guid": "0b7a8b987c9d6c04d845aff3316c5df2"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Hull02_Normal.png",
+      "exists": true,
+      "sha256": "93966a637ebd95c616d8300a32cae1f155759bec5b0d330954f509811302fe9c",
+      "bytes": 1129665,
+      "guid": "a732d4707cdf36046ab1190dce3a1c68"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Hull03_Albedo.png",
+      "exists": true,
+      "sha256": "0aed4c70fab24fcd9cf942b1e3cbd35752492d780c22ddb13f3412d132bb5ace",
+      "bytes": 1987916,
+      "guid": "0f1f43469dd30324fac16b19cf366207"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Hull03_Normal.png",
+      "exists": true,
+      "sha256": "9d73853b6613b4e8725d80cb9d76cb394e77a6d8affe8a114532c239686f394a",
+      "bytes": 1576412,
+      "guid": "9974fc2d53caf1c47bb7fe6ecdb289e2"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Lights_Emissive.png",
+      "exists": true,
+      "sha256": "81e51a9ebe8a8209687ef0618d5ef17fee6e0fda34bf6946c65b6f525a41d3fe",
+      "bytes": 282072,
+      "guid": "493a492edc077ef4ebd0175cc05df23e"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Reactor_Albedo.png",
+      "exists": true,
+      "sha256": "5aaa54537349150bba1d83745d56e8728dc5c869ba7decb84d9b67f0dc84eaca",
+      "bytes": 46036,
+      "guid": "07488dcf699787446a7d2de63360b4c9"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Reactor_Normal.png",
+      "exists": true,
+      "sha256": "b4c399b2e6858d82a39bfd1f4aeb95cd71fa3bba8d3ecced6a76a01d092919d4",
+      "bytes": 39910,
+      "guid": "81d67cf777ab5a140916dcf6e4ac7c15"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RepublicShips\\Rothana\\Rothana_Shield_Albedo.png",
+      "exists": true,
+      "sha256": "d505800e467890d5d27b15c52100e6cbf45d1065027cf9695ec4c1f7ef13594c",
+      "bytes": 116520,
+      "guid": "04266c31662841047899b23d3db50866"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\EndurancePart00_Hull_Lights_Grid_Additive.png",
+      "exists": true,
+      "sha256": "9d64a4dbdd5c8a560b35c278b5405a853f2ebcd269c1f33670ef3fdf8ec62387",
+      "bytes": 141933,
+      "guid": "f02dfb988fc1be54da0265286053135e"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main.png",
+      "exists": true,
+      "sha256": "db9f3c2c109a97c1e5c52918053a27aad2311daf47508fd5f053bc1709a58020",
+      "bytes": 3797143,
+      "guid": "2d9eaef04d9779d44b338a62bd655511"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main_B.png",
+      "exists": true,
+      "sha256": "63225294c540c78d2161dfd991ad4654fcb898e21169aeb859d9dbbdf5ec6f18",
+      "bytes": 875661,
+      "guid": "c0e6ef4150e0d514399f1f9b4feb2c77"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main_TeamMask.png",
+      "exists": true,
+      "sha256": "83f14cc44ac6fac6ae20e052408250ff000c9104cc7baec2f2111309c4522597",
+      "bytes": 8540,
+      "guid": "825dcfaf6f560f44b8c10c3e63472df5"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Second.png",
+      "exists": true,
+      "sha256": "084b70f002c312141b4e2509bf60484749028d485c8e0219e49acd8355ff6118",
+      "bytes": 3355213,
+      "guid": "6d31f823cc6bc0a4685a451808c1a9c2"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Second_B.png",
+      "exists": true,
+      "sha256": "013f11d47c21a992f3ad5d126c5e0efa1b6ddd7811587b708315bb39a17e8aa7",
+      "bytes": 1601545,
+      "guid": "7ecfade5b948f564384d93c05e09dc0c"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\EndurancePart01_Hull_Lights_Grid_Additive.png",
+      "exists": true,
+      "sha256": "9d64a4dbdd5c8a560b35c278b5405a853f2ebcd269c1f33670ef3fdf8ec62387",
+      "bytes": 141933,
+      "guid": "eaece670c7ab41f42ab2ffa26bb28f7b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Engine_Glow_Fancy_Blue_Additive.png",
+      "exists": true,
+      "sha256": "c9b8b77134907232cf5eac95affe3a34c1bdb5e757305fb105bdd7d9f52a2d5e",
+      "bytes": 96955,
+      "guid": "1160f99050847814ca208c45155e1a51"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Engine_Glow_Fancy_White_Additive.png",
+      "exists": true,
+      "sha256": "aa6bbb9681c98398767336d3e50ee0f3980e33cc8dd6e5eb878934ccdb1682f8",
+      "bytes": 43897,
+      "guid": "bedc9b50881003d40894e573bb192c9d"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Hull_2_B.png",
+      "exists": true,
+      "sha256": "e736ff3afc80eb6fa4fa3483dab9dcd007f48fa2411d2e49fb6ef8577669129b",
+      "bytes": 2385556,
+      "guid": "121ce2f698277114e8be0b2f9850ba29"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Hull_2_SD.png",
+      "exists": true,
+      "sha256": "eb8df1f158a7325a0854854436fd7fb5277fc41580da053efe0629a9e825ddb1",
+      "bytes": 4628784,
+      "guid": "558b5533891f58047b95f5cb68cb3fca"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Hull_Lights_Grid_Additive.png",
+      "exists": true,
+      "sha256": "9d64a4dbdd5c8a560b35c278b5405a853f2ebcd269c1f33670ef3fdf8ec62387",
+      "bytes": 141933,
+      "guid": "c00fe5e914767854980bf304885b2fe5"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Nb_shieldbase_Blue_Additive.png",
+      "exists": true,
+      "sha256": "9893124489ac205e74add53b381ef4191f8be1fea6413388197a353c78a9ea4f",
+      "bytes": 329178,
+      "guid": "80ae71b65870a0b42afdebdc9148b084"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Rebel_Mon_Calamari_Cruisers_L_Additive.png",
+      "exists": true,
+      "sha256": "05406e82cd06e268bcf7ddbf7946afdbc1777dbf55e8d180ee178fc9508afdfc",
+      "bytes": 24477,
+      "guid": "cdacfbc42393e3249902b52573e56dc8"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Rebel_Mon_Cal_Home_One_1_Additive.png",
+      "exists": true,
+      "sha256": "d1ae589fe56d337e7ed356de99559eb0b9403ed5ff3a1d836145b94366451fae",
+      "bytes": 5220520,
+      "guid": "098d7356432ff924b964cc1286c06822"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Rebel_Mon_Cal_Home_One_3.png",
+      "exists": true,
+      "sha256": "96b5e52b8da1ee55077194e85071628d4b03cd8844f041023859738949837c33",
+      "bytes": 4343506,
+      "guid": "a2e7557930c5aee46bd9c5a1b2aeec44"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Rebel_Mon_Cal_Home_One_3_Additive.png",
+      "exists": true,
+      "sha256": "e34003dc5bd4e4dd42c1443e77c19c0cb319a5306265833037a29bbd4ecb94db",
+      "bytes": 4839767,
+      "guid": "5d324e1ac58e2b64f80e50417ff72b2e"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Rebel_Mon_Cal_Home_One_3_B.png",
+      "exists": true,
+      "sha256": "e0c4e7d5b87faf6e36044d8c8b2157bb9f2b5b4a6d6cdb785e2f8148c386f491",
+      "bytes": 1796428,
+      "guid": "98290bcd8b5ce874aab2b076a929ade8"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Engines.png",
+      "exists": true,
+      "sha256": "ac271cee3ce3d3825c47b6b30099c84d72520876452f70e9fcde6f75f327ed7b",
+      "bytes": 702730,
+      "guid": "d108b92bcf80ab34a8ec77517c4d58b2"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Engines_B.png",
+      "exists": true,
+      "sha256": "751cb3db150fa1d5ee27d64ccfcdbcf5c352bdd9e41dad04ab7a58e5dd30a017",
+      "bytes": 913775,
+      "guid": "318ecf8201636ea45a82f016edf7e2fa"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Engines_TeamMask.png",
+      "exists": true,
+      "sha256": "1aee4666dff4340e9d4c00346d98d8cef9fbedc0cde983ecfba7202ba5942918",
+      "bytes": 3161,
+      "guid": "9ca117a175c59fa489fd864a109ca91a"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Textures\\Models\\RebellionShips\\Endurance\\Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main_Additive.png",
+      "exists": true,
+      "sha256": "beaf16acd2df4c17ae06aabe3bb8b0b981e6ecd1e42dddbd2f98635c90710060",
+      "bytes": 4290925,
+      "guid": "a2c6bbd7248469044a6d28e5af2d25a0"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\Shields\\EnduranceShipViewShield.asset",
+      "exists": true,
+      "sha256": "fd6f8bd9927239cc8051002b637eb60f68ab1874ae4e3fc90b08df6a1bbe51cf",
+      "bytes": 453624,
+      "guid": "e33ddc09ee308b04b9c4f192cacd72e6"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\Shields\\RebelSpaceStationLevel1Shield.asset",
+      "exists": true,
+      "sha256": "3dd8842d873a068a38d2b957a43706c471d0d66c7b32f6807f7dafcd8f69a2a0",
+      "bytes": 453620,
+      "guid": "d6b9f0c0942001f41abdc520f1f94c2f"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\Shields\\RebelSpaceStationLevel2Shield.asset",
+      "exists": true,
+      "sha256": "302f0a7fcec22b8e4164b3fa0af95312f9d3bf70aa72ec43b7c288e8c8f156ef",
+      "bytes": 453624,
+      "guid": "8186995e88363834bade2e0733c73396"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\Shields\\RebelSpaceStationLevel3Shield.asset",
+      "exists": true,
+      "sha256": "9ce22356d49d2cfa6bc70b1dc212a6a01eed30981bf8fb5f96d4b6e1db394d6f",
+      "bytes": 453626,
+      "guid": "507ac78087afc2a49bfece4977c7c207"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\Shields\\RebelSpaceStationLevel4Shield.asset",
+      "exists": true,
+      "sha256": "c339415ed323a1264dce07d1f4b97e97a6a4e765c8b9c832fcb4ce3c675ab1d3",
+      "bytes": 453630,
+      "guid": "25d4c281c977f104aa51096a0bfa9695"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\Shields\\RebelSpaceStationLevel5Shield.asset",
+      "exists": true,
+      "sha256": "b836941112deaa3c327ab49550c7aa817c8e82ccd2910cd1f872d27793bf236e",
+      "bytes": 453626,
+      "guid": "f059d829c09d6c6409829115020e6f79"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\Shields\\RothanaShipViewShield.asset",
+      "exists": true,
+      "sha256": "fb204e3b8a82a882b6473eb8d964fa6ca22fad492a610be71fe3f58430231132",
+      "bytes": 453618,
+      "guid": "a7d45f61744e69244b4b218955389a17"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_01_HP01_CA.fbx",
+      "exists": true,
+      "sha256": "2231c57e8faeb74c1e113cb6927b5083293c6fca6bf8027e68006f447c7bc893",
+      "bytes": 115244,
+      "guid": "29f69e3ac3a6fa34688a2e089030f82d"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_01_HP01_CCM.fbx",
+      "exists": true,
+      "sha256": "acc5f7e77379c41fb1a0619c8eee0179debb08a16dfcfee5cf4735749fb66ecb",
+      "bytes": 104380,
+      "guid": "d3f8c80fd2e87ce4a89d9807dcd04125"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_01_HP01_LC.fbx",
+      "exists": true,
+      "sha256": "34875fc9e1ec36b96405f9108f8bcd63f415948d3c2fa01cfe200fc324bd9d9b",
+      "bytes": 106428,
+      "guid": "691d94d9d61bb48449ccd5062a9ac8c8"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_01_HP01_SHG.fbx",
+      "exists": true,
+      "sha256": "7245406a9ac4a540e59b1e12cba41062d24d4c900118e5f3c75a3b8d24e0b656",
+      "bytes": 114364,
+      "guid": "8544646cf59185344abe406a6ced632d"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_01_HP01_TBL.fbx",
+      "exists": true,
+      "sha256": "a2414deb15cce4c489bd622a4927d943844c127c75dc9ac37187bda00e30534d",
+      "bytes": 106908,
+      "guid": "ef63cbfcf58d8b342b101029a7657e1f"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_02_HP02_LC.fbx",
+      "exists": true,
+      "sha256": "2a6a8923eda38b859d6dae47d236899259470277291d1b0842c9b9c1a8859bd6",
+      "bytes": 125196,
+      "guid": "882af5b5e641e2e43bddaa4198204e8b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_02_HP02_PRT.fbx",
+      "exists": true,
+      "sha256": "f084889d7261f32afd0b92f3db3a2ffbb41df057fd3c0d2718527da47e936242",
+      "bytes": 125452,
+      "guid": "748393504d2584d48bfb0f3f9ac04863"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_02_HP02_TBL.fbx",
+      "exists": true,
+      "sha256": "30aaf158b1c57728a4759a1e0d609a5dfffaf99d41d111da3de853229a12491c",
+      "bytes": 126492,
+      "guid": "dbc4ba2912250194db6051a6e301949a"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_03_HP03_CCM.fbx",
+      "exists": true,
+      "sha256": "4555bc046b4f17861219f7a11522446dec144dcd738ad67b9344b7a733611d4e",
+      "bytes": 143372,
+      "guid": "19c055c08f880bf4795673ba723472c3"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_03_HP03_IC.fbx",
+      "exists": true,
+      "sha256": "be0b5bcbdf139595472df1865f9e011696872f3b3dc259c8adb2e9e849b4ac70",
+      "bytes": 159452,
+      "guid": "708bf193a0f9fea4e837e46a1120a000"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_03_HP03_PRT.fbx",
+      "exists": true,
+      "sha256": "a34a4fe6b6607433412ba36719c5fb93c08a6c1a2b9909f7d42ddce62e8286e8",
+      "bytes": 149868,
+      "guid": "291f0312b5fabe6428dd21d1287546c8"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_04_HP04_IC.fbx",
+      "exists": true,
+      "sha256": "0d1ebfd0708a0045157485a35e68963c62fbe692bec22c6014b44741c7673dd7",
+      "bytes": 169180,
+      "guid": "8e8c4f3743282e84496e7fd6497aac31"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_04_HP04_LC.fbx",
+      "exists": true,
+      "sha256": "f6f782b54ece535f19d83a01f79cad4e2ad5d2ad2b1609100675f17c96613365",
+      "bytes": 171228,
+      "guid": "31170cd20ff6cd74e8b88c1a70000beb"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_04_HP04_SHG.fbx",
+      "exists": true,
+      "sha256": "c5ff2717d1250216410deda6940d1e6ad8eeec9696fb17f1f88f724bcefc11a1",
+      "bytes": 204636,
+      "guid": "3bd93581513df9246bd71786644cdc91"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_04_HP04_TBL.fbx",
+      "exists": true,
+      "sha256": "c75547db06ef95e7860e823c2a6e97acfce06f27fe7b042b80314f246a9d2b74",
+      "bytes": 165708,
+      "guid": "f231d1a0d79c3a749b9ae4fb4bbef7ff"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_05_HP05_CCM.fbx",
+      "exists": true,
+      "sha256": "8cdcd1e7104d0ca8cc03d5f5aded1f3811efdf32674a80633de132569c497473",
+      "bytes": 202268,
+      "guid": "56b5a891bea23bc4ebc2de803f8c5f3c"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_05_HP05_IC.fbx",
+      "exists": true,
+      "sha256": "48ef50da87defb5e98cb072953eeb5f05211b8c54916c2af1efa5c9e9c6d7544",
+      "bytes": 190428,
+      "guid": "facb0c36c3f9dd94c9e7453a4318841b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_05_HP05_PRT.fbx",
+      "exists": true,
+      "sha256": "370985cf5b3d29f9e07e358a7dc25b2299851510c270d1393f17246a5687f0b2",
+      "bytes": 197596,
+      "guid": "6ab62afd25d25c3478e10284f2a8b3a1"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_05_HP05_TBL.fbx",
+      "exists": true,
+      "sha256": "e6066cd36f26c9ffa7470fc24f76c8194fa0371f052b9e06a5a8ef5375450c79",
+      "bytes": 197996,
+      "guid": "01d7865f1da1a3f4697b6aee02fda1fd"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Attachments\\RB_Station_05_HP05_TBL2.fbx",
+      "exists": true,
+      "sha256": "7c71ea661976d6cad29dbd36bdbf4db0e8e1946f18f2e48ae29fa699b55cf869",
+      "bytes": 206316,
+      "guid": "48668f113d54a384f80d3fc4c8bf136f"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Level1\\RebelSpaceStationLevel1.fbx",
+      "exists": true,
+      "sha256": "50750763d06e6d3082b4a92cdf25ac26533f0bf0118fb20b2335c4399204c02e",
+      "bytes": 352796,
+      "guid": "149f0e91e3e45394d97294380d26ab2f"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Level1\\RebelSpaceStationLevel1Hull.asset",
+      "exists": true,
+      "sha256": "6a0e05ea0543b3132ebeefd9dbbe908e6893245546277793b9be9213333fb5f3",
+      "bytes": 474715,
+      "guid": "8f128f05f1c19cf40801dda5015cd47c"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Level2\\RebelSpaceStationLevel2.fbx",
+      "exists": true,
+      "sha256": "d0682571beaf400413b30abfdeb38bf9e948fb0d9c0925214c04d13ff2b1dcb7",
+      "bytes": 415100,
+      "guid": "2f385196cb195c341bdfcfadb37b9ba5"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Level2\\RebelSpaceStationLevel2Hull.asset",
+      "exists": true,
+      "sha256": "ee7b79cd76300ee2e9a13ab8398574e4555d0159abb50e963eaedf5383c34863",
+      "bytes": 550587,
+      "guid": "77222c435cd881348b1bf38e48b8f312"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Level3\\RebelSpaceStationLevel3.fbx",
+      "exists": true,
+      "sha256": "6192d8d21c43f3d477cdc44a257b7f2da65a7d652fe6ffaf4e86c69ad8e4ac65",
+      "bytes": 472348,
+      "guid": "157873c2ba605b44aa546b689eeb3796"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Level3\\RebelSpaceStationLevel3Hull.asset",
+      "exists": true,
+      "sha256": "77093eddc4e4d58f34b22d21898b8e217bb2f3ebd64a741f99510c836ca42c83",
+      "bytes": 610567,
+      "guid": "12c81ac314f859d40aac797046da64a2"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Level4\\RebelSpaceStationLevel4.fbx",
+      "exists": true,
+      "sha256": "6746f6d5ea2fe47de128a221eed3d503ec8096eae63b6c46f7ef9009e105c016",
+      "bytes": 575692,
+      "guid": "8f7ce4671cea7dd4c9b75b533adc8c6a"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Level4\\RebelSpaceStationLevel4Hull.asset",
+      "exists": true,
+      "sha256": "5182a8ac8f15a55f36a457c1765fba9daa33c16762420584a3ade47fd25d6998",
+      "bytes": 775299,
+      "guid": "35cd52f328813294aba122027dfc700c"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Level5\\RebelSpaceStationLevel5.fbx",
+      "exists": true,
+      "sha256": "5b1175976f818db7353280bc7bb208c86a5b0e11d4a40928e1447fd66c0a0299",
+      "bytes": 692332,
+      "guid": "e89a0b8ebaa6ec940a6b5d88f15334a7"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\SpaceStations\\RebelSpaceStation\\Level5\\RebelSpaceStationLevel5Hull.asset",
+      "exists": true,
+      "sha256": "fe3225d159e2cbbb2e2c0a23953859a5ea423b0a505bfc0e339a6f633d06b128",
+      "bytes": 916209,
+      "guid": "cde12cfe89b941446a310a5597f7b4d3"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RepublicShips\\Rothana\\Rothana.fbx",
+      "exists": true,
+      "sha256": "bd9e03534ed424853803cfeb4ac27cc8bda528dce3532dfaa6316d2fbbc24ea3",
+      "bytes": 2225740,
+      "guid": "5ebf42897258d9b4da95b30ae3e16b6e"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\Endurance.fbx",
+      "exists": true,
+      "sha256": "333df6519877ab4baf2b450d6e57c7b103db8a7f59c3e915f2fc16961bd7cfda",
+      "bytes": 1236300,
+      "guid": "74a917f44df2ff648b2c1239b4fcd922"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart00.fbx",
+      "exists": true,
+      "sha256": "3fb699c1ff9da5dacc53331b9b5c3135f096c549b68318763042e68d6d8d276e",
+      "bytes": 135004,
+      "guid": "83d4d34858f4d4848b7f6a6e8b000f87"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart01.fbx",
+      "exists": true,
+      "sha256": "d7031047ced99b076fe5bb16053cc211f5070e3e60f29282ef4cc8a2f39af615",
+      "bytes": 45548,
+      "guid": "75cef640e64bbb94183286d03abca6f9"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart02.fbx",
+      "exists": true,
+      "sha256": "09e8210fdef03cf46e696764b2e9313b9c36b6341e06cb11bc169569bf92d84b",
+      "bytes": 92620,
+      "guid": "e2ec0637546cc8a4e9c50db9eb2b06cb"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart03.fbx",
+      "exists": true,
+      "sha256": "fdb596b785ae9dc5b965fdc87adc019f704fcc972c3bdd1534fda934d0816a78",
+      "bytes": 92620,
+      "guid": "ac7c050206543424ca70039a082b1ea8"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart04.fbx",
+      "exists": true,
+      "sha256": "62f777e4f47dd1ad511de47fe8fbd155ae6cdf5409d281781f1fb5fc4029de82",
+      "bytes": 92620,
+      "guid": "b62ac458a2ae3e44090375a02dbcde55"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart05.fbx",
+      "exists": true,
+      "sha256": "20098d82bee6d417d249bf73322e78210cac40cb06f064f2481db272dc6dbf72",
+      "bytes": 92620,
+      "guid": "b528b407dc47e534681f96acdbdc9a24"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart06.fbx",
+      "exists": true,
+      "sha256": "d1fb62e918b7faa885c920918f81923c6fd83a7be8b3e7fb94bf1ca31121a183",
+      "bytes": 48492,
+      "guid": "32589890ae87a1748920739ae77b4dc3"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart07.fbx",
+      "exists": true,
+      "sha256": "7d34b2237a97942478f756b76f5d3e49e79936da0b73b8efc3671ef1c2bdea9a",
+      "bytes": 48492,
+      "guid": "8cc2930f86204ed40ba3e6fb71a4f96c"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart08.fbx",
+      "exists": true,
+      "sha256": "d36a6b3d990c9882dfc995a6e7e1e7902bf96d7bc068f1652ccfa397236059f4",
+      "bytes": 48492,
+      "guid": "15d77d6b7b790994f90c899bc50b27f3"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart09.fbx",
+      "exists": true,
+      "sha256": "aeab9dbb267434c07a59c20b6fb78da7a1fa0a66b0061c696ae5f29b8e039d1b",
+      "bytes": 48492,
+      "guid": "57f9e49026c82d847a812c487868916d"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart10.fbx",
+      "exists": true,
+      "sha256": "c757ceee49735a58df51d4bc07a591eb56efd91fe0aa3b453a51b0ba706267ca",
+      "bytes": 48492,
+      "guid": "00213702eec1fd6408badcae0c284257"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart11.fbx",
+      "exists": true,
+      "sha256": "d6bd6acaa413ab7f8c806e3bb39b7d2bb6938d4a600cc7814615d589e16d6dc9",
+      "bytes": 48492,
+      "guid": "a21eab3df5a8a404fb952c8d37670ace"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart12.fbx",
+      "exists": true,
+      "sha256": "9b1ad2ad7a950232004ae8f68ce658214e77e93d1824c2e35e6aca957d0b593e",
+      "bytes": 48492,
+      "guid": "085781d9bfe485c49a46439af3416e61"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\EndurancePart13.fbx",
+      "exists": true,
+      "sha256": "d4144a153b19b0055eb21e0df5eb96137fd220da206390eaffdfdc16e6fdb0b6",
+      "bytes": 48492,
+      "guid": "fda75160700d92e44bd7eacfe6626a72"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\Endurance_3_Slot0.asset",
+      "exists": true,
+      "sha256": "3b8ccd354ab35384a053f06135d6fe13985ddf2c578dad2b21fbb38c64ca8b02",
+      "bytes": 252366,
+      "guid": "1d8bfada96beeea48a734de268ab176b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\Endurance_3_Slot1.asset",
+      "exists": true,
+      "sha256": "24d752fe4dac4bd08578631426f041611e6edbc6ae806932addcdf75ea6bcf04",
+      "bytes": 243906,
+      "guid": "6cc844ac049c2f645af0ff62ac5e0ffa"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Models\\RebellionShips\\Endurance\\Endurance_3_Slot2.asset",
+      "exists": true,
+      "sha256": "69665f307e0e151c670f4996760480f0814a0fe755bbfa9860f3015c93db81a4",
+      "bytes": 250676,
+      "guid": "db5fd113de7fc1046aed548baebbf57d"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Republic\\Rothana\\Rothana_engines_Wreck.mat",
+      "exists": true,
+      "sha256": "14dac8ae0ff33dca972b3ba8ca7e3ce26184b2af29ccdce20119bc94b272c4df",
+      "bytes": 2588,
+      "guid": "b7e0e0df4c1441440b28f5c91d3d0869"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Republic\\Rothana\\Rothana_Hanger_Wreck.mat",
+      "exists": true,
+      "sha256": "8ba8298857f65daa2079e4d330243287d07dcc1ef9d524acc3fb9b022e587d5c",
+      "bytes": 2587,
+      "guid": "ffc91a895051cc84d89f6b03bcad91e0"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Republic\\Rothana\\Rothana_hull_1_Base_Wreck.mat",
+      "exists": true,
+      "sha256": "a10fcb55d7b15dc912d40ba2739106ddfd4cf2209fb420d57e3ffdf335ac6e96",
+      "bytes": 2592,
+      "guid": "fdc63ac8be9e5584199666c03e863491"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Republic\\Rothana\\Rothana_hull_2_base_Wreck.mat",
+      "exists": true,
+      "sha256": "29a6ef9cd3554a13649a5861ba41e875c64a06a74d0c41ad2f74cda2d1fa2cb1",
+      "bytes": 2592,
+      "guid": "894996cee521ab24aa26177f31e25eac"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Republic\\Rothana\\Rothana_hull_3_base_Wreck.mat",
+      "exists": true,
+      "sha256": "922080f7651e1ad85b02faa763c5d4ed1281fe931c1070e2916e845eadb9c696",
+      "bytes": 2592,
+      "guid": "3689e1878074b314fb187ec6bf183b73"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Republic\\Rothana\\Rothana_reactor_Wreck.mat",
+      "exists": true,
+      "sha256": "4f96c3eeca87a761dc7547255d650b9e5bbb47f7d2f44dbbb1ede0bfb2a4f37e",
+      "bytes": 2588,
+      "guid": "5431f40e1692765439cb7ac236d35ce0"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart00_M005_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "70b6e446c12518066c804a84f4456d51f08a93cf831f391477f93c159a20f30d",
+      "bytes": 2719,
+      "guid": "db0a2382d963c2b429f86ab0c543fe0a"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart00_M006_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "b15e2efaf7b080939e100280fa11c480b4eb471ef018102f765af8bf1a97be4e",
+      "bytes": 2719,
+      "guid": "f54be8fef99653c42a92a62fb8272e63"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart00_M008_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Second_Wreck.mat",
+      "exists": true,
+      "sha256": "e9b6be9233dcae57d1395727f70cf08cc609f783393b8bda60007958eeef7fae",
+      "bytes": 2721,
+      "guid": "65c14ab2696a52e4ba4c7bb488e8606d"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart01_M004_EndurancePart01_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "f79a3a92ddc166b856a734f47e44d65a35bdcc6ffd7972b884e46b4a4b922b83",
+      "bytes": 2719,
+      "guid": "af404c29c3dadc143bc42251296d2320"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart02_M003_EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "55df82d793d6ba5c5fa0ee2b453a68105d5fe9585c399926bac801fc4a181f7e",
+      "bytes": 2719,
+      "guid": "a2e95a816aa6bdb40886d82e3739ac86"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart02_M004_EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "bab6a02632832f62105ded3045ffa81db3d82546c85a863071e2cb9de9023b8e",
+      "bytes": 2719,
+      "guid": "74b3c39827014d546bb9620b2f8e72c6"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart03_M003_EndurancePart03_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "b2444463bc69135388374642bca14280b9095f861bd52d4f39312394c9d459e8",
+      "bytes": 2719,
+      "guid": "e65549923a162864c801a845b5514e4d"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart03_M004_EndurancePart03_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "c324e5831faf2953c18ecec38ac9b3e92aeebfd51ac9e7859ca49c97b11bad20",
+      "bytes": 2719,
+      "guid": "75394a1732e4ce842b56a4add6b778c6"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart04_M003_EndurancePart04_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "6353839a9096503bd8e0b5f6ccc9dd2d903d6cb5f7591b1759f6d1fd84d5884c",
+      "bytes": 2719,
+      "guid": "69046d92535157947b549892dcac89af"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart04_M004_EndurancePart04_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "80959bdd37079e362e6a0311e96df5d54a4388bdad04183f3e7ed2442ea6cb57",
+      "bytes": 2719,
+      "guid": "6f679d4416b0e3e4c95f8cd162ffc238"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart05_M003_EndurancePart05_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "a980968801e969ae047c79af6e8a9cf553edbcd472110beaf8278c95753093d1",
+      "bytes": 2719,
+      "guid": "b469d16284d35194283451c13f252bfc"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart05_M004_EndurancePart05_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "1a31daa175fcb7d21e087c6273dfacc4ea6a7a69bbc5a42d661612808810f765",
+      "bytes": 2719,
+      "guid": "2046b97bc92da194eb411942171d9960"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart06_M003_EndurancePart06_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "a2135988871ba8495f87dfa913a214023cd231b778b6b0f7f9c2523e365696b6",
+      "bytes": 2719,
+      "guid": "97f914cc4864b6240a70ce0216113074"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart07_M003_EndurancePart07_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "fd67af00113932599eef7b061472589be4727fbb3ff4045ee667d25e8927157f",
+      "bytes": 2719,
+      "guid": "f19f39a5712fb1b45b477f99ab714c92"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart08_M003_EndurancePart08_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "7ee6b3989b1372170594760ba48c36dcd186fa4eede5fc741493969e0c4b9042",
+      "bytes": 2719,
+      "guid": "4a761414c531d29439f0e9d37d0539f4"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart09_M003_EndurancePart09_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "5873a3f09c283190754f9ee71d1bca39e14188706aec311f6c4b3856ae0c3a02",
+      "bytes": 2719,
+      "guid": "8cdb5228f7620614e88c511b93210910"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart10_M003_EndurancePart10_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "e60231e2eb6fb01e13fe8b2397860fe577c239487f6ed1a2d7f3619e1c390b27",
+      "bytes": 2719,
+      "guid": "41eb7d4bcd7b4a64db8f38515e24b6a9"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart11_M003_EndurancePart11_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "962870a00005d660c8492e48d9bb4c156316f6eda795e0d1d5f14502264aafd5",
+      "bytes": 2719,
+      "guid": "bf566b96646d80e4a873aa1229c50b07"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart12_M003_EndurancePart12_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "f0bd45c45c02b854da2d8d4c7ba8c2e89a2269e9b314478f6665abfd45c4f2e3",
+      "bytes": 2719,
+      "guid": "42f5cd2e0d9dea84698558641b25ed4b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\EndurancePart13_M003_EndurancePart13_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "7a48da817211f0266a4647e880d9cb51ba8db2af26a8f8ddf3f0d6a099919e85",
+      "bytes": 2719,
+      "guid": "8d671fd49383ec140a675a947fbefd6f"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\Endurance_M013_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "b373344165a6c4d56476f1a8fe52eebc34ba0b5464136c22ec8294a3a20aaccc",
+      "bytes": 2707,
+      "guid": "10f2412222df51847b50ac1777a8fc88"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\Endurance_M014_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Engines_Wreck.mat",
+      "exists": true,
+      "sha256": "2ea22a693b7a7cbfa7e2867fe3be595fb59e9e49cf3752ab4c6dc13039d63e1d",
+      "bytes": 2710,
+      "guid": "9c98510c4f2c32846a8f028ddd698239"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\Endurance_M018_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Second_Wreck.mat",
+      "exists": true,
+      "sha256": "e99646e3b41ce73e5123b8ceeeff79c913d818e345f8e728fb0927dad87e16ae",
+      "bytes": 2709,
+      "guid": "8e85afa47f8419e48bc3435c7cb63aa0"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\Endurance_M022_Endurance_Hull_2_SD_Wreck.mat",
+      "exists": true,
+      "sha256": "3883a8f99d0c9ece567610b5f5aa56838e879d293908610bd08eb16512e69f8b",
+      "bytes": 2674,
+      "guid": "6652a9debda759641b0d0e9061d5ddbb"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\Endurance_M024_Endurance_Hull_2_SD_Wreck.mat",
+      "exists": true,
+      "sha256": "4a4117dfb02a16098f45b84cb45750c273ad30b899f9d7483edabce18ee67615",
+      "bytes": 2674,
+      "guid": "2ed7b27cef5f9774da7408dc4d3f8bea"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\Endurance_M027_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main_Wreck.mat",
+      "exists": true,
+      "sha256": "7b57076beedd3fb8ee65c8aae2039ee8144bbd7ed82ead77baed8ac32adb18e2",
+      "bytes": 2707,
+      "guid": "c283479731ca99b4fa0ecfc132f8bb28"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Wrecks\\Rebellion\\Endurance\\Endurance_M028_Endurance_Rebel_Mon_Cal_Home_One_3_Wreck.mat",
+      "exists": true,
+      "sha256": "4d888e264e1d01275398ae614cdd4d974c6f0e19b4e934385f5bf2ee55dc2ef7",
+      "bytes": 2689,
+      "guid": "6577ea40cdfdc2147a73afc546a9cc41"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\SpaceStations\\RebelSpaceStation\\RebelSpaceStation_RebelStationSlot00.mat",
+      "exists": true,
+      "sha256": "35571f30f9a5d7565be6f1183729e6b0c5eff4394fd46c8881d542e2c5fb0838",
+      "bytes": 2008,
+      "guid": "f6c7ba6a336edd147b79a2137fe2d05d"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\SpaceStations\\RebelSpaceStation\\RebelSpaceStation_RebelStationSlot01.mat",
+      "exists": true,
+      "sha256": "a05d0d573be4470d6c694d6ab2b761c061fdce73a002290df28430fe4d6b2e65",
+      "bytes": 2050,
+      "guid": "7425e76cfb9b8f242972cd3963b2fcbf"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\SpaceStations\\RebelSpaceStation\\RebelSpaceStation_RebelStationSlot02.mat",
+      "exists": true,
+      "sha256": "971d7969c813d32da323c5a010a7ad77e28c5d5edeb018891e7138b6f79ac45c",
+      "bytes": 2074,
+      "guid": "6fc829116247b0a4b8ac315d2c14bcf0"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\SpaceStations\\RebelSpaceStation\\RebelSpaceStation_RebelStationSlot03.mat",
+      "exists": true,
+      "sha256": "4eec5f770c64018b2f63ad294b07acb4bb0e0f0d9d5cb7ecc82bbf067fe15e61",
+      "bytes": 1899,
+      "guid": "215486f4d3102124982817688fed5447"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RepublicShips\\Rothana\\Rothana_COLLISION.mat",
+      "exists": true,
+      "sha256": "ba3d77ca0479eaeede5047cffd81af6845dca17b67e722cabd9874917a9930d5",
+      "bytes": 1851,
+      "guid": "9100620c25f42494dadeeef0491da452"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RepublicShips\\Rothana\\Rothana_engines.mat",
+      "exists": true,
+      "sha256": "5bc386b674629b3f2fb04cf821cfb892537ba3f3c3a55abbb011275caaa5d088",
+      "bytes": 1959,
+      "guid": "ab73b79220d6d6b4e8f761b5f62101ba"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RepublicShips\\Rothana\\Rothana_engines1.mat",
+      "exists": true,
+      "sha256": "5c390544b2753216d933ceb57c1629bead6c4177494d93b1d8da41e0ae06ab55",
+      "bytes": 2659,
+      "guid": "7b6b8d05a10428442bb4ad2caf0ef36e"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RepublicShips\\Rothana\\Rothana_Hanger.mat",
+      "exists": true,
+      "sha256": "86e405e85e3d3aca819d055b5b4b710f97b98cf1167bfedd125ec482fce39e39",
+      "bytes": 1958,
+      "guid": "84de326c4e32382459c612c5d313338e"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RepublicShips\\Rothana\\Rothana_hull_1_Base.mat",
+      "exists": true,
+      "sha256": "31768728c0b53e77f79f681961ef9699fe139eab02c43e6a6d14b14d42fa03b0",
+      "bytes": 1963,
+      "guid": "b5923c951d15b0e4daeebe0f21f44884"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RepublicShips\\Rothana\\Rothana_hull_2_base.mat",
+      "exists": true,
+      "sha256": "0f7607be8b1faa7a4fa117faf10ecbbb9a3a46f5aa7e01e3ad146a2028ccde41",
+      "bytes": 1963,
+      "guid": "75c7f3de52b4b894694887087c246dbd"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RepublicShips\\Rothana\\Rothana_hull_3_base.mat",
+      "exists": true,
+      "sha256": "2c7e29e9abaf160870361ca41b5a453c36cf6615c5a896c3ebb0cfc0e6de1394",
+      "bytes": 1963,
+      "guid": "cc8a9a1fb283d2746907130684305693"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RepublicShips\\Rothana\\Rothana_Hull_Lights_Grid_Sparse_Rebel.mat",
+      "exists": true,
+      "sha256": "3bcc327c5921d3b60f224377ea69b72588ce713b6d0d98032b09064591b32e68",
+      "bytes": 2680,
+      "guid": "dcaebffccc287824caff35b3d0c067c1"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RepublicShips\\Rothana\\Rothana_Nb_shieldbase.mat",
+      "exists": true,
+      "sha256": "a877c4408309dd3b3de45436df06c37f2086f54045adec026dd16f96a3c73ff2",
+      "bytes": 2664,
+      "guid": "929aa8c614416714ca813bb2e74d097f"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RepublicShips\\Rothana\\Rothana_reactor.mat",
+      "exists": true,
+      "sha256": "def1818902788e0726a570cfe1e6842f5b75b5081f2716c9c97e8374210da799",
+      "bytes": 1959,
+      "guid": "ca09b103cada45b4c94b55555c88ab77"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RepublicShips\\Rothana\\Rothana_SHADOW.mat",
+      "exists": true,
+      "sha256": "c7843af7bb73dd981380275e69b228810153d849946b50382634ddc895e5626c",
+      "bytes": 1848,
+      "guid": "560bb395602fd1c46aa513b7b0ae2f8c"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M005_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "63b8776acb14288e844a70c5143295c13d5be9ac49764bbc40ed0671eb3f044b",
+      "bytes": 2090,
+      "guid": "4330b3a5e123d0b4084796946c16e84a"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M006_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "e7cf804f210d2bcfe334c5e887b585f6611751398ed718731e309a5024a32625",
+      "bytes": 2090,
+      "guid": "d4bd489f1adfaf642965076ec8b25c57"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M007_Helper.mat",
+      "exists": true,
+      "sha256": "e8a8a81da4e39559a8c28b0438758c317a673c4379833bc1bbd553926d311de3",
+      "bytes": 1861,
+      "guid": "2debad06ac5336b4bbdeb474250880a6"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M008_EndurancePart00_Rebel_Nebula_Star_Destroyer_Prototype_Second.mat",
+      "exists": true,
+      "sha256": "cd5f66e3a50dcbead4321499eb1e3c88057e114512433130ee165bd5ef32a8b6",
+      "bytes": 2092,
+      "guid": "0b1d8ef413178524ca51e6aa5e75baf2"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart00_M009_EndurancePart00_Hull_Lights_Grid.mat",
+      "exists": true,
+      "sha256": "820c8f6d5d1734bd242914a08b20e311d78bc782cc4b0b4166d910cb75c89869",
+      "bytes": 2695,
+      "guid": "678130acc4822004ba5d7fe757a8d1a7"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart01_M004_EndurancePart01_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "462ba4a481f2f1f80c589148fa132e1f554e00e12f77b171c3a01e6b2b08280d",
+      "bytes": 2090,
+      "guid": "fe90ee9d09fc631428270542da383fb4"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart01_M005_EndurancePart01_Hull_Lights_Grid.mat",
+      "exists": true,
+      "sha256": "b585d8853ef85a154922c3a7d17c2b0a168cf48d47a222a5beeedc19b83b3e38",
+      "bytes": 2696,
+      "guid": "693233a1a798cbf44a5ecca01b18d313"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart01_M006_Helper.mat",
+      "exists": true,
+      "sha256": "a8e7715059295cd416f4b8fa126687a1ca609a54105dba0f504cfc88772a5109",
+      "bytes": 1861,
+      "guid": "0a01f117640f8384ca0de9b4c2bad7ae"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart02_M003_EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "893db836d410e475f0248b531ca4da5d0262d590880ffd1b98b3145e2b7a01e9",
+      "bytes": 2090,
+      "guid": "3b2efed5e05941942968319b7ec3ebd0"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart02_M004_EndurancePart02_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "c8701df1fd57705094b7f6d92b35f02f6236823b8d8f6b15ecd5fce4523ef200",
+      "bytes": 2090,
+      "guid": "2463f2a57c0e52141ae799e8c49dee54"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart02_M005_Helper.mat",
+      "exists": true,
+      "sha256": "cf7aabdfbecb1070127fd6ab7c0d11545a0bf89e9b3a825e474a424c72587c99",
+      "bytes": 1861,
+      "guid": "46a5e47728d9f7048be0bb25668d002c"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart02_M006_Helper.mat",
+      "exists": true,
+      "sha256": "da0bec8f3701a310e508800c1a434e3340e284955a6fa189d4bca58305ad5c09",
+      "bytes": 1861,
+      "guid": "aec147f55a6ee45409911c40e310b2e4"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart03_M003_EndurancePart03_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "588ac797bb842c415507b9c2f96b04eb27a7488b94de250b410c980fcf509c4b",
+      "bytes": 2090,
+      "guid": "7dbae78199df4e84ba5fe0b82d733794"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart03_M004_EndurancePart03_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "bd209295bf7b06f0a3bea83c2c04ef7457c7b77c5fe2930da63b3f1fc753a47c",
+      "bytes": 2090,
+      "guid": "90243769f6cf02e42b9b04186b940e50"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart03_M005_Helper.mat",
+      "exists": true,
+      "sha256": "953bcae7cf41d32b10ab0c40ff7f3dd995219dc3fb2059d74c346bff62ad8fb9",
+      "bytes": 1861,
+      "guid": "dbb4e5145796e5b4086dfe68229de33b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart03_M006_Helper.mat",
+      "exists": true,
+      "sha256": "1c95fb38ec9a5ffa86955f3180ff415dab7aaf14588c5a543346fcf4821c3cd8",
+      "bytes": 1861,
+      "guid": "fbea24611ce32554883a3a17c540b9a2"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart04_M003_EndurancePart04_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "29af196a31662a68a12c1210624a6960bc462b3f8d95dcee9f7ccecac4a136c7",
+      "bytes": 2090,
+      "guid": "3a8ccc0409a632b49829f9e73c28b43e"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart04_M004_EndurancePart04_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "461ded82c14f4beb304bfb7d50aae6ebac7a5e3031667bf2723292d94b6af93b",
+      "bytes": 2090,
+      "guid": "4389414be80cbf549b93c45c01735111"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart04_M005_Helper.mat",
+      "exists": true,
+      "sha256": "ac45bfed19f83b995581ca318033cf479785d3d25b9670051902ddae393ff111",
+      "bytes": 1861,
+      "guid": "566e12f48db584e4598fd5d8d87d9658"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart04_M006_Helper.mat",
+      "exists": true,
+      "sha256": "e61a41ea9a5b97760dea03a0f0834cc6ce97eeef4f35ada2e47b5937aa2b7d91",
+      "bytes": 1861,
+      "guid": "03951f3d9a17c354db6e626d73a8ce55"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart05_M003_EndurancePart05_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "0286bb1cdd7a678f73d2513446b4db8713e638febd8abe3803c9f7a028edbabe",
+      "bytes": 2090,
+      "guid": "fd49dccaec8d2ee42a5a092187a68cff"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart05_M004_EndurancePart05_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "8231a7aa270d190c254577d4e81015113c3f83b4f3473564da47c938f18e5302",
+      "bytes": 2090,
+      "guid": "694d77f9553da67469a255ed4802e90b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart05_M005_Helper.mat",
+      "exists": true,
+      "sha256": "8ebd6098f501f9de63d427042cdebf664adc21fa032c22a6aab6a927d996b86c",
+      "bytes": 1861,
+      "guid": "a17fd51408db31b49b647aab3fc7093f"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart05_M006_Helper.mat",
+      "exists": true,
+      "sha256": "93a65427bfaa9e386c7c6030910a56cf9f41c5cb6f53f3e0d673a2fcc578fbbb",
+      "bytes": 1861,
+      "guid": "3a91b95a0db89ff4d93ddb7b4ec0c19c"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart06_M003_EndurancePart06_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "27f7cada8b872531359418f6a886e124dafba74729ae459a285203bc69fc7d9f",
+      "bytes": 2090,
+      "guid": "ae214a44295af824780c9c2c40b5ef91"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart06_M004_Helper.mat",
+      "exists": true,
+      "sha256": "345d611eaac63db94473660d032c130f2b77273d826ef9a64e3ceb80e2e9f748",
+      "bytes": 1861,
+      "guid": "032c9b8ac6d999f4f970c8e4cb54b5e1"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart07_M003_EndurancePart07_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "ee74b32cc6360b9f7bad42073e55df1684c41c03b9cf73c13a8b13c6527a8e89",
+      "bytes": 2090,
+      "guid": "667dc3436190fc340a9d1842e4e4cbcb"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart07_M004_Helper.mat",
+      "exists": true,
+      "sha256": "a77787b96526f89a30567b0392f430c5e1e29d21424676aa18ceb134cdbf01f6",
+      "bytes": 1861,
+      "guid": "234c3b7a9cd08f44e8c286dd86ad150e"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart08_M003_EndurancePart08_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "d66ebc8ed6a6700baaedbca0d579bb32c0aa516026300a8cc6ae2ae268733759",
+      "bytes": 2090,
+      "guid": "41023277f8079d949a72b9907c408649"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart08_M004_Helper.mat",
+      "exists": true,
+      "sha256": "22e07ba6d3d078e76183bb5624b8e3360892932cb0f29ae78ce1c1adb15e0fa8",
+      "bytes": 1861,
+      "guid": "5ace157bc92d98d46b72ab27c1362826"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart09_M003_EndurancePart09_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "eaa802436d1b66e0fcb3ed237549bcfba6a1061fca7ad5df821c457582704f35",
+      "bytes": 2090,
+      "guid": "8cab5a582fbbc2a46a5da06d6068975b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart09_M004_Helper.mat",
+      "exists": true,
+      "sha256": "9cf8c06a723bb0b3335a03409743e67194b528ead759e472b1ab14cba92f5598",
+      "bytes": 1861,
+      "guid": "375f1661ea932f843b37bb00d952ff04"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart10_M003_EndurancePart10_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "a670222e9729552e0c5f62bba1ca9fafe4cab36139e30adf980f294e5558dc30",
+      "bytes": 2090,
+      "guid": "ef0a522dcc334bd48bf5f50e19667919"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart10_M004_Helper.mat",
+      "exists": true,
+      "sha256": "7c114441299e110b728c87cd23564a24fa554db4aedd671667e9b7724d068204",
+      "bytes": 1861,
+      "guid": "29c12c8349f718146bf4a355132c668e"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart11_M003_EndurancePart11_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "424962033b2281e90d489e1029db24c7609c2a5563eecc2debbde65f7047c108",
+      "bytes": 2090,
+      "guid": "058eb5be547f11d42bb1b59a4d9fd5c9"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart11_M004_Helper.mat",
+      "exists": true,
+      "sha256": "ec30b8588449969f9baae3a60e7b59177fde80f89a7ba5c44078433d555296f2",
+      "bytes": 1861,
+      "guid": "b07060ebf54b3354482f32436f6513dd"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart12_M003_EndurancePart12_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "c9b464c8baae00ed51e493809ef6deba53606a79ffb5dcb02b367380b5bf913d",
+      "bytes": 2090,
+      "guid": "9b902eabc3f28e448bc0f63b0beb632e"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart12_M004_Helper.mat",
+      "exists": true,
+      "sha256": "206c54d3d32a51f66d2f9d05fc998c5875e52cbc11c86234a56ff5050a85fc95",
+      "bytes": 1861,
+      "guid": "d9620959a8087d742b8f79292d0ad296"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart13_M003_EndurancePart13_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "6b554e77eb0b2b9ee63006c5674383faa7fc55428a2a65ef327d965f93d1d598",
+      "bytes": 2090,
+      "guid": "cd3db15cb1312d047b263e2fe7058659"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\EndurancePart13_M004_Helper.mat",
+      "exists": true,
+      "sha256": "2e2670199518cc073433855fd82403d59a24572d940b28120db36870f78a737f",
+      "bytes": 1861,
+      "guid": "458b42ae53cbe0149bfca9d313a7c914"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M013_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "bd806799d09955dd1c80ecc559650e34dd58cfdfb09125cd413a393796cd715c",
+      "bytes": 2078,
+      "guid": "55b70184dff7f834797118447c9b5443"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M014_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Engines.mat",
+      "exists": true,
+      "sha256": "91f0b500b4973dafc616a3e4228675390036e16dcca60f9a3330add65d7773dd",
+      "bytes": 2081,
+      "guid": "5f2b2ffb24590f343b57964bc27c2fae"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M015_Endurance_Hull_Lights_Grid.mat",
+      "exists": true,
+      "sha256": "45600a12ff09532d6441781b86e9d50bf0cdf13c7d8901fd72cd8eafc634a823",
+      "bytes": 2683,
+      "guid": "7dfb14f36a2fe0240b2dda84fad780f6"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M016_Endurance_Rebel_Mon_Calamari_Cruisers_L.mat",
+      "exists": true,
+      "sha256": "0b92aa099b03dd717c55fc0d577f96a592fc1e9d84db0345239b5fc245b4392e",
+      "bytes": 2696,
+      "guid": "d42e8f4c4ebed7c4cb19ee6ec715b3e5"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M017_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "73884a9ee2320b624b9c2abd38583ff9fb931a732072b0fbc955a6b1199f87da",
+      "bytes": 2710,
+      "guid": "494ebc6d1ae95594ba3041dcfa9cc4d2"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M018_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Second.mat",
+      "exists": true,
+      "sha256": "f556bbc313f5bbfce9198af8ddf36667565401d41adb8b5210800bddd06ad193",
+      "bytes": 2080,
+      "guid": "5cf85ceae395c344598824a7fdb33269"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M019_Helper.mat",
+      "exists": true,
+      "sha256": "3a3eb16344f53a3a3b5b68993c706c3e0e9c93186728d78fbf28543d98bffa1a",
+      "bytes": 1855,
+      "guid": "590ffdefeabd5b94583ac96b52de8f03"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M020_Helper.mat",
+      "exists": true,
+      "sha256": "e70dc3ccb8a7d0852bc251a7d6d561966b2c92ab9d54ab786cdd2801a4a8b52c",
+      "bytes": 1855,
+      "guid": "24cc6998e36a31b44bdf3ea29ef927c2"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M021_Endurance_Nb_shieldbase_Blue.mat",
+      "exists": true,
+      "sha256": "dfc346f47265ed1213f8e13057848aaa23ea831de2f1e8b162231e2ce15e77c0",
+      "bytes": 2686,
+      "guid": "23acff851efb6244a89afa8a9776cfc2"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M022_Endurance_Hull_2_SD.mat",
+      "exists": true,
+      "sha256": "e26b806addeed0d147980a6015e8d8419773c58c9d2b3a66607bbe33d4082d71",
+      "bytes": 2045,
+      "guid": "cee43801ed217654abc70e8008e28502"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M023_Endurance_Engine_Glow_Fancy_Blue.mat",
+      "exists": true,
+      "sha256": "568c1fe13c41d9a6ff46e02492ba87bf31a8ac30139c9ca55e886c91638de57e",
+      "bytes": 2689,
+      "guid": "604e308b467f0ee419f7a01ff20fee0e"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M024_Endurance_Hull_2_SD.mat",
+      "exists": true,
+      "sha256": "ab27406d16098bd705cf8d292e6fb148a7752510c6670791893414ffcbe6ce1b",
+      "bytes": 2045,
+      "guid": "64a8dee4f8df83d42a770a37cfe89285"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M025_Helper.mat",
+      "exists": true,
+      "sha256": "16e8a14264c29aaa257064a1a7677d84e87845a25e4200cf95fe296b33dc9ab0",
+      "bytes": 1855,
+      "guid": "33f316cc1f92c3a47a61146d192d82ac"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M026_Helper.mat",
+      "exists": true,
+      "sha256": "7ca167cbcdeebc4563279640df9e7f9d408c3f5df3eec320b8a9534d6c8003b4",
+      "bytes": 1855,
+      "guid": "4d8e1220d2e0f2849beddeff81299b30"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M027_Endurance_Rebel_Nebula_Star_Destroyer_Prototype_Main.mat",
+      "exists": true,
+      "sha256": "f67336a8b7db0c445ee423f5bc8c1101adb9167339e9d99638349da2f2d266ba",
+      "bytes": 2078,
+      "guid": "88eac745128f42f43980a10d7394da27"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M028_Endurance_Rebel_Mon_Cal_Home_One_3.mat",
+      "exists": true,
+      "sha256": "23599202e17cd344641fef0d8850b66c6c5a5ddb21ff9cb8414572836162b85d",
+      "bytes": 2060,
+      "guid": "ca69d3573e54afe44b62400a4742697f"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M029_Endurance_Rebel_Mon_Cal_Home_One_1.mat",
+      "exists": true,
+      "sha256": "f4c3cc0ce8c6c359ad94658d00082a0f58afec9edcefb70d36eed7e7245e301c",
+      "bytes": 2745,
+      "guid": "8ef916117eb372f45bf252cdadcbda6d"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M030_Endurance_Rebel_Mon_Cal_Home_One_3.mat",
+      "exists": true,
+      "sha256": "1beafb6ad29b3149e333c0f6274969ac74bfe2f4f96acb6bbbcf6ba361f8701d",
+      "bytes": 2745,
+      "guid": "07ffc2ac26d01a24387d7e32aa234800"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M031_Helper.mat",
+      "exists": true,
+      "sha256": "dc2cbcb3278d9acbd746ca2798a0b75308b6516e02d6d2fb3245b8fb67fd3124",
+      "bytes": 1855,
+      "guid": "3979d5a89f709a24090cb60484bbfa21"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Art\\Materials\\Models\\RebellionShips\\Endurance\\Endurance_M032_Endurance_Engine_Glow_Fancy_White.mat",
+      "exists": true,
+      "sha256": "8b9fe2dd0f9f6aa02f3c3257df250ce35b9607960ef880c6cae3b7270d315447",
+      "bytes": 2691,
+      "guid": "75486cb56ba60d0488824c5d31936456"
+    }
+  ],
+  "referencingSettings": [
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\AssetMappingData.asset",
+      "exists": true,
+      "sha256": "ebad80dca479ceef41404f6c136807c3fef3d3257113b43cb188dfa80cff8e8a",
+      "bytes": 44299,
+      "guid": "b5889e4bc784b4649a605db9577be9ed"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Reinforcement\\ReinforcementData.asset",
+      "exists": true,
+      "sha256": "a8a0754f43375ebfc9cba67798b4187145ebb3ef211be0d8f8f25a4232872e00",
+      "bytes": 16992,
+      "guid": "1c157dade5de42e4081ffe3ef1dd634f"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Tooltip\\TooltipIconData.asset",
+      "exists": true,
+      "sha256": "b7d98633afdb667b9705248890a00f5d071d5d0efb75c1b467f4db05bea285b5",
+      "bytes": 13705,
+      "guid": "f5fb2ca4ac1d3a848a445314158b9a6e"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Ship\\Rebellion\\EnduranceShipData.asset",
+      "exists": true,
+      "sha256": "6a468ff0bc956bb1038d1b9c9e8153460c86fa6d6c7f42b329b1050e7a5dbe70",
+      "bytes": 2219,
+      "guid": "fef3778c9889843489a563dd0efbf27b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Ship\\Republic\\RothanaShipData.asset",
+      "exists": true,
+      "sha256": "61c68aed408725eb984a8b8a09c4ab29d375c8179a4a91348d62a889275ee3cd",
+      "bytes": 2119,
+      "guid": "c58688ab024a13b4b8952191db292c09"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Ship\\Shared\\ShipsData.asset",
+      "exists": true,
+      "sha256": "2a3f23c08db441487cfb0d1a825a95f9bb5344e2425f9330cede1e5fd8000358",
+      "bytes": 12363,
+      "guid": "56be5b5e32a4f5040bdc4427106e8535"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Models\\Components\\HardPointOverlayData.asset",
+      "exists": true,
+      "sha256": "fb42f80026780670af1a70f66b00e44e6234b318bb05ff2ce410218c1fc5c38c",
+      "bytes": 2895,
+      "guid": "251202eef97355e48b97bd3a9f486718"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Models\\ShipUi\\ShipUiData.asset",
+      "exists": true,
+      "sha256": "40dec2c89861fdfc4d31d76568dc5250ab50366879185a99bafdfc18329bb540",
+      "bytes": 8112,
+      "guid": "5d122ff846ebd9c42b0d93d92110997b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Models\\Wrecks\\Rebellion\\EnduranceWreckData.asset",
+      "exists": true,
+      "sha256": "ef28bec6afa59128daf8a3e2cdce71f558a7c9bab39cc2900833aa3ba4b6cebf",
+      "bytes": 1246,
+      "guid": "a9f3c665f5131814fa5da0d29e6dbe73"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Models\\Wrecks\\Republic\\RothanaWreckData.asset",
+      "exists": true,
+      "sha256": "d057f6ed97648108f066f02ae6912458fedba691b61db59bb666db828319e605",
+      "bytes": 1244,
+      "guid": "0d9ed0af40f2d5c45844478b7a19ecae"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Factions\\Rebellion\\RebellionFaction.asset",
+      "exists": true,
+      "sha256": "100fe7cc21ecbc9afd4b164cc14e14bbdf7b2c1a08c14ed56894f20baf854965",
+      "bytes": 31439,
+      "guid": "382e7106c0f27f640a7758327194390b"
+    },
+    {
+      "path": "F:\\Private\\empire-at-war\\Assets\\Settings\\Data\\Factions\\Republic\\RepublicFaction.asset",
+      "exists": true,
+      "sha256": "99103bb5e14e5900a856f7ff23c785f5eba7cf628656212297babb27060772c9",
+      "bytes": 29202,
+      "guid": "e8c9b195b6b249c4e9528ef11dcb0efc"
+    }
+  ],
+  "stationArchives": [
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Star Wars Empire at War\\GameData\\Data\\config.meg",
+      "exists": true,
+      "sha256": "79774426a7d1442a2dd08eb87e16e3c9b39093f1224d862def7281d6587ccb35",
+      "bytes": 11211253
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Star Wars Empire at War\\GameData\\Data\\models.meg",
+      "exists": true,
+      "sha256": "09eb13870f963bf3ee5bfbc1a029104523f06b3bd3aeddc35dad66a7ea2f7ced",
+      "bytes": 624198751
+    }
+  ],
+  "legacyAttachmentCounts": {
+    "1": 5,
+    "2": 8,
+    "3": 11,
+    "4": 14,
+    "5": 18
+  },
+  "limitations": [
+    "Disk snapshots do not prove component injection, gameplay registration routing or runtime behavior.",
+    "Station archive attachment extraction and XML-derived instance comparison still required; legacy attachment counts are not fresh acceptance."
+  ]
+}
