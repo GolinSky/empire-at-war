@@ -4998,7 +4998,7 @@ GameObject:
   - component: {fileID: 453329637902651807}
   - component: {fileID: 7724669976096579057}
   m_Layer: 0
-  m_Name: Laser_TurboR04
+  m_Name: Laser_HP_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5167,7 +5167,7 @@ GameObject:
   - component: {fileID: 3782532007477233329}
   - component: {fileID: 4881549908407344512}
   m_Layer: 0
-  m_Name: Laser_TurboR01
+  m_Name: Laser_HP_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5413,7 +5413,7 @@ GameObject:
   - component: {fileID: 3723592695637512652}
   - component: {fileID: 8844092122835661001}
   m_Layer: 0
-  m_Name: Laser_TurboR03
+  m_Name: Laser_HP_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7315,7 +7315,7 @@ GameObject:
   - component: {fileID: 8939339314266518114}
   - component: {fileID: 5706194764227811855}
   m_Layer: 0
-  m_Name: Laser_TurboR02
+  m_Name: Laser_HP_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

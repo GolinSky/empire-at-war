@@ -3536,7 +3536,7 @@ GameObject:
   - component: {fileID: 3222373051956082023}
   - component: {fileID: 7949012638225316501}
   m_Layer: 0
-  m_Name: Laser_Battery_2_6
+  m_Name: RepublicMediumProtonTorpedo_HP_21
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 6944668764849469484}
   - component: {fileID: 3278030741898170042}
   m_Layer: 0
-  m_Name: LightDualTurbolaser1
+  m_Name: DualMediumTurboLaser_HP_14
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5433,7 +5433,7 @@ GameObject:
   - component: {fileID: 2868428101390040882}
   - component: {fileID: 1103858709375218433}
   m_Layer: 0
-  m_Name: HP_Victory_Torpedo_02
+  m_Name: MediumDualMissileLauncher_HP_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5522,7 +5522,7 @@ GameObject:
   - component: {fileID: 1104301792168089618}
   - component: {fileID: 2835594948183819569}
   m_Layer: 0
-  m_Name: LightDualTurbolaser5
+  m_Name: DualMediumTurboLaser_HP_18
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11473,7 +11473,7 @@ GameObject:
   - component: {fileID: 7170667434087373076}
   - component: {fileID: 5595428114137985090}
   m_Layer: 0
-  m_Name: HP_Victory_Torpedo_01
+  m_Name: MediumDualMissileLauncher_HP_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17709,7 +17709,7 @@ GameObject:
   - component: {fileID: 292196751562283520}
   - component: {fileID: 2412495965930036078}
   m_Layer: 0
-  m_Name: LightDualTurbolaser2
+  m_Name: DualMediumTurboLaser_HP_15
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17767,7 +17767,7 @@ GameObject:
   - component: {fileID: 4556994161536007503}
   - component: {fileID: 5113441696065798102}
   m_Layer: 0
-  m_Name: LightDualTurbolaser4
+  m_Name: DualMediumTurboLaser_HP_17
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17856,7 +17856,7 @@ GameObject:
   - component: {fileID: 872549514112707991}
   - component: {fileID: 21958835946636982}
   m_Layer: 0
-  m_Name: LightDualTurbolaser6
+  m_Name: DualMediumTurboLaser_HP_19
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17914,7 +17914,7 @@ GameObject:
   - component: {fileID: 1508861615236378046}
   - component: {fileID: 7824029622599692889}
   m_Layer: 0
-  m_Name: LightDualTurbolaser3
+  m_Name: DualMediumTurboLaser_HP_16
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

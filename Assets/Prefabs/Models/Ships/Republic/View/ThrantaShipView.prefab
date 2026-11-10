@@ -11815,7 +11815,7 @@ GameObject:
   - component: {fileID: 8063016023719419175}
   - component: {fileID: 5912352160520398884}
   m_Layer: 0
-  m_Name: TurboLaserL
+  m_Name: Laser_HP_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16745,7 +16745,7 @@ GameObject:
   - component: {fileID: 4943633884909868460}
   - component: {fileID: 2877504472718332254}
   m_Layer: 0
-  m_Name: TurboLaserR
+  m_Name: Laser_HP_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

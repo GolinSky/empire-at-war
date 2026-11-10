@@ -229,7 +229,7 @@ GameObject:
   - component: {fileID: 5603180403063717901}
   - component: {fileID: 1948043466741868983}
   m_Layer: 0
-  m_Name: HP_Raider_Corvette_Laser_04
+  m_Name: DualRepeatingPointDefense_HP_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1245,7 +1245,7 @@ GameObject:
   - component: {fileID: 6799988500711141502}
   - component: {fileID: 7447020473882645092}
   m_Layer: 0
-  m_Name: HP_Raider_Corvette_Laser_03
+  m_Name: DualRepeatingPointDefense_HP_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -3732,7 +3732,7 @@ GameObject:
   - component: {fileID: 1731898089549004324}
   - component: {fileID: 957658272424672217}
   m_Layer: 0
-  m_Name: DualHeavyTurbolaser_BR
+  m_Name: HeavyQuadTurbolaser_HP_14
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4939,7 +4939,7 @@ GameObject:
   - component: {fileID: 3601257677921124460}
   - component: {fileID: 3077854009156632130}
   m_Layer: 0
-  m_Name: DualHeavyTurbolaser_ML
+  m_Name: HeavyQuadTurbolaser_HP_11
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35475,7 +35475,7 @@ GameObject:
   - component: {fileID: 3126887344947764072}
   - component: {fileID: 5037674661801758170}
   m_Layer: 0
-  m_Name: DualHeavyTurbolaser_BL
+  m_Name: HeavyQuadTurbolaser_HP_13
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40728,7 +40728,7 @@ GameObject:
   - component: {fileID: 8963611182901263809}
   - component: {fileID: 8960433305818249261}
   m_Layer: 0
-  m_Name: DualHeavyTurbolaser_MR
+  m_Name: HeavyQuadTurbolaser_HP_12
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

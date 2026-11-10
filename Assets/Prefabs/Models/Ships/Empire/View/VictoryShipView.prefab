@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9047308538784980254}
   - component: {fileID: 2425058990281957621}
   m_Layer: 0
-  m_Name: DualHeavyTurbolaser_Starboard
+  m_Name: MediumDualLaser_HP_10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 3638196623393322491}
   - component: {fileID: 5599773373418307143}
   m_Layer: 0
-  m_Name: DualMediumTurbolaser_Starboard_Aft
+  m_Name: MediumQuadTurbolaser_HP_9
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15524,7 +15524,7 @@ GameObject:
   - component: {fileID: 8697768460755397458}
   - component: {fileID: 6582324072546426299}
   m_Layer: 0
-  m_Name: DualMediumTurbolaser_Port_Aft
+  m_Name: MediumQuadTurbolaser_HP_6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15769,7 +15769,7 @@ GameObject:
   - component: {fileID: 1767694374523821521}
   - component: {fileID: 1484910613926568210}
   m_Layer: 0
-  m_Name: DualHeavyTurbolaser_Port_7
+  m_Name: MediumDualLaser_HP_13
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15889,7 +15889,7 @@ GameObject:
   - component: {fileID: 894418315343545483}
   - component: {fileID: 1152764067185171214}
   m_Layer: 0
-  m_Name: DualHeavyTurbolaser_Port
+  m_Name: MediumDualLaser_HP_7
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15978,7 +15978,7 @@ GameObject:
   - component: {fileID: 387998095139599724}
   - component: {fileID: 7811550283545793000}
   m_Layer: 0
-  m_Name: ConcussionMissile_Port_6
+  m_Name: MediumProtonTorpedo_HP_16
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16067,7 +16067,7 @@ GameObject:
   - component: {fileID: 7712824714058823243}
   - component: {fileID: 4397483017326626045}
   m_Layer: 0
-  m_Name: DualMediumTurbolaser_Port_Fore
+  m_Name: MediumQuadTurbolaser_HP_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16177,7 +16177,7 @@ GameObject:
   - component: {fileID: 8082038458735181855}
   - component: {fileID: 8092313918144131303}
   m_Layer: 0
-  m_Name: IonBattery
+  m_Name: MediumDualLaser_HP_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22510,7 +22510,7 @@ GameObject:
   - component: {fileID: 4186857683201325255}
   - component: {fileID: 2074278777680678543}
   m_Layer: 0
-  m_Name: DualMediumTurbolaser_Starboard_Fore
+  m_Name: MediumQuadTurbolaser_HP_8
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

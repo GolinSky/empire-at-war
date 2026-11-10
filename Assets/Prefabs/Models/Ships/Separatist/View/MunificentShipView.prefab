@@ -260,7 +260,7 @@ GameObject:
   - component: {fileID: 679716778317814594}
   - component: {fileID: 1541867583189470700}
   m_Layer: 0
-  m_Name: ProtonTorpedo_HardPoint_13
+  m_Name: MediumIonCannon_HP_13
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -407,7 +407,7 @@ GameObject:
   - component: {fileID: 1989651804366731259}
   - component: {fileID: 5006924658142012772}
   m_Layer: 0
-  m_Name: ProtonTorpedo_HardPoint_12
+  m_Name: MediumIonCannon_HP_12
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

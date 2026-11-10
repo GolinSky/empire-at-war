@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 2346426048190959036}
   - component: {fileID: 3946613221357031398}
   m_Layer: 0
-  m_Name: HeavyIonCannon_25
+  m_Name: MediumProtonTorpedo_HP_23
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1312,7 +1312,7 @@ GameObject:
   - component: {fileID: 8190002861889553072}
   - component: {fileID: 7664990947962371875}
   m_Layer: 0
-  m_Name: DualHeavyTurboLaser_15
+  m_Name: MediumDualLaser_HP_15
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1622,7 +1622,7 @@ GameObject:
   - component: {fileID: 7820515863380671627}
   - component: {fileID: 1741264443624317650}
   m_Layer: 0
-  m_Name: DualHeavyTurboLaser_18
+  m_Name: MediumDualLaser_HP_18
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2004,7 +2004,7 @@ GameObject:
   - component: {fileID: 3471035513397712267}
   - component: {fileID: 1775756662949857415}
   m_Layer: 0
-  m_Name: DualHeavyTurboLaser_16
+  m_Name: MediumDualLaser_HP_16
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2183,7 +2183,7 @@ GameObject:
   - component: {fileID: 5976742367481712224}
   - component: {fileID: 2724358236395185389}
   m_Layer: 0
-  m_Name: DualHeavyTurboLaser_14
+  m_Name: MediumDualLaser_HP_14
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3515,7 +3515,7 @@ GameObject:
   - component: {fileID: 2159214517093094841}
   - component: {fileID: 2912655742350888541}
   m_Layer: 0
-  m_Name: HeavyIonCannon_24
+  m_Name: MediumProtonTorpedo_HP_22
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3573,7 +3573,7 @@ GameObject:
   - component: {fileID: 7437608970039503096}
   - component: {fileID: 1200406785358549135}
   m_Layer: 0
-  m_Name: DualHeavyTurboLaser_17
+  m_Name: MediumDualLaser_HP_17
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4019,7 +4019,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: DualHeavyTurboLaser_05
+      value: MediumQuadTurbolaser_HP_5
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4150,7 +4150,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: DualHeavyTurboLaser_01
+      value: MediumQuadTurbolaser_HP_1
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4402,7 +4402,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: HeavyIonCannon_10
+      value: MediumProtonTorpedo_HP_10
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4528,7 +4528,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: DualHeavyTurboLaser_00
+      value: MediumQuadTurbolaser_HP_0
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4866,7 +4866,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: HeavyIonCannon_11
+      value: MediumProtonTorpedo_HP_11
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4997,7 +4997,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: DualHeavyTurboLaser_04
+      value: MediumQuadTurbolaser_HP_4
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -5254,7 +5254,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: DualHeavyTurboLaser_03
+      value: MediumQuadTurbolaser_HP_3
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -5637,7 +5637,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: DualHeavyTurboLaser_02
+      value: MediumQuadTurbolaser_HP_2
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}

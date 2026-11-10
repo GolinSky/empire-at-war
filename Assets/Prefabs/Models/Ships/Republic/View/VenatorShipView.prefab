@@ -22634,7 +22634,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: TurboLaserProjectileL
+      value: MediumDualLaser_HP_11
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -23375,7 +23375,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: TurboLaserProjectileR
+      value: MediumDualLaser_HP_10
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}

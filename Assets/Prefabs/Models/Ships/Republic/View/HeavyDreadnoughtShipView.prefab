@@ -188,7 +188,7 @@ GameObject:
   - component: {fileID: 4525682927271177206}
   - component: {fileID: 6265568302988346168}
   m_Layer: 0
-  m_Name: TurboLaserProjectileR_Additional
+  m_Name: MediumLaser_HP_12
   m_TagString: Untagged
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -5266,7 +5266,7 @@ GameObject:
   - component: {fileID: 8659190125993928038}
   - component: {fileID: 6922816510570151733}
   m_Layer: 0
-  m_Name: TurboLaserProjectileL_Additional
+  m_Name: MediumLaser_HP_13
   m_TagString: Untagged
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -20447,7 +20447,7 @@ GameObject:
   - component: {fileID: 578055824259989817}
   - component: {fileID: 5881202668159058325}
   m_Layer: 0
-  m_Name: IonProjectileR_Additional
+  m_Name: MediumLaser_HP_8
   m_TagString: Untagged
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -21083,7 +21083,7 @@ GameObject:
   - component: {fileID: 1958705300805160623}
   - component: {fileID: 8315749577976244144}
   m_Layer: 0
-  m_Name: IonProjectileL_Additional
+  m_Name: MediumLaser_HP_9
   m_TagString: Untagged
   m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -32200,7 +32200,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: TurboLaserProjectileL
+      value: MediumLaser_HP_5
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -32327,7 +32327,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: IonProjectileR
+      value: MediumLaser_HP_0
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -32796,7 +32796,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: IonProjectileL
+      value: MediumLaser_HP_1
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -33105,7 +33105,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: TurboLaserProjectileR
+      value: MediumLaser_HP_4
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}

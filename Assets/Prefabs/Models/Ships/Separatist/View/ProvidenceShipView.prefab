@@ -166,7 +166,7 @@ MonoBehaviour:
     <Min>k__BackingField: -171
     <Max>k__BackingField: 18
   mainBattery: 0
-  <WeaponType>k__BackingField: 11
+  <WeaponType>k__BackingField: 3
 --- !u!1 &2018075614179319620
 GameObject:
   m_ObjectHideFlags: 0
@@ -2557,7 +2557,7 @@ GameObject:
   - component: {fileID: 4371605642135054641}
   - component: {fileID: 731547487028605003}
   m_Layer: 0
-  m_Name: MedimTurboDualProjectileL1_6
+  m_Name: MediumQuadTurbolaser_HP_18
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2603,7 +2603,7 @@ MonoBehaviour:
     <Min>k__BackingField: -177
     <Max>k__BackingField: 1
   mainBattery: 0
-  <WeaponType>k__BackingField: 48
+  <WeaponType>k__BackingField: 90
 --- !u!1 &5357275181807295719
 GameObject:
   m_ObjectHideFlags: 0
@@ -2677,7 +2677,7 @@ GameObject:
   - component: {fileID: 1659199221839361998}
   - component: {fileID: 3375191117220857193}
   m_Layer: 0
-  m_Name: MedimTurboDualProjectileR1_6
+  m_Name: MediumQuadTurbolaser_HP_17
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2723,7 +2723,7 @@ MonoBehaviour:
     <Min>k__BackingField: 0
     <Max>k__BackingField: 178
   mainBattery: 0
-  <WeaponType>k__BackingField: 48
+  <WeaponType>k__BackingField: 90
 --- !u!1 &7305706072016779026
 GameObject:
   m_ObjectHideFlags: 0
@@ -2938,7 +2938,7 @@ MonoBehaviour:
     <Min>k__BackingField: -17
     <Max>k__BackingField: 172
   mainBattery: 0
-  <WeaponType>k__BackingField: 11
+  <WeaponType>k__BackingField: 3
 --- !u!1 &9109107468091188869
 GameObject:
   m_ObjectHideFlags: 0
@@ -3037,7 +3037,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: MedimTurboDualProjectileL1
+      value: MediumQuadTurbolaser_HP_8
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3143,7 +3143,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 90
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3254,7 +3254,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 94
+      value: 89
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3269,7 +3269,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: TurboLaserCannonL
+      value: HeavyQuadTurbolaser_HP_12
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3380,7 +3380,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 90
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3501,7 +3501,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 90
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3612,7 +3612,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 94
+      value: 91
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3627,7 +3627,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: IonCannonR1
+      value: HeavyDualIonCannon_HP_10
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3728,27 +3728,27 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 94
+      value: 89
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
-      value: -75
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Min>k__BackingField
-      value: -100
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: TurboLaserCannonR
+      value: HeavyQuadTurbolaser_HP_13
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.4
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3849,7 +3849,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 94
+      value: 91
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -3864,7 +3864,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: IonCannonL1
+      value: HeavyDualIonCannon_HP_11
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4083,7 +4083,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 90
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4199,7 +4199,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 90
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4330,7 +4330,7 @@ PrefabInstance:
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: m_Name
-      value: MedimTurboDualProjectileR1
+      value: MediumQuadTurbolaser_HP_6
       objectReference: {fileID: 0}
     - target: {fileID: 3861106332040136750, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -4441,7 +4441,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <WeaponType>k__BackingField
-      value: 90
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
