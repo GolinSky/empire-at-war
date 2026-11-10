@@ -203,7 +203,7 @@ MonoBehaviour:
     <Min>k__BackingField: -175
     <Max>k__BackingField: 5
   mainBattery: 0
-  <WeaponType>k__BackingField: 7
+  <WeaponType>k__BackingField: 94
 --- !u!1 &964417087690523932
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,7 +350,7 @@ MonoBehaviour:
     <Min>k__BackingField: -93
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!1 &1500435172507766505
 GameObject:
   m_ObjectHideFlags: 0
@@ -381,6 +381,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6159420978873796021}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1536486221616523410
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 669518720989207902}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &669518720989207902
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1536486221616523410}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5884619, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5246098746182945321}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1661302263848887008
 GameObject:
@@ -439,7 +470,7 @@ MonoBehaviour:
     <Min>k__BackingField: -14
     <Max>k__BackingField: 168
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!1 &1896072669801497843
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,7 +617,7 @@ MonoBehaviour:
     <Min>k__BackingField: -100
     <Max>k__BackingField: 100
   mainBattery: 0
-  <WeaponType>k__BackingField: 7
+  <WeaponType>k__BackingField: 94
 --- !u!1 &3074137581679329972
 GameObject:
   m_ObjectHideFlags: 0
@@ -644,7 +675,7 @@ MonoBehaviour:
     <Min>k__BackingField: -100
     <Max>k__BackingField: 100
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!1 &3120446593140378204
 GameObject:
   m_ObjectHideFlags: 0
@@ -2255,6 +2286,8 @@ MonoBehaviour:
   - {fileID: 5849748632126627959}
   - {fileID: 2213350771780850888}
   - {fileID: 994784416503593339}
+  - {fileID: 4951304833763604167}
+  - {fileID: 7067066718004218559}
 --- !u!114 &6698126527802799869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2340,6 +2373,8 @@ MonoBehaviour:
   - {fileID: 5849748632126627959}
   - {fileID: 2213350771780850888}
   - {fileID: 994784416503593339}
+  - {fileID: 4951304833763604167}
+  - {fileID: 7067066718004218559}
 --- !u!1 &4698310410345965848
 GameObject:
   m_ObjectHideFlags: 0
@@ -2710,7 +2745,7 @@ MonoBehaviour:
     <Min>k__BackingField: -165
     <Max>k__BackingField: 14
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!1 &6757603433764108464
 GameObject:
   m_ObjectHideFlags: 0
@@ -2768,7 +2803,7 @@ MonoBehaviour:
     <Min>k__BackingField: -100
     <Max>k__BackingField: 100
   mainBattery: 0
-  <WeaponType>k__BackingField: 7
+  <WeaponType>k__BackingField: 94
 --- !u!1 &7237836788944304650
 GameObject:
   m_ObjectHideFlags: 0
@@ -2814,6 +2849,8 @@ Transform:
   - {fileID: 1338427969219197559}
   - {fileID: 1299339172186524601}
   - {fileID: 94013269265758116}
+  - {fileID: 3225607605649777629}
+  - {fileID: 5246098746182945321}
   m_Father: {fileID: 876958530588266346}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7395730036657395149
@@ -2936,6 +2973,95 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8239095120298015738}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7874027472005930727
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5246098746182945321}
+  - component: {fileID: 7067066718004218559}
+  m_Layer: 0
+  m_Name: HeavyDualMissile_HP_TORP02_FP02
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5246098746182945321
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7874027472005930727}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.7447217, y: -0.9498572, z: 32.782925}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 669518720989207902}
+  m_Father: {fileID: 4076532687219446856}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7067066718004218559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7874027472005930727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 669518720989207902}
+  destroyedVfxScale: 0.49874315
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 17
+  yAxisRange:
+    <Min>k__BackingField: -100
+    <Max>k__BackingField: 100
+  mainBattery: 0
+  <WeaponType>k__BackingField: 128
+--- !u!1 &7934620973823470313
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 924951378938550387}
+  m_Layer: 0
+  m_Name: DestroyedVfxAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &924951378938550387
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7934620973823470313}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.587882, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3225607605649777629}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8006165415132953880
 GameObject:
   m_ObjectHideFlags: 0
@@ -3055,7 +3181,7 @@ MonoBehaviour:
     <Min>k__BackingField: -100
     <Max>k__BackingField: 100
   mainBattery: 0
-  <WeaponType>k__BackingField: 7
+  <WeaponType>k__BackingField: 94
 --- !u!1 &8547316371169413735
 GameObject:
   m_ObjectHideFlags: 0
@@ -3173,7 +3299,67 @@ MonoBehaviour:
   - {fileID: 130055050197985640}
   - {fileID: 6193950587895669563}
   - {fileID: 5849748632126627959}
+  - {fileID: 4951304833763604167}
+  - {fileID: 7067066718004218559}
   rangeMultiplier: 1
+--- !u!1 &9108738063271976375
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3225607605649777629}
+  - component: {fileID: 4951304833763604167}
+  m_Layer: 0
+  m_Name: HeavyDualMissile_HP_TORP01_FP02
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3225607605649777629
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9108738063271976375}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.8279858, y: -0.9498572, z: 32.65137}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 924951378938550387}
+  m_Father: {fileID: 4076532687219446856}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4951304833763604167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9108738063271976375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
+  spawnDestroyedExplosion: 1
+  destroyedVfxAnchor: {fileID: 924951378938550387}
+  destroyedVfxScale: 0.49874315
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 16
+  yAxisRange:
+    <Min>k__BackingField: -100
+    <Max>k__BackingField: 100
+  mainBattery: 0
+  <WeaponType>k__BackingField: 128
 --- !u!1001 &1545718542174955107
 PrefabInstance:
   m_ObjectHideFlags: 0

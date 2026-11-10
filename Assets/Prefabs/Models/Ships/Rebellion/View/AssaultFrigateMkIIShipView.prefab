@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 2614617539607455247}
   - component: {fileID: 5864651649240718811}
   m_Layer: 0
-  m_Name: LightQuadTurbolaser01
+  m_Name: LightDualTurbolaser01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -88,7 +88,7 @@ MonoBehaviour:
     <Min>k__BackingField: -141
     <Max>k__BackingField: 17
   mainBattery: 0
-  <WeaponType>k__BackingField: 82
+  <WeaponType>k__BackingField: 36
 --- !u!1 &181579974861508595
 GameObject:
   m_ObjectHideFlags: 0
@@ -269,7 +269,7 @@ GameObject:
   - component: {fileID: 3582616725740467314}
   - component: {fileID: 3302379678060003263}
   m_Layer: 0
-  m_Name: HeavyLaser02
+  m_Name: HeavyDualLaser02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -315,7 +315,7 @@ MonoBehaviour:
     <Min>k__BackingField: -90
     <Max>k__BackingField: 90
   mainBattery: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 69
 --- !u!1 &1557955118400526174
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,7 +475,7 @@ GameObject:
   - component: {fileID: 4195371944929197999}
   - component: {fileID: 2800432581665854289}
   m_Layer: 0
-  m_Name: MediumTurbolaser04
+  m_Name: MediumDualTurbolaser04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -521,7 +521,7 @@ MonoBehaviour:
     <Min>k__BackingField: -141
     <Max>k__BackingField: 14
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!1 &3435092062826234723
 GameObject:
   m_ObjectHideFlags: 0
@@ -533,7 +533,7 @@ GameObject:
   - component: {fileID: 3873147033643824594}
   - component: {fileID: 4600965700273896430}
   m_Layer: 0
-  m_Name: LightQuadTurbolaser02
+  m_Name: LightDualTurbolaser02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -579,7 +579,7 @@ MonoBehaviour:
     <Min>k__BackingField: -16
     <Max>k__BackingField: 142
   mainBattery: 0
-  <WeaponType>k__BackingField: 82
+  <WeaponType>k__BackingField: 36
 --- !u!1 &3623717812178450207
 GameObject:
   m_ObjectHideFlags: 0
@@ -1785,7 +1785,7 @@ GameObject:
   - component: {fileID: 8592283672305347415}
   - component: {fileID: 1020163860725407408}
   m_Layer: 0
-  m_Name: HeavyLaser04
+  m_Name: HeavyDualLaser04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1831,7 +1831,7 @@ MonoBehaviour:
     <Min>k__BackingField: -90
     <Max>k__BackingField: 90
   mainBattery: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 69
 --- !u!1 &4559483585117901925
 GameObject:
   m_ObjectHideFlags: 0
@@ -2375,7 +2375,7 @@ GameObject:
   - component: {fileID: 6886052719463743421}
   - component: {fileID: 8333611298385703439}
   m_Layer: 0
-  m_Name: MediumTurbolaser02
+  m_Name: MediumDualTurbolaser02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2421,7 +2421,7 @@ MonoBehaviour:
     <Min>k__BackingField: -12
     <Max>k__BackingField: 142
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!1 &5475513523906811953
 GameObject:
   m_ObjectHideFlags: 0
@@ -2522,7 +2522,7 @@ GameObject:
   - component: {fileID: 3855533518945667022}
   - component: {fileID: 6709688039655430185}
   m_Layer: 0
-  m_Name: MediumTurbolaser01
+  m_Name: MediumDualTurbolaser01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2568,7 +2568,7 @@ MonoBehaviour:
     <Min>k__BackingField: -141
     <Max>k__BackingField: 13
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!1 &5682223229268968410
 GameObject:
   m_ObjectHideFlags: 0
@@ -2580,7 +2580,7 @@ GameObject:
   - component: {fileID: 2239550799939359793}
   - component: {fileID: 3054390626734597266}
   m_Layer: 0
-  m_Name: MediumTurbolaser03
+  m_Name: MediumDualTurbolaser03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2626,7 +2626,7 @@ MonoBehaviour:
     <Min>k__BackingField: -13
     <Max>k__BackingField: 142
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!1 &5690948249856127476
 GameObject:
   m_ObjectHideFlags: 0
@@ -2769,7 +2769,7 @@ GameObject:
   - component: {fileID: 8265627612508174006}
   - component: {fileID: 5745664223334884104}
   m_Layer: 0
-  m_Name: HeavyLaser01
+  m_Name: HeavyDualLaser01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2815,7 +2815,7 @@ MonoBehaviour:
     <Min>k__BackingField: -90
     <Max>k__BackingField: 90
   mainBattery: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 69
 --- !u!1 &7023232863933495874
 GameObject:
   m_ObjectHideFlags: 0
@@ -2911,7 +2911,7 @@ GameObject:
   - component: {fileID: 6833836323040568399}
   - component: {fileID: 6443255064418659469}
   m_Layer: 0
-  m_Name: HeavyLaser03
+  m_Name: HeavyDualLaser03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2957,7 +2957,7 @@ MonoBehaviour:
     <Min>k__BackingField: -90
     <Max>k__BackingField: 90
   mainBattery: 0
-  <WeaponType>k__BackingField: 28
+  <WeaponType>k__BackingField: 69
 --- !u!1 &8869782192770501499
 GameObject:
   m_ObjectHideFlags: 0

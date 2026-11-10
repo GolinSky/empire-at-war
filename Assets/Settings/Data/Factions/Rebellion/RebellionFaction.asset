@@ -149,7 +149,7 @@ MonoBehaviour:
         <Name>k__BackingField: Corellian Battlecruiser
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 3000
+        <Price>k__BackingField: 3500
         <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: fe1f61f0ff4f03a47a7a2a16340c510d,
@@ -157,10 +157,10 @@ MonoBehaviour:
     - key: 307
       value:
         matchups: {fileID: 11400000, guid: 30b6133074989dd4bbd5a7f24777def0, type: 2}
-        description: 'Fast torpedo frigate: 1,800 hull, 2,400 shields. Two heavy
-          proton torpedoes, four medium turbolasers, four dual lasers, two point
-          defense lasers and two burst cluster-bomb launchers. Torpedo Salvo increases
-          torpedo firing rate by 50% for 6 seconds.'
+        description: Fast torpedo cruiser with four medium dual turbolasers, four
+          medium dual laser cannons, two heavy dual missile launchers, two heavy
+          proton torpedo launchers, two point defense lasers and two cluster bomb
+          launchers. Torpedo Salvo boosts torpedo fire for 6 seconds.
         role: Anti-capital strike ship
         iconKey: 469dd9f50be001b43938f09f7cdbcb4f:21300000
         isHero: 0
@@ -220,7 +220,7 @@ MonoBehaviour:
         <Name>k__BackingField: MC50 Medium Cruiser
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 2
-        <Price>k__BackingField: 3400
+        <Price>k__BackingField: 3000
         <BuildTime>k__BackingField: 42
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: db3ba52ed373c8242844c936a9497696,
@@ -258,7 +258,7 @@ MonoBehaviour:
         <Name>k__BackingField: Dauntless Heavy Cruiser
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 5600
+        <Price>k__BackingField: 5000
         <BuildTime>k__BackingField: 60
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 66c1ea9cf4e49774d99aff299b8237ca,
@@ -316,7 +316,7 @@ MonoBehaviour:
         <Name>k__BackingField: Bothan Assault Cruiser
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 5200
+        <Price>k__BackingField: 4800
         <BuildTime>k__BackingField: 58
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 60f458712418dd74393a49293c347c81,

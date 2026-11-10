@@ -153,7 +153,7 @@ MonoBehaviour:
           cannons and three ion cannons deliver strong offensive firepower. Thin
           shields favor hit-and-run attacks. Power to Weapons temporarily boosts
           offensive output.
-        role: Frigate / Fast assault / Hit-and-run
+        role: Cruiser / Fast assault / Hit-and-run
         iconKey: f7655a1be55b2a74aa984b640ec46f5d:21300000
         isHero: 0
         <Name>k__BackingField: Dispatcher-class Frigate
@@ -175,7 +175,7 @@ MonoBehaviour:
         <Name>k__BackingField: Invincible
         <MaxCount>k__BackingField: 20
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 12000
+        <Price>k__BackingField: 20000
         <BuildTime>k__BackingField: 60
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: af913e547595237409f81ee21d82b267,
@@ -243,7 +243,7 @@ MonoBehaviour:
           dual ion cannon battery, all medium caliber. All 17 mounts are targetable,
           including engines and shield generator. Power to Weapons boosts firing
           rate at the cost of speed and increased incoming damage.
-        role: Frigate / Missile support
+        role: Cruiser / Missile support
         iconKey: cc08d3ef304a00a4999b7602cc4d17d0:21300000
         isHero: 0
         <Name>k__BackingField: Recalcitrant-class Light Cruiser
