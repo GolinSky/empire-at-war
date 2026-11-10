@@ -135,7 +135,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             SquadronUnitRequest => 0,
             ShipUnitRequest ship => _assets.Load<ShipData>(_shipsData.GetShipDataPath(ship.Key)).ShipClass switch
             {
-                ShipClass.Fighter or ShipClass.Bomber or ShipClass.Interceptor => 0,
+                ShipClass.Fighter or ShipClass.Bomber or ShipClass.Interceptor or ShipClass.HeroStrikecraft => 0,
                 ShipClass.Corvette => 1,
                 ShipClass.Frigate => 2,
                 ShipClass.Cruiser => 3,

@@ -13,7 +13,7 @@ namespace EmpireAtWar.Models.Health
         private readonly float[] _classMinimums;
 
         public static float[] DefaultTypeWeights => new[] { 1f, 1.5f, 1.5f, 1f, 1.2f, 1.2f, 1.2f, 1.2f, 0.7f, 0.7f, 1.2f, 1.2f };
-        public static float[] DefaultClassMinimums => new[] { 0f, 0f, 100f, 150f, 250f, 300f, 0f, 0f, 200f };
+        public static float[] DefaultClassMinimums => new[] { 0f, 0f, 100f, 150f, 250f, 300f, 0f, 0f, 200f, 0f };
 
         public HardPointHealthBudget() : this(DEFAULT_BUDGET_RATIO, DefaultTypeWeights, DefaultClassMinimums) { }
 
