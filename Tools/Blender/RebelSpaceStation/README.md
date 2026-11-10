@@ -4,7 +4,7 @@ Dedicated guide: [SPACE_STATION_MODEL_IMPORT_GUIDE](../../../EmpireAtWarDocument
 
 These scripts rebuild the five **vanilla Rebel** station models and their Rebellion-only level mapping. They are model-specific; other stations require a fresh binary audit and explicit attachment mapping.
 
-**Known issue (2026-10-07):** the user still sees the reported albedo/surface problem after the UV repair attempt. Current assets are retained at the user's request. Passing structural tests and isolated preview renders do not establish that the visual issue is resolved.
+**Dome seam follow-up (2026-11-10):** regenerated albedo reduced contrast but did not fix the isolated strip's mismatched UV borders. `RepairDomeUv.cs` now maps all dome sectors to one mirrored quadrant, including connected cutout/bevel vertices on higher levels. Shared dome positions use matching UVs; original geometry and FBXs remain unchanged. User accepted the visual result on 2026-11-10.
 
 ## Inputs and outputs
 
@@ -86,7 +86,7 @@ unity command test_status --json
 - FBX requires unique bone names. Store the source-name map and restore original repeated names in the Unity visual prefabs without flattening hierarchy.
 - Rebuild material slots from original shaders and parameters. Retain authored hidden damage overlays in the FBX and disable them in gameplay. Strip only the disabled shadow-volume renderer leaf from visual prefabs.
 - Base station ALOs are incomplete by themselves. Add **5, 8, 11, 14, 18** original hardpoint models for levels 1–5, using each XML `Attachment_Bone`. Compute poses from original bone matrices with the source-to-Unity basis, not FBX bone rotation (which includes Blender bone-axis correction). Retain full rigs/helpers in source FBXs; copy only visible mesh instances under existing named anchors in game prefabs.
-- The reported dark dome strip was already present in the original UV layout. `RepairDomeUv.cs` changes **15 UV vertices / 16 triangles** in a derived mesh per level, copying the identical curved plating at +90 degrees. Positions, indices, normals, texture pixels and original FBXs remain unchanged; tangents are recalculated. This is an explicit visual repair, not a lossless source-UV conversion claim.
+- The original dark dome strip used a different atlas island. The former 15-vertex repair copied a +90-degree sector but left discontinuous panel bands. `RepairDomeUv.cs` now mirrors the positive-X/positive-Z quadrant around the entire dome, interpolating UVs by angle and height for cutouts. Positions, indices, normals, texture pixels and original FBXs remain unchanged; tangents are recalculated. This is an explicit visual repair, not a lossless source-UV conversion claim.
 - ALAMO welds shadow-volume doubles and removes degenerate triangles. Visible hull/light/damage geometry is checked directly against the original ALO; shadow topology is excluded from equality assertions.
 - FBX import scale `0.02`; common nested scale approximately `12.3978834`; unit-scale gameplay root. Level 5's XZ diameter matches the previous station's `299.302856` units. The other levels retain their own source dimensions.
 - Hull material: `EmpireAtWar/Ship Lit`, direct source-alpha team mask, normal-map green flip. Additive lights use the existing project light-material convention. The alpha mask is **not inverted**.

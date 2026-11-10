@@ -317,7 +317,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(3)]
         [TestCase(4)]
         [TestCase(5)]
-        public void DomeRepair_PreservesGeometryAndRepairsOnlyTheDarkAtlasStrip(int level)
+        public void DomeRepair_PreservesGeometryAndKeepsDomeUvJoinsContinuous(int level)
         {
             string folder = "Assets/Art/Models/SpaceStations/RebelSpaceStation/Level" + level + "/";
             string name = "RebelSpaceStationLevel" + level;
@@ -332,14 +332,16 @@ namespace EmpireAtWar.Tests.Editor
             var before = source.uv;
             var after = repaired.uv;
             var changed = Enumerable.Range(0, before.Length).Where(i => before[i] != after[i]).ToArray();
-            Assert.That(changed, Has.Length.EqualTo(15));
+            Assert.That(changed.Length, Is.GreaterThan(100));
+            var points = source.vertices.Select(renderer.transform.TransformPoint).ToArray();
             foreach (int index in changed)
             {
-                Assert.That(before[index].y, Is.InRange(-.867f, -.587f));
-                Assert.That(after[index].x, Is.InRange(.35f, .46f));
-                Assert.That(after[index].y, Is.InRange(-.3f, 0));
-                Vector3 point = renderer.transform.TransformPoint(source.vertices[index]);
-                Assert.That(point.y, Is.InRange(3f, 5.05f));
+                Assert.That(after[index].x, Is.InRange(.36f, .67f));
+                Assert.That(after[index].y, Is.InRange(-.26f, -.03f));
+                Assert.That(points[index].y, Is.InRange(3.02f, 5.05f));
+                foreach (int other in changed.Where(j => j > index && Vector3.Distance(points[index], points[j]) < .00003f))
+                    Assert.That(Vector2.Distance(after[index], after[other]), Is.LessThan(.00001f),
+                        "Dome UV join at vertices " + index + " / " + other);
             }
             Assert.That(repaired.tangents.All(t => !float.IsNaN(t.x) && !float.IsNaN(t.y) && !float.IsNaN(t.z)), Is.True);
         }
