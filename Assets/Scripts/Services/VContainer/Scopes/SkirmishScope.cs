@@ -181,6 +181,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<HarmonicBombEffects>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HarmonicBombService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipAbilityDependencies>(Lifetime.Singleton);
+            builder.Register<ShipAbilityAutoUse>(Lifetime.Singleton);
             builder.Register<ShipAbilityFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipAbilityService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitCombatProfileCatalog>(Lifetime.Singleton);

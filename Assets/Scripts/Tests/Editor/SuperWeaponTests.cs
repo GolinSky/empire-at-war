@@ -189,7 +189,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action OnValueChanged { add { } remove { } }
             public Transform Transform { get; }
             public ShipClass ShipClass => ShipClass.Structure;
-            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1000f;
             public float HullPercentage => 1f;
             public float Shields => 1000f;

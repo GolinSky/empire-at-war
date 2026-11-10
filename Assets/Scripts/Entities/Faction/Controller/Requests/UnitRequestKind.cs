@@ -1,4 +1,4 @@
-namespace EmpireAtWar.Services.Saves
+namespace EmpireAtWar.Controllers.Factions
 {
     public enum UnitRequestKind
     {

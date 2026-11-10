@@ -1,5 +1,6 @@
 using EmpireAtWar.Entities.ShipUi;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using EmpireAtWar.Components.Hangar;
@@ -81,7 +82,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action OnValueChanged { add { Subscribers++; } remove { Subscribers--; } }
             public int Subscribers { get; private set; }
             public ShipClass ShipClass => ShipClass.Capital;
-            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 100f;
             public float HullPercentage => 1f;
             public float Shields => 0f;

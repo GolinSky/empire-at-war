@@ -247,7 +247,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public event Action OnValueChanged { add { } remove { } }
 
-            public HardPointModel[] HardPointModels { get; } = new[]
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels { get; } = new[]
                 { new HardPointModel(HardPointType.SensorArray, 0) };
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;

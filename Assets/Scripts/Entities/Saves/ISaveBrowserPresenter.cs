@@ -5,8 +5,5 @@ namespace EmpireAtWar.Entities.Saves
         void Close();
         void SelectSave(int index);
         void RemoveSave(int index);
-        void SaveAsNew();
-        void ConfirmName(string name);
-        void CancelName();
     }
 }

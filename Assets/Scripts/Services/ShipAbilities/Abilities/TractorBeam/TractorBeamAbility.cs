@@ -44,8 +44,10 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 .First(point => point.HardPointType == HardPointType.TractorBeam && !point.IsDestroyed);
             _targetTransform = target.GetFacade<IEntityTransformFacade>().Transform;
             _targetModifiers = target.GetFacade<ICombatModifiersFacade>().Modifiers;
+            // Resolve the beam prefab first: a wrong prefab must fail before the target is slowed.
+            BeamShot beamPrefab = (BeamShot)_settings.Beam.ShotPrefab;
             _applied = _targetModifiers.Add(_movementPenalty);
-            _view = (BeamShot)Object.Instantiate(_settings.Beam.ShotPrefab);
+            _view = Object.Instantiate(beamPrefab);
             _view.PlayBeam(_hardPoint.Transform, _targetTransform, definition.Duration, _settings.Beam);
         }
 

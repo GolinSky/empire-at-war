@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Game;
@@ -126,7 +127,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public bool IsDestroyed => false;
             public ShipClass ShipClass => throw new NotSupportedException();
-            public HardPointModel[] HardPointModels => throw new NotSupportedException();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => throw new NotSupportedException();
             public float Hull => throw new NotSupportedException();
             public float HullPercentage => throw new NotSupportedException();
             public float Shields => throw new NotSupportedException();

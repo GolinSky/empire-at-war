@@ -18,7 +18,6 @@ using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Services.Hazards;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Services.PlayerCommands;
-using EmpireAtWar.Services.Saves;
 
 namespace EmpireAtWar.Services.Reinforcement
 {
@@ -269,7 +268,7 @@ namespace EmpireAtWar.Services.Reinforcement
                     if (_previews[i].CanSpawn) slots.Add(GetSlotPosition(dropPoint, i));
                 }
 
-                UnitRequestSave key = UnitRequestSave.From(_currentRequest);
+                UnitRequestKey key = UnitRequestKey.From(_currentRequest);
                 _commands.Submit(new DeployReinforcementCommand(_owner.Id, key.Kind, key.Key, slots.ToArray()));
             }
             finally
@@ -317,7 +316,7 @@ namespace EmpireAtWar.Services.Reinforcement
         {
             foreach (KeyValuePair<UnitRequest, int> entry in _model.Reserve)
             {
-                UnitRequestSave candidate = UnitRequestSave.From(entry.Key);
+                UnitRequestKey candidate = UnitRequestKey.From(entry.Key);
                 if (candidate.Kind != kind || candidate.Key != key) continue;
                 request = entry.Key;
                 return true;

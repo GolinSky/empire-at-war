@@ -122,7 +122,7 @@ namespace EmpireAtWar.Tests.Editor
             public Vector3 WorldPosition => Transform.position;
             public float RadarRange => 1000f;
             public HardPointType HardPointType => HardPointType.CommandArray;
-            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public float HullPercentage => 1f;
             public float Shields => 1f;

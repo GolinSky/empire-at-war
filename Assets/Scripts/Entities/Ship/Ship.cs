@@ -65,7 +65,7 @@ namespace EmpireAtWar.Ship
         [SerializeField] private Transform compositeBeamMuzzle;
 
         public Transform CompositeBeamMuzzle => compositeBeamMuzzle;
-        private readonly List<HardPointModel> _engineUnits = new List<HardPointModel>();
+        private readonly List<IReadOnlyHardPointModel> _engineUnits = new List<IReadOnlyHardPointModel>();
         private ShipOrderRunner _orders;
         private long _entityId;
         private EntityComponentLifecycle _componentLifecycle;
@@ -144,7 +144,7 @@ namespace EmpireAtWar.Ship
             foreach (ShipAbilitySlot ability in _audioAbilities)
                 ability.Changed += _audioShipComponent.HandleAbilityChanged;
             _healthComponent.HealthModelObserver.OnDestroy += HandleDestroyed;
-            foreach (HardPointModel hardPointModel in _healthComponent.HealthModelObserver.HardPointModels)
+            foreach (IReadOnlyHardPointModel hardPointModel in _healthComponent.HealthModelObserver.HardPointModels)
             {
                 hardPointModel.OnDestroyedByDamage += _audioShipComponent.PlayHardPointLost;
                 if (hardPointModel.HardPointType == HardPointType.Engines)
@@ -240,12 +240,12 @@ namespace EmpireAtWar.Ship
             _healthAudioEvents.HealthRestored -= ResetShieldAudio;
             _healthComponent.HealthModelObserver.OnValueChanged -= HandleHealthChanged;
             _healthAudioEvents.ShieldImpacted -= _audioShipComponent.PlayShieldImpact;
-            foreach (HardPointModel hardPoint in _healthComponent.HealthModelObserver.HardPointModels)
+            foreach (IReadOnlyHardPointModel hardPoint in _healthComponent.HealthModelObserver.HardPointModels)
                 hardPoint.OnDestroyedByDamage -= _audioShipComponent.PlayHardPointLost;
             _weaponFireEvents.ShotEmitted -= _audioShipComponent.PlayWeaponShot;
             foreach (ShipAbilitySlot ability in _audioAbilities)
                 ability.Changed -= _audioShipComponent.HandleAbilityChanged;
-            foreach (HardPointModel engine in _engineUnits)
+            foreach (IReadOnlyHardPointModel engine in _engineUnits)
             {
                 engine.OnHardPointHealthChanged -= HandleEnginesData;
             }
@@ -302,7 +302,7 @@ namespace EmpireAtWar.Ship
         private void HandleEnginesData()
         {
             int destroyed = 0;
-            foreach (HardPointModel engine in _engineUnits)
+            foreach (IReadOnlyHardPointModel engine in _engineUnits)
             {
                 if (engine.IsDestroyed)
                 {

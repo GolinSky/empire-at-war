@@ -3,7 +3,6 @@ using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Factions;
-using EmpireAtWar.Services.Saves;
 
 namespace EmpireAtWar.Services.PlayerCommands
 {
@@ -33,8 +32,8 @@ namespace EmpireAtWar.Services.PlayerCommands
         public void LateDispose() => _handlers.UnregisterProduction(_owner.Id);
 
         public void Purchase(PurchaseUnitCommand command) =>
-            _faction.TryPurchaseUnit(UnitRequestSave.CreateRequest(command.Kind, command.Key, command.Tier,
-                _requests, _roster, _levels));
+            _faction.TryPurchaseUnit(new UnitRequestKey(command.Kind, command.Key, command.Tier)
+                .ToRequest(_requests, _roster, _levels));
 
         public void Cancel(CancelPurchaseCommand command) => _faction.CancelBuilding(command.RequestId);
     }

@@ -264,17 +264,17 @@ namespace EmpireAtWar.Services.SuperWeapons
         /// <summary>A random live hardpoint; once all are destroyed the wrecks still carry hull damage.</summary>
         private static int PickHardPoint(IHealthModelObserver health)
         {
-            HardPointModel[] hardPoints = health.HardPointModels;
+            IReadOnlyList<IReadOnlyHardPointModel> hardPoints = health.HardPointModels;
             int liveCount = 0;
-            foreach (HardPointModel hardPoint in hardPoints)
+            foreach (IReadOnlyHardPointModel hardPoint in hardPoints)
             {
                 if (!hardPoint.IsDestroyed) liveCount++;
             }
 
-            if (liveCount == 0) return Random.Range(0, hardPoints.Length);
+            if (liveCount == 0) return Random.Range(0, hardPoints.Count);
 
             int pick = Random.Range(0, liveCount);
-            for (int i = 0; i < hardPoints.Length; i++)
+            for (int i = 0; i < hardPoints.Count; i++)
             {
                 if (hardPoints[i].IsDestroyed) continue;
                 if (pick == 0) return i;

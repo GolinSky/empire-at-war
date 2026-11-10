@@ -8,7 +8,6 @@ using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.Networking.Messages;
 using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.Reinforcement;
-using EmpireAtWar.Services.Saves;
 using Mirror;
 
 namespace EmpireAtWar.Services.Networking
@@ -80,7 +79,7 @@ namespace EmpireAtWar.Services.Networking
             };
             if (request != null)
             {
-                UnitRequestSave saved = UnitRequestSave.From(request);
+                UnitRequestKey saved = UnitRequestKey.From(request);
                 message.RequestKind = saved.Kind;
                 message.RequestKey = saved.Key;
                 message.RequestTier = saved.Tier;

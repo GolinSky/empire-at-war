@@ -2251,7 +2251,7 @@ private sealed class ZoneSource : IReinforcementZoneSource
 
             public event Action OnValueChanged { add { } remove { } }
 
-            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull { get; set; } = 1f;
             public ShipClass ShipClass => ShipClass.Capital;
             public bool HasLiveHardPoints => true;

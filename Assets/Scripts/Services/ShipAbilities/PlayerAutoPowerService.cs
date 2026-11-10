@@ -8,7 +8,6 @@ using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Settings;
-using EmpireAtWar.Services.ShipAbilities.Abilities;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities
@@ -23,7 +22,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         private readonly ShipAbilityService _abilities;
         private readonly AutoPowerCombatSnapshot _combat;
         private readonly AutoPowerTuning _tuning;
-        private readonly HarmonicBombService _bombs;
+        private readonly ShipAbilityAutoUse _autoUse;
         private readonly Dictionary<long, AutoPowerMonitor> _monitors = new Dictionary<long, AutoPowerMonitor>();
         private readonly List<IEntity> _casters = new List<IEntity>();
         private int _nextCaster;
@@ -32,7 +31,7 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public PlayerAutoPowerService(IEntityLocator entities, ILocalPlayer player, ISettingsService settings,
             ISelectionService selection, SkirmishStateModel battle, ShipAbilityService abilities,
-            AutoPowerCombatSnapshot combat, ShipAbilityCatalog catalog, HarmonicBombService bombs)
+            AutoPowerCombatSnapshot combat, ShipAbilityCatalog catalog, ShipAbilityAutoUse autoUse)
         {
             _entities = entities;
             _player = player;
@@ -42,7 +41,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             _abilities = abilities;
             _combat = combat;
             _tuning = catalog.AutoPower;
-            _bombs = bombs;
+            _autoUse = autoUse;
             _abilities.ManualAction += HandleManualAction;
             _entities.EntityRemoved += HandleRemoved;
         }
@@ -76,13 +75,13 @@ namespace EmpireAtWar.Services.ShipAbilities
             return _entities.TryGetEntity(entity.Id, out IEntity registered) && ReferenceEquals(entity, registered) &&
                 _player.IsLocal(entity.Owner) && !entity.HealthModel.IsDestroyed &&
                 entity.TryGetFacade(out caster) &&
-                (entity.TryGetFacade(out automation) && automation.Eligible || HasBomb(caster));
+                (entity.TryGetFacade(out automation) && automation.Eligible || HasAutoUseRule(caster));
         }
 
-        private static bool HasBomb(IShipAbilityFacade caster)
+        private static bool HasAutoUseRule(IShipAbilityFacade caster)
         {
             for (int i = 0; i < caster.Slots.Count; i++)
-                if (caster.Slots[i].Id == ShipAbilityId.HarmonicBomb) return true;
+                if (ShipAbilityAutoUse.HasRule(caster.Slots[i].Definition)) return true;
             return false;
         }
 
@@ -104,8 +103,8 @@ namespace EmpireAtWar.Services.ShipAbilities
             for (int i = 0; i < caster.Slots.Count; i++)
             {
                 ShipAbilitySlot slot = caster.Slots[i];
-                if (slot.CanActivate && slot.Definition.Settings is HarmonicBombSettings bomb &&
-                    bomb.ShouldAutoDrop(_bombs, caster) && _abilities.TryRequestActivation(caster, slot.Id, null)) return;
+                if (slot.CanActivate && _autoUse.ShouldActivate(caster, slot.Definition) &&
+                    _abilities.TryRequestActivation(caster, slot.Id, null)) return;
             }
             if (automation == null || !automation.Eligible) return;
             AutoPowerSituation situation = _combat.Assess(caster, automation, heavyLoss, IsTravelling(entity));

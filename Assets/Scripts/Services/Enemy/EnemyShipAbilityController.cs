@@ -5,7 +5,6 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Services.ShipAbilities;
-using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.Services.Vision;
 using UnityEngine;
 using VContainer;
@@ -29,7 +28,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly PlayerSlot _owner;
         private readonly ShipAbilityService _shipAbilityService;
-        private readonly HarmonicBombService _bombs;
+        private readonly ShipAbilityAutoUse _autoUse;
         private readonly List<IEntity> _targets = new List<IEntity>();
         // The caster's entity is kept beside its facade: the facade resolves its entity through the locator,
         // which throws once the unit has left the battle.
@@ -46,14 +45,14 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyShipAbilityController(IEntityLocator entities,
             IEnemyAiStateProvider state, IPlayerRelations relations,
             ShipAbilityService shipAbilityService, IVisionService vision,
-            PlayerSlot owner, HarmonicBombService bombs, SimulationModel simulation = null)
+            PlayerSlot owner, ShipAbilityAutoUse autoUse, SimulationModel simulation = null)
         {
             _owner = owner;
             _entities = entities;
             _state = state;
             _relations = relations;
             _shipAbilityService = shipAbilityService;
-            _bombs = bombs;
+            _autoUse = autoUse;
             _vision = vision;
             _simulation = simulation;
         }
@@ -124,9 +123,9 @@ namespace EmpireAtWar.Services.Enemy
             EnemyAiDifficultyProfile profile)
         {
             ShipAbilityDefinition definition = slot.Definition;
-            if (definition.AiUse == ShipAbilityAiUse.NearbyStrikecraft)
+            if (ShipAbilityAutoUse.HasRule(definition))
             {
-                if (((HarmonicBombSettings)definition.Settings).ShouldAutoDrop(_bombs, caster))
+                if (_autoUse.ShouldActivate(caster, definition))
                     _shipAbilityService.TryActivate(caster, slot.Id, null);
                 return;
             }

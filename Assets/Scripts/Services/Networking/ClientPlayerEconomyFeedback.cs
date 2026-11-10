@@ -5,7 +5,6 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.BattleNotifications;
 using EmpireAtWar.Services.Networking.Messages;
-using EmpireAtWar.Services.Saves;
 using Mirror;
 
 namespace EmpireAtWar.Services.Networking
@@ -51,8 +50,8 @@ namespace EmpireAtWar.Services.Networking
                 message.Kind == FactionFeedbackKind.PurchaseCanceled ||
                 message.Kind == FactionFeedbackKind.UnitProduced ||
                 message.Kind == FactionFeedbackKind.ReinforcementDeployed)
-                request = UnitRequestSave.CreateRequest(message.RequestKind, message.RequestKey,
-                    message.RequestTier, _requests, _roster, _levels);
+                request = new UnitRequestKey(message.RequestKind, message.RequestKey, message.RequestTier)
+                    .ToRequest(_requests, _roster, _levels);
             _announcements.AnnounceReplicated(message.Kind, request, message.UnitCapacity, message.StationLevel);
             _notifications.ShowReplicated(message.Kind, request, message.StationLevel);
         }

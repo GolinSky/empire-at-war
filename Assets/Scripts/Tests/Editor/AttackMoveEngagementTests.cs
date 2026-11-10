@@ -155,7 +155,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action OnValueChanged { add { } remove { } }
 
             public bool IsDestroyedValue { get; set; }
-            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
             public bool HasLiveHardPoints => true;

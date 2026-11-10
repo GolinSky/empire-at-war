@@ -9,7 +9,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Networking;
 using EmpireAtWar.Services.Networking.Messages;
 using EmpireAtWar.Services.PlayerCommands;
-using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Services.UnitOrders;
 using Mirror;
 using NUnit.Framework;
@@ -277,7 +277,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action OnDestroy { add { } remove { } }
             public event Action OnValueChanged { add { } remove { } }
             public EmpireAtWar.Components.Ship.Health.ShipClass ShipClass => default;
-            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 0f;
             public float HullPercentage => 0f;
             public float Shields => 0f;

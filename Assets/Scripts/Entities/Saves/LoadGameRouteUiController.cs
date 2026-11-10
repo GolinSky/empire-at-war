@@ -109,10 +109,6 @@ namespace EmpireAtWar.Entities.Saves
             }
         }
 
-        public void SaveAsNew() => throw new InvalidOperationException("The load screen cannot create saves.");
-        public void ConfirmName(string name) => throw new InvalidOperationException("The load screen cannot create saves.");
-        public void CancelName() => _ui.SetNameEntryVisible(false);
-
         protected override bool HandleCancel()
         {
             Close();

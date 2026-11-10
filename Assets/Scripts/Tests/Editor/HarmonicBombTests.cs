@@ -167,7 +167,7 @@ namespace EmpireAtWar.Tests.Editor
             public float ShieldPercentage => 0f;
             public float Hull => 1f;
             public float HullPercentage => 1f;
-            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public IHardPointModel[] GetShipUnits(HardPointType type) => Units;
             public event Action OnDestroy { add { } remove { } }
             public event Action OnValueChanged { add { } remove { } }

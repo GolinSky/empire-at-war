@@ -401,7 +401,7 @@ namespace EmpireAtWar.Tests.Selection
             public event Action OnValueChanged { add { } remove { } }
             public int DeathSubscribers => OnDestroy == null ? 0 : OnDestroy.GetInvocationList().Length;
             public ShipClass ShipClass => ShipClass.Fighter;
-            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => IsDestroyed ? 0f : 100f;
             public float HullPercentage => IsDestroyed ? 0f : 1f;
             public float Shields => 0f;

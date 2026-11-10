@@ -75,7 +75,7 @@ namespace EmpireAtWar.Components.Ship.Health
         public bool Destroyed => Model.IsDestroyed;
         public IHealthModelObserver HealthModelObserver => this;
         public ShipClass ShipClass => Model.ShipClass;
-        public HardPointModel[] HardPointModels => Model.HardPointModels;
+        public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Model.HardPointModels;
         public float Hull => Model.Hull;
         public bool IsShieldRecovering => _shieldRecovering && !_shieldRecoveryTimer.IsComplete;
         public float ShieldRegeneration => Model.IsLostShieldGenerator || Model.IsShieldSuppressed || IsShieldRecovering ? 0f

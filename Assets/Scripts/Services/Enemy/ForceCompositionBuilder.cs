@@ -89,13 +89,13 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Destroyed hardpoints (ship systems, squadron fighters) stop firing.</summary>
         public static float GetOffenseScale(IHealthModelObserver health)
         {
-            if (health.HardPointModels.Length == 0)
+            if (health.HardPointModels.Count == 0)
             {
                 return 1f;
             }
 
             int alive = 0;
-            foreach (HardPointModel hardPoint in health.HardPointModels)
+            foreach (IReadOnlyHardPointModel hardPoint in health.HardPointModels)
             {
                 if (!hardPoint.IsDestroyed)
                 {
@@ -103,7 +103,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
             }
 
-            return (float)alive / health.HardPointModels.Length;
+            return (float)alive / health.HardPointModels.Count;
         }
     }
 }

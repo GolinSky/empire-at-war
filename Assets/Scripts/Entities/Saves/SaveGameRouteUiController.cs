@@ -9,7 +9,7 @@ using EmpireAtWar.Ui.Base;
 namespace EmpireAtWar.Entities.Saves
 {
     public sealed class SaveGameRouteUiController : UiController, ISaveGameRoute,
-        ISaveBrowserPresenter, IInitializable, ILateDisposable
+        ISaveBrowserPresenter, ISaveCreationPresenter, IInitializable, ILateDisposable
     {
         private readonly BattleDefinition _battle;
         private readonly IBattleSaveRepository _repository;
@@ -35,6 +35,7 @@ namespace EmpireAtWar.Entities.Saves
         {
             _ui = CreateUi<SaveBrowserUi>();
             _ui.AssignPresenter(this);
+            _ui.AssignCreationPresenter(this);
             _ui.Initialize();
             _ui.Hide();
             _saves.StatusChanged += OnSaveStatus;

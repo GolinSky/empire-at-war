@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
@@ -267,7 +268,7 @@ namespace EmpireAtWar.Tests.Weapon
             public event Action OnDestroy { add { } remove { } }
             public event Action OnValueChanged { add { } remove { } }
             public ShipClass ShipClass => ShipClass.Capital;
-            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 100f;
             public float HullPercentage => 1f;
             public float Shields => HasShields ? 100f : 0f;

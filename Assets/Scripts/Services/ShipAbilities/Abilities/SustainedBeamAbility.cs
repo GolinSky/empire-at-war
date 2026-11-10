@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
@@ -43,13 +44,15 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
+            // Resolve the beam prefab first: a wrong prefab must fail before anything is spawned.
+            BeamShot beamPrefab = (BeamShot)_profile.ShotPrefab;
             _caster = caster;
             _target = target;
             _health = target.GetFacade<IHealthFacade>();
             _timeLeft = definition.Duration;
             _damagePerSecond = _damage / definition.Duration;
             _pendingTime = 0f;
-            _view = (BeamShot)Object.Instantiate(_profile.ShotPrefab);
+            _view = Object.Instantiate(beamPrefab);
             _view.PrepareImpact(_impactPresenter, target.HealthModel, _damageType, _damage, 1.5f, true);
             _view.PlayBeam(GetMuzzle(caster), target.GetFacade<IEntityTransformFacade>().Transform,
                 definition.Duration, _profile);
@@ -62,9 +65,9 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             if (_pendingTime < DAMAGE_TICK_INTERVAL && _timeLeft > 0f) return;
 
             // The first live hardpoint takes the hit. Index zero routes it to the hull on a wreck.
-            HardPointModel[] hardPoints = _target.HealthModel.HardPointModels;
+            IReadOnlyList<IReadOnlyHardPointModel> hardPoints = _target.HealthModel.HardPointModels;
             int hardPointId = 0;
-            for (int i = 0; i < hardPoints.Length; i++)
+            for (int i = 0; i < hardPoints.Count; i++)
             {
                 if (hardPoints[i].IsDestroyed) continue;
                 hardPointId = i;

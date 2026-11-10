@@ -26,12 +26,16 @@ namespace EmpireAtWar.Entities.Saves
         [SerializeField] private Button cancelNameButton;
         private readonly List<SaveBrowserRow> _rows = new List<SaveBrowserRow>();
         private ISaveBrowserPresenter _presenter;
+        private ISaveCreationPresenter _creation;
         private bool _isInitialized;
         private int _modeIndex;
 
         public event Action<int> ModeSelected;
 
         public void AssignPresenter(ISaveBrowserPresenter presenter) => _presenter = presenter;
+
+        /// <summary>Save route only: binds save-as-new and naming. The load route never assigns it.</summary>
+        public void AssignCreationPresenter(ISaveCreationPresenter creation) => _creation = creation;
 
         public override void Show()
         {
@@ -45,9 +49,12 @@ namespace EmpireAtWar.Entities.Saves
             closeButton.onClick.AddListener(_presenter.Close);
             skirmishToggle.onValueChanged.AddListener(SelectSkirmish);
             survivalToggle.onValueChanged.AddListener(SelectSurvival);
-            saveAsNewButton.onClick.AddListener(_presenter.SaveAsNew);
-            confirmNameButton.onClick.AddListener(ConfirmName);
-            cancelNameButton.onClick.AddListener(_presenter.CancelName);
+            if (_creation != null)
+            {
+                saveAsNewButton.onClick.AddListener(_creation.SaveAsNew);
+                confirmNameButton.onClick.AddListener(ConfirmName);
+                cancelNameButton.onClick.AddListener(_creation.CancelName);
+            }
             _isInitialized = true;
         }
 
@@ -57,9 +64,12 @@ namespace EmpireAtWar.Entities.Saves
             closeButton.onClick.RemoveListener(_presenter.Close);
             skirmishToggle.onValueChanged.RemoveListener(SelectSkirmish);
             survivalToggle.onValueChanged.RemoveListener(SelectSurvival);
-            saveAsNewButton.onClick.RemoveListener(_presenter.SaveAsNew);
-            confirmNameButton.onClick.RemoveListener(ConfirmName);
-            cancelNameButton.onClick.RemoveListener(_presenter.CancelName);
+            if (_creation != null)
+            {
+                saveAsNewButton.onClick.RemoveListener(_creation.SaveAsNew);
+                confirmNameButton.onClick.RemoveListener(ConfirmName);
+                cancelNameButton.onClick.RemoveListener(_creation.CancelName);
+            }
             _isInitialized = false;
         }
 
@@ -104,7 +114,7 @@ namespace EmpireAtWar.Entities.Saves
 
         private void SelectSkirmish(bool selected) { if (selected && _modeIndex != 0) ModeSelected?.Invoke(0); }
         private void SelectSurvival(bool selected) { if (selected && _modeIndex != 1) ModeSelected?.Invoke(1); }
-        private void ConfirmName() => _presenter.ConfirmName(saveName.text);
+        private void ConfirmName() => _creation.ConfirmName(saveName.text);
         private void OnDestroy() => Dispose();
     }
 }

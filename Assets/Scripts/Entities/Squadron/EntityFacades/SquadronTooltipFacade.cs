@@ -25,7 +25,7 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
         public TooltipContent Build(List<TooltipStat> stats, string status)
         {
             stats.Add(new TooltipStat(label: "Surviving fighters", current: _health.HardPointModels.Count(member => !member.IsDestroyed),
-                max: _health.HardPointModels.Length));
+                max: _health.HardPointModels.Count));
             return UnitTooltipContent.Build(_factions.GetSquadronFactionData(_squadronType), stats, status: status);
         }
     }

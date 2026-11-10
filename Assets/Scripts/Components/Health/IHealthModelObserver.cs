@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Mvc;
@@ -12,7 +13,7 @@ namespace EmpireAtWar.Models.Health
         event Action OnValueChanged;
 
         ShipClass ShipClass { get; }
-        HardPointModel[] HardPointModels { get; }
+        IReadOnlyList<IReadOnlyHardPointModel> HardPointModels { get; }
         float Hull { get; }
         float HullPercentage { get; }
         float Shields { get; }

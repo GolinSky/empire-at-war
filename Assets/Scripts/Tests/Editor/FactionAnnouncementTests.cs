@@ -718,7 +718,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action OnDestroy = delegate { };
             public event Action OnValueChanged { add { } remove { } }
             public ShipClass ShipClass => ShipClass.Cruiser;
-            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public float HullPercentage => 1f;
             public float Shields => 0f;

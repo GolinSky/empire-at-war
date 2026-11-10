@@ -422,7 +422,7 @@ namespace EmpireAtWar.Tests.Weapon
             public event Action OnDestroy { add { } remove { } }
             public event Action OnValueChanged { add { } remove { } }
             public ShipClass ShipClass { get; set; } = ShipClass.Capital;
-            public HardPointModel[] HardPointModels => Array.Empty<HardPointModel>();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 100f;
             public float HullPercentage => 1f;
             public float Shields => 0f;

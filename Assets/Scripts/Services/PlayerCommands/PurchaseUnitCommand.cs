@@ -1,6 +1,5 @@
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Players;
-using EmpireAtWar.Services.Saves;
 
 namespace EmpireAtWar.Services.PlayerCommands
 {
@@ -22,7 +21,7 @@ namespace EmpireAtWar.Services.PlayerCommands
 
         public static PurchaseUnitCommand From(PlayerId issuer, UnitRequest request)
         {
-            UnitRequestSave key = UnitRequestSave.From(request);
+            UnitRequestKey key = UnitRequestKey.From(request);
             return new PurchaseUnitCommand(issuer, key.Kind, key.Key, key.Tier);
         }
     }

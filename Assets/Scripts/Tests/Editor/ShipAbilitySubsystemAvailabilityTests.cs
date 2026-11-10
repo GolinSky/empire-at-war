@@ -109,7 +109,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action OnDestroy { add { } remove { } }
             public event Action OnValueChanged { add { } remove { } }
             public ShipClass ShipClass => ShipClass.Capital;
-            public HardPointModel[] HardPointModels { get; }
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels { get; }
             public float Hull => 1f;
             public float HullPercentage => 1f;
             public float Shields => 1f;
