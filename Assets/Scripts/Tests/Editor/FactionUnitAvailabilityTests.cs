@@ -165,24 +165,26 @@ namespace EmpireAtWar.Tests.Editor
 
                 Assert.That(presenter.IsUnitLimitReached(request), Is.True);
                 view.RefreshAvailability(0f, false);
-                Assert.That(card.gameObject.activeSelf, Is.True, "Reaching the purchase limit must keep the card visible.");
+                Assert.That(card.gameObject.activeSelf, Is.EqualTo(kind != "Hero"), "Only bought heroes hide at their limit.");
                 Assert.That(button.interactable, Is.False, "Reaching the purchase limit must disable the card.");
 
                 Assert.That(model.TryCancelCurrentUnit(request.Id, out _), Is.True);
                 view.RefreshAvailability(0f, false);
+                Assert.That(card.gameObject.activeSelf, Is.True, "Releasing a purchase must restore the card.");
                 Assert.That(button.interactable, Is.True, "Releasing a purchase must re-enable the card.");
 
                 model.QueueUnit(request);
                 model.Advance(10f * maxCount);
                 view.RefreshAvailability(0f, false);
                 bool hasLifetimeLimit = kind == "Structure" || kind == "Hero";
-                Assert.That(card.gameObject.activeSelf, Is.True);
+                Assert.That(card.gameObject.activeSelf, Is.EqualTo(kind != "Hero"));
                 Assert.That(button.interactable, Is.EqualTo(!hasLifetimeLimit),
                     "Completed structures and heroes retain their reservation; ordinary queues release capacity.");
 
                 if (kind == "Structure") model.ReleaseStructure(request);
                 if (kind == "Hero") model.SetHeroReserved(UnitTypeId.Ship(ShipType.HomeOne), false);
                 view.RefreshAvailability(0f, false);
+                Assert.That(card.gameObject.activeSelf, Is.True, "Releasing a hero restores its card.");
                 Assert.That(button.interactable, Is.True, "Releasing a lifetime reservation re-enables the card.");
             }
             finally

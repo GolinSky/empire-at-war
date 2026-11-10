@@ -172,7 +172,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                     if (queue.UnitRequest.Id == unit.RequestId) queued = true;
                 bool unlocked = _presenter.IsUnitAvailable(unit.FactionData);
                 bool atLimit = _presenter.IsUnitLimitReached(unit.Request);
-                unit.SetActive(unlocked);
+                unit.SetActive(unlocked && !(unit.FactionData.IsHero && atLimit));
                 unit.RenderAvailability(unlocked,
                     credits >= unit.FactionData.Price, queued, battleEnded, atLimit);
             }
@@ -296,7 +296,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
                          .ThenByDescending(unit => _presenter.IsUnitAvailable(unit.FactionData)))
             {
                 unitUi.transform.SetSiblingIndex(siblingIndex++);
-                bool isShown = isSelectionVisible && _presenter.IsUnitAvailable(unitUi.FactionData);
+                bool isShown = isSelectionVisible && _presenter.IsUnitAvailable(unitUi.FactionData) &&
+                               !(unitUi.FactionData.IsHero && _presenter.IsUnitLimitReached(unitUi.Request));
                 unitUi.SetActive(isShown);
                 if (!isShown) continue;
                 switch (unitUi.Request)
