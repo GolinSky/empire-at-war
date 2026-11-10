@@ -16,6 +16,9 @@ namespace EmpireAtWar.Models.Health
     [Serializable]
     public class HealthModel : Model
     {
+        public const float DEAD_HARDPOINT_HULL_SHARE = 0.9f;
+        public const float DEAD_HARDPOINT_SPREAD_SHARE = 0.25f;
+
         private readonly IHealthData _data;
 
         private readonly DamageMatrixData _damageMatrix;
@@ -288,37 +291,36 @@ namespace EmpireAtWar.Models.Health
             OnValueChanged?.Invoke();
         }
 
-        // A hit on an already destroyed hardpoint is split evenly between the live ones.
+        // A hit on an already destroyed hardpoint: the hull takes 90%, and 25% is split evenly between the live hardpoints.
         private void DamageLiveHardPoints(float damage)
         {
             int liveCount = 0;
             foreach (HardPointModel hardPoint in HardPointModels)
                 if (!hardPoint.IsDestroyed) liveCount++;
 
-            float share = damage / liveCount;
+            float share = damage * DEAD_HARDPOINT_SPREAD_SHARE / liveCount;
             foreach (HardPointModel hardPoint in HardPointModels)
-            {
-                if (hardPoint.IsDestroyed) continue;
-                DamageHardPoint(hardPoint, share);
-                if (IsDestroyed) return;
-            }
+                if (!hardPoint.IsDestroyed) DamageHardPointOnly(hardPoint, share);
+
+            DamageHull(damage * DEAD_HARDPOINT_HULL_SHARE);
         }
 
         private void DamageHardPoint(HardPointModel hardPoint, float damage)
         {
-            if (!hardPoint.IsDestroyed)
-            {
-                hardPoint.ApplyDamage(damage);
-                if (hardPoint.IsDestroyed && hardPoint.HardPointType == HardPointType.ShieldGenerator &&
-                    HardPointModels.Where(point => point.HardPointType == HardPointType.ShieldGenerator)
-                        .All(point => point.IsDestroyed))
-                {
-                    IsLostShieldGenerator = true;
-                    Shields = 0f;
-                }
-            }
-
+            if (!hardPoint.IsDestroyed) DamageHardPointOnly(hardPoint, damage);
             DamageHull(damage * hardPoint.HullDamageMultiplier);
+        }
+
+        private void DamageHardPointOnly(HardPointModel hardPoint, float damage)
+        {
+            hardPoint.ApplyDamage(damage);
+            if (hardPoint.IsDestroyed && hardPoint.HardPointType == HardPointType.ShieldGenerator &&
+                HardPointModels.Where(point => point.HardPointType == HardPointType.ShieldGenerator)
+                    .All(point => point.IsDestroyed))
+            {
+                IsLostShieldGenerator = true;
+                Shields = 0f;
+            }
         }
 
         // Only marks the death; ApplyDamage raises OnDestroy after OnValueChanged.

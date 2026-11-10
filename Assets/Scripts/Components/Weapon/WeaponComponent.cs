@@ -1025,13 +1025,14 @@ namespace EmpireAtWar.Components.Weapon
                 GetHullDamageMultiplier(target, hardPointModel);
         }
 
-        // A live installed hardpoint scales hull damage; hits spread from a dead one or on a locked one count at 1.
+        // A live installed hardpoint scales hull damage; hits spread from a dead one take the hull share; a locked one counts at 1.
         private static float GetHullDamageMultiplier(IHealthModelObserver target, IHardPointModel hardPointModel)
         {
             IReadOnlyList<IReadOnlyHardPointModel> hardPoints = target.HardPointModels;
             if (hardPoints.Count == 0) return 1f;
             IReadOnlyHardPointModel hardPoint = hardPoints[hardPointModel.Id];
-            return hardPoint.IsInstalled && !hardPoint.IsDestroyed ? hardPoint.HullDamageMultiplier : 1f;
+            if (hardPoint.IsInstalled && !hardPoint.IsDestroyed) return hardPoint.HullDamageMultiplier;
+            return hardPoint.IsDestroyed && target.HasLiveHardPoints ? HealthModel.DEAD_HARDPOINT_HULL_SHARE : 1f;
         }
 
         private static bool IsTargetValid(AttackData attackData, IHardPointModel hardPointModel) =>

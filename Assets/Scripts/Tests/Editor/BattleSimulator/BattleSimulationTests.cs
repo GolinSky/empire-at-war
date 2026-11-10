@@ -33,7 +33,7 @@ namespace EmpireAtWar.Tests.Editor
             var definition = Unit("A", 7000, 0);
             definition.HardPoints[0].HealthWeight = healthWeight;
             definition.HardPoints.Add(new SimHardPointDefinition { Type = HardPointType.Weapon });
-            float expectedHealth = 7000f * 1.15f * healthWeight / (healthWeight + 1f);
+            float expectedHealth = 7000f * 1.5f * healthWeight / (healthWeight + 1f);
             var unit = new SimUnit(definition, new BattleFleetEntry { UnitId = "A" }, 0, 0,
                 _matrix, new System.Random(1), true);
 

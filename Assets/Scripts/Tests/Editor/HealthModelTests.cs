@@ -175,7 +175,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void ApplyDamage_DestroyedHardPointSpreadsDamageOverLiveHardPoints()
+        public void ApplyDamage_DestroyedHardPointSendsMostDamageToHullAndSpreadsAQuarter()
         {
             HealthModel model = CreateModel(0f, out HardPointModel weapon, out HardPointModel engine,
                 out HardPointModel shieldGenerator);
@@ -184,9 +184,9 @@ namespace EmpireAtWar.Tests.Editor
             model.ApplyDamage(100f, DamageType.Turbolaser, 0);
 
             Assert.That(weapon.IsDestroyed, Is.True);
-            Assert.That(engine.Health, Is.EqualTo(150f));
-            Assert.That(shieldGenerator.Health, Is.EqualTo(100f));
-            Assert.That(model.Hull, Is.EqualTo(HULL - 300f * 0.5f - 50f - 50f));
+            Assert.That(engine.Health, Is.EqualTo(187.5f));
+            Assert.That(shieldGenerator.Health, Is.EqualTo(137.5f));
+            Assert.That(model.Hull, Is.EqualTo(HULL - 300f * 0.5f - 100f * HealthModel.DEAD_HARDPOINT_HULL_SHARE));
             Assert.That(model.IsDestroyed, Is.False);
         }
 
@@ -379,8 +379,8 @@ namespace EmpireAtWar.Tests.Editor
             };
             float[] health = new HardPointHealthBudget().Calculate(10000f, ShipClass.Capital, mounts);
 
-            Assert.That(health[0], Is.EqualTo(4600f).Within(0.01f));
-            Assert.That(health[1], Is.EqualTo(6900f).Within(0.01f));
+            Assert.That(health[0], Is.EqualTo(6000f).Within(0.01f));
+            Assert.That(health[1], Is.EqualTo(9000f).Within(0.01f));
             Assert.That(health[2], Is.Zero);
         }
 
@@ -408,7 +408,7 @@ namespace EmpireAtWar.Tests.Editor
             modifiers.SetFleetCommand(true);
             model.RefreshStatModifiers();
 
-            Assert.That(mount.MaxHealth, Is.EqualTo(model.MaxHull * 1.15f).Within(0.01f));
+            Assert.That(mount.MaxHealth, Is.EqualTo(model.MaxHull * 1.5f).Within(0.01f));
             Assert.That(mount.HealthPercentage, Is.EqualTo(fraction).Within(0.0001f));
             Assert.That(mount.Health / mount.MaxHealth, Is.EqualTo(fraction).Within(0.0001f));
             Assert.That(mount.HullDamageMultiplier, Is.EqualTo(1f));
@@ -442,7 +442,7 @@ namespace EmpireAtWar.Tests.Editor
             float[] health = new HardPointHealthBudget().Calculate(10000f, ShipClass.Capital, mounts);
 
             Assert.That(health[1], Is.EqualTo(health[0] * 2f).Within(0.01f));
-            Assert.That(health[0] + health[1], Is.EqualTo(11500f).Within(0.01f));
+            Assert.That(health[0] + health[1], Is.EqualTo(15000f).Within(0.01f));
         }
 
         [Test]
@@ -459,8 +459,8 @@ namespace EmpireAtWar.Tests.Editor
             model.Upgrade(2, 1f, 1f, 1f, hardPointScale: 10f);
 
             Assert.That(lockedWeapon.IsInstalled, Is.True);
-            Assert.That(weapon.MaxHealth, Is.EqualTo(575f).Within(0.01f));
-            Assert.That(lockedWeapon.MaxHealth, Is.EqualTo(575f).Within(0.01f));
+            Assert.That(weapon.MaxHealth, Is.EqualTo(750f).Within(0.01f));
+            Assert.That(lockedWeapon.MaxHealth, Is.EqualTo(750f).Within(0.01f));
             Assert.That(weapon.Health, Is.EqualTo(weapon.MaxHealth));
             Assert.That(lockedWeapon.Health, Is.EqualTo(lockedWeapon.MaxHealth));
             Assert.That(model.HullPercentage, Is.EqualTo(hullFraction).Within(0.0001f));
@@ -479,7 +479,7 @@ namespace EmpireAtWar.Tests.Editor
             model.SetConstructionProgress(1f);
 
             Assert.That(model.Hull, Is.EqualTo(HULL - 20f).Within(0.01f));
-            Assert.That(weapon.MaxHealth, Is.EqualTo(HULL * 1.15f).Within(0.01f));
+            Assert.That(weapon.MaxHealth, Is.EqualTo(HULL * 1.5f).Within(0.01f));
             Assert.That(weapon.MaxHealth - weapon.Health, Is.EqualTo(20f).Within(0.01f));
             Assert.That(lockedWeapon.IsInstalled, Is.False);
             Assert.That(lockedWeapon.MaxHealth, Is.Zero);

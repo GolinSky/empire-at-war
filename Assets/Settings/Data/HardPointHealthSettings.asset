@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e6e4629dfd64ade9bc157f694475094, type: 3}
   m_Name: HardPointHealthSettings
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Models.Health.HardPointHealthSettings
-  budgetRatio: 1.15
+  budgetRatio: 1.5
   typeWeights:
   - 1
   - 1.5
