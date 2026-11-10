@@ -74,5 +74,6 @@ namespace EmpireAtWar.Components.AttackComponent
         BobaFettTwinLaser = 126,
         FalconQuadLaser = 123,
         InterceptorLaser = 127,
+        HeavyDualMissileLauncher = 128,
     }
 }

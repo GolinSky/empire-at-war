@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: VictoryIShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
-  <Speed>k__BackingField: 20
+  <Speed>k__BackingField: 16
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 5
   <HullBottom>k__BackingField: -17.680126
@@ -27,8 +27,8 @@ MonoBehaviour:
   <Wreck>k__BackingField: {fileID: 11400000, guid: 4db4bb5843cde4048a60d36a8ec83347,
     type: 2}
   <ShipClass>k__BackingField: 8
-  <Hull>k__BackingField: 3600
-  <Shields>k__BackingField: 3000
+  <Hull>k__BackingField: 4500
+  <Shields>k__BackingField: 3500
   shieldRegenTiers: {fileID: 11400000, guid: 3425d6ddc79a6b649990974111258ac9, type: 2}
   <ShieldRegenTier>k__BackingField: 2
   <ShieldRegenerateDelay>k__BackingField: 1
@@ -45,5 +45,5 @@ MonoBehaviour:
     count: 4
   - weaponType: 65
     count: 4
-  - weaponType: 93
+  - weaponType: 95
     count: 2
