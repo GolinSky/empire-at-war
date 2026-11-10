@@ -78,5 +78,31 @@ namespace EmpireAtWar.Services.Tutorial
         UnitCancelled = 72,
         ScoutQueued = 73,
         NewestUnitSelected = 74,
+        /// <summary>Every mining facility kind unlocked so far is at its build limit (queued, waiting or placed).</summary>
+        MiningFacilitiesAtLimit = 75,
+        /// <summary>A local unit is inside a not-owned site of the step's target kind (mining, central, edge).</summary>
+        UnitInTargetSite = 76,
+        /// <summary>One more site of the step's target kind was captured after the step started.</summary>
+        TargetSiteCaptured = 77,
+        /// <summary>One more site of the step's target kind started building after the step started.</summary>
+        TargetSiteBuilding = 78,
+        /// <summary>Every central mining site is owned and building or built.</summary>
+        CentralZoneTaken = 79,
+        /// <summary>The player has a fleet: <see cref="FleetOwnedHintCondition.FLEET_SIZE"/> living ships.</summary>
+        FleetOwned = 80,
+        /// <summary>Ships and squadrons in the build queue reach the step's count.</summary>
+        ShipsQueued = 81,
+        /// <summary>No ship or squadron is being built and one waits in reinforcements.</summary>
+        ShipsBuilt = 82,
+        /// <summary>No ship or squadron waits in reinforcements.</summary>
+        ShipsDeployed = 83,
+        /// <summary>No mining facility is being built and one waits in reinforcements.</summary>
+        MiningFacilitiesBuilt = 84,
+        /// <summary>No mining facility waits in reinforcements.</summary>
+        MiningFacilitiesDeployed = 85,
+        /// <summary>A central mining site is owned by the player.</summary>
+        CentralSiteCaptured = 86,
+        /// <summary>Units were ordered (map or minimap) into a not-owned site of the step's target kind.</summary>
+        OrderIntoTargetSite = 87,
     }
 }

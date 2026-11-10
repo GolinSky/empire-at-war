@@ -52,7 +52,9 @@ namespace EmpireAtWar.Services.VContainer
             RegisterLocalPlayerServices(builder, player.Features);
             battleScope.Modules.ConfigureLocalPlayer(builder, player, transform);
             // Simulations are a balance tool, not matches players play.
-            if (battleScope.Battle.Mode != GameMode.BattleSimulation)
+            if (battleScope.Battle.Mode == GameMode.Tutorial)
+                EmpireAtWar.Services.Tutorial.Guided.GuidedTutorialRegistrations.Register(builder, Assets);
+            else if (battleScope.Battle.Mode != GameMode.BattleSimulation)
                 HintRegistrations.Register(builder, Assets,
                     hasCheatPanel: battleScope.Battle.HasFeature(BattleFeatures.Economy) && player.Has(BattleFeatures.Economy));
         }

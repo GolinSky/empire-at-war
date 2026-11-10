@@ -2,7 +2,7 @@ using EmpireAtWar.Entities.Reinforcement;
 
 namespace EmpireAtWar.Services.Tutorial
 {
-    /// <summary>Met when the player opens the reinforcement panel.</summary>
+    /// <summary>Met when the reinforcement panel opens, or is already open when the condition starts.</summary>
     public sealed class ReinforcementPanelHintCondition : IHintCondition
     {
         private readonly IReinforcementPanelObserver _panel;
@@ -12,6 +12,7 @@ namespace EmpireAtWar.Services.Tutorial
         public ReinforcementPanelHintCondition(IReinforcementPanelObserver panel)
         {
             _panel = panel;
+            IsMet = panel.IsOpen;
             _panel.Opened += HandleOpened;
         }
 

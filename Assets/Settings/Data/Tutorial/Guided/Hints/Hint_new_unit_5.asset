@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843a2fdd59d09604a874eb556c56c86e, type: 3}
+  m_Name: Hint_new_unit_5
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
+  id: new_unit_5
+  title: New units
+  body: 'Build the marked new unit and 2 more ships. Hover each: Strong against and
+    Weak against show what it is for. Ordered [count].'
+  inputActions: []
+  inputControls:
+  - <Mouse>/leftButton
+  anchor: 26
+  anchorFallback: 0
+  target: 0
+  completion: 81
+  completionCount: 3
+  listenFromShown: 1
+  requires:
+  - state: 11
+    step: {fileID: 11400000, guid: 470590bdb4e8ded47b14bb263603ceab, type: 2}
+  - state: 2
+    step: {fileID: 11400000, guid: c152b637ff1e65340a8086aa0196dcb8, type: 2}
+  skipUnless: 0
+  showDuringCombat: 0
+  autoCloseSeconds: 0
+  waitSilently: 0
+  demo: 0
+  previewAnchor: 0

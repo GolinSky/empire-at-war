@@ -18,5 +18,13 @@ namespace EmpireAtWar.Services.Tutorial
         FoggedMiningSite = 7,
         /// <summary>The local movable unit that arrived last (highest entity id), such as a just deployed scout.</summary>
         NewestUnit = 8,
+        /// <summary>Open space beside the local station, toward the map middle: where units are deployed.</summary>
+        NearOwnStation = 9,
+        /// <summary>A mining site of the central zone: own unbuilt one first, else the free one nearest the station.</summary>
+        CentralMiningSite = 10,
+        /// <summary>A mining site outside the central zone: own unbuilt one first, else the free one nearest the station.</summary>
+        EdgeMiningSite = 11,
+        /// <summary>The station of the first hostile player that still has one.</summary>
+        EnemyStation = 12,
     }
 }

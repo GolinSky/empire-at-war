@@ -20,8 +20,9 @@ MonoBehaviour:
   - <Mouse>/leftButton
   anchor: 29
   anchorFallback: 13
-  target: 3
+  target: 9
   completion: 71
+  completionCount: 1
   listenFromShown: 0
   requires:
   - state: 8

@@ -17,15 +17,18 @@ namespace EmpireAtWar.Services.Tutorial
             _selection = selection;
             _type = type;
             _minimumCount = minimumCount;
+            // Already selected when the step starts counts too: the player need not click again.
+            IsMet = IsWanted(selection.PlayerSelectionContext);
             _selection.AddObserver(this);
         }
 
         public void UpdateState(ISelectionSubject value)
         {
-            if (value.PlayerSelectionContext.SelectionType == _type &&
-                value.PlayerSelectionContext.Count >= _minimumCount)
-                IsMet = true;
+            if (IsWanted(value.PlayerSelectionContext)) IsMet = true;
         }
+
+        private bool IsWanted(ISelectionContext context) =>
+            context.SelectionType == _type && context.Count >= _minimumCount;
 
         public void Dispose() => _selection.RemoveObserver(this);
     }

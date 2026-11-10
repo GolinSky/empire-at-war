@@ -12,8 +12,13 @@ namespace EmpireAtWar.Entities.TutorialUi
             List<HintInputPrompt> prompts = new List<HintInputPrompt>();
             foreach (string actionPath in hint.InputActions)
                 AddAction(prompts, actions.FindAction(actionPath, throwIfNotFound: true));
-            foreach (string controlPath in hint.InputControls)
-                AddControl(prompts, controlPath, prompts.Count == 0 ? string.Empty : "or");
+            // A fixed control written as "<Keyboard>/shift+<Mouse>/leftButton" is one chord: Shift + left mouse.
+            foreach (string control in hint.InputControls)
+            {
+                string[] chord = control.Split('+');
+                for (int i = 0; i < chord.Length; i++)
+                    AddControl(prompts, chord[i], i > 0 ? "+" : prompts.Count == 0 ? string.Empty : "or");
+            }
             return prompts;
         }
 

@@ -25,6 +25,8 @@ namespace EmpireAtWar.Services.Tutorial
         [SerializeField] private HintTargetId target;
         [Tooltip("Closes the step as done; a step done before it is shown is skipped. None: only Dismiss or auto close.")]
         [SerializeField] private HintConditionId completion;
+        [Tooltip("How many the completion needs, for counting completions (Ships Queued).")]
+        [Min(1)] [SerializeField] private int completionCount = 1;
         [Tooltip("Start listening for the completion only when the step shows, for actions the player repeats " +
                  "(move, queue a unit).")]
         [SerializeField] private bool listenFromShown;
@@ -53,6 +55,7 @@ namespace EmpireAtWar.Services.Tutorial
         public TutorialAnchorId AnchorFallback => anchorFallback;
         public HintTargetId Target => target;
         public HintConditionId Completion => completion;
+        public int CompletionCount => completionCount;
         public bool ListenFromShown => listenFromShown;
         public IReadOnlyList<HintRequirement> Requires => requires;
         public HintStateId SkipUnless => skipUnless;

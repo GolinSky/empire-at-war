@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Battle;
@@ -20,10 +21,14 @@ namespace EmpireAtWar.Services.Tutorial
         private readonly IReinforcementModelObserver _reinforcements;
         private readonly IEntityLocator _entities;
         private readonly ScoutUnits _scouts;
+        private readonly IPlayerFactionModelObserver _faction;
+        private readonly StationLevelData _stationLevels;
 
         public HintStates(ISelectionService selection, ILocalPlayer player, IReinforcementModelObserver reinforcements,
-            IEntityLocator entities, ScoutUnits scouts)
+            IEntityLocator entities, ScoutUnits scouts, IPlayerFactionModelObserver faction, StationLevelData stationLevels)
         {
+            _faction = faction;
+            _stationLevels = stationLevels;
             _scouts = scouts;
             _entities = entities;
             _selection = selection;
@@ -49,6 +54,9 @@ namespace EmpireAtWar.Services.Tutorial
                     return TryGetSelectedAbility(out ShipAbilityDefinition instant) && !instant.RequiresEnemyTarget;
                 case HintStateId.MiningFacilityReady: return HasMiningFacilityInReserve() || HasPlacedMiningFacility();
                 case HintStateId.ScoutReady: return HasScoutInReserve();
+                case HintStateId.LevelUpReady: return _faction.CurrentLevel < _stationLevels.MaxLevel && !IsLevelUpQueued();
+                case HintStateId.LevelUpIdle: return !IsLevelUpQueued();
+                case HintStateId.ShipStackInReserve: return HasShipStackInReserve();
                 default: throw new System.ArgumentOutOfRangeException(nameof(id), id, "No hint state for this id.");
             }
         }
@@ -79,6 +87,20 @@ namespace EmpireAtWar.Services.Tutorial
         {
             foreach (KeyValuePair<UnitRequest, int> entry in _reinforcements.Reserve)
                 if (entry.Key is MiningFacilityUnitRequest && entry.Value > 0) return true;
+            return false;
+        }
+
+        private bool IsLevelUpQueued()
+        {
+            foreach (ProductionQueueSnapshot item in _faction.GetProductionQueueSnapshots())
+                if (item.UnitRequest is LevelUnitRequest) return true;
+            return false;
+        }
+
+        private bool HasShipStackInReserve()
+        {
+            foreach (KeyValuePair<UnitRequest, int> entry in _reinforcements.Reserve)
+                if (entry.Value >= 2 && (entry.Key is ShipUnitRequest || entry.Key is SquadronUnitRequest)) return true;
             return false;
         }
 

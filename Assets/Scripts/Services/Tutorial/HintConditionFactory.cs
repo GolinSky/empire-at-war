@@ -99,13 +99,29 @@ namespace EmpireAtWar.Services.Tutorial
         public IHintCondition CreateTrigger(HintConditionId id) =>
             id == HintConditionId.None ? new ImmediateHintCondition() : Create(id);
 
-        public IHintCondition CreateCompletion(HintConditionId id) =>
-            id == HintConditionId.None ? new NeverHintCondition() : Create(id);
+        public IHintCondition CreateCompletion(HintDefinition step) =>
+            step.Completion == HintConditionId.None ? new NeverHintCondition() : Create(step.Completion, step);
 
-        private IHintCondition Create(HintConditionId id)
+        /// <param name="step">The step a completion belongs to, for target- and count-based conditions; null for triggers.</param>
+        private IHintCondition Create(HintConditionId id, HintDefinition step = null)
         {
             switch (id)
             {
+                case HintConditionId.UnitInTargetSite: return TargetSite(step, TargetSiteHintCondition.Stage.UnitInside);
+                case HintConditionId.TargetSiteCaptured: return TargetSite(step, TargetSiteHintCondition.Stage.Captured);
+                case HintConditionId.TargetSiteBuilding: return TargetSite(step, TargetSiteHintCondition.Stage.Building);
+                case HintConditionId.OrderIntoTargetSite:
+                    return _sites == null
+                        ? new NeverHintCondition()
+                        : new OrderIntoSiteHintCondition(_orders, _sites, _player, _targets, StepOf(id, step).Target);
+                case HintConditionId.CentralZoneTaken: return CentralZone(true);
+                case HintConditionId.CentralSiteCaptured: return CentralZone(false);
+                case HintConditionId.FleetOwned: return new FleetOwnedHintCondition(_entities, _player);
+                case HintConditionId.ShipsQueued: return new ShipsQueuedHintCondition(_faction, StepOf(id, step).CompletionCount);
+                case HintConditionId.ShipsBuilt: return Reserve(ReserveHintCondition.Kind.ShipsBuilt);
+                case HintConditionId.ShipsDeployed: return Reserve(ReserveHintCondition.Kind.ShipsDeployed);
+                case HintConditionId.MiningFacilitiesBuilt: return Reserve(ReserveHintCondition.Kind.FacilitiesBuilt);
+                case HintConditionId.MiningFacilitiesDeployed: return Reserve(ReserveHintCondition.Kind.FacilitiesDeployed);
                 case HintConditionId.ShipSelected: return new SelectionHintCondition(_selection, SelectionType.Ship, 1);
                 case HintConditionId.MultipleShipsSelected:
                     return new SelectionHintCondition(_selection, SelectionType.Ship, 2);
@@ -191,6 +207,7 @@ namespace EmpireAtWar.Services.Tutorial
                 case HintConditionId.UnitCancelled:
                     return _buildQueue == null ? new NeverHintCondition() : new UnitCancelledHintCondition(_buildQueue);
                 case HintConditionId.ScoutQueued: return new ScoutQueuedHintCondition(_faction, _scouts);
+                case HintConditionId.MiningFacilitiesAtLimit: return new MiningFacilityLimitHintCondition(_roster, _faction);
                 case HintConditionId.NewestUnitSelected: return new NewestUnitSelectedHintCondition(_targets, _selection);
                 case HintConditionId.SelectVisibleUsed: return new SelectionShortcutHintCondition(_selectionInput, false);
                 case HintConditionId.SelectAllUsed: return new SelectionShortcutHintCondition(_selectionInput, true);
@@ -207,6 +224,22 @@ namespace EmpireAtWar.Services.Tutorial
                 default: throw new ArgumentOutOfRangeException(nameof(id), id, "No hint condition for this id.");
             }
         }
+
+        private IHintCondition TargetSite(HintDefinition step, TargetSiteHintCondition.Stage stage) => _sites == null
+            ? new NeverHintCondition()
+            : new TargetSiteHintCondition(_sites, _entities, _player, _targets,
+                StepOf(HintConditionId.UnitInTargetSite, step).Target, stage);
+
+        private IHintCondition CentralZone(bool wholeZone) => _sites == null
+            ? new NeverHintCondition()
+            : new CentralZoneHintCondition(_sites, _player, _targets, wholeZone);
+
+        private IHintCondition Reserve(ReserveHintCondition.Kind kind) =>
+            new ReserveHintCondition(_faction, _reinforcements, kind);
+
+        // Target- and count-based conditions read their step; as a lesson trigger they have none.
+        private static HintDefinition StepOf(HintConditionId id, HintDefinition step) =>
+            step ?? throw new ArgumentException($"{id} needs a step and cannot be a lesson trigger.", nameof(id));
 
         private IHintCondition ResearchAffordable(bool? isEconomy) => _economy == null
             ? new NeverHintCondition()

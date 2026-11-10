@@ -6,5 +6,7 @@ namespace EmpireAtWar.Entities.Reinforcement
     public interface IReinforcementPanelObserver
     {
         event Action Opened;
+
+        bool IsOpen { get; }
     }
 }

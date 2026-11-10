@@ -1,0 +1,151 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e46857dfaeb9c9489dc2881530f4b17, type: 3}
+  m_Name: TutorialScript
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.Guided.TutorialScript
+  track: {fileID: 11400000, guid: 320ec119b9b458f4bb6a86b735b8413c, type: 2}
+  moneyFloorPerLevel:
+  - 3000
+  - 6000
+  - 8000
+  - 12000
+  - 12000
+  buildSpeed: 3
+  spawnSpread: 60
+  enemyGroups:
+  - afterLesson: lesson_fleet
+    alongFromEnemy: 0.75
+    factions:
+    - faction: 0
+      units:
+      - isSquadron: 1
+        unitId: 2
+        quantity: 2
+    - faction: 1
+      units:
+      - isSquadron: 1
+        unitId: 102
+        quantity: 2
+    - faction: 2
+      units:
+      - isSquadron: 1
+        unitId: 300
+        quantity: 2
+    - faction: 3
+      units:
+      - isSquadron: 1
+        unitId: 200
+        quantity: 2
+  - afterLesson: lesson_station
+    alongFromEnemy: 0.6
+    factions:
+    - faction: 0
+      units:
+      - isSquadron: 0
+        unitId: 13
+        quantity: 2
+    - faction: 1
+      units:
+      - isSquadron: 0
+        unitId: 106
+        quantity: 2
+    - faction: 2
+      units:
+      - isSquadron: 0
+        unitId: 301
+        quantity: 2
+    - faction: 3
+      units:
+      - isSquadron: 0
+        unitId: 208
+        quantity: 2
+  - afterLesson: lesson_new_units
+    alongFromEnemy: 0.55
+    factions:
+    - faction: 0
+      units:
+      - isSquadron: 0
+        unitId: 15
+        quantity: 2
+    - faction: 1
+      units:
+      - isSquadron: 0
+        unitId: 107
+        quantity: 2
+    - faction: 2
+      units:
+      - isSquadron: 0
+        unitId: 300
+        quantity: 2
+    - faction: 3
+      units:
+      - isSquadron: 0
+        unitId: 215
+        quantity: 2
+  - afterLesson: lesson_build_fleet
+    alongFromEnemy: 0.5
+    factions:
+    - faction: 0
+      units:
+      - isSquadron: 0
+        unitId: 13
+        quantity: 2
+      - isSquadron: 0
+        unitId: 15
+        quantity: 1
+    - faction: 1
+      units:
+      - isSquadron: 0
+        unitId: 106
+        quantity: 2
+      - isSquadron: 0
+        unitId: 107
+        quantity: 1
+    - faction: 2
+      units:
+      - isSquadron: 0
+        unitId: 301
+        quantity: 2
+      - isSquadron: 0
+        unitId: 300
+        quantity: 1
+    - faction: 3
+      units:
+      - isSquadron: 0
+        unitId: 208
+        quantity: 2
+      - isSquadron: 0
+        unitId: 215
+        quantity: 1
+  - afterLesson: lesson_central
+    alongFromEnemy: 0.12
+    factions:
+    - faction: 0
+      units:
+      - isSquadron: 0
+        unitId: 15
+        quantity: 2
+    - faction: 1
+      units:
+      - isSquadron: 0
+        unitId: 107
+        quantity: 2
+    - faction: 2
+      units:
+      - isSquadron: 0
+        unitId: 300
+        quantity: 2
+    - faction: 3
+      units:
+      - isSquadron: 0
+        unitId: 215
+        quantity: 2

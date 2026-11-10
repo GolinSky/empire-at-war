@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9ddcac7e310c7a43badee4eb8515b66, type: 3}
+  m_Name: Lesson_fleet_more
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintLesson
+  id: lesson_fleet_more
+  steps:
+  - {fileID: 11400000, guid: a53e502b376d9db45bcfed92d721357f, type: 2}
+  - {fileID: 11400000, guid: 6f826b96857c43b4390d9da41021c3ba, type: 2}
+  - {fileID: 11400000, guid: b2ce59546a88d6843842dc61e43f82c7, type: 2}
+  - {fileID: 11400000, guid: e5fbc73f9c670e648abeae816f2d2f2f, type: 2}
+  - {fileID: 11400000, guid: d86f9febfec487544a53cf2c6161e5a7, type: 2}
+  trigger: 36
+  priority: 0
+  interruptsOnboarding: 0

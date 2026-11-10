@@ -22,6 +22,7 @@ namespace EmpireAtWar.Entities.TutorialUi
         private readonly List<RectTransform> _anchors = new List<RectTransform>();
         private HintUi _ui;
         private bool _isPreviewShown;
+        private string _body;
 
         public HintUiController(IUiService uiService, IHintService hints, ISettingsService settings,
             ICameraService camera, InputActionsProvider input, IInputBindings bindings,
@@ -50,6 +51,8 @@ namespace EmpireAtWar.Entities.TutorialUi
         {
             HintDefinition hint = _hints.Current;
             if (hint == null) return;
+            // Progress tokens ([count]) change while the card is open.
+            if (hint.Body.IndexOf('[') >= 0) RefreshBody(hint);
             bool hasAnchor = TutorialAnchor.TryFindAll(hint.Anchor, _anchors) ||
                              TutorialAnchor.TryFindAll(hint.AnchorFallback, _anchors);
             _ui.SetAnchorFrame(hasAnchor, hasAnchor ? ScreenRect(_anchors) : default);
@@ -74,7 +77,8 @@ namespace EmpireAtWar.Entities.TutorialUi
 
         private void HandleShown(HintDefinition hint)
         {
-            _ui.OpenHint(hint.Title, Body(hint), _hints.CurrentProgress);
+            _body = Body(hint);
+            _ui.OpenHint(hint.Title, _body, _hints.CurrentProgress);
             _ui.SetDemo(hint.Demo);
             _ui.SetPreview(null);
             _isPreviewShown = false;
@@ -95,8 +99,17 @@ namespace EmpireAtWar.Entities.TutorialUi
         {
             HintDefinition hint = _hints.Current;
             if (hint == null) return;
-            _ui.SetBody(Body(hint));
+            _body = null;
+            RefreshBody(hint);
             SetInputPrompts(hint);
+        }
+
+        private void RefreshBody(HintDefinition hint)
+        {
+            string body = Body(hint);
+            if (body == _body) return;
+            _body = body;
+            _ui.SetBody(body);
         }
 
         private void SetInputPrompts(HintDefinition hint) =>

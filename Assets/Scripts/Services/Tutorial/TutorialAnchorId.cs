@@ -36,5 +36,9 @@ namespace EmpireAtWar.Services.Tutorial
         /// <summary>Card of the unit added to reinforcements last (the scout, the facility).</summary>
         ReinforcementNewUnit = 29,
         ReinforcementPanel = 30,
+        /// <summary>Card of the mining facilities waiting in the open reinforcement panel.</summary>
+        ReinforcementFacility = 31,
+        /// <summary>First unit card holding two or more units: the one Shift+drag deploys together.</summary>
+        ReinforcementStack = 32,
     }
 }

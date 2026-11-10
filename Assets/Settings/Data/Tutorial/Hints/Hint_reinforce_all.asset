@@ -17,14 +17,15 @@ MonoBehaviour:
   body: Hold Shift and drag the marked unit to deploy every one of its kind.
   inputActions: []
   inputControls:
-  - <Mouse>/leftButton
-  anchor: 28
-  anchorFallback: 13
-  target: 3
+  - <Keyboard>/shift+<Mouse>/leftButton
+  anchor: 32
+  anchorFallback: 30
+  target: 9
   completion: 57
+  completionCount: 1
   listenFromShown: 0
   requires: []
-  skipUnless: 0
+  skipUnless: 12
   showDuringCombat: 0
   autoCloseSeconds: 0
   waitSilently: 0

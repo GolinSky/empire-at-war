@@ -122,12 +122,20 @@ namespace EmpireAtWar.Entities.Reinforcement
         private void RefreshTutorialMarks()
         {
             SpawnShipUi first = null;
-            foreach (ISpawnShipUi shipUi in _spawnUnitUiDictionary.Values)
+            SpawnShipUi facility = null;
+            SpawnShipUi stack = null;
+            foreach (KeyValuePair<UnitLimitKey, ISpawnShipUi> entry in _spawnUnitUiDictionary)
             {
-                SpawnShipUi card = (SpawnShipUi)shipUi;
+                SpawnShipUi card = (SpawnShipUi)entry.Value;
                 if (first == null || card.transform.GetSiblingIndex() < first.transform.GetSiblingIndex()) first = card;
+                if (entry.Key.RequestType == typeof(MiningFacilityUnitRequest)) facility = card;
+                else if (_counts.TryGetValue(entry.Key, out int count) && count >= 2 &&
+                         (stack == null || card.transform.GetSiblingIndex() < stack.transform.GetSiblingIndex()))
+                    stack = card;
             }
             Mark(TutorialAnchorId.ReinforcementUnit, first);
+            Mark(TutorialAnchorId.ReinforcementFacility, facility);
+            Mark(TutorialAnchorId.ReinforcementStack, stack);
             Mark(TutorialAnchorId.ReinforcementNewUnit,
                 _hasNewest && _spawnUnitUiDictionary.TryGetValue(_newestKey, out ISpawnShipUi newest)
                     ? (SpawnShipUi)newest

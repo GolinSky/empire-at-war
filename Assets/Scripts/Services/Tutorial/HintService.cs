@@ -4,7 +4,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Lifecycle;
-using EmpireAtWar.Services.Settings;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.Tutorial
@@ -25,7 +24,7 @@ namespace EmpireAtWar.Services.Tutorial
         private readonly HintStates _states;
         private readonly HintTargets _targets;
         private readonly IHintProgressRepository _repository;
-        private readonly ISettingsService _settings;
+        private readonly IHintVisibility _visibility;
         private readonly SkirmishStateModel _battle;
         private readonly LocalUnitDamageTracker _damage;
         private readonly HintProgress _progress;
@@ -52,7 +51,7 @@ namespace EmpireAtWar.Services.Tutorial
                 : $"{_lesson.StepNumber}/{_lesson.Lesson.Steps.Count}";
 
         public HintService(HintTrack track, HintConditionFactory conditions, HintStates states, HintTargets targets,
-            IHintProgressRepository repository, ISettingsService settings, SkirmishStateModel battle,
+            IHintProgressRepository repository, IHintVisibility visibility, SkirmishStateModel battle,
             LocalUnitDamageTracker damage)
         {
             _track = track;
@@ -60,7 +59,7 @@ namespace EmpireAtWar.Services.Tutorial
             _states = states;
             _targets = targets;
             _repository = repository;
-            _settings = settings;
+            _visibility = visibility;
             _battle = battle;
             _damage = damage;
             _progress = _repository.Load();
@@ -95,7 +94,7 @@ namespace EmpireAtWar.Services.Tutorial
             foreach (HintDefinition step in lesson.Steps)
                 if (!_progress.IsDone(step.Id))
                     run.Steps.Add(new StepRun(step,
-                        step.ListenFromShown ? null : _conditions.CreateCompletion(step.Completion)));
+                        step.ListenFromShown ? null : _conditions.CreateCompletion(step)));
             return run;
         }
 
@@ -115,7 +114,7 @@ namespace EmpireAtWar.Services.Tutorial
             float deltaTime = Time.unscaledDeltaTime;
             _now += deltaTime;
             PollConditions(deltaTime);
-            if (!_settings.Saved.Gameplay.ShowHints)
+            if (!_visibility.IsOn)
             {
                 HideShown();
                 return;
@@ -191,7 +190,10 @@ namespace EmpireAtWar.Services.Tutorial
                 return;
             }
             HintDefinition show = Resolve(step.Definition, 0);
-            if (step.Condition == null) step.Condition = _conditions.CreateCompletion(step.Definition.Completion);
+            // A step that listens from shown starts listening only once it is the one showing: while its fix step
+            // (or silent wait) runs, an earlier action — the upgrade already building — must not count.
+            if (step.Condition == null && show == step.Definition)
+                step.Condition = _conditions.CreateCompletion(step.Definition);
             if (show.WaitSilently)
             {
                 Park(show);
@@ -285,6 +287,8 @@ namespace EmpireAtWar.Services.Tutorial
         {
             if (token == ABILITY_TOKEN) return _states.TryGetSelectedAbilityName(out value);
             value = null;
+            // The visible step's own condition (a [count]) first, then the lesson trigger (a [unit]).
+            if (_lesson.Head?.Condition is IHintTextSource step && step.TryGetText(token, out value)) return true;
             return _lesson.Trigger is IHintTextSource source && source.TryGetText(token, out value);
         }
 

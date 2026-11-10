@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843a2fdd59d09604a874eb556c56c86e, type: 3}
+  m_Name: Hint_sat_move
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
+  id: sat_move
+  title: Take a satellite pad
+  body: 'Now send them into the marked ring ({0}): a satellite pad. A satellite there
+    guards the area.'
+  inputActions:
+  - Battle/Command
+  inputControls: []
+  anchor: 0
+  anchorFallback: 0
+  target: 6
+  completion: 87
+  completionCount: 1
+  listenFromShown: 1
+  requires:
+  - state: 1
+    step: {fileID: 11400000, guid: 88d73ac2a2895c445bb1f34c29c24bc3, type: 2}
+  skipUnless: 0
+  showDuringCombat: 0
+  autoCloseSeconds: 0
+  waitSilently: 0
+  demo: 0
+  previewAnchor: 0

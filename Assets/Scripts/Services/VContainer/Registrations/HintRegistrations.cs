@@ -13,6 +13,15 @@ namespace EmpireAtWar.Services.VContainer
         {
             if (hasCheatPanel) builder.Register<HintCheatPresenter>(Lifetime.Singleton).AsImplementedInterfaces();
             AssetRegistrations.RegisterShared<HintTrack>(builder, assets);
+            builder.Register<SettingsHintVisibility>(Lifetime.Singleton).As<IHintVisibility>();
+            RegisterEngine(builder);
+        }
+
+        /// <summary>
+        /// The hint engine and card without a track, visibility or progress; the caller registers those.
+        /// </summary>
+        public static void RegisterEngine(IContainerBuilder builder)
+        {
             builder.Register<HintConditionFactory>(Lifetime.Singleton);
             builder.Register<ScoutUnits>(Lifetime.Singleton);
             builder.Register<HintStates>(Lifetime.Singleton);

@@ -31,6 +31,7 @@ namespace EmpireAtWar.Entities.Reinforcement
         private bool _isDisposed;
 
         public event Action Opened;
+        public bool IsOpen { get; private set; }
 
         public ReinforcementUiController(
             IUiService uiService,
@@ -124,6 +125,7 @@ namespace EmpireAtWar.Entities.Reinforcement
                     HandleTooltipHover, _tooltips);
             }
 
+            IsOpen = isActive;
             if (isActive)
             {
                 _ui.Show();

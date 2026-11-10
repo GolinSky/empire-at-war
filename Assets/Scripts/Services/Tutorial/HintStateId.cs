@@ -17,5 +17,11 @@ namespace EmpireAtWar.Services.Tutorial
         MiningFacilityReady = 8,
         /// <summary>A built scout (squadron, fighter, interceptor) waits in reinforcements.</summary>
         ScoutReady = 9,
+        /// <summary>No station upgrade is being built and the station is below its top level.</summary>
+        LevelUpReady = 10,
+        /// <summary>No station upgrade is being built.</summary>
+        LevelUpIdle = 11,
+        /// <summary>Two or more ships or squadrons of one kind wait in reinforcements (Shift+drag deploys them together).</summary>
+        ShipStackInReserve = 12,
     }
 }
