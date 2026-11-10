@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Entities.BaseEntity;
-using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Squadrons.EntityFacades;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
@@ -22,7 +22,6 @@ namespace EmpireAtWar.Services.ShipAbilities
             public Vector3 Position;
             public float Fuse;
             public float Radius;
-            public float Damage;
             public HarmonicBombView Marker;
         }
 
@@ -30,25 +29,25 @@ namespace EmpireAtWar.Services.ShipAbilities
         private readonly IPlayerRelations _relations;
         private readonly IVisionService _vision;
         private readonly HarmonicBombEffects _effects;
+        private readonly FactionCatalog _factions;
         private readonly List<Bomb> _bombs = new List<Bomb>();
-        private readonly List<(IEntity Entity, ISquadronMembersFacade Squadron, IHardPointModel Member,
-            int Index, IHealthFacade Health, float Damage)> _hits = new();
+        private readonly List<ISquadronMembersFacade> _hits = new();
 
         public HarmonicBombService(IEntityLocator entities, IPlayerRelations relations, IVisionService vision,
-            HarmonicBombEffects effects)
+            HarmonicBombEffects effects, FactionCatalog factions)
         {
             _entities = entities;
             _relations = relations;
             _vision = vision;
             _effects = effects;
+            _factions = factions;
         }
 
-        public void Drop(PlayerId owner, Vector3 position, float fuse, float radius, float damage,
-            HarmonicBombView prefab)
+        public void Drop(PlayerId owner, Vector3 position, float fuse, float radius, HarmonicBombView prefab)
         {
             _bombs.Add(new Bomb
             {
-                Owner = owner, Position = position, Fuse = fuse, Radius = radius, Damage = damage,
+                Owner = owner, Position = position, Fuse = fuse, Radius = radius,
                 Marker = _effects.Drop(position, prefab)
             });
         }
@@ -92,39 +91,35 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         private void ApplyBlast(Bomb bomb)
         {
-            // A lethal hit may remove a squadron from the locator or recycle it into a new formation.
+            // Collected first: a killed squadron leaves the locator.
             foreach (IEntity entity in _entities.Entities)
             {
-                if (!TryGetHostileSquadron(bomb.Owner, entity, out ISquadronMembersFacade squadron)) continue;
-                IHealthFacade health = entity.GetFacade<IHealthFacade>();
-                IReadOnlyList<IHardPointModel> members = squadron.Members;
-                for (int i = 0; i < members.Count; i++)
-                {
-                    IHardPointModel member = members[i];
-                    if (member.IsDestroyed) continue;
-                    float distance = PlanarGeometry.Distance(member.Position, bomb.Position);
-                    if (distance > bomb.Radius) continue;
-                    float multiplier = distance <= bomb.Radius / 3f ? 1f :
-                        distance <= 2f * bomb.Radius / 3f ? 0.6f : 0.25f;
-                    _hits.Add((entity, squadron, member, i, health, bomb.Damage * multiplier));
-                }
+                if (TryGetHostileSquadron(bomb.Owner, entity, out ISquadronMembersFacade squadron) &&
+                    HasMemberInside(squadron, bomb.Position, bomb.Radius)) _hits.Add(squadron);
             }
 
-            foreach (var hit in _hits)
-            {
-                if (!_entities.TryGetEntity(hit.Entity.Id, out IEntity current) || current != hit.Entity ||
-                    hit.Member.IsDestroyed || hit.Index >= hit.Squadron.Members.Count ||
-                    !ReferenceEquals(hit.Squadron.Members[hit.Index], hit.Member)) continue;
-                hit.Health.ApplyDamage(hit.Damage, DamageType.HypervelocityGun, hit.Member.Id);
-            }
+            foreach (ISquadronMembersFacade squadron in _hits) squadron.Kill();
             _hits.Clear();
         }
 
+        private static bool HasMemberInside(ISquadronMembersFacade squadron, Vector3 position, float radius)
+        {
+            IReadOnlyList<IHardPointModel> members = squadron.Members;
+            for (int i = 0; i < members.Count; i++)
+            {
+                IHardPointModel member = members[i];
+                if (!member.IsDestroyed && PlanarGeometry.ContainsCircle(member.Position, position, radius)) return true;
+            }
+            return false;
+        }
+
+        // Hero squadrons are immune to the bomb.
         private bool TryGetHostileSquadron(PlayerId owner, IEntity entity, out ISquadronMembersFacade squadron)
         {
             squadron = null;
             return _relations.IsHostile(owner, entity.Owner) && !entity.HealthModel.IsDestroyed &&
-                   entity.TryGetFacade(out squadron);
+                   entity.TryGetFacade(out squadron) &&
+                   !_factions.GetSquadronFactionData(entity.GetFacade<IUnitTypeFacade>().UnitTypeId.SquadronType).IsHero;
         }
 
         public void Clear()

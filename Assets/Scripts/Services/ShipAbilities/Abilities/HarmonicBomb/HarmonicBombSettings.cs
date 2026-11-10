@@ -8,13 +8,11 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     [Serializable]
     public sealed class HarmonicBombSettings : ShipAbilitySettings, IShipAbilityAutoUseRule
     {
-        [SerializeField] private float radius = 35f;
-        [SerializeField] private float centerDamage = 120f;
+        [SerializeField] private float radius = 70f;
         [SerializeField] private int minimumTargets = 3;
         [SerializeField] private HarmonicBombView viewPrefab;
 
         public float Radius => radius;
-        public float CenterDamage => centerDamage;
         public HarmonicBombView ViewPrefab => viewPrefab;
 
         public bool ShouldAutoActivate(ShipAbilityDependencies dependencies, IShipAbilityFacade caster) =>

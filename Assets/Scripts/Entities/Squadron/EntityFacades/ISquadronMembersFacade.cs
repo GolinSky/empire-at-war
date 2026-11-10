@@ -7,5 +7,8 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
     public interface ISquadronMembersFacade : IEntityFacade
     {
         IReadOnlyList<IHardPointModel> Members { get; }
+
+        /// <summary>Destroys every fighter at once.</summary>
+        void Kill();
     }
 }

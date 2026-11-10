@@ -962,8 +962,7 @@ MonoBehaviour:
       type: {class: HarmonicBombSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        radius: 105
-        centerDamage: 360
+        radius: 210
         minimumTargets: 3
         viewPrefab: {fileID: 2672410178665344242, guid: bc5edc30e2c06774dbe9b04d9ffdecbf,
           type: 3}

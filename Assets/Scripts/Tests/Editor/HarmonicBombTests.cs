@@ -4,7 +4,10 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Squadrons.EntityFacades;
+using EmpireAtWar.Entities.Units;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Audio;
@@ -25,43 +28,42 @@ namespace EmpireAtWar.Tests.Editor
         private GameObject _poolRoot;
 
         [Test]
-        public void OverlappingDropsSampleLiveMembersAtDetonationAndHitEachOnce()
+        public void DetonationKillsEveryHostileNonHeroSquadronWithAMemberInsideTheRadius()
         {
             PlayerRoster roster = TestPlayers.CreateTeamGame();
             VisionService vision = new VisionService(roster, false);
             DetonationAudio audio = new DetonationAudio();
-            _bombs = new HarmonicBombService(_entities, roster, vision,
-                new HarmonicBombEffects(vision, TestPlayers.CreateLocalPlayer(roster), audio));
+            _bombs = CreateService(roster, vision, audio);
             ShipAbilityDefinition definition = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(
                 "Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset").Get(ShipAbilityId.HarmonicBomb);
             var settings = (HarmonicBombSettings)definition.Settings;
-            // Distances scale with the authored radius: inner band, middle band, edge, just outside, far outside.
             float radius = settings.Radius;
-            Wing enemy = AddWing(TestPlayers.Enemy, 0f, radius * 12f / 35f, radius, radius * 35.1f / 35f,
-                radius * 100f / 35f);
+            Wing center = AddWing(TestPlayers.Enemy, 0f);
+            Wing edge = AddWing(TestPlayers.Enemy, radius * 1.5f, radius);
+            Wing outside = AddWing(TestPlayers.Enemy, radius * 1.01f, radius * 3f);
+            Wing movedIn = AddWing(TestPlayers.Enemy, radius * 3f);
+            Wing hero = AddWing(TestPlayers.Enemy, SquadronType.BobaFettSlaveI, 0f);
             Wing ally = AddWing(TestPlayers.Ally, 0f);
             Wing own = AddWing(TestPlayers.Human, 0f);
             Vector3 emptyDrop = new Vector3(500f, 4f, -250f);
-            _bombs.Drop(TestPlayers.Enemy, emptyDrop, definition.Duration, settings.Radius,
-                settings.CenterDamage, settings.ViewPrefab);
+            _bombs.Drop(TestPlayers.Enemy, emptyDrop, definition.Duration, radius, settings.ViewPrefab);
             for (int i = 0; i < 2; i++)
-                _bombs.Drop(TestPlayers.Human, Vector3.zero, definition.Duration, settings.Radius,
-                    settings.CenterDamage, settings.ViewPrefab);
+                _bombs.Drop(TestPlayers.Human, Vector3.zero, definition.Duration, radius, settings.ViewPrefab);
             _poolRoot = GameObject.Find("Harmonic Bombs");
 
             _bombs.Advance(1f);
-            Assert.That(enemy.Hits, Is.Empty);
+            Assert.That(center.Kills, Is.Zero);
             Assert.That(audio.Cues, Is.Empty);
-            enemy.Units[4].Position = Vector3.up * 200f;
+            movedIn.Units[0].Position = Vector3.zero;
             _bombs.Advance(0.5f);
             _bombs.Advance(5f);
-            float full = settings.CenterDamage;
-            float middle = settings.CenterDamage * 0.6f;
-            float edge = settings.CenterDamage * 0.25f;
-            Assert.That(enemy.Hits, Is.EqualTo(new[] { (0, full), (1, middle), (2, edge), (4, full),
-                (0, full), (1, middle), (2, edge), (4, full) }));
-            Assert.That(ally.Hits, Is.Empty);
-            Assert.That(own.Hits, Is.Empty);
+            Assert.That(center.Kills, Is.EqualTo(2));
+            Assert.That(edge.Kills, Is.EqualTo(2));
+            Assert.That(movedIn.Kills, Is.EqualTo(2));
+            Assert.That(outside.Kills, Is.Zero);
+            Assert.That(hero.Kills, Is.Zero);
+            Assert.That(ally.Kills, Is.Zero);
+            Assert.That(own.Kills, Is.Zero);
             Assert.That(audio.Cues, Is.EquivalentTo(new[] { (TestPlayers.Enemy, emptyDrop),
                 (TestPlayers.Human, Vector3.zero), (TestPlayers.Human, Vector3.zero) }));
         }
@@ -71,8 +73,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             PlayerRoster roster = TestPlayers.CreateTeamGame();
             VisionService vision = new VisionService(roster);
-            _bombs = new HarmonicBombService(_entities, roster, vision,
-                new HarmonicBombEffects(vision, TestPlayers.CreateLocalPlayer(roster), new DetonationAudio()));
+            _bombs = CreateService(roster, vision, new DetonationAudio());
             Wing enemy = AddWing(TestPlayers.Enemy, 1f, 15f, 35f, 36f);
             AddWing(TestPlayers.Ally, 0f, 0f, 0f);
             GameObject radar = new GameObject("Vision source");
@@ -91,6 +92,11 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private bool Enough() => _bombs.HasEnoughTargets(TestPlayers.Human, Vector3.zero, 35f, 3);
+
+        private HarmonicBombService CreateService(PlayerRoster roster, VisionService vision, DetonationAudio audio) =>
+            new HarmonicBombService(_entities, roster, vision,
+                new HarmonicBombEffects(vision, TestPlayers.CreateLocalPlayer(roster), audio),
+                AssetDatabase.LoadAssetAtPath<FactionCatalog>("Assets/Settings/Data/Factions/Shared/FactionCatalog.asset"));
 
         private sealed class DetonationAudio : IWorldSfxService
         {
@@ -113,10 +119,14 @@ namespace EmpireAtWar.Tests.Editor
             foreach (IEntity entity in new List<IEntity>(_entities.Entities)) _entities.RemoveEntity(entity);
         }
 
-        private Wing AddWing(PlayerId owner, params float[] distances)
+        private Wing AddWing(PlayerId owner, params float[] distances) =>
+            AddWing(owner, SquadronType.TIEFighter, distances);
+
+        private Wing AddWing(PlayerId owner, SquadronType type, params float[] distances)
         {
             Wing wing = new Wing(owner, distances);
-            _entities.AddEntity(new Entity(wing, _entities, new IEntityFacade[] { wing }, owner,
+            _entities.AddEntity(new Entity(wing, _entities,
+                new IEntityFacade[] { wing, new UnitTypeFacade(UnitTypeId.Squadron(type)) }, owner,
                 _entities.Entities.Count + 1, Array.Empty<IPooledEntityEvents>(),
                 Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>()));
             return wing;
@@ -136,9 +146,9 @@ namespace EmpireAtWar.Tests.Editor
             public event Action OnDestroyed { add { } remove { } }
         }
 
-        private sealed class Wing : IHealthModelObserver, ISquadronMembersFacade, IHealthFacade
+        private sealed class Wing : IHealthModelObserver, ISquadronMembersFacade
         {
-            public readonly List<(int, float)> Hits = new();
+            public int Kills { get; private set; }
             public Member[] Units { get; }
             public IReadOnlyList<IHardPointModel> Members => Units;
             public PlayerId Owner { get; }
@@ -151,11 +161,7 @@ namespace EmpireAtWar.Tests.Editor
                     Units[i] = new Member { Id = i, Position = Vector3.right * distances[i] };
             }
 
-            public void ApplyDamage(float damage, DamageType type, int id)
-            {
-                Assert.That(type, Is.EqualTo(DamageType.HypervelocityGun));
-                Hits.Add((id, damage));
-            }
+            public void Kill() => Kills++;
 
             public ShipClass ShipClass => ShipClass.Fighter;
             public bool IsDestroyed => false;

@@ -26,7 +26,7 @@ namespace EmpireAtWar.Editor.Balance
             [typeof(FighterCoordinationSettings)] = new[] { "commandRadius" },
             [typeof(FullSalvoSettings)] = new[] { "projectileFireDelayMultiplier", "otherFireDelayMultiplier" },
             [typeof(CompositeBeamSettings)] = new[] { "damage" },
-            [typeof(HarmonicBombSettings)] = new[] { "radius", "centerDamage", "minimumTargets" },
+            [typeof(HarmonicBombSettings)] = new[] { "radius", "minimumTargets" },
             [typeof(ProtonBeamSettings)] = new[] { "damage", "damageType" },
             [typeof(TractorBeamSettings)] = new[] { "speedMultiplier", "targetClasses", "beam" },
             [typeof(IonShotSettings)] = new[] { "disableDuration", "projectile" },

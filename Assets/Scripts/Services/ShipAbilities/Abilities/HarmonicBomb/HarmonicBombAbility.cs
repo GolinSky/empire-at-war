@@ -16,6 +16,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target) =>
             _bombs.Drop(caster.Entity.Owner, caster.WorldPosition, definition.Duration,
-                _settings.Radius, _settings.CenterDamage, _settings.ViewPrefab);
+                _settings.Radius, _settings.ViewPrefab);
     }
 }

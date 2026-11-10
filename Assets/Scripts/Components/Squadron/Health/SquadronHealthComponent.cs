@@ -149,6 +149,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
         public void ApplyDamage(float damage, DamageType damageType, int shipUnitId) =>
             Model.ApplyDamage(damage, damageType, shipUnitId);
 
+        public void Kill() => Model.Kill();
+
         public bool Equal(IHealthModelObserver modelObserver) => ReferenceEquals(this, modelObserver);
 
         /// <summary>Live fighters; once all are dead the wrecks are returned so callers never get an empty set.</summary>
