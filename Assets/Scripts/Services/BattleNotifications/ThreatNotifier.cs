@@ -28,17 +28,19 @@ namespace EmpireAtWar.Services.BattleNotifications
         private readonly IEntityLocator _entities;
         private readonly ILocalPlayer _local;
         private readonly FactionCatalog _factions;
+        private readonly StationLevelData _stationLevels;
         private readonly Dictionary<IEntity, Subscription> _subscriptions = new Dictionary<IEntity, Subscription>();
         private readonly HashSet<IEntity> _visibleEnemies = new HashSet<IEntity>();
         private float _fleetQuietSince = float.NegativeInfinity;
 
         public ThreatNotifier(IBattleNotifications notifications, IEntityLocator entities, ILocalPlayer local,
-            FactionCatalog factions)
+            FactionCatalog factions, StationLevelData stationLevels)
         {
             _notifications = notifications;
             _entities = entities;
             _local = local;
             _factions = factions;
+            _stationLevels = stationLevels;
         }
 
         public void Initialize()
@@ -71,7 +73,8 @@ namespace EmpireAtWar.Services.BattleNotifications
             {
                 subscription.Level = level;
                 subscription.LevelChanged = newLevel =>
-                    _notifications.Post(BattleNotificationPriority.Tactical, $"Enemy station reached level {newLevel}");
+                    _notifications.Post(BattleNotificationPriority.Tactical, $"Enemy station reached level {newLevel}",
+                        iconKey: _stationLevels.GetLevelFactionData(newLevel - 1).IconKey);
                 level.LevelUpgraded += subscription.LevelChanged;
             }
             if (isHostile && isUnit && unit.UnitTypeId.IsShip && entity.TryGetFacade(out IFogVisibilityFacade fog))
@@ -129,12 +132,13 @@ namespace EmpireAtWar.Services.BattleNotifications
                 ? _factions.GetShipFactionData(unitType.ShipType)
                 : _factions.GetSquadronFactionData(unitType.SquadronType);
             if (data.IsHero || shipClass == ShipClass.Capital || shipClass == ShipClass.HeavyCapital)
-                _notifications.Post(BattleNotificationPriority.Urgent, $"{data.Name} destroyed");
+                _notifications.Post(BattleNotificationPriority.Urgent, $"{data.Name} destroyed", iconKey: data.IconKey);
             else if (unitType.IsShip)
-                _notifications.Post(BattleNotificationPriority.Tactical, $"{data.Name} lost", "loss.ship", "{0} ships lost");
+                _notifications.Post(BattleNotificationPriority.Tactical, $"{data.Name} lost", "loss.ship", "{0} ships lost",
+                    iconKey: data.IconKey);
             else
                 _notifications.Post(BattleNotificationPriority.Tactical, $"{data.Name} squadron lost", "loss.squadron",
-                    "{0} squadrons lost");
+                    "{0} squadrons lost", iconKey: data.IconKey);
         }
 
         private void HandleVisibilityChanged(IEntity entity, bool visible)

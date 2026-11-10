@@ -64,6 +64,34 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Post_GroupedIcons_KeepMatchingIconAndClearMixedIcons()
+        {
+            _feed.Post(BattleNotificationPriority.Progress, "X-wing ready", "ready", "{0} units ready", "x-wing");
+            _feed.Post(BattleNotificationPriority.Progress, "X-wing ready", "ready", "{0} units ready", "x-wing");
+            Assert.That(_feed.Visible[0].IconKey, Is.EqualTo("x-wing"));
+
+            string updatedIcon = "not-updated";
+            _feed.Updated += notification => updatedIcon = notification.IconKey;
+            _feed.Post(BattleNotificationPriority.Progress, "Y-wing ready", "ready", "{0} units ready", "y-wing");
+
+            Assert.That(_feed.Visible, Has.Count.EqualTo(1));
+            Assert.That(_feed.Visible[0].Text, Is.EqualTo("3 units ready"));
+            Assert.That(updatedIcon, Is.Null);
+        }
+
+        [Test]
+        public void Post_PendingIcon_IsPreservedWhenShown()
+        {
+            for (int i = 0; i < BattleNotificationFeed.MAX_VISIBLE; i++)
+                _feed.Post(BattleNotificationPriority.Urgent, "Attack");
+            _feed.Post(BattleNotificationPriority.Progress, "Station upgraded", iconKey: "level-up");
+
+            Assert.That(_feed.Pending[0].IconKey, Is.EqualTo("level-up"));
+            _feed.Dismiss(_feed.Visible[0].Id);
+            Assert.That(_feed.Visible[BattleNotificationFeed.MAX_VISIBLE - 1].IconKey, Is.EqualTo("level-up"));
+        }
+
+        [Test]
         public void Post_RepeatsForever_CardStillExpiresAtMaxAge()
         {
             // Tactical lives 6 s; repeats extend it to at most 12 s.

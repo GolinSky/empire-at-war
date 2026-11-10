@@ -23,11 +23,12 @@ namespace EmpireAtWar.Services.BattleNotifications
         private readonly PlayerFactionModel _model;
         private readonly FactionResearchModel _research;
         private readonly FactionRoster _roster;
+        private readonly StationLevelData _stationLevels;
         private readonly List<string> _unlocks = new List<string>();
 
         public EconomyNotifier(IBattleNotifications notifications, FactionService faction,
             ReinforcementService reinforcements, PlayerFactionModel model, FactionResearchModel research,
-            FactionRoster roster)
+            FactionRoster roster, StationLevelData stationLevels)
         {
             _notifications = notifications;
             _faction = faction;
@@ -35,6 +36,7 @@ namespace EmpireAtWar.Services.BattleNotifications
             _model = model;
             _research = research;
             _roster = roster;
+            _stationLevels = stationLevels;
         }
 
         public void Initialize()
@@ -78,23 +80,23 @@ namespace EmpireAtWar.Services.BattleNotifications
         private void HandleResearchCompleted(ResearchType type)
         {
             int tier = _research.GetCompletedTiers(type);
-            string name = _roster.ResearchLines[type].Tiers[tier - 1].FactionData.Name;
-            _notifications.Post(BattleNotificationPriority.Progress, $"{name} complete", "research",
-                "{0} research projects complete");
+            FactionData data = _roster.ResearchLines[type].Tiers[tier - 1].FactionData;
+            _notifications.Post(BattleNotificationPriority.Progress, $"{data.Name} complete", "research",
+                "{0} research projects complete", iconKey: data.IconKey);
         }
 
         private void HandleUnitProduced(UnitRequest request)
         {
             if (!IsUnit(request)) return;
             _notifications.Post(BattleNotificationPriority.Progress, $"{request.FactionData.Name} ready in reserve",
-                "unit.ready", "{0} units ready in reserve");
+                "unit.ready", "{0} units ready in reserve", iconKey: request.FactionData.IconKey);
         }
 
         private void HandleDeployed(UnitRequest request)
         {
             if (!IsUnit(request)) return;
             _notifications.Post(BattleNotificationPriority.Progress, $"{request.FactionData.Name} deployed",
-                "unit.deployed", "{0} units deployed");
+                "unit.deployed", "{0} units deployed", iconKey: request.FactionData.IconKey);
         }
 
         private void HandleCapacityRejected() =>
@@ -104,16 +106,18 @@ namespace EmpireAtWar.Services.BattleNotifications
 
         private void PostStationLevel(int level)
         {
+            string iconKey = _stationLevels.GetLevelFactionData(level - 1).IconKey;
             CollectUnlocks(level);
             if (_unlocks.Count == 0)
             {
-                _notifications.Post(BattleNotificationPriority.Tactical, $"Station level {level}");
+                _notifications.Post(BattleNotificationPriority.Tactical, $"Station level {level}", iconKey: iconKey);
                 return;
             }
             int listed = Math.Min(MAX_LISTED_UNLOCKS, _unlocks.Count);
             string items = string.Join(", ", _unlocks.GetRange(0, listed));
             if (_unlocks.Count > listed) items += $" +{_unlocks.Count - listed} more";
-            _notifications.Post(BattleNotificationPriority.Tactical, $"Station level {level} — unlocked {items}");
+            _notifications.Post(BattleNotificationPriority.Tactical, $"Station level {level} — unlocked {items}",
+                iconKey: iconKey);
         }
 
         private void CollectUnlocks(int level)

@@ -12,6 +12,7 @@ namespace EmpireAtWar.Services.BattleNotifications
         public int Id { get; }
         public BattleNotificationPriority Priority { get; }
         public string GroupKey { get; }
+        public string IconKey { get; private set; }
         public int Count { get; private set; } = 1;
         public float TimeLeft { get; private set; }
         public float Age { get; private set; }
@@ -21,12 +22,13 @@ namespace EmpireAtWar.Services.BattleNotifications
 
         /// <param name="maxAge">Repeated events stop extending the card past this age, so it cannot stay forever.</param>
         public BattleNotification(int id, BattleNotificationPriority priority, string text, string groupKey,
-            string groupFormat, float lifetime, float maxAge)
+            string groupFormat, float lifetime, float maxAge, string iconKey = null)
         {
             Id = id;
             Priority = priority;
             _text = text;
             GroupKey = groupKey;
+            IconKey = iconKey;
             _groupFormat = groupFormat;
             _lifetime = lifetime;
             _maxAge = maxAge;
@@ -37,7 +39,7 @@ namespace EmpireAtWar.Services.BattleNotifications
         /// True adds one to the count, extending the card only up to its max age. False keeps the card on screen
         /// for one more lifetime, so a held card stays while its condition lasts.
         /// </param>
-        public void Repeat(bool counts)
+        public void Repeat(bool counts, string iconKey = null)
         {
             if (!counts)
             {
@@ -45,6 +47,8 @@ namespace EmpireAtWar.Services.BattleNotifications
                 return;
             }
             Count++;
+            // A mixed group must not display one unit or research project's icon for the whole group.
+            if (IconKey != iconKey) IconKey = null;
             TimeLeft = Math.Max(TimeLeft, Math.Min(_lifetime, _maxAge - Age));
         }
 

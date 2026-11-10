@@ -34,11 +34,12 @@ namespace EmpireAtWar.Services.BattleNotifications
         public IReadOnlyList<BattleNotification> Visible => _visible;
         public IReadOnlyList<BattleNotification> Pending => _pending;
 
-        public void Post(BattleNotificationPriority priority, string text, string groupKey = null, string groupFormat = null) =>
-            Add(priority, text, groupKey, groupFormat, true);
+        public void Post(BattleNotificationPriority priority, string text, string groupKey = null, string groupFormat = null,
+            string iconKey = null) =>
+            Add(priority, text, groupKey, groupFormat, true, iconKey);
 
-        public void Hold(BattleNotificationPriority priority, string text, string key) =>
-            Add(priority, text, key, null, false);
+        public void Hold(BattleNotificationPriority priority, string text, string key, string iconKey = null) =>
+            Add(priority, text, key, null, false, iconKey);
 
         /// <summary>
         /// Gameplay cards are accepted only while the battle runs, so loading and save restore stay silent.
@@ -79,13 +80,13 @@ namespace EmpireAtWar.Services.BattleNotifications
         }
 
         private void Add(BattleNotificationPriority priority, string text, string groupKey, string groupFormat,
-            bool counts)
+            bool counts, string iconKey)
         {
             if (!_isAccepting && priority != BattleNotificationPriority.Outcome) return;
-            if (groupKey != null && (IsMuted(groupKey) || TryRepeat(groupKey, counts))) return;
+            if (groupKey != null && (IsMuted(groupKey) || TryRepeat(groupKey, counts, iconKey))) return;
             float lifetime = Lifetime(priority);
             var notification = new BattleNotification(++_nextId, priority, text, groupKey, groupFormat, lifetime,
-                lifetime * MAX_AGE_FACTOR);
+                lifetime * MAX_AGE_FACTOR, iconKey);
             if (_visible.Count < MAX_VISIBLE)
             {
                 Show(notification);
@@ -109,19 +110,19 @@ namespace EmpireAtWar.Services.BattleNotifications
             return false;
         }
 
-        private bool TryRepeat(string groupKey, bool counts)
+        private bool TryRepeat(string groupKey, bool counts, string iconKey)
         {
             foreach (BattleNotification notification in _visible)
             {
                 if (notification.GroupKey != groupKey) continue;
-                notification.Repeat(counts);
+                notification.Repeat(counts, iconKey);
                 if (counts) Updated?.Invoke(notification);
                 return true;
             }
             foreach (BattleNotification notification in _pending)
             {
                 if (notification.GroupKey != groupKey) continue;
-                notification.Repeat(counts);
+                notification.Repeat(counts, iconKey);
                 return true;
             }
             return false;

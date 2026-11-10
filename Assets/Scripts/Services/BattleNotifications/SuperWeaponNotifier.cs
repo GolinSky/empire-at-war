@@ -18,9 +18,11 @@ namespace EmpireAtWar.Services.BattleNotifications
         private readonly FactionCatalog _factions;
         private readonly FactionRoster _roster;
         private readonly ILocalPlayer _local;
+        private readonly SuperWeaponCatalog _superWeapons;
 
         public SuperWeaponNotifier(IBattleNotifications notifications, SuperWeaponFireService fire,
-            SuperWeaponModel model, FactionCatalog factions, FactionRoster roster, ILocalPlayer local)
+            SuperWeaponModel model, FactionCatalog factions, FactionRoster roster, ILocalPlayer local,
+            SuperWeaponCatalog superWeapons)
         {
             _notifications = notifications;
             _fire = fire;
@@ -28,6 +30,7 @@ namespace EmpireAtWar.Services.BattleNotifications
             _factions = factions;
             _roster = roster;
             _local = local;
+            _superWeapons = superWeapons;
         }
 
         public void Initialize()
@@ -45,13 +48,15 @@ namespace EmpireAtWar.Services.BattleNotifications
         private void HandleFired(SuperWeaponType type, IEntity target)
         {
             if (!_local.IsFriendly(target.Owner)) return;
-            _notifications.Post(BattleNotificationPriority.Urgent, $"Incoming {WeaponName(type)} strike on {TargetName(target)}");
+            _notifications.Post(BattleNotificationPriority.Urgent, $"Incoming {WeaponName(type)} strike on {TargetName(target)}",
+                iconKey: _superWeapons.Get(type).IconKey);
         }
 
         private void HandleStateChanged(SuperWeaponType type, SuperWeaponState state)
         {
             if (_model.IsRestoring || state != SuperWeaponState.Ready || !_model.CanFire(type)) return;
-            _notifications.Post(BattleNotificationPriority.Progress, $"{_roster.SuperWeapons[type].Name} ready");
+            _notifications.Post(BattleNotificationPriority.Progress, $"{_roster.SuperWeapons[type].Name} ready",
+                iconKey: _roster.SuperWeapons[type].IconKey);
         }
 
         private string TargetName(IEntity target)

@@ -73,7 +73,7 @@ namespace EmpireAtWar.Services.BattleNotifications
             bool isHighValue = data.IsHero || shipClass == ShipClass.Capital || shipClass == ShipClass.HeavyCapital;
             if (!isHighValue && !_selection.PlayerSelectionContext.Contains(entity)) return;
             _notifications.Post(BattleNotificationPriority.Tactical, $"{data.Name} entered {hazard.DisplayName} — {effect}",
-                $"hazard.{hazard.DisplayName}", $"{{0}} ships entered {hazard.DisplayName} — {effect}");
+                $"hazard.{hazard.DisplayName}", $"{{0}} ships entered {hazard.DisplayName} — {effect}", iconKey: data.IconKey);
         }
 
         private static string Effect(SpaceHazardData hazard)

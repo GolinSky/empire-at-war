@@ -16,16 +16,19 @@ namespace EmpireAtWar.Entities.BattleNotifications
         private const float SLIDE_DISTANCE = 16f;
         // The gap to the next card is part of the slot, so it collapses with the card.
         private const float CARD_GAP = 6f;
+        private const float ICON_TEXT_INSET = 56f;
 
         [SerializeField] private LayoutElement slot;
         [SerializeField] private RectTransform body;
         [SerializeField] private CanvasGroup bodyGroup;
         [SerializeField] private Image accent;
+        [SerializeField] private Image eventIcon;
         [SerializeField] private TMP_Text messageText;
         [SerializeField] private Button dismissButton;
 
         private Action<int> _dismiss;
         private float _height;
+        private float _textInset;
         private float _fade;
         private float _size;
         private bool _isClosing;
@@ -38,15 +41,16 @@ namespace EmpireAtWar.Entities.BattleNotifications
         {
             _dismiss = dismiss;
             _height = body.rect.height + CARD_GAP;
+            _textInset = messageText.rectTransform.offsetMin.x;
             dismissButton.onClick.AddListener(HandleDismissClicked);
         }
 
         public void Dispose() => dismissButton.onClick.RemoveListener(HandleDismissClicked);
 
-        public void Open(int notificationId, string message, Color accentColor)
+        public void Open(int notificationId, string message, Color accentColor, Sprite icon)
         {
             NotificationId = notificationId;
-            messageText.text = message;
+            SetContent(message, icon);
             accent.color = accentColor;
             _fade = 0f;
             _size = 0f;
@@ -58,7 +62,15 @@ namespace EmpireAtWar.Entities.BattleNotifications
             Apply();
         }
 
-        public void SetMessage(string message) => messageText.text = message;
+        public void SetContent(string message, Sprite icon)
+        {
+            messageText.text = message;
+            eventIcon.sprite = icon;
+            eventIcon.gameObject.SetActive(icon != null);
+            Vector2 offset = messageText.rectTransform.offsetMin;
+            offset.x = icon != null ? ICON_TEXT_INSET : _textInset;
+            messageText.rectTransform.offsetMin = offset;
+        }
 
         public void Close()
         {

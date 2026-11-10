@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.BattleNotifications;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace EmpireAtWar.Entities.BattleNotifications
     {
         [SerializeField] private RectTransform stack;
         [SerializeField] private BattleNotificationCardView cardTemplate;
+        [SerializeField] private TooltipIconData icons;
 
         [Header("Placement")]
         [SerializeField] private float topOffset = 12f;
@@ -56,12 +58,16 @@ namespace EmpireAtWar.Entities.BattleNotifications
         }
 
         private void HandleShown(BattleNotification notification) =>
-            FreeCard().Open(notification.Id, notification.Text, AccentColor(notification.Priority));
+            FreeCard().Open(notification.Id, notification.Text, AccentColor(notification.Priority), Icon(notification));
 
         private void HandleUpdated(BattleNotification notification)
         {
-            if (TryGetOpenCard(notification.Id, out BattleNotificationCardView card)) card.SetMessage(notification.Text);
+            if (TryGetOpenCard(notification.Id, out BattleNotificationCardView card))
+                card.SetContent(notification.Text, Icon(notification));
         }
+
+        private Sprite Icon(BattleNotification notification) =>
+            string.IsNullOrEmpty(notification.IconKey) ? null : icons.Resolve(notification.IconKey);
 
         private void HandleHidden(BattleNotification notification)
         {

@@ -163,13 +163,13 @@ namespace EmpireAtWar.Tests.Editor
                 Kind = FactionFeedbackKind.ResearchCompleted
             };
             var receiver = new ClientPlayerEconomyFeedback(new OnlineSession(false, TestPlayers.Human),
-                _service, null, null, null, new EconomyNotifier(new BattleNotificationFeed(), null, null, null, null, null));
+                _service, null, null, null, new EconomyNotifier(new BattleNotificationFeed(), null, null, null, null, null, null));
 
             receiver.Receive(message);
             Assert.That(_audio.Clips, Is.Empty);
             message.Owner = TestPlayers.Human;
             var hostReceiver = new ClientPlayerEconomyFeedback(new OnlineSession(true, TestPlayers.Human),
-                _service, null, null, null, new EconomyNotifier(new BattleNotificationFeed(), null, null, null, null, null));
+                _service, null, null, null, new EconomyNotifier(new BattleNotificationFeed(), null, null, null, null, null, null));
             hostReceiver.Receive(message);
             Assert.That(_audio.Clips, Is.Empty, "The host already announces its local service events.");
 
