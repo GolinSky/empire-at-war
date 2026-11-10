@@ -151,17 +151,18 @@ namespace EmpireAtWar.Services.Graphics
                 {
                     bool found = false;
                     foreach (RefreshRate available in rates)
-                        found |= (ulong)available.numerator * rate.denominator ==
-                            (ulong)rate.numerator * available.denominator;
+                        found |= SameRate(available, rate);
                     if (!found)
                     {
                         rate = rates.Count > 0 ? rates[0] : CurrentRefreshRate;
                         display.SetRefreshRate(rate.numerator, rate.denominator);
                     }
                 }
-                Screen.SetResolution(size.x, size.y, mode, rate);
+                // Re-entering the same exclusive mode resets the output, which minimizes and restores the window.
+                if (!IsCurrent(size, mode) || (rate.numerator != 0 && !SameRate(rate, CurrentRefreshRate)))
+                    Screen.SetResolution(size.x, size.y, mode, rate);
             }
-            else Screen.SetResolution(size.x, size.y, mode);
+            else if (!IsCurrent(size, mode)) Screen.SetResolution(size.x, size.y, mode);
 
             await Awaitable.NextFrameAsync();
             if (_windowNeedsCentering && mode == FullScreenMode.Windowed)
@@ -189,6 +190,12 @@ namespace EmpireAtWar.Services.Graphics
             AsyncOperation move = Screen.MoveMainWindowTo(in monitor, position);
             while (!move.isDone) await Awaitable.NextFrameAsync();
         }
+
+        private static bool IsCurrent(Vector2Int size, FullScreenMode mode) =>
+            Screen.fullScreenMode == mode && Screen.width == size.x && Screen.height == size.y;
+
+        private static bool SameRate(RefreshRate a, RefreshRate b) =>
+            (ulong)a.numerator * b.denominator == (ulong)b.numerator * a.denominator;
 
         private static Vector2Int ClosestSize(Vector2Int requested, IReadOnlyList<Vector2Int> sizes)
         {
