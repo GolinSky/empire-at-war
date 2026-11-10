@@ -172,7 +172,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                     if (queue.UnitRequest.Id == unit.RequestId) queued = true;
                 bool unlocked = _presenter.IsUnitAvailable(unit.FactionData);
                 bool atLimit = _presenter.IsUnitLimitReached(unit.Request);
-                unit.SetActive(unlocked && !(unit.FactionData.IsHero && atLimit));
+                unit.SetActive(unlocked && !(atLimit && HidesAtLimit(unit)));
                 unit.RenderAvailability(unlocked,
                     credits >= unit.FactionData.Price, queued, battleEnded, atLimit);
             }
@@ -277,6 +277,12 @@ namespace EmpireAtWar.Entities.Faction.Ui
             RefreshUnitVisibility(_model.SelectionType);
         }
 
+        // Heroes, structure population caps, station upgrades and research tiers hide at their limit.
+        // Ship and squadron queue limits only block the card: it becomes buyable again as the queue drains.
+        private static bool HidesAtLimit(FactionUnitUi unit) =>
+            unit.FactionData.IsHero || unit.Request is MiningFacilityUnitRequest or DefendPlatformUnitRequest
+                or LevelUnitRequest or ResearchUnitRequest;
+
         private void HandleSelectionChanged(SelectionType selectionType)
         {
             RefreshUnitVisibility(selectionType);
@@ -297,7 +303,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             {
                 unitUi.transform.SetSiblingIndex(siblingIndex++);
                 bool isShown = isSelectionVisible && _presenter.IsUnitAvailable(unitUi.FactionData) &&
-                               !(unitUi.FactionData.IsHero && _presenter.IsUnitLimitReached(unitUi.Request));
+                               !(HidesAtLimit(unitUi) && _presenter.IsUnitLimitReached(unitUi.Request));
                 unitUi.SetActive(isShown);
                 if (!isShown) continue;
                 switch (unitUi.Request)

@@ -163,9 +163,11 @@ namespace EmpireAtWar.Tests.Editor
                     model.QueueUnit(request);
                 }
 
+                bool hidesAtLimit = kind != "Ship";
                 Assert.That(presenter.IsUnitLimitReached(request), Is.True);
                 view.RefreshAvailability(0f, false);
-                Assert.That(card.gameObject.activeSelf, Is.EqualTo(kind != "Hero"), "Only bought heroes hide at their limit.");
+                Assert.That(card.gameObject.activeSelf, Is.EqualTo(!hidesAtLimit),
+                    "Heroes, structures, upgrades and research hide at their limit; ship queue limits only block.");
                 Assert.That(button.interactable, Is.False, "Reaching the purchase limit must disable the card.");
 
                 Assert.That(model.TryCancelCurrentUnit(request.Id, out _), Is.True);
@@ -177,7 +179,7 @@ namespace EmpireAtWar.Tests.Editor
                 model.Advance(10f * maxCount);
                 view.RefreshAvailability(0f, false);
                 bool hasLifetimeLimit = kind == "Structure" || kind == "Hero";
-                Assert.That(card.gameObject.activeSelf, Is.EqualTo(kind != "Hero"));
+                Assert.That(card.gameObject.activeSelf, Is.EqualTo(!hasLifetimeLimit));
                 Assert.That(button.interactable, Is.EqualTo(!hasLifetimeLimit),
                     "Completed structures and heroes retain their reservation; ordinary queues release capacity.");
 
