@@ -56,6 +56,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<KeyBindingEditor>(Lifetime.Singleton);
             builder.Register<SkirmishRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<OnlineRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<EmpireAtWar.Entities.MainMenu.Tutorial.TutorialRouteUiController>(Lifetime.Singleton)
+                .AsImplementedInterfaces().AsSelf();
             // Lobby screens reuse the setup views; their presenter interfaces stay unregistered.
             builder.Register<OnlineSkirmishLobbyUiController>(Lifetime.Singleton)
                 .As<IOnlineSkirmishLobbyScreen, EmpireAtWar.Lifecycle.IInitializable, EmpireAtWar.Lifecycle.ILateDisposable>();

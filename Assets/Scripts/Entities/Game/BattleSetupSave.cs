@@ -5,7 +5,7 @@ namespace EmpireAtWar.Entities.Game
 {
     /// <summary>
     /// What a save needs to build the same <see cref="BattleDefinition"/> again: the preset inputs and map seed.
-    /// Battle Simulation is never saved.
+    /// Only modes listed in <see cref="Supports"/> are saved; any other mode is unsaveable by default.
     /// </summary>
     [Serializable]
     public sealed class BattleSetupSave
@@ -15,6 +15,8 @@ namespace EmpireAtWar.Entities.Game
         [SerializeField] private SurvivalSetupSave survival;
 
         public GameMode Mode => mode;
+
+        public static bool Supports(GameMode mode) => mode is GameMode.Skirmish or GameMode.Survival;
 
         public static BattleSetupSave From(BattleDefinition battle) => battle.Mode switch
         {

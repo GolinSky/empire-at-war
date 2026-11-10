@@ -6,6 +6,7 @@ namespace EmpireAtWar.Entities.MainMenu.Play
         void OpenSurvival();
         void OpenSimulation();
         void OpenOnline();
+        void OpenTutorial();
         void Close();
         void OpenLoadGame();
     }

@@ -82,7 +82,7 @@ namespace EmpireAtWar.Services.Saves
 
         private string GetFolder(GameMode mode)
         {
-            if (mode != GameMode.Skirmish && mode != GameMode.Survival)
+            if (!BattleSetupSave.Supports(mode))
                 throw new ArgumentException($"{mode} battles are not saved.", nameof(mode));
             return Path.Combine(_root, mode.ToString());
         }

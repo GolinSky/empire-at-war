@@ -238,7 +238,7 @@ Each hint: card → highlight → completion condition → short confirm feedbac
 - Anchors on: Faction build UI, `ShipAbilityBarUi`, `ShipAutoPowerButtonUi`, `UnitActionsView`, `MiniMapUi`, Tooltip prefab.
 
 ## Deferred
-- Guided Tutorial battle (`GameMode.Tutorial`, fixed faction/map via `TutorialPreset` SO, scripted enemy, ordered chapters). Earlier decisions kept for it: fixed not hardcoded, plain text, text-only card.
+- Guided Tutorial battle (`GameMode.Tutorial`, fixed faction/map via `TutorialPreset` SO, scripted enemy, ordered chapters). Earlier decisions kept for it: fixed not hardcoded, plain text, text-only card. Now planned separately → [[TODOs/Features/Guided_Tutorial_Battle_Plan|Guided Tutorial Battle Plan]] (2026-11-10).
 
 ## TODO
 - Audio cue on hint show (pick a clip; add a one-shot UI method).

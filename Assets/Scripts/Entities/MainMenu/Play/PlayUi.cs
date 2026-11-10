@@ -12,6 +12,7 @@ namespace EmpireAtWar.Entities.MainMenu.Play
         [SerializeField] private Button onlineButton;
         [SerializeField] private Button backButton;
         [SerializeField] private Button loadButton;
+        [SerializeField] private Button tutorialButton;
         private IPlayPresenter _presenter;
         private bool _isInitialized;
 
@@ -27,6 +28,7 @@ namespace EmpireAtWar.Entities.MainMenu.Play
             simulationButton.onClick.AddListener(_presenter.OpenSimulation);
             loadButton.onClick.AddListener(_presenter.OpenLoadGame);
             onlineButton.onClick.AddListener(_presenter.OpenOnline);
+            tutorialButton.onClick.AddListener(_presenter.OpenTutorial);
             _isInitialized = true;
         }
 
@@ -36,6 +38,7 @@ namespace EmpireAtWar.Entities.MainMenu.Play
             simulationButton.onClick.RemoveListener(_presenter.OpenSimulation);
             loadButton.onClick.RemoveListener(_presenter.OpenLoadGame);
             onlineButton.onClick.RemoveListener(_presenter.OpenOnline);
+            tutorialButton.onClick.RemoveListener(_presenter.OpenTutorial);
             skirmishButton.onClick.RemoveListener(_presenter.OpenSkirmish);
             survivalButton.onClick.RemoveListener(_presenter.OpenSurvival);
             backButton.onClick.RemoveListener(_presenter.Close);

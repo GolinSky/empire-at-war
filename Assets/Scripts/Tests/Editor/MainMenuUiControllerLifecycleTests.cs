@@ -91,8 +91,9 @@ namespace EmpireAtWar.Tests.Editor
                 var survival = new RouteStub();
                 var loadGame = new RouteStub();
                 var online = new RouteStub();
+                var tutorial = new RouteStub();
                 controller = new EmpireAtWar.Entities.MainMenu.Play.PlayRouteUiController(
-                    service, new CancelRouterStub(), skirmish, survival, new RouteStub(), loadGame, online);
+                    service, new CancelRouterStub(), skirmish, survival, new RouteStub(), loadGame, online, tutorial);
                 controller.Open();
                 controller.Open();
                 var fields = new SerializedObject(view);
@@ -105,9 +106,12 @@ namespace EmpireAtWar.Tests.Editor
                 skirmishButton.onClick.Invoke();
                 survivalButton.onClick.Invoke();
                 loadButton.onClick.Invoke();
+                var tutorialButton = (Button)fields.FindProperty("tutorialButton").objectReferenceValue;
                 onlineButton.onClick.Invoke();
+                tutorialButton.onClick.Invoke();
                 Assert.That(loadGame.OpenCount, Is.EqualTo(1));
                 Assert.That(online.OpenCount, Is.EqualTo(1));
+                Assert.That(tutorial.OpenCount, Is.EqualTo(1));
                 Assert.That(skirmish.OpenCount, Is.EqualTo(1));
                 Assert.That(survival.OpenCount, Is.EqualTo(1));
                 Assert.That(simulationButton.interactable, Is.True);
@@ -312,7 +316,7 @@ namespace EmpireAtWar.Tests.Editor
             public void SetContentVisible(bool isVisible) { }
         }
 
-        private sealed class RouteStub : EmpireAtWar.Entities.MainMenu.Play.IPlayRoute, ISettingsRoute, ISkirmishRoute, EmpireAtWar.Entities.MainMenu.Survival.ISurvivalRoute, EmpireAtWar.Entities.MainMenu.Simulation.ISimulationRoute, EmpireAtWar.Entities.Saves.ILoadGameRoute, EmpireAtWar.Entities.MainMenu.Online.IOnlineRoute
+        private sealed class RouteStub : EmpireAtWar.Entities.MainMenu.Play.IPlayRoute, ISettingsRoute, ISkirmishRoute, EmpireAtWar.Entities.MainMenu.Survival.ISurvivalRoute, EmpireAtWar.Entities.MainMenu.Simulation.ISimulationRoute, EmpireAtWar.Entities.Saves.ILoadGameRoute, EmpireAtWar.Entities.MainMenu.Online.IOnlineRoute, EmpireAtWar.Entities.MainMenu.Tutorial.ITutorialRoute
         {
             public int OpenCount { get; private set; }
             public void Open() => OpenCount++;

@@ -15,7 +15,7 @@ namespace EmpireAtWar.Services.Saves
 
         public event Action<string> StatusChanged;
         public string Status { get; private set; } = "";
-        public bool IsSupported => _battle.Outcome != OutcomeRule.Simulation;
+        public bool IsSupported => BattleSetupSave.Supports(_battle.Mode);
         public bool CanSave => !_disposed && _saves.CanSave;
 
         public BattleSaveActions(BattleSaveService saves, IBattleSaveRepository repository,

@@ -10,7 +10,7 @@ namespace EmpireAtWar.Services.Saves
 {
     /// <summary>
     /// Takes a snapshot of the running battle on the main thread and writes it on a worker thread.
-    /// Refuses Battle Simulation, a battle that is loading or ended, and a second save while one is being written.
+    /// Refuses unsaveable modes (<see cref="BattleSetupSave.Supports"/>), a battle that is loading or ended, and a second save while one is being written.
     /// </summary>
     public sealed class BattleSaveService
     {
@@ -25,7 +25,7 @@ namespace EmpireAtWar.Services.Saves
 
         public bool IsSaving { get; private set; }
         public bool CanSave => GetRefusal() == null;
-        public bool CanLoad => _battle.Outcome != OutcomeRule.Simulation && !IsSaving &&
+        public bool CanLoad => BattleSetupSave.Supports(_battle.Mode) && !IsSaving &&
             (_state.State == BattleState.Running || _state.State == BattleState.Paused ||
              _state.State == BattleState.Ended);
 
@@ -82,7 +82,7 @@ namespace EmpireAtWar.Services.Saves
 
         private string GetRefusal()
         {
-            if (_battle.Outcome == OutcomeRule.Simulation) return "Battle Simulation is not saved.";
+            if (!BattleSetupSave.Supports(_battle.Mode)) return $"{_battle.Mode} battles are not saved.";
             if (_state.State != BattleState.Running && _state.State != BattleState.Paused)
                 return $"A battle cannot be saved while it is {_state.State}.";
             return IsSaving ? "A save is already being written." : null;

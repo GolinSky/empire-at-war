@@ -7,12 +7,13 @@ namespace EmpireAtWar.Services.VContainer
 {
     public static class BattleModes
     {
-        public static IBattleMode Create(BattleDefinition battle, IAssetService assets, OnlineMatchService online) => battle.Outcome switch
+        public static IBattleMode Create(BattleDefinition battle, IAssetService assets, OnlineMatchService online) => battle.Mode switch
         {
-            OutcomeRule.Skirmish => new SkirmishMode(online),
-            OutcomeRule.Survival => new SurvivalMode(assets, online),
-            OutcomeRule.Simulation => new SimulationMode(battle),
-            _ => throw new ArgumentOutOfRangeException(nameof(battle), battle.Outcome, "Unknown outcome rule.")
+            GameMode.Skirmish => new SkirmishMode(online),
+            GameMode.Survival => new SurvivalMode(assets, online),
+            GameMode.BattleSimulation => new SimulationMode(battle),
+            GameMode.Tutorial => new EmpireAtWar.Services.Tutorial.Guided.TutorialMode(),
+            _ => throw new ArgumentOutOfRangeException(nameof(battle), battle.Mode, "Unknown game mode.")
         };
     }
 }
