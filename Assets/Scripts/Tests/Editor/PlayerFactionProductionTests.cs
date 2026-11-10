@@ -149,8 +149,8 @@ namespace EmpireAtWar.Tests.Editor
             model.QueueUnit(levelUp);
             model.QueueUnit(research);
 
-            Assert.That(model.IsUnitLimitReached(levelUp), Is.True, "A queued station upgrade hides its card.");
-            Assert.That(model.IsUnitLimitReached(research), Is.True, "A queued research tier hides its card.");
+            Assert.That(model.IsUnitLimitReached(levelUp), Is.True, "A queued station upgrade disables its card.");
+            Assert.That(model.IsUnitLimitReached(research), Is.True, "A queued research tier disables its card.");
             model.Advance(10f);
             Assert.That(model.IsUnitLimitReached(levelUp), Is.False);
         }

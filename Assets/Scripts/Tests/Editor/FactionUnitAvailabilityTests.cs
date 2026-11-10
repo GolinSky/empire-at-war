@@ -69,8 +69,8 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [TestCase(false, false)]
-        [TestCase(true, true)]
-        public void UnavailableCards_HideOnSelectionAndRefreshUntilAvailable(bool unlocked, bool heroReserved)
+        [TestCase(false, true)]
+        public void LockedCards_HideOnSelectionAndRefreshUntilUnlocked(bool unlocked, bool heroReserved)
         {
             FactionUnitUi prefab = AssetDatabase.LoadAssetAtPath<FactionUnitUi>(
                 "Assets/Prefabs/Ui/Factions/FactionUnit.prefab");
@@ -96,20 +96,20 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(card.gameObject.activeSelf, Is.False, "Unavailable cards must be hidden on selection.");
                 card.SetActive(true);
                 view.RefreshAvailability(0f, false);
-                Assert.That(card.gameObject.activeSelf, Is.False, "Live updates must hide locked units and reserved heroes.");
+                Assert.That(card.gameObject.activeSelf, Is.False, "Live updates must hide locked units.");
 
                 presenter.Unlocked = true;
                 presenter.HeroReserved = false;
                 view.RefreshAvailability(0f, false);
-                Assert.That(card.gameObject.activeSelf, Is.True, "Unlocked units and released heroes must reappear.");
+                Assert.That(card.gameObject.activeSelf, Is.True, "Unlocked units must reappear.");
 
                 presenter.Unlocked = unlocked;
                 presenter.HeroReserved = heroReserved;
                 view.RefreshAvailability(0f, false);
-                Assert.That(card.gameObject.activeSelf, Is.False, "New purchases and level changes must hide cards again.");
+                Assert.That(card.gameObject.activeSelf, Is.False, "Level changes must hide locked cards again.");
                 refresh.Invoke(view, new object[] { SelectionType.None });
                 refresh.Invoke(view, new object[] { SelectionType.Base });
-                Assert.That(card.gameObject.activeSelf, Is.False, "Reselection must keep unavailable cards hidden.");
+                Assert.That(card.gameObject.activeSelf, Is.False, "Reselection must keep locked cards hidden.");
             }
             finally
             {
@@ -122,7 +122,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("Ship", 2)]
         [TestCase("Structure", 2)]
         [TestCase("Hero", 1)]
-        public void PurchaseLimit_HidesCardUntilCapacityIsReleased(string kind, int maxCount)
+        public void PurchaseLimit_DisablesCardUntilCapacityIsReleased(string kind, int maxCount)
         {
             var data = new FactionData();
             typeof(FactionData).GetField("<MaxCount>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic)
@@ -147,6 +147,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = new GameObject("Faction purchase limit test");
             FactionUi view = root.AddComponent<FactionUi>();
             FactionUnitUi card = Object.Instantiate(prefab, root.transform);
+            Button button = (Button)new SerializedObject(card).FindProperty("purchaseButton").objectReferenceValue;
 
             try
             {
@@ -158,29 +159,31 @@ namespace EmpireAtWar.Tests.Editor
                 for (int count = 0; count < maxCount; count++)
                 {
                     view.RefreshAvailability(0f, false);
-                    Assert.That(card.gameObject.activeSelf, Is.True, "Cards below their own limit remain visible.");
+                    Assert.That(button.interactable, Is.True, "Cards below their own limit remain purchasable.");
                     model.QueueUnit(request);
                 }
 
                 Assert.That(presenter.IsUnitLimitReached(request), Is.True);
                 view.RefreshAvailability(0f, false);
-                Assert.That(card.gameObject.activeSelf, Is.False, "Reaching the purchase limit must hide the card.");
+                Assert.That(card.gameObject.activeSelf, Is.True, "Reaching the purchase limit must keep the card visible.");
+                Assert.That(button.interactable, Is.False, "Reaching the purchase limit must disable the card.");
 
                 Assert.That(model.TryCancelCurrentUnit(request.Id, out _), Is.True);
                 view.RefreshAvailability(0f, false);
-                Assert.That(card.gameObject.activeSelf, Is.True, "Releasing a purchase must restore the card.");
+                Assert.That(button.interactable, Is.True, "Releasing a purchase must re-enable the card.");
 
                 model.QueueUnit(request);
                 model.Advance(10f * maxCount);
                 view.RefreshAvailability(0f, false);
                 bool hasLifetimeLimit = kind == "Structure" || kind == "Hero";
-                Assert.That(card.gameObject.activeSelf, Is.EqualTo(!hasLifetimeLimit),
+                Assert.That(card.gameObject.activeSelf, Is.True);
+                Assert.That(button.interactable, Is.EqualTo(!hasLifetimeLimit),
                     "Completed structures and heroes retain their reservation; ordinary queues release capacity.");
 
                 if (kind == "Structure") model.ReleaseStructure(request);
                 if (kind == "Hero") model.SetHeroReserved(UnitTypeId.Ship(ShipType.HomeOne), false);
                 view.RefreshAvailability(0f, false);
-                Assert.That(card.gameObject.activeSelf, Is.True, "Releasing a lifetime reservation restores the card.");
+                Assert.That(button.interactable, Is.True, "Releasing a lifetime reservation re-enables the card.");
             }
             finally
             {
