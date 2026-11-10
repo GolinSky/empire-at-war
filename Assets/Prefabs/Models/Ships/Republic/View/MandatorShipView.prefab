@@ -587,7 +587,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 93
+  <WeaponType>k__BackingField: 128
 --- !u!1 &787964382344111944
 GameObject:
   m_ObjectHideFlags: 0
@@ -719,7 +719,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 93
+  <WeaponType>k__BackingField: 128
 --- !u!1 &1016771245604808740
 GameObject:
   m_ObjectHideFlags: 0
@@ -2803,7 +2803,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 93
+  <WeaponType>k__BackingField: 128
 --- !u!1 &3904308099390851292
 GameObject:
   m_ObjectHideFlags: 0
@@ -2861,7 +2861,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 93
+  <WeaponType>k__BackingField: 128
 --- !u!1 &3929042576176418892
 GameObject:
   m_ObjectHideFlags: 0
@@ -4436,7 +4436,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 93
+  <WeaponType>k__BackingField: 128
 --- !u!1 &6646226567111547308
 GameObject:
   m_ObjectHideFlags: 0
@@ -4614,7 +4614,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 93
+  <WeaponType>k__BackingField: 128
 --- !u!1 &6784214612980504380
 GameObject:
   m_ObjectHideFlags: 0
@@ -4703,7 +4703,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 93
+  <WeaponType>k__BackingField: 128
 --- !u!1 &7121280944841253187
 GameObject:
   m_ObjectHideFlags: 0
@@ -5833,7 +5833,7 @@ MonoBehaviour:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
   mainBattery: 0
-  <WeaponType>k__BackingField: 93
+  <WeaponType>k__BackingField: 128
 --- !u!1 &8230984776964172988
 GameObject:
   m_ObjectHideFlags: 0

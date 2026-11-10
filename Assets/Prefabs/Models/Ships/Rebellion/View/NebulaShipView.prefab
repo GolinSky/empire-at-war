@@ -3273,7 +3273,7 @@ MonoBehaviour:
     <Min>k__BackingField: -2
     <Max>k__BackingField: 162
   mainBattery: 0
-  <WeaponType>k__BackingField: 65
+  <WeaponType>k__BackingField: 128
 --- !u!135 &5141108669066433826
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5019,7 +5019,7 @@ MonoBehaviour:
     <Min>k__BackingField: -161
     <Max>k__BackingField: 3
   mainBattery: 0
-  <WeaponType>k__BackingField: 65
+  <WeaponType>k__BackingField: 128
 --- !u!135 &3023422434197921971
 SphereCollider:
   m_ObjectHideFlags: 0
