@@ -31,7 +31,7 @@ namespace EmpireAtWar.Entities.Tooltip
                     new TooltipStat(label: "Range", current: definition.Range),
                     new TooltipStat(label: "Duration (s)", current: definition.Settings.GetEffectDuration(definition.Duration)),
                     new TooltipStat(label: "Cooldown (s)", current: definition.RecoveryDelay),
-                    new TooltipStat(label: "Remaining (s)", current: remaining)
+                    new TooltipStat(label: "Remaining (s)", current: remaining, format: "0")
                 }, status: (jammed > 0 ? (shieldsOffline
                     ? "Shields and special abilities disabled. "
                     : "Special abilities disabled by nebula. ") : "") +

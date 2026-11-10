@@ -245,7 +245,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 if (queue.UnitRequest.Id == request.Id)
                 {
                     stats.Add(new TooltipStat(label: "Queued", current: queue.Count, max: data.MaxCount));
-                    stats.Add(new TooltipStat(label: "Next completion (s)", current: queue.RemainingBuildTime));
+                    stats.Add(new TooltipStat(label: "Next completion (s)", current: queue.RemainingBuildTime, format: "0"));
                     if (request is ResearchUnitRequest) status = "Already researching";
                 }
             if (data.UnitCapacity > _reinforcements.CapacityLeft)

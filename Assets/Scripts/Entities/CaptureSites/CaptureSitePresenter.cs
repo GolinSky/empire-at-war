@@ -148,8 +148,8 @@ namespace EmpireAtWar.Entities.CaptureSites
             {
                 return new TooltipContent(title: "Capture site",
                     description: "Move units into the ring to capture it. Select a friendly empty site to choose a facility.",
-                    stats: new[] { new TooltipStat(label: "Capture (%)", current: CaptureProgress * 100f),
-                        new TooltipStat(label: "Construction (%)", current: ConstructionProgress * 100f) },
+                    stats: new[] { new TooltipStat(label: "Capture (%)", current: CaptureProgress * 100f, format: "0"),
+                        new TooltipStat(label: "Construction (%)", current: ConstructionProgress * 100f, format: "0") },
                     status: $"Owner: {Owner} · {State} · {FacilityType}");
             });
         }

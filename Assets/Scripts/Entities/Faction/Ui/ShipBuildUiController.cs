@@ -113,8 +113,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 var data = snapshot.UnitRequest.FactionData;
                 return UnitTooltipContent.Build(data, new[]
                 {
-                    new TooltipStat(label: "Remaining time (s)", current: snapshot.RemainingBuildTime),
-                    new TooltipStat(label: "Progress (s)", current: data.BuildTime - snapshot.RemainingBuildTime, max: data.BuildTime),
+                    new TooltipStat(label: "Remaining time (s)", current: snapshot.RemainingBuildTime, format: "0"),
+                    new TooltipStat(label: "Progress (s)", current: data.BuildTime - snapshot.RemainingBuildTime, format: "0", max: data.BuildTime),
                     new TooltipStat(label: "Items in this queue", current: snapshot.Count),
                     new TooltipStat(label: "Cancel refund (credits)", current: data.Price)
                 }, status: "<color=#EF4444><b>Click to cancel the current item and refund its cost.</b></color>");

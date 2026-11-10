@@ -24,8 +24,8 @@ namespace EmpireAtWar.Services.CaptureSites
                 provider = new TooltipContentProvider(this, site,
                     () => _hover.CanHover && site.IsRevealed, () => new TooltipContent(title: "Capture site",
                         description: "Move ships into the ring to capture it. Select an owned empty site to construct a facility.",
-                        stats: new[] { new TooltipStat(label: "Capture (%)", current: site.CaptureProgress * 100f),
-                            new TooltipStat(label: "Construction (%)", current: site.ConstructionProgress * 100f) },
+                        stats: new[] { new TooltipStat(label: "Capture (%)", current: site.CaptureProgress * 100f, format: "0"),
+                            new TooltipStat(label: "Construction (%)", current: site.ConstructionProgress * 100f, format: "0") },
                         status: $"Owner: {site.Owner} · {site.State} · {site.FacilityType}"));
                 return true;
             }
