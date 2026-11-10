@@ -39,6 +39,9 @@ sysinfo.txt
 *.unitypackage
 **/build_*
 **/*_build*
+# Build-output patterns must not hide project assets (e.g. Lesson_build_fleet.asset).
+!/Assets/**/build_*
+!/Assets/**/*_build*
 
 #tortoise mergetool temp files
 *.orig
