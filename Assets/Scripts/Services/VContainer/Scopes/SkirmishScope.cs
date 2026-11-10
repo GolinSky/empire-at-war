@@ -207,6 +207,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterInstance(_miniMapData).AsImplementedInterfaces().AsSelf();
             builder.Register<MiniMapUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ReinforcementZoneMiniMapPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<MiniMapAlertPresenter>(Lifetime.Singleton).AsImplementedInterfaces();
             if (Battle.Mode != GameMode.BattleSimulation)
                 builder.Register<BaseMiniMapPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CinematicCameraModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

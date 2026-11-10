@@ -20,6 +20,14 @@ namespace EmpireAtWar.Entities.MiniMap
         private const float HIGHLIGHT_MARK_ALPHA = 1f;
         private const float FADE_DURATION = 0.3f;
         private const float ORIGIN_MAP_ALPHA = 0.8f;
+        private const int MAX_ALERTS = 8;
+        private const float CAPTURED_ALERT_SECONDS = 4f;
+        private const float LOST_ALERT_SECONDS = 5f;
+        private const float COMBAT_ALERT_SECONDS = 3f;
+        private const float COMBAT_DISC_ALPHA = 0.35f;
+        private static readonly Color CAPTURED_ALERT_COLOR = new Color(0.3f, 1f, 0.45f, 1f);
+        private static readonly Color LOST_ALERT_COLOR = new Color(1f, 0.62f, 0.12f, 1f);
+        private static readonly Color COMBAT_ALERT_COLOR = new Color(1f, 0.18f, 0.15f, 0.85f);
 
         [SerializeField] private RectTransform miniMapRectTransform;
         [SerializeField] private TooltipHoverView tooltipHover;
@@ -31,6 +39,8 @@ namespace EmpireAtWar.Entities.MiniMap
         [SerializeField] private MiniMapMoveTargetView moveTargetView;
         [SerializeField] private RawImage fogImage;
         [SerializeField] private MiniMapTargetView targetView;
+        [SerializeField] private MiniMapAlertView alertTemplate;
+        private readonly List<MiniMapAlertView> _alertViews = new List<MiniMapAlertView>(MAX_ALERTS);
         private List<Image> _mapMarkers = new List<Image>();
         private Dictionary<MiniMapMarker, MarkView> _markerViews =
             new Dictionary<MiniMapMarker, MarkView>();
@@ -74,6 +84,7 @@ namespace EmpireAtWar.Entities.MiniMap
             _model.OnMarkAdded += AddMark;
             _model.OnMarkerAdded += AddMarker;
             _model.OnMarkerRemoved += RemoveMarker;
+            _model.OnAlertAdded += ShowAlert;
         }
 
         public void Dispose()
@@ -83,6 +94,7 @@ namespace EmpireAtWar.Entities.MiniMap
             _model.OnMarkAdded -= AddMark;
             _model.OnMarkerAdded -= AddMarker;
             _model.OnMarkerRemoved -= RemoveMarker;
+            _model.OnAlertAdded -= ShowAlert;
             if (_markerFade != null) _markerFade.Kill();
             foreach (MarkView view in _markerViews.Values) view.Release();
             // Inactive prefabs may be destroyed without Unity invoking OnDestroy.
@@ -141,6 +153,44 @@ namespace EmpireAtWar.Entities.MiniMap
                 if (Application.isPlaying) Destroy(view.gameObject);
                 else DestroyImmediate(view.gameObject);
             }
+        }
+
+        // Pooled: at most MAX_ALERTS pings at once; a new one reuses the oldest when all are playing.
+        private void ShowAlert(MiniMapAlertType alertType, Vector3 worldPoint)
+        {
+            MiniMapAlertView view = GetAlertView();
+            Vector2 position = GetPosition(worldPoint);
+            switch (alertType)
+            {
+                case MiniMapAlertType.Captured:
+                    view.Play(position, CAPTURED_ALERT_COLOR, 0f, CAPTURED_ALERT_SECONDS);
+                    break;
+                case MiniMapAlertType.Lost:
+                    view.Play(position, LOST_ALERT_COLOR, 0f, LOST_ALERT_SECONDS);
+                    break;
+                case MiniMapAlertType.Combat:
+                    view.Play(position, COMBAT_ALERT_COLOR, COMBAT_DISC_ALPHA, COMBAT_ALERT_SECONDS);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(alertType), alertType, "Unknown minimap alert.");
+            }
+        }
+
+        private MiniMapAlertView GetAlertView()
+        {
+            MiniMapAlertView oldest = null;
+            foreach (MiniMapAlertView view in _alertViews)
+            {
+                if (!view.IsPlaying) return view;
+                if (oldest == null || view.Elapsed > oldest.Elapsed) oldest = view;
+            }
+            if (_alertViews.Count < MAX_ALERTS)
+            {
+                MiniMapAlertView created = Instantiate(alertTemplate, alertTemplate.transform.parent);
+                _alertViews.Add(created);
+                return created;
+            }
+            return oldest;
         }
 
         public void ShowTarget(Vector3 worldPoint) => targetView.Show(GetPosition(worldPoint));

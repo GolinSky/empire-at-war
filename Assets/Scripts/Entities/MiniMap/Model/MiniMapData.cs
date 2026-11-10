@@ -16,6 +16,8 @@ namespace EmpireAtWar.Models.MiniMap
 
         event Action<MiniMapMarker> OnMarkerRemoved;
 
+        event Action<MiniMapAlertType, Vector3> OnAlertAdded;
+
         MarkView MarkViewPrefab { get;}
         Vector2Range MapRange { get; }
         CameraMarkData CameraMark { get;}
@@ -40,6 +42,8 @@ namespace EmpireAtWar.Models.MiniMap
 
         public event Action<MiniMapMarker> OnMarkerRemoved;
 
+        public event Action<MiniMapAlertType, Vector3> OnAlertAdded;
+
         public Vector2Range MapRange { get; set; }
         public CameraMarkData CameraMark { get; } = new CameraMarkData();
         public IReadOnlyList<MiniMapMarker> Markers => _markers;
@@ -58,6 +62,9 @@ namespace EmpireAtWar.Models.MiniMap
             Sprite icon = GetIcon(markType);
             OnMarkAdded?.Invoke(new MarkData(position: position, icon: icon));
         }
+
+        public void AddAlert(MiniMapAlertType alertType, Vector3 worldPosition) =>
+            OnAlertAdded?.Invoke(alertType, worldPosition);
 
         public void AddMarker(MiniMapMarker marker)
         {
