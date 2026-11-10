@@ -169,7 +169,7 @@ MonoBehaviour:
     <Min>k__BackingField: -94
     <Max>k__BackingField: -25
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!135 &3798494072087654210
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -248,8 +248,8 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -18
     <Max>k__BackingField: 169
-  mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  mainBattery: 1
+  <WeaponType>k__BackingField: 3
 --- !u!135 &6942772357704589892
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -360,7 +360,7 @@ MonoBehaviour:
     <Min>k__BackingField: -3
     <Max>k__BackingField: 170
   mainBattery: 0
-  <WeaponType>k__BackingField: 11
+  <WeaponType>k__BackingField: 91
 --- !u!135 &7951092455702929266
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -440,7 +440,7 @@ MonoBehaviour:
     <Min>k__BackingField: -17
     <Max>k__BackingField: 151
   mainBattery: 0
-  <WeaponType>k__BackingField: 32
+  <WeaponType>k__BackingField: 37
 --- !u!135 &4427590004043022937
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -626,7 +626,7 @@ MonoBehaviour:
     <Min>k__BackingField: -165
     <Max>k__BackingField: 19
   mainBattery: 0
-  <WeaponType>k__BackingField: 32
+  <WeaponType>k__BackingField: 37
 --- !u!135 &2066444728763407820
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5573,7 +5573,7 @@ MonoBehaviour:
     <Min>k__BackingField: -125
     <Max>k__BackingField: 19
   mainBattery: 0
-  <WeaponType>k__BackingField: 23
+  <WeaponType>k__BackingField: 94
 --- !u!135 &4003378627771429784
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5653,7 +5653,7 @@ MonoBehaviour:
     <Min>k__BackingField: -16
     <Max>k__BackingField: 154
   mainBattery: 0
-  <WeaponType>k__BackingField: 23
+  <WeaponType>k__BackingField: 94
 --- !u!135 &97305590665542423
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5875,7 +5875,7 @@ MonoBehaviour:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 162
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!135 &2118757405989055179
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -5955,7 +5955,7 @@ MonoBehaviour:
     <Min>k__BackingField: -94
     <Max>k__BackingField: 95
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!135 &270395685707138467
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6034,8 +6034,8 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -170
     <Max>k__BackingField: 8
-  mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  mainBattery: 1
+  <WeaponType>k__BackingField: 3
 --- !u!135 &530070976454891432
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6177,7 +6177,7 @@ MonoBehaviour:
     <Min>k__BackingField: -153
     <Max>k__BackingField: 17
   mainBattery: 0
-  <WeaponType>k__BackingField: 23
+  <WeaponType>k__BackingField: 94
 --- !u!135 &7279041277309850690
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6257,7 +6257,7 @@ MonoBehaviour:
     <Min>k__BackingField: -156
     <Max>k__BackingField: 15
   mainBattery: 0
-  <WeaponType>k__BackingField: 23
+  <WeaponType>k__BackingField: 94
 --- !u!135 &768566220423822428
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6994,7 +6994,7 @@ MonoBehaviour:
     <Min>k__BackingField: -161
     <Max>k__BackingField: 16
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!135 &7439671852275327898
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -7074,7 +7074,7 @@ MonoBehaviour:
     <Min>k__BackingField: -18
     <Max>k__BackingField: 126
   mainBattery: 0
-  <WeaponType>k__BackingField: 23
+  <WeaponType>k__BackingField: 94
 --- !u!135 &6624121844417724778
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -12473,8 +12473,8 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -2
     <Max>k__BackingField: 172
-  mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  mainBattery: 1
+  <WeaponType>k__BackingField: 3
 --- !u!135 &1330893039921218307
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -12615,8 +12615,8 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -148
     <Max>k__BackingField: 19
-  mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  mainBattery: 1
+  <WeaponType>k__BackingField: 3
 --- !u!135 &260785139762009027
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -12850,7 +12850,7 @@ MonoBehaviour:
     <Min>k__BackingField: -169
     <Max>k__BackingField: 5
   mainBattery: 0
-  <WeaponType>k__BackingField: 11
+  <WeaponType>k__BackingField: 91
 --- !u!135 &2070918640324346603
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -12992,7 +12992,7 @@ MonoBehaviour:
     <Min>k__BackingField: -14
     <Max>k__BackingField: 157
   mainBattery: 0
-  <WeaponType>k__BackingField: 23
+  <WeaponType>k__BackingField: 94
 --- !u!135 &829048179064948668
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -13072,7 +13072,7 @@ MonoBehaviour:
     <Min>k__BackingField: -160
     <Max>k__BackingField: 7
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!135 &5234639964737289373
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -13326,7 +13326,7 @@ MonoBehaviour:
     <Min>k__BackingField: -94
     <Max>k__BackingField: 95
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!135 &5192775537757932242
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -13468,7 +13468,7 @@ MonoBehaviour:
     <Min>k__BackingField: -6
     <Max>k__BackingField: 161
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!135 &7421419238237858492
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -13547,8 +13547,8 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -2
     <Max>k__BackingField: 171
-  mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  mainBattery: 1
+  <WeaponType>k__BackingField: 3
 --- !u!135 &7914609496774584479
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -20265,7 +20265,7 @@ MonoBehaviour:
     <Min>k__BackingField: -160
     <Max>k__BackingField: 39
   mainBattery: 0
-  <WeaponType>k__BackingField: 4
+  <WeaponType>k__BackingField: 5
 --- !u!135 &740678788837030541
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -20344,8 +20344,8 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -169
     <Max>k__BackingField: 11
-  mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  mainBattery: 1
+  <WeaponType>k__BackingField: 3
 --- !u!135 &8946801608728561497
 SphereCollider:
   m_ObjectHideFlags: 0

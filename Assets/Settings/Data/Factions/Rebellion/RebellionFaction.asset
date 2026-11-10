@@ -56,12 +56,13 @@ MonoBehaviour:
     - key: 302
       value:
         matchups: {fileID: 11400000, guid: 061d31c86b87ab34ca40a0d06290c8a5, type: 2}
-        description: Heavy Rebel capital ship with 8,500 hull, 10,000 shields and
-          70/s shield regeneration. Four enhanced turbolaser, four dual heavy turbolaser,
-          two turbolaser and two ion cannon batteries and targetable engines. No
-          targetable shield generator. Power to Shields boosts regeneration tenfold
-          for 15 seconds, reduces speed by 20% and weapon damage by 50%; 40-second
-          cooldown. Strong against frigates; vulnerable to bombers.
+        description: Heavy Rebel capital ship with 12,750 hull, 12,000 shields and
+          180/s shield regeneration. Eight heavy turbolaser, four heavy quad turbolaser,
+          four dual heavy turbolaser, two dual medium turbolaser and two heavy ion
+          cannon batteries, four point-defense guns and targetable engines. No targetable
+          shield generator. Boost Shield Power quadruples shield regeneration for
+          15 seconds, reducing speed and weapon damage by 25%; 40-second cooldown.
+          Strong against frigates; vulnerable to bombers.
         role: Heavy capital ship / Anti-frigate
         iconKey: b95f55f2e2f204f42a94f0c44c5baa85:21300000
         isHero: 0

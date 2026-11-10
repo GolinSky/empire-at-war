@@ -38,14 +38,15 @@ MonoBehaviour:
     - key: 201
       value:
         matchups: {fileID: 11400000, guid: 55d62e93f93a1f34badabec3d1a83f4a, type: 2}
-        description: '10,000 hull; 9,000 shields; speed 18. Twenty-four targetable
-          weapons: six heavy two-burst turbolasers, two heavy two-burst turbo-ion
-          cannons, two medium turbo-ion cannons, three medium three-burst turbolasers,
-          five medium turbolasers and six medium laser cannons. Two shield generators,
-          two engines, tractor beam and hangar are targetable. Launches TIE Interceptors,
-          TIE Brutes and TIE Punishers. Boost Weapon Power doubles weapon damage
-          and reduces reload to 15% for 7 s; 50 s recovery. Tractor Beam restricts
-          enemy corvette or frigate movement.'
+        description: '11,000 hull; 9,000 shields; speed 18. Twenty-four targetable
+          weapons: six dual heavy turbolaser main batteries, two heavy dual ion cannons,
+          two medium dual ion cannons, eight dual medium turbolasers and six medium
+          dual laser cannons, plus four point-defense guns. Two shield generators,
+          two engines, tractor beam and hangar are targetable. Launches TIE Fighters,
+          TIE Interceptors and TIE Bombers, up to six squadrons at once. Boost Weapon
+          Power cuts the reload time of all weapons by 85% for 7 s with no speed
+          or damage change; 50 s recovery. Tractor Beam restricts enemy corvette
+          or frigate movement.'
         role: Capital ship / Advanced carrier
         iconKey: b8f66d736a9c0a841b8957320119ca55:21300000
         isHero: 0
@@ -103,7 +104,8 @@ MonoBehaviour:
           two quad ion turrets, six medium ion cannons, six medium turbolasers and
           two medium dual turbolasers. Every weapon is targetable; shield generator,
           hangar, tractor beam are targetable. Power to Main Batteries and Tractor
-          Beam. Existing TIE Interceptor, Brute and Punisher complement.
+          Beam. Launches TIE Fighters, TIE Interceptors and TIE Bombers, up to six
+          squadrons at once.
         role: Capital ship / Ship of the line
         iconKey: 5c33cff1e56f4c246956a7183bb94b02:21300000
         isHero: 0
@@ -200,17 +202,18 @@ MonoBehaviour:
     - key: 211
       value:
         matchups: {fileID: 11400000, guid: 2e867f7906f912745a1d170c737e565a, type: 2}
-        description: '15,000 hull and shields. Republic Venator hardpoint layout:
+        description: '9,000 hull and 10,000 shields. Republic Venator hardpoint layout:
           ten Imperial green heavy dual turbolasers, two heavy turbolasers, two heavy
-          ion cannons and one SPHAT beam. Intensify Firepower increases firing rate
-          for 15 s. Launches TIE Fighters and TIE Bombers.'
+          ion cannons and one SPHAT beam. Intensify Firepower makes turbolasers,
+          ion cannons and the SPHAT beam fire about six times faster for 15 s; 60
+          s recovery. Launches TIE Fighters, TIE Bombers and TIE Interceptors.'
         role: Capital carrier / Anti-frigate
         iconKey: d612310c959d0bb4d93c64dba1f5b3f4:21300000
         isHero: 0
         <Name>k__BackingField: Imperial Venator
         <MaxCount>k__BackingField: 3
-        <AvailableLevel>k__BackingField: 2
-        <Price>k__BackingField: 7000
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 6500
         <BuildTime>k__BackingField: 45
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: d612310c959d0bb4d93c64dba1f5b3f4,
@@ -295,7 +298,7 @@ MonoBehaviour:
         description: 6,000 hull and 5,000 shields with capital shield regeneration.
           Four dual medium turbolasers, two concussion missile launchers and two
           point defense lasers. Deploys TIE Fighter, TIE Bomber, TIE Avenger, TIE
-          Interceptor, TIE Brute and TIE Punisher squadrons. One squadron of each
+          Interceptor, TIE Brute and TIE Punisher squadrons. Two squadrons of each
           type can be active, with ten carried per type and sixty total.
         role: Capital / Assault carrier
         iconKey: f38f2a09297bc734d89c94affa2d83f6:21300000
@@ -303,7 +306,7 @@ MonoBehaviour:
         <Name>k__BackingField: Gladiator-class Star Destroyer
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 5200
+        <Price>k__BackingField: 4800
         <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: f38f2a09297bc734d89c94affa2d83f6,

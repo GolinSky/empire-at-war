@@ -71,26 +71,28 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SavedHangar_LaunchesThreeMixedSquadronsAndReplacesLosses()
+        public void SavedHangar_LaunchesSixMixedSquadronsAndReplacesLosses()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.HangarBays.Select(b => (int)b.SquadronType), Is.EqualTo(new[] { 203, 204, 205 }));
-            Assert.That(data.HangarBays.All(b => b.Reserve == 40 && b.MaxActive == 1), Is.True);
+            Assert.That(data.HangarBays.Select(b => (int)b.SquadronType), Is.EqualTo(new[] { 200, 203, 201 }));
+            Assert.That(data.HangarBays.All(b => b.Reserve == 80 && b.MaxActive == 2), Is.True);
             HangarModel model = new HangarModel(data);
-            for (int expected = 0; expected < 3; expected++)
+            for (int launch = 0; launch < 6; launch++)
             {
+                int expected = launch / 2;
                 Assert.That(model.TryLaunch(30f, out int bay), Is.True);
                 Assert.That(bay, Is.EqualTo(expected));
-                Assert.That(model.GetReserve(bay), Is.EqualTo(39));
-                Assert.That(model.GetActive(bay), Is.EqualTo(1));
+                Assert.That(model.GetReserve(bay), Is.EqualTo(79 - launch % 2));
+                Assert.That(model.GetActive(bay), Is.EqualTo(1 + launch % 2));
             }
             Assert.That(model.TryLaunch(30f, out _), Is.False);
             for (int expected = 0; expected < 3; expected++)
             {
                 model.SquadronLost(expected);
+                model.SquadronLost(expected);
                 Assert.That(model.TryLaunchReplacement(out int bay), Is.True);
                 Assert.That(bay, Is.EqualTo(expected));
-                Assert.That(model.GetReserve(bay), Is.EqualTo(38));
+                Assert.That(model.GetReserve(bay), Is.EqualTo(77));
                 Assert.That(model.GetActive(bay), Is.EqualTo(1));
             }
             Assert.That(model.TryLaunchReplacement(out _), Is.False);
