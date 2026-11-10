@@ -42,9 +42,20 @@ $env:GIT_LFS_SKIP_SMUDGE = '1'
 try {
     if (-not (Test-Path -LiteralPath $ci)) { Invoke-Git -C $source worktree add --detach $ci $sha }
     Assert-CiWorktree
+    $previousSha = (Invoke-Git -C $ci rev-parse HEAD).Trim()
     Invoke-Git -C $ci checkout --detach --force $sha
     Invoke-Git -C $ci clean -fdx -e /Library/
 } finally { Remove-Item Env:GIT_LFS_SKIP_SMUDGE -ErrorAction SilentlyContinue }
+# The Addressables build cache keys a bundle on the files it contains, not on references that were missing when
+# it was built. When an asset appears (or disappears) the referencing bundle can be reused with null references
+# baked in (v0.1.44-0.1.46 shipped tutorial lessons with null steps this way). Rebuild bundles from scratch then.
+$assetSetChanged = Invoke-Git -C $source diff --name-only --diff-filter=ADR $previousSha $sha -- Assets
+if ($assetSetChanged) {
+    foreach ($cache in "$ci\Library\BuildCache", "$ci\Library\com.unity.addressables") {
+        if (Test-Path -LiteralPath $cache) { Remove-Item -LiteralPath $cache -Recurse -Force }
+    }
+    Write-Host "Assets added, removed or renamed since $previousSha; cleared the Addressables build cache."
+}
 Invoke-Git -C $ci lfs checkout
 Invoke-Git -C $ci lfs pull
 Invoke-Git -C $ci lfs fsck
