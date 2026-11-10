@@ -51,8 +51,12 @@ namespace EmpireAtWar.Entities.Ship.Abilities
 
         private bool HasLiveHardPoint(HardPointType type)
         {
-            foreach (IReadOnlyHardPointModel point in Owner.Health.HardPointModels)
+            var points = Owner.Health.HardPointModels;
+            for (int i = 0; i < points.Count; i++)
+            {
+                IReadOnlyHardPointModel point = points[i];
                 if (point.HardPointType == type && !point.IsDestroyed) return true;
+            }
             return false;
         }
 

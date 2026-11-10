@@ -36,15 +36,17 @@ namespace EmpireAtWar.Tests.Editor
                     .Invoke(movement, new object[] { model });
                 typeof(EmpireAtWar.Ship.Ship).GetField("_shipMoveComponent", PRIVATE_INSTANCE).SetValue(ship, movement);
                 typeof(EmpireAtWar.Ship.Ship).GetField("<Data>k__BackingField", PRIVATE_INSTANCE).SetValue(ship, data);
-                var engines = (List<HardPointModel>)typeof(EmpireAtWar.Ship.Ship)
+                var engineObservers = (List<IReadOnlyHardPointModel>)typeof(EmpireAtWar.Ship.Ship)
                     .GetField("_engineUnits", PRIVATE_INSTANCE).GetValue(ship);
+                var engines = new HardPointModel[2];
                 var changed = (Action)Delegate.CreateDelegate(typeof(Action), ship,
                     typeof(EmpireAtWar.Ship.Ship).GetMethod("HandleEnginesData", PRIVATE_INSTANCE));
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < engines.Length; i++)
                 {
                     var engine = new HardPointModel(HardPointType.Engines, i);
                     engine.SetHealth(4000, 1);
-                    engines.Add(engine);
+                    engines[i] = engine;
+                    engineObservers.Add(engine);
                     engine.OnHardPointHealthChanged += changed;
                 }
 

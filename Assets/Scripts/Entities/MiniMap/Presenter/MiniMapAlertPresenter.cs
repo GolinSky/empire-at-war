@@ -3,6 +3,7 @@ using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.MiniMap;
@@ -28,7 +29,8 @@ namespace EmpireAtWar.Presenters.MiniMap
         private const int COMBAT_CELLS_PER_SIDE = 10;
 
         private readonly MiniMapData _miniMapData;
-        private readonly ICaptureSiteDirectory _sites;
+        private readonly IMapModelObserver _map;
+        private readonly IReadOnlyList<ICaptureSiteDirectory> _siteDirectories;
         private readonly ReinforcementZonesSystem _zones;
         private readonly IEntityLocator _entities;
         private readonly ILocalPlayer _localPlayer;
@@ -40,12 +42,14 @@ namespace EmpireAtWar.Presenters.MiniMap
         private readonly Dictionary<int, float> _combatCellReadyAt = new Dictionary<int, float>();
         private bool _running;
 
-        public MiniMapAlertPresenter(MiniMapData miniMapData, ICaptureSiteDirectory sites,
+        public MiniMapAlertPresenter(MiniMapData miniMapData, IMapModelObserver map,
+            IReadOnlyList<ICaptureSiteDirectory> siteDirectories,
             ReinforcementZonesSystem zones, IEntityLocator entities, ILocalPlayer localPlayer,
             INotifier<BattleState> battleState)
         {
             _miniMapData = miniMapData;
-            _sites = sites;
+            _map = map;
+            _siteDirectories = siteDirectories;
             _zones = zones;
             _entities = entities;
             _localPlayer = localPlayer;
@@ -62,7 +66,8 @@ namespace EmpireAtWar.Presenters.MiniMap
             SnapshotSites();
             foreach (ReinforcementZonePresenter zone in _zones.Zones)
                 if (zone.IsCapturable) _zoneOwners.Add(zone, zone.Owner);
-            _sites.SitesChanged += SnapshotSites;
+            for (int i = 0; i < _siteDirectories.Count; i++)
+                _siteDirectories[i].SitesChanged += SnapshotSites;
             _entities.EntityAdded += HandleEntityAdded;
             _entities.EntityRemoved += HandleEntityRemoved;
             foreach (IEntity entity in _entities.Entities) HandleEntityAdded(entity);
@@ -73,7 +78,8 @@ namespace EmpireAtWar.Presenters.MiniMap
             _battleState.RemoveObserver(this);
             if (!_running) return;
             _running = false;
-            _sites.SitesChanged -= SnapshotSites;
+            for (int i = 0; i < _siteDirectories.Count; i++)
+                _siteDirectories[i].SitesChanged -= SnapshotSites;
             _entities.EntityAdded -= HandleEntityAdded;
             _entities.EntityRemoved -= HandleEntityRemoved;
             foreach (HealthWatch watch in _watches.Values) watch.Dispose();
@@ -84,12 +90,17 @@ namespace EmpireAtWar.Presenters.MiniMap
         public void LateTick()
         {
             if (!_running) return;
-            foreach (ICaptureSite site in _sites.Sites)
+            for (int i = 0; i < _siteDirectories.Count; i++)
             {
-                PlayerId previous = _siteOwners[site];
-                if (previous == site.Owner) continue;
-                _siteOwners[site] = site.Owner;
-                PingOwnerChange(previous, site.Owner, site.Center);
+                IReadOnlyList<ICaptureSite> sites = _siteDirectories[i].Sites;
+                for (int j = 0; j < sites.Count; j++)
+                {
+                    ICaptureSite site = sites[j];
+                    PlayerId previous = _siteOwners[site];
+                    if (previous == site.Owner) continue;
+                    _siteOwners[site] = site.Owner;
+                    PingOwnerChange(previous, site.Owner, site.Center);
+                }
             }
             foreach (ReinforcementZonePresenter zone in _zones.Zones)
             {
@@ -102,7 +113,9 @@ namespace EmpireAtWar.Presenters.MiniMap
         private void SnapshotSites()
         {
             _siteOwners.Clear();
-            foreach (ICaptureSite site in _sites.Sites) _siteOwners.Add(site, site.Owner);
+            for (int i = 0; i < _siteDirectories.Count; i++)
+                foreach (ICaptureSite site in _siteDirectories[i].Sites)
+                    _siteOwners.Add(site, site.Owner);
         }
 
         private void PingOwnerChange(PlayerId previous, PlayerId owner, Vector3 position)
@@ -135,7 +148,7 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         private int GetCombatCell(Vector3 position)
         {
-            Vector2Range range = _miniMapData.MapRange;
+            Vector2Range range = _map.SizeRange;
             int x = Mathf.Clamp((int)(Mathf.InverseLerp(range.Min.x, range.Max.x, position.x) * COMBAT_CELLS_PER_SIDE),
                 0, COMBAT_CELLS_PER_SIDE - 1);
             int y = Mathf.Clamp((int)(Mathf.InverseLerp(range.Min.y, range.Max.y, position.z) * COMBAT_CELLS_PER_SIDE),

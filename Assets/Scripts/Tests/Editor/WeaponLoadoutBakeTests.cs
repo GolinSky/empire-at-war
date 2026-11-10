@@ -46,10 +46,10 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase(WeaponType.Laser, 0.8f, 0.45f)]
-        [TestCase(WeaponType.PointDefense, 0.9f, 0f)]
+        [TestCase(WeaponType.Laser, true)]
+        [TestCase(WeaponType.PointDefense, false)]
         public void CombatRating_UsesSquadronShieldBonusOnlyForStrikecraftTargets(
-            WeaponType weaponType, float fighterShieldFactor, float capitalShieldFactor)
+            WeaponType weaponType, bool canHitCapital)
         {
             WeaponsData weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(WEAPONS_DATA);
             DamageMatrixData matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>(DAMAGE_MATRIX);
@@ -58,9 +58,17 @@ namespace EmpireAtWar.Tests.Editor
                 loadout, weapons, matrix, Array.Empty<UnitCombatProfile>());
             WeaponProfile weapon = weapons.GetProfile(weaponType);
             float rawDps = weapon.Damage * weapon.ShotsPerSalvo / weapon.Reload;
+            float fighterShieldDps = HitDps(ShipClass.Fighter) *
+                matrix.GetSquadronShieldMultiplier(weapon.DamageType);
+            float capitalShieldDps = canHitCapital
+                ? HitDps(ShipClass.Capital) * matrix.GetShipShieldMultiplier(weapon.DamageType)
+                : 0f;
 
-            Assert.That(profile.ShieldDps(ShipClass.Fighter), Is.EqualTo(rawDps * fighterShieldFactor).Within(0.001f));
-            Assert.That(profile.ShieldDps(ShipClass.Capital), Is.EqualTo(rawDps * capitalShieldFactor).Within(0.001f));
+            Assert.That(profile.ShieldDps(ShipClass.Fighter), Is.EqualTo(fighterShieldDps).Within(0.001f));
+            Assert.That(profile.ShieldDps(ShipClass.Capital), Is.EqualTo(capitalShieldDps).Within(0.001f));
+
+            float HitDps(ShipClass target) => rawDps * weapon.GetDamageBias(target) *
+                Math.Min(1f, matrix.GetAccuracy(weapon.DamageType, target) * weapon.GetAccuracyBias(target));
         }
 
         [TestCase(ShipClass.Capital, 1.25f)]

@@ -33,6 +33,8 @@ namespace EmpireAtWar.Tests.Editor
 
             try
             {
+                var data = new FactionData();
+                card.SetData(data, view, new ShipUnitRequest(data, ShipType.HomeOne));
                 FieldInfo cardsField = typeof(FactionUi).GetField("_factionUnitsUi",
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 ((List<FactionUnitUi>)cardsField.GetValue(view)).Add(card);
