@@ -42,6 +42,11 @@ sysinfo.txt
 # Build-output patterns must not hide project assets (e.g. Lesson_build_fleet.asset).
 !/Assets/**/build_*
 !/Assets/**/*_build*
+!/Assets/**/[Tt]emp/
+!/Assets/**/[Bb]uild/
+!/Assets/**/[Bb]uilds/
+!/Assets/**/[Ll]ogs/
+!/Assets/**/obj/
 
 #tortoise mergetool temp files
 *.orig
