@@ -150,7 +150,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
             {
                 // The part of the hit the member's shield could not hold carries on to its hull.
                 float shieldMultiplier = _damageMatrix.GetSquadronShieldMultiplier(damageType) *
-                    (damageType == DamageType.Laser || damageType == DamageType.FighterLaser
+                    (damageType is DamageType.Laser or DamageType.FighterLaser or DamageType.InterceptorLaser
+                        or DamageType.HeroLaser
                         ? _data.LaserShieldDamageMultiplier
                         : 1f);
                 float shieldDamage = damage * shieldMultiplier;

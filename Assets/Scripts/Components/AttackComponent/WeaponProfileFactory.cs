@@ -46,7 +46,8 @@ namespace EmpireAtWar.Components.AttackComponent
             }
 
             if (family.Family is WeaponFamily.Laser or WeaponFamily.Turbolaser or WeaponFamily.Ion
-                or WeaponFamily.FighterLaser or WeaponFamily.FighterIon)
+                or WeaponFamily.FighterLaser or WeaponFamily.FighterIon or WeaponFamily.InterceptorLaser
+                or WeaponFamily.HeroLaser)
             {
                 // Stretched billboards use Y for length; caliber never changes bolt width.
                 size.y *= caliber.Caliber switch

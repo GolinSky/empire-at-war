@@ -108,11 +108,52 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(matrix.GetSquadronShieldMultiplier(DamageType.PointDefense), Is.EqualTo(1f));
             Assert.That(matrix.GetShieldMultiplier(DamageType.Laser), Is.EqualTo(0.5f));
             Assert.That(matrix.GetShieldMultiplier(DamageType.PointDefense), Is.EqualTo(0.25f));
-            foreach (ShipClass target in new[] { ShipClass.Fighter, ShipClass.Bomber, ShipClass.Interceptor })
+            foreach (DamageType gun in new[] { DamageType.Laser, DamageType.PointDefense })
             {
-                Assert.That(matrix.GetDamageMultiplier(DamageType.Laser, target), Is.EqualTo(2f));
-                Assert.That(matrix.GetDamageMultiplier(DamageType.PointDefense, target), Is.EqualTo(2.5f));
+                Assert.That(matrix.GetDamageMultiplier(gun, ShipClass.Fighter), Is.EqualTo(2f));
+                Assert.That(matrix.GetDamageMultiplier(gun, ShipClass.Bomber), Is.EqualTo(2.5f));
+                Assert.That(matrix.GetDamageMultiplier(gun, ShipClass.Interceptor), Is.EqualTo(2.5f));
             }
+        }
+
+        [Test]
+        public void SquadronRoles_InterceptorsCounterBombers_FightersCounterInterceptors()
+        {
+            DamageMatrixData matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>(MATRIX);
+            float Effectiveness(DamageType gun, ShipClass target) =>
+                matrix.GetDamageMultiplier(gun, target) * matrix.GetAccuracy(gun, target);
+
+            Assert.That(Effectiveness(DamageType.InterceptorLaser, ShipClass.Bomber),
+                Is.GreaterThan(Effectiveness(DamageType.FighterLaser, ShipClass.Bomber)));
+            Assert.That(Effectiveness(DamageType.FighterLaser, ShipClass.Interceptor),
+                Is.GreaterThan(Effectiveness(DamageType.InterceptorLaser, ShipClass.Fighter)));
+            foreach (DamageType gun in new[] { DamageType.Laser, DamageType.PointDefense })
+            {
+                Assert.That(Effectiveness(gun, ShipClass.Fighter), Is.LessThan(Effectiveness(gun, ShipClass.Bomber)));
+                Assert.That(matrix.GetAccuracy(gun, ShipClass.Interceptor), Is.LessThan(matrix.GetAccuracy(gun, ShipClass.Fighter)));
+            }
+        }
+
+        [Test]
+        public void HeroStrikecraft_ResistsNonHeroGuns_AndHeroLasersHitHeroes()
+        {
+            DamageMatrixData matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>(MATRIX);
+            float Effectiveness(DamageType gun, ShipClass target) =>
+                matrix.GetDamageMultiplier(gun, target) * matrix.GetAccuracy(gun, target);
+
+            foreach (DamageType gun in Enum.GetValues(typeof(DamageType)))
+            {
+                if (gun == DamageType.HeroLaser) continue;
+                Assert.That(Effectiveness(gun, ShipClass.HeroStrikecraft),
+                    Is.LessThanOrEqualTo(Effectiveness(gun, ShipClass.Fighter) * 0.5f + 0.0001f), gun.ToString());
+            }
+
+            Assert.That(Effectiveness(DamageType.HeroLaser, ShipClass.HeroStrikecraft), Is.GreaterThanOrEqualTo(0.8f));
+            foreach (ShipClass squadron in new[] { ShipClass.Fighter, ShipClass.Bomber, ShipClass.Interceptor })
+                Assert.That(Effectiveness(DamageType.HeroLaser, squadron),
+                    Is.GreaterThan(Effectiveness(DamageType.FighterLaser, squadron)));
+            Assert.That(Effectiveness(DamageType.HeroLaser, ShipClass.Corvette),
+                Is.GreaterThan(Effectiveness(DamageType.FighterLaser, ShipClass.Corvette)));
         }
 
         [Test]

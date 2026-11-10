@@ -16,5 +16,7 @@ namespace EmpireAtWar.Components.AttackComponent
         FighterIon = 21,
         FighterMissile = 22,
         FighterTorpedo = 23,
+        InterceptorLaser = 24,
+        HeroLaser = 25,
     }
 }

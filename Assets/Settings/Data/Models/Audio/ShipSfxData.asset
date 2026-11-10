@@ -164,6 +164,28 @@ MonoBehaviour:
       loop: 0
       localFeedback: 0
     family: 20
+  - sfx:
+      clip: {fileID: 8300000, guid: ec55a5f9d6d4a36409ec27940a1d23f3, type: 3}
+      clips:
+        array: []
+      volume: 0.45
+      priority: 30
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+      localFeedback: 0
+    family: 24
+  - sfx:
+      clip: {fileID: 8300000, guid: ec55a5f9d6d4a36409ec27940a1d23f3, type: 3}
+      clips:
+        array: []
+      volume: 0.45
+      priority: 30
+      cooldown: 0
+      maxInstances: 4
+      loop: 0
+      localFeedback: 0
+    family: 25
   weapons:
   - sfx:
       clip: {fileID: 0}

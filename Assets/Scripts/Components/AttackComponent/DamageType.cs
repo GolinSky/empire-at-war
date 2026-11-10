@@ -16,5 +16,9 @@ namespace EmpireAtWar.Components.AttackComponent
         CompositeBeam = 12,
         /// <summary>Strikecraft guns: strong against fighters, bombers and interceptors, weak against every ship.</summary>
         FighterLaser = 13,
+        /// <summary>Interceptor guns: best against bombers, weaker than fighter guns against fighters and ships.</summary>
+        InterceptorLaser = 14,
+        /// <summary>Hero strikecraft guns: beat every squadron, hurt corvettes, and hit other heroes normally.</summary>
+        HeroLaser = 15,
     }
 }

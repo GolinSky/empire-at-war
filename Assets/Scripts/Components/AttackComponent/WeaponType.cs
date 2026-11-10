@@ -73,5 +73,6 @@ namespace EmpireAtWar.Components.AttackComponent
         JangoFettLaser = 125,
         BobaFettTwinLaser = 126,
         FalconQuadLaser = 123,
+        InterceptorLaser = 127,
     }
 }

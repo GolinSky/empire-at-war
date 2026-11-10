@@ -27,7 +27,7 @@ MonoBehaviour:
   <ExtendDistance>k__BackingField: 34
   <WarheadDamageMultiplier>k__BackingField: 1
   <WarheadReloadMultiplier>k__BackingField: 1
-  <ShipClass>k__BackingField: 0
+  <ShipClass>k__BackingField: 7
   <MemberHull>k__BackingField: 25
   <MemberShields>k__BackingField: 0
   <ShieldRegenerateValue>k__BackingField: 0
@@ -43,5 +43,5 @@ MonoBehaviour:
   <VisionRange>k__BackingField: 350
   <MemberCount>k__BackingField: 8
   weaponLoadout:
-  - weaponType: 15
+  - weaponType: 127
     count: 32

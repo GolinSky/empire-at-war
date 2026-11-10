@@ -27,7 +27,7 @@ MonoBehaviour:
   <ExtendDistance>k__BackingField: 60
   <WarheadDamageMultiplier>k__BackingField: 1
   <WarheadReloadMultiplier>k__BackingField: 1
-  <ShipClass>k__BackingField: 0
+  <ShipClass>k__BackingField: 9
   <MemberHull>k__BackingField: 3000
   <MemberShields>k__BackingField: 1200
   <ShieldRegenerateValue>k__BackingField: 2.5

@@ -317,6 +317,56 @@ MonoBehaviour:
     factionColored: 0
     color: {r: 0.3, g: 0.6, b: 1, a: 1}
     size: {x: 9, y: 9, z: 9}
+  - family: 24
+    platform: 1
+    damageType: 14
+    damage: 5
+    shotsPerSalvo: 2
+    shotInterval: 0.08
+    reload: 0.9
+    range: 70
+    strikecraftOnly: 0
+    preferredTarget: 0
+    interceptable: 0
+    targetSizeBias: 0
+    turnRate: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    quadShotPrefab: {fileID: 4723455029226909166, guid: 6d96c09757ceccc41aeb2018a4ad59d6,
+      type: 3}
+    octupleShotPrefab: {fileID: 4723455029226909166, guid: bb4021ab222bd2946a6f49cb77df03d1,
+      type: 3}
+    projectileSpeed: 182
+    factionColored: 1
+    color: {r: 1, g: 0.25, b: 0.1, a: 1}
+    size: {x: 0.2, y: 0.6, z: 0.6}
+  - family: 25
+    platform: 1
+    damageType: 15
+    damage: 5
+    shotsPerSalvo: 2
+    shotInterval: 0.08
+    reload: 0.9
+    range: 70
+    strikecraftOnly: 0
+    preferredTarget: 0
+    interceptable: 0
+    targetSizeBias: 0
+    turnRate: 0
+    shotPrefab: {fileID: 5542285853262679020, guid: d90ad13c075512a478c24f41fbf7c0b6,
+      type: 3}
+    multiBarrelShotPrefab: {fileID: 4723455029226909166, guid: d08e869a202dee742b31818cc8c5b23b,
+      type: 3}
+    quadShotPrefab: {fileID: 4723455029226909166, guid: 6d96c09757ceccc41aeb2018a4ad59d6,
+      type: 3}
+    octupleShotPrefab: {fileID: 4723455029226909166, guid: bb4021ab222bd2946a6f49cb77df03d1,
+      type: 3}
+    projectileSpeed: 182
+    factionColored: 1
+    color: {r: 1, g: 0.25, b: 0.1, a: 1}
+    size: {x: 0.2, y: 0.6, z: 0.6}
   calibers:
   - caliber: 0
     damageMultiplier: 1
@@ -332,6 +382,7 @@ MonoBehaviour:
       capital: 0.9
       heavyCapital: 0.85
       structure: 0.9
+      heroStrikecraft: 1
     accuracyBias:
       fighter: 1
       bomber: 1
@@ -342,6 +393,7 @@ MonoBehaviour:
       capital: 1
       heavyCapital: 1
       structure: 1
+      heroStrikecraft: 1
   - caliber: 1
     damageMultiplier: 1.35
     rangeMultiplier: 1.15
@@ -356,6 +408,7 @@ MonoBehaviour:
       capital: 1
       heavyCapital: 1
       structure: 1
+      heroStrikecraft: 0.8
     accuracyBias:
       fighter: 0.8
       bomber: 0.8
@@ -366,6 +419,7 @@ MonoBehaviour:
       capital: 1
       heavyCapital: 1
       structure: 1
+      heroStrikecraft: 0.8
   - caliber: 2
     damageMultiplier: 2.86
     rangeMultiplier: 1.3
@@ -380,6 +434,7 @@ MonoBehaviour:
       capital: 1.25
       heavyCapital: 1.35
       structure: 1.25
+      heroStrikecraft: 0.6
     accuracyBias:
       fighter: 0.6
       bomber: 0.6
@@ -390,6 +445,7 @@ MonoBehaviour:
       capital: 1
       heavyCapital: 1
       structure: 1
+      heroStrikecraft: 0.6
   mounts:
   - mount: 1
     damageMultiplier: 1
@@ -720,9 +776,27 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 127
+    displayName: Light Interceptor Laser Cannon
+    family: 24
+    caliber: 0
+    mount: 1
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 1
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 126
     displayName: Slave I Laser Cannon
-    family: 20
+    family: 25
     caliber: 0
     mount: 1
     scope: 2
@@ -1128,7 +1202,7 @@ MonoBehaviour:
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 125
     displayName: Slave I Laser Cannon
-    family: 20
+    family: 25
     caliber: 0
     mount: 1
     scope: 2
@@ -1651,7 +1725,7 @@ MonoBehaviour:
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 123
     displayName: Falcon Quad Laser Cannon
-    family: 20
+    family: 25
     caliber: 0
     mount: 4
     scope: 2
