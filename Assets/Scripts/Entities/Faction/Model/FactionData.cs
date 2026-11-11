@@ -26,6 +26,14 @@ namespace EmpireAtWar.Models.Factions
         [field:SerializeField] public int BuildTime { get; private set; }
         [field:SerializeField] public int UnitCapacity { get; private set; }
         [field:SerializeField] public Sprite Icon { get; private set; }
+
+        internal FactionData WithIcon(TooltipIconEntry icon)
+        {
+            var data = (FactionData)MemberwiseClone();
+            data.Icon = icon.Sprite;
+            data.iconKey = icon.Key;
+            return data;
+        }
         
     }
 }

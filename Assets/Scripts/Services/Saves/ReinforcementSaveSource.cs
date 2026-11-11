@@ -88,7 +88,7 @@ namespace EmpireAtWar.Services.Saves
             foreach (StructureSave structure in context.Save.Structures.Where(structure =>
                          structure.Owner == Owner && structure.Kind == StructureKind.SecondStation))
             {
-                _faction.ReserveStructure(_requests.ConstructSecondStationRequest(_levels.SecondStation));
+                _faction.ReserveStructure(_requests.ConstructSecondStationRequest(_levels.GetSecondStationFactionData(_roster.FactionType)));
                 context.SecondStations[structure.Id].Destroyed += () =>
                     _faction.ReleaseStructure<SecondStationUnitRequest>(SecondStationUnitRequest.REQUEST_ID);
             }

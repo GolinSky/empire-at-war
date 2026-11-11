@@ -370,6 +370,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b7bc1b42c2cdac42904d0cafd617d2e
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/RepublicSpaceStationIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9e99f16d754a042a3b1b0f2d25045f52
     m_Address: Assets/Art/Textures/Ui/Icons/Ui/DefensePlatformIcon.png
     m_ReadOnly: 0
@@ -427,6 +432,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b95f55f2e2f204f42a94f0c44c5baa85
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/MonCalCruiserIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf3d2e581ea612840a65970c9fc7fc8a
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/RebellionSpaceStationIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -500,6 +510,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9d860f13eb84c240be4bed18b6f570a
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/EmpireSpaceStationIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ea3a41aea9ac2814f8151acea48c72a0
     m_Address: Assets/Art/Textures/Ui/Icons/DefendPlatform/IonSatelliteIcon.png
     m_ReadOnly: 0
@@ -542,6 +557,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f4308d6ba01d34f25bb6e197b56f9bb4
     m_Address: Assets/Art/Textures/Ui/Icons/FacilityIcon/BattleAsteroidIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5270162e3c32254aa37537e5f999255
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/SeparatistSpaceStationIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

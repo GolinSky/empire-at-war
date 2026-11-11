@@ -1,5 +1,7 @@
+using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Mvc;
 using UnityEngine;
+using Utilities.ScriptUtils.EditorSerialization;
 
 namespace EmpireAtWar.Models.Factions
 {
@@ -10,6 +12,7 @@ namespace EmpireAtWar.Models.Factions
         [SerializeField] private FactionData[] levels;
         [Tooltip("Purchase of a second station; it is built at level 1.")]
         [SerializeField] private FactionData secondStation;
+        [SerializeField] private DictionaryWrapper<FactionType, TooltipIconEntry> stationIcons;
         [Tooltip("Second station upgrade costs, one per level like levels.")]
         [SerializeField] private FactionData[] secondStationLevels;
 
@@ -23,7 +26,10 @@ namespace EmpireAtWar.Models.Factions
             return levels[level - 1];
         }
 
-        public FactionData SecondStation => secondStation;
+        public string GetStationIconKey(FactionType faction) => stationIcons.Dictionary[faction].Key;
+
+        public FactionData GetSecondStationFactionData(FactionType faction) =>
+            secondStation.WithIcon(stationIcons.Dictionary[faction]);
 
         /// <summary>Cost of upgrading the second station from <paramref name="level"/>; null at max level.</summary>
         public FactionData GetSecondStationLevelFactionData(int level)

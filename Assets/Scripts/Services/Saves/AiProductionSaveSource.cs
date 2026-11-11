@@ -84,7 +84,7 @@ namespace EmpireAtWar.Services.Saves
             foreach (StructureSave structure in context.Save.Structures.Where(structure =>
                          structure.Owner == Owner && structure.Kind == StructureKind.SecondStation))
                 _controller.AdoptSecondStation(context.SecondStations[structure.Id],
-                    _requests.ConstructSecondStationRequest(_levels.SecondStation));
+                    _requests.ConstructSecondStationRequest(_levels.GetSecondStationFactionData(_roster.FactionType)));
 
             foreach (StructureSave structure in context.Save.Structures.Where(structure => structure.Owner == Owner &&
                          structure.Kind is not (StructureKind.SpaceStation or StructureKind.SecondStation) &&

@@ -232,7 +232,7 @@ namespace EmpireAtWar.Models.Factions
                     for (int i = 0; i < GetStructureCount(request.GetType(), request.Id); i++)
                         yield return request;
                 }
-                var secondStation = new SecondStationUnitRequest(_stationLevels.SecondStation);
+                var secondStation = new SecondStationUnitRequest(_stationLevels.GetSecondStationFactionData(FactionType));
                 for (int i = 0; i < GetStructureCount(secondStation.GetType(), secondStation.Id); i++)
                     yield return secondStation;
             }

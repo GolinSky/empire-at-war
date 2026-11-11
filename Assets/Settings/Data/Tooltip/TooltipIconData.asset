@@ -223,3 +223,11 @@ MonoBehaviour:
     key: f3ead6a21f6b16e43b11d8b28a159db2:21300000
   - sprite: {fileID: 21300000, guid: 8ed5c98fc325a8d4c9c82c74f72e7bd0, type: 3}
     key: 8ed5c98fc325a8d4c9c82c74f72e7bd0:21300000
+  - sprite: {fileID: 21300000, guid: 9b7bc1b42c2cdac42904d0cafd617d2e, type: 3}
+    key: 9b7bc1b42c2cdac42904d0cafd617d2e:21300000
+  - sprite: {fileID: 21300000, guid: f5270162e3c32254aa37537e5f999255, type: 3}
+    key: f5270162e3c32254aa37537e5f999255:21300000
+  - sprite: {fileID: 21300000, guid: bf3d2e581ea612840a65970c9fc7fc8a, type: 3}
+    key: bf3d2e581ea612840a65970c9fc7fc8a:21300000
+  - sprite: {fileID: 21300000, guid: e9d860f13eb84c240be4bed18b6f570a, type: 3}
+    key: e9d860f13eb84c240be4bed18b6f570a:21300000

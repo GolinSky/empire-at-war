@@ -99,7 +99,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                     data.Key));
             }
 
-            AddUi(_unitRequestFactory.ConstructSecondStationRequest(_stationLevels.SecondStation));
+            AddUi(_unitRequestFactory.ConstructSecondStationRequest(_stationLevels.GetSecondStationFactionData(_roster.FactionType)));
             CreateSecondLevelUnit();
 
             foreach (var data in _roster.SuperWeapons)

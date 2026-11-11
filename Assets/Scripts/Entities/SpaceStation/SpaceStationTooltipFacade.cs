@@ -9,10 +9,16 @@ namespace EmpireAtWar.Entities.SpaceStation
     {
         private readonly IFactionLevelObserver _level;
 
-        public SpaceStationTooltipFacade(IFactionLevelObserver level) => _level = level;
+        private readonly string _iconKey;
+
+        public SpaceStationTooltipFacade(IFactionLevelObserver level, StationLevelData stationLevels, FactionType faction)
+        {
+            _level = level;
+            _iconKey = stationLevels.GetStationIconKey(faction);
+        }
 
         public TooltipContent Build(List<TooltipStat> stats, string status) =>
             new TooltipContent(title: "Space station", description: "Produces units, research and upgrades. Select to open the station roster.",
-                subtitle: $"Level {_level.CurrentLevel}", stats: stats, status: status);
+                iconKey: _iconKey, subtitle: $"Level {_level.CurrentLevel}", stats: stats, status: status);
     }
 }

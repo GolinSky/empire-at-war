@@ -52,7 +52,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             return _stationLevels.GetLevelFactionData(CurrentLevel);
         }
 
-        public FactionData SecondStationFactionData => _stationLevels.SecondStation;
+        public FactionData SecondStationFactionData =>
+            _stationLevels.GetSecondStationFactionData(_roster.FactionType);
 
         public FactionData GetSecondStationLevelFactionData(int level) =>
             _stationLevels.GetSecondStationLevelFactionData(level);

@@ -50,7 +50,8 @@ namespace EmpireAtWar.Controllers.Factions
                 roster.ResearchLines[(ResearchType)Key].Tiers[Tier - 1].FactionData, (ResearchType)Key, Tier),
             UnitRequestKind.SuperWeapon => factory.ConstructUnitRequest(
                 roster.SuperWeapons[(SuperWeaponType)Key], (SuperWeaponType)Key),
-            UnitRequestKind.SecondStation => factory.ConstructSecondStationRequest(levels.SecondStation),
+            UnitRequestKind.SecondStation => factory.ConstructSecondStationRequest(
+                levels.GetSecondStationFactionData(roster.FactionType)),
             UnitRequestKind.SecondStationLevel => factory.ConstructSecondStationLevelRequest(
                 levels.GetSecondStationLevelFactionData(Key), Key),
             _ => throw new ArgumentOutOfRangeException(nameof(Kind), Kind, "Unknown request kind.")
