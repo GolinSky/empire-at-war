@@ -175,6 +175,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 893fe890e9d4ab148bea3131249fb9db
+    m_Address: MC80FreedomReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8989ee97f4840c04382fc985df8c67b2
     m_Address: HanSoloMillenniumFalconReinforcementView
     m_ReadOnly: 0
@@ -292,6 +297,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d7c14c6e2e6a4f6449378312ad8c1c7b
     m_Address: QuasarFireShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db606ecbbf572454d99fa40b881a7bd7
+    m_Address: MC80FreedomShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e08e8f94796b8ab46b3b4b20f371c9a1
+    m_Address: MC80FreedomWreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

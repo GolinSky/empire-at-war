@@ -364,6 +364,23 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: 610b88b3ef1d84c40a8468e8780db2b4,
           type: 3}
+    - key: 324
+      value:
+        matchups: {fileID: 0}
+        description: Rebel brawler with four heavy dual ion cannons, six medium dual
+          turbolasers, six turbolasers and four heavy turbolasers. Power to Shields
+          boosts shield regeneration. Launches one Y-Wing squadron.
+        role: Capital ship / Shield disabler
+        iconKey: f20def5849b5bd649bb2e04331267807:21300000
+        isHero: 0
+        <Name>k__BackingField: MC80 Freedom
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 5500
+        <BuildTime>k__BackingField: 68
+        <UnitCapacity>k__BackingField: 10
+        <Icon>k__BackingField: {fileID: 21300000, guid: f20def5849b5bd649bb2e04331267807,
+          type: 3}
   squadrons:
     keyValue:
     - key: 1

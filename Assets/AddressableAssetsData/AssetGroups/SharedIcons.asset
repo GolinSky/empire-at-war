@@ -555,6 +555,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f20def5849b5bd649bb2e04331267807
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC80FreedomIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f38f2a09297bc734d89c94affa2d83f6
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/GladiatorIcon.png
     m_ReadOnly: 0

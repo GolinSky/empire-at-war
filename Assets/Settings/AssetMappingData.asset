@@ -1561,6 +1561,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: MC80FreedomShipView
+      value:
+        m_AssetGUID: db606ecbbf572454d99fa40b881a7bd7
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MC80FreedomShipData
+      value:
+        m_AssetGUID: 04b43d6a02cba7d4185bd55de61638a3
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: InterdictorStarDestroyerShipView
       value:
         m_AssetGUID: eb4ff8dbfba09204d8932bc648131c7d
