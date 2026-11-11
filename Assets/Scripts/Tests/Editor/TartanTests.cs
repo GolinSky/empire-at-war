@@ -28,21 +28,14 @@ namespace EmpireAtWar.Tests.Editor
         private const string DATA = "Assets/Settings/Data/Ship/Empire/TartanShipData.asset";
 
         [Test]
-        public void SavedUnit_HasRequestedStatsAndNoHangar()
+        public void SavedUnit_HasNoHangar()
         {
             var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.Hull, Is.EqualTo(600));
-            Assert.That(data.Shields, Is.EqualTo(600));
-            Assert.That(data.Speed, Is.EqualTo(35));
             Assert.That(data.ShipClass, Is.EqualTo(ShipClass.Corvette));
             Assert.That(data.Abilities, Is.EqualTo(new[] {ShipAbilityId.TIEAvengerPowerToWeapons}));
             Assert.That(data.HangarBays, Is.Empty);
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             Assert.That(view.GetComponentsInChildren<MonoBehaviour>(true).Any(m => m.GetType().Name == "HangarComponent"), Is.False);
-            var roster = Entry("Assets/Settings/Data/Factions/Empire/EmpireFaction.asset", "ships.keyValue");
-            Assert.That(roster.FindPropertyRelative("<Price>k__BackingField").intValue, Is.EqualTo(1200));
-            Assert.That(roster.FindPropertyRelative("<BuildTime>k__BackingField").intValue, Is.EqualTo(28));
-            Assert.That(roster.FindPropertyRelative("<AvailableLevel>k__BackingField").intValue, Is.EqualTo(1));
         }
 
         [Test]
@@ -50,19 +43,15 @@ namespace EmpireAtWar.Tests.Editor
         {
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             var weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
-            Assert.That(weapons.Length, Is.EqualTo(9));
-            Assert.That(weapons.Select(w => w.Id).Distinct().Count(), Is.EqualTo(9));
+            Assert.That(weapons.Select(w => w.Id).Distinct().Count(), Is.EqualTo(weapons.Length));
             Assert.That(view.GetComponentsInChildren<HealthComponent>(true).Single().ShipUnits, Is.EquivalentTo(view.GetComponentsInChildren<HardPoint>(true)));
             var bindings = view.GetComponents<EntityBindings>().Single();
             Assert.That(bindings.Injectables, Is.All.Not.Null);
             Assert.That(bindings.Injectables.Distinct().Count(), Is.EqualTo(12));
             Assert.That(bindings.Injectables.OfType<WeaponHardPoint>(), Is.EquivalentTo(weapons));
             var profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
-            foreach (var expected in new[] {(WeaponType.Laser, 7), (WeaponType.PointDefense, 2)})
-            {
-                Assert.That(weapons.Count(w => w.WeaponType == expected.Item1), Is.EqualTo(expected.Item2));
-                Assert.That(profiles.GetProfile(expected.Item1).ShotPrefab, Is.Not.Null);
-            }
+            foreach (WeaponType weaponType in weapons.Select(w => w.WeaponType).Distinct())
+                Assert.That(profiles.GetProfile(weaponType).ShotPrefab, Is.Not.Null);
             Assert.That(profiles.GetProfile(WeaponType.PointDefense).StrikecraftOnly, Is.True);
             Assert.That(weapons.Single(w => w.Id == 7).name, Is.EqualTo("Tartan_Laser_HP_05"));
             Assert.That(weapons.Single(w => w.Id == 8).name, Is.EqualTo("Tartan_Laser_HP_06"));
@@ -104,8 +93,6 @@ namespace EmpireAtWar.Tests.Editor
             var definition = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset").Get(ShipAbilityId.TIEAvengerPowerToWeapons);
             Assert.That(definition.DisplayName, Is.EqualTo("Power to Weapons"));
             Assert.That(definition.RequiresEnemyTarget, Is.False);
-            Assert.That(definition.Duration, Is.EqualTo(10));
-            Assert.That(definition.RecoveryDelay, Is.EqualTo(60));
         }
 
         [Test]

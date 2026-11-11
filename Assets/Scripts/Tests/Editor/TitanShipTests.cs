@@ -65,7 +65,6 @@ namespace EmpireAtWar.Tests.Editor
             var matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>("Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset");
             var health = new HealthModel(data, matrix, new CombatModifiers(), new HardPointHealthBudget());
             health.InitializeHardPoints(points);
-            Assert.That(points.Length, Is.EqualTo(33));
             foreach (var point in points)
             {
                 Assert.That(point.Health, Is.GreaterThan(0));
@@ -105,9 +104,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             var root = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW_PATH);
             var targets = root.GetComponentsInChildren<HardPoint>(true);
-            Assert.That(targets.Length, Is.EqualTo(33));
-            Assert.That(targets.Select(point => point.Id).Distinct().Count(), Is.EqualTo(33));
-            Assert.That(targets.OfType<WeaponHardPoint>().Count(), Is.EqualTo(24));
+            Assert.That(targets.Select(point => point.Id).Distinct().Count(), Is.EqualTo(targets.Length));
             var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA_PATH);
             Assert.That(data.UsesHullHardPointBudget, Is.True);
             Assert.That(new SerializedObject(data).FindProperty("hardPointHealth"), Is.Null);

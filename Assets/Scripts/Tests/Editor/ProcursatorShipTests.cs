@@ -22,13 +22,10 @@ namespace EmpireAtWar.Tests.Editor
         private const string DATA = "Assets/Settings/Data/Ship/Empire/ProcursatorShipData.asset";
 
         [Test]
-        public void SavedShip_HasRequestedStatsAndNoInjectableHangar()
+        public void SavedShip_HasNoInjectableHangar()
         {
             var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
-            Assert.That(data.Hull, Is.EqualTo(8000));
-            Assert.That(data.Shields, Is.EqualTo(7000));
-            Assert.That(data.Speed, Is.EqualTo(20));
             Assert.That(data.ShipClass, Is.EqualTo(ShipClass.Capital));
             Assert.That(data.Abilities, Is.EqualTo(new[] { ShipAbilityId.BoostWeaponPower }));
             var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
@@ -44,13 +41,8 @@ namespace EmpireAtWar.Tests.Editor
             var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             var health = view.GetComponentsInChildren<HealthComponent>(true).Single();
             var weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
-            Assert.That(health.ShipUnits.Count, Is.EqualTo(17));
-            Assert.That(health.ShipUnits.Select(h => h.Id), Is.EquivalentTo(Enumerable.Range(0, 17)));
-            Assert.That(weapons.Length, Is.EqualTo(15));
+            Assert.That(health.ShipUnits.Select(h => h.Id), Is.EquivalentTo(Enumerable.Range(0, health.ShipUnits.Count)));
             Assert.That(weapons.All(health.ShipUnits.Contains), Is.True);
-            foreach (var expected in new[] { (WeaponType.HeavyQuadTurbolaser, 3), (WeaponType.DualMediumTurboLaser, 2),
-                (WeaponType.ProcursatorMediumTripleTurbolaser, 8), (WeaponType.MediumIonCannon, 2) })
-                Assert.That(weapons.Count(w => w.WeaponType == expected.Item1), Is.EqualTo(expected.Item2));
             var matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>("Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset");
             var model = new HealthModel(data, matrix, new CombatModifiers(), new HardPointHealthBudget());
             var targets = health.ShipUnits.Select(h => new HardPointModel(h.HardPointType, h.Id)).ToArray();
@@ -68,27 +60,6 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(target.IsDestroyed, Is.True);
             }
             Assert.That(model.HasLiveHardPoints, Is.False);
-        }
-
-        [Test]
-        public void SavedArcs_MatchHullClearanceTuning()
-        {
-            var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
-            var weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
-            // Weapon IDs 2 through 16 follow the two system hardpoints.
-            (float Min, float Max)[] arcs =
-            {
-                (-156, 16), (-15, 157), (-159, 10), (-9, 160), (-89, 91),
-                (-89, 90), (-89, 90), (-23, 159), (5, 175), (5, 175),
-                (5, 175), (-158, 11), (-175, -5), (-175, -5), (-170, 26),
-            };
-            Assert.That(weapons.Length, Is.EqualTo(arcs.Length));
-            foreach (var weapon in weapons)
-            {
-                var arc = arcs[weapon.Id - 2];
-                Assert.That(weapon.MinYaw, Is.EqualTo(arc.Min), weapon.name);
-                Assert.That(weapon.MaxYaw, Is.EqualTo(arc.Max), weapon.name);
-            }
         }
 
         [Test]

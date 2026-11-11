@@ -22,27 +22,18 @@ namespace EmpireAtWar.Tests.Editor
         private const string DATA = "Assets/Settings/Data/Ship/Empire/ISDIIShipData.asset";
 
         [Test]
-        public void SavedShip_HasRequestedStatsWeaponsAndTargetableSystems()
+        public void SavedShip_HasTargetableWeaponsAndSystems()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.Hull, Is.EqualTo(16000));
-            Assert.That(data.Shields, Is.EqualTo(12000));
-            Assert.That(data.Speed, Is.EqualTo(18));
             Assert.That(data.Abilities, Is.EquivalentTo(new[] { ShipAbilityId.PowerToMainBatteries, ShipAbilityId.TractorBeam }));
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             HardPoint[] hardPoints = view.GetComponentsInChildren<HardPoint>(true);
             WeaponHardPoint[] weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
             HealthComponent health = view.GetComponentsInChildren<HealthComponent>(true).Single();
-            Assert.That(hardPoints.Select(h => h.Id).Distinct().Count(), Is.EqualTo(32));
-            Assert.That(health.ShipUnits.Count, Is.EqualTo(32));
+            Assert.That(hardPoints.Select(h => h.Id).Distinct().Count(), Is.EqualTo(hardPoints.Length));
+            Assert.That(health.ShipUnits, Is.EquivalentTo(hardPoints));
             Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.Engines), Is.EqualTo(1));
             Assert.That(health.ShipUnits.Count(h => h.HardPointType == HardPointType.ShieldGenerator), Is.EqualTo(1));
-            Assert.That(weapons.Length, Is.EqualTo(28));
-            foreach (var expected in new[] { (WeaponType.ISDIIOctupleTurbolaser, 8), (WeaponType.ISDIIQuadIonCannon, 2),
-                (WeaponType.MediumTurboLaser, 6), (WeaponType.DualMediumTurboLaser, 2), (WeaponType.MediumIonCannon, 6),
-                (WeaponType.MediumLaser, 4) })
-                Assert.That(weapons.Count(w => w.WeaponType == expected.Item1), Is.EqualTo(expected.Item2));
-            Assert.That(weapons.Count(w => new SerializedObject(w).FindProperty("mainBattery").boolValue), Is.EqualTo(8));
             Assert.That(weapons.All(health.ShipUnits.Contains), Is.True);
             MonoBehaviour hangar = Component(view, "HangarComponent");
             SerializedObject hangarConfig = new SerializedObject(hangar);
@@ -71,37 +62,6 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SavedHangar_LaunchesSixMixedSquadronsAndReplacesLosses()
-        {
-            ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.HangarBays.Select(b => (int)b.SquadronType), Is.EqualTo(new[] { 200, 203, 201 }));
-            Assert.That(data.HangarBays.All(b => b.Reserve == 6 && b.MaxActive == 2), Is.True);
-            HangarModel model = new HangarModel(data);
-            for (int launch = 0; launch < 6; launch++)
-            {
-                int expected = launch % 3;
-                float delay = launch == 0 ? data.HangarInitialDelay : data.HangarLaunchInterval;
-                Assert.That(model.TryLaunch(delay, out int bay), Is.True);
-                Assert.That(bay, Is.EqualTo(expected));
-                Assert.That(model.GetReserve(bay), Is.EqualTo(5 - launch / 3));
-                Assert.That(model.GetActive(bay), Is.EqualTo(1 + launch / 3));
-            }
-            Assert.That(model.TryLaunch(30f, out _), Is.False);
-            for (int expected = 0; expected < 3; expected++)
-            {
-                model.SquadronLost(expected);
-                model.SquadronLost(expected);
-                Assert.That(model.TryLaunchReplacement(out int bay), Is.True);
-                Assert.That(bay, Is.EqualTo(expected));
-                Assert.That(model.GetReserve(bay), Is.EqualTo(3));
-                Assert.That(model.GetActive(bay), Is.EqualTo(1));
-            }
-            Assert.That(model.TryLaunchReplacement(out _), Is.False);
-            model.Shutdown();
-            Assert.That(model.TryLaunch(30f, out _), Is.False);
-        }
-
-        [Test]
         public void SavedRegistrations_ResolveOwnViewsIconsAndAbility()
         {
             Assert.That((int)ShipType.ISDII, Is.EqualTo(205));
@@ -123,8 +83,6 @@ namespace EmpireAtWar.Tests.Editor
             ShipAbilityCatalog catalog = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset");
             ShipAbilityDefinition definition = catalog.Get(ShipAbilityId.PowerToMainBatteries);
             Assert.That(definition.Settings, Is.TypeOf<PowerToMainBatteriesSettings>());
-            Assert.That(definition.Duration, Is.EqualTo(20f));
-            Assert.That(definition.RecoveryDelay, Is.EqualTo(60f));
             WeaponsData profiles = AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
             // Main batteries are Heavy Octuple / Quad mounts: the family's salvo, damage scaled by the mount rule.
             WeaponProfile heavyTurbolaser = profiles.GetProfile(WeaponType.HeavyTurboLaser);

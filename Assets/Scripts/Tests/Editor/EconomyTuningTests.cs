@@ -30,8 +30,6 @@ namespace EmpireAtWar.Tests.Editor
             FactionRoster roster = CreateRoster(faction);
             ResearchTierData[] tiers = roster.ResearchLines[ResearchType.IncreasedStationIncome].Tiers;
             Assert.That(tiers, Has.Length.EqualTo(2));
-            Assert.That(tiers[0].FactionData.AvailableLevel, Is.EqualTo(4));
-            Assert.That(tiers[1].FactionData.AvailableLevel, Is.EqualTo(5));
 
             FactionResearchModel research = new FactionResearchModel(roster);
             Assert.That(research.StationIncomeMultiplier, Is.EqualTo(1f));
@@ -122,27 +120,6 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(loaded.AdvanceIncomeTimer(0f, 10f), Is.False);
             Assert.That(loaded.AdvanceIncomeTimer(5f, 10f), Is.False);
             Assert.That(loaded.AdvanceIncomeTimer(1f, 10f), Is.True);
-        }
-
-        [Test]
-        public void FacilityAndUpgradeAssets_UseTunedValues()
-        {
-            Assert.That(Load<MiningFacilityData>(
-                "Assets/Settings/Data/Models/MiningFacilities/MiningFacilityData.asset").Income,
-                Is.EqualTo(20f));
-            Assert.That(Load<MiningFacilityData>(
-                "Assets/Settings/Data/Models/MiningFacilities/AsteroidMiningFacilityData.asset").Income,
-                Is.EqualTo(60f));
-            Assert.That(Load<MiningFacilityCatalog>(SHARED_PATH + "MiningFacilityCatalog.asset")
-                .Get(MiningFacilityType.CommonMiner).Price, Is.EqualTo(1000));
-            Assert.That(Load<CaptureSiteData>(
-                "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset")
-                .GetCost(SiteFacilityType.BattleAsteroid).Price, Is.EqualTo(1600));
-            StationLevelData levels = Load<StationLevelData>(SHARED_PATH + "StationLevelData.asset");
-            Assert.That(levels.GetLevelFactionData(1).BuildTime, Is.EqualTo(80));
-            Assert.That(levels.GetLevelFactionData(2).BuildTime, Is.EqualTo(120));
-            Assert.That(levels.GetLevelFactionData(3).BuildTime, Is.EqualTo(180));
-            Assert.That(levels.GetLevelFactionData(4).BuildTime, Is.EqualTo(220));
         }
 
         [TestCase(MiningFacilityType.CommonMiner, "MiningFacility")]

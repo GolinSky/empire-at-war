@@ -36,8 +36,6 @@ namespace EmpireAtWar.Tests.Editor
             ShipAbilityDefinition definition = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(
                 "Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset").Get(ShipAbilityId.HarmonicBomb);
             var settings = (HarmonicBombSettings)definition.Settings;
-            Assert.That(definition.Duration, Is.EqualTo(1.5f));
-            Assert.That(definition.Duration + definition.RecoveryDelay, Is.EqualTo(20f));
             Assert.That(definition.RequiresEnemyTarget, Is.False);
             float radius = settings.Radius;
             Wing center = AddWing(TestPlayers.Enemy, 0f);

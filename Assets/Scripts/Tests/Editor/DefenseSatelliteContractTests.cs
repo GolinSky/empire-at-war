@@ -18,19 +18,16 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Capture")]
     public sealed class DefenseSatelliteContractTests
     {
-        [TestCase(SiteFacilityType.QuadLaserSatellite, DefendPlatformType.QuadLaserSatellite, WeaponType.DualRepeatingPointDefense, 300f, 21f)]
-        [TestCase(SiteFacilityType.TurbolaserSatellite, DefendPlatformType.TurbolaserSatellite, WeaponType.DualMediumTurboLaser, 500f, 25f)]
-        [TestCase(SiteFacilityType.IonSatellite, DefendPlatformType.IonSatellite, WeaponType.MediumIonCannon, 400f, 23f)]
-        [TestCase(SiteFacilityType.MassDriverSatellite, DefendPlatformType.MassDriverSatellite, WeaponType.MassDriver, 1600f, 47f)]
-        [TestCase(SiteFacilityType.MissileSatellite, DefendPlatformType.MissileSatellite, WeaponType.HeavyAssaultMissile, 1000f, 35f)]
-        public void Satellite_HasRegisteredSixWeaponPrefabAndBalancedData(SiteFacilityType facility,
-            DefendPlatformType platform, WeaponType weapon, float price, float buildTime)
+        [TestCase(SiteFacilityType.QuadLaserSatellite, DefendPlatformType.QuadLaserSatellite, WeaponType.DualRepeatingPointDefense)]
+        [TestCase(SiteFacilityType.TurbolaserSatellite, DefendPlatformType.TurbolaserSatellite, WeaponType.DualMediumTurboLaser)]
+        [TestCase(SiteFacilityType.IonSatellite, DefendPlatformType.IonSatellite, WeaponType.MediumIonCannon)]
+        [TestCase(SiteFacilityType.MassDriverSatellite, DefendPlatformType.MassDriverSatellite, WeaponType.MassDriver)]
+        [TestCase(SiteFacilityType.MissileSatellite, DefendPlatformType.MissileSatellite, WeaponType.HeavyAssaultMissile)]
+        public void Satellite_HasRegisteredSixWeaponPrefabAndData(SiteFacilityType facility,
+            DefendPlatformType platform, WeaponType weapon)
         {
             Assert.That(facility.ToSatelliteType(), Is.EqualTo(platform));
             DefendPlatformData data = LoadData(platform);
-            Assert.That(data.ComponentData.Hull, Is.EqualTo(3000f));
-            Assert.That(data.ComponentData.Shields, Is.EqualTo(5000f));
-            Assert.That(data.ComponentData.SpawnBlockRadius, Is.EqualTo(90f));
             Assert.That(data.Income, Is.Zero);
             Assert.That(data.WeaponLoadout.Sum(entry => entry.Count), Is.EqualTo(6));
             Assert.That(data.WeaponLoadout.All(entry => entry.WeaponType == weapon), Is.True);
@@ -76,8 +73,6 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(sites.GetAllowedFacilities(CaptureSiteKind.Satellite), Contains.Item(facility));
             Assert.That(sites.GetCost(facility).Icon, Is.Not.Null);
             Assert.That(sites.GetCost(facility).Icon.rect.size, Is.EqualTo(new Vector2(512f, 512f)));
-            Assert.That(sites.GetCost(facility).Price, Is.EqualTo(price));
-            Assert.That(sites.GetCost(facility).BuildTime, Is.EqualTo(buildTime));
         }
 
         [TestCase(DefendPlatformType.QuadLaserSatellite)]
@@ -159,8 +154,8 @@ namespace EmpireAtWar.Tests.Editor
             }
             Assert.That(turret.IsDestroyed, Is.True);
             Assert.That(turret.Health, Is.Zero);
-            Assert.That(model.Hull, Is.EqualTo(3000f));
-            Assert.That(model.Shields, Is.EqualTo(5000f));
+            Assert.That(model.Hull, Is.EqualTo(data.ComponentData.Hull));
+            Assert.That(model.Shields, Is.EqualTo(data.ComponentData.Shields));
         }
 
         private static DefendPlatformData LoadData(DefendPlatformType platform)

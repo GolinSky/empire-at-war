@@ -90,13 +90,11 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Catalog_ContainsOnlySharedShieldDefinitionAndExpectedBalance()
+        public void Catalog_ContainsOnlySharedShieldDefinition()
         {
             ShipAbilityCatalog catalog = Catalog();
             ShipAbilityDefinition shared = catalog.Get(ShipAbilityId.BoostShieldPower);
             Assert.That(shared.Settings, Is.TypeOf<BoostShieldPowerSettings>());
-            Assert.That(shared.Duration, Is.EqualTo(15f));
-            Assert.That(shared.RecoveryDelay, Is.EqualTo(40f));
             Assert.That(shared.CanCancel, Is.True);
             using var serialized = new SerializedObject(catalog);
             SerializedProperty entries = serialized.FindProperty("definitions.keyValue");

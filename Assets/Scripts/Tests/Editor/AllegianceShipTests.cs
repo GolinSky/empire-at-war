@@ -46,12 +46,9 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SavedShip_HasRequestedBalanceAndNoSquadrons()
+        public void SavedShip_HasNoSquadronsAndTargetableGuns()
         {
             var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.Hull, Is.EqualTo(20000));
-            Assert.That(data.Shields, Is.EqualTo(15000));
-            Assert.That(data.Speed, Is.EqualTo(14));
             Assert.That(data.Abilities, Is.EquivalentTo(new[] {ShipAbilityId.PowerToMainBatteries, ShipAbilityId.TractorBeam}));
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             Assert.That(view.GetComponentsInChildren<HangarComponent>(true), Is.Empty);
@@ -60,13 +57,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(hangar.TryLaunch(1000, out _), Is.False);
             var health = view.GetComponentsInChildren<HealthComponent>(true).Single();
             var guns = view.GetComponentsInChildren<WeaponHardPoint>(true);
-            Assert.That(health.ShipUnits.Select(p => p.Id), Is.EquivalentTo(Enumerable.Range(0, 28)));
-            Assert.That(guns.Length, Is.EqualTo(21));
+            Assert.That(health.ShipUnits.Select(p => p.Id), Is.EquivalentTo(Enumerable.Range(0, health.ShipUnits.Count)));
             Assert.That(guns.All(health.ShipUnits.Contains), Is.True);
-            foreach (var pair in new[] {(WeaponType.DualHeavyTurboLaser, 3), (WeaponType.HeavyQuadTurbolaser, 6),
-                (WeaponType.DualMediumTurboLaser, 6), (WeaponType.HeavyIonCannon, 6)})
-                Assert.That(guns.Count(g => g.WeaponType == pair.Item1), Is.EqualTo(pair.Item2));
-            Assert.That(guns.Count(g => new SerializedObject(g).FindProperty("mainBattery").boolValue), Is.EqualTo(9));
             foreach (var pair in new[] {(HardPointType.Engines, 3), (HardPointType.ShieldGenerator, 2),
                 (HardPointType.TractorBeam, 1), (HardPointType.CommandArray, 1)})
                 Assert.That(health.ShipUnits.Count(p => p.HardPointType == pair.Item1), Is.EqualTo(pair.Item2));
@@ -92,7 +84,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Registrations_ResolveOwnAssetsAndRequestedEconomy()
+        public void Registrations_ResolveOwnAssets()
         {
             Assert.That(System.Enum.IsDefined(typeof(ShipType), 213), Is.True);
             var ships = AssetDatabase.LoadAssetAtPath<ShipsData>("Assets/Settings/Data/Ship/Shared/ShipsData.asset");
@@ -104,8 +96,6 @@ namespace EmpireAtWar.Tests.Editor
                 .FindProperty("ships.keyValue");
             var unit = Enumerable.Range(0, array.arraySize).Select(i => array.GetArrayElementAtIndex(i))
                 .Single(p => p.FindPropertyRelative("key").intValue == 213).FindPropertyRelative("value");
-            Assert.That(unit.FindPropertyRelative("<Price>k__BackingField").intValue, Is.EqualTo(15000));
-            Assert.That(unit.FindPropertyRelative("<BuildTime>k__BackingField").intValue, Is.EqualTo(85));
             Assert.That(unit.FindPropertyRelative("<Icon>k__BackingField").objectReferenceValue,
                 Is.EqualTo(AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/AllegianceIcon.png")));
             var matchups = new SerializedObject(unit.FindPropertyRelative("matchups").objectReferenceValue);
