@@ -12,12 +12,12 @@ namespace EmpireAtWar.Services.Popups
     public sealed class PopupService : IPopupService, IUiCancelHandler, IInitializable, ILateDisposable
     {
         private readonly IUiService _uiService;
-        private readonly UiCancelRouter _cancelRouter;
+        private readonly IUiPopupCancelLayer _cancelRouter;
         private readonly List<(PopupHandle Handle, IPopupController Controller, BaseUi View)> _stack = new();
         private PopupBlockerUi _blocker;
         private bool _isDisposed;
 
-        public PopupService(IUiService uiService, UiCancelRouter cancelRouter)
+        public PopupService(IUiService uiService, IUiPopupCancelLayer cancelRouter)
         {
             _uiService = uiService;
             _cancelRouter = cancelRouter;

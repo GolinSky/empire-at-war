@@ -8,7 +8,7 @@ namespace EmpireAtWar.Ui.Base
     /// <summary>
     /// Gives the popup layer first chance to cancel, then dispatches to focused UIs.
     /// </summary>
-    public sealed class UiCancelRouter : IUiCancelRouter, IInitializable, IOrderedDisposable
+    public sealed class UiCancelRouter : IUiCancelRouter, IUiPopupCancelLayer, IInitializable, IOrderedDisposable
     {
         private readonly ICancelInput _cancelInput;
 
@@ -44,7 +44,7 @@ namespace EmpireAtWar.Ui.Base
             _focused.Remove(handler);
         }
 
-        internal void SetPopupLayer(IUiCancelHandler handler) => _popupLayer = handler;
+        public void SetPopupLayer(IUiCancelHandler handler) => _popupLayer = handler;
 
         private void Dispatch()
         {

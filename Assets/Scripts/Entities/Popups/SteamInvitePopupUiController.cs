@@ -6,20 +6,22 @@ using EmpireAtWar.Ui.Base;
 
 namespace EmpireAtWar.Entities.Popups
 {
-    internal sealed class SteamInvitePopupUiController : UiController, IPopupController
+    internal sealed class SteamInvitePopupUiController : IPopupController
     {
+        private readonly IUiService _uiService;
         private readonly SteamPlatform _steam;
         private SteamInvitePopupUi _ui;
         private SteamInvitePresenter _presenter;
 
-        public SteamInvitePopupUiController(IUiService uiService, SteamPlatform steam) : base(uiService)
+        public SteamInvitePopupUiController(IUiService uiService, SteamPlatform steam)
         {
+            _uiService = uiService;
             _steam = steam;
         }
 
         public BaseUi Open(Action complete)
         {
-            _ui = CreateUi<SteamInvitePopupUi>();
+            _ui = _uiService.CreateUi<SteamInvitePopupUi>();
             _presenter = new SteamInvitePresenter(_steam, _ui.InviteView, complete);
             _presenter.Initialize();
             _presenter.Open();

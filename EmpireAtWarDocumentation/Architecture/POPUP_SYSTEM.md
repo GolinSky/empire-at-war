@@ -29,6 +29,8 @@ verification: Live source, Unity prefab and Addressables inspection, 1920×1080
 - New popups open immediately on top. No queue.
 - Only the top popup is interactive and receives Escape. Lower popups stay visible.
 - Escape priority: the popup stack is a cancel layer above screens in `UiCancelRouter`. A screen calling `Focus()` while popups are open never outranks them.
+- `PopupService` registers through `IUiPopupCancelLayer.SetPopupLayer`, never the concrete router. Screens keep using `IUiCancelRouter`.
+- Popup controllers implement `IPopupController` only and create views through an injected `IUiService`. They do not extend `UiController`: the core owns their Escape and focus.
 - Closing the last popup returns Escape to the previously focused screen (router fallthrough). Core never calls screen `Focus()`.
 - Shared blocker: one blocker view owned by the core, placed directly under the top popup, hidden when the stack is empty. Clicking it does nothing (no close). Popup prefabs carry no blocker.
 - Each open request gets a `PopupHandle`. `Close(handle)` removes that entry (top or covered) without touching others. Closing an already-closed handle is a no-op — popups can self-complete before their owner leaves.
@@ -102,6 +104,6 @@ Owner/route/teardown close  → Dismissed
 
 - Plan: [[Done/Refactoring/Shared_Invite_Friends_Popup_Plan]]
 - `Assets/Scripts/Services/Popups/`; `Assets/Scripts/Entities/Popups/`; `Assets/Prefabs/Ui/Popups/`
-- `Assets/Scripts/BaseSystem/Ui/{UiCancelRouter,UiController,UiPlacement}.cs`
+- `Assets/Scripts/BaseSystem/Ui/{UiCancelRouter,IUiPopupCancelLayer,UiController,UiPlacement}.cs`
 - `Assets/Scripts/Services/VContainer/Registrations/UiRegistrations.cs`; `Assets/Scripts/Services/VContainer/Scopes/MainMenuScope.cs`
 - Related: [[Rules/UI_CODE_BUILD_GUIDE]]; [[Rules/UI_UX_GUIDELINES]]; [[Architecture/VCONTAINER_LIFECYCLE]]

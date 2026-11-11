@@ -4,8 +4,9 @@ using EmpireAtWar.Ui.Base;
 
 namespace EmpireAtWar.Entities.Popups
 {
-    public sealed class AcceptPopupUiController : UiController, IPopupController, IAcceptPopupPresenter
+    public sealed class AcceptPopupUiController : IPopupController, IAcceptPopupPresenter
     {
+        private readonly IUiService _uiService;
         private readonly AcceptPopupContent _content;
         private readonly Action<ConfirmPopupResult> _answered;
         private AcceptPopupUi _ui;
@@ -13,8 +14,9 @@ namespace EmpireAtWar.Entities.Popups
         private ConfirmPopupResult _result;
 
         public AcceptPopupUiController(IUiService uiService, AcceptPopupContent content,
-            Action<ConfirmPopupResult> answered) : base(uiService)
+            Action<ConfirmPopupResult> answered)
         {
+            _uiService = uiService;
             _content = content;
             _answered = answered;
         }
@@ -22,7 +24,7 @@ namespace EmpireAtWar.Entities.Popups
         public BaseUi Open(Action complete)
         {
             _complete = complete;
-            _ui = CreateUi<AcceptPopupUi>();
+            _ui = _uiService.CreateUi<AcceptPopupUi>();
             _ui.AssignPresenter(this);
             _ui.Render(_content);
             _ui.Initialize();
