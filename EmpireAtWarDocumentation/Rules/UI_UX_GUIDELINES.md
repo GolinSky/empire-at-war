@@ -110,3 +110,13 @@
 - [ ] Does `CloseButton` have a clear ASCII `"X"` text icon visual?
 - [ ] Is `fontSizeMin` set to less than 12 (e.g. 6) on all auto-sized text objects?
 - [ ] If the user requested tests: do the relevant EditMode categories pass? Otherwise report tests as not run.
+
+## 8. Tutorial UI spotlights
+
+- `HintUi` + `HintSpotlightView`: 65% black dim overlay; rectangular transparent cutout with 6 canvas-unit padding; coach card above overlay. Four UI mesh quads use the standard UI material.
+- Resolve fixed/dynamic targets through `TutorialAnchor`; missing/off-screen targets and closed hints hide the overlay. Multiple matching anchors share bounding bounds.
+- `UiPlacement` routes `HintUi` to `tooltipSlot`; keep it after tooltip views and below the fade slot. Modal `IInputLock.IsLocked` hides the coach UI.
+- `HintDefinition.blockPointerOutsideSpotlight` defaults false. Opt-in blocks pointer input outside cutout; keyboard shortcuts remain available. World-click and reinforcement-drag lessons require non-blocking input.
+- World/minimap tutorial markers remain separate from UI spotlight rendering.
+
+- Minimap marker lifecycle: the view is created on route activation after map loading. Tutorial input-lock handling must not call `HideTarget` before showing a marker; `HintUiController` tracks marker visibility explicitly.

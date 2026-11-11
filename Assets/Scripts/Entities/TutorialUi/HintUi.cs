@@ -8,16 +8,14 @@ using UnityEngine.UI;
 namespace EmpireAtWar.Entities.TutorialUi
 {
     /// <summary>
-    /// Coach card at a fixed screen edge, a pulsing frame on the highlighted HUD element, and a marker for world
-    /// targets (clamped to the screen edge when off screen). Only the card's buttons take clicks.
+    /// Coach card above a UI spotlight, and a marker for world targets (clamped to the screen edge).
     /// </summary>
     public sealed class HintUi : BaseUi
     {
         private const float SLIDE_SECONDS = 0.2f;
         private const float DONE_SECONDS = 0.5f;
         private const float SLIDE_DISTANCE = 40f;
-        private const float PULSE_SPEED = 5f;
-        private const float FRAME_PADDING = 6f;
+        private const float SPOTLIGHT_PADDING = 6f;
 
         [SerializeField] private RectTransform root;
         [SerializeField] private RectTransform card;
@@ -28,8 +26,7 @@ namespace EmpireAtWar.Entities.TutorialUi
         [SerializeField] private GameObject doneMark;
         [SerializeField] private Button dismissButton;
         [SerializeField] private Button turnOffButton;
-        [SerializeField] private RectTransform anchorFrame;
-        [SerializeField] private CanvasGroup anchorFrameGroup;
+        [SerializeField] private HintSpotlightView spotlight;
         [SerializeField] private HintWorldMarkerView worldMarker;
         [SerializeField] private HintDragSelectDemoView dragSelectDemo;
         [SerializeField] private HintElementPreviewView elementPreview;
@@ -53,7 +50,7 @@ namespace EmpireAtWar.Entities.TutorialUi
             dismissButton.onClick.AddListener(_presenter.Dismiss);
             turnOffButton.onClick.AddListener(_presenter.TurnOffHints);
             SetCardVisible(false);
-            SetAnchorFrame(false, default);
+            SetSpotlight(false, default);
             SetWorldMarker(false, default);
             _isInitialized = true;
         }
@@ -100,7 +97,7 @@ namespace EmpireAtWar.Entities.TutorialUi
         public void CloseHint(bool completed)
         {
             _isOpen = false;
-            SetAnchorFrame(false, default);
+            SetSpotlight(false, default);
             SetWorldMarker(false, default);
             dismissButton.interactable = false;
             turnOffButton.interactable = false;
@@ -112,14 +109,19 @@ namespace EmpireAtWar.Entities.TutorialUi
         }
 
         /// <param name="screenRect">Element bounds in screen pixels.</param>
-        public void SetAnchorFrame(bool isVisible, Rect screenRect)
+        public void SetSpotlight(bool isVisible, Rect screenRect, bool blockPointerOutside = false)
         {
-            anchorFrame.gameObject.SetActive(isVisible);
-            if (!isVisible) return;
-            Vector2 min = ToLocal(screenRect.min) - Vector2.one * FRAME_PADDING;
-            Vector2 max = ToLocal(screenRect.max) + Vector2.one * FRAME_PADDING;
-            anchorFrame.anchoredPosition = (min + max) * 0.5f;
-            anchorFrame.sizeDelta = max - min;
+            if (!isVisible || !screenRect.Overlaps(new Rect(0f, 0f, Screen.width, Screen.height)))
+            {
+                spotlight.Hide();
+                return;
+            }
+            Vector2 min = ToLocal(screenRect.min) - Vector2.one * SPOTLIGHT_PADDING;
+            Vector2 max = ToLocal(screenRect.max) + Vector2.one * SPOTLIGHT_PADDING;
+            // Tooltip views can be created after this view; keep the coach overlay above them.
+            if (transform.GetSiblingIndex() != transform.parent.childCount - 1)
+                transform.SetAsLastSibling();
+            spotlight.Show(Rect.MinMaxRect(min.x, min.y, max.x, max.y), blockPointerOutside);
         }
 
         /// <param name="screenPoint">Projected world point; z below zero means behind the camera.</param>
@@ -144,7 +146,6 @@ namespace EmpireAtWar.Entities.TutorialUi
 
         private void Update()
         {
-            anchorFrameGroup.alpha = 0.55f + 0.45f * Mathf.Sin(Time.unscaledTime * PULSE_SPEED);
             if (_isOpen)
             {
                 if (_slide < 1f)

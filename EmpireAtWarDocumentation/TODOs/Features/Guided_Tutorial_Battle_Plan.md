@@ -230,3 +230,16 @@ Map: own station top-right; free mining structure at the top-left edge; central 
 - [ ] Ship role lines per faction.
 - [ ] New lessons: Hunt/Retreat, edge expansion, level to max, central zone, enemy mine, station kill.
 - [ ] User in-game check.
+
+## UI spotlight migration · 2026-11-11
+
+- [x] Guided lessons now use the shared 65% dim spotlight instead of pulsing UI frames; coach card and world/minimap markers retained.
+- Pointer blocking is per-hint opt-in and off for existing lessons, preserving world clicks and reinforcement dragging. Keyboard shortcuts remain available.
+- Implementation/guidance → [[TODOs/Features/Ingame_Tutorial_Plan#UI spotlight migration · 2026-11-11]].
+- Unity compilation and saved prefab references verified; tests not run; in-game visual acceptance pending. Unimplemented guided-tutorial scope remains active.
+
+- Layering: hint view follows tooltips in `tooltipSlot` and stays below fade; modal input lock hides tutorial UI. Source-verified; no tests run.
+
+- Spotlight lifecycle fix 2026-11-11: all 118 current Console errors were `MiniMapUiController.HideTarget` called by `HintUiController.LateTick` during loading, before minimap activation. Controller now tracks whether it showed a minimap target and hides only that active marker on lock, target loss, or hint closure. No null suppression. Unity compiled/loaded the fix; no new Console errors after import. Play Mode ended during refresh; next battle startup remains unverified. Tests not run.
+
+- User-authorized verification 2026-11-11: EditMode `Ui` **274/274 passed**, `Core` **150/150 passed**; no failures/skips. MainMenuScene clean before each run. Full suite and in-game spotlight acceptance not run.

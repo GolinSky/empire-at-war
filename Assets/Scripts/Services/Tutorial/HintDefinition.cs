@@ -19,8 +19,10 @@ namespace EmpireAtWar.Services.Tutorial
         [Tooltip("Fixed controls for UI gestures, such as <Mouse>/leftButton. These do not follow battle bindings.")]
         [SerializeField] private string[] inputControls = new string[0];
         [SerializeField] private TutorialAnchorId anchor;
-        [Tooltip("Framed while the anchor is not on screen, such as the unit button to hover before its tooltip opens.")]
+        [Tooltip("Spotlight target while the anchor is unavailable, such as the unit button to hover before its tooltip opens.")]
         [SerializeField] private TutorialAnchorId anchorFallback;
+        [Tooltip("Block pointer input outside the UI spotlight. Keyboard shortcuts remain available.")]
+        [SerializeField] private bool blockPointerOutsideSpotlight;
         [Tooltip("Place in the world to mark (and mirror on the minimap).")]
         [SerializeField] private HintTargetId target;
         [Tooltip("Closes the step as done; a step done before it is shown is skipped. None: only Dismiss or auto close.")]
@@ -53,6 +55,7 @@ namespace EmpireAtWar.Services.Tutorial
         public IReadOnlyList<string> InputControls => inputControls;
         public TutorialAnchorId Anchor => anchor;
         public TutorialAnchorId AnchorFallback => anchorFallback;
+        public bool BlockPointerOutsideSpotlight => blockPointerOutsideSpotlight;
         public HintTargetId Target => target;
         public HintConditionId Completion => completion;
         public int CompletionCount => completionCount;

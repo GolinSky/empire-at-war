@@ -17,17 +17,20 @@ namespace EmpireAtWar.Entities.TutorialUi
         private readonly ICameraService _camera;
         private readonly InputActionsProvider _input;
         private readonly IInputBindings _bindings;
+        private readonly IInputLock _inputLock;
         private readonly IMiniMapTargetMarker _miniMap;
         private readonly Vector3[] _corners = new Vector3[4];
         private readonly List<RectTransform> _anchors = new List<RectTransform>();
         private HintUi _ui;
         private bool _isPreviewShown;
+        private bool _isMiniMapTargetShown;
         private string _body;
 
         public HintUiController(IUiService uiService, IHintService hints, ISettingsService settings,
             ICameraService camera, InputActionsProvider input, IInputBindings bindings,
-            IMiniMapTargetMarker miniMap) : base(uiService)
+            IMiniMapTargetMarker miniMap, IInputLock inputLock) : base(uiService)
         {
+            _inputLock = inputLock;
             _miniMap = miniMap;
             _hints = hints;
             _settings = settings;
@@ -49,13 +52,21 @@ namespace EmpireAtWar.Entities.TutorialUi
 
         public void LateTick()
         {
+            if (_inputLock.IsLocked)
+            {
+                _ui.Hide();
+                HideMiniMapTarget();
+                return;
+            }
+            _ui.Show();
             HintDefinition hint = _hints.Current;
             if (hint == null) return;
             // Progress tokens ([count]) change while the card is open.
             if (hint.Body.IndexOf('[') >= 0) RefreshBody(hint);
             bool hasAnchor = TutorialAnchor.TryFindAll(hint.Anchor, _anchors) ||
                              TutorialAnchor.TryFindAll(hint.AnchorFallback, _anchors);
-            _ui.SetAnchorFrame(hasAnchor, hasAnchor ? ScreenRect(_anchors) : default);
+            _ui.SetSpotlight(hasAnchor, hasAnchor ? ScreenRect(_anchors) : default,
+                hint.BlockPointerOutsideSpotlight);
             if (hint.PreviewAnchor && hasAnchor && !_isPreviewShown)
             {
                 _ui.SetPreview(_anchors[0]);
@@ -63,8 +74,12 @@ namespace EmpireAtWar.Entities.TutorialUi
             }
             bool hasTarget = _hints.TryGetWorldTarget(out Vector3 position);
             _ui.SetWorldMarker(hasTarget, hasTarget ? _camera.SceneCamera.WorldToScreenPoint(position) : default);
-            if (hasTarget) _miniMap.ShowTarget(position);
-            else _miniMap.HideTarget();
+            if (hasTarget)
+            {
+                _miniMap.ShowTarget(position);
+                _isMiniMapTargetShown = true;
+            }
+            else HideMiniMapTarget();
         }
 
         public void Dismiss() => _hints.Dismiss();
@@ -88,7 +103,14 @@ namespace EmpireAtWar.Entities.TutorialUi
         private void HandleClosed(HintDefinition hint, bool completed)
         {
             _ui.CloseHint(completed);
+            HideMiniMapTarget();
+        }
+
+        private void HideMiniMapTarget()
+        {
+            if (!_isMiniMapTargetShown) return;
             _miniMap.HideTarget();
+            _isMiniMapTargetShown = false;
         }
 
         private string Body(HintDefinition hint) =>

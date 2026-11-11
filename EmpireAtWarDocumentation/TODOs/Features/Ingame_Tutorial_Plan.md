@@ -18,13 +18,13 @@ created: 2026-11-08
 - **Two hint kinds, one engine.**
   - **Basics track**: ordered hints from match start (camera → select → move → … → research). Next basic hint shows only after the previous is done or dismissed.
   - **Event hints**: one-shot, fired on first occurrence (level up affordable, ability unlocked, capture site seen…).
-- **Non-blocking.** Input stays live; no `IInputLock`. Each card has Dismiss; "Turn off hints" on the card.
+- **Non-blocking by default.** Input stays live; no `IInputLock`. Each card has Dismiss and "Turn off hints". `blockPointerOutsideSpotlight` opts individual UI lessons into pointer blocking; keyboard shortcuts remain available.
 - **Pacing.** Max one card visible; min gap between cards **3 s**; event hints queue by priority.
 - **Combat pause** (decided 2026-11-09): basics track waits while any owned unit fires or takes damage; resumes after **~5 s** quiet (tune). Combat-relevant event hints (attack, abilities, auto-power) still show. Signal: reuse `AutoPowerCombatSnapshot` if it fits, else a read-only in-combat observer.
 - **Card layout A** (decided 2026-11-09): fixed coach card at a screen edge, clear of minimap/build bar/selection panel.
   - Card: `#080C14` @ 0.96 bg, 3 px cyan `#38BDF8` left accent, cyan uppercase title + basics progress (`5/7`), body ≤ ~12 words verb-first, key-cap glyphs, "Dismiss (Esc) · Turn off hints".
-  - Raycasts only on card buttons; no full-screen dim.
-  - Target highlight: pulsing cyan ring on UI anchor (only pulsing element); world target → ground ring + bouncing chevron; off-screen target → screen-edge arrow.
+  - UI spotlight (2026-11-11): black overlay at 65% opacity, transparent target cutout with 6 canvas-unit padding; coach card above overlay. Supersedes the original no-dim design.
+  - Target highlight: UI anchor → transparent spotlight cutout; world target → existing ground ring + bouncing chevron; off-screen world target → screen-edge arrow.
   - Completion: ~0.5 s checkmark, card slides out; slide-in ~0.2 s; quiet audio cue.
   - Red is reserved for the required mouse control (user request 2026-11-09); keep target frames cyan. Avoid: yellow warning accents and team colours for hints; Next-button progression; callout bubbles (B) and top banner (C) — rejected.
 - **Local only.** Hints are local-player UI; nothing goes through the multiplayer command sink. `BattleSimulation` mode excluded.
@@ -50,7 +50,7 @@ created: 2026-11-08
 - `TutorialAnchor` MonoBehaviour with serialized `TutorialAnchorId`, placed on UI prefabs (build buttons, level button, research buttons, ability bar, auto-power button, unit action buttons, minimap, money/HUD). Registers into `ITutorialAnchorRegistry` on enable — no `Find`/`GetComponent`.
 - `HintUi` (View) + `HintPresenter` (MVP fits: real state + input):
   - card (title, 1–2 lines, key glyphs, Dismiss, Turn off hints); placed so it doesn't cover minimap/build panel.
-  - highlight: pulsing frame on anchor RectTransform (no full-screen dim — play continues); arrow to world target (screen-projected marker).
+  - Highlight: `HintSpotlightView` draws four dim quads around the UI anchor bounds; world targets keep the screen-projected marker.
   - key glyphs read from `IInputBindings` / `BindingSlotCatalog` so rebinds display correctly.
 - Persistence: `GameplaySettingsData` → `showHints` (default on), completed/dismissed hint ids. Settings: "Show hints", "Reset hints".
 - Analytics (optional): hint shown/completed/dismissed through existing `IAnalyticsService` ([[TODOs/Features/Gameplay_Analytics|Gameplay Analytics]]).
@@ -245,3 +245,18 @@ Each hint: card → highlight → completion condition → short confirm feedbac
 - Optional: analytics funnel (shown/completed/dismissed).
 - EditMode tests for `HintService` + `Tutorial` category in `AGENTS.md`.
 - User in-game check: card placement vs HUD, highlight frames, pacing, combat pause, settings rows.
+
+## UI spotlight migration · 2026-11-11
+
+- [x] Replaced shared UI anchor frames with `HintSpotlightView`; fixed and dynamically registered anchors use the same cutout path in both hint modes.
+- [x] Saved `Assets/Prefabs/Ui/Tutorial/HintUi.prefab`: 65% black, full-screen stretch, coach card above spotlight, old frame removed. No custom shader/material required.
+- `HintDefinition.blockPointerOutsideSpotlight` defaults false. Opt-in blocks pointer input outside cutout; card controls and keyboard shortcuts remain available. Keep off for world-click and reinforcement-drag lessons.
+- Missing/off-screen anchor or closed hint → overlay hidden. Multiple matching anchors retain their shared bounding rectangle.
+- Verification: Unity compilation and saved prefab bindings/order checked; no new Console errors. Tests not run (repository override); in-game visual acceptance pending.
+- Reusable guidance: [[Rules/UI_UX_GUIDELINES#8. Tutorial UI spotlights]]. Remaining original plan scope stays active.
+
+- Layering: hint view follows tooltips in `tooltipSlot` and stays below fade; modal input lock hides tutorial UI. Source-verified; no tests run.
+
+- Spotlight lifecycle fix 2026-11-11: all 118 current Console errors were `MiniMapUiController.HideTarget` called by `HintUiController.LateTick` during loading, before minimap activation. Controller now tracks whether it showed a minimap target and hides only that active marker on lock, target loss, or hint closure. No null suppression. Unity compiled/loaded the fix; no new Console errors after import. Play Mode ended during refresh; next battle startup remains unverified. Tests not run.
+
+- User-authorized verification 2026-11-11: EditMode `Ui` **274/274 passed**, `Core` **150/150 passed**; no failures/skips. MainMenuScene clean before each run. Full suite and in-game spotlight acceptance not run.
