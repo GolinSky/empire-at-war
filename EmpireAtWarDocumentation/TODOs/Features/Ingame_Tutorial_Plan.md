@@ -260,3 +260,5 @@ Each hint: card → highlight → completion condition → short confirm feedbac
 - Spotlight lifecycle fix 2026-11-11: all 118 current Console errors were `MiniMapUiController.HideTarget` called by `HintUiController.LateTick` during loading, before minimap activation. Controller now tracks whether it showed a minimap target and hides only that active marker on lock, target loss, or hint closure. No null suppression. Unity compiled/loaded the fix; no new Console errors after import. Play Mode ended during refresh; next battle startup remains unverified. Tests not run.
 
 - User-authorized verification 2026-11-11: EditMode `Ui` **274/274 passed**, `Core` **150/150 passed**; no failures/skips. MainMenuScene clean before each run. Full suite and in-game spotlight acceptance not run.
+
+- Full standard suites, user-authorized 2026-11-11: EditMode **2961/2961 passed**, PlayMode **36/36 passed**, no failures/skips. Explicit opt-in sweeps excluded. Source commit `80b265098`; no implementation changes required. In-game visual acceptance remains pending.
