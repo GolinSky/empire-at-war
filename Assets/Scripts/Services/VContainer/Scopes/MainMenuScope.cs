@@ -36,6 +36,8 @@ namespace EmpireAtWar.Services.VContainer
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<PlayRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
+            builder.Register<EmpireAtWar.Entities.MainMenu.SinglePlayer.SinglePlayerRouteUiController>(Lifetime.Singleton)
+                .AsImplementedInterfaces().AsSelf();
             builder.Register<LoadGameRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<MainMenuUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
@@ -57,6 +59,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SkirmishRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SteamPopupService>(Lifetime.Singleton).As<ISteamPopupService>();
             builder.Register<OnlineRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<EmpireAtWar.Entities.MainMenu.ServerBrowser.ServerBrowserRouteUiController>(Lifetime.Singleton)
+                .AsImplementedInterfaces().AsSelf();
             builder.Register<EmpireAtWar.Entities.MainMenu.Tutorial.TutorialRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
             // Lobby screens reuse the setup views; their presenter interfaces stay unregistered.

@@ -158,18 +158,45 @@ namespace EmpireAtWar.Services.Networking.Online
             _root.SetActive(true);
         }
 
-        /// <summary>Hosts a lobby reachable by IP and, with Steam running, by Steam invite.</summary>
-        public void HostLobby(LobbyMode mode)
+        /// <summary>
+        /// Hosts a Skirmish lobby reachable by IP and, with Steam running, by invite and the Server Browser.
+        /// The host picks the mode in the lobby (<see cref="SwitchLobbyMode"/>).
+        /// </summary>
+        public void HostLobby()
         {
             EnterOnline();
             ResetMatch(OnlineRole.Host);
-            Mode = mode;
-            int capacity = mode == LobbyMode.Survival ? OnlineLineup.MAX_SURVIVAL_HUMANS : OnlineLobby.MAX_MEMBERS;
+            Mode = LobbyMode.Skirmish;
+            int capacity = CapacityOf(Mode);
             _lobby.Reset(_steam.PersonaName, _steam.LocalSteamId, capacity);
             _manager.UseTransport(_multiplex);
             _manager.StartHost();
-            if (_steam.IsInitialized) _steam.CreateLobby(capacity);
+            if (_steam.IsInitialized) _steam.CreateLobby(capacity, Mode.ToString());
             Changed?.Invoke();
+        }
+
+        /// <summary>Host, in the lobby: Survival seats fewer members, so it is refused while too many are in.</summary>
+        public bool CanSwitchLobbyMode(LobbyMode mode) => Role == OnlineRole.Host && !IsInBattle &&
+            mode != LobbyMode.None && _lobby.Members.Count <= CapacityOf(mode);
+
+        /// <summary>Host: every member sees the new mode's setup screen and confirms ready again.</summary>
+        public void SwitchLobbyMode(LobbyMode mode)
+        {
+            if (!CanSwitchLobbyMode(mode))
+                throw new InvalidOperationException($"The lobby cannot switch to {mode} now.");
+            if (mode == Mode) return;
+            Mode = mode;
+            SetupJson = string.Empty;
+            _lobby.ChangeCapacity(CapacityOf(mode));
+            if (_steam.IsInitialized) _steam.UpdateHostedLobby(_lobby.Capacity, mode.ToString());
+            BroadcastLobby();
+        }
+
+        /// <summary>Server Browser: joins a listed Steam lobby; the join reports through <see cref="Changed"/>.</summary>
+        public void JoinListedLobby(SteamLobbyListing lobby)
+        {
+            ClearError();
+            _steam.Join(lobby.Id);
         }
 
         public void JoinByIp(string address)
@@ -266,6 +293,7 @@ namespace EmpireAtWar.Services.Networking.Online
         private void StartBattle(BattleDefinition battle)
         {
             ClearError();
+            if (_steam.IsInitialized) _steam.SetHostedLobbyInBattle(true);
             _battleJson = JsonUtility.ToJson(BattleSetupSave.From(battle));
             foreach (LobbyMember member in _lobby.Members)
             {
@@ -484,6 +512,9 @@ namespace EmpireAtWar.Services.Networking.Online
             connection.Send(new LobbyRejectedMessage { Reason = reason });
             _pendingKicks.Add((connection, Time.unscaledTime + KICK_DISCONNECT_DELAY));
         }
+
+        private static int CapacityOf(LobbyMode mode) =>
+            mode == LobbyMode.Survival ? OnlineLineup.MAX_SURVIVAL_HUMANS : OnlineLobby.MAX_MEMBERS;
 
         private string LobbyStatus() => $"In {Mode} lobby {_lobby.Members.Count}/{_lobby.Capacity}";
 

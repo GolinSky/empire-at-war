@@ -6,13 +6,11 @@ namespace EmpireAtWar.Entities.MainMenu.Play
 {
     public sealed class PlayUi : BaseUi
     {
-        [SerializeField] private Button skirmishButton;
-        [SerializeField] private Button survivalButton;
+        [SerializeField] private Button singlePlayerButton;
+        [SerializeField] private Button multiplayerButton;
         [SerializeField] private Button simulationButton;
-        [SerializeField] private Button onlineButton;
-        [SerializeField] private Button backButton;
-        [SerializeField] private Button loadButton;
         [SerializeField] private Button tutorialButton;
+        [SerializeField] private Button backButton;
         private IPlayPresenter _presenter;
         private bool _isInitialized;
 
@@ -21,26 +19,21 @@ namespace EmpireAtWar.Entities.MainMenu.Play
         public void Initialize()
         {
             if (_isInitialized) return;
-            skirmishButton.onClick.AddListener(_presenter.OpenSkirmish);
-            survivalButton.onClick.AddListener(_presenter.OpenSurvival);
-            backButton.onClick.AddListener(_presenter.Close);
-            simulationButton.interactable = true;
+            singlePlayerButton.onClick.AddListener(_presenter.OpenSinglePlayer);
+            multiplayerButton.onClick.AddListener(_presenter.OpenMultiplayer);
             simulationButton.onClick.AddListener(_presenter.OpenSimulation);
-            loadButton.onClick.AddListener(_presenter.OpenLoadGame);
-            onlineButton.onClick.AddListener(_presenter.OpenOnline);
             tutorialButton.onClick.AddListener(_presenter.OpenTutorial);
+            backButton.onClick.AddListener(_presenter.Close);
             _isInitialized = true;
         }
 
         public void Dispose()
         {
             if (!_isInitialized) return;
+            singlePlayerButton.onClick.RemoveListener(_presenter.OpenSinglePlayer);
+            multiplayerButton.onClick.RemoveListener(_presenter.OpenMultiplayer);
             simulationButton.onClick.RemoveListener(_presenter.OpenSimulation);
-            loadButton.onClick.RemoveListener(_presenter.OpenLoadGame);
-            onlineButton.onClick.RemoveListener(_presenter.OpenOnline);
             tutorialButton.onClick.RemoveListener(_presenter.OpenTutorial);
-            skirmishButton.onClick.RemoveListener(_presenter.OpenSkirmish);
-            survivalButton.onClick.RemoveListener(_presenter.OpenSurvival);
             backButton.onClick.RemoveListener(_presenter.Close);
             _isInitialized = false;
         }

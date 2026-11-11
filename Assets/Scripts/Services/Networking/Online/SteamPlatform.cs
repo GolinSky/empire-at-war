@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.Networking.Online
 {
-    // Steam lobby flow (from the Phase 0 spike): init, friends-only lobby, overlay invite, join request, launch arg.
+    // Steam lobby flow (from the Phase 0 spike): init, public lobby (Server Browser), overlay invite, join request, launch arg.
     // App ID 480 (Spacewar) shares its lobby namespace, so lobbies carry game + version data and joins check it.
     public sealed class SteamPlatform
     {
@@ -13,6 +13,12 @@ namespace EmpireAtWar.Services.Networking.Online
         private const string GAME_DATA = "game";
         private const string VERSION_DATA = "version";
         private const string HOST_DATA = "host";
+        private const string HOST_NAME_DATA = "host_name";
+        private const string MODE_DATA = "mode";
+        private const string STATE_DATA = "state";
+        private const string OPEN_STATE = "lobby";
+        private const string BATTLE_STATE = "battle";
+        private const int MAX_LISTED_LOBBIES = 50;
         private const string CONNECT_LOBBY_ARG = "+connect_lobby";
         private const string CONNECT_PRESENCE = "connect";
         private const string STATUS_PRESENCE = "status";
@@ -20,6 +26,10 @@ namespace EmpireAtWar.Services.Networking.Online
         private const string STEAM_APP_ID = "480";
 
         private CallResult<LobbyCreated_t> _lobbyCreated;
+        private CallResult<LobbyMatchList_t> _lobbyList;
+        private readonly List<SteamLobbyListing> _listedLobbies = new List<SteamLobbyListing>();
+        private string _hostedMode = string.Empty;
+        private int _hostedCapacity;
         private readonly Dictionary<CSteamID, CallResult<LobbyEnter_t>> _lobbyJoins =
             new Dictionary<CSteamID, CallResult<LobbyEnter_t>>();
         private Callback<GameLobbyJoinRequested_t> _joinRequested;
@@ -41,6 +51,8 @@ namespace EmpireAtWar.Services.Networking.Online
         public event Action InviteReceived;
         /// <summary>A friend's avatar finished downloading; <see cref="TryGetAvatar"/> now has it.</summary>
         public event Action AvatarLoaded;
+        /// <summary><see cref="RequestLobbyList"/> finished; <see cref="ListedLobbies"/> holds the result.</summary>
+        public event Action LobbyListReceived;
 
         public bool IsInitialized { get; private set; }
         private string _status = "Steam not initialized";
@@ -65,6 +77,9 @@ namespace EmpireAtWar.Services.Networking.Online
         public bool HasPendingInvite => PendingInviteLobby != CSteamID.Nil;
         public CSteamID PendingInviteLobby { get; private set; } = CSteamID.Nil;
         public string PendingInviteFrom { get; private set; } = string.Empty;
+        /// <summary>Open lobbies from the last <see cref="RequestLobbyList"/>.</summary>
+        public IReadOnlyList<SteamLobbyListing> ListedLobbies => _listedLobbies;
+        public bool IsListingLobbies { get; private set; }
 
         public bool TryInitialize()
         {
@@ -83,6 +98,7 @@ namespace EmpireAtWar.Services.Networking.Online
 
             IsInitialized = true;
             _lobbyCreated = CallResult<LobbyCreated_t>.Create(OnLobbyCreated);
+            _lobbyList = CallResult<LobbyMatchList_t>.Create(OnLobbyList);
             _joinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequested);
             _lobbyInvite = Callback<LobbyInvite_t>.Create(OnLobbyInvite);
             _presenceJoinRequested = Callback<GameRichPresenceJoinRequested_t>.Create(OnPresenceJoinRequested);
@@ -97,11 +113,45 @@ namespace EmpireAtWar.Services.Networking.Online
                 SteamAPI.RunCallbacks();
         }
 
-        public void CreateLobby(int maxMembers)
+        /// <summary>A public lobby, so the Server Browser lists it; <paramref name="mode"/> is shown in its row.</summary>
+        public void CreateLobby(int maxMembers, string mode)
         {
             _isHost = true;
-            _lobbyCreated.Set(SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, maxMembers));
+            _hostedCapacity = maxMembers;
+            _hostedMode = mode;
+            _lobbyCreated.Set(SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic, maxMembers));
             Status = "Creating lobby...";
+        }
+
+        /// <summary>Host: the lobby's mode changed; a lobby still being created takes it when ready.</summary>
+        public void UpdateHostedLobby(int maxMembers, string mode)
+        {
+            _hostedCapacity = maxMembers;
+            _hostedMode = mode;
+            if (!_isHost || !InLobby) return;
+            SteamMatchmaking.SetLobbyMemberLimit(_lobby, maxMembers);
+            SteamMatchmaking.SetLobbyData(_lobby, MODE_DATA, mode);
+        }
+
+        /// <summary>Host: a lobby in battle drops out of the Server Browser; rejoins still use invites and IP.</summary>
+        public void SetHostedLobbyInBattle(bool inBattle)
+        {
+            if (!_isHost || !InLobby) return;
+            SteamMatchmaking.SetLobbyData(_lobby, STATE_DATA, inBattle ? BATTLE_STATE : OPEN_STATE);
+        }
+
+        /// <summary>Open lobbies of this game and version, worldwide; <see cref="LobbyListReceived"/> follows.</summary>
+        public void RequestLobbyList()
+        {
+            IsListingLobbies = true;
+            SteamMatchmaking.AddRequestLobbyListStringFilter(GAME_DATA, GAME_KEY, ELobbyComparison.k_ELobbyComparisonEqual);
+            SteamMatchmaking.AddRequestLobbyListStringFilter(VERSION_DATA, Application.version,
+                ELobbyComparison.k_ELobbyComparisonEqual);
+            SteamMatchmaking.AddRequestLobbyListStringFilter(STATE_DATA, OPEN_STATE, ELobbyComparison.k_ELobbyComparisonEqual);
+            SteamMatchmaking.AddRequestLobbyListFilterSlotsAvailable(1);
+            SteamMatchmaking.AddRequestLobbyListDistanceFilter(ELobbyDistanceFilter.k_ELobbyDistanceFilterWorldwide);
+            SteamMatchmaking.AddRequestLobbyListResultCountFilter(MAX_LISTED_LOBBIES);
+            _lobbyList.Set(SteamMatchmaking.RequestLobbyList());
         }
 
         public void InviteFriends()
@@ -271,9 +321,31 @@ namespace EmpireAtWar.Services.Networking.Online
             SteamMatchmaking.SetLobbyData(_lobby, GAME_DATA, GAME_KEY);
             SteamMatchmaking.SetLobbyData(_lobby, VERSION_DATA, Application.version);
             SteamMatchmaking.SetLobbyData(_lobby, HOST_DATA, hostId);
+            SteamMatchmaking.SetLobbyData(_lobby, HOST_NAME_DATA, SteamFriends.GetPersonaName());
+            SteamMatchmaking.SetLobbyData(_lobby, STATE_DATA, OPEN_STATE);
+            UpdateHostedLobby(_hostedCapacity, _hostedMode);
             SteamFriends.SetRichPresence(CONNECT_PRESENCE, $"{CONNECT_LOBBY_ARG} {_lobby.m_SteamID}");
             Status = $"Hosting lobby {_lobby.m_SteamID}";
             HostLobbyReady?.Invoke(hostId);
+        }
+
+        private void OnLobbyList(LobbyMatchList_t result, bool ioFailure)
+        {
+            IsListingLobbies = false;
+            _listedLobbies.Clear();
+            if (!ioFailure)
+            {
+                for (int i = 0; i < result.m_nLobbiesMatching; i++)
+                {
+                    CSteamID lobby = SteamMatchmaking.GetLobbyByIndex(i);
+                    if (lobby == _lobby) continue;
+                    _listedLobbies.Add(new SteamLobbyListing(lobby, SteamMatchmaking.GetLobbyData(lobby, HOST_NAME_DATA),
+                        SteamMatchmaking.GetLobbyData(lobby, MODE_DATA), SteamMatchmaking.GetNumLobbyMembers(lobby),
+                        SteamMatchmaking.GetLobbyMemberLimit(lobby)));
+                }
+            }
+
+            LobbyListReceived?.Invoke();
         }
 
         private void OnJoinRequested(GameLobbyJoinRequested_t request) => Join(request.m_steamIDLobby);

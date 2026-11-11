@@ -120,34 +120,28 @@ namespace EmpireAtWar.Tests.Editor
             {
                 var view = root.GetComponent<EmpireAtWar.Entities.MainMenu.Play.PlayUi>();
                 var service = new UiServiceStub(view);
-                var skirmish = new RouteStub();
-                var survival = new RouteStub();
-                var loadGame = new RouteStub();
-                var online = new RouteStub();
+                var singlePlayer = new RouteStub();
+                var multiplayer = new RouteStub();
+                var simulation = new RouteStub();
                 var tutorial = new RouteStub();
                 controller = new EmpireAtWar.Entities.MainMenu.Play.PlayRouteUiController(
-                    service, new CancelRouterStub(), skirmish, survival, new RouteStub(), loadGame, online, tutorial);
+                    service, new CancelRouterStub(), singlePlayer, multiplayer, simulation, tutorial);
                 controller.Open();
                 controller.Open();
                 var fields = new SerializedObject(view);
-                var skirmishButton = (Button)fields.FindProperty("skirmishButton").objectReferenceValue;
-                var survivalButton = (Button)fields.FindProperty("survivalButton").objectReferenceValue;
+                var singlePlayerButton = (Button)fields.FindProperty("singlePlayerButton").objectReferenceValue;
+                var multiplayerButton = (Button)fields.FindProperty("multiplayerButton").objectReferenceValue;
                 var simulationButton = (Button)fields.FindProperty("simulationButton").objectReferenceValue;
-                var backButton = (Button)fields.FindProperty("backButton").objectReferenceValue;
-                var loadButton = (Button)fields.FindProperty("loadButton").objectReferenceValue;
-                var onlineButton = (Button)fields.FindProperty("onlineButton").objectReferenceValue;
-                skirmishButton.onClick.Invoke();
-                survivalButton.onClick.Invoke();
-                loadButton.onClick.Invoke();
                 var tutorialButton = (Button)fields.FindProperty("tutorialButton").objectReferenceValue;
-                onlineButton.onClick.Invoke();
+                var backButton = (Button)fields.FindProperty("backButton").objectReferenceValue;
+                singlePlayerButton.onClick.Invoke();
+                multiplayerButton.onClick.Invoke();
+                simulationButton.onClick.Invoke();
                 tutorialButton.onClick.Invoke();
-                Assert.That(loadGame.OpenCount, Is.EqualTo(1));
-                Assert.That(online.OpenCount, Is.EqualTo(1));
+                Assert.That(singlePlayer.OpenCount, Is.EqualTo(1));
+                Assert.That(multiplayer.OpenCount, Is.EqualTo(1));
+                Assert.That(simulation.OpenCount, Is.EqualTo(1));
                 Assert.That(tutorial.OpenCount, Is.EqualTo(1));
-                Assert.That(skirmish.OpenCount, Is.EqualTo(1));
-                Assert.That(survival.OpenCount, Is.EqualTo(1));
-                Assert.That(simulationButton.interactable, Is.True);
                 Assert.That(controller.TryCancel(), Is.True);
                 Assert.That(view.IsVisible, Is.False);
                 Assert.That(controller.IsFocused, Is.False);
@@ -156,12 +150,55 @@ namespace EmpireAtWar.Tests.Editor
                 backButton.onClick.Invoke();
                 Assert.That(view.IsVisible, Is.False);
                 controller.LateDispose();
+                singlePlayerButton.onClick.Invoke();
+                multiplayerButton.onClick.Invoke();
+                Assert.That(singlePlayer.OpenCount, Is.EqualTo(1));
+                Assert.That(multiplayer.OpenCount, Is.EqualTo(1));
+            }
+            finally
+            {
+                if (controller != null) controller.LateDispose();
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        [Test]
+        public void SinglePlayerRoute_ForwardsOfflineModesAndReturnsOnCancel()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/MainMenu/SinglePlayerUi.prefab");
+            EmpireAtWar.Entities.MainMenu.SinglePlayer.SinglePlayerRouteUiController controller = null;
+            try
+            {
+                var view = root.GetComponent<EmpireAtWar.Entities.MainMenu.SinglePlayer.SinglePlayerUi>();
+                var service = new UiServiceStub(view);
+                var skirmish = new RouteStub();
+                var survival = new RouteStub();
+                var loadGame = new RouteStub();
+                controller = new EmpireAtWar.Entities.MainMenu.SinglePlayer.SinglePlayerRouteUiController(
+                    service, new CancelRouterStub(), skirmish, survival, loadGame);
+                controller.Open();
+                controller.Open();
+                var fields = new SerializedObject(view);
+                var skirmishButton = (Button)fields.FindProperty("skirmishButton").objectReferenceValue;
+                var survivalButton = (Button)fields.FindProperty("survivalButton").objectReferenceValue;
+                var loadButton = (Button)fields.FindProperty("loadButton").objectReferenceValue;
+                var backButton = (Button)fields.FindProperty("backButton").objectReferenceValue;
                 skirmishButton.onClick.Invoke();
                 survivalButton.onClick.Invoke();
                 loadButton.onClick.Invoke();
-                Assert.That(loadGame.OpenCount, Is.EqualTo(1));
                 Assert.That(skirmish.OpenCount, Is.EqualTo(1));
                 Assert.That(survival.OpenCount, Is.EqualTo(1));
+                Assert.That(loadGame.OpenCount, Is.EqualTo(1));
+                Assert.That(service.CreateCount, Is.EqualTo(1));
+                Assert.That(controller.TryCancel(), Is.True);
+                Assert.That(view.IsVisible, Is.False);
+                controller.Open();
+                backButton.onClick.Invoke();
+                Assert.That(view.IsVisible, Is.False);
+                Assert.That(controller.IsFocused, Is.False);
+                controller.LateDispose();
+                skirmishButton.onClick.Invoke();
+                Assert.That(skirmish.OpenCount, Is.EqualTo(1));
             }
             finally
             {
@@ -226,17 +263,19 @@ namespace EmpireAtWar.Tests.Editor
                 var mainView = mainRoot.GetComponent<MainMenuUi>();
                 var saveView = saveRoot.GetComponent<SaveBrowserUi>();
                 var playRoute = new RouteStub();
+                var singlePlayerRoute = new RouteStub();
                 mainMenu = new MainMenuUiController(new UiServiceStub(mainView), new CancelRouterStub(),
                     playRoute, new RouteStub(), CreateSettings(), new PopupServiceStub(), new TooltipServiceStub());
                 var saves = new EmptySaves();
                 loadRoute = new LoadGameRouteUiController(new UiServiceStub(saveView), new CancelRouterStub(),
                     saves, null, gameData);
-                var orchestrator = new MainMenuOrchestrator(mainMenu, playRoute, loadRoute, gameData);
+                var orchestrator = new MainMenuOrchestrator(mainMenu, playRoute, singlePlayerRoute, loadRoute, gameData);
 
                 orchestrator.Initialize();
 
                 var status = (TMPro.TMP_Text)new SerializedObject(saveView).FindProperty("status").objectReferenceValue;
                 Assert.That(playRoute.OpenCount, Is.EqualTo(1));
+                Assert.That(singlePlayerRoute.OpenCount, Is.EqualTo(1));
                 Assert.That(saveView.IsVisible, Is.True);
                 Assert.That(saves.LastMode, Is.EqualTo(GameMode.Survival));
                 Assert.That(status.text, Is.EqualTo("Load failed: Save has 1 capture sites, expected 4."));
@@ -349,7 +388,8 @@ namespace EmpireAtWar.Tests.Editor
             public void SetContentVisible(bool isVisible) { }
         }
 
-        private sealed class RouteStub : EmpireAtWar.Entities.MainMenu.Play.IPlayRoute, ISettingsRoute, ISkirmishRoute, EmpireAtWar.Entities.MainMenu.Survival.ISurvivalRoute, EmpireAtWar.Entities.MainMenu.Simulation.ISimulationRoute, EmpireAtWar.Entities.Saves.ILoadGameRoute, EmpireAtWar.Entities.MainMenu.Online.IOnlineRoute, EmpireAtWar.Entities.MainMenu.Tutorial.ITutorialRoute
+        private sealed class RouteStub : EmpireAtWar.Entities.MainMenu.Play.IPlayRoute, ISettingsRoute, ISkirmishRoute, EmpireAtWar.Entities.MainMenu.Survival.ISurvivalRoute, EmpireAtWar.Entities.MainMenu.Simulation.ISimulationRoute, EmpireAtWar.Entities.Saves.ILoadGameRoute, EmpireAtWar.Entities.MainMenu.Online.IOnlineRoute, EmpireAtWar.Entities.MainMenu.Tutorial.ITutorialRoute,
+            EmpireAtWar.Entities.MainMenu.SinglePlayer.ISinglePlayerRoute
         {
             public int OpenCount { get; private set; }
             public void Open() => OpenCount++;

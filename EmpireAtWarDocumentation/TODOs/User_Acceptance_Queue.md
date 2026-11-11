@@ -275,3 +275,9 @@ created: "2026-10-29\r"
 - [ ] [[Done/Refactoring/Fog_Disabled_Stand_Ins]] — Start a fog-disabled battle. Check fade timing and a fully revealed minimap.
 - [ ] [[Done/Refactoring/Fog_Disabled_Stand_Ins]] — Restart or restore with different bounds. Check the fog plane fits the new map.
 - [ ] [[Done/Refactoring/Fog_Disabled_Stand_Ins]] — Run Vision, Map, Ui, GameFlow, Core and BattleInput when authorized.
+
+## Play menu reroute
+
+- [ ] [[Done/Features/Play_Menu_Reroute_Plan]] — In-game: Play → Single Player (Skirmish, Survival, Load Game), Multiplayer, AI vs AI, Tutorial; every Back/Escape returns one level.
+- [ ] [[Done/Features/Play_Menu_Reroute_Plan]] — Two PCs: Host Game, client joins from the Server Browser (and by IP); host switches Skirmish ↔ Survival; Survival blocked with 4 members.
+- [ ] [[Done/Features/Play_Menu_Reroute_Plan]] — Run Ui, Networking and GameFlow when authorized.

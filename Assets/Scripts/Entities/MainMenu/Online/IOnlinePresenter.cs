@@ -2,9 +2,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 {
     public interface IOnlinePresenter
     {
-        void HostSkirmish();
-        void HostSurvival();
-        void Join(string address);
+        void HostGame();
+        void OpenServerBrowser();
         void AcceptInvite();
         void Close();
     }

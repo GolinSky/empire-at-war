@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.MainMenu.ServerBrowser;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.Popups;
@@ -6,7 +7,7 @@ using EmpireAtWar.Ui.Base;
 namespace EmpireAtWar.Entities.MainMenu.Online
 {
     /// <summary>
-    /// Online entry screen and lobby routing: while this PC sits in a lobby, the lobby's setup screen is shown;
+    /// Multiplayer screen and lobby routing: while this PC sits in a lobby, the lobby's setup screen is shown;
     /// when the session ends (left, kicked, host gone, connection failed) the entry screen returns with the reason.
     /// </summary>
     public sealed class OnlineRouteUiController : UiController, IOnlineRoute, IOnlinePresenter, IInitializable,
@@ -16,19 +17,21 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private readonly IOnlineSkirmishLobbyScreen _skirmishLobby;
         private readonly IOnlineSurvivalLobbyScreen _survivalLobby;
         private readonly ISteamPopupService _steamPopups;
+        private readonly IServerBrowserRoute _serverBrowser;
         private OnlineUi _ui;
         private bool _isOpen;
         private LobbyMode _shownLobby;
 
         public OnlineRouteUiController(IUiService uiService, IUiCancelRouter cancelRouter, OnlineMatchService online,
             IOnlineSkirmishLobbyScreen skirmishLobby, IOnlineSurvivalLobbyScreen survivalLobby,
-            ISteamPopupService steamPopups)
+            ISteamPopupService steamPopups, IServerBrowserRoute serverBrowser)
             : base(uiService, cancelRouter)
         {
             _online = online;
             _skirmishLobby = skirmishLobby;
             _survivalLobby = survivalLobby;
             _steamPopups = steamPopups;
+            _serverBrowser = serverBrowser;
         }
 
         public void Initialize()
@@ -74,15 +77,14 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             Unfocus();
         }
 
-        public void HostSkirmish() => Host(LobbyMode.Skirmish);
-
-        public void HostSurvival() => Host(LobbyMode.Survival);
-
-        public void Join(string address)
+        /// <summary>Hosts a Skirmish lobby; the host switches the mode inside the lobby.</summary>
+        public void HostGame()
         {
             _online.ClearError();
-            _online.JoinByIp(address.Trim());
+            _online.HostLobby();
         }
+
+        public void OpenServerBrowser() => _serverBrowser.Open();
 
         public void AcceptInvite()
         {
@@ -106,12 +108,6 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         {
             Close();
             return true;
-        }
-
-        private void Host(LobbyMode mode)
-        {
-            _online.ClearError();
-            _online.HostLobby(mode);
         }
 
         private void Route()
@@ -153,7 +149,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             string status = _online.LastError != OnlineError.None ? OnlineErrorText.Describe(_online.LastError)
                 : connecting ? "Connecting to the host..."
                 : _online.Steam.IsInitialized
-                    ? $"Steam: signed in as {_online.Steam.PersonaName}. Friends join your lobby from a Steam invite or by IP."
+                    ? $"Steam: signed in as {_online.Steam.PersonaName}. Players find your lobby in the Server Browser, by invite or by IP."
                     : "Steam is not running: hosting and joining work by IP only.";
             _ui.Render(status, connecting, _online.Steam.HasPendingInvite ? _online.Steam.PendingInviteFrom : string.Empty);
         }

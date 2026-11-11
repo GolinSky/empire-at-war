@@ -96,7 +96,7 @@ namespace EmpireAtWar.Entities.MainMenu.Main
             _tooltips.Show(source, key, anchor, () => _ui != null, () => new TooltipContent(title: (string)key,
                 description: (string)key switch
                 {
-                    "Play" => "Choose Skirmish, Survival or Battle Simulation.",
+                    "Play" => "Choose Single Player, Multiplayer, AI vs AI or Tutorial.",
                     "Settings" => "Edit display, camera and key-binding settings.",
                     "Quit" => "Exit the application.",
                     _ => throw new ArgumentOutOfRangeException(nameof(key))

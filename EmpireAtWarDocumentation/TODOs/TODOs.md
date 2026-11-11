@@ -280,6 +280,10 @@
 
 ### Features
 
+- [x] **Play menu reroute (Single Player / Multiplayer / AI vs AI / Tutorial; Host Game with mode picked in lobby; Server Browser; START GAME everywhere)** → [[Done/Features/Play_Menu_Reroute_Plan|Play Menu Reroute Plan]]
+  - Completed 2026-11-11: Single Player screen (Skirmish, Survival, Load Game), Multiplayer (Host Game, Join Game → Server Browser of public Steam lobbies + IP join), host-only Skirmish/Survival switch in the lobby (Survival refused over 3 members), START GAME labels.
+  - Unity compile, prefab references, Addressables and preview renders verified; tests not run. In-game routes and 2-PC lobby/browser checks → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **Seismic Charge — shared Boba/Jango bomb rework** → [[Done/Features/Harmonic_Bomb_Ability|Implementation plan]]
   - Completed 2026-11-11: 360 base damage ×2 against squadron members, 210-unit sphere, 1.5 s fuse, 20 s activation cooldown and pooled flat blue Shader Graph shockwaves. Supersedes the 2026-11-06 Harmonic Bomb behavior/visuals; original pilot voices and seismic detonation retained.
   - Unity compile/import, saved bindings, shader passes and isolated render verified; tests not run. In-battle gameplay, visuals and listening → [[TODOs/User_Acceptance_Queue]].

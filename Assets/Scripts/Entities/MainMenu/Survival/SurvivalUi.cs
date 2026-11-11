@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.EnemyFaction.Models;
+using EmpireAtWar.Entities.MainMenu.Online;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Ui.Base;
@@ -25,6 +26,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         [SerializeField] private TMP_Text matchSummaryText;
         [SerializeField] private CanvasGroup startContent;
         [SerializeField] private Button inviteButton;
+        [SerializeField] private LobbyModeSwitchView lobbyModeSwitch;
         [SerializeField] private SurvivalLobbyMemberView[] memberViews;
         private SurvivalModel _model;
         private ISurvivalPresenter _presenter;
@@ -33,6 +35,9 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
 
         /// <summary>Online lobby route only.</summary>
         public event Action InviteRequested;
+
+        /// <summary>Online lobby route only.</summary>
+        public LobbyModeSwitchView LobbyModeSwitch => lobbyModeSwitch;
 
 
         public void SetModel(SurvivalModel model) => _model = model;
@@ -62,6 +67,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
             superWeapons.onValueChanged.AddListener(_presenter.SelectSuperWeapons);
             inviteButton.onClick.AddListener(RaiseInviteRequested);
             SetInviteAvailable(false);
+            lobbyModeSwitch.Initialize();
             foreach (SurvivalLobbyMemberView view in memberViews) view.Hide();
             _initialized = true;
             Render();
@@ -90,6 +96,7 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
             difficulty.onValueChanged.RemoveListener(_presenter.SelectDifficulty);
             superWeapons.onValueChanged.RemoveListener(_presenter.SelectSuperWeapons);
             inviteButton.onClick.RemoveListener(RaiseInviteRequested);
+            lobbyModeSwitch.Dispose();
             _initialized = false;
         }
 

@@ -73,6 +73,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             if (_ui != null)
             {
                 _ui.InviteRequested -= InviteFriends;
+                _ui.LobbyModeSwitch.ModeSelected -= SwitchMode;
                 _ui.Dispose();
             }
 
@@ -91,6 +92,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 _ui.SetAvatarSource(this);
                 _ui.Initialize();
                 _ui.InviteRequested += InviteFriends;
+                _ui.LobbyModeSwitch.ModeSelected += SwitchMode;
                 _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover, HandleTooltipHover, _tooltips);
             }
 
@@ -199,6 +201,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             bool canInvite = IsHost && _online.IsSteamLobby;
             if (!canInvite) CloseInvitePicker();
             _ui.SetInviteAvailable(canInvite);
+            if (IsHost) _ui.LobbyModeSwitch.Render(_online.Mode, _online.CanSwitchLobbyMode(LobbyMode.Survival));
+            else _ui.LobbyModeSwitch.Hide();
             _ui.ShowLobbyStatus(CreateStatus());
         }
 
@@ -211,6 +215,9 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         private void ApplyMemberEdit(int connectionId, LobbySlotEditMessage edit) =>
             _model.TryEditMemberSlot(connectionId, (FactionType)edit.Faction, edit.Team, edit.Color);
+
+        // The online route swaps this screen for the new mode's screen.
+        private void SwitchMode(LobbyMode mode) => _online.SwitchLobbyMode(mode);
 
         private void InviteFriends() => _invitePicker = _steamPopups.OpenInvitePicker();
 

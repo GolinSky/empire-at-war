@@ -1,6 +1,7 @@
 using System;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.MainMenu.Online;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
@@ -38,6 +39,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private Button startGameButton;
         [SerializeField] private TMP_Text startGameLabel;
         [SerializeField] private Button inviteButton;
+        [SerializeField] private LobbyModeSwitchView lobbyModeSwitch;
         [SerializeField] private SkirmishSlotRowView[] slotRows;
         [SerializeField] private TMP_Dropdown planetsDropdown;
         [SerializeField] private RawImage planetPreviewImage;
@@ -66,6 +68,8 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
 
         public TooltipHoverView TooltipHover => tooltipHover;
+        /// <summary>Online lobby route only.</summary>
+        public LobbyModeSwitchView LobbyModeSwitch => lobbyModeSwitch;
 
         public void Initialize()
         {
@@ -101,6 +105,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             SetStartingMoneySliderData();
             _offlineStartLabel = startGameLabel.text;
             SetInviteAvailable(false);
+            lobbyModeSwitch.Initialize();
             Render();
             closeButton.onClick.AddListener(_presenter.Close);
             startGameButton.onClick.AddListener(_presenter.StartGame);
@@ -131,6 +136,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             closeButton.onClick.RemoveListener(_presenter.Close);
             startGameButton.onClick.RemoveListener(_presenter.StartGame);
             inviteButton.onClick.RemoveListener(RaiseInviteRequested);
+            lobbyModeSwitch.Dispose();
             planetsDropdown.onValueChanged.RemoveListener(_presenter.SelectPlanet);
             mapSizeDropdown.onValueChanged.RemoveListener(_presenter.SelectMapSize);
             victoryConditionDropdown.onValueChanged.RemoveListener(_presenter.SelectVictoryCondition);

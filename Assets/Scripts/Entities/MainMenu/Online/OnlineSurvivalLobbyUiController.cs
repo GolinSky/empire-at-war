@@ -20,7 +20,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
     public sealed class OnlineSurvivalLobbyUiController : UiController, ISurvivalPresenter, IOnlineSurvivalLobbyScreen,
         IInitializable, ILateDisposable
     {
-        private const string START_LABEL = "START SURVIVAL";
+        private const string START_LABEL = "START GAME";
         private const string FORCE_START_LABEL = "FORCE START";
         private const string READY_LABEL = "READY";
         private const string CANCEL_READY_LABEL = "NOT READY";
@@ -60,6 +60,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             if (_ui != null)
             {
                 _ui.InviteRequested -= InviteFriends;
+                _ui.LobbyModeSwitch.ModeSelected -= SwitchMode;
                 _ui.Dispose();
             }
 
@@ -77,6 +78,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 _ui.AssignPresenter(this);
                 _ui.Initialize();
                 _ui.InviteRequested += InviteFriends;
+                _ui.LobbyModeSwitch.ModeSelected += SwitchMode;
             }
 
             _isOpen = true;
@@ -142,6 +144,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             bool canInvite = IsHost && _online.IsSteamLobby;
             if (!canInvite) CloseInvitePicker();
             _ui.SetInviteAvailable(canInvite);
+            if (IsHost) _ui.LobbyModeSwitch.Render(_online.Mode, _online.CanSwitchLobbyMode(LobbyMode.Survival));
+            else _ui.LobbyModeSwitch.Hide();
             RenderLobby();
         }
 
@@ -176,6 +180,9 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         private bool IsLocalReady() =>
             _online.Members.Any(member => member.ConnectionId == _online.LocalConnectionId && member.Ready);
+
+        // The online route swaps this screen for the new mode's screen.
+        private void SwitchMode(LobbyMode mode) => _online.SwitchLobbyMode(mode);
 
         private void InviteFriends() => _invitePicker = _steamPopups.OpenInvitePicker();
 

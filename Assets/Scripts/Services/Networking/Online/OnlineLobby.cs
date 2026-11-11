@@ -37,6 +37,19 @@ namespace EmpireAtWar.Services.Networking.Online
             });
         }
 
+        /// <summary>The host switched modes: the new capacity applies and every client confirms ready again.</summary>
+        public void ChangeCapacity(int capacity)
+        {
+            Capacity = capacity;
+            for (int i = 0; i < _members.Count; i++)
+            {
+                if (_members[i].ConnectionId == HOST_CONNECTION_ID) continue;
+                LobbyMember member = _members[i];
+                member.Ready = false;
+                _members[i] = member;
+            }
+        }
+
         public void Replace(LobbyMember[] members)
         {
             _members.Clear();

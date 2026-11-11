@@ -6,13 +6,11 @@ using UnityEngine.UI;
 
 namespace EmpireAtWar.Entities.MainMenu.Online
 {
-    /// <summary>Online entry: host a Skirmish or Survival lobby, join by IP, accept a Steam invite.</summary>
+    /// <summary>Multiplayer entry: host a lobby, open the Server Browser, accept a Steam invite.</summary>
     public sealed class OnlineUi : BaseUi
     {
-        [SerializeField] private Button hostSkirmishButton;
-        [SerializeField] private Button hostSurvivalButton;
-        [SerializeField] private TMP_InputField addressInput;
-        [SerializeField] private Button joinButton;
+        [SerializeField] private Button hostGameButton;
+        [SerializeField] private Button joinGameButton;
         [SerializeField] private Button acceptInviteButton;
         [SerializeField] private TMP_Text acceptInviteLabel;
         [SerializeField] private Button backButton;
@@ -29,9 +27,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Initialize()
         {
             if (_isInitialized) return;
-            hostSkirmishButton.onClick.AddListener(_presenter.HostSkirmish);
-            hostSurvivalButton.onClick.AddListener(_presenter.HostSurvival);
-            joinButton.onClick.AddListener(Join);
+            hostGameButton.onClick.AddListener(_presenter.HostGame);
+            joinGameButton.onClick.AddListener(_presenter.OpenServerBrowser);
             acceptInviteButton.onClick.AddListener(_presenter.AcceptInvite);
             backButton.onClick.AddListener(_presenter.Close);
             _inviteColor = acceptInviteButton.targetGraphic.color;
@@ -43,10 +40,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Render(string status, bool busy, string inviteFrom)
         {
             statusText.text = status;
-            hostSkirmishButton.interactable = !busy;
-            hostSurvivalButton.interactable = !busy;
-            joinButton.interactable = !busy;
-            addressInput.interactable = !busy;
+            hostGameButton.interactable = !busy;
+            joinGameButton.interactable = !busy;
             acceptInviteButton.gameObject.SetActive(inviteFrom.Length > 0);
             acceptInviteButton.interactable = !busy;
             acceptInviteLabel.text = $"JOIN {inviteFrom.ToUpperInvariant()}";
@@ -56,9 +51,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Dispose()
         {
             if (!_isInitialized) return;
-            hostSkirmishButton.onClick.RemoveListener(_presenter.HostSkirmish);
-            hostSurvivalButton.onClick.RemoveListener(_presenter.HostSurvival);
-            joinButton.onClick.RemoveListener(Join);
+            hostGameButton.onClick.RemoveListener(_presenter.HostGame);
+            joinGameButton.onClick.RemoveListener(_presenter.OpenServerBrowser);
             acceptInviteButton.onClick.RemoveListener(_presenter.AcceptInvite);
             backButton.onClick.RemoveListener(_presenter.Close);
             SetInviteBlinking(false);
@@ -85,8 +79,6 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             _inviteBlink = null;
             acceptInviteButton.targetGraphic.color = _inviteColor;
         }
-
-        private void Join() => _presenter.Join(addressInput.text);
 
         private void OnDestroy() => Dispose();
     }
