@@ -340,6 +340,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae18c29e9bc540ff863dcc32caa7cb86
+    m_Address: InterdictorStarDestroyerShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bf1bd8f61bce0b64cb1933fe98113261
     m_Address: HeavyDreadnoughtShipData
     m_ReadOnly: 0

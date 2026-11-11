@@ -312,6 +312,26 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: f38f2a09297bc734d89c94affa2d83f6,
           type: 3}
+    - key: 217
+      value:
+        matchups: {fileID: 11400000, guid: 55d62e93f93a1f34badabec3d1a83f4a, type: 2}
+        description: Imperial capital ship with 20,000 hull and 16,000 shields. Two
+          heavy quad turbolasers, two heavy dual ion cannons, three medium quad turbolasers,
+          four medium dual turbolasers and six heavy turbolasers. Power to Weapons
+          quadruples fire rate for 10 s, reduces speed by 25% and increases damage
+          taken by 50%. Recovers in 60 s. Launches one TIE Fighter squadron at a
+          time with three total launches.
+        role: Capital ship / Line combat
+        iconKey: 1eb602fdb62be8f4f9214ecdb7cf4e20:21300000
+        isHero: 0
+        <Name>k__BackingField: Interdictor Star Destroyer
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 9000
+        <BuildTime>k__BackingField: 55
+        <UnitCapacity>k__BackingField: 10
+        <Icon>k__BackingField: {fileID: 21300000, guid: 1eb602fdb62be8f4f9214ecdb7cf4e20,
+          type: 3}
   squadrons:
     keyValue:
     - key: 200

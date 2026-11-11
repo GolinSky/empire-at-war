@@ -320,6 +320,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb393a960a476c941bbe38373f1d100d
+    m_Address: InterdictorStarDestroyerWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb4ff8dbfba09204d8932bc648131c7d
+    m_Address: InterdictorStarDestroyerShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f24f9301127af634ab504e1c96f3d728
     m_Address: ISDIIShipView
     m_ReadOnly: 0
@@ -327,6 +337,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f2d6fc19fa4e3ba4cb9b44711e09dc60
     m_Address: RaiderCorvetteReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f33b80a082291fb409cda3ba17776372
+    m_Address: InterdictorStarDestroyerReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

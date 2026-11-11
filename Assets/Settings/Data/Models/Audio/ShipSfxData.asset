@@ -2900,6 +2900,40 @@ MonoBehaviour:
           localFeedback: 0
         useAlarmOverride: 1
         ready: {fileID: 8300000, guid: 2add3b8eef466b7409facc620a50df18, type: 3}
+    - key: 217
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: a340a670cbbd3014e97180070f53d16e, type: 3}
+          clips:
+            array: []
+          volume: 0.37
+          priority: 10
+          cooldown: 0
+          maxInstances: 6
+          loop: 1
+          localFeedback: 0
+        explosion:
+          clip: {fileID: 8300000, guid: ce98e6f1271f18f44b0475beb2b1a1a4, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 4
+          loop: 0
+          localFeedback: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 5
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+          localFeedback: 0
+        useAlarmOverride: 0
+        ready: {fileID: 8300000, guid: 111ef6fd4812c174d9bd4de32312224d, type: 3}
   squadrons:
     keyValue:
     - key: 0
@@ -4891,6 +4925,75 @@ MonoBehaviour:
           array:
           - {fileID: 8300000, guid: 96ef609b1201c654092c01302c6ae0ad, type: 3}
           - {fileID: 8300000, guid: 6b830248691abaa4f9a9caf0a88e0d80, type: 3}
+    - key: 217
+      value:
+        selection:
+          array:
+          - {fileID: 8300000, guid: 0fd0a6abf9b80904eaacd8c4fd8b01f0, type: 3}
+          - {fileID: 8300000, guid: 111ef6fd4812c174d9bd4de32312224d, type: 3}
+          - {fileID: 8300000, guid: fd7b5c0cacea6c240a848b408b12b060, type: 3}
+          - {fileID: 8300000, guid: c97502257665e4e48ac31fca9ded3721, type: 3}
+          - {fileID: 8300000, guid: 0e505e0e232c9254aa32eb9846032bf0, type: 3}
+          - {fileID: 8300000, guid: fabe95f0f1237824a86a83046104f1bd, type: 3}
+          - {fileID: 8300000, guid: baa5acbe1384eec448a1f686866f5977, type: 3}
+          - {fileID: 8300000, guid: 57648795bebb190459b5af3fc14b27b6, type: 3}
+          - {fileID: 8300000, guid: 43a6e536ed0cd744fb937aadef0d27c2, type: 3}
+          - {fileID: 8300000, guid: d4ad70b3e63b9e84a8c8b1255bf6c928, type: 3}
+          - {fileID: 8300000, guid: d4ff46063512ed940a7dcdd901944027, type: 3}
+          - {fileID: 8300000, guid: a4d80d1a7868e6a42882e0d441683094, type: 3}
+          - {fileID: 8300000, guid: baee2dc728c1e3243b966673f6b32068, type: 3}
+          - {fileID: 8300000, guid: 9b63c81bf60378a4c8f359b01cfd2644, type: 3}
+          - {fileID: 8300000, guid: acfc7b8e0636e7043a61c4842abb326b, type: 3}
+        move:
+          array:
+          - {fileID: 8300000, guid: 382ee3b9d12761e40801833d3a6fa368, type: 3}
+          - {fileID: 8300000, guid: eca1399fcf7bc6241a65640ae88f6da9, type: 3}
+          - {fileID: 8300000, guid: 42c9e7bbf217ed64c9ef1af38ff7a3f6, type: 3}
+          - {fileID: 8300000, guid: 4011773bdf3609d4a8c4c1fbc817f706, type: 3}
+          - {fileID: 8300000, guid: d11486144e8963d42a8a1ab1b2b60857, type: 3}
+          - {fileID: 8300000, guid: ba0bdf4f2242fd04fb5e2c05bd1b97be, type: 3}
+          - {fileID: 8300000, guid: 1db4a4eef0bbf6446af31341dc3400d4, type: 3}
+          - {fileID: 8300000, guid: 8cdf9df941fa8fb4fb2f2e583042e100, type: 3}
+          - {fileID: 8300000, guid: cfd91589d85bbc849a49c599cbe1039e, type: 3}
+          - {fileID: 8300000, guid: 24579d1c312b2674ba5f1ee0ab161df3, type: 3}
+          - {fileID: 8300000, guid: d29b53df5932e1b4191754f886857833, type: 3}
+          - {fileID: 8300000, guid: cd6ce90fd82832d418abcf4b30118320, type: 3}
+          - {fileID: 8300000, guid: 939c8e64ee6d8544695cb1b4e6608736, type: 3}
+          - {fileID: 8300000, guid: 1cc1d94ca9597c9418cda8df6c468c68, type: 3}
+          - {fileID: 8300000, guid: 199aebaa0eff2544b8e3e41625500396, type: 3}
+          - {fileID: 8300000, guid: d2e3b905621eecb4f8a336215cf0bf2a, type: 3}
+          - {fileID: 8300000, guid: 67320f8c056a30c46b851b2c428cedb9, type: 3}
+        attack:
+          array:
+          - {fileID: 8300000, guid: e4e0c38ffcdf80946a79e30f02fd3941, type: 3}
+          - {fileID: 8300000, guid: 68dcc74fee5b9c441849d5eb8e39e7fc, type: 3}
+          - {fileID: 8300000, guid: 830e092d2ef214b41adaa946e1b3bbb7, type: 3}
+          - {fileID: 8300000, guid: afbe7600028beb14294d5ae0f654a6d2, type: 3}
+          - {fileID: 8300000, guid: b3226727198466e4ba1ea90fd3eb46b6, type: 3}
+          - {fileID: 8300000, guid: 73b74298656f4154fb6a17d6127eb987, type: 3}
+          - {fileID: 8300000, guid: b66a8d59cbe721647a9d9cd63a58ae4c, type: 3}
+          - {fileID: 8300000, guid: 101cc2e07b048c14b86b5231a1638240, type: 3}
+          - {fileID: 8300000, guid: 4e5790361cb185b4c914c59c87277192, type: 3}
+          - {fileID: 8300000, guid: c220ccfaeb725c246bcb396ae4b35d12, type: 3}
+          - {fileID: 8300000, guid: 37573115fde62fd4c91b8f6465a93e97, type: 3}
+          - {fileID: 8300000, guid: 01f8048c89e66654ba058f610d2381e6, type: 3}
+        alarm:
+          array:
+          - {fileID: 8300000, guid: ae24cf98f163ef5468c3dae5d7238c86, type: 3}
+          - {fileID: 8300000, guid: d57764382d8fa094eada760830d5bd25, type: 3}
+          - {fileID: 8300000, guid: e7a46e140ebf2154f8040f1d8d48bebe, type: 3}
+          - {fileID: 8300000, guid: a6dea5a8556740545968069bd936f6ef, type: 3}
+          - {fileID: 8300000, guid: 68dcc74fee5b9c441849d5eb8e39e7fc, type: 3}
+          - {fileID: 8300000, guid: aaa15230c912c1f42b2e7c775f0be23d, type: 3}
+          - {fileID: 8300000, guid: ad2cde38f1ed4770a1e5ca32a81bab59, type: 3}
+          - {fileID: 8300000, guid: 09b379449d334df7892cf61d9b374932, type: 3}
+          - {fileID: 8300000, guid: 823ef01f6a834b12beffd0298386224b, type: 3}
+          - {fileID: 8300000, guid: d21cbef3ca7b45feb7e4a97f2eb9fe04, type: 3}
+          - {fileID: 8300000, guid: 314472146d424fee971559e796272061, type: 3}
+        damage:
+          array:
+          - {fileID: 8300000, guid: 543c981fada76584f9c0238bb9f8c518, type: 3}
+          - {fileID: 8300000, guid: 8f31f8f328b38824ebaabf2eab280df7, type: 3}
   squadronVoices:
     keyValue:
     - key: 103

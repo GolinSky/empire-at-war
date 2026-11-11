@@ -60,6 +60,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1eb602fdb62be8f4f9214ecdb7cf4e20
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/InterdictorStarDestroyerIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1ef035bcae2fad145ab8ce8fa5776004
     m_Address: Assets/Art/Textures/Ui/Icons/Research/IncreasedProductionIcon.png
     m_ReadOnly: 0

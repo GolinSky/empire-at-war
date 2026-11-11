@@ -1561,3 +1561,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: InterdictorStarDestroyerShipView
+      value:
+        m_AssetGUID: eb4ff8dbfba09204d8932bc648131c7d
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: InterdictorStarDestroyerShipData
+      value:
+        m_AssetGUID: ae18c29e9bc540ff863dcc32caa7cb86
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
