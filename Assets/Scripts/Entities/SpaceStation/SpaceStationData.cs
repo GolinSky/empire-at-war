@@ -12,8 +12,8 @@ namespace EmpireAtWar.Entities.SpaceStation
     public class SpaceStationData:Data
     {
         [field: SerializeField] public EntityComponentData ComponentData { get; private set; }
-        [Tooltip("Optional wreck of each faction's station. A faction without one is only removed.")]
-        [SerializeField] private DictionaryWrapper<FactionType, UnitWreckData> wrecks;
+        [Tooltip("Optional wrecks of each faction's station, one per level. A faction without them is only removed.")]
+        [SerializeField] private DictionaryWrapper<FactionType, StationLevelWrecks> levelWrecks;
 
         [Header("Hangar")]
         [Tooltip("Squadron bay of each faction's station; lost squadrons are replaced from its reserve.")]
@@ -29,7 +29,7 @@ namespace EmpireAtWar.Entities.SpaceStation
 
         public StationLevelStats GetLevelStats(int level) => levelStats[level - 1];
 
-        public bool TryGetWreck(FactionType factionType, out UnitWreckData wreck) =>
-            wrecks.Dictionary.TryGetValue(factionType, out wreck);
+        public bool TryGetWrecks(FactionType factionType, out StationLevelWrecks wrecks) =>
+            levelWrecks.Dictionary.TryGetValue(factionType, out wrecks);
     }
 }

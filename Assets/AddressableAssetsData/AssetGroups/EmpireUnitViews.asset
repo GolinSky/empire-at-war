@@ -85,6 +85,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ab59ea267fef9b4ba40b40b927bafe3
+    m_Address: EmpireSpaceStationLevel3WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3b5b857ce337c8b45908f08d39688c71
     m_Address: TartanWreckView
     m_ReadOnly: 0
@@ -142,6 +147,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6fd0cc7d74bff17459c45351f3dfa248
     m_Address: TIEPunisherSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 712d90dd06d54e84aa844c983da203ba
+    m_Address: EmpireSpaceStationLevel1WreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -250,6 +260,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6ab4d2cbadbb02498d2028321510173
+    m_Address: EmpireSpaceStationLevel4WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c1a184ac793b4274f9e3b204be5d5057
     m_Address: AcclamatorAssaultWreckView
     m_ReadOnly: 0
@@ -327,6 +342,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fafbf467e9fb7e24abf014a67b14fe2f
     m_Address: ISDIIIReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb2b91e216d0a1246a6fb9fa7fd6e21e
+    m_Address: EmpireSpaceStationLevel2WreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

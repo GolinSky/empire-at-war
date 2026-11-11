@@ -130,9 +130,10 @@ namespace EmpireAtWar.Entities.SpaceStation
                 EntityComponentData componentData = Data.ComponentData;
                 _unitExplosionService.Spawn(explosionHullRenderers, DESTRUCTION_BURST_SCALE);
                 // The explosion hides the swap: the wreck appears as the station entity is destroyed.
-                if (Data.TryGetWreck(_factionType, out UnitWreckData wreck))
+                if (Data.TryGetWrecks(_factionType, out StationLevelWrecks wrecks))
                 {
-                    _unitWreckService.Spawn(wreck, transform, _owner, componentData.DestroyDelay);
+                    _unitWreckService.Spawn(wrecks.Get(_factionLevel.CurrentLevel), transform, _owner,
+                        componentData.DestroyDelay);
                 }
 
                 Destroy(_scope.gameObject, componentData.DestroyDelay);

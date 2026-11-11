@@ -16,12 +16,16 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(FactionType.Empire)]
         [TestCase(FactionType.Republic)]
         [TestCase(FactionType.Separatist)]
-        public void StationDestruction_SelectsItsFactionWreck(FactionType faction)
+        public void StationDestruction_SelectsItsFactionWreckForEachLevel(FactionType faction)
         {
             var station = AssetDatabase.LoadAssetAtPath<SpaceStationData>(
                 "Assets/Settings/Data/Models/SpaceStation/SpaceStationData.asset");
-            Assert.That(station.TryGetWreck(faction, out var wreck), Is.True);
-            Assert.That(AssetDatabase.GUIDToAssetPath(wreck.PrefabKey),
+            Assert.That(station.TryGetWrecks(faction, out var wrecks), Is.True);
+            Assert.That(wrecks.Levels, Has.Length.EqualTo(5));
+            for (int level = 1; level < 5; level++)
+                Assert.That(AssetDatabase.GUIDToAssetPath(wrecks.Get(level).PrefabKey),
+                    Is.EqualTo($"Assets/Prefabs/Models/Wrecks/{faction}SpaceStationLevel{level}WreckView.prefab"));
+            Assert.That(AssetDatabase.GUIDToAssetPath(wrecks.Get(5).PrefabKey),
                 Is.EqualTo($"Assets/Prefabs/Models/Wrecks/{faction}SpaceStationWreckView.prefab"));
         }
 

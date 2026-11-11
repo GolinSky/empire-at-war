@@ -325,6 +325,14 @@ namespace EmpireAtWar.Entities.Faction.Ui
             unit.FactionData.IsHero || unit.Request is MiningFacilityUnitRequest or DefendPlatformUnitRequest
                 or LevelUnitRequest or ResearchUnitRequest or SecondStationUnitRequest or SecondStationLevelUnitRequest;
 
+        // Each station offers only its own level-up; everything else is shared by both.
+        private bool IsOnSelectedStation(UnitRequest request) => request switch
+        {
+            LevelUnitRequest => !_model.IsSecondStationSelected,
+            SecondStationLevelUnitRequest => _model.IsSecondStationSelected,
+            _ => true
+        };
+
         private void HandleSelectionChanged(SelectionType selectionType)
         {
             RefreshUnitVisibility(selectionType);
@@ -345,7 +353,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
             {
                 unitUi.transform.SetSiblingIndex(siblingIndex++);
                 bool isShown = isSelectionVisible && _presenter.IsUnitAvailable(unitUi.FactionData) &&
-                               !(HidesAtLimit(unitUi) && _presenter.IsUnitLimitReached(unitUi.Request));
+                               !(HidesAtLimit(unitUi) && _presenter.IsUnitLimitReached(unitUi.Request)) &&
+                               IsOnSelectedStation(unitUi.Request);
                 unitUi.SetActive(isShown);
                 if (!isShown) continue;
                 switch (unitUi.Request)

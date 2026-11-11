@@ -31,8 +31,11 @@ namespace EmpireAtWar.Entities.SpaceStation
             Create(owner, factionType, position, entityId, null);
 
         /// <summary>A bought second station; it uses the owner's second-station level.</summary>
-        public SpaceStation CreateSecond(PlayerId owner, FactionType factionType, Vector3 position) =>
-            CreateSecond(owner, factionType, position, _ids.GenerateUniqueId());
+        public SpaceStation CreateSecond(PlayerId owner, FactionType factionType, Vector3 position)
+        {
+            _secondStationLevel.ResetForNewStation();
+            return CreateSecond(owner, factionType, position, _ids.GenerateUniqueId());
+        }
 
         public SpaceStation CreateSecond(PlayerId owner, FactionType factionType, Vector3 position, long entityId) =>
             Create(owner, factionType, position, entityId, _secondStationLevel);

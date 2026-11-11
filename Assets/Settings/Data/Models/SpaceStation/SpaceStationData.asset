@@ -36,14 +36,32 @@ MonoBehaviour:
     <Delay>k__BackingField: 0.25
     <VisionRange>k__BackingField: 900
     <SpawnBlockRadius>k__BackingField: 1200
-  wrecks:
+  levelWrecks:
     keyValue:
     - key: 3
-      value: {fileID: 11400000, guid: 287c319f06d49ae46a3f7573f3d8c36b, type: 2}
+      value:
+        levels:
+        - {fileID: 11400000, guid: c7a34095909de594baa6a2c1814e9974, type: 2}
+        - {fileID: 11400000, guid: dd7423e904931084986d07840ff13a53, type: 2}
+        - {fileID: 11400000, guid: 588e2595ae45a1747bac91ade14ba016, type: 2}
+        - {fileID: 11400000, guid: 4fee7f5685ec82e4fb6b961e19b2e835, type: 2}
+        - {fileID: 11400000, guid: 287c319f06d49ae46a3f7573f3d8c36b, type: 2}
     - key: 0
-      value: {fileID: 11400000, guid: 9f2c44f8ac3531147a3186a1f0a40c99, type: 2}
+      value:
+        levels:
+        - {fileID: 11400000, guid: a1111f86779f31c45a27e0abb7d3879e, type: 2}
+        - {fileID: 11400000, guid: 8fd7e93c2265ca74e9d3987bc26fa294, type: 2}
+        - {fileID: 11400000, guid: 6b0d4ff6a2a89164eb65453104457f8d, type: 2}
+        - {fileID: 11400000, guid: 1609a82abbfdd5a44a3e7b1521947709, type: 2}
+        - {fileID: 11400000, guid: 9f2c44f8ac3531147a3186a1f0a40c99, type: 2}
     - key: 1
-      value: {fileID: 11400000, guid: a363bae8f25566841a66676da42ea93d, type: 2}
+      value:
+        levels:
+        - {fileID: 11400000, guid: 4ca7bed2b8e64544da6283add3c4cc56, type: 2}
+        - {fileID: 11400000, guid: 215103a410d818d42873f87c447c7493, type: 2}
+        - {fileID: 11400000, guid: 0745ee71384c6ee4f86e7d38c4ba9045, type: 2}
+        - {fileID: 11400000, guid: 4ff8997031754ee4d86bae6beaa2d1c8, type: 2}
+        - {fileID: 11400000, guid: a363bae8f25566841a66676da42ea93d, type: 2}
   hangarBays:
     keyValue:
     - key: 2

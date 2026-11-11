@@ -32,6 +32,10 @@ namespace EmpireAtWar.Editor.Rendering
         private static void BuildSelected()
         {
             string path = AssetDatabase.GetAssetPath(Selection.activeObject);
+            GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            // A station gets one wreck per level.
+            for (int level = 1; level <= GetStationLevelCount(view); level++)
+                Debug.Log($"[ShipWreck] Built {AssetDatabase.GetAssetPath(Build(path, level))}");
             Debug.Log($"[ShipWreck] Built {AssetDatabase.GetAssetPath(Build(path))}");
         }
 
@@ -55,7 +59,10 @@ namespace EmpireAtWar.Editor.Rendering
             {
                 GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPath);
                 string materialFolder = GetMaterialFolder(view);
-                foreach (MeshRenderer source in GetSourceRenderers(view))
+                var sources = new List<MeshRenderer>(GetSourceRenderers(view));
+                for (int level = 1; level < GetStationLevelCount(view); level++)
+                    sources.AddRange(GetSourceRenderers(view, level));
+                foreach (MeshRenderer source in sources)
                 {
                     CreateWreckMaterials(source.sharedMaterials, wreckShader, materialFolder);
                 }
@@ -84,20 +91,35 @@ namespace EmpireAtWar.Editor.Rendering
             return paths;
         }
 
-        public static string GetWreckPrefabPath(GameObject view)
+        /// <param name="stationLevel">A station level below the top one; 0 or the top level is the default wreck.</param>
+        public static string GetWreckPrefabPath(GameObject view, int stationLevel = 0)
         {
-            return $"{PREFAB_FOLDER}/{GetUnitName(view)}WreckView.prefab";
+            return IsLowerStationLevel(view, stationLevel)
+                ? $"{PREFAB_FOLDER}/{GetUnitName(view)}Level{stationLevel}WreckView.prefab"
+                : $"{PREFAB_FOLDER}/{GetUnitName(view)}WreckView.prefab";
         }
 
+        /// <summary>Levels of a station view; 0 for other units.</summary>
+        public static int GetStationLevelCount(GameObject view)
+        {
+            var levelView = view.GetComponent<EmpireAtWar.ViewComponents.Station.StationLevelView>();
+            return levelView == null ? 0 : new SerializedObject(levelView).FindProperty("levelModels").arraySize;
+        }
+
+        private static bool IsLowerStationLevel(GameObject view, int stationLevel) =>
+            stationLevel > 0 && stationLevel < GetStationLevelCount(view);
+
         /// <summary>The renderers a wreck copies, in the order its prefab lists them.</summary>
-        public static List<MeshRenderer> GetSourceRenderers(GameObject view)
+        /// <param name="stationLevel">For a station, the level whose model is copied; 0 is the top level.</param>
+        public static List<MeshRenderer> GetSourceRenderers(GameObject view, int stationLevel = 0)
         {
             var levelView = view.GetComponent<EmpireAtWar.ViewComponents.Station.StationLevelView>();
             Renderer[] sources;
             if (levelView != null)
             {
                 var levels = new SerializedObject(levelView).FindProperty("levelModels");
-                var model = (EmpireAtWar.ViewComponents.Station.StationLevelArt)levels.GetArrayElementAtIndex(levels.arraySize - 1).objectReferenceValue;
+                int index = stationLevel > 0 ? stationLevel - 1 : levels.arraySize - 1;
+                var model = (EmpireAtWar.ViewComponents.Station.StationLevelArt)levels.GetArrayElementAtIndex(index).objectReferenceValue;
                 sources = model.HullRenderers;
             }
             else
@@ -136,19 +158,20 @@ namespace EmpireAtWar.Editor.Rendering
             return $"{MATERIAL_FOLDER}/Shared/{unitName}";
         }
 
-        public static UnitWreckView Build(string viewPrefabPath)
+        /// <param name="stationLevel">For a station, the level to wreck; 0 is the top level.</param>
+        public static UnitWreckView Build(string viewPrefabPath, int stationLevel = 0)
         {
             // In Play Mode AddComponent runs UnitWreckView.Awake before its renderers are assigned.
             if (EditorApplication.isPlayingOrWillChangePlaymode)
                 throw new System.InvalidOperationException("Exit Play Mode (including test runs) before building wrecks.");
 
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPrefabPath);
-            string shipName = GetUnitName(view);
             Shader wreckShader = AssetDatabase.LoadAssetAtPath<Shader>(SHIP_WRECK_SHADER_PATH);
             string materialFolder = EnsureFolder(GetMaterialFolder(view));
             EnsureFolder(PREFAB_FOLDER);
 
-            GameObject root = new GameObject(shipName + "WreckView");
+            GameObject root = new GameObject(
+                Path.GetFileNameWithoutExtension(GetWreckPrefabPath(view, stationLevel)));
             // The spawn sets position and rotation only, so the view's own root scale must be kept here.
             root.transform.localScale = view.transform.localScale;
             try
@@ -156,7 +179,7 @@ namespace EmpireAtWar.Editor.Rendering
                 List<MeshRenderer> renderers = new List<MeshRenderer>();
                 List<MeshFilter> filters = new List<MeshFilter>();
                 Matrix4x4 viewToLocal = view.transform.worldToLocalMatrix;
-                foreach (MeshRenderer source in GetSourceRenderers(view))
+                foreach (MeshRenderer source in GetSourceRenderers(view, stationLevel))
                 {
                     GameObject part = new GameObject(source.name);
                     part.transform.SetParent(root.transform, false);

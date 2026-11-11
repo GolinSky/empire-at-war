@@ -60,6 +60,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17352d81613b096478b2899920b3302d
+    m_Address: RepublicSpaceStationLevel4WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 17a481d27c6af7747ab7af212434070c
     m_Address: CentaxWreckView
     m_ReadOnly: 0
@@ -92,6 +97,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 22aad1d1d6cecd043901814978cdaac2
     m_Address: VenatorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 239bc0833b185814eb4f3b5ba200fec0
+    m_Address: RepublicSpaceStationLevel1WreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -160,6 +170,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58e6e88b2a439b640b5456b0614efea7
+    m_Address: RepublicSpaceStationLevel2WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5e8ee1d9c89afe243bbfdf230a0185c1
     m_Address: MandatorShipView
     m_ReadOnly: 0
@@ -202,6 +217,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 77827bf21ddbe2b45b1327f3409a492a
     m_Address: RepublicSpaceStationWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a1e3aa14e620994785f7f2164261c3c
+    m_Address: RepublicSpaceStationLevel3WreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -50,6 +50,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d941a5ef82e9dd4c8fb596e858111b8
+    m_Address: SeparatistSpaceStationLevel3WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 21d3c8b2d3c013d4ab0c615706ecf2ce
     m_Address: VultureSquadronView
     m_ReadOnly: 0
@@ -72,6 +77,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 35b4f59dbc461a94e93e44211485a393
     m_Address: PelesetWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37349536629f8b5488f4346b53b798f6
+    m_Address: SeparatistSpaceStationLevel1WreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -195,6 +205,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: adfa6fbe9de3b5f4aa544afbe2b51669
+    m_Address: SeparatistSpaceStationLevel4WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b0fbad4b04cbcd54cb40d77de3043a3b
     m_Address: InvincibleShipView
     m_ReadOnly: 0
@@ -247,6 +262,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: da5c998e5e80ccb4db0951c5b73b208e
     m_Address: MalevolenceReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de84e1705aefb404a986c24d94d65d78
+    m_Address: SeparatistSpaceStationLevel2WreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

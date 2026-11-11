@@ -100,7 +100,8 @@ namespace EmpireAtWar.Repository
                     if (!PreloadWreckBeforeRunning(ship))
                         AddWreck(wrecks, assets.Load<ShipData>(ships.GetShipDataPath(ship)).Wreck);
                 }
-                if (stations.TryGetWreck(faction, out UnitWreckData stationWreck)) AddWreck(wrecks, stationWreck);
+                if (stations.TryGetWrecks(faction, out StationLevelWrecks stationWrecks))
+                    foreach (UnitWreckData stationWreck in stationWrecks.Levels) AddWreck(wrecks, stationWreck);
             }
             foreach (MiningFacilityType type in MINING_FACILITIES)
             {

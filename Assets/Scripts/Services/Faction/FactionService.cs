@@ -125,6 +125,7 @@ namespace EmpireAtWar.Services.Factions
 
         public void ChangeSelection()
         {
+            _model.IsSecondStationSelected = false;
             _model.SelectionType = _model.SelectionType == SelectionType.Base ? SelectionType.None : SelectionType.Base;
         }
 
@@ -293,6 +294,8 @@ namespace EmpireAtWar.Services.Factions
             if (selectionSubject.UpdatedScope == SelectionScope.Local)
             {
                 _selectionContext = selectionSubject.PlayerSelectionContext;
+                _model.IsSecondStationSelected = _selectionContext.Entity != null &&
+                    _selectionContext.Entity.TryGetFacade(out EmpireAtWar.Entities.SpaceStation.ISecondStationFacade _);
                 _model.SelectionType = _selectionContext.SelectionType;// move it to selection component and reuse it 
             }
         }

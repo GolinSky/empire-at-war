@@ -74,8 +74,9 @@ namespace EmpireAtWar.Tests.Editor
                             assets.Load<SquadronData>(squadron + "SquadronData");
                             assets.LoadComponent<Squadron>(squadron + "SquadronView");
                         }
-                        if (stations.TryGetWreck(factionType, out var stationWreck))
-                            assets.LoadComponent<UnitWreckView>(stationWreck.PrefabKey);
+                        if (stations.TryGetWrecks(factionType, out var stationWrecks))
+                            foreach (var stationWreck in stationWrecks.Levels)
+                                assets.LoadComponent<UnitWreckView>(stationWreck.PrefabKey);
                     }
                     assets.LoadPrefab("CoreGameUi");
                     foreach (DefendPlatformType platform in Enum.GetValues(typeof(DefendPlatformType)))

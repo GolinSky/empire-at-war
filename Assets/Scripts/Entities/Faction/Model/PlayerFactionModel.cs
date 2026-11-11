@@ -16,6 +16,8 @@ namespace EmpireAtWar.Models.Factions
         event Action<SelectionType> OnSelectionTypeChanged;
 
         SelectionType SelectionType { get; }
+        /// <summary>The selected base is the second station, so its own level-up card shows instead of the main one.</summary>
+        bool IsSecondStationSelected { get; }
         bool IsHeroReserved(UnitTypeId unitType);
         bool IsUnitLimitReached(UnitRequest unitRequest);
         FactionType FactionType { get; }
@@ -64,6 +66,9 @@ namespace EmpireAtWar.Models.Factions
                 OnSelectionTypeChanged?.Invoke(_selectionType);
             }
         }
+
+        /// <summary>Set before <see cref="SelectionType"/>, whose change refreshes the panel.</summary>
+        public bool IsSecondStationSelected { get; set; }
 
         public FactionType FactionType => _roster.FactionType;
 
