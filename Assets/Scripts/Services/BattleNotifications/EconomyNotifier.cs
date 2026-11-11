@@ -46,6 +46,7 @@ namespace EmpireAtWar.Services.BattleNotifications
             _faction.StationUpgraded += HandleStationUpgraded;
             _reinforcements.ReinforcementDeployed += HandleDeployed;
             _reinforcements.CapacityRejected += HandleCapacityRejected;
+            _reinforcements.PlacementRejected += HandlePlacementRejected;
         }
 
         public void LateDispose()
@@ -55,6 +56,7 @@ namespace EmpireAtWar.Services.BattleNotifications
             _faction.StationUpgraded -= HandleStationUpgraded;
             _reinforcements.ReinforcementDeployed -= HandleDeployed;
             _reinforcements.CapacityRejected -= HandleCapacityRejected;
+            _reinforcements.PlacementRejected -= HandlePlacementRejected;
         }
 
         /// <summary>Owner-only live feedback from the host; restoring replicated state never calls this path.</summary>
@@ -70,6 +72,7 @@ namespace EmpireAtWar.Services.BattleNotifications
                 case FactionFeedbackKind.StationUpgraded: PostStationLevel(stationLevel); break;
                 case FactionFeedbackKind.ReinforcementDeployed: HandleDeployed(request); break;
                 case FactionFeedbackKind.CapacityRejected: HandleCapacityRejected(); break;
+                case FactionFeedbackKind.ReinforcementPlacementRejected: HandlePlacementRejected(); break;
                 case FactionFeedbackKind.PurchaseAccepted:
                 case FactionFeedbackKind.PurchaseCanceled:
                     break;
@@ -101,6 +104,9 @@ namespace EmpireAtWar.Services.BattleNotifications
 
         private void HandleCapacityRejected() =>
             _notifications.Post(BattleNotificationPriority.Feedback, "Fleet capacity full", "capacity");
+
+        private void HandlePlacementRejected() =>
+            _notifications.Post(BattleNotificationPriority.Feedback, "Cannot deploy reinforcements", "reinforcement-blocked");
 
         private void HandleStationUpgraded() => PostStationLevel(_model.CurrentLevel);
 

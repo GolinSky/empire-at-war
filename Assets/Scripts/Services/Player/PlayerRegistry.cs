@@ -100,8 +100,11 @@ namespace EmpireAtWar.Services.Player
 
         public bool HasPendingReinforcement(PlayerId owner)
         {
-            return _reinforcementReserves.TryGetValue(owner, out ReinforcementModel reserve) && reserve.HasReserve;
+            return TryGetReinforcementReserve(owner, out ReinforcementModel reserve) && reserve.HasReserve;
         }
+
+        public bool TryGetReinforcementReserve(PlayerId owner, out ReinforcementModel reserve) =>
+            _reinforcementReserves.TryGetValue(owner, out reserve);
 
         public void RegisterReinforcementReserve(PlayerId owner, ReinforcementModel reserve) =>
             _reinforcementReserves.Add(owner, reserve);

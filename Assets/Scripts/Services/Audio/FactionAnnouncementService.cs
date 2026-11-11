@@ -207,6 +207,7 @@ namespace EmpireAtWar.Services.Audio
                 case FactionFeedbackKind.StationUpgraded: AnnounceStationUpgrade(stationLevel); break;
                 case FactionFeedbackKind.ReinforcementDeployed: AnnounceDeployed(request, unitCapacity); break;
                 case FactionFeedbackKind.CapacityRejected: HandleCapacityRejected(); break;
+                case FactionFeedbackKind.ReinforcementPlacementRejected: break;
                 default: throw new ArgumentOutOfRangeException(nameof(kind), kind, "Unknown faction feedback.");
             }
         }

@@ -19,6 +19,8 @@ namespace EmpireAtWar.Services.Player
 
         void UnregisterReinforcementReserve(PlayerId owner);
 
+        bool TryGetReinforcementReserve(PlayerId owner, out ReinforcementModel reserve);
+
         void RegisterAiStationCheat(PlayerId owner, IEnemyStationCheat station);
 
         void RegisterStationSpawner(PlayerId owner, IStationSpawner spawner);

@@ -62,6 +62,7 @@ namespace EmpireAtWar.Services.Reinforcement
 
         public event Action<UnitRequest> ReinforcementDeployed;
         public event Action CapacityRejected;
+        public event Action PlacementRejected;
 
         public ReinforcementService(
             IInputLock inputLock,
@@ -136,13 +137,16 @@ namespace EmpireAtWar.Services.Reinforcement
 
             Vector3 position = _cameraService.GetWorldPoint(_pointerInput.Position, _previews[0].Position);
             position.y = 0;
-            bool isOverUi = _uiHitTest.IsOverUi(_pointerInput.Position);
+            bool canPlace = !_inputLock.IsLocked && !_uiHitTest.IsOverUi(_pointerInput.Position);
+            bool hasValidSlot = false;
             for (int i = 0; i < _previews.Count; i++)
             {
                 Vector3 slot = GetSlotPosition(position, i);
                 _previews[i].UpdatePosition(slot);
-                _previews[i].SetPlacementValidity(!isOverUi && _placement.IsPositionValid(slot));
+                _previews[i].SetPlacementValidity(canPlace && _placement.IsPositionValid(slot));
+                hasValidSlot |= _previews[i].CanSpawn;
             }
+            _model.CanDeployPreview = hasValidSlot;
             if (_hazards.TryGetHazardAt(position, out var hazard) && hazard.BlocksReinforcements)
                 _tooltips.Show(this, hazard, new TooltipAnchor(TooltipAnchorKind.Cursor,
                     _pointerInput.Position.x, _pointerInput.Position.y), () => _model.IsTrySpawning,
@@ -241,6 +245,7 @@ namespace EmpireAtWar.Services.Reinforcement
             }
 
             _model.IsTrySpawning = false;
+            _model.CanDeployPreview = false;
             _cancelRouter.Unfocus(this);
             _placementLock.Dispose();
             DestroyPreviews();
@@ -265,7 +270,15 @@ namespace EmpireAtWar.Services.Reinforcement
                 List<Vector3> slots = new List<Vector3>(_previews.Count);
                 for (int i = 0; i < _previews.Count; i++)
                 {
-                    if (_previews[i].CanSpawn) slots.Add(GetSlotPosition(dropPoint, i));
+                    Vector3 slot = GetSlotPosition(dropPoint, i);
+                    _previews[i].SetPlacementValidity(_placement.IsPositionValid(slot));
+                    if (_previews[i].CanSpawn) slots.Add(slot);
+                }
+
+                if (slots.Count == 0)
+                {
+                    PlacementRejected?.Invoke();
+                    return;
                 }
 
                 UnitRequestKey key = UnitRequestKey.From(_currentRequest);
@@ -281,9 +294,15 @@ namespace EmpireAtWar.Services.Reinforcement
         /// <summary>Authority side of a drop: blocked slots are skipped and their units stay in the reserve.</summary>
         public void Deploy(DeployReinforcementCommand command)
         {
-            if (!TryFindReserve(command.Kind, command.Key, out UnitRequest request) ||
-                !_placementFactory.TryCreate(request, out IReinforcementPlacement placement))
+            if (!TryFindReserve(command.Kind, command.Key, out UnitRequest request))
             {
+                PlacementRejected?.Invoke();
+                return;
+            }
+
+            if (!_placementFactory.TryCreate(request, out IReinforcementPlacement placement))
+            {
+                CapacityRejected?.Invoke();
                 return;
             }
 
@@ -309,6 +328,10 @@ namespace EmpireAtWar.Services.Reinforcement
             if (isCapacityBlocked || deployedCount == 0 && usesCapacity && !_model.HasRoomFor(request))
             {
                 CapacityRejected?.Invoke();
+            }
+            else if (deployedCount == 0)
+            {
+                PlacementRejected?.Invoke();
             }
         }
 

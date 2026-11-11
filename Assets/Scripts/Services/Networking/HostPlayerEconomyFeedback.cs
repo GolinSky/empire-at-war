@@ -45,6 +45,7 @@ namespace EmpireAtWar.Services.Networking
             _faction.StationUpgraded += StationUpgraded;
             _reinforcements.ReinforcementDeployed += ReinforcementDeployed;
             _reinforcements.CapacityRejected += CapacityRejected;
+            _reinforcements.PlacementRejected += PlacementRejected;
         }
 
         public void LateDispose()
@@ -57,6 +58,7 @@ namespace EmpireAtWar.Services.Networking
             _faction.StationUpgraded -= StationUpgraded;
             _reinforcements.ReinforcementDeployed -= ReinforcementDeployed;
             _reinforcements.CapacityRejected -= CapacityRejected;
+            _reinforcements.PlacementRejected -= PlacementRejected;
         }
 
         private void PurchaseAccepted(UnitRequest request) => Send(FactionFeedbackKind.PurchaseAccepted, request);
@@ -66,6 +68,7 @@ namespace EmpireAtWar.Services.Networking
         private void StationUpgraded() => Send(FactionFeedbackKind.StationUpgraded);
         private void ReinforcementDeployed(UnitRequest request) => Send(FactionFeedbackKind.ReinforcementDeployed, request);
         private void CapacityRejected() => Send(FactionFeedbackKind.CapacityRejected);
+        private void PlacementRejected() => Send(FactionFeedbackKind.ReinforcementPlacementRejected);
 
         private void Send(FactionFeedbackKind kind, UnitRequest request = null)
         {

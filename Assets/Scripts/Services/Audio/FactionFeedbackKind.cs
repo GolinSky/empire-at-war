@@ -8,6 +8,7 @@ namespace EmpireAtWar.Services.Audio
         ResearchCompleted,
         StationUpgraded,
         ReinforcementDeployed,
-        CapacityRejected
+        CapacityRejected,
+        ReinforcementPlacementRejected
     }
 }

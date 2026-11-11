@@ -4,7 +4,9 @@ using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.ShipAbilities;
 
 namespace EmpireAtWar.Services.UnitOrders
@@ -14,6 +16,7 @@ namespace EmpireAtWar.Services.UnitOrders
     {
         private readonly IHoveredEntityObserver _hover;
         private readonly ILocalPlayer _localPlayer;
+        private readonly IPlayerRegistry _players;
         private readonly ISelectionService _selectionService;
         private readonly IShipAbilityTargeting _abilities;
         private readonly SuperWeaponTargetingModel _superWeapons;
@@ -21,10 +24,11 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public OrderCursorService(IHoveredEntityObserver hover, ILocalPlayer localPlayer,
             ISelectionService selectionService, IShipAbilityTargeting abilities,
-            SuperWeaponTargetingModel superWeapons, UnitActionTargetingModel targeting)
+            SuperWeaponTargetingModel superWeapons, UnitActionTargetingModel targeting, IPlayerRegistry players)
         {
             _hover = hover;
             _localPlayer = localPlayer;
+            _players = players;
             _selectionService = selectionService;
             _abilities = abilities;
             _superWeapons = superWeapons;
@@ -33,6 +37,10 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public OrderCursor Resolve()
         {
+            if (_players.TryGetReinforcementReserve(_localPlayer.Id, out ReinforcementModel reserve) &&
+                reserve.IsTrySpawning)
+                return reserve.CanDeployPreview ? OrderCursor.None : OrderCursor.Invalid;
+
             if (!_hover.TryGetHovered(out IEntity hovered) || !IsEnemy(hovered)) return OrderCursor.None;
             // Clicking an ineligible enemy keeps ability targeting armed, so the cursor marks it as invalid.
             if (_abilities.IsWaitingForTarget)
