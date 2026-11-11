@@ -28,7 +28,6 @@ namespace EmpireAtWar
         private int _count;
 
         private bool _isScrolling;
-        private bool _isBlocked;
 
         public TooltipTrigger TooltipTrigger => tooltipTrigger;
 
@@ -65,7 +64,6 @@ namespace EmpireAtWar
         void ISpawnShipUi.Activate(bool isActive)
         {
             backgroundImage.color = isActive ? _originColor : _blockedColor;
-            _isBlocked = !isActive;
         }
 
         void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
@@ -117,13 +115,12 @@ namespace EmpireAtWar
 
         private void StartPlacement()
         {
-            if (!_isBlocked)
+            if (_count > 0)
                 _reinforcementVisitor.Handle(this);
         }
 
         private void Destroy()
         {
-            _isBlocked = true;
             _reinforcementVisitor.OnRelease(this);
             _reinforcementVisitor = null;
             Destroy(gameObject);

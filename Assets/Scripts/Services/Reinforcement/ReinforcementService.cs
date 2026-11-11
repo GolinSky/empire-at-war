@@ -137,7 +137,8 @@ namespace EmpireAtWar.Services.Reinforcement
 
             Vector3 position = _cameraService.GetWorldPoint(_pointerInput.Position, _previews[0].Position);
             position.y = 0;
-            bool canPlace = !_inputLock.IsLocked && !_uiHitTest.IsOverUi(_pointerInput.Position);
+            bool canPlace = !_inputLock.IsLocked && !_uiHitTest.IsOverUi(_pointerInput.Position) &&
+                            !IsPlacementCapacityBlocked();
             bool hasValidSlot = false;
             for (int i = 0; i < _previews.Count; i++)
             {
@@ -265,6 +266,12 @@ namespace EmpireAtWar.Services.Reinforcement
                 if (_inputLock.IsLocked || _uiHitTest.IsOverUi(screenPosition))
                     return;
 
+                if (IsPlacementCapacityBlocked())
+                {
+                    CapacityRejected?.Invoke();
+                    return;
+                }
+
                 Vector3 dropPoint = _cameraService.GetWorldPoint(screenPosition, _previews[0].Position);
                 // Previews flag locally blocked slots; the authority re-checks every slot it receives.
                 List<Vector3> slots = new List<Vector3>(_previews.Count);
@@ -290,6 +297,9 @@ namespace EmpireAtWar.Services.Reinforcement
                 CancelPlacement();
             }
         }
+
+        private bool IsPlacementCapacityBlocked() =>
+            ReinforcementModel.UsesCapacity(_currentRequest) && !_model.HasRoomFor(_currentRequest);
 
         /// <summary>Authority side of a drop: blocked slots are skipped and their units stay in the reserve.</summary>
         public void Deploy(DeployReinforcementCommand command)
