@@ -136,10 +136,11 @@ namespace EmpireAtWar.Services.Networking.Online
         }
 
         /// <summary>Sends a Steam lobby invite directly; the friend's running game receives <c>LobbyInvite_t</c>.</summary>
-        public void InviteFriend(SteamFriend friend)
+        public bool InviteFriend(SteamFriend friend)
         {
             bool sent = SteamMatchmaking.InviteUserToLobby(_lobby, friend.Id);
             Status = sent ? $"Invite sent to {friend.Name}" : $"Invite to {friend.Name} failed";
+            return sent;
         }
 
         public void AcceptInvite()

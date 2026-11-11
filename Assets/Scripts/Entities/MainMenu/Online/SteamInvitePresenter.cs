@@ -57,8 +57,10 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         public void Invite(int index)
         {
-            _steam.InviteFriend(_friends[index]);
-            _view.ShowStatus(_steam.Status);
+            if (_steam.InviteFriend(_friends[index]))
+                Close();
+            else
+                _view.ShowStatus(_steam.Status);
         }
 
         public void Close() => _view.Hide();
