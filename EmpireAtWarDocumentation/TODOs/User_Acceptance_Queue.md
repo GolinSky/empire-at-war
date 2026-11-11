@@ -124,12 +124,12 @@ created: "2026-10-29\r"
 - [ ] [[Done/Bugs/Carrier_and_Squadron_Rebalance]] — Observe all three launch roles per faction, shared fighter/interceptor hardpoint loss and repair, and load a version 4 battle with spent reserves and deployed squadrons.
 - [ ] [[Done/Bugs/Carrier_and_Squadron_Rebalance]] — Compare equal-cost fleets at levels 2, 3 and 5 and same-role duels with and without abilities and research. Confirm X-Wing torpedoes launch during ship attack runs. Record peak craft, launch timing, losses, replacements and anti-ship damage.
 
-- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — In skirmish, verify the stationary drop, ring visibility and per-member falloff with a Fett, including caster death during the fuse.
-- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Verify player autofire and AI with two versus three nearby visible enemies.
-- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Count members actually hit per autofire drop in a moving dogfight. Enemy fighters at 58–92 u/s can leave the 35-unit radius during the 1.5 s fuse; if most drops hit nothing, tune radius, fuse or trigger before damage.
-- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Save during the fuse and reload. Confirm the bomb disappears and the surviving Fett retains the remaining fuse plus recharge.
-- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Run the focused `HarmonicBombTests` fixture when test execution is enabled.
-- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Listen to both pilots on drop and the single positional seismic blast at fuse expiry, including empty and overlapping drops.
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — With both Fetts, verify stationary drop, 1.5 s fuse, 20 s activation cooldown, one spherical hit per eligible unit/member, allied immunity and 360/720 base damage under existing shield/armor rules; include caster death during the fuse.
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Review the blue planar main/secondary rings, white-blue core, 210-unit radius, fog visibility and overlapping/pool reuse at battle zoom levels and quality presets (Performant retains HDR off).
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Check three-visible-member autofire, moving targets, and save/load during the fuse (pending bomb discarded; remaining cooldown retained).
+- [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Listen to each pilot’s activation voice and one positional seismic blast per detonation, including empty/overlapping drops.
+
+
 
 
 - [ ] [[Done/Features/Auto_Power_Abilities_Plan]] — Battle: player-only automatic starts, individual selection pause, multi-selection use, manual cancellation/non-cancellable effects, settings and saved per-ship preferences; include Allegiance / ISD II Main Batteries auto-start and normal 20 s active → 60 s recovery (2026-11-01 extension; Core regressions authored, not run).

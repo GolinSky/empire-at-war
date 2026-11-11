@@ -38,8 +38,8 @@ verification: source-and-assets
 
 ### Automatic player ship powers
 
-- Standard shield/weapon automation applies to local human ships. Eligibility is data: `ShipAbilityDefinition.autoPower` (`AutoPowerRole` None/Shields/Weapons) in `ShipAbilityCatalog`. Current: Shields `3`; Weapons `5, 10, 12, 20, 23, 24, 31, 32, 33, 38` (Boost Weapon, Main Batteries `24` incl. Allegiance/ISD II, laser beams `10`/`33`). Squadrons with Harmonic Bomb use its separate member-count rule. New abilities default to `None`.
-- 2026-11-07 extension (ships only): every catalog ability has a role. Target `1,6,7,8,9,16,22,25`; Engage `19,35,36,42,50,51,52`; Defensive `2,39`; Cloak `11`; Travel `4,14,21,30,37,40`. `18` Lock S-Foils (squadron toggle) and `54` Harmonic Bomb stay `None`.
+- Standard shield/weapon automation applies to local human ships. Eligibility is data: `ShipAbilityDefinition.autoPower` (`AutoPowerRole` None/Shields/Weapons) in `ShipAbilityCatalog`. Current: Shields `3`; Weapons `5, 10, 12, 20, 23, 24, 31, 32, 33, 38` (Boost Weapon, Main Batteries `24` incl. Allegiance/ISD II, laser beams `10`/`33`). Squadrons with Seismic Charge use its separate member-count rule. New abilities default to `None`.
+- 2026-11-07 extension (ships only): every catalog ability has a role. Target `1,6,7,8,9,16,22,25`; Engage `19,35,36,42,50,51,52`; Defensive `2,39`; Cloak `11`; Travel `4,14,21,30,37,40`. `18` Lock S-Foils (squadron toggle) and `54` Seismic Charge stay `None`.
 - Role conditions (`AutoPowerSituation.Wants`): Cloak → heavy shield loss + hull <`35%` + visible hostile in radar; Defensive → heavy loss + shields <`60%` + hostile; Target → acceptable hostile in ability range; Engage → meaningful engaged force (heavy loss does not block); Travel → Move/WaypointMove/Retreat order and no visible hostile in radar.
 - Selection: first wanted role in `Cloak → Defensive → Shields/Weapons → Target → Engage → Travel` with a ready slot. A recovering Shields/Weapons power never swaps to the other power, but lower non-power roles may still fire.
 - Abilities with `requiresEnemyTarget` auto-target the nearest visible uncloaked hostile in ability range that passes the ability's `IShipAbilityTargetRule`; warships before strikecraft.
@@ -59,14 +59,18 @@ verification: source-and-assets
 - Shared Power to Shields id `3`: `15 s` active, `40 s` recovery, regeneration `×4`, damage/speed `×0.75`, cancellable. Removed IDs `13,15,17,26,34,45,53` remap in `AbilitySlotSave.Id` before validation/restore.
 - Preserve saved remaining recovery, even above `40 s`; reject multiple saved shield slots after remap instead of deduplicating. `UnitSave.autoPowerDisabled` defaults false in older saves.
 
-### Harmonic Bomb
+### Seismic Charge (Harmonic Bomb ID 54)
 
-- Jango and Boba Fett share catalog ID `54`. Manual activation drops a stationary charge at the squadron centroid. Fuse 1.5 s, recovery 20 s.
-- At detonation, each live hostile squadron member within 35 XZ units takes one hit. Equal thirds of the radius deal 120, 72 and 30 base damage. Ships, structures and friendly members are immune.
-- The existing `HypervelocityGun` profile deals 1× strikecraft hull damage or 2× shield damage. A hit absorbed by shields does not spill into hull or use laser-specific mitigation.
-- AI and player autofire require three visible, uncloaked hostile members in range. The blast can hit unseen members. The pooled ring follows local area visibility.
-- Successful local activation plays the activating pilot’s voice line. Each detonation requests `EXP_SIZEMIC_CHARGE_2.WAV` once at its fixed world position even when it hits zero members. There is no extra event predelay.
-- The battle owns dropped charges across caster death, despawn and movement. Loading drops in-flight effects and restores the surviving caster’s saved recovery timer. See [[Done/Features/Harmonic_Bomb_Ability]].
+- Jango and Boba Fett share catalog ID `54` (`ShipAbilityId.HarmonicBomb`). Manual activation instantly drops a stationary charge at the caster’s current position; no enemy selection or approach order.
+- Fuse `1.5 s` + recovery `18.5 s` → `20 s` between activations. Save/load discards in-flight effects and restores the surviving caster’s remaining fuse plus recovery as cooldown.
+- Detonation snapshots eligible enemies once within an inclusive `210`-unit sphere using 3D distance. No falloff. Each non-squadron health entity takes `360` base damage once; each live squadron member inside takes `720` (`×2`), including fighters, bombers, interceptors and hero members.
+- Allies are immune. Ships and structures with health facades can be hit; heroes have no special immunity. `DamageType.HypervelocityGun` uses existing shields/armor rules, so base damage is not guaranteed hull loss.
+- Snapshot before damage callbacks; recheck entity registration/identity, destruction and member identity/generation before each hit. No collider-based duplicate damage or Physics query.
+- AI and player autofire require three visible, uncloaked hostile members in range. Manual drops have no enemy-count requirement; detonation can hit unseen enemies.
+- Battle-owned pooled charges survive caster movement, death and despawn. Local area vision controls drawing; battle disposal/reset returns charges and views.
+- Successful local activation plays the pilot’s voice line; each fuse expiry requests `EXP_SIZEMIC_CHARGE_2.WAV` once at the fixed position, including an empty blast, without extra predelay.
+- Pooled visual: three flat quads with shared additive URP Unlit Shader Graph; core `0.15 s`, main ring `0.08–0.60 s`, secondary starts `0.14 s`, all fade by `0.80 s`. Maximum ring radius matches the damage sphere’s `210`-unit horizontal section.
+- Source, saved bindings, Unity compilation and isolated render verified `2026-11-11`; no tests run. In-battle acceptance pending. Evidence → [[Done/Features/Harmonic_Bomb_Ability]].
 
 ### Checked current ability examples
 

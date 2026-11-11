@@ -65,8 +65,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         private void UpdateVisibility(HarmonicBombView view)
         {
-            Transform ring = view.transform;
-            view.SetVisible(_vision.IsAreaVisible(_localPlayer.Id, ring.position, ring.localScale.x));
+            view.SetVisible(_vision.IsAreaVisible(_localPlayer.Id, view.transform.position, view.VisibilityRadius));
         }
 
         public void Clear()

@@ -420,8 +420,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 606a86b08cc7a5e4eb247e01d41aa404, type: 2}
         description: Boba Fett pilots Slave I alone. Its twin laser cannons hunt
-          fighters and bombers. Slave I has 2460 hull and 1440 shields. Drops a harmonic
-          bomb that damages nearby enemy fighters after 1.5 seconds.
+          fighters and bombers. Slave I has 2460 hull and 1440 shields. Drops a Seismic
+          Charge that damages nearby enemies after 1.5 seconds, especially fighter
+          squadrons.
         role: Hero / Fighter
         iconKey: 8ed5c98fc325a8d4c9c82c74f72e7bd0:21300000
         isHero: 1

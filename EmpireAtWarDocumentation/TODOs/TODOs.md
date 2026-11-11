@@ -9,8 +9,6 @@
 
 ### Features
 
-
-
 - [ ] **Dynamic in-game tutorial (in-match hints: camera, select, move, minimap, build, counters tooltip, build queue, abilities + auto-power, level up, research, map systems)** → [[TODOs/Features/Ingame_Tutorial_Plan|In-Game Tutorial Plan]]
   - Status: in progress. Phase 0 decided 2026-11-09: in-match hints only (guided battle deferred), plain text, text-only coach card (layout A) + pulsing ring, 3 s gap, basics pause during combat. Phases 1–7 + settings done 2026-11-09 (compiles clean; tests not run; not run in-game): hint card UI, HUD anchors, 10 basics + 18 event hints, Show/Reset hints in Settings, Turn off on card. Remaining: audio cue (needs clip), optional analytics, tests, user in-game check.
   - Input glyphs added 2026-11-09: white mouse/keycaps, red active mouse control, live settings bindings and station-selection prerequisite prompts. Imported/saved and visually previewed; tests not run.
@@ -54,10 +52,6 @@
 
 
 ### Bugs
-
-
-
-
 
 - [ ] **Fix defense satellite review findings** → [[TODOs/Bugs/Defense_Satellites_Review_Fixes|Defense Satellites Review Fixes]]; parent: [[TODOs/Features/Defense_Satellites_Plan|Defense Satellites Plan]]
   - Status: fixes #1–#10 implemented 2026-10-28; #3 kept by user.
@@ -284,14 +278,16 @@
 
 ### Features
 
+- [x] **Seismic Charge — shared Boba/Jango bomb rework** → [[Done/Features/Harmonic_Bomb_Ability|Implementation plan]]
+  - Completed 2026-11-11: 360 base damage ×2 against squadron members, 210-unit sphere, 1.5 s fuse, 20 s activation cooldown and pooled flat blue Shader Graph shockwaves. Supersedes the 2026-11-06 Harmonic Bomb behavior/visuals; original pilot voices and seismic detonation retained.
+  - Unity compile/import, saved bindings, shader passes and isolated render verified; tests not run. In-battle gameplay, visuals and listening → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **Battle notifications (dismissible top-center text cards for urgent, tactical, progress, feedback and outcome events)** → [[Done/Features/Battle_Notifications_Plan|Battle Notifications Plan]]
   - Done 2026-11-09: feed + `BattleNotificationUi` prefab/Addressable, 9 event sources, rejection reasons, survival and outcome cards. Compiled clean; tests authored, not run. In-game checks → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Jango Fett — Slave I — single-fighter skirmish hero for CIS (`Separatist`)** → [[Done/Features/Jango_Fett_Slave_I|Implementation plan]] · [[Done/Features/Skirmish_Hero_Fighters - Research|Balance research]]
   - Ship, guns, recruitment, audio and Harmonic Bomb equipped. In-game flight, balance and lifecycle checks → [[TODOs/User_Acceptance_Queue]].
 
-- [x] **Harmonic bomb — shared Slave I ability (per-fighter area damage with falloff)** → [[Done/Features/Harmonic_Bomb_Ability|Implementation plan]]
-  - Completed 2026-11-06. Both Fetts equip the bomb with their pilot voices and the shared seismic detonation. In-game and fixture verification → [[TODOs/User_Acceptance_Queue]].
 - [x] **Han Solo & Chewbacca — Millennium Falcon — single-fighter skirmish hero for Rebellion** → [[Done/Features/Han_Solo_Millennium_Falcon|Completed plan]] · [[Done/Features/Skirmish_Hero_Fighters - Research|Balance research]]
   - Completed 2026-11-06. Unity wiring, 40 stationary matchups and live shop visibility after the hero prewarm fix verified. Remaining flight, audio and skirmish acceptance → [[TODOs/User_Acceptance_Queue]].
 
