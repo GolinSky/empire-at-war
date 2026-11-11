@@ -32,7 +32,6 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly IReinforcementZonesSystem _zones;
         private readonly IReinforcementSpawnRule _spawnRule;
-        private readonly IStructureSpawnClearance _structureClearance;
         private readonly IVisionService _vision;
         private readonly IBattleAreaService _areas;
 
@@ -43,6 +42,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Queue<Vector3> _recentDestroyedPositions = new Queue<Vector3>();
 
         private readonly Bounds _stationBounds;
+        private readonly float _placementRadius;
 
         public EnemyStructurePlacementService(
             IReinforcementZonesSystem zones,
@@ -60,10 +60,13 @@ namespace EmpireAtWar.Services.Enemy
             _mapModel = mapModel;
             _zones = zones;
             _spawnRule = spawnRule;
-            _structureClearance = structureClearance;
             _vision = vision;
             _areas = areas;
             _stationBounds = StructureSpawnClearance.GetSpawnBounds(stationPrefab);
+            Vector3 stationReach = _stationBounds.extents + new Vector3(
+                Mathf.Abs(_stationBounds.center.x), Mathf.Abs(_stationBounds.center.y),
+                Mathf.Abs(_stationBounds.center.z));
+            _placementRadius = Mathf.Max(structureClearance.Radius, stationReach.magnitude);
         }
 
         public bool TryGetPosition(out Vector3 position)
@@ -163,7 +166,7 @@ namespace EmpireAtWar.Services.Enemy
             out Vector3 position)
         {
             var bounds = _mapModel.SizeRange;
-            float clearance = _structureClearance.Radius;
+            float clearance = _placementRadius;
             for (int index = 0; index < count; index++)
             {
                 float angle = index * (2f * Mathf.PI / count);
@@ -189,7 +192,7 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         private float GetFirstRingRadius(float anchorRadius) =>
-            Mathf.Max(MINIMUM_ANCHOR_DISTANCE, anchorRadius + _structureClearance.Radius + RING_SPACING);
+            Mathf.Max(MINIMUM_ANCHOR_DISTANCE, anchorRadius + _placementRadius + RING_SPACING);
 
         private bool IsNearRecentDestroyedPosition(Vector3 candidate)
         {

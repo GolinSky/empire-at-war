@@ -175,7 +175,10 @@ namespace EmpireAtWar.Tests.Editor
             Vector3 center = _stationPrefab.transform.TransformVector(_stationPrefab.center);
             center.y = 0f;
             float radius = new Vector2(150f, 45f).magnitude;
-            Assert.That(Vector3.Distance(position, center), Is.GreaterThan(radius + 16f));
+            float secondStationRadius = new Vector3(270f, 150f, 90f).magnitude;
+            Assert.That(Vector3.Distance(position, center), Is.GreaterThan(radius + secondStationRadius));
+            Assert.That(Mathf.Abs(position.x) + secondStationRadius, Is.LessThanOrEqualTo(1000f));
+            Assert.That(Mathf.Abs(position.z) + secondStationRadius, Is.LessThanOrEqualTo(1000f));
         }
 
         [Test]
