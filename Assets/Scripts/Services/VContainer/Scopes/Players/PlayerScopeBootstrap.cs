@@ -111,7 +111,7 @@ namespace EmpireAtWar.Services.VContainer
             else
             {
                 HumanPlayerScope human = playerRoot.AddComponent<HumanPlayerScope>();
-                human.ConfigurePlayer(slot, slot.Id == _session.LocalPlayerId);
+                human.ConfigurePlayer(slot, slot.Id == _session.LocalPlayerId, _session.IsOnline);
                 player = human;
             }
 

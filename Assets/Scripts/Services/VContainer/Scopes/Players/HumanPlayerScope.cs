@@ -26,11 +26,13 @@ namespace EmpireAtWar.Services.VContainer
     {
         private PlayerSlot _owner;
         private bool _isLocal;
+        private bool _isOnline;
 
-        public void ConfigurePlayer(PlayerSlot owner, bool isLocal)
+        public void ConfigurePlayer(PlayerSlot owner, bool isLocal, bool isOnline)
         {
             _owner = owner;
             _isLocal = isLocal;
+            _isOnline = isOnline;
         }
 
         protected override void Configure(IContainerBuilder builder)
@@ -51,10 +53,10 @@ namespace EmpireAtWar.Services.VContainer
             if (!_isLocal) return;
             RegisterLocalPlayerServices(builder, player.Features);
             battleScope.Modules.ConfigureLocalPlayer(builder, player, transform);
-            // Simulations are a balance tool, not matches players play.
+            // Simulations are a balance tool, not matches players play; online matches show no tutorial hints.
             if (battleScope.Battle.Mode == GameMode.Tutorial)
                 EmpireAtWar.Services.Tutorial.Guided.GuidedTutorialRegistrations.Register(builder, Assets);
-            else if (battleScope.Battle.Mode != GameMode.BattleSimulation)
+            else if (battleScope.Battle.Mode != GameMode.BattleSimulation && !_isOnline)
                 HintRegistrations.Register(builder, Assets,
                     hasCheatPanel: battleScope.Battle.HasFeature(BattleFeatures.Economy) && player.Has(BattleFeatures.Economy));
         }

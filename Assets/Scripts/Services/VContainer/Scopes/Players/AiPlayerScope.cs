@@ -49,7 +49,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<EnemyStructurePlacementService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(Assets.LoadComponent<BoxCollider>(
                     battleScope.Battle.GetProductionHost(player).Slot.Faction + "SpaceStationView"));
-            if (player.HasDirectCombatAi)
+            // The tutorial director gives the tutorial enemy its only orders; no strategic AI moves its units.
+            if (player.HasDirectCombatAi || battleScope.Battle.Mode == GameMode.Tutorial)
                 builder.Register<DirectCombatAiState>(Lifetime.Singleton).AsImplementedInterfaces();
             else
                 builder.Register<EnemyUnitCommander>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

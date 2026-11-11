@@ -8,8 +8,8 @@ using EmpireAtWar.Models.Players;
 namespace EmpireAtWar.Entities.Game
 {
     /// <summary>
-    /// Guided tutorial battle: the human against an Easy AI with no economy, so the enemy never builds and only
-    /// commands the units the tutorial gives it. Victory = destroy the enemy station.
+    /// Guided tutorial battle: the human against an AI with no economy and no strategic commander, so the enemy never
+    /// builds and its units move only on the tutorial director's orders. Victory = destroy the enemy station.
     /// </summary>
     public static class TutorialPreset
     {
