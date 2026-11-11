@@ -145,6 +145,7 @@ namespace EmpireAtWar.Tests.Editor
             public float HyperSpaceDuration => 2f;
             public float BodyRotationMaxAngle => 15f;
             public float NavigationRadius => 30f;
+            public bool IgnoresMapObstacles => false;
         }
 
         private sealed class HealthDataStub : IHealthData

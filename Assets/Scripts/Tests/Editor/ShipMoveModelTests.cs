@@ -139,6 +139,7 @@ namespace EmpireAtWar.Tests.Editor
             public float HyperSpaceDuration => 1f;
             public float BodyRotationMaxAngle => 10f;
             public float NavigationRadius => 5f;
+            public bool IgnoresMapObstacles => false;
         }
     }
 }

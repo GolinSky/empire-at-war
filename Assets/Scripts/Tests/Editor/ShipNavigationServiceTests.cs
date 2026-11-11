@@ -233,6 +233,22 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void Plan_ObstacleIgnoringShipFliesStraightThroughStationFootprint()
+        {
+            SetRangeValue("<Min>k__BackingField", new Vector2(-5000f, -5000f));
+            SetRangeValue("<Max>k__BackingField", new Vector2(5000f, 5000f));
+            var station = new RadarContact(Vector3.zero, 396f, false, -396f, 396f);
+            var service = CreateService(new[] { station });
+            var executor = new FakeAgent(new Vector3(-2400f, -341f, 0f), -341f, 1059.4355f, 10f, 1.5f,
+                new ShipHullSpan(-416f, -267f)) { IgnoresMapObstacles = true };
+
+            ShipNavigationPlan plan = Plan(service, executor, new Vector3(2400f, -341f, 0f));
+
+            Assert.That(plan.Destination, Is.EqualTo(new Vector3(2400f, -341f, 0f)));
+            Assert.That(plan.Route.Length, Is.EqualTo(4800f).Within(0.05f));
+        }
+
+        [Test]
         public void MapContacts_RemoveDestroyedStationFootprint()
         {
             var stations = new FakeStationRegistry { IsAlive = true };
@@ -1025,6 +1041,7 @@ namespace EmpireAtWar.Tests.Movement
             public float NavigationRadius { get; }
             public float NavigationSpeed { get; }
             public float NavigationRotationSpeed { get; }
+            public bool IgnoresMapObstacles { get; set; }
 
             public FakeAgent(
                 Vector3 position,
@@ -1092,6 +1109,7 @@ namespace EmpireAtWar.Tests.Movement
             public float HyperSpaceDuration => 1f;
             public float BodyRotationMaxAngle => 10f;
             public float NavigationRadius => 5f;
+            public bool IgnoresMapObstacles => false;
         }
 
         private sealed class RecordingPlanRequester : IShipPlanRequester

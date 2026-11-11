@@ -145,18 +145,21 @@ namespace EmpireAtWar.Services.ShipNavigation
             EnsureBuilt();
             if (!_hasExtraCost) return true;
             NavigationTravelCost cost = new NavigationTravelCost(_cells, _extraCost);
-            float originalCost = 0f;
+            float originalExtra = 0f;
             for (int i = 1; i < waypoints.Count; i++)
-                originalCost += cost.Segment(new float2(waypoints[i - 1].x, waypoints[i - 1].z),
-                    new float2(waypoints[i].x, waypoints[i].z));
+            {
+                float2 from = new float2(waypoints[i - 1].x, waypoints[i - 1].z);
+                float2 to = new float2(waypoints[i].x, waypoints[i].z);
+                originalExtra += cost.Segment(from, to) - math.distance(from, to);
+            }
             int samples = Mathf.Max(1, Mathf.CeilToInt(route.Length / (_cells.CellSize * 0.5f)));
-            float routeCost = 0f;
+            float routeExtra = 0f;
             for (int i = 0; i < samples; i++)
             {
                 Vector3 point = route.EvaluateNormalizedDistance((i + 0.5f) / samples, out _);
-                routeCost += 1f + _extraCost[_cells.GetCell(new float2(point.x, point.z))];
+                routeExtra += _extraCost[_cells.GetCell(new float2(point.x, point.z))];
             }
-            return routeCost * route.Length / samples <= originalCost * 1.05f + 0.01f;
+            return routeExtra * route.Length / samples <= originalExtra * 1.05f + 0.01f;
         }
 
         public bool TryFindPath(Vector3 destination, float height, List<Vector3> waypoints)

@@ -40,6 +40,8 @@ namespace EmpireAtWar.Entities.Ship.Data
         [field: SerializeField] public float HyperSpaceDuration { get; private set; }
         [field: SerializeField] public float BodyRotationMaxAngle { get; private set; }
         [field: SerializeField] public float NavigationRadius { get; private set; } = 8f;
+        [Tooltip("Routes straight through asteroids, rocks and stations; hazards still add travel cost.")]
+        [field: SerializeField] public bool IgnoresMapObstacles { get; private set; }
 
         [Header("Destruction Settings")]
         [Tooltip("Seconds the dead ship stays under its explosion before it is removed.")]

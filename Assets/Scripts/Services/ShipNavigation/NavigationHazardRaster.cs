@@ -78,22 +78,27 @@ namespace EmpireAtWar.Services.ShipNavigation
             return cost.Segment(start, end) <= math.distance(start, end) + 0.01f;
         }
 
+        // Compares only the hazard surcharge: a smooth curve is longer than its straight legs by design,
+        // and counting that length rejected every turning curve on hazard maps (ships turned in place instead).
         public bool PreservesTravelCost(ShipBezierRoute route, IReadOnlyList<Vector3> waypoints)
         {
             if (!HasExtraCost) return true;
             var cost = new NavigationTravelCost(Cells, _costs);
-            float originalCost = 0f;
+            float originalExtra = 0f;
             for (int i = 1; i < waypoints.Count; i++)
-                originalCost += cost.Segment(new float2(waypoints[i - 1].x, waypoints[i - 1].z),
-                    new float2(waypoints[i].x, waypoints[i].z));
+            {
+                float2 from = new float2(waypoints[i - 1].x, waypoints[i - 1].z);
+                float2 to = new float2(waypoints[i].x, waypoints[i].z);
+                originalExtra += cost.Segment(from, to) - math.distance(from, to);
+            }
             int samples = Mathf.Max(1, Mathf.CeilToInt(route.Length / (Cells.CellSize * 0.5f)));
-            float routeCost = 0f;
+            float routeExtra = 0f;
             for (int i = 0; i < samples; i++)
             {
                 Vector3 point = route.EvaluateNormalizedDistance((i + 0.5f) / samples, out _);
-                routeCost += 1f + _costs[Cells.GetCell(new float2(point.x, point.z))];
+                routeExtra += _costs[Cells.GetCell(new float2(point.x, point.z))];
             }
-            return routeCost * route.Length / samples <= originalCost * 1.05f + 0.01f;
+            return routeExtra * route.Length / samples <= originalExtra * 1.05f + 0.01f;
         }
 
         public void Dispose()

@@ -27,6 +27,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(data.Hull, Is.EqualTo(150000));
             Assert.That(data.Shields, Is.EqualTo(200000));
             Assert.That(data.Speed, Is.EqualTo(10));
+            Assert.That(data.IgnoresMapObstacles, Is.True);
             Assert.That(data.Abilities, Is.EquivalentTo(new[] { ShipAbilityId.ExecutorLaserBeam, ShipAbilityId.TractorBeam }));
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             HealthComponent health = view.GetComponentsInChildren<HealthComponent>(true).Single();

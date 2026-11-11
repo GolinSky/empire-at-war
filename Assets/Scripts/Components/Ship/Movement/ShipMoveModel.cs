@@ -27,6 +27,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public float HyperSpaceDuration => _shipMoveData.HyperSpaceDuration;
         public float BodyRotationMaxAngle => _shipMoveData.BodyRotationMaxAngle;
         public float NavigationRadius => _shipMoveData.NavigationRadius;
+        public bool IgnoresMapObstacles => _shipMoveData.IgnoresMapObstacles;
         public MovementPhase Phase { get; private set; } = MovementPhase.Arriving;
         public NumericsVector3 Destination { get; private set; }
         public NumericsVector3? PendingDestination { get; private set; }

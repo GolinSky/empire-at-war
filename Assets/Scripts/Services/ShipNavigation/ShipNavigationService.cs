@@ -24,6 +24,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         float NavigationRadius { get; }
         float NavigationSpeed { get; }
         float NavigationRotationSpeed { get; }
+        bool IgnoresMapObstacles { get; }
     }
 
     public readonly struct ShipNavigationPlan
@@ -182,6 +183,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             int registrationId = GetRegistrationId(agent);
             Vector3 origin = agent.NavigationPosition;
             BuildNavigationContacts(obstacleContacts, agent.NavigationHullSpan);
+            if (agent.IgnoresMapObstacles) _mapObstacleContacts.Clear();
 
             bool canReuseStationary = preserveCourse && !reserveAsPending;
             ShipNavigationCache.Request request = new ShipNavigationCache.Request(agent, forward,

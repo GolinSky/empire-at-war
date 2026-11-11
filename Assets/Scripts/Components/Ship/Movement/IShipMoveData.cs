@@ -11,5 +11,6 @@ namespace EmpireAtWar.Components.Ship.Movement
         float HyperSpaceDuration { get; }
         float BodyRotationMaxAngle { get; }
         float NavigationRadius { get; }
+        bool IgnoresMapObstacles { get; }
     }
 }

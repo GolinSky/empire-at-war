@@ -85,6 +85,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public float NavigationRadius => Mathf.Max(Model.NavigationRadius, MINIMUM_NAVIGATION_RADIUS);
         public float NavigationSpeed => Model.Speed;
         public float NavigationRotationSpeed => Model.RotationSpeed;
+        public bool IgnoresMapObstacles => Model.IgnoresMapObstacles;
         public Vector3 CurrentPosition => transform.position;
         // A ship waiting for its plan counts as moving, so a move order does not complete before it starts.
         public bool IsMoving => (_isNavigationRegistered && Model.Phase == MovementPhase.Arriving) ||

@@ -2177,6 +2177,7 @@ private sealed class ZoneSource : IReinforcementZoneSource
             public float NavigationRadius => 5f;
             public float NavigationSpeed => 10f;
             public float NavigationRotationSpeed => 90f;
+            public bool IgnoresMapObstacles => false;
             public Vector3 Destination { get; private set; }
 
             public NavigationRetreatFacade(ShipNavigationService navigation, Vector2Range range)
