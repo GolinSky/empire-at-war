@@ -53,6 +53,10 @@ namespace EmpireAtWar.Services.Battle
         public SpaceStationEntity SpawnRestoredStation(PlayerId owner, FactionType faction, Vector3 position, long entityId) =>
             _players[owner].Stations.Create(owner, faction, position, entityId);
 
+        public SpaceStationEntity SpawnRestoredSecondStation(PlayerId owner, FactionType faction, Vector3 position,
+            long entityId) =>
+            _players[owner].Stations.CreateSecond(owner, faction, position, entityId);
+
         public MiningFacilityEntity SpawnRestoredMiningFacility(PlayerId owner, MiningFacilityType type, Vector3 position,
             long entityId, float buildDuration) =>
             _players[owner].MiningFacilities.Create(owner, type, position, entityId, buildDuration);

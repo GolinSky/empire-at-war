@@ -52,7 +52,8 @@ namespace EmpireAtWar.Services.Saves
             {
                 UnitRequest request = reserved.ToRequest(_requests, _roster, _levels);
                 // A built structure keeps its limit slot while it waits to be placed.
-                if (request is MiningFacilityUnitRequest || request is DefendPlatformUnitRequest)
+                if (request is MiningFacilityUnitRequest || request is DefendPlatformUnitRequest ||
+                    request is SecondStationUnitRequest)
                     _faction.ReserveStructure(request);
                 // So does a built hero ship or squadron: only one may be queued, in reserve or deployed.
                 if (PlayerFactionModel.IsHeroRequest(request, out UnitTypeId hero))
@@ -84,6 +85,14 @@ namespace EmpireAtWar.Services.Saves
                 }
             }
 
+            foreach (StructureSave structure in context.Save.Structures.Where(structure =>
+                         structure.Owner == Owner && structure.Kind == StructureKind.SecondStation))
+            {
+                _faction.ReserveStructure(_requests.ConstructSecondStationRequest(_levels.SecondStation));
+                context.SecondStations[structure.Id].Destroyed += () =>
+                    _faction.ReleaseStructure<SecondStationUnitRequest>(SecondStationUnitRequest.REQUEST_ID);
+            }
+
             foreach (StructureSave structure in OwnedPlacedStructures(context))
             {
                 if (structure.Kind == StructureKind.MiningFacility)
@@ -105,6 +114,7 @@ namespace EmpireAtWar.Services.Saves
 
         private IEnumerable<StructureSave> OwnedPlacedStructures(BattleRestoreContext context) =>
             context.Save.Structures.Where(structure => structure.Owner == Owner &&
-                structure.Kind != StructureKind.SpaceStation && !context.SiteFacilities.Contains(structure.Id));
+                structure.Kind is not (StructureKind.SpaceStation or StructureKind.SecondStation) &&
+                !context.SiteFacilities.Contains(structure.Id));
     }
 }

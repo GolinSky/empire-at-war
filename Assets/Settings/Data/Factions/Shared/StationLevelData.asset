@@ -65,4 +65,73 @@ MonoBehaviour:
     <UnitCapacity>k__BackingField: 0
     <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
       type: 3}
+  secondStation:
+    matchups: {fileID: 0}
+    description: A second space station, built at level 1 with its own upgrades.
+      It shares your build queue, research and limits, and keeps you producing if
+      your main station falls.
+    role: Station
+    iconKey: 2c7347a89cf4cc4448b118d2c696cc1b:21300000
+    isHero: 0
+    <Name>k__BackingField: Second Station
+    <MaxCount>k__BackingField: 1
+    <AvailableLevel>k__BackingField: 1
+    <Price>k__BackingField: 3000
+    <BuildTime>k__BackingField: 90
+    <UnitCapacity>k__BackingField: 0
+    <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
+      type: 3}
+  secondStationLevels:
+  - matchups: {fileID: 0}
+    description: Upgrade the second station.
+    role: Station upgrade
+    iconKey: 2c7347a89cf4cc4448b118d2c696cc1b:21300000
+    isHero: 0
+    <Name>k__BackingField: Second Station Level 2
+    <MaxCount>k__BackingField: 1
+    <AvailableLevel>k__BackingField: 1
+    <Price>k__BackingField: 2000
+    <BuildTime>k__BackingField: 80
+    <UnitCapacity>k__BackingField: 0
+    <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
+      type: 3}
+  - matchups: {fileID: 0}
+    description: Upgrade the second station.
+    role: Station upgrade
+    iconKey: 2c7347a89cf4cc4448b118d2c696cc1b:21300000
+    isHero: 0
+    <Name>k__BackingField: Second Station Level 3
+    <MaxCount>k__BackingField: 1
+    <AvailableLevel>k__BackingField: 1
+    <Price>k__BackingField: 3200
+    <BuildTime>k__BackingField: 120
+    <UnitCapacity>k__BackingField: 0
+    <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
+      type: 3}
+  - matchups: {fileID: 0}
+    description: Upgrade the second station.
+    role: Station upgrade
+    iconKey: 2c7347a89cf4cc4448b118d2c696cc1b:21300000
+    isHero: 0
+    <Name>k__BackingField: Second Station Level 4
+    <MaxCount>k__BackingField: 1
+    <AvailableLevel>k__BackingField: 1
+    <Price>k__BackingField: 4000
+    <BuildTime>k__BackingField: 180
+    <UnitCapacity>k__BackingField: 0
+    <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
+      type: 3}
+  - matchups: {fileID: 0}
+    description: Upgrade the second station.
+    role: Station upgrade
+    iconKey: 2c7347a89cf4cc4448b118d2c696cc1b:21300000
+    isHero: 0
+    <Name>k__BackingField: Second Station Level 5
+    <MaxCount>k__BackingField: 1
+    <AvailableLevel>k__BackingField: 1
+    <Price>k__BackingField: 5500
+    <BuildTime>k__BackingField: 220
+    <UnitCapacity>k__BackingField: 0
+    <Icon>k__BackingField: {fileID: 21300000, guid: 2c7347a89cf4cc4448b118d2c696cc1b,
+      type: 3}
   <MaxLevel>k__BackingField: 5

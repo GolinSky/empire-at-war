@@ -68,6 +68,10 @@ namespace EmpireAtWar.Services.Networking
                     _factories.SpawnRestoredStation(structure.Owner, structure.StationFaction, structure.Position,
                         structure.Id);
                     break;
+                case StructureKind.SecondStation:
+                    _factories.SpawnRestoredSecondStation(structure.Owner, structure.StationFaction, structure.Position,
+                        structure.Id);
+                    break;
                 case StructureKind.MiningFacility:
                     _factories.SpawnRestoredMiningFacility(structure.Owner, structure.MiningFacilityType,
                         structure.Position, structure.Id, structure.ConstructionBuildTime);

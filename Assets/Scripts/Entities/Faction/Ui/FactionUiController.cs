@@ -40,6 +40,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private readonly ShipsData _shipsData;
         private readonly TooltipRequests _tooltips;
         private readonly EmpireAtWar.Models.Reinforcement.ReinforcementModel _reinforcements;
+        private readonly SecondStationLevelModel _secondStation;
+        private readonly StationLevelData _stationLevels;
+        private readonly EmpireAtWar.Services.Stations.IProductionAccess _productionAccess;
         private TooltipHoverSubscription _tooltipHover;
 
         private bool _isTooltipActive;
@@ -65,8 +68,14 @@ namespace EmpireAtWar.Entities.Faction.Ui
             EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements,
             IAssetService assets,
             ShipsData shipsData, EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio,
-            EmpireAtWar.Services.BattleNotifications.IBattleNotifications notifications) : base(uiService, cancelRouter)
+            EmpireAtWar.Services.BattleNotifications.IBattleNotifications notifications,
+            SecondStationLevelModel secondStation,
+            StationLevelData stationLevels,
+            EmpireAtWar.Services.Stations.IProductionAccess productionAccess) : base(uiService, cancelRouter)
         {
+            _productionAccess = productionAccess;
+            _secondStation = secondStation;
+            _stationLevels = stationLevels;
             _interfaceAudio = interfaceAudio;
             _notifications = notifications;
             _placement = placement;
@@ -123,9 +132,13 @@ namespace EmpireAtWar.Entities.Faction.Ui
             _commands.Submit(PurchaseUnitCommand.From(_owner.Id, unitRequest));
         }
 
-        public bool IsUnitAvailable(FactionData data) => _model.CurrentLevel >= data.AvailableLevel;
+        // Units unlock by the higher of the two station levels; the queue, research and limits are shared.
+        private int UnlockedLevel =>
+            Math.Max(_model.CurrentLevel, _secondStation.IsBuilt ? _secondStation.CurrentLevel : 1);
 
-        public bool IsUnlockedAtCurrentLevel(FactionData data) => _model.CurrentLevel == data.AvailableLevel;
+        public bool IsUnitAvailable(FactionData data) => UnlockedLevel >= data.AvailableLevel;
+
+        public bool IsUnlockedAtCurrentLevel(FactionData data) => UnlockedLevel == data.AvailableLevel;
 
         public bool IsCarrier(UnitRequest request) => request is ShipUnitRequest ship &&
             _assets.Load<ShipData>(_shipsData.GetShipDataPath(ship.Key)).HangarBays.Count > 0;
@@ -145,15 +158,18 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 _ => throw new ArgumentOutOfRangeException(nameof(request))
             },
             DefendPlatformUnitRequest => 6,
+            SecondStationUnitRequest => 6,
             MiningFacilityUnitRequest => 7,
             LevelUnitRequest => -1,
+            SecondStationLevelUnitRequest => -1,
             SuperWeaponUnitRequest => 9,
             ResearchUnitRequest => 10,
             _ => throw new ArgumentOutOfRangeException(nameof(request))
         };
 
+        // The main station's upgrade card hides while that station is gone; the second station has its own card.
         public bool IsUnitLimitReached(UnitRequest request) =>
-            _model.IsUnitLimitReached(request);
+            request is LevelUnitRequest && !_productionAccess.HasHostBase || _model.IsUnitLimitReached(request);
 
         public void UpdateState(BattleState state)
         {
@@ -180,6 +196,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 _ui.AssignPresenter(this);
                 _ui.SetData(_roster);
                 _ui.SetUnitRequestFactory(_unitRequestFactory);
+                _ui.SetSecondStation(_secondStation, _stationLevels);
                 _ui.Initialize();
                 _tooltipHover = new TooltipHoverSubscription(
                     _ui.TooltipHover,
@@ -209,7 +226,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             FactionData data = request.FactionData;
             var requirements = new System.Collections.Generic.List<TooltipRequirement>();
             requirements.Add(new TooltipRequirement(
-                $"Station Level {data.AvailableLevel}", _model.CurrentLevel >= data.AvailableLevel));
+                $"Station Level {data.AvailableLevel}", UnlockedLevel >= data.AvailableLevel));
             if (_economy.Money < data.Price)
                 requirements.Add(new TooltipRequirement(
                     $"Missing {data.Price - _economy.Money:0} credits", false));
@@ -232,6 +249,14 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 stats.Add(new TooltipStat(label: "Next station level", current: _model.CurrentLevel + 1));
                 status = "Upgrade the station to unlock higher-level roster cards.";
             }
+            if (request is SecondStationLevelUnitRequest)
+            {
+                stats.Add(new TooltipStat(label: "Current second station level", current: _secondStation.CurrentLevel));
+                stats.Add(new TooltipStat(label: "Next second station level", current: _secondStation.CurrentLevel + 1));
+                status = "Upgrade the second station; units unlock by your highest station level.";
+            }
+            if (request is SecondStationUnitRequest)
+                status = "A second station, built at level 1. It shares your build queue, research and limits.";
             if (request is ResearchUnitRequest research && _research.TryGetNextTier(research.Key, out ResearchTierData tier))
             {
                 foreach (ResearchEffect effect in tier.Effects)

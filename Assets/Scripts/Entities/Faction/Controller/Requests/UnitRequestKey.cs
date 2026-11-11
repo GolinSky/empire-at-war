@@ -30,6 +30,9 @@ namespace EmpireAtWar.Controllers.Factions
             DefendPlatformUnitRequest platform => new UnitRequestKey(UnitRequestKind.DefendPlatform, (int)platform.Key, 0),
             ResearchUnitRequest research => new UnitRequestKey(UnitRequestKind.Research, (int)research.Key, research.Tier),
             SuperWeaponUnitRequest superWeapon => new UnitRequestKey(UnitRequestKind.SuperWeapon, (int)superWeapon.Key, 0),
+            SecondStationUnitRequest => new UnitRequestKey(UnitRequestKind.SecondStation, 0, 0),
+            SecondStationLevelUnitRequest secondLevel =>
+                new UnitRequestKey(UnitRequestKind.SecondStationLevel, secondLevel.Level, 0),
             _ => throw new ArgumentOutOfRangeException(nameof(request), request.GetType().Name, "Unknown request kind.")
         };
 
@@ -47,6 +50,9 @@ namespace EmpireAtWar.Controllers.Factions
                 roster.ResearchLines[(ResearchType)Key].Tiers[Tier - 1].FactionData, (ResearchType)Key, Tier),
             UnitRequestKind.SuperWeapon => factory.ConstructUnitRequest(
                 roster.SuperWeapons[(SuperWeaponType)Key], (SuperWeaponType)Key),
+            UnitRequestKind.SecondStation => factory.ConstructSecondStationRequest(levels.SecondStation),
+            UnitRequestKind.SecondStationLevel => factory.ConstructSecondStationLevelRequest(
+                levels.GetSecondStationLevelFactionData(Key), Key),
             _ => throw new ArgumentOutOfRangeException(nameof(Kind), Kind, "Unknown request kind.")
         };
     }

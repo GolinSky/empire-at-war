@@ -78,7 +78,7 @@ namespace EmpireAtWar.Tests.Editor
                     model: model,
                     shipFactory: null,
                     miningFacilityFactory: null,
-                    defendPlatformFactory: null,
+                    defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(),
                     research: null,
                     economyProvider: economyProvider,
                     wallet: new TrackingWallet(),
@@ -132,7 +132,7 @@ namespace EmpireAtWar.Tests.Editor
                     model: new EnemyFactionModel(null, null),
                     shipFactory: null,
                     miningFacilityFactory: null,
-                    defendPlatformFactory: null,
+                    defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(),
                     research: null,
                     economyProvider: new TrackingEconomyProvider(),
                     wallet: wallet,
@@ -192,7 +192,7 @@ namespace EmpireAtWar.Tests.Editor
                     model: model,
                     shipFactory: null,
                     miningFacilityFactory: null,
-                    defendPlatformFactory: null,
+                    defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(),
                     research: null,
                     economyProvider: new TrackingEconomyProvider(),
                     wallet: wallet,
@@ -252,7 +252,7 @@ namespace EmpireAtWar.Tests.Editor
                 var spawnPoints = new BlockedShipSpawnPoints();
                 var factory = new TrackingShipFactory(shipObject.AddComponent<EmpireAtWar.Ship.Ship>());
                 var controller = new EnemyFactionController(aiState: new IdleAiState(), model: new EnemyFactionModel(null, null),
-                    shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
+                    shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(), research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: spawnPoints,
                     unitLimitModel: limits, reinforcementData: data,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
@@ -317,7 +317,7 @@ namespace EmpireAtWar.Tests.Editor
                     ProductionHost = hosted ? TestPlayers.Human : TestPlayers.Enemy
                 };
                 var controller = new EnemyFactionController(aiState: new IdleAiState(), model: new EnemyFactionModel(null, null),
-                    shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
+                    shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(), research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet,
                     shipSpawnPoints: new BlockedShipSpawnPoints(), unitLimitModel: limits, reinforcementData: data,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
@@ -361,7 +361,7 @@ namespace EmpireAtWar.Tests.Editor
                     model: new EnemyFactionModel(null, null),
                     shipFactory: null,
                     miningFacilityFactory: null,
-                    defendPlatformFactory: null,
+                    defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(),
                     research: research,
                     economyProvider: new TrackingEconomyProvider(),
                     wallet: new TrackingWallet(),
@@ -406,7 +406,7 @@ namespace EmpireAtWar.Tests.Editor
                 model: model,
                 shipFactory: null,
                 miningFacilityFactory: null,
-                defendPlatformFactory: null,
+                defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(),
                 research: null,
                 economyProvider: new TrackingEconomyProvider(),
                 wallet: null,
@@ -443,7 +443,7 @@ namespace EmpireAtWar.Tests.Editor
                 var wallet = new TrackingWallet();
                 var limits = new EnemyUnitLimitModel();
                 var controller = new EnemyFactionController(aiState: new IdleAiState(), model: new EnemyFactionModel(null, null),
-                    shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, research: null,
+                    shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(), research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
                     unitLimitModel: limits, reinforcementData: data,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),
@@ -489,7 +489,7 @@ namespace EmpireAtWar.Tests.Editor
                 var wallet = new TrackingWallet();
                 var limits = new EnemyUnitLimitModel(); var model = new EnemyFactionModel(null, null);
                 var controller = new EnemyFactionController(aiState: new IdleAiState(), model: model, shipFactory: null,
-                    miningFacilityFactory: null, defendPlatformFactory: null, research: null,
+                    miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(), research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
                     unitLimitModel: limits, reinforcementData: data, enemyStructurePlacementService: new UnavailableStructurePlacement(),
                     productionAccess: access, squadronLauncher: null, squadronCommander: null,
@@ -521,7 +521,7 @@ namespace EmpireAtWar.Tests.Editor
                 var wallet = new TrackingWallet();
                 var model = new EnemyFactionModel(null, null);
                 var controller = new EnemyFactionController(aiState: new IdleAiState(), model: model, shipFactory: null,
-                    miningFacilityFactory: null, defendPlatformFactory: null, research: null,
+                    miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(), research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
                     unitLimitModel: new EnemyUnitLimitModel(), reinforcementData: data,
                     enemyStructurePlacementService: new UnavailableStructurePlacement(),

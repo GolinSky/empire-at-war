@@ -3,6 +3,7 @@ using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.Reinforcement;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Services.Squadrons;
@@ -30,6 +31,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly ISquadronSpawner _squadronSpawner;
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
+        private readonly SpaceStationFactory _stationFactory;
         private readonly ShipsData _shipsData;
         private readonly PlayerSlot _owner;
 
@@ -45,6 +47,7 @@ namespace EmpireAtWar.Services.Reinforcement
             ISquadronSpawner squadronSpawner,
             MiningFacilityFactory miningFacilityFactory,
             DefendPlatformFactory defendPlatformFactory,
+            SpaceStationFactory stationFactory,
             ShipsData shipsData,
             PlayerSlot owner)
         {
@@ -59,6 +62,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _squadronSpawner = squadronSpawner;
             _miningFacilityFactory = miningFacilityFactory;
             _defendPlatformFactory = defendPlatformFactory;
+            _stationFactory = stationFactory;
             _shipsData = shipsData;
             _owner = owner;
         }
@@ -92,6 +96,11 @@ namespace EmpireAtWar.Services.Reinforcement
                     placement = new DefendPlatformReinforcementPlacement(_spawnRule, _previewFactory,
                         _playerFactionModel, _defendPlatformFactory, LoadPreview(_data.GetSpawnPrefabKey(platformRequest.Key)),
                         _owner.Id, platformRequest.Key);
+                    return true;
+                case SecondStationUnitRequest:
+                    placement = new SecondStationReinforcementPlacement(_spawnRule, _previewFactory,
+                        _playerFactionModel, _stationFactory, LoadPreview(_data.GetSecondStationPrefabKey(_owner.Faction)),
+                        _owner.Id, _owner.Faction);
                     return true;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(request));

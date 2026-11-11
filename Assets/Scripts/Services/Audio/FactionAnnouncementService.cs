@@ -125,7 +125,7 @@ namespace EmpireAtWar.Services.Audio
         private void HandlePurchaseAccepted(UnitRequest request)
         {
             if (request is ResearchUnitRequest) Announce(_clips.UpgradeProgress, AnnouncementPriority.Progress);
-            else if (request is LevelUnitRequest) Announce(_clips.TechUpgradeProgress, AnnouncementPriority.Progress);
+            else if (request is LevelUnitRequest or SecondStationLevelUnitRequest) Announce(_clips.TechUpgradeProgress, AnnouncementPriority.Progress);
             else if (request is ShipUnitRequest || request is SquadronUnitRequest)
                 Announce(_clips.UnitProduction, AnnouncementPriority.Progress);
         }
@@ -133,7 +133,7 @@ namespace EmpireAtWar.Services.Audio
         private void HandlePurchaseCanceled(UnitRequest request)
         {
             if (request is ResearchUnitRequest) Announce(_clips.UpgradeCanceled, AnnouncementPriority.Progress);
-            else if (request is LevelUnitRequest) Announce(_clips.TechUpgradeCanceled, AnnouncementPriority.Progress);
+            else if (request is LevelUnitRequest or SecondStationLevelUnitRequest) Announce(_clips.TechUpgradeCanceled, AnnouncementPriority.Progress);
         }
 
         private void HandleResearchCompleted(ResearchType type) =>

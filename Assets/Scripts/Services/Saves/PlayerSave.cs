@@ -16,6 +16,7 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private float money;
         [SerializeField] private float incomeTimeLeft;
         [SerializeField] private int stationLevel = 1;
+        [SerializeField] private int secondStationLevel = 1;
         [SerializeField] private ResearchSave[] research = Array.Empty<ResearchSave>();
         [SerializeField] private UnitRequestSave[] production = Array.Empty<UnitRequestSave>();
         [SerializeField] private UnitRequestSave[] reserve = Array.Empty<UnitRequestSave>();
@@ -30,6 +31,7 @@ namespace EmpireAtWar.Services.Saves
         /// <summary>Seconds until the next income payment, so a load cannot pay early.</summary>
         public float IncomeTimeLeft => incomeTimeLeft;
         public int StationLevel { get => stationLevel; set => stationLevel = value; }
+        public int SecondStationLevel { get => secondStationLevel; set => secondStationLevel = value; }
         public ResearchSave[] Research { get => research; set => research = value; }
         /// <summary>The human's production queue in pipeline order; each head item carries its time left.</summary>
         public UnitRequestSave[] Production { get => production; set => production = value; }

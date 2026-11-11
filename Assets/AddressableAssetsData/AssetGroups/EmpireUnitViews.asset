@@ -150,6 +150,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 734e0235fb537ce4386c5ee0cda179c6
+    m_Address: EmpireSecondStationReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 74024b448248ca24baf84e9c0a36098c
     m_Address: BobaFettSlaveIReinforcementView
     m_ReadOnly: 0

@@ -13,26 +13,33 @@ namespace EmpireAtWar.Services.Networking.States
     {
         private readonly PlayerSlot _owner;
         private readonly PlayerFactionModel _faction;
+        private readonly SecondStationLevelModel _secondStation;
 
         public StationLevelReplicatedState(ReplicatedStateRegistry registry, IMatchSession session, PlayerSlot owner,
-            PlayerFactionModel faction) : base(registry, session)
+            PlayerFactionModel faction, SecondStationLevelModel secondStation) : base(registry, session)
         {
             _owner = owner;
             _faction = faction;
+            _secondStation = secondStation;
         }
 
         public override string Key => KeyFor(_owner.Id);
 
         public static string KeyFor(PlayerId player) => $"player-{player.Index}-level";
 
-        public override string Capture() => JsonUtility.ToJson(new StationLevelSnapshot { Level = _faction.CurrentLevel });
+        public override string Capture() => JsonUtility.ToJson(new StationLevelSnapshot
+            { Level = _faction.CurrentLevel, SecondStationLevel = _secondStation.CurrentLevel });
 
         // Upgrades complete one level at a time, as on the host, so the station plays each upgrade.
         public override void Apply(string json)
         {
-            int level = JsonUtility.FromJson<StationLevelSnapshot>(json).Level;
+            StationLevelSnapshot snapshot = JsonUtility.FromJson<StationLevelSnapshot>(json);
+            int level = snapshot.Level;
             if (level < _faction.CurrentLevel) _faction.CurrentLevel = level;
             while (_faction.CurrentLevel < level) _faction.CompleteLevelUpgrade();
+            int secondLevel = snapshot.SecondStationLevel;
+            if (secondLevel < _secondStation.CurrentLevel) _secondStation.CurrentLevel = secondLevel;
+            while (_secondStation.CurrentLevel < secondLevel) _secondStation.CompleteLevelUpgrade();
         }
 
         // Level upgrades come from production, which FactionService stops on a client.

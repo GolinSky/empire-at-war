@@ -219,7 +219,8 @@ namespace EmpireAtWar.Tests.Editor
                 uiService: null, placement: null, cancelRouter: null, commands: null, owner: null,
                 model: model, research: null, unitRequestFactory: null, routeNavigation: null,
                 tooltipService: null, economy: null, hud: null, battleState: null, roster: null,
-                reinforcements: null, assets: null, shipsData: null, interfaceAudio: null, notifications: null);
+                reinforcements: null, assets: null, shipsData: null, interfaceAudio: null, notifications: null,
+                secondStation: new SecondStationLevelModel(), stationLevels: null, productionAccess: new OwnBaseAccess());
         }
 
         private sealed class AvailabilityPresenter : IFactionPresenter
@@ -232,6 +233,16 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsCarrier(UnitRequest request) => false;
             public bool IsUnitLimitReached(UnitRequest request) => HeroReserved;
             public int GetUnitSortOrder(UnitRequest request) => 0;
+        }
+
+        private sealed class OwnBaseAccess : EmpireAtWar.Services.Stations.IProductionAccess
+        {
+            public bool CanProduce => true;
+            public bool HasHostBase => true;
+            public EmpireAtWar.Models.Players.PlayerId ProductionHost => TestPlayers.Human;
+
+            public bool TryGetProductionBase(out EmpireAtWar.Entities.BaseEntity.IEntity productionBase) =>
+                throw new System.NotSupportedException();
         }
 
         private sealed class UnlockedPresenter : IFactionPresenter

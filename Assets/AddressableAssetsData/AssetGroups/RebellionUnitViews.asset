@@ -60,6 +60,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28bf33787dff4614bb4849edba83c999
+    m_Address: RebellionSecondStationReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 321af9a415a384045a4e8a7ce25163bd
     m_Address: MonCalCruiserShipView
     m_ReadOnly: 0

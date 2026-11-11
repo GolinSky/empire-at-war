@@ -643,6 +643,36 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+  secondStationWrapper:
+    keyValue:
+    - key: 0
+      value:
+        m_AssetGUID: 25718b59b3750974d9ac1171b96d9d15
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 1
+      value:
+        m_AssetGUID: 3b67f7ddb92f10949a3d846a3f6f4dac
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 2
+      value:
+        m_AssetGUID: 28bf33787dff4614bb4849edba83c999
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 3
+      value:
+        m_AssetGUID: 734e0235fb537ce4386c5ee0cda179c6
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
   <ReinforcementButton>k__BackingField: {fileID: -6947479030628330081, guid: 53891f2c9384e0343bde531bf54ebdcc,
     type: 3}
   <MaxUnitCapacity>k__BackingField: 120

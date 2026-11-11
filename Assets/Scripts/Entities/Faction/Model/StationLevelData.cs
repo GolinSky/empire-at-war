@@ -8,6 +8,10 @@ namespace EmpireAtWar.Models.Factions
     public class StationLevelData : Data
     {
         [SerializeField] private FactionData[] levels;
+        [Tooltip("Purchase of a second station; it is built at level 1.")]
+        [SerializeField] private FactionData secondStation;
+        [Tooltip("Second station upgrade costs, one per level like levels.")]
+        [SerializeField] private FactionData[] secondStationLevels;
 
         [field: SerializeField] public int MaxLevel { get; private set; }
 
@@ -17,6 +21,16 @@ namespace EmpireAtWar.Models.Factions
             if (level >= MaxLevel) return null;
 
             return levels[level - 1];
+        }
+
+        public FactionData SecondStation => secondStation;
+
+        /// <summary>Cost of upgrading the second station from <paramref name="level"/>; null at max level.</summary>
+        public FactionData GetSecondStationLevelFactionData(int level)
+        {
+            if (level >= MaxLevel) return null;
+
+            return secondStationLevels[level - 1];
         }
     }
 }

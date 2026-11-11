@@ -110,6 +110,10 @@ namespace EmpireAtWar.Services.Saves
                 case StructureKind.SpaceStation:
                     _spawner.SpawnRestoredStation(structure.Owner, structure.StationFaction, structure.Position, structure.Id);
                     break;
+                case StructureKind.SecondStation:
+                    context.SecondStations.Add(structure.Id, _spawner.SpawnRestoredSecondStation(structure.Owner,
+                        structure.StationFaction, structure.Position, structure.Id));
+                    break;
                 case StructureKind.MiningFacility:
                     context.MiningFacilities.Add(structure.Id, _spawner.SpawnRestoredMiningFacility(structure.Owner,
                         structure.MiningFacilityType, structure.Position, structure.Id, structure.ConstructionBuildTime));

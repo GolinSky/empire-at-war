@@ -26,6 +26,8 @@ using EmpireAtWar.Lifecycle;
 using DefendPlatformEntity = EmpireAtWar.Entities.DefendPlatform.DefendPlatform;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 using ShipEntity = EmpireAtWar.Ship.Ship;
+using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
+using EmpireAtWar.Entities.SpaceStation;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 {
@@ -56,6 +58,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly HashSet<long> _builtSquadrons = new HashSet<long>();
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
+        private readonly SpaceStationFactory _stationFactory;
+        private readonly SecondStationLevelModel _secondStation;
         private readonly FactionResearchModel _research;
 
         private bool _isInitialized;
@@ -64,6 +68,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         public float Income => DEFAULT_INCOME * Model.CurrentLevel * _research.StationIncomeMultiplier;
         public bool HasPendingReinforcement => _builds.Count > 0;
         public bool IsUpgradingStation => _builds.Builds.Any(build => build.Request is LevelUnitRequest);
+        public bool IsUpgradingSecondStation => _builds.Builds.Any(build => build.Request is SecondStationLevelUnitRequest);
         public IReadOnlyList<EnemyPendingBuild> PendingBuilds => _builds.Builds;
 
         public bool CanQueue(string requestId, int maxCount) => _builds.CanAdd(requestId, maxCount);
@@ -88,6 +93,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             ShipFactory shipFactory,
             MiningFacilityFactory miningFacilityFactory,
             DefendPlatformFactory defendPlatformFactory,
+            SpaceStationFactory stationFactory,
+            SecondStationLevelModel secondStation,
             FactionResearchModel research,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
@@ -100,6 +107,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _shipFactory = shipFactory;
             _miningFacilityFactory = miningFacilityFactory;
             _defendPlatformFactory = defendPlatformFactory;
+            _stationFactory = stationFactory;
+            _secondStation = secondStation;
             _research = research;
             _economyProvider = economyProvider;
             _wallet = wallet;
@@ -160,7 +169,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             if (!CanQueue(unitRequest.Id, unitRequest.FactionData.MaxCount) ||
                 !_productionAccess.CanProduce ||
                 unitRequest is LevelUnitRequest &&
-                (_productionAccess.ProductionHost != Owner || !_productionAccess.HasHostBase))
+                (_productionAccess.ProductionHost != Owner || !_productionAccess.HasHostBase) ||
+                unitRequest is SecondStationUnitRequest && _productionAccess.ProductionHost != Owner ||
+                unitRequest is SecondStationLevelUnitRequest secondLevel &&
+                (!_secondStation.IsBuilt || secondLevel.Level != _secondStation.CurrentLevel))
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "purchaseRejected",
                     $"unit={unitRequest.Id};reason=queue or production unavailable");
@@ -177,6 +189,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     }
 
                     break;
+                case SecondStationLevelUnitRequest secondLevelUnitRequest:
+                    if (IsUpgradingSecondStation || !_wallet.TrySpend(secondLevelUnitRequest))
+                    {
+                        return;
+                    }
+
+                    break;
                 case ShipUnitRequest:
                     if (!TryReserveAndSpend(unitRequest)) return;
                     _unitLimitModel.RecordShipOrder();
@@ -186,6 +205,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 case SquadronUnitRequest:
                 case MiningFacilityUnitRequest:
                 case DefendPlatformUnitRequest:
+                case SecondStationUnitRequest:
                     if (!TryReserveAndSpend(unitRequest)) return;
                     break;
                 default:
@@ -322,6 +342,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     Track(_defendPlatformFactory.Create(Owner, defendPlatformUnitRequest.Key, GenerateMapCoordinates()),
                         defendPlatformUnitRequest);
                     break;
+                case SecondStationUnitRequest secondStationUnitRequest:
+                    Track(_stationFactory.CreateSecond(Owner, _owner.Faction, GenerateMapCoordinates()),
+                        secondStationUnitRequest);
+                    break;
+                case SecondStationLevelUnitRequest secondStationLevelUnitRequest:
+                    _secondStation.CompleteLevelUpgrade();
+                    ReleaseUnit(secondStationLevelUnitRequest);
+                    break;
             }
             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "buildCompleted", $"unit={unitRequest.Id}");
         }
@@ -348,6 +376,19 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             facility.OnRelease += () =>
             {
                 _enemyStructurePlacementService.RecordDestroyedPosition(facility.transform.position);
+                ReleaseUnit(unitRequest);
+            };
+
+        public void AdoptSecondStation(SpaceStationEntity station, SecondStationUnitRequest unitRequest)
+        {
+            AdoptReservation(unitRequest);
+            Track(station, unitRequest);
+        }
+
+        private void Track(SpaceStationEntity station, SecondStationUnitRequest unitRequest) =>
+            station.Destroyed += () =>
+            {
+                _enemyStructurePlacementService.RecordDestroyedPosition(station.transform.position);
                 ReleaseUnit(unitRequest);
             };
 
@@ -396,7 +437,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         {
             if (unitRequest is LevelUnitRequest
                     ? !_productionAccess.HasHostBase
-                    : !_productionAccess.CanProduce && _productionAccess.ProductionHost != Owner)
+                    : unitRequest is SecondStationLevelUnitRequest
+                        ? !_secondStation.IsBuilt
+                        : !_productionAccess.CanProduce && _productionAccess.ProductionHost != Owner)
             {
                 if (unitRequest is ShipUnitRequest) _unitLimitModel.CancelShipOrder();
                 ReleaseUnit(unitRequest);

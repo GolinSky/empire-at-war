@@ -8,6 +8,8 @@ namespace EmpireAtWar.Controllers.Factions
         MiningFacility = 3,
         DefendPlatform = 4,
         Research = 5,
-        SuperWeapon = 6
+        SuperWeapon = 6,
+        SecondStation = 7,
+        SecondStationLevel = 8
     }
 }

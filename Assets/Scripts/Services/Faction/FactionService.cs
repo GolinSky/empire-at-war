@@ -46,6 +46,7 @@ namespace EmpireAtWar.Services.Factions
         private readonly PlayerFactionModel _model;
         private readonly FactionResearchModel _research;
         private readonly SuperWeaponModel _superWeapons;
+        private readonly SecondStationLevelModel _secondStation;
 
         private bool _isInitialized;
         private bool _followsHost;
@@ -68,8 +69,10 @@ namespace EmpireAtWar.Services.Factions
             FactionResearchModel research,
             SuperWeaponModel superWeapons,
             PlayerSlot owner,
-            IEntityLocator entities)
+            IEntityLocator entities,
+            SecondStationLevelModel secondStation)
         {
+            _secondStation = secondStation;
             _owner = owner;
             _model = model;
             _research = research;
@@ -130,14 +133,18 @@ namespace EmpireAtWar.Services.Factions
         {
             // Own queued units still reach the reinforcement pool after every team base falls; a hosted
             // player's queue needs a team base, and station upgrades and super weapons need the host's own.
-            if (NeedsHostBase(unitRequest)
-                    ? !_productionAccess.HasHostBase
-                    : !_productionAccess.CanProduce && _productionAccess.ProductionHost != _owner.Id)
+            // A second-station upgrade needs that station standing.
+            if (unitRequest is SecondStationLevelUnitRequest
+                    ? !_secondStation.IsBuilt
+                    : NeedsHostBase(unitRequest)
+                        ? !_productionAccess.HasHostBase
+                        : !_productionAccess.CanProduce && _productionAccess.ProductionHost != _owner.Id)
             {
                 if (PlayerFactionModel.IsHeroRequest(unitRequest, out UnitTypeId hero))
                     _model.SetHeroReserved(hero, false);
                 if (unitRequest is MiningFacilityUnitRequest ||
-                    unitRequest is DefendPlatformUnitRequest)
+                    unitRequest is DefendPlatformUnitRequest ||
+                    unitRequest is SecondStationUnitRequest)
                 {
                     _model.ReleaseStructure(unitRequest);
                 }
@@ -163,6 +170,10 @@ namespace EmpireAtWar.Services.Factions
                 case SuperWeaponUnitRequest superWeaponUnitRequest:
                     _superWeapons.CompleteCharging(superWeaponUnitRequest.Key);
                     return;
+                case SecondStationLevelUnitRequest:
+                    _secondStation.CompleteLevelUpgrade();
+                    StationUpgraded?.Invoke();
+                    return;
             }
 
             _reinforcementPool.Add(unitRequest);
@@ -174,6 +185,8 @@ namespace EmpireAtWar.Services.Factions
             if (!_productionAccess.CanProduce ||
                 unitRequest is LevelUnitRequest && _productionAccess.ProductionHost != _owner.Id ||
                 NeedsHostBase(unitRequest) && !_productionAccess.HasHostBase ||
+                unitRequest is SecondStationLevelUnitRequest secondLevel &&
+                (!_secondStation.IsBuilt || secondLevel.Level != _secondStation.CurrentLevel) ||
                 !_model.CanQueueUnit(unitRequest) ||
                 unitRequest is SuperWeaponUnitRequest superWeapon && !_superWeapons.CanPurchase(superWeapon.Key))
             {

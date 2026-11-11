@@ -42,6 +42,9 @@ namespace EmpireAtWar.Entities.SpaceStation
 
         private SpaceStationData Data { get; set; }
 
+        /// <summary>Raised once when the station is destroyed in battle.</summary>
+        public event System.Action Destroyed;
+
         public override string Id => GetType().Name;
 
         [Inject]
@@ -92,7 +95,11 @@ namespace EmpireAtWar.Entities.SpaceStation
             Release(false);
         }
 
-        private void HandleDestroyed() => Release(true);
+        private void HandleDestroyed()
+        {
+            Release(true);
+            Destroyed?.Invoke();
+        }
 
         // Each level toughens the station, installs that level's hardpoints and restores destroyed ones.
         private void ApplyLevel(int level)

@@ -6,5 +6,6 @@ namespace EmpireAtWar.Services.Networking.States
     public sealed class StationLevelSnapshot
     {
         public int Level;
+        public int SecondStationLevel = 1;
     }
 }

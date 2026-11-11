@@ -67,7 +67,7 @@ namespace EmpireAtWar.Tests.Editor
             EconomyService economy = new EconomyService(new EconomyModel(data, data.StartMoneyAmount), data,
                 new BattleStateNotifier(), new PlayerRegistry(), owner, research);
             FactionService station = new FactionService(null, null, null, economy, null,
-                faction, research, null, owner, null);
+                faction, research, null, owner, null, new SecondStationLevelModel());
             economy.Initialize();
             try
             {

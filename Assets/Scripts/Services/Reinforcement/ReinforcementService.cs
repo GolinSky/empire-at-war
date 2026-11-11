@@ -175,6 +175,9 @@ namespace EmpireAtWar.Services.Reinforcement
                 case DefendPlatformUnitRequest defendPlatformUnitRequest:
                     _model.AddReinforcement(defendPlatformUnitRequest);
                     break;
+                case SecondStationUnitRequest secondStationUnitRequest:
+                    _model.AddReinforcement(secondStationUnitRequest);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(request));
             }

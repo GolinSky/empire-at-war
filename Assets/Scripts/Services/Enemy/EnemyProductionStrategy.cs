@@ -28,6 +28,11 @@ namespace EmpireAtWar.Services.Enemy
         private const int SHIPS_PER_MINING_FACILITY = 3;
         private const int ULTRA_HARD_SHIPS_PER_MINING_FACILITY = 2;
 
+        /// <summary>Main station level from which a backup second station is worth its price.</summary>
+        private const int SECOND_STATION_MIN_LEVEL = 3;
+        /// <summary>A backup station waits until the AI holds this multiple of its price.</summary>
+        private const float SECOND_STATION_MONEY_MULTIPLIER = 2f;
+
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
         private readonly IUnitRequestFactory _requestFactory;
         private readonly IEconomyModelObserver _economyModel;
@@ -47,6 +52,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyCounterProductionModel _counterModel;
         private readonly HostileIntelModel _intel;
         private readonly EnemyStationPressureTracker _stationPressure;
+        private readonly SecondStationLevelModel _secondStation;
 
         private readonly ForceComposition _ownForce = new ForceComposition();
         private readonly ForceComposition _hostileForce = new ForceComposition();
@@ -80,8 +86,10 @@ namespace EmpireAtWar.Services.Enemy
             EnemyCounterProductionModel counterModel,
             TeamIntelRegistry intelRegistry,
             PlayerSlot owner,
-            EnemyStationPressureTracker stationPressure)
+            EnemyStationPressureTracker stationPressure,
+            SecondStationLevelModel secondStation)
         {
+            _secondStation = secondStation;
             _owner = owner;
             _stationPressure = stationPressure;
             _playerRoster = playerRoster;
@@ -204,6 +212,19 @@ namespace EmpireAtWar.Services.Enemy
             {
                 levelData = null;
             }
+            // Both stations level up; the second takes the upgrade whenever the main one cannot.
+            bool upgradesSecondStation = false;
+            if (levelData == null && _productionAccess.ProductionHost == _owner.Id && _secondStation.IsBuilt)
+            {
+                FactionData secondLevelData = _factionModel.GetSecondStationLevelFactionData(_secondStation.CurrentLevel);
+                if (secondLevelData != null && _purchaseProcessor.CanQueue(
+                        _requestFactory.ConstructSecondStationLevelRequest(secondLevelData, _secondStation.CurrentLevel).Id,
+                        secondLevelData.MaxCount))
+                {
+                    levelData = secondLevelData;
+                    upgradesSecondStation = true;
+                }
+            }
             bool hasLevelUpOption = levelData != null;
             bool canLevelUp = levelData != null && levelData.Price <= _economyModel.Money;
             bool canResearchIncome = TrySelectResearch(true, out ResearchType incomeResearch,
@@ -217,6 +238,11 @@ namespace EmpireAtWar.Services.Enemy
             int defensePlatformTarget = isUltraHard
                 ? 1 + _stateProvider.ActiveShipCount / 3
                 : 1;
+
+            if (TryBuySecondStation(canPlaceStructure))
+            {
+                return;
+            }
 
             if (!_stationPressure.IsStationCritical && TryBuyScout(shipCount,
                     hasMiningSelection && miningFacilityCount < miningFacilityTarget,
@@ -268,6 +294,8 @@ namespace EmpireAtWar.Services.Enemy
                     _requestFactory.ConstructUnitRequest(mining.Value, mining.Key),
                 EnemyProductionCategory.Defense =>
                     _requestFactory.ConstructUnitRequest(defense.Value, defense.Key),
+                EnemyProductionCategory.Level when upgradesSecondStation =>
+                    _requestFactory.ConstructSecondStationLevelRequest(levelData, _secondStation.CurrentLevel),
                 EnemyProductionCategory.Level =>
                     _requestFactory.ConstructUnitRequest(levelData, _factionModel.CurrentLevel),
                 EnemyProductionCategory.Research when canResearchIncome =>
@@ -299,6 +327,22 @@ namespace EmpireAtWar.Services.Enemy
                     hasCounter ? counterId : UnitTypeId.Ship(ship.Key), request.FactionData) : 0f,
                 _stationPressure.EstimatedTimeToLossSeconds);
             _purchaseProcessor.Purchase(request);
+        }
+
+        // A backup station once the economy can spare it, or at once after the main station falls.
+        private bool TryBuySecondStation(bool canPlaceStructure)
+        {
+            FactionData data = _factionModel.SecondStationFactionData;
+            bool isBackup = _productionAccess.HasHostBase;
+            if (_productionAccess.ProductionHost != _owner.Id || _stationPressure.IsStationCritical ||
+                !canPlaceStructure || _secondStation.IsBuilt || !IsAffordable(data) ||
+                !CanReserve<SecondStationUnitRequest>(SecondStationUnitRequest.REQUEST_ID, data) ||
+                isBackup && (_factionModel.CurrentLevel < SECOND_STATION_MIN_LEVEL ||
+                             _economyModel.Money < data.Price * SECOND_STATION_MONEY_MULTIPLIER))
+                return false;
+
+            _purchaseProcessor.Purchase(_requestFactory.ConstructSecondStationRequest(data));
+            return true;
         }
 
         private int CountReservedShips()

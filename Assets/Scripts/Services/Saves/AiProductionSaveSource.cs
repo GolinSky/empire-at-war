@@ -22,12 +22,15 @@ namespace EmpireAtWar.Services.Saves
         private readonly FactionRoster _roster;
         private readonly StationLevelData _levels;
         private readonly IProductionAccess _production;
+        private readonly SecondStationLevelModel _secondStation;
 
         public AiProductionSaveSource(PlayerSaveRegistry registry, PlayerSlot owner, EnemyFactionModel faction,
             FactionResearchModel research, EnemyFactionController controller, EnemyUnitLimitModel limits,
-            IUnitRequestFactory requests, FactionRoster roster, StationLevelData levels, IProductionAccess production)
+            IUnitRequestFactory requests, FactionRoster roster, StationLevelData levels, IProductionAccess production,
+            SecondStationLevelModel secondStation)
             : base(registry, owner)
         {
+            _secondStation = secondStation;
             _production = production;
             _faction = faction;
             _research = research;
@@ -41,6 +44,7 @@ namespace EmpireAtWar.Services.Saves
         public override void Capture(PlayerSave save)
         {
             save.StationLevel = _faction.CurrentLevel;
+            save.SecondStationLevel = _secondStation.CurrentLevel;
             save.Research = ResearchSave.CaptureAll(_research);
             save.PendingBuilds = _controller.PendingBuilds
                 .Select(build => UnitRequestSave.From(build.Request, build.TimeLeft)).ToArray();
@@ -52,6 +56,7 @@ namespace EmpireAtWar.Services.Saves
         {
             // A hosted ally copies its host's level.
             if (_production.ProductionHost == Owner) _faction.CurrentLevel = save.StationLevel;
+            _secondStation.CurrentLevel = save.SecondStationLevel;
             ResearchSave.RestoreAll(save.Research, _research);
             for (int i = 0; i < save.ShipOrders; i++) _limits.RecordShipOrder();
             foreach (UnitRequestSave build in save.PendingBuilds)
@@ -76,8 +81,14 @@ namespace EmpireAtWar.Services.Saves
                 }
             }
 
+            foreach (StructureSave structure in context.Save.Structures.Where(structure =>
+                         structure.Owner == Owner && structure.Kind == StructureKind.SecondStation))
+                _controller.AdoptSecondStation(context.SecondStations[structure.Id],
+                    _requests.ConstructSecondStationRequest(_levels.SecondStation));
+
             foreach (StructureSave structure in context.Save.Structures.Where(structure => structure.Owner == Owner &&
-                         structure.Kind != StructureKind.SpaceStation && !context.SiteFacilities.Contains(structure.Id)))
+                         structure.Kind is not (StructureKind.SpaceStation or StructureKind.SecondStation) &&
+                         !context.SiteFacilities.Contains(structure.Id)))
             {
                 if (structure.Kind == StructureKind.MiningFacility)
                     _controller.AdoptMiningFacility(context.MiningFacilities[structure.Id], _requests.ConstructUnitRequest(

@@ -17,12 +17,15 @@ namespace EmpireAtWar.Services.Saves
         private readonly IUnitRequestFactory _requests;
         private readonly FactionRoster _roster;
         private readonly StationLevelData _levels;
+        private readonly SecondStationLevelModel _secondStation;
 
         public HumanProductionSaveSource(PlayerSaveRegistry registry, PlayerSlot owner, PlayerFactionModel faction,
             FactionResearchModel research, FactionService factionService, IEconomyProvider economyProvider,
-            IUnitRequestFactory requests, FactionRoster roster, StationLevelData levels)
+            IUnitRequestFactory requests, FactionRoster roster, StationLevelData levels,
+            SecondStationLevelModel secondStation)
             : base(registry, owner)
         {
+            _secondStation = secondStation;
             _faction = faction;
             _research = research;
             _factionService = factionService;
@@ -35,6 +38,7 @@ namespace EmpireAtWar.Services.Saves
         public override void Capture(PlayerSave save)
         {
             save.StationLevel = _faction.CurrentLevel;
+            save.SecondStationLevel = _secondStation.CurrentLevel;
             save.Research = ResearchSave.CaptureAll(_research);
             save.Production = _faction.QueuedItems
                 .Select(item => UnitRequestSave.From(item.UnitRequest, item.RemainingBuildTime)).ToArray();
@@ -43,6 +47,7 @@ namespace EmpireAtWar.Services.Saves
         public override void RestoreBeforeUnits(PlayerSave save)
         {
             _faction.CurrentLevel = save.StationLevel;
+            _secondStation.CurrentLevel = save.SecondStationLevel;
             _economyProvider.RecalculateIncome(_factionService);
             ResearchSave.RestoreAll(save.Research, _research);
             _faction.RestoreQueue(save.Production.Select(item =>

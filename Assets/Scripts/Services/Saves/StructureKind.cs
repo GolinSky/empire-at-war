@@ -4,6 +4,7 @@ namespace EmpireAtWar.Services.Saves
     {
         SpaceStation = 0,
         MiningFacility = 1,
-        DefendPlatform = 2
+        DefendPlatform = 2,
+        SecondStation = 3
     }
 }

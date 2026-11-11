@@ -18,10 +18,17 @@ namespace EmpireAtWar.SpaceStation
     public sealed class SpaceStationInstaller : DynamicEntityInstaller<SpaceStationEntity, SpaceStationData>
     {
         private readonly FactionType _factionType;
+        private readonly SecondStationLevelModel _secondStationLevel;
 
+        /// <param name="secondStationLevel">The owner's second-station level; null for the main station.</param>
         public SpaceStationInstaller(SpaceStationEntity view, SpaceStationData data, ILocalPlayer localPlayer,
-            PlayerId owner, long entityId, Vector3 position, FactionType factionType)
-            : base(view, data, localPlayer, owner, entityId, position) => _factionType = factionType;
+            PlayerId owner, long entityId, Vector3 position, FactionType factionType,
+            SecondStationLevelModel secondStationLevel = null)
+            : base(view, data, localPlayer, owner, entityId, position)
+        {
+            _factionType = factionType;
+            _secondStationLevel = secondStationLevel;
+        }
 
         protected override void InstallFeatures(IContainerBuilder builder)
         {
@@ -34,8 +41,16 @@ namespace EmpireAtWar.SpaceStation
             builder.Register<StationFootprintFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<StationDurabilityFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<StationLevelFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            bool isSecondStation = _secondStationLevel != null;
+            if (isSecondStation)
+            {
+                // The second station levels on its own track instead of the player's main station level.
+                builder.RegisterInstance(_secondStationLevel).As<IFactionLevelObserver>();
+                builder.Register<SecondStationFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            }
             builder.Register<StructureSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces()
-                .WithParameter("kind", StructureKind.SpaceStation).WithParameter("type", (int)_factionType);
+                .WithParameter("kind", isSecondStation ? StructureKind.SecondStation : StructureKind.SpaceStation)
+                .WithParameter("type", (int)_factionType);
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.Base, SelectionType.Base);
             EntityFeatureBindings.RegisterHighlight(builder, Bindings);
             EntityFeatureBindings.RegisterCombatModifiers(builder);

@@ -232,6 +232,9 @@ namespace EmpireAtWar.Models.Factions
                     for (int i = 0; i < GetStructureCount(request.GetType(), request.Id); i++)
                         yield return request;
                 }
+                var secondStation = new SecondStationUnitRequest(_stationLevels.SecondStation);
+                for (int i = 0; i < GetStructureCount(secondStation.GetType(), secondStation.Id); i++)
+                    yield return secondStation;
             }
         }
 
@@ -331,7 +334,8 @@ namespace EmpireAtWar.Models.Factions
         private static bool IsStructureRequest(UnitRequest unitRequest)
         {
             return unitRequest is MiningFacilityUnitRequest ||
-                unitRequest is DefendPlatformUnitRequest;
+                unitRequest is DefendPlatformUnitRequest ||
+                unitRequest is SecondStationUnitRequest;
         }
 
         public void Advance(float deltaTime)

@@ -21,6 +21,10 @@ namespace EmpireAtWar.Controllers.Factions
         ResearchUnitRequest ConstructUnitRequest(FactionData factionData, ResearchType researchType, int tier);
 
         SuperWeaponUnitRequest ConstructUnitRequest(FactionData factionData, SuperWeaponType superWeaponType);
+
+        SecondStationUnitRequest ConstructSecondStationRequest(FactionData factionData);
+
+        SecondStationLevelUnitRequest ConstructSecondStationLevelRequest(FactionData factionData, int level);
     }
 
     public class UnitRequestFactory : IUnitRequestFactory
@@ -64,5 +68,11 @@ namespace EmpireAtWar.Controllers.Factions
             if (!_superWeaponsEnabled) throw new System.InvalidOperationException("Super weapons are disabled for this player.");
             return new SuperWeaponUnitRequest(factionData, superWeaponType);
         }
+
+        public SecondStationUnitRequest ConstructSecondStationRequest(FactionData factionData) =>
+            new SecondStationUnitRequest(factionData);
+
+        public SecondStationLevelUnitRequest ConstructSecondStationLevelRequest(FactionData factionData, int level) =>
+            new SecondStationLevelUnitRequest(factionData, level);
     }
 }

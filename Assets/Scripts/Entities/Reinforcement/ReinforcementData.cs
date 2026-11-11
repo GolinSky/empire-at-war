@@ -21,6 +21,7 @@ namespace EmpireAtWar.Models.Reinforcement
         [SerializeField] private DictionaryWrapper<SquadronType, AssetReferenceGameObject> spawnSquadronWrapper;
         [SerializeField] private DictionaryWrapper<MiningFacilityType, AssetReferenceGameObject> spawnFacilityWrapper;
         [SerializeField] private DictionaryWrapper<DefendPlatformType, AssetReferenceGameObject> defendPlatformWrapper;
+        [SerializeField] private DictionaryWrapper<FactionType, AssetReferenceGameObject> secondStationWrapper;
 
         [field: SerializeField] public SpawnShipUi ReinforcementButton { get; private set; }
         [field: SerializeField] public int MaxUnitCapacity { get; private set; }
@@ -55,6 +56,9 @@ namespace EmpireAtWar.Models.Reinforcement
             return defendPlatformWrapper.Dictionary.Values.First().AssetGUID;
         }
 
+        public string GetSecondStationPrefabKey(FactionType faction) =>
+            secondStationWrapper.Dictionary[faction].AssetGUID;
+
         /// <summary>Previews a player of this faction can place: its ships and squadrons plus every structure.</summary>
         public IEnumerable<string> GetPreviewKeys(FactionDefinition faction)
         {
@@ -72,6 +76,7 @@ namespace EmpireAtWar.Models.Reinforcement
                 yield return preview.AssetGUID;
             foreach (AssetReferenceGameObject preview in defendPlatformWrapper.Dictionary.Values)
                 yield return preview.AssetGUID;
+            yield return GetSecondStationPrefabKey(faction.FactionType);
         }
     }
 }

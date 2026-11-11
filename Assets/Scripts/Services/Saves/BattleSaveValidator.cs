@@ -68,7 +68,8 @@ namespace EmpireAtWar.Services.Saves
             foreach (StructureSave structure in save.Structures)
             {
                 if (!entityIds.Add(structure.Id)) throw new InvalidDataException($"Duplicate entity id {structure.Id}.");
-                if (structure.Kind != StructureKind.SpaceStation) facilityIds.Add(structure.Id);
+                if (structure.Kind is not (StructureKind.SpaceStation or StructureKind.SecondStation))
+                    facilityIds.Add(structure.Id);
             }
             foreach (UnitSave unit in save.Units)
             {
@@ -156,7 +157,7 @@ namespace EmpireAtWar.Services.Saves
         {
             if (!players.ContainsKey(structure.Owner))
                 throw new InvalidDataException($"Structure {structure.Id} belongs to unknown player {structure.Owner}.");
-            if (structure.Kind != StructureKind.SpaceStation &&
+            if (structure.Kind is not (StructureKind.SpaceStation or StructureKind.SecondStation) &&
                 (!float.IsFinite(structure.ConstructionProgress) || structure.ConstructionProgress < 0f ||
                  structure.ConstructionProgress > 1f || !float.IsFinite(structure.ConstructionBuildTime) ||
                  structure.ConstructionBuildTime < 0f ||
@@ -165,6 +166,7 @@ namespace EmpireAtWar.Services.Saves
             switch (structure.Kind)
             {
                 case StructureKind.SpaceStation:
+                case StructureKind.SecondStation:
                     if (!Enum.IsDefined(typeof(FactionType), structure.StationFaction))
                         throw new InvalidDataException($"Station {structure.Id} has unknown faction {structure.StationFaction}.");
                     ValidateHardPoints(_assets.LoadComponent<SpaceStationEntity>(structure.StationFaction + "SpaceStationView"),
@@ -323,6 +325,9 @@ namespace EmpireAtWar.Services.Saves
                         request.Tier >= 1 && request.Tier <= line.Tiers.Length,
                     UnitRequestKind.SuperWeapon => Enum.IsDefined(typeof(SuperWeaponType), (SuperWeaponType)request.Key) &&
                         roster.SuperWeapons.ContainsKey((SuperWeaponType)request.Key),
+                    UnitRequestKind.SecondStation => request.Key == 0,
+                    UnitRequestKind.SecondStationLevel =>
+                        request.Key >= 1 && levels.GetSecondStationLevelFactionData(request.Key) != null,
                     _ => false
                 };
                 if (!valid) throw new InvalidDataException($"Saved production request ({request.Kind}, {request.Key}) is not valid.");

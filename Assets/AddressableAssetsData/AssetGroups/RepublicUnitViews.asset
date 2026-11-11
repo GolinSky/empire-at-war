@@ -95,6 +95,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25718b59b3750974d9ac1171b96d9d15
+    m_Address: RepublicSecondStationReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2e946fce1a75f284e9066e2dc4e37b1d
     m_Address: CR70ReinforcementView
     m_ReadOnly: 0

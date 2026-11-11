@@ -704,7 +704,8 @@ namespace EmpireAtWar.Tests.Editor
                     profileCatalog: UniformValueCatalog(definition),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
-                    owner: owner, stationPressure: new EnemyStationPressureTracker());
+                    owner: owner, stationPressure: new EnemyStationPressureTracker(),
+                    secondStation: new SecondStationLevelModel());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -784,7 +785,8 @@ namespace EmpireAtWar.Tests.Editor
                     profileCatalog: UniformValueCatalog(definition),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
-                    owner: owner, stationPressure: new EnemyStationPressureTracker());
+                    owner: owner, stationPressure: new EnemyStationPressureTracker(),
+                    secondStation: new SecondStationLevelModel());
 
                 UnitLimitKey capacityHolder = GetUnitId<ShipUnitRequest>("capacity-holder");
                 int heldCapacity = MAX_UNIT_CAPACITY - unitLimitModel.CurrentUnitCapacity -
@@ -880,7 +882,8 @@ namespace EmpireAtWar.Tests.Editor
                     profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
-                    owner: owner, stationPressure: new EnemyStationPressureTracker());
+                    owner: owner, stationPressure: new EnemyStationPressureTracker(),
+                    secondStation: new SecondStationLevelModel());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -959,7 +962,8 @@ namespace EmpireAtWar.Tests.Editor
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
-                    stationPressure: pressure);
+                    stationPressure: pressure,
+                    secondStation: new SecondStationLevelModel());
 
                 strategy.Start();
                 strategy.Tick(0f);

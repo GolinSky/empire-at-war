@@ -3,6 +3,7 @@ using EmpireAtWar.Entities.Squadrons;
 using DefendPlatformEntity = EmpireAtWar.Entities.DefendPlatform.DefendPlatform;
 using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 using ShipEntity = EmpireAtWar.Ship.Ship;
+using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
 namespace EmpireAtWar.Services.Saves
 {
@@ -14,6 +15,7 @@ namespace EmpireAtWar.Services.Saves
         public Dictionary<long, Squadron> Squadrons { get; } = new Dictionary<long, Squadron>();
         public Dictionary<long, MiningFacilityEntity> MiningFacilities { get; } = new Dictionary<long, MiningFacilityEntity>();
         public Dictionary<long, DefendPlatformEntity> DefendPlatforms { get; } = new Dictionary<long, DefendPlatformEntity>();
+        public Dictionary<long, SpaceStationEntity> SecondStations { get; } = new Dictionary<long, SpaceStationEntity>();
         /// <summary>Facilities a capture site built; they belong to the site, not to their owner's structure limits.</summary>
         public HashSet<long> SiteFacilities { get; } = new HashSet<long>();
 

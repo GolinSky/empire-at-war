@@ -30,6 +30,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private readonly Dictionary<ResearchType, FactionUnitUi> _researchUnitsUi =
             new Dictionary<ResearchType, FactionUnitUi>();
         private FactionUnitUi _levelFactionUnitUi;
+        private FactionUnitUi _secondLevelUnitUi;
+        private SecondStationLevelModel _secondStation;
+        private StationLevelData _stationLevels;
         private FactionRoster _roster;
         private Transform _unitParent;
         private UiContentLayout _contentLayout;
@@ -49,7 +52,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public void Initialize()
         {
             if (_model == null || _research == null || _presenter == null || _roster == null ||
-                _unitRequestFactory == null)
+                _unitRequestFactory == null || _secondStation == null || _stationLevels == null)
             {
                 throw new InvalidOperationException(
                     "Faction UI dependencies must be set before initialization.");
@@ -96,6 +99,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
                     data.Key));
             }
 
+            AddUi(_unitRequestFactory.ConstructSecondStationRequest(_stationLevels.SecondStation));
+            CreateSecondLevelUnit();
+
             foreach (var data in _roster.SuperWeapons)
             {
                 AddUi(_unitRequestFactory.ConstructUnitRequest(
@@ -110,6 +116,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
             _model.OnSelectionTypeChanged += HandleSelectionChanged;
             _model.OnLevelUpgraded += UpdateUnits;
+            _secondStation.OnLevelUpgraded += UpdateSecondLevelUnit;
+            _secondStation.BuiltChanged += HandleSecondStationBuiltChanged;
             _research.OnResearchCompleted += UpdateResearchUnit;
             _isInitialized = true;
             RefreshUnitVisibility(_model.SelectionType);
@@ -124,6 +132,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
             _model.OnSelectionTypeChanged -= HandleSelectionChanged;
             _model.OnLevelUpgraded -= UpdateUnits;
+            _secondStation.OnLevelUpgraded -= UpdateSecondLevelUnit;
+            _secondStation.BuiltChanged -= HandleSecondStationBuiltChanged;
             _research.OnResearchCompleted -= UpdateResearchUnit;
             if (_contentLayout != null) _contentLayout.DetachContent();
             _isInitialized = false;
@@ -154,6 +164,12 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public void SetUnitRequestFactory(IUnitRequestFactory unitRequestFactory)
         {
             _unitRequestFactory = unitRequestFactory;
+        }
+
+        public void SetSecondStation(SecondStationLevelModel secondStation, StationLevelData stationLevels)
+        {
+            _secondStation = secondStation;
+            _stationLevels = stationLevels;
         }
 
         public void BuyUnit(UnitRequest unitRequest)
@@ -277,11 +293,37 @@ namespace EmpireAtWar.Entities.Faction.Ui
             RefreshUnitVisibility(_model.SelectionType);
         }
 
+        // The second station's level-up card exists only while that station stands.
+        private void CreateSecondLevelUnit()
+        {
+            if (!_secondStation.IsBuilt) return;
+            FactionData levelData = _stationLevels.GetSecondStationLevelFactionData(_secondStation.CurrentLevel);
+            if (levelData == null) return;
+            _secondLevelUnitUi = AddUi(
+                _unitRequestFactory.ConstructSecondStationLevelRequest(levelData, _secondStation.CurrentLevel));
+        }
+
+        private void UpdateSecondLevelUnit(int level)
+        {
+            if (_secondLevelUnitUi != null)
+            {
+                _factionUnitsUi.Remove(_secondLevelUnitUi);
+                _secondLevelUnitUi.SetActive(false);
+                _secondLevelUnitUi.Destroy();
+                _secondLevelUnitUi = null;
+            }
+
+            CreateSecondLevelUnit();
+            RefreshUnitVisibility(_model.SelectionType);
+        }
+
+        private void HandleSecondStationBuiltChanged(bool isBuilt) => UpdateSecondLevelUnit(_secondStation.CurrentLevel);
+
         // Heroes, structure population caps, station upgrades and research tiers hide at their limit.
         // Ship and squadron queue limits only block the card: it becomes buyable again as the queue drains.
         private static bool HidesAtLimit(FactionUnitUi unit) =>
             unit.FactionData.IsHero || unit.Request is MiningFacilityUnitRequest or DefendPlatformUnitRequest
-                or LevelUnitRequest or ResearchUnitRequest;
+                or LevelUnitRequest or ResearchUnitRequest or SecondStationUnitRequest or SecondStationLevelUnitRequest;
 
         private void HandleSelectionChanged(SelectionType selectionType)
         {
