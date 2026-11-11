@@ -9,9 +9,10 @@ namespace EmpireAtWar.Views.MiniMap
 {
     public class MarkView:MonoBehaviour
     {
-        private const float STATION_SIZE = 18f;
+        private const float STATION_SIZE = 24f;
         private const float SHIP_SIZE = 6f;
         private const float PLATFORM_SIZE = 14f;
+        private const float TIBANNA_GAS_STATION_SIZE = 10f;
         private const float ZONE_SIZE_SCALE = 0.65f;
         private const float ZONE_ALPHA = 0.35f;
 
@@ -55,6 +56,7 @@ namespace EmpireAtWar.Views.MiniMap
             {
                 MarkType.Ship => SHIP_SIZE,
                 MarkType.PlayerBase or MarkType.EnemyBase => STATION_SIZE,
+                MarkType.TibannaGasStation => TIBANNA_GAS_STATION_SIZE,
                 _ => PLATFORM_SIZE
             });
             if (marker.WorldDiameter > 0f)

@@ -177,7 +177,9 @@ namespace EmpireAtWar.Entities.MiniMap
             if (key is MiniMapMarker marker)
             {
                 _tooltips.Show(source, key, anchor, () => !_model.IsInputBlocked && marker.Visible,
-                    () => new TooltipContent(title: marker.MarkType.ToString(),
+                    () => new TooltipContent(title: marker.MarkType == MarkType.TibannaGasStation
+                            ? "Tibanna Gas Station"
+                            : marker.MarkType.ToString(),
                         description: marker.MarkType == MarkType.ReinforcementZone
                             ? "Deploy reinforcements inside a friendly zone."
                             : marker.MarkType == MarkType.CaptureSite

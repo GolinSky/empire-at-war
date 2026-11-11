@@ -28,6 +28,7 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         private readonly PlayerId _owner;
         private readonly SelectionType _selectionType;
+        private readonly MarkType? _markTypeOverride;
 
         public MiniMapUnitMarkerPresenter(
             IHealthModelObserver healthModel,
@@ -37,7 +38,8 @@ namespace EmpireAtWar.Presenters.MiniMap
             [Key(EntityBindType.ViewTransform)] Transform viewTransform,
             PlayerId owner,
             SelectionType selectionType, EmpireAtWar.Components.Combat.CombatModifiers modifiers,
-            ISlowTickService slowTick)
+            ISlowTickService slowTick,
+            MarkType? markTypeOverride)
         {
             _slowTick = slowTick;
             _localPlayer = localPlayer;
@@ -45,6 +47,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             _viewTransform = viewTransform;
             _owner = owner;
             _selectionType = selectionType;
+            _markTypeOverride = markTypeOverride;
             _healthModel = healthModel;
             _visionService = visionService;
             _modifiers = modifiers;
@@ -58,7 +61,7 @@ namespace EmpireAtWar.Presenters.MiniMap
                 return;
             }
 
-            _marker = new MiniMapMarker(GetMarkType(), _owner);
+            _marker = new MiniMapMarker(_markTypeOverride ?? GetMarkType(), _owner);
             Vector3 position = _viewTransform.position;
             _marker.SetPosition(position.x, position.z);
             _marker.SetVisible(_localPlayer.IsFriendly(_owner));

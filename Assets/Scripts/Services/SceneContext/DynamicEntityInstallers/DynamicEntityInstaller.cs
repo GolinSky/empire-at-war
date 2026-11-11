@@ -1,5 +1,6 @@
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Extensions;
+using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace EmpireAtWar
         protected EntityBindings Bindings => View.Bindings;
         protected ILocalPlayer LocalPlayer { get; }
         protected PlayerId Owner { get; }
+        protected virtual MarkType? MiniMapMarkOverride => null;
         private readonly long _entityId;
         private readonly Vector3 _startPosition;
 
@@ -39,7 +41,7 @@ namespace EmpireAtWar
             builder.RegisterInstance(View.transform).Keyed(EntityBindType.ViewTransform);
             builder.RegisterComponent(View).AsSelf().AsImplementedInterfaces();
             InstallFeatures(builder);
-            EntityInstaller.Register(builder, View);
+            EntityInstaller.Register(builder, View, MiniMapMarkOverride);
             foreach (MonoBehaviour injectable in Bindings.Injectables)
                 builder.RegisterComponent(injectable).Keyed(injectable);
         }

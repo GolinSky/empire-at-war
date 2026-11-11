@@ -2,6 +2,7 @@
 using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.SpawnBlocking;
@@ -17,6 +18,9 @@ namespace EmpireAtWar.MiningFacility
     {
         private readonly MiningFacilityType _type;
         private readonly float _buildTime;
+
+        protected override MarkType? MiniMapMarkOverride =>
+            _type == MiningFacilityType.TibannaGasStation ? MarkType.TibannaGasStation : null;
 
         public MiningFacilityInstaller(MiningFacilityEntity view, MiningFacilityData data, ILocalPlayer localPlayer,
             PlayerId owner, long entityId, Vector3 position, MiningFacilityType type, float buildTime = 0f)

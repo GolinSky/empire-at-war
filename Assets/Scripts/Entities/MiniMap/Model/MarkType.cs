@@ -13,5 +13,6 @@
         ReinforcementZone = 8,
         CaptureSite = 9,
         SatelliteSite = 10,
+        TibannaGasStation = 11,
     }
 }
