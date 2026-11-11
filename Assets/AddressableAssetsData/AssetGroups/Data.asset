@@ -215,6 +215,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6cb15db6226c4a40949f8430e95340c1
+    m_Address: MediatorBattlecruiserShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6fe145e29f7c63b48891be7c7b366040
     m_Address: TIEAvengerSquadronData
     m_ReadOnly: 0

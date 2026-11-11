@@ -381,6 +381,26 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: f20def5849b5bd649bb2e04331267807,
           type: 3}
+    - key: 326
+      value:
+        matchups: {fileID: 0}
+        description: Mon Calamari battlecruiser with 35,000 hull and 40,000 shields.
+          Eight heavy dual turbolasers, six heavy dual ion cannons, eight medium
+          dual turbolasers, six medium dual laser cannons and six heavy laser cannons.
+          Launches one Y-wing bomber squadron. Power to Weapons quadruples fire rate
+          for 10 seconds, reduces speed by 25% and increases damage taken by 50%.
+          60-second cooldown.
+        role: Capital ship / Heavy frontline combat
+        iconKey: 7c9824186eb64db48a578111cfce264b:21300000
+        isHero: 0
+        <Name>k__BackingField: Mediator Battlecruiser
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 10000
+        <BuildTime>k__BackingField: 130
+        <UnitCapacity>k__BackingField: 25
+        <Icon>k__BackingField: {fileID: 21300000, guid: 7c9824186eb64db48a578111cfce264b,
+          type: 3}
   squadrons:
     keyValue:
     - key: 1

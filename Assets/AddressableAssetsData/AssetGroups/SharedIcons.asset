@@ -315,6 +315,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c9824186eb64db48a578111cfce264b
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MediatorBattlecruiserIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7e5117ae6840c8d4a9252e2b589de44f
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/CR70Icon.png
     m_ReadOnly: 0

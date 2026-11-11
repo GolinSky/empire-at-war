@@ -1589,3 +1589,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: MediatorBattlecruiserShipView
+      value:
+        m_AssetGUID: 535537be84cd9f04b98c514f178d053c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MediatorBattlecruiserShipData
+      value:
+        m_AssetGUID: 6cb15db6226c4a40949f8430e95340c1
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
