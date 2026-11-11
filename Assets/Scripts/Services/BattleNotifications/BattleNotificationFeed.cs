@@ -14,11 +14,11 @@ namespace EmpireAtWar.Services.BattleNotifications
         public const int MAX_PENDING = 8;
         public const float MAX_AGE_FACTOR = 2f;
         public const float DISMISS_MUTE_SECONDS = 15f;
-        private const float OUTCOME_SECONDS = 12f;
-        private const float URGENT_SECONDS = 8f;
-        private const float TACTICAL_SECONDS = 6f;
-        private const float FEEDBACK_SECONDS = 3f;
-        private const float PROGRESS_SECONDS = 4f;
+        private const float OUTCOME_SECONDS = 18f;
+        private const float URGENT_SECONDS = 12f;
+        private const float TACTICAL_SECONDS = 9f;
+        private const float FEEDBACK_SECONDS = 5f;
+        private const float PROGRESS_SECONDS = 6f;
 
         private readonly List<BattleNotification> _visible = new List<BattleNotification>();
         private readonly List<BattleNotification> _pending = new List<BattleNotification>();

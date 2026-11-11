@@ -94,8 +94,8 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Post_RepeatsForever_CardStillExpiresAtMaxAge()
         {
-            // Tactical lives 6 s; repeats extend it to at most 12 s.
-            for (int i = 0; i < 12; i++)
+            // Tactical lives 9 s and repeats extend it to at most 18 s.
+            for (int i = 0; i < 18; i++)
             {
                 _feed.Post(BattleNotificationPriority.Tactical, "Ship lost", "loss", "{0} ships lost");
                 _feed.Advance(1.05f);
@@ -117,7 +117,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_hidden, Is.Empty);
             Assert.That(_feed.Visible[0].Text, Is.EqualTo("Station under attack"));
 
-            _feed.Advance(8.1f);
+            _feed.Advance(11f);
             Assert.That(_hidden, Is.EqualTo(new[] { "Station under attack" }));
         }
 
@@ -143,7 +143,10 @@ namespace EmpireAtWar.Tests.Editor
             _feed.Post(BattleNotificationPriority.Tactical, "C");
             _feed.Post(BattleNotificationPriority.Tactical, "D");
 
-            _feed.Advance(6.5f);
+            _feed.Advance(8.5f);
+            Assert.That(_hidden, Is.Empty);
+
+            _feed.Advance(1f);
 
             Assert.That(_hidden, Is.EqualTo(new[] { "C" }));
             Assert.That(_shown, Is.EqualTo(new[] { "A", "B", "C", "D" }));
