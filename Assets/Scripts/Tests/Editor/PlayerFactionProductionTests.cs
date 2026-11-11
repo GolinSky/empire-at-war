@@ -291,11 +291,13 @@ namespace EmpireAtWar.Tests.Editor
                     new DefendPlatformUnitRequest(structureData, DefendPlatformType.Xq6),
                     new ShipUnitRequest(heroData, ShipType.HomeOne)
                 };
-                var host = new PlayerFactionModel(null, roster);
+                StationLevelData levels = AssetDatabase.LoadAssetAtPath<StationLevelData>(
+                    "Assets/Settings/Data/Factions/Shared/StationLevelData.asset");
+                var host = new PlayerFactionModel(levels, roster);
                 foreach (UnitRequest request in requests) host.QueueUnit(request);
                 host.Advance(1f);
 
-                var client = new PlayerFactionModel(null, roster);
+                var client = new PlayerFactionModel(levels, roster);
                 client.ReplaceQueue(host.QueuedItems.ToArray(), host.PurchaseReservations.ToArray());
 
                 Assert.That(client.GetProductionQueueSnapshots(), Is.Empty);

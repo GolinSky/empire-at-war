@@ -25,8 +25,8 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedShip_HasRequestedStatsWeaponsAndTargetableSystems()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.Hull, Is.EqualTo(12500));
-            Assert.That(data.Shields, Is.EqualTo(10000));
+            Assert.That(data.Hull, Is.EqualTo(16000));
+            Assert.That(data.Shields, Is.EqualTo(12000));
             Assert.That(data.Speed, Is.EqualTo(18));
             Assert.That(data.Abilities, Is.EquivalentTo(new[] { ShipAbilityId.PowerToMainBatteries, ShipAbilityId.TractorBeam }));
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);

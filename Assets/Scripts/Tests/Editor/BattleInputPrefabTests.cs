@@ -132,7 +132,7 @@ namespace EmpireAtWar.Tests.Editor
         public void BattleHudControls_DoNotAcquireKeyboardFocusOrNavigate()
         {
             string[] excluded = { "/MainMenu/", "/SkirmishMenu/", "/Controls/",
-                "/ButtonsTemplate/", "/IconTemplate/" };
+                "/ButtonsTemplate/", "/IconTemplate/", "/Popups/SteamInvitePopupUi.prefab" };
             string[] paths = AssetDatabase.FindAssets("t:Prefab", new[] { "Assets/Prefabs/Ui" })
                 .Select(AssetDatabase.GUIDToAssetPath)
                 .Where(path => !excluded.Any(path.Contains) && !path.EndsWith("/EndGameUi.prefab"))

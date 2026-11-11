@@ -669,6 +669,15 @@ namespace EmpireAtWar.Tests.Editor
                     ReserveDefensePlatform(factionModel, unitLimitModel);
                 }
 
+                FactionData secondStationData = factionModel.SecondStationFactionData;
+                Assert.That(
+                    unitLimitModel.TryReserve(
+                        GetUnitId<SecondStationUnitRequest>(SecondStationUnitRequest.REQUEST_ID),
+                        secondStationData.MaxCount,
+                        secondStationData.UnitCapacity,
+                        MAX_UNIT_CAPACITY),
+                    Is.True);
+
                 FactionData preferredData =
                     factionModel.ShipFactionData[preferredShip];
                 SetBackingField(

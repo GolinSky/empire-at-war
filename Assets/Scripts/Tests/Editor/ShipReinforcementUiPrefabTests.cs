@@ -1,4 +1,7 @@
 using EmpireAtWar;
+using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.Units;
+using EmpireAtWar.Models.Factions;
 using MPUIKIT;
 using NUnit.Framework;
 using TMPro;
@@ -6,7 +9,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Reflection;
 using EmpireAtWar.Entities.Reinforcement;
 
 namespace EmpireAtWar.Tests.Editor
@@ -29,10 +31,8 @@ namespace EmpireAtWar.Tests.Editor
             {
                 SpawnShipUi view = root.GetComponent<SpawnShipUi>();
                 var visitor = new ReinforcementVisitor();
-                typeof(SpawnShipUi).GetField("_reinforcementVisitor", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .SetValue(view, visitor);
-                typeof(SpawnShipUi).GetField("_scrollRect", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .SetValue(view, scrollObject.GetComponent<ScrollRect>());
+                var request = new ShipUnitRequest(new FactionData(), ShipType.ISDII);
+                ((ISpawnShipUi)view).Init(visitor, request, scrollObject.GetComponent<ScrollRect>());
                 var pointer = new PointerEventData(eventSystemObject.GetComponent<EventSystem>())
                 {
                     button = button,
