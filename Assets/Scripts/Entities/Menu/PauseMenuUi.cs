@@ -1,5 +1,6 @@
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Ui.Base;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +17,7 @@ namespace EmpireAtWar.Entities.Menu
         [SerializeField] private GameObject menuPanel;
         [SerializeField] private TooltipHoverView tooltipHover;
         [SerializeField] private Button saveButton;
+        [SerializeField] private TMP_Text enemyDifficultyText;
 
         private bool _isInitialized;
 
@@ -74,6 +76,12 @@ namespace EmpireAtWar.Entities.Menu
         public void SetSavingAvailable(bool available) => saveButton.gameObject.SetActive(available);
 
         public void SetRestartAvailable(bool available) => restartButton.interactable = available;
+
+        public void SetEnemyDifficulty(string text)
+        {
+            enemyDifficultyText.text = text;
+            enemyDifficultyText.gameObject.SetActive(text.Length > 0);
+        }
 
         public void SetMenuVisible(bool isVisible)
         {

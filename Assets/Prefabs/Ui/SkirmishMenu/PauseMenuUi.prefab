@@ -500,8 +500,8 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     m_CornerGradientColors:
-    - {r: 0.19607844, g: 0.38431374, b: 0.50980396, a: 1}
-    - {r: 0.19607844, g: 0.38431374, b: 0.50980396, a: 1}
+    - {r: 0.19607843, g: 0.38431373, b: 0.50980395, a: 1}
+    - {r: 0.19607843, g: 0.38431373, b: 0.50980395, a: 1}
     - {r: 0.0627451, g: 0.17254902, b: 0.25882354, a: 1}
     - {r: 0.0627451, g: 0.17254902, b: 0.25882354, a: 1}
     m_Rotation: 0
@@ -993,8 +993,8 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     m_CornerGradientColors:
-    - {r: 0.19607844, g: 0.38431374, b: 0.50980396, a: 1}
-    - {r: 0.19607844, g: 0.38431374, b: 0.50980396, a: 1}
+    - {r: 0.19607843, g: 0.38431373, b: 0.50980395, a: 1}
+    - {r: 0.19607843, g: 0.38431373, b: 0.50980395, a: 1}
     - {r: 0.0627451, g: 0.17254902, b: 0.25882354, a: 1}
     - {r: 0.0627451, g: 0.17254902, b: 0.25882354, a: 1}
     m_Rotation: 0
@@ -1161,8 +1161,8 @@ GameObject:
   - component: {fileID: 556610890326758592}
   - component: {fileID: 5612155641348641382}
   - component: {fileID: 1074799942893604243}
-  m_Layer: 0
-  m_Name: PauseCaption
+  m_Layer: 5
+  m_Name: EnemyDifficultyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1215,7 +1215,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BATTLE PAUSED
+  m_text: "Rebellion \xB7 Medium AI"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 556998c8ebb46bc40be3c7d0e7d94ba1, type: 2}
   m_sharedMaterial: {fileID: -2697744041012372576, guid: 556998c8ebb46bc40be3c7d0e7d94ba1,
@@ -1485,8 +1485,8 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     m_CornerGradientColors:
-    - {r: 0.19607844, g: 0.48627452, b: 0.627451, a: 1}
-    - {r: 0.19607844, g: 0.48627452, b: 0.627451, a: 1}
+    - {r: 0.19607843, g: 0.4862745, b: 0.627451, a: 1}
+    - {r: 0.19607843, g: 0.4862745, b: 0.627451, a: 1}
     - {r: 0.0627451, g: 0.17254902, b: 0.25882354, a: 1}
     - {r: 0.0627451, g: 0.17254902, b: 0.25882354, a: 1}
     m_Rotation: 0
@@ -1688,8 +1688,8 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     m_CornerGradientColors:
-    - {r: 0.19607844, g: 0.38431374, b: 0.50980396, a: 1}
-    - {r: 0.19607844, g: 0.38431374, b: 0.50980396, a: 1}
+    - {r: 0.19607843, g: 0.38431373, b: 0.50980395, a: 1}
+    - {r: 0.19607843, g: 0.38431373, b: 0.50980395, a: 1}
     - {r: 0.0627451, g: 0.17254902, b: 0.25882354, a: 1}
     - {r: 0.0627451, g: 0.17254902, b: 0.25882354, a: 1}
     m_Rotation: 0
@@ -2136,8 +2136,8 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     m_CornerGradientColors:
-    - {r: 0.19607844, g: 0.48627452, b: 0.627451, a: 1}
-    - {r: 0.19607844, g: 0.48627452, b: 0.627451, a: 1}
+    - {r: 0.19607843, g: 0.4862745, b: 0.627451, a: 1}
+    - {r: 0.19607843, g: 0.4862745, b: 0.627451, a: 1}
     - {r: 0.0627451, g: 0.17254902, b: 0.25882354, a: 1}
     - {r: 0.0627451, g: 0.17254902, b: 0.25882354, a: 1}
     m_Rotation: 0
@@ -2546,6 +2546,7 @@ MonoBehaviour:
   menuPanel: {fileID: 26848829901883186}
   tooltipHover: {fileID: 6699929545119764882}
   saveButton: {fileID: 6525991058601315295}
+  enemyDifficultyText: {fileID: 1074799942893604243}
 --- !u!225 &1180694155874166261
 CanvasGroup:
   m_ObjectHideFlags: 0

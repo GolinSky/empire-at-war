@@ -7,6 +7,7 @@ using EmpireAtWar.Services.Tooltip;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Entities.CoreGameUi;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Ui.Base;
@@ -69,6 +70,7 @@ namespace EmpireAtWar.Entities.Menu
             _ui.SetSavingAvailable(_saves.IsSupported && !_session.IsOnline);
             // Online, only the host restarts; every client then reloads with it.
             _ui.SetRestartAvailable(_session.IsAuthority);
+            _ui.SetEnemyDifficulty(BattleOpponentLabels.Format(_battle, _session.LocalPlayerId, aiOnly: true));
             _tooltipHover = new TooltipHoverSubscription(
                 _ui.TooltipHover, HandleTooltipHover, _tooltips);
             _ui.SetMenuVisible(false);

@@ -49,7 +49,7 @@ namespace EmpireAtWar.Entities.EndGameUi
 
         private void OnDestroy() => Dispose();
 
-        public void ShowResult(BattleResult result)
+        public void ShowResult(BattleResult result, string enemyFactions)
         {
             outcomeText.text = result.Outcome switch
             {
@@ -87,7 +87,7 @@ namespace EmpireAtWar.Entities.EndGameUi
             playerBaseText.gameObject.SetActive(result.Mode != GameMode.BattleSimulation);
             enemyBaseText.gameObject.SetActive(result.Mode != GameMode.BattleSimulation);
             playerFactionText.text = result.PlayerFaction.ToString().ToUpperInvariant();
-            enemyFactionText.text = string.Join(" / ", result.EnemyFactions).ToUpperInvariant();
+            enemyFactionText.text = enemyFactions.ToUpperInvariant();
             playerFleetText.text = result.PlayerShipCount.ToString();
             enemyFleetText.text = result.EnemyShipCount.ToString();
             playerBaseText.text = result.IsPlayerBaseAlive ? "Operational" : "Destroyed";

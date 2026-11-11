@@ -13,6 +13,7 @@ namespace EmpireAtWar.Entities.EndGameUi
         private readonly INotifier<BattleResult> _battleVictoryNotifier;
         private readonly EndGameUi _view;
         private readonly Action _returnToMenu;
+        private readonly string _enemyFactions;
         private BattleResult _result;
         private readonly TooltipRequests _tooltips;
         private readonly TooltipHoverSubscription _tooltipHover;
@@ -21,11 +22,12 @@ namespace EmpireAtWar.Entities.EndGameUi
 
         public EndGameUiController(IUiService uiService, IUiCancelRouter cancelRouter,
             INotifier<BattleResult> battleVictoryNotifier,
-            ITooltipService tooltipService, Action returnToMenu) : base(uiService, cancelRouter)
+            ITooltipService tooltipService, Action returnToMenu, string enemyFactions) : base(uiService, cancelRouter)
         {
             _battleVictoryNotifier = battleVictoryNotifier;
             _view = CreateUi<EndGameUi>();
             _returnToMenu = returnToMenu;
+            _enemyFactions = enemyFactions;
             _tooltips = new TooltipRequests(tooltipService);
             _view.AssignPresenter(this);
             _view.Initialize();
@@ -51,7 +53,7 @@ namespace EmpireAtWar.Entities.EndGameUi
             if (result.Mode == GameMode.BattleSimulation) return;
             _result = result;
             _isShown = true;
-            _view.ShowResult(result);
+            _view.ShowResult(result, _enemyFactions);
         }
 
         public void ReturnToMenu()

@@ -37,6 +37,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         private readonly ITooltipService _tooltipService;
         private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
         private readonly IMatchSession _session;
+        private readonly BattleDefinition _battle;
 
         private readonly Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>> _routes = new();
         private readonly Dictionary<SkirmishUiRoutePosition, bool> _routeStates = new();
@@ -78,7 +79,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             ICinematicCameraController cinematicCamera,
             ITooltipService tooltipService,
             EmpireAtWar.Services.Input.IInputBindings bindings,
-            IMatchSession session) : base(uiService, cancelRouter)
+            IMatchSession session, BattleDefinition battle) : base(uiService, cancelRouter)
         {
             _placement = placement;
             _cancelRouter = cancelRouter;
@@ -92,6 +93,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _tooltipService = tooltipService;
             _bindings = bindings;
             _session = session;
+            _battle = battle;
         }
 
         public void Initialize()
@@ -112,6 +114,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _endGamePresenter = new EndGameUiController(
                 uiService: UiService, cancelRouter: _cancelRouter,
                 battleVictoryNotifier: _battleVictoryNotifier,
+                enemyFactions: BattleOpponentLabels.Format(_battle, _session.LocalPlayerId, aiOnly: false),
                 returnToMenu: _skirmishFlow.ExitSkirmish, tooltipService: _tooltipService);
             _selectionService.AddObserver(this);
 
