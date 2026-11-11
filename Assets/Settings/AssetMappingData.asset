@@ -1603,3 +1603,24 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: MC80bRemondaShipView
+      value:
+        m_AssetGUID: 3dc4f8442a6e4a04ab6b06f040b3c651
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MC80bRemondaShipData
+      value:
+        m_AssetGUID: 19af4ae044a04db48b2a231d9dc41b86
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MC80bRemondaWreckView
+      value:
+        m_AssetGUID: 64d8c890d3da3444aa8d048fbedd2db4
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

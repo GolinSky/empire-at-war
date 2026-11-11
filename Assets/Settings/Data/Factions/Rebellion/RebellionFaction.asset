@@ -401,6 +401,23 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 25
         <Icon>k__BackingField: {fileID: 21300000, guid: 7c9824186eb64db48a578111cfce264b,
           type: 3}
+    - key: 325
+      value:
+        matchups: {fileID: 0}
+        description: Mon Calamari battleship with 16,000 hull and 16,000 shields.
+          Launches X-wing and Y-wing squadrons. Boost Shield Power quadruples shield
+          regeneration for 15 seconds and reduces speed and weapon damage by 25%.
+        role: Battleship
+        iconKey: 4b20a06ec4c30014daec0d6a75029d2a:21300000
+        isHero: 0
+        <Name>k__BackingField: MC80b Remonda
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 6000
+        <BuildTime>k__BackingField: 89
+        <UnitCapacity>k__BackingField: 8
+        <Icon>k__BackingField: {fileID: 21300000, guid: 4b20a06ec4c30014daec0d6a75029d2a,
+          type: 3}
   squadrons:
     keyValue:
     - key: 1

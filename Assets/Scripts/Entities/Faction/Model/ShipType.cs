@@ -76,6 +76,7 @@ namespace EmpireAtWar.Models.Factions
         MC80Justice = 323,
         MC80Freedom = 324,
         AssaultFrigateMkII = 309,
+        MC80bRemonda = 325,
         MediatorBattlecruiser = 326,
 
     }
