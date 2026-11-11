@@ -15,6 +15,8 @@ namespace EmpireAtWar.Services.Audio
 
         bool TryPlayVoice(AudioClip clip, bool interruptChatter = false);
 
+        void TryPlayAlarmVoice(ShipVoiceSet voices);
+
         void ReleaseShip(ShipSfxHandle ship, SfxProfile explosion = null, Vector3 position = default);
     }
 }

@@ -16,9 +16,6 @@ namespace EmpireAtWar.Components.Ship.Audio
     public sealed class AudioDialogShipComponent : MonoBehaviour, IAudioDialogShipComponent, IMonoComponent,
         IRespawnable
     {
-        private const float MIN_ALARM_DELAY = 30f;
-        private const float MAX_ALARM_DELAY = 60f;
-
         [SerializeField] private ShipAbilityId voicedAbility;
         [SerializeField] private AudioClip abilityVoice;
 
@@ -27,7 +24,6 @@ namespace EmpireAtWar.Components.Ship.Audio
 
         private ShipVoiceSet _voices;
 
-        private float _alarmReadyAt;
 
         private bool _isSelected;
 
@@ -46,9 +42,7 @@ namespace EmpireAtWar.Components.Ship.Audio
 
         public void HandleEnemyDetected()
         {
-            if (!_isSelected || Time.time < _alarmReadyAt) return;
-            if (_shipSfxService.TryPlayVoice(_voices.Alarm))
-                _alarmReadyAt = Time.time + Random.Range(MIN_ALARM_DELAY, MAX_ALARM_DELAY);
+            if (_isSelected) _shipSfxService.TryPlayAlarmVoice(_voices);
         }
 
         public void HandleMove(Vector3 position)
@@ -81,7 +75,6 @@ namespace EmpireAtWar.Components.Ship.Audio
 
         public void Respawn()
         {
-            _alarmReadyAt = Time.time + Random.Range(MIN_ALARM_DELAY, MAX_ALARM_DELAY);
             if (_voicedSlot != null) _voicedSlot.StateChanged += HandleAbilityStateChanged;
         }
     }

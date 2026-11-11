@@ -5,7 +5,7 @@
 - Imported clips: `Assets/Audio/Voices/UnitDialogue/<Faction>/<VoiceSet>/`.
 - Mapping asset: `Assets/Settings/Data/Models/Audio/ShipSfxData.asset`.
 - `UnitDialogueManifest.json` records exact source paths, SHA-256 hashes, subtitles and typed assignments.
-- 682 WAVs / 20,571,262 source bytes; original filenames preserved.
+- 690 WAVs / 20,854,398 source bytes; original filenames preserved.
 - Import: mono, Vorbis quality 0.5, compressed in memory, preloaded, original sample rate.
 
 ## Routing
@@ -17,7 +17,10 @@
 - Specific squadron sets: TIE Fighter, TIE Bomber, TIE Interceptor, X-Wing and Y-Wing.
 - Unmatched units use their faction's generic officer; Republic/Separatist defaults remain unchanged.
 - Executor uses the generic Empire officer: the extracted Executor set contains Vader speech and reprimands.
-- Alarm uses the faction generic “We've got them on our scopes” recording. Damage data uses short faction fighter damage reports; the damage property currently has no runtime consumer.
+- Empire alarms share 11 combat lines from generic, ship, squadron, station and hero recordings.
+- Rebellion alarms share eight combat lines from the generic officer, Assault Frigate, X-wing, Alliance Shuttle and Rebel space station.
+- Each enemy-detection request can play one line through the shared voice channel and its two-second cooldown. The picker avoids replaying the last alarm when alternatives are available.
+- Damage data uses short faction fighter damage reports; the damage property currently has no runtime consumer.
 - Original XML events determine actions. `VSD` filenames belong to Star Destroyer events; `STD` filenames belong to Victory events.
 
 ## Verification

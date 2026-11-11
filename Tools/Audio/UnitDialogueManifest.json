@@ -38,7 +38,17 @@
           "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0306_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Star_Destroyer/U000_VSD0104_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Tie_Bomber/U000_TBP0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TSP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_BFT1601_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_SSE0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_TF31102_ENG.wav",
@@ -75,7 +85,14 @@
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0306_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0102_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0103_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_XW11807_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_ASH0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_SSR0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_VW11106_ENG.wav",
@@ -150,7 +167,17 @@
           "Assets/Audio/Voices/UnitDialogue/Empire/Victory_Destroyer/U000_STD0115_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Star_Destroyer/U000_VSD0104_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Tie_Bomber/U000_TBP0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TSP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_BFT1601_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_SSE0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_TF31102_ENG.wav",
@@ -219,7 +246,17 @@
           "Assets/Audio/Voices/UnitDialogue/Empire/Star_Destroyer/U000_VSD0115_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Star_Destroyer/U000_VSD0104_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Tie_Bomber/U000_TBP0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TSP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_BFT1601_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_SSE0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_TF31102_ENG.wav",
@@ -289,7 +326,17 @@
           "Assets/Audio/Voices/UnitDialogue/Empire/Acclamator/U000_ACC0115_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Star_Destroyer/U000_VSD0104_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Tie_Bomber/U000_TBP0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TSP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_BFT1601_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_SSE0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_TF31102_ENG.wav",
@@ -356,7 +403,17 @@
           "Assets/Audio/Voices/UnitDialogue/Empire/Tartan/U000_TRC0315_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Star_Destroyer/U000_VSD0104_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Tie_Bomber/U000_TBP0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TSP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_BFT1601_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_SSE0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_TF31102_ENG.wav",
@@ -426,7 +483,14 @@
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Nebulon/U000_NEB0115_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0102_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0103_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_XW11807_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_ASH0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_SSR0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_VW11106_ENG.wav",
@@ -493,7 +557,14 @@
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Corvette/U000_COR0315_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0102_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0103_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_XW11807_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_ASH0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_SSR0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_VW11106_ENG.wav",
@@ -568,7 +639,14 @@
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Calamari/U000_MCC0115_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0102_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0103_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_XW11807_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_ASH0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_SSR0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_VW11106_ENG.wav",
@@ -636,7 +714,14 @@
           "Assets/Audio/Voices/UnitDialogue/Rebellion/MC30_Frigate/U000_MCF0315_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0102_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0103_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_XW11807_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_ASH0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_SSR0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_VW11106_ENG.wav",
@@ -706,7 +791,14 @@
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0115_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0102_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0103_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_XW11807_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_ASH0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_SSR0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_VW11106_ENG.wav",
@@ -774,7 +866,17 @@
           "Assets/Audio/Voices/UnitDialogue/Empire/Tie_Fighter/U000_TFP0315_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Star_Destroyer/U000_VSD0104_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Tie_Bomber/U000_TBP0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TSP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_BFT1601_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_SSE0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_TF31102_ENG.wav",
@@ -842,7 +944,17 @@
           "Assets/Audio/Voices/UnitDialogue/Empire/Tie_Bomber/U000_TBP0315_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Star_Destroyer/U000_VSD0104_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Tie_Bomber/U000_TBP0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TSP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_BFT1601_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_SSE0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_TF31102_ENG.wav",
@@ -910,7 +1022,17 @@
           "Assets/Audio/Voices/UnitDialogue/Empire/Tie_Interceptor/U000_TIP0315_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_EFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Star_Destroyer/U000_VSD0104_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Tie_Bomber/U000_TBP0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TSP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_BFT1601_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_SSE0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Empire/Generic/U000_TF31102_ENG.wav",
@@ -978,7 +1100,14 @@
           "Assets/Audio/Voices/UnitDialogue/Rebellion/X_Wing/U000_XWP0315_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0102_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0103_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_XW11807_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_ASH0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_SSR0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_VW11106_ENG.wav",
@@ -1045,7 +1174,14 @@
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Y_Wing/U000_YWP0315_ENG.wav"
         ],
         "alarm": [
-          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav"
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0304_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0301_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_RFC0305_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0102_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Assault_Frigate/U000_AAF0103_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_XW11807_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_ASH0303_ENG.wav",
+          "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_SSR0201_ENG.wav"
         ],
         "damage": [
           "Assets/Audio/Voices/UnitDialogue/Rebellion/Generic/U000_VW11106_ENG.wav",
@@ -5146,6 +5282,54 @@
       "source": "Audio/Space/Voices/Rebellion/Unit_Attack_Y_Wing/U000_YWP0315_ENG.wav",
       "sha256": "5b969671d9f721782898699af074e65b2f81e576d6df20794d4534db599b0049",
       "subtitle": "Firing"
+    },
+    {
+      "asset": "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_BFT1601_ENG.wav",
+      "source": "Audio/Shared/Voices/Empire/Unit_Attack_Ship_Boba_Fett/U000_BFT1601_ENG.wav",
+      "sha256": "bfff1848727e53c6cd90df976c638f14f3e85f50a8c2e4132471b74d3da39961",
+      "subtitle": "Enemy Sighted"
+    },
+    {
+      "asset": "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_SSE0201_ENG.wav",
+      "source": "Audio/Space/Voices/Empire/Unit_Attack_Empire_Space_Station/U000_SSE0201_ENG.wav",
+      "sha256": "36861c5c0e5222fbcc74d94516e3a5b9ca5d9655d9a7957119decb0df3ab76a5",
+      "subtitle": "Primary target acquired"
+    },
+    {
+      "asset": "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0303_ENG.wav",
+      "source": "Audio/Space/Voices/Empire/Unit_Attack_Tie_Phantom/U000_TPP0303_ENG.wav",
+      "sha256": "d4142e46d5d7a89f6e9e61de0dbe1fbf2f1298b3bc593d6556dbd5073535416f",
+      "subtitle": "Enemy sighted"
+    },
+    {
+      "asset": "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TPP0305_ENG.wav",
+      "source": "Audio/Space/Voices/Empire/Unit_Attack_Tie_Phantom/U000_TPP0305_ENG.wav",
+      "sha256": "5640e6a5fd253d17f824e56840a3b381711c9c29931a8b60cf2abf8bb13f2660",
+      "subtitle": "Enemy detected"
+    },
+    {
+      "asset": "Assets/Audio/Voices/UnitDialogue/Empire/Alarm/U000_TSP0303_ENG.wav",
+      "source": "Audio/Space/Voices/Empire/Unit_Attack_Tie_Scout/U000_TSP0303_ENG.wav",
+      "sha256": "549a837a70de9673722a9c8d889224764d52e63e6c074fdc9a13f7b82168e0bd",
+      "subtitle": "Enemy sighted"
+    },
+    {
+      "asset": "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_XW11807_ENG.wav",
+      "source": "Audio/Space/Voices/Rebellion/Unit_Assist_Attack_X_Wing/U000_XW11807_ENG.wav",
+      "sha256": "f989176aae8962749a559d30006ecd79d6a1b725521140c52c147485fa749443",
+      "subtitle": "Enemy sighted"
+    },
+    {
+      "asset": "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_ASH0303_ENG.wav",
+      "source": "Audio/Space/Voices/Rebellion/Unit_Attack_Alliance_Shuttle/U000_ASH0303_ENG.wav",
+      "sha256": "861fb34f8e46b3d070a4e8f986e3dc9c45bbfb5a2f95b044f40b1ab635f124fb",
+      "subtitle": "Enemy sighted"
+    },
+    {
+      "asset": "Assets/Audio/Voices/UnitDialogue/Rebellion/Alarm/U000_SSR0201_ENG.wav",
+      "source": "Audio/Space/Voices/Rebellion/Unit_Attack_Rebel_Space_Station/U000_SSR0201_ENG.wav",
+      "sha256": "9fad303655c61e1d02fac78281a943a557c01b6fe1159f8c5f5228193a27fbfb",
+      "subtitle": "Primary target acquired"
     }
   ]
 }

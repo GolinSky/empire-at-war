@@ -39,6 +39,7 @@ namespace EmpireAtWar.Services.Audio
 
         private float _time;
         private float _voiceReadyAt;
+        private AudioClip _lastAlarm;
 
         private int _timeFrame = -1;
 
@@ -192,12 +193,30 @@ namespace EmpireAtWar.Services.Audio
 
         public bool TryPlayVoice(AudioClip clip, bool interruptChatter = false)
         {
-            if (_disposed || _interfaceSfx.IsAnnouncing ||
-                !interruptChatter && (_sources.Voice.isPlaying || Time.unscaledTime < _voiceReadyAt)) return false;
-            _audioService.Play(_sources.Voice, clip, _data.VoiceVolume, false);
-            _voiceReadyAt = Time.unscaledTime + _data.VoiceCooldown;
-            _mixDirty = true;
+            float now = Time.unscaledTime;
+            if (!CanPlayVoice(now, interruptChatter)) return false;
+            PlayVoice(clip, now);
             return true;
+        }
+
+        public void TryPlayAlarmVoice(ShipVoiceSet voices)
+        {
+            float now = Time.unscaledTime;
+            if (!CanPlayVoice(now)) return;
+            AudioClip clip = voices.GetAlarm(_lastAlarm);
+            PlayVoice(clip, now);
+            _lastAlarm = clip;
+        }
+
+        private bool CanPlayVoice(float now, bool interruptChatter = false) =>
+            !_disposed && !_interfaceSfx.IsAnnouncing &&
+            (interruptChatter || !_sources.Voice.isPlaying && now >= _voiceReadyAt);
+
+        private void PlayVoice(AudioClip clip, float now)
+        {
+            _audioService.Play(_sources.Voice, clip, _data.VoiceVolume, false);
+            _voiceReadyAt = now + _data.VoiceCooldown;
+            _mixDirty = true;
         }
 
         public void Tick()

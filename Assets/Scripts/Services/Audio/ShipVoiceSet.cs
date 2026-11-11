@@ -16,7 +16,7 @@ namespace EmpireAtWar.Services.Audio
         public AudioClip Selection => selection.GetRandom();
         public AudioClip Move => move.GetRandom();
         public AudioClip Attack => attack.GetRandom();
-        public AudioClip Alarm => alarm.GetRandom();
+        public AudioClip GetAlarm(AudioClip previous) => alarm.GetRandomExcept(previous);
         public AudioClip Damage => damage.GetRandom();
     }
 }
