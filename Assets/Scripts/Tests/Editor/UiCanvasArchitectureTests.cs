@@ -7,6 +7,7 @@ using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Entities.Faction.Ui;
 using EmpireAtWar.Entities.CoreGameUi;
 using EmpireAtWar.Entities.Reinforcement;
+using EmpireAtWar.Entities.TutorialUi;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -43,7 +44,7 @@ namespace EmpireAtWar.Tests.Editor
             finally { PrefabUtility.UnloadPrefabContents(root); }
         }
         [Test]
-        public void UiScreenPrefabs_UseBoundCanvasGroupsWithoutLocalCanvases()
+        public void UiScreenPrefabs_UseBoundCanvasGroupsAndInheritTheirScreenCanvas()
         {
             string[] prefabGuids = AssetDatabase.FindAssets(
                 "t:Prefab",
@@ -62,10 +63,23 @@ namespace EmpireAtWar.Tests.Editor
                 }
 
                 screenCount++;
-                Assert.That(
-                    root.GetComponentsInChildren<Canvas>(true),
-                    Is.Empty,
-                    $"{prefabPath} must inherit its Canvas from UiService.");
+                var serializedScreen = new SerializedObject(baseUi);
+                Canvas[] localCanvases = root.GetComponentsInChildren<Canvas>(true);
+                if (baseUi is HintUi)
+                {
+                    var marker = (HintWorldMarkerView)serializedScreen.FindProperty("worldMarker").objectReferenceValue;
+                    Assert.That(marker, Is.Not.Null);
+                    Assert.That(marker.transform.parent, Is.SameAs(root.transform));
+                    Assert.That(localCanvases, Has.Length.EqualTo(1));
+                    Canvas markerCanvas = localCanvases[0];
+                    Assert.That(markerCanvas.gameObject, Is.SameAs(marker.gameObject));
+                    Assert.That(markerCanvas.overrideSorting, Is.True);
+                    Assert.That(markerCanvas.sortingOrder, Is.EqualTo(-5));
+                }
+                else
+                {
+                    Assert.That(localCanvases, Is.Empty, $"{prefabPath} must inherit its Canvas from UiService.");
+                }
 
                 CanvasGroup canvasGroup = root.GetComponent<CanvasGroup>();
                 Assert.That(
@@ -73,7 +87,6 @@ namespace EmpireAtWar.Tests.Editor
                     Is.Not.Null,
                     $"{prefabPath} requires a root CanvasGroup.");
 
-                SerializedObject serializedScreen = new SerializedObject(baseUi);
                 Assert.That(
                     serializedScreen.FindProperty("canvasGroup").objectReferenceValue,
                     Is.SameAs(canvasGroup),
