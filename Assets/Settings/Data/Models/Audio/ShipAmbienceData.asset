@@ -15,8 +15,8 @@ MonoBehaviour:
   loops:
   - {fileID: 8300000, guid: aef8614a8f32df64f971395ae349a466, type: 3}
   - {fileID: 8300000, guid: 13796938ccc483c44a10833a81a97bd7, type: 3}
-  innerRadius: 50
-  outerRadius: 300
+  innerRadius: 150
+  outerRadius: 650
   fadeTime: 1
   volume: 0.3
   updateInterval: 0.25

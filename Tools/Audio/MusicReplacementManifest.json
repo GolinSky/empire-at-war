@@ -626,22 +626,22 @@
     {
       "sha256": "91f5172266191669b1bca9022098785f60dfd208dd0606248274c3b510fe931c",
       "bytes": 709468,
-      "path": "Assets/Audio/Music/Ship/amb_ship_loop_1.wav"
+      "path": "Assets/Audio/SFX/Ambient/amb_ship_loop_1.wav"
     },
     {
-      "sha256": "03f6b6f6c079746b72511aae7a4de4fd2e2399cdd2c8899a6973192cb9cf2333",
-      "bytes": 508,
-      "path": "Assets/Audio/Music/Ship/amb_ship_loop_1.wav.meta"
+      "sha256": "ec9081ab0270370dee2b64592e01110805b7dbaf0a650b9e57c415de6ac33bf0",
+      "bytes": 487,
+      "path": "Assets/Audio/SFX/Ambient/amb_ship_loop_1.wav.meta"
     },
     {
       "sha256": "2c157f9e5f89c1c0f1922103861f947b7f3b793ac8b17df402aae3e07fbcbb0b",
       "bytes": 1261892,
-      "path": "Assets/Audio/Music/Ship/amb_ship_loop_2.wav"
+      "path": "Assets/Audio/SFX/Ambient/amb_ship_loop_2.wav"
     },
     {
-      "sha256": "af3ebdcb5524348b3fb30f20902a650806c71a58e89e66e275f46b70490c0b09",
-      "bytes": 508,
-      "path": "Assets/Audio/Music/Ship/amb_ship_loop_2.wav.meta"
+      "sha256": "ce3ded25da531dae9bd984afb16868862f3f70b2da6b917775e4f5c5f062b816",
+      "bytes": 487,
+      "path": "Assets/Audio/SFX/Ambient/amb_ship_loop_2.wav.meta"
     }
   ]
 }
