@@ -74,7 +74,9 @@ verification: source-and-assets
 
 - Roles: Interceptor guns → bombers; Fighter guns → interceptors (and bombers, weaker than interceptors).
 - Survivability vs lasers/PD: Fighter toughest; Interceptor hard to hit but fragile; Bomber easiest to kill.
-- Interceptor class (`ShipClass.Interceptor`): `TIEInterceptor`, `AWing`, `VWing`; they fire `WeaponType.InterceptorLaser` (`127`, family `InterceptorLaser = 24`).
+- Interceptor class (`ShipClass.Interceptor`) → `TIEInterceptor`, `AWing`, `VWing`, `Belbullab22`. Each uses a unit-scoped weapon definition in the `InterceptorLaser` family (`24`).
+- All playable ship carriers with deployable bays cover Fighter, Bomber and Interceptor. Automatic launch selection rotates across eligible bays. Each launch spends one unit of battle stock, including the initial launch.
+- Exact carrier counts and regular squadron values → [[Done/Bugs/Carrier_and_Squadron_Rebalance]].
 - Hero class `ShipClass.HeroStrikecraft = 9`: `BobaFettSlaveI`, `JangoFettSlaveI`, `HanSoloMillenniumFalcon`; their unit weapons (`123`, `125`, `126`) use family `HeroLaser = 25`.
 - Rule: every non-HeroLaser row's hero effectiveness (damage × accuracy) ≤ `0.5×` its fighter value. Only `HeroLaser` hits heroes normally.
 - Hero shields still take full shield multipliers; resistance comes from accuracy (shields) and accuracy × damage (hull).

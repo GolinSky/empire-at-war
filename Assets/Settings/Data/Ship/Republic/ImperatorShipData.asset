@@ -23,6 +23,7 @@ MonoBehaviour:
   <HyperSpaceDuration>k__BackingField: 0.6
   <BodyRotationMaxAngle>k__BackingField: 5
   <NavigationRadius>k__BackingField: 85.048836
+  <IgnoresMapObstacles>k__BackingField: 0
   <DestroyDelay>k__BackingField: 0.35
   <Wreck>k__BackingField: {fileID: 11400000, guid: 0267a90234a92114b943b66b30ebe5ca,
     type: 2}
@@ -37,10 +38,13 @@ MonoBehaviour:
   abilities: 0a00000016000000
   hangarBays:
   - squadronType: 2
-    reserve: 20
-    maxActive: 1
+    reserve: 6
+    maxActive: 2
   - squadronType: 3
-    reserve: 20
+    reserve: 3
+    maxActive: 1
+  - squadronType: 6
+    reserve: 3
     maxActive: 1
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 8

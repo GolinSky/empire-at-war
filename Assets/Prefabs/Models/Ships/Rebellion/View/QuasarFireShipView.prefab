@@ -2910,9 +2910,11 @@ MonoBehaviour:
   bayHardPoints:
   - {fileID: 5831482073139858341}
   - {fileID: 5659436133121343482}
+  - {fileID: 5831482073139858341}
   bayLaunchPoints:
   - {fileID: 3742974577778270170}
   - {fileID: 1894557051832875333}
+  - {fileID: 3742974577778270170}
   isDestroyable: 1
 --- !u!1001 &1545718542174955107
 PrefabInstance:

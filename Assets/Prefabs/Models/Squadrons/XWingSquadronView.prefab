@@ -49,13 +49,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &48996890998830293
 GameObject:
@@ -238,6 +238,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3902106031783285289}
+  - {fileID: 6355501016627668074}
   m_Father: {fileID: 3515700777278248384}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &195607366800148752
@@ -1044,13 +1045,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 14
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &1400806001838409774
 GameObject:
@@ -1233,6 +1234,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6301431529217730507}
+  - {fileID: 3472637063420198859}
   m_Father: {fileID: 3635941758972845578}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1579909779353012430
@@ -1284,14 +1286,72 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
+--- !u!1 &1594387526809279326
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3472637063420198859}
+  - component: {fileID: 3605488149707580522}
+  m_Layer: 0
+  m_Name: ProtonTorpedoLauncher
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3472637063420198859
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1594387526809279326}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.4, z: 1.9000001}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5237495051144676427}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3605488149707580522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1594387526809279326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
+  spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 24
+  yAxisRange:
+    <Min>k__BackingField: -15
+    <Max>k__BackingField: 15
+  mainBattery: 0
+  <WeaponType>k__BackingField: 155
+  fighterIndex: 4
 --- !u!1 &1686887384289811865
 GameObject:
   m_ObjectHideFlags: 0
@@ -1341,13 +1401,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &1758148520541430113
 GameObject:
@@ -1411,6 +1471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Squadron
   bindings: {fileID: 1777391324887390971}
+  playDestructionSound: 0
 --- !u!114 &6690140857762700653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1585,6 +1646,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
+  voicedAbility: 0
+  abilityVoice: {fileID: 0}
 --- !u!114 &1777391324887390971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1640,6 +1703,11 @@ MonoBehaviour:
   - {fileID: 1247213820370218001}
   - {fileID: 7574031787567205406}
   - {fileID: 7835581175894561937}
+  - {fileID: 4992475136825506534}
+  - {fileID: 4770310034204310728}
+  - {fileID: 8933319473187624390}
+  - {fileID: 9055224456556194445}
+  - {fileID: 3605488149707580522}
 --- !u!1 &1816910562666282389
 GameObject:
   m_ObjectHideFlags: 0
@@ -1689,13 +1757,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 10
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &2326912143475078183
 GameObject:
@@ -1746,13 +1814,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 15
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &2393707072117398922
 GameObject:
@@ -1828,6 +1896,7 @@ MonoBehaviour:
   - {fileID: 1247213820370218001}
   - {fileID: 7574031787567205406}
   - {fileID: 9079646933002093974}
+  - {fileID: 3605488149707580522}
   engineTrails:
   - {fileID: 1001958880428923114}
   - {fileID: 1168403720819871329}
@@ -2034,13 +2103,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 18
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &2701116820227948658
 GameObject:
@@ -2137,6 +2206,64 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &2753010468223376574
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8834180100680197838}
+  - component: {fileID: 9055224456556194445}
+  m_Layer: 0
+  m_Name: ProtonTorpedoLauncher
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8834180100680197838
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2753010468223376574}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.4, z: 1.9000001}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7489307672971344597}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9055224456556194445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2753010468223376574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
+  spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 23
+  yAxisRange:
+    <Min>k__BackingField: -15
+    <Max>k__BackingField: 15
+  mainBattery: 0
+  <WeaponType>k__BackingField: 155
+  fighterIndex: 3
 --- !u!1 &3057298255893828056
 GameObject:
   m_ObjectHideFlags: 0
@@ -2838,13 +2965,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 16
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &4204696885323012291
 GameObject:
@@ -2920,6 +3047,7 @@ MonoBehaviour:
   - {fileID: 783278415968771051}
   - {fileID: 7317681428928554252}
   - {fileID: 8330721924570538322}
+  - {fileID: 8933319473187624390}
   engineTrails:
   - {fileID: 9182786010906093927}
   - {fileID: 1295466791274984190}
@@ -3126,13 +3254,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &4620070692144940829
 GameObject:
@@ -3183,13 +3311,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 13
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &4800732764607341532
 GameObject:
@@ -3240,13 +3368,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &5051421923163436041
 GameObject:
@@ -3313,6 +3441,12 @@ MonoBehaviour:
   - {fileID: 1247213820370218001}
   - {fileID: 7574031787567205406}
   - {fileID: 9079646933002093974}
+  - {fileID: 4992475136825506534}
+  - {fileID: 4770310034204310728}
+  - {fileID: 8933319473187624390}
+  - {fileID: 9055224456556194445}
+  - {fileID: 3605488149707580522}
+  rangeMultiplier: 1
 --- !u!1 &5119970463472688658
 GameObject:
   m_ObjectHideFlags: 0
@@ -3513,13 +3647,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 11
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &5273824472121844569
 GameObject:
@@ -3746,6 +3880,7 @@ MonoBehaviour:
   - {fileID: 7001295422902196374}
   - {fileID: 8129116384497323108}
   - {fileID: 8274008040225297148}
+  - {fileID: 4770310034204310728}
   engineTrails:
   - {fileID: 3548273913974813254}
   - {fileID: 6790478029446968411}
@@ -3826,6 +3961,7 @@ MonoBehaviour:
   - {fileID: 430017224026315591}
   - {fileID: 1311555072952392677}
   - {fileID: 2442399315258713804}
+  - {fileID: 4992475136825506534}
   engineTrails:
   - {fileID: 1536048272165820547}
   - {fileID: 566639264000821386}
@@ -3906,6 +4042,7 @@ MonoBehaviour:
   - {fileID: 6214386693927165168}
   - {fileID: 7533005178045838720}
   - {fileID: 8293892463212359624}
+  - {fileID: 9055224456556194445}
   engineTrails:
   - {fileID: 1123371398133228347}
   - {fileID: 9202317054713246042}
@@ -4093,6 +4230,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7707941838945873432}
+  - {fileID: 8834180100680197838}
   m_Father: {fileID: 6099236040770287895}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6406434241609874967
@@ -4144,13 +4282,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 19
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &6572476083566145246
 GameObject:
@@ -4201,14 +4339,72 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
+--- !u!1 &6870792928571598582
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 508906112929486116}
+  - component: {fileID: 4992475136825506534}
+  m_Layer: 0
+  m_Name: ProtonTorpedoLauncher
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &508906112929486116
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6870792928571598582}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.4, z: 1.9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1986493402761766347}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4992475136825506534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6870792928571598582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
+  spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 20
+  yAxisRange:
+    <Min>k__BackingField: -15
+    <Max>k__BackingField: 15
+  mainBattery: 0
+  <WeaponType>k__BackingField: 155
+  fighterIndex: 0
 --- !u!1 &7010599363961463077
 GameObject:
   m_ObjectHideFlags: 0
@@ -4239,6 +4435,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2855102035390773651}
+  - {fileID: 508906112929486116}
   m_Father: {fileID: 8480237764590484925}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7383330965203407344
@@ -4290,13 +4487,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 9
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &7384107020747676152
 GameObject:
@@ -4498,13 +4695,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &7522251894225030750
 GameObject:
@@ -4706,13 +4903,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 17
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &7721408114387881988
 GameObject:
@@ -4933,8 +5130,67 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5609845906230461932}
+  - {fileID: 1399405157134077386}
   m_Father: {fileID: 106959245609021963}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8140370909150381560
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6355501016627668074}
+  - component: {fileID: 4770310034204310728}
+  m_Layer: 0
+  m_Name: ProtonTorpedoLauncher
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6355501016627668074
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8140370909150381560}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.40000004, z: 1.9000001}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 483891661248689046}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4770310034204310728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8140370909150381560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
+  spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 21
+  yAxisRange:
+    <Min>k__BackingField: -15
+    <Max>k__BackingField: 15
+  mainBattery: 0
+  <WeaponType>k__BackingField: 155
+  fighterIndex: 1
 --- !u!1 &8160000690793286114
 GameObject:
   m_ObjectHideFlags: 0
@@ -5286,14 +5542,72 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 12
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
+--- !u!1 &8358657998202850184
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1399405157134077386}
+  - component: {fileID: 8933319473187624390}
+  m_Layer: 0
+  m_Name: ProtonTorpedoLauncher
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1399405157134077386
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8358657998202850184}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.40000004, z: 1.9000001}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5221476317475049443}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8933319473187624390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8358657998202850184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
+  spawnDestroyedExplosion: 0
+  destroyedVfxAnchor: {fileID: 0}
+  destroyedVfxScale: 1
+  unlockLevel: 1
+  healthOverride: 0
+  healthWeight: 1
+  <HardPointType>k__BackingField: 0
+  <Id>k__BackingField: 22
+  yAxisRange:
+    <Min>k__BackingField: -15
+    <Max>k__BackingField: 15
+  mainBattery: 0
+  <WeaponType>k__BackingField: 155
+  fighterIndex: 2
 --- !u!1 &8681337317469018388
 GameObject:
   m_ObjectHideFlags: 0
@@ -5343,13 +5657,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 8
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &8760030260199845827
 GameObject:
@@ -5400,13 +5714,13 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
   <WeaponType>k__BackingField: 24
 --- !u!1 &9120503480572074864
 GameObject:

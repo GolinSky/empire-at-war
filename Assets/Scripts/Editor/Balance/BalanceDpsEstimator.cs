@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Entities.Squadrons.Data;
 
 namespace EmpireAtWar.Editor.Balance
 {
@@ -10,7 +11,7 @@ namespace EmpireAtWar.Editor.Balance
     public sealed class BalanceDpsEstimator : System.IDisposable
     {
         public const string FORMULA = "Base DPS = mounts × damage × shots per salvo / max(reload, (shots − 1) × shot interval), " +
-                                      "with each weapon's stats derived from its family, caliber, mount, pattern and variant.";
+                                      "including squadron warhead tuning.";
 
         private readonly BalanceRegistration _registry;
         private readonly BalanceWeaponPreview _weapons;
@@ -29,12 +30,15 @@ namespace EmpireAtWar.Editor.Balance
                 .ToList();
             if (mounts.Count == 0) return BalanceDpsEstimate.Unavailable(BalanceDpsEstimate.NOT_ARMED);
 
+            SquadronData squadron = unit.Data as SquadronData;
             double total = 0;
             foreach (IGrouping<string, BalanceField> group in mounts.GroupBy(field => field.DraftValue(draft)))
             {
                 WeaponType type = (WeaponType)int.Parse(group.Key, CultureInfo.InvariantCulture);
                 if (!_weapons.TryGetProfile(type, draft, out WeaponProfile profile))
                     return BalanceDpsEstimate.Unavailable("Missing weapon profile: " + BalanceFieldView.Display(group.First(), group.Key));
+                if (squadron != null)
+                    profile = profile.WithWarheadMultipliers(squadron.WarheadDamageMultiplier, squadron.WarheadReloadMultiplier);
                 if (!(profile.CycleSeconds > 0))
                     return BalanceDpsEstimate.Unavailable(BalanceDpsEstimate.INVALID_DRAFT);
 

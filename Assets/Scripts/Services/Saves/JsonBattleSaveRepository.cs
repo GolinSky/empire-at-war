@@ -51,7 +51,8 @@ namespace EmpireAtWar.Services.Saves
                 throw new InvalidDataException($"Save '{path}' is a {save.Header.Mode} save, not {mode}.");
             if (!save.Header.IsCompatible)
                 throw new InvalidDataException(
-                    $"Save '{path}' is version {save.Header.Version}; this build loads version {BattleSaveHeader.CURRENT_VERSION}.");
+                    $"Save '{path}' is version {save.Header.Version}; this build loads versions " +
+                    $"{BattleSaveHeader.PRE_HANGAR_REBALANCE_VERSION} and {BattleSaveHeader.CURRENT_VERSION}.");
             return save;
         }
 

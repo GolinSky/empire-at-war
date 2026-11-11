@@ -199,14 +199,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 144
 --- !u!1 &893218846226996727
 GameObject:
   m_ObjectHideFlags: 0
@@ -256,14 +256,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 144
 --- !u!1 &1758148520541430113
 GameObject:
   m_ObjectHideFlags: 0
@@ -324,6 +324,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Squadron
   bindings: {fileID: 2061398930675088327}
+  playDestructionSound: 0
 --- !u!114 &6690140857762700653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -443,6 +444,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
+  voicedAbility: 0
+  abilityVoice: {fileID: 0}
 --- !u!114 &2061398930675088327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -902,6 +905,7 @@ MonoBehaviour:
   - {fileID: 8966828644905161867}
   - {fileID: 8788798184317764641}
   - {fileID: 1325223077535501834}
+  rangeMultiplier: 1
 --- !u!1 &5243400769884836373
 GameObject:
   m_ObjectHideFlags: 0
@@ -1177,14 +1181,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 22
+  <WeaponType>k__BackingField: 145
 --- !u!1 &5979521104252352891
 GameObject:
   m_ObjectHideFlags: 0
@@ -1536,14 +1540,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 22
+  <WeaponType>k__BackingField: 145
 --- !u!1 &6258949220742859324
 GameObject:
   m_ObjectHideFlags: 0
@@ -1593,14 +1597,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 144
 --- !u!1 &6999903561471781393
 GameObject:
   m_ObjectHideFlags: 0
@@ -1760,14 +1764,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 22
+  <WeaponType>k__BackingField: 145
 --- !u!1 &7371012496606340059
 GameObject:
   m_ObjectHideFlags: 0
@@ -2041,14 +2045,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 144
 --- !u!1 &9029899938229763606
 GameObject:
   m_ObjectHideFlags: 0
@@ -2098,14 +2102,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 22
+  <WeaponType>k__BackingField: 145
 --- !u!1 &9120503480572074864
 GameObject:
   m_ObjectHideFlags: 0

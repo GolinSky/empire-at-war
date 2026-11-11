@@ -79,12 +79,22 @@ namespace EmpireAtWar.Services.Saves
 
             var siteFacilities = ValidateSitesAndZones(save, players, facilityIds);
             var adoptedSquadrons = new HashSet<long>();
+            List<(UnitSave Unit, HangarSave Hangar)> migratedHangars =
+                save.Header.Version == BattleSaveHeader.PRE_HANGAR_REBALANCE_VERSION ? new() : null;
             foreach (StructureSave structure in save.Structures)
                 ValidateStructure(structure, players, rosters, siteFacilities, squadrons, adoptedSquadrons);
             foreach (UnitSave unit in save.Units)
-                ValidateUnit(unit, players, rosters, shipsData, squadrons, adoptedSquadrons);
+                ValidateUnit(unit, players, rosters, shipsData, squadrons, adoptedSquadrons, migratedHangars);
             ValidatePlayers(save.Players, players, rosters, levels, squadrons);
             ValidateCombatAndVictory(save, players, entityIds);
+
+            if (migratedHangars != null)
+            {
+                // Commit only after all checks pass, so a rejected or retried load keeps its original reserves.
+                foreach ((UnitSave unit, HangarSave hangar) in migratedHangars)
+                    unit.WithHangar(hangar);
+                save.Header.FinishHangarMigration();
+            }
         }
 
         private void ValidateMapCounts(BattleSave save, BattleDefinition definition)
@@ -201,7 +211,8 @@ namespace EmpireAtWar.Services.Saves
 
         private void ValidateUnit(UnitSave unit, IReadOnlyDictionary<PlayerId, BattlePlayer> players,
             IReadOnlyDictionary<PlayerId, FactionRoster> rosters, ShipsData shipsData,
-            IReadOnlyDictionary<long, UnitSave> squadrons, HashSet<long> adoptedSquadrons)
+            IReadOnlyDictionary<long, UnitSave> squadrons, HashSet<long> adoptedSquadrons,
+            List<(UnitSave Unit, HangarSave Hangar)> migratedHangars)
         {
             if (!players.ContainsKey(unit.Owner))
                 throw new InvalidDataException($"Unit {unit.Id} belongs to unknown player {unit.Owner}.");
@@ -214,7 +225,13 @@ namespace EmpireAtWar.Services.Saves
                 ShipData data = _assets.Load<ShipData>(shipsData.GetShipDataPath(shipType));
                 ValidateHardPoints(_assets.LoadComponent<ShipEntity>(shipType + "ShipView"), unit.Health, unit.Id);
                 ValidateAbilities(unit.Abilities, data.Abilities, unit.Id);
-                ValidateHangar(unit.Hangar, data.HangarBays.Count, squadrons, adoptedSquadrons, unit.Id);
+                HangarSave hangar = unit.Hangar;
+                if (migratedHangars != null && HangarStockMigration.TryMigrate(unit, data.HangarBays, out HangarSave migrated))
+                {
+                    hangar = migrated;
+                    migratedHangars.Add((unit, migrated));
+                }
+                ValidateHangar(hangar, data.HangarBays.Count, squadrons, adoptedSquadrons, unit.Id);
                 return;
             }
             SquadronType squadronType = unit.UnitType.SquadronType;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.CaptureSites;
@@ -12,7 +13,9 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
@@ -260,6 +263,56 @@ namespace EmpireAtWar.Tests.Editor
             badPlayer.Research = new[] { ResearchSave.Create((ResearchType)int.MaxValue, 1) };
             Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(badPlayerSave, definition)).Message,
                 Does.Contain("Saved research"));
+        }
+
+        [Test]
+        public void Validator_MigratesVersion4CarrierStockOnceAndKeepsLaunchedSquadrons()
+        {
+            using var assets = new CachedAssetService(new AddressableHandleLoader());
+            BattleDefinition defaults = SkirmishPreset.Default();
+            var rebel = new PlayerSlot(TestPlayers.Human, new TeamId(0), FactionType.Rebellion,
+                PlayerController.Human, EnemyAiDifficulty.Medium, 0);
+            BattleDefinition battle = SkirmishPreset.Create(new[] { rebel, defaults.Slots[1] }, defaults.Map.Planet,
+                defaults.Map.Size, defaults.VictoryCondition, defaults.StartingMoney, true, 0).Build();
+
+            ShipData shipData = assets.Load<ShipData>("QuasarFireShipData");
+            SquadronData squadronData = assets.Load<SquadronData>("XWingSquadronData");
+            ShipAbilityCatalog abilities = assets.Load<ShipAbilityCatalog>(nameof(ShipAbilityCatalog));
+            AbilitySlotSave SaveAbility(ShipAbilityId id) =>
+                AbilitySlotSave.From(new ShipAbilitySlot(null, abilities.Get(id), id));
+
+            int hardpointCount = assets.LoadComponent<EmpireAtWar.Ship.Ship>("QuasarFireShipView")
+                .Bindings.Health[0].ShipUnits.Count;
+            int memberCount = assets.LoadComponent<Squadron>("XWingSquadronView").Bindings.SquadronHealth.FighterCount;
+            UnitSave ship = UnitSave.Create(1, rebel.Id, UnitTypeId.Ship(ShipType.QuasarFire), Vector3.zero,
+                Quaternion.identity, UnitHealthSave.ForShip(1f, 1f, new float[hardpointCount]), null)
+                .WithAbilities(shipData.Abilities.Select(SaveAbility).ToArray())
+                .WithHangar(HangarSave.Create(new[] { 19, 17 }, 6f, new[] { LaunchedSquadronSave.Create(2, 0) }));
+            UnitSave squadron = UnitSave.Create(2, rebel.Id, UnitTypeId.Squadron(SquadronType.XWing), Vector3.zero,
+                Quaternion.identity, UnitHealthSave.ForSquadron(new float[memberCount], new float[memberCount]), null)
+                .WithAbilities(squadronData.Abilities.Select(SaveAbility).ToArray());
+            BattleSaveHeader header = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave,
+                DateTime.UtcNow, 0f, GameSpeed.Normal);
+            JsonUtility.FromJsonOverwrite("{\"version\":4}", header);
+            BattleSave save = BattleSave.Create(header, BattleSetupSave.From(battle),
+                CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 500f), new[] { ship, squadron },
+                Array.Empty<StructureSave>());
+            var validator = new BattleSaveValidator(assets);
+
+            save.ObservedBases = new[] { int.MaxValue };
+            Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(save, battle)).Message,
+                Does.Contain("Observed base owner"));
+            Assert.That(header.Version, Is.EqualTo(4));
+            Assert.That(ship.Hangar.Reserve, Is.EqualTo(new[] { 19, 17 }));
+
+            save.ObservedBases = Array.Empty<int>();
+            validator.Validate(save, battle);
+            validator.Validate(save, battle);
+            Assert.That(header.Version, Is.EqualTo(BattleSaveHeader.CURRENT_VERSION));
+            Assert.That(ship.Hangar.Reserve, Is.EqualTo(new[] { 1, 0, 2 }));
+            Assert.That(ship.Hangar.Cooldown, Is.EqualTo(6f));
+            Assert.That(ship.Hangar.Launched.Single().SquadronId, Is.EqualTo(2));
+            Assert.That(ship.Hangar.Launched.Single().Bay, Is.Zero);
         }
 
         [Test]

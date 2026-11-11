@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Editor.AI;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Services.Enemy;
@@ -15,13 +17,35 @@ namespace EmpireAtWar.Tests.Editor
         private const string WEAPONS_PATH = "Assets/Settings/Data/Models/Weapon/WeaponsData.asset";
         private const string MATRIX_PATH = "Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset";
 
-        [TestCase("TIEBomber", 360f)]
+        [TestCase("ARC170", 36f, 12f, 175f)]
+        [TestCase("XWing", 40f, 10f, 230f)]
+        public void FighterTorpedoes_MatchLiveLoadoutAndDamageTargets(string name, float damage, float reload, float dps)
+        {
+            SquadronData data = AssetDatabase.LoadAssetAtPath<SquadronData>(
+                $"Assets/Settings/Data/Squadron/{name}SquadronData.asset");
+            WeaponsData weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(WEAPONS_PATH);
+            var loadout = WeaponLoadoutBaker.DeriveLoadout(WeaponLoadoutBaker.LoadSquadronView(data));
+            Assert.That(loadout, Is.EqualTo(data.WeaponLoadout));
+            WeaponProfile Profile(WeaponType type) => weapons.GetProfile(type)
+                .WithWarheadMultipliers(data.WarheadDamageMultiplier, data.WarheadReloadMultiplier);
+            WeaponLoadoutEntry torpedoes = loadout.Single(entry => Profile(entry.WeaponType).Family == WeaponFamily.FighterTorpedo);
+            WeaponProfile torpedo = Profile(torpedoes.WeaponType);
+
+            Assert.That(torpedoes.Count, Is.EqualTo(data.MemberCount));
+            Assert.That(torpedo.ShotsPerSalvo, Is.EqualTo(1));
+            Assert.That(torpedo.Damage, Is.EqualTo(damage).Within(0.001f));
+            Assert.That(torpedo.Reload, Is.EqualTo(reload).Within(0.001f));
+            Assert.That(loadout.Sum(entry => entry.Count * Profile(entry.WeaponType).DamagePerSecond),
+                Is.EqualTo(dps).Within(0.001f));
+        }
+
+        [TestCase("TIEBomber", 240f)]
         [TestCase("YWingBomber", 360f)]
-        [TestCase("YWing", 360f)]
-        [TestCase("NTB630", 360f)]
-        [TestCase("DroidBomber", 360f)]
-        [TestCase("TIEPunisher", 432f)]
-        public void BomberTorpedoes_HaveComparableVolleysAndLongerReload(string name, float expectedVolley)
+        [TestCase("YWing", 300f)]
+        [TestCase("NTB630", 288f)]
+        [TestCase("DroidBomber", 180f)]
+        [TestCase("TIEPunisher", 276f)]
+        public void BomberTorpedoes_MatchFactionVolleyAndReloadTargets(string name, float expectedVolley)
         {
             SquadronData data = AssetDatabase.LoadAssetAtPath<SquadronData>(
                 $"Assets/Settings/Data/Squadron/{name}SquadronData.asset");

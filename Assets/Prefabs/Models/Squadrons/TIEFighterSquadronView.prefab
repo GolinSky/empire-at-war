@@ -49,14 +49,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 11
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1 &573553368224123336
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,14 +257,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 9
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1 &807799114134371188
 GameObject:
   m_ObjectHideFlags: 0
@@ -857,6 +857,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Squadrons.Squadron
   bindings: {fileID: 4998259428069359838}
+  playDestructionSound: 0
 --- !u!114 &6690140857762700653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -991,6 +992,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5713dcfff75e49e88a1031e6f4445565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Audio.AudioDialogShipComponent
+  voicedAbility: 0
+  abilityVoice: {fileID: 0}
 --- !u!114 &4998259428069359838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1091,14 +1094,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 8
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1 &2030420702298458621
 GameObject:
   m_ObjectHideFlags: 0
@@ -1148,14 +1151,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1 &2304324952668639510
 GameObject:
   m_ObjectHideFlags: 0
@@ -1638,14 +1641,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 12
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1 &3343524616267744252
 GameObject:
   m_ObjectHideFlags: 0
@@ -1819,14 +1822,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1 &4099438723955912009
 GameObject:
   m_ObjectHideFlags: 0
@@ -2513,14 +2516,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1 &5051421923163436041
 GameObject:
   m_ObjectHideFlags: 0
@@ -2580,6 +2583,7 @@ MonoBehaviour:
   - {fileID: 2550798988264883833}
   - {fileID: 3165432792152659517}
   - {fileID: 8578289697784689953}
+  rangeMultiplier: 1
 --- !u!1 &5504153470302253618
 GameObject:
   m_ObjectHideFlags: 0
@@ -2892,14 +2896,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 7
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1 &6363131916634107739
 GameObject:
   m_ObjectHideFlags: 0
@@ -3025,14 +3029,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1 &6429909868340309939
 GameObject:
   m_ObjectHideFlags: 0
@@ -3421,14 +3425,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 5
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1 &7371012496606340059
 GameObject:
   m_ObjectHideFlags: 0
@@ -3629,14 +3633,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 13
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1 &7578115188790124353
 GameObject:
   m_ObjectHideFlags: 0
@@ -3911,14 +3915,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 10
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1 &8234978125924548871
 GameObject:
   m_ObjectHideFlags: 0
@@ -4119,14 +4123,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1 &8964001583578719769
 GameObject:
   m_ObjectHideFlags: 0
@@ -4483,14 +4487,14 @@ MonoBehaviour:
   destroyedVfxScale: 1
   unlockLevel: 1
   healthOverride: 0
+  healthWeight: 1
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 1
   yAxisRange:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 15
   mainBattery: 0
-  prewarmEffects: 0
-  <WeaponType>k__BackingField: 15
+  <WeaponType>k__BackingField: 131
 --- !u!1001 &30100190634419435
 PrefabInstance:
   m_ObjectHideFlags: 0

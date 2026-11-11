@@ -19169,9 +19169,11 @@ MonoBehaviour:
   bayHardPoints:
   - {fileID: 3725501717299379003}
   - {fileID: 6742037497187198308}
+  - {fileID: 3725501717299379003}
   bayLaunchPoints:
   - {fileID: 6033331891925638542}
   - {fileID: 3093128353559832615}
+  - {fileID: 6033331891925638542}
   isDestroyable: 1
 --- !u!1 &4450525393088804106
 GameObject:

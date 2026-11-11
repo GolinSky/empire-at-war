@@ -75,15 +75,16 @@ namespace EmpireAtWar.Tests.Editor
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             Assert.That(data.HangarBays.Select(b => (int)b.SquadronType), Is.EqualTo(new[] { 200, 203, 201 }));
-            Assert.That(data.HangarBays.All(b => b.Reserve == 80 && b.MaxActive == 2), Is.True);
+            Assert.That(data.HangarBays.All(b => b.Reserve == 6 && b.MaxActive == 2), Is.True);
             HangarModel model = new HangarModel(data);
             for (int launch = 0; launch < 6; launch++)
             {
-                int expected = launch / 2;
-                Assert.That(model.TryLaunch(30f, out int bay), Is.True);
+                int expected = launch % 3;
+                float delay = launch == 0 ? data.HangarInitialDelay : data.HangarLaunchInterval;
+                Assert.That(model.TryLaunch(delay, out int bay), Is.True);
                 Assert.That(bay, Is.EqualTo(expected));
-                Assert.That(model.GetReserve(bay), Is.EqualTo(79 - launch % 2));
-                Assert.That(model.GetActive(bay), Is.EqualTo(1 + launch % 2));
+                Assert.That(model.GetReserve(bay), Is.EqualTo(5 - launch / 3));
+                Assert.That(model.GetActive(bay), Is.EqualTo(1 + launch / 3));
             }
             Assert.That(model.TryLaunch(30f, out _), Is.False);
             for (int expected = 0; expected < 3; expected++)
@@ -92,7 +93,7 @@ namespace EmpireAtWar.Tests.Editor
                 model.SquadronLost(expected);
                 Assert.That(model.TryLaunchReplacement(out int bay), Is.True);
                 Assert.That(bay, Is.EqualTo(expected));
-                Assert.That(model.GetReserve(bay), Is.EqualTo(77));
+                Assert.That(model.GetReserve(bay), Is.EqualTo(3));
                 Assert.That(model.GetActive(bay), Is.EqualTo(1));
             }
             Assert.That(model.TryLaunchReplacement(out _), Is.False);

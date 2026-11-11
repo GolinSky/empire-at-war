@@ -19,7 +19,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 5c5715b5eb4b3254db8aaac35b69aeb0, type: 2}
         description: Heavy and medium turbolasers, supported by ion cannons, engage
-          large ships.
+          large ships. Deploys 4 fighters, 3 bombers, and 3 interceptors at once.
+          Carries 40 total squadron launches.
         role: "Capital \xB7 Battle line / carrier"
         iconKey: 60d91c69afc54ad4fa9b45f6990ff8af:21300000
         isHero: 0
@@ -65,7 +66,9 @@ MonoBehaviour:
     - key: 103
       value:
         matchups: {fileID: 11400000, guid: ed499ffc17084c847a836b55cd20c147, type: 2}
-        description: Heavy and medium turbolasers defend a large carrier hull.
+        description: Heavy and medium turbolasers defend a large carrier hull. Deploys
+          7 fighters, 5 bombers, and 6 interceptors at once. Carries 72 total squadron
+          launches.
         role: "Heavy capital \xB7 Carrier / heavy gunship"
         iconKey: 8128fcc8b8e454e47ab592309d37208e:21300000
         isHero: 0
@@ -99,8 +102,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 699f1928bcda3284f9ae9ff3f683f5d8, type: 2}
         description: Support carrier with 2 turbolasers, 6 lasers and 2 ion cannons.
-          Deploys 11 Vulture Droid and 8 Advanced Droid Bomber squadrons, with one
-          of each active at once. Power to Weapons improves self-defense.
+          Power to Weapons improves self-defense. Deploys 6 fighters, 4 bombers,
+          and 4 interceptors at once. Carries 56 total squadron launches.
         role: "Capital \xB7 Dedicated carrier"
         iconKey: 5f8bc4a82cc113244b19a13b489bb0f0:21300000
         isHero: 0
@@ -168,7 +171,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 4a1771d5cec7be245892510aeae56eba, type: 2}
         description: A larger Providence-class hull with 10,000 hull, 6,000 shields
-          and 28 weapon hardpoints. Retains Providence's abilities and fighter complement.
+          and 28 weapon hardpoints. Retains Providence's abilities. Deploys 5 fighters,
+          3 bombers, and 4 interceptors at once. Carries 48 total squadron launches.
         role: Capital / Providence-class dreadnought / carrier
         iconKey: af913e547595237409f81ee21d82b267:21300000
         isHero: 0
@@ -204,8 +208,8 @@ MonoBehaviour:
         description: 8,500 hull and 2,500 shields. Three quad turbolaser batteries,
           eight turbolaser batteries and two proton torpedo launchers use medium
           caliber. Sixteen targetable hardpoints include engines, shields and hangar.
-          Deploys two Vulture fighter squadrons and one Advanced Droid Bomber squadron,
-          with matching replacement reserves.
+          Deploys 3 fighters, 2 bombers, and 2 interceptors at once. Carries 28 total
+          squadron launches.
         role: Capital / Battle line carrier
         iconKey: 929de4fd7db737646a0df2a72d3404af:21300000
         isHero: 0
@@ -223,7 +227,8 @@ MonoBehaviour:
         description: 3,100 hull and 1,500 shields. Eight turbolaser batteries, four
           laser cannon batteries, two ion cannon batteries and one proton torpedo
           launcher, all medium caliber. All 17 mounts are targetable, including engines
-          and hangar. Carries two active Vulture Droid squadrons plus one reserve.
+          and hangar. Deploys 2 fighters, 1 bomber, and 2 interceptors at once. Carries
+          20 total squadron launches.
         role: Frigate / Escort
         iconKey: 6659a938f240057468564cb0ee980865:21300000
         isHero: 0
@@ -259,9 +264,9 @@ MonoBehaviour:
     - key: 100
       value:
         matchups: {fileID: 11400000, guid: 997cc1b8ed373fe4fbe4d556a811f3b0, type: 2}
-        description: A squadron of fighters. Surviving members share orders and take
-          damage individually.
-        role: "Fighter squadron \xB7 Interceptor"
+        description: Four Belbullab-22 interceptors with 38 hull and 5 shields each.
+          Their interceptor lasers are most effective against bombers.
+        role: Interceptor / Anti-bomber
         iconKey: 6475693b4e9a23943aa6f6d43d698437:21300000
         isHero: 0
         <Name>k__BackingField: Belbullab-22 Squadron
@@ -293,10 +298,10 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 515b7205b7913704094becf24905d815, type: 2}
         description: Seven Vulture-class droid starfighters with four laser cannons
-          each. Cheap, fast interceptors with 35 hull per fighter and no shields.
-          Effective against bombers and fighters; vulnerable to corvettes and dedicated
-          anti-fighter weapons. No hyperdrive.
-        role: "Interceptor squadron \xB7 Swarm fighter"
+          each. Swarm fighters with 28 hull per fighter and no shields. Effective
+          against bombers and fighters; vulnerable to corvettes and dedicated anti-fighter
+          weapons. No hyperdrive.
+        role: Fighter / Swarm fighter
         iconKey: 9fcb02cde6a89f84a91b532e31af44f4:21300000
         isHero: 0
         <Name>k__BackingField: Vulture Droid Squadron

@@ -75,23 +75,34 @@ namespace EmpireAtWar.Components.Hangar
             foreach (IHardPointModel unit in _health.GetShipUnits(HardPointType.Hangar))
             {
                 hasLaunchHangar |= unit.Transform == hangarHardPoint.transform;
-                int bay = Array.FindIndex(bayHardPoints, point => point.transform == unit.Transform);
-                if (bayHardPoints.Length != 0 && bay < 0)
+                if (bayHardPoints.Length == 0)
                 {
+                    TrackHangarHealth(unit, OnHangarHealthChanged);
                     continue;
                 }
-                Action handler = bayHardPoints.Length == 0 ? OnHangarHealthChanged : () =>
+
+                for (int bay = 0; bay < bayHardPoints.Length; bay++)
                 {
-                    if (unit.IsDestroyed) Model.DisableBay(bay);
-                    else Model.EnableBay(bay);
-                };
-                unit.OnHardPointHealthChanged += handler;
-                _hangarUnits.Add((unit, handler));
+                    if (bayHardPoints[bay].transform != unit.Transform) continue;
+
+                    int linkedBay = bay;
+                    TrackHangarHealth(unit, () =>
+                    {
+                        if (unit.IsDestroyed) Model.DisableBay(linkedBay);
+                        else Model.EnableBay(linkedBay);
+                    });
+                }
             }
             if (!hasLaunchHangar || (bayHardPoints.Length != 0 && _hangarUnits.Count != Model.BayCount))
             {
                 throw new InvalidOperationException($"{name}: hangar hardpoints must belong to the health hardpoints.");
             }
+        }
+
+        private void TrackHangarHealth(IHardPointModel unit, Action handler)
+        {
+            unit.OnHardPointHealthChanged += handler;
+            _hangarUnits.Add((unit, handler));
         }
 
         public void LateDispose() => Release();

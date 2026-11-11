@@ -62,37 +62,43 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SavedHangars_KeepSeparateExitsAndLaunchTwoSquadrons()
+        public void SavedHangars_LaunchAllRolesAndShareTheFighterExitWithInterceptors()
         {
             ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.HangarBays.Select(b => (int)b.SquadronType), Is.EqualTo(new[] { 200, 201 }));
-            Assert.That(data.HangarBays.All(b => b.Reserve == 20 && b.MaxActive == 1), Is.True);
+            Assert.That(data.HangarBays.Select(b => (int)b.SquadronType), Is.EqualTo(new[] { 200, 201, 203 }));
+            Assert.That(data.HangarBays.Select(b => b.MaxActive), Is.EqualTo(new[] { 3, 2, 2 }));
+            Assert.That(data.HangarBays.Select(b => b.Reserve), Is.EqualTo(new[] { 9, 6, 6 }));
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             SerializedObject hangar = Config(view, "HangarComponent");
             SerializedProperty points = hangar.FindProperty("bayHardPoints");
             SerializedProperty exits = hangar.FindProperty("bayLaunchPoints");
-            Assert.That(points.arraySize, Is.EqualTo(2));
-            Assert.That(exits.arraySize, Is.EqualTo(2));
+            Assert.That(points.arraySize, Is.EqualTo(3));
+            Assert.That(exits.arraySize, Is.EqualTo(3));
             Assert.That(points.GetArrayElementAtIndex(0).objectReferenceValue, Is.Not.EqualTo(points.GetArrayElementAtIndex(1).objectReferenceValue));
-            for (int i = 0; i < 2; i++)
+            Assert.That(points.GetArrayElementAtIndex(2).objectReferenceValue, Is.EqualTo(points.GetArrayElementAtIndex(0).objectReferenceValue));
+            Assert.That(exits.GetArrayElementAtIndex(2).objectReferenceValue, Is.EqualTo(exits.GetArrayElementAtIndex(0).objectReferenceValue));
+            for (int i = 0; i < exits.arraySize; i++)
             {
                 Transform exit = (Transform)exits.GetArrayElementAtIndex(i).objectReferenceValue;
                 Assert.That(exit.position.y - view.transform.position.y, Is.LessThan(data.HullBottom));
             }
             HangarModel model = new HangarModel(data);
-            for (int expected = 0; expected < 2; expected++)
+            for (int launch = 0; launch < 7; launch++)
             {
-                Assert.That(model.TryLaunch(data.HangarInitialDelay + data.HangarLaunchInterval, out int bay), Is.True);
-                Assert.That(bay, Is.EqualTo(expected));
-                Assert.That(model.GetReserve(bay), Is.EqualTo(19));
+                float delay = launch == 0 ? data.HangarInitialDelay : data.HangarLaunchInterval;
+                Assert.That(model.TryLaunch(delay, out int bay), Is.True);
+                Assert.That(bay, Is.EqualTo(launch % 3));
             }
             Assert.That(model.TryLaunch(100, out _), Is.False);
             model.SquadronLost(0);
+            model.SquadronLost(0);
+            model.SquadronLost(0);
             Assert.That(model.TryLaunchReplacement(out int replacement), Is.True);
             Assert.That(replacement, Is.Zero);
-            Assert.That(model.GetReserve(0), Is.EqualTo(18));
+            Assert.That(model.GetReserve(0), Is.EqualTo(5));
             model.DisableBay(0);
             model.DisableBay(1);
+            model.DisableBay(2);
             Assert.That(model.IsOperational, Is.False);
             Assert.That(model.TryLaunch(100, out _), Is.False);
         }

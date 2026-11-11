@@ -121,6 +121,9 @@ created: "2026-10-29\r"
 
 ## Gameplay and Balance
 
+- [ ] [[Done/Bugs/Carrier_and_Squadron_Rebalance]] — Observe all three launch roles per faction, shared fighter/interceptor hardpoint loss and repair, and load a version 4 battle with spent reserves and deployed squadrons.
+- [ ] [[Done/Bugs/Carrier_and_Squadron_Rebalance]] — Compare equal-cost fleets at levels 2, 3 and 5 and same-role duels with and without abilities and research. Confirm X-Wing torpedoes launch during ship attack runs. Record peak craft, launch timing, losses, replacements and anti-ship damage.
+
 - [ ] [[Done/Features/Harmonic_Bomb_Ability]] — In skirmish, verify the stationary drop, ring visibility and per-member falloff with a Fett, including caster death during the fuse.
 - [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Verify player autofire and AI with two versus three nearby visible enemies.
 - [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Count members actually hit per autofire drop in a moving dogfight. Enemy fighters at 58–92 u/s can leave the 35-unit radius during the 1.5 s fuse; if most drops hit nothing, tune radius, fuse or trigger before damage.

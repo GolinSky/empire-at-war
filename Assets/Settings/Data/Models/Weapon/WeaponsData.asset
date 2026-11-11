@@ -893,10 +893,10 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: XWing
-    damageMultiplier: 1
+    damageMultiplier: 0.945
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: T-65 X-Wing cannons.
+    reason: XWing squadron rebalance damage target.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -1219,18 +1219,17 @@ MonoBehaviour:
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 122
-    displayName: Triple Laser Cannon
-    family: 20
+    displayName: Triple Interceptor Laser Cannon
+    family: 24
     caliber: 0
     mount: 3
     scope: 2
     faction: 0
     unit: Belbullab22
-    damageMultiplier: 1.5
+    damageMultiplier: 0.9375
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Belbullab-22 carries triple laser cannons; with one gun per fighter it
-      had a fifth of a Vulture squadron's firepower at nearly twice the price.
+    reason: Belbullab22 squadron rebalance damage target.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0
@@ -1771,6 +1770,474 @@ MonoBehaviour:
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 130
+    displayName: Light Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 1
+    unit: Vulture
+    damageMultiplier: 0.36
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Vulture squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 131
+    displayName: Light Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: TIEFighter
+    damageMultiplier: 0.8485714
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: TIEFighter squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 132
+    displayName: Heavy Fighter Laser Cannon
+    family: 20
+    caliber: 2
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: TIEBrute
+    damageMultiplier: 0.40646854
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: TIEBrute squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 133
+    displayName: Light Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: TIEAvenger
+    damageMultiplier: 0.8891129
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: TIEAvenger squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 134
+    displayName: Light Fighter Missile Launcher
+    family: 22
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: TIEAvenger
+    damageMultiplier: 0.8891129
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: TIEAvenger squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 135
+    displayName: Heavy Fighter Laser Cannon
+    family: 20
+    caliber: 2
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: ARC170
+    damageMultiplier: 0.4040404
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: ARC170 squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 136
+    displayName: Light Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: ARC170
+    damageMultiplier: 0.56888884
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: ARC170 squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 137
+    displayName: Strike Fighter Proton Torpedo
+    family: 23
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: ARC170
+    damageMultiplier: 0.4
+    reloadMultiplier: 1.5
+    rangeMultiplier: 1
+    reason: ARC170 squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 138
+    displayName: Light Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: V19Torrent
+    damageMultiplier: 1.485
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: V19Torrent squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 139
+    displayName: Light Interceptor Laser Cannon
+    family: 24
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: TIEInterceptor
+    damageMultiplier: 0.45
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: TIEInterceptor squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 140
+    displayName: Light Interceptor Laser Cannon
+    family: 24
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: VWing
+    damageMultiplier: 0.8775
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: VWing squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 141
+    displayName: Light Interceptor Laser Cannon
+    family: 24
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 2
+    unit: AWing
+    damageMultiplier: 0.9
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: AWing squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 142
+    displayName: Light Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 1
+    unit: DroidBomber
+    damageMultiplier: 0.70875
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: DroidBomber squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 143
+    displayName: Light Fighter Proton Torpedo
+    family: 23
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 1
+    unit: DroidBomber
+    damageMultiplier: 0.5
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: DroidBomber squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 144
+    displayName: Light Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: TIEBomber
+    damageMultiplier: 1.6875
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: TIEBomber squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 145
+    displayName: Light Fighter Proton Torpedo
+    family: 23
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: TIEBomber
+    damageMultiplier: 0.6666667
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: TIEBomber squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 146
+    displayName: Light Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: TIEPunisher
+    damageMultiplier: 1.642198
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: TIEPunisher squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 147
+    displayName: Light Fighter Proton Torpedo
+    family: 23
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: TIEPunisher
+    damageMultiplier: 0.6388889
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: TIEPunisher squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 148
+    displayName: Light Fighter Missile Launcher
+    family: 22
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: TIEPunisher
+    damageMultiplier: 1.642198
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: TIEPunisher squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 149
+    displayName: Light Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: YWing
+    damageMultiplier: 0.945
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: YWing squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 150
+    displayName: Light Fighter Proton Torpedo
+    family: 23
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: YWing
+    damageMultiplier: 0.8333333
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: YWing squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 151
+    displayName: Light Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: NTB630
+    damageMultiplier: 1.1025
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: NTB630 squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 152
+    displayName: Light Fighter Proton Torpedo
+    family: 23
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: NTB630
+    damageMultiplier: 0.8
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: NTB630 squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 153
+    displayName: Light Dual Fighter Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 2
+    scope: 2
+    faction: 2
+    unit: YWingBomber
+    damageMultiplier: 0.87526953
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: YWingBomber squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 154
+    displayName: Heavy Dual Fighter Ion Cannon
+    family: 21
+    caliber: 2
+    mount: 2
+    scope: 2
+    faction: 2
+    unit: YWingBomber
+    damageMultiplier: 0.6216403
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: YWingBomber squadron rebalance damage target.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 155
+    displayName: X-Wing Proton Torpedo
+    family: 23
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 2
+    unit: XWing
+    damageMultiplier: 0.44444445
+    reloadMultiplier: 1.25
+    rangeMultiplier: 1
+    reason: X-Wing fighter torpedo damage and reload targets.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0

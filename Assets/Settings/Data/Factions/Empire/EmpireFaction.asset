@@ -42,11 +42,11 @@ MonoBehaviour:
           weapons: six dual heavy turbolaser main batteries, two heavy dual ion cannons,
           two medium dual ion cannons, eight dual medium turbolasers and six medium
           dual laser cannons, plus four point-defense guns. Two shield generators,
-          two engines, tractor beam and hangar are targetable. Launches TIE Fighters,
-          TIE Interceptors and TIE Bombers, up to six squadrons at once. Boost Weapon
-          Power cuts the reload time of all weapons by 85% for 7 s with no speed
-          or damage change; 50 s recovery. Tractor Beam restricts enemy corvette
-          or frigate movement.'
+          two engines, tractor beam and hangar are targetable. Boost Weapon Power
+          cuts the reload time of all weapons by 85% for 7 s with no speed or damage
+          change; 50 s recovery. Tractor Beam restricts enemy corvette or frigate
+          movement. Deploys 2 fighters, 2 bombers, and 2 interceptors at once. Carries
+          18 total squadron launches.'
         role: Capital ship / Advanced carrier
         iconKey: b8f66d736a9c0a841b8957320119ca55:21300000
         isHero: 0
@@ -104,8 +104,8 @@ MonoBehaviour:
           two quad ion turrets, six medium ion cannons, six medium turbolasers and
           two medium dual turbolasers. Every weapon is targetable; shield generator,
           hangar, tractor beam are targetable. Power to Main Batteries and Tractor
-          Beam. Launches TIE Fighters, TIE Interceptors and TIE Bombers, up to six
-          squadrons at once.
+          Beam. Deploys 2 fighters, 2 bombers, and 2 interceptors at once. Carries
+          18 total squadron launches.
         role: Capital ship / Ship of the line
         iconKey: 5c33cff1e56f4c246956a7183bb94b02:21300000
         isHero: 0
@@ -125,8 +125,8 @@ MonoBehaviour:
           heavy 2-burst long-range dual turbo-ions, ten heavy 8-burst artillery-rocket
           launchers, four shield generators, two engines and two hangars. Integrated:
           69 medium 2-burst dual long-range turbolasers, 40 heavy lasers and 14 repeating
-          point-defense mounts. Laser Beam and Tractor Beam. TIE Fighter and TIE
-          Bomber complement.'
+          point-defense mounts. Laser Beam and Tractor Beam. Deploys 3 fighters,
+          2 bombers, and 2 interceptors at once. Carries 21 total squadron launches.'
         role: Dreadnought / Fleet Flagship
         iconKey: ebec4f97ee2c2454883747a62531d2c9:21300000
         isHero: 0
@@ -163,10 +163,10 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: ce8195d5a87d2a34fa7374c25d89d352, type: 2}
         description: 5,000 hull; 2,500 shields; speed 40. Two targetable 4-burst
           assault-missile launchers, shield generator and engine. Four non-targetable
-          heavy lasers and six non-targetable missile-defense mounts. TIE-Fighters
-          and TIE-Bombers; no hangar hardpoint. Boost Weapon Power doubles fire rate
-          for 20 s, stops shield regeneration, reduces speed to 25% and increases
-          incoming damage by 50%.
+          heavy lasers and six non-targetable missile-defense mounts. Boost Weapon
+          Power doubles fire rate for 20 s, stops shield regeneration, reduces speed
+          to 25% and increases incoming damage by 50%. Deploys 2 fighters, 1 bomber,
+          and 1 interceptor at once. Carries 12 total squadron launches.
         role: Battle Carrier / Cruiser
         iconKey: f0344b89ac6897448a6494a4e3c4353e:21300000
         isHero: 0
@@ -206,7 +206,8 @@ MonoBehaviour:
           ten Imperial green heavy dual turbolasers, two heavy turbolasers, two heavy
           ion cannons and one SPHAT beam. Intensify Firepower makes turbolasers,
           ion cannons and the SPHAT beam fire about six times faster for 15 s; 60
-          s recovery. Launches TIE Fighters, TIE Bombers and TIE Interceptors.'
+          s recovery. Deploys 3 fighters, 3 bombers, and 2 interceptors at once.
+          Carries 24 total squadron launches.'
         role: Capital carrier / Anti-frigate
         iconKey: d612310c959d0bb4d93c64dba1f5b3f4:21300000
         isHero: 0
@@ -297,9 +298,9 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 16ec1784ca6e7fc4d842d982fde86b5c, type: 2}
         description: 6,000 hull and 5,000 shields with capital shield regeneration.
           Four dual medium turbolasers, two concussion missile launchers and two
-          point defense lasers. Deploys TIE Fighter, TIE Bomber, TIE Avenger, TIE
-          Interceptor, TIE Brute and TIE Punisher squadrons. Two squadrons of each
-          type can be active, with ten carried per type and sixty total.
+          point defense lasers. Launches the full TIE squadron roster. Deploys 3
+          fighters, 3 bombers, and 2 interceptors at once. Carries 24 total squadron
+          launches.
         role: Capital / Assault carrier
         iconKey: f38f2a09297bc734d89c94affa2d83f6:21300000
         isHero: 0
@@ -316,10 +317,10 @@ MonoBehaviour:
     - key: 200
       value:
         matchups: {fileID: 11400000, guid: 42b9d7cba8dab804589da64ac8ce570f, type: 2}
-        description: 'Imperial squadron: seven TIE Fighters, each with 50 hull, no
+        description: 'Imperial squadron: seven TIE Fighters, each with 42 hull, no
           shields and two laser cannons. Screens carriers against fighters and bombers;
           vulnerable to anti-fighter corvettes.'
-        role: "Fighter \xB7 Interceptor"
+        role: Fighter / Squadron screen
         iconKey: 7c8d76c748665eb4f8c008d83b753703:21300000
         isHero: 0
         <Name>k__BackingField: TIE Fighter Squadron
@@ -333,7 +334,7 @@ MonoBehaviour:
     - key: 201
       value:
         matchups: {fileID: 11400000, guid: 7c52c799b307ef24ab481ca1f82ccfb9, type: 2}
-        description: 'Imperial squadron: four TIE Bombers, each with 60 hull, no
+        description: 'Imperial squadron: four TIE Bombers, each with 45 hull, no
           shields, a laser cannon and a proton torpedo launcher. Attacks larger ships;
           vulnerable to fighters and anti-fighter weapons.'
         role: Bomber / Anti-ship
@@ -350,12 +351,12 @@ MonoBehaviour:
     - key: 202
       value:
         matchups: {fileID: 11400000, guid: c5df0907ae25f944fa8027342b0f745c, type: 2}
-        description: Six TIE Avengers. Each fighter has 40 hull, 12 shields, two
+        description: Six TIE Avengers. Each fighter has 44 hull, 10 shields, two
           light repeating lasers and two concussion-missile launchers. Power to Weapons
           doubles fire rate for 10 s, reduces speed by 25% and increases damage taken
           by 50%; 60 s recovery. Seeker Warhead Countermeasure automatically intercepts
           incoming missiles. Weapons are not separately targetable.
-        role: Fighter / Interceptor
+        role: Fighter / Fast attack
         iconKey: 3ebf9b17840b8ee4daae27c4f063d4af:21300000
         isHero: 0
         <Name>k__BackingField: TIE Avenger Squadron
@@ -369,9 +370,9 @@ MonoBehaviour:
     - key: 203
       value:
         matchups: {fileID: 11400000, guid: 606a86b08cc7a5e4eb247e01d41aa404, type: 2}
-        description: Eight fast TIE Interceptors, each with 25 hull and four laser
-          cannons. Advanced-loadout carrier fighter.
-        role: Fighter / Interceptor
+        description: Eight fast TIE Interceptors, each with 32 hull and four laser
+          cannons. Carrier interceptor.
+        role: Interceptor / Anti-bomber
         iconKey: 64e95301a26b2ca498bc930f9eae7727:21300000
         isHero: 0
         <Name>k__BackingField: TIE Interceptor Squadron
@@ -385,9 +386,9 @@ MonoBehaviour:
     - key: 204
       value:
         matchups: {fileID: 11400000, guid: 90bfd56a75214e249aaf83f0d74b2bfe, type: 2}
-        description: Six heavy TIE Brutes, each with 50 hull and two heavy laser
+        description: Six heavy TIE Brutes, each with 52 hull and two heavy laser
           cannons. Advanced-loadout carrier fighter.
-        role: Fighter / Interceptor
+        role: Heavy fighter / Squadron screen
         iconKey: 2dc8ad80492076941aae35ba3ce7c2aa:21300000
         isHero: 0
         <Name>k__BackingField: TIE Brute Squadron
@@ -401,7 +402,7 @@ MonoBehaviour:
     - key: 205
       value:
         matchups: {fileID: 11400000, guid: b5b754d7809130641b8b0449137d8769, type: 2}
-        description: Four TIE Punishers, each with 55 hull, 30 shields, one laser
+        description: Four TIE Punishers, each with 48 hull, 12 shields, one laser
           cannon, two proton-torpedo launchers and two missile launchers. Advanced-loadout
           carrier bomber.
         role: Bomber / Anti-ship

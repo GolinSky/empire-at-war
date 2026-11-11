@@ -9,8 +9,8 @@ namespace EmpireAtWar.Services.Saves
     [Serializable]
     public sealed class BattleSaveHeader
     {
-        /// <summary>Raise when the save layout changes; older saves are refused, not migrated.</summary>
-        public const int CURRENT_VERSION = 4;
+        public const int CURRENT_VERSION = 5;
+        internal const int PRE_HANGAR_REBALANCE_VERSION = 4;
 
         [SerializeField] private int version;
         [SerializeField] private GameMode mode;
@@ -27,7 +27,9 @@ namespace EmpireAtWar.Services.Saves
         /// <summary>Battle seconds elapsed while the battle was running.</summary>
         public float BattleTime => battleTime;
         public GameSpeed GameSpeed => gameSpeed;
-        public bool IsCompatible => version == CURRENT_VERSION;
+        public bool IsCompatible => version is CURRENT_VERSION or PRE_HANGAR_REBALANCE_VERSION;
+
+        internal void FinishHangarMigration() => version = CURRENT_VERSION;
 
         public static BattleSaveHeader Create(GameMode mode, BattleSaveSlot slot, DateTime savedAtUtc,
             float battleTime, GameSpeed gameSpeed) => new BattleSaveHeader

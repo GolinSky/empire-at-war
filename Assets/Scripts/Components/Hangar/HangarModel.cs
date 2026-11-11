@@ -23,6 +23,7 @@ namespace EmpireAtWar.Components.Hangar
         private readonly List<float>[] _recentLaunches;
 
         private float _cooldown;
+        private int _nextAutomaticBay;
 
         public bool IsOperational { get; private set; } = true;
         public int BayCount => _reserve.Length;
@@ -60,6 +61,7 @@ namespace EmpireAtWar.Components.Hangar
             }
 
             _cooldown = cooldown;
+            _nextAutomaticBay = 0;
         }
 
         // A restored squadron counts as just launched.
@@ -109,6 +111,7 @@ namespace EmpireAtWar.Components.Hangar
             bay = FindLaunchBay(respectRelaunch: true);
             if (bay < 0) return false;
             Launch(bay);
+            _nextAutomaticBay = (bay + 1) % BayCount;
             return true;
         }
 
@@ -133,10 +136,15 @@ namespace EmpireAtWar.Components.Hangar
         private int FindLaunchBay(bool respectRelaunch)
         {
             if (!IsOperational) return -1;
-            for (int i = 0; i < _reserve.Length; i++)
-                if (!_disabled[i] && _reserve[i] > 0 && _active[i] < _data.HangarBays[i].MaxActive &&
-                    (!respectRelaunch || _recentLaunches[i].Count < _data.HangarBays[i].MaxActive))
-                    return i;
+            int firstBay = respectRelaunch ? _nextAutomaticBay : 0;
+            for (int offset = 0; offset < BayCount; offset++)
+            {
+                int bay = (firstBay + offset) % BayCount;
+                int maxActive = _data.HangarBays[bay].MaxActive;
+                if (!_disabled[bay] && _reserve[bay] > 0 && _active[bay] < maxActive &&
+                    (!respectRelaunch || _recentLaunches[bay].Count < maxActive))
+                    return bay;
+            }
             return -1;
         }
 
