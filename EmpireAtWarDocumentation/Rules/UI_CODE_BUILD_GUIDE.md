@@ -5,6 +5,7 @@
 - Before UI changes: read [[Rules/UI_UX_GUIDELINES]].
 - Before new asset folders: read [[Architecture/PROJECT_ORGANIZATION]].
 - Mixed existing responsibilities → [[Architecture/UI_REFACTORING_PLAYBOOK]].
+- Popups and dialogs → [[Architecture/POPUP_SYSTEM]].
 
 ## 1. Plan the responsibilities
 

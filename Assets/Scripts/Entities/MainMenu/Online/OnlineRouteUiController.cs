@@ -15,20 +15,20 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private readonly OnlineMatchService _online;
         private readonly IOnlineSkirmishLobbyScreen _skirmishLobby;
         private readonly IOnlineSurvivalLobbyScreen _survivalLobby;
-        private readonly IPopupService _popupService;
+        private readonly ISteamPopupService _steamPopups;
         private OnlineUi _ui;
         private bool _isOpen;
         private LobbyMode _shownLobby;
 
         public OnlineRouteUiController(IUiService uiService, IUiCancelRouter cancelRouter, OnlineMatchService online,
             IOnlineSkirmishLobbyScreen skirmishLobby, IOnlineSurvivalLobbyScreen survivalLobby,
-            IPopupService popupService)
+            ISteamPopupService steamPopups)
             : base(uiService, cancelRouter)
         {
             _online = online;
             _skirmishLobby = skirmishLobby;
             _survivalLobby = survivalLobby;
-            _popupService = popupService;
+            _steamPopups = steamPopups;
         }
 
         public void Initialize()
@@ -93,16 +93,13 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private void ShowInvitePopup()
         {
             string from = _online.Steam.PendingInviteFrom;
-            _popupService.ShowAccept(new AcceptPopupContent(
-                    title: "Game invite",
-                    message: $"{from} invited you to join their online lobby.",
-                    acceptLabel: "Join",
-                    declineLabel: "Later"),
-                isAccepted =>
-                {
-                    // "Later" keeps the invite on the Online screen; it may already be accepted there.
-                    if (isAccepted && _online.Steam.HasPendingInvite) AcceptInvite();
-                });
+            var lobby = _online.Steam.PendingInviteLobby;
+            _steamPopups.ShowInviteReceived(from, result =>
+            {
+                // "Later" keeps the invite on the Online screen; it may already be accepted there.
+                if (result == ConfirmPopupResult.Accepted && _online.Steam.HasPendingInvite &&
+                    _online.Steam.PendingInviteLobby == lobby) AcceptInvite();
+            });
         }
 
         protected override bool HandleCancel()

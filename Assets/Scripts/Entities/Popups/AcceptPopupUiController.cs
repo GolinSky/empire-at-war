@@ -1,67 +1,53 @@
 using System;
-using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Popups;
 using EmpireAtWar.Ui.Base;
 
 namespace EmpireAtWar.Entities.Popups
 {
-    /// <summary>Owns the accept/decline popup view. Cancel (Escape) declines.</summary>
-    public sealed class AcceptPopupUiController : UiController, IPopupController, IAcceptPopupPresenter,
-        ILateDisposable
+    public sealed class AcceptPopupUiController : UiController, IPopupController, IAcceptPopupPresenter
     {
+        private readonly AcceptPopupContent _content;
+        private readonly Action<ConfirmPopupResult> _answered;
         private AcceptPopupUi _ui;
-        private Action<bool> _answered;
+        private Action _complete;
+        private ConfirmPopupResult _result;
 
-        public AcceptPopupUiController(IUiService uiService, IUiCancelRouter cancelRouter)
-            : base(uiService, cancelRouter)
+        public AcceptPopupUiController(IUiService uiService, AcceptPopupContent content,
+            Action<ConfirmPopupResult> answered) : base(uiService)
         {
-        }
-
-        public void Show(AcceptPopupContent content, Action<bool> answered)
-        {
-            if (_answered != null)
-            {
-                throw new InvalidOperationException("An accept popup is already open.");
-            }
-
-            if (_ui == null)
-            {
-                _ui = CreateUi<AcceptPopupUi>();
-                _ui.AssignPresenter(this);
-                _ui.Initialize();
-            }
-
+            _content = content;
             _answered = answered;
-            _ui.Render(content);
+        }
+
+        public BaseUi Open(Action complete)
+        {
+            _complete = complete;
+            _ui = CreateUi<AcceptPopupUi>();
+            _ui.AssignPresenter(this);
+            _ui.Render(_content);
+            _ui.Initialize();
             _ui.Show();
-            Focus();
+            return _ui;
         }
 
-        public void Accept() => Answer(true);
-
-        public void Decline() => Answer(false);
-
-        protected override bool HandleCancel()
+        public void SetCovered(bool covered)
         {
-            Decline();
-            return true;
         }
 
-        public void LateDispose()
+        public void Accept() => Answer(ConfirmPopupResult.Accepted);
+        public void Decline() => Answer(ConfirmPopupResult.Declined);
+        public void Cancel() => Decline();
+
+        public void Dispose(bool dismissed)
         {
-            Unfocus();
-            if (_ui != null) _ui.Dispose();
-            _ui = null;
-            _answered = null;
+            _ui.Dispose();
+            _answered(dismissed ? ConfirmPopupResult.Dismissed : _result);
         }
 
-        private void Answer(bool isAccepted)
+        private void Answer(ConfirmPopupResult result)
         {
-            Action<bool> answered = _answered;
-            _answered = null;
-            _ui.Hide();
-            Unfocus();
-            answered(isAccepted);
+            _result = result;
+            _complete();
         }
     }
 }

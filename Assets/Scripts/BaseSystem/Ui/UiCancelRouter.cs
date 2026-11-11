@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Services.Input;
-using VContainer;
 using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Ui.Base
 {
     /// <summary>
-    /// Sends each cancel request to the focused UIs, most recently focused first, until one consumes it.
+    /// Gives the popup layer first chance to cancel, then dispatches to focused UIs.
     /// </summary>
     public sealed class UiCancelRouter : IUiCancelRouter, IInitializable, IOrderedDisposable
     {
         private readonly ICancelInput _cancelInput;
 
         private readonly List<IUiCancelHandler> _focused = new List<IUiCancelHandler>();
+        private IUiCancelHandler _popupLayer;
 
         public event Action CancelUnhandled;
 
@@ -44,8 +44,15 @@ namespace EmpireAtWar.Ui.Base
             _focused.Remove(handler);
         }
 
+        internal void SetPopupLayer(IUiCancelHandler handler) => _popupLayer = handler;
+
         private void Dispatch()
         {
+            if (_popupLayer != null && _popupLayer.TryCancel())
+            {
+                return;
+            }
+
             for (int i = _focused.Count - 1; i >= 0; i--)
             {
                 if (_focused[i].TryCancel())

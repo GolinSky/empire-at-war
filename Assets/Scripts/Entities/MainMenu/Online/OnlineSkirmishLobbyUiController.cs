@@ -14,6 +14,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.Networking.Online.Messages;
+using EmpireAtWar.Services.Popups;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 
@@ -31,23 +32,25 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private readonly TeamColorPalette _palette;
         private readonly IMenuFactionSfxService _factionAudio;
         private readonly TooltipRequests _tooltips;
+        private readonly ISteamPopupService _steamPopups;
         private TooltipHoverSubscription _tooltipHover;
         // The lobby keeps its own setup so the offline Skirmish screen is untouched.
         private readonly SkirmishModel _model = new SkirmishModel();
         private SkirmishUi _ui;
-        private SteamInvitePresenter _invites;
+        private PopupHandle _invitePicker;
         private bool _isOpen;
         private string _appliedSetup = string.Empty;
 
         public OnlineSkirmishLobbyUiController(IUiService uiService, IUiCancelRouter cancelRouter,
             OnlineMatchService online, TeamColorPalette palette, IMenuFactionSfxService factionAudio,
-            ITooltipService tooltipService)
+            ITooltipService tooltipService, ISteamPopupService steamPopups)
             : base(uiService, cancelRouter)
         {
             _tooltips = new TooltipRequests(tooltipService);
             _online = online;
             _palette = palette;
             _factionAudio = factionAudio;
+            _steamPopups = steamPopups;
         }
 
         private bool IsHost => _online.Role == OnlineRole.Host;
@@ -66,10 +69,10 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             _model.Changed -= OnModelChanged;
             if (_tooltipHover != null) _tooltipHover.Dispose();
             _tooltipHover = null;
+            CloseInvitePicker();
             if (_ui != null)
             {
                 _ui.InviteRequested -= InviteFriends;
-                _invites.Dispose();
                 _ui.Dispose();
             }
 
@@ -87,8 +90,6 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 _ui.SetData(_palette);
                 _ui.SetAvatarSource(this);
                 _ui.Initialize();
-                _invites = new SteamInvitePresenter(_online.Steam, _ui.SteamInvites);
-                _invites.Initialize();
                 _ui.InviteRequested += InviteFriends;
                 _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover, HandleTooltipHover, _tooltips);
             }
@@ -106,17 +107,20 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         {
             _isOpen = false;
             _tooltips.HideAll();
-            _invites.Close();
+            CloseInvitePicker();
             _ui.Hide();
             Unfocus();
         }
 
         // X and Escape leave the lobby; the online route then closes this screen.
-        public void Close() => _online.Leave();
+        public void Close()
+        {
+            CloseInvitePicker();
+            _online.Leave();
+        }
 
         protected override bool HandleCancel()
         {
-            if (_invites.TryClose()) return true;
             Close();
             return true;
         }
@@ -129,7 +133,11 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 return;
             }
 
-            if (_model.CanStart) _online.StartSkirmish(_model.CreateBattle(), _model.CreateMemberSlots());
+            if (_model.CanStart)
+            {
+                CloseInvitePicker();
+                _online.StartSkirmish(_model.CreateBattle(), _model.CreateMemberSlots());
+            }
         }
 
         /// <summary>Host only (clients cannot open the dropdown). A member's row offers Kick, which frees the seat.</summary>
@@ -175,7 +183,12 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         private void Sync()
         {
-            if (!_isOpen || _online.Mode != LobbyMode.Skirmish) return;
+            if (!_isOpen) return;
+            if (!_online.IsInLobby || _online.IsInBattle || _online.Mode != LobbyMode.Skirmish)
+            {
+                CloseInvitePicker();
+                return;
+            }
             if (IsHost) _model.SeatMembers(CreateSeats());
             else if (_online.SetupJson.Length > 0 && _online.SetupJson != _appliedSetup)
             {
@@ -183,7 +196,9 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 _model.ApplyLobby(JsonUtility.FromJson<SkirmishLobbySnapshot>(_appliedSetup), _online.LocalConnectionId);
             }
 
-            _ui.SetInviteAvailable(IsHost && _online.IsSteamLobby);
+            bool canInvite = IsHost && _online.IsSteamLobby;
+            if (!canInvite) CloseInvitePicker();
+            _ui.SetInviteAvailable(canInvite);
             _ui.ShowLobbyStatus(CreateStatus());
         }
 
@@ -197,7 +212,13 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private void ApplyMemberEdit(int connectionId, LobbySlotEditMessage edit) =>
             _model.TryEditMemberSlot(connectionId, (FactionType)edit.Faction, edit.Team, edit.Color);
 
-        private void InviteFriends() => _invites.Open();
+        private void InviteFriends() => _invitePicker = _steamPopups.OpenInvitePicker();
+
+        private void CloseInvitePicker()
+        {
+            _steamPopups.CloseInvitePicker(_invitePicker);
+            _invitePicker = null;
+        }
 
         public bool TryGetAvatar(ulong steamId, out Texture2D avatar) => _online.Steam.TryGetAvatar(steamId, out avatar);
 

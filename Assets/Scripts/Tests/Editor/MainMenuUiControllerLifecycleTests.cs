@@ -78,6 +78,39 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(ConfirmPopupResult.Dismissed, false, false, 0)]
+        [TestCase(ConfirmPopupResult.Declined, true, false, 1)]
+        [TestCase(ConfirmPopupResult.Accepted, true, true, 1)]
+        public void Consent_OnlyPersistsPlayerAnswers(ConfirmPopupResult result, bool hasAnswered,
+            bool isShared, int saveCount)
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(PREFAB_PATH);
+            MainMenuUiController controller = null;
+            try
+            {
+                var repository = new ConsentRepository(false);
+                var settings = new EmpireAtWar.Services.Settings.SettingsService(repository, Array.Empty<ISettingsApplier>());
+                settings.Initialize();
+                var popups = new PopupServiceStub();
+                controller = new MainMenuUiController(new UiServiceStub(root.GetComponent<MainMenuUi>()),
+                    new CancelRouterStub(), new RouteStub(), new RouteStub(), settings, popups,
+                    new TooltipServiceStub());
+
+                controller.Open();
+                Assert.That(popups.Complete, Is.Not.Null);
+                popups.Complete(result);
+
+                Assert.That(repository.SaveCount, Is.EqualTo(saveCount));
+                Assert.That(settings.Saved.Privacy.HasAnsweredConsent, Is.EqualTo(hasAnswered));
+                Assert.That(settings.Saved.Privacy.ShareUsageData, Is.EqualTo(isShared));
+            }
+            finally
+            {
+                if (controller != null) controller.LateDispose();
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
         [Test]
         public void PlayRoute_ReusesViewForwardsModesAndReturnsOnCancel()
         {
@@ -326,23 +359,26 @@ namespace EmpireAtWar.Tests.Editor
         private static ISettingsService CreateSettings()
         {
             EmpireAtWar.Services.Settings.SettingsService settings =
-                new EmpireAtWar.Services.Settings.SettingsService(new AnsweredConsentRepository(), new ISettingsApplier[0]);
+                new EmpireAtWar.Services.Settings.SettingsService(new ConsentRepository(true), new ISettingsApplier[0]);
             settings.Initialize();
             return settings;
         }
 
-        private sealed class AnsweredConsentRepository : ISettingsRepository
+        private sealed class ConsentRepository : ISettingsRepository
         {
+            private readonly bool _hasAnswered;
+            public int SaveCount { get; private set; }
+
+            public ConsentRepository(bool hasAnswered) => _hasAnswered = hasAnswered;
+
             public SettingsLoadStatus Load(out SettingsData data)
             {
                 data = new SettingsData();
-                data.Privacy.Answer(false);
+                if (_hasAnswered) data.Privacy.Answer(false);
                 return SettingsLoadStatus.Loaded;
             }
 
-            public void Save(SettingsData data)
-            {
-            }
+            public void Save(SettingsData data) => SaveCount++;
         }
 
         private sealed class CancelRouterStub : IUiCancelRouter
@@ -352,10 +388,15 @@ namespace EmpireAtWar.Tests.Editor
             public void Unfocus(IUiCancelHandler handler) { }
         }
 
-        private sealed class PopupServiceStub : IPopupService
+        private sealed class PopupServiceStub : IConfirmPopupService
         {
-            public void ShowAccept(AcceptPopupContent content, Action<bool> answered) =>
-                throw new InvalidOperationException("Consent is already answered in this test.");
+            public Action<ConfirmPopupResult> Complete { get; private set; }
+
+            public void ShowAccept(AcceptPopupContent content, Action<ConfirmPopupResult> answered)
+            {
+                Assert.That(Complete, Is.Null, "Only one consent prompt should open.");
+                Complete = answered;
+            }
         }
 
         private sealed class TooltipServiceStub : ITooltipService

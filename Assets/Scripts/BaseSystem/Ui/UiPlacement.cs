@@ -13,6 +13,7 @@ using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
 using EmpireAtWar.Entities.Menu;
 using EmpireAtWar.Entities.MiniMap;
+using EmpireAtWar.Entities.Popups;
 using EmpireAtWar.Entities.Reinforcement;
 using EmpireAtWar.Entities.ShipUi;
 using EmpireAtWar.Entities.Tooltip;
@@ -79,7 +80,9 @@ namespace EmpireAtWar.Ui.Base
                     { typeof(PauseMenuUi), modalSlot },
                     { typeof(EmpireAtWar.Entities.Saves.SaveBrowserUi), modalSlot },
                     { typeof(SettingsUi), modalSlot },
-                    { typeof(EmpireAtWar.Entities.Popups.AcceptPopupUi), modalSlot },
+                    { typeof(AcceptPopupUi), modalSlot },
+                    { typeof(PopupBlockerUi), modalSlot },
+                    { typeof(SteamInvitePopupUi), modalSlot },
                     { typeof(TooltipUi), tooltipSlot },
                     { typeof(FadeUi), fadeSlot }
                 };

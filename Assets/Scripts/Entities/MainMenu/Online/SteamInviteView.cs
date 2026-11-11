@@ -15,8 +15,6 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private ISteamInvitePresenter _presenter;
         private bool _initialized;
 
-        public bool IsOpen => gameObject.activeSelf;
-
         public void Initialize(ISteamInvitePresenter presenter)
         {
             _presenter = presenter;
@@ -24,10 +22,9 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             refreshButton.onClick.AddListener(_presenter.Refresh);
             closeButton.onClick.AddListener(_presenter.Close);
             _initialized = true;
-            Hide();
         }
 
-        public void Show(List<string> names, string message)
+        public void Render(List<string> names, string message)
         {
             friends.Hide();
             ReleaseAvatars();
@@ -37,7 +34,6 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             friends.interactable = names.Count > 0;
             inviteButton.interactable = names.Count > 0;
             status.text = message;
-            gameObject.SetActive(true);
         }
 
         public void ShowStatus(string message) => status.text = message;
@@ -54,8 +50,10 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void RefreshAvatars()
         {
             friends.RefreshShownValue();
-            if (!friends.IsExpanded) return;
-            friends.Hide();
+            if (!friends.enabled || !friends.IsExpanded) return;
+            // Hide fades asynchronously, so Show would still see the previous list.
+            friends.enabled = false;
+            friends.enabled = true;
             friends.Show();
         }
 
@@ -64,20 +62,21 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             foreach (TMP_Dropdown.OptionData option in friends.options)
             {
                 if (option.image == null) continue;
-                Destroy(option.image);
+                if (Application.isPlaying)
+                    Destroy(option.image);
+                else
+                    DestroyImmediate(option.image);
                 option.image = null;
             }
         }
 
-        public void Hide()
-        {
-            friends.Hide();
-            gameObject.SetActive(false);
-        }
+        // TMP_Dropdown.OnDisable immediately collapses its independently sorted list and blocker.
+        public void SetCovered(bool covered) => friends.enabled = !covered;
 
         public void Dispose()
         {
             if (!_initialized) return;
+            SetCovered(true);
             ReleaseAvatars();
             inviteButton.onClick.RemoveListener(Invite);
             refreshButton.onClick.RemoveListener(_presenter.Refresh);

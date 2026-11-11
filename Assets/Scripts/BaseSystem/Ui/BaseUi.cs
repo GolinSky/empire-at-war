@@ -30,11 +30,16 @@ namespace EmpireAtWar.Ui.Base
             SetVisibility(false);
         }
 
+        internal void SetInteraction(bool isInteractive)
+        {
+            canvasGroup.interactable = isInteractive;
+            canvasGroup.blocksRaycasts = isInteractive;
+        }
+
         private void SetVisibility(bool isVisible)
         {
             canvasGroup.alpha = isVisible ? 1f : 0f;
-            canvasGroup.interactable = isVisible;
-            canvasGroup.blocksRaycasts = isVisible;
+            SetInteraction(isVisible);
             IsVisible = isVisible;
         }
     }

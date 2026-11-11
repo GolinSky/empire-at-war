@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.MainMenu.Survival;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Networking.Online;
+using EmpireAtWar.Services.Popups;
 using EmpireAtWar.Ui.Base;
 using UnityEngine;
 
@@ -27,17 +28,19 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private static readonly MapSize[] COOP_MAP_SIZES = { MapSize.Medium, MapSize.Large };
 
         private readonly OnlineMatchService _online;
+        private readonly ISteamPopupService _steamPopups;
         // The lobby keeps its own setup so the offline Survival screen is untouched.
         private readonly SurvivalModel _model = new SurvivalModel();
         private SurvivalUi _ui;
-        private SteamInvitePresenter _invites;
+        private PopupHandle _invitePicker;
         private bool _isOpen;
         private string _appliedSetup = string.Empty;
 
         public OnlineSurvivalLobbyUiController(IUiService uiService, IUiCancelRouter cancelRouter,
-            OnlineMatchService online) : base(uiService, cancelRouter)
+            OnlineMatchService online, ISteamPopupService steamPopups) : base(uiService, cancelRouter)
         {
             _online = online;
+            _steamPopups = steamPopups;
         }
 
         private bool IsHost => _online.Role == OnlineRole.Host;
@@ -53,10 +56,10 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         {
             _online.Changed -= Sync;
             _model.Changed -= OnModelChanged;
+            CloseInvitePicker();
             if (_ui != null)
             {
                 _ui.InviteRequested -= InviteFriends;
-                _invites.Dispose();
                 _ui.Dispose();
             }
 
@@ -73,8 +76,6 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 _ui.SetMapSizes(COOP_MAP_SIZES);
                 _ui.AssignPresenter(this);
                 _ui.Initialize();
-                _invites = new SteamInvitePresenter(_online.Steam, _ui.SteamInvites);
-                _invites.Initialize();
                 _ui.InviteRequested += InviteFriends;
             }
 
@@ -89,24 +90,30 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Hide()
         {
             _isOpen = false;
-            _invites.Close();
+            CloseInvitePicker();
             _ui.Hide();
             Unfocus();
         }
 
         // X and Escape leave the lobby; the online route then closes this screen.
-        public void Close() => _online.Leave();
+        public void Close()
+        {
+            CloseInvitePicker();
+            _online.Leave();
+        }
 
         protected override bool HandleCancel()
         {
-            if (_invites.TryClose()) return true;
             Close();
             return true;
         }
 
         public void StartBattle()
         {
-            if (IsHost) _online.TryStartSurvival(_model.CreateBattle());
+            if (IsHost)
+            {
+                if (_online.TryStartSurvival(_model.CreateBattle())) CloseInvitePicker();
+            }
             else _online.SetReady(!IsLocalReady());
         }
 
@@ -120,14 +127,21 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         private void Sync()
         {
-            if (!_isOpen || _online.Mode != LobbyMode.Survival) return;
+            if (!_isOpen) return;
+            if (!_online.IsInLobby || _online.IsInBattle || _online.Mode != LobbyMode.Survival)
+            {
+                CloseInvitePicker();
+                return;
+            }
             if (!IsHost && _online.SetupJson.Length > 0 && _online.SetupJson != _appliedSetup)
             {
                 _appliedSetup = _online.SetupJson;
                 _model.ApplyLobby(JsonUtility.FromJson<SurvivalLobbySnapshot>(_appliedSetup));
             }
 
-            _ui.SetInviteAvailable(IsHost && _online.IsSteamLobby);
+            bool canInvite = IsHost && _online.IsSteamLobby;
+            if (!canInvite) CloseInvitePicker();
+            _ui.SetInviteAvailable(canInvite);
             RenderLobby();
         }
 
@@ -163,7 +177,13 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private bool IsLocalReady() =>
             _online.Members.Any(member => member.ConnectionId == _online.LocalConnectionId && member.Ready);
 
-        private void InviteFriends() => _invites.Open();
+        private void InviteFriends() => _invitePicker = _steamPopups.OpenInvitePicker();
+
+        private void CloseInvitePicker()
+        {
+            _steamPopups.CloseInvitePicker(_invitePicker);
+            _invitePicker = null;
+        }
 
         private static FactionType FactionAt(int index) =>
             (FactionType)Enum.GetValues(typeof(FactionType)).GetValue(index);

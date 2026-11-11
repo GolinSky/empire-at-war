@@ -91,6 +91,9 @@ created: "2026-10-29\r"
 
 ## UI and Settings
 
+- [ ] [[Done/Refactoring/Shared_Invite_Friends_Popup_Plan]] — With two Steam accounts, receive a game invite over the open picker. Later/Escape restores selection. Join switches lobbies and closes the old picker.
+- [ ] [[Done/Refactoring/Shared_Invite_Friends_Popup_Plan]] — In both lobby modes, verify the Steam overlay and in-game fallback, sending success/failure, and disconnect while the picker is open.
+
 - [ ] [[Done/Refactoring/Empty_Interface_Members]] — Open setup from the main menu and launch a simulation.
 - [ ] [[Done/Refactoring/Empty_Interface_Members]] — Open setup from the battle HUD and cancel while running and while paused. Start a replacement simulation.
 - [ ] [[Done/Refactoring/Empty_Interface_Members]] — Switch Skirmish/Survival tabs on Load, reopen it, and verify Save hides the tabs.

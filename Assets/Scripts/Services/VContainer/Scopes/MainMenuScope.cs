@@ -55,6 +55,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SettingsDraftEditor>(Lifetime.Singleton);
             builder.Register<KeyBindingEditor>(Lifetime.Singleton);
             builder.Register<SkirmishRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<SteamPopupService>(Lifetime.Singleton).As<ISteamPopupService>();
             builder.Register<OnlineRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EmpireAtWar.Entities.MainMenu.Tutorial.TutorialRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();

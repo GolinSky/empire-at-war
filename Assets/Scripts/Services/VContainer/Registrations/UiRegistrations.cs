@@ -1,4 +1,3 @@
-using EmpireAtWar.Entities.Popups;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Popups;
 using EmpireAtWar.Ui.Base;
@@ -16,8 +15,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterComponent(uiService).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(uiService.Placement);
             builder.Register<UiCancelRouter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<AcceptPopupUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PopupService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<ConfirmPopupService>(Lifetime.Singleton).As<IConfirmPopupService>();
         }
     }
 }

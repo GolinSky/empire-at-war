@@ -1,7 +1,7 @@
 using System;
 using EmpireAtWar.Entities.MainMenu.Online;
-using EmpireAtWar.Entities.MainMenu.Skirmish;
 using EmpireAtWar.Entities.MainMenu.Survival;
+using EmpireAtWar.Entities.Popups;
 using MPUIKIT;
 using TMPro;
 using UnityEditor;
@@ -10,30 +10,24 @@ using UnityEngine.UI;
 
 public static class BuildSteamInviteUi
 {
-    private const string SKIRMISH_PATH = "Assets/Prefabs/Ui/MainMenu/SkirmishUi.prefab";
+    private const string POPUP_PATH = "Assets/Prefabs/Ui/Popups/SteamInvitePopupUi.prefab";
     private const string SURVIVAL_PATH = "Assets/Prefabs/Ui/MainMenu/SurvivalUi.prefab";
     private static TMP_Text _text;
     private static TMP_Dropdown _dropdown;
 
     public static string UpgradeAvatars()
     {
-        UpgradeAvatars<SkirmishUi>(SKIRMISH_PATH);
-        UpgradeAvatars<SurvivalUi>(SURVIVAL_PATH);
-        AssetDatabase.SaveAssets();
-        return "Saved avatar bindings and friend row layout in both lobby prefabs.";
-    }
-
-    private static void UpgradeAvatars<T>(string path) where T : Component
-    {
-        GameObject root = PrefabUtility.LoadPrefabContents(path);
+        GameObject root = PrefabUtility.LoadPrefabContents(POPUP_PATH);
         try
         {
-            var owner = new SerializedObject(RootView<T>(root));
-            var view = new SerializedObject(owner.FindProperty("steamInvites").objectReferenceValue);
+            var popup = new SerializedObject(RootView<SteamInvitePopupUi>(root));
+            var view = new SerializedObject(popup.FindProperty("inviteView").objectReferenceValue);
             ConfigureAvatars((TMP_Dropdown)view.FindProperty("friends").objectReferenceValue);
-            PrefabUtility.SaveAsPrefabAsset(root, path);
+            PrefabUtility.SaveAsPrefabAsset(root, POPUP_PATH);
+            AssetDatabase.SaveAssets();
         }
         finally { PrefabUtility.UnloadPrefabContents(root); }
+        return "Saved avatar bindings and friend row layout in the shared Steam invite popup.";
     }
 
     private static void ConfigureAvatars(TMP_Dropdown friends)
@@ -74,73 +68,89 @@ public static class BuildSteamInviteUi
 
     public static string Run()
     {
-        var donor = new SerializedObject(AssetDatabase.LoadAssetAtPath<SurvivalUi>(SURVIVAL_PATH));
-        _text = (TMP_Text)donor.FindProperty("startLabel").objectReferenceValue;
-        _dropdown = (TMP_Dropdown)donor.FindProperty("playerFaction").objectReferenceValue;
-        Build<SkirmishUi>(SKIRMISH_PATH);
-        Build<SurvivalUi>(SURVIVAL_PATH);
-        AssetDatabase.SaveAssets();
-        return "Saved Steam friend pickers in Skirmish and Survival lobby prefabs.";
-    }
-
-    private static void Build<T>(string path) where T : Component
-    {
-        GameObject root = PrefabUtility.LoadPrefabContents(path);
+        GameObject donor = PrefabUtility.LoadPrefabContents(SURVIVAL_PATH);
         try
         {
-            var fields = new SerializedObject(RootView<T>(root));
-            var previous = fields.FindProperty("steamInvites").objectReferenceValue as SteamInviteView;
-            if (previous != null) UnityEngine.Object.DestroyImmediate(previous.gameObject);
-            RectTransform overlay = Rect(root.transform, "SteamInvites");
-            overlay.anchorMin = Vector2.zero;
-            overlay.anchorMax = Vector2.one;
-            overlay.offsetMin = overlay.offsetMax = Vector2.zero;
-            SteamInviteView view = overlay.gameObject.AddComponent<SteamInviteView>();
-            RectTransform blocker = Rect(overlay, "Backdrop");
-            blocker.anchorMin = Vector2.zero;
-            blocker.anchorMax = Vector2.one;
-            blocker.offsetMin = blocker.offsetMax = Vector2.zero;
-            blocker.gameObject.AddComponent<Image>().color = new Color(0, 0, 0, 0.7f);
-
-            RectTransform panel = Rect(overlay, "Panel");
-            panel.anchorMin = panel.anchorMax = new Vector2(0.5f, 0.5f);
-            panel.sizeDelta = new Vector2(700, 370);
-            Background(panel, new Color32(8, 12, 20, 250), 16);
-            Label(panel, "Title", "INVITE FRIENDS", 28, -24, 570, 44, 28).color = new Color32(56, 189, 248, 255);
-            RectTransform divider = Rect(panel, "HeaderDivider");
-            Place(divider, 28, -76, 644, 2);
-            divider.gameObject.AddComponent<Image>().color = new Color32(56, 189, 248, 230);
-
-            TMP_Dropdown friends = UnityEngine.Object.Instantiate(_dropdown, panel);
-            friends.name = "OnlineFriends";
-            friends.onValueChanged = new TMP_Dropdown.DropdownEvent();
-            friends.ClearOptions();
-            friends.captionText.richText = false;
-            friends.itemText.richText = false;
-            Place((RectTransform)friends.transform, 28, -108, 644, 52);
-            ConfigureAvatars(friends);
-            TMP_Text status = Label(panel, "Status", "Choose an online friend to invite.", 28, -180, 644, 80, 22);
-            status.richText = false;
-            Button refresh = Button(panel, "REFRESH", 28, -290, 220, false);
-            Button invite = Button(panel, "INVITE", 452, -290, 220, true);
-            Button close = Button(panel, "X", 620, -24, 52, false);
-            MPImage closeBackground = (MPImage)close.targetGraphic;
-            closeBackground.DrawShape = DrawShape.Circle;
-            closeBackground.OutlineColor = new Color32(239, 68, 68, 255);
-            closeBackground.OutlineWidth = 1.5f;
-            var bindings = new SerializedObject(view);
-            Bind(bindings, "friends", friends);
-            Bind(bindings, "status", status);
-            Bind(bindings, "inviteButton", invite);
-            Bind(bindings, "refreshButton", refresh);
-            Bind(bindings, "closeButton", close);
-            bindings.ApplyModifiedPropertiesWithoutUndo();
-            Bind(fields, "steamInvites", view);
-            fields.ApplyModifiedPropertiesWithoutUndo();
-            overlay.gameObject.SetActive(false);
-            PrefabUtility.SaveAsPrefabAsset(root, path);
+            var fields = new SerializedObject(RootView<SurvivalUi>(donor));
+            _text = (TMP_Text)fields.FindProperty("startLabel").objectReferenceValue;
+            _dropdown = (TMP_Dropdown)fields.FindProperty("playerFaction").objectReferenceValue;
+            Build(donor.transform);
+            AssetDatabase.SaveAssets();
         }
-        finally { PrefabUtility.UnloadPrefabContents(root); }
+        finally { PrefabUtility.UnloadPrefabContents(donor); }
+        return "Saved the shared Steam invite popup.";
+    }
+
+    private static void Build(Transform parent)
+    {
+        RectTransform root = Rect(parent, nameof(SteamInvitePopupUi));
+        Stretch(root);
+        CanvasGroup canvasGroup = root.gameObject.AddComponent<CanvasGroup>();
+        var popup = new SerializedObject(root.gameObject.AddComponent<SteamInvitePopupUi>());
+        RectTransform overlay = Rect(root, "SteamInvites");
+        Stretch(overlay);
+        SteamInviteView view = overlay.gameObject.AddComponent<SteamInviteView>();
+
+        RectTransform panel = Rect(overlay, "Panel");
+        panel.anchorMin = panel.anchorMax = new Vector2(0.5f, 0.5f);
+        panel.sizeDelta = new Vector2(700, 370);
+        Background(panel, new Color32(8, 12, 20, 250), 16);
+        Label(panel, "Title", "INVITE FRIENDS", 28, -24, 570, 44, 28).color = new Color32(56, 189, 248, 255);
+        RectTransform divider = Rect(panel, "HeaderDivider");
+        Place(divider, 28, -76, 644, 2);
+        divider.gameObject.AddComponent<Image>().color = new Color32(56, 189, 248, 230);
+
+        TMP_Dropdown friends = UnityEngine.Object.Instantiate(_dropdown, panel);
+        friends.name = "OnlineFriends";
+        friends.onValueChanged = new TMP_Dropdown.DropdownEvent();
+        friends.ClearOptions();
+        friends.captionText.richText = false;
+        friends.itemText.richText = false;
+        var dropdownRect = (RectTransform)friends.transform;
+        dropdownRect.anchorMin = new Vector2(0, 0.5f);
+        dropdownRect.anchorMax = new Vector2(1, 0.5f);
+        dropdownRect.pivot = new Vector2(0.5f, 0.5f);
+        dropdownRect.anchoredPosition = Vector2.zero;
+        dropdownRect.sizeDelta = new Vector2(-56, 52);
+        friends.template.sizeDelta = new Vector2(friends.template.sizeDelta.x, 320);
+        RootView<ScrollRect>(friends.template.gameObject).scrollSensitivity = 8;
+        foreach (RectTransform child in dropdownRect)
+        {
+            if (child.name != "Arrow") continue;
+            child.anchorMin = child.anchorMax = child.pivot = new Vector2(1, 0.5f);
+            child.anchoredPosition = new Vector2(-16, 0);
+            break;
+        }
+        ConfigureAvatars(friends);
+        TMP_Text status = Label(panel, "Status", "Choose an online friend to invite.", 0, -88, -56, 64, 22);
+        status.rectTransform.anchorMax = Vector2.one;
+        status.rectTransform.pivot = new Vector2(0.5f, 1);
+        status.richText = false;
+        Button refresh = Button(panel, "REFRESH", 28, -290, 220, false);
+        Button invite = Button(panel, "INVITE", 452, -290, 220, true);
+        Button close = Button(panel, "X", 620, -24, 52, false);
+        MPImage closeBackground = (MPImage)close.targetGraphic;
+        closeBackground.DrawShape = DrawShape.Circle;
+        closeBackground.OutlineColor = new Color32(239, 68, 68, 255);
+        closeBackground.OutlineWidth = 1.5f;
+        var bindings = new SerializedObject(view);
+        Bind(bindings, "friends", friends);
+        Bind(bindings, "status", status);
+        Bind(bindings, "inviteButton", invite);
+        Bind(bindings, "refreshButton", refresh);
+        Bind(bindings, "closeButton", close);
+        bindings.ApplyModifiedPropertiesWithoutUndo();
+        Bind(popup, "canvasGroup", canvasGroup);
+        Bind(popup, "inviteView", view);
+        popup.ApplyModifiedPropertiesWithoutUndo();
+        PrefabUtility.SaveAsPrefabAsset(root.gameObject, POPUP_PATH);
+    }
+
+    private static void Stretch(RectTransform rect)
+    {
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.offsetMin = rect.offsetMax = Vector2.zero;
     }
 
     private static T RootView<T>(GameObject root) where T : Component

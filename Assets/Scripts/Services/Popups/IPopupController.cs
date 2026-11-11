@@ -1,10 +1,14 @@
 using System;
+using EmpireAtWar.Ui.Base;
 
 namespace EmpireAtWar.Services.Popups
 {
-    /// <summary>Shows one popup at a time and reports the player's answer once.</summary>
     public interface IPopupController
     {
-        void Show(AcceptPopupContent content, Action<bool> answered);
+        /// <summary>Creates the popup view. Invoke complete after a player action to close it.</summary>
+        BaseUi Open(Action complete);
+        void SetCovered(bool covered);
+        void Cancel();
+        void Dispose(bool dismissed);
     }
 }

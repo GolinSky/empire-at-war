@@ -139,6 +139,7 @@
 
 
 
+
 - [ ] **Derive hardpoint HP from hull HP (budget ratio, type weights, per-class minimum)** → [[TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan|Hardpoint Health From Hull]]; [[TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan - Research|Current Σ HP / hull table]]
   - Status: implemented 2026-10-29 (`R = 1.15`, 62 data / 61 prefabs migrated); tests not run.
   - Next: user skirmish/tuning acceptance; refresh ALO recipe HP baselines before next import.
@@ -485,6 +486,9 @@
 - [x] **Implement unit actions (ship orders)** → [[Done/Features/SHIP_ACTIONS_PLAN|Unit Actions (Ship Orders) implementation plan]]
 
 ### Refactoring
+
+- [x] **Popup core + feature popup services; shared Invite Friends popup** → [[Done/Refactoring/Shared_Invite_Friends_Popup_Plan|Shared Invite Friends Popup Plan]] · contract: [[Architecture/POPUP_SYSTEM]]
+  - Completed 2026-11-11. Both lobbies share a picker. Unity EditMode `Ui` 274 passed and `Core` 150 passed. Live Steam checks are in [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Remove empty interface members (simulation launcher pause, save-screen SelectMode)** → [[Done/Refactoring/Empty_Interface_Members|Empty Interface Members]]
   - Completed 2026-11-06. Split battle pause from launch and moved mode selection to the load route. Editor analytics retains its disabled implementation.
