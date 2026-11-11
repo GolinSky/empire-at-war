@@ -668,6 +668,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class ProductionAccessStub : IProductionAccess
         {
             public bool CanProduce => true;
+            public bool HasHostBase => CanProduce;
             public PlayerId ProductionHost { get; }
             public ProductionAccessStub(PlayerId host) => ProductionHost = host;
             public bool TryGetProductionBase(out IEntity productionBase) { productionBase = null; return false; }

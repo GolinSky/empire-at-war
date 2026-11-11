@@ -397,6 +397,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class ProductionAccess : IProductionAccess
         {
             public bool CanProduce { get; set; }
+            public bool HasHostBase => CanProduce;
             public PlayerId ProductionHost => TestPlayers.Enemy;
             public bool TryGetProductionBase(out EmpireAtWar.Entities.BaseEntity.IEntity productionBase) =>
                 throw new System.NotSupportedException();

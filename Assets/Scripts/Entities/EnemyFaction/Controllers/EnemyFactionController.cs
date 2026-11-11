@@ -145,7 +145,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         public bool ForceUpgradeStation()
         {
             if (_productionAccess.ProductionHost != Owner ||
-                Model.GetCurrentLevelFactionData() == null || !_productionAccess.CanProduce) return false;
+                Model.GetCurrentLevelFactionData() == null || !_productionAccess.HasHostBase) return false;
 
             // Refund a building upgrade so its later completion cannot exceed the level limit.
             foreach (EnemyPendingBuild upgrade in _builds.Builds.Where(build => build.Request is LevelUnitRequest))
@@ -159,7 +159,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         {
             if (!CanQueue(unitRequest.Id, unitRequest.FactionData.MaxCount) ||
                 !_productionAccess.CanProduce ||
-                unitRequest is LevelUnitRequest && _productionAccess.ProductionHost != Owner)
+                unitRequest is LevelUnitRequest &&
+                (_productionAccess.ProductionHost != Owner || !_productionAccess.HasHostBase))
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "purchaseRejected",
                     $"unit={unitRequest.Id};reason=queue or production unavailable");
@@ -267,13 +268,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     break;
                 case ShipUnitRequest shipUnitRequest:
                     bool hasRally = _aiState.TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
+                    // Ships arrive at the home of whichever team base builds them, borrowed from an ally or not.
+                    PlayerId home = !_productionAccess.HasHostBase &&
+                                    _productionAccess.TryGetProductionBase(out var productionBase)
+                        ? productionBase.Owner
+                        : _productionAccess.ProductionHost;
                     Vector3 position;
                     bool foundPosition = hasRally
                         ? defendHome
-                            ? _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(_productionAccess.ProductionHost, shipUnitRequest.Key, out position)
-                            : _shipSpawnPoints.TryGetSpawnPositionNear(_productionAccess.ProductionHost, shipUnitRequest.Key, rally, out position)
-                        : _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(_productionAccess.ProductionHost, shipUnitRequest.Key, out position) ||
-                          _shipSpawnPoints.TryGetRandomSpawnPosition(_productionAccess.ProductionHost, shipUnitRequest.Key, out position);
+                            ? _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(home, shipUnitRequest.Key, out position)
+                            : _shipSpawnPoints.TryGetSpawnPositionNear(home, shipUnitRequest.Key, rally, out position)
+                        : _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(home, shipUnitRequest.Key, out position) ||
+                          _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipUnitRequest.Key, out position);
                     if (!foundPosition)
                     {
                         if (_productionAccess.CanProduce)
@@ -297,7 +303,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 case SquadronUnitRequest squadronUnitRequest:
                     if (!_squadronLauncher.TryLaunchFromStation(Owner, squadronUnitRequest.Key, out ISquadron squadron))
                     {
-                        // The station fell during the build, so no hangar can launch the squadron.
+                        // Every team base fell during the build, so nothing can launch the squadron.
                         ReleaseUnit(squadronUnitRequest);
                         _wallet.Refund(squadronUnitRequest);
                         Debug.Log(
@@ -388,8 +394,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private void ExecuteBuild(UnitRequest unitRequest)
         {
-            if (!_productionAccess.CanProduce &&
-                (_productionAccess.ProductionHost != Owner || unitRequest is LevelUnitRequest))
+            if (unitRequest is LevelUnitRequest
+                    ? !_productionAccess.HasHostBase
+                    : !_productionAccess.CanProduce && _productionAccess.ProductionHost != Owner)
             {
                 if (unitRequest is ShipUnitRequest) _unitLimitModel.CancelShipOrder();
                 ReleaseUnit(unitRequest);

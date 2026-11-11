@@ -61,7 +61,8 @@ namespace EmpireAtWar.Tests.Editor
                 zones: _zones, spawnRule: spawnRule, structureClearance: structureClearance,
                 vision: vision, areas: _areas,
                 owner: roster.Get(TestPlayers.Enemy), stationPrefab: _stationPrefab,
-                productionAccess: new SelfProductionAccess(TestPlayers.Enemy, new StationRegistry(new EntityLocator())));
+                productionAccess: new SelfProductionAccess(TestPlayers.Enemy, new StationRegistry(new EntityLocator()),
+                    roster));
         }
 
         private BoxCollider CreatePrefab(Vector3 size)

@@ -22,7 +22,8 @@ namespace EmpireAtWar.Tests.Editor
             Base host = new Base(1, TestPlayers.Human);
             Base enemy = new Base(2, TestPlayers.Enemy);
             entities.AddEntity(enemy);
-            HostedProductionAccess access = new HostedProductionAccess(TestPlayers.Human, new StationRegistry(entities));
+            HostedProductionAccess access = new HostedProductionAccess(TestPlayers.Human, new StationRegistry(entities),
+                TestPlayers.CreateDuel());
             Assert.That(access.CanProduce, Is.False);
             entities.AddEntity(host);
             Assert.That(access.TryGetProductionBase(out IEntity found), Is.True);
@@ -37,11 +38,38 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SelfAccess_DoesNotBorrowAlliedProduction()
+        public void SelfAccess_DoesNotBorrowHostileProduction()
         {
             EntityLocator entities = new EntityLocator();
             entities.AddEntity(new Base(1, TestPlayers.Human));
-            Assert.That(new SelfProductionAccess(TestPlayers.Enemy, new StationRegistry(entities)).CanProduce, Is.False);
+            SelfProductionAccess access = new SelfProductionAccess(TestPlayers.Enemy, new StationRegistry(entities),
+                TestPlayers.CreateTeamGame());
+            Assert.That(access.CanProduce, Is.False);
+        }
+
+        [Test]
+        public void SelfAccess_BorrowsAlliedBaseOnlyAfterOwnBaseFalls()
+        {
+            EntityLocator entities = new EntityLocator();
+            Base own = new Base(1, TestPlayers.Human);
+            Base ally = new Base(2, TestPlayers.Ally);
+            entities.AddEntity(ally);
+            entities.AddEntity(own);
+            SelfProductionAccess access = new SelfProductionAccess(TestPlayers.Human, new StationRegistry(entities),
+                TestPlayers.CreateTeamGame());
+
+            Assert.That(access.TryGetProductionBase(out IEntity found), Is.True);
+            Assert.That(found, Is.SameAs(own));
+            Assert.That(access.HasHostBase, Is.True);
+
+            own.Health.Destroyed = true;
+            Assert.That(access.TryGetProductionBase(out found), Is.True);
+            Assert.That(found, Is.SameAs(ally));
+            Assert.That(access.CanProduce, Is.True);
+            Assert.That(access.HasHostBase, Is.False);
+
+            ally.Health.Destroyed = true;
+            Assert.That(access.CanProduce, Is.False);
         }
 
         [Test]

@@ -8,10 +8,11 @@ namespace EmpireAtWar.Services.Stations
         private readonly SelfProductionAccess _host;
         public PlayerId ProductionHost => _host.ProductionHost;
         public bool CanProduce => _host.CanProduce;
+        public bool HasHostBase => _host.HasHostBase;
 
-        public HostedProductionAccess(PlayerId host, IStationRegistry stations)
+        public HostedProductionAccess(PlayerId host, IStationRegistry stations, IPlayerRoster players)
         {
-            _host = new SelfProductionAccess(host, stations);
+            _host = new SelfProductionAccess(host, stations, players);
         }
 
         public bool TryGetProductionBase(out IEntity productionBase) =>

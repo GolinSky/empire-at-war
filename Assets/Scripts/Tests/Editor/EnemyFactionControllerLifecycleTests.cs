@@ -658,6 +658,7 @@ namespace EmpireAtWar.Tests.Editor
             public PlayerId ProductionHost { get; set; } = TestPlayers.Enemy;
 
             public bool CanProduce { get; set; } = true;
+            public bool HasHostBase => CanProduce;
 
             public bool TryGetProductionBase(out IEntity station) =>
                 throw new NotImplementedException();

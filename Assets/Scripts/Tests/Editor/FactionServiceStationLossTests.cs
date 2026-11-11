@@ -79,6 +79,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public PlayerId ProductionHost { get; }
             public bool CanProduce => false;
+            public bool HasHostBase => CanProduce;
 
             public LostStationAccess(PlayerId host) => ProductionHost = host;
 

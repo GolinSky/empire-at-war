@@ -119,7 +119,7 @@ namespace EmpireAtWar.Services.Enemy
 
                 _chargeTimeLeft.Remove(type);
                 _production.ReleaseExternalPipeline(type.ToString());
-                if (_productionAccess.CanProduce)
+                if (_productionAccess.HasHostBase)
                 {
                     _model.CompleteCharging(type);
                     continue;
@@ -133,7 +133,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool TryPurchase(SuperWeaponType type, FactionData data)
         {
-            if (_stationPressure.IsStationCritical || !_productionAccess.CanProduce ||
+            if (_stationPressure.IsStationCritical || !_productionAccess.HasHostBase ||
                 !_production.CanQueue(type.ToString(), data.MaxCount) ||
                 data.AvailableLevel > _factionModel.CurrentLevel ||
                 _economyModel.Money < data.Price * MONEY_RESERVE_MULTIPLIER ||

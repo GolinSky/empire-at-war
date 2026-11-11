@@ -12,10 +12,12 @@ namespace EmpireAtWar.Services.VContainer
             PlayerId host = battle.GetProductionHost(player).Slot.Id;
             if (player.IsHosted)
                 builder.Register<IProductionAccess>(resolver =>
-                    new HostedProductionAccess(host, resolver.Resolve<IStationRegistry>()), Lifetime.Singleton);
+                    new HostedProductionAccess(host, resolver.Resolve<IStationRegistry>(),
+                        resolver.Resolve<IPlayerRoster>()), Lifetime.Singleton);
             else
                 builder.Register<IProductionAccess>(resolver =>
-                    new SelfProductionAccess(host, resolver.Resolve<IStationRegistry>()), Lifetime.Singleton);
+                    new SelfProductionAccess(host, resolver.Resolve<IStationRegistry>(),
+                        resolver.Resolve<IPlayerRoster>()), Lifetime.Singleton);
         }
     }
 }

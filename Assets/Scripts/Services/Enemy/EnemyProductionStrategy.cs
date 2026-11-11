@@ -196,6 +196,7 @@ namespace EmpireAtWar.Services.Enemy
                     $"timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1}");
             }
             FactionData levelData = _productionAccess.ProductionHost == _owner.Id &&
+                                    _productionAccess.HasHostBase &&
                                     !_purchaseProcessor.IsUpgradingStation
                 ? _factionModel.GetCurrentLevelFactionData() : null;
             if (levelData != null &&

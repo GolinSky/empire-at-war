@@ -128,11 +128,11 @@ namespace EmpireAtWar.Services.Factions
 
         private void BuildUnit(UnitRequest unitRequest)
         {
-            // Own queued units still reach the reinforcement pool after the station falls; a hosted
-            // player's queue, station upgrades and super weapons need a living station.
-            if (!_productionAccess.CanProduce &&
-                (_productionAccess.ProductionHost != _owner.Id || unitRequest is LevelUnitRequest ||
-                    unitRequest is SuperWeaponUnitRequest))
+            // Own queued units still reach the reinforcement pool after every team base falls; a hosted
+            // player's queue needs a team base, and station upgrades and super weapons need the host's own.
+            if (NeedsHostBase(unitRequest)
+                    ? !_productionAccess.HasHostBase
+                    : !_productionAccess.CanProduce && _productionAccess.ProductionHost != _owner.Id)
             {
                 if (PlayerFactionModel.IsHeroRequest(unitRequest, out UnitTypeId hero))
                     _model.SetHeroReserved(hero, false);
@@ -173,6 +173,7 @@ namespace EmpireAtWar.Services.Factions
         {
             if (!_productionAccess.CanProduce ||
                 unitRequest is LevelUnitRequest && _productionAccess.ProductionHost != _owner.Id ||
+                NeedsHostBase(unitRequest) && !_productionAccess.HasHostBase ||
                 !_model.CanQueueUnit(unitRequest) ||
                 unitRequest is SuperWeaponUnitRequest superWeapon && !_superWeapons.CanPurchase(superWeapon.Key))
             {
@@ -191,6 +192,9 @@ namespace EmpireAtWar.Services.Factions
             }
             PurchaseAccepted?.Invoke(unitRequest);
         }
+
+        private static bool NeedsHostBase(UnitRequest unitRequest) =>
+            unitRequest is LevelUnitRequest || unitRequest is SuperWeaponUnitRequest;
 
         private bool IsOwnedHero(IEntity entity, out UnitTypeId hero)
         {
@@ -233,7 +237,7 @@ namespace EmpireAtWar.Services.Factions
         {
             FactionData upgrade = _model.GetCurrentLevelFactionData();
             if (_productionAccess.ProductionHost != _owner.Id ||
-                upgrade == null || !_productionAccess.CanProduce) return false;
+                upgrade == null || !_productionAccess.HasHostBase) return false;
 
             // Refund queued upgrades so their later completion cannot exceed the level limit.
             foreach (ProductionQueueSnapshot queued in _model.GetProductionQueueSnapshots())

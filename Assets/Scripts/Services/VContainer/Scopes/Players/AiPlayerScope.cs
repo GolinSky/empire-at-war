@@ -40,8 +40,7 @@ namespace EmpireAtWar.Services.VContainer
                 .AsImplementedInterfaces().AsSelf();
             UnitFactoryRegistrations.Register(builder);
             builder.Register<SquadronPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            if (player.IsHosted)
-                builder.Register<HostedSquadronLauncher>(Lifetime.Singleton).As<ISquadronLauncher>();
+            builder.Register<TeamBaseSquadronLauncher>(Lifetime.Singleton).As<ISquadronLauncher>();
             builder.Register<EnemyStrategicDecisionModel>(Lifetime.Singleton);
             builder.Register<HostileIntelGatherer>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EnemyStrategicContextBuilder>(Lifetime.Singleton);

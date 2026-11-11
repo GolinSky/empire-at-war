@@ -200,6 +200,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public PlayerId ProductionHost => TestPlayers.Human;
             public bool CanProduce => true;
+            public bool HasHostBase => CanProduce;
             public bool TryGetProductionBase(out IEntity entity) { entity = null; return false; }
         }
     }
