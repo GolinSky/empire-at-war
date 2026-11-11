@@ -15,7 +15,7 @@ MonoBehaviour:
   <MinMoveCoefficient>k__BackingField: 0.4
   <Speed>k__BackingField: 20
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
-  <HeightTier>k__BackingField: 1
+  <HeightTier>k__BackingField: 3
   <HullBottom>k__BackingField: -11.675829
   <HullTop>k__BackingField: 9.777914
   <RotationSpeed>k__BackingField: 6
@@ -23,12 +23,13 @@ MonoBehaviour:
   <HyperSpaceDuration>k__BackingField: 0.6
   <BodyRotationMaxAngle>k__BackingField: 5
   <NavigationRadius>k__BackingField: 66.980484
+  <IgnoresMapObstacles>k__BackingField: 0
   <DestroyDelay>k__BackingField: 0.35
   <Wreck>k__BackingField: {fileID: 11400000, guid: 3f1e2e7017bbe2e498dd87a71c004502,
     type: 2}
   <ShipClass>k__BackingField: 4
-  <Hull>k__BackingField: 15599.999
-  <Shields>k__BackingField: 14299.999
+  <Hull>k__BackingField: 12000
+  <Shields>k__BackingField: 12000
   shieldRegenTiers: {fileID: 11400000, guid: 3425d6ddc79a6b649990974111258ac9, type: 2}
   <ShieldRegenTier>k__BackingField: 3
   <ShieldRegenerateDelay>k__BackingField: 1

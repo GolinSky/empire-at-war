@@ -23,12 +23,13 @@ MonoBehaviour:
   <HyperSpaceDuration>k__BackingField: 0.6
   <BodyRotationMaxAngle>k__BackingField: 8
   <NavigationRadius>k__BackingField: 59.27651
+  <IgnoresMapObstacles>k__BackingField: 0
   <DestroyDelay>k__BackingField: 0.35
   <Wreck>k__BackingField: {fileID: 11400000, guid: 5882c6d4c3a6d2045aa9cc1c4de9a03e,
     type: 2}
   <ShipClass>k__BackingField: 8
-  <Hull>k__BackingField: 6000
-  <Shields>k__BackingField: 4500
+  <Hull>k__BackingField: 8000
+  <Shields>k__BackingField: 5500
   shieldRegenTiers: {fileID: 11400000, guid: 3425d6ddc79a6b649990974111258ac9, type: 2}
   <ShieldRegenTier>k__BackingField: 2
   <ShieldRegenerateDelay>k__BackingField: 1
