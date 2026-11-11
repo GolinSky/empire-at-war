@@ -235,6 +235,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 610b88b3ef1d84c40a8468e8780db2b4
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC80JusticeIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6475693b4e9a23943aa6f6d43d698437
     m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Belbullab22Icon.png
     m_ReadOnly: 0

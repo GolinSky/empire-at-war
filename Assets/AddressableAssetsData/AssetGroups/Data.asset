@@ -270,6 +270,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92929a627102479a89a198a95757e347
+    m_Address: MC80JusticeShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 94fb1f4b8f76e8a45baec9d3df1e378a
     m_Address: AcclamatorShipData
     m_ReadOnly: 0

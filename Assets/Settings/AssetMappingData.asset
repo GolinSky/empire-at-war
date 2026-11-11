@@ -1547,3 +1547,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: MC80JusticeShipView
+      value:
+        m_AssetGUID: ebd944d8ca3d2f14389ad26e0a56f4e3
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MC80JusticeShipData
+      value:
+        m_AssetGUID: 92929a627102479a89a198a95757e347
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

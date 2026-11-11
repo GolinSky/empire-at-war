@@ -115,6 +115,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f178665e47974d4b93c68894b62b847
+    m_Address: MC80JusticeWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5fd52b6d50f8a7c4bbcdab52c3de99bf
     m_Address: MC80IndependenceReinforcementView
     m_ReadOnly: 0
@@ -280,6 +285,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7412cc512474ef4681d5fe787d1fc55
+    m_Address: MC80JusticeReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d7c14c6e2e6a4f6449378312ad8c1c7b
     m_Address: QuasarFireShipView
     m_ReadOnly: 0
@@ -292,6 +302,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e46f524705dd7a343b31e72f14991a1d
     m_Address: QuasarFireWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebd944d8ca3d2f14389ad26e0a56f4e3
+    m_Address: MC80JusticeShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

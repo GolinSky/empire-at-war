@@ -102,5 +102,6 @@ namespace EmpireAtWar.Components.AttackComponent
         YWingBomberDualLaser = 153,
         YWingBomberIonCannon = 154,
         XWingProtonTorpedo = 155,
+        LightDualIonCannon = 156,
     }
 }

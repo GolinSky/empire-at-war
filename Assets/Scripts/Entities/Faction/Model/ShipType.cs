@@ -72,6 +72,7 @@ namespace EmpireAtWar.Models.Factions
         MC30c = 307,
         Nebula = 330,
         Endurance = 322,
+        MC80Justice = 323,
         AssaultFrigateMkII = 309,
 
     }
