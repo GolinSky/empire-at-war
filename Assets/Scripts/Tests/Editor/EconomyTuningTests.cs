@@ -86,6 +86,26 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SecondStation_AddsIncomeByItsOwnLevelWhileItStands()
+        {
+            FactionRoster roster = CreateRoster("Empire");
+            FactionResearchModel research = new FactionResearchModel(roster);
+            PlayerFactionModel faction = new PlayerFactionModel(
+                Load<StationLevelData>(SHARED_PATH + "StationLevelData.asset"), roster) { CurrentLevel = 3 };
+            var secondStation = new SecondStationLevelModel();
+            FactionService station = new FactionService(null, null, null, null, null,
+                faction, research, null, TestPlayers.CreateDuel().Get(TestPlayers.Human), null, secondStation);
+
+            Assert.That(station.Income, Is.EqualTo(45f));
+            secondStation.IsBuilt = true;
+            Assert.That(station.Income, Is.EqualTo(60f));
+            secondStation.CompleteLevelUpgrade();
+            Assert.That(station.Income, Is.EqualTo(75f));
+            secondStation.HandleLost();
+            Assert.That(station.Income, Is.EqualTo(45f));
+        }
+
+        [Test]
         public void IncomeDelay_SurvivesSaveSoLoadingDoesNotPayEarly()
         {
             EconomyData data = Load<EconomyData>("Assets/Settings/Data/Economy/EconomyData.asset");

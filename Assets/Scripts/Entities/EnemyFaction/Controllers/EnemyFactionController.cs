@@ -65,7 +65,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private bool _isInitialized;
 
         private PlayerId Owner => _owner.Id;
-        public float Income => DEFAULT_INCOME * Model.CurrentLevel * _research.StationIncomeMultiplier;
+        // Each station pays by its own level; the second station only while it stands.
+        public float Income => DEFAULT_INCOME *
+            (Model.CurrentLevel + (_secondStation.IsBuilt ? _secondStation.CurrentLevel : 0)) *
+            _research.StationIncomeMultiplier;
         public bool HasPendingReinforcement => _builds.Count > 0;
         public bool IsUpgradingStation => _builds.Builds.Any(build => build.Request is LevelUnitRequest);
         public bool IsUpgradingSecondStation => _builds.Builds.Any(build => build.Request is SecondStationLevelUnitRequest);
@@ -132,6 +135,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _enemyStructurePlacementService.Reset();
             _economyProvider.AddProvider(this);
             Model.OnLevelUpgraded += RecalculateIncome;
+            _secondStation.OnLevelUpgraded += RecalculateIncome;
+            _secondStation.BuiltChanged += RecalculateIncome;
             _playerRegistry.RegisterAiStationCheat(Owner, this);
             _isInitialized = true;
         }
@@ -147,6 +152,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
             _economyProvider.RemoveProvider(this);
             Model.OnLevelUpgraded -= RecalculateIncome;
+            _secondStation.OnLevelUpgraded -= RecalculateIncome;
+            _secondStation.BuiltChanged -= RecalculateIncome;
             _playerRegistry.UnregisterAiStationCheat(Owner);
             _isInitialized = false;
         }
@@ -425,6 +432,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         }
 
         private void RecalculateIncome(int level) => _economyProvider.RecalculateIncome(this);
+
+        private void RecalculateIncome(bool isBuilt) => _economyProvider.RecalculateIncome(this);
 
         private void ReleaseUnit(UnitRequest unitRequest)
         {

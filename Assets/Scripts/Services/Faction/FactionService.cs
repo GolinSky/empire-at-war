@@ -57,7 +57,10 @@ namespace EmpireAtWar.Services.Factions
         public event System.Action<ResearchType> ResearchCompleted;
         public event System.Action StationUpgraded;
 
-        public float Income => DEFAULT_INCOME * _model.CurrentLevel * _research.StationIncomeMultiplier;
+        // Each station pays by its own level; the second station only while it stands.
+        public float Income => DEFAULT_INCOME *
+            (_model.CurrentLevel + (_secondStation.IsBuilt ? _secondStation.CurrentLevel : 0)) *
+            _research.StationIncomeMultiplier;
 
         public FactionService(
             ISelectionService selectionService,
@@ -95,6 +98,8 @@ namespace EmpireAtWar.Services.Factions
             _selectionService.AddObserver(this);
             _economyProvider.AddProvider(this);
             _model.OnUnitCompleted += BuildUnit;
+            _secondStation.OnLevelUpgraded += HandleSecondStationLevelChanged;
+            _secondStation.BuiltChanged += HandleSecondStationBuiltChanged;
             _entities.EntityAdded += HandleEntityAdded;
             _entities.EntityRemoved += HandleEntityRemoved;
             foreach (IEntity entity in _entities.Entities) HandleEntityAdded(entity);
@@ -111,6 +116,8 @@ namespace EmpireAtWar.Services.Factions
             _selectionService.RemoveObserver(this);
             _economyProvider.RemoveProvider(this);
             _model.OnUnitCompleted -= BuildUnit;
+            _secondStation.OnLevelUpgraded -= HandleSecondStationLevelChanged;
+            _secondStation.BuiltChanged -= HandleSecondStationBuiltChanged;
             _entities.EntityAdded -= HandleEntityAdded;
             _entities.EntityRemoved -= HandleEntityRemoved;
             _isInitialized = false;
@@ -205,6 +212,10 @@ namespace EmpireAtWar.Services.Factions
             }
             PurchaseAccepted?.Invoke(unitRequest);
         }
+
+        private void HandleSecondStationLevelChanged(int level) => _economyProvider.RecalculateIncome(this);
+
+        private void HandleSecondStationBuiltChanged(bool isBuilt) => _economyProvider.RecalculateIncome(this);
 
         private static bool NeedsHostBase(UnitRequest unitRequest) =>
             unitRequest is LevelUnitRequest || unitRequest is SuperWeaponUnitRequest;
