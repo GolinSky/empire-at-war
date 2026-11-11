@@ -36,4 +36,6 @@ MonoBehaviour:
     <Delay>k__BackingField: 0.25
     <VisionRange>k__BackingField: 900
     <SpawnBlockRadius>k__BackingField: 500
+  <Income>k__BackingField: 0
+  weaponLoadout: []
   <Wreck>k__BackingField: {fileID: 0}
