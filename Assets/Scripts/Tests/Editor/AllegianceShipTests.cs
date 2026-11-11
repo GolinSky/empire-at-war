@@ -49,7 +49,7 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedShip_HasRequestedBalanceAndNoSquadrons()
         {
             var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
-            Assert.That(data.Hull, Is.EqualTo(15000));
+            Assert.That(data.Hull, Is.EqualTo(20000));
             Assert.That(data.Shields, Is.EqualTo(15000));
             Assert.That(data.Speed, Is.EqualTo(14));
             Assert.That(data.Abilities, Is.EquivalentTo(new[] {ShipAbilityId.PowerToMainBatteries, ShipAbilityId.TractorBeam}));
