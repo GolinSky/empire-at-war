@@ -409,6 +409,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 3
   target: {fileID: 5233012742759148230}
+  highlights:
+  - {fileID: 6180131615625631593}
+  - {fileID: 5045441671902311893}
+  - {fileID: 641513505132031688}
+  - {fileID: 4537948395446017042}
+  - {fileID: 8584713896883032844}
+  - {fileID: 6685047651053139309}
+  - {fileID: 2082512022989892549}
   visibility: {fileID: 841658973533068309}
 --- !u!1 &4719315688448661827
 GameObject:
@@ -682,7 +690,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6180131615625631593}
   m_SourcePrefab: {fileID: 100100000, guid: 04bdd3ebbffe44b4c8471b25d8dd380e, type: 3}
 --- !u!114 &6838225934261372462 stripped
 MonoBehaviour:
@@ -690,7 +702,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 982734321543438214}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 9021377883952717469}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d666ea48436140189e081631b3e9a480, type: 3}
@@ -702,6 +714,37 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 982734321543438214}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &9021377883952717469 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 982734321543438214}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6180131615625631593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9021377883952717469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 9035549951511951721}
+--- !u!114 &9035549951511951721 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8126718479396284143, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 982734321543438214}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9021377883952717469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 141109fb25f0083469e71ce8cb3e75c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
 --- !u!1001 &1755772953448563726
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -823,7 +866,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2082512022989892549}
   m_SourcePrefab: {fileID: 100100000, guid: 04bdd3ebbffe44b4c8471b25d8dd380e, type: 3}
 --- !u!114 &5411321087284174246 stripped
 MonoBehaviour:
@@ -831,12 +878,43 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1755772953448563726}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 7551625050453247253}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d666ea48436140189e081631b3e9a480, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7537377971322938081 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8126718479396284143, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1755772953448563726}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7551625050453247253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 141109fb25f0083469e71ce8cb3e75c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
+--- !u!1 &7551625050453247253 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1755772953448563726}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2082512022989892549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7551625050453247253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 7537377971322938081}
 --- !u!224 &8264633835528338967 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7704571122944932377, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
@@ -964,7 +1042,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6685047651053139309}
   m_SourcePrefab: {fileID: 100100000, guid: 04bdd3ebbffe44b4c8471b25d8dd380e, type: 3}
 --- !u!224 &5632581564517271633 stripped
 RectTransform:
@@ -972,13 +1054,44 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2650035824487969352}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6053179765205931175 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8126718479396284143, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2650035824487969352}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6077556300421886803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 141109fb25f0083469e71ce8cb3e75c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
+--- !u!1 &6077556300421886803 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2650035824487969352}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6685047651053139309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6077556300421886803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 6053179765205931175}
 --- !u!114 &8611951640737950688 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6000234965536414120, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
     type: 3}
   m_PrefabInstance: {fileID: 2650035824487969352}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 6077556300421886803}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d666ea48436140189e081631b3e9a480, type: 3}
@@ -1105,7 +1218,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4537948395446017042}
   m_SourcePrefab: {fileID: 100100000, guid: 04bdd3ebbffe44b4c8471b25d8dd380e, type: 3}
 --- !u!114 &1260817470542185715 stripped
 MonoBehaviour:
@@ -1113,7 +1230,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 4772213780516642139}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 3651099805835615296}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d666ea48436140189e081631b3e9a480, type: 3}
@@ -1125,6 +1242,37 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4772213780516642139}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3651099805835615296 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 4772213780516642139}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4537948395446017042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3651099805835615296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 3674277865747102644}
+--- !u!114 &3674277865747102644 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8126718479396284143, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 4772213780516642139}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3651099805835615296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 141109fb25f0083469e71ce8cb3e75c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
 --- !u!1001 &5537566922099113667
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1246,7 +1394,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8584713896883032844}
   m_SourcePrefab: {fileID: 100100000, guid: 04bdd3ebbffe44b4c8471b25d8dd380e, type: 3}
 --- !u!114 &2277834254656644971 stripped
 MonoBehaviour:
@@ -1254,7 +1406,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 5537566922099113667}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 4343830749193240536}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d666ea48436140189e081631b3e9a480, type: 3}
@@ -1266,6 +1418,37 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 5537566922099113667}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4332045718160087084 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8126718479396284143, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 5537566922099113667}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4343830749193240536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 141109fb25f0083469e71ce8cb3e75c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
+--- !u!1 &4343830749193240536 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 5537566922099113667}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8584713896883032844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4343830749193240536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 4332045718160087084}
 --- !u!1001 &8015149269141065265
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1387,7 +1570,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5045441671902311893}
   m_SourcePrefab: {fileID: 100100000, guid: 04bdd3ebbffe44b4c8471b25d8dd380e, type: 3}
 --- !u!224 &420986883015701544 stripped
 RectTransform:
@@ -1395,13 +1582,44 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8015149269141065265}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2281784598194933546 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8015149269141065265}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5045441671902311893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2281784598194933546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 2304823405635315934}
+--- !u!114 &2304823405635315934 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8126718479396284143, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8015149269141065265}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2281784598194933546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 141109fb25f0083469e71ce8cb3e75c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
 --- !u!114 &4359090961390737305 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6000234965536414120, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
     type: 3}
   m_PrefabInstance: {fileID: 8015149269141065265}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2281784598194933546}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d666ea48436140189e081631b3e9a480, type: 3}
@@ -1528,8 +1746,43 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 641513505132031688}
   m_SourcePrefab: {fileID: 100100000, guid: 04bdd3ebbffe44b4c8471b25d8dd380e, type: 3}
+--- !u!114 &874422995751648272 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8126718479396284143, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8999727466418346751}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 897470564922186724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 141109fb25f0083469e71ce8cb3e75c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
+--- !u!1 &897470564922186724 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8111265280006504731, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8999727466418346751}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &641513505132031688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 897470564922186724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 874422995751648272}
 --- !u!224 &1587895928506573030 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7704571122944932377, guid: 04bdd3ebbffe44b4c8471b25d8dd380e,
@@ -1542,7 +1795,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 8999727466418346751}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 897470564922186724}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d666ea48436140189e081631b3e9a480, type: 3}

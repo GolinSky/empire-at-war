@@ -1575,16 +1575,23 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: InterdictorStarDestroyerShipView
+    - key: MC80bRemondaShipView
       value:
-        m_AssetGUID: eb4ff8dbfba09204d8932bc648131c7d
+        m_AssetGUID: 3dc4f8442a6e4a04ab6b06f040b3c651
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: InterdictorStarDestroyerShipData
+    - key: MC80bRemondaShipData
       value:
-        m_AssetGUID: ae18c29e9bc540ff863dcc32caa7cb86
+        m_AssetGUID: 19af4ae044a04db48b2a231d9dc41b86
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MC80bRemondaWreckView
+      value:
+        m_AssetGUID: 64d8c890d3da3444aa8d048fbedd2db4
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
@@ -1603,23 +1610,16 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MC80bRemondaShipView
+    - key: InterdictorStarDestroyerShipView
       value:
-        m_AssetGUID: 3dc4f8442a6e4a04ab6b06f040b3c651
+        m_AssetGUID: eb4ff8dbfba09204d8932bc648131c7d
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: MC80bRemondaShipData
+    - key: InterdictorStarDestroyerShipData
       value:
-        m_AssetGUID: 19af4ae044a04db48b2a231d9dc41b86
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: MC80bRemondaWreckView
-      value:
-        m_AssetGUID: 64d8c890d3da3444aa8d048fbedd2db4
+        m_AssetGUID: ae18c29e9bc540ff863dcc32caa7cb86
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 

@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui;
 using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace EmpireAtWar.Entities.ShipUi
         private readonly List<ShipAbilitySlot> _observedSlots = new List<ShipAbilitySlot>();
 
         [SerializeField] private Button button;
+        [SerializeField] private UiHighlight tutorialHighlight;
         [SerializeField] private Image icon;
         [SerializeField] private Image cooldownFill;
         [SerializeField] private GameObject activeHighlight;
@@ -28,6 +30,7 @@ namespace EmpireAtWar.Entities.ShipUi
         private bool _displayedWaiting;
 
         public TooltipTrigger TooltipTrigger => tooltipTrigger;
+        public UiHighlight TutorialHighlight => tutorialHighlight;
 
         public ShipAbilityId Id { get; private set; }
 

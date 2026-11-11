@@ -62,7 +62,7 @@ namespace EmpireAtWar.Entities.ShipUi
                 _buttons[i].gameObject.SetActive(false);
             if (buttonIndex > 0)
                 tutorialAnchor.Mark(EmpireAtWar.Services.Tutorial.TutorialAnchorId.AbilityButton,
-                    (RectTransform)_buttons[0].transform);
+                    (RectTransform)_buttons[0].transform, _buttons[0].TutorialHighlight);
             else tutorialAnchor.Unmark(EmpireAtWar.Services.Tutorial.TutorialAnchorId.AbilityButton);
         }
 

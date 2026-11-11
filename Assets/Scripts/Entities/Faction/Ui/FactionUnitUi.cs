@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
@@ -16,12 +17,14 @@ namespace EmpireAtWar.Entities.Faction.Ui
         [SerializeField] private TextMeshProUGUI tierText;
         [SerializeField] private Image unitIconImage;
         [SerializeField] private Button purchaseButton;
+        [SerializeField] private UiHighlight tutorialHighlight;
         [SerializeField] private TextMeshProUGUI stateText;
         [SerializeField] private GameObject queuedHighlight;
         private UnitRequest _unitRequest;
         private (bool unlocked, bool affordable, bool queued, bool ended, bool atLimit)? _availability;
 
         public TooltipTrigger TooltipTrigger => tooltipTrigger;
+        public UiHighlight TutorialHighlight => tutorialHighlight;
         public string RequestId => _unitRequest.Id;
         public UnitRequest Request => _unitRequest;
         public FactionData FactionData { get; private set; }

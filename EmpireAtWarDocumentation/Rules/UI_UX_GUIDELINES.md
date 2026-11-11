@@ -120,3 +120,6 @@
 - World/minimap tutorial markers remain separate from UI spotlight rendering.
 
 - Minimap marker lifecycle: the view is created on route activation after map loading. Tutorial input-lock handling must not call `HideTarget` before showing a marker; `HintUiController` tracks marker visibility explicitly.
+
+- Target emphasis uses `Components/Ui/IUiHighlight` (`Highlight`, `StopHighlight`) and `UiHighlight` on the Graphic itself. Explicitly bind `targetGraphic` on the same GameObject; `IMeshModifier` pulses vertex RGB; `IMaterialModifier` pulses `_Color` brightness 1.8–3.5× on an owned material copy over 1.2 s unscaled time. This also brightens dark MPImage gradients. Preserve source alpha, `Graphic.color`, Selectable states and current stencil/gradient properties; stop returns the normal live material/colors. Destroy the owned material with the component. Do not draw target tint/glow in the spotlight overlay.
+- `TutorialAnchor.highlights` binds fixed targets; dynamic build/ability/reinforcement views supply their serialized `tutorialHighlight`. Geometry-only container anchors without a Graphic retain the dim cutout, with no fabricated highlight surface.

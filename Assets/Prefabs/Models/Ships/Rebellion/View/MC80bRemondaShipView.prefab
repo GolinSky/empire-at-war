@@ -1015,7 +1015,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Selection.SelectionComponent
   selectionRoot: {fileID: 2281227125419073790}
   selectedRenderer: {fileID: 7138025520673478713}
-  ringSize: {x: 104.57859, y: 104.57859}
+  ringSize: {x: 96.494354, y: 96.49434}
 --- !u!114 &4383179957344805840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1061,6 +1061,19 @@ MonoBehaviour:
   - {fileID: 4982253056651166811}
   - {fileID: 5246520660627167942}
   - {fileID: 1158189161534135058}
+  - {fileID: 4306513243086383650}
+  - {fileID: 8341664144251457462}
+  - {fileID: 6618421547194431007}
+  - {fileID: 3133667733958705548}
+  - {fileID: 1794652532873861215}
+  - {fileID: 7585601930966759244}
+  - {fileID: 4442690141351146509}
+  - {fileID: 5564066710892777609}
+  - {fileID: 8043587488284368900}
+  - {fileID: 2998867373610075952}
+  - {fileID: 5636648899067093583}
+  - {fileID: 3794409039991912125}
+  - {fileID: 4074751786517239850}
 --- !u!114 &6432391071094141378
 MonoBehaviour:
   m_ObjectHideFlags: 0

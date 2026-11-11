@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4767199979424165482}
   - component: {fileID: 783703316864763069}
   - component: {fileID: 5705197032812797626}
+  - component: {fileID: 4389992686049730151}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -189,7 +190,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 30
   target: {fileID: 4603508320550710749}
+  highlights:
+  - {fileID: 4389992686049730151}
   visibility: {fileID: 4767199979424165482}
+--- !u!114 &4389992686049730151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 72894616053550305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 783703316864763069}
 --- !u!1 &123110571819329846
 GameObject:
   m_ObjectHideFlags: 0

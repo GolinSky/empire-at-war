@@ -95,6 +95,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 4
   target: {fileID: 6397796856056037375}
+  highlights:
+  - {fileID: 7882646841044110797}
+  - {fileID: 8417203682694920377}
+  - {fileID: 9097366997620365685}
+  - {fileID: 1662749725148807803}
   visibility: {fileID: 7608207804413390026}
 --- !u!1 &2412095293360848161
 GameObject:
@@ -107,6 +112,7 @@ GameObject:
   - component: {fileID: 6015225049087821208}
   - component: {fileID: 911306873435745093}
   - component: {fileID: 7603150659175226384}
+  - component: {fileID: 8417203682694920377}
   m_Layer: 0
   m_Name: Upper
   m_TagString: Untagged
@@ -171,6 +177,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8417203682694920377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2412095293360848161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 7603150659175226384}
 --- !u!1 &3067467717721872465
 GameObject:
   m_ObjectHideFlags: 0
@@ -182,6 +201,7 @@ GameObject:
   - component: {fileID: 5937690263877832827}
   - component: {fileID: 5810557774381448471}
   - component: {fileID: 9056325021277661273}
+  - component: {fileID: 1662749725148807803}
   m_Layer: 0
   m_Name: Lower
   m_TagString: Untagged
@@ -246,6 +266,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1662749725148807803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3067467717721872465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 9056325021277661273}
 --- !u!1 &4859799027161427492
 GameObject:
   m_ObjectHideFlags: 0
@@ -442,6 +475,7 @@ GameObject:
   - component: {fileID: 7626780801283973004}
   - component: {fileID: 6265990091462011859}
   - component: {fileID: 5228695158995687594}
+  - component: {fileID: 9097366997620365685}
   m_Layer: 0
   m_Name: Mid
   m_TagString: Untagged
@@ -506,6 +540,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &9097366997620365685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7316506458884600939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 5228695158995687594}
 --- !u!1 &7372571873975610079
 GameObject:
   m_ObjectHideFlags: 0
@@ -517,6 +564,7 @@ GameObject:
   - component: {fileID: 5009622482117186243}
   - component: {fileID: 1931013113098570598}
   - component: {fileID: 7906658166967644424}
+  - component: {fileID: 7882646841044110797}
   m_Layer: 5
   m_Name: MoneyIcon
   m_TagString: Untagged
@@ -584,6 +632,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7882646841044110797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7372571873975610079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 7906658166967644424}
 --- !u!1 &9144931710910531171
 GameObject:
   m_ObjectHideFlags: 0

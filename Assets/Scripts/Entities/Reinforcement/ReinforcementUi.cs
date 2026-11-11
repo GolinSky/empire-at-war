@@ -145,7 +145,7 @@ namespace EmpireAtWar.Entities.Reinforcement
         private void Mark(TutorialAnchorId id, SpawnShipUi card)
         {
             if (card == null) tutorialAnchor.Unmark(id);
-            else tutorialAnchor.Mark(id, (RectTransform)card.transform);
+            else tutorialAnchor.Mark(id, (RectTransform)card.transform, card.TutorialHighlight);
         }
 
         private void UpdateCapacityData(int capacity)

@@ -1224,15 +1224,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.TeamColor.TeamColorView
   meshRenderers:
+  - {fileID: 2561499397476259715}
   - {fileID: 3407728139103179401}
   - {fileID: 7938477072946884087}
   - {fileID: 6301115990030305336}
   - {fileID: 7908666423531976880}
+  - {fileID: 3977973024804598264}
+  - {fileID: 2948456487327675254}
+  - {fileID: 2923322783081792774}
+  - {fileID: 6711577586528069843}
+  - {fileID: 2767453251546836664}
+  - {fileID: 3679699961191717923}
   - {fileID: 8653314889129613230}
   - {fileID: 6382552682746188434}
   - {fileID: 7203630403873102643}
   - {fileID: 2048570845929729322}
   - {fileID: 6177931474391105626}
+  - {fileID: 2498016851757632669}
   - {fileID: 134582011986977819}
   - {fileID: 960998897150984528}
   - {fileID: 1771000990516219204}
@@ -1250,6 +1258,7 @@ MonoBehaviour:
   - {fileID: 983536972069878181}
   - {fileID: 5432108872032808261}
   - {fileID: 2455423100204385007}
+  - {fileID: 6457476534539755731}
   - {fileID: 1014610945103307135}
   - {fileID: 5481267081385528823}
   - {fileID: 5509734603797217826}
@@ -1262,6 +1271,9 @@ MonoBehaviour:
   - {fileID: 7849116580428190260}
   - {fileID: 56470605350670112}
   - {fileID: 7364455664861293675}
+  - {fileID: 3784452263241194564}
+  - {fileID: 8533273003204128207}
+  - {fileID: 5474084656991874429}
   - {fileID: 3250641584256226956}
   - {fileID: 2117587098324887356}
   - {fileID: 2739876757744039989}
@@ -1269,7 +1281,6 @@ MonoBehaviour:
   - {fileID: 4407592939546757081}
   - {fileID: 6160839895470268643}
   - {fileID: 7590144111555724961}
-  - {fileID: 2561499397476259715}
 --- !u!114 &7256685330956268558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1630,7 +1641,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.0000076293945}
+  m_AnchoredPosition: {x: -0.5088154, y: 0}
   m_SizeDelta: {x: 196.55731, y: 196.55731}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &3318282782644180738

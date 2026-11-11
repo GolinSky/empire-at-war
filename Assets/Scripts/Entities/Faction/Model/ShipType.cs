@@ -75,9 +75,9 @@ namespace EmpireAtWar.Models.Factions
         Endurance = 322,
         MC80Justice = 323,
         MC80Freedom = 324,
-        AssaultFrigateMkII = 309,
         MC80bRemonda = 325,
         MediatorBattlecruiser = 326,
+        AssaultFrigateMkII = 309,
 
     }
 }

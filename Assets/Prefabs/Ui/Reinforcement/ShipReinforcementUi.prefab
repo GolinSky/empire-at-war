@@ -227,6 +227,7 @@ GameObject:
   - component: {fileID: 6597382864997038084}
   - component: {fileID: 81682957737661102}
   - component: {fileID: 5982671618044511339}
+  - component: {fileID: 3047482467409784963}
   m_Layer: 5
   m_Name: ShipReinforcementUi
   m_TagString: Untagged
@@ -279,6 +280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   iconImage: {fileID: 6185335331752354387}
   backgroundImage: {fileID: 6597382864997038084}
+  tutorialHighlight: {fileID: 3047482467409784963}
   unitCapacityText: {fileID: 4050306462234272236}
   unitCountText: {fileID: 288562003435635639}
   tooltipTrigger: {fileID: 5982671618044511339}
@@ -451,6 +453,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 5732775408491011721}
   key: 
+--- !u!114 &3047482467409784963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6427103703715446618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 6597382864997038084}
 --- !u!1 &7102019493039269704
 GameObject:
   m_ObjectHideFlags: 0

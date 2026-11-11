@@ -1,4 +1,5 @@
 using EmpireAtWar.Entities.Reinforcement;
+using EmpireAtWar.Components.Ui;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Controllers.Factions;
 using TMPro;
@@ -17,6 +18,7 @@ namespace EmpireAtWar
 
         [SerializeField] private Image iconImage;
         [SerializeField] private Image backgroundImage;
+        [SerializeField] private UiHighlight tutorialHighlight;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
         [SerializeField] private TextMeshProUGUI unitCountText;
         [SerializeField] private TooltipTrigger tooltipTrigger;
@@ -30,6 +32,7 @@ namespace EmpireAtWar
         private bool _isScrolling;
 
         public TooltipTrigger TooltipTrigger => tooltipTrigger;
+        public UiHighlight TutorialHighlight => tutorialHighlight;
 
         public UnitRequest Request { get; private set; }
 

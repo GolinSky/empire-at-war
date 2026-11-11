@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 9037979142701862360}
   - component: {fileID: 2058160215538798344}
   - component: {fileID: 6138838567896221846}
+  - component: {fileID: 8162747345852354025}
   m_Layer: 5
   m_Name: FactionUnit
   m_TagString: Untagged
@@ -106,6 +107,7 @@ MonoBehaviour:
   tierText: {fileID: 296264282637977761}
   unitIconImage: {fileID: 4859507491399935640}
   purchaseButton: {fileID: 651671216248046380}
+  tutorialHighlight: {fileID: 8162747345852354025}
   stateText: {fileID: 428627993751638998}
   queuedHighlight: {fileID: 7015856029000383180}
 --- !u!222 &9037979142701862360
@@ -241,6 +243,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.Tooltip.TooltipTrigger
   anchorRect: {fileID: 1460586841284908476}
   key: 
+--- !u!114 &8162747345852354025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 259683070922718735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 2058160215538798344}
 --- !u!1 &461959193894815860
 GameObject:
   m_ObjectHideFlags: 0

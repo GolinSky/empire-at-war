@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "TODOs/Tooling/Crash_And_Error_Reporting.md",
+                "file": "GameDesign/References/Awakening of the Rebellion - Capital Ship Reference.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Crash_And_Error_Reporting"
+              "title": "Awakening of the Rebellion - Capital Ship Reference"
             }
           }
         ]
@@ -42,8 +42,8 @@
               "state": {
                 "sortOrder": "alphabetical",
                 "autoReveal": false,
-                "showSearch": false,
-                "searchQuery": ""
+                "showSearch": true,
+                "searchQuery": "Awakening of the Rebellion Capital Ship Reference "
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "Awakening of the Rebellion Capital Ship Reference ",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": true,
@@ -76,8 +76,7 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -188,6 +187,22 @@
   },
   "active": "fd4544b14efb9af5",
   "lastOpenFiles": [
+    "TODOs/Tooling/Crash_And_Error_Reporting.md",
+    "Done/Features/Play_Menu_Reroute_Plan.md",
+    "GameDesign/References/Awakening of the Rebellion - Capital Ship Reference.md",
+    "TODOs/Features/Play_Menu_Reroute_Plan.md",
+    "Done/Bugs/Carrier_and_Squadron_Rebalance.md",
+    "TODOs/Bugs/Carrier_and_Squadron_Rebalance.md",
+    "Done/Features/Harmonic_Bomb_Ability.md",
+    "TODOs/Features/Harmonic_Bomb_Ability.md",
+    "Done/Refactoring/Shared_Invite_Friends_Popup_Plan.md",
+    "Architecture/POPUP_SYSTEM.md",
+    "TODOs/TODOs.md.tmp.37680.5fe2a9633524",
+    "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md.tmp.37680.0b93a8afc968",
+    "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md.tmp.37680.7b109c8b5e09",
+    "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md.tmp.37680.00533bf80565",
+    "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md.tmp.37680.69545f8653d2",
+    "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md",
     "Done/Features/Battle_Notifications_Plan.md",
     "TODOs/Features/Battle_Notifications_Plan.md",
     "sed59Mdr7",
@@ -207,24 +222,8 @@
     "TODOs/Optimization/Graph_Pathfinding_Plan - Research.md",
     "TODOs/Optimization/Graph_Pathfinding_Plan.md",
     "Done/Features/Skirmish_Hero_Fighters - Research.md",
-    "Done/Features/Jango_Fett_Slave_I.md",
-    "Done/Features/Harmonic_Bomb_Ability.md",
-    "TODOs/Features/Harmonic_Bomb_Ability.md",
-    "Done/Features/Boba_Fett_Slave_I.md",
-    "Done/Features/Han_Solo_Millennium_Falcon.md",
-    "TODOs/Features/Han_Solo_Millennium_Falcon.md",
-    "TODOs/Features/Boba_Fett_Slave_I.md",
-    "TODOs/Features/Jango_Fett_Slave_I.md",
-    "TODOs/Features/Skirmish_Hero_Fighters - Research.md",
-    "Done/Refactoring/Fog_Disabled_Stand_Ins.md",
-    "Done/Refactoring/Empty_Code_Cleanup.md",
     "TODOs/sedHoE5uX",
     "TODOs/sed2g2Anb",
-    "TODOs/Documentation",
-    "TODOs/Documentation/sedEi1wmg",
-    "TODOs/Documentation/sedJUugEI",
-    "AssetPipeline/Imports/sedAFtn17",
-    "AssetPipeline/Imports/sedrPbomK",
-    "Rules/AGENTS.md.tmp.10036.941724027e1d"
+    "TODOs/Documentation"
   ]
 }

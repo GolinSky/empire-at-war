@@ -409,7 +409,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private void MarkTutorialButton(TutorialAnchorId id, FactionUnitUi unitUi)
         {
             if (unitUi == null) tutorialAnchor.Unmark(id);
-            else tutorialAnchor.Mark(id, (RectTransform)unitUi.transform);
+            else tutorialAnchor.Mark(id, (RectTransform)unitUi.transform, unitUi.TutorialHighlight);
         }
     }
 }

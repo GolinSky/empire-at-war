@@ -3034,6 +3034,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 10
   target: {fileID: 7655814840572190640}
+  highlights: []
   visibility: {fileID: 4003304680418406474}
 --- !u!1 &7770018114453856036
 GameObject:
@@ -3285,6 +3286,7 @@ GameObject:
   - component: {fileID: 1278354831791627814}
   - component: {fileID: 5577681926343855480}
   - component: {fileID: 164364705633753181}
+  - component: {fileID: 7750214157366621821}
   m_Layer: 5
   m_Name: AutoPowerButton
   m_TagString: Untagged
@@ -3540,7 +3542,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
   id: 11
   target: {fileID: 7230994320167110634}
+  highlights:
+  - {fileID: 7750214157366621821}
   visibility: {fileID: 4003304680418406474}
+--- !u!114 &7750214157366621821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8833400398573079220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 3910119431647206173}
 --- !u!1 &9048021374583775034
 GameObject:
   m_ObjectHideFlags: 0

@@ -180,6 +180,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b20a06ec4c30014daec0d6a75029d2a
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC80bRemondaIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4f34eb7cb55a9c24abc10d378515d62e
     m_Address: Assets/Art/Textures/Ui/Icons/DefendPlatform/QuadLaserSatelliteIcon.png
     m_ReadOnly: 0
@@ -612,11 +617,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fe8c1e85b0bf680479b5946516c3041f
     m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEPunisherIcon.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4b20a06ec4c30014daec0d6a75029d2a
-    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC80bRemondaIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
