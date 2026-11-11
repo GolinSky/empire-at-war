@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using EmpireAtWar.Models.Audio;
 using EmpireAtWar.Models.Factions;
@@ -159,13 +160,15 @@ namespace EmpireAtWar.Tests.Editor
 
         private static void AssertFileIdentity(string path, JToken recorded)
         {
-            Assert.That(new FileInfo(path).Length, Is.EqualTo((long)recorded["bytes"]), path);
-            using (SHA256 sha256 = SHA256.Create())
-            using (FileStream stream = File.OpenRead(path))
-            {
-                string hash = BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
-                Assert.That(hash, Is.EqualTo(((string)recorded["sha256"]).ToLowerInvariant()), path);
-            }
+            // The manifest records Unity metadata with LF line endings.
+            using Stream stream = path.EndsWith(".meta", StringComparison.OrdinalIgnoreCase)
+                ? new MemoryStream(Encoding.UTF8.GetBytes(
+                    Encoding.UTF8.GetString(File.ReadAllBytes(path)).Replace("\r\n", "\n")))
+                : File.OpenRead(path);
+            Assert.That(stream.Length, Is.EqualTo((long)recorded["bytes"]), path);
+            using SHA256 sha256 = SHA256.Create();
+            string hash = BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
+            Assert.That(hash, Is.EqualTo(((string)recorded["sha256"]).ToLowerInvariant()), path);
         }
 
         private static void AssertSettings(AudioImporterSampleSettings settings, string context)
