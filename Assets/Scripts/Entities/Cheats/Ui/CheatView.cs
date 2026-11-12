@@ -45,6 +45,8 @@ namespace EmpireAtWar.Views.Cheats
 
         private float _windowVisibility;
         private UiHitTest _uiHitTest;
+        private GUIStyle _windowStyle;
+        private Texture2D _windowBackground;
 
         private float EasedVisibility => Mathf.SmoothStep(0f, 1f, _windowVisibility);
         private float WindowScale => Mathf.Lerp(WINDOW_COLLAPSED_SCALE, 1f, EasedVisibility);
@@ -193,6 +195,11 @@ namespace EmpireAtWar.Views.Cheats
             {
                 _uiHitTest.UnregisterOverlay(IsPointerOverWindow);
             }
+
+            if (_windowBackground != null)
+            {
+                Destroy(_windowBackground);
+            }
         }
 
         private bool IsPointerOverWindow(Vector2 screenPosition)
@@ -228,6 +235,29 @@ namespace EmpireAtWar.Views.Cheats
         {
             if (_windowVisibility <= 0f) return;
 
+            if (_windowStyle == null)
+            {
+                _windowBackground = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+                _windowBackground.SetPixel(0, 0, WINDOW_BACKGROUND);
+                _windowBackground.Apply(false, true);
+
+                GUIStyle defaultWindow = GUI.skin.window;
+                _windowStyle = new GUIStyle(defaultWindow)
+                {
+                    border = new RectOffset(),
+                    normal = new GUIStyleState
+                    {
+                        background = _windowBackground,
+                        textColor = defaultWindow.normal.textColor
+                    },
+                    onNormal = new GUIStyleState
+                    {
+                        background = _windowBackground,
+                        textColor = defaultWindow.onNormal.textColor
+                    }
+                };
+            }
+
             GUI.depth = -1000;
             float easedVisibility = EasedVisibility;
             float scale = WindowScale;
@@ -238,9 +268,6 @@ namespace EmpireAtWar.Views.Cheats
             GUIUtility.ScaleAroundPivot(
                 new Vector2(scale, scale),
                 new Vector2(_windowRect.xMin, _windowRect.yMin));
-            GUI.color = new Color(WINDOW_BACKGROUND.r, WINDOW_BACKGROUND.g, WINDOW_BACKGROUND.b,
-                WINDOW_BACKGROUND.a * easedVisibility);
-            GUI.DrawTexture(_windowRect, Texture2D.whiteTexture);
             GUI.color = new Color(
                 previousColor.r,
                 previousColor.g,
@@ -252,6 +279,7 @@ namespace EmpireAtWar.Views.Cheats
                 _windowRect,
                 DrawWindow,
                 "Cheats",
+                _windowStyle,
                 GUILayout.Width(_windowRect.width),
                 GUILayout.Height(_windowRect.height));
             GUI.enabled = wasEnabled;
