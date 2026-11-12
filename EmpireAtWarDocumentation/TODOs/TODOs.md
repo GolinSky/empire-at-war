@@ -280,6 +280,12 @@
 
 ### Features
 
+- [x] **Tactical markers (B ping + radial: Look/Attack/Capture/Defend/Rally/Retreat; team-only online sync; allied AI accepts/declines and sends its own)** → [[Done/Features/Tactical_Markers_Plan|Tactical Markers Plan]]
+  - Completed/reviewed 2026-11-12: startup DI cycle, site identity, input cancellation, AI objectives and lifecycle fixed; BattleInput 296/296, Ui 276/276, Networking 30/30, EnemyAi 360/360, Core 151/151 passed. In-game/two-client/visual acceptance queued.
+
+
+
+
 - [x] **Play menu reroute (Single Player / Multiplayer / AI vs AI / Tutorial; Host Game with mode picked in lobby; Server Browser; START GAME everywhere)** → [[Done/Features/Play_Menu_Reroute_Plan|Play Menu Reroute Plan]]
   - Completed 2026-11-11: Single Player screen (Skirmish, Survival, Load Game), Multiplayer (Host Game, Join Game → Server Browser of public Steam lobbies + IP join), host-only Skirmish/Survival switch in the lobby (Survival refused over 3 members), START GAME labels.
   - Unity compile, prefab references, Addressables and preview renders verified; tests not run. In-game routes and 2-PC lobby/browser checks → [[TODOs/User_Acceptance_Queue]].

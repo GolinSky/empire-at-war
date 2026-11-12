@@ -9,7 +9,7 @@ namespace EmpireAtWar.Entities.BattleNotifications
     /// One notification card. Opening grows its slot while the body slides down and fades in; closing fades the
     /// body out first, then collapses the slot, so the cards below move up smoothly instead of jumping.
     /// </summary>
-    public sealed class BattleNotificationCardView : MonoBehaviour
+    public sealed class BattleNotificationCardView : MonoBehaviour, UnityEngine.EventSystems.IPointerClickHandler
     {
         private const float FADE_SECONDS = 0.18f;
         private const float COLLAPSE_SECONDS = 0.15f;
@@ -27,6 +27,7 @@ namespace EmpireAtWar.Entities.BattleNotifications
         [SerializeField] private Button dismissButton;
 
         private Action<int> _dismiss;
+        private Action _activate;
         private float _height;
         private float _textInset;
         private float _fade;
@@ -47,9 +48,10 @@ namespace EmpireAtWar.Entities.BattleNotifications
 
         public void Dispose() => dismissButton.onClick.RemoveListener(HandleDismissClicked);
 
-        public void Open(int notificationId, string message, Color accentColor, Sprite icon)
+        public void Open(int notificationId, string message, Color accentColor, Sprite icon, Action activate = null)
         {
             NotificationId = notificationId;
+            _activate = activate;
             SetContent(message, icon);
             accent.color = accentColor;
             _fade = 0f;
@@ -80,6 +82,12 @@ namespace EmpireAtWar.Entities.BattleNotifications
         }
 
         private void HandleDismissClicked() => _dismiss(NotificationId);
+
+        public void OnPointerClick(UnityEngine.EventSystems.PointerEventData eventData)
+        {
+            if (eventData.button == UnityEngine.EventSystems.PointerEventData.InputButton.Left && _activate != null)
+                _activate();
+        }
 
         private void Update()
         {

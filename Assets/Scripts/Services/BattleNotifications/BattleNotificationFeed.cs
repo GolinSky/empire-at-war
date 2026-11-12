@@ -35,8 +35,8 @@ namespace EmpireAtWar.Services.BattleNotifications
         public IReadOnlyList<BattleNotification> Pending => _pending;
 
         public void Post(BattleNotificationPriority priority, string text, string groupKey = null, string groupFormat = null,
-            string iconKey = null) =>
-            Add(priority, text, groupKey, groupFormat, true, iconKey);
+            string iconKey = null, Action onActivate = null) =>
+            Add(priority, text, groupKey, groupFormat, true, iconKey, onActivate);
 
         public void Hold(BattleNotificationPriority priority, string text, string key, string iconKey = null) =>
             Add(priority, text, key, null, false, iconKey);
@@ -80,13 +80,13 @@ namespace EmpireAtWar.Services.BattleNotifications
         }
 
         private void Add(BattleNotificationPriority priority, string text, string groupKey, string groupFormat,
-            bool counts, string iconKey)
+            bool counts, string iconKey, Action onActivate = null)
         {
             if (!_isAccepting && priority != BattleNotificationPriority.Outcome) return;
             if (groupKey != null && (IsMuted(groupKey) || TryRepeat(groupKey, counts, iconKey))) return;
             float lifetime = Lifetime(priority);
             var notification = new BattleNotification(++_nextId, priority, text, groupKey, groupFormat, lifetime,
-                lifetime * MAX_AGE_FACTOR, iconKey);
+                lifetime * MAX_AGE_FACTOR, iconKey, onActivate);
             if (_visible.Count < MAX_VISIBLE)
             {
                 Show(notification);

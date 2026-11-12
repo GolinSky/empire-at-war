@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.UnitActions.Model;
+using EmpireAtWar.Entities.TacticalMarkers;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Ui.Base;
@@ -286,6 +287,25 @@ namespace EmpireAtWar.Tests.Editor
             else _targeting.Start((UnitActionId)Enum.Parse(typeof(UnitActionId), mode));
         }
 
+        [Test]
+        public void MarkerRadialCancelDoesNotIssueAWorldCommandOnRightButtonRelease()
+        {
+            var model = new MarkerRadialModel();
+            var controller = new MarkerInputController(null, null, _provider, null, null, null,
+                null, null, null, null, null, null, null, model, null, null, null, null, null);
+            model.Open();
+            _uiHitTest.Query = () => model.IsOpen;
+            InputSystem.QueueStateEvent(_mouse, new MouseState { buttons = 2, position = new Vector2(100, 100) });
+            InputSystem.Update();
+            controller.Cancel();
+            _gestures.Tick();
+            controller.LateTick();
+            Assert.That(model.IsOpen, Is.False);
+
+            MouseFrame(0, new Vector2(100, 100));
+            Assert.That(_commanded, Is.Zero);
+        }
+
         private void MouseFrame(ushort buttons, Vector2 position)
         {
             InputSystem.QueueStateEvent(_mouse, new MouseState { buttons = buttons, position = position });
@@ -305,7 +325,8 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class UiHitTestStub : IUiHitTest
         {
             public bool OverUi { get; set; }
-            public bool IsOverUi(Vector2 position) => OverUi;
+            public Func<bool> Query { get; set; }
+            public bool IsOverUi(Vector2 position) => Query != null ? Query() : OverUi;
         }
 
         private sealed class HudStub : IHudVisibilityObserver

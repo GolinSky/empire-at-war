@@ -17,6 +17,7 @@ using EmpireAtWar.Entities.MiniMap;
 using EmpireAtWar.Entities.ShipUi;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Entities.TacticalMarkers;
 using EmpireAtWar.Entities.UnitActions.Controller;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Entities.UnitOrderFeedback;
@@ -54,6 +55,7 @@ using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.Timing;
+using EmpireAtWar.Services.TacticalMarkers;
 using EmpireAtWar.Services.UnitExplosion;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.Vision;
@@ -74,6 +76,7 @@ namespace EmpireAtWar.Services.VContainer
         [SerializeField] private SpawnAreaOverlay spawnAreaOverlay;
         [SerializeField] private ReinforcementZoneData reinforcementZoneData;
         [SerializeField] private UnitOrderSettings unitOrderSettings;
+        [SerializeField] private TacticalMarkerSettings tacticalMarkerSettings;
         [SerializeField] private TeamColorPalette teamColorPalette;
         [SerializeField] private UnitHighlightSettings unitHighlightSettings;
         [SerializeField] private ExplosionVfx fighterExplosion;
@@ -130,6 +133,10 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<TooltipLifecyclePresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(reinforcementZoneData);
             builder.RegisterInstance(unitOrderSettings);
+            builder.RegisterInstance(tacticalMarkerSettings);
+            builder.Register<TacticalMarkerTargets>(Lifetime.Singleton);
+            builder.Register<TacticalMarkerRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<TacticalMarkerReplies>(Lifetime.Singleton);
             builder.Register<UnitOrderService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerCommandHandlers>(Lifetime.Singleton);
             OnlineMatchService online = Parent.Container.Resolve<OnlineMatchService>();
@@ -212,6 +219,13 @@ namespace EmpireAtWar.Services.VContainer
                 builder.Register<BaseMiniMapPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CinematicCameraModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CinematicCameraPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            if (Battle.Mode != GameMode.BattleSimulation)
+            {
+                builder.Register<MarkerRadialModel>(Lifetime.Singleton);
+                builder.Register<MarkerWorldPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+                builder.Register<MarkerInputController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+                builder.Register<MiniMapMarkerPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            }
             builder.Register<BattleStartupSequence>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<BattleAssetWarmup>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(assets);
             builder.Register<SkirmishOrchestrator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

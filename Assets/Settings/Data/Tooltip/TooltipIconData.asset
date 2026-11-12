@@ -241,3 +241,15 @@ MonoBehaviour:
     key: 7c9824186eb64db48a578111cfce264b:21300000
   - sprite: {fileID: 21300000, guid: 1eb602fdb62be8f4f9214ecdb7cf4e20, type: 3}
     key: 1eb602fdb62be8f4f9214ecdb7cf4e20:21300000
+  - sprite: {fileID: 21300000, guid: 1db86f023bfacf14a919ca9a7f47ab8c, type: 3}
+    key: MarkerLook
+  - sprite: {fileID: 21300000, guid: 3a24e4120c4eb8f4789b57e3e66d217a, type: 3}
+    key: MarkerAttack
+  - sprite: {fileID: 21300000, guid: c5e3027f49ffe9648aed563f3e85e1c8, type: 3}
+    key: MarkerCapture
+  - sprite: {fileID: 21300000, guid: 46105c94b5e07c0479144c8f280da8e7, type: 3}
+    key: MarkerDefend
+  - sprite: {fileID: 21300000, guid: 5ed2b632c53a59f4c8c236fd17f94415, type: 3}
+    key: MarkerRally
+  - sprite: {fileID: 21300000, guid: 2a2ed125427b81345a4abe4f25a0c034, type: 3}
+    key: MarkerRetreat

@@ -35,6 +35,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ed4cfcde7d0489344b741ee60966f192, type: 2}
   - {fileID: 11400000, guid: 175cbffddb6abe64e8120cdf9efdbbb2, type: 2}
   - {fileID: 11400000, guid: 6fab96d437e6ef64ebb93470a8883631, type: 2}
+  - {fileID: 11400000, guid: bc34fba3c0a379741a7d985a3ac2fdc2, type: 2}
   minimumGapSeconds: 0.5
   stepGapSeconds: 0.4
   combatQuietSeconds: 0

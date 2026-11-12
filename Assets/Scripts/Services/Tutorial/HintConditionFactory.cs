@@ -59,6 +59,7 @@ namespace EmpireAtWar.Services.Tutorial
         private readonly ScoutUnits _scouts;
         private readonly HintTargets _targets;
         private readonly IBuildQueueCancelObserver _buildQueue;
+        private readonly EmpireAtWar.Services.TacticalMarkers.ITacticalMarkerObserver _markers;
 
         public HintConditionFactory(ISelectionService selection, IPlayerFactionModelObserver faction,
             IFactionResearchModelObserver research, ICameraInput camera, IUnitOrderService orders, ILocalPlayer player,
@@ -66,9 +67,10 @@ namespace EmpireAtWar.Services.Tutorial
             IAutoPowerToggleObserver autoPower, IEntityLocator entities, IVisionService vision, FactionCatalog factions,
             IReinforcementModelObserver reinforcements, ISuperWeaponModelObserver superWeapons, IHazardService hazards,
             SkirmishStateModel battle, ISelectionInput selectionInput, FactionRoster roster, ScoutUnits scouts,
-            HintTargets targets, IObjectResolver resolver)
+            HintTargets targets, IObjectResolver resolver, EmpireAtWar.Services.TacticalMarkers.ITacticalMarkerObserver markers)
         {
             _selection = selection;
+            _markers = markers;
             _faction = faction;
             _research = research;
             _camera = camera;
@@ -107,6 +109,7 @@ namespace EmpireAtWar.Services.Tutorial
         {
             switch (id)
             {
+                case HintConditionId.AlliedMarkerPlaced: return new AlliedMarkerHintCondition(_markers, _player);
                 case HintConditionId.UnitInTargetSite: return TargetSite(step, TargetSiteHintCondition.Stage.UnitInside);
                 case HintConditionId.TargetSiteCaptured: return TargetSite(step, TargetSiteHintCondition.Stage.Captured);
                 case HintConditionId.TargetSiteBuilding: return TargetSite(step, TargetSiteHintCondition.Stage.Building);

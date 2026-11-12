@@ -211,6 +211,9 @@ namespace EmpireAtWar.Entities.MiniMap
             return miniMapPos;
         }
 
+        public Vector2 WorldToScreenPoint(Vector3 worldPoint) => RectTransformUtility.WorldToScreenPoint(null,
+            miniMapRectTransform.TransformPoint(GetPosition(worldPoint)));
+
         public Vector2 GetSize(float worldDiameter)
         {
             return new Vector2(
@@ -263,17 +266,22 @@ namespace EmpireAtWar.Entities.MiniMap
         }
 
         private bool TryGetWorldPoint(PointerEventData eventData, out Vector3 worldPoint)
+            => TryGetWorldPoint(eventData.position, eventData.pressEventCamera, out worldPoint);
+
+        public bool TryGetWorldPoint(Vector2 screenPoint, out Vector3 worldPoint)
+            => TryGetWorldPoint(screenPoint, null, out worldPoint);
+
+        private bool TryGetWorldPoint(Vector2 screenPoint, UnityEngine.Camera eventCamera, out Vector3 worldPoint)
         {
             worldPoint = default;
-            UnityEngine.Camera eventCamera = eventData.pressEventCamera;
-            if (!RectTransformUtility.RectangleContainsScreenPoint(miniMapRectTransform, eventData.position, eventCamera))
+            if (!RectTransformUtility.RectangleContainsScreenPoint(miniMapRectTransform, screenPoint, eventCamera))
             {
                 return false;
             }
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 miniMapRectTransform,
-                eventData.position,
+                screenPoint,
                 eventCamera,
                 out Vector2 localPoint);
 

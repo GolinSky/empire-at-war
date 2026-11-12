@@ -10,13 +10,18 @@ namespace EmpireAtWar.Services.Saves
         private readonly SkirmishStateModel _state;
 
         public float Elapsed { get; private set; }
+        public event System.Action Restored;
 
         public BattleClock(SkirmishStateModel state)
         {
             _state = state;
         }
 
-        public void Restore(float elapsed) => Elapsed = elapsed;
+        public void Restore(float elapsed)
+        {
+            Elapsed = elapsed;
+            Restored?.Invoke();
+        }
 
         public void Tick()
         {

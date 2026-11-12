@@ -39,7 +39,7 @@ namespace EmpireAtWar.Repository
         {
             "UiService", "FadeUi", "FpsUi", "CoreGameUi", "FactionUi", "ShipBuildUi", "ShipUi",
             "ShipGroupUi", "EconomyUi", "MiniMapUi", "ReinforcementUi", "UnitOrderFeedbackUi",
-            "TooltipUi", "PauseMenuUi", "SettingsUi", "SaveBrowserUi", "EndGameUi", "HeroUi"
+            "TooltipUi", "PauseMenuUi", "SettingsUi", "SaveBrowserUi", "EndGameUi", "HeroUi", "MarkerRadialUi"
         };
         private static readonly MiningFacilityType[] MINING_FACILITIES =
             { MiningFacilityType.CommonMiner, MiningFacilityType.AsteroidMiner, MiningFacilityType.TibannaGasStation };

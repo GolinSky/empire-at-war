@@ -590,6 +590,15 @@ namespace EmpireAtWar.Services.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PlaceMarker"",
+                    ""type"": ""Button"",
+                    ""id"": ""77bcc494-918e-4b4c-a426-d207d62af38e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -724,6 +733,17 @@ namespace EmpireAtWar.Services.Input
                     ""action"": ""QuickLoad"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""320fac3e-25c5-484c-bcdf-bae67d06b1a8"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""PlaceMarker"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -799,6 +819,7 @@ namespace EmpireAtWar.Services.Input
             m_Battle_QueueWaypoint = m_Battle.FindAction("QueueWaypoint", throwIfNotFound: true);
             m_Battle_QuickSave = m_Battle.FindAction("QuickSave", throwIfNotFound: true);
             m_Battle_QuickLoad = m_Battle.FindAction("QuickLoad", throwIfNotFound: true);
+            m_Battle_PlaceMarker = m_Battle.FindAction("PlaceMarker", throwIfNotFound: true);
             // Ui
             m_Ui = asset.FindActionMap("Ui", throwIfNotFound: true);
             m_Ui_Cancel = m_Ui.FindAction("Cancel", throwIfNotFound: true);
@@ -1183,6 +1204,7 @@ namespace EmpireAtWar.Services.Input
         private readonly InputAction m_Battle_QueueWaypoint;
         private readonly InputAction m_Battle_QuickSave;
         private readonly InputAction m_Battle_QuickLoad;
+        private readonly InputAction m_Battle_PlaceMarker;
         /// <summary>
         /// Provides access to input actions defined in input action map "Battle".
         /// </summary>
@@ -1222,6 +1244,10 @@ namespace EmpireAtWar.Services.Input
             /// Provides access to the underlying input action "Battle/QuickLoad".
             /// </summary>
             public InputAction @QuickLoad => m_Wrapper.m_Battle_QuickLoad;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/PlaceMarker".
+            /// </summary>
+            public InputAction @PlaceMarker => m_Wrapper.m_Battle_PlaceMarker;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1269,6 +1295,9 @@ namespace EmpireAtWar.Services.Input
                 @QuickLoad.started += instance.OnQuickLoad;
                 @QuickLoad.performed += instance.OnQuickLoad;
                 @QuickLoad.canceled += instance.OnQuickLoad;
+                @PlaceMarker.started += instance.OnPlaceMarker;
+                @PlaceMarker.performed += instance.OnPlaceMarker;
+                @PlaceMarker.canceled += instance.OnPlaceMarker;
             }
 
             /// <summary>
@@ -1301,6 +1330,9 @@ namespace EmpireAtWar.Services.Input
                 @QuickLoad.started -= instance.OnQuickLoad;
                 @QuickLoad.performed -= instance.OnQuickLoad;
                 @QuickLoad.canceled -= instance.OnQuickLoad;
+                @PlaceMarker.started -= instance.OnPlaceMarker;
+                @PlaceMarker.performed -= instance.OnPlaceMarker;
+                @PlaceMarker.canceled -= instance.OnPlaceMarker;
             }
 
             /// <summary>
@@ -1592,6 +1624,13 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnQuickLoad(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "PlaceMarker" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnPlaceMarker(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Ui" which allows adding and removing callbacks.

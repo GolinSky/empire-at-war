@@ -104,5 +104,6 @@ namespace EmpireAtWar.Services.Tutorial
         CentralSiteCaptured = 86,
         /// <summary>Units were ordered (map or minimap) into a not-owned site of the step's target kind.</summary>
         OrderIntoTargetSite = 87,
+        AlliedMarkerPlaced = 88,
     }
 }

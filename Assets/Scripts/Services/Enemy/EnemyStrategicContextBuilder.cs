@@ -25,6 +25,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Services.TacticalMarkers;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -133,6 +134,7 @@ namespace EmpireAtWar.Services.Enemy
         private string _captureReason;
         private string _objectiveSafetyReason;
         public bool CaptureReservedByOtherGroup { get; private set; }
+        public AllyAiMarkerSource AlliedMarkers { get; }
         private readonly List<IShipEntity> _ownShips = new List<IShipEntity>();
         private readonly List<FormationPoint> _formationPositions = new List<FormationPoint>();
         private readonly Dictionary<IShipEntity, GameEntity> _receivers = new Dictionary<IShipEntity, GameEntity>();
@@ -178,6 +180,8 @@ namespace EmpireAtWar.Services.Enemy
             _shipService = shipService;
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _captureSources = captureSources;
+            foreach (IEnemyCaptureObjectiveSource source in captureSources)
+                if (source is AllyAiMarkerSource markers) AlliedMarkers = markers;
             _entityLocator = entityLocator;
             _gameModel = gameModel;
             _owner = owner;
@@ -194,6 +198,7 @@ namespace EmpireAtWar.Services.Enemy
             _shipService = source._shipService;
             _reinforcementZonesSystem = source._reinforcementZonesSystem;
             _captureSources = source._captureSources;
+            AlliedMarkers = source.AlliedMarkers;
             _entityLocator = source._entityLocator;
             _gameModel = source._gameModel;
             _playerRoster = source._playerRoster;
@@ -209,6 +214,9 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         public EnemyStrategicContextBuilder CreateGroupBuilder() => new EnemyStrategicContextBuilder(this);
+
+        public bool IsMarkerApproachSafe(Vector3 point) =>
+            IsObjectiveSafe(ToVector(CalculateFleetCenter(_ownShips)), point, AllyAiMarkerSource.REQUEST_RADIUS, false);
 
         public (bool HasPressure, bool GatherReinforcements) AssessStation(IReadOnlyList<IShipEntity> ships)
         {
@@ -550,7 +558,8 @@ namespace EmpireAtWar.Services.Enemy
                     zone.Owner, ToVector(ToPoint(zone.Center)), zone.Radius, zone.CaptureProgress));
             }
             foreach (IEnemyCaptureObjectiveSource source in _captureSources)
-                source.AddStrategicObjectives(_captureCandidates, _intel);
+                if (!(source is AllyAiMarkerSource)) source.AddStrategicObjectives(_captureCandidates, _intel);
+            if (AlliedMarkers != null) AlliedMarkers.AddStrategicObjectives(_captureCandidates, _intel);
 
             EnemyCaptureObjective best = null;
             EnemyCaptureObjective retained = null;
@@ -585,7 +594,8 @@ namespace EmpireAtWar.Services.Enemy
                     candidate.Owner == _captureObjective.Owner) retained = candidate;
             }
 
-            if (retained != null && (best == null || !best.IsThreatened || retained.IsThreatened))
+            if (retained != null && (best == null || best.PriorityBonus <= retained.PriorityBonus) &&
+                (best == null || !best.IsThreatened || retained.IsThreatened))
             {
                 float distance = CaptureDistance(retained);
                 if (_captureIsExecuting) _captureStallSeconds += now - _captureEvaluatedAt;
@@ -655,11 +665,11 @@ namespace EmpireAtWar.Services.Enemy
 
         private float GetCaptureScore(Vector3 origin, EnemyCaptureObjective candidate)
         {
-            if (!_preferStrategicObjectives) return GetTargetScore(origin, candidate.Position);
+            if (!_preferStrategicObjectives) return GetTargetScore(origin, candidate.Position) - candidate.PriorityBonus;
             // The main fleet contests strategic relays; detachments continue collecting nearby facilities.
             float relayPenalty = candidate.Kind == EnemyCaptureObjectiveType.ReinforcementZone ? 0f : 2000f;
             return PlanarDistance(_strategicCenter, candidate.Position) * 2f +
-                   GetTargetScore(origin, candidate.Position) * 0.25f + relayPenalty;
+                   GetTargetScore(origin, candidate.Position) * 0.25f + relayPenalty - candidate.PriorityBonus;
         }
 
         private float CaptureDistance(EnemyCaptureObjective objective)

@@ -7,7 +7,7 @@ namespace EmpireAtWar.Services.BattleNotifications
         /// <param name="groupFormat">Text for a counted card, with {0} as the count; null appends " ×N".</param>
         /// <param name="iconKey">Existing UI icon key; null leaves the card text-only.</param>
         void Post(BattleNotificationPriority priority, string text, string groupKey = null, string groupFormat = null,
-            string iconKey = null);
+            string iconKey = null, System.Action onActivate = null);
 
         /// <summary>Shows the card, or keeps the card with this key on screen, without counting repeats.</summary>
         void Hold(BattleNotificationPriority priority, string text, string key, string iconKey = null);

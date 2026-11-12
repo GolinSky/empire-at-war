@@ -34,6 +34,15 @@ namespace EmpireAtWar.Entities.MiniMap
         public event System.Action CameraMoved;
         public event System.Action MoveOrdered;
 
+        public Vector2 WorldToScreenPoint(Vector3 worldPoint) => _miniMapView.WorldToScreenPoint(worldPoint);
+
+        public bool TryGetWorldPoint(Vector2 screenPoint, out Vector3 worldPoint)
+        {
+            worldPoint = default;
+            return _miniMapView != null && _miniMapView.IsVisible &&
+                   _miniMapView.TryGetWorldPoint(screenPoint, out worldPoint);
+        }
+
         private readonly ICameraService _cameraService;
         private readonly IInputLock _inputLock;
         private readonly ISkirmishRouteNavigation _routeNavigation;
@@ -179,7 +188,8 @@ namespace EmpireAtWar.Entities.MiniMap
                 _tooltips.Show(source, key, anchor, () => !_model.IsInputBlocked && marker.Visible,
                     () => new TooltipContent(title: marker.MarkType == MarkType.TibannaGasStation
                             ? "Tibanna Gas Station"
-                            : marker.MarkType.ToString(),
+                            : marker.MarkType.ToString().Replace("Tactical", "") +
+                              (marker.MarkType >= MarkType.TacticalLook && marker.MarkType <= MarkType.TacticalRetreat ? " marker" : ""),
                         description: marker.MarkType == MarkType.ReinforcementZone
                             ? "Deploy reinforcements inside a friendly zone."
                             : marker.MarkType == MarkType.CaptureSite

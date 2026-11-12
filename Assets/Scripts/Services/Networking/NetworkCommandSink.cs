@@ -35,6 +35,9 @@ namespace EmpireAtWar.Services.Networking
         public void Submit(DeployReinforcementCommand command) =>
             Send(new PlayerCommandMessage { Kind = PlayerCommandKind.DeployReinforcement, DeployReinforcement = command });
 
+        public void Submit(PlaceMarkerCommand command) =>
+            Send(new PlayerCommandMessage { Kind = PlayerCommandKind.PlaceMarker, PlaceMarker = command });
+
         private void Send(PlayerCommandMessage message)
         {
             message.LastReceivedTick = _replica.LastReceivedTick;

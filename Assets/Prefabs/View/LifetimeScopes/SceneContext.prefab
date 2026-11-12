@@ -793,6 +793,8 @@ MonoBehaviour:
   spawnAreaOverlay: {fileID: 8633086611108695522}
   reinforcementZoneData: {fileID: 0}
   unitOrderSettings: {fileID: 11400000, guid: afce51dcd754fd0469faa3093790d821, type: 2}
+  tacticalMarkerSettings: {fileID: 11400000, guid: 5d6b4c5f484d6674c8248487cb61b435,
+    type: 2}
   teamColorPalette: {fileID: 11400000, guid: e126eded0451c624bbeb3e2c6170e260, type: 2}
   unitHighlightSettings: {fileID: 11400000, guid: 0aac2804c0ddb744fa5d2d7bd30f1c8f,
     type: 2}

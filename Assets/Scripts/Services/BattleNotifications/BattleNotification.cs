@@ -16,15 +16,17 @@ namespace EmpireAtWar.Services.BattleNotifications
         public int Count { get; private set; } = 1;
         public float TimeLeft { get; private set; }
         public float Age { get; private set; }
+        public Action OnActivate { get; }
 
         public string Text => Count == 1 ? _text
             : _groupFormat != null ? string.Format(_groupFormat, Count) : $"{_text} ×{Count}";
 
         /// <param name="maxAge">Repeated events stop extending the card past this age, so it cannot stay forever.</param>
         public BattleNotification(int id, BattleNotificationPriority priority, string text, string groupKey,
-            string groupFormat, float lifetime, float maxAge, string iconKey = null)
+            string groupFormat, float lifetime, float maxAge, string iconKey = null, Action onActivate = null)
         {
             Id = id;
+            OnActivate = onActivate;
             Priority = priority;
             _text = text;
             GroupKey = groupKey;

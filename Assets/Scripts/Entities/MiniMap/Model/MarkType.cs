@@ -14,5 +14,11 @@
         CaptureSite = 9,
         SatelliteSite = 10,
         TibannaGasStation = 11,
+        TacticalLook = 12,
+        TacticalAttack = 13,
+        TacticalCapture = 14,
+        TacticalDefend = 15,
+        TacticalRally = 16,
+        TacticalRetreat = 17,
     }
 }

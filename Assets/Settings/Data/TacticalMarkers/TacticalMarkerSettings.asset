@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 871eefa9efa02a944ad769d048ae9308, type: 3}
+  m_Name: TacticalMarkerSettings
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.TacticalMarkers.TacticalMarkerSettings
+  styles:
+  - type: 0
+    lifetime: 8
+    color: {r: 0.78431374, g: 0.8039216, b: 0.83137256, a: 1}
+    icon: {fileID: 21300000, guid: 4e43979cbe436bf439ea526c4cfd21db, type: 3}
+    sound: {fileID: 8300000, guid: e1908d26813536b4eaea2e5e47c3e273, type: 3}
+  - type: 1
+    lifetime: 8
+    color: {r: 1, g: 0.29411766, b: 0.29411766, a: 1}
+    icon: {fileID: 21300000, guid: 9769c70ee82a0454db58b48008c172cf, type: 3}
+    sound: {fileID: 8300000, guid: acf0bd24f2b1b664b91d915dbdf69982, type: 3}
+  - type: 2
+    lifetime: 30
+    color: {r: 1, g: 0.77254903, b: 0.19215687, a: 1}
+    icon: {fileID: 21300000, guid: e0861093ea4beea47b2bb74392beb56a, type: 3}
+    sound: {fileID: 8300000, guid: e1908d26813536b4eaea2e5e47c3e273, type: 3}
+  - type: 3
+    lifetime: 30
+    color: {r: 0.24705882, g: 0.54901963, b: 1, a: 1}
+    icon: {fileID: 21300000, guid: 2c8b014df27b2f84e89329b4a8f9cef2, type: 3}
+    sound: {fileID: 8300000, guid: acf0bd24f2b1b664b91d915dbdf69982, type: 3}
+  - type: 4
+    lifetime: 15
+    color: {r: 0.18431373, g: 0.8784314, b: 0.8156863, a: 1}
+    icon: {fileID: 21300000, guid: f908b90826bd5464bb6e1191f355bd2f, type: 3}
+    sound: {fileID: 8300000, guid: e1908d26813536b4eaea2e5e47c3e273, type: 3}
+  - type: 5
+    lifetime: 8
+    color: {r: 0.6901961, g: 0.3764706, b: 1, a: 1}
+    icon: {fileID: 21300000, guid: 1f15ff7002a84844281fec6a02971138, type: 3}
+    sound: {fileID: 8300000, guid: acf0bd24f2b1b664b91d915dbdf69982, type: 3}
+  maxPerPlayer: 4
+  rateLimit: 3
+  rateWindow: 2
+  repeatRadius: 50
+  objectiveRadius: 750
+  octagonFrame: {fileID: 21300000, guid: d9c3b57d1eb0fee4db3c15557e9d399d, type: 3}
+  squareFrame: {fileID: 21300000, guid: 56574f08ba00a344c9609e56bc9c9cf6, type: 3}
+  worldMaterial: {fileID: 2100000, guid: f712f3ade8a39154cb0d2903fcb39aa2, type: 2}

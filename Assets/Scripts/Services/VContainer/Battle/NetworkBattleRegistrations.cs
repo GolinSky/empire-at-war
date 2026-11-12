@@ -25,6 +25,7 @@ namespace EmpireAtWar.Services.VContainer
             }
 
             builder.Register<AuthorityCommandSink>(Lifetime.Singleton).As<IPlayerCommandSink>().AsSelf();
+            builder.Register<EmpireAtWar.Services.TacticalMarkers.MarkerResolutionWatcher>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<AttackDataFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SquadronLaunchSlots>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             if (role == OnlineRole.None)
@@ -35,6 +36,8 @@ namespace EmpireAtWar.Services.VContainer
 
             builder.Register<NetworkTickService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HostCommandReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<EmpireAtWar.Services.Networking.HostTacticalMarkerSender>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<EmpireAtWar.Services.Networking.HostTacticalMarkerReplySender>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<HostBattleStartGate>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<HostMatchStateSender>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HostReplicatedStateSender>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
@@ -55,6 +58,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ClosedSquadronLaunchSlots>(Lifetime.Singleton).As<ISquadronLaunchSlots>();
             builder.Register<ReplicaEntitySpawner>(Lifetime.Singleton);
             builder.Register<ClientReplicationReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<EmpireAtWar.Services.Networking.ClientTacticalMarkerReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<EmpireAtWar.Services.Networking.ClientTacticalMarkerReplyReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ClientReplicatedStateReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ClientCombatEventReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ClientShipRouteReceiver>(Lifetime.Singleton).AsImplementedInterfaces();

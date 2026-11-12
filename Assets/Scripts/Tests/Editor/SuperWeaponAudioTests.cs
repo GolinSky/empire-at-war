@@ -320,6 +320,7 @@ namespace EmpireAtWar.Tests.Editor
             public void Submit(BuildSiteFacilityCommand command) => throw new NotSupportedException();
             public void Submit(ShipAbilityCommand command) => throw new NotSupportedException();
             public void Submit(DeployReinforcementCommand command) => throw new NotSupportedException();
+            public void Submit(PlaceMarkerCommand command) => throw new NotSupportedException();
         }
 
         private sealed class FireService : ISuperWeaponFireService

@@ -217,9 +217,9 @@ namespace EmpireAtWar.Services.Enemy
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
             {
                 group.Evaluate(_reservedCaptureObjectives, Time.time);
-                if (group.Decision.State == EnemyStrategicState.RebuildFleet ||
+                if (!group.HasMarkerRequest && (group.Decision.State == EnemyStrategicState.RebuildFleet ||
                     group.Decision.State == EnemyStrategicState.Hold &&
-                    (!group.IsMainForce || group.Context.Snapshot.IsRegrouped))
+                    (!group.IsMainForce || group.Context.Snapshot.IsRegrouped)))
                     MoveShipsOutOfDefaultZone(group.Ships);
                 else
                     foreach (IShipEntity ship in group.Ships) _zoneExitTargets.Remove(ship);
@@ -243,6 +243,8 @@ namespace EmpireAtWar.Services.Enemy
             _recoveryStartedAt = primary.RecoveryStartedAt;
             _actionReason = primary.Executor.ActionReason + groupSummary;
             PublishDecision(primary.Decision, bodyCount, rallyingCount);
+            if (_contextBuilder.AlliedMarkers != null)
+                _contextBuilder.AlliedMarkers.Observe(primary.Context, primary.Decision);
             _taskGroups.TryCreateCaptureGroup(_ships, _reservedCaptureObjectives, station.HasPressure);
         }
 

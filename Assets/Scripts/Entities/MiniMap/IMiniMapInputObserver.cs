@@ -7,5 +7,7 @@ namespace EmpireAtWar.Entities.MiniMap
     {
         event Action CameraMoved;
         event Action MoveOrdered;
+        bool TryGetWorldPoint(UnityEngine.Vector2 screenPoint, out UnityEngine.Vector3 worldPoint);
+        UnityEngine.Vector2 WorldToScreenPoint(UnityEngine.Vector3 worldPoint);
     }
 }

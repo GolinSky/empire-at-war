@@ -1,5 +1,6 @@
 using EmpireAtWar.Services.Networking.Online;
 using Mirror;
+using EmpireAtWar.Models.Players;
 
 namespace EmpireAtWar.Services.Networking
 {
@@ -10,6 +11,14 @@ namespace EmpireAtWar.Services.Networking
     /// </summary>
     public static class HostBroadcast
     {
+        public static void ToTeam<T>(OnlineMatchService online, INetworkPlayerDirectory players,
+            IPlayerRelations relations, PlayerId sender, T message) where T : struct, NetworkMessage
+        {
+            foreach (NetworkConnectionToClient connection in NetworkServer.connections.Values)
+                if (online.IsBattleLoaded(connection) && players.TryGetPlayer(connection.connectionId, out PlayerId player) &&
+                    relations.IsAllied(sender, player)) connection.Send(message);
+        }
+
         public static void ToClients<T>(OnlineMatchService online, T message, int channelId = Channels.Reliable)
             where T : struct, NetworkMessage
         {

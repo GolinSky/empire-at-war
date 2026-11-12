@@ -13,5 +13,6 @@ namespace EmpireAtWar.Services.PlayerCommands
         void Submit(FireSuperWeaponCommand command);
         void Submit(ShipAbilityCommand command);
         void Submit(DeployReinforcementCommand command);
+        void Submit(PlaceMarkerCommand command);
     }
 }

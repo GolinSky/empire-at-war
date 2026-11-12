@@ -78,6 +78,8 @@ namespace EmpireAtWar.Services.PlayerCommands
             return owned;
         }
 
+        public void Submit(PlaceMarkerCommand command) => _handlers.TacticalMarkers.TryPlace(command);
+
         public void Submit(PurchaseUnitCommand command) => _handlers.GetProduction(command.Issuer).Purchase(command);
 
         public void Submit(CancelPurchaseCommand command) => _handlers.GetProduction(command.Issuer).Cancel(command);

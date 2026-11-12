@@ -10,6 +10,7 @@ using EmpireAtWar.Services.Networking.States;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Squadrons;
+using EmpireAtWar.Services.TacticalMarkers;
 using UnityEngine;
 using global::VContainer;
 using global::VContainer.Unity;
@@ -42,6 +43,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SquadronPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<TeamBaseSquadronLauncher>(Lifetime.Singleton).As<ISquadronLauncher>();
             builder.Register<EnemyStrategicDecisionModel>(Lifetime.Singleton);
+            builder.Register<AllyAiMarkerSource>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<AllyAiMarkerEmitter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HostileIntelGatherer>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EnemyStrategicContextBuilder>(Lifetime.Singleton);
             builder.Register<EnemyStationPressureTracker>(Lifetime.Singleton);

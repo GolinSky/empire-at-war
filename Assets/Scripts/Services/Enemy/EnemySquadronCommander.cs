@@ -199,6 +199,9 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool TryGetScoutTarget(out Vector3 target)
         {
+            foreach (IEnemyCaptureObjectiveSource source in _captureSources)
+                if (source is EmpireAtWar.Services.TacticalMarkers.AllyAiMarkerSource markers &&
+                    markers.TryGetScoutTarget(out target)) return true;
             if (!_structurePlacement.TryGetPosition(out _) &&
                 _structurePlacement.TryGetScoutTarget(out target))
             {

@@ -48,6 +48,7 @@ namespace EmpireAtWar.Services.Networking
             PlayerCommandKind.FireSuperWeapon => message.FireSuperWeapon.Issuer,
             PlayerCommandKind.ShipAbility => message.ShipAbility.Issuer,
             PlayerCommandKind.DeployReinforcement => message.DeployReinforcement.Issuer,
+            PlayerCommandKind.PlaceMarker => message.PlaceMarker.Issuer,
             _ => throw new ArgumentOutOfRangeException(nameof(message), message.Kind, "Unknown command kind.")
         };
 
@@ -62,6 +63,7 @@ namespace EmpireAtWar.Services.Networking
                 case PlayerCommandKind.FireSuperWeapon: sink.Submit(message.FireSuperWeapon); break;
                 case PlayerCommandKind.ShipAbility: sink.Submit(message.ShipAbility); break;
                 case PlayerCommandKind.DeployReinforcement: sink.Submit(message.DeployReinforcement); break;
+                case PlayerCommandKind.PlaceMarker: sink.Submit(message.PlaceMarker); break;
                 default: throw new ArgumentOutOfRangeException(nameof(message), message.Kind, "Unknown command kind.");
             }
         }

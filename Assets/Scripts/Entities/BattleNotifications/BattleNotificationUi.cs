@@ -58,7 +58,7 @@ namespace EmpireAtWar.Entities.BattleNotifications
         }
 
         private void HandleShown(BattleNotification notification) =>
-            FreeCard().Open(notification.Id, notification.Text, AccentColor(notification.Priority), Icon(notification));
+            FreeCard().Open(notification.Id, notification.Text, AccentColor(notification.Priority), Icon(notification), notification.OnActivate);
 
         private void HandleUpdated(BattleNotification notification)
         {

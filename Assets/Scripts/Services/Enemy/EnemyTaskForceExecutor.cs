@@ -62,6 +62,9 @@ namespace EmpireAtWar.Services.Enemy
         private readonly HashSet<IShipEntity> _bodyMembers = new HashSet<IShipEntity>();
         private readonly Dictionary<IShipEntity, IShipEntity> _rallyAnchors = new Dictionary<IShipEntity, IShipEntity>();
         private readonly List<IShipEntity> _lostShips = new List<IShipEntity>();
+        private long _markerId = -1;
+        private Vector3 _markerPoint;
+        private readonly HashSet<IShipEntity> _markerShips = new HashSet<IShipEntity>();
 
         public EnemyTaskForceExecutor(IUnitOrderService unitOrderService) => _unitOrderService = unitOrderService;
 
@@ -86,6 +89,8 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Execute(EnemyStrategicDecision decision, EnemyStrategicContext context)
         {
+            _markerId = -1;
+            _markerShips.Clear();
             if (_lastState != decision.State)
             {
                 _assignedShips.Clear();
@@ -356,8 +361,50 @@ namespace EmpireAtWar.Services.Enemy
             StopRemaining(context, _captureShips, count);
         }
 
+        /// <param name="attackTarget">Hostile unit of an Attack marker; null attacks-moves to the point.</param>
+        public void ExecuteMarker(EmpireAtWar.Services.TacticalMarkers.TacticalMarker marker,
+            EmpireAtWar.Entities.BaseEntity.IEntity attackTarget, EnemyStrategicContext context)
+        {
+            // A unit target is chased by its own order, so its movement does not need fresh orders.
+            if (_markerId != marker.Id || attackTarget == null && (_markerPoint - marker.Point).sqrMagnitude > 1f)
+                _markerShips.Clear();
+            _markerId = marker.Id;
+            _markerPoint = marker.Point;
+            _body.Clear();
+            _stragglers.Clear();
+            var receivers = new List<GameEntity>();
+            foreach (IShipEntity ship in context.Ships)
+            {
+                if (marker.Type == EmpireAtWar.Services.TacticalMarkers.TacticalMarkerType.Retreat &&
+                    !EmpireAtWar.Services.TacticalMarkers.AllyAiMarkerSource.Near(ship.WorldPosition, marker.Point)) continue;
+                if (!_markerShips.Add(ship)) continue;
+                receivers.Add(context.Receivers[ship]);
+            }
+            if (receivers.Count == 0) return;
+            ActionReason = $"Accepted allied {marker.Type} request.";
+            context.OrderDestination = marker.Point;
+            switch (marker.Type)
+            {
+                case EmpireAtWar.Services.TacticalMarkers.TacticalMarkerType.Retreat:
+                    _unitOrderService.IssueRetreat(receivers, context.RetreatAnchor.Value);
+                    break;
+                case EmpireAtWar.Services.TacticalMarkers.TacticalMarkerType.Attack when attackTarget != null:
+                    _unitOrderService.IssueAttack(receivers, attackTarget);
+                    break;
+                case EmpireAtWar.Services.TacticalMarkers.TacticalMarkerType.Attack:
+                case EmpireAtWar.Services.TacticalMarkers.TacticalMarkerType.Defend:
+                    _unitOrderService.IssueAttackMove(receivers, marker.Point);
+                    break;
+                default:
+                    _unitOrderService.IssueMove(receivers, marker.Point);
+                    break;
+            }
+        }
+
         public void Rally(EnemyStrategicContext context)
         {
+            _markerId = -1;
+            _markerShips.Clear();
             if (context.Ships.Count == 0) return;
             IShipEntity anchor = SplitBody(context.Ships, context.Ships.Count);
             RallyBody(context, anchor);

@@ -15,5 +15,6 @@ namespace EmpireAtWar.Services.Networking.Messages
         public FireSuperWeaponCommand FireSuperWeapon;
         public ShipAbilityCommand ShipAbility;
         public DeployReinforcementCommand DeployReinforcement;
+        public PlaceMarkerCommand PlaceMarker;
     }
 }

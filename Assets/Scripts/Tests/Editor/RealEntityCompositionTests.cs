@@ -189,6 +189,26 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_battle.Container.Resolve<IBattleOutcomeRule>(), Is.TypeOf<SurvivalOutcomeRule>());
         }
 
+        [Test, Category("BattleInput")]
+        public void TacticalMarkers_ResolveWithCaptureSitesAndRouteCommandsAfterLifecycleInitialization()
+        {
+            BuildSaveProject();
+            BuildSaveBattle();
+            var registry = _battle.Container.Resolve<EmpireAtWar.Services.TacticalMarkers.TacticalMarkerRegistry>();
+            var handlers = _battle.Container.Resolve<EmpireAtWar.Services.PlayerCommands.PlayerCommandHandlers>();
+            var sink = _battle.Container.Resolve<EmpireAtWar.Services.PlayerCommands.IPlayerCommandSink>();
+            Assert.That(_battle.Container.Resolve<ICaptureSiteDirectory>(), Is.TypeOf<CaptureSitesSystem>());
+            Assert.That(handlers.TacticalMarkers, Is.SameAs(registry));
+
+            sink.Submit(new EmpireAtWar.Services.PlayerCommands.PlaceMarkerCommand(
+                _battle.Container.Resolve<ILocalPlayer>().Id,
+                EmpireAtWar.Services.TacticalMarkers.TacticalMarkerType.Look, Vector3.zero));
+
+            Assert.That(registry.Markers.Count, Is.EqualTo(1));
+            registry.Dispose();
+            Assert.Throws<InvalidOperationException>(() => { var handler = handlers.TacticalMarkers; });
+        }
+
         [Test]
         public void PlayerBootstrap_SecondPlayerBuildFailureRollsBackBothRootsAndFactoryLookup()
         {

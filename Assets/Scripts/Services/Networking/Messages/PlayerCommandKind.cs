@@ -8,6 +8,7 @@ namespace EmpireAtWar.Services.Networking.Messages
         BuildSiteFacility,
         FireSuperWeapon,
         ShipAbility,
-        DeployReinforcement
+        DeployReinforcement,
+        PlaceMarker
     }
 }

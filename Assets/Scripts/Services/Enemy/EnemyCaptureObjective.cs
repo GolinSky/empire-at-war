@@ -12,9 +12,10 @@ namespace EmpireAtWar.Services.Enemy
         public float Radius { get; }
         public float Progress { get; }
         public bool IsThreatened { get; }
+        public float PriorityBonus { get; }
 
         public EnemyCaptureObjective(string id, EnemyCaptureObjectiveType kind, PlayerId owner,
-            Vector3 position, float radius, float progress, bool isThreatened = false)
+            Vector3 position, float radius, float progress, bool isThreatened = false, float priorityBonus = 0f)
         {
             Id = id;
             Kind = kind;
@@ -23,6 +24,7 @@ namespace EmpireAtWar.Services.Enemy
             Radius = radius;
             Progress = progress;
             IsThreatened = isThreatened;
+            PriorityBonus = priorityBonus;
         }
     }
 }

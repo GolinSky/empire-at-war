@@ -281,3 +281,11 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Play_Menu_Reroute_Plan]] — In-game: Play → Single Player (Skirmish, Survival, Load Game), Multiplayer, AI vs AI, Tutorial; every Back/Escape returns one level.
 - [ ] [[Done/Features/Play_Menu_Reroute_Plan]] — Two PCs: Host Game, client joins from the Server Browser (and by IP); host switches Skirmish ↔ Survival; Survival blocked with 4 members.
 - [ ] [[Done/Features/Play_Menu_Reroute_Plan]] — Run Ui, Networking and GameFlow when authorized.
+
+## Tactical markers
+
+- [ ] [[Done/Features/Tactical_Markers_Plan]] — In-game: B tap/hold/rebind, all six slices, hub/Esc/RMB cancel, world/minimap target attachment, pause, hidden/dead targets, load cleanup and notification focus.
+- [ ] [[Done/Features/Tactical_Markers_Plan]] — Two clients: allied markers/replies arrive; enemy clients receive none; disconnect and late scene loading do not retain stale markers.
+- [ ] [[Done/Features/Tactical_Markers_Plan]] — Allied AI: accept/delay/decline, capture/defense/scouting, safe attack/rally/retreat, autonomous markers, silent solo enemy AI and one-time tutorial hint.
+- [ ] [[Done/Features/Tactical_Markers_Plan]] — Approve world/radial/minimap visuals at battle zoom/resolution and listen to info/urgent cues. Art and radial previews: `Logs/TacticalMarkers/`.
+

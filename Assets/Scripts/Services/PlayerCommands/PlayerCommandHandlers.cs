@@ -17,6 +17,7 @@ namespace EmpireAtWar.Services.PlayerCommands
             new Dictionary<PlayerId, IReinforcementCommandHandler>();
         private ISiteConstructionCommandHandler _siteConstruction;
         private IShipAbilityCommandHandler _abilities;
+        private ITacticalMarkerCommandHandler _tacticalMarkers;
 
         public void RegisterProduction(PlayerId owner, IProductionCommandHandler handler) => _production.Add(owner, handler);
         public void UnregisterProduction(PlayerId owner) => _production.Remove(owner);
@@ -36,6 +37,12 @@ namespace EmpireAtWar.Services.PlayerCommands
 
         public void RegisterAbilities(IShipAbilityCommandHandler handler) => _abilities = handler;
         public void UnregisterAbilities() => _abilities = null;
+
+        public void RegisterTacticalMarkers(ITacticalMarkerCommandHandler handler) => _tacticalMarkers = handler;
+        public void UnregisterTacticalMarkers() => _tacticalMarkers = null;
+
+        public ITacticalMarkerCommandHandler TacticalMarkers => _tacticalMarkers ??
+            throw new System.InvalidOperationException("Tactical markers are not initialized in this battle.");
 
         public IShipAbilityCommandHandler Abilities => _abilities ??
             throw new System.InvalidOperationException("Ship abilities are not available in this battle.");

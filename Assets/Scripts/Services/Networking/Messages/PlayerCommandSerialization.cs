@@ -6,6 +6,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.TacticalMarkers;
 using Mirror;
 using UnityEngine;
 
@@ -39,6 +40,7 @@ namespace EmpireAtWar.Services.Networking.Messages
                 case PlayerCommandKind.FireSuperWeapon: writer.WriteFireSuperWeaponCommand(message.FireSuperWeapon); break;
                 case PlayerCommandKind.ShipAbility: writer.WriteShipAbilityCommand(message.ShipAbility); break;
                 case PlayerCommandKind.DeployReinforcement: writer.WriteDeployReinforcementCommand(message.DeployReinforcement); break;
+                case PlayerCommandKind.PlaceMarker: writer.WritePlaceMarkerCommand(message.PlaceMarker); break;
                 default: throw new ArgumentOutOfRangeException(nameof(message), message.Kind, "Unknown command kind.");
             }
         }
@@ -59,11 +61,24 @@ namespace EmpireAtWar.Services.Networking.Messages
                 case PlayerCommandKind.FireSuperWeapon: message.FireSuperWeapon = reader.ReadFireSuperWeaponCommand(); break;
                 case PlayerCommandKind.ShipAbility: message.ShipAbility = reader.ReadShipAbilityCommand(); break;
                 case PlayerCommandKind.DeployReinforcement: message.DeployReinforcement = reader.ReadDeployReinforcementCommand(); break;
+                case PlayerCommandKind.PlaceMarker: message.PlaceMarker = reader.ReadPlaceMarkerCommand(); break;
                 default: throw new ArgumentOutOfRangeException(nameof(reader), message.Kind, "Unknown command kind.");
             }
 
             return message;
         }
+
+        public static void WritePlaceMarkerCommand(this NetworkWriter writer, PlaceMarkerCommand command)
+        {
+            writer.WritePlayerId(command.Issuer);
+            writer.WriteByte((byte)command.Type);
+            writer.WriteVector3(command.Point);
+            writer.WriteLong(command.TargetId);
+        }
+
+        public static PlaceMarkerCommand ReadPlaceMarkerCommand(this NetworkReader reader) =>
+            new PlaceMarkerCommand(reader.ReadPlayerId(), (TacticalMarkerType)reader.ReadByte(),
+                reader.ReadVector3(), reader.ReadLong());
 
         public static void WriteUnitOrderCommand(this NetworkWriter writer, UnitOrderCommand command)
         {
