@@ -43,7 +43,7 @@
                 "sortOrder": "alphabetical",
                 "autoReveal": false,
                 "showSearch": true,
-                "searchQuery": "Awakening of the Rebellion Capital Ship Reference "
+                "searchQuery": ""
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -185,8 +185,14 @@
       "bases:Create new base": false
     }
   },
-  "active": "fd4544b14efb9af5",
+  "active": "1261212fe2167d70",
   "lastOpenFiles": [
+    "Done/Features/Ui_Sfx_System.md",
+    "TODOs/Features/Ui_Sfx_System.md",
+    "TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research.md",
+    "TODOs/Bugs/Carrier_and_Squadron_Rebalance.md",
+    "TODOs/Refactoring/RTS_UI_Refresh_Plan.md",
+    "TODOs/Refactoring/RTS_UI_Refresh_Plan - Research.md",
     "Done/Refactoring/Namespace_Qualified_Type_Cleanup.md",
     "TODOs/Refactoring/Namespace_Qualified_Type_Cleanup.md",
     "Done/Features/Tactical_Markers_Plan.md",
@@ -197,7 +203,6 @@
     "GameDesign/References/Awakening of the Rebellion - Capital Ship Reference.md",
     "TODOs/Features/Play_Menu_Reroute_Plan.md",
     "Done/Bugs/Carrier_and_Squadron_Rebalance.md",
-    "TODOs/Bugs/Carrier_and_Squadron_Rebalance.md",
     "Done/Features/Harmonic_Bomb_Ability.md",
     "TODOs/Features/Harmonic_Bomb_Ability.md",
     "Done/Refactoring/Shared_Invite_Friends_Popup_Plan.md",
@@ -214,13 +219,8 @@
     "TODOs/Features/Ingame_Tutorial_Plan.md",
     "TODOs/Tooling/Game_Installer_Velopack.md",
     "TODOs/Optimization/Optimization_Audit_Fix_Plan - Research.md",
-    "TODOs/Optimization/Battle_Start_Hitch_Plan.md",
     "Artifacts/Audits/Optimization_2026-11-06/Station_camera.png",
     "Artifacts/Audits/Optimization_2026-11-06/Station_destruction.png",
-    "TODOs/Optimization/Optimization_Audit_Fix_Plan.md",
-    "Rules/UNITY_OPTIMIZATION_COOKBOOK.md",
-    "Rules/EMPIRE_AT_WAR_OPTIMIZATION_COOKBOOK.md",
-    "Artifacts/Audits/Optimization_2026-11-06/Optimization_Audit.md",
     "Artifacts/Audits/Optimization_2026-11-06",
     "TODOs/sedHoE5uX",
     "TODOs/sed2g2Anb",

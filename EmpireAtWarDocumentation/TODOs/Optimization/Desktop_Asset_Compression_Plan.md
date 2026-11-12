@@ -142,3 +142,12 @@ created: 2026-10-11
 - Backlog: [[TODOs/TODOs]].
 - Existing material work: [[Done/Refactoring/ShipLit_Autodesk_Material_Conversion_Plan]]; preserve shader/channel contracts.
 - Unity references: [Audio import settings](https://docs.unity3d.com/6000.4/Documentation/Manual/class-AudioClip.html), [mesh compression](https://docs.unity3d.com/6000.4/Documentation/Manual/compressing-mesh-data-optimization.html), [texture formats](https://docs.unity3d.com/6000.4/Documentation/Manual/texture-formats-reference.html).
+
+## Implementation — 2026-11-12 selected texture retry
+- User scope: ten large uncompressed textures from the audit. Explicit Standalone BC7/HQ, compression quality 100; original RGB RMSE ≤2/255 and maximum alpha error ≤8/255 retained.
+- Retained six: Gladiator hull + TeamMask, Recalcitrant Front + Rear (color, not `_B` normal maps), Peleset Ord Cruiser, Titan WornPaint M024. Resolution 2048², mipmaps, color space, alpha handling, source files and GUIDs preserved.
+- Restored four: AssaultFrigateMkII albedo (max alpha 19/255), Pelta hull (9), Liberator hangar additive (9), Endurance HomeOne1 additive (11). These still exceed the 8/255 gate; no gate relaxed.
+- Official Unity CLI imported/saved changes; all ten formats/settings/dimensions/mips/GUIDs read back. Disk verification: six metas change only four Standalone fields; rejected four match original semantic metadata. No new Console errors; tests not run under local override.
+- Evidence: `Tools/DesktopAssetCompression/Evidence/SelectedTextures20261112.json`; one-shot `Tools/DesktopAssetCompression/DesktopCompressionSelectedTextures.cs`; raw rollback metas/results `output/DesktopAssetCompression/Selected20261112/`.
+- No new content build, Player memory capture or Mac/gameplay visual acceptance. Broader plan remains in-progress with remaining categories and measurements.
+- Reusable guidance: existing [[Rules/EMPIRE_AT_WAR_OPTIMIZATION_COOKBOOK]] strict gates apply. Explicit BC7 resolved Titan's prior automatic-DXT quality failure; HQ alone does not establish the actual GPU format.

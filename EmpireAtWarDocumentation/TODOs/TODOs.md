@@ -106,6 +106,7 @@
   - **Next**: Play Mode behavior and matched performance/Development Player acceptance. New performance analysis explicitly deferred by the user; no savings claimed.
 
 - [ ] **Apply moderate desktop asset compression** → [[TODOs/Optimization/Desktop_Asset_Compression_Plan|Desktop Asset Compression Plan]]
+  - **2026-11-12 selected retry**: 6/10 large textures retained as explicit Standalone BC7; four restored for alpha-error gate failures. Import/disk readback verified, no new Console errors; no tests/build/runtime memory measurement. Evidence: `Tools/DesktopAssetCompression/Evidence/SelectedTextures20261112.json`.
   - **Pass 2 (2026-10-24)**: 462/507 model textures compressed under screening, 47 meshes Low; Addressables bundles 1.53 GB → 1.03 GB, payload 6.46 → 2.66 GB; related EditMode tests pass. Mesh gate 3° rerun: 478 models at Low, bundles → 989.8 MB. In-game visual check pending.
   - **Next**: remaining categories, matched gameplay memory/loading/DSP captures, audio listening/startup/loop/crossfade and intended-scale visual acceptance; macOS module + actual Mac validation. Plan stays active.
 
