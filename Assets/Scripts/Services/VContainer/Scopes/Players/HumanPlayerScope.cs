@@ -14,6 +14,8 @@ using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.BattleNotifications;
+using EmpireAtWar.Services.Tutorial.Guided;
 using global::VContainer;
 
 namespace EmpireAtWar.Services.VContainer
@@ -55,7 +57,7 @@ namespace EmpireAtWar.Services.VContainer
             battleScope.Modules.ConfigureLocalPlayer(builder, player, transform);
             // Simulations are a balance tool, not matches players play; online matches show no tutorial hints.
             if (battleScope.Battle.Mode == GameMode.Tutorial)
-                EmpireAtWar.Services.Tutorial.Guided.GuidedTutorialRegistrations.Register(builder, Assets);
+                GuidedTutorialRegistrations.Register(builder, Assets);
             else if (battleScope.Battle.Mode != GameMode.BattleSimulation && !_isOnline)
                 HintRegistrations.Register(builder, Assets,
                     hasCheatPanel: battleScope.Battle.HasFeature(BattleFeatures.Economy) && player.Has(BattleFeatures.Economy));
@@ -92,7 +94,7 @@ namespace EmpireAtWar.Services.VContainer
             if ((features & BattleFeatures.Economy) != 0)
             {
                 builder.Register<FactionAnnouncementService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-                builder.Register<EmpireAtWar.Services.BattleNotifications.EconomyNotifier>(Lifetime.Singleton)
+                builder.Register<EconomyNotifier>(Lifetime.Singleton)
                     .AsImplementedInterfaces().AsSelf();
                 builder.Register<ClientPlayerEconomyFeedback>(Lifetime.Singleton).AsImplementedInterfaces();
             }

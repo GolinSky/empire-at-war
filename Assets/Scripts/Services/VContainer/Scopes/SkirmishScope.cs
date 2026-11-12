@@ -62,6 +62,9 @@ using EmpireAtWar.Services.Vision;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using EmpireAtWar.Views.SpawnArea;
+using EmpireAtWar.Entities.Fade;
+using EmpireAtWar.Entities.Saves;
+using EmpireAtWar.Services.IdGeneration;
 using UnityEngine;
 using Unity.Profiling;
 using global::VContainer;
@@ -167,12 +170,12 @@ namespace EmpireAtWar.Services.VContainer
             UiRegistrations.Register(builder, Assets, transform);
             BattleNotificationRegistrations.Register(builder, Battle);
             builder.Register<FadeService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<EmpireAtWar.Entities.Fade.FadeUiController>(Lifetime.Singleton)
+            builder.Register<FadeUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<FpsModel>(Lifetime.Singleton);
             builder.Register<FpsUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EntityLocator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<EmpireAtWar.Services.IdGeneration.UniqueIdGenerator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<UniqueIdGenerator>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<StationRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SquadronRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SquadronLauncher>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
@@ -181,7 +184,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<KeyBindingEditor>(Lifetime.Singleton);
             builder.Register<SettingsRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PauseMenuRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<EmpireAtWar.Entities.Saves.SaveGameRouteUiController>(Lifetime.Singleton)
+            builder.Register<SaveGameRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
             AssetRegistrations.RegisterShared<ShipUiData>(builder, Assets);
             AssetRegistrations.RegisterShared<ShipAbilityCatalog>(builder, Assets);

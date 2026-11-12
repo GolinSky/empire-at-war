@@ -14,6 +14,7 @@ using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.Saves;
 using UnityEngine;
 using static EmpireAtWar.Utils.FormationConversion;
+using EmpireAtWar.Entities.BaseEntity;
 
 namespace EmpireAtWar.Services.TacticalMarkers
 {
@@ -161,7 +162,7 @@ namespace EmpireAtWar.Services.TacticalMarkers
             return false;
         }
 
-        private bool TryKnownPoint(EmpireAtWar.Entities.BaseEntity.IEntity target, out Vector3 point)
+        private bool TryKnownPoint(IEntity target, out Vector3 point)
         {
             point = target.GetFacade<IEntityTransformFacade>().Transform.position;
             if (_vision.IsVisible(_owner.Id, point)) return true;

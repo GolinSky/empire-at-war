@@ -16,6 +16,7 @@ using Utilities.ScriptUtils.Time;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 using static EmpireAtWar.Utils.FormationConversion;
+using EmpireAtWar.Services.TacticalMarkers;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -200,7 +201,7 @@ namespace EmpireAtWar.Services.Enemy
         private bool TryGetScoutTarget(out Vector3 target)
         {
             foreach (IEnemyCaptureObjectiveSource source in _captureSources)
-                if (source is EmpireAtWar.Services.TacticalMarkers.AllyAiMarkerSource markers &&
+                if (source is AllyAiMarkerSource markers &&
                     markers.TryGetScoutTarget(out target)) return true;
             if (!_structurePlacement.TryGetPosition(out _) &&
                 _structurePlacement.TryGetScoutTarget(out target))

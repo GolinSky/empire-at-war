@@ -3,6 +3,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Analytics;
 using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.BattleNotifications;
 using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.Networking.States;
 using EmpireAtWar.Services.Saves;
@@ -44,7 +45,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SurvivalReplicatedState>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SurvivalSaveSource>(Lifetime.Singleton).As<IBattleSaveSource>();
             builder.Register<SurvivalHudUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<EmpireAtWar.Services.BattleNotifications.SurvivalNotifier>(Lifetime.Singleton)
+            builder.Register<SurvivalNotifier>(Lifetime.Singleton)
                 .AsImplementedInterfaces();
             builder.Register<SurvivalWaveAnalytics>(Lifetime.Singleton).AsImplementedInterfaces();
         }

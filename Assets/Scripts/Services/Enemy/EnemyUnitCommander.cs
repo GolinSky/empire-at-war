@@ -16,6 +16,7 @@ using EmpireAtWar.Lifecycle;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Services.Ships;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -88,7 +89,7 @@ namespace EmpireAtWar.Services.Enemy
                 if (group.Context.OwnBase == null ||
                     !_entityLocator.TryGetEntity(group.Context.OwnBase.Id, out GameEntity ownBase)) continue;
                 defendHome = true;
-                rally = ownBase.GetFacade<EmpireAtWar.Entities.BaseEntity.EntityFacades.IEntityTransformFacade>()
+                rally = ownBase.GetFacade<IEntityTransformFacade>()
                     .Transform.position;
                 return true;
             }

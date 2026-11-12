@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using Utilities.ScriptUtils.EditorSerialization;
+using MvcData = EmpireAtWar.Mvc.Data;
 
 namespace EmpireAtWar.Repository.Data
 {
     [CreateAssetMenu(fileName = nameof(AssetMappingData), menuName = "Data/Asset Mapping Data")]
-    public class AssetMappingData : EmpireAtWar.Mvc.Data
+    public class AssetMappingData : MvcData
     {
         [Tooltip("Maps the key used by code (usually a C# type name) to an Addressable asset reference.")]
         [SerializeField]

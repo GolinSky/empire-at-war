@@ -7,6 +7,7 @@ using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Networking;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.BattleNotifications;
 using global::VContainer;
 using UnityEngine;
 
@@ -42,7 +43,7 @@ namespace EmpireAtWar.Services.VContainer
         public void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
         {
             builder.Register<SuperWeaponPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<EmpireAtWar.Services.BattleNotifications.SuperWeaponNotifier>(Lifetime.Singleton)
+            builder.Register<SuperWeaponNotifier>(Lifetime.Singleton)
                 .AsImplementedInterfaces();
         }
     }

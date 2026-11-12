@@ -9,6 +9,7 @@ using UnityEngine;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Services.TacticalMarkers;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -362,8 +363,8 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <param name="attackTarget">Hostile unit of an Attack marker; null attacks-moves to the point.</param>
-        public void ExecuteMarker(EmpireAtWar.Services.TacticalMarkers.TacticalMarker marker,
-            EmpireAtWar.Entities.BaseEntity.IEntity attackTarget, EnemyStrategicContext context)
+        public void ExecuteMarker(TacticalMarker marker,
+            GameEntity attackTarget, EnemyStrategicContext context)
         {
             // A unit target is chased by its own order, so its movement does not need fresh orders.
             if (_markerId != marker.Id || attackTarget == null && (_markerPoint - marker.Point).sqrMagnitude > 1f)
@@ -375,8 +376,8 @@ namespace EmpireAtWar.Services.Enemy
             var receivers = new List<GameEntity>();
             foreach (IShipEntity ship in context.Ships)
             {
-                if (marker.Type == EmpireAtWar.Services.TacticalMarkers.TacticalMarkerType.Retreat &&
-                    !EmpireAtWar.Services.TacticalMarkers.AllyAiMarkerSource.Near(ship.WorldPosition, marker.Point)) continue;
+                if (marker.Type == TacticalMarkerType.Retreat &&
+                    !AllyAiMarkerSource.Near(ship.WorldPosition, marker.Point)) continue;
                 if (!_markerShips.Add(ship)) continue;
                 receivers.Add(context.Receivers[ship]);
             }
@@ -385,14 +386,14 @@ namespace EmpireAtWar.Services.Enemy
             context.OrderDestination = marker.Point;
             switch (marker.Type)
             {
-                case EmpireAtWar.Services.TacticalMarkers.TacticalMarkerType.Retreat:
+                case TacticalMarkerType.Retreat:
                     _unitOrderService.IssueRetreat(receivers, context.RetreatAnchor.Value);
                     break;
-                case EmpireAtWar.Services.TacticalMarkers.TacticalMarkerType.Attack when attackTarget != null:
+                case TacticalMarkerType.Attack when attackTarget != null:
                     _unitOrderService.IssueAttack(receivers, attackTarget);
                     break;
-                case EmpireAtWar.Services.TacticalMarkers.TacticalMarkerType.Attack:
-                case EmpireAtWar.Services.TacticalMarkers.TacticalMarkerType.Defend:
+                case TacticalMarkerType.Attack:
+                case TacticalMarkerType.Defend:
                     _unitOrderService.IssueAttackMove(receivers, marker.Point);
                     break;
                 default:
@@ -554,7 +555,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
                 BattleFormationModel.CalculateDestinations(_positions, _radii,
                     default, _destinations,
-                    target.TryGetFacade(out EmpireAtWar.Entities.BaseEntity.EntityFacades.INavigationFootprintFacade footprint)
+                    target.TryGetFacade(out INavigationFootprintFacade footprint)
                         ? footprint.NavigationRadius : 0f);
                 for (int i = 0; i < count; i++)
                     _battleOffsets.Add(ships[i], _destinations[i]);

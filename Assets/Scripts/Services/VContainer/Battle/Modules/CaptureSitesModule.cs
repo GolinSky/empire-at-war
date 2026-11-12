@@ -9,6 +9,7 @@ using EmpireAtWar.Services.Networking.States;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Tooltip;
+using EmpireAtWar.Services.BattleNotifications;
 using global::VContainer;
 using global::VContainer.Unity;
 using UnityEngine;
@@ -60,7 +61,7 @@ namespace EmpireAtWar.Services.VContainer
 
         public void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
         {
-            builder.Register<EmpireAtWar.Services.BattleNotifications.CaptureSiteNotifier>(Lifetime.Singleton)
+            builder.Register<CaptureSiteNotifier>(Lifetime.Singleton)
                 .AsImplementedInterfaces();
             if (player.Has(BattleFeatures.Economy))
                 builder.Register<CaptureSiteAnnouncer>(Lifetime.Singleton).AsImplementedInterfaces();

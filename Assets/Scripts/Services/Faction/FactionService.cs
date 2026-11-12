@@ -13,6 +13,7 @@ using EmpireAtWar.Entities.Units;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Entities.SpaceStation;
 
 namespace EmpireAtWar.Services.Factions
 {
@@ -295,7 +296,7 @@ namespace EmpireAtWar.Services.Factions
             {
                 _selectionContext = selectionSubject.PlayerSelectionContext;
                 _model.IsSecondStationSelected = _selectionContext.Entity != null &&
-                    _selectionContext.Entity.TryGetFacade(out EmpireAtWar.Entities.SpaceStation.ISecondStationFacade _);
+                    _selectionContext.Entity.TryGetFacade(out ISecondStationFacade _);
                 _model.SelectionType = _selectionContext.SelectionType;// move it to selection component and reuse it 
             }
         }

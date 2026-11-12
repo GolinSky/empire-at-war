@@ -6,6 +6,7 @@ using Utilities.ScriptUtils.Time;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Ships;
+using EmpireAtWar.Entities.EnemyFaction.Models;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -24,12 +25,12 @@ namespace EmpireAtWar.Services.Enemy
         private readonly PlayerSlot _owner;
         private readonly EnemyDefenseSnapshotBuilder _snapshotBuilder;
         private readonly EnemyStationPressureTracker _stationPressure;
-        private readonly EmpireAtWar.Entities.EnemyFaction.Models.EnemyDefenseStrategy _defense;
+        private readonly EnemyDefenseStrategy _defense;
 
         public EnemySiteConstructionController(ICaptureSiteDirectory sites, ICaptureSitePresence presence,
             ICaptureSiteConstruction construction, IShipService shipService,
             PlayerSlot owner, EnemyDefenseSnapshotBuilder snapshotBuilder,
-            EmpireAtWar.Entities.EnemyFaction.Models.EnemyDefenseStrategy defense,
+            EnemyDefenseStrategy defense,
             EnemyStationPressureTracker stationPressure)
         {
             _owner = owner;

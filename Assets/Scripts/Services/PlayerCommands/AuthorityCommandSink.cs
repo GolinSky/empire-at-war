@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.UnitActions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.UnitOrders;
 
 namespace EmpireAtWar.Services.PlayerCommands
@@ -67,7 +68,7 @@ namespace EmpireAtWar.Services.PlayerCommands
         }
 
         // Issuer validation: a player can only command its own units.
-        private List<IEntity> OwnedEntities(long[] ids, EmpireAtWar.Models.Players.PlayerId issuer)
+        private List<IEntity> OwnedEntities(long[] ids, PlayerId issuer)
         {
             List<IEntity> owned = new List<IEntity>(ids.Length);
             foreach (long id in ids)

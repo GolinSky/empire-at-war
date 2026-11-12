@@ -23,6 +23,7 @@ using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Services.TacticalMarkers;
 using VContainer;
 
 namespace EmpireAtWar.Services.Tutorial
@@ -59,7 +60,7 @@ namespace EmpireAtWar.Services.Tutorial
         private readonly ScoutUnits _scouts;
         private readonly HintTargets _targets;
         private readonly IBuildQueueCancelObserver _buildQueue;
-        private readonly EmpireAtWar.Services.TacticalMarkers.ITacticalMarkerObserver _markers;
+        private readonly ITacticalMarkerObserver _markers;
 
         public HintConditionFactory(ISelectionService selection, IPlayerFactionModelObserver faction,
             IFactionResearchModelObserver research, ICameraInput camera, IUnitOrderService orders, ILocalPlayer player,
@@ -67,7 +68,7 @@ namespace EmpireAtWar.Services.Tutorial
             IAutoPowerToggleObserver autoPower, IEntityLocator entities, IVisionService vision, FactionCatalog factions,
             IReinforcementModelObserver reinforcements, ISuperWeaponModelObserver superWeapons, IHazardService hazards,
             SkirmishStateModel battle, ISelectionInput selectionInput, FactionRoster roster, ScoutUnits scouts,
-            HintTargets targets, IObjectResolver resolver, EmpireAtWar.Services.TacticalMarkers.ITacticalMarkerObserver markers)
+            HintTargets targets, IObjectResolver resolver, ITacticalMarkerObserver markers)
         {
             _selection = selection;
             _markers = markers;

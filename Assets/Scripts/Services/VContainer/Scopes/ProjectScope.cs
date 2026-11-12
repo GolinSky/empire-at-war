@@ -21,6 +21,7 @@ using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Ui.Base;
+using EmpireAtWar.Services.Tutorial;
 using Utilities.ScriptUtils.Time;
 using Unity.Profiling;
 using UnityEngine;
@@ -104,7 +105,7 @@ namespace EmpireAtWar.Services.VContainer
                 .WithParameter(Application.persistentDataPath);
             builder.Register<JsonBattleSaveRepository>(Lifetime.Singleton).AsImplementedInterfaces()
                 .WithParameter(Application.persistentDataPath);
-            builder.Register<EmpireAtWar.Services.Tutorial.JsonHintProgressRepository>(Lifetime.Singleton)
+            builder.Register<JsonHintProgressRepository>(Lifetime.Singleton)
                 .AsImplementedInterfaces().WithParameter(Application.persistentDataPath);
             builder.Register<DisplaySettingsApplier>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<GraphicsSettingsApplier>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

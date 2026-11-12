@@ -2,6 +2,7 @@ using System;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Networking.Online;
+using EmpireAtWar.Services.Tutorial.Guided;
 
 namespace EmpireAtWar.Services.VContainer
 {
@@ -12,7 +13,7 @@ namespace EmpireAtWar.Services.VContainer
             GameMode.Skirmish => new SkirmishMode(online),
             GameMode.Survival => new SurvivalMode(assets, online),
             GameMode.BattleSimulation => new SimulationMode(battle),
-            GameMode.Tutorial => new EmpireAtWar.Services.Tutorial.Guided.TutorialMode(),
+            GameMode.Tutorial => new TutorialMode(),
             _ => throw new ArgumentOutOfRangeException(nameof(battle), battle.Mode, "Unknown game mode.")
         };
     }

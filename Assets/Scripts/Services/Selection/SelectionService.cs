@@ -284,7 +284,7 @@ namespace EmpireAtWar.Services.Battle
             }
         }
 
-        private void HandleEntityRemoved(EmpireAtWar.Entities.BaseEntity.IEntity entity)
+        private void HandleEntityRemoved(IEntity entity)
         {
             UnsubscribeDeath(entity);
             if (_lastTappedEntityId == entity.Id)

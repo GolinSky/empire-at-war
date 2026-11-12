@@ -23,6 +23,7 @@ using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Squadrons;
 using EmpireAtWar.ViewComponents.Weapon;
+using EmpireAtWar.Services.FleetCommand;
 using UnityEngine;
 using global::VContainer;
 using global::VContainer.Unity;
@@ -87,7 +88,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SelectionInput>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitOrderInput>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<EmpireAtWar.Services.FleetCommand.FleetCommandService>(Lifetime.Singleton)
+            builder.Register<FleetCommandService>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<MapObstacleContactProvider>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HazardService>(Lifetime.Singleton)

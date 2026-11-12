@@ -10,6 +10,7 @@ using EmpireAtWar.Services.Ships;
 using EmpireAtWar.Services.Saves;
 using UnityEngine;
 using static EmpireAtWar.Utils.FormationConversion;
+using EmpireAtWar.Entities.EnemyFaction.Models;
 
 namespace EmpireAtWar.Services.TacticalMarkers
 {
@@ -242,7 +243,7 @@ namespace EmpireAtWar.Services.TacticalMarkers
             return null;
         }
 
-        public void Observe(EnemyStrategicContext context, EmpireAtWar.Entities.EnemyFaction.Models.EnemyStrategicDecision decision)
+        public void Observe(EnemyStrategicContext context, EnemyStrategicDecision decision)
             => _emitter.Observe(context, decision);
 
         private void BuildThreat(Vector3 point) => _forces.BuildKnown(_threat, _intel, Time.time,

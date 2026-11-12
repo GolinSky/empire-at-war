@@ -13,10 +13,16 @@ using EmpireAtWar.Entities.MainMenu.Online;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Fade;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Entities.MainMenu.ServerBrowser;
+using EmpireAtWar.Entities.MainMenu.SinglePlayer;
+using EmpireAtWar.Entities.MainMenu.Tutorial;
 using UnityEngine;
 using global::VContainer;
 using global::VContainer.Unity;
 using SurvivalModel = EmpireAtWar.Entities.MainMenu.Survival.SurvivalModel;
+using ILifecycleInitializable = EmpireAtWar.Lifecycle.IInitializable;
+using ILifecycleLateDisposable = EmpireAtWar.Lifecycle.ILateDisposable;
+using ILifecycleLateTickable = EmpireAtWar.Lifecycle.ILateTickable;
 
 namespace EmpireAtWar.Services.VContainer
 {
@@ -36,7 +42,7 @@ namespace EmpireAtWar.Services.VContainer
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<PlayRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
-            builder.Register<EmpireAtWar.Entities.MainMenu.SinglePlayer.SinglePlayerRouteUiController>(Lifetime.Singleton)
+            builder.Register<SinglePlayerRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<LoadGameRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
@@ -59,19 +65,19 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SkirmishRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SteamPopupService>(Lifetime.Singleton).As<ISteamPopupService>();
             builder.Register<OnlineRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<EmpireAtWar.Entities.MainMenu.ServerBrowser.ServerBrowserRouteUiController>(Lifetime.Singleton)
+            builder.Register<ServerBrowserRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
-            builder.Register<EmpireAtWar.Entities.MainMenu.Tutorial.TutorialSetupModel>(Lifetime.Singleton);
-            builder.Register<EmpireAtWar.Entities.MainMenu.Tutorial.TutorialSetupHintsController>(Lifetime.Singleton)
-                .As<EmpireAtWar.Lifecycle.ILateTickable, EmpireAtWar.Lifecycle.ILateDisposable>().AsSelf();
+            builder.Register<TutorialSetupModel>(Lifetime.Singleton);
+            builder.Register<TutorialSetupHintsController>(Lifetime.Singleton)
+                .As<ILifecycleLateTickable, ILifecycleLateDisposable>().AsSelf();
             // The tutorial route reuses the Skirmish setup view; its presenter interface stays unregistered.
-            builder.Register<EmpireAtWar.Entities.MainMenu.Tutorial.TutorialRouteUiController>(Lifetime.Singleton)
-                .As<EmpireAtWar.Entities.MainMenu.Tutorial.ITutorialRoute, EmpireAtWar.Lifecycle.ILateDisposable>();
+            builder.Register<TutorialRouteUiController>(Lifetime.Singleton)
+                .As<ITutorialRoute, ILifecycleLateDisposable>();
             // Lobby screens reuse the setup views; their presenter interfaces stay unregistered.
             builder.Register<OnlineSkirmishLobbyUiController>(Lifetime.Singleton)
-                .As<IOnlineSkirmishLobbyScreen, EmpireAtWar.Lifecycle.IInitializable, EmpireAtWar.Lifecycle.ILateDisposable>();
+                .As<IOnlineSkirmishLobbyScreen, ILifecycleInitializable, ILifecycleLateDisposable>();
             builder.Register<OnlineSurvivalLobbyUiController>(Lifetime.Singleton)
-                .As<IOnlineSurvivalLobbyScreen, EmpireAtWar.Lifecycle.IInitializable, EmpireAtWar.Lifecycle.ILateDisposable>();
+                .As<IOnlineSurvivalLobbyScreen, ILifecycleInitializable, ILifecycleLateDisposable>();
             builder.Register<SettingsRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
     }

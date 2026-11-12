@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
@@ -100,7 +101,7 @@ namespace EmpireAtWar.Services.Enemy
         public bool IsScreen(IShipEntity ship) => _screens.Contains(ship);
 
         private static float EffectiveDps(ForceComposition force,
-            EmpireAtWar.Components.Ship.Health.ShipClass shipClass, float hull, float shields)
+            ShipClass shipClass, float hull, float shields)
         {
             float time = CombatMatchup.TimeToDestroyClass(hull, shields, force.HullDps(shipClass),
                 force.ShieldDps(shipClass), force.PiercingDps(shipClass));
