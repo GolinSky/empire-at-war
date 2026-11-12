@@ -10,6 +10,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using EmpireAtWar.Components.Ui.Tooltip;
+using Utilities.ScriptUtils.EditorSerialization;
 
 namespace EmpireAtWar.Entities.MainMenu.Skirmish
 {
@@ -45,6 +46,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private RawImage planetPreviewImage;
         [SerializeField] private Texture2D coruscantPreview;
         [SerializeField] private Texture2D kaminoPreview;
+        [SerializeField] private DictionaryWrapper<PlanetType, Texture2D> planetPreviews;
         [SerializeField] private TMP_Dropdown mapSizeDropdown;
         [SerializeField] private TMP_Dropdown victoryConditionDropdown;
         [SerializeField] private Slider startingMoneySlider;
@@ -246,7 +248,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             {
                 PlanetType.Coruscant => coruscantPreview,
                 PlanetType.Kamino => kaminoPreview,
-                _ => throw new ArgumentOutOfRangeException(nameof(_model.Planet), _model.Planet, null)
+                _ => planetPreviews.Dictionary[_model.Planet]
             };
             mapSizeDropdown.SetValueWithoutNotify((int)_model.MapSize);
             victoryConditionDropdown.SetValueWithoutNotify((int)_model.VictoryCondition);

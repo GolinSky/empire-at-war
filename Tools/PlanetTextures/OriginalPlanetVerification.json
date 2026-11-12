@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-12",
+  "planetCount": 57,
+  "addedPlanets": 55,
+  "sharedSurfaceVertices": 4753,
+  "sharedSurfaceTriangles": 9024,
+  "sourceRingTriangles": {
+    "Geonosis": 48,
+    "Kuat": 4150
+  },
+  "sharedModelTextures": 32,
+  "newMenuPreviews": 55,
+  "standaloneFormat": "BC7",
+  "compressedTexturePayloadBytes": 49917440,
+  "cpuReadable": false,
+  "savedAssetAudit": "57 prefab bindings; all 87 imported model/preview textures BC7 and non-readable; Unity console zero errors.",
+  "testsBeforeFinalFourPlanets": {
+    "Map": 45,
+    "Ui": 277,
+    "Core": 151,
+    "GameFlow": 177,
+    "MapGeneration": 42
+  },
+  "remainingTests": "MapExhaustive interrupted by external Play Mode/restart. User explicitly requested skipping further tests before the final four imports; no subsequent tests executed.",
+  "visualChecks": [
+    "Coruscant",
+    "Kamino",
+    "Alderaan",
+    "Bespin",
+    "Geonosis",
+    "Kuat",
+    "Mustafar",
+    "Naboo",
+    "Kessel",
+    "Balmorra",
+    "Ralltiir",
+    "Hapes",
+    "Lwhekk"
+  ],
+  "limits": "Isolated Editor renders; no packed-player FPS or residency measurement."
+}

@@ -1,0 +1,1083 @@
+{
+  "planets": [
+    {
+      "name": "AbregadoRae",
+      "source_name": "Abregado_Rae",
+      "galactic_model": "w_planet_temperate01.alo",
+      "artwork_model": "w_planet_temperate01.alo",
+      "surface": "w_planet_temperate.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_abregadorae_01.dds"
+    },
+    {
+      "name": "AetenII",
+      "source_name": "AetenII",
+      "galactic_model": "w_planet_volcanic01.alo",
+      "artwork_model": "w_planet_volcanic01.alo",
+      "surface": "w_planet_volcanic.dds",
+      "cloud": "",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_aetenii_01.dds"
+    },
+    {
+      "name": "Alderaan",
+      "source_name": "Alderaan",
+      "galactic_model": "w_planet_alderaan_low.alo",
+      "artwork_model": "w_planet_alderaan_high.alo",
+      "surface": "w_planet_alderaan.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_alderaan_01.dds"
+    },
+    {
+      "name": "AlzocIII",
+      "source_name": "AlzocIII",
+      "galactic_model": "w_planet_ice01.alo",
+      "artwork_model": "w_planet_ice01.alo",
+      "surface": "w_planet_ice.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_alzociii_01.dds"
+    },
+    {
+      "name": "Anaxes",
+      "source_name": "Anaxes",
+      "galactic_model": "w_planet_temperate01.alo",
+      "artwork_model": "w_planet_temperate01.alo",
+      "surface": "w_planet_temperate.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_anaxes_01.dds"
+    },
+    {
+      "name": "Atzerri",
+      "source_name": "Atzerri",
+      "galactic_model": "w_planet_swamp01.alo",
+      "artwork_model": "w_planet_swamp01.alo",
+      "surface": "w_planet_swamp.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_atzerri_01.dds"
+    },
+    {
+      "name": "Balmorra",
+      "source_name": "Balmorra",
+      "galactic_model": "w_planet_balmorra_high.alo",
+      "artwork_model": "w_planet_balmorra_high.alo",
+      "surface": "w_planet_balmorra.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "source-albedo-placeholder",
+      "generated_preview": true,
+      "catalog_source": "shipped-model-only"
+    },
+    {
+      "name": "Bespin",
+      "source_name": "Bespin",
+      "galactic_model": "w_planet_gas01.alo",
+      "artwork_model": "w_planet_gas01.alo",
+      "surface": "w_planet_gas.dds",
+      "cloud": "",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_bespin_01.dds"
+    },
+    {
+      "name": "Bestine",
+      "source_name": "Bestine",
+      "galactic_model": "w_planet_ocean01.alo",
+      "artwork_model": "w_planet_ocean01.alo",
+      "surface": "w_planet_ocean.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_bestine_01.dds"
+    },
+    {
+      "name": "Bonadan",
+      "source_name": "Bonadan",
+      "galactic_model": "w_planet_bonadan_low.alo",
+      "artwork_model": "w_planet_bonadan_high.alo",
+      "surface": "w_planet_bonadan.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_bonadan_01.dds"
+    },
+    {
+      "name": "Bothawui",
+      "source_name": "Bothawui",
+      "galactic_model": "w_planet_temperate01.alo",
+      "artwork_model": "w_planet_temperate01.alo",
+      "surface": "w_planet_temperate.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_bothawui_01.dds"
+    },
+    {
+      "name": "Byss",
+      "source_name": "Byss",
+      "galactic_model": "w_planet_temperate01.alo",
+      "artwork_model": "w_planet_temperate01.alo",
+      "surface": "w_planet_temperate.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_byss_01.dds"
+    },
+    {
+      "name": "Carida",
+      "source_name": "Carida",
+      "galactic_model": "w_planet_temperate01.alo",
+      "artwork_model": "w_planet_temperate01.alo",
+      "surface": "w_planet_temperate.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_carida_01.dds"
+    },
+    {
+      "name": "Corellia",
+      "source_name": "Corellia",
+      "galactic_model": "w_planet_temperate01.alo",
+      "artwork_model": "w_planet_temperate01.alo",
+      "surface": "w_planet_temperate.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_corellia_01.dds"
+    },
+    {
+      "name": "Corulag",
+      "source_name": "Corulag",
+      "galactic_model": "w_planet_forest01.alo",
+      "artwork_model": "w_planet_forest01.alo",
+      "surface": "w_planet_forest.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_corulag_01.dds"
+    },
+    {
+      "name": "Coruscant",
+      "source_name": "Coruscant",
+      "galactic_model": "w_planet_urban01.alo",
+      "artwork_model": "w_planet_urban01.alo",
+      "surface": "w_planet_urban.dds",
+      "cloud": "w_planetclouds_tiled.dds",
+      "rings": [],
+      "preserve_existing": true,
+      "preview_source": "_space_planet_coruscant_01.dds"
+    },
+    {
+      "name": "Dagobah",
+      "source_name": "Dagobah",
+      "galactic_model": "w_planet_dagobah_low.alo",
+      "artwork_model": "w_planet_dagobah_high.alo",
+      "surface": "w_planet_dagobah.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_dagobah_01.dds"
+    },
+    {
+      "name": "Dantooine",
+      "source_name": "Dantooine",
+      "galactic_model": "w_planet_dantooine01.alo",
+      "artwork_model": "w_planet_dantooine01.alo",
+      "surface": "w_planet_ocean.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_dantooine_01.dds"
+    },
+    {
+      "name": "Dathomir",
+      "source_name": "Dathomir",
+      "galactic_model": "w_planet_forest01.alo",
+      "artwork_model": "w_planet_forest01.alo",
+      "surface": "w_planet_forest.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_dathomir_01.dds"
+    },
+    {
+      "name": "Endor",
+      "source_name": "Endor",
+      "galactic_model": "w_planet_endor_low.alo",
+      "artwork_model": "w_planet_endor_high.alo",
+      "surface": "w_planet_endor.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_endor_01.dds"
+    },
+    {
+      "name": "Eriadu",
+      "source_name": "Eriadu",
+      "galactic_model": "w_planet_eriadu_low.alo",
+      "artwork_model": "w_planet_eriadu_high.alo",
+      "surface": "w_planet_eriadu.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_eriadu_01.dds"
+    },
+    {
+      "name": "Felucia",
+      "source_name": "Felucia",
+      "galactic_model": "w_planet_swamp01.alo",
+      "artwork_model": "w_planet_swamp01.alo",
+      "surface": "w_planet_swamp.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_felucia_01.dds"
+    },
+    {
+      "name": "Fondor",
+      "source_name": "Fondor",
+      "galactic_model": "w_planet_urban01.alo",
+      "artwork_model": "w_planet_urban01.alo",
+      "surface": "w_planet_urban.dds",
+      "cloud": "w_planetclouds_tiled.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_fondor_01.dds"
+    },
+    {
+      "name": "Fresia",
+      "source_name": "Fresia",
+      "galactic_model": "w_planet_ocean01.alo",
+      "artwork_model": "w_planet_ocean01.alo",
+      "surface": "w_planet_ocean.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_fresia_01.dds"
+    },
+    {
+      "name": "Geonosis",
+      "source_name": "Geonosis",
+      "galactic_model": "w_planet_geonosis_low.alo",
+      "artwork_model": "w_planet_geonosis_high.alo",
+      "surface": "w_planet_geonosis.dds",
+      "cloud": "w_planetclouds_thick.dds",
+      "rings": [
+        {
+          "mesh": "Rings",
+          "texture": "w_planet_rings.dds",
+          "shader": "MeshAlpha.fx"
+        }
+      ],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_geonosis_01.dds"
+    },
+    {
+      "name": "Hapes",
+      "source_name": "Hapes",
+      "galactic_model": "w_planet_hapes_low.alo",
+      "artwork_model": "w_planet_hapes_low.alo",
+      "surface": "w_planet_temperate.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "source-albedo-placeholder",
+      "generated_preview": true,
+      "catalog_source": "shipped-model-only"
+    },
+    {
+      "name": "Honoghr",
+      "source_name": "Honoghr",
+      "galactic_model": "w_planet_desert01.alo",
+      "artwork_model": "w_planet_desert01.alo",
+      "surface": "w_planet_desert.dds",
+      "cloud": "w_planetclouds_thick.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_honoghr_01.dds"
+    },
+    {
+      "name": "Hoth",
+      "source_name": "Hoth",
+      "galactic_model": "w_planet_hoth_low.alo",
+      "artwork_model": "w_planet_hoth_high.alo",
+      "surface": "w_planet_hoth.dds",
+      "cloud": "w_planetclouds_thick.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_hoth_01.dds"
+    },
+    {
+      "name": "Hypori",
+      "source_name": "Hypori",
+      "galactic_model": "w_planet_desert01.alo",
+      "artwork_model": "w_planet_desert01.alo",
+      "surface": "w_planet_desert.dds",
+      "cloud": "w_planetclouds_thick.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_hypori_01.dds"
+    },
+    {
+      "name": "Ilum",
+      "source_name": "Ilum",
+      "galactic_model": "w_planet_ice01.alo",
+      "artwork_model": "w_planet_ice01.alo",
+      "surface": "w_planet_ice.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_ilum_01.dds"
+    },
+    {
+      "name": "Jabiim",
+      "source_name": "Jabiim",
+      "galactic_model": "w_planet_temperate01.alo",
+      "artwork_model": "w_planet_temperate01.alo",
+      "surface": "w_planet_temperate.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_jabiim_01.dds"
+    },
+    {
+      "name": "Kamino",
+      "source_name": "Kamino",
+      "galactic_model": "w_planet_kamino_low.alo",
+      "artwork_model": "w_planet_kamino_high.alo",
+      "surface": "w_planet_kamino.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": true,
+      "preview_source": "_space_planet_kamino_01.dds"
+    },
+    {
+      "name": "Kashyyyk",
+      "source_name": "Kashyyyk",
+      "galactic_model": "w_planet_forest01.alo",
+      "artwork_model": "w_planet_forest01.alo",
+      "surface": "w_planet_forest.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_kashyyyk_01.dds"
+    },
+    {
+      "name": "Kessel",
+      "source_name": "Kessel",
+      "galactic_model": "w_planet_kessel_low.alo",
+      "artwork_model": "w_planet_kessel_high.alo",
+      "surface": "w_asteroid00.dds",
+      "cloud": "",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_kessel_01.dds"
+    },
+    {
+      "name": "Korriban",
+      "source_name": "Korriban",
+      "galactic_model": "w_planet_korriban01.alo",
+      "artwork_model": "w_planet_korriban01.alo",
+      "surface": "w_planet_desert.dds",
+      "cloud": "w_planetclouds_thick.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_korriban_01.dds"
+    },
+    {
+      "name": "Kuat",
+      "source_name": "Kuat",
+      "galactic_model": "w_planet_kuat_low.alo",
+      "artwork_model": "w_planet_kuat_high.alo",
+      "surface": "w_planet_endor.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [
+        {
+          "mesh": "building_ring",
+          "texture": "eb_station.dds",
+          "shader": "MeshGloss.fx"
+        },
+        {
+          "mesh": "Cylinder01",
+          "texture": "w_ring_mesh.dds",
+          "shader": "MeshAlpha.fx"
+        }
+      ],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_kuat_01.dds"
+    },
+    {
+      "name": "Lwhekk",
+      "source_name": "Lwhekk",
+      "galactic_model": "w_planet_lwhekk01.alo",
+      "artwork_model": "w_planet_lwhekk01.alo",
+      "surface": "w_planet_temperate.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "source-albedo-placeholder",
+      "generated_preview": true,
+      "catalog_source": "shipped-model-only"
+    },
+    {
+      "name": "Manaan",
+      "source_name": "Manaan",
+      "galactic_model": "w_planet_kamino_low.alo",
+      "artwork_model": "w_planet_kamino_high.alo",
+      "surface": "w_planet_kamino.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_manaan_01.dds"
+    },
+    {
+      "name": "Mandalore",
+      "source_name": "Mandalore",
+      "galactic_model": "w_planet_swamp01.alo",
+      "artwork_model": "w_planet_swamp01.alo",
+      "surface": "w_planet_swamp.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_mandalore_01.dds"
+    },
+    {
+      "name": "MonCalamari",
+      "source_name": "MonCalimari",
+      "galactic_model": "w_planet_moncalamari01.alo",
+      "artwork_model": "w_planet_moncalamari01.alo",
+      "surface": "w_planet_ocean.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_moncalamari_01.dds"
+    },
+    {
+      "name": "Mustafar",
+      "source_name": "Mustafar",
+      "galactic_model": "w_planet_volcanic01.alo",
+      "artwork_model": "w_planet_mustafar_high.alo",
+      "surface": "w_planet_mustafar.dds",
+      "cloud": "",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_mustafar_01.dds"
+    },
+    {
+      "name": "Muunilinst",
+      "source_name": "Muunilinst",
+      "galactic_model": "w_planet_alderaan_low.alo",
+      "artwork_model": "w_planet_alderaan_high.alo",
+      "surface": "w_planet_alderaan.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_muunilinst_01.dds"
+    },
+    {
+      "name": "Myrkr",
+      "source_name": "Myrkr",
+      "galactic_model": "w_planet_forest01.alo",
+      "artwork_model": "w_planet_forest01.alo",
+      "surface": "w_planet_forest.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_myrkr_01.dds"
+    },
+    {
+      "name": "Naboo",
+      "source_name": "Naboo",
+      "galactic_model": "w_planet_naboo_low.alo",
+      "artwork_model": "w_planet_naboo_high.alo",
+      "surface": "w_planet_alderaan.dds",
+      "cloud": "w_planetclouds_thickist.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_naboo_01.dds"
+    },
+    {
+      "name": "NalHutta",
+      "source_name": "NalHutta",
+      "galactic_model": "w_planet_nalhutta01.alo",
+      "artwork_model": "w_planet_nalhutta01.alo",
+      "surface": "w_planet_swamp.dds",
+      "cloud": "w_planetclouds_tiled.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_nalhutta_01.dds"
+    },
+    {
+      "name": "Polus",
+      "source_name": "Polus",
+      "galactic_model": "w_planet_hoth_low.alo",
+      "artwork_model": "w_planet_hoth_high.alo",
+      "surface": "w_planet_hoth.dds",
+      "cloud": "w_planetclouds_thick.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_polus_01.dds"
+    },
+    {
+      "name": "Ralltiir",
+      "source_name": "Ralltiir",
+      "galactic_model": "w_planet_ralltiir_high.alo",
+      "artwork_model": "w_planet_ralltiir_high.alo",
+      "surface": "w_planet_ralltiir.dds",
+      "cloud": "w_planetclouds_thick.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "source-albedo-placeholder",
+      "generated_preview": true,
+      "catalog_source": "shipped-model-only"
+    },
+    {
+      "name": "Ryloth",
+      "source_name": "Ryloth",
+      "galactic_model": "w_planet_ryloth_low.alo",
+      "artwork_model": "w_planet_ryloth_high.alo",
+      "surface": "w_planet_ryloth.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_ryloth_01.dds"
+    },
+    {
+      "name": "Saleucami",
+      "source_name": "Saleucami",
+      "galactic_model": "w_planet_desert01.alo",
+      "artwork_model": "w_planet_desert01.alo",
+      "surface": "w_planet_desert.dds",
+      "cloud": "w_planetclouds_thick.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_saleucami_01.dds"
+    },
+    {
+      "name": "Shola",
+      "source_name": "Shola",
+      "galactic_model": "w_planet_volcanic01.alo",
+      "artwork_model": "w_planet_volcanic01.alo",
+      "surface": "w_planet_volcanic.dds",
+      "cloud": "",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_shola_01.dds"
+    },
+    {
+      "name": "Sullust",
+      "source_name": "Sullust",
+      "galactic_model": "w_planet_volcanic01.alo",
+      "artwork_model": "w_planet_volcanic01.alo",
+      "surface": "w_planet_volcanic.dds",
+      "cloud": "",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_sullust_01.dds"
+    },
+    {
+      "name": "Taris",
+      "source_name": "Taris",
+      "galactic_model": "w_planet_taris01.alo",
+      "artwork_model": "w_planet_taris01.alo",
+      "surface": "w_planet_urban.dds",
+      "cloud": "w_planetclouds_tiled.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_taris_01.dds"
+    },
+    {
+      "name": "Tatooine",
+      "source_name": "Tatooine",
+      "galactic_model": "w_planet_tatooine_low.alo",
+      "artwork_model": "w_planet_tatooine_high.alo",
+      "surface": "w_planet_tatooine.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_tatooine_01.dds"
+    },
+    {
+      "name": "Thyferra",
+      "source_name": "Thyferra",
+      "galactic_model": "w_planet_thyferra01.alo",
+      "artwork_model": "w_planet_thyferra01.alo",
+      "surface": "w_planet_forest.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_thyferra_01.dds"
+    },
+    {
+      "name": "Utapau",
+      "source_name": "Utapau",
+      "galactic_model": "w_planet_utapau_low.alo",
+      "artwork_model": "w_planet_utapau_high.alo",
+      "surface": "w_planet_utapau.dds",
+      "cloud": "w_planetclouds_med.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_utapau_01.dds"
+    },
+    {
+      "name": "Wayland",
+      "source_name": "Wayland",
+      "galactic_model": "w_planet_wayland_low.alo",
+      "artwork_model": "w_planet_wayland_high.alo",
+      "surface": "w_planet_forest.dds",
+      "cloud": "w_planetclouds_thick.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_wayland_01.dds"
+    },
+    {
+      "name": "Yavin",
+      "source_name": "Yavin",
+      "galactic_model": "w_planet_yaviniv_low.alo",
+      "artwork_model": "w_planet_yaviniv_high.alo",
+      "surface": "w_planet_yaviniv.dds",
+      "cloud": "w_planetclouds_thick.dds",
+      "rings": [],
+      "preserve_existing": false,
+      "preview_source": "_space_planet_yavin_01.dds"
+    }
+  ],
+  "textures": {
+    "w_planet_temperate.dds": {
+      "source_file": "w_planet_temperate.dds",
+      "source_sha256": "2c5992d3e9577ff5fde7f8eb472de05c61fbe575f950a366c88c59cc235d12ac",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planetclouds_thickist.dds": {
+      "source_file": "w_planetclouds_thickist.dds",
+      "source_sha256": "c55858fdfca03e670919d6a9285691a21990b6f325fe71ca453f441e030e294b",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        186
+      ],
+      "role": "cloud"
+    },
+    "w_planet_volcanic.dds": {
+      "source_file": "w_planet_volcanic.dds",
+      "source_sha256": "09d9e892f935fe21b9f57dcb8f1ab771296d164ad1dd1daeb0bdae3b71dc3449",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        75
+      ],
+      "role": "surface"
+    },
+    "w_planet_alderaan.dds": {
+      "source_file": "w_planet_alderaan.dds",
+      "source_sha256": "77f82c85c519dc3a9d630d3dc22fc68d2e8e6d182f28866f8bd4f7c9580ca435",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planetclouds_med.dds": {
+      "source_file": "w_planetclouds_med.dds",
+      "source_sha256": "d4bd1c4df137d6b0f9c96169ab0f7bb135c4533c023b2b22d6444f948602decf",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        168
+      ],
+      "role": "cloud"
+    },
+    "w_planet_ice.dds": {
+      "source_file": "w_planet_ice.dds",
+      "source_sha256": "aeb54eee12cf44406ef8dcd60fba0fa9f3ad51aaa3f200153149befa8a2d9f32",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        255,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_swamp.dds": {
+      "source_file": "w_planet_swamp.dds",
+      "source_sha256": "ad7545542ed453d17d22c3673e72950f80c7750b7dc5294e83637190802669d8",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_gas.dds": {
+      "source_file": "w_planet_gas.dds",
+      "source_sha256": "875a7bf2332b3434e544340f8c522e38744c7a220b60b1be1a21a0cf35e82e26",
+      "size": [
+        128,
+        128
+      ],
+      "alpha": [
+        255,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_ocean.dds": {
+      "source_file": "w_planet_ocean.dds",
+      "source_sha256": "a1828975fb6d02e522639413df1e9bf3b63c1b920aad284485ed4a6c793bccd2",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_bonadan.dds": {
+      "source_file": "w_planet_bonadan.dds",
+      "source_sha256": "0e66e8b48acdeb8122474de334ec5cecf4500a0248ead01dd36b96c7ac9225b4",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_forest.dds": {
+      "source_file": "w_planet_forest.dds",
+      "source_sha256": "eae32eebc10c4b75c26a5bb370e96beea3b9b8a155a21b81abfe08f49113657b",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_urban.dds": {
+      "source_file": "w_planet_urban.dds",
+      "source_sha256": "c00d01f4d86558ba749331f8f8250ba3eabb9e11400a68910ad0485266485c94",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        170
+      ],
+      "role": "surface"
+    },
+    "w_planetclouds_tiled.dds": {
+      "source_file": "w_planetclouds_tiled.dds",
+      "source_sha256": "cec762e04da0f97574b63f6cc84e46cedcbfe44dc703dfbb8c76c46ed42c1287",
+      "size": [
+        256,
+        256
+      ],
+      "alpha": [
+        38,
+        255
+      ],
+      "role": "cloud"
+    },
+    "w_planet_dagobah.dds": {
+      "source_file": "w_planet_dagobah.dds",
+      "source_sha256": "216b9f4ecf63dce27d3f785d7cab8a604ee5b4210e8a931d24d042aaa687096b",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        255,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_endor.dds": {
+      "source_file": "w_planet_endor.dds",
+      "source_sha256": "da2a8988890aac7d62f9ee66b6e6cea4c1b4b1afb0c9f8aa3ee1119767939d8f",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_eriadu.dds": {
+      "source_file": "w_planet_eriadu.dds",
+      "source_sha256": "332da61cd241cacb75bc10cd02c1357082b7a077e1650b25d300d97ca495cba8",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_geonosis.dds": {
+      "source_file": "w_planet_geonosis.dds",
+      "source_sha256": "99ade7ac259ea766d2d38296f2f00f7846a62ce902cc361c0568301ecca9766d",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planetclouds_thick.dds": {
+      "source_file": "w_planetclouds_thick.dds",
+      "source_sha256": "719edd709dab57c3e4613af2745c761138ac69bc920b53e9301e6b28904ce4c3",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        176
+      ],
+      "role": "cloud"
+    },
+    "w_planet_rings.dds": {
+      "source_file": "w_planet_rings.dds",
+      "source_sha256": "ddf887b016b6214cc8a81e192e2f10bcd40331fe778db3fd48d60a03bb636bc4",
+      "size": [
+        256,
+        256
+      ],
+      "alpha": [
+        0,
+        152
+      ],
+      "role": "ring"
+    },
+    "w_planet_desert.dds": {
+      "source_file": "w_planet_desert.dds",
+      "source_sha256": "d04b779303ba7e46e0bdb8c11905fd62725d6ce4ef6b3013ef8d114679156248",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_hoth.dds": {
+      "source_file": "w_planet_hoth.dds",
+      "source_sha256": "6cd0bc38bf0866e894cfd01d0b256e1204bd7117138c5e685e2fe866fe2cf92c",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        255,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_kamino.dds": {
+      "source_file": "w_planet_kamino.dds",
+      "source_sha256": "fb7893dd08f5da7a9c4d503a755552321c38f96712a86f4bf3b8bdb9432964ed",
+      "size": [
+        128,
+        128
+      ],
+      "alpha": [
+        255,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_asteroid00.dds": {
+      "source_file": "w_asteroid00.dds",
+      "source_sha256": "903a917ec7339cc8cfa0d70b4ed28179f1a9e30b92c7fda604bf88d6e75bcfad",
+      "size": [
+        256,
+        256
+      ],
+      "alpha": [
+        0,
+        0
+      ],
+      "role": "surface"
+    },
+    "eb_station.dds": {
+      "source_file": "eb_station.dds",
+      "source_sha256": "832c4a33d0f9c6728e5c5d7da4c1376f5817dabf8c0c6fe6642393bfb17b75d8",
+      "size": [
+        512,
+        512
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "ring"
+    },
+    "w_ring_mesh.dds": {
+      "source_file": "w_ring_mesh.dds",
+      "source_sha256": "ca44928af7cbbbdc4f364b4d80fa35d3ef18c7a58dee0fad528a93b1c09f12ab",
+      "size": [
+        256,
+        256
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "ring"
+    },
+    "w_planet_mustafar.dds": {
+      "source_file": "w_planet_mustafar.dds",
+      "source_sha256": "988b05653f252fc5e7e08902abbf985b233ef43fa27aff1324fda2908c6b6f9a",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        177
+      ],
+      "role": "surface"
+    },
+    "w_planet_ryloth.dds": {
+      "source_file": "w_planet_ryloth.dds",
+      "source_sha256": "ef2c0d94d5da2410c6412b640632ca11c1af1a56735d8e58b92a24788e7ee82c",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_tatooine.dds": {
+      "source_file": "w_planet_tatooine.dds",
+      "source_sha256": "95cb3a1a31be6798a4525e2b52420131fd2e2d00d49132b72b4fb5f0621d2811",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_utapau.dds": {
+      "source_file": "w_planet_utapau.dds",
+      "source_sha256": "2687777105b335ceb5345f6a0e1257bb0d22436aa6805a055777efa0ef8dd0b1",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_yaviniv.dds": {
+      "source_file": "w_planet_yaviniv.dds",
+      "source_sha256": "cc92e298f3ec05a6d163043032475966fba43e1b6461b06c09b044a4dc7ef2d1",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        255,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_balmorra.dds": {
+      "source_file": "w_planet_balmorra.dds",
+      "source_sha256": "559a3485792c22e094a09a5395851a0fd83e44b9f56ab23ad4cc5c8035124579",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    },
+    "w_planet_ralltiir.dds": {
+      "source_file": "w_planet_ralltiir.dds",
+      "source_sha256": "962dac4ce2a729ebf6ceee03b9aa6a86a60bb60502c9449feaf0f1e09df00ed2",
+      "size": [
+        1024,
+        1024
+      ],
+      "alpha": [
+        0,
+        255
+      ],
+      "role": "surface"
+    }
+  },
+  "decisions": [
+    "Alderaan uses intact original-game artwork.",
+    "Mustafar uses its dedicated FoC high-detail artwork instead of its generic galactic model.",
+    "Kessel retains its asteroid surface texture on the requested shared sphere.",
+    "Kuat has an artificial shipyard ring; Geonosis has natural rings.",
+    "Coruscant and Kamino existing Unity artwork is preserved.",
+    "Balmorra, Ralltiir, Hapes and Lwhekk are shipped named models absent from the XML catalog.",
+    "Their staged source-albedo preview placeholders must be replaced with rendered prefab thumbnails."
+  ]
+}
