@@ -30,11 +30,6 @@ namespace EmpireAtWar.Mvc
             View = view;
         }
 
-        public void SetModelObserver(IModelObserver modelObserver)
-        {
-            ModelObserver = modelObserver;
-        }
-
         public virtual void Init()
         {
             OnInit();

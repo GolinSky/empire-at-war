@@ -19,8 +19,6 @@ namespace EmpireAtWar.Editor.Balance
             _redraw = redraw;
         }
 
-        public void Redraw() => _redraw();
-
         public void Edit(BalanceField field, string value)
         {
             State.Draft.Set(field.Snapshot(), value);

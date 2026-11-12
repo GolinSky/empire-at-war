@@ -24,16 +24,6 @@ namespace EmpireAtWar.Entities.Map.Generation
             IReadOnlyList<MapStation> stations,
             IReadOnlyList<MapNode> nodes,
             IReadOnlyList<MapLane> lanes,
-            Random random)
-        {
-            return Build(size, stations, nodes, lanes, random, System.Array.Empty<HazardShape>(), out _);
-        }
-
-        public List<AsteroidField> Build(
-            MapSizeSettings size,
-            IReadOnlyList<MapStation> stations,
-            IReadOnlyList<MapNode> nodes,
-            IReadOnlyList<MapLane> lanes,
             Random random,
             IReadOnlyList<HazardShape> hazards,
             out FieldDensity density)

@@ -200,13 +200,6 @@ namespace EmpireAtWar.Services.Networking.Online
             Join(lobby);
         }
 
-        public bool TryJoinById(string lobbyId)
-        {
-            if (!ulong.TryParse(lobbyId.Trim(), out ulong id)) return false;
-            Join(new CSteamID(id));
-            return true;
-        }
-
         public void Join(CSteamID lobby)
         {
             JoinStarting?.Invoke();

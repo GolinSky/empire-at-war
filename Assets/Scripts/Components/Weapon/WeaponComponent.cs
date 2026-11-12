@@ -19,7 +19,6 @@ using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Utils;
 using UnityEngine;
-using Utilities.ScriptUtils.Time;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 
@@ -49,7 +48,6 @@ namespace EmpireAtWar.Components.Weapon
         private PlayerId _owner;
         private FactionType _faction;
         private string _telemetryName;
-        private ITimer _attackTimer = TimerFactory.ConstructTimer();
 
         [SerializeField] private List<WeaponHardPoint> hardPoints;
         [SerializeField] private float rangeMultiplier = 1f;
@@ -232,7 +230,6 @@ namespace EmpireAtWar.Components.Weapon
 
             foreach (AttackData group in _subscribedGroups)
             {
-                group.UnitsChanged -= InvalidateCandidates;
                 group.Destroyed -= OnGroupDestroyed;
             }
             _subscribedGroups.Clear();
@@ -684,7 +681,6 @@ namespace EmpireAtWar.Components.Weapon
         private void Subscribe(AttackData group)
         {
             if (!_subscribedGroups.Add(group)) return;
-            group.UnitsChanged += InvalidateCandidates;
             group.Destroyed += OnGroupDestroyed;
         }
 
@@ -692,7 +688,6 @@ namespace EmpireAtWar.Components.Weapon
         {
             if (group == null || ReferenceEquals(group, _mainAttackData) || _attackDataList.Contains(group)) return;
             if (!_subscribedGroups.Remove(group)) return;
-            group.UnitsChanged -= InvalidateCandidates;
             group.Destroyed -= OnGroupDestroyed;
         }
 

@@ -52,15 +52,5 @@ namespace EmpireAtWar.Editor
         {
             return Path.Combine(directory, "capture-status.json");
         }
-
-        internal static string SanitizeFileName(string value)
-        {
-            foreach (var invalidCharacter in Path.GetInvalidFileNameChars())
-            {
-                value = value.Replace(invalidCharacter, '_');
-            }
-
-            return string.IsNullOrWhiteSpace(value) ? "unnamed" : value;
-        }
     }
 }

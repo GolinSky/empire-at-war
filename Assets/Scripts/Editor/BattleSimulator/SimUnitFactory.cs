@@ -39,7 +39,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
 
         public SimUnitDefinition Build(BalanceUnit unit)
         {
-            var definition = new SimUnitDefinition { Id = unit.Id, Name = unit.Name, Faction = unit.Faction };
+            var definition = new SimUnitDefinition { Id = unit.Id, Name = unit.Name };
             Object copy = Copy(unit.Data);
             var bindings = new Dictionary<Object, int>();
             try

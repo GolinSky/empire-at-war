@@ -46,7 +46,6 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyProductionDecisionModel _decisionModel;
         private readonly EnemyUnitLimitModel _unitLimitModel;
         private readonly ReinforcementData _reinforcementData;
-        private readonly IPlayerRoster _playerRoster;
         private readonly ForceCompositionBuilder _forceBuilder;
         private readonly UnitCombatProfileCatalog _profileCatalog;
         private readonly EnemyCounterProductionModel _counterModel;
@@ -80,7 +79,6 @@ namespace EmpireAtWar.Services.Enemy
             EnemyProductionDecisionModel decisionModel,
             EnemyUnitLimitModel unitLimitModel,
             ReinforcementData reinforcementData,
-            IPlayerRoster playerRoster,
             ForceCompositionBuilder forceBuilder,
             UnitCombatProfileCatalog profileCatalog,
             EnemyCounterProductionModel counterModel,
@@ -92,7 +90,6 @@ namespace EmpireAtWar.Services.Enemy
             _secondStation = secondStation;
             _owner = owner;
             _stationPressure = stationPressure;
-            _playerRoster = playerRoster;
             _forceBuilder = forceBuilder;
             _profileCatalog = profileCatalog;
             _counterModel = counterModel;

@@ -182,13 +182,9 @@ namespace EmpireAtWar.Tests.Weapon
         internal struct OriginalJob : IJobParallelFor
         {
             internal const int FALLBACK_NON_FINITE = 0;
-            internal const int FALLBACK_PARENT_TILT = 1;
             internal const int FALLBACK_RANGE_BOUNDARY = 2;
             internal const int FALLBACK_YAW_BOUNDARY = 3;
             internal const int FALLBACK_DEGENERATE_DIRECTION = 4;
-            internal const int FALLBACK_TARGET_VERSION = 5;
-            internal const int FALLBACK_INVALID_CANDIDATE = 6;
-            internal const int FALLBACK_OUT_OF_SPAN = 7;
 
             [ReadOnly] public NativeArray<Input> Inputs;
             // Each candidate is a hardpoint slot plus its target group, local to the owner's group block.

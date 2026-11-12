@@ -10,8 +10,6 @@ namespace EmpireAtWar.Editor.AloImport
         private static readonly AloEditorOperationStore _store = new AloEditorOperationStore(
             AloImportLayout.CoordinatorRoot, Guid.NewGuid().ToString("N"));
 
-        public static JObject Read() => _store.Read();
-
         public static JObject Execute(string jobId, string operationId, string inputHash, Func<JObject> action)
         {
             RequireReady();

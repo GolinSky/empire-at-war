@@ -26,7 +26,6 @@ namespace EmpireAtWar.Services.Networking
         private readonly List<EntityDespawnMessage> _despawns = new List<EntityDespawnMessage>();
         private readonly Dictionary<long, IEntity> _handedOver = new Dictionary<long, IEntity>();
         private bool _isHandingOver;
-        private double _time;
 
         public HostTickReplicator(IEntityLocator entities)
         {
@@ -43,7 +42,6 @@ namespace EmpireAtWar.Services.Networking
         /// <summary>Advances the clock and fills <paramref name="output"/> with every message due this frame.</summary>
         public void Advance(float deltaTime, double now, HostTickOutput output)
         {
-            _time = now;
             output.Clear();
             // Spawns are built here, not in EntityAdded, so the unit save captures a fully initialized entity.
             foreach (IEntity entity in _pendingSpawns)

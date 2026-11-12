@@ -50,11 +50,6 @@ namespace EmpireAtWar.Views.ViewImpl
           
         }
 
-        public void Release()
-        {
-            LateDispose();
-        }
-
         protected abstract void OnInitialize();
 
         protected abstract void OnDispose();

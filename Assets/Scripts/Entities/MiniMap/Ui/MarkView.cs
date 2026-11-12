@@ -31,15 +31,6 @@ namespace EmpireAtWar.Views.MiniMap
 
         public Image IconImage => iconImage;
 
-        public void SetData(Transform parent, Vector2 position, Sprite sprite)
-        {
-            rectTransform.SetParent(parent, false);
-            rectTransform.anchoredPosition = position;
-            rectTransform.sizeDelta = Vector2.one * STATION_SIZE;
-            iconImage.sprite = sprite;
-            tooltipTrigger.SetKey("Station");
-        }
-
         public void SetData(
             IMiniMapPositionConvector miniMapPositionConvector,
             IPlayerColors playerColors,

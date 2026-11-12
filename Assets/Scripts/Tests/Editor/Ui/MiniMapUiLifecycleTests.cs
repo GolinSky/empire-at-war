@@ -54,14 +54,14 @@ namespace EmpireAtWar.Tests.Editor
                 ui.SetData(model, new ColorsStub());
                 ui.Initialize();
                 ui.Initialize();
-                foreach (string eventName in new[] { "OnMarkAdded", "OnMarkerAdded", "OnMarkerRemoved" })
+                foreach (string eventName in new[] { "OnMarkerAdded", "OnMarkerRemoved" })
                     Assert.That(SubscriberCount(model, eventName), Is.EqualTo(1), eventName);
 
                 if (destroyFirst) UnityEngine.Object.DestroyImmediate(ui.gameObject);
                 ui.Dispose();
                 ui.Dispose();
 
-                foreach (string eventName in new[] { "OnMarkAdded", "OnMarkerAdded", "OnMarkerRemoved" })
+                foreach (string eventName in new[] { "OnMarkerAdded", "OnMarkerRemoved" })
                     Assert.That(SubscriberCount(model, eventName), Is.Zero, eventName);
             }
             finally

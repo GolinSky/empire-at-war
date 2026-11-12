@@ -27,12 +27,6 @@ namespace EmpireAtWar.Services.Saves
             _battle = battle;
         }
 
-        public void SaveNamed(string name)
-        {
-            try { Save(BattleSaveSlot.Named(name)); }
-            catch (ArgumentException exception) { SetStatus(exception.Message); }
-        }
-
         public void Save(BattleSaveSlot slot) => _ = SaveAsync(slot);
 
         public async Task SaveAsync(BattleSaveSlot slot)

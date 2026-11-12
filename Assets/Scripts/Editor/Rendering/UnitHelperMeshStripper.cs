@@ -47,7 +47,6 @@ namespace EmpireAtWar.Editor.Rendering
         {
             public string OwnerPath;
             public string HierarchyPath;
-            public string Name;
             public int Triangles;
             /// <summary>Why the helper must stay; null when it can be stripped.</summary>
             public string BlockedBy;
@@ -90,7 +89,6 @@ namespace EmpireAtWar.Editor.Rendering
                     {
                         OwnerPath = path,
                         HierarchyPath = GetHierarchyPath(helperObject.transform, prefab.transform),
-                        Name = helperObject.name,
                         Triangles = CountTriangles(filter),
                         BlockedBy = FindBlocker(path, locked, helperObject, components, references)
                     });

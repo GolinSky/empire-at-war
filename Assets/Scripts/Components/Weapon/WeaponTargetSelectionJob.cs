@@ -13,7 +13,6 @@ namespace EmpireAtWar.Components.Weapon
     internal struct WeaponTargetSelectionJob : IJobParallelFor
     {
         internal const int FALLBACK_NON_FINITE = 0;
-        internal const int FALLBACK_PARENT_TILT = 1;
         internal const int FALLBACK_RANGE_BOUNDARY = 2;
         internal const int FALLBACK_YAW_BOUNDARY = 3;
         internal const int FALLBACK_DEGENERATE_DIRECTION = 4;

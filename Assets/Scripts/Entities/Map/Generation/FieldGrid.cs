@@ -33,11 +33,6 @@ namespace EmpireAtWar.Entities.Map.Generation
             _isField = new bool[Columns * Rows];
         }
 
-        public bool IsField(int index)
-        {
-            return _isField[index];
-        }
-
         public void SetField(int index, bool isField)
         {
             _isField[index] = isField;

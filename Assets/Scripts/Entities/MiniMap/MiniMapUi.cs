@@ -81,7 +81,6 @@ namespace EmpireAtWar.Entities.MiniMap
             {
                 AddMarker(marker);
             }
-            _model.OnMarkAdded += AddMark;
             _model.OnMarkerAdded += AddMarker;
             _model.OnMarkerRemoved += RemoveMarker;
             _model.OnAlertAdded += ShowAlert;
@@ -91,7 +90,6 @@ namespace EmpireAtWar.Entities.MiniMap
         {
             if (!_isInitialized) return;
             _isInitialized = false;
-            _model.OnMarkAdded -= AddMark;
             _model.OnMarkerAdded -= AddMarker;
             _model.OnMarkerRemoved -= RemoveMarker;
             _model.OnAlertAdded -= ShowAlert;
@@ -119,14 +117,6 @@ namespace EmpireAtWar.Entities.MiniMap
         {
             fogImage.texture = mask;
             fogImage.enabled = true;
-        }
-
-        private void AddMark(MarkData markData)
-        {
-            MarkView view = Instantiate(_model.MarkViewPrefab);
-            view.SetData( iconParent, GetPosition(markData.Position), markData.Icon);
-            tooltipHover.Register(view.TooltipTrigger);
-            _mapMarkers.Add(view.IconImage);
         }
 
         private void AddMarker(MiniMapMarker marker)

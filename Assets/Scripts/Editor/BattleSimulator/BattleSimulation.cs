@@ -120,7 +120,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
                 double arrival = time + delay + mount.Definition.DamageDuration * i / ticks;
                 int tick = Math.Max(_tick, (int)Math.Ceiling(arrival / STEP_SECONDS - 0.000001));
                 if (!_impacts.TryGetValue(tick, out List<SimImpact> queue)) _impacts.Add(tick, queue = new List<SimImpact>());
-                queue.Add(new SimImpact { Time = arrival, Source = source, Target = selected, HardPointId = point,
+                queue.Add(new SimImpact { Source = source, Target = selected, HardPointId = point,
                     DamageType = profile.DamageType, Damage = profile.Damage * profile.GetDamageBias(selected.Definition.ShipClass)
                         * source.Modifiers.DamageMultiplier / ticks });
             }

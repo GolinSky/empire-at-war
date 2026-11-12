@@ -509,13 +509,8 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueMove(IReadOnlyList<IEntity> units, Vector3 point)
             { LastAction = UnitActionId.Move; LastPoint = point; }
 
-            public void IssueMove(IReadOnlyList<IEntity> units, IReadOnlyList<Vector3> points) => LastAction = UnitActionId.Move;
-
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target)
             { LastAction = UnitActionId.Attack; LastTarget = target; }
-
-            public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target,
-                IReadOnlyList<Vector3> offsets) => LastAction = UnitActionId.Attack;
 
             public void IssueHardPointAttack(IReadOnlyList<IEntity> units, IEntity target,
                 int hardPointId) => LastAction = UnitActionId.Attack;
@@ -523,15 +518,9 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueAttackMove(IReadOnlyList<IEntity> units, Vector3 point)
             { LastAction = UnitActionId.AttackMove; LastPoint = point; }
 
-            public void IssueAttackMove(IReadOnlyList<IEntity> units, IReadOnlyList<Vector3> destinations)
-            { LastAction = UnitActionId.AttackMove; LastPoint = destinations[0]; }
-
             public void IssueStop(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Stop;
 
             public void IssueGuard(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Guard;
-
-            public void IssueGuard(IReadOnlyList<IEntity> units, IEntity target,
-                IReadOnlyList<Vector3> offsets) => LastAction = UnitActionId.Guard;
 
             public void IssueWaypointMove(IReadOnlyList<IEntity> units, IReadOnlyList<Vector3> points)
             { LastAction = UnitActionId.WaypointMove; WaypointCount = points.Count; LastPoint = points[0]; }
@@ -539,8 +528,6 @@ namespace EmpireAtWar.Tests.Editor
             public void IssueHunt(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Hunt;
 
             public void IssueRetreat(IReadOnlyList<IEntity> units) => LastAction = UnitActionId.Retreat;
-
-            public void IssueRetreat(IReadOnlyList<IEntity> units, Vector3 point) => LastAction = UnitActionId.Retreat;
         }
 
         private sealed class FakeEntity : IEntity

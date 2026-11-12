@@ -40,7 +40,6 @@ namespace EmpireAtWar.Entities.MiningFacility
             remove => construction.ProgressChanged -= value;
         }
 
-        public void RestoreConstruction(float progress) => construction.Restore(progress, construction.BuildTime);
         private IUnitExplosionService _unitExplosionService;
         private IUnitWreckService _unitWreckService;
         private ILayerService _layerService;

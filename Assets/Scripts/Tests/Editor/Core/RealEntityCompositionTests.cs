@@ -813,8 +813,6 @@ namespace EmpireAtWar.Tests.Editor
             var director = _battle.Container.Resolve<SurvivalWaveDirector>();
             var miniMap = _battle.Container.Resolve<MiniMapData>();
             IEntityLocator locator = _battle.Container.Resolve<IEntityLocator>();
-            int staticMarks = 0;
-            miniMap.OnMarkAdded += _ => staticMarks++;
             int initialMarkers = miniMap.Markers.Count;
             _battle.Container.Resolve<SkirmishStateModel>().SetState(BattleState.Running);
 
@@ -823,7 +821,6 @@ namespace EmpireAtWar.Tests.Editor
                 model.StartWaveNow();
                 director.Tick();
                 IEntity attacker = locator.Entities.Single(entity => entity.Owner != humanSlot.Id);
-                Assert.That(staticMarks, Is.Zero, "Spawns must not add permanent station-style marks.");
                 Assert.That(miniMap.Markers.Count, Is.EqualTo(initialMarkers + 1));
                 director.Restore(wave, Array.Empty<UnitTypeId>(), 1, 0);
                 director.Tick();

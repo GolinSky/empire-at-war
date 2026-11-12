@@ -10,8 +10,6 @@ namespace EmpireAtWar.Models.MiniMap
 {
     public interface IMiniMapModelObserver : IModelObserver
     {
-        event Action<MarkData> OnMarkAdded;
-
         event Action<MiniMapMarker> OnMarkerAdded;
 
         event Action<MiniMapMarker> OnMarkerRemoved;
@@ -36,8 +34,6 @@ namespace EmpireAtWar.Models.MiniMap
         private readonly List<MiniMapObstacle> _obstacles = new List<MiniMapObstacle>();
         private readonly List<MiniMapHazard> _hazards = new List<MiniMapHazard>();
 
-        public event Action<MarkData> OnMarkAdded;
-
         public event Action<MiniMapMarker> OnMarkerAdded;
 
         public event Action<MiniMapMarker> OnMarkerRemoved;
@@ -56,12 +52,6 @@ namespace EmpireAtWar.Models.MiniMap
         [field:SerializeField] public MarkView MarkViewPrefab { get; private set; }
 
         public bool IsInputBlocked { get; set; }
-
-        public void AddMark(MarkType markType, Vector3 position)
-        {
-            Sprite icon = GetIcon(markType);
-            OnMarkAdded?.Invoke(new MarkData(position: position, icon: icon));
-        }
 
         public void AddAlert(MiniMapAlertType alertType, Vector3 worldPosition) =>
             OnAlertAdded?.Invoke(alertType, worldPosition);

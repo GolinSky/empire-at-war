@@ -16,8 +16,6 @@ namespace EmpireAtWar.Components.AttackComponent
 
         public bool CanAcquireTarget => !_targetEntity.IsCloaked();
 
-        public event Action UnitsChanged;
-
         public event Action Destroyed
         {
             add => _shipUnitsProvider.OnDestroy += value;
@@ -107,22 +105,6 @@ namespace EmpireAtWar.Components.AttackComponent
         public void ApplyDamage(float damage, DamageType damageType, int id)
         {
             HealthFacade.ApplyDamage(damage, damageType, id);
-        }
-
-        public bool TryUpdateNewUnits(HardPointType hardPointType = HardPointType.Any)
-        {
-            Units.Clear();
-            if (_shipUnitsProvider.HasUnits)
-            {
-                ReplaceUnits(hardPointType);
-                UnitsChanged?.Invoke();
-                return Units is { Count: > 0 };
-            }
-            else
-            {
-                UnitsChanged?.Invoke();
-                return false;
-            }
         }
 
         public bool IsFrom(IHealthFacade healthFacade) =>

@@ -10,7 +10,6 @@ namespace EmpireAtWar.Editor.BattleSimulator
     {
         public string Id;
         public string Name;
-        public string Faction;
         public bool IsSquadron;
         public string Warning = "";
         public float Range;

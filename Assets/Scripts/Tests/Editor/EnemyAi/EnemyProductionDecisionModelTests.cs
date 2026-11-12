@@ -706,7 +706,6 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     productionAccess: new OperationalProductionAccess(),
-                    playerRoster: TestPlayers.CreateDuel(difficulty),
                     // No hostile units exist, so the size-based selection runs; every ship rates the same per credit.
                     forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
                         new UnitCombatProfileCatalog(null, null, null, null)),
@@ -787,7 +786,6 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     productionAccess: new OperationalProductionAccess(),
-                    playerRoster: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard),
                     // No hostile units exist, so the size-based selection runs; every ship rates the same per credit.
                     forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
                         new UnitCombatProfileCatalog(null, null, null, null)),
@@ -885,7 +883,6 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     productionAccess: new OperationalProductionAccess(),
-                    playerRoster: TestPlayers.CreateDuel(EnemyAiDifficulty.Medium),
                     forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
                         new UnitCombatProfileCatalog(null, null, null, null)),
                     profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
@@ -965,7 +962,6 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     productionAccess: new OperationalProductionAccess(),
-                    playerRoster: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard),
                     forceBuilder: new ForceCompositionBuilder(new EntityLocator(), catalog),
                     profileCatalog: catalog,
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
