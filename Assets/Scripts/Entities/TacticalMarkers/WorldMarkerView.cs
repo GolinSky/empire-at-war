@@ -52,5 +52,12 @@ namespace EmpireAtWar.Entities.TacticalMarkers
         }
 
         public void Release() => gameObject.SetActive(false);
+
+        // Teardown also runs from EditMode composition tests, where Object.Destroy is not allowed.
+        public void Destroy()
+        {
+            if (Application.isPlaying) Object.Destroy(gameObject);
+            else Object.DestroyImmediate(gameObject);
+        }
     }
 }

@@ -36,7 +36,7 @@ namespace EmpireAtWar.Entities.TacticalMarkers
         private readonly IPlayerCommandSink _commands;
         private readonly MarkerRadialModel _model;
         private readonly TacticalMarkerSettings _settings;
-        private readonly MarkerWorldPresenter _world;
+        private readonly WorldMarkerController _world;
         private readonly IEntityLocator _entities;
         private readonly IVisionService _vision;
         private readonly TacticalMarkerTargets _targets;
@@ -51,7 +51,7 @@ namespace EmpireAtWar.Entities.TacticalMarkers
             IPointerInput pointer, IInputLock inputLock, ICinematicCameraModelObserver cinematic,
             IMiniMapInputObserver miniMap, IUiHitTest hitTest, ICameraService camera, ISelectionQuery selection,
             IReadOnlyList<ICaptureSiteDirectory> sites, ILocalPlayer local, IPlayerCommandSink commands,
-            MarkerRadialModel model, TacticalMarkerSettings settings, MarkerWorldPresenter world,
+            MarkerRadialModel model, TacticalMarkerSettings settings, WorldMarkerController world,
             IEntityLocator entities, IVisionService vision, TacticalMarkerTargets targets) : base(ui, cancel)
         {
             _place = input.Actions.asset.FindAction("Battle/PlaceMarker", true);

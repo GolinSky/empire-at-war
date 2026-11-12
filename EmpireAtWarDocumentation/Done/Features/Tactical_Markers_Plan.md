@@ -206,7 +206,7 @@ Services/Networking
 2. `AllyAiMarkerSource.SelectRequest` now also returns accepted `Capture`/`Defend` (Defend allowed under home station pressure). "On my way" is posted only when a task group takes the request (`Take`); if none takes it within 3 s → one "Delayed" card, upgraded to Accepted later if a group takes it.
 3. `EnemyTaskForceExecutor.ExecuteMarker(marker, attackTarget, context)`: Attack on a live hostile unit → `IssueAttack(target)` (no re-issue as it moves); Attack on a point and Defend → attack-move; Capture/Rally → move.
 4. Replies: one answer per marker, then only an upgrade to Accepted; AI answers human senders only (`!IsAi`); `AllyAiMarkerEmitter` capture cards limited to one per 30 s (`CAPTURE_REPORT_INTERVAL`).
-5. `MarkerWorldPresenter`: no card for your own markers (sound kept as feedback); markers older than 0.5 s on arrival (late-join snapshot) show without sound or card.
+5. `WorldMarkerController` (was `MarkerWorldPresenter`): no card for your own markers (sound kept as feedback); markers older than 0.5 s on arrival (late-join snapshot) show without sound or card.
 6. Delayed text → "Busy now — will come when free".
 7. `HostTacticalMarkerSender` sends tracking moves only after ≥ 25 m (`RESEND_DISTANCE`); adds, refreshes, retargets and removals always sent.
 

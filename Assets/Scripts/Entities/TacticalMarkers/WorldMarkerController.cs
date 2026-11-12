@@ -10,7 +10,8 @@ using UnityEngine;
 
 namespace EmpireAtWar.Entities.TacticalMarkers
 {
-    public sealed class MarkerWorldPresenter : ILateTickable
+    /// <summary>Shows allied markers in the world: pools <see cref="WorldMarkerView"/>s, plays cues and posts cards.</summary>
+    public sealed class WorldMarkerController : ILateTickable
     {
         private readonly ITacticalMarkerObserver _markers;
         private readonly TacticalMarkerSettings _settings;
@@ -30,7 +31,7 @@ namespace EmpireAtWar.Entities.TacticalMarkers
         private AudioSource _source;
         private bool _initialized;
 
-        public MarkerWorldPresenter(ITacticalMarkerObserver markers, TacticalMarkerSettings settings,
+        public WorldMarkerController(ITacticalMarkerObserver markers, TacticalMarkerSettings settings,
             ILocalPlayer local, IPlayerColors colors, ICameraService camera, IBattleNotifications notifications,
             IAudioService audio, TacticalMarkerReplies replies,
             EmpireAtWar.Services.Networking.Online.OnlineMatchService online, IPlayerRoster roster)
@@ -104,15 +105,9 @@ namespace EmpireAtWar.Entities.TacticalMarkers
             if (!_initialized) return;
             _initialized = false;
             _markers.Added -= Added; _markers.Removed -= Removed; _replies.Replied -= Replied;
-            foreach (WorldMarkerView view in _active.Values) if (view != null) DestroyView(view);
-            foreach (WorldMarkerView view in _pool) if (view != null) DestroyView(view);
+            foreach (WorldMarkerView view in _active.Values) if (view != null) view.Destroy();
+            foreach (WorldMarkerView view in _pool) if (view != null) view.Destroy();
             _active.Clear(); _pool.Clear();
-        }
-
-        private static void DestroyView(WorldMarkerView view)
-        {
-            if (Application.isPlaying) Object.Destroy(view.gameObject);
-            else Object.DestroyImmediate(view.gameObject);
         }
     }
 }

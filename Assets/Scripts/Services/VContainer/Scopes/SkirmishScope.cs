@@ -222,7 +222,7 @@ namespace EmpireAtWar.Services.VContainer
             if (Battle.Mode != GameMode.BattleSimulation)
             {
                 builder.Register<MarkerRadialModel>(Lifetime.Singleton);
-                builder.Register<MarkerWorldPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+                builder.Register<WorldMarkerController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
                 builder.Register<MarkerInputController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
                 builder.Register<MiniMapMarkerPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             }

@@ -25,7 +25,7 @@ verification: Unity compilation and saved asset checks; authorized EditMode
 ## Implementation
 
 - Tap rebindable `Battle/PlaceMarker` (`B`) → Look. Hold >0.2 s → six-slice radial; hub release, Esc or command/RMB cancels. Modal input lock and cinematic camera disable placement.
-- `MarkerRadialModel` owns selection; `MarkerInputController` submits commands; `MarkerRadialUi` renders state. `MarkerWorldPresenter` pools world views and posts focusable notifications.
+- `MarkerRadialModel` owns selection; `MarkerInputController` submits commands; `MarkerRadialUi` renders state. `WorldMarkerController` pools world views (each `WorldMarkerView` destroys itself) and posts focusable notifications.
 - Minimap marks use `MiniMapData` / `MarkType.TacticalLook` through `TacticalRetreat`; colored sprites bypass player-color multiplication. Arrival tweens are released with their pooled `MarkView`.
 - `AllyAiMarkerSource` contributes Capture/Defend objectives and Look scouting; Attack/Rally/Retreat use force/intel/priority and existing route-safety checks. Replies: Accepted, Delayed, Declined.
 - `AllyAiMarkerEmitter` reports capital contacts, station/site threats, assault staging/attack and retreat. No allied human → no outgoing AI communications; capture completion is an info card without camera focus.
