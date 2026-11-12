@@ -1,0 +1,125 @@
+{
+  "date": "2026-11-12",
+  "requestedResolution": "2048x2048",
+  "assets": [
+    {
+      "name": "mustafar",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_mustafar_Albedo.png",
+      "generatedOutput": "C:\\Users\\golin\\.codex\\generated_images\\01a1d03a-dc77-7470-99f8-5129a9b0d764\\exec-60190965-a718-435e-a6d7-ae51c5c2d5e4.png",
+      "output": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_mustafar_Albedo.png",
+      "prompt": "Use case: precise-object-edit. Asset type: production planet surface albedo. Edit the reference into a crisp detailed 2048x2048 square flat full-canvas unlit albedo texture, not a sphere render. Preserve its broad region layout, palette and visual identity; redraw muddy blurry artwork as coherent sharp orbital terrain, with natural fine-scale detail and clear intermediate-scale features. Do not merely sharpen blur or add grain. No sphere, space, text, labels, clouds, cast shadows, directional illumination, glow bloom or vignette. Seamless matching left/right edge for longitude wrap. Keep upper/lower poles comparatively simple and continuous. Mustafar volcanic surface. Preserve the existing dark brown-black basalt plates and red fissure networks in their same positions. Resolve detailed cracked basalt crust, cooled lava fields, branching narrow red-orange lava channels with restrained hot cores. Maintain readable dark terrain without crushed black or blurry red haze.",
+      "mode": "built-in image_gen",
+      "inspection": "Inspected generated full image: crisp terrain/detail, broad reference layout and palette preserved; parent to verify sphere rendering.",
+      "sourceResolution": [
+        1024,
+        1024
+      ],
+      "outputResolution": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "name": "ocean",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_ocean_Albedo.png",
+      "generatedOutput": "C:\\Users\\golin\\.codex\\generated_images\\01a1d03a-dc77-7470-99f8-5129a9b0d764\\exec-91b55cac-e480-4155-bdf9-08bff22d6c69.png",
+      "output": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_ocean_Albedo.png",
+      "prompt": "Use case: precise-object-edit. Asset type: production planet surface albedo. Edit the reference into a crisp detailed 2048x2048 square flat full-canvas unlit albedo texture, not a sphere render. Preserve its broad region layout, palette and visual identity; redraw muddy blurry artwork as coherent sharp orbital terrain, with natural fine-scale detail and clear intermediate-scale features. Do not merely sharpen blur or add grain. No sphere, space, text, labels, clouds, cast shadows, directional illumination, glow bloom or vignette. Seamless matching left/right edge for longitude wrap. Keep upper/lower poles comparatively simple and continuous. Ocean planet. Preserve the reference's teal polar regions and deep cobalt broad central ocean gradient. Add delicate coherent ocean current filaments, tiny fine wave detail and subtle sea-depth patterns visible from orbit. Entire planet is ocean; do not invent landmasses, islands, cities or clouds. Keep colors and large gradient regions faithful and detail restrained.",
+      "mode": "built-in image_gen",
+      "inspection": "Inspected generated full image: crisp terrain/detail, broad reference layout and palette preserved; parent to verify sphere rendering.",
+      "sourceResolution": [
+        1024,
+        1024
+      ],
+      "outputResolution": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "name": "ralltiir",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_ralltiir_Albedo.png",
+      "generatedOutput": "C:\\Users\\golin\\.codex\\generated_images\\01a1d03a-dc77-7470-99f8-5129a9b0d764\\exec-8ea5fbe1-97af-42bc-9e0c-aef5475fda46.png",
+      "output": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_ralltiir_Albedo.png",
+      "prompt": "Use case: precise-object-edit. Asset type: production planet surface albedo. Edit the reference into a crisp detailed 2048x2048 square flat full-canvas unlit albedo texture, not a sphere render. Preserve its broad region layout, palette and visual identity; redraw muddy blurry artwork as coherent sharp orbital terrain, with natural fine-scale detail and clear intermediate-scale features. Do not merely sharpen blur or add grain. No sphere, space, text, labels, clouds, cast shadows, directional illumination, glow bloom or vignette. Seamless matching left/right edge for longitude wrap. Keep upper/lower poles comparatively simple and continuous. Ralltiir terrestrial planet. Preserve the distinctive diagonal elongated green-gray continents, blue ocean channels, broad snowy top and bottom caps and existing land/ocean distribution. Resolve natural sharp coastlines, coherent mountain chains, river valleys, forest patches and rocky plateaus at orbital scale; crisp white ice boundaries. Remove coarse painterly smear while keeping major shapes.",
+      "mode": "built-in image_gen",
+      "inspection": "Inspected generated full image: crisp terrain/detail, broad reference layout and palette preserved; parent to verify sphere rendering.",
+      "sourceResolution": [
+        1024,
+        1024
+      ],
+      "outputResolution": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "name": "ryloth",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_ryloth_Albedo.png",
+      "generatedOutput": "C:\\Users\\golin\\.codex\\generated_images\\01a1d03a-dc77-7470-99f8-5129a9b0d764\\exec-c7d46ff2-1583-4afb-be3a-a2f69d9c522c.png",
+      "output": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_ryloth_Albedo.png",
+      "prompt": "Use case: precise-object-edit. Asset type: production planet surface albedo. Edit the reference into a crisp detailed 2048x2048 square flat full-canvas unlit albedo texture, not a sphere render. Preserve its broad region layout, palette and visual identity; redraw muddy blurry artwork as coherent sharp orbital terrain, with natural fine-scale detail and clear intermediate-scale features. Do not merely sharpen blur or add grain. No sphere, space, text, labels, clouds, cast shadows, directional illumination, glow bloom or vignette. Seamless matching left/right edge for longitude wrap. Keep upper/lower poles comparatively simple and continuous. Ryloth arid planet. Preserve the coral rust-orange surrounding regions, broad irregular pale bluish-white center and dark desaturated slate patches at the same locations. Reinterpret muddy features as coherent colored exposed geology: eroded mesas, canyons, salt and pale mineral plains, layered rocky ridges. The pale center is surface terrain, not clouds. Add crisp coherent orbital geological structure; no oceans or vegetation.",
+      "mode": "built-in image_gen",
+      "inspection": "Inspected generated full image: crisp terrain/detail, broad reference layout and palette preserved; parent to verify sphere rendering.",
+      "sourceResolution": [
+        1024,
+        1024
+      ],
+      "outputResolution": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "name": "swamp",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_swamp_Albedo.png",
+      "generatedOutput": "C:\\Users\\golin\\.codex\\generated_images\\01a1d03a-dc77-7470-99f8-5129a9b0d764\\exec-983b8e18-30df-447d-8ab3-9b93f4819666.png",
+      "output": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_swamp_Albedo.png",
+      "prompt": "Use case: precise-object-edit. Asset type: production planet surface albedo. Edit the reference into a crisp detailed 2048x2048 square flat full-canvas unlit albedo texture, not a sphere render. Preserve its broad region layout, palette and visual identity; redraw muddy blurry artwork as coherent sharp orbital terrain, with natural fine-scale detail and clear intermediate-scale features. Do not merely sharpen blur or add grain. No sphere, space, text, labels, clouds, cast shadows, directional illumination, glow bloom or vignette. Seamless matching left/right edge for longitude wrap. Keep upper/lower poles comparatively simple and continuous. Swamp planet. Preserve existing deep green water channels and broad muted olive-brown land masses at the same positions. Resolve crisp branching wetlands, marsh boundaries, forest canopy patterns, drainage networks and low rocky ridges. Keep the subdued olive, moss green and muddy gray-brown palette. No new continents, blue ocean or floating cloud haze.",
+      "mode": "built-in image_gen",
+      "inspection": "Inspected generated full image: crisp terrain/detail, broad reference layout and palette preserved; parent to verify sphere rendering.",
+      "sourceResolution": [
+        1024,
+        1024
+      ],
+      "outputResolution": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "name": "tatooine",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_tatooine_Albedo.png",
+      "generatedOutput": "C:\\Users\\golin\\.codex\\generated_images\\01a1d03a-dc77-7470-99f8-5129a9b0d764\\exec-e636e940-fe70-4b88-b762-11ddeed8ccc7.png",
+      "output": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_tatooine_Albedo.png",
+      "prompt": "Use case: precise-object-edit. Asset type: production planet surface albedo. Edit the reference into a crisp detailed 2048x2048 square flat full-canvas unlit albedo texture, not a sphere render. Preserve its broad region layout, palette and visual identity; redraw muddy blurry artwork as coherent sharp orbital terrain, with natural fine-scale detail and clear intermediate-scale features. Do not merely sharpen blur or add grain. No sphere, space, text, labels, clouds, cast shadows, directional illumination, glow bloom or vignette. Seamless matching left/right edge for longitude wrap. Keep upper/lower poles comparatively simple and continuous. Tatooine desert planet. Preserve the original pale peach-tan sand regions and mauve-brown rocky basins at the same positions. Replace blur with sharp interwoven dune fields, naturally eroded ridges, dry channels, layered sandstone plateaus and subtle varied sand patterns at orbital scale. Keep the light warm muted palette; no oceans, vegetation, cities or clouds.",
+      "mode": "built-in image_gen",
+      "inspection": "Inspected generated full image: crisp terrain/detail, broad reference layout and palette preserved; parent to verify sphere rendering.",
+      "sourceResolution": [
+        1024,
+        1024
+      ],
+      "outputResolution": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "name": "temperate",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_temperate_Albedo.png",
+      "generatedOutput": "C:\\Users\\golin\\.codex\\generated_images\\01a1d03a-dc77-7470-99f8-5129a9b0d764\\exec-2f59d0a6-812d-42e4-8351-7a6d62425110.png",
+      "output": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_temperate_Albedo.png",
+      "prompt": "Use case: precise-object-edit. Asset type: production planet surface albedo. Edit the reference into a crisp detailed 2048x2048 square flat full-canvas unlit albedo texture, not a sphere render. Preserve its broad region layout, palette and visual identity; redraw muddy blurry artwork as coherent sharp orbital terrain, with natural fine-scale detail and clear intermediate-scale features. Do not merely sharpen blur or add grain. No sphere, space, text, labels, clouds, cast shadows, directional illumination, glow bloom or vignette. Seamless matching left/right edge for longitude wrap. Keep upper/lower poles comparatively simple and continuous. Temperate terrestrial planet. Preserve every major green-tan continent shape, bright blue ocean basin and pale polar zone of the reference. Improve coastlines, forest patches, branching river valleys, mountain chains and dry plains as coherent detailed orbital terrain. Remove neon coastline blur and painterly smearing. Keep similar overall colors and land/ocean balance. Pale poles should be natural subdued ice rather than blank gray cutouts. No clouds or cities.",
+      "mode": "built-in image_gen",
+      "inspection": "Inspected generated full image: crisp terrain/detail, broad reference layout and palette preserved; parent to verify sphere rendering.",
+      "sourceResolution": [
+        1024,
+        1024
+      ],
+      "outputResolution": [
+        1254,
+        1254
+      ]
+    }
+  ]
+}

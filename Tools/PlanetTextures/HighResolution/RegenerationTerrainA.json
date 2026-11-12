@@ -1,0 +1,58 @@
+{
+  "generator": "built-in image_gen",
+  "date": "2026-11-12",
+  "requestedSize": 2048,
+  "actualSize": 1254,
+  "verification": "Inspected each generated image against original. Large patterns and palette retained with crisp terrain structure. Unity/render verification delegated to parent. No automated tests run.",
+  "assets": [
+    {
+      "name": "desert",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_desert_Albedo.png",
+      "prompt": "Edit target: the attached existing square planet albedo. Redraw its blurry ugly surface detail into a crisp professional game albedo, requested 2048x2048 square. Keep its recognizable large-scale pattern, palette and overall luminosity; improve actual structured detail instead of sharpening blurred noise. Preserve beige sand, dusty ochre, gray-brown dry basins and the exact broad basin/mountain layout. Replace blurred strokes with fine coherent dune belts, dry drainage channels, rocky ridgelines, subtle erosion fans and stratified mesas. An arid planet seen from orbital scale; no water, plants, cities or giant new craters. Entire canvas is a flat unlit surface texture, not a planet sphere or map illustration. Uniform diffuse albedo; no directional lighting, shadows, glow, atmosphere, space, border, text or labels. No cloud additions. Left/right edges must tile seamlessly at each row. Reduce high-frequency detail gradually at top/bottom polar rows without conspicuous blank bands. Avoid oversaturated colors and crushed black areas. Preserve source identity.",
+      "generatedPath": "C:/Users/golin/.codex/generated_images/01a1d03c-47da-7910-9448-3bc0dea74844/exec-aa99d47f-2dae-48ef-8ec8-c2ecdd4f6cf9.png",
+      "target": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_desert_Albedo.png"
+    },
+    {
+      "name": "endor",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_endor_Albedo.png",
+      "prompt": "Edit target: the attached existing square planet albedo. Redraw its blurry ugly surface detail into a crisp professional game albedo, requested 2048x2048 square. Keep its recognizable large-scale pattern, palette and overall luminosity; improve actual structured detail instead of sharpening blurred noise. Preserve the exact major coastline/continent arrangement, cyan-blue seas, rich green forest land and small pale snow patches. Add intricately branching river valleys, coherent mountain ridges, forest biome variations and detailed coastlines. Land should look like forests at orbital scale, not individual trees. Ocean should remain clean blue, no added clouds or cities. Entire canvas is a flat unlit surface texture, not a planet sphere or map illustration. Uniform diffuse albedo; no directional lighting, shadows, glow, atmosphere, space, border, text or labels. No cloud additions. Left/right edges must tile seamlessly at each row. Reduce high-frequency detail gradually at top/bottom polar rows without conspicuous blank bands. Avoid oversaturated colors and crushed black areas. Preserve source identity.",
+      "generatedPath": "C:/Users/golin/.codex/generated_images/01a1d03c-47da-7910-9448-3bc0dea74844/exec-3b9abd4c-d31e-49b2-9213-3d9c4308bff6.png",
+      "target": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_endor_Albedo.png"
+    },
+    {
+      "name": "eriadu",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_eriadu_Albedo.png",
+      "prompt": "Edit target: the attached existing square planet albedo. Redraw its blurry ugly surface detail into a crisp professional game albedo, requested 2048x2048 square. Keep its recognizable large-scale pattern, palette and overall luminosity; improve actual structured detail instead of sharpening blurred noise. Preserve the reference's ochre, rust brown, muted olive and gray mineral palette and broad dark basin distribution. Rebuild muddy terrain into coherent eroded plateaus, detailed mineral ridges, sedimentary fans and fine branching valleys. Industrial-world terrain but no oversized buildings, lights or new land/ocean arrangement. Entire canvas is a flat unlit surface texture, not a planet sphere or map illustration. Uniform diffuse albedo; no directional lighting, shadows, glow, atmosphere, space, border, text or labels. No cloud additions. Left/right edges must tile seamlessly at each row. Reduce high-frequency detail gradually at top/bottom polar rows without conspicuous blank bands. Avoid oversaturated colors and crushed black areas. Preserve source identity.",
+      "generatedPath": "C:/Users/golin/.codex/generated_images/01a1d03c-47da-7910-9448-3bc0dea74844/exec-bc2d0909-0e69-4982-abda-26e4130ebf36.png",
+      "target": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_eriadu_Albedo.png"
+    },
+    {
+      "name": "forest",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_forest_Albedo.png",
+      "prompt": "Edit target: the attached existing square planet albedo. Redraw its blurry ugly surface detail into a crisp professional game albedo, requested 2048x2048 square. Keep its recognizable large-scale pattern, palette and overall luminosity; improve actual structured detail instead of sharpening blurred noise. Preserve the exact distribution of small blue lakes, green forest land and pale polar zones. Replace the smeared mountain texture with intricately branching river valleys, coherent ridgelines, rich but restrained forest biome variations and detailed lake shorelines. Forests must read at orbital scale, not individual trees. Lakes stay in their original places. Entire canvas is a flat unlit surface texture, not a planet sphere or map illustration. Uniform diffuse albedo; no directional lighting, shadows, glow, atmosphere, space, border, text or labels. No cloud additions. Left/right edges must tile seamlessly at each row. Reduce high-frequency detail gradually at top/bottom polar rows without conspicuous blank bands. Avoid oversaturated colors and crushed black areas. Preserve source identity.",
+      "generatedPath": "C:\\Users\\golin\\.codex\\generated_images\\01a1d03c-47da-7910-9448-3bc0dea74844\\exec-a2bc821d-fb49-46c3-b169-c18fc2a42d44.png",
+      "target": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_forest_Albedo.png"
+    },
+    {
+      "name": "geonosis",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_geonosis_Albedo.png",
+      "prompt": "Edit target: the attached existing square planet albedo. Redraw its blurry ugly surface detail into a crisp professional game albedo, requested 2048x2048 square. Keep its recognizable large-scale pattern, palette and overall luminosity; improve actual structured detail instead of sharpening blurred noise. Preserve the reference's orange-red and yellow-ochre palette and overall broad pattern of pale uplands and dark rust basins. Replace muddy blobs with coherent desert geology: dense eroded canyon networks, red sandstone plateaus, fine dune fields and sediment fans. No vegetation or water, no excessive black contrast, no lava. Entire canvas is a flat unlit surface texture, not a planet sphere or map illustration. Uniform diffuse albedo; no directional lighting, shadows, glow, atmosphere, space, border, text or labels. No cloud additions. Left/right edges must tile seamlessly at each row. Reduce high-frequency detail gradually at top/bottom polar rows without conspicuous blank bands. Avoid oversaturated colors and crushed black areas. Preserve source identity.",
+      "generatedPath": "C:\\Users\\golin\\.codex\\generated_images\\01a1d03c-47da-7910-9448-3bc0dea74844\\exec-4a947cd7-b64e-4114-b47d-1484aff90f17.png",
+      "target": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_geonosis_Albedo.png"
+    },
+    {
+      "name": "hoth",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_hoth_Albedo.png",
+      "prompt": "Edit target: the attached existing square planet albedo. Redraw its blurry ugly surface detail into a crisp professional game albedo, requested 2048x2048 square. Keep its recognizable large-scale pattern, palette and overall luminosity; improve actual structured detail instead of sharpening blurred noise. Preserve the reference's white, pale blue and cold gray palette and approximate large frozen basin/ridge arrangement. Add crisp orbital-scale glacial fractures, fine ice crevasses, carved snowy mountain ridges and wind-sculpted snowfields. Clearly legible icy terrain, not a cloudy mist. No water oceans, vegetation or buildings, no pure-white blown-out regions. Entire canvas is a flat unlit surface texture, not a planet sphere or map illustration. Uniform diffuse albedo; no directional lighting, shadows, glow, atmosphere, space, border, text or labels. No cloud additions. Left/right edges must tile seamlessly at each row. Reduce high-frequency detail gradually at top/bottom polar rows without conspicuous blank bands. Avoid oversaturated colors and crushed black areas. Preserve source identity.",
+      "generatedPath": "C:\\Users\\golin\\.codex\\generated_images\\01a1d03c-47da-7910-9448-3bc0dea74844\\exec-34fd47ec-846d-4498-a1b4-04f2a3c91616.png",
+      "target": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_hoth_Albedo.png"
+    },
+    {
+      "name": "ice",
+      "source": "F:/Private/empire-at-war/Assets/Art/Textures/Models/Planets/Original/w_planet_ice_Albedo.png",
+      "prompt": "Edit target: the attached existing square ice planet albedo. Redraw its blurry surface into a crisp professional game texture, requested2048x2048 square. Preserve the original broad positions of cold gray ice basins, white ridges and snowfields and its white/pale-blue/cold-gray palette. Develop sharp coherent orbital-scale terrain: branching glacier valleys, crystalline fissures, wind-scoured frost patterns, finely carved icy ridges, occasional exposed gray rock. Moderate contrast, readable midtones, no blown-out white. Entire canvas flat unlit diffuse albedo, not a globe or perspective scene. No baked directional lighting, cast shadows, clouds, glow, atmosphere, stars, text, border, water ocean or buildings. Left/right edges must tile seamlessly at each row; polar edge detail should gradually simplify to avoid pinching, with no conspicuous blank strip. Keep recognizable original appearance while replacing smeared noise with actual fine surface structure.",
+      "generatedPath": "C:\\Users\\golin\\.codex\\generated_images\\01a1d03c-47da-7910-9448-3bc0dea74844\\exec-0f11ca6a-5eb9-451e-856f-15f18e11331b.png",
+      "target": "F:/Private/empire-at-war/Tools/PlanetTextures/HighResolution/w_planet_ice_Albedo.png"
+    }
+  ]
+}

@@ -37,7 +37,7 @@
     "Lwhekk"
   ],
   "limits": "Isolated Editor renders; no packed-player FPS or residency measurement.",
-  "texturePayloadBytes": 53718444,
+  "texturePayloadBytes": 53915052,
   "qualityFollowup": {
     "date": "2026-11-12",
     "surfaceTint": 0.55,
@@ -89,5 +89,22 @@
     "Manaan": 512,
     "Kessel": 1024,
     "verification": "Imported readback and isolated renders checked; previews regenerated. Tests not run per user instruction."
+  },
+  "surfaceRegenerationFollowup": {
+    "sourceManifest": "Tools/PlanetTextures/HighResolution/Sources.json",
+    "regeneratedMaps": 23,
+    "affectedPlanets": 53,
+    "nativeSize": 1254,
+    "importSize": 1024,
+    "changedOrientations": 51,
+    "approvedPlanetsUnchanged": [
+      "Bespin",
+      "Manaan"
+    ],
+    "existingSourceQualityFixes": [
+      "Coruscant",
+      "Kamino"
+    ],
+    "tests": "Not run per user instruction."
   }
 }

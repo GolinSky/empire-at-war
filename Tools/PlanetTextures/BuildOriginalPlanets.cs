@@ -51,8 +51,8 @@ public static class BuildOriginalPlanets
                 filter.sharedMesh = sphere;
                 if (!existing)
                 {
-                    // Keep the full rings below the battle plane, aligned with the planet's equator.
-                    if (planet["rings"].Any())
+                    // Present equatorial terrain rather than the UV pole; keep approved gas/ocean orientations.
+                    if (name != "Bespin" && name != "Manaan")
                         surface.transform.localRotation = Quaternion.Inverse(root.transform.localRotation) * Quaternion.Euler(15, 0, 0);
                     surface.sharedMaterial = MaterialFor((string)planet["surface"], "Surface", false);
                     var clouds = view.FindProperty("cloudRenderers");

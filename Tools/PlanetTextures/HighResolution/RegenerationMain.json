@@ -1,0 +1,56 @@
+[
+  {
+    "name": "w_asteroid00_Albedo",
+    "prompt": "Rebuild this muddy planet albedo as a crisp professional game texture for Kessel. Flat square full-surface color map, 2048x2048 target. Preserve the recognizable approximate large crater placements and rocky gray-brown mineral palette, but redraw terrain with clean sharp crater rims, clearly separated terraced rock, fine geological fracture networks, scattered small impacts and dusty tan mineral deposits. Orbital-scale terrain, not close-up pebbles. Improve real structure, not sharpening noisy blobs. Moderate contrast and readable midtones, no pure black crater holes or overbright highlights. Uniform diffuse unlit albedo, no directional baked lighting, no cast shadows, no atmosphere, clouds, globe, space, labels or border. Seamless left/right wrapping at each y, polar edge rows should have gradually simpler low-contrast detail to avoid pinching. Keep restrained original coloration; no orange lava or buildings.",
+    "generatedSource": "C:\\Users\\golin\\.codex\\generated_images\\01a1cfe3-d125-7e61-8a6b-3cb5817fb663\\exec-7fc9cb32-d3c0-4eed-92f4-09d9b0c33c53.png",
+    "source": "Assets/Art/Textures/Models/Planets/Original/w_asteroid00_Albedo.png"
+  },
+  {
+    "name": "w_planet_alderaan_Albedo",
+    "prompt": "Edit this original low-detail planet albedo into a crisp detailed professional game surface texture, 2048x2048 square target. Preserve the original's large landmass shapes, layout and palette. Replace blurry smeared/noisy artwork with coherent finely resolved orbital-scale terrain: intricate coastlines where applicable, river valleys, ridgelines, mineral variation. Flat unlit full-canvas albedo, no globe, atmosphere, space, directional light, cast shadows, text, borders or added clouds. Moderate readable contrast, avoid muddy near-black areas or excessive highlights. Left/right edges must wrap seamlessly at each y. Simplify polar edge detail gradually to minimize sphere pinch. Blue oceans, green temperate continents and white polar ice; retain recognizable coastline positions, add realistic detailed mountains and coastal plains; no cloud cover.",
+    "generatedSource": "C:\\Users\\golin\\.codex\\generated_images\\01a1cfe3-d125-7e61-8a6b-3cb5817fb663\\exec-52a46454-7104-45d7-9b76-cde4f7d7b3f0.png",
+    "source": "Assets/Art/Textures/Models/Planets/Original/w_planet_alderaan_Albedo.png"
+  },
+  {
+    "name": "w_planet_balmorra_Albedo",
+    "prompt": "Edit this original low-detail planet albedo into a crisp detailed professional game surface texture, 2048x2048 square target. Preserve the original's large landmass shapes, layout and palette. Replace blurry smeared/noisy artwork with coherent finely resolved orbital-scale terrain: intricate coastlines where applicable, river valleys, ridgelines, mineral variation. Flat unlit full-canvas albedo, no globe, atmosphere, space, directional light, cast shadows, text, borders or added clouds. Moderate readable contrast, avoid muddy near-black areas or excessive highlights. Left/right edges must wrap seamlessly at each y. Simplify polar edge detail gradually to minimize sphere pinch. Preserve pale gray-blue icy palette of this reference while adding subtle crisp rocky/industrial terrain, eroded low mountain ranges and fine mineral variation. Do not introduce glowing city grids.",
+    "generatedSource": "C:\\Users\\golin\\.codex\\generated_images\\01a1cfe3-d125-7e61-8a6b-3cb5817fb663\\exec-1db35eca-d8f6-4df5-8521-5175107acd2f.png",
+    "source": "Assets/Art/Textures/Models/Planets/Original/w_planet_balmorra_Albedo.png"
+  },
+  {
+    "name": "w_planet_bonadan_Albedo",
+    "prompt": "Edit this original low-detail planet albedo into a crisp detailed professional game surface texture, 2048x2048 square target. Preserve the original's large landmass shapes, layout and palette. Replace blurry smeared/noisy artwork with coherent finely resolved orbital-scale terrain: intricate coastlines where applicable, river valleys, ridgelines, mineral variation. Flat unlit full-canvas albedo, no globe, atmosphere, space, directional light, cast shadows, text, borders or added clouds. Moderate readable contrast, avoid muddy near-black areas or excessive highlights. Left/right edges must wrap seamlessly at each y. Simplify polar edge detail gradually to minimize sphere pinch. Preserve tan ochre dry land and darker brown branching basins; replace smooth smears with sharp eroded escarpments, fine dry river networks and dusty mineral plains.",
+    "generatedSource": "C:\\Users\\golin\\.codex\\generated_images\\01a1cfe3-d125-7e61-8a6b-3cb5817fb663\\exec-256a1dcd-59bb-42d7-b331-c3c742f7bf99.png",
+    "source": "Assets/Art/Textures/Models/Planets/Original/w_planet_bonadan_Albedo.png"
+  },
+  {
+    "name": "w_planet_dagobah_Albedo",
+    "prompt": "Edit this original low-detail planet albedo into a crisp detailed professional game surface texture, 2048x2048 square target. Preserve the original's large landmass shapes, layout and palette. Replace blurry smeared/noisy artwork with coherent finely resolved orbital-scale terrain: intricate coastlines where applicable, river valleys, ridgelines, mineral variation. Flat unlit full-canvas albedo, no globe, atmosphere, space, directional light, cast shadows, text, borders or added clouds. Moderate readable contrast, avoid muddy near-black areas or excessive highlights. Left/right edges must wrap seamlessly at each y. Simplify polar edge detail gradually to minimize sphere pinch. Preserve murky olive water and dark green swamp continents; add finely articulated wetlands, delta channels, dense canopy regions and readable sediment edges, without luminous green blobs.",
+    "generatedSource": "C:\\Users\\golin\\.codex\\generated_images\\01a1cfe3-d125-7e61-8a6b-3cb5817fb663\\exec-f5d833ad-1eee-41b0-8766-899a3529518b.png",
+    "source": "Assets/Art/Textures/Models/Planets/Original/w_planet_dagobah_Albedo.png"
+  },
+  {
+    "name": "w_planet_urban_Albedo",
+    "prompt": "Edit this original blurry low-detail planet albedo into a crisp professional sci-fi game surface texture, 2048x2048 square target. Keep original large-scale layout and defining palette, redraw with coherent fine orbital-scale structure rather than generic noise. Flat unlit full-canvas albedo, no globe, space, atmosphere, text, border, directional light, cast shadows or new clouds. Readable moderate contrast. Seamless left/right at every y, less detail toward polar edge rows to avoid pinch. Gray slate industrial ecumenopolis with warm amber city districts and circular concentric hubs. Preserve the large circular hub positions and roads; redraw crisp densely packed tiny urban blocks, broad road arteries and concentric infrastructure. Remove blurry milky cloud-like washes from surface; retain slate gray base and restrained gold highlights, no giant white emissive blobs.",
+    "generatedSource": "C:\\Users\\golin\\.codex\\generated_images\\01a1cfe3-d125-7e61-8a6b-3cb5817fb663\\exec-3fd4a4e7-5756-4643-975e-80b99299e116.png",
+    "source": "Assets/Art/Textures/Models/Planets/Original/w_planet_urban_Albedo.png"
+  },
+  {
+    "name": "w_planet_utapau_Albedo",
+    "prompt": "Edit this original blurry low-detail planet albedo into a crisp professional sci-fi game surface texture, 2048x2048 square target. Keep original large-scale layout and defining palette, redraw with coherent fine orbital-scale structure rather than generic noise. Flat unlit full-canvas albedo, no globe, space, atmosphere, text, border, directional light, cast shadows or new clouds. Readable moderate contrast. Seamless left/right at every y, less detail toward polar edge rows to avoid pinch. Preserve pale yellow-green and olive land, dark olive basins. Sharp sedimentary escarpments, winding eroded channels, fine sinkhole terrain and dry mineral plains. Avoid blurry yellow haze, keep map surface readable.",
+    "generatedSource": "C:\\Users\\golin\\.codex\\generated_images\\01a1cfe3-d125-7e61-8a6b-3cb5817fb663\\exec-2b56a76c-8602-40be-885f-df8d45b2ff33.png",
+    "source": "Assets/Art/Textures/Models/Planets/Original/w_planet_utapau_Albedo.png"
+  },
+  {
+    "name": "w_planet_volcanic_Albedo",
+    "prompt": "Edit this original blurry low-detail planet albedo into a crisp professional sci-fi game surface texture, 2048x2048 square target. Keep original large-scale layout and defining palette, redraw with coherent fine orbital-scale structure rather than generic noise. Flat unlit full-canvas albedo, no globe, space, atmosphere, text, border, directional light, cast shadows or new clouds. Readable moderate contrast. Seamless left/right at every y, less detail toward polar edge rows to avoid pinch. Preserve rusty tan volcanic crust and network of narrow orange-red lava fissures at similar locations. Redraw sharply resolved rock plates, fine branching fractures and realistic narrow lava channels with darker crust along banks. Do not turn whole surface black or blanket with lava.",
+    "generatedSource": "C:\\Users\\golin\\.codex\\generated_images\\01a1cfe3-d125-7e61-8a6b-3cb5817fb663\\exec-0b802144-acd6-4250-ad9a-44eabb8fe37d.png",
+    "source": "Assets/Art/Textures/Models/Planets/Original/w_planet_volcanic_Albedo.png"
+  },
+  {
+    "name": "w_planet_yaviniv_Albedo",
+    "prompt": "Edit this original blurry low-detail planet albedo into a crisp professional sci-fi game surface texture, 2048x2048 square target. Keep original large-scale layout and defining palette, redraw with coherent fine orbital-scale structure rather than generic noise. Flat unlit full-canvas albedo, no globe, space, atmosphere, text, border, directional light, cast shadows or new clouds. Readable moderate contrast. Seamless left/right at every y, less detail toward polar edge rows to avoid pinch. Preserve teal-green jungle continents and cyan water with existing coastline layout; crisp canopy tonal regions, mountain valleys, winding river deltas and finely resolved shorelines. Remove luminous cloudy blobs, retain jungle-green/teal identity without adding cloud cover.",
+    "generatedSource": "C:\\Users\\golin\\.codex\\generated_images\\01a1cfe3-d125-7e61-8a6b-3cb5817fb663\\exec-24075e6f-12f3-41ee-aa83-f181a71c7c23.png",
+    "source": "Assets/Art/Textures/Models/Planets/Original/w_planet_yaviniv_Albedo.png"
+  }
+]

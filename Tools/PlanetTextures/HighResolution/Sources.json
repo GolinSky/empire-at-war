@@ -28,15 +28,34 @@
       "planet": "Kessel",
       "file": "w_asteroid00_Albedo.png",
       "originalSize": 256,
-      "sourceSize": 1024,
+      "sourceSize": 1254,
       "importSize": 1024,
-      "source": "Republic at War, installed Workshop1129810972/Data/Art/Textures/W_ASTEROID00.DDS",
-      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1129810972",
-      "credits": "Local credits.md: planets z3r0x. Reuse restrictions apply to post1.3 assets; exact asset introduction version unverified.",
-      "appearance": "Same crater layout, more detail and darker tones.",
-      "sha256": "054f6190e416932ba82f7c6377f2454411ba7d214acb280fc4d417bebd957aca"
+      "source": "Built-in image_gen reference regeneration; replaces rejected Workshop-derived texture",
+      "appearance": "Regenerated gray-brown crater rims, fractures and mineral plains; equatorial presentation.",
+      "sha256": "faf7133a3e8dc8d74cfc4157c7b0a905fef35b34b96997f25c60a049c5f6cfb5",
+      "promptManifest": "RegenerationMain.json"
     }
   ],
   "importPolicy": "Existing GUIDs preserved; BC7 high quality, mipmaps, trilinear, unreadable, ignore preset mip limits; max1024. ImportPlanetTextures checks these overrides before original sources.",
-  "verification": "Isolated before/after sphere renders and imported dimensions/formats reviewed. Menu previews updated. Automated tests skipped per user request."
+  "verification": "Isolated before/after sphere renders and imported dimensions/formats reviewed. Menu previews updated. Automated tests skipped per user request.",
+  "surfaceRegeneration": {
+    "count": 23,
+    "nativeOutput": [
+      1254,
+      1254
+    ],
+    "importedSize": [
+      1024,
+      1024
+    ],
+    "mode": "built-in image_gen",
+    "promptManifests": [
+      "RegenerationMain.json",
+      "RegenerationTerrainA.json",
+      "RegenerationTerrainB.json"
+    ],
+    "coverage": "53 original-game planets reuse23 regenerated surface maps. Existing Coruscant/Kamino source art retained with importer quality fixes. Approved Bespin/Manaan unchanged.",
+    "orientation": "51 surface/cloud transforms corrected to equatorial presentation; Geonosis/Kuat already used matching orientation; shared meshes and ring alignment unchanged.",
+    "verification": "All53 previews regenerated from saved prefabs. Import/reference audit and isolated visuals; no automated tests."
+  }
 }
