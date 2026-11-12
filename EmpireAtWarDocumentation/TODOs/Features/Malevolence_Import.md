@@ -1,7 +1,7 @@
 ---
 category: Features
 status: in-progress
-updated: 2026-10-03
+updated: 2026-11-12
 ---
 # Malevolence Import
 
@@ -18,6 +18,7 @@ updated: 2026-10-03
 - [x] Unity compilation and saved-reference inspection clean; all 126 bone positions/parents verified. No automated tests or Play Mode run.
 - [x] Resize to RaW length ratio and lower flight altitude below Lucrehulk; saved prefab/data readback and side-view comparison verified. No automated tests or Play Mode run for this adjustment.
 - [ ] Configure exact Vulture/bomber launches when their squadron assets and bomber identity are available.
+- [x] Ion Pulse uses a 10 s stun and nests `IonStunField` inside the moving ring. Unity readback verified the duration, tooltip and all seven arc bindings. Console reported zero errors.
 - [ ] Runtime acceptance: placement, navigation/banking, fire arcs, hull/shields, Ion Pulse, UI disable, death/wreck and teardown.
 
 ## Important Values
@@ -36,7 +37,7 @@ updated: 2026-10-03
 - Provisional movement/economy: speed **4**, yaw/acceleration **3**; price **20,000**, level **5**, build time **90 s**.
 - Provisional hardpoint HP: weapon **600**, engine **1,200**, shield **1,800**, hangar **900**, supply **1,000**, ion **2,200**.
 - Provisional Mass Driver: **35** configured damage, **3 shots**, interval **0.5 s**, reload **5 s**, range **140**, speed **90**; existing turbolaser class multipliers/accuracy, full shield bypass. Shared projectile/audio assets.
-- Provisional Ion Pulse: charge **4 s**, alignment timeout **45 s**, tolerance **5°**, range **240**, speed **35**, radius **60**, thickness **8**, disable **12 s**, malfunction **10%**, recovery **60 s**. Lifecycle ceiling **80 s**; tooltip displays the **12 s** effect.
+- Provisional Ion Pulse: charge **4 s**, alignment timeout **45 s**, tolerance **5°**, range **500**, speed **35**, radius **60**, thickness **8**, disable **10 s**, malfunction **10%**, recovery **60 s**. Lifecycle ceiling **80 s**; tooltip displays the **10 s** effect.
 - Disable freezes movement/turning, stops weapon emissions and non-phased active abilities, and blocks new abilities. Already-launched shots continue. Overlapping pulse disables retain independent lifetimes; planetary-ion state remains separate.
 - Chosen source: intact `CIS_Malevolence.ALO`. `CIS_Malevolence_D.ALO` and `CIS_Malevolence_D_DIE_00.ala` remain untouched; use the project's wreck system.
 
@@ -65,5 +66,5 @@ updated: 2026-10-03
 - Art: `Assets/Art/{Models,Materials/Models,Textures/Models}/SeparatistShips/Malevolence/`.
 - Prefabs: `Assets/Prefabs/Models/Ships/Malevolence{,ShipView}.prefab`; `Assets/Prefabs/Models/Wrecks/MalevolenceWreckView.prefab`; `Assets/Prefabs/Ui/Reinforcement/MalevolenceReinforcementView.prefab`.
 - Data: `Assets/Settings/Data/Ship/MalevolenceShipData.asset`; `Assets/Settings/Data/Ship/Wreck/MalevolenceWreckData.asset`; `Assets/Settings/Data/Tooltip/Matchups/MalevolenceMatchups.asset`.
-- Ability: `Assets/Scripts/Services/ShipAbilities/Abilities/IonPulse/`; view: `Assets/Prefabs/Vfx/IonPulseWave.prefab`; verification: `Temp/MalevolenceImport/{report,verification,audit}.json`; resize evidence: `resize-result.json`, `size-verification.json`, `SizeComparison.png` in the same folder.
+- Ability: `Assets/Scripts/Services/ShipAbilities/Abilities/IonPulse/`; view: `Assets/Prefabs/Vfx/Projectiles/IonPulseWave.prefab`; verification: `Temp/MalevolenceImport/{report,verification,audit}.json`; resize evidence: `resize-result.json`, `size-verification.json`, `SizeComparison.png` in the same folder.
 - Pack credits: model/rig **Nomada_Firefox**, textures **Nawrocki**; pack README requests contacting its author before public-mod use.

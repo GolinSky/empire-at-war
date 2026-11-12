@@ -17,7 +17,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         [SerializeField] private float waveSpeed = 35f;
         [SerializeField] private float waveRadius = 60f;
         [SerializeField] private float waveThickness = 8f;
-        [SerializeField] private float disableDuration = 1.5f;
+        [SerializeField] private float disableDuration = 10f;
         [SerializeField, Range(0f, 1f)] private float malfunctionChance = 0.1f;
 
         public IonPulseView ViewPrefab => viewPrefab;
