@@ -9,6 +9,7 @@ using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Editor.AI;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -258,7 +259,7 @@ namespace EmpireAtWar.Tests.Editor
             var shot = UnityEngine.Object.Instantiate(profile.ShotPrefab);
             var muzzle = new GameObject("Test muzzle");
             var target = new GameObject("Test target");
-            var flights = new EmpireAtWar.ViewComponents.Weapon.BoltFlightBatch();
+            var flights = new BoltFlightBatch();
             try
             {
                 target.transform.position = Vector3.forward * 133f;
@@ -270,7 +271,7 @@ namespace EmpireAtWar.Tests.Editor
                     if (reuse == 0)
                         shot.Fire(muzzle.transform, target.transform, target.transform, Vector3.zero, profile, flights);
                     else
-                        typeof(EmpireAtWar.ViewComponents.Weapon.BoltShot).GetMethod("Play",
+                        typeof(BoltShot).GetMethod("Play",
                             System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
                             .Invoke(shot, new object[] { muzzle.transform, target.transform, Vector3.zero, profile });
                     particles.Simulate(0.05f, true, false, true);

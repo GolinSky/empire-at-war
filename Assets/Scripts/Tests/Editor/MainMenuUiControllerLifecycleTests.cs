@@ -1,10 +1,17 @@
 using System;
 using System.Linq;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MainMenu;
 using EmpireAtWar.Entities.MainMenu.Main;
+using EmpireAtWar.Entities.MainMenu.Online;
+using EmpireAtWar.Entities.MainMenu.Play;
 using EmpireAtWar.Entities.MainMenu.Settings;
+using EmpireAtWar.Entities.MainMenu.Simulation;
+using EmpireAtWar.Entities.MainMenu.SinglePlayer;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
+using EmpireAtWar.Entities.MainMenu.Survival;
+using EmpireAtWar.Entities.MainMenu.Tutorial;
 using EmpireAtWar.Entities.Saves;
 using EmpireAtWar.Services.Popups;
 using EmpireAtWar.Services.Saves;
@@ -15,6 +22,8 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using GameSettingsService = EmpireAtWar.Services.Settings.SettingsService;
+using SurvivalSetupModel = EmpireAtWar.Entities.MainMenu.Survival.SurvivalModel;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -89,7 +98,7 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 var repository = new ConsentRepository(false);
-                var settings = new EmpireAtWar.Services.Settings.SettingsService(repository, Array.Empty<ISettingsApplier>());
+                var settings = new GameSettingsService(repository, Array.Empty<ISettingsApplier>());
                 settings.Initialize();
                 var popups = new PopupServiceStub();
                 controller = new MainMenuUiController(new UiServiceStub(root.GetComponent<MainMenuUi>()),
@@ -115,16 +124,16 @@ namespace EmpireAtWar.Tests.Editor
         public void PlayRoute_ReusesViewForwardsModesAndReturnsOnCancel()
         {
             GameObject root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/MainMenu/PlayUi.prefab");
-            EmpireAtWar.Entities.MainMenu.Play.PlayRouteUiController controller = null;
+            PlayRouteUiController controller = null;
             try
             {
-                var view = root.GetComponent<EmpireAtWar.Entities.MainMenu.Play.PlayUi>();
+                var view = root.GetComponent<PlayUi>();
                 var service = new UiServiceStub(view);
                 var singlePlayer = new RouteStub();
                 var multiplayer = new RouteStub();
                 var simulation = new RouteStub();
                 var tutorial = new RouteStub();
-                controller = new EmpireAtWar.Entities.MainMenu.Play.PlayRouteUiController(
+                controller = new PlayRouteUiController(
                     service, new CancelRouterStub(), singlePlayer, multiplayer, simulation, tutorial);
                 controller.Open();
                 controller.Open();
@@ -166,15 +175,15 @@ namespace EmpireAtWar.Tests.Editor
         public void SinglePlayerRoute_ForwardsOfflineModesAndReturnsOnCancel()
         {
             GameObject root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/MainMenu/SinglePlayerUi.prefab");
-            EmpireAtWar.Entities.MainMenu.SinglePlayer.SinglePlayerRouteUiController controller = null;
+            SinglePlayerRouteUiController controller = null;
             try
             {
-                var view = root.GetComponent<EmpireAtWar.Entities.MainMenu.SinglePlayer.SinglePlayerUi>();
+                var view = root.GetComponent<SinglePlayerUi>();
                 var service = new UiServiceStub(view);
                 var skirmish = new RouteStub();
                 var survival = new RouteStub();
                 var loadGame = new RouteStub();
-                controller = new EmpireAtWar.Entities.MainMenu.SinglePlayer.SinglePlayerRouteUiController(
+                controller = new SinglePlayerRouteUiController(
                     service, new CancelRouterStub(), skirmish, survival, loadGame);
                 controller.Open();
                 controller.Open();
@@ -211,19 +220,19 @@ namespace EmpireAtWar.Tests.Editor
         public void LoadRoute_SeparatesModesRejectsOldVersionsAndShowsLoadErrors()
         {
             var root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/MainMenu/SaveBrowserUi.prefab");
-            EmpireAtWar.Entities.Saves.LoadGameRouteUiController controller = null;
+            LoadGameRouteUiController controller = null;
             try
             {
-                var view = root.GetComponent<EmpireAtWar.Entities.Saves.SaveBrowserUi>();
+                var view = root.GetComponent<SaveBrowserUi>();
                 var saves = new EmptySaves();
-                var header = EmpireAtWar.Services.Saves.BattleSaveHeader.Create(
-                    EmpireAtWar.Entities.Game.GameMode.Skirmish, EmpireAtWar.Services.Saves.BattleSaveSlot.Quicksave,
-                    DateTime.UtcNow, 400f, EmpireAtWar.Controllers.Game.GameSpeed.Normal);
-                var old = JsonUtility.FromJson<EmpireAtWar.Services.Saves.BattleSaveHeader>(
+                var header = BattleSaveHeader.Create(
+                    GameMode.Skirmish, BattleSaveSlot.Quicksave,
+                    DateTime.UtcNow, 400f, GameSpeed.Normal);
+                var old = JsonUtility.FromJson<BattleSaveHeader>(
                     JsonUtility.ToJson(header).Replace(
-                        "\"version\":" + EmpireAtWar.Services.Saves.BattleSaveHeader.CURRENT_VERSION, "\"version\":0"));
+                        "\"version\":" + BattleSaveHeader.CURRENT_VERSION, "\"version\":0"));
                 saves.Headers = new[] { header, old };
-                controller = new EmpireAtWar.Entities.Saves.LoadGameRouteUiController(
+                controller = new LoadGameRouteUiController(
                     new UiServiceStub(view), new CancelRouterStub(), saves, null);
                 controller.Open();
                 var fields = new SerializedObject(view);
@@ -233,7 +242,7 @@ namespace EmpireAtWar.Tests.Editor
                 controller.SelectSave(1);
                 Assert.That(status.text, Does.Contain("not supported"));
                 survival.isOn = true;
-                Assert.That(saves.LastMode, Is.EqualTo(EmpireAtWar.Entities.Game.GameMode.Survival));
+                Assert.That(saves.LastMode, Is.EqualTo(GameMode.Survival));
                 Assert.That(status.text, Does.Contain("No saves"));
                 skirmish.isOn = true;
                 controller.SelectSave(0);
@@ -258,7 +267,7 @@ namespace EmpireAtWar.Tests.Editor
             LoadGameRouteUiController loadRoute = null;
             try
             {
-                gameData.Battle = new EmpireAtWar.Entities.MainMenu.Survival.SurvivalModel().CreateBattle();
+                gameData.Battle = new SurvivalSetupModel().CreateBattle();
                 gameData.PendingLoadError = "Load failed: Save has 1 capture sites, expected 4.";
                 var mainView = mainRoot.GetComponent<MainMenuUi>();
                 var saveView = saveRoot.GetComponent<SaveBrowserUi>();
@@ -300,11 +309,11 @@ namespace EmpireAtWar.Tests.Editor
             {
                 var view = root.GetComponent<SaveBrowserUi>();
                 var header = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave,
-                    DateTime.UtcNow, 400f, EmpireAtWar.Controllers.Game.GameSpeed.Normal);
+                    DateTime.UtcNow, 400f, GameSpeed.Normal);
                 var old = JsonUtility.FromJson<BattleSaveHeader>(JsonUtility.ToJson(header).Replace(
                     "\"version\":" + BattleSaveHeader.CURRENT_VERSION, "\"version\":0"));
                 var remaining = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Autosave,
-                    DateTime.UtcNow, 200f, EmpireAtWar.Controllers.Game.GameSpeed.Normal);
+                    DateTime.UtcNow, 200f, GameSpeed.Normal);
                 var saves = new EmptySaves { Headers = new[] { old, remaining } };
                 controller = new LoadGameRouteUiController(new UiServiceStub(view), new CancelRouterStub(), saves, null);
                 controller.Open();
@@ -344,15 +353,15 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class EmptySaves : EmpireAtWar.Services.Saves.IBattleSaveRepository
+        private sealed class EmptySaves : IBattleSaveRepository
         {
-            public EmpireAtWar.Services.Saves.BattleSaveHeader[] Headers = Array.Empty<EmpireAtWar.Services.Saves.BattleSaveHeader>();
-            public EmpireAtWar.Entities.Game.GameMode LastMode;
+            public BattleSaveHeader[] Headers = Array.Empty<BattleSaveHeader>();
+            public GameMode LastMode;
             public int LoadCount;
             public int DeleteCount;
             public GameMode DeletedMode;
             public BattleSaveSlot DeletedSlot;
-            public void Save(EmpireAtWar.Services.Saves.BattleSave save) => throw new NotSupportedException();
+            public void Save(BattleSave save) => throw new NotSupportedException();
             public BattleSave Load(GameMode mode, BattleSaveSlot slot)
             {
                 LoadCount++;
@@ -366,10 +375,10 @@ namespace EmpireAtWar.Tests.Editor
                 DeletedSlot = slot;
                 Headers = Headers.Where(header => header.Mode != mode || header.Slot.Name != slot.Name).ToArray();
             }
-            public System.Collections.Generic.IReadOnlyList<EmpireAtWar.Services.Saves.BattleSaveHeader> List(EmpireAtWar.Entities.Game.GameMode mode)
+            public System.Collections.Generic.IReadOnlyList<BattleSaveHeader> List(GameMode mode)
             {
                 LastMode = mode;
-                return mode == EmpireAtWar.Entities.Game.GameMode.Skirmish ? Headers : Array.Empty<EmpireAtWar.Services.Saves.BattleSaveHeader>();
+                return mode == GameMode.Skirmish ? Headers : Array.Empty<BattleSaveHeader>();
             }
         }
 
@@ -388,8 +397,8 @@ namespace EmpireAtWar.Tests.Editor
             public void SetContentVisible(bool isVisible) { }
         }
 
-        private sealed class RouteStub : EmpireAtWar.Entities.MainMenu.Play.IPlayRoute, ISettingsRoute, ISkirmishRoute, EmpireAtWar.Entities.MainMenu.Survival.ISurvivalRoute, EmpireAtWar.Entities.MainMenu.Simulation.ISimulationRoute, EmpireAtWar.Entities.Saves.ILoadGameRoute, EmpireAtWar.Entities.MainMenu.Online.IOnlineRoute, EmpireAtWar.Entities.MainMenu.Tutorial.ITutorialRoute,
-            EmpireAtWar.Entities.MainMenu.SinglePlayer.ISinglePlayerRoute
+        private sealed class RouteStub : IPlayRoute, ISettingsRoute, ISkirmishRoute, ISurvivalRoute, ISimulationRoute, ILoadGameRoute, IOnlineRoute, ITutorialRoute,
+            ISinglePlayerRoute
         {
             public int OpenCount { get; private set; }
             public void Open() => OpenCount++;
@@ -398,8 +407,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private static ISettingsService CreateSettings()
         {
-            EmpireAtWar.Services.Settings.SettingsService settings =
-                new EmpireAtWar.Services.Settings.SettingsService(new ConsentRepository(true), new ISettingsApplier[0]);
+            GameSettingsService settings =
+                new GameSettingsService(new ConsentRepository(true), new ISettingsApplier[0]);
             settings.Initialize();
             return settings;
         }

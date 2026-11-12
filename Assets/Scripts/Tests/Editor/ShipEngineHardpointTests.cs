@@ -10,6 +10,7 @@ using EmpireAtWar.Mvc;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -26,7 +27,7 @@ namespace EmpireAtWar.Tests.Editor
             var root = new GameObject("Engine regression") { hideFlags = HideFlags.HideAndDontSave };
             try
             {
-                var ship = root.AddComponent<EmpireAtWar.Ship.Ship>();
+                var ship = root.AddComponent<ShipEntity>();
                 var movement = root.AddComponent<ShipMoveComponent>();
                 var model = new ShipMoveModel(data, new CombatModifiers());
                 var motion = new ShipMovementTweenPlayer(root.transform, root.transform,
@@ -34,13 +35,13 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(ShipMoveComponent).GetField("_motion", PRIVATE_INSTANCE).SetValue(movement, motion);
                 typeof(MonoComponent<ShipMoveModel>).GetMethod("SetModel", PRIVATE_INSTANCE)
                     .Invoke(movement, new object[] { model });
-                typeof(EmpireAtWar.Ship.Ship).GetField("_shipMoveComponent", PRIVATE_INSTANCE).SetValue(ship, movement);
-                typeof(EmpireAtWar.Ship.Ship).GetField("<Data>k__BackingField", PRIVATE_INSTANCE).SetValue(ship, data);
-                var engineObservers = (List<IReadOnlyHardPointModel>)typeof(EmpireAtWar.Ship.Ship)
+                typeof(ShipEntity).GetField("_shipMoveComponent", PRIVATE_INSTANCE).SetValue(ship, movement);
+                typeof(ShipEntity).GetField("<Data>k__BackingField", PRIVATE_INSTANCE).SetValue(ship, data);
+                var engineObservers = (List<IReadOnlyHardPointModel>)typeof(ShipEntity)
                     .GetField("_engineUnits", PRIVATE_INSTANCE).GetValue(ship);
                 var engines = new HardPointModel[2];
                 var changed = (Action)Delegate.CreateDelegate(typeof(Action), ship,
-                    typeof(EmpireAtWar.Ship.Ship).GetMethod("HandleEnginesData", PRIVATE_INSTANCE));
+                    typeof(ShipEntity).GetMethod("HandleEnginesData", PRIVATE_INSTANCE));
                 for (int i = 0; i < engines.Length; i++)
                 {
                     var engine = new HardPointModel(HardPointType.Engines, i);

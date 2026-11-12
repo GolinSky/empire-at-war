@@ -12,6 +12,7 @@ using EmpireAtWar.Entities.Map.Generation;
 using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Views.ReinforcementZones;
+using EmpireAtWar.Entities.Planet;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -906,7 +907,7 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedSkirmishSeed_RebuildsIdenticalLayout()
         {
             BattleDefinition battle = SkirmishPreset.Create(TestPlayers.CreateTeamGame().Players,
-                EmpireAtWar.Entities.Planet.PlanetType.Coruscant, MapSize.Large,
+                PlanetType.Coruscant, MapSize.Large,
                 BattleVictoryCondition.DestroyEnemyFleet, 1000f, true, SkirmishPreset.NewMapSeed()).Build();
             BattleDefinition loaded = JsonUtility.FromJson<BattleSetupSave>(
                 JsonUtility.ToJson(BattleSetupSave.From(battle))).Rebuild();

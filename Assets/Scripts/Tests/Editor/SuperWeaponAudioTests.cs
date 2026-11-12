@@ -13,6 +13,8 @@ using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
+using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.BattleNotifications;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -208,7 +210,7 @@ namespace EmpireAtWar.Tests.Editor
                     faction: null, bindings: null, battleState: null, model: model,
                     targeting: new SuperWeaponTargetingModel(), unitTargeting: null, data: null,
                     interfaceAudio: audio, interfaceData: data, commands: commands,
-                    notifications: new EmpireAtWar.Services.BattleNotifications.BattleNotificationFeed());
+                    notifications: new BattleNotificationFeed());
                 SetField(presenter, "_view", new View());
                 var states = (Dictionary<SuperWeaponType, SuperWeaponState>)typeof(SuperWeaponPresenter)
                     .GetField("_lastStates", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(presenter);
@@ -335,7 +337,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class OwnedEntity : IEntity
         {
             public long Id => 1;
-            public EmpireAtWar.Models.Health.IHealthModelObserver HealthModel => throw new NotSupportedException();
+            public IHealthModelObserver HealthModel => throw new NotSupportedException();
             public PlayerId Owner { get; }
             public OwnedEntity(PlayerId owner) => Owner = owner;
             public bool TryGetFacade<TFacade>(out TFacade entityFacade) where TFacade : IEntityFacade =>

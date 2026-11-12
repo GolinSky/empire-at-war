@@ -11,6 +11,8 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 using Object = UnityEngine.Object;
+using ILifecycleInitializable = EmpireAtWar.Lifecycle.IInitializable;
+using ILifecycleTickable = EmpireAtWar.Lifecycle.ITickable;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -117,7 +119,7 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class CallbackProbe : EmpireAtWar.Lifecycle.IInitializable, EmpireAtWar.Lifecycle.ITickable
+        private sealed class CallbackProbe : ILifecycleInitializable, ILifecycleTickable
         {
             public int InitializeCount { get; private set; }
             public int TickCount { get; private set; }

@@ -9,6 +9,7 @@ using NUnit.Framework;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Services.IdGeneration;
 using EmpireAtWar.Ship;
+using EmpireAtWar.Entities.BaseEntity;
 using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
@@ -21,7 +22,7 @@ namespace EmpireAtWar.Tests.Editor
         public void ShipFactory_ISDIII_RejectsSpawnAndRestoreBeforeLoadingAssets(bool restore)
         {
             var factory = new ShipFactory(null, null, null, null, null, new UniqueIdGenerator(
-                new OfflineSession(new PlayerId(0)), new EmpireAtWar.Entities.BaseEntity.EntityLocator()));
+                new OfflineSession(new PlayerId(0)), new EntityLocator()));
 
             var exception = Assert.Throws<System.InvalidOperationException>(() =>
             {

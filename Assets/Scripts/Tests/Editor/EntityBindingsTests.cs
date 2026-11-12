@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.Squadrons;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Tests.Entities
 {
@@ -36,7 +37,7 @@ namespace EmpireAtWar.Tests.Entities
                 }
                 else
                     Assert.That(bindings.Health, Is.Not.Empty, path);
-                if (view is EmpireAtWar.Ship.Ship)
+                if (view is ShipEntity)
                 {
                     Assert.That(bindings.ShipMove, Is.Not.Null, path);
                     Assert.That(bindings.AudioShip, Is.Not.Null, path);

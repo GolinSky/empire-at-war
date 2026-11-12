@@ -15,6 +15,7 @@ using UnityEditor;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Components.Hangar;
 using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Tests.Editor
@@ -47,7 +48,7 @@ namespace EmpireAtWar.Tests.Editor
                 Entity hero = new Entity(new LivingHealth(), entities,
                     new IEntityFacade[] { new UnitTypeFacade(UnitTypeId.Ship(heroType)) },
                     TestPlayers.Human, 42, System.Array.Empty<IPooledEntityEvents>(),
-                    System.Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+                    System.Array.Empty<IHangarLaunchEvents>());
                 ContainerBuilder builder = new ContainerBuilder();
                 builder.RegisterInstance(controller).AsImplementedInterfaces();
                 builder.RegisterLifecycle();

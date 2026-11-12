@@ -18,6 +18,9 @@ using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Components.Hangar;
+using EmpireAtWar.Mvc;
+using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -44,7 +47,7 @@ namespace EmpireAtWar.Tests.Editor
                 StationTarget health = new StationTarget(stationView.transform);
                 Entity station = new Entity(health, entities, new IEntityFacade[] { health },
                     TestPlayers.Human, 1, System.Array.Empty<IPooledEntityEvents>(),
-                    System.Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+                    System.Array.Empty<IHangarLaunchEvents>());
                 entities.AddEntity(station);
                 RecordingSuperWeaponFireService fireService = new RecordingSuperWeaponFireService();
                 SuperWeaponModel model = new SuperWeaponModel();
@@ -104,7 +107,7 @@ namespace EmpireAtWar.Tests.Editor
                 StationTarget health = new StationTarget(stationView.transform);
                 entities.AddEntity(new Entity(health, entities, new IEntityFacade[] { health },
                     TestPlayers.Human, 1, Array.Empty<IPooledEntityEvents>(),
-                    Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>()));
+                    Array.Empty<IHangarLaunchEvents>()));
                 vision.Register(TestPlayers.Enemy, scout.transform, 20f);
                 RecordingSuperWeaponFireService fireService = new RecordingSuperWeaponFireService();
                 SuperWeaponModel model = new SuperWeaponModel();
@@ -145,7 +148,7 @@ namespace EmpireAtWar.Tests.Editor
             StationTarget health = new StationTarget(view.transform);
             Entity target = new Entity(health, entities, new IEntityFacade[] { health },
                 TestPlayers.Human, 123, Array.Empty<IPooledEntityEvents>(),
-                Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+                Array.Empty<IHangarLaunchEvents>());
             entities.AddEntity(target);
             SuperWeaponData data = LoadData();
             SuperWeaponFireService fire = CreateFireService(entities, data, audio);
@@ -217,7 +220,7 @@ namespace EmpireAtWar.Tests.Editor
             StationTarget health = new StationTarget(view.transform);
             Entity target = new Entity(health, entities, new IEntityFacade[] { health },
                 TestPlayers.Human, 123, Array.Empty<IPooledEntityEvents>(),
-                Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+                Array.Empty<IHangarLaunchEvents>());
             entities.AddEntity(target);
             SuperWeaponData data = AssetDatabase.LoadAssetAtPath<SuperWeaponData>(
                 "Assets/Settings/Data/Models/SuperWeapons/SuperWeaponData.asset");
@@ -289,7 +292,7 @@ namespace EmpireAtWar.Tests.Editor
             StationTarget health = new StationTarget(view.transform);
             Entity target = new Entity(health, entities, new IEntityFacade[] { health },
                 TestPlayers.Human, 123, Array.Empty<IPooledEntityEvents>(),
-                Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+                Array.Empty<IHangarLaunchEvents>());
             entities.AddEntity(target);
             SuperWeaponFireService fire = CreateFireService(entities, null, audio);
             SuperWeaponFireService restored = CreateFireService(entities, null, audio);
@@ -330,7 +333,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static SuperWeaponFireService CreateFireService(EntityLocator entities, SuperWeaponData data, GameObject audio,
-            IAudioService audioService = null, EmpireAtWar.ViewComponents.Weapon.BoltFlightBatch boltFlights = null)
+            IAudioService audioService = null, BoltFlightBatch boltFlights = null)
         {
             AudioSource audioSource = audio.AddComponent<AudioSource>();
             ShipSfxSources sources = audio.AddComponent<ShipSfxSources>();
@@ -342,7 +345,7 @@ namespace EmpireAtWar.Tests.Editor
                 new ImpactEffectPresenter(null, null), boltFlights, audioService, sfx, sources);
         }
 
-        private sealed class RecordingAudio : EmpireAtWar.Mvc.Service, IAudioService
+        private sealed class RecordingAudio : Service, IAudioService
         {
             public readonly List<AudioClip> Clips = new List<AudioClip>();
             public readonly List<float> Volumes = new List<float>();
@@ -369,11 +372,11 @@ namespace EmpireAtWar.Tests.Editor
             GameObject origin = new GameObject("Ion origin");
             GameObject audio = new GameObject("Ion test audio");
             var recording = new RecordingAudio();
-            var boltFlights = new EmpireAtWar.ViewComponents.Weapon.BoltFlightBatch();
+            var boltFlights = new BoltFlightBatch();
             var entities = new EntityLocator();
             var health = new StationTarget(view.transform);
             var target = new Entity(health, entities, new IEntityFacade[] { health }, TestPlayers.Human, 123,
-                Array.Empty<IPooledEntityEvents>(), Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+                Array.Empty<IPooledEntityEvents>(), Array.Empty<IHangarLaunchEvents>());
             SuperWeaponData data = LoadData();
             SuperWeaponFireService fire = CreateFireService(entities, data, audio, recording, boltFlights);
             try

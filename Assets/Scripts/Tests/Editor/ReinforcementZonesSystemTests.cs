@@ -18,6 +18,8 @@ using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
 using UnityEngine;
 using EmpireAtWar.Services.Ships;
+using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Input;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -518,7 +520,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         /// <summary>The pointer projects far from every zone, so nothing is hovered.</summary>
-        private sealed class FarCamera : EmpireAtWar.Services.Camera.ICameraService
+        private sealed class FarCamera : ICameraService
         {
             public string Id => nameof(FarCamera);
             public Vector3 CameraPosition => Vector3.zero;
@@ -539,7 +541,7 @@ namespace EmpireAtWar.Tests.Editor
             public void SetCullingMask(LayerMask mask) { }
         }
 
-        private sealed class IdlePointer : EmpireAtWar.Services.Input.IPointerInput
+        private sealed class IdlePointer : IPointerInput
         {
             public event System.Action<Vector2> PrimaryPressed { add { } remove { } }
             public event System.Action<Vector2> PrimaryReleased { add { } remove { } }

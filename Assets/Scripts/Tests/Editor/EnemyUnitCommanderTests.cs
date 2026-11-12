@@ -36,6 +36,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.ShipNavigation;
+using EmpireAtWar.Entities.SpaceStation;
 using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
@@ -2207,7 +2208,7 @@ private sealed class ZoneSource : IReinforcementZoneSource
         }
 
         private sealed class FakeEntity : IEntity, ICombatModifiersFacade, IUnitTypeFacade, IMiningFacilityFacade,
-            INavigationFootprintFacade, IUnitCombatObserverFacade, EmpireAtWar.Entities.SpaceStation.IStationDurabilityFacade
+            INavigationFootprintFacade, IUnitCombatObserverFacade, IStationDurabilityFacade
         {
             public bool IsUnit { get; set; } = true;
             public bool IsMine { get; set; }

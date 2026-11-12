@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
 using EmpireAtWar.Entities.MainMenu.Survival;
 using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
@@ -71,7 +72,7 @@ namespace EmpireAtWar.Tests.Editor
         public void Builder_CopiesPlayerList()
         {
             var builder = SkirmishPreset.Create(SkirmishPreset.Default().Slots,
-                EmpireAtWar.Entities.Planet.PlanetType.Coruscant, MapSize.Small,
+                PlanetType.Coruscant, MapSize.Small,
                 BattleVictoryCondition.DestroyEnemyFleet, 1000, true, 0);
             BattleDefinition definition = builder.Build();
             builder.Players.Clear();

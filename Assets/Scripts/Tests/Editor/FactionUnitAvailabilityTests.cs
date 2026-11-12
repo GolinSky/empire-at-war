@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Faction.Ui;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -235,13 +238,13 @@ namespace EmpireAtWar.Tests.Editor
             public int GetUnitSortOrder(UnitRequest request) => 0;
         }
 
-        private sealed class OwnBaseAccess : EmpireAtWar.Services.Stations.IProductionAccess
+        private sealed class OwnBaseAccess : IProductionAccess
         {
             public bool CanProduce => true;
             public bool HasHostBase => true;
-            public EmpireAtWar.Models.Players.PlayerId ProductionHost => TestPlayers.Human;
+            public PlayerId ProductionHost => TestPlayers.Human;
 
-            public bool TryGetProductionBase(out EmpireAtWar.Entities.BaseEntity.IEntity productionBase) =>
+            public bool TryGetProductionBase(out IEntity productionBase) =>
                 throw new System.NotSupportedException();
         }
 

@@ -3,6 +3,7 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Services.Player;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
@@ -154,7 +155,7 @@ namespace EmpireAtWar.Tests.Editor
         public void ConstructionStartedEmitsOnlyAfterSuccessfulPaymentAndNotRestore(SiteFacilityType type)
         {
             CaptureSitesSystem system = CreateSystem();
-            var registry = new EmpireAtWar.Services.Player.PlayerRegistry();
+            var registry = new PlayerRegistry();
             var builder = new BuilderStub();
             registry.RegisterSiteBuilder(TestPlayers.Human, builder);
             typeof(CaptureSitesSystem).GetField("_playerRegistry", BindingFlags.Instance | BindingFlags.NonPublic)

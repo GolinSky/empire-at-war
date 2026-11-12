@@ -14,6 +14,7 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Stations;
+using EmpireAtWar.Entities.BaseEntity;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -399,7 +400,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool CanProduce { get; set; }
             public bool HasHostBase => CanProduce;
             public PlayerId ProductionHost => TestPlayers.Enemy;
-            public bool TryGetProductionBase(out EmpireAtWar.Entities.BaseEntity.IEntity productionBase) =>
+            public bool TryGetProductionBase(out IEntity productionBase) =>
                 throw new System.NotSupportedException();
         }
 

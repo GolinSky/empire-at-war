@@ -2,6 +2,7 @@ using System.Linq;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Editor.Rendering;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.ViewComponents.Health;
@@ -81,7 +82,7 @@ namespace EmpireAtWar.Tests.Editor
             var station = AssetDatabase.LoadAssetAtPath<GameObject>(ViewPath("Republic"));
             var levels = new SerializedObject(station.GetComponent<StationLevelView>()).FindProperty("levelModels");
             var finalModel = (StationLevelArt)levels.GetArrayElementAtIndex(LEVELS - 1).objectReferenceValue;
-            var sources = EmpireAtWar.Editor.Rendering.ShipWreckBuilder.GetSourceRenderers(station);
+            var sources = ShipWreckBuilder.GetSourceRenderers(station);
             Assert.That(sources, Is.EquivalentTo(finalModel.HullRenderers));
             var wreck = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Models/Wrecks/RepublicSpaceStationWreckView.prefab");
             Assert.That(wreck.transform.localScale, Is.EqualTo(Vector3.one));

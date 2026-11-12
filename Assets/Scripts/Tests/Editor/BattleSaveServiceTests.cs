@@ -5,12 +5,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
 using System.Linq;
+using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.MainMenu.Skirmish;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.Data;
@@ -29,6 +31,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
+using SurvivalSetupModel = EmpireAtWar.Entities.MainMenu.Survival.SurvivalModel;
+using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -65,7 +69,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(BattleState.Paused)]
         public void Capture_RunningOrPausedBattle_RecordsHeaderSetupAndCamera(BattleState state)
         {
-            BattleDefinition battle = new EmpireAtWar.Entities.MainMenu.Skirmish.SkirmishModel().CreateBattle();
+            BattleDefinition battle = new SkirmishModel().CreateBattle();
             _state.SetState(state);
             _state.SetSpeed(GameSpeed.Fast);
             BattleSaveService service = CreateService(battle);
@@ -101,7 +105,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Capture_ThroughRepository_LoadsBackSameCameraAndSetup()
         {
-            BattleDefinition battle = new EmpireAtWar.Entities.MainMenu.Survival.SurvivalModel().CreateBattle();
+            BattleDefinition battle = new SurvivalSetupModel().CreateBattle();
             _state.SetState(BattleState.Running);
             _repository.Save(CreateService(battle).Capture(BattleSaveSlot.Named("Wave 3")));
 
@@ -281,7 +285,7 @@ namespace EmpireAtWar.Tests.Editor
             AbilitySlotSave SaveAbility(ShipAbilityId id) =>
                 AbilitySlotSave.From(new ShipAbilitySlot(null, abilities.Get(id), id));
 
-            int hardpointCount = assets.LoadComponent<EmpireAtWar.Ship.Ship>("QuasarFireShipView")
+            int hardpointCount = assets.LoadComponent<ShipEntity>("QuasarFireShipView")
                 .Bindings.Health[0].ShipUnits.Count;
             int memberCount = assets.LoadComponent<Squadron>("XWingSquadronView").Bindings.SquadronHealth.FighterCount;
             UnitSave ship = UnitSave.Create(1, rebel.Id, UnitTypeId.Ship(ShipType.QuasarFire), Vector3.zero,
@@ -504,7 +508,7 @@ namespace EmpireAtWar.Tests.Editor
             if (!allowed) Assert.That(actions.Status, Does.StartWith("Load failed:"));
         }
 
-        private sealed class LoadCommandStub : EmpireAtWar.Commands.Game.IGameCommand
+        private sealed class LoadCommandStub : IGameCommand
         {
             public BattleSave Loaded { get; private set; }
             public void ExitGame() { }

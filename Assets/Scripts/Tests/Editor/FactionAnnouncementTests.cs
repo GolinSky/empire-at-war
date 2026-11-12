@@ -21,6 +21,9 @@ using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Networking;
 using EmpireAtWar.Services.Networking.Messages;
 using EmpireAtWar.Services.Stations;
+using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.SuperWeapons;
+using EmpireAtWar.Utils.Random;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -45,12 +48,12 @@ namespace EmpireAtWar.Tests.Editor
             _clips = new FactionAnnouncerSet();
             foreach (FieldInfo field in typeof(FactionAnnouncerSet).GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
                 if (field.FieldType == typeof(AudioClip)) field.SetValue(_clips, Clip(field.Name));
-            var capturePool = new EmpireAtWar.Utils.Random.RandomAudioClips();
-            typeof(EmpireAtWar.Utils.Random.RandomFromArray<AudioClip>)
+            var capturePool = new RandomAudioClips();
+            typeof(RandomFromArray<AudioClip>)
                 .GetField("array", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(capturePool, new[] { Clip("Captured") });
             SetField(_clips, "miningCaptured", capturePool);
-            var attackPool = new EmpireAtWar.Utils.Random.RandomAudioClips();
-            typeof(EmpireAtWar.Utils.Random.RandomFromArray<AudioClip>)
+            var attackPool = new RandomAudioClips();
+            typeof(RandomFromArray<AudioClip>)
                 .GetField("array", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(attackPool, new[] { Clip("StationUnderAttack") });
             SetField(_clips, "stationUnderAttack", attackPool);
             ReinforcementData data = ScriptableObject.CreateInstance<ReinforcementData>();
@@ -269,9 +272,9 @@ namespace EmpireAtWar.Tests.Editor
         public void MineCaptureOnlyAnnouncesLocalNeutralCapture()
         {
             InvokeSite("HandleCaptured", TestPlayers.Enemy, TestPlayers.Human, SiteFacilityType.Mining);
-            InvokeSite("HandleCaptured", default(EmpireAtWar.Models.Players.PlayerId), TestPlayers.Enemy, SiteFacilityType.Mining);
+            InvokeSite("HandleCaptured", default(PlayerId), TestPlayers.Enemy, SiteFacilityType.Mining);
             Assert.That(_audio.Clips, Is.Empty);
-            InvokeSite("HandleCaptured", default(EmpireAtWar.Models.Players.PlayerId), TestPlayers.Human, SiteFacilityType.Mining);
+            InvokeSite("HandleCaptured", default(PlayerId), TestPlayers.Human, SiteFacilityType.Mining);
             Assert.That(_audio.Clips.Count, Is.EqualTo(1));
             Assert.That(_audio.Clips[0].name, Is.EqualTo("Captured"));
         }
@@ -600,8 +603,8 @@ namespace EmpireAtWar.Tests.Editor
             definition.Ships.Clear();
             definition.Squadrons.Clear();
             SetField(definition, "miningFacilities", Array.Empty<MiningFacilityType>());
-            SetField(definition, "defendPlatforms", Array.Empty<EmpireAtWar.Entities.DefendPlatform.DefendPlatformType>());
-            SetField(definition, "superWeapons", Array.Empty<EmpireAtWar.Entities.SuperWeapons.SuperWeaponType>());
+            SetField(definition, "defendPlatforms", Array.Empty<DefendPlatformType>());
+            SetField(definition, "superWeapons", Array.Empty<SuperWeaponType>());
             if (unlocks)
             {
                 var ship = new FactionData();

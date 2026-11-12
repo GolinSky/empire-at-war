@@ -11,6 +11,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.SceneService;
+using EmpireAtWar.Controllers.Game;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -88,12 +89,12 @@ namespace EmpireAtWar.Tests.Editor
             var scenes = new TrackingSceneService();
             var controller = new GameController(scenes, _model);
             var definition = SkirmishPreset.Default();
-            var save = EmpireAtWar.Services.Saves.BattleSave.Create(
-                EmpireAtWar.Services.Saves.BattleSaveHeader.Create(GameMode.Skirmish,
-                    EmpireAtWar.Services.Saves.BattleSaveSlot.Quicksave, DateTime.UtcNow, 456f,
-                    EmpireAtWar.Controllers.Game.GameSpeed.Fast), BattleSetupSave.From(definition),
-                EmpireAtWar.Services.Saves.CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 600f),
-                Array.Empty<EmpireAtWar.Services.Saves.UnitSave>(), Array.Empty<EmpireAtWar.Services.Saves.StructureSave>());
+            var save = BattleSave.Create(
+                BattleSaveHeader.Create(GameMode.Skirmish,
+                    BattleSaveSlot.Quicksave, DateTime.UtcNow, 456f,
+                    GameSpeed.Fast), BattleSetupSave.From(definition),
+                CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 600f),
+                Array.Empty<UnitSave>(), Array.Empty<StructureSave>());
 
             controller.LoadBattle(save);
             Assert.That(_model.Battle.Map.Seed, Is.EqualTo(definition.Map.Seed));
@@ -122,7 +123,7 @@ namespace EmpireAtWar.Tests.Editor
                 UnitOrderSave.From(new UnitOrderModel()));
             var save = BattleSave.Create(
                 BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave, DateTime.UtcNow, 10f,
-                    EmpireAtWar.Controllers.Game.GameSpeed.Normal),
+                    GameSpeed.Normal),
                 BattleSetupSave.From(definition),
                 CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 600f),
                 new[] { badUnit }, Array.Empty<StructureSave>());

@@ -1,9 +1,13 @@
 using EmpireAtWar.Components.TeamColor;
 using System.Linq;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.DefendPlatform;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using ShipEntity = EmpireAtWar.Ship.Ship;
+using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
+using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -34,10 +38,10 @@ namespace EmpireAtWar.Tests.Editor
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
                 EntityView entity = prefab.GetComponent<EntityView>();
-                if (!(entity is EmpireAtWar.Ship.Ship) &&
-                    !(entity is EmpireAtWar.Entities.DefendPlatform.DefendPlatform) &&
-                    !(entity is EmpireAtWar.Entities.SpaceStation.SpaceStation) &&
-                    !(entity is EmpireAtWar.Entities.MiningFacility.MiningFacility)) continue;
+                if (!(entity is ShipEntity) &&
+                    !(entity is DefendPlatform) &&
+                    !(entity is SpaceStationEntity) &&
+                    !(entity is MiningFacilityEntity)) continue;
 
                 Assert.That(entity.Bindings, Is.Not.Null, path);
                 UnitRenderStateComponent[] components = entity.Bindings.Injectables

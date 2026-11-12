@@ -125,15 +125,15 @@ namespace EmpireAtWar.Tests.Editor
             var request = new DerivedShipRequest();
             var model = new EnemyUnitLimitModel();
             model.TryReserve(UnitLimitKey.From(request), 1, 2, 10);
-            Assert.That(model.GetReservedCount<EmpireAtWar.Controllers.Factions.ShipUnitRequest>(request.Id),
+            Assert.That(model.GetReservedCount<ShipUnitRequest>(request.Id),
                 Is.EqualTo(1));
-            Assert.That(model.CanReserve<EmpireAtWar.Controllers.Factions.ShipUnitRequest>(request.Id, 1, 2, 10),
+            Assert.That(model.CanReserve<ShipUnitRequest>(request.Id, 1, 2, 10),
                 Is.False);
-            model.Release(UnitLimitKey.For<EmpireAtWar.Controllers.Factions.ShipUnitRequest>(request.Id), 2);
+            model.Release(UnitLimitKey.For<ShipUnitRequest>(request.Id), 2);
             Assert.That(model.GetReservedCount(UnitLimitKey.From(request)), Is.Zero);
         }
 
-        private sealed class DerivedShipRequest : EmpireAtWar.Controllers.Factions.ShipUnitRequest
+        private sealed class DerivedShipRequest : ShipUnitRequest
         {
             public DerivedShipRequest() : base(null, default) { }
         }

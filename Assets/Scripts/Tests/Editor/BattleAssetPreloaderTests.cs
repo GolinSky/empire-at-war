@@ -27,6 +27,8 @@ using UnityEngine.ResourceManagement;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Object = UnityEngine.Object;
 using ShipEntity = EmpireAtWar.Ship.Ship;
+using MiningFacilityEntity = EmpireAtWar.Entities.MiningFacility.MiningFacility;
+using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -59,10 +61,10 @@ namespace EmpireAtWar.Tests.Editor
                         foreach (MiningFacilityType mining in faction.MiningFacilities)
                         {
                             string assetName = MiningFacilityAssets.GetName(mining);
-                            assets.LoadComponent<EmpireAtWar.Entities.MiningFacility.MiningFacility>(assetName + "View");
+                            assets.LoadComponent<MiningFacilityEntity>(assetName + "View");
                             assets.Load<MiningFacilityData>(assetName + "Data");
                         }
-                        assets.LoadComponent<EmpireAtWar.Entities.SpaceStation.SpaceStation>(factionType + "SpaceStationView");
+                        assets.LoadComponent<SpaceStationEntity>(factionType + "SpaceStationView");
                         foreach (ShipType ship in faction.Ships.Keys)
                         {
                             ShipData data = assets.Load<ShipData>(ships.GetShipDataPath(ship));

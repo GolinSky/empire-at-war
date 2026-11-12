@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using NUnit.Framework;
+using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -14,7 +15,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                if (prefab.GetComponent<EmpireAtWar.Ship.Ship>() != null)
+                if (prefab.GetComponent<ShipEntity>() != null)
                     yield return path;
             }
         }
@@ -25,7 +26,7 @@ namespace EmpireAtWar.Tests.Editor
             var root = PrefabUtility.LoadPrefabContents(path);
             try
             {
-                using (var serialized = new SerializedObject(root.GetComponent<EmpireAtWar.Ship.Ship>()))
+                using (var serialized = new SerializedObject(root.GetComponent<ShipEntity>()))
                 {
                     var renderers = serialized.FindProperty("explosionHullRenderers");
                     Assert.That(renderers.arraySize, Is.GreaterThan(0), path);

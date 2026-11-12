@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -132,7 +133,7 @@ namespace EmpireAtWar.Tests.Editor
             _entities.AddEntity(new Entity(wing, _entities,
                 new IEntityFacade[] { wing, new UnitTypeFacade(UnitTypeId.Squadron(type)) }, owner,
                 _entities.Entities.Count + 1, Array.Empty<IPooledEntityEvents>(),
-                Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>()));
+                Array.Empty<IHangarLaunchEvents>()));
             return wing;
         }
 

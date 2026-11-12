@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
@@ -15,6 +16,7 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Ships;
+using EmpireAtWar.Ship;
 using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
@@ -135,7 +137,7 @@ namespace EmpireAtWar.Tests.Editor
             return (List<PlayerBattleState>)typeof(BattleVictoryService).GetField("_states", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(service);
         }
 
-        private sealed class Unit : IEntity, IPlayerBaseFacade, EmpireAtWar.Ship.IShipEntity
+        private sealed class Unit : IEntity, IPlayerBaseFacade, IShipEntity
         {
             private readonly bool _isBase;
             public long Id { get; }
@@ -144,7 +146,7 @@ namespace EmpireAtWar.Tests.Editor
             public float NavigationRadius => 1;
             public float NavigationSpeed => 1;
             public long EntityId => Id;
-            public EmpireAtWar.Entities.BaseEntity.Orders.UnitOrderType CurrentOrder => default;
+            public UnitOrderType CurrentOrder => default;
             public Health Health { get; } = new Health();
             public IHealthModelObserver HealthModel => Health;
             public Unit(long id, PlayerId owner, bool isBase) { Id = id; Owner = owner; _isBase = isBase; }

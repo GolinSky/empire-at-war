@@ -16,6 +16,9 @@ using VContainer;
 using VContainer.Internal;
 using VContainer.Unity;
 using Object = UnityEngine.Object;
+using ILifecycleInitializable = EmpireAtWar.Lifecycle.IInitializable;
+using ILifecycleLateDisposable = EmpireAtWar.Lifecycle.ILateDisposable;
+using ILifecycleTickable = EmpireAtWar.Lifecycle.ITickable;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -276,8 +279,8 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class ProbeEntity : EntityView, EmpireAtWar.Lifecycle.IInitializable,
-            EmpireAtWar.Lifecycle.ITickable, EmpireAtWar.Lifecycle.ILateDisposable
+        private sealed class ProbeEntity : EntityView, ILifecycleInitializable,
+            ILifecycleTickable, ILifecycleLateDisposable
         {
             [SerializeField] private OwnedComponentProbe ownedComponent;
             private EntityComponentLifecycle _components;
@@ -337,7 +340,7 @@ namespace EmpireAtWar.Tests.Editor
             public void Dispose() => DisposeCount++;
         }
 
-        private sealed class OwnedComponentProbe : MonoBehaviour, IMonoComponent, EmpireAtWar.Lifecycle.ILateDisposable
+        private sealed class OwnedComponentProbe : MonoBehaviour, IMonoComponent, ILifecycleLateDisposable
         {
             public int ReleaseCount { get; private set; }
             public void Release() => ReleaseCount++;

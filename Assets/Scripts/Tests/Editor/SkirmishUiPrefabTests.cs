@@ -1,6 +1,7 @@
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Entities.Game;
 using NUnit.Framework;
 using TMPro;
 using UnityEditor;
@@ -102,7 +103,7 @@ namespace EmpireAtWar.Tests.Editor
 
                 Toggle superWeapons = (Toggle)serializedPopup.FindProperty("superWeaponsToggle").objectReferenceValue;
                 superWeapons.isOn = false;
-                Assert.That(model.CreateBattle().HasFeature(EmpireAtWar.Entities.Game.BattleFeatures.SuperWeapons), Is.False);
+                Assert.That(model.CreateBattle().HasFeature(BattleFeatures.SuperWeapons), Is.False);
                 model.Changed -= popup.Render;
                 popup.Dispose();
             }

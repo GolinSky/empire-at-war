@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Radar;
@@ -262,7 +263,7 @@ namespace EmpireAtWar.Tests.Editor
             _service.Register(radar);
 
             // The entity owns component release; repeated cleanup remains safe.
-            ((EmpireAtWar.Lifecycle.IOrderedDisposable)radar).Dispose();
+            ((IOrderedDisposable)radar).Dispose();
 
             Assert.DoesNotThrow(radar.Release);
         }

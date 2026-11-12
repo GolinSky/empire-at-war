@@ -19,6 +19,7 @@ using EmpireAtWar.Services.OwnedAreas;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Hangar;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -279,7 +280,7 @@ namespace EmpireAtWar.Tests.Editor
             Entity entity = new Entity(new HealthStub { ShipClass = shipClass }, _locator,
                 new IEntityFacade[] { new EntityTransformFacade(item.transform), new CombatSpy() },
                 owner ?? TestPlayers.Enemy, _candidates.Count + 1, System.Array.Empty<IPooledEntityEvents>(),
-                System.Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+                System.Array.Empty<IHangarLaunchEvents>());
             _locator.AddEntity(entity);
             _candidates.Add(entity);
             return entity;

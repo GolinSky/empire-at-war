@@ -3,6 +3,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.TeamColor;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -12,6 +13,7 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
+using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -91,9 +93,9 @@ namespace EmpireAtWar.Tests.Editor
         public void Injectables_RegisterOnlyCurrentHardpointsAndTeamColorView()
         {
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
-            var ship = view.GetComponent<EmpireAtWar.Ship.Ship>();
+            var ship = view.GetComponent<ShipEntity>();
             var health = view.GetComponentsInChildren<HealthComponent>(true).Single();
-            var teamColor = view.GetComponentsInChildren<EmpireAtWar.Components.TeamColor.UnitRenderStateComponent>(true).Single();
+            var teamColor = view.GetComponentsInChildren<UnitRenderStateComponent>(true).Single();
             Assert.That(ship.Bindings.Injectables, Is.All.Not.Null, "Deleted donor components must not remain in injection slots.");
             Assert.That(ship.Bindings.Injectables, Is.EquivalentTo(health.ShipUnits.Cast<MonoBehaviour>().Append(teamColor)));
         }

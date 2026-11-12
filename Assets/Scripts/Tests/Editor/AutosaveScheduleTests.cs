@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Saves;
 using NUnit.Framework;
 
@@ -9,9 +10,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void QuickSaveAndLoad_AreRebindableBattleActions()
         {
-            using (var provider = new EmpireAtWar.Services.Input.InputActionsProvider())
+            using (var provider = new InputActionsProvider())
             {
-                var bindings = new EmpireAtWar.Services.Input.InputBindingService(provider);
+                var bindings = new InputBindingService(provider);
                 foreach (var pair in new[] { ("QuickSave", "<Keyboard>/f5"), ("QuickLoad", "<Keyboard>/f9") })
                 {
                     var action = provider.Actions.asset.FindAction("Battle/" + pair.Item1, true);

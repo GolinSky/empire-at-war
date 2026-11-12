@@ -11,6 +11,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Tests.Editor;
+using EmpireAtWar.Components.Hangar;
 using NUnit.Framework;
 using Unity.Collections;
 using Unity.Mathematics;
@@ -307,7 +308,7 @@ namespace EmpireAtWar.Tests.Weapon
                     new EntityTransformFacade(unit.Transform)
                 }, default, 1,
                 Array.Empty<IPooledEntityEvents>(),
-                Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+                Array.Empty<IHangarLaunchEvents>());
             AttackData group = new AttackData(health, null, unit, entity);
             capture.Acquire(unit, health);
             Assert.That(capture.CanAcquire(group, TestPlayers.Human, vision, out _), Is.True);
@@ -335,7 +336,7 @@ namespace EmpireAtWar.Tests.Weapon
             Entity entity = new Entity(health, null,
                 new IEntityFacade[] { new CombatModifiersFacade(modifiers), fog, new EntityTransformFacade(unit.Transform) }, default, 1,
                 System.Array.Empty<IPooledEntityEvents>(),
-                System.Array.Empty<EmpireAtWar.Components.Hangar.IHangarLaunchEvents>());
+                System.Array.Empty<IHangarLaunchEvents>());
             AttackData first = new AttackData(health, null, unit, entity);
             AttackData second = new AttackData(health, null, unit, entity);
 

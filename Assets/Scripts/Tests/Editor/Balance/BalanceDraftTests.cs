@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Editor.Balance;
 using NUnit.Framework;
 using UnityEngine;
@@ -61,7 +62,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(floating.Validate("NaN"), Is.Not.Empty);
             Assert.That(floating.Validate("Infinity"), Is.Not.Empty);
             Assert.That(floating.Validate("0"), Is.Not.Empty);
-            BalanceField enumeration = new BalanceField { Kind = BalanceValueKind.Enum, EnumType = typeof(EmpireAtWar.Components.AttackComponent.DamageType) };
+            BalanceField enumeration = new BalanceField { Kind = BalanceValueKind.Enum, EnumType = typeof(DamageType) };
             int id = Convert.ToInt32(Enum.GetValues(enumeration.EnumType).GetValue(0));
             Assert.That(BalanceValue.Bulk(enumeration, id.ToString(), "Set", id), Is.EqualTo(id.ToString()));
             Assert.Throws<InvalidOperationException>(() => BalanceValue.Bulk(enumeration, id.ToString(), "Multiply", 2));

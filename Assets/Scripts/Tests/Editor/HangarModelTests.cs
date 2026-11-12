@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEngine;
@@ -38,7 +39,7 @@ namespace EmpireAtWar.Tests.Editor
                 if (individualBay) SetField(component, "bayHardPoints", new[] { hardPoint });
                 var model = new HangarModel(data);
                 typeof(HangarComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(component, new object[] { data, healthComponent, model, null, null, default(EmpireAtWar.Models.Players.PlayerId) });
+                    .Invoke(component, new object[] { data, healthComponent, model, null, null, default(PlayerId) });
                 component.Initialize();
                 Assert.That(model.TryLaunch(INITIAL_DELAY, out _), Is.True);
                 hardPointModel.ApplyDamage(hardPointModel.MaxHealth);

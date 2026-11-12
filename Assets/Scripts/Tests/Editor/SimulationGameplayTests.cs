@@ -12,6 +12,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.UnitOrders;
+using EmpireAtWar.Ui.Base;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -243,7 +244,7 @@ namespace EmpireAtWar.Tests.Editor
                 var root = PrefabUtility.LoadPrefabContents(path);
                 try
                 {
-                    var view = root.GetComponent<EmpireAtWar.Ui.Base.BaseUi>();
+                    var view = root.GetComponent<BaseUi>();
                     var serialized = new SerializedObject(view);
                     var field = serialized.GetIterator();
                     while (field.NextVisible(true))

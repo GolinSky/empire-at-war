@@ -25,6 +25,7 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
+using EmpireAtWar.Services.Settings;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -553,8 +554,8 @@ namespace EmpireAtWar.Tests.Editor
                 selectionService: new AbilitySelection(), routeNavigation: new AbilityRoutes(),
                 cameraService: null, tooltipService: null, bindings: null, model: model,
                 icons: null, shipAbilityService: service, tooltipIcons: null, factions: null,
-                settings: new EmpireAtWar.Services.Settings.SettingsService(null,
-                    Array.Empty<EmpireAtWar.Services.Settings.ISettingsApplier>()),
+                settings: new SettingsService(null,
+                    Array.Empty<ISettingsApplier>()),
                 localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
             int unhandledCount = 0;
             router.CancelUnhandled += () => unhandledCount++;
@@ -586,7 +587,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             FakeCommand first = CreateCaster(targeted: true);
             FakeCommand second = CreateCaster(targeted: true);
-            EmpireAtWar.Models.ShipUi.ShipUiModel model = new EmpireAtWar.Models.ShipUi.ShipUiModel();
+            ShipUiModel model = new ShipUiModel();
             model.SetPendingAbility(ShipAbilityId.BoostEnginePower, new[] { first.Entity });
             Assert.That(model.IsPendingCaster(first.Entity), Is.True);
             Assert.That(model.IsPendingCaster(second.Entity), Is.False);

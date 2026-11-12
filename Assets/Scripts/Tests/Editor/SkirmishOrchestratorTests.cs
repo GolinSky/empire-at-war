@@ -10,6 +10,9 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Entities.Units;
+using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.Saves;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -62,7 +65,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Simulation_RestartsEndedThroughLoadingAndRestoresRequestedSpeed()
         {
-            var entry = new SimulationFleetEntry(EmpireAtWar.Entities.Units.UnitTypeId.Ship(ShipType.Venator), 1);
+            var entry = new SimulationFleetEntry(UnitTypeId.Ship(ShipType.Venator), 1);
             var setup = new SimulationSetup(FactionType.Republic, FactionType.Separatist,
                 new[] { entry }, new[] { entry }, 1000, 30, true);
             var state = new SkirmishStateModel();
@@ -159,13 +162,13 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Simulation_FailedRestartExitsToMenuAndRestoresTime()
         {
-            var entry = new SimulationFleetEntry(EmpireAtWar.Entities.Units.UnitTypeId.Ship(ShipType.Venator), 1);
+            var entry = new SimulationFleetEntry(UnitTypeId.Ship(ShipType.Venator), 1);
             var setup = new SimulationSetup(FactionType.Republic, FactionType.Separatist,
                 new[] { entry }, new[] { entry }, 1000, 30, false);
             var state = new SkirmishStateModel();
             var flow = new SkirmishOrchestrator(_gameCommand, new CompletedStartupStub(), _inputLock,
                 state, SimulationPreset.Create(setup).Build(), new OfflineSession(PlayerId.None));
-            var director = new EmpireAtWar.Services.Battle.SimulationDirector(null, state, flow,
+            var director = new SimulationDirector(null, state, flow,
                 null, null, null, null, null, null, null, null, null);
             try
             {
@@ -406,7 +409,7 @@ namespace EmpireAtWar.Tests.Editor
             public void ExitGame() => ExitCount++;
 
             public void StartBattle(BattleDefinition definition) { }
-            public void LoadBattle(EmpireAtWar.Services.Saves.BattleSave save) { }
+            public void LoadBattle(BattleSave save) { }
         }
     }
 }

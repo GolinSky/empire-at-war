@@ -11,6 +11,10 @@ using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.ShipSpawning;
+using EmpireAtWar.Components.Obstacles;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -254,8 +258,8 @@ namespace EmpireAtWar.Tests.Movement
             var stations = new FakeStationRegistry { IsAlive = true };
             var provider = new MapObstacleContactProvider(null, stations);
             provider.UpdateState(new BattleMap(null, null, null,
-                System.Array.Empty<EmpireAtWar.Components.Obstacles.MapObstacle>(),
-                new[] { new EmpireAtWar.Components.Obstacles.StationObstacle(
+                System.Array.Empty<MapObstacle>(),
+                new[] { new StationObstacle(
                     new PlayerId(0), Vector3.zero, 30f) }));
             var contacts = new List<RadarContact>();
             provider.CopyContacts(contacts);
@@ -267,16 +271,16 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(contacts, Is.Empty);
         }
 
-        private sealed class FakeStationRegistry : EmpireAtWar.Services.Stations.IStationRegistry
+        private sealed class FakeStationRegistry : IStationRegistry
         {
             public string Id => nameof(FakeStationRegistry);
             public bool IsAlive;
             public bool HasProductionBase(PlayerId owner) => IsAlive;
             public bool TryGetProductionBase(PlayerId owner,
-                out EmpireAtWar.Entities.BaseEntity.IEntity productionBase) =>
+                out IEntity productionBase) =>
                 TryGetLivingStation(owner, out productionBase);
             public bool TryGetLivingStation(PlayerId owner,
-                out EmpireAtWar.Entities.BaseEntity.IEntity station)
+                out IEntity station)
             {
                 station = null;
                 return IsAlive;
@@ -1015,7 +1019,7 @@ namespace EmpireAtWar.Tests.Movement
 
         private static ShipMoveModel GetModel(ShipMoveComponent component)
         {
-            PropertyInfo property = typeof(EmpireAtWar.Mvc.MonoComponent<ShipMoveModel>)
+            PropertyInfo property = typeof(MonoComponent<ShipMoveModel>)
                 .GetProperty("Model", BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(property, Is.Not.Null);
             return (ShipMoveModel)property.GetValue(component);

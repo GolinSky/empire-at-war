@@ -19,6 +19,9 @@ using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.Ship;
+using EmpireAtWar.Components.Movement.Formation;
+using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Tests.Editor;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -58,7 +61,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
             state.SetData(_target, formation ? Vector3.forward * 20f : Vector3.zero,
-                EmpireAtWar.Entities.BaseEntity.Orders.UnitOrderModel.NO_HARD_POINT);
+                UnitOrderModel.NO_HARD_POINT);
             state.Tick(0.1f);
             Vector3 committed = _movement.Destination;
 
@@ -84,7 +87,7 @@ namespace EmpireAtWar.Tests.Movement
             GameObject capitalObject = new GameObject("Far capital");
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
             ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
-                EmpireAtWar.Tests.Editor.TestPlayers.CreateDuel());
+                TestPlayers.CreateDuel());
             try
             {
                 deadObject.transform.position = new Vector3(0f, 0f, 150f);
@@ -133,7 +136,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
             ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
-                EmpireAtWar.Tests.Editor.TestPlayers.CreateDuel());
+                TestPlayers.CreateDuel());
             Radar radar = new Radar();
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
@@ -274,8 +277,8 @@ namespace EmpireAtWar.Tests.Movement
         public void AbilityApproach_FailureResumesRemainingWaypoints()
         {
             UnitOrderModel orders = new UnitOrderModel();
-            var first = new EmpireAtWar.Components.Movement.Formation.FormationPoint(10f, 20f);
-            var second = new EmpireAtWar.Components.Movement.Formation.FormationPoint(30f, 40f);
+            var first = new FormationPoint(10f, 20f);
+            var second = new FormationPoint(30f, 40f);
             orders.Replace(UnitOrderType.WaypointMove, first, waypoints: new[] { first, second });
             orders.AdvanceWaypoint(out _);
             ShipStateMachine machine = new ShipStateMachine();
@@ -305,7 +308,7 @@ namespace EmpireAtWar.Tests.Movement
             // Seeded so the random first delay is above zero; edit-mode time does not advance between ticks.
             UnityEngine.Random.InitState(7);
             AttackMoveState state = new AttackMoveState(_movement, _weapon, new Radar(), null);
-            state.SetData(Vector3.zero, new EmpireAtWar.Entities.BaseEntity.Orders.AttackMoveEngagement());
+            state.SetData(Vector3.zero, new AttackMoveEngagement());
             state.Enter();
             _movement.FinishLeg();
 
@@ -321,10 +324,10 @@ namespace EmpireAtWar.Tests.Movement
             UnitOrderSettings settings = ScriptableObject.CreateInstance<UnitOrderSettings>();
             try
             {
-                var players = EmpireAtWar.Tests.Editor.TestPlayers.CreateDuel();
+                var players = TestPlayers.CreateDuel();
                 HuntState state = new HuntState(_movement, _weapon, null, new EntityLocator(), null,
-                    new EmpireAtWar.Services.Vision.VisionService(players), settings,
-                    EmpireAtWar.Tests.Editor.TestPlayers.Human);
+                    new VisionService(players), settings,
+                    TestPlayers.Human);
                 _movement.MoveToPosition(Vector3.forward * 100f);
                 state.Enter();
                 state.Tick(0.1f);
@@ -342,10 +345,10 @@ namespace EmpireAtWar.Tests.Movement
             UnitOrderSettings settings = ScriptableObject.CreateInstance<UnitOrderSettings>();
             try
             {
-                var players = EmpireAtWar.Tests.Editor.TestPlayers.CreateTeamGame();
-                var vision = new EmpireAtWar.Services.Vision.VisionService(players);
+                var players = TestPlayers.CreateTeamGame();
+                var vision = new VisionService(players);
                 PlayerId side = new PlayerId(owner);
-                if (owner == 3) _target.Owner = EmpireAtWar.Tests.Editor.TestPlayers.Human;
+                if (owner == 3) _target.Owner = TestPlayers.Human;
                 var locator = new EntityLocator();
                 locator.AddEntity(_target);
                 HuntState state = new HuntState(_movement, _weapon, null, locator, players, vision, settings, side);
@@ -368,7 +371,7 @@ namespace EmpireAtWar.Tests.Movement
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
             RecordingAbility ability = new RecordingAbility();
             ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(ability),
-                EmpireAtWar.Tests.Editor.TestPlayers.CreateDuel());
+                TestPlayers.CreateDuel());
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
             _orderSettings = ScriptableObject.CreateInstance<UnitOrderSettings>();
@@ -395,7 +398,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.Cloak);
             ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new CloakAbility()),
-                EmpireAtWar.Tests.Editor.TestPlayers.CreateDuel());
+                TestPlayers.CreateDuel());
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
             _orderSettings = ScriptableObject.CreateInstance<UnitOrderSettings>();
@@ -421,7 +424,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
             ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
-                EmpireAtWar.Tests.Editor.TestPlayers.CreateDuel());
+                TestPlayers.CreateDuel());
             Radar radar = new Radar();
             AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
@@ -517,7 +520,7 @@ namespace EmpireAtWar.Tests.Movement
             public long Id { get; set; } = 1;
             public Health Health { get; } = new Health();
             public IHealthModelObserver HealthModel => Health;
-            public PlayerId Owner { get; set; } = EmpireAtWar.Tests.Editor.TestPlayers.Enemy;
+            public PlayerId Owner { get; set; } = TestPlayers.Enemy;
             public Transform Transform { get; }
             public float NavigationRadius { get; set; } = 5f;
             public Target(Transform transform) => Transform = transform;
@@ -545,7 +548,7 @@ namespace EmpireAtWar.Tests.Movement
             public bool IsDestroyed { get; set; }
             public bool IsLostShieldGenerator => false;
             public bool HasUnits => true;
-            public PlayerId Owner => EmpireAtWar.Tests.Editor.TestPlayers.Enemy;
+            public PlayerId Owner => TestPlayers.Enemy;
             public bool HasShields => true;
             public IHardPointModel[] GetShipUnits(HardPointType type) => Array.Empty<IHardPointModel>();
         }

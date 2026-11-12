@@ -1,6 +1,7 @@
 using System;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Mvc;
 using NUnit.Framework;
 using NumericsQuaternion = System.Numerics.Quaternion;
 using NumericsVector3 = System.Numerics.Vector3;
@@ -18,7 +19,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 ShipMoveComponent movement = ship.AddComponent<ShipMoveComponent>();
                 ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub(), new CombatModifiers());
-                typeof(EmpireAtWar.Mvc.MonoComponent<ShipMoveModel>)
+                typeof(MonoComponent<ShipMoveModel>)
                     .GetMethod("SetModel", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
                     .Invoke(movement, new object[] { model });
                 typeof(ShipMoveComponent).GetField("_modifiers",

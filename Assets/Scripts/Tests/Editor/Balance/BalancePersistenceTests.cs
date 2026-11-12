@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Services.ShipAbilities;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -139,18 +140,18 @@ namespace EmpireAtWar.Tests.Editor
         {
             string path = TEST_FOLDER + "/Abilities.asset";
             AssetDatabase.CopyAsset("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset", path);
-            var fixture = AssetDatabase.LoadAssetAtPath<EmpireAtWar.Services.ShipAbilities.ShipAbilityCatalog>(path);
+            var fixture = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(path);
             using (SerializedObject serialized = new SerializedObject(fixture))
             {
                 SerializedProperty entry = BalanceRegistration.Keyed(serialized, "definitions.keyValue").Single(row => row.FindPropertyRelative("key").intValue == 10);
-                entry.FindPropertyRelative("value.settings").managedReferenceValue = fixture.Get(EmpireAtWar.Services.ShipAbilities.ShipAbilityId.ProtonBeam).Settings;
+                entry.FindPropertyRelative("value.settings").managedReferenceValue = fixture.Get(ShipAbilityId.ProtonBeam).Settings;
                 serialized.ApplyModifiedPropertiesWithoutUndo();
             }
             EditorUtility.SetDirty(fixture);
             AssetDatabase.SaveAssets();
             Func<BalanceRegistration> scan = () =>
             {
-                var catalog = AssetDatabase.LoadAssetAtPath<EmpireAtWar.Services.ShipAbilities.ShipAbilityCatalog>(path);
+                var catalog = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(path);
                 BalanceRegistration registry = new BalanceRegistration();
                 using (SerializedObject serialized = new SerializedObject(catalog))
                 {
@@ -159,13 +160,13 @@ namespace EmpireAtWar.Tests.Editor
                 }
                 return registry;
             };
-            var original = AssetDatabase.LoadAssetAtPath<EmpireAtWar.Services.ShipAbilities.ShipAbilityCatalog>(path);
-            float duration = original.Get(EmpireAtWar.Services.ShipAbilities.ShipAbilityId.ProtonBeam).Duration;
+            var original = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(path);
+            float duration = original.Get(ShipAbilityId.ProtonBeam).Duration;
             BalanceField field = scan().Fields.Values.Single(); BalanceDraft draft = new BalanceDraft(); draft.Set(field.Snapshot(), "1234");
             BalanceApplyService.Apply(draft, scan);
-            var saved = AssetDatabase.LoadAssetAtPath<EmpireAtWar.Services.ShipAbilities.ShipAbilityCatalog>(path);
-            Assert.That(ReferenceEquals(saved.Get(EmpireAtWar.Services.ShipAbilities.ShipAbilityId.ProtonBeam).Settings, saved.Get(EmpireAtWar.Services.ShipAbilities.ShipAbilityId.LaserBeam).Settings), Is.True);
-            Assert.That(saved.Get(EmpireAtWar.Services.ShipAbilities.ShipAbilityId.ProtonBeam).Duration, Is.EqualTo(duration));
+            var saved = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(path);
+            Assert.That(ReferenceEquals(saved.Get(ShipAbilityId.ProtonBeam).Settings, saved.Get(ShipAbilityId.LaserBeam).Settings), Is.True);
+            Assert.That(saved.Get(ShipAbilityId.ProtonBeam).Duration, Is.EqualTo(duration));
             Assert.That(scan().Fields.Values.Single().Read(), Is.EqualTo("1234"));
         }
     }

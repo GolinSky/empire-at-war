@@ -18,6 +18,7 @@ using IInitializable = EmpireAtWar.Lifecycle.IInitializable;
 using ITickable = EmpireAtWar.Lifecycle.ITickable;
 using ILateTickable = EmpireAtWar.Lifecycle.ILateTickable;
 using IFixedTickable = EmpireAtWar.Lifecycle.IFixedTickable;
+using ILifecyclePostTickable = EmpireAtWar.Lifecycle.IPostTickable;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -226,7 +227,7 @@ namespace EmpireAtWar.Tests.Editor
             new OrderedLifecycleCoordinator(
                 new ContainerLocal<IReadOnlyList<IInitializable>>(callbacks.Cast<IInitializable>().ToArray()),
                 new ContainerLocal<IReadOnlyList<ITickable>>(callbacks.Cast<ITickable>().ToArray()),
-                new ContainerLocal<IReadOnlyList<EmpireAtWar.Lifecycle.IPostTickable>>(Array.Empty<EmpireAtWar.Lifecycle.IPostTickable>()),
+                new ContainerLocal<IReadOnlyList<ILifecyclePostTickable>>(Array.Empty<ILifecyclePostTickable>()),
                 new ContainerLocal<IReadOnlyList<IFixedTickable>>(callbacks.Cast<IFixedTickable>().ToArray()),
                 new ContainerLocal<IReadOnlyList<ILateTickable>>(callbacks.Cast<ILateTickable>().ToArray()),
                 new ContainerLocal<IReadOnlyList<IOrderedDisposable>>(callbacks.Cast<IOrderedDisposable>().ToArray()),

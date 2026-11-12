@@ -18,6 +18,7 @@ using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -46,7 +47,7 @@ namespace EmpireAtWar.Tests.Editor
         public void SavedComposition_BindsAllTargetsAndRenderers()
         {
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW_PATH);
-            var ship = view.GetComponent<EmpireAtWar.Ship.Ship>();
+            var ship = view.GetComponent<ShipEntity>();
             Assert.That(ship.Bindings.Injectables, Is.All.Not.Null);
             Assert.That(ship.Bindings.Injectables.Distinct().Count(), Is.EqualTo(ship.Bindings.Injectables.Length));
             foreach (var point in view.GetComponentsInChildren<HardPoint>(true))
@@ -135,20 +136,20 @@ namespace EmpireAtWar.Tests.Editor
             var root = new GameObject("Titan engine regression") { hideFlags = HideFlags.HideAndDontSave };
             try
             {
-                var ship = root.AddComponent<EmpireAtWar.Ship.Ship>();
+                var ship = root.AddComponent<ShipEntity>();
                 var movement = root.AddComponent<ShipMoveComponent>();
                 var model = new ShipMoveModel(data, new CombatModifiers());
                 var motion = new ShipMovementTweenPlayer(root.transform, root.transform,
                     root.AddComponent<LineRenderer>(), DG.Tweening.Ease.Linear);
                 typeof(ShipMoveComponent).GetField("_motion", PRIVATE_INSTANCE).SetValue(movement, motion);
                 typeof(MonoComponent<ShipMoveModel>).GetMethod("SetModel", PRIVATE_INSTANCE).Invoke(movement, new object[] { model });
-                typeof(EmpireAtWar.Ship.Ship).GetField("_shipMoveComponent", PRIVATE_INSTANCE).SetValue(ship, movement);
-                typeof(EmpireAtWar.Ship.Ship).GetField("<Data>k__BackingField", PRIVATE_INSTANCE).SetValue(ship, data);
-                var engineObservers = (List<IReadOnlyHardPointModel>)typeof(EmpireAtWar.Ship.Ship)
+                typeof(ShipEntity).GetField("_shipMoveComponent", PRIVATE_INSTANCE).SetValue(ship, movement);
+                typeof(ShipEntity).GetField("<Data>k__BackingField", PRIVATE_INSTANCE).SetValue(ship, data);
+                var engineObservers = (List<IReadOnlyHardPointModel>)typeof(ShipEntity)
                     .GetField("_engineUnits", PRIVATE_INSTANCE).GetValue(ship);
                 var engines = new HardPointModel[4];
                 var changed = (Action)Delegate.CreateDelegate(typeof(Action), ship,
-                    typeof(EmpireAtWar.Ship.Ship).GetMethod("HandleEnginesData", PRIVATE_INSTANCE));
+                    typeof(ShipEntity).GetMethod("HandleEnginesData", PRIVATE_INSTANCE));
                 for (int index = 0; index < engines.Length; index++)
                 {
                     var engine = new HardPointModel(HardPointType.Engines, index);

@@ -21,6 +21,7 @@ using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.Units;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -237,7 +238,7 @@ namespace EmpireAtWar.Tests.Editor
             public void RemoveSelectable(ISelectionContext context) { }
 
             public void SelectEntity(IEntity entity) => throw new NotSupportedException();
-            public void SelectCurrentUnitsByType(EmpireAtWar.Entities.Units.UnitTypeId unitTypeId) { }
+            public void SelectCurrentUnitsByType(UnitTypeId unitTypeId) { }
 
             public void AddObserver(IObserver<ISelectionSubject> observer) => _observers.Add(observer);
 

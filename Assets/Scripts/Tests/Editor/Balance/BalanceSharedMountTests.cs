@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.Entities.Ship.Data;
@@ -28,7 +29,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject source = new GameObject("Mount"); WeaponHardPoint sourceMount = source.AddComponent<WeaponHardPoint>();
             using (SerializedObject serialized = new SerializedObject(sourceMount))
             {
-                serialized.FindProperty(BalanceRegistration.Auto("WeaponType")).intValue = Convert.ToInt32(Enum.GetValues(typeof(EmpireAtWar.Components.AttackComponent.WeaponType)).GetValue(0));
+                serialized.FindProperty(BalanceRegistration.Auto("WeaponType")).intValue = Convert.ToInt32(Enum.GetValues(typeof(WeaponType)).GetValue(0));
                 serialized.ApplyModifiedPropertiesWithoutUndo();
             }
             GameObject owner = new GameObject("Owner");

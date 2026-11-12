@@ -126,7 +126,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             _hasSearched = false;
         }
 
-        public bool ContainsRoute(EmpireAtWar.Components.Ship.Movement.ShipBezierRoute route) =>
+        public bool ContainsRoute(ShipBezierRoute route) =>
             route.IsWithinBounds(_mapMin, _mapMax);
 
         public bool IsUnpenalizedSegment(Vector3 from, Vector3 to)

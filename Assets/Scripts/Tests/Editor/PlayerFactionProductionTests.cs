@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Entities.SuperWeapons;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -277,7 +278,7 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(FactionDefinition).GetField("defendPlatforms", PRIVATE_INSTANCE)
                     .SetValue(definition, System.Array.Empty<DefendPlatformType>());
                 typeof(FactionDefinition).GetField("superWeapons", PRIVATE_INSTANCE)
-                    .SetValue(definition, System.Array.Empty<EmpireAtWar.Entities.SuperWeapons.SuperWeaponType>());
+                    .SetValue(definition, System.Array.Empty<SuperWeaponType>());
                 var roster = new FactionRoster(definition, null, null, null);
                 FactionData structureData = CreateFactionData(1, 1);
                 FactionData heroData = CreateFactionData(1, 1);

@@ -17,10 +17,12 @@ using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.ShipSpawning;
+using EmpireAtWar.Ship;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
+using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -250,7 +252,7 @@ namespace EmpireAtWar.Tests.Editor
                 var wallet = new TrackingWallet();
                 var limits = new EnemyUnitLimitModel();
                 var spawnPoints = new BlockedShipSpawnPoints();
-                var factory = new TrackingShipFactory(shipObject.AddComponent<EmpireAtWar.Ship.Ship>());
+                var factory = new TrackingShipFactory(shipObject.AddComponent<ShipEntity>());
                 var controller = new EnemyFactionController(aiState: new IdleAiState(), model: new EnemyFactionModel(null, null),
                     shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null, secondStation: new SecondStationLevelModel(), research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: spawnPoints,
@@ -587,17 +589,17 @@ namespace EmpireAtWar.Tests.Editor
                 TryGetRandomSpawnPosition(owner, shipType, out position);
         }
 
-        private sealed class TrackingShipFactory : EmpireAtWar.Ship.ShipFactory
+        private sealed class TrackingShipFactory : ShipFactory
         {
-            private readonly EmpireAtWar.Ship.Ship _ship;
+            private readonly ShipEntity _ship;
             public List<ShipType> Created { get; } = new List<ShipType>();
 
-            public TrackingShipFactory(EmpireAtWar.Ship.Ship ship) : base(null, null, null, null, null, null)
+            public TrackingShipFactory(ShipEntity ship) : base(null, null, null, null, null, null)
             {
                 _ship = ship;
             }
 
-            public override EmpireAtWar.Ship.Ship Create(PlayerId owner, ShipType shipType, Vector3 position)
+            public override ShipEntity Create(PlayerId owner, ShipType shipType, Vector3 position)
             {
                 Created.Add(shipType);
                 return _ship;

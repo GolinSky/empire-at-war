@@ -11,6 +11,7 @@ using EmpireAtWar.Services.Networking.Messages;
 using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Services.UnitOrders;
+using EmpireAtWar.Components.Ship.Health;
 using Mirror;
 using NUnit.Framework;
 using UnityEngine;
@@ -276,7 +277,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public event Action OnDestroy { add { } remove { } }
             public event Action OnValueChanged { add { } remove { } }
-            public EmpireAtWar.Components.Ship.Health.ShipClass ShipClass => default;
+            public ShipClass ShipClass => default;
             public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 0f;
             public float HullPercentage => 0f;
@@ -288,7 +289,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasLiveHardPoints => false;
             public bool HasShields => false;
             public PlayerId Owner => TestPlayers.Human;
-            public IHardPointModel[] GetShipUnits(EmpireAtWar.Components.Ship.Health.HardPointType hardPointType) => Array.Empty<IHardPointModel>();
+            public IHardPointModel[] GetShipUnits(HardPointType hardPointType) => Array.Empty<IHardPointModel>();
         }
 
         private sealed class FakeEntity : IEntity, IEntityTransformFacade
