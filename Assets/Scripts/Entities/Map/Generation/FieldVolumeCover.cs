@@ -15,7 +15,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         private const float PARTIAL_COVER_SHARE = 0.5f;
 
         public static List<FieldVolume> Cover(FieldGrid grid, IReadOnlyList<int> cells, int[] edgeDistances,
-            IReadOnlyList<MapLane> lanes, float passableHalfWidth)
+            IReadOnlyList<MapLane> lanes, float passableHalfWidth, bool requireCellCenterCoverage = false)
         {
             List<FieldVolume> volumes = new List<FieldVolume>();
             List<int> uncovered = new List<int>(cells);
@@ -42,9 +42,13 @@ namespace EmpireAtWar.Entities.Map.Generation
                         PlanarGeometry.DistanceToPolyline(center, lane.Points) - passableHalfWidth);
                 }
                 volumes.Add(new FieldVolume(center, radius));
-                // Cells the circle only partly reaches count as covered; the next circle would add little.
+                // Regular fields can leave cells partly covered; sealed space must block each cell center.
                 float coverage = radius + grid.CellSize * PARTIAL_COVER_SHARE;
-                uncovered.RemoveAll(cell => PlanarGeometry.Distance(grid.GetCenter(cell), center) <= coverage);
+                uncovered.RemoveAll(cell =>
+                {
+                    float distance = PlanarGeometry.Distance(grid.GetCenter(cell), center);
+                    return requireCellCenterCoverage ? distance < radius : distance <= coverage;
+                });
             }
 
             return volumes;

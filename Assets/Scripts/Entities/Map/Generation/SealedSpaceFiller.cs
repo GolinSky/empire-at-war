@@ -41,7 +41,8 @@ namespace EmpireAtWar.Entities.Map.Generation
             foreach (List<int> cells in grid.FindFields())
             {
                 fields.Add(new AsteroidField(
-                    FieldVolumeCover.Cover(grid, cells, edgeDistances, Array.Empty<MapLane>(), 0f),
+                    FieldVolumeCover.Cover(grid, cells, edgeDistances, Array.Empty<MapLane>(), 0f,
+                        requireCellCenterCoverage: true),
                     _rockScatter.Scatter(grid, cells, size.RockDensity, random),
                     _settings.FieldFloor,
                     _settings.FieldCeiling));
