@@ -200,6 +200,7 @@ When creating, modifying, or refactoring any UI prefab, component, or view:
 
 ## Code Simplicity
 
+- Reference project types through file-level `using` directives. Use a file-level alias for name collisions such as project lifecycle interfaces and `VContainer.Unity`, or entity types that share their namespace name. Retain inline qualification when an alias is unavailable for an open generic or clearer for an identically named base type.
 - Keep one source of truth for identifiers. Do not pass duplicate string names alongside typed, hashed, or otherwise canonical identifiers solely for validation or error messages.
 - Do not wrap direct framework calls in helpers that only pre-check state and throw. Call the framework API directly and let required-state failures surface naturally.
 - Add conditions and validation only when they change required behavior or are explicitly requested; do not add routine defensive checks around straightforward code.

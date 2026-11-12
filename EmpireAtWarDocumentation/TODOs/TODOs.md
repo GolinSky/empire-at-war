@@ -498,6 +498,9 @@
 
 ### Refactoring
 
+- [x] **Replace inline namespace-qualified type references with usings (429 lines / 143 files)** → [[Done/Refactoring/Namespace_Qualified_Type_Cleanup|Namespace-Qualified Type Cleanup]]
+  - Completed 2026-11-12. Shortened 428 lines across 140 C# files, including test source. Four collision cases retained. All six batches compiled in Unity. Tests not run.
+
 - [x] **Popup core + feature popup services; shared Invite Friends popup** → [[Done/Refactoring/Shared_Invite_Friends_Popup_Plan|Shared Invite Friends Popup Plan]] · contract: [[Architecture/POPUP_SYSTEM]]
   - Completed 2026-11-11. Both lobbies share a picker. Unity EditMode `Ui` 274 passed and `Core` 150 passed. Live Steam checks are in [[TODOs/User_Acceptance_Queue]].
 
