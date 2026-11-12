@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Mvc;
 using NumericsQuaternion = System.Numerics.Quaternion;
 using NumericsVector3 = System.Numerics.Vector3;
@@ -7,7 +8,7 @@ using NumericsVector3 = System.Numerics.Vector3;
 namespace EmpireAtWar.Components.Ship.Movement
 {
     [Serializable]
-    public class ShipMoveModel : Model, EmpireAtWar.Components.Ship.Audio.IShipEngineAudioObserver
+    public class ShipMoveModel : Model, IShipEngineAudioObserver
     {
         private const float OFFSET_HYPERSPACE_JUMP = 1000f;
         private const float POSITION_TOLERANCE = 0.05f;

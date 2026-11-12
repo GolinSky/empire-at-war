@@ -12,6 +12,7 @@ using UnityEngine;
 using Utilities.ScriptUtils.Time;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Entities.Squadrons.Data;
 
 namespace EmpireAtWar.Components.Squadrons.Health
 {
@@ -47,7 +48,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
             remove => Model.OnDestroy -= value;
         }
 
-        private EmpireAtWar.Entities.Squadrons.Data.SquadronData Data { get; set; }
+        private SquadronData Data { get; set; }
 
         public int FighterCount => fighters.Count;
         public IReadOnlyList<IHardPointModel> Members => _adapters;
@@ -72,7 +73,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
 
         [Inject]
         private void Construct(SquadronHealthModel model, CombatModifiers modifiers,
-            PlayerId owner, EmpireAtWar.Entities.Squadrons.Data.SquadronData data)
+            PlayerId owner, SquadronData data)
         {
             Data = data;
             SetModel(model);

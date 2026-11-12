@@ -8,6 +8,7 @@ using EmpireAtWar.ViewComponents.Squadrons;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Components.Combat;
 using NumericsVector3 = System.Numerics.Vector3;
 
 namespace EmpireAtWar.Components.Squadrons.Flight
@@ -22,7 +23,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
     {
         private IVisionService _visionService;
         private IFogVisionData _visionData;
-        private EmpireAtWar.Components.Combat.CombatModifiers _modifiers;
+        private CombatModifiers _modifiers;
         private FighterPoseBatch _poseBatch;
 
         [SerializeField] private List<FighterView> fighters;
@@ -44,7 +45,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         [Inject]
         private void Construct(IVisionService visionService, IFogVisionData visionData,
             SquadronFlightModel model, Vector3 startPosition, Quaternion startRotation, PlayerId owner,
-            EmpireAtWar.Components.Combat.CombatModifiers modifiers, FighterPoseBatch poseBatch)
+            CombatModifiers modifiers, FighterPoseBatch poseBatch)
         {
             _poseBatch = poseBatch;
             SetModel(model);

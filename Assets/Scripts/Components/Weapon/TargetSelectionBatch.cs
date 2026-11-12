@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Services.Timing;
+using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Health;
 using Unity.Collections;
 using Unity.Mathematics;
@@ -100,8 +101,8 @@ namespace EmpireAtWar.Components.Weapon
             using (BattleProfilerMarkers.TargetBatchPrepare.Auto())
 #endif
             {
-                EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _targetSelectionInputs, _targetSelectionRequests.Count);
-                EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _targetSelectionResults, _targetSelectionRequests.Count);
+                NativeArrayBuffer.EnsureCapacity(ref _targetSelectionInputs, _targetSelectionRequests.Count);
+                NativeArrayBuffer.EnsureCapacity(ref _targetSelectionResults, _targetSelectionRequests.Count);
                 for (int i = 0; i < _targetSelectionRequests.Count; i++)
                 {
                     TargetSelectionRequest request = _targetSelectionRequests[i];
@@ -221,9 +222,9 @@ namespace EmpireAtWar.Components.Weapon
                 {
                     for (int i = 0; i < _capturedWeapons.Count; i++)
                         _capture.MarkUsed(_capturedWeapons[i].CandidateSlots, _capturedWeapons[i].CandidateCount);
-                    EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _candidateSlots, candidateCount);
-                    EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _candidateGroups, candidateCount);
-                    EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _groupEligible, groupCount);
+                    NativeArrayBuffer.EnsureCapacity(ref _candidateSlots, candidateCount);
+                    NativeArrayBuffer.EnsureCapacity(ref _candidateGroups, candidateCount);
+                    NativeArrayBuffer.EnsureCapacity(ref _groupEligible, groupCount);
                     for (int i = 0; i < _capturedWeapons.Count; i++)
                     {
                         WeaponComponent weapon = _capturedWeapons[i];

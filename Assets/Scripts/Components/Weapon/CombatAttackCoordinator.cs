@@ -9,6 +9,7 @@ using UnityEngine;
 using Unity.Jobs;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Components.Weapon
 {
@@ -321,8 +322,8 @@ namespace EmpireAtWar.Components.Weapon
             using (BattleProfilerMarkers.DueBatchPrepare.Auto())
 #endif
             {
-                EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _dueInputs, recordCount);
-                EmpireAtWar.Utils.NativeArrayBuffer.EnsureCapacity(ref _dueResults, recordCount);
+                NativeArrayBuffer.EnsureCapacity(ref _dueInputs, recordCount);
+                NativeArrayBuffer.EnsureCapacity(ref _dueResults, recordCount);
 
                 for (int i = 0; i < sequenceCount; i++)
                 {

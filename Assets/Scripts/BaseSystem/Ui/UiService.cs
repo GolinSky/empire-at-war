@@ -9,7 +9,7 @@ namespace EmpireAtWar.Ui.Base
     public class UiService : MonoBehaviour, IUiService, IHudVisibilityObserver
     {
         [SerializeField] private UiPlacement placement;
-        private EmpireAtWar.Mvc.IAssetService _assetService;
+        private IAssetService _assetService;
         private bool _isFactionContent;
         private bool _isContentVisible;
 
@@ -17,7 +17,7 @@ namespace EmpireAtWar.Ui.Base
         public IUiPlacement Placement => placement;
 
         [Inject]
-        public void Constructor(EmpireAtWar.Mvc.IAssetService assetService) => _assetService = assetService;
+        public void Constructor(IAssetService assetService) => _assetService = assetService;
 
         public TUi CreateUi<TUi>() where TUi : BaseUi
         {

@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
@@ -8,7 +9,7 @@ namespace EmpireAtWar.Components.Radar
     public class RadarModel : Model, IRadarModelObserver
     {
         private readonly IRadarData _data;
-        private readonly EmpireAtWar.Components.Combat.CombatModifiers _modifiers;
+        private readonly CombatModifiers _modifiers;
 
         public float Range => _data.Range * _modifiers.VisionMultiplier;
         public float Delay => _data.Delay;
@@ -16,7 +17,7 @@ namespace EmpireAtWar.Components.Radar
         public ObservableList<IEntity> Enemies { get; } = new ObservableList<IEntity>();
 
         public RadarModel(IRadarData data, PlayerId owner,
-            EmpireAtWar.Components.Combat.CombatModifiers modifiers)
+            CombatModifiers modifiers)
         {
             _data = data;
             Owner = owner;

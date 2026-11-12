@@ -9,6 +9,7 @@ using EmpireAtWar.Services.Vision;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Components.Combat;
 
 namespace EmpireAtWar.Components.FogOfWar
 {
@@ -24,7 +25,7 @@ namespace EmpireAtWar.Components.FogOfWar
         private IVisionService _visionService;
         private ILocalPlayer _localPlayer;
         private ISlowTickService _slowTick;
-        private EmpireAtWar.Components.Combat.CombatModifiers _modifiers;
+        private CombatModifiers _modifiers;
 
         [SerializeField] private Renderer[] renderers;
         [Tooltip("XZ footprint radius: the unit is revealed when vision reaches any part of it.")]
@@ -43,7 +44,7 @@ namespace EmpireAtWar.Components.FogOfWar
 
         [Inject]
         private void Construct(IVisionService visionService, ILocalPlayer localPlayer,
-            IReadOnlyList<IIonStunViewSource> ionStunSources, EmpireAtWar.Components.Combat.CombatModifiers modifiers,
+            IReadOnlyList<IIonStunViewSource> ionStunSources, CombatModifiers modifiers,
             ISlowTickService slowTick)
         {
             _slowTick = slowTick;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
 using UnityEngine;
 using EmpireAtWar.Models.SkirmishCamera;
+using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Components.Ship.Movement
 {
@@ -189,7 +190,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                     Vector2 end = new Vector2(
                         samples[sampleIndex].x,
                         samples[sampleIndex].z);
-                    if (EmpireAtWar.Utils.PlanarGeometry.DistanceToSegmentSquared(center, start, end) <
+                    if (PlanarGeometry.DistanceToSegmentSquared(center, start, end) <
                         safeRadiusSquared)
                     {
                         return false;

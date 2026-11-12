@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Entities.BattleNotifications;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.CoreGameUi;
 using EmpireAtWar.Entities.Economy.Ui;
@@ -7,16 +8,26 @@ using EmpireAtWar.Entities.EndGameUi;
 using EmpireAtWar.Entities.Faction.Ui;
 using EmpireAtWar.Entities.Fade;
 using EmpireAtWar.Entities.Fps;
+using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Heroes;
 using EmpireAtWar.Entities.MainMenu.Main;
+using EmpireAtWar.Entities.MainMenu.Online;
+using EmpireAtWar.Entities.MainMenu.Play;
+using EmpireAtWar.Entities.MainMenu.ServerBrowser;
 using EmpireAtWar.Entities.MainMenu.Settings;
+using EmpireAtWar.Entities.MainMenu.Simulation;
+using EmpireAtWar.Entities.MainMenu.SinglePlayer;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
+using EmpireAtWar.Entities.MainMenu.Survival;
 using EmpireAtWar.Entities.Menu;
 using EmpireAtWar.Entities.MiniMap;
 using EmpireAtWar.Entities.Popups;
 using EmpireAtWar.Entities.Reinforcement;
+using EmpireAtWar.Entities.Saves;
 using EmpireAtWar.Entities.ShipUi;
+using EmpireAtWar.Entities.TacticalMarkers;
 using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Entities.TutorialUi;
 using EmpireAtWar.Entities.UnitOrderFeedback;
 using UnityEngine;
 
@@ -54,16 +65,16 @@ namespace EmpireAtWar.Ui.Base
                 _parents = new Dictionary<Type, Transform>
                 {
                     { typeof(CoreGameUi), defaultCanvas.transform },
-                    { typeof(EmpireAtWar.Entities.Game.SurvivalHudUi), dynamicCanvas.transform },
-                    { typeof(EmpireAtWar.Entities.Game.SimulationHudUi), dynamicCanvas.transform },
-                    { typeof(EmpireAtWar.Entities.MainMenu.Simulation.SimulationSetupUi), modalSlot },
+                    { typeof(SurvivalHudUi), dynamicCanvas.transform },
+                    { typeof(SimulationHudUi), dynamicCanvas.transform },
+                    { typeof(SimulationSetupUi), modalSlot },
                     { typeof(MainMenuUi), defaultCanvas.transform },
-                    { typeof(EmpireAtWar.Entities.MainMenu.Play.PlayUi), defaultCanvas.transform },
-                    { typeof(EmpireAtWar.Entities.MainMenu.SinglePlayer.SinglePlayerUi), defaultCanvas.transform },
-                    { typeof(EmpireAtWar.Entities.MainMenu.Online.OnlineUi), defaultCanvas.transform },
-                    { typeof(EmpireAtWar.Entities.MainMenu.ServerBrowser.ServerBrowserUi), defaultCanvas.transform },
+                    { typeof(PlayUi), defaultCanvas.transform },
+                    { typeof(SinglePlayerUi), defaultCanvas.transform },
+                    { typeof(OnlineUi), defaultCanvas.transform },
+                    { typeof(ServerBrowserUi), defaultCanvas.transform },
                     { typeof(SkirmishUi), defaultCanvas.transform },
-                    { typeof(EmpireAtWar.Entities.MainMenu.Survival.SurvivalUi), defaultCanvas.transform },
+                    { typeof(SurvivalUi), defaultCanvas.transform },
                     { typeof(ReinforcementUi), defaultCanvas.transform },
                     { typeof(HeroUi), defaultCanvas.transform },
                     { typeof(EconomyUi), economySlot },
@@ -73,14 +84,14 @@ namespace EmpireAtWar.Ui.Base
                     { typeof(MiniMapUi), miniMapSlot },
                     { typeof(ShipBuildUi), buildPipelineSlot },
                     { typeof(FpsUi), dynamicCanvas.transform },
-                    { typeof(EmpireAtWar.Entities.TutorialUi.HintUi), tooltipSlot },
-                    { typeof(EmpireAtWar.Entities.TacticalMarkers.MarkerRadialUi), tooltipSlot },
-                    { typeof(EmpireAtWar.Entities.BattleNotifications.BattleNotificationUi), dynamicCanvas.transform },
+                    { typeof(HintUi), tooltipSlot },
+                    { typeof(MarkerRadialUi), tooltipSlot },
+                    { typeof(BattleNotificationUi), dynamicCanvas.transform },
                     { typeof(UnitOrderFeedbackUi), feedbackCanvas.transform },
                     { typeof(CaptureSiteBuildUi), contextualSlot },
                     { typeof(EndGameUi), endGameSlot },
                     { typeof(PauseMenuUi), modalSlot },
-                    { typeof(EmpireAtWar.Entities.Saves.SaveBrowserUi), modalSlot },
+                    { typeof(SaveBrowserUi), modalSlot },
                     { typeof(SettingsUi), modalSlot },
                     { typeof(AcceptPopupUi), modalSlot },
                     { typeof(PopupBlockerUi), modalSlot },
