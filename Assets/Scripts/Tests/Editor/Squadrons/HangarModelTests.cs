@@ -52,7 +52,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(model.GetReserve(0), Is.EqualTo(2));
                 Assert.That(model.GetActive(0), Is.Zero);
                 Assert.That(model.Cooldown, Is.EqualTo(LAUNCH_INTERVAL));
-                Assert.That(model.TryLaunch(HangarModel.RELAUNCH_COOLDOWN, out _), Is.True);
+                Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.True);
                 Assert.That(model.GetReserve(0), Is.EqualTo(1));
                 component.Release();
                 hardPointModel.SetHealth(100f, 1f);
@@ -126,44 +126,63 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SquadronLost_ReplacesOnlyOnceTheLostLaunchIsAMinuteOld()
+        public void SquadronLost_FastLauncherWaitsFiveSecondsFromTheLostLaunch()
         {
-            HangarModel model = CreateModel(reserve: 2, maxActive: 1);
+            var model = new HangarModel(new TestHangarData(new HangarBay(SquadronType.Delta7, 2, 1))
+            {
+                HangarLaunchInterval = 1f
+            });
             model.TryLaunch(INITIAL_DELAY, out _);
-            model.TryLaunch(30f, out _);
+            model.AdvanceCooldown(1f);
 
             model.SquadronLost(0);
 
-            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.False, "A squadron lost 30 s after launch is not replaced at once.");
-            Assert.That(model.TryLaunch(HangarModel.RELAUNCH_COOLDOWN - 30f - LAUNCH_INTERVAL - 0.1f, out _), Is.False);
+            Assert.That(model.TryLaunch(3.9f, out _), Is.False);
             Assert.That(model.TryLaunch(0.2f, out _), Is.True);
             Assert.That(model.GetReserve(0), Is.EqualTo(0));
         }
 
         [Test]
-        public void SquadronLost_LongLivedSquadronIsReplacedAfterTheLaunchInterval()
+        public void SquadronLost_LongLivedSquadronIsReplacedWithoutRestartingElapsedTimer()
         {
             HangarModel model = CreateModel(reserve: 2, maxActive: 1);
             model.TryLaunch(INITIAL_DELAY, out _);
-            model.TryLaunch(HangarModel.RELAUNCH_COOLDOWN, out _);
+            model.AdvanceCooldown(LAUNCH_INTERVAL);
 
             model.SquadronLost(0);
 
-            Assert.That(model.TryLaunch(LAUNCH_INTERVAL - 0.1f, out _), Is.False);
-            Assert.That(model.TryLaunch(0.2f, out _), Is.True);
+            Assert.That(model.TryLaunch(0f, out _), Is.True);
         }
 
         [Test]
-        public void TwoSlotBay_LaunchesBothAtOnce_ThenWaitsAMinuteFromTheOldestLaunch()
+        public void SquadronLost_DoesNotDelayAnotherBaysScheduledLaunch()
         {
-            HangarModel model = CreateModel(reserve: 5, maxActive: 2);
+            var model = new HangarModel(new TestHangarData(
+                new HangarBay(SquadronType.XWing, 2, 1),
+                new HangarBay(SquadronType.YWing, 2, 1)));
             Assert.That(model.TryLaunch(INITIAL_DELAY, out _), Is.True);
-            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.True, "The second slot does not wait for the first launch.");
+            model.AdvanceCooldown(LAUNCH_INTERVAL - 1f);
 
             model.SquadronLost(0);
 
-            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.False);
-            Assert.That(model.TryLaunch(HangarModel.RELAUNCH_COOLDOWN - 2f * LAUNCH_INTERVAL - 0.1f, out _), Is.False);
+            Assert.That(model.Cooldown, Is.EqualTo(1f));
+            Assert.That(model.TryLaunch(1f, out int bay), Is.True);
+            Assert.That(bay, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void TwoSlotBay_WaitsUntilOldestLaunchLeavesFiveSecondWindow()
+        {
+            var model = new HangarModel(new TestHangarData(new HangarBay(SquadronType.Delta7, 5, 2))
+            {
+                HangarLaunchInterval = 1f
+            });
+            Assert.That(model.TryLaunch(INITIAL_DELAY, out _), Is.True);
+            Assert.That(model.TryLaunch(1f, out _), Is.True);
+
+            model.SquadronLost(0);
+
+            Assert.That(model.TryLaunch(3.9f, out _), Is.False);
             Assert.That(model.TryLaunch(0.2f, out _), Is.True);
         }
 
@@ -251,8 +270,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.Cooldown, Is.EqualTo(1f));
             Assert.That(model.TryLaunch(1f, out _), Is.False, "The bay's one active slot is taken by the adopted squadron.");
             model.SquadronLost(0);
-            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.False, "An adopted squadron counts as just launched.");
-            Assert.That(model.TryLaunch(HangarModel.RELAUNCH_COOLDOWN, out int bay), Is.True);
+            Assert.That(model.TryLaunch(3.9f, out _), Is.False, "An adopted squadron counts as just launched.");
+            Assert.That(model.TryLaunch(0.2f, out int bay), Is.True);
             Assert.That(bay, Is.EqualTo(0));
             Assert.That(model.GetReserve(0), Is.EqualTo(1));
         }
@@ -279,7 +298,7 @@ namespace EmpireAtWar.Tests.Editor
             };
             public IReadOnlyList<HangarBay> HangarBays { get; }
             public float HangarInitialDelay => INITIAL_DELAY;
-            public float HangarLaunchInterval => LAUNCH_INTERVAL;
+            public float HangarLaunchInterval { get; set; } = LAUNCH_INTERVAL;
 
             public TestHangarData(params HangarBay[] bays) => HangarBays = new List<HangarBay>(bays);
         }

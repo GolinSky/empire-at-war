@@ -59,6 +59,9 @@
 
 ### Bugs
 
+- [ ] **Rebalance carrier deployment and squadron stats** → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance|Carrier and Squadron Rebalance]]
+  - Reopened 2026-11-12 after failed fresh-match balance acceptance. Original 29 loadouts match; telemetry confirms Republic/Rebel squadron kill advantage. Implemented 1 s CIS launches, no loss-triggered cooldown reset, 5 s recent window and faction station counts 5/4/3/2. Remaining: quality and current-roster coverage; [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research|audit evidence]].
+
 - [ ] **Fix defense satellite review findings** → [[TODOs/Bugs/Defense_Satellites_Review_Fixes|Defense Satellites Review Fixes]]; parent: [[TODOs/Features/Defense_Satellites_Plan|Defense Satellites Plan]]
   - Status: fixes #1–#10 implemented 2026-10-28; #3 kept by user.
   - Next: user in-game check (#4 build order, #5 raids, #10 cues, #11 rings, #12 home mines).
@@ -239,8 +242,6 @@
 
 ### Bugs
 
-- [x] **Rebalance carrier deployment and squadron stats** → [[Done/Bugs/Carrier_and_Squadron_Rebalance|Carrier and Squadron Rebalance]]
-  - Completed 2026-11-11. Verified 29/29 carrier loadouts, 17/17 squadron variants and 230 X-Wing base DPS. EditMode 1,076/1,083 passed. Existing Ships and EnemyAi mismatches recorded in plan. In-game acceptance → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Fix enemy AI endgame siege defense, emergency production and capture oscillation** → [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix|Endgame Defense and Capture Fix]]; parent: [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]
   - Completed 2026-11-02, `acceptance: pending-user`. Phases 1–4 (`cf4a22850`), 4b (`1dff4330e`), 4c (`aa7fcaffa`), Phase 5 (strikecraft-specialist cap, raid route safety). Compilation/diff checks passed; tests not run. Gates → [[TODOs/User_Acceptance_Queue]].

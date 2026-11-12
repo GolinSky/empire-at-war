@@ -47,7 +47,7 @@ MonoBehaviour:
     reserve: 28
     maxActive: 7
   <HangarInitialDelay>k__BackingField: 4
-  <HangarLaunchInterval>k__BackingField: 6
+  <HangarLaunchInterval>k__BackingField: 1
   weaponLoadout:
   - weaponType: 32
     count: 4

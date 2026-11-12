@@ -6,13 +6,13 @@ namespace EmpireAtWar.Components.Hangar
 {
     /// <summary>
     /// Finite squadron reserve with a cap on simultaneously deployed squadrons per bay.
-    /// Lost squadrons are replaced from the reserve after the launch interval, but a bay launches only while fewer than
+    /// Lost squadrons free active slots without delaying scheduled launches, but a bay launches only while fewer than
     /// its MaxActive squadrons left it in the last <see cref="RELAUNCH_COOLDOWN"/> seconds; an empty reserve launches nothing.
     /// </summary>
     public sealed class HangarModel : Model
     {
         // Seconds a launch counts against its bay; abilities that launch at once ignore the limit.
-        public const float RELAUNCH_COOLDOWN = 60f;
+        public const float RELAUNCH_COOLDOWN = 5f;
 
         private readonly IHangarData _data;
 
@@ -173,7 +173,6 @@ namespace EmpireAtWar.Components.Hangar
         public void SquadronLost(int bay)
         {
             _active[bay] = Math.Max(0, _active[bay] - 1);
-            _cooldown = Math.Max(_cooldown, _data.HangarLaunchInterval);
         }
 
         public void DisableBay(int bay)

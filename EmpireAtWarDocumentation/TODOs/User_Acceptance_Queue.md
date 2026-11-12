@@ -121,8 +121,6 @@ created: "2026-10-29\r"
 
 ## Gameplay and Balance
 
-- [ ] [[Done/Bugs/Carrier_and_Squadron_Rebalance]] — Observe all three launch roles per faction, shared fighter/interceptor hardpoint loss and repair, and load a version 4 battle with spent reserves and deployed squadrons.
-- [ ] [[Done/Bugs/Carrier_and_Squadron_Rebalance]] — Compare equal-cost fleets at levels 2, 3 and 5 and same-role duels with and without abilities and research. Confirm X-Wing torpedoes launch during ship attack runs. Record peak craft, launch timing, losses, replacements and anti-ship damage.
 
 - [ ] [[Done/Features/Harmonic_Bomb_Ability]] — With both Fetts, verify stationary drop, 1.5 s fuse, 20 s activation cooldown, one spherical hit per eligible unit/member, allied immunity and 360/720 base damage under existing shield/armor rules; include caster death during the fuse.
 - [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Review the blue planar main/secondary rings, white-blue core, 210-unit radius, fog visibility and overlapping/pool reuse at battle zoom levels and quality presets (Performant retains HDR off).

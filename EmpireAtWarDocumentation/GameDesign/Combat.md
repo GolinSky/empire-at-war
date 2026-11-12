@@ -75,8 +75,8 @@ verification: source-and-assets
 - Roles: Interceptor guns → bombers; Fighter guns → interceptors (and bombers, weaker than interceptors).
 - Survivability vs lasers/PD: Fighter toughest; Interceptor hard to hit but fragile; Bomber easiest to kill.
 - Interceptor class (`ShipClass.Interceptor`) → `TIEInterceptor`, `AWing`, `VWing`, `Belbullab22`. Each uses a unit-scoped weapon definition in the `InterceptorLaser` family (`24`).
-- All playable ship carriers with deployable bays cover Fighter, Bomber and Interceptor. Automatic launch selection rotates across eligible bays. Each launch spends one unit of battle stock, including the initial launch.
-- Exact carrier counts and regular squadron values → [[Done/Bugs/Carrier_and_Squadron_Rebalance]].
+- The 29 carriers audited in the original rebalance cover Fighter, Bomber and Interceptor; later roster coverage remains under review. Automatic launch selection rotates across eligible bays. Each launch spends one unit of battle stock, including the initial launch.
+- Exact carrier counts and regular squadron values → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]].
 - Hero class `ShipClass.HeroStrikecraft = 9`: `BobaFettSlaveI`, `JangoFettSlaveI`, `HanSoloMillenniumFalcon`; their unit weapons (`123`, `125`, `126`) use family `HeroLaser = 25`.
 - Rule: every non-HeroLaser row's hero effectiveness (damage × accuracy) ≤ `0.5×` its fighter value. Only `HeroLaser` hits heroes normally.
 - Hero shields still take full shield multipliers; resistance comes from accuracy (shields) and accuracy × damage (hull).
@@ -119,3 +119,11 @@ verification: source-and-assets
 - `Assets/Scripts/Components/Weapon/WeaponTargetSelectionJob.cs` — preferred targets, range and arcs; `Assets/Scripts/Components/Weapon/WeaponTargetSelector.cs` — planar aim checks.
 - `Assets/Scripts/Components/Health/HealthModel.cs` — `ApplyDamage`, `AbsorbsDamage`, `DamageHardPoint`, `DamageHull`.
 - `Assets/Scripts/Components/Health/HealthComponent.cs` — `Tick`, `ApplyDamage`; `Assets/Scripts/Components/Squadron/Health/SquadronHealthModel.cs` — `ApplyDamage`, `RepairHull`.
+
+### Carrier balance verification
+
+- Hangar `maxActive` is potential capacity, not live air strength. Compare launch throughput, recent-launch limits, full-squad survival, finite stock, stations and direct purchases together.
+- `HangarModel.SquadronLost` frees an active slot without resetting launch cooldown. Per-bay recent launches expire after 5 s; normal launch intervals and active/stock limits still apply.
+- CIS carrier interval → 1 s, initial delay 4 s. Station active/stock → CIS 5/20, Empire 4/12, Republic 3/9, Rebellion 2/4; station initial delay/interval 1/3 s.
+- Shared battle launch ceiling remains 10/s. Existing station saves preserve saved stock/cooldown; fresh matches use the new stock.
+- 2026-11-12 balance rejection and recorded combat evidence → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research]].
