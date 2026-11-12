@@ -360,7 +360,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 switch (unitUi.Request)
                 {
                     case ShipUnitRequest:
-                        if (firstShip == null) firstShip = unitUi;
+                        // Hints ask for several of the marked ship (Queue 6); a hero is built only once.
+                        bool isRepeatable = !unitUi.FactionData.IsHero;
+                        if (firstShip == null && isRepeatable) firstShip = unitUi;
                         if (_presenter.IsUnlockedAtCurrentLevel(unitUi.FactionData) &&
                             IsBetterNewShip(unitUi, newShip, isNewShipCarrier, out bool isCarrier))
                         {
@@ -368,7 +370,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
                             isNewShipCarrier = isCarrier;
                         }
                         // Sort order 0 is fighters, bombers and interceptors: the scouts.
-                        if (firstScout == null && _presenter.GetUnitSortOrder(unitUi.Request) == 0) firstScout = unitUi;
+                        if (firstScout == null && isRepeatable && _presenter.GetUnitSortOrder(unitUi.Request) == 0)
+                            firstScout = unitUi;
                         break;
                     case SquadronUnitRequest:
                         if (firstScout == null) firstScout = unitUi;
