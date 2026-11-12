@@ -62,26 +62,29 @@ public static class ImportPlanetTextures
         File.Copy(source, target, true);
         AssetDatabase.ImportAsset(target, ImportAssetOptions.ForceSynchronousImport);
         var importer = (TextureImporter)AssetImporter.GetAtPath(target);
+        var imported = AssetDatabase.LoadAssetAtPath<Texture2D>(target);
+        bool lossless = !preview && imported.width <= 256 && imported.height <= 256;
         importer.textureType = TextureImporterType.Default;
         importer.sRGBTexture = true;
         importer.alphaSource = preserveAlpha ? TextureImporterAlphaSource.FromInput : TextureImporterAlphaSource.None;
         importer.alphaIsTransparency = preserveAlpha;
         importer.isReadable = false;
         importer.mipmapEnabled = !preview;
+        importer.ignoreMipmapLimit = !preview;
         importer.wrapMode = preview ? TextureWrapMode.Clamp : TextureWrapMode.Repeat;
         importer.filterMode = preview ? FilterMode.Bilinear : FilterMode.Trilinear;
         importer.anisoLevel = preview ? 1 : 4;
-        importer.maxTextureSize = preview ? 512 : 1024;
+        importer.maxTextureSize = preview ? 512 : 2048;
         importer.npotScale = TextureImporterNPOTScale.None;
-        importer.textureCompression = TextureImporterCompression.CompressedHQ;
+        importer.textureCompression = lossless ? TextureImporterCompression.Uncompressed : TextureImporterCompression.CompressedHQ;
         importer.crunchedCompression = false;
         importer.SetPlatformTextureSettings(new TextureImporterPlatformSettings
         {
             name = "Standalone",
             overridden = true,
             maxTextureSize = importer.maxTextureSize,
-            format = TextureImporterFormat.BC7,
-            textureCompression = TextureImporterCompression.CompressedHQ,
+            format = lossless ? (preserveAlpha ? TextureImporterFormat.RGBA32 : TextureImporterFormat.RGB24) : TextureImporterFormat.BC7,
+            textureCompression = importer.textureCompression,
             compressionQuality = 100
         });
         EditorUtility.SetDirty(importer);

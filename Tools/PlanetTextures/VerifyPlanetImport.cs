@@ -18,7 +18,8 @@ public static class VerifyPlanetImport
         {
             string asset = (string)path.Value;
             var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(asset);
-            if (texture.isReadable || texture.format != TextureFormat.BC7)
+            bool validFormat = texture.format == TextureFormat.BC7 || texture.format == TextureFormat.RGB24 || texture.format == TextureFormat.RGBA32;
+            if (texture.isReadable || !validFormat)
                 throw new InvalidOperationException("Texture optimization missing: " + asset);
             textures.Add(new JObject { ["path"] = asset, ["width"] = texture.width, ["height"] = texture.height,
                 ["mips"] = texture.mipmapCount, ["format"] = texture.format.ToString(),
@@ -43,6 +44,6 @@ public static class VerifyPlanetImport
             ["textureEditorMemoryBytes"] = textures.Sum(t => (long)t["editorMemoryBytes"]),
             ["verification"] = "Saved prefab/catalog references and imported Windows textures; isolated renders inspected. Editor memory sum is not a packed-player residency measurement." };
         File.WriteAllText("Temp/PlanetImport/verification.json", report.ToString());
-        return report["textureEditorMemoryBytes"] + " bytes across " + textures.Count + " compressed textures/previews; " + planets.Count + " planet bindings.";
+        return report["textureEditorMemoryBytes"] + " bytes across " + textures.Count + " textures/previews; " + planets.Count + " planet bindings.";
     }
 }

@@ -10,10 +10,9 @@
   },
   "sharedModelTextures": 32,
   "newMenuPreviews": 55,
-  "standaloneFormat": "BC7",
-  "compressedTexturePayloadBytes": 49917440,
+  "standaloneFormat": "BC7 for larger textures/previews; RGB24/RGBA32 for model textures at most 256x256",
   "cpuReadable": false,
-  "savedAssetAudit": "57 prefab bindings; all 87 imported model/preview textures BC7 and non-readable; Unity console zero errors.",
+  "savedAssetAudit": "57 prefab bindings; 87 textures/previews non-readable; native-resolution model textures exempt from quality mip limits. Unity console zero errors.",
   "testsBeforeFinalFourPlanets": {
     "Map": 45,
     "Ui": 277,
@@ -37,5 +36,51 @@
     "Hapes",
     "Lwhekk"
   ],
-  "limits": "Isolated Editor renders; no packed-player FPS or residency measurement."
+  "limits": "Isolated Editor renders; no packed-player FPS or residency measurement.",
+  "texturePayloadBytes": 50965849,
+  "qualityFollowup": {
+    "date": "2026-11-12",
+    "surfaceTint": 0.55,
+    "bespinTint": 0.4,
+    "cloudTint": 0.35,
+    "atmosphereBrightness": 0.7,
+    "dropdownHeight": 496,
+    "visibleDropdownRows": 10,
+    "compressionAudit": [
+      {
+        "texture": "w_planet_gas_Albedo",
+        "width": 128,
+        "height": 128,
+        "format": "BC7",
+        "rgbRmse8Bit": 0.5,
+        "maxRgbError8Bit": 2
+      },
+      {
+        "texture": "w_planet_alderaan_Albedo",
+        "width": 1024,
+        "height": 1024,
+        "format": "BC7",
+        "rgbRmse8Bit": 0.4177389969197585,
+        "maxRgbError8Bit": 4
+      },
+      {
+        "texture": "w_planet_forest_Albedo",
+        "width": 1024,
+        "height": 1024,
+        "format": "BC7",
+        "rgbRmse8Bit": 0.4147674509538667,
+        "maxRgbError8Bit": 4
+      },
+      {
+        "texture": "w_planetclouds_thickist_Clouds",
+        "width": 1024,
+        "height": 1024,
+        "format": "BC7",
+        "rgbRmse8Bit": 0.2944477640920518,
+        "maxRgbError8Bit": 4
+      }
+    ],
+    "tests": "Not run per user instruction; import/readback and isolated visual verification only.",
+    "sourceLimit": "Bespin source is 128x128; no artificial detail or upscaling added."
+  }
 }

@@ -110,7 +110,8 @@ public static class BuildOriginalPlanets
         material.shader = shader;
         material.shaderKeywords = Array.Empty<string>();
         material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>((string)_imports["textures"][source]));
-        material.SetColor("_BaseColor", Color.white);
+        float brightness = role == "Surface" ? (source == "w_planet_gas.dds" ? 0.4f : 0.55f) : role == "Clouds" ? 0.35f : 1f;
+        material.SetColor("_BaseColor", new Color(brightness, brightness, brightness, 1));
         if (!unlitRing)
         {
             material.SetFloat("_Smoothness", 0);
