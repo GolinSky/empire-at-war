@@ -12,6 +12,7 @@
 
 
 
+- [ ] **Forbidden UI SFX** → [[Done/Features/Ui_Sfx_System#Deferred follow-up|Deferred forbidden cue]].
 - [ ] **Dynamic in-game tutorial (in-match hints: camera, select, move, minimap, build, counters tooltip, build queue, abilities + auto-power, level up, research, map systems)** → [[TODOs/Features/Ingame_Tutorial_Plan|In-Game Tutorial Plan]]
   - UI spotlight migration 2026-11-11: shared UI frames replaced by a 65% dim overlay with target cutout; added per-element `IUiHighlight` API and own-graphic 1.2 s pulse (compile/bindings verified, visual check pending); optional pointer blocking defaults off. Loading-time minimap `HideTarget` exception fixed 2026-11-11 with marker lifecycle tracking; compiled, startup replay pending. User-authorized tests: Ui 274/274 and Core 150/150 passed; visual acceptance pending.
   - Status: in progress. Phase 0 decided 2026-11-09: in-match hints only (guided battle deferred), plain text, text-only coach card (layout A) + pulsing ring, 3 s gap, basics pause during combat. Phases 1–7 + settings done 2026-11-09 (compiles clean; tests not run; not run in-game): hint card UI, HUD anchors, 10 basics + 18 event hints, Show/Reset hints in Settings, Turn off on card. Remaining: audio cue (needs clip), optional analytics, tests, user in-game check.
@@ -290,6 +291,9 @@
 - [x] **Implement Game Design Balance Editor** → [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]; [[Done/Tooling/GameDesign_Balance_Editor - Research|Data ownership and feasibility]]
 
 ### Features
+
+- [x] **UI SFX system (button click via global listener, selection sounds station/ship/unit/enemy)** → [[Done/Features/Ui_Sfx_System|UI SFX System]]
+  - Completed 2026-11-12. Unity compiled and verified the saved binding, mixer and 15 clips. Tests not run. In-game listening → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Tactical markers (B ping + radial: Look/Attack/Capture/Defend/Rally/Retreat; team-only online sync; allied AI accepts/declines and sends its own)** → [[Done/Features/Tactical_Markers_Plan|Tactical Markers Plan]]
   - Completed/reviewed 2026-11-12: startup DI cycle, site identity, input cancellation, AI objectives and lifecycle fixed; BattleInput 296/296, Ui 276/276, Networking 30/30, EnemyAi 360/360, Core 151/151 passed. In-game/two-client/visual acceptance queued.

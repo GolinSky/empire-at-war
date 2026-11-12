@@ -80,3 +80,10 @@ CreateUi<TUi> -> AssignPresenter -> explicit model/data setup -> Initialize -> S
 - Verify initialization/disposal, input forwarding, model-to-view updates.
 - Verify Unity import and Console state.
 - Run automated tests only on explicit user request.
+
+## 6. Shared button audio
+
+- `UiClickListener` uses the active EventSystem's pointer and submit actions to observe the relevant uGUI `Button.onClick` for the frame. Let uGUI confirm the click so disabled controls and canceled presses stay silent.
+- Use `UiSfxMute` on the Button GameObject when it already supplies its own click cue. World ability sounds and announcer lines serve separate feedback roles.
+- Route selection feedback through `IUiSfxService`. The project service emits at most one cue per frame through the pause-safe 2D `Sfx` mixer route. Selection takes priority over click.
+- Configuration lives in `Assets/Settings/Data/Models/Audio/UiSfxData.asset`. Setup and verification → [[Done/Features/Ui_Sfx_System]].

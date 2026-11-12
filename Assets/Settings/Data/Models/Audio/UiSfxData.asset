@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6033ab027373e9448010430dacaa101, type: 3}
+  m_Name: UiSfxData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Audio.UiSfxData
+  click:
+    array:
+    - {fileID: 8300000, guid: 51beea830b3acfb48a502ab8e95a1e7b, type: 3}
+    - {fileID: 8300000, guid: 29a6d707b0b5610479e4aa1ae596eca7, type: 3}
+    - {fileID: 8300000, guid: 742ac896edc12d8479f6ebe1580cb010, type: 3}
+  clickVolume: 1
+  selectStation:
+    array:
+    - {fileID: 8300000, guid: e8e98d626f9f98447adeee1f0fc19b59, type: 3}
+    - {fileID: 8300000, guid: d1be9cd49127ea34e9d4e208c4664a7d, type: 3}
+    - {fileID: 8300000, guid: 521615caf2cb67d44a7dca88f9189333, type: 3}
+  selectStationVolume: 1
+  selectShip:
+    array:
+    - {fileID: 8300000, guid: 6eec384d60eeaaf4f890ddb3efe1f117, type: 3}
+    - {fileID: 8300000, guid: 027b99bf78f63e14da03a8050318df44, type: 3}
+    - {fileID: 8300000, guid: c0406e137e30c3a44a6d44456243b99a, type: 3}
+  selectShipVolume: 1
+  selectUnit:
+    array:
+    - {fileID: 8300000, guid: 79af3d2a7c281ff40ba360d9545f77fd, type: 3}
+    - {fileID: 8300000, guid: e913745f795d35f4da14bb030f822593, type: 3}
+    - {fileID: 8300000, guid: efad84a437363074ca01a92c7ee2e7ab, type: 3}
+  selectUnitVolume: 1
+  selectEnemy:
+    array:
+    - {fileID: 8300000, guid: 24bc72447af3adc43bb56ffad8139120, type: 3}
+    - {fileID: 8300000, guid: 9ba58120a6d11eb40ad46e645e3152d0, type: 3}
+    - {fileID: 8300000, guid: f1ec678255ee32e42b2f05f8aa405661, type: 3}
+  selectEnemyVolume: 1

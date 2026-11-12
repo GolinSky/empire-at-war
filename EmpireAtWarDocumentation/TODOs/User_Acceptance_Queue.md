@@ -78,6 +78,9 @@ created: "2026-10-29\r"
 
 ## Audio
 
+- [ ] [[Done/Features/Ui_Sfx_System]] — Listen for accepted clicks in main menu, battle and pause menus. Check keyboard/gamepad submit, disabled buttons, and dragging off a button before release.
+- [ ] [[Done/Features/Ui_Sfx_System]] — Listen for station, ship/squadron, other-unit and hostile cues. Check box selection, selecting from the UI, silent pruning, and ship voice alongside the cue.
+
 - [[Done/Features/Audio_System_Extension_Plan]]
   - [ ] User in-game listening: loudness, engine/flyby seams, shield cadence, ambience fade, announcer timing.
 - [[Done/Features/Faction_Interface_And_Ability_Audio_Plan]]

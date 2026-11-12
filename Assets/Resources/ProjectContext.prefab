@@ -52,6 +52,7 @@ MonoBehaviour:
   autoInjectGameObjects: []
   coroutineService: {fileID: 7701091334962757629}
   audioMixer: {fileID: 24100000, guid: e118c1010075e5e4f8338d3298c20b50, type: 2}
+  uiSfxData: {fileID: 11400000, guid: 4eb36ac7b8839254090cf705e4dc1b9d, type: 2}
   mapGenerationSettings: {fileID: 11400000, guid: 37f2004615e33a24eb8c4f1fb75c5a3f,
     type: 2}
   hardPointHealthSettings: {fileID: 11400000, guid: ce6a601ac3fa4844298c8e1cf4f6957c,

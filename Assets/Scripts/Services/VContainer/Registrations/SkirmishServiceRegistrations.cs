@@ -102,6 +102,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<UnitExplosionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SelectionQuery>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<SelectionService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<SelectionSfx>(Lifetime.Singleton).AsImplementedInterfaces();
         }
     }
 }

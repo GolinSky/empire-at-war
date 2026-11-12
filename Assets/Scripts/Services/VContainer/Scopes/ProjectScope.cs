@@ -40,6 +40,7 @@ namespace EmpireAtWar.Services.VContainer
 
         [SerializeField] private CoroutineHost coroutineService;
         [SerializeField] private AudioMixer audioMixer;
+        [SerializeField] private UiSfxData uiSfxData;
         [SerializeField] private MapGenerationSettings mapGenerationSettings;
         [SerializeField] private HardPointHealthSettings hardPointHealthSettings;
 
@@ -95,6 +96,7 @@ namespace EmpireAtWar.Services.VContainer
             AssetRegistrations.RegisterShared<SceneData>(builder, Assets);
             builder.RegisterComponent(coroutineService).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(audioMixer);
+            builder.RegisterInstance(uiSfxData);
             builder.Register<TimerPoolService>(Lifetime.Singleton);
             builder.Register<TimerPoolTick>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(new BattleSaveValidator(Assets, mapGenerationSettings));
@@ -114,6 +116,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<UnityCrashContext>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SettingsService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<AudioService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<UiSfxService>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<UiClickListener>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<MusicService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<InputActionsProvider>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<InputBindingService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
