@@ -98,10 +98,16 @@ namespace EmpireAtWar.Services.ShipAbilities
             AutoPowerShieldLoss shieldLoss = automation == null ? AutoPowerShieldLoss.None
                 : monitor.Sample(_now, caster.Health.Shields, automation.MaxShields, automation.ShieldSuppressed,
                     automation.ShieldRevision);
+            // An active shield boost is the one ability Weapons may stack on; any other active ability waits.
+            bool shieldsBoosted = false;
             foreach (ShipAbilitySlot slot in caster.Slots)
-                if (slot.State == ShipAbilityState.Active) { monitor.ResetConfirmation(); return; }
+            {
+                if (slot.State != ShipAbilityState.Active) continue;
+                if (slot.Definition.AutoPower != AutoPowerRole.Shields) { monitor.ResetConfirmation(); return; }
+                shieldsBoosted = true;
+            }
             if (monitor.IsHeld(_now)) return;
-            for (int i = 0; i < caster.Slots.Count; i++)
+            for (int i = 0; i < caster.Slots.Count && !shieldsBoosted; i++)
             {
                 ShipAbilitySlot slot = caster.Slots[i];
                 if (slot.CanActivate && _autoUse.ShouldActivate(caster, slot.Definition) &&
@@ -109,21 +115,22 @@ namespace EmpireAtWar.Services.ShipAbilities
             }
             if (automation == null || !automation.Eligible) return;
             AutoPowerSituation situation = _combat.Assess(caster, automation, shieldLoss, IsTravelling(entity));
-            AutoPowerRole decision = Choose(caster, situation, out _, out _);
+            AutoPowerRole decision = Choose(caster, situation, shieldsBoosted, out _, out _);
             if (!monitor.Confirm(decision)) return;
             monitor.ResetConfirmation();
             // Recheck right before spending: the target or readiness can change between checks.
-            if (Choose(caster, situation, out ShipAbilitySlot chosen, out IEntity target) == decision)
+            if (Choose(caster, situation, shieldsBoosted, out ShipAbilitySlot chosen, out IEntity target) == decision)
                 _abilities.TryRequestActivation(caster, chosen.Id, target);
         }
 
         // First wanted role with a ready slot; a recovering power never swaps Shields for Weapons or back.
-        private AutoPowerRole Choose(IShipAbilityFacade caster, AutoPowerSituation situation,
+        // While shields are boosted only Weapons may be added on top.
+        private AutoPowerRole Choose(IShipAbilityFacade caster, AutoPowerSituation situation, bool weaponsOnly,
             out ShipAbilitySlot chosen, out IEntity target)
         {
             foreach (AutoPowerRole role in AutoPowerSituation.Priority)
             {
-                if (!situation.Wants(role)) continue;
+                if (!situation.Wants(role) || weaponsOnly && role != AutoPowerRole.Weapons) continue;
                 foreach (ShipAbilitySlot slot in caster.Slots)
                 {
                     if (slot.Definition.AutoPower != role || !slot.CanActivate) continue;

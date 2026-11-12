@@ -412,14 +412,15 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void PlayerAutoPower_ActiveAbilityBlocksOverlapAndChosenCooldownIsNotRestarted()
+        public void PlayerAutoPower_WeaponsStackOnShieldBoostAndChosenCooldownIsNotRestarted()
         {
             using AutoPowerRuntime runtime = CreateAutoPowerRuntime();
             Assert.That(runtime.Abilities.TryActivate(runtime.Caster.GetFacade<IShipAbilityFacade>(),
                 runtime.Shields.Id, null), Is.True);
             runtime.TickAt(1f);
             runtime.TickAt(1.5f);
-            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Ready));
+            Assert.That(runtime.Weapon.State, Is.EqualTo(ShipAbilityState.Active),
+                "Weapons must stack on an active shield boost.");
             Assert.That(runtime.Shields.State, Is.EqualTo(ShipAbilityState.Active));
             runtime.Abilities.Advance(runtime.Shields.Definition.Duration);
             runtime.Abilities.Restore(runtime.Weapon, ShipAbilityState.Recovering, 80f);

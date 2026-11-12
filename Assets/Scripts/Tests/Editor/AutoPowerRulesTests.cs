@@ -21,30 +21,34 @@ namespace EmpireAtWar.Tests.Editor
         [TearDown]
         public void TearDown() => Object.DestroyImmediate(_catalog);
 
-        [TestCase(0.2f, 0f, true, AutoPowerShieldLoss.Heavy, true, 2f, AutoPowerRole.Weapons)]
-        [TestCase(0.2f, 0f, true, AutoPowerShieldLoss.Heavy, true, 1f, AutoPowerRole.Shields)]
-        [TestCase(1f, 0.3f, true, AutoPowerShieldLoss.Heavy, true, 2f, AutoPowerRole.Shields)]
-        [TestCase(1f, 0.3f, false, AutoPowerShieldLoss.Heavy, true, 2f, AutoPowerRole.None)]
-        [TestCase(1f, 0.8f, true, AutoPowerShieldLoss.Heavy, true, 2f, AutoPowerRole.None)]
-        [TestCase(1f, 0.8f, true, AutoPowerShieldLoss.None, true, 2f, AutoPowerRole.Weapons)]
-        [TestCase(1f, 0.8f, true, AutoPowerShieldLoss.None, false, 2f, AutoPowerRole.None)]
+        [TestCase(0.2f, 0f, true, false, AutoPowerShieldLoss.Heavy, true, 2f, AutoPowerRole.Weapons)]
+        [TestCase(0.2f, 0f, true, false, AutoPowerShieldLoss.Heavy, true, 1f, AutoPowerRole.Shields)]
+        [TestCase(1f, 0.3f, true, false, AutoPowerShieldLoss.Heavy, true, 2f, AutoPowerRole.Shields)]
+        [TestCase(1f, 0.3f, false, false, AutoPowerShieldLoss.Heavy, true, 2f, AutoPowerRole.None)]
+        [TestCase(1f, 0.8f, true, false, AutoPowerShieldLoss.Heavy, true, 2f, AutoPowerRole.None)]
+        [TestCase(1f, 0.8f, true, false, AutoPowerShieldLoss.None, true, 2f, AutoPowerRole.Weapons)]
+        [TestCase(1f, 0.8f, true, false, AutoPowerShieldLoss.None, false, 2f, AutoPowerRole.None)]
         // Steady fire on drained shields can never reach the burst threshold, yet still asks for Shields.
-        [TestCase(1f, 0.1f, true, AutoPowerShieldLoss.Light, true, 2f, AutoPowerRole.Shields)]
-        [TestCase(1f, 0.3f, true, AutoPowerShieldLoss.None, true, 2f, AutoPowerRole.Weapons)]
-        [TestCase(1f, 0.8f, true, AutoPowerShieldLoss.Light, true, 2f, AutoPowerRole.Weapons)]
+        [TestCase(1f, 0.1f, true, false, AutoPowerShieldLoss.Light, true, 2f, AutoPowerRole.Shields)]
+        [TestCase(1f, 0.3f, true, false, AutoPowerShieldLoss.None, true, 2f, AutoPowerRole.Weapons)]
+        [TestCase(1f, 0.8f, true, false, AutoPowerShieldLoss.Light, true, 2f, AutoPowerRole.Weapons)]
         // Without a shield power, light fire on low shields keeps Weapons available.
-        [TestCase(1f, 0.3f, false, AutoPowerShieldLoss.Light, true, 2f, AutoPowerRole.Weapons)]
+        [TestCase(1f, 0.3f, false, false, AutoPowerShieldLoss.Light, true, 2f, AutoPowerRole.Weapons)]
+        // An active shield boost lets Weapons stack on top, even under heavy loss.
+        [TestCase(1f, 0.1f, true, true, AutoPowerShieldLoss.Heavy, true, 2f, AutoPowerRole.Weapons)]
+        [TestCase(1f, 0.1f, true, true, AutoPowerShieldLoss.Light, true, 2f, AutoPowerRole.Weapons)]
+        [TestCase(1f, 0.1f, true, true, AutoPowerShieldLoss.Heavy, false, 2f, AutoPowerRole.None)]
         public void PriorityAndRegeneration(float hull, float shieldFraction, bool canBoostShields,
-            AutoPowerShieldLoss shieldLoss, bool attack, float advantage, AutoPowerRole expected)
+            bool shieldsBoosted, AutoPowerShieldLoss shieldLoss, bool attack, float advantage, AutoPowerRole expected)
         {
             Assert.That(_combat.ChooseRole(hull, shieldFraction * 100f, shieldFraction, canBoostShields,
-                shieldLoss, true, attack, advantage), Is.EqualTo(expected));
+                shieldsBoosted, shieldLoss, true, attack, advantage), Is.EqualTo(expected));
         }
 
         [Test]
         public void NoMeaningfulEnemy_BlocksWeaponsIncludingLastStand()
         {
-            Assert.That(_combat.ChooseRole(0.1f, 0f, 0f, false, AutoPowerShieldLoss.None, false, true, 10f),
+            Assert.That(_combat.ChooseRole(0.1f, 0f, 0f, false, false, AutoPowerShieldLoss.None, false, true, 10f),
                 Is.EqualTo(AutoPowerRole.None));
         }
 
