@@ -27,4 +27,4 @@ Selection-specific world queries remain in `SelectionQuery`, while `SelectionSer
 
 ## Verification
 
-EditMode tests cover rectangle normalization, boundary inclusion, reverse-direction dragging, and model lifecycle behavior in `Assets/Scripts/Tests/Editor/MarqueeSelectionUtilityTests.cs`.
+EditMode tests cover rectangle normalization, boundary inclusion, reverse-direction dragging, and model lifecycle behavior in `Assets/Scripts/Tests/Editor/BattleInput/MarqueeSelectionUtilityTests.cs`.

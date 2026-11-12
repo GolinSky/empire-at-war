@@ -1,5 +1,5 @@
 from pathlib import Path
-s=Path('Assets/Scripts/Tests/Editor/RealEntityCompositionTests.cs').read_text(encoding='utf-8-sig')
+s=Path('Assets/Scripts/Tests/Editor/Core/RealEntityCompositionTests.cs').read_text(encoding='utf-8-sig')
 s=s.replace('RealEntityCompositionTests','ProcursatorCompositionCheck').replace('ShipType.Acclamator','ShipType.Procursator').replace('ShipType.Arquitens','ShipType.Procursator')
 s+='''
 public static class ProcursatorCompositionRunner
