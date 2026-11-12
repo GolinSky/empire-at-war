@@ -68,14 +68,14 @@ verification: source-and-assets
 | Wave | Ships | Direct squadrons | Spawn groups |
 |---|---:|---:|---:|
 | 1 | 4 | 2 | 1 |
-| 2 | 16 | 3 | 2 |
-| 3 | 26 | 4 | 3 |
-| 4 | 32 | 5 | 4 |
-| 5 | 40 | 6 | 4 |
+| 2 | 14 | 3 | 2 |
+| 3 | 28 | 4 | 3 |
+| 4 | 38 | 5 | 4 |
+| 5 | 46 | 6 | 4 |
 
 ## Edge Cases
 
-- The current fifth-wave asset total is 40 ships; older planning snapshots recording 38 are historical.
+- Ship unlock tier changes → update `SurvivalWaveData.asset` for every faction. Per-tier ship totals are 2 × the largest faction roster for that tier; `SurvivalGameplayTests` checks totals and unlock coverage.
 - Mode victory rules differ: Skirmish is team elimination; Survival protects the human station; Simulation has a time-limit draw.
 - General battle time scale: normal 1, fast 4, paused/ended 0. Preparation and Simulation elapsed time use scaled battle time.
 - Saving supports Skirmish and Survival only: [[GameDesign/Save_And_Load]].
