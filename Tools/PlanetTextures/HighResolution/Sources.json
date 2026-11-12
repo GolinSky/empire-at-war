@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-12",
+  "assets": [
+    {
+      "planet": "Bespin",
+      "file": "w_planet_gas_Albedo.png",
+      "originalSize": 128,
+      "sourceSize": 1254,
+      "importSize": 1024,
+      "source": "Built-in image_gen, original albedo used as edit reference",
+      "prompt": "Edit the original Bespin gas albedo into a high-resolution square flat unlit game texture. Preserve orange ochre, tan and cream colors, original brightness, horizontal band positions and widths. Add restrained fine horizontal wispy gaseous detail within bands; no giant storms, new large features, sphere, space, glow, shadow, border or text. Left/right edges should wrap seamlessly. Requested 1024 square; generated source1254 square, imported1024 square.",
+      "appearance": "Preserves orange/cream band identity; generated detail, not recovered original detail.",
+      "sha256": "c897022311ee35c5a438306edc98e6316f6ca4e8583eef24a026c483b69b3968"
+    },
+    {
+      "planet": "Manaan",
+      "file": "w_planet_kamino_Albedo.png",
+      "originalSize": 128,
+      "sourceSize": 512,
+      "importSize": 512,
+      "source": "Stargate: Pegasus Chronicles, installed Workshop1126880602/Data/Art/Textures/W_planet_kamino.dds",
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1126880602",
+      "credits": "Planet texture pack credited to Jeff: https://sgmg2022.stargate-eaw.de/mod_versions/",
+      "appearance": "Blue ocean gradient with wave detail; no baked cities. Existing Kamino uses a separate material/texture.",
+      "sha256": "7c158b174aa96ab3f4015517ddce7576fc040e1bf728b4d305bdda2fdbf0db9a"
+    },
+    {
+      "planet": "Kessel",
+      "file": "w_asteroid00_Albedo.png",
+      "originalSize": 256,
+      "sourceSize": 1024,
+      "importSize": 1024,
+      "source": "Republic at War, installed Workshop1129810972/Data/Art/Textures/W_ASTEROID00.DDS",
+      "url": "https://steamcommunity.com/sharedfiles/filedetails/?id=1129810972",
+      "credits": "Local credits.md: planets z3r0x. Reuse restrictions apply to post1.3 assets; exact asset introduction version unverified.",
+      "appearance": "Same crater layout, more detail and darker tones.",
+      "sha256": "054f6190e416932ba82f7c6377f2454411ba7d214acb280fc4d417bebd957aca"
+    }
+  ],
+  "importPolicy": "Existing GUIDs preserved; BC7 high quality, mipmaps, trilinear, unreadable, ignore preset mip limits; max1024. ImportPlanetTextures checks these overrides before original sources.",
+  "verification": "Isolated before/after sphere renders and imported dimensions/formats reviewed. Menu previews updated. Automated tests skipped per user request."
+}

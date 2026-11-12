@@ -12,9 +12,18 @@ public static class ImportPlanetTextures
     private const string OUTPUT_PATH = "Temp/PlanetImport/imported-textures.json";
     private const string MODEL_FOLDER = "Assets/Art/Textures/Models/Planets/Original";
     private const string PREVIEW_FOLDER = "Assets/Art/Textures/Ui/PlanetPreviews/Original";
+    private const string HIGH_RESOLUTION_FOLDER = "Tools/PlanetTextures/HighResolution";
 
-    public static string Main()
+    public static string Main(bool highResolutionOnly = false)
     {
+        if (highResolutionOnly)
+        {
+            foreach (string source in Directory.GetFiles(HIGH_RESOLUTION_FOLDER, "*.png"))
+                ImportTexture(source, MODEL_FOLDER + "/" + Path.GetFileName(source), false, false);
+            AssetDatabase.SaveAssets();
+            return "Imported and saved high-resolution planet albedos with existing GUIDs.";
+        }
+
         if (EditorApplication.isPlayingOrWillChangePlaymode)
             throw new InvalidOperationException("Import planet textures in Edit Mode.");
 
@@ -59,6 +68,9 @@ public static class ImportPlanetTextures
 
     private static void ImportTexture(string source, string target, bool preserveAlpha, bool preview)
     {
+        string replacement = HIGH_RESOLUTION_FOLDER + "/" + Path.GetFileName(target);
+        bool highResolution = !preview && File.Exists(replacement);
+        if (highResolution) source = replacement;
         File.Copy(source, target, true);
         AssetDatabase.ImportAsset(target, ImportAssetOptions.ForceSynchronousImport);
         var importer = (TextureImporter)AssetImporter.GetAtPath(target);
@@ -74,7 +86,7 @@ public static class ImportPlanetTextures
         importer.wrapMode = preview ? TextureWrapMode.Clamp : TextureWrapMode.Repeat;
         importer.filterMode = preview ? FilterMode.Bilinear : FilterMode.Trilinear;
         importer.anisoLevel = preview ? 1 : 4;
-        importer.maxTextureSize = preview ? 512 : 2048;
+        importer.maxTextureSize = preview ? 512 : highResolution ? 1024 : 2048;
         importer.npotScale = TextureImporterNPOTScale.None;
         importer.textureCompression = lossless ? TextureImporterCompression.Uncompressed : TextureImporterCompression.CompressedHQ;
         importer.crunchedCompression = false;

@@ -37,7 +37,7 @@
     "Lwhekk"
   ],
   "limits": "Isolated Editor renders; no packed-player FPS or residency measurement.",
-  "texturePayloadBytes": 50965849,
+  "texturePayloadBytes": 53718444,
   "qualityFollowup": {
     "date": "2026-11-12",
     "surfaceTint": 0.55,
@@ -81,6 +81,13 @@
       }
     ],
     "tests": "Not run per user instruction; import/readback and isolated visual verification only.",
-    "sourceLimit": "Bespin source is 128x128; no artificial detail or upscaling added."
+    "sourceLimit": "Historical original Bespin source128x128; replaced by generated high-resolution albedo in subsequent follow-up."
+  },
+  "highResolutionFollowup": {
+    "sourceManifest": "Tools/PlanetTextures/HighResolution/Sources.json",
+    "Bespin": 1024,
+    "Manaan": 512,
+    "Kessel": 1024,
+    "verification": "Imported readback and isolated renders checked; previews regenerated. Tests not run per user instruction."
   }
 }
