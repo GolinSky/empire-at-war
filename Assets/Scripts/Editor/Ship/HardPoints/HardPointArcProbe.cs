@@ -21,8 +21,8 @@ namespace EmpireAtWar.Editor.Ship.HardPoints
         private const float RAY_START_OFFSET = 0.1f;
         private const float RAY_LENGTH_FACTOR = 2f;
 
-        private static readonly Dictionary<int, (Vector3 Position, Quaternion Frame, HardPointArcProbeResult Result)>
-            _results = new Dictionary<int, (Vector3, Quaternion, HardPointArcProbeResult)>();
+        private static readonly Dictionary<EntityId, (Vector3 Position, Quaternion Frame, HardPointArcProbeResult Result)>
+            _results = new Dictionary<EntityId, (Vector3, Quaternion, HardPointArcProbeResult)>();
         private static readonly List<Mesh> _bakedMeshes = new List<Mesh>();
         private static Scene _hullScene;
         private static Transform _hullRoot;
@@ -39,7 +39,7 @@ namespace EmpireAtWar.Editor.Ship.HardPoints
             Transform transform = weapon.transform;
             Quaternion frame = transform.parent == null ? Quaternion.identity : transform.parent.rotation;
             Transform shipRoot = FindShipRoot(transform);
-            int id = weapon.GetInstanceID();
+            EntityId id = weapon.GetEntityId();
             if (_hullRoot == shipRoot && _results.TryGetValue(id, out var cached) &&
                 cached.Position == transform.position && cached.Frame == frame)
                 return cached.Result;
