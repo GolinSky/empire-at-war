@@ -291,6 +291,8 @@ namespace EmpireAtWar.Tests.Editor
 
             public void FinishWaypoints() { FinishCount++; _targeting.Cancel(); }
 
+            public bool CanIssueAttackMove(Vector2 screen) => throw new NotSupportedException();
+
             public bool TryIssueMove(Vector3 worldPoint) => false;
         }
 

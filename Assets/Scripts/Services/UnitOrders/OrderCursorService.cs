@@ -7,6 +7,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.ShipAbilities;
 
 namespace EmpireAtWar.Services.UnitOrders
@@ -14,6 +15,9 @@ namespace EmpireAtWar.Services.UnitOrders
     /// <summary>Single owner of the order cursor: mirrors what <see cref="PlayerOrderInputHandler"/> does on a world click.</summary>
     public sealed class OrderCursorService : IOrderCursorService
     {
+        private readonly IPlayerOrderInputHandler _orderInput;
+        private readonly IPointerInput _pointer;
+        private readonly IUiHitTest _uiHitTest;
         private readonly IHoveredEntityObserver _hover;
         private readonly ILocalPlayer _localPlayer;
         private readonly IPlayerRegistry _players;
@@ -24,8 +28,12 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public OrderCursorService(IHoveredEntityObserver hover, ILocalPlayer localPlayer,
             ISelectionService selectionService, IShipAbilityTargeting abilities,
-            SuperWeaponTargetingModel superWeapons, UnitActionTargetingModel targeting, IPlayerRegistry players)
+            SuperWeaponTargetingModel superWeapons, UnitActionTargetingModel targeting, IPlayerRegistry players,
+            IPlayerOrderInputHandler orderInput, IPointerInput pointer, IUiHitTest uiHitTest)
         {
+            _orderInput = orderInput;
+            _pointer = pointer;
+            _uiHitTest = uiHitTest;
             _hover = hover;
             _localPlayer = localPlayer;
             _players = players;
@@ -40,6 +48,11 @@ namespace EmpireAtWar.Services.UnitOrders
             if (_players.TryGetReinforcementReserve(_localPlayer.Id, out ReinforcementModel reserve) &&
                 reserve.IsTrySpawning)
                 return reserve.CanDeployPreview ? OrderCursor.None : OrderCursor.Invalid;
+
+            if (!_abilities.IsWaitingForTarget && _superWeapons.Pending == null &&
+                _targeting.Pending == UnitActionId.AttackMove)
+                return _uiHitTest.IsOverUi(_pointer.Position) || _orderInput.CanIssueAttackMove(_pointer.Position)
+                    ? OrderCursor.None : OrderCursor.Invalid;
 
             if (!_hover.TryGetHovered(out IEntity hovered) || !IsEnemy(hovered)) return OrderCursor.None;
             // Clicking an ineligible enemy keeps ability targeting armed, so the cursor marks it as invalid.

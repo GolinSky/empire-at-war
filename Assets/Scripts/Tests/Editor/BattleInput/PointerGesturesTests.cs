@@ -82,12 +82,14 @@ namespace EmpireAtWar.Tests.Editor
             UnityEngine.Object.DestroyImmediate(_testSettings);
         }
 
-        [Test]
-        public void PendingAbility_LeftPressCancelsAndConsumesSelectionGesture()
+        [TestCase("ability")]
+        [TestCase("AttackMove")]
+        public void PendingTarget_LeftPressCancelsAndConsumesSelectionGesture(string mode)
         {
-            Arm("ability");
+            Arm(mode);
             MouseFrame(1, Vector2.zero);
             Assert.That(_abilities.IsWaitingForTarget, Is.False);
+            Assert.That(_targeting.Pending, Is.Null);
 
             MouseFrame(1, new Vector2(100f, 100f));
             MouseFrame(0, new Vector2(100f, 100f));
@@ -103,14 +105,15 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_clicked, Is.EqualTo(1));
         }
 
-        [Test]
-        public void PendingAbility_UiPressDoesNotCancelTargeting()
+        [TestCase("ability")]
+        [TestCase("AttackMove")]
+        public void PendingTarget_UiPressDoesNotCancelTargeting(string mode)
         {
-            Arm("ability");
+            Arm(mode);
             _uiHitTest.OverUi = true;
             MouseFrame(1, Vector2.zero);
             MouseFrame(0, Vector2.zero);
-            Assert.That(_abilities.IsWaitingForTarget, Is.True);
+            Assert.That(_abilities.IsWaitingForTarget || _targeting.Pending != null, Is.True);
             Assert.That(_pressed, Is.Zero);
             Assert.That(_clicked, Is.Zero);
         }

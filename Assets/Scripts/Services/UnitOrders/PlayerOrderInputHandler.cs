@@ -199,25 +199,10 @@ namespace EmpireAtWar.Services.UnitOrders
                 return;
             }
             // Friendly hulls can cover a site without blocking commands to its center.
-            if (!hasHardPoint && !IsEnemy(target))
+            if (!hasHardPoint && !IsEnemy(target) && TryGetOrderSnap(screen, out Vector3 snap))
             {
-                foreach (ICaptureSiteDirectory directory in _siteDirectories)
-                {
-                    foreach (Vector2 offset in SatelliteTapOffsets)
-                    {
-                        Ray ray = _cameraService.SceneCamera.ScreenPointToRay(screen + offset * SATELLITE_TAP_PADDING_PIXELS);
-                        ICaptureSite site = CaptureSitePointerQuery.Find(directory.Sites, ray, CaptureSiteKind.Satellite);
-                        if (site == null) continue;
-                        TryIssueMove(site.Center);
-                        return;
-                    }
-                }
-                foreach (OwnedCircle area in _battleAreas.Get(BattleAreaLayer.OrderSnap))
-                    if (area.Contains(_cameraService.GetWorldPoint(screen, area.Transform.position), 0f))
-                    {
-                        TryIssueMove(area.Transform.position);
-                        return;
-                    }
+                TryIssueMove(snap);
+                return;
             }
             bool isFriendlyShip = hasUnit && !hasHardPoint && _localPlayer.IsFriendly(target.Owner) &&
                 hit.Command.SelectionType == SelectionType.Ship;
@@ -242,6 +227,41 @@ namespace EmpireAtWar.Services.UnitOrders
             else if ((!hasUnit || isFriendlyShip) && !IsObstacle(screen))
                 _playerOrders.IssueMove(receivers,
                     _cameraService.GetWorldPoint(screen, ReferencePosition(receivers)));
+        }
+
+        public bool CanIssueAttackMove(Vector2 screen)
+        {
+            bool hasHardPoint = _hardPointHover.TryGetHovered(out IEntity owner, out _);
+            SelectionEntry hit = default;
+            bool hasUnit = hasHardPoint || _query.TryFindAt(screen, out hit);
+            IEntity target = hasHardPoint ? owner : hasUnit ? hit.Entity : null;
+            if (!hasHardPoint && !IsEnemy(target) && TryGetOrderSnap(screen, out _)) return true;
+            bool isFriendlyShip = hasUnit && !hasHardPoint && _localPlayer.IsFriendly(target.Owner) &&
+                hit.Command.SelectionType == SelectionType.Ship;
+            return (!hasUnit || isFriendlyShip) && !IsObstacle(screen);
+        }
+
+        private bool TryGetOrderSnap(Vector2 screen, out Vector3 point)
+        {
+            foreach (ICaptureSiteDirectory directory in _siteDirectories)
+            {
+                foreach (Vector2 offset in SatelliteTapOffsets)
+                {
+                    Ray ray = _cameraService.SceneCamera.ScreenPointToRay(screen + offset * SATELLITE_TAP_PADDING_PIXELS);
+                    ICaptureSite site = CaptureSitePointerQuery.Find(directory.Sites, ray, CaptureSiteKind.Satellite);
+                    if (site == null) continue;
+                    point = site.Center;
+                    return true;
+                }
+            }
+            foreach (OwnedCircle area in _battleAreas.Get(BattleAreaLayer.OrderSnap))
+                if (area.Contains(_cameraService.GetWorldPoint(screen, area.Transform.position), 0f))
+                {
+                    point = area.Transform.position;
+                    return true;
+                }
+            point = default;
+            return false;
         }
 
         private void IssueAttack(List<IEntity> receivers, IEntity target, bool hasHardPoint, int hardPointId)

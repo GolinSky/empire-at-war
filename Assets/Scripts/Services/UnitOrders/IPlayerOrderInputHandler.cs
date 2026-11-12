@@ -6,6 +6,8 @@ namespace EmpireAtWar.Services.UnitOrders
     {
         void FinishWaypoints();
 
+        bool CanIssueAttackMove(Vector2 screen);
+
         bool TryIssueMove(Vector3 worldPoint);
     }
 }

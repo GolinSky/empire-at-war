@@ -95,6 +95,32 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Attack));
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public void AttackMovePreview_MatchesEnemyAndEmptySpaceCommands(bool enemy)
+        {
+            _query.ReturnEnemy = enemy;
+            _targeting.Start(UnitActionId.AttackMove);
+            Assert.That(_handler.CanIssueAttackMove(Vector2.zero), Is.EqualTo(!enemy));
+            _input.RightClick(Vector2.zero);
+            Assert.That(_orders.LastAction, Is.EqualTo(enemy ? (UnitActionId?)null : UnitActionId.AttackMove));
+            Assert.That(_targeting.Pending, Is.EqualTo(enemy ? (UnitActionId?)UnitActionId.AttackMove : null));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void AttackMovePreview_FriendlyFacilityRequiresCaptureSiteSnap(bool insideSite)
+        {
+            _query.Target = _receiver;
+            _query.Command = new FakeFacilitySelection();
+            if (insideSite) RegisterSite();
+            Vector2 point = new Vector2(11f, 21f);
+            _targeting.Start(UnitActionId.AttackMove);
+            Assert.That(_handler.CanIssueAttackMove(point), Is.EqualTo(insideSite));
+            _input.RightClick(point);
+            Assert.That(_orders.LastAction, Is.EqualTo(insideSite ? (UnitActionId?)UnitActionId.AttackMove : null));
+        }
+
         [Test]
         public void AltWaypoints_AreIssuedOnModifierRelease()
         {
@@ -299,6 +325,8 @@ namespace EmpireAtWar.Tests.Editor
             _query.Command = new FakeFacilitySelection { SelectionType = SelectionType.Ship };
             _view.transform.position = new Vector3(0f, 15f, 0f);
             if (action.HasValue) _targeting.Start(action.Value);
+            if (action == UnitActionId.AttackMove)
+                Assert.That(_handler.CanIssueAttackMove(new Vector2(11f, 21f)), Is.True);
 
             _input.RightClick(new Vector2(11f, 21f));
 
@@ -347,6 +375,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             public bool WasCalled { get; private set; }
             public void FinishWaypoints() { }
+            public bool CanIssueAttackMove(Vector2 screen) => throw new NotSupportedException();
+
             public bool TryIssueMove(Vector3 worldPoint)
             { WasCalled = true; return false; }
         }
