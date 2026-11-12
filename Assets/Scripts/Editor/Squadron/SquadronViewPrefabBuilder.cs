@@ -22,7 +22,7 @@ using UnityEngine.SceneManagement;
 namespace EmpireAtWar.Editor.Squadrons
 {
     /// <summary>Generates the "{SquadronType}SquadronView" prefabs from a fighter model.</summary>
-    [EmpireAtWar.Editor.EditorToolInfo("Rebuilds squadron view prefabs from the builder specifications. Build Squadron Views covers Delta-7 and Belbullab-22; A-Wing has a separate command.")]
+    [EditorToolInfo("Rebuilds squadron view prefabs from the builder specifications. Build Squadron Views covers Delta-7 and Belbullab-22; A-Wing has a separate command.")]
     public static class SquadronViewPrefabBuilder
     {
         private const string PREFAB_FOLDER = "Assets/Prefabs/Models/Squadrons";

@@ -9,11 +9,12 @@ using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Services.VContainer;
 
 namespace EmpireAtWar.Editor.CaptureSites
 {
     /// <summary>Builds the asteroid mine entity assets from the Space Mining Facility model.</summary>
-    [EmpireAtWar.Editor.EditorToolInfo("Build asteroid mining-facility assets or repair the mining-facility shield. These are maintenance operations on existing content.")]
+    [EditorToolInfo("Build asteroid mining-facility assets or repair the mining-facility shield. These are maintenance operations on existing content.")]
     public static class AsteroidMiningFacilityAssetBuilder
     {
         public const string MODEL_PATH =
@@ -160,7 +161,7 @@ namespace EmpireAtWar.Editor.CaptureSites
         private static void BuildInstaller()
         {
             GameObject root = new GameObject("AsteroidMiningFacilityInstaller");
-            root.AddComponent<EmpireAtWar.Services.VContainer.EntityLifetimeScope>().autoRun = false;
+            root.AddComponent<EntityLifetimeScope>().autoRun = false;
             PrefabUtility.SaveAsPrefabAsset(root, INSTALLER_PATH);
             Object.DestroyImmediate(root);
         }

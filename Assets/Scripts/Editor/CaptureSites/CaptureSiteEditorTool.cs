@@ -13,7 +13,7 @@ using UnityEngine.UI;
 namespace EmpireAtWar.Editor.CaptureSites
 {
     /// <summary>Builds the capture-site prefabs and data; maps spawn the sites at generated positions.</summary>
-    [EmpireAtWar.Editor.EditorToolInfo("Capture-site authoring and maintenance. Build Sites rebuilds data and prefabs; the other commands rebuild site prefabs or apply obstacles and the mini-map icon.")]
+    [EditorToolInfo("Capture-site authoring and maintenance. Build Sites rebuilds data and prefabs; the other commands rebuild site prefabs or apply obstacles and the mini-map icon.")]
     public static class CaptureSiteEditorTool
     {
         private const float SITE_SCALE = 2f;

@@ -14,7 +14,7 @@ namespace EmpireAtWar.Editor.Tools
     /// on Unity Editor startup if they are not already running.
     /// </summary>
     [InitializeOnLoad]
-    [EmpireAtWar.Editor.EditorToolInfo("Legacy workflow: external-app auto-start was used for the old Obsidian-dependent setup. The current empire-vault connection uses stdio and does not require the Obsidian app. Existing preferences and startup behavior are preserved.")]
+    [EditorToolInfo("Legacy workflow: external-app auto-start was used for the old Obsidian-dependent setup. The current empire-vault connection uses stdio and does not require the Obsidian app. Existing preferences and startup behavior are preserved.")]
     public static class AutoAppStartup
     {
         private const string CONFIG_MENU_PATH = "Tools/Empire At War/Legacy/External Apps/Configure...";

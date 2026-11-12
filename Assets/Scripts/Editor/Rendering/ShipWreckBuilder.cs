@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using EmpireAtWar.ViewComponents.Station;
 using EmpireAtWar.ViewComponents.Wreck;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
@@ -14,7 +15,7 @@ namespace EmpireAtWar.Editor.Rendering
     /// Every Ship Lit renderer is copied with its original mesh; only the materials are Ship Wreck
     /// copies (same textures and colors). The shader cuts the mesh into parts at runtime. Safe to re-run.
     /// </summary>
-    [EmpireAtWar.Editor.EditorToolInfo("Build a wreck from a selected supported view prefab, or synchronize existing wreck materials.")]
+    [EditorToolInfo("Build a wreck from a selected supported view prefab, or synchronize existing wreck materials.")]
     public static class ShipWreckBuilder
     {
         private const string BUILD_MENU_PATH = "Tools/Empire At War/Rendering/Materials/Build Wreck From Selected View";
@@ -102,7 +103,7 @@ namespace EmpireAtWar.Editor.Rendering
         /// <summary>Levels of a station view; 0 for other units.</summary>
         public static int GetStationLevelCount(GameObject view)
         {
-            var levelView = view.GetComponent<EmpireAtWar.ViewComponents.Station.StationLevelView>();
+            var levelView = view.GetComponent<StationLevelView>();
             return levelView == null ? 0 : new SerializedObject(levelView).FindProperty("levelModels").arraySize;
         }
 
@@ -113,13 +114,13 @@ namespace EmpireAtWar.Editor.Rendering
         /// <param name="stationLevel">For a station, the level whose model is copied; 0 is the top level.</param>
         public static List<MeshRenderer> GetSourceRenderers(GameObject view, int stationLevel = 0)
         {
-            var levelView = view.GetComponent<EmpireAtWar.ViewComponents.Station.StationLevelView>();
+            var levelView = view.GetComponent<StationLevelView>();
             Renderer[] sources;
             if (levelView != null)
             {
                 var levels = new SerializedObject(levelView).FindProperty("levelModels");
                 int index = stationLevel > 0 ? stationLevel - 1 : levels.arraySize - 1;
-                var model = (EmpireAtWar.ViewComponents.Station.StationLevelArt)levels.GetArrayElementAtIndex(index).objectReferenceValue;
+                var model = (StationLevelArt)levels.GetArrayElementAtIndex(index).objectReferenceValue;
                 sources = model.HullRenderers;
             }
             else

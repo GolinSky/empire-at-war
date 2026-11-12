@@ -2,6 +2,7 @@ using System.IO;
 using EmpireAtWar.Components.Environment;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Map.Hazards;
+using EmpireAtWar.Services.VContainer;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -67,7 +68,7 @@ namespace EmpireAtWar.Editor
                 var effectsSerialized = new SerializedObject(effects);
                 effectsSerialized.FindProperty("hazardEntryPrefab").objectReferenceValue = entry;
                 effectsSerialized.ApplyModifiedPropertiesWithoutUndo();
-                var scope = root.GetComponent<EmpireAtWar.Services.VContainer.SkirmishScope>();
+                var scope = root.GetComponent<SkirmishScope>();
                 var scopeSerialized = new SerializedObject(scope);
                 scopeSerialized.FindProperty("hazardEffectsView").objectReferenceValue = effects;
                 scopeSerialized.ApplyModifiedPropertiesWithoutUndo();

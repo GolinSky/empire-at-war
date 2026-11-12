@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using EmpireAtWar.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditor.Toolbars;
@@ -38,7 +39,7 @@ internal static class SceneToolbarDropdown
     }
 
     [MenuItem(ADD_TO_TOOLBAR_MENU)]
-    [EmpireAtWar.Editor.EditorToolInfo("Show the current scene selector on Unity's main toolbar. The toolbar provides navigation between project scenes.")]
+    [EditorToolInfo("Show the current scene selector on Unity's main toolbar. The toolbar provides navigation between project scenes.")]
     private static void AddToMainToolbar()
     {
         var showAllMethod = typeof(MainToolbar).GetMethod(

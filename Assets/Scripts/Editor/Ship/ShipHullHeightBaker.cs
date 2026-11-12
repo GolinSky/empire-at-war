@@ -10,7 +10,7 @@ namespace EmpireAtWar.Editor
     /// <summary>Measures each ship view's visible hull across its full bank range and caches the
     /// vertical extent in its ShipData. Disabled renderers (shield bubbles) and inactive objects
     /// are excluded.</summary>
-    [EmpireAtWar.Editor.EditorToolInfo("Bake hull heights from current ship prefabs into ship data.")]
+    [EditorToolInfo("Bake hull heights from current ship prefabs into ship data.")]
     public static class ShipHullHeightBaker
     {
         private const string SHIP_DATA_FOLDER = "Assets/Settings/Data/Ship";

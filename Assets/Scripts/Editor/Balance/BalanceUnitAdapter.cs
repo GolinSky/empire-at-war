@@ -114,7 +114,7 @@ namespace EmpireAtWar.Editor.Balance
                 if (!types.Add(id)) throw new InvalidOperationException($"Duplicate hardpoint health type: {data.name}/{id}");
                 foreach (string name in new[] { "health", "hullDamageMultiplier" })
                     registry.Add(data, key + "/" + id + "/" + name, entry.propertyPath + "." + name,
-                        BalanceFieldGroup.Hardpoints, unit.Name + " / " + ((EmpireAtWar.Components.Ship.Health.HardPointType)id), BalanceFieldOwner.UnitData,
+                        BalanceFieldGroup.Hardpoints, unit.Name + " / " + ((HardPointType)id), BalanceFieldOwner.UnitData,
                         unit.Kind == BalanceUnitKind.Structure, new[] { unit }, positive: name == "health");
             }
         }

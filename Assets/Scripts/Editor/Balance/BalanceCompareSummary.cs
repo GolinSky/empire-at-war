@@ -165,7 +165,7 @@ namespace EmpireAtWar.Editor.Balance
                 }
                 BalanceField weapon = registry.FieldsFor(mount).FirstOrDefault(field => !field.SharedMountSource && field.Stat == "WeaponType");
                 if (weapon != null) Editable(hardpoint, "Weapon type", weapon, draft, usage, edit);
-                else Text(hardpoint, ((EmpireAtWar.ViewComponents.Health.HardPoint)mount).HardPointType.ToString(), "balance-muted");
+                else Text(hardpoint, ((HardPoint)mount).HardPointType.ToString(), "balance-muted");
             }
         }
 

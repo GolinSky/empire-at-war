@@ -10,7 +10,7 @@ namespace EmpireAtWar.Editor.Rendering
     /// its hue on the material, so EmpireAtWar/Ship Lit repaints that livery in the owner's team color.
     /// Saturated emissive lights are also switched to full team tint.
     /// </summary>
-    [EmpireAtWar.Editor.EditorToolInfo("Analyze existing unit materials and store their painted livery colors for team coloring.")]
+    [EditorToolInfo("Analyze existing unit materials and store their painted livery colors for team coloring.")]
     public static class TeamLiveryAnalyzer
     {
         private const string MENU_PATH = "Tools/Empire At War/Rendering/Materials/Detect Team Livery Colors";

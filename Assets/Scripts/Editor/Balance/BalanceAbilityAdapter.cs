@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using UnityEditor;
@@ -91,8 +93,8 @@ namespace EmpireAtWar.Editor.Balance
                 BalanceWeaponAdapter.Profile(registry, catalog, property, key + name + "/", BalanceFieldGroup.Abilities, context, users, alias, subtype);
             else
                 registry.Add(catalog, key + name, property.propertyPath, BalanceFieldGroup.Abilities, context, BalanceFieldOwner.SharedProfile, true, users,
-                    name == "damageType" ? typeof(EmpireAtWar.Components.AttackComponent.DamageType)
-                    : name == "targetClasses" ? typeof(EmpireAtWar.Components.Ship.Health.ShipClass) : null,
+                    name == "damageType" ? typeof(DamageType)
+                    : name == "targetClasses" ? typeof(ShipClass) : null,
                     maximum: name == "malfunctionChance" ? 1 : double.PositiveInfinity,
                     minimum: name == "minimumTargets" ? 1 : 0, positive: name == "radius" || name == "waveSpeed" || name.EndsWith("FireDelayMultiplier"),
                     alias: alias, dependency: subtype, serializedTarget: settings.serializedObject);

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Squadrons.Data;
 using UnityEditor;
 using UnityEngine;
 
@@ -25,8 +27,8 @@ namespace EmpireAtWar.Editor.Balance
             HashSet<string> paths = fields.Select(field => field.AssetPath).ToHashSet();
             BalanceUnit[] derived = registry.Units.Where(unit => unit.Prefab != null && (paths.Contains(AssetDatabase.GetAssetPath(unit.Prefab))
                     || fields.Any(field => field.SharedMountSource && field.Users.Contains(unit))))
-                .GroupBy(unit => unit.Data).Select(group => group.First()).Where(unit => unit.Data is EmpireAtWar.Entities.Ship.Data.ShipData
-                    || unit.Data is EmpireAtWar.Entities.Squadrons.Data.SquadronData).ToArray();
+                .GroupBy(unit => unit.Data).Select(group => group.First()).Where(unit => unit.Data is ShipData
+                    || unit.Data is SquadronData).ToArray();
             foreach (BalanceUnit unit in derived) paths.Add(AssetDatabase.GetAssetPath(unit.Data));
             if (paths.Any(path => EditorUtility.IsDirty(AssetDatabase.LoadMainAssetAtPath(path))))
                 throw new InvalidOperationException("A target has unsaved external edits. Save that asset, refresh the inventory, and resolve its diff first.");

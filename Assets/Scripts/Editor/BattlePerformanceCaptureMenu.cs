@@ -5,7 +5,7 @@ using UnityEditor;
 namespace EmpireAtWar.Editor
 {
     [InitializeOnLoad]
-    [EmpireAtWar.Editor.EditorToolInfo("Capture detailed battle frames or open the folder containing automatic FPS history.")]
+    [EditorToolInfo("Capture detailed battle frames or open the folder containing automatic FPS history.")]
     public static class BattlePerformanceCaptureMenu
     {
         private const string MENU = "Tools/Empire At War/Diagnostics/Performance/";

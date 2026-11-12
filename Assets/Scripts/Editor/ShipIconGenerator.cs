@@ -9,7 +9,7 @@ using UnityEngine.Rendering;
 
 namespace EmpireAtWar.Editor
 {
-    [EmpireAtWar.Editor.EditorToolInfo("Regenerate ship icons and update ship UI data and faction definitions.")]
+    [EditorToolInfo("Regenerate ship icons and update ship UI data and faction definitions.")]
     public static class ShipIconGenerator
     {
         private const string PREFAB_FOLDER = "Assets/Prefabs/Models/Ships";

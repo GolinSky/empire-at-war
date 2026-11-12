@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons.Data;
+using EmpireAtWar.Repository.Data;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEditor;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace EmpireAtWar.Editor.AI
 {
     /// <summary>Counts each unit view's WeaponComponent hardpoints per weapon type and caches the result in its
     /// ShipData / SquadronData, so the AI can rate units it has not spawned without loading their prefabs.</summary>
-    [EmpireAtWar.Editor.EditorToolInfo("Bake AI weapon-loadout summaries from current ship and squadron prefabs into their data assets.")]
+    [EditorToolInfo("Bake AI weapon-loadout summaries from current ship and squadron prefabs into their data assets.")]
     public static class WeaponLoadoutBaker
     {
         public const string SHIP_DATA_FOLDER = "Assets/Settings/Data/Ship";
@@ -67,7 +68,7 @@ namespace EmpireAtWar.Editor.AI
 
         public static GameObject LoadShipView(ShipData data)
         {
-            var mappings = AssetDatabase.LoadAssetAtPath<EmpireAtWar.Repository.Data.AssetMappingData>("Assets/Settings/AssetMappingData.asset");
+            var mappings = AssetDatabase.LoadAssetAtPath<AssetMappingData>("Assets/Settings/AssetMappingData.asset");
             string viewName = data.name.Substring(0, data.name.Length - SHIP_DATA_SUFFIX.Length) + SHIP_VIEW_SUFFIX;
             string viewPath = AssetDatabase.GUIDToAssetPath(mappings.GetAssetKey(viewName));
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPath);

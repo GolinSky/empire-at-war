@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using EmpireAtWar.Entities.BattleNotifications;
 using EmpireAtWar.Entities.TacticalMarkers;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Repository.Data;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.TacticalMarkers;
 using EmpireAtWar.Services.Tutorial;
 using EmpireAtWar.Services.VContainer;
@@ -121,7 +123,7 @@ namespace EmpireAtWar.Editor
             for (int i = 0; i < 6; i++) if (miniMap.GetIcon((MarkType)((int)MarkType.TacticalLook + i)) == null)
                 throw new InvalidOperationException("Missing minimap marker icon.");
             RequireReferences(miniMap.MarkViewPrefab, "arrivalRing", "tacticalMarkerSettings");
-            var actions = new EmpireAtWar.Services.Input.GameInputActions();
+            var actions = new GameInputActions();
             try
             {
                 var action = actions.asset.FindAction("Battle/PlaceMarker", true);
@@ -345,7 +347,7 @@ namespace EmpireAtWar.Editor
             GameObject root = PrefabUtility.LoadPrefabContents(notificationPath);
             try
             {
-                foreach (EmpireAtWar.Entities.BattleNotifications.BattleNotificationCardView card in root.GetComponentsInChildren<EmpireAtWar.Entities.BattleNotifications.BattleNotificationCardView>(true))
+                foreach (BattleNotificationCardView card in root.GetComponentsInChildren<BattleNotificationCardView>(true))
                 {
                     var serialized = new SerializedObject(card);
                     var body = (RectTransform)serialized.FindProperty("body").objectReferenceValue;

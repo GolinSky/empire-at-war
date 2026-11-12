@@ -16,7 +16,7 @@ namespace EmpireAtWar.Editor.Rendering
     /// Moves unit prefabs onto the EmpireAtWar/Ship Lit shader and gives them team colors.
     /// Safe to run again after adding new units: converted materials and existing views are updated in place.
     /// </summary>
-    [EmpireAtWar.Editor.EditorToolInfo("Maintain the current Ship Lit rendering pipeline: convert unit materials or add team-color views to unit prefabs.")]
+    [EditorToolInfo("Maintain the current Ship Lit rendering pipeline: convert unit materials or add team-color views to unit prefabs.")]
     public static class ShipLitSetupTool
     {
         private const string CONVERT_MENU_PATH = "Tools/Empire At War/Rendering/Materials/Convert Unit Materials To Ship Lit";

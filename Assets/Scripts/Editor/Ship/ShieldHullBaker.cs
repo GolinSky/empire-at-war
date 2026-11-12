@@ -9,7 +9,7 @@ namespace EmpireAtWar.Editor
 {
     /// <summary>Wraps each shield tightly around its hull: a convex shell of the visible renderers plus a margin,
     /// saved as a per-view mesh and as the planes <see cref="Shield"/> clips shots against.</summary>
-    [EmpireAtWar.Editor.EditorToolInfo("Bake shield hull geometry for current unit prefabs.")]
+    [EditorToolInfo("Bake shield hull geometry for current unit prefabs.")]
     public static class ShieldHullBaker
     {
         private const string VIEW_FOLDER = "Assets/Prefabs/Models";

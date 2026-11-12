@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Editor
 {
-    [EmpireAtWar.Editor.EditorToolInfo("Audit battle rendering and instancing. Use during a representative battle for meaningful results.")]
+    [EditorToolInfo("Audit battle rendering and instancing. Use during a representative battle for meaningful results.")]
     public static class BattleInstancingAudit
     {
         private const string MENU_PATH = "Tools/Empire At War/Diagnostics/Performance/Audit Battle Instancing";

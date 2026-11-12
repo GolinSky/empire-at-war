@@ -1,8 +1,9 @@
 using System.IO;
+using EmpireAtWar.Editor;
 using UnityEditor;
 using UnityEngine;
 
-[EmpireAtWar.Editor.EditorToolInfo("Outdated: reads and writes retired Assets/Graphics paths and expects the old volumetric-nebula shader there. Retained for reference; update the workflow before reuse.")]
+[EditorToolInfo("Outdated: reads and writes retired Assets/Graphics paths and expects the old volumetric-nebula shader there. Retained for reference; update the workflow before reuse.")]
 public class VolumetricNebulaGenerator
 {
     [MenuItem("Tools/Empire At War/Legacy/Volumetric Nebula/Setup Full Vfx")]

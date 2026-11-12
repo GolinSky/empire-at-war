@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Editor
 {
-    [EmpireAtWar.Editor.EditorToolInfo("Add selected assets to the asset mapping, or rebuild all mappings from Addressables.")]
+    [EditorToolInfo("Add selected assets to the asset mapping, or rebuild all mappings from Addressables.")]
     public static class AssetMappingContextMenu
     {
         private const string MAPPING_DATA_PATH = "Assets/Settings/AssetMappingData.asset";
