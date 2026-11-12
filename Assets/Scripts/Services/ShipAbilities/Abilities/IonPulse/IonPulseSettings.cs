@@ -8,29 +8,27 @@ using UnityEngine;
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
     [Serializable]
-    public sealed class IonPulseSettings : ShipAbilitySettings, IShipAbilityTargetRule
+    public sealed class IonPulseSettings : ShipAbilitySettings, IShipAbilityTargetRule, IShipAbilityReadiness
     {
         [SerializeField] private IonPulseView viewPrefab;
-        [SerializeField] private float chargeDuration = 4f;
-        [SerializeField] private float alignmentTimeout = 45f;
         [SerializeField] private float alignmentTolerance = 5f;
         [SerializeField] private float waveSpeed = 35f;
         [SerializeField] private float waveRadius = 60f;
         [SerializeField] private float waveThickness = 8f;
         [SerializeField] private float disableDuration = 10f;
-        [SerializeField, Range(0f, 1f)] private float malfunctionChance = 0.1f;
 
         public IonPulseView ViewPrefab => viewPrefab;
-        public float ChargeDuration => chargeDuration;
-        public float AlignmentTimeout => alignmentTimeout;
         public float AlignmentTolerance => alignmentTolerance;
         public float WaveSpeed => waveSpeed;
         public float WaveRadius => waveRadius;
         public float WaveThickness => waveThickness;
         public float DisableDuration => disableDuration;
-        public float MalfunctionChance => malfunctionChance;
 
         public override float GetEffectDuration(float activeDuration) => disableDuration;
+
+        // The hull cannot turn during the hyperspace arrival, so the pulse waits until the ship is in the battle.
+        public bool IsReady(IShipAbilityFacade caster) =>
+            !(caster.Entity.TryGetFacade(out IShipArrivalFacade arrival) && arrival.IsArriving);
 
         public bool CanTarget(IShipAbilityFacade caster, IEntity target) => !target.HealthModel.ShipClass.IsStrikecraft();
 

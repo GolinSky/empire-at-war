@@ -18,15 +18,15 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 2e60ab884151e074caf67bb570ba533b, type: 3}
         displayName: Ion Pulse
-        description: Charge for 4 s, align a surviving broadside cannon, then fire
-          a slow ion wave. Enemy ships hit are disabled for 10 s. 10% chance to disable
-          Malevolence instead. No hull damage. Move/Stop cancels charging; 60 s recovery.
+        description: Turn the nearest ion cannon broadside to the target, then fire
+          a slow ion wave. Enemy ships hit are disabled for 10 s. No hull damage.
+          Move/Stop cancels turning; 60 s recovery.
         duration: 80
         recoveryDelay: 60
         canCancel: 0
         isToggle: 0
         requiresEnemyTarget: 1
-        range: 500
+        range: 1000
         aiUse: 2
         autoPower: 3
         settings:
@@ -636,14 +636,11 @@ MonoBehaviour:
       data:
         viewPrefab: {fileID: 3312737823744789419, guid: d548686123b65a746bc6c7f7f32924a6,
           type: 3}
-        chargeDuration: 4
-        alignmentTimeout: 45
         alignmentTolerance: 5
         waveSpeed: 35
         waveRadius: 60
         waveThickness: 8
         disableDuration: 10
-        malfunctionChance: 0.1
     - rid: 6801466898397790283
       type: {class: IonShotSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}

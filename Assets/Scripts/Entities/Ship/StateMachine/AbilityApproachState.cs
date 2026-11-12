@@ -2,6 +2,7 @@ using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Patterns.StateMachine;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Utils;
 using UnityEngine;
 
@@ -25,7 +26,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private int _stalledAttempts;
 
         private Vector3 TargetPosition => _targetTransform.position;
-        public bool IsInRange => PlanarGeometry.Distance(_movement.CurrentPosition, TargetPosition) <= _range;
+        public bool IsInRange =>
+            ShipAbilityRange.IsInRange(_movement.CurrentPosition, _movement.NavigationRadius, _target, _range);
         public bool IsComplete => _target.HealthModel.IsDestroyed || _target.IsCloaked() || IsInRange ||
                                   _stalledAttempts >= MAX_STALLED_ATTEMPTS;
 

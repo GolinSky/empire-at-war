@@ -28,15 +28,14 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private IonPulseModel _model;
         private IIonPulseView _view;
         private Vector3 _origin;
+        private Vector3 _aimPoint;
         private Vector3 _direction;
-        private float _side;
         private float _rise;
         private float _range;
         private bool _cancelled;
-        private bool _malfunctioned;
 
         public bool IsComplete => _cancelled || (_model.HasFired &&
-            (_malfunctioned || _model.WaveComplete) && _stuns.Count == 0);
+            _model.WaveComplete && _stuns.Count == 0);
         public bool SurvivesCasterDeath => _model.HasFired;
 
         public IonPulseAbility(IonPulseSettings settings, IEntityLocator entities, IPlayerRelations relations)
@@ -51,21 +50,9 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _caster = caster;
             _owner = caster.Entity.Owner;
             _target = target;
+            _aimPoint = target.GetFacade<IEntityTransformFacade>().Transform.position;
             _range = definition.Range;
-            _model = new IonPulseModel(_settings.ChargeDuration, _settings.AlignmentTimeout, _settings.WaveSpeed, _range);
-            Transform ship = caster.Entity.GetFacade<IEntityTransformFacade>().Transform;
-            Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
-            float bestAngle = float.MaxValue;
-            foreach (IHardPointModel cannon in caster.Health.GetShipUnits(HardPointType.IonPulseCannon))
-            {
-                if (!IsLiveCannon(cannon)) continue;
-                float side = Mathf.Sign(ship.InverseTransformPoint(cannon.Position).x);
-                float angle = Vector3.Angle(ship.right * side, targetPosition - ship.position);
-                if (angle >= bestAngle) continue;
-                bestAngle = angle;
-                _cannon = cannon;
-                _side = side;
-            }
+            _model = new IonPulseModel(_settings.WaveSpeed);
             _facing = caster.Entity.GetFacade<IAbilityFacingFacade>();
             _facing.BeginAbilityFacing();
         }
@@ -88,39 +75,35 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _model.Advance(deltaTime);
             if (!_model.HasFired)
             {
-                if (_target.HealthModel.IsDestroyed || _target.IsCloaked() || _cannon.IsDestroyed || !_facing.IsAbilityFacing ||
-                    _caster.Modifiers.AbilitiesSuppressed || _model.AlignmentExpired)
+                // A target lost mid-turn (destroyed or cloaked) keeps its last seen position as the aim point.
+                if (!_target.HealthModel.IsDestroyed && !_target.IsCloaked())
+                    _aimPoint = _target.GetFacade<IEntityTransformFacade>().Transform.position;
+                if (_cannon == null || _cannon.IsDestroyed) _cannon = FindBestCannon();
+                if (_cannon == null || !_facing.IsAbilityFacing || _caster.Modifiers.AbilitiesSuppressed)
                 {
                     _cancelled = true;
                     return;
                 }
-                if (!_model.IsCharged) return;
                 Transform ship = _caster.Entity.GetFacade<IEntityTransformFacade>().Transform;
-                Vector3 toTarget = _target.GetFacade<IEntityTransformFacade>().Transform.position - _cannon.Position;
-                toTarget.y = 0f;
-                if (toTarget.sqrMagnitude > _range * _range)
-                {
-                    _cancelled = true;
-                    return;
-                }
-                _direction = toTarget.normalized;
-                _facing.FaceAbility(Quaternion.AngleAxis(-90f * _side, Vector3.up) * _direction);
-                if (Vector3.Angle(ship.right * _side, _direction) > _settings.AlignmentTolerance) return;
+                Vector3 targetPosition = _aimPoint;
+                Vector3 bearing = targetPosition - ship.position;
+                bearing.y = 0f;
+                // The ion cannons sit on the flanks: turn that broadside toward the target.
+                float side = CannonSide(ship, _cannon);
+                _facing.FaceAbility(Quaternion.AngleAxis(-90f * side, Vector3.up) * bearing);
+                if (Vector3.Angle(ship.right * side, bearing) > _settings.AlignmentTolerance) return;
                 _origin = _cannon.Position;
+                Vector3 toTarget = targetPosition - _origin;
+                toTarget.y = 0f;
+                _direction = toTarget.normalized;
                 // Malevolence flies on the Deep tier; the wave climbs from the cannon to reach the target's height.
-                _rise = (_target.GetFacade<IEntityTransformFacade>().Transform.position.y - _origin.y) /
-                    Mathf.Max(toTarget.magnitude, 1f);
-                _model.Fire();
+                _rise = (targetPosition.y - _origin.y) / Mathf.Max(toTarget.magnitude, 1f);
+                // A station's center can lie past the ability range; the wave must still reach it.
+                _model.Fire(Mathf.Max(_range, toTarget.magnitude + _settings.WaveThickness));
                 _facing.EndAbilityFacing();
-                _malfunctioned = Random.value < _settings.MalfunctionChance;
-                if (_malfunctioned)
-                {
-                    Disable(_caster.Modifiers);
-                    return;
-                }
                 _view = Object.Instantiate(_settings.ViewPrefab);
             }
-            if (_malfunctioned || _view == null) return;
+            if (_view == null) return;
             Vector3 path = _direction + Vector3.up * _rise;
             _view.Show(_origin + path * _model.Distance, path.normalized, _settings.WaveRadius);
             foreach (IEntity entity in _entities.Entities)
@@ -167,8 +150,27 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _stuns.Add((modifiers, applied, _settings.DisableDuration));
         }
 
-        // GetShipUnits falls back to every live hardpoint once no cannon is left, so the type is checked again.
-        private static bool IsLiveCannon(IHardPointModel unit) =>
-            !unit.IsDestroyed && unit.HardPointType == HardPointType.IonPulseCannon;
+        // The live cannon whose broadside needs the smallest turn toward the target.
+        private IHardPointModel FindBestCannon()
+        {
+            Transform ship = _caster.Entity.GetFacade<IEntityTransformFacade>().Transform;
+            Vector3 bearing = _aimPoint - ship.position;
+            bearing.y = 0f;
+            IHardPointModel best = null;
+            float bestAngle = float.MaxValue;
+            foreach (IHardPointModel cannon in _caster.Health.GetShipUnits(HardPointType.IonPulseCannon))
+            {
+                // GetShipUnits falls back to every live hardpoint once no cannon is left, so the type is checked again.
+                if (cannon.IsDestroyed || cannon.HardPointType != HardPointType.IonPulseCannon) continue;
+                float angle = Vector3.Angle(ship.right * CannonSide(ship, cannon), bearing);
+                if (angle >= bestAngle) continue;
+                bestAngle = angle;
+                best = cannon;
+            }
+            return best;
+        }
+
+        private static float CannonSide(Transform ship, IHardPointModel cannon) =>
+            Mathf.Sign(ship.InverseTransformPoint(cannon.Position).x);
     }
 }

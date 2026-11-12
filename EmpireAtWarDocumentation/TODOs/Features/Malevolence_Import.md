@@ -15,6 +15,11 @@ updated: 2026-11-12
 - [x] 73 health hardpoints; 62 conventional weapons; IDs match health-array order.
 - [x] Mass Driver profile uses the existing shield-piercing path → hull/hardpoint damage.
 - [x] Ion Pulse model/view/presenter: charge → align surviving side cannon → travelling area wave → timed disable; malfunction disables caster instead.
+- [x] 2026-11-12 rework: cast → ship turns nose toward target → fires from the live ion cannon nearest the target once within tolerance. Charge, alignment timeout and range-loss cancel removed. Compile clean; tests not run; in-game check pending.
+- [x] 2026-11-12 station fix: Malevolence footprint **287** + station footprint **396/261** → closest park **~683/548** > range **500** → approach stalled, never cast. `ShipAbilityRange.IsInRange`: center distance ≤ max(range, (caster + target footprint) × **1.15**); used by `ShipAbilityService` and `AbilityApproachState`. Wave travel = max(range, distance to target center + thickness).
+- [x] 2026-11-12 range raised **500 → 1000**. Diagnostics showed: nose-turn from **135°** at **3°/s** outlived the target (destroyed → cancel); successful casts hit the station but fired from the flank. Now turns the broadside of the live ion cannon needing the smallest turn (≤ **90°**) toward the target, then fires. Temp logs removed. Compile clean; tests not run; in-game check pending.
+- [x] 2026-11-12 no early cancels: target destroyed/cloaked mid-turn → keeps turning, fires at last seen position. `IonPulseSettings` is `IShipAbilityReadiness`: not castable while `IShipArrivalFacade.IsArriving` (hull cannot turn in hyperspace; blocked auto-power casts on spawn). Remaining pre-fire cancels: no live ion cannon, player Move/Stop/other order, ion disable/suppression. Tooltip text updated.
+- [x] 2026-11-12 malfunction removed (user request): `malfunctionChance` field, self-disable branch, balance field and tooltip/faction text gone.
 - [x] Unity compilation and saved-reference inspection clean; all 126 bone positions/parents verified. No automated tests or Play Mode run.
 - [x] Resize to RaW length ratio and lower flight altitude below Lucrehulk; saved prefab/data readback and side-view comparison verified. No automated tests or Play Mode run for this adjustment.
 - [ ] Configure exact Vulture/bomber launches when their squadron assets and bomber identity are available.
@@ -37,7 +42,7 @@ updated: 2026-11-12
 - Provisional movement/economy: speed **4**, yaw/acceleration **3**; price **20,000**, level **5**, build time **90 s**.
 - Provisional hardpoint HP: weapon **600**, engine **1,200**, shield **1,800**, hangar **900**, supply **1,000**, ion **2,200**.
 - Provisional Mass Driver: **35** configured damage, **3 shots**, interval **0.5 s**, reload **5 s**, range **140**, speed **90**; existing turbolaser class multipliers/accuracy, full shield bypass. Shared projectile/audio assets.
-- Provisional Ion Pulse: charge **4 s**, alignment timeout **45 s**, tolerance **5°**, range **500**, speed **35**, radius **60**, thickness **8**, disable **10 s**, malfunction **10%**, recovery **60 s**. Lifecycle ceiling **80 s**; tooltip displays the **10 s** effect.
+- Provisional Ion Pulse: broadside-alignment tolerance **5°**, range **1000**, speed **35**, radius **60**, thickness **8**, disable **10 s**, recovery **60 s**. Lifecycle ceiling **80 s**; tooltip displays the **10 s** effect.
 - Disable freezes movement/turning, stops weapon emissions and non-phased active abilities, and blocks new abilities. Already-launched shots continue. Overlapping pulse disables retain independent lifetimes; planetary-ion state remains separate.
 - Chosen source: intact `CIS_Malevolence.ALO`. `CIS_Malevolence_D.ALO` and `CIS_Malevolence_D_DIE_00.ala` remain untouched; use the project's wreck system.
 
@@ -56,7 +61,7 @@ updated: 2026-11-12
 - Unity: **15 meshes / 19,379 triangles / 126 bones**; **8 visible meshes / 15,914 visible triangles**; all meshes have UVs; maximum bone-position error **0.000001801 units** before gameplay scaling.
 - Unity dropped **28 degenerate triangles** from hidden `Motor` / `Motor_SML` helpers. Visible geometry unchanged; collision/shadow/engine helpers retained with renderers disabled.
 - Livery: hull/engine materials and matching wreck materials use hue **0.63**, range **0.08**, minimum saturation **0.25**, strength **1**. All eight palettes rendered; blue/green visually inspected.
-- Move/Stop cancels charging/alignment. Destroyed firing cannon, lost target, ion disable, range loss or alignment timeout cancels before firing. A launched wave and its disables survive caster death; scene teardown cleans them up.
+- Move/Stop cancels turning. All ion cannons destroyed or ion disable cancels before firing; a lost target (destroyed/cloaked) is fired at its last seen position. A launched wave and its disables survive caster death; scene teardown cleans them up.
 - Source stats are supplied by the user with [Republic at War Subjugator](https://republicatwar.wiki.gg/wiki/Subjugator); web fetch failed, so no independent live-wiki verification is claimed.
 
 ## Files

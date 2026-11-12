@@ -193,11 +193,15 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void IonPulse_TargetCloaksDuringCharge_CancelsAndReleasesFacing()
+        public void IonPulse_TargetCloaksWhileTurning_KeepsAimingAtLastPosition()
         {
             _targetView = new GameObject("Ion pulse participants");
+            Transform targetTransform = new GameObject("Ion pulse target").transform;
+            targetTransform.SetParent(_targetView.transform);
+            // Ahead of the bow: the starboard ion cannon still has to turn toward it.
+            targetTransform.position = Vector3.forward * 100f;
             FakeCommand caster = new FakeCommand(new ShipAbilityDefinition(), _targetView.transform);
-            FakeCommand target = new FakeCommand(new ShipAbilityDefinition(), _targetView.transform);
+            FakeCommand target = new FakeCommand(new ShipAbilityDefinition(), targetTransform);
             caster.FakeHealth.Units = new IHardPointModel[] { new IonCannonStub() };
             IonPulseAbility ability = new IonPulseAbility(new IonPulseSettings(), new EntityLocator(), TestPlayers.CreateDuel());
             Assert.That(new IonPulseSettings().CanTarget(caster, target.Entity), Is.True);
@@ -208,7 +212,8 @@ namespace EmpireAtWar.Tests.Editor
 
             ability.Advance(0.1f);
 
-            Assert.That(ability.IsComplete, Is.True);
+            Assert.That(ability.IsComplete, Is.False);
+            Assert.That(caster.IsAbilityFacing, Is.True);
             Assert.That(ability.SurvivesCasterDeath, Is.False);
             ability.Stop();
             Assert.That(caster.IsAbilityFacing, Is.False);

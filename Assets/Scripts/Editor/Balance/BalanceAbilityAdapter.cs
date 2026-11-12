@@ -33,8 +33,8 @@ namespace EmpireAtWar.Editor.Balance
             [typeof(TractorBeamSettings)] = new[] { "speedMultiplier", "targetClasses", "beam" },
             [typeof(IonShotSettings)] = new[] { "disableDuration", "projectile" },
             [typeof(ConcentrateFireSettings)] = new[] { "allyStatModifier", "commandRadius", "targetDamageMultiplier" },
-            [typeof(IonPulseSettings)] = new[] { "chargeDuration", "alignmentTimeout", "alignmentTolerance", "waveSpeed", "waveRadius",
-                "waveThickness", "disableDuration", "malfunctionChance" }
+            [typeof(IonPulseSettings)] = new[] { "alignmentTolerance", "waveSpeed", "waveRadius",
+                "waveThickness", "disableDuration" }
         };
 
         public static void Register(BalanceRegistration registry)
@@ -95,7 +95,6 @@ namespace EmpireAtWar.Editor.Balance
                 registry.Add(catalog, key + name, property.propertyPath, BalanceFieldGroup.Abilities, context, BalanceFieldOwner.SharedProfile, true, users,
                     name == "damageType" ? typeof(DamageType)
                     : name == "targetClasses" ? typeof(ShipClass) : null,
-                    maximum: name == "malfunctionChance" ? 1 : double.PositiveInfinity,
                     minimum: name == "minimumTargets" ? 1 : 0, positive: name == "radius" || name == "waveSpeed" || name.EndsWith("FireDelayMultiplier"),
                     alias: alias, dependency: subtype, serializedTarget: settings.serializedObject);
         }

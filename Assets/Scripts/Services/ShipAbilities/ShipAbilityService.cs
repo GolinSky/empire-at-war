@@ -7,7 +7,6 @@ using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Utils;
 using EmpireAtWar.Services.PlayerCommands;
 
 namespace EmpireAtWar.Services.ShipAbilities
@@ -200,8 +199,8 @@ namespace EmpireAtWar.Services.ShipAbilities
         private bool CanActivateNow(IShipAbilityFacade caster, ShipAbilityId id, IEntity target)
         {
             if (!TryFindUsableSlot(caster, id, target, out ShipAbilitySlot slot)) return false;
-            return !slot.Definition.RequiresEnemyTarget || PlanarGeometry.Distance(caster.WorldPosition,
-                target.GetFacade<IEntityTransformFacade>().Transform.position) <= slot.Definition.Range;
+            return !slot.Definition.RequiresEnemyTarget ||
+                ShipAbilityRange.IsInRange(caster, target, slot.Definition.Range);
         }
 
         public void CancelTargeting()
@@ -274,8 +273,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         {
             if (!TryFindUsableSlot(caster, id, target, out ShipAbilitySlot slot)) return false;
             ShipAbilityDefinition definition = slot.Definition;
-            if (definition.RequiresEnemyTarget &&
-                PlanarGeometry.Distance(caster.WorldPosition, target.GetFacade<IEntityTransformFacade>().Transform.position) > definition.Range)
+            if (definition.RequiresEnemyTarget && !ShipAbilityRange.IsInRange(caster, target, definition.Range))
                 return false;
 
             Start(slot, caster, target);

@@ -85,8 +85,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 06d3083dadc16bb4ea8e64a692ecfa1e, type: 2}
         description: 'Subjugator-class dreadnought: 34 turbolaser batteries, 20 laser
           batteries and 8 shield-piercing Mass Drivers. Ion Pulse disables enemy
-          ships; a malfunction can disable Malevolence. Four hangars await Vulture/bomber
-          implementation.'
+          ships. Four hangars await Vulture/bomber implementation.'
         role: "Capital \xB7 Heavy gunship / carrier"
         iconKey: 026b6c5cca68d9b49918db3c7c0c0a5f:21300000
         isHero: 0
