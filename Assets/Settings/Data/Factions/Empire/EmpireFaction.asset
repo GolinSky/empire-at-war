@@ -195,7 +195,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 7000
-        <BuildTime>k__BackingField: 50
+        <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: f0a9b1821246f484dbc3d7fcaa7828d1,
           type: 3}
@@ -233,7 +233,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 5000
-        <BuildTime>k__BackingField: 45
+        <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: 480ea67ea8c1d1444b4eae17e11f53e8,
           type: 3}
@@ -327,8 +327,8 @@ MonoBehaviour:
         <Name>k__BackingField: Interdictor Star Destroyer
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 9000
-        <BuildTime>k__BackingField: 55
+        <Price>k__BackingField: 6500
+        <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: 1eb602fdb62be8f4f9214ecdb7cf4e20,
           type: 3}
