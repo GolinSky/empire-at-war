@@ -271,7 +271,7 @@ MonoBehaviour:
         <Name>k__BackingField: Belbullab-22 Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 600
+        <Price>k__BackingField: 300
         <BuildTime>k__BackingField: 5
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 6475693b4e9a23943aa6f6d43d698437,
@@ -288,7 +288,7 @@ MonoBehaviour:
         <Name>k__BackingField: Advanced Droid Bomber Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 450
+        <Price>k__BackingField: 300
         <BuildTime>k__BackingField: 8
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 0148d1e047b1c024494b31fb02e655ed,
@@ -306,7 +306,7 @@ MonoBehaviour:
         <Name>k__BackingField: Vulture Droid Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 350
+        <Price>k__BackingField: 200
         <BuildTime>k__BackingField: 8
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 9fcb02cde6a89f84a91b532e31af44f4,

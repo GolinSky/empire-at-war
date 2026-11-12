@@ -60,7 +60,7 @@
 ### Bugs
 
 - [ ] **Rebalance carrier deployment and squadron stats** → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance|Carrier and Squadron Rebalance]]
-  - Reopened 2026-11-12 after failed fresh-match balance acceptance. Original 29 loadouts match; telemetry confirms Republic/Rebel squadron kill advantage. Implemented 1 s CIS launches, no loss-triggered cooldown reset, 5 s recent window and faction station counts 5/4/3/2. Remaining: quality and current-roster coverage; [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research|audit evidence]].
+  - Reopened 2026-11-12 after failed fresh-match balance acceptance. Original 29 loadouts match; telemetry confirms Republic/Rebel squadron kill advantage. Implemented 1 s CIS launches, no loss-triggered cooldown reset, 5 s recent window and faction station counts 5/4/3/2. Applied approved direct-purchase prices. Remaining: strength playtest, AI live/reserve counting and current-roster coverage; [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research|audit evidence]].
 
 - [ ] **Fix defense satellite review findings** → [[TODOs/Bugs/Defense_Satellites_Review_Fixes|Defense Satellites Review Fixes]]; parent: [[TODOs/Features/Defense_Satellites_Plan|Defense Satellites Plan]]
   - Status: fixes #1–#10 implemented 2026-10-28; #3 kept by user.

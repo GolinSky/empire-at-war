@@ -299,7 +299,7 @@ MonoBehaviour:
         <Name>k__BackingField: ARC-170 Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 375
+        <Price>k__BackingField: 600
         <BuildTime>k__BackingField: 8
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 14a57369a6b0b6447917d19a5a8114c8,
@@ -317,7 +317,7 @@ MonoBehaviour:
         <Name>k__BackingField: BTL-B Y-Wing Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 2
-        <Price>k__BackingField: 500
+        <Price>k__BackingField: 650
         <BuildTime>k__BackingField: 8
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 8aec8fa8b8581064dbf2721ad11585bb,
@@ -352,7 +352,7 @@ MonoBehaviour:
         <Name>k__BackingField: V-19 Torrent Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 400
+        <Price>k__BackingField: 500
         <BuildTime>k__BackingField: 6
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 47bb7927ce6b11a40a4930c0e6e95426,
@@ -371,7 +371,7 @@ MonoBehaviour:
         <Name>k__BackingField: V-Wing Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 600
+        <Price>k__BackingField: 650
         <BuildTime>k__BackingField: 15
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 6db48aa8ac87e0e4faf79f796d5b3f37,

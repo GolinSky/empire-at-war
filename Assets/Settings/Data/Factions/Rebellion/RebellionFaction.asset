@@ -431,7 +431,7 @@ MonoBehaviour:
         <Name>k__BackingField: A-Wing Interceptor Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 700
+        <Price>k__BackingField: 850
         <BuildTime>k__BackingField: 6
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 524d65b06058f0a428ee3d2a9b9b78e9,
@@ -451,7 +451,7 @@ MonoBehaviour:
         <Name>k__BackingField: T-65 X-Wing Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 500
+        <Price>k__BackingField: 800
         <BuildTime>k__BackingField: 15
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: ea53c8c126651444aaedb6d6761e02b3,
@@ -470,7 +470,7 @@ MonoBehaviour:
         <Name>k__BackingField: BTL-A4 Y-Wing Bomber Squadron
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
-        <Price>k__BackingField: 500
+        <Price>k__BackingField: 850
         <BuildTime>k__BackingField: 15
         <UnitCapacity>k__BackingField: 1
         <Icon>k__BackingField: {fileID: 21300000, guid: 793233063a2c3d241ab5dbc0af1a35d4,

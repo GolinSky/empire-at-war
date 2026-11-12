@@ -72,3 +72,14 @@ created: 2026-11-12
 - Existing station saves restore their old remaining reserve and cooldown. Fresh matches use new stock. No station stock migration added; this preserves spent-stock saves rather than inventing replenishment.
 - Existing AI purchase room counts reserved carriers × theoretical hangar capacity, including ships with destroyed bays or exhausted stock. Further work must use appropriate live/pending air strength to avoid suppressing useful replacements.
 - Tests authored/updated, not executed. No quality, direct-purchase, global-throttle or save migration changes in this follow-up.
+
+## Empire versus CIS — 2026-11-12 15:54
+
+- Sources: `Battle_20261112_155400.csv`, `Loading_20261112_155240_ai.csv`, `Loading_20261112_155240_ai_orders.csv` in the telemetry directory above. Combat duration 1,170 unscaled seconds (19:30). Price update in this task postdates the battle.
+- Regular-squadron final blows against regular squads: Empire 319, CIS 199. Damage to regular squads: Empire 57,782, CIS 53,255 shield+hull HP. All-weapon regular squad losses: Empire 398, CIS 536.
+- Leading squadron killers: TIE Interceptor 141, TIE Fighter 137; Vulture 116, Belbullab-22 59, Droid Bomber 24. Boba adds 24 CIS squad kills outside the regular exchange.
+- Ships/stations killed 193 CIS squadrons and 199 Imperial squadrons. Leading Imperial AA: ISD I 61, Acclamator Assault 32, Gladiator 23. Leading CIS AA: station 38, quad-laser satellites 32, Dispatcher 24.
+- Regular squad damage to ships/structures: Empire 61,500 HP / 6 final blows, CIS 37,724 HP / 2 final blows. Damage totals sum rounded CSV shield/hull losses; these are mixed-fleet outcomes, not controlled duels.
+- CIS AI purchased two Vultures at old price 350; logged times 53.0 and 128.2. Carrier purchases: Bulwark 10, Providence 7, Wavecrest 5, Invincible 4, Captor 1, Lucrehulk 0. AI companion covers CIS only.
+- Final AI state: no combat ships or living production station. Late samples select Lucrehulk with population 114/120, capacity cost 25, funds 460–654 versus price 15,000; possible production-selection issue, not enough adjacent samples to establish a prolonged stall.
+- Conclusion: CIS air support participated heavily; Empire achieved more squadron kills. Price changes alone may have limited effect because CIS bought only two regular squads. Logs lack launch requests, wait time and live/peak counts; no global launch bottleneck is established.

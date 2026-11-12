@@ -148,3 +148,10 @@ acceptance: failed
 - Remaining findings → battle-wide launch ceiling 10/s; AI counts theoretical carrier capacity after attrition/exhaustion; old saves retain saved stock/timer; quality gap and direct-purchase equality remain. Details in research companion.
 - Broader plan remains active: quality retuning and full current-roster quantity reconciliation are not implemented by this scoped follow-up.
 - Follow-up verification: Unity explicitly reserialized and saved all seven changed assets; live inspection confirmed six 1 s carrier intervals and all four station cap/stock pairs. Compiled `RELAUNCH_COOLDOWN` reads 5; source/diff checks passed. No affected import/serialization errors observed. Shared Editor Console contains unrelated test teardown errors from concurrent work; this task did not execute tests.
+
+## Purchase prices — 2026-11-12
+
+- Applied user-approved prices (credits/squadron): CIS Vulture 200, Belbullab-22 300, Droid Bomber 300; Empire TIE Fighter 300, Interceptor 450, Bomber 450, Brute 450, Avenger 550, Punisher 600; Republic V-19 500, ARC-170 600, V-Wing 650, NTB-630 550, BTL-B 650; Rebellion X-Wing 800, A-Wing 850, BTL-A4 850.
+- Four faction assets, 14 changed price fields; three regular prices already matched. Hero prices, build times, limits, capacity and combat stats unchanged.
+- Unity refreshed, explicitly reserialized and saved all four faction assets. Live serialized inspection verified all 17 regular prices and unchanged heroes; Console returned no errors; diff whitespace check passed. Balance verification was asset inspection only; tests not run.
+- User decisions: keep global launch throttle; strength balance awaits user playtest; old-save migration is out of scope during development. Live/pending hangar strength for AI purchases remains proposed, not implemented.
