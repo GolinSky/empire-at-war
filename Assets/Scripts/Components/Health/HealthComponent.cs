@@ -25,7 +25,7 @@ namespace EmpireAtWar.Components.Ship.Health
         bool Equal(IHealthModelObserver modelObserver);
     }
 
-    [EmpireAtWar.Lifecycle.LifecycleOrder(Initialize = EmpireAtWar.Lifecycle.LifecycleOrders.HEALTH_INITIALIZE)]
+    [LifecycleOrder(Initialize = LifecycleOrders.HEALTH_INITIALIZE)]
     public class HealthComponent : MonoComponent<HealthModel>, IInitializable, ILateDisposable,
         IHealthComponent, IHealthAudioEvents, IHealthModelObserver, IHealthTooltipObserver, IShieldTarget, ITickable, IHardPointsSource, IIonStunViewSource,
         IHealthUpgrade, IIonFieldShape

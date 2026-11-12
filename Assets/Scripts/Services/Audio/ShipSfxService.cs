@@ -12,8 +12,8 @@ using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Services.Audio
 {
-    [EmpireAtWar.Lifecycle.LifecycleOrder(Tick = EmpireAtWar.Lifecycle.LifecycleOrders.SHIP_SFX_TICK,
-        LateTick = EmpireAtWar.Lifecycle.LifecycleOrders.SHIP_SFX_LATE_TICK, Dispose = EmpireAtWar.Lifecycle.LifecycleOrders.SHIP_SFX_DISPOSE)]
+    [LifecycleOrder(Tick = LifecycleOrders.SHIP_SFX_TICK,
+        LateTick = LifecycleOrders.SHIP_SFX_LATE_TICK, Dispose = LifecycleOrders.SHIP_SFX_DISPOSE)]
     public sealed class ShipSfxService : IShipSfxService, IWorldSfxService, ITickable, ILateTickable, IOrderedDisposable
     {
         private const float MIN_AUDIBLE_GAIN = 0.01f;
