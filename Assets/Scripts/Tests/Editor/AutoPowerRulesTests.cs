@@ -21,24 +21,30 @@ namespace EmpireAtWar.Tests.Editor
         [TearDown]
         public void TearDown() => Object.DestroyImmediate(_catalog);
 
-        [TestCase(0.2f, 0f, true, true, true, 2f, AutoPowerRole.Weapons)]
-        [TestCase(0.2f, 0f, true, true, true, 1f, AutoPowerRole.Shields)]
-        [TestCase(1f, 0.3f, true, true, true, 2f, AutoPowerRole.Shields)]
-        [TestCase(1f, 0.3f, false, true, true, 2f, AutoPowerRole.None)]
-        [TestCase(1f, 0.8f, true, true, true, 2f, AutoPowerRole.None)]
-        [TestCase(1f, 0.8f, true, false, true, 2f, AutoPowerRole.Weapons)]
-        [TestCase(1f, 0.8f, true, false, false, 2f, AutoPowerRole.None)]
-        public void PriorityAndRegeneration(float hull, float shieldFraction, bool regenerate, bool heavyLoss,
-            bool attack, float advantage, AutoPowerRole expected)
+        [TestCase(0.2f, 0f, true, AutoPowerShieldLoss.Heavy, true, 2f, AutoPowerRole.Weapons)]
+        [TestCase(0.2f, 0f, true, AutoPowerShieldLoss.Heavy, true, 1f, AutoPowerRole.Shields)]
+        [TestCase(1f, 0.3f, true, AutoPowerShieldLoss.Heavy, true, 2f, AutoPowerRole.Shields)]
+        [TestCase(1f, 0.3f, false, AutoPowerShieldLoss.Heavy, true, 2f, AutoPowerRole.None)]
+        [TestCase(1f, 0.8f, true, AutoPowerShieldLoss.Heavy, true, 2f, AutoPowerRole.None)]
+        [TestCase(1f, 0.8f, true, AutoPowerShieldLoss.None, true, 2f, AutoPowerRole.Weapons)]
+        [TestCase(1f, 0.8f, true, AutoPowerShieldLoss.None, false, 2f, AutoPowerRole.None)]
+        // Steady fire on drained shields can never reach the burst threshold, yet still asks for Shields.
+        [TestCase(1f, 0.1f, true, AutoPowerShieldLoss.Light, true, 2f, AutoPowerRole.Shields)]
+        [TestCase(1f, 0.3f, true, AutoPowerShieldLoss.None, true, 2f, AutoPowerRole.Weapons)]
+        [TestCase(1f, 0.8f, true, AutoPowerShieldLoss.Light, true, 2f, AutoPowerRole.Weapons)]
+        // Without a shield power, light fire on low shields keeps Weapons available.
+        [TestCase(1f, 0.3f, false, AutoPowerShieldLoss.Light, true, 2f, AutoPowerRole.Weapons)]
+        public void PriorityAndRegeneration(float hull, float shieldFraction, bool canBoostShields,
+            AutoPowerShieldLoss shieldLoss, bool attack, float advantage, AutoPowerRole expected)
         {
-            Assert.That(_combat.ChooseRole(hull, shieldFraction * 100f, shieldFraction, regenerate,
-                heavyLoss, true, attack, advantage), Is.EqualTo(expected));
+            Assert.That(_combat.ChooseRole(hull, shieldFraction * 100f, shieldFraction, canBoostShields,
+                shieldLoss, true, attack, advantage), Is.EqualTo(expected));
         }
 
         [Test]
         public void NoMeaningfulEnemy_BlocksWeaponsIncludingLastStand()
         {
-            Assert.That(_combat.ChooseRole(0.1f, 0f, 0f, false, false, false, true, 10f),
+            Assert.That(_combat.ChooseRole(0.1f, 0f, 0f, false, AutoPowerShieldLoss.None, false, true, 10f),
                 Is.EqualTo(AutoPowerRole.None));
         }
 
@@ -46,11 +52,11 @@ namespace EmpireAtWar.Tests.Editor
         public void SamplesSumPositiveDropsAndExpire()
         {
             AutoPowerMonitor monitor = new AutoPowerMonitor(_catalog.AutoPower);
-            Assert.That(monitor.Sample(0f, 100f, 100f, false, 0), Is.False);
-            Assert.That(monitor.Sample(0.5f, 85f, 100f, false, 0), Is.False);
-            Assert.That(monitor.Sample(1f, 90f, 100f, false, 0), Is.False);
-            Assert.That(monitor.Sample(1.5f, 80f, 100f, false, 0), Is.True);
-            Assert.That(monitor.Sample(5f, 60f, 100f, false, 0), Is.False);
+            Assert.That(monitor.Sample(0f, 100f, 100f, false, 0), Is.EqualTo(AutoPowerShieldLoss.None));
+            Assert.That(monitor.Sample(0.5f, 85f, 100f, false, 0), Is.EqualTo(AutoPowerShieldLoss.Light));
+            Assert.That(monitor.Sample(1f, 90f, 100f, false, 0), Is.EqualTo(AutoPowerShieldLoss.Light));
+            Assert.That(monitor.Sample(1.5f, 80f, 100f, false, 0), Is.EqualTo(AutoPowerShieldLoss.Heavy));
+            Assert.That(monitor.Sample(5f, 60f, 100f, false, 0), Is.EqualTo(AutoPowerShieldLoss.None));
         }
 
         [Test]
@@ -58,9 +64,9 @@ namespace EmpireAtWar.Tests.Editor
         {
             AutoPowerMonitor monitor = new AutoPowerMonitor(_catalog.AutoPower);
             monitor.Sample(0f, 100f, 100f, false, 0);
-            Assert.That(monitor.Sample(0.5f, 85f, 100f, false, 0), Is.False);
-            Assert.That(monitor.Sample(1f, 70f, 100f, false, 1), Is.False);
-            Assert.That(monitor.Sample(1.5f, 60f, 100f, false, 1), Is.False);
+            Assert.That(monitor.Sample(0.5f, 85f, 100f, false, 0), Is.EqualTo(AutoPowerShieldLoss.Light));
+            Assert.That(monitor.Sample(1f, 70f, 100f, false, 1), Is.EqualTo(AutoPowerShieldLoss.None));
+            Assert.That(monitor.Sample(1.5f, 60f, 100f, false, 1), Is.EqualTo(AutoPowerShieldLoss.Light));
         }
 
         [Test]
@@ -68,8 +74,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             AutoPowerMonitor monitor = new AutoPowerMonitor(_catalog.AutoPower);
             monitor.Sample(0f, 100f, 100f, false, 0);
-            Assert.That(monitor.Sample(0.5f, 0f, 100f, true, 0), Is.False);
-            Assert.That(monitor.Sample(1f, 0f, 100f, false, 0), Is.False);
+            Assert.That(monitor.Sample(0.5f, 0f, 100f, true, 0), Is.EqualTo(AutoPowerShieldLoss.None));
+            Assert.That(monitor.Sample(1f, 0f, 100f, false, 0), Is.EqualTo(AutoPowerShieldLoss.None));
         }
 
         [Test]
@@ -102,7 +108,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             AutoPowerMonitor monitor = new AutoPowerMonitor(_catalog.AutoPower);
             monitor.Sample(0f, 100f, 100f, false, 0);
-            Assert.That(monitor.Sample(0.5f, 0f, 100f, false, 2), Is.False);
+            Assert.That(monitor.Sample(0.5f, 0f, 100f, false, 2), Is.EqualTo(AutoPowerShieldLoss.None));
         }
     }
 }

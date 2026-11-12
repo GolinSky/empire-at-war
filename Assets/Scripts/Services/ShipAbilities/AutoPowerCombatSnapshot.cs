@@ -83,11 +83,12 @@ namespace EmpireAtWar.Services.ShipAbilities
             return target;
         }
 
-        public AutoPowerRole Decide(IShipAbilityFacade caster, IShipAutoPowerFacade automation, bool heavyLoss) =>
-            Assess(caster, automation, heavyLoss, travelling: false).Power;
+        public AutoPowerRole Decide(IShipAbilityFacade caster, IShipAutoPowerFacade automation,
+            AutoPowerShieldLoss shieldLoss) =>
+            Assess(caster, automation, shieldLoss, travelling: false).Power;
 
-        public AutoPowerSituation Assess(IShipAbilityFacade caster, IShipAutoPowerFacade automation, bool heavyLoss,
-            bool travelling)
+        public AutoPowerSituation Assess(IShipAbilityFacade caster, IShipAutoPowerFacade automation,
+            AutoPowerShieldLoss shieldLoss, bool travelling)
         {
             _own.Clear();
             _hostile.Clear();
@@ -114,23 +115,37 @@ namespace EmpireAtWar.Services.ShipAbilities
             bool meaningful = (hostileWarship || _engagedHostile.UnitCount > 1) &&
                 _engagedHostile.HullDps(targetClass) + _engagedHostile.PiercingDps(targetClass) >= minimumDps;
             IHealthModelObserver health = caster.Health;
+            bool canBoostShields = automation.CanRegenerateShields && HasRole(caster, AutoPowerRole.Shields);
             AutoPowerRole power = ChooseRole(health.HullPercentage, health.Shields, health.ShieldPercentage,
-                automation.CanRegenerateShields, heavyLoss, meaningful, canAttack, CombatMatchup.Advantage(_hostile, _own));
+                canBoostShields, shieldLoss, meaningful, canAttack, CombatMatchup.Advantage(_hostile, _own));
+            bool heavyLoss = shieldLoss == AutoPowerShieldLoss.Heavy;
             return new AutoPowerSituation(power, hostileNearby: !_hostile.IsEmpty, engaged: meaningful && canAttack,
                 endangered: heavyLoss && health.ShieldPercentage < _tuning.LowShields,
                 cornered: heavyLoss && health.HullPercentage < _tuning.LastStandHull, travelling);
         }
 
         /// <summary>Priority: last-stand Weapons → Shields → normal Weapons.</summary>
-        public AutoPowerRole ChooseRole(float hull, float shields, float shieldFraction, bool canRegenerate,
-            bool heavyLoss, bool meaningfulForce, bool canAttack, float hostileAdvantage)
+        /// <remarks>
+        /// Any shield damage below the low-shield line asks for Shields: a burst threshold alone can never be met
+        /// once fewer shields remain than the burst, and steady fire never reaches it.
+        /// </remarks>
+        public AutoPowerRole ChooseRole(float hull, float shields, float shieldFraction, bool canBoostShields,
+            AutoPowerShieldLoss shieldLoss, bool meaningfulForce, bool canAttack, float hostileAdvantage)
         {
             if (meaningfulForce && canAttack && hull < _tuning.LastStandHull && shields <= 0f &&
                 hostileAdvantage >= _tuning.LastStandForceRatio)
                 return AutoPowerRole.Weapons;
-            if (canRegenerate && heavyLoss && shieldFraction < _tuning.LowShields)
+            if (canBoostShields && shieldLoss != AutoPowerShieldLoss.None && shieldFraction < _tuning.LowShields)
                 return AutoPowerRole.Shields;
-            return meaningfulForce && canAttack && !heavyLoss ? AutoPowerRole.Weapons : AutoPowerRole.None;
+            return meaningfulForce && canAttack && shieldLoss != AutoPowerShieldLoss.Heavy
+                ? AutoPowerRole.Weapons : AutoPowerRole.None;
+        }
+
+        private static bool HasRole(IShipAbilityFacade caster, AutoPowerRole role)
+        {
+            for (int i = 0; i < caster.Slots.Count; i++)
+                if (caster.Slots[i].Definition.AutoPower == role) return true;
+            return false;
         }
 
         // Cells come from the captured positions; range is checked against the live position.

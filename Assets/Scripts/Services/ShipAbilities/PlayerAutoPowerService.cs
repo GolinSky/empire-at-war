@@ -95,8 +95,9 @@ namespace EmpireAtWar.Services.ShipAbilities
                 return;
             }
             AutoPowerMonitor monitor = GetMonitor(entity.Id);
-            bool heavyLoss = automation != null && monitor.Sample(_now, caster.Health.Shields, automation.MaxShields,
-                automation.ShieldSuppressed, automation.ShieldRevision);
+            AutoPowerShieldLoss shieldLoss = automation == null ? AutoPowerShieldLoss.None
+                : monitor.Sample(_now, caster.Health.Shields, automation.MaxShields, automation.ShieldSuppressed,
+                    automation.ShieldRevision);
             foreach (ShipAbilitySlot slot in caster.Slots)
                 if (slot.State == ShipAbilityState.Active) { monitor.ResetConfirmation(); return; }
             if (monitor.IsHeld(_now)) return;
@@ -107,7 +108,7 @@ namespace EmpireAtWar.Services.ShipAbilities
                     _abilities.TryRequestActivation(caster, slot.Id, null)) return;
             }
             if (automation == null || !automation.Eligible) return;
-            AutoPowerSituation situation = _combat.Assess(caster, automation, heavyLoss, IsTravelling(entity));
+            AutoPowerSituation situation = _combat.Assess(caster, automation, shieldLoss, IsTravelling(entity));
             AutoPowerRole decision = Choose(caster, situation, out _, out _);
             if (!monitor.Confirm(decision)) return;
             monitor.ResetConfirmation();

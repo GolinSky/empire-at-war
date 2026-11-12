@@ -483,7 +483,7 @@ namespace EmpireAtWar.Tests.Editor
                 profiles, new EmpireAtWar.Services.Enemy.ForceCompositionBuilder(entities, profiles), catalog);
             combat.Capture();
             Assert.That(combat.Decide(caster.GetFacade<IShipAbilityFacade>(), caster.GetFacade<IShipAutoPowerFacade>(),
-                false), Is.EqualTo(AutoPowerRole.Weapons), "The fixture must establish a useful engagement.");
+                AutoPowerShieldLoss.None), Is.EqualTo(AutoPowerRole.Weapons), "The fixture must establish a useful engagement.");
             var selection = new SelectionService(null, null, null, entities, null, null, local);
             var abilities = _battle.Container.Resolve<ShipAbilityService>();
             var battle = _battle.Container.Resolve<SkirmishStateModel>();

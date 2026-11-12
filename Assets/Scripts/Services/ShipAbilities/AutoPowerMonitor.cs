@@ -19,7 +19,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         }
 
         // A new shield revision (maximum, suppression or restore changed) starts a fresh damage history.
-        public bool Sample(float now, float shields, float maximum, bool suppressed, int shieldRevision)
+        public AutoPowerShieldLoss Sample(float now, float shields, float maximum, bool suppressed, int shieldRevision)
         {
             if (shieldRevision != _shieldRevision || now - _lastTime > _tuning.ShieldLossWindow)
             {
@@ -34,7 +34,8 @@ namespace EmpireAtWar.Services.ShipAbilities
                 _losses.Dequeue();
             float loss = 0f;
             foreach (var sample in _losses) loss += sample.Loss;
-            return maximum > 0f && loss >= maximum * _tuning.HeavyShieldLoss;
+            if (maximum <= 0f || loss <= 0f) return AutoPowerShieldLoss.None;
+            return loss >= maximum * _tuning.HeavyShieldLoss ? AutoPowerShieldLoss.Heavy : AutoPowerShieldLoss.Light;
         }
 
         public bool Confirm(AutoPowerRole decision)
