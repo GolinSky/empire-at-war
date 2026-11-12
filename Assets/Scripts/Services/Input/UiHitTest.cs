@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,17 +7,24 @@ using UnityEngine.UI;
 namespace EmpireAtWar.Services.Input
 {
     /// <summary>
-    /// UI counts exactly when the EventSystem would deliver pointer events to it, so a fully transparent
-    /// raycast-target image (such as a scroll viewport) blocks the world while non-raycast graphics do not.
+    /// Registered IMGUI overlays and EventSystem graphics that receive pointer events block world input.
     /// </summary>
     public sealed class UiHitTest : IUiHitTest
     {
         private readonly List<RaycastResult> _results = new List<RaycastResult>();
+        private readonly HashSet<Func<Vector2, bool>> _overlays = new HashSet<Func<Vector2, bool>>();
         private EventSystem _eventSystem;
         private PointerEventData _eventData;
 
+        public void RegisterOverlay(Func<Vector2, bool> containsPointer) => _overlays.Add(containsPointer);
+
+        public void UnregisterOverlay(Func<Vector2, bool> containsPointer) => _overlays.Remove(containsPointer);
+
         public bool IsOverUi(Vector2 screenPosition)
         {
+            foreach (Func<Vector2, bool> containsPointer in _overlays)
+                if (containsPointer(screenPosition)) return true;
+
             EventSystem current = EventSystem.current;
             if (current == null) return false;
             if (_eventSystem != current)

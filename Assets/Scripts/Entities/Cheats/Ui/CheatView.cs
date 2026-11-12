@@ -4,7 +4,10 @@ using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Services.Input;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using VContainer;
 
 namespace EmpireAtWar.Views.Cheats
 {
@@ -12,8 +15,8 @@ namespace EmpireAtWar.Views.Cheats
     {
         private const int WINDOW_ID = 90421;
 
-        private const float WINDOW_WIDTH = 480f;
-        private const float WINDOW_HEIGHT = 560f;
+        private const float WINDOW_WIDTH = 680f;
+        private const float WINDOW_HEIGHT = 700f;
         private const float WINDOW_MARGIN = 16f;
         private const float WINDOW_ANIMATION_DURATION = 0.18f;
         private const float WINDOW_COLLAPSED_SCALE = 0.85f;
@@ -22,6 +25,7 @@ namespace EmpireAtWar.Views.Cheats
 
         private static readonly string[] TAB_NAMES =
             { "Economy", "Ships", "Station", "Defend", "Enemy", "Superweapons", "Debug", "Tutorial" };
+        private static readonly Color WINDOW_BACKGROUND = new Color32(8, 12, 20, 245);
         private IReadOnlyList<DefendPlatformType> _platforms = Array.Empty<DefendPlatformType>();
         private static readonly SuperWeaponType[] SUPER_WEAPONS =
             (SuperWeaponType[])Enum.GetValues(typeof(SuperWeaponType));
@@ -40,6 +44,10 @@ namespace EmpireAtWar.Views.Cheats
             WINDOW_HEIGHT);
 
         private float _windowVisibility;
+        private UiHitTest _uiHitTest;
+
+        private float EasedVisibility => Mathf.SmoothStep(0f, 1f, _windowVisibility);
+        private float WindowScale => Mathf.Lerp(WINDOW_COLLAPSED_SCALE, 1f, EasedVisibility);
 
         private int _selectedTab;
         private int _selectedFaction;
@@ -172,31 +180,57 @@ namespace EmpireAtWar.Views.Cheats
                 LevelUpAllEnemyStationsRequested?.Invoke();
         }
 
+        [Inject]
+        private void Construct(UiHitTest uiHitTest)
+        {
+            _uiHitTest = uiHitTest;
+            _uiHitTest.RegisterOverlay(IsPointerOverWindow);
+        }
+
+        private void OnDestroy()
+        {
+            if (_uiHitTest != null)
+            {
+                _uiHitTest.UnregisterOverlay(IsPointerOverWindow);
+            }
+        }
+
+        private bool IsPointerOverWindow(Vector2 screenPosition)
+        {
+            if (!isActiveAndEnabled || _windowVisibility <= 0f) return false;
+
+            float scale = WindowScale;
+            Rect visibleRect = new Rect(_windowRect.position, _windowRect.size * scale);
+            return visibleRect.Contains(new Vector2(screenPosition.x, Screen.height - screenPosition.y));
+        }
+
         private void Update()
         {
+            Keyboard keyboard = Keyboard.current;
+            if (keyboard != null && keyboard.f12Key.wasPressedThisFrame)
+            {
+                _isExpanded = !_isExpanded;
+            }
+
             float targetVisibility = _isExpanded ? 1f : 0f;
             _windowVisibility = Mathf.MoveTowards(
                 _windowVisibility,
                 targetVisibility,
                 Time.unscaledDeltaTime / WINDOW_ANIMATION_DURATION);
+
+            _windowRect.width = Mathf.Min(WINDOW_WIDTH, Screen.width - 2f * WINDOW_MARGIN);
+            _windowRect.height = Mathf.Min(WINDOW_HEIGHT, Screen.height - 2f * WINDOW_MARGIN);
+            _windowRect.x = Mathf.Clamp(_windowRect.x, WINDOW_MARGIN, Screen.width - _windowRect.width - WINDOW_MARGIN);
+            _windowRect.y = Mathf.Clamp(_windowRect.y, WINDOW_MARGIN, Screen.height - _windowRect.height - WINDOW_MARGIN);
         }
 
         private void OnGUI()
         {
+            if (_windowVisibility <= 0f) return;
+
             GUI.depth = -1000;
-
-            if (!_isExpanded && _windowVisibility <= 0f)
-            {
-                if (GUI.Button(new Rect(WINDOW_MARGIN, WINDOW_MARGIN, 100f, 32f), "Cheats"))
-                {
-                    _isExpanded = true;
-                }
-
-                return;
-            }
-
-            float easedVisibility = Mathf.SmoothStep(0f, 1f, _windowVisibility);
-            float scale = Mathf.Lerp(WINDOW_COLLAPSED_SCALE, 1f, easedVisibility);
+            float easedVisibility = EasedVisibility;
+            float scale = WindowScale;
             Matrix4x4 previousMatrix = GUI.matrix;
             Color previousColor = GUI.color;
             bool wasEnabled = GUI.enabled;
@@ -204,6 +238,9 @@ namespace EmpireAtWar.Views.Cheats
             GUIUtility.ScaleAroundPivot(
                 new Vector2(scale, scale),
                 new Vector2(_windowRect.xMin, _windowRect.yMin));
+            GUI.color = new Color(WINDOW_BACKGROUND.r, WINDOW_BACKGROUND.g, WINDOW_BACKGROUND.b,
+                WINDOW_BACKGROUND.a * easedVisibility);
+            GUI.DrawTexture(_windowRect, Texture2D.whiteTexture);
             GUI.color = new Color(
                 previousColor.r,
                 previousColor.g,
@@ -215,8 +252,8 @@ namespace EmpireAtWar.Views.Cheats
                 _windowRect,
                 DrawWindow,
                 "Cheats",
-                GUILayout.Width(WINDOW_WIDTH),
-                GUILayout.Height(WINDOW_HEIGHT));
+                GUILayout.Width(_windowRect.width),
+                GUILayout.Height(_windowRect.height));
             GUI.enabled = wasEnabled;
             GUI.color = previousColor;
             GUI.matrix = previousMatrix;
@@ -248,7 +285,6 @@ namespace EmpireAtWar.Views.Cheats
             GUILayout.EndScrollView();
             if (!string.IsNullOrEmpty(_status)) GUILayout.Label(_status);
 
-            if (GUILayout.Button("Collapse")) _isExpanded = false;
             GUI.DragWindow();
         }
 
