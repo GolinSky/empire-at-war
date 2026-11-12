@@ -2,14 +2,20 @@ using System.Collections.Generic;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.UnitActions;
+using EmpireAtWar.Entities.UnitActions.Model;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.ShipAbilities;
+using VContainer;
 
 namespace EmpireAtWar.Services.Tutorial
 {
@@ -23,10 +29,20 @@ namespace EmpireAtWar.Services.Tutorial
         private readonly ScoutUnits _scouts;
         private readonly IPlayerFactionModelObserver _faction;
         private readonly StationLevelData _stationLevels;
+        private readonly UnitActionTargetingModel _actionTargeting;
+        private readonly IShipAbilityTargeting _abilityTargeting;
+        private readonly ICaptureSiteBuildSelection _siteSelection;
 
         public HintStates(ISelectionService selection, ILocalPlayer player, IReinforcementModelObserver reinforcements,
-            IEntityLocator entities, ScoutUnits scouts, IPlayerFactionModelObserver faction, StationLevelData stationLevels)
+            IEntityLocator entities, ScoutUnits scouts, IPlayerFactionModelObserver faction, StationLevelData stationLevels,
+            UnitActionTargetingModel actionTargeting, IShipAbilityTargeting abilityTargeting, IObjectResolver resolver)
         {
+            _actionTargeting = actionTargeting;
+            _abilityTargeting = abilityTargeting;
+            // Capture sites exist only in some modes; without them no site can be selected.
+            _siteSelection = resolver.TryResolve(typeof(ICaptureSiteBuildSelection), out object sites)
+                ? (ICaptureSiteBuildSelection)sites
+                : null;
             _faction = faction;
             _stationLevels = stationLevels;
             _scouts = scouts;
@@ -57,9 +73,24 @@ namespace EmpireAtWar.Services.Tutorial
                 case HintStateId.LevelUpReady: return _faction.CurrentLevel < _stationLevels.MaxLevel && !IsLevelUpQueued();
                 case HintStateId.LevelUpIdle: return !IsLevelUpQueued();
                 case HintStateId.ShipStackInReserve: return HasShipStackInReserve();
+                case HintStateId.GuardTargeting: return _actionTargeting.Pending == UnitActionId.Guard;
+                case HintStateId.AttackMoveTargeting: return _actionTargeting.Pending == UnitActionId.AttackMove;
+                case HintStateId.AbilityTargeting: return _abilityTargeting.IsWaitingForTarget;
+                case HintStateId.MiningSiteSelected: return IsSiteSelected(CaptureSiteKind.Mining);
+                case HintStateId.SatelliteSiteSelected: return IsSiteSelected(CaptureSiteKind.Satellite);
+                case HintStateId.SquadronSelected: return IsSquadronSelected(selection.Entities);
                 default: throw new System.ArgumentOutOfRangeException(nameof(id), id, "No hint state for this id.");
             }
         }
+
+        /// <summary>
+        /// A state the step's own first click enters (an order or ability waiting for its target, an open site
+        /// panel). Its fix step is the first half of the step, so skip rules do not wait for it.
+        /// </summary>
+        public static bool IsEnteredByStep(HintStateId id) =>
+            id == HintStateId.GuardTargeting || id == HintStateId.AttackMoveTargeting ||
+            id == HintStateId.AbilityTargeting || id == HintStateId.MiningSiteSelected ||
+            id == HintStateId.SatelliteSiteSelected;
 
         /// <summary>Name of the ability the ability bar marks: the first slot of the first selected unit with abilities.</summary>
         public bool TryGetSelectedAbilityName(out string name)
@@ -117,6 +148,16 @@ namespace EmpireAtWar.Services.Tutorial
                 if (_player.IsLocal(entity.Owner) && !entity.HealthModel.IsDestroyed &&
                     entity.TryGetFacade(out IMiningFacilityFacade _))
                     return true;
+            return false;
+        }
+
+        private bool IsSiteSelected(CaptureSiteKind kind) =>
+            _siteSelection != null && _siteSelection.SelectedSite != null && _siteSelection.SelectedSite.Kind == kind;
+
+        private bool IsSquadronSelected(IReadOnlyList<IEntity> entities)
+        {
+            foreach (IEntity entity in entities)
+                if (_player.IsLocal(entity.Owner) && entity.IsSquadron()) return true;
             return false;
         }
 

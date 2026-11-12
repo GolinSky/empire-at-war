@@ -14,13 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: enemy_select
   title: Select your whole fleet
-  body: Press {0} to select every unit, then attack together.
+  body: Press {0} to select every unit.
   inputActions:
   - Battle/SelectAll
   inputControls: []
   anchor: 0
   anchorFallback: 0
+  blockPointerOutsideSpotlight: 0
   target: 0
+  hideTargetMarker: 0
   completion: 55
   completionCount: 1
   listenFromShown: 1

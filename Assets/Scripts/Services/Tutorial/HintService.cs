@@ -226,11 +226,20 @@ namespace EmpireAtWar.Services.Tutorial
             {
                 StepRun head = _lesson.Head;
                 bool isDone = head.Condition != null && head.Condition.IsMet;
-                // Skip rules read the selection, so they apply only once the step's prerequisites hold.
-                bool canJudge = Resolve(head.Definition, 0) == head.Definition;
-                if (!isDone && (!canJudge || _states.IsSatisfied(head.Definition.SkipUnless))) return;
+                if (!isDone && (!CanJudgeSkip(head.Definition) || _states.IsSatisfied(head.Definition.SkipUnless)))
+                    return;
                 CompleteHead();
             }
+        }
+
+        // Skip rules read the selection, so they apply only once the step's prerequisites hold — apart from the
+        // step's own first click (Click [ability]), which an instant ability must never be told to make.
+        private bool CanJudgeSkip(HintDefinition step)
+        {
+            foreach (HintRequirement requirement in step.Requires)
+                if (!HintStates.IsEnteredByStep(requirement.State) && !_states.IsSatisfied(requirement.State))
+                    return false;
+            return true;
         }
 
         /// <summary>The step to show for <paramref name="step"/>: itself, or the fix step of its first missing state.</summary>
@@ -274,7 +283,8 @@ namespace EmpireAtWar.Services.Tutorial
         public bool TryGetWorldTarget(out Vector3 position)
         {
             position = default;
-            return _shown != null && _targets.TryGet(_shown.Target, _lesson.Trigger, out position);
+            return _shown != null && !_shown.HideTargetMarker &&
+                   _targets.TryGet(_shown.Target, _lesson.Trigger, out position);
         }
 
         public string ResolveText(string text)

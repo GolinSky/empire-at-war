@@ -14,17 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: expand_build
   title: Build a mine
-  body: Select the captured asteroid ({0}), then click Mine.
-  inputActions:
-  - Battle/Select
-  inputControls: []
-  anchor: 0
+  body: Click Mine.
+  inputActions: []
+  inputControls:
+  - <Mouse>/leftButton
+  anchor: 36
   anchorFallback: 0
+  blockPointerOutsideSpotlight: 0
   target: 11
+  hideTargetMarker: 1
   completion: 78
   completionCount: 1
   listenFromShown: 1
-  requires: []
+  requires:
+  - state: 16
+    step: {fileID: 11400000, guid: 4fd127df308527547a804f1d879178cb, type: 2}
   skipUnless: 0
   showDuringCombat: 0
   autoCloseSeconds: 0

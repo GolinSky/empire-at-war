@@ -14,18 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: enemy_attack
   title: Destroy the enemy station
-  body: Click Attack-move, then click the marked enemy station.
+  body: Click the marked enemy station.
   inputActions: []
-  inputControls: []
-  anchor: 7
+  inputControls:
+  - <Mouse>/leftButton
+  anchor: 0
   anchorFallback: 0
+  blockPointerOutsideSpotlight: 0
   target: 12
+  hideTargetMarker: 0
   completion: 63
   completionCount: 1
   listenFromShown: 1
   requires:
   - state: 1
     step: {fileID: 11400000, guid: 88d73ac2a2895c445bb1f34c29c24bc3, type: 2}
+  - state: 14
+    step: {fileID: 11400000, guid: c0907a15406986e408ce31e4cad74dc8, type: 2}
   skipUnless: 0
   showDuringCombat: 1
   autoCloseSeconds: 0

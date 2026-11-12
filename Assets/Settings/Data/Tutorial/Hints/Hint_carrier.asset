@@ -14,15 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: carrier
   title: Carrier
-  body: '[unit] carries fighters. Select one of its squadrons and send it somewhere.'
-  inputActions: []
+  body: Press {0} somewhere to send the squadron.
+  inputActions:
+  - Battle/Command
   inputControls: []
   anchor: 0
   anchorFallback: 0
-  target: 1
+  blockPointerOutsideSpotlight: 0
+  target: 0
+  hideTargetMarker: 0
   completion: 42
+  completionCount: 1
   listenFromShown: 0
-  requires: []
+  requires:
+  - state: 18
+    step: {fileID: 11400000, guid: b4124d3bfbe867e49921c5fc76b00316, type: 2}
   skipUnless: 0
   showDuringCombat: 0
   autoCloseSeconds: 0

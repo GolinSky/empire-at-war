@@ -14,16 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: satellite_pad
   title: Defense satellite
-  body: Select the pad ({0}) and build a satellite.
-  inputActions:
-  - Battle/Select
-  inputControls: []
-  anchor: 0
+  body: Click a satellite to build it.
+  inputActions: []
+  inputControls:
+  - <Mouse>/leftButton
+  anchor: 36
   anchorFallback: 0
-  target: 6
+  blockPointerOutsideSpotlight: 0
+  target: 0
+  hideTargetMarker: 0
   completion: 40
+  completionCount: 1
   listenFromShown: 0
-  requires: []
+  requires:
+  - state: 17
+    step: {fileID: 11400000, guid: a82d6ae410f8caf4e86c0ec311dabc74, type: 2}
   skipUnless: 0
   showDuringCombat: 0
   autoCloseSeconds: 0

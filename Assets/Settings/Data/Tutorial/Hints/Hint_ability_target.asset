@@ -14,18 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: ability_target
   title: Use an ability
-  body: Click [ability], then click an enemy.
+  body: Click an enemy.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
-  anchor: 21
+  anchor: 0
   anchorFallback: 0
+  blockPointerOutsideSpotlight: 0
   target: 0
+  hideTargetMarker: 0
   completion: 20
+  completionCount: 1
   listenFromShown: 0
   requires:
   - state: 3
     step: {fileID: 11400000, guid: 825636f72cae6ca46990434ca820f588, type: 2}
+  - state: 15
+    step: {fileID: 11400000, guid: bf2448653c2044e4b8dc302efa4750ad, type: 2}
   skipUnless: 6
   showDuringCombat: 1
   autoCloseSeconds: 0

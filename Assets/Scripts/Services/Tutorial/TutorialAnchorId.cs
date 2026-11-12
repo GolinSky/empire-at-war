@@ -46,5 +46,7 @@ namespace EmpireAtWar.Services.Tutorial
         SetupColor = 34,
         /// <summary>Tutorial setup screen: the start button.</summary>
         SetupStart = 35,
+        /// <summary>Build panel of the selected capture site (Mine, Battle Asteroid, satellite).</summary>
+        SiteBuildPanel = 36,
     }
 }

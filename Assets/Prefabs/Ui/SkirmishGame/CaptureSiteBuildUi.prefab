@@ -936,6 +936,7 @@ GameObject:
   - component: {fileID: 5897403476817738190}
   - component: {fileID: 4983584189734454945}
   - component: {fileID: 8507856924851268686}
+  - component: {fileID: 17120974127575623}
   m_Layer: 0
   m_Name: CaptureSiteBuildUi
   m_TagString: Untagged
@@ -993,6 +994,22 @@ MonoBehaviour:
   facilityOptions:
   - {fileID: 6719631105924035739}
   - {fileID: 1361552694409074001}
+--- !u!114 &17120974127575623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5890159803454715082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 36
+  target: {fileID: 123814938035098723}
+  highlights: []
+  visibility: {fileID: 4983584189734454945}
 --- !u!1 &5920334334297425852
 GameObject:
   m_ObjectHideFlags: 0

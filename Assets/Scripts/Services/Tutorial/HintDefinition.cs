@@ -25,6 +25,9 @@ namespace EmpireAtWar.Services.Tutorial
         [SerializeField] private bool blockPointerOutsideSpotlight;
         [Tooltip("Place in the world to mark (and mirror on the minimap).")]
         [SerializeField] private HintTargetId target;
+        [Tooltip("The target only tells the completion which site counts; no world or minimap marker shows. " +
+                 "For the second click of a step, when its fix step already marked the place.")]
+        [SerializeField] private bool hideTargetMarker;
         [Tooltip("Closes the step as done; a step done before it is shown is skipped. None: only Dismiss or auto close.")]
         [SerializeField] private HintConditionId completion;
         [Tooltip("How many the completion needs, for counting completions (Ships Queued).")]
@@ -57,6 +60,7 @@ namespace EmpireAtWar.Services.Tutorial
         public TutorialAnchorId AnchorFallback => anchorFallback;
         public bool BlockPointerOutsideSpotlight => blockPointerOutsideSpotlight;
         public HintTargetId Target => target;
+        public bool HideTargetMarker => hideTargetMarker;
         public HintConditionId Completion => completion;
         public int CompletionCount => completionCount;
         public bool ListenFromShown => listenFromShown;

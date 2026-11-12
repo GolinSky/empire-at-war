@@ -14,18 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: guard_order
   title: Guard
-  body: Click Guard, then click your station.
+  body: Click your station.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
-  anchor: 9
+  anchor: 0
   anchorFallback: 0
+  blockPointerOutsideSpotlight: 0
   target: 3
+  hideTargetMarker: 0
   completion: 14
+  completionCount: 1
   listenFromShown: 0
   requires:
   - state: 1
     step: {fileID: 11400000, guid: 88d73ac2a2895c445bb1f34c29c24bc3, type: 2}
+  - state: 13
+    step: {fileID: 11400000, guid: 87bf1d18913f4064d8dfd4e01a6afa43, type: 2}
   skipUnless: 0
   showDuringCombat: 0
   autoCloseSeconds: 0

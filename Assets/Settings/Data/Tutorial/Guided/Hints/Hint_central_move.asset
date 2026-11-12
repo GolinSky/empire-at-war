@@ -14,19 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: central_move
   title: Take the center
-  body: Click Attack-move, then click inside the marked ring. The 4 central asteroids
-    are the richest on the map.
+  body: Click inside the marked ring. The 4 central asteroids are the richest on
+    the map.
   inputActions: []
-  inputControls: []
-  anchor: 7
+  inputControls:
+  - <Mouse>/leftButton
+  anchor: 0
   anchorFallback: 0
+  blockPointerOutsideSpotlight: 0
   target: 10
+  hideTargetMarker: 0
   completion: 87
   completionCount: 1
   listenFromShown: 1
   requires:
   - state: 1
     step: {fileID: 11400000, guid: 88d73ac2a2895c445bb1f34c29c24bc3, type: 2}
+  - state: 14
+    step: {fileID: 11400000, guid: c0907a15406986e408ce31e4cad74dc8, type: 2}
   skipUnless: 0
   showDuringCombat: 0
   autoCloseSeconds: 0
