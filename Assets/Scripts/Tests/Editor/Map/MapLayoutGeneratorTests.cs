@@ -637,6 +637,27 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Generate_LeavesNoOpenSpaceWalledOffFromTheStations()
+        {
+            foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))
+            foreach (int seed in _seeds)
+            {
+                IReadOnlyList<PlayerSlot> players = TestPlayers.CreateDuel().Players;
+                MapLayout layout = GetLayout(mapSize, players, seed);
+                MapSizeSettings size = _settings.GetSize(mapSize);
+                FieldGrid grid = new FieldGrid(size.Bounds, size.FieldCellSize);
+                for (int index = 0; index < grid.Count; index++)
+                    grid.SetField(index, layout.Fields.Any(field => field.Volumes.Any(volume =>
+                        PlanarGeometry.Distance(grid.GetCenter(index), volume.Center) < volume.Radius)));
+
+                List<int> sealedCells = grid.FindSealedOpenCells(
+                    players.Select(player => grid.GetIndex(layout.GetStationPosition(player.Id))));
+
+                Assert.That(sealedCells, Is.Empty, $"{mapSize} seed {seed}: open space ships could spawn in but never leave.");
+            }
+        }
+
+        [Test]
         public void Stations_SitInDiagonallyOppositeCorners()
         {
             foreach (MapSize mapSize in Enum.GetValues(typeof(MapSize)))

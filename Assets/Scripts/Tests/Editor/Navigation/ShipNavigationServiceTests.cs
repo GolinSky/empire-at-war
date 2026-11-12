@@ -1174,6 +1174,9 @@ namespace EmpireAtWar.Tests.Movement
                 return IsClear;
             }
 
+            public bool IsReachable(Vector3 from, Vector3 to, float clearance, ShipHullSpan hullSpan,
+                Vector2Range mapRange) => true;
+
             public void RequestPlan(IShipPlanRequester requester)
             {
                 if (ExecuteImmediately) requester.ExecuteQueuedPlan();

@@ -52,7 +52,10 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void SetOrigin(Vector3 origin)
         {
-            _origin = new float2(origin.x, origin.z);
+            float2 planar = new float2(origin.x, origin.z);
+            // Spawn checks ask from the same station repeatedly; its located origin stays valid.
+            if (_hasSearched && _origin.Equals(planar)) return;
+            _origin = planar;
             _hasSearched = false;
         }
 
@@ -88,6 +91,12 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             // The planner tries its direct course before forcing any triangulation.
             return _hasSearched && FindReachableGoal(new float2(position.x, position.z), out _) < 0;
+        }
+
+        public bool IsReachable(Vector3 position)
+        {
+            BeginSearch();
+            return FindReachableGoal(new float2(position.x, position.z), out _) >= 0;
         }
 
         private int FindReachableGoal(float2 goal, out float2 exit)

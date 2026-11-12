@@ -6,7 +6,8 @@ namespace EmpireAtWar.Services.Reinforcement
 {
     /// <summary>
     /// The single deployment rule for every team: a point is open when it is inside the map, the team sees it
-    /// and no hostile spawn blocker covers it. Ships additionally need a clear landing hull; structures need
+    /// and no hostile spawn blocker covers it. Ships additionally need a clear landing hull
+    /// and a flight path back to their own station's space; structures need
     /// clear space and must stay outside relay rings and capture sites.
     /// </summary>
     public interface IReinforcementSpawnRule

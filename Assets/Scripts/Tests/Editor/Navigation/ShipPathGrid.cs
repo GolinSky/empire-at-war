@@ -213,6 +213,12 @@ namespace EmpireAtWar.Services.ShipNavigation
         /// the ship's region. Matches <see cref="TryFindPath"/>: a point inside the grid's inflation
         /// (e.g. snapped to an obstacle edge) uses its nearest walkable cell.
         /// </summary>
+        public bool IsReachable(Vector3 position)
+        {
+            BeginSearch();
+            return !IsKnownUnreachable(position);
+        }
+
         public bool IsKnownUnreachable(Vector3 position)
         {
             if (!_hasSearched)

@@ -46,6 +46,42 @@ namespace EmpireAtWar.Entities.Map.Generation
                 _min.y + (index / Columns + 0.5f) * CellSize);
         }
 
+        public int GetIndex(Vector3 position)
+        {
+            int column = Mathf.Clamp(Mathf.FloorToInt((position.x - _min.x) / CellSize), 0, Columns - 1);
+            int row = Mathf.Clamp(Mathf.FloorToInt((position.z - _min.y) / CellSize), 0, Rows - 1);
+            return row * Columns + column;
+        }
+
+        /// <summary>Open cells that no edge-connected open path links to any of <paramref name="starts"/>.</summary>
+        public List<int> FindSealedOpenCells(IEnumerable<int> starts)
+        {
+            bool[] isReached = new bool[Count];
+            Queue<int> queue = new Queue<int>();
+            foreach (int start in starts)
+            {
+                if (_isField[start] || isReached[start]) continue;
+                isReached[start] = true;
+                queue.Enqueue(start);
+            }
+
+            while (queue.Count > 0)
+            {
+                int index = queue.Dequeue();
+                foreach (int neighbour in GetNeighbours(index, EDGE_NEIGHBOURS))
+                {
+                    if (_isField[neighbour] || isReached[neighbour]) continue;
+                    isReached[neighbour] = true;
+                    queue.Enqueue(neighbour);
+                }
+            }
+
+            List<int> sealedCells = new List<int>();
+            for (int index = 0; index < Count; index++)
+                if (!_isField[index] && !isReached[index]) sealedCells.Add(index);
+            return sealedCells;
+        }
+
         /// <summary>Groups field cells into edge-connected fields.</summary>
         public List<List<int>> FindFields()
         {

@@ -18,6 +18,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         bool PreservesTravelCost(ShipBezierRoute route, IReadOnlyList<Vector3> waypoints);
         bool TryFindPath(Vector3 destination, float height, List<Vector3> waypoints);
         bool IsKnownUnreachable(Vector3 position);
+        bool IsReachable(Vector3 position);
         bool TryGetNearestReachable(Vector3 position, float height, out Vector3 nearest);
     }
 }

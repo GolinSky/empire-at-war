@@ -22,6 +22,7 @@ namespace EmpireAtWar.Tests.Editor
         private VisionService _vision;
         private BattleAreaService _blockers;
         private FixedClearance _clearance;
+        private FixedReachability _reachability;
         private FixedStructureClearance _structureClearance;
         private ReinforcementSpawnRule _rule;
         private TestHazards _hazards;
@@ -36,7 +37,8 @@ namespace EmpireAtWar.Tests.Editor
             _clearance = new FixedClearance();
             _structureClearance = new FixedStructureClearance();
             _hazards = new TestHazards();
-            _rule = new ReinforcementSpawnRule(_vision, _blockers, _clearance, _structureClearance,
+            _reachability = new FixedReachability();
+            _rule = new ReinforcementSpawnRule(_vision, _blockers, _clearance, _reachability, _structureClearance,
                 new FixedMap(), _hazards);
             _vision.Register(TestPlayers.Human, CreateTransform(Vector3.zero), 500f);
             _vision.Register(TestPlayers.Enemy, CreateTransform(Vector3.zero), 500f);
@@ -115,6 +117,15 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void CanSpawnShip_WalledOffFromOwnStation_False()
+        {
+            _reachability.IsReachableResult = false;
+
+            Assert.That(_rule.CanSpawnShip(TestPlayers.Human, ShipType.Arquitens, Vector3.zero), Is.False);
+            Assert.That(_rule.IsOpen(TestPlayers.Human, Vector3.zero), Is.True);
+        }
+
+        [Test]
         public void CanSpawnStructure_BlockedPhysically_False()
         {
             _structureClearance.IsClearResult = false;
@@ -170,6 +181,13 @@ namespace EmpireAtWar.Tests.Editor
             public void ReleaseLanding(object ship)
             {
             }
+        }
+
+        private sealed class FixedReachability : IShipSpawnReachability
+        {
+            public bool IsReachableResult { get; set; } = true;
+
+            public bool IsReachable(PlayerId owner, ShipType shipType, Vector3 position) => IsReachableResult;
         }
 
         private sealed class FixedStructureClearance : IStructureSpawnClearance

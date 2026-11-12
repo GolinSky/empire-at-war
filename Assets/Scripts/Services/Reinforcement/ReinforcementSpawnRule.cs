@@ -14,6 +14,7 @@ namespace EmpireAtWar.Services.Reinforcement
         private readonly IVisionService _vision;
         private readonly IBattleAreaService _areas;
         private readonly IShipSpawnClearance _shipClearance;
+        private readonly IShipSpawnReachability _shipReachability;
         private readonly IStructureSpawnClearance _structureClearance;
         private readonly IMapModelObserver _mapModel;
         private readonly IHazardService _hazards;
@@ -22,6 +23,7 @@ namespace EmpireAtWar.Services.Reinforcement
             IVisionService vision,
             IBattleAreaService areas,
             IShipSpawnClearance shipClearance,
+            IShipSpawnReachability shipReachability,
             IStructureSpawnClearance structureClearance,
             IMapModelObserver mapModel,
             IHazardService hazards)
@@ -29,6 +31,7 @@ namespace EmpireAtWar.Services.Reinforcement
             _vision = vision;
             _areas = areas;
             _shipClearance = shipClearance;
+            _shipReachability = shipReachability;
             _structureClearance = structureClearance;
             _mapModel = mapModel;
             _hazards = hazards;
@@ -46,7 +49,8 @@ namespace EmpireAtWar.Services.Reinforcement
         }
 
         public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position) =>
-            IsOpen(owner, position) && _shipClearance.IsClear(owner, shipType, position);
+            IsOpen(owner, position) && _shipClearance.IsClear(owner, shipType, position) &&
+            _shipReachability.IsReachable(owner, shipType, position);
 
         public bool CanSpawnStructure(PlayerId owner, Vector3 position)
         {

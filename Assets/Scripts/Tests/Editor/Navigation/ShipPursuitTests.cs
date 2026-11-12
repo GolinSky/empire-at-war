@@ -257,19 +257,19 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void AbilityApproach_HullOutsideCastRangeCompletesAfterContact()
+        public void AbilityApproach_HullContactCountsAsInRangeBeyondCastDistance()
         {
             _target.NavigationRadius = 120f;
             AbilityApproachState state = new AbilityApproachState(_movement);
             state.SetData(_target, 100f);
             state.Enter();
-            for (int i = 0; i < 4; i++)
-            {
-                _movement.FinishLeg();
-                state.Tick(0.5f);
-            }
-            Assert.That(state.IsComplete, Is.True);
             Assert.That(state.IsInRange, Is.False);
+
+            _movement.FinishLeg();
+            state.Tick(0.5f);
+
+            Assert.That(state.IsComplete, Is.True);
+            Assert.That(state.IsInRange, Is.True);
             Assert.That(Vector3.Distance(_movement.Destination, _target.Transform.position), Is.EqualTo(125f));
         }
 

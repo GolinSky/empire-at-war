@@ -55,7 +55,7 @@ namespace EmpireAtWar.Tests.Editor
                 new StructureSpawnClearance(new LayersStub(), new[] { _structurePrefab });
             _areas = new BattleAreaService(roster);
             ReinforcementSpawnRule spawnRule = new ReinforcementSpawnRule(vision, _areas,
-                new OpenShipClearance(), structureClearance, _map, new TestHazards());
+                new OpenShipClearance(), new OpenShipReachability(), structureClearance, _map, new TestHazards());
             return new EnemyStructurePlacementService(
                 mapModel: _map,
                 zones: _zones, spawnRule: spawnRule, structureClearance: structureClearance,
@@ -311,6 +311,11 @@ namespace EmpireAtWar.Tests.Editor
                 position = default;
                 return false;
             }
+        }
+
+        private sealed class OpenShipReachability : IShipSpawnReachability
+        {
+            public bool IsReachable(PlayerId owner, ShipType shipType, Vector3 position) => true;
         }
 
         private sealed class OpenShipClearance : IShipSpawnClearance

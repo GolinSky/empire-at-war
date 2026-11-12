@@ -74,6 +74,10 @@ namespace EmpireAtWar.Services.ShipNavigation
             Vector3 position,
             float navigationRadius);
 
+        /// <summary>Whether a ship of this clearance and hull span can fly from one point to the other
+        /// past the map's asteroid fields and stations.</summary>
+        bool IsReachable(Vector3 from, Vector3 to, float clearance, ShipHullSpan hullSpan, Vector2Range mapRange);
+
         /// <summary>Queues the requester for a route plan; the service runs a few queued plans per frame.</summary>
         void RequestPlan(IShipPlanRequester requester);
 
@@ -417,6 +421,13 @@ namespace EmpireAtWar.Services.ShipNavigation
                    (!includeReservations || _destinationRegistry.HasClearance(
                 ToPoint(position),
                 navigationRadius));
+        }
+
+        public bool IsReachable(Vector3 from, Vector3 to, float clearance, ShipHullSpan hullSpan,
+            Vector2Range mapRange)
+        {
+            BuildNavigationContacts(Array.Empty<RadarContact>(), hullSpan);
+            return _cache.GetGraph(_mapObstacleContacts, mapRange, from, clearance, _hazards.Sources).IsReachable(to);
         }
 
         public bool IsPositionClear(

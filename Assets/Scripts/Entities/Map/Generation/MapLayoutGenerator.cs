@@ -20,6 +20,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         private readonly LaneNetworkBuilder _laneNetworkBuilder;
         private readonly AsteroidFieldBuilder _asteroidFieldBuilder;
         private readonly HazardPlacer _hazardPlacer;
+        private readonly SealedSpaceFiller _sealedSpaceFiller;
 
         public MapLayoutGenerator(MapGenerationSettings settings, MapFeatureRadii radii)
         {
@@ -29,6 +30,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             _laneNetworkBuilder = new LaneNetworkBuilder(settings);
             _asteroidFieldBuilder = new AsteroidFieldBuilder(settings);
             _hazardPlacer = new HazardPlacer(settings, _pointOfInterestPlacer);
+            _sealedSpaceFiller = new SealedSpaceFiller(settings);
         }
 
         public MapLayout Generate(
@@ -61,6 +63,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                 List<AsteroidField> fields = _asteroidFieldBuilder.Build(size, stations, nodes, lanes, random,
                     hazards, out FieldDensity density);
                 blocker.Fill(size, nodes, hazards, reserved, fields, random);
+                _sealedSpaceFiller.Fill(size, stations, fields, random);
                 IReadOnlyList<AsteroidSpot> decor = new DecorAsteroidBuilder(_settings).Build(size, density,
                     new Random(hazardSeed ^ DECOR_SALT));
                 return new MapLayout(

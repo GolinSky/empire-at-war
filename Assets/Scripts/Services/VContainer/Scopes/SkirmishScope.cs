@@ -205,6 +205,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ShipUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitOrderFeedbackUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipSpawnClearance>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<ShipSpawnReachability>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipSpawnPoints>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ReinforcementSpawnRule>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<StructureSpawnClearance>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()

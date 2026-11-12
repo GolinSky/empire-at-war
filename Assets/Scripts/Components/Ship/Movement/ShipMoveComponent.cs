@@ -24,7 +24,7 @@ namespace EmpireAtWar.Components.Ship.Movement
     public class ShipMoveComponent : MonoComponent<ShipMoveModel>, IShipMoveComponent,
         IShipNavigationAgent, IShipPlanRequester, IShipRouteReplicaFacade, IInitializable, ITickable, ILateDisposable
     {
-        private const float MINIMUM_NAVIGATION_RADIUS = 1f;
+        public const float MINIMUM_NAVIGATION_RADIUS = 1f;
         private const float HEIGHT_TOLERANCE = 0.5f;
         // Solving the firing turn reads every hardpoint transform. A stationary ship keeps its solved facing
         // until the bearing to the target swings this far or the solve ages out (lost hardpoints change the arcs).
