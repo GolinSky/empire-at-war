@@ -18,6 +18,7 @@ namespace EmpireAtWar.Entities.Game
         public int EnemyShipCount { get; }
         public bool IsPlayerBaseAlive { get; }
         public bool IsEnemyBaseAlive { get; }
+        public int DurationSeconds { get; }
 
         public BattleResult(
             IReadOnlyList<FactionType> enemyFactions,
@@ -28,7 +29,7 @@ namespace EmpireAtWar.Entities.Game
             int playerShipCount,
             int enemyShipCount,
             bool isPlayerBaseAlive,
-            bool isEnemyBaseAlive, GameMode mode = GameMode.Skirmish)
+            bool isEnemyBaseAlive, GameMode mode = GameMode.Skirmish, int durationSeconds = 0)
         {
             Outcome = outcome;
             Mode = mode;
@@ -40,6 +41,7 @@ namespace EmpireAtWar.Entities.Game
             EnemyShipCount = enemyShipCount;
             IsPlayerBaseAlive = isPlayerBaseAlive;
             IsEnemyBaseAlive = isEnemyBaseAlive;
+            DurationSeconds = durationSeconds;
         }
     }
 }

@@ -12,6 +12,7 @@ using EmpireAtWar.Lifecycle;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.Ships;
+using EmpireAtWar.Services.Saves;
 
 namespace EmpireAtWar.Services.Battle
 {
@@ -26,6 +27,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly IPlayerRegistry _playerRegistry;
         private readonly IReadOnlyList<IBattleSurvivalSource> _survivalSources;
         private readonly INotifier<BattleState> _battleState;
+        private readonly BattleClock _clock;
 
         private readonly IBattleOutcomeRule _victoryModel;
         private readonly List<IObserver<BattleResult>> _observers = new();
@@ -47,7 +49,8 @@ namespace EmpireAtWar.Services.Battle
             IPlayerRegistry playerRegistry,
             INotifier<BattleState> battleState,
             IBattleOutcomeRule victoryModel,
-            IReadOnlyList<IBattleSurvivalSource> survivalSources)
+            IReadOnlyList<IBattleSurvivalSource> survivalSources,
+            BattleClock clock)
         {
             _survivalSources = survivalSources;
             _gameModel = gameModel;
@@ -58,6 +61,7 @@ namespace EmpireAtWar.Services.Battle
             _localPlayer = localPlayer;
             _playerRegistry = playerRegistry;
             _battleState = battleState;
+            _clock = clock;
         }
 
         public void Initialize()
@@ -201,7 +205,9 @@ namespace EmpireAtWar.Services.Battle
                 playerShipCount: playerShipCount,
                 enemyShipCount: enemyShipCount,
                 isPlayerBaseAlive: isPlayerBaseAlive,
-                isEnemyBaseAlive: isEnemyBaseAlive, mode: _gameModel.GameMode);
+                isEnemyBaseAlive: isEnemyBaseAlive,
+                mode: _gameModel.GameMode,
+                durationSeconds: (int)_clock.Elapsed);
         }
 
         public void Reset() => _finalResult = null;

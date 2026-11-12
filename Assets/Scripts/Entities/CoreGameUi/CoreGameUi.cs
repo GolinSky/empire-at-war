@@ -1,6 +1,7 @@
 using System;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Ui.Base;
@@ -39,6 +40,8 @@ namespace EmpireAtWar.Entities.CoreGameUi
         [SerializeField] private TMP_Text modeLabel;
         [SerializeField] private TMP_Text populationText;
         [SerializeField] private GameObject populationDisplay;
+        [SerializeField] private GameObject battleDurationPanel;
+        [SerializeField] private TMP_Text battleDurationText;
 
         private bool _isInitialized;
         private bool _hasContentLayout;
@@ -46,6 +49,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         private bool _isShipGroupLayout;
         private bool _hasTimeControls = true;
         private (string faction, bool ended, bool factionLayout, bool visible)? _lastHudStatus;
+        private int _displayedDurationSeconds = -1;
 
         public TooltipHoverView TooltipHover => tooltipHover;
 
@@ -107,6 +111,15 @@ namespace EmpireAtWar.Entities.CoreGameUi
         {
             timeImage.sprite = timeSprites.Dictionary[isPaused];
             speedUpImage.sprite = speedUpSprites.Dictionary[speed];
+        }
+
+        public void SetBattleDurationVisible(bool visible) => battleDurationPanel.SetActive(visible);
+
+        public void SetBattleDuration(int seconds)
+        {
+            if (_displayedDurationSeconds == seconds) return;
+            _displayedDurationSeconds = seconds;
+            battleDurationText.text = BattleDuration.Format(seconds);
         }
 
         /// <summary>Online battles share one time scale, so a client cannot pause or speed it up.</summary>

@@ -66,8 +66,8 @@ MonoBehaviour:
   stack: {fileID: 5560657841789747671}
   cardTemplate: {fileID: 5951079118748781688}
   icons: {fileID: 11400000, guid: f5fb2ca4ac1d3a848a445314158b9a6e, type: 2}
-  topOffset: 12
-  survivalTopOffset: 78
+  topOffset: 54
+  survivalTopOffset: 164
   outcomeColor: {r: 0.972549, g: 0.98039216, b: 0.9882353, a: 1}
   urgentColor: {r: 0.9372549, g: 0.26666668, b: 0.26666668, a: 1}
   tacticalColor: {r: 0.9607843, g: 0.61960787, b: 0.043137256, a: 1}
@@ -657,7 +657,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -12}
+  m_AnchoredPosition: {x: 0, y: -54}
   m_SizeDelta: {x: 460, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &3626391789552904745

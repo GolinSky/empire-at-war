@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Models.Factions;
@@ -11,6 +12,7 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Ships;
 using UnityEngine;
 
@@ -206,7 +208,8 @@ namespace EmpireAtWar.Tests.Editor
             ConstructionSite sites = new ConstructionSite { Owner = new PlayerId(ownerIndex) };
             BattleVictoryService service = new BattleVictoryService(null, new ShipService(), new EntityLocator(),
                 roster, TestPlayers.CreateLocalPlayer(roster), new PlayerRegistry(), null,
-                new BattleVictoryModel(), new[] { new ConstructingSitesSurvival(sites) });
+                new BattleVictoryModel(), new[] { new ConstructingSitesSurvival(sites) },
+                new BattleClock(new SkirmishStateModel()));
             typeof(BattleVictoryService).GetMethod("CollectStates", BindingFlags.Instance | BindingFlags.NonPublic)
                 .Invoke(service, null);
             List<PlayerBattleState> states = (List<PlayerBattleState>)typeof(BattleVictoryService)

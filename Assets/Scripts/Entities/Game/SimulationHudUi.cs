@@ -26,7 +26,8 @@ namespace EmpireAtWar.Entities.Game
         }
         public void Render(SimulationModel model, BattleState state, GameSpeed speed)
         {
-            status.text = model.IsSpawning ? "Deploying fleets…" : $"{model.Elapsed:0.0}s   •   Side A: {model.CountA}   •   Side B: {model.CountB}";
+            status.text = model.IsSpawning ? "Deploying fleets…" :
+                $"{BattleDuration.Format((int)model.Elapsed)}   •   Side A: {model.CountA}   •   Side B: {model.CountB}";
             pauseLabel.text = state == BattleState.Paused ? "RESUME" : "PAUSE";
             speedLabel.text = speed == GameSpeed.Fast ? "SPEED 4×" : "SPEED 1×";
             pauseButton.interactable = speedButton.interactable = state == BattleState.Running || state == BattleState.Paused;
@@ -37,7 +38,7 @@ namespace EmpireAtWar.Entities.Game
             if (outcome == null) return;
             string winner = outcome.Outcome == BattleOutcome.PlayerVictory ? "SIDE A WINS" :
                 outcome.Outcome == BattleOutcome.EnemyVictory ? "SIDE B WINS" : "DRAW";
-            result.text = $"{winner} · {outcome.Elapsed:0.0}s\nA: {outcome.SurvivorsA} survivors · {outcome.HullA:0} hull HP\nB: {outcome.SurvivorsB} survivors · {outcome.HullB:0} hull HP";
+            result.text = $"{winner} · {BattleDuration.Format((int)outcome.Elapsed)}\nA: {outcome.SurvivorsA} survivors · {outcome.HullA:0} hull HP\nB: {outcome.SurvivorsB} survivors · {outcome.HullB:0} hull HP";
         }
         public void Dispose()
         {

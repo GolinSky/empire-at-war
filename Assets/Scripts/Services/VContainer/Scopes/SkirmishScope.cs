@@ -149,8 +149,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<WorldTooltipPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             // Mode services keep their entry-point order: after the player scopes, before the battle UI.
             BattleModes.Create(Battle, Assets, online).ConfigureBattle(builder);
-            builder.Register<BattleVictoryService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<BattleClock>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<BattleVictoryService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitSaveService>(Lifetime.Singleton);
             builder.Register<PlayerSaveRegistry>(Lifetime.Singleton).AsSelf().As<IBattleSaveSource>();
             builder.Register<BattleSaveService>(Lifetime.Singleton);

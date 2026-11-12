@@ -19,6 +19,7 @@ namespace EmpireAtWar.Entities.EndGameUi
         [SerializeField] private TMP_Text enemyFleetText;
         [SerializeField] private TMP_Text playerBaseText;
         [SerializeField] private TMP_Text enemyBaseText;
+        [SerializeField] private TMP_Text battleDurationText;
         [SerializeField] private UnityEngine.UI.Button returnToMenuButton;
         [SerializeField] private TooltipHoverView tooltipHover;
 
@@ -70,6 +71,7 @@ namespace EmpireAtWar.Entities.EndGameUi
             };
 
             battlefieldText.text = result.Planet.ToString().ToUpperInvariant();
+            battleDurationText.text = $"Battle duration: <color=#7DD3FC>{BattleDuration.Format(result.DurationSeconds)}</color>";
             objectiveText.text = fleetObjective ? "Destroy enemy fleet" : "Destroy opponent base";
             if (result.Mode == GameMode.Survival)
             {

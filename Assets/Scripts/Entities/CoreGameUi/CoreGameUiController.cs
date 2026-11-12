@@ -13,6 +13,7 @@ using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using VContainer;
@@ -38,6 +39,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
         private readonly IMatchSession _session;
         private readonly BattleDefinition _battle;
+        private readonly BattleClock _clock;
 
         private readonly Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>> _routes = new();
         private readonly Dictionary<SkirmishUiRoutePosition, bool> _routeStates = new();
@@ -79,7 +81,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             ICinematicCameraController cinematicCamera,
             ITooltipService tooltipService,
             EmpireAtWar.Services.Input.IInputBindings bindings,
-            IMatchSession session, BattleDefinition battle) : base(uiService, cancelRouter)
+            IMatchSession session, BattleDefinition battle, BattleClock clock) : base(uiService, cancelRouter)
         {
             _placement = placement;
             _cancelRouter = cancelRouter;
@@ -94,6 +96,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _bindings = bindings;
             _session = session;
             _battle = battle;
+            _clock = clock;
         }
 
         public void Initialize()
@@ -256,6 +259,8 @@ namespace EmpireAtWar.Entities.CoreGameUi
         public void UpdateState(BattleState state)
         {
             _state = state;
+            _ui.SetBattleDurationVisible(_battle.Mode != GameMode.BattleSimulation &&
+                (state == BattleState.Running || state == BattleState.Paused));
             if (IsBattleEnded)
             {
                 _hasReadyReinforcement = false;
@@ -317,6 +322,8 @@ namespace EmpireAtWar.Entities.CoreGameUi
 
         public void Tick()
         {
+            if (_battle.Mode != GameMode.BattleSimulation)
+                _ui.SetBattleDuration((int)_clock.Elapsed);
             _ui.SetHudStatus(_factionName, _stationLevel,
                 _lastSelectionContext != null ? _lastSelectionContext.Count : 0, IsBattleEnded);
         }

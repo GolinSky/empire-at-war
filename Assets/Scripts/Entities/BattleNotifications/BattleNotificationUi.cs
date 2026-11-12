@@ -14,9 +14,9 @@ namespace EmpireAtWar.Entities.BattleNotifications
         [SerializeField] private TooltipIconData icons;
 
         [Header("Placement")]
-        [SerializeField] private float topOffset = 12f;
+        [SerializeField] private float topOffset = 54f;
         [Tooltip("Survival keeps its wave and status rows at the top, so the cards start below them.")]
-        [SerializeField] private float survivalTopOffset = 78f;
+        [SerializeField] private float survivalTopOffset = 164f;
 
         [Header("Priority Accents")]
         [SerializeField] private Color outcomeColor = new Color32(0xF8, 0xFA, 0xFC, 0xFF);
