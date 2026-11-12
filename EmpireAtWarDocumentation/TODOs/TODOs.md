@@ -143,6 +143,12 @@
 
 
 
+- [ ] **Refresh the RTS HUD and menus with the navy and gold palette** → [[TODOs/Refactoring/RTS_UI_Refresh_Plan|RTS UI Refresh Plan]] · [[TODOs/Refactoring/RTS_UI_Refresh_Plan - Research|Research and audit evidence]]
+  - First phase implemented (2026-11-12): verified Penpot → shared common/primary/destructive menu prefabs → all-UI palette, Rajdhani/Inter Tight and modest sizing. Follow-up: 47 menu actions across 11 screens inherit shared styles; 156 prefabs pass missing-reference checks; Unity saves/import checks clean. Tests not run.
+  - Hover feedback strengthened across project controls; 275 saved controls checked, HUD/menu hover previews inspected. Live battle check blocked by separate map DI cycle; tests not run.
+  - HUD correction: faction cards and controls use flat #202E40; card gradient disabled, gold borders retained. Six action labels share size 11.5 and fit; white enabled icons and three removed strips retained. Saved read-back and HUD preview verified; live visual acceptance pending.
+  - Later phases: overflow/readability, feedback/input, aspect-ratio captures and large-fleet verification. Plan remains active.
+
 - [ ] **Derive hardpoint HP from hull HP (budget ratio, type weights, per-class minimum)** → [[TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan|Hardpoint Health From Hull]]; [[TODOs/Refactoring/Hardpoint_Health_From_Hull_Plan - Research|Current Σ HP / hull table]]
   - Status: implemented 2026-10-29 (`R = 1.15`, 62 data / 61 prefabs migrated); tests not run.
   - Next: user skirmish/tuning acceptance; refresh ALO recipe HP baselines before next import.

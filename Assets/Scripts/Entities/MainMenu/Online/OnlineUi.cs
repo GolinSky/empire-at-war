@@ -32,7 +32,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             acceptInviteButton.onClick.AddListener(_presenter.AcceptInvite);
             backButton.onClick.AddListener(_presenter.Close);
             _inviteColor = acceptInviteButton.targetGraphic.color;
-            _inviteBlinkColor = new Color(1f, 0.12f, 0.12f, _inviteColor.a);
+            _inviteBlinkColor = new Color(210f / 255f, 169f / 255f, 94f / 255f, _inviteColor.a);
             _isInitialized = true;
         }
 

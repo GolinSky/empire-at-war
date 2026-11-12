@@ -25,7 +25,7 @@ namespace EmpireAtWar.Views.Cheats
 
         private static readonly string[] TAB_NAMES =
             { "Economy", "Ships", "Station", "Defend", "Enemy", "Superweapons", "Debug", "Tutorial" };
-        private static readonly Color WINDOW_BACKGROUND = new Color32(8, 12, 20, 245);
+        private static readonly Color WINDOW_BACKGROUND = new Color32(16, 26, 41, 245);
         private IReadOnlyList<DefendPlatformType> _platforms = Array.Empty<DefendPlatformType>();
         private static readonly SuperWeaponType[] SUPER_WEAPONS =
             (SuperWeaponType[])Enum.GetValues(typeof(SuperWeaponType));

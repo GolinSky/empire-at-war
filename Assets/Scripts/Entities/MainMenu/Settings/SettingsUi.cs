@@ -142,7 +142,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             statusText.text = _model.StatusMessage.Length != 0
                 ? _model.StatusMessage
                 : _model.IsDirty ? UNSAVED_CHANGES_MESSAGE : SETTINGS_SCOPE_MESSAGE;
-            statusText.color = _model.IsDirty ? new Color32(231, 189, 105, 255) : new Color32(123, 156, 175, 255);
+            statusText.color = _model.IsDirty ? new Color32(210, 169, 94, 255) : new Color32(123, 156, 175, 255);
             promptView.Render(_model.Prompt);
         }
 

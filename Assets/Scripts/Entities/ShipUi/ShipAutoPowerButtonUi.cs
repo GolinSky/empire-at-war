@@ -29,7 +29,7 @@ namespace EmpireAtWar.Entities.ShipUi
             activeHighlight.SetActive(state.GlobalEnabled && (state.Enabled || state.Mixed));
             label.text = "A";
             label.color = state.GlobalEnabled
-                ? new Color(0.97f, 0.98f, 0.99f, 1f)
+                ? new Color(242f / 255f, 240f / 255f, 230f / 255f, 1f)
                 : new Color(0.45f, 0.5f, 0.6f, 1f);
             gameObject.SetActive(state.Visible);
         }

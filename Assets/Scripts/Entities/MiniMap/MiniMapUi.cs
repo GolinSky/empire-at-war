@@ -25,9 +25,9 @@ namespace EmpireAtWar.Entities.MiniMap
         private const float LOST_ALERT_SECONDS = 5f;
         private const float COMBAT_ALERT_SECONDS = 3f;
         private const float COMBAT_DISC_ALPHA = 0.35f;
-        private static readonly Color CAPTURED_ALERT_COLOR = new Color(0.3f, 1f, 0.45f, 1f);
-        private static readonly Color LOST_ALERT_COLOR = new Color(1f, 0.62f, 0.12f, 1f);
-        private static readonly Color COMBAT_ALERT_COLOR = new Color(1f, 0.18f, 0.15f, 0.85f);
+        private static readonly Color CAPTURED_ALERT_COLOR = new Color32(109, 184, 226, 255);
+        private static readonly Color LOST_ALERT_COLOR = new Color32(210, 169, 94, 255);
+        private static readonly Color COMBAT_ALERT_COLOR = new Color(232f / 255f, 110f / 255f, 108f / 255f, 0.85f);
 
         [SerializeField] private RectTransform miniMapRectTransform;
         [SerializeField] private TooltipHoverView tooltipHover;

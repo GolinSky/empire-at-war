@@ -5,6 +5,16 @@
 
 - Codex, Claude, Gemini, and Antigravity **MUST** read and follow this note before creating, modifying, or refactoring UI prefabs/components.
 
+## Visual Refresh Override · 2026-11-12
+
+- Current project UI palette supersedes the older color literals below: navy `#101A29`, primary/selected gold `#D2A95E`, enabled text `#F2F0E6`, informational/shield cyan `#6DB8E2`, warning/destructive red `#E86E6C`.
+- Related surface/border shades: `#202E40` / `#344357`. Preserve meaningful health/team colors, artwork tint, alpha and border geometry.
+- Penpot font roles: Rajdhani 600 HUD, Rajdhani 700 menu headings; Inter Tight 700 menu controls and Inter Tight 500 supporting menu text. Inter and Inter Tight are different families.
+- Shared menu assets: `Assets/Prefabs/Ui/ButtonsTemplate/CommonMenuButton.prefab`; variants `PrimaryMenuButton.prefab` and `DestructiveMenuButton.prefab`. Primary → navy label on gold; common → off-white on slate; destructive → red outline.
+- Standard rectangular actions across all 11 menu screens inherit font, tint and interaction states (47 instances verified 2026-11-12). Close/X controls and compound list rows retain specialized layouts. Override only labels, tooltip keys, layout and availability on instances. Main Menu QUIT uses common; Pause EXIT uses destructive.
+- Initial size adjustment: common menu labels 27 → 23 TMP units; small authored text 10–17 → +2 TMP units. These values are not rendered glyph heights; full viewport/combat acceptance remains with [[TODOs/Refactoring/RTS_UI_Refresh_Plan]].
+- Verification: saved prefab inheritance/references and 1920×1080 isolated menu renders. Do not treat prefab previews as live menu-route, online availability or battle readability validation.
+
 ## 1. Component Choice (Optional MPUIKit Integration)
 
 - **Choose components for the design**: Standard `UnityEngine.UI.Image`, suitable scalable sprites, and `MPUIKIT.MPImage` are allowed on panels, popup cards, buttons, dropdowns, slider tracks/fills, and dialog containers.
@@ -127,3 +137,10 @@
   - `IMeshModifier` lerps vertex RGB to the opposite; `IMaterialModifier` fades `_Color`, `_CornerGradientColor0–3`, `_GradientColor0–7` to white on an owned material copy by the same pulse.
   - Avoid: brightness multipliers (old 1.8–3.5× `_Color`) — blew white-text buttons out to white squares. Preserve source alpha, `Graphic.color`, Selectable states and current stencil/gradient properties; stop returns the normal live material/colors. Destroy the owned material with the component. Do not draw target tint/glow in the spotlight overlay.
 - `TutorialAnchor.highlights` binds fixed targets; dynamic build/ability/reinforcement views supply their serialized `tutorialHighlight`. Geometry-only container anchors without a Graphic retain the dim cutout, with no fabricated highlight surface.
+
+- Core HUD hierarchy (corrected after user review, 2026-11-12): panel base `#101A29`; command/time/reserve/camera/orbital control fill `#202E40`. Faction production cards use the same flat `#202E40` control fill, with MPUIKit corner gradient disabled and gold border retained (latest user correction removes the fog-like gradient).
+- Enabled icons remain white/alpha 1. Disabled background tint uses neutral RGB `0.75`, alpha `1` to avoid multiplying a dark fill into black; runtime content fading and availability remain separate. Production-panel, ShipActions and minimap HudFrame accent widths remain `0`. The earlier flat-navy-for-everything rule was rejected by the user.
+
+- ShipActions main button labels share fixed font size `11.5`; `ATTACK MOVE` measures `63.83` in its `66`-unit label. Keep secondary target labels and panel heading separate.
+
+- Hover feedback: dark control surfaces → `#415670`, primary gold → `#F6D089`, fade `0.08 s`; use per-channel Color Tint relative to the target Graphic fill. Preserve normal, selected, pressed and disabled state colors. Keep shared menu state styling inherited.

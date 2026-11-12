@@ -53,7 +53,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public void SetInteractable(bool isInteractable)
         {
             // Unaffordable cards remain clickable so the presenter can explain rejection audibly.
-            costText.color = isInteractable ? new Color32(215, 236, 247, 255) : new Color32(239, 107, 92, 255);
+            costText.color = isInteractable ? new Color32(242, 240, 230, 255) : new Color32(232, 110, 108, 255);
         }
 
         private void HandleClicked()

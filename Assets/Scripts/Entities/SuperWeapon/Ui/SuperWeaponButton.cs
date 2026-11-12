@@ -53,12 +53,12 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         {
             stateText.text = _pending ? "TARGETING" : _isCoolingDown ? "COOLDOWN" : _state.ToString().ToUpperInvariant();
             stateText.color = _pending || _state == SuperWeaponState.Charging
-                ? new Color32(243, 182, 77, 255)
-                : _isCoolingDown ? new Color32(214, 92, 76, 255)
-                : new Color32(54, 200, 243, 255);
-            background.OutlineColor = _pending ? new Color32(243, 182, 77, 255)
-                : _state == SuperWeaponState.Ready ? new Color32(54, 200, 243, 255)
-                : new Color32(40, 70, 87, 255);
+                ? new Color32(210, 169, 94, 255)
+                : _isCoolingDown ? new Color32(232, 110, 108, 255)
+                : new Color32(109, 184, 226, 255);
+            background.OutlineColor = _pending ? new Color32(210, 169, 94, 255)
+                : _state == SuperWeaponState.Ready ? new Color32(109, 184, 226, 255)
+                : new Color32(52, 67, 87, 255);
         }
 
         private void HandleClick() => Pressed?.Invoke(weaponType);

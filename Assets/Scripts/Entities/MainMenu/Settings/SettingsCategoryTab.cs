@@ -28,8 +28,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             panel.alpha = selected ? 1f : 0f;
             panel.interactable = selected;
             panel.blocksRaycasts = selected;
-            categoryText.color = selected ? new Color32(215, 236, 247, 255) : new Color32(123, 156, 175, 255);
-            indexText.color = selected ? new Color32(50, 200, 240, 255) : new Color32(123, 156, 175, 255);
+            categoryText.color = selected ? new Color32(242, 240, 230, 255) : new Color32(123, 156, 175, 255);
+            indexText.color = selected ? new Color32(210, 169, 94, 255) : new Color32(123, 156, 175, 255);
             selectedIndicator.enabled = selected;
         }
     }

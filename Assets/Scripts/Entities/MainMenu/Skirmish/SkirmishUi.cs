@@ -266,7 +266,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
                 : _model.CanStart
                     ? $"{_model.ActivePlayerCount} players   /   {_model.ActiveTeamCount} opposing teams   /   ${_model.StartingMoney:N0} per player"
                     : "Enable at least two opposing teams to start.";
-            readinessIndicator.color = ready ? new Color32(105, 199, 157, 255) : new Color32(245, 184, 76, 255);
+            readinessIndicator.color = ready ? new Color32(109, 184, 226, 255) : new Color32(210, 169, 94, 255);
             RenderStartButton();
         }
 

@@ -143,7 +143,7 @@ MonoBehaviour:
   m_MaterialMode: 0
   m_StrokeWidth: 0
   m_OutlineWidth: 0
-  m_OutlineColor: {r: 0.118, g: 0.161, b: 0.231, a: 0.6}
+  m_OutlineColor: {r: 0.1254902, g: 0.18039216, b: 0.2509804, a: 0.6}
   m_FalloffDistance: 1
   m_ConstrainRotation: 1
   m_ShapeRotation: 0

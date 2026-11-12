@@ -37,7 +37,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             _availability = availability;
             purchaseButton.interactable = unlocked && !battleEnded && !atLimit;
             unitIconImage.color = new Color(1f, 1f, 1f, unlocked ? 1f : 0.25f);
-            unitPriceText.color = affordable ? new Color32(215, 236, 247, 255) : new Color32(239, 107, 92, 255);
+            unitPriceText.color = affordable ? new Color32(242, 240, 230, 255) : new Color32(232, 110, 108, 255);
             stateText.text = unlocked && queued ? "QUEUED" : atLimit ? "LIMIT REACHED" : "";
             queuedHighlight.SetActive(queued);
         }
