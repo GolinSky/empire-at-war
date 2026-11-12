@@ -4,6 +4,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Factory;
 using EmpireAtWar.Services.IdGeneration;
+using EmpireAtWar.SpaceStation;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -45,7 +46,7 @@ namespace EmpireAtWar.Entities.SpaceStation
         {
             SpaceStationData data = Assets.Load<SpaceStationData>(nameof(SpaceStationData));
             return Spawn(Assets.LoadComponent<SpaceStation>(factionType + "SpaceStationView"), position, Quaternion.identity,
-                (builder, view) => new EmpireAtWar.SpaceStation.SpaceStationInstaller(view, data, _localPlayer,
+                (builder, view) => new SpaceStationInstaller(view, data, _localPlayer,
                     owner, entityId, position, factionType, secondStationLevel).Install(builder));
         }
     }

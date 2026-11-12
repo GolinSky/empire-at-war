@@ -9,6 +9,7 @@ using VContainer;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Entities.MiniMap;
+using EmpireAtWar.Services.Audio;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,7 +20,7 @@ namespace EmpireAtWar.Entities.CaptureSites
     {
         private readonly ICaptureSiteBuildSelection _selection;
         private readonly CaptureSiteData _data;
-        private readonly EmpireAtWar.Services.Audio.IInterfaceSfxService _interfaceAudio;
+        private readonly IInterfaceSfxService _interfaceAudio;
         private readonly IBattleNotifications _notifications;
         private readonly TooltipRequests _tooltips;
         private readonly IPointerInput _pointer;
@@ -30,7 +31,7 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         public CaptureSiteBuildUiController(IUiService uiService, ICaptureSiteBuildSelection selection,
             CaptureSiteData data, ITooltipService tooltipService,
-            EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio,
+            IInterfaceSfxService interfaceAudio,
             IPointerInput pointer, IUiPlacement placement, InputActionsProvider inputActions,
             IBattleNotifications notifications) : base(uiService, null)
         {

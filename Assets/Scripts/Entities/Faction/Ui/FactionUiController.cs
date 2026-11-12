@@ -15,6 +15,12 @@ using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Models.Economy;
+using EmpireAtWar.Models.Reinforcement;
+using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.BattleNotifications;
+using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Services.Stations;
 
 namespace EmpireAtWar.Entities.Faction.Ui
 {
@@ -23,26 +29,26 @@ namespace EmpireAtWar.Entities.Faction.Ui
     {
         private readonly IPlayerCommandSink _commands;
         private readonly PlayerSlot _owner;
-        private readonly EmpireAtWar.Services.Audio.IInterfaceSfxService _interfaceAudio;
-        private readonly EmpireAtWar.Services.BattleNotifications.IBattleNotifications _notifications;
+        private readonly IInterfaceSfxService _interfaceAudio;
+        private readonly IBattleNotifications _notifications;
         private readonly IPlayerFactionModelObserver _model;
         private readonly IFactionResearchModelObserver _research;
         private readonly IUnitRequestFactory _unitRequestFactory;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private FactionUi _ui;
         private readonly IUiPlacement _placement;
-        private readonly EmpireAtWar.Models.Economy.IEconomyModelObserver _economy;
-        private readonly EmpireAtWar.Entities.CoreGameUi.ICoreGameHudStatus _hud;
+        private readonly IEconomyModelObserver _economy;
+        private readonly ICoreGameHudStatus _hud;
         private readonly INotifier<BattleState> _battleState;
 
         private readonly FactionRoster _roster;
         private readonly IAssetService _assets;
         private readonly ShipsData _shipsData;
         private readonly TooltipRequests _tooltips;
-        private readonly EmpireAtWar.Models.Reinforcement.ReinforcementModel _reinforcements;
+        private readonly ReinforcementModel _reinforcements;
         private readonly SecondStationLevelModel _secondStation;
         private readonly StationLevelData _stationLevels;
-        private readonly EmpireAtWar.Services.Stations.IProductionAccess _productionAccess;
+        private readonly IProductionAccess _productionAccess;
         private TooltipHoverSubscription _tooltipHover;
 
         private bool _isTooltipActive;
@@ -61,17 +67,17 @@ namespace EmpireAtWar.Entities.Faction.Ui
             IUnitRequestFactory unitRequestFactory,
             ISkirmishRouteNavigation routeNavigation,
             ITooltipService tooltipService,
-            EmpireAtWar.Models.Economy.IEconomyModelObserver economy,
-            EmpireAtWar.Entities.CoreGameUi.ICoreGameHudStatus hud,
+            IEconomyModelObserver economy,
+            ICoreGameHudStatus hud,
             INotifier<BattleState> battleState,
             FactionRoster roster,
-            EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements,
+            ReinforcementModel reinforcements,
             IAssetService assets,
-            ShipsData shipsData, EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio,
-            EmpireAtWar.Services.BattleNotifications.IBattleNotifications notifications,
+            ShipsData shipsData, IInterfaceSfxService interfaceAudio,
+            IBattleNotifications notifications,
             SecondStationLevelModel secondStation,
             StationLevelData stationLevels,
-            EmpireAtWar.Services.Stations.IProductionAccess productionAccess) : base(uiService, cancelRouter)
+            IProductionAccess productionAccess) : base(uiService, cancelRouter)
         {
             _productionAccess = productionAccess;
             _secondStation = secondStation;
@@ -125,7 +131,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             if (_economy.Money < unitRequest.FactionData.Price)
             {
                 _interfaceAudio.PlayRejected();
-                _notifications.Post(EmpireAtWar.Services.BattleNotifications.BattleNotificationPriority.Feedback,
+                _notifications.Post(BattleNotificationPriority.Feedback,
                     "Insufficient credits", "credits");
                 return;
             }
@@ -217,7 +223,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         {
             UnitRequest request = (UnitRequest)key;
             _tooltips.Show(source, request.Id, anchor,
-                () => _isTooltipActive && _model.SelectionType == EmpireAtWar.Services.Selection.SelectionType.Base,
+                () => _isTooltipActive && _model.SelectionType == SelectionType.Base,
                 () => BuildTooltip(request));
         }
 

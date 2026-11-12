@@ -10,6 +10,7 @@ using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Entities.CoreGameUi;
 
 namespace EmpireAtWar.Entities.Reinforcement
 {
@@ -18,7 +19,7 @@ namespace EmpireAtWar.Entities.Reinforcement
     {
         private readonly IReinforcementService _reinforcementService;
         private readonly ISkirmishRouteNavigation _routeNavigation;
-        private readonly EmpireAtWar.Entities.CoreGameUi.ICoreGameHudStatus _hud;
+        private readonly ICoreGameHudStatus _hud;
         private ReinforcementUi _ui;
 
         private readonly ReinforcementModel _model;
@@ -41,7 +42,7 @@ namespace EmpireAtWar.Entities.Reinforcement
             ITooltipService tooltipService,
             ReinforcementModel model,
             ReinforcementData data,
-            EmpireAtWar.Entities.CoreGameUi.ICoreGameHudStatus hud) : base(uiService, cancelRouter)
+            ICoreGameHudStatus hud) : base(uiService, cancelRouter)
         {
             _reinforcementService = reinforcementService;
             _model = model;

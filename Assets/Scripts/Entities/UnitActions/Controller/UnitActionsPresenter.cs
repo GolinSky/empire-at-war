@@ -14,6 +14,7 @@ using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ui.Base;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Services.Input;
 
 namespace EmpireAtWar.Entities.UnitActions.Controller
 {
@@ -28,7 +29,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
         private readonly IPlayerUnitOrders _playerOrders;
         private readonly INotifier<BattleState> _battleState;
         private IUnitActionsView _view;
-        private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
+        private readonly IInputBindings _bindings;
 
         private readonly UnitActionTargetingModel _targeting;
         private readonly Dictionary<UnitActionId, bool> _availability =
@@ -44,7 +45,7 @@ namespace EmpireAtWar.Entities.UnitActions.Controller
             IPlayerUnitOrders playerOrders, INotifier<BattleState> battleState,
             IUiService uiService,
             IUiCancelRouter cancelRouter, ITooltipService tooltipService,
-            EmpireAtWar.Services.Input.IInputBindings bindings,
+            IInputBindings bindings,
             UnitActionTargetingModel targeting) : base(uiService, cancelRouter)
         {
             _coreUi = coreUi;

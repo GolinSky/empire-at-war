@@ -79,7 +79,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private IReadOnlyList<IRespawnable> _respawnables;
         private IReadOnlyList<IDespawnable> _despawnables;
         private SFoilsModel _sFoils;
-        private IReadOnlyList<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView> _sFoilsViews;
+        private IReadOnlyList<ISFoilsView> _sFoilsViews;
 
         private ShipAbilityId _pendingAbilityId;
 
@@ -131,7 +131,7 @@ namespace EmpireAtWar.Entities.Squadrons
             SquadronPilot pilot, SquadronTargetSelector targetSelector, UnitOrderSettings orderSettings,
             IEntityPoolActivation poolActivation, ShipSfxHandle audioHandle, ContainerLocal<IReadOnlyList<IMonoComponent>> monoComponents,
             IWeaponFireEvents weaponFireEvents, IShipSfxService shipSfxService, ShipSfxData sfxData, SquadronType squadronType,
-            SFoilsModel sFoils, ContainerLocal<IReadOnlyList<EmpireAtWar.ViewComponents.Squadrons.ISFoilsView>> sFoilsViews,
+            SFoilsModel sFoils, ContainerLocal<IReadOnlyList<ISFoilsView>> sFoilsViews,
             ShipAbilityService abilities, IShipAbilityFacade abilityCaster, ISelectionModelObserver selectionModel,
             CombatModifiers modifiers, ContainerLocal<IReadOnlyList<IRespawnable>> respawnables,
             ContainerLocal<IReadOnlyList<IDespawnable>> despawnables,

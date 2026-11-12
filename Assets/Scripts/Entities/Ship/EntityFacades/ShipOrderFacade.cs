@@ -26,7 +26,7 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
         public void BeginAbilityFacing() => _orders.BeginAbilityFacing();
         public void FaceAbility(Vector3 direction) => _orders.FaceAbility(direction);
         public void EndAbilityFacing() => _orders.EndAbilityFacing();
-        public EmpireAtWar.Entities.BaseEntity.Orders.UnitOrderType CurrentOrder => _orders.CurrentOrder;
+        public UnitOrderType CurrentOrder => _orders.CurrentOrder;
         public int OrderRevision => _orders.OrderRevision;
 
         public void ApplyReplicaOrder(UnitOrderType order, bool isNewOrder) =>

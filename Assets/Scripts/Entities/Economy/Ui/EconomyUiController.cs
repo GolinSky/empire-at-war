@@ -7,6 +7,8 @@ using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Models.Reinforcement;
+using EmpireAtWar.Services.Economy;
 
 namespace EmpireAtWar.Entities.Economy.Ui
 {
@@ -18,9 +20,9 @@ namespace EmpireAtWar.Entities.Economy.Ui
         private EconomyUi _ui;
 
         private readonly TooltipRequests _tooltips;
-        private readonly EmpireAtWar.Services.Economy.EconomyService _economy;
-        private readonly EmpireAtWar.Models.Economy.EconomyData _data;
-        private readonly EmpireAtWar.Models.Reinforcement.ReinforcementModel _reinforcements;
+        private readonly EconomyService _economy;
+        private readonly EconomyData _data;
+        private readonly ReinforcementModel _reinforcements;
         private TooltipHoverSubscription _tooltipHover;
 
         private bool _isTooltipActive;
@@ -33,9 +35,9 @@ namespace EmpireAtWar.Entities.Economy.Ui
             IEconomyModelObserver model,
             ISkirmishRouteNavigation routeNavigation,
             ITooltipService tooltipService,
-            EmpireAtWar.Services.Economy.EconomyService economyService,
-            EmpireAtWar.Models.Economy.EconomyData data,
-            EmpireAtWar.Models.Reinforcement.ReinforcementModel reinforcements) : base(uiService, cancelRouter)
+            EconomyService economyService,
+            EconomyData data,
+            ReinforcementModel reinforcements) : base(uiService, cancelRouter)
         {
             _model = model;
             _routeNavigation = routeNavigation;

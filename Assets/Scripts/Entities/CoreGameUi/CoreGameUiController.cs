@@ -18,6 +18,7 @@ using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Services.Input;
 
 namespace EmpireAtWar.Entities.CoreGameUi
 {
@@ -36,7 +37,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         private CoreGameUi _ui;
         private ISelectionContext _lastSelectionContext;
         private readonly ITooltipService _tooltipService;
-        private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
+        private readonly IInputBindings _bindings;
         private readonly IMatchSession _session;
         private readonly BattleDefinition _battle;
         private readonly BattleClock _clock;
@@ -80,7 +81,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             INotifier<BattleResult> battleVictoryNotifier,
             ICinematicCameraController cinematicCamera,
             ITooltipService tooltipService,
-            EmpireAtWar.Services.Input.IInputBindings bindings,
+            IInputBindings bindings,
             IMatchSession session, BattleDefinition battle, BattleClock clock) : base(uiService, cancelRouter)
         {
             _placement = placement;

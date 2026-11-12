@@ -21,6 +21,7 @@ using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Views;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Services.Input;
 
 namespace EmpireAtWar.Entities.ShipUi
 {
@@ -35,7 +36,7 @@ namespace EmpireAtWar.Entities.ShipUi
         private ISelectionContext _playerSelectionContext;
         private ShipUi _shipUi;
         private ShipGroupUi _shipGroupUi;
-        private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
+        private readonly IInputBindings _bindings;
 
         private readonly IShipIconProvider _icons;
         private readonly ShipUiModel _model;
@@ -45,7 +46,7 @@ namespace EmpireAtWar.Entities.ShipUi
         private readonly List<ShipAbilitySlot> _abilitySlots = new List<ShipAbilitySlot>();
         private readonly TooltipRequests _tooltips;
         private readonly TooltipIconData _tooltipIcons;
-        private readonly EmpireAtWar.Models.Factions.FactionCatalog _factions;
+        private readonly FactionCatalog _factions;
         private TooltipHoverSubscription _shipTooltipHover;
         private TooltipHoverSubscription _groupTooltipHover;
 
@@ -60,12 +61,12 @@ namespace EmpireAtWar.Entities.ShipUi
             ISkirmishRouteNavigation routeNavigation,
             ICameraService cameraService,
             ITooltipService tooltipService,
-            EmpireAtWar.Services.Input.IInputBindings bindings,
+            IInputBindings bindings,
             ShipUiModel model,
             IShipIconProvider icons,
             ShipAbilityService shipAbilityService,
             TooltipIconData tooltipIcons,
-            EmpireAtWar.Models.Factions.FactionCatalog factions,
+            FactionCatalog factions,
             ISettingsService settings, ILocalPlayer localPlayer) : base(uiService, cancelRouter)
         {
             _selectionService = selectionService;
@@ -374,7 +375,7 @@ namespace EmpireAtWar.Entities.ShipUi
                 return new TooltipContent(title: "Clear selection", description: "Click to deselect the current ship.");
             if (key is IReadOnlyList<ShipAbilitySlot> slots)
                 return ShipAbilityTooltipContent.Build(slots, _bindings, _tooltipIcons);
-            if (key is EmpireAtWar.Models.ShipUi.ShipUiEntry entry)
+            if (key is ShipUiEntry entry)
                 return EntityTooltipContent.Build(entry.Entity);
             if (key is ShipType || key is SquadronType)
             {

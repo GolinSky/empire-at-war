@@ -4,6 +4,7 @@ using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Factory;
 using EmpireAtWar.Services.IdGeneration;
+using EmpireAtWar.MiningFacility;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -35,7 +36,7 @@ namespace EmpireAtWar.Entities.MiningFacility
                 ? Assets.Load<CaptureSiteData>(nameof(CaptureSiteData)).GetCost(SiteFacilityType.Mining).BuildTime
                 : _catalog.Get(type == MiningFacilityType.BattleMiner ? MiningFacilityType.CommonMiner : type).BuildTime);
             return Spawn(Assets.LoadComponent<MiningFacility>(assetName + "View"), position, Quaternion.identity,
-                (builder, view) => new EmpireAtWar.MiningFacility.MiningFacilityInstaller(view, data,
+                (builder, view) => new MiningFacilityInstaller(view, data,
                     _localPlayer, owner, entityId, position, type, buildTime).Install(builder));
         }
     }

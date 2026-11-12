@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.SkirmishCamera;
+using EmpireAtWar.Services.ShipSpawning;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Map.Generation
@@ -12,7 +13,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         private const float MAP_MARGIN = 250f;
 
         public static float GetSpacing(IReadOnlyList<SimulationFleetEntry> fleet,
-            EmpireAtWar.Services.ShipSpawning.IShipSpawnClearance clearance)
+            IShipSpawnClearance clearance)
         {
             float spacing = 100f;
             foreach (SimulationFleetEntry entry in fleet)

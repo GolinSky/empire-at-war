@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Entities.BaseEntity;
 
 namespace EmpireAtWar.Models.ShipUi
 {
@@ -11,10 +12,10 @@ namespace EmpireAtWar.Models.ShipUi
         public IReadOnlyList<ShipAbilitySlot> AbilitySlots { get; }
         public IHealthModelObserver Health { get; }
         public Action Focus { get; }
-        public EmpireAtWar.Entities.BaseEntity.IEntity Entity { get; }
+        public IEntity Entity { get; }
 
         public ShipUiEntry(IReadOnlyList<ShipAbilitySlot> abilitySlots,
-            IHealthModelObserver health, EmpireAtWar.Entities.BaseEntity.IEntity entity,
+            IHealthModelObserver health, IEntity entity,
             Action focus)
         {
             AbilitySlots = abilitySlots;

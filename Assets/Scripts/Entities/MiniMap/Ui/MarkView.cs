@@ -2,6 +2,7 @@ using EmpireAtWar.Components.Ui.Tooltip;
 using DG.Tweening;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Models.MiniMap;
+using EmpireAtWar.Services.TacticalMarkers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,7 +24,7 @@ namespace EmpireAtWar.Views.MiniMap
         [SerializeField] private RectTransform rectTransform;
         [SerializeField] private TooltipTrigger tooltipTrigger;
         [SerializeField] private Image arrivalRing;
-        [SerializeField] private EmpireAtWar.Services.TacticalMarkers.TacticalMarkerSettings tacticalMarkerSettings;
+        [SerializeField] private TacticalMarkerSettings tacticalMarkerSettings;
         private MiniMapMarker _marker;
 
         public TooltipTrigger TooltipTrigger => tooltipTrigger;
@@ -75,7 +76,7 @@ namespace EmpireAtWar.Views.MiniMap
             {
                 arrivalRing.gameObject.SetActive(true);
                 arrivalRing.color = tacticalMarkerSettings.GetColor(
-                    (EmpireAtWar.Services.TacticalMarkers.TacticalMarkerType)((int)marker.MarkType - (int)MarkType.TacticalLook));
+                    (TacticalMarkerType)((int)marker.MarkType - (int)MarkType.TacticalLook));
                 arrivalRing.rectTransform.localScale = Vector3.one;
                 arrivalRing.rectTransform.DOScale(2.4f, 0.6f).SetLink(gameObject);
                 arrivalRing.DOFade(0f, 0.6f).SetLink(gameObject).OnComplete(() => arrivalRing.gameObject.SetActive(false));

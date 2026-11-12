@@ -1,4 +1,5 @@
 using UnityEngine;
+using ShipEntity = EmpireAtWar.Ship.Ship;
 
 namespace EmpireAtWar.Entities.Ship.Abilities
 {
@@ -6,7 +7,7 @@ namespace EmpireAtWar.Entities.Ship.Abilities
     {
         public Transform Muzzle { get; }
 
-        public CompositeBeamFacade(EmpireAtWar.Ship.Ship ship)
+        public CompositeBeamFacade(ShipEntity ship)
         {
             Muzzle = ship.CompositeBeamMuzzle;
         }

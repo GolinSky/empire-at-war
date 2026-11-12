@@ -10,6 +10,7 @@ using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Services.Tutorial;
 
 namespace EmpireAtWar.Entities.MainMenu.Settings
 {
@@ -23,7 +24,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         private const string CONFLICTS_MESSAGE = "Resolve key binding conflicts before applying.";
 
         private readonly ISettingsService _settingsService;
-        private readonly EmpireAtWar.Services.Tutorial.IHintProgressRepository _hintProgress;
+        private readonly IHintProgressRepository _hintProgress;
         private readonly IInputBindings _bindings;
         private SettingsUi _ui;
 
@@ -48,7 +49,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             ITooltipService tooltipService,
             SettingsDraftEditor draftEditor,
             KeyBindingEditor keyBindingEditor, SettingsModel model,
-            EmpireAtWar.Services.Tutorial.IHintProgressRepository hintProgress) : base(uiService, cancelRouter)
+            IHintProgressRepository hintProgress) : base(uiService, cancelRouter)
         {
             _hintProgress = hintProgress;
             _settingsService = settingsService;

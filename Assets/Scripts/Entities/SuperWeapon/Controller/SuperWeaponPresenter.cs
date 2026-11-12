@@ -16,6 +16,10 @@ using EmpireAtWar.Ui.Base;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.Input;
 
 namespace EmpireAtWar.Entities.SuperWeapons.Controller
 {
@@ -27,8 +31,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         IObserver<BattleState>
     {
         private readonly ILocalPlayer _localPlayer;
-        private readonly EmpireAtWar.Services.Audio.IInterfaceSfxService _interfaceAudio;
-        private readonly EmpireAtWar.Services.Audio.InterfaceSfxData _interfaceData;
+        private readonly IInterfaceSfxService _interfaceAudio;
+        private readonly InterfaceSfxData _interfaceData;
         private readonly IBattleNotifications _notifications;
         private readonly System.Collections.Generic.Dictionary<SuperWeaponType, SuperWeaponState> _lastStates = new();
         private bool _isBattleRunning;
@@ -37,8 +41,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly IShipAbilityTargeting _abilities;
         private ISuperWeaponsView _view;
-        private readonly EmpireAtWar.Models.Factions.IPlayerFactionModelObserver _faction;
-        private readonly EmpireAtWar.Services.Input.IInputBindings _bindings;
+        private readonly IPlayerFactionModelObserver _faction;
+        private readonly IInputBindings _bindings;
         private readonly INotifier<BattleState> _battleState;
 
         private readonly SuperWeaponModel _model;
@@ -56,12 +60,12 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             ISkirmishRouteNavigation routeNavigation, IShipAbilityTargeting abilities,
             ILocalPlayer localPlayer,
             IUiService uiService, IUiCancelRouter cancelRouter,
-            ITooltipService tooltipService, EmpireAtWar.Models.Factions.IPlayerFactionModelObserver faction, EmpireAtWar.Services.Input.IInputBindings bindings,
+            ITooltipService tooltipService, IPlayerFactionModelObserver faction, IInputBindings bindings,
             INotifier<BattleState> battleState, SuperWeaponModel model,
             SuperWeaponTargetingModel targeting,
             UnitActionTargetingModel unitTargeting,
-            SuperWeaponData data, EmpireAtWar.Services.Audio.IInterfaceSfxService interfaceAudio,
-            EmpireAtWar.Services.Audio.InterfaceSfxData interfaceData, IPlayerCommandSink commands,
+            SuperWeaponData data, IInterfaceSfxService interfaceAudio,
+            InterfaceSfxData interfaceData, IPlayerCommandSink commands,
             IBattleNotifications notifications)
             : base(uiService, cancelRouter)
         {
@@ -165,7 +169,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 SuperWeaponState state = _model.GetState(type);
                 float remaining = 0f;
                 foreach (var queue in _faction.GetProductionQueueSnapshots())
-                    if (queue.UnitRequest is EmpireAtWar.Controllers.Factions.SuperWeaponUnitRequest request && request.Key == type)
+                    if (queue.UnitRequest is SuperWeaponUnitRequest request && request.Key == type)
                         remaining = queue.RemainingBuildTime;
                 return new TooltipContent(title: type.ToString(),
                     description: $"Fire at a hostile ship or station; fighters are not valid targets. Choose with {TooltipBindings.Get(_bindings, "Battle", "Command")}; cancel with {TooltipBindings.Get(_bindings, "Ui", "Cancel")}.",
@@ -296,7 +300,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             }
             if (!_isOpen) return;
             foreach (var queue in _faction.GetProductionQueueSnapshots())
-                if (queue.UnitRequest is EmpireAtWar.Controllers.Factions.SuperWeaponUnitRequest request)
+                if (queue.UnitRequest is SuperWeaponUnitRequest request)
                     _view.SetRemaining(request.Key, queue.RemainingBuildTime);
             foreach (SuperWeaponType type in Enum.GetValues(typeof(SuperWeaponType)))
                 if (_model.GetState(type) == SuperWeaponState.Ready && !_model.CanFire(type))

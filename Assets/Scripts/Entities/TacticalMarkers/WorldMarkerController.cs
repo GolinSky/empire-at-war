@@ -4,6 +4,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.BattleNotifications;
 using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.TacticalMarkers;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace EmpireAtWar.Entities.TacticalMarkers
         private readonly IBattleNotifications _notifications;
         private readonly IAudioService _audio;
         private readonly TacticalMarkerReplies _replies;
-        private readonly EmpireAtWar.Services.Networking.Online.OnlineMatchService _online;
+        private readonly OnlineMatchService _online;
         private readonly IPlayerRoster _roster;
         // Markers older than this on arrival came from a late-join snapshot and are shown silently.
         private const float FRESH_MARKER_SECONDS = 0.5f;
@@ -34,7 +35,7 @@ namespace EmpireAtWar.Entities.TacticalMarkers
         public WorldMarkerController(ITacticalMarkerObserver markers, TacticalMarkerSettings settings,
             ILocalPlayer local, IPlayerColors colors, ICameraService camera, IBattleNotifications notifications,
             IAudioService audio, TacticalMarkerReplies replies,
-            EmpireAtWar.Services.Networking.Online.OnlineMatchService online, IPlayerRoster roster)
+            OnlineMatchService online, IPlayerRoster roster)
         {
             _markers = markers; _settings = settings; _local = local; _colors = colors;
             _camera = camera; _notifications = notifications; _audio = audio; _replies = replies;

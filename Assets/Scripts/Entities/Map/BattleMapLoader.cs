@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Map.Generation;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.ShipSpawning;
 using UnityEngine;
 using Random = System.Random;
 
@@ -18,7 +19,7 @@ namespace EmpireAtWar.Entities.Map
         private readonly IGameModelObserver _gameModel;
         private readonly MapModel _mapModel;
         private readonly BattleDefinition _battle;
-        private readonly EmpireAtWar.Services.ShipSpawning.IShipSpawnClearance _spawnClearance;
+        private readonly IShipSpawnClearance _spawnClearance;
         private readonly List<IObserver<BattleMap>> _observers = new List<IObserver<BattleMap>>();
 
         private BattleMap _battleMap;
@@ -28,7 +29,7 @@ namespace EmpireAtWar.Entities.Map
             MapLayoutView mapLayoutView,
             IGameModelObserver gameModel,
             MapModel mapModel, BattleDefinition battle,
-            EmpireAtWar.Services.ShipSpawning.IShipSpawnClearance spawnClearance)
+            IShipSpawnClearance spawnClearance)
         {
             _settings = settings;
             _mapLayoutView = mapLayoutView;

@@ -2,8 +2,10 @@ using EmpireAtWar.Components.Ui.Tooltip;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.TutorialUi;
 using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.Tutorial;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.ShipUi
@@ -16,7 +18,7 @@ namespace EmpireAtWar.Entities.ShipUi
         [SerializeField] private Transform buttonParent;
         [SerializeField] private ShipAutoPowerButtonUi autoPowerButton;
         [Tooltip("The bar's AbilityBar anchor; it also marks the first ability button for tutorial hints.")]
-        [SerializeField] private EmpireAtWar.Entities.TutorialUi.TutorialAnchor tutorialAnchor;
+        [SerializeField] private TutorialAnchor tutorialAnchor;
         private readonly List<ShipAbilityButtonUi> _buttons = new List<ShipAbilityButtonUi>();
         private readonly Dictionary<ShipAbilityId, List<ShipAbilitySlot>> _groups =
             new Dictionary<ShipAbilityId, List<ShipAbilitySlot>>();
@@ -61,9 +63,9 @@ namespace EmpireAtWar.Entities.ShipUi
             for (int i = buttonIndex; i < _buttons.Count; i++)
                 _buttons[i].gameObject.SetActive(false);
             if (buttonIndex > 0)
-                tutorialAnchor.Mark(EmpireAtWar.Services.Tutorial.TutorialAnchorId.AbilityButton,
+                tutorialAnchor.Mark(TutorialAnchorId.AbilityButton,
                     (RectTransform)_buttons[0].transform, _buttons[0].TutorialHighlight);
-            else tutorialAnchor.Unmark(EmpireAtWar.Services.Tutorial.TutorialAnchorId.AbilityButton);
+            else tutorialAnchor.Unmark(TutorialAnchorId.AbilityButton);
         }
 
         private void Update()

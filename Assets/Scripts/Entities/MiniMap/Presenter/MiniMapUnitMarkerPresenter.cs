@@ -10,6 +10,7 @@ using UnityEngine;
 using EmpireAtWar.Services.Vision;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Components.Combat;
 
 namespace EmpireAtWar.Presenters.MiniMap
 {
@@ -20,7 +21,7 @@ namespace EmpireAtWar.Presenters.MiniMap
         private readonly IVisionService _visionService;
         private readonly ILocalPlayer _localPlayer;
         private readonly ISlowTickService _slowTick;
-        private readonly EmpireAtWar.Components.Combat.CombatModifiers _modifiers;
+        private readonly CombatModifiers _modifiers;
 
         private readonly MiniMapData _miniMapData;
         private readonly Transform _viewTransform;
@@ -37,7 +38,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             MiniMapData miniMapData,
             [Key(EntityBindType.ViewTransform)] Transform viewTransform,
             PlayerId owner,
-            SelectionType selectionType, EmpireAtWar.Components.Combat.CombatModifiers modifiers,
+            SelectionType selectionType, CombatModifiers modifiers,
             ISlowTickService slowTick,
             MarkType? markTypeOverride)
         {
