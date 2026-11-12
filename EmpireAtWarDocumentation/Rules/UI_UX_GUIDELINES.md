@@ -121,5 +121,9 @@
 
 - Minimap marker lifecycle: the view is created on route activation after map loading. Tutorial input-lock handling must not call `HideTarget` before showing a marker; `HintUiController` tracks marker visibility explicitly.
 
-- Target emphasis uses `Components/Ui/IUiHighlight` (`Highlight`, `StopHighlight`) and `UiHighlight` on the Graphic itself. Explicitly bind `targetGraphic` on the same GameObject; `IMeshModifier` pulses vertex RGB; `IMaterialModifier` pulses `_Color` brightness 1.8–3.5× on an owned material copy over 1.2 s unscaled time. This also brightens dark MPImage gradients. Preserve source alpha, `Graphic.color`, Selectable states and current stencil/gradient properties; stop returns the normal live material/colors. Destroy the owned material with the component. Do not draw target tint/glow in the spotlight overlay.
+- Target emphasis uses `Components/Ui/IUiHighlight` (`Highlight`, `StopHighlight`) and `UiHighlight` on the Graphic itself. Explicitly bind `targetGraphic` on the same GameObject. Pulse = visible colour → opposite hue → back, 1.2 s cosine, unscaled time.
+  - Visible colour = `Graphic.color` × material `_Color` × average MPImage gradient (corner colours or gradient keys).
+  - Opposite = hue + 0.5, saturation ≥ 0.7, value clamped 0.65–0.8 (dark navy `#0C1D2A` → `#A6632F`); white labels stay readable.
+  - `IMeshModifier` lerps vertex RGB to the opposite; `IMaterialModifier` fades `_Color`, `_CornerGradientColor0–3`, `_GradientColor0–7` to white on an owned material copy by the same pulse.
+  - Avoid: brightness multipliers (old 1.8–3.5× `_Color`) — blew white-text buttons out to white squares. Preserve source alpha, `Graphic.color`, Selectable states and current stencil/gradient properties; stop returns the normal live material/colors. Destroy the owned material with the component. Do not draw target tint/glow in the spotlight overlay.
 - `TutorialAnchor.highlights` binds fixed targets; dynamic build/ability/reinforcement views supply their serialized `tutorialHighlight`. Geometry-only container anchors without a Graphic retain the dim cutout, with no fabricated highlight surface.

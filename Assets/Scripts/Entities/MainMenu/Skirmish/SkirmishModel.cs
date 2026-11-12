@@ -66,6 +66,8 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             return !IsOnline || IsLocal(slot) || IsHost && !slot.IsHuman;
         }
 
+        public bool CanEditTeam(int slotIndex) => CanEditDetails(slotIndex);
+
         public void SelectSuperWeapons(bool enabled)
         {
             SuperWeapons = enabled;
@@ -176,21 +178,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         /// <summary>Colors stay unique: taking a color another row uses swaps the two rows' colors.</summary>
         public void SelectSlotColor(int slotIndex, int colorIndex)
         {
-            if (colorIndex < 0 || colorIndex >= MatchRules.MAX_TEAM_COLORS)
-            {
-                throw new ArgumentOutOfRangeException(nameof(colorIndex), colorIndex, "No such team color.");
-            }
-
-            SkirmishSlotSetup slot = _slots[slotIndex];
-            foreach (SkirmishSlotSetup other in _slots)
-            {
-                if (other != slot && other.ColorIndex == colorIndex)
-                {
-                    other.ColorIndex = slot.ColorIndex;
-                }
-            }
-
-            slot.ColorIndex = colorIndex;
+            SkirmishSlotColors.Select(_slots, slotIndex, colorIndex);
             Changed?.Invoke();
         }
 

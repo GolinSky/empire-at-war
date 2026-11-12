@@ -34,5 +34,6 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         bool IsLocalSlot(int slotIndex);
         bool CanEditOccupant(int slotIndex);
         bool CanEditDetails(int slotIndex);
+        bool CanEditTeam(int slotIndex);
     }
 }

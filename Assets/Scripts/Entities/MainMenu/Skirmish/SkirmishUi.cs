@@ -285,6 +285,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             SkirmishSlotSetup slot = _model.Slots[slotIndex];
             bool occupantEditable = _model.CanEditOccupant(slotIndex);
             bool detailsEditable = _model.CanEditDetails(slotIndex);
+            bool teamEditable = _model.CanEditTeam(slotIndex);
             if (slot.IsHuman)
             {
                 string name = _model.IsOnline ? slot.PlayerName : HUMAN_OCCUPANT_LABEL;
@@ -294,7 +295,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
                 Texture2D avatar = null;
                 if (_model.IsOnline && slot.SteamId != 0UL) _avatars.TryGetAvatar(slot.SteamId, out avatar);
                 return new SkirmishSlotRowState(title, _model.IsLocalSlot(slotIndex) ? "YOU" : "HUMAN", options, 0,
-                    occupantEditable, detailsEditable, avatar);
+                    occupantEditable, detailsEditable, teamEditable, avatar);
             }
 
             bool isVacant = slot.Occupant == SkirmishSlotOccupant.Vacant;
@@ -303,7 +304,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
                 isVacant ? "OPEN" : slot.IsOpen ? "AI" : "OFF",
                 _model.IsOnline ? ONLINE_AI_OCCUPANT_OPTIONS : AI_OCCUPANT_OPTIONS,
                 isVacant ? VACANT_OPTION_INDEX : (int)slot.Occupant,
-                occupantEditable, detailsEditable, null);
+                occupantEditable, detailsEditable, teamEditable, null);
         }
 
         // A member's row offers only Kick, which frees the seat; AI rows map option index to occupant.

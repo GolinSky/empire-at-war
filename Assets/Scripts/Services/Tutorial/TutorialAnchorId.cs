@@ -40,5 +40,11 @@ namespace EmpireAtWar.Services.Tutorial
         ReinforcementFacility = 31,
         /// <summary>First unit card holding two or more units: the one Shift+drag deploys together.</summary>
         ReinforcementStack = 32,
+        /// <summary>Tutorial setup screen: the player's faction dropdown.</summary>
+        SetupFaction = 33,
+        /// <summary>Tutorial setup screen: the player's colour dropdown.</summary>
+        SetupColor = 34,
+        /// <summary>Tutorial setup screen: the start button.</summary>
+        SetupStart = 35,
     }
 }

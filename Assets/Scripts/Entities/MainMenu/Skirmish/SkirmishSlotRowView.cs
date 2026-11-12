@@ -82,7 +82,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             colorDropdown.SetValueWithoutNotify(slot.ColorIndex);
             occupantDropdown.interactable = state.OccupantEditable;
             factionDropdown.interactable = state.DetailsEditable;
-            teamDropdown.interactable = state.DetailsEditable;
+            teamDropdown.interactable = state.TeamEditable;
             colorDropdown.interactable = state.DetailsEditable;
             occupantDropdown.RefreshShownValue();
             factionDropdown.RefreshShownValue();

@@ -13,22 +13,29 @@ namespace EmpireAtWar.Entities.Game
     /// </summary>
     public static class TutorialPreset
     {
-        public static BattleDefinition Create(FactionType playerFaction)
+        public const PlanetType PLANET = PlanetType.Coruscant;
+        public const MapSize MAP_SIZE = MapSize.Small;
+        public const BattleVictoryCondition VICTORY_CONDITION = BattleVictoryCondition.DestroyOpponentBase;
+        public const EnemyAiDifficulty OPPONENT_DIFFICULTY = EnemyAiDifficulty.Easy;
+        public const float STARTING_MONEY = 1000f;
+
+        public static BattleDefinition Create(FactionType playerFaction, int playerColorIndex, int opponentColorIndex)
         {
             BattleDefinitionBuilder builder = new BattleDefinitionBuilder
             {
                 Mode = GameMode.Tutorial,
-                Map = new MapSpec(MapType.Full, PlanetType.Coruscant, MapSize.Small, SkirmishPreset.NewMapSeed()),
-                VictoryCondition = BattleVictoryCondition.DestroyOpponentBase
+                Map = new MapSpec(MapType.Full, PLANET, MAP_SIZE, SkirmishPreset.NewMapSeed()),
+                VictoryCondition = VICTORY_CONDITION,
+                StartingMoney = STARTING_MONEY
             };
             builder.Players.Add(new BattlePlayer(new PlayerSlot(new PlayerId(0), new TeamId(0), playerFaction,
-                PlayerController.Human, EnemyAiDifficulty.Easy, 0), PlayerRole.Human, BattleFeatures.All));
+                PlayerController.Human, EnemyAiDifficulty.Easy, playerColorIndex), PlayerRole.Human, BattleFeatures.All));
             builder.Players.Add(new BattlePlayer(new PlayerSlot(new PlayerId(1), new TeamId(1), Opponent(playerFaction),
-                PlayerController.Ai, EnemyAiDifficulty.Easy, 1), PlayerRole.AiOpponent, BattleFeatures.None));
+                PlayerController.Ai, OPPONENT_DIFFICULTY, opponentColorIndex), PlayerRole.AiOpponent, BattleFeatures.None));
             return builder.Build();
         }
 
-        private static FactionType Opponent(FactionType faction) => faction switch
+        public static FactionType Opponent(FactionType faction) => faction switch
         {
             FactionType.Republic => FactionType.Separatist,
             FactionType.Separatist => FactionType.Republic,

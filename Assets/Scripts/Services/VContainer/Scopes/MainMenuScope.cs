@@ -61,8 +61,12 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<OnlineRouteUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EmpireAtWar.Entities.MainMenu.ServerBrowser.ServerBrowserRouteUiController>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
+            builder.Register<EmpireAtWar.Entities.MainMenu.Tutorial.TutorialSetupModel>(Lifetime.Singleton);
+            builder.Register<EmpireAtWar.Entities.MainMenu.Tutorial.TutorialSetupHintsController>(Lifetime.Singleton)
+                .As<EmpireAtWar.Lifecycle.ILateTickable, EmpireAtWar.Lifecycle.ILateDisposable>().AsSelf();
+            // The tutorial route reuses the Skirmish setup view; its presenter interface stays unregistered.
             builder.Register<EmpireAtWar.Entities.MainMenu.Tutorial.TutorialRouteUiController>(Lifetime.Singleton)
-                .AsImplementedInterfaces().AsSelf();
+                .As<EmpireAtWar.Entities.MainMenu.Tutorial.ITutorialRoute, EmpireAtWar.Lifecycle.ILateDisposable>();
             // Lobby screens reuse the setup views; their presenter interfaces stay unregistered.
             builder.Register<OnlineSkirmishLobbyUiController>(Lifetime.Singleton)
                 .As<IOnlineSkirmishLobbyScreen, EmpireAtWar.Lifecycle.IInitializable, EmpireAtWar.Lifecycle.ILateDisposable>();

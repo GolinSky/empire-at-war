@@ -64,7 +64,6 @@ namespace EmpireAtWar.Ui.Base
                     { typeof(EmpireAtWar.Entities.MainMenu.ServerBrowser.ServerBrowserUi), defaultCanvas.transform },
                     { typeof(SkirmishUi), defaultCanvas.transform },
                     { typeof(EmpireAtWar.Entities.MainMenu.Survival.SurvivalUi), defaultCanvas.transform },
-                    { typeof(EmpireAtWar.Entities.MainMenu.Tutorial.TutorialFactionUi), defaultCanvas.transform },
                     { typeof(ReinforcementUi), defaultCanvas.transform },
                     { typeof(HeroUi), defaultCanvas.transform },
                     { typeof(EconomyUi), economySlot },

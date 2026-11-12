@@ -1936,6 +1936,8 @@ GameObject:
   - component: {fileID: 3400071309563297367}
   - component: {fileID: 5838584205569690721}
   - component: {fileID: 5232378966336179568}
+  - component: {fileID: 8789435450318662275}
+  - component: {fileID: 222455826857311072}
   m_Layer: 5
   m_Name: ColorDropdown
   m_TagString: Untagged
@@ -2163,6 +2165,36 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &8789435450318662275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 488624438935893145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 5232378966336179568}
+--- !u!114 &222455826857311072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 488624438935893145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 34
+  target: {fileID: 8807442228849636363}
+  highlights:
+  - {fileID: 8789435450318662275}
+  visibility: {fileID: 6091553307987835861}
 --- !u!1 &504518352800866517
 GameObject:
   m_ObjectHideFlags: 0
@@ -12786,6 +12818,8 @@ GameObject:
   - component: {fileID: 2741450488110516467}
   - component: {fileID: 8151915972916847527}
   - component: {fileID: 490360855153536291}
+  - component: {fileID: 3960964138700361235}
+  - component: {fileID: 4954238539889573322}
   m_Layer: 5
   m_Name: FactionDropdown
   m_TagString: Untagged
@@ -12995,6 +13029,36 @@ MonoBehaviour:
     - {r: 0, g: 0, b: 0, a: 0}
     - {r: 0, g: 0, b: 0, a: 0}
     m_Rotation: 0
+--- !u!114 &3960964138700361235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3314111401734907955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 490360855153536291}
+--- !u!114 &4954238539889573322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3314111401734907955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 33
+  target: {fileID: 4426955972407121670}
+  highlights:
+  - {fileID: 3960964138700361235}
+  visibility: {fileID: 6091553307987835861}
 --- !u!1 &3322238396235931770
 GameObject:
   m_ObjectHideFlags: 0
@@ -30284,6 +30348,8 @@ GameObject:
   - component: {fileID: 1777660979941078820}
   - component: {fileID: 1585302522339281733}
   - component: {fileID: 1122926037877541333}
+  - component: {fileID: 8150703099723386330}
+  - component: {fileID: 4721158701553258296}
   m_Layer: 5
   m_Name: StartGameButton
   m_TagString: Untagged
@@ -30500,6 +30566,36 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &8150703099723386330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7046905282660198292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5fe3c20db4419479e2d981681ded86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ui.UiHighlight
+  targetGraphic: {fileID: 1777660979941078820}
+--- !u!114 &4721158701553258296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7046905282660198292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c61e561837efbcd44a634fa7743d8fbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.TutorialUi.TutorialAnchor
+  id: 35
+  target: {fileID: 7242405720566980280}
+  highlights:
+  - {fileID: 8150703099723386330}
+  visibility: {fileID: 6091553307987835861}
 --- !u!1 &7093327180966730027
 GameObject:
   m_ObjectHideFlags: 0

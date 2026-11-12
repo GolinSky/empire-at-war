@@ -170,11 +170,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: f290dbf7b6785fa49ad65197fa766afe
-    m_Address: TutorialFactionUi
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f343dde1580f9c449aa91a6c5d650dff
     m_Address: MainMenuUi
     m_ReadOnly: 0

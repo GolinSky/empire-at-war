@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using EmpireAtWar.Entities.MiniMap;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Camera;
@@ -19,9 +18,7 @@ namespace EmpireAtWar.Entities.TutorialUi
         private readonly IInputBindings _bindings;
         private readonly IInputLock _inputLock;
         private readonly IMiniMapTargetMarker _miniMap;
-        private readonly Vector3[] _corners = new Vector3[4];
-        private readonly List<TutorialAnchor> _anchors = new List<TutorialAnchor>();
-        private readonly List<TutorialAnchor> _highlightedAnchors = new List<TutorialAnchor>();
+        private readonly TutorialAnchorTracker _anchors = new TutorialAnchorTracker();
         private HintUi _ui;
         private bool _isPreviewShown;
         private bool _isMiniMapTargetShown;
@@ -55,7 +52,7 @@ namespace EmpireAtWar.Entities.TutorialUi
         {
             if (_inputLock.IsLocked)
             {
-                ClearHighlights();
+                _anchors.Clear();
                 _ui.Hide();
                 HideMiniMapTarget();
                 return;
@@ -65,15 +62,11 @@ namespace EmpireAtWar.Entities.TutorialUi
             if (hint == null) return;
             // Progress tokens ([count]) change while the card is open.
             if (hint.Body.IndexOf('[') >= 0) RefreshBody(hint);
-            bool hasAnchor = TutorialAnchor.TryFindAll(hint.Anchor, _anchors) ||
-                             TutorialAnchor.TryFindAll(hint.AnchorFallback, _anchors);
-            Rect screenRect = hasAnchor ? ScreenRect(_anchors) : default;
-            hasAnchor &= screenRect.Overlaps(new Rect(0f, 0f, Screen.width, Screen.height));
+            bool hasAnchor = _anchors.Track(hint.Anchor, hint.AnchorFallback, out Rect screenRect);
             _ui.SetSpotlight(hasAnchor, screenRect, hint.BlockPointerOutsideSpotlight);
-            UpdateHighlights(hasAnchor);
             if (hint.PreviewAnchor && hasAnchor && !_isPreviewShown)
             {
-                _ui.SetPreview(_anchors[0].Target);
+                _ui.SetPreview(_anchors.Anchors[0].Target);
                 _isPreviewShown = true;
             }
             bool hasTarget = _hints.TryGetWorldTarget(out Vector3 position);
@@ -106,7 +99,7 @@ namespace EmpireAtWar.Entities.TutorialUi
 
         private void HandleClosed(HintDefinition hint, bool completed)
         {
-            ClearHighlights();
+            _anchors.Clear();
             _ui.CloseHint(completed);
             HideMiniMapTarget();
         }
@@ -142,45 +135,9 @@ namespace EmpireAtWar.Entities.TutorialUi
         private void SetInputPrompts(HintDefinition hint) =>
             _ui.SetInputs(HintInputFormatter.CreatePrompts(hint, _input.Actions.asset));
 
-        private void UpdateHighlights(bool hasAnchor)
-        {
-            if (!hasAnchor)
-            {
-                ClearHighlights();
-                return;
-            }
-            foreach (TutorialAnchor anchor in _highlightedAnchors)
-                if (anchor != null && !_anchors.Contains(anchor))
-                    anchor.StopHighlight();
-            _highlightedAnchors.Clear();
-            _highlightedAnchors.AddRange(_anchors);
-            foreach (TutorialAnchor anchor in _highlightedAnchors) anchor.Highlight();
-        }
-
-        private void ClearHighlights()
-        {
-            foreach (TutorialAnchor anchor in _highlightedAnchors)
-                if (anchor != null) anchor.StopHighlight();
-            _highlightedAnchors.Clear();
-        }
-
-        private Rect ScreenRect(List<TutorialAnchor> anchors)
-        {
-            // HUD canvases are Screen Space Overlay, so world corners are screen pixels.
-            Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
-            Vector2 max = new Vector2(float.MinValue, float.MinValue);
-            foreach (TutorialAnchor anchor in anchors)
-            {
-                anchor.Target.GetWorldCorners(_corners);
-                min = Vector2.Min(min, _corners[0]);
-                max = Vector2.Max(max, _corners[2]);
-            }
-            return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
-        }
-
         public void LateDispose()
         {
-            ClearHighlights();
+            _anchors.Clear();
             _hints.Shown -= HandleShown;
             _hints.Closed -= HandleClosed;
             _bindings.BindingsChanged -= RefreshInputs;
