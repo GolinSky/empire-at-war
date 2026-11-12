@@ -42,7 +42,8 @@ public static class ImportPlanetTextures
                 sources.Add((string)ring["texture"]);
 
             string previewPath = PREVIEW_FOLDER + "/" + (string)planet["name"] + "_Preview.png";
-            ImportTexture((string)planet["preview"], previewPath, true, true);
+            // Existing previews are authored widescreen renders; never restore the old source thumbnails.
+            if (!File.Exists(previewPath)) ImportTexture((string)planet["preview"], previewPath, true, true);
             previews[(string)planet["name"]] = previewPath;
         }
 

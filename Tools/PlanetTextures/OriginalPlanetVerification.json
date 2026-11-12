@@ -37,7 +37,7 @@
     "Lwhekk"
   ],
   "limits": "Isolated Editor renders; no packed-player FPS or residency measurement.",
-  "texturePayloadBytes": 53915052,
+  "texturePayloadBytes": 81188012,
   "qualityFollowup": {
     "date": "2026-11-12",
     "surfaceTint": 0.55,
@@ -106,5 +106,17 @@
       "Kamino"
     ],
     "tests": "Not run per user instruction."
+  },
+  "menuPreviewFollowup": {
+    "count": 55,
+    "dimensions": [
+      1344,
+      564
+    ],
+    "style": "Existing Coruscant/Kamino widescreen cards: right-of-center sphere, blue nebula, sparse stars and asteroids. Background plate regenerated from Kamino reference; actual planet/ring prefabs rendered in Unity.",
+    "cleanup": "55 previous images replaced in place;57 total preview PNG assets, no old duplicate set. All55 GUIDs unchanged and referenced by SkirmishUi.",
+    "referencePreviews": "CoruscantPreview.png and KaminoPreview.png unchanged",
+    "import": "BC7, unreadable, no mips, max2048 preserves1344x564",
+    "verification": "Visual samples including both ringed planets; full image dimensions and GUID bindings checked. Unity console zero errors; tests not run."
   }
 }

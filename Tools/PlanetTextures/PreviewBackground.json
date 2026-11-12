@@ -1,0 +1,7 @@
+{
+  "mode": "built-in image_gen",
+  "reference": "Assets/Art/Textures/Ui/PlanetPreviews/KaminoPreview.png",
+  "prompt": "Edit the reference into a reusable EMPTY background plate for this exact game planet preview. Remove ONLY the large blue planet and its atmosphere completely, filling its former area with quiet nearly black outer space and a natural continuation of the faint blue nebula behind it. Preserve the existing sparse tiny stars, very small dark scattered asteroids, blue wispy nebula positions at left and lower right, original muted brightness and black background. Absolutely no planets, spheres, moons, sun, large objects, text or frames. Keep center-right mostly dark and open for compositing an actual rendered planet later. Match reference wide aspect ratio1320x564 (2.34:1). Output full widescreen background plate, not a collage.",
+  "output": "Tools/PlanetTextures/PreviewBackground.png",
+  "use": "Background plate for isolated Unity renders; actual planets rendered from saved prefabs."
+}

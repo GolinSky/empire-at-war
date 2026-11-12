@@ -20,15 +20,23 @@ public static class RenderPlanetCatalog
     {
         if (names == null) names = new[] { "Coruscant", "Kamino", "Alderaan", "Bespin", "Geonosis", "Kuat", "Mustafar", "Naboo", "Kessel" };
         string folder = "Temp/PlanetImport/Renders/" + phase;
+        int width = updateMenuPreviews ? 1344 : TILE_SIZE;
+        int height = updateMenuPreviews ? 564 : TILE_SIZE;
         Directory.CreateDirectory(folder);
         var scene = EditorSceneManager.NewPreviewScene();
         var previousAmbient = RenderSettings.ambientLight;
         var previousMode = RenderSettings.ambientMode;
         var previousTarget = RenderTexture.active;
-        var target = RenderTexture.GetTemporary(TILE_SIZE, TILE_SIZE, 24, RenderTextureFormat.ARGB32);
-        var image = new Texture2D(TILE_SIZE, TILE_SIZE, TextureFormat.RGBA32, false);
+        var target = RenderTexture.GetTemporary(width, height, 24, RenderTextureFormat.ARGB32);
+        var image = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        var background = new Texture2D(2, 2, TextureFormat.RGB24, false);
+        if (updateMenuPreviews) background.LoadImage(File.ReadAllBytes("Tools/PlanetTextures/PreviewBackground.png"));
+        var backdropMesh = new Mesh { vertices = new[] { new Vector3(-0.5f, -0.5f), new Vector3(0.5f, -0.5f), new Vector3(0.5f, 0.5f), new Vector3(-0.5f, 0.5f) },
+            uv = new[] { Vector2.zero, Vector2.right, Vector2.one, Vector2.up }, triangles = new[] { 0, 2, 1, 0, 3, 2 } };
+        var backdropMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+        backdropMaterial.SetTexture("_BaseMap", background);
         int rows = (names.Length + COLUMNS - 1) / COLUMNS;
-        var sheet = new Texture2D(TILE_SIZE * COLUMNS, TILE_SIZE * rows, TextureFormat.RGBA32, false);
+        var sheet = new Texture2D(width * COLUMNS, height * rows, TextureFormat.RGBA32, false);
         var records = new List<object>();
         try
         {
@@ -44,11 +52,16 @@ public static class RenderPlanetCatalog
             camera.nearClipPlane = 0.1f;
             camera.farClipPlane = 10000;
             camera.targetTexture = target;
+            var backdrop = new GameObject("PreviewBackdrop") { layer = PREVIEW_LAYER };
+            SceneManager.MoveGameObjectToScene(backdrop, scene);
+            backdrop.AddComponent<MeshFilter>().sharedMesh = backdropMesh;
+            backdrop.AddComponent<MeshRenderer>().sharedMaterial = backdropMaterial;
+            backdrop.SetActive(updateMenuPreviews);
             var lightObject = new GameObject("PlanetPreviewLight");
             SceneManager.MoveGameObjectToScene(lightObject, scene);
             var light = lightObject.AddComponent<Light>();
             light.type = LightType.Directional;
-            light.intensity = 1.5f;
+            light.intensity = updateMenuPreviews ? 2.5f : 1.5f;
             light.cullingMask = 1 << PREVIEW_LAYER;
             light.transform.rotation = Quaternion.LookRotation(new Vector3(-0.8f, -0.4f, 1));
             RenderSettings.ambientMode = AmbientMode.Flat;
@@ -70,20 +83,42 @@ public static class RenderPlanetCatalog
                     camera.orthographicSize = radius * 0.72f;
                     camera.transform.position = bounds.center + new Vector3(0.2f, 0.35f, -1).normalized * radius * 4;
                     camera.transform.LookAt(bounds.center);
+                    if (updateMenuPreviews)
+                    {
+                        // Match the authored Coruscant/Kamino cards: 69% height, slightly right of center.
+                        var surface = renderers.Find(renderer => renderer.name == "Planet");
+                        float bodyRadius = surface.transform.lossyScale.x * 0.5f;
+                        camera.orthographicSize = bodyRadius / 0.69f;
+                        camera.transform.position -= camera.transform.right * camera.orthographicSize * 2 * camera.aspect * 0.043f;
+                        backdrop.transform.SetPositionAndRotation(camera.transform.position + camera.transform.forward * 3000, camera.transform.rotation);
+                        backdrop.transform.localScale = new Vector3(camera.orthographicSize * 2 * camera.aspect, camera.orthographicSize * 2, 1);
+                    }
                     camera.Render();
                     RenderTexture.active = target;
-                    image.ReadPixels(new Rect(0, 0, TILE_SIZE, TILE_SIZE), 0, 0);
+                    image.ReadPixels(new Rect(0, 0, width, height), 0, 0);
                     image.Apply();
                     File.WriteAllBytes(folder + "/" + names[index] + ".png", image.EncodeToPNG());
                     if (updateMenuPreviews)
                     {
-                        var imports = JObject.Parse(File.ReadAllText("Temp/PlanetImport/imported-textures.json"));
-                        string preview = (string)imports["previews"][names[index]];
-                        File.WriteAllBytes(preview, image.EncodeToPNG());
+                        string preview = "Assets/Art/Textures/Ui/PlanetPreviews/Original/" + names[index] + "_Preview.png";
+                        string replacement = folder + "/" + names[index] + ".replacement";
+                        File.WriteAllBytes(replacement, image.EncodeToPNG());
+                        // Unity's background importer can briefly memory-map the previous PNG on Windows.
+                        for (int attempt = 0; ; attempt++)
+                        {
+                            try { File.Replace(replacement, preview, null); break; }
+                            catch (IOException) when (attempt < 10) { System.Threading.Thread.Sleep(200); }
+                        }
                         AssetDatabase.ImportAsset(preview, ImportAssetOptions.ForceSynchronousImport);
+                        var importer = (TextureImporter)AssetImporter.GetAtPath(preview);
+                        importer.maxTextureSize = 2048;
+                        var platform = importer.GetPlatformTextureSettings("Standalone");
+                        platform.maxTextureSize = 2048;
+                        importer.SetPlatformTextureSettings(platform);
+                        importer.SaveAndReimport();
                     }
-                    sheet.SetPixels(index % COLUMNS * TILE_SIZE, (rows - 1 - index / COLUMNS) * TILE_SIZE,
-                        TILE_SIZE, TILE_SIZE, image.GetPixels());
+                    sheet.SetPixels(index % COLUMNS * width, (rows - 1 - index / COLUMNS) * height,
+                        width, height, image.GetPixels());
                     records.Add(new { name = names[index], prefab = path, renderers = renderers.Count,
                         bounds = bounds.ToString(), camera = camera.transform.position.ToString(), camera.orthographicSize });
                 }
@@ -99,6 +134,9 @@ public static class RenderPlanetCatalog
             RenderTexture.active = previousTarget;
             RenderTexture.ReleaseTemporary(target);
             Object.DestroyImmediate(image);
+            Object.DestroyImmediate(background);
+            Object.DestroyImmediate(backdropMesh);
+            Object.DestroyImmediate(backdropMaterial);
             Object.DestroyImmediate(sheet);
             EditorSceneManager.ClosePreviewScene(scene);
             RenderSettings.ambientMode = previousMode;
