@@ -7,10 +7,10 @@ system:
   - ships
   - combat
   - balance
-verification: "2026-11-13: roster description audit and 21 numeric corrections
-  source-verified; four assets refreshed, targeted reserialized and saved in
-  Edit Mode; no new console errors; tests not run. Home One hero intent and
-  other plan scope remain open."
+verification: "2026-11-13: roster audit and 22 description corrections
+  source-verified. Home One follow-up refreshed, targeted reserialized, saved
+  and read back in Edit Mode; no import/serialization errors; a Pipeline request
+  timeout was recorded. Tests not run. Other plan scope remains open."
 tags:
   - flag/issue
 ---
@@ -142,9 +142,10 @@ tags:
 |---|---|---|---|---|
 | 301 Corellian Corvette / CR90 | `CorellianCorvetteShipData` | 500 / 800 | 600 / 600 | Corrected |
 | 321 Liberator Cruiser | `LiberatorShipData` | 4,800 / 4,200 | 7,500 / 8,400 | Corrected |
-| 303 Home One / Admiral Ackbar | `HomeOneShipData` | 30,000 / 40,000 | 25,000 / 20,000 | Retained; hero intent unresolved |
+| 303 Home One / Admiral Ackbar | `HomeOneShipData` | 30,000 / 40,000 | 25,000 / 20,000 | Corrected by explicit user decision |
 
-- Home One retained under the requested hero-discrepancy exception. No verified buff explains the displayed values: `FleetCommandService.Tick` skips `ReferenceEquals(entity, commander)` and explicitly preserves command ships' configured base stats. Decide whether to correct the description or deliberately change hero balance; neither is inferred here.
+- Home One corrected 2026-11-13 by explicit user decision: description now uses base H25,000 / S20,000; table preserves the old claims. `FleetCommandService.Tick` skips `ReferenceEquals(entity, commander)` and preserves command ships' configured base stats.
+- Home One verification: only two description numbers changed; YAML wrapping preserved. Refreshed, reserialized only `RebellionFaction.asset`, saved, and read the imported description back; asset clean and Editor in Edit Mode. No import/serialization errors; console also recorded a Pipeline request timeout. Tests not run; Play Mode not entered.
 
 **Ships already matching**
 
@@ -260,7 +261,7 @@ tags:
 5. [ ] Review Dispatcher, Resolute/Venator II and Arquitens narrow arcs against model placement and intended weapon roles; record fix or justified retention for each.
 6. [ ] Separate shared-prefab attacker identity; establish per-unit/mount firing exposure and blocking reasons needed to measure arc effects.
 7. [ ] Review Mandator economics and Recusant output after arc/attribution corrections; account for carrier output, support, upgrades and population restrictions.
-8. [x] Correct roster description drift (8 units listed above). Done 2026-11-13: hull/shield text in `RepublicFaction.asset` / `SeparatistFaction.asset` now matches ShipData; assets refreshed, reserialized and saved, no console errors. Follow-up 2026-11-13: 12 Empire ships, CR90, Liberator, Centax regeneration and six shared defenses corrected; all 20 squadron entries audited, 17 numeric baselines already match. Remaining: Home One hero description intent (30,000/40,000 vs base 25,000/20,000) requires a decision; all other requested description audits complete. Other plan items remain open.
+8. [x] Correct roster description drift (8 units listed above). Done 2026-11-13: hull/shield text in `RepublicFaction.asset` / `SeparatistFaction.asset` now matches ShipData; assets refreshed, reserialized and saved, no console errors. Follow-up 2026-11-13: 12 Empire ships, CR90, Liberator, Centax regeneration and six shared defenses corrected; all 20 squadron entries audited, 17 numeric baselines already match. Home One follow-up 2026-11-13: corrected to base 25,000 hull / 20,000 shields by explicit user decision; targeted persistence and imported-description readback verified. Remaining: none for this roster-description audit. Other plan items remain open.
 9. [ ] Record source/non-test validation, applicable user acceptance gates and reusable guidance before closure.
 
 ## Rules

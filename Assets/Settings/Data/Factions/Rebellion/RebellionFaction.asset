@@ -77,7 +77,7 @@ MonoBehaviour:
     - key: 303
       value:
         matchups: {fileID: 11400000, guid: 6f751ab5214d08f468a4ba44b5cf1107, type: 2}
-        description: 'Admiral Ackbar''s hero command cruiser: 30,000 hull, 40,000
+        description: 'Admiral Ackbar''s hero command cruiser: 25,000 hull, 20,000
           shields, four turbolaser, four dual heavy turbolaser, four dual medium
           turbolaser and four ion cannon batteries. Shield generator, engines and
           fighter bay can be destroyed. Concentrate Fire grants Home One +50% damage
