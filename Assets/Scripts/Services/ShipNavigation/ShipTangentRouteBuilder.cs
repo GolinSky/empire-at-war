@@ -9,8 +9,22 @@ namespace EmpireAtWar.Services.ShipNavigation
 {
     internal static class ShipTangentRouteBuilder
     {
+        private const float COINCIDENT_TOLERANCE = 0.001f;
+        // An endpoint on an obstacle's clearance edge joins the mesh through a link this short;
+        // a turn rounded there, or a start circle this small, is an in-place turn with a heading kink.
+        private const float MIN_TURN_RADIUS = 0.05f;
+
         public static ShipRoute Build(IShipPathGraph graph, IReadOnlyList<Vector3> waypoints,
             Vector3 forward, float turnRadius, bool allowEscape)
+        {
+            // Dropping an endpoint link can leave a disk repair with no consistent side;
+            // the uncollapsed corners still route there, with an in-place turn at the link.
+            return Build(graph, waypoints, forward, turnRadius, allowEscape, true) ??
+                Build(graph, waypoints, forward, turnRadius, allowEscape, false);
+        }
+
+        private static ShipRoute Build(IShipPathGraph graph, IReadOnlyList<Vector3> waypoints,
+            Vector3 forward, float turnRadius, bool allowEscape, bool collapseLinks)
         {
             using var circleStorage = new NativeList<ShipRouteCircle>(waypoints.Count + 4, Allocator.TempJob);
             var circles = circleStorage;
@@ -22,7 +36,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             float2 start = ShipRouteGeometry.Planar(waypoints[first]);
             if (first > 0) pieces.Add(ShipRouteGeometry.Line(ShipRouteGeometry.Planar(waypoints[0]), start, height));
             circles.Add(new ShipRouteCircle(start, 0f, 1));
+            float2 goal = ShipRouteGeometry.Planar(waypoints[waypoints.Count - 1]);
             bool tagged = graph.RouteCorners.Count == waypoints.Count && waypoints.Count > 2;
+            bool collapsed = false;
             for (int i = first + 1; i < waypoints.Count - 1; i++)
             {
                 float2 position = ShipRouteGeometry.Planar(waypoints[i]);
@@ -52,6 +68,12 @@ namespace EmpireAtWar.Services.ShipNavigation
                 {
                     float half = math.abs(turn) * 0.5f;
                     if (half < ShipRouteGeometry.EPSILON) continue;
+                    if (collapseLinks && (i == first + 1 && math.distance(position, start) <= MIN_TURN_RADIUS ||
+                        i == waypoints.Count - 2 && math.distance(position, goal) <= MIN_TURN_RADIUS))
+                    {
+                        collapsed = true;
+                        continue;
+                    }
                     float tangent = math.tan(half);
                     float shorter = math.min(math.distance(position, ShipRouteGeometry.Planar(waypoints[i - 1])),
                         math.distance(position, ShipRouteGeometry.Planar(waypoints[i + 1])));
@@ -61,10 +83,20 @@ namespace EmpireAtWar.Services.ShipNavigation
                             math.max(1f / math.cos(half) - 1f, ShipRouteGeometry.EPSILON));
                     float2 offset = -incoming * tangent + ShipRouteGeometry.Right(incoming) * sign;
                     radius = LimitRadius(graph, position, offset, radius);
-                    circles.Add(new ShipRouteCircle(position + offset * radius, radius, sign));
+                    float2 center = position + offset * radius;
+                    // Equal turns at both ends of a short leg get fillets capped at half that leg,
+                    // which lie on one circle; coincident circles have no tangent, so keep it once.
+                    ShipRouteCircle previous = circles[circles.Length - 1];
+                    if (previous.DiskIndex < 0 && previous.Sign == sign && previous.Radius > 0f &&
+                        math.distance(previous.Center, center) + math.abs(previous.Radius - radius) <= COINCIDENT_TOLERANCE)
+                    {
+                        previous.SweepHint += math.abs(turn);
+                        circles[circles.Length - 1] = previous;
+                        continue;
+                    }
+                    circles.Add(new ShipRouteCircle(center, radius, sign) { SweepHint = math.abs(turn) });
                 }
             }
-            float2 goal = ShipRouteGeometry.Planar(waypoints[waypoints.Count - 1]);
             circles.Add(new ShipRouteCircle(goal, 0f, 1));
             if (!allowEscape && math.distancesq(start, goal) > ShipRouteGeometry.EPSILON)
             {
@@ -89,6 +121,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             }.Run();
             if (failure.Value != ShipTangentRouteJob.FAILURE_NONE)
             {
+                if (collapsed) return null;
                 Debug.LogError($"[ShipNavigation] Tangent route build failed (code {failure.Value}); " +
                     "following the funnel polyline with turns in place.");
                 return BuildPolyline(waypoints);
@@ -111,7 +144,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                     denominator - ShipRouteGeometry.EPSILON));
             circle = new ShipRouteCircle(start + normal * radius, radius, sign);
             length = 0f;
-            if (radius <= ShipRouteGeometry.EPSILON ||
+            if (radius <= MIN_TURN_RADIUS ||
                 !ShipRouteGeometry.Tangent(circle, target, out float2 exit, out float2 entry)) return false;
             float sweep = ShipRouteGeometry.Sweep(start - circle.Center, exit - circle.Center, sign);
             if (sweep < -ShipRouteGeometry.EPSILON) sweep += 2f * math.PI;

@@ -19,14 +19,16 @@ namespace EmpireAtWar.Services.ShipNavigation
             float2 delta = b.Center - a.Center;
             float distance = math.length(delta);
             float offset = a.Sign * a.Radius - b.Sign * b.Radius;
-            if (distance <= math.abs(offset) + EPSILON)
+            // Circles touching within EPSILON keep a degenerate tangent at the contact point:
+            // consecutive corner fillets capped at half their shared leg touch exactly.
+            if (distance <= EPSILON || distance < math.abs(offset) - EPSILON)
             {
                 from = a.Center;
                 to = b.Center;
                 return false;
             }
             float2 direction = delta / distance;
-            float ratio = offset / distance;
+            float ratio = math.clamp(offset / distance, -1f, 1f);
             float2 normal = -Right(direction) * math.sqrt(math.max(0f, 1f - ratio * ratio)) + direction * ratio;
             from = a.Center + normal * (a.Sign * a.Radius);
             to = b.Center + normal * (b.Sign * b.Radius);
