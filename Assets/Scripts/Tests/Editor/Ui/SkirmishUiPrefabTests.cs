@@ -48,7 +48,8 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (string field in new[]
                          {
                              "closeButton", "startGameButton", "planetButton", "planetLabel",
-                             "planetPreviewButton", "planetPreviewImage", "mapSizeDropdown",
+                             "planetPreviewButton", "planetPreviewImage", "generationPatternImage", "patternNameText",
+                             "mapSettings", "mapSizeDropdown",
                              "victoryConditionDropdown", "startingMoneySlider", "startingMoneyText", "superWeaponsToggle"
                          })
                 {
@@ -79,7 +80,8 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (string field in new[]
                          {
                              "canvasGroup", "closeButton", "searchInput", "scrollRect",
-                             "countText", "currentPlanetText", "emptyState", "mapSettings"
+                             "countText", "currentPlanetText", "emptyState", "mapSettings",
+                             "cancelButton", "selectButton", "planetPreviewImage", "generationPatternImage", "patternNameText"
                          })
                     Assert.That(serializedGallery.FindProperty(field).objectReferenceValue, Is.Not.Null, field);
 

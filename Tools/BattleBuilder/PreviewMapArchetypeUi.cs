@@ -68,7 +68,9 @@ public static class PreviewMapArchetypeUi
             if (gallery)
             {
                 popup = RootView<PlanetSelectionPopupUi>(root);
-                popup.Initialize(model);
+                var previewSource = RootView<SkirmishUi>(AssetDatabase.LoadAssetAtPath<GameObject>(
+                    "Assets/Prefabs/Ui/MainMenu/SkirmishUi.prefab"));
+                popup.Initialize(model, previewSource.GetPlanetPreview);
                 using var fields = new SerializedObject(popup);
                 ((CanvasGroup)fields.FindProperty("canvasGroup").objectReferenceValue).alpha = 1f;
                 scroll = (ScrollRect)fields.FindProperty("scrollRect").objectReferenceValue;

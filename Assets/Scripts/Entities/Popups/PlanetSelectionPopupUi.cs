@@ -12,28 +12,39 @@ namespace EmpireAtWar.Entities.Popups
     public sealed class PlanetSelectionPopupUi : BaseUi
     {
         [SerializeField] private Button closeButton;
+        [SerializeField] private Button cancelButton;
+        [SerializeField] private Button selectButton;
         [SerializeField] private TMP_InputField searchInput;
         [SerializeField] private ScrollRect scrollRect;
         [SerializeField] private PlanetSelectionCardView[] cards;
         [SerializeField] private TMP_Text countText;
         [SerializeField] private TMP_Text currentPlanetText;
+        [SerializeField] private RawImage planetPreviewImage;
+        [SerializeField] private RawImage generationPatternImage;
+        [SerializeField] private TMP_Text patternNameText;
         [SerializeField] private GameObject emptyState;
         [SerializeField] private MapGenerationSettings mapSettings;
         private ISkirmishModelObserver _model;
+        private Func<PlanetType, Texture2D> _getPlanetPreview;
+        private PlanetType _selectedPlanet;
         private bool _isInitialized;
 
         public event Action<int> PlanetSelected;
         public event Action CloseRequested;
 
-        public void Initialize(ISkirmishModelObserver model)
+        public void Initialize(ISkirmishModelObserver model, Func<PlanetType, Texture2D> getPlanetPreview)
         {
             _model = model;
+            _getPlanetPreview = getPlanetPreview;
+            _selectedPlanet = model.Planet;
             foreach (PlanetSelectionCardView card in cards)
             {
                 PlanetMapProfileEntry profile = mapSettings.Profiles.Get(card.Planet);
-                card.Initialize(profile.Preview, SelectPlanet, profile.Archetype.DisplayName);
+                card.Initialize(_getPlanetPreview(card.Planet), SelectPlanet, profile.Archetype.DisplayName);
             }
             closeButton.onClick.AddListener(Close);
+            cancelButton.onClick.AddListener(Close);
+            selectButton.onClick.AddListener(ConfirmPlanet);
             searchInput.onValueChanged.AddListener(Filter);
             _model.Changed += Render;
             _isInitialized = true;
@@ -59,6 +70,8 @@ namespace EmpireAtWar.Entities.Popups
             if (!_isInitialized) return;
             _model.Changed -= Render;
             closeButton.onClick.RemoveListener(Close);
+            cancelButton.onClick.RemoveListener(Close);
+            selectButton.onClick.RemoveListener(ConfirmPlanet);
             searchInput.onValueChanged.RemoveListener(Filter);
             foreach (PlanetSelectionCardView card in cards) card.Dispose();
             _isInitialized = false;
@@ -76,8 +89,13 @@ namespace EmpireAtWar.Entities.Popups
 
         private void Render()
         {
-            currentPlanetText.text = $"Current planet: {GetPlanetName(_model.Planet)}";
-            foreach (PlanetSelectionCardView card in cards) card.Render(_model.Planet);
+            currentPlanetText.text = GetPlanetName(_selectedPlanet);
+            planetPreviewImage.texture = _getPlanetPreview(_selectedPlanet);
+            PlanetMapProfileEntry profile = mapSettings.Profiles.Get(_selectedPlanet);
+            generationPatternImage.texture = profile.Preview;
+            patternNameText.text = profile.Archetype.DisplayName;
+            selectButton.interactable = _model.CanEditSettings;
+            foreach (PlanetSelectionCardView card in cards) card.Render(_selectedPlanet);
         }
 
         private void Filter(string query)
@@ -97,7 +115,13 @@ namespace EmpireAtWar.Entities.Popups
             scrollRect.verticalNormalizedPosition = 1f;
         }
 
-        private void SelectPlanet(int index) => PlanetSelected(index);
+        private void SelectPlanet(int index)
+        {
+            _selectedPlanet = (PlanetType)index;
+            Render();
+        }
+
+        private void ConfirmPlanet() => PlanetSelected((int)_selectedPlanet);
         private void Close() => CloseRequested();
         private void OnDestroy() => Dispose();
     }

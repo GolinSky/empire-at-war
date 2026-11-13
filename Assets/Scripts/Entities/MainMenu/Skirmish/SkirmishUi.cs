@@ -47,6 +47,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private TMP_Text planetLabel;
         [SerializeField] private Button planetPreviewButton;
         [SerializeField] private RawImage planetPreviewImage;
+        [SerializeField] private RawImage generationPatternImage;
+        [SerializeField] private TMP_Text patternNameText;
+        [SerializeField] private MapGenerationSettings mapSettings;
         [SerializeField] private Texture2D coruscantPreview;
         [SerializeField] private Texture2D kaminoPreview;
         [SerializeField] private DictionaryWrapper<PlanetType, Texture2D> planetPreviews;
@@ -253,6 +256,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             superWeaponsToggle.interactable = canEditSettings;
             planetLabel.text = PlanetSelectionPopupUi.GetPlanetName(_model.Planet);
             planetPreviewImage.texture = GetPlanetPreview(_model.Planet);
+            PlanetMapProfileEntry profile = mapSettings.Profiles.Get(_model.Planet);
+            generationPatternImage.texture = profile.Preview;
+            patternNameText.text = profile.Archetype.DisplayName;
             mapSizeDropdown.SetValueWithoutNotify((int)_model.MapSize);
             victoryConditionDropdown.SetValueWithoutNotify((int)_model.VictoryCondition);
             startingMoneySlider.SetValueWithoutNotify(_model.StartingMoney);
