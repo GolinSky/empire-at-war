@@ -15,6 +15,9 @@
 - Initial size adjustment: common menu labels 27 → 23 TMP units; small authored text 10–17 → +2 TMP units. These values are not rendered glyph heights; full viewport/combat acceptance remains with [[TODOs/Refactoring/RTS_UI_Refresh_Plan]].
 - Verification: saved prefab inheritance/references and 1920×1080 isolated menu renders. Do not treat prefab previews as live menu-route, online availability or battle readability validation.
 
+- Dropdown readability correction (2026-11-13): shared fill `#344357`, existing outline geometry with `#6D8BA8` border, off-white `#F2F0E6` captions and procedural chevrons. Hover/focus `#415670`, pressed `#202E40`, disabled fill multiplier `0.75` RGB / alpha `1`; retain runtime disabled-content fading. Popup surface `#202E40`, rows share control fill/states, selected checkmark gold `#D2A95E`. These values supersede older dropdown literals below.
+- Skirmish section headers have no numeric prefixes; titles start at x `36`. Battle Settings and Players panels both use height `712` canvas units.
+
 ## 1. Component Choice (Optional MPUIKit Integration)
 
 - **Choose components for the design**: Standard `UnityEngine.UI.Image`, suitable scalable sprites, and `MPUIKIT.MPImage` are allowed on panels, popup cards, buttons, dropdowns, slider tracks/fills, and dialog containers.

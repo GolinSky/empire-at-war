@@ -43,6 +43,14 @@ updated: 2026-11-12
 - Related work → [[TODOs/Optimization/UI_Canvas_Routing_Optimization_Plan]], [[Rules/BATTLE_PERFORMANCE_GUIDELINES]], [[Architecture/TACTICAL_MARKERS]], [[Done/Features/Tactical_Markers_Plan]].
 - Unity entry points → `Assets/Prefabs/Ui/SkirmishGame/CoreGameUi.prefab`, `Assets/Prefabs/Ui/UiService.prefab`, `Assets/Prefabs/Ui/MainMenu/MainMenuUi.prefab`, `Assets/Prefabs/Ui/SkirmishMenu/PauseMenuUi.prefab`.
 
+## Implementation · Dropdown readability · 2026-11-13
+
+- [x] Unify all 38 project dropdowns across Settings (7), Skirmish (19), Survival (5), Simulation Setup (6), Steam Invite popup (1): brighter `#344357` fill, `#6D8BA8` outline, off-white captions/chevrons, visible hover/focus and popup rows. Replaced Settings bitmap arrows with procedural chevrons.
+- [x] Remove Skirmish's two section-number objects; move titles x `84` → `36`. Players panel height `676` → `712`, matching Battle Settings.
+- MainMenuUi/CoreGameUi inspected: neither contains dropdowns directly; shared SettingsUi supplies settings controls. Runtime view source does not overwrite dropdown styles; closed-slot fading retained.
+- Verification: Unity prefab save/read-back verified 38 fills and required dropdown bindings; both panel heights equal and section numbers absent. Skirmish and Display-settings isolated 1920×1080 previews inspected. No new Console errors. Tests not run (local override); live interaction/visual acceptance remains pending.
+- Evidence: `Logs/UiRefresh/skirmish-bright-dropdowns.png`, `Logs/UiRefresh/settings-display-bright-dropdowns.png`. Reusable guidance → [[Rules/UI_UX_GUIDELINES]]. Broader plan stays active for unimplemented phases below.
+
 ## TODO
 
 1. [x] Record user research, the palette and the Penpot references. → Verified three editable palette boards. HUD variant retained the source geometry, labels and artwork. Menu recolors retained layout, artwork and button order.
