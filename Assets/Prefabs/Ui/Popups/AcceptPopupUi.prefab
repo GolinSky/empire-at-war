@@ -411,9 +411,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.20392157, g: 0.2627451, b: 0.34117648, a: 1}
-  accentColor: {r: 0.8235294, g: 0.6627451, b: 0.36862746, a: 1}
   bevel: 12
-  accentWidth: 104
 --- !u!1 &3356700252996830425
 GameObject:
   m_ObjectHideFlags: 0

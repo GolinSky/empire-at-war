@@ -7,10 +7,8 @@ namespace EmpireAtWar.Components.Ui
     public sealed class HudFrame : MaskableGraphic
     {
         [SerializeField] private Color borderColor = new Color32(40, 70, 87, 255);
-        [SerializeField] private Color accentColor = new Color32(54, 200, 243, 255);
 
         [SerializeField] private float bevel = 10f;
-        [SerializeField] private float accentWidth = 80f;
 
         protected override void OnPopulateMesh(VertexHelper mesh)
         {
@@ -20,9 +18,6 @@ namespace EmpireAtWar.Components.Ui
             Ring(mesh, rect, bevel, borderColor);
             rect = Inset(rect, 4f);
             Ring(mesh, rect, Mathf.Max(0f, bevel - 4f), borderColor * new Color(1f, 1f, 1f, 0.6f));
-            Rect edge = GetPixelAdjustedRect();
-            Polygon(mesh, new Rect(edge.xMin + bevel, edge.yMax - 2f,
-                Mathf.Min(accentWidth, edge.width - bevel * 2f), 2f), 0f, accentColor);
         }
 
         private static Rect Inset(Rect rect, float amount) =>

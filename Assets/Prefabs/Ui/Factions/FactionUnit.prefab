@@ -1032,9 +1032,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.8235294, g: 0.6627451, b: 0.36862746, a: 1}
-  accentColor: {r: 0.8235294, g: 0.6627451, b: 0.36862746, a: 1}
   bevel: 4
-  accentWidth: 80
 --- !u!222 &4249448085030228285
 CanvasRenderer:
   m_ObjectHideFlags: 0
