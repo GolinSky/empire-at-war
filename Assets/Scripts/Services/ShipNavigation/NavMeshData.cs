@@ -10,6 +10,9 @@ namespace EmpireAtWar.Services.ShipNavigation
     {
         private readonly NavMeshBuckets _layout;
         private NativeList<float2> _positions;
+        private NativeList<int> _diskIndices;
+        private NativeArray<float3> _disks;
+        private NativeParallelMultiHashMap<int, int> _diskBuckets;
         private NativeList<int> _triangles;
         private NativeList<int> _halfedges;
         private NativeArray<int> _regions;
@@ -17,22 +20,28 @@ namespace EmpireAtWar.Services.ShipNavigation
         private NativeReference<NavMeshLocator.Result> _location;
 
         public NativeArray<float2> Positions => _positions.AsArray();
+        public NativeArray<int> DiskIndices => _diskIndices.AsArray();
+        public NativeArray<float3> Disks => _disks;
+        public NativeParallelMultiHashMap<int, int> DiskBuckets => _diskBuckets;
+        public NavMeshBuckets Layout => _layout;
         public NativeArray<int> Triangles => _triangles.AsArray();
         public NativeArray<int> Halfedges => _halfedges.AsArray();
         public NativeArray<int> Regions => _regions;
 
         public NavMeshData(float2 min, float2 max, float cellSize, NativeArray<float3> inflatedDisks,
-            NativeArray<float2> hazardPoints)
+            NativeArray<float2> hazardPoints, NativeParallelMultiHashMap<int, int> diskBuckets)
         {
             _layout = new NavMeshBuckets(min, max);
             try
             {
                 using var points = new NativeList<float2>(128, Allocator.TempJob);
-                using var diskBuckets = new NativeParallelMultiHashMap<int, int>(128, Allocator.TempJob);
+                _diskBuckets = diskBuckets;
+                _diskIndices = new NativeList<int>(128, Allocator.Persistent);
+                _disks = inflatedDisks;
                 new NavMeshPointsJob
                 {
                     Layout = _layout, CellSize = cellSize, Disks = inflatedDisks, HazardPoints = hazardPoints,
-                    DiskBuckets = diskBuckets, Points = points
+                    DiskBuckets = _diskBuckets, Points = points, DiskIndices = _diskIndices
                 }.Run();
                 _positions = new NativeList<float2>(points.Length, Allocator.Persistent);
                 _triangles = new NativeList<int>(Allocator.Persistent);
@@ -50,7 +59,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 _buckets = new NativeParallelMultiHashMap<int, int>(_regions.Length, Allocator.Persistent);
                 new NavMeshClassifyJob
                 {
-                    Layout = _layout, Disks = inflatedDisks, DiskBuckets = diskBuckets,
+                    Layout = _layout, Disks = inflatedDisks, DiskBuckets = _diskBuckets,
                     Positions = Positions, Triangles = Triangles, Regions = _regions, TriangleBuckets = _buckets
                 }.Run();
                 new NavMeshRegionJob { Halfedges = Halfedges, Regions = _regions }.Run();
@@ -93,6 +102,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             if (_halfedges.IsCreated) _halfedges.Dispose();
             if (_triangles.IsCreated) _triangles.Dispose();
             if (_positions.IsCreated) _positions.Dispose();
+            if (_diskIndices.IsCreated) _diskIndices.Dispose();
         }
     }
 }

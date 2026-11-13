@@ -23,7 +23,7 @@
 | --- | --- |
 | `MapGeometry` distance, center, reflection, polyline distance | `PlanarGeometry`; `MapGeometry` removed and callers migrated |
 | `OwnedCircle.Contains`, capture-site and reinforcement-zone presenter/system circle checks | `PlanarGeometry.ContainsCircle`; callers supply radius plus their existing clearance |
-| `ShipBezierPath.GetPlanarDirection`, `ShipRoutePlanner.GetPlanarDirection` | `PlanarGeometry.NormalizeDirection` |
+| Former ship path and route-planner direction helpers | `PlanarGeometry.NormalizeDirection` |
 | `ReinforcementZonesSystem` height flattening, exit-point and circle-bounds math | `PlanarGeometry.Flatten`, `GetPointTowards`, `GetCircleBounds` |
 | `PointerGestures.ToNumerics(Vector2)` | `NumericsConversionExtensions.ToNumerics(Vector2)` |
 
@@ -38,8 +38,8 @@
 | --- | --- | --- |
 | `Components/Movement/Formation/` | `FormationConversion`, `FormationModel`, `BattleFormationModel` | Formation coordinates and placement rules |
 | `Components/Squadron/Flight/` | `SquadronFormation`; static methods in `FighterKinematics`, `FighterManeuver` | Fighter pose and maneuver rules using System.Numerics |
-| `Components/Ship/Movement/` | `ShipRotationKinematics`, `ShipAvoidancePlanner`, `ShipBezierPath` | Ship movement and obstacle rules |
-| `Services/ShipNavigation/` | `ShipRoutePlanner` | Navigation planning; generic direction math extracted |
+| `Components/Ship/Movement/` | `ShipRotationKinematics`, `ShipAvoidancePlanner`, `ShipRoute`, `ShipRouteSpeedProfile` | Ship movement, exact line/arc evaluation, speed profiles and obstacle rules |
+| `Services/ShipNavigation/` | `ShipRoutePlanner`, `ShipTangentRouteBuilder`, `ShipRouteGeometry` | Navigation planning and tangent-circle geometry |
 | `Components/Selection/Marquee/` | `MarqueeSelectionUtility` | Marquee-specific rectangle and point types |
 | `Components/Weapon/` | `WeaponTargetSelector`, `AttackSequenceDiagnostics` | Weapon aim rules and counters |
 | `Components/Health/` | `ShipClassExtensions` | Ship class behavior |
@@ -63,7 +63,7 @@
 - `RandomFromArray` owns a System.Random instance. `RandomAudioClips` is a serialized concrete specialization, not a second selection algorithm.
 - `AttackMoveEngagement.IsAlive` excludes cloaked entities; `SquadronTargetSelector.IsAlive` permits cloaked entities and handles absent targets. Keep those policies separate.
 - Unity/System.Numerics/Unity.Mathematics geometry stays in its existing execution domain. Pure models and Burst jobs must not acquire UnityEngine dependencies just to share arithmetic.
-- Bezier evaluation in `CubicBezierSegment` supplies tangents and integrates with route arc lengths. Package `PathCalculationUtils` samples positions; replacing route behavior with that helper would lose its contract.
+- `ShipRoutePiece` evaluates lines and circular arcs by exact distance, tangent and signed curvature. Package `PathCalculationUtils` samples positions; replacing route evaluation with that helper would lose its contract.
 
 ## Audit scope
 

@@ -9,6 +9,7 @@ namespace EmpireAtWar.Services.ShipNavigation
     internal struct NavMeshRouteJob : IJob
     {
         [ReadOnly] public NativeArray<float2> Positions;
+        [ReadOnly] public NativeArray<int> DiskIndices;
         [ReadOnly] public NativeArray<int> Triangles;
         [ReadOnly] public NativeArray<int> Halfedges;
         [ReadOnly] public NativeArray<int> Regions;
@@ -25,10 +26,12 @@ namespace EmpireAtWar.Services.ShipNavigation
         public NativeList<HeapEntry> Open;
         public NativeList<int> Corridor;
         public NativeList<float2> Waypoints;
+        public NativeList<float3> CornerTags;
 
         public void Execute()
         {
             Waypoints.Clear();
+            CornerTags.Clear();
             Corridor.Clear();
             Open.Clear();
             if (StartTriangle < 0 || GoalTriangle < 0 || Regions[StartTriangle] == 0 ||
@@ -80,25 +83,27 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         private void BuildWaypoints(int edge, int startNode)
         {
-            // An expensive triangle can be cheaper to leave and re-enter through a
-            // different portal. Such a corridor overlaps itself and has no simple funnel.
-            bool revisitsTriangle = false;
-            CorridorGenerations[StartTriangle] = Generation;
+            // Cost search may revisit a triangle. Remove that loop before funneling;
+            // hazards remain soft and never require midpoint zig-zags.
             while (edge != startNode)
             {
-                Corridor.Add(edge);
                 int triangle = edge / 3;
+                if (triangle == StartTriangle) break;
                 if (CorridorGenerations[triangle] == Generation)
-                    revisitsTriangle = true;
+                {
+                    for (int i = 0; i < Corridor.Length; i++)
+                    {
+                        if (Corridor[i] / 3 != triangle) continue;
+                        Corridor.ResizeUninitialized(i);
+                        break;
+                    }
+                }
+                Corridor.Add(edge);
                 CorridorGenerations[triangle] = Generation;
                 edge = Nodes[edge].Parent;
             }
-            var funnel = new NavMeshFunnel(Positions, Triangles, Corridor, Start, Goal, Cells, ExtraCost, HasExtraCost,
-                Waypoints);
-            if (revisitsTriangle)
-                funnel.UsePortalMidpoints();
-            else
-                funnel.Build();
+            new NavMeshFunnel(Positions, DiskIndices, Triangles, Corridor, Start, Goal,
+                Waypoints, CornerTags).Build();
         }
 
         private float2 Midpoint(int edge)

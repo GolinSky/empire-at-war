@@ -2177,6 +2177,7 @@ private sealed class ZoneSource : IReinforcementZoneSource
             public ShipHullSpan NavigationHullSpan => ShipHullSpan.Unbounded;
             public float NavigationRadius => 5f;
             public float NavigationSpeed => 10f;
+            public float NavigationCurrentSpeed => 0f;
             public float NavigationRotationSpeed => 90f;
             public bool IgnoresMapObstacles => false;
             public Vector3 Destination { get; private set; }

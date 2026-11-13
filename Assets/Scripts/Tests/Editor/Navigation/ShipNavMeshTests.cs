@@ -8,6 +8,10 @@ using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Utils;
 using NUnit.Framework;
 using UnityEngine;
+using Unity.Collections;
+using Unity.Mathematics;
+using Unity.Jobs;
+using andywiecko.BurstTriangulator;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -18,6 +22,64 @@ namespace EmpireAtWar.Tests.Editor
         private const float CLEARANCE = 3f;
         private const float GEOMETRY_TOLERANCE = 0.001f;
         private static readonly IHazardSource[] _noHazards = Array.Empty<IHazardSource>();
+
+[Test]
+        public void TriangulationPreservesInputPointOrderForDiskTags()
+        {
+            using var points = new NativeArray<float2>(new[]
+            {
+                new float2(-20f, -20f), new float2(20f, 20f),
+                new float2(-20f, 20f), new float2(20f, -20f),
+                new float2(5f, 0f), new float2(0f, 5f),
+                new float2(-5f, 0f), new float2(0f, -5f)
+            }, Allocator.TempJob);
+            using var positions = new NativeList<float2>(Allocator.TempJob);
+            using var triangles = new NativeList<int>(Allocator.TempJob);
+            using var halfedges = new NativeList<int>(Allocator.TempJob);
+            using var status = new NativeReference<Status>(Allocator.TempJob);
+            new NavMeshTriangulateJob
+            {
+                Points = points, Positions = positions, Triangles = triangles,
+                Halfedges = halfedges, Status = status
+            }.Run();
+
+            Assert.That(status.Value, Is.EqualTo(Status.OK));
+            Assert.That(positions.Length, Is.EqualTo(points.Length));
+            for (int i = 0; i < points.Length; i++)
+                Assert.That(positions[i], Is.EqualTo(points[i]), $"Input point {i} reordered.");
+        }
+
+        [TestCase(-15f)]
+        [TestCase(15f)]
+        public void FunnelCornersRetainDiskIdentityAndGeometricTurnSign(float offset)
+        {
+            var obstacle = new RadarContact(Vector3.zero, 20f, false);
+            var origin = new Vector3(-80f, HEIGHT, offset);
+            var destination = new Vector3(80f, HEIGHT, offset);
+            using var cache = new ShipNavigationCache();
+            IShipPathGraph graph = cache.GetGraph(new[] { obstacle }, Bounds(100f, 100f),
+                origin, CLEARANCE, _noHazards);
+            var path = new List<Vector3>();
+            Assert.That(graph.TryFindPath(destination, HEIGHT, path), Is.True);
+            Assert.That(graph.RouteCorners.Count, Is.EqualTo(path.Count));
+            Assert.That(graph.Disks[0].z, Is.EqualTo(obstacle.Radius + CLEARANCE));
+            int tagged = 0;
+            for (int i = 1; i < path.Count - 1; i++)
+            {
+                NavMeshCorner corner = graph.RouteCorners[i];
+                Assert.That(corner.Position, Is.EqualTo(path[i]));
+                Assert.That(corner.DiskIndex, Is.EqualTo(0));
+                Assert.That(corner.PortalWidth, Is.GreaterThan(0f));
+                Vector3 incoming = path[i] - path[i - 1];
+                Vector3 outgoing = path[i + 1] - path[i];
+                float cross = incoming.x * outgoing.z - incoming.z * outgoing.x;
+                Assert.That(corner.TurnSign, Is.EqualTo((int)Mathf.Sign(cross)));
+                tagged++;
+            }
+            Assert.That(tagged, Is.GreaterThan(0));
+            Assert.That(graph.RouteCorners[0].DiskIndex, Is.EqualTo(-1));
+            Assert.That(graph.RouteCorners[path.Count - 1].DiskIndex, Is.EqualTo(-1));
+        }
 
         [TestCase(73191)]
         [TestCase(104729)]

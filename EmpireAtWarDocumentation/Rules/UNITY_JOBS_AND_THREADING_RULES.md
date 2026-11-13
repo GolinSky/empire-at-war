@@ -54,6 +54,7 @@ Main thread: gather snapshot (+ stable ids / generation)
 | JOB-09 | Scheduled jobs cannot be cancelled. Shutdown order: stop accepting requests → stop scheduling → `Complete()` outstanding handles → drop stale results → `Dispose` buffers. Scene unload / scope teardown / pooling are **not** completion boundaries by themselves — wire them into this order (`IOrderedDisposable`/`ILateDisposable`). |
 | JOB-10 | Race-free ≠ deterministic. Define tie-breaking explicitly (e.g. lowest index wins) when ordering matters. |
 | JOB-11 | Validate numeric inputs (`math.isfinite`) inside kernels where bad data is possible; provide a serial fallback/flag rather than propagating NaN (see `WeaponTargetSelectionJob.RequiresSerialFallback`). |
+| JOB-12 | No `throw` in Burst code for runtime failures: Editor logs it, **Player build aborts** (Burst 1.8, warning BC1370). Write a failure code to a `NativeReference<int>`; the managed caller logs and takes a valid fallback (see `ShipTangentRouteJob.Failure`). Throws only inside `[Conditional("ENABLE_UNITY_COLLECTIONS_CHECKS")]` helpers. |
 
 ## 4. Managed threading (outside Jobs)
 

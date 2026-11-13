@@ -90,19 +90,16 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void IsRouteClear_IgnoresShipContact()
+        public void IsSegmentClear_IgnoresShipContact()
         {
-            ShipBezierRoute route = ShipBezierPath.BuildDirectRoute(
-                Vector3.zero,
-                Vector3.right,
-                new Vector3(30f, 0f, 0f));
             RadarContact contact = new RadarContact(
                 new Vector3(15f, 0f, 0f),
                 3f,
                 true);
 
-            bool isClear = ShipAvoidancePlanner.IsRouteClear(
-                route,
+            bool isClear = ShipAvoidancePlanner.IsSegmentClear(
+                Vector3.zero,
+                new Vector3(30f, 0f, 0f),
                 new[] { contact },
                 0f,
                 0.5f,
@@ -112,15 +109,12 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void IsRouteClear_RejectsInitialStaticObstacleOverlap()
+        public void IsSegmentClear_RejectsInitialStaticObstacleOverlap()
         {
-            ShipBezierRoute route = ShipBezierPath.BuildDirectRoute(
-                Vector3.zero,
-                Vector3.right,
-                new Vector3(30f, 0f, 0f));
 
-            bool isClear = ShipAvoidancePlanner.IsRouteClear(
-                route,
+            bool isClear = ShipAvoidancePlanner.IsSegmentClear(
+                Vector3.zero,
+                new Vector3(30f, 0f, 0f),
                 new[] { new RadarContact(Vector3.zero, 3f, false) },
                 0f,
                 0.5f,
@@ -130,15 +124,12 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void IsRouteClear_AllowEscape_AcceptsRouteLeavingObstacle()
+        public void IsSegmentClear_AllowEscape_AcceptsRouteLeavingObstacle()
         {
-            ShipBezierRoute route = ShipBezierPath.BuildDirectRoute(
-                Vector3.zero,
-                Vector3.right,
-                new Vector3(30f, 0f, 0f));
 
-            bool isClear = ShipAvoidancePlanner.IsRouteClear(
-                route,
+            bool isClear = ShipAvoidancePlanner.IsSegmentClear(
+                Vector3.zero,
+                new Vector3(30f, 0f, 0f),
                 new[] { new RadarContact(new Vector3(-1f, 0f, 0f), 3f, false) },
                 0f,
                 0.5f,
@@ -149,15 +140,12 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void IsRouteClear_AllowEscape_RejectsRouteHeadingIntoObstacle()
+        public void IsSegmentClear_AllowEscape_RejectsRouteHeadingIntoObstacle()
         {
-            ShipBezierRoute route = ShipBezierPath.BuildDirectRoute(
-                Vector3.zero,
-                Vector3.right,
-                new Vector3(30f, 0f, 0f));
 
-            bool isClear = ShipAvoidancePlanner.IsRouteClear(
-                route,
+            bool isClear = ShipAvoidancePlanner.IsSegmentClear(
+                Vector3.zero,
+                new Vector3(30f, 0f, 0f),
                 new[] { new RadarContact(new Vector3(2f, 0f, 0f), 3f, false) },
                 0f,
                 0.5f,

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Map.Hazards;
-using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.Timing;
@@ -13,7 +12,7 @@ namespace EmpireAtWar.Services.ShipNavigation
 {
     // One obstacle raster and its region labels, kept across frames while the obstacles stay the same.
     // Searches are specific to the current origin. Jobs complete before reuse; the navigation cache disposes buffers.
-    internal sealed class ShipPathGrid : IShipPathGraph
+    internal sealed class ShipPathGrid : System.IDisposable
     {
         private const float MINIMUM_CELL_SIZE = 4f;
 
@@ -126,9 +125,6 @@ namespace EmpireAtWar.Services.ShipNavigation
             _hasSearched = false;
         }
 
-        public bool ContainsRoute(ShipBezierRoute route) =>
-            route.IsWithinBounds(_mapMin, _mapMax);
-
         public bool IsUnpenalizedSegment(Vector3 from, Vector3 to)
         {
             if (_hazards.Length == 0) return true;
@@ -137,29 +133,6 @@ namespace EmpireAtWar.Services.ShipNavigation
             float2 start = new float2(from.x, from.z);
             float2 end = new float2(to.x, to.z);
             return cost.Segment(start, end) <= math.distance(start, end) + 0.01f;
-        }
-
-        public bool PreservesTravelCost(ShipBezierRoute route, IReadOnlyList<Vector3> waypoints)
-        {
-            if (_hazards.Length == 0) return true;
-            EnsureBuilt();
-            if (!_hasExtraCost) return true;
-            NavigationTravelCost cost = new NavigationTravelCost(_cells, _extraCost);
-            float originalExtra = 0f;
-            for (int i = 1; i < waypoints.Count; i++)
-            {
-                float2 from = new float2(waypoints[i - 1].x, waypoints[i - 1].z);
-                float2 to = new float2(waypoints[i].x, waypoints[i].z);
-                originalExtra += cost.Segment(from, to) - math.distance(from, to);
-            }
-            int samples = Mathf.Max(1, Mathf.CeilToInt(route.Length / (_cells.CellSize * 0.5f)));
-            float routeExtra = 0f;
-            for (int i = 0; i < samples; i++)
-            {
-                Vector3 point = route.EvaluateNormalizedDistance((i + 0.5f) / samples, out _);
-                routeExtra += _extraCost[_cells.GetCell(new float2(point.x, point.z))];
-            }
-            return routeExtra * route.Length / samples <= originalExtra * 1.05f + 0.01f;
         }
 
         public bool TryFindPath(Vector3 destination, float height, List<Vector3> waypoints)

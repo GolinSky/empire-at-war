@@ -14,15 +14,10 @@ namespace EmpireAtWar.Services.ShipNavigation
         [ReadOnly] public NativeArray<float2> HazardPoints;
         public NativeParallelMultiHashMap<int, int> DiskBuckets;
         public NativeList<float2> Points;
+        public NativeList<int> DiskIndices;
 
         public void Execute()
         {
-            for (int i = 0; i < Disks.Length; i++)
-            {
-                float3 disk = Disks[i];
-                Layout.Insert(DiskBuckets, i, disk.xy - disk.z, disk.xy + disk.z);
-            }
-
             float2 min = Layout.Min;
             float2 max = Layout.Max;
             float magnitude = math.cmax(math.max(math.abs(min), math.abs(max)));
@@ -56,7 +51,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 {
                     math.sincos((j % count) * (2f * math.PI / count), out float sin, out float cos);
                     float2 current = disk.xy + outer * new float2(cos, sin);
-                    AddFree(current, unique, spacing);
+                    AddFree(current, unique, spacing, i);
                     // A disk crossing the map edge needs a vertex where its tangent chord enters the map.
                     AddCrossings(previous, current, 0, unique, spacing);
                     AddCrossings(previous, current, 1, unique, spacing);
@@ -82,7 +77,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             }
         }
 
-        private void AddFree(float2 point, NativeParallelMultiHashMap<int2, int> unique, float spacing)
+        private void AddFree(float2 point, NativeParallelMultiHashMap<int2, int> unique, float spacing, int diskIndex = -1)
         {
             if (math.any(point < Layout.Min) || math.any(point > Layout.Max)) return;
             int2 cell = Layout.Cell(point);
@@ -91,10 +86,10 @@ namespace EmpireAtWar.Services.ShipNavigation
                 float3 disk = Disks[index];
                 if (math.distancesq(point, disk.xy) < disk.z * disk.z) return;
             }
-            AddUnique(point, unique, spacing);
+            AddUnique(point, unique, spacing, diskIndex);
         }
 
-        private void AddUnique(float2 point, NativeParallelMultiHashMap<int2, int> unique, float spacing)
+        private void AddUnique(float2 point, NativeParallelMultiHashMap<int2, int> unique, float spacing, int diskIndex = -1)
         {
             int2 cell = (int2)math.floor((point - Layout.Min) / spacing);
             for (int y = -1; y <= 1; y++)
@@ -105,6 +100,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             }
             unique.Add(cell, Points.Length);
             Points.Add(point);
+            DiskIndices.Add(diskIndex);
         }
     }
 }

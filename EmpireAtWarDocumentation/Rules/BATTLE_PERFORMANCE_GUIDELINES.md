@@ -82,6 +82,12 @@ tags:
 
 - Cache each triangle graph by map bounds, exact clearance, height-filtered obstacle disks and hazard-source identities. Movement-only changes reuse that graph with a new origin.
 - Share the hazard cost raster across clearance layers. Keep raw ship height filtering and destination reservations in `ShipNavigationService`.
+- Route geometry (2026-11-13, source/Unity compilation verified): `ShipTangentRouteJob` builds exact line/circular-arc pieces around inflated disks. Keep disk identity through triangulation and persistent disk buckets per graph layer.
+- Tangent legs **and arcs** can intersect a non-corner disk after tightening the polygon corridor. Query both analytically and repair locally; corner-circle clearance alone is insufficient for overlapping field disks.
+- Hazards are soft A* costs. Funnel smoothing may clip hazard edges; keep the direct-shortcut penalty check, never restore midpoint staircases or route-cost rejection.
+- `ShipRouteSpeedProfile`: acceleration = maximum speed / 1.5 s; arc cap = yaw rate in rad/s × radius. Follower uses exact tangent yaw and signed curvature for banking; replans preserve speed while braking to a lower cap.
+- Escape leg stays unchanged unless a clear fillet can trim its original adjoining lines. Start arcs require disk and map-extrema checks; rejected start arc → turn in place. A goal closer than stopping distance forces a safe endpoint stop.
+- Performance and network improvement remain unmeasured. Navigation/Ships tests and explicit archetype sweeps are authored/unrun; acceptance owner → [[Done/Bugs/Ship_Route_Curvature_Plan]].
 - Compare graph builds, A* searches and nearest-reachable queries with the existing `NavigationGridBuild`, `NavigationPathSearch` and `NavigationNearestReachable` markers. Record layer count, triangles, persistent memory and frame times before changing clearance grouping.
 
 ### CPU scheduling and snapshots

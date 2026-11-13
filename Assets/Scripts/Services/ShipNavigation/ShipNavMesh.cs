@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.Timing;
@@ -15,12 +14,21 @@ namespace EmpireAtWar.Services.ShipNavigation
         private readonly NavigationHazardRaster _hazards;
         private readonly float _clearance;
         private NativeArray<float3> _obstacles;
+        private NativeArray<float3> _disks;
+        private NativeParallelMultiHashMap<int, int> _diskBuckets;
+        private readonly NavMeshBuckets _layout;
         private NavMeshData _mesh;
         private NavMeshRouteWorkspace _search;
         private float2 _origin;
         private float2 _entry;
         private int _originTriangle;
         private bool _hasSearched;
+        private readonly List<NavMeshCorner> _routeCorners = new List<NavMeshCorner>();
+
+        public IReadOnlyList<NavMeshCorner> RouteCorners => _routeCorners;
+        public NativeArray<float3> Disks => _disks;
+        public NativeParallelMultiHashMap<int, int> DiskBuckets => _diskBuckets;
+        public NavMeshBuckets Layout => _layout;
 
         public ShipNavMesh(IReadOnlyList<RadarContact> obstacles, Vector3 origin, float clearance,
             NavigationHazardRaster hazards)
@@ -28,10 +36,17 @@ namespace EmpireAtWar.Services.ShipNavigation
             _hazards = hazards;
             _clearance = clearance;
             _obstacles = new NativeArray<float3>(obstacles.Count, Allocator.Persistent);
+            _disks = new NativeArray<float3>(obstacles.Count, Allocator.Persistent);
+            _diskBuckets = new NativeParallelMultiHashMap<int, int>(128, Allocator.Persistent);
+            _layout = new NavMeshBuckets(new float2(hazards.Min.x, hazards.Min.y),
+                new float2(hazards.Max.x, hazards.Max.y));
             for (int i = 0; i < obstacles.Count; i++)
             {
                 RadarContact obstacle = obstacles[i];
                 _obstacles[i] = new float3(obstacle.Position.x, obstacle.Position.z, obstacle.Radius);
+                float3 disk = new float3(obstacle.Position.x, obstacle.Position.z, obstacle.Radius + clearance);
+                _disks[i] = disk;
+                _layout.Insert(_diskBuckets, i, disk.xy - disk.z, disk.xy + disk.z);
             }
             SetOrigin(origin);
         }
@@ -59,14 +74,12 @@ namespace EmpireAtWar.Services.ShipNavigation
             _hasSearched = false;
         }
 
-        public bool ContainsRoute(ShipBezierRoute route) => route.IsWithinBounds(_hazards.Min, _hazards.Max);
         public bool IsUnpenalizedSegment(Vector3 from, Vector3 to) => _hazards.IsUnpenalizedSegment(from, to);
-        public bool PreservesTravelCost(ShipBezierRoute route, IReadOnlyList<Vector3> waypoints) =>
-            _hazards.PreservesTravelCost(route, waypoints);
 
         public bool TryFindPath(Vector3 destination, float height, List<Vector3> waypoints)
         {
             waypoints.Clear();
+            _routeCorners.Clear();
             BeginSearch();
             float2 goal = new float2(destination.x, destination.z);
             int triangle = FindReachableGoal(goal, out float2 exit);
@@ -75,15 +88,27 @@ namespace EmpireAtWar.Services.ShipNavigation
                     _hazards.Costs, _hazards.HasExtraCost)) return false;
 
             waypoints.Add(new Vector3(_origin.x, height, _origin.y));
-            if (!_entry.Equals(_origin)) waypoints.Add(new Vector3(_entry.x, height, _entry.y));
+            _routeCorners.Add(new NavMeshCorner(waypoints[0], -1, 0, 0f));
+            if (!_entry.Equals(_origin))
+            {
+                waypoints.Add(new Vector3(_entry.x, height, _entry.y));
+                _routeCorners.Add(new NavMeshCorner(waypoints[waypoints.Count - 1], -1, 0, 0f));
+            }
             var path = _search.Waypoints;
             for (int i = 0; i < path.Length; i++)
             {
                 var point = new Vector3(path[i].x, height, path[i].y);
-                if (!waypoints[waypoints.Count - 1].Equals(point)) waypoints.Add(point);
+                if (waypoints[waypoints.Count - 1].Equals(point)) continue;
+                waypoints.Add(point);
+                float3 tag = _search.CornerTags[i];
+                _routeCorners.Add(new NavMeshCorner(point, (int)tag.x, (int)tag.y, tag.z));
             }
             var end = new Vector3(goal.x, height, goal.y);
-            if (waypoints.Count == 1 || !waypoints[waypoints.Count - 1].Equals(end)) waypoints.Add(end);
+            if (waypoints.Count == 1 || !waypoints[waypoints.Count - 1].Equals(end))
+            {
+                waypoints.Add(end);
+                _routeCorners.Add(new NavMeshCorner(end, -1, 0, 0f));
+            }
             return true;
         }
 
@@ -165,22 +190,8 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         private NavMeshData BuildMesh()
         {
-            var disks = new NativeArray<float3>(_obstacles.Length, Allocator.TempJob);
-            try
-            {
-                for (int i = 0; i < disks.Length; i++)
-                {
-                    float3 disk = _obstacles[i];
-                    disk.z += _clearance;
-                    disks[i] = disk;
-                }
-                return new NavMeshData(new float2(_hazards.Min.x, _hazards.Min.y),
-                    new float2(_hazards.Max.x, _hazards.Max.y), _hazards.Cells.CellSize, disks, _hazards.Boundary);
-            }
-            finally
-            {
-                disks.Dispose();
-            }
+            return new NavMeshData(_layout.Min, _layout.Max, _hazards.Cells.CellSize, _disks,
+                _hazards.Boundary, _diskBuckets);
         }
 
         public void Dispose()
@@ -188,6 +199,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             if (_search != null) _search.Dispose();
             if (_mesh != null) _mesh.Dispose();
             if (_obstacles.IsCreated) _obstacles.Dispose();
+            if (_disks.IsCreated) _disks.Dispose();
+            if (_diskBuckets.IsCreated) _diskBuckets.Dispose();
         }
     }
 }

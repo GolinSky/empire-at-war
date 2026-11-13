@@ -290,6 +290,14 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Tactical_Markers_Plan]] — Allied AI: accept/delay/decline, capture/defense/scouting, safe attack/rally/retreat, autonomous markers, silent solo enemy AI and one-time tutorial hint.
 - [ ] [[Done/Features/Tactical_Markers_Plan]] — Approve world/radial/minimap visuals at battle zoom/resolution and listen to info/urgent cues. Art and radial previews: `Logs/TacticalMarkers/`.
 
+
+## Ship Route Curvature
+
+- [ ] [[Done/Bugs/Ship_Route_Curvature_Plan]] — Run `Navigation` and `Ships` tests; execute both explicit `ShipArchetypeRouteSweepTests(false/true)` fixtures. Tests were not run under the local override.
+- [ ] [[Done/Bugs/Ship_Route_Curvature_Plan]] — In-game: fields/overlapping disks, hazard corridors, map edges, Executor clearance, moving replans and ion disable/resume; confirm continuous bends and safe escape/turnaround behavior.
+- [ ] [[Done/Bugs/Ship_Route_Curvature_Plan]] — Matched before/after profiler capture: `NavigationRouteBuild`, movement tick, queue latency with eight fleets on an eight-player Large map. Record source/workload and compare CPU; no improvement measured yet.
+- [ ] [[Done/Bugs/Ship_Route_Curvature_Plan]] — Online client: measure keyframes per moving ship and route-message traffic on eight-player Large. Compact piece messages remain a conditional follow-up only if route traffic matters.
+
 ## Map Archetypes
 
 - [ ] [[Done/Features/Map_Archetypes_Plan]] — Approve the proposed 57 planet→archetype assignments and generated layout previews in the skirmish gallery.

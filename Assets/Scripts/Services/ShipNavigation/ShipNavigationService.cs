@@ -23,6 +23,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         ShipHullSpan NavigationHullSpan { get; }
         float NavigationRadius { get; }
         float NavigationSpeed { get; }
+        float NavigationCurrentSpeed { get; }
         float NavigationRotationSpeed { get; }
         bool IgnoresMapObstacles { get; }
     }
@@ -31,7 +32,7 @@ namespace EmpireAtWar.Services.ShipNavigation
     {
         public Vector3 Destination { get; }
         public Vector3? Detour { get; }
-        public ShipBezierRoute Route { get; }
+        public ShipRoute Route { get; }
         public Vector3[] Trajectory => Route.Samples;
         public float TurnDuration { get; }
         public float MovementDuration { get; }
@@ -39,7 +40,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         public bool IsDeferred { get; }
 
         public ShipNavigationPlan(
-            ShipBezierRoute route,
+            ShipRoute route,
             Vector3 destination,
             Vector3? detour,
             float turnDuration,
@@ -223,9 +224,9 @@ namespace EmpireAtWar.Services.ShipNavigation
                             ToPoint(routePlan.Destination));
                     }
 
-                    float movementDuration =
-                        routePlan.Route.Length /
-                        Mathf.Max(agent.NavigationSpeed, Mathf.Epsilon);
+                    float movementDuration = new ShipRouteSpeedProfile(routePlan.Route,
+                        agent.NavigationSpeed, agent.NavigationRotationSpeed,
+                        routePlan.TurnDuration > 0f ? 0f : agent.NavigationCurrentSpeed).Duration;
                     _cache.RemoveStationary(agent);
                     return new ShipNavigationPlan(
                         destination: routePlan.Destination,
@@ -243,10 +244,10 @@ namespace EmpireAtWar.Services.ShipNavigation
                 _destinationRegistry.Stop(registrationId);
             }
 
-            ShipBezierRoute stationaryRoute = ShipBezierPath.BuildDirectRoute(
-                origin,
-                forward,
-                origin);
+            ShipRoute stationaryRoute = new ShipRoute(new[]
+            {
+                new ShipRoutePiece(origin, Mathf.Atan2(forward.x, forward.z), 0f, 0f)
+            });
             ShipNavigationPlan stationaryPlan = new ShipNavigationPlan(
                 destination: origin,
                 detour: null,

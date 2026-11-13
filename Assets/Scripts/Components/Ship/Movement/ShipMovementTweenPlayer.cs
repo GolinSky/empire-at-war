@@ -10,24 +10,13 @@ namespace EmpireAtWar.Components.Ship.Movement
     {
         private const float BANK_SMOOTH_TIME = 0.6f;
         private const float ROUTE_HEADING_TOLERANCE = 1f;
-        private const float MINIMUM_TANGENT_STEP = 0.05f;
-        // Seconds to reach full route speed from rest; braking uses the same rate.
-        private const float SPEED_RAMP_TIME = 1.5f;
-        // Floor so braking never stalls the hull just short of the route end.
-        private const float MINIMUM_SPEED_FACTOR = 0.1f;
-
-        private const int ROUTE_STEP_SEARCH_ITERATIONS = 8;
-        // Heading lag the hull may keep behind the route tangent, so it can hold its turn rate through a bend.
-        private const float MAXIMUM_TURN_LEAD = 10f;
-        // Bends are looked for as far ahead as the hull travels while turning this much at full speed.
-        private const float CORNER_LOOK_AHEAD_TURN = 90f;
-        private const int CORNER_SAMPLE_COUNT = 8;
 
         private readonly Transform _rootTransform;
         private readonly Transform _bodyTransform;
         private readonly LineRenderer _lineRenderer;
         private Sequence _translationSequence;
-        private ShipBezierRoute _route;
+        private ShipRoute _route;
+        private ShipRouteSpeedProfile _speedProfile;
         private Action _pathCompleted;
 
         private readonly Ease _hyperSpaceEase;
@@ -35,14 +24,16 @@ namespace EmpireAtWar.Components.Ship.Movement
         private Vector3 _lookDirection;
         private Vector3? _currentPathTangent;
 
-        private float _routeProgress;
+        private float _routeDistance;
+        private float _profileTime;
+        private int _pieceIndex;
+        private int _profilePhaseIndex;
+        private int _nextTurnPiece;
         private float _routeSpeed;
         private float _currentSpeed;
         private float _rotationSpeed;
         private float _turnAcceleration;
         private float _maximumBankAngle;
-        private float _turnLead;
-        private float _cornerTurnRate;
         private float _angularVelocity;
         private float _bankVelocity;
 
@@ -60,6 +51,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public Vector3? CurrentPathTangent => _currentPathTangent;
         public bool IsBraking => _isBraking;
         public bool HasMomentum => _route != null && _currentSpeed > Mathf.Epsilon;
+        public float CurrentSpeed => _currentSpeed;
 
         public ShipMovementTweenPlayer(
             Transform rootTransform,
@@ -77,8 +69,9 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void SetRouteSpeed(float speed)
         {
+            if (_routeSpeed == speed) return;
             _routeSpeed = speed;
-            _currentSpeed = Mathf.Min(_currentSpeed, speed);
+            if (_route != null) RebuildSpeedProfile();
         }
 
         public void BrakeForReplan() => _isBraking = true;
@@ -157,22 +150,22 @@ namespace EmpireAtWar.Components.Ship.Movement
             _hasLookDirection = false;
             _route = plan.Route;
             _pathCompleted = completed;
-            _routeProgress = 0f;
+            _routeDistance = 0f;
+            _pieceIndex = 0;
             _routeSpeed = speed;
             _rotationSpeed = rotationSpeed;
             _turnAcceleration = turnAcceleration;
             _maximumBankAngle = maximumBankAngle;
-            // StepYaw holds a yaw rate w only while the target leads by w^2 / (2 * acceleration).
-            _turnLead = Mathf.Min(MAXIMUM_TURN_LEAD,
-                rotationSpeed * rotationSpeed / (2f * turnAcceleration));
-            _cornerTurnRate = Mathf.Max(Mathf.Min(rotationSpeed,
-                Mathf.Sqrt(2f * turnAcceleration * (ROUTE_HEADING_TOLERANCE + _turnLead))), Mathf.Epsilon);
-            _isTurningToRoute = plan.TurnDuration > Mathf.Epsilon;
+            _isBraking = false;
+            _isTurningToRoute = plan.TurnDuration > Mathf.Epsilon &&
+                Vector3.Angle(_rootTransform.forward, _route.InitialTangent) > ROUTE_HEADING_TOLERANCE;
             if (_isTurningToRoute)
             {
                 // The hull turns in place before it moves, so it starts the route from rest.
                 _currentSpeed = 0f;
             }
+            RebuildSpeedProfile();
+            FindNextTurn();
             _currentPathTangent = null;
             DisplayRoute(plan.Trajectory);
         }
@@ -180,6 +173,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void StopPath()
         {
             _route = null;
+            _speedProfile = null;
             _currentSpeed = 0f;
             _pathCompleted = null;
             _currentPathTangent = null;
@@ -195,7 +189,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _translationSequence.KillExt();
         }
 
-public void Tick(float deltaTime)
+        public void Tick(float deltaTime)
         {
             if (_route != null)
             {
@@ -219,103 +213,89 @@ public void Tick(float deltaTime)
         {
             if (_isTurningToRoute)
             {
-                StepRotation(_route.InitialTangent, deltaTime);
-                if (Vector3.Angle(
-                        _rootTransform.forward,
-                        _route.InitialTangent) > ROUTE_HEADING_TOLERANCE)
-                {
+                _route.EvaluateDistance(_routeDistance, ref _pieceIndex,
+                    out Vector3 turnTangent, out _);
+                StepRotation(turnTangent, deltaTime);
+                if (Vector3.Angle(_rootTransform.forward, turnTangent) > ROUTE_HEADING_TOLERANCE)
                     return;
-                }
-
                 _isTurningToRoute = false;
             }
 
-            // A re-plan keeps the current speed, so pursuit re-paths do not restart from rest.
-            float acceleration = _routeSpeed / SPEED_RAMP_TIME;
-            float remainingDistance = (1f - _routeProgress) * _route.Length;
-            float targetSpeed = _isBraking ? 0f : Mathf.Max(
-                Mathf.Min(_routeSpeed, Mathf.Sqrt(2f * acceleration * remainingDistance),
-                    GetCornerSpeedLimit(remainingDistance)),
-                _routeSpeed * MINIMUM_SPEED_FACTOR);
-            _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acceleration * deltaTime);
-            if (_isBraking && _currentSpeed <= Mathf.Epsilon)
+            if (_isBraking)
             {
-                StopPath();
-                return;
-            }
-            float requestedStep = _currentSpeed * deltaTime /
-                Mathf.Max(_route.Length, Mathf.Epsilon);
-            float nextProgress = Mathf.Min(1f, _routeProgress + requestedStep);
-            float allowedTurn = Mathf.Max(
-                MINIMUM_TANGENT_STEP,
-                Mathf.Abs(_angularVelocity) * deltaTime +
-                0.5f * _turnAcceleration * deltaTime * deltaTime) + _turnLead;
-            float low = _routeProgress;
-            float high = nextProgress;
-            _route.EvaluateNormalizedDistance(high, out Vector3 nextTangent);
-            if (Vector3.Angle(_rootTransform.forward, nextTangent) <=
-                allowedTurn + ROUTE_HEADING_TOLERANCE)
-            {
-                low = high;
+                float previousSpeed = _currentSpeed;
+                _currentSpeed = Mathf.MoveTowards(_currentSpeed, 0f,
+                    _speedProfile.Acceleration * deltaTime);
+                _routeDistance = Mathf.Min(_route.Length,
+                    _routeDistance + (previousSpeed + _currentSpeed) * 0.5f * deltaTime);
             }
             else
             {
-                for (int i = 0; i < ROUTE_STEP_SEARCH_ITERATIONS; i++)
+                _profileTime = Mathf.Min(_profileTime + deltaTime, _speedProfile.Duration);
+                if (_nextTurnPiece < _route.Pieces.Count &&
+                    _profileTime >= _speedProfile.GetPieceStartTime(_nextTurnPiece))
                 {
-                    float middle = (low + high) * 0.5f;
-                    _route.EvaluateNormalizedDistance(middle, out Vector3 tangent);
-                    if (Vector3.Angle(_rootTransform.forward, tangent) <=
-                        allowedTurn + ROUTE_HEADING_TOLERANCE)
-                    {
-                        low = middle;
-                    }
-                    else
-                    {
-                        high = middle;
-                    }
+                    _profileTime = _speedProfile.GetPieceStartTime(_nextTurnPiece);
+                    _routeDistance = _route.GetPieceStartDistance(_nextTurnPiece);
+                    _pieceIndex = _nextTurnPiece;
+                    _currentSpeed = 0f;
+                    _isTurningToRoute = true;
+                    FindNextTurn();
+                }
+                else
+                {
+                    _speedProfile.EvaluateTime(_profileTime, ref _profilePhaseIndex,
+                        out _routeDistance, out _currentSpeed);
                 }
             }
 
-            // When the turn rate limits the step (e.g. at a sharp waypoint corner)
-            // progress cannot pass the bend until the hull faces the upcoming
-            // tangent, so steer towards it instead of the current one.
-            bool isTurnLimited = low < nextProgress;
-            _routeProgress = low;
-            _rootTransform.position = _route.EvaluateNormalizedDistance(
-                _routeProgress,
-                out Vector3 routeTangent);
+            _rootTransform.position = _route.EvaluateDistance(_routeDistance,
+                ref _pieceIndex, out Vector3 routeTangent, out float curvature);
             _currentPathTangent = routeTangent;
-            StepRotation(isTurnLimited ? nextTangent : routeTangent, deltaTime);
-            if (_routeProgress < 1f - Mathf.Epsilon)
+            if (!_isTurningToRoute)
             {
-                return;
+                if (_currentSpeed > _speedProfile.GetSpeedLimit(_pieceIndex) + Mathf.Epsilon)
+                {
+                    // Replans can enter their first arc above its limit; brake without snapping yaw.
+                    StepRotation(routeTangent, deltaTime);
+                }
+                else
+                {
+                    _rootTransform.rotation = Quaternion.LookRotation(routeTangent, Vector3.up);
+                    _angularVelocity = _currentSpeed * curvature * Mathf.Rad2Deg;
+                    SmoothBank(deltaTime);
+                }
             }
 
+            if (_isBraking)
+            {
+                if (_currentSpeed <= Mathf.Epsilon || _routeDistance >= _route.Length)
+                    StopPath();
+                return;
+            }
+            if (_profileTime < _speedProfile.Duration) return;
+
+            // A replan shorter than the stopping distance must stop at its validated endpoint;
+            // carrying residual speed beyond it would leave the clearance-checked route.
             Action completed = _pathCompleted;
             StopPath();
             completed?.Invoke();
         }
 
-        // Highest speed at which the hull still turns onto every tangent within the look-ahead before reaching it.
-        private float GetCornerSpeedLimit(float remainingDistance)
+        private void RebuildSpeedProfile()
         {
-            // Time lost ramping the yaw rate from its current value up to the corner rate.
-            float rampDeficit = Mathf.Max(0f, _cornerTurnRate - Mathf.Abs(_angularVelocity));
-            float rampTime = rampDeficit * rampDeficit / (2f * _turnAcceleration * _cornerTurnRate);
-            float lookAhead = Mathf.Min(remainingDistance,
-                _routeSpeed * (CORNER_LOOK_AHEAD_TURN / _cornerTurnRate + rampTime));
-            if (lookAhead <= Mathf.Epsilon) return _routeSpeed;
-            float limit = _routeSpeed;
-            Vector3 forward = _rootTransform.forward;
-            for (int i = 1; i <= CORNER_SAMPLE_COUNT; i++)
-            {
-                float distance = lookAhead * i / CORNER_SAMPLE_COUNT;
-                _route.EvaluateNormalizedDistance(_routeProgress + distance / _route.Length, out Vector3 tangent);
-                float turn = Vector3.Angle(forward, tangent) - ROUTE_HEADING_TOLERANCE - _turnLead;
-                if (turn <= 0f) continue;
-                limit = Mathf.Min(limit, distance / (turn / _cornerTurnRate + rampTime));
-            }
-            return limit;
+            _speedProfile = new ShipRouteSpeedProfile(_route, _routeSpeed, _rotationSpeed,
+                _currentSpeed, startDistance: _routeDistance);
+            _profileTime = 0f;
+            _profilePhaseIndex = 0;
+        }
+
+        private void FindNextTurn()
+        {
+            _nextTurnPiece = _pieceIndex + 1;
+            while (_nextTurnPiece < _route.Pieces.Count &&
+                   !_route.RequiresTurnAtPiece(_nextTurnPiece))
+                _nextTurnPiece++;
         }
 
         private void StepRotation(Vector3 direction, float deltaTime)

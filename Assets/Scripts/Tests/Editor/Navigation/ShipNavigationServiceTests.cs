@@ -57,9 +57,11 @@ namespace EmpireAtWar.Tests.Movement
                 Assert.That(around.IsStationary, Is.False);
                 Assert.That(around.Destination, Is.EqualTo(new Vector3(80f, 0f, 0f)));
                 Assert.That(around.Route.Length, Is.GreaterThan(160f));
-                for (int i = 0; i <= 100; i++)
-                    Assert.That(zone.Contains(around.Route.EvaluateNormalizedDistance(i / 100f, out _), 0f, false),
-                        Is.False, "Route smoothing must preserve the hazard detour.");
+                bool hasCurve = false;
+                foreach (ShipRoutePiece piece in around.Route.Pieces) hasCurve |= piece.Curvature != 0f;
+                Assert.That(hasCurve, Is.True, "Hazard corridors should produce curved routes; their edges are soft.");
+                Assert.That(Vector3.Distance(around.Route.EvaluateNormalizedDistance(1f, out _), around.Destination),
+                    Is.LessThan(0.001f));
                 ShipNavigationPlan inside = service.Plan(agent, Vector3.right, Vector3.zero,
                     System.Array.Empty<RadarContact>(), 0.5f, agent.NavigationRadius, _mapRange);
                 Assert.That(inside.IsStationary, Is.False);
@@ -88,9 +90,9 @@ namespace EmpireAtWar.Tests.Movement
                 fast,
                 new Vector3(50f, 0f, 0f));
 
-            Assert.That(
-                slowPlan.MovementDuration,
-                Is.EqualTo(fastPlan.MovementDuration * 4f).Within(0.01f));
+            Assert.That(slowPlan.MovementDuration, Is.GreaterThan(fastPlan.MovementDuration));
+            Assert.That(slowPlan.MovementDuration, Is.GreaterThan(slowPlan.Route.Length / slow.NavigationSpeed));
+            Assert.That(fastPlan.MovementDuration, Is.GreaterThan(fastPlan.Route.Length / fast.NavigationSpeed));
         }
 
         [Test]
@@ -230,7 +232,7 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(titanPlan.IsStationary, Is.False);
             Assert.That(Vector3.Distance(titanPlan.Destination, destination),
                 Is.InRange(titan.NavigationRadius + quasar.NavigationRadius, 2f * titan.NavigationRadius + 0.01f));
-            Assert.That(ShipAvoidancePlanner.IsRouteClear(titanPlan.Route, new[] { obstacle },
+            Assert.That(IsRouteClear(titanPlan.Route, new[] { obstacle },
                 titan.NavigationHeight, 0.5f, titan.NavigationRadius), Is.True);
             Assert.That(executorPlan.Destination, Is.EqualTo(new Vector3(2400f, -341f, 0f)));
             Assert.That(executorPlan.Route.Length, Is.EqualTo(4800f).Within(0.05f));
@@ -465,7 +467,7 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(plan.IsStationary, Is.False);
             Assert.That(plan.Destination, Is.EqualTo(destination));
             Assert.That(
-                ShipAvoidancePlanner.IsRouteClear(
+                IsRouteClear(
                     plan.Route,
                     cluster,
                     agent.NavigationHeight,
@@ -636,7 +638,7 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void Plan_ObstacleAheadAndDestinationBehind_TurnsInPlace()
+        public void Plan_ObstacleAheadAndDestinationBehind_UsesClearTightTurn()
         {
             FakeAgent ship = new FakeAgent(
                 Vector3.zero,
@@ -663,12 +665,12 @@ namespace EmpireAtWar.Tests.Movement
             Vector3 earlyPosition =
                 plan.Route.EvaluateNormalizedDistance(0.05f, out _);
 
-            Assert.That(plan.TurnDuration, Is.GreaterThan(0f));
+            Assert.That(plan.TurnDuration, Is.Zero);
             Assert.That(
                 Vector3.Dot(earlyPosition, Vector3.forward),
-                Is.LessThanOrEqualTo(0f));
+                Is.GreaterThan(0f));
             Assert.That(
-                ShipAvoidancePlanner.IsRouteClear(
+                IsRouteClear(
                     plan.Route,
                     new[] { obstacle },
                     ship.NavigationHeight,
@@ -1037,6 +1039,20 @@ namespace EmpireAtWar.Tests.Movement
             field.SetValue(component, value);
         }
 
+        private static bool IsRouteClear(ShipRoute route, IReadOnlyList<RadarContact> contacts,
+            float shipHeight, float heightTolerance, float clearance)
+        {
+            int cursor = 0;
+            int count = Mathf.Max(1, Mathf.CeilToInt(route.Length / 0.25f));
+            for (int i = 0; i <= count; i++)
+            {
+                Vector3 point = route.EvaluateDistance(route.Length * i / count, ref cursor, out _, out _);
+                if (!ShipAvoidancePlanner.IsPointClear(point, contacts, shipHeight, heightTolerance,
+                        Mathf.Max(0f, clearance - 0.001f))) return false;
+            }
+            return true;
+        }
+
         private sealed class FakeAgent : IShipNavigationAgent
         {
             public Vector3 NavigationPosition { get; }
@@ -1044,6 +1060,7 @@ namespace EmpireAtWar.Tests.Movement
             public ShipHullSpan NavigationHullSpan { get; }
             public float NavigationRadius { get; }
             public float NavigationSpeed { get; }
+            public float NavigationCurrentSpeed => 0f;
             public float NavigationRotationSpeed { get; }
             public bool IgnoresMapObstacles { get; set; }
 
@@ -1199,10 +1216,7 @@ namespace EmpireAtWar.Tests.Movement
                 return new ShipNavigationPlan(
                     destination: requestedDestination,
                     detour: null,
-                    route: ShipBezierPath.BuildDirectRoute(
-                        agent.NavigationPosition,
-                        forward,
-                        requestedDestination),
+                    route: new ShipRoute(new[] { ShipRoutePiece.Line(agent.NavigationPosition, requestedDestination) }),
                     turnDuration: 0f,
                     movementDuration: 0f,
                     isStationary: IsStationary,

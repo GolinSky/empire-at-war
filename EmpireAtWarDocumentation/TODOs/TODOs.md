@@ -252,6 +252,9 @@
 ### Bugs
 
 
+- [x] **Ship routes not curved; ships slow/stop at graph corners** → [[Done/Bugs/Ship_Route_Curvature_Plan]]; research → [[Done/Bugs/Ship_Route_Curvature_Plan - Research]]
+  - Completed 2026-11-13, `acceptance: pending-user`. Tangent lines/arcs, local disk repair, persistent buckets, speed profile and tangent follower replaced the Bezier rejection chain. Unity compilation and source/diff checks passed. Tests, archetype sweeps, runtime CPU and online traffic checks → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **Fix enemy AI endgame siege defense, emergency production and capture oscillation** → [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix|Endgame Defense and Capture Fix]]; parent: [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]
   - Completed 2026-11-02, `acceptance: pending-user`. Phases 1–4 (`cf4a22850`), 4b (`1dff4330e`), 4c (`aa7fcaffa`), Phase 5 (strikecraft-specialist cap, raid route safety). Compilation/diff checks passed; tests not run. Gates → [[TODOs/User_Acceptance_Queue]].
 

@@ -84,6 +84,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             new ShipHullSpan(Model.Height + Model.HullBottom, Model.Height + Model.HullTop);
         public float NavigationRadius => Mathf.Max(Model.NavigationRadius, MINIMUM_NAVIGATION_RADIUS);
         public float NavigationSpeed => Model.Speed;
+        public float NavigationCurrentSpeed => _motion.CurrentSpeed;
         public float NavigationRotationSpeed => Model.RotationSpeed;
         public bool IgnoresMapObstacles => Model.IgnoresMapObstacles;
         public Vector3 CurrentPosition => transform.position;
