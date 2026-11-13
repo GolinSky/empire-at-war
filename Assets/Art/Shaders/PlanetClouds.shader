@@ -115,7 +115,7 @@ Shader "EmpireAtWar/Planet Clouds"
 
             #define BUMP_SCALE_NOT_SUPPORTED 1
 
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/SimpleLitInput.hlsl"
+            #include "PlanetCloudsInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/SimpleLitForwardPass.hlsl"
             #include "PlanetRotation.hlsl"
             Varyings PlanetVertex(Attributes input)
@@ -157,7 +157,7 @@ Shader "EmpireAtWar/Planet Clouds"
 
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/SimpleLitInput.hlsl"
+            #include "PlanetCloudsInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
             #include "PlanetRotation.hlsl"
             Varyings PlanetVertex(Attributes input)
@@ -195,7 +195,7 @@ Shader "EmpireAtWar/Planet Clouds"
             #pragma multi_compile_instancing
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/SimpleLitInput.hlsl"
+            #include "PlanetCloudsInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/DepthOnlyPass.hlsl"
             #include "PlanetRotation.hlsl"
             Varyings PlanetVertex(Attributes input)
@@ -234,7 +234,7 @@ Shader "EmpireAtWar/Planet Clouds"
             #pragma multi_compile_instancing
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/SimpleLitInput.hlsl"
+            #include "PlanetCloudsInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/SimpleLitDepthNormalsPass.hlsl"
             #include "PlanetRotation.hlsl"
             Varyings PlanetVertex(Attributes input)

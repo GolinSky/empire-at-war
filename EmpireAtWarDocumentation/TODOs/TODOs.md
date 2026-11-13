@@ -60,6 +60,11 @@
 
 ### Bugs
 
+
+- [ ] **Ship hardpoints, firing angles and balance** → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]
+  - Status: todo (2026-11-13). Peleset/Recalcitrant wrapped-yaw mismatch; Recusant DPS/coverage; Dispatcher/Resolute/Arquitens narrow arcs; Mandator economics; shared-prefab telemetry and Venator II description. Findings recorded; fixes unimplemented.
+
+
 - [ ] **Rebalance carrier deployment and squadron stats** → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance|Carrier and Squadron Rebalance]]
   - Reopened 2026-11-12 after failed fresh-match balance acceptance. Original 29 loadouts match; telemetry confirms Republic/Rebel squadron kill advantage. Implemented 1 s CIS launches, no loss-triggered cooldown reset, 5 s recent window and faction station counts 5/4/3/2. Applied approved direct-purchase prices. Remaining: strength playtest, AI live/reserve counting and current-roster coverage; [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research|audit evidence]].
 
@@ -68,6 +73,7 @@
   - Next: user in-game check (#4 build order, #5 raids, #10 cues, #11 rings, #12 home mines).
 
 - [ ] **Fix enemy AI losing battles and CIS vs Republic balance** → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance|Enemy AI and Faction Balance]]; logs: [[Tooling/Battle_Telemetry|Battle Telemetry]]
+  - 2026-11-13 audit: rapid raid/site-defense switching and order/retreat follow-ups → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review 2026-11-13]]. Ship findings now owned by [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]].
   - Done (commit `6babee5e1`): Republic torpedo nerf, CIS hangar/squadron buffs, Concentrate Fire nerf, AI squadron escort, strength, rally, production, press-advantage and retreat-memory fixes; AI EditMode tests pass.
   - 2026-11-01: mining raid priority/strength checks, capture-squadron reservation and early captured-mine construction fixed; tests authored, not run. Comparison → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Research]].
   - Target-specific task forces implemented 2026-11-01: counter-based strike selection, assembly readiness, retained membership and guard screen. Runtime acceptance pending; tests authored, not run.

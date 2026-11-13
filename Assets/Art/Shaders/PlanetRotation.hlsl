@@ -2,8 +2,10 @@
 #define PLANET_ROTATION_INCLUDED
 
 // Per-renderer values set once by PlanetView: local axis, degrees/second, start time.
+#if !defined(PLANET_LIT_INPUT_INCLUDED) && !defined(PLANET_CLOUDS_INPUT_INCLUDED)
 float4 _PlanetRotation;
 float _PlanetRotationStartTime;
+#endif
 
 float3 RotatePlanetVector(float3 value)
 {

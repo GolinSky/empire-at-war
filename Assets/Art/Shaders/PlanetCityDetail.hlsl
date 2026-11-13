@@ -3,9 +3,6 @@
 
 TEXTURE2D(_CityDetailMap);
 SAMPLER(sampler_CityDetailMap);
-float _CityDetailTiling;
-half _CityDetailStrength;
-half4 _CityEmissionColor;
 
 void InitializePlanetSurfaceData(float2 uv, float3 positionWS, out SurfaceData surfaceData)
 {

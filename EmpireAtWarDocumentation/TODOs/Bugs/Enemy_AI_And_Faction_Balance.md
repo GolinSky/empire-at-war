@@ -129,6 +129,13 @@ commit: 6babee5e1
 - Fresh evidence supersedes the earlier pending-battle gate only for production/concentration/deployment. Central capture and endgame defense remain unresolved.
 - Original attachment preserved → [[GameDesign/References/EaW_Global_AI_Original_Attachment]]. Reusable implementation guidance remains [[Architecture/Enemy_AI_Objectives]].
 
+## Battle Findings (2026-11-13)
+
+- Ship findings now have a separate owner → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]. Keep AI objective/order work here; the dated review links the separated ship plan.
+
+- Current review → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review 2026-11-13]]. Rapid raid/site-defense switching and Peleset/Recalcitrant wrapped-yaw contract mismatch confirmed; Recusant coverage and narrow-arc candidates documented. Retreat/order causes and battle damage impact need follow-up; production/recovery worked in this sample.
+- [ ] Resolve the dated review's objective-stability and order-replacement follow-ups; no gameplay fix implemented by this audit. Broader balance scope remains active.
+
 ## TODO
 
 - Endgame implementation and secondary tuning → [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] (done 2026-11-02, in-game acceptance pending).

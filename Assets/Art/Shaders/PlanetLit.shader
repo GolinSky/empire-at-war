@@ -151,7 +151,7 @@ Shader "EmpireAtWar/Planet Lit"
             #pragma instancing_options renderinglayer
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
+            #include "PlanetLitInput.hlsl"
             #include "PlanetRotation.hlsl"
             #include "PlanetCityDetail.hlsl"
             // Decorate URP's surface initialization while retaining its lighting/fog pass.
@@ -197,7 +197,7 @@ Shader "EmpireAtWar/Planet Lit"
 
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
+            #include "PlanetLitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
             #include "PlanetRotation.hlsl"
             Varyings PlanetVertex(Attributes input)
@@ -235,7 +235,7 @@ Shader "EmpireAtWar/Planet Lit"
             #pragma multi_compile_instancing
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
+            #include "PlanetLitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/DepthOnlyPass.hlsl"
             #include "PlanetRotation.hlsl"
             Varyings PlanetVertex(Attributes input)
@@ -276,7 +276,7 @@ Shader "EmpireAtWar/Planet Lit"
             #pragma multi_compile_instancing
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DOTS.hlsl"
 
-            #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
+            #include "PlanetLitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/LitDepthNormalsPass.hlsl"
             #include "PlanetRotation.hlsl"
             Varyings PlanetVertex(Attributes input)
