@@ -10,6 +10,7 @@ using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.TacticalMarkers;
+using EmpireAtWar.Components.Hangar;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -501,8 +502,10 @@ namespace EmpireAtWar.Services.Enemy
                 _strikeShips.Clear();
                 _supportShips.Clear();
                 if (targeted) _attackForce.AssignScreens(context, _body, anchor);
+                // A carrier never screens: an attack-move would fly it onto the target, while an attack order
+                // keeps it at standoff and hands the target to its guarding bombers.
                 foreach (IShipEntity ship in _body)
-                    if (!targeted || !_attackForce.IsScreen(ship)) _strikeShips.Add(ship);
+                    if (!targeted || !_attackForce.IsScreen(ship) || IsCarrier(context, ship)) _strikeShips.Add(ship);
                     else _supportShips.Add(ship);
                 foreach (IShipEntity ship in _supportShips) _strikeTargets.Remove(ship);
                 if (target != null) IssueStrikeAttack(context, target);
@@ -553,6 +556,7 @@ namespace EmpireAtWar.Services.Enemy
         private void IssueStrikeAttack(EnemyStrategicContext context, GameEntity target)
         {
             List<Vector3> offsets = BattleOffsets(_strikeShips, _strikeShips.Count, target, out bool rebuilt);
+            ApplyCarrierStandoff(context, target, offsets);
             List<GameEntity> receivers = new List<GameEntity>();
             List<Vector3> receiverOffsets = new List<Vector3>();
             for (int i = 0; i < _strikeShips.Count; i++)
@@ -566,6 +570,42 @@ namespace EmpireAtWar.Services.Enemy
             }
             if (receivers.Count > 0) _unitOrderService.IssueAttack(receivers, target, receiverOffsets);
         }
+
+        /// <summary>
+        /// Carriers attack from the gun line's side of the target at their own weapon range, behind the gun ships,
+        /// instead of a close battle-formation slot. The attack order keeps the target for their guarding bombers.
+        /// </summary>
+        private void ApplyCarrierStandoff(EnemyStrategicContext context, GameEntity target, List<Vector3> offsets)
+        {
+            Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
+            Vector3 gunLine = Vector3.zero;
+            int gunShips = 0;
+            foreach (IShipEntity ship in _strikeShips)
+            {
+                if (IsCarrier(context, ship)) continue;
+                gunLine += ship.WorldPosition;
+                gunShips++;
+            }
+            for (int i = 0; i < _strikeShips.Count; i++)
+            {
+                IShipEntity ship = _strikeShips[i];
+                if (!IsCarrier(context, ship)) continue;
+                float weaponRange = context.Receivers[ship].GetFacade<IUnitCombatObserverFacade>().WeaponRange;
+                // Without guns the attack state cannot judge range; the carrier keeps its formation slot.
+                if (weaponRange <= 0f) continue;
+                Vector3 side = (gunShips > 0 ? gunLine / gunShips : ship.WorldPosition) - targetPosition;
+                side.y = 0f;
+                if (side.sqrMagnitude <= Mathf.Epsilon) continue;
+                float targetRadius = target.TryGetFacade(out INavigationFootprintFacade footprint)
+                    ? footprint.NavigationRadius : 0f;
+                offsets[i] = side.normalized * (targetRadius + ship.NavigationRadius + weaponRange);
+            }
+        }
+
+        /// <summary>A ship whose hangar can still launch or still has squadrons out.</summary>
+        private static bool IsCarrier(EnemyStrategicContext context, IShipEntity ship) =>
+            context.Receivers[ship].TryGetFacade(out IHangarAirWingFacade airWing) &&
+            (airWing.CanLaunch || airWing.LaunchedCount > 0);
 
         private List<Vector3> BattleOffsets(IReadOnlyList<IShipEntity> ships,
             int count, GameEntity target) => BattleOffsets(ships, count, target, out _);

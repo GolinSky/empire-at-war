@@ -173,3 +173,24 @@ tags:
 - S6 orders: `EnemyTaskForceExecutor.IssueStrikeAttack` skips re-sending Attack when target, slot and active Attack order are unchanged. Order-change reason logging not added.
 - Verification: Unity recompile clean, no console errors. EditMode tests not run (local override); new test `CorneredWithoutSafeRetreat_EngagesLocalThreatInsteadOfHolding`. Behavior unverified in battle.
 - Reusable guidance: none extracted yet; promote after battle confirmation.
+
+## Carrier Usage 2026-11-13
+
+### Evidence
+
+- AI buys carriers: Republic AI 15 Venator, 14 Venator II, 7 Acclamator, 6 Imperator; CIS AI 7 Bulwark, 6 Wavecrest, 5 Providence.
+- Carrier hulls fight like other ships: in-range sample share Venator 38%, Venator II 52%, Providence 46%.
+- Squadron damage: Republic AI 382k vs player CIS 366k (1851 s). CIS AI (UltraHard) 66k vs player Republic 244k (770 s) → ~86 vs 316 per s. Confounded by Vulture/DroidBomber nerfs between battles.
+- Ruled out: launch throttle (10/s); AI/player guard logic is shared; production values hangars; Fighter Reinforcements / Rapid Deployment are on no ship.
+
+### Changes
+
+- Logging: `SquadronTelemetry` → `_squadrons.csv`; schema → [[Tooling/Battle_Telemetry]].
+- `IHangarAirWingFacade` (`HangarComponent`): `CanLaunch`, launched squadrons.
+- `EnemyStrategicContextBuilder.AddEscortingAirWing`: each carrier's `ShipForces` adds launched squadrons still on Guard, at current health → selection, readiness, target DPS and screens count the air wing.
+- `EnemyTaskForceExecutor`: carriers (hangar can launch or has squadrons out) never screen; they get an Attack order with offset on the gun-line side at `targetRadius + shipRadius + weaponRange`. Gunless carriers keep their battle slot.
+- Verification: Unity recompile clean, no console errors. Tests not run; no new tests. Behavior unverified in battle.
+
+### TODO
+
+- [ ] Play a CIS-AI UltraHard battle; from `_squadrons.csv` measure launches per carrier, squadron lifetime, guard vs engaged time, hangar shutdown time; confirm carriers hold standoff in `_ai_orders.csv`.

@@ -33,6 +33,7 @@ using VContainer;
 using VContainer.Internal;
 using IEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Models.Players;
 
 namespace EmpireAtWar.Entities.Squadrons
 {
@@ -46,6 +47,9 @@ namespace EmpireAtWar.Entities.Squadrons
     {
         // Idle and guarding squadrons scan every enemy in range; spacing those scans keeps large air battles cheap.
         private const float TARGET_SEARCH_INTERVAL = 0.25f;
+        // Dev telemetry: one periodic order/position row per squadron.
+        private const float TELEMETRY_SAMPLE_INTERVAL = 5f;
+        private float _nextTelemetrySample;
 
         private ISquadronFlightComponent _flight;
         private ISquadronHealthComponent _health;
@@ -82,6 +86,8 @@ namespace EmpireAtWar.Entities.Squadrons
         private IReadOnlyList<ISFoilsView> _sFoilsViews;
 
         private ShipAbilityId _pendingAbilityId;
+        private PlayerId _owner;
+        private SquadronType _squadronType;
 
         private float _huntRetargetTimer;
         private float _targetSearchTimer;
@@ -136,9 +142,11 @@ namespace EmpireAtWar.Entities.Squadrons
             CombatModifiers modifiers, ContainerLocal<IReadOnlyList<IRespawnable>> respawnables,
             ContainerLocal<IReadOnlyList<IDespawnable>> despawnables,
             ContainerLocal<IReadOnlyList<IAudioDialogShipComponent>> audioDialogs, SquadronData data, LifecycleTickGate tickGate,
-            long entityId, FighterPoseBatch poseBatch, SquadronOrderScheduler orderScheduler)
+            long entityId, FighterPoseBatch poseBatch, SquadronOrderScheduler orderScheduler, PlayerId owner)
         {
             EntityId = entityId;
+            _owner = owner;
+            _squadronType = squadronType;
             _flight = flight;
             _health = health;
             _radar = radar;
@@ -187,6 +195,10 @@ namespace EmpireAtWar.Entities.Squadrons
             // Staggered so squadrons launched together do not all search in the same frame.
             _targetSearchTimer = UnityEngine.Random.Range(0f, TARGET_SEARCH_INTERVAL);
             _orderScheduler.Register(UpdateOrder);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _nextTelemetrySample = Time.time + TELEMETRY_SAMPLE_INTERVAL;
+            RecordTelemetry("start", "Squadron entered the battle.");
+#endif
         }
 
         public void LateDispose() => Release(false);
@@ -391,6 +403,13 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private void UpdateOrder(float elapsed)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (Time.time >= _nextTelemetrySample)
+            {
+                _nextTelemetrySample = Time.time + TELEMETRY_SAMPLE_INTERVAL;
+                RecordTelemetry("sample", "Periodic squadron order state.");
+            }
+#endif
             switch (_orders.Current)
             {
                 case UnitOrderType.Attack:
@@ -537,6 +556,16 @@ namespace EmpireAtWar.Entities.Squadrons
             _weapon.ResetTarget();
         }
 
+        private void RecordTelemetry(string kind, string reason)
+        {
+            IEntity target = _orders.Target;
+            float targetDistance = target == null ? -1f :
+                PlanarGeometry.Distance(_flight.Centroid, target.GetFacade<IEntityTransformFacade>().Transform.position);
+            SquadronTelemetry.Squadron(kind, _owner, EntityId, _squadronType.ToString(), _orders.Current.ToString(),
+                target == null ? 0L : target.Id, _engaged == null ? 0L : _engaged.Id, _flight.Centroid,
+                targetDistance, _health.HealthModelObserver.Hull, _health.HealthModelObserver.Shields, reason);
+        }
+
         private void Release(bool destroyed)
         {
             _health.HealthModelObserver.OnDestroy -= HandleDestroyed;
@@ -545,6 +574,9 @@ namespace EmpireAtWar.Entities.Squadrons
                 return;
             }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (destroyed) RecordTelemetry("destroyed", "Squadron destroyed.");
+#endif
             _isReleased = true;
             _orderScheduler.Unregister(UpdateOrder);
             _radar.Enemies.ItemAdded -= HandleEnemyAdded;

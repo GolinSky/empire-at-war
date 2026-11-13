@@ -39,7 +39,7 @@ namespace EmpireAtWar.Tests.Editor
                 if (individualBay) SetField(component, "bayHardPoints", new[] { hardPoint });
                 var model = new HangarModel(data);
                 typeof(HangarComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(component, new object[] { data, healthComponent, model, null, null, default(PlayerId) });
+                    .Invoke(component, new object[] { data, healthComponent, model, null, null, default(PlayerId), 0L });
                 component.Initialize();
                 Assert.That(model.TryLaunch(INITIAL_DELAY, out _), Is.True);
                 hardPointModel.ApplyDamage(hardPointModel.MaxHealth);

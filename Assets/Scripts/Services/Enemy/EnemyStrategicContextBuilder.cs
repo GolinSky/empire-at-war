@@ -26,6 +26,8 @@ using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Services.TacticalMarkers;
+using EmpireAtWar.Components.Hangar;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -312,6 +314,7 @@ namespace EmpireAtWar.Services.Enemy
                 _receivers.Add(ship, entity);
                 ForceComposition force = new ForceComposition();
                 _forceBuilder.AddUnit(force, entity);
+                AddEscortingAirWing(force, entity);
                 _shipForces.Add(ship, force);
             }
             _targetForces.Clear();
@@ -341,6 +344,22 @@ namespace EmpireAtWar.Services.Enemy
                 recoveryReason: recoveryReason + " " + _captureReason,
                 stationPressure: _stationPressure,
                 isDefensePointClear: (point, radius) => _navigation.IsPositionClear(point, radius, includeReservations: false));
+        }
+
+        /// <summary>
+        /// A carrier's strike value includes the launched squadrons still guarding it, at their current strength:
+        /// guarding bombers attack whatever the carrier is ordered to attack.
+        /// </summary>
+        private void AddEscortingAirWing(ForceComposition force, GameEntity carrier)
+        {
+            if (!carrier.TryGetFacade(out IHangarAirWingFacade airWing)) return;
+            for (int i = 0; i < airWing.LaunchedCount; i++)
+            {
+                if (!_entityLocator.TryGetEntity(airWing.GetLaunched(i).EntityId, out GameEntity squadron) ||
+                    squadron.HealthModel.IsDestroyed || !squadron.HealthModel.HasUnits ||
+                    squadron.GetFacade<IUnitOrderObserverFacade>().CurrentOrder != UnitOrderType.Guard) continue;
+                _forceBuilder.AddUnit(force, squadron);
+            }
         }
 
         /// <summary>

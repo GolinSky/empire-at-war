@@ -28,6 +28,7 @@ verification: Historical battle evidence plus 2026-10-31 live-source review and
 - `<scene>_<yyyyMMdd_HHmmss>.csv` — damage telemetry (`BattleTelemetry`).
 - `<scene>_<yyyyMMdd_HHmmss>_ai.csv` — AI decision/purchase timeline (`EnemyAiTelemetry`).
 - `<scene>_<yyyyMMdd_HHmmss>_ai_orders.csv` — per-ship order/contact timeline (`ShipOrderTelemetry`).
+- `<scene>_<yyyyMMdd_HHmmss>_squadrons.csv` — hangar and squadron timeline, all players (`Assets/Scripts/Services/Squadron/SquadronTelemetry.cs`; hooks in `HangarComponent`, `Squadron`).
 - `Assets/Scripts/Services/Enemy/ShipOrderTelemetry.cs`; `ShipOrderTelemetrySource.cs` — runner lifecycle hooks, stable injected identity and live radar source.
 - `Assets/Scripts/Components/Weapon/BattleTelemetry.cs` — writer; hooks in `WeaponComponent.OnShotEmitted` / `CommitImpact`.
 - `Assets/Scripts/Services/Enemy/EnemyAiTelemetry.cs` — writer; hooks in `EnemyUnitCommander.PublishDecision`, `EnemyProductionStrategy` purchase.
@@ -63,6 +64,13 @@ verification: Historical battle evidence plus 2026-10-31 live-source review and
 - Effective live radar/weapon range, vision multiplier, ion/cloak state, facing dot, hull/shields and lifecycle reason.
 - Join decision assignment and order rows by stable entity ID; distinguish approaching, fighting en route, stopped outside, inside capturing, stalled and idle.
 - Historical Providence `5065384297670371146` has only saved Idle/no-target evidence; before/after damage/facing attribution requires a new recording.
+
+## Squadron CSV (`<scene>_<time>_squadrons.csv`)
+
+- Columns: `time,kind,player,entityId,unit,order,targetId,engagedId,x,z,targetDistance,hull,shields,carrierId,bay,reason`. `time` = scaled `Time.time`.
+- Squadron rows: `start` (each pooled life), `sample` every `5 s`, `destroyed`. `targetId` = order target (Guard → guarded carrier); `engagedId` = enemy the fighters are engaging; `targetDistance` = planar distance to order target, `-1` without one.
+- Hangar rows (`entityId` = squadron, `carrierId` = carrier/station): `launch` (`source=automatic|replacement|immediate`, bay reserve/active), `squadronLost`, `bayDisabled`, `bayEnabled`, `hangarShutdown`, `hangarResumed`, `hangarReleased` (summed reserve, launched count).
+- Join `launch.entityId` → squadron rows for per-carrier air-wing output; join `carrierId` → `_ai_orders.csv` `entityId` for carrier position/state.
 
 ## Implementation
 
