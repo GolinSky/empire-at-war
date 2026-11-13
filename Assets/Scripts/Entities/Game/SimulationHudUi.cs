@@ -21,6 +21,9 @@ namespace EmpireAtWar.Entities.Game
         public void Initialize(ISimulationHudPresenter presenter)
         {
             _presenter = presenter;
+            // The main battle HUD already provides pause and speed controls.
+            pauseButton.gameObject.SetActive(false);
+            speedButton.gameObject.SetActive(false);
             pauseButton.onClick.AddListener(presenter.TogglePause); speedButton.onClick.AddListener(presenter.ToggleSpeed);
             restartButton.onClick.AddListener(presenter.Restart); newButton.onClick.AddListener(presenter.New);
         }
