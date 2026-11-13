@@ -28,7 +28,11 @@ namespace EmpireAtWar.Entities.MainMenu.Tutorial
             new SkirmishSlotSetup(ToOccupant(TutorialPreset.OPPONENT_DIFFICULTY),
                 TutorialPreset.Opponent(DEFAULT_FACTION), 1, 1),
             new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, DEFAULT_FACTION, 0, 2),
-            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, TutorialPreset.Opponent(DEFAULT_FACTION), 1, 3)
+            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, TutorialPreset.Opponent(DEFAULT_FACTION), 1, 3),
+            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, DEFAULT_FACTION, 0, 4),
+            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, TutorialPreset.Opponent(DEFAULT_FACTION), 1, 5),
+            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, DEFAULT_FACTION, 0, 6),
+            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, TutorialPreset.Opponent(DEFAULT_FACTION), 1, 7)
         };
 
         public event Action Changed;

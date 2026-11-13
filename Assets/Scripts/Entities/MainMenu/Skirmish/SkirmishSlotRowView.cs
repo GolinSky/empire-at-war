@@ -43,6 +43,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             IReadOnlyList<string> colorOptions)
         {
             _rowIndex = rowIndex;
+            slotIndexText.text = (rowIndex + 1).ToString("00");
             SetOptions(factionDropdown, factionOptions);
             SetOptions(teamDropdown, teamOptions);
             SetOptions(colorDropdown, colorOptions);

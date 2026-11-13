@@ -6,7 +6,7 @@ namespace EmpireAtWar.Services.Networking.Online
     /// <summary>Host-side lobby members, ready ticks and slot assignment. The host is connection 0 and always ready.</summary>
     public sealed class OnlineLobby
     {
-        public const int MAX_MEMBERS = 4;
+        public const int MAX_MEMBERS = MatchRules.MAX_PLAYERS;
         public const int HOST_CONNECTION_ID = 0;
 
         private readonly List<LobbyMember> _members = new List<LobbyMember>();

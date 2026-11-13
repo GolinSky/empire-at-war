@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Entities.MainMenu.Skirmish;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -349,6 +350,8 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(MapSize.Small, 4, 24, 3)]
         [TestCase(MapSize.Medium, 4, 30, 5)]
         [TestCase(MapSize.Large, 4, 36, 7)]
+        [TestCase(MapSize.Medium, 6, 40, 7)]
+        [TestCase(MapSize.Large, 8, 56, 11)]
         public void Validator_AcceptsRelayLayoutCountsAndRejectsOldZoneCounts(
             MapSize size, int playerCount, int expectedSites, int expectedZones)
         {
@@ -356,8 +359,10 @@ namespace EmpireAtWar.Tests.Editor
             MapGenerationSettings settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(
                 "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset");
             BattleDefinition defaults = SkirmishPreset.Default();
-            IReadOnlyList<PlayerSlot> players = playerCount == 2
-                ? defaults.Slots : TestPlayers.CreateTeamGame().Players;
+            var setup = new SkirmishModel();
+            for (int i = 2; i < playerCount; i++)
+                setup.SelectSlotOccupant(i, SkirmishSlotOccupant.AiMedium);
+            IReadOnlyList<PlayerSlot> players = setup.CreatePlayers();
             BattleDefinition definition = SkirmishPreset.Create(players, defaults.Map.Planet, size,
                 defaults.VictoryCondition, defaults.StartingMoney, true, 0).Build();
             BattleSaveHeader header = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave,
@@ -385,7 +390,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private static CaptureSiteSave[] CreateDefaultCaptureSites(MapGenerationSettings mapSettings, BattleDefinition definition)
         {
-            MapSizeSettings size = mapSettings.GetSize(definition.Map.Size);
+            MapSizeSettings size = mapSettings.GetSize(definition.Map.Size)
+                .ForArchetype(mapSettings.Profiles.Get(definition.Map.Planet), definition.Slots.Count);
             int count = definition.Slots.Count * 2 + mapSettings.MainZoneMiningCount +
                 mapSettings.MainZoneSatelliteCount + 2 * size.AdditionalZonePairCount *
                 (1 + mapSettings.AdditionalZoneSatelliteCount);
@@ -397,7 +403,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private static ReinforcementZoneSave[] CreateDefaultReinforcementZones(MapGenerationSettings mapSettings, BattleDefinition definition)
         {
-            int count = 1 + 2 * mapSettings.GetSize(definition.Map.Size).AdditionalZonePairCount;
+            int count = 1 + 2 * mapSettings.GetSize(definition.Map.Size)
+                .ForArchetype(mapSettings.Profiles.Get(definition.Map.Planet), definition.Slots.Count).AdditionalZonePairCount;
             var zones = new ReinforcementZoneSave[count];
             for (int i = 0; i < count; i++)
                 zones[i] = ReinforcementZoneSave.Create(PlayerId.None, PlayerId.None, 0f, false);

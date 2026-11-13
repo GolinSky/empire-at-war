@@ -46,6 +46,21 @@ namespace EmpireAtWar.Entities.Map.Generation
             Vector3 center = new Vector3(middle.x, 0f, middle.y);
             float side = Mathf.Min(size.Bounds.Max.x - size.Bounds.Min.x, size.Bounds.Max.y - size.Bounds.Min.y);
             float cellSize = Mathf.Clamp(side * CELL_SHARE, MIN_CELL_SIZE, MAX_CELL_SIZE);
+            bool centralStorm = size.IsArchetypeLayout && size.Archetype == MapArchetypeKind.OrbitalRing;
+            if (centralStorm)
+            {
+                SpaceHazardData stormData = null;
+                foreach (SpaceHazardData preset in _settings.Hazards)
+                    if (preset.HazardType == HazardType.IonStorm) stormData = preset;
+                if (ReferenceEquals(stormData, null))
+                    throw new System.InvalidOperationException("Orbital Ring requires an Ion Storm hazard preset.");
+                // Keep the long storm axis perpendicular to the off-centre main relay for every planet rotation.
+                Vector3 stormAxis = Quaternion.Euler(0f, size.SkeletonAngle, 0f) * Vector3.right;
+                HazardSpot storm = HazardCloudGenerator.CreateIsland(stormData, center, stormAxis,
+                    side * 0.18f, side * 0.045f, cellSize, random);
+                if (!Fits(storm, size, stations, nodes, true)) return result;
+                result.Add(storm);
+            }
             Vector3 splitAxis = GetSplitAxis(stations, center);
             Vector3 teamAxis = new Vector3(splitAxis.z, 0f, -splitAxis.x);
             // Relay-facing islands fold across the relay line; fallback islands retain the fair team axis.
@@ -69,7 +84,29 @@ namespace EmpireAtWar.Entities.Map.Generation
                 float length = side * (sweep ? size.HazardLengthShare.x : Range(random, size.HazardLengthShare));
                 float width = side * (sweep ? size.HazardHalfWidthShare.x : Range(random, size.HazardHalfWidthShare));
                 HazardSpot first;
-                if (preferRelay)
+                if (size.IsArchetypeLayout)
+                {
+                    Quaternion orientation = Quaternion.Euler(0f, size.SkeletonAngle, 0f);
+                    Vector3 axis = orientation * Vector3.right;
+                    Vector3 normal = orientation * Vector3.forward;
+                    float along = Mathf.Lerp(-0.32f, 0.32f, (float)random.NextDouble()) * side;
+                    float across = Mathf.Lerp(0.15f, 0.32f, (float)random.NextDouble()) * side;
+                    bool corridor = size.Archetype == MapArchetypeKind.NebulaCorridors;
+                    Vector3 position = center + axis * along + normal * across;
+                    bool plugs = size.Archetype == MapArchetypeKind.AsteroidBelt ||
+                        size.Archetype == MapArchetypeKind.TwinPass;
+                    if (plugs && attempt < attempts / 2 && candidates.Count < MAX_CANDIDATE_PAIRS / 2)
+                    {
+                        float pass = size.Archetype == MapArchetypeKind.AsteroidBelt ? 0.31f : 0.36f;
+                        position = center + axis * side * (pass + Mathf.Lerp(-0.06f, 0.06f, (float)random.NextDouble())) +
+                            normal * side * Mathf.Lerp(-0.08f, 0.08f, (float)random.NextDouble());
+                    }
+                    first = corridor
+                        ? HazardCloudGenerator.CreateStream(data, position, axis, length, width, cellSize, random)
+                        : HazardCloudGenerator.CreateIsland(data, position, normal, length * 0.55f,
+                            width * 1.2f, cellSize, random);
+                }
+                else if (preferRelay)
                 {
                     Vector3 direction = (relayTargets[attempt % relayTargets.Count].Center - center).normalized;
                     Vector3 along = new Vector3(-direction.z, 0f, direction.x);
@@ -103,7 +140,8 @@ namespace EmpireAtWar.Entities.Map.Generation
                 }
                 HazardSpot second = first.Mirror(center);
                 if (!Fits(first, size, stations, nodes) || !Fits(second, size, stations, nodes) ||
-                    first.GetClearance(second) <= 0f)
+                    first.GetClearance(second) <= 0f ||
+                    centralStorm && (Overlaps(first, result[0]) || Overlaps(second, result[0])))
                     continue;
                 candidates.Add(first);
                 candidates.Add(second);
@@ -178,12 +216,19 @@ namespace EmpireAtWar.Entities.Map.Generation
         }
 
         private bool Fits(HazardSpot spot, MapSizeSettings size, IReadOnlyList<MapStation> stations,
-            IReadOnlyList<MapNode> nodes)
+            IReadOnlyList<MapNode> nodes, bool allowCentralObstacle = false)
         {
             Bounds reach = spot.GetReach();
             if (reach.min.x < size.Bounds.Min.x || reach.max.x > size.Bounds.Max.x ||
                 reach.min.z < size.Bounds.Min.y || reach.max.z > size.Bounds.Max.y)
                 return false;
+            if (!allowCentralObstacle && size.CentralObstacleRadius > 0f && spot.GetClearance(new Vector3(
+                    (size.Bounds.Min.x + size.Bounds.Max.x) * 0.5f, 0f,
+                    (size.Bounds.Min.y + size.Bounds.Max.y) * 0.5f)) <= size.CentralObstacleRadius)
+                return false;
+            foreach (FieldVolume wall in size.StructuralFields)
+                if (spot.GetClearance(wall.Center) <= wall.Radius + size.FieldCellSize)
+                    return false;
             foreach (MapStation station in stations)
                 if (spot.GetClearance(station.Position) <= station.Radius + _settings.ZoneClearance)
                     return false;

@@ -11,6 +11,32 @@ namespace EmpireAtWar.Entities.Planet
         private static readonly int _rotationId = Shader.PropertyToID("_PlanetRotation");
         private static readonly int _rotationStartTimeId = Shader.PropertyToID("_PlanetRotationStartTime");
 
+        public void FitObstacle(Vector3 center, float radius)
+        {
+            Vector3 visualCenter = planetRenderers[0].transform.TransformPoint(planetRenderers[0].localBounds.center);
+            float visualRadius = GetVisualRadius(planetRenderers, visualCenter);
+            visualRadius = Mathf.Max(visualRadius, GetVisualRadius(cloudRenderers, visualCenter));
+            Vector3 localCenter = transform.InverseTransformPoint(visualCenter);
+            transform.localScale *= radius / visualRadius;
+            transform.position += center - transform.TransformPoint(localCenter);
+        }
+
+        private static float GetVisualRadius(MeshRenderer[] renderers, Vector3 center)
+        {
+            float radius = 0f;
+            foreach (MeshRenderer renderer in renderers)
+            {
+                // Planet and cloud meshes are spheres; local bounds remain available while creation is inactive.
+                Vector3 extent = renderer.localBounds.extents;
+                Vector3 scale = renderer.transform.lossyScale;
+                float sphereRadius = Mathf.Max(extent.x, Mathf.Max(extent.y, extent.z)) *
+                    Mathf.Max(Mathf.Abs(scale.x), Mathf.Max(Mathf.Abs(scale.y), Mathf.Abs(scale.z)));
+                Vector3 sphereCenter = renderer.transform.TransformPoint(renderer.localBounds.center);
+                radius = Mathf.Max(radius, Vector3.Distance(center, sphereCenter) + sphereRadius);
+            }
+            return radius;
+        }
+
         protected override void OnInitialize()
         {
             var properties = new MaterialPropertyBlock();

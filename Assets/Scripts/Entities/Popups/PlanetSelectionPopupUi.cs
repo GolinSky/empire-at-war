@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
+using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Ui.Base;
 using TMPro;
@@ -17,17 +18,21 @@ namespace EmpireAtWar.Entities.Popups
         [SerializeField] private TMP_Text countText;
         [SerializeField] private TMP_Text currentPlanetText;
         [SerializeField] private GameObject emptyState;
+        [SerializeField] private MapGenerationSettings mapSettings;
         private ISkirmishModelObserver _model;
         private bool _isInitialized;
 
         public event Action<int> PlanetSelected;
         public event Action CloseRequested;
 
-        public void Initialize(ISkirmishModelObserver model, Func<PlanetType, Texture2D> preview)
+        public void Initialize(ISkirmishModelObserver model)
         {
             _model = model;
             foreach (PlanetSelectionCardView card in cards)
-                card.Initialize(preview(card.Planet), SelectPlanet);
+            {
+                PlanetMapProfileEntry profile = mapSettings.Profiles.Get(card.Planet);
+                card.Initialize(profile.Preview, SelectPlanet, profile.Archetype.DisplayName);
+            }
             closeButton.onClick.AddListener(Close);
             searchInput.onValueChanged.AddListener(Filter);
             _model.Changed += Render;

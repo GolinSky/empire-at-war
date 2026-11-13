@@ -23,7 +23,8 @@ namespace EmpireAtWar.Entities.Map.Generation
             _settings = settings;
         }
 
-        public List<MapLane> Build(IReadOnlyList<MapNode> nodes, IReadOnlyList<MapStation> stations, Random random)
+        public List<MapLane> Build(IReadOnlyList<MapNode> nodes, IReadOnlyList<MapStation> stations, Random random,
+            float extraLaneChanceMultiplier = 1f, float laneBendMultiplier = 1f)
         {
             bool[,] isGabriel = BuildGabrielGraph(nodes, stations);
             bool[,] isConnected = new bool[nodes.Count, nodes.Count];
@@ -32,7 +33,7 @@ namespace EmpireAtWar.Entities.Map.Generation
 
             foreach ((int from, int to) in BuildSpanningTree(nodes, isGabriel))
             {
-                AddWithMirror(from, to, nodes, isConnected, degree, random, lanes);
+                AddWithMirror(from, to, nodes, isConnected, degree, random, lanes, laneBendMultiplier);
             }
 
             for (int from = 0; from < nodes.Count; from++)
@@ -41,12 +42,12 @@ namespace EmpireAtWar.Entities.Map.Generation
                 {
                     if (!isGabriel[from, to] || isConnected[from, to] ||
                         degree[from] >= MAX_EXTRA_LANE_DEGREE || degree[to] >= MAX_EXTRA_LANE_DEGREE ||
-                        random.NextDouble() >= _settings.ExtraLaneChance)
+                        random.NextDouble() >= _settings.ExtraLaneChance * extraLaneChanceMultiplier)
                     {
                         continue;
                     }
 
-                    AddWithMirror(from, to, nodes, isConnected, degree, random, lanes);
+                    AddWithMirror(from, to, nodes, isConnected, degree, random, lanes, laneBendMultiplier);
                 }
             }
 
@@ -131,12 +132,14 @@ namespace EmpireAtWar.Entities.Map.Generation
             bool[,] isConnected,
             int[] degree,
             Random random,
-            List<MapLane> lanes)
+            List<MapLane> lanes,
+            float bendMultiplier)
         {
             // Point reflection flips the normal with the direction, preserving the signed bend.
             float sign = random.Next(2) == 0 ? -1f : 1f;
             float bend = sign * Mathf.Lerp(_settings.LaneBendMin, _settings.LaneBend,
                 (float)random.NextDouble());
+            bend *= bendMultiplier;
             AddLane(from, to, bend, nodes, isConnected, degree, lanes);
             AddLane(nodes[from].Mirror, nodes[to].Mirror, bend, nodes, isConnected, degree, lanes);
         }

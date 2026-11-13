@@ -258,14 +258,18 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             startingMoneySlider.SetValueWithoutNotify(_model.StartingMoney);
             superWeaponsToggle.SetIsOnWithoutNotify(_model.SuperWeapons);
             startingMoneyText.text = $"${(int)_model.StartingMoney:N0}";
-            activeSlotsText.text = $"{_model.ActivePlayerCount} / {slotRows.Length} SLOTS ACTIVE";
+            int capacity = MatchRules.GetMaxPlayers(_model.MapSize);
+            bool overCapacity = _model.ActivePlayerCount > capacity;
+            activeSlotsText.text = $"{_model.ActivePlayerCount} / {capacity} SLOTS ACTIVE";
             // A match needs at least two opposing teams among the open rows.
             bool ready = _model.CanStart && (!_model.IsOnline || _model.AllHumansReady);
-            readinessText.text = !_model.CanStart ? "OPPOSING TEAM REQUIRED"
+            readinessText.text = overCapacity ? "LARGER MAP REQUIRED"
+                : !_model.CanStart ? "OPPOSING TEAM REQUIRED"
                 : !_model.IsOnline ? "READY TO DEPLOY"
                 : _model.AllHumansReady ? "ALL COMMANDERS READY"
                 : $"{_model.ReadyHumanCount} / {_model.HumanCount} COMMANDERS READY";
-            matchSummaryText.text = _model.IsOnline && _lobbyStatus.Length > 0 ? _lobbyStatus
+            matchSummaryText.text = overCapacity ? $"{_model.MapSize} supports {capacity} players. Choose a larger map or close slots."
+                : _model.IsOnline && _lobbyStatus.Length > 0 ? _lobbyStatus
                 : _model.CanStart
                     ? $"{_model.ActivePlayerCount} players   /   {_model.ActiveTeamCount} opposing teams   /   ${_model.StartingMoney:N0} per player"
                     : "Enable at least two opposing teams to start.";

@@ -1,0 +1,94 @@
+using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Entities.Planet;
+using EmpireAtWar.Services.VContainer;
+using NUnit.Framework;
+using UnityEditor;
+using UnityEngine;
+using Object = UnityEngine.Object;
+
+namespace EmpireAtWar.Tests.Editor
+{
+    [Category("Map")]
+    public sealed class PlanetObstaclePresentationTests
+    {
+        private const string SETTINGS_PATH = "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset";
+        private const float OBSTACLE_RADIUS = 720f;
+        private const float TOLERANCE = 0.1f;
+
+        [Test]
+        public void EveryOrbitalPlanet_FitsSurfaceAndCloudsInsideObstacleAtGameplayCenter()
+        {
+            MapGenerationSettings settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(SETTINGS_PATH);
+            Vector3 center = new Vector3(123f, 0f, -456f);
+            int checkedPlanets = 0;
+            int cloudlessPlanets = 0;
+            foreach (PlanetMapProfileEntry entry in settings.Profiles.Entries)
+            {
+                if (entry.Archetype.Kind != MapArchetypeKind.OrbitalRing) continue;
+                checkedPlanets++;
+                PlanetScope prefab = settings.GetPlanetPrefab(entry.Planet);
+                Vector3 prefabPosition = prefab.transform.position;
+                Vector3 prefabScale = prefab.transform.localScale;
+                GameObject parent = new GameObject("Inactive Planet Fit Test");
+                parent.SetActive(false);
+                try
+                {
+                    PlanetScope instance = Object.Instantiate(prefab, parent.transform, false);
+                    Assert.That(instance.gameObject.activeInHierarchy, Is.False);
+                    instance.View.FitObstacle(center, OBSTACLE_RADIUS);
+                    using SerializedObject view = new SerializedObject(instance.View);
+                    SerializedProperty surfaces = view.FindProperty("planetRenderers");
+                    Assert.That(surfaces.arraySize, Is.GreaterThan(0), entry.Planet.ToString());
+                    MeshRenderer first = (MeshRenderer)surfaces.GetArrayElementAtIndex(0).objectReferenceValue;
+                    Assert.That(Vector3.Distance(first.transform.TransformPoint(first.localBounds.center), center),
+                        Is.LessThan(TOLERANCE), entry.Planet.ToString());
+                    float furthestSurface = 0f;
+                    foreach (string field in new[] { "planetRenderers", "cloudRenderers" })
+                    {
+                        SerializedProperty renderers = view.FindProperty(field);
+                        if (field == "cloudRenderers" && renderers.arraySize == 0) cloudlessPlanets++;
+                        for (int i = 0; i < renderers.arraySize; i++)
+                        {
+                            MeshRenderer renderer = (MeshRenderer)renderers.GetArrayElementAtIndex(i).objectReferenceValue;
+                            Assert.That(renderer, Is.Not.Null, $"{entry.Planet}: {field}[{i}]");
+                            Bounds bounds = renderer.localBounds;
+                            foreach (Vector3 axis in new[] { Vector3.right, Vector3.up, Vector3.forward })
+                            foreach (float sign in new[] { -1f, 1f })
+                            {
+                                Vector3 localSurface = bounds.center + Vector3.Scale(axis, bounds.extents) * sign;
+                                float distance = Vector3.Distance(renderer.transform.TransformPoint(localSurface), center);
+                                Assert.That(distance, Is.LessThanOrEqualTo(OBSTACLE_RADIUS + TOLERANCE),
+                                    $"{entry.Planet}: {field}[{i}] extends past navigation obstacle");
+                                furthestSurface = Mathf.Max(furthestSurface, distance);
+                            }
+                        }
+                    }
+                    Assert.That(furthestSurface, Is.EqualTo(OBSTACLE_RADIUS).Within(TOLERANCE),
+                        $"{entry.Planet}: visual body must fill the blocked footprint");
+                    Assert.That(prefab.transform.position, Is.EqualTo(prefabPosition));
+                    Assert.That(prefab.transform.localScale, Is.EqualTo(prefabScale));
+                }
+                finally { Object.DestroyImmediate(parent); }
+            }
+            Assert.That(checkedPlanets, Is.GreaterThan(0));
+            Assert.That(cloudlessPlanets, Is.GreaterThan(0), "The capture must cover planets with no cloud layer.");
+        }
+
+        [Test]
+        public void FitObstacle_MissingRequiredSurfaceReferenceFails()
+        {
+            MapGenerationSettings settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(SETTINGS_PATH);
+            GameObject parent = new GameObject("Inactive Missing Surface Test");
+            parent.SetActive(false);
+            try
+            {
+                PlanetScope instance = Object.Instantiate(settings.GetPlanetPrefab(PlanetType.Bespin), parent.transform, false);
+                using SerializedObject view = new SerializedObject(instance.View);
+                view.FindProperty("planetRenderers").GetArrayElementAtIndex(0).objectReferenceValue = null;
+                view.ApplyModifiedPropertiesWithoutUndo();
+                Assert.Throws<UnassignedReferenceException>(() => instance.View.FitObstacle(Vector3.zero, OBSTACLE_RADIUS));
+            }
+            finally { Object.DestroyImmediate(parent); }
+        }
+    }
+}

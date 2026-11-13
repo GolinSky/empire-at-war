@@ -21,6 +21,8 @@ namespace EmpireAtWar.Entities.Map
         private DictionaryWrapper<AsteroidSize, RockLayerSettings> rockLayers;
         [SerializeField] private SpaceHazardData[] hazards = System.Array.Empty<SpaceHazardData>();
 
+        [field: SerializeField] public PlanetMapProfile Profiles { get; private set; }
+
         public IReadOnlyList<SpaceHazardData> Hazards => hazards;
 
         [field: SerializeField, Tooltip("World height of an asteroid field's underside. Sits above the hulls of the " +

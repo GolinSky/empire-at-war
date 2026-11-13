@@ -65,6 +65,8 @@ namespace EmpireAtWar.Entities.Map.Generation
                 return false;
             }
 
+            if (_size.IsArchetypeLayout && ArchetypeFieldPattern.IsGuaranteedGap(position, _size))
+                return false;
             bool isInPocket = IsInPocket(position);
             if (IsInLane(position, isInPocket))
             {
@@ -81,6 +83,8 @@ namespace EmpireAtWar.Entities.Map.Generation
 
         public bool IsNaturalField(Vector3 position)
         {
+            if (_size.IsArchetypeLayout && _size.Archetype != MapArchetypeKind.OpenField)
+                return ArchetypeFieldPattern.IsField(position, _size, GetShapeNoise(position), GetRidgeNoise(position));
             float edgeDistance = Mathf.Min(position.x - _size.Bounds.Min.x, _size.Bounds.Max.x - position.x,
                 position.z - _size.Bounds.Min.y, _size.Bounds.Max.y - position.z);
             bool isZoneEdge = false;

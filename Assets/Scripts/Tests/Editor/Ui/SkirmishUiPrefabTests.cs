@@ -79,7 +79,7 @@ namespace EmpireAtWar.Tests.Editor
                 foreach (string field in new[]
                          {
                              "canvasGroup", "closeButton", "searchInput", "scrollRect",
-                             "countText", "currentPlanetText", "emptyState"
+                             "countText", "currentPlanetText", "emptyState", "mapSettings"
                          })
                     Assert.That(serializedGallery.FindProperty(field).objectReferenceValue, Is.Not.Null, field);
 

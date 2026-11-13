@@ -18,10 +18,10 @@ namespace EmpireAtWar.Entities.Popups
 
         public PlanetType Planet => planet;
 
-        public void Initialize(Texture2D preview, Action<int> selected)
+        public void Initialize(Texture2D preview, Action<int> selected, string archetypeName)
         {
             previewImage.texture = preview;
-            nameText.text = PlanetSelectionPopupUi.GetPlanetName(planet);
+            nameText.text = $"{PlanetSelectionPopupUi.GetPlanetName(planet)}\n<size=70%>{archetypeName}</size>";
             _selected = selected;
             button.onClick.AddListener(Select);
         }

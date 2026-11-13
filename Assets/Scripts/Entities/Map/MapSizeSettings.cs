@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Models.SkirmishCamera;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -9,6 +10,65 @@ namespace EmpireAtWar.Entities.Map
     [Serializable]
     public sealed class MapSizeSettings
     {
+        public bool IsArchetypeLayout { get; private set; }
+        public MapArchetypeKind Archetype { get; private set; }
+        public int PlanetSeed { get; private set; }
+        public float StationPhaseJitterRadians { get; private set; } = 0.06f;
+        public float ExtraLaneChanceMultiplier { get; private set; } = 1f;
+        public float LaneBendMultiplier { get; private set; } = 1f;
+        public float MaximumFairnessRatio { get; private set; } = 2f;
+        public float CentralObstacleRadius => IsArchetypeLayout && Archetype == MapArchetypeKind.OrbitalRing
+            ? Mathf.Min(Bounds.Max.x - Bounds.Min.x, Bounds.Max.y - Bounds.Min.y) * 0.08f : 0f;
+        public float SkeletonAngle => (uint)PlanetSeed % 4 * 45f;
+
+        public IReadOnlyList<FieldVolume> StructuralFields { get; private set; } = Array.Empty<FieldVolume>();
+
+        public void ConfigureStructuralFields(float mainRadius, float clearance)
+        {
+            if (!IsArchetypeLayout || Archetype != MapArchetypeKind.TwinPass) return;
+            Vector2 middle = (Bounds.Min + Bounds.Max) * 0.5f;
+            Vector3 center = new Vector3(middle.x, 0f, middle.y);
+            float radius = MinLaneWidth * 0.55f;
+            float offset = mainRadius + clearance + PocketThickness + radius + MinLaneWidth * 0.5f + FieldCellSize;
+            Vector3 direction = Quaternion.Euler(0f, SkeletonAngle, 0f) * Vector3.forward;
+            StructuralFields = new[]
+            {
+                new FieldVolume(center + direction * offset, radius),
+                new FieldVolume(center - direction * offset, radius)
+            };
+        }
+
+        public MapSizeSettings ForArchetype(PlanetMapProfileEntry profile, int playerCount)
+        {
+            MapSizeSettings result = (MapSizeSettings)MemberwiseClone();
+            result.IsArchetypeLayout = true;
+            result.Archetype = profile.Archetype.Kind;
+            result.PlanetSeed = profile.GetSeed();
+            float scale = profile.Archetype.BoundsMultiplier * Mathf.Sqrt(Mathf.Max(1f, playerCount / 4f));
+            Vector2 center = (Bounds.Min + Bounds.Max) * 0.5f;
+            Vector2 half = (Bounds.Max - Bounds.Min) * (scale * 0.5f);
+            Vector2 min = center - half;
+            Vector2 max = center + half;
+            result.Bounds = JsonUtility.FromJson<Vector2Range>(FormattableString.Invariant(
+                $"{{\"<Min>k__BackingField\":{{\"x\":{min.x},\"y\":{min.y}}},\"<Max>k__BackingField\":{{\"x\":{max.x},\"y\":{max.y}}}}}"));
+            result.AdditionalZonePairCount = AdditionalZonePairCount + Mathf.Max(0, (playerCount - 3) / 2) +
+                profile.Archetype.AdditionalRelayPairs + profile.AdditionalRelayPairs;
+            result.HazardCount = HazardCount + (Mathf.Max(0, (playerCount - 3) / 2) +
+                profile.Archetype.AdditionalHazardPairs + profile.AdditionalHazardPairs) * 2;
+            if (result.Archetype == MapArchetypeKind.OrbitalRing && result.HazardCount > 0)
+                result.HazardCount++;
+            result.FieldThreshold = profile.Archetype.FieldThreshold;
+            result.RidgeThreshold = profile.Archetype.RidgeThreshold;
+            result.FieldFeatureSize *= profile.Archetype.FeatureSizeMultiplier;
+            result.StationPhaseJitterRadians = profile.Archetype.StationPhaseJitterRadians;
+            result.ExtraLaneChanceMultiplier = profile.Archetype.ExtraLaneChanceMultiplier;
+            result.LaneBendMultiplier = profile.Archetype.LaneBendMultiplier;
+            result.MaximumFairnessRatio = profile.Archetype.MaximumFairnessRatio;
+            result.HazardLengthShare = new Vector2(0.16f, 0.25f);
+            result.HazardHalfWidthShare = new Vector2(0.018f, 0.03f);
+            return result;
+        }
+
         [field: SerializeField] public Vector2Range Bounds { get; private set; }
         [field: SerializeField, Min(0)] public int AdditionalZonePairCount { get; private set; }
         [field: SerializeField, Min(0f)] public float AdditionalZoneMainDistance { get; private set; }

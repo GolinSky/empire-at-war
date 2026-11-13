@@ -294,6 +294,10 @@
 
 ### Features
 
+- [x] **Map archetypes: per-planet layout patterns, free station placement, 6–8 players** → [[Done/Features/Map_Archetypes_Plan|Map Archetypes Plan]]; [[Done/Features/Map_Archetypes_Plan - Research|Assignments and decisions]]
+  - Completed 2026-11-13, `acceptance: pending-user`. Seven archetypes, 57 profiles/previews, grouped-first station fallback, 4/6/8-player limits, setup/gallery/save/network integration. Optional biome visuals deferred.
+  - Verified: Map 83/83, MapGeneration 224/224, MapExhaustive 164/164, Ui 278/278, GameFlow 187/187, Capture 111/111, Networking 31/31, Core 151/151. Assignment/visual, eight-fleet performance and multiplayer gates → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **UI SFX system (button click via global listener, selection sounds station/ship/unit/enemy)** → [[Done/Features/Ui_Sfx_System|UI SFX System]]
   - Completed 2026-11-12. Unity compiled and verified the saved binding, mixer and 15 clips. Tests not run. In-game listening → [[TODOs/User_Acceptance_Queue]].
 

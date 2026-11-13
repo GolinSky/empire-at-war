@@ -21,6 +21,7 @@ namespace EmpireAtWar.Entities.Map
         public IReadOnlyList<HazardShape> Hazards { get; }
         public IReadOnlyList<AsteroidSpot> DecorRocks { get; }
         public float EdgeMargin { get; }
+        public float PlanetObstacleRadius { get; }
 
         public MapLayout(
             IReadOnlyDictionary<PlayerId, Vector3> stationPositions,
@@ -45,7 +46,7 @@ namespace EmpireAtWar.Entities.Map
             Vector3 planetPosition,
             IReadOnlyList<HazardShape> hazards,
             IReadOnlyList<AsteroidSpot> decorRocks = null,
-            float edgeMargin = 0f)
+            float edgeMargin = 0f, float planetObstacleRadius = 0f)
         {
             SizeRange = sizeRange;
             _stationPositions = stationPositions;
@@ -57,6 +58,7 @@ namespace EmpireAtWar.Entities.Map
             Hazards = hazards;
             DecorRocks = decorRocks ?? System.Array.Empty<AsteroidSpot>();
             EdgeMargin = edgeMargin;
+            PlanetObstacleRadius = planetObstacleRadius;
         }
 
         public Vector3 GetStationPosition(PlayerId owner)

@@ -24,7 +24,11 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             new SkirmishSlotSetup(SkirmishSlotOccupant.Human, FactionType.Republic, 0, 0),
             new SkirmishSlotSetup(SkirmishSlotOccupant.AiMedium, FactionType.Separatist, 1, 1),
             new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, FactionType.Republic, 0, 2),
-            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, FactionType.Separatist, 1, 3)
+            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, FactionType.Separatist, 1, 3),
+            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, FactionType.Republic, 0, 4),
+            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, FactionType.Separatist, 1, 5),
+            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, FactionType.Republic, 0, 6),
+            new SkirmishSlotSetup(SkirmishSlotOccupant.Closed, FactionType.Separatist, 1, 7)
         };
 
         public event Action Changed;
@@ -39,7 +43,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         public float MinStartingMoney => MIN_STARTING_MONEY;
         public float MaxStartingMoney => MAX_STARTING_MONEY;
         public float StartingMoney { get; private set; } = DEFAULT_STARTING_MONEY;
-        public bool CanStart => ActiveTeamCount >= 2;
+        public bool CanStart => ActiveTeamCount >= 2 && ActivePlayerCount <= MatchRules.GetMaxPlayers(MapSize);
         public bool SuperWeapons { get; private set; } = true;
 
         public bool IsOnline { get; private set; }

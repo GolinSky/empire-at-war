@@ -20,7 +20,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         {
             if (!model.CanEditSettings || _popups.IsOpen(_handle)) return;
             _handle = _popups.Open(new PlanetSelectionPopupUiController(_uiService, model, presenter,
-                view.GetPlanetPreview, view.RestorePlanetFocus));
+                view.RestorePlanetFocus));
         }
 
         public void Close()

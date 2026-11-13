@@ -1,10 +1,11 @@
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.Map;
 using System;
 using System.Collections.Generic;
 
 namespace EmpireAtWar.Models.Players
 {
-    /// <summary>Limits of a skirmish line-up: one station per map corner and at least one human.</summary>
+    /// <summary>Limits of a skirmish line-up and at least one human.</summary>
     public static class MatchRules
     {
         public static void Validate(BattleDefinition definition)
@@ -14,6 +15,9 @@ namespace EmpireAtWar.Models.Players
                 Validate(definition.Slots);
             else if (players.Count != 2 || players[0].Slot.Team == players[1].Slot.Team)
                 throw new ArgumentException("Simulation requires two opposing sides.", nameof(definition));
+
+            if (definition.Map.Type == MapType.Full && players.Count > GetMaxPlayers(definition.Map.Size))
+                throw new ArgumentException($"{definition.Map.Size} maps support at most {GetMaxPlayers(definition.Map.Size)} players.", nameof(definition));
 
             if (float.IsNaN(definition.StartingMoney) || float.IsInfinity(definition.StartingMoney) ||
                 definition.StartingMoney < 0f ||
@@ -35,9 +39,17 @@ namespace EmpireAtWar.Models.Players
         }
 
         public const int MIN_PLAYERS = 2;
-        public const int MAX_PLAYERS = 4;
+        public const int MAX_PLAYERS = 8;
         /// <summary>Size of the team color palette; must match MAX_TEAM_COLORS in ShipLitInput.hlsl.</summary>
         public const int MAX_TEAM_COLORS = 8;
+
+        public static int GetMaxPlayers(MapSize size) => size switch
+        {
+            MapSize.Small => 4,
+            MapSize.Medium => 6,
+            MapSize.Large => 8,
+            _ => throw new ArgumentOutOfRangeException(nameof(size), size, null)
+        };
 
         private static bool IsValidProductionHost(BattleDefinition definition, BattlePlayer ally)
         {
@@ -83,7 +95,7 @@ namespace EmpireAtWar.Models.Players
             for (int i = 0; i < players.Count; i++)
             {
                 PlayerSlot slot = players[i];
-                // Slot ids index per-player arrays and corner lists, so they must be 0..Count-1 in order.
+                // Slot ids index per-player arrays, so they must be 0..Count-1 in order.
                 if (slot.Id != new PlayerId(i))
                 {
                     throw new ArgumentException($"Player slot {i} has id {slot.Id}.", nameof(players));

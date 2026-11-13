@@ -24,7 +24,8 @@ namespace EmpireAtWar.Entities.Planet
 
         public void UpdateState(BattleMap battleMap)
         {
-            _factory.Create(_gameModel.PlanetType, _gameModel.MapSize, battleMap.Layout.PlanetPosition);
+            _factory.Create(_gameModel.PlanetType, _gameModel.MapSize, battleMap.Layout.PlanetPosition,
+                battleMap.Layout.PlanetObstacleRadius);
         }
     }
 }

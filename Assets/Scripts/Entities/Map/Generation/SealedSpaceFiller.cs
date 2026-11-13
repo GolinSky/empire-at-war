@@ -36,7 +36,8 @@ namespace EmpireAtWar.Entities.Map.Generation
             // Measured alone, each sealed area's edge distance is its own inscribed size, so the cover stays inside it.
             FieldGrid grid = new FieldGrid(size.Bounds, size.FieldCellSize);
             foreach (int cell in sealedCells)
-                grid.SetField(cell, true);
+                if (!size.IsArchetypeLayout || !ArchetypeFieldPattern.IsGuaranteedGap(grid.GetCenter(cell), size))
+                    grid.SetField(cell, true);
             int[] edgeDistances = grid.GetEdgeDistances();
             foreach (List<int> cells in grid.FindFields())
             {

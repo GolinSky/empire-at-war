@@ -6,7 +6,7 @@ using Random = System.Random;
 
 namespace EmpireAtWar.Entities.Map.Generation
 {
-    /// <summary>Places the point-symmetric main relay group at the exact map center.</summary>
+    /// <summary>Places the main relay at the map center, or beside the central planet in Orbital Ring.</summary>
     public sealed class MainZonePlacer
     {
         private const float FULL_TURN = 360f;
@@ -25,7 +25,13 @@ namespace EmpireAtWar.Entities.Map.Generation
             IReadOnlyList<PlayerSlot> players, Random random, List<MapNode> nodes)
         {
             Vector3 center = PlanarGeometry.GetCenter(size.Bounds);
-            List<MapNode> group = CreateGroup(center, stations.Count, (float)random.NextDouble() * FULL_TURN);
+            bool offset = size.IsArchetypeLayout && size.Archetype == MapArchetypeKind.OrbitalRing;
+            Vector3 position = offset ? center + Quaternion.Euler(0f, size.SkeletonAngle, 0f) * Vector3.forward *
+                (size.CentralObstacleRadius + _radii.MainZone + size.MinLaneWidth * 0.5f + size.FieldCellSize) : center;
+            float turn = size.IsArchetypeLayout ? size.SkeletonAngle : (float)random.NextDouble() * FULL_TURN;
+            List<MapNode> group = CreateGroup(position, stations.Count, turn);
+            if (offset)
+                for (int i = 0; i < group.Count; i++) group[i].Mirror = i;
             return _placement.TryAddGroup(group, size, stations, nodes);
         }
 

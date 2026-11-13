@@ -290,3 +290,9 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Tactical_Markers_Plan]] — Allied AI: accept/delay/decline, capture/defense/scouting, safe attack/rally/retreat, autonomous markers, silent solo enemy AI and one-time tutorial hint.
 - [ ] [[Done/Features/Tactical_Markers_Plan]] — Approve world/radial/minimap visuals at battle zoom/resolution and listen to info/urgent cues. Art and radial previews: `Logs/TacticalMarkers/`.
 
+## Map Archetypes
+
+- [ ] [[Done/Features/Map_Archetypes_Plan]] — Approve the proposed 57 planet→archetype assignments and generated layout previews in the skirmish gallery.
+- [ ] [[Done/Features/Map_Archetypes_Plan]] — In-game visual/gameplay review: capital-ship passage width, grouped/separated ally starts, Orbital planet alignment, hazard readability and neutral-objective access. Gallery artifacts are layout schematics, not battlefield-material captures.
+- [ ] [[Done/Features/Map_Archetypes_Plan]] — Measure eight-fleet CPU/GPU budget against [[Rules/BATTLE_PERFORMANCE_GUIDELINES]]; include AI, minimap and battle telemetry workload.
+- [ ] [[Done/Features/Map_Archetypes_Plan]] — Live multiplayer with matching builds: 6/8-player lobby, startup, save/load, disconnect and synchronized map generation. Older four-player clients are not covered.

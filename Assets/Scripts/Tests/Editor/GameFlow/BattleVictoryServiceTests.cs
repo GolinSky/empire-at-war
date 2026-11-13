@@ -7,6 +7,7 @@ using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -24,6 +25,46 @@ namespace EmpireAtWar.Tests.Editor
     [Category("GameFlow")]
     public sealed class BattleVictoryServiceTests
     {
+        [Test]
+        public void Collection_EighthPlayerBaseAndFleetKeepItsTeamAlive()
+        {
+            var slots = new PlayerSlot[8];
+            for (int i = 0; i < slots.Length; i++)
+                slots[i] = new PlayerSlot(new PlayerId(i), new TeamId(i == 0 ? 0 : 1), FactionType.Republic,
+                    i == 0 ? PlayerController.Human : PlayerController.Ai, EnemyAiDifficulty.Medium, i);
+            var roster = new PlayerRoster(slots);
+            var entities = new EntityLocator();
+            var ships = new ShipService();
+            var last = new PlayerId(7);
+            var home = new Unit(1, new PlayerId(0), true);
+            var enemyBase = new Unit(2, last, true);
+            var enemyShip = new Unit(3, last, false);
+            entities.AddEntity(home);
+            entities.AddEntity(enemyBase);
+            entities.AddEntity(enemyShip);
+            ships.Add(enemyShip);
+            var victory = new BattleVictoryModel();
+            victory.RestoreObservedBases(Array.ConvertAll(slots, slot => slot.Id));
+            var service = new BattleVictoryService(null, ships, entities, roster,
+                TestPlayers.CreateLocalPlayer(roster), new PlayerRegistry(), null, victory,
+                Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()));
+
+            var states = Collect(service);
+            Assert.That(states.Count, Is.EqualTo(8));
+            Assert.That(states[7].UnitCount, Is.EqualTo(1));
+            Assert.That(states[7].IsBaseAlive, Is.True);
+            Assert.That(victory.Evaluate(BattleVictoryCondition.DestroyEnemyFleet, states, new TeamId(0)),
+                Is.EqualTo(BattleOutcome.None));
+
+            enemyBase.Health.IsDestroyed = true;
+            enemyShip.Health.IsDestroyed = true;
+            states = Collect(service);
+            Assert.That(states[7].UnitCount, Is.Zero);
+            Assert.That(states[7].IsBaseAlive, Is.False);
+            Assert.That(victory.Evaluate(BattleVictoryCondition.DestroyEnemyFleet, states, new TeamId(0)),
+                Is.EqualTo(BattleOutcome.PlayerVictory));
+        }
+
         [Test]
         public void Collection_SeparatesBasesAndUnits_ExcludesDestroyedEntities_AndRefreshes()
         {

@@ -9,6 +9,32 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class CaptureStrengthBuilderTests
     {
         [Test]
+        public void Build_EighthPlayerContributesToTeamAndClearRemovesItsStrength()
+        {
+            var slots = new PlayerSlot[8];
+            for (int i = 0; i < slots.Length; i++)
+                slots[i] = new PlayerSlot(new PlayerId(i), new TeamId(i % 2), FactionType.Republic,
+                    i == 0 ? PlayerController.Human : PlayerController.Ai, EnemyAiDifficulty.Medium, i);
+            var builder = new CaptureStrengthBuilder(new PlayerRoster(slots));
+            builder.Add(new PlayerId(0), 4f);
+            builder.Add(new PlayerId(1), 2f);
+            builder.Add(new PlayerId(7), 3f);
+
+            CaptureStrength tally = builder.Build();
+            Assert.That(tally.LeadingPlayer, Is.EqualTo(new PlayerId(7)));
+            Assert.That(tally.OpposingPlayer, Is.EqualTo(new PlayerId(0)));
+            Assert.That(tally.Advantage, Is.EqualTo(1f));
+            Assert.That(tally.PresentTeamCount, Is.EqualTo(2));
+
+            builder.Clear();
+            builder.Add(new PlayerId(0), 1f);
+            tally = builder.Build();
+            Assert.That(tally.LeadingPlayer, Is.EqualTo(new PlayerId(0)));
+            Assert.That(tally.Advantage, Is.EqualTo(1f));
+            Assert.That(tally.PresentTeamCount, Is.EqualTo(1));
+        }
+
+        [Test]
         public void Build_ThreeTeams_AdvantageIsLeadOverRunnerUp()
         {
             PlayerRoster freeForAll = CreateFreeForAll();

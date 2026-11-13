@@ -7,6 +7,20 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class OnlineLobbyModeTests
     {
         [Test]
+        public void SkirmishLobby_EightMembersFillCapacity()
+        {
+            var lobby = new OnlineLobby();
+            lobby.Reset("Host", 0UL, OnlineLobby.MAX_MEMBERS);
+            for (int i = 1; i < 8; i++)
+            {
+                Assert.That(lobby.IsFull, Is.False);
+                lobby.Add(i, $"Player {i}", 0UL);
+            }
+            Assert.That(lobby.Members.Count, Is.EqualTo(8));
+            Assert.That(lobby.IsFull, Is.True);
+        }
+
+        [Test]
         public void ChangeCapacity_AppliesLimitAndClearsClientReadyOnly()
         {
             var lobby = new OnlineLobby();

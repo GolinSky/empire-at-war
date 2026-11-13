@@ -23,7 +23,7 @@ namespace EmpireAtWar.Services.Factory
             _settings = settings;
         }
 
-        public PlanetView Create(PlanetType type, MapSize size, Vector3 position)
+        public PlanetView Create(PlanetType type, MapSize size, Vector3 position, float obstacleRadius = 0f)
         {
             PlanetScope prefab = _settings.GetPlanetPrefab(type);
             float scale = _settings.GetSize(size).PlanetScale;
@@ -40,6 +40,8 @@ namespace EmpireAtWar.Services.Factory
                 planet.transform.SetPositionAndRotation(
                     position + Vector3.up * prefab.transform.position.y * scale, prefab.transform.rotation);
                 planet.transform.localScale = prefab.transform.localScale * scale;
+                if (obstacleRadius > 0f)
+                    planet.View.FitObstacle(position, obstacleRadius);
                 planet.Build();
                 planet.gameObject.SetActive(true);
                 _planets.Add(planet);

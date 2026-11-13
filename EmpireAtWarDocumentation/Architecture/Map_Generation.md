@@ -2,17 +2,21 @@
 type: engineering-reference
 system:
   - map-generation
-verified: 2026-10-29
-verification: Review fixes verified through live source and Unity compilation;
-  no automated generation tests or Play Mode. Saved main relay prefab/settings
-  from original implementation unchanged by review fixes.
+verified: 2026-11-13
+verification: Legacy Open Field fingerprints and quick/exhaustive generation
+  sweeps passed; archetype branch documented separately in Map_Archetypes.
 ---
 # Map Generation
 
 ## Rules
 
-- Full Skirmish uses `MapLayoutGenerator`; Survival and Empty layouts retain their separate generators.
+- Full Skirmish passes `PlanetType` to `MapLayoutGenerator`; `PlanetMapProfile` selects the archetype. Missing profiles fail explicitly.
+- Open Field with 2–4 players retains the legacy generator and same-seed geometry. Other archetypes and Open Field with 5–8 players use the archetype branch; see [[Architecture/Map_Archetypes]].
+- Survival and Empty layouts retain their separate generators.
 - `MapFeatureRadii` reads ordinary/main relay radii from separate prefab references on `MapLayoutView`; never infer the main radius from the ordinary relay.
+
+### Legacy Open Field placement
+
 - Main relay: exact `PlanarGeometry.GetCenter(size.Bounds)`, range `540`; ordinary/default/additional range `270`.
 - Main mines: 4 at `MainZone × MainZoneMiningRadiusShare` = `270`, 90° apart. Main satellites stay outside capture range; opposite ring nodes have real `Mirror` indices.
 - Opposite stations share a mirrored random corner offset and the larger station footprint inset; each home mine/pad uses its own station radius + own footprint + `15` units.
@@ -42,10 +46,10 @@ verification: Review fixes verified through live source and Unity compilation;
 ## Edge Cases
 
 - Mandatory main-prefab reference belongs in `SceneContext.prefab`; `SerializedReferenceTests` covers the binding. Main variant overrides radius to `540` and `SphereRenderer` X/Y scale to `1080`.
-- `MainLineBlocker` reserves mirrored bowed fields: 7 overlapping circles, radius `MinLaneWidth / 6` = 120; transverse width `LaneWidth × 1.25` = 1250/1275/1250 (S/M/L). Standard area-based `RockScatter` populates their actual volumes; five-rock fallback removed.
+- Legacy Open Field only: `MainLineBlocker` reserves mirrored bowed fields: 7 overlapping circles, radius `MinLaneWidth / 6` = 120; transverse width `LaneWidth × 1.25` = 1250/1275/1250 (S/M/L). Standard area-based `RockScatter` populates their actual volumes; five-rock fallback removed.
 - Existing fields/hazards satisfy blocking only with a continuous local cross-section at least `LaneWidth` wide across the intervening line. Distant wide blobs and tiny intersections cannot bypass the field.
 - `LaneObstacleRouter` detours crossing lanes with `MinLaneWidth / 2` clearance (360; full 720-unit corridor); obstacle vertices inside other expanded volumes are discarded. Natural fields are generated after detours; broad fallback fields added only where needed.
-- `HazardPlacer` first searches main→additional segments at 35–65% progress, with hazard long axis perpendicular to the segment. Existing mirrored clearance/count checks and original fallback remain.
+- Legacy Open Field `HazardPlacer` first searches main→additional segments at 35–65% progress, with hazard long axis perpendicular to the segment. Existing mirrored clearance/count checks and original fallback remain.
 - Endpoint relay asteroid pockets must not satisfy main↔additional shortcut blocking. Inspect the intervening segment and preserve the lane corridor around any inserted blocker.
 - Mirrored station positions can coexist with different home-site positions when faction station radii differ; closeness to each station uses its own footprint.
 - Tests are disabled under repository `AGENTS.md` unless explicitly requested. Compilation/source inspection does not establish all-seed generation success or gameplay acceptance.

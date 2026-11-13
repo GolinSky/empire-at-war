@@ -941,6 +941,24 @@ namespace EmpireAtWar.Tests.Editor
             return _generator.Generate(battle.Map.Size, battle.Slots, new Random(battle.Map.Seed), battle.Map.Seed);
         }
 
+        [TestCase(MapSize.Small, 0, "08481F50F6B4183533470DC5A74AC7448EB42B606D33C8A352C04DCD839559E7")]
+        [TestCase(MapSize.Small, 7, "BB8D47580D056CD190D95870109AEB031EB3AFAA242BD01044468CCEC496A428")]
+        [TestCase(MapSize.Small, 19, "5EFAFF617C754A175A02896B9634696007D88C659E4ADF42119A3A6A1B8013F7")]
+        [TestCase(MapSize.Medium, 0, "C895BE95E286995FD3315AE1FE1F1C3F14479521758CB301047F56563496DFED")]
+        [TestCase(MapSize.Medium, 7, "2EE91F88118103CAEF216B1BA40C62DE4471A6CD9E4FB5269DDB96BEF59DF510")]
+        [TestCase(MapSize.Medium, 19, "75C7DFA891074BE54EC4189CF007A7AF29C7FFF3158877FBF077EBA877028168")]
+        [TestCase(MapSize.Large, 0, "85E59E9A087E2B6BFEFA64BFDD5614DFB4EA34AB8989CB57F0B6CAEC74C18254")]
+        [TestCase(MapSize.Large, 7, "D31217CE5D5C407AAEA949D8D708C9A8D90094182975C82AF4467A3032471896")]
+        [TestCase(MapSize.Large, 19, "B29337C7DB8EA381367037A95D69BD6882D7982CD2499DB8AF40F1D85EF08FF8")]
+        public void OpenField_PreservesPreArchetypeGeometry(MapSize mapSize, int seed, string expected)
+        {
+            MapLayout layout = _generator.Generate(mapSize, TestPlayers.CreateTeamGame().Players,
+                new Random(seed), seed, PlanetType.Coruscant);
+            using (var hash = System.Security.Cryptography.SHA256.Create())
+                Assert.That(BitConverter.ToString(hash.ComputeHash(Encoding.UTF8.GetBytes(Fingerprint(layout))))
+                    .Replace("-", ""), Is.EqualTo(expected));
+        }
+
         private static string Fingerprint(MapLayout layout)
         {
             StringBuilder text = new StringBuilder();

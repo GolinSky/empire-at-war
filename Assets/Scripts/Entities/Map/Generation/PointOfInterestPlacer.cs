@@ -7,7 +7,7 @@ using Random = System.Random;
 namespace EmpireAtWar.Entities.Map.Generation
 {
     /// <summary>
-    /// Places the main relay first, then home sites and mirrored additional relay groups.
+    /// Places the main relay first, then home sites and the roster-compatible additional relay groups.
     /// </summary>
     public sealed class PointOfInterestPlacer
     {
@@ -19,6 +19,7 @@ namespace EmpireAtWar.Entities.Map.Generation
 
         private readonly MapGenerationSettings _settings;
         private readonly MapFeatureRadii _radii;
+        public string LastFailure { get; private set; }
 
         public PointOfInterestPlacer(MapGenerationSettings settings, MapFeatureRadii radii)
         {
@@ -31,13 +32,23 @@ namespace EmpireAtWar.Entities.Map.Generation
         {
             nodes.Clear();
             Vector3 center = PlanarGeometry.GetCenter(size.Bounds);
+            LastFailure = "main relay";
             if (!new MainZonePlacer(_settings, _radii, this).TryPlace(size, stations, players, random, nodes))
                 return false;
             Vector3 mainPosition = nodes[0].Center;
-            return TryAddDefaultZones(size, stations, center, nodes) &&
-                TryAddHomeMining(size, stations, center, nodes) &&
-                new AdditionalZonePlacer(_settings, _radii, this).TryPlace(
-                    size, stations, players, center, mainPosition, random, nodes);
+            LastFailure = "default relays";
+            if (!TryAddDefaultZones(size, stations, players, center, nodes)) return false;
+            LastFailure = "home sites";
+            if (!TryAddHomeMining(size, stations, players, center, nodes)) return false;
+            LastFailure = "additional relays";
+            AdditionalZonePlacer additional = new AdditionalZonePlacer(_settings, _radii, this);
+            if (!additional.TryPlace(size, stations, players, center, mainPosition, random, nodes))
+            {
+                LastFailure += ": " + additional.LastFailure;
+                return false;
+            }
+            LastFailure = string.Empty;
+            return true;
         }
 
         public Vector3 PlacePlanet(MapSizeSettings size, Random random)
@@ -64,6 +75,13 @@ namespace EmpireAtWar.Entities.Map.Generation
             if (position.x - outer < size.Bounds.Min.x || position.x + outer > size.Bounds.Max.x ||
                 position.z - outer < size.Bounds.Min.y || position.z + outer > size.Bounds.Max.y)
                 return false;
+            if (size.CentralObstacleRadius > 0f &&
+                PlanarGeometry.Distance(position, PlanarGeometry.GetCenter(size.Bounds)) <
+                    size.CentralObstacleRadius + candidate.Radius + size.MinLaneWidth * 0.5f)
+                return false;
+            foreach (FieldVolume wall in size.StructuralFields)
+                if (PlanarGeometry.Distance(position, wall.Center) < wall.Radius + outer + size.MinLaneWidth * 0.5f)
+                    return false;
             foreach (MapStation station in stations)
                 if (PlanarGeometry.Distance(position, station.Position) < station.Radius + outer)
                     return false;
@@ -102,11 +120,17 @@ namespace EmpireAtWar.Entities.Map.Generation
         }
 
         private bool TryAddDefaultZones(MapSizeSettings size, IReadOnlyList<MapStation> stations,
-            Vector3 center, List<MapNode> nodes)
+            IReadOnlyList<PlayerSlot> players, Vector3 center, List<MapNode> nodes)
         {
             int first = nodes.Count;
             foreach (MapStation station in stations)
             {
+                if (size.IsArchetypeLayout)
+                {
+                    if (!TryAddFacingDefaultZone(size, stations, players, station, center, nodes))
+                        return false;
+                    continue;
+                }
                 float side = station.Position.x < center.x ? 1f : -1f;
                 float offset = station.Radius + _radii.Zone + _settings.ZoneClearance + size.DefaultZoneGap;
                 MapNode node = new MapNode(MapNodeKind.DefaultZone,
@@ -120,8 +144,29 @@ namespace EmpireAtWar.Entities.Map.Generation
             return true;
         }
 
+        private bool TryAddFacingDefaultZone(MapSizeSettings size, IReadOnlyList<MapStation> stations,
+            IReadOnlyList<PlayerSlot> players, MapStation station, Vector3 center, List<MapNode> nodes)
+        {
+            Vector3 origin = new Vector3(station.Position.x, 0f, station.Position.z);
+            Vector3 forward = (center - origin).normalized;
+            float offset = station.Radius + _radii.Zone + _settings.ZoneClearance + size.DefaultZoneGap;
+            for (int candidate = 0; candidate < 7; candidate++)
+            {
+                float turn = candidate == 0 ? 0f : ((candidate + 1) / 2) * 35f *
+                    (candidate % 2 == 1 ? 1f : -1f);
+                MapNode node = new MapNode(MapNodeKind.DefaultZone,
+                    origin + Quaternion.Euler(0f, turn, 0f) * forward * offset,
+                    station.Owner, _radii.Zone);
+                if (!StationAreaClearance.HasEnemyClearance(node, size, stations, players) ||
+                    !IsClear(node, size, stations, nodes)) continue;
+                nodes.Add(node);
+                return true;
+            }
+            return false;
+        }
+
         private bool TryAddHomeMining(MapSizeSettings size, IReadOnlyList<MapStation> stations,
-            Vector3 center, List<MapNode> nodes)
+            IReadOnlyList<PlayerSlot> players, Vector3 center, List<MapNode> nodes)
         {
             int first = nodes.Count;
             for (int i = 0; i < stations.Count; i++)
@@ -129,15 +174,19 @@ namespace EmpireAtWar.Entities.Map.Generation
                 MapStation station = stations[i];
                 Vector3 outward = new Vector3(Mathf.Sign(station.Position.x - center.x), 0f,
                     Mathf.Sign(station.Position.z - center.z)).normalized;
+                if (size.IsArchetypeLayout)
+                    outward = (new Vector3(station.Position.x, 0f, station.Position.z) - center).normalized;
                 bool placed = false;
                 for (int side = 0; side < 2 && !placed; side++)
                 {
                     Vector3 direction = side == 0 ? outward : -outward;
+                    if (size.IsArchetypeLayout) direction = -direction;
                     for (int orientation = 0; orientation < 3 && !placed; orientation++)
                     {
                         float turn = (orientation - 1) * 30f;
-                        Vector3 mineDirection = Quaternion.Euler(0f, turn - 30f, 0f) * direction;
-                        Vector3 padDirection = Quaternion.Euler(0f, turn + 30f, 0f) * direction;
+                        float spread = size.IsArchetypeLayout ? 60f : 30f;
+                        Vector3 mineDirection = Quaternion.Euler(0f, turn - spread, 0f) * direction;
+                        Vector3 padDirection = Quaternion.Euler(0f, turn + spread, 0f) * direction;
                         Vector3 origin = new Vector3(station.Position.x, 0f, station.Position.z);
                         MapNode mine = new MapNode(MapNodeKind.MiningSite,
                             origin + mineDirection * (station.Radius + _radii.MiningSite + HOME_SITE_GAP),
@@ -145,6 +194,9 @@ namespace EmpireAtWar.Entities.Map.Generation
                         MapNode pad = new MapNode(MapNodeKind.SatelliteSite,
                             origin + padDirection * (station.Radius + _settings.SatelliteFootprintRadius + HOME_SITE_GAP),
                             PlayerId.None, _settings.SatelliteFootprintRadius, i) { IsHomeSite = true };
+                        if (size.IsArchetypeLayout &&
+                            (!StationAreaClearance.HasEnemyClearance(mine, size, stations, players) ||
+                             !StationAreaClearance.HasEnemyClearance(pad, size, stations, players))) continue;
                         placed = TryAddGroup(new[] { mine, pad }, size, stations, nodes);
                     }
                 }

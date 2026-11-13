@@ -101,6 +101,12 @@ namespace EmpireAtWar.Services.Saves
         {
             if (_mapSettings == null) return;
             MapSizeSettings size = _mapSettings.GetSize(definition.Map.Size);
+            if (definition.Map.Type == MapType.Full)
+            {
+                PlanetMapProfileEntry profile = _mapSettings.Profiles.Get(definition.Map.Planet);
+                if (profile.Archetype.Kind != MapArchetypeKind.OpenField || definition.Slots.Count > 4)
+                    size = size.ForArchetype(profile, definition.Slots.Count);
+            }
             int expectedZones = definition.Map.Type == MapType.Full ? 1 + 2 * size.AdditionalZonePairCount : 0;
             if (save.ReinforcementZones.Length != expectedZones)
                 throw new InvalidDataException($"Saved {save.ReinforcementZones.Length} reinforcement zones; the map has {expectedZones}.");
