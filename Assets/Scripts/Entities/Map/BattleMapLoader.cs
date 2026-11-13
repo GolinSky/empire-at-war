@@ -66,7 +66,7 @@ namespace EmpireAtWar.Entities.Map
                 layout.Zones, layout.Sites.Where(site => _battle.HasFeature(BattleFeatures.CaptureSites) &&
                     _battle.HasFeature(BattleFeatures.MiningSites)).ToArray(),
                 layout.Lanes, layout.Fields, layout.SizeRange, layout.PlanetPosition, layout.Hazards,
-                layout.DecorRocks, layout.EdgeMargin, layout.PlanetObstacleRadius);
+                layout.DecorRocks, layout.EdgeMargin, layout.PlanetObstacleRadius, layout.Decorations);
             await Awaitable.MainThreadAsync();
             cancellationToken.ThrowIfCancellationRequested();
 

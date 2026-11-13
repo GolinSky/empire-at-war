@@ -309,5 +309,9 @@ created: "2026-10-29\r"
 ## Planet Decorations
 
 - [ ] [[Done/Features/Planet_Decorations_Plan]] — Approve proposed planet assignments for shipyard docks, space junk and resource containers.
-- [ ] [[Done/Features/Planet_Decorations_Plan]] — Battle visual review: model/texture fidelity, dock mix, scale, height, lane readability and always-visible scenery through gameplay fog; include Small Kuat.
+- Visibility gate failed 2026-11-13: no Kuat/Tatooine props → [[Done/Bugs/Planet_Decorations_Loading_Fix]].
+- [ ] [[Done/Features/Planet_Decorations_Plan]] — After visibility repair, review model/texture fidelity, dock mix, scale, height, lane readability and always-visible scenery through gameplay fog; include Small Kuat.
 - [ ] [[Done/Features/Planet_Decorations_Plan]] — Run authored Map tests only on explicit request; tests were not run during implementation.
+
+- [ ] [[Done/Bugs/Planet_Decorations_Loading_Fix]] — Kuat visibility confirmed by user; verify corrected dock orientation in battle and junk visibility in a fresh Tatooine battle. Spawn now preserves the imported prefab root rotation under world yaw.
+- [ ] [[Done/Bugs/Planet_Decorations_Loading_Fix]] — Run the authored loader/view and imported-orientation regressions in category Map only on explicit request; tests not run during this fix.

@@ -59,7 +59,7 @@ namespace EmpireAtWar.Tests.Editor
                     .Invoke(view, new object[] { System.Array.Empty<IMapBoundsListener>(), settings, scene.GetComponentInChildren<CameraService>(true),
                         AssetDatabase.LoadAssetAtPath<CaptureSiteData>("Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset") });
                 BattleDefinitionBuilder builder = SkirmishPreset.Create(TestPlayers.CreateTeamGame().Players,
-                    PlanetType.Coruscant, MapSize.Medium, BattleVictoryCondition.DestroyEnemyFleet, 1000f, true, 7919);
+                    PlanetType.Kuat, MapSize.Medium, BattleVictoryCondition.DestroyEnemyFleet, 1000f, true, 7919);
                 builder.Features = BattleFeatures.None;
                 game.Battle = builder.Build();
                 BattleMapLoader loader = new BattleMapLoader(settings, view, game, new MapModel(), game.Battle,
@@ -89,6 +89,13 @@ namespace EmpireAtWar.Tests.Editor
 
                 Assert.That(observer.Map, Is.Not.Null);
                 Assert.That(observer.Map.Layout.Sites, Is.Empty, "Exercise the actual loader's site filtering.");
+                Assert.That(observer.Map.Layout.Decorations, Is.Not.Empty,
+                    "The loader must preserve generated planet decorations when filtering sites.");
+                foreach (MapDecorationSpot decoration in observer.Map.Layout.Decorations)
+                    Assert.That(System.Array.Exists(scene.GetComponentsInChildren<Transform>(true),
+                        child => child.name == decoration.Prefab.name + "(Clone)" &&
+                                 Vector3.Distance(child.position, decoration.Position) < 0.01f), Is.True,
+                        "Every generated decoration must reach the spawned map hierarchy.");
                 Assert.That(observer.Map.Layout.EdgeMargin, Is.GreaterThan(0f), "Filtering must preserve exterior terrain settings.");
                 Assert.That(observer.Map.Layout.Hazards, Is.Not.Empty,
                     "The published map must preserve hazards through the loader's layout reconstruction.");

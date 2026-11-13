@@ -144,6 +144,26 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void SpawnPreservesImportedOrientationUnderWorldYaw()
+        {
+            GameObject parent = new GameObject("Decoration parent");
+            try
+            {
+                _prefab.transform.localRotation = Quaternion.Euler(-90f, 0f, 0f);
+                _prefab.transform.localScale = Vector3.one * 100f;
+                MapDecorationView.Spawn(new MapDecorationSpot(_prefab, Vector3.right * 50f, 37f, 0.12f, 10f), parent.transform);
+                Transform instance = parent.transform.GetChild(0);
+                Assert.That(Quaternion.Angle(instance.rotation,
+                    Quaternion.Euler(0f, 37f, 0f) * _prefab.transform.localRotation), Is.LessThan(0.01f));
+                Assert.That(instance.localScale, Is.EqualTo(Vector3.one * 12f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(parent);
+            }
+        }
+
         private IReadOnlyList<MapDecorationSpot> Place(int seed) => MapDecorationPlacer.Place(_set, seed,
             _size, Array.Empty<MapStation>(), Array.Empty<MapNode>(), Array.Empty<MapLane>(),
             Array.Empty<AsteroidField>(), Array.Empty<HazardShape>(), 0f);

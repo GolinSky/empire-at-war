@@ -257,6 +257,10 @@
 
 ### Bugs
 
+- [x] **Preserve planet decorations during battle loading and spawning** → [[Done/Bugs/Planet_Decorations_Loading_Fix]]
+  - Completed 2026-11-13: loader forwards decorations through its site-filtering layout copy; spawn preserves imported rotation under world yaw. Kuat visibility confirmed by user; rotation/Tatooine acceptance pending. Regressions authored; tests not run.
+
+
 
 - [x] **Ship routes not curved; ships slow/stop at graph corners** → [[Done/Bugs/Ship_Route_Curvature_Plan]]; research → [[Done/Bugs/Ship_Route_Curvature_Plan - Research]]
   - Completed 2026-11-13, `acceptance: pending-user`. Tangent lines/arcs, local disk repair, persistent buckets, speed profile and tangent follower replaced the Bezier rejection chain. Unity compilation and source/diff checks passed. Tests, archetype sweeps, runtime CPU and online traffic checks → [[TODOs/User_Acceptance_Queue]].

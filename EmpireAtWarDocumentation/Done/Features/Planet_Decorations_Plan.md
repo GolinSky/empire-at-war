@@ -55,9 +55,13 @@ Simplified replacement for the deferred biome phase of [[Done/Features/Map_Arche
 - [x] Data/profile field, independent seeded placer and load-time view integrated. Geometry generation and its RNG unchanged.
 - [x] `MapDecorationTests` authored, category `Map`: deterministic spots, bounds/overlap, lane/field/height, station/node/prop, hazard clearance, full-map skip and prefab references. Tests not run under the local override.
 - [x] Unity compilation completed: `failed:false`, `errors:[]`; recent Console check empty. Assets imported and saved.
-- Non-test Editor layout inspection: two players, seed 7, Small/Medium/Large → Kuat 5/4/4, Tatooine 7/7/7, Kessel 3/3/3. This establishes sampled placement availability, not an exhaustive seed sweep.
+- Non-test Editor layout inspection: two players, seed 7, Small/Medium/Large → Kuat 5/4/4, Tatooine 7/7/7, Kessel 3/3/3. This establishes sampled generator placement availability only; it bypassed `BattleMapLoader` and missed the later layout-copy drop.
 - Evidence: `Tools/Blender/PlanetDecorations/{README.md,ImportEvidence.json,PlacementEvidence.json}`.
 - Reusable implementation rules and exact counts/scales → [[Architecture/Map_Archetypes#Planet decorations]].
 
 ## TODO
 - User-only gates → [[TODOs/User_Acceptance_Queue]]: proposed planet list approval, in-battle visuals/scale/fog, authored Map tests on explicit request.
+
+## Follow-up · 2026-11-13
+- User battle check failed: no decorations visible on Kuat/Tatooine. `BattleMapLoader` discarded generated decorations when reconstructing the layout to filter sites.
+- Narrow fix and renewed visibility acceptance → [[Done/Bugs/Planet_Decorations_Loading_Fix]]. Original generator-count evidence did not verify delivery to the view.

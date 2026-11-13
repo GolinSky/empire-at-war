@@ -7,7 +7,7 @@ namespace EmpireAtWar.Entities.Map
         public static void Spawn(MapDecorationSpot spot, Transform parent)
         {
             GameObject instance = Object.Instantiate(spot.Prefab, spot.Position,
-                Quaternion.Euler(0f, spot.Yaw, 0f), parent);
+                Quaternion.Euler(0f, spot.Yaw, 0f) * spot.Prefab.transform.localRotation, parent);
             instance.transform.localScale = spot.Prefab.transform.localScale * spot.Scale;
         }
     }

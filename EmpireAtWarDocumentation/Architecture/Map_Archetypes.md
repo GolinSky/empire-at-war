@@ -35,6 +35,8 @@ verification: "Archetypes: Map 83/83, MapGeneration 224/224, MapExhaustive
 - `PlanetMapProfileEntry.Decorations` optionally selects a `PlanetDecorationSet`; null explicitly means no scenery.
 - `MapDecorationPlacer` runs after final geometry with its own `System.Random(matchSeed ^ planetSeed)`; layout RNG, navigation and fairness remain unchanged.
 - Clearance includes station/node radii, half lane width, field volumes (including central planet), hazard signed distance + one cell, prior props and map bounds. 128 attempts per requested prop; unplaceable props are skipped.
+- `BattleMapLoader` must preserve `layout.Decorations` when rebuilding the layout to filter sites. Generator-only count checks miss dropped collections in later copies; loader regression and live battle visibility are separate checks.
+- Decoration spawn rotation = world yaw × prefab local rotation; yaw alone discards Blender/FBX axis correction (dock root ≈−90° X). Spawn scale likewise multiplies the prefab scale.
 - `MapDecorationView` spawns once beneath `MapLayoutView.fieldRoot`, using existing load-time frame slicing. No colliders, selection or minimap markers; URP/Lit scenery stays visible through gameplay fog; cast/receive shadows off.
 - Kuat docks request 3–5 intact + 1–2 broken at scale 0.10–0.14; junk entries request 1–2 / 1–3 / 1–3 at 0.06–0.10; containers request 3–6 at 0.50–0.80. Height jitter ±15; clearance = (source origin-relative radius + 5) × scale.
 - Implementation/import evidence and proposed planet assignments → [[Done/Features/Planet_Decorations_Plan]]. Source/asset checks and seed-7 layout inspection completed 2026-11-13; decoration tests and battle visuals remain unverified.
