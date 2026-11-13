@@ -104,3 +104,11 @@ Builds on [[Architecture/Map_Generation]]. Reference model: AoE-style rule-based
 - Preview artifacts: all 57 regenerated after final geometry changes; gallery and eight-player setup inspected at 1920×1080. Schematics show actual layout data, not rendered battlefield materials.
 - Reusable guidance extracted to [[Architecture/Map_Archetypes]]; [[Architecture/Map_Generation]] now distinguishes legacy rules. No missing Unity metadata; scoped diffs clean.
 - Optional Phase 9 biome visuals remain outside this implementation.
+
+## Re-verification · 2026-11-13 (source only, tests not run)
+- Commit `b3a7e3674` holds all plan work; no uncommitted archetype changes.
+- Accepted by user: older builds cannot join the eight-row lobby (matching versions required); old non-Open-Field setups regenerate new geometry.
+- `PlanetMapProfiles.asset`: 57/57 `PlanetType` values, no duplicates; all seven archetype groups match the research table; 57 previews linked and present.
+- `MatchRules.MAX_PLAYERS = 8`; `GetMaxPlayers` Small 4 / Medium 6 / Large 8. Fixed arrays, `OnlineLobby.MAX_MEMBERS`, 8 `SkirmishUi.slotRows`, 8 default slots follow it.
+- `MapLayoutGenerator.Generate(..., planet)` fails fast on missing table/profile; Open Field ≤4 players keeps the legacy `CORNER_SIGNS` path. `BattleMapLoader` and `BattleSaveValidator` use the same branch.
+- Unity Editor idle, console 0 errors.
