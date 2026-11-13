@@ -1,14 +1,16 @@
 ---
 type: plan
 category: Bugs
-status: todo
+status: in-progress
 created: 2026-11-13
 system:
   - ships
   - combat
   - balance
-verification: Findings carried from November 13 telemetry and source/asset
-  audit; plan created and links verified; no fixes or tests.
+verification: "2026-11-13: roster description audit and 21 numeric corrections
+  source-verified; four assets refreshed, targeted reserialized and saved in
+  Edit Mode; no new console errors; tests not run. Home One hero intent and
+  other plan scope remain open."
 tags:
   - flag/issue
 ---
@@ -25,7 +27,7 @@ tags:
 - Priority 1: consistent wrapped-yaw handling for Peleset/Recalcitrant; priority 2: Recusant and narrow-arc layouts; priority 3: trustworthy attribution and ship-value review.
 - Confirmed: numeric yaw-contract mismatch, restrictive serialized sectors, shared-prefab attribution and stale roster description stats (Venator II plus seven others).
 - Unresolved: intended mount sectors, arc-caused battle damage loss, correct balance changes. Narrow broadsides alone are not defects.
-- This is a new implementation plan; diagnosis exists, fixes are unimplemented. No gameplay edits or tests were performed for this plan.
+- Description corrections are implemented; firing-angle, attribution and balance work remains open. No gameplay data changes, tests or Play Mode runs were performed for this follow-up.
 - Flag issue: unresolved firing/attribution defects and balance concerns; remove after fixes or documented dismissal with evidence.
 
 ## Important Values
@@ -106,9 +108,141 @@ tags:
 | Peleset | 7,000 / 3,000 | 5,000 / 4,500 |
 | C-9979 | 500 / 600 | 600 / 600 |
 
-- Matching: CR70, Pelta, Carrack, Wavecrest, Recalcitrant. Squadron descriptions not audited.
+- Prior ship audit matching: CR70, Pelta, Carrack, Wavecrest, Recalcitrant. Squadron follow-up results below.
 - Sources: `Assets/Settings/Data/Factions/Republic/RepublicFaction.asset` (Venator II :37, Resolute :121); `Assets/Settings/Data/Factions/Separatist/SeparatistFaction.asset`; matching `Assets/Settings/Data/Ship/<Faction>/*ShipData.asset`.
-- Next: align descriptions with authoritative data; prefer generating stat text from ShipData over hand-written numbers.
+- Future prevention option: generate stat text from authoritative data; no presentation code changes in this audit.
+
+- Follow-up audit 2026-11-13: all 16 Empire ships, 21 Rebellion ships, 20 squadron entries across four factions, Centax regeneration and all 8 shared defense entries inspected. Tables below preserve pre-fix claims.
+- Mapping: faction ship key → `ShipType` → `ShipsData.GetShipDataPath` → GUID in `Assets/Settings/Data/Ship/Shared/ShipsData.asset` → asset `.meta`. Ship asset stems below resolve under `Assets/Settings/Data/Ship/<Faction>/`, with `.asset` suffix.
+- Squadron mapping: `FactionDefinition.Squadrons` → `SquadronType` → `SquadronFactory.Create` (`squadronType + "SquadronData"`) → Addressables GUID → asset `.meta`. Squadron stems resolve under `Assets/Settings/Data/Squadron/`, with `SquadronData.asset` suffix.
+- H/S/V = hull/shields/base speed; R = shield regeneration per second. Only numeric baseline claims changed; ability text, weapons and YAML wrapping preserved.
+
+**Empire drift — corrected**
+
+| Key / unit | Data asset stem | Description H / S / V | Data H / S / V |
+|---|---|---|---|
+| 202 Victory I — Advanced Loadout | `VictoryIShipData` | 12,000 / 8,000 / 175 | 6,000 / 4,000 / 16 |
+| 201 ISD I | `ISDIShipData` | 11,000 / 9,000 / 18 | 12,000 / 10,000 / 18 |
+| 203 Victory II — Advanced Loadout | `VictoryIIShipData` | 12,000 / 10,000 / 20 | 8,000 / 5,500 / 25 |
+| 204 ArquitensImperialCruiser | `ArquitensImperialCruiserShipData` | 2,600 / 1,400 / 48 | 4,000 / 4,000 / 30 |
+| 205 ISD II | `ISDIIShipData` | 12,500 / 10,000 / 18 | 16,000 / 12,000 / 18 |
+| 208 Raider Corvette | `RaiderCorvetteShipData` | 600 / 800 / 35 | 600 / 600 / 35 |
+| 209 AcclamatorAssault | `AcclamatorAssaultShipData` | 5,000 / 2,500 / 40 | 4,700 / 2,000 / 25 |
+| 210 Tector Star Destroyer | `TectorShipData` | 12,000 / 9,000 / 16 | 15,000 / 10,000 / 16 |
+| 213 Allegiance-class Battlecruiser | `AllegianceShipData` | 15,000 / 15,000 / — | 20,000 / 15,000 / — |
+| 215 Tartan-class Patrol Cruiser | `TartanShipData` | 650 / 850 / 70 | 600 / 600 / 35 |
+| 216 Gladiator-class Star Destroyer | `GladiatorShipData` | 6,000 / 5,000 / — | 9,000 / 8,000 / — |
+| 217 Interdictor Star Destroyer | `InterdictorStarDestroyerShipData` | 20,000 / 16,000 / — | 10,000 / 10,000 / — |
+
+- Gladiator's “capital shield regeneration” already matches `ShieldRegenTier.Capital = 3` → shared `capital: 180`; retained.
+
+**Rebellion drift**
+
+| Key / unit | Data asset stem | Description H / S | Data H / S | Action |
+|---|---|---|---|---|
+| 301 Corellian Corvette / CR90 | `CorellianCorvetteShipData` | 500 / 800 | 600 / 600 | Corrected |
+| 321 Liberator Cruiser | `LiberatorShipData` | 4,800 / 4,200 | 7,500 / 8,400 | Corrected |
+| 303 Home One / Admiral Ackbar | `HomeOneShipData` | 30,000 / 40,000 | 25,000 / 20,000 | Retained; hero intent unresolved |
+
+- Home One retained under the requested hero-discrepancy exception. No verified buff explains the displayed values: `FleetCommandService.Tick` skips `ReferenceEquals(entity, commander)` and explicitly preserves command ships' configured base stats. Decide whether to correct the description or deliberately change hero balance; neither is inferred here.
+
+**Ships already matching**
+
+| Faction/key / unit | Data asset stem | Description = data |
+|---|---|---|
+| Empire/207 Executor | `ExecutorShipData` | H150,000 / S200,000 / V10 |
+| Empire/211 Imperial Venator | `ImperialVenatorShipData` | H9,000 / S10,000 |
+| Rebellion/302 MC80 | `MonCalCruiserShipData` | H12,750 / S12,000 / R180 |
+| Rebellion/323 MC80 Justice | `MC80JusticeShipData` | H12,000 / S14,000 |
+| Rebellion/326 Mediator | `MediatorBattlecruiserShipData` | H35,000 / S40,000 |
+| Rebellion/325 MC80b Remonda | `MC80bRemondaShipData` | H16,000 / S16,000 |
+
+- MC80 R180 verified through tier 3 and shared `ShipShieldRegenTiersData.asset`, GUID `3425d6ddc79a6b649990974111258ac9`.
+
+**Other ships — no numeric baseline claim to correct**
+
+| Faction/key / unit | Data asset stem | Actual H / S / V | Relevant wording |
+|---|---|---|---|
+| Empire/212 Procursator | `ProcursatorShipData` | 8,000 / 7,000 / 20 | Ability reload speed |
+| Empire/214 Titan | `TitanShipData` | 42,000 / 36,000 / 14 | None |
+| Rebellion/300 Nebulon-B | `NebulonBShipData` | 3,000 / 3,000 / 30 | Shield recovery/speed ability |
+| Rebellion/304 MC75 Profundity | `MC75ProfundityShipData` | 5,000 / 6,000 / 30 | None |
+| Rebellion/305 MC80 Independence | `MC80IndependenceShipData` | 22,500 / 16,000 / 20 | Hull destruction; regen/movement ability |
+| Rebellion/306 Corellian Battlecruiser | `CorellianBattlecruiserShipData` | 5,000 / 4,500 / 25 | Shield regen ability |
+| Rebellion/307 MC30c | `MC30cShipData` | 4,000 / 3,500 / 30 | “Fast” |
+| Rebellion/308 CD-273 | `CD273ShipData` | 1,600 / 1,000 / 26 | “fast” |
+| Rebellion/320 Quasar Fire | `QuasarFireShipData` | 2,000 / 2,000 / 30 | None |
+| Rebellion/311 MC50 | `MC50ShipData` | 4,200 / 4,000 / 25 | Speed ability |
+| Rebellion/309 Assault Frigate Mk II | `AssaultFrigateMkIIShipData` | 3,500 / 4,000 / 25 | Regen/speed ability |
+| Rebellion/310 Dauntless | `DauntlessShipData` | 5,000 / 6,000 / 20 | None |
+| Rebellion/330 Nebula | `NebulaShipData` | 12,000 / 12,000 / 20 | Regen-disable ability |
+| Rebellion/312 Bothan Assault Cruiser | `BothanAssaultCruiserShipData` | 5,000 / 5,000 / 25 | None |
+| Rebellion/322 Endurance | `EnduranceShipData` | 15,000 / 14,000 / 18 | Regen/speed ability |
+| Rebellion/324 MC80 Freedom | `MC80FreedomShipData` | 16,000 / 18,000 / 20 | Regen ability |
+
+**Squadrons — all 17 numeric baseline descriptions already match**
+
+- H/S are per member, explicitly “each fighter/bomber”; Boba Fett is one craft. No whole-squadron-total mismatch. C/T = cruise/combat speed; actual R/C/T included even where the description does not quote them.
+
+| Faction/key / unit | Data stem | Description claims | Actual H / S; R; C / T |
+|---|---|---|---|
+| Republic/2 ARC-170 | `ARC170` | H80 / S30 | 80 / 30; 3; 69 / 78 |
+| Republic/3 BTL-B Y-Wing | `YWing` | H62 / S24 | 62 / 24; 2; 34 / 39 |
+| Republic/4 NTB-630 | `NTB630` | H60 / S22 | 60 / 22; 2; 34 / 39 |
+| Republic/5 V-19 Torrent | `V19Torrent` | H72 / S25 | 72 / 25; 2; 71 / 81 |
+| Republic/6 V-Wing | `VWing` | H62 / S22; “fast” | 62 / 22; 2; 76 / 84 |
+| Separatist/100 Belbullab-22 | `Belbullab22` | H38 / S5 | 38 / 5; 1; 62 / 70 |
+| Separatist/102 Vulture | `Vulture` | H28 / no shields | 28 / 0; 0; 54 / 60 |
+| Empire/200 TIE Fighter | `TIEFighter` | H42 / no shields | 42 / 0; 0; 56 / 63 |
+| Empire/201 TIE Bomber | `TIEBomber` | H45 / no shields | 45 / 0; 0; 31 / 36 |
+| Empire/202 TIE Avenger | `TIEAvenger` | H44 / S10 | 44 / 10; 1; 67 / 75 |
+| Empire/203 TIE Interceptor | `TIEInterceptor` | H32; “fast” | 32 / 0; 0; 70 / 78 |
+| Empire/204 TIE Brute | `TIEBrute` | H52 | 52 / 0; 0; 55 / 62 |
+| Empire/205 TIE Punisher | `TIEPunisher` | H48 / S12 | 48 / 12; 1; 31 / 36 |
+| Empire/206 Boba Fett / Slave I | `BobaFettSlaveI` | H2460 / S1440 | 2460 / 1440; 4.8; 70 / 75 |
+| Rebellion/1 A-Wing | `AWing` | H85 / S40; “fast” | 85 / 40; 6; 83 / 94 |
+| Rebellion/300 T-65 X-Wing | `XWing` | H95 / S50 / R4 | 95 / 50; 4; 75 / 86 |
+| Rebellion/301 BTL-A4 Y-Wing | `YWingBomber` | H70 / S40 / tactical speed 44 | 70 / 40; 3; 38 / 44 |
+
+- BTL-A4 tactical speed 44 matches `CombatSpeed`, not `CruiseSpeed` 38; retained. X-Wing R4 matches `ShieldRegenerateValue`.
+- Ability modifiers retained/out of scope: TIE Avenger speed −25%; X-Wing S-Foils speed ×1.3 and shield regen ×3.
+
+| Faction/key / unit | Data stem | Description wording | Actual H / S; R; C / T |
+|---|---|---|---|
+| Separatist/101 Droid Bomber | `DroidBomber` | “slow”; no baseline number | 32 / 5; 0.5; 29 / 33 |
+| Separatist/103 Jango Fett / Slave I | `JangoFettSlaveI` | “reinforced hull”; no baseline number | 3000 / 1200; 2.5; 70 / 75 |
+| Rebellion/302 Millennium Falcon | `HanSoloMillenniumFalcon` | “Falcon's speed”; no baseline number | 2130 / 2220; 2; 60 / 65 |
+
+- `Delta7SquadronData.asset` has no entry in any faction roster (key 0 absent), so no description exists to change.
+
+**Centax — corrected**
+
+| Unit/key | Description | Data |
+|---|---|---|
+| Republic/16 Centax | H2,000 / S1,300; R62 | H2,000 / S1,300; R25 |
+
+- `CentaxShipData.asset` → `shieldRegenTiers` GUID `3425d6ddc79a6b649990974111258ac9` → `ShipShieldRegenTiersData.asset`; tier 1 = `Frigate`; `frigate: 25`.
+- `ShipData.ShieldRegenerateValue` calls `GetRegenerateValue(ShieldRegenTier)`. Changed only 62 → 25; prior hull/shield correction retained.
+
+**Shared defenses — fully audited**
+
+- Catalog key → `DefendPlatformType` → `DefendPlatformAssets.GetDataName` → `DefendPlatformFactory.Create` → `AssetMappingData.asset` GUID → exact data `.meta`.
+- Data stems below resolve under `Assets/Settings/Data/Models/DefendPlatform/`, with `.asset` suffix; H/S live in `healthData`.
+
+| Key / unit | Data asset stem | Description H / S | Data H / S | Result |
+|---|---|---|---|---|
+| 2 Golan III | `AotrGolanIIIDefensePlatformData` | 10,000 / 12,000 | 10,000 / 20,000 | Corrected shields |
+| 3 XQ-3 Empress | `AotrEmpressDefensePlatformData` | 6,000 / 24,000 | 6,000 / 24,000 | Match |
+| 4 QuadLaser Satellite | `QuadLaserSatelliteData` | 1,000 / 1,000 | 3,000 / 5,000 | Corrected |
+| 5 Turbolaser Satellite | `TurbolaserSatelliteData` | 1,000 / 1,000 | 3,000 / 5,000 | Corrected |
+| 6 Ion Satellite | `IonSatelliteData` | 1,000 / 1,000 | 3,000 / 5,000 | Corrected |
+| 7 MassDriver Satellite | `MassDriverSatelliteData` | 1,000 / 1,000 | 3,000 / 5,000 | Corrected |
+| 8 Missile Satellite | `MissileSatelliteData` | 1,000 / 1,000 | 3,000 / 5,000 | Corrected |
+| 0 XQ-6 | `DefendPlatformData` | No numeric claim | 3,000 / 1,500 | No edit |
+
+- Verification: 21 descriptions corrected across four assets; only numbers changed and line wrapping retained. Confirmed Editor outside Play Mode; ran `AssetDatabase.Refresh()`, `ForceReserializeAssets` with exactly the four changed paths, then `SaveAssets()`. No new console errors after baseline cursor 578; one older Pipeline request timeout remains in console history. Tests and Play Mode not run.
+- Plan remains active. Backlog entry read; `TODOs.md` deliberately left untouched under this request's explicit working-tree exclusion.
+
 
 ### Dismissed or limited suspicions
 
@@ -126,7 +260,7 @@ tags:
 5. [ ] Review Dispatcher, Resolute/Venator II and Arquitens narrow arcs against model placement and intended weapon roles; record fix or justified retention for each.
 6. [ ] Separate shared-prefab attacker identity; establish per-unit/mount firing exposure and blocking reasons needed to measure arc effects.
 7. [ ] Review Mandator economics and Recusant output after arc/attribution corrections; account for carrier output, support, upgrades and population restrictions.
-8. [x] Correct roster description drift (8 units listed above). Done 2026-11-13: hull/shield text in `RepublicFaction.asset` / `SeparatistFaction.asset` now matches ShipData; assets refreshed, reserialized and saved, no console errors. Remaining: squadron, Empire and Rebellion descriptions not audited; Centax shield-regen text unchecked.
+8. [x] Correct roster description drift (8 units listed above). Done 2026-11-13: hull/shield text in `RepublicFaction.asset` / `SeparatistFaction.asset` now matches ShipData; assets refreshed, reserialized and saved, no console errors. Follow-up 2026-11-13: 12 Empire ships, CR90, Liberator, Centax regeneration and six shared defenses corrected; all 20 squadron entries audited, 17 numeric baselines already match. Remaining: Home One hero description intent (30,000/40,000 vs base 25,000/20,000) requires a decision; all other requested description audits complete. Other plan items remain open.
 9. [ ] Record source/non-test validation, applicable user acceptance gates and reusable guidance before closure.
 
 ## Rules

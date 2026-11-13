@@ -267,7 +267,7 @@ MonoBehaviour:
     - key: 16
       value:
         matchups: {fileID: 11400000, guid: 8bdf528cc8d4fa74997a634975fb890e, type: 2}
-        description: 2,000 hull, 1,300 shields, 62 shield points restored each second.
+        description: 2,000 hull, 1,300 shields, 25 shield points restored each second.
           Four laser cannons per side, one forward dual turbolaser battery and two
           forward proton torpedo launchers. Power to Weapons doubles firing rate
           for 10 seconds, reduces speed by 25% and increases incoming damage by 50%;

@@ -17,7 +17,7 @@ MonoBehaviour:
     - key: 2
       value:
         matchups: {fileID: 0}
-        description: 10,000 hull; 12,000 shields. 12 heavy dual turbolasers, 4 heavy
+        description: 10,000 hull; 20,000 shields. 12 heavy dual turbolasers, 4 heavy
           assault missile launchers, 12 heavy proton torpedo launchers and 8 laser
           cannons. Powerful long-range firepower and torpedoes; comparatively vulnerable
           to concentrated bomber attacks.
@@ -54,7 +54,7 @@ MonoBehaviour:
     - key: 4
       value:
         matchups: {fileID: 0}
-        description: 1,000 hull, 1,000 shields; six targetable turrets. Built on
+        description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
         iconKey: 4f34eb7cb55a9c24abc10d378515d62e:21300000
@@ -70,7 +70,7 @@ MonoBehaviour:
     - key: 5
       value:
         matchups: {fileID: 0}
-        description: 1,000 hull, 1,000 shields; six targetable turrets. Built on
+        description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
         iconKey: 514bfb32fe0d62847bd99758ec3b05bd:21300000
@@ -86,7 +86,7 @@ MonoBehaviour:
     - key: 6
       value:
         matchups: {fileID: 0}
-        description: 1,000 hull, 1,000 shields; six targetable turrets. Built on
+        description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
         iconKey: ea3a41aea9ac2814f8151acea48c72a0:21300000
@@ -102,7 +102,7 @@ MonoBehaviour:
     - key: 7
       value:
         matchups: {fileID: 0}
-        description: 1,000 hull, 1,000 shields; six targetable turrets. Built on
+        description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
         iconKey: 26f532f229fa8e64a8505e23c65bd5cf:21300000
@@ -118,7 +118,7 @@ MonoBehaviour:
     - key: 8
       value:
         matchups: {fileID: 0}
-        description: 1,000 hull, 1,000 shields; six targetable turrets. Built on
+        description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
         iconKey: 3285d703aec4dab419f58b760f903d38:21300000

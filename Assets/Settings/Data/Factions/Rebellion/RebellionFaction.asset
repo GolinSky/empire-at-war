@@ -38,7 +38,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: f0593bb86a7249c46b0e783c993fec3b, type: 2}
         description: Rebel anti-fighter and anti-bomber corvette with eight laser
-          cannons, 500 hull and 800 shields. Power to Engines doubles speed for 20
+          cannons, 600 hull and 600 shields. Power to Engines doubles speed for 20
           seconds, triples weapon delays and stops shield regeneration; 50-second
           recovery. Use it to screen larger ships, chase strikecraft or escape. Weak
           against frigates and capital ships.
@@ -268,7 +268,7 @@ MonoBehaviour:
     - key: 321
       value:
         matchups: {fileID: 11400000, guid: 30f4f94da51a19c43af1cb27ccdc0a47, type: 2}
-        description: Battlecarrier with 4,800 hull and 4,200 shields. Four heavy
+        description: Battlecarrier with 7,500 hull and 8,400 shields. Four heavy
           turbolasers, two medium dual turbolasers, four medium ion cannons and two
           point defense lasers. Boost Weapon Power doubles weapon damage and reduces
           reload time by 70% for 7 seconds; 50 seconds recovery. Deploys 1 fighter,
