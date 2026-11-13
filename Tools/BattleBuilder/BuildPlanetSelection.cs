@@ -91,11 +91,11 @@ public static class BuildPlanetSelection
 
             RectTransform scrollRoot = Rect("PlanetScroll", panel);
             Place(scrollRoot, 44, 266, 1412, 566);
-            var scroll = scrollRoot.gameObject.AddComponent<ScrollRect>();
+            var scroll = scrollRoot.gameObject.AddComponent<PlanetSelectionScrollRect>();
             scroll.horizontal = false;
             scroll.vertical = true;
             scroll.movementType = ScrollRect.MovementType.Clamped;
-            scroll.scrollSensitivity = 45;
+            scroll.scrollSensitivity = 22;
             RectTransform viewport = Rect("Viewport", scrollRoot);
             Stretch(viewport, 0, 0, 24, 0);
             var hitArea = viewport.gameObject.AddComponent<Image>();
