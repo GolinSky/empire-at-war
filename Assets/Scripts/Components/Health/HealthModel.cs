@@ -17,7 +17,7 @@ namespace EmpireAtWar.Models.Health
     public class HealthModel : Model
     {
         public const float DEAD_HARDPOINT_HULL_SHARE = 0.9f;
-        public const float DEAD_HARDPOINT_SPREAD_SHARE = 0.25f;
+        public const float DEAD_HARDPOINT_SPREAD_SHARE = 0.5f;
 
         private readonly IHealthData _data;
 
@@ -291,7 +291,7 @@ namespace EmpireAtWar.Models.Health
             OnValueChanged?.Invoke();
         }
 
-        // A hit on an already destroyed hardpoint: the hull takes 90%, and 25% is split evenly between the live hardpoints.
+        // A hit on an already destroyed hardpoint: the hull takes 90%, and 50% is split evenly between the live hardpoints.
         private void DamageLiveHardPoints(float damage)
         {
             int liveCount = 0;

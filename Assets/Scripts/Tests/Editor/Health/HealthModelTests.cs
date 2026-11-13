@@ -175,7 +175,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void ApplyDamage_DestroyedHardPointSendsMostDamageToHullAndSpreadsAQuarter()
+        public void ApplyDamage_DestroyedHardPointSendsMostDamageToHullAndSpreadsHalf()
         {
             HealthModel model = CreateModel(0f, out HardPointModel weapon, out HardPointModel engine,
                 out HardPointModel shieldGenerator);
@@ -184,8 +184,8 @@ namespace EmpireAtWar.Tests.Editor
             model.ApplyDamage(100f, DamageType.Turbolaser, 0);
 
             Assert.That(weapon.IsDestroyed, Is.True);
-            Assert.That(engine.Health, Is.EqualTo(187.5f));
-            Assert.That(shieldGenerator.Health, Is.EqualTo(137.5f));
+            Assert.That(engine.Health, Is.EqualTo(175f));
+            Assert.That(shieldGenerator.Health, Is.EqualTo(125f));
             Assert.That(model.Hull, Is.EqualTo(HULL - 300f * 0.5f - 100f * HealthModel.DEAD_HARDPOINT_HULL_SHARE));
             Assert.That(model.IsDestroyed, Is.False);
         }
