@@ -11,7 +11,7 @@ Open **Tools > Empire At War > Game Design > Battle Simulator**. The Editor Hub 
 5. Run. Cancel retains completed seeds only. Batch work advances in approximately 8 ms Editor-update chunks.
 6. Inspect first-seed survivors, per-unit statistics, health timeline and event log. Copy Markdown or export to `Library/BattleSimulator/<timestamp-id>/`.
 
-Exports: `results.md`, `summary.csv`, `units.csv`, `timeline.csv`, `events.csv`. CSV numbers use invariant decimal points and text fields are quoted. Summary TTK excludes timeouts; no resolved battles displays `NaN` in the window and `n/a` in exports. Percentiles use linear interpolation. Realized DPS uses total battle duration. Hardpoint damage overlaps hull damage; do not sum all taken columns. Wasted raw damage records impacts on already destroyed targets, and impacts on a subsystem destroyed in flight while the target still has live subsystems (runtime `AttackData.CanTarget`).
+Exports: `results.md`, `summary.csv`, `units.csv`, `timeline.csv`, `events.csv`. CSV numbers use invariant decimal points and text fields are quoted. Summary TTK excludes timeouts; no resolved battles displays `NaN` in the window and `n/a` in exports. Percentiles use linear interpolation. Realized DPS uses total battle duration. Hardpoint damage includes spread damage and overlaps hull damage; do not sum all taken columns. Wasted raw damage records impacts on already destroyed units or strikecraft members (runtime `AttackData.CanStillHit`).
 
 ## Simulation rules
 
@@ -21,7 +21,7 @@ Exports: `results.md`, `summary.csv`, `units.csv`, `timeline.csv`, `events.csv`.
 - Damage, piercing, shields, subsystem loss and squadron member health use `HealthModel`, `HardPointModel`, `SquadronHealthModel` and `DamageMatrixData`. Accuracy uses `WeaponModel.RollHit`; profile biases and default `CombatModifiers` apply.
 - Runtime shield timers initially are ready. Ships restart the regeneration timer only when below maximum shields; losing all shield generators blocks regeneration. Squadron passive hull repair uses the runtime model.
 - Every living mount schedules its shots before impacts resolve in a tick; simultaneous lethal shots can produce a mutual draw. Already-emitted projectiles remain scheduled when their source dies. Battle ends when a side is eliminated.
-- Unit policies: weakest/strongest absolute hull + shields, round-robin per attacker, same class then weakest. Subsystem focus falls back to random live points. An impact whose point died in flight is dropped while other points live; after all installed points are lost, damage continues through destroyed points to hull, following the health model.
+- Unit policies: weakest/strongest absolute hull + shields, round-robin per attacker, same class then weakest. Subsystem focus falls back to random live points. A salvo retains its chosen hardpoint until it finishes; a destroyed ship mount still receives remaining salvo and in-flight hits. The runtime health model applies hull and spread damage. Dead strikecraft members reject further hits; destroyed ships reject all further damage.
 - Factory mapping follows explicit `HealthComponent.ShipUnits`, `WeaponComponent.hardPoints`, and squadron fighter gun/additional-gun references. It never matches object names or trusts serialized ship IDs.
 
 ## v1 limits

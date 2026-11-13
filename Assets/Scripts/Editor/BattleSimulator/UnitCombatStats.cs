@@ -14,6 +14,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
         public double Overkill;
         public int Shots;
         public int Hits;
+        public int HardPointsRemaining;
         public float Hull;
         public float Shields;
         public float MaxHull;

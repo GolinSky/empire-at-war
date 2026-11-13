@@ -90,6 +90,13 @@ namespace EmpireAtWar.Editor.BattleSimulator
             _nextRegen = time + Definition.ShieldRegenerateDelay;
         }
 
-        public void UpdateStats() { Stats.Hull = Hull; Stats.Shields = Shields; }
+        public void UpdateStats()
+        {
+            Stats.Hull = Hull;
+            Stats.Shields = Shields;
+            Stats.HardPointsRemaining = 0;
+            foreach (HardPointModel point in HardPoints)
+                if (point.IsInstalled && !point.IsDestroyed) Stats.HardPointsRemaining++;
+        }
     }
 }

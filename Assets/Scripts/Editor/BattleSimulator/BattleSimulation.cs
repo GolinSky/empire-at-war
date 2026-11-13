@@ -100,13 +100,22 @@ namespace EmpireAtWar.Editor.BattleSimulator
         private void Fire(SimUnit source, SimMount mount, double time)
         {
             WeaponProfile profile = mount.Definition.Profile;
-            _candidates.Clear();
-            foreach (SimUnit target in _units)
-                if (!target.IsDestroyed && target.Stats.Side != source.Stats.Side &&
-                    (!profile.StrikecraftOnly || target.Definition.ShipClass.IsStrikecraft())) _candidates.Add(target);
-            if (_candidates.Count == 0) return;
-            SimUnit selected = _policies[source.Stats.Side].Select(source, _candidates);
-            int point = SelectPoint(selected);
+            if (mount.Shot == 0)
+            {
+                mount.Target = null;
+                _candidates.Clear();
+                foreach (SimUnit target in _units)
+                    if (!target.IsDestroyed && target.Stats.Side != source.Stats.Side &&
+                        (!profile.StrikecraftOnly || target.Definition.ShipClass.IsStrikecraft())) _candidates.Add(target);
+                if (_candidates.Count == 0) return;
+                mount.Target = _policies[source.Stats.Side].Select(source, _candidates);
+                mount.TargetHardPointId = SelectPoint(mount.Target);
+            }
+            SimUnit selected = mount.Target;
+            if (selected == null || selected.IsDestroyed) return;
+            int point = mount.TargetHardPointId;
+            // Active salvos retain ship aim points destroyed after the first shot, like CanStillHit.
+            if (selected.Definition.ShipClass.IsStrikecraft() && selected.HardPoints[point].IsDestroyed) return;
             source.Stats.Shots++;
             if (!mount.Hits.Roll(_weapons.GetHitChance(profile.DamageType, selected.Definition.ShipClass,
                     profile.GetAccuracyBias(selected.Definition.ShipClass) * source.Modifiers.AccuracyMultiplier),

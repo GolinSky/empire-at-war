@@ -8,6 +8,8 @@ namespace EmpireAtWar.Editor.BattleSimulator
         public HitAccumulator Hits;
         public double SalvoStart;
         public int Shot;
+        public SimUnit Target;
+        public int TargetHardPointId;
         public double NextShot => SalvoStart + Shot * Definition.Profile.ShotInterval;
 
         public void Advance()

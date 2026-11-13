@@ -33,7 +33,7 @@ namespace EmpireAtWar.Tests.Editor
             var definition = Unit("A", 7000, 0);
             definition.HardPoints[0].HealthWeight = healthWeight;
             definition.HardPoints.Add(new SimHardPointDefinition { Type = HardPointType.Weapon });
-            float expectedHealth = 7000f * 1.5f * healthWeight / (healthWeight + 1f);
+            float expectedHealth = 7000f * 1.35f * healthWeight / (healthWeight + 1f);
             var unit = new SimUnit(definition, new BattleFleetEntry { UnitId = "A" }, 0, 0,
                 _matrix, new System.Random(1), true);
 
@@ -139,7 +139,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void ImpactOnSubsystemDestroyedInFlight_IsWastedWhileOtherSubsystemsLive()
+        public void ImpactOnSubsystemDestroyedInFlight_DamagesHullAndSpreadsToLiveSubsystems()
         {
             var a = Unit("A", 1000, 0); a.Mounts.Add(new SimMountDefinition { HardPointId = 0, Profile = Profile(10, shots: 2) });
             var b = Unit("B", 1000, 0);
@@ -147,8 +147,47 @@ namespace EmpireAtWar.Tests.Editor
             FragilePoints(b, 1);
             var setup = Setup(); setup.Distance = 10; setup.TimeLimit = 1; setup.HardPointFocus = HardPointType.ShieldGenerator;
             BattleResult result = Run(setup, a, b);
-            // Both shots leave at 0 s for the generator; the first destroys it on arrival, the second is dropped.
-            Assert.That(result.Units[1].Hull, Is.EqualTo(990));
+            // Both shots leave at 0 s for the generator; the second deals 9 hull damage and 9 spread damage.
+            Assert.That(result.Units[1].Hull, Is.EqualTo(981));
+            Assert.That(result.Units[1].HardPointDamage, Is.EqualTo(19));
+            Assert.That(result.Units[0].Overkill, Is.Zero);
+        }
+
+        [TestCase(0.45f, 972f, 3, 28f)]
+        [TestCase(1f, 962f, 4, 38f)]
+        public void Salvo_FinishesOnDestroyedShipMountThenNextSalvoSelectsLiveMount(
+            float timeLimit, float expectedHull, int expectedShots, float expectedHardPointDamage)
+        {
+            var a = Unit("A", 1000, 10);
+            a.Mounts[0].Profile = Profile(10, shots: 3, interval: 0.2f);
+            var b = Unit("B", 1000, 0);
+            b.HardPoints.Insert(0, new SimHardPointDefinition { Name = "Generator", Type = HardPointType.ShieldGenerator });
+            FragilePoints(b, 1);
+            var setup = Setup(); setup.TimeLimit = timeLimit; setup.HardPointFocus = HardPointType.ShieldGenerator;
+
+            BattleResult result = Run(setup, a, b);
+
+            Assert.That(result.Units[1].Hull, Is.EqualTo(expectedHull));
+            Assert.That(result.Units[0].Shots, Is.EqualTo(expectedShots));
+            Assert.That(result.Units[1].HardPointDamage, Is.EqualTo(expectedHardPointDamage));
+        }
+
+        [Test]
+        public void ImpactOnFighterDestroyedInFlight_IsWastedWhileOtherMembersLive()
+        {
+            var a = Unit("A", 1000, 10);
+            a.Mounts[0].Profile = Profile(10, shots: 2);
+            var b = Unit("B", 20, 0);
+            b.IsSquadron = true;
+            b.MemberHull = 10;
+            b.ShipClass = ShipClass.Fighter;
+            b.HardPoints.Add(new SimHardPointDefinition { Name = "Second fighter", Type = HardPointType.Weapon });
+            var setup = Setup(); setup.Distance = 10; setup.TimeLimit = 1;
+
+            BattleResult result = Run(setup, a, b);
+
+            Assert.That(result.Units[1].Hull, Is.EqualTo(10));
+            Assert.That(result.Units[1].DestroyedAt, Is.EqualTo(-1));
             Assert.That(result.Units[0].Overkill, Is.EqualTo(10));
         }
 

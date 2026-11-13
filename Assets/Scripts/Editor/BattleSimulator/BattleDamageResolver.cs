@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Components.Ship.Health;
 
 namespace EmpireAtWar.Editor.BattleSimulator
 {
@@ -8,27 +9,31 @@ namespace EmpireAtWar.Editor.BattleSimulator
         {
             SimUnit target = impact.Target;
             var point = target.HardPoints.Length == 0 ? null : target.HardPoints[impact.HardPointId];
-            // Runtime AttackData.CanTarget drops impacts on a point destroyed in flight while other points live.
-            if (target.IsDestroyed || (point != null && point.IsDestroyed && target.HasLiveHardPoints))
+            // Runtime CanStillHit preserves impacts on dead ship mounts, but not dead strikecraft members.
+            if (target.IsDestroyed || (point != null && point.IsDestroyed && target.Definition.ShipClass.IsStrikecraft()))
             {
                 impact.Source.Stats.Overkill += impact.Damage;
                 return;
             }
             float hull = target.Hull;
             float shields = target.Shields;
-            float pointHealth = point == null ? 0 : point.Health;
+            Span<float> pointHealth = stackalloc float[target.HardPoints.Length];
+            for (int i = 0; i < pointHealth.Length; i++) pointHealth[i] = target.HardPoints[i].Health;
             bool lostGenerator = target.LostGenerator;
             target.ApplyDamage(impact.Damage, impact.DamageType, impact.HardPointId);
             double hullDamage = hull - target.Hull;
             double shieldDamage = shields - target.Shields;
             target.Stats.HullDamage += hullDamage;
             target.Stats.ShieldDamage += shieldDamage;
-            target.Stats.HardPointDamage += point == null ? 0 : pointHealth - point.Health;
             impact.Source.Stats.DamageDealt += hullDamage + shieldDamage;
             if (shields > 0 && target.Shields == 0) Add("Shields down", "", target, time, result, detailed);
             if (!lostGenerator && target.LostGenerator) Add("Shield generator lost", "", target, time, result, detailed);
-            if (point != null && pointHealth > 0 && point.IsDestroyed)
-                Add("Hardpoint destroyed", target.Definition.HardPoints[point.Id].Name, target, time, result, detailed);
+            for (int i = 0; i < pointHealth.Length; i++)
+            {
+                target.Stats.HardPointDamage += pointHealth[i] - target.HardPoints[i].Health;
+                if (pointHealth[i] > 0 && target.HardPoints[i].IsDestroyed)
+                    Add("Hardpoint destroyed", target.Definition.HardPoints[i].Name, target, time, result, detailed);
+            }
             if (target.IsDestroyed)
             {
                 target.Stats.DestroyedAt = time;
