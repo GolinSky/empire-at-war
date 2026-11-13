@@ -1,0 +1,24 @@
+[
+  {
+    "name": "ReinforcementZone",
+    "meshes": [
+      "Object02",
+      "Shadow_02"
+    ],
+    "triangles": 1088,
+    "size": "(40.5774, 48.5287, 45.0621)",
+    "center": "(0.0000, 80.0000, 0.0000)",
+    "shader": "EmpireAtWar/Ship Lit"
+  },
+  {
+    "name": "MainReinforcementZone",
+    "meshes": [
+      "Object02",
+      "Shadow_02"
+    ],
+    "triangles": 1088,
+    "size": "(40.5774, 48.5287, 45.0621)",
+    "center": "(0.0000, 80.0000, 0.0000)",
+    "shader": "EmpireAtWar/Ship Lit"
+  }
+]

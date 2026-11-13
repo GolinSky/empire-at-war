@@ -1,0 +1,153 @@
+{
+  "source": [
+    {
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 0.0002115121116515365
+          },
+          "degenerateNormalExclusions": [],
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 6.3693708222300395e-09
+          },
+          "degenerateNormalExclusions": [],
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 1.0947825664885598e-07
+          },
+          "degenerateNormalExclusions": [],
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 6.564288316922328e-05
+          },
+          "degenerateNormalExclusions": [],
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 5.715999545480476e-05
+          },
+          "degenerateNormalExclusions": [],
+          "normalCheck": "passed"
+        }
+      ]
+    }
+  ],
+  "fbx": [
+    {
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 2.0542773464715972e-05,
+            "uvPixels": 0,
+            "normal": 0.0002116583439898606
+          },
+          "degenerateNormalExclusions": [],
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 2.3843048372620503e-05,
+            "uvPixels": 0,
+            "normal": 1.6619690073653292e-07
+          },
+          "degenerateNormalExclusions": [],
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 1.0831658069229648e-05,
+            "uvPixels": 0,
+            "normal": 2.3741292398027647e-07
+          },
+          "degenerateNormalExclusions": [],
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 1.5437602996826172e-05,
+            "uvPixels": 0,
+            "normal": 6.564439644919095e-05
+          },
+          "degenerateNormalExclusions": [],
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 1.7059844799040144e-05,
+            "uvPixels": 0,
+            "normal": 5.722348195491078e-05
+          },
+          "degenerateNormalExclusions": [],
+          "normalCheck": "passed"
+        }
+      ]
+    }
+  ],
+  "skeletonFbx": {
+    "bones": 10,
+    "maxSourceError": 6.5770693894070255e-06,
+    "fullAuthoredMatrixMetadata": "passed",
+    "comparison": "head-and-parent"
+  },
+  "triangles": 1140
+}

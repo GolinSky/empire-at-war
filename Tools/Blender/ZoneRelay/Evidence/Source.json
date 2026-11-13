@@ -1,0 +1,28 @@
+{
+  "model": {
+    "archive": "D:\\SteamLibrary\\steamapps\\common\\Star Wars Empire at War\\GameData\\Data\\models.meg",
+    "archiveSha256": "09eb13870f963bf3ee5bfbc1a029104523f06b3bd3aeddc35dad66a7ea2f7ced",
+    "member": "DATA\\ART\\MODELS\\NB_SPACESENSORNODE.ALO",
+    "offset": 198406741,
+    "size": 194429,
+    "sha256": "aa6165d5ea3d2508004562109297d2387c6b73051144edcd280386b5fb115e59"
+  },
+  "textures": {
+    "nb_sensornode.tga": {
+      "archive": "D:\\SteamLibrary\\steamapps\\common\\Star Wars Empire at War\\GameData\\Data\\textures.meg",
+      "archiveSha256": "718f5cd337d043d4f1d064c500b55d4299f546cf8d3ead8eaf4e21a2634eb029",
+      "member": "DATA\\ART\\TEXTURES\\NB_SENSORNODE.DDS",
+      "offset": 133393066,
+      "size": 87536,
+      "sha256": "ac4dd195696d0f760b27eb5616151cc71a63363e9d294654abb245630605d5b3"
+    },
+    "nb_sensornode_bump.tga": {
+      "archive": "D:\\SteamLibrary\\steamapps\\common\\Star Wars Empire at War\\GameData\\Data\\textures.meg",
+      "archiveSha256": "718f5cd337d043d4f1d064c500b55d4299f546cf8d3ead8eaf4e21a2634eb029",
+      "member": "DATA\\ART\\TEXTURES\\NB_SENSORNODE_BUMP.DDS",
+      "offset": 261859362,
+      "size": 22000,
+      "sha256": "8e7dd793dece7e1c31ffaab7d3949636d81d9819a62dfcf032aab85264fde5f2"
+    }
+  }
+}
