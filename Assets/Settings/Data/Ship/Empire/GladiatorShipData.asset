@@ -42,7 +42,7 @@ MonoBehaviour:
     maxActive: 1
   - squadronType: 201
     reserve: 6
-    maxActive: 2
+    maxActive: 3
   - squadronType: 202
     reserve: 3
     maxActive: 1

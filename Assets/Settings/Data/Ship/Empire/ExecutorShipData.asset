@@ -39,7 +39,7 @@ MonoBehaviour:
   hangarBays:
   - squadronType: 200
     reserve: 9
-    maxActive: 3
+    maxActive: 4
   - squadronType: 201
     reserve: 6
     maxActive: 2
