@@ -65,6 +65,58 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(false)]
         [TestCase(true)]
+        public void BomberSelection_RanksAnyShipAheadOfNearerStrikecraft(bool seen)
+        {
+            AddTarget(3f, ShipClass.Fighter);
+            IEntity ship = AddTarget(90f, ShipClass.Frigate);
+
+            Assert.That(Select(CreateSelector(ShipClass.Bomber), seen), Is.SameAs(ship));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void BomberSelection_FallsBackToStrikecraftWithoutShips(bool seen)
+        {
+            IEntity fighter = AddTarget(3f, ShipClass.Fighter);
+
+            Assert.That(Select(CreateSelector(ShipClass.Bomber), seen), Is.SameAs(fighter));
+        }
+
+        [Test]
+        public void BomberGuard_JoinsShipTheGuardedUnitFightsBeyondGuardArea()
+        {
+            AddTarget(5f, ShipClass.Frigate);
+            IEntity fought = AddTarget(500f, ShipClass.Capital);
+
+            Assert.That(CreateSelector(ShipClass.Bomber).SelectGuardTarget(Guarded(fought), Vector3.zero, 100f),
+                Is.SameAs(fought));
+        }
+
+        [Test]
+        public void BomberGuard_SkipsFoughtStrikecraftAndHiddenShips()
+        {
+            IEntity near = AddTarget(5f, ShipClass.Frigate);
+            IEntity fighter = AddTarget(500f, ShipClass.Fighter);
+            IEntity hidden = AddTarget(600f, ShipClass.Capital);
+            _vision.Hidden.Add(hidden.GetFacade<IEntityTransformFacade>().Transform.position);
+            SquadronTargetSelector selector = CreateSelector(ShipClass.Bomber);
+
+            Assert.That(selector.SelectGuardTarget(Guarded(fighter), Vector3.zero, 100f), Is.SameAs(near));
+            Assert.That(selector.SelectGuardTarget(Guarded(hidden), Vector3.zero, 100f), Is.SameAs(near));
+            Assert.That(selector.SelectGuardTarget(Guarded(null), Vector3.zero, 100f), Is.SameAs(near));
+        }
+
+        [Test]
+        public void FighterGuard_IgnoresShipTheGuardedUnitFights()
+        {
+            IEntity near = AddTarget(5f, ShipClass.Fighter);
+            IEntity fought = AddTarget(500f, ShipClass.Capital);
+
+            Assert.That(CreateSelector().SelectGuardTarget(Guarded(fought), Vector3.zero, 100f), Is.SameAs(near));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
         public void Selection_RejectsWorseAndDistantCandidatesBeforeCloakOrVision(bool seen)
         {
             IEntity expected = AddTarget(3f);
@@ -284,6 +336,25 @@ namespace EmpireAtWar.Tests.Editor
             _locator.AddEntity(entity);
             _candidates.Add(entity);
             return entity;
+        }
+
+        private IEntity Guarded(IEntity fought)
+        {
+            GameObject item = new GameObject("Guarded");
+            _objects.Add(item);
+            return new Entity(new HealthStub { ShipClass = ShipClass.Frigate }, _locator,
+                new IEntityFacade[] { new EntityTransformFacade(item.transform), new CombatObserverStub(fought) },
+                TestPlayers.Human, 1000 + _objects.Count, System.Array.Empty<IPooledEntityEvents>(),
+                System.Array.Empty<IHangarLaunchEvents>());
+        }
+
+        private sealed class CombatObserverStub : IUnitCombatObserverFacade
+        {
+            public CombatObserverStub(IEntity target) { Target = target; }
+            public float WeaponRange => throw new NotSupportedException();
+            public float RadarRange => throw new NotSupportedException();
+            public IEntity Target { get; }
+            public bool IsAttacking(IEntity target) => throw new NotSupportedException();
         }
 
         private static CombatSpy Combat(IEntity entity) => (CombatSpy)entity.GetFacade<ICombatModifiersFacade>();

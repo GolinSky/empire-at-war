@@ -276,7 +276,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             string addresses = string.Join(", ", _online.LocalAddresses().Select(address => $"{address}:{_online.Port}"));
             return _online.IsSteamLobby
                 ? $"Friends join from a Steam invite or by IP {addresses}."
-                : $"Friends join by IP {addresses}.";
+                : $"LAN / IP game: players on your network join by IP {addresses}.";
         }
     }
 }

@@ -407,8 +407,8 @@ namespace EmpireAtWar.Entities.Squadrons
                     // Fighters orbit one side of the guarded unit, so the whole guard area is
                     // searched in what the team sees rather than in the squadron's own radar.
                     // The area reaches past the guarded unit's guns, so escorts join the fight it is in.
-                    else if (ShouldSearchTargets(elapsed)) DefendArea(_targetSelector.SelectSeen(
-                        _orders.Target.GetFacade<IEntityTransformFacade>().Transform.position,
+                    else if (ShouldSearchTargets(elapsed)) DefendArea(_targetSelector.SelectGuardTarget(
+                        _orders.Target, _orders.Target.GetFacade<IEntityTransformFacade>().Transform.position,
                         Mathf.Max(_guardedRadius + Data.GuardRadius, _orderSettings.SquadronGuardEngageRadius)));
                     break;
                 case UnitOrderType.AttackMove:
@@ -464,12 +464,18 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private bool IsEngaging => SquadronTargetSelector.IsAlive(_engaged) && !_engaged.IsCloaked();
 
-        /// <summary>A lost target is replaced at once; with no target the search runs on an interval.</summary>
+        private bool IsBomberOnStrikecraft =>
+            _targetSelector.PrefersShips && _engaged.HealthModel.ShipClass.IsStrikecraft();
+
+        /// <summary>
+        /// A lost target is replaced at once; with no target the search runs on an interval.
+        /// Bombers fighting strikecraft keep searching on the interval for a ship.
+        /// </summary>
         private bool ShouldSearchTargets(float elapsed)
         {
             _targetSearchTimer -= elapsed;
-            if (IsEngaging) return false;
-            if (_engaged == null && _targetSearchTimer > 0f) return false;
+            if (IsEngaging && !IsBomberOnStrikecraft) return false;
+            if ((_engaged == null || IsEngaging) && _targetSearchTimer > 0f) return false;
             // Jittered: squadrons that lost one shared target search in the same frame and would otherwise stay in step.
             _targetSearchTimer = UnityEngine.Random.Range(0.5f, 1f) * TARGET_SEARCH_INTERVAL;
             return true;
@@ -480,11 +486,13 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             if (enemy != null)
             {
+                // A bomber already fighting strikecraft breaks off only for a ship.
+                if (IsEngaging && enemy.HealthModel.ShipClass.IsStrikecraft()) return;
                 Engage(enemy);
                 return;
             }
 
-            if (_engaged == null) return;
+            if (_engaged == null || IsEngaging) return;
             Disengage();
             ResumeCourse();
         }

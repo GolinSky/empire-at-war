@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ui;
 using EmpireAtWar.Entities.Menu;
 using MPUIKIT;
 using NUnit.Framework;
@@ -30,7 +31,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(menuPanel.name, Is.EqualTo("MenuPanel"));
                 Assert.That(menuPanel.activeSelf, Is.False);
                 Assert.That(menuPanel.GetComponent<Canvas>(), Is.Null);
-                Assert.That(menuPanel.GetComponent<MPImage>(), Is.Not.Null);
+                Assert.That(menuPanel.transform.Find("HudFrame").GetComponent<HudFrame>(), Is.Not.Null);
                 foreach (string field in new[] { "saveButton" })
                     Assert.That(serializedMenuUi.FindProperty(field).objectReferenceValue, Is.Not.Null, field);
                 Assert.That(root.transform.Find("RoundButtonCyan"), Is.Null);

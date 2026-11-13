@@ -115,7 +115,7 @@ namespace EmpireAtWar.Entities.MainMenu.ServerBrowser
         {
             if (_online.LastError != OnlineError.None) return OnlineErrorText.Describe(_online.LastError);
             if (connecting) return "Connecting to the host...";
-            if (!_online.Steam.IsInitialized) return "Steam is not running: join a host by IP below.";
+            if (!_online.Steam.IsInitialized) return "Steam not detected: the lobby list needs Steam. Join a LAN / IP game by address below.";
             if (_online.Steam.IsListingLobbies) return "Searching for open lobbies...";
             return _rows.Count == 0 ? "No open lobbies found. Refresh, or join a host by IP."
                 : "Choose a lobby to join, or join a host by IP.";

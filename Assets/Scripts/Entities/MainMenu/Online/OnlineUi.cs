@@ -2,17 +2,21 @@ using DG.Tweening;
 using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace EmpireAtWar.Entities.MainMenu.Online
 {
-    /// <summary>Multiplayer entry: host a lobby, open the Server Browser, accept a Steam invite.</summary>
+    /// <summary>Multiplayer entry: host a Steam or LAN / IP lobby, open the Server Browser, accept a Steam invite, retry Steam.</summary>
     public sealed class OnlineUi : BaseUi
     {
-        [SerializeField] private Button hostGameButton;
+        [FormerlySerializedAs("hostGameButton")]
+        [SerializeField] private Button hostSteamButton;
+        [SerializeField] private Button hostLanButton;
         [SerializeField] private Button joinGameButton;
         [SerializeField] private Button acceptInviteButton;
         [SerializeField] private TMP_Text acceptInviteLabel;
+        [SerializeField] private Button retrySteamButton;
         [SerializeField] private Button backButton;
         [SerializeField] private TMP_Text statusText;
         private const float INVITE_BLINK_DURATION = 0.5f;
@@ -27,9 +31,11 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Initialize()
         {
             if (_isInitialized) return;
-            hostGameButton.onClick.AddListener(_presenter.HostGame);
+            hostSteamButton.onClick.AddListener(_presenter.HostSteamLobby);
+            hostLanButton.onClick.AddListener(_presenter.HostLanGame);
             joinGameButton.onClick.AddListener(_presenter.OpenServerBrowser);
             acceptInviteButton.onClick.AddListener(_presenter.AcceptInvite);
+            retrySteamButton.onClick.AddListener(_presenter.RetrySteam);
             backButton.onClick.AddListener(_presenter.Close);
             _inviteColor = acceptInviteButton.targetGraphic.color;
             _inviteBlinkColor = new Color(210f / 255f, 169f / 255f, 94f / 255f, _inviteColor.a);
@@ -37,11 +43,15 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         }
 
         /// <param name="busy">Connecting to a host: hosting and joining wait; Back cancels.</param>
-        public void Render(string status, bool busy, string inviteFrom)
+        /// <param name="steamReady">Without Steam the Steam lobby is blocked and Retry Steam takes the invite slot.</param>
+        public void Render(string status, bool busy, string inviteFrom, bool steamReady)
         {
             statusText.text = status;
-            hostGameButton.interactable = !busy;
+            hostSteamButton.interactable = steamReady && !busy;
+            hostLanButton.interactable = !busy;
             joinGameButton.interactable = !busy;
+            retrySteamButton.gameObject.SetActive(!steamReady);
+            retrySteamButton.interactable = !busy;
             acceptInviteButton.gameObject.SetActive(inviteFrom.Length > 0);
             acceptInviteButton.interactable = !busy;
             acceptInviteLabel.text = $"JOIN {inviteFrom.ToUpperInvariant()}";
@@ -51,9 +61,11 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Dispose()
         {
             if (!_isInitialized) return;
-            hostGameButton.onClick.RemoveListener(_presenter.HostGame);
+            hostSteamButton.onClick.RemoveListener(_presenter.HostSteamLobby);
+            hostLanButton.onClick.RemoveListener(_presenter.HostLanGame);
             joinGameButton.onClick.RemoveListener(_presenter.OpenServerBrowser);
             acceptInviteButton.onClick.RemoveListener(_presenter.AcceptInvite);
+            retrySteamButton.onClick.RemoveListener(_presenter.RetrySteam);
             backButton.onClick.RemoveListener(_presenter.Close);
             SetInviteBlinking(false);
             _isInitialized = false;

@@ -8,7 +8,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
     {
         public static string Describe(OnlineError error) => error switch
         {
-            OnlineError.SteamNotRunning => "Steam is not running.",
+            OnlineError.SteamNotRunning => "Steam is still not running. Start Steam and sign in, then press RETRY STEAM.",
             OnlineError.LobbyFull => "The lobby is full.",
             OnlineError.VersionMismatch => "Game versions differ.",
             OnlineError.HostLeft => "The host left.",

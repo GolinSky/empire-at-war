@@ -77,12 +77,21 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             Unfocus();
         }
 
-        /// <summary>Hosts a Skirmish lobby; the host switches the mode inside the lobby.</summary>
-        public void HostGame()
+        /// <summary>Hosts a Skirmish lobby listed in the Server Browser with Steam invites; the host switches the mode inside the lobby.</summary>
+        public void HostSteamLobby()
         {
             _online.ClearError();
-            _online.HostLobby();
+            _online.HostLobby(steamLobby: true);
         }
+
+        /// <summary>Hosts a Skirmish lobby joined only by IP: players on the same network, or through a forwarded port.</summary>
+        public void HostLanGame()
+        {
+            _online.ClearError();
+            _online.HostLobby(steamLobby: false);
+        }
+
+        public void RetrySteam() => _online.RetrySteam();
 
         public void OpenServerBrowser() => _serverBrowser.Open();
 
@@ -149,9 +158,10 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             string status = _online.LastError != OnlineError.None ? OnlineErrorText.Describe(_online.LastError)
                 : connecting ? "Connecting to the host..."
                 : _online.Steam.IsInitialized
-                    ? $"Steam: signed in as {_online.Steam.PersonaName}. Players find your lobby in the Server Browser, by invite or by IP."
-                    : "Steam is not running: hosting and joining work by IP only.";
-            _ui.Render(status, connecting, _online.Steam.HasPendingInvite ? _online.Steam.PendingInviteFrom : string.Empty);
+                    ? $"Signed in to Steam as {_online.Steam.PersonaName}. A Steam lobby appears in the Server Browser and takes invites; a LAN / IP game is joined by address."
+                    : "Steam not detected: Steam lobbies, invites and the lobby list are off. Start Steam and press RETRY STEAM, or host a LAN / IP game.";
+            _ui.Render(status, connecting, _online.Steam.HasPendingInvite ? _online.Steam.PendingInviteFrom : string.Empty,
+                _online.Steam.IsInitialized);
         }
     }
 }

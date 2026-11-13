@@ -2968,7 +2968,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7655814840572190640}
-  - component: {fileID: 7363475597430516931}
   - component: {fileID: 8962644063851557097}
   - component: {fileID: 3425778100012065326}
   m_Layer: 5
@@ -2998,32 +2997,6 @@ RectTransform:
   m_AnchoredPosition: {x: 5, y: -0}
   m_SizeDelta: {x: 87.5, y: 40}
   m_Pivot: {x: 0, y: 1}
---- !u!114 &7363475597430516931
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7422184043045789584}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.HorizontalLayoutGroup
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 1
-  m_Spacing: 4
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 1
-  m_ChildScaleWidth: 0
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
 --- !u!114 &8962644063851557097
 MonoBehaviour:
   m_ObjectHideFlags: 0

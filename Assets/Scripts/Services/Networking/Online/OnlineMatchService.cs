@@ -95,7 +95,21 @@ namespace EmpireAtWar.Services.Networking.Online
 
         public void Initialize()
         {
-            if (!_steam.TryInitialize()) return;
+            if (StartSteam()) _steam.TryJoinFromLaunchArgs();
+        }
+
+        /// <summary>Online screen: Steam started after the game, so Steam lobbies, invites and the Server Browser come back.</summary>
+        public void RetrySteam()
+        {
+            if (Role != OnlineRole.None || _steam.IsInitialized)
+                throw new InvalidOperationException("Steam can be retried only while it is off and outside a lobby.");
+            LastError = StartSteam() ? OnlineError.None : OnlineError.SteamNotRunning;
+            Changed?.Invoke();
+        }
+
+        private bool StartSteam()
+        {
+            if (!_steam.TryInitialize()) return false;
             _steam.JoinedHost += JoinSteamHost;
             _steam.JoinStarting += BeginSteamJoin;
             _steam.Failed += OnSteamFailed;
@@ -103,7 +117,8 @@ namespace EmpireAtWar.Services.Networking.Online
             _steam.HostLobbyReady += OnSteamLobbyReady;
             _steam.InviteReceived += NotifyChanged;
             _steam.AvatarLoaded += NotifyChanged;
-            _steam.TryJoinFromLaunchArgs();
+            if (_root != null) ApplySteamTransport();
+            return true;
         }
 
         public void Tick()
@@ -143,10 +158,8 @@ namespace EmpireAtWar.Services.Networking.Online
             Object.DontDestroyOnLoad(_root);
             _kcp = _root.AddComponent<KcpTransport>();
             _fizzy = _root.AddComponent<FizzySteamworks>();
-            _fizzy.enabled = _steam.IsInitialized;
-            // The host listens on direct IP and, with Steam running, on the Steam relay at once.
             _multiplex = _root.AddComponent<MultiplexTransport>();
-            _multiplex.transports = _steam.IsInitialized ? new Transport[] { _kcp, _fizzy } : new Transport[] { _kcp };
+            ApplySteamTransport();
             _manager = _root.AddComponent<OnlineNetworkManager>();
             _manager.autoCreatePlayer = false;
             _manager.maxConnections = OnlineLobby.MAX_MEMBERS;
@@ -158,20 +171,29 @@ namespace EmpireAtWar.Services.Networking.Online
             _root.SetActive(true);
         }
 
-        /// <summary>
-        /// Hosts a Skirmish lobby reachable by IP and, with Steam running, by invite and the Server Browser.
-        /// The host picks the mode in the lobby (<see cref="SwitchLobbyMode"/>).
-        /// </summary>
-        public void HostLobby()
+        // A Steam lobby host listens on direct IP and the Steam relay at once; Steam may start after this object exists.
+        private void ApplySteamTransport()
         {
+            _fizzy.enabled = _steam.IsInitialized;
+            _multiplex.transports = _steam.IsInitialized ? new Transport[] { _kcp, _fizzy } : new Transport[] { _kcp };
+        }
+
+        /// <summary>
+        /// Hosts a Skirmish lobby reachable by IP; a <paramref name="steamLobby"/> (Steam required) is also listed in
+        /// the Server Browser and takes Steam invites. The host picks the mode in the lobby (<see cref="SwitchLobbyMode"/>).
+        /// </summary>
+        public void HostLobby(bool steamLobby)
+        {
+            if (steamLobby && !_steam.IsInitialized)
+                throw new InvalidOperationException("A Steam lobby needs Steam running.");
             EnterOnline();
             ResetMatch(OnlineRole.Host);
             Mode = LobbyMode.Skirmish;
             int capacity = CapacityOf(Mode);
             _lobby.Reset(_steam.PersonaName, _steam.LocalSteamId, capacity);
-            _manager.UseTransport(_multiplex);
+            _manager.UseTransport(steamLobby ? _multiplex : _kcp);
             _manager.StartHost();
-            if (_steam.IsInitialized) _steam.CreateLobby(capacity, Mode.ToString());
+            if (steamLobby) _steam.CreateLobby(capacity, Mode.ToString());
             Changed?.Invoke();
         }
 
