@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.Popups;
 using EmpireAtWar.Ui.Base;
 using VContainer;
 using EmpireAtWar.Lifecycle;
@@ -20,6 +21,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         private readonly IGameCommand _gameCommand;
         private readonly IMenuFactionSfxService _factionAudio;
         private SkirmishUi _ui;
+        private readonly SkirmishPlanetPicker _planetPicker;
 
         private readonly TeamColorPalette _teamColorPalette;
         private readonly SkirmishModel _model;
@@ -34,8 +36,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             IGameCommand gameCommand,
             ITooltipService tooltipService,
             SkirmishModel model, TeamColorPalette teamColorPalette,
-            IMenuFactionSfxService factionAudio) : base(uiService, cancelRouter)
+            IMenuFactionSfxService factionAudio, IPopupService popups) : base(uiService, cancelRouter)
         {
+            _planetPicker = new SkirmishPlanetPicker(uiService, popups);
             _teamColorPalette = teamColorPalette;
             _factionAudio = factionAudio;
             _gameCommand = gameCommand;
@@ -45,10 +48,12 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         public void LateDispose()
         {
+            _planetPicker.Close();
             _model.Changed -= Render;
             if (_tooltipHover != null) _tooltipHover.Dispose();
             if (_ui != null)
             {
+                _ui.PlanetSelectionRequested -= OpenPlanetPicker;
                 _ui.Dispose();
             }
             _tooltipHover = null;
@@ -65,6 +70,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
                 _ui.AssignPresenter(this);
                 _ui.SetData(_teamColorPalette);
                 _ui.Initialize();
+                _ui.PlanetSelectionRequested += OpenPlanetPicker;
                 _model.Changed += Render;
                 _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover,
                     HandleTooltipHover, _tooltips);
@@ -77,6 +83,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         public void Close()
         {
+            _planetPicker.Close();
             _isOpen = false;
             _tooltips.HideAll();
             _ui.Hide();
@@ -92,7 +99,15 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         public void StartGame()
         {
-            if (_model.CanStart) _gameCommand.StartBattle(_model.CreateBattle());
+            if (!_model.CanStart) return;
+            _planetPicker.Close();
+            _gameCommand.StartBattle(_model.CreateBattle());
+        }
+
+        private void OpenPlanetPicker()
+        {
+            _tooltips.HideAll();
+            _planetPicker.Open(_model, this, _ui);
         }
 
         public void SelectSlotOccupant(int slotIndex, int occupantIndex)

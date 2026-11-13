@@ -1,5 +1,9 @@
+using System;
+using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
+using EmpireAtWar.Entities.Planet;
+using EmpireAtWar.Entities.Popups;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.Game;
 using NUnit.Framework;
@@ -43,7 +47,8 @@ namespace EmpireAtWar.Tests.Editor
 
                 foreach (string field in new[]
                          {
-                             "closeButton", "startGameButton", "planetsDropdown", "mapSizeDropdown",
+                             "closeButton", "startGameButton", "planetButton", "planetLabel",
+                             "planetPreviewButton", "planetPreviewImage", "mapSizeDropdown",
                              "victoryConditionDropdown", "startingMoneySlider", "startingMoneyText", "superWeaponsToggle"
                          })
                 {
@@ -55,6 +60,48 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(root.transform.Find("Background/BattleSettings/VictoryConditionField"), Is.Not.Null);
                 Assert.That(root.transform.Find("Background/BattleSettings/MapSizeField"), Is.Not.Null);
                 Assert.That(root.transform.Find("Background/BattleSettings/StartingMoneyField/StartingMoneySlider"), Is.Not.Null);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        [Test]
+        public void PlanetGallery_BindsEveryPlanetOnceAndKeepsCardsInsideScrollContent()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/Popups/PlanetSelectionPopupUi.prefab");
+            try
+            {
+                PlanetSelectionPopupUi gallery = root.GetComponent<PlanetSelectionPopupUi>();
+                Assert.That(gallery, Is.Not.Null);
+                using var serializedGallery = new SerializedObject(gallery);
+                foreach (string field in new[]
+                         {
+                             "canvasGroup", "closeButton", "searchInput", "scrollRect",
+                             "countText", "currentPlanetText", "emptyState"
+                         })
+                    Assert.That(serializedGallery.FindProperty(field).objectReferenceValue, Is.Not.Null, field);
+
+                var scroll = (ScrollRect)serializedGallery.FindProperty("scrollRect").objectReferenceValue;
+                Assert.That(scroll.viewport, Is.Not.Null);
+                Assert.That(scroll.content, Is.Not.Null);
+                SerializedProperty cards = serializedGallery.FindProperty("cards");
+                Assert.That(cards.arraySize, Is.EqualTo(Enum.GetValues(typeof(PlanetType)).Length));
+                var planets = new HashSet<PlanetType>();
+                for (int i = 0; i < cards.arraySize; i++)
+                {
+                    var card = cards.GetArrayElementAtIndex(i).objectReferenceValue as PlanetSelectionCardView;
+                    Assert.That(card, Is.Not.Null, $"Card {i}");
+                    Assert.That(planets.Add(card.Planet), Is.True, $"Duplicate planet: {card.Planet}");
+                    Assert.That(card.transform.parent, Is.EqualTo(scroll.content));
+                    using var serializedCard = new SerializedObject(card);
+                    foreach (string field in new[]
+                             { "button", "previewImage", "nameText", "selectedIndicator", "selectionOutline" })
+                        Assert.That(serializedCard.FindProperty(field).objectReferenceValue, Is.Not.Null,
+                            $"{card.Planet}: {field}");
+                }
+                CollectionAssert.AreEquivalent(Enum.GetValues(typeof(PlanetType)), planets);
             }
             finally
             {

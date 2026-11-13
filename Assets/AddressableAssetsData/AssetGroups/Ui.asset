@@ -40,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42ec5d03e7cbba04997759c3fdbffe4f
+    m_Address: PlanetSelectionPopupUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 44c88130ec726cf479ff760e55f8d98d
     m_Address: EconomyUi
     m_ReadOnly: 0

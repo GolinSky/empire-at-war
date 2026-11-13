@@ -1631,3 +1631,10 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: PlanetSelectionPopupUi
+      value:
+        m_AssetGUID: 42ec5d03e7cbba04997759c3fdbffe4f
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

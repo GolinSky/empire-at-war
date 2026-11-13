@@ -96,6 +96,7 @@ namespace EmpireAtWar.Ui.Base
                     { typeof(AcceptPopupUi), modalSlot },
                     { typeof(PopupBlockerUi), modalSlot },
                     { typeof(SteamInvitePopupUi), modalSlot },
+                    { typeof(PlanetSelectionPopupUi), modalSlot },
                     { typeof(TooltipUi), tooltipSlot },
                     { typeof(FadeUi), fadeSlot }
                 };

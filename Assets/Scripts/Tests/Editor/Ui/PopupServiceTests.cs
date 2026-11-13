@@ -198,7 +198,7 @@ namespace EmpireAtWar.Tests.Editor
             IOnlineLobbyScreen lobby = mode == LobbyMode.Skirmish
                 ? new OnlineSkirmishLobbyUiController(_ui, _router, online,
                     AssetDatabase.LoadAssetAtPath<TeamColorPalette>(
-                        "Assets/Settings/Data/Models/Players/TeamColorPalette.asset"), null, new TooltipServiceStub(), steam)
+                        "Assets/Settings/Data/Models/Players/TeamColorPalette.asset"), null, new TooltipServiceStub(), steam, _popups)
                 : new OnlineSurvivalLobbyUiController(_ui, _router, online, steam);
             ((IInitializable)lobby).Initialize();
             try

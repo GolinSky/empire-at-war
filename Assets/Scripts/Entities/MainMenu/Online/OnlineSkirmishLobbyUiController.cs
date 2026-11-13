@@ -33,6 +33,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private readonly IMenuFactionSfxService _factionAudio;
         private readonly TooltipRequests _tooltips;
         private readonly ISteamPopupService _steamPopups;
+        private readonly SkirmishPlanetPicker _planetPicker;
         private TooltipHoverSubscription _tooltipHover;
         // The lobby keeps its own setup so the offline Skirmish screen is untouched.
         private readonly SkirmishModel _model = new SkirmishModel();
@@ -43,7 +44,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         public OnlineSkirmishLobbyUiController(IUiService uiService, IUiCancelRouter cancelRouter,
             OnlineMatchService online, TeamColorPalette palette, IMenuFactionSfxService factionAudio,
-            ITooltipService tooltipService, ISteamPopupService steamPopups)
+            ITooltipService tooltipService, ISteamPopupService steamPopups, IPopupService popups)
             : base(uiService, cancelRouter)
         {
             _tooltips = new TooltipRequests(tooltipService);
@@ -51,6 +52,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             _palette = palette;
             _factionAudio = factionAudio;
             _steamPopups = steamPopups;
+            _planetPicker = new SkirmishPlanetPicker(uiService, popups);
         }
 
         private bool IsHost => _online.Role == OnlineRole.Host;
@@ -64,6 +66,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         public void LateDispose()
         {
+            _planetPicker.Close();
             _online.Changed -= Sync;
             _online.SlotEditRequested -= ApplyMemberEdit;
             _model.Changed -= OnModelChanged;
@@ -73,6 +76,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             if (_ui != null)
             {
                 _ui.InviteRequested -= InviteFriends;
+                _ui.PlanetSelectionRequested -= OpenPlanetPicker;
                 _ui.LobbyModeSwitch.ModeSelected -= SwitchMode;
                 _ui.Dispose();
             }
@@ -92,6 +96,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 _ui.SetAvatarSource(this);
                 _ui.Initialize();
                 _ui.InviteRequested += InviteFriends;
+                _ui.PlanetSelectionRequested += OpenPlanetPicker;
                 _ui.LobbyModeSwitch.ModeSelected += SwitchMode;
                 _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover, HandleTooltipHover, _tooltips);
             }
@@ -107,6 +112,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         public void Hide()
         {
+            _planetPicker.Close();
             _isOpen = false;
             _tooltips.HideAll();
             CloseInvitePicker();
@@ -117,6 +123,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         // X and Escape leave the lobby; the online route then closes this screen.
         public void Close()
         {
+            _planetPicker.Close();
             CloseInvitePicker();
             _online.Leave();
         }
@@ -137,6 +144,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
             if (_model.CanStart)
             {
+                _planetPicker.Close();
                 CloseInvitePicker();
                 _online.StartSkirmish(_model.CreateBattle(), _model.CreateMemberSlots());
             }
@@ -188,6 +196,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             if (!_isOpen) return;
             if (!_online.IsInLobby || _online.IsInBattle || _online.Mode != LobbyMode.Skirmish)
             {
+                _planetPicker.Close();
                 CloseInvitePicker();
                 return;
             }
@@ -199,6 +208,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             }
 
             bool canInvite = IsHost && _online.IsSteamLobby;
+            if (!_model.CanEditSettings) _planetPicker.Close();
             if (!canInvite) CloseInvitePicker();
             _ui.SetInviteAvailable(canInvite);
             if (IsHost) _ui.LobbyModeSwitch.Render(_online.Mode, _online.CanSwitchLobbyMode(LobbyMode.Survival));
@@ -220,6 +230,12 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private void SwitchMode(LobbyMode mode) => _online.SwitchLobbyMode(mode);
 
         private void InviteFriends() => _invitePicker = _steamPopups.OpenInvitePicker();
+
+        private void OpenPlanetPicker()
+        {
+            _tooltips.HideAll();
+            _planetPicker.Open(_model, this, _ui);
+        }
 
         private void CloseInvitePicker()
         {

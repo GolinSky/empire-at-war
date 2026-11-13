@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MainMenu.Online;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
+using EmpireAtWar.Entities.Popups;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Ui.Base;
 using TMPro;
@@ -42,7 +43,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private Button inviteButton;
         [SerializeField] private LobbyModeSwitchView lobbyModeSwitch;
         [SerializeField] private SkirmishSlotRowView[] slotRows;
-        [SerializeField] private TMP_Dropdown planetsDropdown;
+        [SerializeField] private Button planetButton;
+        [SerializeField] private TMP_Text planetLabel;
+        [SerializeField] private Button planetPreviewButton;
         [SerializeField] private RawImage planetPreviewImage;
         [SerializeField] private Texture2D coruscantPreview;
         [SerializeField] private Texture2D kaminoPreview;
@@ -64,6 +67,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         private ISkirmishAvatarSource _avatars;
 
         private bool _isInitialized;
+        private Button _planetOpener;
+
+        public event Action PlanetSelectionRequested;
 
         /// <summary>Online lobby route only.</summary>
         public event Action InviteRequested;
@@ -98,7 +104,6 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
                 row.ColorChanged += _presenter.SelectSlotColor;
             }
 
-            SetData<PlanetType>(planetsDropdown);
             SetData<MapSize>(mapSizeDropdown);
             SetData<BattleVictoryCondition>(victoryConditionDropdown);
             victoryConditionDropdown.options[(int)BattleVictoryCondition.DestroyEnemyFleet].text = "Destroy enemy fleet";
@@ -112,7 +117,8 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             closeButton.onClick.AddListener(_presenter.Close);
             startGameButton.onClick.AddListener(_presenter.StartGame);
             inviteButton.onClick.AddListener(RaiseInviteRequested);
-            planetsDropdown.onValueChanged.AddListener(_presenter.SelectPlanet);
+            planetButton.onClick.AddListener(OpenPlanetSelection);
+            planetPreviewButton.onClick.AddListener(OpenPlanetPreviewSelection);
             mapSizeDropdown.onValueChanged.AddListener(_presenter.SelectMapSize);
             victoryConditionDropdown.onValueChanged.AddListener(_presenter.SelectVictoryCondition);
             startingMoneySlider.onValueChanged.AddListener(OnStartingMoneySliderChanged);
@@ -139,7 +145,8 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             startGameButton.onClick.RemoveListener(_presenter.StartGame);
             inviteButton.onClick.RemoveListener(RaiseInviteRequested);
             lobbyModeSwitch.Dispose();
-            planetsDropdown.onValueChanged.RemoveListener(_presenter.SelectPlanet);
+            planetButton.onClick.RemoveListener(OpenPlanetSelection);
+            planetPreviewButton.onClick.RemoveListener(OpenPlanetPreviewSelection);
             mapSizeDropdown.onValueChanged.RemoveListener(_presenter.SelectMapSize);
             victoryConditionDropdown.onValueChanged.RemoveListener(_presenter.SelectVictoryCondition);
             startingMoneySlider.onValueChanged.RemoveListener(OnStartingMoneySliderChanged);
@@ -238,18 +245,14 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             }
 
             bool canEditSettings = _model.CanEditSettings;
-            planetsDropdown.interactable = canEditSettings;
+            planetButton.interactable = canEditSettings;
+            planetPreviewButton.interactable = canEditSettings;
             mapSizeDropdown.interactable = canEditSettings;
             victoryConditionDropdown.interactable = canEditSettings;
             startingMoneySlider.interactable = canEditSettings;
             superWeaponsToggle.interactable = canEditSettings;
-            planetsDropdown.SetValueWithoutNotify((int)_model.Planet);
-            planetPreviewImage.texture = _model.Planet switch
-            {
-                PlanetType.Coruscant => coruscantPreview,
-                PlanetType.Kamino => kaminoPreview,
-                _ => planetPreviews.Dictionary[_model.Planet]
-            };
+            planetLabel.text = PlanetSelectionPopupUi.GetPlanetName(_model.Planet);
+            planetPreviewImage.texture = GetPlanetPreview(_model.Planet);
             mapSizeDropdown.SetValueWithoutNotify((int)_model.MapSize);
             victoryConditionDropdown.SetValueWithoutNotify((int)_model.VictoryCondition);
             startingMoneySlider.SetValueWithoutNotify(_model.StartingMoney);
@@ -319,6 +322,30 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         }
 
         private void RaiseInviteRequested() => InviteRequested?.Invoke();
+
+        public Texture2D GetPlanetPreview(PlanetType planet) => planet switch
+        {
+            PlanetType.Coruscant => coruscantPreview,
+            PlanetType.Kamino => kaminoPreview,
+            _ => planetPreviews.Dictionary[planet]
+        };
+
+        public void RestorePlanetFocus()
+        {
+            if (IsVisible && _model.CanEditSettings) _planetOpener.Select();
+        }
+
+        private void OpenPlanetSelection()
+        {
+            _planetOpener = planetButton;
+            PlanetSelectionRequested();
+        }
+
+        private void OpenPlanetPreviewSelection()
+        {
+            _planetOpener = planetPreviewButton;
+            PlanetSelectionRequested();
+        }
 
         private void OnDestroy()
         {

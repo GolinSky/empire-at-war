@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.MainMenu.Survival;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.Popups;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -83,7 +84,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             var model = new SkirmishModel();
             var audio = new SelectionAudio();
-            var controller = new SkirmishRouteUiController(null, null, null, null, model, null, audio);
+            var controller = new SkirmishRouteUiController(null, null, null, null, model, null, audio, new UnexpectedPopupService());
             controller.SelectSlotFaction(0, (int)FactionType.Republic);
             controller.SelectSlotFaction(1, (int)FactionType.Empire);
             Assert.That(audio.Count, Is.Zero);
@@ -114,9 +115,21 @@ namespace EmpireAtWar.Tests.Editor
         {
             var model = new SkirmishModel();
             var audio = new SelectionAudio();
-            _ = new SkirmishRouteUiController(null, null, null, null, model, null, audio);
+            _ = new SkirmishRouteUiController(null, null, null, null, model, null, audio, new UnexpectedPopupService());
             model.SelectSlotFaction(0, FactionType.Empire);
             Assert.That(audio.Count, Is.Zero);
+        }
+
+        private sealed class UnexpectedPopupService : IPopupService
+        {
+            public PopupHandle Open(IPopupController controller) =>
+                throw new System.InvalidOperationException("Faction selection must not open a popup.");
+
+            public void Close(PopupHandle handle) =>
+                throw new System.InvalidOperationException("Faction selection must not close a popup.");
+
+            public bool IsOpen(PopupHandle handle) =>
+                throw new System.InvalidOperationException("Faction selection must not inspect a popup.");
         }
 
         private sealed class SelectionAudio : IMenuFactionSfxService
