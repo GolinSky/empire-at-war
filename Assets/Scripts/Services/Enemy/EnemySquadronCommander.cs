@@ -33,6 +33,9 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Escorts stop being added once they match the hostile strikecraft (advantage 1).</summary>
         private const float EVEN_FIGHT = 1f;
 
+        /// <summary>Hostile strikecraft within this planar distance of an own ship count toward its escort need.</summary>
+        private const float ESCORT_THREAT_RADIUS = 2000f;
+
         private readonly IReadOnlyList<IEnemyCaptureObjectiveSource> _captureSources;
         private readonly IReinforcementZoneSource _zones;
         private readonly IEntityLocator _entityLocator;
@@ -52,6 +55,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ForceComposition _squadronForce = new ForceComposition();
         private readonly ForceComposition _escortForce = new ForceComposition();
         private readonly List<IEntity> _escortTargets = new List<IEntity>();
+        private readonly List<Vector3> _ownShipPositions = new List<Vector3>();
         private readonly HashSet<ISquadron> _escorts = new HashSet<ISquadron>();
         private readonly List<KeyValuePair<ISquadron, float>> _escortCandidates =
             new List<KeyValuePair<ISquadron, float>>();
@@ -300,7 +304,17 @@ namespace EmpireAtWar.Services.Enemy
         {
             PlayerId self = _owner.Id;
             float now = Time.time;
-            _forceBuilder.BuildKnown(_hostileStrikecraft, _intel, now, sighting => sighting.UnitTypeId.IsSquadron);
+            _ownShipPositions.Clear();
+            foreach (IEntity entity in _entityLocator.Entities)
+            {
+                if (entity.Owner == self && entity.IsShip() && !entity.HealthModel.IsDestroyed)
+                    _ownShipPositions.Add(entity.GetFacade<IEntityTransformFacade>().Transform.position);
+            }
+
+            // Only strikecraft that can reach an own ship need escorts; distant wings are not a local threat.
+            _forceBuilder.BuildKnown(_hostileStrikecraft, _intel, now, sighting =>
+                sighting.UnitTypeId.IsSquadron && _playerRoster.IsHostile(self, sighting.Owner) &&
+                IsNearOwnShip(ToVector(sighting.Position)));
             _forceBuilder.BuildKnown(_hostileShips, _intel, now, sighting => sighting.UnitTypeId.IsShip);
             _escortTargets.Clear();
             _nextEscortTarget = 0;
@@ -312,7 +326,8 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IEntity entity in _entityLocator.Entities)
             {
                 if (entity.Owner == self && entity.IsShip() && !entity.HealthModel.IsDestroyed &&
-                    StrikecraftThreat(entity) > 0f)
+                    StrikecraftThreat(entity) > 0f &&
+                    HasHostileStrikecraftNear(entity.GetFacade<IEntityTransformFacade>().Transform.position, now))
                 {
                     _escortTargets.Add(entity);
                 }
@@ -326,6 +341,33 @@ namespace EmpireAtWar.Services.Enemy
                     : (second.HealthModel.Hull + second.HealthModel.Shields)
                     .CompareTo(first.HealthModel.Hull + first.HealthModel.Shields);
             });
+        }
+
+        private bool IsNearOwnShip(Vector3 position)
+        {
+            foreach (Vector3 ship in _ownShipPositions)
+                if (PlanarDistanceSquared(ship, position) <= ESCORT_THREAT_RADIUS * ESCORT_THREAT_RADIUS) return true;
+            return false;
+        }
+
+        private bool HasHostileStrikecraftNear(Vector3 position, float now)
+        {
+            foreach (HostileSighting sighting in _intel.Sightings)
+            {
+                if (sighting.UnitTypeId.IsSquadron && _playerRoster.IsHostile(_owner.Id, sighting.Owner) &&
+                    _intel.GetConfidence(sighting, now) > 0f &&
+                    PlanarDistanceSquared(position, ToVector(sighting.Position)) <=
+                    ESCORT_THREAT_RADIUS * ESCORT_THREAT_RADIUS)
+                    return true;
+            }
+            return false;
+        }
+
+        private static float PlanarDistanceSquared(Vector3 a, Vector3 b)
+        {
+            Vector3 offset = a - b;
+            offset.y = 0f;
+            return offset.sqrMagnitude;
         }
 
         private float StrikecraftThreat(IEntity ship)
@@ -364,7 +406,8 @@ namespace EmpireAtWar.Services.Enemy
                     return;
                 }
 
-                _escortForce.AddNew(_squadrons[candidate.Key].Profile, false);
+                // Damaged escorts count at their current strength, like ordinary fleet estimates.
+                _forceBuilder.AddUnit(_escortForce, _entityLocator.GetEntity(candidate.Key.EntityId));
                 _escorts.Add(candidate.Key);
             }
         }

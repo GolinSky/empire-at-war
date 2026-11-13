@@ -103,6 +103,9 @@ namespace EmpireAtWar.Services.Enemy
 
         private const float CAPTURE_STALL_SECONDS = 20f;
 
+        /// <summary>Scale on the retreat threshold the current capture objective must stay above to be kept.</summary>
+        private const float RETAIN_SAFETY_SCALE = 0.85f;
+
         /// <summary>Hostiles this close to the fleet center can engage it soon: twice the common ship weapon range (500).</summary>
         private const float LOCAL_ENGAGEMENT_RADIUS = 1000f;
 
@@ -578,7 +581,11 @@ namespace EmpireAtWar.Services.Enemy
                     AppendCaptureReason($"Rejected {candidate.Id}: stall cooldown {_captureRetryAt - now:F1}s remaining.");
                     continue;
                 }
-                if (!IsObjectiveSafe(origin, candidate.Position, candidate.Radius, false))
+                bool isCurrent = _captureObjective != null && candidate.Id == _captureObjective.Id &&
+                                 candidate.Owner == _captureObjective.Owner;
+                // The current objective keeps a looser cutoff so estimate noise at the threshold does not flip targets.
+                if (!IsObjectiveSafe(origin, candidate.Position, candidate.Radius, false,
+                        isCurrent ? RETAIN_SAFETY_SCALE : 1f))
                 {
                     AppendCaptureReason($"Rejected {candidate.Id}: {_objectiveSafetyReason}");
                     continue;
@@ -590,8 +597,7 @@ namespace EmpireAtWar.Services.Enemy
                     best = candidate;
                     bestScore = score;
                 }
-                if (_captureObjective != null && candidate.Id == _captureObjective.Id &&
-                    candidate.Owner == _captureObjective.Owner) retained = candidate;
+                if (isCurrent) retained = candidate;
             }
 
             if (retained != null && (best == null || best.PriorityBonus <= retained.PriorityBonus) &&
@@ -667,9 +673,15 @@ namespace EmpireAtWar.Services.Enemy
         {
             if (!_preferStrategicObjectives) return GetTargetScore(origin, candidate.Position) - candidate.PriorityBonus;
             // The main fleet contests strategic relays; detachments continue collecting nearby facilities.
+            // Every term is in linear map units: a squared travel term outgrew relay preference on large maps.
             float relayPenalty = candidate.Kind == EnemyCaptureObjectiveType.ReinforcementZone ? 0f : 2000f;
             return PlanarDistance(_strategicCenter, candidate.Position) * 2f +
-                   GetTargetScore(origin, candidate.Position) * 0.25f + relayPenalty - candidate.PriorityBonus;
+                   GetTravelCost(origin, candidate.Position) + relayPenalty - candidate.PriorityBonus;
+        }
+
+        private float GetTravelCost(Vector3 origin, Vector3 position)
+        {
+            return PlanarDistance(origin, position) * (1f + _ionRiskWeight * GetIonCost(position));
         }
 
         private float CaptureDistance(EnemyCaptureObjective objective)
@@ -680,7 +692,8 @@ namespace EmpireAtWar.Services.Enemy
             return distance;
         }
 
-        private bool IsObjectiveSafe(Vector3 origin, Vector3 destination, float radius, bool escaping)
+        private bool IsObjectiveSafe(Vector3 origin, Vector3 destination, float radius, bool escaping,
+            float safetyScale = 1f)
         {
             _objectiveSafetyReason = "";
             if (_ownShips.Count == 0)
@@ -722,11 +735,11 @@ namespace EmpireAtWar.Services.Enemy
                 _objectiveSafetyReason = "destination ion cost exceeds the current position.";
                 return false;
             }
-            return IsRouteSafe(origin, destination, radius, escaping);
+            return IsRouteSafe(origin, destination, radius, escaping, safetyScale);
         }
 
         /// <summary>Known hostiles at the origin, along the route or near the destination are beatable.</summary>
-        private bool IsRouteSafe(Vector3 origin, Vector3 destination, float radius, bool escaping)
+        private bool IsRouteSafe(Vector3 origin, Vector3 destination, float radius, bool escaping, float safetyScale = 1f)
         {
             Vector3 segment = destination - origin;
             segment.y = 0f;
@@ -737,14 +750,16 @@ namespace EmpireAtWar.Services.Enemy
                 Vector3 offset = position - origin;
                 offset.y = 0f;
                 float t = segment.sqrMagnitude > 0f ? Mathf.Clamp01(Vector3.Dot(offset, segment) / segment.sqrMagnitude) : 0f;
+                // An escape leaves the force at the origin behind wherever the anchor is; only a second force
+                // ahead of it, along the route or at the anchor, can make the withdrawal unsafe.
+                if (escaping && PlanarDistance(position, origin) <= LOCAL_ENGAGEMENT_RADIUS) return false;
                 bool nearDestination = PlanarDistance(position, destination) <= LOCAL_ENGAGEMENT_RADIUS + radius;
                 bool alongRoute = PlanarDistance(position, origin + segment * t) <= LOCAL_ENGAGEMENT_RADIUS;
-                // An escape may leave the force at the origin, but cannot head into a second force ahead.
-                return nearDestination || alongRoute && (!escaping || t > 0.25f);
+                return nearDestination || alongRoute;
             });
             if (_objectiveThreat.IsEmpty) return true;
             float advantage = CombatMatchup.Advantage(_groupScoped ? _ownForce : _localOwnForce, _objectiveThreat);
-            float threshold = EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage;
+            float threshold = EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage * safetyScale;
             if (advantage > threshold) return true;
             _objectiveSafetyReason = $"hostile: known route/local force advantage {advantage:F2} <= safety threshold {threshold:F2}.";
             return false;

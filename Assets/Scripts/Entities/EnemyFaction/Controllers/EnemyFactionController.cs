@@ -301,9 +301,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         ? productionBase.Owner
                         : _productionAccess.ProductionHost;
                     Vector3 position;
+                    // Defenders arrive at the threatened station itself; after the primary falls it is not the home area.
                     bool foundPosition = hasRally
                         ? defendHome
-                            ? _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(home, shipUnitRequest.Key, out position)
+                            ? _shipSpawnPoints.TryGetSpawnPositionAround(home, shipUnitRequest.Key, rally, out position) ||
+                              _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(home, shipUnitRequest.Key, out position)
                             : _shipSpawnPoints.TryGetSpawnPositionNear(home, shipUnitRequest.Key, rally, out position)
                         : _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(home, shipUnitRequest.Key, out position) ||
                           _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipUnitRequest.Key, out position);

@@ -142,6 +142,23 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.Hold));
         }
 
+        [Test]
+        public void CorneredWithoutSafeRetreat_EngagesLocalThreatInsteadOfHolding()
+        {
+            EnemyStrategicDecisionModel model = new EnemyStrategicDecisionModel();
+            model.Evaluate(CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                ownShipCount: 7, enemyShipCount: 20, ownedCapturableZoneCount: 1,
+                fleetAdvantage: 0.16f, hasLocalThreat: true, localAdvantage: 0.4f));
+
+            EnemyStrategicDecision decision = model.Evaluate(CreateSnapshot(
+                BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                ownShipCount: 7, enemyShipCount: 20, ownedCapturableZoneCount: 1,
+                fleetAdvantage: 0.16f, hasCaptureTarget: false, hasOwnBase: true, hasSafeRetreat: false,
+                hasLocalThreat: true, localAdvantage: 0.4f, isRegrouped: false));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.EngageLocal));
+        }
+
         [TestCase(EnemyAiDifficulty.Easy)]
         [TestCase(EnemyAiDifficulty.UltraHard)]
         public void ActualStationPressure_TriggersDefenseDespiteLowThreatRatio(EnemyAiDifficulty difficulty)

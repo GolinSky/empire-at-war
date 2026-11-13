@@ -127,6 +127,9 @@ namespace EmpireAtWar.Tests.Editor
                 position = default;
                 return false;
             }
+
+            public bool TryGetSpawnPositionAround(PlayerId owner, ShipType shipType, Vector3 anchor, out Vector3 position) =>
+                TryGetDefaultZoneSpawnPosition(owner, shipType, out position);
         }
 
         private sealed class EmptyEntityLocator : IEntityLocator

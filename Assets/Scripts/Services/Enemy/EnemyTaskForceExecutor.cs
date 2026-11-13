@@ -39,6 +39,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyAttackTaskForce _attackForce = new EnemyAttackTaskForce();
         private readonly List<IShipEntity> _supportShips = new List<IShipEntity>();
         private readonly List<IShipEntity> _strikeShips = new List<IShipEntity>();
+        private readonly Dictionary<IShipEntity, GameEntity> _strikeTargets = new Dictionary<IShipEntity, GameEntity>();
 
         private readonly List<IShipEntity> _captureShips = new List<IShipEntity>();
         private readonly List<FormationPoint> _positions = new List<FormationPoint>();
@@ -104,6 +105,7 @@ namespace EmpireAtWar.Services.Enemy
                 _noFiringSince = -1f;
                 _defenseAdvance = 0f;
                 _attackForce.Clear();
+                _strikeTargets.Clear();
             }
             _lastState = decision.State;
             ActionReason = decision.Reason;
@@ -116,6 +118,10 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IShipEntity ship in _captureDistances.Keys)
                 if (!context.Receivers.ContainsKey(ship)) _lostShips.Add(ship);
             foreach (IShipEntity ship in _lostShips) _captureDistances.Remove(ship);
+            _lostShips.Clear();
+            foreach (IShipEntity ship in _strikeTargets.Keys)
+                if (!context.Receivers.ContainsKey(ship)) _lostShips.Add(ship);
+            foreach (IShipEntity ship in _lostShips) _strikeTargets.Remove(ship);
             if (context.Ships.Count == 0) return;
             switch (decision.State)
             {
@@ -498,10 +504,13 @@ namespace EmpireAtWar.Services.Enemy
                 foreach (IShipEntity ship in _body)
                     if (!targeted || !_attackForce.IsScreen(ship)) _strikeShips.Add(ship);
                     else _supportShips.Add(ship);
-                List<GameEntity> receivers = Resolve(context, _strikeShips, _strikeShips.Count);
-                if (target != null)
-                    _unitOrderService.IssueAttack(receivers, target, BattleOffsets(_strikeShips, _strikeShips.Count, target));
-                else _unitOrderService.IssueHunt(receivers);
+                foreach (IShipEntity ship in _supportShips) _strikeTargets.Remove(ship);
+                if (target != null) IssueStrikeAttack(context, target);
+                else
+                {
+                    _strikeTargets.Clear();
+                    _unitOrderService.IssueHunt(Resolve(context, _strikeShips, _strikeShips.Count));
+                }
                 if (_supportShips.Count > 0)
                 {
                     List<GameEntity> screens = new List<GameEntity>();
@@ -537,8 +546,32 @@ namespace EmpireAtWar.Services.Enemy
             else StopRemaining(context, context.Ships, count);
         }
 
+        /// <summary>
+        /// Attack orders go only to strike ships whose target, slot or active order changed. Re-sending an identical
+        /// attack resets the ship's approach and makes its weapons re-sort their candidates.
+        /// </summary>
+        private void IssueStrikeAttack(EnemyStrategicContext context, GameEntity target)
+        {
+            List<Vector3> offsets = BattleOffsets(_strikeShips, _strikeShips.Count, target, out bool rebuilt);
+            List<GameEntity> receivers = new List<GameEntity>();
+            List<Vector3> receiverOffsets = new List<Vector3>();
+            for (int i = 0; i < _strikeShips.Count; i++)
+            {
+                IShipEntity ship = _strikeShips[i];
+                if (!rebuilt && ship.CurrentOrder == UnitOrderType.Attack &&
+                    _strikeTargets.TryGetValue(ship, out GameEntity previous) && previous == target) continue;
+                _strikeTargets[ship] = target;
+                receivers.Add(context.Receivers[ship]);
+                receiverOffsets.Add(offsets[i]);
+            }
+            if (receivers.Count > 0) _unitOrderService.IssueAttack(receivers, target, receiverOffsets);
+        }
+
         private List<Vector3> BattleOffsets(IReadOnlyList<IShipEntity> ships,
-            int count, GameEntity target)
+            int count, GameEntity target) => BattleOffsets(ships, count, target, out _);
+
+        private List<Vector3> BattleOffsets(IReadOnlyList<IShipEntity> ships,
+            int count, GameEntity target, out bool rebuilt)
         {
             bool rebuild = _battleTarget != target;
             for (int i = 0; i < count; i++)
@@ -560,6 +593,7 @@ namespace EmpireAtWar.Services.Enemy
                 for (int i = 0; i < count; i++)
                     _battleOffsets.Add(ships[i], _destinations[i]);
             }
+            rebuilt = rebuild;
             _battleTarget = target;
             List<Vector3> offsets = new List<Vector3>(count);
             for (int i = 0; i < count; i++)

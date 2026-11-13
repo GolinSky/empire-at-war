@@ -176,6 +176,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             new EnemyStrategicRule(EnemyStrategicState.AssaultBase, 0.2f,
                 "No other target remains before the base objective.",
                 (s, p) => ResponseCurve.When(s.HasEnemyBaseTarget && s.EnemyShipCount == 0)),
+            // Cornered: no anchor accepts the retreat, so fight what is in reach instead of stopping under fire.
+            new EnemyStrategicRule(EnemyStrategicState.EngageLocal, 0.15f,
+                "No safe retreat anchor exists and hostiles are in reach, so the fleet fights back instead of stopping.",
+                (s, p) => ResponseCurve.When(s.HasLocalThreat && !s.HasSafeRetreat)),
             // Too weak to hunt and nothing to capture: hit structures the enemy left undefended.
             new EnemyStrategicRule(EnemyStrategicState.RaidStructures, 0.1f,
                 "The enemy fleet is too strong, so the fleet raids an undefended structure.",

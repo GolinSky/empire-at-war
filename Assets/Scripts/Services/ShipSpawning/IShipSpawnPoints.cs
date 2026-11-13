@@ -12,5 +12,8 @@ namespace EmpireAtWar.Services.ShipSpawning
         bool TryGetSpawnPositionNear(PlayerId owner, ShipType shipType, Vector3 target, out Vector3 position);
 
         bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position);
+
+        /// <summary>Finds an arrival point within the home-area radius of an arbitrary anchor, such as a surviving station.</summary>
+        bool TryGetSpawnPositionAround(PlayerId owner, ShipType shipType, Vector3 anchor, out Vector3 position);
     }
 }

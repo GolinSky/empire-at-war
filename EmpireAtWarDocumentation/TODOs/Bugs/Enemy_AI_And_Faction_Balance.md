@@ -134,7 +134,7 @@ commit: 6babee5e1
 - Ship findings now have a separate owner → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]. Keep AI objective/order work here; the dated review links the separated ship plan.
 
 - Current review → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review 2026-11-13]]. Rapid raid/site-defense switching and Peleset/Recalcitrant wrapped-yaw contract mismatch confirmed; Recusant coverage and narrow-arc candidates documented. Retreat/order causes and battle damage impact need follow-up; production/recovery worked in this sample.
-- [ ] Resolve the dated review's objective-stability and order-replacement follow-ups; no gameplay fix implemented by this audit. Broader balance scope remains active.
+- [x] Resolve the dated review's objective-stability and order-replacement follow-ups (2026-11-13 fixes S1–S6; compiled, tests not run; in-game check queued). Broader balance scope remains active.
 
 ## TODO
 
@@ -168,3 +168,12 @@ commit: 6babee5e1
 - `Assets/Scripts/Services/Enemy/EnemySquadronCommander.cs`, `CommandedSquadron.cs` — hangar escorts.
 - `Assets/Scripts/Services/Enemy/EnemyProductionStrategy.cs`; `EnemyProductionDecisionModel.cs`; `EnemyCounterProductionModel.cs`; `UnitCombatProfile.cs` — production.
 - `Assets/Settings/Data/Models/Weapon/WeaponsData.asset` (types 120–122); `ShipAbilityCatalog.asset` (Concentrate Fire).
+
+
+## Evening Battle Findings (2026-11-13, 19:09)
+
+- Latest full session has Separatist AI; earlier November13 review was Republic AI. Evidence and remaining work → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review 2026-11-13#Evening Battle — Separatist AI, 19:09 Session]].
+- Confirmed: secondary-station defenders spawn at original home; no-safe-retreat Hold stops the fleet (7→0 during an80.6s episode); capture objectives oscillate. Map-scale scoring and global/full-health escort estimates are additional source weaknesses.
+- Republic squadron damage243724 versus CIS66515; not normalized for deployment/exposure. Current balance profiles integrate the changed stats; no live hangar double-count found.
+- [x] Fix station-aware defense spawn and tactical fallback before broad stat tuning; then stabilize capture and localize escort evaluation. Implemented 2026-11-13 → review note `## Fixes 2026-11-13`.
+- Audit complete by source/log inspection; no gameplay changes or tests. Unimplemented scope keeps this plan in progress.

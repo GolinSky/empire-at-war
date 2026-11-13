@@ -587,6 +587,9 @@ namespace EmpireAtWar.Tests.Editor
 
             public bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position) =>
                 TryGetRandomSpawnPosition(owner, shipType, out position);
+
+            public bool TryGetSpawnPositionAround(PlayerId owner, ShipType shipType, Vector3 anchor, out Vector3 position) =>
+                TryGetRandomSpawnPosition(owner, shipType, out position);
         }
 
         private sealed class TrackingShipFactory : ShipFactory

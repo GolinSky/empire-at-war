@@ -75,6 +75,13 @@ namespace EmpireAtWar.Services.ShipSpawning
             return TryFindOpenPosition(owner, shipType, _data.HomeAreaRadius, out position);
         }
 
+        public bool TryGetSpawnPositionAround(PlayerId owner, ShipType shipType, Vector3 anchor, out Vector3 position)
+        {
+            _anchors.Clear();
+            _anchors.Add(anchor);
+            return TryFindOpenPosition(owner, shipType, _data.HomeAreaRadius, out position);
+        }
+
         private bool TryFindOpenPosition(PlayerId owner, ShipType shipType, float searchRadius, out Vector3 position)
         {
             if (_anchors.Count > 0)

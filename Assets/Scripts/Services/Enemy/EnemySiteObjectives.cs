@@ -10,6 +10,13 @@ namespace EmpireAtWar.Services.Enemy
 {
     public sealed class EnemySiteObjectives : IEnemyCaptureObjectiveSource
     {
+        /// <summary>
+        /// An owned site stays threatened this long after its last known hostile leaves, so a contact flickering
+        /// across the site edge does not flip the fleet between site defense and raiding every evaluation.
+        /// </summary>
+        private const float THREAT_GRACE_SECONDS = 6f;
+
+        private readonly Dictionary<int, float> _threatenedUntil = new Dictionary<int, float>();
         private readonly ICaptureSiteDirectory _sites;
         private readonly ICaptureSitePresence _presence;
         private readonly CaptureSiteData _data;
@@ -31,7 +38,7 @@ namespace EmpireAtWar.Services.Enemy
             for (int i = 0; i < _sites.Sites.Count; i++)
             {
                 ICaptureSite site = _sites.Sites[i];
-                bool threatened = site.Owner == _owner.Id && HasKnownHostileInside(site, intel);
+                bool threatened = IsThreatened(i, site, intel, Time.time);
                 if (!threatened && !IsCapturable(site)) continue;
                 objectives.Add(new EnemyCaptureObjective($"site:{i}", EnemyCaptureObjectiveType.Facility,
                     site.Owner, ToVector(ToPoint(site.Center)), _data.GetSettings(site.Kind).Radius,
@@ -47,6 +54,21 @@ namespace EmpireAtWar.Services.Enemy
                 if (threatened || IsCapturable(site))
                     assignments.AddTarget(ToVector(ToPoint(site.Center)), threatened);
             }
+        }
+
+        private bool IsThreatened(int index, ICaptureSite site, HostileIntelModel intel, float now)
+        {
+            if (site.Owner != _owner.Id)
+            {
+                _threatenedUntil.Remove(index);
+                return false;
+            }
+            if (HasKnownHostileInside(site, intel))
+            {
+                _threatenedUntil[index] = now + THREAT_GRACE_SECONDS;
+                return true;
+            }
+            return _threatenedUntil.TryGetValue(index, out float until) && now < until;
         }
 
         private bool IsCapturable(ICaptureSite site)

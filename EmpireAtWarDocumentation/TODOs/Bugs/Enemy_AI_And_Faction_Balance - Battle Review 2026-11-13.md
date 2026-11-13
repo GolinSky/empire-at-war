@@ -97,3 +97,79 @@ tags:
 - [[Architecture/Enemy_AI_Objectives]] — implementation contracts.
 - [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Research]] — earlier source research.
 - [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review]] — historical November 1 review.
+
+
+## Evening Battle — Separatist AI, 19:09 Session
+
+### Evidence and scope
+
+- Latest full battle: `Loading_20261113_190921_ai.csv`, matching `_ai_orders.csv`, `Battle_20261113_191102.csv`; ended about 19:23 Kyiv. The 19:26 file contains startup only.
+- Player1 = Separatist AI; Player0 = Republic. Damage window = 770 unscaled seconds; AI clock = 24.4–1155.5 scaled startup seconds. Times below use AI clock.
+- Autosave: seed `1509740851`, planet `52`, mapSize `0`, AI difficulty `3`. Save battleTime has a separate origin.
+- Main-state duration: DefendBase 372.9 s, CaptureZone 263.7 s, Hold 139.4 s, RetreatValue 136.4 s, RebuildFleet 102.6 s, HuntFleet 55.4 s, EngageLocal 49.9 s, RaidStructures 10.8 s.
+- 13 direct capture/retreat transitions; 1540 issued / 1443 cancelled AI ship orders. 702/1478 consecutive per-entity issue intervals <1 s; these counts alone do not prove redundant commands.
+- Verification: CSV aggregation, autosave and live C# / serialized balance inspection. No gameplay edits, new battle or tests. Graphify freshness failed on its busy update lock; findings use live source.
+
+### P1 — Secondary-station defenders use the old home spawn
+
+- After primary station loss, station189 remains; defense rally = (1978,1516), but replacements spawn around original home (1144,1098).
+- C9979 deployments t1095.2 /1115.2 /1138.6 are followed by zero-ship RebuildFleet at t1099.9 /1119.7 /1142.3.
+- `EnemyFactionController.cs:297–309`: defendHome always uses `TryGetDefaultZoneSpawnPosition`; production-base fallback retains owner, not station position.
+- `ShipSpawnPoints.cs:71–75` and `ReinforcementZonesSystem.cs:202–213`: resolve the static default home.
+- Proposed: pass the actual surviving defense/production station anchor through placement; preserve clearance checks. Confirmed source defect with matching deployment evidence.
+
+### P1 — Retreat rejection falls back to stopping the fleet
+
+- t412.1–492.7: Hold, 7 ships → 0; station remains at 93600 hull /74400 shields in its t414–489 samples.
+- Entity147 Attack is cancelled at t412.14; it remains at (1295.3,842.9) until hull0 at t443.61. Entity155 remains at (1432.3,1275.0) until hull0 at t492.56.
+- `EnemyStrategicContextBuilder.cs:740–746,754–760`: retreat includes every hostile within1000 of destination, even the force being escaped; the escape exemption applies only to the along-route branch. Matchup excludes stationary base firepower.
+- `EnemyTaskForceExecutor.cs:140–143,646–654`: Hold stops remaining orders. `EnemyUnitCommander.cs:221–225,252–315` then only clears the default spawn zone.
+- t394.3 retreat localAdvantage0.78 → t395.8 EngageLocal at worse0.76 when safe anchor disappears. Log lines929/934; Hold begins line977.
+- Do not call this total weapon inactivity: 32/38 periodic samples in the first Hold episode are IdleState, but 37/38 still track a weapon contact.
+- Proposed: distinguish viable withdrawal under station coverage from winning a destination battle; preserve a tactical fallback when no strategic objective is safe.
+
+### P2 — Objective selection is poorly adapted to map scale
+
+- t358.7 zone1 →359.2 threatened site18 →359.7 zone1; fleet is roughly3000–3500 units from zone1 (AI CSV lines827/828/833).
+- `EnemyStrategicContextBuilder.cs:581–598,746–750`: retained objectives immediately lose eligibility at the same safety cutoff; no separate retain threshold.
+- Lines531–534,666–672 combine squared travel distance ×0.25 with linear center distance ×2 and flat2000 facility penalty. At1000 travel units, the first term is250000; strategic-relay preference is weak relative to travel.
+- Lines729–751 assess a straight segment rather than the navigated route around scenery. Source-level limitation; this run does not prove a bad detour.
+- Early site12 /zone2 /site17 captures succeeded. Three explicit stalls: site7 t143.7, site8 t230.6, zone1 t306.6. Only one obstacle rejection and zero ion-cost rejections.
+- Proposed: stabilize objective retention and use compatible distance/route costs. No evidence for broadly impassable generation.
+
+### P2 — Squadron effectiveness and escort estimation
+
+- Republic squadron damage = 243724; CIS = 66515 (3.66×). Shares of faction damage =15.8% /5.7%.
+- ARC170 =128698 total /61120 structure damage; YWing =75569 /43653. DroidBomber =16346 /630.
+- CIS squadron structure damage totals1419 versus111997 Republic. Deployment and target access differ; aggregate damage is not an equal-force balance test.
+- AI selected12 DroidBombers,11 Belbullab22s,9 Vultures. Purchase events are attempts, not proof of deployed counts.
+- `EnemySquadronCommander.cs:299–335`: escort threat uses global known strikecraft and ship class, without proximity. Larger maps can spread escorts away from local concentrations.
+- Same file:367 uses `AddNew(profile,false)` for escort sufficiency; damaged squadrons count as full strength. `ForceCompositionBuilder.cs:57,90` uses current strength for ordinary fleet estimates.
+- Source-confirmed escort weaknesses; no per-squadron command/health timeline to prove their contribution in this battle.
+- `UnitCombatProfileCatalog.cs:56,85` correctly consumes current member stats, aggregate weapons, warhead modifiers and MaxActive hangars. No live hangar double-count found.
+- Relevant pre-battle changes: Vulture hull70→28; DroidBomber hull/shields50/10→32/5, speed31→29; ARC170 hull/shields105/35→80/30, speed41→69. These warrant matchup/response-time review, not a blanket buff from one sample.
+- Squadron stat follow-up remains with [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]]; AI escort logic remains with the parent AI plan.
+- Do not treat damage-report kill counters as squadron-entity losses or activeSeconds as summed squadron uptime.
+
+### Working behavior and next actions
+
+- Production:163 purchaseAccepted,154 buildCompleted,62 ship deployments; no purchaseRejected or deploymentBlocked events.
+- 984 capacity-bearing waits:972 credits-only,12 credits+population;85 other wait rows lack capacity fields. Credit pressure dominated recorded ordinary waits.
+- Total damage: Republic1543635 /CIS1170684. AI rebuilt and fielded capitals; this is not a general production shutdown.
+- [x] Fix secondary-station spawn anchoring and no-safe-retreat Hold fallback first.
+- [x] Stabilize capture retention; align route scoring with current map distances. Navigated-route safety still uses a straight segment.
+- [x] Localize escort allocation and count surviving squadron strength.
+- [ ] Compare subsequent battles before numerical faction/squadron tuning.
+- Parent remains in progress for broader balance. Morning review above remains historical evidence from a different battle.
+
+## Fixes 2026-11-13
+
+- S1 spawn: `IShipSpawnPoints.TryGetSpawnPositionAround`; `EnemyFactionController` defenders spawn within `HomeAreaRadius` of the rally station → fallback default home.
+- S2 retreat: `EnemyStrategicContextBuilder.IsRouteSafe` escaping ignores hostiles ≤1000 from origin (the pursuing force). Station firepower still not in matchup (stations have no combat profile).
+- S2 Hold: `EnemyStrategicDecisionModel` rule EngageLocal 0.15 when `HasLocalThreat && !HasSafeRetreat`.
+- S3 raid/site flips: `EnemySiteObjectives` keeps an owned site threatened 6 s after last hostile inside.
+- S4 capture: current objective safety threshold ×0.85 (`RETAIN_SAFETY_SCALE`); strategic capture score uses linear travel (`GetTravelCost`) instead of squared ×0.25.
+- S5 escorts: `EnemySquadronCommander` counts strikecraft ≤2000 from an own ship; escort targets need nearby strikecraft; escort sufficiency uses current health (`ForceCompositionBuilder.AddUnit`).
+- S6 orders: `EnemyTaskForceExecutor.IssueStrikeAttack` skips re-sending Attack when target, slot and active Attack order are unchanged. Order-change reason logging not added.
+- Verification: Unity recompile clean, no console errors. EditMode tests not run (local override); new test `CorneredWithoutSafeRetreat_EngagesLocalThreatInsteadOfHolding`. Behavior unverified in battle.
+- Reusable guidance: none extracted yet; promote after battle confirmation.
