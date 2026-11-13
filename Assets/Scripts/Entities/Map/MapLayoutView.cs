@@ -26,8 +26,8 @@ namespace EmpireAtWar.Entities.Map
         [SerializeField] private CaptureSiteView satelliteSitePrefab;
         [SerializeField, Tooltip("Invisible impassable cylinder: unit-diameter, two-unit-tall convex collider.")]
         private MapObstacle fieldVolumePrefab;
-        [SerializeField] private GameObject largeRockPrefab;
-        [SerializeField] private GameObject mediumRockPrefab;
+        [SerializeField] private GameObject[] largeRockPrefabs;
+        [SerializeField] private GameObject[] mediumRockPrefabs;
         [SerializeField] private GameObject[] debrisRockPrefabs;
         [SerializeField] private Transform zoneRoot;
         [SerializeField] private Transform siteRoot;
@@ -144,12 +144,13 @@ namespace EmpireAtWar.Entities.Map
 
         private void SpawnRock(AsteroidSpot rock, int index, Transform root)
         {
-            GameObject prefab = rock.Size switch
+            GameObject[] prefabs = rock.Size switch
             {
-                AsteroidSize.Large => largeRockPrefab,
-                AsteroidSize.Medium => mediumRockPrefab,
-                _ => debrisRockPrefabs[index % debrisRockPrefabs.Length]
+                AsteroidSize.Large => largeRockPrefabs,
+                AsteroidSize.Medium => mediumRockPrefabs,
+                _ => debrisRockPrefabs
             };
+            GameObject prefab = prefabs[index % prefabs.Length];
             GameObject instance = Instantiate(prefab, rock.Position, Quaternion.Euler(rock.Rotation), root);
             instance.transform.localScale = prefab.transform.localScale * rock.Scale;
         }

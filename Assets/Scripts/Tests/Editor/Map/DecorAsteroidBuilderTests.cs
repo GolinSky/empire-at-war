@@ -58,17 +58,25 @@ namespace EmpireAtWar.Tests.Editor
             var renderer = (DecorAsteroidRenderer)map.FindProperty("decorRenderer").objectReferenceValue;
             Assert.That(renderer, Is.Not.Null);
             SerializedProperty meshes = new SerializedObject(renderer).FindProperty("meshes");
+            Assert.That(meshes.arraySize, Is.EqualTo(10));
             HashSet<AsteroidSize> sizes = new HashSet<AsteroidSize>();
+            HashSet<Mesh> uniqueMeshes = new HashSet<Mesh>();
+            HashSet<Material> materials = new HashSet<Material>();
             for (int i = 0; i < meshes.arraySize; i++)
             {
                 var entry = (DecorAsteroidMesh)meshes.GetArrayElementAtIndex(i).boxedValue;
                 sizes.Add(entry.Size);
                 Assert.That(entry.Mesh, Is.Not.Null);
+                Assert.That(uniqueMeshes.Add(entry.Mesh), Is.True, entry.Mesh.name);
+                Assert.That(entry.LowDetailMesh, Is.Not.Null);
+                Assert.That(entry.LowDetailMesh.GetIndexCount(0), Is.LessThan(entry.Mesh.GetIndexCount(0)));
                 Assert.That(entry.Materials.Length, Is.EqualTo(entry.Mesh.subMeshCount));
                 Assert.That(entry.Materials, Has.All.Not.Null);
+                foreach (Material material in entry.Materials) materials.Add(material);
                 Assert.That(entry.LocalTransform.determinant, Is.Not.Zero);
             }
             Assert.That(sizes, Is.EquivalentTo(Enum.GetValues(typeof(AsteroidSize))));
+            Assert.That(materials.Count, Is.EqualTo(1));
         }
     }
 }

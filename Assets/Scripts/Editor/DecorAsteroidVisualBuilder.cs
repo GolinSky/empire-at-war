@@ -10,7 +10,6 @@ namespace EmpireAtWar.Editor
     public static class DecorAsteroidVisualBuilder
     {
         private const string SCENE_CONTEXT_PATH = "Assets/Prefabs/View/LifetimeScopes/SceneContext.prefab";
-        private const string LOD_FOLDER = "Assets/Art/Models/Asteroids/BattleRockLods/";
 
         public static void Build()
         {
@@ -20,8 +19,12 @@ namespace EmpireAtWar.Editor
                 MapLayoutView view = root.GetComponentInChildren<MapLayoutView>(true);
                 SerializedObject map = new SerializedObject(view);
                 List<DecorAsteroidMesh> meshes = new List<DecorAsteroidMesh>();
-                Add(meshes, (GameObject)map.FindProperty("largeRockPrefab").objectReferenceValue, AsteroidSize.Large);
-                Add(meshes, (GameObject)map.FindProperty("mediumRockPrefab").objectReferenceValue, AsteroidSize.Medium);
+                SerializedProperty large = map.FindProperty("largeRockPrefabs");
+                for (int i = 0; i < large.arraySize; i++)
+                    Add(meshes, (GameObject)large.GetArrayElementAtIndex(i).objectReferenceValue, AsteroidSize.Large);
+                SerializedProperty medium = map.FindProperty("mediumRockPrefabs");
+                for (int i = 0; i < medium.arraySize; i++)
+                    Add(meshes, (GameObject)medium.GetArrayElementAtIndex(i).objectReferenceValue, AsteroidSize.Medium);
                 SerializedProperty debris = map.FindProperty("debrisRockPrefabs");
                 for (int i = 0; i < debris.arraySize; i++)
                     Add(meshes, (GameObject)debris.GetArrayElementAtIndex(i).objectReferenceValue, AsteroidSize.Debris);
@@ -53,7 +56,8 @@ namespace EmpireAtWar.Editor
             MeshRenderer renderer = filter.GetComponent<MeshRenderer>();
             Matrix4x4 local = Matrix4x4.Scale(prefab.transform.localScale) *
                 prefab.transform.worldToLocalMatrix * filter.transform.localToWorldMatrix;
-            Mesh lowDetail = AssetDatabase.LoadAssetAtPath<Mesh>(LOD_FOLDER + prefab.name + "_LOD1.asset");
+            LOD[] lods = prefab.GetComponent<LODGroup>().GetLODs();
+            Mesh lowDetail = lods[1].renderers[0].GetComponent<MeshFilter>().sharedMesh;
             if (lowDetail == null)
                 throw new InvalidOperationException($"Decor rock {prefab.name} is missing its LOD mesh.");
             meshes.Add(new DecorAsteroidMesh(size, filter.sharedMesh, renderer.sharedMaterials, local, lowDetail));

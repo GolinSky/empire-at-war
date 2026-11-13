@@ -8,7 +8,8 @@ namespace EmpireAtWar.Entities.Map.Generation
     /// <summary>Continues the field noise beyond the playable map without creating gameplay volumes.</summary>
     public sealed class DecorAsteroidBuilder
     {
-        public const int MAX_INSTANCES = 15000;
+        public const int MAX_INSTANCES = 7500;
+        private const int SAMPLE_CAPACITY = MAX_INSTANCES * 2;
         private const int MAX_CANDIDATES = 120000;
         private const float AREA_UNIT = 1000f;
         private const float UPRIGHT_TILT = 15f;
@@ -60,7 +61,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                 AsteroidSpot rock = new AsteroidSpot(position, rotation, rockSize,
                     Mathf.Lerp(layer.Scale.Min, layer.Scale.Max, Next(random)));
                 accepted++;
-                if (rocks.Count < MAX_INSTANCES)
+                if (rocks.Count < SAMPLE_CAPACITY)
                 {
                     rocks.Add(rock);
                 }
@@ -68,11 +69,16 @@ namespace EmpireAtWar.Entities.Map.Generation
                 {
                     // Reservoir sampling keeps all four sides equally represented when the budget is reached.
                     int replacement = random.Next(accepted);
-                    if (replacement < MAX_INSTANCES)
+                    if (replacement < SAMPLE_CAPACITY)
                         rocks[replacement] = rock;
                 }
             }
 
+            // Thin after sampling to preserve seeded placements and subsequent random draws.
+            int retainedCount = rocks.Count / 2;
+            for (int i = 0; i < retainedCount; i++)
+                rocks[i] = rocks[i * 2];
+            rocks.RemoveRange(retainedCount, rocks.Count - retainedCount);
             return rocks;
         }
 

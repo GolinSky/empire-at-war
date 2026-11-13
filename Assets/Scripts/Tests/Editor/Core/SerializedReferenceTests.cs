@@ -49,8 +49,9 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(MapLayoutView), "mainZonePrefab"),
             new SerializedReference(typeof(MapLayoutView), "miningSitePrefab"),
             new SerializedReference(typeof(MapLayoutView), "fieldVolumePrefab"),
-            new SerializedReference(typeof(MapLayoutView), "largeRockPrefab"),
-            new SerializedReference(typeof(MapLayoutView), "mediumRockPrefab"),
+            new SerializedReference(typeof(MapLayoutView), "largeRockPrefabs"),
+            new SerializedReference(typeof(MapLayoutView), "mediumRockPrefabs"),
+            new SerializedReference(typeof(MapLayoutView), "debrisRockPrefabs"),
             new SerializedReference(typeof(MapLayoutView), "zoneRoot"),
             new SerializedReference(typeof(MapLayoutView), "siteRoot"),
             new SerializedReference(typeof(MapLayoutView), "fieldRoot"),
@@ -142,7 +143,17 @@ namespace EmpireAtWar.Tests.Editor
                         SerializedProperty property = serializedComponent.FindProperty(reference.FieldName);
                         string location = $"{prefabPath}/{component.name}.{reference.FieldName}";
                         Assert.That(property, Is.Not.Null, location);
-                        Assert.That(property.objectReferenceValue, Is.Not.Null, location);
+                        if (property.isArray)
+                        {
+                            Assert.That(property.arraySize, Is.GreaterThan(0), location);
+                            for (int element = 0; element < property.arraySize; element++)
+                                Assert.That(property.GetArrayElementAtIndex(element).objectReferenceValue,
+                                    Is.Not.Null, $"{location}[{element}]");
+                        }
+                        else
+                        {
+                            Assert.That(property.objectReferenceValue, Is.Not.Null, location);
+                        }
                         referenceCounts[i]++;
                     }
 

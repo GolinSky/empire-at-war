@@ -50,6 +50,11 @@ namespace EmpireAtWar.Entities.Map.Generation
                 rocks.Add(new AsteroidSpot(position: position, rotation: rotation, scale: scale, size: size));
             }
 
+            // Thin after sampling to preserve seeded placements and subsequent random draws.
+            int retainedCount = rocks.Count / 2;
+            for (int i = 0; i < retainedCount; i++)
+                rocks[i] = rocks[i * 2];
+            rocks.RemoveRange(retainedCount, rocks.Count - retainedCount);
             return rocks;
         }
 
