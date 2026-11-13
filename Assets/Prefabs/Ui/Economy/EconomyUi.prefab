@@ -97,9 +97,6 @@ MonoBehaviour:
   target: {fileID: 6397796856056037375}
   highlights:
   - {fileID: 7882646841044110797}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   visibility: {fileID: 7608207804413390026}
 --- !u!1 &4859799027161427492
 GameObject:
