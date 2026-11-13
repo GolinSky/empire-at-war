@@ -20,7 +20,7 @@ MonoBehaviour:
       volume: 0.65
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     family: 3
@@ -33,7 +33,7 @@ MonoBehaviour:
       volume: 0.7
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     family: 1
@@ -44,7 +44,7 @@ MonoBehaviour:
       volume: 0.85
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     family: 23
@@ -55,7 +55,7 @@ MonoBehaviour:
       volume: 0.85
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     family: 6
@@ -66,7 +66,7 @@ MonoBehaviour:
       volume: 0.85
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     family: 5
@@ -80,7 +80,7 @@ MonoBehaviour:
       volume: 0.55
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     family: 0
@@ -91,7 +91,7 @@ MonoBehaviour:
       volume: 0.65
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 1
       localFeedback: 0
     family: 2
@@ -102,7 +102,7 @@ MonoBehaviour:
       volume: 0.65
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 1
       localFeedback: 0
     family: 21
@@ -113,7 +113,7 @@ MonoBehaviour:
       volume: 0.6
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     family: 8
@@ -124,7 +124,7 @@ MonoBehaviour:
       volume: 0.75
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     family: 22
@@ -135,7 +135,7 @@ MonoBehaviour:
       volume: 0.75
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     family: 4
@@ -149,7 +149,7 @@ MonoBehaviour:
       volume: 0.45
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     family: 7
@@ -160,7 +160,7 @@ MonoBehaviour:
       volume: 0.45
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     family: 20
@@ -171,7 +171,7 @@ MonoBehaviour:
       volume: 0.45
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     family: 24
@@ -182,7 +182,7 @@ MonoBehaviour:
       volume: 0.45
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     family: 25
@@ -196,7 +196,7 @@ MonoBehaviour:
       volume: 0.65
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 86
@@ -209,7 +209,7 @@ MonoBehaviour:
       volume: 0.65
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 1
@@ -222,7 +222,7 @@ MonoBehaviour:
       volume: 0.8
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 2
@@ -235,7 +235,7 @@ MonoBehaviour:
       volume: 0.82
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 3
@@ -248,7 +248,7 @@ MonoBehaviour:
       volume: 0.68
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 4
@@ -262,7 +262,7 @@ MonoBehaviour:
       volume: 0.6
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 7
@@ -275,7 +275,7 @@ MonoBehaviour:
       volume: 0.85
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 9
@@ -286,7 +286,7 @@ MonoBehaviour:
       volume: 0.72
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 1
       localFeedback: 0
     weaponType: 11
@@ -297,7 +297,7 @@ MonoBehaviour:
       volume: 0.8
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 17
@@ -310,7 +310,7 @@ MonoBehaviour:
       volume: 0.82
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 89
@@ -323,7 +323,7 @@ MonoBehaviour:
       volume: 0.82
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 43
@@ -336,7 +336,7 @@ MonoBehaviour:
       volume: 0.8
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 49
@@ -349,7 +349,7 @@ MonoBehaviour:
       volume: 0.82
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 50
@@ -360,7 +360,7 @@ MonoBehaviour:
       volume: 0.72
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 1
       localFeedback: 0
     weaponType: 51
@@ -373,7 +373,7 @@ MonoBehaviour:
       volume: 0.8
       priority: 60
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 67
@@ -384,7 +384,7 @@ MonoBehaviour:
       volume: 0.72
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 1
       localFeedback: 0
     weaponType: 68
@@ -398,7 +398,7 @@ MonoBehaviour:
       volume: 0.6
       priority: 30
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 94
@@ -409,7 +409,7 @@ MonoBehaviour:
       volume: 0.8
       priority: 90
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 16
@@ -420,7 +420,7 @@ MonoBehaviour:
       volume: 0.8
       priority: 90
       cooldown: 0
-      maxInstances: 4
+      maxInstances: 8
       loop: 0
       localFeedback: 0
     weaponType: 18
@@ -1867,7 +1867,7 @@ MonoBehaviour:
     volume: 0.37
     priority: 10
     cooldown: 0
-    maxInstances: 6
+    maxInstances: 12
     loop: 1
     localFeedback: 0
   fallbackExplosion:
@@ -1879,7 +1879,7 @@ MonoBehaviour:
     volume: 0.65
     priority: 65
     cooldown: 0
-    maxInstances: 4
+    maxInstances: 8
     loop: 0
     localFeedback: 0
   ships:
@@ -1893,7 +1893,7 @@ MonoBehaviour:
           volume: 0.16
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -1903,7 +1903,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -1927,7 +1927,7 @@ MonoBehaviour:
           volume: 0.16
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -1937,7 +1937,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -1961,7 +1961,7 @@ MonoBehaviour:
           volume: 0.16
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -1971,7 +1971,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -1995,7 +1995,7 @@ MonoBehaviour:
           volume: 0.16
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2007,7 +2007,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2031,7 +2031,7 @@ MonoBehaviour:
           volume: 0.16
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2043,7 +2043,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2067,7 +2067,7 @@ MonoBehaviour:
           volume: 0.16
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2079,7 +2079,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2103,7 +2103,7 @@ MonoBehaviour:
           volume: 0.16
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2115,7 +2115,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2139,7 +2139,7 @@ MonoBehaviour:
           volume: 0.16
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2151,7 +2151,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2175,7 +2175,7 @@ MonoBehaviour:
           volume: 0.16
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2187,7 +2187,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2211,7 +2211,7 @@ MonoBehaviour:
           volume: 0.55
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2223,7 +2223,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2247,7 +2247,7 @@ MonoBehaviour:
           volume: 0.19
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2259,7 +2259,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2283,7 +2283,7 @@ MonoBehaviour:
           volume: 0.23
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2295,7 +2295,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2319,7 +2319,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2329,7 +2329,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2353,7 +2353,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2363,7 +2363,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2387,7 +2387,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2397,7 +2397,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2421,7 +2421,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2431,7 +2431,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2455,7 +2455,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2465,7 +2465,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2489,7 +2489,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2499,7 +2499,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2523,7 +2523,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2533,7 +2533,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2557,7 +2557,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2567,7 +2567,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2591,7 +2591,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2601,7 +2601,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2625,7 +2625,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2635,7 +2635,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2659,7 +2659,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2669,7 +2669,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2693,7 +2693,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2705,7 +2705,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2729,7 +2729,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2741,7 +2741,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2765,7 +2765,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2777,7 +2777,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2801,7 +2801,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2813,7 +2813,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2837,7 +2837,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2849,7 +2849,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2873,7 +2873,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2885,7 +2885,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2909,7 +2909,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2921,7 +2921,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2945,7 +2945,7 @@ MonoBehaviour:
           volume: 0.37
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2955,7 +2955,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -2983,7 +2983,7 @@ MonoBehaviour:
           volume: 0.4
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -2995,7 +2995,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3022,7 +3022,7 @@ MonoBehaviour:
           volume: 0.55
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3034,7 +3034,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3058,7 +3058,7 @@ MonoBehaviour:
           volume: 0.69
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3070,7 +3070,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3094,7 +3094,7 @@ MonoBehaviour:
           volume: 0.69
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3106,7 +3106,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3130,7 +3130,7 @@ MonoBehaviour:
           volume: 0.24
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3142,7 +3142,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3166,7 +3166,7 @@ MonoBehaviour:
           volume: 0.24
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3178,7 +3178,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3202,7 +3202,7 @@ MonoBehaviour:
           volume: 0.24
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3214,7 +3214,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3238,7 +3238,7 @@ MonoBehaviour:
           volume: 0.24
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3250,7 +3250,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3274,7 +3274,7 @@ MonoBehaviour:
           volume: 0.24
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3286,7 +3286,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3310,7 +3310,7 @@ MonoBehaviour:
           volume: 0.24
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3322,7 +3322,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3346,7 +3346,7 @@ MonoBehaviour:
           volume: 0.69
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3358,7 +3358,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3384,7 +3384,7 @@ MonoBehaviour:
           volume: 0.39
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3396,7 +3396,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3420,7 +3420,7 @@ MonoBehaviour:
           volume: 0.24
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3432,7 +3432,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3456,7 +3456,7 @@ MonoBehaviour:
           volume: 0.24
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3468,7 +3468,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -3492,7 +3492,7 @@ MonoBehaviour:
           volume: 0.24
           priority: 10
           cooldown: 0
-          maxInstances: 6
+          maxInstances: 12
           loop: 1
           localFeedback: 0
         explosion:
@@ -3504,7 +3504,7 @@ MonoBehaviour:
           volume: 0.65
           priority: 65
           cooldown: 0
-          maxInstances: 4
+          maxInstances: 8
           loop: 0
           localFeedback: 0
         alarm:
@@ -5529,7 +5529,7 @@ MonoBehaviour:
   minZoomGain: 0.6
   engineMinZoomGain: 1
   voiceDuckGain: 0.4
-  poolVoices: 20
-  perShipVoices: 2
-  engineVoices: 6
-  startsPerWindow: 3
+  poolVoices: 40
+  perShipVoices: 4
+  engineVoices: 12
+  startsPerWindow: 6
