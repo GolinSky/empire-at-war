@@ -6,7 +6,7 @@ namespace EmpireAtWar.Models.Health
 {
     public sealed class HardPointHealthBudget
     {
-        public const float DEFAULT_BUDGET_RATIO = 1.5f;
+        public const float DEFAULT_BUDGET_RATIO = 1.35f;
 
         private readonly float _budgetRatio;
         private readonly float[] _typeWeights;
