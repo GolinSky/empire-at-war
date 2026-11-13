@@ -4942,6 +4942,7 @@ MonoBehaviour:
   - {fileID: 8945311068636919721}
   - {fileID: 1580344407696899342}
   - {fileID: 6319131072980782351}
+  sustainedEmitters: []
 --- !u!1 &4359382391685289382
 GameObject:
   m_ObjectHideFlags: 0
@@ -6560,8 +6561,8 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     speedRange: {x: 0, y: 1}
-    tilesX: 7
-    tilesY: 7
+    tilesX: 4
+    tilesY: 4
     animationType: 0
     rowIndex: 0
     cycles: 1
@@ -9869,7 +9870,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7a726420710d0494f9443b7a0a08d30a, type: 2}
+  - {fileID: 2100000, guid: d8c0b0467f1e13940aa9539b9a503d63, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
