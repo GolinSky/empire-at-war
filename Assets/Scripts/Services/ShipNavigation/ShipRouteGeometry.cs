@@ -111,7 +111,8 @@ namespace EmpireAtWar.Services.ShipNavigation
         }
 
         public static int FindBlocker(ShipRoutePiece piece, NativeArray<float3> disks,
-            NativeParallelMultiHashMap<int, int> buckets, NavMeshBuckets layout, int skipA = -1, int skipB = -1)
+            NativeParallelMultiHashMap<int, int> buckets, NavMeshBuckets layout,
+            int skipA = -1, int skipB = -1, bool allowEscape = false)
         {
             Bounds(piece, out float2 min, out float2 max);
             int2 first = layout.Cell(min);
@@ -127,11 +128,28 @@ namespace EmpireAtWar.Services.ShipNavigation
                 float radius = math.max(0f, disk.z - math.max(EPSILON, disk.z * 0.00001f));
                 if (DistanceSquared(piece, disk.xy) >= radius * radius) continue;
                 float distance = math.distancesq(Planar(piece.Start), disk.xy);
+                if (allowEscape && distance < disk.z * disk.z && MovesAway(piece, disk.xy)) continue;
                 if (distance >= nearest) continue;
                 nearest = distance;
                 blocker = index;
             }
             return blocker;
+        }
+
+        private static bool MovesAway(ShipRoutePiece piece, float2 obstacle)
+        {
+            float2 start = Planar(piece.Start);
+            float2 tangent = new float2(math.sin(piece.Heading), math.cos(piece.Heading));
+            float outward = math.dot(start - obstacle, tangent);
+            if (outward < 0f) return false;
+            if (piece.Curvature == 0f || piece.Length == 0f) return true;
+
+            // The arc stops moving away once its radius points directly away from the obstacle.
+            float2 radial = Right(tangent) * (piece.Curvature > 0f ? -1f : 1f);
+            float2 away = start - obstacle - radial / math.abs(piece.Curvature);
+            if (math.lengthsq(away) == 0f) return true;
+            float sweep = math.atan2(outward, math.dot(radial, away));
+            return piece.Length * math.abs(piece.Curvature) <= sweep;
         }
 
         public static bool InsideBounds(ShipRoutePiece piece, NavMeshBuckets layout)

@@ -102,8 +102,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                 }
 
                 ShipRoutePiece line = ShipRouteGeometry.Line(from, to, Height);
-                int blocker = Escape && index == 0 ? -1 : ShipRouteGeometry.FindBlocker(
-                    line, Disks, DiskBuckets, Layout, a.DiskIndex, b.DiskIndex);
+                int blocker = ShipRouteGeometry.FindBlocker(
+                    line, Disks, DiskBuckets, Layout, a.DiskIndex, b.DiskIndex, Escape && index == 0);
                 if (blocker >= 0)
                 {
                     if (++repairs > repairLimit)
@@ -138,8 +138,9 @@ namespace EmpireAtWar.Services.ShipNavigation
                 ShipRoutePiece arc = ShipRouteGeometry.Arc(first, Start, sweep, Height);
                 ShipRoutePiece leg = ShipRouteGeometry.Line(exit, entry, Height);
                 if (!hasTangent || !ShipRouteGeometry.InsideBounds(arc, Layout) || !ShipRouteGeometry.InsideBounds(leg, Layout) ||
-                    ShipRouteGeometry.FindBlocker(arc, Disks, DiskBuckets, Layout) >= 0 ||
-                    ShipRouteGeometry.FindBlocker(leg, Disks, DiskBuckets, Layout, -1, Circles[first.Next].DiskIndex) >= 0)
+                    ShipRouteGeometry.FindBlocker(arc, Disks, DiskBuckets, Layout, allowEscape: Escape) >= 0 ||
+                    ShipRouteGeometry.FindBlocker(leg, Disks, DiskBuckets, Layout,
+                        -1, Circles[first.Next].DiskIndex, Escape) >= 0)
                 {
                     first.Center = Start;
                     first.Radius = 0f;

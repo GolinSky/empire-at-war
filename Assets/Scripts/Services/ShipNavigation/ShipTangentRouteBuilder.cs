@@ -98,7 +98,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                 }
             }
             circles.Add(new ShipRouteCircle(goal, 0f, 1));
-            if (!allowEscape && math.distancesq(start, goal) > ShipRouteGeometry.EPSILON)
+            bool directEscape = allowEscape && first == 0;
+            if (first == 0 && math.distancesq(start, goal) > ShipRouteGeometry.EPSILON)
             {
                 // Try both turn directions; turning towards the first corner's wrap side
                 // can sweep almost a full circle when that corner lies on the other side.
@@ -106,7 +107,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 float shortest = float.MaxValue;
                 for (int sign = -1; sign <= 1; sign += 2)
                 {
-                    if (!TryStartCircle(graph, start, direction, circles[1], sign, turnRadius,
+                    if (!TryStartCircle(graph, start, direction, circles[1], sign, turnRadius, directEscape,
                             out ShipRouteCircle circle, out float length) || length >= shortest) continue;
                     shortest = length;
                     circles[0] = circle;
@@ -117,7 +118,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             {
                 Disks = graph.Disks, DiskBuckets = graph.DiskBuckets, Layout = graph.Layout,
                 Circles = circles, Pieces = pieces, Failure = failure, Start = start, Height = height,
-                Escape = allowEscape && first == 0
+                Escape = directEscape
             }.Run();
             if (failure.Value != ShipTangentRouteJob.FAILURE_NONE)
             {
@@ -132,10 +133,11 @@ namespace EmpireAtWar.Services.ShipNavigation
         }
 
         private static bool TryStartCircle(IShipPathGraph graph, float2 start, float2 direction,
-            ShipRouteCircle target, int sign, float turnRadius, out ShipRouteCircle circle, out float length)
+            ShipRouteCircle target, int sign, float turnRadius, bool allowEscape,
+            out ShipRouteCircle circle, out float length)
         {
             float2 normal = ShipRouteGeometry.Right(direction) * sign;
-            float radius = LimitRadius(graph, start, normal, turnRadius);
+            float radius = LimitRadius(graph, start, normal, turnRadius, allowEscape);
             // Keep the start circle disjoint from the first corner circle so both tangents exist.
             float2 delta = target.Center - start;
             float denominator = 2f * (math.dot(normal, delta) + target.Radius);
@@ -195,7 +197,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             pieces[1] = arc;
         }
 
-        private static float LimitRadius(IShipPathGraph graph, float2 anchor, float2 offset, float radius)
+        private static float LimitRadius(IShipPathGraph graph, float2 anchor, float2 offset, float radius,
+            bool allowEscape = false)
         {
             // The entire candidate circle is outside neighbouring disks. Solve the first
             // contact of |disk - (anchor + offset*r)| = diskRadius + r analytically.
@@ -212,6 +215,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 float c = math.lengthsq(delta) - disk.z * disk.z;
                 float b = math.dot(delta, offset) + disk.z;
                 float a = math.lengthsq(offset) - 1f;
+                if (c < 0f && allowEscape) continue; // CheckStart validates the actual escape arc.
                 if (c <= 0f) return 0f;
                 if (b <= 0f) continue;
                 float discriminant = b * b - a * c;

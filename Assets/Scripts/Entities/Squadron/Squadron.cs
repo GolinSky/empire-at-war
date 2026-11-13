@@ -558,6 +558,8 @@ namespace EmpireAtWar.Entities.Squadrons
 
         private void RecordTelemetry(string kind, string reason)
         {
+            if (!Application.isPlaying) return;
+
             IEntity target = _orders.Target;
             float targetDistance = target == null ? -1f :
                 PlanarGeometry.Distance(_flight.Centroid, target.GetFacade<IEntityTransformFacade>().Transform.position);

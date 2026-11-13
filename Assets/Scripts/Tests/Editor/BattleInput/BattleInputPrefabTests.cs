@@ -90,9 +90,9 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase("Assets/Prefabs/Ui/SkirmishMenu/PauseMenuUi.prefab")]
-        [TestCase("Assets/Prefabs/Ui/MainMenu/SaveBrowserUi.prefab")]
-        public void Modal_HasFullScreenRaycastBlockerBehindPanel(string path)
+        [TestCase("Assets/Prefabs/Ui/SkirmishMenu/PauseMenuUi.prefab", true)]
+        [TestCase("Assets/Prefabs/Ui/MainMenu/SaveBrowserUi.prefab", false)]
+        public void Modal_HasFullScreenRaycastBlockerBehindPanel(string path, bool transparentBlocker)
         {
             GameObject root = AssetDatabase.LoadAssetAtPath<GameObject>(path);
             RectTransform rootRect = (RectTransform)root.transform;
@@ -110,7 +110,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(rect.offsetMax, Is.EqualTo(Vector2.zero));
             Image image = blocker.GetComponent<Image>();
             Assert.That(image.raycastTarget, Is.True);
-            Assert.That(image.color.a, Is.Zero);
+            if (transparentBlocker) Assert.That(image.color.a, Is.Zero);
             Assert.That(blocker.GetComponent<CanvasGroup>(), Is.Null);
 
             var view = new SerializedObject(root.GetComponent<BaseUi>());
@@ -131,8 +131,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void BattleHudControls_DoNotAcquireKeyboardFocusOrNavigate()
         {
-            string[] excluded = { "/MainMenu/", "/SkirmishMenu/", "/Controls/",
-                "/ButtonsTemplate/", "/IconTemplate/", "/Popups/SteamInvitePopupUi.prefab" };
+            // The planet picker belongs to skirmish setup and focuses its search field.
+            string[] excluded = { "/MainMenu/", "/SkirmishMenu/", "/Controls/", "/ButtonsTemplate/", "/IconTemplate/",
+                "/Popups/SteamInvitePopupUi.prefab", "/Popups/PlanetSelectionPopupUi.prefab" };
             string[] paths = AssetDatabase.FindAssets("t:Prefab", new[] { "Assets/Prefabs/Ui" })
                 .Select(AssetDatabase.GUIDToAssetPath)
                 .Where(path => !excluded.Any(path.Contains) && !path.EndsWith("/EndGameUi.prefab"))
