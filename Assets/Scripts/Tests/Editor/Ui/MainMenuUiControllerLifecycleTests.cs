@@ -239,13 +239,22 @@ namespace EmpireAtWar.Tests.Editor
                 var status = (TMPro.TMP_Text)fields.FindProperty("status").objectReferenceValue;
                 var survival = (Toggle)fields.FindProperty("survivalToggle").objectReferenceValue;
                 var skirmish = (Toggle)fields.FindProperty("skirmishToggle").objectReferenceValue;
+                var load = (Button)fields.FindProperty("loadButton").objectReferenceValue;
                 controller.SelectSave(1);
                 Assert.That(status.text, Does.Contain("not supported"));
+                Assert.That(load.interactable, Is.False);
+                load.onClick.Invoke();
+                Assert.That(saves.LoadCount, Is.Zero);
                 survival.isOn = true;
                 Assert.That(saves.LastMode, Is.EqualTo(GameMode.Survival));
                 Assert.That(status.text, Does.Contain("No saves"));
+                Assert.That(load.interactable, Is.False);
                 skirmish.isOn = true;
                 controller.SelectSave(0);
+                Assert.That(saves.LoadCount, Is.Zero, "Selecting a row must not load the battle.");
+                Assert.That(load.interactable, Is.True);
+                load.onClick.Invoke();
+                Assert.That(saves.LoadCount, Is.EqualTo(1));
                 Assert.That(status.text, Does.Contain("Load failed").And.Contain("Unreadable save"));
                 Assert.That(controller.TryCancel(), Is.True);
                 Assert.That(view.IsVisible, Is.False);
@@ -301,7 +310,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void LoadRoute_RemoveButtonsDeleteUnsupportedSaveAndReuseRowWithoutLoading()
+        public void LoadRoute_DeleteSelectedUnsupportedSaveAndReuseRowWithoutLoading()
         {
             var root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/MainMenu/SaveBrowserUi.prefab");
             LoadGameRouteUiController controller = null;
@@ -322,10 +331,17 @@ namespace EmpireAtWar.Tests.Editor
                 var content = (RectTransform)fields.FindProperty("content").objectReferenceValue;
                 var row = content.GetComponentsInChildren<SaveBrowserRow>().First();
                 var rowFields = new SerializedObject(row);
-                var load = (Button)rowFields.FindProperty("button").objectReferenceValue;
-                var remove = (Button)rowFields.FindProperty("removeButton").objectReferenceValue;
+                var select = (Button)rowFields.FindProperty("button").objectReferenceValue;
+                var rowRemove = (Button)rowFields.FindProperty("removeButton").objectReferenceValue;
+                var load = (Button)fields.FindProperty("loadButton").objectReferenceValue;
+                var remove = (Button)fields.FindProperty("deleteButton").objectReferenceValue;
+                var selectedName = (TMPro.TMP_Text)fields.FindProperty("selectedName").objectReferenceValue;
 
                 Assert.That(old.IsCompatible, Is.False);
+                Assert.That(select.interactable, Is.True);
+                Assert.That(rowRemove.gameObject.activeSelf, Is.False);
+                select.onClick.Invoke();
+                Assert.That(selectedName.text, Is.EqualTo(old.Slot.Name));
                 Assert.That(load.interactable, Is.False);
                 Assert.That(remove.interactable, Is.True);
                 remove.onClick.Invoke();
@@ -335,6 +351,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(saves.DeletedMode, Is.EqualTo(GameMode.Skirmish));
                 Assert.That(content.GetComponentsInChildren<SaveBrowserRow>(), Is.EqualTo(new[] { row }));
                 Assert.That(load.interactable, Is.True);
+                Assert.That(selectedName.text, Is.EqualTo(remaining.Slot.Name));
                 remove.onClick.Invoke();
 
                 Assert.That(saves.DeleteCount, Is.EqualTo(2));
@@ -344,6 +361,8 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(content.GetComponentsInChildren<SaveBrowserRow>(), Is.Empty);
                 var status = (TMPro.TMP_Text)fields.FindProperty("status").objectReferenceValue;
                 Assert.That(status.text, Does.Contain("No saves"));
+                Assert.That(load.interactable, Is.False);
+                Assert.That(remove.interactable, Is.False);
                 Assert.That(view.IsVisible, Is.True);
             }
             finally

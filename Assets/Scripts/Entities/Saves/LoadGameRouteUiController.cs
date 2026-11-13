@@ -16,6 +16,7 @@ namespace EmpireAtWar.Entities.Saves
         private SaveBrowserUi _ui;
         private IReadOnlyList<BattleSaveHeader> _slots = Array.Empty<BattleSaveHeader>();
         private int _modeIndex;
+        private int _selectedIndex = -1;
 
         public LoadGameRouteUiController(IUiService uiService, IUiCancelRouter cancelRouter,
             IBattleSaveRepository saves, IGameCommand game, GameData gameData = null) : base(uiService, cancelRouter)
@@ -32,6 +33,8 @@ namespace EmpireAtWar.Entities.Saves
                 _ui = CreateUi<SaveBrowserUi>();
                 _ui.AssignPresenter(this);
                 _ui.ModeSelected += SelectMode;
+                _ui.LoadRequested += LoadSelected;
+                _ui.DeleteRequested += DeleteSelected;
                 _ui.Initialize();
             }
             _ui.SetTitle("LOAD GAME");
@@ -61,31 +64,35 @@ namespace EmpireAtWar.Entities.Saves
         private void SelectMode(int index)
         {
             _modeIndex = index;
+            _selectedIndex = -1;
             _ui.SetMode(index, true);
             try
             {
                 _slots = _saves.List(index == 0 ? GameMode.Skirmish : GameMode.Survival);
-                var labels = new List<string>();
-                var enabled = new List<bool>();
-                foreach (BattleSaveHeader slot in _slots)
-                {
-                    labels.Add($"{slot.Slot.Name} — {slot.SavedAtUtc.ToLocalTime():g} — {TimeSpan.FromSeconds(slot.BattleTime):hh\\:mm\\:ss}{(slot.IsCompatible ? "" : " (unsupported version)")}");
-                    enabled.Add(slot.IsCompatible);
-                }
-                _ui.SetSaves(labels, enabled);
+                _ui.SetLoadSaves(_slots);
                 _ui.SetStatus(_slots.Count == 0 ? "No saves for this mode." : "");
+                if (_slots.Count > 0) SelectSave(0);
             }
             catch (Exception exception)
             {
                 _slots = Array.Empty<BattleSaveHeader>();
-                _ui.SetSaves(new List<string>(), new List<bool>());
+                _selectedIndex = -1;
+                _ui.SetLoadSaves(_slots);
                 _ui.SetStatus($"Cannot read saves: {exception.Message}");
             }
         }
 
         public void SelectSave(int index)
         {
-            BattleSaveHeader slot = _slots[index];
+            _selectedIndex = index;
+            _ui.SetLoadSelection(index, _slots[index]);
+            _ui.SetStatus(_slots[index].IsCompatible ? "" : "This save version is not supported.");
+        }
+
+        private void LoadSelected()
+        {
+            if (_selectedIndex < 0) return;
+            BattleSaveHeader slot = _slots[_selectedIndex];
             if (!slot.IsCompatible)
             {
                 _ui.SetStatus("This save version is not supported.");
@@ -93,6 +100,11 @@ namespace EmpireAtWar.Entities.Saves
             }
             try { _game.LoadBattle(_saves.Load(slot.Mode, slot.Slot)); }
             catch (Exception exception) { _ui.SetStatus($"Load failed: {exception.Message}"); }
+        }
+
+        private void DeleteSelected()
+        {
+            if (_selectedIndex >= 0) RemoveSave(_selectedIndex);
         }
 
         public void RemoveSave(int index)
@@ -120,6 +132,8 @@ namespace EmpireAtWar.Entities.Saves
             if (_ui != null)
             {
                 _ui.ModeSelected -= SelectMode;
+                _ui.LoadRequested -= LoadSelected;
+                _ui.DeleteRequested -= DeleteSelected;
                 _ui.Dispose();
             }
             _ui = null;
