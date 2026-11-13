@@ -61,11 +61,12 @@ namespace EmpireAtWar.Entities.Map.Generation
             if (size.IsArchetypeLayout && size.HazardCount > 0 && _settings.Hazards.Count == 0)
                 throw new InvalidOperationException($"{planet} requires {size.HazardCount} hazards, but no hazard presets are configured.");
             size.ConfigureStructuralFields(_radii.MainZone, _settings.ZoneClearance);
-            return GenerateLayout(mapSize, size, players, random, hazardSeed);
+            return GenerateLayout(mapSize, size, players, random, hazardSeed, profile.Decorations, profile.GetSeed());
         }
 
         private MapLayout GenerateLayout(MapSize mapSize, MapSizeSettings size,
-            IReadOnlyList<PlayerSlot> players, Random random, int hazardSeed)
+            IReadOnlyList<PlayerSlot> players, Random random, int hazardSeed,
+            PlanetDecorationSet decorations = null, int planetSeed = 0)
         {
             List<MapNode> nodes = new List<MapNode>();
             string fairnessDetail = string.Empty;
@@ -163,7 +164,9 @@ namespace EmpireAtWar.Entities.Map.Generation
                     hazards: hazards,
                     decorRocks: decor,
                     edgeMargin: size.EdgeMargin,
-                    planetObstacleRadius: size.CentralObstacleRadius);
+                    planetObstacleRadius: size.CentralObstacleRadius,
+                    decorations: MapDecorationPlacer.Place(decorations, hazardSeed ^ planetSeed,
+                        size, stations, nodes, lanes, fields, hazards, _settings.ZoneClearance));
             }
 
             throw new InvalidOperationException(

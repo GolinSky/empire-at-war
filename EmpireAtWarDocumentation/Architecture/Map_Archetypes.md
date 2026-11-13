@@ -3,8 +3,10 @@ type: engineering-reference
 system:
   - map-generation
 verified: 2026-11-13
-verification: Map 83/83, MapGeneration 224/224, MapExhaustive 164/164; all 57
-  previews regenerated; runtime acceptance remains pending.
+verification: "Archetypes: Map 83/83, MapGeneration 224/224, MapExhaustive
+  164/164; 57 previews regenerated. Decorations: source/import/compile checks
+  and seed-7 placement inspection only; tests not run. Runtime acceptance
+  pending."
 ---
 # Map Archetypes
 
@@ -28,6 +30,14 @@ verification: Map 83/83, MapGeneration 224/224, MapExhaustive 164/164; all 57
 - Grouped allies get 60 layout attempts before 60 attempts with a nearest-boundary slot exchange; every candidate retains enemy, footprint and fairness checks. Legacy and FFA keep their original attempt budget.
 - Mirrored additional groups require balanced teams and actual opposing reflected station partners. Odd, uneven or asymmetric station layouts use independent groups with the same total relay count.
 - `BattleSaveValidator` computes counts through the same legacy/archetype branch as generation.
+
+### Planet decorations
+- `PlanetMapProfileEntry.Decorations` optionally selects a `PlanetDecorationSet`; null explicitly means no scenery.
+- `MapDecorationPlacer` runs after final geometry with its own `System.Random(matchSeed ^ planetSeed)`; layout RNG, navigation and fairness remain unchanged.
+- Clearance includes station/node radii, half lane width, field volumes (including central planet), hazard signed distance + one cell, prior props and map bounds. 128 attempts per requested prop; unplaceable props are skipped.
+- `MapDecorationView` spawns once beneath `MapLayoutView.fieldRoot`, using existing load-time frame slicing. No colliders, selection or minimap markers; URP/Lit scenery stays visible through gameplay fog; cast/receive shadows off.
+- Kuat docks request 3–5 intact + 1–2 broken at scale 0.10–0.14; junk entries request 1–2 / 1–3 / 1–3 at 0.06–0.10; containers request 3–6 at 0.50–0.80. Height jitter ±15; clearance = (source origin-relative radius + 5) × scale.
+- Implementation/import evidence and proposed planet assignments → [[Done/Features/Planet_Decorations_Plan]]. Source/asset checks and seed-7 layout inspection completed 2026-11-13; decoration tests and battle visuals remain unverified.
 
 ## Edge Cases
 - Old planet+seed setups can regenerate different geometry. No migration reproduces pre-archetype non-Open-Field maps.

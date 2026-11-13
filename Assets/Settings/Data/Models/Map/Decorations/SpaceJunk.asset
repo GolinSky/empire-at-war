@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4408352679a6fef489fef9a82542407e, type: 3}
+  m_Name: SpaceJunk
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Map.PlanetDecorationSet
+  entries:
+  - <Prefab>k__BackingField: {fileID: 3002521874475357281, guid: 61983af99babdba47aa6e210e9b3cd3a,
+      type: 3}
+    <MinimumCount>k__BackingField: 1
+    <MaximumCount>k__BackingField: 2
+    <MinimumScale>k__BackingField: 0.06
+    <MaximumScale>k__BackingField: 0.1
+    <HeightJitter>k__BackingField: 15
+    <ClearanceRadius>k__BackingField: 835.8963
+  - <Prefab>k__BackingField: {fileID: 350022472790329987, guid: 25adac2249f745d488d916018d60a637,
+      type: 3}
+    <MinimumCount>k__BackingField: 1
+    <MaximumCount>k__BackingField: 3
+    <MinimumScale>k__BackingField: 0.06
+    <MaximumScale>k__BackingField: 0.1
+    <HeightJitter>k__BackingField: 15
+    <ClearanceRadius>k__BackingField: 609.3163
+  - <Prefab>k__BackingField: {fileID: 7775760842866666859, guid: dd0d2b17aaa05e94c8cb054e4b71575f,
+      type: 3}
+    <MinimumCount>k__BackingField: 1
+    <MaximumCount>k__BackingField: 3
+    <MinimumScale>k__BackingField: 0.06
+    <MaximumScale>k__BackingField: 0.1
+    <HeightJitter>k__BackingField: 15
+    <ClearanceRadius>k__BackingField: 364.1712

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4408352679a6fef489fef9a82542407e, type: 3}
+  m_Name: ShipyardDocks
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Map.PlanetDecorationSet
+  entries:
+  - <Prefab>k__BackingField: {fileID: 3448588730571610944, guid: a4cb8998250882c4f975d9c82f311904,
+      type: 3}
+    <MinimumCount>k__BackingField: 3
+    <MaximumCount>k__BackingField: 5
+    <MinimumScale>k__BackingField: 0.1
+    <MaximumScale>k__BackingField: 0.14
+    <HeightJitter>k__BackingField: 15
+    <ClearanceRadius>k__BackingField: 1418.1744
+  - <Prefab>k__BackingField: {fileID: 1109794730186346217, guid: 62ec662bdd4ad044aa6311c2d7115996,
+      type: 3}
+    <MinimumCount>k__BackingField: 1
+    <MaximumCount>k__BackingField: 2
+    <MinimumScale>k__BackingField: 0.1
+    <MaximumScale>k__BackingField: 0.14
+    <HeightJitter>k__BackingField: 15
+    <ClearanceRadius>k__BackingField: 1418.1747

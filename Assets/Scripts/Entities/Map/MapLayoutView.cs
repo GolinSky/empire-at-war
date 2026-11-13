@@ -72,6 +72,12 @@ namespace EmpireAtWar.Entities.Map
             decorRenderer.Configure(layout.DecorRocks, _camera.SceneCamera);
             float sliceStart = Time.realtimeSinceStartup;
 
+            foreach (MapDecorationSpot decoration in layout.Decorations)
+            {
+                MapDecorationView.Spawn(decoration, fieldRoot);
+                sliceStart = await YieldWhenSliceSpent(sliceStart, cancellationToken);
+            }
+
             foreach (HazardShape hazard in layout.Hazards)
             {
                 HazardCloudView view = Instantiate(hazardPrefab, fieldRoot);

@@ -1,0 +1,56 @@
+[
+  {
+    "planet": "Kuat",
+    "size": "Small",
+    "seed": 7,
+    "count": 5
+  },
+  {
+    "planet": "Kuat",
+    "size": "Medium",
+    "seed": 7,
+    "count": 4
+  },
+  {
+    "planet": "Kuat",
+    "size": "Large",
+    "seed": 7,
+    "count": 4
+  },
+  {
+    "planet": "Tatooine",
+    "size": "Small",
+    "seed": 7,
+    "count": 7
+  },
+  {
+    "planet": "Tatooine",
+    "size": "Medium",
+    "seed": 7,
+    "count": 7
+  },
+  {
+    "planet": "Tatooine",
+    "size": "Large",
+    "seed": 7,
+    "count": 7
+  },
+  {
+    "planet": "Kessel",
+    "size": "Small",
+    "seed": 7,
+    "count": 3
+  },
+  {
+    "planet": "Kessel",
+    "size": "Medium",
+    "seed": 7,
+    "count": 3
+  },
+  {
+    "planet": "Kessel",
+    "size": "Large",
+    "seed": 7,
+    "count": 3
+  }
+]

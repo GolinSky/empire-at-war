@@ -68,7 +68,7 @@ Builds on [[Architecture/Map_Generation]]. Reference model: AoE-style rule-based
 - [x] 6. 6–8 players: `MAX_PLAYERS`, arrays, setup UI, saves, networking, AI, n-fold layout symmetry.
 - [x] 7. Assign all planets; skirmish gallery shows archetype name + top-down layout preview.
 - [x] 8. Verification: quick/exhaustive seed sweeps passed; 57 editor-generated top-down layout schematics saved. Final battlefield visual approval queued.
-- [ ] 9. Optional, deferred: biome visuals. No biome art direction or new visual asset set selected in this implementation.
+- [ ] 9. Optional, deferred: biome visuals. Superseded 2026-11-13 by the simplified [[Done/Features/Planet_Decorations_Plan]] (per-planet EaW props); full biomes dropped.
 
 ## Edge Cases
 - Saved skirmish setups (planet + seed) regenerate different geometry after Phase 1.
