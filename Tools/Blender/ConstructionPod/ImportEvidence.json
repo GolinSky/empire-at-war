@@ -1,0 +1,617 @@
+{
+  "pieceId": "ConstructionPod",
+  "transportRigName": "ConstructionPodRig",
+  "source": [
+    {
+      "meshIndex": 0,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 0.00042946235443662824
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 1,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 3.764755092572787e-06
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 2,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 1.0766024510972763e-06
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 3,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 0.00026448113780587956
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 4,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 0
+          },
+          "degenerateNormalExclusions": 1245,
+          "normalCheck": "excluded"
+        }
+      ]
+    },
+    {
+      "meshIndex": 5,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 2.3840434181020515e-05
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 6,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 1.1318114445657557e-08
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 7,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 4.489248640748723e-05
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 8,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 0,
+            "uvPixels": 0,
+            "normal": 3.0730530010215816e-05
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    }
+  ],
+  "fbx": [
+    {
+      "meshIndex": 0,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 4.482269287109375e-05,
+            "uvPixels": 0,
+            "normal": 0.0006203511728263513
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 1,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 3.62396240234375e-05,
+            "uvPixels": 0,
+            "normal": 3.7647550989618083e-06
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 2,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 2.750817318316642e-05,
+            "uvPixels": 0,
+            "normal": 1.205797691592211e-06
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 3,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 5.006563090670276e-05,
+            "uvPixels": 0,
+            "normal": 0.0002645825282902728
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 4,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 4.267692565917969e-05,
+            "uvPixels": 0,
+            "normal": 0
+          },
+          "degenerateNormalExclusions": 1245,
+          "normalCheck": "excluded"
+        }
+      ]
+    },
+    {
+      "meshIndex": 5,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 3.910064697265625e-05,
+            "uvPixels": 0,
+            "normal": 2.3814192128322e-05
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 6,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 8.529922399520072e-06,
+            "uvPixels": 0,
+            "normal": 1.6317407114385674e-07
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 7,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 2.86102294921875e-05,
+            "uvPixels": 0,
+            "normal": 4.5049042183114114e-05
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    },
+    {
+      "meshIndex": 8,
+      "slots": [
+        {
+          "slot": 0,
+          "maxErrors": {
+            "geometry": 2.677091378711357e-05,
+            "uvPixels": 0,
+            "normal": 3.0622535226493116e-05
+          },
+          "degenerateNormalExclusions": 0,
+          "normalCheck": "passed"
+        }
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "meshIndex": 4,
+      "repair": "restore-original-helper-topology"
+    },
+    {
+      "meshIndex": 4,
+      "repair": "retain-authored-flat-helper-shading"
+    },
+    {
+      "meshIndex": 5,
+      "repair": "restore-original-helper-topology"
+    },
+    {
+      "meshIndex": 0,
+      "repair": "24 source-zero normals replaced by area-weighted incident face normals; 28 triangle corners affected"
+    }
+  ],
+  "skeletonSource": {
+    "bones": 22,
+    "maxSourceError": 2.4437904357910156e-06,
+    "fullAuthoredMatrixMetadata": "passed",
+    "comparison": "full-matrix-and-parent"
+  },
+  "skeletonFbx": {
+    "bones": 22,
+    "maxSourceError": 0.00013647875839232116,
+    "fullAuthoredMatrixMetadata": "passed",
+    "comparison": "head-and-parent"
+  },
+  "bones": 22,
+  "meshes": 9,
+  "triangles": 6279,
+  "sourceMap": {
+    "bones": [
+      {
+        "index": 0,
+        "exportedName": "Root"
+      },
+      {
+        "index": 1,
+        "exportedName": "Camera01"
+      },
+      {
+        "index": 2,
+        "exportedName": "Camera01.Target"
+      },
+      {
+        "index": 3,
+        "exportedName": "blink lights"
+      },
+      {
+        "index": 4,
+        "exportedName": "p_sensornode01"
+      },
+      {
+        "index": 5,
+        "exportedName": "p_rb_station_damage_ALT1"
+      },
+      {
+        "index": 6,
+        "exportedName": "p_rb_station_damage_ALT1.001"
+      },
+      {
+        "index": 7,
+        "exportedName": "p_rb_station_damage_ALT1.002"
+      },
+      {
+        "index": 8,
+        "exportedName": "p_rb_station_damage_ALT2"
+      },
+      {
+        "index": 9,
+        "exportedName": "ELEC_BOX_ALT2"
+      },
+      {
+        "index": 10,
+        "exportedName": "p_damage_elec04_ALT2"
+      },
+      {
+        "index": 11,
+        "exportedName": "p_rb_station_damage_ALT2.001"
+      },
+      {
+        "index": 12,
+        "exportedName": "p_rb_station_damage_ALT2.002"
+      },
+      {
+        "index": 13,
+        "exportedName": "p_rb_station_damage_ALT2.003"
+      },
+      {
+        "index": 14,
+        "exportedName": "ELEC_BOX_ALT2.001"
+      },
+      {
+        "index": 15,
+        "exportedName": "p_damage_elec04_ALT2.001"
+      },
+      {
+        "index": 16,
+        "exportedName": "ELEC_BOX_ALT2.002"
+      },
+      {
+        "index": 17,
+        "exportedName": "p_damage_elec04_ALT2.002"
+      },
+      {
+        "index": 18,
+        "exportedName": "p_imperial_explosion_big00_ALT1"
+      },
+      {
+        "index": 19,
+        "exportedName": "p_imperial_explosion_big00_ALT1.001"
+      },
+      {
+        "index": 20,
+        "exportedName": "p_imperial_explosion_big00_ALT2"
+      },
+      {
+        "index": 21,
+        "exportedName": "p_imperial_explosion_big00_ALT2.001"
+      }
+    ],
+    "meshes": [
+      {
+        "index": 0,
+        "objectIndex": 0,
+        "boneIndex": 0,
+        "exportedName": "main body",
+        "sourceName": "main body",
+        "hidden": false,
+        "shading": "source-custom-smooth",
+        "slots": [
+          {
+            "index": 0,
+            "signature": "0e9a4cf61941f3eab22a50adc284da5607bd03b2eec89ccfbf6163a240d7194f",
+            "exportedMaterialName": "ConstructionPod_M000_S00_0e9a4cf61941"
+          }
+        ]
+      },
+      {
+        "index": 1,
+        "objectIndex": 1,
+        "boneIndex": 0,
+        "exportedName": "alphas",
+        "sourceName": "alphas",
+        "hidden": false,
+        "shading": "source-custom-smooth",
+        "slots": [
+          {
+            "index": 0,
+            "signature": "4348c76e94036f6d6e5c6f61666385ebab6ab95ec5716f18fa3d77e7a68f6451",
+            "exportedMaterialName": "ConstructionPod_M001_S00_4348c76e9403"
+          }
+        ]
+      },
+      {
+        "index": 2,
+        "objectIndex": 2,
+        "boneIndex": 0,
+        "exportedName": "scaf",
+        "sourceName": "scaf",
+        "hidden": false,
+        "shading": "source-custom-smooth",
+        "slots": [
+          {
+            "index": 0,
+            "signature": "4348c76e94036f6d6e5c6f61666385ebab6ab95ec5716f18fa3d77e7a68f6451",
+            "exportedMaterialName": "ConstructionPod_M002_S00_4348c76e9403"
+          }
+        ]
+      },
+      {
+        "index": 3,
+        "objectIndex": 3,
+        "boneIndex": 3,
+        "exportedName": "blink lights",
+        "sourceName": "blink lights",
+        "hidden": true,
+        "shading": "source-custom-smooth",
+        "slots": [
+          {
+            "index": 0,
+            "signature": "fff85588f66538fe37fa13471a9db378d94bcdb359eb99c39deec8e525126bed",
+            "exportedMaterialName": "ConstructionPod_M003_S00_fff85588f665"
+          }
+        ]
+      },
+      {
+        "index": 4,
+        "objectIndex": 4,
+        "boneIndex": 0,
+        "exportedName": "shadow",
+        "sourceName": "shadow",
+        "hidden": false,
+        "shading": "source-flat-helper",
+        "slots": [
+          {
+            "index": 0,
+            "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+            "exportedMaterialName": "ConstructionPod_M004_S00_6c4b7839f50b"
+          }
+        ]
+      },
+      {
+        "index": 5,
+        "objectIndex": 5,
+        "boneIndex": 0,
+        "exportedName": "collision",
+        "sourceName": "collision",
+        "hidden": true,
+        "shading": "source-custom-smooth",
+        "slots": [
+          {
+            "index": 0,
+            "signature": "a4028ae693045c51861978a695439be5c701d14fb628537fb50b299bde26de5e",
+            "exportedMaterialName": "ConstructionPod_M005_S00_a4028ae69304"
+          }
+        ]
+      },
+      {
+        "index": 6,
+        "objectIndex": 6,
+        "boneIndex": 9,
+        "exportedName": "ELEC_BOX_ALT2",
+        "sourceName": "ELEC_BOX_ALT2",
+        "hidden": true,
+        "shading": "source-custom-smooth",
+        "slots": [
+          {
+            "index": 0,
+            "signature": "fff85588f66538fe37fa13471a9db378d94bcdb359eb99c39deec8e525126bed",
+            "exportedMaterialName": "ConstructionPod_M006_S00_fff85588f665"
+          }
+        ]
+      },
+      {
+        "index": 7,
+        "objectIndex": 7,
+        "boneIndex": 14,
+        "exportedName": "ELEC_BOX_ALT2.001",
+        "sourceName": "ELEC_BOX_ALT2",
+        "hidden": true,
+        "shading": "source-custom-smooth",
+        "slots": [
+          {
+            "index": 0,
+            "signature": "fff85588f66538fe37fa13471a9db378d94bcdb359eb99c39deec8e525126bed",
+            "exportedMaterialName": "ConstructionPod_M007_S00_fff85588f665"
+          }
+        ]
+      },
+      {
+        "index": 8,
+        "objectIndex": 8,
+        "boneIndex": 16,
+        "exportedName": "ELEC_BOX_ALT2.002",
+        "sourceName": "ELEC_BOX_ALT2",
+        "hidden": true,
+        "shading": "source-custom-smooth",
+        "slots": [
+          {
+            "index": 0,
+            "signature": "fff85588f66538fe37fa13471a9db378d94bcdb359eb99c39deec8e525126bed",
+            "exportedMaterialName": "ConstructionPod_M008_S00_fff85588f665"
+          }
+        ]
+      }
+    ]
+  },
+  "provenance": {
+    "archive": "D:\\SteamLibrary\\steamapps\\common\\Star Wars Empire at War\\GameData\\Data\\models.meg",
+    "archiveSha256": "09eb13870f963bf3ee5bfbc1a029104523f06b3bd3aeddc35dad66a7ea2f7ced",
+    "member": "DATA\\ART\\MODELS\\EB_CONSTRUCTION_POD.ALO",
+    "offset": 506586918,
+    "size": 1483611,
+    "sha256": "8987c68721f5caada20967d5e36da8f6fc4e49b51ece5ffcbb281e3cfc68a2b7"
+  },
+  "textures": {
+    "eb_station.tga": {
+      "path": "F:\\Private\\empire-at-war\\Temp\\ConstructionPodImport\\ConstructionPod_Hull_Albedo.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": {
+        "archive": "D:\\SteamLibrary\\steamapps\\common\\Star Wars Empire at War\\GameData\\Data\\textures.meg",
+        "archiveSha256": "718f5cd337d043d4f1d064c500b55d4299f546cf8d3ead8eaf4e21a2634eb029",
+        "member": "DATA\\ART\\TEXTURES\\EB_STATION.DDS",
+        "offset": 295112242,
+        "size": 349680,
+        "sha256": "832c4a33d0f9c6728e5c5d7da4c1376f5817dabf8c0c6fe6642393bfb17b75d8"
+      }
+    },
+    "eb_station_bump.tga": {
+      "path": "F:\\Private\\empire-at-war\\Temp\\ConstructionPodImport\\ConstructionPod_Hull_Normal.png",
+      "size": [
+        512,
+        512
+      ],
+      "source": {
+        "archive": "D:\\SteamLibrary\\steamapps\\common\\Star Wars Empire at War\\GameData\\Data\\textures.meg",
+        "archiveSha256": "718f5cd337d043d4f1d064c500b55d4299f546cf8d3ead8eaf4e21a2634eb029",
+        "member": "DATA\\ART\\TEXTURES\\EB_STATION_BUMP.DDS",
+        "offset": 55506618,
+        "size": 349680,
+        "sha256": "9bfc1886c173a2530a75a476d7b2a817e94c61fe1dccaa939d913305aee3079f"
+      }
+    },
+    "nb_girder2.tga": {
+      "path": "F:\\Private\\empire-at-war\\Temp\\ConstructionPodImport\\ConstructionPod_Girder_Albedo.png",
+      "size": [
+        128,
+        128
+      ],
+      "source": {
+        "archive": "D:\\SteamLibrary\\steamapps\\common\\Star Wars Empire at War\\GameData\\Data\\textures.meg",
+        "archiveSha256": "718f5cd337d043d4f1d064c500b55d4299f546cf8d3ead8eaf4e21a2634eb029",
+        "member": "DATA\\ART\\TEXTURES\\NB_GIRDER2.DDS",
+        "offset": 353975476,
+        "size": 22000,
+        "sha256": "f5fee2c92aeb80cd22cc6bdbd74d088541176a179f5fbf3ec41c4a172d9b4904"
+      }
+    }
+  },
+  "unity": {
+    "prefab": "Assets/Prefabs/Models/SpaceStations/ConstructionPod.prefab",
+    "visibleMeshes": 3,
+    "visibleTriangles": 4508,
+    "boundsSize": "(411.1422, 431.9194, 472.7024)",
+    "missingDependencies": []
+  },
+  "limitations": [
+    "Static model only; no gameplay or Addressables registration.",
+    "Shadow-volume helper normals excluded from comparison; geometry and UVs verified.",
+    "24 invalid hull normals repaired before strict comparisons; remaining authored normals preserved.",
+    "No automated tests run."
+  ]
+}
