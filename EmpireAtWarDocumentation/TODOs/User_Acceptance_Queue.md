@@ -315,3 +315,5 @@ created: "2026-10-29\r"
 
 - [ ] [[Done/Bugs/Planet_Decorations_Loading_Fix]] — Kuat visibility confirmed by user; verify corrected dock orientation in battle and junk visibility in a fresh Tatooine battle. Spawn now preserves the imported prefab root rotation under world yaw.
 - [ ] [[Done/Bugs/Planet_Decorations_Loading_Fix]] — Run the authored loader/view and imported-orientation regressions in category Map only on explicit request; tests not run during this fix.
+
+- [ ] [[Done/Features/Planet_Decorations_Plan]] — In a fresh junk planet battle, confirm 3× junk scale is readable at normal zoom and interior placement looks right; SpaceJunk uses scale 0.18–0.30 and central 70% bounds. Sampled Tatooine seed-7 counts are 3/7/7 for Small/Medium/Large.

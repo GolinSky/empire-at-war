@@ -309,6 +309,7 @@
 
 - [x] **Planet decorations (Kuat docks, space junk, resource containers)** → [[Done/Features/Planet_Decorations_Plan|Planet Decorations Plan]]
   - Completed 2026-11-13: six imported props, three sets, 13 planet assignments, independent seeded clearance placement. Unity compile/import checks clean; sampled placement counts recorded. Tests not run; planet-list and battle visual acceptance queued.
+  - 2026-11-13 follow-up: junk scale 3× (0.18–0.30), central 70% footprint bounds; saved/compiled, sampled Tatooine counts 3/7/7. Normal-zoom visual acceptance pending.
 
 - [x] **Map archetypes: per-planet layout patterns, free station placement, 6–8 players** → [[Done/Features/Map_Archetypes_Plan|Map Archetypes Plan]]; [[Done/Features/Map_Archetypes_Plan - Research|Assignments and decisions]]
   - Completed 2026-11-13, `acceptance: pending-user`. Seven archetypes, 57 profiles/previews, grouped-first station fallback, 4/6/8-player limits, setup/gallery/save/network integration. Optional biome visuals deferred.

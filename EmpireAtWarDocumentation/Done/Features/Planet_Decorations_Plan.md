@@ -65,3 +65,11 @@ Simplified replacement for the deferred biome phase of [[Done/Features/Map_Arche
 ## Follow-up · 2026-11-13
 - User battle check failed: no decorations visible on Kuat/Tatooine. `BattleMapLoader` discarded generated decorations when reconstructing the layout to filter sites.
 - Narrow fix and renewed visibility acceptance → [[Done/Bugs/Planet_Decorations_Loading_Fix]]. Original generator-count evidence did not verify delivery to the view.
+
+## Junk Visibility Follow-up · 2026-11-13
+- User requested larger junk visible at normal battle zoom and placement away from map edges.
+- `SpaceJunk.asset`: all three entries scale 0.18–0.30 (3× previous 0.06–0.10); counts unchanged. `PlacementBoundsFraction = 0.70` keeps complete clearance footprints inside the central 70% of each map dimension.
+- Docks/containers retain their scales/counts and fraction 1.0; navigation, lane and hazard clearance rules unchanged.
+- Non-test seed-7 Tatooine inspection: Small/Medium/Large counts 3/7/7. Maximum footprint reach from center 1567.7/2252.7/3136.6 versus contracted half-extents 1610/2415/3622.5. Evidence → `Tools/Blender/PlanetDecorations/PlacementEvidence.json`.
+- Assets saved; Unity compilation clean. `MapDecorationTests.PlacementFractionKeepsWholePropsInsideCentralBounds` authored; tests not run.
+- Source review confirms radius-aware bounds contraction. Normal-zoom visual acceptance remains pending; reusable rule → [[Architecture/Map_Archetypes#Planet decorations]].

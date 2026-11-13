@@ -19,6 +19,8 @@ namespace EmpireAtWar.Entities.Map.Generation
             List<MapDecorationSpot> result = new List<MapDecorationSpot>();
             if (set == null) return result;
             Random random = new Random(seed);
+            Vector2 center = (size.Bounds.Min + size.Bounds.Max) * 0.5f;
+            Vector2 halfSize = (size.Bounds.Max - size.Bounds.Min) * (set.PlacementBoundsFraction * 0.5f);
             foreach (PlanetDecorationEntry entry in set.Entries)
             {
                 if (entry.Prefab == null || entry.MinimumCount < 0 || entry.MaximumCount < entry.MinimumCount ||
@@ -29,8 +31,8 @@ namespace EmpireAtWar.Entities.Map.Generation
                 {
                     float scale = Mathf.Lerp(entry.MinimumScale, entry.MaximumScale, (float)random.NextDouble());
                     float radius = entry.ClearanceRadius * scale;
-                    Vector2 min = size.Bounds.Min + Vector2.one * radius;
-                    Vector2 max = size.Bounds.Max - Vector2.one * radius;
+                    Vector2 min = center - halfSize + Vector2.one * radius;
+                    Vector2 max = center + halfSize - Vector2.one * radius;
                     if (min.x > max.x || min.y > max.y) continue;
                     for (int attempt = 0; attempt < ATTEMPTS_PER_PROP; attempt++)
                     {

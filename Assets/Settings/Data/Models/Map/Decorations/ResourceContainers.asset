@@ -21,3 +21,4 @@ MonoBehaviour:
     <MaximumScale>k__BackingField: 0.8
     <HeightJitter>k__BackingField: 15
     <ClearanceRadius>k__BackingField: 75.413185
+  <PlacementBoundsFraction>k__BackingField: 1

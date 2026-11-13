@@ -68,6 +68,25 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void PlacementFractionKeepsWholePropsInsideCentralBounds()
+        {
+            SerializedObject serialized = new SerializedObject(_set);
+            serialized.FindProperty("<PlacementBoundsFraction>k__BackingField").floatValue = 0.7f;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            Vector2 center = (_size.Bounds.Min + _size.Bounds.Max) * 0.5f;
+            Vector2 halfSize = (_size.Bounds.Max - _size.Bounds.Min) * 0.35f;
+            IReadOnlyList<MapDecorationSpot> spots = Place(42);
+            Assert.That(spots.Count, Is.EqualTo(8));
+            foreach (MapDecorationSpot spot in spots)
+            {
+                Assert.That(spot.Position.x, Is.InRange(center.x - halfSize.x + spot.Radius,
+                    center.x + halfSize.x - spot.Radius));
+                Assert.That(spot.Position.z, Is.InRange(center.y - halfSize.y + spot.Radius,
+                    center.y + halfSize.y - spot.Radius));
+            }
+        }
+
+        [Test]
         public void LaneAndFieldClearanceIgnoreHeight()
         {
             MapLane[] lanes = { new MapLane(new[] { Vector3.left * 100f, Vector3.right * 100f }) };

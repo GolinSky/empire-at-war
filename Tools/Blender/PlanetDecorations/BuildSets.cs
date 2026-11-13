@@ -15,7 +15,7 @@ public static class BuildPlanetDecorationSets
         AssetDatabase.Refresh();
         var report = JArray.Parse(File.ReadAllText("Temp/PlanetDecorationsImport/UnityReport.json"));
         var docks = Set("ShipyardDocks", new[] {"EB_DOCK00","EB_DOCK_BREAK"}, new[] {3,1}, new[] {5,2}, .1f,.14f, report);
-        var junk = Set("SpaceJunk", new[] {"W_SPACEJUNK","W_SPACEJUNK_MED","W_SPACEJUNK_SML"}, new[] {1,1,1}, new[] {2,3,3}, .06f,.1f, report);
+        var junk = Set("SpaceJunk", new[] {"W_SPACEJUNK","W_SPACEJUNK_MED","W_SPACEJUNK_SML"}, new[] {1,1,1}, new[] {2,3,3}, .18f,.30f, report);
         var containers = Set("ResourceContainers", new[] {"W_ORBITAL_RESOURCE_CONTAINER"}, new[] {3}, new[] {6}, .5f,.8f, report);
         var profile = AssetDatabase.LoadAssetAtPath<PlanetMapProfile>("Assets/Settings/Data/Models/Map/PlanetMapProfiles.asset");
         var so = new SerializedObject(profile);
@@ -42,6 +42,7 @@ public static class BuildPlanetDecorationSets
         var set = AssetDatabase.LoadAssetAtPath<PlanetDecorationSet>(path);
         if (set == null) { set = ScriptableObject.CreateInstance<PlanetDecorationSet>(); AssetDatabase.CreateAsset(set,path); }
         var so = new SerializedObject(set);
+        so.FindProperty("<PlacementBoundsFraction>k__BackingField").floatValue = name == "SpaceJunk" ? .7f : 1f;
         var entries = so.FindProperty("entries"); entries.arraySize = names.Length;
         for (int i=0;i<names.Length;i++)
         {

@@ -3,54 +3,363 @@
     "planet": "Kuat",
     "size": "Small",
     "seed": 7,
-    "count": 5
+    "count": 5,
+    "boundsMin": "(-2000.00, -2000.00)",
+    "boundsMax": "(2000.00, 2000.00)",
+    "spots": [
+      {
+        "prefab": "EB_DOCK00",
+        "x": 825.9966,
+        "z": 1790.08936,
+        "scale": 0.118414864,
+        "radius": 167.932938
+      },
+      {
+        "prefab": "EB_DOCK00",
+        "x": 1562.75708,
+        "z": 732.0246,
+        "scale": 0.103049815,
+        "radius": 146.142609
+      },
+      {
+        "prefab": "EB_DOCK00",
+        "x": 1406.69226,
+        "z": -238.842712,
+        "scale": 0.11385493,
+        "radius": 161.466156
+      },
+      {
+        "prefab": "EB_DOCK_BREAK",
+        "x": 175.547287,
+        "z": 1490.99756,
+        "scale": 0.103430964,
+        "radius": 146.683182
+      },
+      {
+        "prefab": "EB_DOCK_BREAK",
+        "x": -1747.83472,
+        "z": -651.800537,
+        "scale": 0.122120135,
+        "radius": 173.187683
+      }
+    ]
   },
   {
     "planet": "Kuat",
     "size": "Medium",
     "seed": 7,
-    "count": 4
+    "count": 4,
+    "boundsMin": "(-3000.00, -3000.00)",
+    "boundsMax": "(3000.00, 3000.00)",
+    "spots": [
+      {
+        "prefab": "EB_DOCK00",
+        "x": 1276.85168,
+        "z": 2767.17676,
+        "scale": 0.118414864,
+        "radius": 167.932938
+      },
+      {
+        "prefab": "EB_DOCK00",
+        "x": 1967.40125,
+        "z": 2557.085,
+        "scale": 0.103049815,
+        "radius": 146.142609
+      },
+      {
+        "prefab": "EB_DOCK00",
+        "x": 266.6384,
+        "z": -2573.42627,
+        "scale": 0.104758322,
+        "radius": 148.565582
+      },
+      {
+        "prefab": "EB_DOCK_BREAK",
+        "x": 1515.86035,
+        "z": 2220.316,
+        "scale": 0.122709148,
+        "radius": 174.02301
+      }
+    ]
   },
   {
     "planet": "Kuat",
     "size": "Large",
     "seed": 7,
-    "count": 4
+    "count": 4,
+    "boundsMin": "(-4500.00, -4500.00)",
+    "boundsMax": "(4500.00, 4500.00)",
+    "spots": [
+      {
+        "prefab": "EB_DOCK00",
+        "x": -4328.071,
+        "z": 2864.04419,
+        "scale": 0.118414864,
+        "radius": 167.932938
+      },
+      {
+        "prefab": "EB_DOCK00",
+        "x": 4242.56445,
+        "z": 2139.40845,
+        "scale": 0.111373782,
+        "radius": 157.947449
+      },
+      {
+        "prefab": "EB_DOCK00",
+        "x": 3894.355,
+        "z": -2223.68677,
+        "scale": 0.1083579,
+        "radius": 153.6704
+      },
+      {
+        "prefab": "EB_DOCK_BREAK",
+        "x": 547.2024,
+        "z": -4324.905,
+        "scale": 0.1128209,
+        "radius": 159.999741
+      }
+    ]
   },
   {
     "planet": "Tatooine",
     "size": "Small",
     "seed": 7,
-    "count": 7
+    "count": 3,
+    "boundsMin": "(-2300.00, -2300.00)",
+    "boundsMax": "(2300.00, 2300.00)",
+    "spots": [
+      {
+        "prefab": "W_SPACEJUNK",
+        "x": -1371.11377,
+        "z": -274.926025,
+        "scale": 0.2351901,
+        "radius": 196.594528
+      },
+      {
+        "prefab": "W_SPACEJUNK_MED",
+        "x": -1342.217,
+        "z": 523.4416,
+        "scale": 0.253086358,
+        "radius": 154.209641
+      },
+      {
+        "prefab": "W_SPACEJUNK_SML",
+        "x": -361.253235,
+        "z": 1476.72156,
+        "scale": 0.227814049,
+        "radius": 82.96332
+      }
+    ]
   },
   {
     "planet": "Tatooine",
     "size": "Medium",
     "seed": 7,
-    "count": 7
+    "count": 7,
+    "boundsMin": "(-3450.00, -3450.00)",
+    "boundsMax": "(3450.00, 3450.00)",
+    "spots": [
+      {
+        "prefab": "W_SPACEJUNK",
+        "x": 1853.46094,
+        "z": -1496.49268,
+        "scale": 0.2351901,
+        "radius": 196.594528
+      },
+      {
+        "prefab": "W_SPACEJUNK_MED",
+        "x": -1757.914,
+        "z": 1437.8623,
+        "scale": 0.250799268,
+        "radius": 152.816086
+      },
+      {
+        "prefab": "W_SPACEJUNK_MED",
+        "x": -2088.01831,
+        "z": 1489.9895,
+        "scale": 0.270310849,
+        "radius": 164.7048
+      },
+      {
+        "prefab": "W_SPACEJUNK_MED",
+        "x": -1799.76086,
+        "z": 495.762238,
+        "scale": 0.2329894,
+        "radius": 141.964233
+      },
+      {
+        "prefab": "W_SPACEJUNK_SML",
+        "x": -1196.85913,
+        "z": 1883.03943,
+        "scale": 0.195086733,
+        "radius": 71.04497
+      },
+      {
+        "prefab": "W_SPACEJUNK_SML",
+        "x": -1778.37122,
+        "z": 2031.36377,
+        "scale": 0.208975643,
+        "radius": 76.10291
+      },
+      {
+        "prefab": "W_SPACEJUNK_SML",
+        "x": 2140.86475,
+        "z": -1384.93933,
+        "scale": 0.233890519,
+        "radius": 85.17619
+      }
+    ]
   },
   {
     "planet": "Tatooine",
     "size": "Large",
     "seed": 7,
-    "count": 7
+    "count": 7,
+    "boundsMin": "(-5175.00, -5175.00)",
+    "boundsMax": "(5175.00, 5175.00)",
+    "spots": [
+      {
+        "prefab": "W_SPACEJUNK",
+        "x": 2862.31787,
+        "z": -2311.04834,
+        "scale": 0.2351901,
+        "radius": 196.594528
+      },
+      {
+        "prefab": "W_SPACEJUNK_MED",
+        "x": -2696.24658,
+        "z": 2205.35913,
+        "scale": 0.250799268,
+        "radius": 152.816086
+      },
+      {
+        "prefab": "W_SPACEJUNK_MED",
+        "x": -1153.261,
+        "z": 2552.03687,
+        "scale": 0.270310849,
+        "radius": 164.7048
+      },
+      {
+        "prefab": "W_SPACEJUNK_MED",
+        "x": -3024.30835,
+        "z": 2445.98145,
+        "scale": 0.184326828,
+        "radius": 112.313339
+      },
+      {
+        "prefab": "W_SPACEJUNK_SML",
+        "x": -2790.36841,
+        "z": 768.635132,
+        "scale": 0.270095438,
+        "radius": 98.36098
+      },
+      {
+        "prefab": "W_SPACEJUNK_SML",
+        "x": 2828.25122,
+        "z": -1066.99524,
+        "scale": 0.2800102,
+        "radius": 101.971649
+      },
+      {
+        "prefab": "W_SPACEJUNK_SML",
+        "x": 2139.17163,
+        "z": -2684.93066,
+        "scale": 0.250719368,
+        "radius": 91.30477
+      }
+    ]
   },
   {
     "planet": "Kessel",
     "size": "Small",
     "seed": 7,
-    "count": 3
+    "count": 3,
+    "boundsMin": "(-2300.00, -2300.00)",
+    "boundsMax": "(2300.00, 2300.00)",
+    "spots": [
+      {
+        "prefab": "W_ORBITAL_RESOURCE_CONTAINER",
+        "x": -1564.851,
+        "z": -1107.46,
+        "scale": 0.669046164,
+        "radius": 50.4549026
+      },
+      {
+        "prefab": "W_ORBITAL_RESOURCE_CONTAINER",
+        "x": -1136.82288,
+        "z": -570.2395,
+        "scale": 0.770731,
+        "radius": 58.1232758
+      },
+      {
+        "prefab": "W_ORBITAL_RESOURCE_CONTAINER",
+        "x": -1861.312,
+        "z": -733.5035,
+        "scale": 0.7557749,
+        "radius": 56.99539
+      }
+    ]
   },
   {
     "planet": "Kessel",
     "size": "Medium",
     "seed": 7,
-    "count": 3
+    "count": 3,
+    "boundsMin": "(-3450.00, -3450.00)",
+    "boundsMax": "(3450.00, 3450.00)",
+    "spots": [
+      {
+        "prefab": "W_ORBITAL_RESOURCE_CONTAINER",
+        "x": 2341.24316,
+        "z": 1909.319,
+        "scale": 0.669046164,
+        "radius": 50.4549026
+      },
+      {
+        "prefab": "W_ORBITAL_RESOURCE_CONTAINER",
+        "x": 2400.28564,
+        "z": -121.007576,
+        "scale": 0.611846268,
+        "radius": 46.1412773
+      },
+      {
+        "prefab": "W_ORBITAL_RESOURCE_CONTAINER",
+        "x": 1635.45618,
+        "z": -1131.27979,
+        "scale": 0.695157647,
+        "radius": 52.4240532
+      }
+    ]
   },
   {
     "planet": "Kessel",
     "size": "Large",
     "seed": 7,
-    "count": 3
+    "count": 3,
+    "boundsMin": "(-5175.00, -5175.00)",
+    "boundsMax": "(5175.00, 5175.00)",
+    "spots": [
+      {
+        "prefab": "W_ORBITAL_RESOURCE_CONTAINER",
+        "x": -823.7918,
+        "z": -3037.05859,
+        "scale": 0.669046164,
+        "radius": 50.4549026
+      },
+      {
+        "prefab": "W_ORBITAL_RESOURCE_CONTAINER",
+        "x": 1584.76489,
+        "z": -4038.31665,
+        "scale": 0.5991915,
+        "radius": 45.18694
+      },
+      {
+        "prefab": "W_ORBITAL_RESOURCE_CONTAINER",
+        "x": 4494.91748,
+        "z": 2593.84961,
+        "scale": 0.695685565,
+        "radius": 52.4638634
+      }
+    ]
   }
 ]

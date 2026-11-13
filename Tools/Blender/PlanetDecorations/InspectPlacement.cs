@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -26,7 +27,7 @@ public static class InspectPlanetDecorations
   foreach(MapSize size in Enum.GetValues(typeof(MapSize)))
   {
    var layout=generator.Generate(size,players,new System.Random(7),7,planet);
-   report.Add(new JObject{["planet"]=planet.ToString(),["size"]=size.ToString(),["seed"]=7,["count"]=layout.Decorations.Count});
+   report.Add(new JObject{["planet"]=planet.ToString(),["size"]=size.ToString(),["seed"]=7,["count"]=layout.Decorations.Count,["boundsMin"]=layout.SizeRange.Min.ToString(),["boundsMax"]=layout.SizeRange.Max.ToString(),["spots"]=new JArray(layout.Decorations.Select(s=>new JObject{["prefab"]=s.Prefab.name,["x"]=s.Position.x,["z"]=s.Position.z,["scale"]=s.Scale,["radius"]=s.Radius}))});
   }
   File.WriteAllText("Tools/Blender/PlanetDecorations/PlacementEvidence.json",report.ToString());
   return report.ToString();

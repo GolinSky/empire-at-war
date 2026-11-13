@@ -17,23 +17,24 @@ MonoBehaviour:
       type: 3}
     <MinimumCount>k__BackingField: 1
     <MaximumCount>k__BackingField: 2
-    <MinimumScale>k__BackingField: 0.06
-    <MaximumScale>k__BackingField: 0.1
+    <MinimumScale>k__BackingField: 0.18
+    <MaximumScale>k__BackingField: 0.3
     <HeightJitter>k__BackingField: 15
     <ClearanceRadius>k__BackingField: 835.8963
   - <Prefab>k__BackingField: {fileID: 350022472790329987, guid: 25adac2249f745d488d916018d60a637,
       type: 3}
     <MinimumCount>k__BackingField: 1
     <MaximumCount>k__BackingField: 3
-    <MinimumScale>k__BackingField: 0.06
-    <MaximumScale>k__BackingField: 0.1
+    <MinimumScale>k__BackingField: 0.18
+    <MaximumScale>k__BackingField: 0.3
     <HeightJitter>k__BackingField: 15
     <ClearanceRadius>k__BackingField: 609.3163
   - <Prefab>k__BackingField: {fileID: 7775760842866666859, guid: dd0d2b17aaa05e94c8cb054e4b71575f,
       type: 3}
     <MinimumCount>k__BackingField: 1
     <MaximumCount>k__BackingField: 3
-    <MinimumScale>k__BackingField: 0.06
-    <MaximumScale>k__BackingField: 0.1
+    <MinimumScale>k__BackingField: 0.18
+    <MaximumScale>k__BackingField: 0.3
     <HeightJitter>k__BackingField: 15
     <ClearanceRadius>k__BackingField: 364.1712
+  <PlacementBoundsFraction>k__BackingField: 0.7
