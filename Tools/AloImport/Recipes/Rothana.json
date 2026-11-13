@@ -3454,7 +3454,7 @@
       "capacity": 1,
       "reserve": 20,
       "initialDelaySeconds": 4,
-      "intervalSeconds": 8
+      "intervalSeconds": 1
     },
     {
       "id": "bay-3",
@@ -3477,7 +3477,7 @@
       "capacity": 1,
       "reserve": 20,
       "initialDelaySeconds": 4,
-      "intervalSeconds": 8
+      "intervalSeconds": 1
     }
   ],
   "gameplay": {

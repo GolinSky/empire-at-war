@@ -23,6 +23,7 @@ MonoBehaviour:
   <HyperSpaceDuration>k__BackingField: 0.6
   <BodyRotationMaxAngle>k__BackingField: 8
   <NavigationRadius>k__BackingField: 102.84925
+  <IgnoresMapObstacles>k__BackingField: 0
   <DestroyDelay>k__BackingField: 0.35
   <Wreck>k__BackingField: {fileID: 11400000, guid: 9e977fbca9344b44b87597d623249be6,
     type: 2}
@@ -43,7 +44,7 @@ MonoBehaviour:
     reserve: 20
     maxActive: 1
   <HangarInitialDelay>k__BackingField: 4
-  <HangarLaunchInterval>k__BackingField: 30
+  <HangarLaunchInterval>k__BackingField: 1
   weaponLoadout:
   - weaponType: 4
     count: 9

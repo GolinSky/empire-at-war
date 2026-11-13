@@ -8997,7 +8997,7 @@
       "capacity": 1,
       "reserve": 40,
       "initialDelaySeconds": 4,
-      "intervalSeconds": 8
+      "intervalSeconds": 1
     },
     {
       "id": "bay-301",
@@ -9020,7 +9020,7 @@
       "capacity": 1,
       "reserve": 40,
       "initialDelaySeconds": 4,
-      "intervalSeconds": 8
+      "intervalSeconds": 1
     },
     {
       "id": "bay-1",
@@ -9043,7 +9043,7 @@
       "capacity": 1,
       "reserve": 40,
       "initialDelaySeconds": 4,
-      "intervalSeconds": 8
+      "intervalSeconds": 1
     }
   ],
   "gameplay": {
