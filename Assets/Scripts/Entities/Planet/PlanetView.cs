@@ -17,8 +17,11 @@ namespace EmpireAtWar.Entities.Planet
             float visualRadius = GetVisualRadius(planetRenderers, visualCenter);
             visualRadius = Mathf.Max(visualRadius, GetVisualRadius(cloudRenderers, visualCenter));
             Vector3 localCenter = transform.InverseTransformPoint(visualCenter);
-            transform.localScale *= radius / visualRadius;
-            transform.position += center - transform.TransformPoint(localCenter);
+            float fitScale = radius / visualRadius;
+            // Preserve the authored clearance below gameplay as the planet changes size.
+            float height = (visualCenter.y - center.y) * fitScale;
+            transform.localScale *= fitScale;
+            transform.position += center + Vector3.up * height - transform.TransformPoint(localCenter);
         }
 
         private static float GetVisualRadius(MeshRenderer[] renderers, Vector3 center)

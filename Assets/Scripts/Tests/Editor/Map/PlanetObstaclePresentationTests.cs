@@ -15,11 +15,13 @@ namespace EmpireAtWar.Tests.Editor
         private const float OBSTACLE_RADIUS = 720f;
         private const float TOLERANCE = 0.1f;
 
-        [Test]
-        public void EveryOrbitalPlanet_FitsSurfaceAndCloudsInsideObstacleAtGameplayCenter()
+        [TestCase(360f, 6f)]
+        [TestCase(720f, 8.4f)]
+        [TestCase(1440f, 10.5f)]
+        public void EveryOrbitalPlanet_FitsFootprintBelowGameplayWithProportionalDepth(float radius, float mapScale)
         {
             MapGenerationSettings settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(SETTINGS_PATH);
-            Vector3 center = new Vector3(123f, 0f, -456f);
+            Vector3 center = new Vector3(123f, 50f, -456f);
             int checkedPlanets = 0;
             int cloudlessPlanets = 0;
             foreach (PlanetMapProfileEntry entry in settings.Profiles.Entries)
@@ -35,13 +37,23 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     PlanetScope instance = Object.Instantiate(prefab, parent.transform, false);
                     Assert.That(instance.gameObject.activeInHierarchy, Is.False);
-                    instance.View.FitObstacle(center, OBSTACLE_RADIUS);
+                    instance.transform.position = center + Vector3.up * prefabPosition.y * mapScale;
+                    instance.transform.localScale = prefabScale * mapScale;
                     using SerializedObject view = new SerializedObject(instance.View);
                     SerializedProperty surfaces = view.FindProperty("planetRenderers");
                     Assert.That(surfaces.arraySize, Is.GreaterThan(0), entry.Planet.ToString());
                     MeshRenderer first = (MeshRenderer)surfaces.GetArrayElementAtIndex(0).objectReferenceValue;
-                    Assert.That(Vector3.Distance(first.transform.TransformPoint(first.localBounds.center), center),
-                        Is.LessThan(TOLERANCE), entry.Planet.ToString());
+                    float originalHeight = first.transform.TransformPoint(first.localBounds.center).y - center.y;
+                    float originalScale = instance.transform.localScale.x;
+                    instance.View.FitObstacle(center, radius);
+                    Vector3 visualCenter = first.transform.TransformPoint(first.localBounds.center);
+                    Assert.That(visualCenter.x, Is.EqualTo(center.x).Within(TOLERANCE), entry.Planet.ToString());
+                    Assert.That(visualCenter.z, Is.EqualTo(center.z).Within(TOLERANCE), entry.Planet.ToString());
+                    Assert.That(visualCenter.y - center.y,
+                        Is.EqualTo(originalHeight * instance.transform.localScale.x / originalScale).Within(TOLERANCE),
+                        entry.Planet.ToString());
+                    Assert.That(visualCenter.y + radius, Is.LessThan(center.y),
+                        $"{entry.Planet}: surface and clouds must stay below gameplay");
                     float furthestSurface = 0f;
                     foreach (string field in new[] { "planetRenderers", "cloudRenderers" })
                     {
@@ -56,14 +68,14 @@ namespace EmpireAtWar.Tests.Editor
                             foreach (float sign in new[] { -1f, 1f })
                             {
                                 Vector3 localSurface = bounds.center + Vector3.Scale(axis, bounds.extents) * sign;
-                                float distance = Vector3.Distance(renderer.transform.TransformPoint(localSurface), center);
-                                Assert.That(distance, Is.LessThanOrEqualTo(OBSTACLE_RADIUS + TOLERANCE),
+                                float distance = Vector3.Distance(renderer.transform.TransformPoint(localSurface), visualCenter);
+                                Assert.That(distance, Is.LessThanOrEqualTo(radius + TOLERANCE),
                                     $"{entry.Planet}: {field}[{i}] extends past navigation obstacle");
                                 furthestSurface = Mathf.Max(furthestSurface, distance);
                             }
                         }
                     }
-                    Assert.That(furthestSurface, Is.EqualTo(OBSTACLE_RADIUS).Within(TOLERANCE),
+                    Assert.That(furthestSurface, Is.EqualTo(radius).Within(TOLERANCE),
                         $"{entry.Planet}: visual body must fill the blocked footprint");
                     Assert.That(prefab.transform.position, Is.EqualTo(prefabPosition));
                     Assert.That(prefab.transform.localScale, Is.EqualTo(prefabScale));
