@@ -75,7 +75,9 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         public void Dispose()
         {
             Unregister();
-            if (_root != null) UnityEngine.Object.Destroy(_root.gameObject);
+            if (_root == null) return;
+            if (Application.isPlaying) UnityEngine.Object.Destroy(_root.gameObject);
+            else UnityEngine.Object.DestroyImmediate(_root.gameObject);
         }
 
         public void SetPosition(Vector3 position) => _position = position;

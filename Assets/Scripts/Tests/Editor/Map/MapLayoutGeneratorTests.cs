@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using EmpireAtWar.Utils;
@@ -941,16 +942,17 @@ namespace EmpireAtWar.Tests.Editor
             return _generator.Generate(battle.Map.Size, battle.Slots, new Random(battle.Map.Seed), battle.Map.Seed);
         }
 
-        [TestCase(MapSize.Small, 0, "08481F50F6B4183533470DC5A74AC7448EB42B606D33C8A352C04DCD839559E7")]
-        [TestCase(MapSize.Small, 7, "BB8D47580D056CD190D95870109AEB031EB3AFAA242BD01044468CCEC496A428")]
-        [TestCase(MapSize.Small, 19, "5EFAFF617C754A175A02896B9634696007D88C659E4ADF42119A3A6A1B8013F7")]
-        [TestCase(MapSize.Medium, 0, "C895BE95E286995FD3315AE1FE1F1C3F14479521758CB301047F56563496DFED")]
-        [TestCase(MapSize.Medium, 7, "2EE91F88118103CAEF216B1BA40C62DE4471A6CD9E4FB5269DDB96BEF59DF510")]
-        [TestCase(MapSize.Medium, 19, "75C7DFA891074BE54EC4189CF007A7AF29C7FFF3158877FBF077EBA877028168")]
-        [TestCase(MapSize.Large, 0, "85E59E9A087E2B6BFEFA64BFDD5614DFB4EA34AB8989CB57F0B6CAEC74C18254")]
-        [TestCase(MapSize.Large, 7, "D31217CE5D5C407AAEA949D8D708C9A8D90094182975C82AF4467A3032471896")]
-        [TestCase(MapSize.Large, 19, "B29337C7DB8EA381367037A95D69BD6882D7982CD2499DB8AF40F1D85EF08FF8")]
-        public void OpenField_PreservesPreArchetypeGeometry(MapSize mapSize, int seed, string expected)
+        // The baseline includes the visual rocks retained by RockScatter's 50% density reduction.
+        [TestCase(MapSize.Small, 0, "837F1346CC804CB650F4E2868B1D7AB598B186EDC4D400B6DFB909DAE7CB9A51")]
+        [TestCase(MapSize.Small, 7, "EC8EED3B752471C3CFAF57279C8032C7E83FCDD273017DFB641D0D31FCF92881")]
+        [TestCase(MapSize.Small, 19, "649500F3872F930D696A0EFBF43FBBFEAB4ABAD4909024724C616B7150E60548")]
+        [TestCase(MapSize.Medium, 0, "DE2973B1CA133AF177D5071289CD963EF24D777137BA9394BBE4119F1A5F7C85")]
+        [TestCase(MapSize.Medium, 7, "8E66F72E0934210732FA6733C62019EAF548562D70CDC2BE9ABDD24AF12E01E5")]
+        [TestCase(MapSize.Medium, 19, "FF7F0859B3A9FACA7496458A22FE5FFC0DA077F84D6AC9256B167F2AF6791D53")]
+        [TestCase(MapSize.Large, 0, "5E030E4A5AA42978DB1A28D595F55BC71794AE3C928FB3F0368EA66206651E92")]
+        [TestCase(MapSize.Large, 7, "A028D2D3AC9FD21453A57AD61D7CEABE5609883EBE765C69360ADD4E78B6AB15")]
+        [TestCase(MapSize.Large, 19, "23C5034F775D5418337B538B29D8557DCEBD4B6990394539D287A73A0E7DDB15")]
+        public void OpenField_MatchesGeometryBaseline(MapSize mapSize, int seed, string expected)
         {
             MapLayout layout = _generator.Generate(mapSize, TestPlayers.CreateTeamGame().Players,
                 new Random(seed), seed, PlanetType.Coruscant);
@@ -962,24 +964,25 @@ namespace EmpireAtWar.Tests.Editor
         private static string Fingerprint(MapLayout layout)
         {
             StringBuilder text = new StringBuilder();
-            text.Append(layout.PlanetPosition.ToString("R")).Append('|');
+            CultureInfo culture = CultureInfo.InvariantCulture;
+            text.Append(layout.PlanetPosition.ToString("R", culture)).Append('|');
             for (int i = 0; i < TestPlayers.CreateTeamGame().Players.Count; i++)
-                text.Append(layout.GetStationPosition(new PlayerId(i)).ToString("R")).Append(';');
+                text.Append(layout.GetStationPosition(new PlayerId(i)).ToString("R", culture)).Append(';');
             foreach (ZoneSpot zone in layout.Zones)
-                text.Append(zone.Center.ToString("R")).Append(zone.Owner).Append(zone.IsCapturable).Append(';');
+                text.Append(zone.Center.ToString("R", culture)).Append(zone.Owner).Append(zone.IsCapturable).Append(';');
             foreach (SiteSpot site in layout.Sites)
-                text.Append(site.Center.ToString("R")).Append(site.Kind).Append(site.Owner).Append(site.PointId).Append(';');
+                text.Append(site.Center.ToString("R", culture)).Append(site.Kind).Append(site.Owner).Append(site.PointId).Append(';');
             foreach (MapLane lane in layout.Lanes)
                 foreach (Vector3 point in lane.Points)
-                    text.Append(point.ToString("R")).Append(';');
+                    text.Append(point.ToString("R", culture)).Append(';');
             foreach (AsteroidField field in layout.Fields)
             {
-                text.Append(field.Floor.ToString("R")).Append(field.Ceiling.ToString("R")).Append('|');
+                text.Append(field.Floor.ToString("R", culture)).Append(field.Ceiling.ToString("R", culture)).Append('|');
                 foreach (FieldVolume volume in field.Volumes)
-                    text.Append(volume.Center.ToString("R")).Append(volume.Radius.ToString("R")).Append(';');
+                    text.Append(volume.Center.ToString("R", culture)).Append(volume.Radius.ToString("R", culture)).Append(';');
                 foreach (AsteroidSpot rock in field.Rocks)
-                    text.Append(rock.Position.ToString("R")).Append(rock.Rotation.ToString("R"))
-                        .Append(rock.Scale.ToString("R")).Append(rock.Size).Append(';');
+                    text.Append(rock.Position.ToString("R", culture)).Append(rock.Rotation.ToString("R", culture))
+                        .Append(rock.Scale.ToString("R", culture)).Append(rock.Size).Append(';');
             }
 
             return text.ToString();

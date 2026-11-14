@@ -6,7 +6,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     [Serializable]
     public sealed class FullSalvoSettings : ShipAbilitySettings
     {
-        [SerializeField] private float projectileFireDelayMultiplier = 0.33f;
+        [SerializeField] private float projectileFireDelayMultiplier = 0.5f;
         [SerializeField] private float otherFireDelayMultiplier = 3f;
 
         public float ProjectileFireDelayMultiplier => projectileFireDelayMultiplier;

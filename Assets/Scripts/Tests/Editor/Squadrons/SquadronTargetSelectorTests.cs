@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Squadrons.Flight;
+using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Squadrons.Data;
@@ -253,6 +254,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = new GameObject("Squadron with deferred orders");
             _objects.Add(root);
             Squadron squadron = root.AddComponent<Squadron>();
+            SquadronIconComponent icon = root.AddComponent<SquadronIconComponent>();
             SquadronData data = ScriptableObject.CreateInstance<SquadronData>();
             try
             {
@@ -267,6 +269,8 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(Squadron).GetField("_flight", PRIVATE_INSTANCE).SetValue(squadron, flight);
                 typeof(Squadron).GetField("_pilot", PRIVATE_INSTANCE).SetValue(squadron, pilot);
                 typeof(Squadron).GetField("_weapon", PRIVATE_INSTANCE).SetValue(squadron, weapon);
+                typeof(Squadron).GetField("_icon", PRIVATE_INSTANCE).SetValue(squadron, icon);
+                typeof(Squadron).GetProperty("Data", PRIVATE_INSTANCE).SetValue(squadron, data);
                 typeof(Squadron).GetField("_engaged", PRIVATE_INSTANCE).SetValue(squadron, target);
                 ((HealthStub)target.HealthModel).IsDestroyed = true;
                 GameObject targetView = target.GetFacade<IEntityTransformFacade>().Transform.gameObject;

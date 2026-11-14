@@ -14,12 +14,15 @@ using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
+using Unity.Profiling;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.Enemy
 {
     public sealed class EnemyProductionStrategy
     {
+        private static readonly ProfilerMarker _evaluateMarker = new ProfilerMarker("EnemyAI.Production.Evaluate");
+
         private const float MINIMUM_PRODUCTION_INTERVAL = 1f;
 
         private const int SHIPS_PER_SQUADRON = 2;
@@ -151,6 +154,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private void EvaluateProduction(EnemyAiDifficultyProfile profile)
         {
+            using var sample = _evaluateMarker.Auto();
             int shipCount = CountReservedShips();
             int miningFacilityCount = CountReservedMiningFacilities();
             int defensePlatformCount = CountReservedDefensePlatforms();

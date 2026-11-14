@@ -175,7 +175,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _leaseActive = false;
             ReleaseMissile();
             ResetForPool();
-            Destroy(gameObject);
+            if (Application.isPlaying) Destroy(gameObject);
+            else DestroyImmediate(gameObject);
         }
 
         private void BeginLease(float duration)

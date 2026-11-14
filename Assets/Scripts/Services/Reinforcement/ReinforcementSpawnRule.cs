@@ -52,12 +52,10 @@ namespace EmpireAtWar.Services.Reinforcement
             IsOpen(owner, position) && _shipClearance.IsClear(owner, shipType, position) &&
             _shipReachability.IsReachable(owner, shipType, position);
 
-        public bool CanSpawnStructure(PlayerId owner, Vector3 position)
-        {
-            float radius = _structureClearance.Radius;
-            return IsOpen(owner, position) &&
-                   !_areas.IsStructureExcluded(position, radius) &&
-                   _structureClearance.IsClear(position);
-        }
+        public bool IsOpenForStructure(PlayerId owner, Vector3 position) =>
+            IsOpen(owner, position) && !_areas.IsStructureExcluded(position, _structureClearance.Radius);
+
+        public bool CanSpawnStructure(PlayerId owner, Vector3 position) =>
+            IsOpenForStructure(owner, position) && _structureClearance.IsClear(position);
     }
 }

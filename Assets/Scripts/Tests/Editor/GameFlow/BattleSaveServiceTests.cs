@@ -314,7 +314,12 @@ namespace EmpireAtWar.Tests.Editor
             validator.Validate(save, battle);
             validator.Validate(save, battle);
             Assert.That(header.Version, Is.EqualTo(BattleSaveHeader.CURRENT_VERSION));
-            Assert.That(ship.Hangar.Reserve, Is.EqualTo(new[] { 1, 0, 2 }));
+            Assert.That(ship.Hangar.Reserve, Is.EqualTo(new[]
+            {
+                shipData.HangarBays[0].Reserve - 1,
+                shipData.HangarBays[1].Reserve - 3,
+                shipData.HangarBays[2].Reserve
+            }));
             Assert.That(ship.Hangar.Cooldown, Is.EqualTo(6f));
             Assert.That(ship.Hangar.Launched.Single().SquadronId, Is.EqualTo(2));
             Assert.That(ship.Hangar.Launched.Single().Bay, Is.Zero);

@@ -150,12 +150,12 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: b92ff58098755ab4baa941419c34f072, type: 2}
         displayName: Pride of the Core
-        description: "Republic dreadnought with 20 turbolaser mounts, eight ion cannons,
+        description: Republic dreadnought with 20 turbolaser mounts, eight ion cannons,
           16 point-defense batteries, eight missile and four torpedo launchers. Boost
-          Weapon Power makes weapons fire 10\xD7 faster and reload 90% faster. Vulnerable
-          to concentrated bomber attacks and Malevolence. Deploys 2 fighter squadrons,
+          Weapon Power halves weapon reload and time between shots. Vulnerable to
+          concentrated bomber attacks and Malevolence. Deploys 2 fighter squadrons,
           2 interceptor squadrons, 2 bomber squadrons at once. Carries 24 total squadron
-          launches, including the initial deployment."
+          launches, including the initial deployment.
         role: "Mandator II \xB7 Dreadnought"
         iconKey: 771dbf8529c7a394b864ffcb0bd556d7:21300000
         isHero: 0
@@ -211,12 +211,12 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 2b08713a371fcbd4c98840e4d71f3353, type: 2}
         displayName: VSD
-        description: "Republic heavy cruiser built to destroy corvettes and frigates.
+        description: Republic heavy cruiser built to destroy corvettes and frigates.
           Two enhanced turbolaser, four dual medium turbolaser, two dual heavy turbolaser,
           two concussion missile and one ion cannon battery; thirteen targetable
-          hardpoints. Boost Weapon Power makes weapons fire 10\xD7 faster and reload
-          90% faster and halves speed and shield regeneration for 7 s. Recovers in
-          50 s. No hangar or squadron deployment."
+          hardpoints. Boost Weapon Power halves weapon reload and time between shots
+          and halves speed and shield regeneration for 7 s. Recovers in 50 s. No
+          hangar or squadron deployment.
         role: Heavy cruiser / Anti-corvette / Anti-frigate
         iconKey: 552ac5636e4f65c44994f1337d051b8a:21300000
         isHero: 0
@@ -269,10 +269,10 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 5660afec4edee70409f96502d7e05d8c, type: 2}
         displayName: Carrack
-        description: "1,600 hull, 1,000 shields. Twelve dual laser cannons screen
-          the fleet against fighters and bombers. Boost Weapon Power makes weapons
-          fire 10\xD7 faster and reload 90% faster and halves speed and shield regeneration
-          for 7 s. Recovers in 50 s."
+        description: 1,600 hull, 1,000 shields. Twelve dual laser cannons screen
+          the fleet against fighters and bombers. Boost Weapon Power halves weapon
+          reload and time between shots and halves speed and shield regeneration
+          for 7 s. Recovers in 50 s.
         role: Cruiser / Anti-fighter Escort
         iconKey: ee8c2cac9ed92d8499f6b865153f7ff3:21300000
         isHero: 0
@@ -288,11 +288,11 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 8bdf528cc8d4fa74997a634975fb890e, type: 2}
         displayName: Centax
-        description: "2,000 hull, 1,300 shields, 25 shield points restored each second.
+        description: 2,000 hull, 1,300 shields, 25 shield points restored each second.
           Four laser cannons per side, one forward dual turbolaser battery and two
-          forward proton torpedo launchers. Boost Weapon Power makes weapons fire
-          10\xD7 faster and reload 90% faster and halves speed and shield regeneration
-          for 7 s. Recovers in 50 s."
+          forward proton torpedo launchers. Boost Weapon Power halves weapon reload
+          and time between shots and halves speed and shield regeneration for 7 s.
+          Recovers in 50 s.
         role: Heavy Frigate / Assault Escort
         iconKey: c7ed8d3ae8343e24a8ef2eca2a1a0e8f:21300000
         isHero: 0

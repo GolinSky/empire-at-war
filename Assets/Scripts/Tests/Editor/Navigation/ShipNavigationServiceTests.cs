@@ -272,8 +272,9 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(plan.Route.Length, Is.EqualTo(4800f).Within(0.05f));
         }
 
-        [Test]
-        public void Plan_ObstacleIgnoringShipCrossesHazardsAndMapBoundsIntoReservedDestination()
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Plan_ObstacleIgnoringShipCrossesHazardsAndMapBoundsIntoReservedDestination(bool reserveAsPending)
         {
             SpaceHazardData data = ScriptableObject.CreateInstance<SpaceHazardData>();
             try
@@ -288,9 +289,13 @@ namespace EmpireAtWar.Tests.Movement
                 service.Register(parked, destination);
                 var executor = new FakeAgent(new Vector3(-300f, 0f, 0f), 0f, 1059.4355f, 10f, 1.5f)
                     { IgnoresMapObstacles = true };
+                service.Register(executor, executor.NavigationPosition);
 
-                ShipNavigationPlan plan = Plan(service, executor, destination);
+                ShipNavigationPlan plan = service.Plan(executor, Vector3.right, destination,
+                    System.Array.Empty<RadarContact>(), 0.5f, executor.NavigationRadius, _mapRange,
+                    reserveAsPending: reserveAsPending);
 
+                Assert.That(plan.IsDeferred, Is.EqualTo(reserveAsPending));
                 Assert.That(plan.IsStationary, Is.False);
                 Assert.That(plan.Destination, Is.EqualTo(destination));
                 Assert.That(plan.Route.Length, Is.EqualTo(600f).Within(0.01f));

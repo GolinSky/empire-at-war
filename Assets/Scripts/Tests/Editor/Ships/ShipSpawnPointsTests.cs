@@ -202,6 +202,8 @@ namespace EmpireAtWar.Tests.Editor
 
             public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position) => true;
 
+            public bool IsOpenForStructure(PlayerId owner, Vector3 position) => true;
+
             public bool CanSpawnStructure(PlayerId owner, Vector3 position) => true;
         }
 
@@ -219,6 +221,8 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsOpen(PlayerId team, Vector3 position) => PlanarDistance(position, _center) <= _radius;
 
             public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position) => IsOpen(owner, position);
+
+            public bool IsOpenForStructure(PlayerId owner, Vector3 position) => IsOpen(owner, position);
 
             public bool CanSpawnStructure(PlayerId owner, Vector3 position) => IsOpen(owner, position);
         }

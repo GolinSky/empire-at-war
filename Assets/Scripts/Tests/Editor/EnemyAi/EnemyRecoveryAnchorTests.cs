@@ -45,11 +45,16 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(true)]
         public void LostStationAcceptsHumanOrAiAllyEvenWithoutShips(bool ai)
         {
-            PlayerSlot original = _roster.Get(TestPlayers.Human);
-            var players = new List<PlayerSlot>(_roster.Players);
-            players[0] = new PlayerSlot(original.Id, original.Team, original.Faction,
-                ai ? PlayerController.Ai : PlayerController.Human, original.Difficulty, original.ColorIndex);
-            _roster.Replace(players);
+            if (ai)
+            {
+                var players = new List<PlayerSlot>(_roster.Players);
+                PlayerSlot ally = _roster.Get(TestPlayers.Human);
+                PlayerSlot opponent = _roster.Get(TestPlayers.Enemy);
+                players[0] = new PlayerSlot(ally.Id, ally.Team, ally.Faction, PlayerController.Ai, ally.Difficulty, ally.ColorIndex);
+                players[1] = new PlayerSlot(opponent.Id, opponent.Team, opponent.Faction, PlayerController.Human,
+                    opponent.Difficulty, opponent.ColorIndex);
+                _roster.Replace(players);
+            }
             AddZone(TestPlayers.Human, new Vector3(1000f, 0f, 0f));
             Update(canCapture: false);
             Assert.That(_recovery.TryGetBuildAnchor(out Vector3 anchor), Is.True);
@@ -152,6 +157,41 @@ namespace EmpireAtWar.Tests.Editor
             _intel.GetPatrol(_owner.Team).Register("structure:123", new FormationPoint(1000f, 0f), "hostileStructure", 2f);
             Assert.That(_recovery.IsPlacementSafe(Vector3.right * 500f, 0f), Is.False);
             Assert.That(_recovery.GetNearestHostileDistance(Vector3.right * 500f), Is.EqualTo(500f));
+        }
+
+        [TestCase(-2074f, 0f, false)]
+        [TestCase(-2074.01f, 0f, true)]
+        [TestCase(390f, 0f, false)]
+        [TestCase(389.99f, 0f, true)]
+        [TestCase(1000f, 610f, false)]
+        [TestCase(1000f, 610.01f, true)]
+        [TestCase(1000f, 1390f, false)]
+        [TestCase(1000f, 1389.99f, true)]
+        public void PlacementSnapshotMatchesLiveThreatsAtClearanceBoundary(float x, float z, bool safe)
+        {
+            ReportHostile(new FormationPoint(1000f, 0f));
+            _intel.GetPatrol(_owner.Team).Register("structure:456", new FormationPoint(1000f, 2000f),
+                "hostileStructure", 2f);
+            Update(canCapture: false);
+            var snapshot = new PlacementThreatSnapshot();
+            _recovery.FillPlacementThreats(snapshot);
+
+            const float CLEARANCE = 10f;
+            Assert.That(snapshot.IsSafe(x, z, CLEARANCE), Is.EqualTo(safe));
+            Assert.That(_recovery.IsPlacementSafe(new Vector3(x, 0f, z), CLEARANCE), Is.EqualTo(safe));
+        }
+
+        [Test]
+        public void RefillingPlacementSnapshotDropsForgottenSightings()
+        {
+            ReportHostile(new FormationPoint(1000f, 0f));
+            var snapshot = new PlacementThreatSnapshot();
+            _recovery.FillPlacementThreats(snapshot);
+            Assert.That(snapshot.IsSafe(1000f, 0f, 0f), Is.False);
+
+            _intel.Get(_owner.Team).Forget(123);
+            _recovery.FillPlacementThreats(snapshot);
+            Assert.That(snapshot.IsSafe(1000f, 0f, 0f), Is.True);
         }
 
         private void ReportHostile(FormationPoint position) =>

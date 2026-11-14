@@ -1,12 +1,12 @@
+using System;
 using EmpireAtWar.Services.SuperWeapons;
 using UnityEngine;
 using VContainer;
-using EmpireAtWar.Lifecycle;
 
 namespace EmpireAtWar.Entities.Planet
 {
     /// <summary>Adapts the battle planet into the superweapon origin: shots leave the surface point facing the target.</summary>
-    public class PlanetSuperWeaponOrigin : MonoBehaviour, ISuperWeaponOrigin
+    public class PlanetSuperWeaponOrigin : MonoBehaviour, ISuperWeaponOrigin, IDisposable
     {
         private ISuperWeaponOriginRegistry _registry;
 
@@ -17,11 +17,11 @@ namespace EmpireAtWar.Entities.Planet
         [Inject]
         private void Construct(ISuperWeaponOriginRegistry registry)
         {
+            registry.Register(this);
             _registry = registry;
-            _registry.Register(this);
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
             _registry.Unregister(this);
         }

@@ -197,9 +197,9 @@ namespace EmpireAtWar.Services.ShipNavigation
                 ? 0f : ShipRotationKinematics.CalculateTurnDuration(Quaternion.LookRotation(forward, Vector3.up),
                     route.InitialTangent, agent.NavigationRotationSpeed);
             if (reserveAsPending)
-                _destinationRegistry.ReservePendingFinalPosition(registrationId, ToPoint(destination));
+                _destinationRegistry.ReservePendingFinalPosition(registrationId, ToPoint(destination), requireClearance: false);
             else
-                _destinationRegistry.CommitActiveFinalPosition(registrationId, ToPoint(destination));
+                _destinationRegistry.CommitActiveFinalPosition(registrationId, ToPoint(destination), requireClearance: false);
             float movementDuration = new ShipRouteSpeedProfile(route, agent.NavigationSpeed,
                 agent.NavigationRotationSpeed, turnDuration > 0f ? 0f : agent.NavigationCurrentSpeed).Duration;
             // Turning plans must reach the component's brake/replan branch even during pursuit.

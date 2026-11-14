@@ -132,8 +132,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
         displayName: Coordinated Assault
-        description: Torpedo firing rate +150% for 8 seconds. Recovers 40 seconds
-          after expiry.
+        description: Torpedo reload and time between shots are halved for 8 seconds.
+          Recovers in 40 seconds.
         duration: 8
         recoveryDelay: 40
         canCancel: 0
@@ -213,9 +213,9 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
         displayName: Power to Main Batteries
-        description: Main-battery shot and reload delays fall to 5%. Other gun hardpoints
-          stop firing. Movement speed falls to 25% and shield regeneration falls
-          to 50% for 20 s. Recovers in 60 s.
+        description: Main-battery reload and time between shots are halved. Other
+          gun hardpoints stop firing. Movement speed falls to 25% and shield regeneration
+          to 50% for 20 seconds. Recovers in 60 seconds.
         duration: 20
         recoveryDelay: 60
         canCancel: 0
@@ -230,8 +230,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
         displayName: Boost Weapon Power
-        description: "Weapons fire 10\xD7 faster and reload 90% faster. Movement
-          speed and shield regeneration fall to 50% for 7 s. Recovers in 50 s."
+        description: Weapon reload and time between shots are halved. Movement speed
+          and shield regeneration fall to 50% for 7 seconds. Recovers in 50 seconds.
         duration: 7
         recoveryDelay: 50
         canCancel: 1
@@ -246,8 +246,9 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 3cbfaeb7158d3ec4089863ac834197b4, type: 3}
         displayName: Pursuit
-        description: For 15 s, speed increases to 500% and fire rate quadruples.
-          Shield regeneration stops. Recovers in 60 s.
+        description: For 15 seconds, movement speed increases to 500%, weapon reload
+          and time between shots are halved, and shield regeneration stops. Recovers
+          in 60 seconds.
         duration: 15
         recoveryDelay: 60
         canCancel: 0
@@ -262,8 +263,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 3cbfaeb7158d3ec4089863ac834197b4, type: 3}
         displayName: Assault
-        description: Charge an enemy target with quadruple fire rate and double movement
-          speed.
+        description: Charge a selected enemy with half the normal weapon reload and
+          time between shots, and double movement speed.
         duration: 7
         recoveryDelay: 50
         canCancel: 0
@@ -294,8 +295,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: a4e2bc47fe148694ca2314ad9ae2f3d6, type: 3}
         displayName: Concentrate Fire
-        description: Nearby allies within 400 units focus the target and gain 40%
-          shorter fire delays. Does not stack with other Concentrate Fire.
+        description: Nearby allies within 400 units focus the target and halve weapon
+          reload and time between shots. Does not stack with other Concentrate Fire.
         duration: 8
         recoveryDelay: 60
         canCancel: 0
@@ -343,9 +344,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 25f606fb36ea77942b60e1c0eca1bf51, type: 3}
         displayName: Intensify Firepower
-        description: Turbolasers, ion cannons and the SPHAT beam fire about six times
-          faster for 15 s. Damage, speed and shield regeneration are unchanged. 60
-          s recovery.
+        description: Turbolasers, ion cannons and the SPHAT beam have half their
+          normal reload and time between shots for 15 seconds. Recovers in 60 seconds.
         duration: 15
         recoveryDelay: 60
         canCancel: 0
@@ -360,9 +360,9 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 25f606fb36ea77942b60e1c0eca1bf51, type: 3}
         displayName: Full Salvo
-        description: 'For 20 seconds, missiles, rockets and torpedoes fire about
-          six times faster, while other weapons fire at one-third their normal rate.
-          Recharge: 60 seconds after the salvo ends.'
+        description: For 20 seconds, missiles, rockets and torpedoes have half their
+          normal reload and time between shots. Other weapons take three times as
+          long. Recovers in 60 seconds.
         duration: 20
         recoveryDelay: 60
         canCancel: 0
@@ -395,8 +395,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: ee7b79f13d927674cb535bcd3d3a2042, type: 3}
         displayName: Torpedo Salvo
-        description: Torpedoes fire 200% faster for 6 seconds. 30 second recovery.
-          Other weapons remain unchanged.
+        description: Torpedo reload and time between shots are halved for 6 seconds.
+          Recovers in 30 seconds.
         duration: 6
         recoveryDelay: 30
         canCancel: 0
@@ -533,6 +533,7 @@ MonoBehaviour:
           speedMultiplier: 1
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
+          shotIntervalMultiplier: 1
         commandRadius: 400
         targetDamageMultiplier: 1
     - rid: 6801466898397790291
@@ -545,11 +546,12 @@ MonoBehaviour:
           speedMultiplier: 1.3
           shieldRegenMultiplier: 3
           damageTakenMultiplier: 1
+          shotIntervalMultiplier: 1
     - rid: 6801466921437888590
       type: {class: FullSalvoSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        projectileFireDelayMultiplier: 0.165
+        projectileFireDelayMultiplier: 0.5
         otherFireDelayMultiplier: 3
     - rid: 6801466921437888597
       type: {class: TractorBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -582,34 +584,36 @@ MonoBehaviour:
       type: {class: PowerToMainBatteriesSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        fireDelayMultiplier: 0.05
+        fireDelayMultiplier: 0.5
         statModifier:
           damageMultiplier: 1
           fireDelayMultiplier: 1
           speedMultiplier: 0.25
           shieldRegenMultiplier: 0.5
           damageTakenMultiplier: 1
+          shotIntervalMultiplier: 1
     - rid: 6801466944227639371
       type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         statModifier:
           damageMultiplier: 1
-          fireDelayMultiplier: 0.25
+          fireDelayMultiplier: 0.5
           speedMultiplier: 5
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1
+          shotIntervalMultiplier: 0.5
     - rid: 6801466989490733131
       type: {class: FullSalvoSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         projectileFireDelayMultiplier: 1
-        otherFireDelayMultiplier: 0.165
+        otherFireDelayMultiplier: 0.5
     - rid: 6801467062609510478
       type: {class: TorpedoSalvoSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        fireDelayMultiplier: 0.33333334
+        fireDelayMultiplier: 0.5
     - rid: 6801467062609510480
       type: {class: FighterReinforcementsSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -624,6 +628,7 @@ MonoBehaviour:
           speedMultiplier: 2.5
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
+          shotIntervalMultiplier: 1
     - rid: 6801467062609510483
       type: {class: SensorJammingSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -636,7 +641,7 @@ MonoBehaviour:
       type: {class: TorpedoSalvoSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        fireDelayMultiplier: 0.4
+        fireDelayMultiplier: 0.5
     - rid: 6801467062609510488
       type: {class: FighterCoordinationSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -658,6 +663,7 @@ MonoBehaviour:
           speedMultiplier: 1
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 0
+          shotIntervalMultiplier: 1
     - rid: 7607833764655792205
       type: {class: BoostShieldPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -668,6 +674,7 @@ MonoBehaviour:
           speedMultiplier: 0.55
           shieldRegenMultiplier: 4
           damageTakenMultiplier: 1
+          shotIntervalMultiplier: 1
     - rid: 7607833764655792206
       type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -678,37 +685,41 @@ MonoBehaviour:
           speedMultiplier: 2
           shieldRegenMultiplier: 0.5
           damageTakenMultiplier: 1
+          shotIntervalMultiplier: 1
     - rid: 7607833764655792207
       type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         statModifier:
           damageMultiplier: 1
-          fireDelayMultiplier: 0.1
+          fireDelayMultiplier: 0.5
           speedMultiplier: 0.5
           shieldRegenMultiplier: 0.5
           damageTakenMultiplier: 1
-        shotIntervalMultiplier: 0.1
+          shotIntervalMultiplier: 1
+        shotIntervalMultiplier: 0.5
     - rid: 7607833764655792208
       type: {class: AssaultSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         statModifier:
           damageMultiplier: 1
-          fireDelayMultiplier: 0.25
+          fireDelayMultiplier: 0.5
           speedMultiplier: 2
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
+          shotIntervalMultiplier: 0.5
     - rid: 7607833764655792209
       type: {class: ConcentrateFireSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         allyStatModifier:
           damageMultiplier: 1
-          fireDelayMultiplier: 0.6
+          fireDelayMultiplier: 0.5
           speedMultiplier: 1
           shieldRegenMultiplier: 1
           damageTakenMultiplier: 1
+          shotIntervalMultiplier: 0.5
         commandRadius: 400
         targetDamageMultiplier: 1
     - rid: 7607833764655792233

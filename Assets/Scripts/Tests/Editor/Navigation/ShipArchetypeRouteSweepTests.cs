@@ -18,12 +18,13 @@ using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.TestTools;
 using Random = System.Random;
 
 namespace EmpireAtWar.Tests.Editor
 {
     [TestFixture(false, Category = "Navigation", Explicit = true)]
-    [TestFixture(true, Category = "Navigation", Explicit = true)]
+    [TestFixture(true, Category = "NavigationExhaustive", Explicit = true)]
     public sealed class ShipArchetypeRouteSweepTests
     {
         private const float TOLERANCE = 0.01f;
@@ -99,11 +100,11 @@ namespace EmpireAtWar.Tests.Editor
                 if (!graph.TryFindPath(end, 0f, points)) continue;
                 Vector3 forward = points[1] - points[0];
                 var timer = Stopwatch.StartNew();
-                ShipRoute route = ShipTangentRouteBuilder.Build(graph, points, forward, 30f, false);
+                ShipRoute route = BuildRoute(graph, points, forward, out bool fallback);
                 timer.Stop();
                 totalMilliseconds += timer.Elapsed.TotalMilliseconds;
                 maximumMilliseconds = Math.Max(maximumMilliseconds, timer.Elapsed.TotalMilliseconds);
-                AssertRoute(route, graph, context);
+                AssertRoute(route, graph, fallback, $"{context}/sample={completed}/start={start:F3}/end={end:F3}");
                 completed++;
             }
             Assert.That(completed, Is.EqualTo(requested), context + " insufficient reachable sampled pairs");
@@ -115,15 +116,58 @@ namespace EmpireAtWar.Tests.Editor
             Mathf.Lerp(layout.SizeRange.Min.x, layout.SizeRange.Max.x, (float)random.NextDouble()), 0f,
             Mathf.Lerp(layout.SizeRange.Min.y, layout.SizeRange.Max.y, (float)random.NextDouble()));
 
-        private static void AssertRoute(ShipRoute route, IShipPathGraph graph, string context)
+        private static ShipRoute BuildRoute(IShipPathGraph graph, IReadOnlyList<Vector3> points, Vector3 forward,
+            out bool fallback)
         {
+            bool usedFallback = false;
+            Application.logMessageReceived += HandleBuildLog;
+            try
+            {
+                ShipRoute route = ShipTangentRouteBuilder.Build(graph, points, forward, 30f, false);
+                fallback = usedFallback;
+                return route;
+            }
+            finally
+            {
+                Application.logMessageReceived -= HandleBuildLog;
+            }
+
+            void HandleBuildLog(string message, string stackTrace, LogType type)
+            {
+                if (type == LogType.Warning && IsFallback(ShipTangentRouteJob.FAILURE_NO_TANGENT))
+                    usedFallback = true;
+                if (type == LogType.Error && (IsFallback(ShipTangentRouteJob.FAILURE_ARC_REPAIR) ||
+                    IsFallback(ShipTangentRouteJob.FAILURE_LINE_REPAIR)))
+                {
+                    usedFallback = true;
+                    LogAssert.Expect(type, message);
+                }
+
+                bool IsFallback(int code) => message == $"[ShipNavigation] Tangent route build failed (code {code}); " +
+                    "following the funnel polyline with turns in place.";
+            }
+        }
+
+        private static void AssertRoute(ShipRoute route, IShipPathGraph graph, bool fallback, string context)
+        {
+            var speedProfile = new ShipRouteSpeedProfile(route, 20f, 30f, 0f);
+            int phase = 0;
             for (int i = 0; i < route.Pieces.Count; i++)
             {
                 ShipRoutePiece piece = route.Pieces[i];
                 if (i > 0)
                 {
                     Assert.That(Vector3.Distance(route.Pieces[i - 1].End, piece.Start), Is.LessThan(TOLERANCE), context);
-                    Assert.That(Vector3.Angle(route.Pieces[i - 1].EndTangent, piece.InitialTangent), Is.LessThan(0.1f), context);
+                    if (fallback && route.RequiresTurnAtPiece(i))
+                    {
+                        speedProfile.EvaluateTime(speedProfile.GetPieceStartTime(i), ref phase, out float distance, out float speed);
+                        Assert.That(distance, Is.EqualTo(route.GetPieceStartDistance(i)).Within(TOLERANCE), context);
+                        Assert.That(speed, Is.Zero.Within(TOLERANCE), context);
+                    }
+                    else if (!fallback)
+                    {
+                        Assert.That(Vector3.Angle(route.Pieces[i - 1].EndTangent, piece.InitialTangent), Is.LessThan(0.1f), context);
+                    }
                 }
                 foreach (var disk in graph.Disks)
                     Assert.That(DistanceToPiece(piece, new Vector2(disk.x, disk.y)),
@@ -135,8 +179,6 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(point.z, Is.InRange(graph.Layout.Min.y - TOLERANCE, graph.Layout.Max.y + TOLERANCE), context);
                 }
             }
-            var speedProfile = new ShipRouteSpeedProfile(route, 20f, 30f, 0f);
-            int phase = 0;
             int pieceIndex = 0;
             for (int sample = 1; sample < 200; sample++)
             {

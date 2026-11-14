@@ -85,9 +85,9 @@ namespace EmpireAtWar.Editor.Balance
             SerializedProperty property = settings.FindPropertyRelative(name);
             if (name.EndsWith("tatModifier"))
             {
-                foreach (string member in new[] { "damageMultiplier", "fireDelayMultiplier", "speedMultiplier", "shieldRegenMultiplier", "damageTakenMultiplier" })
+                foreach (string member in new[] { "damageMultiplier", "fireDelayMultiplier", "speedMultiplier", "shieldRegenMultiplier", "damageTakenMultiplier", "shotIntervalMultiplier" })
                     registry.Add(catalog, key + name + "/" + member, property.propertyPath + "." + member, BalanceFieldGroup.Abilities, context, BalanceFieldOwner.SharedProfile, true, users,
-                        positive: member == "fireDelayMultiplier", alias: alias, dependency: subtype, serializedTarget: settings.serializedObject);
+                        positive: member is "fireDelayMultiplier" or "shotIntervalMultiplier", alias: alias, dependency: subtype, serializedTarget: settings.serializedObject);
             }
             else if (name == "beam" || name == "projectile")
                 BalanceWeaponAdapter.Profile(registry, catalog, property, key + name + "/", BalanceFieldGroup.Abilities, context, users, alias, subtype);

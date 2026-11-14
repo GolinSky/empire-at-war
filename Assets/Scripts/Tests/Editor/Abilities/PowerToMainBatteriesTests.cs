@@ -10,7 +10,9 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.ViewComponents.Health;
+using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
@@ -31,7 +33,7 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(modifiers.CanFireWeapon(true), Is.True);
             Assert.That(modifiers.CanFireWeapon(false), Is.False);
-            Assert.That(modifiers.GetMainBatteryFireDelayMultiplier(true), Is.EqualTo(0.05f));
+            Assert.That(modifiers.GetMainBatteryFireDelayMultiplier(true), Is.EqualTo(0.5f));
             Assert.That(modifiers.SpeedMultiplier, Is.EqualTo(0.375f));
             Assert.That(modifiers.ShieldRegenMultiplier, Is.EqualTo(1f));
             Assert.That(modifiers.DamageMultiplier, Is.EqualTo(2f));
@@ -48,52 +50,63 @@ namespace EmpireAtWar.Tests.Editor
         public void ActiveSecondarySalvo_StopsAndCannotRestartDuringAbility()
         {
             GameObject obj = new GameObject("SecondaryWeapon");
+            var prewarmer = new ShotPoolPrewarmer();
             try
             {
                 WeaponHardPoint weapon = obj.AddComponent<WeaponHardPoint>();
                 CombatModifiers modifiers = new CombatModifiers();
-                weapon.SetData(new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser, DamageType.Laser,
-                    1f, 1, 0f, 1f, 100f, false, false, null, 100f, Color.white, Vector3.one,
-                    false, false, default, default, 0f), 100f, 0f, null, null, modifiers, null, null, null, null);
-                MethodInfo start = typeof(WeaponHardPoint).GetMethod("TryStartScheduledSequence", PRIVATE_INSTANCE);
-                MethodInfo emitting = typeof(WeaponHardPoint).GetMethod("IsEmitting", PRIVATE_INSTANCE);
-                object[] args = { 0 };
-                Assert.That(start.Invoke(weapon, args), Is.True);
-                Assert.That(emitting.Invoke(weapon, new[] { args[0] }), Is.True);
+                InitializeWeapon(weapon, modifiers, prewarmer);
+                Assert.That(weapon.TryStartScheduledSequence(out int generation), Is.True);
+                Assert.That(weapon.IsEmitting(generation), Is.True);
                 modifiers.SetMainBatteries(true, 0.33f);
-                Assert.That(emitting.Invoke(weapon, new[] { args[0] }), Is.False);
-                typeof(WeaponHardPoint).GetMethod("StopEmitting", PRIVATE_INSTANCE).Invoke(weapon, new[] { args[0] });
-                Assert.That(start.Invoke(weapon, args), Is.False);
+                Assert.That(weapon.IsEmitting(generation), Is.False);
+                weapon.StopEmitting(generation);
+                Assert.That(weapon.TryStartScheduledSequence(out _), Is.False);
                 modifiers.SetMainBatteries(false, 1f);
-                Assert.That(start.Invoke(weapon, args), Is.True);
+                Assert.That(weapon.TryStartScheduledSequence(out _), Is.True);
             }
-            finally { Object.DestroyImmediate(obj); }
+            finally
+            {
+                Object.DestroyImmediate(obj);
+                prewarmer.Clear();
+            }
         }
 
         [Test]
         public void MainBattery_BoostsShotIntervalAndRemainsBlockedByIonDisable()
         {
             GameObject obj = new GameObject("MainBattery");
+            var prewarmer = new ShotPoolPrewarmer();
             try
             {
                 WeaponHardPoint weapon = obj.AddComponent<WeaponHardPoint>();
                 typeof(WeaponHardPoint).GetField("mainBattery", PRIVATE_INSTANCE).SetValue(weapon, true);
-                WeaponProfile profile = new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser, DamageType.Laser,
-                    1f, 1, 0f, 1f, 100f, false, false, null, 100f, Color.white, Vector3.one,
-                    false, false, default, default, 0f);
-                typeof(WeaponProfile).GetField("shotInterval", PRIVATE_INSTANCE).SetValue(profile, 1f);
                 CombatModifiers modifiers = new CombatModifiers();
-                weapon.SetData(profile, 100f, 0f, null, null, modifiers, null, null, null, null);
+                InitializeWeapon(weapon, modifiers, prewarmer);
                 modifiers.SetMainBatteries(true, 0.33f);
-                Assert.That(typeof(WeaponHardPoint).GetProperty("DelayBetweenShots", PRIVATE_INSTANCE).GetValue(weapon), Is.EqualTo(0.33f));
-                MethodInfo start = typeof(WeaponHardPoint).GetMethod("TryStartScheduledSequence", PRIVATE_INSTANCE);
-                object[] args = { 0 };
+                Assert.That(weapon.DelayBetweenShots, Is.EqualTo(0.33f));
                 modifiers.SetIonDisabled(true);
-                Assert.That(start.Invoke(weapon, args), Is.False);
+                Assert.That(weapon.TryStartScheduledSequence(out _), Is.False);
                 modifiers.SetIonDisabled(false);
-                Assert.That(start.Invoke(weapon, args), Is.True);
+                Assert.That(weapon.TryStartScheduledSequence(out _), Is.True);
             }
-            finally { Object.DestroyImmediate(obj); }
+            finally
+            {
+                Object.DestroyImmediate(obj);
+                prewarmer.Clear();
+            }
+        }
+
+        private static void InitializeWeapon(WeaponHardPoint weapon, CombatModifiers modifiers, ShotPoolPrewarmer prewarmer)
+        {
+            var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
+                "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            var profile = new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser, DamageType.Laser,
+                1f, 1, 1f, 1f, 100f, false, false, weapons.GetFamily(WeaponFamily.Laser).ShotPrefab,
+                100f, Color.white, Vector3.one, false, false, default, default, 0f);
+            weapon.SetData(profile, 100f, 0f, null, null, modifiers, null, null, null, prewarmer);
+            var pool = (ShotEffectPool)typeof(WeaponHardPoint).GetMethod("GetPool", PRIVATE_INSTANCE).Invoke(weapon, null);
+            pool.Prewarm(WeaponHardPoint.ExpectedShotsInFlight(profile));
         }
 
         private sealed class TestFacade : IShipAbilityFacade

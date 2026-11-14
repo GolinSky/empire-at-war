@@ -21,6 +21,7 @@ namespace EmpireAtWar
         [SerializeField] private UiHighlight tutorialHighlight;
         [SerializeField] private TextMeshProUGUI unitCapacityText;
         [SerializeField] private TextMeshProUGUI unitCountText;
+        [SerializeField] private TextMeshProUGUI unitNameText;
         [SerializeField] private TooltipTrigger tooltipTrigger;
         private ScrollRect _scrollRect;
 
@@ -49,6 +50,7 @@ namespace EmpireAtWar
             _reinforcementVisitor = reinforcementVisitor;
             _scrollRect = scrollRect;
             iconImage.sprite = request.FactionData.Icon;
+            unitNameText.text = request.FactionData.DisplayName;
             unitCapacityText.text = request.FactionData.UnitCapacity.ToString();
             _count = DEFAULT_COUNT_VALUE;
             UpdateUnitCountText();

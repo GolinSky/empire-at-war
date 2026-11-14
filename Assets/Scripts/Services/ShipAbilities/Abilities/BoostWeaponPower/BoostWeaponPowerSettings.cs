@@ -8,7 +8,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     public sealed class BoostWeaponPowerSettings : ShipAbilitySettings
     {
         [SerializeField] private CombatStatModifier statModifier;
-        [SerializeField] private float shotIntervalMultiplier = 0.1f;
+        [SerializeField] private float shotIntervalMultiplier = 0.5f;
 
         public CombatStatModifier StatModifier => statModifier;
         public float ShotIntervalMultiplier => shotIntervalMultiplier;

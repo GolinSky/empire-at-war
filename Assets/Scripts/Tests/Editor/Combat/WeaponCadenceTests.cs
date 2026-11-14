@@ -49,6 +49,26 @@ namespace EmpireAtWar.Tests.Weapon
         }
 
         [Test]
+        public void SharedAbilityModifier_RetimesReloadAndShotsUntilLastApplicationEnds()
+        {
+            var modifier = new CombatStatModifier(1f, 0.5f, 1f, 1f, 1f, shotIntervalMultiplier: 0.5f);
+            var stackKey = new object();
+            _reload.ChangeDelay(2f).StartTimer();
+            CombatModifierHandle first = _modifiers.Add(modifier, stackKey);
+            CombatModifierHandle second = _modifiers.Add(modifier, stackKey);
+
+            Assert.That(_weapon.RefreshTiming(), Is.True);
+            Assert.That(_reload.TimeLeft, Is.EqualTo(1f).Within(0.001f));
+            Assert.That(_weapon.DelayBetweenShots, Is.EqualTo(0.1f));
+
+            _modifiers.Remove(first);
+            Assert.That(_weapon.RefreshTiming(), Is.False);
+            _modifiers.Remove(second);
+            Assert.That(_weapon.RefreshTiming(), Is.True);
+            Assert.That(_weapon.DelayBetweenShots, Is.EqualTo(0.2f));
+        }
+
+        [Test]
         public void WeaponPower_ActivationAndExpiryRetimeRemainingWaits()
         {
             _reload.ChangeDelay(2f).StartTimer();

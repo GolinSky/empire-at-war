@@ -115,6 +115,7 @@ namespace EmpireAtWar.Components.Combat
 
         public float DamageMultiplier { get; private set; } = 1f;
         public float FireDelayMultiplier { get; private set; } = 1f;
+        public float ShotIntervalMultiplier { get; private set; } = 1f;
         public float WeaponPowerShotIntervalMultiplier { get; private set; } = 1f;
         public float SpeedMultiplier { get; private set; } = 1f;
         public float ShieldRegenMultiplier { get; private set; } = 1f;
@@ -239,6 +240,7 @@ namespace EmpireAtWar.Components.Combat
         {
             float damage = _fleetCommandActive ? FLEET_COMMAND_DAMAGE_MULTIPLIER : UNMODIFIED_MULTIPLIER;
             float fireDelay = UNMODIFIED_MULTIPLIER;
+            float shotInterval = UNMODIFIED_MULTIPLIER;
             float speed = (_fleetCommandActive ? FLEET_COMMAND_SPEED_MULTIPLIER : UNMODIFIED_MULTIPLIER) *
                           (_fighterCoordinations > 0 ? FIGHTER_COORDINATION_SPEED_MULTIPLIER : UNMODIFIED_MULTIPLIER);
             float shieldRegen = UNMODIFIED_MULTIPLIER;
@@ -250,6 +252,7 @@ namespace EmpireAtWar.Components.Combat
                 CombatStatModifier modifier = _active[i].Modifier;
                 damage *= modifier.DamageMultiplier;
                 fireDelay *= modifier.FireDelayMultiplier;
+                shotInterval *= modifier.ShotIntervalMultiplier;
                 speed *= modifier.SpeedMultiplier;
                 shieldRegen *= modifier.ShieldRegenMultiplier;
                 damageTaken *= modifier.DamageTakenMultiplier;
@@ -257,6 +260,7 @@ namespace EmpireAtWar.Components.Combat
 
             DamageMultiplier = damage;
             FireDelayMultiplier = fireDelay;
+            ShotIntervalMultiplier = shotInterval;
             SpeedMultiplier = speed;
             ShieldRegenMultiplier = shieldRegen;
             DamageTakenMultiplier = damageTaken;

@@ -103,6 +103,11 @@ namespace EmpireAtWar.Tests.Editor
             public string DeferredReason => "noAnchor";
             public bool TryGetBuildAnchor(out Vector3 position) { position = Anchor; return HasAnchor; }
             public bool IsPlacementSafe(Vector3 position, float clearance) => Safe;
+            public void FillPlacementThreats(PlacementThreatSnapshot snapshot)
+            {
+                snapshot.Clear();
+                if (!Safe) snapshot.Add(0f, 0f, 100000f);
+            }
             public float GetNearestHostileDistance(Vector3 position) => float.PositiveInfinity;
             public void CopySafeAlliedZoneBounds(List<Bounds> bounds) => bounds.Clear();
             public void OnStationBuilt(Vector3 position) { }
@@ -200,6 +205,19 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 second), Is.True);
 
             Assert.That(second, Is.EqualTo(first));
+        }
+
+        [Test]
+        public void PreviouslyAcceptedPosition_IsRevalidatedAndReusedWhileStillClear()
+        {
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 first), Is.True);
+            GameObject obstacle = Block(first, Vector3.one * 20f);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 alternate), Is.True);
+            Assert.That(alternate, Is.Not.EqualTo(first));
+            UnityEngine.Object.DestroyImmediate(obstacle);
+
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 reused), Is.True);
+            Assert.That(reused, Is.EqualTo(alternate));
         }
 
         [Test]

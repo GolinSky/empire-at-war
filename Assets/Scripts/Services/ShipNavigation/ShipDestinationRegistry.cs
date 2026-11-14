@@ -76,10 +76,11 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void CommitActiveFinalPosition(
             int registrationId,
-            FormationPoint position)
+            FormationPoint position,
+            bool requireClearance = true)
         {
             Entry entry = GetEntry(registrationId);
-            if (!IsPositionClear(position, entry.NavigationRadius, entry.HullSpan, registrationId))
+            if (requireClearance && !IsPositionClear(position, entry.NavigationRadius, entry.HullSpan, registrationId))
             {
                 throw new InvalidOperationException(
                     "The ship's final position is already occupied.");
@@ -93,10 +94,11 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void ReservePendingFinalPosition(
             int registrationId,
-            FormationPoint position)
+            FormationPoint position,
+            bool requireClearance = true)
         {
             Entry entry = GetEntry(registrationId);
-            if (!IsPositionClear(position, entry.NavigationRadius, entry.HullSpan, registrationId))
+            if (requireClearance && !IsPositionClear(position, entry.NavigationRadius, entry.HullSpan, registrationId))
             {
                 throw new InvalidOperationException(
                     "The ship's deferred final position is already occupied.");

@@ -29,6 +29,8 @@ namespace EmpireAtWar.ViewComponents.Health
         private ShotPoolPrewarmer _poolPrewarmer;
         private IncomingMissileRegistry _missiles;
         private int _inFlightCap;
+        private int _timingInFlightCap;
+        private int _requestedInFlightCap;
         private float _reloadMultiplier = 1f;
         private float _intervalMultiplier = 1f;
 
@@ -62,7 +64,7 @@ namespace EmpireAtWar.ViewComponents.Health
                 _modifiers.GetTorpedoFireDelayMultiplier(_profile.Family == WeaponFamily.Torpedo) *
                 _modifiers.GetMainBatteryFireDelayMultiplier(mainBattery);
             return (shared * _modifiers.FireDelayMultiplier,
-                shared * _modifiers.WeaponPowerShotIntervalMultiplier);
+                shared * _modifiers.WeaponPowerShotIntervalMultiplier * _modifiers.ShotIntervalMultiplier);
         }
 
         internal bool RefreshTiming()
@@ -74,7 +76,17 @@ namespace EmpireAtWar.ViewComponents.Health
             _reloadTimer.AppendTime(_reloadTimer.TimeLeft * (timing.reload / _reloadMultiplier - 1f));
             _reloadMultiplier = timing.reload;
             _intervalMultiplier = timing.interval;
+            _timingInFlightCap = ExpectedShotsInFlight(_profile, timing.reload, timing.interval);
+            ReserveShotsInFlight();
             return true;
+        }
+
+        private void ReserveShotsInFlight()
+        {
+            if (_effectPool == null) return;
+            if (_timingInFlightCap <= _requestedInFlightCap) return;
+            _poolPrewarmer.IncreaseCapacity(_effectPool, _timingInFlightCap);
+            _requestedInFlightCap = _timingInFlightCap;
         }
 
         internal bool CanEngage(ShipClass targetClass) =>
@@ -115,7 +127,9 @@ namespace EmpireAtWar.ViewComponents.Health
             _attackCoordinator = attackCoordinator;
             _modifiers = modifiers;
             _inFlightCap = inFlightCap > 0 ? inFlightCap : ExpectedShotsInFlight(profile);
+            _requestedInFlightCap = _inFlightCap;
             (_reloadMultiplier, _intervalMultiplier) = GetTimingMultipliers();
+            _timingInFlightCap = ExpectedShotsInFlight(profile, _reloadMultiplier, _intervalMultiplier);
             PendingShotIntervalRatio = 1f;
             _impactPresenter = impactPresenter;
             _missiles = missiles;
@@ -182,13 +196,15 @@ namespace EmpireAtWar.ViewComponents.Health
 
         internal bool TryStartScheduledSequence(out int generation)
         {
+            int inFlightCap = _inFlightCap;
             if (_modifiers.IsIonDisabled || _modifiers.IsCloaked || !_modifiers.CanFireWeapon(mainBattery) ||
                 !GetPool().IsPrewarmed)
             {
                 generation = _sequence.Generation;
                 return false;
             }
-            if (!_sequence.TryStart(_profile.ShotsPerSalvo, _inFlightCap, out generation)) return false;
+            if (_effectPool.IsExpandedCapacityPrewarmed) inFlightCap = Mathf.Max(inFlightCap, _timingInFlightCap);
+            if (!_sequence.TryStart(_profile.ShotsPerSalvo, inFlightCap, out generation)) return false;
             _reloadTimer.ChangeDelay(_profile.Reload * GetTimingMultipliers().reload).StartTimer();
             return true;
         }
@@ -237,6 +253,8 @@ namespace EmpireAtWar.ViewComponents.Health
             if (_effectPool != null) return _effectPool;
             _effectPool = _poolPrewarmer.CreatePool(_profile, transform, OnTurretEffectCompleted,
                 _impactPresenter, _boltFlights, _inFlightCap);
+            _requestedInFlightCap = _inFlightCap;
+            ReserveShotsInFlight();
             return _effectPool;
         }
 

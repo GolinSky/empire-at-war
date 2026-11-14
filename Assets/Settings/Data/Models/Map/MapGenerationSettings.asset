@@ -329,7 +329,7 @@ MonoBehaviour:
     type: 2}
   <FieldFloor>k__BackingField: -150
   <FieldCeiling>k__BackingField: 110
-  <HazardFloor>k__BackingField: -650
+  <HazardFloor>k__BackingField: -651
   <HazardCeiling>k__BackingField: 180
   <StationEdgeDistance>k__BackingField: 420
   <StationHeight>k__BackingField: -40

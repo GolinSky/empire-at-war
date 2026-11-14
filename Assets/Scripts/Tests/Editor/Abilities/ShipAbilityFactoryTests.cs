@@ -19,7 +19,6 @@ namespace EmpireAtWar.Tests.Editor
         {
             typeof(BoostEnginePowerSettings),
             typeof(BoostShieldPowerSettings),
-            typeof(BoostWeaponPowerSettings),
             typeof(InvulnerabilitySettings)
         };
 

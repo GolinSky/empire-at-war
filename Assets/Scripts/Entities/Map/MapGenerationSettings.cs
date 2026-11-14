@@ -30,7 +30,7 @@ namespace EmpireAtWar.Entities.Map
         public float FieldFloor { get; private set; } = -150f;
         [field: SerializeField, Tooltip("World height of an asteroid field's top. Sits above every ship hull.")]
         public float FieldCeiling { get; private set; } = 110f;
-        [field: SerializeField] public float HazardFloor { get; private set; } = -650f;
+        [field: SerializeField] public float HazardFloor { get; private set; } = -651f;
         [field: SerializeField] public float HazardCeiling { get; private set; } = 180f;
         [field: SerializeField, Min(0f), Tooltip("Free gap between each station footprint and both adjacent borders.")]
         public float StationEdgeDistance { get; private set; } = 420f;

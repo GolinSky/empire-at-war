@@ -21,7 +21,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         [SerializeField] private FactionUnitUi factionUnitPrefab;
         [SerializeField] private TooltipHoverView tooltipHover;
-        [SerializeField] private UnityEngine.UI.GridLayoutGroup layoutGrid;
+        [SerializeField] private RectTransform unitsRow;
+        [SerializeField] private RectTransform supportRow;
         [SerializeField] private UnityEngine.UI.ContentSizeFitter layoutFitter;
         [Tooltip("The panel's BuildPanel anchor; it also marks the level-up, research and first ship buttons.")]
         [SerializeField] private TutorialAnchor tutorialAnchor;
@@ -34,7 +35,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private SecondStationLevelModel _secondStation;
         private StationLevelData _stationLevels;
         private FactionRoster _roster;
-        private Transform _unitParent;
         private UiContentLayout _contentLayout;
 
         private bool _isInitialized;
@@ -44,9 +44,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         public void SetContentLayout(UiContentLayout layout)
         {
-            _unitParent = transform;
             _contentLayout = layout;
-            layout.AttachContent((RectTransform)transform, layoutGrid, layoutFitter);
+            layout.AttachContent((RectTransform)transform, layoutFitter);
         }
 
         public void Initialize()
@@ -58,7 +57,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                     "Faction UI dependencies must be set before initialization.");
             }
 
-            if (_unitParent == null)
+            if (_contentLayout == null)
             {
                 throw new InvalidOperationException(
                     "Faction UI route parent must be set before initialization.");
@@ -219,12 +218,21 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         private FactionUnitUi AddUi(UnitRequest unitRequest)
         {
-            FactionUnitUi unitUi = Instantiate(factionUnitPrefab, _unitParent);
+            FactionUnitUi unitUi = Instantiate(factionUnitPrefab, GetRow(unitRequest));
             unitUi.SetData(unitRequest.FactionData, this, unitRequest);
             tooltipHover.Register(unitUi.TooltipTrigger);
             _factionUnitsUi.Add(unitUi);
             return unitUi;
         }
+
+        private RectTransform GetRow(UnitRequest request) => request switch
+        {
+            ShipUnitRequest or SquadronUnitRequest => unitsRow,
+            DefendPlatformUnitRequest or MiningFacilityUnitRequest or SecondStationUnitRequest
+                or ResearchUnitRequest or LevelUnitRequest or SecondStationLevelUnitRequest
+                or SuperWeaponUnitRequest => supportRow,
+            _ => throw new ArgumentOutOfRangeException(nameof(request))
+        };
 
         private void CreateResearchUnit(ResearchType researchType)
         {
@@ -255,7 +263,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 return;
             }
 
-            _levelFactionUnitUi = Instantiate(factionUnitPrefab, _unitParent);
+            _levelFactionUnitUi = Instantiate(factionUnitPrefab, supportRow);
             LevelUnitRequest levelUnitRequest =
                 _unitRequestFactory.ConstructUnitRequest(
                     levelData,
@@ -272,7 +280,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 : _factionUnitsUi.Count;
             int siblingIndex = _levelFactionUnitUi != null
                 ? _levelFactionUnitUi.transform.GetSiblingIndex()
-                : _unitParent.childCount;
+                : supportRow.childCount;
 
             if (_levelFactionUnitUi != null)
             {
@@ -342,16 +350,17 @@ namespace EmpireAtWar.Entities.Faction.Ui
         {
             bool isSelectionVisible =
                 _isRouteActive && selectionType == SelectionType.Base;
-            int siblingIndex = 0;
 
             FactionUnitUi firstShip = null, firstScout = null, firstResearch = null, level = null;
             FactionUnitUi economyResearch = null, fleetResearch = null, newShip = null, miningFacility = null;
             bool isNewShipCarrier = false;
             foreach (FactionUnitUi unitUi in _factionUnitsUi
                          .OrderBy(unit => _presenter.GetUnitSortOrder(unit.Request))
+                         .ThenBy(unit => unit.Request is ShipUnitRequest or SquadronUnitRequest
+                             ? unit.FactionData.Price : 0)
                          .ThenByDescending(unit => _presenter.IsUnitAvailable(unit.FactionData)))
             {
-                unitUi.transform.SetSiblingIndex(siblingIndex++);
+                unitUi.transform.SetAsLastSibling();
                 bool isShown = isSelectionVisible && _presenter.IsUnitAvailable(unitUi.FactionData) &&
                                !(HidesAtLimit(unitUi) && _presenter.IsUnitLimitReached(unitUi.Request)) &&
                                IsOnSelectedStation(unitUi.Request);
@@ -369,8 +378,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
                             newShip = unitUi;
                             isNewShipCarrier = isCarrier;
                         }
-                        // Sort order 0 is fighters, bombers and interceptors: the scouts.
-                        if (firstScout == null && isRepeatable && _presenter.GetUnitSortOrder(unitUi.Request) == 0)
+                        // Scout eligibility follows unit class, independently of production sorting.
+                        if (firstScout == null && isRepeatable && _presenter.IsScout(unitUi.Request))
                             firstScout = unitUi;
                         break;
                     case SquadronUnitRequest:

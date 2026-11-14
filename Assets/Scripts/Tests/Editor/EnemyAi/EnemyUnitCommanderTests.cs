@@ -44,6 +44,7 @@ using EmpireAtWar.Entities.SpaceStation;
 using UnityEditor;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.SuperWeapons;
+using EmpireAtWar.Services.Stations;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -60,12 +61,17 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 var zones = view.AddComponent<ReinforcementZonesSystem>();
-                PlayerSlot owner = TestPlayers.CreateDuel().Get(TestPlayers.Enemy);
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                PlayerSlot owner = roster.Get(TestPlayers.Enemy);
                 var battleState = new ReplayNotifier<BattleState>(state);
                 var patrol = new EnemyPatrolService(new TeamIntelRegistry(), owner, new MapModel(),
-                    null, null, null, null, null, null);
+                    null, Array.Empty<ICaptureSiteDirectory>(), null, null, null, roster);
+                var orders = new FakeOrderService();
+                EnemyStrategicContextBuilder context = CaptureBuilder(roster, new ZoneSource(roster),
+                    new SiteSource(), new TestHazards());
                 var commander = new EnemyUnitCommander(new ShipService(), zones, new EntityLocator(),
-                    null, null, new EnemyStrategicDecisionModel(), null, null, owner, patrol, null, battleState);
+                    null, orders, new EnemyStrategicDecisionModel(), context, new EnemyTaskForceExecutor(orders),
+                    owner, patrol, null, battleState);
 
                 Assert.DoesNotThrow(commander.Initialize);
                 try
@@ -116,7 +122,8 @@ namespace EmpireAtWar.Tests.Editor
                     ships.Add(new FakeShip(Vector3.zero, i + 1));
                 }
                 PlayerSlot owner = TestPlayers.CreateDuel().Get(TestPlayers.Enemy);
-                var patrol = new EnemyPatrolService(new TeamIntelRegistry(), owner, null, null, null, null, null, null, null);
+                var patrol = new EnemyPatrolService(new TeamIntelRegistry(), owner, null, null,
+                    Array.Empty<ICaptureSiteDirectory>(), null, null, null, null);
                 var controller = new EnemyPatrolShipController(patrol, null, faction, locator, null, owner);
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 var selected = (IShipEntity)typeof(EnemyPatrolShipController).GetMethod("FindCheapest", flags)
@@ -248,7 +255,7 @@ namespace EmpireAtWar.Tests.Editor
             PlayerSlot owner = TestPlayers.CreateDuel().Get(TestPlayers.Enemy);
             var battleState = new ReplayNotifier<BattleState>(state);
             var patrol = new EnemyPatrolService(new TeamIntelRegistry(), owner, new MapModel(),
-                null, null, null, null, null, null);
+                null, Array.Empty<ICaptureSiteDirectory>(), null, null, null, null);
             var catalog = new UnitCombatProfileCatalog(null, null, null, null);
             var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
                 .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
@@ -1397,6 +1404,136 @@ namespace EmpireAtWar.Tests.Editor
                 distance, stationRadius, hostileRadius, weaponRange), Is.EqualTo(expected));
         }
 
+        [TestCase("safe", true)]
+        [TestCase("primary", false)]
+        [TestCase("strongFleet", false)]
+        [TestCase("noPressure", false)]
+        [TestCase("noPrimary", false)]
+        [TestCase("obstacle", false)]
+        [TestCase("hostileRear", false)]
+        [TestCase("hostileRoute", false)]
+        public void ForwardStationWithdrawal_DetectsThreatAndValidatesFallback(string condition, bool withdraw)
+        {
+            var views = new List<GameObject>();
+            var hazards = new TestHazards();
+            var obstacles = new RetreatObstacleProvider();
+            var navigation = new ShipNavigationService(obstacles, hazards);
+            var game = ScriptableObject.CreateInstance<GameData>();
+            try
+            {
+                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+                PlayerSlot owner = roster.Get(TestPlayers.Enemy);
+                var locator = new EntityLocator();
+                var intel = new TeamIntelRegistry();
+                var zones = new WithdrawalZones();
+                var pressure = new EnemyStationPressureTracker();
+                var production = new WithdrawalProduction();
+                var catalog = new UnitCombatProfileCatalog(null, null, null, null);
+                var damage = new float[ForceComposition.ClassSlots];
+                damage[(int)ShipClass.Capital] = 100f;
+                var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                    .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
+                profiles.Add(UnitTypeId.Ship(ShipType.Venator), new UnitCombatProfile(ShipClass.Capital,
+                    10000f, 0f, damage, damage, new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>()));
+
+                FakeEntity primary = AddEntity("Primary", 1, Vector3.zero, owner.Id);
+                primary.IsUnit = false;
+                primary.IsBase = true;
+                primary.NavigationRadius = 50f;
+                ((FakeHealthModel)primary.HealthModel).IsDestroyed = condition == "noPrimary";
+                FakeEntity front = AddEntity("Forward", 2, Vector3.right * 3000f, owner.Id);
+                front.IsUnit = false;
+                front.IsBase = true;
+                front.IsSecondStation = condition != "primary";
+                front.NavigationRadius = 50f;
+                FakeEntity receiver = AddEntity("Survivor", 3, Vector3.right * 2900f, owner.Id);
+                ((FakeHealthModel)receiver.HealthModel).Hull = condition == "strongFleet" ? 100000f : 100f;
+                var ships = new IShipEntity[] { new FakeShip(Vector3.right * 2900f, receiver.Id) };
+                FakeEntity attacker = AddEntity("Attacker", 4, Vector3.right * 3100f, TestPlayers.Human);
+                attacker.Target = front;
+                attacker.WeaponRange = 200f;
+                if (condition != "noPressure") Report(attacker);
+                Vector3 fallback = Vector3.left * 60f;
+                if (condition == "obstacle") obstacles.Contacts.Add(new RadarContact(fallback, 30f, false));
+                if (condition == "hostileRear" || condition == "hostileRoute")
+                {
+                    FakeEntity blocker = AddEntity("Rear threat", 5,
+                        condition == "hostileRear" ? fallback : Vector3.right * 1500f, TestPlayers.Human);
+                    blocker.WeaponRange = 100f;
+                    Report(blocker);
+                }
+                var recovery = new EnemyRecoveryAnchor(zones, new ZoneSource(roster), roster, locator,
+                    null, null, intel, owner, production, pressure, new SecondStationLevelModel());
+                var builder = new EnemyStrategicContextBuilder(null, zones, Array.Empty<IEnemyCaptureObjectiveSource>(),
+                    locator, game, roster, new ForceCompositionBuilder(locator, catalog), intel,
+                    new VisionService(roster, fogEnabled: false), owner, production, hazards,
+                    new ZoneSource(roster), navigation, pressure, recovery);
+
+                var assessment = builder.AssessStation(ships);
+
+                Assert.That(assessment.HasPressure, Is.EqualTo(condition != "noPressure"));
+                Assert.That(builder.ForwardStationFallback.HasValue, Is.EqualTo(withdraw));
+                if (!withdraw) return;
+                Assert.That(assessment.GatherReinforcements, Is.False);
+                Assert.That(builder.ForwardStationFallback.Value, Is.EqualTo(fallback),
+                    "The anchor must be behind the primary footprint with the fleet's clearance.");
+
+                EnemyStrategicContext context = builder.CreateGroupBuilder().Build(ships);
+                Assert.That(context.Snapshot.WithdrawFromForwardStation, Is.True);
+                Assert.That(context.Snapshot.HasSafeRetreat, Is.True);
+                Assert.That(context.RetreatAnchor, Is.EqualTo(fallback));
+                var decisions = new EnemyStrategicDecisionModel();
+                EnemyStrategicDecision decision = decisions.Evaluate(context.Snapshot);
+                Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.RetreatValue));
+                var orders = new FakeOrderService();
+                var executor = new EnemyTaskForceExecutor(orders);
+                executor.Execute(decision, context);
+                Assert.That(orders.Calls.Count, Is.EqualTo(1));
+                Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.Retreat));
+                Assert.That(orders.Calls[0].Point, Is.EqualTo(fallback));
+                Assert.That(orders.Calls[0].Receivers, Is.EqualTo(new IEntity[] { receiver }));
+                var commander = new EnemyUnitCommander(null, zones, locator, game, orders, decisions,
+                    builder, executor, owner, null, null, null);
+                Assert.That(commander.TryGetReinforcementRally(out Vector3 rally, out bool defendHome), Is.True);
+                Assert.That(rally, Is.EqualTo(fallback));
+                Assert.That(defendHome, Is.True);
+
+                ((FakeShip)ships[0]).WorldPosition = fallback;
+                receiver.GetFacade<IEntityTransformFacade>().Transform.position = fallback;
+                builder.AssessStation(ships);
+                Assert.That(builder.ForwardStationFallback, Is.EqualTo(fallback),
+                    "Arriving nearer the primary must not reselect it and send the fleet back to the forward fight.");
+                ((FakeHealthModel)front.HealthModel).IsDestroyed = true;
+                builder.AssessStation(ships);
+                Assert.That(builder.ForwardStationFallback, Is.Null, "The withdrawal latch ends when its station is lost.");
+                Assert.That(commander.TryGetReinforcementRally(out _, out _), Is.False,
+                    "A commander without another decision must not keep advertising the stale fallback.");
+
+                FakeEntity AddEntity(string name, long id, Vector3 position, PlayerId player)
+                {
+                    var view = new GameObject(name);
+                    views.Add(view);
+                    view.transform.position = position;
+                    var entity = new FakeEntity(new FakeHealthModel(view.transform) { Hull = 10000f, Shields = 0f }, player, id);
+                    locator.AddEntity(entity);
+                    return entity;
+                }
+
+                void Report(FakeEntity entity)
+                {
+                    Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
+                    intel.Get(owner.Team).Report(new HostileSighting(entity.Id, entity.UnitTypeId, entity.Owner,
+                        new FormationPoint(position.x, position.z), entity.HealthModel.Hull, 0f, 1f, Time.time));
+                }
+            }
+            finally
+            {
+                navigation.Dispose();
+                UnityEngine.Object.DestroyImmediate(game);
+                foreach (GameObject view in views) UnityEngine.Object.DestroyImmediate(view);
+            }
+        }
+
         [Test]
         public void StationPressure_DepletedShieldsStillUseFullMaximumDurability()
         {
@@ -2416,11 +2553,33 @@ private sealed class ZoneSource : IReinforcementZoneSource
             }
         }
 
+        private sealed class WithdrawalProduction : IProductionAccess
+        {
+            public bool CanProduce => true;
+            public bool HasHostBase => true;
+            public PlayerId ProductionHost => TestPlayers.Enemy;
+            public bool TryGetProductionBase(out IEntity productionBase) { productionBase = null; return false; }
+        }
+
+        private sealed class WithdrawalZones : IReinforcementZonesSystem
+        {
+            public event Action OwnershipChanged { add { } remove { } }
+            public void CopyOwnedCapturableZoneBounds(PlayerId owner, List<Bounds> destination) => destination.Clear();
+            public int GetOwnedCapturableZoneCount(PlayerId owner) => 0;
+            public bool TryGetDefaultZoneCenter(PlayerId owner, out Vector3 position) { position = default; return false; }
+            public bool TryGetDefaultZoneExitPosition(PlayerId owner, Vector3 shipPosition, float shipRadius,
+                out Vector3 position) { position = default; return false; }
+            public bool TryGetCaptureTarget(PlayerId owner, Vector3 origin, out Vector3 position)
+            { position = default; return false; }
+        }
+
         private sealed class FakeEntity : IEntity, ICombatModifiersFacade, IUnitTypeFacade, IMiningFacilityFacade,
-            INavigationFootprintFacade, IUnitCombatObserverFacade, IStationDurabilityFacade
+            INavigationFootprintFacade, IUnitCombatObserverFacade, IStationDurabilityFacade, IPlayerBaseFacade, ISecondStationFacade
         {
             public bool IsUnit { get; set; } = true;
             public bool IsMine { get; set; }
+            public bool IsBase { get; set; }
+            public bool IsSecondStation { get; set; }
             public IRetreatFacade RetreatCommand { get; set; }
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
             public UnitTypeId UnitTypeId { get; set; } = UnitTypeId.Ship(ShipType.Venator);
@@ -2446,7 +2605,9 @@ private sealed class ZoneSource : IReinforcementZoneSource
                 where TCommand : IEntityFacade
             {
                 if (!IsUnit && typeof(TCommand) == typeof(IUnitTypeFacade) ||
-                    !IsMine && typeof(TCommand) == typeof(IMiningFacilityFacade))
+                    !IsMine && typeof(TCommand) == typeof(IMiningFacilityFacade) ||
+                    !IsBase && typeof(TCommand) == typeof(IPlayerBaseFacade) ||
+                    !IsSecondStation && typeof(TCommand) == typeof(ISecondStationFacade))
                 { command = default; return false; }
                 if (this is TCommand self) { command = self; return true; }
                 if (RetreatCommand is TCommand retreat) { command = retreat; return true; }

@@ -88,6 +88,77 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(queue.Builds, Is.Empty);
         }
 
+        [TestCase(true, true)]
+        [TestCase(false, true)]
+        [TestCase(false, false)]
+        public void Withdrawal_ReleasesReadyShipAtFallbackOrDefaultZoneWithoutLosingBlockedPurchase(
+            bool fallbackAvailable, bool defaultZoneAvailable)
+        {
+            var data = ScriptableObject.CreateInstance<ReinforcementData>();
+            var shipObject = new GameObject("Withdrawal reinforcement");
+            try
+            {
+                SetBackingField(data, nameof(ReinforcementData.MaxUnitCapacity), 10);
+                var faction = new FactionData();
+                SetBackingField(faction, nameof(FactionData.MaxCount), 1);
+                SetBackingField(faction, nameof(FactionData.BuildTime), 2);
+                SetBackingField(faction, nameof(FactionData.UnitCapacity), 1);
+                var ai = new RallyAiState { GatherReinforcements = true };
+                var wallet = new TrackingWallet();
+                var limits = new EnemyUnitLimitModel();
+                var spawnPoints = new RallyShipSpawnPoints(fallbackAvailable, defaultZoneAvailable);
+                var factory = new TrackingShipFactory(shipObject.AddComponent<ShipEntity>());
+                var controller = new EnemyFactionController(aiState: ai, model: new EnemyFactionModel(null, null),
+                    shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null,
+                    stationFactory: null, secondStation: new SecondStationLevelModel(), research: null,
+                    economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: spawnPoints,
+                    unitLimitModel: limits, reinforcementData: data,
+                    enemyStructurePlacementService: new UnavailableStructurePlacement(),
+                    productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
+                    squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry());
+                var request = new ShipUnitRequest(faction, ShipType.Venator);
+                controller.Purchase(request);
+                controller.Advance(2f);
+                Assert.That(controller.PendingBuilds[0].TimeLeft, Is.Zero);
+                Assert.That(factory.Created, Is.Empty);
+                Assert.That(spawnPoints.Calls, Is.Empty);
+
+                Vector3 fallback = new Vector3(40f, 0f, -900f);
+                ai.Rally = fallback;
+                ai.GatherReinforcements = false;
+                controller.Advance(0f);
+
+                Assert.That(spawnPoints.Calls, Is.EqualTo(fallbackAvailable
+                    ? new[] { "around" } : new[] { "around", "default" }));
+                Assert.That(spawnPoints.Anchor, Is.EqualTo(fallback));
+                Assert.That(spawnPoints.Owner, Is.EqualTo(TestPlayers.Enemy));
+                Assert.That(spawnPoints.ShipType, Is.EqualTo(ShipType.Venator));
+                Assert.That(wallet.SpendCount, Is.EqualTo(1));
+                Assert.That(wallet.RefundCount, Is.Zero);
+                Assert.That(limits.CurrentUnitCapacity, Is.EqualTo(1));
+                if (fallbackAvailable || defaultZoneAvailable)
+                {
+                    Assert.That(factory.Created, Is.EqualTo(new[] { ShipType.Venator }));
+                    Assert.That(factory.Positions, Is.EqualTo(new[]
+                        { fallbackAvailable ? fallback + Vector3.right : RallyShipSpawnPoints.DefaultPosition }));
+                    Assert.That(controller.PendingBuilds, Is.Empty);
+                }
+                else
+                {
+                    Assert.That(factory.Created, Is.Empty);
+                    Assert.That(controller.PendingBuilds.Count, Is.EqualTo(1));
+                    Assert.That(controller.PendingBuilds[0].Request, Is.SameAs(request));
+                    Assert.That(controller.PendingBuilds[0].TimeLeft, Is.GreaterThan(0f));
+                }
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(shipObject);
+                UnityEngine.Object.DestroyImmediate(data);
+            }
+        }
+
         [Test]
         public void LateDispose_CancelsPendingBuildAndIsIdempotent()
         {
@@ -632,6 +703,69 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        private sealed class RallyAiState : IEnemyAiStateProvider
+        {
+            public EnemyStrategicState CurrentState => EnemyStrategicState.RetreatValue;
+            public int ActiveShipCount => 0;
+            public bool GatherReinforcements { get; set; }
+            public Vector3 Rally { get; set; }
+
+            public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
+            {
+                rally = Rally;
+                defendHome = true;
+                return true;
+            }
+        }
+
+        private sealed class RallyShipSpawnPoints : IShipSpawnPoints
+        {
+            public static readonly Vector3 DefaultPosition = new Vector3(20f, 0f, -700f);
+            private readonly bool _fallbackAvailable;
+            private readonly bool _defaultZoneAvailable;
+            public List<string> Calls { get; } = new List<string>();
+            public Vector3 Anchor { get; private set; }
+            public PlayerId Owner { get; private set; }
+            public ShipType ShipType { get; private set; }
+
+            public RallyShipSpawnPoints(bool fallbackAvailable, bool defaultZoneAvailable)
+            {
+                _fallbackAvailable = fallbackAvailable;
+                _defaultZoneAvailable = defaultZoneAvailable;
+            }
+
+            public bool TryGetSpawnPositionAround(PlayerId owner, ShipType shipType, Vector3 anchor, out Vector3 position)
+            {
+                Calls.Add("around");
+                Owner = owner;
+                ShipType = shipType;
+                Anchor = anchor;
+                position = anchor + Vector3.right;
+                return _fallbackAvailable;
+            }
+
+            public bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
+            {
+                Calls.Add("default");
+                position = DefaultPosition;
+                return _defaultZoneAvailable;
+            }
+
+            public bool TryGetSpawnPositionNear(PlayerId owner, ShipType shipType, Vector3 target, out Vector3 position)
+            {
+                Calls.Add("near");
+                position = default;
+                return false;
+            }
+
+            public bool TryGetRandomSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
+            {
+                Calls.Add("random");
+                position = default;
+                return false;
+            }
+        }
+
         private sealed class BlockedShipSpawnPoints : IShipSpawnPoints
         {
             public bool IsBlocked { get; set; } = true;
@@ -659,6 +793,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             private readonly ShipEntity _ship;
             public List<ShipType> Created { get; } = new List<ShipType>();
+            public List<Vector3> Positions { get; } = new List<Vector3>();
 
             public TrackingShipFactory(ShipEntity ship) : base(null, null, null, null, null, null)
             {
@@ -668,6 +803,7 @@ namespace EmpireAtWar.Tests.Editor
             public override ShipEntity Create(PlayerId owner, ShipType shipType, Vector3 position)
             {
                 Created.Add(shipType);
+                Positions.Add(position);
                 return _ship;
             }
         }

@@ -14,6 +14,7 @@ using VContainer;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Reinforcement;
@@ -149,18 +150,33 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public bool IsCarrier(UnitRequest request) => request is ShipUnitRequest ship &&
             _assets.Load<ShipData>(_shipsData.GetShipDataPath(ship.Key)).HangarBays.Count > 0;
 
+        public bool IsScout(UnitRequest request) => request is SquadronUnitRequest ||
+            request is ShipUnitRequest ship &&
+            _assets.Load<ShipData>(_shipsData.GetShipDataPath(ship.Key)).ShipClass is
+                ShipClass.Fighter or ShipClass.Interceptor or ShipClass.Bomber;
+
         public int GetUnitSortOrder(UnitRequest request) => request switch
         {
-            SquadronUnitRequest => 0,
+            SquadronUnitRequest squadron => _assets.Load<SquadronData>(squadron.Key + nameof(SquadronData)).ShipClass switch
+            {
+                ShipClass.Fighter => 0,
+                ShipClass.Interceptor => 1,
+                ShipClass.Bomber => 2,
+                ShipClass.HeroStrikecraft => 3,
+                _ => throw new ArgumentOutOfRangeException(nameof(request))
+            },
             ShipUnitRequest ship => _assets.Load<ShipData>(_shipsData.GetShipDataPath(ship.Key)).ShipClass switch
             {
-                ShipClass.Fighter or ShipClass.Bomber or ShipClass.Interceptor or ShipClass.HeroStrikecraft => 0,
-                ShipClass.Corvette => 1,
-                ShipClass.Frigate => 2,
-                ShipClass.Cruiser => 3,
-                ShipClass.Capital => 4,
-                ShipClass.HeavyCapital => 5,
-                ShipClass.Structure => 6,
+                ShipClass.Fighter => 4,
+                ShipClass.Interceptor => 5,
+                ShipClass.Bomber => 6,
+                ShipClass.HeroStrikecraft => 7,
+                ShipClass.Corvette => 8,
+                ShipClass.Frigate => 9,
+                ShipClass.Cruiser => 10,
+                ShipClass.Capital => 11,
+                ShipClass.HeavyCapital => 12,
+                ShipClass.Structure => 13,
                 _ => throw new ArgumentOutOfRangeException(nameof(request))
             },
             DefendPlatformUnitRequest => 6,

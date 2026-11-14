@@ -31,13 +31,9 @@ namespace EmpireAtWar.Entities.CoreGameUi
         [SerializeField] private UnitActionsView unitActionsView;
         [SerializeField] private SuperWeaponsView superWeaponsView;
         [SerializeField] private GameObject contextualPopup;
-        [SerializeField] private TMP_Text factionText;
-        [SerializeField] private TMP_Text contentTitle;
-        [SerializeField] private GameObject productionLabel;
         [SerializeField] private GameObject selectionSlots;
         [SerializeField] private Button clearFleetButton;
         [SerializeField] private CanvasGroup battleControls;
-        [SerializeField] private TMP_Text modeLabel;
         [SerializeField] private TMP_Text populationText;
         [SerializeField] private GameObject populationDisplay;
         [SerializeField] private GameObject battleDurationPanel;
@@ -50,7 +46,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         private bool _isContentVisible;
         private bool _isSpectator;
         private bool _hasTimeControls = true;
-        private (string faction, bool ended, bool factionLayout, bool visible)? _lastHudStatus;
+        private (bool ended, bool visible)? _lastHudStatus;
         private int _displayedDurationSeconds = -1;
 
         public TooltipHoverView TooltipHover => tooltipHover;
@@ -96,11 +92,9 @@ namespace EmpireAtWar.Entities.CoreGameUi
 
         public void SetHudStatus(string faction, int level, int selectionCount, bool battleEnded)
         {
-            var status = (faction, battleEnded, _isFactionLayout, IsVisible);
+            var status = (battleEnded, IsVisible);
             if (_lastHudStatus == status) return;
             _lastHudStatus = status;
-            factionText.text = faction.ToUpperInvariant();
-            contentTitle.text = _isFactionLayout ? $"{faction.ToUpperInvariant()} STARBASE" : "FLEET SELECTION";
             timeButton.interactable = !battleEnded && _hasTimeControls;
             speedUpButton.interactable = !battleEnded && _hasTimeControls;
             reinforcementButton.interactable = !battleEnded;
@@ -136,7 +130,6 @@ namespace EmpireAtWar.Entities.CoreGameUi
         public void SetMode(string label, bool spectator)
         {
             _isSpectator = spectator;
-            modeLabel.text = label;
             reinforcementButton.gameObject.SetActive(!spectator);
             UpdateShipActionsVisibility();
         }
@@ -177,11 +170,8 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _hasContentLayout = true;
             _isFactionLayout = isFactionSelection;
             _isShipGroupLayout = isShipGroupSelection;
-            bool hasHeader = isFactionSelection;
             UiContentLayout.SetPanelLayout(panelImage.rectTransform, isFactionSelection);
-            contentTitle.gameObject.SetActive(hasHeader);
-            productionLabel.SetActive(isFactionSelection);
-            selectionSlots.SetActive(!hasHeader);
+            selectionSlots.SetActive(!isFactionSelection);
             clearFleetButton.gameObject.SetActive(isShipGroupSelection);
             UpdateShipActionsVisibility();
         }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.OwnedAreas;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
@@ -23,7 +24,7 @@ namespace EmpireAtWar.Tests.Editor
             var roster = TestPlayers.CreateDuel();
             var owner = roster.Get(TestPlayers.Enemy);
             var registry = new TeamIntelRegistry();
-            var patrol = new EnemyPatrolService(registry, owner, null, null, null,
+            var patrol = new EnemyPatrolService(registry, owner, null, null, Array.Empty<ICaptureSiteDirectory>(),
                 new VisionService(roster), new OpenAreas(), null, roster);
             patrol.Memory.NextSampleTime = float.PositiveInfinity;
             patrol.Memory.Register("stalled", new FormationPoint(10f, 0f), "sector", 1f);

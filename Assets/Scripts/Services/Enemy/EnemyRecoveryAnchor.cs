@@ -120,24 +120,35 @@ namespace EmpireAtWar.Services.Enemy
             return best;
         }
 
-        public bool IsPlacementSafe(Vector3 position, float clearance)
+        public bool IsPlacementSafe(Vector3 position, float clearance) =>
+            CollectOrCheckPlacementThreats(null, position, clearance);
+
+        public void FillPlacementThreats(PlacementThreatSnapshot snapshot)
         {
-            if (IsActive && _stationLost && Distance(position, _map.GetStationPosition(_owner.Id)) <=
-                LostHomeRadius() + clearance) return false;
+            snapshot.Clear();
+            CollectOrCheckPlacementThreats(snapshot, default, 0f);
+        }
+
+        private bool CollectOrCheckPlacementThreats(PlacementThreatSnapshot snapshot, Vector3 position, float clearance)
+        {
+            if (IsActive && _stationLost && BlocksPlacement(_map.GetStationPosition(_owner.Id), LostHomeRadius()))
+                return false;
+
+            float now = Time.time;
             foreach (HostileSighting sighting in _intel.Sightings)
             {
-                if (!_roster.IsHostile(_owner.Id, sighting.Owner) || _intel.GetConfidence(sighting, Time.time) <= 0f) continue;
+                if (!_roster.IsHostile(_owner.Id, sighting.Owner) || _intel.GetConfidence(sighting, now) <= 0f) continue;
                 float range = UNKNOWN_WEAPON_RANGE;
                 if (_entities.TryGetEntity(sighting.EntityId, out IEntity entity) &&
                     entity.TryGetFacade(out IUnitCombatObserverFacade combat)) range = combat.WeaponRange;
-                if (Distance(position, ToVector(sighting.Position)) <= range + HOSTILE_MARGIN + clearance) return false;
+                if (BlocksPlacement(ToVector(sighting.Position), range + HOSTILE_MARGIN)) return false;
             }
             foreach (IEntity entity in _entities.Entities)
             {
                 if (!entity.IsPlayerBase() || !_roster.IsHostile(_owner.Id, entity.Owner) || entity.HealthModel.IsDestroyed) continue;
                 float range = entity.TryGetFacade(out IUnitCombatObserverFacade combat) ? combat.WeaponRange : UNKNOWN_WEAPON_RANGE;
-                if (Distance(position, entity.GetFacade<IEntityTransformFacade>().Transform.position) <=
-                    range + HOSTILE_MARGIN + clearance) return false;
+                if (BlocksPlacement(entity.GetFacade<IEntityTransformFacade>().Transform.position, range + HOSTILE_MARGIN))
+                    return false;
             }
             foreach (EnemyPatrolPoint point in _registry.GetPatrol(_owner.Team).Entries)
             {
@@ -146,9 +157,18 @@ namespace EmpireAtWar.Services.Enemy
                 if (point.Id.StartsWith("structure:", StringComparison.Ordinal) &&
                     _entities.TryGetEntity(long.Parse(point.Id.Substring(10)), out IEntity structure) &&
                     structure.TryGetFacade(out IUnitCombatObserverFacade combat)) range = combat.WeaponRange;
-                if (Distance(position, ToVector(point.Position)) <= range + HOSTILE_MARGIN + clearance) return false;
+                if (BlocksPlacement(ToVector(point.Position), range + HOSTILE_MARGIN)) return false;
             }
             return true;
+
+            bool BlocksPlacement(Vector3 center, float radius)
+            {
+                if (snapshot == null)
+                    return Distance(position, center) <= radius + clearance;
+
+                snapshot.Add(center.x, center.z, radius);
+                return false;
+            }
         }
 
         public float GetNearestHostileDistance(Vector3 position)

@@ -28,7 +28,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly PlayerSlot _owner;
         private readonly IMapModelObserver _map;
         private readonly IReinforcementZoneSource _zones;
-        private readonly ICaptureSiteDirectory _sites;
+        private readonly IReadOnlyList<ICaptureSiteDirectory> _siteDirectories;
         private readonly IVisionService _vision;
         private readonly IBattleAreaService _areas;
         private readonly IEntityLocator _entities;
@@ -45,7 +45,7 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyPatrolMemory Memory { get; }
 
         public EnemyPatrolService(TeamIntelRegistry registry, PlayerSlot owner, IMapModelObserver map,
-            IReinforcementZoneSource zones, ICaptureSiteDirectory sites, IVisionService vision,
+            IReinforcementZoneSource zones, IReadOnlyList<ICaptureSiteDirectory> siteDirectories, IVisionService vision,
             IBattleAreaService areas, IEntityLocator entities, IPlayerRoster players)
         {
             Memory = registry.GetPatrol(owner.Team);
@@ -53,7 +53,7 @@ namespace EmpireAtWar.Services.Enemy
             _owner = owner;
             _map = map;
             _zones = zones;
-            _sites = sites;
+            _siteDirectories = siteDirectories;
             _vision = vision;
             _areas = areas;
             _entities = entities;
@@ -76,12 +76,15 @@ namespace EmpireAtWar.Services.Enemy
                 var zone = _zones.Zones[i];
                 if (zone.IsCapturable) Memory.Register($"relay:{i}", ToPoint(zone.Center), "relay", 3f);
             }
-            for (int i = 0; i < _sites.Sites.Count; i++)
+            int siteIndex = 0;
+            foreach (ICaptureSiteDirectory directory in _siteDirectories)
             {
-                ICaptureSite site = _sites.Sites[i];
-                bool alliedMine = site.Kind == CaptureSiteKind.Mining && _players.IsAllied(_owner.Id, site.Owner);
-                Memory.Register($"site:{i}", ToPoint(site.Center), alliedMine ? "alliedMine" :
-                    site.Kind == CaptureSiteKind.Mining ? "mine" : "satellite", alliedMine ? 5f : 3f);
+                foreach (ICaptureSite site in directory.Sites)
+                {
+                    bool alliedMine = site.Kind == CaptureSiteKind.Mining && _players.IsAllied(_owner.Id, site.Owner);
+                    Memory.Register($"site:{siteIndex++}", ToPoint(site.Center), alliedMine ? "alliedMine" :
+                        site.Kind == CaptureSiteKind.Mining ? "mine" : "satellite", alliedMine ? 5f : 3f);
+                }
             }
             _liveIntel.Clear();
             foreach (IEntity entity in _entities.Entities)

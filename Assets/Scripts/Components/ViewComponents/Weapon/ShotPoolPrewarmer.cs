@@ -50,6 +50,15 @@ namespace EmpireAtWar.ViewComponents.Weapon
             return pool;
         }
 
+        internal void IncreaseCapacity(ShotEffectPool pool, int capacity)
+        {
+            (ShotEffectCache cache, int previousCapacity) = _pools[pool];
+            int threshold = cache.RegisterCapacity(capacity - previousCapacity);
+            _pools[pool] = (cache, capacity);
+            pool.IncreaseCapacity(capacity, threshold);
+            Enqueue(cache, threshold);
+        }
+
         private ShotEffectCache GetCache(ShotEffect prefab)
         {
             if (!_caches.TryGetValue(prefab, out ShotEffectCache cache))

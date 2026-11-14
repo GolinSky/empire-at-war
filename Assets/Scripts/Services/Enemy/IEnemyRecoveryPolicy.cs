@@ -9,6 +9,7 @@ namespace EmpireAtWar.Services.Enemy
         string DeferredReason { get; }
         bool TryGetBuildAnchor(out Vector3 position);
         bool IsPlacementSafe(Vector3 position, float clearance);
+        void FillPlacementThreats(PlacementThreatSnapshot snapshot);
         float GetNearestHostileDistance(Vector3 position);
         void CopySafeAlliedZoneBounds(List<Bounds> bounds);
         void OnStationBuilt(Vector3 position);
