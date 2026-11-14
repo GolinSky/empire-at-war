@@ -222,7 +222,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e8752bffdc76c164587ad8c6f6c23ab3, type: 2}
+  - {fileID: 2100000, guid: 1f418762716c4488be102cc7900a4bd2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -688,11 +688,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Capture.CaptureRingView
   ringRenderer: {fileID: 5725095360330420120}
-  neutralColor: {r: 0.48, g: 0.55, b: 0.62, a: 0.08}
-  playerColor: {r: 0.18, g: 0.53, b: 0.68, a: 0.1}
-  allyColor: {r: 0.27, g: 0.62, b: 0.43, a: 0.1}
-  opponentColor: {r: 0.68, g: 0.27, b: 0.29, a: 0.1}
-  contestedColor: {r: 0.73, g: 0.56, b: 0.23, a: 0.1}
+  neutralColor: {r: 0.82, g: 0.85, b: 0.89, a: 0.32}
+  playerColor: {r: 0.58, g: 0.74, b: 0.81, a: 0.32}
+  allyColor: {r: 0.27, g: 0.62, b: 0.43, a: 0.32}
+  opponentColor: {r: 0.68, g: 0.27, b: 0.29, a: 0.32}
+  contestedColor: {r: 0.73, g: 0.56, b: 0.23, a: 0.32}
   siteBorder: 0
 --- !u!1 &7804388680199334990
 GameObject:

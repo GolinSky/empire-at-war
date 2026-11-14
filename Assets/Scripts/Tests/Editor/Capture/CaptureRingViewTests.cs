@@ -20,7 +20,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(CaptureSiteState.Owned, OwnerRelation.Own, OwnerRelation.Enemy, false, true, true)]
         [TestCase(CaptureSiteState.Owned, OwnerRelation.Own, OwnerRelation.Neutral, true, true, true)]
         [TestCase(CaptureSiteState.Constructing, OwnerRelation.Own, OwnerRelation.Neutral, false, false, false)]
-        [TestCase(CaptureSiteState.Operational, OwnerRelation.Own, OwnerRelation.Neutral, false, false, false)]
+        [TestCase(CaptureSiteState.Operational, OwnerRelation.Own, OwnerRelation.Neutral, false, false, true)]
         public void SiteState_DrivesBlinkAndVisibility(CaptureSiteState state, OwnerRelation owner,
             OwnerRelation capturer, bool contested, bool blink, bool visible)
         {
