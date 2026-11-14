@@ -238,12 +238,16 @@ Run the tests for the areas a change touches, not the whole suite. Every EditMod
 
 - Runner: `run_tests --filter_type category --filter <Category>`. One exact category per call; batch the touched categories into consecutive calls.
 - One fixture: `--filter_type testName --filter <FixtureName>`.
-- `[Explicit]` tests run only with `--include_explicit true`.
+- Standard runs must use `--include_explicit false`, including full-suite runs and reruns after failures. Never enable explicit tests to diagnose ordinary failures or obtain a broader green result.
+- `--include_explicit true` requires a nonempty, exact category filter for the intended sweep. Never combine it with an unfiltered run or a shared fixture-name filter that selects both quick and exhaustive instances.
+- Exhaustive categories (`MapExhaustive`, `NavigationExhaustive`, and future `*Exhaustive` categories) require an explicit user request for that exhaustive run. Permission to run tests or the full suite does not authorize exhaustive sweeps. Run only the requested exhaustive category, once; do not widen scope on failure.
+- Before an authorized run, state its mode, category/fixture, explicit-test setting, and whether it is quick or exhaustive. After failures, rerun only failing fixtures or affected categories; repeat the standard full suite only after fixes are complete when a full run is warranted.
+- Use separate `--mode editor` and `--mode playmode` commands with `--async_tests true`; asynchronous `all` mode is unsupported. The installed Pipeline async runner does not enforce `--timeout`: track elapsed time while polling, report overruns, and never start a replacement run until the previous run is confirmed stopped. Cancellation may wait for Unity's main thread.
 
 | Changed path | Categories |
 |---|---|
 | `Entities/Map`, `Entities/Planet`, `Services/Hazards`, `Components/Environment`, `Components/Obstacles` | `Map`; plus `MapGeneration` (explicit) when map generation changes |
-| `Components/Movement`, `Services/ShipNavigation`, `Services/SpawnBlocking`, `Services/StationFacing`, `Services/FleetCommand`, `Entities/SpawnArea` | `Navigation` |
+| `Components/Movement`, `Services/ShipNavigation`, `Services/SpawnBlocking`, `Services/StationFacing`, `Services/FleetCommand`, `Entities/SpawnArea` | `Navigation`; `NavigationExhaustive` only on explicit user request |
 | `Components/AttackComponent`, `Components/Weapon`, `Components/CombatModifiers`, `Components/ViewComponents`, `Services/Pooling` | `Combat` |
 | `Components/Health`, `Services/UnitExplosion`, `Services/UnitWreck` | `Health` |
 | `Components/Ship`, `Entities/Ship`, `Entities/SpaceStation`, `Entities/DefendPlatform`, `Services/Ship`, `Services/ShipSpawning`, `Services/Station`, `Editor/Ship` | `Ships` |
@@ -264,9 +268,11 @@ Run the tests for the areas a change touches, not the whole suite. Every EditMod
 
 1. Before a feature, name the categories it touches from the table; add a fixture's own category when a test file changes.
 2. While iterating, run only those categories.
-3. `MapLayoutGeneratorTests` is `[Explicit]` and never runs in category or full-suite runs. Only when map generation changes (`Entities/Map/Generation`, `Entities/Map/Hazards`, map settings assets): iterate with `MapGeneration` (3 seeds) and run `MapExhaustive` (all seeds, minutes) once before finishing, both with `--include_explicit true`.
+3. `MapLayoutGeneratorTests` is explicit and excluded from standard runs. When map generation changes (`Entities/Map/Generation`, `Entities/Map/Hazards`, map settings assets) and tests are authorized, use `MapGeneration` (3 seeds) with `--include_explicit true`. `MapExhaustive` (all seeds, minutes) is optional and requires the separate exhaustive authorization above; never run it automatically before finishing.
 4. Run the full EditMode suite only at the end of a large or cross-cutting task, or when the user asks.
 5. Report which categories ran; never imply the full suite passed when only categories ran.
+
+- `ShipArchetypeRouteSweepTests`: quick instance = `Navigation` (3 seeds, 6 routes per archetype/clearance); exhaustive instance = `NavigationExhaustive` (20 seeds, 24 routes). Both remain explicit. For an authorized quick sweep, use `--filter_type category --filter Navigation --include_explicit true`; this also includes ordinary Navigation tests but excludes the exhaustive instance. Never select this shared fixture name with explicit tests enabled.
 
 - New fixtures: add one feature `[Category]`; add a new category only for a new feature area and add it to this table.
 - New heavy sweeps: make the fixture explicit with a quick and a full instance, e.g. `[TestFixture(false, Category = "<Area>", Explicit = true)]` + `[TestFixture(true, Category = "<Area>Exhaustive", Explicit = true)]` (see `MapLayoutGeneratorTests`).
