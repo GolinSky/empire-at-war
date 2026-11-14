@@ -118,7 +118,7 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(id, Is.EqualTo(3));
                     SerializedProperty modifier = entries.GetArrayElementAtIndex(i)
                         .FindPropertyRelative("value.settings.statModifier");
-                    Assert.That(modifier.FindPropertyRelative("shieldRegenMultiplier").floatValue, Is.EqualTo(2f));
+                    Assert.That(modifier.FindPropertyRelative("shieldRegenMultiplier").floatValue, Is.EqualTo(4f));
                     Assert.That(modifier.FindPropertyRelative("damageMultiplier").floatValue, Is.EqualTo(0.95f));
                     Assert.That(modifier.FindPropertyRelative("speedMultiplier").floatValue, Is.EqualTo(0.55f));
                 }
