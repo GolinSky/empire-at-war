@@ -14,6 +14,8 @@ namespace EmpireAtWar.Entities.Game
         private ISurvivalHudPresenter _presenter;
         private bool _initialized;
         private bool _canStartWave = true;
+        private int? _displayedWave;
+        private (SurvivalPhase Phase, int Second)? _displayedStatus;
         public void SetModel(SurvivalModel model) => _model = model;
         public void SetStartWaveAvailable(bool available) => _canStartWave = available;
         public void AssignPresenter(ISurvivalHudPresenter presenter) => _presenter = presenter;
@@ -27,10 +29,21 @@ namespace EmpireAtWar.Entities.Game
         }
         private void Render()
         {
-            waveText.text = $"WAVE {_model.WaveIndex}/5";
-            statusText.text = _model.Phase == SurvivalPhase.Preparation
-                ? $"Prepare defenses · {Mathf.CeilToInt(_model.PreparationTimeLeft)}s" : _model.Phase.ToString();
-            startWaveButton.gameObject.SetActive(_canStartWave && _model.Phase == SurvivalPhase.Preparation);
+            int wave = _model.WaveIndex;
+            if (_displayedWave != wave)
+            {
+                _displayedWave = wave;
+                waveText.text = $"WAVE {wave}/5";
+            }
+            SurvivalPhase phase = _model.Phase;
+            bool preparing = phase == SurvivalPhase.Preparation;
+            int second = preparing ? Mathf.CeilToInt(_model.PreparationTimeLeft) : 0;
+            if (_displayedStatus != (phase, second))
+            {
+                _displayedStatus = (phase, second);
+                statusText.text = preparing ? $"Prepare defenses · {second}s" : phase.ToString();
+            }
+            startWaveButton.gameObject.SetActive(_canStartWave && preparing);
         }
         public void Dispose()
         {
@@ -38,6 +51,8 @@ namespace EmpireAtWar.Entities.Game
             _model.Changed -= Render;
             startWaveButton.onClick.RemoveListener(_presenter.StartWaveNow);
             _initialized = false;
+            _displayedWave = null;
+            _displayedStatus = null;
         }
         private void OnDestroy() => Dispose();
     }

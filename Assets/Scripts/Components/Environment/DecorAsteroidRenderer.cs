@@ -101,10 +101,11 @@ namespace EmpireAtWar.Components.Environment
                     for (int j = 0; j < cell.Matrices.Length; j++)
                     {
                         Bounds bounds = cell.InstanceBounds[j];
-                        if (bounds.SqrDistance(cameraPosition) > maxDistanceSquared ||
+                        float distanceSquared = bounds.SqrDistance(cameraPosition);
+                        if (distanceSquared > maxDistanceSquared ||
                             (!inside && !GeometryUtility.TestPlanesAABB(_planes, bounds))) continue;
                         bool lowDetail = meshes[i].LowDetailMesh != null &&
-                            bounds.SqrDistance(cameraPosition) >= lodDistance * lodDistance;
+                            distanceSquared >= lodDistance * lodDistance;
                         if (lowDetail)
                         {
                             _lowBatch[lowCount++] = cell.Matrices[j];

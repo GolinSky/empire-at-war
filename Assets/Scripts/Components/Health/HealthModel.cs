@@ -200,9 +200,14 @@ namespace EmpireAtWar.Models.Health
                 if (isReplica) HardPointModels[i].ApplyReplicaHealth(hardPointPercentages[i]);
                 else HardPointModels[i].Restore(hardPointPercentages[i]);
             }
-            IsLostShieldGenerator = HardPointModels.Any(point => point.HardPointType == HardPointType.ShieldGenerator) &&
-                HardPointModels.Where(point => point.HardPointType == HardPointType.ShieldGenerator)
-                    .All(point => point.IsDestroyed);
+            IsLostShieldGenerator = false;
+            for (int i = 0; i < HardPointModels.Length; i++)
+            {
+                HardPointModel point = HardPointModels[i];
+                if (point.HardPointType != HardPointType.ShieldGenerator) continue;
+                IsLostShieldGenerator = point.IsDestroyed;
+                if (!IsLostShieldGenerator) break;
+            }
             Hull = MaxHull * hullPercentage;
             Shields = IsLostShieldGenerator || IsShieldSuppressed ? 0f : MaxShields * shieldPercentage;
         }

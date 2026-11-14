@@ -133,6 +133,17 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IReinforcementZoneSource _zones;
         private readonly IShipNavigationService _navigation;
         private readonly ForceComposition _objectiveThreat = new ForceComposition();
+        // ForceCompositionBuilder consumes these predicates synchronously.
+        private readonly Predicate<HostileSighting> _includeDefender;
+        private readonly Predicate<HostileSighting> _includeRouteThreat;
+        private readonly Predicate<GameEntity> _includeNearbyOwn;
+        private Vector3 _nearbyCenter;
+        private float _nearbyRadiusSquared;
+        private Vector3 _routeOrigin;
+        private Vector3 _routeDestination;
+        private Vector3 _routeSegment;
+        private float _routeDestinationRadius;
+        private bool _routeEscaping;
         private readonly HashSet<long> _stationThreats = new HashSet<long>();
         private readonly List<EnemyCaptureObjective> _captureCandidates = new List<EnemyCaptureObjective>();
         private EnemyCaptureObjective _captureObjective;
@@ -213,6 +224,9 @@ namespace EmpireAtWar.Services.Enemy
             _navigation = navigation;
             _stationPressure = stationPressure;
             _recovery = recovery;
+            _includeDefender = IncludeDefender;
+            _includeRouteThreat = IncludeRouteThreat;
+            _includeNearbyOwn = IncludeNearbyOwn;
         }
 
         private EnemyStrategicContextBuilder(EnemyStrategicContextBuilder source)
@@ -235,6 +249,9 @@ namespace EmpireAtWar.Services.Enemy
             _stationPressure = source._stationPressure;
             _recovery = source._recovery;
             _stationAssessment = source;
+            _includeDefender = IncludeDefender;
+            _includeRouteThreat = IncludeRouteThreat;
+            _includeNearbyOwn = IncludeNearbyOwn;
         }
 
         public EnemyStrategicContextBuilder CreateGroupBuilder() => new EnemyStrategicContextBuilder(this);
@@ -532,17 +549,19 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool IsDefended(Vector3 position, float now)
         {
-            float radiusSquared = LOCAL_ENGAGEMENT_RADIUS * LOCAL_ENGAGEMENT_RADIUS;
-            _forceBuilder.BuildKnown(_objectiveThreat, _intel, now, sighting =>
-            {
-                Vector3 offset = ToVector(sighting.Position) - position;
-                offset.y = 0f;
-                return _playerRoster.IsHostile(_owner.Id, sighting.Owner) &&
-                    offset.sqrMagnitude <= radiusSquared;
-            });
+            _nearbyCenter = position;
+            _forceBuilder.BuildKnown(_objectiveThreat, _intel, now, _includeDefender);
             return !_objectiveThreat.IsEmpty &&
                 CombatMatchup.Advantage(_ownForce, _objectiveThreat) <
                 EnemyAiDifficultyProfile.Get(_owner.Difficulty).RequiredAttackRatio;
+        }
+
+        private bool IncludeDefender(HostileSighting sighting)
+        {
+            Vector3 offset = ToVector(sighting.Position) - _nearbyCenter;
+            offset.y = 0f;
+            return _playerRoster.IsHostile(_owner.Id, sighting.Owner) &&
+                offset.sqrMagnitude <= LOCAL_ENGAGEMENT_RADIUS * LOCAL_ENGAGEMENT_RADIUS;
         }
 
         /// <summary>
@@ -836,28 +855,34 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Known hostiles at the origin, along the route or near the destination are beatable.</summary>
         private bool IsRouteSafe(Vector3 origin, Vector3 destination, float radius, bool escaping, float safetyScale = 1f)
         {
-            Vector3 segment = destination - origin;
-            segment.y = 0f;
-            _forceBuilder.BuildKnown(_objectiveThreat, _intel, Time.time, sighting =>
-            {
-                if (!_playerRoster.IsHostile(_owner.Id, sighting.Owner)) return false;
-                Vector3 position = ToVector(sighting.Position);
-                Vector3 offset = position - origin;
-                offset.y = 0f;
-                float t = segment.sqrMagnitude > 0f ? Mathf.Clamp01(Vector3.Dot(offset, segment) / segment.sqrMagnitude) : 0f;
-                // An escape leaves the force at the origin behind wherever the anchor is; only a second force
-                // ahead of it, along the route or at the anchor, can make the withdrawal unsafe.
-                if (escaping && PlanarDistance(position, origin) <= LOCAL_ENGAGEMENT_RADIUS) return false;
-                bool nearDestination = PlanarDistance(position, destination) <= LOCAL_ENGAGEMENT_RADIUS + radius;
-                bool alongRoute = PlanarDistance(position, origin + segment * t) <= LOCAL_ENGAGEMENT_RADIUS;
-                return nearDestination || alongRoute;
-            });
+            _routeOrigin = origin;
+            _routeDestination = destination;
+            _routeSegment = destination - origin;
+            _routeSegment.y = 0f;
+            _routeDestinationRadius = LOCAL_ENGAGEMENT_RADIUS + radius;
+            _routeEscaping = escaping;
+            _forceBuilder.BuildKnown(_objectiveThreat, _intel, Time.time, _includeRouteThreat);
             if (_objectiveThreat.IsEmpty) return true;
             float advantage = CombatMatchup.Advantage(_groupScoped ? _ownForce : _localOwnForce, _objectiveThreat);
             float threshold = EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage * safetyScale;
             if (advantage > threshold) return true;
             _objectiveSafetyReason = $"hostile: known route/local force advantage {advantage:F2} <= safety threshold {threshold:F2}.";
             return false;
+        }
+
+        private bool IncludeRouteThreat(HostileSighting sighting)
+        {
+            if (!_playerRoster.IsHostile(_owner.Id, sighting.Owner)) return false;
+            Vector3 position = ToVector(sighting.Position);
+            Vector3 offset = position - _routeOrigin;
+            offset.y = 0f;
+            float lengthSquared = _routeSegment.sqrMagnitude;
+            float t = lengthSquared > 0f ? Mathf.Clamp01(Vector3.Dot(offset, _routeSegment) / lengthSquared) : 0f;
+            // An escape leaves the force at the origin behind. Only a second force along the route or at the anchor threatens it.
+            if (_routeEscaping && PlanarDistance(position, _routeOrigin) <= LOCAL_ENGAGEMENT_RADIUS) return false;
+            bool nearDestination = PlanarDistance(position, _routeDestination) <= _routeDestinationRadius;
+            bool alongRoute = PlanarDistance(position, _routeOrigin + _routeSegment * t) <= LOCAL_ENGAGEMENT_RADIUS;
+            return nearDestination || alongRoute;
         }
 
         private Vector3? FindRetreatAnchor(Vector3 origin, GameEntity ownBase)
@@ -1038,16 +1063,17 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Own ships and squadrons within <paramref name="radius"/> of <paramref name="center"/> (ground plane).</summary>
         private void BuildOwnNear(ForceComposition force, Vector3 center, float radius)
         {
-            PlayerId self = _owner.Id;
-            float radiusSquared = radius * radius;
-            _forceBuilder.Build(force, entity =>
-            {
-                if (entity.Owner != self) return false;
-                if (_groupScoped && !_ownShipIds.Contains(entity.Id)) return false;
-                Vector3 offset = entity.GetFacade<IEntityTransformFacade>().Transform.position - center;
-                offset.y = 0f;
-                return offset.sqrMagnitude <= radiusSquared;
-            });
+            _nearbyCenter = center;
+            _nearbyRadiusSquared = radius * radius;
+            _forceBuilder.Build(force, _includeNearbyOwn);
+        }
+
+        private bool IncludeNearbyOwn(GameEntity entity)
+        {
+            if (entity.Owner != _owner.Id || _groupScoped && !_ownShipIds.Contains(entity.Id)) return false;
+            Vector3 offset = entity.GetFacade<IEntityTransformFacade>().Transform.position - _nearbyCenter;
+            offset.y = 0f;
+            return offset.sqrMagnitude <= _nearbyRadiusSquared;
         }
 
         /// <summary>Hostile ships and squadrons within <paramref name="radius"/> of <paramref name="center"/> (ground plane).</summary>

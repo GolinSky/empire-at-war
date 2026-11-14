@@ -25,9 +25,9 @@ namespace EmpireAtWar.Entities.BaseEntity
             }
 
             _isReleased = true;
-            foreach (IMonoComponent component in _components)
+            for (int i = 0; i < _components.Count; i++)
             {
-                component.Release();
+                _components[i].Release();
             }
 
             return true;

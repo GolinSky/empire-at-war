@@ -18,9 +18,14 @@ namespace EmpireAtWar.Entities.Game
         [SerializeField] private Button restartButton;
         [SerializeField] private Button newButton;
         private ISimulationHudPresenter _presenter;
+        private (bool Spawning, int Second, int CountA, int CountB)? _displayedStatus;
+        private SimulationResult _displayedResult;
+
         public void Initialize(ISimulationHudPresenter presenter)
         {
             _presenter = presenter;
+            _displayedStatus = null;
+            _displayedResult = null;
             // The main battle HUD already provides pause and speed controls.
             pauseButton.gameObject.SetActive(false);
             speedButton.gameObject.SetActive(false);
@@ -29,8 +34,15 @@ namespace EmpireAtWar.Entities.Game
         }
         public void Render(SimulationModel model, BattleState state, GameSpeed speed)
         {
-            status.text = model.IsSpawning ? "Deploying fleets…" :
-                $"{BattleDuration.Format((int)model.Elapsed)}   •   Side A: {model.CountA}   •   Side B: {model.CountB}";
+            (bool Spawning, int Second, int CountA, int CountB) next = model.IsSpawning
+                ? (true, 0, 0, 0)
+                : (false, (int)model.Elapsed, model.CountA, model.CountB);
+            if (_displayedStatus != next)
+            {
+                _displayedStatus = next;
+                status.text = next.Spawning ? "Deploying fleets…" :
+                    $"{BattleDuration.Format(next.Second)}   •   Side A: {next.CountA}   •   Side B: {next.CountB}";
+            }
             pauseLabel.text = state == BattleState.Paused ? "RESUME" : "PAUSE";
             speedLabel.text = speed == GameSpeed.Fast ? "SPEED 4×" : "SPEED 1×";
             pauseButton.interactable = speedButton.interactable = state == BattleState.Running || state == BattleState.Paused;
@@ -38,6 +50,8 @@ namespace EmpireAtWar.Entities.Game
             SimulationResult outcome = model.Result;
             panel.sizeDelta = new Vector2(panel.sizeDelta.x, outcome == null ? 108 : 204);
             result.gameObject.SetActive(outcome != null);
+            if (ReferenceEquals(_displayedResult, outcome)) return;
+            _displayedResult = outcome;
             if (outcome == null) return;
             string winner = outcome.Outcome == BattleOutcome.PlayerVictory ? "SIDE A WINS" :
                 outcome.Outcome == BattleOutcome.EnemyVictory ? "SIDE B WINS" : "DRAW";

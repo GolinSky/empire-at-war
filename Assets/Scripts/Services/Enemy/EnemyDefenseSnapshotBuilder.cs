@@ -45,6 +45,11 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ForceComposition _hostile = new ForceComposition();
         private readonly List<EnemyDefenseOption> _options = new List<EnemyDefenseOption>();
         private readonly List<EnemyDefensePad> _pads = new List<EnemyDefensePad>();
+        private readonly List<int> _padIndices = new List<int>();
+        private readonly Dictionary<int, (int ProtectedMines, bool Threatened, List<SiteFacilityType> Existing)> _sitesByPoint =
+            new Dictionary<int, (int, bool, List<SiteFacilityType>)>();
+        private readonly List<(Vector3 Position, bool Own, bool Hostile)> _bases =
+            new List<(Vector3, bool, bool)>();
 
         public EnemyDefenseSnapshotBuilder(ICaptureSiteDirectory sites, ICaptureSitePresence presence, ForceCompositionBuilder forces,
             TeamIntelRegistry intel, IEntityLocator entities, IPlayerRoster players, PlayerSlot owner,
@@ -81,22 +86,13 @@ namespace EmpireAtWar.Services.Enemy
             _forces.BuildKnown(_hostile, _intel, now, sighting => _players.IsHostile(_owner.Id, sighting.Owner));
             if (_options.Count == 0) LoadOptions();
             _pads.Clear();
-            for (int i = 0; i < _sites.Sites.Count; i++)
+            IReadOnlyList<ICaptureSite> sites = _sites.Sites;
+            CapturePadPoints(sites);
+            CaptureBases();
+            foreach (int index in _padIndices)
             {
-                ICaptureSite site = _sites.Sites[i];
-                if (site.Kind != CaptureSiteKind.Satellite || site.Owner != _owner.Id || site.State != CaptureSiteState.Owned)
-                    continue;
-                int protectedMines = 0;
-                bool threatened = false;
-                List<SiteFacilityType> existing = new List<SiteFacilityType>();
-                foreach (ICaptureSite sibling in _sites.Sites)
-                {
-                    if (sibling.PointId != site.PointId || sibling.Owner != _owner.Id) continue;
-                    if (sibling.IsOperational && sibling.FacilityType == SiteFacilityType.Mining) protectedMines++;
-                    if (sibling.Kind == CaptureSiteKind.Satellite &&
-                        (sibling.State == CaptureSiteState.Constructing || sibling.IsOperational)) existing.Add(sibling.FacilityType);
-                    if (_presence.HasHostileUnits(sibling, _owner.Id)) threatened = true;
-                }
+                ICaptureSite site = sites[index];
+                var point = _sitesByPoint[site.PointId];
                 float lastSeen = float.PositiveInfinity;
                 foreach (HostileSighting sighting in _intel.Sightings)
                 {
@@ -106,21 +102,61 @@ namespace EmpireAtWar.Services.Enemy
                 }
                 float ownDistance = float.PositiveInfinity;
                 float enemyDistance = float.PositiveInfinity;
-                foreach (IEntity entity in _entities.Entities)
+                foreach (var station in _bases)
                 {
-                    if (!entity.IsPlayerBase() || entity.HealthModel.IsDestroyed) continue;
-                    float distance = Vector3.Distance(site.Center, entity.GetFacade<IEntityTransformFacade>().Transform.position);
-                    if (entity.Owner == _productionAccess.ProductionHost) ownDistance = Mathf.Min(ownDistance, distance);
-                    if (_players.IsHostile(_owner.Id, entity.Owner)) enemyDistance = Mathf.Min(enemyDistance, distance);
+                    float distance = Vector3.Distance(site.Center, station.Position);
+                    if (station.Own) ownDistance = Mathf.Min(ownDistance, distance);
+                    if (station.Hostile) enemyDistance = Mathf.Min(enemyDistance, distance);
                 }
                 float exposure = float.IsPositiveInfinity(enemyDistance) ? 0f : float.IsPositiveInfinity(ownDistance) ? 1f :
                     ownDistance / Mathf.Max(1f, ownDistance + enemyDistance);
-                _pads.Add(new EnemyDefensePad(i, (float)protectedMines / PointOfInterestPlacer.SITES_PER_MINING_POINT, exposure, lastSeen,
-                    _presence.HasHostileUnits(site, _owner.Id), threatened || lastSeen <= 5f,
-                    existing));
+                _pads.Add(new EnemyDefensePad(index, (float)point.ProtectedMines / PointOfInterestPlacer.SITES_PER_MINING_POINT,
+                    exposure, lastSeen, _presence.HasHostileUnits(site, _owner.Id), point.Threatened || lastSeen <= 5f,
+                    point.Existing));
             }
             return new EnemyDefenseSnapshot(_money.Money, _economy.TotalIncome / _economyData.IncomeDelay,
                 _production.DefenseReserve, _strategy.LastSnapshot, _own, _hostile, _pads, _options);
+        }
+
+        private void CapturePadPoints(IReadOnlyList<ICaptureSite> sites)
+        {
+            _padIndices.Clear();
+            _sitesByPoint.Clear();
+            for (int i = 0; i < sites.Count; i++)
+            {
+                ICaptureSite site = sites[i];
+                if (site.Kind != CaptureSiteKind.Satellite || site.Owner != _owner.Id || site.State != CaptureSiteState.Owned)
+                    continue;
+                _padIndices.Add(i);
+                if (!_sitesByPoint.ContainsKey(site.PointId))
+                    _sitesByPoint.Add(site.PointId, (0, false, new List<SiteFacilityType>()));
+            }
+            if (_padIndices.Count == 0) return;
+
+            for (int i = 0; i < sites.Count; i++)
+            {
+                ICaptureSite site = sites[i];
+                if (site.Owner != _owner.Id || !_sitesByPoint.TryGetValue(site.PointId, out var point)) continue;
+                if (site.IsOperational && site.FacilityType == SiteFacilityType.Mining) point.ProtectedMines++;
+                if (site.Kind == CaptureSiteKind.Satellite &&
+                    (site.State == CaptureSiteState.Constructing || site.IsOperational)) point.Existing.Add(site.FacilityType);
+                if (!point.Threatened) point.Threatened = _presence.HasHostileUnits(site, _owner.Id);
+                _sitesByPoint[site.PointId] = point;
+            }
+        }
+
+        private void CaptureBases()
+        {
+            _bases.Clear();
+            if (_padIndices.Count == 0) return;
+            foreach (IEntity entity in _entities.Entities)
+            {
+                if (!entity.IsPlayerBase() || entity.HealthModel.IsDestroyed) continue;
+                bool own = entity.Owner == _productionAccess.ProductionHost;
+                bool hostile = _players.IsHostile(_owner.Id, entity.Owner);
+                if (own || hostile)
+                    _bases.Add((entity.GetFacade<IEntityTransformFacade>().Transform.position, own, hostile));
+            }
         }
 
         private void LoadOptions()
