@@ -1,157 +1,202 @@
 ---
 category: Bugs
 status: in-progress
-design_state: implemented-balance-rejected
+design_state: exact-targets-proposed
 created: 2026-11-11
 system:
   - balance
   - squadrons
   - hangars
 acceptance: failed
+updated: 2026-11-14
 ---
 # Carrier and Squadron Rebalance
 
 ## Goal
 
-- Every one of the 29 audited carrier hulls launches a fighter, bomber and interceptor. Liberator at **1 / 1 / 1 active** is the minimum.
-- Simultaneous capacity and battle stock order → CIS > Empire > Republic > Rebellion.
-- Regular squadron quality within each role → Rebellion > Republic > Empire > CIS. Keep existing squadron member counts.
+- Reduce squadron entities using faction-specific craft counts and 1–2 active squadrons per supported role.
+- Per-craft quality: Rebellion > Republic > Empire > CIS for base DPS, hull+shield HP and effective durability against common strikecraft lasers.
+- Exact proposed targets dated 2026-11-14. No gameplay changes applied; balance requires match acceptance.
 
-## Rules
+## Decision
 
-- Carrier scope → playable ship roster with deployable hangar bays, including existing hero carriers. Station quantities were added in the 2026-11-12 follow-up. Hero strikecraft, disabled ISD III, unfielded Delta-7 and ships with empty bays are outside this balance pass. Malevolence hangar integration remains in [[TODOs/Features/Malevolence_Import]].
-- Active = simultaneous squads. Stock = total launches including the initial deployment. Stock per bay → CIS 4× active, Empire and Republic 3×, Rebellion 2×. A new Liberator can launch three initial squads and three replacements.
-- Per-hull targets apply to each hull in a grouped row. Fleet totals use one of each hull. Actual match totals depend on fleet composition.
-- Round-robin automatic launch selection across eligible bays. Keep the shared launch throttle, 5 s per-bay recent-launch limit and existing reserve/hardpoint checks. Start delay 4 s for all carriers. Interval → CIS 1 s, Empire 10 s, Republic and Rebellion 8 s. Ability-driven launches keep their existing timing rules.
+- This note is the authoritative proposed target sheet; supersedes earlier count-only and provisional targets. F / I / B always means fighter / interceptor / bomber.
+- Craft per squadron: Rebel 5/4/3; Republic 8/6/4; Empire 10/8/6; CIS **13/11/10**. CIS ranges are resolved to these fixed values.
+- Role caps aggregate concrete variants. Use explicit bay assignments below; no new runtime shared-role-cap system required.
+- Dedicated carriers receive larger wings than general gunships. Four existing partial-role supports retain absent roles at zero; no new role or launch hardpoint is added to them.
+- Three hero strikecraft retain one member and current stats. Unfielded Delta-7, disabled ISD III and unfinished Malevolence hangar integration remain excluded.
+- Existing save migration remains outside development scope: require fresh matches across the member-count change; preserve clear incompatible-save rejection and matching host/client content.
+- Earlier audit, implementation and acceptance history → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research]]. Count-only baseline/full carrier comparisons → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Unit Amount Research]].
 
 ## Important Values
 
-### Carrier totals
+### Squadron targets
 
-| Faction | Hulls with all roles | Active F / B / I | Active total | Battle stock | Active individual craft |
-|---|---:|---:|---:|---:|---:|
-| CIS | 6 | 27 / 18 / 21 | 66 | 264 | 345 |
-| Empire | 6 | 15 / 13 / 11 | 39 | 117 | 243 |
-| Republic | 7 | 17 / 11 / 10 | 38 | 114 | 190 |
-| Rebellion | 10 | 11 / 10 / 10 | 31 | 62 | 175 |
+- DPS = full-strength squadron raw firing-cycle DPS, before accuracy, target multipliers, attack-run downtime, research and abilities.
+- Hull and shields are **per craft**. Squad HP = members × (hull + shields); shield resistance makes raw HP totals insufficient for comparison.
+- Squad DPS is the exact authoring target; DPS/craft is displayed rounded to four decimals. Use the exact ratio when allocating mount damage.
+- All 17 regular types are specified, including premium variants. Per-craft ordering also holds across the listed variants within each role.
 
-### Carrier bays
+| Faction / unit | Role | Craft | Squad DPS | DPS/craft | Hull/craft | Shields/craft | Squad hull+shields | Shield HP/s/craft |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| Rebellion / X-Wing | F | 5 | 230 | 46.0000 | 95 | 15 | 550 | 0.3 |
+| Republic / ARC-170 | F | 8 | 220 | 27.5000 | 60 | 8 | 544 | 0.2 |
+| Empire / TIE Fighter | F | 10 | 210 | 21.0000 | 58 | 0 | 580 | 0 |
+| CIS / Vulture | F | 13 | 200 | 15.3846 | 44 | 0 | 572 | 0 |
+| Rebellion / A-Wing | I | 4 | 200 | 50.0000 | 100 | 15 | 460 | 0.3 |
+| Republic / V-Wing | I | 6 | 190 | 31.6667 | 64 | 8 | 432 | 0.2 |
+| Empire / TIE Interceptor | I | 8 | 180 | 22.5000 | 62 | 0 | 496 | 0 |
+| CIS / Belbullab-22 | I | 11 | 170 | 15.4545 | 44 | 0 | 484 | 0 |
+| Rebellion / BTL-A4 | B | 3 | 140 | 46.6667 | 180 | 10 | 570 | 0.2 |
+| Republic / BTL-B | B | 4 | 135 | 33.7500 | 130 | 8 | 552 | 0.15 |
+| Empire / TIE Bomber | B | 6 | 130 | 21.6667 | 100 | 0 | 600 | 0 |
+| CIS / Droid Bomber | B | 10 | 125 | 12.5000 | 58 | 0 | 580 | 0 |
+| Republic / V-19 | F | 8 | 210 | 26.2500 | 58 | 8 | 528 | 0.2 |
+| Republic / NTB-630 | B | 4 | 130 | 32.5000 | 125 | 8 | 532 | 0.15 |
+| Empire / TIE Brute | F | 10 | 220 | 22.0000 | 64 | 0 | 640 | 0 |
+| Empire / TIE Avenger | F | 10 | 225 | 22.5000 | 54 | 8 | 620 | 0.1 |
+| Empire / TIE Punisher | B | 6 | 145 | 24.1667 | 110 | 6 | 696 | 0.1 |
 
-| Faction | Hull | Active F / B / I | Stock F / B / I |
-|---|---|---:|---:|
-| CIS | Captor | 6 / 4 / 4 | 24 / 16 / 16 |
-| CIS | Lucrehulk | 7 / 5 / 6 | 28 / 20 / 24 |
-| CIS | Providence | 4 / 3 / 3 | 16 / 12 / 12 |
-| CIS | Invincible | 5 / 3 / 4 | 20 / 12 / 16 |
-| CIS | Bulwark | 3 / 2 / 2 | 12 / 8 / 8 |
-| CIS | Wavecrest | 2 / 1 / 2 | 8 / 4 / 8 |
-| Empire | Acclamator Assault | 2 / 1 / 1 | 6 / 3 / 3 |
-| Empire | Imperial Venator | 3 / 3 / 2 | 9 / 9 / 6 |
-| Empire | ISD I, ISD II | 2 / 2 / 2 | 6 / 6 / 6 |
-| Empire | Executor | 3 / 2 / 2 | 9 / 6 / 6 |
-| Empire | Gladiator | 3 / 3 / 2 | 9 / 9 / 6 |
-| Republic | Venator | 3 / 2 / 2 | 9 / 6 / 6 |
-| Republic | Venator II | 4 / 2 / 2 | 12 / 6 / 6 |
-| Republic | Resolute, Acclamator, Imperator | 2 / 1 / 1 | 6 / 3 / 3 |
-| Republic | Mandator | 2 / 2 / 2 | 6 / 6 / 6 |
-| Republic | Rothana | 2 / 2 / 1 | 6 / 6 / 3 |
-| Rebellion | Endurance | 2 / 1 / 1 | 4 / 2 / 2 |
-| Rebellion | Liberator, Quasar Fire, Corellian Battlecruiser, Dauntless, Bothan Assault Cruiser, MC75 Profundity, Home One, MC80 Independence, Nebula | 1 / 1 / 1 | 2 / 2 / 2 |
 
-- CIS bays → Vulture fighter, Droid Bomber, Belbullab-22 interceptor. Change Belbullab runtime class to Interceptor and use a unit-scoped interceptor laser variant.
-- Empire standard bays → TIE Fighter, TIE Bomber, TIE Interceptor. Gladiator split → TIE Fighter / Brute / Avenger 1 each, TIE Bomber 2, Punisher 1, TIE Interceptor 2. Each Gladiator bay uses 3× its active count as stock.
-- Republic standard bays → ARC-170, Republic Y-Wing, V-Wing. Acclamator splits its two fighter slots into 1 ARC-170 and 1 V-19 Torrent, each with stock 3. NTB-630 remains available through direct purchase.
-- Rebel bays → X-Wing, BTL-A4 Y-Wing, A-Wing.
+### Recovery and unchanged values
 
-### Squadron stats
+- **HullRepairPerSecond = 0 for all 17 regular types**, including V-Wing and BTL-B. This explicitly removes their current passive hull repair; update descriptions accordingly.
+- Shield regeneration uses the HP/s/craft column. Preserve each asset's current tick interval; serialize ShieldRegenerateValue = target HP/s × ShieldRegenerateDelay. A-Wing's 2 s interval → 0.6 HP/tick.
+- LaserShieldDamageMultiplier = 1 for all 17 types. Keep the damage matrix unchanged; common fighter/interceptor lasers deal 0.5× raw damage to squadron shields.
+- CIS shields and regeneration become zero for all three types; Imperial standard types and Brute remain unshielded. Avenger/Punisher retain small shields and 0.1 HP/s/craft recovery.
+- These shield/recovery reductions are intentional balance changes: fewer high-quality craft should not combine large resistant shield pools with rapid in-combat recovery.
+- Preserve current movement, targeting, weapon cycle/salvo timings, ranges, research and ability behavior for the first candidate. No new repair ability is introduced.
+- Ability-modified/researched quality ordering is not guaranteed by this base-stat target; evaluate those separately. Premium units retain their existing abilities.
 
-- HP and recovery values are per craft. Recovery columns give shield regeneration and hull repair in HP/s. A-Wing and Belbullab-22 serialize 6 and 1 HP per 2-second shield tick, respectively. Speeds are cruise and combat values in Unity units/s.
-- DPS is full-strength squadron base damage per second summed across mounted weapons. Torpedo volley is full squadron raw damage from one synchronized torpedo salvo. Values are before accuracy, target-class multipliers, ability effects and research. Keep weapon targeting rules, cycle times and member counts. Unlisted stats keep their current values.
+### Exact weapon budget per squadron
 
-| Role | Faction | Squadron | Craft | Hull / shield | Shield regen / hull repair | Cruise / combat | Base DPS | Torpedo volley |
-|---|---|---|---:|---:|---:|---:|---:|---:|
-| Fighter | CIS | Vulture | 7 | 28 / 0 | 0 / 0 | 54 / 60 | 112 | — |
-| Fighter | Empire | TIE Fighter | 7 | 42 / 0 | 0 / 0 | 56 / 63 | 132 | — |
-| Fighter | Empire | TIE Brute | 6 | 52 / 0 | 0 / 0 | 55 / 62 | 155 | — |
-| Fighter | Empire | TIE Avenger | 6 | 44 / 10 | 1 / 0 | 67 / 75 | 147 | — |
-| Fighter | Republic | ARC-170 | 5 | 80 / 30 | 3 / 0 | 69 / 78 | 175 | 180 |
-| Fighter | Republic | V-19 Torrent | 5 | 72 / 25 | 2 / 0 | 71 / 81 | 165 | — |
-| Fighter | Rebellion | X-Wing | 5 | 95 / 50 | 4 / 0 | 75 / 86 | 230 | 200 |
-| Interceptor | CIS | Belbullab-22 | 4 | 38 / 5 | 0.5 / 0 | 62 / 70 | 125 | — |
-| Interceptor | Empire | TIE Interceptor | 8 | 32 / 0 | 0 / 0 | 70 / 78 | 160 | — |
-| Interceptor | Republic | V-Wing | 5 | 62 / 22 | 2 / 1 | 76 / 84 | 195 | — |
-| Interceptor | Rebellion | A-Wing | 6 | 85 / 40 | 3 / 0 | 83 / 94 | 240 | — |
-| Bomber | CIS | Droid Bomber | 4 | 32 / 5 | 0.5 / 0 | 29 / 33 | 78 | 180 |
-| Bomber | Empire | TIE Bomber | 4 | 45 / 0 | 0 / 0 | 31 / 36 | 95 | 240 |
-| Bomber | Empire | TIE Punisher | 4 | 48 / 12 | 1 / 0 | 31 / 36 | 110 | 276 |
-| Bomber | Republic | Y-Wing | 5 | 62 / 24 | 2 / 1 | 34 / 39 | 130 | 300 |
-| Bomber | Republic | NTB-630 | 4 | 60 / 22 | 2 / 0 | 34 / 39 | 122 | 288 |
-| Bomber | Rebellion | BTL-A4 Y-Wing | 6 | 70 / 40 | 3 / 0 | 38 / 44 | 158 | 360 |
+| Unit | Laser DPS | Ion DPS | Missile DPS | Torpedo DPS | Total DPS | Torpedo volley / cycle |
+|---|---:|---:|---:|---:|---:|---:|
+| X-Wing | 210 | 0 | 0 | 20 | 230 | 200 / 10 s |
+| ARC-170 | 200 | 0 | 0 | 20 | 220 | 240 / 12 s |
+| V-19 | 210 | 0 | 0 | 0 | 210 | — |
+| TIE Fighter | 210 | 0 | 0 | 0 | 210 | — |
+| TIE Brute | 220 | 0 | 0 | 0 | 220 | — |
+| TIE Avenger | 205 | 0 | 20 | 0 | 225 | — |
+| Vulture | 200 | 0 | 0 | 0 | 200 | — |
+| A-Wing | 200 | 0 | 0 | 0 | 200 | — |
+| V-Wing | 190 | 0 | 0 | 0 | 190 | — |
+| TIE Interceptor | 180 | 0 | 0 | 0 | 180 | — |
+| Belbullab-22 | 170 | 0 | 0 | 0 | 170 | — |
+| Rebel BTL-A4 | 70 | 10 | 0 | 60 | 140 | 720 / 12 s |
+| Republic BTL-B | 79 | 0 | 0 | 56 | 135 | 672 / 12 s |
+| NTB-630 | 78 | 0 | 0 | 52 | 130 | 624 / 12 s |
+| TIE Bomber | 78 | 0 | 0 | 52 | 130 | 624 / 12 s |
+| TIE Punisher | 77 | 0 | 12 | 56 | 145 | 672 / 12 s |
+| Droid Bomber | 77 | 0 | 0 | 48 | 125 | 576 / 12 s |
 
-### Fighter torpedoes
+- Bomber torpedo budgets deliberately increase anti-ship contribution: current Rebel BTL-A4 volley360 → target720 despite six→three craft. This is an explicit role rebalance, not a side effect of member scaling.
+- Per-craft bomber torpedo volley: Rebel240 > Republic168 (NTB156) > Empire104 (Punisher112) > CIS57.6.
+- Preserve all existing mounts per craft and salvo shot counts. For each weapon family on a type, multiply its current resized damage by target family DPS / current resized family DPS. Preserve relative damage among that family's mounts, including ARC rear/forward guns.
+- Use unit-scoped weapon definitions; do not retune shared family rules. This algorithm plus family totals specifies every mount's damage without guessing barrel/salvo counts.
+- Missile total-DPS targets use existing cycle times. Set base WarheadDamageMultiplier and WarheadReloadMultiplier to 1 and encode the budget in unit definitions, avoiding duplicate tuning.
 
-- X-Wing → one ship-targeting proton torpedo launcher per fighter, 40 damage, 10 s reload, one shot per attack run. Full squadron → 200 volley, 20 torpedo DPS, 210 laser DPS, 230 total base DPS.
-- ARC-170 → 36 damage per torpedo, 12 s reload, 180 volley, 15 torpedo DPS, 175 total base DPS.
-- BTL-A4 and BTL-B Y-Wings use proton torpedoes. Their full-squadron volleys are 360 and 300, respectively, at 12 s reload.
+### Carrier targets
+
+- Active cap = simultaneous squads. Total stock = all launches including the first wing, not additional replacements.
+- Stock factor is explicit per row: support2×, dedicated3×, flagship4× active. This replaces the old faction stock multiplier; faction quantity now primarily comes from members per squadron.
+- Wing DPS excludes carrier guns and assumes every listed squad is intact and deployed.
+- Standard types: Rebel X-Wing/A-Wing/BTL-A4; Republic ARC-170/V-Wing/BTL-B; Empire TIE Fighter/TIE Interceptor/TIE Bomber; CIS Vulture/Belbullab-22/Droid Bomber.
+
+| Faction / carrier | Active F / I / B | Total stock F / I / B | Wing raw DPS |
+|---|---:|---:|---:|
+| Empire / Acclamator Assault | 2/1/1 | 4/2/2 | 730 |
+| Empire / Executor | 2/2/2 | 8/8/8 | 1040 |
+| Empire / Gladiator | 2/1/2 | 6/3/6 | 900 |
+| Empire / Imperial Venator | 2/2/2 | 6/6/6 | 1040 |
+| Empire / Interdictor | 1/0/0 | 2/0/0 | 210 |
+| Empire / ISD I | 2/1/2 | 6/3/6 | 860 |
+| Empire / ISD II | 2/1/1 | 4/2/2 | 730 |
+| Rebellion / Bothan Assault Cruiser | 1/1/1 | 2/2/2 | 570 |
+| Rebellion / Corellian Battlecruiser | 1/1/1 | 2/2/2 | 570 |
+| Rebellion / Dauntless | 1/1/1 | 2/2/2 | 570 |
+| Rebellion / MC75 Profundity | 1/1/1 | 2/2/2 | 570 |
+| Rebellion / Nebula | 1/1/1 | 2/2/2 | 570 |
+| Rebellion / Home One | 2/2/1 | 8/8/4 | 1000 |
+| Rebellion / MC80 Independence | 2/1/2 | 8/4/8 | 940 |
+| Rebellion / Endurance | 2/2/2 | 8/8/8 | 1140 |
+| Rebellion / Liberator | 2/1/2 | 6/3/6 | 940 |
+| Rebellion / MC80 Justice | 2/1/2 | 6/3/6 | 940 |
+| Rebellion / Quasar Fire | 2/1/1 | 6/3/3 | 800 |
+| Rebellion / MC80b Remonda | 1/0/1 | 2/0/2 | 370 |
+| Rebellion / MC80 Freedom | 0/0/1 | 0/0/2 | 140 |
+| Rebellion / Mediator | 0/0/1 | 0/0/2 | 140 |
+| Republic / Acclamator | 2/1/1 | 4/2/2 | 755 |
+| Republic / Imperator | 1/1/1 | 2/2/2 | 545 |
+| Republic / Resolute | 2/2/1 | 6/6/3 | 955 |
+| Republic / Mandator | 2/2/2 | 8/8/8 | 1090 |
+| Republic / Rothana | 2/1/2 | 6/3/6 | 900 |
+| Republic / Venator II | 2/1/2 | 6/3/6 | 900 |
+| Republic / Venator I | 2/2/2 | 6/6/6 | 1090 |
+| CIS / Wavecrest | 1/1/1 | 2/2/2 | 495 |
+| CIS / Bulwark | 2/1/1 | 4/2/2 | 695 |
+| CIS / Providence | 2/1/2 | 6/3/6 | 820 |
+| CIS / Captor | 2/2/2 | 6/6/6 | 990 |
+| CIS / Invincible | 2/2/2 | 8/8/8 | 990 |
+| CIS / Lucrehulk | 2/2/2 | 8/8/8 | 990 |
+
+
+### Mixed bays and timing
+
+- Gladiator exact active/stock: TIE Fighter0/0; Brute1/3; Avenger1/3; TIE Interceptor1/3; TIE Bomber1/3; Punisher1/3. Preserve all existing indices/bindings; Brute/Avenger fill two fighter slots and Bomber/Punisher fill two bomber slots. Standard TIE direct purchase remains available.
+- Zero/zero bay is supported: HangarBay permits0; launch selection requires stock>0 and active<cap; preload skips disabled bays. No new runtime capacity mechanism required.
+- Republic Acclamator: ARC-1701/2, V-19 1/2, V-Wing1/2, BTL-B1/2; fighter total2/4.
+- Interdictor supports fighters only; Remonda fighters/bombers; Freedom and Mediator bombers only. Their zero-role entries are intentional exceptions to the three-role carrier convention.
+- Every carrier uses initial delay4 s and interval1 s, retaining round-robin selection, global10 launches/s and per-bay5 s recent-launch window. Preserve existing ability-driven timing rules and destroyed-hardpoint eligibility.
+- Same six-squadron ceiling means Captor and Lucrehulk share990 active wing DPS; Lucrehulk has8/8/8 stock versus Captor6/6/6 plus its own hull/guns. Do not claim their air wings alone justify the hull-price difference.
+- Lucrehulk raw active wing DPS2161→990 (−54.2%) is intentional consolidation plus quality normalization; its craft104→68 and entities20→6. Revisit carrier value if this excessive nerf appears in equal-cost matches.
+
+### Scope boundaries
+
+- This requested target sheet fixes squadron combat stats and all34 carrier loadouts. Direct-purchase prices/build times/population, station deployment and whole-faction economic balance are not declared balanced by these numbers.
+- Existing station caps2 Rebel/3 Republic/4 Empire/5 CIS would yield400/660/840/1000 base DPS with new squad stats. Resolve station targets before shipping the overall rebalance; carrier rules do not silently change station roles.
+- Existing low CIS purchase prices and high Rebel prices cannot be assumed appropriate when whole squads are now closer in strength. Keep a separate economics acceptance item rather than silently changing approved prices in this proposal.
 
 ## Implementation
 
-1. Apply bay targets to ship assets. Preserve existing bay indices and types. Append missing bays and validate every active cap against stock. For Executor, Quasar Fire, Bothan Assault Cruiser and Nebula, retain independent fighter/bomber hardpoints and bind the added interceptor bay to the existing fighter hardpoint and launch point. Extend per-bay hardpoint handling to toggle all linked bays when a shared hardpoint changes.
-2. Rotate automatic selection after each successful automatic launch. Skip bays that are disabled, empty, full or cooling down. Verify a fresh, lossless Captor launches all three roles by about 6 s and Liberator by about 20 s, measured from the start of the hangar timer with an available global slot.
-3. Set the squadron data fields. Tune weapon damage using unit-scoped definitions for variants that need individual values. Set torpedo damage to the volley target first. Scale the other damage-bearing mounts by the ratio of remaining target DPS to their current summed DPS. Keep mount counts, reloads and firing geometry. Re-bake and reconcile live mount values with AI combat profiles and the balance preview. Update role and count descriptions in the faction data.
-4. Migrate old hangar saves before validation. Keep old indices and tracked squadron IDs. For each existing bay use remaining stock = max(0, new stock − max(0, old starting stock − old saved remaining stock)). Initialize appended bays at their new stock. Keep already-launched units and let any over-cap bays fall below the new cap through attrition. Preserve saved launch cooldown. Use pre-change per-hull stock as migration input, including the four independently bound hulls.
-5. Verify 29/29 carrier role coverage, the exact bay and squadron targets, correct hardpoint damage behavior, and save/load with deployed squadrons and spent stock. Source-verify Squadrons, Balance, Combat, Ships, GameFlow and EnemyAi paths. Compare equal-cost fleets at levels 2, 3 and 5 and compare each role head-to-head with base stats and with abilities/research. Record spawn times, peak craft count, losses, replacements and anti-ship damage before signing off on balance.
+1. Resize17 regular prefabs to the exact counts; preserve three heroes and excluded Delta-7. Clone/remove complete craft subtrees and rebuild contiguous IDs plus health/flight/weapon/death/pose/entity registrations.
+2. Preserve each type's full multi-gun/torpedo/ion layout. The generic SquadronViewPrefabBuilder only covers three types and registers one Gun/member; do not blanket-rebuild modern layouts with it.
+3. Apply per-craft hull/shields/recovery and family DPS budgets through unit-scoped definitions. Rebake MemberCount and weaponLoadout; both remain derived data. Verify counts, exact damage totals, volley budgets and unchanged weapon cycles.
+4. Apply all34 carrier active/stock targets and explicit mixed bays. Preserve bay indices and hardpoint/exit bindings. Update faction descriptions, count/health/repair text and carrier stock descriptions.
+5. Reconcile AI live/pending wing strength and usable reserves; inspect capture/retreat/population valuation. Theoretical carrier capacity is not surviving strength.
+6. Source-check fresh save/load, member-death weapon shutdown, complete pooled respawn and matching host/client member arrays. Old member-array lengths are incompatible; no silent healing or truncation migration.
+7. Review13/11-member formations, navigation radius, launch overlap and targeting footprint. No fixed eight-member limit was found; increased craft still adds per-member weapon/visual cost.
+8. Refresh/import assets, explicitly reserialize only changed paths, SaveAssets and inspect Console. Do not require manual Editor saving.
+9. Validate equal-cost/population fleets at levels2/3/5, strikecraft role matchups, anti-ship volleys, replacement timelines, station/purchase changes and abilities/research. Record living squads AND craft, losses, damage by target, expenditure and frame time.
 
-## Files
+## Edge Cases
 
-- `Assets/Settings/Data/Ship/`, `Assets/Settings/Data/Squadron/`, `Assets/Settings/Data/Factions/`
-- `Assets/Settings/Data/Models/Weapon/WeaponsData.asset`, `DamageMatrixData.asset`
-- `Assets/Scripts/Components/Hangar/HangarModel.cs`, `HangarComponent.cs`
-- `Assets/Scripts/Services/Saves/BattleSaveValidator.cs`, `HangarSave.cs`, `LaunchedSquadronSave.cs`
-- [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]] — historical CIS buffs and broader AI scope.
-
-## Verification
-
-- Imported, explicitly reserialized and saved 70 affected Unity assets. Editor Console reported zero errors.
-- Editor asset inspection verified 29/29 carrier loadouts against exact caps, stock and timers. Checked squadron asset/view addresses, all three runtime roles per carrier, and every hangar’s bound launch point and applicable hardpoints. Four independent-bay prefabs share their fighter exit with the interceptor bay.
-- Verified 17/17 squadron stat sets and live mount counts against baked loadouts. Maximum floating-point deviation was 0.000016 base DPS and 0.000031 torpedo volley damage.
-- Source-verified version 4 stock migration before save validation and preservation of tracked squadrons and cooldowns. Captor's first three automatic launch times derive as 4/10/16 s and Liberator's as 4/12/20 s when shared slots are available.
-- Reusable combat and carrier rules recorded in [[GameDesign/Combat]].
-- Equal-cost fleet balance, live bay destruction, X-Wing torpedo firing and legacy-save load remain in [[TODOs/User_Acceptance_Queue]].
-- X-Wing prefab has five `FighterTorpedoHardPoint` launchers, indexed by fighter and registered for attack runs, weapon firing, dependency injection and fighter death. Baked loadout matches 20 laser mounts and 5 proton torpedo launchers.
-- Final Editor asset inspection confirmed 29/29 carrier loadouts and 17/17 squadron variants, including 230 X-Wing base DPS and 200 torpedo volley damage.
-- EditMode passes → Balance 99/99, Squadrons 83/83, Combat 240/240, GameFlow 177/177. Includes the fighter torpedo and version 4 hangar migration cases.
-- Ships 138/141 → existing asset/fixture mismatches on Allegiance ion mounts, ISD II hull and Procursator hull. EnemyAi 339/343 → four `PreferredShipAtLimit` cases hit the existing second-station purchase branch before ship selection.
-
-## Review — 2026-11-12
-
-- Reopened after user reported fresh-match CIS < Republic and Empire < Rebellion visible squadron counts. Initial implementation completed 2026-11-11; combat balance acceptance failed.
-- Read-only audit matches all original 29 carrier cap/stock/timer sets and all 17 squadron count/role/durability/recovery/speed sets. Mounted DPS was not independently re-baked in this review. No tests or new gameplay runs executed.
-- Existing post-rebalance telemetry confirms all CIS and Empire regular roles fire; regular squadron kill exchanges favor Republic 57:14 and Rebellion 71:32. Detailed evidence → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research]]. These are whole squadron kills, not individual craft or spawn counts.
-- Causes: large durability/DPS/recovery advantage; shields take 0.5× fighter/interceptor laser raw damage; every squadron loss resets the carrier-wide launch wait; 60 s recent-launch gate limits replacements; station counts and purchase limits do not enforce faction quantity hierarchy.
-- Current deployable roster includes four additional Rebel carriers and Imperial Interdictor outside the 29-hull table: current one-of-each active totals CIS 66, Empire 40, Republic 38, Rebellion 38. These totals do not predict equal-cost fleets or live survivors.
-- Reusable verified rule recorded in [[GameDesign/Combat]]: maximum hangar capacity is not current air strength; assess launch throughput and survival together.
+- Effective durability against a chosen common laser = members × (hull / hull-class multiplier + shields / 0.5), excluding recovery, accuracy, targeting bias and casualty distribution.
+- Fighter laser hull multipliers F/I/B =1.5/1.75/1.5; interceptor laser =1/1.5/2.5. This avoids overvaluing raw unshielded HP or undervaluing shield resistance.
+- Exact target math confirms per-craft DPS and HP ordering for standard and listed premium types. It does not prove equal-cost match balance.
+- Shielded recovery, Rebel speed, overkill against fragile craft, attack-run uptime and premium abilities can widen the Rebel advantage; do not compensate by changing counts without updating the target sheet.
+- Local test execution remains disabled unless explicitly requested. Current verification is arithmetic, prior live source/prefab inspection and current carrier role/price inspection, not a battle or test pass.
 
 ## TODO
 
-- [ ] Reconcile current playable carrier coverage and faction quantity targets, including stations and direct purchases.
-- [x] Remove the shared cooldown reset on squadron death; recent-launch window 60 → 5 s; six CIS carrier intervals 6 → 1 s (2026-11-12).
-- [ ] Retune quality versus quantity using effective shield durability, regeneration and anti-squadron damage; preserve the requested quality ordering.
-- [ ] Recheck equal-cost fleets at levels 2/3/5 and role matchups, recording launch/live-count/loss/replacement timelines. Existing telemetry lacks launch and peak-count histories.
-- [ ] Retain unresolved launch-role/shared-hardpoint/legacy-save/X-Wing torpedo acceptance checks from the original review.
+- [x] Audit live member/loadout data; verify21/21 prefab inventories.
+- [x] Calculate count-only impact and identify save, builder, economy and role-cap issues.
+- [x] Set exact17-type count/DPS/hull/shield/recovery/weapon budgets and34-carrier caps/stock.
+- [x] Verify strict per-craft quality ordering and both common-laser durability calculations; verify zero/zero disabled bay support.
+- [ ] Implement prefab, stats, weapon budgets and carrier values.
+- [ ] Reconcile station and direct-purchase economics before release; preserve global launch throttle.
+- [ ] Update AI strength consumers, descriptions and fresh-match compatibility messaging.
+- [ ] Complete asset persistence/source checks and user gameplay acceptance.
+- Relevant categories when authorized: Squadrons, Balance, Combat, Ships, GameFlow, EnemyAi; Networking/Capture/Economy/Ui only where implementation touches them.
+- No reusable implemented rule extracted: these are proposed targets; prior verified engineering findings remain linked in the research and GameDesign/Combat.
 
-## Follow-up — 2026-11-12
+## Files
 
-- User-requested implementation: CIS carrier intervals 1 s; loss leaves the shared timer unchanged; per-bay recent-launch window 5 s globally. Initial carrier delay remains 4 s. Empire/Republic/Rebel intervals remain 10/8/8 s.
-- Stations, active / total stock: CIS 5/20, Empire 4/12, Republic 3/9, Rebellion 2/4. Stock follows faction multipliers 4×/3×/3×/2×. Station delay/interval remain 1/3 s.
-- Updated Squadrons regression assertions for fast launch history, cross-bay loss, elapsed-timer replacement, restored launches and hangar repair. Tests not run under local override.
-- Remaining findings → battle-wide launch ceiling 10/s; AI counts theoretical carrier capacity after attrition/exhaustion; old saves retain saved stock/timer; quality gap and direct-purchase equality remain. Details in research companion.
-- Broader plan remains active: quality retuning and full current-roster quantity reconciliation are not implemented by this scoped follow-up.
-- Follow-up verification: Unity explicitly reserialized and saved all seven changed assets; live inspection confirmed six 1 s carrier intervals and all four station cap/stock pairs. Compiled `RELAUNCH_COOLDOWN` reads 5; source/diff checks passed. No affected import/serialization errors observed. Shared Editor Console contains unrelated test teardown errors from concurrent work; this task did not execute tests.
-
-## Purchase prices — 2026-11-12
-
-- Applied user-approved prices (credits/squadron): CIS Vulture 200, Belbullab-22 300, Droid Bomber 300; Empire TIE Fighter 300, Interceptor 450, Bomber 450, Brute 450, Avenger 550, Punisher 600; Republic V-19 500, ARC-170 600, V-Wing 650, NTB-630 550, BTL-B 650; Rebellion X-Wing 800, A-Wing 850, BTL-A4 850.
-- Four faction assets, 14 changed price fields; three regular prices already matched. Hero prices, build times, limits, capacity and combat stats unchanged.
-- Unity refreshed, explicitly reserialized and saved all four faction assets. Live serialized inspection verified all 17 regular prices and unchanged heroes; Console returned no errors; diff whitespace check passed. Balance verification was asset inspection only; tests not run.
-- User decisions: keep global launch throttle; strength balance awaits user playtest; old-save migration is out of scope during development. Live/pending hangar strength for AI purchases remains proposed, not implemented.
+- Assets/Prefabs/Models/Squadrons/; Assets/Settings/Data/Squadron/
+- Assets/Settings/Data/Models/Weapon/WeaponsData.asset; DamageMatrixData.asset
+- Assets/Settings/Data/Ship/{Empire,Rebellion,Republic,Separatist}/; Assets/Settings/Data/Factions/
+- Assets/Scripts/Components/Hangar/HangarBay.cs; HangarModel.cs
+- Assets/Scripts/Components/Squadron/Health/SquadronHealthComponent.cs; SquadronHealthModel.cs
+- Assets/Scripts/Editor/AI/WeaponLoadoutBaker.cs; Assets/Scripts/Editor/Balance/BalanceDerivedData.cs
+- Assets/Scripts/Services/Saves/BattleSaveValidator.cs; Assets/Scripts/Services/Repository/BattleAssetPreload.cs
+- [[TODOs/Features/Malevolence_Import]]; [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]

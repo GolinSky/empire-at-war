@@ -68,11 +68,15 @@
 
 
 
+- [ ] **Boost Weapon Power firing rate** → [[TODOs/Bugs/Boost_Weapon_Power_Fire_Rate_Fix|Boost Weapon Power Fire Rate Fix]]
+  - Status: todo (2026-11-14). Source-verified: effect-flight gate blocks reload gain (Ion/Missile 1×, Turbolaser ≈1.3×); burst spacing ignores boost. Decisions: bounded in-flight cap with boosted prewarm for ability-5 units (Option B); accept +20–27% unboosted long-range Ion/Missile DPS. Implementation pending.
+
 - [ ] **Ship hardpoints, firing angles and balance** → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]
   - Status: todo (2026-11-13). Peleset/Recalcitrant wrapped-yaw mismatch; Recusant DPS/coverage; Dispatcher/Resolute/Arquitens narrow arcs; Mandator economics; shared-prefab telemetry and Venator II description. Findings recorded; fixes unimplemented.
 
 
 - [ ] **Rebalance carrier deployment and squadron stats** → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance|Carrier and Squadron Rebalance]]
+  - 2026-11-14 exact target sheet: 17 regular types with craft/DPS/hull/shield/recovery/weapon budgets; all 34 carriers assigned 1–2 squads per supported role plus total stock. CIS fixed at 13/11/10 F/I/B; per-craft quality verified Rebel > Republic > Empire > CIS. [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Unit Amount Research|Calculations]]. Proposed only; implementation, station/purchase economics and gameplay acceptance remain.
   - Reopened 2026-11-12 after failed fresh-match balance acceptance. Original 29 loadouts match; telemetry confirms Republic/Rebel squadron kill advantage. Implemented 1 s CIS launches, no loss-triggered cooldown reset, 5 s recent window and faction station counts 5/4/3/2. Applied approved direct-purchase prices. Remaining: strength playtest, AI live/reserve counting and current-roster coverage; [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research|audit evidence]].
 
 - [ ] **Fix defense satellite review findings** → [[TODOs/Bugs/Defense_Satellites_Review_Fixes|Defense Satellites Review Fixes]]; parent: [[TODOs/Features/Defense_Satellites_Plan|Defense Satellites Plan]]

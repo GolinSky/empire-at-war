@@ -49,6 +49,9 @@ tool_timeout_sec = 180
 [mcp_servers.graphify.env]
 GRAPHIFY_QUERY_LOG_DISABLE = "1"
 
+[mcp_servers.graphify.tools.query_graph]
+approval_mode = "approve"
+
 # Use the project-local bridge instead of the inherited user-level connection.
 # Placeholder URL keeps the disabled entry valid; it is never contacted.
 [mcp_servers.penpot]
