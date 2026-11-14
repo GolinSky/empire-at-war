@@ -103,8 +103,8 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 522ba884f3c6d224cb19c7a59f5dd39b, type: 2}
         description: Eight DBY-827 heavy twin turbolasers lead a durable Republic
           battle line. Ion cannons weaken shields; laser batteries and point defense
-          protect the fleet. Deploys 2 fighters, 2 bombers, and 1 interceptor at
-          once. Carries 15 total squadron launches.
+          protect the fleet. Deploys 1 fighter, 1 bomber, and 1 interceptor at once.
+          Carries 15 total squadron launches.
         role: "Capital \xB7 Heavy gunship / carrier"
         iconKey: 677a9fb4a7566e14d932893ee85f3357:21300000
         isHero: 0
