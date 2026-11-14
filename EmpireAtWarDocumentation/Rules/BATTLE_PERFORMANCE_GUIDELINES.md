@@ -96,6 +96,10 @@ tags:
 
 ### CPU scheduling and snapshots
 
+- Enemy placement: reject bounds, vision, area, hazard and structure exclusions before checking a per-search snapshot of threat disks. Run physics clearance last.
+- Share placement and scout results per AI per frame. Invalidate before another query can reuse a spot consumed by a structure build. Revalidate a last good placement before scanning again.
+- Same-seed restored Editor battle: 12 full map scans peaked at 3.30 ms, and enemy production tick peaked at 4.55 ms. No failure cooldown was needed. Baseline and restored workloads differ → [[Done/Optimization/Enemy_Production_CPU_Spike_Plan]].
+
 - Capture-strength predicates snapshot center/radius once per due area via the sampler preparation callback. Refresh on each scan so moved/resized geometry remains correct; do not repeat Unity site-transform reads per unit.
 - Budget target searches, but validate model target lifetime before every pilot tick. Dead Attack/Guard targets stop; dead opportunistic engagements disengage and resume their course, including Hunt. Cached view transforms must not outlive their target.
 - Profiler frame indices accumulate across captures. Use exact ranges or explicitly clear an idle buffer after saving; top-40 summaries cannot recover uninstrumented descendants. Reproduction/verified CPU evidence → `Docs/Audits/2026-10-30-Late-Battle-CPU/analysis.md`.

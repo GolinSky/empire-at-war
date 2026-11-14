@@ -61,7 +61,29 @@ acceptance: pending-user
 - [x] Unity 6000.4.7f1 recompile completed with 0 errors. Refreshed, reserialized only the 20 updated prefabs, saved and reloaded all 20. Console contained 0 errors on final check.
 - [x] Authored regression coverage for damage and reservations, simulator ticks, mixed AI forces, shared forward arcs, firing priority and recovery, and siege standoff. Tests were not run under the local execution override.
 - [x] Extracted current rules to [[GameDesign/Combat#Capital siege and hull facing]] and geometry/cadence caveats to [[Rules/WEAPON_EFFECTIVE_DPS_LIMITATIONS]].
+- [x] Independent source review of commit `417b02029` (2026-11-14): siege factor, kind facade, attacker-class injection, simulator mirror, AI task-force estimate, facing solver, standoff and 20 prefab flag/arc sets match this plan. `MiningFacilityInstaller` registers no `IStructureKindFacade` → mines excluded. Unity console: 0 errors. Tests not run.
+  - Residual: `GetFiringTurnAngle` returns 0 (hold heading) when no mount can reach any target hardpoint; the old solver pre-turned with out-of-range guns. Callers invoke it only in range, so no current regression.
+  - Residual: secondaries do not break ties among equal main-battery headings; nearest heading wins.
+  - Residual: only `EnemyAttackTaskForce` estimates use the target kind. Generic `CombatMatchup.TimeToDestroy`, `EnemyDefenseStrategy` and `EnemyCounterProductionModel` still use base Structure DPS.
+  - Residual: facing solve cost is up to 180 samples × mounts × target hardpoints (early exit at full score, timed re-solve). Not profiled; check `BattleProfilerMarkers.ShipFacingSolve` during acceptance.
+  - Expected: Pelta main batteries have no forward sector, so main-first facing turns Pelta broadside.
 - [ ] Player acceptance → [[TODOs/User_Acceptance_Queue#Gameplay and Balance]]. Compare shield/hull DPS at fixed distance and inspect approach, forward firing and fallback in an uncheated battle.
+
+### Implementation review — 2026-11-14 (source vs `417b02029`)
+
+- Confirmed: `SiegeDamage` = ×1.5 only for `HeavyCapital` → `SpaceStation` / `SecondStation` / `DefendPlatform`; applied once in `WeaponComponent` before `EstimateLoss` and tick split → shields, hull and reservations all see it.
+- Confirmed: `StructureKindFacade` registered only by `SpaceStationInstaller` and `DefendPlatformInstaller`; `MiningFacilityInstaller` has none → mines/Tibanna excluded. `ShotEffectPool` impact damage is visual only.
+- Confirmed: AI `ForceComposition.DamageRates` adds only the HeavyCapital `Structure` share × (1.5 − 1); `EnemyAttackTaskForce` resolves the kind once per target.
+- Confirmed: `WeaponFacingSolver` 2° samples, nearest-first order with early exit at maximum score, mains before secondaries; `CanContributeToFacing` excludes destroyed, Power-to-Main-Batteries-disabled and target-ineligible mounts; ion/cloak → no turn.
+- Confirmed: siege approach only when own nav radius > 0.8 × engagementRange (contact-limited); standoff = own radius + station hull radius + 1, hold +2; platforms use contact distance + 1.
+- Confirmed: `mounts.csv` after-phase — every flagged main mount covers hull 0° in all 24 scoped layouts; Pelta (4 mains, no forward) unchanged as decided. ISD II prefab arcs (−135…10 / −10…135) match the export.
+- Simulator: `SimUnitDefinition.StructureKind` is set only by tests → siege is unreachable from the simulator window (already stated above).
+
+### Open risks (not blocking; check during acceptance)
+
+- No-reach facing: when neither mains nor secondaries reach any target point, `FindTurn` returns 0 → ship keeps its heading. The old solver still turned toward out-of-range arcs. Watch Executor vs Empire L5 station (0–2 mains reach at contact).
+- Facing cost unmeasured: Executor has 174 mounts; worst case 180 samples × mounts × target hardpoints with `TryCalculateAim`, main thread, once per 1 s or 2° bearing change per stationary ship. Check `ShipFacingSolve` in the acceptance profiler capture against [[Rules/BATTLE_PERFORMANCE_GUIDELINES]].
+- Other HeavyCapitals (Titan, Allegiance, Mandator, Lucrehulk, Malevolence) get the siege approach only if contact-limited; otherwise they use the standard approach with ×1.5 damage.
 
 ## Important Values
 

@@ -72,7 +72,7 @@ verification: "Source, serialized mount arcs, Unity compilation, and loaded
 - Nominal all-mount DPS includes guns unable to share a bearing and may include fighter-only PD. Exclude PD for anti-ship coverage.
 - The November 14 telemetry predates main-battery-first auto-facing. During a current solve, destroyed, disabled and target-ineligible mounts contribute zero weight.
 - Ships only perform combat-facing turns while stationary; navigation controls moving headings.
-- All 37 Empire/Rebellion roster ships were audited. Republic geometry requires a fresh audit before the new plan changes it.
+- All 37 Empire/Rebellion roster ships were audited; the siege audit then covered 25 layouts incl. Republic (`Tools/BattleAudit/CapitalSiegeAudit.md`). Separatist/Rebellion arcs outside those layouts are unaudited.
 - Gate removal raised unboosted long-flight DPS without stat changes (user-accepted): Missile cycle ~12.9 → 10 s (+27% at max range), Ion ~7.2 → 6 s (+20%). Executor turbolaser/ion gain more (flight > reload).
 - Battle_20261114_125915 predates the gate removal → its Executor delivered-damage figures are not current-cadence evidence. Re-capture before siege tuning; do not silently compensate away the user-approved 1.5× rule.
 - `ShipEngagement` standoff (0.65×) sits inside the 0.8× gate. AttackMove/Guard/Hunt pursue only while `CanEngage` is false → a ship inside the gate does not move closer, even when individual mounts are out of reach.

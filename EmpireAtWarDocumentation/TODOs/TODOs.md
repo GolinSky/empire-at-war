@@ -94,6 +94,7 @@
 
 ### Optimization
 
+
 - [ ] **Ship facing solve spikes (35.2 ms of a 60.5 ms frame; once-a-second ship-order spikes)** → [[TODOs/Optimization/Ship_Facing_Solve_CPU_Plan|Ship Facing Solve CPU Plan]]
   - 2026-11-14: fast yaw checks, Burst sweep, refresh budget and reusable health buffer implemented. Unity compiled. In-range probe max 1.11 ms; dense 40×30 probe max 4.16 ms. Exact intervals and matched crowded-battle verification remain active.
 
@@ -226,6 +227,9 @@
 ## Done
 
 ### Optimization
+
+- [x] **Remove enemy AI production spikes** → [[Done/Optimization/Enemy_Production_CPU_Spike_Plan|Enemy Production CPU Spike Plan]]
+  - 2026-11-14: cheap checks, threat snapshot and per-frame query reuse. Same map and AI after restoring an autosave: production tick max 4.55 ms versus 294.08 ms in the original live capture. Twelve full-map scans peaked at 3.30 ms. Unity compiled with zero errors. Automated tests not run.
 
 - [x] **Restore FPS during ship reinforcement placement (spawn grid overlay)** → [[Done/Optimization/Spawn_Grid_Overlay_Performance_Plan|Spawn Grid Overlay Performance Plan]]
   - Completed 2026-11-14: all four phases implemented — deduplicated clearance, allocation-free contact filtering, cached asynchronous reachability and bucketed point checks. Source/diff checks passed; full compile blocked by 3 unrelated ShipSelectionReuseTests CS1501 errors. Tests and runtime FPS unmeasured; acceptance → [[TODOs/User_Acceptance_Queue]].

@@ -17,6 +17,18 @@ updated: 2026-11-14
 - In-range diagnostic `Logs/RenderAudit/20261114T153113515Z-profiler`: 50 capital solves, 49 ≤0.681 ms, max/p99 1.111 ms (14 mounts × 41 targets, 180 headings, 2,433 aim checks). One solve per probe frame.
 - Dense 40×30 diagnostic `Logs/RenderAudit/20261114T153001520Z-profiler`: 30 solves, roughly 2.4 ms typical, p99/max 4.163 ms. Full 180 headings and 180,969 aim checks. Warmed synthetic kernel recorded zero GC.Alloc children in the standard capture.
 - Post-change 10 s CSV `battle_20261114_153206_897.csv`: 2,025 frames, 0 ship-order frames above 6 ms, zero target requests. Use it only as an idle bound.
+- Source review of `453ae9892` (2026-11-14):
+  - Compiles, with no facing errors in the console. Tests have not been run (local override).
+  - **Behavior preserved, confirmed in source:**
+    - `Mount.Classify` uses yaw = `atan2(dot(d, parentRight), dot(d, parentForward))`, which equals Unity's `eulerAngles.y` for `Inverse(parent)·LookRotation(d)`.
+    - Narrow and wide arcs are both correct.
+    - Cases close to an arc edge (0.1°), close to the range limit (1e-6), or with the target nearly straight above or below fall back to `TryCalculateAim`.
+    - Burst `Lower`/`Upper` bounds run the exact check only when a heading can beat the current best. The first strictly better score still wins, so the tie order matches the old solver.
+  - **Wiring confirmed:** `long entityId` is already resolvable (`HangarComponent` and `ShipBattleMarker` take it). The scheduler is in `Assembly-CSharp`; tests reach it through `InternalsVisibleTo`. `Ship.Tick` (`ITickable`) runs states every frame before `ShipFacingSolveScheduler.LateTick`, so the `_facingRequestFrame` guard holds. A dropped request re-queues on the next `LookAtTarget`.
+  - **[ ] Throughput:** `MAX_REFRESHES_PER_FRAME` = 2. Each ship holds at most one queued request, so with N stationary ships the refresh delay is about N/2 frames (200 ships ≈ 1.7 s at 60 FPS). Most solves are now ≤ 0.7 ms, so raise the cap (for example to 8) and let the 1 ms budget limit the work.
+  - **[ ] Remaining allocation:** `List.AddRange(array)` in Mono's reference-source `InsertRange` allocates a temporary `T[count]`. This affects `HealthComponent.CopyShipUnits` for hull-only targets (`_hullTargets`), `SquadronHealthComponent.CopyShipUnits` once all fighters are dead (`_adapters`), and the `IHealthModelObserver` default method. Replace these with indexed `Add` loops.
+  - **[ ] Burst path cost:** seven `TempJob` arrays per solve, and the static heading table is copied each time. Optional: keep these as persistent buffers. This is not the cause of the 4.16 ms dense case; exact turn intervals are still needed for that.
+  - **[ ] Test placement:** `FacingRefreshQueueCarriesExcessRequestsToNextFrame` lives in `ShipNavigationServiceTests` (`Navigation`), but the scheduler is in `Services/Ship`, which maps to `Ships`. Move it to a `Ships` fixture.
 - Remaining: implement exact turn intervals and verify score/turn parity before claiming the dense target. Profile a matched crowded fight with allocation call stacks, confirm trigger mix and aggregate facing budget, and check capital behavior in game.
 
 ## Goal

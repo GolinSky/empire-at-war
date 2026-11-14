@@ -182,6 +182,8 @@ created: "2026-10-29\r"
 
 ## Visuals and Performance
 
+- [ ] [[Done/Optimization/Enemy_Production_CPU_Spike_Plan]] — Run the `EnemyAi` EditMode regressions for threat snapshot parity and placement reuse.
+
 - [ ] [[TODOs/Optimization/Battle_FPS_Recovery_Plan]] — November 7 implemented phase: review station-only burst scale 0.75 at near/far zoom with nearby fighters and HUD. [Matched captures](../../Docs/Audits/2026-11-07-Optimization-Fixes/station-comparison.png); packed smoke/fog/pool lifecycle already verified.
 - [ ] [[TODOs/Optimization/Asset_Size_Followup_Plan]] — November 7 implemented phase: approve three compressed Providence maps at closest zoom/team colors on Windows and Mac; listen to menu/battle transitions and voice ducking. Numeric gates, Mac packed playback and handle release already verified.
 
