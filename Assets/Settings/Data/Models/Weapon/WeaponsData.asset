@@ -113,7 +113,7 @@ MonoBehaviour:
   - family: 4
     platform: 0
     damageType: 5
-    damage: 40
+    damage: 32
     shotsPerSalvo: 4
     shotInterval: 0.25
     reload: 10
@@ -135,7 +135,7 @@ MonoBehaviour:
   - family: 5
     platform: 0
     damageType: 6
-    damage: 90
+    damage: 72
     shotsPerSalvo: 2
     shotInterval: 0.4
     reload: 12
@@ -157,7 +157,7 @@ MonoBehaviour:
   - family: 6
     platform: 0
     damageType: 4
-    damage: 64
+    damage: 51.2
     shotsPerSalvo: 1
     shotInterval: 0
     reload: 15
@@ -276,7 +276,7 @@ MonoBehaviour:
   - family: 22
     platform: 1
     damageType: 5
-    damage: 40
+    damage: 32
     shotsPerSalvo: 1
     shotInterval: 0.5
     reload: 15
@@ -298,7 +298,7 @@ MonoBehaviour:
   - family: 23
     platform: 1
     damageType: 6
-    damage: 90
+    damage: 72
     shotsPerSalvo: 1
     shotInterval: 0.4
     reload: 8

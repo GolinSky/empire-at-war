@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ProcursatorShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  <ShowBattleMarker>k__BackingField: 0
   <Speed>k__BackingField: 20
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 2
@@ -28,9 +29,9 @@ MonoBehaviour:
   <Wreck>k__BackingField: {fileID: 11400000, guid: a2624a081d9a9d34ab084cd759d7790e,
     type: 2}
   <ShipClass>k__BackingField: 4
-  <Hull>k__BackingField: 8000
-  <Shields>k__BackingField: 7000
-  shieldRegenTiers: {fileID: 11400000, guid: 3425d6ddc79a6b649990974111258ac9, type: 2}
+  <Hull>k__BackingField: 9200
+  <Shields>k__BackingField: 7700
+  shieldRegenTiers: {fileID: 11400000, guid: 13e8b17936074345b03019b205c57d90, type: 2}
   <ShieldRegenTier>k__BackingField: 3
   <ShieldRegenerateDelay>k__BackingField: 1
   <Range>k__BackingField: 900

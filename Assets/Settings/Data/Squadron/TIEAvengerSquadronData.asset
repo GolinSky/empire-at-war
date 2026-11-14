@@ -30,7 +30,7 @@ MonoBehaviour:
   <ShipClass>k__BackingField: 0
   <MemberHull>k__BackingField: 54
   <MemberShields>k__BackingField: 8
-  <ShieldRegenerateValue>k__BackingField: 0.1
+  <ShieldRegenerateValue>k__BackingField: 0.095
   <ShieldRegenerateDelay>k__BackingField: 1
   <LaserShieldDamageMultiplier>k__BackingField: 1
   <HullRepairPerSecond>k__BackingField: 0

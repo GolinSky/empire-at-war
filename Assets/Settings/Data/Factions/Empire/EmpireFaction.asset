@@ -40,7 +40,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 55d62e93f93a1f34badabec3d1a83f4a, type: 2}
         displayName: ISD I
-        description: "12,000 hull; 10,000 shields; speed 18. Twenty-four targetable
+        description: "13,800 hull; 11,000 shields; speed 18. Twenty-four targetable
           weapons: six dual heavy turbolaser main batteries, two heavy dual ion cannons,
           two medium dual ion cannons, eight dual medium turbolasers and six medium
           dual laser cannons, plus four point-defense guns. Two shield generators,
@@ -107,7 +107,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: b01b394c2ca8a4b40a6db15525783e52, type: 2}
         displayName: ISD II
-        description: 16,000 hull; 12,000 shields; speed 18. Eight octuple turbolasers,
+        description: 18,400 hull; 13,200 shields; speed 18. Eight octuple turbolasers,
           two quad ion turrets, six medium ion cannons, six medium turbolasers and
           two medium dual turbolasers. Every weapon is targetable; shield generator,
           hangar, tractor beam are targetable. Power to Main Batteries and Tractor
@@ -128,7 +128,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: e2411bc7a0dc73f439949739e8ae9a73, type: 2}
         displayName: Executor
-        description: '150,000 hull; 200,000 shields; speed 10. Targetable: ten heavy
+        description: '172,500 hull; 220,000 shields; speed 10. Targetable: ten heavy
           2-burst long-range turbolasers, 23 heavy 2-burst dual turbolasers, eight
           heavy 2-burst long-range dual turbo-ions, ten heavy 8-burst artillery-rocket
           launchers, four shield generators, two engines and two hangars. Integrated:
@@ -194,7 +194,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 5c515caf8c0852b458b6d5a383fd1fa5, type: 2}
         displayName: Tector
-        description: "15,000 hull; 10,000 shields; speed 16. Eight targetable heavy
+        description: "17,250 hull; 11,000 shields; speed 16. Eight targetable heavy
           octuple turbolasers, two heavy long-range dual turbolasers, two shield
           generators, three engines and tractor beam. Seven heavy 3-burst turbolasers,
           four heavy turbolasers and four heavy laser cannons are not separately
@@ -216,9 +216,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 2e867f7906f912745a1d170c737e565a, type: 2}
         displayName: Imp. Venator
-        description: '9,000 hull and 10,000 shields. Republic Venator hardpoint layout:
-          eight DBY-827 Heavy Turbolasers, two Imperial heavy dual turbolasers, two
-          heavy turbolasers, two heavy ion cannons and one SPHAT beam. Intensify
+        description: '10,350 hull and 11,000 shields. Republic Venator hardpoint
+          layout: eight DBY-827 Heavy Turbolasers, two Imperial heavy dual turbolasers,
+          two heavy turbolasers, two heavy ion cannons and one SPHAT beam. Intensify
           Firepower makes turbolasers, ion cannons and the SPHAT beam fire about
           six times faster for 15 s; 60 s recovery. Deploys 2 fighter squadrons,
           2 interceptor squadrons, 2 bomber squadrons at once. Carries 18 total squadron
@@ -277,7 +277,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 1e8d5f8644602a54aa8e45330d780674, type: 2}
         displayName: Allegiance
-        description: 'Heavy anti-capital battlecruiser: 20,000 hull, 15,000 shields;
+        description: 'Heavy anti-capital battlecruiser: 23,000 hull, 16,500 shields;
           three heavy dual turbolasers, six heavy quad turbolasers, six medium dual
           turbolasers and six heavy ion cannons. Three engines, two shield generators,
           tractor beam and command array. Power to Main Batteries and Tractor Beam.
@@ -317,7 +317,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 16ec1784ca6e7fc4d842d982fde86b5c, type: 2}
         displayName: Gladiator
-        description: '9,000 hull and 8,000 shields with capital shield regeneration.
+        description: '10,350 hull and 8,800 shields with capital shield regeneration.
           Four dual medium turbolasers, two concussion missile launchers and two
           point defense lasers. Deploys 2 fighter squadrons, 1 interceptor squadron,
           2 bomber squadrons at once. Carries 15 total squadron launches, including
@@ -338,7 +338,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 55d62e93f93a1f34badabec3d1a83f4a, type: 2}
         displayName: Interdictor
-        description: "Imperial capital ship with 10,000 hull and 10,000 shields.
+        description: "Imperial capital ship with 11,500 hull and 11,000 shields.
           Two heavy quad turbolasers, two heavy dual ion cannons, three medium quad
           turbolasers, four medium dual turbolasers and six heavy turbolasers. Boost
           Weapon Power makes weapons fire 10\xD7 faster and reload 90% faster and
@@ -383,7 +383,7 @@ MonoBehaviour:
         description: 'Imperial squadron: six TIE Bombers, each with 100 hull, no
           shields, a laser cannon and a proton torpedo launcher. Attacks larger ships;
           vulnerable to fighters and anti-fighter weapons. Full squadron torpedo
-          volley: 624 damage; 12 s reload.'
+          volley: 499.2 damage; 12 s reload.'
         role: Bomber / Anti-ship
         iconKey: 6deef1e660f9c3a41b4d343f91418382:21300000
         isHero: 0
@@ -404,7 +404,7 @@ MonoBehaviour:
           Power makes weapons fire 10\xD7 faster and reload 90% faster and halves
           speed and shield regeneration for 7 s. Recovers in 50 s. Seeker Warhead
           Countermeasure automatically intercepts incoming missiles. Weapons are
-          not separately targetable. Each surviving craft regenerates 0.1 shield
+          not separately targetable. Each surviving craft regenerates 0.095 shield
           HP/s."
         role: Fighter / Fast attack
         iconKey: 3ebf9b17840b8ee4daae27c4f063d4af:21300000
@@ -457,8 +457,8 @@ MonoBehaviour:
         displayName: TIE Punisher
         description: 'Six TIE Punishers, each with 110 hull, 6 shields, one laser
           cannon, two proton-torpedo launchers and two missile launchers. Advanced-loadout
-          carrier bomber. Each surviving craft regenerates 0.1 shield HP/s. Full
-          squadron torpedo volley: 672 damage; 12 s reload.'
+          carrier bomber. Each surviving craft regenerates 0.095 shield HP/s. Full
+          squadron torpedo volley: 537.6 damage; 12 s reload.'
         role: Bomber / Anti-ship
         iconKey: fe8c1e85b0bf680479b5946516c3041f:21300000
         isHero: 0

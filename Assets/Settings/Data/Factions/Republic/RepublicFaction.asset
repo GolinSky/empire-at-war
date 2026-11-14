@@ -37,9 +37,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: c0df2ce6f2e7d2c42b42501e3bf56020, type: 2}
         displayName: Venator II
-        description: Upgraded Venator with 9,000 hull and 10,000 shields. Heavy weapons
-          support the fleet. Boost Shield Power and Boost Weapon Power. Deploys 2
-          fighter squadrons, 1 interceptor squadron, 2 bomber squadrons at once.
+        description: Upgraded Venator with 10,350 hull and 11,000 shields. Heavy
+          weapons support the fleet. Boost Shield Power and Boost Weapon Power. Deploys
+          2 fighter squadrons, 1 interceptor squadron, 2 bomber squadrons at once.
           Carries 15 total squadron launches, including the initial deployment.
         role: "Capital \xB7 Heavy gunship"
         iconKey: 8ee3ff50731492c43b11469ff405c5d6:21300000
@@ -129,7 +129,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: c0df2ce6f2e7d2c42b42501e3bf56020, type: 2}
         displayName: Resolute
-        description: Unique Venator with 10,500 hull and 10,000 shields. SPHA-T Beam
+        description: Unique Venator with 12,075 hull and 11,000 shields. SPHA-T Beam
           and Concentrate Fire. Allied ships and squadrons within 400 receive +50%
           vision, +20% hull, +10% shields, damage and speed, and 35% less incoming
           damage. One at a time; replaceable after destruction. Deploys 2 fighter
@@ -315,7 +315,7 @@ MonoBehaviour:
           run. 60 hull and 8 shields per fighter. Effective against fighters, bombers
           and light ships; can threaten capital-ship hardpoints. Dedicated bombers
           have greater torpedo output. Each surviving craft regenerates 0.2 shield
-          HP/s. Full squadron torpedo volley: 240 damage; 12 s reload.'
+          HP/s. Full squadron torpedo volley: 192 damage; 12 s reload.'
         role: "Heavy fighter \xB7 Fighter-bomber"
         iconKey: 14a57369a6b0b6447917d19a5a8114c8:21300000
         isHero: 0
@@ -335,7 +335,7 @@ MonoBehaviour:
           lasers and a two-torpedo salvo per attack run. Ion Shot disables a target.
           Effective against large ships and important hardpoints; vulnerable to fighters.
           Each surviving craft regenerates 0.15 shield HP/s. Full squadron torpedo
-          volley: 672 damage; 12 s reload.'
+          volley: 537.6 damage; 12 s reload.'
         role: "Heavy bomber \xB7 Anti-capital strikecraft"
         iconKey: 8aec8fa8b8581064dbf2721ad11585bb:21300000
         isHero: 0
@@ -354,8 +354,8 @@ MonoBehaviour:
         description: 'Four naval bombers, each with 125 hull, 8 shields, laser cannons
           and proton torpedoes. Effective against capital ships, stations and important
           hardpoints; vulnerable to fighters and anti-fighter weapons. Each surviving
-          craft regenerates 0.15 shield HP/s. Full squadron torpedo volley: 624 damage;
-          12 s reload.'
+          craft regenerates 0.15 shield HP/s. Full squadron torpedo volley: 499.2
+          damage; 12 s reload.'
         role: "Naval bomber \xB7 Anti-capital strikecraft"
         iconKey: 83b847ad5990b534c940f6bcc1abfbf1:21300000
         isHero: 0

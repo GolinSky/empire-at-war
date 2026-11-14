@@ -59,13 +59,13 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 061d31c86b87ab34ca40a0d06290c8a5, type: 2}
         displayName: MC80
-        description: Heavy Rebel capital ship with 12,750 hull, 12,000 shields and
-          180/s shield regeneration. Eight heavy turbolaser, four heavy quad turbolaser,
-          four dual heavy turbolaser, two dual medium turbolaser and two heavy ion
-          cannon batteries, four point-defense guns and targetable engines. No targetable
-          shield generator. Boost Shield Power doubles shield regeneration, reduces
-          speed by 45% and reduces weapon damage by 5% for 15 s. Recovers in 40 s.
-          Strong against frigates; vulnerable to bombers.
+        description: Heavy Rebel capital ship with 14,662.5 hull, 13,200 shields
+          and 198/s shield regeneration. Eight heavy turbolaser, four heavy quad
+          turbolaser, four dual heavy turbolaser, two dual medium turbolaser and
+          two heavy ion cannon batteries, four point-defense guns and targetable
+          engines. No targetable shield generator. Boost Shield Power doubles shield
+          regeneration, reduces speed by 45% and reduces weapon damage by 5% for
+          15 s. Recovers in 40 s. Strong against frigates; vulnerable to bombers.
         role: Heavy capital ship / Anti-frigate
         iconKey: b95f55f2e2f204f42a94f0c44c5baa85:21300000
         isHero: 0
@@ -81,7 +81,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 6f751ab5214d08f468a4ba44b5cf1107, type: 2}
         displayName: Home One
-        description: 'Admiral Ackbar''s hero command cruiser: 25,000 hull, 20,000
+        description: 'Admiral Ackbar''s hero command cruiser: 28,750 hull, 22,000
           shields, four turbolaser, four dual heavy turbolaser, four dual medium
           turbolaser and four ion cannon batteries. Shield generator, engines and
           fighter bay can be destroyed. Concentrate Fire grants Home One +50% damage
@@ -374,7 +374,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         displayName: Justice
-        description: Mon Calamari capital carrier with 12,000 hull and 14,000 shields.
+        description: Mon Calamari capital carrier with 13,800 hull and 15,400 shields.
           Four medium dual turbolasers, four light dual ion cannons, six medium turbolasers
           and eight medium lasers. Boost Shield Power doubles shield regeneration,
           reduces speed by 45% and reduces weapon damage by 5% for 15 s. Recovers
@@ -415,7 +415,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         displayName: Mediator
-        description: "Mon Calamari battlecruiser with 35,000 hull and 40,000 shields.
+        description: "Mon Calamari battlecruiser with 40,250 hull and 44,000 shields.
           Eight heavy dual turbolasers, six heavy dual ion cannons, eight medium
           dual turbolasers, six medium dual laser cannons and six heavy laser cannons.
           Boost Weapon Power makes weapons fire 10\xD7 faster and reload 90% faster
@@ -437,7 +437,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         displayName: Remonda
-        description: Mon Calamari battleship with 16,000 hull and 16,000 shields.
+        description: Mon Calamari battleship with 18,400 hull and 17,600 shields.
           Boost Shield Power doubles shield regeneration, reduces speed by 45% and
           reduces weapon damage by 5% for 15 s. Recovers in 40 s. Deploys 1 fighter
           squadron, 1 bomber squadron at once. Carries 4 total squadron launches,
@@ -461,7 +461,7 @@ MonoBehaviour:
         displayName: A-Wing
         description: Four fast A-Wing interceptors with 100 hull and 15 shields each.
           Their interceptor lasers are most effective against bombers. Each surviving
-          craft regenerates 0.3 shield HP/s.
+          craft regenerates 0.66 shield HP/s.
         role: Interceptor / Anti-bomber
         iconKey: 524d65b06058f0a428ee3d2a9b9b78e9:21300000
         isHero: 0
@@ -478,8 +478,8 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: b16f510db75b93c4ab4d86f98ed96103, type: 2}
         displayName: X-Wing
         description: 'Five Rebel multirole fighters, each with 95 hull, 15 shields,
-          0.3/s shield regeneration, four laser cannons and one proton torpedo launcher.
-          Torpedoes deal 40 damage per fighter with a 10-second reload. Intercept
+          0.33/s shield regeneration, four laser cannons and one proton torpedo launcher.
+          Torpedoes deal 32 damage per fighter with a 10-second reload. Intercept
           bombers, dogfight fighters, escort bombers and scout. Lock S-Foils closes
           the wings: speed x1.3, weapon delays x3 and shield regeneration x3. Toggle
           again to reopen the wings and return to combat configuration.'
@@ -502,8 +502,8 @@ MonoBehaviour:
           shields and tactical speed 44. One light dual laser, one heavy dual ion
           stunner and two medium proton-torpedo launchers per craft. Ion Shot disables
           the target for 3 s on arrival; 20 s recovery. Weapons are not separately
-          targetable. Each surviving craft regenerates 0.2 shield HP/s. Full squadron
-          torpedo volley: 720 damage; 12 s reload.'
+          targetable. Each surviving craft regenerates 0.22 shield HP/s. Full squadron
+          torpedo volley: 576 damage; 12 s reload.'
         role: Bomber / Anti-ship
         iconKey: 793233063a2c3d241ab5dbc0af1a35d4:21300000
         isHero: 0
