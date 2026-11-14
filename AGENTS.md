@@ -214,6 +214,22 @@ When creating, modifying, or refactoring any UI prefab, component, or view:
 
 - Define one top-level type per C# script and name the file exactly after that type. Do not group multiple classes or interfaces in a differently named `*Contracts.cs` file.
 
+## Test Maintenance With Every Change
+
+- Every agent must review affected tests before finishing a code, prefab, scene, settings, asset, or tooling change. Use the category map below and `Tools/Jenkins/TEST_INVENTORY.md` to locate suites; search tests for changed symbols, serialized fields, asset paths, default values, and behavior contracts. Category membership alone is not enough.
+- Update affected tests, fixtures, mocks, setup, and expected values in the same change when intended behavior or dependencies change. If existing tests remain correct, state which were reviewed and why no update was needed. The local execution restriction does not excuse skipping test review or test edits.
+- Preserve meaningful assertions. Fix production regressions in production code; change test expectations only when the intended contract changed or the test's assumption is demonstrably wrong. Never delete, ignore, mark explicit, weaken assertions, or bypass the CI gate merely to make a build pass.
+- Keep scheduler and performance-related correctness tests independent of machine speed: test limits, ordering, and eventual completion; do not assume a fixed number of cheap operations will consume a wall-clock budget.
+- Before completion, inspect the source and test diff together for stale constructors, bindings, serialized names, values, and assertions. Report reviewed/updated fixtures and categories, verification performed, and tests not run. Do not describe source inspection as a passing test run.
+
+## Jenkins Failure and Rebuild Policy
+
+- `Tools/Jenkins/Jenkinsfile` runs EditMode tests before the Windows player build; `Invoke-BuildPhase.ps1` selects EditMode without category filtering. Review the current scripts and installed job when diagnosing CI, rather than assuming the local category selection applies to Jenkins.
+- Before retrying a failed job, inspect its archived `EditMode-results.xml`, `EditMode.log`, phase log, and pinned `commit.txt`. Identify whether the failure is a production regression, stale/unstable test, compilation/import problem, or infrastructure failure. Fix the cause or report the blocker; do not repeatedly rebuild the same failing snapshot hoping it passes.
+- Jenkins builds committed `main` in an isolated worktree. Local fixes do not affect a retry until included in that snapshot. Never trigger Jenkins as a workaround for the local test-execution restriction.
+- Test failures stop the pipeline before the player build. For packaging/publishing failures after a successful player build, inspect retained artifacts and documented recovery before requesting another Unity build. Publishing an existing successful build uses its archived ZIP.
+- Do not change test gates, add automatic retries, or reconfigure Jenkins unless requested. See `Tools/Jenkins/README.md` for reports, provenance, and recovery.
+
 ## Local Test Execution Override (Codex and Claude)
 
 - Test execution is disabled for Codex and Claude in this checkout. Do not run tests through Unity, CLI, MCP, scripts, or delegated agents.
