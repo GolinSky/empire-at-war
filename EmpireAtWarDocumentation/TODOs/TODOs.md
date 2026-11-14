@@ -94,6 +94,9 @@
 
 ### Optimization
 
+- [ ] **Ship facing solve spikes (35.2 ms of a 60.5 ms frame; once-a-second ship-order spikes)** → [[TODOs/Optimization/Ship_Facing_Solve_CPU_Plan|Ship Facing Solve CPU Plan]]
+  - 2026-11-14: fast yaw checks, Burst sweep, refresh budget and reusable health buffer implemented. Unity compiled. In-range probe max 1.11 ms; dense 40×30 probe max 4.16 ms. Exact intervals and matched crowded-battle verification remain active.
+
 - [ ] **November 6 optimization fixes — P0 hitch attribution remains** → [[TODOs/Optimization/Optimization_Audit_Fix_Plan|Retained fixes, evidence and next action]]. Mac content −48.7 MB; 54 duplicates → 0; packed memory, loading, smoke, music and nebula fixes verified. Rare large fleet stalls remain unresolved.
   - 2026-11-07: capture metadata and scoped retained fixes verified. P0 native 296 ms stall attributed to synchronous AssetBundle waiting; exact key and other stalls remain open. Separate satellite warmup omission fixed (43–50 ms → 0.0022 ms in isolated packed probe). No general FPS improvement established; tests disabled.
   - Follow-up: new 576 ms / 1.8 s stalls traced to synchronous Metal GPU-program creation. Original 296 ms asset key and historical 198 ms cause remain unresolved. [[TODOs/Optimization/Optimization_Audit_Fix_Plan - Research|All findings, fixes and evidence]].

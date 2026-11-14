@@ -157,13 +157,23 @@ namespace EmpireAtWar.Components.Squadrons.Health
         /// <summary>Live fighters; once all are dead the wrecks are returned so callers never get an empty set.</summary>
         public IHardPointModel[] GetShipUnits(HardPointType hardPointType)
         {
-            _liveUnits.Clear();
+            CopyLiveUnits(_liveUnits);
+            return _liveUnits.Count > 0 ? _liveUnits.ToArray() : _adapters;
+        }
+
+        public void CopyShipUnits(List<IHardPointModel> destination)
+        {
+            CopyLiveUnits(destination);
+            if (destination.Count == 0) destination.AddRange(_adapters);
+        }
+
+        private void CopyLiveUnits(List<IHardPointModel> destination)
+        {
+            destination.Clear();
             foreach (HardPointAdapter adapter in _adapters)
             {
-                if (!adapter.IsDestroyed) _liveUnits.Add(adapter);
+                if (!adapter.IsDestroyed) destination.Add(adapter);
             }
-
-            return _liveUnits.Count > 0 ? _liveUnits.ToArray() : _adapters;
         }
     }
 }

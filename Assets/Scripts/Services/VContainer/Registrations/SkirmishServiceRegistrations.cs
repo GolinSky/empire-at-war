@@ -98,6 +98,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<HazardEffectsPresenter>(Lifetime.Singleton)
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<ShipNavigationService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<ShipFacingSolveScheduler>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipNavigationMapPreparer>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<RadarScanService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitWreckService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

@@ -24,6 +24,23 @@ namespace EmpireAtWar.Tests.Movement
     [Category("Navigation")]
     public sealed class ShipNavigationServiceTests
     {
+        [Test]
+        public void FacingRefreshQueueCarriesExcessRequestsToNextFrame()
+        {
+            var scheduler = new EmpireAtWar.Services.Ships.ShipFacingSolveScheduler();
+            var executed = new List<int>();
+            scheduler.Request(() => executed.Add(1));
+            scheduler.Request(() => executed.Add(2));
+            scheduler.Request(() => executed.Add(3));
+
+            scheduler.LateTick();
+
+            Assert.That(executed.Count, Is.InRange(1, 2));
+            Assert.That(executed[0], Is.EqualTo(1));
+            for (int i = 0; i < 2; i++) scheduler.LateTick();
+            Assert.That(executed, Is.EqualTo(new[] { 1, 2, 3 }));
+        }
+
         private Vector2Range _mapRange;
         private readonly List<ShipNavigationService> _services = new List<ShipNavigationService>();
 
@@ -1186,7 +1203,8 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(construct, Is.Not.Null);
             construct.Invoke(component, new object[] { new FakeMapModel(_mapRange), null,
                 recordingShipNavigationService, new IgnoredSpawnClearance(), null, null, null, model, null,
-                ShipType.Arquitens, Vector3.zero, TestPlayers.Human, ShipSpawnPose.Hyperspace });
+                ShipType.Arquitens, Vector3.zero, TestPlayers.Human, ShipSpawnPose.Hyperspace, 1L,
+                new EmpireAtWar.Services.Ships.ShipFacingSolveScheduler() });
             System.Type motionType = typeof(ShipMoveComponent).Assembly.GetType(
                 "EmpireAtWar.Components.Ship.Movement.ShipMovementTweenPlayer");
             Assert.That(motionType, Is.Not.Null);

@@ -81,6 +81,7 @@ namespace EmpireAtWar.Components.Weapon
         private readonly HashSet<AttackData> _liveGroupsAtRebuild = new HashSet<AttackData>();
         private readonly Dictionary<IHardPointModel, Vector3> _targetPositions = new Dictionary<IHardPointModel, Vector3>();
         private readonly List<Vector3> _facingTargetPositions = new List<Vector3>();
+        private readonly List<IHardPointModel> _facingTargetUnits = new List<IHardPointModel>();
         // Index = hardpoint: its firepower share when choosing the hull facing.
         private int[] _facingWeights = Array.Empty<int>();
         private readonly WeaponFacingSolver _facingSolver = new WeaponFacingSolver();
@@ -394,7 +395,7 @@ namespace EmpireAtWar.Components.Weapon
             _facingSolver.Clear();
             IHardPointModel focusedHardPoint = _mainAttackData != null && _mainAttackData.IsFocused &&
                 _mainAttackData.TargetEntity == target ? _mainAttackData.Units[0] : null;
-            CollectFacingTargets(target, _facingTargetPositions, focusedHardPoint);
+            CollectFacingTargets(target, _facingTargetPositions, _facingTargetUnits, focusedHardPoint);
             for (int i = 0; i < _facingTargetPositions.Count; i++)
                 _facingSolver.AddTarget(_facingTargetPositions[i] - pivot);
 
@@ -413,7 +414,7 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         internal static void CollectFacingTargets(IEntity target, List<Vector3> positions,
-            IHardPointModel focusedHardPoint = null)
+            List<IHardPointModel> units, IHardPointModel focusedHardPoint = null)
         {
             positions.Clear();
             IHealthModelObserver health = target.HealthModel;
@@ -437,8 +438,9 @@ namespace EmpireAtWar.Components.Weapon
                 return;
             }
 
-            IHardPointModel[] targets = health.GetShipUnits(HardPointType.Any);
-            for (int i = 0; i < targets.Length; i++) positions.Add(targets[i].Position);
+            health.CopyShipUnits(units);
+            for (int i = 0; i < units.Count; i++) positions.Add(units[i].Position);
+            units.Clear();
         }
 
         public void ResetTarget()

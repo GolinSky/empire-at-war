@@ -232,6 +232,23 @@ namespace EmpireAtWar.Components.Ship.Health
             return CollectHardPoints(byType ? typedCount : liveCount, false, byType, hardPointType);
         }
 
+        public void CopyShipUnits(List<IHardPointModel> destination)
+        {
+            destination.Clear();
+            if (_hardPointAdapters.Length == 0)
+            {
+                destination.AddRange(_hullTargets);
+                return;
+            }
+
+            bool hasLiveHardPoints = HasLiveHardPoints;
+            foreach (HardPointAdapter hardPoint in _hardPointAdapters)
+            {
+                if (hasLiveHardPoints ? !hardPoint.IsDestroyed : hardPoint.IsInstalled)
+                    destination.Add(hardPoint);
+            }
+        }
+
         private IHardPointModel[] CollectHardPoints(int count, bool installedOnly, bool byType,
             HardPointType hardPointType)
         {

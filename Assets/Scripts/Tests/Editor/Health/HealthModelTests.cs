@@ -95,6 +95,49 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.HasUnits, Is.True);
         }
 
+        [Test]
+        public void CopyShipUnits_ReplacesBufferWithLiveUnitsThenInstalledWrecks()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            CombatModifiers modifiers = new CombatModifiers();
+            HealthModel model = new HealthModel(new HealthDataStub(SHIELDS), _matrix, modifiers,
+                new HardPointHealthBudget());
+            GameObject owner = new GameObject("ShipUnitsTest");
+            try
+            {
+                HealthComponent health = owner.AddComponent<HealthComponent>();
+                typeof(HealthComponent).GetMethod("Construct", PRIVATE_INSTANCE)
+                    .Invoke(health, new object[] { model, modifiers, owner.transform, TestPlayers.Human });
+                health.ShipUnits = new List<HardPoint>();
+                for (int i = 0; i < 3; i++)
+                {
+                    GameObject child = new GameObject("Hardpoint");
+                    child.transform.SetParent(owner.transform);
+                    HardPoint point = child.AddComponent<HardPoint>();
+                    typeof(HardPoint).GetField("spawnDestroyedExplosion", PRIVATE_INSTANCE).SetValue(point, false);
+                    health.ShipUnits.Add(point);
+                }
+
+                typeof(HardPoint).GetField("unlockLevel", PRIVATE_INSTANCE).SetValue(health.ShipUnits[2], 2);
+                health.Initialize();
+                IHealthModelObserver observer = health;
+                List<IHardPointModel> units = new List<IHardPointModel> { health.HardPoints[2] };
+                model.HardPointModels[0].ApplyDamage(100f);
+
+                observer.CopyShipUnits(units);
+                Assert.That(units, Is.EqualTo(new[] { health.HardPoints[1] }));
+
+                model.HardPointModels[1].ApplyDamage(100f);
+                observer.CopyShipUnits(units);
+                Assert.That(units, Is.EqualTo(new[] { health.HardPoints[0], health.HardPoints[1] }));
+                health.Release();
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+
         [TestCase(0f, 100f)]
         [TestCase(500f, 500f)]
         public void InitializeHardPoints_UsesMountOverrideAndPreservesItThroughUpgrade(float healthOverride,

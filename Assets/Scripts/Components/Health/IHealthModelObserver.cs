@@ -26,5 +26,12 @@ namespace EmpireAtWar.Models.Health
         PlayerId Owner { get; }
 
         IHardPointModel[] GetShipUnits(HardPointType hardPointType);
+
+        /// <summary>Replaces the buffer with the units targeted by <see cref="HardPointType.Any"/>.</summary>
+        void CopyShipUnits(List<IHardPointModel> destination)
+        {
+            destination.Clear();
+            destination.AddRange(GetShipUnits(HardPointType.Any));
+        }
     }
 }

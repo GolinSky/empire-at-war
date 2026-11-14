@@ -11,10 +11,14 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.ShipSpawning;
+using EmpireAtWar.Services.Ships;
 using EmpireAtWar.Services.StationFacing;
 using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Utils;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+using Unity.Profiling;
+#endif
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
@@ -31,6 +35,11 @@ namespace EmpireAtWar.Components.Ship.Movement
         // until the bearing to the target swings this far or the solve ages out (lost hardpoints change the arcs).
         private const float FACING_RESOLVE_ANGLE = 2f;
         private const float FACING_RESOLVE_INTERVAL = 1f;
+        private const float FACING_RESOLVE_JITTER = 0.2f;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private static readonly ProfilerMarker<int, int, int> _facingTrigger =
+            new ProfilerMarker<int, int, int>("Battle.Ship.FacingSolve.Trigger", "Ship type", "Target class", "Reason");
+#endif
         // A ship chasing a moving target re-plans its course at most this often; new orders plan at once.
         private const float REPATH_INTERVAL = 0.5f;
 
@@ -41,6 +50,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private IVisionService _visionService;
         private IRadarModelObserver _radarModel;
         private IWeaponFacing _weaponFacing;
+        private ShipFacingSolveScheduler _facingScheduler;
 
         [SerializeField] private LineRenderer lineRenderer;
         [SerializeField] private Transform bodyTransform;
@@ -69,6 +79,12 @@ namespace EmpireAtWar.Components.Ship.Movement
         private Vector3 _solvedBearing;
         private long _solvedTargetId;
         private float _solvedFacingTime;
+        private float _facingResolveInterval;
+        private Action _refreshFacing;
+        private IEntity _pendingFacingTarget;
+        private int _facingRequestFrame = -1;
+        private int _facingRefreshReason;
+        private bool _facingQueued;
 
         public event Action<Vector3> DestinationChanged;
 
@@ -101,16 +117,21 @@ namespace EmpireAtWar.Components.Ship.Movement
             IRadarModelObserver radarModel,
             IWeaponFacing weaponFacing,
             ShipMoveModel model, CombatModifiers modifiers, ShipType shipType, Vector3 startPosition,
-            PlayerId owner, ShipSpawnPose spawnPose)
+            PlayerId owner, ShipSpawnPose spawnPose, long entityId, ShipFacingSolveScheduler facingScheduler)
         {
             _spawnPose = spawnPose;
             _weaponFacing = weaponFacing;
+            _facingScheduler = facingScheduler;
+            _refreshFacing = RefreshFacing;
             SetModel(model);
             _modifiers = modifiers;
             startPosition.y = Model.Height;
             _startPosition = startPosition;
             _owner = owner;
             _shipType = shipType;
+            uint phase = unchecked((uint)entityId * 2654435761u) >> 8;
+            _facingResolveInterval = FACING_RESOLVE_INTERVAL +
+                ((phase / 16777215f) * 2f - 1f) * FACING_RESOLVE_JITTER;
             _mapModel = mapModel;
             _stationFacingService = stationFacingService;
             _shipNavigationService = shipNavigationService;
@@ -165,6 +186,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         {
             if (_isReleased) return;
             _isReleased = true;
+            _pendingFacingTarget = null;
             _hasQueuedPlan = false;
             _modifiers.Changed -= UpdateRouteSpeed;
             _shipSpawnClearance.ReleaseLanding(this);
@@ -251,20 +273,24 @@ namespace EmpireAtWar.Components.Ship.Movement
             {
                 Vector3 bearing = targetPosition - transform.position;
                 bearing.y = 0f;
-                if (!_hasSolvedFacing || _solvedTargetId != target.Id ||
-                    Time.time - _solvedFacingTime > FACING_RESOLVE_INTERVAL ||
-                    Vector3.Angle(bearing, _solvedBearing) > FACING_RESOLVE_ANGLE)
+                bool first = !_hasSolvedFacing;
+                bool changedTarget = !first && _solvedTargetId != target.Id;
+                bool expired = !first && !changedTarget && Time.time - _solvedFacingTime > _facingResolveInterval;
+                if (first || changedTarget)
                 {
-                    float turn;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                    using (BattleProfilerMarkers.ShipFacingSolve.Auto())
-#endif
-                    turn = _weaponFacing.GetFiringTurnAngle(target, transform.position);
-                    _solvedFacing = Quaternion.AngleAxis(turn, Vector3.up) * transform.forward;
-                    _solvedBearing = bearing;
-                    _solvedTargetId = target.Id;
-                    _solvedFacingTime = Time.time;
-                    _hasSolvedFacing = true;
+                    _pendingFacingTarget = null;
+                    SolveFacing(target, bearing, first ? 0 : 1);
+                }
+                else if (expired || Vector3.Angle(bearing, _solvedBearing) > FACING_RESOLVE_ANGLE)
+                {
+                    _pendingFacingTarget = target;
+                    _facingRequestFrame = Time.frameCount;
+                    _facingRefreshReason = expired ? 2 : 3;
+                    if (!_facingQueued)
+                    {
+                        _facingQueued = true;
+                        _facingScheduler.Request(_refreshFacing);
+                    }
                 }
 
                 _motion.PlayLookAt(_solvedFacing, Model.RotationSpeed,
@@ -272,6 +298,34 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
             else _hasSolvedFacing = false;
             LookingAt?.Invoke(targetPosition);
+        }
+
+        private void RefreshFacing()
+        {
+            _facingQueued = false;
+            IEntity target = _pendingFacingTarget;
+            _pendingFacingTarget = null;
+            if (target == null || _isReleased || _facingRequestFrame != Time.frameCount ||
+                IsMoving || _modifiers.IsIonDisabled || target.HealthModel.IsDestroyed)
+                return;
+            Vector3 bearing = target.GetFacade<IEntityTransformFacade>().Transform.position - transform.position;
+            bearing.y = 0f;
+            SolveFacing(target, bearing, _facingRefreshReason);
+        }
+
+        private void SolveFacing(IEntity target, Vector3 bearing, int reason)
+        {
+            float turn;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.ShipFacingSolve.Auto())
+            using (_facingTrigger.Auto((int)_shipType, (int)target.HealthModel.ShipClass, reason))
+#endif
+                turn = _weaponFacing.GetFiringTurnAngle(target, transform.position);
+            _solvedFacing = Quaternion.AngleAxis(turn, Vector3.up) * transform.forward;
+            _solvedBearing = bearing;
+            _solvedTargetId = target.Id;
+            _solvedFacingTime = Time.time;
+            _hasSolvedFacing = true;
         }
 
         public float GetRange(Vector3 targetPosition) =>
