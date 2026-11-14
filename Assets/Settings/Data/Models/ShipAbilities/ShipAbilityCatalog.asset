@@ -148,7 +148,7 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
         displayName: Boost Shield Power
-        description: Double shield regeneration. Movement speed falls to 55% and
+        description: Quadruple shield regeneration. Movement speed falls to 55% and
           outgoing damage falls to 95% for 15 s. Recovers in 40 s.
         duration: 15
         recoveryDelay: 40
@@ -666,7 +666,7 @@ MonoBehaviour:
           damageMultiplier: 0.95
           fireDelayMultiplier: 1
           speedMultiplier: 0.55
-          shieldRegenMultiplier: 2
+          shieldRegenMultiplier: 4
           damageTakenMultiplier: 1
     - rid: 7607833764655792206
       type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
