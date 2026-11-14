@@ -259,6 +259,41 @@ namespace EmpireAtWar.Tests.Editor
             new HangarModel(new TestHangarData(new HangarBay(SquadronType.Delta7, reserve, maxActive)));
 
         [Test]
+        public void PendingLaunchCount_UsesFreeSlotsAndStockOfOperationalBays()
+        {
+            var model = new HangarModel(new TestHangarData(
+                new HangarBay(SquadronType.XWing, 6, 2),
+                new HangarBay(SquadronType.YWing, 1, 2),
+                new HangarBay(SquadronType.TIEFighter, 0, 0)));
+            Assert.That(model.PendingLaunchCount, Is.EqualTo(3));
+
+            model.TryLaunchImmediately(out _);
+            Assert.That(model.PendingLaunchCount, Is.EqualTo(2));
+            model.DisableBay(0);
+            Assert.That(model.PendingLaunchCount, Is.EqualTo(1));
+            model.TryLaunchImmediately(out _);
+            Assert.That(model.PendingLaunchCount, Is.Zero);
+            model.SquadronLost(1);
+            Assert.That(model.PendingLaunchCount, Is.Zero, "An exhausted bay cannot fill its free slot.");
+
+            model.EnableBay(0);
+            Assert.That(model.PendingLaunchCount, Is.EqualTo(1));
+            model.Shutdown();
+            Assert.That(model.PendingLaunchCount, Is.Zero);
+        }
+
+        [Test]
+        public void PendingLaunchCount_RestoredOverCapWingDoesNotSubtractOtherBays()
+        {
+            var model = new HangarModel(new TestHangarData(
+                new HangarBay(SquadronType.XWing, 3, 1),
+                new HangarBay(SquadronType.YWing, 3, 1)));
+            model.AdoptLaunched(0);
+            model.AdoptLaunched(0);
+            Assert.That(model.PendingLaunchCount, Is.EqualTo(1));
+        }
+
+        [Test]
         public void Restore_LoadsReserveAndTimer_AdoptedSquadronsHoldTheirBay()
         {
             HangarModel model = CreateModel(reserve: 5, maxActive: 1);

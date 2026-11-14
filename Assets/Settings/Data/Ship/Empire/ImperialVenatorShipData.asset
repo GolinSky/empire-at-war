@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ImperialVenatorShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  <ShowBattleMarker>k__BackingField: 0
   <Speed>k__BackingField: 25
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 3
@@ -38,11 +39,11 @@ MonoBehaviour:
   abilities: 23000000
   hangarBays:
   - squadronType: 200
-    reserve: 9
-    maxActive: 4
+    reserve: 6
+    maxActive: 2
   - squadronType: 201
-    reserve: 9
-    maxActive: 3
+    reserve: 6
+    maxActive: 2
   - squadronType: 203
     reserve: 6
     maxActive: 2

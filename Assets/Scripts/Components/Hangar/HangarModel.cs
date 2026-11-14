@@ -28,6 +28,19 @@ namespace EmpireAtWar.Components.Hangar
         public bool IsOperational { get; private set; } = true;
         public int BayCount => _reserve.Length;
 
+        public int PendingLaunchCount
+        {
+            get
+            {
+                if (!IsOperational) return 0;
+                int count = 0;
+                for (int bay = 0; bay < BayCount; bay++)
+                    if (!_disabled[bay])
+                        count += Math.Min(_reserve[bay], Math.Max(0, _data.HangarBays[bay].MaxActive - _active[bay]));
+                return count;
+            }
+        }
+
         public HangarModel(IHangarData data)
         {
             _data = data;

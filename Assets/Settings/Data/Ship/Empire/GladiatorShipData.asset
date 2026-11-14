@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GladiatorShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  <ShowBattleMarker>k__BackingField: 0
   <Speed>k__BackingField: 25
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 2
@@ -38,17 +39,17 @@ MonoBehaviour:
   abilities: 03000000
   hangarBays:
   - squadronType: 200
+    reserve: 0
+    maxActive: 0
+  - squadronType: 201
     reserve: 3
     maxActive: 1
-  - squadronType: 201
-    reserve: 6
-    maxActive: 3
   - squadronType: 202
     reserve: 3
     maxActive: 1
   - squadronType: 203
-    reserve: 6
-    maxActive: 2
+    reserve: 3
+    maxActive: 1
   - squadronType: 204
     reserve: 3
     maxActive: 1

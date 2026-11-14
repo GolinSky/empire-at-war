@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Components.Hangar;
+using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.Units;
@@ -59,6 +61,23 @@ namespace EmpireAtWar.Services.Enemy
             IHealthModelObserver health = entity.HealthModel;
             force.Add(_catalog.Get(entity.GetFacade<IUnitTypeFacade>().UnitTypeId),
                 health.Hull, health.Shields, GetOffenseScale(health));
+        }
+
+        /// <summary>Counts live carrier wings and usable empty slots; records deployed ship counts for pending purchases.</summary>
+        public int CountHangarSquadrons(PlayerId owner, Dictionary<UnitTypeId, int> liveShips)
+        {
+            liveShips.Clear();
+            int count = 0;
+            foreach (GameEntity entity in _entityLocator.Entities)
+            {
+                if (entity.Owner != owner || entity.HealthModel.IsDestroyed || !entity.HealthModel.HasUnits ||
+                    !entity.TryGetFacade(out IUnitTypeFacade unit) || !unit.UnitTypeId.IsShip) continue;
+                liveShips.TryGetValue(unit.UnitTypeId, out int ships);
+                liveShips[unit.UnitTypeId] = ships + 1;
+                if (entity.TryGetFacade(out IHangarAirWingFacade airWing))
+                    count += airWing.LaunchedCount + airWing.PendingLaunchCount;
+            }
+            return count;
         }
 
         /// <summary>

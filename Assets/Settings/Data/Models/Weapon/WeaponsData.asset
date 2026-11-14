@@ -1226,7 +1226,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: Belbullab22
-    damageMultiplier: 0.9375
+    damageMultiplier: 0.46363637
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: Belbullab22 squadron rebalance damage target.
@@ -1784,7 +1784,7 @@ MonoBehaviour:
     scope: 2
     faction: 1
     unit: Vulture
-    damageMultiplier: 0.36
+    damageMultiplier: 0.34615386
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: Vulture squadron rebalance damage target.
@@ -1802,7 +1802,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEFighter
-    damageMultiplier: 0.8485714
+    damageMultiplier: 0.945
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: TIEFighter squadron rebalance damage target.
@@ -1820,7 +1820,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEBrute
-    damageMultiplier: 0.40646854
+    damageMultiplier: 0.34615386
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: TIEBrute squadron rebalance damage target.
@@ -1838,7 +1838,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEAvenger
-    damageMultiplier: 0.8891129
+    damageMultiplier: 0.9225
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: TIEAvenger squadron rebalance damage target.
@@ -1856,7 +1856,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEAvenger
-    damageMultiplier: 0.8891129
+    damageMultiplier: 0.375
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: TIEAvenger squadron rebalance damage target.
@@ -1874,7 +1874,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: ARC170
-    damageMultiplier: 0.4040404
+    damageMultiplier: 0.31565657
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: ARC170 squadron rebalance damage target.
@@ -1892,7 +1892,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: ARC170
-    damageMultiplier: 0.56888884
+    damageMultiplier: 0.44444442
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: ARC170 squadron rebalance damage target.
@@ -1910,7 +1910,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: ARC170
-    damageMultiplier: 0.4
+    damageMultiplier: 0.33333334
     reloadMultiplier: 1.5
     rangeMultiplier: 1
     reason: ARC170 squadron rebalance damage target.
@@ -1928,7 +1928,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: V19Torrent
-    damageMultiplier: 1.485
+    damageMultiplier: 1.18125
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: V19Torrent squadron rebalance damage target.
@@ -1946,7 +1946,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEInterceptor
-    damageMultiplier: 0.45
+    damageMultiplier: 0.50625
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: TIEInterceptor squadron rebalance damage target.
@@ -1964,7 +1964,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: VWing
-    damageMultiplier: 0.8775
+    damageMultiplier: 0.7125
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: VWing squadron rebalance damage target.
@@ -1982,7 +1982,7 @@ MonoBehaviour:
     scope: 2
     faction: 2
     unit: AWing
-    damageMultiplier: 0.9
+    damageMultiplier: 1.125
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: AWing squadron rebalance damage target.
@@ -2000,7 +2000,7 @@ MonoBehaviour:
     scope: 2
     faction: 1
     unit: DroidBomber
-    damageMultiplier: 0.70875
+    damageMultiplier: 0.3465
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: DroidBomber squadron rebalance damage target.
@@ -2018,7 +2018,7 @@ MonoBehaviour:
     scope: 2
     faction: 1
     unit: DroidBomber
-    damageMultiplier: 0.5
+    damageMultiplier: 0.42666668
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: DroidBomber squadron rebalance damage target.
@@ -2036,7 +2036,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEBomber
-    damageMultiplier: 1.6875
+    damageMultiplier: 1.17
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: TIEBomber squadron rebalance damage target.
@@ -2054,7 +2054,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEBomber
-    damageMultiplier: 0.6666667
+    damageMultiplier: 0.77037036
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: TIEBomber squadron rebalance damage target.
@@ -2072,7 +2072,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEPunisher
-    damageMultiplier: 1.642198
+    damageMultiplier: 1.155
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: TIEPunisher squadron rebalance damage target.
@@ -2090,7 +2090,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEPunisher
-    damageMultiplier: 0.6388889
+    damageMultiplier: 0.4148148
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: TIEPunisher squadron rebalance damage target.
@@ -2108,7 +2108,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEPunisher
-    damageMultiplier: 1.642198
+    damageMultiplier: 0.375
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: TIEPunisher squadron rebalance damage target.
@@ -2126,7 +2126,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: YWing
-    damageMultiplier: 0.945
+    damageMultiplier: 0.88875
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: YWing squadron rebalance damage target.
@@ -2144,7 +2144,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: YWing
-    damageMultiplier: 0.8333333
+    damageMultiplier: 1.2444445
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: YWing squadron rebalance damage target.
@@ -2162,7 +2162,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: NTB630
-    damageMultiplier: 1.1025
+    damageMultiplier: 0.8775
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: NTB630 squadron rebalance damage target.
@@ -2180,7 +2180,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: NTB630
-    damageMultiplier: 0.8
+    damageMultiplier: 1.1555556
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: NTB630 squadron rebalance damage target.
@@ -2198,7 +2198,7 @@ MonoBehaviour:
     scope: 2
     faction: 2
     unit: YWingBomber
-    damageMultiplier: 0.87526953
+    damageMultiplier: 1.05
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: YWingBomber squadron rebalance damage target.
@@ -2216,7 +2216,7 @@ MonoBehaviour:
     scope: 2
     faction: 2
     unit: YWingBomber
-    damageMultiplier: 0.6216403
+    damageMultiplier: 1.100502
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: YWingBomber squadron rebalance damage target.
@@ -2256,6 +2256,24 @@ MonoBehaviour:
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 157
+    displayName: Medium Fighter Proton Torpedo
+    family: 23
+    caliber: 1
+    mount: 1
+    scope: 2
+    faction: 2
+    unit: YWingBomber
+    damageMultiplier: 0.65843624
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: YWingBomber squadron unit amount damage target.
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0

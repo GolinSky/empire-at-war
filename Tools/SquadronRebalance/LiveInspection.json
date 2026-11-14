@@ -1,0 +1,416 @@
+{
+  "compilationFailed": false,
+  "compiling": false,
+  "squadrons": [
+    {
+      "unit": "ARC170SquadronData",
+      "members": 8,
+      "bakedMembers": 8,
+      "flightCount": 8,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 32,
+      "MemberHull": 60,
+      "MemberShields": 8,
+      "shieldHpPerSecond": 0.2,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 200.00000762939453,
+        "FighterTorpedo": 20
+      },
+      "totalDps": 220.00000762939453,
+      "torpedoVolley": 240
+    },
+    {
+      "unit": "AWingSquadronData",
+      "members": 4,
+      "bakedMembers": 4,
+      "flightCount": 4,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 16,
+      "MemberHull": 100,
+      "MemberShields": 15,
+      "shieldHpPerSecond": 0.3,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "InterceptorLaser": 200
+      },
+      "totalDps": 200,
+      "torpedoVolley": 0
+    },
+    {
+      "unit": "Belbullab22SquadronData",
+      "members": 11,
+      "bakedMembers": 11,
+      "flightCount": 11,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 11,
+      "MemberHull": 44,
+      "MemberShields": 0,
+      "shieldHpPerSecond": 0,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "InterceptorLaser": 170.0000057220459
+      },
+      "totalDps": 170.0000057220459,
+      "torpedoVolley": 0
+    },
+    {
+      "unit": "BobaFettSlaveISquadronData",
+      "members": 1,
+      "bakedMembers": 1,
+      "flightCount": 1,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 2,
+      "MemberHull": 2460,
+      "MemberShields": 1440,
+      "shieldHpPerSecond": 4.8,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "HeroLaser": 425
+      },
+      "totalDps": 425,
+      "torpedoVolley": 0
+    },
+    {
+      "unit": "Delta7SquadronData",
+      "members": 5,
+      "bakedMembers": 5,
+      "flightCount": 5,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 10,
+      "MemberHull": 160,
+      "MemberShields": 100,
+      "shieldHpPerSecond": 1,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 111.11111640930176
+      },
+      "totalDps": 111.11111640930176,
+      "torpedoVolley": 0
+    },
+    {
+      "unit": "DroidBomberSquadronData",
+      "members": 10,
+      "bakedMembers": 10,
+      "flightCount": 10,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 30,
+      "MemberHull": 58,
+      "MemberShields": 0,
+      "shieldHpPerSecond": 0,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 77.00000762939453,
+        "FighterTorpedo": 48.00000190734863
+      },
+      "totalDps": 125.00000953674316,
+      "torpedoVolley": 384.00001525878906
+    },
+    {
+      "unit": "HanSoloMillenniumFalconSquadronData",
+      "members": 1,
+      "bakedMembers": 1,
+      "flightCount": 1,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 2,
+      "MemberHull": 2130,
+      "MemberShields": 2220,
+      "shieldHpPerSecond": 1,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "HeroLaser": 375
+      },
+      "totalDps": 375,
+      "torpedoVolley": 0
+    },
+    {
+      "unit": "JangoFettSlaveISquadronData",
+      "members": 1,
+      "bakedMembers": 1,
+      "flightCount": 1,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 2,
+      "MemberHull": 3000,
+      "MemberShields": 1200,
+      "shieldHpPerSecond": 1.25,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "HeroLaser": 400
+      },
+      "totalDps": 400,
+      "torpedoVolley": 0
+    },
+    {
+      "unit": "NTB630SquadronData",
+      "members": 4,
+      "bakedMembers": 4,
+      "flightCount": 4,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 12,
+      "MemberHull": 125,
+      "MemberShields": 8,
+      "shieldHpPerSecond": 0.15,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 78,
+        "FighterTorpedo": 52.000003814697266
+      },
+      "totalDps": 130.0000038146973,
+      "torpedoVolley": 416.0000305175782
+    },
+    {
+      "unit": "TIEAvengerSquadronData",
+      "members": 10,
+      "bakedMembers": 10,
+      "flightCount": 10,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 40,
+      "MemberHull": 54,
+      "MemberShields": 8,
+      "shieldHpPerSecond": 0.1,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 205.00001907348633,
+        "FighterMissile": 20
+      },
+      "totalDps": 225.00001907348633,
+      "torpedoVolley": 0
+    },
+    {
+      "unit": "TIEBomberSquadronData",
+      "members": 6,
+      "bakedMembers": 6,
+      "flightCount": 6,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 12,
+      "MemberHull": 100,
+      "MemberShields": 0,
+      "shieldHpPerSecond": 0,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 78,
+        "FighterTorpedo": 52.00000190734863
+      },
+      "totalDps": 130.00000190734863,
+      "torpedoVolley": 416.00001525878906
+    },
+    {
+      "unit": "TIEBruteSquadronData",
+      "members": 10,
+      "bakedMembers": 10,
+      "flightCount": 10,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 20,
+      "MemberHull": 64,
+      "MemberShields": 0,
+      "shieldHpPerSecond": 0,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 220
+      },
+      "totalDps": 220,
+      "torpedoVolley": 0
+    },
+    {
+      "unit": "TIEFighterSquadronData",
+      "members": 10,
+      "bakedMembers": 10,
+      "flightCount": 10,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 20,
+      "MemberHull": 58,
+      "MemberShields": 0,
+      "shieldHpPerSecond": 0,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 210
+      },
+      "totalDps": 210,
+      "torpedoVolley": 0
+    },
+    {
+      "unit": "TIEInterceptorSquadronData",
+      "members": 8,
+      "bakedMembers": 8,
+      "flightCount": 8,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 32,
+      "MemberHull": 62,
+      "MemberShields": 0,
+      "shieldHpPerSecond": 0,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "InterceptorLaser": 180
+      },
+      "totalDps": 180,
+      "torpedoVolley": 0
+    },
+    {
+      "unit": "TIEPunisherSquadronData",
+      "members": 6,
+      "bakedMembers": 6,
+      "flightCount": 6,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 30,
+      "MemberHull": 110,
+      "MemberShields": 6,
+      "shieldHpPerSecond": 0.1,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 76.99999809265135,
+        "FighterTorpedo": 55.99999809265137,
+        "FighterMissile": 12
+      },
+      "totalDps": 144.9999961853027,
+      "torpedoVolley": 447.99998474121094
+    },
+    {
+      "unit": "V19TorrentSquadronData",
+      "members": 8,
+      "bakedMembers": 8,
+      "flightCount": 8,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 16,
+      "MemberHull": 58,
+      "MemberShields": 8,
+      "shieldHpPerSecond": 0.2,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 210
+      },
+      "totalDps": 210,
+      "torpedoVolley": 0
+    },
+    {
+      "unit": "VultureSquadronData",
+      "members": 13,
+      "bakedMembers": 13,
+      "flightCount": 13,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 52,
+      "MemberHull": 44,
+      "MemberShields": 0,
+      "shieldHpPerSecond": 0,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 200.0000066757202
+      },
+      "totalDps": 200.0000066757202,
+      "torpedoVolley": 0
+    },
+    {
+      "unit": "VWingSquadronData",
+      "members": 6,
+      "bakedMembers": 6,
+      "flightCount": 6,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 24,
+      "MemberHull": 64,
+      "MemberShields": 8,
+      "shieldHpPerSecond": 0.2,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "InterceptorLaser": 190.00000762939453
+      },
+      "totalDps": 190.00000762939453,
+      "torpedoVolley": 0
+    },
+    {
+      "unit": "XWingSquadronData",
+      "members": 5,
+      "bakedMembers": 5,
+      "flightCount": 5,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 25,
+      "MemberHull": 95,
+      "MemberShields": 15,
+      "shieldHpPerSecond": 0.3,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 210,
+        "FighterTorpedo": 20
+      },
+      "totalDps": 230,
+      "torpedoVolley": 200
+    },
+    {
+      "unit": "YWingBomberSquadronData",
+      "members": 3,
+      "bakedMembers": 3,
+      "flightCount": 3,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 12,
+      "MemberHull": 180,
+      "MemberShields": 10,
+      "shieldHpPerSecond": 0.2,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 70.00000190734863,
+        "FighterIon": 9.999999046325684,
+        "FighterTorpedo": 60.0000057220459
+      },
+      "totalDps": 140.0000066757202,
+      "torpedoVolley": 480.0000457763672
+    },
+    {
+      "unit": "YWingSquadronData",
+      "members": 4,
+      "bakedMembers": 4,
+      "flightCount": 4,
+      "matchingLoadout": true,
+      "contiguousMemberIds": true,
+      "uniqueMountIds": true,
+      "mounts": 12,
+      "MemberHull": 130,
+      "MemberShields": 8,
+      "shieldHpPerSecond": 0.15,
+      "HullRepairPerSecond": 0,
+      "familyDps": {
+        "FighterLaser": 79,
+        "FighterTorpedo": 56.000003814697266
+      },
+      "totalDps": 135.0000038146973,
+      "torpedoVolley": 448.0000305175782
+    }
+  ]
+}

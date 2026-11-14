@@ -68,7 +68,7 @@ verification: source-and-assets
 - `ShieldRegenerateDelay` is the timer interval in this implementation; taking damage does not reset it in `HealthComponent.ApplyDamage`.
 - Squadron health is per member, including separate member shields; losing the final member destroys the squadron.
 - Squadron laser/fighter-laser damage against shields also uses `LaserShieldDamageMultiplier`.
-- Squadron shield-breaking hits also discard excess damage. Hull repair affects surviving damaged members; it does not resurrect destroyed members.
+- Squadron shield-breaking hits carry the unabsorbed raw damage into the hull/class damage path. Hull repair, where configured, affects surviving damaged members and does not resurrect destroyed members.
 
 ### Squadron roles and hero strikecraft (2026-11-10)
 
@@ -127,3 +127,15 @@ verification: source-and-assets
 - CIS carrier interval → 1 s, initial delay 4 s. Station active/stock → CIS 5/20, Empire 4/12, Republic 3/9, Rebellion 2/4; station initial delay/interval 1/3 s.
 - Shared battle launch ceiling remains 10/s. Existing station saves preserve saved stock/cooldown; fresh matches use the new stock.
 - 2026-11-12 balance rejection and recorded combat evidence → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance - Research]].
+
+
+### Squadron member-count rework · 2026-11-14
+
+- Runtime members come from prefab health/flight fighter lists; MemberCount and weaponLoadout are baked metadata. Resize complete craft subtrees, preserve additionalGuns/death bindings and torpedo fighter indices, then rebake.
+- Current regular sizes F/I/B: Rebel5/4/3, Republic8/6/4, Empire10/8/6, CIS13/11/10. Exact stats and34 carrier caps/total-launch stock → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]]. Heroes remain one craft.
+- Base regular HullRepairPerSecond=0; shield regeneration is per craft. Serialize HP/s×ShieldRegenerateDelay as the tick amount; reduced squadron shields/recovery are intentional.
+- All34 carrier initial/interval targets4/1 s; global10 launches/s and5 s per-bay recent window retained. Stations preserve existing quantities/timing; separate economic balance is still open.
+- PendingLaunchCount=sum(min(remaining stock, max(0, active cap−live count))) across enabled operational bays. AI purchase room counts live carrier wings + pending slots, and theoretical wings only for undeployed carriers. Orphan wings after carrier death remain an association limitation.
+- Weapon157 is Rebel BTL-A4's unit-scoped proton torpedo; shared72 is unchanged. Never retune a shared definition to achieve one squadron's budget.
+- Member-array save/replica contracts require the exact live prefab count. Use fresh matches after count changes; no legacy health migration implemented.
+- Verification: Unity compilation/live profiles and saved binding/loadout inspection21/21;17 regular budgets within0.0000191 total DPS. Tests and gameplay acceptance not run; Tools/SquadronRebalance/LiveInspection.json records the asset check.

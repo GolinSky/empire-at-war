@@ -580,16 +580,19 @@ namespace EmpireAtWar.Services.Enemy
             return cap > 0 && CountReservedSquadrons() + CountHangarSquadrons() < cap;
         }
 
-        /// <summary>Squadrons the AI's bought ships field at once from their hangars.</summary>
+        /// <summary>Live wings, usable carrier reserves and initial wings of ships still awaiting deployment.</summary>
         private int CountHangarSquadrons()
         {
-            int count = 0;
+            int count = _forceBuilder.CountHangarSquadrons(_owner.Id, _liveUnitCounts);
             foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
             {
+                UnitTypeId unitType = UnitTypeId.Ship(option.Key);
+                _liveUnitCounts.TryGetValue(unitType, out int liveCount);
                 int reserved = _unitLimitModel.GetReservedCount<ShipUnitRequest>(option.Key.ToString());
-                if (reserved > 0)
+                int pending = reserved - liveCount;
+                if (pending > 0)
                 {
-                    count += reserved * _profileCatalog.Get(UnitTypeId.Ship(option.Key)).Hangar.Count;
+                    count += pending * _profileCatalog.Get(unitType).Hangar.Count;
                 }
             }
 

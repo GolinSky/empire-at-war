@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ExecutorShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  <ShowBattleMarker>k__BackingField: 0
   <Speed>k__BackingField: 10
   heightTiers: {fileID: 11400000, guid: 03843d4a09287694288d7eaf483218be, type: 2}
   <HeightTier>k__BackingField: 0
@@ -38,13 +39,13 @@ MonoBehaviour:
   abilities: 2100000016000000
   hangarBays:
   - squadronType: 200
-    reserve: 9
-    maxActive: 4
+    reserve: 8
+    maxActive: 2
   - squadronType: 201
-    reserve: 6
+    reserve: 8
     maxActive: 2
   - squadronType: 203
-    reserve: 6
+    reserve: 8
     maxActive: 2
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 1

@@ -38,14 +38,16 @@ MonoBehaviour:
     - key: 201
       value:
         matchups: {fileID: 11400000, guid: 55d62e93f93a1f34badabec3d1a83f4a, type: 2}
-        description: '12,000 hull; 10,000 shields; speed 18. Twenty-four targetable
+        description: "12,000 hull; 10,000 shields; speed 18. Twenty-four targetable
           weapons: six dual heavy turbolaser main batteries, two heavy dual ion cannons,
           two medium dual ion cannons, eight dual medium turbolasers and six medium
           dual laser cannons, plus four point-defense guns. Two shield generators,
-          two engines, tractor beam and hangar are targetable. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration
-          for 7 s. Recovers in 50 s. Tractor Beam restricts enemy corvette or frigate
-          movement. Deploys 2 fighters, 2 bombers, and 2 interceptors at once. Carries
-          18 total squadron launches.'
+          two engines, tractor beam and hangar are targetable. Boost Weapon Power
+          makes weapons fire 10\xD7 faster and reload 90% faster and halves speed
+          and shield regeneration for 7 s. Recovers in 50 s. Tractor Beam restricts
+          enemy corvette or frigate movement. Deploys 2 fighter squadrons, 1 interceptor
+          squadron, 2 bomber squadrons at once. Carries 15 total squadron launches,
+          including the initial deployment."
         role: Capital ship / Advanced carrier
         iconKey: b8f66d736a9c0a841b8957320119ca55:21300000
         isHero: 0
@@ -60,11 +62,13 @@ MonoBehaviour:
     - key: 203
       value:
         matchups: {fileID: 11400000, guid: 514f46b309303c04eaaaeb7733662a3e, type: 2}
-        description: 8,000 hull; 5,500 shields; speed 25. Four medium dual turbo-ion
+        description: "8,000 hull; 5,500 shields; speed 25. Four medium dual turbo-ion
           cannons and two medium turbo-ion cannons. Targetable shield generator,
           two engines and tractor beam. Six medium 3-burst turbolasers, six heavy
-          laser cannons are not separately targetable. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration for 7 s. Recovers
-          in 50 s. Tractor Beam restricts enemy movement. No hangar or squadron deployment.
+          laser cannons are not separately targetable. Boost Weapon Power makes weapons
+          fire 10\xD7 faster and reload 90% faster and halves speed and shield regeneration
+          for 7 s. Recovers in 50 s. Tractor Beam restricts enemy movement. No hangar
+          or squadron deployment."
         role: Ion Support / Cruiser
         iconKey: 73509b3f4bebe5542ba69d62230fff68:21300000
         isHero: 0
@@ -79,10 +83,11 @@ MonoBehaviour:
     - key: 204
       value:
         matchups: {fileID: 11400000, guid: 5660b95ce5f607a4884370642690984d, type: 2}
-        description: 4,000 hull; 4,000 shields; speed 30. Four light long-range 2-burst
-          turbolasers and four 2-burst laser cannons. Engines and shield generator
-          are targetable hardpoints. No hangar or fighter complement. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration
-          for 7 s. Recovers in 50 s.
+        description: "4,000 hull; 4,000 shields; speed 30. Four light long-range
+          2-burst turbolasers and four 2-burst laser cannons. Engines and shield
+          generator are targetable hardpoints. No hangar or fighter complement. Boost
+          Weapon Power makes weapons fire 10\xD7 faster and reload 90% faster and
+          halves speed and shield regeneration for 7 s. Recovers in 50 s."
         role: Artillery / Light Cruiser
         iconKey: e54026c071416a845b2d23e814c1e8d5:21300000
         isHero: 0
@@ -101,8 +106,8 @@ MonoBehaviour:
           two quad ion turrets, six medium ion cannons, six medium turbolasers and
           two medium dual turbolasers. Every weapon is targetable; shield generator,
           hangar, tractor beam are targetable. Power to Main Batteries and Tractor
-          Beam. Deploys 2 fighters, 2 bombers, and 2 interceptors at once. Carries
-          18 total squadron launches.
+          Beam. Deploys 2 fighter squadrons, 1 interceptor squadron, 1 bomber squadron
+          at once. Carries 8 total squadron launches, including the initial deployment.
         role: Capital ship / Ship of the line
         iconKey: 5c33cff1e56f4c246956a7183bb94b02:21300000
         isHero: 0
@@ -122,8 +127,9 @@ MonoBehaviour:
           heavy 2-burst long-range dual turbo-ions, ten heavy 8-burst artillery-rocket
           launchers, four shield generators, two engines and two hangars. Integrated:
           69 medium 2-burst dual long-range turbolasers, 40 heavy lasers and 14 repeating
-          point-defense mounts. Laser Beam and Tractor Beam. Deploys 3 fighters,
-          2 bombers, and 2 interceptors at once. Carries 21 total squadron launches.'
+          point-defense mounts. Laser Beam and Tractor Beam. Deploys 2 fighter squadrons,
+          2 interceptor squadrons, 2 bomber squadrons at once. Carries 24 total squadron
+          launches, including the initial deployment.'
         role: Dreadnought / Fleet Flagship
         iconKey: ebec4f97ee2c2454883747a62531d2c9:21300000
         isHero: 0
@@ -158,11 +164,13 @@ MonoBehaviour:
     - key: 209
       value:
         matchups: {fileID: 11400000, guid: ce8195d5a87d2a34fa7374c25d89d352, type: 2}
-        description: 4,700 hull; 2,000 shields; speed 25. Two targetable 4-burst
+        description: "4,700 hull; 2,000 shields; speed 25. Two targetable 4-burst
           assault-missile launchers, shield generator and engine. Four non-targetable
-          heavy lasers and six non-targetable missile-defense mounts. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration
-          for 7 s. Recovers in 50 s. Deploys 2 fighters, 1 bomber, and 1 interceptor
-          at once. Carries 12 total squadron launches.
+          heavy lasers and six non-targetable missile-defense mounts. Boost Weapon
+          Power makes weapons fire 10\xD7 faster and reload 90% faster and halves
+          speed and shield regeneration for 7 s. Recovers in 50 s. Deploys 2 fighter
+          squadrons, 1 interceptor squadron, 1 bomber squadron at once. Carries 8
+          total squadron launches, including the initial deployment."
         role: Battle Carrier / Cruiser
         iconKey: f0344b89ac6897448a6494a4e3c4353e:21300000
         isHero: 0
@@ -177,13 +185,13 @@ MonoBehaviour:
     - key: 210
       value:
         matchups: {fileID: 11400000, guid: 5c515caf8c0852b458b6d5a383fd1fa5, type: 2}
-        description: 15,000 hull; 10,000 shields; speed 16. Eight targetable heavy
+        description: "15,000 hull; 10,000 shields; speed 16. Eight targetable heavy
           octuple turbolasers, two heavy long-range dual turbolasers, two shield
           generators, three engines and tractor beam. Seven heavy 3-burst turbolasers,
           four heavy turbolasers and four heavy laser cannons are not separately
-          targetable. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves
-          speed and shield regeneration for 7 s. Recovers in 50 s. Tractor Beam restricts
-          enemy movement. No hangars or fighter complement.
+          targetable. Boost Weapon Power makes weapons fire 10\xD7 faster and reload
+          90% faster and halves speed and shield regeneration for 7 s. Recovers in
+          50 s. Tractor Beam restricts enemy movement. No hangars or fighter complement."
         role: Ship of the Line / Capital Ship
         iconKey: f0a9b1821246f484dbc3d7fcaa7828d1:21300000
         isHero: 0
@@ -202,8 +210,9 @@ MonoBehaviour:
           eight DBY-827 Heavy Turbolasers, two Imperial heavy dual turbolasers, two
           heavy turbolasers, two heavy ion cannons and one SPHAT beam. Intensify
           Firepower makes turbolasers, ion cannons and the SPHAT beam fire about
-          six times faster for 15 s; 60 s recovery. Deploys 3 fighters, 3 bombers,
-          and 2 interceptors at once. Carries 24 total squadron launches.'
+          six times faster for 15 s; 60 s recovery. Deploys 2 fighter squadrons,
+          2 interceptor squadrons, 2 bomber squadrons at once. Carries 18 total squadron
+          launches, including the initial deployment.'
         role: Capital carrier / Anti-frigate
         iconKey: d612310c959d0bb4d93c64dba1f5b3f4:21300000
         isHero: 0
@@ -218,10 +227,11 @@ MonoBehaviour:
     - key: 212
       value:
         matchups: {fileID: 11400000, guid: 1ab40ab88738a3d40ae586aca91250cf, type: 2}
-        description: 'Combat destroyer: three quad heavy turbolasers, two medium
+        description: "Combat destroyer: three quad heavy turbolasers, two medium
           dual turbolasers, eight light triple turbolasers and two medium ion cannons.
-          No fighter complement. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster
-          and halves speed and shield regeneration for 7 s. Recovers in 50 s.'
+          No fighter complement. Boost Weapon Power makes weapons fire 10\xD7 faster
+          and reload 90% faster and halves speed and shield regeneration for 7 s.
+          Recovers in 50 s."
         role: Anti-frigate / Capital-ship support
         iconKey: 480ea67ea8c1d1444b4eae17e11f53e8:21300000
         isHero: 0
@@ -273,11 +283,11 @@ MonoBehaviour:
     - key: 215
       value:
         matchups: {fileID: 11400000, guid: 24a14022d6124b44fb118da9e93f01c2, type: 2}
-        description: Anti-squadron escort corvette with four large repeating lasers,
+        description: "Anti-squadron escort corvette with four large repeating lasers,
           one heavy laser and four point-defense mounts. 600 hull, 600 shields, speed
           35. Targetable engine and shield-generator hardpoints; no hangar or squadrons.
-          Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and
-          shield regeneration for 7 s. Recovers in 50 s.
+          Boost Weapon Power makes weapons fire 10\xD7 faster and reload 90% faster
+          and halves speed and shield regeneration for 7 s. Recovers in 50 s."
         role: Screener / Corvette
         iconKey: a18de04525e87254ebd6a359e39a58ba:21300000
         isHero: 0
@@ -292,11 +302,12 @@ MonoBehaviour:
     - key: 216
       value:
         matchups: {fileID: 11400000, guid: 16ec1784ca6e7fc4d842d982fde86b5c, type: 2}
-        description: 9,000 hull and 8,000 shields with capital shield regeneration.
+        description: '9,000 hull and 8,000 shields with capital shield regeneration.
           Four dual medium turbolasers, two concussion missile launchers and two
-          point defense lasers. Launches the full TIE squadron roster. Deploys 3
-          fighters, 3 bombers, and 2 interceptors at once. Carries 24 total squadron
-          launches.
+          point defense lasers. Deploys 2 fighter squadrons, 1 interceptor squadron,
+          2 bomber squadrons at once. Carries 15 total squadron launches, including
+          the initial deployment. Fighter complement: one TIE Brute and one TIE Avenger
+          squadron; bombers: one TIE Bomber and one TIE Punisher squadron.'
         role: Capital / Assault carrier
         iconKey: f38f2a09297bc734d89c94affa2d83f6:21300000
         isHero: 0
@@ -311,11 +322,13 @@ MonoBehaviour:
     - key: 217
       value:
         matchups: {fileID: 11400000, guid: 55d62e93f93a1f34badabec3d1a83f4a, type: 2}
-        description: Imperial capital ship with 10,000 hull and 10,000 shields. Two
-          heavy quad turbolasers, two heavy dual ion cannons, three medium quad turbolasers,
-          four medium dual turbolasers and six heavy turbolasers. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration
-          for 7 s. Recovers in 50 s. Launches one TIE Fighter squadron at a time
-          with three total launches.
+        description: "Imperial capital ship with 10,000 hull and 10,000 shields.
+          Two heavy quad turbolasers, two heavy dual ion cannons, three medium quad
+          turbolasers, four medium dual turbolasers and six heavy turbolasers. Boost
+          Weapon Power makes weapons fire 10\xD7 faster and reload 90% faster and
+          halves speed and shield regeneration for 7 s. Recovers in 50 s. Deploys
+          1 fighter squadron at once. Carries 2 total squadron launches, including
+          the initial deployment."
         role: Capital ship / Line combat
         iconKey: 1eb602fdb62be8f4f9214ecdb7cf4e20:21300000
         isHero: 0
@@ -332,7 +345,7 @@ MonoBehaviour:
     - key: 200
       value:
         matchups: {fileID: 11400000, guid: 42b9d7cba8dab804589da64ac8ce570f, type: 2}
-        description: 'Imperial squadron: seven TIE Fighters, each with 42 hull, no
+        description: 'Imperial squadron: ten TIE Fighters, each with 58 hull, no
           shields and two laser cannons. Screens carriers against fighters and bombers;
           vulnerable to anti-fighter corvettes.'
         role: Fighter / Squadron screen
@@ -349,9 +362,10 @@ MonoBehaviour:
     - key: 201
       value:
         matchups: {fileID: 11400000, guid: 7c52c799b307ef24ab481ca1f82ccfb9, type: 2}
-        description: 'Imperial squadron: four TIE Bombers, each with 45 hull, no
+        description: 'Imperial squadron: six TIE Bombers, each with 100 hull, no
           shields, a laser cannon and a proton torpedo launcher. Attacks larger ships;
-          vulnerable to fighters and anti-fighter weapons.'
+          vulnerable to fighters and anti-fighter weapons. Full squadron torpedo
+          volley: 624 damage; 12 s reload.'
         role: Bomber / Anti-ship
         iconKey: 6deef1e660f9c3a41b4d343f91418382:21300000
         isHero: 0
@@ -366,10 +380,13 @@ MonoBehaviour:
     - key: 202
       value:
         matchups: {fileID: 11400000, guid: c5df0907ae25f944fa8027342b0f745c, type: 2}
-        description: Six TIE Avengers. Each fighter has 44 hull, 10 shields, two
-          light repeating lasers and two concussion-missile launchers. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration
-          for 7 s. Recovers in 50 s. Seeker Warhead Countermeasure automatically
-          intercepts incoming missiles. Weapons are not separately targetable.
+        description: "Ten TIE Avengers. Each fighter has 54 hull, 8 shields, two
+          light repeating lasers and two concussion-missile launchers. Boost Weapon
+          Power makes weapons fire 10\xD7 faster and reload 90% faster and halves
+          speed and shield regeneration for 7 s. Recovers in 50 s. Seeker Warhead
+          Countermeasure automatically intercepts incoming missiles. Weapons are
+          not separately targetable. Each surviving craft regenerates 0.1 shield
+          HP/s."
         role: Fighter / Fast attack
         iconKey: 3ebf9b17840b8ee4daae27c4f063d4af:21300000
         isHero: 0
@@ -384,7 +401,7 @@ MonoBehaviour:
     - key: 203
       value:
         matchups: {fileID: 11400000, guid: 606a86b08cc7a5e4eb247e01d41aa404, type: 2}
-        description: Eight fast TIE Interceptors, each with 32 hull and four laser
+        description: Eight fast TIE Interceptors, each with 62 hull and four laser
           cannons. Carrier interceptor.
         role: Interceptor / Anti-bomber
         iconKey: 64e95301a26b2ca498bc930f9eae7727:21300000
@@ -400,7 +417,7 @@ MonoBehaviour:
     - key: 204
       value:
         matchups: {fileID: 11400000, guid: 90bfd56a75214e249aaf83f0d74b2bfe, type: 2}
-        description: Six heavy TIE Brutes, each with 52 hull and two heavy laser
+        description: Ten heavy TIE Brutes, each with 64 hull and two heavy laser
           cannons. Advanced-loadout carrier fighter.
         role: Heavy fighter / Squadron screen
         iconKey: 2dc8ad80492076941aae35ba3ce7c2aa:21300000
@@ -416,9 +433,10 @@ MonoBehaviour:
     - key: 205
       value:
         matchups: {fileID: 11400000, guid: b5b754d7809130641b8b0449137d8769, type: 2}
-        description: Four TIE Punishers, each with 48 hull, 12 shields, one laser
+        description: 'Six TIE Punishers, each with 110 hull, 6 shields, one laser
           cannon, two proton-torpedo launchers and two missile launchers. Advanced-loadout
-          carrier bomber.
+          carrier bomber. Each surviving craft regenerates 0.1 shield HP/s. Full
+          squadron torpedo volley: 672 damage; 12 s reload.'
         role: Bomber / Anti-ship
         iconKey: fe8c1e85b0bf680479b5946516c3041f:21300000
         isHero: 0

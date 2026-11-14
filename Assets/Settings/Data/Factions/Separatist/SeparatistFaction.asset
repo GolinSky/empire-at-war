@@ -19,8 +19,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 5c5715b5eb4b3254db8aaac35b69aeb0, type: 2}
         description: Heavy and medium turbolasers, supported by ion cannons, engage
-          large ships. Deploys 4 fighters, 3 bombers, and 3 interceptors at once.
-          Carries 40 total squadron launches.
+          large ships. Deploys 2 fighter squadrons, 1 interceptor squadron, 2 bomber
+          squadrons at once. Carries 15 total squadron launches, including the initial
+          deployment.
         role: "Capital \xB7 Battle line / carrier"
         iconKey: 60d91c69afc54ad4fa9b45f6990ff8af:21300000
         isHero: 0
@@ -67,8 +68,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: ed499ffc17084c847a836b55cd20c147, type: 2}
         description: Heavy and medium turbolasers defend a large carrier hull. Deploys
-          7 fighters, 5 bombers, and 6 interceptors at once. Carries 72 total squadron
-          launches.
+          2 fighter squadrons, 2 interceptor squadrons, 2 bomber squadrons at once.
+          Carries 24 total squadron launches, including the initial deployment.
         role: "Heavy capital \xB7 Carrier / heavy gunship"
         iconKey: 8128fcc8b8e454e47ab592309d37208e:21300000
         isHero: 0
@@ -101,8 +102,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 699f1928bcda3284f9ae9ff3f683f5d8, type: 2}
         description: Support carrier with 2 turbolasers, 6 lasers and 2 ion cannons.
-          Boost Weapon Power improves self-defense. Deploys 6 fighters, 4 bombers,
-          and 4 interceptors at once. Carries 56 total squadron launches.
+          Boost Weapon Power improves self-defense. Deploys 2 fighter squadrons,
+          2 interceptor squadrons, 2 bomber squadrons at once. Carries 18 total squadron
+          launches, including the initial deployment.
         role: "Capital \xB7 Dedicated carrier"
         iconKey: 5f8bc4a82cc113244b19a13b489bb0f0:21300000
         isHero: 0
@@ -150,10 +152,11 @@ MonoBehaviour:
     - key: 108
       value:
         matchups: {fileID: 11400000, guid: e053a1b798d6f5f4d85501286790670d, type: 2}
-        description: Fast CIS assault frigate, formerly the Techno Union Frigate.
+        description: "Fast CIS assault frigate, formerly the Techno Union Frigate.
           Four twin turbolasers, seven turbolasers, two lasers, four point-defense
           cannons and three ion cannons deliver strong offensive firepower. Thin
-          shields favor hit-and-run attacks. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster.
+          shields favor hit-and-run attacks. Boost Weapon Power makes weapons fire
+          10\xD7 faster and reload 90% faster."
         role: Cruiser / Fast assault / Hit-and-run
         iconKey: f7655a1be55b2a74aa984b640ec46f5d:21300000
         isHero: 0
@@ -169,8 +172,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 4a1771d5cec7be245892510aeae56eba, type: 2}
         description: A larger Providence-class hull with 22,500 hull, 24,000 shields
-          and 28 weapon hardpoints. Retains Providence's abilities. Deploys 5 fighters,
-          3 bombers, and 4 interceptors at once. Carries 48 total squadron launches.
+          and 28 weapon hardpoints. Retains Providence's abilities. Deploys 2 fighter
+          squadrons, 2 interceptor squadrons, 2 bomber squadrons at once. Carries
+          24 total squadron launches, including the initial deployment.
         role: Capital / Providence-class dreadnought / carrier
         iconKey: af913e547595237409f81ee21d82b267:21300000
         isHero: 0
@@ -206,8 +210,8 @@ MonoBehaviour:
         description: 12,750 hull and 8,000 shields. Three quad turbolaser batteries,
           eight turbolaser batteries and two proton torpedo launchers use medium
           caliber. Sixteen targetable hardpoints include engines, shields and hangar.
-          Deploys 3 fighters, 2 bombers, and 2 interceptors at once. Carries 28 total
-          squadron launches.
+          Deploys 2 fighter squadrons, 1 interceptor squadron, 1 bomber squadron
+          at once. Carries 8 total squadron launches, including the initial deployment.
         role: Capital / Battle line carrier
         iconKey: 929de4fd7db737646a0df2a72d3404af:21300000
         isHero: 0
@@ -225,8 +229,9 @@ MonoBehaviour:
         description: 3,100 hull and 1,500 shields. Eight turbolaser batteries, four
           laser cannon batteries, two ion cannon batteries and one proton torpedo
           launcher, all medium caliber. All 17 mounts are targetable, including engines
-          and hangar. Deploys 2 fighters, 1 bomber, and 2 interceptors at once. Carries
-          20 total squadron launches.
+          and hangar. Deploys 1 fighter squadron, 1 interceptor squadron, 1 bomber
+          squadron at once. Carries 6 total squadron launches, including the initial
+          deployment.
         role: Frigate / Escort
         iconKey: 6659a938f240057468564cb0ee980865:21300000
         isHero: 0
@@ -241,11 +246,12 @@ MonoBehaviour:
     - key: 113
       value:
         matchups: {fileID: 11400000, guid: 097392c440411f24986bc3e16be0db4e, type: 2}
-        description: 2,800 hull and 2,500 shields with cruiser shield regeneration.
+        description: "2,800 hull and 2,500 shields with cruiser shield regeneration.
           Eight dual turbolaser batteries, six concussion missile launchers and one
           dual ion cannon battery, all medium caliber. All 17 mounts are targetable,
-          including engines and shield generator. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration for 7 s. Recovers
-          in 50 s.
+          including engines and shield generator. Boost Weapon Power makes weapons
+          fire 10\xD7 faster and reload 90% faster and halves speed and shield regeneration
+          for 7 s. Recovers in 50 s."
         role: Cruiser / Missile support
         iconKey: cc08d3ef304a00a4999b7602cc4d17d0:21300000
         isHero: 0
@@ -262,8 +268,8 @@ MonoBehaviour:
     - key: 100
       value:
         matchups: {fileID: 11400000, guid: 997cc1b8ed373fe4fbe4d556a811f3b0, type: 2}
-        description: Four Belbullab-22 interceptors with 38 hull and 5 shields each.
-          Their interceptor lasers are most effective against bombers.
+        description: Eleven Belbullab-22 interceptors with 44 hull and no shields
+          each. Their interceptor lasers are most effective against bombers.
         role: Interceptor / Anti-bomber
         iconKey: 6475693b4e9a23943aa6f6d43d698437:21300000
         isHero: 0
@@ -278,9 +284,10 @@ MonoBehaviour:
     - key: 101
       value:
         matchups: {fileID: 11400000, guid: cfd79fcde45f938438f66f8a3a6f392e, type: 2}
-        description: Four autonomous Trade Federation droid bombers with 2 laser
-          cannons and 1 proton torpedo launcher each. Effective against capital ships,
-          frigates and stations; slow and vulnerable to fighters. No hyperdrive.
+        description: 'Ten autonomous Trade Federation droid bombers, each with 58
+          hull, no shields, 2 laser cannons and 1 proton torpedo launcher. Effective
+          against capital ships, frigates and stations; slow and vulnerable to fighters.
+          No hyperdrive. Full squadron torpedo volley: 576 damage; 12 s reload.'
         role: "Bomber squadron \xB7 Anti-capital"
         iconKey: 0148d1e047b1c024494b31fb02e655ed:21300000
         isHero: 0
@@ -295,8 +302,8 @@ MonoBehaviour:
     - key: 102
       value:
         matchups: {fileID: 11400000, guid: 515b7205b7913704094becf24905d815, type: 2}
-        description: Seven Vulture-class droid starfighters with four laser cannons
-          each. Swarm fighters with 28 hull per fighter and no shields. Effective
+        description: Thirteen Vulture-class droid starfighters with four laser cannons
+          each. Swarm fighters with 44 hull per fighter and no shields. Effective
           against bombers and fighters; vulnerable to corvettes and dedicated anti-fighter
           weapons. No hyperdrive.
         role: Fighter / Swarm fighter

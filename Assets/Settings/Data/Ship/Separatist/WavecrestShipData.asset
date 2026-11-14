@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: WavecrestShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  <ShowBattleMarker>k__BackingField: 0
   <Speed>k__BackingField: 25
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 5
@@ -38,14 +39,14 @@ MonoBehaviour:
   abilities: 03000000
   hangarBays:
   - squadronType: 102
-    reserve: 8
-    maxActive: 3
+    reserve: 2
+    maxActive: 1
   - squadronType: 101
-    reserve: 4
+    reserve: 2
     maxActive: 1
   - squadronType: 100
-    reserve: 8
-    maxActive: 2
+    reserve: 2
+    maxActive: 1
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 1
   weaponLoadout:

@@ -12,6 +12,9 @@ namespace EmpireAtWar.Components.Hangar
         /// <summary>Squadrons launched from this hangar's reserve that are still alive.</summary>
         int LaunchedCount { get; }
 
+        /// <summary>Free active slots that operational bays can fill from their remaining reserve.</summary>
+        int PendingLaunchCount { get; }
+
         ISquadron GetLaunched(int index);
     }
 }

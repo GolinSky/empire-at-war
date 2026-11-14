@@ -187,6 +187,8 @@ namespace EmpireAtWar.Components.Hangar
 
         public int LaunchedCount => _launched.Count;
 
+        public int PendingLaunchCount => _isReleased ? 0 : Model.PendingLaunchCount;
+
         public ISquadron GetLaunched(int index) => _launched[index].Squadron;
 
         public bool CanLaunchReplacement =>!_isReleased && _launchSlots.IsAvailable && Model.CanLaunchReplacement;

@@ -1,13 +1,13 @@
 ---
 category: Bugs
 status: in-progress
-design_state: exact-targets-proposed
+design_state: implemented-targets-economics-open
 created: 2026-11-11
 system:
   - balance
   - squadrons
   - hangars
-acceptance: failed
+acceptance: pending-user
 updated: 2026-11-14
 ---
 # Carrier and Squadron Rebalance
@@ -16,11 +16,11 @@ updated: 2026-11-14
 
 - Reduce squadron entities using faction-specific craft counts and 1–2 active squadrons per supported role.
 - Per-craft quality: Rebellion > Republic > Empire > CIS for base DPS, hull+shield HP and effective durability against common strikecraft lasers.
-- Exact proposed targets dated 2026-11-14. No gameplay changes applied; balance requires match acceptance.
+- Exact targets implemented 2026-11-14. Source, saved assets and Unity compilation verified; match balance acceptance remains open.
 
 ## Decision
 
-- This note is the authoritative proposed target sheet; supersedes earlier count-only and provisional targets. F / I / B always means fighter / interceptor / bomber.
+- This note is the authoritative implemented squadron/carrier target sheet; supersedes earlier count-only and provisional targets. F / I / B always means fighter / interceptor / bomber.
 - Craft per squadron: Rebel 5/4/3; Republic 8/6/4; Empire 10/8/6; CIS **13/11/10**. CIS ranges are resolved to these fixed values.
 - Role caps aggregate concrete variants. Use explicit bay assignments below; no new runtime shared-role-cap system required.
 - Dedicated carriers receive larger wings than general gunships. Four existing partial-role supports retain absent roles at zero; no new role or launch hardpoint is added to them.
@@ -183,12 +183,13 @@ updated: 2026-11-14
 - [x] Calculate count-only impact and identify save, builder, economy and role-cap issues.
 - [x] Set exact17-type count/DPS/hull/shield/recovery/weapon budgets and34-carrier caps/stock.
 - [x] Verify strict per-craft quality ordering and both common-laser durability calculations; verify zero/zero disabled bay support.
-- [ ] Implement prefab, stats, weapon budgets and carrier values.
+- [x] Implement prefab, stats, weapon budgets and carrier values (2026-11-14).
 - [ ] Reconcile station and direct-purchase economics before release; preserve global launch throttle.
-- [ ] Update AI strength consumers, descriptions and fresh-match compatibility messaging.
-- [ ] Complete asset persistence/source checks and user gameplay acceptance.
+- [x] Update AI purchase-room counting and descriptions; retain explicit member-array rejection and document the fresh-match requirement (2026-11-14).
+- [x] Complete asset persistence/source checks and Unity compilation (2026-11-14).
+- [ ] User gameplay acceptance → [[TODOs/User_Acceptance_Queue#Squadron member-count rework]].
 - Relevant categories when authorized: Squadrons, Balance, Combat, Ships, GameFlow, EnemyAi; Networking/Capture/Economy/Ui only where implementation touches them.
-- No reusable implemented rule extracted: these are proposed targets; prior verified engineering findings remain linked in the research and GameDesign/Combat.
+- Reusable implemented rules extracted → [[GameDesign/Combat#Squadron member-count rework · 2026-11-14]].
 
 ## Files
 
@@ -200,3 +201,19 @@ updated: 2026-11-14
 - Assets/Scripts/Editor/AI/WeaponLoadoutBaker.cs; Assets/Scripts/Editor/Balance/BalanceDerivedData.cs
 - Assets/Scripts/Services/Saves/BattleSaveValidator.cs; Assets/Scripts/Services/Repository/BattleAssetPreload.cs
 - [[TODOs/Features/Malevolence_Import]]; [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]]
+
+## Implementation — Verified 2026-11-14
+
+- Completed requested scope: all17 regular stats, member counts, family DPS/volley budgets, all34 carrier loadouts and updated faction descriptions. Station quantities and purchase economics unchanged by scope.
+-14 prefab files resized; X-Wing, TIE Interceptor and NTB-630 already had target member counts. Three hero views/data and Delta-7 preserved.
+-17 data assets updated; 27 existing unit-scoped weapon damage multipliers changed. Added YWingBomberProtonTorpedo=157 and rebound Rebel bomber mounts; shared type72 and family/caliber/mount rules preserved.
+-29 carrier assets changed; five already matched. All34 active/stock/timer sets verified; four faction assets updated only selected descriptions (34 carriers +17 squadrons).
+- AI purchase room uses live launched carrier wings + usable free slots limited by stock; theoretical wing counts apply only to carriers awaiting deployment. Disabled/destroyed/exhausted bays no longer count as full future wings.
+- Existing per-squadron capture weighting and surviving-member combat scaling remain unchanged. Known inherited limit: orphan wings after carrier destruction lose their carrier association and remain absent from this carrier-specific purchase count.
+- Imported/reserialized51 changed data/faction/carrier assets; saved prefab contents through PrefabUtility and rebaked actual weapon inventories. No manual Editor action required.
+- Live inspection:21/21 prefab inventories match baked count/loadout, with contiguous member IDs and unique weapon IDs. All17 regular live stat/family budgets match; max total DPS deviation0.0000191. Compiled PendingLaunchCount API present; Editor scriptCompilationFailed=false.
+- Final import/save Console delta:0 errors. Initial authoring pass touched Transform child lists, which Unity repaired; tooling now excludes Transform lists, rerun saved cleanly. Independent saved-YAML audit passed21/21:134 craft,412 mounts,1,981 explicit transforms,55 fighter-indexed mounts,529 injectables and40 nested X-Wing attachments; no missing fileIDs, duplicate children, parent reciprocity errors or cycles.
+- Two HangarModel regression cases authored, not run. No EditMode/PlayMode tests or gameplay simulation executed under the local override.
+- Evidence/tools: Tools/SquadronRebalance/LiveInspection.json, InspectAssets.cs, ApplyStats.py, ResizeSquadrons.cs and README.md.
+- Formation review: Vulture13 at spacing3 reaches18 lateral/14.4 trailing units; Belbullab11 reaches15/12. Navigation/loiter values preserved as requested; overlap/visual acceptance remains a user gate.
+- Parent remains active because station/direct-purchase economic decisions are still unimplemented; the requested squadron/carrier implementation phase is complete. Do not archive the broader balance plan prematurely.
