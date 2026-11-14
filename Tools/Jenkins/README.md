@@ -43,8 +43,7 @@
 ## Resource policy
 
 - `ResourcePolicy.json`: disk reserve 20 GiB per used volume. Available RAM is recorded; RAM start/stop restrictions are disabled by user request.
-- Additional peak estimates: F: 50 GiB; C: 15 GiB. Baseline: source assets 2.21 GiB, development Library 8.01 GiB, user Unity cache 6.87 GiB.
-- These are conservative initial estimates, not measured CI peaks. Refine after successful cold and warm runs.
+- Startup requires 20 GiB free on F: and 35 GiB free on C:. C: includes a 15 GiB peak growth estimate.
 - CI Library budget: 48 GiB; over-budget preparation fails. Review/rebuild only that cache while idle; automatic cache deletion is disabled.
 - Preparation/build/package processes run in a Windows Job Object, assigned while suspended, with BelowNormal priority and kill-on-close; child processes inherit membership.
 - Unity job workers: 4. Resource sampling: every 5 seconds. Build limit: 6,600 seconds; job limit: 120 minutes.
