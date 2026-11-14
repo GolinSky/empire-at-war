@@ -29,16 +29,16 @@ namespace EmpireAtWar.Tests.Movement
         {
             var scheduler = new EmpireAtWar.Services.Ships.ShipFacingSolveScheduler();
             var executed = new List<int>();
-            scheduler.Request(() => executed.Add(1));
-            scheduler.Request(() => executed.Add(2));
-            scheduler.Request(() => executed.Add(3));
+            var expected = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            foreach (int requestId in expected)
+                scheduler.Request(() => executed.Add(requestId));
 
             scheduler.LateTick();
 
-            Assert.That(executed.Count, Is.InRange(1, 2));
+            Assert.That(executed.Count, Is.InRange(1, 8));
             Assert.That(executed[0], Is.EqualTo(1));
-            for (int i = 0; i < 2; i++) scheduler.LateTick();
-            Assert.That(executed, Is.EqualTo(new[] { 1, 2, 3 }));
+            for (int i = 0; i < expected.Length - 1; i++) scheduler.LateTick();
+            Assert.That(executed, Is.EqualTo(expected));
         }
 
         private Vector2Range _mapRange;
