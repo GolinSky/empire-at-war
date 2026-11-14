@@ -1,3 +1,5 @@
+using System;
+using System.Buffers;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Map.Hazards
@@ -33,8 +35,34 @@ namespace EmpireAtWar.Entities.Map.Hazards
             Rows = Mathf.CeilToInt((reach.size.z + GRID_MARGIN * 2f) / CellSize) + 1;
             GridOrigin = new Vector3(reach.min.x - GRID_MARGIN, 0f, reach.min.z - GRID_MARGIN);
             int count = Columns * Rows;
-            float[] field = new float[count];
-            bool[] inside = new bool[count];
+            _distances = new float[count];
+            Bounds = BakeDistances(count);
+        }
+
+        private Bounds BakeDistances(int count)
+        {
+            float[] field = ArrayPool<float>.Shared.Rent(count);
+            bool[] inside = ArrayPool<bool>.Shared.Rent(count);
+            bool[] edge = ArrayPool<bool>.Shared.Rent(count);
+            Vector3[] edgePoints = ArrayPool<Vector3>.Shared.Rent(count);
+            int[] nearest = ArrayPool<int>.Shared.Rent(count);
+            try
+            {
+                Array.Clear(edge, 0, count);
+                return BakeDistances(field, inside, edge, edgePoints, nearest);
+            }
+            finally
+            {
+                ArrayPool<float>.Shared.Return(field);
+                ArrayPool<bool>.Shared.Return(inside);
+                ArrayPool<bool>.Shared.Return(edge);
+                ArrayPool<Vector3>.Shared.Return(edgePoints);
+                ArrayPool<int>.Shared.Return(nearest);
+            }
+        }
+
+        private Bounds BakeDistances(float[] field, bool[] inside, bool[] edge, Vector3[] edgePoints, int[] nearest)
+        {
             for (int row = 0; row < Rows; row++)
                 for (int column = 0; column < Columns; column++)
                 {
@@ -44,8 +72,6 @@ namespace EmpireAtWar.Entities.Map.Hazards
                 }
             // Samples beside the outline project onto it with field / slope, which is sub-cell accurate;
             // every other sample measures to the projection of its nearest such sample.
-            bool[] edge = new bool[count];
-            Vector3[] edgePoints = new Vector3[count];
             for (int row = 1; row < Rows - 1; row++)
                 for (int column = 1; column < Columns - 1; column++)
                 {
@@ -54,10 +80,8 @@ namespace EmpireAtWar.Entities.Map.Hazards
                         inside[index] != inside[index - Columns] || inside[index] != inside[index + Columns];
                     if (edge[index]) edgePoints[index] = ProjectToOutline(field, column, row);
                 }
-            int[] nearest = new int[count];
             SquaredDistanceTransform.FindNearest(edge, Columns, Rows, nearest);
-            _distances = new float[count];
-            Bounds bounds = new Bounds(spot.Center, Vector3.zero);
+            Bounds bounds = new Bounds(Spot.Center, Vector3.zero);
             bool hasInside = false;
             for (int row = 0; row < Rows; row++)
                 for (int column = 0; column < Columns; column++)
@@ -73,7 +97,7 @@ namespace EmpireAtWar.Entities.Map.Hazards
                     bounds.Encapsulate(position);
                 }
             bounds.Expand(new Vector3(CellSize * 2f, 0f, CellSize * 2f));
-            Bounds = bounds;
+            return bounds;
         }
 
         public Vector3 GetSamplePosition(int column, int row)

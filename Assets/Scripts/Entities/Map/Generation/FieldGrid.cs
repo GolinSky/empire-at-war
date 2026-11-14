@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.SkirmishCamera;
 using UnityEngine;
@@ -14,6 +15,8 @@ namespace EmpireAtWar.Entities.Map.Generation
             (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)
         };
         private readonly bool[] _isField;
+        private readonly bool[] _visited;
+        private readonly Queue<int> _queue = new Queue<int>();
 
         private readonly Vector2 _min;
 
@@ -31,6 +34,7 @@ namespace EmpireAtWar.Entities.Map.Generation
             Rows = Mathf.Max(1, Mathf.RoundToInt(size.y / cellSize));
             CellSize = size.x / Columns;
             _isField = new bool[Columns * Rows];
+            _visited = new bool[_isField.Length];
         }
 
         public void SetField(int index, bool isField)
@@ -56,29 +60,29 @@ namespace EmpireAtWar.Entities.Map.Generation
         /// <summary>Open cells that no edge-connected open path links to any of <paramref name="starts"/>.</summary>
         public List<int> FindSealedOpenCells(IEnumerable<int> starts)
         {
-            bool[] isReached = new bool[Count];
-            Queue<int> queue = new Queue<int>();
+            Array.Clear(_visited, 0, Count);
+            _queue.Clear();
             foreach (int start in starts)
             {
-                if (_isField[start] || isReached[start]) continue;
-                isReached[start] = true;
-                queue.Enqueue(start);
+                if (_isField[start] || _visited[start]) continue;
+                _visited[start] = true;
+                _queue.Enqueue(start);
             }
 
-            while (queue.Count > 0)
+            while (_queue.Count > 0)
             {
-                int index = queue.Dequeue();
+                int index = _queue.Dequeue();
                 foreach (int neighbour in GetNeighbours(index, EDGE_NEIGHBOURS))
                 {
-                    if (_isField[neighbour] || isReached[neighbour]) continue;
-                    isReached[neighbour] = true;
-                    queue.Enqueue(neighbour);
+                    if (_isField[neighbour] || _visited[neighbour]) continue;
+                    _visited[neighbour] = true;
+                    _queue.Enqueue(neighbour);
                 }
             }
 
             List<int> sealedCells = new List<int>();
             for (int index = 0; index < Count; index++)
-                if (!_isField[index] && !isReached[index]) sealedCells.Add(index);
+                if (!_isField[index] && !_visited[index]) sealedCells.Add(index);
             return sealedCells;
         }
 
@@ -86,28 +90,28 @@ namespace EmpireAtWar.Entities.Map.Generation
         public List<List<int>> FindFields()
         {
             List<List<int>> fields = new List<List<int>>();
-            bool[] isVisited = new bool[Count];
-            Queue<int> queue = new Queue<int>();
+            Array.Clear(_visited, 0, Count);
+            _queue.Clear();
             for (int start = 0; start < Count; start++)
             {
-                if (!_isField[start] || isVisited[start])
+                if (!_isField[start] || _visited[start])
                 {
                     continue;
                 }
 
                 List<int> field = new List<int>();
-                isVisited[start] = true;
-                queue.Enqueue(start);
-                while (queue.Count > 0)
+                _visited[start] = true;
+                _queue.Enqueue(start);
+                while (_queue.Count > 0)
                 {
-                    int index = queue.Dequeue();
+                    int index = _queue.Dequeue();
                     field.Add(index);
                     foreach (int neighbour in GetNeighbours(index, EDGE_NEIGHBOURS))
                     {
-                        if (_isField[neighbour] && !isVisited[neighbour])
+                        if (_isField[neighbour] && !_visited[neighbour])
                         {
-                            isVisited[neighbour] = true;
-                            queue.Enqueue(neighbour);
+                            _visited[neighbour] = true;
+                            _queue.Enqueue(neighbour);
                         }
                     }
                 }
@@ -122,7 +126,7 @@ namespace EmpireAtWar.Entities.Map.Generation
         public int[] GetEdgeDistances()
         {
             int[] distances = new int[Count];
-            Queue<int> queue = new Queue<int>();
+            _queue.Clear();
             for (int index = 0; index < Count; index++)
             {
                 int column = index % Columns;
@@ -131,7 +135,7 @@ namespace EmpireAtWar.Entities.Map.Generation
                 if (!_isField[index] || isEdge)
                 {
                     distances[index] = _isField[index] ? 1 : 0;
-                    queue.Enqueue(index);
+                    _queue.Enqueue(index);
                 }
                 else
                 {
@@ -139,15 +143,15 @@ namespace EmpireAtWar.Entities.Map.Generation
                 }
             }
 
-            while (queue.Count > 0)
+            while (_queue.Count > 0)
             {
-                int index = queue.Dequeue();
+                int index = _queue.Dequeue();
                 foreach (int neighbour in GetNeighbours(index, ALL_NEIGHBOURS))
                 {
                     if (distances[neighbour] > distances[index] + 1)
                     {
                         distances[neighbour] = distances[index] + 1;
-                        queue.Enqueue(neighbour);
+                    _queue.Enqueue(neighbour);
                     }
                 }
             }

@@ -26,8 +26,9 @@ namespace EmpireAtWar.Editor.BattleSimulator
 
         public void Advance(int milliseconds = 8)
         {
-            var watch = Stopwatch.StartNew();
-            while (!IsComplete && watch.ElapsedMilliseconds < milliseconds)
+            long start = Stopwatch.GetTimestamp();
+            double budget = milliseconds * (Stopwatch.Frequency / 1000d);
+            while (!IsComplete && Stopwatch.GetTimestamp() - start < budget)
             {
                 if (_current == null) _current = new BattleSimulation(_setup, _definitions, _matrix,
                     unchecked(_setup.Seed + Summary.Completed), Summary.Completed == 0);

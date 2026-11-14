@@ -147,6 +147,23 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void RepeatedBake_PreservesDistancesAfterScratchReuse()
+        {
+            var center = new Vector3(300f, 0f, -100f);
+            HazardSpot spot = HazardCloudGenerator.CreateIsland(_data, center, Vector3.right,
+                1200f, 300f, CELL_SIZE, new Random(7));
+            HazardShape original = new HazardShape(spot);
+            var middle = new HazardShape(spot.Mirror(Vector3.zero));
+            HazardShape repeated = new HazardShape(spot);
+
+            Assert.That(repeated.Bounds, Is.EqualTo(original.Bounds));
+            Assert.That(middle.SignedDistance(-center), Is.EqualTo(original.SignedDistance(center)).Within(CELL_SIZE));
+            for (int row = 0; row < original.Rows; row++)
+                for (int column = 0; column < original.Columns; column++)
+                    Assert.That(repeated.GetDistance(column, row), Is.EqualTo(original.GetDistance(column, row)));
+        }
+
         private static int CountInsidePieces(HazardShape shape)
         {
             bool[] seen = new bool[shape.Columns * shape.Rows];

@@ -2,7 +2,7 @@ using EmpireAtWar.Components.AttackComponent;
 
 namespace EmpireAtWar.Editor.BattleSimulator
 {
-    public sealed class SimImpact
+    public struct SimImpact
     {
         public SimUnit Source;
         public SimUnit Target;

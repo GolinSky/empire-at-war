@@ -17,6 +17,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
         private readonly List<SimUnit> _candidates = new List<SimUnit>();
         private readonly List<int> _points = new List<int>();
         private readonly SortedDictionary<int, List<SimImpact>> _impacts = new SortedDictionary<int, List<SimImpact>>();
+        private readonly Stack<List<SimImpact>> _impactBuffers = new Stack<List<SimImpact>>();
         private readonly ITargetPolicy[] _policies;
         private int _tick;
         public BattleResult Result { get; }
@@ -78,6 +79,8 @@ namespace EmpireAtWar.Editor.BattleSimulator
             {
                 foreach (SimImpact impact in impacts) BattleDamageResolver.Apply(impact, time, Result, _detailed);
                 _impacts.Remove(_tick);
+                impacts.Clear();
+                _impactBuffers.Push(impacts);
             }
             bool aliveA = false, aliveB = false;
             foreach (SimUnit unit in _units)
@@ -131,7 +134,11 @@ namespace EmpireAtWar.Editor.BattleSimulator
             {
                 double arrival = time + delay + mount.Definition.DamageDuration * i / ticks;
                 int tick = Math.Max(_tick, (int)Math.Ceiling(arrival / STEP_SECONDS - 0.000001));
-                if (!_impacts.TryGetValue(tick, out List<SimImpact> queue)) _impacts.Add(tick, queue = new List<SimImpact>());
+                if (!_impacts.TryGetValue(tick, out List<SimImpact> queue))
+                {
+                    queue = _impactBuffers.Count == 0 ? new List<SimImpact>() : _impactBuffers.Pop();
+                    _impacts.Add(tick, queue);
+                }
                 queue.Add(new SimImpact { Source = source, Target = selected, HardPointId = point,
                     DamageType = profile.DamageType, Damage = damage / ticks });
             }

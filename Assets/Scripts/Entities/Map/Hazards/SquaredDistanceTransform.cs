@@ -14,8 +14,8 @@ namespace EmpireAtWar.Entities.Map.Hazards
             int[] arguments = new int[longest];
             int[] parabolas = new int[longest];
             float[] boundaries = new float[longest + 1];
-            float[] columnDistance = new float[targets.Length];
-            int[] columnRow = new int[targets.Length];
+            float[] columnDistance = new float[columns * rows];
+            int[] columnRow = new int[columns * rows];
             for (int column = 0; column < columns; column++)
             {
                 for (int row = 0; row < rows; row++) line[row] = targets[row * columns + column] ? 0f : FAR;
