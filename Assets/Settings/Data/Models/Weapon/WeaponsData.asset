@@ -635,14 +635,14 @@ MonoBehaviour:
     family: 1
     caliber: 2
     mount: 2
-    scope: 1
+    scope: 0
     faction: 0
     unit: 
     damageMultiplier: 1.17
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: 'DBY-827 turret of Republic Venator, Rothana and Resolute: damage increased
-      30% from its previous 0.9 multiplier to 1.17.'
+    reason: 'Shared Venator main battery: damage increased 30% from its previous
+      0.9 multiplier to 1.17.'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     projectileSpeed: 0

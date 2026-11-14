@@ -203,11 +203,11 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 2e867f7906f912745a1d170c737e565a, type: 2}
         description: '9,000 hull and 10,000 shields. Republic Venator hardpoint layout:
-          ten Imperial green heavy dual turbolasers, two heavy turbolasers, two heavy
-          ion cannons and one SPHAT beam. Intensify Firepower makes turbolasers,
-          ion cannons and the SPHAT beam fire about six times faster for 15 s; 60
-          s recovery. Deploys 3 fighters, 3 bombers, and 2 interceptors at once.
-          Carries 24 total squadron launches.'
+          eight DBY-827 Heavy Turbolasers, two Imperial heavy dual turbolasers, two
+          heavy turbolasers, two heavy ion cannons and one SPHAT beam. Intensify
+          Firepower makes turbolasers, ion cannons and the SPHAT beam fire about
+          six times faster for 15 s; 60 s recovery. Deploys 3 fighters, 3 bombers,
+          and 2 interceptors at once. Carries 24 total squadron launches.'
         role: Capital carrier / Anti-frigate
         iconKey: d612310c959d0bb4d93c64dba1f5b3f4:21300000
         isHero: 0
