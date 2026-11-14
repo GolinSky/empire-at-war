@@ -20,6 +20,7 @@ namespace EmpireAtWar.Tests.Editor
         private GameObject _hullObject;
         private GameObject _obstacleObject;
         private ShipSpawnClearance _clearance;
+        private FixedFacing _facing;
         private float _height;
         private readonly PlayerId _owner = new PlayerId(0);
 
@@ -35,7 +36,8 @@ namespace EmpireAtWar.Tests.Editor
                 "Assets/Settings/Data/Ship/Shared/ShipsData.asset");
             var assets = new TestAssets(hull);
             _height = assets.Load<ShipData>(ships.GetShipDataPath(SHIP_TYPE)).Height;
-            _clearance = new ShipSpawnClearance(assets, new FixedFacing(), ships);
+            _facing = new FixedFacing();
+            _clearance = new ShipSpawnClearance(assets, _facing, ships);
         }
 
         [TearDown]
@@ -63,13 +65,10 @@ namespace EmpireAtWar.Tests.Editor
 
             var grid = new SpawnAreaGridModel(20, -10f, -10f, 20f, 20f);
             grid.RevealAll();
-            int queries = 0;
+            _facing.Queries = 0;
             _clearance.BlockObstructedCells(_owner, SHIP_TYPE, grid,
-                new Bounds(Vector3.zero, new Vector3(20f, 0f, 20f)), (x, z) =>
-                {
-                    queries++;
-                    return !_clearance.IsClear(_owner, SHIP_TYPE, new Vector3(x, 0f, z));
-                });
+                new Bounds(Vector3.zero, new Vector3(20f, 0f, 20f)));
+            Assert.That(_facing.Queries, Is.EqualTo(1));
 
             int blocked = 0;
             for (int row = 0; row < 20; row++)
@@ -82,11 +81,10 @@ namespace EmpireAtWar.Tests.Editor
                     if (!clear) blocked++;
                 }
             Assert.That(blocked, Is.GreaterThan(0));
-            Assert.That(queries, Is.LessThan(400));
         }
 
         [Test]
-        public void BlockObstructedCells_DoesNotQueryColliderAboveHull()
+        public void BlockObstructedCells_ColliderAboveHullLeavesCellsOpen()
         {
             _obstacleObject = new GameObject("High obstacle");
             BoxCollider obstacle = _obstacleObject.AddComponent<BoxCollider>();
@@ -96,8 +94,32 @@ namespace EmpireAtWar.Tests.Editor
             var grid = new SpawnAreaGridModel(20, -10f, -10f, 20f, 20f);
             grid.RevealAll();
             _clearance.BlockObstructedCells(_owner, SHIP_TYPE, grid,
-                new Bounds(Vector3.zero, new Vector3(20f, 0f, 20f)),
-                (x, z) => throw new InvalidOperationException("No candidate expected."));
+                new Bounds(Vector3.zero, new Vector3(20f, 0f, 20f)));
+            for (int row = 0; row < 20; row++)
+                for (int column = 0; column < 20; column++)
+                    Assert.That(grid.Get(column, row), Is.EqualTo(SpawnAreaGridModel.OPEN));
+        }
+
+        [Test]
+        public void BlockObstructedCells_AfterLandingReleaseDoesNotRetainCandidatesOrBlockedCells()
+        {
+            var grid = new SpawnAreaGridModel(20, -10f, -10f, 20f, 20f);
+            var map = new Bounds(Vector3.zero, new Vector3(20f, 0f, 20f));
+            _clearance.ReserveLanding(this, _owner, SHIP_TYPE, Vector3.zero);
+            grid.RevealAll();
+            _clearance.BlockObstructedCells(_owner, SHIP_TYPE, grid, map);
+            Assert.That(grid.GetAt(0.5f, 0.5f), Is.EqualTo(SpawnAreaGridModel.BLOCKED));
+
+            _clearance.ReleaseLanding(this);
+            grid.RevealAll();
+            _facing.Queries = 0;
+            _clearance.BlockObstructedCells(_owner, SHIP_TYPE, grid, map);
+
+            Assert.That(_facing.Queries, Is.EqualTo(1));
+            grid.BlockCandidates((x, z) => throw new InvalidOperationException("Stale landing candidate."));
+            for (int row = 0; row < 20; row++)
+                for (int column = 0; column < 20; column++)
+                    Assert.That(grid.Get(column, row), Is.EqualTo(SpawnAreaGridModel.OPEN));
         }
 
         private sealed class TestAssets : IAssetService
@@ -113,7 +135,13 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FixedFacing : IStationFacingService
         {
-            public Quaternion GetRotation(PlayerId owner) => Quaternion.Euler(0f, 90f, 0f);
+            public int Queries { get; set; }
+
+            public Quaternion GetRotation(PlayerId owner)
+            {
+                Queries++;
+                return Quaternion.Euler(0f, 90f, 0f);
+            }
         }
     }
 }

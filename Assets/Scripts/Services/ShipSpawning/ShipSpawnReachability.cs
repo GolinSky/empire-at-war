@@ -53,6 +53,20 @@ namespace EmpireAtWar.Services.ShipSpawning
                 profile.NavigationRadius, profile.Span, _mapModel.SizeRange);
         }
 
+        public bool TryFillReachability(PlayerId owner, ShipType shipType, Vector3[] positions, bool[] reachable,
+            bool forceRefresh)
+        {
+            using var marker = BattleProfilerMarkers.SpawnAreaReachability.Auto();
+            Profile profile = GetProfile(shipType);
+            if (profile.IgnoresMapObstacles)
+            {
+                Array.Fill(reachable, true);
+                return true;
+            }
+            return _navigation.TryFillReachability(_mapModel.GetStationPosition(owner), positions, reachable,
+                profile.NavigationRadius, profile.Span, _mapModel.SizeRange, forceRefresh);
+        }
+
         private Profile GetProfile(ShipType shipType)
         {
             if (_profiles.TryGetValue(shipType, out Profile profile)) return profile;

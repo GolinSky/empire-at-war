@@ -14,6 +14,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         public float Clearance;
         [ReadOnly] public NativeArray<Vector3> Goals;
         [ReadOnly] public NativeArray<float3> Obstacles;
+        [ReadOnly] public NativeParallelMultiHashMap<int, int> DiskBuckets;
         [ReadOnly] public NativeParallelMultiHashMap<int, int> Buckets;
         [ReadOnly] public NativeArray<int> Regions;
         [ReadOnly] public NativeArray<float2> Positions;
@@ -25,11 +26,25 @@ namespace EmpireAtWar.Services.ShipNavigation
             Reachable[index] = false;
             if (OriginRegion == 0) return;
             float2 goal = new float2(Goals[index].x, Goals[index].z);
-            for (int i = 0; i < Obstacles.Length; i++)
+            if (math.all(goal >= Layout.Min) && math.all(goal <= Layout.Max))
             {
-                float3 disk = Obstacles[i];
-                double radius = disk.z + Clearance;
-                if (math.lengthsq((double2)goal - disk.xy) < radius * radius) return;
+                int2 cell = Layout.Cell(goal);
+                foreach (int i in DiskBuckets.GetValuesForKey(NavMeshBuckets.Key(cell.x, cell.y)))
+                {
+                    float3 disk = Obstacles[i];
+                    double radius = disk.z + Clearance;
+                    if (math.lengthsq((double2)goal - disk.xy) < radius * radius) return;
+                }
+            }
+            else
+            {
+                // Preserve scalar semantics for points outside the bucketed map.
+                for (int i = 0; i < Obstacles.Length; i++)
+                {
+                    float3 disk = Obstacles[i];
+                    double radius = disk.z + Clearance;
+                    if (math.lengthsq((double2)goal - disk.xy) < radius * radius) return;
+                }
             }
             var locator = new NavMeshLocator
             {

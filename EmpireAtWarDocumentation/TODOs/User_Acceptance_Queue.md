@@ -356,3 +356,11 @@ created: "2026-10-29\r"
 
 - [ ] [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]] — Fresh-match role duels and equal-cost fleets (levels2/3/5): carrier deployment/replacements, torpedo burst damage and faction strength. Stats/carrier implementation verified; station/purchase economics remain separately active.
 - [ ] [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]] — Check13/11-craft CIS formations, launch overlap, member death/pooled respawn visuals, fresh save/load and matching-client multiplayer. Old member-array saves require a fresh match; no migration added.
+
+
+## Spawn grid overlay performance
+
+- [ ] [[Done/Optimization/Spawn_Grid_Overlay_Performance_Plan]] — Large-map small/Executor-class placement and deploy-all: compare Battle.SpawnArea.Redraw, Battle.SpawnArea.Reachability, worker time and GC allocations. No measured speedup yet.
+- [ ] [[Done/Optimization/Spawn_Grid_Overlay_Performance_Plan]] — Verify initial pending mask, rapid selection changes, moved/destroyed/upgraded stations, reservations, preview/drop parity and battle exit while a batch is pending.
+- [ ] [[Done/Optimization/Spawn_Grid_Overlay_Performance_Plan]] — Run authored Navigation and affected Economy/EnemyAi regressions only on explicit request. Tests not run under local override.
+- [ ] [[Done/Optimization/Spawn_Grid_Overlay_Performance_Plan]] — Recheck full Unity compilation after unrelated ShipSelectionReuseTests.cs:43,49,53 Configure-signature errors are resolved; no spawn/navigation errors reported by the current compile.

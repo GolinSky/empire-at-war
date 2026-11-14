@@ -13,6 +13,7 @@ namespace EmpireAtWar.Models.SpawnArea
         public const float OPEN = 1f;
 
         private readonly float[] _cells;
+        private readonly bool[] _candidates;
         private readonly float _minX;
         private readonly float _minZ;
         private readonly float _cellSizeX;
@@ -24,6 +25,7 @@ namespace EmpireAtWar.Models.SpawnArea
         {
             Resolution = resolution;
             _cells = new float[resolution * resolution];
+            _candidates = new bool[_cells.Length];
             _minX = minX;
             _minZ = minZ;
             _cellSizeX = sizeX / resolution;
@@ -77,6 +79,30 @@ namespace EmpireAtWar.Models.SpawnArea
                         _cells[index] = BLOCKED;
                 }
             }
+        }
+
+        public void ClearCandidates() => Array.Clear(_candidates, 0, _candidates.Length);
+
+        public void MarkCandidates(float minX, float minZ, float maxX, float maxZ)
+        {
+            int lastRow = ToIndex(maxZ, _minZ, _cellSizeZ);
+            int lastColumn = ToIndex(maxX, _minX, _cellSizeX);
+            int firstColumn = ToIndex(minX, _minX, _cellSizeX);
+            for (int row = ToIndex(minZ, _minZ, _cellSizeZ); row <= lastRow; row++)
+                for (int column = firstColumn; column <= lastColumn; column++)
+                    _candidates[row * Resolution + column] = true;
+        }
+
+        public void BlockCandidates(Func<float, float, bool> isBlocked)
+        {
+            for (int row = 0; row < Resolution; row++)
+                for (int column = 0; column < Resolution; column++)
+                {
+                    int index = row * Resolution + column;
+                    if (_candidates[index] && _cells[index] == OPEN &&
+                        isBlocked(GetCenterX(column), GetCenterZ(row)))
+                        _cells[index] = BLOCKED;
+                }
         }
 
         private void Stamp(float x, float z, float radius, float from, float to)

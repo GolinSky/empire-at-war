@@ -83,6 +83,11 @@ namespace EmpireAtWar.Services.ShipNavigation
         void FillReachability(Vector3 from, Vector3[] positions, bool[] reachable, float clearance,
             ShipHullSpan hullSpan, Vector2Range mapRange);
 
+        /// <summary>Publishes a matching cached/completed mask, or starts/polls work without waiting.
+        /// Positions must remain immutable for the lifetime of the grid.</summary>
+        bool TryFillReachability(Vector3 from, Vector3[] positions, bool[] reachable, float clearance,
+            ShipHullSpan hullSpan, Vector2Range mapRange, bool forceRefresh);
+
         /// <summary>Queues the requester for a route plan; the service runs a few queued plans per frame.</summary>
         void RequestPlan(IShipPlanRequester requester);
 
@@ -466,6 +471,14 @@ namespace EmpireAtWar.Services.ShipNavigation
             graph.FillReachability(positions, reachable);
         }
 
+        public bool TryFillReachability(Vector3 from, Vector3[] positions, bool[] reachable, float clearance,
+            ShipHullSpan hullSpan, Vector2Range mapRange, bool forceRefresh)
+        {
+            BuildNavigationContacts(Array.Empty<RadarContact>(), hullSpan);
+            IShipPathGraph graph = _cache.GetGraph(_mapObstacleContacts, mapRange, from, clearance, _hazards.Sources);
+            return graph.TryFillReachability(positions, reachable, forceRefresh);
+        }
+
         public bool IsPositionClear(
             IShipNavigationAgent agent,
             Vector3 position,
@@ -485,8 +498,14 @@ namespace EmpireAtWar.Services.ShipNavigation
             ShipHullSpan hullSpan)
         {
             _mapObstacleContactProvider.CopyContacts(_mapObstacleContacts);
-            _mapObstacleContacts.RemoveAll(contact =>
-                contact.IsShip || !IsAtHullHeight(contact, hullSpan));
+            int retained = 0;
+            for (int i = 0; i < _mapObstacleContacts.Count; i++)
+            {
+                RadarContact contact = _mapObstacleContacts[i];
+                if (!contact.IsShip && IsAtHullHeight(contact, hullSpan))
+                    _mapObstacleContacts[retained++] = contact;
+            }
+            _mapObstacleContacts.RemoveRange(retained, _mapObstacleContacts.Count - retained);
             for (int i = 0; i < radarContacts.Count; i++)
             {
                 RadarContact contact = radarContacts[i];

@@ -58,6 +58,7 @@ acceptance: pending-user
 
 ## TODO
 - User in-game acceptance: small/large ships near, above and below all station levels; preview/grid parity after refresh; batch drops, main-station destruction and landing reservations.
+- 2026-11-14: user reports FPS collapse during ship placement → [[Done/Optimization/Spawn_Grid_Overlay_Performance_Plan]].
 - Large-map profile: compare steady redraw and 1 s reachability refresh against [[Rules/BATTLE_PERFORMANCE_GUIDELINES]], recording source/workload and frame-time distribution.
 - Tests were not run under the local override. Run authored Navigation/Map/Economy regressions and affected BattleInput/EnemyAi compatibility checks only on explicit request.
 - Gates transferred to [[TODOs/User_Acceptance_Queue]]; implementation is complete.

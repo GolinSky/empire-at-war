@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Models.SkirmishCamera;
@@ -251,6 +252,80 @@ namespace EmpireAtWar.Tests.Editor
 
             for (int i = 0; i < positions.Length; i++)
                 Assert.That(actual[i], Is.EqualTo(graph.IsReachable(positions[i])), $"Point {positions[i]}");
+        }
+
+        [Test]
+        public void AsyncReachability_PublishesMatchingMaskAndReusesItAfterScalarOriginChanges()
+        {
+            var origin = new Vector3(-80f, HEIGHT, 0f);
+            using var cache = new ShipNavigationCache();
+            IShipPathGraph graph = cache.GetGraph(new[] { new RadarContact(Vector3.zero, 20f, false) },
+                Bounds(100f, 100f), origin, CLEARANCE, _noHazards);
+            var positions = new[] { Vector3.zero, new Vector3(80f, HEIGHT, 0f) };
+            var actual = new[] { true, false };
+
+            Assert.That(graph.TryFillReachability(positions, actual, false), Is.False);
+            Assert.That(actual, Is.EqualTo(new[] { true, false }));
+            graph.SetOrigin(new Vector3(-60f, HEIGHT, 20f));
+            Assert.That(graph.IsReachable(positions[1]), Is.True);
+            graph.SetOrigin(origin);
+            Assert.That(SpinWait.SpinUntil(() => graph.TryFillReachability(positions, actual, false), 5000), Is.True);
+            Assert.That(actual, Is.EqualTo(new[] { false, true }));
+            Assert.That(graph.TryFillReachability(positions, actual, false), Is.True);
+
+            Assert.That(graph.TryFillReachability(positions, actual, true), Is.False);
+            Assert.That(SpinWait.SpinUntil(() => graph.TryFillReachability(positions, actual, false), 5000), Is.True);
+            Assert.That(actual, Is.EqualTo(new[] { false, true }));
+            // Leaving the scope with an unpublished job must complete ownership before disposal.
+            Assert.That(graph.TryFillReachability(positions, actual, true), Is.False);
+        }
+
+        [Test]
+        public void AsyncReachability_DifferentPendingArrayResizesOnlyAfterPreviousJobCompletes()
+        {
+            using var cache = new ShipNavigationCache();
+            IShipPathGraph graph = cache.GetGraph(new[] { new RadarContact(Vector3.zero, 20f, false) },
+                Bounds(100f, 100f), new Vector3(-80f, HEIGHT, 0f), CLEARANCE, _noHazards);
+            var original = new[] { Vector3.zero };
+            var originalResults = new[] { true };
+            var replacement = new[] { new Vector3(80f, HEIGHT, 0f), Vector3.zero };
+            var replacementResults = new[] { false, true };
+
+            Assert.That(graph.TryFillReachability(original, originalResults, false), Is.False);
+            Assert.That(graph.TryFillReachability(replacement, replacementResults, false), Is.False);
+            Assert.That(replacementResults, Is.EqualTo(new[] { false, true }));
+            Assert.That(SpinWait.SpinUntil(() =>
+                graph.TryFillReachability(replacement, replacementResults, false), 5000), Is.True);
+            Assert.That(replacementResults, Is.EqualTo(new[] { true, false }));
+            Assert.That(originalResults, Is.EqualTo(new[] { true }));
+        }
+
+        [Test]
+        public void BucketedReachability_PreservesStrictDiskEdgeAndOutsideMapObstacleChecks()
+        {
+            using var cache = new ShipNavigationCache();
+            var obstacles = new[]
+            {
+                new RadarContact(new Vector3(-23f, 0f, 0f), 20f, false),
+                new RadarContact(new Vector3(120f, 0f, 0f), 2f, false)
+            };
+            IShipPathGraph graph = cache.GetGraph(obstacles, Bounds(100f, 100f),
+                new Vector3(-80f, HEIGHT, 0f), CLEARANCE, _noHazards);
+            var positions = new[]
+            {
+                new Vector3(-0.0001f, HEIGHT, 0f),
+                new Vector3(0f, HEIGHT, 0f),
+                new Vector3(0.0001f, HEIGHT, 0f),
+                new Vector3(120f, HEIGHT, 0f)
+            };
+            var expected = new[] { false, true, true, false };
+            var actual = new bool[positions.Length];
+
+            graph.FillReachability(positions, actual);
+
+            Assert.That(actual, Is.EqualTo(expected));
+            for (int i = 0; i < positions.Length; i++)
+                Assert.That(graph.IsReachable(positions[i]), Is.EqualTo(expected[i]));
         }
 
         private static Vector2Range Bounds(float x, float z)

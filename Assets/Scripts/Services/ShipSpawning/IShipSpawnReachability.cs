@@ -11,5 +11,9 @@ namespace EmpireAtWar.Services.ShipSpawning
         bool IsReachable(PlayerId owner, ShipType shipType, Vector3 position);
 
         void FillReachability(PlayerId owner, ShipType shipType, Vector3[] positions, bool[] reachable);
+
+        /// <summary>Leaves the published mask unchanged while a new immutable grid snapshot is pending.</summary>
+        bool TryFillReachability(PlayerId owner, ShipType shipType, Vector3[] positions, bool[] reachable,
+            bool forceRefresh);
     }
 }

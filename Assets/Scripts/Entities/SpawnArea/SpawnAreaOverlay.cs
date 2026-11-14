@@ -57,6 +57,8 @@ namespace EmpireAtWar.Views.SpawnArea
         private Vector3[] _cellCenters;
         private bool[] _reachable;
         private float _reachabilityTimer;
+        private bool _reachabilityPending;
+        private bool _forceReachabilityRefresh;
         private Texture2D _texture;
         private Material _material;
         private PlayerId _team;
@@ -130,6 +132,10 @@ namespace EmpireAtWar.Views.SpawnArea
             _shipRequest = request as ShipUnitRequest;
             _isPositionValid = isPositionValid;
             _reachabilityTimer = REACHABILITY_INTERVAL;
+            _reachabilityPending = false;
+            _forceReachabilityRefresh = true;
+            // Never display a previous selection's mask while this ship's first batch is pending.
+            Array.Clear(_reachable, 0, _reachable.Length);
             _timer = 0f;
             Redraw();
             overlayRenderer.enabled = true;
@@ -199,13 +205,15 @@ namespace EmpireAtWar.Views.SpawnArea
             if (_placingStructure) BlockStructureFootprints();
             if (_shipRequest != null)
             {
-                if (_reachabilityTimer >= REACHABILITY_INTERVAL)
+                if (_reachabilityPending || _reachabilityTimer >= REACHABILITY_INTERVAL)
                 {
-                    _shipReachability.FillReachability(_team, _shipRequest.Key, _cellCenters, _reachable);
+                    _reachabilityPending = !_shipReachability.TryFillReachability(
+                        _team, _shipRequest.Key, _cellCenters, _reachable, _forceReachabilityRefresh);
+                    _forceReachabilityRefresh = false;
                     _reachabilityTimer = 0f;
                 }
                 _grid.BlockUnreachable(_reachable);
-                _shipClearance.BlockObstructedCells(_team, _shipRequest.Key, _grid, _mapBounds, _isObstructed);
+                _shipClearance.BlockObstructedCells(_team, _shipRequest.Key, _grid, _mapBounds);
             }
 
             // The built-in plane's UV origin sits at its +X/+Z corner, so both axes are mirrored.

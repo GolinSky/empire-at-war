@@ -26,6 +26,12 @@ namespace EmpireAtWar.Services.ShipNavigation
         private bool _hasSearched;
         private NativeArray<Vector3> _reachabilityPoints;
         private NativeArray<bool> _reachabilityResults;
+        private JobHandle _reachabilityHandle;
+        private Vector3[] _reachabilitySource;
+        private float2 _reachabilityOrigin;
+        private bool _reachabilityPending;
+        private bool _reachabilityCached;
+        private bool _discardReachability;
         private readonly List<NavMeshCorner> _routeCorners = new List<NavMeshCorner>();
 
         public IReadOnlyList<NavMeshCorner> RouteCorners => _routeCorners;
@@ -129,6 +135,44 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void FillReachability(Vector3[] positions, bool[] reachable)
         {
+            if (_reachabilityPending) CompleteReachability();
+            ScheduleReachability(positions);
+            CompleteReachability();
+            _reachabilityResults.CopyTo(reachable);
+        }
+
+        // Positions are the overlay's immutable cell-centre array; graph identity captures topology.
+        public bool TryFillReachability(Vector3[] positions, bool[] reachable, bool forceRefresh)
+        {
+            if (forceRefresh)
+            {
+                _reachabilityCached = false;
+                if (_reachabilityPending) _discardReachability = true;
+            }
+            if (_reachabilityPending)
+            {
+                if (!_reachabilityHandle.IsCompleted) return false;
+                CompleteReachability();
+            }
+            if (_reachabilityCached && ReferenceEquals(_reachabilitySource, positions) &&
+                _reachabilityOrigin.Equals(_origin))
+            {
+                _reachabilityResults.CopyTo(reachable);
+                return true;
+            }
+            ScheduleReachability(positions);
+            return false;
+        }
+
+        private void CompleteReachability()
+        {
+            _reachabilityHandle.Complete();
+            _reachabilityPending = false;
+            _reachabilityCached = !_discardReachability;
+        }
+
+        private void ScheduleReachability(Vector3[] positions)
+        {
             BeginSearch();
             if (!_reachabilityPoints.IsCreated || _reachabilityPoints.Length != positions.Length)
             {
@@ -140,14 +184,20 @@ namespace EmpireAtWar.Services.ShipNavigation
                     NativeArrayOptions.UninitializedMemory);
             }
             _reachabilityPoints.CopyFrom(positions);
-            new NavMeshReachabilityJob
+            _reachabilitySource = positions;
+            _reachabilityOrigin = _origin;
+            _reachabilityCached = false;
+            _discardReachability = false;
+            _reachabilityHandle = new NavMeshReachabilityJob
             {
                 Layout = _mesh.Layout, OriginRegion = _originTriangle < 0 ? 0 : _mesh.Regions[_originTriangle],
                 Clearance = _clearance, Goals = _reachabilityPoints, Reachable = _reachabilityResults,
-                Obstacles = _obstacles, Buckets = _mesh.TriangleBuckets, Regions = _mesh.Regions,
+                Obstacles = _obstacles, DiskBuckets = _diskBuckets,
+                Buckets = _mesh.TriangleBuckets, Regions = _mesh.Regions,
                 Positions = _mesh.Positions, Triangles = _mesh.Triangles
-            }.Schedule(positions.Length, 64).Complete();
-            _reachabilityResults.CopyTo(reachable);
+            }.Schedule(positions.Length, 64);
+            _reachabilityPending = true;
+            JobHandle.ScheduleBatchedJobs();
         }
 
         private int FindReachableGoal(float2 goal, out float2 exit)
@@ -165,6 +215,18 @@ namespace EmpireAtWar.Services.ShipNavigation
         // Same strict test as NavMeshEscapeJob.CanConnect, so the early rejection never changes its answer.
         private bool IsInsideObstacle(float2 point)
         {
+            if (math.all(point >= _layout.Min) && math.all(point <= _layout.Max))
+            {
+                int2 cell = _layout.Cell(point);
+                foreach (int i in _diskBuckets.GetValuesForKey(NavMeshBuckets.Key(cell.x, cell.y)))
+                {
+                    float3 disk = _obstacles[i];
+                    double radius = disk.z + _clearance;
+                    if (math.lengthsq((double2)point - disk.xy) < radius * radius) return true;
+                }
+                return false;
+            }
+            // Buckets omit disks entirely outside the map; scalar callers can query there.
             for (int i = 0; i < _obstacles.Length; i++)
             {
                 float3 disk = _obstacles[i];
@@ -222,6 +284,7 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void Dispose()
         {
+            if (_reachabilityPending) CompleteReachability();
             if (_reachabilityPoints.IsCreated) _reachabilityPoints.Dispose();
             if (_reachabilityResults.IsCreated) _reachabilityResults.Dispose();
             if (_search != null) _search.Dispose();

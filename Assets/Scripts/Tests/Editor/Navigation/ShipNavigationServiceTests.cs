@@ -1105,6 +1105,30 @@ namespace EmpireAtWar.Tests.Movement
                 "Changing the station origin must select the new connected region.");
         }
 
+        [Test]
+        public void TryFillReachability_SchedulesWithoutPublishingAndKeepsScalarQueriesLive()
+        {
+            var provider = new FakeMapObstacleContactProvider(new[]
+            {
+                new RadarContact(Vector3.zero, 10f, false)
+            });
+            var service = new ShipNavigationService(provider, new TestHazards());
+            _services.Add(service);
+            var origin = new Vector3(-80f, 0f, 0f);
+            var positions = new[] { origin, Vector3.zero };
+            var published = new[] { false, true };
+            var span = new ShipHullSpan(-1f, 1f);
+
+            bool ready = service.TryFillReachability(origin, positions, published, 3f, span, _mapRange, true);
+
+            Assert.That(ready, Is.False);
+            Assert.That(provider.CopyCount, Is.EqualTo(1));
+            Assert.That(published, Is.EqualTo(new[] { false, true }),
+                "Scheduling must not overwrite the currently displayed mask.");
+            Assert.That(service.IsReachable(origin, origin, 3f, span, _mapRange), Is.True);
+            Assert.That(service.IsReachable(origin, Vector3.zero, 3f, span, _mapRange), Is.False);
+        }
+
         private ShipNavigationService CreateService(
             IReadOnlyList<RadarContact> staticObstacles = null)
         {
@@ -1369,6 +1393,13 @@ namespace EmpireAtWar.Tests.Movement
 
             public void FillReachability(Vector3 from, Vector3[] positions, bool[] reachable, float clearance,
                 ShipHullSpan hullSpan, Vector2Range mapRange) => System.Array.Fill(reachable, true);
+
+            public bool TryFillReachability(Vector3 from, Vector3[] positions, bool[] reachable, float clearance,
+                ShipHullSpan hullSpan, Vector2Range mapRange, bool forceRefresh)
+            {
+                FillReachability(from, positions, reachable, clearance, hullSpan, mapRange);
+                return true;
+            }
 
             public void RequestPlan(IShipPlanRequester requester)
             {

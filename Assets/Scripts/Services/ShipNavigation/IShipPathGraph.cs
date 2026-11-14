@@ -23,6 +23,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         bool IsKnownUnreachable(Vector3 position);
         bool IsReachable(Vector3 position);
         void FillReachability(Vector3[] positions, bool[] reachable);
+        bool TryFillReachability(Vector3[] positions, bool[] reachable, bool forceRefresh);
         bool TryGetNearestReachable(Vector3 position, float height, out Vector3 nearest);
     }
 }

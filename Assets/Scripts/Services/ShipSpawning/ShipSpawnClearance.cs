@@ -23,6 +23,8 @@ namespace EmpireAtWar.Services.ShipSpawning
         private readonly Dictionary<object, ShipHullFootprint> _landings =
             new Dictionary<object, ShipHullFootprint>();
         private Collider[] _obstacles = new Collider[32];
+        private readonly Func<float, float, bool> _isGridCellBlocked;
+        private ShipHullFootprint _gridFootprint;
 
         public ShipSpawnClearance(
             IAssetService assetService,
@@ -32,6 +34,7 @@ namespace EmpireAtWar.Services.ShipSpawning
             _assetService = assetService;
             _stationFacingService = stationFacingService;
             _shipsData = shipsData;
+            _isGridCellBlocked = IsGridCellBlocked;
         }
 
         public float GetPlanarRadius(ShipType shipType)
@@ -45,8 +48,10 @@ namespace EmpireAtWar.Services.ShipSpawning
         public Bounds GetLocalHullBounds(ShipType shipType) => GetHull(shipType).LocalBounds;
 
         public bool IsClear(PlayerId owner, ShipType shipType, Vector3 position)
+            => IsClear(GetFootprint(owner, shipType, position));
+
+        private bool IsClear(ShipHullFootprint footprint)
         {
-            ShipHullFootprint footprint = GetFootprint(owner, shipType, position);
             if (Physics.CheckBox(footprint.Center, footprint.HalfExtents, footprint.Rotation,
                     Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
             {
@@ -65,11 +70,14 @@ namespace EmpireAtWar.Services.ShipSpawning
             return true;
         }
 
-        // Broad phase only: the placement predicate remains the source of truth at each candidate cell.
+        // The overlay already applies visibility, blockers, hazards and bulk reachability.
         public void BlockObstructedCells(PlayerId owner, ShipType shipType, SpawnAreaGridModel grid,
-            Bounds map, Func<float, float, bool> isBlocked)
+            Bounds map)
         {
-            Bounds hull = GetFootprint(owner, shipType, Vector3.zero).Bounds;
+            // This snapshot is consumed synchronously by the cached predicate below.
+            _gridFootprint = GetFootprint(owner, shipType, Vector3.zero);
+            Bounds hull = _gridFootprint.Bounds;
+            grid.ClearCandidates();
             Bounds query = new Bounds(
                 new Vector3(map.center.x + hull.center.x, hull.center.y, map.center.z + hull.center.z),
                 new Vector3(map.size.x + hull.size.x, hull.size.y, map.size.z + hull.size.z));
@@ -80,19 +88,24 @@ namespace EmpireAtWar.Services.ShipSpawning
                 Array.Resize(ref _obstacles, _obstacles.Length * 2);
 
             for (int i = 0; i < count; i++)
-                BlockCandidate(_obstacles[i].bounds, hull, grid, isBlocked);
+                MarkCandidate(_obstacles[i].bounds, hull, grid);
 
             foreach (ShipHullFootprint landing in _landings.Values)
-                BlockCandidate(landing.Bounds, hull, grid, isBlocked);
+                MarkCandidate(landing.Bounds, hull, grid);
+
+            grid.BlockCandidates(_isGridCellBlocked);
         }
 
-        private static void BlockCandidate(Bounds obstacle, Bounds hull, SpawnAreaGridModel grid,
-            Func<float, float, bool> isBlocked)
+        private bool IsGridCellBlocked(float x, float z) =>
+            !IsClear(new ShipHullFootprint(_gridFootprint.Center + new Vector3(x, 0f, z),
+                _gridFootprint.HalfExtents, _gridFootprint.Rotation));
+
+        private static void MarkCandidate(Bounds obstacle, Bounds hull, SpawnAreaGridModel grid)
         {
             if (obstacle.max.y < hull.min.y || obstacle.min.y > hull.max.y) return;
-            grid.BlockWhere(
+            grid.MarkCandidates(
                 obstacle.min.x - hull.max.x, obstacle.min.z - hull.max.z,
-                obstacle.max.x - hull.min.x, obstacle.max.z - hull.min.z, isBlocked);
+                obstacle.max.x - hull.min.x, obstacle.max.z - hull.min.z);
         }
 
         public void ReserveLanding(object ship, PlayerId owner, ShipType shipType, Vector3 position)

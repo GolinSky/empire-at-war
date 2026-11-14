@@ -80,6 +80,10 @@ tags:
 
 ### Ship pathfinding
 
+- Spawn-overlay reachability: cache by graph identity + captured station origin + immutable cell-array identity. Force a fresh batch on selection; inspect topology every 1 s. Never run full spawn validation per raster cell.
+- Schedule the bulk mask asynchronously, poll `IsCompleted`, then `Complete` before reading results. Complete before buffer reuse/resizing or graph disposal. Movement queries may change the shared graph origin; publish only the captured matching origin/grid result.
+- Use disk buckets for in-map point overlap tests while preserving strict radius math; keep outside-map fallback because buckets omit fully external disks. Initial triangulation remains synchronous. Source-reviewed 2026-11-14; full compile blocked by unrelated UI test errors, runtime savings unmeasured → [[Done/Optimization/Spawn_Grid_Overlay_Performance_Plan]].
+
 - Cache each triangle graph by map bounds, exact clearance, height-filtered obstacle disks and hazard-source identities. Movement-only changes reuse that graph with a new origin.
 - Share the hazard cost raster across clearance layers. Keep raw ship height filtering and destination reservations in `ShipNavigationService`.
 - Route geometry (2026-11-13, source/Unity compilation verified): `ShipTangentRouteJob` builds exact line/circular-arc pieces around inflated disks. Keep disk identity through triangulation and persistent disk buckets per graph layer.

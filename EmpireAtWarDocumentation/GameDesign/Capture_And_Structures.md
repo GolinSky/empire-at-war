@@ -58,7 +58,9 @@ verification: source-and-assets
 - Station navigation keeps its planar radius but uses the current level's world-space collider bottom/top through `IStationHullFacade`; never use planar radius as vertical reach.
 - Ship previews and drops sample grid cell centres (default 256 × 256); maximum snap displacement = half a cell per axis. Batch spacing reserves one cell for rounding.
 - Ship preview validity comes solely from the placement rule, avoiding a second trigger-overlap veto. Structures/squadrons retain their existing trigger behavior.
-- Physics candidates refresh at the existing 0.1 s interval; reachability refreshes on selection and every 1 s through one parallel Burst batch. Preview/authority still recheck live validity.
+- Physics candidates refresh every 0.1 s; reachability checks its graph/origin/grid cache every 1 s. A changed selection forces an asynchronous Burst batch; initial cells stay blocked until completion. Later refreshes retain the previous mask. Preview/authority still recheck live validity.
+- Ship overlay clearance must not call full `CanSpawnShip` per cell: consume existing visibility/blocker/reachability masks and final hazard mask. Union collider/landing candidate bounds into a reusable mask; check each open candidate once with one hull/facing snapshot per redraw. Preview/drop/authority retain full live checks.
+- 2026-11-14 performance follow-up: all four phases source-reviewed; full compile blocked by unrelated UI test errors; runtime savings unmeasured → [[Done/Optimization/Spawn_Grid_Overlay_Performance_Plan]].
 - Profile `Battle.SpawnArea.Redraw` and `Battle.SpawnArea.Reachability`; runtime budget is not established by source inspection or compilation.
 
 ### Enemy AI map control

@@ -124,6 +124,80 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(grid.Get(1, 1), Is.EqualTo(SpawnAreaGridModel.HIDDEN));
         }
 
+        [Test]
+        public void BlockCandidates_OverlappingAreasQueryEachOpenCellOnceIncludingClearCells()
+        {
+            var grid = new SpawnAreaGridModel(2, 0f, 0f, 20f, 20f);
+            grid.RevealAll();
+            grid.MarkCandidates(0f, 0f, 19f, 19f);
+            grid.MarkCandidates(0f, 0f, 9f, 19f);
+            var queries = new int[4];
+
+            grid.BlockCandidates((x, z) =>
+            {
+                queries[(int)(z / 10f) * 2 + (int)(x / 10f)]++;
+                return x > z;
+            });
+
+            Assert.That(queries, Is.EqualTo(new[] { 1, 1, 1, 1 }));
+            Assert.That(grid.Get(1, 0), Is.EqualTo(SpawnAreaGridModel.BLOCKED));
+            Assert.That(grid.Get(0, 0), Is.EqualTo(SpawnAreaGridModel.OPEN));
+            Assert.That(grid.Get(0, 1), Is.EqualTo(SpawnAreaGridModel.OPEN));
+            Assert.That(grid.Get(1, 1), Is.EqualTo(SpawnAreaGridModel.OPEN));
+        }
+
+        [Test]
+        public void BlockCandidates_SkipsHiddenBlockedAndUnmarkedCells()
+        {
+            var grid = new SpawnAreaGridModel(2, 0f, 0f, 20f, 20f);
+            grid.Reveal(5f, 5f, 1f);
+            grid.Reveal(15f, 5f, 1f);
+            grid.Reveal(5f, 15f, 1f);
+            grid.Block(15f, 5f, 1f);
+            grid.MarkCandidates(5f, 5f, 15f, 5f);
+            grid.MarkCandidates(15f, 15f, 15f, 15f);
+            int queries = 0;
+
+            grid.BlockCandidates((x, z) =>
+            {
+                Assert.That(x, Is.EqualTo(5f));
+                Assert.That(z, Is.EqualTo(5f));
+                queries++;
+                return true;
+            });
+
+            Assert.That(queries, Is.EqualTo(1));
+            Assert.That(grid.Get(0, 0), Is.EqualTo(SpawnAreaGridModel.BLOCKED));
+            Assert.That(grid.Get(1, 0), Is.EqualTo(SpawnAreaGridModel.BLOCKED));
+            Assert.That(grid.Get(0, 1), Is.EqualTo(SpawnAreaGridModel.OPEN));
+            Assert.That(grid.Get(1, 1), Is.EqualTo(SpawnAreaGridModel.HIDDEN));
+        }
+
+        [Test]
+        public void ClearCandidates_NextPassUsesOnlyNewCandidateArea()
+        {
+            var grid = new SpawnAreaGridModel(2, 0f, 0f, 20f, 20f);
+            grid.RevealAll();
+            grid.MarkCandidates(0f, 0f, 19f, 19f);
+            grid.ClearCandidates();
+            grid.MarkCandidates(15f, 15f, 15f, 15f);
+            int queries = 0;
+
+            grid.BlockCandidates((x, z) =>
+            {
+                Assert.That(x, Is.EqualTo(15f));
+                Assert.That(z, Is.EqualTo(15f));
+                queries++;
+                return true;
+            });
+
+            Assert.That(queries, Is.EqualTo(1));
+            Assert.That(grid.Get(0, 0), Is.EqualTo(SpawnAreaGridModel.OPEN));
+            Assert.That(grid.Get(1, 0), Is.EqualTo(SpawnAreaGridModel.OPEN));
+            Assert.That(grid.Get(0, 1), Is.EqualTo(SpawnAreaGridModel.OPEN));
+            Assert.That(grid.Get(1, 1), Is.EqualTo(SpawnAreaGridModel.BLOCKED));
+        }
+
         [TestCase(-51f)]
         [TestCase(-50f)]
         [TestCase(-49f)]

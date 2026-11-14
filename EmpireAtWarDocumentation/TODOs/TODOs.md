@@ -224,6 +224,10 @@
 
 ### Optimization
 
+- [x] **Restore FPS during ship reinforcement placement (spawn grid overlay)** → [[Done/Optimization/Spawn_Grid_Overlay_Performance_Plan|Spawn Grid Overlay Performance Plan]]
+  - Completed 2026-11-14: all four phases implemented — deduplicated clearance, allocation-free contact filtering, cached asynchronous reachability and bucketed point checks. Source/diff checks passed; full compile blocked by 3 unrelated ShipSelectionReuseTests CS1501 errors. Tests and runtime FPS unmeasured; acceptance → [[TODOs/User_Acceptance_Queue]].
+
+
 - [x] **Switch ship pathfinding from raster grid to Burst triangle graph (BurstTriangulator + triangle A* + funnel)** → [[Done/Optimization/Graph_Pathfinding_Plan|Graph Pathfinding Plan]]; [[Done/Optimization/Graph_Pathfinding_Plan - Research|Verified data and package research]]
   - 2026-11-06: switched the runtime planner to the triangle graph and moved the raster baseline into Editor parity fixtures. Unity compiled both assemblies and Burst emitted native code for eight jobs. Navigation acceptance pending → [[TODOs/User_Acceptance_Queue]].
 
