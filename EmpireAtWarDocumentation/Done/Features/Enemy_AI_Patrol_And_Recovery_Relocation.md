@@ -113,7 +113,7 @@ acceptance: pending-user
 - `DESTROYED_POSITION_EXCLUSION_RADIUS`: `1` → structure scale (≥ placement radius; final value set in implementation).
 - Capture-site mines/satellites stay on their sites; only free-placement requests move.
 - Position still picked at completion (`GenerateMapCoordinates`) → uses current safety. No safe spot → existing refund path + `placementDeferred` log.
-- Surviving fleet retreats to the recovery anchor to cover new structures.
+- Backup construction is independent of withdrawal: defend a living station unless smoothed local advantage falls below RetreatAdvantage; once withdrawn, retain the ×1.25 exit threshold. Station loss directs survivors to the recovery anchor (user confirmed 2026-11-14 review).
 
 ### D. Telemetry
 
@@ -218,10 +218,12 @@ Run after one battle per check scenario; compare against `Loading_20261113_20223
 
 - Implemented stability, team patrol memory/scout and Normal+ corvette patrol, recovery latch/anchor, neutral relay capture, safe free placement, hosted recovery purchase and required event telemetry.
 - Live capture already retained viable objectives until stall; replaced implicit retention with explicit 10 s / 20% commitment. Fresh contact resets the empty-force sentinel before 4 s smoothing; neutral-relay and patrol stalls invalidate targets with retry cooldowns.
-- Recovery runs from strategic `AssessStation` before group decisions, including zero-ship safe rebuilds. Recovery state prioritizes anchor coverage/required relay capture; pressure no longer sends reinforcements back to old-home defense during relocation.
+- Recovery runs from strategic `AssessStation` before group decisions, including zero-ship safe rebuilds. Recovery prioritizes anchor coverage/required relay capture after station loss or when clearly outmatched; a near-even fleet keeps defending a living station while backup construction proceeds. Reinforcement rally follows the group's actual defense/withdrawal decision.
 - Values: sector grid 6×6; visibility sample 3 s; coverage event 60 s; recent-sector age 60 s; patrol stall 30 s; weak latch 5 s; parity release 20 s; hostile margin 100 units / unknown range 500 units; destroyed exclusion max(32 units, placement radius); lost-home exclusion max(64 units, default-zone radius) + placement clearance.
 - Empty sectors require recent vision; static hostile structures use remembered patrol points because mobile intel alone excludes free structures. Placement rechecks current ownership, contesting, age and known reach at completion.
 - Direct combat controllers do not run strategic recovery/patrol ship updates. Strategic AI uses the shared policy; no save format change.
 - Reusable guidance extracted → [[Architecture/Enemy_AI_Objectives]] and [[Tooling/Battle_Telemetry]]. Existing large strategic classes remain scoped; future capture-policy extraction is preferable to unrelated refactoring.
 - Verification: Unity script compilation/import and loaded runtime types; scoped diff/source/DI checks. `EnemyAi` regression cases authored for stability, patrol, latch/anchors, placement and hosted rebuild. Tests and Play Mode not run under local override.
 - User gates: one battle per scenario, log acceptance checks 1–10 and tuning; execute `EnemyAi` tests only on explicit request. No runtime coverage or balance pass claimed.
+
+- Review follow-up: threatened-site priority, defense/recovery separation, scoped pressure bypass and log formatting → [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]]. Placement search cost remains a user profiling gate.

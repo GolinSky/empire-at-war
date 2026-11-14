@@ -684,8 +684,12 @@ namespace EmpireAtWar.Services.Enemy
                     retained = retained != null && retained.Id == relay.Id ? retained : null;
                 }
             }
+            bool defensePreemptsCapture = best != null && best.IsThreatened &&
+                retained != null && !retained.IsThreatened;
+            if (defensePreemptsCapture) invalidReason = "threatenedSite";
             string selected = _captureCommitment.Select(best == null ? null : best.Id, bestScore,
-                _captureObjective == null ? null : _captureObjective.Id, retainedScore, retained != null, now, invalidReason);
+                _captureObjective == null ? null : _captureObjective.Id, retainedScore,
+                retained != null && !defensePreemptsCapture, now, invalidReason);
             EnemyCaptureObjective next = retained != null && retained.Id == selected ? retained : best;
             if (_captureCommitment.Changed)
             {

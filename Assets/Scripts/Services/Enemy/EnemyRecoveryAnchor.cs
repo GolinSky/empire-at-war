@@ -231,10 +231,10 @@ namespace EmpireAtWar.Services.Enemy
             _anchor = current != null && current.Id == selected ? current : best;
             if (!_commitment.Changed) return;
             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "objectiveSwitch",
-                $"domain=anchor fromId={_commitment.LastFromId} toId={selected} fromScore={_commitment.LastFromScore:F2} toScore={_commitment.LastToScore:F2} margin=0.20 heldSeconds={_commitment.LastHeldSeconds:F1} cause={_commitment.LastCause}");
+                FormattableString.Invariant($"domain=anchor;fromId={_commitment.LastFromId ?? "none"};toId={selected ?? "none"};fromScore={_commitment.LastFromScore:F2};toScore={_commitment.LastToScore:F2};margin=0.20;heldSeconds={_commitment.LastHeldSeconds:F1};cause={_commitment.LastCause}"));
             if (_anchor != null)
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "recoveryAnchor",
-                    $"kind={_anchor.Kind} id={_anchor.Id} pos={_anchor.Position.x:F1},{_anchor.Position.z:F1} w={Weight():F2} threatDistance={GetNearestHostileDistance(_anchor.Position):F1} oldStationDistance={Distance(_anchor.Position, _map.GetStationPosition(_owner.Id)):F1} candidates={_candidates.Count} rejectedUnsafe={rejectedUnsafe}");
+                    FormattableString.Invariant($"kind={_anchor.Kind};id={_anchor.Id};pos=({_anchor.Position.x:F1} {_anchor.Position.z:F1});w={Weight():F2};threatDistance={GetNearestHostileDistance(_anchor.Position):F1};oldStationDistance={Distance(_anchor.Position, _map.GetStationPosition(_owner.Id)):F1};candidates={_candidates.Count};rejectedUnsafe={rejectedUnsafe}"));
         }
 
         private void Add(string id, string kind, Vector3 position, float radius, EnemyCaptureObjective capture, ref int rejected)
@@ -284,7 +284,7 @@ namespace EmpireAtWar.Services.Enemy
             return !_stationLost && !_pressure.HasPressure;
         }
         private void RecordMode() => EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "recoveryMode",
-            $"on={IsActive} trigger={_latch.Trigger} fleetSmoothed={_advantage:F2} threat={_pressure.ThreatX:F1},{_pressure.ThreatZ:F1}");
+            FormattableString.Invariant($"on={IsActive};trigger={_latch.Trigger};fleetSmoothed={_advantage:F2};threat=({_pressure.ThreatX:F1} {_pressure.ThreatZ:F1})"));
 
         private sealed class Candidate
         {

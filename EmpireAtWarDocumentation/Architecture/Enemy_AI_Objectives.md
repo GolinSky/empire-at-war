@@ -126,6 +126,15 @@ verification: Live-source and DI review, Unity script compilation/import; tests
 - Anchor utility interpolates near-own-fleet and far-from-known-threat by clamped smoothed fleet advantage. Shared retreat checks reject unsafe routes; pending relay capture takes priority for an eligible group. No anchor → defer rebuilding and scout safe unseen space.
 - Free placement: anchor rings → safety-ranked allied zones → map rings from anchor; every candidate passes live spawn and hostile-reach checks. Known weapon reach +100 units is excluded (unknown reach 500); lost-home exclusion max(64 units, own default-home radius) plus placement footprint during recovery.
 - Destroyed-structure exclusion = max(32 units, placement radius), last 10 positions. Sites keep fixed mine/satellite placement. Completion revalidates anchor ownership, contesting, recent sector visibility and safety; no candidate → existing refund path.
-- Hosted AI may buy its replacement station during recovery. Recovery overrides the critical-station purchase gate; ordinary hosted upgrades remain restricted.
+- Hosted AI may buy its replacement station during recovery. Recovery overrides the critical-station purchase gate; ordinary hosted upgrades remain restricted. Backup construction does not itself order withdrawal.
 - Modes using `DirectCombatAiState` do not run strategic recovery/patrol ship decisions; ordinary strategic AI, including applicable Survival AI slots, uses the same policy. Transient patrol/commitment/latch state is reassessed after load; no save schema change.
 - Implementation/acceptance → [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]]; event fields → [[Tooling/Battle_Telemetry]]. Tests authored; battle acceptance remains user-gated.
+
+### Patrol/recovery review corrections (2026-11-14)
+
+- A viable threatened owned site immediately preempts a normal capture target, bypassing target age and score margin; unsafe, reserved and stalled objectives remain excluded.
+- A living station stays defended during backup construction unless smoothed local advantage falls below difficulty RetreatAdvantage (0.7 Medium/Hard; 0.8 Easy/UltraHard). Withdrawal retains the existing ×1.25 exit threshold; station loss still directs survivors to the recovery anchor.
+- Reinforcement rally follows the actual DefendBase decision during recovery; pressure alone does not redirect withdrawn groups home.
+- Pressure bypasses minimum state duration only when entering DefendBase, not for arbitrary capture/engage/retreat switches while pressure remains latched.
+- Placement/scout map search still checks threats per candidate. Worst-case source complexity is candidate count × (sightings + entities + patrol points); profile a blocked large map before optimizing. No measured timing or performance pass claimed.
+- Fix and verification → [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]].

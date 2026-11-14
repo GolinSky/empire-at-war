@@ -333,3 +333,9 @@ created: "2026-10-29\r"
 
 - [ ] [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]] — Play stability, coverage, station-loss/critical-pressure, weak/parity and allied/neutral-anchor scenarios; inspect AI CSV checks 1–10 and tune starting values.
 - [ ] [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]] — Run authored EnemyAi regression tests only when explicitly requested; tests were not run under the local override.
+
+## AI patrol/recovery review fixes
+
+- [ ] [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]] — Battle-check distant attacked mines, near-parity station defense during backup construction, outmatched withdrawal and stable pressure transitions; verify recovery log parsing.
+- [ ] [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]] — Run authored EnemyAi regressions on explicit request; tests not run under the local override.
+- [ ] [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]] — Profile a large blocked map with multiple AI: placement/scout query duration and candidate/threat counts. Repeated per-candidate threat scans remain unoptimized; no runtime timing measured.

@@ -87,7 +87,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
             {
                 if (group.Context == null || !group.Context.Snapshot.HasStationPressure ||
-                    group.Context.Snapshot.RecoveryMode) continue;
+                    group.Context.Snapshot.RecoveryMode && group.Decision.State != EnemyStrategicState.DefendBase) continue;
                 // Cached decisions can outlive entities while world-change reevaluation is deferred.
                 if (group.Context.OwnBase == null ||
                     !_entityLocator.TryGetEntity(group.Context.OwnBase.Id, out GameEntity ownBase)) continue;

@@ -257,6 +257,9 @@
 
 ### Bugs
 
+- [x] **Fix AI patrol/recovery review regressions** → [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]]
+  - Completed 2026-11-14: threatened-site preemption, defendable-station protection during backup construction, scoped pressure bypass and parseable recovery telemetry. Unity compilation/source checks passed; tests not run. Battle/profiling gates → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **Fix reinforcement spawn near/above station and ship spawn grid** → [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]]
   - Completed 2026-11-14: live station hull spans, ship-aware physics/reachability grid, cell-centred preview/drop positions and safe batch spacing. Unity compilation/import and source checks passed; tests not run. In-game and large-map profiling gates → [[TODOs/User_Acceptance_Queue]].
 

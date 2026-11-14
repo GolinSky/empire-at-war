@@ -123,3 +123,5 @@ verification: Live-source review of patrol/recovery event writers and Unity
 - `recoveryMode`: latch on/off, trigger, smoothed fleet advantage and known pressure position. `recoveryAnchor`: kind, ID, XZ, near/far weight, threat/old-home distances, candidate/rejection counts.
 - `placement`: request, XZ, source, anchor, nearest hostile/destroyed distances and recovery mode. `placementDeferred`: request, noAnchor/anchorNotOwned/noSafeCandidate reason and refund amount; existing build failure path performs the refund.
 - Acceptance: compare matched battle logs with the ten checks in [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]]. Source verification is not runtime coverage or balance acceptance.
+
+- 2026-11-14 review: recoveryAnchor, recoveryMode and anchor objectiveSwitch fields use invariant numeric formatting and `;` separators; position fields use `(X Z)` at F1 precision. Fix → [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]].

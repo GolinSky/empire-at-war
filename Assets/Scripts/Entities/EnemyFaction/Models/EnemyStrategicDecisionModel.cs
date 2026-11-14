@@ -243,7 +243,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             StateHeldSeconds = _hasLastState && !float.IsNaN(now) ? Math.Max(0f, now - _stateStartedAt) : 0f;
             Bypass = snapshot.OwnShipCount == 0 ? "noShips" :
                 _hasLastState && _hadBase && !snapshot.HasOwnBase ? "stationLost" :
-                snapshot.HasOwnBase && snapshot.HasStationPressure ? "defend" :
                 snapshot.HasLocalThreat && !snapshot.HasSafeRetreat ? "cornered" : "none";
             foreach (EnemyStrategicRule rule in _rules)
             {
@@ -277,7 +276,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
             EnemyStrategicState state = best.State;
             string reason = best.Reason;
-            if (snapshot.OwnShipCount > 0 && snapshot.RecoveryMode)
+            bool withdrawForRecovery = !snapshot.HasOwnBase ||
+                snapshot.LocalAdvantage < profile.RetreatAdvantage ||
+                _hasLastState && _lastState == EnemyStrategicState.RetreatValue &&
+                snapshot.LocalAdvantage < profile.RetreatAdvantage * RETREAT_EXIT_SCALE;
+            if (snapshot.OwnShipCount > 0 && snapshot.RecoveryMode && withdrawForRecovery)
             {
                 if (snapshot.RecoveryCapturePending && snapshot.HasCaptureTarget)
                 {
@@ -290,6 +293,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     reason = "Cover the safe recovery anchor while rebuilding.";
                 }
             }
+            if (Bypass == "none" && state == EnemyStrategicState.DefendBase &&
+                snapshot.HasStationPressure && (!_hasLastState || _lastState != EnemyStrategicState.DefendBase))
+                Bypass = "defend";
             BestScore = bestScore;
             RunnerUpScore = runnerUp;
             bool held = _hasLastState && state != _lastState && Bypass == "none" &&

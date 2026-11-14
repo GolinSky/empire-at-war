@@ -87,10 +87,13 @@ namespace EmpireAtWar.Tests.Editor
             finally { UnityEngine.Object.DestroyImmediate(definition); }
         }
 
-        [TestCase(false, true)]
-        [TestCase(true, true)]
-        [TestCase(true, false)]
-        public void ReinforcementRally_CachedDecisionSkipsRemovedEntities(bool removeStation, bool keepFleet)
+        [TestCase(false, true, false, false)]
+        [TestCase(true, true, false, false)]
+        [TestCase(true, false, false, false)]
+        [TestCase(false, true, true, true)]
+        [TestCase(false, true, true, false)]
+        public void ReinforcementRally_CachedDecisionSkipsRemovedEntities(bool removeStation, bool keepFleet,
+            bool recovery, bool defending)
         {
             GameObject stationView = new GameObject("Reinforcement rally station");
             try
@@ -116,7 +119,9 @@ namespace EmpireAtWar.Tests.Editor
                 group.Ships.Add(new FakeShip(Vector3.right * 1000f, 3));
                 var snapshot = new EnemyStrategicSnapshot(BattleVictoryCondition.DestroyEnemyFleet,
                     EnemyAiDifficulty.UltraHard, 2, 1, 0, 1f, 1f, false, false, true,
-                    hasStationPressure: true);
+                    hasStationPressure: true, recoveryMode: recovery);
+                typeof(EnemyShipTaskGroup).GetProperty(nameof(EnemyShipTaskGroup.Decision)).SetValue(group,
+                    new EnemyStrategicDecision("test", defending ? EnemyStrategicState.DefendBase : EnemyStrategicState.RetreatValue, 2));
                 var context = new EnemyStrategicContext(group.Ships, null, null, station, snapshot,
                     Vector3.zero, null, null);
                 typeof(EnemyShipTaskGroup).GetProperty(nameof(EnemyShipTaskGroup.Context)).SetValue(group, context);
@@ -131,9 +136,10 @@ namespace EmpireAtWar.Tests.Editor
 
                 bool hasRally = commander.TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
 
-                Assert.That(hasRally, Is.EqualTo(!removeStation || keepFleet));
-                Assert.That(defendHome, Is.EqualTo(!removeStation));
-                Assert.That(rally, Is.EqualTo(!removeStation ? Vector3.forward * 100f :
+                bool shouldDefend = !removeStation && (!recovery || defending);
+                Assert.That(hasRally, Is.EqualTo(shouldDefend || keepFleet));
+                Assert.That(defendHome, Is.EqualTo(shouldDefend));
+                Assert.That(rally, Is.EqualTo(shouldDefend ? Vector3.forward * 100f :
                     keepFleet ? Vector3.right * 20f : Vector3.zero));
             }
             finally
@@ -1441,6 +1447,55 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(objective.Position, Is.EqualTo(Vector3.right * 10f));
         }
 
+        [TestCase(1f)]
+        [TestCase(11f)]
+        public void CaptureSelection_AttackedOwnedSitePreemptsCloserCaptureImmediately(float now)
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            ZoneSource zones = new ZoneSource(roster, Vector3.right * 100f, Vector3.right * 1000f);
+            zones.Zones[1].Restore(TestPlayers.Enemy, PlayerId.None, 0f, false);
+            var defense = new MutableCaptureObjectiveSource();
+            EnemyStrategicContextBuilder builder = CaptureBuilder(roster, zones, new SiteSource(),
+                new TestHazards(), sources: new IEnemyCaptureObjectiveSource[] { defense });
+            EnemyCaptureObjective initial = SelectCapture(builder, 0f);
+            Assert.That(initial.Id, Is.EqualTo("zone:0"));
+            defense.Objective = new EnemyCaptureObjective("owned-mine", EnemyCaptureObjectiveType.Facility,
+                TestPlayers.Enemy, Vector3.right * 1000f, 10f, 0f, true);
+
+            EnemyCaptureObjective selected = SelectCapture(builder, now);
+
+            Assert.That(selected.Id, Is.EqualTo("owned-mine"),
+                "Safe defense preempts both the minimum hold and a worse travel score.");
+            Assert.That(selected.IsThreatened, Is.True);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void CaptureSelection_DefensePreemptionStillRespectsReservationAndStall(bool reserved)
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            ZoneSource zones = new ZoneSource(roster, Vector3.right * 100f, Vector3.right * 1000f);
+            zones.Zones[1].Restore(TestPlayers.Enemy, PlayerId.None, 0f, false);
+            var defense = new MutableCaptureObjectiveSource();
+            EnemyStrategicContextBuilder builder = CaptureBuilder(roster, zones, new SiteSource(),
+                new TestHazards(), sources: new IEnemyCaptureObjectiveSource[] { defense });
+            EnemyCaptureObjective initial = SelectCapture(builder, 0f);
+            defense.Objective = new EnemyCaptureObjective("owned-mine", EnemyCaptureObjectiveType.Facility,
+                TestPlayers.Enemy, Vector3.right * 1000f, 10f, 0f, true);
+            if (reserved)
+                typeof(EnemyStrategicContextBuilder).GetField("_reservedCaptureObjectives",
+                    BindingFlags.Instance | BindingFlags.NonPublic).SetValue(builder, new HashSet<string> { "owned-mine" });
+            else
+            {
+                typeof(EnemyStrategicContextBuilder).GetField("_rejectedCaptureId",
+                    BindingFlags.Instance | BindingFlags.NonPublic).SetValue(builder, "owned-mine");
+                typeof(EnemyStrategicContextBuilder).GetField("_captureRetryAt",
+                    BindingFlags.Instance | BindingFlags.NonPublic).SetValue(builder, 20f);
+            }
+
+            Assert.That(SelectCapture(builder, 1f).Id, Is.EqualTo(initial.Id));
+        }
+
         [Test]
         public void CaptureSelection_PrefersCloserZoneOverFartherMine()
         {
@@ -1964,11 +2019,12 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static EnemyStrategicContextBuilder CaptureBuilder(PlayerRoster roster,
-            ZoneSource zones, SiteSource sites, TestHazards hazards, IShipNavigationService navigation = null)
+            ZoneSource zones, SiteSource sites, TestHazards hazards, IShipNavigationService navigation = null,
+            IEnemyCaptureObjectiveSource[] sources = null)
         {
             EntityLocator locator = new EntityLocator();
             EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
-                null, null, SiteObjectives(sites, roster), locator, null, roster, new ForceCompositionBuilder(locator, null),
+                null, null, sources ?? SiteObjectives(sites, roster), locator, null, roster, new ForceCompositionBuilder(locator, null),
                 new TeamIntelRegistry(), new VisionService(roster, fogEnabled: false),
                 roster.Get(TestPlayers.Enemy), null, hazards, zones,
                 navigation, new EnemyStationPressureTracker(), CreateRecovery(roster, zones));
@@ -2110,6 +2166,18 @@ private sealed class ZoneSource : IReinforcementZoneSource
             return new IEnemyCaptureObjectiveSource[] {
                 new EnemySiteObjectives(sites, sites, data, roster, roster.Get(TestPlayers.Enemy))
             };
+        }
+
+        private sealed class MutableCaptureObjectiveSource : IEnemyCaptureObjectiveSource
+        {
+            public EnemyCaptureObjective Objective { get; set; }
+
+            public void AddStrategicObjectives(List<EnemyCaptureObjective> objectives, HostileIntelModel intel)
+            {
+                if (Objective != null) objectives.Add(Objective);
+            }
+
+            public void AddSquadronTargets(EnemySquadronCaptureAssignments assignments) { }
         }
 
         private sealed class SiteSource : ICaptureSiteDirectory, ICaptureSitePresence
