@@ -13,6 +13,7 @@ using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
@@ -255,6 +256,51 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void StationContact_UsesHullSpanWithoutChangingPlanarRadius()
+        {
+            var obstacle = new StationObstacle(new PlayerId(0), new Vector3(0f, -40f, 0f), 396f);
+
+            RadarContact contact = obstacle.GetContact(-112f, 32f);
+
+            Assert.That(contact.Radius, Is.EqualTo(396f));
+            Assert.That(contact.Bottom, Is.EqualTo(-112f));
+            Assert.That(contact.Top, Is.EqualTo(32f));
+        }
+
+        [Test]
+        public void IsReachable_StationOriginAllowsClearHullHeightsAndExteriorGoals()
+        {
+            var obstacle = new StationObstacle(new PlayerId(0), Vector3.zero, 30f);
+            ShipNavigationService service = CreateService(new[] { obstacle.GetContact(-10f, 10f) });
+
+            Assert.That(service.IsReachable(Vector3.zero, Vector3.zero, 5f,
+                new ShipHullSpan(11f, 15f), _mapRange), Is.True);
+            Assert.That(service.IsReachable(Vector3.zero, Vector3.zero, 5f,
+                new ShipHullSpan(-15f, -11f), _mapRange), Is.True);
+            Assert.That(service.IsReachable(Vector3.zero, Vector3.zero, 5f,
+                new ShipHullSpan(-1f, 1f), _mapRange), Is.False);
+            Assert.That(service.IsReachable(Vector3.zero, new Vector3(70f, 0f, 0f), 5f,
+                new ShipHullSpan(-1f, 1f), _mapRange), Is.True);
+        }
+
+        [Test]
+        public void Plan_FliesAboveStationHullAndAvoidsItAtHullHeight()
+        {
+            var obstacle = new StationObstacle(new PlayerId(0), Vector3.zero, 30f);
+            ShipNavigationService service = CreateService(new[] { obstacle.GetContact(-10f, 10f) });
+            var above = new FakeAgent(new Vector3(-80f, 20f, 0f), 20f, 5f, 10f, 5f,
+                new ShipHullSpan(15f, 25f));
+            var overlapping = new FakeAgent(new Vector3(-80f, 0f, 0f), 0f, 5f, 10f, 5f,
+                new ShipHullSpan(-5f, 5f));
+
+            ShipNavigationPlan clear = Plan(service, above, new Vector3(80f, 20f, 0f));
+            ShipNavigationPlan detour = Plan(service, overlapping, new Vector3(80f, 0f, 0f));
+
+            Assert.That(clear.Route.Length, Is.EqualTo(160f).Within(0.05f));
+            Assert.That(detour.Route.Length, Is.GreaterThan(160f));
+        }
+
+        [Test]
         public void MapContacts_RemoveDestroyedStationFootprint()
         {
             var stations = new FakeStationRegistry { IsAlive = true };
@@ -266,6 +312,16 @@ namespace EmpireAtWar.Tests.Movement
             var contacts = new List<RadarContact>();
             provider.CopyContacts(contacts);
             Assert.That(contacts.Count, Is.EqualTo(1));
+            Assert.That(contacts[0].Bottom, Is.EqualTo(-10f));
+            Assert.That(contacts[0].Top, Is.EqualTo(10f));
+
+            stations.Hull.HullTop = 20f;
+            provider.CopyContacts(contacts);
+            Assert.That(contacts[0].Top, Is.EqualTo(20f), "Upgrades must refresh the current hull span.");
+
+            stations.IsSecondStation = true;
+            provider.CopyContacts(contacts);
+            Assert.That(contacts, Is.Empty, "A surviving second station cannot keep the main slot blocked.");
 
             stations.IsAlive = false;
             provider.CopyContacts(contacts);
@@ -277,6 +333,8 @@ namespace EmpireAtWar.Tests.Movement
         {
             public string Id => nameof(FakeStationRegistry);
             public bool IsAlive;
+            public bool IsSecondStation;
+            public readonly FakeStationHull Hull = new FakeStationHull();
             public bool HasProductionBase(PlayerId owner) => IsAlive;
             public bool TryGetProductionBase(PlayerId owner,
                 out IEntity productionBase) =>
@@ -284,9 +342,18 @@ namespace EmpireAtWar.Tests.Movement
             public bool TryGetLivingStation(PlayerId owner,
                 out IEntity station)
             {
-                station = null;
+                IEntityFacade[] facades = IsSecondStation
+                    ? new IEntityFacade[] { Hull, new SecondStationFacade() }
+                    : new IEntityFacade[] { Hull };
+                station = new Entity(null, null, facades, owner, 0, null, null);
                 return IsAlive;
             }
+        }
+
+        private sealed class FakeStationHull : IStationHullFacade
+        {
+            public float HullBottom { get; set; } = -10f;
+            public float HullTop { get; set; } = 10f;
         }
 
         [Test]
@@ -937,6 +1004,37 @@ namespace EmpireAtWar.Tests.Movement
             motion.GetType().GetMethod("Tick").Invoke(motion, new object[] { deltaTime });
         }
 
+        [Test]
+        public void FillReachability_SamplesOneContactSnapshotAndMatchesPointQueries()
+        {
+            var obstacles = new[]
+            {
+                new RadarContact(new Vector3(0f, 0f, 60f), 65f, false),
+                new RadarContact(new Vector3(0f, 0f, -60f), 65f, false)
+            };
+            var provider = new FakeMapObstacleContactProvider(obstacles);
+            var service = new ShipNavigationService(provider, new TestHazards());
+            _services.Add(service);
+            var origin = new Vector3(-85f, 0f, 0f);
+            var positions = new[]
+            {
+                origin, new Vector3(-80f, 0f, 30f), Vector3.zero, new Vector3(85f, 0f, 0f)
+            };
+            var reachable = new bool[positions.Length];
+            var span = new ShipHullSpan(-1f, 1f);
+
+            service.FillReachability(origin, positions, reachable, 3f, span, _mapRange);
+
+            Assert.That(provider.CopyCount, Is.EqualTo(1));
+            Assert.That(reachable, Is.EqualTo(new[] { true, true, false, false }));
+            for (int i = 0; i < positions.Length; i++)
+                Assert.That(reachable[i], Is.EqualTo(service.IsReachable(origin, positions[i], 3f, span, _mapRange)));
+
+            service.FillReachability(positions[3], positions, reachable, 3f, span, _mapRange);
+            Assert.That(reachable, Is.EqualTo(new[] { false, false, false, true }),
+                "Changing the station origin must select the new connected region.");
+        }
+
         private ShipNavigationService CreateService(
             IReadOnlyList<RadarContact> staticObstacles = null)
         {
@@ -1088,6 +1186,8 @@ namespace EmpireAtWar.Tests.Movement
 
             public string Id => nameof(FakeMapObstacleContactProvider);
 
+            public int CopyCount { get; private set; }
+
             public FakeMapObstacleContactProvider(
                 IReadOnlyList<RadarContact> contacts)
             {
@@ -1096,6 +1196,7 @@ namespace EmpireAtWar.Tests.Movement
 
             public void CopyContacts(List<RadarContact> destination)
             {
+                CopyCount++;
                 destination.Clear();
                 for (int i = 0; i < _contacts.Count; i++)
                 {
@@ -1193,6 +1294,9 @@ namespace EmpireAtWar.Tests.Movement
 
             public bool IsReachable(Vector3 from, Vector3 to, float clearance, ShipHullSpan hullSpan,
                 Vector2Range mapRange) => true;
+
+            public void FillReachability(Vector3 from, Vector3[] positions, bool[] reachable, float clearance,
+                ShipHullSpan hullSpan, Vector2Range mapRange) => System.Array.Fill(reachable, true);
 
             public void RequestPlan(IShipPlanRequester requester)
             {

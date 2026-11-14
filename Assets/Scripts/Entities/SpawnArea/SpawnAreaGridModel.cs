@@ -39,6 +39,23 @@ namespace EmpireAtWar.Models.SpawnArea
         public float GetAt(float x, float z) =>
             Get(ToIndex(x, _minX, _cellSizeX), ToIndex(z, _minZ, _cellSizeZ));
 
+        public float GetCenterX(int column) => _minX + (column + 0.5f) * _cellSizeX;
+
+        public float GetCenterZ(int row) => _minZ + (row + 0.5f) * _cellSizeZ;
+
+        public float SnapX(float x) => GetCenterX(ToIndex(x, _minX, _cellSizeX));
+
+        public float SnapZ(float z) => GetCenterZ(ToIndex(z, _minZ, _cellSizeZ));
+
+        // Two independent roundings can reduce separation by up to one cell.
+        public float GetPlacementSpacing(float minimum) => minimum + Math.Max(_cellSizeX, _cellSizeZ);
+
+        public void BlockUnreachable(bool[] reachable)
+        {
+            for (int index = 0; index < _cells.Length; index++)
+                if (_cells[index] == OPEN && !reachable[index]) _cells[index] = BLOCKED;
+        }
+
         /// <summary>Opens every hidden cell whose centre lies inside the circle.</summary>
         public void Reveal(float x, float z, float radius) => Stamp(x, z, radius, HIDDEN, OPEN);
 

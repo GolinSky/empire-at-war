@@ -13,6 +13,21 @@ namespace EmpireAtWar.Services.ShipSpawning
             Rotation = rotation;
         }
 
+        public Bounds Bounds
+        {
+            get
+            {
+                Vector3 right = Rotation * Vector3.right * HalfExtents.x;
+                Vector3 up = Rotation * Vector3.up * HalfExtents.y;
+                Vector3 forward = Rotation * Vector3.forward * HalfExtents.z;
+                Vector3 extents = new Vector3(
+                    Mathf.Abs(right.x) + Mathf.Abs(up.x) + Mathf.Abs(forward.x),
+                    Mathf.Abs(right.y) + Mathf.Abs(up.y) + Mathf.Abs(forward.y),
+                    Mathf.Abs(right.z) + Mathf.Abs(up.z) + Mathf.Abs(forward.z));
+                return new Bounds(Center, extents * 2f);
+            }
+        }
+
         public Vector3 Center { get; }
         public Vector3 HalfExtents { get; }
         public Quaternion Rotation { get; }

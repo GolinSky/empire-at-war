@@ -192,6 +192,12 @@ namespace EmpireAtWar.Services.ShipNavigation
             return !IsKnownUnreachable(position);
         }
 
+        public void FillReachability(Vector3[] positions, bool[] reachable)
+        {
+            for (int i = 0; i < positions.Length; i++)
+                reachable[i] = IsReachable(positions[i]);
+        }
+
         public bool IsKnownUnreachable(Vector3 position)
         {
             if (!_hasSearched)

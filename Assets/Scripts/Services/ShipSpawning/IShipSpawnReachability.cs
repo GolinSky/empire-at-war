@@ -9,5 +9,7 @@ namespace EmpireAtWar.Services.ShipSpawning
     public interface IShipSpawnReachability
     {
         bool IsReachable(PlayerId owner, ShipType shipType, Vector3 position);
+
+        void FillReachability(PlayerId owner, ShipType shipType, Vector3[] positions, bool[] reachable);
     }
 }

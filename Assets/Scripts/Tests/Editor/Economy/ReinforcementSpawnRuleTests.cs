@@ -188,6 +188,9 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsReachableResult { get; set; } = true;
 
             public bool IsReachable(PlayerId owner, ShipType shipType, Vector3 position) => IsReachableResult;
+
+            public void FillReachability(PlayerId owner, ShipType shipType, Vector3[] positions, bool[] reachable) =>
+                System.Array.Fill(reachable, IsReachableResult);
         }
 
         private sealed class FixedStructureClearance : IStructureSpawnClearance

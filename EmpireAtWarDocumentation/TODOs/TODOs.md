@@ -257,6 +257,9 @@
 
 ### Bugs
 
+- [x] **Fix reinforcement spawn near/above station and ship spawn grid** → [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]]
+  - Completed 2026-11-14: live station hull spans, ship-aware physics/reachability grid, cell-centred preview/drop positions and safe batch spacing. Unity compilation/import and source checks passed; tests not run. In-game and large-map profiling gates → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **Preserve planet decorations during battle loading and spawning** → [[Done/Bugs/Planet_Decorations_Loading_Fix]]
   - Completed 2026-11-13: loader forwards decorations through its site-filtering layout copy; spawn preserves imported rotation under world yaw. Kuat visibility confirmed by user; rotation/Tatooine acceptance pending. Regressions authored; tests not run.
 

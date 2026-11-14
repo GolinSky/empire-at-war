@@ -1,3 +1,4 @@
+using System.Reflection;
 using EmpireAtWar.Entities.Reinforcement;
 using NUnit.Framework;
 using UnityEditor;
@@ -12,6 +13,35 @@ namespace EmpireAtWar.Tests.Editor
             "Assets/Prefabs/Ui/Reinforcement/AcclamatorReinforcementView.prefab";
         private const string ACCLAMATOR_SHIP_PREFAB_PATH =
             "Assets/Prefabs/Models/Ships/Republic/View/AcclamatorShipView.prefab";
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CanSpawn_UsesPlacementRuleOnlyWhenExplicitlyEnabled(bool placementOnly)
+        {
+            UnitSpawnView prefab = AssetDatabase.LoadAssetAtPath<UnitSpawnView>(ACCLAMATOR_PREFAB_PATH);
+            UnitSpawnView view = Object.Instantiate(prefab);
+            GameObject obstacle = new GameObject("Preview trigger");
+            try
+            {
+                // Initialize explicitly because this fixture runs outside Play Mode.
+                typeof(UnitSpawnView).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(view, null);
+                BoxCollider collider = obstacle.AddComponent<BoxCollider>();
+                typeof(UnitSpawnView).GetMethod("OnTriggerEnter", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(view, new object[] { collider });
+                if (placementOnly) view.UsePlacementValidityOnly();
+
+                view.SetPlacementValidity(true);
+                Assert.That(view.CanSpawn, Is.EqualTo(placementOnly));
+                view.SetPlacementValidity(false);
+                Assert.That(view.CanSpawn, Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(view.gameObject);
+                Object.DestroyImmediate(obstacle);
+            }
+        }
 
         [Test]
         public void SetRotation_AppliesProvidedWorldRotation()

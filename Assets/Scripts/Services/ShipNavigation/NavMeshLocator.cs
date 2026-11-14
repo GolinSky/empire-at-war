@@ -26,6 +26,11 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void Execute()
         {
+            Location.Value = Locate();
+        }
+
+        public Result Locate()
+        {
             var result = new Result { Triangle = -1, Point = Point };
             if (math.all(Point >= Layout.Min) && math.all(Point <= Layout.Max))
             {
@@ -58,7 +63,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                     result.Point = Triangle(result.Triangle).RoundInside(result.Point);
                 }
             }
-            Location.Value = result;
+            return result;
         }
 
         private bool WinsTie(int candidate, int current)

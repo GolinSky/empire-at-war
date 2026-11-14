@@ -43,6 +43,8 @@ namespace EmpireAtWar.Services.Reinforcement
         public UnitSpawnView CreatePreview()
         {
             UnitSpawnView preview = _previewFactory.Create(_previewPrefab);
+            // Ship placement already checks the actual hull, including reserved hyperspace landings.
+            preview.UsePlacementValidityOnly();
             // The preview hovers where the ship will actually fly.
             preview.SetHeight(_height);
             return preview;

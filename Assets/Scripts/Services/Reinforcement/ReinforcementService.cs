@@ -223,7 +223,8 @@ namespace EmpireAtWar.Services.Reinforcement
                 bool placingStructure = !ReinforcementModel.UsesCapacity(request);
                 if (placingStructure)
                     _slotSpacing = Mathf.Max(_slotSpacing, _structureClearance.Radius * SLOT_SPACING_FACTOR);
-                _spawnAreaOverlay.Show(_owner.Id, placingStructure);
+                _spawnAreaOverlay.Show(_owner.Id, request, placement.IsPositionValid);
+                _slotSpacing = _spawnAreaOverlay.GetPlacementSpacing(_slotSpacing);
                 _cancelRouter.Focus(this);
             }
             catch
@@ -366,7 +367,7 @@ namespace EmpireAtWar.Services.Reinforcement
         {
             FormationPoint slot = FormationModel.CalculateGridDestination(index, _previews.Count,
                 new FormationPoint(dropPoint.x, dropPoint.z), _slotSpacing);
-            return new Vector3(slot.X, dropPoint.y, slot.Z);
+            return _spawnAreaOverlay.GetPlacementPosition(new Vector3(slot.X, dropPoint.y, slot.Z));
         }
 
         private void DestroyPreviews()

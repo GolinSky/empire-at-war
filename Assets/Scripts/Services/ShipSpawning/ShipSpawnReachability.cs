@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Entities.Map;
@@ -6,6 +7,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipNavigation;
+using EmpireAtWar.Services.Timing;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipSpawning
@@ -35,6 +37,19 @@ namespace EmpireAtWar.Services.ShipSpawning
             Profile profile = GetProfile(shipType);
             if (profile.IgnoresMapObstacles) return true;
             return _navigation.IsReachable(_mapModel.GetStationPosition(owner), position,
+                profile.NavigationRadius, profile.Span, _mapModel.SizeRange);
+        }
+
+        public void FillReachability(PlayerId owner, ShipType shipType, Vector3[] positions, bool[] reachable)
+        {
+            using var marker = BattleProfilerMarkers.SpawnAreaReachability.Auto();
+            Profile profile = GetProfile(shipType);
+            if (profile.IgnoresMapObstacles)
+            {
+                Array.Fill(reachable, true);
+                return;
+            }
+            _navigation.FillReachability(_mapModel.GetStationPosition(owner), positions, reachable,
                 profile.NavigationRadius, profile.Span, _mapModel.SizeRange);
         }
 

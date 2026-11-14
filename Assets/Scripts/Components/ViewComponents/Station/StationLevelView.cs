@@ -18,6 +18,7 @@ namespace EmpireAtWar.ViewComponents.Station
         private HardPointHealthObserver[] _observers;
 
         public StationLevelArt CurrentModel { get; private set; }
+        public BoxCollider HullCollider => hullCollider;
 
         private void Awake()
         {

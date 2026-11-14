@@ -38,6 +38,24 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(ship.Overlaps(At(new Vector3(61f, 0f, 0f), crossing)), Is.False);
         }
 
+        [TestCase(0f)]
+        [TestCase(45f)]
+        [TestCase(90f)]
+        public void Bounds_ContainsEveryRotatedCorner(float yaw)
+        {
+            var hull = new ShipHullFootprint(new Vector3(7f, 11f, -13f), HALF_EXTENTS,
+                Quaternion.Euler(0f, yaw, 0f));
+            Bounds bounds = hull.Bounds;
+            for (int corner = 0; corner < 8; corner++)
+            {
+                var sign = new Vector3((corner & 1) == 0 ? -1f : 1f,
+                    (corner & 2) == 0 ? -1f : 1f, (corner & 4) == 0 ? -1f : 1f);
+                Vector3 point = hull.Center + hull.Rotation * Vector3.Scale(HALF_EXTENTS, sign);
+                Assert.That(bounds.SqrDistance(point), Is.LessThan(0.0001f));
+            }
+            Assert.That(bounds.center, Is.EqualTo(hull.Center));
+        }
+
         private static ShipHullFootprint At(Vector3 center, Quaternion rotation)
         {
             return new ShipHullFootprint(center, HALF_EXTENTS, rotation);

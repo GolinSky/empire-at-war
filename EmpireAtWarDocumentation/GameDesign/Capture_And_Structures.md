@@ -52,6 +52,15 @@ verification: source-and-assets
 - Human ship placement additionally requires ship-specific hull clearance. Human squadron placement calls `IsOpen` without the ship-clearance check; ordinary structures use the stricter exclusions below.
 - Vision and cloak rules: [[GameDesign/Visibility]]. Reserve availability, population and deployment accounting: [[GameDesign/Production_And_Research]].
 
+### Reinforcement placement grid
+- Source/Unity compilation verified 2026-11-14; tests and live large-map performance remain pending in [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]].
+- Ship placement requires visibility, no hostile spawn block/hazard, actual hull/landing-reservation clearance and a reachable navigation region from the station anchor.
+- Station navigation keeps its planar radius but uses the current level's world-space collider bottom/top through `IStationHullFacade`; never use planar radius as vertical reach.
+- Ship previews and drops sample grid cell centres (default 256 × 256); maximum snap displacement = half a cell per axis. Batch spacing reserves one cell for rounding.
+- Ship preview validity comes solely from the placement rule, avoiding a second trigger-overlap veto. Structures/squadrons retain their existing trigger behavior.
+- Physics candidates refresh at the existing 0.1 s interval; reachability refreshes on selection and every 1 s through one parallel Burst batch. Preview/authority still recheck live validity.
+- Profile `Battle.SpawnArea.Redraw` and `Battle.SpawnArea.Reachability`; runtime budget is not established by source inspection or compilation.
+
 ### Enemy AI map control
 - The reinforcement-zone minimum selects viable relays specifically; emergency owned-site defense can interrupt it. After the minimum, zones and facilities compete normally.
 - Regrouped retreaters can capture or defend locally without global fleet parity; lost/unsafe home access triggers anchor/objective reassessment.

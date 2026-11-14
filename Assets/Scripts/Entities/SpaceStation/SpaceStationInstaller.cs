@@ -38,7 +38,8 @@ namespace EmpireAtWar.SpaceStation
             builder.Register<SpaceStationTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<PlayerBaseFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ProductionBaseFacade>(Lifetime.Singleton).AsImplementedInterfaces();
-            builder.Register<StationFootprintFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<StationFootprintFacade>(Lifetime.Singleton).AsImplementedInterfaces()
+                .WithParameter(View.HullCollider);
             builder.Register<StationDurabilityFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<StationLevelFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             bool isSecondStation = _secondStationLevel != null;

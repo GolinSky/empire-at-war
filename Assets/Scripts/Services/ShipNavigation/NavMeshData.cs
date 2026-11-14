@@ -27,6 +27,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         public NativeArray<int> Triangles => _triangles.AsArray();
         public NativeArray<int> Halfedges => _halfedges.AsArray();
         public NativeArray<int> Regions => _regions;
+        public NativeParallelMultiHashMap<int, int> TriangleBuckets => _buckets;
 
         public NavMeshData(float2 min, float2 max, float cellSize, NativeArray<float3> inflatedDisks,
             NativeArray<float2> hazardPoints, NativeParallelMultiHashMap<int, int> diskBuckets)

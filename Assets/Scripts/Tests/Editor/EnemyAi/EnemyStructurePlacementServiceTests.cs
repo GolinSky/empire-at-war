@@ -316,6 +316,9 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class OpenShipReachability : IShipSpawnReachability
         {
             public bool IsReachable(PlayerId owner, ShipType shipType, Vector3 position) => true;
+
+            public void FillReachability(PlayerId owner, ShipType shipType, Vector3[] positions, bool[] reachable) =>
+                System.Array.Fill(reachable, true);
         }
 
         private sealed class OpenShipClearance : IShipSpawnClearance

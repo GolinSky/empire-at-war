@@ -226,6 +226,33 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(graph.TryGetNearestReachable(goal, HEIGHT, out _), Is.False);
         }
 
+        [Test]
+        public void BatchReachabilityMatchesScalarAtDiskEdgesAndMapBoundaries()
+        {
+            var obstacles = new[]
+            {
+                new RadarContact(Vector3.zero, 20f, false),
+                new RadarContact(new Vector3(32f, 0f, 8f), 13f, false)
+            };
+            using var cache = new ShipNavigationCache();
+            IShipPathGraph graph = cache.GetGraph(obstacles, Bounds(100f, 100f),
+                new Vector3(-80f, HEIGHT, 0f), CLEARANCE, _noHazards);
+            var points = new List<Vector3>();
+            for (int z = -105; z <= 105; z += 5)
+                for (int x = -105; x <= 105; x += 5)
+                    points.Add(new Vector3(x, HEIGHT, z));
+            points.Add(new Vector3(23f, HEIGHT, 0f));
+            points.Add(new Vector3(22.999f, HEIGHT, 0f));
+            points.Add(new Vector3(23.001f, HEIGHT, 0f));
+            Vector3[] positions = points.ToArray();
+            var actual = new bool[positions.Length];
+
+            graph.FillReachability(positions, actual);
+
+            for (int i = 0; i < positions.Length; i++)
+                Assert.That(actual[i], Is.EqualTo(graph.IsReachable(positions[i])), $"Point {positions[i]}");
+        }
+
         private static Vector2Range Bounds(float x, float z)
         {
             var bounds = new Vector2Range();

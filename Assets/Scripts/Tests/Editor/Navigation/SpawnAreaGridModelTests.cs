@@ -90,5 +90,52 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(grid.GetAt(-495f, -495f), Is.EqualTo(SpawnAreaGridModel.OPEN));
         }
+
+        [Test]
+        public void Snap_UsesTheSameCellCenterAsThePlacementPredicate()
+        {
+            SpawnAreaGridModel grid = CreateGrid();
+            grid.RevealAll();
+            float x = grid.SnapX(2f);
+            float z = grid.SnapZ(-2f);
+
+            grid.BlockWhere(x, z, x, z, (sampleX, sampleZ) => sampleX == x && sampleZ == z);
+
+            Assert.That(x, Is.EqualTo(5f));
+            Assert.That(z, Is.EqualTo(-5f));
+            Assert.That(grid.GetAt(2f, -2f), Is.EqualTo(SpawnAreaGridModel.BLOCKED));
+            Assert.That(grid.GetAt(-2f, -2f), Is.EqualTo(SpawnAreaGridModel.OPEN));
+        }
+
+        [Test]
+        public void BlockUnreachable_PreservesHiddenAndPreviouslyBlockedCells()
+        {
+            var grid = new SpawnAreaGridModel(2, 0f, 0f, 20f, 20f);
+            grid.Reveal(5f, 5f, 1f);
+            grid.Reveal(15f, 5f, 1f);
+            grid.Reveal(5f, 15f, 1f);
+            grid.Block(5f, 15f, 1f);
+
+            grid.BlockUnreachable(new[] { false, true, true, false });
+
+            Assert.That(grid.Get(0, 0), Is.EqualTo(SpawnAreaGridModel.BLOCKED));
+            Assert.That(grid.Get(1, 0), Is.EqualTo(SpawnAreaGridModel.OPEN));
+            Assert.That(grid.Get(0, 1), Is.EqualTo(SpawnAreaGridModel.BLOCKED));
+            Assert.That(grid.Get(1, 1), Is.EqualTo(SpawnAreaGridModel.HIDDEN));
+        }
+
+        [TestCase(-51f)]
+        [TestCase(-50f)]
+        [TestCase(-49f)]
+        [TestCase(1f)]
+        public void PlacementSpacing_PreservesMinimumSeparationAfterSnapping(float origin)
+        {
+            var grid = new SpawnAreaGridModel(100, -500f, -500f, 1000f, 2000f);
+            const float MINIMUM = 21f;
+            float spacing = grid.GetPlacementSpacing(MINIMUM);
+
+            Assert.That(grid.SnapX(origin + spacing) - grid.SnapX(origin), Is.GreaterThanOrEqualTo(MINIMUM));
+            Assert.That(grid.SnapZ(origin + spacing) - grid.SnapZ(origin), Is.GreaterThanOrEqualTo(MINIMUM));
+        }
     }
 }

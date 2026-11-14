@@ -22,8 +22,9 @@ namespace EmpireAtWar.Entities.Reinforcement
         private static readonly int BASE_COLOR_ID = Shader.PropertyToID("_BaseColor");
 
         private bool _isPlacementValid;
+        private bool _useTriggerClearance = true;
 
-        public bool CanSpawn => _triggeredCollider.Count == 0 && _isPlacementValid;
+        public bool CanSpawn => (!_useTriggerClearance || _triggeredCollider.Count == 0) && _isPlacementValid;
         public Vector3 Position => transform.position;
 
         /// <summary>Largest planar distance from the pivot to the edge of the rendered bounds.</summary>
@@ -89,6 +90,12 @@ namespace EmpireAtWar.Entities.Reinforcement
         public void SetPlacementValidity(bool isPlacementValid)
         {
             _isPlacementValid = isPlacementValid;
+            UpdateColor();
+        }
+
+        public void UsePlacementValidityOnly()
+        {
+            _useTriggerClearance = false;
             UpdateColor();
         }
 

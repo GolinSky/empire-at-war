@@ -79,6 +79,10 @@ namespace EmpireAtWar.Services.ShipNavigation
         /// past the map's asteroid fields and stations.</summary>
         bool IsReachable(Vector3 from, Vector3 to, float clearance, ShipHullSpan hullSpan, Vector2Range mapRange);
 
+        /// <summary>Samples one prepared navigation graph for a batch of placement points.</summary>
+        void FillReachability(Vector3 from, Vector3[] positions, bool[] reachable, float clearance,
+            ShipHullSpan hullSpan, Vector2Range mapRange);
+
         /// <summary>Queues the requester for a route plan; the service runs a few queued plans per frame.</summary>
         void RequestPlan(IShipPlanRequester requester);
 
@@ -429,6 +433,14 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             BuildNavigationContacts(Array.Empty<RadarContact>(), hullSpan);
             return _cache.GetGraph(_mapObstacleContacts, mapRange, from, clearance, _hazards.Sources).IsReachable(to);
+        }
+
+        public void FillReachability(Vector3 from, Vector3[] positions, bool[] reachable, float clearance,
+            ShipHullSpan hullSpan, Vector2Range mapRange)
+        {
+            BuildNavigationContacts(Array.Empty<RadarContact>(), hullSpan);
+            IShipPathGraph graph = _cache.GetGraph(_mapObstacleContacts, mapRange, from, clearance, _hazards.Sources);
+            graph.FillReachability(positions, reachable);
         }
 
         public bool IsPositionClear(

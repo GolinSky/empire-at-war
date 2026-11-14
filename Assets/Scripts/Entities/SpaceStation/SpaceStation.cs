@@ -46,6 +46,7 @@ namespace EmpireAtWar.Entities.SpaceStation
         public event System.Action Destroyed;
 
         public override string Id => GetType().Name;
+        public BoxCollider HullCollider => levelView.HullCollider;
 
         [Inject]
         private void Construct(

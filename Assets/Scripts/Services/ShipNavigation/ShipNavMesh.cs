@@ -4,6 +4,7 @@ using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.Timing;
 using Unity.Collections;
+using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -23,6 +24,8 @@ namespace EmpireAtWar.Services.ShipNavigation
         private float2 _entry;
         private int _originTriangle;
         private bool _hasSearched;
+        private NativeArray<Vector3> _reachabilityPoints;
+        private NativeArray<bool> _reachabilityResults;
         private readonly List<NavMeshCorner> _routeCorners = new List<NavMeshCorner>();
 
         public IReadOnlyList<NavMeshCorner> RouteCorners => _routeCorners;
@@ -124,6 +127,29 @@ namespace EmpireAtWar.Services.ShipNavigation
             return FindReachableGoal(new float2(position.x, position.z), out _) >= 0;
         }
 
+        public void FillReachability(Vector3[] positions, bool[] reachable)
+        {
+            BeginSearch();
+            if (!_reachabilityPoints.IsCreated || _reachabilityPoints.Length != positions.Length)
+            {
+                if (_reachabilityPoints.IsCreated) _reachabilityPoints.Dispose();
+                if (_reachabilityResults.IsCreated) _reachabilityResults.Dispose();
+                _reachabilityPoints = new NativeArray<Vector3>(positions.Length, Allocator.Persistent,
+                    NativeArrayOptions.UninitializedMemory);
+                _reachabilityResults = new NativeArray<bool>(positions.Length, Allocator.Persistent,
+                    NativeArrayOptions.UninitializedMemory);
+            }
+            _reachabilityPoints.CopyFrom(positions);
+            new NavMeshReachabilityJob
+            {
+                Layout = _mesh.Layout, OriginRegion = _originTriangle < 0 ? 0 : _mesh.Regions[_originTriangle],
+                Clearance = _clearance, Goals = _reachabilityPoints, Reachable = _reachabilityResults,
+                Obstacles = _obstacles, Buckets = _mesh.TriangleBuckets, Regions = _mesh.Regions,
+                Positions = _mesh.Positions, Triangles = _mesh.Triangles
+            }.Schedule(positions.Length, 64).Complete();
+            _reachabilityResults.CopyTo(reachable);
+        }
+
         private int FindReachableGoal(float2 goal, out float2 exit)
         {
             exit = goal;
@@ -196,6 +222,8 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         public void Dispose()
         {
+            if (_reachabilityPoints.IsCreated) _reachabilityPoints.Dispose();
+            if (_reachabilityResults.IsCreated) _reachabilityResults.Dispose();
             if (_search != null) _search.Dispose();
             if (_mesh != null) _mesh.Dispose();
             if (_obstacles.IsCreated) _obstacles.Dispose();

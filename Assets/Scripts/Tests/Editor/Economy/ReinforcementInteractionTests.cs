@@ -186,7 +186,9 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeOverlay : ISpawnAreaOverlay
         {
             public bool Hidden;
-            public void Show(PlayerId team, bool placingStructure) => Hidden = false;
+            public void Show(PlayerId team, UnitRequest request, Func<Vector3, bool> isPositionValid) => Hidden = false;
+            public Vector3 GetPlacementPosition(Vector3 position) => position;
+            public float GetPlacementSpacing(float minimum) => minimum;
             public void Hide() => Hidden = true;
         }
     }

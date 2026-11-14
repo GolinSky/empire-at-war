@@ -7,6 +7,7 @@ using VContainer;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Services.Stations;
+using EmpireAtWar.Entities.SpaceStation;
 
 namespace EmpireAtWar.Services.ShipNavigation
 {
@@ -26,6 +27,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         private readonly INotifier<BattleMap> _battleMap;
         private readonly IStationRegistry _stations;
         private readonly List<IMapObstacleContactSource> _sources = new List<IMapObstacleContactSource>();
+        private IReadOnlyList<StationObstacle> _stationObstacles = Array.Empty<StationObstacle>();
 
         public MapObstacleContactProvider(INotifier<BattleMap> battleMap, IStationRegistry stations)
         {
@@ -47,7 +49,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             _sources.Clear();
             _sources.AddRange(battleMap.Obstacles);
-            _sources.AddRange(battleMap.StationObstacles);
+            _stationObstacles = battleMap.StationObstacles;
         }
 
         public void CopyContacts(List<RadarContact> destination)
@@ -67,9 +69,16 @@ namespace EmpireAtWar.Services.ShipNavigation
                         "A registered map obstacle contact source is missing.");
                 }
 
-                if (source is StationObstacle station &&
-                    !_stations.TryGetLivingStation(station.Owner, out _)) continue;
                 destination.Add(source.Contact);
+            }
+
+            foreach (StationObstacle obstacle in _stationObstacles)
+            {
+                if (!_stations.TryGetLivingStation(obstacle.Owner, out var station)) continue;
+                // The map slot belongs to the main station, not a surviving second station elsewhere.
+                if (station.TryGetFacade(out ISecondStationFacade _)) continue;
+                IStationHullFacade hull = station.GetFacade<IStationHullFacade>();
+                destination.Add(obstacle.GetContact(hull.HullBottom, hull.HullTop));
             }
         }
     }

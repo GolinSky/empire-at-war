@@ -1,17 +1,64 @@
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Map.Generation;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using StationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
 
 namespace EmpireAtWar.Tests.Editor
 {
     [Category("Map")]
     public sealed class StationAreaClearanceTests
     {
+        [TestCase(FactionType.Republic)]
+        [TestCase(FactionType.Empire)]
+        [TestCase(FactionType.Rebellion)]
+        [TestCase(FactionType.Separatist)]
+        public void StationPrefab_BindsItsOnlySolidColliderAsNavigationHull(FactionType faction)
+        {
+            string path = $"Assets/Prefabs/Models/Stations/{faction}/{faction}SpaceStationView.prefab";
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            StationEntity station = prefab.GetComponent<StationEntity>();
+            Collider[] colliders = prefab.GetComponentsInChildren<Collider>(true);
+
+            Assert.That(colliders, Has.Length.EqualTo(1));
+            Assert.That(station.HullCollider, Is.SameAs(colliders[0]));
+            Assert.That(station.HullCollider.isTrigger, Is.False);
+            Assert.That(station.HullCollider.enabled, Is.True);
+        }
+
+        [Test]
+        public void StationFootprint_TracksColliderHeightChangesAtWorldPosition()
+        {
+            MapGenerationSettings settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(
+                "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset");
+            GameObject station = new GameObject("Station hull");
+            try
+            {
+                station.transform.position = new Vector3(0f, -40f, 0f);
+                BoxCollider hull = station.AddComponent<BoxCollider>();
+                hull.center = new Vector3(0f, 5f, 0f);
+                hull.size = new Vector3(100f, 20f, 100f);
+                var facade = new StationFootprintFacade(settings, FactionType.Republic, hull);
+
+                Assert.That(facade.NavigationRadius, Is.EqualTo(settings.GetStationRadius(FactionType.Republic)));
+                Assert.That(facade.HullBottom, Is.EqualTo(-45f));
+                Assert.That(facade.HullTop, Is.EqualTo(-25f));
+
+                hull.size = new Vector3(100f, 40f, 100f);
+                Assert.That(facade.HullBottom, Is.EqualTo(-55f));
+                Assert.That(facade.HullTop, Is.EqualTo(-15f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(station);
+            }
+        }
+
         [TestCase(MapSize.Small, MapNodeKind.MiningSite)]
         [TestCase(MapSize.Medium, MapNodeKind.MiningSite)]
         [TestCase(MapSize.Large, MapNodeKind.MiningSite)]
