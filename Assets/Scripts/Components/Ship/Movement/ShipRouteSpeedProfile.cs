@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,10 @@ namespace EmpireAtWar.Components.Ship.Movement
     {
         public const float SPEED_RAMP_TIME = 1.5f;
         private readonly List<SpeedPhase> _phases = new List<SpeedPhase>();
+        private readonly ShipRoute _route;
+        private readonly float _maxSpeed;
+        private readonly float _rotationSpeed;
+        private readonly float _rampTime;
         private readonly float[] _speedLimits;
         private readonly float[] _pieceStartTimes;
         private readonly float _startDistance;
@@ -22,6 +27,10 @@ namespace EmpireAtWar.Components.Ship.Movement
         public ShipRouteSpeedProfile(ShipRoute route, float maxSpeed, float rotationSpeed,
             float initialSpeed, float rampTime = SPEED_RAMP_TIME, float startDistance = 0f)
         {
+            _route = route;
+            _maxSpeed = maxSpeed;
+            _rotationSpeed = rotationSpeed;
+            _rampTime = rampTime;
             _startDistance = Mathf.Clamp(startDistance, 0f, route.Length);
             _distance = _startDistance;
             _initialSpeed = Mathf.Max(0f, initialSpeed);
@@ -31,7 +40,25 @@ namespace EmpireAtWar.Components.Ship.Movement
             int count = route.Pieces.Count;
             _speedLimits = new float[count];
             _pieceStartTimes = new float[count];
-            float[] boundary = new float[count + 1];
+            float[] boundary = ArrayPool<float>.Shared.Rent(count + 1);
+            try
+            {
+                Build(route, maxSpeed, rotationSpeed, boundary);
+            }
+            finally
+            {
+                ArrayPool<float>.Shared.Return(boundary);
+            }
+        }
+
+        internal bool Matches(ShipRoute route, float maxSpeed, float rotationSpeed, float initialSpeed,
+            float startDistance) => ReferenceEquals(_route, route) && _maxSpeed == maxSpeed &&
+            _rotationSpeed == rotationSpeed && _initialSpeed == initialSpeed && _startDistance == startDistance &&
+            _rampTime == SPEED_RAMP_TIME;
+
+        private void Build(ShipRoute route, float maxSpeed, float rotationSpeed, float[] boundary)
+        {
+            int count = route.Pieces.Count;
             int first = 0;
             for (int i = 0; i < count; i++)
             {
@@ -63,6 +90,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
 
             // Backward braking envelope, followed by forward acceleration feasibility.
+            boundary[count] = 0f;
             for (int i = count - 1; i >= first; i--)
             {
                 float length = PieceLength(route, i);

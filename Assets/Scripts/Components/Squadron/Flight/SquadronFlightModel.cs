@@ -28,13 +28,22 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         public void Spawn(IReadOnlyList<Vector3> positions, Vector3 forward)
         {
             int count = positions.Count;
-            _fighters = new FighterKinematics[count];
-            _alive = new bool[count];
-            _targets = new Vector3[count];
-            _speeds = new float[count];
+            if (count != _fighters.Length)
+            {
+                _fighters = new FighterKinematics[count];
+                _alive = new bool[count];
+                _targets = new Vector3[count];
+                _speeds = new float[count];
+                for (int i = 0; i < count; i++)
+                    _fighters[i] = new FighterKinematics(positions[i], forward, _data.CruiseSpeed);
+            }
+            else
+            {
+                for (int i = 0; i < count; i++)
+                    _fighters[i].Reset(positions[i], forward, _data.CruiseSpeed);
+            }
             for (int i = 0; i < count; i++)
             {
-                _fighters[i] = new FighterKinematics(positions[i], forward, _data.CruiseSpeed);
                 _alive[i] = true;
                 _targets[i] = positions[i] + forward * _data.LoiterRadius;
                 _speeds[i] = _data.CruiseSpeed;

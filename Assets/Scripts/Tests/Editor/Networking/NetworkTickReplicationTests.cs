@@ -102,12 +102,25 @@ namespace EmpireAtWar.Tests.Editor
 
             List<EntityKeyframe> keyframes = new List<EntityKeyframe>();
             for (ushort i = 0; i < 200; i++) keyframes.Add(new EntityKeyframe { Index = i });
-            List<EntityKeyframe[]> chunks = KeyframeChunker.Split(keyframes);
+            List<EntityKeyframe[]> chunks = new List<EntityKeyframe[]>();
+            KeyframeChunker.Split(keyframes, chunks);
 
             Assert.That(chunks, Has.Count.EqualTo(Mathf.CeilToInt(200f / KeyframeChunker.KEYFRAMES_PER_CHUNK)));
+            int expectedIndex = 0;
             foreach (EntityKeyframe[] chunk in chunks)
+            {
                 Assert.That(KeyframeChunker.HEADER_BYTES + chunk.Length * EntityKeyframeCodec.ENCODED_BYTES,
                     Is.LessThanOrEqualTo(NetworkTickSettings.CHUNK_BYTE_BUDGET));
+                foreach (EntityKeyframe keyframe in chunk) Assert.That(keyframe.Index, Is.EqualTo(expectedIndex++));
+            }
+
+            Assert.That(expectedIndex, Is.EqualTo(keyframes.Count));
+            EntityKeyframe[] sent = chunks[0];
+            keyframes.Clear();
+            KeyframeChunker.Split(keyframes, chunks);
+            Assert.That(chunks, Has.Count.EqualTo(1));
+            Assert.That(chunks[0], Is.SameAs(Array.Empty<EntityKeyframe>()));
+            Assert.That(sent[1].Index, Is.EqualTo(1));
         }
 
         [Test]

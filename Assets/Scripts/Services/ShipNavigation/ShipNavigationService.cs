@@ -38,6 +38,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         public float MovementDuration { get; }
         public bool IsStationary { get; }
         public bool IsDeferred { get; }
+        internal ShipRouteSpeedProfile SpeedProfile { get; }
 
         public ShipNavigationPlan(
             ShipRoute route,
@@ -55,6 +56,20 @@ namespace EmpireAtWar.Services.ShipNavigation
             MovementDuration = movementDuration;
             IsStationary = isStationary;
             IsDeferred = isDeferred;
+            SpeedProfile = null;
+        }
+
+        internal ShipNavigationPlan(
+            ShipRoute route,
+            Vector3 destination,
+            Vector3? detour,
+            float turnDuration,
+            ShipRouteSpeedProfile speedProfile,
+            bool isStationary = false,
+            bool isDeferred = false)
+            : this(route, destination, detour, turnDuration, speedProfile.Duration, isStationary, isDeferred)
+        {
+            SpeedProfile = speedProfile;
         }
     }
 
@@ -200,10 +215,10 @@ namespace EmpireAtWar.Services.ShipNavigation
                 _destinationRegistry.ReservePendingFinalPosition(registrationId, ToPoint(destination), requireClearance: false);
             else
                 _destinationRegistry.CommitActiveFinalPosition(registrationId, ToPoint(destination), requireClearance: false);
-            float movementDuration = new ShipRouteSpeedProfile(route, agent.NavigationSpeed,
-                agent.NavigationRotationSpeed, turnDuration > 0f ? 0f : agent.NavigationCurrentSpeed).Duration;
+            var speedProfile = new ShipRouteSpeedProfile(route, agent.NavigationSpeed,
+                agent.NavigationRotationSpeed, turnDuration > 0f ? 0f : agent.NavigationCurrentSpeed);
             // Turning plans must reach the component's brake/replan branch even during pursuit.
-            return new ShipNavigationPlan(route, destination, null, turnDuration, movementDuration,
+            return new ShipNavigationPlan(route, destination, null, turnDuration, speedProfile,
                 isStationary, reserveAsPending);
         }
 
@@ -256,16 +271,16 @@ namespace EmpireAtWar.Services.ShipNavigation
                             ToPoint(routePlan.Destination));
                     }
 
-                    float movementDuration = new ShipRouteSpeedProfile(routePlan.Route,
+                    var speedProfile = new ShipRouteSpeedProfile(routePlan.Route,
                         agent.NavigationSpeed, agent.NavigationRotationSpeed,
-                        routePlan.TurnDuration > 0f ? 0f : agent.NavigationCurrentSpeed).Duration;
+                        routePlan.TurnDuration > 0f ? 0f : agent.NavigationCurrentSpeed);
                     _cache.RemoveStationary(agent);
                     return new ShipNavigationPlan(
                         destination: routePlan.Destination,
                         detour: routePlan.Detour,
                         route: routePlan.Route,
                         turnDuration: routePlan.TurnDuration,
-                        movementDuration: movementDuration,
+                        speedProfile: speedProfile,
                         isStationary: false,
                         isDeferred: isDeferred);
                 }

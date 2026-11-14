@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace EmpireAtWar.Services.Networking
@@ -14,17 +15,23 @@ namespace EmpireAtWar.Services.Networking
         public static List<EntityKeyframe[]> Split(IReadOnlyList<EntityKeyframe> keyframes)
         {
             List<EntityKeyframe[]> chunks = new List<EntityKeyframe[]>();
+            Split(keyframes, chunks);
+            return chunks;
+        }
+
+        /// <summary>Replaces the destination's contents. Nonempty chunk arrays belong to the resulting messages.</summary>
+        public static void Split(IReadOnlyList<EntityKeyframe> keyframes, List<EntityKeyframe[]> chunks)
+        {
+            chunks.Clear();
             int start = 0;
             do
             {
-                int count = System.Math.Min(KEYFRAMES_PER_CHUNK, keyframes.Count - start);
-                EntityKeyframe[] chunk = new EntityKeyframe[count];
+                int count = Math.Min(KEYFRAMES_PER_CHUNK, keyframes.Count - start);
+                EntityKeyframe[] chunk = count == 0 ? Array.Empty<EntityKeyframe>() : new EntityKeyframe[count];
                 for (int i = 0; i < count; i++) chunk[i] = keyframes[start + i];
                 chunks.Add(chunk);
                 start += count;
             } while (start < keyframes.Count);
-
-            return chunks;
         }
     }
 }

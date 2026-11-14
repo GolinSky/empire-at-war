@@ -1,3 +1,4 @@
+using System.Reflection;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Services.ShipNavigation;
 using DG.Tweening;
@@ -9,6 +10,42 @@ namespace EmpireAtWar.Tests.Movement
     [Category("Navigation")]
     public sealed class ShipRotationKinematicsTests
     {
+        [TestCase(10f, 90f, 0f, 0f, false, true)]
+        [TestCase(0f, 90f, 0f, 0f, false, false)]
+        [TestCase(10f, 45f, 0f, 0f, false, false)]
+        [TestCase(10f, 90f, 2f, 0f, false, false)]
+        [TestCase(10f, 90f, 0f, 2f, false, false)]
+        [TestCase(10f, 90f, 0f, 0f, true, false)]
+        public void PlayPath_ReusesProfileOnlyWhenInputsMatch(float plannedSpeed, float plannedRotation,
+            float plannedInitialSpeed, float plannedStartDistance, bool differentRoute, bool expectReuse)
+        {
+            var root = new GameObject("Moving ship");
+            var motion = new ShipMovementTweenPlayer(root.transform, root.transform,
+                root.AddComponent<LineRenderer>(), Ease.Linear);
+            try
+            {
+                Vector3 destination = Vector3.forward * 50f;
+                var route = new ShipRoute(new[] { ShipRoutePiece.Line(Vector3.zero, destination) });
+                ShipRoute plannedRoute = differentRoute
+                    ? new ShipRoute(new[] { ShipRoutePiece.Line(Vector3.zero, destination) }) : route;
+                var planned = new ShipRouteSpeedProfile(plannedRoute, plannedSpeed, plannedRotation,
+                    plannedInitialSpeed, startDistance: plannedStartDistance);
+
+                motion.PlayPath(new ShipNavigationPlan(route, destination, null, 0f, planned),
+                    10f, 90f, 90f, 0f, null);
+
+                var active = (ShipRouteSpeedProfile)typeof(ShipMovementTweenPlayer)
+                    .GetField("_speedProfile", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(motion);
+                Assert.That(ReferenceEquals(active, planned), Is.EqualTo(expectReuse));
+                Assert.That(active.Matches(route, 10f, 90f, 0f, 0f), Is.True);
+            }
+            finally
+            {
+                motion.Release();
+                Object.DestroyImmediate(root);
+            }
+        }
+
         [TestCase(0.25f)]
         [TestCase(0.4f)]
         public void RouteSpeed_ReductionBrakesWithoutSnappingSpeed(float coefficient)

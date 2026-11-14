@@ -19,6 +19,7 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly IReinforcementZonesSystem _zones;
 
         private readonly UnitOrderSettings _settings;
+        private readonly List<FormationPoint> _compactSlots = new List<FormationPoint>();
 
         public event Action<UnitOrder> OrderIssued;
         /// <summary>Every attack order (players and AI) with its receivers; the online host relays the target.</summary>
@@ -287,7 +288,7 @@ namespace EmpireAtWar.Services.UnitOrders
         private static bool IsAlive(IEntity entity) =>
             !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits;
 
-        private static List<Vector3> Compact<TCommand>(IReadOnlyList<TCommand> commands,
+        private List<Vector3> Compact<TCommand>(IReadOnlyList<TCommand> commands,
             Vector3 point, Func<TCommand, Vector3> position, Func<TCommand, float> radius,
             float occupiedRadius = 0f)
         {
@@ -301,7 +302,7 @@ namespace EmpireAtWar.Services.UnitOrders
             }
             List<FormationPoint> destinations = new List<FormationPoint>();
             FormationModel.CalculateCompactDestinations(positions, radii,
-                ToPoint(point), destinations, occupiedRadius);
+                ToPoint(point), destinations, occupiedRadius, _compactSlots);
             List<Vector3> slots = new List<Vector3>(destinations.Count);
             for (int i = 0; i < destinations.Count; i++)
                 slots.Add(new Vector3(destinations[i].X, position(commands[i]).y,

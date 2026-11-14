@@ -79,7 +79,8 @@ namespace EmpireAtWar.Components.Squadrons.Flight
                 fighter.ClearTrails();
             }
 
-            _poseSlots = new int[fighters.Count];
+            if (_poseSlots == null || _poseSlots.Length != fighters.Count)
+                _poseSlots = new int[fighters.Count];
             for (int i = 0; i < fighters.Count; i++)
             {
                 FighterView fighter = fighters[i];

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Buffers;
 using System;
 
 namespace EmpireAtWar.Components.Movement.Formation
@@ -100,7 +101,17 @@ namespace EmpireAtWar.Components.Movement.Formation
             IReadOnlyList<float> radii,
             FormationPoint targetCenter,
             IList<FormationPoint> destinations,
-            float occupiedRadius = 0f)
+            float occupiedRadius = 0f) =>
+            CalculateCompactDestinations(positions, radii, targetCenter, destinations, occupiedRadius,
+                new List<FormationPoint>());
+
+        internal static void CalculateCompactDestinations(
+            IReadOnlyList<FormationPoint> positions,
+            IReadOnlyList<float> radii,
+            FormationPoint targetCenter,
+            IList<FormationPoint> destinations,
+            float occupiedRadius,
+            List<FormationPoint> slots)
         {
             if (positions == null)
             {
@@ -143,38 +154,32 @@ namespace EmpireAtWar.Components.Movement.Formation
                 destinations.Add(targetCenter);
             }
 
-            bool[] assignedPositions = new bool[positions.Count];
-            int assignedCount = 0;
-            if (occupiedRadius <= 0f)
-            {
-                int centerIndex = FindClosestPosition(positions, targetCenter, null);
-                assignedPositions[centerIndex] = true;
-                assignedCount = 1;
-            }
-
+            int assignedCount = occupiedRadius <= 0f ? 1 : 0;
             FormationPoint center = CalculateCenter(positions);
             double heading = Math.Atan2(targetCenter.Z - center.Z, targetCenter.X - center.X);
-            List<FormationPoint> availableSlots =
-                BuildCompactSlots(
-                    targetCenter,
-                    Math.Max(maximumRadius * 2f, occupiedRadius + maximumRadius + 0.1f),
-                    positions.Count - assignedCount,
-                    heading);
-            for (int assignmentIndex = assignedCount;
-                 assignmentIndex < positions.Count;
-                 assignmentIndex++)
+            BuildCompactSlots(slots, targetCenter,
+                Math.Max(maximumRadius * 2f, occupiedRadius + maximumRadius + 0.1f),
+                positions.Count - assignedCount, heading);
+            int slotOffset = positions.Count;
+            bool[] assigned = ArrayPool<bool>.Shared.Rent(slotOffset + slots.Count);
+            try
             {
-                int positionIndex = FindClosestPosition(
-                    positions,
-                    targetCenter,
-                    assignedPositions);
-                int slotIndex = FindClosestPosition(
-                    availableSlots,
-                    positions[positionIndex],
-                    null);
-                destinations[positionIndex] = availableSlots[slotIndex];
-                assignedPositions[positionIndex] = true;
-                availableSlots.RemoveAt(slotIndex);
+                Array.Clear(assigned, 0, slotOffset + slots.Count);
+                if (assignedCount != 0)
+                    assigned[FindClosestPosition(positions, targetCenter, assigned, 0)] = true;
+
+                for (int assignmentIndex = assignedCount; assignmentIndex < positions.Count; assignmentIndex++)
+                {
+                    int positionIndex = FindClosestPosition(positions, targetCenter, assigned, 0);
+                    int slotIndex = FindClosestPosition(slots, positions[positionIndex], assigned, slotOffset);
+                    destinations[positionIndex] = slots[slotIndex];
+                    assigned[positionIndex] = true;
+                    assigned[slotOffset + slotIndex] = true;
+                }
+            }
+            finally
+            {
+                ArrayPool<bool>.Shared.Return(assigned);
             }
         }
 
@@ -203,13 +208,14 @@ namespace EmpireAtWar.Components.Movement.Formation
                 targetCenter.Z + zOffset);
         }
 
-        private static List<FormationPoint> BuildCompactSlots(
+        private static void BuildCompactSlots(
+            List<FormationPoint> slots,
             FormationPoint center,
             float spacing,
             int requiredCount,
             double heading)
         {
-            List<FormationPoint> slots = new List<FormationPoint>();
+            slots.Clear();
             for (int ring = 1; slots.Count < requiredCount; ring++)
             {
                 int slotCount = HEXAGONAL_RING_SIDE_COUNT * ring;
@@ -222,20 +228,19 @@ namespace EmpireAtWar.Components.Movement.Formation
                         center.Z + (float)Math.Sin(angle) * radius));
                 }
             }
-
-            return slots;
         }
 
         private static int FindClosestPosition(
             IReadOnlyList<FormationPoint> positions,
             FormationPoint target,
-            IReadOnlyList<bool> excludedPositions)
+            bool[] excludedPositions,
+            int offset)
         {
             int closestIndex = -1;
             float closestDistance = float.PositiveInfinity;
             for (int i = 0; i < positions.Count; i++)
             {
-                if (excludedPositions != null && excludedPositions[i])
+                if (excludedPositions[offset + i])
                 {
                     continue;
                 }

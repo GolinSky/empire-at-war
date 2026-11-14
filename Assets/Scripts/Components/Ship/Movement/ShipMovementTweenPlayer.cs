@@ -164,7 +164,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                 // The hull turns in place before it moves, so it starts the route from rest.
                 _currentSpeed = 0f;
             }
-            RebuildSpeedProfile();
+            RebuildSpeedProfile(plan.SpeedProfile);
             FindNextTurn();
             _currentPathTangent = null;
             DisplayRoute(plan.Trajectory);
@@ -282,10 +282,13 @@ namespace EmpireAtWar.Components.Ship.Movement
             completed?.Invoke();
         }
 
-        private void RebuildSpeedProfile()
+        private void RebuildSpeedProfile(ShipRouteSpeedProfile planned = null)
         {
-            _speedProfile = new ShipRouteSpeedProfile(_route, _routeSpeed, _rotationSpeed,
-                _currentSpeed, startDistance: _routeDistance);
+            _speedProfile = planned != null && planned.Matches(_route, _routeSpeed, _rotationSpeed,
+                _currentSpeed, _routeDistance)
+                ? planned
+                : new ShipRouteSpeedProfile(_route, _routeSpeed, _rotationSpeed,
+                    _currentSpeed, startDistance: _routeDistance);
             _profileTime = 0f;
             _profilePhaseIndex = 0;
         }

@@ -22,6 +22,7 @@ namespace EmpireAtWar.Services.Networking
         private readonly Dictionary<long, Pose> _previousPoses = new Dictionary<long, Pose>();
         private readonly Dictionary<long, double> _previousTimes = new Dictionary<long, double>();
         private readonly List<EntityKeyframe> _pending = new List<EntityKeyframe>();
+        private readonly List<EntityKeyframe[]> _chunks = new List<EntityKeyframe[]>();
         private readonly List<IEntity> _pendingSpawns = new List<IEntity>();
         private readonly List<EntityDespawnMessage> _despawns = new List<EntityDespawnMessage>();
         private readonly Dictionary<long, IEntity> _handedOver = new Dictionary<long, IEntity>();
@@ -57,18 +58,19 @@ namespace EmpireAtWar.Services.Networking
             if (due == 0) return;
 
             CollectKeyframes(now);
-            List<EntityKeyframe[]> chunks = KeyframeChunker.Split(_pending);
-            for (int i = 0; i < chunks.Count; i++)
+            KeyframeChunker.Split(_pending, _chunks);
+            for (int i = 0; i < _chunks.Count; i++)
             {
                 output.Keyframes.Add(new EntityKeyframesMessage
                 {
                     Tick = _clock.Tick,
                     Time = now,
                     ChunkIndex = (byte)i,
-                    ChunkCount = (byte)chunks.Count,
-                    Keyframes = chunks[i]
+                    ChunkCount = (byte)_chunks.Count,
+                    Keyframes = _chunks[i]
                 });
             }
+            _chunks.Clear();
         }
 
         /// <summary>A joining/reconnecting client gets spawns for every live entity and a full keyframe set.</summary>

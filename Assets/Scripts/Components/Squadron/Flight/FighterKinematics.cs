@@ -22,9 +22,15 @@ namespace EmpireAtWar.Components.Squadrons.Flight
 
         public FighterKinematics(Vector3 position, Vector3 forward, float speed)
         {
+            Reset(position, forward, speed);
+        }
+
+        internal void Reset(Vector3 position, Vector3 forward, float speed)
+        {
             Position = position;
             Forward = Vector3.Normalize(forward);
             Speed = speed;
+            Bank = 0f;
         }
 
         public void Step(Vector3 target, float desiredSpeed, IFighterFlightData data, float deltaTime)

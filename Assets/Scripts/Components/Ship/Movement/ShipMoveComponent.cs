@@ -428,7 +428,8 @@ namespace EmpireAtWar.Components.Ship.Movement
                 QueuePlan(destination, false);
                 return;
             }
-            Model.Accept(plan.Destination.ToNumerics());
+            Vector3 plannedDestination = plan.Destination;
+            Model.Accept(plannedDestination.ToNumerics());
             _motion.PlayPath(plan, Model.Speed, Model.RotationSpeed,
                 Model.TurnAcceleration, Model.BodyRotationMaxAngle, () =>
                 {
@@ -446,7 +447,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                     }
                     Model.Arrive(transform.position.ToNumerics());
                     if (!_shipNavigationService.IsPositionClear(this,
-                            plan.Destination, NavigationRadius))
+                            plannedDestination, NavigationRadius))
                     {
                         if (_hasArrivalCorrection)
                         {
@@ -454,7 +455,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                             return;
                         }
                         _hasArrivalCorrection = true;
-                        QueuePlan(plan.Destination, false);
+                        QueuePlan(plannedDestination, false);
                     }
                 });
         }

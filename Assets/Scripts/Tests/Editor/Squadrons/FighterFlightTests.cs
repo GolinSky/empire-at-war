@@ -1,5 +1,6 @@
 using System;
 using System.Numerics;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Squadrons.Flight;
 using NUnit.Framework;
 
@@ -12,6 +13,27 @@ namespace EmpireAtWar.Tests.Editor
         private const float TURN_RATE = 90f;
 
         private readonly TestFlightData _data = new TestFlightData();
+
+        [Test]
+        public void Spawn_WithSameCountReusesFighterAndResetsItsState()
+        {
+            var model = new SquadronFlightModel(_data, new CombatModifiers());
+            model.Spawn(new[] { Vector3.Zero }, Vector3.UnitZ);
+            FighterKinematics fighter = model.Get(0);
+            model.SetSteering(0, new Vector3(100f, 0f, 0f), _data.CombatSpeed);
+            model.Step(DELTA_TIME);
+            Assert.That(fighter.Bank, Is.LessThan(0f));
+            model.Kill(0);
+
+            model.Spawn(new[] { Vector3.One }, Vector3.UnitX * 2f);
+
+            Assert.That(model.Get(0), Is.SameAs(fighter));
+            Assert.That(model.IsAlive(0), Is.True);
+            Assert.That(fighter.Position, Is.EqualTo(Vector3.One));
+            Assert.That(fighter.Forward, Is.EqualTo(Vector3.UnitX));
+            Assert.That(fighter.Speed, Is.EqualTo(_data.CruiseSpeed));
+            Assert.That(fighter.Bank, Is.Zero);
+        }
 
         [Test]
         public void Step_LimitsTurnRate()

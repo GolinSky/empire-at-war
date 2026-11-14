@@ -111,6 +111,9 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(slowPlan.MovementDuration, Is.GreaterThan(fastPlan.MovementDuration));
             Assert.That(slowPlan.MovementDuration, Is.GreaterThan(slowPlan.Route.Length / slow.NavigationSpeed));
             Assert.That(fastPlan.MovementDuration, Is.GreaterThan(fastPlan.Route.Length / fast.NavigationSpeed));
+            Assert.That(fastPlan.SpeedProfile.Duration, Is.EqualTo(fastPlan.MovementDuration));
+            Assert.That(fastPlan.SpeedProfile.Matches(fastPlan.Route, fast.NavigationSpeed,
+                fast.NavigationRotationSpeed, fast.NavigationCurrentSpeed, 0f), Is.True);
         }
 
         [Test]
