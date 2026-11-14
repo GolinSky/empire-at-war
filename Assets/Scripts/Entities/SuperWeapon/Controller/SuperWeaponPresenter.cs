@@ -13,7 +13,6 @@ using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
-using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Controllers.Factions;
@@ -219,13 +218,12 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             }
             _targeting.Cancel();
             _commands.Submit(new FireSuperWeaponCommand(_localPlayer.Id, type, target.Id));
-            _interfaceAudio.PlayAnnouncement(_interfaceData.GetOrbitalFiring(type));
         }
 
-        /// <summary>Warns the local side of an incoming hostile strike; its own firing is announced on submit.</summary>
-        private void HandleFired(SuperWeaponType type, IEntity target)
+        /// <summary>Announces accepted local firing and warns the local side of incoming hostile strikes.</summary>
+        private void HandleFired(PlayerId issuer, SuperWeaponType type, IEntity target)
         {
-            if (!_isBattleRunning || !_localPlayer.IsFriendly(target.Owner)) return;
+            if (!_isBattleRunning || issuer != _localPlayer.Id && !_localPlayer.IsFriendly(target.Owner)) return;
             _interfaceAudio.PlayAnnouncement(_interfaceData.GetOrbitalFiring(type));
         }
 
@@ -290,7 +288,6 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
 
         public void Tick()
         {
-            _model.Tick(Time.deltaTime);
             if (_view == null) return;
             _view.SetBattleAvailable(!_isBattleEnded);
             if (_isBattleEnded)

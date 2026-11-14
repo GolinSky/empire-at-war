@@ -50,6 +50,7 @@ using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Services.Factory;
 using EmpireAtWar.Services.Settings;
@@ -83,6 +84,7 @@ using global::VContainer.Unity;
 using Object = UnityEngine.Object;
 using ShipEntity = EmpireAtWar.Ship.Ship;
 using ILifecycleInitializable = EmpireAtWar.Lifecycle.IInitializable;
+using ILifecycleTickable = EmpireAtWar.Lifecycle.ITickable;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -1139,6 +1141,9 @@ namespace EmpireAtWar.Tests.Editor
                     ? typeof(EnemySuperWeaponController)
                     : typeof(SuperWeaponPresenter);
                 Assert.That(player.Container.TryGetRegistration(superWeaponDriver, out _), Is.EqualTo(superWeapons));
+                Assert.That(player.Container.Resolve<IReadOnlyList<ILifecycleTickable>>()
+                    .OfType<SuperWeaponCooldownService>().Count(), Is.EqualTo(superWeapons ? 1 : 0),
+                    "Local humans and AI must each have exactly one simulation cooldown ticker.");
                 PlayerSlot slot = player.Container.Resolve<PlayerSlot>();
                 Vector3 origin = map.GetStationPosition(slot.Id);
                 ShipEntity ship = player.Container.Resolve<ShipFactory>().Create(slot.Id, ShipType.Acclamator, origin);

@@ -45,7 +45,7 @@ namespace EmpireAtWar.Services.BattleNotifications
             _model.OnStateChanged -= HandleStateChanged;
         }
 
-        private void HandleFired(SuperWeaponType type, IEntity target)
+        private void HandleFired(PlayerId issuer, SuperWeaponType type, IEntity target)
         {
             if (!_local.IsFriendly(target.Owner)) return;
             _notifications.Post(BattleNotificationPriority.Urgent, $"Incoming {WeaponName(type)} strike on {TargetName(target)}",

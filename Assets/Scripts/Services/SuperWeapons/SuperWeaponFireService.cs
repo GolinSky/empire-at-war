@@ -40,7 +40,7 @@ namespace EmpireAtWar.Services.SuperWeapons
         private readonly List<SuperWeaponStun> _stuns = new List<SuperWeaponStun>();
         private readonly List<IEntity> _areaTargets = new List<IEntity>();
 
-        public event Action<SuperWeaponType, IEntity> Fired;
+        public event Action<PlayerId, SuperWeaponType, IEntity> Fired;
 
         public IReadOnlyList<SuperWeaponSalvo> Salvos => _salvos;
         public IReadOnlyList<SuperWeaponStun> Stuns => _stuns;
@@ -128,7 +128,7 @@ namespace EmpireAtWar.Services.SuperWeapons
                    target.TryGetFacade(out IHealthFacade _);
         }
 
-        public void Fire(SuperWeaponType type, IEntity target)
+        public void Fire(PlayerId issuer, SuperWeaponType type, IEntity target)
         {
             Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
             Vector3 originPosition = _origin.GetFirePosition(targetPosition);
@@ -136,7 +136,7 @@ namespace EmpireAtWar.Services.SuperWeapons
             origin.transform.SetPositionAndRotation(originPosition,
                 Quaternion.LookRotation(targetPosition - originPosition));
             _salvos.Add(new SuperWeaponSalvo(type, target, _data.GetProfile(type), origin.transform));
-            Fired?.Invoke(type, target);
+            Fired?.Invoke(issuer, type, target);
         }
 
         public void Tick()

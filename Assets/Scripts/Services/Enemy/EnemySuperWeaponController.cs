@@ -73,7 +73,6 @@ namespace EmpireAtWar.Services.Enemy
         public void Tick()
         {
             AdvanceCharging(Time.deltaTime);
-            _model.Tick(Time.deltaTime);
             if (_hasFireDelay) _fireDelayLeft -= Time.deltaTime;
 
             _decisionTimer -= Time.deltaTime;
@@ -168,7 +167,7 @@ namespace EmpireAtWar.Services.Enemy
             if (target == null) return false;
 
             _model.Consume(type);
-            _superWeaponFireService.Fire(type, target);
+            _superWeaponFireService.Fire(_owner.Id, type, target);
             Debug.Log($"[EnemyAI:SuperWeapon] Fired {type} at {target.HealthModel.ShipClass} ({target.Id})");
             return true;
         }

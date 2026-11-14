@@ -31,7 +31,7 @@ namespace EmpireAtWar.Services.PlayerCommands
         {
             if (!_model.CanFire(type) || !_fireService.CanTarget(_owner.Id, target)) return;
             _model.Consume(type);
-            _fireService.Fire(type, target);
+            _fireService.Fire(_owner.Id, type, target);
         }
     }
 }

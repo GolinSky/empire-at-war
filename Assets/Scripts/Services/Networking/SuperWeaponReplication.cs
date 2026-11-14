@@ -43,14 +43,14 @@ namespace EmpireAtWar.Services.Networking
             else NetworkClient.UnregisterHandler<SuperWeaponFiredMessage>();
         }
 
-        private void OnFired(SuperWeaponType type, IEntity target)
+        private void OnFired(PlayerId issuer, SuperWeaponType type, IEntity target)
         {
-            if (_online.HasBegun) HostBroadcast.ToClients(_online, new SuperWeaponFiredMessage { Type = type, TargetId = target.Id });
+            if (_online.HasBegun) HostBroadcast.ToClients(_online, new SuperWeaponFiredMessage { Issuer = issuer, Type = type, TargetId = target.Id });
         }
 
         private void OnHostFired(SuperWeaponFiredMessage message)
         {
-            if (_entities.TryGetEntity(message.TargetId, out IEntity target)) _fire.Fire(message.Type, target);
+            if (_entities.TryGetEntity(message.TargetId, out IEntity target)) _fire.Fire(message.Issuer, message.Type, target);
         }
     }
 }

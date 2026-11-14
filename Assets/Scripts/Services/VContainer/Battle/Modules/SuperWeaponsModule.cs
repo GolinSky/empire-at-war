@@ -34,6 +34,7 @@ namespace EmpireAtWar.Services.VContainer
 
         public void ConfigurePlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot, bool runsAi)
         {
+            builder.Register<SuperWeaponCooldownService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             if (!runsAi)
                 builder.Register<HumanSuperWeaponCommandHandler>(Lifetime.Singleton).AsImplementedInterfaces();
             else if (player.Has(BattleFeatures.Economy))

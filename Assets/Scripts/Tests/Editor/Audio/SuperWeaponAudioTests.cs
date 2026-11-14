@@ -219,6 +219,9 @@ namespace EmpireAtWar.Tests.Editor
                 MethodInfo handler = typeof(SuperWeaponPresenter).GetMethod("HandleStateChanged",
                     BindingFlags.NonPublic | BindingFlags.Instance);
                 model.OnStateChanged += (weapon, state) => handler.Invoke(presenter, new object[] { weapon, state });
+                MethodInfo fired = typeof(SuperWeaponPresenter).GetMethod("HandleFired",
+                    BindingFlags.NonPublic | BindingFlags.Instance);
+                fire.Fired += (issuer, weapon, entity) => fired.Invoke(presenter, new object[] { issuer, weapon, entity });
 
                 model.StartCharging(type);
                 model.CompleteCharging(type);
@@ -246,11 +249,12 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(fire.Shots, Is.EqualTo(1));
                 Assert.That(model.CanFire(type), Is.False);
 
-                MethodInfo fired = typeof(SuperWeaponPresenter).GetMethod("HandleFired",
-                    BindingFlags.NonPublic | BindingFlags.Instance);
-                fired.Invoke(presenter, new object[] { type, new OwnedEntity(TestPlayers.Enemy) });
-                Assert.That(audio.Clips, Has.Count.EqualTo(3), "Own strikes are announced on submit only.");
-                fired.Invoke(presenter, new object[] { type, new OwnedEntity(TestPlayers.Human) });
+                submit.Invoke(presenter, new object[] { type, target });
+                Assert.That(fire.Shots, Is.EqualTo(1));
+                Assert.That(audio.Clips, Has.Count.EqualTo(3), "A host-rejected cooldown command must not announce firing.");
+                fired.Invoke(presenter, new object[] { TestPlayers.Enemy, type, new OwnedEntity(TestPlayers.Enemy) });
+                Assert.That(audio.Clips, Has.Count.EqualTo(3), "Unrelated strikes must not announce local firing.");
+                fired.Invoke(presenter, new object[] { TestPlayers.Enemy, type, new OwnedEntity(TestPlayers.Human) });
                 Assert.That(audio.Clips, Is.EqualTo(new[] { bought, ready, firing, firing }),
                     "An incoming enemy strike warns the local player.");
             }
@@ -329,9 +333,13 @@ namespace EmpireAtWar.Tests.Editor
         {
             public bool Accept { get; set; }
             public int Shots { get; private set; }
-            public event Action<SuperWeaponType, IEntity> Fired { add { } remove { } }
+            public event Action<PlayerId, SuperWeaponType, IEntity> Fired;
             public bool CanTarget(PlayerId owner, IEntity target) => Accept;
-            public void Fire(SuperWeaponType type, IEntity target) => Shots++;
+            public void Fire(PlayerId issuer, SuperWeaponType type, IEntity target)
+            {
+                Shots++;
+                Fired?.Invoke(issuer, type, target);
+            }
         }
 
         private sealed class OwnedEntity : IEntity

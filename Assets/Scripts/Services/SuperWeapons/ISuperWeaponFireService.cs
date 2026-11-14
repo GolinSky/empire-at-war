@@ -7,11 +7,11 @@ namespace EmpireAtWar.Services.SuperWeapons
 {
     public interface ISuperWeaponFireService
     {
-        /// <summary>Raised for every side's firing, so the targeted side can be warned.</summary>
-        event Action<SuperWeaponType, IEntity> Fired;
+        /// <summary>Raised for accepted firing, so the firing and targeted sides can be notified.</summary>
+        event Action<PlayerId, SuperWeaponType, IEntity> Fired;
 
         bool CanTarget(PlayerId owner, IEntity target);
 
-        void Fire(SuperWeaponType type, IEntity target);
+        void Fire(PlayerId issuer, SuperWeaponType type, IEntity target);
     }
 }

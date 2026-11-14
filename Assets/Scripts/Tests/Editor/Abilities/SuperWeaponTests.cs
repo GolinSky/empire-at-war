@@ -89,9 +89,9 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class RecordingSuperWeaponFireService : ISuperWeaponFireService
         {
             public IEntity Target { get; private set; }
-            public event Action<SuperWeaponType, IEntity> Fired { add { } remove { } }
+            public event Action<PlayerId, SuperWeaponType, IEntity> Fired { add { } remove { } }
             public bool CanTarget(PlayerId owner, IEntity target) => target.Owner != owner;
-            public void Fire(SuperWeaponType type, IEntity target) => Target = target;
+            public void Fire(PlayerId issuer, SuperWeaponType type, IEntity target) => Target = target;
         }
 
         [Test]
