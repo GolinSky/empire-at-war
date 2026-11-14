@@ -23,7 +23,7 @@ namespace EmpireAtWar.Components.Ship.Audio
 
         void HandleAbilityChanged();
 
-        void PlayWeaponShot(WeaponProfile profile, Transform muzzle);
+        void PlayWeaponShot(WeaponProfile profile, Transform muzzle, float shotInterval);
 
         void PlayHyperSpace();
 

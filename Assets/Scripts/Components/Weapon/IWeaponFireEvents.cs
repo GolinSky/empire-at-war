@@ -6,6 +6,6 @@ namespace EmpireAtWar.Components.Weapon
 {
     public interface IWeaponFireEvents
     {
-        event Action<WeaponProfile, Transform> ShotEmitted;
+        event Action<WeaponProfile, Transform, float> ShotEmitted;
     }
 }

@@ -128,7 +128,7 @@ namespace EmpireAtWar.Components.Weapon
 
             int targetGeneration = target.Generation;
             hardPoint.EmitScheduledShot(targetGroup, target, hardPointGeneration);
-            if (!hardPoint.IsEmitting(hardPointGeneration))
+            if (shots == 1 || !hardPoint.IsEmitting(hardPointGeneration))
             {
                 // An ion disable interrupts the salvo; the sequence must end or the hardpoint stays busy forever.
                 hardPoint.StopEmitting(hardPointGeneration);
@@ -161,6 +161,20 @@ namespace EmpireAtWar.Components.Weapon
                 throw new InvalidOperationException("Weapon must be registered before selecting a target.");
 
             _targetSelection.Queue(weapon, hardPoint, ownerGeneration);
+        }
+
+        public void RetimeSequences(IWeaponPresenter owner)
+        {
+            float now = Time.time;
+            for (int i = 0; i < _sequences.Count; i++)
+            {
+                SequenceRecord sequence = _sequences[i];
+                if (!ReferenceEquals(sequence.Owner, owner)) continue;
+                float ratio = sequence.HardPoint.PendingShotIntervalRatio;
+                if (ratio == 1f) continue;
+                sequence.NextTime = now + Mathf.Max(0f, sequence.NextTime - now) * ratio;
+                _sequences[i] = sequence;
+            }
         }
 
         public void CancelSequence(WeaponHardPoint hardPoint, int generation)
@@ -468,6 +482,11 @@ namespace EmpireAtWar.Components.Weapon
                 return;
             }
             sequence.ShotsRemaining--;
+            if (sequence.ShotsRemaining == 0)
+            {
+                sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);
+                return;
+            }
             sequence.NextTime = now + sequence.HardPoint.DelayBetweenShots;
             sequence.EarliestFrame = frame + 1;
             sequence.EventSequence = ++_nextEventSequence;

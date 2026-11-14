@@ -101,11 +101,11 @@ namespace EmpireAtWar.Services.Audio
         public bool TryHoldEngine(ShipSfxHandle ship, SfxProfile loop, Vector3 position, float volumeScale, float pitch) =>
             Request(ship.Owner, ship, loop, position, null, true, volumeScale, pitch, LOOP_LEASE, true);
 
-        public bool TryPlayWeaponShot(ShipSfxHandle ship, WeaponProfile weapon, Transform muzzle)
+        public bool TryPlayWeaponShot(ShipSfxHandle ship, WeaponProfile weapon, Transform muzzle, float shotInterval)
         {
             if (_disposed || Time.timeScale == 0f || muzzle == null) return false;
             SfxProfile sound = _data.GetWeapon(weapon.WeaponType, weapon.Family);
-            float interval = weapon.ShotInterval / Time.timeScale;
+            float interval = shotInterval / Time.timeScale;
             bool loop = sound.Loop && weapon.ShotsPerSalvo > 1 && interval <= MAX_WEAPON_LOOP_INTERVAL;
             float pitch = UnityEngine.Random.Range(0.96f, 1.04f);
             return Request(ship.Owner, ship, sound, muzzle.position, muzzle, loop, 1f, pitch,

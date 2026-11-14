@@ -230,8 +230,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
         displayName: Boost Weapon Power
-        description: Reduce weapon reload times by 90%. Movement speed and shield
-          regeneration fall to 50% for 7 s. Recovers in 50 s.
+        description: "Weapons fire 10\xD7 faster and reload 90% faster. Movement
+          speed and shield regeneration fall to 50% for 7 s. Recovers in 50 s."
         duration: 7
         recoveryDelay: 50
         canCancel: 1
@@ -688,6 +688,7 @@ MonoBehaviour:
           speedMultiplier: 0.5
           shieldRegenMultiplier: 0.5
           damageTakenMultiplier: 1
+        shotIntervalMultiplier: 0.1
     - rid: 7607833764655792208
       type: {class: AssaultSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}

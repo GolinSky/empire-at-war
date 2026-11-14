@@ -153,8 +153,7 @@ MonoBehaviour:
         description: Fast CIS assault frigate, formerly the Techno Union Frigate.
           Four twin turbolasers, seven turbolasers, two lasers, four point-defense
           cannons and three ion cannons deliver strong offensive firepower. Thin
-          shields favor hit-and-run attacks. Boost Weapon Power temporarily shortens
-          weapon reloads.
+          shields favor hit-and-run attacks. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster.
         role: Cruiser / Fast assault / Hit-and-run
         iconKey: f7655a1be55b2a74aa984b640ec46f5d:21300000
         isHero: 0
@@ -245,8 +244,7 @@ MonoBehaviour:
         description: 2,800 hull and 2,500 shields with cruiser shield regeneration.
           Eight dual turbolaser batteries, six concussion missile launchers and one
           dual ion cannon battery, all medium caliber. All 17 mounts are targetable,
-          including engines and shield generator. Boost Weapon Power cuts weapon
-          reload time by 90% and halves speed and shield regeneration for 7 s. Recovers
+          including engines and shield generator. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration for 7 s. Recovers
           in 50 s.
         role: Cruiser / Missile support
         iconKey: cc08d3ef304a00a4999b7602cc4d17d0:21300000

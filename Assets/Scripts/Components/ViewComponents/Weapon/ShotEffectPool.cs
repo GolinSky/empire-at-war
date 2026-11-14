@@ -19,13 +19,16 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private readonly BoltFlightBatch _boltFlights;
         private readonly ShotEffectCache _cache;
         private readonly bool _ownsCache;
-        private readonly Dictionary<ShotEffect, int> _active = new Dictionary<ShotEffect, int>();
+        private readonly int _prewarmThreshold;
+        private readonly Dictionary<ShotEffect, int> _active;
         private readonly Action<ShotEffect, int> _onCompleted;
         private readonly Action<ShotEffect, int> _onDestroyed;
         private Action<int> _effectCompleted;
         private bool _released;
 
         public event Action<ShotEffectPool> Retired;
+
+        public bool IsPrewarmed => _cache.TotalCount >= _prewarmThreshold;
 
         public ShotEffectPool(WeaponProfile profile, Transform owner, Action<int> effectCompleted,
             ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights)
@@ -35,7 +38,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         }
 
         internal ShotEffectPool(WeaponProfile profile, Transform owner, Action<int> effectCompleted,
-            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, ShotEffectCache cache)
+            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, ShotEffectCache cache, int capacity = 0, int prewarmThreshold = 0)
         {
             _profile = profile;
             _owner = owner;
@@ -43,6 +46,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _impactPresenter = impactPresenter;
             _boltFlights = boltFlights;
             _cache = cache;
+            _prewarmThreshold = prewarmThreshold;
+            _active = new Dictionary<ShotEffect, int>(capacity);
             _onCompleted = OnEffectCompleted;
             _onDestroyed = OnEffectDestroyed;
         }

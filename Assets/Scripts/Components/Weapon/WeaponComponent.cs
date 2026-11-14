@@ -15,6 +15,8 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Weapon;
 using EmpireAtWar.Services.Timing;
+using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Utils;
@@ -62,6 +64,8 @@ namespace EmpireAtWar.Components.Weapon
         private ImpactEffectPresenter _impactPresenter;
         private BoltFlightBatch _boltFlights;
         private ShotPoolPrewarmer _poolPrewarmer;
+        private ShipAbilityCatalog _abilityCatalog;
+        private bool _hasWeaponPower;
         private List<AttackData> _attackDataList = new List<AttackData>();
         // Candidates in priority order: a hardpoint slot in the coordinator's target table and an index into
         // _candidateGroups. A group's candidates are contiguous; groups without candidates are not listed.
@@ -111,7 +115,7 @@ namespace EmpireAtWar.Components.Weapon
         // Online client: targets come from the host (IWeaponTargetReplica); local AI, radar and order picks are ignored.
         private bool _followsHost;
 
-        public event Action<WeaponProfile, Transform> ShotEmitted;
+        public event Action<WeaponProfile, Transform, float> ShotEmitted;
         public event Action<AttackData, AttackType> TargetAdded;
         public event Action TargetReset;
 
@@ -125,8 +129,10 @@ namespace EmpireAtWar.Components.Weapon
             DamageMatrixData damageMatrix, DebugRangeCircleFactory rangeCircleFactory, IncomingMissileRegistry missiles,
             IVisionService visionService, IPlayerRoster playerRoster, PlayerId owner,
             ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, ShotPoolPrewarmer poolPrewarmer,
-            [Key(EntityBindType.ViewTransform)] Transform viewTransform, IMatchSession session)
+            [Key(EntityBindType.ViewTransform)] Transform viewTransform, IMatchSession session,
+            ShipAbilityCatalog abilityCatalog)
         {
+            _abilityCatalog = abilityCatalog;
             _followsHost = !session.IsAuthority;
             _impactPresenter = impactPresenter;
             _boltFlights = boltFlights;
@@ -151,6 +157,8 @@ namespace EmpireAtWar.Components.Weapon
             _warheadReloadMultiplier = reloadMultiplier;
         }
 
+        public void ConfigureWeaponPower(bool enabled) => _hasWeaponPower = enabled;
+
         public void Initialize()
         {
             _isInitialized = true;
@@ -164,6 +172,14 @@ namespace EmpireAtWar.Components.Weapon
             _faction = faction;
             _telemetryName = _viewTransform.name.Replace("(Clone)", string.Empty);
             List<WeaponProfile> profiles = new List<WeaponProfile>(hardPoints.Count);
+            float reloadMultiplier = 1f;
+            float intervalMultiplier = 1f;
+            if (_hasWeaponPower)
+            {
+                var settings = (BoostWeaponPowerSettings)_abilityCatalog.Get(ShipAbilityId.BoostWeaponPower).Settings;
+                reloadMultiplier = settings.StatModifier.FireDelayMultiplier;
+                intervalMultiplier = settings.ShotIntervalMultiplier;
+            }
             for (int i = 0; i < hardPoints.Count; i++)
             {
                 WeaponHardPoint hardPoint = hardPoints[i];
@@ -173,11 +189,14 @@ namespace EmpireAtWar.Components.Weapon
                 profiles.Add(profile);
                 _facingWeights[i] = Mathf.Max(1, Mathf.RoundToInt(profile.DamagePerSecond * FACING_WEIGHT_SCALE));
                 hardPoint.SetData(profile, profile.Range, _damageMatrix.MissSpread,
-                    this, _attackCoordinator, _modifiers, _impactPresenter, _boltFlights, _missiles, _poolPrewarmer);
+                    this, _attackCoordinator, _modifiers, _impactPresenter, _boltFlights, _missiles, _poolPrewarmer,
+                    WeaponHardPoint.ExpectedShotsInFlight(profile, reloadMultiplier, intervalMultiplier));
+                hardPoint.PrepareEffects();
                 hardPoint.ShotEmitted += OnShotEmitted;
             }
 
-            _poolPrewarmer.RequestPrewarm(profiles);
+            _modifiers.Changed += OnModifiersChanged;
+            _poolPrewarmer.RequestPrewarm(profiles, reloadMultiplier, intervalMultiplier);
             Dictionary<ShipClass, float> engagementRanges = new Dictionary<ShipClass, float>();
             float maxRange = 0f;
             foreach (ShipClass targetClass in (ShipClass[])Enum.GetValues(typeof(ShipClass)))
@@ -221,6 +240,7 @@ namespace EmpireAtWar.Components.Weapon
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (_attackRangeCircle != null) { _attackRangeCircle.Destroy(); _attackRangeCircle = null; }
 #endif
+            _modifiers.Changed -= OnModifiersChanged;
             _attackCoordinator.Unregister(this);
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
@@ -242,10 +262,18 @@ namespace EmpireAtWar.Components.Weapon
             _mainAttackData = null;
         }
 
-        private void OnShotEmitted(WeaponProfile profile, Transform muzzle)
+        private void OnModifiersChanged()
+        {
+            bool changed = false;
+            foreach (WeaponHardPoint hardPoint in hardPoints)
+                changed |= hardPoint.RefreshTiming();
+            if (changed) _attackCoordinator.RetimeSequences(this);
+        }
+
+        private void OnShotEmitted(WeaponProfile profile, Transform muzzle, float effectiveInterval)
         {
             BattleTelemetry.RecordShot(_faction, _telemetryName);
-            if (ShotEmitted != null) ShotEmitted.Invoke(profile, muzzle);
+            if (ShotEmitted != null) ShotEmitted.Invoke(profile, muzzle, effectiveInterval);
         }
 
         public void AddTarget(AttackData attackData, AttackType attackType)

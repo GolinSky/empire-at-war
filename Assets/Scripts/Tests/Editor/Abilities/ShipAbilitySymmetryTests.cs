@@ -47,8 +47,47 @@ namespace EmpireAtWar.Tests.Editor
 
             ability.Start(caster, new ShipAbilityDefinition(), null);
             Assert.That(caster.Modifiers.DamageMultiplier, Is.EqualTo(1.5f));
+            Assert.That(caster.Modifiers.WeaponPowerShotIntervalMultiplier,
+                Is.EqualTo(id == ShipAbilityId.BoostWeaponPower ? 0.1f : 1f));
             ((IStoppableShipAbility)ability).Stop();
             AssertNeutral(caster.Modifiers);
+        }
+
+        [Test]
+        public void BoostWeaponPower_PreservesOtherModifiersAndReplicaPersistence()
+        {
+            TestCommand caster = new TestCommand(id: 1, owner: TestPlayers.Human);
+            CombatModifierHandle other = caster.Modifiers.Add(new CombatStatModifier(2f, 0.25f, 1f, 1f, 1f));
+            BoostWeaponPowerSettings settings = CreateSettings<BoostWeaponPowerSettings>(
+                "statModifier", new CombatStatModifier(1f, 0.1f, 0.5f, 0.5f, 1f));
+            IStoppableShipAbility ability = (IStoppableShipAbility)settings.CreateAbility(null);
+
+            Assert.That(ability, Is.InstanceOf<IReplicaPersistentShipAbility>());
+            ability.Start(caster, new ShipAbilityDefinition(), null);
+            Assert.That(caster.Modifiers.FireDelayMultiplier, Is.EqualTo(0.025f).Within(0.00001f));
+            Assert.That(caster.Modifiers.WeaponPowerShotIntervalMultiplier, Is.EqualTo(0.1f));
+            Assert.That(caster.Modifiers.DamageMultiplier, Is.EqualTo(2f));
+            ability.Stop();
+            Assert.That(caster.Modifiers.FireDelayMultiplier, Is.EqualTo(0.25f));
+            Assert.That(caster.Modifiers.WeaponPowerShotIntervalMultiplier, Is.EqualTo(1f));
+            Assert.That(caster.Modifiers.DamageMultiplier, Is.EqualTo(2f));
+            caster.Modifiers.Remove(other);
+            AssertNeutral(caster.Modifiers);
+            Assert.That(caster.Modifiers.HasTemporaryEffects, Is.False);
+        }
+
+        [Test]
+        public void WeaponPowerShotInterval_TracksTemporaryEffectsAndNotifiesChanges()
+        {
+            CombatModifiers modifiers = new CombatModifiers();
+            int changes = 0;
+            modifiers.Changed += () => changes++;
+            modifiers.SetWeaponPowerShotInterval(0.1f);
+            Assert.That(modifiers.HasTemporaryEffects, Is.True);
+            Assert.That(modifiers.FireDelayMultiplier, Is.EqualTo(1f));
+            modifiers.SetWeaponPowerShotInterval(1f);
+            Assert.That(modifiers.HasTemporaryEffects, Is.False);
+            Assert.That(changes, Is.EqualTo(2));
         }
 
         [Test]
@@ -181,6 +220,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             Assert.That(modifiers.DamageMultiplier, Is.EqualTo(1f));
             Assert.That(modifiers.FireDelayMultiplier, Is.EqualTo(1f));
+            Assert.That(modifiers.WeaponPowerShotIntervalMultiplier, Is.EqualTo(1f));
             Assert.That(modifiers.SpeedMultiplier, Is.EqualTo(1f));
             Assert.That(modifiers.ShieldRegenMultiplier, Is.EqualTo(1f));
             Assert.That(modifiers.DamageTakenMultiplier, Is.EqualTo(1f));

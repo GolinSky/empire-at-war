@@ -350,3 +350,9 @@ created: "2026-10-29\r"
 - [ ] [[Done/Bugs/Enemy_AI_Battle_Log_Followup_Fixes]] — Replay a battle: capture `objectiveSwitch` none-bounces near 0, `patrolTarget` rows ≥ 1/min through sieges, no long recovery latch with a standing backup, patrol/production-wait numbers parse with `.` decimals.
 - [ ] [[Done/Bugs/Enemy_AI_Battle_Log_Followup_Fixes]] — Run authored EnemyAi regressions on explicit request; tests not run under the local override.
 - [ ] [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]] — Profile a large blocked map with multiple AI: placement/scout query duration and candidate/threat counts. Repeated per-candidate threat scans remain unoptimized; no runtime timing measured.
+
+
+## Squadron member-count rework
+
+- [ ] [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]] — Fresh-match role duels and equal-cost fleets (levels2/3/5): carrier deployment/replacements, torpedo burst damage and faction strength. Stats/carrier implementation verified; station/purchase economics remain separately active.
+- [ ] [[TODOs/Bugs/Carrier_and_Squadron_Rebalance]] — Check13/11-craft CIS formations, launch overlap, member death/pooled respawn visuals, fresh save/load and matching-client multiplayer. Old member-array saves require a fresh match; no migration added.

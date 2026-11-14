@@ -4,6 +4,7 @@ using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.ViewComponents.Weapon;
+using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -44,6 +45,75 @@ namespace EmpireAtWar.Tests.Weapon
             finally
             {
                 if (effect != null) Object.DestroyImmediate(effect.gameObject);
+                prewarmer.Clear();
+            }
+        }
+
+        [Test]
+        public void SharedPrewarm_KeepsRetiringOwnersCapacityUntilLastLeaseReturns()
+        {
+            var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
+                "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            var profile = WeaponProfileFactory.Create(new WeaponDefinition(), weapons.GetFamily(WeaponFamily.Torpedo),
+                weapons.GetCaliber(WeaponCaliber.Medium), weapons.GetMount(WeaponMount.Single));
+            var prewarmer = new ShotPoolPrewarmer();
+            ShotEffectPool first = prewarmer.CreatePool(profile, null, _ => { }, null, null, 2);
+            ShotEffectPool second = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1);
+            try
+            {
+                first.Prewarm(2);
+                Assert.That(first.IsPrewarmed, Is.True, "An earlier owner only waits for its own admission threshold.");
+                Assert.That(second.IsPrewarmed, Is.False, "Both owners' full caps must fit in shared storage.");
+                ShotEffect leased = Lease(first);
+                first.Release();
+                Assert.That(second.IsPrewarmed, Is.False, "A retiring owner's in-flight lease still reserves its cap.");
+                Return(first, leased);
+                Assert.That(second.IsPrewarmed, Is.False, "An existing admission threshold stays fixed after retirement.");
+                second.Prewarm(3);
+                Assert.That(second.IsPrewarmed, Is.True);
+
+                ShotEffectPool third = prewarmer.CreatePool(profile, null, _ => { }, null, null, 3);
+                Assert.That(second.IsPrewarmed, Is.True, "A reinforcement must not pause admitted owners.");
+                Assert.That(third.IsPrewarmed, Is.False);
+                third.Prewarm(4);
+                Assert.That(second.IsPrewarmed, Is.True);
+                Assert.That(third.IsPrewarmed, Is.True);
+                int created = AttackSequenceDiagnostics.PoolCreated;
+                var shots = new List<ShotEffect>();
+                shots.Add(Lease(second));
+                for (int i = 0; i < 3; i++) shots.Add(Lease(third));
+                Assert.That(AttackSequenceDiagnostics.PoolCreated, Is.EqualTo(created));
+                Return(second, shots[0]);
+                for (int i = 1; i < shots.Count; i++) Return(third, shots[i]);
+            }
+            finally
+            {
+                prewarmer.Clear();
+            }
+        }
+
+        [TestCase(WeaponFamily.Turbolaser)]
+        [TestCase(WeaponFamily.Torpedo)]
+        public void BoostedPrewarm_ReservesAllMountCapsForSharedPrefab(WeaponFamily family)
+        {
+            var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
+                "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            var profile = WeaponProfileFactory.Create(new WeaponDefinition(), weapons.GetFamily(family),
+                weapons.GetCaliber(WeaponCaliber.Medium), weapons.GetMount(WeaponMount.Single));
+            var prewarmer = new ShotPoolPrewarmer();
+            try
+            {
+                prewarmer.RequestPrewarm(new[] { profile, profile }, 0.1f, 0.1f);
+                var targets = (IDictionary)typeof(ShotPoolPrewarmer)
+                    .GetField("_targets", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(prewarmer);
+                Assert.That(targets.Count, Is.EqualTo(1));
+                foreach (DictionaryEntry target in targets)
+                    Assert.That(target.Value, Is.EqualTo(2 * WeaponHardPoint.ExpectedShotsInFlight(profile, 0.1f, 0.1f)));
+                Assert.That(WeaponHardPoint.ExpectedShotsInFlight(profile, 0.1f, 0.1f),
+                    Is.GreaterThan(WeaponHardPoint.ExpectedShotsInFlight(profile)));
+            }
+            finally
+            {
                 prewarmer.Clear();
             }
         }

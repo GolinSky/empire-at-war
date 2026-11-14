@@ -48,7 +48,8 @@ namespace EmpireAtWar.Components.Combat
         /// <summary>Effects that abilities or attackers remove later; fleet command is re-evaluated by position instead.</summary>
         public bool HasTemporaryEffects => _active.Count > 0 || _sensorJammers > 0 || _fighterCoordinations > 0 || IsIonDisabled || IsCloaked || _mainBatteriesActive ||
                                            _focusTarget != null || _projectileFireDelayMultiplier != 1f ||
-                                           _otherFireDelayMultiplier != 1f || _torpedoFireDelayMultiplier != 1f;
+                                           _otherFireDelayMultiplier != 1f || _torpedoFireDelayMultiplier != 1f ||
+                                           WeaponPowerShotIntervalMultiplier != 1f;
         public bool IsCloaked { get; private set; }
 
         public void AddSensorJamming()
@@ -114,6 +115,7 @@ namespace EmpireAtWar.Components.Combat
 
         public float DamageMultiplier { get; private set; } = 1f;
         public float FireDelayMultiplier { get; private set; } = 1f;
+        public float WeaponPowerShotIntervalMultiplier { get; private set; } = 1f;
         public float SpeedMultiplier { get; private set; } = 1f;
         public float ShieldRegenMultiplier { get; private set; } = 1f;
         public float DamageTakenMultiplier { get; private set; } = 1f;
@@ -130,6 +132,12 @@ namespace EmpireAtWar.Components.Combat
         public void SetTorpedoSalvo(float fireDelayMultiplier)
         {
             _torpedoFireDelayMultiplier = fireDelayMultiplier;
+            if (Changed != null) Changed.Invoke();
+        }
+
+        public void SetWeaponPowerShotInterval(float multiplier)
+        {
+            WeaponPowerShotIntervalMultiplier = multiplier;
             if (Changed != null) Changed.Invoke();
         }
 

@@ -42,8 +42,7 @@ MonoBehaviour:
           weapons: six dual heavy turbolaser main batteries, two heavy dual ion cannons,
           two medium dual ion cannons, eight dual medium turbolasers and six medium
           dual laser cannons, plus four point-defense guns. Two shield generators,
-          two engines, tractor beam and hangar are targetable. Boost Weapon Power
-          cuts weapon reload time by 90% and halves speed and shield regeneration
+          two engines, tractor beam and hangar are targetable. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration
           for 7 s. Recovers in 50 s. Tractor Beam restricts enemy corvette or frigate
           movement. Deploys 2 fighters, 2 bombers, and 2 interceptors at once. Carries
           18 total squadron launches.'
@@ -64,8 +63,7 @@ MonoBehaviour:
         description: 8,000 hull; 5,500 shields; speed 25. Four medium dual turbo-ion
           cannons and two medium turbo-ion cannons. Targetable shield generator,
           two engines and tractor beam. Six medium 3-burst turbolasers, six heavy
-          laser cannons are not separately targetable. Boost Weapon Power cuts weapon
-          reload time by 90% and halves speed and shield regeneration for 7 s. Recovers
+          laser cannons are not separately targetable. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration for 7 s. Recovers
           in 50 s. Tractor Beam restricts enemy movement. No hangar or squadron deployment.
         role: Ion Support / Cruiser
         iconKey: 73509b3f4bebe5542ba69d62230fff68:21300000
@@ -83,8 +81,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 5660b95ce5f607a4884370642690984d, type: 2}
         description: 4,000 hull; 4,000 shields; speed 30. Four light long-range 2-burst
           turbolasers and four 2-burst laser cannons. Engines and shield generator
-          are targetable hardpoints. No hangar or fighter complement. Boost Weapon
-          Power cuts weapon reload time by 90% and halves speed and shield regeneration
+          are targetable hardpoints. No hangar or fighter complement. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration
           for 7 s. Recovers in 50 s.
         role: Artillery / Light Cruiser
         iconKey: e54026c071416a845b2d23e814c1e8d5:21300000
@@ -163,8 +160,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: ce8195d5a87d2a34fa7374c25d89d352, type: 2}
         description: 4,700 hull; 2,000 shields; speed 25. Two targetable 4-burst
           assault-missile launchers, shield generator and engine. Four non-targetable
-          heavy lasers and six non-targetable missile-defense mounts. Boost Weapon
-          Power cuts weapon reload time by 90% and halves speed and shield regeneration
+          heavy lasers and six non-targetable missile-defense mounts. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration
           for 7 s. Recovers in 50 s. Deploys 2 fighters, 1 bomber, and 1 interceptor
           at once. Carries 12 total squadron launches.
         role: Battle Carrier / Cruiser
@@ -185,7 +181,7 @@ MonoBehaviour:
           octuple turbolasers, two heavy long-range dual turbolasers, two shield
           generators, three engines and tractor beam. Seven heavy 3-burst turbolasers,
           four heavy turbolasers and four heavy laser cannons are not separately
-          targetable. Boost Weapon Power cuts weapon reload time by 90% and halves
+          targetable. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves
           speed and shield regeneration for 7 s. Recovers in 50 s. Tractor Beam restricts
           enemy movement. No hangars or fighter complement.
         role: Ship of the Line / Capital Ship
@@ -224,7 +220,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 1ab40ab88738a3d40ae586aca91250cf, type: 2}
         description: 'Combat destroyer: three quad heavy turbolasers, two medium
           dual turbolasers, eight light triple turbolasers and two medium ion cannons.
-          No fighter complement. Boost Weapon Power cuts weapon reload time by 90%
+          No fighter complement. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster
           and halves speed and shield regeneration for 7 s. Recovers in 50 s.'
         role: Anti-frigate / Capital-ship support
         iconKey: 480ea67ea8c1d1444b4eae17e11f53e8:21300000
@@ -280,7 +276,7 @@ MonoBehaviour:
         description: Anti-squadron escort corvette with four large repeating lasers,
           one heavy laser and four point-defense mounts. 600 hull, 600 shields, speed
           35. Targetable engine and shield-generator hardpoints; no hangar or squadrons.
-          Boost Weapon Power cuts weapon reload time by 90% and halves speed and
+          Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and
           shield regeneration for 7 s. Recovers in 50 s.
         role: Screener / Corvette
         iconKey: a18de04525e87254ebd6a359e39a58ba:21300000
@@ -317,8 +313,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 55d62e93f93a1f34badabec3d1a83f4a, type: 2}
         description: Imperial capital ship with 10,000 hull and 10,000 shields. Two
           heavy quad turbolasers, two heavy dual ion cannons, three medium quad turbolasers,
-          four medium dual turbolasers and six heavy turbolasers. Boost Weapon Power
-          cuts weapon reload time by 90% and halves speed and shield regeneration
+          four medium dual turbolasers and six heavy turbolasers. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration
           for 7 s. Recovers in 50 s. Launches one TIE Fighter squadron at a time
           with three total launches.
         role: Capital ship / Line combat
@@ -372,8 +367,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: c5df0907ae25f944fa8027342b0f745c, type: 2}
         description: Six TIE Avengers. Each fighter has 44 hull, 10 shields, two
-          light repeating lasers and two concussion-missile launchers. Boost Weapon
-          Power cuts weapon reload time by 90% and halves speed and shield regeneration
+          light repeating lasers and two concussion-missile launchers. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration
           for 7 s. Recovers in 50 s. Seeker Warhead Countermeasure automatically
           intercepts incoming missiles. Weapons are not separately targetable.
         role: Fighter / Fast attack

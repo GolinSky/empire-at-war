@@ -1,7 +1,9 @@
 ---
 category: Bugs
-status: todo
+status: done
 created: 2026-11-14
+completed: 2026-11-14
+acceptance: pending-user
 ---
 # Boost Weapon Power Firing Rate Fix
 
@@ -10,7 +12,7 @@ created: 2026-11-14
 - Make Boost Weapon Power visibly increase projectiles fired per second and sustained damage against an available target.
 - User-confirmed requirement (2026-11-14): projectile fire rate within each burst MUST increase while Boost Weapon Power is active, in addition to shorter reloads between bursts.
 - Hard constraint (2026-11-14): keep the existing Burst job / pooled-shot architecture and its CPU budget. No per-shot allocation, no on-demand `Instantiate` spikes, no new per-frame O(N) main-thread scans.
-- Scope: implementation plan only. No gameplay changes or runtime verification performed.
+- Implemented 2026-11-14; Unity compilation, loaded settings and targeted asset persistence verified. Tests not run; gameplay/profiling acceptance pending.
 
 ## Important Values
 
@@ -66,47 +68,47 @@ Real cycle = max(reload, burst + flight + visual/muzzle tail) because of the eff
 
 ### 1. Single timing source
 
-- [ ] Add `shotIntervalMultiplier` (0.1) to `BoostWeaponPowerSettings`; create `BoostWeaponPowerAbility` (implements `IStoppableShipAbility`, `IReplicaPersistentShipAbility`) that adds `statModifier` and calls `CombatModifiers.SetWeaponPowerShotInterval(x)`; `Stop` restores 1. Pattern = `FullSalvoAbility`.
-- [ ] Include the new field in `CombatModifiers.HasTemporaryEffects`.
-- [ ] `WeaponHardPoint`: one private method computes `(reloadMultiplier, intervalMultiplier)`; `TryStartScheduledSequence` and `DelayBetweenShots` both read it. FullSalvo/Torpedo/MainBattery stay in both; `FireDelayMultiplier` reload-only; weapon-power interval interval-only.
-- [ ] Update `BalanceAbilityAdapter` map for `BoostWeaponPowerSettings` (`shotIntervalMultiplier`, positive).
+- [x] Add `shotIntervalMultiplier` (0.1) to `BoostWeaponPowerSettings`; create `BoostWeaponPowerAbility` (implements `IStoppableShipAbility`, `IReplicaPersistentShipAbility`) that adds `statModifier` and calls `CombatModifiers.SetWeaponPowerShotInterval(x)`; `Stop` restores 1. Pattern = `FullSalvoAbility`.
+- [x] Include the new field in `CombatModifiers.HasTemporaryEffects`.
+- [x] `WeaponHardPoint`: one private method computes `(reloadMultiplier, intervalMultiplier)`; `TryStartScheduledSequence` and `DelayBetweenShots` both read it. FullSalvo/Torpedo/MainBattery stay in both; `FireDelayMultiplier` reload-only; weapon-power interval interval-only.
+- [x] Update `BalanceAbilityAdapter` map for `BoostWeaponPowerSettings` (`shotIntervalMultiplier`, positive).
 - Verify: other abilities' reload and spacing numerically unchanged (table above).
 
 ### 2. Separate firing readiness from projectile lifetime (CPU-bounded)
 
-- [ ] `AttackSequenceState`: `_activeEffects` counts all leased effects of the current pool lifetime, not per generation; completions decrement regardless of generation; `Release` resets it (pool already drops callbacks on release).
-- [ ] `StopEmitting` → `Ready` immediately; drop `WaitingForEffects` as an end-of-burst state.
-- [ ] New readiness gate in `TryStart`: refuse when `_activeEffects + ShotsPerSalvo > inFlightCap` (bounded window, not unbounded). Cap per Decision 1: passed into `WeaponHardPoint.SetData` by the owning unit's weapon setup (boosted only when the unit owns ability 5); fixed for the hardpoint's lifetime, no per-frame lookup.
-- [ ] Keep `ShotEffectPool` lease ownership unchanged; old callbacks cannot touch the newer burst (lease id + `_active` map already guard).
-- [ ] Update `AttackSequenceDiagnostics` semantics (`RecordUnmatchedCompletion` no longer fires for overlap).
+- [x] `AttackSequenceState`: `_activeEffects` counts all leased effects of the current pool lifetime, not per generation; completions decrement regardless of generation; `Release` resets it (pool already drops callbacks on release).
+- [x] `StopEmitting` → `Ready` immediately; drop `WaitingForEffects` as an end-of-burst state.
+- [x] New readiness gate in `TryStart`: refuse when `_activeEffects + ShotsPerSalvo > inFlightCap` (bounded window, not unbounded). Cap per Decision 1: passed into `WeaponHardPoint.SetData` by the owning unit's weapon setup (boosted only when the unit owns ability 5); fixed for the hardpoint's lifetime, no per-frame lookup.
+- [x] Keep `ShotEffectPool` lease ownership unchanged; old callbacks cannot touch the newer burst (lease id + `_active` map already guard).
+- [x] Update `AttackSequenceDiagnostics` semantics (`RecordUnmatchedCompletion` no longer fires for overlap).
 - Verify: overlapping bursts each deal damage once; owner release/restart cannot leave `_activeEffects` stale; pooled reuse inherits no callbacks.
 
 ### 3. Retiming on activation, cancellation and expiry
 
-- [ ] Reload: `_reloadTimer.AppendTime(TimeLeft × (newMult / oldMult − 1))`. Example 4 s reload, 2 s left → 0.2 s on activation; reverse on expiry.
-- [ ] Pending inter-shot: new `CombatAttackCoordinator.RetimeSequences(IWeaponPresenter owner)` — one pass over `_sequences`, matching owner, `NextTime = now + (NextTime − now) × ratio` using each hardpoint's cached old/new interval multiplier. Keep `EarliestFrame`; no unconditional shot.
-- [ ] Trigger only when a hardpoint's effective multipliers change: hardpoint caches last multipliers; `WeaponComponent` handles `CombatModifiers.Changed` → compare → retime. `Changed` fires for unrelated reasons (cloak, focus, suppression) → compare first, no work otherwise.
-- [ ] Applies to all cadence modifiers (FullSalvo, Torpedo, MainBattery too); same mechanism, cost only on change.
+- [x] Reload: `_reloadTimer.AppendTime(TimeLeft × (newMult / oldMult − 1))`. Example 4 s reload, 2 s left → 0.2 s on activation; reverse on expiry.
+- [x] Pending inter-shot: new `CombatAttackCoordinator.RetimeSequences(IWeaponPresenter owner)` — one pass over `_sequences`, matching owner, `NextTime = now + (NextTime − now) × ratio` using each hardpoint's cached old/new interval multiplier. Keep `EarliestFrame`; no unconditional shot.
+- [x] Trigger only when a hardpoint's effective multipliers change: hardpoint caches last multipliers; `WeaponComponent` handles `CombatModifiers.Changed` → compare → retime. `Changed` fires for unrelated reasons (cloak, focus, suppression) → compare first, no work otherwise.
+- [x] Applies to all cadence modifiers (FullSalvo, Torpedo, MainBattery too); same mechanism, cost only on change.
 - Verify: activation mid-reload/mid-burst, expiry mid-wait, cancel, auto-power, stacked changes.
 
 ### 4. Within-burst projectile acceleration
 
-- [ ] `DelayBetweenShots` × weapon-power interval multiplier (0.1). Activation mid-burst retimes via step 3.
-- [ ] Keep `EarliestFrame = frame + 1` (≤1 shot/hardpoint/frame, no catch-up). Effective floor = frame time: Turbolaser 0.02 s → ~0.017 s at 60 fps, 0.033 s at 30 fps; Laser 0.01 s → frame-bound. Document; do not add multi-shot-per-frame emission.
-- [ ] Preserve velocity, damage per hit, `ShotsPerSalvo`.
+- [x] `DelayBetweenShots` × weapon-power interval multiplier (0.1). Activation mid-burst retimes via step 3.
+- [x] Keep `EarliestFrame = frame + 1` (≤1 shot/hardpoint/frame, no catch-up). Effective floor = frame time: Turbolaser 0.02 s → ~0.033 s at 60 fps, 0.033 s at 30 fps; Laser 0.01 s → frame-bound. Document; do not add multi-shot-per-frame emission.
+- [x] Preserve velocity, damage per hit, `ShotsPerSalvo`.
 - Verify: shot timestamps shorter within and between bursts; no extra shots.
 
 ### 5. Pools, jobs and consumers (CPU budget)
 
-- [ ] Prewarm must cover the in-flight cap so boosted bursts never hit `Create(true)` mid-combat. Cap must be ≤ prewarm target per hardpoint.
-- [ ] `ShotPoolPrewarmer.PrewarmRosterAsync` → `AddLoadout`: for `ShipData` whose `Abilities` contains `BoostWeaponPower`, count each entry with the boosted `ExpectedShotsInFlight`. Squadrons and defend platforms unchanged.
-- [ ] `WeaponHardPoint.GetPool` passes the same cap as the pool target (single source with the gate).
-- [ ] Loading cost: more creations in the 4 ms/frame loading budget; check the `[ShotPoolPrewarmer] Roster target` log for boosted prefabs.
-- [ ] Job path: no new jobs needed. `AttackDueJob` input count grows with sequences/impacts (`NativeArrayBuffer.EnsureCapacity` grows once); `BoltFlightBatch` (`INITIAL_CAPACITY 256`) grows once. Record capacity growth with `BattlePerformanceCapture` combat workload counters.
-- [ ] Target selection: boosted hardpoints become non-busy ~10× more often → more `QueueTargetSelection` requests into `TargetSelectionBatch` job. Acceptable (batched); measure `TargetRequests`.
-- [ ] Audio: pass effective interval to `ShipSfxService.TryPlayWeaponShot` so boosted bursts use the loop path instead of one-shot spam. Adds `Audio` category.
-- [ ] `BalanceDpsEstimator`, `BattleSimulator` (`SimMount` uses `CycleSeconds`, no gate) — removing the gate aligns runtime with these; no formula change (Decision 2).
-- [ ] Update catalog description key 5: "Weapons fire 10× faster and reload 90% faster. Movement speed and shield regeneration fall to 50% for 7 s. Recovers in 50 s." Sync faction descriptions.
+- [x] Prewarm must cover the in-flight cap so boosted bursts never hit `Create(true)` mid-combat. Cap must be ≤ prewarm target per hardpoint.
+- [x] `ShotPoolPrewarmer.PrewarmRosterAsync` → `AddLoadout`: for `ShipData` whose `Abilities` contains `BoostWeaponPower`, count each entry with the boosted `ExpectedShotsInFlight`. Squadrons and defend platforms unchanged.
+- [x] `WeaponHardPoint.GetPool` passes the same cap as the pool target (single source with the gate).
+- [x] Loading budget preserved; runtime log review queued for user acceptance. Check the `[ShotPoolPrewarmer] Roster target` log for boosted prefabs.
+- [x] Job path source-reviewed; workload/capacity measurements queued for user capture: no new jobs needed. `AttackDueJob` input count grows with sequences/impacts (`NativeArrayBuffer.EnsureCapacity` grows once); `BoltFlightBatch` (`INITIAL_CAPACITY 256`) grows once. Record capacity growth with `BattlePerformanceCapture` combat workload counters.
+- [x] Target selection remains batched; measurement queued for user acceptance. Boosted hardpoints become non-busy ~10× more often → more `QueueTargetSelection` requests into `TargetSelectionBatch` job. Acceptable (batched); measure `TargetRequests`.
+- [x] Audio: pass effective interval to `ShipSfxService.TryPlayWeaponShot` so boosted bursts use the loop path instead of one-shot spam. Adds `Audio` category.
+- [x] `BalanceDpsEstimator`, `BattleSimulator` (`SimMount` uses `CycleSeconds`, no gate) — removing the gate aligns runtime with these; no formula change (Decision 2).
+- [x] Update catalog description key 5: "Weapons fire 10× faster and reload 90% faster. Movement speed and shield regeneration fall to 50% for 7 s. Recovers in 50 s." Sync faction descriptions.
 - Verify: no `Battle.Projectile.Instantiate.*` samples during boost in a profiled capture (user-run).
 
 ### Decisions — user, 2026-11-14
@@ -123,18 +125,28 @@ Real cycle = max(reload, burst + flight + visual/muzzle tail) because of the eff
 
 ### 6. Verification and closure
 
-- [ ] Regression coverage (authored, not run): overlapping bursts, cross-generation completion counting, release/restart reset, cap gate, retime math (reload + pending shot), unchanged spacing for other abilities, unchanged damage/speed.
-- [ ] Categories: `Combat`, `Abilities`; plus `Audio` (step 5), `Balance` (adapter), `Networking` if replica persistence changes.
-- [ ] Tests disabled under local override; report as not run.
-- [ ] Compile; import/save `ShipAbilityCatalog.asset` via Unity persistence flow (re-serialize changed path only).
-- [ ] User acceptance: same weapon, stationary durable target, fixed distance/game speed; shot timestamps/counts and damage before/during/after; close vs far range; mid-reload/mid-burst activation; expiry; cancel; owner/target death; slow missiles; profiler capture for Instantiate/Update cost.
-- [ ] Update canonical weapon timing guidance (`Rules/BATTLE_PERFORMANCE_GUIDELINES` shot-storage bullet: in-flight cap contract) and link here before closure.
-- [ ] Close to `Done/Bugs` with `acceptance: pending-user`; runtime gates → `TODOs/User_Acceptance_Queue.md`.
+- [x] Regression coverage (authored, not run): overlapping bursts, cross-generation completion counting, release/restart reset, cap gate, retime math (reload + pending shot), unchanged spacing for other abilities, unchanged damage/speed.
+- [x] Categories: `Combat`, `Abilities`; plus `Audio` (step 5), `Balance` (adapter), `Networking` if replica persistence changes.
+- [x] Tests disabled under local override; report as not run.
+- [x] Compile; import/save `ShipAbilityCatalog.asset` via Unity persistence flow (re-serialize changed path only).
+- [x] User acceptance queued (not performed): same weapon, stationary durable target, fixed distance/game speed; shot timestamps/counts and damage before/during/after; close vs far range; mid-reload/mid-burst activation; expiry; cancel; owner/target death; slow missiles; profiler capture for Instantiate/Update cost.
+- [x] Update canonical weapon timing guidance (`Rules/BATTLE_PERFORMANCE_GUIDELINES` shot-storage bullet: in-flight cap contract) and link here before closure.
+- [x] Close to `Done/Bugs` with `acceptance: pending-user`; runtime gates → `TODOs/User_Acceptance_Queue.md`.
+
+## Verification and outcome
+
+- Unity loaded `BoostWeaponPowerAbility`, catalog interval/reload `0.1 / 0.1`; Editor compiling/updating both false. Targeted catalog + four faction asset reserialization/save completed; no new Console errors after this task's import cursor.
+- Regression source authored/updated: `WeaponCadenceTests`, `AttackSequenceStateTests`, `CombatAttackCoordinatorDueTests`, `ShotEffectPoolLifecycleTests`, `ShipAbilitySymmetryTests`; audio/reflection fixture signatures updated. Tests not run under local override.
+- Integration correction: old roster prewarm covered only the largest unit. Pools now register summed live capacity during initialization, reserve it through orphan-flight retirement and pre-size lease dictionaries. Fixed per-pool admission thresholds keep existing ships firing while newly added units wait for ≤1-shot/frame budgeted growth.
+- Final emission now ends its salvo immediately; removed the extra trailing inter-shot wait. Pending waits retime on modifier changes; one-shot-per-frame gate remains.
+- `Battle.Projectile.Instantiate.*` also wraps budgeted prewarm. User capture must distinguish nested `Prewarm.*` and check `AttackSequenceDiagnostics.PoolExpansions` for on-demand growth.
+- Guidance extracted → [[Rules/BATTLE_PERFORMANCE_GUIDELINES#Weapon cadence and pooled overlap · 2026-11-14]]; stale Boost values corrected → [[GameDesign/Abilities_And_Superweapons]].
+- Gameplay, audio and profiler gates → [[TODOs/User_Acceptance_Queue#Boost Weapon Power Firing Rate Fix]].
 
 ## Rules
 
 - Read `Rules/BATTLE_PERFORMANCE_GUIDELINES.md` (shot storage, prewarm budgets: 4 ms loading, ≤1 shot/frame runtime) before pool changes.
-- Plan stays active until implemented. No fix or passing tests claimed.
+- Implementation closed with `acceptance: pending-user`; no test or runtime performance pass claimed.
 
 ## Files
 

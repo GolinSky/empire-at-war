@@ -18,6 +18,17 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private readonly ProfilerMarker _prewarmMarker;
 #endif
         private bool _released;
+        private int _registeredCapacity;
+
+        public int TotalCount => _all.Count;
+
+        public int RegisterCapacity(int capacity)
+        {
+            _registeredCapacity += capacity;
+            return _registeredCapacity;
+        }
+
+        public void ReleaseCapacity(int capacity) => _registeredCapacity -= capacity;
 
         public ShotEffectCache(ShotEffect prefab)
         {

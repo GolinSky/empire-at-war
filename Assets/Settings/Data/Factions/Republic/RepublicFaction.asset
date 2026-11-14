@@ -139,8 +139,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: b92ff58098755ab4baa941419c34f072, type: 2}
         description: Republic dreadnought with 20 turbolaser mounts, eight ion cannons,
-          16 point-defense batteries, eight missile and four torpedo launchers. Boost
-          Weapon Power shortens reloads. Vulnerable to concentrated bomber attacks
+          16 point-defense batteries, eight missile and four torpedo launchers. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster. Vulnerable to concentrated bomber attacks
           and Malevolence. Deploys 2 fighters, 2 bombers, and 2 interceptors at once.
           Carries 18 total squadron launches.
         role: "Mandator II \xB7 Dreadnought"
@@ -198,7 +197,7 @@ MonoBehaviour:
         description: Republic heavy cruiser built to destroy corvettes and frigates.
           Two enhanced turbolaser, four dual medium turbolaser, two dual heavy turbolaser,
           two concussion missile and one ion cannon battery; thirteen targetable
-          hardpoints. Boost Weapon Power cuts weapon reload time by 90% and halves
+          hardpoints. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves
           speed and shield regeneration for 7 s. Recovers in 50 s. No hangar or squadron
           deployment.
         role: Heavy cruiser / Anti-corvette / Anti-frigate
@@ -251,8 +250,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 5660afec4edee70409f96502d7e05d8c, type: 2}
         description: 1,600 hull, 1,000 shields. Twelve dual laser cannons screen
-          the fleet against fighters and bombers. Boost Weapon Power cuts weapon
-          reload time by 90% and halves speed and shield regeneration for 7 s. Recovers
+          the fleet against fighters and bombers. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration for 7 s. Recovers
           in 50 s.
         role: Cruiser / Anti-fighter Escort
         iconKey: ee8c2cac9ed92d8499f6b865153f7ff3:21300000
@@ -270,8 +268,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 8bdf528cc8d4fa74997a634975fb890e, type: 2}
         description: 2,000 hull, 1,300 shields, 25 shield points restored each second.
           Four laser cannons per side, one forward dual turbolaser battery and two
-          forward proton torpedo launchers. Boost Weapon Power cuts weapon reload
-          time by 90% and halves speed and shield regeneration for 7 s. Recovers
+          forward proton torpedo launchers. Boost Weapon Power makes weapons fire 10× faster and reload 90% faster and halves speed and shield regeneration for 7 s. Recovers
           in 50 s.
         role: Heavy Frigate / Assault Escort
         iconKey: c7ed8d3ae8343e24a8ef2eca2a1a0e8f:21300000

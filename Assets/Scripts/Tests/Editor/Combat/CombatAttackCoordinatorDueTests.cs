@@ -10,6 +10,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -19,6 +20,55 @@ namespace EmpireAtWar.Tests.Weapon
     public sealed class CombatAttackCoordinatorDueTests
     {
         private const int BENCHMARK_SAMPLES = 40;
+
+        [TestCase(0.1f)]
+        [TestCase(10f)]
+        public void RetimeSequences_RescalesOnlyOwnersRemainingWaitAndPreservesFrameGate(float ratio)
+        {
+            CombatAttackCoordinator coordinator = new CombatAttackCoordinator();
+            GameObject mountObject = new GameObject("RetimeMount");
+            try
+            {
+                WeaponHardPoint mount = mountObject.AddComponent<WeaponHardPoint>();
+                typeof(WeaponHardPoint).GetProperty("PendingShotIntervalRatio",
+                    BindingFlags.Instance | BindingFlags.NonPublic).SetValue(mount, ratio);
+                RecordingOwner owner = new RecordingOwner(() => { });
+                RecordingOwner other = new RecordingOwner(() => { });
+                IList sequences = (IList)typeof(CombatAttackCoordinator)
+                    .GetField("_sequences", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(coordinator);
+                Type recordType = typeof(CombatAttackCoordinator)
+                    .GetNestedType("SequenceRecord", BindingFlags.NonPublic);
+                float now = Time.time;
+                int frame = Time.frameCount + 1;
+                foreach (IWeaponPresenter recordOwner in new IWeaponPresenter[] { owner, other, owner })
+                {
+                    object record = Activator.CreateInstance(recordType);
+                    recordType.GetField("Owner").SetValue(record, recordOwner);
+                    recordType.GetField("HardPoint").SetValue(record, mount);
+                    recordType.GetField("NextTime").SetValue(record, now + (sequences.Count == 2 ? -1f : 2f));
+                    recordType.GetField("EarliestFrame").SetValue(record, frame);
+                    sequences.Add(record);
+                }
+
+                coordinator.RetimeSequences(owner);
+
+                Assert.That((float)recordType.GetField("NextTime").GetValue(sequences[0]),
+                    Is.EqualTo(now + 2f * ratio).Within(0.001f));
+                Assert.That((float)recordType.GetField("NextTime").GetValue(sequences[1]),
+                    Is.EqualTo(now + 2f));
+                Assert.That((float)recordType.GetField("NextTime").GetValue(sequences[2]),
+                    Is.EqualTo(now).Within(0.001f));
+                for (int i = 0; i < sequences.Count; i++)
+                    Assert.That(recordType.GetField("EarliestFrame").GetValue(sequences[i]), Is.EqualTo(frame));
+                Assert.That(owner.Commits, Is.Zero);
+                Assert.That(coordinator.PendingSequences, Is.EqualTo(3));
+            }
+            finally
+            {
+                coordinator.Dispose();
+                UnityEngine.Object.DestroyImmediate(mountObject);
+            }
+        }
 
         [TestCase(63)]
         [TestCase(64)]

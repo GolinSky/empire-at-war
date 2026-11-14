@@ -112,7 +112,7 @@ namespace EmpireAtWar.Tests.Editor
                 Requests.Add(sfx);
                 return true;
             }
-            public bool TryPlayWeaponShot(ShipSfxHandle ship, WeaponProfile weapon, Transform muzzle) => false;
+            public bool TryPlayWeaponShot(ShipSfxHandle ship, WeaponProfile weapon, Transform muzzle, float shotInterval) => false;
             public bool TryHoldLoop(ShipSfxHandle ship, SfxProfile loop, Vector3 position, float volumeScale, float pitch) => false;
             public bool TryHoldEngine(ShipSfxHandle ship, SfxProfile loop, Vector3 position, float volumeScale, float pitch) => false;
             public bool TryPlayVoice(AudioClip clip, bool interruptChatter = false) => false;

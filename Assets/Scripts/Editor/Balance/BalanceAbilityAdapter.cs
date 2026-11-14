@@ -16,7 +16,7 @@ namespace EmpireAtWar.Editor.Balance
             [typeof(AssaultSettings)] = new[] { "statModifier" },
             [typeof(BoostEnginePowerSettings)] = new[] { "statModifier" },
             [typeof(BoostShieldPowerSettings)] = new[] { "statModifier" },
-            [typeof(BoostWeaponPowerSettings)] = new[] { "statModifier" },
+            [typeof(BoostWeaponPowerSettings)] = new[] { "statModifier", "shotIntervalMultiplier" },
             [typeof(InvulnerabilitySettings)] = new[] { "statModifier" },
             [typeof(LockSFoilsSettings)] = new[] { "statModifier" },
             [typeof(PowerToMainBatteriesSettings)] = new[] { "fireDelayMultiplier", "statModifier" },
@@ -95,7 +95,7 @@ namespace EmpireAtWar.Editor.Balance
                 registry.Add(catalog, key + name, property.propertyPath, BalanceFieldGroup.Abilities, context, BalanceFieldOwner.SharedProfile, true, users,
                     name == "damageType" ? typeof(DamageType)
                     : name == "targetClasses" ? typeof(ShipClass) : null,
-                    minimum: name == "minimumTargets" ? 1 : 0, positive: name == "radius" || name == "waveSpeed" || name.EndsWith("FireDelayMultiplier"),
+                    minimum: name == "minimumTargets" ? 1 : 0, positive: name == "radius" || name == "waveSpeed" || name == "shotIntervalMultiplier" || name.EndsWith("FireDelayMultiplier"),
                     alias: alias, dependency: subtype, serializedTarget: settings.serializedObject);
         }
     }

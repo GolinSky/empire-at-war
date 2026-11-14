@@ -28,6 +28,9 @@ namespace EmpireAtWar.ViewComponents.Health
         private BoltFlightBatch _boltFlights;
         private ShotPoolPrewarmer _poolPrewarmer;
         private IncomingMissileRegistry _missiles;
+        private int _inFlightCap;
+        private float _reloadMultiplier = 1f;
+        private float _intervalMultiplier = 1f;
 
         private float _maxAttackDistance;
         private float _missSpread;
@@ -36,7 +39,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private float _mountYaw;
         private float _turnEndTime = float.NegativeInfinity;
 
-        public event System.Action<WeaponProfile, Transform> ShotEmitted;
+        public event System.Action<WeaponProfile, Transform, float> ShotEmitted;
 
         [field:SerializeField] public WeaponType WeaponType { get; private set; }
         protected IWeaponPresenter WeaponPresenter { get; private set; }
@@ -49,10 +52,29 @@ namespace EmpireAtWar.ViewComponents.Health
         internal bool StrikecraftOnly => _profile.StrikecraftOnly;
         internal virtual bool ShipsOnly => _profile.DamageType == DamageType.Ion || _profile.DamageType == DamageType.IonCannon;
         internal TargetPreference PreferredTarget => _profile.PreferredTarget;
-        internal float DelayBetweenShots =>
-            _profile.ShotInterval * _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable) *
-            _modifiers.GetTorpedoFireDelayMultiplier(_profile.Family == WeaponFamily.Torpedo) *
-            _modifiers.GetMainBatteryFireDelayMultiplier(mainBattery);
+        internal float DelayBetweenShots => _profile.ShotInterval * GetTimingMultipliers().interval;
+        internal float PendingShotIntervalRatio { get; private set; } = 1f;
+
+        private (float reload, float interval) GetTimingMultipliers()
+        {
+            float shared = _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable) *
+                _modifiers.GetTorpedoFireDelayMultiplier(_profile.Family == WeaponFamily.Torpedo) *
+                _modifiers.GetMainBatteryFireDelayMultiplier(mainBattery);
+            return (shared * _modifiers.FireDelayMultiplier,
+                shared * _modifiers.WeaponPowerShotIntervalMultiplier);
+        }
+
+        internal bool RefreshTiming()
+        {
+            var timing = GetTimingMultipliers();
+            PendingShotIntervalRatio = timing.interval / _intervalMultiplier;
+            bool changed = timing.reload != _reloadMultiplier || timing.interval != _intervalMultiplier;
+            if (!changed) return false;
+            _reloadTimer.AppendTime(_reloadTimer.TimeLeft * (timing.reload / _reloadMultiplier - 1f));
+            _reloadMultiplier = timing.reload;
+            _intervalMultiplier = timing.interval;
+            return true;
+        }
 
         internal bool CanEngage(ShipClass targetClass) =>
             (!StrikecraftOnly || targetClass.IsStrikecraft()) && (!ShipsOnly || !targetClass.IsStrikecraft());
@@ -77,7 +99,7 @@ namespace EmpireAtWar.ViewComponents.Health
         public void SetData(WeaponProfile profile, float maxAttackDistance, float missSpread,
             IWeaponPresenter weaponPresenter, CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers,
             ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, IncomingMissileRegistry missiles,
-            ShotPoolPrewarmer poolPrewarmer)
+            ShotPoolPrewarmer poolPrewarmer, int inFlightCap = 0)
         {
             _boltFlights = boltFlights;
             _poolPrewarmer = poolPrewarmer;
@@ -88,6 +110,9 @@ namespace EmpireAtWar.ViewComponents.Health
             WeaponPresenter = weaponPresenter;
             _attackCoordinator = attackCoordinator;
             _modifiers = modifiers;
+            _inFlightCap = inFlightCap > 0 ? inFlightCap : ExpectedShotsInFlight(profile);
+            (_reloadMultiplier, _intervalMultiplier) = GetTimingMultipliers();
+            PendingShotIntervalRatio = 1f;
             _impactPresenter = impactPresenter;
             _missiles = missiles;
             _mountYaw = (MinYaw + MaxYaw) * 0.5f;
@@ -153,16 +178,14 @@ namespace EmpireAtWar.ViewComponents.Health
 
         internal bool TryStartScheduledSequence(out int generation)
         {
-            if (_modifiers.IsIonDisabled || _modifiers.IsCloaked || !_modifiers.CanFireWeapon(mainBattery))
+            if (_modifiers.IsIonDisabled || _modifiers.IsCloaked || !_modifiers.CanFireWeapon(mainBattery) ||
+                !GetPool().IsPrewarmed)
             {
                 generation = _sequence.Generation;
                 return false;
             }
-            if (!_sequence.TryStart(out generation)) return false;
-            _reloadTimer.ChangeDelay(_profile.Reload * _modifiers.FireDelayMultiplier *
-                _modifiers.GetFullSalvoFireDelayMultiplier(_profile.Interceptable) *
-                _modifiers.GetTorpedoFireDelayMultiplier(_profile.Family == WeaponFamily.Torpedo) *
-                _modifiers.GetMainBatteryFireDelayMultiplier(mainBattery)).StartTimer();
+            if (!_sequence.TryStart(_profile.ShotsPerSalvo, _inFlightCap, out generation)) return false;
+            _reloadTimer.ChangeDelay(_profile.Reload * GetTimingMultipliers().reload).StartTimer();
             return true;
         }
 
@@ -184,7 +207,7 @@ namespace EmpireAtWar.ViewComponents.Health
             }
 
             _sequence.RecordShotEmission(sequenceGeneration);
-            if (ShotEmitted != null) ShotEmitted.Invoke(_profile, transform);
+            if (ShotEmitted != null) ShotEmitted.Invoke(_profile, transform, DelayBetweenShots);
             if (isHit)
             {
                 IncomingMissile missile = null;
@@ -203,19 +226,25 @@ namespace EmpireAtWar.ViewComponents.Health
             _sequence.TryCompleteEffect(sequenceGeneration);
         }
 
+        internal void PrepareEffects() => GetPool();
+
         private ShotEffectPool GetPool()
         {
             if (_effectPool != null) return _effectPool;
             _effectPool = _poolPrewarmer.CreatePool(_profile, transform, OnTurretEffectCompleted,
-                _impactPresenter, _boltFlights, ExpectedShotsInFlight(_profile));
+                _impactPresenter, _boltFlights, _inFlightCap);
             return _effectPool;
         }
 
         /// <summary>One salvo plus every further salvo fired while the slowest shot is still flying.</summary>
-        internal static int ExpectedShotsInFlight(WeaponProfile profile)
+        internal static int ExpectedShotsInFlight(WeaponProfile profile) => ExpectedShotsInFlight(profile, 1f, 1f);
+
+        internal static int ExpectedShotsInFlight(WeaponProfile profile, float reloadMultiplier, float intervalMultiplier)
         {
             float flightSeconds = profile.ProjectileSpeed > 0f ? profile.Range / profile.ProjectileSpeed : 0f;
-            int salvos = 1 + Mathf.CeilToInt(flightSeconds / Mathf.Max(profile.CycleSeconds, 0.01f));
+            float cycle = Mathf.Max(profile.Reload * reloadMultiplier,
+                (profile.ShotsPerSalvo - 1) * profile.ShotInterval * intervalMultiplier);
+            int salvos = 1 + Mathf.CeilToInt(flightSeconds / Mathf.Max(cycle, 0.01f));
             return profile.ShotsPerSalvo * salvos;
         }
 

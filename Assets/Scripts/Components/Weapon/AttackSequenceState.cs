@@ -6,12 +6,12 @@ namespace EmpireAtWar.Components.Weapon
         private int _generation;
 
         public Status CurrentStatus { get; private set; } = Status.Ready;
-        public bool IsBusy => CurrentStatus == Status.Emitting || CurrentStatus == Status.WaitingForEffects;
+        public bool IsBusy => CurrentStatus == Status.Emitting;
         public int Generation => _generation;
 
-        public bool TryStart(out int generation)
+        public bool TryStart(int shotsPerSalvo, int inFlightCap, out int generation)
         {
-            if (CurrentStatus != Status.Ready)
+            if (CurrentStatus != Status.Ready || _activeEffects + shotsPerSalvo > inFlightCap)
             {
                 AttackSequenceDiagnostics.RecordRejectedBusyStart();
                 generation = _generation;
@@ -55,28 +55,20 @@ namespace EmpireAtWar.Components.Weapon
                 return;
             }
 
-            CurrentStatus = _activeEffects == 0 ? Status.Ready : Status.WaitingForEffects;
-            if (CurrentStatus == Status.Ready)
-            {
-                AttackSequenceDiagnostics.RecordSequenceFinished();
-            }
+            CurrentStatus = Status.Ready;
+            AttackSequenceDiagnostics.RecordSequenceFinished();
         }
 
         public bool TryCompleteEffect(int generation)
         {
-            if (generation != _generation || _activeEffects == 0)
+            // Pool lease validation owns callback lifetime; older salvos can still be in flight.
+            if (_activeEffects == 0)
             {
                 AttackSequenceDiagnostics.RecordUnmatchedCompletion();
                 return false;
             }
 
             _activeEffects--;
-            if (CurrentStatus == Status.WaitingForEffects && _activeEffects == 0)
-            {
-                CurrentStatus = Status.Ready;
-                AttackSequenceDiagnostics.RecordSequenceFinished();
-            }
-
             return true;
         }
 
@@ -97,7 +89,7 @@ namespace EmpireAtWar.Components.Weapon
             CurrentStatus = Status.Released;
         }
 
-        /// <summary>Makes a released sequence ready again; the generation stays advanced so old effects stay ignored.</summary>
+        /// <summary>Makes a released sequence ready again; the released pool no longer delivers callbacks.</summary>
         public void Restart()
         {
             if (CurrentStatus == Status.Released)
@@ -110,7 +102,6 @@ namespace EmpireAtWar.Components.Weapon
         {
             Ready,
             Emitting,
-            WaitingForEffects,
             Released
         }
     }

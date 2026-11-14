@@ -7,7 +7,7 @@ namespace EmpireAtWar.Services.Audio
     {
         bool TryPlayOneShot(ShipSfxHandle ship, SfxProfile sfx, Vector3 position);
 
-        bool TryPlayWeaponShot(ShipSfxHandle ship, WeaponProfile weapon, Transform muzzle);
+        bool TryPlayWeaponShot(ShipSfxHandle ship, WeaponProfile weapon, Transform muzzle, float shotInterval);
 
         bool TryHoldLoop(ShipSfxHandle ship, SfxProfile loop, Vector3 position, float volumeScale, float pitch);
 

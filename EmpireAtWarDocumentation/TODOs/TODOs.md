@@ -68,9 +68,6 @@
 
 
 
-- [ ] **Boost Weapon Power firing rate** → [[TODOs/Bugs/Boost_Weapon_Power_Fire_Rate_Fix|Boost Weapon Power Fire Rate Fix]]
-  - Status: todo (2026-11-14). Source-verified: effect-flight gate blocks reload gain (Ion/Missile 1×, Turbolaser ≈1.3×); burst spacing ignores boost. Decisions: bounded in-flight cap with boosted prewarm for ability-5 units (Option B); accept +20–27% unboosted long-range Ion/Missile DPS. Implementation pending.
-
 - [ ] **Ship hardpoints, firing angles and balance** → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]
   - Status: todo (2026-11-13). Peleset/Recalcitrant wrapped-yaw mismatch; Recusant DPS/coverage; Dispatcher/Resolute/Arquitens narrow arcs; Mandator economics; shared-prefab telemetry and Venator II description. Findings recorded; fixes unimplemented.
 
@@ -269,6 +266,10 @@
   - Closed 2026-10-29 by backlog triage; user gates → [[TODOs/User_Acceptance_Queue]].
 
 ### Bugs
+
+- [x] **Boost Weapon Power firing rate** → [[Done/Bugs/Boost_Weapon_Power_Fire_Rate_Fix|Boost Weapon Power Fire Rate Fix]]
+  - Completed 2026-11-14: faster burst spacing/reloads, bounded overlap and prewarm admission, pending-wait retiming and effective-interval audio. Unity compile/import verified; tests not run. Gameplay/profiling → [[TODOs/User_Acceptance_Queue#Boost Weapon Power Firing Rate Fix]].
+
 
 - [x] **Fix AI battle-log follow-ups (capture safety bounce, patrol shutdown, stuck recovery latch, locale log numbers)** → [[Done/Bugs/Enemy_AI_Battle_Log_Followup_Fixes]]
   - Completed 2026-11-14 from battle `Loading_20261114_125624` (checks 3–5 failed). Unity compile clean; tests not run; battle replay → [[TODOs/User_Acceptance_Queue]].

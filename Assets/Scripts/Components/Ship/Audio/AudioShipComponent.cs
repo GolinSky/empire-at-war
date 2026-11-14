@@ -115,9 +115,9 @@ namespace EmpireAtWar.Components.Ship.Audio
             }
         }
 
-        public void PlayWeaponShot(WeaponProfile profile, Transform muzzle)
+        public void PlayWeaponShot(WeaponProfile profile, Transform muzzle, float shotInterval)
         {
-            if (_initialized) _shipSfxService.TryPlayWeaponShot(_ship, profile, muzzle);
+            if (_initialized) _shipSfxService.TryPlayWeaponShot(_ship, profile, muzzle, shotInterval);
         }
 
         public void HandleEnemyDetected()

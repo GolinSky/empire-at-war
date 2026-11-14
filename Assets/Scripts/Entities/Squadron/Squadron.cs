@@ -291,8 +291,8 @@ namespace EmpireAtWar.Entities.Squadrons
             foreach (var view in _sFoilsViews) view.SetClosed(_sFoils.IsClosed, false);
         }
 
-        private void HandleShotEmitted(WeaponProfile profile, Transform muzzle) =>
-            _shipSfxService.TryPlayWeaponShot(_audioHandle, profile, muzzle);
+        private void HandleShotEmitted(WeaponProfile profile, Transform muzzle, float shotInterval) =>
+            _shipSfxService.TryPlayWeaponShot(_audioHandle, profile, muzzle, shotInterval);
 
         public void MoveTo(Vector2 screenPosition) =>
             MoveTo(_cameraService.GetWorldPoint(screenPosition, _flight.Centroid));

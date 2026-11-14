@@ -77,11 +77,12 @@ verification: source-and-assets
 | ID / definition | Active / recovery | Effect or restriction |
 |---|---|---|
 | `14` — CR90 Power to Engines | `20 / 50 s` | Speed `×2`, fire delay `×3`, shield regeneration `×0`; cannot manually cancel |
-| `5` — Boost Weapon Power | `7 / 50 s` | Damage `×2`, fire delay `×0.3`, speed unchanged; cancellable |
+| `5` — Boost Weapon Power | `7 / 50 s` | Reload `×0.1`, within-burst interval `×0.1`, speed/shield regeneration `×0.5`; damage unchanged; cancellable |
 | `18` — Lock S-Foils | Toggle / `0 s` | Speed `×1.3`, fire delay `×3`, shield regeneration `×3`; press again to reopen |
 | `11` — Cloak | `80 / 10 s` | Sets cloaked state; cancellable; generic implementation has no recent-damage activation test |
 | `22` — Tractor Beam | `20 / 25 s` | Enemy Corvette/Frigate within `225` units; target speed `×0.25`; cancellable |
 
+- Boost Weapon Power timing verified 2026-11-14: activation/cancellation/expiry retimes pending waits. Bursts can overlap older projectiles within a prewarmed cap; one shot per mount per frame remains the limit. Gameplay/profiling acceptance → [[Done/Bugs/Boost_Weapon_Power_Fire_Rate_Fix]].
 - These are shared definition/settings values; not every unit has these abilities.
 - Tractor Beam ends when its selected hardpoint or target is destroyed, caster is ion-disabled, or the target leaves range; caster death also ends it.
 - Old fleet proposals describe Titan cloak and Allegiance Concentrated Fire. Do not infer current assignments from those proposals; check the unit asset and catalog.
