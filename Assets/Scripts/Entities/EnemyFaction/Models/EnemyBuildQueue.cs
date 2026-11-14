@@ -8,6 +8,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     /// <summary>The AI's paid builds, using the player's per-ID production pipelines.</summary>
     public sealed class EnemyBuildQueue
     {
+        private const float MAX_DEPLOYMENT_WAIT_SECONDS = 6f;
+
         private EnemyPendingBuild _lastShipInGroup;
         private readonly List<EnemyPendingBuild> _builds = new List<EnemyPendingBuild>();
         private readonly List<UnitRequest> _finished = new List<UnitRequest>();
@@ -58,38 +60,47 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             for (int i = 0; i < _builds.Count;)
             {
                 EnemyPendingBuild build = _builds[i];
-                if (build.Request is ShipUnitRequest && build.TimeLeft == 0f && gatherShips)
+                bool isShip = build.Request is ShipUnitRequest;
+                float remaining = deltaTime;
+                // Completed ships wait for deployment without occupying a production lane.
+                if (!isShip || build.TimeLeft > 0f)
                 {
-                    i++;
-                    continue;
-                }
-                string id = build.Request.Id;
-                if (_remainingTime.TryGetValue(id, out float remaining))
-                {
-                    if (remaining <= 0f)
+                    string id = build.Request.Id;
+                    if (_remainingTime.TryGetValue(id, out float pipelineTime))
                     {
-                        i++;
-                        continue;
+                        if (pipelineTime <= 0f)
+                        {
+                            i++;
+                            continue;
+                        }
+                        remaining = pipelineTime;
                     }
-                }
-                else
-                {
                     // Older saves may contain more pipelines than new purchases allow.
-                    if (_remainingTime.Count >= PlayerFactionModel.MAX_ACTIVE_PIPELINES)
+                    else if (_remainingTime.Count >= PlayerFactionModel.MAX_ACTIVE_PIPELINES)
                     {
                         i++;
                         continue;
                     }
-                    remaining = deltaTime;
+
+                    float elapsed = Math.Min(build.TimeLeft, remaining);
+                    build.Advance(elapsed);
+                    remaining -= elapsed;
+                    _remainingTime[id] = remaining;
                 }
 
-                float elapsed = Math.Min(build.TimeLeft, remaining);
-                build.Advance(elapsed);
-                _remainingTime[id] = remaining - elapsed;
-                if (build.TimeLeft > 0f || gatherShips && build.Request is ShipUnitRequest)
+                if (build.TimeLeft > 0f)
                 {
                     i++;
                     continue;
+                }
+                if (gatherShips && isShip)
+                {
+                    build.WaitForDeployment(remaining);
+                    if (build.DeploymentWait < MAX_DEPLOYMENT_WAIT_SECONDS)
+                    {
+                        i++;
+                        continue;
+                    }
                 }
 
                 _finished.Add(build.Request);

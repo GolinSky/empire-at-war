@@ -7,6 +7,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     {
         public UnitRequest Request { get; }
         public float TimeLeft { get; private set; }
+        internal float DeploymentWait { get; private set; }
 
         public EnemyPendingBuild(UnitRequest request, float timeLeft)
         {
@@ -15,5 +16,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         }
 
         internal void Advance(float deltaTime) => TimeLeft = Math.Max(0f, TimeLeft - deltaTime);
+
+        internal void WaitForDeployment(float deltaTime) => DeploymentWait += deltaTime;
     }
 }

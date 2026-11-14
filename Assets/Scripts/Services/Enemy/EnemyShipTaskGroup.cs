@@ -45,7 +45,7 @@ namespace EmpireAtWar.Services.Enemy
             next = DecisionModel.Evaluate(Context.Snapshot, IsCaptureDetachment, allowOffense: canAssemble, now: now);
             if (IsMainForce || next.State == EnemyStrategicState.DefendBase)
                 next = new EnemyStrategicDecision(next.Reason, next.State, Ships.Count);
-            TacticalMarker request = ContextBuilder.AlliedMarkers == null ? null :
+            TacticalMarker request = Context.Snapshot.WithdrawFromForwardStation || ContextBuilder.AlliedMarkers == null ? null :
                 ContextBuilder.AlliedMarkers.SelectRequest(Context, DecisionModel.IsRecovering);
             if (request != null && request.Type != TacticalMarkerType.Retreat &&
                 !ContextBuilder.IsMarkerApproachSafe(request.Point)) request = null;

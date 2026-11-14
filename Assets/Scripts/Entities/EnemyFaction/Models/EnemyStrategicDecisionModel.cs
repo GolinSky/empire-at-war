@@ -54,6 +54,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public float FleetRaw { get; }
         public bool RecoveryMode { get; }
         public bool RecoveryCapturePending { get; }
+        public bool WithdrawFromForwardStation { get; }
 
         public EnemyStrategicSnapshot(
             BattleVictoryCondition victoryCondition,
@@ -74,7 +75,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasStationPressure = false,
             bool hasSafeRetreat = true,
             bool hasEconomyRaidTarget = false,
-            float localRaw = float.NaN, float fleetRaw = float.NaN, bool recoveryMode = false, bool recoveryCapturePending = false)
+            float localRaw = float.NaN, float fleetRaw = float.NaN, bool recoveryMode = false,
+            bool recoveryCapturePending = false, bool withdrawFromForwardStation = false)
         {
             VictoryCondition = victoryCondition;
             Difficulty = difficulty;
@@ -91,6 +93,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             FleetRaw = float.IsNaN(fleetRaw) ? fleetAdvantage : fleetRaw;
             RecoveryMode = recoveryMode;
             RecoveryCapturePending = recoveryCapturePending;
+            WithdrawFromForwardStation = withdrawFromForwardStation;
             HasThreatenedSite = hasThreatenedSite;
             HasLocalThreat = hasLocalThreat;
             HasRaidTarget = hasRaidTarget;
@@ -280,7 +283,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 snapshot.LocalAdvantage < profile.RetreatAdvantage ||
                 _hasLastState && _lastState == EnemyStrategicState.RetreatValue &&
                 snapshot.LocalAdvantage < profile.RetreatAdvantage * RETREAT_EXIT_SCALE;
-            if (snapshot.OwnShipCount > 0 && snapshot.RecoveryMode && withdrawForRecovery)
+            if (snapshot.OwnShipCount > 0 && snapshot.WithdrawFromForwardStation && snapshot.HasSafeRetreat)
+            {
+                state = EnemyStrategicState.RetreatValue;
+                reason = "Withdraw from the outmatched forward station and regroup at the primary station.";
+                Bypass = "forwardStationFallback";
+            }
+            else if (snapshot.OwnShipCount > 0 && snapshot.RecoveryMode && withdrawForRecovery)
             {
                 if (snapshot.RecoveryCapturePending && snapshot.HasCaptureTarget)
                 {

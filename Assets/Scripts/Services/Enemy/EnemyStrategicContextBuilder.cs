@@ -102,6 +102,9 @@ namespace EmpireAtWar.Services.Enemy
     {
         private readonly EnemyStationPressureTracker _stationPressure;
         private readonly EnemyRecoveryAnchor _recovery;
+        // Task groups share the commander's fleet-wide decision to leave the forward station.
+        private readonly EnemyStrategicContextBuilder _stationAssessment;
+        private GameEntity _withdrawingFromStation;
         private bool _preferStrategicObjectives;
         private Vector3 _strategicCenter;
 
@@ -148,6 +151,7 @@ namespace EmpireAtWar.Services.Enemy
         public bool CaptureReservedByOtherGroup { get; private set; }
         public bool RecoveryActive => _recovery.IsActive;
         public bool StationCritical => _stationPressure.IsStationCritical;
+        public Vector3? ForwardStationFallback { get; private set; }
         public AllyAiMarkerSource AlliedMarkers { get; }
         private readonly List<IShipEntity> _ownShips = new List<IShipEntity>();
         private readonly List<FormationPoint> _formationPositions = new List<FormationPoint>();
@@ -228,6 +232,7 @@ namespace EmpireAtWar.Services.Enemy
             _productionAccess = source._productionAccess;
             _stationPressure = source._stationPressure;
             _recovery = source._recovery;
+            _stationAssessment = source;
         }
 
         public EnemyStrategicContextBuilder CreateGroupBuilder() => new EnemyStrategicContextBuilder(this);
@@ -238,8 +243,10 @@ namespace EmpireAtWar.Services.Enemy
         public (bool HasPressure, bool GatherReinforcements) AssessStation(IReadOnlyList<IShipEntity> ships)
         {
             Vector3 origin = ToVector(CalculateFleetCenter(ships));
-            GameEntity ownBase = FindOwnBase(origin);
-            GameEntity defenseTarget = BuildBaseThreat(ownBase);
+            GameEntity ownBase = _withdrawingFromStation != null && !_withdrawingFromStation.HealthModel.IsDestroyed
+                ? _withdrawingFromStation
+                : FindOwnBase(origin);
+            BuildBaseThreat(ownBase);
             _groupScoped = false;
             _ownShips.Clear();
             _ownShips.AddRange(ships);
@@ -247,10 +254,12 @@ namespace EmpireAtWar.Services.Enemy
             _forceBuilder.BuildKnown(_focusTeamForce, _intel, Time.time,
                 sighting => _playerRoster.IsHostile(_owner.Id, sighting.Owner));
             BuildOwnNear(_localOwnForce, origin, LOCAL_ENGAGEMENT_RADIUS);
+            ForwardStationFallback = FindForwardStationFallback(ownBase, origin);
+            _withdrawingFromStation = ForwardStationFallback.HasValue ? ownBase : null;
             _recovery.Update(origin, CombatMatchup.Advantage(_ownTeamForce, _focusTeamForce),
                 FindLocalThreat(origin, Time.time) != null, HasOwnStation(), Time.time,
                 (position, radius) => ships.Count == 0 || IsObjectiveSafe(origin, position, radius, true), ships.Count > 0, !_focusTeamForce.IsEmpty);
-            return (_stationPressure.HasPressure, ShouldGatherReinforcements(ownBase, defenseTarget));
+            return (_stationPressure.HasPressure, ShouldGatherReinforcements(ownBase));
         }
 
         public EnemyStrategicContext Build(IReadOnlyList<IShipEntity> ships = null,
@@ -278,7 +287,9 @@ namespace EmpireAtWar.Services.Enemy
                 _ionRiskWeight = Mathf.Max(_ionRiskWeight, 1f + capitalWeight * health.Shields / durability);
             }
             Vector3 origin = ToVector(CalculateFleetCenter(ownShips));
-            GameEntity ownBase = FindOwnBase(origin);
+            EnemyStrategicContextBuilder stationAssessment = _stationAssessment ?? this;
+            Vector3? forwardFallback = stationAssessment.ForwardStationFallback;
+            GameEntity ownBase = stationAssessment._withdrawingFromStation ?? FindOwnBase(origin);
             Vector3 home = ownBase != null ? ownBase.GetFacade<IEntityTransformFacade>().Transform.position : origin;
             PlayerId focusEnemy = FindFocusEnemy(home);
             GameEntity enemyBaseTarget = FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == focusEnemy, origin);
@@ -306,10 +317,12 @@ namespace EmpireAtWar.Services.Enemy
                     _localThreat != null, HasOwnStation(), now,
                     (position, radius) => ownShips.Count == 0 || IsObjectiveSafe(origin, position, radius, true), ownShips.Count > 0, !_focusTeamForce.IsEmpty);
             EnemyCaptureObjective captureObjective = SelectCaptureObjective(origin, now);
-            Vector3? retreatAnchor = FindRetreatAnchor(origin, ownBase);
+            Vector3? retreatAnchor = forwardFallback ?? FindRetreatAnchor(origin, ownBase);
             string recoveryReason = retreatAnchor.HasValue
                 ? "Validated a safe home or allied relay anchor."
                 : "No safe home or allied relay; hold/rebuild or take a viable local objective.";
+            if (forwardFallback.HasValue)
+                recoveryReason = "Withdrawing from an outmatched forward station to the rear of the primary station.";
             float baseThreatRatio = _baseThreatForce.IsEmpty
                 ? 0f
                 : 1f / CombatMatchup.Advantage(_ownForce, _baseThreatForce);
@@ -340,7 +353,8 @@ namespace EmpireAtWar.Services.Enemy
                 hasEconomyRaidTarget: _raidTarget != null && _raidTarget.TryGetFacade(out IMiningFacilityFacade _),
                 recoveryMode: _recovery.IsActive,
                 recoveryCapturePending: captureObjective != null && _recovery.PendingCaptureObjective != null &&
-                    captureObjective.Id == _recovery.PendingCaptureObjective.Id);
+                    captureObjective.Id == _recovery.PendingCaptureObjective.Id,
+                withdrawFromForwardStation: forwardFallback.HasValue);
             _receivers.Clear();
             _shipForces.Clear();
             foreach (IShipEntity ship in ownShips)
@@ -945,11 +959,50 @@ namespace EmpireAtWar.Services.Enemy
             return FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == productionHost, origin);
         }
 
-        private bool ShouldGatherReinforcements(GameEntity ownBase, GameEntity defenseTarget)
+        private Vector3? FindForwardStationFallback(GameEntity station, Vector3 origin)
         {
-            if (ownBase == null || _stationPressure.IsStationCritical ||
-                Time.time - _stationPressure.LastDamageTime < 5f ||
-                defenseTarget != null && defenseTarget.GetFacade<IUnitCombatObserverFacade>().IsAttacking(ownBase))
+            if (!_stationPressure.HasPressure || station == null ||
+                !station.TryGetFacade(out ISecondStationFacade _)) return null;
+
+            Vector3 front = station.GetFacade<IEntityTransformFacade>().Transform.position;
+            if (_withdrawingFromStation != station)
+            {
+                float radius = LOCAL_ENGAGEMENT_RADIUS + station.GetFacade<INavigationFootprintFacade>().NavigationRadius;
+                BuildHostilesNear(_localThreatForce, front, radius);
+                BuildOwnNear(_baseThreatForce, front, radius);
+                float threshold = EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage;
+                if (CombatMatchup.Advantage(_baseThreatForce, _localThreatForce) > threshold) return null;
+            }
+
+            GameEntity primary = FindClosestEntity(
+                entity => entity.IsPlayerBase() && !entity.TryGetFacade(out ISecondStationFacade _),
+                owner => owner == station.Owner, front);
+            if (primary == null) return null;
+
+            Vector3 rear = primary.GetFacade<IEntityTransformFacade>().Transform.position;
+            Vector3 away = rear - front;
+            away.y = 0f;
+            if (away.sqrMagnitude == 0f) return null;
+            float clearance = 0f;
+            foreach (IShipEntity ship in _ownShips) clearance = Mathf.Max(clearance, ship.NavigationRadius);
+            Vector3 rally = _withdrawingFromStation == station && ForwardStationFallback is Vector3 previous
+                ? previous
+                : rear + away.normalized *
+                    (primary.GetFacade<INavigationFootprintFacade>().NavigationRadius + 2f * clearance);
+            if (IsSafeFallback(rally)) return rally;
+            if (_reinforcementZonesSystem.TryGetDefaultZoneCenter(primary.Owner, out Vector3 home) &&
+                PlanarDistance(home, front) > PlanarDistance(rear, front) && IsSafeFallback(home)) return home;
+            return null;
+
+            bool IsSafeFallback(Vector3 point) => _recovery.IsPlacementSafe(point, clearance) &&
+                (_ownShips.Count == 0
+                    ? _navigation.IsPositionClear(point, clearance, includeReservations: false)
+                    : IsObjectiveSafe(origin, point, 0f, true));
+        }
+
+        private bool ShouldGatherReinforcements(GameEntity ownBase)
+        {
+            if (ownBase == null || _stationPressure.HasPressure || Time.time - _stationPressure.LastDamageTime < 5f)
                 return false;
 
             Vector3 home = ownBase.GetFacade<IEntityTransformFacade>().Transform.position;

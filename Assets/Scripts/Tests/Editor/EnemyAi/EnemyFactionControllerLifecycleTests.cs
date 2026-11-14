@@ -55,6 +55,40 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void GatherShips_ReleasesReadyShipBeforeSlowBatchFinishes()
+        {
+            EnemyBuildQueue queue = new EnemyBuildQueue();
+            FactionData data = new FactionData();
+            var flagship = new ShipUnitRequest(data, ShipType.Tector);
+            var escort = new ShipUnitRequest(data, ShipType.Venator);
+            List<UnitRequest> arrived = new List<UnitRequest>();
+            queue.Add(flagship, 2f);
+            queue.Add(escort, 30f);
+
+            queue.Advance(7f, arrived.Add, gatherShips: true);
+            Assert.That(arrived, Is.Empty);
+            queue.Advance(1f, arrived.Add, gatherShips: true);
+            Assert.That(arrived, Is.EqualTo(new UnitRequest[] { flagship }));
+            Assert.That(queue.Builds[0].TimeLeft, Is.EqualTo(22f));
+        }
+
+        [Test]
+        public void Advance_ReleasesReadyShipWhenProductionPipelinesAreOccupied()
+        {
+            EnemyBuildQueue queue = new EnemyBuildQueue();
+            var ship = new ShipUnitRequest(new FactionData(), ShipType.Venator);
+            List<UnitRequest> arrived = new List<UnitRequest>();
+            queue.Add(ship, 1f);
+            queue.Advance(1f, arrived.Add, gatherShips: true);
+            for (int i = 0; i < PlayerFactionModel.MAX_ACTIVE_PIPELINES; i++)
+                queue.ReserveExternalPipeline(i.ToString());
+
+            queue.Advance(1f, arrived.Add);
+            Assert.That(arrived, Is.EqualTo(new UnitRequest[] { ship }));
+            Assert.That(queue.Builds, Is.Empty);
+        }
+
+        [Test]
         public void LateDispose_CancelsPendingBuildAndIsIdempotent()
         {
             EnemyFactionModel model =

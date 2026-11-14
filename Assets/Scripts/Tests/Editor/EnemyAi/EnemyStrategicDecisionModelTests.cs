@@ -239,6 +239,22 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void OutmatchedForwardDefense_WithdrawsImmediatelyAndStaysAtFallbackUnderPressure()
+        {
+            var model = new EnemyStrategicDecisionModel();
+            EnemyStrategicSnapshot defending = CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet,
+                EnemyAiDifficulty.UltraHard, 8, 10, 0, 0.7f, hasStationPressure: true);
+            EnemyStrategicSnapshot withdrawing = CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet,
+                EnemyAiDifficulty.UltraHard, 8, 10, 0, 0.7f, hasStationPressure: true,
+                withdrawFromForwardStation: true);
+
+            Assert.That(model.Evaluate(defending, now: 100f).State, Is.EqualTo(EnemyStrategicState.DefendBase));
+            Assert.That(model.Evaluate(withdrawing, now: 100.5f).State, Is.EqualTo(EnemyStrategicState.RetreatValue));
+            Assert.That(model.Bypass, Is.EqualTo("forwardStationFallback"));
+            Assert.That(model.Evaluate(withdrawing, now: 120f).State, Is.EqualTo(EnemyStrategicState.RetreatValue));
+        }
+
+        [Test]
         public void OutmatchedWithNothingToCapture_RaidsUndefendedStructure()
         {
             EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
@@ -562,7 +578,8 @@ namespace EmpireAtWar.Tests.Editor
             bool isRegrouped = true,
             bool hasStationPressure = false,
             bool hasSafeRetreat = true,
-            bool hasEconomyRaidTarget = false)
+            bool hasEconomyRaidTarget = false,
+            bool withdrawFromForwardStation = false)
         {
             return new EnemyStrategicSnapshot(
                 victoryCondition: victoryCondition,
@@ -582,7 +599,8 @@ namespace EmpireAtWar.Tests.Editor
                 isRegrouped: isRegrouped,
                 hasStationPressure: hasStationPressure,
                 hasSafeRetreat: hasSafeRetreat,
-                hasEconomyRaidTarget: hasEconomyRaidTarget);
+                hasEconomyRaidTarget: hasEconomyRaidTarget,
+                withdrawFromForwardStation: withdrawFromForwardStation);
         }
     }
 }

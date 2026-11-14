@@ -87,6 +87,12 @@ namespace EmpireAtWar.Services.Enemy
         {
             rally = default;
             defendHome = false;
+            if (_contextBuilder.ForwardStationFallback is Vector3 fallback)
+            {
+                rally = fallback;
+                defendHome = true;
+                return true;
+            }
             if (!_hasDecision) return false;
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
             {
@@ -232,7 +238,8 @@ namespace EmpireAtWar.Services.Enemy
                     _ships.Add(ship);
             var station = _contextBuilder.AssessStation(_ships);
             GatherReinforcements = station.GatherReinforcements;
-            IShipEntity patrolShip = _patrolShips.Select(_ships, _contextBuilder.StationCritical);
+            IShipEntity patrolShip = _patrolShips.Select(_ships,
+                _contextBuilder.StationCritical || _contextBuilder.ForwardStationFallback.HasValue);
             if (patrolShip != null) _ships.Remove(patrolShip);
             _taskGroups.Reconcile(_ships, station.HasPressure);
             _reservedCaptureObjectives.Clear();
@@ -266,7 +273,7 @@ namespace EmpireAtWar.Services.Enemy
                 snapshot.LocalAdvantage, snapshot.HasLocalThreat, snapshot.HasRaidTarget,
                 snapshot.IsRegrouped, snapshot.HasStationPressure, snapshot.HasSafeRetreat,
                 snapshot.HasEconomyRaidTarget, snapshot.LocalRaw, snapshot.FleetRaw,
-                snapshot.RecoveryMode, snapshot.RecoveryCapturePending);
+                snapshot.RecoveryMode, snapshot.RecoveryCapturePending, snapshot.WithdrawFromForwardStation);
             _recoveryStartedAt = primary.RecoveryStartedAt;
             _actionReason = primary.Executor.ActionReason + groupSummary;
             PublishDecision(primary.Decision, bodyCount, rallyingCount);
