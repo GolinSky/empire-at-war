@@ -22,6 +22,7 @@ namespace EmpireAtWar.Entities.ShipUi
         private CombatModifiers _modifiers;
 
         [SerializeField] private Image shipIconImage;
+        [SerializeField] private TMP_Text unitNameText;
         [SerializeField] private Button disableSelectionButton;
         [SerializeField] private Button focusButton;
         [SerializeField] private ShipAbilityBarUi abilityBar;
@@ -40,6 +41,8 @@ namespace EmpireAtWar.Entities.ShipUi
         public TooltipHoverView TooltipHover => tooltipHover;
 
         public void SetIcons(IShipIconProvider icons) => _icons = icons;
+
+        public void SetDisplayName(string displayName) => unitNameText.text = displayName;
 
         public void Initialize()
         {
@@ -116,6 +119,7 @@ namespace EmpireAtWar.Entities.ShipUi
             _isEntry = true;
             _onSelected = onSelected;
             _onFocused = entry.Focus;
+            unitNameText.gameObject.SetActive(false);
             shipIconImage.sprite = icon;
             shipIconImage.enabled = icon != null;
             abilityBar.gameObject.SetActive(false);

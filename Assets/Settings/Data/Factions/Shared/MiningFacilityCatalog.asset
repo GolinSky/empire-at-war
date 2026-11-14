@@ -17,6 +17,7 @@ MonoBehaviour:
     - key: 3
       value:
         matchups: {fileID: 0}
+        displayName: Tibanna Station
         description: A spawnable Tibanna gas mining station that provides recurring
           credits.
         role: Mining facility
@@ -33,6 +34,7 @@ MonoBehaviour:
     - key: 0
       value:
         matchups: {fileID: 0}
+        displayName: Mining Facility
         description: Construct at an owned capture site to provide recurring credits.
         role: Mining facility
         iconKey: c54029d425acba74c9c5d702e49710b6:21300000

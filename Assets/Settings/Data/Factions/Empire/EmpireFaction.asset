@@ -18,6 +18,7 @@ MonoBehaviour:
     - key: 202
       value:
         matchups: {fileID: 11400000, guid: 6887148f139f280438d9d67f651593e6, type: 2}
+        displayName: VSD I
         description: 6,000 hull; 4,000 shields; speed 16. Four heavy 4-burst artillery-rocket
           launchers and two 6-burst barrage-rocket launchers. Targetable shield generator,
           two engines and tractor beam. Six light dual turbolasers, four heavy laser
@@ -38,6 +39,7 @@ MonoBehaviour:
     - key: 201
       value:
         matchups: {fileID: 11400000, guid: 55d62e93f93a1f34badabec3d1a83f4a, type: 2}
+        displayName: ISD I
         description: "12,000 hull; 10,000 shields; speed 18. Twenty-four targetable
           weapons: six dual heavy turbolaser main batteries, two heavy dual ion cannons,
           two medium dual ion cannons, eight dual medium turbolasers and six medium
@@ -62,6 +64,7 @@ MonoBehaviour:
     - key: 203
       value:
         matchups: {fileID: 11400000, guid: 514f46b309303c04eaaaeb7733662a3e, type: 2}
+        displayName: VSD II
         description: "8,000 hull; 5,500 shields; speed 25. Four medium dual turbo-ion
           cannons and two medium turbo-ion cannons. Targetable shield generator,
           two engines and tractor beam. Six medium 3-burst turbolasers, six heavy
@@ -83,6 +86,7 @@ MonoBehaviour:
     - key: 204
       value:
         matchups: {fileID: 11400000, guid: 5660b95ce5f607a4884370642690984d, type: 2}
+        displayName: Arquitens
         description: "4,000 hull; 4,000 shields; speed 30. Four light long-range
           2-burst turbolasers and four 2-burst laser cannons. Engines and shield
           generator are targetable hardpoints. No hangar or fighter complement. Boost
@@ -102,6 +106,7 @@ MonoBehaviour:
     - key: 205
       value:
         matchups: {fileID: 11400000, guid: b01b394c2ca8a4b40a6db15525783e52, type: 2}
+        displayName: ISD II
         description: 16,000 hull; 12,000 shields; speed 18. Eight octuple turbolasers,
           two quad ion turrets, six medium ion cannons, six medium turbolasers and
           two medium dual turbolasers. Every weapon is targetable; shield generator,
@@ -122,6 +127,7 @@ MonoBehaviour:
     - key: 207
       value:
         matchups: {fileID: 11400000, guid: e2411bc7a0dc73f439949739e8ae9a73, type: 2}
+        displayName: Executor
         description: '150,000 hull; 200,000 shields; speed 10. Targetable: ten heavy
           2-burst long-range turbolasers, 23 heavy 2-burst dual turbolasers, eight
           heavy 2-burst long-range dual turbo-ions, ten heavy 8-burst artillery-rocket
@@ -144,6 +150,7 @@ MonoBehaviour:
     - key: 208
       value:
         matchups: {fileID: 11400000, guid: da45b1d1432550f47a485d67cb1fb21f, type: 2}
+        displayName: Raider
         description: 600 hull; 600 shields; speed 35. Four 2-burst laser cannons,
           two dual repeating point-defense mounts, two heavy 2-burst ion blasters
           and two heavy 5-burst concussion-missile launchers. Targetable engine and
@@ -164,6 +171,7 @@ MonoBehaviour:
     - key: 209
       value:
         matchups: {fileID: 11400000, guid: ce8195d5a87d2a34fa7374c25d89d352, type: 2}
+        displayName: Acclamator
         description: "4,700 hull; 2,000 shields; speed 25. Two targetable 4-burst
           assault-missile launchers, shield generator and engine. Four non-targetable
           heavy lasers and six non-targetable missile-defense mounts. Boost Weapon
@@ -185,6 +193,7 @@ MonoBehaviour:
     - key: 210
       value:
         matchups: {fileID: 11400000, guid: 5c515caf8c0852b458b6d5a383fd1fa5, type: 2}
+        displayName: Tector
         description: "15,000 hull; 10,000 shields; speed 16. Eight targetable heavy
           octuple turbolasers, two heavy long-range dual turbolasers, two shield
           generators, three engines and tractor beam. Seven heavy 3-burst turbolasers,
@@ -206,6 +215,7 @@ MonoBehaviour:
     - key: 211
       value:
         matchups: {fileID: 11400000, guid: 2e867f7906f912745a1d170c737e565a, type: 2}
+        displayName: Imp. Venator
         description: '9,000 hull and 10,000 shields. Republic Venator hardpoint layout:
           eight DBY-827 Heavy Turbolasers, two Imperial heavy dual turbolasers, two
           heavy turbolasers, two heavy ion cannons and one SPHAT beam. Intensify
@@ -227,6 +237,7 @@ MonoBehaviour:
     - key: 212
       value:
         matchups: {fileID: 11400000, guid: 1ab40ab88738a3d40ae586aca91250cf, type: 2}
+        displayName: Procursator
         description: "Combat destroyer: three quad heavy turbolasers, two medium
           dual turbolasers, eight light triple turbolasers and two medium ion cannons.
           No fighter complement. Boost Weapon Power makes weapons fire 10\xD7 faster
@@ -246,6 +257,7 @@ MonoBehaviour:
     - key: 214
       value:
         matchups: {fileID: 11400000, guid: ac8c0500ff4d2bd43a6e524f62694c7a, type: 2}
+        displayName: Titan
         description: Heavy Imperial battlecruiser with twelve quad heavy turbolasers,
           six medium dual turbolasers, four heavy ion cannons and two point defense
           lasers. No squadrons. Uses Boost Weapon Power and Tractor Beam. It requires
@@ -264,6 +276,7 @@ MonoBehaviour:
     - key: 213
       value:
         matchups: {fileID: 11400000, guid: 1e8d5f8644602a54aa8e45330d780674, type: 2}
+        displayName: Allegiance
         description: 'Heavy anti-capital battlecruiser: 20,000 hull, 15,000 shields;
           three heavy dual turbolasers, six heavy quad turbolasers, six medium dual
           turbolasers and six heavy ion cannons. Three engines, two shield generators,
@@ -283,6 +296,7 @@ MonoBehaviour:
     - key: 215
       value:
         matchups: {fileID: 11400000, guid: 24a14022d6124b44fb118da9e93f01c2, type: 2}
+        displayName: Tartan
         description: "Anti-squadron escort corvette with four large repeating lasers,
           one heavy laser and four point-defense mounts. 600 hull, 600 shields, speed
           35. Targetable engine and shield-generator hardpoints; no hangar or squadrons.
@@ -302,6 +316,7 @@ MonoBehaviour:
     - key: 216
       value:
         matchups: {fileID: 11400000, guid: 16ec1784ca6e7fc4d842d982fde86b5c, type: 2}
+        displayName: Gladiator
         description: '9,000 hull and 8,000 shields with capital shield regeneration.
           Four dual medium turbolasers, two concussion missile launchers and two
           point defense lasers. Deploys 2 fighter squadrons, 1 interceptor squadron,
@@ -322,6 +337,7 @@ MonoBehaviour:
     - key: 217
       value:
         matchups: {fileID: 11400000, guid: 55d62e93f93a1f34badabec3d1a83f4a, type: 2}
+        displayName: Interdictor
         description: "Imperial capital ship with 10,000 hull and 10,000 shields.
           Two heavy quad turbolasers, two heavy dual ion cannons, three medium quad
           turbolasers, four medium dual turbolasers and six heavy turbolasers. Boost
@@ -345,6 +361,7 @@ MonoBehaviour:
     - key: 200
       value:
         matchups: {fileID: 11400000, guid: 42b9d7cba8dab804589da64ac8ce570f, type: 2}
+        displayName: TIE Fighter
         description: 'Imperial squadron: ten TIE Fighters, each with 58 hull, no
           shields and two laser cannons. Screens carriers against fighters and bombers;
           vulnerable to anti-fighter corvettes.'
@@ -362,6 +379,7 @@ MonoBehaviour:
     - key: 201
       value:
         matchups: {fileID: 11400000, guid: 7c52c799b307ef24ab481ca1f82ccfb9, type: 2}
+        displayName: TIE Bomber
         description: 'Imperial squadron: six TIE Bombers, each with 100 hull, no
           shields, a laser cannon and a proton torpedo launcher. Attacks larger ships;
           vulnerable to fighters and anti-fighter weapons. Full squadron torpedo
@@ -380,6 +398,7 @@ MonoBehaviour:
     - key: 202
       value:
         matchups: {fileID: 11400000, guid: c5df0907ae25f944fa8027342b0f745c, type: 2}
+        displayName: TIE Avenger
         description: "Ten TIE Avengers. Each fighter has 54 hull, 8 shields, two
           light repeating lasers and two concussion-missile launchers. Boost Weapon
           Power makes weapons fire 10\xD7 faster and reload 90% faster and halves
@@ -401,6 +420,7 @@ MonoBehaviour:
     - key: 203
       value:
         matchups: {fileID: 11400000, guid: 606a86b08cc7a5e4eb247e01d41aa404, type: 2}
+        displayName: TIE Interceptor
         description: Eight fast TIE Interceptors, each with 62 hull and four laser
           cannons. Carrier interceptor.
         role: Interceptor / Anti-bomber
@@ -417,6 +437,7 @@ MonoBehaviour:
     - key: 204
       value:
         matchups: {fileID: 11400000, guid: 90bfd56a75214e249aaf83f0d74b2bfe, type: 2}
+        displayName: TIE Brute
         description: Ten heavy TIE Brutes, each with 64 hull and two heavy laser
           cannons. Advanced-loadout carrier fighter.
         role: Heavy fighter / Squadron screen
@@ -433,6 +454,7 @@ MonoBehaviour:
     - key: 205
       value:
         matchups: {fileID: 11400000, guid: b5b754d7809130641b8b0449137d8769, type: 2}
+        displayName: TIE Punisher
         description: 'Six TIE Punishers, each with 110 hull, 6 shields, one laser
           cannon, two proton-torpedo launchers and two missile launchers. Advanced-loadout
           carrier bomber. Each surviving craft regenerates 0.1 shield HP/s. Full
@@ -451,6 +473,7 @@ MonoBehaviour:
     - key: 206
       value:
         matchups: {fileID: 11400000, guid: 606a86b08cc7a5e4eb247e01d41aa404, type: 2}
+        displayName: Slave I (Boba)
         description: Boba Fett pilots Slave I alone. Its twin laser cannons hunt
           fighters and bombers. Slave I has 2460 hull and 1440 shields. Drops a Seismic
           Charge that damages nearby enemies after 1.5 seconds, especially fighter
@@ -473,6 +496,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Production I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -492,6 +516,7 @@ MonoBehaviour:
             multiplier: 1.2
         - factionData:
             matchups: {fileID: 0}
+            displayName: Production II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -514,6 +539,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Weapons I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -533,6 +559,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Weapons II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -552,6 +579,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Weapons III
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -574,6 +602,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Shields I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -593,6 +622,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Shields II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -612,6 +642,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Shields III
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -634,6 +665,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Defenses I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -653,6 +685,7 @@ MonoBehaviour:
             multiplier: 1.15
         - factionData:
             matchups: {fileID: 0}
+            displayName: Defenses II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -672,6 +705,7 @@ MonoBehaviour:
             multiplier: 1.3
         - factionData:
             matchups: {fileID: 0}
+            displayName: Defenses III
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -694,6 +728,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Structures
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -716,6 +751,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Income I
             description: Increases station income. Replaces the previous tier.
             role: Research
             iconKey: 5555e458b6d140f9aeeee10a133cb94b:21300000
@@ -734,6 +770,7 @@ MonoBehaviour:
             multiplier: 1.2
         - factionData:
             matchups: {fileID: 0}
+            displayName: Income II
             description: Increases station income. Replaces the previous tier.
             role: Research
             iconKey: 5555e458b6d140f9aeeee10a133cb94b:21300000

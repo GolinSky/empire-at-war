@@ -5,6 +5,13 @@ namespace EmpireAtWar.Ui.Base
 {
     public sealed class UiContentLayout : MonoBehaviour
     {
+        private const float FACTION_LEFT = 406f;
+        private const float SHIP_LEFT = 592f;
+        private const float RIGHT_MARGIN = 20f;
+        private const float BOTTOM_MARGIN = 22f;
+        private const float FACTION_HEIGHT = 274f;
+        private const float SHIP_HEIGHT = 244f;
+
         [SerializeField] private RectTransform panel;
         [SerializeField] private ScrollRect scroll;
         [SerializeField] private GridLayoutGroup grid;
@@ -18,6 +25,16 @@ namespace EmpireAtWar.Ui.Base
 
         public Transform Content => scroll.content;
         public Transform Viewport => scroll.viewport;
+
+        public static void SetPanelLayout(RectTransform target, bool isFaction)
+        {
+            float left = isFaction ? FACTION_LEFT : SHIP_LEFT;
+            target.anchorMin = Vector2.zero;
+            target.anchorMax = new Vector2(1f, 0f);
+            target.pivot = Vector2.zero;
+            target.anchoredPosition = new Vector2(left, BOTTOM_MARGIN);
+            target.sizeDelta = new Vector2(-left - RIGHT_MARGIN, isFaction ? FACTION_HEIGHT : SHIP_HEIGHT);
+        }
 
         public void AttachContent(RectTransform content, GridLayoutGroup contentGrid, ContentSizeFitter contentFitter)
         {
@@ -48,11 +65,11 @@ namespace EmpireAtWar.Ui.Base
             _hasLayout = true;
             _isFaction = isFaction;
             _isGroup = isGroup;
-            panel.sizeDelta = new Vector2(-612f, isFaction ? 274f : 222f);
+            SetPanelLayout(panel, isFaction);
             scroll.viewport.offsetMin = new Vector2(14f, 12f);
             scroll.viewport.offsetMax = new Vector2(-14f, isFaction ? -42f : -12f);
             grid.enabled = !isGroup;
-            grid.cellSize = isFaction ? new Vector2(114f, 106f) : new Vector2(80f, 198f);
+            grid.cellSize = isFaction ? new Vector2(114f, 106f) : new Vector2(80f, 220f);
             grid.spacing = new Vector2(8f, 6f);
             grid.padding = new RectOffset();
             grid.startCorner = GridLayoutGroup.Corner.UpperLeft;

@@ -47,6 +47,8 @@ namespace EmpireAtWar.Entities.CoreGameUi
         private bool _hasContentLayout;
         private bool _isFactionLayout;
         private bool _isShipGroupLayout;
+        private bool _isContentVisible;
+        private bool _isSpectator;
         private bool _hasTimeControls = true;
         private (string faction, bool ended, bool factionLayout, bool visible)? _lastHudStatus;
         private int _displayedDurationSeconds = -1;
@@ -67,6 +69,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             clearFleetButton.onClick.AddListener(_presenter.ClearFleetSelection);
             // Hidden until a super weapon presenter binds; battles without super weapons have none.
             superWeaponsView.SetAvailable(false);
+            unitActionsView.SetAvailable(false);
             _isInitialized = true;
         }
 
@@ -132,9 +135,10 @@ namespace EmpireAtWar.Entities.CoreGameUi
 
         public void SetMode(string label, bool spectator)
         {
+            _isSpectator = spectator;
             modeLabel.text = label;
             reinforcementButton.gameObject.SetActive(!spectator);
-            unitActionsView.SetAvailable(!spectator);
+            UpdateShipActionsVisibility();
         }
 
         public void SetPopulationCapacity(int current, int max)
@@ -158,8 +162,13 @@ namespace EmpireAtWar.Entities.CoreGameUi
 
         public void SetContentVisible(bool isVisible)
         {
+            _isContentVisible = isVisible;
             panelImage.gameObject.SetActive(isVisible);
+            UpdateShipActionsVisibility();
         }
+
+        private void UpdateShipActionsVisibility() =>
+            unitActionsView.SetAvailable(_isContentVisible && !_isFactionLayout && !_isSpectator);
 
         public void SetContentLayout(bool isFactionSelection, bool isShipGroupSelection)
         {
@@ -169,12 +178,12 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _isFactionLayout = isFactionSelection;
             _isShipGroupLayout = isShipGroupSelection;
             bool hasHeader = isFactionSelection;
-            panelImage.rectTransform.anchorMax = new Vector2(1f, 0f);
-            panelImage.rectTransform.sizeDelta = new Vector2(-612f, hasHeader ? 274f : 222f);
+            UiContentLayout.SetPanelLayout(panelImage.rectTransform, isFactionSelection);
             contentTitle.gameObject.SetActive(hasHeader);
             productionLabel.SetActive(isFactionSelection);
             selectionSlots.SetActive(!hasHeader);
             clearFleetButton.gameObject.SetActive(isShipGroupSelection);
+            UpdateShipActionsVisibility();
         }
 
     }

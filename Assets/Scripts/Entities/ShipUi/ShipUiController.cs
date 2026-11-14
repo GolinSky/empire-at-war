@@ -227,6 +227,11 @@ namespace EmpireAtWar.Entities.ShipUi
             }
 
             bool hasGroup = _model.HasShips && _playerSelectionContext.Count > 1;
+            _shipUi.SetDisplayName(_model.SelectedShipType.HasValue
+                ? _factions.GetShipFactionData(_model.SelectedShipType.Value).DisplayName
+                : _model.SelectedSquadronType.HasValue
+                    ? _factions.GetSquadronFactionData(_model.SelectedSquadronType.Value).DisplayName
+                    : "");
             _abilitySlots.Clear();
             _shipGroupUi.ClearGroups();
             SortedDictionary<ShipType, List<IEntity>> groups = new SortedDictionary<ShipType, List<IEntity>>();
@@ -260,8 +265,8 @@ namespace EmpireAtWar.Entities.ShipUi
             _shipUi.SetModifiers(_model.HasShips && !hasGroup &&
                 _playerSelectionContext.Entity.TryGetFacade(out ICombatModifiersFacade combat) ? combat.Modifiers : null);
 
-            AddSelectionGroups(groups, _shipGroupUi.AddGroup);
-            AddSelectionGroups(squadrons, _shipGroupUi.AddGroup);
+            AddSelectionGroups(groups, type => _factions.GetShipFactionData(type).DisplayName, _shipGroupUi.AddGroup);
+            AddSelectionGroups(squadrons, type => _factions.GetSquadronFactionData(type).DisplayName, _shipGroupUi.AddGroup);
 
             if (_isRouteActive && _model.HasShips && !hasGroup)
             {
@@ -292,7 +297,8 @@ namespace EmpireAtWar.Entities.ShipUi
         }
 
         private void AddSelectionGroups<T>(SortedDictionary<T, List<IEntity>> groups,
-            Action<T, IReadOnlyList<ShipUiEntry>, Action<ShipAbilityId>, ShipAutoPowerUiState, Action> addGroup) where T : struct, Enum
+            Func<T, string> getDisplayName,
+            Action<T, string, IReadOnlyList<ShipUiEntry>, Action<ShipAbilityId>, ShipAutoPowerUiState, Action> addGroup) where T : struct, Enum
         {
             foreach (KeyValuePair<T, List<IEntity>> group in groups)
             {
@@ -305,7 +311,7 @@ namespace EmpireAtWar.Entities.ShipUi
                         focus: () => FocusEntity(entity), entity: entity));
                 }
                 List<IEntity> casters = group.Value;
-                addGroup(group.Key, entries, id => _shipAbilityService.Press(casters, id, allowCancel: false),
+                addGroup(group.Key, getDisplayName(group.Key), entries, id => _shipAbilityService.Press(casters, id, allowCancel: false),
                     GetAutoPowerState(casters, individuallySelected: false), () => ToggleAutoPower(casters));
             }
         }

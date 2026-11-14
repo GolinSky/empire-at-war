@@ -18,6 +18,7 @@ MonoBehaviour:
     - key: 0
       value:
         matchups: {fileID: 11400000, guid: 653d9ec29b63e8247ad326a382bd4671, type: 2}
+        displayName: Venator I
         description: Heavy turbolasers engage large ships. Deploys 2 fighter squadrons,
           2 interceptor squadrons, 2 bomber squadrons at once. Carries 18 total squadron
           launches, including the initial deployment.
@@ -35,6 +36,7 @@ MonoBehaviour:
     - key: 12
       value:
         matchups: {fileID: 11400000, guid: c0df2ce6f2e7d2c42b42501e3bf56020, type: 2}
+        displayName: Venator II
         description: Upgraded Venator with 9,000 hull and 10,000 shields. Heavy weapons
           support the fleet. Boost Shield Power and Boost Weapon Power. Deploys 2
           fighter squadrons, 1 interceptor squadron, 2 bomber squadrons at once.
@@ -53,6 +55,7 @@ MonoBehaviour:
     - key: 2
       value:
         matchups: {fileID: 11400000, guid: e4f86e22329ba2b4a8badf3dd9a5816f, type: 2}
+        displayName: Arquitens
         description: Medium turbolasers and dual lasers escort larger ships against
           light targets.
         role: "Frigate \xB7 Escort"
@@ -69,6 +72,7 @@ MonoBehaviour:
     - key: 1
       value:
         matchups: {fileID: 11400000, guid: 22df59b8a5884e9458874b118fc3b7a0, type: 2}
+        displayName: Acclamator
         description: 'Medium turbolasers, lasers and proton torpedoes support the
           battle line. Deploys 2 fighter squadrons, 1 interceptor squadron, 1 bomber
           squadron at once. Carries 8 total squadron launches, including the initial
@@ -87,6 +91,7 @@ MonoBehaviour:
     - key: 5
       value:
         matchups: {fileID: 11400000, guid: b1f3c971db8c60640b5dbd3818bb1322, type: 2}
+        displayName: Dreadnought
         description: Heavy ion cannons strip shields while heavy turbolasers damage
           large targets.
         role: "Frigate \xB7 Shield breaker"
@@ -103,6 +108,7 @@ MonoBehaviour:
     - key: 7
       value:
         matchups: {fileID: 11400000, guid: 522ba884f3c6d224cb19c7a59f5dd39b, type: 2}
+        displayName: Rothana
         description: Eight DBY-827 heavy twin turbolasers lead a durable Republic
           battle line. Ion cannons weaken shields; laser batteries and point defense
           protect the fleet. Deploys 2 fighter squadrons, 1 interceptor squadron,
@@ -122,6 +128,7 @@ MonoBehaviour:
     - key: 8
       value:
         matchups: {fileID: 11400000, guid: c0df2ce6f2e7d2c42b42501e3bf56020, type: 2}
+        displayName: Resolute
         description: Unique Venator with 10,500 hull and 10,000 shields. SPHA-T Beam
           and Concentrate Fire. Allied ships and squadrons within 400 receive +50%
           vision, +20% hull, +10% shields, damage and speed, and 35% less incoming
@@ -142,6 +149,7 @@ MonoBehaviour:
     - key: 9
       value:
         matchups: {fileID: 11400000, guid: b92ff58098755ab4baa941419c34f072, type: 2}
+        displayName: Pride of the Core
         description: "Republic dreadnought with 20 turbolaser mounts, eight ion cannons,
           16 point-defense batteries, eight missile and four torpedo launchers. Boost
           Weapon Power makes weapons fire 10\xD7 faster and reload 90% faster. Vulnerable
@@ -162,6 +170,7 @@ MonoBehaviour:
     - key: 10
       value:
         matchups: {fileID: 11400000, guid: fcc5b4e54bcb0104486e9c66ffac9685, type: 2}
+        displayName: Imperator
         description: Late Clone Wars Republic prototype battleship. Six heavy twin
           turbolasers, two heavy twin ion cannons, fourteen turbolaser batteries
           and five ion batteries deliver heavy direct fire. Laser Beam replaces Tractor
@@ -182,6 +191,7 @@ MonoBehaviour:
     - key: 11
       value:
         matchups: {fileID: 11400000, guid: e7d55be5d7cbd0446bea19c2532e8c8e, type: 2}
+        displayName: IPV-2C
         description: Republic prototype stealth corvette with 850 hull, 900 shields,
           two concussion missile launchers and two laser cannons. Cloak hides it
           from enemy sensors and targeting for up to 80 seconds; weapons are disabled
@@ -200,6 +210,7 @@ MonoBehaviour:
     - key: 200
       value:
         matchups: {fileID: 11400000, guid: 2b08713a371fcbd4c98840e4d71f3353, type: 2}
+        displayName: VSD
         description: "Republic heavy cruiser built to destroy corvettes and frigates.
           Two enhanced turbolaser, four dual medium turbolaser, two dual heavy turbolaser,
           two concussion missile and one ion cannon battery; thirteen targetable
@@ -220,6 +231,7 @@ MonoBehaviour:
     - key: 13
       value:
         matchups: {fileID: 11400000, guid: 46fbf485a22af0146943a56eeafd8780, type: 2}
+        displayName: CR70
         description: 750 hull, 650 shields. Eight laser cannons and two point-defense
           mounts screen the fleet. Weapons, engines and shield generator are destructible.
           Power to Engines doubles speed and weapon reload time and halves shield
@@ -238,6 +250,7 @@ MonoBehaviour:
     - key: 14
       value:
         matchups: {fileID: 11400000, guid: 35e596b5a19ba5548a9149085202510f, type: 2}
+        displayName: Pelta
         description: 2,200 hull and 1,000 shields. Four turbolasers damage larger
           ships, four laser cannons defend against smaller ships, and two ion cannons
           weaken shields. Weapons, engines and shield generator are destructible.
@@ -255,6 +268,7 @@ MonoBehaviour:
     - key: 15
       value:
         matchups: {fileID: 11400000, guid: 5660afec4edee70409f96502d7e05d8c, type: 2}
+        displayName: Carrack
         description: "1,600 hull, 1,000 shields. Twelve dual laser cannons screen
           the fleet against fighters and bombers. Boost Weapon Power makes weapons
           fire 10\xD7 faster and reload 90% faster and halves speed and shield regeneration
@@ -273,6 +287,7 @@ MonoBehaviour:
     - key: 16
       value:
         matchups: {fileID: 11400000, guid: 8bdf528cc8d4fa74997a634975fb890e, type: 2}
+        displayName: Centax
         description: "2,000 hull, 1,300 shields, 25 shield points restored each second.
           Four laser cannons per side, one forward dual turbolaser battery and two
           forward proton torpedo launchers. Boost Weapon Power makes weapons fire
@@ -294,6 +309,7 @@ MonoBehaviour:
     - key: 2
       value:
         matchups: {fileID: 11400000, guid: e6970a03cdd980243ba2662086173178, type: 2}
+        displayName: ARC-170
         description: 'Eight durable ARC-170 multirole starfighters, each with two
           heavy forward lasers, a rear laser turret and one proton torpedo per attack
           run. 60 hull and 8 shields per fighter. Effective against fighters, bombers
@@ -314,6 +330,7 @@ MonoBehaviour:
     - key: 3
       value:
         matchups: {fileID: 11400000, guid: 07a5885f26b41c34386b125bd4fb6e6a, type: 2}
+        displayName: Y-Wing BTL-B
         description: 'Four BTL-B heavy bombers, each with 130 hull, 8 shields, two
           lasers and a two-torpedo salvo per attack run. Ion Shot disables a target.
           Effective against large ships and important hardpoints; vulnerable to fighters.
@@ -333,6 +350,7 @@ MonoBehaviour:
     - key: 4
       value:
         matchups: {fileID: 11400000, guid: 0e5a3e64998bb0b4fa271e997ebf93f6, type: 2}
+        displayName: NTB-630
         description: 'Four naval bombers, each with 125 hull, 8 shields, laser cannons
           and proton torpedoes. Effective against capital ships, stations and important
           hardpoints; vulnerable to fighters and anti-fighter weapons. Each surviving
@@ -352,6 +370,7 @@ MonoBehaviour:
     - key: 5
       value:
         matchups: {fileID: 11400000, guid: 7b61aabb13894524ebe6a77baaaeba46, type: 2}
+        displayName: V-19 Torrent
         description: Eight V-19 Torrent fighters, each with 58 hull, 8 shields and
           two laser cannons. Screens Republic capital ships and bombers, intercepting
           hostile fighters and bombers. Vulnerable to corvettes and dedicated anti-fighter
@@ -370,6 +389,7 @@ MonoBehaviour:
     - key: 6
       value:
         matchups: {fileID: 11400000, guid: 18c01a8cde9f0da4e94f9136167261ab, type: 2}
+        displayName: V-Wing
         description: Six fast V-Wing interceptors, each with 64 hull, 8 shields and
           four laser cannons. Hunt seeks enemies and favors strikecraft. Screens
           the fleet and intercepts hostile fighters and bombers. Vulnerable to corvettes
@@ -393,6 +413,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Production I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -412,6 +433,7 @@ MonoBehaviour:
             multiplier: 1.2
         - factionData:
             matchups: {fileID: 0}
+            displayName: Production II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -434,6 +456,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Weapons I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -453,6 +476,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Weapons II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -472,6 +496,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Weapons III
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -494,6 +519,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Shields I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -513,6 +539,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Shields II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -532,6 +559,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Shields III
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -554,6 +582,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Defenses I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -573,6 +602,7 @@ MonoBehaviour:
             multiplier: 1.15
         - factionData:
             matchups: {fileID: 0}
+            displayName: Defenses II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -592,6 +622,7 @@ MonoBehaviour:
             multiplier: 1.3
         - factionData:
             matchups: {fileID: 0}
+            displayName: Defenses III
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -614,6 +645,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Structures
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -636,6 +668,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Income I
             description: Increases station income. Replaces the previous tier.
             role: Research
             iconKey: 5555e458b6d140f9aeeee10a133cb94b:21300000
@@ -654,6 +687,7 @@ MonoBehaviour:
             multiplier: 1.2
         - factionData:
             matchups: {fileID: 0}
+            displayName: Income II
             description: Increases station income. Replaces the previous tier.
             role: Research
             iconKey: 5555e458b6d140f9aeeee10a133cb94b:21300000

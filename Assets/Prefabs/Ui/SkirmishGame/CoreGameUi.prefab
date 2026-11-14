@@ -1503,7 +1503,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.8235294, g: 0.6627451, b: 0.36862746, a: 1}
-  bevel: 4
+  cornerRadius: 4
 --- !u!222 &8881559228041547424
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5041,7 +5041,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3976019959470191957
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5895,7 +5895,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.8235294, g: 0.6627451, b: 0.36862746, a: 1}
-  bevel: 4
+  cornerRadius: 4
 --- !u!222 &7735600507900472757
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6637,7 +6637,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.8235294, g: 0.6627451, b: 0.36862746, a: 1}
-  bevel: 4
+  cornerRadius: 4
 --- !u!222 &1530051047878338601
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7852,7 +7852,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.20392157, g: 0.2627451, b: 0.34117648, a: 1}
-  bevel: 10
+  cornerRadius: 10
 --- !u!222 &8231846492193456229
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7946,7 +7946,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 592, y: 22}
-  m_SizeDelta: {x: -612, y: 222}
+  m_SizeDelta: {x: -612, y: 244}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &371738624838680915
 CanvasRenderer:
@@ -8125,7 +8125,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.8235294, g: 0.6627451, b: 0.36862746, a: 1}
-  bevel: 4
+  cornerRadius: 4
 --- !u!222 &2057312643508020159
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8486,7 +8486,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.8235294, g: 0.6627451, b: 0.36862746, a: 1}
-  bevel: 4
+  cornerRadius: 4
 --- !u!222 &2926494169880045923
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9939,7 +9939,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.8235294, g: 0.6627451, b: 0.36862746, a: 1}
-  bevel: 4
+  cornerRadius: 4
 --- !u!222 &337115198363955822
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10103,7 +10103,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5731508840521252262
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12148,7 +12148,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.20392157, g: 0.2627451, b: 0.34117648, a: 1}
-  bevel: 10
+  cornerRadius: 10
 --- !u!222 &6037663526928261103
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -13378,7 +13378,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.8235294, g: 0.6627451, b: 0.36862746, a: 1}
-  bevel: 4
+  cornerRadius: 4
 --- !u!222 &918173647242922905
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -14162,7 +14162,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.8235294, g: 0.6627451, b: 0.36862746, a: 1}
-  bevel: 4
+  cornerRadius: 4
 --- !u!222 &5962797776754406188
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -16044,7 +16044,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5197706728343944985
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16653,7 +16653,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.20392157, g: 0.2627451, b: 0.34117648, a: 1}
-  bevel: 10
+  cornerRadius: 10
 --- !u!222 &3450622082052869557
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -16847,7 +16847,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.8235294, g: 0.6627451, b: 0.36862746, a: 1}
-  bevel: 4
+  cornerRadius: 4
 --- !u!222 &3530812269530361845
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -16873,7 +16873,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3288541978026743625
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17868,7 +17868,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.20392157, g: 0.2627451, b: 0.34117648, a: 1}
-  bevel: 10
+  cornerRadius: 10
 --- !u!222 &5312596409111759697
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -18026,7 +18026,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.8235294, g: 0.6627451, b: 0.36862746, a: 1}
-  bevel: 4
+  cornerRadius: 4
 --- !u!222 &4026246022306173022
 CanvasRenderer:
   m_ObjectHideFlags: 0

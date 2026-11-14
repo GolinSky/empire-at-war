@@ -14,6 +14,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         [SerializeField] private TooltipTrigger tooltipTrigger;
         [SerializeField] private TextMeshProUGUI unitPriceText;
+        [SerializeField] private TMP_Text unitNameText;
         [SerializeField] private TextMeshProUGUI tierText;
         [SerializeField] private Image unitIconImage;
         [SerializeField] private Button purchaseButton;
@@ -47,6 +48,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             FactionData = factionData;
             unitIconImage.sprite = factionData.Icon;
             unitPriceText.text = factionData.Price.ToString();
+            unitNameText.text = factionData.DisplayName;
             tierText.text = unitRequest is ResearchUnitRequest research ? $"T{research.Tier}" : "";
             purchaseButton.onClick.AddListener(HandleClick);
             _factionView = factionView;

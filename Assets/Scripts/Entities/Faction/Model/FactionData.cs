@@ -8,6 +8,7 @@ namespace EmpireAtWar.Models.Factions
     public class FactionData
     {
         [SerializeField] private UnitMatchupData matchups;
+        [SerializeField] private string displayName;
 
         [SerializeField, TextArea] private string description;
         [SerializeField] private string role;
@@ -15,6 +16,7 @@ namespace EmpireAtWar.Models.Factions
         [SerializeField] private bool isHero;
 
         public string Description => description;
+        public string DisplayName => displayName;
         public string Role => role;
         public string IconKey => iconKey;
         public bool IsHero => isHero;

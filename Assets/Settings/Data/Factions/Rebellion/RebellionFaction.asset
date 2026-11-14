@@ -18,6 +18,7 @@ MonoBehaviour:
     - key: 300
       value:
         matchups: {fileID: 11400000, guid: f2965c2e6d7e7ea42abf7182f9b60c04, type: 2}
+        displayName: Nebulon-B
         description: Rebel general-purpose frigate effective against corvettes and
           light cruisers. Four turbolaser batteries, four laser cannon batteries
           and targetable engines. Boost Shield Power doubles shield regeneration,
@@ -37,6 +38,7 @@ MonoBehaviour:
     - key: 301
       value:
         matchups: {fileID: 11400000, guid: f0593bb86a7249c46b0e783c993fec3b, type: 2}
+        displayName: CR90
         description: Rebel anti-fighter and anti-bomber corvette with eight laser
           cannons, 600 hull and 600 shields. Power to Engines doubles speed and weapon
           reload time and halves shield regeneration for 12 s. Recovers in 35 s.
@@ -56,6 +58,7 @@ MonoBehaviour:
     - key: 302
       value:
         matchups: {fileID: 11400000, guid: 061d31c86b87ab34ca40a0d06290c8a5, type: 2}
+        displayName: MC80
         description: Heavy Rebel capital ship with 12,750 hull, 12,000 shields and
           180/s shield regeneration. Eight heavy turbolaser, four heavy quad turbolaser,
           four dual heavy turbolaser, two dual medium turbolaser and two heavy ion
@@ -77,6 +80,7 @@ MonoBehaviour:
     - key: 303
       value:
         matchups: {fileID: 11400000, guid: 6f751ab5214d08f468a4ba44b5cf1107, type: 2}
+        displayName: Home One
         description: 'Admiral Ackbar''s hero command cruiser: 25,000 hull, 20,000
           shields, four turbolaser, four dual heavy turbolaser, four dual medium
           turbolaser and four ion cannon batteries. Shield generator, engines and
@@ -102,6 +106,7 @@ MonoBehaviour:
     - key: 304
       value:
         matchups: {fileID: 11400000, guid: 33184172200c25f489618d48b34a6a2b, type: 2}
+        displayName: Profundity
         description: MC75 capital ship armed with proton and ion torpedoes, close-range
           turbolasers, heavy lasers and point defense. Full Salvo triples torpedo
           fire rate while slowing its other weapons for 20 seconds. Deploys 1 fighter
@@ -121,6 +126,7 @@ MonoBehaviour:
     - key: 305
       value:
         matchups: {fileID: 11400000, guid: 41d0193e2f230fa4d9f62ec405cfd0c4, type: 2}
+        displayName: Independence
         description: MC80 Independence dreadnought with eight medium dual turbolasers
           and six medium dual turbo-ion cannons. Three engines and three hangars
           are targetable. Eight medium turbolasers, six medium ion cannons and eight
@@ -142,6 +148,7 @@ MonoBehaviour:
     - key: 306
       value:
         matchups: {fileID: 11400000, guid: cfffd4866130fe34faafe00094f56ef4, type: 2}
+        displayName: Corellian BC
         description: Corellian Battlecruiser armed with four heavy two-burst barrage
           rocket launchers, eight medium turbolasers and five laser cannons. Boost
           Shield Power doubles shield regeneration for 15 seconds. Deploys 1 fighter
@@ -161,6 +168,7 @@ MonoBehaviour:
     - key: 307
       value:
         matchups: {fileID: 11400000, guid: 30b6133074989dd4bbd5a7f24777def0, type: 2}
+        displayName: MC30c
         description: Fast torpedo cruiser with four medium dual turbolasers, four
           medium dual laser cannons, two heavy dual missile launchers, two heavy
           proton torpedo launchers, two point defense lasers and two cluster bomb
@@ -179,6 +187,7 @@ MonoBehaviour:
     - key: 308
       value:
         matchups: {fileID: 11400000, guid: 3257543b722be21409dddfd419a7e941, type: 2}
+        displayName: CD-273
         description: "CD-273 Corellian Destroyer: fast strike ship with four light
           laser cannons, two concussion missile launchers and two point-defense lasers.
           Boost Weapon Power makes weapons fire 10\xD7 faster and reload 90% faster
@@ -197,6 +206,7 @@ MonoBehaviour:
     - key: 320
       value:
         matchups: {fileID: 11400000, guid: fcb215fee41020c4490034316e324e2b, type: 2}
+        displayName: Quasar Fire
         description: "Light carrier with two light turbolasers and two point-defense
           lasers. Boost Weapon Power makes weapons fire 10\xD7 faster and reload
           90% faster and halves speed and shield regeneration for 7 s. Recovers in
@@ -217,6 +227,7 @@ MonoBehaviour:
     - key: 311
       value:
         matchups: {fileID: 11400000, guid: aab75532e06aee940b3c4562d0ec7ccb, type: 2}
+        displayName: MC50
         description: General-purpose medium cruiser with two heavy turbolasers, four
           medium dual turbolasers, two medium ion cannons, four laser cannons and
           two point-defense lasers. Hit and Run increases speed by 25% for 8 seconds.
@@ -234,6 +245,7 @@ MonoBehaviour:
     - key: 309
       value:
         matchups: {fileID: 11400000, guid: 22624456adb3ee948b528edb11a07f6e, type: 2}
+        displayName: Assault Frigate II
         description: General-purpose combat frigate for fleet escort and medium-range
           combat. Four medium turbolasers, two light quad turbolasers, four heavy
           laser cannons and two point-defense lasers. Boost Shield Power doubles
@@ -254,6 +266,7 @@ MonoBehaviour:
     - key: 310
       value:
         matchups: {fileID: 11400000, guid: 7398eb1d6c6974a469f7180d66773898, type: 2}
+        displayName: Dauntless
         description: Heavy frontline cruiser with eight heavy turbolasers, four medium
           dual turbolasers, four heavy ion cannons and two point-defense lasers.
           Sensor Jamming reduces nearby enemy accuracy by 20% for 8 seconds. Deploys
@@ -273,6 +286,7 @@ MonoBehaviour:
     - key: 321
       value:
         matchups: {fileID: 11400000, guid: 30f4f94da51a19c43af1cb27ccdc0a47, type: 2}
+        displayName: Liberator
         description: "Battlecarrier with 7,500 hull and 8,400 shields. Four heavy
           turbolasers, two medium dual turbolasers, four medium ion cannons and two
           point defense lasers. Boost Weapon Power makes weapons fire 10\xD7 faster
@@ -294,6 +308,7 @@ MonoBehaviour:
     - key: 330
       value:
         matchups: {fileID: 11400000, guid: a13432fff1b87cd4b8353d2823b041ea, type: 2}
+        displayName: Nebula
         description: "Heavy frontline star destroyer. Eight dual heavy turbolasers,
           six medium turbolasers, four medium ion cannons, two assault concussion
           launchers and four point defense lasers. Boost Weapon Power makes weapons
@@ -315,6 +330,7 @@ MonoBehaviour:
     - key: 312
       value:
         matchups: {fileID: 11400000, guid: 3b0a6ebe5bef68a47ae3adc0d8490257, type: 2}
+        displayName: Bothan Cruiser
         description: Heavy assault cruiser with four dual heavy turbolasers, four
           medium turbolasers, two medium ion cannons, four proton torpedo launchers
           and two point-defense lasers. Two independently targetable hangars. Coordinated
@@ -336,6 +352,7 @@ MonoBehaviour:
     - key: 322
       value:
         matchups: {fileID: 11400000, guid: 7eb5d1258f2de8349b775004d6a5899b, type: 2}
+        displayName: Endurance
         description: Fleet carrier with four heavy octuple turbolasers, two heavy
           ion cannons and six heavy point-defense mounts. Boost Shield Power doubles
           shield regeneration, reduces speed by 45% and reduces weapon damage by
@@ -356,6 +373,7 @@ MonoBehaviour:
     - key: 323
       value:
         matchups: {fileID: 0}
+        displayName: Justice
         description: Mon Calamari capital carrier with 12,000 hull and 14,000 shields.
           Four medium dual turbolasers, four light dual ion cannons, six medium turbolasers
           and eight medium lasers. Boost Shield Power doubles shield regeneration,
@@ -377,6 +395,7 @@ MonoBehaviour:
     - key: 324
       value:
         matchups: {fileID: 0}
+        displayName: Freedom
         description: Rebel brawler with four heavy dual ion cannons, six medium dual
           turbolasers, six turbolasers and four heavy turbolasers. Boost Shield Power
           boosts shield regeneration. Deploys 1 bomber squadron at once. Carries
@@ -395,6 +414,7 @@ MonoBehaviour:
     - key: 326
       value:
         matchups: {fileID: 0}
+        displayName: Mediator
         description: "Mon Calamari battlecruiser with 35,000 hull and 40,000 shields.
           Eight heavy dual turbolasers, six heavy dual ion cannons, eight medium
           dual turbolasers, six medium dual laser cannons and six heavy laser cannons.
@@ -416,6 +436,7 @@ MonoBehaviour:
     - key: 325
       value:
         matchups: {fileID: 0}
+        displayName: Remonda
         description: Mon Calamari battleship with 16,000 hull and 16,000 shields.
           Boost Shield Power doubles shield regeneration, reduces speed by 45% and
           reduces weapon damage by 5% for 15 s. Recovers in 40 s. Deploys 1 fighter
@@ -437,6 +458,7 @@ MonoBehaviour:
     - key: 1
       value:
         matchups: {fileID: 11400000, guid: 5b8d183986aa6104291623ddd0143550, type: 2}
+        displayName: A-Wing
         description: Four fast A-Wing interceptors with 100 hull and 15 shields each.
           Their interceptor lasers are most effective against bombers. Each surviving
           craft regenerates 0.3 shield HP/s.
@@ -454,6 +476,7 @@ MonoBehaviour:
     - key: 300
       value:
         matchups: {fileID: 11400000, guid: b16f510db75b93c4ab4d86f98ed96103, type: 2}
+        displayName: X-Wing
         description: 'Five Rebel multirole fighters, each with 95 hull, 15 shields,
           0.3/s shield regeneration, four laser cannons and one proton torpedo launcher.
           Torpedoes deal 40 damage per fighter with a 10-second reload. Intercept
@@ -474,6 +497,7 @@ MonoBehaviour:
     - key: 301
       value:
         matchups: {fileID: 11400000, guid: b9ce6e1dd47fb3c43a95e0feda9a7bee, type: 2}
+        displayName: Y-Wing BTL-A4
         description: 'Three BTL-A4 Y-Wing bombers. Each bomber has 180 hull, 10 anti-laser
           shields and tactical speed 44. One light dual laser, one heavy dual ion
           stunner and two medium proton-torpedo launchers per craft. Ion Shot disables
@@ -494,6 +518,7 @@ MonoBehaviour:
     - key: 302
       value:
         matchups: {fileID: 0}
+        displayName: Millennium Falcon
         description: "Han Solo and Chewbacca fly the Millennium Falcon. Twin quad
           laser turrets engage fighters. Activate Invulnerability to ignore incoming
           damage for 8 seconds, then use the Falcon\u2019s speed to escape during
@@ -516,6 +541,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Production I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -535,6 +561,7 @@ MonoBehaviour:
             multiplier: 1.2
         - factionData:
             matchups: {fileID: 0}
+            displayName: Production II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -557,6 +584,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Weapons I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -576,6 +604,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Weapons II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -595,6 +624,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Weapons III
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -617,6 +647,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Shields I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -636,6 +667,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Shields II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -655,6 +687,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Shields III
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -677,6 +710,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Defenses I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -696,6 +730,7 @@ MonoBehaviour:
             multiplier: 1.15
         - factionData:
             matchups: {fileID: 0}
+            displayName: Defenses II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -715,6 +750,7 @@ MonoBehaviour:
             multiplier: 1.3
         - factionData:
             matchups: {fileID: 0}
+            displayName: Defenses III
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -737,6 +773,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Structures
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -759,6 +796,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Income I
             description: Increases station income. Replaces the previous tier.
             role: Research
             iconKey: 5555e458b6d140f9aeeee10a133cb94b:21300000
@@ -777,6 +815,7 @@ MonoBehaviour:
             multiplier: 1.2
         - factionData:
             matchups: {fileID: 0}
+            displayName: Income II
             description: Increases station income. Replaces the previous tier.
             role: Research
             iconKey: 5555e458b6d140f9aeeee10a133cb94b:21300000

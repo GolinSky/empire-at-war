@@ -76,21 +76,21 @@ namespace EmpireAtWar.Entities.ShipUi
             _layoutDirty = true;
         }
 
-        public void AddGroup(ShipType shipType, IReadOnlyList<ShipUiEntry> ships,
+        public void AddGroup(ShipType shipType, string displayName, IReadOnlyList<ShipUiEntry> ships,
             Action<ShipAbilityId> pressAbility, ShipAutoPowerUiState autoPower, Action toggleAutoPower)
         {
             ShipSelectionGroupUi group = GetGroup();
-            group.Configure(shipType, _icons.GetShipIcon(shipType), ships, _model,
+            group.Configure(shipType, _icons.GetShipIcon(shipType), displayName, ships, _model,
                 _presenter.SelectShipGroup, pressAbility, autoPower, toggleAutoPower);
             group.gameObject.SetActive(true);
             _layoutDirty = true;
         }
 
-        public void AddGroup(SquadronType squadronType, IReadOnlyList<ShipUiEntry> squadrons,
+        public void AddGroup(SquadronType squadronType, string displayName, IReadOnlyList<ShipUiEntry> squadrons,
             Action<ShipAbilityId> pressAbility, ShipAutoPowerUiState autoPower, Action toggleAutoPower)
         {
             ShipSelectionGroupUi group = GetGroup();
-            group.Configure(squadronType, _icons.GetSquadronIcon(squadronType), squadrons, _model,
+            group.Configure(squadronType, _icons.GetSquadronIcon(squadronType), displayName, squadrons, _model,
                 _presenter.SelectSquadronGroup, pressAbility, autoPower, toggleAutoPower);
             group.gameObject.SetActive(true);
             _layoutDirty = true;

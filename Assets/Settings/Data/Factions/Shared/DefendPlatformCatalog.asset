@@ -17,6 +17,7 @@ MonoBehaviour:
     - key: 2
       value:
         matchups: {fileID: 0}
+        displayName: Golan III
         description: 10,000 hull; 20,000 shields. 12 heavy dual turbolasers, 4 heavy
           assault missile launchers, 12 heavy proton torpedo launchers and 8 laser
           cannons. Powerful long-range firepower and torpedoes; comparatively vulnerable
@@ -35,6 +36,7 @@ MonoBehaviour:
     - key: 3
       value:
         matchups: {fileID: 0}
+        displayName: XQ-3 Empress
         description: 6,000 hull; 24,000 shields. 3 heavy three-burst long-range turbolasers,
           3 heavy three-burst long-range turbo-ion cannons, 6 medium long-range dual
           turbolasers, 12 light dual turbolasers and 6 heavy dual laser cannons.
@@ -54,6 +56,7 @@ MonoBehaviour:
     - key: 4
       value:
         matchups: {fileID: 0}
+        displayName: Quad Laser Sat.
         description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
@@ -70,6 +73,7 @@ MonoBehaviour:
     - key: 5
       value:
         matchups: {fileID: 0}
+        displayName: Turbolaser Sat.
         description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
@@ -86,6 +90,7 @@ MonoBehaviour:
     - key: 6
       value:
         matchups: {fileID: 0}
+        displayName: Ion Satellite
         description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
@@ -102,6 +107,7 @@ MonoBehaviour:
     - key: 7
       value:
         matchups: {fileID: 0}
+        displayName: Mass Driver Sat.
         description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
@@ -118,6 +124,7 @@ MonoBehaviour:
     - key: 8
       value:
         matchups: {fileID: 0}
+        displayName: Missile Satellite
         description: 3,000 hull, 5,000 shields; six targetable turrets. Built on
           captured satellite pads.
         role: Stationary mining-point defense
@@ -134,6 +141,7 @@ MonoBehaviour:
     - key: 0
       value:
         matchups: {fileID: 0}
+        displayName: XQ-6
         description: Construct at an owned capture site to defend the area.
         role: Defensive platform
         iconKey: 9e99f16d754a042a3b1b0f2d25045f52:21300000

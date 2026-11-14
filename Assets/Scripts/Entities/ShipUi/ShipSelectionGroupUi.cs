@@ -17,7 +17,7 @@ namespace EmpireAtWar.Entities.ShipUi
     {
         private const int MAX_INDIVIDUAL_SHIPS = 4;
 
-        private const float HEADER_HEIGHT = 32f;
+        private const float HEADER_HEIGHT = 54f;
         private const float COLUMN_SPACING = 8f;
         private const float ROW_SPACING = 2f;
 
@@ -36,6 +36,7 @@ namespace EmpireAtWar.Entities.ShipUi
         [SerializeField] private ShipStateUi summaryStateIndicators;
         [SerializeField] private Image summaryIcon;
         [SerializeField] private TMP_Text summaryCount;
+        [SerializeField] private TMP_Text unitNameText;
         [SerializeField] private Image summaryHealthFill;
         [SerializeField] private Image summaryShieldFill;
         [SerializeField] private TooltipTrigger tooltipTrigger;
@@ -84,27 +85,28 @@ namespace EmpireAtWar.Entities.ShipUi
             abilityBar.SetSlots(_slots, null);
         }
 
-        public void Configure(ShipType shipType, Sprite icon, IReadOnlyList<ShipUiEntry> ships,
+        public void Configure(ShipType shipType, Sprite icon, string displayName, IReadOnlyList<ShipUiEntry> ships,
             IShipUiModelObserver model, Action<ShipType> onClicked, Action<ShipAbilityId> pressAbility,
             ShipAutoPowerUiState autoPower, Action toggleAutoPower)
         {
-            Configure(icon, ships, model, () => onClicked(shipType), pressAbility, autoPower, toggleAutoPower);
+            Configure(icon, displayName, ships, model, () => onClicked(shipType), pressAbility, autoPower, toggleAutoPower);
             tooltipTrigger.SetKey(shipType);
         }
 
-        public void Configure(SquadronType squadronType, Sprite icon, IReadOnlyList<ShipUiEntry> squadrons,
+        public void Configure(SquadronType squadronType, Sprite icon, string displayName, IReadOnlyList<ShipUiEntry> squadrons,
             IShipUiModelObserver model, Action<SquadronType> onClicked, Action<ShipAbilityId> pressAbility,
             ShipAutoPowerUiState autoPower, Action toggleAutoPower)
         {
-            Configure(icon, squadrons, model, () => onClicked(squadronType), pressAbility, autoPower, toggleAutoPower);
+            Configure(icon, displayName, squadrons, model, () => onClicked(squadronType), pressAbility, autoPower, toggleAutoPower);
             tooltipTrigger.SetKey(squadronType);
         }
 
-        private void Configure(Sprite icon, IReadOnlyList<ShipUiEntry> ships,
+        private void Configure(Sprite icon, string displayName, IReadOnlyList<ShipUiEntry> ships,
             IShipUiModelObserver model, Action onClicked, Action<ShipAbilityId> pressAbility,
             ShipAutoPowerUiState autoPower, Action toggleAutoPower)
         {
             Clear();
+            unitNameText.text = displayName;
             _onClicked = onClicked;
             _ships = ships;
             _shipCount = ships.Count;

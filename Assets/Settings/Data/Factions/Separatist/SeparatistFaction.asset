@@ -18,6 +18,7 @@ MonoBehaviour:
     - key: 100
       value:
         matchups: {fileID: 11400000, guid: 5c5715b5eb4b3254db8aaac35b69aeb0, type: 2}
+        displayName: Providence
         description: Heavy and medium turbolasers, supported by ion cannons, engage
           large ships. Deploys 2 fighter squadrons, 1 interceptor squadron, 2 bomber
           squadrons at once. Carries 15 total squadron launches, including the initial
@@ -36,6 +37,7 @@ MonoBehaviour:
     - key: 101
       value:
         matchups: {fileID: 11400000, guid: 2565f6fe8bb5a3243986c21b8d92a67b, type: 2}
+        displayName: Recusant
         description: Medium turbolasers provide supporting fire against smaller warships.
         role: "Frigate \xB7 Fire support"
         iconKey: dcdfa3aa3e1fabb44b5e337f8aa8370f:21300000
@@ -51,6 +53,7 @@ MonoBehaviour:
     - key: 102
       value:
         matchups: {fileID: 11400000, guid: 8178ba0fff7501a4887859b5e2e4069e, type: 2}
+        displayName: Munificent
         description: Four dual medium turbolaser batteries and two proton torpedo
           launchers concentrate fire on corvettes and frigates.
         role: "Frigate \xB7 Medium gunship"
@@ -67,6 +70,7 @@ MonoBehaviour:
     - key: 103
       value:
         matchups: {fileID: 11400000, guid: ed499ffc17084c847a836b55cd20c147, type: 2}
+        displayName: Lucrehulk
         description: Heavy and medium turbolasers defend a large carrier hull. Deploys
           2 fighter squadrons, 2 interceptor squadrons, 2 bomber squadrons at once.
           Carries 24 total squadron launches, including the initial deployment.
@@ -84,6 +88,7 @@ MonoBehaviour:
     - key: 104
       value:
         matchups: {fileID: 11400000, guid: 06d3083dadc16bb4ea8e64a692ecfa1e, type: 2}
+        displayName: Malevolence
         description: 'Subjugator-class dreadnought: 34 turbolaser batteries, 20 laser
           batteries and 8 shield-piercing Mass Drivers. Ion Pulse disables enemy
           ships. Four hangars await Vulture/bomber implementation.'
@@ -101,6 +106,7 @@ MonoBehaviour:
     - key: 105
       value:
         matchups: {fileID: 11400000, guid: 699f1928bcda3284f9ae9ff3f683f5d8, type: 2}
+        displayName: Captor
         description: Support carrier with 2 turbolasers, 6 lasers and 2 ion cannons.
           Boost Weapon Power improves self-defense. Deploys 2 fighter squadrons,
           2 interceptor squadrons, 2 bomber squadrons at once. Carries 18 total squadron
@@ -119,6 +125,7 @@ MonoBehaviour:
     - key: 106
       value:
         matchups: {fileID: 11400000, guid: a185bb400e77c2f4bb926ecd586ede7a, type: 2}
+        displayName: Patrol Frigate
         description: CIS patrol corvette with eight laser cannons. Screens the fleet
           against fighters and bombers; Power to Engines boosts pursuit and escape.
           Vulnerable to frigates and larger warships.
@@ -136,6 +143,7 @@ MonoBehaviour:
     - key: 107
       value:
         matchups: {fileID: 11400000, guid: 5253bdace10ccf24b9253110f4869c48, type: 2}
+        displayName: C-9979
         description: CIS transport with 600 hull, 600 shields and four light laser
           cannon hardpoints. Avoid sustained combat with warships.
         role: "Transport \xB7 Light support"
@@ -152,6 +160,7 @@ MonoBehaviour:
     - key: 108
       value:
         matchups: {fileID: 11400000, guid: e053a1b798d6f5f4d85501286790670d, type: 2}
+        displayName: Dispatcher
         description: "Fast CIS assault frigate, formerly the Techno Union Frigate.
           Four twin turbolasers, seven turbolasers, two lasers, four point-defense
           cannons and three ion cannons deliver strong offensive firepower. Thin
@@ -171,6 +180,7 @@ MonoBehaviour:
     - key: 109
       value:
         matchups: {fileID: 11400000, guid: 4a1771d5cec7be245892510aeae56eba, type: 2}
+        displayName: Invincible
         description: A larger Providence-class hull with 22,500 hull, 24,000 shields
           and 28 weapon hardpoints. Retains Providence's abilities. Deploys 2 fighter
           squadrons, 2 interceptor squadrons, 2 bomber squadrons at once. Carries
@@ -189,6 +199,7 @@ MonoBehaviour:
     - key: 110
       value:
         matchups: {fileID: 11400000, guid: 4caf5be368a29b847ad73b04abb8aec1, type: 2}
+        displayName: Peleset
         description: 5,000 hull and 4,500 shields. Six dual turbolaser batteries,
           two ion cannons, two point-defense cannons, two concussion missile launchers
           and one proton torpedo launcher. All weapons use medium caliber. Engines,
@@ -207,6 +218,7 @@ MonoBehaviour:
     - key: 112
       value:
         matchups: {fileID: 11400000, guid: 4868432cc9a1c1943bac947eb30cc8c1, type: 2}
+        displayName: Bulwark I
         description: 12,750 hull and 8,000 shields. Three quad turbolaser batteries,
           eight turbolaser batteries and two proton torpedo launchers use medium
           caliber. Sixteen targetable hardpoints include engines, shields and hangar.
@@ -226,6 +238,7 @@ MonoBehaviour:
     - key: 111
       value:
         matchups: {fileID: 11400000, guid: fffdc6b3b73ba8642bdf475bf120e869, type: 2}
+        displayName: Wavecrest
         description: 3,100 hull and 1,500 shields. Eight turbolaser batteries, four
           laser cannon batteries, two ion cannon batteries and one proton torpedo
           launcher, all medium caliber. All 17 mounts are targetable, including engines
@@ -246,6 +259,7 @@ MonoBehaviour:
     - key: 113
       value:
         matchups: {fileID: 11400000, guid: 097392c440411f24986bc3e16be0db4e, type: 2}
+        displayName: Recalcitrant
         description: "2,800 hull and 2,500 shields with cruiser shield regeneration.
           Eight dual turbolaser batteries, six concussion missile launchers and one
           dual ion cannon battery, all medium caliber. All 17 mounts are targetable,
@@ -268,6 +282,7 @@ MonoBehaviour:
     - key: 100
       value:
         matchups: {fileID: 11400000, guid: 997cc1b8ed373fe4fbe4d556a811f3b0, type: 2}
+        displayName: Belbullab-22
         description: Eleven Belbullab-22 interceptors with 44 hull and no shields
           each. Their interceptor lasers are most effective against bombers.
         role: Interceptor / Anti-bomber
@@ -284,6 +299,7 @@ MonoBehaviour:
     - key: 101
       value:
         matchups: {fileID: 11400000, guid: cfd79fcde45f938438f66f8a3a6f392e, type: 2}
+        displayName: Adv. Droid Bomber
         description: 'Ten autonomous Trade Federation droid bombers, each with 58
           hull, no shields, 2 laser cannons and 1 proton torpedo launcher. Effective
           against capital ships, frigates and stations; slow and vulnerable to fighters.
@@ -302,6 +318,7 @@ MonoBehaviour:
     - key: 102
       value:
         matchups: {fileID: 11400000, guid: 515b7205b7913704094becf24905d815, type: 2}
+        displayName: Vulture Droid
         description: Thirteen Vulture-class droid starfighters with four laser cannons
           each. Swarm fighters with 44 hull per fighter and no shields. Effective
           against bombers and fighters; vulnerable to corvettes and dedicated anti-fighter
@@ -320,6 +337,7 @@ MonoBehaviour:
     - key: 103
       value:
         matchups: {fileID: 11400000, guid: 997cc1b8ed373fe4fbe4d556a811f3b0, type: 2}
+        displayName: Slave I (Jango)
         description: Jango Fett pilots Slave I alone. Twin laser cannons and a reinforced
           hull make it a durable fighter hunter at close range. Drops a Seismic Charge
           that damages nearby enemies after 1.5 seconds, especially fighter squadrons.
@@ -341,6 +359,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Production I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -360,6 +379,7 @@ MonoBehaviour:
             multiplier: 1.2
         - factionData:
             matchups: {fileID: 0}
+            displayName: Production II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -382,6 +402,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Weapons I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -401,6 +422,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Weapons II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -420,6 +442,7 @@ MonoBehaviour:
             multiplier: 1.25
         - factionData:
             matchups: {fileID: 0}
+            displayName: Weapons III
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -442,6 +465,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Engines I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -461,6 +485,7 @@ MonoBehaviour:
             multiplier: 1.15
         - factionData:
             matchups: {fileID: 0}
+            displayName: Engines II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -480,6 +505,7 @@ MonoBehaviour:
             multiplier: 1.15
         - factionData:
             matchups: {fileID: 0}
+            displayName: Engines III
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -502,6 +528,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Defenses I
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -521,6 +548,7 @@ MonoBehaviour:
             multiplier: 1.15
         - factionData:
             matchups: {fileID: 0}
+            displayName: Defenses II
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -540,6 +568,7 @@ MonoBehaviour:
             multiplier: 1.3
         - factionData:
             matchups: {fileID: 0}
+            displayName: Defenses III
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -562,6 +591,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Structures
             description: Research this upgrade for your faction. Completed research
               improves the affected units.
             role: Research
@@ -584,6 +614,7 @@ MonoBehaviour:
         tiers:
         - factionData:
             matchups: {fileID: 0}
+            displayName: Income I
             description: Increases station income. Replaces the previous tier.
             role: Research
             iconKey: 5555e458b6d140f9aeeee10a133cb94b:21300000
@@ -602,6 +633,7 @@ MonoBehaviour:
             multiplier: 1.2
         - factionData:
             matchups: {fileID: 0}
+            displayName: Income II
             description: Increases station income. Replaces the previous tier.
             role: Research
             iconKey: 5555e458b6d140f9aeeee10a133cb94b:21300000

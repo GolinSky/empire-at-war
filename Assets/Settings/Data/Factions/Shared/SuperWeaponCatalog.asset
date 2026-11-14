@@ -17,6 +17,7 @@ MonoBehaviour:
     - key: 0
       value:
         matchups: {fileID: 0}
+        displayName: Ion Cannon
         description: Construct one shot. Fire at an enemy ship or structure, then
           rebuild to fire again. Fighters are not valid targets.
         role: Superweapon construction
@@ -33,6 +34,7 @@ MonoBehaviour:
     - key: 1
       value:
         matchups: {fileID: 0}
+        displayName: Hypervelocity Gun
         description: Construct one shot. Fire at an enemy ship or structure, then
           rebuild to fire again. Fighters are not valid targets.
         role: Superweapon construction
@@ -49,6 +51,7 @@ MonoBehaviour:
     - key: 2
       value:
         matchups: {fileID: 0}
+        displayName: Plasma Cannon
         description: Construct one shot. Fire at an enemy ship or structure, then
           rebuild to fire again. Fighters are not valid targets.
         role: Superweapon construction
