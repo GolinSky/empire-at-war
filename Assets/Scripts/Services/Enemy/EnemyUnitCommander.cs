@@ -54,6 +54,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly PlayerSlot _owner;
         private readonly EnemyShipTaskGroupPlanner _taskGroups;
         private readonly EnemyStrategicContextBuilder _contextBuilder;
+        private readonly EnemyPatrolService _patrol;
+        private readonly EnemyPatrolShipController _patrolShips;
         private readonly List<IShipEntity> _ships = new List<IShipEntity>();
         private readonly HashSet<string> _reservedCaptureObjectives = new HashSet<string>();
         private readonly Dictionary<IShipEntity, Vector3> _zoneExitTargets =
@@ -84,7 +86,8 @@ namespace EmpireAtWar.Services.Enemy
             if (!_hasDecision) return false;
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
             {
-                if (group.Context == null || !group.Context.Snapshot.HasStationPressure) continue;
+                if (group.Context == null || !group.Context.Snapshot.HasStationPressure ||
+                    group.Context.Snapshot.RecoveryMode) continue;
                 // Cached decisions can outlive entities while world-change reevaluation is deferred.
                 if (group.Context.OwnBase == null ||
                     !_entityLocator.TryGetEntity(group.Context.OwnBase.Id, out GameEntity ownBase)) continue;
@@ -120,9 +123,11 @@ namespace EmpireAtWar.Services.Enemy
             EnemyStrategicDecisionModel decisionModel,
             EnemyStrategicContextBuilder contextBuilder,
             EnemyTaskForceExecutor taskForceExecutor,
-            PlayerSlot owner)
+            PlayerSlot owner, EnemyPatrolService patrol, EnemyPatrolShipController patrolShips)
         {
             _owner = owner;
+            _patrol = patrol;
+            _patrolShips = patrolShips;
             _shipService = shipService;
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _entityLocator = entityLocator;
@@ -203,12 +208,24 @@ namespace EmpireAtWar.Services.Enemy
         private void EvaluateAndExecute()
         {
             _decisionTimer = EnemyAiDifficultyProfile.Get(_owner.Difficulty).DecisionInterval;
+            _patrol.Sample(Time.time);
             _ships.Clear();
             foreach (IShipEntity ship in _shipService.Ships)
                 if (ship.Owner == _owner.Id && _entityLocator.TryGetEntity(ship.EntityId, out GameEntity _))
                     _ships.Add(ship);
             var station = _contextBuilder.AssessStation(_ships);
             GatherReinforcements = station.GatherReinforcements;
+            bool taskForceNeedsShip = false;
+            foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
+                taskForceNeedsShip |= group.Decision.State == EnemyStrategicState.EngageLocal ||
+                    group.Decision.State == EnemyStrategicState.DefendBase ||
+                    group.Decision.State == EnemyStrategicState.RetreatValue ||
+                    group.Decision.State == EnemyStrategicState.AssaultBase ||
+                    group.Decision.State == EnemyStrategicState.HuntFleet ||
+                    group.Decision.State == EnemyStrategicState.RaidStructures;
+            IShipEntity patrolShip = _patrolShips.Select(_ships, station.HasPressure, taskForceNeedsShip,
+                _contextBuilder.RecoveryActive);
+            if (patrolShip != null) _ships.Remove(patrolShip);
             _taskGroups.Reconcile(_ships, station.HasPressure);
             _reservedCaptureObjectives.Clear();
             EnemyShipTaskGroup primary = null;
@@ -235,18 +252,20 @@ namespace EmpireAtWar.Services.Enemy
             _lastContext = primary.Context;
             EnemyStrategicSnapshot snapshot = primary.Context.Snapshot;
             LastSnapshot = new EnemyStrategicSnapshot(snapshot.VictoryCondition, snapshot.Difficulty,
-                _ships.Count, snapshot.EnemyShipCount, snapshot.OwnedCapturableZoneCount,
+                _ships.Count + (patrolShip == null ? 0 : 1), snapshot.EnemyShipCount, snapshot.OwnedCapturableZoneCount,
                 snapshot.FleetAdvantage, snapshot.BaseThreatRatio, snapshot.HasCaptureTarget,
                 snapshot.HasEnemyBaseTarget, snapshot.HasOwnBase, snapshot.HasThreatenedSite,
                 snapshot.LocalAdvantage, snapshot.HasLocalThreat, snapshot.HasRaidTarget,
                 snapshot.IsRegrouped, snapshot.HasStationPressure, snapshot.HasSafeRetreat,
-                snapshot.HasEconomyRaidTarget);
+                snapshot.HasEconomyRaidTarget, snapshot.LocalRaw, snapshot.FleetRaw,
+                snapshot.RecoveryMode, snapshot.RecoveryCapturePending);
             _recoveryStartedAt = primary.RecoveryStartedAt;
             _actionReason = primary.Executor.ActionReason + groupSummary;
             PublishDecision(primary.Decision, bodyCount, rallyingCount);
             if (_contextBuilder.AlliedMarkers != null)
                 _contextBuilder.AlliedMarkers.Observe(primary.Context, primary.Decision);
             _taskGroups.TryCreateCaptureGroup(_ships, _reservedCaptureObjectives, station.HasPressure);
+            if (patrolShip != null) _ships.Add(patrolShip);
         }
 
         private void MoveShipsOutOfDefaultZone(IReadOnlyList<IShipEntity> ships)

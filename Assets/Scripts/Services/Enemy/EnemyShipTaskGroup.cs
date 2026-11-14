@@ -7,6 +7,8 @@ namespace EmpireAtWar.Services.Enemy
 {
     public sealed class EnemyShipTaskGroup
     {
+        private static int _nextGroupId;
+        private readonly int _groupId = ++_nextGroupId;
         private bool _hasDecision;
         public List<IShipEntity> Ships { get; } = new List<IShipEntity>();
         public EnemyStrategicContextBuilder ContextBuilder { get; }
@@ -36,11 +38,11 @@ namespace EmpireAtWar.Services.Enemy
             if (Context.Snapshot.HasCaptureTarget)
                 NoViableCaptureSince = -1f;
             else if (NoViableCaptureSince < 0f) NoViableCaptureSince = now;
-            EnemyStrategicDecision next = DecisionModel.Evaluate(Context.Snapshot, IsCaptureDetachment);
+            EnemyStrategicDecision next = DecisionModel.Evaluate(Context.Snapshot, IsCaptureDetachment, now: now, commit: false);
             if (IsMainForce || next.State == EnemyStrategicState.DefendBase)
                 next = new EnemyStrategicDecision(next.Reason, next.State, Ships.Count);
-            if (!Executor.CanAssemble(next, Context))
-                next = DecisionModel.Evaluate(Context.Snapshot, IsCaptureDetachment, allowOffense: false);
+            bool canAssemble = Executor.CanAssemble(next, Context);
+            next = DecisionModel.Evaluate(Context.Snapshot, IsCaptureDetachment, allowOffense: canAssemble, now: now);
             if (IsMainForce || next.State == EnemyStrategicState.DefendBase)
                 next = new EnemyStrategicDecision(next.Reason, next.State, Ships.Count);
             TacticalMarker request = ContextBuilder.AlliedMarkers == null ? null :
@@ -56,6 +58,14 @@ namespace EmpireAtWar.Services.Enemy
             bool execute = HasMarkerRequest || !_hasDecision || Decision.State != next.State ||
                 next.State != EnemyStrategicState.Hold && next.State != EnemyStrategicState.RebuildFleet;
             HasMarkerRequest = request != null;
+            Context.StateHeldSeconds = DecisionModel.StateHeldSeconds;
+            string group = _groupId.ToString();
+            if (!_hasDecision || Decision.State != next.State)
+                ContextBuilder.RecordStabilityEvent("stateSwitch", System.FormattableString.Invariant(
+                    $"group={group}; from={(_hasDecision ? Decision.State.ToString() : "none")}; to={next.State}; localRaw={Context.Snapshot.LocalRaw:F3}; localSmoothed={Context.Snapshot.LocalAdvantage:F3}; heldSeconds={DecisionModel.StateHeldSeconds:F1}; bypass={DecisionModel.Bypass}; bestScore={DecisionModel.BestScore:F3}; runnerUp={DecisionModel.RunnerUpScore:F3}"));
+            else if (DecisionModel.SwitchHeld)
+                ContextBuilder.RecordStabilityEvent("stateSwitchHeld", System.FormattableString.Invariant(
+                    $"group={group}; current={Decision.State}; blocked={DecisionModel.BlockedState}; scoreGap={DecisionModel.BestScore - DecisionModel.RunnerUpScore:F3}; heldSeconds={DecisionModel.StateHeldSeconds:F1}"));
             Decision = next;
             _hasDecision = true;
             if (DecisionModel.IsRecovering && RecoveryStartedAt < 0f) RecoveryStartedAt = now;

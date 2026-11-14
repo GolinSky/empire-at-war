@@ -48,6 +48,10 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<HostileIntelGatherer>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EnemyStrategicContextBuilder>(Lifetime.Singleton);
             builder.Register<EnemyStationPressureTracker>(Lifetime.Singleton);
+            builder.Register<EnemyRecoveryAnchor>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<EnemyPatrolService>(Lifetime.Singleton);
+            builder.Register<EnemyPatrolSafety>(Lifetime.Singleton);
+            builder.Register<EnemyPatrolShipController>(Lifetime.Singleton);
             builder.Register<EnemyTaskForceExecutor>(Lifetime.Singleton);
             builder.Register<EnemyStructurePlacementService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(Assets.LoadComponent<BoxCollider>(

@@ -177,7 +177,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 !_productionAccess.CanProduce ||
                 unitRequest is LevelUnitRequest &&
                 (_productionAccess.ProductionHost != Owner || !_productionAccess.HasHostBase) ||
-                unitRequest is SecondStationUnitRequest && _productionAccess.ProductionHost != Owner ||
+                unitRequest is SecondStationUnitRequest && _productionAccess.ProductionHost != Owner &&
+                !_enemyStructurePlacementService.IsRecovering ||
                 unitRequest is SecondStationLevelUnitRequest secondLevel &&
                 (!_secondStation.IsBuilt || secondLevel.Level != _secondStation.CurrentLevel))
             {
@@ -344,16 +345,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     Track(squadron, squadronUnitRequest);
                     break;
                 case MiningFacilityUnitRequest miningFacilityUnitRequest:
-                    Track(_miningFacilityFactory.Create(Owner, miningFacilityUnitRequest.Key, GenerateMapCoordinates()),
+                    Track(_miningFacilityFactory.Create(Owner, miningFacilityUnitRequest.Key, GenerateMapCoordinates(unitRequest)),
                         miningFacilityUnitRequest);
                     break;
                 case DefendPlatformUnitRequest defendPlatformUnitRequest:
-                    Track(_defendPlatformFactory.Create(Owner, defendPlatformUnitRequest.Key, GenerateMapCoordinates()),
+                    Track(_defendPlatformFactory.Create(Owner, defendPlatformUnitRequest.Key, GenerateMapCoordinates(unitRequest)),
                         defendPlatformUnitRequest);
                     break;
                 case SecondStationUnitRequest secondStationUnitRequest:
-                    Track(_stationFactory.CreateSecond(Owner, _owner.Faction, GenerateMapCoordinates()),
+                    Vector3 stationPosition = GenerateMapCoordinates(unitRequest);
+                    Track(_stationFactory.CreateSecond(Owner, _owner.Faction, stationPosition),
                         secondStationUnitRequest);
+                    _enemyStructurePlacementService.RecordStationBuilt(stationPosition);
                     break;
                 case SecondStationLevelUnitRequest secondStationLevelUnitRequest:
                     _secondStation.CompleteLevelUpgrade();
@@ -496,13 +499,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _builds.Clear();
         }
 
-        private Vector3 GenerateMapCoordinates()
+        private Vector3 GenerateMapCoordinates(UnitRequest request)
         {
             if (_enemyStructurePlacementService.TryGetPosition(out Vector3 position))
             {
+                _enemyStructurePlacementService.RecordPlacement(request.Id, position);
                 return position;
             }
 
+            _enemyStructurePlacementService.RecordDeferred(request.Id, request.FactionData.Price);
             throw new InvalidOperationException(
                 "No clear enemy structure position is available near the station or captured zones.");
         }

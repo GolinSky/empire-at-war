@@ -39,6 +39,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IEnemyAiStateProvider _stateProvider;
         private readonly IEnemyStructurePlacementService _enemyStructurePlacementService;
         private readonly IProductionAccess _productionAccess;
+        private readonly IEnemyRecoveryPolicy _recovery;
 
         private readonly EnemyFactionModel _factionModel;
         private readonly IFactionResearchModelObserver _research;
@@ -85,9 +86,11 @@ namespace EmpireAtWar.Services.Enemy
             TeamIntelRegistry intelRegistry,
             PlayerSlot owner,
             EnemyStationPressureTracker stationPressure,
-            SecondStationLevelModel secondStation)
+            SecondStationLevelModel secondStation,
+            IEnemyRecoveryPolicy recovery)
         {
             _secondStation = secondStation;
+            _recovery = recovery;
             _owner = owner;
             _stationPressure = stationPressure;
             _forceBuilder = forceBuilder;
@@ -331,10 +334,11 @@ namespace EmpireAtWar.Services.Enemy
         {
             FactionData data = _factionModel.SecondStationFactionData;
             bool isBackup = _productionAccess.HasHostBase;
-            if (_productionAccess.ProductionHost != _owner.Id || _stationPressure.IsStationCritical ||
+            if (_productionAccess.ProductionHost != _owner.Id && !_recovery.IsActive ||
+                _stationPressure.IsStationCritical && !_recovery.IsActive ||
                 !canPlaceStructure || _secondStation.IsBuilt || !IsAffordable(data) ||
                 !CanReserve<SecondStationUnitRequest>(SecondStationUnitRequest.REQUEST_ID, data) ||
-                isBackup && (_factionModel.CurrentLevel < SECOND_STATION_MIN_LEVEL ||
+                isBackup && !_recovery.IsActive && (_factionModel.CurrentLevel < SECOND_STATION_MIN_LEVEL ||
                              _economyModel.Money < data.Price * SECOND_STATION_MONEY_MULTIPLIER))
                 return false;
 

@@ -4,10 +4,9 @@ system:
   - ai
   - capture
   - combat
-verified: 2026-11-01
-verification: Live-source review, Unity compilation/import, new runtime types
-  loaded, error console empty and scoped diff checks; tests and Play Mode not
-  run.
+verified: 2026-11-14
+verification: Live-source and DI review, Unity script compilation/import; tests
+  and Play Mode not run. Patrol/recovery battle acceptance pending.
 ---
 # Enemy AI Objectives
 
@@ -32,7 +31,7 @@ verification: Live-source review, Unity compilation/import, new runtime types
 - Capture diversion beyond closest approach + max(800, radius + 2 × ship navigation radius) → return movement; valid engagements are retained.
 - No approach/capture progress for 20 s of executed capture → reject objective for 20 s and consider alternatives. `EnemyUnitCommander` reports the executed objective after each decision; defense/retreat/hold/rebuild pause the accumulated stall budget. A new objective or approach/capture progress resets it. Objective owner/availability changes invalidate commitment.
 - Safety uses known target/route threat, ion cost and clear capture-area samples. It does not prove full physical path connectivity; stall recovery handles lack of movement.
-- Retreat anchors: surviving production host + safe default home, otherwise safe allied capturable relay. Dead default zones are excluded.
+- Retreat anchors share recovery safety: safe home/allied relay normally; active relocation uses the committed recovery anchor. Dead default zones are excluded.
 - Allied production host remains authoritative; capture ownership uses team relationships.
 
 ### Mining objectives (2026-11-01)
@@ -115,3 +114,18 @@ verification: Live-source review, Unity compilation/import, new runtime types
 - Each committed ship captures if its clearance fits the centre or one of four half-radius interior samples; only failed-fit ships AttackMove to perimeter points at objective radius + their own navigation radius. Capture receivers are batched per identical fitted point through `IssueAttackMove`, preserving compact formation and shared contacts/target distribution. A new/recovering member regroups its point's eligible ships; unchanged groups retain orders. Failed-fit escorts rejoin capture when fit becomes available. Strategic fit uses minimum clearance to admit any fitting capturer and ignores transient reservations; obstacle, ion and known hostile-route checks remain.
 - Reservation API cannot identify owners; `transientReservation` means a ship reservation blocked the sampled point, not proof of a hostile or friendly owner. Tactical order placement still applies clearance.
 - Implementation → [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]]. Tests authored; runtime battle acceptance remains pending.
+
+### Patrol and recovery relocation (2026-11-14)
+
+- Each task group smooths local/fleet advantage with a 4 s exponential average. Empty-force → real-contact transitions reset that channel, preventing the no-enemy sentinel `100` from delaying retreat.
+- Retreat enters at difficulty `RetreatAdvantage`, exits at ×1.25; Engage/Retreat/Capture hold 8 s unless ships/base/defense/cornering or target validity requires a change. Capture/patrol/anchor targets hold 10 s and require ≥20% better utility; invalid targets release immediately.
+- `TeamIntelRegistry` owns team `EnemyPatrolMemory`: 6×6 sector centers, relays, mining/satellite sites and unexpired intel. Sample allied visibility on AI ticks at 3 s cadence; score staleness × value / (1 + distance). Values: allied mine 5, neutral mine/relay/pad 3, hostile structure 2, empty sector/other intel 1.
+- Squadron scout priority: allied marker → missing build space → common patrol/intel score → known hostile base. Normal+ detaches the cheapest available corvette when spare ships exist; defense, recovery and combat task-force need release it. Easy uses squadrons only.
+- `EnemyRecoveryAnchor` updates in `AssessStation`, before task-group decisions. Trigger: own station lost, critical pressure, or weak fleet under attack for 5 s. Clear after 20 s parity without pressure or successful replacement construction; suppress the completed pressure episode until it clears.
+- Anchor candidates: safe home/own/allied zones/stations → sector seen within 60 s → neutral relay to capture first. Human and AI allies use the same alliance rules. No survivors → safe owned/allied/seen-sector building remains possible; neutral capture requires ships.
+- Anchor utility interpolates near-own-fleet and far-from-known-threat by clamped smoothed fleet advantage. Shared retreat checks reject unsafe routes; pending relay capture takes priority for an eligible group. No anchor → defer rebuilding and scout safe unseen space.
+- Free placement: anchor rings → safety-ranked allied zones → map rings from anchor; every candidate passes live spawn and hostile-reach checks. Known weapon reach +100 units is excluded (unknown reach 500); lost-home exclusion max(64 units, own default-home radius) plus placement footprint during recovery.
+- Destroyed-structure exclusion = max(32 units, placement radius), last 10 positions. Sites keep fixed mine/satellite placement. Completion revalidates anchor ownership, contesting, recent sector visibility and safety; no candidate → existing refund path.
+- Hosted AI may buy its replacement station during recovery. Recovery overrides the critical-station purchase gate; ordinary hosted upgrades remain restricted.
+- Modes using `DirectCombatAiState` do not run strategic recovery/patrol ship decisions; ordinary strategic AI, including applicable Survival AI slots, uses the same policy. Transient patrol/commitment/latch state is reassessed after load; no save schema change.
+- Implementation/acceptance → [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]]; event fields → [[Tooling/Battle_Telemetry]]. Tests authored; battle acceptance remains user-gated.

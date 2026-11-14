@@ -713,7 +713,8 @@ namespace EmpireAtWar.Tests.Editor
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
-                    secondStation: new SecondStationLevelModel());
+                    secondStation: new SecondStationLevelModel(),
+                    recovery: new EnemyRecoveryPolicyStub());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -793,7 +794,8 @@ namespace EmpireAtWar.Tests.Editor
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
-                    secondStation: new SecondStationLevelModel());
+                    secondStation: new SecondStationLevelModel(),
+                    recovery: new EnemyRecoveryPolicyStub());
 
                 UnitLimitKey capacityHolder = GetUnitId<ShipUnitRequest>("capacity-holder");
                 int heldCapacity = MAX_UNIT_CAPACITY - unitLimitModel.CurrentUnitCapacity -
@@ -889,7 +891,8 @@ namespace EmpireAtWar.Tests.Editor
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
-                    secondStation: new SecondStationLevelModel());
+                    secondStation: new SecondStationLevelModel(),
+                    recovery: new EnemyRecoveryPolicyStub());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -968,7 +971,8 @@ namespace EmpireAtWar.Tests.Editor
                     intelRegistry: new TeamIntelRegistry(),
                     owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
                     stationPressure: pressure,
-                    secondStation: new SecondStationLevelModel());
+                    secondStation: new SecondStationLevelModel(),
+                    recovery: new EnemyRecoveryPolicyStub());
 
                 strategy.Start();
                 strategy.Tick(0f);
@@ -1148,6 +1152,11 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class StructurePlacementServiceStub :
             IEnemyStructurePlacementService
         {
+            public bool IsRecovering => false;
+            public void RecordPlacement(string request, Vector3 position) { }
+            public void RecordDeferred(string request, float refund) { }
+            public void RecordStationBuilt(Vector3 position) { }
+
             public void RecordDestroyedPosition(Vector3 position)
             {
             }

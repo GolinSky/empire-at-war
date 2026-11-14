@@ -33,10 +33,14 @@ namespace EmpireAtWar.Tests.Editor
         private EnemyStructurePlacementService _enemyStructurePlacementService;
         private BoxCollider _stationPrefab;
         private BoxCollider _structurePrefab;
+        private readonly RecoveryPolicyStub _recovery = new RecoveryPolicyStub();
 
         [SetUp]
         public void SetUp()
         {
+            _recovery.IsActive = false;
+            _recovery.HasAnchor = false;
+            _recovery.Safe = true;
             _root = new GameObject(nameof(EnemyStructurePlacementServiceTests));
             _map = new MapStub();
             _zones = new ZonesStub();
@@ -62,7 +66,46 @@ namespace EmpireAtWar.Tests.Editor
                 vision: vision, areas: _areas,
                 owner: roster.Get(TestPlayers.Enemy), stationPrefab: _stationPrefab,
                 productionAccess: new SelfProductionAccess(TestPlayers.Enemy, new StationRegistry(new EntityLocator()),
-                    roster));
+                    roster), recovery: _recovery);
+        }
+
+        [Test]
+        public void RecoveryWithoutAnchor_DefersInsteadOfBuildingAtOldHome()
+        {
+            _recovery.IsActive = true;
+            _recovery.HasAnchor = false;
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out _), Is.False);
+        }
+
+        [Test]
+        public void RecoveryAnchor_IsUsedInsteadOfOldHome()
+        {
+            _recovery.IsActive = true;
+            _recovery.HasAnchor = true;
+            _recovery.Anchor = new Vector3(-100f, 0f, -100f);
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 position), Is.True);
+            Assert.That(Vector3.Distance(position, _recovery.Anchor), Is.LessThanOrEqualTo(88f));
+        }
+
+        [Test]
+        public void HostileReach_RejectsOtherwiseOpenPlacement()
+        {
+            _recovery.Safe = false;
+            Assert.That(_enemyStructurePlacementService.TryGetPosition(out _), Is.False);
+        }
+
+        private sealed class RecoveryPolicyStub : IEnemyRecoveryPolicy
+        {
+            public bool IsActive { get; set; }
+            public bool HasAnchor { get; set; }
+            public bool Safe { get; set; } = true;
+            public Vector3 Anchor { get; set; }
+            public string DeferredReason => "noAnchor";
+            public bool TryGetBuildAnchor(out Vector3 position) { position = Anchor; return HasAnchor; }
+            public bool IsPlacementSafe(Vector3 position, float clearance) => Safe;
+            public float GetNearestHostileDistance(Vector3 position) => float.PositiveInfinity;
+            public void CopySafeAlliedZoneBounds(List<Bounds> bounds) => bounds.Clear();
+            public void OnStationBuilt(Vector3 position) { }
         }
 
         private BoxCollider CreatePrefab(Vector3 size)
@@ -147,7 +190,7 @@ namespace EmpireAtWar.Tests.Editor
             _enemyStructurePlacementService.RecordDestroyedPosition(first);
 
             Assert.That(_enemyStructurePlacementService.TryGetPosition(out Vector3 replacement), Is.True);
-            Assert.That(Vector3.Distance(replacement, first), Is.GreaterThan(1f));
+            Assert.That(Vector3.Distance(replacement, first), Is.GreaterThanOrEqualTo(32f));
         }
 
         [Test]

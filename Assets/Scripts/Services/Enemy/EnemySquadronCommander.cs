@@ -62,6 +62,8 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly IEnemyStructurePlacementService _structurePlacement;
         private readonly HostileIntelModel _intel;
+        private readonly EnemyPatrolService _patrol;
+        private readonly EnemyPatrolSafety _patrolSafety;
 
         private Vector3? _stationDefense;
 
@@ -83,9 +85,11 @@ namespace EmpireAtWar.Services.Enemy
             UnitCombatProfileCatalog profileCatalog,
             IEnemyStructurePlacementService structurePlacement,
             TeamIntelRegistry intelRegistry,
-            PlayerSlot owner)
+            PlayerSlot owner, EnemyPatrolService patrol, EnemyPatrolSafety patrolSafety)
         {
             _owner = owner;
+            _patrol = patrol;
+            _patrolSafety = patrolSafety;
             _intel = intelRegistry.Get(owner.Team);
             _structurePlacement = structurePlacement;
             _captureSources = captureSources;
@@ -123,6 +127,7 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             _decisionTimer.StartTimer();
+            _patrol.Sample(Time.time);
             TrackOwnedSquadrons();
             AssessThreats();
             AssignEscorts();
@@ -181,12 +186,13 @@ namespace EmpireAtWar.Services.Enemy
         /// </summary>
         private void AssignScout()
         {
+            ISquadron previous = _scout;
             _scout = null;
             // Keep one available squadron capturing; only surplus squadrons scout while objectives remain.
             if (_captureSquadrons.Count == 0 ||
-                _captureAssignments.HasTargets && _captureSquadrons.Count == 1 ||
-                !TryGetScoutTarget(out _scoutTarget))
+                _captureAssignments.HasTargets && _captureSquadrons.Count == 1 || _stationDefense.HasValue)
             {
+                if (previous != null) _patrol.Release($"squadron:{previous.EntityId}");
                 return;
             }
 
@@ -200,10 +206,17 @@ namespace EmpireAtWar.Services.Enemy
                     _scout = squadron;
                 }
             }
+            if (previous != null && _captureSquadrons.Contains(previous) && !_squadrons[previous].IsHangarLaunched)
+                _scout = previous;
+            ISquadron candidate = _scout;
+            if (_scout != null && !TryGetScoutTarget(_scout, out _scoutTarget)) _scout = null;
+            if (previous != null && previous != _scout && previous != candidate)
+                _patrol.Release($"squadron:{previous.EntityId}");
         }
 
-        private bool TryGetScoutTarget(out Vector3 target)
+        private bool TryGetScoutTarget(ISquadron scout, out Vector3 target)
         {
+            Vector3 origin = scout.WorldPosition;
             foreach (IEnemyCaptureObjectiveSource source in _captureSources)
                 if (source is AllyAiMarkerSource markers &&
                     markers.TryGetScoutTarget(out target)) return true;
@@ -213,9 +226,9 @@ namespace EmpireAtWar.Services.Enemy
                 return true;
             }
 
-            if (_intel.TryGetScoutTarget(Time.time, out FormationPoint stale))
+            if (_patrol.TryGetTarget($"squadron:{scout.EntityId}", origin,
+                    point => _patrolSafety.IsObjectiveSafe(scout.EntityId, origin, point, 0f, false), out target))
             {
-                target = ToVector(stale);
                 return true;
             }
 
@@ -452,6 +465,7 @@ namespace EmpireAtWar.Services.Enemy
             _captureAssignments.Release(squadron);
             if (_scout == squadron)
             {
+                _patrol.Release($"squadron:{squadron.EntityId}");
                 _scout = null;
             }
         }

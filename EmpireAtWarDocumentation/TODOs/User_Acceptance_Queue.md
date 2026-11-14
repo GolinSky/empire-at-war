@@ -328,3 +328,8 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Small_Ship_Icons_And_Squadron_Grid_Plan]] — In-game: inspect all 12 ship markers, Stealth Corvette cloak/fog, individual squadron slots through idle/move/combat, merges/splits and passing traffic, viewport edges, dense screen overlap, zoom and pause.
 - [ ] [[Done/Features/Small_Ship_Icons_And_Squadron_Grid_Plan]] — Development Player: capture comparable 32/128/512 visible markers and 321 squadrons + 83 ships with dense, dispersed and high-churn layouts. Record p95 main-thread, worker time, candidate counts, canvas rebuild and GC bytes; tune using measured results.
 - [ ] [[Done/Features/Small_Ship_Icons_And_Squadron_Grid_Plan]] — Run authored Squadrons, Ships, BattleInput, Vision and Core regressions only on explicit request.
+
+## Enemy AI patrol and recovery relocation
+
+- [ ] [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]] — Play stability, coverage, station-loss/critical-pressure, weak/parity and allied/neutral-anchor scenarios; inspect AI CSV checks 1–10 and tune starting values.
+- [ ] [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]] — Run authored EnemyAi regression tests only when explicitly requested; tests were not run under the local override.

@@ -511,6 +511,35 @@ namespace EmpireAtWar.Tests.Editor
             finally { UnityEngine.Object.DestroyImmediate(data); }
         }
 
+        [TestCase(false, 0)]
+        [TestCase(true, 1)]
+        public void HostedSecondStation_RequiresRecovery(bool recovering, int expectedPurchases)
+        {
+            var data = ScriptableObject.CreateInstance<ReinforcementData>();
+            try
+            {
+                var faction = new FactionData();
+                SetBackingField(faction, nameof(FactionData.MaxCount), 1);
+                SetBackingField(faction, nameof(FactionData.BuildTime), 10);
+                var wallet = new TrackingWallet();
+                var controller = new EnemyFactionController(aiState: new IdleAiState(),
+                    model: new EnemyFactionModel(null, null), shipFactory: null,
+                    miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null,
+                    secondStation: new SecondStationLevelModel(), research: null,
+                    economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
+                    unitLimitModel: new EnemyUnitLimitModel(), reinforcementData: data,
+                    enemyStructurePlacementService: new UnavailableStructurePlacement { IsRecovering = recovering },
+                    productionAccess: new OperationalProductionAccess { ProductionHost = TestPlayers.Human },
+                    squadronLauncher: null, squadronCommander: null,
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), playerRegistry: new PlayerRegistry());
+                controller.Purchase(new SecondStationUnitRequest(faction));
+                Assert.That(wallet.SpendCount, Is.EqualTo(expectedPurchases));
+                Assert.That(controller.PendingBuilds.Count, Is.EqualTo(expectedPurchases));
+                controller.LateDispose();
+            }
+            finally { UnityEngine.Object.DestroyImmediate(data); }
+        }
+
         [Test]
         public void StationUpgrade_WaitsForBuildTimeAndBlocksASecondPurchase()
         {
@@ -611,6 +640,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class UnavailableStructurePlacement : IEnemyStructurePlacementService
         {
+            public bool IsRecovering { get; set; }
             public bool TryGetPosition(out Vector3 position)
             {
                 position = default;
@@ -623,6 +653,10 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
+            public void RecordPlacement(string request, Vector3 position) { }
+            public void RecordDeferred(string request, float refund) { }
+            public void RecordStationBuilt(Vector3 position) { }
+
             public void RecordDestroyedPosition(Vector3 position)
             {
             }
@@ -634,6 +668,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class TrackingStructurePlacement : IEnemyStructurePlacementService
         {
+            public bool IsRecovering => false;
             public int ResetCount { get; private set; }
 
             public bool TryGetPosition(out Vector3 position)
@@ -647,6 +682,10 @@ namespace EmpireAtWar.Tests.Editor
                 position = default;
                 return false;
             }
+
+            public void RecordPlacement(string request, Vector3 position) { }
+            public void RecordDeferred(string request, float refund) { }
+            public void RecordStationBuilt(Vector3 position) { }
 
             public void RecordDestroyedPosition(Vector3 position)
             {

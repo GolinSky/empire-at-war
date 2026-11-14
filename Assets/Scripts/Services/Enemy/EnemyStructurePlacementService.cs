@@ -11,9 +11,8 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.Enemy
 {
-    /// <summary>Chooses where an AI builds a structure: rings around its station, then around its captured relays,
-    /// then the nearest open spot anywhere it can see. Every candidate must pass the same structure spawn rule as a
-    /// player placement. When nothing visible is open, it names the nearest unexplored, unblocked spot to scout.</summary>
+    /// <summary>Searches safe structure positions from the station or recovery anchor, then allied zones and
+    /// visible map space. Unexplored safe space supplies scouting targets when building is blocked.</summary>
     public sealed class EnemyStructurePlacementService : IEnemyStructurePlacementService
     {
         private const float MINIMUM_ANCHOR_DISTANCE = 64f;
@@ -28,7 +27,7 @@ namespace EmpireAtWar.Services.Enemy
         private const float WIDE_SEARCH_SPACING = 48f;
         private const int MAX_RECENT_DESTROYED_POSITIONS = 10;
 
-        private const float DESTROYED_POSITION_EXCLUSION_RADIUS = 1f;
+        private const float DESTROYED_POSITION_EXCLUSION_RADIUS = 32f;
 
         private readonly IReinforcementZonesSystem _zones;
         private readonly IReinforcementSpawnRule _spawnRule;
@@ -38,6 +37,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly PlayerSlot _owner;
         private readonly IMapModelObserver _mapModel;
         private readonly IProductionAccess _productionAccess;
+        private readonly IEnemyRecoveryPolicy _recovery;
+        private string _placementSource;
         private readonly List<Bounds> _capturedZoneBounds = new List<Bounds>();
         private readonly Queue<Vector3> _recentDestroyedPositions = new Queue<Vector3>();
 
@@ -53,10 +54,12 @@ namespace EmpireAtWar.Services.Enemy
             IMapModelObserver mapModel,
             PlayerSlot owner,
             BoxCollider stationPrefab,
-            IProductionAccess productionAccess)
+            IProductionAccess productionAccess,
+            IEnemyRecoveryPolicy recovery)
         {
             _owner = owner;
             _productionAccess = productionAccess;
+            _recovery = recovery;
             _mapModel = mapModel;
             _zones = zones;
             _spawnRule = spawnRule;
@@ -69,9 +72,30 @@ namespace EmpireAtWar.Services.Enemy
             _placementRadius = Mathf.Max(structureClearance.Radius, stationReach.magnitude);
         }
 
+        public bool IsRecovering => _recovery.IsActive;
+
         public bool TryGetPosition(out Vector3 position)
         {
             Physics.SyncTransforms();
+            if (_recovery.IsActive)
+            {
+                if (!_recovery.TryGetBuildAnchor(out Vector3 anchor))
+                {
+                    position = default;
+                    return false;
+                }
+                _placementSource = "anchor";
+                if (TryGetPositionNear(anchor, 0f, out position)) return true;
+                _recovery.CopySafeAlliedZoneBounds(_capturedZoneBounds);
+                foreach (Bounds zone in _capturedZoneBounds)
+                {
+                    _placementSource = "allyZone";
+                    if (TryGetPositionNear(zone.center, zone.extents.x, out position)) return true;
+                }
+                _placementSource = "map";
+                return TrySearchMap(anchor, 0f, IsPlaceable, out position);
+            }
+            _placementSource = "station";
             Vector3 station = GetStationCenter();
             float stationRadius = GetStationRadius();
             if (TryGetPositionNear(station, stationRadius, out position))
@@ -82,20 +106,42 @@ namespace EmpireAtWar.Services.Enemy
             _zones.CopyOwnedCapturableZoneBounds(_owner.Id, _capturedZoneBounds);
             foreach (Bounds zone in _capturedZoneBounds)
             {
+                _placementSource = "ownZone";
                 if (TryGetPositionNear(zone.center, zone.extents.x, out position))
                 {
                     return true;
                 }
             }
 
-            // Neutral relays block building around some stations; any spot the AI sees is better than none.
+            // Search remaining visible, safe space when local rings are occupied.
+            _placementSource = "map";
             return TrySearchMap(station, stationRadius, IsPlaceable, out position);
         }
 
         public bool TryGetScoutTarget(out Vector3 position)
         {
-            return TrySearchMap(GetStationCenter(), GetStationRadius(), IsUnexplored, out position);
+            Vector3 origin = _recovery.IsActive && _recovery.TryGetBuildAnchor(out Vector3 anchor)
+                ? anchor : GetStationCenter();
+            return TrySearchMap(origin, GetStationRadius(), IsUnexplored, out position);
         }
+
+        public void RecordPlacement(string request, Vector3 position)
+        {
+            string anchor = _recovery.TryGetBuildAnchor(out Vector3 point)
+                ? FormattableString.Invariant($"({point.x:F1} {point.z:F1})") : "none";
+            float destroyedDistance = float.PositiveInfinity;
+            foreach (Vector3 destroyed in _recentDestroyedPositions)
+                destroyedDistance = Mathf.Min(destroyedDistance, Vector2.Distance(
+                    new Vector2(position.x, position.z), new Vector2(destroyed.x, destroyed.z)));
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "placement",
+                FormattableString.Invariant($"request={request};pos=({position.x:F1} {position.z:F1});source={_placementSource};anchor={anchor};nearestHostile={_recovery.GetNearestHostileDistance(position):F1};nearestDestroyed={destroyedDistance:F1};recoveryMode={_recovery.IsActive}"));
+        }
+
+        public void RecordDeferred(string request, float refund) =>
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "placementDeferred",
+                FormattableString.Invariant($"request={request};reason={(_recovery.IsActive ? _recovery.DeferredReason : "noSafeCandidate")};refund={refund:F1}"));
+
+        public void RecordStationBuilt(Vector3 position) => _recovery.OnStationBuilt(position);
 
         public void RecordDestroyedPosition(Vector3 position)
         {
@@ -119,11 +165,14 @@ namespace EmpireAtWar.Services.Enemy
             new Vector2(_stationBounds.extents.x, _stationBounds.extents.z).magnitude;
 
         private bool IsPlaceable(Vector3 candidate) =>
-            !IsNearRecentDestroyedPosition(candidate) && _spawnRule.CanSpawnStructure(_owner.Id, candidate);
+            !IsNearRecentDestroyedPosition(candidate) &&
+            _recovery.IsPlacementSafe(candidate, _placementRadius) &&
+            _spawnRule.CanSpawnStructure(_owner.Id, candidate);
 
         /// <summary>Hidden by fog but not covered by a hostile or neutral blocker, so a scout can open it.</summary>
         private bool IsUnexplored(Vector3 candidate) =>
-            !_vision.IsVisible(_owner.Id, candidate) && !_areas.IsBlocked(_owner.Id, candidate);
+            !_vision.IsVisible(_owner.Id, candidate) && !_areas.IsBlocked(_owner.Id, candidate) &&
+            _recovery.IsPlacementSafe(candidate, _placementRadius);
 
         private bool TryGetPositionNear(Vector3 anchor, float anchorRadius, out Vector3 position)
         {
@@ -197,7 +246,7 @@ namespace EmpireAtWar.Services.Enemy
         private bool IsNearRecentDestroyedPosition(Vector3 candidate)
         {
             float exclusionRadiusSquared =
-                DESTROYED_POSITION_EXCLUSION_RADIUS * DESTROYED_POSITION_EXCLUSION_RADIUS;
+                Mathf.Pow(Mathf.Max(DESTROYED_POSITION_EXCLUSION_RADIUS, _placementRadius), 2f);
             foreach (Vector3 destroyedPosition in _recentDestroyedPositions)
             {
                 if ((candidate - destroyedPosition).sqrMagnitude <= exclusionRadiusSquared)

@@ -4,9 +4,9 @@ system:
   - tooling
   - balance
   - ai
-verified: 2026-10-31
-verification: Historical battle evidence plus 2026-10-31 live-source review and
-  Unity compilation; new telemetry not runtime-tested
+verified: 2026-11-14
+verification: Live-source review of patrol/recovery event writers and Unity
+  compilation; new telemetry not runtime-tested.
 ---
 # Battle Telemetry
 
@@ -111,3 +111,15 @@ verification: Historical battle evidence plus 2026-10-31 live-source review and
 - Decision `reason`: `orderDestination` records the issued defense destination and `defensePointReason` records threat-facing/ring/advance/blocked positioning. Mixed ship orders require the per-ship order CSV for exact destinations.
 - Purchase/production-wait `reason`: `critical`, `etaSeconds`, `timeToLoss`. Infinite loss time means no current damage-rate estimate; ETA is an estimate, not a deployment guarantee.
 - Capture selection reasons distinguish `ReservedByOtherGroup`, `NoViableObjective`, `transientReservation`, `obstacle`, and `hostile`. Reservation ownership is unavailable through the navigation clearance API.
+
+### Patrol, stability and relocation (2026-11-14)
+
+- Existing 20 CSV columns remain unchanged; new event details use `reason`. Coordinates are XZ in world units, one decimal place.
+- Decision/sample details: `localRaw`, `localSmoothed`, `fleetSmoothed`, `stateHeldSeconds`, `recoveryMode`. Advantage columns now use smoothed values.
+- `stateSwitch`: group, from/to states, raw/smoothed local advantage, held seconds, emergency bypass, best/runner-up scores. `stateSwitchHeld`: first minimum-time/exit-cutoff hold per episode, blocked state and score gap.
+- `objectiveSwitch`: capture/patrol/anchor domain, old/new IDs and scores, 20% margin, held seconds and invalidation/better cause.
+- `patrolTarget`: unit, point ID/kind, staleness, value, travel cost, score and runner-up. `patrolVisit`: target, previous staleness and observing assigned unit. `patrolShip`: assignment/release and reason.
+- `patrolCoverage`: seen/total sectors, maximum sector/POI staleness and stalest POI every 60 s per team.
+- `recoveryMode`: latch on/off, trigger, smoothed fleet advantage and known pressure position. `recoveryAnchor`: kind, ID, XZ, near/far weight, threat/old-home distances, candidate/rejection counts.
+- `placement`: request, XZ, source, anchor, nearest hostile/destroyed distances and recovery mode. `placementDeferred`: request, noAnchor/anchorNotOwned/noSafeCandidate reason and refund amount; existing build failure path performs the refund.
+- Acceptance: compare matched battle logs with the ten checks in [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]]. Source verification is not runtime coverage or balance acceptance.

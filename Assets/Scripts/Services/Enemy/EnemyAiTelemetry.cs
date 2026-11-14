@@ -92,7 +92,10 @@ namespace EmpireAtWar.Services.Enemy
             bool sampleDue = !_nextSample.TryGetValue(player, out float next) || now >= next;
             if (!changed && !sampleDue) return;
             _nextSample[player] = now + SAMPLE_INTERVAL;
-            string details = decision.Reason;
+            string details = decision.Reason + string.Format(CultureInfo.InvariantCulture,
+                "; localRaw={0:F3}; localSmoothed={1:F3}; fleetSmoothed={2:F3}; stateHeldSeconds={3:F1}; recoveryMode={4}",
+                snapshot.LocalRaw, snapshot.LocalAdvantage, snapshot.FleetAdvantage,
+                context == null ? 0f : context.StateHeldSeconds, snapshot.RecoveryMode);
             if (context != null)
             {
                 EnemyCaptureObjective objective = context.CaptureObjective;

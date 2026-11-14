@@ -8,7 +8,22 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class TeamIntelRegistry
     {
         private readonly Dictionary<TeamId, HostileIntelModel> _teams = new Dictionary<TeamId, HostileIntelModel>();
-        public void Clear() => _teams.Clear();
+        private readonly Dictionary<TeamId, EnemyPatrolMemory> _patrols = new Dictionary<TeamId, EnemyPatrolMemory>();
+        public void Clear()
+        {
+            _teams.Clear();
+            _patrols.Clear();
+        }
+
+        public EnemyPatrolMemory GetPatrol(TeamId team)
+        {
+            if (!_patrols.TryGetValue(team, out EnemyPatrolMemory memory))
+            {
+                memory = new EnemyPatrolMemory();
+                _patrols.Add(team, memory);
+            }
+            return memory;
+        }
 
         public HostileIntelModel Get(TeamId team)
         {

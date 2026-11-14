@@ -38,12 +38,55 @@ using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Entities.SpaceStation;
 using UnityEditor;
+using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.SuperWeapons;
 
 namespace EmpireAtWar.Tests.Editor
 {
     [Category("EnemyAi")]
     public sealed class EnemyUnitCommanderTests
     {
+        [Test]
+        public void PatrolShipSelectsCheapestCorvetteAndReleasesForDefense()
+        {
+            const string SHARED_DATA = "Assets/Settings/Data/Factions/Shared/";
+            var catalog = AssetDatabase.LoadAssetAtPath<FactionCatalog>(SHARED_DATA + "FactionCatalog.asset");
+            var definition = UnityEngine.Object.Instantiate(catalog.Get(FactionType.Empire));
+            try
+            {
+                var roster = new FactionRoster(definition,
+                    AssetDatabase.LoadAssetAtPath<MiningFacilityCatalog>(SHARED_DATA + "MiningFacilityCatalog.asset"),
+                    AssetDatabase.LoadAssetAtPath<DefendPlatformCatalog>(SHARED_DATA + "DefendPlatformCatalog.asset"),
+                    AssetDatabase.LoadAssetAtPath<SuperWeaponCatalog>(SHARED_DATA + "SuperWeaponCatalog.asset"));
+                var faction = new EnemyFactionModel(null, roster);
+                ShipType[] types = definition.Ships.Keys.Take(3).ToArray();
+                int[] prices = { 500, 100, 1 };
+                var locator = new EntityLocator();
+                var ships = new List<IShipEntity>();
+                for (int i = 0; i < types.Length; i++)
+                {
+                    typeof(FactionData).GetField("<Price>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic)
+                        .SetValue(definition.Ships[types[i]], prices[i]);
+                    locator.AddEntity(new FakeEntity(new FakeHealthModel(null)
+                        { ShipClass = i == 2 ? ShipClass.Capital : ShipClass.Corvette }, TestPlayers.Enemy, i + 1)
+                        { UnitTypeId = UnitTypeId.Ship(types[i]) });
+                    ships.Add(new FakeShip(Vector3.zero, i + 1));
+                }
+                PlayerSlot owner = TestPlayers.CreateDuel().Get(TestPlayers.Enemy);
+                var patrol = new EnemyPatrolService(new TeamIntelRegistry(), owner, null, null, null, null, null, null, null);
+                var controller = new EnemyPatrolShipController(patrol, null, faction, locator, null, owner);
+                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                var selected = (IShipEntity)typeof(EnemyPatrolShipController).GetMethod("FindCheapest", flags)
+                    .Invoke(controller, new object[] { ships });
+                Assert.That(selected, Is.SameAs(ships[1]), "The cheaper capital ship cannot displace a corvette patrol.");
+                typeof(EnemyPatrolShipController).GetField("_ship", flags).SetValue(controller, selected);
+
+                Assert.That(controller.Select(ships, true, false, false), Is.Null);
+                Assert.That(typeof(EnemyPatrolShipController).GetField("_ship", flags).GetValue(controller), Is.Null);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(definition); }
+        }
+
         [TestCase(false, true)]
         [TestCase(true, true)]
         [TestCase(true, false)]
@@ -64,7 +107,7 @@ namespace EmpireAtWar.Tests.Editor
                 FakeOrderService orders = new FakeOrderService();
                 EnemyUnitCommander commander = new EnemyUnitCommander(null, null, locator, null, orders,
                     new EnemyStrategicDecisionModel(), builder, new EnemyTaskForceExecutor(orders),
-                    roster.Get(TestPlayers.Enemy));
+                    roster.Get(TestPlayers.Enemy), null, null);
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 var planner = (EnemyShipTaskGroupPlanner)typeof(EnemyUnitCommander)
                     .GetField("_taskGroups", flags).GetValue(commander);
@@ -132,7 +175,7 @@ namespace EmpireAtWar.Tests.Editor
                 };
                 EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
                     null, null, Array.Empty<IEnemyCaptureObjectiveSource>(), locator, null, roster, null, registry,
-                    new VisionService(roster, fogEnabled: false), owner, null, hazards, null, null, new EnemyStationPressureTracker());
+                    new VisionService(roster, fogEnabled: false), owner, null, hazards, null, null, new EnemyStationPressureTracker(), CreateRecovery(roster));
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 typeof(EnemyStrategicContextBuilder).GetField("_localThreat", flags).SetValue(builder, hazardous);
                 MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector, flags);
@@ -163,7 +206,7 @@ namespace EmpireAtWar.Tests.Editor
                 .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
             profiles.Add(UnitTypeId.Squadron(SquadronType.Vulture), profile);
             EnemySquadronCommander commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), null, locator, roster,
-                null, catalog, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy));
+                null, catalog, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null);
             MethodInfo discover = typeof(EnemySquadronCommander).GetMethod("TrackOwnedSquadrons",
                 BindingFlags.Instance | BindingFlags.NonPublic);
             MethodInfo track = typeof(EnemySquadronCommander).GetMethod("Track",
@@ -206,7 +249,7 @@ namespace EmpireAtWar.Tests.Editor
                 .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
             profiles.Add(UnitTypeId.Squadron(SquadronType.Vulture), profile);
             EnemySquadronCommander commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), null, locator, roster,
-                null, catalog, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy));
+                null, catalog, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null);
             var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                 .GetField("_squadrons", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(commander);
             MethodInfo issueOrder = typeof(EnemySquadronCommander).GetMethod("IssueOrder",
@@ -242,7 +285,7 @@ namespace EmpireAtWar.Tests.Editor
                 ? new SiteSource(new CaptureSiteStub(minePosition))
                 : new SiteSource();
             var commander = new EnemySquadronCommander(SiteObjectives(sites, roster), new ZoneSource(roster), null, roster,
-                null, null, new ScoutPlacement(), new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy));
+                null, null, new ScoutPlacement(), new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null);
             var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                 .GetField("_squadrons", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(commander);
             for (int i = 0; i < squadronCount; i++)
@@ -274,8 +317,12 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class ScoutPlacement : IEnemyStructurePlacementService
         {
+            public bool IsRecovering => false;
             public bool TryGetPosition(out Vector3 position) { position = default; return false; }
             public bool TryGetScoutTarget(out Vector3 position) { position = Vector3.left * 100f; return true; }
+            public void RecordPlacement(string request, Vector3 position) { }
+            public void RecordDeferred(string request, float refund) { }
+            public void RecordStationBuilt(Vector3 position) { }
             public void RecordDestroyedPosition(Vector3 position) { }
             public void Reset() { }
         }
@@ -362,7 +409,7 @@ namespace EmpireAtWar.Tests.Editor
                     new FormationPoint(20f, 0f), 1f, 0f, 1f, 0f));
                 EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
                     null, null, Array.Empty<IEnemyCaptureObjectiveSource>(), locator, null, roster, null, registry,
-                    new VisionService(roster, fogEnabled: false), owner, null, new TestHazards(), null, null, new EnemyStationPressureTracker());
+                    new VisionService(roster, fogEnabled: false), owner, null, new TestHazards(), null, null, new EnemyStationPressureTracker(), CreateRecovery(roster));
                 MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector,
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 object[] args = { Vector3.zero, 0f };
@@ -407,7 +454,7 @@ namespace EmpireAtWar.Tests.Editor
                     new FormationPoint(20f, 0f), 1f, 0f, 1f, 0f));
                 EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
                     null, null, Array.Empty<IEnemyCaptureObjectiveSource>(), locator, null, roster, null, registry,
-                    new VisionService(roster, fogEnabled: false), owner, null, new TestHazards(), null, null, new EnemyStationPressureTracker());
+                    new VisionService(roster, fogEnabled: false), owner, null, new TestHazards(), null, null, new EnemyStationPressureTracker(), CreateRecovery(roster));
                 MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector,
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 object[] args = { Vector3.zero, 0f };
@@ -454,7 +501,7 @@ namespace EmpireAtWar.Tests.Editor
                 TestPlayers.Human, new FormationPoint(defenderDistance, 0f), 100f, 0f, 1f, 0f));
             var builder = new EnemyStrategicContextBuilder(null, null, Array.Empty<IEnemyCaptureObjectiveSource>(), locator, null, roster,
                 new ForceCompositionBuilder(locator, catalog), registry, new VisionService(roster, fogEnabled: false),
-                owner, null, new TestHazards(), null, null, new EnemyStationPressureTracker());
+                owner, null, new TestHazards(), null, null, new EnemyStationPressureTracker(), CreateRecovery(roster));
             BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
             var ownForce = (ForceComposition)typeof(EnemyStrategicContextBuilder)
                 .GetField("_ownForce", flags).GetValue(builder);
@@ -492,7 +539,7 @@ namespace EmpireAtWar.Tests.Editor
                         TestPlayers.Human, new FormationPoint(1500f, hostileZ), 100f, 0f, 1f, 0f));
                 var builder = new EnemyStrategicContextBuilder(null, null, Array.Empty<IEnemyCaptureObjectiveSource>(), locator, null, roster,
                     new ForceCompositionBuilder(locator, catalog), registry, new VisionService(roster, fogEnabled: false),
-                    owner, null, new TestHazards(), null, null, new EnemyStationPressureTracker());
+                    owner, null, new TestHazards(), null, null, new EnemyStationPressureTracker(), CreateRecovery(roster));
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 ((ForceComposition)typeof(EnemyStrategicContextBuilder).GetField("_localOwnForce", flags)
                     .GetValue(builder)).AddNew(profile, false);
@@ -524,7 +571,7 @@ namespace EmpireAtWar.Tests.Editor
                 locator.AddEntity(structure);
                 var builder = new EnemyStrategicContextBuilder(null, null, Array.Empty<IEnemyCaptureObjectiveSource>(), locator, null, roster,
                     new ForceCompositionBuilder(locator, null), new TeamIntelRegistry(), new VisionService(roster, fogEnabled: false),
-                    roster.Get(TestPlayers.Enemy), null, new TestHazards(), null, null, new EnemyStationPressureTracker());
+                    roster.Get(TestPlayers.Enemy), null, new TestHazards(), null, null, new EnemyStationPressureTracker(), CreateRecovery(roster));
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod("FindRaidTarget", flags);
                 object[] args = { Vector3.zero, 0f };
@@ -567,7 +614,7 @@ namespace EmpireAtWar.Tests.Editor
                 vision.Register(TestPlayers.Enemy, scoutView.transform, visible ? 200f : 20f);
                 var builder = new EnemyStrategicContextBuilder(null, null, Array.Empty<IEnemyCaptureObjectiveSource>(), locator, null, roster,
                     new ForceCompositionBuilder(locator, null), new TeamIntelRegistry(), vision, roster.Get(TestPlayers.Enemy),
-                    null, new TestHazards(), null, null, new EnemyStationPressureTracker());
+                    null, new TestHazards(), null, null, new EnemyStationPressureTracker(), CreateRecovery(roster));
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 typeof(EnemyStrategicContextBuilder).GetField("_raidTarget", flags).SetValue(builder, mine);
                 MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod("FindRaidTarget", flags);
@@ -606,7 +653,7 @@ namespace EmpireAtWar.Tests.Editor
                 vision.Register(owner.Id, scoutView.transform, 20f);
                 EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
                     null, null, Array.Empty<IEnemyCaptureObjectiveSource>(), locator, null, roster, new ForceCompositionBuilder(locator, null), registry, vision, owner, null, new TestHazards(),
-                    null, null, new EnemyStationPressureTracker());
+                    null, null, new EnemyStationPressureTracker(), CreateRecovery(roster));
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod(selector, flags);
                 object[] args = { Vector3.zero, 0f };
@@ -1271,7 +1318,7 @@ namespace EmpireAtWar.Tests.Editor
                 var builder = new EnemyStrategicContextBuilder(null, null, Array.Empty<IEnemyCaptureObjectiveSource>(), locator, null, roster,
                     new ForceCompositionBuilder(locator, new UnitCombatProfileCatalog(null, null, null, null)),
                     new TeamIntelRegistry(), new VisionService(roster, fogEnabled: false), owner,
-                    null, new TestHazards(), null, null, tracker);
+                    null, new TestHazards(), null, null, tracker, CreateRecovery(roster));
 
                 typeof(EnemyStrategicContextBuilder).GetMethod("BuildBaseThreat",
                     BindingFlags.Instance | BindingFlags.NonPublic).Invoke(builder, new object[] { station });
@@ -1327,7 +1374,7 @@ namespace EmpireAtWar.Tests.Editor
                 EnemyStrategicContextBuilder builder = new EnemyStrategicContextBuilder(
                     null, null, Array.Empty<IEnemyCaptureObjectiveSource>(), locator, null, roster, new ForceCompositionBuilder(locator, catalog),
                     registry, new VisionService(roster, fogEnabled: condition == "hidden"), owner,
-                    null, new TestHazards(), null, null, pressure);
+                    null, new TestHazards(), null, null, pressure, CreateRecovery(roster));
 
                 object target = typeof(EnemyStrategicContextBuilder)
                     .GetMethod("BuildBaseThreat", BindingFlags.Instance | BindingFlags.NonPublic)
@@ -1924,7 +1971,7 @@ namespace EmpireAtWar.Tests.Editor
                 null, null, SiteObjectives(sites, roster), locator, null, roster, new ForceCompositionBuilder(locator, null),
                 new TeamIntelRegistry(), new VisionService(roster, fogEnabled: false),
                 roster.Get(TestPlayers.Enemy), null, hazards, zones,
-                navigation, new EnemyStationPressureTracker());
+                navigation, new EnemyStationPressureTracker(), CreateRecovery(roster, zones));
             List<IShipEntity> ships = (List<IShipEntity>)typeof(EnemyStrategicContextBuilder)
                 .GetField("_ownShips", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(builder);
             foreach (ReinforcementZonePresenter zone in zones.Zones)
@@ -1933,6 +1980,10 @@ namespace EmpireAtWar.Tests.Editor
                 ships.Add(new FakeShip(site.Center, ships.Count + 1));
             return builder;
         }
+
+        private static EnemyRecoveryAnchor CreateRecovery(PlayerRoster roster, ZoneSource zones = null) =>
+            new EnemyRecoveryAnchor(null, zones ?? new ZoneSource(roster), roster, new EntityLocator(), null, null,
+                new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, new EnemyStationPressureTracker());
 
         private static EnemyCaptureObjective SelectCapture(EnemyStrategicContextBuilder builder, float now = 0f) =>
             (EnemyCaptureObjective)typeof(EnemyStrategicContextBuilder)
@@ -2215,7 +2266,7 @@ private sealed class ZoneSource : IReinforcementZoneSource
             public bool IsMine { get; set; }
             public IRetreatFacade RetreatCommand { get; set; }
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
-            public UnitTypeId UnitTypeId => UnitTypeId.Ship(ShipType.Venator);
+            public UnitTypeId UnitTypeId { get; set; } = UnitTypeId.Ship(ShipType.Venator);
             public long Id { get; }
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner { get; }
@@ -2256,7 +2307,7 @@ private sealed class ZoneSource : IReinforcementZoneSource
 
             public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull { get; set; } = 1f;
-            public ShipClass ShipClass => ShipClass.Capital;
+            public ShipClass ShipClass { get; set; } = ShipClass.Capital;
             public bool HasLiveHardPoints => true;
             public float HullPercentage => 1f;
             public float Shields { get; set; } = 1f;

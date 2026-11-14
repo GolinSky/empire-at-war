@@ -34,6 +34,7 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class EnemyStrategicContext
     {
         public EnemyStrategicSnapshot Snapshot { get; }
+        public float StateHeldSeconds { get; internal set; }
         public IReadOnlyList<IShipEntity> Ships { get; }
         public Vector3 CaptureTarget { get; }
         public GameEntity EnemyFleetTarget { get; }
@@ -100,6 +101,7 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class EnemyStrategicContextBuilder
     {
         private readonly EnemyStationPressureTracker _stationPressure;
+        private readonly EnemyRecoveryAnchor _recovery;
         private bool _preferStrategicObjectives;
         private Vector3 _strategicCenter;
 
@@ -129,6 +131,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly HashSet<long> _stationThreats = new HashSet<long>();
         private readonly List<EnemyCaptureObjective> _captureCandidates = new List<EnemyCaptureObjective>();
         private EnemyCaptureObjective _captureObjective;
+        private readonly EnemyTargetCommitment _captureCommitment = new EnemyTargetCommitment();
+        private readonly EnemyAdvantageSmoother _advantageSmoother = new EnemyAdvantageSmoother();
         private float _captureDistance;
         private float _captureProgress;
         private float _captureStallSeconds;
@@ -139,6 +143,7 @@ namespace EmpireAtWar.Services.Enemy
         private string _captureReason;
         private string _objectiveSafetyReason;
         public bool CaptureReservedByOtherGroup { get; private set; }
+        public bool RecoveryActive => _recovery.IsActive;
         public AllyAiMarkerSource AlliedMarkers { get; }
         private readonly List<IShipEntity> _ownShips = new List<IShipEntity>();
         private readonly List<FormationPoint> _formationPositions = new List<FormationPoint>();
@@ -176,7 +181,8 @@ namespace EmpireAtWar.Services.Enemy
             IHazardService hazards,
             IReinforcementZoneSource zones,
             IShipNavigationService navigation,
-            EnemyStationPressureTracker stationPressure)
+            EnemyStationPressureTracker stationPressure,
+            EnemyRecoveryAnchor recovery)
         {
             _vision = vision;
             _hazards = hazards;
@@ -195,6 +201,7 @@ namespace EmpireAtWar.Services.Enemy
             _zones = zones;
             _navigation = navigation;
             _stationPressure = stationPressure;
+            _recovery = recovery;
         }
 
         /// <summary>The returned collections are borrowed until the next Build on this player's builder.</summary>
@@ -216,6 +223,7 @@ namespace EmpireAtWar.Services.Enemy
             _owner = source._owner;
             _productionAccess = source._productionAccess;
             _stationPressure = source._stationPressure;
+            _recovery = source._recovery;
         }
 
         public EnemyStrategicContextBuilder CreateGroupBuilder() => new EnemyStrategicContextBuilder(this);
@@ -225,8 +233,19 @@ namespace EmpireAtWar.Services.Enemy
 
         public (bool HasPressure, bool GatherReinforcements) AssessStation(IReadOnlyList<IShipEntity> ships)
         {
-            GameEntity ownBase = FindOwnBase(ToVector(CalculateFleetCenter(ships)));
+            Vector3 origin = ToVector(CalculateFleetCenter(ships));
+            GameEntity ownBase = FindOwnBase(origin);
             GameEntity defenseTarget = BuildBaseThreat(ownBase);
+            _groupScoped = false;
+            _ownShips.Clear();
+            _ownShips.AddRange(ships);
+            _forceBuilder.Build(_ownTeamForce, entity => _playerRoster.IsAllied(_owner.Id, entity.Owner));
+            _forceBuilder.BuildKnown(_focusTeamForce, _intel, Time.time,
+                sighting => _playerRoster.IsHostile(_owner.Id, sighting.Owner));
+            BuildOwnNear(_localOwnForce, origin, LOCAL_ENGAGEMENT_RADIUS);
+            _recovery.Update(origin, CombatMatchup.Advantage(_ownTeamForce, _focusTeamForce),
+                FindLocalThreat(origin, Time.time) != null, HasOwnStation(), Time.time,
+                (position, radius) => ships.Count == 0 || IsObjectiveSafe(origin, position, radius, true), ships.Count > 0, !_focusTeamForce.IsEmpty);
             return (_stationPressure.HasPressure, ShouldGatherReinforcements(ownBase, defenseTarget));
         }
 
@@ -278,6 +297,10 @@ namespace EmpireAtWar.Services.Enemy
             BuildOwnNear(_localOwnForce, origin, LOCAL_ENGAGEMENT_RADIUS);
             _localThreat = FindLocalThreat(origin, now);
             _raidTarget = FindRaidTarget(origin, now);
+            if (!_groupScoped)
+                _recovery.Update(origin, CombatMatchup.Advantage(_ownTeamForce, _focusTeamForce),
+                    _localThreat != null, HasOwnStation(), now,
+                    (position, radius) => ownShips.Count == 0 || IsObjectiveSafe(origin, position, radius, true), ownShips.Count > 0, !_focusTeamForce.IsEmpty);
             EnemyCaptureObjective captureObjective = SelectCaptureObjective(origin, now);
             Vector3? retreatAnchor = FindRetreatAnchor(origin, ownBase);
             string recoveryReason = retreatAnchor.HasValue
@@ -287,6 +310,10 @@ namespace EmpireAtWar.Services.Enemy
                 ? 0f
                 : 1f / CombatMatchup.Advantage(_ownForce, _baseThreatForce);
 
+            float localRaw = CombatMatchup.Advantage(_localOwnForce, _localThreatForce);
+            float fleetRaw = CombatMatchup.Advantage(ships == null ? _ownTeamForce : _ownForce, _focusTeamForce);
+            _advantageSmoother.Sample(localRaw, fleetRaw, now,
+                !_localThreatForce.IsEmpty, !_focusTeamForce.IsEmpty);
             EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
                 victoryCondition: _gameModel.VictoryCondition,
                 difficulty: _owner.Difficulty,
@@ -296,16 +323,20 @@ namespace EmpireAtWar.Services.Enemy
                 hasEnemyBaseTarget: enemyBaseTarget != null,
                 hasOwnBase: ownBase != null,
                 ownedCapturableZoneCount: ownedCapturableZoneCount,
-                fleetAdvantage: CombatMatchup.Advantage(ships == null ? _ownTeamForce : _ownForce, _focusTeamForce),
+                fleetAdvantage: _advantageSmoother.Fleet,
+                localRaw: localRaw, fleetRaw: fleetRaw,
                 baseThreatRatio: baseThreatRatio,
                 hasThreatenedSite: captureObjective != null && captureObjective.IsThreatened,
-                localAdvantage: CombatMatchup.Advantage(_localOwnForce, _localThreatForce),
+                localAdvantage: _advantageSmoother.Local,
                 hasLocalThreat: _localThreat != null,
                 hasRaidTarget: _raidTarget != null,
                 isRegrouped: IsRegrouped(ownShips),
                 hasStationPressure: _stationPressure.HasPressure,
                 hasSafeRetreat: retreatAnchor.HasValue,
-                hasEconomyRaidTarget: _raidTarget != null && _raidTarget.TryGetFacade(out IMiningFacilityFacade _));
+                hasEconomyRaidTarget: _raidTarget != null && _raidTarget.TryGetFacade(out IMiningFacilityFacade _),
+                recoveryMode: _recovery.IsActive,
+                recoveryCapturePending: captureObjective != null && _recovery.PendingCaptureObjective != null &&
+                    captureObjective.Id == _recovery.PendingCaptureObjective.Id);
             _receivers.Clear();
             _shipForces.Clear();
             foreach (IShipEntity ship in ownShips)
@@ -571,6 +602,7 @@ namespace EmpireAtWar.Services.Enemy
         private EnemyCaptureObjective SelectCaptureObjective(Vector3 origin, float now)
         {
             CaptureReservedByOtherGroup = false;
+            _captureReason = "Ranking viable capture objectives.";
             _captureCandidates.Clear();
             for (int i = 0; i < _zones.Zones.Count; i++)
             {
@@ -585,95 +617,94 @@ namespace EmpireAtWar.Services.Enemy
 
             EnemyCaptureObjective best = null;
             EnemyCaptureObjective retained = null;
-            float bestScore = float.MaxValue;
-            _captureReason = "Ranking viable capture objectives.";
+            float bestScore = float.NegativeInfinity;
+            float retainedScore = 0f;
+            string invalidReason = "ownedOrRemoved";
             foreach (EnemyCaptureObjective candidate in _captureCandidates)
             {
+                bool isCurrent = _captureObjective != null && candidate.Id == _captureObjective.Id &&
+                                 candidate.Owner == _captureObjective.Owner;
                 if (_reservedCaptureObjectives != null && _reservedCaptureObjectives.Contains(candidate.Id))
                 {
                     CaptureReservedByOtherGroup = true;
-                    AppendCaptureReason($"ReservedByOtherGroup: {candidate.Id}.");
+                    if (isCurrent) invalidReason = "reserved";
                     continue;
                 }
                 if (candidate.Id == _rejectedCaptureId && now < _captureRetryAt)
                 {
-                    AppendCaptureReason($"Rejected {candidate.Id}: stall cooldown {_captureRetryAt - now:F1}s remaining.");
+                    if (isCurrent) invalidReason = "stalled";
                     continue;
                 }
-                bool isCurrent = _captureObjective != null && candidate.Id == _captureObjective.Id &&
-                                 candidate.Owner == _captureObjective.Owner;
-                // The current objective keeps a looser cutoff so estimate noise at the threshold does not flip targets.
                 if (!IsObjectiveSafe(origin, candidate.Position, candidate.Radius, false,
                         isCurrent ? RETAIN_SAFETY_SCALE : 1f))
                 {
+                    if (isCurrent) invalidReason = "unsafe";
                     AppendCaptureReason($"Rejected {candidate.Id}: {_objectiveSafetyReason}");
                     continue;
                 }
-                float score = GetCaptureScore(origin, candidate);
+                if (isCurrent)
+                {
+                    float distance = CaptureDistance(candidate);
+                    if (_captureIsExecuting) _captureStallSeconds += Mathf.Max(0f, now - _captureEvaluatedAt);
+                    if (distance + 1f < _captureDistance || Mathf.Abs(candidate.Progress - _captureProgress) > 0.001f)
+                    {
+                        _captureDistance = distance;
+                        _captureProgress = candidate.Progress;
+                        _captureStallSeconds = 0f;
+                    }
+                    if (_captureStallSeconds >= CAPTURE_STALL_SECONDS)
+                    {
+                        _rejectedCaptureId = candidate.Id;
+                        _captureRetryAt = now + CAPTURE_STALL_SECONDS;
+                        invalidReason = "stalled";
+                        continue;
+                    }
+                }
+                float score = -GetCaptureScore(origin, candidate);
                 if (best == null || candidate.IsThreatened && !best.IsThreatened ||
-                    candidate.IsThreatened == best.IsThreatened && score < bestScore)
+                    candidate.IsThreatened == best.IsThreatened && score > bestScore)
                 {
                     best = candidate;
                     bestScore = score;
                 }
-                if (isCurrent) retained = candidate;
+                if (isCurrent) { retained = candidate; retainedScore = score; }
             }
-
-            if (retained != null && (best == null || best.PriorityBonus <= retained.PriorityBonus) &&
-                (best == null || !best.IsThreatened || retained.IsThreatened))
+            if (_rejectedCaptureId != null && now < _captureRetryAt)
+                _recovery.RejectCaptureObjective(_rejectedCaptureId, _captureRetryAt);
+            if (_recovery.IsActive && _recovery.PendingCaptureObjective != null)
             {
-                float distance = CaptureDistance(retained);
-                if (_captureIsExecuting) _captureStallSeconds += now - _captureEvaluatedAt;
-                _captureEvaluatedAt = now;
-                if (distance + 1f < _captureDistance || Mathf.Abs(retained.Progress - _captureProgress) > 0.001f)
+                EnemyCaptureObjective relay = _recovery.PendingCaptureObjective;
+                if (!(relay.Id == _rejectedCaptureId && now < _captureRetryAt) &&
+                    (_reservedCaptureObjectives == null || !_reservedCaptureObjectives.Contains(relay.Id)) &&
+                    IsObjectiveSafe(origin, relay.Position, relay.Radius, false))
                 {
-                    _captureDistance = distance;
-                    _captureProgress = retained.Progress;
-                    _captureStallSeconds = 0f;
-                }
-                if (_captureStallSeconds < CAPTURE_STALL_SECONDS)
-                {
-                    _captureObjective = retained;
-                    CaptureReservedByOtherGroup = false;
-                    _captureReason += $" Retained {retained.Id}; approach/capture progress is monitored.";
-                    return retained;
-                }
-                _rejectedCaptureId = retained.Id;
-                _captureRetryAt = now + CAPTURE_STALL_SECONDS;
-                _captureReason += $" Objective {retained.Id} stalled for {CAPTURE_STALL_SECONDS} seconds; considering alternatives.";
-                best = null;
-                bestScore = float.MaxValue;
-                foreach (EnemyCaptureObjective candidate in _captureCandidates)
-                {
-                    if (_reservedCaptureObjectives != null && _reservedCaptureObjectives.Contains(candidate.Id)) continue;
-                    if (candidate.Id == _rejectedCaptureId) continue;
-                    if (!IsObjectiveSafe(origin, candidate.Position, candidate.Radius, false))
-                    {
-                        AppendCaptureReason($"Rejected {candidate.Id}: {_objectiveSafetyReason}");
-                        continue;
-                    }
-                    float score = GetCaptureScore(origin, candidate);
-                    if (best == null || candidate.IsThreatened && !best.IsThreatened ||
-                        candidate.IsThreatened == best.IsThreatened && score < bestScore)
-                    {
-                        best = candidate;
-                        bestScore = score;
-                    }
+                    best = relay;
+                    bestScore = -GetCaptureScore(origin, relay);
+                    if (retained == null || retained.Id != relay.Id) invalidReason = "recoveryRelay";
+                    retained = retained != null && retained.Id == relay.Id ? retained : null;
                 }
             }
-            _captureObjective = best;
-            CaptureReservedByOtherGroup &= best == null;
-            _captureStallSeconds = 0f;
+            string selected = _captureCommitment.Select(best == null ? null : best.Id, bestScore,
+                _captureObjective == null ? null : _captureObjective.Id, retainedScore, retained != null, now, invalidReason);
+            EnemyCaptureObjective next = retained != null && retained.Id == selected ? retained : best;
+            if (_captureCommitment.Changed)
+            {
+                RecordStabilityEvent("objectiveSwitch", FormattableString.Invariant(
+                    $"domain=capture; fromId={_captureCommitment.LastFromId ?? "none"}; toId={selected ?? "none"}; fromScore={retainedScore:F3}; toScore={_captureCommitment.LastToScore:F3}; margin={EnemyTargetCommitment.SWITCH_MARGIN:F2}; heldSeconds={_captureCommitment.LastHeldSeconds:F1}; cause={_captureCommitment.LastCause}"));
+                _captureStallSeconds = 0f;
+                _captureIsExecuting = false;
+                _captureDistance = next == null ? 0f : CaptureDistance(next);
+                _captureProgress = next == null ? 0f : next.Progress;
+            }
             _captureEvaluatedAt = now;
-            _captureIsExecuting = false;
-            _captureDistance = best == null ? 0f : CaptureDistance(best);
-            _captureProgress = best == null ? 0f : best.Progress;
-            _captureReason += best == null ? CaptureReservedByOtherGroup
-                ? " ReservedByOtherGroup: waiting for an unclaimed objective."
-                : " NoViableObjective: no safe capture destination or approach is available."
-                : $" Selected {best.Id}.";
-            return best;
+            _captureObjective = next;
+            CaptureReservedByOtherGroup &= next == null;
+            _captureReason += next == null ? " NoViableObjective: no safe capture destination." : $" Selected {next.Id}.";
+            return next;
         }
+
+        public void RecordStabilityEvent(string kind, string details) =>
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, kind, details);
 
         public void ReportCaptureExecution(EnemyCaptureObjective objective, float now)
         {
@@ -787,22 +818,15 @@ namespace EmpireAtWar.Services.Enemy
         private Vector3? FindRetreatAnchor(Vector3 origin, GameEntity ownBase)
         {
             if (_ownShips.Count == 0) return null;
-            // A surviving production host and its default home are distinct from a capturable relay.
-            if (ownBase != null && _stationThreats.Count == 0 &&
-                _reinforcementZonesSystem.TryGetDefaultZoneCenter(_productionAccess.ProductionHost, out Vector3 home) &&
-                IsObjectiveSafe(origin, home, 0f, true)) return home;
-            Vector3? closest = null;
-            float closestScore = float.MaxValue;
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
-            {
-                if (!zone.IsCapturable || !_playerRoster.IsAllied(_owner.Id, zone.Owner) || zone.IsContested) continue;
-                Vector3 position = ToVector(ToPoint(zone.Center));
-                float score = GetTargetScore(origin, position);
-                if (score >= closestScore || !IsObjectiveSafe(origin, position, zone.Radius, true)) continue;
-                closest = position;
-                closestScore = score;
-            }
-            return closest;
+            return _recovery.FindRetreatAnchor(origin, ownBase != null,
+                (position, radius) => IsObjectiveSafe(origin, position, radius, true));
+        }
+
+        private bool HasOwnStation()
+        {
+            foreach (GameEntity entity in _entityLocator.Entities)
+                if (entity.Owner == _owner.Id && entity.IsPlayerBase() && !entity.HealthModel.IsDestroyed) return true;
+            return false;
         }
 
         private static float PlanarDistance(Vector3 a, Vector3 b)
