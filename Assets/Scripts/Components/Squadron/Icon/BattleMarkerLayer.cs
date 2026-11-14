@@ -15,6 +15,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
     {
         private const float SNAPSHOT_INTERVAL = 0.1f;
         private const float PLANE_DISTANCE_PAST_NEAR_CLIP = 0.05f;
+        private const float SHIP_MARKER_SCALE = 1.1f;
         private static readonly ProfilerMarker SnapshotSampler = new ProfilerMarker("Battle.Markers.Snapshot");
         private static readonly ProfilerMarker VisionSampler = new ProfilerMarker("Battle.Markers.Vision");
         private static readonly ProfilerMarker CompletionSampler = new ProfilerMarker("Battle.Markers.Consume");
@@ -73,12 +74,12 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             var rect = (RectTransform)root.transform;
             CreateShape("Background", rect, new Color(0f, 0f, 0f, 0.5f), 0f);
             MPImage frame = CreateShape("Frame", rect, Color.white, 1.5f);
-            Image icon = CreateImage<Image>("Icon", rect, 6.75f);
+            Image icon = CreateImage<Image>("Icon", rect, 6.75f * SHIP_MARKER_SCALE);
             icon.material = _iconMaterial;
             icon.sprite = sprite;
             icon.preserveAspect = true;
-            icon.rectTransform.anchoredPosition = new Vector2(0f, -1.5f);
-            return new BattleMarker(this, rect, frame, icon, 60f, 72f) { AnchorTransform = anchor };
+            icon.rectTransform.anchoredPosition = new Vector2(0f, -1.5f * SHIP_MARKER_SCALE);
+            return new BattleMarker(this, rect, frame, icon, 60f * SHIP_MARKER_SCALE, 72f) { AnchorTransform = anchor };
         }
 
         private MPImage CreateShape(string name, Transform parent, Color color, float stroke)
