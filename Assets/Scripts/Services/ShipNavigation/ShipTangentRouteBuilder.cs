@@ -123,8 +123,12 @@ namespace EmpireAtWar.Services.ShipNavigation
             if (failure.Value != ShipTangentRouteJob.FAILURE_NONE)
             {
                 if (collapsed) return null;
-                Debug.LogError($"[ShipNavigation] Tangent route build failed (code {failure.Value}); " +
-                    "following the funnel polyline with turns in place.");
+                string message = $"[ShipNavigation] Tangent route build failed (code {failure.Value}); " +
+                    "following the funnel polyline with turns in place.";
+                if (failure.Value == ShipTangentRouteJob.FAILURE_NO_TANGENT)
+                    Debug.LogWarning(message);
+                else
+                    Debug.LogError(message);
                 return BuildPolyline(waypoints);
             }
             if (first > 0) FilletEscapeJoin(graph, pieces, turnRadius, height);

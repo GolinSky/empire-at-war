@@ -571,7 +571,8 @@ namespace EmpireAtWar.Entities.Squadrons
             if (!Application.isPlaying) return;
 
             IEntity target = _orders.Target;
-            float targetDistance = target == null ? -1f :
+            // Sampling and release can run before the order retires a destroyed target.
+            float targetDistance = !SquadronTargetSelector.IsAlive(target) ? -1f :
                 PlanarGeometry.Distance(_flight.Centroid, target.GetFacade<IEntityTransformFacade>().Transform.position);
             SquadronTelemetry.Squadron(kind, _owner, EntityId, _squadronType.ToString(), _orders.Current.ToString(),
                 target == null ? 0L : target.Id, _engaged == null ? 0L : _engaged.Id, _flight.Centroid,

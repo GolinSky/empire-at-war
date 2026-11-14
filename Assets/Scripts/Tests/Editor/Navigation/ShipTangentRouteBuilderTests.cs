@@ -7,6 +7,8 @@ using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.ShipNavigation;
 using NUnit.Framework;
+using Unity.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -17,6 +19,49 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const float CLEARANCE = 0.25f;
         private const float TOLERANCE = 0.002f;
+
+        [TestCase(1)]
+        [TestCase(-1)]
+        public void AdjacentCopiesOfDiskCircle_MergeOnlyMatchingTurnDirections(int secondSign)
+        {
+            using var disks = new NativeArray<float3>(new[] { new float3(0f, 0f, 2f) }, Allocator.TempJob);
+            using var buckets = new NativeParallelMultiHashMap<int, int>(128, Allocator.TempJob);
+            var layout = new NavMeshBuckets(new float2(-100f), new float2(100f));
+            layout.Insert(buckets, 0, new float2(-2f), new float2(2f));
+            using var circles = new NativeList<ShipRouteCircle>(4, Allocator.TempJob);
+            using var pieces = new NativeList<ShipRoutePiece>(4, Allocator.TempJob);
+            using var failure = new NativeReference<int>(Allocator.TempJob);
+            var start = new float2(-10f, 0f);
+            var goal = new float2(10f, 0f);
+            circles.Add(new ShipRouteCircle(start, 0f, 1));
+            circles.Add(new ShipRouteCircle(float2.zero, 2f, 1, 0));
+            // Arc repairs insert a copy of the original circle after the blocking disk;
+            // removing an obsolete corner can leave those copies directly adjacent.
+            circles.Add(new ShipRouteCircle(float2.zero, 2f, secondSign, 0));
+            circles.Add(new ShipRouteCircle(goal, 0f, 1));
+
+            new ShipTangentRouteJob
+            {
+                Disks = disks, DiskBuckets = buckets, Layout = layout,
+                Circles = circles, Pieces = pieces, Failure = failure, Start = start
+            }.Execute();
+
+            if (secondSign < 0)
+            {
+                Assert.That(failure.Value, Is.EqualTo(ShipTangentRouteJob.FAILURE_NO_TANGENT));
+                Assert.That(pieces.Length, Is.Zero);
+                return;
+            }
+
+            Assert.That(failure.Value, Is.EqualTo(ShipTangentRouteJob.FAILURE_NONE));
+            Assert.That(circles[1].Next, Is.EqualTo(3));
+            Assert.That(circles[3].Previous, Is.EqualTo(1));
+            var route = new ShipRoute(pieces.AsArray().ToArray());
+            AssertGeometry(route, new[] { new RadarContact(Vector3.zero, 2f - CLEARANCE, false) },
+                100f, Vector3.left * 10f, Vector3.right * 10f);
+            Assert.That(route.Pieces.Count, Is.EqualTo(3));
+            Assert.That(route.Pieces[1].Curvature, Is.EqualTo(0.5f));
+        }
 
         [TestCase(12f, 100f)]
         [TestCase(140f, 300f)]

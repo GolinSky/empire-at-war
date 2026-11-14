@@ -52,6 +52,19 @@ namespace EmpireAtWar.Services.ShipNavigation
             {
                 ShipRouteCircle a = Circles[index];
                 ShipRouteCircle b = Circles[a.Next];
+                // Repair can expose the two copies of a circle inserted around an arc
+                // blocker. Merge them before requesting a tangent between identical circles.
+                if (index > 0 && b.Next >= 0 && a.DiskIndex == b.DiskIndex && a.Sign == b.Sign &&
+                    a.Radius == b.Radius && a.Center.Equals(b.Center))
+                {
+                    a.Next = b.Next;
+                    a.SweepHint += b.SweepHint;
+                    ShipRouteCircle next = Circles[b.Next];
+                    next.Previous = index;
+                    Circles[index] = a;
+                    Circles[b.Next] = next;
+                    continue;
+                }
                 if (!ShipRouteGeometry.Tangent(a, b, out float2 from, out float2 to))
                 {
                     // The heading-constrained start circle may touch a disk that a repair
