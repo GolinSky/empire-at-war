@@ -1,5 +1,6 @@
 using static EmpireAtWar.Utils.FormationConversion;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Controllers.Game;
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Movement.Formation;
@@ -42,6 +43,7 @@ namespace EmpireAtWar.Services.Enemy
         IInitializable,
         ITickable,
         ILateDisposable,
+        IObserver<BattleState>,
         IEnemyAiDebugInfo,
         IEnemyAiStateProvider
     {
@@ -49,6 +51,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly IEntityLocator _entityLocator;
         private readonly IGameModelObserver _gameModel;
+        private readonly INotifier<BattleState> _battleState;
         private readonly IUnitOrderService _unitOrderService;
 
         private readonly PlayerSlot _owner;
@@ -64,6 +67,7 @@ namespace EmpireAtWar.Services.Enemy
         private float _decisionTimer;
 
         private bool _hasDecision;
+        private bool _isRunning;
         private float _recoveryStartedAt = -1f;
         private EnemyStrategicContext _lastContext;
         private string _actionReason;
@@ -123,7 +127,8 @@ namespace EmpireAtWar.Services.Enemy
             EnemyStrategicDecisionModel decisionModel,
             EnemyStrategicContextBuilder contextBuilder,
             EnemyTaskForceExecutor taskForceExecutor,
-            PlayerSlot owner, EnemyPatrolService patrol, EnemyPatrolShipController patrolShips)
+            PlayerSlot owner, EnemyPatrolService patrol, EnemyPatrolShipController patrolShips,
+            INotifier<BattleState> battleState)
         {
             _owner = owner;
             _patrol = patrol;
@@ -132,6 +137,7 @@ namespace EmpireAtWar.Services.Enemy
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _entityLocator = entityLocator;
             _gameModel = gameModel;
+            _battleState = battleState;
             _contextBuilder = contextBuilder;
             _taskGroups = new EnemyShipTaskGroupPlanner(contextBuilder, decisionModel, taskForceExecutor, unitOrderService);
             _unitOrderService = unitOrderService;
@@ -144,12 +150,16 @@ namespace EmpireAtWar.Services.Enemy
             _reinforcementZonesSystem.OwnershipChanged += HandleWorldChanged;
             _entityLocator.EntityAdded += HandleEntityChanged;
             _entityLocator.EntityRemoved += HandleEntityChanged;
-            EvaluateAndExecute();
-            _decisionTimer += EnemyAiStagger.Offset(_owner.Id, _decisionTimer);
+            // Player scopes initialize before the asynchronous map load finishes.
+            _decisionTimer = EnemyAiStagger.Offset(_owner.Id,
+                EnemyAiDifficultyProfile.Get(_owner.Difficulty).DecisionInterval);
+            _battleState.AddObserver(this);
         }
 
         public void LateDispose()
         {
+            _battleState.RemoveObserver(this);
+            _isRunning = false;
             _shipService.ShipAdded -= HandleShipChanged;
             _shipService.ShipRemoved -= HandleShipRemoved;
             _zoneExitTargets.Clear();
@@ -158,8 +168,15 @@ namespace EmpireAtWar.Services.Enemy
             _entityLocator.EntityRemoved -= HandleEntityChanged;
         }
 
+        public void UpdateState(BattleState state)
+        {
+            _isRunning = state == BattleState.Running;
+        }
+
         public void Tick()
         {
+            if (!_isRunning) return;
+
             _decisionTimer -= Time.deltaTime;
             if (_decisionTimer <= 0f)
             {
@@ -215,16 +232,7 @@ namespace EmpireAtWar.Services.Enemy
                     _ships.Add(ship);
             var station = _contextBuilder.AssessStation(_ships);
             GatherReinforcements = station.GatherReinforcements;
-            bool taskForceNeedsShip = false;
-            foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
-                taskForceNeedsShip |= group.Decision.State == EnemyStrategicState.EngageLocal ||
-                    group.Decision.State == EnemyStrategicState.DefendBase ||
-                    group.Decision.State == EnemyStrategicState.RetreatValue ||
-                    group.Decision.State == EnemyStrategicState.AssaultBase ||
-                    group.Decision.State == EnemyStrategicState.HuntFleet ||
-                    group.Decision.State == EnemyStrategicState.RaidStructures;
-            IShipEntity patrolShip = _patrolShips.Select(_ships, station.HasPressure, taskForceNeedsShip,
-                _contextBuilder.RecoveryActive);
+            IShipEntity patrolShip = _patrolShips.Select(_ships, _contextBuilder.StationCritical);
             if (patrolShip != null) _ships.Remove(patrolShip);
             _taskGroups.Reconcile(_ships, station.HasPressure);
             _reservedCaptureObjectives.Clear();

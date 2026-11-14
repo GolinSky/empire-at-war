@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Controllers.Game;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
@@ -26,7 +27,8 @@ namespace EmpireAtWar.Services.Enemy
     /// are in play, the squadrons that destroy them fastest escort the
     /// own ships those strikecraft hurt the most, only until the escorts match the strikecraft.
     /// </summary>
-    public sealed class EnemySquadronCommander : IEnemySquadronCommander, ITickable, ILateDisposable
+    public sealed class EnemySquadronCommander : IEnemySquadronCommander, IInitializable, ITickable,
+        ILateDisposable, IObserver<BattleState>
     {
         private const float DECISION_INTERVAL = 3f;
 
@@ -64,6 +66,9 @@ namespace EmpireAtWar.Services.Enemy
         private readonly HostileIntelModel _intel;
         private readonly EnemyPatrolService _patrol;
         private readonly EnemyPatrolSafety _patrolSafety;
+        private readonly INotifier<BattleState> _battleState;
+
+        private bool _isRunning;
 
         private Vector3? _stationDefense;
 
@@ -85,11 +90,13 @@ namespace EmpireAtWar.Services.Enemy
             UnitCombatProfileCatalog profileCatalog,
             IEnemyStructurePlacementService structurePlacement,
             TeamIntelRegistry intelRegistry,
-            PlayerSlot owner, EnemyPatrolService patrol, EnemyPatrolSafety patrolSafety)
+            PlayerSlot owner, EnemyPatrolService patrol, EnemyPatrolSafety patrolSafety,
+            INotifier<BattleState> battleState)
         {
             _owner = owner;
             _patrol = patrol;
             _patrolSafety = patrolSafety;
+            _battleState = battleState;
             _intel = intelRegistry.Get(owner.Team);
             _structurePlacement = structurePlacement;
             _captureSources = captureSources;
@@ -100,8 +107,20 @@ namespace EmpireAtWar.Services.Enemy
             _profileCatalog = profileCatalog;
         }
 
+        public void Initialize()
+        {
+            _battleState.AddObserver(this);
+        }
+
+        public void UpdateState(BattleState state)
+        {
+            _isRunning = state == BattleState.Running;
+        }
+
         public void LateDispose()
         {
+            _battleState.RemoveObserver(this);
+            _isRunning = false;
             foreach (KeyValuePair<ISquadron, CommandedSquadron> pair in _squadrons)
             {
                 pair.Key.Released -= pair.Value.ReleaseHandler;
@@ -113,6 +132,8 @@ namespace EmpireAtWar.Services.Enemy
         public void Command(ISquadron squadron, SquadronType squadronType)
         {
             Track(squadron, squadronType);
+            if (!_isRunning) return;
+
             AssessThreats();
             AssignEscorts();
             AssignCaptureTargets();
@@ -121,6 +142,9 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Tick()
         {
+            // Player scopes tick while the asynchronous map load is still in progress.
+            if (!_isRunning) return;
+
             if (!_decisionTimer.IsComplete)
             {
                 return;

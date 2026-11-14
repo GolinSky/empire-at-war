@@ -6,6 +6,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Units;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.ReinforcementZones;
@@ -33,6 +34,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly PlayerSlot _owner;
         private readonly IProductionAccess _production;
         private readonly EnemyStationPressureTracker _pressure;
+        private readonly SecondStationLevelModel _secondStation;
         private readonly EnemyAdvantageSmoother _smoother = new EnemyAdvantageSmoother();
         private readonly EnemyRecoveryLatch _latch = new EnemyRecoveryLatch();
         private readonly EnemyTargetCommitment _commitment = new EnemyTargetCommitment();
@@ -55,8 +57,9 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyRecoveryAnchor(IReinforcementZonesSystem reinforcementZones, IReinforcementZoneSource zones,
             IPlayerRoster roster, IEntityLocator entities, IBattleAreaService areas, IMapModelObserver map,
             TeamIntelRegistry registry, PlayerSlot owner, IProductionAccess production,
-            EnemyStationPressureTracker pressure)
+            EnemyStationPressureTracker pressure, SecondStationLevelModel secondStation)
         {
+            _secondStation = secondStation;
             _reinforcementZones = reinforcementZones;
             _zones = zones;
             _roster = roster;
@@ -81,7 +84,8 @@ namespace EmpireAtWar.Services.Enemy
             _smoother.Sample(fleetAdvantage, fleetAdvantage, now, hasFleetThreat, hasFleetThreat);
             _advantage = _smoother.Fleet;
             if (_latch.Update(now, _advantage, EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage,
-                    underAttack || _pressure.HasPressure, !hasOwnStation, _pressure.IsStationCritical))
+                    underAttack || _pressure.HasPressure, !hasOwnStation, _pressure.IsStationCritical,
+                    !_secondStation.IsBuilt))
                 RecordMode();
             if (!IsActive) { _anchor = null; return; }
             SelectAnchor(now, hasOwnStation);

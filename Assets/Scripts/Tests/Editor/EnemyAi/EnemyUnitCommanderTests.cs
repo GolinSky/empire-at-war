@@ -1,5 +1,9 @@
 using System;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Controllers.Game;
+using EmpireAtWar.Entities.Map;
+using EmpireAtWar.Services.Ships;
+using EmpireAtWar.Utils;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
@@ -46,6 +50,45 @@ namespace EmpireAtWar.Tests.Editor
     [Category("EnemyAi")]
     public sealed class EnemyUnitCommanderTests
     {
+        [TestCase(BattleState.NotInitialized)]
+        [TestCase(BattleState.Loading)]
+        [TestCase(BattleState.Paused)]
+        [TestCase(BattleState.Ended)]
+        public void InitializeAndTick_BeforeBattleRuns_DoNotReadUnloadedMap(BattleState state)
+        {
+            GameObject view = new GameObject("Commander lifecycle zones");
+            try
+            {
+                var zones = view.AddComponent<ReinforcementZonesSystem>();
+                PlayerSlot owner = TestPlayers.CreateDuel().Get(TestPlayers.Enemy);
+                var battleState = new ReplayNotifier<BattleState>(state);
+                var patrol = new EnemyPatrolService(new TeamIntelRegistry(), owner, new MapModel(),
+                    null, null, null, null, null, null);
+                var commander = new EnemyUnitCommander(new ShipService(), zones, new EntityLocator(),
+                    null, null, new EnemyStrategicDecisionModel(), null, null, owner, patrol, null, battleState);
+
+                Assert.DoesNotThrow(commander.Initialize);
+                try
+                {
+                    typeof(EnemyUnitCommander).GetField("_decisionTimer", BindingFlags.Instance | BindingFlags.NonPublic)
+                        .SetValue(commander, 0f);
+                    Assert.DoesNotThrow(commander.Tick);
+                    Assert.That(commander.HasDecision, Is.False);
+                }
+                finally
+                {
+                    commander.LateDispose();
+                }
+
+                battleState.Set(BattleState.Running);
+                Assert.DoesNotThrow(commander.Tick, "Disposed commanders must unsubscribe from battle state.");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(view);
+            }
+        }
+
         [Test]
         public void PatrolShipSelectsCheapestCorvetteAndReleasesForDefense()
         {
@@ -81,7 +124,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(selected, Is.SameAs(ships[1]), "The cheaper capital ship cannot displace a corvette patrol.");
                 typeof(EnemyPatrolShipController).GetField("_ship", flags).SetValue(controller, selected);
 
-                Assert.That(controller.Select(ships, true, false, false), Is.Null);
+                Assert.That(controller.Select(ships, true), Is.Null);
                 Assert.That(typeof(EnemyPatrolShipController).GetField("_ship", flags).GetValue(controller), Is.Null);
             }
             finally { UnityEngine.Object.DestroyImmediate(definition); }
@@ -110,7 +153,7 @@ namespace EmpireAtWar.Tests.Editor
                 FakeOrderService orders = new FakeOrderService();
                 EnemyUnitCommander commander = new EnemyUnitCommander(null, null, locator, null, orders,
                     new EnemyStrategicDecisionModel(), builder, new EnemyTaskForceExecutor(orders),
-                    roster.Get(TestPlayers.Enemy), null, null);
+                    roster.Get(TestPlayers.Enemy), null, null, null);
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 var planner = (EnemyShipTaskGroupPlanner)typeof(EnemyUnitCommander)
                     .GetField("_taskGroups", flags).GetValue(commander);
@@ -196,6 +239,48 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(BattleState.NotInitialized)]
+        [TestCase(BattleState.Loading)]
+        [TestCase(BattleState.Paused)]
+        [TestCase(BattleState.Ended)]
+        public void SquadronCommander_OutsideRunning_TracksRestoredSquadronsWithoutReadingMap(BattleState state)
+        {
+            PlayerSlot owner = TestPlayers.CreateDuel().Get(TestPlayers.Enemy);
+            var battleState = new ReplayNotifier<BattleState>(state);
+            var patrol = new EnemyPatrolService(new TeamIntelRegistry(), owner, new MapModel(),
+                null, null, null, null, null, null);
+            var catalog = new UnitCombatProfileCatalog(null, null, null, null);
+            var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
+            profiles.Add(UnitTypeId.Squadron(SquadronType.Vulture), new UnitCombatProfile(ShipClass.Fighter,
+                1f, 0f, Array.Empty<float>(), Array.Empty<float>(), Array.Empty<float>(), Array.Empty<UnitCombatProfile>()));
+            var squadron = new FakeSquadron(1, owner.Id);
+            var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(),
+                null, null, null, null, catalog, null, new TeamIntelRegistry(), owner, patrol, null, battleState);
+
+            commander.Initialize();
+            try
+            {
+                Assert.DoesNotThrow(commander.Tick);
+                Assert.DoesNotThrow(() => commander.Command(squadron, SquadronType.Vulture));
+                Assert.That(squadron.ReleaseListeners, Is.EqualTo(1), "Restored squadrons must remain tracked.");
+                Assert.That(squadron.OrdersReceived, Is.Zero);
+                Assert.That(patrol.Memory.Entries, Is.Empty);
+
+                battleState.Set(BattleState.Running);
+                battleState.Set(state);
+                Assert.DoesNotThrow(commander.Tick, "Leaving Running must suspend decisions again.");
+            }
+            finally
+            {
+                commander.LateDispose();
+            }
+
+            Assert.That(squadron.ReleaseListeners, Is.Zero);
+            battleState.Set(BattleState.Running);
+            Assert.DoesNotThrow(commander.Tick, "Disposed commanders must unsubscribe from battle state.");
+        }
+
         [Test]
         public void ReserveSquadrons_AreTrackedOnceAndRejoinAfterPoolReuse()
         {
@@ -212,7 +297,8 @@ namespace EmpireAtWar.Tests.Editor
                 .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
             profiles.Add(UnitTypeId.Squadron(SquadronType.Vulture), profile);
             EnemySquadronCommander commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), null, locator, roster,
-                null, catalog, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null);
+                null, catalog, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null,
+                new ReplayNotifier<BattleState>(BattleState.Running));
             MethodInfo discover = typeof(EnemySquadronCommander).GetMethod("TrackOwnedSquadrons",
                 BindingFlags.Instance | BindingFlags.NonPublic);
             MethodInfo track = typeof(EnemySquadronCommander).GetMethod("Track",
@@ -255,7 +341,8 @@ namespace EmpireAtWar.Tests.Editor
                 .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
             profiles.Add(UnitTypeId.Squadron(SquadronType.Vulture), profile);
             EnemySquadronCommander commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), null, locator, roster,
-                null, catalog, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null);
+                null, catalog, null, new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null,
+                new ReplayNotifier<BattleState>(BattleState.Running));
             var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                 .GetField("_squadrons", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(commander);
             MethodInfo issueOrder = typeof(EnemySquadronCommander).GetMethod("IssueOrder",
@@ -291,7 +378,8 @@ namespace EmpireAtWar.Tests.Editor
                 ? new SiteSource(new CaptureSiteStub(minePosition))
                 : new SiteSource();
             var commander = new EnemySquadronCommander(SiteObjectives(sites, roster), new ZoneSource(roster), null, roster,
-                null, null, new ScoutPlacement(), new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null);
+                null, null, new ScoutPlacement(), new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, null,
+                new ReplayNotifier<BattleState>(BattleState.Running));
             var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
                 .GetField("_squadrons", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(commander);
             for (int i = 0; i < squadronCount; i++)
@@ -2039,7 +2127,8 @@ namespace EmpireAtWar.Tests.Editor
 
         private static EnemyRecoveryAnchor CreateRecovery(PlayerRoster roster, ZoneSource zones = null) =>
             new EnemyRecoveryAnchor(null, zones ?? new ZoneSource(roster), roster, new EntityLocator(), null, null,
-                new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, new EnemyStationPressureTracker());
+                new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, new EnemyStationPressureTracker(),
+                new SecondStationLevelModel());
 
         private static EnemyCaptureObjective SelectCapture(EnemyStrategicContextBuilder builder, float now = 0f) =>
             (EnemyCaptureObjective)typeof(EnemyStrategicContextBuilder)

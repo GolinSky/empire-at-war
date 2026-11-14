@@ -266,6 +266,9 @@
 
 ### Bugs
 
+- [x] **Fix AI battle-log follow-ups (capture safety bounce, patrol shutdown, stuck recovery latch, locale log numbers)** → [[Done/Bugs/Enemy_AI_Battle_Log_Followup_Fixes]]
+  - Completed 2026-11-14 from battle `Loading_20261114_125624` (checks 3–5 failed). Unity compile clean; tests not run; battle replay → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **Fix AI patrol/recovery review regressions** → [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]]
   - Completed 2026-11-14: threatened-site preemption, defendable-station protection during backup construction, scoped pressure bypass and parseable recovery telemetry. Unity compilation/source checks passed; tests not run. Battle/profiling gates → [[TODOs/User_Acceptance_Queue]].
 

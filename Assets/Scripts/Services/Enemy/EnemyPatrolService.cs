@@ -168,9 +168,7 @@ namespace EmpireAtWar.Services.Enemy
             if (commitment.Changed)
             {
                 _visitedTargets.Remove(unit);
-                Log("objectiveSwitch", $"domain=patrol;fromId={commitment.LastFromId};toId={commitment.LastToId};" +
-                    $"fromScore={commitment.LastFromScore:F3};toScore={commitment.LastToScore:F3};margin={EnemyTargetCommitment.SWITCH_MARGIN:F2};" +
-                    $"heldSeconds={commitment.LastHeldSeconds:F1};cause={commitment.LastCause}");
+                Log("objectiveSwitch", $"domain=patrol;fromId={commitment.LastFromId};toId={commitment.LastToId};fromScore={commitment.LastFromScore:F3};toScore={commitment.LastToScore:F3};margin={EnemyTargetCommitment.SWITCH_MARGIN:F2};heldSeconds={commitment.LastHeldSeconds:F1};cause={commitment.LastCause}");
             }
             if (selected == null) { _targets.Remove(unit); return false; }
             _targets[unit] = selected;
@@ -178,8 +176,7 @@ namespace EmpireAtWar.Services.Enemy
             if (commitment.Changed) _progress[unit] = (chosen.Travel(start), now);
             target = ToVector(chosen.Position);
             if (commitment.Changed)
-                Log("patrolTarget", $"unit={unit};target={chosen.Id};poiKind={chosen.Kind};staleness={chosen.Staleness(now):F1};" +
-                    $"value={chosen.Value:F1};travel={chosen.Travel(start):F1};score={chosen.Score(start, now):F3};runnerUp={runnerUp:F3}");
+                Log("patrolTarget", $"unit={unit};target={chosen.Id};poiKind={chosen.Kind};staleness={chosen.Staleness(now):F1};value={chosen.Value:F1};travel={chosen.Travel(start):F1};score={chosen.Score(start, now):F3};runnerUp={runnerUp:F3}");
             return true;
         }
 
@@ -204,6 +201,8 @@ namespace EmpireAtWar.Services.Enemy
                 }
         }
 
-        private void Log(string kind, string reason) => EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, kind, reason);
+        // Invariant culture: a comma decimal separator breaks number parsing in the CSV.
+        private void Log(string kind, FormattableString reason) =>
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, kind, FormattableString.Invariant(reason));
     }
 }

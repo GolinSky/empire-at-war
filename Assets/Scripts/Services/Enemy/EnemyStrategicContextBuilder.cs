@@ -109,6 +109,8 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>Scale on the retreat threshold the current capture objective must stay above to be kept.</summary>
         private const float RETAIN_SAFETY_SCALE = 0.85f;
+        /// <summary>A hostile-strength dip must last this long before the current capture objective is dropped.</summary>
+        private const float UNSAFE_GRACE_SECONDS = 3f;
 
         /// <summary>Hostiles this close to the fleet center can engage it soon: twice the common ship weapon range (500).</summary>
         private const float LOCAL_ENGAGEMENT_RADIUS = 1000f;
@@ -136,6 +138,7 @@ namespace EmpireAtWar.Services.Enemy
         private float _captureDistance;
         private float _captureProgress;
         private float _captureStallSeconds;
+        private float _captureUnsafeSince = -1f;
         private float _captureEvaluatedAt;
         private bool _captureIsExecuting;
         private string _rejectedCaptureId;
@@ -144,6 +147,7 @@ namespace EmpireAtWar.Services.Enemy
         private string _objectiveSafetyReason;
         public bool CaptureReservedByOtherGroup { get; private set; }
         public bool RecoveryActive => _recovery.IsActive;
+        public bool StationCritical => _stationPressure.IsStationCritical;
         public AllyAiMarkerSource AlliedMarkers { get; }
         private readonly List<IShipEntity> _ownShips = new List<IShipEntity>();
         private readonly List<FormationPoint> _formationPositions = new List<FormationPoint>();
@@ -638,10 +642,19 @@ namespace EmpireAtWar.Services.Enemy
                 if (!IsObjectiveSafe(origin, candidate.Position, candidate.Radius, false,
                         isCurrent ? RETAIN_SAFETY_SCALE : 1f))
                 {
-                    if (isCurrent) invalidReason = "unsafe";
-                    AppendCaptureReason($"Rejected {candidate.Id}: {_objectiveSafetyReason}");
-                    continue;
+                    // Raw strength estimates dip for a tick as squadrons launch or die; only a sustained
+                    // hostile advantage drops the current objective.
+                    bool hostileDip = isCurrent && _objectiveSafetyReason.StartsWith("hostile", StringComparison.Ordinal);
+                    if (hostileDip && _captureUnsafeSince < 0f) _captureUnsafeSince = now;
+                    if (!hostileDip || now - _captureUnsafeSince >= UNSAFE_GRACE_SECONDS)
+                    {
+                        if (isCurrent) invalidReason = "unsafe";
+                        AppendCaptureReason($"Rejected {candidate.Id}: {_objectiveSafetyReason}");
+                        continue;
+                    }
+                    AppendCaptureReason($"Kept {candidate.Id} through unsafe grace: {_objectiveSafetyReason}");
                 }
+                else if (isCurrent) _captureUnsafeSince = -1f;
                 if (isCurrent)
                 {
                     float distance = CaptureDistance(candidate);
@@ -696,6 +709,7 @@ namespace EmpireAtWar.Services.Enemy
                 RecordStabilityEvent("objectiveSwitch", FormattableString.Invariant(
                     $"domain=capture; fromId={_captureCommitment.LastFromId ?? "none"}; toId={selected ?? "none"}; fromScore={retainedScore:F3}; toScore={_captureCommitment.LastToScore:F3}; margin={EnemyTargetCommitment.SWITCH_MARGIN:F2}; heldSeconds={_captureCommitment.LastHeldSeconds:F1}; cause={_captureCommitment.LastCause}"));
                 _captureStallSeconds = 0f;
+                _captureUnsafeSince = -1f;
                 _captureIsExecuting = false;
                 _captureDistance = next == null ? 0f : CaptureDistance(next);
                 _captureProgress = next == null ? 0f : next.Progress;

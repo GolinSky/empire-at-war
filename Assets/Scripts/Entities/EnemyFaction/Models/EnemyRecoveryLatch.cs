@@ -12,10 +12,24 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool IsActive { get; private set; }
         public string Trigger { get; private set; } = "none";
 
+        /// <param name="canRebuild">False while a backup station already stands: relocation has nothing to build,
+        /// so recovery neither starts nor stays on (it would only block patrols and free placement).</param>
         public bool Update(float now, float advantage, float retreatAdvantage, bool underAttack,
-            bool stationLost, bool critical)
+            bool stationLost, bool critical, bool canRebuild = true)
         {
             bool previous = IsActive;
+            if (!canRebuild)
+            {
+                _weakSince = -1f;
+                _recoveredSince = -1f;
+                _hadStationLoss = stationLost;
+                if (IsActive)
+                {
+                    IsActive = false;
+                    Trigger = "backupStanding";
+                }
+                return previous != IsActive;
+            }
             bool weak = underAttack && advantage < retreatAdvantage;
             _weakSince = weak ? (_weakSince < 0f ? now : _weakSince) : -1f;
             if (stationLost && !_hadStationLoss || !stationLost && !underAttack && !critical)

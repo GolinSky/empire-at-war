@@ -31,18 +31,20 @@ namespace EmpireAtWar.Services.Enemy
             _owner = owner;
         }
 
-        public IShipEntity Select(IReadOnlyList<IShipEntity> ships, bool stationPressure, bool taskForceNeedsShip,
-            bool recovery)
+        /// <summary>One corvette keeps patrolling through ordinary fights and sieges: its firepower barely changes
+        /// a battle, while the map knowledge it keeps fresh feeds capture, raid and recovery choices.
+        /// It joins the fleet only when the station is about to fall or it is the last ship.</summary>
+        public IShipEntity Select(IReadOnlyList<IShipEntity> ships, bool stationCritical)
         {
-            IShipEntity selected = CanPatrol(_owner.Difficulty, ships.Count, stationPressure, taskForceNeedsShip, recovery)
+            IShipEntity selected = CanPatrol(_owner.Difficulty, ships.Count, stationCritical)
                 ? FindCheapest(ships) : null;
             if (selected != _ship)
             {
                 if (_ship != null)
                 {
                     _patrol.Release($"ship:{_ship.EntityId}");
-                    Log(_ship, "released", stationPressure ? "stationDefense" : recovery ? "recovery" :
-                        taskForceNeedsShip ? "taskForce" : "unavailable");
+                    Log(_ship, "released", stationCritical ? "stationCritical" :
+                        ships.Count <= 1 ? "lastShip" : "unavailable");
                 }
                 _ship = selected;
                 if (_ship != null) Log(_ship, "assigned", "cheapestCorvette");
@@ -76,9 +78,8 @@ namespace EmpireAtWar.Services.Enemy
             return selected;
         }
 
-        public static bool CanPatrol(EnemyAiDifficulty difficulty, int shipCount, bool stationPressure,
-            bool taskForceNeedsShip, bool recovery) => difficulty != EnemyAiDifficulty.Easy && shipCount > 1 &&
-                !stationPressure && !taskForceNeedsShip && !recovery;
+        public static bool CanPatrol(EnemyAiDifficulty difficulty, int shipCount, bool stationCritical) =>
+            difficulty != EnemyAiDifficulty.Easy && shipCount > 1 && !stationCritical;
 
         private void Log(IShipEntity ship, string action, string reason) => EnemyAiTelemetry.RecordEvent(
             _owner.Id, _owner.Faction, "patrolShip", $"ship={ship.EntityId};action={action};reason={reason}");

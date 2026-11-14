@@ -191,17 +191,13 @@ namespace EmpireAtWar.Services.Enemy
             if (_stationPressure.IsStationCritical && !hasShipOption)
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "production-wait",
-                    $"critical=True;etaSeconds=Infinity;timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};" +
+                    FormattableString.Invariant($"critical=True;etaSeconds=Infinity;timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};") +
                     "reason=no affordable combat unit with available population and production lane");
             }
             if (hasShipOption && !canBuildShip)
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "production-wait",
-                    $"unit={(hasCounter ? counterId.ToString() : hasShip ? ship.Key.ToString() : squadron.Key.ToString())};" +
-                    $"capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};" +
-                    $"required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money};" +
-                    $"critical={_stationPressure.IsStationCritical};etaSeconds={GetArrivalSeconds(hasCounter ? counterId : UnitTypeId.Ship(ship.Key), shipChoice):F1};" +
-                    $"timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1}");
+                    FormattableString.Invariant($"unit={(hasCounter ? counterId.ToString() : hasShip ? ship.Key.ToString() : squadron.Key.ToString())};capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money:F1};critical={_stationPressure.IsStationCritical};etaSeconds={GetArrivalSeconds(hasCounter ? counterId : UnitTypeId.Ship(ship.Key), shipChoice):F1};timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1}"));
             }
             FactionData levelData = _productionAccess.ProductionHost == _owner.Id &&
                                     _productionAccess.HasHostBase &&

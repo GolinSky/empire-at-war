@@ -42,6 +42,25 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void StandingBackupStationBlocksRecovery()
+        {
+            var latch = new EnemyRecoveryLatch();
+            latch.Update(0f, 0.4f, 0.8f, true, false, true, canRebuild: false);
+            Assert.That(latch.IsActive, Is.False);
+        }
+
+        [Test]
+        public void BackupStationEndsActiveRecovery()
+        {
+            var latch = new EnemyRecoveryLatch();
+            latch.Update(0f, 0.4f, 0.8f, true, false, true);
+            Assert.That(latch.IsActive, Is.True);
+            Assert.That(latch.Update(1f, 0.4f, 0.8f, true, false, true, canRebuild: false), Is.True);
+            Assert.That(latch.IsActive, Is.False);
+            Assert.That(latch.Trigger, Is.EqualTo("backupStanding"));
+        }
+
+        [Test]
         public void ReplacementEndsRecoveryWithoutImmediatelyRelatchingStationLoss()
         {
             var latch = new EnemyRecoveryLatch();

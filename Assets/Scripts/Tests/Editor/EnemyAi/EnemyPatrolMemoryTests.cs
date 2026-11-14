@@ -100,16 +100,14 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(memory.Entries, Is.Empty);
         }
 
-        [TestCase(EnemyAiDifficulty.Easy, 3, false, false, false, false)]
-        [TestCase(EnemyAiDifficulty.Medium, 3, false, false, false, true)]
-        [TestCase(EnemyAiDifficulty.Hard, 3, true, false, false, false)]
-        [TestCase(EnemyAiDifficulty.UltraHard, 3, false, true, false, false)]
-        [TestCase(EnemyAiDifficulty.Medium, 3, false, false, true, false)]
-        [TestCase(EnemyAiDifficulty.Medium, 1, false, false, false, false)]
-        public void PatrolShipYieldsToDefenseTaskForcesAndRecovery(EnemyAiDifficulty difficulty, int ships,
-            bool defense, bool taskForce, bool recovery, bool expected)
+        [TestCase(EnemyAiDifficulty.Easy, 3, false, false)]
+        [TestCase(EnemyAiDifficulty.Medium, 3, false, true)]
+        [TestCase(EnemyAiDifficulty.Hard, 3, true, false)]
+        [TestCase(EnemyAiDifficulty.Medium, 1, false, false)]
+        public void PatrolShipYieldsOnlyToCriticalStationOrLastShip(EnemyAiDifficulty difficulty, int ships,
+            bool stationCritical, bool expected)
         {
-            Assert.That(EnemyPatrolShipController.CanPatrol(difficulty, ships, defense, taskForce, recovery), Is.EqualTo(expected));
+            Assert.That(EnemyPatrolShipController.CanPatrol(difficulty, ships, stationCritical), Is.EqualTo(expected));
         }
 
         private sealed class OpenAreas : IBattleAreaService

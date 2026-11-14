@@ -38,7 +38,7 @@ namespace EmpireAtWar.Tests.Editor
             _zones = new ZoneSource();
             _recovery = new EnemyRecoveryAnchor(null, _zones, _roster, new EntityLocator(),
                 new BattleAreaService(_roster), new Map(), _intel, _owner, null,
-                new EnemyStationPressureTracker());
+                new EnemyStationPressureTracker(), new SecondStationLevelModel());
         }
 
         [TestCase(false)]

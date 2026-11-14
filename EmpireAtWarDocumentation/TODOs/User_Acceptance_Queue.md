@@ -340,11 +340,13 @@ created: "2026-10-29\r"
 
 ## Enemy AI patrol and recovery relocation
 
-- [ ] [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]] — Play stability, coverage, station-loss/critical-pressure, weak/parity and allied/neutral-anchor scenarios; inspect AI CSV checks 1–10 and tune starting values.
+- [ ] [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]] — Battle `Loading_20261114_125624` passed checks 1, 2, 6, 7, 10; checks 3–5 failed → [[Done/Bugs/Enemy_AI_Battle_Log_Followup_Fixes]]. Remaining: weak/parity near-far (8) and allied/neutral-anchor (9) scenarios in a team game; tune starting values.
 - [ ] [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]] — Run authored EnemyAi regression tests only when explicitly requested; tests were not run under the local override.
 
 ## AI patrol/recovery review fixes
 
 - [ ] [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]] — Battle-check distant attacked mines, near-parity station defense during backup construction, outmatched withdrawal and stable pressure transitions; verify recovery log parsing.
 - [ ] [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]] — Run authored EnemyAi regressions on explicit request; tests not run under the local override.
+- [ ] [[Done/Bugs/Enemy_AI_Battle_Log_Followup_Fixes]] — Replay a battle: capture `objectiveSwitch` none-bounces near 0, `patrolTarget` rows ≥ 1/min through sieges, no long recovery latch with a standing backup, patrol/production-wait numbers parse with `.` decimals.
+- [ ] [[Done/Bugs/Enemy_AI_Battle_Log_Followup_Fixes]] — Run authored EnemyAi regressions on explicit request; tests not run under the local override.
 - [ ] [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]] — Profile a large blocked map with multiple AI: placement/scout query duration and candidate/threat counts. Repeated per-candidate threat scans remain unoptimized; no runtime timing measured.

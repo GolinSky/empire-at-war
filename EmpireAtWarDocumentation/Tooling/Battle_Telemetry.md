@@ -21,6 +21,7 @@ verification: Live-source review of patrol/recovery event writers and Unity
 - One battle → damage, AI decision and ship-order CSVs; each writer resets on every Single scene load. Match scene and nearby filename timestamps.
 - Files flush every `10 s` and on quit; AI decisions and ship orders also flush when Editor Play Mode exits.
 - One battle is one sample: fleet composition and player habits vary. Compare several battles before retuning.
+- Format `RecordEvent` details with `FormattableString.Invariant`: a non-English system locale writes `132,9` / `бесконечность`, which breaks numeric parsing. Some older call sites (controller, counter-selection) still use the current culture → [[Done/Bugs/Enemy_AI_Battle_Log_Followup_Fixes]].
 
 ## Files
 
