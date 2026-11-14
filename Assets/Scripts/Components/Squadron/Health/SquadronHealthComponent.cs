@@ -164,7 +164,9 @@ namespace EmpireAtWar.Components.Squadrons.Health
         public void CopyShipUnits(List<IHardPointModel> destination)
         {
             CopyLiveUnits(destination);
-            if (destination.Count == 0) destination.AddRange(_adapters);
+            if (destination.Count > 0) return;
+            // Indexed adds: Mono's AddRange copies an ICollection through a temporary array.
+            for (int i = 0; i < _adapters.Length; i++) destination.Add(_adapters[i]);
         }
 
         private void CopyLiveUnits(List<IHardPointModel> destination)

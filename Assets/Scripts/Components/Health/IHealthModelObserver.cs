@@ -31,7 +31,8 @@ namespace EmpireAtWar.Models.Health
         void CopyShipUnits(List<IHardPointModel> destination)
         {
             destination.Clear();
-            destination.AddRange(GetShipUnits(HardPointType.Any));
+            IHardPointModel[] units = GetShipUnits(HardPointType.Any);
+            for (int i = 0; i < units.Length; i++) destination.Add(units[i]);
         }
     }
 }

@@ -237,7 +237,8 @@ namespace EmpireAtWar.Components.Ship.Health
             destination.Clear();
             if (_hardPointAdapters.Length == 0)
             {
-                destination.AddRange(_hullTargets);
+                // Indexed adds: Mono's AddRange copies an ICollection through a temporary array.
+                for (int i = 0; i < _hullTargets.Length; i++) destination.Add(_hullTargets[i]);
                 return;
             }
 

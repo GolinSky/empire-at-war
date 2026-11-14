@@ -7,7 +7,7 @@ namespace EmpireAtWar.Services.Ships
 {
     internal sealed class ShipFacingSolveScheduler : ILateTickable
     {
-        private const int MAX_REFRESHES_PER_FRAME = 2;
+        private const int MAX_REFRESHES_PER_FRAME = 8;
         private static readonly long _budgetTicks = Stopwatch.Frequency / 1000;
         private readonly Queue<Action> _refreshes = new Queue<Action>();
 
