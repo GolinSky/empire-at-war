@@ -65,7 +65,8 @@ namespace EmpireAtWar.Tests.Editor
             EconomyService economy = new EconomyService(new EconomyModel(data, data.StartMoneyAmount), data,
                 new BattleStateNotifier(), new PlayerRegistry(), owner, research);
             FactionService station = new FactionService(null, null, null, economy, null,
-                faction, research, null, owner, null, new SecondStationLevelModel());
+                faction, research, null, owner, null, new SecondStationLevelModel(),
+                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
             economy.Initialize();
             try
             {
@@ -92,7 +93,8 @@ namespace EmpireAtWar.Tests.Editor
                 Load<StationLevelData>(SHARED_PATH + "StationLevelData.asset"), roster) { CurrentLevel = 3 };
             var secondStation = new SecondStationLevelModel();
             FactionService station = new FactionService(null, null, null, null, null,
-                faction, research, null, TestPlayers.CreateDuel().Get(TestPlayers.Human), null, secondStation);
+                faction, research, null, TestPlayers.CreateDuel().Get(TestPlayers.Human), null, secondStation,
+                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
 
             Assert.That(station.Income, Is.EqualTo(45f));
             secondStation.IsBuilt = true;

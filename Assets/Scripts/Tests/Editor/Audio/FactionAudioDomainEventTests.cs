@@ -119,7 +119,7 @@ namespace EmpireAtWar.Tests.Editor
             Pool pool = new Pool();
             FactionService service = new FactionService(null, new Wallet(), pool, new Economy(),
                 new ProductionAccess(), model, null, null, TestPlayers.CreateDuel().Get(TestPlayers.Human), null,
-                new SecondStationLevelModel());
+                new SecondStationLevelModel(), TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
             ShipUnitRequest request = new ShipUnitRequest(new FactionData(), ShipType.Venator);
             UnitRequest produced = null;
             service.UnitProduced += value =>
@@ -173,7 +173,7 @@ namespace EmpireAtWar.Tests.Editor
             wallet = new Wallet();
             return new FactionService(null, wallet, new Pool(), new Economy(), new ProductionAccess(),
                 model, null, null, TestPlayers.CreateDuel().Get(TestPlayers.Human), null,
-                new SecondStationLevelModel());
+                new SecondStationLevelModel(), TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
         }
 
         private sealed class Wallet : IWallet

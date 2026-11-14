@@ -44,6 +44,7 @@ namespace EmpireAtWar.Services.Factions
         private ISelectionContext _selectionContext;
 
         private readonly PlayerSlot _owner;
+        private readonly ILocalPlayer _localPlayer;
         private readonly PlayerFactionModel _model;
         private readonly FactionResearchModel _research;
         private readonly SuperWeaponModel _superWeapons;
@@ -74,8 +75,10 @@ namespace EmpireAtWar.Services.Factions
             SuperWeaponModel superWeapons,
             PlayerSlot owner,
             IEntityLocator entities,
-            SecondStationLevelModel secondStation)
+            SecondStationLevelModel secondStation,
+            ILocalPlayer localPlayer)
         {
+            _localPlayer = localPlayer;
             _secondStation = secondStation;
             _owner = owner;
             _model = model;
@@ -292,13 +295,11 @@ namespace EmpireAtWar.Services.Factions
 
         public void UpdateState(ISelectionSubject selectionSubject)
         {
-            if (selectionSubject.UpdatedScope == SelectionScope.Local)
-            {
-                _selectionContext = selectionSubject.PlayerSelectionContext;
-                _model.IsSecondStationSelected = _selectionContext.Entity != null &&
-                    _selectionContext.Entity.TryGetFacade(out ISecondStationFacade _);
-                _model.SelectionType = _selectionContext.SelectionType;// move it to selection component and reuse it 
-            }
+            _selectionContext = SelectionContext.ForProduction(selectionSubject, _localPlayer);
+            _model.IsSecondStationSelected = _selectionContext.Entity != null &&
+                _selectionContext.Entity.Owner == _owner.Id &&
+                _selectionContext.Entity.TryGetFacade(out ISecondStationFacade _);
+            _model.SelectionType = _selectionContext.SelectionType;
         }
     }
 }

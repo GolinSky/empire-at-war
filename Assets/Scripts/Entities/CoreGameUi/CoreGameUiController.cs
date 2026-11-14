@@ -39,6 +39,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         private readonly ITooltipService _tooltipService;
         private readonly IInputBindings _bindings;
         private readonly IMatchSession _session;
+        private readonly ILocalPlayer _localPlayer;
         private readonly BattleDefinition _battle;
         private readonly BattleClock _clock;
 
@@ -82,8 +83,10 @@ namespace EmpireAtWar.Entities.CoreGameUi
             ICinematicCameraController cinematicCamera,
             ITooltipService tooltipService,
             IInputBindings bindings,
-            IMatchSession session, BattleDefinition battle, BattleClock clock) : base(uiService, cancelRouter)
+            IMatchSession session, BattleDefinition battle, BattleClock clock,
+            ILocalPlayer localPlayer) : base(uiService, cancelRouter)
         {
+            _localPlayer = localPlayer;
             _placement = placement;
             _cancelRouter = cancelRouter;
             _selectionService = selectionService;
@@ -250,11 +253,8 @@ namespace EmpireAtWar.Entities.CoreGameUi
 
         public void UpdateState(ISelectionSubject selectionSubject)
         {
-            if (selectionSubject.UpdatedScope == SelectionScope.Local)
-            {
-                _lastSelectionContext = selectionSubject.PlayerSelectionContext;
-                UpdateContentVisibility(_lastSelectionContext);
-            }
+            _lastSelectionContext = SelectionContext.ForProduction(selectionSubject, _localPlayer);
+            UpdateContentVisibility(_lastSelectionContext);
         }
 
         public void UpdateState(BattleState state)

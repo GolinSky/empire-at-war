@@ -46,7 +46,8 @@ namespace EmpireAtWar.Tests.Editor
             pool = new RecordingPool();
             wallet = new RecordingWallet();
             FactionService service = new FactionService(new NullSelection(), wallet, pool, new NullEconomy(),
-                new LostStationAccess(host), model, null, null, owner, new EntityLocator(), new SecondStationLevelModel());
+                new LostStationAccess(host), model, null, null, owner, new EntityLocator(), new SecondStationLevelModel(),
+                TestPlayers.CreateLocalPlayer(TestPlayers.CreateTeamGame()));
             service.Initialize();
             try
             {

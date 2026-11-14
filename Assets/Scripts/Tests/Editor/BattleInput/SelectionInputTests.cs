@@ -8,11 +8,14 @@ using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.SpaceStation;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Selection;
+using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Views.MiniMap;
 using EmpireAtWar.Entities.MiniMap;
 using NUnit.Framework;
@@ -25,6 +28,89 @@ namespace EmpireAtWar.Tests.Selection
     [Category("BattleInput")]
     public sealed class SelectionInputTests
     {
+        [TestCase(false, false, 0)]
+        [TestCase(false, true, 0)]
+        [TestCase(true, false, 0)]
+        [TestCase(true, true, 0)]
+        [TestCase(false, false, 2)]
+        [TestCase(false, true, 2)]
+        [TestCase(true, false, 2)]
+        [TestCase(true, true, 2)]
+        public void AlliedStation_OpensOwnProductionWithoutCommandOwnership(
+            bool ownStationLost, bool secondStation, int localSlot)
+        {
+            var roster = TestPlayers.CreateTeamGame();
+            var local = new LocalPlayer(roster, new OfflineSession(new PlayerId(localSlot)));
+            PlayerId allyOwner = localSlot == 0 ? TestPlayers.Ally : TestPlayers.Human;
+            var input = new FakeInputService();
+            var service = new SelectionService(input, input, input, new EntityLocator(), new FakeSelectionQuery(),
+                new FakeMarqueeSelectionPresenter(), local);
+            var own = new FakeEntity(new FakeSelectionCommand(SelectionType.Base), local.Id, 1,
+                new ProductionBaseFacade());
+            var ally = new FakeEntity(new FakeSelectionCommand(SelectionType.Base), allyOwner, 2,
+                new ProductionBaseFacade(), secondStation ? new SecondStationFacade() : null);
+            var model = new PlayerFactionModel(null, null);
+            var faction = new FactionService(service, null, null, null, null, model, null, null,
+                local.Slot, new EntityLocator(), new SecondStationLevelModel(), local);
+            service.AddObserver(faction);
+            service.Initialize();
+            try
+            {
+                service.SelectEntity(own);
+                if (ownStationLost) own.Health.Destroy();
+                service.SelectEntity(ally);
+
+                Assert.That(model.SelectionType, Is.EqualTo(SelectionType.Base));
+                Assert.That(model.IsSecondStationSelected, Is.False);
+                Assert.That(SelectionContext.ForProduction(service, local), Is.SameAs(service.OtherSelectionContext));
+                Assert.That(service.PlayerSelectionContext.HasSelectable, Is.False);
+                Assert.That(ally.Owner, Is.EqualTo(allyOwner));
+
+                faction.CloseSelection();
+                Assert.That(service.OtherSelectionContext.HasSelectable, Is.False);
+                Assert.That(model.SelectionType, Is.EqualTo(SelectionType.None));
+
+                service.SelectEntity(ally);
+                ally.Health.Destroy();
+                Assert.That(model.SelectionType, Is.EqualTo(SelectionType.None));
+                Assert.That(service.OtherSelectionContext.HasSelectable, Is.False);
+
+                var ownSecond = new FakeEntity(new FakeSelectionCommand(SelectionType.Base), local.Id, 3,
+                    new ProductionBaseFacade(), new SecondStationFacade());
+                service.SelectEntity(ownSecond);
+                Assert.That(model.IsSecondStationSelected, Is.True);
+                Assert.That(SelectionContext.ForProduction(service, local), Is.SameAs(service.PlayerSelectionContext));
+            }
+            finally
+            {
+                service.RemoveObserver(faction);
+                service.LateDispose();
+            }
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void EnemyStationOrAlliedShip_DoesNotOpenProduction(bool enemyStation)
+        {
+            var local = TestPlayers.CreateLocalPlayer(TestPlayers.CreateTeamGame());
+            var input = new FakeInputService();
+            var service = new SelectionService(input, input, input, new EntityLocator(), new FakeSelectionQuery(),
+                new FakeMarqueeSelectionPresenter(), local);
+            var entity = new FakeEntity(new FakeSelectionCommand(enemyStation ? SelectionType.Base : SelectionType.Ship),
+                enemyStation ? TestPlayers.Enemy : TestPlayers.Ally, 1,
+                enemyStation ? new ProductionBaseFacade() : null);
+            try
+            {
+                service.SelectEntity(entity);
+                Assert.That(service.OtherSelectionContext.Entity, Is.SameAs(entity));
+                Assert.That(SelectionContext.ForProduction(service, local).HasSelectable, Is.False);
+            }
+            finally
+            {
+                service.LateDispose();
+            }
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         public void SelectedEntityDeath_ClearsSelectionBeforeDespawn(bool local)
@@ -461,6 +547,7 @@ namespace EmpireAtWar.Tests.Selection
         private sealed class FakeEntity : GameEntity
         {
             private readonly IEntitySelectionFacade _selectionCommand;
+            private readonly IEntityFacade[] _extraFacades;
 
             public long Id { get; }
             public FakeHealth Health { get; } = new FakeHealth();
@@ -470,8 +557,9 @@ namespace EmpireAtWar.Tests.Selection
             public FakeEntity(
                 IEntitySelectionFacade selectionCommand,
                 PlayerId owner,
-                long id)
+                long id, params IEntityFacade[] extraFacades)
             {
+                _extraFacades = extraFacades;
                 Id = id;
                 Owner = owner;
                 _selectionCommand = selectionCommand;
@@ -483,6 +571,14 @@ namespace EmpireAtWar.Tests.Selection
             public bool TryGetFacade<TCommand>(out TCommand entityCommand)
                 where TCommand : IEntityFacade
             {
+                foreach (IEntityFacade facade in _extraFacades)
+                {
+                    if (facade is TCommand extra)
+                    {
+                        entityCommand = extra;
+                        return true;
+                    }
+                }
                 if (_selectionCommand is TCommand command)
                 {
                     entityCommand = command;

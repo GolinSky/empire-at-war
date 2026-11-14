@@ -3,6 +3,7 @@ using EmpireAtWar.Models.Players;
 using System.Collections.ObjectModel;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Services.Selection;
 
 namespace EmpireAtWar.Services.Battle
@@ -37,6 +38,16 @@ namespace EmpireAtWar.Services.Battle
         public bool Accepts(IEntity entity)
         {
             return _localPlayer.IsLocal(entity.Owner) == (Scope == SelectionScope.Local);
+        }
+
+        public static ISelectionContext ForProduction(ISelectionSubject subject, ILocalPlayer localPlayer)
+        {
+            ISelectionContext other = subject.OtherSelectionContext;
+            IEntity entity = other.Entity;
+            return entity != null && !entity.HealthModel.IsDestroyed &&
+                   localPlayer.IsFriendly(entity.Owner) && entity.TryGetFacade(out IProductionBaseFacade _)
+                ? other
+                : subject.PlayerSelectionContext;
         }
 
         public bool Contains(IEntity entity)
