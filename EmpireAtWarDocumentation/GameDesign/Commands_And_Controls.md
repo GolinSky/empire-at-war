@@ -34,7 +34,8 @@ verification: source-and-assets
 ### Orders
 
 - Right-click release on empty space → Move. Right-click a hostile entity → Attack.
-- A hovered hardpoint marker wins over the hull hit; receivers supporting hardpoint targeting attack that hardpoint.
+- Hover a visible hull to reveal its hardpoints at default zoom. Marker size follows hull size and zoom, with a minimum for readability.
+- A hovered hardpoint marker wins over the hull hit; receivers supporting hardpoint targeting attack that hardpoint. The targeted marker is 25% larger than its normal size.
 - Receivers without hardpoint targeting, such as squadrons, fall back to attacking the whole target.
 - Orders apply to living locally selected receivers that expose the corresponding command capability.
 - Move, Attack Move and Guard use compact size-aware destination slots; ordinary movement preserves each receiver's height.

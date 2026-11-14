@@ -8,7 +8,6 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
     {
         private const float ICON_BOX_SIZE = 28f;
         private const float ICON_SIZE = 25f;
-        private const float HOVER_SCALE = 1.12f;
         private const float HEALTH_HUE_RANGE = 1f / 3f;
         private const float HEALTH_SATURATION = 0.55f;
         private const float HEALTH_BRIGHTNESS = 0.75f;
@@ -38,7 +37,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             }
 
             _root.anchoredPosition = localPosition;
-            _root.localScale = Vector3.one * (data.Scale * (data.IsHovered ? HOVER_SCALE : 1f));
+            _root.localScale = Vector3.one * data.DisplayScale;
 
             _icon.sprite = data.Icon;
             _icon.color = Color.HSVToRGB(Mathf.Clamp01(data.HealthPercentage) * HEALTH_HUE_RANGE,
