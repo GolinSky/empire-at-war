@@ -57,6 +57,8 @@ namespace EmpireAtWar.Services.Hazards
 
         public void RefreshMemberships()
         {
+            if (_sources.Count == 0 && _memberships.Count == 0) return;
+
             foreach (IEntity entity in _entities.Entities)
             {
                 if (entity.HealthModel.IsDestroyed ||

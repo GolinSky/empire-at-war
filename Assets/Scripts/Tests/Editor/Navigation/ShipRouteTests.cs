@@ -1,5 +1,6 @@
 using EmpireAtWar.Components.Ship.Movement;
 using NUnit.Framework;
+using Unity.Collections;
 using UnityEngine;
 
 namespace EmpireAtWar.Tests.Movement
@@ -7,6 +8,36 @@ namespace EmpireAtWar.Tests.Movement
     [Category("Navigation")]
     public sealed class ShipRouteTests
     {
+        [Test]
+        public void NativePieces_RouteOwnsCopyAfterSourceDisposal()
+        {
+            ShipRoute route;
+            using (var pieces = new NativeList<ShipRoutePiece>(2, Allocator.Temp))
+            {
+                pieces.Add(ShipRoutePiece.Line(Vector3.zero, Vector3.forward * 4f));
+                pieces.Add(ShipRoutePiece.Line(Vector3.forward * 4f, Vector3.forward * 9f));
+                route = new ShipRoute(pieces.AsArray());
+                pieces.Clear();
+            }
+
+            Assert.That(route.Pieces.Count, Is.EqualTo(2));
+            Assert.That(route.GetPieceStartDistance(1), Is.EqualTo(4f));
+            Assert.That(route.Length, Is.EqualTo(9f));
+            Assert.That(route.EvaluateNormalizedDistance(1f, out _), Is.EqualTo(Vector3.forward * 9f));
+        }
+
+        [Test]
+        public void ManagedPieces_RouteOwnsDefensiveCopy()
+        {
+            var pieces = new[] { ShipRoutePiece.Line(Vector3.zero, Vector3.forward * 4f) };
+            var route = new ShipRoute(pieces);
+
+            pieces[0] = ShipRoutePiece.Line(Vector3.zero, Vector3.right);
+
+            Assert.That(route.Length, Is.EqualTo(4f));
+            Assert.That(route.EvaluateNormalizedDistance(1f, out _), Is.EqualTo(Vector3.forward * 4f));
+        }
+
         [Test]
         public void Arc_UsesExactLengthAndSignedTangent()
         {

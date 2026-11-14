@@ -47,6 +47,18 @@ namespace EmpireAtWar.Services.FleetCommand
             }
 
             _next.Clear();
+            if (_commanders.Count != 0) CollectRecipients();
+
+            foreach (CombatModifiers modifiers in _affected)
+                if (!_next.Contains(modifiers)) modifiers.SetFleetCommand(false);
+            foreach (CombatModifiers modifiers in _next)
+                if (!_affected.Contains(modifiers)) modifiers.SetFleetCommand(true);
+            _affected.Clear();
+            _affected.UnionWith(_next);
+        }
+
+        private void CollectRecipients()
+        {
             foreach (IEntity entity in _entities.Entities)
             {
                 if (entity.HealthModel.IsDestroyed ||
@@ -70,13 +82,6 @@ namespace EmpireAtWar.Services.FleetCommand
                     break;
                 }
             }
-
-            foreach (CombatModifiers modifiers in _affected)
-                if (!_next.Contains(modifiers)) modifiers.SetFleetCommand(false);
-            foreach (CombatModifiers modifiers in _next)
-                if (!_affected.Contains(modifiers)) modifiers.SetFleetCommand(true);
-            _affected.Clear();
-            _affected.UnionWith(_next);
         }
 
         public void LateDispose()

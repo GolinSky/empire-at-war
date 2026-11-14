@@ -7,6 +7,8 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
     {
         UnitSave Capture();
 
+        UnitHealthSave CaptureHealth();
+
         void RestoreHealth(UnitHealthSave save);
 
         /// <summary>Online client: a host health update, with destruction effects for parts lost since the last.</summary>

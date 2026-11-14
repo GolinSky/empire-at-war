@@ -133,7 +133,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             }
             if (first > 0) FilletEscapeJoin(graph, pieces, turnRadius, height);
             if (pieces.Length == 0) pieces.Add(ShipRouteGeometry.Line(start, goal, height));
-            return new ShipRoute(pieces.AsArray().ToArray());
+            return new ShipRoute(pieces.AsArray());
         }
 
         private static bool TryStartCircle(IShipPathGraph graph, float2 start, float2 direction,

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 
 namespace EmpireAtWar.Components.Ship.Movement
@@ -17,19 +18,29 @@ namespace EmpireAtWar.Components.Ship.Movement
         public Vector3 InitialTangent => _pieces[0].InitialTangent;
         public Vector3[] Samples => _samples ?? (_samples = BuildSamples());
 
-        public ShipRoute(IReadOnlyList<ShipRoutePiece> pieces)
+        public ShipRoute(IReadOnlyList<ShipRoutePiece> pieces) : this(CopyPieces(pieces)) { }
+
+        public ShipRoute(NativeArray<ShipRoutePiece> pieces) : this(pieces.ToArray()) { }
+
+        private ShipRoute(ShipRoutePiece[] pieces)
         {
-            if (pieces.Count == 0) throw new ArgumentException("A route requires at least one piece.", nameof(pieces));
-            _pieces = new ShipRoutePiece[pieces.Count];
-            _starts = new float[pieces.Count];
+            if (pieces.Length == 0) throw new ArgumentException("A route requires at least one piece.", nameof(pieces));
+            _pieces = pieces;
+            _starts = new float[pieces.Length];
             float length = 0f;
-            for (int i = 0; i < pieces.Count; i++)
+            for (int i = 0; i < pieces.Length; i++)
             {
-                _pieces[i] = pieces[i];
                 _starts[i] = length;
                 length += pieces[i].Length;
             }
             Length = length;
+        }
+
+        private static ShipRoutePiece[] CopyPieces(IReadOnlyList<ShipRoutePiece> pieces)
+        {
+            var copy = new ShipRoutePiece[pieces.Count];
+            for (int i = 0; i < copy.Length; i++) copy[i] = pieces[i];
+            return copy;
         }
 
         public float GetPieceStartDistance(int index) => _starts[index];

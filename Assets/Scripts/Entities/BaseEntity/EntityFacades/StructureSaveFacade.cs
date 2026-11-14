@@ -30,8 +30,11 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
         }
 
         public StructureSave Capture() => StructureSave.Create(_entityId, _owner, _kind, _type, _viewTransform.position,
+            CaptureHealth());
+
+        public UnitHealthSave CaptureHealth() =>
             UnitHealthSave.ForShip(_health.HullPercentage, _health.ShieldPercentage,
-                _health.HardPointModels.Select(point => point.HealthPercentage).ToArray()));
+                _health.HardPointModels.Select(point => point.HealthPercentage).ToArray());
 
         public void RestoreHealth(UnitHealthSave save) => _health.Restore(save.Hull, save.Shields, save.HardPoints);
 

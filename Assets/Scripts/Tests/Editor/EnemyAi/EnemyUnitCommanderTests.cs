@@ -1478,7 +1478,8 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(builder.ForwardStationFallback.Value, Is.EqualTo(fallback),
                     "The anchor must be behind the primary footprint with the fleet's clearance.");
 
-                EnemyStrategicContext context = builder.CreateGroupBuilder().Build(ships);
+                EnemyStrategicContextBuilder groupBuilder = builder.CreateGroupBuilder();
+                EnemyStrategicContext context = groupBuilder.Build(ships);
                 Assert.That(context.Snapshot.WithdrawFromForwardStation, Is.True);
                 Assert.That(context.Snapshot.HasSafeRetreat, Is.True);
                 Assert.That(context.RetreatAnchor, Is.EqualTo(fallback));
@@ -1497,6 +1498,14 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(commander.TryGetReinforcementRally(out Vector3 rally, out bool defendHome), Is.True);
                 Assert.That(rally, Is.EqualTo(fallback));
                 Assert.That(defendHome, Is.True);
+
+                ForceComposition firstForce = context.ShipForces[ships[0]];
+                ((FakeHealthModel)receiver.HealthModel).Hull = 250f;
+                EnemyStrategicContext rebuilt = groupBuilder.Build(ships);
+                ForceComposition rebuiltForce = rebuilt.ShipForces[ships[0]];
+                Assert.That(rebuiltForce, Is.SameAs(firstForce));
+                Assert.That(rebuiltForce.UnitCount, Is.EqualTo(1));
+                Assert.That(rebuiltForce.Hull(ShipClass.Capital), Is.EqualTo(receiver.HealthModel.Hull));
 
                 ((FakeShip)ships[0]).WorldPosition = fallback;
                 receiver.GetFacade<IEntityTransformFacade>().Transform.position = fallback;

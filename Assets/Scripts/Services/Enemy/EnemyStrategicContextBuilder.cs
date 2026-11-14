@@ -154,10 +154,13 @@ namespace EmpireAtWar.Services.Enemy
         public Vector3? ForwardStationFallback { get; private set; }
         public AllyAiMarkerSource AlliedMarkers { get; }
         private readonly List<IShipEntity> _ownShips = new List<IShipEntity>();
+        private readonly HashSet<long> _ownShipIds = new HashSet<long>();
         private readonly List<FormationPoint> _formationPositions = new List<FormationPoint>();
         private readonly Dictionary<IShipEntity, GameEntity> _receivers = new Dictionary<IShipEntity, GameEntity>();
         private readonly Dictionary<IShipEntity, ForceComposition> _shipForces = new Dictionary<IShipEntity, ForceComposition>();
         private readonly Dictionary<GameEntity, ForceComposition> _targetForces = new Dictionary<GameEntity, ForceComposition>();
+        private readonly List<ForceComposition> _forcePool = new List<ForceComposition>();
+        private int _usedForces;
         private float _ionRiskWeight = 1f;
         // Targets stay picked while still valid: a new pick re-orders every committed ship, and each order makes
         // the ship's weapons re-sort their candidates.
@@ -212,7 +215,6 @@ namespace EmpireAtWar.Services.Enemy
             _recovery = recovery;
         }
 
-        /// <summary>The returned collections are borrowed until the next Build on this player's builder.</summary>
         private EnemyStrategicContextBuilder(EnemyStrategicContextBuilder source)
         {
             _shipService = source._shipService;
@@ -262,6 +264,7 @@ namespace EmpireAtWar.Services.Enemy
             return (_stationPressure.HasPressure, ShouldGatherReinforcements(ownBase));
         }
 
+        /// <summary>The returned collections and their force compositions are borrowed until the next Build on this builder.</summary>
         public EnemyStrategicContext Build(IReadOnlyList<IShipEntity> ships = null,
             ISet<string> reservedCaptureObjectives = null, bool preferStrategicObjectives = false)
         {
@@ -278,8 +281,10 @@ namespace EmpireAtWar.Services.Enemy
             }
             _reservedCaptureObjectives = reservedCaptureObjectives;
             _ionRiskWeight = 1f;
+            _ownShipIds.Clear();
             foreach (IShipEntity ship in ownShips)
             {
+                if (_groupScoped) _ownShipIds.Add(ship.EntityId);
                 IHealthModelObserver health = _entityLocator.GetEntity(ship.EntityId).HealthModel;
                 float durability = health.Hull + health.Shields;
                 if (durability <= 0f) continue;
@@ -301,7 +306,7 @@ namespace EmpireAtWar.Services.Enemy
             int focusTeamShipCount = CountKnownShips(focusEnemy, now);
             int ownedCapturableZoneCount = _reinforcementZonesSystem.GetOwnedCapturableZoneCount(self);
             _forceBuilder.Build(_ownForce, entity => entity.Owner == self &&
-                (ships == null || ownShips.Exists(ship => ship.EntityId == entity.Id)));
+                (!_groupScoped || _ownShipIds.Contains(entity.Id)));
             if (ships == null)
                 _forceBuilder.Build(_ownTeamForce, entity => _playerRoster.IsAllied(self, entity.Owner));
             _forceBuilder.BuildKnown(_focusTeamForce, _intel, now,
@@ -357,16 +362,18 @@ namespace EmpireAtWar.Services.Enemy
                 withdrawFromForwardStation: forwardFallback.HasValue);
             _receivers.Clear();
             _shipForces.Clear();
+            _targetForces.Clear();
+            _usedForces = 0;
             foreach (IShipEntity ship in ownShips)
             {
                 GameEntity entity = _entityLocator.GetEntity(ship.EntityId);
                 _receivers.Add(ship, entity);
-                ForceComposition force = new ForceComposition();
+                ForceComposition force = NextForce();
+                force.Clear();
                 _forceBuilder.AddUnit(force, entity);
                 AddEscortingAirWing(force, entity);
                 _shipForces.Add(ship, force);
             }
-            _targetForces.Clear();
             AddTargetForce(enemyFleetTarget, now);
             AddTargetForce(enemyBaseTarget, now);
             AddTargetForce(_raidTarget, now);
@@ -460,15 +467,17 @@ namespace EmpireAtWar.Services.Enemy
             return keepsPrevious && (previousIsShip || !closestIsShip) ? _localThreat : closest;
         }
 
-        /// <summary>
-        /// The closest visible hostile structure (not a base), with no known hostile ship within
-        /// <see cref="LOCAL_ENGAGEMENT_RADIUS"/> of it.
-        /// </summary>
+        private ForceComposition NextForce()
+        {
+            if (_usedForces == _forcePool.Count) _forcePool.Add(new ForceComposition());
+            return _forcePool[_usedForces++];
+        }
+
         private void AddTargetForce(GameEntity target, float now)
         {
             if (target == null || _targetForces.ContainsKey(target)) return;
             Vector3 center = target.GetFacade<IEntityTransformFacade>().Transform.position;
-            ForceComposition force = new ForceComposition();
+            ForceComposition force = NextForce();
             _forceBuilder.BuildKnown(force, _intel, now, sighting =>
                 sighting.EntityId != target.Id && _playerRoster.IsHostile(_owner.Id, sighting.Owner) &&
                 PlanarDistance(center, ToVector(sighting.Position)) <= LOCAL_ENGAGEMENT_RADIUS);
@@ -476,6 +485,10 @@ namespace EmpireAtWar.Services.Enemy
             _targetForces.Add(target, force);
         }
 
+        /// <summary>
+        /// The closest visible hostile structure (not a base), with no known hostile ship within
+        /// <see cref="LOCAL_ENGAGEMENT_RADIUS"/> of it.
+        /// </summary>
         private GameEntity FindRaidTarget(Vector3 origin, float now)
         {
             GameEntity closest = null;
@@ -1030,7 +1043,7 @@ namespace EmpireAtWar.Services.Enemy
             _forceBuilder.Build(force, entity =>
             {
                 if (entity.Owner != self) return false;
-                if (_groupScoped && !_ownShips.Exists(ship => ship.EntityId == entity.Id)) return false;
+                if (_groupScoped && !_ownShipIds.Contains(entity.Id)) return false;
                 Vector3 offset = entity.GetFacade<IEntityTransformFacade>().Transform.position - center;
                 offset.y = 0f;
                 return offset.sqrMagnitude <= radiusSquared;

@@ -92,8 +92,8 @@ namespace EmpireAtWar.Services.Networking
         private static bool TryCaptureHealth(IEntity entity, out UnitHealthSave save)
         {
             save = null;
-            if (entity.TryGetFacade(out IUnitSaveFacade unit)) save = unit.Capture().Health;
-            else if (entity.TryGetFacade(out IStructureSaveFacade structure)) save = structure.Capture().Health;
+            if (entity.TryGetFacade(out IUnitSaveFacade unit)) save = unit.CaptureHealth();
+            else if (entity.TryGetFacade(out IStructureSaveFacade structure)) save = structure.CaptureHealth();
             return save != null;
         }
     }

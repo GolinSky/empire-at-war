@@ -32,10 +32,12 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
         }
 
         public UnitSave Capture() => UnitSave.Create(_entityId, _owner, UnitTypeId.Squadron(_squadronType),
-            _flight.Centroid, Quaternion.LookRotation(_flight.Heading, Vector3.up),
-            UnitHealthSave.ForSquadron(_health.Members.Select(member => member.HealthPercentage).ToArray(),
-                Enumerable.Range(0, _health.Members.Length).Select(_health.GetMemberShieldPercentage).ToArray()),
+            _flight.Centroid, Quaternion.LookRotation(_flight.Heading, Vector3.up), CaptureHealth(),
             UnitOrderSave.From(_orders));
+
+        public UnitHealthSave CaptureHealth() =>
+            UnitHealthSave.ForSquadron(_health.Members.Select(member => member.HealthPercentage).ToArray(),
+                Enumerable.Range(0, _health.Members.Length).Select(_health.GetMemberShieldPercentage).ToArray());
 
         public void RestoreHealth(UnitHealthSave save) => _health.Restore(save.MemberHull, save.MemberShields);
 

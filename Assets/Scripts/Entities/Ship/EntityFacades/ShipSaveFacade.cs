@@ -39,10 +39,11 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
 
         public UnitSave Capture() => UnitSave.Create(_entityId, _owner, UnitTypeId.Ship(_shipType),
             _move.Phase == MovementPhase.Arriving ? _move.HyperSpacePosition.ToUnity() : _viewTransform.position,
-            _viewTransform.rotation,
+            _viewTransform.rotation, CaptureHealth(), UnitOrderSave.From(_orders));
+
+        public UnitHealthSave CaptureHealth() =>
             UnitHealthSave.ForShip(_health.HullPercentage, _health.ShieldPercentage,
-                _health.HardPointModels.Select(point => point.HealthPercentage).ToArray()),
-            UnitOrderSave.From(_orders));
+                _health.HardPointModels.Select(point => point.HealthPercentage).ToArray());
 
         public void RestoreHealth(UnitHealthSave save) => _health.Restore(save.Hull, save.Shields, save.HardPoints);
 

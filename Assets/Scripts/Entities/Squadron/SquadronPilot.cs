@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Entities.BaseEntity;
@@ -39,7 +39,7 @@ namespace EmpireAtWar.Entities.Squadrons
         private readonly Vector3[] _aimPositions;
         private int _cachedSlotCount;
         private Transform _escortAnchor;
-        private IHardPointModel[] _aimUnits = Array.Empty<IHardPointModel>();
+        private readonly List<IHardPointModel> _aimUnits = new List<IHardPointModel>();
 
         private Mode _mode = Mode.Loiter;
         private Vector3 _destination;
@@ -89,6 +89,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _mode = Mode.Travel;
             _escortAnchor = null;
             _target = null;
+            _aimUnits.Clear();
         }
 
         public void Loiter(Vector3 center)
@@ -114,7 +115,7 @@ namespace EmpireAtWar.Entities.Squadrons
             _target = target;
             _escortAnchor = null;
             _targetRadius = GetRadius(target);
-            _aimUnits = target.HealthModel.GetShipUnits(HardPointType.Any);
+            target.HealthModel.CopyShipUnits(_aimUnits);
             _aimRefreshTimer = AIM_REFRESH_INTERVAL;
             for (int i = 0; i < _maneuvers.Length; i++)
             {
@@ -157,6 +158,7 @@ namespace EmpireAtWar.Entities.Squadrons
         {
             _mode = Mode.Loiter;
             _target = null;
+            _aimUnits.Clear();
             _loiterCenter = center;
             _loiterRadius = radius;
             Vector3 offset = _flight.Centroid - center;
@@ -227,18 +229,19 @@ namespace EmpireAtWar.Entities.Squadrons
             if (_aimRefreshTimer <= 0f)
             {
                 _aimRefreshTimer = AIM_REFRESH_INTERVAL;
-                _aimUnits = _target.HealthModel.GetShipUnits(HardPointType.Any);
+                _target.HealthModel.CopyShipUnits(_aimUnits);
             }
 
             int rank = 0;
             int capturedAimCount = 0;
+            int aimUnitCount = _aimUnits.Count;
             for (int i = 0; i < _flight.Count; i++)
             {
                 if (!_flight.IsAlive(i)) continue;
-                int aimIndex = _aimUnits.Length == 0 ? 0 : rank % _aimUnits.Length;
+                int aimIndex = aimUnitCount == 0 ? 0 : rank % aimUnitCount;
                 if (aimIndex == capturedAimCount)
                 {
-                    _aimPositions[capturedAimCount++] = _aimUnits.Length == 0
+                    _aimPositions[capturedAimCount++] = aimUnitCount == 0
                         ? _target.GetFacade<IEntityTransformFacade>().Transform.position
                         : _aimUnits[aimIndex].Position;
                 }
