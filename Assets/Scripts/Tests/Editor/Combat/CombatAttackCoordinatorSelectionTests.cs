@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.ViewComponents.Health;
 using EmpireAtWar.ViewComponents.Weapon;
@@ -40,7 +41,7 @@ namespace EmpireAtWar.Tests.Weapon
                         .SetValue(weapon, new List<WeaponHardPoint> { hardPoint });
                     typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
                         .Invoke(weapon, new object[] { null, null, coordinator, new CombatModifiers(), null, null, null, null, null, null, null, null, null, null, weapon.transform,
-                        new OfflineSession(PlayerId.None), null });
+                        new OfflineSession(PlayerId.None), null, ShipClass.Capital });
                     coordinator.Register(weapon);
                     coordinator.QueueTargetSelection(weapon, hardPoint);
                 }
@@ -83,7 +84,7 @@ namespace EmpireAtWar.Tests.Weapon
                     .SetValue(weapon, new List<WeaponHardPoint> { hardPoint });
                 typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
                     .Invoke(weapon, new object[] { null, null, coordinator, new CombatModifiers(), null, null, null, null, null, null, null, null, null, null, weapon.transform,
-                        new OfflineSession(PlayerId.None), null });
+                        new OfflineSession(PlayerId.None), null, ShipClass.Capital });
                 coordinator.Register(weapon);
                 coordinator.QueueTargetSelection(weapon, hardPoint);
                 weapon.Release();

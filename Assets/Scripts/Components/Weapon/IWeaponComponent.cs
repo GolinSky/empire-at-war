@@ -1,5 +1,6 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Mvc;
 
@@ -22,6 +23,8 @@ namespace EmpireAtWar.Components.Weapon
         bool HasTarget(IHealthFacade healthFacade);
 
         bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass);
+
+        bool CanUseSiegeApproach(IEntity target);
 
         void ResetTarget();
     }

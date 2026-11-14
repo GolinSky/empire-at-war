@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.SpaceStation;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
@@ -11,14 +12,23 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
     public static class ShipEngagement
     {
         private const float STANDOFF_RANGE_FACTOR = 0.65f;
+        private const float SIEGE_CLEARANCE_MARGIN = 1f;
 
         public static bool CanEngage(IEntity enemy, IShipMovement movement,
             IWeaponComponent weapon)
         {
             return !enemy.HealthModel.IsDestroyed && enemy.HealthModel.HasUnits &&
-                   weapon.HasEnoughRange(movement.GetRange(
-                       enemy.GetFacade<IEntityTransformFacade>().Transform.position),
-                       ContactDistance(movement, enemy), enemy.HealthModel.ShipClass);
+                   IsInRange(movement, weapon, enemy, enemy.GetFacade<IEntityTransformFacade>().Transform.position);
+        }
+
+        public static bool IsInRange(IShipMovement movement, IWeaponComponent weapon, IEntity target,
+            Vector3 targetPosition)
+        {
+            float distance = movement.GetRange(targetPosition);
+            if (UsesCloseSiegeApproach(movement, weapon, target))
+                return distance <= SiegeStandoffDistance(movement, target, targetPosition) + SIEGE_CLEARANCE_MARGIN;
+
+            return weapon.HasEnoughRange(distance, ContactDistance(movement, target), target.HealthModel.ShipClass);
         }
 
         /// <summary>An enemy the ship's loadout is built for; AI target searches take these before the others.</summary>
@@ -83,11 +93,28 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             IWeaponComponent weapon, IEntity target)
         {
             Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
+            float distance = UsesCloseSiegeApproach(movement, weapon, target)
+                ? SiegeStandoffDistance(movement, target, targetPosition)
+                : Mathf.Max(weapon.GetEngagementRange(target.HealthModel.ShipClass) * STANDOFF_RANGE_FACTOR,
+                    ContactDistance(movement, target));
             Vector3 fromTarget = movement.CurrentPosition - targetPosition;
             fromTarget.y = 0f;
-            return targetPosition + fromTarget.normalized * Mathf.Max(
-                weapon.GetEngagementRange(target.HealthModel.ShipClass) * STANDOFF_RANGE_FACTOR,
-                ContactDistance(movement, target));
+            return targetPosition + fromTarget.normalized * distance;
+        }
+
+        // A footprint larger than nominal weapon reach makes the normal contact slack a substantial loss
+        // of mount coverage. Only ships that are already contact-limited need to close against structures.
+        private static bool UsesCloseSiegeApproach(IShipMovement movement, IWeaponComponent weapon, IEntity target) =>
+            weapon.CanUseSiegeApproach(target) &&
+            !weapon.HasEnoughRange(movement.NavigationRadius, 0f, target.HealthModel.ShipClass);
+
+        private static float SiegeStandoffDistance(IShipMovement movement, IEntity target, Vector3 center)
+        {
+            // The station's map generation keep-out radius can be much larger than its live navigation obstacle.
+            if (target.TryGetFacade(out IStationHullFacade hull))
+                return movement.NavigationRadius + hull.GetHullRadius(center) + SIEGE_CLEARANCE_MARGIN;
+
+            return ContactDistance(movement, target) + SIEGE_CLEARANCE_MARGIN;
         }
     }
 }

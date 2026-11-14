@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.BaseEntity;
 using UnityEngine;
 
 namespace EmpireAtWar.Components.Ship.Movement
@@ -11,7 +12,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         void MoveToPosition(Vector3 targetPosition, bool preserveCourse = false);
 
-        void LookAtTarget(Vector3 targetPosition);
+        void LookAtTarget(IEntity target);
         void LookInDirection(Vector3 direction);
 
         float GetRange(Vector3 targetPosition);

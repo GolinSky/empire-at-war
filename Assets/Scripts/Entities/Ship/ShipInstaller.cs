@@ -54,7 +54,7 @@ namespace EmpireAtWar.Ship
             EntityFeatureBindings.RegisterCombatModifiers(builder);
             EntityFeatureBindings.RegisterHealth(builder, Bindings, Data);
             EntityFeatureBindings.RegisterRadar(builder, Bindings);
-            EntityFeatureBindings.RegisterWeapons(builder, Bindings);
+            EntityFeatureBindings.RegisterWeapons(builder, Bindings, Data.ShipClass);
             foreach (var weapon in Bindings.Weapons)
                 weapon.ConfigureWeaponPower(Data.Abilities.Contains(ShipAbilityId.BoostWeaponPower));
             EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));

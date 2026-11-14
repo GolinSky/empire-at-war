@@ -67,11 +67,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 if (_movement.IsMoving) _movement.Stop();
                 return;
             }
-            Vector3 target = _target.GetFacade<IEntityTransformFacade>().Transform.position;
             if (ShipEngagement.CanEngage(_target, _movement, _weapon))
             {
                 if (_movement.IsMoving) _movement.Stop();
-                _movement.LookAtTarget(target);
+                _movement.LookAtTarget(_target);
             }
             else ShipEngagement.Pursue(_movement, _weapon, _target);
         }

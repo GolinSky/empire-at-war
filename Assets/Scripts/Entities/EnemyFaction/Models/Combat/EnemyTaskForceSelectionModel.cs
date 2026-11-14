@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Services.Saves;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
 {
@@ -11,7 +12,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
 
         public bool Select(IReadOnlyList<ForceComposition> candidates, ForceComposition defenders,
             ShipClass targetClass, float targetHull, float targetShields, float requiredAdvantage,
-            IReadOnlyList<int> retained, int maximumCount, List<int> selected)
+            IReadOnlyList<int> retained, int maximumCount, List<int> selected, StructureKind? targetKind = null)
         {
             selected.Clear();
             _selectedForce.Clear();
@@ -25,7 +26,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             }
 
             // Keep a viable force committed; rebuild an inadequate composition against changed defenders.
-            if (!IsReady(_selectedForce, defenders, targetClass, targetHull, targetShields, requiredAdvantage))
+            if (!IsReady(_selectedForce, defenders, targetClass, targetHull, targetShields, requiredAdvantage, targetKind))
             {
                 selected.Clear();
                 _selectedForce.Clear();
@@ -42,7 +43,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                     if (selected.Contains(i) || !CanContribute(candidates[i], defenders, targetClass, targetShields)) continue;
                     _candidateForce.CopyFrom(_selectedForce);
                     _candidateForce.Add(candidates[i]);
-                    float clearTime = TargetTime(_candidateForce, targetClass, targetHull, targetShields) +
+                    float clearTime = CombatMatchup.TimeToDestroyTarget(_candidateForce, targetClass, targetHull,
+                                          targetShields, targetKind) +
                                       CombatMatchup.TimeToDestroy(_candidateForce, defenders);
                     float score = Math.Min(requiredAdvantage, CombatMatchup.Advantage(_candidateForce, defenders)) /
                                   Math.Max(float.Epsilon, clearTime);
@@ -55,12 +57,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                 _selectedForce.Add(candidates[best]);
             }
 
-            return IsReady(_selectedForce, defenders, targetClass, targetHull, targetShields, requiredAdvantage);
+            return IsReady(_selectedForce, defenders, targetClass, targetHull, targetShields, requiredAdvantage, targetKind);
         }
 
         public static bool IsReady(ForceComposition force, ForceComposition defenders,
-            ShipClass targetClass, float targetHull, float targetShields, float requiredAdvantage) =>
-            !force.IsEmpty && TargetTime(force, targetClass, targetHull, targetShields) < CombatMatchup.MAX_TIME &&
+            ShipClass targetClass, float targetHull, float targetShields, float requiredAdvantage,
+            StructureKind? targetKind = null) =>
+            !force.IsEmpty &&
+            CombatMatchup.TimeToDestroyTarget(force, targetClass, targetHull, targetShields, targetKind) < CombatMatchup.MAX_TIME &&
             CombatMatchup.Advantage(force, defenders) >= requiredAdvantage;
 
         private static bool CanContribute(ForceComposition force, ForceComposition defenders,
@@ -68,9 +72,5 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             force.HullDps(targetClass) + force.PiercingDps(targetClass) > 0f &&
             (targetShields <= 0f || force.ShieldDps(targetClass) + force.PiercingDps(targetClass) > 0f) ||
             !defenders.IsEmpty && CombatMatchup.TimeToDestroy(force, defenders) < CombatMatchup.MAX_TIME;
-
-        private static float TargetTime(ForceComposition force, ShipClass targetClass, float hull, float shields) =>
-            CombatMatchup.TimeToDestroyClass(hull, shields, force.HullDps(targetClass),
-                force.ShieldDps(targetClass), force.PiercingDps(targetClass));
     }
 }

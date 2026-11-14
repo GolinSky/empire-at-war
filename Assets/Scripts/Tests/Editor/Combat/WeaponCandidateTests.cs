@@ -200,6 +200,38 @@ namespace EmpireAtWar.Tests.Weapon
             Assert.That(mount.CanEngage(ShipClass.Capital), Is.True);
         }
 
+        [Test]
+        public void GetFiringTurnAngle_FrigateUsesMainBatteryAndRecoversAfterDamage()
+        {
+            List<WeaponHardPoint> mounts = ConfigureMounts(2);
+            WeaponHardPoint main = mounts[0];
+            WeaponHardPoint secondary = mounts[1];
+            main.transform.SetParent(_weapon.transform);
+            secondary.transform.SetParent(_weapon.transform);
+            SetYawArc(main, -10f, 10f);
+            SetYawArc(secondary, 69f, 99f);
+            typeof(WeaponComponent).GetField("_attackerClass", PRIVATE_INSTANCE).SetValue(_weapon, ShipClass.Frigate);
+            typeof(WeaponComponent).GetField("_facingWeights", PRIVATE_INSTANCE).SetValue(_weapon, new[] { 1, 100 });
+            typeof(WeaponHardPoint).GetField("mainBattery", PRIVATE_INSTANCE).SetValue(main, true);
+            typeof(HardPoint).GetField("spawnDestroyedExplosion", PRIVATE_INSTANCE).SetValue(main, false);
+            CombatModifiers modifiers = (CombatModifiers)Field("_modifiers");
+            AttackData group = Group(1);
+            group.Units[0].Transform.position = Vector3.forward * 50f;
+
+            Assert.That(_weapon.GetFiringTurnAngle(group.TargetEntity, Vector3.zero), Is.Zero);
+
+            main.UpdateData(0f);
+            Assert.That(_weapon.GetFiringTurnAngle(group.TargetEntity, Vector3.zero), Is.EqualTo(-70f));
+
+            modifiers.SetMainBatteries(true, 0.5f);
+            Assert.That(_weapon.GetFiringTurnAngle(group.TargetEntity, Vector3.zero), Is.Zero);
+
+            main.UpdateData(1f);
+            Assert.That(_weapon.GetFiringTurnAngle(group.TargetEntity, Vector3.zero), Is.Zero);
+            modifiers.SetMainBatteries(false, 1f);
+            Assert.That(_weapon.GetFiringTurnAngle(group.TargetEntity, Vector3.zero), Is.Zero);
+        }
+
         private List<WeaponHardPoint> ConfigureMounts(int count)
         {
             CombatModifiers modifiers = new CombatModifiers();
@@ -215,10 +247,7 @@ namespace EmpireAtWar.Tests.Weapon
             for (int i = 0; i < count; i++)
             {
                 WeaponHardPoint mount = Track(new GameObject("Mount")).AddComponent<WeaponHardPoint>();
-                FloatRange arc = new FloatRange();
-                typeof(Range<float>).GetProperty("Min").GetSetMethod(true).Invoke(arc, new object[] { -180f });
-                typeof(Range<float>).GetProperty("Max").GetSetMethod(true).Invoke(arc, new object[] { 180f });
-                mount.SetData(arc);
+                SetYawArc(mount, -180f, 180f);
                 mount.SetData(Profile(), 100f, 0f, _weapon, _coordinator, modifiers, null, null, null, null);
                 object timer = typeof(WeaponHardPoint).GetField("_reloadTimer", PRIVATE_INSTANCE).GetValue(mount);
                 timer.GetType().GetField("_timer", PRIVATE_INSTANCE).SetValue(timer, float.NegativeInfinity);
@@ -228,6 +257,14 @@ namespace EmpireAtWar.Tests.Weapon
             typeof(WeaponComponent).GetField("_retryAt", PRIVATE_INSTANCE).SetValue(_weapon, new float[count]);
             _coordinator.Register(_weapon);
             return mounts;
+        }
+
+        private static void SetYawArc(WeaponHardPoint mount, float min, float max)
+        {
+            FloatRange arc = new FloatRange();
+            typeof(Range<float>).GetProperty("Min").GetSetMethod(true).Invoke(arc, new object[] { min });
+            typeof(Range<float>).GetProperty("Max").GetSetMethod(true).Invoke(arc, new object[] { max });
+            mount.SetData(arc);
         }
 
         private static WeaponProfile Profile(DamageType damageType = DamageType.Laser) =>

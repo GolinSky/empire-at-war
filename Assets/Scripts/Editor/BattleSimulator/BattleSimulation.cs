@@ -124,14 +124,16 @@ namespace EmpireAtWar.Editor.BattleSimulator
             float distance = _setup.Distance < 0 ? source.Definition.Range : _setup.Distance;
             double delay = mount.Definition.HasFixedFlight ? mount.Definition.FixedFlightSeconds : distance / profile.ProjectileSpeed;
             int ticks = Math.Max(1, (int)Math.Ceiling(mount.Definition.DamageDuration / WeaponComponent.DAMAGE_TICK_INTERVAL));
+            float damage = profile.Damage * profile.GetDamageBias(selected.Definition.ShipClass) *
+                           source.Modifiers.DamageMultiplier *
+                           SiegeDamage.GetMultiplier(source.Definition.ShipClass, selected.Definition.StructureKind);
             for (int i = 0; i < ticks; i++)
             {
                 double arrival = time + delay + mount.Definition.DamageDuration * i / ticks;
                 int tick = Math.Max(_tick, (int)Math.Ceiling(arrival / STEP_SECONDS - 0.000001));
                 if (!_impacts.TryGetValue(tick, out List<SimImpact> queue)) _impacts.Add(tick, queue = new List<SimImpact>());
                 queue.Add(new SimImpact { Source = source, Target = selected, HardPointId = point,
-                    DamageType = profile.DamageType, Damage = profile.Damage * profile.GetDamageBias(selected.Definition.ShipClass)
-                        * source.Modifiers.DamageMultiplier / ticks });
+                    DamageType = profile.DamageType, Damage = damage / ticks });
             }
         }
 

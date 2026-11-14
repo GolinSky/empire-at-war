@@ -45,7 +45,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             Vector3.ClampMagnitude(_formationOffset, EngagementRange * 0.8f);
         private Vector3 StandoffPosition => ShipEngagement.GetStandoffPosition(
             _shipMoveComponent, _weaponComponent, _mainTargetEntity);
-        private float ContactDistance => ShipEngagement.ContactDistance(_shipMoveComponent, _mainTargetEntity);
+        private bool IsInRange => ShipEngagement.IsInRange(_shipMoveComponent, _weaponComponent,
+            _mainTargetEntity, TargetPosition);
         private float PursuitDestinationUpdateDistance => Mathf.Max(
             _shipMoveComponent.NavigationRadius,
             EngagementRange * 0.1f);
@@ -153,12 +154,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         private void UpdateFormationMove()
         {
-            bool inRange = _weaponComponent.HasEnoughRange(
-                _shipMoveComponent.GetRange(TargetPosition), ContactDistance, _mainTarget.ShipClass);
-            if (inRange && (!_isClosingRange || !_shipMoveComponent.IsMoving))
+            if (IsInRange && (!_isClosingRange || !_shipMoveComponent.IsMoving))
             {
                 if (_shipMoveComponent.IsMoving) _shipMoveComponent.Stop();
-                _shipMoveComponent.LookAtTarget(TargetPosition);
+                _shipMoveComponent.LookAtTarget(_mainTargetEntity);
                 _isClosingRange = true;
                 _hasPursuitDestination = false;
                 return;
@@ -191,18 +190,17 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             _wasMoving = _shipMoveComponent.IsMoving;
             float range = _shipMoveComponent.GetRange(TargetPosition);
-            if (!_shipMoveComponent.IsMoving && _weaponComponent.HasEnoughRange(range, ContactDistance, _mainTarget.ShipClass))
+            if (!_shipMoveComponent.IsMoving && IsInRange)
             {
-                _shipMoveComponent.LookAtTarget(TargetPosition);
+                _shipMoveComponent.LookAtTarget(_mainTargetEntity);
                 _hasPursuitDestination = false;
                 return;
             }
 
-            if (_shipMoveComponent.IsMoving &&
-                range <= EngagementRange * MINIMUM_RANGE_FACTOR)
+            if (_shipMoveComponent.IsMoving && range <= EngagementRange * MINIMUM_RANGE_FACTOR)
             {
                 _shipMoveComponent.Stop();
-                _shipMoveComponent.LookAtTarget(TargetPosition);
+                _shipMoveComponent.LookAtTarget(_mainTargetEntity);
                 _hasPursuitDestination = false;
                 return;
             }
@@ -230,8 +228,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 return false;
             }
 
-            if (_shipMoveComponent.IsMoving || _weaponComponent.HasEnoughRange(
-                    _shipMoveComponent.GetRange(TargetPosition), ContactDistance, _mainTarget.ShipClass)) return false;
+            if (_shipMoveComponent.IsMoving || IsInRange) return false;
 
             _stallRetryTimer -= deltaTime;
             if (_stallRetryTimer > 0f) return true;

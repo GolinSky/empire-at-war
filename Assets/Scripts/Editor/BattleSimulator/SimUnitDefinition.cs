@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.Saves;
 
 namespace EmpireAtWar.Editor.BattleSimulator
 {
@@ -15,6 +16,7 @@ namespace EmpireAtWar.Editor.BattleSimulator
         public float Range;
         public float HullRepairPerSecond;
         public ShipClass ShipClass { get; set; }
+        public StructureKind? StructureKind;
         public float Hull { get; set; }
         public float Shields { get; set; }
         public float ShieldRegenerateValue { get; set; }

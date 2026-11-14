@@ -94,11 +94,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 // Any chase move replaces the follow course, so the next Follow must re-path.
                 _isFollowing = false;
-                Vector3 target = _engagementTarget.GetFacade<IEntityTransformFacade>().Transform.position;
                 if (ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon))
                 {
                     if (_movement.IsMoving) _movement.Stop();
-                    _movement.LookAtTarget(target);
+                    _movement.LookAtTarget(_engagementTarget);
                 }
                 else ShipEngagement.Pursue(_movement, _weapon, _engagementTarget);
             }

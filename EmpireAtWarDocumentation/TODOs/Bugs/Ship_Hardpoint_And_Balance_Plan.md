@@ -24,6 +24,9 @@ tags:
 
 ## Decision
 
+- 2026-11-14 explicit design scope → [[Done/Features/Capital_Siege_And_Forward_Batteries_Plan]] implemented 1.5× HeavyCapital siege damage, 1.0× Capital factor, Empire/Republic forward main batteries and main-battery-first facing. This plan retains wrapped-yaw defects, other layouts, wasted-shot/identity attribution and remaining balance investigation.
+- Range/flight/waste evidence → [[Rules/WEAPON_EFFECTIVE_DPS_LIMITATIONS]]. Requested forward arcs supersede the unresolved-intent caution below only for the new plan's named hull scope.
+
 - Priority 1: consistent wrapped-yaw handling for Peleset/Recalcitrant; priority 2: Recusant and narrow-arc layouts; priority 3: trustworthy attribution and ship-value review.
 - Confirmed: numeric yaw-contract mismatch, restrictive serialized sectors, shared-prefab attribution and stale roster description stats (Venator II plus seven others).
 - Unresolved: intended mount sectors, arc-caused battle damage loss, correct balance changes. Narrow broadsides alone are not defects.

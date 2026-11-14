@@ -35,8 +35,10 @@ namespace EmpireAtWar
             builder.RegisterInstance(_type);
             builder.RegisterInstance(Data.ComponentData).AsSelf().As<IRadarData, IFogVisionData, ISpawnBlockerData>();
             builder.Register<DefendPlatformTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<StructureKindFacade>(Lifetime.Singleton).AsImplementedInterfaces()
+                .WithParameter(StructureKind.DefendPlatform);
             builder.Register<StructureSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces()
-                .WithParameter("kind", StructureKind.DefendPlatform).WithParameter("type", (int)_type);
+                .WithParameter(StructureKind.DefendPlatform).WithParameter("type", (int)_type);
             if (isProductionBase) builder.Register<ProductionBaseFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.DefendPlatform,
                 isProductionBase ? SelectionType.Base : SelectionType.DefendPlatform);
@@ -44,7 +46,7 @@ namespace EmpireAtWar
             EntityFeatureBindings.RegisterCombatModifiers(builder);
             EntityFeatureBindings.RegisterHealth(builder, Bindings, Data.ComponentData);
             EntityFeatureBindings.RegisterRadar(builder, Bindings);
-            EntityFeatureBindings.RegisterWeapons(builder, Bindings);
+            EntityFeatureBindings.RegisterWeapons(builder, Bindings, Data.ComponentData.ShipClass);
             EntityFeatureBindings.RegisterStationaryCombat(builder);
             EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));
             EntityFeatureBindings.RegisterStructureVision(builder);

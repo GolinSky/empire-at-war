@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Components.Radar;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Components.TeamColor;
@@ -58,8 +59,9 @@ namespace EmpireAtWar.Entities.BaseEntity
             RegisterComponents(builder, bindings.Radar);
         }
 
-        public static void RegisterWeapons(IContainerBuilder builder, EntityBindings bindings)
+        public static void RegisterWeapons(IContainerBuilder builder, EntityBindings bindings, ShipClass shipClass)
         {
+            builder.RegisterInstance(shipClass);
             builder.Register<WeaponModel>(Lifetime.Singleton);
             RegisterComponents(builder, bindings.Weapons);
             builder.Register<WeaponTargetReplicaFacade>(Lifetime.Singleton).AsImplementedInterfaces();

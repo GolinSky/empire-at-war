@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Ship;
 
 namespace EmpireAtWar.Services.Enemy
@@ -19,19 +21,25 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ForceComposition _screenForce = new ForceComposition();
         private readonly HashSet<IShipEntity> _screens = new HashSet<IShipEntity>();
         private IEntity _target;
+        private StructureKind? _targetKind;
 
         public List<IShipEntity> Ships { get; } = new List<IShipEntity>();
 
         public void Clear()
         {
             _target = null;
+            _targetKind = null;
             Ships.Clear();
         }
 
         public bool Assemble(EnemyStrategicContext context, IEntity target, int maximumCount)
         {
-            if (_target != target) Clear();
-            _target = target;
+            if (_target != target)
+            {
+                Clear();
+                _target = target;
+                if (target.TryGetFacade(out IStructureKindFacade structure)) _targetKind = structure.Kind;
+            }
             _candidates.Clear();
             _retained.Clear();
             for (int i = 0; i < context.Ships.Count; i++)
@@ -43,7 +51,7 @@ namespace EmpireAtWar.Services.Enemy
             var health = target.HealthModel;
             bool ready = _selection.Select(_candidates, context.TargetForces[target], health.ShipClass,
                 health.Hull, health.Shields, EnemyAiDifficultyProfile.Get(context.Snapshot.Difficulty).RequiredAttackRatio,
-                _retained, maximumCount, _selected);
+                _retained, maximumCount, _selected, _targetKind);
             Ships.Clear();
             foreach (int index in _selected) Ships.Add(context.Ships[index]);
             return ready;
@@ -56,13 +64,13 @@ namespace EmpireAtWar.Services.Enemy
             var health = _target.HealthModel;
             return EnemyTaskForceSelectionModel.IsReady(_bodyForce, context.TargetForces[_target],
                 health.ShipClass, health.Hull, health.Shields,
-                EnemyAiDifficultyProfile.Get(context.Snapshot.Difficulty).RequiredAttackRatio);
+                EnemyAiDifficultyProfile.Get(context.Snapshot.Difficulty).RequiredAttackRatio, _targetKind);
         }
 
         public float TargetDps(EnemyStrategicContext context, IShipEntity ship)
         {
             var health = _target.HealthModel;
-            return EffectiveDps(context.ShipForces[ship], health.ShipClass, health.Hull, health.Shields);
+            return EffectiveDps(context.ShipForces[ship], health.ShipClass, health.Hull, health.Shields, _targetKind);
         }
 
         public void AssignScreens(EnemyStrategicContext context, IReadOnlyList<IShipEntity> body, IShipEntity strikeAnchor)
@@ -101,10 +109,9 @@ namespace EmpireAtWar.Services.Enemy
         public bool IsScreen(IShipEntity ship) => _screens.Contains(ship);
 
         private static float EffectiveDps(ForceComposition force,
-            ShipClass shipClass, float hull, float shields)
+            ShipClass shipClass, float hull, float shields, StructureKind? targetKind = null)
         {
-            float time = CombatMatchup.TimeToDestroyClass(hull, shields, force.HullDps(shipClass),
-                force.ShieldDps(shipClass), force.PiercingDps(shipClass));
+            float time = CombatMatchup.TimeToDestroyTarget(force, shipClass, hull, shields, targetKind);
             return time >= CombatMatchup.MAX_TIME ? 0f : (hull + shields) / System.Math.Max(time, float.Epsilon);
         }
     }

@@ -43,21 +43,22 @@ namespace EmpireAtWar.SpaceStation
             builder.Register<StationDurabilityFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<StationLevelFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             bool isSecondStation = _secondStationLevel != null;
+            StructureKind kind = isSecondStation ? StructureKind.SecondStation : StructureKind.SpaceStation;
             if (isSecondStation)
             {
                 // The second station levels on its own track instead of the player's main station level.
                 builder.RegisterInstance(_secondStationLevel).As<IFactionLevelObserver>();
                 builder.Register<SecondStationFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             }
+            builder.Register<StructureKindFacade>(Lifetime.Singleton).AsImplementedInterfaces().WithParameter(kind);
             builder.Register<StructureSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces()
-                .WithParameter("kind", isSecondStation ? StructureKind.SecondStation : StructureKind.SpaceStation)
-                .WithParameter("type", (int)_factionType);
+                .WithParameter(kind).WithParameter("type", (int)_factionType);
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.Base, SelectionType.Base);
             EntityFeatureBindings.RegisterHighlight(builder, Bindings);
             EntityFeatureBindings.RegisterCombatModifiers(builder);
             EntityFeatureBindings.RegisterHealth(builder, Bindings, Data.ComponentData);
             EntityFeatureBindings.RegisterRadar(builder, Bindings);
-            EntityFeatureBindings.RegisterWeapons(builder, Bindings);
+            EntityFeatureBindings.RegisterWeapons(builder, Bindings, Data.ComponentData.ShipClass);
             EntityFeatureBindings.RegisterStationaryCombat(builder);
             EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));
             builder.Register<StationHangarData>(Lifetime.Singleton).As<IHangarData>();

@@ -338,6 +338,10 @@
 
 ### Features
 
+- [x] **Capital siege damage and forward main batteries** → [[Done/Features/Capital_Siege_And_Forward_Batteries_Plan]]
+  - Completed 2026-11-14. Super-heavy mounted weapons deal ×1.5 against stations and defense platforms. Added forward main-battery arcs, main-battery-first hull facing and a closer Executor siege approach where the live hull permits.
+  - Unity compilation and 20 prefab saves verified. Evidence → [[Rules/WEAPON_EFFECTIVE_DPS_LIMITATIONS]]. Cadence → [[Done/Bugs/Boost_Weapon_Power_Fire_Rate_Fix]]. Unrun tests and player checks → [[TODOs/User_Acceptance_Queue#Gameplay and Balance]].
+
 - [x] **Enemy AI map patrol and safe recovery relocation** → [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation|Enemy AI Patrol and Recovery Relocation]]
   - Completed 2026-11-14; acceptance pending-user. Patrol memory with visit staleness; recovery anchor (safe allied zone / empty sector) for station, mining and platform placement after station loss or critical pressure. Owns old-home rebuild finding from [[TODOs/Bugs/Enemy_AI_And_Faction_Balance|Enemy AI and Faction Balance]]. Decisions recorded 2026-11-14: patrol ship on Normal+, trigger = losing badly (fleet advantage), distance scales with power, any ally zone, fog-based empty areas incl. capturing a neutral relay. Step 0 adds decision stability (fixes engage↔retreat flip t230–255 and capture flip t293). New `_ai.csv` event kinds + 10 log acceptance checks. All implementation scope complete; Unity compilation/source checks passed. Tests not run; battle-log gates → [[TODOs/User_Acceptance_Queue]].
 

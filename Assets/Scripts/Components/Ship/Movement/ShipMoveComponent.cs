@@ -4,6 +4,7 @@ using DG.Tweening;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Mvc;
@@ -66,6 +67,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private float _lastPlanTime = float.NegativeInfinity;
         private Vector3 _solvedFacing;
         private Vector3 _solvedBearing;
+        private long _solvedTargetId;
         private float _solvedFacingTime;
 
         public event Action<Vector3> DestinationChanged;
@@ -241,23 +243,26 @@ namespace EmpireAtWar.Components.Ship.Movement
             DestinationChanged?.Invoke(Model.Destination.ToUnity());
         }
 
-        public void LookAtTarget(Vector3 targetPosition)
+        public void LookAtTarget(IEntity target)
         {
             if (_modifiers.IsIonDisabled || Model.Phase == MovementPhase.Arriving) return;
+            Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
             if (!IsMoving)
             {
                 Vector3 bearing = targetPosition - transform.position;
                 bearing.y = 0f;
-                if (!_hasSolvedFacing || Time.time - _solvedFacingTime > FACING_RESOLVE_INTERVAL ||
+                if (!_hasSolvedFacing || _solvedTargetId != target.Id ||
+                    Time.time - _solvedFacingTime > FACING_RESOLVE_INTERVAL ||
                     Vector3.Angle(bearing, _solvedBearing) > FACING_RESOLVE_ANGLE)
                 {
                     float turn;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                     using (BattleProfilerMarkers.ShipFacingSolve.Auto())
 #endif
-                    turn = _weaponFacing.GetFiringTurnAngle(targetPosition);
+                    turn = _weaponFacing.GetFiringTurnAngle(target, transform.position);
                     _solvedFacing = Quaternion.AngleAxis(turn, Vector3.up) * transform.forward;
                     _solvedBearing = bearing;
+                    _solvedTargetId = target.Id;
                     _solvedFacingTime = Time.time;
                     _hasSolvedFacing = true;
                 }

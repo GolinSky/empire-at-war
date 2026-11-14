@@ -687,7 +687,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 89
 --- !u!135 &4065867007024791188
 SphereCollider:
@@ -4404,7 +4404,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 89
 --- !u!135 &3619699201027213865
 SphereCollider:

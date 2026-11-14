@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Patterns.StateMachine;
@@ -72,6 +73,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasTarget(IHealthFacade healthFacade) => false;
 
             public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass) => true;
+            public bool CanUseSiegeApproach(IEntity target) => false;
 
             public void ResetTarget() => ResetCount++;
 
@@ -87,7 +89,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public void MoveToPosition(Vector3 position, bool preserveCourse = false) { }
 
-            public void LookAtTarget(Vector3 position) { }
+            public void LookAtTarget(IEntity target) { }
             public void LookInDirection(Vector3 direction) { }
 
             public float GetRange(Vector3 position) => 0f;

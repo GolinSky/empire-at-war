@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Components.Ship.Movement;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.StateMachine;
 using NUnit.Framework;
 using UnityEngine;
@@ -52,7 +53,7 @@ namespace EmpireAtWar.Tests.Editor
                 WorldMoveCount++;
             }
 
-            public void LookAtTarget(Vector3 targetPosition)
+            public void LookAtTarget(IEntity target)
             {
             }
 

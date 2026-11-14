@@ -33,7 +33,7 @@ namespace EmpireAtWar.Tests.Editor
                         System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
                     .SetValue(movement, true);
                 Assert.That(movement.IsMoving, Is.True);
-                movement.LookAtTarget(UnityEngine.Vector3.right * 20f);
+                movement.LookAtTarget(null);
                 movement.LookInDirection(UnityEngine.Vector3.right);
 
                 Assert.That(lookingAt, Is.False);

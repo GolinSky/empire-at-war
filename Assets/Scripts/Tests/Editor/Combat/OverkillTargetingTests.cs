@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Saves;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -15,6 +20,61 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Combat")]
     public sealed class OverkillTargetingTests
     {
+        [TestCase(ShipClass.HeavyCapital, StructureKind.SpaceStation, 1.5f)]
+        [TestCase(ShipClass.HeavyCapital, StructureKind.SecondStation, 1.5f)]
+        [TestCase(ShipClass.HeavyCapital, StructureKind.DefendPlatform, 1.5f)]
+        [TestCase(ShipClass.Capital, StructureKind.SpaceStation, 1f)]
+        [TestCase(ShipClass.Structure, StructureKind.DefendPlatform, 1f)]
+        [TestCase(ShipClass.HeavyCapital, StructureKind.MiningFacility, 1f)]
+        [TestCase(ShipClass.HeavyCapital, null, 1f)]
+        public void ApplyDamage_ScalesEachScheduledTickAndReservationOnce(ShipClass attacker, StructureKind? kind,
+            float factor)
+        {
+            var coordinator = new CombatAttackCoordinator();
+            var owner = new GameObject("Siege weapon");
+            var matrix = ScriptableObject.CreateInstance<DamageMatrixData>();
+            try
+            {
+                JsonUtility.FromJsonOverwrite(@"{""damageTypes"":[{""damageType"":2,""damage"":{""structure"":0.5}}]}", matrix);
+                var health = new HealthStub { Hull = 1000f, ShipClass = ShipClass.Structure };
+                var hardPoint = new HardPointStub();
+                var defense = new CombatModifiers();
+                defense.Add(new CombatStatModifier(1f, 1f, 1f, 1f, 0.8f));
+                var facades = new List<IEntityFacade> { new CombatModifiersFacade(defense) };
+                if (kind.HasValue) facades.Add(new StructureKindFacade(kind.Value));
+                var target = new Entity(health, null, facades, PlayerId.None, 1, null, null);
+                var modifiers = new CombatModifiers();
+                modifiers.Add(new CombatStatModifier(1.2f, 1f, 1f, 1f, 1f));
+                modifiers.SetFocusFire(target, 1.25f);
+                var weapon = owner.AddComponent<WeaponComponent>();
+                typeof(WeaponComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(weapon, new object[] { null, null, coordinator, modifiers, null, matrix, null, null, null,
+                        null, PlayerId.None, null, null, null, owner.transform, new OfflineSession(PlayerId.None), null, attacker });
+                coordinator.Register(weapon);
+                var bias = new ShipClassValues(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1.25f, 1f);
+                var profile = new WeaponProfile(WeaponType.TurboLaser, "Test", WeaponFamily.Turbolaser,
+                    DamageType.Turbolaser, 120f, 1, 0f, 1f, 100f, false, false, null, 100f, Color.white,
+                    Vector3.one, false, true, bias, default, 0f);
+
+                weapon.ApplyDamage(new AttackData(health, null, hardPoint, target), hardPoint, profile, 0f, 0.25f, null);
+
+                IList impacts = GetImpacts(coordinator);
+                Assert.That(impacts.Count, Is.EqualTo(3));
+                // 120 × 1.25 size bias × 1.2 modifier × 1.25 focus fire / 3 ticks = 75 raw damage per tick.
+                foreach (object impact in impacts)
+                {
+                    Assert.That(impact.GetType().GetField("Damage").GetValue(impact), Is.EqualTo(75f * factor).Within(0.001f));
+                    Assert.That(impact.GetType().GetField("ExpectedLoss").GetValue(impact), Is.EqualTo(30f * factor).Within(0.001f));
+                }
+            }
+            finally
+            {
+                coordinator.Dispose();
+                UnityEngine.Object.DestroyImmediate(owner);
+                UnityEngine.Object.DestroyImmediate(matrix);
+            }
+        }
+
         [Test]
         public void IsDoomed_TracksInFlightLossUntilImpactsLand()
         {
@@ -96,9 +156,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private static void MakeImpactsDue(CombatAttackCoordinator coordinator)
         {
-            IList impacts = (IList)typeof(CombatAttackCoordinator)
-                .GetField("_impacts", BindingFlags.Instance | BindingFlags.NonPublic)
-                .GetValue(coordinator);
+            IList impacts = GetImpacts(coordinator);
             for (int i = 0; i < impacts.Count; i++)
             {
                 object record = impacts[i];
@@ -107,6 +165,9 @@ namespace EmpireAtWar.Tests.Editor
                 impacts[i] = record;
             }
         }
+
+        private static IList GetImpacts(CombatAttackCoordinator coordinator) => (IList)typeof(CombatAttackCoordinator)
+            .GetField("_impacts", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(coordinator);
 
         private sealed class CommittingOwner : IWeaponPresenter
         {
@@ -125,7 +186,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public event Action OnDestroy { add { } remove { } }
             public event Action OnValueChanged { add { } remove { } }
-            public ShipClass ShipClass => ShipClass.Capital;
+            public ShipClass ShipClass { get; set; } = ShipClass.Capital;
             public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull { get; set; }
             public float HullPercentage => 1f;

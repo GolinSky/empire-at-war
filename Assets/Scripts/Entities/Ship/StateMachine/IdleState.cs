@@ -3,7 +3,6 @@ using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Patterns.StateMachine;
-using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
@@ -65,7 +64,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             if (_engagementTarget != null)
             {
-                _shipMoveComponent.LookAtTarget(_engagementTarget.GetFacade<IEntityTransformFacade>().Transform.position);
+                _shipMoveComponent.LookAtTarget(_engagementTarget);
             }
         }
 

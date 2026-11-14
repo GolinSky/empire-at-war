@@ -124,6 +124,10 @@ created: "2026-10-29\r"
 
 ## Gameplay and Balance
 
+- [ ] [[Done/Features/Capital_Siege_And_Forward_Batteries_Plan]] — At fixed distances against a same-level station and platform, compare HeavyCapital/Capital shield and hull DPS with identical research and game speed.
+- [ ] [[Done/Features/Capital_Siege_And_Forward_Batteries_Plan]] — In an uncheated battle, confirm close/far Executor reach, forward batteries and stable stationary facing. Disable/destroy the main battery and confirm fallback and recovery, including Pelta/Centax and Power to Main Batteries.
+- [ ] [[Done/Features/Capital_Siege_And_Forward_Batteries_Plan]] — Run the authored Combat, Ships, Navigation, Squadrons, Simulation and EnemyAi regressions when explicitly requested.
+
 
 - [ ] [[Done/Features/Harmonic_Bomb_Ability]] — With both Fetts, verify stationary drop, 1.5 s fuse, 20 s activation cooldown, one spherical hit per eligible unit/member, allied immunity and 360/720 base damage under existing shield/armor rules; include caster death during the fuse.
 - [ ] [[Done/Features/Harmonic_Bomb_Ability]] — Review the blue planar main/secondary rings, white-blue core, 210-unit radius, fog visibility and overlapping/pool reuse at battle zoom levels and quality presets (Performant retains HDR off).

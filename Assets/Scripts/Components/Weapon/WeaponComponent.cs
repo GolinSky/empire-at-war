@@ -48,6 +48,7 @@ namespace EmpireAtWar.Components.Weapon
         private IVisionService _visionService;
         private IPlayerRoster _playerRoster;
         private PlayerId _owner;
+        private ShipClass _attackerClass;
         private FactionType _faction;
         private string _telemetryName;
 
@@ -79,8 +80,7 @@ namespace EmpireAtWar.Components.Weapon
         // lazily, so a group turning into a wreck needs one more rebuild to aim at its dead hardpoints.
         private readonly HashSet<AttackData> _liveGroupsAtRebuild = new HashSet<AttackData>();
         private readonly Dictionary<IHardPointModel, Vector3> _targetPositions = new Dictionary<IHardPointModel, Vector3>();
-        private readonly List<Vector2> _turnArcs = new List<Vector2>();
-        private readonly List<int> _turnWeights = new List<int>();
+        private readonly List<Vector3> _facingTargetPositions = new List<Vector3>();
         // Index = hardpoint: its firepower share when choosing the hull facing.
         private int[] _facingWeights = Array.Empty<int>();
         private readonly WeaponFacingSolver _facingSolver = new WeaponFacingSolver();
@@ -130,9 +130,10 @@ namespace EmpireAtWar.Components.Weapon
             IVisionService visionService, IPlayerRoster playerRoster, PlayerId owner,
             ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, ShotPoolPrewarmer poolPrewarmer,
             [Key(EntityBindType.ViewTransform)] Transform viewTransform, IMatchSession session,
-            ShipAbilityCatalog abilityCatalog)
+            ShipAbilityCatalog abilityCatalog, ShipClass attackerClass)
         {
             _abilityCatalog = abilityCatalog;
+            _attackerClass = attackerClass;
             _followsHost = !session.IsAuthority;
             _impactPresenter = impactPresenter;
             _boltFlights = boltFlights;
@@ -373,6 +374,10 @@ namespace EmpireAtWar.Components.Weapon
                 contactDistance * CONTACT_ENGAGE_FACTOR);
         }
 
+        public bool CanUseSiegeApproach(IEntity target) =>
+            _attackerClass == ShipClass.HeavyCapital && target.TryGetFacade(out IStructureKindFacade structure) &&
+            SiegeDamage.IsEligibleTarget(structure.Kind);
+
         public bool CanEngageMainWeapon(ShipClass targetClass, Vector3 position)
         {
             foreach (WeaponHardPoint weapon in hardPoints)
@@ -382,36 +387,58 @@ namespace EmpireAtWar.Components.Weapon
             return false;
         }
 
-        /// <summary>
-        /// The hull turn that brings the most firepower to bear. Guns count by DPS; point defense never counts, and
-        /// guns out of reach count only while no gun reaches the target, so the ship still turns sensibly on approach.
-        /// </summary>
-        public float GetFiringTurnAngle(Vector3 targetPosition)
+        public float GetFiringTurnAngle(IEntity target, Vector3 pivot)
         {
-            _turnArcs.Clear();
-            _turnWeights.Clear();
-            bool anyInRange = false;
+            if (_modifiers.IsIonDisabled || _modifiers.IsCloaked || target.IsCloaked()) return 0f;
+
+            _facingSolver.Clear();
+            IHardPointModel focusedHardPoint = _mainAttackData != null && _mainAttackData.IsFocused &&
+                _mainAttackData.TargetEntity == target ? _mainAttackData.Units[0] : null;
+            CollectFacingTargets(target, _facingTargetPositions, focusedHardPoint);
+            for (int i = 0; i < _facingTargetPositions.Count; i++)
+                _facingSolver.AddTarget(_facingTargetPositions[i] - pivot);
+
+            ShipClass targetClass = target.HealthModel.ShipClass;
             for (int i = 0; i < hardPoints.Count; i++)
             {
-                WeaponHardPoint hardPoint = hardPoints[i];
-                if (hardPoint.IsDestroyed || hardPoint.StrikecraftOnly) continue;
-                Transform weaponTransform = hardPoint.transform;
-                bool inRange = PlanarGeometry.Distance(targetPosition, weaponTransform.position) <= hardPoint.MaxAttackDistance;
-                if (anyInRange && !inRange) continue;
-                if (inRange && !anyInRange)
-                {
-                    anyInRange = true;
-                    _turnArcs.Clear();
-                    _turnWeights.Clear();
-                }
+                WeaponHardPoint mount = hardPoints[i];
+                if (!mount.CanContributeToFacing(targetClass, _modifiers)) continue;
 
-                Quaternion aim = Quaternion.LookRotation(targetPosition - weaponTransform.position, Vector3.up);
-                float localYaw = Mathf.DeltaAngle(0f, (Quaternion.Inverse(weaponTransform.parent.rotation) * aim).eulerAngles.y);
-                _turnArcs.Add(new Vector2(localYaw - hardPoint.MaxYaw, localYaw - hardPoint.MinYaw));
-                _turnWeights.Add(_facingWeights[i]);
+                Transform mountTransform = mount.transform;
+                _facingSolver.AddMount(mountTransform.position - pivot, mountTransform.parent.rotation,
+                    mount.MaxAttackDistance, mount.MinYaw, mount.MaxYaw, _facingWeights[i], mount.IsMainBattery);
             }
 
-            return _facingSolver.FindTurn(_turnArcs, _turnWeights);
+            return _facingSolver.FindTurn();
+        }
+
+        internal static void CollectFacingTargets(IEntity target, List<Vector3> positions,
+            IHardPointModel focusedHardPoint = null)
+        {
+            positions.Clear();
+            IHealthModelObserver health = target.HealthModel;
+            if (health.IsDestroyed) return;
+            if (focusedHardPoint != null && !focusedHardPoint.IsDestroyed)
+            {
+                positions.Add(focusedHardPoint.Position);
+                return;
+            }
+
+            if (target.TryGetFacade(out IHardPointsFacade facade) && facade.HardPoints.Count > 0)
+            {
+                IReadOnlyList<IHardPointStatus> hardPoints = facade.HardPoints;
+                bool hasLiveHardPoints = health.HasLiveHardPoints;
+                for (int i = 0; i < hardPoints.Count; i++)
+                {
+                    IHardPointStatus point = hardPoints[i];
+                    if (point.IsInstalled && (!point.IsDestroyed || !hasLiveHardPoints))
+                        positions.Add(point.Position);
+                }
+                return;
+            }
+
+            IHardPointModel[] targets = health.GetShipUnits(HardPointType.Any);
+            for (int i = 0; i < targets.Length; i++) positions.Add(targets[i].Position);
         }
 
         public void ResetTarget()
@@ -981,8 +1008,11 @@ namespace EmpireAtWar.Components.Weapon
         {
             // Shots of a salvo whose hardpoint died after the salvo began still deal damage.
             if (_isReleased || attackData.IsDestroyed || !attackData.Contains(hardPointModel)) return;
+            IEntity target = attackData.TargetEntity;
             float damage = profile.Damage * profile.GetDamageBias(attackData.TargetClass) *
-                           _modifiers.GetDamageMultiplier(attackData.TargetEntity);
+                           _modifiers.GetDamageMultiplier(target);
+            if (_attackerClass == ShipClass.HeavyCapital && target.TryGetFacade(out IStructureKindFacade structure))
+                damage *= SiegeDamage.GetMultiplier(_attackerClass, structure.Kind);
             int ticks = Mathf.Max(1, Mathf.CeilToInt(damageDuration / DAMAGE_TICK_INTERVAL));
             float expectedLoss = EstimateLoss(attackData, hardPointModel, damage, profile.DamageType) / ticks;
             for (int i = 0; i < ticks; i++)

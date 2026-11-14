@@ -13,6 +13,7 @@ using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Ship.Orders;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.StateMachine;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.UnitOrders;
@@ -281,6 +282,37 @@ namespace EmpireAtWar.Tests.Movement
             ShipEngagement.Pursue(_movement, _weapon, _target);
             Assert.That(Vector3.Distance(_movement.Destination, _target.Transform.position),
                 Is.EqualTo(105f));
+        }
+
+        [TestCase(true, 321f)]
+        [TestCase(false, 500f)]
+        public void SharedPursuit_ContactLimitedSiegeUsesLiveHullAndTighterGate(bool siegeApproach, float expected)
+        {
+            _weapon.UseSiegeApproach = siegeApproach;
+            _movement.NavigationRadius = 300f;
+            _target.NavigationRadius = 200f;
+            _target.HullRadius = 20f;
+
+            Assert.That(ShipEngagement.CanEngage(_target, _movement, _weapon), Is.EqualTo(!siegeApproach));
+            ShipEngagement.Pursue(_movement, _weapon, _target, newTarget: true);
+            Assert.That(Vector3.Distance(_movement.Destination, _target.Transform.position),
+                Is.EqualTo(expected).Within(0.001f));
+
+            _movement.FinishLeg();
+            Assert.That(ShipEngagement.CanEngage(_target, _movement, _weapon), Is.True);
+        }
+
+        [Test]
+        public void SharedPursuit_SiegeWithNominalReachPreservesNormalStandoff()
+        {
+            _weapon.UseSiegeApproach = true;
+            _target.NavigationRadius = 200f;
+            _target.HullRadius = 20f;
+
+            ShipEngagement.Pursue(_movement, _weapon, _target, newTarget: true);
+
+            Assert.That(Vector3.Distance(_movement.Destination, _target.Transform.position),
+                Is.EqualTo(205f).Within(0.001f));
         }
 
         [Test]
@@ -576,12 +608,12 @@ namespace EmpireAtWar.Tests.Movement
             public bool IsMoving { get; private set; }
             public bool FailMoves { get; set; }
             public bool LastPreserveCourse { get; private set; }
-            public float NavigationRadius => 5f;
+            public float NavigationRadius { get; set; } = 5f;
             public int MoveCount { get; private set; }
             public void MoveToPosition(Vector3 position, bool preserveCourse = false)
             { Destination = position; IsMoving = !FailMoves; LastPreserveCourse = preserveCourse; MoveCount++; }
             public void FinishLeg() { CurrentPosition = Destination; IsMoving = false; }
-            public void LookAtTarget(Vector3 position) { }
+            public void LookAtTarget(IEntity target) { }
             public void LookInDirection(Vector3 direction) { }
             public float GetRange(Vector3 position) => Vector3.Distance(CurrentPosition, position);
             public void Stop() => IsMoving = false;
@@ -590,11 +622,13 @@ namespace EmpireAtWar.Tests.Movement
         private sealed class Weapon : IWeaponComponent
         {
             public string Id => nameof(Weapon);
+            public bool UseSiegeApproach { get; set; }
             public float AttackDistance => 100f;
             public TargetPreference PreferredTarget => TargetPreference.Ships;
             public float GetEngagementRange(ShipClass targetClass) => 100f;
             public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass) =>
                 distance <= Mathf.Max(80f, contactDistance * 1.15f);
+            public bool CanUseSiegeApproach(IEntity target) => UseSiegeApproach;
             public void AddTarget(AttackData data, AttackType type) { }
             public bool HasTarget(IHealthFacade healthFacade) => false;
             public void ResetTarget() { }
@@ -608,7 +642,7 @@ namespace EmpireAtWar.Tests.Movement
             public bool HasEnemy(IEntity entity) => Enemies.Contains(entity);
         }
 
-        private sealed class Target : IEntity, IEntityTransformFacade, INavigationFootprintFacade
+        private sealed class Target : IEntity, IEntityTransformFacade, INavigationFootprintFacade, IStationHullFacade
         {
             public long Id { get; set; } = 1;
             public Health Health { get; } = new Health();
@@ -616,6 +650,10 @@ namespace EmpireAtWar.Tests.Movement
             public PlayerId Owner { get; set; } = TestPlayers.Enemy;
             public Transform Transform { get; }
             public float NavigationRadius { get; set; } = 5f;
+            public float HullRadius { get; set; }
+            public float HullBottom => -1f;
+            public float HullTop => 1f;
+            public float GetHullRadius(Vector3 center) => HullRadius;
             public Target(Transform transform) => Transform = transform;
             public T GetFacade<T>() where T : IEntityFacade =>
                 this is T facade ? facade : throw new InvalidOperationException(typeof(T).Name);

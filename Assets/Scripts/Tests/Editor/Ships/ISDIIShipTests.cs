@@ -45,7 +45,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SavedBroadsideBatteries_CoverTheirOwnBroadside()
+        public void SavedBatteries_CoverTheirOwnBroadsideAndOnlyOctuplesCoverForward()
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             WeaponHardPoint[] batteries = view.GetComponentsInChildren<WeaponHardPoint>(true)
@@ -55,9 +55,18 @@ namespace EmpireAtWar.Tests.Editor
             foreach (WeaponHardPoint battery in batteries)
             {
                 float side = battery.transform.localPosition.x < 0 ? -90f : 90f;
-                Assert.That((battery.MinYaw + battery.MaxYaw) / 2f, Is.EqualTo(side), battery.name);
-                Assert.That(battery.MaxYaw - battery.MinYaw,
-                    Is.EqualTo(battery.WeaponType == WeaponType.ISDIIOctupleTurbolaser ? 90f : 80f), battery.name);
+                bool isOctuple = battery.WeaponType == WeaponType.ISDIIOctupleTurbolaser;
+                Assert.That(new SerializedObject(battery).FindProperty("mainBattery").boolValue, Is.EqualTo(isOctuple), battery.name);
+                if (isOctuple)
+                {
+                    Assert.That(battery.MinYaw, Is.EqualTo(side < 0f ? -135f : -10f), battery.name);
+                    Assert.That(battery.MaxYaw, Is.EqualTo(side < 0f ? 10f : 135f), battery.name);
+                }
+                else
+                {
+                    Assert.That((battery.MinYaw + battery.MaxYaw) / 2f, Is.EqualTo(side), battery.name);
+                    Assert.That(battery.MaxYaw - battery.MinYaw, Is.EqualTo(80f), battery.name);
+                }
             }
         }
 

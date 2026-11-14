@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Services.Saves;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
 {
@@ -22,6 +24,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         private readonly float[] _hullDps = new float[ClassSlots];
         private readonly float[] _shieldDps = new float[ClassSlots];
         private readonly float[] _piercingDps = new float[ClassSlots];
+        private float _heavyCapitalStructureHullDps;
+        private float _heavyCapitalStructureShieldDps;
+        private float _heavyCapitalStructurePiercingDps;
 
         public int UnitCount { get; private set; }
         public bool IsEmpty => UnitCount == 0;
@@ -41,6 +46,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                 _hullDps[index] += profile.HullDps(target) * offenseScale;
                 _shieldDps[index] += profile.ShieldDps(target) * offenseScale;
                 _piercingDps[index] += profile.PiercingDps(target) * offenseScale;
+            }
+
+            if (profile.ShipClass == ShipClass.HeavyCapital)
+            {
+                _heavyCapitalStructureHullDps += profile.HullDps(ShipClass.Structure) * offenseScale;
+                _heavyCapitalStructureShieldDps += profile.ShieldDps(ShipClass.Structure) * offenseScale;
+                _heavyCapitalStructurePiercingDps += profile.PiercingDps(ShipClass.Structure) * offenseScale;
             }
 
             UnitCount++;
@@ -71,6 +83,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                 _shieldDps[i] += other._shieldDps[i];
                 _piercingDps[i] += other._piercingDps[i];
             }
+            _heavyCapitalStructureHullDps += other._heavyCapitalStructureHullDps;
+            _heavyCapitalStructureShieldDps += other._heavyCapitalStructureShieldDps;
+            _heavyCapitalStructurePiercingDps += other._heavyCapitalStructurePiercingDps;
             UnitCount += other.UnitCount;
         }
 
@@ -81,6 +96,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             Array.Copy(other._hullDps, _hullDps, ClassSlots);
             Array.Copy(other._shieldDps, _shieldDps, ClassSlots);
             Array.Copy(other._piercingDps, _piercingDps, ClassSlots);
+            _heavyCapitalStructureHullDps = other._heavyCapitalStructureHullDps;
+            _heavyCapitalStructureShieldDps = other._heavyCapitalStructureShieldDps;
+            _heavyCapitalStructurePiercingDps = other._heavyCapitalStructurePiercingDps;
             UnitCount = other.UnitCount;
         }
 
@@ -91,6 +109,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             Array.Clear(_hullDps, 0, ClassSlots);
             Array.Clear(_shieldDps, 0, ClassSlots);
             Array.Clear(_piercingDps, 0, ClassSlots);
+            _heavyCapitalStructureHullDps = 0f;
+            _heavyCapitalStructureShieldDps = 0f;
+            _heavyCapitalStructurePiercingDps = 0f;
             UnitCount = 0;
         }
 
@@ -99,5 +120,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         public float HullDps(ShipClass target) => _hullDps[(int)target];
         public float ShieldDps(ShipClass target) => _shieldDps[(int)target];
         public float PiercingDps(ShipClass target) => _piercingDps[(int)target];
+
+        internal (float Hull, float Shields, float Piercing) DamageRates(ShipClass target, StructureKind? kind)
+        {
+            float bonus = target == ShipClass.Structure ? SiegeDamage.GetMultiplier(ShipClass.HeavyCapital, kind) - 1f : 0f;
+            return (HullDps(target) + bonus * _heavyCapitalStructureHullDps,
+                ShieldDps(target) + bonus * _heavyCapitalStructureShieldDps,
+                PiercingDps(target) + bonus * _heavyCapitalStructurePiercingDps);
+        }
     }
 }

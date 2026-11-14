@@ -48,6 +48,7 @@ namespace EmpireAtWar.ViewComponents.Health
         public float MaxAttackDistance => _maxAttackDistance * _modifiers.VisionMultiplier;
         public float MinYaw => yAxisRange.Min;
         public float MaxYaw => yAxisRange.Max;
+        internal bool IsMainBattery => mainBattery;
         internal int ShotsPerSalvo => _profile.ShotsPerSalvo;
         internal bool StrikecraftOnly => _profile.StrikecraftOnly;
         internal virtual bool ShipsOnly => _profile.DamageType == DamageType.Ion || _profile.DamageType == DamageType.IonCannon;
@@ -78,6 +79,9 @@ namespace EmpireAtWar.ViewComponents.Health
 
         internal bool CanEngage(ShipClass targetClass) =>
             (!StrikecraftOnly || targetClass.IsStrikecraft()) && (!ShipsOnly || !targetClass.IsStrikecraft());
+
+        internal bool CanContributeToFacing(ShipClass targetClass, CombatModifiers modifiers) =>
+            !IsDestroyed && modifiers.CanFireWeapon(mainBattery) && CanEngage(targetClass);
 
         public override bool TryGetWeaponType(out WeaponType weaponType)
         {

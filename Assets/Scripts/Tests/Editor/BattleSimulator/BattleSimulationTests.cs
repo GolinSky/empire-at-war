@@ -5,6 +5,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Editor.BattleSimulator;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Services.Saves;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -20,8 +21,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             _matrix = ScriptableObject.CreateInstance<DamageMatrixData>();
             JsonUtility.FromJsonOverwrite(@"{""damageTypes"":[
-                {""damageType"":2,""damage"":{""capital"":1,""fighter"":1},""accuracy"":{""capital"":1,""fighter"":1},""vsShield"":1},
-                {""damageType"":6,""damage"":{""capital"":1,""fighter"":1},""accuracy"":{""capital"":1,""fighter"":1},""vsShield"":1,""shieldPiercing"":true}]}", _matrix);
+                {""damageType"":2,""damage"":{""capital"":1,""fighter"":1,""structure"":1},""accuracy"":{""capital"":1,""fighter"":1,""structure"":1},""vsShield"":1},
+                {""damageType"":6,""damage"":{""capital"":1,""fighter"":1,""structure"":1},""accuracy"":{""capital"":1,""fighter"":1,""structure"":1},""vsShield"":1,""shieldPiercing"":true}]}", _matrix);
         }
 
         [TearDown] public void TearDown() => UnityEngine.Object.DestroyImmediate(_matrix);
@@ -248,6 +249,30 @@ namespace EmpireAtWar.Tests.Editor
             var result = Run(Setup(), a, Unit("B", 19, 0));
             Assert.That(result.Duration, Is.EqualTo(0.5).Within(0.0001));
             Assert.That(result.Units[0].Shots, Is.EqualTo(1));
+        }
+
+        [TestCase(ShipClass.HeavyCapital, StructureKind.SpaceStation, DamageType.Turbolaser, 60f, 120f)]
+        [TestCase(ShipClass.HeavyCapital, StructureKind.DefendPlatform, DamageType.ProtonTorpedo, 0f, 180f)]
+        [TestCase(ShipClass.Capital, StructureKind.SecondStation, DamageType.Turbolaser, 60f, 60f)]
+        [TestCase(ShipClass.HeavyCapital, StructureKind.MiningFacility, DamageType.Turbolaser, 60f, 60f)]
+        public void SiegeDamage_UsesExplicitStructureKindForShieldAndHullLoss(ShipClass attacker, StructureKind kind,
+            DamageType damageType, float shieldLoss, float hullLoss)
+        {
+            var source = Unit("A", 1000, 120, type: damageType);
+            source.ShipClass = attacker;
+            source.Mounts[0].DamageDuration = 0.25f;
+            var target = Unit("B", 1000, 0);
+            target.ShipClass = ShipClass.Structure;
+            target.StructureKind = kind;
+            target.Shields = 60f;
+            var setup = Setup();
+            setup.TimeLimit = 0.45f;
+
+            BattleResult result = Run(setup, source, target);
+
+            Assert.That(result.Units[0].Shots, Is.EqualTo(1));
+            Assert.That(result.Units[1].ShieldDamage, Is.EqualTo(shieldLoss).Within(0.001f));
+            Assert.That(result.Units[1].HullDamage, Is.EqualTo(hullLoss).Within(0.001f));
         }
 
         [Test]

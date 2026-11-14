@@ -56,7 +56,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -20
     <Max>k__BackingField: 99
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 43
 --- !u!1 &348090524968662126
 GameObject:
@@ -5310,7 +5310,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -21
     <Max>k__BackingField: 99
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 43
 --- !u!1 &1671685505696460957
 GameObject:
@@ -5426,7 +5426,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -98
     <Max>k__BackingField: 15
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 43
 --- !u!1 &1818687902904593581
 GameObject:
@@ -5631,7 +5631,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -98
     <Max>k__BackingField: 71
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 43
 --- !u!1 &2145998180073295954
 GameObject:
@@ -12409,7 +12409,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -70
     <Max>k__BackingField: 99
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 43
 --- !u!1 &4444837898897884068
 GameObject:
@@ -13343,7 +13343,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -98
     <Max>k__BackingField: 21
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 43
 --- !u!1 &6465771881766715856
 GameObject:
@@ -13401,7 +13401,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -98
     <Max>k__BackingField: 21
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 43
 --- !u!1 &6546522683562564821
 GameObject:
@@ -13622,7 +13622,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -14
     <Max>k__BackingField: 99
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 43
 --- !u!1 &7084892980757991083
 GameObject:
@@ -19857,7 +19857,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -98
     <Max>k__BackingField: 22
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 43
 --- !u!1 &7939677317763723475
 GameObject:
@@ -20238,7 +20238,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -20
     <Max>k__BackingField: 99
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 43
 --- !u!1001 &5967525149829640176
 PrefabInstance:

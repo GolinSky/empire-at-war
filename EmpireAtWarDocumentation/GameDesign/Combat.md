@@ -42,6 +42,13 @@ verification: source-and-assets
 - Engagement distance is the longest reach covering at least `60%` of effective DPS against the target class. No effective damage → use the longest weapon reach.
 - This engagement heuristic uses the hull/class matrix; it is not a full shield-aware combat simulator.
 
+### Capital siege and hull facing
+
+- HeavyCapital mounted weapons deal ×1.5 damage against the main station, second station and every defense platform. Ordinary Capital ships deal ×1.0. Mining facilities, other targets and direct-damage abilities retain their existing damage rules.
+- Apply the factor before the shield/hull calculation and the damage tick split. Caliber, research, mitigation, shield piercing and hardpoint overflow still apply.
+- Stationary ships favor the nearest sampled heading with the most usable main-battery DPS, using real mount and target hardpoint positions. When no main battery has a solution, they use eligible surviving secondaries. Navigation controls heading during travel.
+- Contact-limited HeavyCapitals approach eligible structures to navigation hull contact plus 1 unit. The station uses its live hull envelope and the hold gate adds a further 1-unit tolerance.
+
 ### Target selection
 
 - Candidate targets must be eligible and alive; strikecraft-only profiles reject non-strikecraft.
@@ -101,6 +108,9 @@ verification: source-and-assets
 - Example: CR90's saved loadout is eight `Light Laser Cannon` mounts. Its current base durability and purchase cost are in [[GameDesign/Units_And_Factions]].
 
 ## Edge Cases
+
+- Siege range, projectile-flight gating, wasted shots and interpretation of directional DPS → [[Rules/WEAPON_EFFECTIVE_DPS_LIMITATIONS]] (2026-11-14 audit snapshot).
+- Capital siege and forward battery implementation → [[Done/Features/Capital_Siege_And_Forward_Batteries_Plan]].
 
 - A visible turret mesh is not proof of an installed firing mount. Check the gameplay prefab and effective nested overrides.
 - `ShipData.Range` is radar; historical notes describing it as weapon range predate the per-weapon system.

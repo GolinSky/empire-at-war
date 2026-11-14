@@ -385,7 +385,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 49
 --- !u!1 &189904997909340686
 GameObject:
@@ -679,7 +679,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 49
 --- !u!1 &311178069932536552
 GameObject:
@@ -1173,7 +1173,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &700962351728258231
 GameObject:
@@ -1289,7 +1289,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &718071080069986727
 GameObject:
@@ -1498,7 +1498,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &970176789925077204
 GameObject:
@@ -8246,7 +8246,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 49
 --- !u!1 &2476493488017681421
 GameObject:
@@ -8362,7 +8362,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &2500195262367706995
 GameObject:
@@ -9415,7 +9415,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &2970021537617896402
 GameObject:
@@ -9504,7 +9504,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &3055255748133939858
 GameObject:
@@ -9713,7 +9713,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &3131827096136009988
 GameObject:
@@ -9771,7 +9771,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 49
 --- !u!1 &3149723147074055997
 GameObject:
@@ -10754,7 +10754,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 49
 --- !u!1 &3595232280091709203
 GameObject:
@@ -12916,7 +12916,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 49
 --- !u!1 &3812834577964588921
 GameObject:
@@ -13094,7 +13094,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &3951978338986843234
 GameObject:
@@ -13713,7 +13713,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 49
 --- !u!1 &4135107982578434799
 GameObject:
@@ -19432,7 +19432,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &4491833434800477522
 GameObject:
@@ -19675,7 +19675,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 49
 --- !u!1 &4653761735495662203
 GameObject:
@@ -19733,7 +19733,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &4654472451480433482
 GameObject:
@@ -20091,7 +20091,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &4781210066554016470
 GameObject:
@@ -20447,7 +20447,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &4996291703879072305
 GameObject:
@@ -21728,7 +21728,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &5486715133608825999
 GameObject:
@@ -22122,7 +22122,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &5590297698497589678
 GameObject:
@@ -22629,7 +22629,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &5936019761469682909
 GameObject:
@@ -23193,7 +23193,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &6215598665015352700
 GameObject:
@@ -23892,7 +23892,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &6593280830203450057
 GameObject:
@@ -24039,7 +24039,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &6631830573778384023
 GameObject:
@@ -25086,7 +25086,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &7065491474226045064
 GameObject:
@@ -26369,7 +26369,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &7211106288324944928
 GameObject:
@@ -32901,7 +32901,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &8480547299857164939
 GameObject:
@@ -33288,7 +33288,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 49
 --- !u!1 &8777278028972957760
 GameObject:
@@ -33551,7 +33551,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 49
 --- !u!1 &8866741395216602305
 GameObject:
@@ -33782,7 +33782,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &8972324239151996325
 GameObject:
@@ -33991,7 +33991,7 @@ MonoBehaviour:
   yAxisRange:
     <Min>k__BackingField: -180
     <Max>k__BackingField: 180
-  mainBattery: 0
+  mainBattery: 1
   <WeaponType>k__BackingField: 50
 --- !u!1 &9073133355133554604
 GameObject:

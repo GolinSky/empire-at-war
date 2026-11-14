@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Services.Saves;
 
 namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
 {
@@ -13,6 +14,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         public const float MAX_TIME = 1e6f;
         public const float MIN_ADVANTAGE = 0.01f;
         public const float MAX_ADVANTAGE = 100f;
+
+        public static float TimeToDestroyTarget(ForceComposition attacker, ShipClass target, float hull,
+            float shields, StructureKind? kind)
+        {
+            (float hullDps, float shieldDps, float piercingDps) = attacker.DamageRates(target, kind);
+            return TimeToDestroyClass(hull, shields, hullDps, shieldDps, piercingDps);
+        }
 
         /// <summary>
         /// Seconds <paramref name="attacker"/> needs to destroy <paramref name="defender"/> when it focuses one class

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
+using EmpireAtWar.Services.Saves;
 using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Editor
@@ -112,6 +113,44 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(first.HullDps(ShipClass.Capital), Is.EqualTo(10f));
             Assert.That(second.Hull(ShipClass.Capital), Is.EqualTo(40f));
             Assert.That(second.HullDps(ShipClass.Capital), Is.EqualTo(7f));
+        }
+
+        [TestCase(StructureKind.SpaceStation, 0)]
+        [TestCase(StructureKind.DefendPlatform, 0)]
+        [TestCase(StructureKind.MiningFacility, 1)]
+        [TestCase(null, 1)]
+        public void Select_PredictsSiegeDamageOnlyAgainstEligibleStructures(StructureKind? kind, int best)
+        {
+            var heavy = ForceOfClass(ShipClass.HeavyCapital, 100f, (ShipClass.Structure, 8f));
+            var capital = Force(100f, (ShipClass.Structure, 10f));
+            var selected = new List<int>();
+            var model = new EnemyTaskForceSelectionModel();
+
+            bool ready = model.Select(new[] { heavy, capital }, new ForceComposition(), ShipClass.Structure,
+                100f, 100f, 1f, Array.Empty<int>(), 1, selected, kind);
+
+            Assert.That(ready, Is.True);
+            Assert.That(selected, Is.EqualTo(new[] { best }));
+        }
+
+        [Test]
+        public void TimeToDestroyTarget_BonusesOnlyHeavyCapitalDpsInMixedForce()
+        {
+            var heavy = ForceOfClass(ShipClass.HeavyCapital, 100f, (ShipClass.Structure, 40f));
+            var capital = Force(100f, (ShipClass.Structure, 40f));
+            var combined = new ForceComposition();
+            combined.CopyFrom(capital);
+            combined.Add(heavy);
+
+            Assert.That(CombatMatchup.TimeToDestroyTarget(combined, ShipClass.Structure, 100f, 100f,
+                StructureKind.SecondStation), Is.EqualTo(2f));
+            Assert.That(CombatMatchup.TimeToDestroyTarget(combined, ShipClass.Structure, 100f, 100f,
+                StructureKind.MiningFacility), Is.EqualTo(2.5f));
+
+            combined.Clear();
+            combined.Add(capital);
+            Assert.That(CombatMatchup.TimeToDestroyTarget(combined, ShipClass.Structure, 100f, 100f,
+                StructureKind.SecondStation), Is.EqualTo(5f));
         }
 
         private static ForceComposition Force(float hull, params (ShipClass Target, float Dps)[] damage) =>
