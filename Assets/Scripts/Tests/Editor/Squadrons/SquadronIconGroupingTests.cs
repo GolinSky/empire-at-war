@@ -43,6 +43,20 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SmallGroupsFillTheCenterRowBeforeOtherRows()
+        {
+            using var grouping = new SquadronIconGrouping();
+            Update(grouping, new[] { new Sample(1, 0), new Sample(2, 10) }, 6);
+            ReadCell(grouping, 1, out Vector2Int first);
+            ReadCell(grouping, 2, out Vector2Int second);
+            Assert.That(second.y, Is.EqualTo(first.y), "Two squadrons sit side by side.");
+
+            Update(grouping, new[] { new Sample(1, 0), new Sample(2, 10), new Sample(3, 20) }, 6);
+            ReadCell(grouping, 3, out Vector2Int third);
+            Assert.That(third.y, Is.EqualTo(first.y), "Three squadrons form one row.");
+        }
+
+        [Test]
         public void PassingSquadronAndOtherOwnerCannotJoinIdleGrid()
         {
             using var grouping = new SquadronIconGrouping();

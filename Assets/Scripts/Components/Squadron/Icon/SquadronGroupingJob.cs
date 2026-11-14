@@ -376,19 +376,52 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             if (slot == 0)
                 return int2.zero;
 
-            // Complete concentric squares. The first nine slots fill a centered 3×3 grid.
+            // Complete concentric squares; the first nine slots fill a centered 3×3 grid.
+            // Inside a ring, cells nearest the center row/column come first and corners last,
+            // so two squadrons sit side by side and three form one row.
             int ring = (int)math.ceil((math.sqrt(slot + 1f) - 1f) * 0.5f);
             int innerSide = 2 * ring - 1;
-            int remaining = slot - innerSide * innerSide;
-            int edge = 2 * ring;
-            int side = remaining / edge;
-            int offset = remaining % edge;
-            return side switch
+            int index = slot - innerSide * innerSide;
+            if (index < 4)
+                return GetRingCell(index, ring, 0);
+
+            index -= 4;
+            int edgeCells = 8 * (ring - 1);
+            if (index < edgeCells)
+                return GetRingCell(4 + index % 8, ring, index / 8 + 1);
+
+            return GetRingCell(index - edgeCells, ring, ring);
+        }
+
+        // Orders the cells of a ring that lie <paramref name="along"/> cells from a center line.
+        // Axis (along = 0) and corner (along = ring) positions use variants 0–3; the rest use 4–11.
+        private static int2 GetRingCell(int variant, int ring, int along)
+        {
+            if (along == ring)
             {
-                0 => new int2(-ring + offset, ring),
-                1 => new int2(ring, ring - offset),
-                2 => new int2(ring - offset, -ring),
-                _ => new int2(-ring, -ring + offset)
+                return variant switch
+                {
+                    0 => new int2(ring, ring),
+                    1 => new int2(-ring, ring),
+                    2 => new int2(ring, -ring),
+                    _ => new int2(-ring, -ring)
+                };
+            }
+
+            return variant switch
+            {
+                0 => new int2(ring, 0),
+                1 => new int2(-ring, 0),
+                2 => new int2(0, ring),
+                3 => new int2(0, -ring),
+                4 => new int2(ring, along),
+                5 => new int2(ring, -along),
+                6 => new int2(-ring, along),
+                7 => new int2(-ring, -along),
+                8 => new int2(along, ring),
+                9 => new int2(-along, ring),
+                10 => new int2(along, -ring),
+                _ => new int2(-along, -ring)
             };
         }
 
