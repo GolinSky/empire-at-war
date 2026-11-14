@@ -17,7 +17,8 @@ namespace EmpireAtWar.Components.FogOfWar
     /// Stops drawing an opponent unit while its position is covered by the player's fog of war.
     /// Uses <see cref="Renderer.forceRenderingOff"/> so it never fights code that toggles <see cref="Renderer.enabled"/>.
     /// The ion stun effect spawned at runtime is hidden with the unit. Bound only for opponent entities.
-    /// Static buildings such as space stations stay drawn once discovered. Rechecked about once per second.
+    /// Static buildings such as space stations stay drawn once discovered. Fog is rechecked about once per second;
+    /// cloak changes are applied immediately.
     /// </summary>
     public sealed class FogVisibilityComponent : MonoBehaviour, IInitializable, ISlowTickable, ILateDisposable,
         IFogVisibilityFacade, IRespawnable, IDespawnable
@@ -57,7 +58,7 @@ namespace EmpireAtWar.Components.FogOfWar
         public void Initialize()
         {
             _renderers.AddRange(renderers);
-            SubscribeSpawnedEffects();
+            Subscribe();
             _isHidden = IsCoveredByFog();
             ApplyVisibility();
         }
@@ -66,20 +67,21 @@ namespace EmpireAtWar.Components.FogOfWar
         public void Respawn()
         {
             _isReleased = false;
-            SubscribeSpawnedEffects();
+            Subscribe();
             _isHidden = IsCoveredByFog();
             ApplyVisibility();
         }
 
         public void Despawn() => LateDispose();
 
-        private void SubscribeSpawnedEffects()
+        private void Subscribe()
         {
             foreach (IIonStunViewSource ionStunSource in _ionStunSources)
             {
                 ionStunSource.IonStunViewSpawned += TrackIonStun;
             }
 
+            _modifiers.CloakChanged += RefreshVisibility;
             _slowTick.Add(this);
         }
 
@@ -92,13 +94,16 @@ namespace EmpireAtWar.Components.FogOfWar
 
             _isReleased = true;
             _slowTick.Remove(this);
+            _modifiers.CloakChanged -= RefreshVisibility;
             foreach (IIonStunViewSource ionStunSource in _ionStunSources)
             {
                 ionStunSource.IonStunViewSpawned -= TrackIonStun;
             }
         }
 
-        public void SlowTick()
+        public void SlowTick() => RefreshVisibility();
+
+        private void RefreshVisibility()
         {
             if (_isReleased || staysRevealedOnceSeen && !_isHidden)
             {

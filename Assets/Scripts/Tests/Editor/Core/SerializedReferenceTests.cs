@@ -88,6 +88,7 @@ namespace EmpireAtWar.Tests.Editor
             new SerializedReference(typeof(PauseMenuUi), "menuPanel"),
             new SerializedReference(typeof(ReinforcementZoneView), "captureCanvasScaler"),
             new SerializedReference(typeof(SkirmishScope), "rangeDebugLineMaterial"),
+            new SerializedReference(typeof(SkirmishScope), "battleMarkerIconMaterial"),
             new SerializedReference(typeof(DrawCircle), "lineRenderer"),
             new SerializedReference(typeof(PlanetScope), "view")
         };

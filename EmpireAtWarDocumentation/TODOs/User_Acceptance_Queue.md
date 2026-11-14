@@ -323,3 +323,8 @@ created: "2026-10-29\r"
 - [ ] [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]] — In-game: small/large ships near/above/below every faction station level (nav disk now hull-sized, not 396 u — check ships path around station hull cleanly); grid/preview parity after refresh, batch spacing, reservations and main-station destruction.
 - [ ] [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]] — Profile a large-map ship placement using Battle.SpawnArea.Redraw and Battle.SpawnArea.Reachability; compare frame times with the battle performance budget. No runtime measurements yet.
 - [ ] [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]] — Run authored Navigation/Map/Economy regressions and affected BattleInput/EnemyAi compatibility checks only on explicit request; tests were not run.
+
+## Small Ship Icons and Squadron Icon Grid
+- [ ] [[Done/Features/Small_Ship_Icons_And_Squadron_Grid_Plan]] — In-game: inspect all 12 ship markers, Stealth Corvette cloak/fog, individual squadron slots through idle/move/combat, merges/splits and passing traffic, viewport edges, dense screen overlap, zoom and pause.
+- [ ] [[Done/Features/Small_Ship_Icons_And_Squadron_Grid_Plan]] — Development Player: capture comparable 32/128/512 visible markers and 321 squadrons + 83 ships with dense, dispersed and high-churn layouts. Record p95 main-thread, worker time, candidate counts, canvas rebuild and GC bytes; tune using measured results.
+- [ ] [[Done/Features/Small_Ship_Icons_And_Squadron_Grid_Plan]] — Run authored Squadrons, Ships, BattleInput, Vision and Core regressions only on explicit request.

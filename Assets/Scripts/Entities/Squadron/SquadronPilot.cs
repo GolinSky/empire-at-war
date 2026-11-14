@@ -56,6 +56,9 @@ namespace EmpireAtWar.Entities.Squadrons
 
         public bool HasArrived => _mode == Mode.Loiter;
         public Vector3 LoiterCenter => _loiterCenter;
+        public bool IsTravelling => _mode == Mode.Travel;
+        public bool IsFighting => _mode == Mode.Engage;
+        public Vector3 MarkerIntent => IsTravelling ? _leaderPosition : _loiterCenter;
         private IFighterFlightData Data => _flight.Data;
 
         public int GetAttackRun(int fighterIndex) => _mode == Mode.Engage ? _attackRuns[fighterIndex] : 0;

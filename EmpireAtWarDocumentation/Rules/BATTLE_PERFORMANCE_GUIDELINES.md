@@ -29,7 +29,7 @@ verification: "Nebula/hazard/settings source, Unity compilation, saved
   with 0 new errors; GameFlow 153 passed before/after, Combat 220 and Capture
   101 passed. Mac not run."
 tags:
-  - flag/important
+  - "flag/important\r"
 ---
 # Battle Performance Guidelines
 
@@ -172,3 +172,10 @@ tags:
 - Identify exact variants and rendering state before targeted warmup. Do not restore broad `Shader.WarmupAllShaders()`; prior keyword-space errors remain relevant. Mono JIT costs are separate from IL2CPP runtime behavior.
 - Native waiting/context-switch captures can generate gigabytes and perturb an 8 GB host. Preserve complete symbolication, attach to verified PID, and check for owned orphan Players after capture. Mechanism attribution does not establish clean FPS/duration improvement.
 - Evidence/remaining work → [[TODOs/Optimization/Optimization_Audit_Fix_Plan - Research]].
+
+### Battle markers · 2026-11-14
+
+- `BattleMarkerLayer` owns one battle canvas and a 10 Hz visibility/grouping snapshot. Hidden markers leave the display and membership immediately when notified. Use registered marker hit rectangles for input.
+- `SquadronIconGrouping` schedules one Burst job over persistent numeric buffers, keeps published slots until a batch is ready, and completes ownership before reuse or disposal. Renderer/UI state and vision queries stay on the main thread.
+- Compare matching Development Player workloads with `Battle.Markers.Vision`, `Snapshot`, `Grouping.Reconcile`, `Consume`, `Layout`, `HitQuery` and canvas rebuilds. Report candidate counts separately from worker time, main-thread p95 and managed allocations.
+- Layout and allocation budgets are unmeasured. Acceptance → [[TODOs/User_Acceptance_Queue#Small Ship Icons and Squadron Icon Grid]].

@@ -58,6 +58,64 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void CloakUpdatesHullAndVisibilityListenersBeforeNextSlowTick()
+        {
+            GameObject owner = new GameObject("CloakDetectionTest");
+            FogVisibilityComponent fog = owner.AddComponent<FogVisibilityComponent>();
+            MeshRenderer hull = owner.AddComponent<MeshRenderer>();
+            var modifiers = new CombatModifiers();
+            var vision = new Vision { Visible = true };
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            try
+            {
+                typeof(FogVisibilityComponent).GetField("renderers", PRIVATE_INSTANCE)
+                    .SetValue(fog, new Renderer[] { hull });
+                typeof(FogVisibilityComponent).GetMethod("Construct", PRIVATE_INSTANCE).Invoke(fog, new object[]
+                {
+                    vision, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()),
+                    Array.Empty<IIonStunViewSource>(), modifiers, new SlowTicks()
+                });
+                var visibility = new List<bool>();
+                fog.VisibilityChanged += visible =>
+                {
+                    Assert.That(hull.forceRenderingOff, Is.EqualTo(!visible));
+                    visibility.Add(visible);
+                };
+
+                fog.Initialize();
+                modifiers.SetCloaked(true);
+                modifiers.SetCloaked(true);
+                Assert.That(fog.IsHiddenByFog, Is.True);
+                Assert.That(visibility, Is.EqualTo(new[] { false }));
+
+                modifiers.SetCloaked(false);
+                Assert.That(fog.IsHiddenByFog, Is.False);
+                Assert.That(visibility, Is.EqualTo(new[] { false, true }));
+
+                modifiers.SetCloaked(true);
+                vision.Visible = false;
+                modifiers.SetCloaked(false);
+                Assert.That(fog.IsHiddenByFog, Is.True);
+                Assert.That(visibility, Is.EqualTo(new[] { false, true, false }));
+
+                fog.Despawn();
+                vision.Visible = true;
+                modifiers.SetCloaked(true);
+                modifiers.SetCloaked(false);
+                Assert.That(visibility, Has.Count.EqualTo(3));
+
+                fog.Respawn();
+                modifiers.SetCloaked(true);
+                Assert.That(visibility, Is.EqualTo(new[] { false, true, false, false }));
+            }
+            finally
+            {
+                fog.LateDispose();
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+
         private sealed class Vision : IVisionService
         {
             public bool Visible;

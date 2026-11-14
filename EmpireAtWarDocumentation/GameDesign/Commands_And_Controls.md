@@ -25,7 +25,8 @@ verification: source-and-assets
 - Marquee selects local-player entities whose projected positions fall inside it; objects behind the camera are excluded.
 - If a marquee contains ships/squadrons, select those units only. Select structures only when no unit is inside.
 - Double-click a local unit → select matching unit type on screen, for the same owner. This covers ships and squadrons.
-- Slow repeated clicks in the same spot cycle overlapping entities. Squadron icons take priority; units precede structures on the ray.
+- Slow repeated clicks in the same spot cycle overlapping entities. Battle marker hits precede hull hits in the query. Fixed ship markers take priority over overlapping squadron cells.
+- Point selection, hover and marquee use the displayed marker hit rectangle. A pressed marker retains its entity through release while its slot moves; release drops a concealed, destroyed or replaced marker.
 - Ctrl+A selects local units on screen; Ctrl+Shift+A selects all living local units. Neither shortcut selects structures.
 - Selection replacement removes prior entries; removed entities are removed from selection.
 - Enemy selection/raycast hits hidden by fog are excluded; visibility rules are in [[GameDesign/Visibility]].

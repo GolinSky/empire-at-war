@@ -95,6 +95,20 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Attack));
         }
 
+        [Test]
+        public void RightClick_MovingMarkerKeepsPressedTarget()
+        {
+            var neighbor = new FakeEntity(_view.transform, TestPlayers.Enemy, 3);
+            _query.PressedMarker = new SelectionEntry(_enemy, null, markerDrawOrder: 0);
+
+            _input.PressRight(Vector2.zero);
+            _query.Target = neighbor;
+            _input.RightClick(Vector2.one);
+
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(_orders.LastTarget, Is.SameAs(_enemy));
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         public void AttackMovePreview_MatchesEnemyAndEmptySpaceCommands(bool enemy)
@@ -398,6 +412,8 @@ namespace EmpireAtWar.Tests.Editor
 
             public event Action<Vector2> WorldClicked { add { } remove { } }
 
+            public event Action<Vector2> WorldCommandPressed;
+
             public event Action<Vector2> WorldCommanded;
 
             public event Action<Vector2> DragStarted { add { } remove { } }
@@ -410,6 +426,8 @@ namespace EmpireAtWar.Tests.Editor
             public event Action QueueWaypointReleased;
 
             public bool IsQueueWaypointHeld { get; set; }
+
+            public void PressRight(Vector2 point) => WorldCommandPressed?.Invoke(point);
 
             public void RightClick(Vector2 point) => WorldCommanded?.Invoke(point);
 
@@ -449,6 +467,7 @@ namespace EmpireAtWar.Tests.Editor
             public IEntity Target { get; set; }
             public IEntity BehindTarget { get; set; }
             public IEntitySelectionFacade Command { get; set; }
+            public SelectionEntry PressedMarker { get; set; }
 
             public bool ReturnEnemy { get; set; } = true;
 
@@ -459,6 +478,14 @@ namespace EmpireAtWar.Tests.Editor
                 result = ReturnEnemy ? new SelectionEntry(Target, Command) : default;
                 return ReturnEnemy;
             }
+
+            public bool TryFindMarkerAt(Vector2 point, out SelectionEntry result)
+            {
+                result = PressedMarker;
+                return result.IsBattleMarker;
+            }
+
+            public bool IsMarkerAvailable(SelectionEntry selection) => !selection.Entity.HealthModel.IsDestroyed;
 
             public void CollectAt(Vector2 point, IList<SelectionEntry> result)
             {

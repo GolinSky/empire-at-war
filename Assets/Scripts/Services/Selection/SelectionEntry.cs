@@ -7,11 +7,14 @@ namespace EmpireAtWar.Services.Battle
     {
         public IEntity Entity { get; }
         public IEntitySelectionFacade Command { get; }
+        public int? MarkerDrawOrder { get; }
+        public bool IsBattleMarker => MarkerDrawOrder.HasValue;
 
-        public SelectionEntry(IEntity entity, IEntitySelectionFacade command)
+        public SelectionEntry(IEntity entity, IEntitySelectionFacade command, int? markerDrawOrder = null)
         {
             Entity = entity;
             Command = command;
+            MarkerDrawOrder = markerDrawOrder;
         }
     }
 }

@@ -214,7 +214,7 @@ namespace EmpireAtWar.Editor.Squadrons
         public static void AddWorldIcon(GameObject root, Sprite unitIcon)
         {
             SquadronIconComponent icon = root.AddComponent<SquadronIconComponent>();
-            // No canvas of its own: at spawn the marker moves onto the shared SquadronIconLayer canvas.
+            // No canvas of its own: at spawn the marker moves onto the shared BattleMarkerLayer canvas.
             GameObject canvasObject = new GameObject("IconCanvas", typeof(RectTransform));
             canvasObject.transform.SetParent(root.transform, false);
             RectTransform canvasRect = (RectTransform)canvasObject.transform;

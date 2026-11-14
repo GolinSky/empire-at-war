@@ -25,10 +25,13 @@ namespace EmpireAtWar.Services.Input
         private bool _commandPressedInWorld;
         private Vector2 _selectPressPosition;
         private Vector2 _selectReleasePosition;
+        private Vector2 _commandPressPosition;
 
         public event Action<Vector2> WorldPressed;
 
         public event Action<Vector2> WorldClicked;
+
+        public event Action<Vector2> WorldCommandPressed;
 
         public event Action<Vector2> WorldCommanded;
 
@@ -54,12 +57,14 @@ namespace EmpireAtWar.Services.Input
         {
             _battle.Select.performed += CaptureSelectPress;
             _battle.Select.canceled += CaptureSelectRelease;
+            _battle.Command.performed += CaptureCommandPress;
         }
 
         public void LateDispose()
         {
             _battle.Select.performed -= CaptureSelectPress;
             _battle.Select.canceled -= CaptureSelectRelease;
+            _battle.Command.performed -= CaptureCommandPress;
         }
 
         // A single input update can process a whole drag before the gameplay tick.
@@ -68,6 +73,9 @@ namespace EmpireAtWar.Services.Input
 
         private void CaptureSelectRelease(InputAction.CallbackContext context) =>
             _selectReleasePosition = EventPosition(context);
+
+        private void CaptureCommandPress(InputAction.CallbackContext context) =>
+            _commandPressPosition = EventPosition(context);
 
         private Vector2 EventPosition(InputAction.CallbackContext context) =>
             context.control.device is Pointer pointer ? pointer.position.ReadValue() : _pointerInput.Position;
@@ -83,7 +91,11 @@ namespace EmpireAtWar.Services.Input
 
             Vector2 position = _pointerInput.Position;
             if (_battle.Command.WasPressedThisFrame())
-                _commandPressedInWorld = !_uiHitTest.IsOverUi(position);
+            {
+                _commandPressedInWorld = !_uiHitTest.IsOverUi(_commandPressPosition);
+                if (_commandPressedInWorld)
+                    WorldCommandPressed?.Invoke(_commandPressPosition);
+            }
             bool commandReleased = _battle.Command.WasReleasedThisFrame();
             bool commandWorld = commandReleased && _commandPressedInWorld && !_uiHitTest.IsOverUi(position);
             if (commandReleased) _commandPressedInWorld = false;

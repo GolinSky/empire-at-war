@@ -130,6 +130,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action<Vector2> PrimaryReleased { add { } remove { } }
             public event Action<Vector2> WorldPressed { add { } remove { } }
             public event Action<Vector2> WorldClicked { add { } remove { } }
+            public event Action<Vector2> WorldCommandPressed { add { } remove { } }
             public event Action<Vector2> WorldCommanded { add { } remove { } }
             public event Action<Vector2> DragStarted;
             public event Action<Vector2> DragChanged { add { } remove { } }
@@ -147,6 +148,8 @@ namespace EmpireAtWar.Tests.Editor
             public int Picks { get; private set; }
             public bool TryFindAt(Vector2 point, out SelectionEntry selection)
             { Picks++; selection = new SelectionEntry(Entity, null); return Entity != null; }
+            public bool TryFindMarkerAt(Vector2 point, out SelectionEntry selection) => throw new NotSupportedException();
+            public bool IsMarkerAvailable(SelectionEntry selection) => throw new NotSupportedException();
             public void CollectAt(Vector2 point, IList<SelectionEntry> results) => throw new NotSupportedException();
             public void CollectSameShipType(SelectionEntry entry, ICollection<SelectionEntry> results) => throw new NotSupportedException();
             public void CollectAllPlayerUnits(ICollection<SelectionEntry> results) => throw new NotSupportedException();

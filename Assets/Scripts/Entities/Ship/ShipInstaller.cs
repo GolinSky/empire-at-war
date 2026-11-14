@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Ship.Abilities;
@@ -55,6 +56,8 @@ namespace EmpireAtWar.Ship
             EntityFeatureBindings.RegisterRadar(builder, Bindings);
             EntityFeatureBindings.RegisterWeapons(builder, Bindings);
             EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));
+            if (Data.ShowBattleMarker)
+                builder.Register<ShipBattleMarker>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipMoveModel>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             EntityFeatureBindings.RegisterComponent(builder, Bindings.ShipMove);
             if (Data.HangarBays.Count > 0)

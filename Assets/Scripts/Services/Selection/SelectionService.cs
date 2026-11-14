@@ -36,6 +36,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly SelectionContext _otherSelectionContext;
 
         private readonly List<SelectionEntry> _pointBuffer = new List<SelectionEntry>();
+        private SelectionEntry _pressedMarker;
 
         private long? _lastTappedEntityId;
         private Vector2 _lastTappedPosition;
@@ -68,7 +69,9 @@ namespace EmpireAtWar.Services.Battle
 
         public void Initialize()
         {
+            _gestures.WorldPressed += HandleWorldPressed;
             _gestures.WorldClicked += HandleWorldClicked;
+            _gestures.DragStarted += HandleDragStarted;
             _selectionInput.SelectAllRequested += HandleSelectAllUnitsPressed;
             _selectionInput.SelectVisibleRequested += HandleSelectVisibleUnitsPressed;
             _marqueeSelectionPresenter.Completed += HandleMarqueeCompleted;
@@ -77,7 +80,10 @@ namespace EmpireAtWar.Services.Battle
 
         public void LateDispose()
         {
+            _gestures.WorldPressed -= HandleWorldPressed;
             _gestures.WorldClicked -= HandleWorldClicked;
+            _gestures.DragStarted -= HandleDragStarted;
+            _pressedMarker = default;
             _selectionInput.SelectAllRequested -= HandleSelectAllUnitsPressed;
             _selectionInput.SelectVisibleRequested -= HandleSelectVisibleUnitsPressed;
             _marqueeSelectionPresenter.Completed -= HandleMarqueeCompleted;
@@ -133,51 +139,77 @@ namespace EmpireAtWar.Services.Battle
             SetSelection(SelectionScope.Local, _selectionBuffer);
         }
 
+        private void HandleWorldPressed(Vector2 screenPosition)
+        {
+            _pressedMarker = default;
+            if (!_selectionQuery.TryFindMarkerAt(screenPosition, out _))
+                return;
+
+            _pointBuffer.Clear();
+            _selectionQuery.CollectAt(screenPosition, _pointBuffer);
+            int index = GetPointSelectionIndex(screenPosition);
+            if (index >= 0 && _pointBuffer[index].IsBattleMarker)
+                _pressedMarker = _pointBuffer[index];
+        }
+
+        private void HandleDragStarted(Vector2 _) => _pressedMarker = default;
+
         private void HandleWorldClicked(Vector2 screenPosition)
         {
             ResetAllSelections();
-            SelectAt(screenPosition);
-        }
-
-        private void SelectAt(Vector2 screenPosition)
-        {
-            _pointBuffer.Clear();
-            _selectionQuery.CollectAt(screenPosition, _pointBuffer);
-            if (_pointBuffer.Count == 0)
+            SelectionEntry selection = _pressedMarker;
+            _pressedMarker = default;
+            if (selection.IsBattleMarker)
             {
-                _lastTappedEntityId = null;
-                return;
-            }
-
-            bool isSameSpot = (screenPosition - _lastTappedPosition).sqrMagnitude <=
-                              REPEATED_TAP_RADIUS * REPEATED_TAP_RADIUS;
-            int lastIndex = isSameSpot ? IndexOf(_pointBuffer, _lastTappedEntityId) : -1;
-            bool isDoubleClick = _pointerInput.ClickCount >= 2;
-            if (lastIndex >= 0 && isDoubleClick)
-            {
-                SelectionEntry repeated = _pointBuffer[lastIndex];
-                if (_localPlayer.IsLocal(repeated.Entity.Owner) && TryCollectSameShipType(repeated))
+                if (!_selectionQuery.IsMarkerAvailable(selection))
                 {
-                    SetSelection(GetScope(repeated.Entity), _selectionBuffer);
+                    _lastTappedEntityId = null;
                     return;
                 }
             }
+            else
+            {
+                _pointBuffer.Clear();
+                _selectionQuery.CollectAt(screenPosition, _pointBuffer);
+                int index = GetPointSelectionIndex(screenPosition);
+                if (index < 0)
+                {
+                    _lastTappedEntityId = null;
+                    return;
+                }
+                selection = _pointBuffer[index];
+            }
 
-            // A slow repeated click on the same spot cycles through everything under the cursor,
-            // so a structure hidden behind a ship (or the other way round) stays selectable.
-            int index = lastIndex;
-            if (lastIndex < 0)
-                index = FindInitialSelectionIndex();
-            else if (!isDoubleClick)
-                index = (lastIndex + 1) % _pointBuffer.Count;
+            if (IsRepeatedTap(screenPosition) && selection.Entity.Id == _lastTappedEntityId &&
+                _pointerInput.ClickCount >= 2 && _localPlayer.IsLocal(selection.Entity.Owner) &&
+                TryCollectSameShipType(selection))
+            {
+                SetSelection(GetScope(selection.Entity), _selectionBuffer);
+                return;
+            }
 
-            SelectionEntry selection = _pointBuffer[index];
             _lastTappedEntityId = selection.Entity.Id;
             _lastTappedPosition = screenPosition;
             _selectionBuffer.Clear();
             _selectionBuffer.Add(selection);
             SetSelection(GetScope(selection.Entity), _selectionBuffer);
         }
+
+        private int GetPointSelectionIndex(Vector2 screenPosition)
+        {
+            if (_pointBuffer.Count == 0)
+                return -1;
+
+            int lastIndex = IsRepeatedTap(screenPosition) ? IndexOf(_pointBuffer, _lastTappedEntityId) : -1;
+            if (lastIndex < 0)
+                return FindInitialSelectionIndex();
+
+            // Repeated single clicks cycle through overlapping hits.
+            return _pointerInput.ClickCount >= 2 ? lastIndex : (lastIndex + 1) % _pointBuffer.Count;
+        }
+
+        private bool IsRepeatedTap(Vector2 screenPosition) =>
+            (screenPosition - _lastTappedPosition).sqrMagnitude <= REPEATED_TAP_RADIUS * REPEATED_TAP_RADIUS;
 
         private int FindInitialSelectionIndex()
         {
@@ -187,7 +219,8 @@ namespace EmpireAtWar.Services.Battle
                 index = 0;
 
             SelectionEntry first = _pointBuffer[index];
-            if (first.Command.SelectionType == SelectionType.Ship && _localPlayer.IsFriendly(first.Entity.Owner))
+            if (!first.IsBattleMarker && first.Command.SelectionType == SelectionType.Ship &&
+                _localPlayer.IsFriendly(first.Entity.Owner))
             {
                 // A friendly capital ship's hull must not hide a mine's selection target.
                 for (int i = index + 1; i < _pointBuffer.Count; i++)

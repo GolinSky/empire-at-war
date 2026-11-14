@@ -28,6 +28,7 @@ namespace EmpireAtWar.Components.Combat
         private float _mainBatteryFireDelayMultiplier = 1f;
 
         public event Action Changed;
+        public event Action CloakChanged;
 
         private bool _superWeaponDisabled;
         private bool _isConstructing;
@@ -105,7 +106,9 @@ namespace EmpireAtWar.Components.Combat
 
         public void SetCloaked(bool cloaked)
         {
+            bool hasChanged = IsCloaked != cloaked;
             IsCloaked = cloaked;
+            if (hasChanged) CloakChanged?.Invoke();
             if (Changed != null) Changed.Invoke();
         }
 

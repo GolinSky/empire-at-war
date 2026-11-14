@@ -26,6 +26,10 @@ namespace EmpireAtWar.Entities.Ship.Data
         [Header("Ship Settings")]
         [field: SerializeField] public float MinMoveCoefficient { get; private set; }
 
+        [Header("Battle Marker")]
+        [Tooltip("Shows this ship's icon above its hull in battle.")]
+        [field: SerializeField] public bool ShowBattleMarker { get; private set; }
+
         [Header("Movement Settings")]
         [field: SerializeField] public float Speed { get; private set; }
         [SerializeField] private ShipHeightTiersData heightTiers;

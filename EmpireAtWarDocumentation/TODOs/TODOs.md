@@ -310,6 +310,9 @@
 
 ### Features
 
+- [x] **Small-ship battle icons + stable squadron icon grids** → [[Done/Features/Small_Ship_Icons_And_Squadron_Grid_Plan|Small Ship Icons and Squadron Grid Plan]]
+  - Implemented 2026-11-14. Unity compilation and saved asset bindings verified. Live visuals, Development Player profiling and explicitly requested tests → [[TODOs/User_Acceptance_Queue#Small Ship Icons and Squadron Icon Grid]].
+
 - [x] **Planet decorations (Kuat docks, space junk, resource containers)** → [[Done/Features/Planet_Decorations_Plan|Planet Decorations Plan]]
   - Completed 2026-11-13: six imported props, three sets, 13 planet assignments, independent seeded clearance placement. Unity compile/import checks clean; sampled placement counts recorded. Tests not run; planet-list and battle visual acceptance queued.
   - 2026-11-13 follow-up: junk scale 3× (0.18–0.30), central 70% footprint bounds; saved/compiled, sampled Tatooine counts 3/7/7. Normal-zoom visual acceptance pending.

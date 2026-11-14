@@ -34,11 +34,13 @@ verification: source-and-assets
 
 - Friendly entities use an always-visible fog facade. Hostile entities use `FogVisibilityComponent`.
 - A hostile entity is hidden when cloaked or outside local allied vision.
-- The visibility component toggles its configured renderers and tracked ion-stun renderers on a slow update.
+- `FogVisibilityComponent` updates its renderers and tracked ion-stun renderers on the slow fog tick and synchronously on `CombatModifiers.CloakChanged`.
 - All four faction station view prefabs set `staysRevealedOnceSeen = true`: once revealed, those station renderers stay drawn.
 - Ordinary ship prefabs inspected use `staysRevealedOnceSeen = false` and reveal radius 0.
 - Station discovery uses its footprint radius; vision need not reach the station's center.
-- Squadron icon/minimap systems own their marker presentation; do not infer marker visibility solely from a hull renderer.
+- Small-ship battle markers use the hull fog facade and visibility event. Friendly markers stay visible in cloak.
+- Squadron battle markers sample allied point vision at 10 Hz. Enemy cloak and hull concealment immediately remove the marker from selection and group layout. Hidden members never contribute to the displayed group center.
+- Minimap visibility follows its separate marker rules.
 
 ### Radar and targeting
 

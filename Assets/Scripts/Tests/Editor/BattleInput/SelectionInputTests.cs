@@ -231,6 +231,34 @@ namespace EmpireAtWar.Tests.Selection
         }
 
         [Test]
+        public void MarkerMovesBetweenPressAndRelease_SelectsCapturedEntity()
+        {
+            FakeInputService input = new FakeInputService();
+            FakeSelectionQuery query = new FakeSelectionQuery();
+            var first = new FakeSelectionCommand(SelectionType.Ship);
+            var neighbor = new FakeSelectionCommand(SelectionType.Ship);
+            var firstEntity = new FakeEntity(first, TestPlayers.Human, 1);
+            var neighborEntity = new FakeEntity(neighbor, TestPlayers.Human, 2);
+            query.Add(Vector2.zero, new SelectionEntry(firstEntity, first, markerDrawOrder: 0));
+            query.Add(Vector2.one, new SelectionEntry(neighborEntity, neighbor, markerDrawOrder: 1));
+            var service = new SelectionService(input, input, input, new EntityLocator(), query,
+                new FakeMarqueeSelectionPresenter(), TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+            service.Initialize();
+            try
+            {
+                input.RaiseWorldPress(Vector2.zero);
+                input.RaiseWorldClick(Vector2.one);
+
+                Assert.That(first.IsSelected, Is.True);
+                Assert.That(neighbor.IsSelected, Is.False);
+            }
+            finally
+            {
+                service.LateDispose();
+            }
+        }
+
+        [Test]
         public void MiniMapPointerExit_KeepsMapVisible()
         {
             GameObject gameObject = new GameObject(
@@ -283,9 +311,11 @@ namespace EmpireAtWar.Tests.Selection
 
         private sealed class FakeInputService : IPointerGestures, IPointerInput, ISelectionInput
         {
-            public event Action<Vector2> WorldPressed { add { } remove { } }
+            public event Action<Vector2> WorldPressed;
 
             public event Action<Vector2> WorldClicked;
+
+            public event Action<Vector2> WorldCommandPressed { add { } remove { } }
 
             public event Action<Vector2> WorldCommanded { add { } remove { } }
 
@@ -307,6 +337,8 @@ namespace EmpireAtWar.Tests.Selection
             public Vector2 Position => Vector2.zero;
             public int ClickCount => 1;
             public bool HasPosition => true;
+
+            public void RaiseWorldPress(Vector2 position) => WorldPressed?.Invoke(position);
 
             public void RaiseWorldClick(Vector2 position)
             {
@@ -338,6 +370,11 @@ namespace EmpireAtWar.Tests.Selection
                 selection = found ? entries[0] : default;
                 return found;
             }
+
+            public bool TryFindMarkerAt(Vector2 position, out SelectionEntry selection) =>
+                TryFindAt(position, out selection) && selection.IsBattleMarker;
+
+            public bool IsMarkerAvailable(SelectionEntry selection) => !selection.Entity.HealthModel.IsDestroyed;
 
             public void CollectAt(Vector2 screenPosition, IList<SelectionEntry> results)
             {

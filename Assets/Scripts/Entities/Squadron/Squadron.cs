@@ -10,6 +10,7 @@ using EmpireAtWar.Components.Ship.Audio;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Squadrons.Health;
+using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -52,6 +53,8 @@ namespace EmpireAtWar.Entities.Squadrons
         private float _nextTelemetrySample;
 
         private ISquadronFlightComponent _flight;
+        private SquadronIconComponent _icon;
+        private bool _isReplica;
         private ISquadronHealthComponent _health;
         private IRadarComponent _radar;
         private IWeaponComponent _weapon;
@@ -142,12 +145,15 @@ namespace EmpireAtWar.Entities.Squadrons
             CombatModifiers modifiers, ContainerLocal<IReadOnlyList<IRespawnable>> respawnables,
             ContainerLocal<IReadOnlyList<IDespawnable>> despawnables,
             ContainerLocal<IReadOnlyList<IAudioDialogShipComponent>> audioDialogs, SquadronData data, LifecycleTickGate tickGate,
-            long entityId, FighterPoseBatch poseBatch, SquadronOrderScheduler orderScheduler, PlayerId owner)
+            long entityId, FighterPoseBatch poseBatch, SquadronOrderScheduler orderScheduler, PlayerId owner,
+            SquadronIconComponent icon, IMatchSession session)
         {
             EntityId = entityId;
             _owner = owner;
             _squadronType = squadronType;
             _flight = flight;
+            _icon = icon;
+            _isReplica = !session.IsAuthority;
             _health = health;
             _radar = radar;
             _weapon = weapon;
@@ -265,6 +271,10 @@ namespace EmpireAtWar.Entities.Squadrons
             using (BattleProfilerMarkers.SquadronFlight.Auto())
 #endif
             _flight.Step(Time.deltaTime);
+            // Replicas receive root positions from the host and have no authoritative travel leg.
+            bool travelling = _isReplica ? CurrentOrder.IsMoveOrder() : _pilot.IsTravelling;
+            _icon.AdvanceAnchor(_flight.Centroid, _isReplica ? _flight.Centroid : _pilot.MarkerIntent,
+                _flight.Data.CruiseSpeed, Data.LoiterRadius, travelling, _pilot.IsFighting, Time.deltaTime);
             if (Time.deltaTime > 0f && !_pilot.HasArrived)
             {
                 float speed = Vector3.Distance(previousPosition, _flight.Centroid) / Time.deltaTime;

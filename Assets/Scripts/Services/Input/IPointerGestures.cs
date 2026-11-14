@@ -12,6 +12,8 @@ namespace EmpireAtWar.Services.Input
 
         event Action<Vector2> WorldClicked;
 
+        event Action<Vector2> WorldCommandPressed;
+
         event Action<Vector2> WorldCommanded;
 
         event Action<Vector2> DragStarted;

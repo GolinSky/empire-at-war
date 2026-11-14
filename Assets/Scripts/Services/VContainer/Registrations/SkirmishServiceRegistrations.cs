@@ -36,7 +36,7 @@ namespace EmpireAtWar.Services.VContainer
             ImpactEffectView impactEffectPrefab, UnitExplosionView unitExplosionPrefab,
             Material rangeDebugLineMaterial, ShipSfxData shipSfxData, InterfaceSfxData interfaceSfxData,
             ShipAmbienceData shipAmbienceData, ShipSfxSources shipSfxSourcesPrefab,
-            CameraService cameraService)
+            CameraService cameraService, Material battleMarkerIconMaterial)
         {
             builder.RegisterInstance(unitExplosionPrefab);
             builder.RegisterInstance(shipSfxData);
@@ -75,9 +75,11 @@ namespace EmpireAtWar.Services.VContainer
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<HealthOverlayPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterComponent(cameraService).AsImplementedInterfaces().AsSelf();
-            GameObject iconRoot = new GameObject(nameof(SquadronIconLayer));
+            GameObject iconRoot = new GameObject(nameof(BattleMarkerLayer));
             iconRoot.transform.SetParent(owner, false);
-            builder.RegisterComponent(iconRoot.AddComponent<SquadronIconLayer>())
+            var battleMarkers = iconRoot.AddComponent<BattleMarkerLayer>();
+            battleMarkers.SetIconMaterial(battleMarkerIconMaterial);
+            builder.RegisterComponent(battleMarkers)
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<UiHitTest>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<InputLockService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

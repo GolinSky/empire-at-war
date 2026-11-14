@@ -44,6 +44,7 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly IHardPointHoverObserver _hardPointHover;
         private readonly IBattleAreaService _battleAreas;
         private readonly List<SelectionEntry> _attackCandidates = new List<SelectionEntry>();
+        private SelectionEntry _pressedMarker;
 
         private readonly UnitActionTargetingModel _targeting;
         private readonly SuperWeaponTargetingModel _superWeapons;
@@ -75,14 +76,17 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public void Initialize()
         {
+            _gestures.WorldCommandPressed += HandleCommandPressed;
             _gestures.WorldCommanded += HandleCommand;
             _orderInput.QueueWaypointReleased += HandleModifierReleased;
         }
 
         public void LateDispose()
         {
+            _gestures.WorldCommandPressed -= HandleCommandPressed;
             _gestures.WorldCommanded -= HandleCommand;
             _orderInput.QueueWaypointReleased -= HandleModifierReleased;
+            _pressedMarker = default;
         }
 
         public void FinishWaypoints()
@@ -129,12 +133,26 @@ namespace EmpireAtWar.Services.UnitOrders
             if (_targeting.IsAltPlacement) FinishWaypoints();
         }
 
+        private void HandleCommandPressed(Vector2 screen)
+        {
+            _pressedMarker = default;
+            if (!_hardPointHover.TryGetHovered(out _, out _))
+                _query.TryFindMarkerAt(screen, out _pressedMarker);
+        }
+
         private void HandleCommand(Vector2 screen)
         {
+            SelectionEntry hit = _pressedMarker;
+            _pressedMarker = default;
+            bool capturedMarker = hit.IsBattleMarker;
+            if (capturedMarker && !_query.IsMarkerAvailable(hit))
+                return;
+
             // A hardpoint marker wins over the hull or whatever else is under it.
-            bool hasHardPoint = _hardPointHover.TryGetHovered(out IEntity hardPointOwner, out int hardPointId);
-            SelectionEntry hit = default;
-            bool hasUnit = hasHardPoint || _query.TryFindAt(screen, out hit);
+            IEntity hardPointOwner = null;
+            int hardPointId = default;
+            bool hasHardPoint = !capturedMarker && _hardPointHover.TryGetHovered(out hardPointOwner, out hardPointId);
+            bool hasUnit = capturedMarker || hasHardPoint || _query.TryFindAt(screen, out hit);
             IEntity target = hasHardPoint ? hardPointOwner : hasUnit ? hit.Entity : null;
             if (_superWeapons.Pending != null)
             {
@@ -163,7 +181,7 @@ namespace EmpireAtWar.Services.UnitOrders
                     }
             }
             UnitActionId? pending = _targeting.Pending;
-            if (!hasHardPoint && !IsEnemy(target) &&
+            if (!capturedMarker && !hasHardPoint && !IsEnemy(target) &&
                 (pending == null || pending == UnitActionId.Attack))
             {
                 // Friendly hulls must not block attacks on an enemy underneath them.

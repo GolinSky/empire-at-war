@@ -8,6 +8,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Selection;
+using Unity.Profiling;
 using UnityEngine;
 using EmpireAtWar.Entities.Units;
 
@@ -16,6 +17,10 @@ namespace EmpireAtWar.Services.Battle
     public interface ISelectionQuery
     {
         bool TryFindAt(Vector2 screenPosition, out SelectionEntry selection);
+
+        bool TryFindMarkerAt(Vector2 screenPosition, out SelectionEntry selection);
+
+        bool IsMarkerAvailable(SelectionEntry selection);
 
         void CollectAt(Vector2 screenPosition, IList<SelectionEntry> results);
 
@@ -33,45 +38,122 @@ namespace EmpireAtWar.Services.Battle
         private const int INITIAL_RAYCAST_CAPACITY = 32;
 
         private static readonly Comparison<PointCandidate> COMPARE_POINT_CANDIDATES = ComparePointCandidates;
+        private static readonly Comparison<MarkerCandidate> COMPARE_MARKER_CANDIDATES = CompareMarkerCandidates;
+        private static readonly ProfilerMarker MARKER_HIT_QUERY = new ProfilerMarker("Battle.Markers.HitQuery");
 
         private readonly ICameraService _cameraService;
         private readonly IEntityLocator _entityLocator;
         private readonly ILocalPlayer _localPlayer;
+        private readonly IBattleMarkerLayer _markerLayer;
 
         private readonly List<SelectionEntry> _marqueeResults = new List<SelectionEntry>();
+        private readonly HashSet<long> _marqueeMarkerIds = new HashSet<long>();
         private RaycastHit[] _raycastHits = new RaycastHit[INITIAL_RAYCAST_CAPACITY];
         private readonly List<PointCandidate> _pointCandidates = new List<PointCandidate>();
+        private readonly List<MarkerCandidate> _markerCandidates = new List<MarkerCandidate>();
         private readonly List<SelectionEntry> _pointResults = new List<SelectionEntry>();
 
-        public SelectionQuery(ICameraService cameraService, IEntityLocator entityLocator, ILocalPlayer localPlayer)
+        public SelectionQuery(ICameraService cameraService, IEntityLocator entityLocator, ILocalPlayer localPlayer,
+            IBattleMarkerLayer markerLayer)
         {
             _localPlayer = localPlayer;
             _cameraService = cameraService;
             _entityLocator = entityLocator;
+            _markerLayer = markerLayer;
         }
 
         public bool TryFindAt(Vector2 screenPosition, out SelectionEntry selection)
         {
+            if (TryFindMarkerAt(screenPosition, out selection))
+                return true;
+
             _pointResults.Clear();
-            CollectAt(screenPosition, _pointResults);
+            CollectHullsAt(screenPosition, _pointResults);
             selection = _pointResults.Count > 0 ? _pointResults[0] : default;
             return _pointResults.Count > 0;
         }
 
-        public void CollectAt(Vector2 screenPosition, IList<SelectionEntry> results)
+        public bool TryFindMarkerAt(Vector2 screenPosition, out SelectionEntry selection)
         {
-            // Squadron icons are drawn over the scene, so they come before whatever the ray hits behind them.
-            foreach (IEntity iconEntity in _entityLocator.Entities)
+            CollectMarkerCandidates(screenPosition);
+            selection = _markerCandidates.Count > 0 ? _markerCandidates[0].Entry : default;
+            return _markerCandidates.Count > 0;
+        }
+
+        public bool IsMarkerAvailable(SelectionEntry selection)
+        {
+            using ProfilerMarker.AutoScope sample = MARKER_HIT_QUERY.Auto();
+            IReadOnlyList<IBattleMarker> markers = _markerLayer.Markers;
+            for (int i = 0; i < markers.Count; i++)
             {
-                if (!iconEntity.HealthModel.IsDestroyed &&
-                    iconEntity.TryGetFacade(out ISquadronIconCommand icon) &&
-                    icon.ContainsScreenPoint(screenPosition) &&
-                    iconEntity.TryGetFacade(out IEntitySelectionFacade iconSelection))
-                {
-                    results.Add(new SelectionEntry(iconEntity, iconSelection));
-                }
+                IBattleMarker marker = markers[i];
+                if (marker.IsShown && marker.EntityId == selection.Entity.Id &&
+                    marker.DrawOrder == selection.MarkerDrawOrder)
+                    return TryResolveMarker(marker, out SelectionEntry current) &&
+                           ReferenceEquals(current.Entity, selection.Entity);
             }
 
+            return false;
+        }
+
+        public void CollectAt(Vector2 screenPosition, IList<SelectionEntry> results)
+        {
+            CollectMarkerCandidates(screenPosition);
+            for (int i = 0; i < _markerCandidates.Count; i++)
+            {
+                SelectionEntry entry = _markerCandidates[i].Entry;
+                if (!Contains(results, entry.Entity))
+                    results.Add(entry);
+            }
+
+            CollectHullsAt(screenPosition, results);
+        }
+
+        private void CollectMarkerCandidates(Vector2 screenPosition)
+        {
+            using ProfilerMarker.AutoScope sample = MARKER_HIT_QUERY.Auto();
+            _markerCandidates.Clear();
+            IReadOnlyList<IBattleMarker> markers = _markerLayer.Markers;
+            for (int i = 0; i < markers.Count; i++)
+            {
+                IBattleMarker marker = markers[i];
+                if (!marker.IsShown || !marker.ContainsScreenPoint(screenPosition) ||
+                    !TryResolveMarker(marker, out SelectionEntry entry))
+                    continue;
+
+                float distance = (marker.ScreenRect.center - screenPosition).sqrMagnitude;
+                _markerCandidates.Add(new MarkerCandidate(entry, marker.IsSquadron, distance));
+            }
+
+            _markerCandidates.Sort(COMPARE_MARKER_CANDIDATES);
+        }
+
+        private bool TryResolveMarker(IBattleMarker marker, out SelectionEntry entry)
+        {
+            if (_entityLocator.TryGetEntity(marker.EntityId, out IEntity entity) &&
+                !entity.HealthModel.IsDestroyed && !entity.IsHiddenByFog() &&
+                entity.TryGetFacade(out IEntitySelectionFacade selection))
+            {
+                entry = new SelectionEntry(entity, selection, marker.DrawOrder);
+                return true;
+            }
+
+            entry = default;
+            return false;
+        }
+
+        private static int CompareMarkerCandidates(MarkerCandidate a, MarkerCandidate b)
+        {
+            int comparison = a.IsSquadron.CompareTo(b.IsSquadron);
+            if (comparison != 0) return comparison;
+            comparison = Nullable.Compare(b.Entry.MarkerDrawOrder, a.Entry.MarkerDrawOrder);
+            if (comparison != 0) return comparison;
+            comparison = a.Distance.CompareTo(b.Distance);
+            return comparison != 0 ? comparison : a.Entry.Entity.Id.CompareTo(b.Entry.Entity.Id);
+        }
+
+        private void CollectHullsAt(Vector2 screenPosition, IList<SelectionEntry> results)
+        {
             // Structures are large and would hide ships under or behind them, so units anywhere
             // along the ray come before structures; within the same rank the closest hit comes first.
             _pointCandidates.Clear();
@@ -223,12 +305,24 @@ namespace EmpireAtWar.Services.Battle
         public void CollectInside(MarqueeRectangle rectangle, ICollection<SelectionEntry> results)
         {
             _marqueeResults.Clear();
+            using (MARKER_HIT_QUERY.Auto())
+            {
+                _marqueeMarkerIds.Clear();
+                IReadOnlyList<IBattleMarker> markers = _markerLayer.Markers;
+                for (int i = 0; i < markers.Count; i++)
+                {
+                    IBattleMarker marker = markers[i];
+                    if (marker.IsShown && marker.OverlapsMarquee(rectangle))
+                        _marqueeMarkerIds.Add(marker.EntityId);
+                }
+            }
+
             bool hasUnits = false;
             foreach (IEntity entity in _entityLocator.Entities)
             {
-                if (!_localPlayer.IsLocal(entity.Owner) || entity.HealthModel.IsDestroyed ||
+                if (!_localPlayer.IsLocal(entity.Owner) || entity.HealthModel.IsDestroyed || entity.IsHiddenByFog() ||
                     !entity.TryGetFacade(out IEntitySelectionFacade command) ||
-                    !IsInsideMarquee(entity, command, rectangle))
+                    (!_marqueeMarkerIds.Contains(entity.Id) && !IsInsideMarquee(entity, command, rectangle)))
                 {
                     continue;
                 }
@@ -251,9 +345,6 @@ namespace EmpireAtWar.Services.Battle
 
         private bool IsInsideMarquee(IEntity entity, IEntitySelectionFacade command, MarqueeRectangle rectangle)
         {
-            if (entity.TryGetFacade(out ISquadronIconCommand icon) && icon.OverlapsMarquee(rectangle))
-                return true;
-
             if (command is ISelectionPositionProvider positionProvider)
             {
                 Vector3 position = positionProvider.WorldPosition;
@@ -267,6 +358,20 @@ namespace EmpireAtWar.Services.Battle
 
             return entity.TryGetFacade(out ShipMarqueeHull hull) &&
                    hull.Overlaps(rectangle, _cameraService.SceneCamera);
+        }
+
+        private readonly struct MarkerCandidate
+        {
+            public readonly SelectionEntry Entry;
+            public readonly bool IsSquadron;
+            public readonly float Distance;
+
+            public MarkerCandidate(SelectionEntry entry, bool isSquadron, float distance)
+            {
+                Entry = entry;
+                IsSquadron = isSquadron;
+                Distance = distance;
+            }
         }
 
         private readonly struct PointCandidate

@@ -26,6 +26,34 @@ namespace EmpireAtWar.Tests.Editor
 
         private static readonly Vector3 OFF_SCREEN_POSITION = new Vector3(1000f, 0f, 0f);
 
+        private sealed class FakeMarkerLayer : IBattleMarkerLayer
+        {
+            private readonly List<IBattleMarker> _markers = new List<IBattleMarker>();
+            public IReadOnlyList<IBattleMarker> Markers => _markers;
+            public BattleMarker CreateShipMarker(Sprite icon, Transform anchor) => throw new NotSupportedException();
+            public void Attach(RectTransform root) => throw new NotSupportedException();
+            public void Register(IBattleMarker marker) => _markers.Add(marker);
+            public void Unregister(IBattleMarker marker) => _markers.Remove(marker);
+            public void InvalidateMembership(long entityId) => throw new NotSupportedException();
+        }
+
+        private sealed class FakeMarker : IBattleMarker
+        {
+            public long EntityId { get; }
+            public bool IsSquadron { get; set; } = true;
+            public bool IsShown => true;
+            public Rect ScreenRect { get; set; }
+            public int DrawOrder { get; set; }
+            public FakeMarker(long entityId, Rect screenRect)
+            {
+                EntityId = entityId;
+                ScreenRect = screenRect;
+            }
+            public bool ContainsScreenPoint(Vector2 point) => ScreenRect.Contains(point);
+            public bool OverlapsMarquee(MarqueeRectangle rectangle) =>
+                ScreenRect.Overlaps(new Rect(rectangle.MinX, rectangle.MinY, rectangle.Width, rectangle.Height));
+        }
+
         [Test]
         public void CollectInside_DropsStructuresWhenUnitsAreInside()
         {
@@ -46,15 +74,16 @@ namespace EmpireAtWar.Tests.Editor
         public void CollectInside_BoxAroundOffsetIcon_SelectsSquadronOnceAndPrefersItToStructures()
         {
             var locator = new EntityLocator();
-            var squadron = new FakeEntity(1, SelectionType.Ship, isUnit: true,
-                extraFacade: new FakeIcon(new MarqueePoint(20f, 80f)));
+            var squadron = new FakeEntity(1, SelectionType.Ship, isUnit: true);
             locator.AddEntity(squadron);
             locator.AddEntity(new FakeEntity(2, SelectionType.MiningFacility, isUnit: false,
                 worldPosition: new Vector3(-30f, 30f, 0f)));
             var results = new List<SelectionEntry>();
 
             var box = new MarqueeRectangle(new MarqueePoint(25f, 85f), new MarqueePoint(15f, 75f));
-            SelectionQuery query = CreateQuery(locator);
+            var markers = new FakeMarkerLayer();
+            markers.Register(new FakeMarker(squadron.Id, new Rect(15f, 75f, 10f, 10f)));
+            SelectionQuery query = CreateQuery(locator, markers: markers);
             query.CollectInside(box, results);
             Assert.That(results, Has.Count.EqualTo(1));
             Assert.That(results[0].Entity, Is.SameAs(squadron));
@@ -63,6 +92,74 @@ namespace EmpireAtWar.Tests.Editor
             query.CollectInside(WHOLE_SCREEN, results);
             Assert.That(results, Has.Count.EqualTo(1));
             Assert.That(results[0].Entity, Is.SameAs(squadron));
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void MarkerPointAndMarquee_UseCurrentDisplayedBounds(bool concealed)
+        {
+            var locator = new EntityLocator();
+            var fog = new FakeFog();
+            var squadron = new FakeEntity(1, SelectionType.Ship, isUnit: true, extraFacade: fog);
+            locator.AddEntity(squadron);
+            var marker = new FakeMarker(squadron.Id, new Rect(10f, 10f, 20f, 20f));
+            var markers = new FakeMarkerLayer();
+            markers.Register(marker);
+            SelectionQuery query = CreateQuery(locator, markers: markers);
+            Vector2 originalCell = marker.ScreenRect.center;
+            Assert.That(query.TryFindMarkerAt(originalCell, out SelectionEntry captured), Is.True);
+            Assert.That(captured.Entity, Is.SameAs(squadron));
+
+            marker.ScreenRect = new Rect(30f, 10f, 20f, 20f);
+            Assert.That(query.TryFindAt(originalCell, out _), Is.False);
+            Assert.That(query.IsMarkerAvailable(captured), Is.True);
+            Assert.That(query.TryFindAt(marker.ScreenRect.center, out SelectionEntry hit), Is.True);
+            Assert.That(hit.Entity, Is.SameAs(squadron));
+
+            var results = new List<SelectionEntry>();
+            var oldCell = new MarqueeRectangle(new MarqueePoint(11f, 11f), new MarqueePoint(29f, 29f));
+            var newCell = new MarqueeRectangle(new MarqueePoint(31f, 11f), new MarqueePoint(49f, 29f));
+            query.CollectInside(oldCell, results);
+            Assert.That(results, Is.Empty);
+            query.CollectInside(newCell, results);
+            Assert.That(results, Has.Count.EqualTo(1));
+            Assert.That(results[0].Entity, Is.SameAs(squadron));
+
+            if (concealed)
+            {
+                fog.IsHiddenByFog = true;
+                Assert.That(query.TryFindAt(marker.ScreenRect.center, out _), Is.False);
+            }
+            else
+            {
+                markers.Unregister(marker);
+                marker.DrawOrder++;
+                markers.Register(marker);
+                Assert.That(query.IsMarkerAvailable(captured), Is.False);
+
+                Assert.That(query.TryFindAt(marker.ScreenRect.center, out captured), Is.True);
+                locator.RemoveEntity(squadron);
+                locator.AddEntity(new FakeEntity(squadron.Id, SelectionType.Ship, isUnit: true));
+            }
+            Assert.That(query.IsMarkerAvailable(captured), Is.False);
+        }
+
+        [Test]
+        public void MarkerHit_PrioritizesFixedShipOverSquadronInTheSameScreenArea()
+        {
+            var locator = new EntityLocator();
+            var squadron = new FakeEntity(1, SelectionType.Ship, isUnit: true);
+            var ship = new FakeEntity(2, SelectionType.Ship, isUnit: true);
+            locator.AddEntity(squadron);
+            locator.AddEntity(ship);
+            var markers = new FakeMarkerLayer();
+            var rect = new Rect(10f, 10f, 20f, 20f);
+            markers.Register(new FakeMarker(squadron.Id, rect) { DrawOrder = 100 });
+            markers.Register(new FakeMarker(ship.Id, rect) { IsSquadron = false });
+            SelectionQuery query = CreateQuery(locator, markers: markers);
+
+            Assert.That(query.TryFindAt(rect.center, out SelectionEntry hit), Is.True);
+            Assert.That(hit.Entity, Is.SameAs(ship));
         }
 
         [TestCase(true)]
@@ -143,12 +240,14 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(results[1].Entity, Is.SameAs(visible));
         }
 
-        private static SelectionQuery CreateQuery(IEntityLocator locator, UnityEngine.Camera camera = null)
+        private static SelectionQuery CreateQuery(IEntityLocator locator, UnityEngine.Camera camera = null,
+            FakeMarkerLayer markers = null)
         {
             return new SelectionQuery(
                 new FakeCamera(camera),
                 locator,
-                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));
+                TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()),
+                markers ?? new FakeMarkerLayer());
         }
 
         private sealed class FakeCamera : ICameraService
@@ -198,13 +297,10 @@ namespace EmpireAtWar.Tests.Editor
             public void Select(bool isSelected) { }
         }
 
-        private sealed class FakeIcon : ISquadronIconCommand
+        private sealed class FakeFog : IFogVisibilityFacade
         {
-            private readonly MarqueePoint _center;
-
-            public FakeIcon(MarqueePoint center) => _center = center;
-            public bool OverlapsMarquee(MarqueeRectangle rectangle) => rectangle.Contains(_center);
-            public bool ContainsScreenPoint(Vector2 point) => false;
+            public event Action<bool> VisibilityChanged { add { } remove { } }
+            public bool IsHiddenByFog { get; set; }
         }
 
         private sealed class FakeEntity : IEntity
