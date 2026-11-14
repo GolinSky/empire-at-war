@@ -95,6 +95,9 @@
 ### Optimization
 
 
+- [ ] **Remove recurring allocations and redundant scans; gate Jobs/Burst candidates behind captures** → [[TODOs/Optimization/CPU_Allocation_And_Jobs_Plan|CPU Allocation and Jobs Plan]]
+  - 2026-11-14 · Phases 1–2, Phase 3 scan/HUD work and Phase 5 loading/editor work committed. Unity compilation passed. User testing and matched Editor/Development Player captures pending. Replicated-state timer design and measured Jobs/Burst candidates remain active.
+
 - [ ] **Ship facing solve spikes (35.2 ms of a 60.5 ms frame; once-a-second ship-order spikes)** → [[TODOs/Optimization/Ship_Facing_Solve_CPU_Plan|Ship Facing Solve CPU Plan]]
   - 2026-11-14: fast yaw checks, Burst sweep, refresh budget and reusable health buffer implemented. Unity compiled. In-range probe max 1.11 ms; dense 40×30 probe max 4.16 ms. Exact intervals and matched crowded-battle verification remain active.
 
