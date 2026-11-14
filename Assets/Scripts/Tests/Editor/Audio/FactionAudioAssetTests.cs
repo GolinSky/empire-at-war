@@ -22,9 +22,6 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [TestCase(ShipAbilityId.BoostEnginePower)]
-        [TestCase(ShipAbilityId.CorellianCorvettePowerToEngines)]
-        [TestCase(ShipAbilityId.ImperialBoostEnginePower)]
-        [TestCase(ShipAbilityId.CD273PowerToEngines)]
         [TestCase(ShipAbilityId.LockSFoils)]
         public void EngineAndFoilAbilitiesUseToggleCues(ShipAbilityId ability)
         {
@@ -33,15 +30,9 @@ namespace EmpireAtWar.Tests.Editor
             AssertClip(profile.End, "GUI_TOGGLE_18", 0.15f);
         }
 
-        [TestCase(ShipAbilityId.BoostWeaponPower)]
-        [TestCase(ShipAbilityId.VictoryBoostWeaponPower)]
-        [TestCase(ShipAbilityId.TIEAvengerPowerToWeapons)]
-        [TestCase(ShipAbilityId.ArquitensBoostWeaponPower)]
-        [TestCase(ShipAbilityId.AcclamatorBoostWeaponPower)]
-        [TestCase(ShipAbilityId.TectorBoostWeaponPower)]
-        [TestCase(ShipAbilityId.NebulaOverchargeWeapons)]
-        public void WeaponBoostAbilitiesUseApprovedActivation(ShipAbilityId ability) =>
-            AssertClip(Data().GetAbility(ability).Start, "GUI_TOGGLE_UW_2", 0.15f);
+        [Test]
+        public void WeaponBoostUsesApprovedActivation() =>
+            AssertClip(Data().GetAbility(ShipAbilityId.BoostWeaponPower).Start, "GUI_TOGGLE_UW_2", 0.15f);
 
         [Test]
         public void SensorJammingUsesItsDedicatedActivation() =>

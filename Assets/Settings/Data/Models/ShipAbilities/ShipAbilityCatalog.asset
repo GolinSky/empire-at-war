@@ -35,8 +35,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Laser Beam
-        description: Fire a focused laser beam at an enemy. Deals 1,500 beam damage
-          continuously over 8 s, then recovers for 50 s.
+        description: Fire a focused laser beam at an enemy. Deals 3,000 base beam
+          damage over 8 s, then recovers for 50 s.
         duration: 8
         recoveryDelay: 50
         canCancel: 0
@@ -51,8 +51,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Laser Beam
-        description: Fire a focused laser beam at an enemy. Deals 12,000 beam damage
-          continuously over 8 s, then recovers for 50 s.
+        description: Fire a focused laser beam at an enemy. Deals 20,000 base beam
+          damage over 8 s, then recovers for 50 s.
         duration: 8
         recoveryDelay: 50
         canCancel: 0
@@ -84,8 +84,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 704f7450173727e43becc6f5e49c86ed, type: 3}
         displayName: Proton Beam
-        description: Focus a proton beam on an enemy target; deals 3,000 beam damage
-          continuously over 8 s.
+        description: Focus a proton beam on an enemy target. Deals 5,000 base beam
+          damage over 8 s, then recovers for 50 s.
         duration: 8
         recoveryDelay: 50
         canCancel: 0
@@ -148,8 +148,8 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
         displayName: Boost Shield Power
-        description: Quadruple shield regeneration; reduce damage and movement speed
-          by 25%.
+        description: Double shield regeneration. Movement speed falls to 55% and
+          outgoing damage falls to 95% for 15 s. Recovers in 40 s.
         duration: 15
         recoveryDelay: 40
         canCancel: 1
@@ -160,38 +160,6 @@ MonoBehaviour:
         autoPower: 1
         settings:
           rid: 7607833764655792205
-    - key: 37
-      value:
-        icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
-        displayName: Power to Engines
-        description: Increase movement speed by 170% for 20 seconds. Recovers 50
-          seconds after expiry.
-        duration: 20
-        recoveryDelay: 50
-        canCancel: 0
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 1
-        autoPower: 7
-        settings:
-          rid: 6801467062609510479
-    - key: 14
-      value:
-        icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
-        displayName: Power to Engines
-        description: Quadruple speed for 20 s; triple weapon delay and stop shield
-          regeneration. Recovers in 50 s. Use to reposition or escape.
-        duration: 20
-        recoveryDelay: 50
-        canCancel: 0
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 1
-        autoPower: 7
-        settings:
-          rid: 6801466898397790287
     - key: 18
       value:
         icon: {fileID: 21300000, guid: a6278cd137e6426468225b59d670b5f3, type: 3}
@@ -209,22 +177,6 @@ MonoBehaviour:
         autoPower: 0
         settings:
           rid: 6801466898397790291
-    - key: 21
-      value:
-        icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
-        displayName: Boost Engine Power
-        description: Quadruple speed, quadruple weapon delays and pause shield regeneration
-          for 20 s; 50 s recovery.
-        duration: 20
-        recoveryDelay: 50
-        canCancel: 1
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 1
-        autoPower: 7
-        settings:
-          rid: 6801466921437888596
     - key: 40
       value:
         icon: {fileID: 21300000, guid: d56dd5bba26a9424696a4a8b1c8d936b, type: 3}
@@ -244,8 +196,9 @@ MonoBehaviour:
     - key: 4
       value:
         icon: {fileID: 21300000, guid: 4c317a4042ef0264383cfd55904a5e0a, type: 3}
-        displayName: Boost Engine Power
-        description: Increase movement speed by 200%; reduce damage by 20%.
+        displayName: Power to Engines
+        description: Double movement speed and weapon reload times. Shield regeneration
+          falls to 50% for 12 s. Recovers in 35 s.
         duration: 12
         recoveryDelay: 35
         canCancel: 1
@@ -256,61 +209,13 @@ MonoBehaviour:
         autoPower: 7
         settings:
           rid: 7607833764655792206
-    - key: 12
-      value:
-        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
-        displayName: Boost Weapon Power
-        description: Quadruple fire rate for 20 s; halve movement speed and stop
-          shield regeneration. Recovers in 60 s.
-        duration: 20
-        recoveryDelay: 60
-        canCancel: 0
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 2
-        autoPower: 2
-        settings:
-          rid: 6801466898397790285
-    - key: 31
-      value:
-        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
-        displayName: Boost Weapon Power
-        description: Quadruple fire rate for 20 s. Shield regeneration stops, speed
-          falls to 25%, and incoming damage increases by 50%. Recovers in 60 s.
-        duration: 20
-        recoveryDelay: 60
-        canCancel: 1
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 2
-        autoPower: 2
-        settings:
-          rid: 6801466944227639374
-    - key: 23
-      value:
-        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
-        displayName: Boost Weapon Power
-        description: Quadruple fire rate for 20 s. Shield regeneration stops, speed
-          falls to 25%, and incoming damage increases by 50%. Recovers in 60 s.
-        duration: 20
-        recoveryDelay: 60
-        canCancel: 1
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 2
-        autoPower: 2
-        settings:
-          rid: 6801466921437888599
     - key: 24
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
         displayName: Power to Main Batteries
-        description: Main-battery shot and reload delays are reduced to 16.5%. All
-          other weapons are disabled, shield regeneration stops and movement speed
-          is reduced to 25% for 20 s. 60 s recharge.
+        description: Main-battery shot and reload delays fall to 5%. Other gun hardpoints
+          stop firing. Movement speed falls to 25% and shield regeneration falls
+          to 50% for 20 s. Recovers in 60 s.
         duration: 20
         recoveryDelay: 60
         canCancel: 0
@@ -321,44 +226,12 @@ MonoBehaviour:
         autoPower: 2
         settings:
           rid: 6801466921437888601
-    - key: 32
-      value:
-        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
-        displayName: Boost Weapon Power
-        description: For 20 seconds, quadruple fire rate, stop shield regeneration,
-          take 50% more damage and reduce speed to 25%. Recovers in 60 seconds.
-        duration: 20
-        recoveryDelay: 60
-        canCancel: 0
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 2
-        autoPower: 2
-        settings:
-          rid: 6801466944227639375
-    - key: 38
-      value:
-        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
-        displayName: Overcharge Weapons
-        description: Weapons fire 150% faster; shield regeneration stops for 10 seconds.
-          50 second cooldown.
-        duration: 10
-        recoveryDelay: 50
-        canCancel: 0
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 2
-        autoPower: 2
-        settings:
-          rid: 6801467062609510489
     - key: 5
       value:
         icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
         displayName: Boost Weapon Power
-        description: 'Fire all batteries: reduce weapon reload time by 85%. Movement
-          speed is unchanged.'
+        description: Reduce weapon reload times by 90%. Movement speed and shield
+          regeneration fall to 50% for 7 s. Recovers in 50 s.
         duration: 7
         recoveryDelay: 50
         canCancel: 1
@@ -500,22 +373,6 @@ MonoBehaviour:
         autoPower: 4
         settings:
           rid: 6801466921437888590
-    - key: 20
-      value:
-        icon: {fileID: 21300000, guid: 867b122ef4b6b9342ad0f3f66a60f584, type: 3}
-        displayName: Power to Weapons
-        description: Quadruple fire rate for 10 s. Speed is reduced by 25% and damage
-          taken increases by 50%. 60 s recovery.
-        duration: 10
-        recoveryDelay: 60
-        canCancel: 0
-        isToggle: 0
-        requiresEnemyTarget: 0
-        range: 0
-        aiUse: 2
-        autoPower: 2
-        settings:
-          rid: 6801466921437888588
     - key: 22
       value:
         icon: {fileID: 21300000, guid: 44e885e262d0a944db799fce4dd7a43b, type: 3}
@@ -666,26 +523,6 @@ MonoBehaviour:
       type: {class: CloakSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data: 
-    - rid: 6801466898397790285
-      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 0.25
-          speedMultiplier: 0.5
-          shieldRegenMultiplier: 0
-          damageTakenMultiplier: 1
-    - rid: 6801466898397790287
-      type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 3
-          speedMultiplier: 4
-          shieldRegenMultiplier: 0
-          damageTakenMultiplier: 1
     - rid: 6801466898397790289
       type: {class: ConcentrateFireSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -708,32 +545,12 @@ MonoBehaviour:
           speedMultiplier: 1.3
           shieldRegenMultiplier: 3
           damageTakenMultiplier: 1
-    - rid: 6801466921437888588
-      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 0.25
-          speedMultiplier: 0.75
-          shieldRegenMultiplier: 1
-          damageTakenMultiplier: 1.5
     - rid: 6801466921437888590
       type: {class: FullSalvoSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         projectileFireDelayMultiplier: 0.165
         otherFireDelayMultiplier: 3
-    - rid: 6801466921437888596
-      type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 4
-          speedMultiplier: 4
-          shieldRegenMultiplier: 0
-          damageTakenMultiplier: 1
     - rid: 6801466921437888597
       type: {class: TractorBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -756,16 +573,6 @@ MonoBehaviour:
           projectileSpeed: 0
           color: {r: 0.2, g: 0.9, b: 0.45, a: 1}
           size: {x: 0.8, y: 0.4, z: 1}
-    - rid: 6801466921437888599
-      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 0.25
-          speedMultiplier: 0.25
-          shieldRegenMultiplier: 0
-          damageTakenMultiplier: 1.5
     - rid: 6801466921437888600
       type: {class: CompositeBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -775,12 +582,12 @@ MonoBehaviour:
       type: {class: PowerToMainBatteriesSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
-        fireDelayMultiplier: 0.165
+        fireDelayMultiplier: 0.05
         statModifier:
           damageMultiplier: 1
           fireDelayMultiplier: 1
           speedMultiplier: 0.25
-          shieldRegenMultiplier: 0
+          shieldRegenMultiplier: 0.5
           damageTakenMultiplier: 1
     - rid: 6801466944227639371
       type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -792,26 +599,6 @@ MonoBehaviour:
           speedMultiplier: 5
           shieldRegenMultiplier: 0
           damageTakenMultiplier: 1
-    - rid: 6801466944227639374
-      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 0.25
-          speedMultiplier: 0.25
-          shieldRegenMultiplier: 0
-          damageTakenMultiplier: 1.5
-    - rid: 6801466944227639375
-      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 0.25
-          speedMultiplier: 0.25
-          shieldRegenMultiplier: 0
-          damageTakenMultiplier: 1.5
     - rid: 6801466989490733131
       type: {class: FullSalvoSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -823,16 +610,6 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         fireDelayMultiplier: 0.33333334
-    - rid: 6801467062609510479
-      type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 1
-          speedMultiplier: 2.7
-          shieldRegenMultiplier: 1
-          damageTakenMultiplier: 1
     - rid: 6801467062609510480
       type: {class: FighterReinforcementsSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -865,22 +642,12 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         commandRadius: 750
-    - rid: 6801467062609510489
-      type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
-        asm: Assembly-CSharp}
-      data:
-        statModifier:
-          damageMultiplier: 1
-          fireDelayMultiplier: 0.4
-          speedMultiplier: 1
-          shieldRegenMultiplier: 0
-          damageTakenMultiplier: 1
     - rid: 7607833764655792203
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         damageType: 7
-        damage: 3000
+        damage: 5000
     - rid: 7607833764655792204
       type: {class: InvulnerabilitySettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
@@ -896,20 +663,20 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         statModifier:
-          damageMultiplier: 0.75
+          damageMultiplier: 0.95
           fireDelayMultiplier: 1
-          speedMultiplier: 0.75
-          shieldRegenMultiplier: 4
+          speedMultiplier: 0.55
+          shieldRegenMultiplier: 2
           damageTakenMultiplier: 1
     - rid: 7607833764655792206
       type: {class: BoostEnginePowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         statModifier:
-          damageMultiplier: 0.8
-          fireDelayMultiplier: 1
-          speedMultiplier: 3
-          shieldRegenMultiplier: 1
+          damageMultiplier: 1
+          fireDelayMultiplier: 2
+          speedMultiplier: 2
+          shieldRegenMultiplier: 0.5
           damageTakenMultiplier: 1
     - rid: 7607833764655792207
       type: {class: BoostWeaponPowerSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -917,9 +684,9 @@ MonoBehaviour:
       data:
         statModifier:
           damageMultiplier: 1
-          fireDelayMultiplier: 0.15
-          speedMultiplier: 1
-          shieldRegenMultiplier: 1
+          fireDelayMultiplier: 0.1
+          speedMultiplier: 0.5
+          shieldRegenMultiplier: 0.5
           damageTakenMultiplier: 1
     - rid: 7607833764655792208
       type: {class: AssaultSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
@@ -948,13 +715,13 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         damageType: 7
-        damage: 12000
+        damage: 20000
     - rid: 7607833764655792234
       type: {class: ProtonBeamSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data:
         damageType: 7
-        damage: 1500
+        damage: 3000
     - rid: 7607833764655792235
       type: {class: HarmonicBombSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}

@@ -35,8 +35,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: c0df2ce6f2e7d2c42b42501e3bf56020, type: 2}
         description: Upgraded Venator with 9,000 hull and 10,000 shields. Heavy weapons
-          support the fleet. Power to Shields and Power to Weapons. Deploys 4 fighters,
-          2 bombers, and 2 interceptors at once. Carries 24 total squadron launches.
+          support the fleet. Boost Shield Power and Boost Weapon Power. Deploys 4
+          fighters, 2 bombers, and 2 interceptors at once. Carries 24 total squadron
+          launches.
         role: "Capital \xB7 Heavy gunship"
         iconKey: 8ee3ff50731492c43b11469ff405c5d6:21300000
         isHero: 0
@@ -138,8 +139,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: b92ff58098755ab4baa941419c34f072, type: 2}
         description: Republic dreadnought with 20 turbolaser mounts, eight ion cannons,
-          16 point-defense batteries, eight missile and four torpedo launchers. Power
-          to Weapons boosts battery output. Vulnerable to concentrated bomber attacks
+          16 point-defense batteries, eight missile and four torpedo launchers. Boost
+          Weapon Power shortens reloads. Vulnerable to concentrated bomber attacks
           and Malevolence. Deploys 2 fighters, 2 bombers, and 2 interceptors at once.
           Carries 18 total squadron launches.
         role: "Mandator II \xB7 Dreadnought"
@@ -197,8 +198,8 @@ MonoBehaviour:
         description: Republic heavy cruiser built to destroy corvettes and frigates.
           Two enhanced turbolaser, four dual medium turbolaser, two dual heavy turbolaser,
           two concussion missile and one ion cannon battery; thirteen targetable
-          hardpoints. Boost Weapon Power doubles fire rate for 20 seconds, halves
-          speed and stops shield recovery; 60-second cooldown. No hangar or squadron
+          hardpoints. Boost Weapon Power cuts weapon reload time by 90% and halves
+          speed and shield regeneration for 7 s. Recovers in 50 s. No hangar or squadron
           deployment.
         role: Heavy cruiser / Anti-corvette / Anti-frigate
         iconKey: 552ac5636e4f65c44994f1337d051b8a:21300000
@@ -216,8 +217,8 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 46fbf485a22af0146943a56eeafd8780, type: 2}
         description: 750 hull, 650 shields. Eight laser cannons and two point-defense
           mounts screen the fleet. Weapons, engines and shield generator are destructible.
-          Power to Engines doubles speed for 20 seconds, triples weapon delay and
-          pauses shield regeneration; 50-second recovery.
+          Power to Engines doubles speed and weapon reload time and halves shield
+          regeneration for 12 s. Recovers in 35 s.
         role: Corvette / Escort
         iconKey: 7e5117ae6840c8d4a9252e2b589de44f:21300000
         isHero: 0
@@ -250,9 +251,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 5660afec4edee70409f96502d7e05d8c, type: 2}
         description: 1,600 hull, 1,000 shields. Twelve dual laser cannons screen
-          the fleet against fighters and bombers. Power to Weapons doubles firing
-          rate for 10 seconds, reduces speed by 25% and increases incoming damage
-          by 50%; 60-second recovery.
+          the fleet against fighters and bombers. Boost Weapon Power cuts weapon
+          reload time by 90% and halves speed and shield regeneration for 7 s. Recovers
+          in 50 s.
         role: Cruiser / Anti-fighter Escort
         iconKey: ee8c2cac9ed92d8499f6b865153f7ff3:21300000
         isHero: 0
@@ -269,9 +270,9 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 8bdf528cc8d4fa74997a634975fb890e, type: 2}
         description: 2,000 hull, 1,300 shields, 25 shield points restored each second.
           Four laser cannons per side, one forward dual turbolaser battery and two
-          forward proton torpedo launchers. Power to Weapons doubles firing rate
-          for 10 seconds, reduces speed by 25% and increases incoming damage by 50%;
-          60-second recovery.
+          forward proton torpedo launchers. Boost Weapon Power cuts weapon reload
+          time by 90% and halves speed and shield regeneration for 7 s. Recovers
+          in 50 s.
         role: Heavy Frigate / Assault Escort
         iconKey: c7ed8d3ae8343e24a8ef2eca2a1a0e8f:21300000
         isHero: 0

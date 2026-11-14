@@ -7,8 +7,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     [Serializable]
     public sealed class PowerToMainBatteriesSettings : ShipAbilitySettings
     {
-        [SerializeField] private float fireDelayMultiplier = 0.33f;
-        [SerializeField] private CombatStatModifier statModifier = new CombatStatModifier(1f, 1f, 0.25f, 0f, 1f);
+        [SerializeField] private float fireDelayMultiplier = 0.05f;
+        [SerializeField] private CombatStatModifier statModifier = new CombatStatModifier(1f, 1f, 0.25f, 0.5f, 1f);
 
         public float FireDelayMultiplier => fireDelayMultiplier;
         public CombatStatModifier StatModifier => statModifier;

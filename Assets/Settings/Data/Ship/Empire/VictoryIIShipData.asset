@@ -35,7 +35,7 @@ MonoBehaviour:
   <ShieldRegenerateDelay>k__BackingField: 1
   <Range>k__BackingField: 665
   <Delay>k__BackingField: 0.25
-  abilities: 0c00000016000000
+  abilities: 0500000016000000
   hangarBays: []
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 30

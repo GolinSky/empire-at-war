@@ -19,19 +19,28 @@ namespace EmpireAtWar.Tests.Editor
     {
         private const string CATALOG_PATH = "Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset";
 
-        [TestCase(13)]
-        [TestCase(15)]
-        [TestCase(17)]
-        [TestCase(26)]
-        [TestCase(34)]
-        [TestCase(45)]
-        [TestCase(53)]
-        public void LegacySave_ValidatesAndRestoresSharedShieldWithoutShorteningCooldown(int legacyId)
+        [TestCase(13, ShipAbilityId.BoostShieldPower)]
+        [TestCase(15, ShipAbilityId.BoostShieldPower)]
+        [TestCase(17, ShipAbilityId.BoostShieldPower)]
+        [TestCase(26, ShipAbilityId.BoostShieldPower)]
+        [TestCase(34, ShipAbilityId.BoostShieldPower)]
+        [TestCase(45, ShipAbilityId.BoostShieldPower)]
+        [TestCase(53, ShipAbilityId.BoostShieldPower)]
+        [TestCase(14, ShipAbilityId.BoostEnginePower)]
+        [TestCase(21, ShipAbilityId.BoostEnginePower)]
+        [TestCase(37, ShipAbilityId.BoostEnginePower)]
+        [TestCase(12, ShipAbilityId.BoostWeaponPower)]
+        [TestCase(20, ShipAbilityId.BoostWeaponPower)]
+        [TestCase(23, ShipAbilityId.BoostWeaponPower)]
+        [TestCase(31, ShipAbilityId.BoostWeaponPower)]
+        [TestCase(32, ShipAbilityId.BoostWeaponPower)]
+        [TestCase(38, ShipAbilityId.BoostWeaponPower)]
+        public void LegacySave_ValidatesAndRestoresSharedAbilityWithoutShorteningCooldown(int legacyId, ShipAbilityId currentId)
         {
             AbilitySlotSave save = JsonUtility.FromJson<AbilitySlotSave>(
                 $"{{\"id\":{legacyId},\"state\":2,\"timeLeft\":83.5}}");
-            Assert.That(save.Id, Is.EqualTo(ShipAbilityId.BoostShieldPower));
-            Assert.DoesNotThrow(() => Validate(new[] { save }, new[] { ShipAbilityId.BoostShieldPower }));
+            Assert.That(save.Id, Is.EqualTo(currentId));
+            Assert.DoesNotThrow(() => Validate(new[] { save }, new[] { currentId }));
 
             ShipAbilityDefinition definition = Catalog().Get(save.Id);
             var slot = new ShipAbilitySlot(null, definition, save.Id);
@@ -40,8 +49,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(slot.State, Is.EqualTo(ShipAbilityState.Recovering));
             Assert.That(slot.TimeLeft, Is.EqualTo(83.5f));
             Assert.That(slot.Progress01, Is.EqualTo(1f));
-            Assert.That(AbilitySlotSave.From(slot).Id, Is.EqualTo(ShipAbilityId.BoostShieldPower));
-            Assert.That(JsonUtility.ToJson(AbilitySlotSave.From(slot)), Does.Contain("\"id\":3"));
+            Assert.That(AbilitySlotSave.From(slot).Id, Is.EqualTo(currentId));
+            Assert.That(JsonUtility.ToJson(AbilitySlotSave.From(slot)), Does.Contain($"\"id\":{(int)currentId},"));
         }
 
         [Test]
@@ -109,9 +118,9 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(id, Is.EqualTo(3));
                     SerializedProperty modifier = entries.GetArrayElementAtIndex(i)
                         .FindPropertyRelative("value.settings.statModifier");
-                    Assert.That(modifier.FindPropertyRelative("shieldRegenMultiplier").floatValue, Is.EqualTo(4f));
-                    Assert.That(modifier.FindPropertyRelative("damageMultiplier").floatValue, Is.EqualTo(0.75f));
-                    Assert.That(modifier.FindPropertyRelative("speedMultiplier").floatValue, Is.EqualTo(0.75f));
+                    Assert.That(modifier.FindPropertyRelative("shieldRegenMultiplier").floatValue, Is.EqualTo(2f));
+                    Assert.That(modifier.FindPropertyRelative("damageMultiplier").floatValue, Is.EqualTo(0.95f));
+                    Assert.That(modifier.FindPropertyRelative("speedMultiplier").floatValue, Is.EqualTo(0.55f));
                 }
             }
         }

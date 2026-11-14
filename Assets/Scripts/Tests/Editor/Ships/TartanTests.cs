@@ -32,7 +32,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             var data = AssetDatabase.LoadAssetAtPath<ShipData>(DATA);
             Assert.That(data.ShipClass, Is.EqualTo(ShipClass.Corvette));
-            Assert.That(data.Abilities, Is.EqualTo(new[] {ShipAbilityId.TIEAvengerPowerToWeapons}));
+            Assert.That(data.Abilities, Is.EqualTo(new[] {ShipAbilityId.BoostWeaponPower}));
             Assert.That(data.HangarBays, Is.Empty);
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             Assert.That(view.GetComponentsInChildren<MonoBehaviour>(true).Any(m => m.GetType().Name == "HangarComponent"), Is.False);
@@ -88,10 +88,10 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void PowerToWeapons_UsesExistingSelfActivatedAbility()
+        public void BoostWeaponPower_UsesSharedSelfActivatedAbility()
         {
-            var definition = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset").Get(ShipAbilityId.TIEAvengerPowerToWeapons);
-            Assert.That(definition.DisplayName, Is.EqualTo("Power to Weapons"));
+            var definition = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset").Get(ShipAbilityId.BoostWeaponPower);
+            Assert.That(definition.DisplayName, Is.EqualTo("Boost Weapon Power"));
             Assert.That(definition.RequiresEnemyTarget, Is.False);
         }
 

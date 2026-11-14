@@ -31,9 +31,9 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(modifiers.CanFireWeapon(true), Is.True);
             Assert.That(modifiers.CanFireWeapon(false), Is.False);
-            Assert.That(modifiers.GetMainBatteryFireDelayMultiplier(true), Is.EqualTo(0.33f));
+            Assert.That(modifiers.GetMainBatteryFireDelayMultiplier(true), Is.EqualTo(0.05f));
             Assert.That(modifiers.SpeedMultiplier, Is.EqualTo(0.375f));
-            Assert.That(modifiers.ShieldRegenMultiplier, Is.Zero);
+            Assert.That(modifiers.ShieldRegenMultiplier, Is.EqualTo(1f));
             Assert.That(modifiers.DamageMultiplier, Is.EqualTo(2f));
 
             ability.Stop();

@@ -20,9 +20,9 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: f2965c2e6d7e7ea42abf7182f9b60c04, type: 2}
         description: Rebel general-purpose frigate effective against corvettes and
           light cruisers. Four turbolaser batteries, four laser cannon batteries
-          and targetable engines. Boost Shield Strength increases shield recovery
-          tenfold for 15 seconds, reducing speed by 20% and weapon damage by 50%;
-          60-second cooldown.
+          and targetable engines. Boost Shield Power doubles shield regeneration,
+          reduces speed by 45% and reduces weapon damage by 5% for 15 s. Recovers
+          in 40 s.
         role: General-purpose frigate / Anti-corvette
         iconKey: a5d07dd53c680c6408f3e98f4ce75765:21300000
         isHero: 0
@@ -38,10 +38,10 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: f0593bb86a7249c46b0e783c993fec3b, type: 2}
         description: Rebel anti-fighter and anti-bomber corvette with eight laser
-          cannons, 600 hull and 600 shields. Power to Engines doubles speed for 20
-          seconds, triples weapon delays and stops shield regeneration; 50-second
-          recovery. Use it to screen larger ships, chase strikecraft or escape. Weak
-          against frigates and capital ships.
+          cannons, 600 hull and 600 shields. Power to Engines doubles speed and weapon
+          reload time and halves shield regeneration for 12 s. Recovers in 35 s.
+          Use it to screen larger ships, chase strikecraft or escape. Weak against
+          frigates and capital ships.
         role: Anti-fighter / Anti-bomber
         iconKey: 68a48dec07691c448a7ed517f75c5a1a:21300000
         isHero: 0
@@ -60,8 +60,8 @@ MonoBehaviour:
           180/s shield regeneration. Eight heavy turbolaser, four heavy quad turbolaser,
           four dual heavy turbolaser, two dual medium turbolaser and two heavy ion
           cannon batteries, four point-defense guns and targetable engines. No targetable
-          shield generator. Boost Shield Power quadruples shield regeneration for
-          15 seconds, reducing speed and weapon damage by 25%; 40-second cooldown.
+          shield generator. Boost Shield Power doubles shield regeneration, reduces
+          speed by 45% and reduces weapon damage by 5% for 15 s. Recovers in 40 s.
           Strong against frigates; vulnerable to bombers.
         role: Heavy capital ship / Anti-frigate
         iconKey: b95f55f2e2f204f42a94f0c44c5baa85:21300000
@@ -82,10 +82,11 @@ MonoBehaviour:
           turbolaser and four ion cannon batteries. Shield generator, engines and
           fighter bay can be destroyed. Concentrate Fire grants Home One +50% damage
           against one selected enemy and directs nearby fleet units to attack it
-          for 15 s; 20 s recovery. Power to Shields grants 10x shield recovery, 80%
-          speed and 3x weapon delays for 15 s; 20 s recovery. Fleet Commander supports
-          allied Rebel ships and squadrons throughout the battle. Deploys 1 fighter,
-          1 bomber, and 1 interceptor at once. Carries 6 total squadron launches.'
+          for 15 s; 20 s recovery. Boost Shield Power doubles shield regeneration,
+          reduces speed by 45% and reduces weapon damage by 5% for 15 s. Recovers
+          in 40 s. Fleet Commander supports allied Rebel ships and squadrons throughout
+          the battle. Deploys 1 fighter, 1 bomber, and 1 interceptor at once. Carries
+          6 total squadron launches.'
         role: Hero capital ship / Fleet command cruiser
         iconKey: f71730a251297854b97875858cdb2249:21300000
         isHero: 1
@@ -121,10 +122,10 @@ MonoBehaviour:
         description: MC80 Independence dreadnought with eight medium dual turbolasers
           and six medium dual turbo-ion cannons. Three engines and three hangars
           are targetable. Eight medium turbolasers, six medium ion cannons and eight
-          heavy lasers remain operational until hull destruction. Power to Shields
-          accelerates regeneration while reducing movement and firing rate. Deploys
-          1 fighter, 1 bomber, and 1 interceptor at once. Carries 6 total squadron
-          launches.
+          heavy lasers remain operational until hull destruction. Boost Shield Power
+          accelerates shield regeneration while reducing speed and weapon damage.
+          Deploys 1 fighter, 1 bomber, and 1 interceptor at once. Carries 6 total
+          squadron launches.
         role: Dreadnought / Fleet anchor
         iconKey: d1df96d57bfbbb049952971439112bf5:21300000
         isHero: 0
@@ -140,8 +141,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: cfffd4866130fe34faafe00094f56ef4, type: 2}
         description: Corellian Battlecruiser armed with four heavy two-burst barrage
-          rocket launchers, eight medium turbolasers and five laser cannons. Power
-          to Shields doubles shield regeneration for 15 seconds. Deploys 1 fighter,
+          rocket launchers, eight medium turbolasers and five laser cannons. Boost
+          Shield Power doubles shield regeneration for 15 seconds. Deploys 1 fighter,
           1 bomber, and 1 interceptor at once. Carries 6 total squadron launches.
         role: Fleet reinforcement / Squadron support
         iconKey: fe1f61f0ff4f03a47a7a2a16340c510d:21300000
@@ -177,8 +178,8 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 3257543b722be21409dddfd419a7e941, type: 2}
         description: 'CD-273 Corellian Destroyer: fast strike ship with four light
           laser cannons, two concussion missile launchers and two point-defense lasers.
-          Boost Weapon Power doubles weapon damage and reduces reload time by 70%
-          for 7 seconds; 50 seconds recovery.'
+          Boost Weapon Power cuts weapon reload time by 90% and halves speed and
+          shield regeneration for 7 s. Recovers in 50 s.'
         role: Fast attack / Heavy corvette
         iconKey: 2e88496bcd539524c9cf43ae79b88a88:21300000
         isHero: 0
@@ -194,9 +195,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: fcb215fee41020c4490034316e324e2b, type: 2}
         description: Light carrier with two light turbolasers and two point-defense
-          lasers. Boost Weapon Power doubles weapon damage and reduces reload time
-          by 70% for 7 seconds; 50 seconds recovery. Requires escorts. Deploys 1
-          fighter, 1 bomber, and 1 interceptor at once. Carries 6 total squadron
+          lasers. Boost Weapon Power cuts weapon reload time by 90% and halves speed
+          and shield regeneration for 7 s. Recovers in 50 s. Requires escorts. Deploys
+          1 fighter, 1 bomber, and 1 interceptor at once. Carries 6 total squadron
           launches.
         role: Light carrier / Squadron support
         iconKey: 27b2ca6d030fce64fa71f572cb392d6d:21300000
@@ -231,10 +232,10 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 22624456adb3ee948b528edb11a07f6e, type: 2}
         description: General-purpose combat frigate for fleet escort and medium-range
           combat. Four medium turbolasers, two light quad turbolasers, four heavy
-          laser cannons and two point-defense lasers. Power to Shields increases
-          shield regeneration by 60%, reducing movement speed and weapon damage by
-          20% for 8 seconds; 35-second recovery. Strong against corvettes and frigates;
-          limited against heavy capitals.
+          laser cannons and two point-defense lasers. Boost Shield Power doubles
+          shield regeneration, reduces speed by 45% and reduces weapon damage by
+          5% for 15 s. Recovers in 40 s. Strong against corvettes and frigates; limited
+          against heavy capitals.
         role: Fleet escort / Medium-range combat
         iconKey: ae063a7eec8a5af4696394f297681415:21300000
         isHero: 0
@@ -270,9 +271,10 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 30f4f94da51a19c43af1cb27ccdc0a47, type: 2}
         description: Battlecarrier with 7,500 hull and 8,400 shields. Four heavy
           turbolasers, two medium dual turbolasers, four medium ion cannons and two
-          point defense lasers. Boost Weapon Power doubles weapon damage and reduces
-          reload time by 70% for 7 seconds; 50 seconds recovery. Deploys 1 fighter,
-          1 bomber, and 1 interceptor at once. Carries 6 total squadron launches.
+          point defense lasers. Boost Weapon Power cuts weapon reload time by 90%
+          and halves speed and shield regeneration for 7 s. Recovers in 50 s. Deploys
+          1 fighter, 1 bomber, and 1 interceptor at once. Carries 6 total squadron
+          launches.
         role: Battlecarrier / Fleet support
         iconKey: 1583a68acc7d9f9488c947c5470db384:21300000
         isHero: 0
@@ -289,9 +291,9 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: a13432fff1b87cd4b8353d2823b041ea, type: 2}
         description: Heavy frontline star destroyer. Eight dual heavy turbolasers,
           six medium turbolasers, four medium ion cannons, two assault concussion
-          launchers and four point defense lasers. Overcharge Weapons increases firing
-          rate by 25% and disables shield regeneration for 10 seconds; 50 second
-          cooldown. Deploys 1 fighter, 1 bomber, and 1 interceptor at once. Carries
+          launchers and four point defense lasers. Boost Weapon Power cuts weapon
+          reload time by 90% and halves speed and shield regeneration for 7 s. Recovers
+          in 50 s. Deploys 1 fighter, 1 bomber, and 1 interceptor at once. Carries
           6 total squadron launches.
         role: Heavy frontline combat
         iconKey: 0884e62f660956f45a6dc8ef863d13cc:21300000
@@ -329,10 +331,9 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 7eb5d1258f2de8349b775004d6a5899b, type: 2}
         description: Fleet carrier with four heavy octuple turbolasers, two heavy
           ion cannons and six heavy point-defense mounts. Boost Shield Power doubles
-          shield regeneration and reduces weapon damage and speed by 25% for 15 seconds;
-          40 seconds recovery. Boost Weapon Power doubles weapon damage and reduces
-          reload time by 70% for 7 seconds; 50 seconds recovery. Deploys 2 fighters,
-          1 bomber, and 1 interceptor at once. Carries 8 total squadron launches.
+          shield regeneration, reduces speed by 45% and reduces weapon damage by
+          5% for 15 s. Recovers in 40 s. Deploys 2 fighters, 1 bomber, and 1 interceptor
+          at once. Carries 8 total squadron launches.
         role: Fleet carrier / Squadron support
         iconKey: 937b502e2d2d8684ca9920ab2b5d9a0d:21300000
         isHero: 0
@@ -350,9 +351,9 @@ MonoBehaviour:
         description: Mon Calamari capital carrier with 12,000 hull and 14,000 shields.
           Four medium dual turbolasers, four light dual ion cannons, six medium turbolasers
           and eight medium lasers. Launches one X-wing fighter, one Y-wing bomber
-          and one A-wing interceptor squadron. Boost Shield Power quadruples shield
-          regeneration for 15 seconds and reduces speed and weapon damage by 25%.
-          40-second cooldown.
+          and one A-wing interceptor squadron. Boost Shield Power doubles shield
+          regeneration, reduces speed by 45% and reduces weapon damage by 5% for
+          15 s. Recovers in 40 s.
         role: Capital carrier / Squadron support
         iconKey: 610b88b3ef1d84c40a8468e8780db2b4:21300000
         isHero: 0
@@ -368,7 +369,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         description: Rebel brawler with four heavy dual ion cannons, six medium dual
-          turbolasers, six turbolasers and four heavy turbolasers. Power to Shields
+          turbolasers, six turbolasers and four heavy turbolasers. Boost Shield Power
           boosts shield regeneration. Launches one Y-Wing squadron.
         role: Capital ship / Shield disabler
         iconKey: f20def5849b5bd649bb2e04331267807:21300000
@@ -387,9 +388,9 @@ MonoBehaviour:
         description: Mon Calamari battlecruiser with 35,000 hull and 40,000 shields.
           Eight heavy dual turbolasers, six heavy dual ion cannons, eight medium
           dual turbolasers, six medium dual laser cannons and six heavy laser cannons.
-          Launches one Y-wing bomber squadron. Power to Weapons quadruples fire rate
-          for 10 seconds, reduces speed by 25% and increases damage taken by 50%.
-          60-second cooldown.
+          Launches one Y-wing bomber squadron. Boost Weapon Power cuts weapon reload
+          time by 90% and halves speed and shield regeneration for 7 s. Recovers
+          in 50 s.
         role: Capital ship / Heavy frontline combat
         iconKey: 7c9824186eb64db48a578111cfce264b:21300000
         isHero: 0
@@ -405,8 +406,9 @@ MonoBehaviour:
       value:
         matchups: {fileID: 0}
         description: Mon Calamari battleship with 16,000 hull and 16,000 shields.
-          Launches X-wing and Y-wing squadrons. Boost Shield Power quadruples shield
-          regeneration for 15 seconds and reduces speed and weapon damage by 25%.
+          Launches X-wing and Y-wing squadrons. Boost Shield Power doubles shield
+          regeneration, reduces speed by 45% and reduces weapon damage by 5% for
+          15 s. Recovers in 40 s.
         role: Battleship
         iconKey: 4b20a06ec4c30014daec0d6a75029d2a:21300000
         isHero: 0
