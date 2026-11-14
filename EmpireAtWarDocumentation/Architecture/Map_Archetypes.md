@@ -31,6 +31,13 @@ verification: "Archetypes: Map 83/83, MapGeneration 224/224, MapExhaustive
 - Mirrored additional groups require balanced teams and actual opposing reflected station partners. Odd, uneven or asymmetric station layouts use independent groups with the same total relay count.
 - `BattleSaveValidator` computes counts through the same legacy/archetype branch as generation.
 
+### Planet surface ceiling
+- `PlanetFactory.Create` clamps `PlanetView.VisualTop` after map scaling and optional orbital fit, before Build/activation. Only Y changes; obstacle XZ and radius remain unchanged.
+- `MapGenerationSettings.PlanetSurfaceCeiling` = −701 world units: Executor hull bottom −650.876 minus at least 50 units. Recheck against every `ShipData.Height + HullBottom` when adding/deepening ships.
+- `VisualTop` uses explicitly bound surface/cloud renderer local bounds transformed to world-space spheres; valid while inactive. A planet already below the ceiling keeps its authored depth.
+- `PlanetSuperWeaponOrigin` follows the moved planet transform and scaled surface radius.
+- Source reviewed 2026-11-14; new factory/clearance tests authored, not run. Owner → [[Done/Bugs/Executor_Depth_And_Big_Ship_Targeting_Fix]].
+
 ### Planet decorations
 - `PlanetMapProfileEntry.Decorations` optionally selects a `PlanetDecorationSet`; null explicitly means no scenery.
 - `MapDecorationPlacer` runs after final geometry with its own `System.Random(matchSeed ^ planetSeed)`; layout RNG, navigation and fairness remain unchanged.

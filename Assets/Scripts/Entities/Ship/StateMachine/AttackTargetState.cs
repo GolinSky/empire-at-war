@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Patterns.StateMachine;
+using EmpireAtWar.Utils;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
@@ -15,6 +16,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
     {
         // A moving ship only halts early when the target closes inside this fraction.
         private const float MINIMUM_RANGE_FACTOR = 0.5f;
+        private const float STALL_RETRY_INTERVAL = 0.5f;
+        private const float STALL_BEARING_STEP_DEGREES = 20f;
 
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IWeaponComponent _weaponComponent;
@@ -27,6 +30,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         private Vector3 _formationOffset;
         private Vector3 _pursuitDestination;
+        private Vector3 _lastAttemptPosition;
+        private float _stallRetryTimer;
+        private int _stallAttempt;
 
         private bool _hasPursuitDestination;
         private bool _wasMoving;
@@ -76,6 +82,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 _hasPursuitDestination = false;
                 _isClosingRange = false;
+                _stallAttempt = 0;
+                _wasMoving = false;
             }
         }
 
@@ -131,7 +139,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _weaponComponent.AddTarget(_attackDataFactory.ConstructData(_mainTargetEntity), AttackType.MainTarget);
             }
 
-            UpdateMoveState();
+            UpdateMoveState(deltaTime);
         }
 
         public void Exit()
@@ -139,6 +147,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _weaponComponent.ResetTarget();
             _hasPursuitDestination = false;
             _isClosingRange = false;
+            _stallAttempt = 0;
+            _wasMoving = false;
         }
 
         private void UpdateFormationMove()
@@ -159,13 +169,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             // After a formation leg, close any remaining gap from its actual endpoint.
             if (_hasPursuitDestination) _isClosingRange = true;
             Vector3 destination = _isClosingRange ? StandoffPosition : MovementTargetPosition;
-            _pursuitDestination = destination;
-            _hasPursuitDestination = true;
-            _shipMoveComponent.MoveToPosition(destination, preserveCourse: true);
+            MoveToPursuitDestination(destination, preserveCourse: true);
         }
 
-        private void UpdateMoveState()
+        private void UpdateMoveState(float deltaTime = 0f)
         {
+            if (RetryStalledMove(deltaTime)) return;
+
             if (_formationOffset.sqrMagnitude > Mathf.Epsilon)
             {
                 UpdateFormationMove();
@@ -208,9 +218,40 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 return;
             }
 
-            _pursuitDestination = standoffPosition;
+            MoveToPursuitDestination(standoffPosition, preserveCourse: true);
+        }
+
+        private bool RetryStalledMove(float deltaTime)
+        {
+            if (!_hasPursuitDestination) return false;
+            if (PlanarGeometry.Distance(_shipMoveComponent.CurrentPosition, _lastAttemptPosition) >= 0.1f)
+            {
+                _stallAttempt = 0;
+                return false;
+            }
+
+            if (_shipMoveComponent.IsMoving || _weaponComponent.HasEnoughRange(
+                    _shipMoveComponent.GetRange(TargetPosition), ContactDistance, _mainTarget.ShipClass)) return false;
+
+            _stallRetryTimer -= deltaTime;
+            if (_stallRetryTimer > 0f) return true;
+
+            float angle = STALL_BEARING_STEP_DEGREES * (_stallAttempt / 2 + 1) *
+                          (_stallAttempt % 2 == 0 ? 1f : -1f);
+            Vector3 offset = Quaternion.AngleAxis(angle, Vector3.up) * (StandoffPosition - TargetPosition);
+            _stallAttempt++;
+            _isClosingRange = true;
+            MoveToPursuitDestination(TargetPosition + offset, preserveCourse: false);
+            return true;
+        }
+
+        private void MoveToPursuitDestination(Vector3 destination, bool preserveCourse)
+        {
+            _pursuitDestination = destination;
             _hasPursuitDestination = true;
-            _shipMoveComponent.MoveToPosition(_pursuitDestination, preserveCourse: true);
+            _lastAttemptPosition = _shipMoveComponent.CurrentPosition;
+            _stallRetryTimer = STALL_RETRY_INTERVAL;
+            _shipMoveComponent.MoveToPosition(destination, preserveCourse);
             _wasMoving = _shipMoveComponent.IsMoving;
         }
     }

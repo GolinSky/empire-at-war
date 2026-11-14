@@ -42,6 +42,9 @@ namespace EmpireAtWar.Services.Factory
                 planet.transform.localScale = prefab.transform.localScale * scale;
                 if (obstacleRadius > 0f)
                     planet.View.FitObstacle(position, obstacleRadius);
+                float excess = planet.View.VisualTop - _settings.PlanetSurfaceCeiling;
+                if (excess > 0f)
+                    planet.transform.position += Vector3.down * excess;
                 planet.Build();
                 planet.gameObject.SetActive(true);
                 _planets.Add(planet);

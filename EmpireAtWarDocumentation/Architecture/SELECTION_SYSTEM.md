@@ -18,6 +18,10 @@ verification: source
 - Ctrl+A selects visible player units; Ctrl+Shift+A selects all player units.
 - Orders flow through `UnitOrderService` and entity facades such as `IMoveFacade`; the historical `IMoveCommand` description is obsolete.
 
+- Hull point ranking: a unit hit behind a nearer station and below its `IStationHullFacade.HullBottom` loses unit priority. Classify after collection, then sort by category/distance so comparisons remain transitive.
+- Units at/above the station bottom, in front of it, or on exposed hull retain unit priority. Marker priority and marquee behavior are unchanged by this depth rule.
+- Depth ranking source reviewed 2026-11-14; regressions authored, not run. Owner → [[Done/Bugs/Executor_Depth_And_Big_Ship_Targeting_Fix]].
+
 ## Implementation
 
 - Marquee model owns drag/rectangle state; its view renders; its presenter connects input to selection.

@@ -333,6 +333,7 @@ MonoBehaviour:
   <HazardCeiling>k__BackingField: 180
   <StationEdgeDistance>k__BackingField: 420
   <StationHeight>k__BackingField: -40
+  <PlanetSurfaceCeiling>k__BackingField: -701
   <ZoneClearance>k__BackingField: 20
   <SatellitePadOffset>k__BackingField: 160
   <SatelliteFootprintRadius>k__BackingField: 60

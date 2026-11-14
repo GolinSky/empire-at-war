@@ -194,3 +194,12 @@ tags:
 ### TODO
 
 - [ ] Play a CIS-AI UltraHard battle; from `_squadrons.csv` measure launches per carrier, squadron lifetime, guard vs engaged time, hangar shutdown time; confirm carriers hold standoff in `_ai_orders.csv`.
+
+### First check — `Loading_20261113_202230` (CIS AI, 145 s unscaled, short)
+
+- AI launches 54: station 79 → 20 Vulture; Wavecrests 121/126/132 → 19/9/6 mixed. No hangar shutdown or bay loss.
+- AI hangar squadrons: 63% of samples engaged; Guard distance median 363; median life 41 s; 39 destroyed (27 Vulture; CR70 killed 10).
+- Squadron damage: CIS 6.5k (16% of faction) vs Republic 3.9k; player squadrons idle in 66% of samples → not an equal comparison.
+- Wavecrests: 74% in range, mean contact distance 393 (weapon 575), hull untouched. Mostly AttackMove from CaptureZone → standoff path exercised only t237–245.
+- Open: EngageLocal ↔ RetreatValue flip t230–255 (local 1.03/0.83/0.95/0.78 around the 0.8 threshold); capture objective site:7 → site:2 → site:6 in 1.5 s at t293. Carrier standoff not yet proven.
+  - 2026-11-14 cause: engage/retreat scores cross at local ≈0.86 with `HYSTERESIS` 0.05 shifting it ≈0.0125; capture selection has no current-target score bonus. Fix owned by Step 0 of [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]].

@@ -35,6 +35,8 @@ namespace EmpireAtWar.Entities.Map
         [field: SerializeField, Min(0f), Tooltip("Free gap between each station footprint and both adjacent borders.")]
         public float StationEdgeDistance { get; private set; } = 420f;
         [field: SerializeField] public float StationHeight { get; private set; } = -40f;
+        [field: SerializeField, Tooltip("Maximum planet surface/cloud height; keep below the deepest ship hull.")]
+        public float PlanetSurfaceCeiling { get; private set; } = -701f;
         [field: SerializeField, Min(0f)] public float ZoneClearance { get; private set; } = 30f;
         [field: SerializeField, Min(0f)] public float SatellitePadOffset { get; private set; } = 160f;
         [field: SerializeField, Min(0f), Tooltip("Placement radius of a satellite pad. Its capture range comes from " +

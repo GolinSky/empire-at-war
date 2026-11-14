@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Selection;
 using Unity.Profiling;
@@ -154,8 +155,7 @@ namespace EmpireAtWar.Services.Battle
 
         private void CollectHullsAt(Vector2 screenPosition, IList<SelectionEntry> results)
         {
-            // Structures are large and would hide ships under or behind them, so units anywhere
-            // along the ray come before structures; within the same rank the closest hit comes first.
+            // Units normally precede structures; deep hulls occluded by a station share its rank.
             _pointCandidates.Clear();
             int hitCount = _cameraService.ScreenPointRaycastAll(screenPosition, _raycastHits);
             // A full buffer may have dropped hits, including the hull under a squadron.
@@ -175,9 +175,10 @@ namespace EmpireAtWar.Services.Battle
                     continue;
                 }
 
-                AddPointCandidate(new PointCandidate(new SelectionEntry(entity, command), entity.IsUnit(), hit.distance));
+                AddPointCandidate(new PointCandidate(new SelectionEntry(entity, command), entity.IsUnit(), hit.distance, hit.point.y));
             }
 
+            RankUnitsBelowStations();
             _pointCandidates.Sort(COMPARE_POINT_CANDIDATES);
             for (int i = 0; i < _pointCandidates.Count; i++)
             {
@@ -205,6 +206,28 @@ namespace EmpireAtWar.Services.Battle
             }
 
             _pointCandidates.Add(candidate);
+        }
+
+        private void RankUnitsBelowStations()
+        {
+            for (int i = 0; i < _pointCandidates.Count; i++)
+            {
+                PointCandidate unit = _pointCandidates[i];
+                if (!unit.IsUnit)
+                    continue;
+
+                for (int j = 0; j < _pointCandidates.Count; j++)
+                {
+                    PointCandidate structure = _pointCandidates[j];
+                    if (structure.Entry.Entity.IsUnit() || structure.Distance >= unit.Distance ||
+                        !structure.Entry.Entity.TryGetFacade(out IStationHullFacade hull) ||
+                        unit.HitY >= hull.HullBottom)
+                        continue;
+
+                    _pointCandidates[i] = new PointCandidate(unit.Entry, false, unit.Distance, unit.HitY);
+                    break;
+                }
+            }
         }
 
         private static bool Contains(IList<SelectionEntry> entries, IEntity entity)
@@ -379,12 +402,14 @@ namespace EmpireAtWar.Services.Battle
             public SelectionEntry Entry { get; }
             public bool IsUnit { get; }
             public float Distance { get; }
+            public float HitY { get; }
 
-            public PointCandidate(SelectionEntry entry, bool isUnit, float distance)
+            public PointCandidate(SelectionEntry entry, bool isUnit, float distance, float hitY)
             {
                 Entry = entry;
                 IsUnit = isUnit;
                 Distance = distance;
+                HitY = hitY;
             }
         }
     }

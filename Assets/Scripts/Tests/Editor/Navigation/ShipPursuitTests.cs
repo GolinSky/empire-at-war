@@ -131,6 +131,97 @@ namespace EmpireAtWar.Tests.Movement
             }
         }
 
+        [TestCase(false, false)]
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        [TestCase(true, true)]
+        public void Attack_StalledApproachRetriesAlternateBearingsWithoutPreservingCourse(bool formation, bool failsImmediately)
+        {
+            _movement.FailMoves = failsImmediately;
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            state.SetData(_target, formation ? Vector3.forward * 20f : Vector3.zero,
+                UnitOrderModel.NO_HARD_POINT);
+            state.Tick(0.1f);
+            _movement.Stop();
+            _movement.FailMoves = true;
+            state.Tick(0.25f);
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
+
+            for (int i = 0; i < 4; i++)
+            {
+                state.Tick(i == 0 ? 0.25f : 0.5f);
+                float angle = 20f * (i / 2 + 1) * (i % 2 == 0 ? 1f : -1f);
+                Vector3 expected = _target.Transform.position + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.left * 65f;
+                Assert.That(Vector3.Distance(_movement.Destination, expected), Is.LessThan(0.001f));
+                Assert.That(_movement.LastPreserveCourse, Is.False);
+                Assert.That(_movement.MoveCount, Is.EqualTo(i + 2));
+                Assert.That(state.IsComplete, Is.False);
+            }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Attack_ProgressResetsStalledBearingAttempts(bool formation)
+        {
+            _movement.FailMoves = true;
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            state.SetData(_target, formation ? Vector3.forward * 20f : Vector3.zero,
+                UnitOrderModel.NO_HARD_POINT);
+            state.Tick(0.1f);
+            state.Tick(0.5f);
+            state.Tick(0.5f);
+            _movement.FailMoves = false;
+            state.Tick(0.5f);
+            _movement.CurrentPosition = new Vector3(100f, 0f, 0f);
+            state.Tick(0.1f);
+            _movement.Stop();
+            _movement.FailMoves = true;
+            state.Tick(0.1f);
+            state.Tick(0.5f);
+
+            Vector3 expected = _target.Transform.position + Quaternion.AngleAxis(20f, Vector3.up) * Vector3.left * 65f;
+            Assert.That(Vector3.Distance(_movement.Destination, expected), Is.LessThan(0.001f));
+            Assert.That(_movement.LastPreserveCourse, Is.False);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Attack_NewTargetOrExitResetsStalledBearingAttempts(bool exit)
+        {
+            _movement.FailMoves = true;
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            state.SetData(_target);
+            state.Tick(0.1f);
+            state.Tick(0.5f);
+            state.Tick(0.5f);
+
+            if (exit) state.Exit();
+            else state.SetData(new Target(_target.Transform) { Id = 2 });
+            state.Tick(0.1f);
+            state.Tick(0.5f);
+
+            Vector3 expected = _target.Transform.position + Quaternion.AngleAxis(20f, Vector3.up) * Vector3.left * 65f;
+            Assert.That(Vector3.Distance(_movement.Destination, expected), Is.LessThan(0.001f));
+            Assert.That(_movement.LastPreserveCourse, Is.False);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Attack_StalledShipInRangeDoesNotRetry(bool formation)
+        {
+            _movement.FailMoves = true;
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            state.SetData(_target, formation ? Vector3.forward * 20f : Vector3.zero,
+                UnitOrderModel.NO_HARD_POINT);
+            state.Tick(0.1f);
+            _target.Transform.position = new Vector3(70f, 0f, 0f);
+            state.Tick(0.5f);
+            state.Tick(0.5f);
+
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
+            Assert.That(_movement.IsMoving, Is.False);
+        }
+
         [Test]
         public void Attack_TargetKilled_NoRadarContactGoesIdle()
         {
@@ -483,10 +574,12 @@ namespace EmpireAtWar.Tests.Movement
             public Vector3 CurrentPosition { get; set; }
             public Vector3 Destination { get; private set; }
             public bool IsMoving { get; private set; }
+            public bool FailMoves { get; set; }
+            public bool LastPreserveCourse { get; private set; }
             public float NavigationRadius => 5f;
             public int MoveCount { get; private set; }
             public void MoveToPosition(Vector3 position, bool preserveCourse = false)
-            { Destination = position; IsMoving = true; MoveCount++; }
+            { Destination = position; IsMoving = !FailMoves; LastPreserveCourse = preserveCourse; MoveCount++; }
             public void FinishLeg() { CurrentPosition = Destination; IsMoving = false; }
             public void LookAtTarget(Vector3 position) { }
             public void LookInDirection(Vector3 direction) { }

@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Ship.Selection;
 using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
@@ -25,6 +26,85 @@ namespace EmpireAtWar.Tests.Editor
             new MarqueeRectangle(new MarqueePoint(0f, 0f), new MarqueePoint(100f, 100f));
 
         private static readonly Vector3 OFF_SCREEN_POSITION = new Vector3(1000f, 0f, 0f);
+
+        [TestCase(-502f, 600f, true)]
+        [TestCase(0f, 600f, false)]
+        [TestCase(-234f, 600f, false)]
+        [TestCase(-502f, 50f, false)]
+        public void CollectAt_OnlyRanksDeepUnitsBehindStationAsStructures(float shipHitY, float shipDistance,
+            bool stationFirst)
+        {
+            var locator = new HitLocator();
+            var ship = new FakeEntity(1, SelectionType.Ship, true);
+            var station = new FakeEntity(2, SelectionType.Base, false, extraFacade: new FakeStationHull());
+            locator.AddEntity(ship);
+            locator.AddEntity(station);
+            var camera = new FakeCamera(null)
+            {
+                Hits = new[] { Hit(ship, shipHitY, shipDistance), Hit(station, -100f, 100f) }
+            };
+            var query = new SelectionQuery(camera, locator, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()),
+                new FakeMarkerLayer());
+            var results = new List<SelectionEntry>();
+
+            query.CollectAt(Vector2.zero, results);
+
+            Assert.That(results, Has.Count.EqualTo(2));
+            Assert.That(results[0].Entity, Is.SameAs(stationFirst ? station : ship));
+        }
+
+        [Test]
+        public void CollectAt_IconPrecedesStationAndDeepShip_ExposedShipRemainsSelectable()
+        {
+            var locator = new HitLocator();
+            var ship = new FakeEntity(1, SelectionType.Ship, true);
+            var station = new FakeEntity(2, SelectionType.Base, false, extraFacade: new FakeStationHull());
+            var squadron = new FakeEntity(3, SelectionType.Ship, true);
+            locator.AddEntity(ship);
+            locator.AddEntity(station);
+            locator.AddEntity(squadron);
+            var camera = new FakeCamera(null)
+            {
+                Hits = new[] { Hit(ship, -502f, 600f), Hit(station, -100f, 100f) }
+            };
+            var markers = new FakeMarkerLayer();
+            markers.Register(new FakeMarker(squadron.Id, new Rect(-0.5f, -0.5f, 1f, 1f)));
+            var query = new SelectionQuery(camera, locator, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), markers);
+            var results = new List<SelectionEntry>();
+
+            query.CollectAt(Vector2.zero, results);
+
+            Assert.That(results.ConvertAll(entry => entry.Entity), Is.EqualTo(new IEntity[] { squadron, station, ship }));
+
+            camera.Hits = new[] { Hit(ship, -502f, 600f) };
+            Assert.That(query.TryFindAt(Vector2.one, out SelectionEntry exposed), Is.True);
+            Assert.That(exposed.Entity, Is.SameAs(ship));
+        }
+
+        private static RaycastHit Hit(IEntity entity, float y, float distance) =>
+            new RaycastHit { point = new Vector3(entity.Id, y, 0f), distance = distance };
+
+        private sealed class HitLocator : IEntityLocator
+        {
+            private readonly Dictionary<long, IEntity> _entities = new Dictionary<long, IEntity>();
+            public string Id => nameof(HitLocator);
+            public event Action<IEntity> EntityAdded { add { } remove { } }
+            public event Action<IEntity> EntityRemoved { add { } remove { } }
+            public Dictionary<long, IEntity>.ValueCollection Entities => _entities.Values;
+            public void AddEntity(IEntity entity) => _entities.Add(entity.Id, entity);
+            public void RemoveEntity(IEntity entity) => _entities.Remove(entity.Id);
+            public IEntity GetEntity(long entityId) => _entities[entityId];
+            public bool TryGetEntity(long entityId, out IEntity entity) => _entities.TryGetValue(entityId, out entity);
+            public bool TryGetEntity(RaycastHit hit, out IEntity entity) => TryGetEntity((long)hit.point.x, out entity);
+            public bool TryGetEntity(Collider collider, out IEntity entity) => throw new NotSupportedException();
+        }
+
+        private sealed class FakeStationHull : IStationHullFacade
+        {
+            public float HullBottom => -234f;
+            public float HullTop => 0f;
+            public float GetHullRadius(Vector3 center) => 100f;
+        }
 
         private sealed class FakeMarkerLayer : IBattleMarkerLayer
         {
@@ -252,6 +332,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeCamera : ICameraService
         {
+            public RaycastHit[] Hits { get; set; } = Array.Empty<RaycastHit>();
             public string Id => nameof(FakeCamera);
             public Vector3 CameraPosition => default;
             public Transform CameraTransform => null;
@@ -265,7 +346,12 @@ namespace EmpireAtWar.Tests.Editor
 
             public RaycastHit ScreenPointToRay(Vector2 point) => default;
 
-            public int ScreenPointRaycastAll(Vector2 point, RaycastHit[] results) => 0;
+            public int ScreenPointRaycastAll(Vector2 point, RaycastHit[] results)
+            {
+                int count = Math.Min(Hits.Length, results.Length);
+                Array.Copy(Hits, results, count);
+                return count;
+            }
 
             public Vector3 WorldToViewportPoint(Vector3 point) => new Vector3(0.5f + point.x, 0.5f, 1f);
 

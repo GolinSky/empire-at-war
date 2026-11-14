@@ -12,6 +12,9 @@
 
 
 
+
+
+
 - [ ] **Forbidden UI SFX** → [[Done/Features/Ui_Sfx_System#Deferred follow-up|Deferred forbidden cue]].
 - [ ] **Dynamic in-game tutorial (in-match hints: camera, select, move, minimap, build, counters tooltip, build queue, abilities + auto-power, level up, research, map systems)** → [[TODOs/Features/Ingame_Tutorial_Plan|In-Game Tutorial Plan]]
   - UI spotlight migration 2026-11-11: shared UI frames replaced by a 65% dim overlay with target cutout; added per-element `IUiHighlight` API and own-graphic 1.2 s pulse (compile/bindings verified, visual check pending); optional pointer blocking defaults off. Loading-time minimap `HideTarget` exception fixed 2026-11-11 with marker lifecycle tracking; compiled, startup replay pending. User-authorized tests: Ui 274/274 and Core 150/150 passed; visual acceptance pending.
@@ -61,6 +64,10 @@
 ### Bugs
 
 
+
+
+
+
 - [ ] **Ship hardpoints, firing angles and balance** → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]
   - Status: todo (2026-11-13). Peleset/Recalcitrant wrapped-yaw mismatch; Recusant DPS/coverage; Dispatcher/Resolute/Arquitens narrow arcs; Mandator economics; shared-prefab telemetry and Venator II description. Findings recorded; fixes unimplemented.
 
@@ -73,6 +80,8 @@
   - Next: user in-game check (#4 build order, #5 raids, #10 cues, #11 rings, #12 home mines).
 
 - [ ] **Fix enemy AI losing battles and CIS vs Republic balance** → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance|Enemy AI and Faction Balance]]; logs: [[Tooling/Battle_Telemetry|Battle Telemetry]]
+  - Evening19:09 CIS battle audit: old-home spawning after primary station loss, retreat→Hold fleet loss and capture oscillation; squadron damage gap3.66×. Fix anchoring/recovery before broad balance tuning; source/log verified, no gameplay edits/tests. Evidence in the dated review's Evening Battle section.
+  - Old-home rebuild / recovery placement now owned by [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]] (2026-11-14).
   - 2026-11-13 audit: rapid raid/site-defense switching and order/retreat follow-ups → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review 2026-11-13]]. Ship findings now owned by [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]].
   - Done (commit `6babee5e1`): Republic torpedo nerf, CIS hangar/squadron buffs, Concentrate Fire nerf, AI squadron escort, strength, rally, production, press-advantage and retreat-memory fixes; AI EditMode tests pass.
   - 2026-11-01: mining raid priority/strength checks, capture-squadron reservation and early captured-mine construction fixed; tests authored, not run. Comparison → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Research]].
@@ -259,6 +268,10 @@
 
 - [x] **Fix AI patrol/recovery review regressions** → [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]]
   - Completed 2026-11-14: threatened-site preemption, defendable-station protection during backup construction, scoped pressure bypass and parseable recovery telemetry. Unity compilation/source checks passed; tests not run. Battle/profiling gates → [[TODOs/User_Acceptance_Queue]].
+
+- [x] **Executor depth, planet clearance and big-ship targeting** → [[Done/Bugs/Executor_Depth_And_Big_Ship_Targeting_Fix]]
+  - Completed 2026-11-14: Executor −576, planet ceiling −701, station-over-deep-ship clicks, rotated attack-stall retries. Unity compilation and asset persistence verified; tests authored/not run. Visual, battle and test gates → [[TODOs/User_Acceptance_Queue]].
+
 
 - [x] **Fix reinforcement spawn near/above station and ship spawn grid** → [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]]
   - Completed 2026-11-14: live station hull spans, ship-aware physics/reachability grid, cell-centred preview/drop positions and safe batch spacing. Unity compilation/import and source checks passed; tests not run. In-game and large-map profiling gates → [[TODOs/User_Acceptance_Queue]].

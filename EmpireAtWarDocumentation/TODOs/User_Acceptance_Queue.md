@@ -324,7 +324,16 @@ created: "2026-10-29\r"
 - [ ] [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]] — Profile a large-map ship placement using Battle.SpawnArea.Redraw and Battle.SpawnArea.Reachability; compare frame times with the battle performance budget. No runtime measurements yet.
 - [ ] [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]] — Run authored Navigation/Map/Economy regressions and affected BattleInput/EnemyAi compatibility checks only on explicit request; tests were not run.
 
+## Executor Depth and Big-Ship Targeting
+
+- [ ] [[Done/Bugs/Executor_Depth_And_Big_Ship_Targeting_Fix]] — Executor at mid zoom: about 20% smaller apparent size, clearly below stations; cinematic framing, overlays and save/load remain correct.
+- [ ] [[Done/Bugs/Executor_Depth_And_Big_Ship_Targeting_Fix]] — Small map: no planet/hull intersections, planet framing acceptable, superweapon beam starts on the surface.
+- [ ] [[Done/Bugs/Executor_Depth_And_Big_Ship_Targeting_Fix]] — Enemy station above Executor: click selects station, right-click attacks station; exposed Executor hull remains selectable.
+- [ ] [[Done/Bugs/Executor_Depth_And_Big_Ship_Targeting_Fix]] — Fleet attack on a surrounded Executor: outer ships retry toward open slots and fire; inspect large-battle retry cost.
+- [ ] [[Done/Bugs/Executor_Depth_And_Big_Ship_Targeting_Fix]] — Run targeted Ships, Map, BattleInput, Navigation and Combat tests only when explicitly requested; regression sources were authored but execution was disabled.
+
 ## Small Ship Icons and Squadron Icon Grid
+
 - [ ] [[Done/Features/Small_Ship_Icons_And_Squadron_Grid_Plan]] — In-game: inspect all 12 ship markers, Stealth Corvette cloak/fog, individual squadron slots through idle/move/combat, merges/splits and passing traffic, viewport edges, dense screen overlap, zoom and pause.
 - [ ] [[Done/Features/Small_Ship_Icons_And_Squadron_Grid_Plan]] — Development Player: capture comparable 32/128/512 visible markers and 321 squadrons + 83 ships with dense, dispersed and high-churn layouts. Record p95 main-thread, worker time, candidate counts, canvas rebuild and GC bytes; tune using measured results.
 - [ ] [[Done/Features/Small_Ship_Icons_And_Squadron_Grid_Plan]] — Run authored Squadrons, Ships, BattleInput, Vision and Core regressions only on explicit request.

@@ -1,10 +1,17 @@
+using System;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Planet;
+using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Mvc;
+using EmpireAtWar.Services.Factory;
+using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.VContainer;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using VContainer;
 using Object = UnityEngine.Object;
+using LifetimeScope = VContainer.Unity.LifetimeScope;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -14,6 +21,75 @@ namespace EmpireAtWar.Tests.Editor
         private const string SETTINGS_PATH = "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset";
         private const float OBSTACLE_RADIUS = 720f;
         private const float TOLERANCE = 0.1f;
+
+        [TestCase(MapSize.Small, 0f)]
+        [TestCase(MapSize.Medium, 0f)]
+        [TestCase(MapSize.Large, 0f)]
+        [TestCase(MapSize.Small, 360f)]
+        [TestCase(MapSize.Medium, 720f)]
+        [TestCase(MapSize.Large, 1440f)]
+        public void Create_EveryPlanetKeepsSurfaceAndCloudsBelowShipCeiling(MapSize size, float obstacleRadius)
+        {
+            MapGenerationSettings settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(SETTINGS_PATH);
+            using var containerSettings = new PopulatedVContainerSettings();
+            GameObject root = new GameObject("Planet Ceiling Test");
+            root.SetActive(false);
+            try
+            {
+                PlanetTestScope owner = root.AddComponent<PlanetTestScope>();
+                owner.autoRun = false;
+                using (LifetimeScope.EnqueueParent(null)) owner.Build();
+                root.SetActive(true);
+                foreach (PlanetType type in Enum.GetValues(typeof(PlanetType)))
+                {
+                    var factory = new PlanetFactory(owner, settings);
+                    try
+                    {
+                        PlanetView planet = factory.Create(type, size, new Vector3(123f, 0f, -456f), obstacleRadius);
+                        Assert.That(planet.VisualTop, Is.LessThanOrEqualTo(settings.PlanetSurfaceCeiling + TOLERANCE),
+                            $"{type}, {size}, obstacle {obstacleRadius}");
+                        using SerializedObject view = new SerializedObject(planet);
+                        foreach (string field in new[] { "planetRenderers", "cloudRenderers" })
+                        {
+                            SerializedProperty renderers = view.FindProperty(field);
+                            for (int i = 0; i < renderers.arraySize; i++)
+                            {
+                                MeshRenderer renderer = (MeshRenderer)renderers.GetArrayElementAtIndex(i).objectReferenceValue;
+                                Bounds bounds = renderer.localBounds;
+                                foreach (Vector3 axis in new[] { Vector3.right, Vector3.up, Vector3.forward })
+                                foreach (float sign in new[] { -1f, 1f })
+                                {
+                                    Vector3 surface = renderer.transform.TransformPoint(
+                                        bounds.center + Vector3.Scale(axis, bounds.extents) * sign);
+                                    Assert.That(surface.y, Is.LessThanOrEqualTo(settings.PlanetSurfaceCeiling + TOLERANCE),
+                                        $"{type}: {field}[{i}] crosses the ceiling");
+                                }
+                            }
+                        }
+                        if (type == PlanetType.Kamino && obstacleRadius == 0f)
+                            Assert.That(planet.transform.position.y,
+                                Is.EqualTo(settings.GetPlanetPrefab(type).transform.position.y * settings.GetSize(size).PlanetScale)
+                                    .Within(TOLERANCE), "A planet already below the ceiling must retain its authored depth.");
+                    }
+                    finally { factory.Dispose(); }
+                }
+                containerSettings.AssertProductionRootUntouched();
+            }
+            finally { Object.DestroyImmediate(root); }
+        }
+
+        [Test]
+        public void PlanetCeiling_IsBelowEveryShipHull()
+        {
+            MapGenerationSettings settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(SETTINGS_PATH);
+            string[] ships = AssetDatabase.FindAssets("t:ShipData", new[] { "Assets/Settings/Data/Ship" });
+            Assert.That(ships, Is.Not.Empty);
+            foreach (string guid in ships)
+            {
+                ShipData ship = AssetDatabase.LoadAssetAtPath<ShipData>(AssetDatabase.GUIDToAssetPath(guid));
+                Assert.That(settings.PlanetSurfaceCeiling, Is.LessThan(ship.Height + ship.HullBottom), ship.name);
+            }
+        }
 
         [TestCase(360f, 6f)]
         [TestCase(720f, 8.4f)]
@@ -101,6 +177,26 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.Throws<UnassignedReferenceException>(() => instance.View.FitObstacle(Vector3.zero, OBSTACLE_RADIUS));
             }
             finally { Object.DestroyImmediate(parent); }
+        }
+
+        private sealed class PlanetTestScope : AssetLifetimeScope, IAssetService
+        {
+            protected override void Configure(IContainerBuilder builder)
+            {
+                Assets = this;
+                builder.RegisterInstance<ISuperWeaponOriginRegistry>(new SuperWeaponOriginRegistry());
+            }
+
+            public TSource Load<TSource>(string key) where TSource : Object
+            {
+                Assert.That(key, Is.EqualTo(nameof(PlanetData)));
+                return AssetDatabase.LoadAssetAtPath<TSource>("Assets/Settings/Data/Models/Planets/PlanetData.asset");
+            }
+
+            public TComponent LoadComponent<TComponent>(string key) where TComponent : Component =>
+                throw new NotSupportedException();
+
+            public GameObject LoadPrefab(string key) => throw new NotSupportedException();
         }
     }
 }

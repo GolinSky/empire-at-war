@@ -176,6 +176,18 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void RightClick_StationRankedAboveEnemyCapital_AttacksStation()
+        {
+            _query.Command = new FakeFacilitySelection { SelectionType = SelectionType.Base };
+            _query.BehindTarget = new FakeEntity(_view.transform, TestPlayers.Enemy, 3);
+
+            _input.RightClick(Vector2.zero);
+
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(_orders.LastTarget, Is.SameAs(_enemy));
+        }
+
+        [Test]
         public void PendingAttack_IgnoresInvalidClickWithoutMoving()
         {
             _targeting.Start(UnitActionId.Attack);
