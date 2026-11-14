@@ -256,13 +256,13 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void StationContact_UsesHullSpanWithoutChangingPlanarRadius()
+        public void StationContact_UsesHullRadiusAndSpan()
         {
-            var obstacle = new StationObstacle(new PlayerId(0), new Vector3(0f, -40f, 0f), 396f);
+            var obstacle = new StationObstacle(new PlayerId(0), new Vector3(0f, -40f, 0f));
 
-            RadarContact contact = obstacle.GetContact(-112f, 32f);
+            RadarContact contact = obstacle.GetContact(62f, -112f, 32f);
 
-            Assert.That(contact.Radius, Is.EqualTo(396f));
+            Assert.That(contact.Radius, Is.EqualTo(62f));
             Assert.That(contact.Bottom, Is.EqualTo(-112f));
             Assert.That(contact.Top, Is.EqualTo(32f));
         }
@@ -270,8 +270,8 @@ namespace EmpireAtWar.Tests.Movement
         [Test]
         public void IsReachable_StationOriginAllowsClearHullHeightsAndExteriorGoals()
         {
-            var obstacle = new StationObstacle(new PlayerId(0), Vector3.zero, 30f);
-            ShipNavigationService service = CreateService(new[] { obstacle.GetContact(-10f, 10f) });
+            var obstacle = new StationObstacle(new PlayerId(0), Vector3.zero);
+            ShipNavigationService service = CreateService(new[] { obstacle.GetContact(30f, -10f, 10f) });
 
             Assert.That(service.IsReachable(Vector3.zero, Vector3.zero, 5f,
                 new ShipHullSpan(11f, 15f), _mapRange), Is.True);
@@ -286,8 +286,8 @@ namespace EmpireAtWar.Tests.Movement
         [Test]
         public void Plan_FliesAboveStationHullAndAvoidsItAtHullHeight()
         {
-            var obstacle = new StationObstacle(new PlayerId(0), Vector3.zero, 30f);
-            ShipNavigationService service = CreateService(new[] { obstacle.GetContact(-10f, 10f) });
+            var obstacle = new StationObstacle(new PlayerId(0), Vector3.zero);
+            ShipNavigationService service = CreateService(new[] { obstacle.GetContact(30f, -10f, 10f) });
             var above = new FakeAgent(new Vector3(-80f, 20f, 0f), 20f, 5f, 10f, 5f,
                 new ShipHullSpan(15f, 25f));
             var overlapping = new FakeAgent(new Vector3(-80f, 0f, 0f), 0f, 5f, 10f, 5f,
@@ -307,11 +307,11 @@ namespace EmpireAtWar.Tests.Movement
             var provider = new MapObstacleContactProvider(null, stations);
             provider.UpdateState(new BattleMap(null, null, null,
                 System.Array.Empty<MapObstacle>(),
-                new[] { new StationObstacle(
-                    new PlayerId(0), Vector3.zero, 30f) }));
+                new[] { new StationObstacle(new PlayerId(0), Vector3.zero) }));
             var contacts = new List<RadarContact>();
             provider.CopyContacts(contacts);
             Assert.That(contacts.Count, Is.EqualTo(1));
+            Assert.That(contacts[0].Radius, Is.EqualTo(30f), "Navigation blocks the hull, not the map keep-out radius.");
             Assert.That(contacts[0].Bottom, Is.EqualTo(-10f));
             Assert.That(contacts[0].Top, Is.EqualTo(10f));
 
@@ -354,6 +354,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             public float HullBottom { get; set; } = -10f;
             public float HullTop { get; set; } = 10f;
+            public float GetHullRadius(Vector3 center) => 30f;
         }
 
         [Test]

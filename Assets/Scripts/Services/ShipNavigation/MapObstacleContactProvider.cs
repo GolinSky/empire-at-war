@@ -78,7 +78,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                 // The map slot belongs to the main station, not a surviving second station elsewhere.
                 if (station.TryGetFacade(out ISecondStationFacade _)) continue;
                 IStationHullFacade hull = station.GetFacade<IStationHullFacade>();
-                destination.Add(obstacle.GetContact(hull.HullBottom, hull.HullTop));
+                destination.Add(obstacle.GetContact(hull.GetHullRadius(obstacle.Position), hull.HullBottom,
+                    hull.HullTop));
             }
         }
     }

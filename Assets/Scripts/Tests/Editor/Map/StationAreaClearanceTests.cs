@@ -52,6 +52,14 @@ namespace EmpireAtWar.Tests.Editor
                 hull.size = new Vector3(100f, 40f, 100f);
                 Assert.That(facade.HullBottom, Is.EqualTo(-55f));
                 Assert.That(facade.HullTop, Is.EqualTo(-15f));
+
+                // Half-diagonal of the 100 x 100 box, plus the planar offset of its centre.
+                hull.size = new Vector3(60f, 40f, 80f);
+                hull.center = new Vector3(10f, 5f, 0f);
+                Assert.That(facade.GetHullRadius(station.transform.position), Is.EqualTo(60f).Within(0.001f));
+                station.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+                Assert.That(facade.GetHullRadius(station.transform.position), Is.EqualTo(60f).Within(0.001f),
+                    "Yaw must not change the covering radius.");
             }
             finally
             {

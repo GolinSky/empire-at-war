@@ -320,6 +320,6 @@ created: "2026-10-29\r"
 
 ## Reinforcement Spawn Near Station
 
-- [ ] [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]] — In-game: small/large ships near/above/below every faction station level; grid/preview parity after refresh, batch spacing, reservations and main-station destruction.
+- [ ] [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]] — In-game: small/large ships near/above/below every faction station level (nav disk now hull-sized, not 396 u — check ships path around station hull cleanly); grid/preview parity after refresh, batch spacing, reservations and main-station destruction.
 - [ ] [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]] — Profile a large-map ship placement using Battle.SpawnArea.Redraw and Battle.SpawnArea.Reachability; compare frame times with the battle performance budget. No runtime measurements yet.
 - [ ] [[Done/Bugs/Reinforcement_Spawn_Near_Station_Fix]] — Run authored Navigation/Map/Economy regressions and affected BattleInput/EnemyAi compatibility checks only on explicit request; tests were not run.

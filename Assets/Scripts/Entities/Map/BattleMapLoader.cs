@@ -114,10 +114,7 @@ namespace EmpireAtWar.Entities.Map
             foreach (PlayerSlot player in players)
             {
                 if (!_battle.GetPlayer(player.Id).OwnsStation) continue;
-                obstacles.Add(new StationObstacle(
-                    player.Id,
-                    layout.GetStationPosition(player.Id),
-                    _settings.GetStationRadius(player.Faction)));
+                obstacles.Add(new StationObstacle(player.Id, layout.GetStationPosition(player.Id)));
             }
 
             return obstacles;

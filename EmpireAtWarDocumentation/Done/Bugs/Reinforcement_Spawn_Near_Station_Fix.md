@@ -14,8 +14,11 @@ acceptance: pending-user
 ## Decision
 - Use the live station collider via `IStationHullFacade`, not a baked maximum height.
   - Why: `StationLevelView.ApplyLevel` changes collider bounds on upgrades.
-  - Keep the planar navigation radius; do not shrink real physics colliders to admit overlapping ships.
-- `BattleMapLoader` still creates owner/position/radius descriptors. `MapObstacleContactProvider` supplies current bottom/top.
+  - Do not shrink real physics colliders to admit overlapping ships.
+- 2026-11-14 follow-up (user-approved): navigation disk radius = live hull box planar half-diagonal + centre offset (`IStationHullFacade.GetHullRadius`), not the 396/261 u map keep-out.
+  - Why: verification showed the old 396 u ring still blocked HighMid ships at every station and 61/68 ships at Rebellion stations.
+  - `INavigationFootprintFacade.NavigationRadius` keeps the map radius (AI defense rings, engagement stand-off, guard spacing unchanged).
+- `BattleMapLoader` creates owner/position descriptors. `MapObstacleContactProvider` supplies current radius/bottom/top.
 - Share placement validity with the overlay. Batch navigation through one parallel Burst job; restrict physics predicates to collider/reservation candidate bounds.
 
 ## Implementation
@@ -40,6 +43,8 @@ acceptance: pending-user
   - Empire: bottom -111.833 to -145.887 u; top 31.833 u.
   - Rebellion: bottom -229.731 u; top 149.731 u (levels 1–3), 218.511 u (levels 4–5).
   - Separatist: bottom approximately -146.768 u; top 66.768 to 75.776 u.
+- Hull nav radius (root BoxCollider, half-diagonal): Empire ≈ 62 u, Republic ≈ 110 u, Separatist ≈ 124 u, Rebellion ≈ 117 u (was 396/261 u); ship nav clearance is added on top.
+- Ships clearing station height (hull wholly above/below collider): Empire 42/68, Republic 41/68, Separatist 28/68, Rebellion 7/68. The rest now meet the hull-sized disk, not the 396 u ring.
 - Default overlay resolution = 256 × 256; cell width = map extent / 256; snap displacement ≤ half a cell on each axis.
 - Dynamic physics/vision/blocker redraw = existing 0.1 s default; reachability refresh = Show + every 1 s.
 - Profiling markers: `Battle.SpawnArea.Redraw`, `Battle.SpawnArea.Reachability`.

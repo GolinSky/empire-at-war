@@ -11,17 +11,15 @@ namespace EmpireAtWar.Components.Obstacles
     public sealed class StationObstacle
     {
         public Vector3 Position { get; }
-        public float Radius { get; }
         public PlayerId Owner { get; }
 
-        public StationObstacle(PlayerId owner, Vector3 position, float radius)
+        public StationObstacle(PlayerId owner, Vector3 position)
         {
             Owner = owner;
             Position = position;
-            Radius = radius;
         }
 
-        public RadarContact GetContact(float bottom, float top) =>
-            new RadarContact(Position, Radius, false, bottom, top);
+        public RadarContact GetContact(float radius, float bottom, float top) =>
+            new RadarContact(Position, radius, false, bottom, top);
     }
 }
