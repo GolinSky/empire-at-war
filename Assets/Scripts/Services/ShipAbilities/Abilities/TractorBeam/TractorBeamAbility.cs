@@ -4,7 +4,6 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Health;
-using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 
@@ -26,7 +25,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public bool IsComplete => _hardPoint.IsDestroyed || _target.HealthModel.IsDestroyed || _target.IsCloaked() || _targetTransform == null ||
             _caster.Modifiers.AbilitiesSuppressed ||
-            PlanarGeometry.Distance(_caster.WorldPosition, _targetTransform.position) > _range;
+            !ShipAbilityRange.IsInRange(_caster, _target, _range);
         public bool SurvivesCasterDeath => false;
 
         public TractorBeamAbility(TractorBeamSettings settings)

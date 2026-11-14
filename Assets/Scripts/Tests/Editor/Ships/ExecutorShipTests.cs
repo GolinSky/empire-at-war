@@ -35,6 +35,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.ShieldGenerator), Is.EqualTo(4));
             Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.Engines), Is.EqualTo(2));
             Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.Hangar), Is.EqualTo(2));
+            Assert.That(health.ShipUnits.Count(p => p.HardPointType == HardPointType.TractorBeam), Is.EqualTo(1));
             Assert.That(weapons.All(health.ShipUnits.Contains), Is.True);
         }
 

@@ -173,9 +173,33 @@ namespace EmpireAtWar.Services.ShipNavigation
 
             using (BattleProfilerMarkers.NavigationPlan.Auto())
             {
+                if (agent.IgnoresMapObstacles)
+                    return PlanUnrestricted(agent, forward, requestedDestination, reserveAsPending);
                 return PlanRoute(agent, forward, requestedDestination, obstacleContacts,
                     heightTolerance, clearance, mapRange, preserveCourse, reserveAsPending);
             }
+        }
+
+        private ShipNavigationPlan PlanUnrestricted(IShipNavigationAgent agent, Vector3 forward,
+            Vector3 destination, bool reserveAsPending)
+        {
+            int registrationId = GetRegistrationId(agent);
+            Vector3 origin = agent.NavigationPosition;
+            destination.y = agent.NavigationHeight;
+            var route = new ShipRoute(new[] { ShipRoutePiece.Line(origin, destination) });
+            bool isStationary = route.Length <= Mathf.Epsilon;
+            float turnDuration = isStationary || Vector3.Angle(forward, route.InitialTangent) <= 1f
+                ? 0f : ShipRotationKinematics.CalculateTurnDuration(Quaternion.LookRotation(forward, Vector3.up),
+                    route.InitialTangent, agent.NavigationRotationSpeed);
+            if (reserveAsPending)
+                _destinationRegistry.ReservePendingFinalPosition(registrationId, ToPoint(destination));
+            else
+                _destinationRegistry.CommitActiveFinalPosition(registrationId, ToPoint(destination));
+            float movementDuration = new ShipRouteSpeedProfile(route, agent.NavigationSpeed,
+                agent.NavigationRotationSpeed, turnDuration > 0f ? 0f : agent.NavigationCurrentSpeed).Duration;
+            // Turning plans must reach the component's brake/replan branch even during pursuit.
+            return new ShipNavigationPlan(route, destination, null, turnDuration, movementDuration,
+                isStationary, reserveAsPending);
         }
 
         private ShipNavigationPlan PlanRoute(
@@ -192,7 +216,6 @@ namespace EmpireAtWar.Services.ShipNavigation
             int registrationId = GetRegistrationId(agent);
             Vector3 origin = agent.NavigationPosition;
             BuildNavigationContacts(obstacleContacts, agent.NavigationHullSpan);
-            if (agent.IgnoresMapObstacles) _mapObstacleContacts.Clear();
 
             bool canReuseStationary = preserveCourse && !reserveAsPending;
             ShipNavigationCache.Request request = new ShipNavigationCache.Request(agent, forward,
@@ -448,6 +471,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             Vector3 position,
             float navigationRadius)
         {
+            if (agent.IgnoresMapObstacles) return true;
             return _destinationRegistry.HasClearance(
                 GetRegistrationId(agent),
                 ToPoint(position),

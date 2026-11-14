@@ -182,8 +182,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         private void SetTargetPosition(Vector3 requestedPosition, bool preserveCourse = false)
         {
             requestedPosition.y = Model.Height;
-            Vector3 requested = ShipAvoidancePlanner.ClampToMap(requestedPosition,
-                _mapModel.SizeRange, NavigationRadius);
+            Vector3 requested = IgnoresMapObstacles ? requestedPosition :
+                ShipAvoidancePlanner.ClampToMap(requestedPosition, _mapModel.SizeRange, NavigationRadius);
             if (preserveCourse && _failedDestination.HasValue &&
                 (requested - _failedDestination.Value).sqrMagnitude < NavigationRadius * NavigationRadius)
                 return;

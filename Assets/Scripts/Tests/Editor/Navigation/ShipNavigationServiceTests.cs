@@ -256,6 +256,75 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void Plan_ObstacleIgnoringShipCrossesHazardsAndMapBoundsIntoReservedDestination()
+        {
+            SpaceHazardData data = ScriptableObject.CreateInstance<SpaceHazardData>();
+            try
+            {
+                HazardShape zone = TestHazards.CreateEllipse(data, Vector3.zero, Vector3.forward, 30f, 20f);
+                var service = new ShipNavigationService(
+                    new FakeMapObstacleContactProvider(new[] { new RadarContact(Vector3.zero, 30f, false) }),
+                    new TestHazards { Sources = new IHazardSource[] { zone } });
+                _services.Add(service);
+                Vector3 destination = new Vector3(300f, 0f, 0f);
+                var parked = new FakeAgent(destination, 0f, 5f, 10f, 30f);
+                service.Register(parked, destination);
+                var executor = new FakeAgent(new Vector3(-300f, 0f, 0f), 0f, 1059.4355f, 10f, 1.5f)
+                    { IgnoresMapObstacles = true };
+
+                ShipNavigationPlan plan = Plan(service, executor, destination);
+
+                Assert.That(plan.IsStationary, Is.False);
+                Assert.That(plan.Destination, Is.EqualTo(destination));
+                Assert.That(plan.Route.Length, Is.EqualTo(600f).Within(0.01f));
+                Assert.That(plan.Route.Pieces.Count, Is.EqualTo(1));
+                Assert.That(plan.Route.Pieces[0].Curvature, Is.Zero);
+                Assert.That(service.IsPositionClear(executor, destination, executor.NavigationRadius), Is.True);
+            }
+            finally { Object.DestroyImmediate(data); }
+        }
+
+        [TestCase(false, false)]
+        [TestCase(true, false)]
+        [TestCase(true, true)]
+        public void Plan_ObstacleIgnoringShipTurnsBeforeStraightApproach(bool preserveCourse, bool reserveAsPending)
+        {
+            var service = CreateService();
+            var executor = new FakeAgent(Vector3.zero, 0f, 1059.4355f, 10f, 1.5f)
+                { IgnoresMapObstacles = true };
+            service.Register(executor, Vector3.zero);
+            Vector3 destination = Vector3.back * 1000f;
+
+            ShipNavigationPlan plan = service.Plan(executor, Vector3.forward, destination,
+                System.Array.Empty<RadarContact>(), 0.5f, executor.NavigationRadius, _mapRange,
+                preserveCourse, reserveAsPending);
+
+            Assert.That(plan.TurnDuration, Is.EqualTo(120f).Within(0.01f));
+            Assert.That(plan.Route.Length, Is.EqualTo(1000f).Within(0.01f));
+            Assert.That(plan.Route.Pieces[0].Curvature, Is.Zero);
+            Assert.That(plan.IsDeferred, Is.EqualTo(reserveAsPending),
+                "Pursuit must brake and replan a turn instead of deferring until the old route finishes.");
+        }
+
+        [TestCase(false, 95f)]
+        [TestCase(true, 300f)]
+        public void MoveToPosition_OnlyObstacleIgnoringShipKeepsDestinationOutsideMap(bool ignoresMapObstacles,
+            float expectedX)
+        {
+            GameObject ship = new GameObject("Map border order");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation,
+                    ignoresMapObstacles: ignoresMapObstacles);
+
+                component.MoveToPosition(Vector3.right * 300f);
+
+                Assert.That(navigation.LastDestination.x, Is.EqualTo(expectedX));
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        [Test]
         public void StationContact_UsesHullRadiusAndSpan()
         {
             var obstacle = new StationObstacle(new PlayerId(0), new Vector3(0f, -40f, 0f));
@@ -1076,10 +1145,12 @@ namespace EmpireAtWar.Tests.Movement
         private ShipMoveComponent CreateReadyComponent(
             GameObject gameObject,
             out RecordingShipNavigationService recordingShipNavigationService,
-            bool isReady = true)
+            bool isReady = true,
+            bool ignoresMapObstacles = false)
         {
             recordingShipNavigationService = new RecordingShipNavigationService();
-            ShipMoveModel model = new ShipMoveModel(new FakeShipMoveData(), new CombatModifiers());
+            ShipMoveModel model = new ShipMoveModel(
+                new FakeShipMoveData { IgnoresMapObstacles = ignoresMapObstacles }, new CombatModifiers());
             if (isReady)
             {
                 model.FinishArrival();
@@ -1232,7 +1303,7 @@ namespace EmpireAtWar.Tests.Movement
             public float HyperSpaceDuration => 1f;
             public float BodyRotationMaxAngle => 10f;
             public float NavigationRadius => 5f;
-            public bool IgnoresMapObstacles => false;
+            public bool IgnoresMapObstacles { get; set; }
         }
 
         private sealed class RecordingPlanRequester : IShipPlanRequester

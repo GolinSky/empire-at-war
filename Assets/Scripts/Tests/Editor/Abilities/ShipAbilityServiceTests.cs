@@ -300,6 +300,31 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(factory.Created[0].StopCount, Is.EqualTo(1));
         }
 
+        [TestCase(1059.4355f, 50f, 1200f, false)]
+        [TestCase(1059.4355f, 50f, 1300f, true)]
+        [TestCase(100f, 50f, 499f, false)]
+        [TestCase(100f, 50f, 501f, true)]
+        public void TractorBeam_EndsOnlyOutsideTheActivationRange(float casterRadius, float targetRadius,
+            float distance, bool expectedComplete)
+        {
+            FakeCommand caster = CreateCaster();
+            caster.FakeHealth.NavigationRadius = casterRadius;
+            _targetView = new GameObject("Tractor target");
+            _targetView.transform.position = Vector3.right * distance;
+            var targetHealth = new FakeHealth(_targetView.transform) { NavigationRadius = targetRadius };
+            var target = new FakeEntity(command: null, owner: TestPlayers.Enemy, health: targetHealth);
+            var ability = new TractorBeamAbility(new TractorBeamSettings());
+            const BindingFlags FLAGS = BindingFlags.Instance | BindingFlags.NonPublic;
+            typeof(TractorBeamAbility).GetField("_caster", FLAGS).SetValue(ability, caster);
+            typeof(TractorBeamAbility).GetField("_target", FLAGS).SetValue(ability, target);
+            typeof(TractorBeamAbility).GetField("_targetTransform", FLAGS).SetValue(ability, _targetView.transform);
+            typeof(TractorBeamAbility).GetField("_hardPoint", FLAGS).SetValue(ability, new IonCannonStub());
+            typeof(TractorBeamAbility).GetField("_range", FLAGS).SetValue(ability, 500f);
+
+            Assert.That(ShipAbilityRange.IsInRange(caster, target, 500f), Is.EqualTo(!expectedComplete));
+            Assert.That(ability.IsComplete, Is.EqualTo(expectedComplete));
+        }
+
         [Test]
         public void Targeting_RejectsOutOfRangeAndActivatesInRange()
         {
@@ -938,8 +963,10 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade, IHealthFacade
+        private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade, IHealthFacade,
+            INavigationFootprintFacade
         {
+            public float NavigationRadius { get; set; }
             public float DamageReceived { get; private set; }
             public void ApplyDamage(float damage, DamageType damageType, int id) => DamageReceived += damage;
 
