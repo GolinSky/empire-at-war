@@ -113,7 +113,7 @@ MonoBehaviour:
           rid: 7607833764655792204
     - key: 39
       value:
-        icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
+        icon: {fileID: 21300000, guid: 702ac3b70a6644b7a50ae6c14bada55c, type: 3}
         displayName: Sensor Jamming
         description: Reduce enemy accuracy by 20% within 500 game units for 8 seconds.
           Sensor destruction ends the effect. Recovers in 40 seconds; overlapping
