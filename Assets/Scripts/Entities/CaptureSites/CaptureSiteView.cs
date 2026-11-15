@@ -99,9 +99,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             bool hidden = state is CaptureSiteState.Constructing or CaptureSiteState.Operational;
             bool blink = state == CaptureSiteState.Owned && owner == OwnerRelation.Own &&
                 capturer == OwnerRelation.Neutral && !isContested;
-            bool showMineGrid = Kind == CaptureSiteKind.Mining && facilityType == SiteFacilityType.Mining &&
-                state == CaptureSiteState.Operational;
-            captureRing.Render(owner, isContested, blink, hidden && !showMineGrid, capturer, contestingFirst, contestingSecond);
+            captureRing.Render(owner, isContested, blink, hidden, capturer, contestingFirst, contestingSecond);
 
             bool isConstructing = state == CaptureSiteState.Constructing;
             asteroidRocks.gameObject.SetActive(!hidden);
