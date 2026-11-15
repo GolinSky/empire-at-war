@@ -214,7 +214,8 @@ namespace EmpireAtWar.Views.Cheats
         private void Update()
         {
             Keyboard keyboard = Keyboard.current;
-            if (keyboard != null && keyboard.f12Key.wasPressedThisFrame)
+            if (keyboard != null && keyboard.leftCtrlKey.isPressed && keyboard.shiftKey.isPressed &&
+                keyboard.f12Key.wasPressedThisFrame)
             {
                 _isExpanded = !_isExpanded;
             }
