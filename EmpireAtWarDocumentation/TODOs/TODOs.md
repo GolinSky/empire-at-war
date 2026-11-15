@@ -63,9 +63,6 @@
 
 ### Bugs
 
-- [ ] **Fix captured tangent arc-repair loop** → [[TODOs/Bugs/Ship_Tangent_Arc_Repair_Loop]]
-  - In progress 2026-11-15: user confirms rotation works; normal battle code 2 captured (build 1696, 20 disks, 227 circle records). Replay/fix and Burst diagnostic-counter correction underway.
-
 
 
 
@@ -284,8 +281,11 @@
 
 ### Bugs
 
+- [x] **Fix captured tangent arc-repair loop** → [[Done/Bugs/Ship_Tangent_Arc_Repair_Loop]]
+  - Completed 2026-11-15: captured battle replay fixed (near-180° winding), obsolete arc-copy reinsertion removed, native repair counters corrected. Navigation 270/270 passed; live battle acceptance pending.
+
 - [x] **Fix ship rotation snaps and tangent route failures** → [[Done/Bugs/Ship_Rotation_Snaps_And_Tangent_Failures]]
-  - Verification 2026-11-15: residual remove/reinsert loop confirmed in direct job inputs (both mirrors: code 2, 33/32 repairs); normal builder passes the same layout. Gameplay reachability remains unproven; see plan verification evidence. No repair change made.
+  - Verification 2026-11-15: residual remove/reinsert loop confirmed in direct job inputs (both mirrors: code 2, 33/32 repairs); normal builder passes the same layout. That probe did not establish gameplay reachability; subsequent battle capture and repair → [[Done/Bugs/Ship_Tangent_Arc_Repair_Loop]].
   - Completed 2026-11-15: bounded heading recovery, actual-hull handoff, corner-safe braking, reproduced overlapping-disk winding repair and Editor/Development-only four-file failure snapshots. EditMode Navigation 260/260 and Ships 209/209 passed; battle/online acceptance → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Restore a dropped/crashed multiplayer session through in-game Reconnect** → [[Done/Bugs/Multiplayer_Reconnect_Flow|Multiplayer Reconnect Flow]]

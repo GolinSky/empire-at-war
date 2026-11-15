@@ -86,7 +86,9 @@ namespace EmpireAtWar.Services.ShipNavigation
                 {
                     ShipRouteGeometry.Tangent(Circles[a.Previous], a, out _, out float2 entry);
                     float sweep = ShipRouteGeometry.Sweep(entry - a.Center, from - a.Center, a.Sign);
-                    if (sweep < 0f && a.SweepHint > math.PI) sweep += 2f * math.PI;
+                    // Funnel corners approximate the arc: a hint just below PI can still
+                    // require a tangent sweep above PI. Choose the winding nearest the hint.
+                    if (sweep < 0f && sweep + math.PI < a.SweepHint) sweep += 2f * math.PI;
                     if (sweep <= ShipRouteGeometry.EPSILON)
                     {
                         ShipRouteCircle previous = Circles[a.Previous];
@@ -107,11 +109,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                             Failure.Value = FAILURE_ARC_REPAIR;
                             return false;
                         }
-                        float3 disk = Disks[arcBlocker];
-                        a.SweepHint = 0f;
-                        Circles[index] = a;
-                        int inserted = InsertAfter(index, new ShipRouteCircle(disk.xy, disk.z, a.Sign, arcBlocker));
-                        InsertAfter(inserted, a);
+                        if (!RepairArc(index, arcBlocker, entry, from, sweep)) return false;
                         index = math.max(0, a.Previous);
                         continue;
                     }
@@ -148,6 +146,47 @@ namespace EmpireAtWar.Services.ShipNavigation
                     continue;
                 }
                 index = a.Next;
+            }
+            return true;
+        }
+
+        private bool RepairArc(int index, int blocker, float2 entry, float2 exit, float sweep)
+        {
+            ShipRouteCircle original = Circles[index];
+            float3 disk = Disks[blocker];
+            var corner = new ShipRouteCircle(disk.xy, disk.z, original.Sign, blocker);
+            if (!ShipRouteGeometry.Tangent(original, corner, out float2 leave, out _) ||
+                !ShipRouteGeometry.Tangent(corner, original, out _, out float2 rejoin))
+            {
+                Failure.Value = FAILURE_NO_TANGENT;
+                return false;
+            }
+
+            float prefix = ShipRouteGeometry.Sweep(entry - original.Center, leave - original.Center, original.Sign);
+            float suffix = ShipRouteGeometry.Sweep(rejoin - original.Center, exit - original.Center, original.Sign);
+            if (prefix < -ShipRouteGeometry.EPSILON) prefix += 2f * math.PI;
+            if (suffix < -ShipRouteGeometry.EPSILON) suffix += 2f * math.PI;
+
+            // Keep only contacts on the arc being repaired. Obsolete copies can otherwise
+            // remove the blocker before the other copy is examined, restoring the same arc.
+            int inserted = index;
+            if (prefix <= sweep + ShipRouteGeometry.EPSILON)
+            {
+                ShipRouteCircle before = original;
+                before.SweepHint = prefix;
+                Circles[index] = before;
+                inserted = InsertAfter(index, corner);
+            }
+            else
+            {
+                corner.Previous = original.Previous;
+                corner.Next = original.Next;
+                Circles[index] = corner;
+            }
+            if (suffix <= sweep + ShipRouteGeometry.EPSILON)
+            {
+                original.SweepHint = suffix;
+                InsertAfter(inserted, original);
             }
             return true;
         }

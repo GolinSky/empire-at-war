@@ -23,6 +23,78 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(1f)]
         [TestCase(-1f)]
+        public void RemovedArcPrefix_DoesNotReinsertTheSameBlocker(float mirror)
+        {
+            // Reduced code-2 reproducer: splitting the small disk arc then removing its
+            // obsolete prefix used to retain a stale suffix and repeat the repair.
+            var input = new[]
+            {
+                new float3(-3.94f, 0.51f * mirror, 0.92f),
+                new float3(-1.07f, -0.24f * mirror, 2.92f)
+            };
+            using var disks = new NativeArray<float3>(input, Allocator.TempJob);
+            using var buckets = new NativeParallelMultiHashMap<int, int>(128, Allocator.TempJob);
+            var layout = new NavMeshBuckets(new float2(-100f), new float2(100f));
+            for (int i = 0; i < input.Length; i++)
+                layout.Insert(buckets, i, input[i].xy - input[i].z, input[i].xy + input[i].z);
+            using var circles = new NativeList<ShipRouteCircle>(4, Allocator.TempJob);
+            using var pieces = new NativeList<ShipRoutePiece>(4, Allocator.TempJob);
+            using var failure = new NativeReference<int>(Allocator.TempJob);
+            using var repairMetrics = new NativeReference<int2>(Allocator.TempJob);
+            var start = new float2(-10f, 0f);
+            circles.Add(new ShipRouteCircle(start, 0f, 1));
+            circles.Add(new ShipRouteCircle(new float2(10f, 0f), 0f, 1));
+            new ShipTangentRouteJob
+            {
+                Disks = disks, DiskBuckets = buckets, Layout = layout,
+                Circles = circles, Pieces = pieces, Failure = failure, Start = start,
+                RepairMetrics = repairMetrics
+            }.Schedule().Complete();
+
+            Assert.That(failure.Value, Is.EqualTo(ShipTangentRouteJob.FAILURE_NONE));
+            Assert.That(repairMetrics.Value.x, Is.InRange(1, repairMetrics.Value.y));
+            var obstacles = new[]
+            {
+                new RadarContact(new Vector3(input[0].x, 0f, input[0].y), input[0].z - CLEARANCE, false),
+                new RadarContact(new Vector3(input[1].x, 0f, input[1].y), input[1].z - CLEARANCE, false)
+            };
+            AssertGeometry(new ShipRoute(pieces.AsArray()), obstacles,
+                100f, Vector3.left * 10f, Vector3.right * 10f);
+        }
+
+        [Test]
+        public void TaggedLongDiskArc_PreservesSweepGreaterThanHalfTurn()
+        {
+            using var disks = new NativeArray<float3>(new[] { new float3(0f, 0f, 5f) }, Allocator.TempJob);
+            using var buckets = new NativeParallelMultiHashMap<int, int>(128, Allocator.TempJob);
+            var layout = new NavMeshBuckets(new float2(-100f), new float2(100f));
+            layout.Insert(buckets, 0, new float2(-5f), new float2(5f));
+            using var circles = new NativeList<ShipRouteCircle>(3, Allocator.TempJob);
+            using var pieces = new NativeList<ShipRoutePiece>(3, Allocator.TempJob);
+            using var failure = new NativeReference<int>(Allocator.TempJob);
+            using var repairMetrics = new NativeReference<int2>(Allocator.TempJob);
+            var start = new float2(0f, -5f);
+            circles.Add(new ShipRouteCircle(start, 0f, 1));
+            circles.Add(new ShipRouteCircle(float2.zero, 5f, 1, 0) { SweepHint = 1.5f * math.PI });
+            circles.Add(new ShipRouteCircle(new float2(5f, 0f), 0f, 1));
+            new ShipTangentRouteJob
+            {
+                Disks = disks, DiskBuckets = buckets, Layout = layout,
+                Circles = circles, Pieces = pieces, Failure = failure, Start = start,
+                RepairMetrics = repairMetrics
+            }.Schedule().Complete();
+
+            Assert.That(failure.Value, Is.EqualTo(ShipTangentRouteJob.FAILURE_NONE));
+            Assert.That(pieces.Length, Is.EqualTo(1));
+            Assert.That(math.abs(pieces[0].Length * pieces[0].Curvature),
+                Is.EqualTo(1.5f * math.PI).Within(0.001f));
+            AssertGeometry(new ShipRoute(pieces.AsArray()),
+                new[] { new RadarContact(Vector3.zero, 5f - CLEARANCE, false) },
+                100f, Vector3.back * 5f, Vector3.right * 5f);
+        }
+
+        [TestCase(1f)]
+        [TestCase(-1f)]
         public void OverlappingBlockersOnOppositeSides_RepairWithoutAlternatingInsertions(float mirror)
         {
             // The nearest disk chooses a wrap side which intersects the other disk.

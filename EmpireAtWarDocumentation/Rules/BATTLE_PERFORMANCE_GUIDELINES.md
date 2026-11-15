@@ -80,6 +80,11 @@ tags:
 
 ### Ship pathfinding
 
+- Arc winding: use the sweep nearest the funnel's angular hint; a hint below 180° can legitimately require a tangent arc above 180°. A hard `SweepHint > π` gate removed the captured battle's 187.92° arc (hint 177.78°).
+- Arc repair: keep original-circle prefixes/suffixes only when their tangent contacts lie on the repaired arc; retain their individual hints. Unconditional copies can remove the inserted blocker and restore the same blocked arc.
+- Job diagnostics must use native output storage (`NativeReference<int2>` for repair count/limit); `.RunByRef()` does not guarantee scalar output writeback through the Unity native runner. Preserve Editor/Development-only snapshot capture.
+- Verified 2026-11-15: captured battle input plus mirrored reinsertion regressions; Navigation 270/270 passed, explicit tests excluded. Live acceptance and evidence → [[Done/Bugs/Ship_Tangent_Arc_Repair_Loop]].
+
 - Heading continuity (2026-11-15): plan from actual hull forward, independently check handoff alignment, and retain bounded yaw recovery until aligned. A lower speed alone does not justify snapping to the tangent; brake on the checked route, align at rest when necessary, then rebuild the remaining speed profile. Preserve exact tangent following on feasible aligned routes.
 - Sharp corners are stopping boundaries during both normal motion and replan/recovery braking. Insufficient stopping distance → stop at the checked corner; never integrate onto its outgoing leg with residual momentum.
 - Overlapping-disk repair: preferred insertion winding can lack adjoining tangents and alternate blockers until code 3. Try the opposite winding only when both adjoining tangents exist; keep all subsequent line/arc clearance checks and the bounded repair budget.
