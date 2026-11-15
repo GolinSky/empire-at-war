@@ -4,12 +4,13 @@ using UnityEngine.UI;
 namespace EmpireAtWar.Components.Squadrons.Icon
 {
     /// <summary>
-    /// Writes each frame vertex's position relative to the frame centre into UV1. The Squadron Frame shader
-    /// uses it to place the plate and tab: once every marker is batched into the shared <see cref="BattleMarkerLayer"/>
-    /// canvas, vertex positions are screen positions and no longer centred on the marker.
+    /// Stores frame-local coordinates and the ownership style in UV1 so both marker types
+    /// can use the same material on the shared <see cref="BattleMarkerLayer"/> canvas.
     /// </summary>
     public sealed class SquadronFrameMeshEffect : BaseMeshEffect
     {
+        internal bool UseTeamFrame { get; set; }
+
         public override void ModifyMesh(VertexHelper vertexHelper)
         {
             Vector2 center = graphic.rectTransform.rect.center;
@@ -17,7 +18,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             for (int i = 0; i < vertexHelper.currentVertCount; i++)
             {
                 vertexHelper.PopulateUIVertex(ref vertex, i);
-                vertex.uv1 = (Vector2)vertex.position - center;
+                Vector2 local = (Vector2)vertex.position - center;
+                vertex.uv1 = new Vector4(local.x, local.y, UseTeamFrame ? 1f : 0f, 0f);
                 vertexHelper.SetUIVertex(vertex, i);
             }
         }

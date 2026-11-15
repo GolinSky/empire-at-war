@@ -15,6 +15,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         private const float SNAPSHOT_INTERVAL = 0.1f;
         private const float PLANE_DISTANCE_PAST_NEAR_CLIP = 0.05f;
         private const float SHIP_MARKER_SCALE = 1.848f;
+        private const float SHIP_FRAME_VERTICAL_INSET = 24f;
         private static readonly ProfilerMarker SnapshotSampler = new ProfilerMarker("Battle.Markers.Snapshot");
         private static readonly ProfilerMarker VisionSampler = new ProfilerMarker("Battle.Markers.Vision");
         private static readonly ProfilerMarker CompletionSampler = new ProfilerMarker("Battle.Markers.Consume");
@@ -77,13 +78,14 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             root.SetActive(false);
             var rect = (RectTransform)root.transform;
             Image frame = CreateImage("Frame", rect, 0f);
+            frame.rectTransform.sizeDelta = new Vector2(0f, -SHIP_FRAME_VERTICAL_INSET);
             frame.material = _frameMaterial;
-            frame.gameObject.AddComponent<SquadronFrameMeshEffect>();
-            Image icon = CreateImage("Icon", rect, 6.75f * SHIP_MARKER_SCALE);
+            frame.gameObject.AddComponent<SquadronFrameMeshEffect>().UseTeamFrame = true;
+            Image icon = CreateImage("Icon", rect, 5.5f * SHIP_MARKER_SCALE);
             icon.material = _iconMaterial;
             icon.sprite = sprite;
             icon.preserveAspect = true;
-            icon.rectTransform.anchoredPosition = new Vector2(0f, -1.5f * SHIP_MARKER_SCALE);
+            icon.rectTransform.anchoredPosition = new Vector2(0f, -2f);
             return new BattleMarker(this, rect, frame, icon, 60f * SHIP_MARKER_SCALE, 120.96f, screenOffset: 80f)
                 { AnchorTransform = anchor };
         }
