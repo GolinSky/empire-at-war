@@ -520,6 +520,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d984efa2c59c0e2488e1bb83e5bc3935
+    m_Address: PraetorIcon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: db3ba52ed373c8242844c936a9497696
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/MC50Icon.png
     m_ReadOnly: 0

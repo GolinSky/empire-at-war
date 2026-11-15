@@ -210,6 +210,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5acb45a8c2839a146a1e19372e1d1328
+    m_Address: PraetorShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5ce2c057b641be14fb1ec8cb5304b8ef
     m_Address: ThrantaShipData
     m_ReadOnly: 0

@@ -255,5 +255,7 @@ MonoBehaviour:
     key: MarkerRetreat
   - sprite: {fileID: 21300000, guid: 5cce3c98ec18d704b8fcd6fd28baef17, type: 3}
     key: 5cce3c98ec18d704b8fcd6fd28baef17:21300000
+  - sprite: {fileID: 21300000, guid: d984efa2c59c0e2488e1bb83e5bc3935, type: 3}
+    key: d984efa2c59c0e2488e1bb83e5bc3935:21300000
   - sprite: {fileID: 21300000, guid: b1f55dd8e83a85345a26f49b8c3deebf, type: 3}
     key: b1f55dd8e83a85345a26f49b8c3deebf:21300000

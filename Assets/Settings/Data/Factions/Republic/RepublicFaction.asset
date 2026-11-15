@@ -321,6 +321,24 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 18
         <Icon>k__BackingField: {fileID: 21300000, guid: 5cce3c98ec18d704b8fcd6fd28baef17,
           type: 3}
+    - key: 19
+      value:
+        matchups: {fileID: 11400000, guid: 522ba884f3c6d224cb19c7a59f5dd39b, type: 2}
+        displayName: Praetor
+        description: A Republic battlecruiser built to hold the line. Heavy shielding
+          protects dense turbolaser and ion batteries. Embarks ARC-170 and V-wing
+          squadrons.
+        role: Heavy capital / Defensive battlecruiser
+        iconKey: d984efa2c59c0e2488e1bb83e5bc3935:21300000
+        isHero: 0
+        <Name>k__BackingField: Praetor-class Battlecruiser
+        <MaxCount>k__BackingField: 1
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 18000
+        <BuildTime>k__BackingField: 90
+        <UnitCapacity>k__BackingField: 15
+        <Icon>k__BackingField: {fileID: 21300000, guid: d984efa2c59c0e2488e1bb83e5bc3935,
+          type: 3}
     - key: 18
       value:
         matchups: {fileID: 11400000, guid: acb60228465cc1d4bb579ccc741c5675, type: 2}

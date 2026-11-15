@@ -21,6 +21,7 @@ namespace EmpireAtWar.Models.Factions
         Centax = 16,
         Secutor = 17,
         Procurator = 18,
+        Praetor = 19,
 
         //separatist
         Providence = 100,

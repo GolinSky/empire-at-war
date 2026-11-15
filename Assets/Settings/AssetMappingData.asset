@@ -1652,6 +1652,13 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: PraetorShipView
+      value:
+        m_AssetGUID: fc7aebf02658d714e9bfece118aa89b3
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: ProcuratorShipView
       value:
         m_AssetGUID: 4e8d726992cd9304c839a5d6fdacfed4
