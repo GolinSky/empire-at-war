@@ -24,7 +24,7 @@ MonoBehaviour:
   <HyperSpaceDuration>k__BackingField: 0.6
   <BodyRotationMaxAngle>k__BackingField: 5
   <NavigationRadius>k__BackingField: 265.9348
-  <IgnoresMapObstacles>k__BackingField: 0
+  <IgnoresMapObstacles>k__BackingField: 1
   <DestroyDelay>k__BackingField: 0.35
   <Wreck>k__BackingField: {fileID: 11400000, guid: b3c3b9e9584d4c0448fe738d020c6fe1,
     type: 2}

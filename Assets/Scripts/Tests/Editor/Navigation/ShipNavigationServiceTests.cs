@@ -230,33 +230,33 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void Plan_QuasarTitanAndExecutorShareClickAcrossHullLayers()
+        public void Plan_ObstacleAwareShipsShareClickAcrossHullLayers()
         {
             SetRangeValue("<Min>k__BackingField", new Vector2(-5000f, -5000f));
             SetRangeValue("<Max>k__BackingField", new Vector2(5000f, 5000f));
             var obstacle = new RadarContact(new Vector3(0f, -270f, 0f), 120f, false, -275f, -265f);
             var service = CreateService(new[] { obstacle });
             var destination = new Vector3(2400f, -241f, 0f);
-            var quasar = new FakeAgent(new Vector3(-2400f, -241f, 0f), -241f, 22.751286f, 10f, 30f,
+            var narrowHull = new FakeAgent(new Vector3(-2400f, -241f, 0f), -241f, 22.751286f, 10f, 30f,
                 new ShipHullSpan(-251f, -231f));
-            var titan = new FakeAgent(new Vector3(-3200f, -241f, 0f), -241f, 265.9348f, 10f, 30f,
+            var intersectingHull = new FakeAgent(new Vector3(-3200f, -241f, 0f), -241f, 265.9348f, 10f, 30f,
                 new ShipHullSpan(-291f, -201f));
-            var executor = new FakeAgent(new Vector3(-2400f, -341f, 0f), -341f, 1059.4355f, 10f, 30f,
+            var lowerHull = new FakeAgent(new Vector3(-2400f, -341f, 0f), -341f, 1059.4355f, 10f, 30f,
                 new ShipHullSpan(-370f, -310f));
 
-            ShipNavigationPlan quasarPlan = Plan(service, quasar, destination);
-            ShipNavigationPlan titanPlan = Plan(service, titan, destination);
-            ShipNavigationPlan executorPlan = Plan(service, executor, destination);
+            ShipNavigationPlan narrowHullPlan = Plan(service, narrowHull, destination);
+            ShipNavigationPlan intersectingHullPlan = Plan(service, intersectingHull, destination);
+            ShipNavigationPlan lowerHullPlan = Plan(service, lowerHull, destination);
 
-            Assert.That(quasarPlan.Destination, Is.EqualTo(destination));
-            Assert.That(quasarPlan.Route.Length, Is.EqualTo(4800f).Within(0.05f));
-            Assert.That(titanPlan.IsStationary, Is.False);
-            Assert.That(Vector3.Distance(titanPlan.Destination, destination),
-                Is.InRange(titan.NavigationRadius + quasar.NavigationRadius, 2f * titan.NavigationRadius + 0.01f));
-            Assert.That(IsRouteClear(titanPlan.Route, new[] { obstacle },
-                titan.NavigationHeight, 0.5f, titan.NavigationRadius), Is.True);
-            Assert.That(executorPlan.Destination, Is.EqualTo(new Vector3(2400f, -341f, 0f)));
-            Assert.That(executorPlan.Route.Length, Is.EqualTo(4800f).Within(0.05f));
+            Assert.That(narrowHullPlan.Destination, Is.EqualTo(destination));
+            Assert.That(narrowHullPlan.Route.Length, Is.EqualTo(4800f).Within(0.05f));
+            Assert.That(intersectingHullPlan.IsStationary, Is.False);
+            Assert.That(Vector3.Distance(intersectingHullPlan.Destination, destination),
+                Is.InRange(intersectingHull.NavigationRadius + narrowHull.NavigationRadius, 2f * intersectingHull.NavigationRadius + 0.01f));
+            Assert.That(IsRouteClear(intersectingHullPlan.Route, new[] { obstacle },
+                intersectingHull.NavigationHeight, 0.5f, intersectingHull.NavigationRadius), Is.True);
+            Assert.That(lowerHullPlan.Destination, Is.EqualTo(new Vector3(2400f, -341f, 0f)));
+            Assert.That(lowerHullPlan.Route.Length, Is.EqualTo(4800f).Within(0.05f));
         }
 
         [Test]

@@ -120,7 +120,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void QuasarFitsGapAndTitanFindsNearestReachableOnItsOwnSide()
+        public void NarrowHullFitsGapAndWideHullFindsNearestReachableOnItsOwnSide()
         {
             Vector2Range bounds = Bounds(600f, 120f);
             RadarContact[] obstacles =
@@ -130,31 +130,31 @@ namespace EmpireAtWar.Tests.Editor
             };
             var left = new Vector3(-500f, HEIGHT, 0f);
             var right = new Vector3(500f, HEIGHT, 0f);
-            const float QUASAR_RADIUS = 22.751286f;
-            const float TITAN_RADIUS = 265.9348f;
+            const float NARROW_HULL_RADIUS = 22.751286f;
+            const float WIDE_HULL_RADIUS = 265.9348f;
             using var cache = new ShipNavigationCache();
-            IShipPathGraph quasar = cache.GetGraph(obstacles, bounds, left, QUASAR_RADIUS, _noHazards);
+            IShipPathGraph narrowHull = cache.GetGraph(obstacles, bounds, left, NARROW_HULL_RADIUS, _noHazards);
             var path = new List<Vector3>();
-            Assert.That(quasar.TryFindPath(right, HEIGHT, path), Is.True);
-            AssertClear(path, obstacles, QUASAR_RADIUS);
+            Assert.That(narrowHull.TryFindPath(right, HEIGHT, path), Is.True);
+            AssertClear(path, obstacles, NARROW_HULL_RADIUS);
             Assert.That(path[0], Is.EqualTo(left));
             Assert.That(path[path.Count - 1], Is.EqualTo(right));
 
-            IShipPathGraph titan = cache.GetGraph(obstacles, bounds, left, TITAN_RADIUS, _noHazards);
-            Assert.That(titan.TryFindPath(right, HEIGHT, path), Is.False);
+            IShipPathGraph wideHull = cache.GetGraph(obstacles, bounds, left, WIDE_HULL_RADIUS, _noHazards);
+            Assert.That(wideHull.TryFindPath(right, HEIGHT, path), Is.False);
             Assert.That(path, Is.Empty);
-            Assert.That(titan.IsKnownUnreachable(right), Is.True);
-            Assert.That(titan.TryGetNearestReachable(right, HEIGHT, out Vector3 nearest), Is.True);
+            Assert.That(wideHull.IsKnownUnreachable(right), Is.True);
+            Assert.That(wideHull.TryGetNearestReachable(right, HEIGHT, out Vector3 nearest), Is.True);
             Assert.That(nearest.x, Is.InRange(left.x + 1f, -1f));
-            Assert.That(titan.TryFindPath(nearest, HEIGHT, path), Is.True);
-            AssertClear(path, obstacles, TITAN_RADIUS);
+            Assert.That(wideHull.TryFindPath(nearest, HEIGHT, path), Is.True);
+            AssertClear(path, obstacles, WIDE_HULL_RADIUS);
             Assert.That(path[0], Is.EqualTo(left));
             Assert.That(path[path.Count - 1], Is.EqualTo(nearest));
 
-            titan.SetOrigin(right);
-            Assert.That(titan.TryFindPath(left, HEIGHT, path), Is.False);
-            Assert.That(titan.IsKnownUnreachable(left), Is.True);
-            Assert.That(titan.TryGetNearestReachable(left, HEIGHT, out nearest), Is.True);
+            wideHull.SetOrigin(right);
+            Assert.That(wideHull.TryFindPath(left, HEIGHT, path), Is.False);
+            Assert.That(wideHull.IsKnownUnreachable(left), Is.True);
+            Assert.That(wideHull.TryGetNearestReachable(left, HEIGHT, out nearest), Is.True);
             Assert.That(nearest.x, Is.InRange(1f, right.x - 1f));
         }
 
