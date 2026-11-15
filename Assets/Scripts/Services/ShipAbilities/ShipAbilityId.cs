@@ -24,7 +24,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         ExecutorLaserBeam = 33,
         DauntlessSensorJamming = 39,
         ImperialVenatorIntensifyFirepower = 35,
-        MC50HitAndRun = 40,
         BothanCoordinatedAssault = 42,
         FighterReinforcements = 50,
         LiberatorRapidDeployment = 51,

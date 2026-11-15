@@ -2,12 +2,10 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
-using EmpireAtWar.Services.ShipAbilities.Abilities;
 
 public static class RegisterMC50
 {
     const int SHIP_ID=311;
-    const int ABILITY_ID=40;
     const string DATA="Assets/Settings/Data/Ship/Rebellion/MC50ShipData.asset";
     const string VIEW="Assets/Prefabs/Models/Ships/Rebellion/MC50ShipView.prefab";
     const string ICON="Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/MC50Icon.png";
@@ -29,7 +27,7 @@ public static class RegisterMC50
         var faction=Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset");
         var row=Upsert(faction.FindProperty("ships.keyValue"),SHIP_ID);var value=row.FindPropertyRelative("value");
         value.FindPropertyRelative("matchups").objectReferenceValue=matchups.targetObject;
-        value.FindPropertyRelative("description").stringValue="General-purpose medium cruiser with two heavy turbolasers, four medium dual turbolasers, two medium ion cannons, four laser cannons and two point-defense lasers. Hit and Run increases speed by 25% for 8 seconds.";
+        value.FindPropertyRelative("description").stringValue="General-purpose medium cruiser with two heavy turbolasers, four medium dual turbolasers, two medium ion cannons, four laser cannons and two point-defense lasers. Boost Weapon Power halves weapon reload and time between shots and halves speed and shield regeneration for 7 s. Recovers in 50 s.";
         value.FindPropertyRelative("role").stringValue="General-purpose combat ship";
         value.FindPropertyRelative("iconKey").stringValue=iconKey;value.FindPropertyRelative("isHero").boolValue=false;
         value.FindPropertyRelative("<Name>k__BackingField").stringValue="MC50 Medium Cruiser";
@@ -60,34 +58,7 @@ public static class RegisterMC50
             var entry=settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(asset),settings.FindGroup(asset==VIEW?"View":"Data"));entry.address=key;EditorUtility.SetDirty(settings);
         }
         Save(mapping);
-        var catalog=Load("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset");
-        var definitions=catalog.FindProperty("definitions.keyValue");
-        row=Enumerable.Range(0,definitions.arraySize).Select(i=>definitions.GetArrayElementAtIndex(i)).SingleOrDefault(p=>p.FindPropertyRelative("key").intValue==ABILITY_ID);
-        if(row==null)
-        {
-            int donor=Enumerable.Range(0,definitions.arraySize).Single(i=>definitions.GetArrayElementAtIndex(i).FindPropertyRelative("key").intValue==4);
-            definitions.InsertArrayElementAtIndex(donor); row=definitions.GetArrayElementAtIndex(donor); row.FindPropertyRelative("key").intValue=ABILITY_ID;
-        }
-        value=row.FindPropertyRelative("value");
-        value.FindPropertyRelative("displayName").stringValue="Hit and Run";
-        value.FindPropertyRelative("description").stringValue="Movement speed increases by 25% for 8 seconds. Cooldown: 35 seconds.";
-        value.FindPropertyRelative("icon").objectReferenceValue=icon;
-        value.FindPropertyRelative("duration").floatValue=8; value.FindPropertyRelative("recoveryDelay").floatValue=35;
-        value.FindPropertyRelative("isToggle").boolValue=false; value.FindPropertyRelative("canCancel").boolValue=false;
-        value.FindPropertyRelative("requiresEnemyTarget").boolValue=false;
-        value.FindPropertyRelative("settings").managedReferenceValue=new BoostEnginePowerSettings();
-        var modifier=value.FindPropertyRelative("settings").FindPropertyRelative("statModifier");
-        foreach(var field in new[]{"damageMultiplier","fireDelayMultiplier","shieldRegenMultiplier","damageTakenMultiplier"}) modifier.FindPropertyRelative(field).floatValue=1;
-        modifier.FindPropertyRelative("speedMultiplier").floatValue=1.25f;
-        Save(catalog);
-        var audio=Load("Assets/Settings/Data/Models/Audio/ShipSfxData.asset");
-        var abilitySounds=audio.FindProperty("abilities");
-        if(!Enumerable.Range(0,abilitySounds.arraySize).Any(i=>abilitySounds.GetArrayElementAtIndex(i).FindPropertyRelative("abilityId").intValue==ABILITY_ID))
-        {
-            int index=Enumerable.Range(0,abilitySounds.arraySize).Single(i=>abilitySounds.GetArrayElementAtIndex(i).FindPropertyRelative("abilityId").intValue==4);
-            abilitySounds.InsertArrayElementAtIndex(index);abilitySounds.GetArrayElementAtIndex(index).FindPropertyRelative("abilityId").intValue=ABILITY_ID;
-        }
-        Save(audio);AssetDatabase.SaveAssets();return "MC50=311 registered: Rebellion, ship data/view/placement/icons/matchups and Hit and Run=40.";
+        AssetDatabase.SaveAssets();return "MC50=311 registered: Rebellion, ship data/view/placement/icons/matchups.";
     }
 
     static SerializedObject Load(string path)=>new SerializedObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path));

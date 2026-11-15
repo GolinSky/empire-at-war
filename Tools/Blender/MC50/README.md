@@ -2,13 +2,13 @@
 
 - Guide: vault `Architecture/ALO_MODEL_IMPORT_GUIDE`; balance: `GameDesign/Rebel units`, MC50 section.
 - Source: Workshop `1770851727`, `Data/Art/Models/Rebel_Mon_Calamari_MC_50.alo`. Textures are in `Data/Art/Textures`; `Texturesc` does not exist.
-- Rebellion ship ID `311`; Hit and Run ability ID `40`. IDs deliberately avoid concurrent imports.
+- Rebellion ship ID `311`.
 - Hull/shields/speed: `4,200 / 3,000 / 27`; price/build time: `3,400 / 42 s`.
 - Weapons: `2` HeavyTurboLaser (`2`), `4` DualMediumTurboLaser (`5`), `2` MediumIonCannon (`32`), `4` Laser (`8`), `2` PointDefense (`14`). Reuses existing profiles without altering their shared balance.
 - `14` weapons + engine + shield generator = `16` targetable hardpoints, IDs `0..15`. Every weapon is in health/fog collections; health data covers all three used hardpoint types.
 - Socket mappings are in `output/remake-rebel-ships/MC50-Converted/HardpointMapping.json`. The requested 14-mount composition differs from Remake's five gun groups; extra gameplay mounts use actual firing/damage/effect sockets. Mappings/arcs are project choices, not Remake weapons.
 - No hangar or squadrons: the requested balance note specifies neither. Source hangar art stays visible.
-- Hit and Run uses existing `BoostEnginePowerSettings`: speed ×`1.25`, all other multipliers `1`; active `8 s`, recovery `35 s` after expiry. Dedicated definition/icon/audio registration.
+- MC50 uses the shared `BoostWeaponPower` ability (ID `5`).
 - Provisional values: level `2`, population `4`, max count `3`, range `600`, navigation radius `65`, ±`5°` banking, weapon/system health `300/700/600`, shield regeneration `20` every `3 s`, matchup entries and arcs ±`85°`.
 - Class: Cruiser (`8`). Root scale `1`, bow `+Z`, up `+Y`; visible size including effects `41.470 × 19.965 × 110.000`; opaque hull/preview/wreck length `109.348`. Bank envelope `−10.016 .. 9.983`.
 - Source FBX/blend retain all ten meshes and 51 bones. Visual/gameplay prefabs remove authored shadow/collision/shield helpers. Three opaque surfaces feed wreck/explosion/team ownership; separate engine/window/hangar effects remain visible on the living ship.

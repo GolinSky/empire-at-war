@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Linq;
 using EmpireAtWar.Commands.Game;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.CaptureSites;
@@ -361,6 +362,78 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(migrated.Hull, Is.EqualTo(0.5f));
             Assert.That(migrated.Shields, Is.EqualTo(0.25f));
             Assert.That(migrated.HardPoints, Is.EqualTo(originalHardPoints.Concat(Enumerable.Repeat(1f, 6))));
+        }
+
+        [TestCase(ShipType.MC50, FactionType.Rebellion, (ShipAbilityId)40, ShipAbilityId.BoostWeaponPower,
+            ShipAbilityId.None, ShipAbilityId.None)]
+        [TestCase(ShipType.QuasarFire, FactionType.Rebellion, ShipAbilityId.BoostWeaponPower,
+            ShipAbilityId.BoostWeaponPower, ShipAbilityId.TractorBeam, ShipAbilityId.None)]
+        [TestCase(ShipType.BothanAssaultCruiser, FactionType.Rebellion, ShipAbilityId.BothanCoordinatedAssault,
+            ShipAbilityId.BothanCoordinatedAssault, ShipAbilityId.TractorBeam, ShipAbilityId.None)]
+        [TestCase(ShipType.InterdictorStarDestroyer, FactionType.Empire, ShipAbilityId.BoostWeaponPower,
+            ShipAbilityId.BoostWeaponPower, ShipAbilityId.None, ShipAbilityId.DauntlessSensorJamming)]
+        public void Validator_MigratesLegacyShipLoadoutsAndPreservesCooldown(ShipType shipType, FactionType faction,
+            ShipAbilityId savedPrimary, ShipAbilityId expectedPrimary, ShipAbilityId savedSecondary,
+            ShipAbilityId expectedSecondary)
+        {
+            using var assets = new CachedAssetService(new AddressableHandleLoader());
+            BattleDefinition defaults = SkirmishPreset.Default();
+            var human = new PlayerSlot(TestPlayers.Human, new TeamId(0), faction,
+                PlayerController.Human, EnemyAiDifficulty.Medium, 0);
+            BattleDefinition battle = SkirmishPreset.Create(new[] { human, defaults.Slots[1] }, defaults.Map.Planet,
+                defaults.Map.Size, defaults.VictoryCondition, defaults.StartingMoney, true, 0).Build();
+            ShipData data = assets.Load<ShipData>(assets.Load<ShipsData>(nameof(ShipsData)).GetShipDataPath(shipType));
+            var hardPoints = assets.LoadComponent<ShipEntity>(shipType + "ShipView").Bindings.Health[0].ShipUnits;
+            bool interdictor = shipType == ShipType.InterdictorStarDestroyer;
+            const int LEGACY_INTERDICTOR_HARDPOINT_COUNT = 23;
+            if (interdictor)
+            {
+                Assert.That(hardPoints.Count, Is.EqualTo(LEGACY_INTERDICTOR_HARDPOINT_COUNT + 1));
+                Assert.That(hardPoints.Single(point => point.HardPointType == HardPointType.SensorArray).Id,
+                    Is.EqualTo(LEGACY_INTERDICTOR_HARDPOINT_COUNT));
+            }
+            int savedHardPointCount = interdictor ? LEGACY_INTERDICTOR_HARDPOINT_COUNT : hardPoints.Count;
+            float[] damage = Enumerable.Repeat(0.25f, savedHardPointCount).ToArray();
+            AbilitySlotSave primary = JsonUtility.FromJson<AbilitySlotSave>(
+                $"{{\"id\":{(int)savedPrimary},\"state\":{(int)ShipAbilityState.Recovering},\"timeLeft\":19}}");
+            AbilitySlotSave[] savedAbilities = savedSecondary == ShipAbilityId.None ? new[] { primary } : new[]
+            {
+                primary,
+                AbilitySlotSave.From(new ShipAbilitySlot(null, new ShipAbilityDefinition(), savedSecondary))
+            };
+            UnitSave ship = UnitSave.Create(1, human.Id, UnitTypeId.Ship(shipType), Vector3.zero,
+                Quaternion.identity, UnitHealthSave.ForShip(0.5f, 0.25f, damage), null).WithAbilities(savedAbilities);
+            if (data.HangarBays.Count > 0)
+                ship.WithHangar(HangarSave.Create(data.HangarBays.Select(bay => bay.Reserve).ToArray(), 0f,
+                    Array.Empty<LaunchedSquadronSave>()));
+            BattleSaveHeader header = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave,
+                DateTime.UtcNow, 0f, GameSpeed.Normal);
+            BattleSave save = BattleSave.Create(header, BattleSetupSave.From(battle),
+                CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 500f), new[] { ship },
+                Array.Empty<StructureSave>());
+            var validator = new BattleSaveValidator(assets);
+
+            save.ObservedBases = new[] { int.MaxValue };
+            Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(save, battle)).Message,
+                Does.Contain("Observed base owner"));
+            Assert.That(ship.Abilities, Is.SameAs(savedAbilities));
+            Assert.That(ship.Health.HardPoints, Is.SameAs(damage));
+
+            save.ObservedBases = Array.Empty<int>();
+            validator.Validate(save, battle);
+            AbilitySlotSave[] migrated = ship.Abilities;
+            validator.Validate(save, battle);
+            Assert.That(ship.Abilities, Is.SameAs(migrated));
+            Assert.That(migrated.Select(slot => slot.Id), Is.EqualTo(expectedSecondary == ShipAbilityId.None
+                ? new[] { expectedPrimary } : new[] { expectedPrimary, expectedSecondary }));
+            Assert.That(migrated[0].State, Is.EqualTo(ShipAbilityState.Recovering));
+            Assert.That(migrated[0].TimeLeft, Is.EqualTo(19f));
+            if (interdictor)
+            {
+                Assert.That(migrated[1].State, Is.EqualTo(ShipAbilityState.Ready));
+                Assert.That(migrated[1].TimeLeft, Is.Zero);
+                Assert.That(ship.Health.HardPoints, Is.EqualTo(damage.Append(1f)));
+            }
         }
 
         [Test]

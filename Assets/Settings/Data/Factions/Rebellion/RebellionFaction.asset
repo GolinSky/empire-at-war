@@ -230,7 +230,9 @@ MonoBehaviour:
         displayName: MC50
         description: General-purpose medium cruiser with two heavy turbolasers, four
           medium dual turbolasers, two medium ion cannons, four laser cannons and
-          two point-defense lasers. Hit and Run increases speed by 25% for 8 seconds.
+          two point-defense lasers. Boost Weapon Power halves weapon reload and time
+          between shots and halves speed and shield regeneration for 7 s. Recovers
+          in 50 s.
         role: General-purpose combat ship
         iconKey: db3ba52ed373c8242844c936a9497696:21300000
         isHero: 0
@@ -335,9 +337,9 @@ MonoBehaviour:
           medium turbolasers, two medium ion cannons, four proton torpedo launchers
           and two point-defense lasers. Two independently targetable hangars. Coordinated
           Assault halves torpedo reload and time between shots for 8 seconds; 40
-          seconds recovery. Tractor Beam holds corvettes and frigates. Deploys 1
-          fighter squadron, 1 interceptor squadron, 1 bomber squadron at once. Carries
-          6 total squadron launches, including the initial deployment.
+          seconds recovery. Deploys 1 fighter squadron, 1 interceptor squadron, 1
+          bomber squadron at once. Carries 6 total squadron launches, including the
+          initial deployment.
         role: Fleet assault / Capital combat
         iconKey: 60f458712418dd74393a49293c347c81:21300000
         isHero: 0

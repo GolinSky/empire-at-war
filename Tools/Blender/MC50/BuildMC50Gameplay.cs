@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.ViewComponents.Health;
 
 public static class BuildMC50Gameplay
@@ -118,7 +119,7 @@ public static class BuildMC50Gameplay
         var hpHealth=data.FindProperty("hardPointHealth");hpHealth.arraySize=3;
         int[] types={0,1,2};float[] values={300,700,600};
         for(int i=0;i<3;i++){var row=hpHealth.GetArrayElementAtIndex(i);row.FindPropertyRelative("hardPointType").intValue=types[i];row.FindPropertyRelative("health").floatValue=values[i];row.FindPropertyRelative("hullDamageMultiplier").floatValue=1;}
-        var abilities=data.FindProperty("abilities");abilities.arraySize=1;abilities.GetArrayElementAtIndex(0).intValue=40;
+        var abilities=data.FindProperty("abilities");abilities.arraySize=1;abilities.GetArrayElementAtIndex(0).intValue=(int)ShipAbilityId.BoostWeaponPower;
         data.FindProperty("hangarBays").arraySize=0;
         var loadout=data.FindProperty("weaponLoadout"); loadout.arraySize=5;
         int[] profileIds={2,5,32,8,14}; int[] counts={2,4,2,4,2};

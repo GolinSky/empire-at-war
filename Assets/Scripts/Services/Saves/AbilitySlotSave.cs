@@ -17,11 +17,14 @@ namespace EmpireAtWar.Services.Saves
         {
             13 or 15 or 17 or 26 or 34 or 45 or 53 => ShipAbilityId.BoostShieldPower,
             14 or 21 or 37 => ShipAbilityId.BoostEnginePower,
-            12 or 20 or 23 or 31 or 32 or 38 => ShipAbilityId.BoostWeaponPower,
+            12 or 20 or 23 or 31 or 32 or 38 or 40 => ShipAbilityId.BoostWeaponPower,
             _ => id
         };
         public ShipAbilityState State => state;
         public float TimeLeft => timeLeft;
+
+        internal static AbilitySlotSave Ready(ShipAbilityId abilityId) =>
+            new AbilitySlotSave { id = abilityId, state = ShipAbilityState.Ready };
 
         /// <summary>
         /// An active ability is saved as recovering for its remaining time plus the full recovery delay;

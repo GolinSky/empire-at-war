@@ -918,47 +918,6 @@ MonoBehaviour:
       localFeedback: 0
     abilityId: 18
   - start:
-      clip: {fileID: 8300000, guid: 57f061cb89eeb9b4b83c1c9ab259e59f, type: 3}
-      clips:
-        array: []
-      volume: 1
-      priority: 80
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-      localFeedback: 0
-    execution:
-      clip: {fileID: 8300000, guid: 4d636b63456c90a4f99f7f4c460a9975, type: 3}
-      clips:
-        array: []
-      volume: 0.18
-      priority: 40
-      cooldown: 0
-      maxInstances: 4
-      loop: 1
-      localFeedback: 0
-    end:
-      clip: {fileID: 8300000, guid: 0f6ac9fa190ae914fb693b7d8d59673a, type: 3}
-      clips:
-        array: []
-      volume: 1
-      priority: 70
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-      localFeedback: 0
-    restore:
-      clip: {fileID: 8300000, guid: 3c661cac560c72242b8fcec805a3df90, type: 3}
-      clips:
-        array: []
-      volume: 0.7
-      priority: 70
-      cooldown: 0
-      maxInstances: 4
-      loop: 0
-      localFeedback: 0
-    abilityId: 40
-  - start:
       clip: {fileID: 8300000, guid: 196314a27370f86468e5cf6135952eda, type: 3}
       clips:
         array: []

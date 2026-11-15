@@ -33,6 +33,8 @@ namespace EmpireAtWar.Services.Saves
     {
         private const int LEGACY_CD273_HARDPOINT_COUNT = 10;
         private const int CD273_HARDPOINT_COUNT = 16;
+        private const int LEGACY_INTERDICTOR_HARDPOINT_COUNT = 23;
+        private const int INTERDICTOR_HARDPOINT_COUNT = 24;
 
         private readonly IAssetService _assets;
         private readonly MapGenerationSettings _mapSettings;
@@ -85,16 +87,19 @@ namespace EmpireAtWar.Services.Saves
             List<(UnitSave Unit, HangarSave Hangar)> migratedHangars =
                 save.Header.Version == BattleSaveHeader.PRE_HANGAR_REBALANCE_VERSION ? new() : null;
             var migratedHealth = new List<(UnitSave Unit, UnitHealthSave Health)>();
+            var migratedAbilities = new List<(UnitSave Unit, AbilitySlotSave[] Slots)>();
             foreach (StructureSave structure in save.Structures)
                 ValidateStructure(structure, players, rosters, siteFacilities, squadrons, adoptedSquadrons);
             foreach (UnitSave unit in save.Units)
                 ValidateUnit(unit, players, rosters, shipsData, squadrons, adoptedSquadrons, migratedHangars,
-                    migratedHealth);
+                    migratedHealth, migratedAbilities);
             ValidatePlayers(save.Players, players, rosters, levels, squadrons);
             ValidateCombatAndVictory(save, players, entityIds);
 
             foreach ((UnitSave unit, UnitHealthSave health) in migratedHealth)
                 unit.SetMigratedHealth(health);
+            foreach ((UnitSave unit, AbilitySlotSave[] slots) in migratedAbilities)
+                unit.WithAbilities(slots);
 
             if (migratedHangars != null)
             {
@@ -227,7 +232,8 @@ namespace EmpireAtWar.Services.Saves
             IReadOnlyDictionary<PlayerId, FactionRoster> rosters, ShipsData shipsData,
             IReadOnlyDictionary<long, UnitSave> squadrons, HashSet<long> adoptedSquadrons,
             List<(UnitSave Unit, HangarSave Hangar)> migratedHangars,
-            List<(UnitSave Unit, UnitHealthSave Health)> migratedHealth)
+            List<(UnitSave Unit, UnitHealthSave Health)> migratedHealth,
+            List<(UnitSave Unit, AbilitySlotSave[] Slots)> migratedAbilities)
         {
             if (!players.ContainsKey(unit.Owner))
                 throw new InvalidDataException($"Unit {unit.Id} belongs to unknown player {unit.Owner}.");
@@ -240,19 +246,27 @@ namespace EmpireAtWar.Services.Saves
                 ShipData data = _assets.Load<ShipData>(shipsData.GetShipDataPath(shipType));
                 ShipEntity view = _assets.LoadComponent<ShipEntity>(shipType + "ShipView");
                 UnitHealthSave health = unit.Health;
-                if (shipType == ShipType.CD273 && health?.HardPoints?.Length == LEGACY_CD273_HARDPOINT_COUNT &&
-                    view.Bindings.Health[0].ShipUnits.Count == CD273_HARDPOINT_COUNT)
+                (int legacyCount, int currentCount) = shipType switch
                 {
-                    // The six dual-laser hardpoints were appended after all existing IDs.
-                    var hardPoints = new float[CD273_HARDPOINT_COUNT];
-                    Array.Copy(health.HardPoints, hardPoints, LEGACY_CD273_HARDPOINT_COUNT);
-                    Array.Fill(hardPoints, 1f, LEGACY_CD273_HARDPOINT_COUNT,
-                        CD273_HARDPOINT_COUNT - LEGACY_CD273_HARDPOINT_COUNT);
+                    ShipType.CD273 => (LEGACY_CD273_HARDPOINT_COUNT, CD273_HARDPOINT_COUNT),
+                    ShipType.InterdictorStarDestroyer => (LEGACY_INTERDICTOR_HARDPOINT_COUNT, INTERDICTOR_HARDPOINT_COUNT),
+                    _ => (0, 0)
+                };
+                if (legacyCount > 0 && health?.HardPoints?.Length == legacyCount &&
+                    view.Bindings.Health[0].ShipUnits.Count == currentCount)
+                {
+                    // Newly appended hardpoints start at full health.
+                    var hardPoints = new float[currentCount];
+                    Array.Copy(health.HardPoints, hardPoints, legacyCount);
+                    Array.Fill(hardPoints, 1f, legacyCount, currentCount - legacyCount);
                     health = UnitHealthSave.ForShip(health.Hull, health.Shields, hardPoints);
                     migratedHealth.Add((unit, health));
                 }
                 ValidateHardPoints(view, health, unit.Id);
-                ValidateAbilities(unit.Abilities, data.Abilities, unit.Id);
+                AbilitySlotSave[] slots = MigrateShipAbilities(shipType, unit.Abilities);
+                ValidateAbilities(slots, data.Abilities, unit.Id);
+                if (slots != unit.Abilities)
+                    migratedAbilities.Add((unit, slots));
                 HangarSave hangar = unit.Hangar;
                 if (migratedHangars != null && HangarStockMigration.TryMigrate(unit, data.HangarBays, out HangarSave migrated))
                 {
@@ -271,6 +285,21 @@ namespace EmpireAtWar.Services.Saves
             int fighters = _assets.LoadComponent<Squadron>(squadronType + "SquadronView").Bindings.SquadronHealth.FighterCount;
             if (unit.Health == null || unit.Health.MemberHull.Length != fighters || unit.Health.MemberShields.Length != fighters)
                 throw new InvalidDataException($"Saved {unit.Health?.MemberHull.Length ?? 0} fighters; {squadronType} has {fighters}.");
+        }
+
+        private static AbilitySlotSave[] MigrateShipAbilities(ShipType shipType, AbilitySlotSave[] slots)
+        {
+            if (slots == null || slots.Length == 0) return slots;
+            return shipType switch
+            {
+                ShipType.QuasarFire when slots.Length == 2 && slots[0] is { Id: ShipAbilityId.BoostWeaponPower } &&
+                    slots[1] is { Id: ShipAbilityId.TractorBeam } => new[] { slots[0] },
+                ShipType.BothanAssaultCruiser when slots.Length == 2 && slots[0] is { Id: ShipAbilityId.BothanCoordinatedAssault } &&
+                    slots[1] is { Id: ShipAbilityId.TractorBeam } => new[] { slots[0] },
+                ShipType.InterdictorStarDestroyer when slots.Length == 1 && slots[0] is { Id: ShipAbilityId.BoostWeaponPower }
+                    => new[] { slots[0], AbilitySlotSave.Ready(ShipAbilityId.DauntlessSensorJamming) },
+                _ => slots
+            };
         }
 
         private static void ValidateHardPoints(EntityView view, UnitHealthSave health, long entityId)

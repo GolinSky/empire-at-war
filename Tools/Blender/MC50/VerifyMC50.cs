@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.ViewComponents.Health;
 
 public static class VerifyMC50
@@ -106,10 +107,7 @@ public static class VerifyMC50
             var mappings = Load("Assets/Settings/AssetMappingData.asset").FindProperty("assetMappings.keyValue");
             Check(Enumerable.Range(0,mappings.arraySize).Select(i=>mappings.GetArrayElementAtIndex(i)).Single(p=>p.FindPropertyRelative("key").stringValue==key).FindPropertyRelative("value.m_AssetGUID").stringValue==guid,"Asset mapping");
         }
-        var ability = Row(Load("Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset").FindProperty("definitions.keyValue"),40).FindPropertyRelative("value");
-        Check(data.FindProperty("abilities").arraySize==1 && data.FindProperty("abilities").GetArrayElementAtIndex(0).intValue==40,"Ability loadout");
-        Check(ability.FindPropertyRelative("displayName").stringValue=="Hit and Run" && ability.FindPropertyRelative("duration").floatValue==8 && ability.FindPropertyRelative("recoveryDelay").floatValue==35,"Ability timing");
-        Check(ability.FindPropertyRelative("settings.statModifier.speedMultiplier").floatValue==1.25f,"Speed boost");
+        Check(data.FindProperty("abilities").arraySize==1 && data.FindProperty("abilities").GetArrayElementAtIndex(0).intValue==(int)ShipAbilityId.BoostWeaponPower,"Ability loadout");
         Check((int)EmpireAtWar.Models.Factions.ShipType.MC50==311,"Compiled ship ID");
         report["checks"]=_checks; report["meshes"]=10; report["triangles"]=triangles; report["bones"]=((JObject)conversion["before"]["bones"]).Count; report["boneErrorUnits"]=boneError;
         report["prefabs"]=prefabs; report["targetableHardpoints"]=16; report["weaponCounts"]=new JArray(counts); report["registrationsVerified"]=true;

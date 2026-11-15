@@ -342,8 +342,10 @@ MonoBehaviour:
           heavy quad turbolasers, two heavy dual ion cannons, three medium quad turbolasers,
           four medium dual turbolasers and six heavy turbolasers. Boost Weapon Power
           halves weapon reload and time between shots and halves speed and shield
-          regeneration for 7 s. Recovers in 50 s. Deploys 1 fighter squadron at once.
-          Carries 2 total squadron launches, including the initial deployment.
+          regeneration for 7 s. Recovers in 50 s. Sensor Jamming reduces enemy accuracy
+          by 20% within 500 units for 8 s. Destroying the sensor array ends the effect.
+          Recovers in 40 s. Deploys 1 fighter squadron at once. Carries 2 total squadron
+          launches, including the initial deployment.
         role: Capital ship / Line combat
         iconKey: 1eb602fdb62be8f4f9214ecdb7cf4e20:21300000
         isHero: 0
