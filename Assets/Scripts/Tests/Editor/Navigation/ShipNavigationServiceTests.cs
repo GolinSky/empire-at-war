@@ -429,9 +429,9 @@ namespace EmpireAtWar.Tests.Movement
             public bool IsAlive;
             public bool IsSecondStation;
             public readonly FakeStationHull Hull = new FakeStationHull();
-            public bool HasProductionBase(PlayerId owner) => IsAlive;
+            public bool HasProductionBase(PlayerId owner, bool stationsOnly = false) => IsAlive;
             public bool TryGetProductionBase(PlayerId owner,
-                out IEntity productionBase) =>
+                out IEntity productionBase, bool stationsOnly = false) =>
                 TryGetLivingStation(owner, out productionBase);
             public bool TryGetLivingStation(PlayerId owner,
                 out IEntity station)

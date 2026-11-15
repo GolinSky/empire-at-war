@@ -10,6 +10,8 @@ namespace EmpireAtWar.Services.VContainer
         public static void Register(IContainerBuilder builder, BattleDefinition battle, BattlePlayer player)
         {
             PlayerId host = battle.GetProductionHost(player).Slot.Id;
+            // An online takeover uses the AI controller but retains the original human slot's production rules.
+            bool stationsOnly = battle.GetPlayer(player.Slot.Id).Role == PlayerRole.AiOpponent;
             if (player.IsHosted)
                 builder.Register<IProductionAccess>(resolver =>
                     new HostedProductionAccess(host, resolver.Resolve<IStationRegistry>(),
@@ -17,7 +19,7 @@ namespace EmpireAtWar.Services.VContainer
             else
                 builder.Register<IProductionAccess>(resolver =>
                     new SelfProductionAccess(host, resolver.Resolve<IStationRegistry>(),
-                        resolver.Resolve<IPlayerRoster>()), Lifetime.Singleton);
+                        resolver.Resolve<IPlayerRoster>(), stationsOnly), Lifetime.Singleton);
         }
     }
 }

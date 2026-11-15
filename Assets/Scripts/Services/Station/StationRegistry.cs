@@ -35,13 +35,15 @@ namespace EmpireAtWar.Services.Stations
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
         }
 
-        public bool HasProductionBase(PlayerId owner) => TryGetProductionBase(owner, out _);
+        public bool HasProductionBase(PlayerId owner, bool stationsOnly = false) =>
+            TryGetProductionBase(owner, out _, stationsOnly);
 
-        public bool TryGetProductionBase(PlayerId owner, out IEntity productionBase)
+        public bool TryGetProductionBase(PlayerId owner, out IEntity productionBase, bool stationsOnly = false)
         {
             foreach (IEntity candidate in _productionBases)
             {
                 if (candidate.Owner == owner &&
+                    (!stationsOnly || candidate.IsPlayerBase()) &&
                     !candidate.HealthModel.IsDestroyed &&
                     candidate.HealthModel.HasUnits)
                 {

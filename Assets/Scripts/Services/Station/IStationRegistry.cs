@@ -6,10 +6,10 @@ namespace EmpireAtWar.Services.Stations
 {
     public interface IStationRegistry : IService
     {
-        /// <summary>True while the owner keeps a living station, Golan III or Empress to buy units from.</summary>
-        bool HasProductionBase(PlayerId owner);
+        /// <summary>Checks for a living station or, when allowed, a Golan III or Empress with production capacity.</summary>
+        bool HasProductionBase(PlayerId owner, bool stationsOnly = false);
 
-        bool TryGetProductionBase(PlayerId owner, out IEntity productionBase);
+        bool TryGetProductionBase(PlayerId owner, out IEntity productionBase, bool stationsOnly = false);
 
         bool TryGetLivingStation(PlayerId owner, out IEntity station);
     }

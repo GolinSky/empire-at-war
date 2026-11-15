@@ -73,6 +73,42 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void StationOnlyAccess_SkipsPlatformsAndUsesOwnOrAlliedStations()
+        {
+            EntityLocator entities = new EntityLocator();
+            Base ownPlatform = new Base(1, TestPlayers.Human);
+            Base alliedPlatform = new Base(2, TestPlayers.Ally);
+            entities.AddEntity(ownPlatform);
+            entities.AddEntity(alliedPlatform);
+            StationRegistry stations = new StationRegistry(entities);
+            var roster = TestPlayers.CreateTeamGame();
+            var access = new SelfProductionAccess(TestPlayers.Human, stations, roster, stationsOnly: true);
+            var unrestricted = new SelfProductionAccess(TestPlayers.Human, stations, roster);
+
+            Assert.That(access.CanProduce, Is.False);
+            Assert.That(access.HasHostBase, Is.False);
+            Assert.That(unrestricted.TryGetProductionBase(out IEntity found), Is.True);
+            Assert.That(found, Is.SameAs(ownPlatform));
+
+            Base alliedStation = new Base(3, TestPlayers.Ally, isStation: true);
+            entities.AddEntity(alliedStation);
+            Assert.That(access.TryGetProductionBase(out found), Is.True);
+            Assert.That(found, Is.SameAs(alliedStation));
+            Assert.That(access.HasHostBase, Is.False);
+
+            Base ownStation = new Base(4, TestPlayers.Human, isStation: true);
+            entities.AddEntity(ownStation);
+            Assert.That(access.TryGetProductionBase(out found), Is.True);
+            Assert.That(found, Is.SameAs(ownStation));
+            Assert.That(access.HasHostBase, Is.True);
+
+            ownStation.Health.Destroyed = true;
+            alliedStation.Health.Destroyed = true;
+            Assert.That(access.CanProduce, Is.False);
+            Assert.That(unrestricted.CanProduce, Is.True);
+        }
+
+        [Test]
         public void HostedLevel_InitialSyncFailureUnsubscribesFromHost()
         {
             var host = new PlayerFactionModel(null, null) { CurrentLevel = 5 };
@@ -103,17 +139,38 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class Base : IEntity
         {
             private readonly IProductionBaseFacade _production = new ProductionBaseFacade();
+            private readonly IPlayerBaseFacade _station;
             public long Id { get; }
             public PlayerId Owner { get; }
             public Health Health { get; } = new Health();
             public IHealthModelObserver HealthModel => Health;
-            public Base(long id, PlayerId owner) { Id = id; Owner = owner; }
+            public Base(long id, PlayerId owner, bool isStation = false)
+            {
+                Id = id;
+                Owner = owner;
+                if (isStation) _station = new PlayerBaseFacade();
+            }
+
             public bool TryGetFacade<T>(out T facade) where T : IEntityFacade
             {
-                facade = _production is T result ? result : default;
-                return _production is T;
+                if (_production is T production)
+                {
+                    facade = production;
+                    return true;
+                }
+
+                if (_station is T station)
+                {
+                    facade = station;
+                    return true;
+                }
+
+                facade = default;
+                return false;
             }
-            public T GetFacade<T>() where T : IEntityFacade => (T)_production;
+
+            public T GetFacade<T>() where T : IEntityFacade =>
+                TryGetFacade(out T facade) ? facade : throw new InvalidOperationException(typeof(T).Name);
         }
 
         private sealed class Health : IHealthModelObserver
