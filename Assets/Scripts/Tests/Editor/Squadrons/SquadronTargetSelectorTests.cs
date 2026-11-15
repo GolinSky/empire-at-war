@@ -291,19 +291,72 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public void IconAnchor_UsesReplicatedRootOnClientsAndSimulatedCentroidOnAuthority(bool isReplica)
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            GameObject root = new GameObject("Squadron marker position");
+            _objects.Add(root);
+            Squadron squadron = root.AddComponent<Squadron>();
+            SquadronIconComponent icon = root.AddComponent<SquadronIconComponent>();
+            SquadronData data = ScriptableObject.CreateInstance<SquadronData>();
+            try
+            {
+                var flight = new FlightStub(data);
+                var pilot = new SquadronPilot(flight);
+                pilot.Loiter(Vector3.zero);
+                var marker = new BattleMarker(null, null, null, null, isSquadron: true);
+                typeof(SquadronIconComponent).GetField("_marker", PRIVATE_INSTANCE).SetValue(icon, marker);
+                typeof(SquadronIconComponent).GetField("_isReleased", PRIVATE_INSTANCE).SetValue(icon, false);
+                typeof(Squadron).GetField("_orders", PRIVATE_INSTANCE).SetValue(squadron, new UnitOrderModel());
+                typeof(Squadron).GetField("_flight", PRIVATE_INSTANCE).SetValue(squadron, flight);
+                typeof(Squadron).GetField("_pilot", PRIVATE_INSTANCE).SetValue(squadron, pilot);
+                typeof(Squadron).GetField("_icon", PRIVATE_INSTANCE).SetValue(squadron, icon);
+                typeof(Squadron).GetField("_isReplica", PRIVATE_INSTANCE).SetValue(squadron, isReplica);
+                typeof(Squadron).GetProperty("Data", PRIVATE_INSTANCE).SetValue(squadron, data);
+
+                for (int frame = 1; frame <= 2; frame++)
+                {
+                    Vector3 replicatedPosition = new Vector3(frame * 1000f, 0f, 0f);
+                    Vector3 simulatedPosition = -replicatedPosition;
+                    // The receiver wrote the host pose after the preceding frame's local flight step.
+                    flight.Centroid = replicatedPosition;
+                    flight.StepCentroid = simulatedPosition;
+
+                    squadron.Tick(0.1f);
+
+                    Assert.That(flight.Centroid, Is.EqualTo(simulatedPosition),
+                        "The visual flight simulation still advances.");
+                    Assert.That(marker.Position, Is.EqualTo(isReplica ? replicatedPosition : simulatedPosition),
+                        "The icon must use the correct position source on every frame.");
+                }
+            }
+            finally
+            {
+                // The test owns an unregistered marker and does not initialize visibility subscriptions.
+                typeof(SquadronIconComponent).GetField("_isReleased", PRIVATE_INSTANCE).SetValue(icon, true);
+                UnityEngine.Object.DestroyImmediate(data);
+            }
+        }
+
         private sealed class FlightStub : ISquadronFlightComponent
         {
             public FlightStub(IFighterFlightData data, int count = 0) { Data = data; Count = count; }
             public string Id => "flight";
             public IFighterFlightData Data { get; }
             public int Count { get; }
-            public Vector3 Centroid => new Vector3(10f, 0f, 20f);
+            public Vector3 Centroid { get; set; } = new Vector3(10f, 0f, 20f);
+            public Vector3? StepCentroid { get; set; }
             public Vector3 Heading => Vector3.forward;
             public bool IsAlive(int index) => true;
             public Vector3 GetPosition(int index) => Centroid;
             public Vector3 GetForward(int index) => Heading;
             public void Steer(int index, Vector3 target, float speed) { }
-            public void Step(float deltaTime) { }
+            public void Step(float deltaTime)
+            {
+                if (StepCentroid.HasValue) Centroid = StepCentroid.Value;
+            }
             public void Respawn(Vector3 position, Quaternion rotation) => throw new NotSupportedException();
         }
 

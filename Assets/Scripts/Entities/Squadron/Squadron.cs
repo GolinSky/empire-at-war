@@ -244,7 +244,9 @@ namespace EmpireAtWar.Entities.Squadrons
             _tickGate.SetTicking(true);
         }
 
-        public void Tick()
+        public void Tick() => Tick(Time.deltaTime);
+
+        internal void Tick(float deltaTime)
         {
             if (_isReleased)
             {
@@ -265,19 +267,21 @@ namespace EmpireAtWar.Entities.Squadrons
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.SquadronPilot.Auto())
 #endif
-            _pilot.Tick(Time.deltaTime);
+            _pilot.Tick(deltaTime);
             Vector3 previousPosition = _flight.Centroid;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.SquadronFlight.Auto())
 #endif
-            _flight.Step(Time.deltaTime);
-            // Replicas receive root positions from the host and have no authoritative travel leg.
+            _flight.Step(deltaTime);
+            // LateTick applies the host root on replicas. Preserve it before local flight overwrites
+            // the transform so the marker follows replicated motion, not the local fighter simulation.
+            Vector3 markerCentroid = _isReplica ? previousPosition : _flight.Centroid;
             bool travelling = _isReplica ? CurrentOrder.IsMoveOrder() : _pilot.IsTravelling;
-            _icon.AdvanceAnchor(_flight.Centroid, _isReplica ? _flight.Centroid : _pilot.MarkerIntent,
-                _flight.Data.CruiseSpeed, Data.LoiterRadius, travelling, _pilot.IsFighting, Time.deltaTime);
-            if (Time.deltaTime > 0f && !_pilot.HasArrived)
+            _icon.AdvanceAnchor(markerCentroid, _isReplica ? markerCentroid : _pilot.MarkerIntent,
+                _flight.Data.CruiseSpeed, Data.LoiterRadius, travelling, _pilot.IsFighting, deltaTime);
+            if (deltaTime > 0f && !_pilot.HasArrived)
             {
-                float speed = Vector3.Distance(previousPosition, _flight.Centroid) / Time.deltaTime;
+                float speed = Vector3.Distance(previousPosition, _flight.Centroid) / deltaTime;
                 if (speed > 0f)
                     _shipSfxService.TryHoldEngine(_audioHandle, _unitAudio.Engine, _flight.Centroid,
                         Mathf.Clamp01(speed / _flight.Data.CruiseSpeed), 1f);
