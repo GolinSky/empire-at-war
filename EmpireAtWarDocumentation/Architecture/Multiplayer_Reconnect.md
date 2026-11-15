@@ -37,7 +37,9 @@ verification: Live source and reliable baseline ordering inspected; automated
 ## Edge Cases
 
 - Project-lifetime `HostLeftBattleExit` handles loss during preloading as well as an active battle. `OnlineBattleLifetime` captures `BattleGeneration`; stale scene disposal cannot close a replacement session.
-- Temporary failure retains the record. Leave/Dismiss, kick, completed match and terminal rejection clear it. Explicit connected Leave revokes the host credential; unreachable Dismiss clears only local state.
+- Temporary failure retains the record. Application quit (`OnlineMatchService.LateDispose`) is not a Leave: client stops the transport without `LobbyLeaveMessage` and keeps the record; host quit still announces `HostLeft`. Leave/Dismiss, kick, completed match and terminal rejection clear it.
+- Early Steam rejoin is transport-safe: FizzySteamworks `NextServer` (default `UseNextGenSteamNetworking = true`) keys connections by `HSteamNetConnection`, so a second connection from the same SteamID is accepted. `LegacyServer` keys by SteamID and would not be.
+- Recovery countdown text rebuilds and raises `Changed` only when the whole-second value changes, not every frame. Explicit connected Leave revokes the host credential; unreachable Dismiss clears only local state.
 - Host restart preserves match ID/credentials and outstanding reservation deadlines. Successful recovery keeps the record for another crash.
 - Corrupt/unsupported record → discard + visible error. Changed Steam account → reject; never fall back to display-name matching.
 - Historical 2026-11-14 client logs show lobby entry and Steam transport connection followed by server disconnect. Exact historical rejection needs the host log; App ID 480 is not established as the cause.

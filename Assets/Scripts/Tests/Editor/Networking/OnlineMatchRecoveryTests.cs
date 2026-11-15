@@ -86,6 +86,18 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void ApplicationQuitFromRecoveryMenu_KeepsDiskRecordForNextLaunch()
+        {
+            RememberSession();
+
+            _online.LateDispose();
+
+            Assert.That(_store.TryLoad(out ReconnectSessionRecord restored, out _), Is.True,
+                "Closing the game is not an explicit Leave; the next launch offers Rejoin previous match.");
+            Assert.That(restored.Credential, Is.EqualTo("private-credential"));
+        }
+
+        [Test]
         public void HelloAfterHostLeft_DoesNotCreateMember()
         {
             Invoke("OnHello", new NetworkConnectionToClient(7, "127.0.0.1"), new LobbyHelloMessage

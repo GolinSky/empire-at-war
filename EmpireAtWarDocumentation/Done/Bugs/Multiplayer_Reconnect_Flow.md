@@ -64,6 +64,7 @@ acceptance: pending-user
 - Host remains authoritative. A last-second accepted recovery can reserve up to **480 s** from detected loss; simulation continues without temporary AI/reclaim swapping.
 - Graceful host announcement → Host ended the match. Transport loss alone cannot prove host termination.
 - Historical Steam Join Game report: local Player.log modified 2026-11-14 23:05 shows lobby entry (line 443), connection established (496), peer/server disconnect (508); earlier cycle 342→354 agrees. Exact host rejection cause remains unproven; do not attribute it to App ID 480.
+- Post-review fix 2026-11-15: graceful application quit had cleared the record through `LateDispose → Leave → ClearRecovery`; client quit now keeps it and sends no `LobbyLeaveMessage`. Added `OnlineMatchRecoveryTests.ApplicationQuitFromRecoveryMenu_KeepsDiskRecordForNextLaunch`. Reconnect countdown now notifies once per second instead of every frame. Unity recompile clean; tests not run.
 - OnlineMatchService remains a large existing coordinator. Persistence and deadline policy are extracted; a broader coordinator refactor is outside this fix.
 
 ## TODO

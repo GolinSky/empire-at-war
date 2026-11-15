@@ -56,6 +56,7 @@ namespace EmpireAtWar.Services.Networking.Online
         private bool _awaitingSteamHost;
         private float _connectDeadline;
         private float _recoveryDeadline;
+        private int _shownRecoverySeconds = -1;
         private float _stopHostAt;
         private float _stopClientAt;
         private int _attempt;
@@ -188,8 +189,14 @@ namespace EmpireAtWar.Services.Networking.Online
             }
             if (IsReconnecting && _recoveryDeadline > 0f)
             {
-                RecoveryStatus = $"{(_localLoaded ? "Synchronizing" : "Loading battle")} - host allowed {Mathf.CeilToInt(Mathf.Max(0, _recoveryDeadline - Time.unscaledTime))} s";
-                NotifyChanged();
+                int seconds = Mathf.CeilToInt(Mathf.Max(0f, _recoveryDeadline - Time.unscaledTime));
+                // The countdown text changes once per second; rebuilding and notifying every frame only allocates.
+                if (seconds != _shownRecoverySeconds)
+                {
+                    _shownRecoverySeconds = seconds;
+                    RecoveryStatus = $"{(_localLoaded ? "Synchronizing" : "Loading battle")} - host allowed {seconds} s";
+                    NotifyChanged();
+                }
             }
             if (Role == OnlineRole.Host) ExpireReservations();
         }
@@ -213,7 +220,15 @@ namespace EmpireAtWar.Services.Networking.Online
 
         public void LateDispose()
         {
-            Leave();
+            // Quitting the application is not an explicit Leave: the saved record survives for the next launch's
+            // Rejoin previous match, and no LobbyLeaveMessage revokes the credential on the host.
+            if (Role == OnlineRole.Host) Leave();
+            else if (Role == OnlineRole.Client)
+            {
+                _leaving = true;
+                _manager.StopClient();
+                _leaving = false;
+            }
             _steam.Shutdown();
             if (_root != null) Object.Destroy(_root);
         }
@@ -528,6 +543,7 @@ namespace EmpireAtWar.Services.Networking.Online
             if (Role == OnlineRole.Client)
             {
                 _localLoaded = true;
+                _shownRecoverySeconds = -1;
                 RecoveryStatus = "Synchronizing";
                 NetworkClient.Send(new BattleLoadedMessage());
                 NotifyChanged();
@@ -741,6 +757,7 @@ namespace EmpireAtWar.Services.Networking.Online
         {
             _connectDeadline = 0f;
             _recoveryDeadline = _recovering ? Time.unscaledTime + message.RecoverySeconds : 0f;
+            _shownRecoverySeconds = -1;
             _recovery = new ReconnectSessionRecord
             {
                 Transport = _clientTransport, Host = _clientHost, Port = _kcp.Port, LobbyId = _clientLobby,
