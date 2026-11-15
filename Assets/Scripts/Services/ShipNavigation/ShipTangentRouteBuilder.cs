@@ -127,8 +127,10 @@ namespace EmpireAtWar.Services.ShipNavigation
             job.RunByRef();
             if (failure.Value != ShipTangentRouteJob.FAILURE_NONE)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
                 ShipTangentFailureSnapshot.Create(graph, waypoints, forward, turnRadius, allowEscape,
                     collapseLinks, buildId, context, job).SaveAndReport();
+#endif
                 if (collapsed) return null;
                 string message = $"[ShipNavigation] Tangent route build failed (code {failure.Value}); " +
                     "following the funnel polyline with turns in place.";

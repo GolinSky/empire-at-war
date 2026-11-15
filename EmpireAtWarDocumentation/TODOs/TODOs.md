@@ -282,7 +282,7 @@
 ### Bugs
 
 - [x] **Fix ship rotation snaps and tangent route failures** → [[Done/Bugs/Ship_Rotation_Snaps_And_Tangent_Failures]]
-  - Completed 2026-11-15: bounded heading recovery, actual-hull handoff, corner-safe braking, reproduced overlapping-disk winding repair and four-file failure snapshots. EditMode Navigation 260/260 and Ships 209/209 passed; battle/online acceptance → [[TODOs/User_Acceptance_Queue]].
+  - Completed 2026-11-15: bounded heading recovery, actual-hull handoff, corner-safe braking, reproduced overlapping-disk winding repair and Editor/Development-only four-file failure snapshots. EditMode Navigation 260/260 and Ships 209/209 passed; battle/online acceptance → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Restore a dropped/crashed multiplayer session through in-game Reconnect** → [[Done/Bugs/Multiplayer_Reconnect_Flow|Multiplayer Reconnect Flow]]
   - Initial report/proposal 2026-11-15. Missing recovery UI; running battles hidden from browser; Steam Join Game failure reported, cause unknown. Persist session destination/credential for crash-restart rejoin; add Reconnect/Leave and startup Rejoin. Proposed 5 min grace + bounded 3 min loading allowance; host owns expiry. Parent: [[TODOs/Features/Multiplayer_Plan]].
