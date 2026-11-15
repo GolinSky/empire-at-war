@@ -14,6 +14,7 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Ships")]
     public sealed class CorvetteLoadoutTests
     {
+        private const string CD273_DATA = "Assets/Settings/Data/Ship/Rebellion/CD273ShipData.asset";
         private const string STEALTH_DATA = "Assets/Settings/Data/Ship/Republic/StealthCorvetteShipData.asset";
         // Republic at War 1.5.5 gives these corvettes no point defense.
         private static readonly string[] NO_POINT_DEFENSE =
@@ -41,7 +42,8 @@ namespace EmpireAtWar.Tests.Editor
                     .Cast<WeaponHardPoint>().ToArray();
                 var healthBindings = BalancePrefabBindings.References(
                     unit.Components.OfType<HealthComponent>().Single(), BalanceRegistration.Auto("ShipUnits"));
-                bool hasPointDefense = !NO_POINT_DEFENSE.Contains(AssetDatabase.GetAssetPath(data));
+                string dataPath = AssetDatabase.GetAssetPath(data);
+                bool hasPointDefense = !NO_POINT_DEFENSE.Contains(dataPath);
 
                 Assert.That(mounts, Is.Not.Empty, unit.Caption);
                 Assert.That(mounts.Distinct().Count(), Is.EqualTo(mounts.Length), unit.Caption);
@@ -57,6 +59,13 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(data.WeaponLoadout.Select(entry => (entry.WeaponType, entry.Count)),
                     Is.EquivalentTo(mounts.GroupBy(mount => mount.WeaponType)
                         .Select(group => (group.Key, group.Count()))), unit.Caption);
+                if (dataPath == CD273_DATA)
+                {
+                    Assert.That(mounts.Count(mount => mount.WeaponType == WeaponType.ConcussionMissile),
+                        Is.EqualTo(2), unit.Caption);
+                    Assert.That(mounts.Count(mount => mount.WeaponType == WeaponType.DualLaser),
+                        Is.EqualTo(10), unit.Caption);
+                }
 
                 foreach (WeaponHardPoint mount in mounts)
                 {
@@ -64,8 +73,8 @@ namespace EmpireAtWar.Tests.Editor
                     string context = unit.Caption + " / " + mount.name;
                     Assert.That(healthBindings, Does.Contain(mount), context);
                     Assert.That(definition.Caliber, Is.Not.EqualTo(WeaponCaliber.Heavy), context);
-                    // The original Stealth Corvette carries concussion missiles.
-                    if (AssetDatabase.GetAssetPath(data) != STEALTH_DATA)
+                    if (dataPath != STEALTH_DATA &&
+                        !(dataPath == CD273_DATA && mount.WeaponType == WeaponType.ConcussionMissile))
                         Assert.That(definition.Family, Is.Not.EqualTo(WeaponFamily.Missile), context);
                     Assert.That(definition.Family, Is.Not.EqualTo(WeaponFamily.Torpedo), context);
                     Assert.That(definition.Family, Is.Not.EqualTo(WeaponFamily.IonTorpedo), context);

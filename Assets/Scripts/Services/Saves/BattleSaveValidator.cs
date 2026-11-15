@@ -31,6 +31,9 @@ namespace EmpireAtWar.Services.Saves
     /// <summary>Verifies a save against current game data and map counts before loading the battle scene.</summary>
     public sealed class BattleSaveValidator
     {
+        private const int LEGACY_CD273_HARDPOINT_COUNT = 10;
+        private const int CD273_HARDPOINT_COUNT = 16;
+
         private readonly IAssetService _assets;
         private readonly MapGenerationSettings _mapSettings;
 
@@ -81,12 +84,17 @@ namespace EmpireAtWar.Services.Saves
             var adoptedSquadrons = new HashSet<long>();
             List<(UnitSave Unit, HangarSave Hangar)> migratedHangars =
                 save.Header.Version == BattleSaveHeader.PRE_HANGAR_REBALANCE_VERSION ? new() : null;
+            var migratedHealth = new List<(UnitSave Unit, UnitHealthSave Health)>();
             foreach (StructureSave structure in save.Structures)
                 ValidateStructure(structure, players, rosters, siteFacilities, squadrons, adoptedSquadrons);
             foreach (UnitSave unit in save.Units)
-                ValidateUnit(unit, players, rosters, shipsData, squadrons, adoptedSquadrons, migratedHangars);
+                ValidateUnit(unit, players, rosters, shipsData, squadrons, adoptedSquadrons, migratedHangars,
+                    migratedHealth);
             ValidatePlayers(save.Players, players, rosters, levels, squadrons);
             ValidateCombatAndVictory(save, players, entityIds);
+
+            foreach ((UnitSave unit, UnitHealthSave health) in migratedHealth)
+                unit.SetMigratedHealth(health);
 
             if (migratedHangars != null)
             {
@@ -218,7 +226,8 @@ namespace EmpireAtWar.Services.Saves
         private void ValidateUnit(UnitSave unit, IReadOnlyDictionary<PlayerId, BattlePlayer> players,
             IReadOnlyDictionary<PlayerId, FactionRoster> rosters, ShipsData shipsData,
             IReadOnlyDictionary<long, UnitSave> squadrons, HashSet<long> adoptedSquadrons,
-            List<(UnitSave Unit, HangarSave Hangar)> migratedHangars)
+            List<(UnitSave Unit, HangarSave Hangar)> migratedHangars,
+            List<(UnitSave Unit, UnitHealthSave Health)> migratedHealth)
         {
             if (!players.ContainsKey(unit.Owner))
                 throw new InvalidDataException($"Unit {unit.Id} belongs to unknown player {unit.Owner}.");
@@ -229,7 +238,20 @@ namespace EmpireAtWar.Services.Saves
                     (rosters.TryGetValue(unit.Owner, out FactionRoster roster) && !roster.Ships.ContainsKey(shipType)))
                     throw new InvalidDataException($"Ship {shipType} cannot be restored for {unit.Owner}.");
                 ShipData data = _assets.Load<ShipData>(shipsData.GetShipDataPath(shipType));
-                ValidateHardPoints(_assets.LoadComponent<ShipEntity>(shipType + "ShipView"), unit.Health, unit.Id);
+                ShipEntity view = _assets.LoadComponent<ShipEntity>(shipType + "ShipView");
+                UnitHealthSave health = unit.Health;
+                if (shipType == ShipType.CD273 && health?.HardPoints?.Length == LEGACY_CD273_HARDPOINT_COUNT &&
+                    view.Bindings.Health[0].ShipUnits.Count == CD273_HARDPOINT_COUNT)
+                {
+                    // The six dual-laser hardpoints were appended after all existing IDs.
+                    var hardPoints = new float[CD273_HARDPOINT_COUNT];
+                    Array.Copy(health.HardPoints, hardPoints, LEGACY_CD273_HARDPOINT_COUNT);
+                    Array.Fill(hardPoints, 1f, LEGACY_CD273_HARDPOINT_COUNT,
+                        CD273_HARDPOINT_COUNT - LEGACY_CD273_HARDPOINT_COUNT);
+                    health = UnitHealthSave.ForShip(health.Hull, health.Shields, hardPoints);
+                    migratedHealth.Add((unit, health));
+                }
+                ValidateHardPoints(view, health, unit.Id);
                 ValidateAbilities(unit.Abilities, data.Abilities, unit.Id);
                 HangarSave hangar = unit.Hangar;
                 if (migratedHangars != null && HangarStockMigration.TryMigrate(unit, data.HangarBays, out HangarSave migrated))

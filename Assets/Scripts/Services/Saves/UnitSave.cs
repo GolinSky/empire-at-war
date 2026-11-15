@@ -63,6 +63,8 @@ namespace EmpireAtWar.Services.Saves
             return this;
         }
 
+        internal void SetMigratedHealth(UnitHealthSave save) => health = save;
+
         public UnitSave WithHangar(HangarSave save)
         {
             hasHangar = true;

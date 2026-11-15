@@ -326,6 +326,44 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Validator_MigratesCd273HardpointsOnceAndPreservesExistingDamage()
+        {
+            using var assets = new CachedAssetService(new AddressableHandleLoader());
+            BattleDefinition defaults = SkirmishPreset.Default();
+            var rebel = new PlayerSlot(TestPlayers.Human, new TeamId(0), FactionType.Rebellion,
+                PlayerController.Human, EnemyAiDifficulty.Medium, 0);
+            BattleDefinition battle = SkirmishPreset.Create(new[] { rebel, defaults.Slots[1] }, defaults.Map.Planet,
+                defaults.Map.Size, defaults.VictoryCondition, defaults.StartingMoney, true, 0).Build();
+            ShipData shipData = assets.Load<ShipData>("CD273ShipData");
+            ShipAbilityCatalog abilities = assets.Load<ShipAbilityCatalog>(nameof(ShipAbilityCatalog));
+            float[] originalHardPoints = { 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f };
+            UnitSave ship = UnitSave.Create(1, rebel.Id, UnitTypeId.Ship(ShipType.CD273), Vector3.zero,
+                Quaternion.identity, UnitHealthSave.ForShip(0.5f, 0.25f, originalHardPoints), null)
+                .WithAbilities(shipData.Abilities.Select(id =>
+                    AbilitySlotSave.From(new ShipAbilitySlot(null, abilities.Get(id), id))).ToArray());
+            BattleSaveHeader header = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave,
+                DateTime.UtcNow, 0f, GameSpeed.Normal);
+            BattleSave save = BattleSave.Create(header, BattleSetupSave.From(battle),
+                CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 500f), new[] { ship },
+                Array.Empty<StructureSave>());
+            var validator = new BattleSaveValidator(assets);
+
+            save.ObservedBases = new[] { int.MaxValue };
+            Assert.That(Assert.Throws<InvalidDataException>(() => validator.Validate(save, battle)).Message,
+                Does.Contain("Observed base owner"));
+            Assert.That(ship.Health.HardPoints, Is.SameAs(originalHardPoints));
+
+            save.ObservedBases = Array.Empty<int>();
+            validator.Validate(save, battle);
+            UnitHealthSave migrated = ship.Health;
+            validator.Validate(save, battle);
+            Assert.That(ship.Health, Is.SameAs(migrated));
+            Assert.That(migrated.Hull, Is.EqualTo(0.5f));
+            Assert.That(migrated.Shields, Is.EqualTo(0.25f));
+            Assert.That(migrated.HardPoints, Is.EqualTo(originalHardPoints.Concat(Enumerable.Repeat(1f, 6))));
+        }
+
+        [Test]
         public void Validator_RequiresTheFalconsConfiguredInvulnerabilitySlot()
         {
             using var assets = new CachedAssetService(new AddressableHandleLoader());
