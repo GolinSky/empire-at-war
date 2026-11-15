@@ -1,8 +1,15 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Components.Hangar;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CaptureSites;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.UnitActions;
+using EmpireAtWar.Entities.Units;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.PlayerCommands;
@@ -17,10 +24,13 @@ namespace EmpireAtWar.Tests.Editor
     [Category("BattleInput")]
     public sealed class PlayerCommandSinkTests
     {
+        private static readonly UnitTypeFacade SHIP_TYPE = new UnitTypeFacade(UnitTypeId.Ship(ShipType.Venator));
+
         private EntityLocator _entities;
         private RecordingOrders _orders;
         private PlayerCommandHandlers _handlers;
         private AuthorityCommandSink _sink;
+        private SkirmishStateModel _battle;
         private FakeEntity _own;
         private FakeEntity _enemy;
 
@@ -30,7 +40,9 @@ namespace EmpireAtWar.Tests.Editor
             _entities = new EntityLocator();
             _orders = new RecordingOrders();
             _handlers = new PlayerCommandHandlers();
-            _sink = new AuthorityCommandSink(_entities, _orders, _handlers);
+            _battle = new SkirmishStateModel();
+            _battle.SetState(BattleState.Running);
+            _sink = new AuthorityCommandSink(_entities, _orders, _handlers, _battle);
             _own = new FakeEntity(1, TestPlayers.Human);
             _enemy = new FakeEntity(2, TestPlayers.Enemy);
             _entities.AddEntity(_own);
@@ -126,6 +138,77 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(construction.SiteIndex, Is.EqualTo(4));
         }
 
+        [TestCase(BattleState.Running)]
+        [TestCase(BattleState.Paused)]
+        public void DestroyShip_OnlyDestroysTheTargetAndIgnoresDuplicates(BattleState state)
+        {
+            _battle.SetState(state);
+            var target = new RecordingDeath(TestPlayers.Human);
+            var other = new RecordingDeath(TestPlayers.Human);
+            AddDestroyTarget(3, target, SHIP_TYPE, target);
+            AddDestroyTarget(4, other, SHIP_TYPE, other);
+            var command = new DestroyShipCommand(TestPlayers.Human, 3);
+
+            _sink.Submit(command);
+            _sink.Submit(command);
+
+            Assert.That(target.Calls, Is.EqualTo(1));
+            Assert.That(other.Calls, Is.Zero);
+        }
+
+        [Test]
+        public void DestroyShip_RejectsEnemyAndAlliedShips()
+        {
+            var enemy = new RecordingDeath(TestPlayers.Enemy);
+            var ally = new RecordingDeath(TestPlayers.Ally);
+            AddDestroyTarget(3, enemy, SHIP_TYPE, enemy);
+            AddDestroyTarget(4, ally, SHIP_TYPE, ally);
+
+            _sink.Submit(new DestroyShipCommand(TestPlayers.Human, 3));
+            _sink.Submit(new DestroyShipCommand(TestPlayers.Human, 4));
+
+            Assert.That(enemy.Calls, Is.Zero);
+            Assert.That(ally.Calls, Is.Zero);
+        }
+
+        [Test]
+        public void DestroyShip_RejectsMissingIdNonShipDeadAndShipWithoutDestroyFacade()
+        {
+            var squadron = new RecordingDeath(TestPlayers.Human);
+            var deadShip = new RecordingDeath(TestPlayers.Human, alreadyDestroyed: true);
+            var shipWithoutFacade = new RecordingDeath(TestPlayers.Human);
+            AddDestroyTarget(3, squadron, new UnitTypeFacade(UnitTypeId.Squadron(SquadronType.Delta7)), squadron);
+            AddDestroyTarget(4, deadShip, SHIP_TYPE, deadShip);
+            AddDestroyTarget(5, shipWithoutFacade, SHIP_TYPE);
+
+            _sink.Submit(new DestroyShipCommand(TestPlayers.Human, 99));
+            _sink.Submit(new DestroyShipCommand(TestPlayers.Human, 3));
+            _sink.Submit(new DestroyShipCommand(TestPlayers.Human, 4));
+            _sink.Submit(new DestroyShipCommand(TestPlayers.Human, 5));
+
+            Assert.That(squadron.Calls, Is.Zero);
+            Assert.That(deadShip.Calls, Is.Zero);
+            Assert.That(shipWithoutFacade.IsDestroyed, Is.False);
+        }
+
+        [TestCase(BattleState.NotInitialized)]
+        [TestCase(BattleState.Loading)]
+        [TestCase(BattleState.Ended)]
+        public void DestroyShip_RejectsInactiveBattle(BattleState state)
+        {
+            _battle.SetState(state);
+            var target = new RecordingDeath(TestPlayers.Human);
+            AddDestroyTarget(3, target, SHIP_TYPE, target);
+
+            _sink.Submit(new DestroyShipCommand(TestPlayers.Human, 3));
+
+            Assert.That(target.Calls, Is.Zero);
+        }
+
+        private void AddDestroyTarget(long id, RecordingDeath health, params IEntityFacade[] facades) =>
+            _entities.AddEntity(new Entity(health, _entities, facades, health.Owner, id,
+                Array.Empty<IPooledEntityEvents>(), Array.Empty<IHangarLaunchEvents>()));
+
         private sealed class FakeEntity : IEntity
         {
             public FakeEntity(long id, PlayerId owner)
@@ -144,6 +227,38 @@ namespace EmpireAtWar.Tests.Editor
             {
                 facade = default;
                 return false;
+            }
+        }
+
+        private sealed class RecordingDeath : IHealthModelObserver, IEntityDestroyFacade
+        {
+            public RecordingDeath(PlayerId owner, bool alreadyDestroyed = false)
+            {
+                Owner = owner;
+                IsDestroyed = alreadyDestroyed;
+            }
+
+            public event Action OnDestroy { add { } remove { } }
+            public event Action OnValueChanged { add { } remove { } }
+            public int Calls { get; private set; }
+            public PlayerId Owner { get; }
+            public bool IsDestroyed { get; private set; }
+            public ShipClass ShipClass => ShipClass.Capital;
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<IReadOnlyHardPointModel>();
+            public float Hull => HullPercentage;
+            public float HullPercentage => IsDestroyed ? 0f : 1f;
+            public float Shields => 0f;
+            public float ShieldPercentage => 0f;
+            public bool IsLostShieldGenerator => false;
+            public bool HasUnits => false;
+            public bool HasLiveHardPoints => false;
+            public bool HasShields => false;
+            public IHardPointModel[] GetShipUnits(HardPointType type) => Array.Empty<IHardPointModel>();
+
+            public void Destroy()
+            {
+                Calls++;
+                IsDestroyed = true;
             }
         }
 

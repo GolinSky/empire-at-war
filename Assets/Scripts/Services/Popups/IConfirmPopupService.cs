@@ -4,6 +4,7 @@ namespace EmpireAtWar.Services.Popups
 {
     public interface IConfirmPopupService
     {
-        void ShowAccept(AcceptPopupContent content, Action<ConfirmPopupResult> answered);
+        PopupHandle ShowAccept(AcceptPopupContent content, Action<ConfirmPopupResult> answered);
+        void Close(PopupHandle handle);
     }
 }

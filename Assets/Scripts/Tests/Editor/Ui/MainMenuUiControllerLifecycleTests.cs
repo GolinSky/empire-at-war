@@ -460,11 +460,14 @@ namespace EmpireAtWar.Tests.Editor
         {
             public Action<ConfirmPopupResult> Complete { get; private set; }
 
-            public void ShowAccept(AcceptPopupContent content, Action<ConfirmPopupResult> answered)
+            public PopupHandle ShowAccept(AcceptPopupContent content, Action<ConfirmPopupResult> answered)
             {
                 Assert.That(Complete, Is.Null, "Only one consent prompt should open.");
                 Complete = answered;
+                return new PopupHandle();
             }
+
+            public void Close(PopupHandle handle) => throw new InvalidOperationException("No popup close is expected.");
         }
 
         private sealed class TooltipServiceStub : ITooltipService

@@ -120,14 +120,13 @@ namespace EmpireAtWar.Tests.Editor
         {
             var lowerResults = new List<ConfirmPopupResult>();
             var upperResults = new List<ConfirmPopupResult>();
-            PopupHandle lower = _popups.Open(new AcceptPopupUiController(_ui,
-                new AcceptPopupContent("First", "Message"), lowerResults.Add));
+            PopupHandle lower = _confirm.ShowAccept(new AcceptPopupContent("First", "Message"), lowerResults.Add);
             _confirm.ShowAccept(new AcceptPopupContent("Second", "Message"), upperResults.Add);
             AcceptPopupUi upper = _root.transform.GetChild(_root.transform.childCount - 1)
                 .GetComponent<AcceptPopupUi>();
 
-            _popups.Close(lower);
-            _popups.Close(lower);
+            _confirm.Close(lower);
+            _confirm.Close(lower);
 
             Assert.That(_popups.IsOpen(lower), Is.False);
             Assert.That(lowerResults, Is.EqualTo(new[] { ConfirmPopupResult.Dismissed }));

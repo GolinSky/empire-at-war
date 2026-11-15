@@ -15,7 +15,9 @@ namespace EmpireAtWar.Services.Popups
             _popups = popups;
         }
 
-        public void ShowAccept(AcceptPopupContent content, Action<ConfirmPopupResult> answered) =>
+        public PopupHandle ShowAccept(AcceptPopupContent content, Action<ConfirmPopupResult> answered) =>
             _popups.Open(new AcceptPopupUiController(_uiService, content, answered));
+
+        public void Close(PopupHandle handle) => _popups.Close(handle);
     }
 }

@@ -94,6 +94,11 @@ created: "2026-10-29\r"
 
 ## UI and Settings
 
+- [ ] [[Done/Features/Ship_Ui_Destroy_Plan]] — Offline: destroy one owned ship and verify normal effects, cleanup and no refund. Verify selection/ability interactions, menu placement/dismissal and expanded/collapsed card reuse.
+- [ ] [[Done/Features/Ship_Ui_Destroy_Plan]] — Online: host and remote co-op/PvP clients each destroy their own ship; verify ally/enemy requests fail and all peers see the same death and selection cleanup.
+- [ ] [[Done/Features/Ship_Ui_Destroy_Plan]] — Repeat under latency and disconnect while the confirmation is open or the request is pending.
+- [ ] [[Done/Features/Ship_Ui_Destroy_Plan]] — Run the affected `Ui`, `BattleInput` and `Networking` EditMode fixtures when requested.
+
 - [ ] [[Done/Refactoring/Shared_Invite_Friends_Popup_Plan]] — With two Steam accounts, receive a game invite over the open picker. Later/Escape restores selection. Join switches lobbies and closes the old picker.
 - [ ] [[Done/Refactoring/Shared_Invite_Friends_Popup_Plan]] — In both lobby modes, verify the Steam overlay and in-game fallback, sending success/failure, and disconnect while the picker is open.
 

@@ -38,6 +38,9 @@ namespace EmpireAtWar.Services.Networking
         public void Submit(PlaceMarkerCommand command) =>
             Send(new PlayerCommandMessage { Kind = PlayerCommandKind.PlaceMarker, PlaceMarker = command });
 
+        public void Submit(DestroyShipCommand command) =>
+            Send(new PlayerCommandMessage { Kind = PlayerCommandKind.DestroyShip, DestroyShip = command });
+
         private void Send(PlayerCommandMessage message)
         {
             message.LastReceivedTick = _replica.LastReceivedTick;

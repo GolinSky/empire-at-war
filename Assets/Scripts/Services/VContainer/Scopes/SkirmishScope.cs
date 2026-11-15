@@ -204,6 +204,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SuperWeaponTargetingModel>(Lifetime.Singleton);
             builder.Register<SuperWeaponOriginRegistry>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipUiModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<ShipDestroyFlow>(Lifetime.Singleton);
             builder.Register<ShipUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitOrderFeedbackUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipSpawnClearance>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

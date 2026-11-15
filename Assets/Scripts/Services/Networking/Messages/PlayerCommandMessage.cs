@@ -16,5 +16,6 @@ namespace EmpireAtWar.Services.Networking.Messages
         public ShipAbilityCommand ShipAbility;
         public DeployReinforcementCommand DeployReinforcement;
         public PlaceMarkerCommand PlaceMarker;
+        public DestroyShipCommand DestroyShip;
     }
 }

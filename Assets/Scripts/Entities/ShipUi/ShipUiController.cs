@@ -43,6 +43,7 @@ namespace EmpireAtWar.Entities.ShipUi
         private readonly ShipAbilityService _shipAbilityService;
         private readonly ISettingsService _settings;
         private readonly ILocalPlayer _localPlayer;
+        private readonly ShipDestroyFlow _destroyFlow;
         private readonly List<ShipAbilitySlot> _abilitySlots = new List<ShipAbilitySlot>();
         private readonly TooltipRequests _tooltips;
         private readonly TooltipIconData _tooltipIcons;
@@ -67,11 +68,12 @@ namespace EmpireAtWar.Entities.ShipUi
             ShipAbilityService shipAbilityService,
             TooltipIconData tooltipIcons,
             FactionCatalog factions,
-            ISettingsService settings, ILocalPlayer localPlayer) : base(uiService, cancelRouter)
+            ISettingsService settings, ILocalPlayer localPlayer, ShipDestroyFlow destroyFlow) : base(uiService, cancelRouter)
         {
             _selectionService = selectionService;
             _settings = settings;
             _localPlayer = localPlayer;
+            _destroyFlow = destroyFlow;
             _model = model;
             _icons = icons;
             _routeNavigation = routeNavigation;
@@ -105,6 +107,7 @@ namespace EmpireAtWar.Entities.ShipUi
             if (_groupTooltipHover != null) _groupTooltipHover.Dispose();
             if (_shipUi != null)
             {
+                _destroyFlow.Dispose();
                 _shipUi.Hide();
                 _shipUi.Dispose();
             }
@@ -127,10 +130,12 @@ namespace EmpireAtWar.Entities.ShipUi
                 _shipUi.SetModel(_model);
                 _shipUi.AssignPresenter(this);
                 _shipUi.Initialize();
+                _destroyFlow.Initialize(_shipUi.DestroyMenu);
 
                 _shipGroupUi.SetIcons(_icons);
                 _shipGroupUi.SetModel(_model);
                 _shipGroupUi.AssignPresenter(this);
+                _shipGroupUi.AssignDestroyHandler(_destroyFlow.Open);
                 _shipGroupUi.Initialize();
                 _shipTooltipHover = new TooltipHoverSubscription(
                     _shipUi.TooltipHover, HandleTooltipHover, _tooltips);
@@ -226,12 +231,18 @@ namespace EmpireAtWar.Entities.ShipUi
                 return;
             }
 
+            _destroyFlow.Invalidate();
             bool hasGroup = _model.HasShips && _playerSelectionContext.Count > 1;
-            _shipUi.SetDisplayName(_model.SelectedShipType.HasValue
+            string displayName = _model.SelectedShipType.HasValue
                 ? _factions.GetShipFactionData(_model.SelectedShipType.Value).DisplayName
                 : _model.SelectedSquadronType.HasValue
                     ? _factions.GetSquadronFactionData(_model.SelectedSquadronType.Value).DisplayName
-                    : "");
+                    : "";
+            _shipUi.SetDisplayName(displayName);
+            if (_isRouteActive && _model.SelectedShipType.HasValue)
+                _shipUi.SetDestroyTarget(_playerSelectionContext.Entity.Id, displayName, _destroyFlow.Open);
+            else
+                _shipUi.SetDestroyTarget(default, null, null);
             _abilitySlots.Clear();
             _shipGroupUi.ClearGroups();
             SortedDictionary<ShipType, List<IEntity>> groups = new SortedDictionary<ShipType, List<IEntity>>();

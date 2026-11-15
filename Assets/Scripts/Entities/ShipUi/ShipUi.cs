@@ -31,6 +31,8 @@ namespace EmpireAtWar.Entities.ShipUi
         [SerializeField] private Image shieldFill;
         [SerializeField] private TooltipHoverView tooltipHover;
         [SerializeField] private TMP_Text hazardStatus;
+        [SerializeField] private ShipCardContextInput contextInput;
+        [SerializeField] private ShipDestroyMenuUi destroyMenu;
         private Action _onSelected;
         private Action _onFocused;
 
@@ -39,6 +41,10 @@ namespace EmpireAtWar.Entities.ShipUi
         private bool _isEntry;
 
         public TooltipHoverView TooltipHover => tooltipHover;
+        public ShipDestroyMenuUi DestroyMenu => destroyMenu;
+
+        public void SetDestroyTarget(long targetId, string displayName, Action<long, string, Vector2> openDestroy) =>
+            contextInput.Bind(targetId, displayName, openDestroy);
 
         public void SetIcons(IShipIconProvider icons) => _icons = icons;
 
@@ -57,6 +63,7 @@ namespace EmpireAtWar.Entities.ShipUi
         public void Dispose()
         {
             if (!_isInitialized) return;
+            contextInput.Clear();
             SetHealth(null);
             SetModifiers(null);
             stateIndicators.Clear();

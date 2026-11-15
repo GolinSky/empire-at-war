@@ -41,6 +41,7 @@ namespace EmpireAtWar.Services.Networking.Messages
                 case PlayerCommandKind.ShipAbility: writer.WriteShipAbilityCommand(message.ShipAbility); break;
                 case PlayerCommandKind.DeployReinforcement: writer.WriteDeployReinforcementCommand(message.DeployReinforcement); break;
                 case PlayerCommandKind.PlaceMarker: writer.WritePlaceMarkerCommand(message.PlaceMarker); break;
+                case PlayerCommandKind.DestroyShip: writer.WriteDestroyShipCommand(message.DestroyShip); break;
                 default: throw new ArgumentOutOfRangeException(nameof(message), message.Kind, "Unknown command kind.");
             }
         }
@@ -62,6 +63,7 @@ namespace EmpireAtWar.Services.Networking.Messages
                 case PlayerCommandKind.ShipAbility: message.ShipAbility = reader.ReadShipAbilityCommand(); break;
                 case PlayerCommandKind.DeployReinforcement: message.DeployReinforcement = reader.ReadDeployReinforcementCommand(); break;
                 case PlayerCommandKind.PlaceMarker: message.PlaceMarker = reader.ReadPlaceMarkerCommand(); break;
+                case PlayerCommandKind.DestroyShip: message.DestroyShip = reader.ReadDestroyShipCommand(); break;
                 default: throw new ArgumentOutOfRangeException(nameof(reader), message.Kind, "Unknown command kind.");
             }
 
@@ -159,5 +161,14 @@ namespace EmpireAtWar.Services.Networking.Messages
         public static DeployReinforcementCommand ReadDeployReinforcementCommand(this NetworkReader reader) =>
             new DeployReinforcementCommand(reader.ReadPlayerId(), (UnitRequestKind)reader.ReadByte(), reader.ReadInt(),
                 reader.ReadArray<Vector3>());
+
+        public static void WriteDestroyShipCommand(this NetworkWriter writer, DestroyShipCommand command)
+        {
+            writer.WritePlayerId(command.Issuer);
+            writer.WriteLong(command.TargetId);
+        }
+
+        public static DestroyShipCommand ReadDestroyShipCommand(this NetworkReader reader) =>
+            new DestroyShipCommand(reader.ReadPlayerId(), reader.ReadLong());
     }
 }

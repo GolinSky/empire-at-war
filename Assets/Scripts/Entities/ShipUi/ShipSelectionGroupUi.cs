@@ -87,9 +87,10 @@ namespace EmpireAtWar.Entities.ShipUi
 
         public void Configure(ShipType shipType, Sprite icon, string displayName, IReadOnlyList<ShipUiEntry> ships,
             IShipUiModelObserver model, Action<ShipType> onClicked, Action<ShipAbilityId> pressAbility,
-            ShipAutoPowerUiState autoPower, Action toggleAutoPower)
+            ShipAutoPowerUiState autoPower, Action toggleAutoPower, Action<long, string, Vector2> openDestroy = null)
         {
-            Configure(icon, displayName, ships, model, () => onClicked(shipType), pressAbility, autoPower, toggleAutoPower);
+            Configure(icon, displayName, ships, model, () => onClicked(shipType), pressAbility, autoPower,
+                toggleAutoPower, openDestroy);
             tooltipTrigger.SetKey(shipType);
         }
 
@@ -103,7 +104,7 @@ namespace EmpireAtWar.Entities.ShipUi
 
         private void Configure(Sprite icon, string displayName, IReadOnlyList<ShipUiEntry> ships,
             IShipUiModelObserver model, Action onClicked, Action<ShipAbilityId> pressAbility,
-            ShipAutoPowerUiState autoPower, Action toggleAutoPower)
+            ShipAutoPowerUiState autoPower, Action toggleAutoPower, Action<long, string, Vector2> openDestroy = null)
         {
             Clear();
             unitNameText.text = displayName;
@@ -129,6 +130,7 @@ namespace EmpireAtWar.Entities.ShipUi
                         _entries.Add(Instantiate(entryPrefab, entriesLayout.transform));
                     ShipUi entry = _entries[entryIndex++];
                     entry.ConfigureEntry(icon, ship, HandleClick);
+                    entry.SetDestroyTarget(ship.Entity.Id, displayName, openDestroy);
                     entry.TooltipHover.ForwardTo(_tooltipHover, ship);
                     entry.gameObject.SetActive(true);
                 }

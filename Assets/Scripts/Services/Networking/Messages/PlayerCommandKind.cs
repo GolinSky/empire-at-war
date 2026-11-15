@@ -9,6 +9,7 @@ namespace EmpireAtWar.Services.Networking.Messages
         FireSuperWeapon,
         ShipAbility,
         DeployReinforcement,
-        PlaceMarker
+        PlaceMarker,
+        DestroyShip
     }
 }

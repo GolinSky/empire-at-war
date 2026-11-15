@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Networking;
 using EmpireAtWar.Services.Networking.Online;
@@ -71,7 +72,8 @@ namespace EmpireAtWar.Tests.Editor
             handlers.RegisterTacticalMarkers(markerHandler);
             PlayerDirectory players = new PlayerDirectory();
             players.Players.Add(71, TestPlayers.Human);
-            HostCommandReceiver receiver = new HostCommandReceiver(new AuthorityCommandSink(null, null, handlers), players);
+            HostCommandReceiver receiver = new HostCommandReceiver(
+                new AuthorityCommandSink(null, null, handlers, new SkirmishStateModel()), players);
             MethodInfo receive = typeof(HostCommandReceiver).GetMethod("Receive", BindingFlags.Instance | BindingFlags.NonPublic);
             RecordingConnection connection = new RecordingConnection(71);
             PlayerCommandMessage message = new PlayerCommandMessage

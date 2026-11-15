@@ -356,6 +356,9 @@
 
 ### Features
 
+- [x] **Destroy one ship from its UI card** → [[Done/Features/Ship_Ui_Destroy_Plan|Ship UI destruction plan]]
+  - Completed 2026-11-15: right-click → Destroy ship → generic Yes/No confirmation and authoritative normal death. Ownership, card reuse, and replication regressions authored. Unity compilation and saved bindings verified. Tests not run; offline and online acceptance → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **Capital siege damage and forward main batteries** → [[Done/Features/Capital_Siege_And_Forward_Batteries_Plan]]
   - Completed 2026-11-14. Super-heavy mounted weapons deal ×1.5 against stations and defense platforms. Added forward main-battery arcs, main-battery-first hull facing and a closer Executor siege approach where the live hull permits.
   - Unity compilation and 20 prefab saves verified. Evidence → [[Rules/WEAPON_EFFECTIVE_DPS_LIMITATIONS]]. Cadence → [[Done/Bugs/Boost_Weapon_Power_Fire_Rate_Fix]]. Unrun tests and player checks → [[TODOs/User_Acceptance_Queue#Gameplay and Balance]].

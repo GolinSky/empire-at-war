@@ -16,6 +16,7 @@ using EmpireAtWar.Views;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -71,7 +72,89 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private static ShipUiEntry[] Entries(HealthStub health, int count) => Enumerable.Range(0, count)
+        [Test]
+        public void RightClick_UsesEachIndividualCardTargetAcrossCollapseAndReuse()
+        {
+            ShipGroupUi prefab = AssetDatabase.LoadAssetAtPath<ShipGroupUi>("Assets/Prefabs/Ui/Ship/ShipGroupUi.prefab");
+            var template = (ShipSelectionGroupUi)new SerializedObject(prefab)
+                .FindProperty("groupPrefab").objectReferenceValue;
+            var hoverObject = new GameObject("Test tooltip hover", typeof(TooltipHoverView));
+            ShipSelectionGroupUi group = Object.Instantiate(template);
+            var requests = new List<(long Id, string Name, Vector2 Position)>();
+            var pointer = new PointerEventData(null)
+            {
+                position = new Vector2(71f, 95f),
+                button = PointerEventData.InputButton.Right
+            };
+            var model = new ShipUiModel();
+            var health = new HealthStub();
+            int selections = 0;
+            try
+            {
+                group.SetTooltipHover(hoverObject.GetComponent<TooltipHoverView>());
+                group.gameObject.SetActive(true);
+
+                for (int count = 1; count <= 4; count++)
+                {
+                    requests.Clear();
+                    Configure(count, 10 * count, "Venator I");
+                    ShipCardContextInput[] inputs = group.GetComponentsInChildren<ShipCardContextInput>();
+                    Assert.That(inputs, Has.Length.EqualTo(count));
+                    foreach (ShipCardContextInput input in inputs)
+                    {
+                        Assert.That(input.GetComponent<Graphic>().raycastTarget, Is.True);
+                        Click(input);
+                    }
+                    CollectionAssert.AreEquivalent(Enumerable.Range(10 * count, count)
+                        .Select(id => ((long)id, "Venator I", pointer.position)), requests);
+                }
+                ShipCardContextInput[] original = group.GetComponentsInChildren<ShipCardContextInput>();
+                Assert.That(selections, Is.Zero);
+
+                requests.Clear();
+                original[0].OnPointerDown(pointer);
+                original[1].OnPointerDown(pointer);
+                Configure(5, 50, "Venator I");
+                Assert.That(group.GetComponentsInChildren<ShipCardContextInput>(), Is.Empty);
+                var summary = (GameObject)new SerializedObject(group).FindProperty("summaryCard").objectReferenceValue;
+                ExecuteEvents.ExecuteHierarchy(summary, pointer, ExecuteEvents.pointerClickHandler);
+                original[1].OnPointerClick(pointer);
+                Assert.That(requests, Is.Empty);
+
+                Configure(2, 100, "Venator II");
+                original[0].OnPointerClick(pointer);
+                Assert.That(requests, Is.Empty, "The previous card's held press cannot target the rebound card.");
+                foreach (ShipCardContextInput input in group.GetComponentsInChildren<ShipCardContextInput>())
+                    Click(input);
+                CollectionAssert.AreEquivalent(new[] { (100L, "Venator II", pointer.position),
+                    (101L, "Venator II", pointer.position) }, requests);
+                CollectionAssert.AreEquivalent(original, group.GetComponentsInChildren<ShipCardContextInput>(true));
+
+                original[0].OnPointerDown(pointer);
+                group.Clear();
+                foreach (ShipCardContextInput input in original) input.OnPointerClick(pointer);
+                Assert.That(requests, Has.Count.EqualTo(2));
+            }
+            finally
+            {
+                Object.DestroyImmediate(group.gameObject);
+                Object.DestroyImmediate(hoverObject);
+            }
+
+            void Configure(int count, int firstId, string name) => group.Configure(default(ShipType), null, name,
+                Entries(health, count, firstId), model, _ => selections++, _ => { }, default, () => { },
+                (id, displayName, position) => requests.Add((id, displayName, position)));
+
+            void Click(ShipCardContextInput input)
+            {
+                pointer.Reset();
+                ExecuteEvents.Execute(input.gameObject, pointer, ExecuteEvents.pointerDownHandler);
+                ExecuteEvents.Execute(input.gameObject, pointer, ExecuteEvents.pointerClickHandler);
+                Assert.That(pointer.used, Is.True);
+            }
+        }
+
+        private static ShipUiEntry[] Entries(HealthStub health, int count, int firstId = 0) => Enumerable.Range(firstId, count)
             .Select(id => new ShipUiEntry(Array.Empty<ShipAbilitySlot>(), health,
                 new Entity(health, null, Array.Empty<IEntityFacade>(), health.Owner, id,
                     Array.Empty<IPooledEntityEvents>(), Array.Empty<IHangarLaunchEvents>()), () => { })).ToArray();

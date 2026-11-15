@@ -1,11 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Entities.UnitActions;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Networking;
 using EmpireAtWar.Services.Networking.Messages;
 using EmpireAtWar.Services.PlayerCommands;
@@ -166,6 +173,23 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void DestroyShipCommand_RoundTripsIssuerTargetAndTick()
+        {
+            const long TARGET_ID = 5_000_000_001;
+            PlayerCommandMessage message = RoundTrip(new PlayerCommandMessage
+            {
+                Kind = PlayerCommandKind.DestroyShip,
+                LastReceivedTick = 42,
+                DestroyShip = new DestroyShipCommand(TestPlayers.Ally, TARGET_ID)
+            });
+
+            Assert.That(message.Kind, Is.EqualTo(PlayerCommandKind.DestroyShip));
+            Assert.That(message.LastReceivedTick, Is.EqualTo(42));
+            Assert.That(HostCommandReceiver.IssuerOf(message), Is.EqualTo(TestPlayers.Ally));
+            Assert.That(message.DestroyShip.TargetId, Is.EqualTo(TARGET_ID));
+        }
+
+        [Test]
         public void OrderFeedback_RoundTripsResolvedPointTargetAndWaypoints()
         {
             var target = new FakeEntity(77, null);
@@ -270,6 +294,90 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void DestroyShip_RequiresConnectionOwnerAndReplicatesOneDeath(bool announceDeathBeforeDespawn)
+        {
+            GameObject root = new GameObject("NetworkedShip");
+            try
+            {
+                const long SHIP_ID = 11;
+                EntityLocator hostEntities = new EntityLocator();
+                EntityLocator clientEntities = new EntityLocator();
+                ReplicationHealthData data = new ReplicationHealthData();
+                HealthModel hostHealth = new HealthModel(data, null, new CombatModifiers(), new HardPointHealthBudget());
+                HealthModel clientHealth = new HealthModel(data, null, new CombatModifiers(), new HardPointHealthBudget());
+                HealthComponent hostObserver = root.AddComponent<HealthComponent>();
+                HealthComponent clientObserver = root.AddComponent<HealthComponent>();
+                MethodInfo setModel = typeof(MonoComponent<HealthModel>).GetMethod("SetModel", BindingFlags.Instance | BindingFlags.NonPublic);
+                setModel.Invoke(hostObserver, new object[] { hostHealth });
+                setModel.Invoke(clientObserver, new object[] { clientHealth });
+                Entity ship = new Entity(hostObserver, hostEntities, new IEntityFacade[]
+                {
+                    new EntityTransformFacade(root.transform), new UnitTypeFacade(UnitTypeId.Ship(ShipType.Nebula)),
+                    new ShipDestroyFacade(hostHealth)
+                }, TestPlayers.Ally, SHIP_ID, Array.Empty<IPooledEntityEvents>(), Array.Empty<IHangarLaunchEvents>());
+                Entity replica = new Entity(clientObserver, clientEntities, new IEntityFacade[]
+                {
+                    new HealthReplicaDeathFacade(clientHealth)
+                }, TestPlayers.Ally, SHIP_ID, Array.Empty<IPooledEntityEvents>(), Array.Empty<IHangarLaunchEvents>());
+                hostEntities.AddEntity(ship);
+                clientEntities.AddEntity(replica);
+
+                using HostTickReplicator host = new HostTickReplicator(hostEntities);
+                HostTickOutput output = new HostTickOutput();
+                host.Advance(0f, 0d, output);
+                Assert.That(output.Spawns, Has.Count.EqualTo(1));
+                EntitySpawnMessage spawn = output.Spawns[0];
+                ClientReplicaBuffer buffer = new ClientReplicaBuffer();
+                buffer.OnSpawn(spawn, 0d);
+
+                SkirmishStateModel battle = new SkirmishStateModel();
+                battle.SetState(BattleState.Running);
+                HostCommandReceiver receiver = new HostCommandReceiver(
+                    new AuthorityCommandSink(hostEntities, null, new PlayerCommandHandlers(), battle), new ShipCommandPlayerDirectory());
+                ClientReplicationReceiver client = new ClientReplicationReceiver(buffer, null, clientEntities, battle);
+                MethodInfo receive = typeof(HostCommandReceiver).GetMethod("Receive", BindingFlags.Instance | BindingFlags.NonPublic);
+                PlayerCommandMessage destroy = new PlayerCommandMessage
+                {
+                    Kind = PlayerCommandKind.DestroyShip,
+                    DestroyShip = new DestroyShipCommand(TestPlayers.Ally, SHIP_ID)
+                };
+                int hostDeaths = 0;
+                int replicaDeaths = 0;
+                hostHealth.OnDestroy += () => hostDeaths++;
+                clientHealth.OnDestroy += () => replicaDeaths++;
+
+                receive.Invoke(receiver, new object[] { new NetworkConnectionToClient(7), destroy });
+                Assert.That(hostDeaths, Is.Zero, "The human connection cannot claim the allied ship's owner.");
+                NetworkConnectionToClient owner = new NetworkConnectionToClient(8);
+                receive.Invoke(receiver, new object[] { owner, destroy });
+                receive.Invoke(receiver, new object[] { owner, destroy });
+                Assert.That(hostDeaths, Is.EqualTo(1));
+                Assert.That(replicaDeaths, Is.Zero);
+
+                if (announceDeathBeforeDespawn)
+                {
+                    typeof(ClientReplicationReceiver).GetMethod("OnDied", BindingFlags.Instance | BindingFlags.NonPublic)
+                        .Invoke(client, new object[] { new EntityDiedMessage { Index = spawn.Index } });
+                    Assert.That(replicaDeaths, Is.EqualTo(1));
+                }
+
+                hostEntities.RemoveEntity(ship);
+                host.Advance(0f, 0d, output);
+                Assert.That(output.Despawns, Has.Count.EqualTo(1));
+                Assert.That(output.Despawns[0].Destroyed, Is.True);
+                typeof(ClientReplicationReceiver).GetMethod("OnDespawn", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(client, new object[] { output.Despawns[0] });
+                Assert.That(replicaDeaths, Is.EqualTo(1));
+                Assert.That(buffer.TryGetEntityId(spawn.Index, out _), Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
+
         private static void Deliver(HostTickOutput output, ClientReplicaBuffer client, double time)
         {
             foreach (EntitySpawnMessage spawn in output.Spawns) client.OnSpawn(spawn, time);
@@ -284,6 +392,31 @@ namespace EmpireAtWar.Tests.Editor
             writer.WritePlayerCommandMessage(message);
             using NetworkReaderPooled reader = NetworkReaderPool.Get(writer.ToArraySegment());
             return reader.ReadPlayerCommandMessage();
+        }
+
+        private sealed class ShipCommandPlayerDirectory : INetworkPlayerDirectory
+        {
+            public bool TryGetPlayer(int connectionId, out PlayerId player)
+            {
+                player = connectionId switch
+                {
+                    7 => TestPlayers.Human,
+                    8 => TestPlayers.Ally,
+                    _ => PlayerId.None
+                };
+                return !player.IsNone;
+            }
+        }
+
+        private sealed class ReplicationHealthData : IHealthData
+        {
+            public ShipClass ShipClass => ShipClass.Cruiser;
+            public bool UsesHullHardPointBudget => false;
+            public float Hull => 100f;
+            public float Shields => 100f;
+            public float ShieldRegenerateValue => 0f;
+            public float ShieldRegenerateDelay => 0f;
+            public IReadOnlyList<HardPointHealth> HardPointHealth => Array.Empty<HardPointHealth>();
         }
 
         private sealed class DestroyedHealth : IHealthModelObserver

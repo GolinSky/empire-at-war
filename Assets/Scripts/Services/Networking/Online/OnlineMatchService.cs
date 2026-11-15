@@ -26,7 +26,7 @@ namespace EmpireAtWar.Services.Networking.Online
         IOnlineLocalSlot
     {
         public const float RECONNECT_GRACE_SECONDS = ReconnectReservations.GRACE_SECONDS;
-        private const int LOBBY_PROTOCOL_VERSION = 2;
+        internal const int LOBBY_PROTOCOL_VERSION = 3;
         private const float CONNECT_TIMEOUT_SECONDS = 30f;
         private const float KICK_DISCONNECT_DELAY = 0.5f;
 

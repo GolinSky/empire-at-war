@@ -43,6 +43,8 @@ verification: Live source, Unity prefab and Addressables inspection, 1920×1080
 - Any non-player close (owner `Close(handle)`, route leave/hide, session loss, match transition, scope teardown) → `Dismissed`.
 - Every request completes exactly once.
 - Callers treat `Dismissed` as "no answer": never persist it as a choice. Example: consent ignores `Dismissed` and asks again next launch.
+- A battle flow that requires modal gameplay input acquires `IInputLock` across the menu and confirmation. The shared blocker handles pointer hit testing; the lock suppresses battle and camera actions independently of game pause.
+- Ship card confirmations capture the entity ID, close the wrapper handle on selection/route/target/session invalidation, and revalidate on acceptance. Late callbacks are ignored. Source and prefab evidence → [[Done/Features/Ship_Ui_Destroy_Plan]].
 
 ```text
 ConfirmPopupResult: Accepted | Declined | Dismissed
@@ -80,7 +82,7 @@ Owner/route/teardown close  → Dismissed
 | Layer | Type | Location |
 |---|---|---|
 | Core | `IPopupService`, `PopupService`, `PopupHandle`, `IPopupController`, `PopupBlockerUi` | `Services/Popups/`, blocker view `Entities/Popups/` |
-| Confirm wrapper | `IConfirmPopupService.ShowAccept(AcceptPopupContent, Action<ConfirmPopupResult>)`, `ConfirmPopupResult` | `Services/Popups/` |
+| Confirm wrapper | `IConfirmPopupService.ShowAccept(AcceptPopupContent, Action<ConfirmPopupResult>)` → `PopupHandle`; `Close(handle)` → `Dismissed` | `Services/Popups/` |
 | Confirm popup | `AcceptPopupUi`, `AcceptPopupUiController` | `Entities/Popups/` |
 | Steam wrapper | `ISteamPopupService.OpenInvitePicker()` → `PopupHandle`; `CloseInvitePicker(handle)`, `ShowInviteReceived(from, Action<ConfirmPopupResult>)` | main-menu Online feature |
 | Steam popup | `SteamInvitePopupUi` + `SteamInvitePopupUiController`, reusing `SteamInvitePresenter` / `SteamInviteView` | `Entities/Popups/` |

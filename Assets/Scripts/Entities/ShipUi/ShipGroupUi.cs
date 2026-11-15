@@ -18,6 +18,7 @@ namespace EmpireAtWar.Entities.ShipUi
         private IShipUiModelObserver _model;
         private IShipIconProvider _icons;
         private IShipUiPresenter _presenter;
+        private Action<long, string, Vector2> _openDestroy;
 
         [SerializeField] private ShipSelectionGroupUi groupPrefab;
         [SerializeField] private TooltipHoverView tooltipHover;
@@ -54,6 +55,8 @@ namespace EmpireAtWar.Entities.ShipUi
 
         public void SetModel(IShipUiModelObserver model) => _model = model;
 
+        public void AssignDestroyHandler(Action<long, string, Vector2> openDestroy) => _openDestroy = openDestroy;
+
         public void AssignPresenter(IShipUiPresenter presenter)
         {
             if (_presenter != null)
@@ -81,7 +84,7 @@ namespace EmpireAtWar.Entities.ShipUi
         {
             ShipSelectionGroupUi group = GetGroup();
             group.Configure(shipType, _icons.GetShipIcon(shipType), displayName, ships, _model,
-                _presenter.SelectShipGroup, pressAbility, autoPower, toggleAutoPower);
+                _presenter.SelectShipGroup, pressAbility, autoPower, toggleAutoPower, _openDestroy);
             group.gameObject.SetActive(true);
             _layoutDirty = true;
         }

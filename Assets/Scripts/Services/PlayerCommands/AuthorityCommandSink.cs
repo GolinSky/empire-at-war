@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.UnitActions;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.UnitOrders;
 
@@ -16,12 +19,15 @@ namespace EmpireAtWar.Services.PlayerCommands
         private readonly IEntityLocator _entities;
         private readonly IUnitOrderService _orders;
         private readonly PlayerCommandHandlers _handlers;
+        private readonly SkirmishStateModel _battle;
 
-        public AuthorityCommandSink(IEntityLocator entities, IUnitOrderService orders, PlayerCommandHandlers handlers)
+        public AuthorityCommandSink(IEntityLocator entities, IUnitOrderService orders, PlayerCommandHandlers handlers,
+            SkirmishStateModel battle)
         {
             _entities = entities;
             _orders = orders;
             _handlers = handlers;
+            _battle = battle;
         }
 
         public void Submit(UnitOrderCommand command)
@@ -105,6 +111,17 @@ namespace EmpireAtWar.Services.PlayerCommands
         {
             if (_entities.TryGetEntity(command.TargetId, out IEntity target))
                 _handlers.GetSuperWeapons(command.Issuer).Fire(command.Type, target);
+        }
+
+        public void Submit(DestroyShipCommand command)
+        {
+            if (_battle.State is not (BattleState.Running or BattleState.Paused) || command.Issuer.IsNone ||
+                !_entities.TryGetEntity(command.TargetId, out IEntity ship) || ship.Owner != command.Issuer ||
+                !ship.IsShip() || ship.HealthModel.IsDestroyed ||
+                !ship.TryGetFacade(out IEntityDestroyFacade destroyFacade))
+                return;
+
+            destroyFacade.Destroy();
         }
     }
 }
