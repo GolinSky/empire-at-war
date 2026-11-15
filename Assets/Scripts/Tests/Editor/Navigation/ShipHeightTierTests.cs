@@ -37,7 +37,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("LucrehulkShipData", ShipHeightTier.Lowest, -241f)]
         [TestCase("MalevolenceShipData", ShipHeightTier.Deep, -341f)]
         [TestCase("MandatorShipData", ShipHeightTier.Deep, -520f)]
-        [TestCase("MC75ProfundityShipData", ShipHeightTier.LowMid, -68f)]
+        [TestCase("MC75ProfundityShipData", ShipHeightTier.Mid, -22f)]
         [TestCase("MC80IndependenceShipData", ShipHeightTier.Lowest, -241f)]
         [TestCase("MonCalCruiserShipData", ShipHeightTier.LowMid, -68f)]
         [TestCase("MunificentShipData", ShipHeightTier.HighMid, 38f)]

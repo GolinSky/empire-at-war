@@ -49,6 +49,9 @@ namespace EmpireAtWar.Tests.Editor
         public void SetUp()
         {
             _canvas = new GameObject("Ship destruction test canvas", typeof(Canvas));
+            _canvas.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+            // Keep layout independent of the Editor Game view and large enough for the menu.
+            ((RectTransform)_canvas.transform).sizeDelta = new Vector2(1920f, 1080f);
             var ui = new FixtureUi(_canvas.transform);
             ShipUi prefab = AssetDatabase.LoadAssetAtPath<ShipUi>("Assets/Prefabs/Ui/Ship/ShipUi.prefab");
             _shipCard = Object.Instantiate(prefab, _canvas.transform);

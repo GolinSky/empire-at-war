@@ -131,8 +131,8 @@ namespace EmpireAtWar.Components.Ship.Health
         {
             if (Model.IsShieldSuppressed == _modifiers.IsShieldSuppressed) return;
             bool suppressed = _modifiers.IsShieldSuppressed;
-            _shieldRecovering = !suppressed;
-            if (!suppressed) _shieldRecoveryTimer.ChangeDelay(_modifiers.ShieldRecoveryDelay).StartTimer();
+            _shieldRecovering = !suppressed && _modifiers.ShieldRecoveryDelay > 0f;
+            if (_shieldRecovering) _shieldRecoveryTimer.ChangeDelay(_modifiers.ShieldRecoveryDelay).StartTimer();
             Model.SetShieldSuppressed(suppressed);
         }
 
