@@ -88,6 +88,7 @@ namespace EmpireAtWar.Services.VContainer
         [SerializeField] private UnitExplosionView unitExplosionPrefab;
         [SerializeField] private Material rangeDebugLineMaterial;
         [SerializeField] private Material battleMarkerIconMaterial;
+        [SerializeField] private Material battleMarkerFrameMaterial;
         [SerializeField] private ShipSfxData shipSfxData;
         [SerializeField] private InterfaceSfxData interfaceSfxData;
         [SerializeField] private ShipAmbienceData shipAmbienceData;
@@ -257,7 +258,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterComponent(spawnAreaOverlay).AsImplementedInterfaces().AsSelf();
             SkirmishServiceRegistrations.Register(builder, Assets, transform, impactEffectPrefab,
                 unitExplosionPrefab, rangeDebugLineMaterial, shipSfxData, interfaceSfxData, shipAmbienceData,
-                shipSfxSourcesPrefab, cameraService, battleMarkerIconMaterial);
+                shipSfxSourcesPrefab, cameraService, battleMarkerIconMaterial, battleMarkerFrameMaterial);
             MapRegistrations.Register(builder, settings, mapLayoutView, reinforcementZonesSystem);
             builder.RegisterComponent(hazardEffectsView).AsImplementedInterfaces();
         }

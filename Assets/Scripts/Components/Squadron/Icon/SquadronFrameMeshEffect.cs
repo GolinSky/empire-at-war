@@ -4,8 +4,8 @@ using UnityEngine.UI;
 namespace EmpireAtWar.Components.Squadrons.Icon
 {
     /// <summary>
-    /// Writes each frame vertex's position relative to the frame centre into UV1. The Squadron Frame shader draws
-    /// its rounded border from it: once every marker is batched into the shared <see cref="BattleMarkerLayer"/>
+    /// Writes each frame vertex's position relative to the frame centre into UV1. The Squadron Frame shader
+    /// uses it to place the plate and tab: once every marker is batched into the shared <see cref="BattleMarkerLayer"/>
     /// canvas, vertex positions are screen positions and no longer centred on the marker.
     /// </summary>
     public sealed class SquadronFrameMeshEffect : BaseMeshEffect

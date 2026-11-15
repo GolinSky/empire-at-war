@@ -3,9 +3,9 @@ Shader "EmpireAtWar/UI/Squadron Frame"
     Properties
     {
         [PerRendererData] _MainTex ("Texture", 2D) = "white" {}
-        _CornerRadius ("Corner Radius", Float) = 3
-        _BorderWidth ("Border Width", Float) = 1.5
-        _BackgroundAlpha ("Background Alpha", Range(0,1)) = 0.5
+        _PlateColor ("Plate Color", Color) = (0.107, 0.125, 0.153, 0.94)
+        _EdgeColor ("Plate Edge Color", Color) = (0.247, 0.282, 0.333, 0.82)
+        _SelectionColor ("Selection Color", Color) = (0.949, 0.941, 0.902, 1)
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
         _StencilOp ("Stencil Operation", Float) = 0
@@ -48,9 +48,9 @@ Shader "EmpireAtWar/UI/Squadron Frame"
                 float2 halfSize : TEXCOORD1;
                 float2 local : TEXCOORD2;
             };
-            float _CornerRadius;
-            float _BorderWidth;
-            float _BackgroundAlpha;
+            half4 _PlateColor;
+            half4 _EdgeColor;
+            half4 _SelectionColor;
             float4 _ClipRect;
             v2f vert(appdata v)
             {
@@ -64,13 +64,32 @@ Shader "EmpireAtWar/UI/Squadron Frame"
             }
             fixed4 frag(v2f i) : SV_Target
             {
-                float2 q = abs(i.local) - i.halfSize + _CornerRadius;
-                float distance = length(max(q,0)) + min(max(q.x,q.y),0) - _CornerRadius;
-                float fill = saturate(-distance) * _BackgroundAlpha;
-                float halfStrip = (_BorderWidth + 1) * 0.5;
-                float border = saturate(halfStrip - abs(-distance - halfStrip)) * i.color.a;
-                // Composite the existing border over the black translucent background.
-                fixed4 result = fixed4(i.color.rgb * border, border + fill * (1 - border));
+                float2 uv = i.local / (2 * i.halfSize) + 0.5;
+                float2 pixel = fwidth(uv);
+                float aa = max(pixel.x, pixel.y);
+
+                // Clip the plate corners and keep its neutral edge one screen pixel wide.
+                float2 edge = abs(uv - float2(0.5, 0.465)) - float2(0.445, 0.365);
+                float plateDistance = max(max(edge.x, edge.y), edge.x + edge.y + 0.075);
+                float plate = saturate(0.5 - plateDistance / aa);
+                float edgeBlend = saturate(1 + plateDistance / aa);
+                half4 plateColor = lerp(_PlateColor, _EdgeColor, edgeBlend);
+                plate *= plateColor.a;
+
+                // A single slanted tab carries the team color at every zoom level.
+                float tabSlope = (uv.y - 0.83) * 0.58;
+                float tabDistance = max(max(0.83 - uv.y, uv.y - 0.965),
+                    max(0.065 + tabSlope - uv.x, uv.x - 0.35 - tabSlope));
+                float tab = saturate(0.5 - tabDistance / aa);
+
+                // Frame vertex alpha carries selection, leaving the ownership tab unchanged.
+                float2 corner = 0.5 - abs(uv - 0.5);
+                float2 arms = max(corner - float2(0.15, 0.15), abs(corner.yx - 0.03) - 0.014);
+                float bracket = min(arms.x, arms.y);
+                float selection = saturate(0.5 - bracket / aa) * step(0.75, i.color.a) * _SelectionColor.a;
+
+                half4 result = lerp(half4(plateColor.rgb * plate, plate), half4(i.color.rgb, 1), tab);
+                result = lerp(result, half4(_SelectionColor.rgb, 1), selection);
                 #ifdef UNITY_UI_CLIP_RECT
                 result *= UnityGet2DClipping(i.position.xy, _ClipRect);
                 #endif

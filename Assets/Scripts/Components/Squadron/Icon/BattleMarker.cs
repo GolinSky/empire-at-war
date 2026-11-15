@@ -112,9 +112,10 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         public void SetColor(Color color, bool selected)
         {
+            // The frame shader uses alpha to distinguish selected markers on the shared material.
+            color.a = selected ? 1f : 0.5f;
             _frame.color = color;
-            color.a = selected ? 0.35f : 0.2f;
-            _icon.color = color;
+            _icon.color = Color.white;
         }
 
         internal void Hide()

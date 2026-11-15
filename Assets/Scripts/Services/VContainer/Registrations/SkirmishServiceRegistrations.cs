@@ -35,7 +35,7 @@ namespace EmpireAtWar.Services.VContainer
             ImpactEffectView impactEffectPrefab, UnitExplosionView unitExplosionPrefab,
             Material rangeDebugLineMaterial, ShipSfxData shipSfxData, InterfaceSfxData interfaceSfxData,
             ShipAmbienceData shipAmbienceData, ShipSfxSources shipSfxSourcesPrefab,
-            CameraService cameraService, Material battleMarkerIconMaterial)
+            CameraService cameraService, Material battleMarkerIconMaterial, Material battleMarkerFrameMaterial)
         {
             builder.RegisterInstance(unitExplosionPrefab);
             builder.RegisterInstance(shipSfxData);
@@ -77,7 +77,7 @@ namespace EmpireAtWar.Services.VContainer
             GameObject iconRoot = new GameObject(nameof(BattleMarkerLayer));
             iconRoot.transform.SetParent(owner, false);
             var battleMarkers = iconRoot.AddComponent<BattleMarkerLayer>();
-            battleMarkers.SetIconMaterial(battleMarkerIconMaterial);
+            battleMarkers.SetMaterials(battleMarkerIconMaterial, battleMarkerFrameMaterial);
             builder.RegisterComponent(battleMarkers)
                 .AsImplementedInterfaces().AsSelf();
             builder.Register<UiHitTest>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

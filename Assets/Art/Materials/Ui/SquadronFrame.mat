@@ -25,10 +25,7 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _BackgroundAlpha: 0.5
-    - _BorderWidth: 1.5
     - _ColorMask: 15
-    - _CornerRadius: 3
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0

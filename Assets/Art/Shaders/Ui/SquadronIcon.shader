@@ -59,13 +59,15 @@ Shader "EmpireAtWar/UI/Squadron Icon"
             }
             fixed4 frag(v2f i) : SV_Target
             {
-                float shadowAlpha = tex2D(_MainTex,i.uv).a * i.color.a;
                 float2 iconUv = (i.uv - 0.5) * _IconScale + 0.5;
                 iconUv.y -= _IconOffsetY;
                 fixed4 icon = tex2D(_MainTex,iconUv);
                 icon.a *= step(0,iconUv.x) * step(iconUv.x,1) * step(0,iconUv.y) * step(iconUv.y,1);
-                fixed4 result = fixed4(icon.rgb * icon.a + i.color.rgb * shadowAlpha * (1-icon.a),
-                    icon.a + shadowAlpha * (1-icon.a));
+                // Lift midtones and deep shadows while keeping the highlights and source silhouette.
+                half3 hull = lerp(icon.rgb, sqrt(icon.rgb), 0.42);
+                hull = lerp(hull, dot(hull, half3(0.2126, 0.7152, 0.0722)), 0.15);
+                hull = lerp(hull, half3(1, 1, 1), 0.022);
+                half4 result = half4(hull * icon.a, icon.a) * i.color.a;
                 #ifdef UNITY_UI_CLIP_RECT
                 result *= UnityGet2DClipping(i.position.xy,_ClipRect);
                 #endif

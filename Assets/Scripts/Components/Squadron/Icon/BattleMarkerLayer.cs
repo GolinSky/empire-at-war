@@ -3,7 +3,6 @@ using EmpireAtWar.Entities.CinematicCamera.Model;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Layer;
-using MPUIKIT;
 using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,6 +28,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         private ICinematicCameraModelObserver _cinematic;
         private RectTransform _root;
         private Material _iconMaterial;
+        private Material _frameMaterial;
         private float _elapsed;
         private int _nextDrawOrder;
         private bool _dirty = true;
@@ -53,7 +53,11 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             _root = (RectTransform)transform;
         }
 
-        internal void SetIconMaterial(Material material) => _iconMaterial = material;
+        internal void SetMaterials(Material iconMaterial, Material frameMaterial)
+        {
+            _iconMaterial = iconMaterial;
+            _frameMaterial = frameMaterial;
+        }
 
         public void Attach(RectTransform icon)
         {
@@ -72,9 +76,10 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             root.layer = gameObject.layer;
             root.SetActive(false);
             var rect = (RectTransform)root.transform;
-            CreateShape("Background", rect, new Color(0f, 0f, 0f, 0.5f), 0f);
-            MPImage frame = CreateShape("Frame", rect, Color.white, 1.5f);
-            Image icon = CreateImage<Image>("Icon", rect, 6.75f * SHIP_MARKER_SCALE);
+            Image frame = CreateImage("Frame", rect, 0f);
+            frame.material = _frameMaterial;
+            frame.gameObject.AddComponent<SquadronFrameMeshEffect>();
+            Image icon = CreateImage("Icon", rect, 6.75f * SHIP_MARKER_SCALE);
             icon.material = _iconMaterial;
             icon.sprite = sprite;
             icon.preserveAspect = true;
@@ -83,25 +88,12 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 { AnchorTransform = anchor };
         }
 
-        private MPImage CreateShape(string name, Transform parent, Color color, float stroke)
-        {
-            MPImage image = CreateImage<MPImage>(name, parent, 0f);
-            image.DrawShape = DrawShape.Rectangle;
-            image.color = color;
-            image.StrokeWidth = stroke;
-            image.FalloffDistance = 1f;
-            Rectangle corners = image.Rectangle;
-            corners.CornerRadius = Vector4.one * 3f;
-            image.Rectangle = corners;
-            return image;
-        }
-
-        private T CreateImage<T>(string name, Transform parent, float padding) where T : Image
+        private Image CreateImage(string name, Transform parent, float padding)
         {
             GameObject imageObject = new GameObject(name, typeof(RectTransform));
             imageObject.layer = gameObject.layer;
             imageObject.transform.SetParent(parent, false);
-            T image = imageObject.AddComponent<T>();
+            Image image = imageObject.AddComponent<Image>();
             image.raycastTarget = false;
             image.rectTransform.anchorMin = Vector2.zero;
             image.rectTransform.anchorMax = Vector2.one;
