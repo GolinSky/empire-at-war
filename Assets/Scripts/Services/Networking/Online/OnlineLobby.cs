@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
 
@@ -10,6 +11,7 @@ namespace EmpireAtWar.Services.Networking.Online
         public const int HOST_CONNECTION_ID = 0;
 
         private readonly List<LobbyMember> _members = new List<LobbyMember>();
+        private readonly Dictionary<int, string> _reconnectCredentials = new Dictionary<int, string>();
 
         public IReadOnlyList<LobbyMember> Members => _members;
         /// <summary>Members the hosted mode can seat (Survival holds fewer than <see cref="MAX_MEMBERS"/>).</summary>
@@ -30,6 +32,7 @@ namespace EmpireAtWar.Services.Networking.Online
         {
             Capacity = capacity;
             _members.Clear();
+            _reconnectCredentials.Clear();
             _members.Add(new LobbyMember
             {
                 ConnectionId = HOST_CONNECTION_ID, Name = hostName, Ready = true, SlotIndex = -1, Connected = true,
@@ -56,15 +59,27 @@ namespace EmpireAtWar.Services.Networking.Online
             _members.AddRange(members);
         }
 
-        public void Add(int connectionId, string name, ulong steamId) =>
+        public void Add(int connectionId, string name, ulong steamId)
+        {
             _members.Add(new LobbyMember
                 { ConnectionId = connectionId, Name = name, SlotIndex = -1, Connected = true, SteamId = steamId });
+            _reconnectCredentials.Add(connectionId, Guid.NewGuid().ToString("N"));
+        }
 
-        public bool Remove(int connectionId) => _members.RemoveAll(member => member.ConnectionId == connectionId) > 0;
+        public string GetReconnectCredential(int connectionId) => _reconnectCredentials[connectionId];
+
+        public bool Remove(int connectionId)
+        {
+            _reconnectCredentials.Remove(connectionId);
+            return _members.RemoveAll(member => member.ConnectionId == connectionId) > 0;
+        }
 
         /// <summary>The slot's player stayed away past the grace period; the AI keeps the slot, so no rejoin.</summary>
-        public void RemoveAbandoned(int slotIndex) =>
-            _members.RemoveAll(member => !member.Connected && member.SlotIndex == slotIndex);
+        public void RemoveAbandoned(int slotIndex)
+        {
+            int index = _members.FindIndex(member => member.SlotIndex == slotIndex);
+            if (index >= 0) Remove(_members[index].ConnectionId);
+        }
 
         public void SetReady(int connectionId, bool ready)
         {
@@ -84,14 +99,22 @@ namespace EmpireAtWar.Services.Networking.Online
             _members[index] = member;
         }
 
-        /// <summary>Rejoin: a disconnected member with the same name takes the new connection and keeps its slot.</summary>
-        public bool TryRebind(string name, int connectionId, out int slotIndex)
+        /// <summary>Only the private credential and transport-verified identity can reclaim a slot, even before disconnect detection.</summary>
+        public bool TryRebind(string credential, ulong verifiedSteamId, string name, int connectionId,
+            out int slotIndex, out int previousConnectionId)
         {
             for (int i = 0; i < _members.Count; i++)
             {
                 LobbyMember member = _members[i];
-                if (member.Connected || member.Name != name) continue;
+                if (member.SlotIndex < 0 || member.ConnectionId == HOST_CONNECTION_ID ||
+                    member.SteamId != verifiedSteamId ||
+                    !_reconnectCredentials.TryGetValue(member.ConnectionId, out string expected) ||
+                    string.IsNullOrEmpty(credential) || !string.Equals(expected, credential, StringComparison.Ordinal)) continue;
+                previousConnectionId = member.ConnectionId;
+                _reconnectCredentials.Remove(previousConnectionId);
+                _reconnectCredentials[connectionId] = expected;
                 member.ConnectionId = connectionId;
+                member.Name = name;
                 member.Connected = true;
                 _members[i] = member;
                 slotIndex = member.SlotIndex;
@@ -99,6 +122,7 @@ namespace EmpireAtWar.Services.Networking.Online
             }
 
             slotIndex = -1;
+            previousConnectionId = -1;
             return false;
         }
 

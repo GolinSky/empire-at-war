@@ -44,7 +44,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(LobbyMode.Survival)]
         public void SwitchLobbyMode_IsRefusedWhenNotHosting(LobbyMode mode)
         {
-            var online = new OnlineMatchService(null);
+            var online = new OnlineMatchService(null, new OnlineRecoveryProgress());
 
             Assert.That(online.CanSwitchLobbyMode(mode), Is.False);
             Assert.Throws<System.InvalidOperationException>(() => online.SwitchLobbyMode(mode));

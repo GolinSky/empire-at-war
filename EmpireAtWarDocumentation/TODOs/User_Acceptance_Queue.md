@@ -370,3 +370,10 @@ created: "2026-10-29\r"
 - [ ] [[Done/Optimization/Spawn_Grid_Overlay_Performance_Plan]] — Verify initial pending mask, rapid selection changes, moved/destroyed/upgraded stations, reservations, preview/drop parity and battle exit while a batch is pending.
 - [ ] [[Done/Optimization/Spawn_Grid_Overlay_Performance_Plan]] — Run authored Navigation and affected Economy/EnemyAi regressions only on explicit request. Tests not run under local override.
 - [ ] [[Done/Optimization/Spawn_Grid_Overlay_Performance_Plan]] — Recheck full Unity compilation after unrelated ShipSelectionReuseTests.cs:43,49,53 Configure-signature errors are resolved; no spawn/navigation errors reported by the current compile.
+
+## Multiplayer Reconnect
+
+- [ ] [[Done/Bugs/Multiplayer_Reconnect_Flow]] — Two-PC Steam/KCP loss and forced-process crash → restart/rejoin; measure startup/loading, near-expiry acceptance, repeated crash deadline, AI takeover, kick/Leave and host exit.
+- [ ] [[Done/Bugs/Multiplayer_Reconnect_Flow]] — Verify no duplicate units and restored ownership/health/orders, credits/production/reserve/research/cooldowns and Survival before input; inspect recovery/loading UI on both PCs.
+- [ ] [[Done/Bugs/Multiplayer_Reconnect_Flow]] — Run Networking, Ui and GameFlow tests when explicitly authorized; authored/updated fixtures were compiled but not executed.
+- [ ] [[Done/Bugs/Multiplayer_Reconnect_Flow]] — Capture matching host/client Steam Join Game logs to establish historical server-disconnect cause; client evidence proves lobby/transport success only.

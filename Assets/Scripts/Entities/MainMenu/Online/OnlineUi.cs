@@ -19,6 +19,10 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         [SerializeField] private Button retrySteamButton;
         [SerializeField] private Button backButton;
         [SerializeField] private TMP_Text statusText;
+        [SerializeField] private Button reconnectButton;
+        [SerializeField] private TMP_Text reconnectLabel;
+        [SerializeField] private Button dismissRecoveryButton;
+        [SerializeField] private TMP_Text dismissRecoveryLabel;
         private const float INVITE_BLINK_DURATION = 0.5f;
         private IOnlinePresenter _presenter;
         private bool _isInitialized;
@@ -37,6 +41,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             acceptInviteButton.onClick.AddListener(_presenter.AcceptInvite);
             retrySteamButton.onClick.AddListener(_presenter.RetrySteam);
             backButton.onClick.AddListener(_presenter.Close);
+            reconnectButton.onClick.AddListener(_presenter.Reconnect);
+            dismissRecoveryButton.onClick.AddListener(_presenter.DismissRecovery);
             _inviteColor = acceptInviteButton.targetGraphic.color;
             _inviteBlinkColor = new Color(210f / 255f, 169f / 255f, 94f / 255f, _inviteColor.a);
             _isInitialized = true;
@@ -44,9 +50,17 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         /// <param name="busy">Connecting to a host: hosting and joining wait; Back cancels.</param>
         /// <param name="steamReady">Without Steam the Steam lobby is blocked and Retry Steam takes the invite slot.</param>
-        public void Render(string status, bool busy, string inviteFrom, bool steamReady)
+        public void Render(string status, bool busy, string inviteFrom, bool steamReady,
+            bool hasRecovery = false, bool recoveryFromStartup = false)
         {
             statusText.text = status;
+            hostSteamButton.gameObject.SetActive(!hasRecovery);
+            hostLanButton.gameObject.SetActive(!hasRecovery);
+            reconnectButton.gameObject.SetActive(hasRecovery);
+            dismissRecoveryButton.gameObject.SetActive(hasRecovery);
+            reconnectButton.interactable = !busy;
+            reconnectLabel.text = recoveryFromStartup ? "REJOIN PREVIOUS MATCH" : "RECONNECT";
+            dismissRecoveryLabel.text = recoveryFromStartup ? "DISMISS" : "LEAVE";
             hostSteamButton.interactable = steamReady && !busy;
             hostLanButton.interactable = !busy;
             joinGameButton.interactable = !busy;
@@ -67,6 +81,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             acceptInviteButton.onClick.RemoveListener(_presenter.AcceptInvite);
             retrySteamButton.onClick.RemoveListener(_presenter.RetrySteam);
             backButton.onClick.RemoveListener(_presenter.Close);
+            reconnectButton.onClick.RemoveListener(_presenter.Reconnect);
+            dismissRecoveryButton.onClick.RemoveListener(_presenter.DismissRecovery);
             SetInviteBlinking(false);
             _isInitialized = false;
         }

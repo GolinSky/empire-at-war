@@ -271,7 +271,7 @@ Play
   - ~~Known gaps: salvos/abilities/turrets keep the old entity~~ fixed 2026-11-08 (compiles; not run): before the swap `ShipAbilityService.StopForRebuild` stops abilities of and aimed at rebuilt units (`ITargetedShipAbility` on IonPulse/IonShot/SustainedBeam/TractorBeam; clients told via `Canceled`); after restore every other armed entity's `IWeaponTargetReplicaFacade.RetargetRebuilt` swaps target groups to the new entity (focused hardpoint → whole target), and `SuperWeaponFireService.RetargetRebuilt` moves salvos in flight and stuns. Client: host drop → `HostLeftBattleExit` → menu shows "The host left". Errors in `OnlineError` + panel text: Steam not running, lobby full, version mismatch, host left, kicked, battle running, connection failed.
 
 ### Phase 6 — Online saving (post-v1)
-- [ ] Full-state baseline on join (also enables reconnect and late join).
+- [ ] Online-load/late-join baseline integration (post-v1). Existing reconnect baseline code still needs end-to-end verification → [[Done/Bugs/Multiplayer_Reconnect_Flow]].
 - [ ] Host-only save + slot → Steam ID map; host-only autosave.
 - [ ] Resume lobby: host loads save → reserved slots for saved Steam IDs → AI fills empty slots.
 - [ ] Optional: in-game Friends panel / friends' lobby list.
@@ -315,7 +315,7 @@ Play
 ## Edge Cases
 
 - Host migration: not in v1 (host leaves → match ends).
-- Late join and reconnect: not in v1; the Phase 6 full-state baseline enables them and online loading.
+- Reconnect is v1 scope (decision 2026-11-08); player-facing recovery implemented 2026-11-15; two-PC acceptance pending → [[Done/Bugs/Multiplayer_Reconnect_Flow]]. New-player late join and online loading remain post-v1.
 - Saved friend not available on resume → slot runs as AI.
 - Survival wave AI and every AI slot run only on the host.
 - Cosmetic randomness (`FighterManeuver`, `ImpactEffectView`, `UnitWreckService`) stays client-local.
@@ -348,6 +348,7 @@ Play
 
 ## TODO / Open Questions
 
-- Remaining v1 work is user acceptance: two-PC checks above (add: Survival client sees wave number/countdown advance, wins after wave 5, no start-wave button), Survival lobby avatar chips, offline smoke test, spike bandwidth numbers.
+- Reconnect implementation completed 2026-11-15: persistent crash recovery, UI/progress, credential-safe reclaim and bounded grace/loading → [[Done/Bugs/Multiplayer_Reconnect_Flow]]. Unity compiled; tests not run. Two-PC acceptance and historical Steam rejection diagnosis → [[TODOs/User_Acceptance_Queue]].
+- Remaining user acceptance: two-PC checks above (add: Survival client sees wave number/countdown advance, wins after wave 5, no start-wave button), Survival lobby avatar chips, offline smoke test, spike bandwidth numbers.
 - Phase 6 (online saving): deferred by user 2026-11-08; not v1.
 - Own Steam App ID before any distribution beyond play-test groups.

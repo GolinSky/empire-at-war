@@ -3,6 +3,7 @@ using System.Threading;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.VContainer;
+using EmpireAtWar.Services.Networking.Online;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Profiling;
@@ -17,6 +18,7 @@ namespace EmpireAtWar.Services.SceneService
 
         private readonly SceneData _sceneModel;
         private readonly ProjectScope _projectScope;
+        private readonly OnlineRecoveryProgress _recovery;
         private AsyncOperation _asyncOperation;
         private IDisposable _sceneParent;
         private Scene _loadingScene;
@@ -27,10 +29,11 @@ namespace EmpireAtWar.Services.SceneService
 
         public bool IsSceneLoaded => _asyncOperation != null && _asyncOperation.progress > MIN_SCENE_PROGRESS;
 
-        public SceneService(SceneData sceneModel, ProjectScope projectScope)
+        public SceneService(SceneData sceneModel, ProjectScope projectScope, OnlineRecoveryProgress recovery)
         {
             _sceneModel = sceneModel;
             _projectScope = projectScope;
+            _recovery = recovery;
         }
 
         public void Initialize()
@@ -134,15 +137,26 @@ namespace EmpireAtWar.Services.SceneService
             }
         }
 
-        // Runs before the target scene's Start: its later instantiations land in it, and the loading camera and
-        // listener stop at once instead of when the asynchronous unload finishes. The loading scene has no
-        // EventSystem, so the target's EventSystem is the only one when it enables.
-        private void ReplaceLoadingScene(Scene target)
+        // Runs before the target scene's Start: later instantiations belong to the target. Recovery retains
+        // only the existing loading presentation until synchronization; it has no competing EventSystem.
+        private async void ReplaceLoadingScene(Scene target)
         {
             SceneManager.SetActiveScene(target);
-            foreach (GameObject root in _loadingScene.GetRootGameObjects()) root.SetActive(false);
-            SceneManager.UnloadSceneAsync(_loadingScene);
-            _loadingScene = default;
+            Scene loadingScene = _loadingScene;
+            CancellationToken cancellationToken = _loadCancellation.Token;
+            try
+            {
+                // Recovery retains the existing loading canvas while the battle applies its baseline.
+                // LoadingUiController has already disabled its camera and listener on target activation.
+                while (_recovery.IsActive) await Awaitable.NextFrameAsync(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                foreach (GameObject root in loadingScene.GetRootGameObjects()) root.SetActive(false);
+                SceneManager.UnloadSceneAsync(loadingScene);
+                _loadingScene = default;
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+            }
         }
     }
 }

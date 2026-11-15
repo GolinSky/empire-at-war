@@ -8,5 +8,8 @@ namespace EmpireAtWar.Services.Networking.Online.Messages
         public string Name;
         public string Version;
         public ulong SteamId;
+        public int Protocol;
+        public string MatchId;
+        public string Credential;
     }
 }

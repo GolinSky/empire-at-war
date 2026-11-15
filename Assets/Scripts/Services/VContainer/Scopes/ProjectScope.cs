@@ -16,6 +16,7 @@ using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Graphics;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Networking.Online;
+using EmpireAtWar.Services.Networking;
 using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Settings;
@@ -101,7 +102,9 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<TimerPoolTick>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.RegisterInstance(new BattleSaveValidator(Assets, mapGenerationSettings));
             builder.Register<GameController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<OnlineRecoveryProgress>(Lifetime.Singleton);
             builder.Register<OnlineMatchService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<HostLeftBattleExit>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SceneLoader>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<JsonSettingsRepository>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(Application.persistentDataPath);

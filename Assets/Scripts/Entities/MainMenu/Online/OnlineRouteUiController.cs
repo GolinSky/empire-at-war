@@ -41,7 +41,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             // A Steam join from the launch arguments may already be connecting.
             Route();
             // Back from a battle the host left: say why.
-            if (_shownLobby == LobbyMode.None && _online.LastError != OnlineError.None) Open();
+            if (_shownLobby == LobbyMode.None &&
+                (_online.LastError != OnlineError.None || _online.HasRecovery)) Open();
         }
 
         public void LateDispose()
@@ -92,6 +93,14 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         }
 
         public void RetrySteam() => _online.RetrySteam();
+
+        public void Reconnect()
+        {
+            if (_online.IsReconnecting || !_online.HasRecovery) return;
+            _online.Reconnect();
+        }
+
+        public void DismissRecovery() => _online.DismissRecovery();
 
         public void OpenServerBrowser() => _serverBrowser.Open();
 
@@ -154,14 +163,22 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         private void Render()
         {
-            bool connecting = _online.Role == OnlineRole.Client && !_online.IsInLobby;
+            bool connecting = _online.IsReconnecting ||
+                (_online.Role == OnlineRole.Client && !_online.IsInLobby);
             string status = _online.LastError != OnlineError.None ? OnlineErrorText.Describe(_online.LastError)
                 : connecting ? "Connecting to the host..."
                 : _online.Steam.IsInitialized
                     ? $"Signed in to Steam as {_online.Steam.PersonaName}. A Steam lobby appears in the Server Browser and takes invites; a LAN / IP game is joined by address."
                     : "Steam not detected: Steam lobbies, invites and the lobby list are off. Start Steam and press RETRY STEAM, or host a LAN / IP game.";
+            if (_online.HasRecovery)
+            {
+                string recovery = _online.RecoveryStatus;
+                status = _online.LastError != OnlineError.None
+                    ? $"{OnlineErrorText.Describe(_online.LastError)} {recovery}"
+                    : recovery;
+            }
             _ui.Render(status, connecting, _online.Steam.HasPendingInvite ? _online.Steam.PendingInviteFrom : string.Empty,
-                _online.Steam.IsInitialized);
+                _online.Steam.IsInitialized, _online.HasRecovery, _online.RecoveryFromStartup);
         }
     }
 }

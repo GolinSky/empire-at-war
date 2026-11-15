@@ -66,7 +66,6 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ClientShipRouteReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ClientUnitOrderReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ClientBattleStartGate>(Lifetime.Singleton).As<IBattleStartGate>();
-            builder.Register<HostLeftBattleExit>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<OnlineBattleLifetime>(Lifetime.Singleton).AsImplementedInterfaces();
         }
     }

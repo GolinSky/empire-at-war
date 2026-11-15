@@ -49,8 +49,9 @@ namespace EmpireAtWar.Services.Networking
         {
             foreach (KeyValuePair<long, (IUnitOrderReplicaFacade Orders, UnitOrderType Order, int Revision)> entry in _sent)
             {
-                if (entry.Value.Order != UnitOrderType.None)
-                    connection.Send(new UnitOrderStateMessage { EntityId = entry.Key, Order = entry.Value.Order });
+                UnitOrderType order = entry.Value.Orders.CurrentOrder;
+                if (order != UnitOrderType.None)
+                    connection.Send(new UnitOrderStateMessage { EntityId = entry.Key, Order = order });
             }
         }
 

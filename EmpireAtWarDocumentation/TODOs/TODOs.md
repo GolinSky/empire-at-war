@@ -281,6 +281,10 @@
 
 ### Bugs
 
+- [x] **Restore a dropped/crashed multiplayer session through in-game Reconnect** → [[Done/Bugs/Multiplayer_Reconnect_Flow|Multiplayer Reconnect Flow]]
+  - Initial report/proposal 2026-11-15. Missing recovery UI; running battles hidden from browser; Steam Join Game failure reported, cause unknown. Persist session destination/credential for crash-restart rejoin; add Reconnect/Leave and startup Rejoin. Proposed 5 min grace + bounded 3 min loading allowance; host owns expiry. Parent: [[TODOs/Features/Multiplayer_Plan]].
+  - Implemented 2026-11-15: persisted recovery, credential/verified-Steam rebind, fixed 300 s/180 s deadlines, loading progress and lifecycle fixes. Unity compiled; tests not run. Two-PC acceptance and historical host-log diagnosis → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **Boost Weapon Power firing rate** → [[Done/Bugs/Boost_Weapon_Power_Fire_Rate_Fix|Boost Weapon Power Fire Rate Fix]]
   - Completed 2026-11-14: faster burst spacing/reloads, bounded overlap and prewarm admission, pending-wait retiming and effective-interval audio. Unity compile/import verified; tests not run. Gameplay/profiling → [[TODOs/User_Acceptance_Queue#Boost Weapon Power Firing Rate Fix]].
 

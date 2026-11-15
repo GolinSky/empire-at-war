@@ -12,6 +12,12 @@ namespace EmpireAtWar.Services.Networking.Online
         ConnectionFailed,
         BattleInProgress,
         SurvivalCoopNeedsLargerMap,
-        SurvivalLobbyTooLarge
+        SurvivalLobbyTooLarge,
+        ConnectionLost,
+        ReconnectExpired,
+        ReconnectRejected,
+        MatchEnded,
+        RecoveryRecordInvalid,
+        RecoveryStorageFailed
     }
 }

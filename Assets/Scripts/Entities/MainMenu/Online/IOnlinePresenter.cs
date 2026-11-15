@@ -7,6 +7,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         void OpenServerBrowser();
         void AcceptInvite();
         void RetrySteam();
+        void Reconnect();
+        void DismissRecovery();
         void Close();
     }
 }

@@ -14,6 +14,8 @@ updated: 2026-10-20
 
 ## Files
 
+- [[Architecture/Multiplayer_Reconnect]] — persisted client recovery, host identity/deadlines and loading lifecycle.
+
 - [[Architecture/PROJECT_ORGANIZATION]] — asset/script placement policy; unresolved policy work: [[TODOs/Refactoring/Project_Organization_Followup]].
 - [[Architecture/VCONTAINER_LIFECYCLE]] — scopes, initialization and disposal.
 - [[Architecture/UI_REFACTORING_PLAYBOOK]] and [[Architecture/UI_REFACTORING_PLAYBOOK - Research]] — focused UI migration.

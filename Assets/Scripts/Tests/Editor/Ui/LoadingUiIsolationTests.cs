@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using System.Reflection;
 using EmpireAtWar.Entities.Loading;
+using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.SceneService;
 using EmpireAtWar.Ui.Base;
 using NUnit.Framework;
@@ -25,6 +26,8 @@ namespace EmpireAtWar.Tests.Editor
             {
                 var ui = scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<LoadingUi>(true)).Single();
                 var serializedUi = new SerializedObject(ui);
+                Assert.That(serializedUi.FindProperty("statusText").objectReferenceValue, Is.Not.Null);
+                Assert.That(serializedUi.FindProperty("sceneCamera").objectReferenceValue, Is.Not.Null);
                 var iconProperty = serializedUi.FindProperty("loadingIcon");
                 Assert.That(iconProperty, Is.Not.Null);
                 var icon = iconProperty.objectReferenceValue as RectTransform;
@@ -71,12 +74,48 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void ScenePlacedControllerHasOnlyItsOwnViewDependency()
+        public void ScenePlacedControllerUsesProjectProgressWithoutDependingOnMenuOrBattleUi()
         {
             ParameterInfo[] parameters = typeof(LoadingUiController).GetConstructors()[0].GetParameters();
-            Assert.That(parameters.Length, Is.EqualTo(1));
-            Assert.That(parameters[0].ParameterType, Is.EqualTo(typeof(LoadingUi)));
+            Assert.That(parameters.Select(parameter => parameter.ParameterType), Is.EqualTo(new[]
+            {
+                typeof(LoadingUi), typeof(OnlineRecoveryProgress), typeof(ISceneService)
+            }));
             Assert.That(typeof(LoadingUi).IsSubclassOf(typeof(BaseUi)), Is.True);
+        }
+
+        [Test]
+        public void RecoveryProgressRendersPhasesAndDisposalRemovesSubscriptions()
+        {
+            var scene = EditorSceneManager.OpenPreviewScene("Assets/Scenes/Loading.unity");
+            LoadingUiController controller = null;
+            try
+            {
+                var ui = scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<LoadingUi>(true)).Single();
+                var fields = new SerializedObject(ui);
+                var status = (TMPro.TMP_Text)fields.FindProperty("statusText").objectReferenceValue;
+                var camera = (GameObject)fields.FindProperty("sceneCamera").objectReferenceValue;
+                var recovery = new OnlineRecoveryProgress();
+                var scenes = new SceneServiceStub();
+                controller = new LoadingUiController(ui, recovery, scenes);
+                recovery.Set(true, "Loading battle");
+                controller.Initialize();
+                Assert.That(status.text, Is.EqualTo("Loading battle"));
+                recovery.Set(true, "Synchronizing");
+                Assert.That(status.text, Is.EqualTo("Synchronizing"));
+                scenes.NotifyActivation(SceneType.Battle);
+                Assert.That(camera.activeSelf, Is.False, "Battle owns its camera and listener while the loading canvas remains.");
+                recovery.Set(false, "Playing");
+                Assert.That(status.text, Is.Empty);
+                controller.LateDispose();
+                recovery.Set(true, "Stale callback");
+                Assert.That(status.text, Is.Empty);
+            }
+            finally
+            {
+                if (controller != null) controller.LateDispose();
+                EditorSceneManager.ClosePreviewScene(scene);
+            }
         }
 
         [Test]
@@ -94,7 +133,8 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class SceneServiceStub : ISceneService
         {
             public string Id => nameof(SceneServiceStub);
-            public event Action<SceneType> OnSceneActivation { add { } remove { } }
+            public event Action<SceneType> OnSceneActivation;
+            public void NotifyActivation(SceneType scene) => OnSceneActivation?.Invoke(scene);
             public SceneType TargetScene => SceneType.Loading;
             public bool IsSceneLoaded { get; set; }
             public int ActivationCount { get; private set; }

@@ -10,5 +10,8 @@ namespace EmpireAtWar.Services.Networking.Online.Messages
     {
         public string SetupJson;
         public int LocalSlotIndex;
+        public string MatchId;
+        public string Credential;
+        public float RecoverySeconds;
     }
 }
