@@ -12,7 +12,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     {
         [SerializeField] private IonPulseView viewPrefab;
         [SerializeField] private float alignmentTolerance = 5f;
-        [SerializeField] private float waveSpeed = 35f;
+        [SerializeField] private float waveSpeed = 350f;
         [SerializeField] private float waveRadius = 60f;
         [SerializeField] private float waveThickness = 8f;
         [SerializeField] private float disableDuration = 10f;

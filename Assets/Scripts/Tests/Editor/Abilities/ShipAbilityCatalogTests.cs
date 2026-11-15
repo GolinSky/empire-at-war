@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using NUnit.Framework;
 using UnityEditor;
 
@@ -31,6 +32,25 @@ namespace EmpireAtWar.Tests.Editor
                 if (definition.RequiresEnemyTarget)
                     Assert.That(definition.Range, Is.GreaterThan(0f), id.ToString());
             }
+        }
+
+        [Test]
+        public void IonPulse_FastWaveSweepsTargetsBetweenFrames()
+        {
+            ShipAbilityCatalog catalog =
+                AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(CATALOG_PATH);
+            IonPulseSettings settings = (IonPulseSettings)catalog.Get(ShipAbilityId.IonPulse).Settings;
+            Assert.That(settings.WaveSpeed, Is.EqualTo(350f));
+            Assert.That(new IonPulseSettings().WaveSpeed, Is.EqualTo(settings.WaveSpeed));
+            IonPulseModel wave = new IonPulseModel(settings.WaveSpeed);
+            wave.Fire(350f);
+
+            wave.Advance(1f);
+
+            Assert.That(wave.WaveComplete, Is.True);
+            Assert.That(wave.Intersects(175f, 0f, settings.WaveRadius, settings.WaveThickness), Is.True);
+            Assert.That(wave.Intersects(175f, settings.WaveRadius + 1f,
+                settings.WaveRadius, settings.WaveThickness), Is.False);
         }
 
         [Test]

@@ -147,6 +147,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         {
             CombatModifierHandle applied = modifiers.Add(_disable);
             modifiers.AddIonPulseDisable();
+            modifiers.AddShieldSuppression(0f);
+            modifiers.RemoveShieldSuppression();
             _stuns.Add((modifiers, applied, _settings.DisableDuration));
         }
 

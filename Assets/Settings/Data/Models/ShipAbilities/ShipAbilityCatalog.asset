@@ -494,7 +494,7 @@ MonoBehaviour:
         viewPrefab: {fileID: 3312737823744789419, guid: d548686123b65a746bc6c7f7f32924a6,
           type: 3}
         alignmentTolerance: 5
-        waveSpeed: 35
+        waveSpeed: 350
         waveRadius: 60
         waveThickness: 8
         disableDuration: 10

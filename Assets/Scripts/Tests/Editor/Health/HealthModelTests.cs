@@ -8,6 +8,7 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEngine;
@@ -561,6 +562,41 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.Shields, Is.Zero);
             model.RegenerateShields(25f);
             Assert.That(model.Shields, Is.EqualTo(25f));
+        }
+
+        [Test]
+        public void IonPulseHit_EmptiesShieldsWithoutHullDamageOrBlockingRegeneration()
+        {
+            CombatModifiers modifiers = new CombatModifiers();
+            HealthModel model = new HealthModel(new HealthDataStub(SHIELDS), _matrix, modifiers, new HardPointHealthBudget());
+            GameObject owner = new GameObject("IonPulseShieldTest");
+            try
+            {
+                const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+                HealthComponent health = owner.AddComponent<HealthComponent>();
+                typeof(HealthComponent).GetMethod("Construct", PRIVATE_INSTANCE)
+                    .Invoke(health, new object[] { model, modifiers, owner.transform, TestPlayers.Human });
+                health.ShipUnits = new List<HardPoint>();
+                health.Initialize();
+                Assert.That(model.Shields, Is.EqualTo(SHIELDS));
+                IonPulseAbility ability = new IonPulseAbility(new IonPulseSettings(), null, null);
+
+                typeof(IonPulseAbility).GetMethod("Disable", PRIVATE_INSTANCE)
+                    .Invoke(ability, new object[] { modifiers });
+
+                Assert.That(model.Shields, Is.Zero);
+                Assert.That(model.Hull, Is.EqualTo(HULL));
+                Assert.That(model.IsLostShieldGenerator, Is.False);
+                Assert.That(modifiers.IsShieldSuppressed, Is.False);
+                Assert.That(health.IsShieldRecovering, Is.False);
+                model.RegenerateShields(25f);
+                Assert.That(model.Shields, Is.EqualTo(25f));
+                health.Release();
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
         }
 
         [Test]
