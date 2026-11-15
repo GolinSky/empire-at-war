@@ -141,6 +141,18 @@ namespace EmpireAtWar.Services.ShipNavigation
                             !ShipRouteGeometry.Tangent(corner, b, out _, out _))
                             corner.Sign = sign;
                     }
+                    // Preserve the chosen winding, but drop the next corner if its contact
+                    // is covered by this disk. Keeping it can immediately remove the new
+                    // blocker and restore the same pierced leg. Endpoints remain fixed.
+                    float radius = math.max(0f, disk.z - math.max(ShipRouteGeometry.EPSILON, disk.z * 0.00001f));
+                    if (b.Next >= 0 && b.Radius > 0f && math.distancesq(to, disk.xy) < radius * radius)
+                    {
+                        ShipRouteCircle next = Circles[b.Next];
+                        a.Next = b.Next;
+                        next.Previous = index;
+                        Circles[index] = a;
+                        Circles[b.Next] = next;
+                    }
                     InsertAfter(index, corner);
                     index = math.max(0, a.Previous);
                     continue;

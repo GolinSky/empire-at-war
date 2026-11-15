@@ -281,6 +281,9 @@
 
 ### Bugs
 
+- [x] **Fix remaining tangent line-repair loop** → [[Done/Bugs/Ship_Tangent_Line_Repair_Loop]]
+  - Completed 2026-11-15: remove covered obsolete corner and insert blocker in the same repair. Six failing seeded/mirrored regressions now pass; Navigation 280/280 passed. Live battle acceptance remains queued.
+
 - [x] **Fix captured tangent arc-repair loop** → [[Done/Bugs/Ship_Tangent_Arc_Repair_Loop]]
   - Completed 2026-11-15: captured battle replay fixed (near-180° winding), obsolete arc-copy reinsertion removed, native repair counters corrected. Navigation 270/270 passed; live battle acceptance pending.
 

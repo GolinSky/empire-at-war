@@ -391,4 +391,4 @@ created: "2026-10-29\r"
 - User confirmed working rotation on 2026-11-15. Remaining battle code-2 failure is captured and owned by [[Done/Bugs/Ship_Tangent_Arc_Repair_Loop]].
 - [ ] [[Done/Bugs/Ship_Rotation_Snaps_And_Tangent_Failures]] — Verify online clients display smooth host-driven heading and route changes.
 
-- [ ] [[Done/Bugs/Ship_Tangent_Arc_Repair_Loop]] — Repeat the affected battle/reroute scenario; verify no tangent-repair error or visible regression. Exact captured input and smaller loop cases pass automated tests; live battle replay remains pending.
+- [ ] [[Done/Bugs/Ship_Tangent_Arc_Repair_Loop]] + [[Done/Bugs/Ship_Tangent_Line_Repair_Loop]] — Repeat the affected battle/reroute scenario; verify no tangent-repair error or visible regression. Exact captured input and smaller loop cases pass automated tests; live battle replay remains pending.

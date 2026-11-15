@@ -21,6 +21,79 @@ namespace EmpireAtWar.Tests.Editor
         private const float CLEARANCE = 0.25f;
         private const float TOLERANCE = 0.002f;
 
+        [TestCase(1f, 0)]
+        [TestCase(-1f, 0)]
+        [TestCase(1f, 1)]
+        [TestCase(-1f, 1)]
+        [TestCase(1f, 2)]
+        [TestCase(-1f, 2)]
+        public void ObsoleteDiskBeforeLargerBlocker_RepairsWithoutRepeatedInsertion(float mirror, int seededDisks)
+        {
+            // The smaller disk blocks the direct line, but becomes obsolete after the
+            // larger disk is inserted. Reintroducing it on the incoming tangent caused code 3.
+            var input = new[]
+            {
+                new float3(0.72f, 1.49f * mirror, 2.81f),
+                new float3(-1.45f, 1.66f * mirror, 1.74f)
+            };
+            using var disks = new NativeArray<float3>(input, Allocator.TempJob);
+            using var buckets = new NativeParallelMultiHashMap<int, int>(128, Allocator.TempJob);
+            var layout = new NavMeshBuckets(new float2(-100f), new float2(100f));
+            for (int i = 0; i < input.Length; i++)
+                layout.Insert(buckets, i, input[i].xy - input[i].z, input[i].xy + input[i].z);
+            using var circles = new NativeList<ShipRouteCircle>(4, Allocator.TempJob);
+            using var pieces = new NativeList<ShipRoutePiece>(4, Allocator.TempJob);
+            using var failure = new NativeReference<int>(Allocator.TempJob);
+            using var repairMetrics = new NativeReference<int2>(Allocator.TempJob);
+            var start = new float2(-10f, 0f);
+            circles.Add(new ShipRouteCircle(start, 0f, 1));
+            if (seededDisks > 0)
+                circles.Add(new ShipRouteCircle(input[1].xy, input[1].z, -(int)mirror, 1));
+            if (seededDisks > 1)
+                circles.Add(new ShipRouteCircle(input[0].xy, input[0].z, -(int)mirror, 0));
+            circles.Add(new ShipRouteCircle(new float2(10f, 0f), 0f, 1));
+            new ShipTangentRouteJob
+            {
+                Disks = disks, DiskBuckets = buckets, Layout = layout,
+                Circles = circles, Pieces = pieces, Failure = failure, Start = start,
+                RepairMetrics = repairMetrics
+            }.Schedule().Complete();
+
+            Assert.That(failure.Value, Is.EqualTo(ShipTangentRouteJob.FAILURE_NONE),
+                $"Repairs {repairMetrics.Value.x}/{repairMetrics.Value.y}, circles {circles.Length}");
+            Assert.That(repairMetrics.Value.x, Is.InRange(0, 4),
+                "Two overlapping disks must resolve without repeatedly exhausting the generic repair budget.");
+            var route = new ShipRoute(pieces.AsArray());
+            foreach (ShipRoutePiece piece in route.Pieces)
+            {
+                Assert.That(ShipRouteGeometry.InsideBounds(piece, layout), Is.True);
+                foreach (float3 disk in input)
+                    Assert.That(ShipRouteGeometry.DistanceSquared(piece, disk.xy),
+                        Is.GreaterThanOrEqualTo((disk.z - TOLERANCE) * (disk.z - TOLERANCE)));
+            }
+            var obstacles = new[]
+            {
+                new RadarContact(new Vector3(input[0].x, 0f, input[0].y), input[0].z - CLEARANCE, false),
+                new RadarContact(new Vector3(input[1].x, 0f, input[1].y), input[1].z - CLEARANCE, false)
+            };
+            AssertGeometry(route, obstacles, 100f, Vector3.left * 10f, Vector3.right * 10f);
+        }
+
+        [TestCase(1f, 0f)]
+        [TestCase(1f, 90f)]
+        [TestCase(-1f, 0f)]
+        [TestCase(-1f, 90f)]
+        public void OverlappingUnequalDisks_FunnelBuilderKeepsClearContinuousRoute(float mirror, float heading)
+        {
+            var obstacles = new[]
+            {
+                new RadarContact(new Vector3(0.72f, 0f, 1.49f * mirror), 2.81f - CLEARANCE, false),
+                new RadarContact(new Vector3(-1.45f, 0f, 1.66f * mirror), 1.74f - CLEARANCE, false)
+            };
+            BuildAndAssert(obstacles, 100f, Vector3.left * 10f, Vector3.right * 10f,
+                Quaternion.Euler(0f, heading, 0f) * Vector3.forward);
+        }
+
         [TestCase(1f)]
         [TestCase(-1f)]
         public void RemovedArcPrefix_DoesNotReinsertTheSameBlocker(float mirror)

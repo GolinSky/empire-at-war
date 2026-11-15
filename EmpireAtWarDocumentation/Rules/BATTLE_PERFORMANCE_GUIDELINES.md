@@ -80,6 +80,9 @@ tags:
 
 ### Ship pathfinding
 
+- Line repair: if a blocking disk covers the next internal corner's incoming tangent contact, retain the selected winding, unlink that corner and insert the blocker in the same repair. Otherwise insertion/removal can recreate the same pierced leg. Preserve endpoints/zero-radius corners and recheck the new adjacent geometry.
+- Verified 2026-11-15: six seeded/mirrored code-3 regressions failed before the fix; Navigation 280/280 passed after it. Evidence and live acceptance → [[Done/Bugs/Ship_Tangent_Line_Repair_Loop]].
+
 - Arc winding: use the sweep nearest the funnel's angular hint; a hint below 180° can legitimately require a tangent arc above 180°. A hard `SweepHint > π` gate removed the captured battle's 187.92° arc (hint 177.78°).
 - Arc repair: keep original-circle prefixes/suffixes only when their tangent contacts lie on the repaired arc; retain their individual hints. Unconditional copies can remove the inserted blocker and restore the same blocked arc.
 - Job diagnostics must use native output storage (`NativeReference<int2>` for repair count/limit); `.RunByRef()` does not guarantee scalar output writeback through the Unity native runner. Preserve Editor/Development-only snapshot capture.
