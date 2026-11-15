@@ -208,10 +208,14 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 partition.OnScreen = group.OnScreen && worldBounds.Overlaps(_viewport);
                 if (partition.OnScreen)
                 {
-                    Vector2 clamped = ClampCenter(desired, halfSize);
+                    // Ordinary grids follow their world anchor beyond the viewport instead of
+                    // colliding with other grids just because the camera reaches an edge.
+                    bool constrainToViewport = group.Max.x - group.Min.x + 1 > group.CellsPerPartition.x ||
+                        group.Max.y - group.Min.y + 1 > group.CellsPerPartition.y;
+                    Vector2 clamped = constrainToViewport ? ClampCenter(desired, halfSize) : desired;
                     var key = (partition.Id, partition.Partition);
                     _previousOffsets.TryGetValue(key, out Vector2 previousOffset);
-                    partition.Screen = FindPlacement(clamped, halfSize, previousOffset, group.Pitch);
+                    partition.Screen = FindPlacement(clamped, halfSize, previousOffset, group.Pitch, constrainToViewport);
                     _previousOffsets[key] = partition.Screen - clamped;
                     _occupied.Add(new Rect(partition.Screen - halfSize, halfSize * 2f));
                 }
@@ -224,9 +228,11 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             _expiredOffsets.Clear();
         }
 
-        private Vector2 FindPlacement(Vector2 center, Vector2 halfSize, Vector2 previousOffset, float pitch)
+        private Vector2 FindPlacement(Vector2 center, Vector2 halfSize, Vector2 previousOffset, float pitch,
+            bool constrainToViewport)
         {
-            Vector2 previous = ClampCenter(center + previousOffset, halfSize);
+            Vector2 previous = center + previousOffset;
+            if (constrainToViewport) previous = ClampCenter(previous, halfSize);
             if (IsFree(previous, halfSize)) return previous;
             if (IsFree(center, halfSize)) return center;
 
@@ -238,38 +244,47 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             {
                 Rect obstacle = _occupied[i];
                 if (!obstacle.Overlaps(new Rect(center - halfSize, 2f * halfSize))) continue;
-                Consider(new Vector2(obstacle.xMin - halfSize.x, center.y), center, halfSize, ref best, ref bestDistance);
-                Consider(new Vector2(obstacle.xMax + halfSize.x, center.y), center, halfSize, ref best, ref bestDistance);
-                Consider(new Vector2(center.x, obstacle.yMin - halfSize.y), center, halfSize, ref best, ref bestDistance);
-                Consider(new Vector2(center.x, obstacle.yMax + halfSize.y), center, halfSize, ref best, ref bestDistance);
+                Consider(new Vector2(obstacle.xMin - halfSize.x, center.y),
+                    center, halfSize, ref best, ref bestDistance, constrainToViewport);
+                Consider(new Vector2(obstacle.xMax + halfSize.x, center.y),
+                    center, halfSize, ref best, ref bestDistance, constrainToViewport);
+                Consider(new Vector2(center.x, obstacle.yMin - halfSize.y),
+                    center, halfSize, ref best, ref bestDistance, constrainToViewport);
+                Consider(new Vector2(center.x, obstacle.yMax + halfSize.y),
+                    center, halfSize, ref best, ref bestDistance, constrainToViewport);
             }
 
             for (int ring = 1; ring <= LOCAL_PLACEMENT_RINGS && ring * pitch < bestDistance; ring++)
             {
                 for (int step = -ring; step < ring; step++)
                 {
-                    Consider(center + new Vector2(step, ring) * pitch, center, halfSize, ref best, ref bestDistance);
-                    Consider(center + new Vector2(ring, -step) * pitch, center, halfSize, ref best, ref bestDistance);
-                    Consider(center + new Vector2(-step, -ring) * pitch, center, halfSize, ref best, ref bestDistance);
-                    Consider(center + new Vector2(-ring, step) * pitch, center, halfSize, ref best, ref bestDistance);
+                    Consider(center + new Vector2(step, ring) * pitch,
+                        center, halfSize, ref best, ref bestDistance, constrainToViewport);
+                    Consider(center + new Vector2(ring, -step) * pitch,
+                        center, halfSize, ref best, ref bestDistance, constrainToViewport);
+                    Consider(center + new Vector2(-step, -ring) * pitch,
+                        center, halfSize, ref best, ref bestDistance, constrainToViewport);
+                    Consider(center + new Vector2(-ring, step) * pitch,
+                        center, halfSize, ref best, ref bestDistance, constrainToViewport);
                 }
             }
 
             // Search the viewport only after the local ring failed. Oversized partitions can need
             // a larger move than five cells even though there is room elsewhere on screen.
-            if (float.IsPositiveInfinity(bestDistance))
+            if (constrainToViewport && float.IsPositiveInfinity(bestDistance))
             {
                 for (float y = _usable.yMin + halfSize.y; y < _usable.yMax - halfSize.y + pitch; y += pitch)
                 for (float x = _usable.xMin + halfSize.x; x < _usable.xMax - halfSize.x + pitch; x += pitch)
-                    Consider(new Vector2(x, y), center, halfSize, ref best, ref bestDistance);
+                    Consider(new Vector2(x, y), center, halfSize, ref best, ref bestDistance, constrainToViewport);
             }
 
             return best;
         }
 
-        private void Consider(Vector2 candidate, Vector2 center, Vector2 halfSize, ref Vector2 best, ref float distance)
+        private void Consider(Vector2 candidate, Vector2 center, Vector2 halfSize, ref Vector2 best, ref float distance,
+            bool constrainToViewport)
         {
-            candidate = ClampCenter(candidate, halfSize);
+            if (constrainToViewport) candidate = ClampCenter(candidate, halfSize);
             float nextDistance = Vector2.Distance(candidate, center);
             if (nextDistance >= distance || !IsFree(candidate, halfSize)) return;
             best = candidate;

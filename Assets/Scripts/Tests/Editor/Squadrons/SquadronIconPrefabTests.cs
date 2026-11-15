@@ -325,6 +325,82 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CameraPanPastViewportEdge_PreservesStationaryGrids(bool mixedShips)
+        {
+            GameObject root = new GameObject("MarkerLayer", typeof(RectTransform));
+            try
+            {
+                BattleMarkerLayer layer = CreateLayer(root);
+                UnityCamera camera = CreateProjectionCamera(root.transform, out float zoom);
+                var markers = new BattleMarker[4];
+                float separation = Mathf.Max(100f, 250f * zoom);
+                for (int i = 0; i < markers.Length; i++)
+                {
+                    BattleMarker marker = CreateMarker(layer, root.transform, i + 1, !mixedShips || i % 2 == 0);
+                    Vector3 position = new Vector3(i < 2 ? -separation * 0.5f : separation * 0.5f, 0f, 0f);
+                    if (marker.IsSquadron) marker.SetPosition(position);
+                    else marker.AnchorTransform.position = position;
+                    marker.SampleMotion(0.1f);
+                    marker.SampleMotion(0.1f); // Establish zero velocity even when Editor deltaTime is zero.
+                    markers[i] = marker;
+                }
+
+                SquadronIconGrouping grouping = GetGrouping(layer);
+                UpdateGrouping(layer, grouping, 3);
+                var projection = new BattleMarkerProjection();
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                var originalRects = new Rect[markers.Length];
+                var originalGroups = new long[markers.Length];
+                var originalCells = new Vector2Int[markers.Length];
+                for (int i = 0; i < markers.Length; i++)
+                {
+                    Assert.That(markers[i].IsShown, Is.True);
+                    originalRects[i] = markers[i].ScreenRect;
+                    Assert.That(grouping.TryGetSlot(markers[i].EntityId, out originalGroups[i], out originalCells[i]), Is.True);
+                }
+                Assert.That(originalGroups[1], Is.EqualTo(originalGroups[0]));
+                Assert.That(originalGroups[3], Is.EqualTo(originalGroups[2]));
+                Assert.That(originalGroups[2], Is.Not.EqualTo(originalGroups[0]));
+
+                // Leave the leftmost icon partly outside the viewport: the grid must follow
+                // its world anchor instead of being pushed inward and repacked.
+                float pan = Mathf.Min(originalRects[0].center.x, originalRects[1].center.x) -
+                    camera.pixelRect.xMin - originalRects[0].width * 0.25f;
+                Vector3 originalCameraPosition = camera.transform.position;
+                camera.transform.position = originalCameraPosition + new Vector3(pan, 0f, 0f);
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                for (int i = 0; i < markers.Length; i++)
+                {
+                    Assert.That(markers[i].IsShown, Is.True);
+                    Assert.That(markers[i].ScreenRect.center.x, Is.EqualTo(originalRects[i].center.x - pan).Within(0.001f));
+                    Assert.That(markers[i].ScreenRect.center.y, Is.EqualTo(originalRects[i].center.y).Within(0.001f));
+                    Assert.That(markers[i].ScreenRect.size, Is.EqualTo(originalRects[i].size));
+                }
+
+                camera.transform.position = originalCameraPosition + new Vector3(camera.pixelWidth * 2f, 0f, 0f);
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                foreach (BattleMarker marker in markers) Assert.That(marker.IsShown, Is.False);
+
+                camera.transform.position = originalCameraPosition;
+                UpdateGrouping(layer, grouping, 3);
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                for (int i = 0; i < markers.Length; i++)
+                {
+                    Assert.That(markers[i].IsShown, Is.True);
+                    Assert.That(markers[i].ScreenRect, Is.EqualTo(originalRects[i]));
+                    Assert.That(grouping.TryGetSlot(markers[i].EntityId, out long group, out Vector2Int cell), Is.True);
+                    Assert.That(group, Is.EqualTo(originalGroups[i]));
+                    Assert.That(cell, Is.EqualTo(originalCells[i]));
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
+
         private static UnityCamera CreateProjectionCamera(Transform parent, out float zoom)
         {
             var cameraObject = new GameObject("MarkerCamera");
