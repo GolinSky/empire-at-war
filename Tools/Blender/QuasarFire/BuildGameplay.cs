@@ -52,8 +52,8 @@ public static class BuildQuasarFireGameplay
             mountGroup.SetParent(body,false);
             int id = 0;
             var records = new JArray();
-            Add("LightTurbolaserLeft", "TL_01", 0, 1);
-            Add("LightTurbolaserRight", "TL_02", 0, 1);
+            Add("MediumQuadTurbolaserLeft", "TL_01", 0, 90);
+            Add("MediumQuadTurbolaserRight", "TL_02", 0, 90);
             Add("PointDefenseLeft", "L_03", 0, 14);
             Add("PointDefenseRight", "L_06", 0, 14);
             Add("Engine", "Pe_Quasar", 1, 0);
@@ -135,7 +135,7 @@ public static class BuildQuasarFireGameplay
         int[] squadrons={300,3};
         for(int i=0;i<2;i++){var bay=bays.GetArrayElementAtIndex(i);bay.FindPropertyRelative("squadronType").intValue=squadrons[i];bay.FindPropertyRelative("reserve").intValue=2;bay.FindPropertyRelative("maxActive").intValue=1;}
         var loadout=data.FindProperty("weaponLoadout"); loadout.arraySize=2;
-        int[] profiles={1,14}; int[] counts={2,2};
+        int[] profiles={14,90}; int[] counts={2,2};
         for(int i=0;i<2;i++){var row=loadout.GetArrayElementAtIndex(i);row.FindPropertyRelative("weaponType").intValue=profiles[i];row.FindPropertyRelative("count").intValue=counts[i];}
         Save(data);AssetDatabase.SaveAssets();
         return "Quasar gameplay saved: 9 targetable hardpoints, 4 weapons, X-Wing/Y-Wing hangar; bounds "+bounds.size+"; banked range "+bottom+" .. "+top;

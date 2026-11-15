@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 6369390185619992923}
   - component: {fileID: 3943979551800374726}
   m_Layer: 0
-  m_Name: LightTurbolaserLeft
+  m_Name: MediumQuadTurbolaserLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -99,7 +99,7 @@ MonoBehaviour:
     <Min>k__BackingField: -22
     <Max>k__BackingField: 154
   mainBattery: 0
-  <WeaponType>k__BackingField: 1
+  <WeaponType>k__BackingField: 90
 --- !u!135 &3943979551800374726
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2637,7 +2637,7 @@ GameObject:
   - component: {fileID: 7687693778136228240}
   - component: {fileID: 4331821870926914831}
   m_Layer: 0
-  m_Name: LightTurbolaserRight
+  m_Name: MediumQuadTurbolaserRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2683,7 +2683,7 @@ MonoBehaviour:
     <Min>k__BackingField: -153
     <Max>k__BackingField: 23
   mainBattery: 0
-  <WeaponType>k__BackingField: 1
+  <WeaponType>k__BackingField: 90
 --- !u!135 &4331821870926914831
 SphereCollider:
   m_ObjectHideFlags: 0
