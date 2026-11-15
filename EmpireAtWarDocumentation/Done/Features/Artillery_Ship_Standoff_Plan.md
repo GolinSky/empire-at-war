@@ -69,6 +69,17 @@ Verified 2026-11-15 from live prefabs + `WeaponsData.asset` via read-only Unity 
 - Reviewed existing Navigation, Combat, Ships, Abilities and Squadrons contracts for changed bindings, data and unaffected fallback behavior. Tests not run under the local override. No full player build or Jenkins run.
 - Gameplay and matched CPU acceptance pending → [[TODOs/User_Acceptance_Queue]].
 
+### Post-implementation review (2026-11-15, commit `b848a70cc`)
+
+- Source matches plan: opt-in flag on exactly five assets (Profundity absent); launcher families Missile/Torpedo/IonTorpedo, strikecraft-only excluded; per-class cache invalidated by `WeaponHardPoint.DestructionChanged`, `CombatModifiers.Changed` and `Release`/`Respawn`; AttackMove/Guard/Hunt/`ShipEngagement` untouched; `IArtilleryCapability` resolves via `RegisterComponent` (all interfaces), one `WeaponComponent` per in-scope prefab.
+- No per-tick allocation in `TryUpdateArtilleryMove`: squared distances, cached reach, dictionary refilled only after invalidation.
+- Editor + player `Assembly-CSharp` rebuilt after commit; Console has no current compile errors (earlier `NetworkTickReplicationTests` CS1503 predates the fix in the same snapshot).
+- Watch in acceptance: compact Attack slots ring the target; a ship given a far-side slot (≈±120° in 4+ ship groups) heads across target gun range until the 80% retreat trigger re-plans it outward. Self-correcting, extra movement only.
+- Watch in acceptance: after six failed retries against a stationary target the ship waits outside the band until the target moves — bounded, but may not fire.
+- Accepted tradeoff: no ordinary-range floor. After missile loss, torpedo-only band can sit slightly inside ordinary approach (Peleset ≈ 0.9 × (402.5 − offset) vs 380).
+- Out of scope: stale "nebulae" comment in `WeaponComponent.Initialize` (multiplier is Fleet Command).
+- Tests not run (local override).
+
 ## Files
 
 - `Assets/Scripts/Entities/Ship/{Data/ShipData,ShipInstaller,StateMachine/AttackTargetState}.cs`

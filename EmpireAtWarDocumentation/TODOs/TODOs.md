@@ -63,6 +63,9 @@
 
 ### Bugs
 
+- [ ] **Fix captured tangent arc-repair loop** → [[TODOs/Bugs/Ship_Tangent_Arc_Repair_Loop]]
+  - In progress 2026-11-15: user confirms rotation works; normal battle code 2 captured (build 1696, 20 disks, 227 circle records). Replay/fix and Burst diagnostic-counter correction underway.
+
 
 
 
@@ -96,7 +99,7 @@
 
 
 - [ ] **Remove recurring allocations and redundant scans; gate Jobs/Burst candidates behind captures** → [[TODOs/Optimization/CPU_Allocation_And_Jobs_Plan|CPU Allocation and Jobs Plan]]
-  - 2026-11-14 · Phases 1–2, Phase 3 scan/HUD work and Phase 5 loading/editor work committed. Unity compilation passed. User testing and matched Editor/Development Player captures pending. Replicated-state timer design and measured Jobs/Burst candidates remain active.
+  - 2026-11-14 · Phases 1–2, Phase 3 scan/HUD work and Phase 5 loading/editor work committed; independent source review found no actionable correctness regressions. Last Unity compilation reports no errors; committed diff check clean. Tests not run; coverage gaps and matched Editor/Development Player captures remain. Replicated-state timer design and measured Jobs/Burst candidates remain active.
 
 - [ ] **Ship facing solve spikes (35.2 ms of a 60.5 ms frame; once-a-second ship-order spikes)** → [[TODOs/Optimization/Ship_Facing_Solve_CPU_Plan|Ship Facing Solve CPU Plan]]
   - 2026-11-14: fast yaw checks, Burst sweep, refresh budget and reusable health buffer implemented. Unity compiled. In-range probe max 1.11 ms; dense 40×30 probe max 4.16 ms. Exact intervals and matched crowded-battle verification remain active.
@@ -360,7 +363,7 @@
   - 2026-11-15: verified six loadouts; five opted in, Profundity excluded. Explicit Attack uses surviving launcher reach, with ordinary pursuit after launcher loss. Editor and Windows player scripts compiled and five assets saved. Tests not run. Gameplay and CPU acceptance → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Destroy one ship from its UI card** → [[Done/Features/Ship_Ui_Destroy_Plan|Ship UI destruction plan]]
-  - Completed 2026-11-15: right-click → Destroy ship → generic Yes/No confirmation and authoritative normal death. Ownership, card reuse, and replication regressions authored. Unity compilation and saved bindings verified. Tests not run; offline and online acceptance → [[TODOs/User_Acceptance_Queue]].
+  - Completed 2026-11-15: right-click → Destroy ship → generic Yes/No confirmation and authoritative normal death. Ownership, card reuse, and replication regressions authored. Unity compilation and saved bindings verified. Source/prefab review of `30e6162ea` on 2026-11-15 found no concrete implementation defects; coverage limits recorded in the plan. Tests not run; offline and online acceptance → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Capital siege damage and forward main batteries** → [[Done/Features/Capital_Siege_And_Forward_Batteries_Plan]]
   - Completed 2026-11-14. Super-heavy mounted weapons deal ×1.5 against stations and defense platforms. Added forward main-battery arcs, main-battery-first hull facing and a closer Executor siege approach where the live hull permits.

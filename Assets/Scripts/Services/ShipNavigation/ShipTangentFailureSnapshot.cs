@@ -60,7 +60,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 CapturedUtc = DateTime.UtcNow.ToString("O"), BuildId = buildId, Frame = Time.frameCount,
                 Agent = agent, Forward = forward, TurnRadius = turnRadius,
                 AllowEscape = allowEscape, CollapseLinks = collapseLinks,
-                FailureCode = job.Failure.Value, RepairCount = job.RepairCount, RepairLimit = job.RepairLimit,
+                FailureCode = job.Failure.Value, RepairCount = job.RepairMetrics.Value.x, RepairLimit = job.RepairMetrics.Value.y,
                 BoundsMin = graph.Layout.Min, BoundsMax = graph.Layout.Max,
                 Waypoints = new Vector3[waypoints.Count], Corners = new Corner[graph.RouteCorners.Count],
                 Disks = graph.Disks.ToArray(), FinalCircles = job.Circles.AsArray().ToArray()

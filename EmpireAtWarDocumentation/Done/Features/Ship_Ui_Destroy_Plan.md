@@ -84,6 +84,14 @@ acceptance: pending-user
 - Evidence 2026-11-15: Graphify exploration and live source inspection; test sources reviewed for planned extensions. No implementation, prefab mutation, test execution or runtime verification.
 - Serena launcher reported running, but direct MCP connection failed; live text inspection used for planning.
 
+## Validation · 2026-11-15
+
+- Reviewed implementation commit `30e6162ea` against live source and serialized prefabs; no concrete implementation defect found in authority, serialization, replication, card targeting, confirmation invalidation or prefab wiring.
+- Reviewed `ShipDestroyFlowTests`, `ShipSelectionReuseTests`, `PlayerCommandSinkTests`, `NetworkTickReplicationTests`, `PopupServiceTests`, `ShipAutoPowerUiTests`, `SelectionInputTests` and `InputLockServiceTests`. No source/test edits required by this review.
+- Coverage limits: `ShipDestroyFlowTests` uses an offline session; selection/route invalidation is simulated by calling `Invalidate`. Pointer tests invoke handlers and inspect raycast properties, without a real EventSystem end-to-end interaction. Remote pending/disconnect and actual pointer behavior remain queued acceptance checks.
+- No tests, Unity compilation, runtime interaction or performance capture performed during validation. `git diff HEAD^ HEAD --check` reports seven trailing spaces in Unity-serialized empty `m_Name` fields only.
+- Plan remains `done` with `acceptance: pending-user`; all four existing acceptance gates remain open. No new reusable guidance; existing [[Architecture/POPUP_SYSTEM]] rules remain applicable.
+
 ## Outcome · 2026-11-15
 
 - Existing `ShipCard` raycast targets receive right-clicks. A press recorded before an entry rebind is discarded. Expanded groups pass each entry's exact entity ID; collapsed groups and squadrons have no eligible action.

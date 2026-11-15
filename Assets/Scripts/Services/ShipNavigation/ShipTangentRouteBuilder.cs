@@ -118,13 +118,14 @@ namespace EmpireAtWar.Services.ShipNavigation
                 }
             }
             using var failure = new NativeReference<int>(Allocator.TempJob);
+            using var repairMetrics = new NativeReference<int2>(Allocator.TempJob);
             var job = new ShipTangentRouteJob
             {
                 Disks = graph.Disks, DiskBuckets = graph.DiskBuckets, Layout = graph.Layout,
                 Circles = circles, Pieces = pieces, Failure = failure, Start = start, Height = height,
-                Escape = directEscape
+                Escape = directEscape, RepairMetrics = repairMetrics
             };
-            job.RunByRef();
+            job.Run();
             if (failure.Value != ShipTangentRouteJob.FAILURE_NONE)
             {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

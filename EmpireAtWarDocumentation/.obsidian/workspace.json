@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "f47a45a6efac56cf",
+        "id": "ac7b56f1548799a7",
         "type": "tabs",
         "children": [
           {
-            "id": "fd4544b14efb9af5",
+            "id": "6840d7bc3222d620",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "GameDesign/References/Awakening of the Rebellion - Capital Ship Reference.md",
+                "file": "GameDesign/References/Secutor, Procurator and Praetor - Workshop Reference.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Awakening of the Rebellion - Capital Ship Reference"
+              "title": "Secutor, Procurator and Praetor - Workshop Reference"
             }
           }
         ]
@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "Awakening of the Rebellion Capital Ship Reference ",
+                "query": "Secutor",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": true,
@@ -76,7 +76,8 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -185,8 +186,23 @@
       "bases:Create new base": false
     }
   },
-  "active": "1261212fe2167d70",
+  "active": "6840d7bc3222d620",
   "lastOpenFiles": [
+    "TODOs/Bugs/Ship_Tangent_Arc_Repair_Loop.md",
+    "Done/Features/Artillery_Ship_Standoff_Plan.md",
+    "Done/Features/Ship_Ui_Destroy_Plan.md",
+    "TODOs/Features/Ship_Ui_Destroy_Plan.md",
+    "TODOs/Features/Artillery_Ship_Standoff_Plan.md",
+    "Done/Bugs/Ship_Rotation_Snaps_And_Tangent_Failures.md",
+    "TODOs/Bugs/Ship_Rotation_Snaps_And_Tangent_Failures.md",
+    "AssetPipeline/Imports/Praetor Import.md",
+    "AssetPipeline/Imports/Procurator Import.md",
+    "AssetPipeline/Imports/Secutor Import.md",
+    "GameDesign/References/Awakening of the Rebellion - Capital Ship Reference.md",
+    "GameDesign/References/Secutor, Procurator and Praetor - Workshop Reference.md",
+    "Done/Bugs/Multiplayer_Reconnect_Flow.md",
+    "Architecture/Multiplayer_Reconnect.md",
+    "TODOs/Optimization/CPU_Allocation_And_Jobs_Plan.md",
     "TODOs/Optimization/Ship_Facing_Solve_CPU_Plan.md",
     "Done/Optimization/Enemy_Production_CPU_Spike_Plan.md",
     "TODOs/Optimization/Enemy_Production_CPU_Spike_Plan.md",
@@ -198,21 +214,6 @@
     "Done/Bugs/Boost_Weapon_Power_Fire_Rate_Fix.md",
     "TODOs/Bugs/Carrier_and_Squadron_Rebalance - Unit Amount Research.md",
     "TODOs/Bugs/Boost_Weapon_Power_Fire_Rate_Fix.md",
-    "Done/Bugs/Enemy_AI_Battle_Log_Followup_Fixes.md",
-    "Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes.md",
-    "TODOs/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes.md",
-    "Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation.md",
-    "Done/Features/Small_Ship_Icons_And_Squadron_Grid_Plan.md",
-    "Done/Bugs/Executor_Depth_And_Big_Ship_Targeting_Fix.md",
-    "TODOs/Features/Small_Ship_Icons_And_Squadron_Grid_Plan.md",
-    "TODOs/Features/Enemy_AI_Patrol_And_Recovery_Relocation.md",
-    "Done/Bugs/Reinforcement_Spawn_Near_Station_Fix.md",
-    "TODOs/Bugs/Executor_Depth_And_Big_Ship_Targeting_Fix.md",
-    "TODOs/Bugs/Reinforcement_Spawn_Near_Station_Fix.md",
-    "Done/Bugs/Planet_Decorations_Loading_Fix.md",
-    "TODOs/Bugs/Planet_Decorations_Loading_Fix.md",
-    "Done/Features/Planet_Decorations_Plan.md",
-    "TODOs/Features/Planet_Decorations_Plan.md",
     "TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan.md.tmp.24432.63e099c503dd",
     "TODOs/TODOs.md.tmp.37680.5fe2a9633524",
     "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md.tmp.37680.0b93a8afc968",

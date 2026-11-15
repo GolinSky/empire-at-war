@@ -15,7 +15,7 @@ created: 2026-11-14
 
 - Method: the 28 runtime audit claims (allocation, Jobs/Burst, networking, other CPU) checked against live source. No profiler capture, no tests, no code changed.
 - Result: 28 confirmed in source; 1 sub-claim unverified; 0 false. 6 priorities changed; 7 items added.
-- Not checked: the 6 loading/editor items in Phase 5 and the `ReplayNotifier` note → verify before starting Phase 5.
+- Initial audit excluded the 6 loading/editor items and `ReplayNotifier`; Phase 5 implementation and subsequent review are recorded below.
 - Audit priorities were effort/value guesses. No millisecond or GC figure exists for any item.
 
 ### Priority changes
@@ -57,6 +57,16 @@ created: 2026-11-14
 - Pre-change source revision: `cd8ba087e`. Code commits: Phase 1 `7220b4f6e`, Phase 2 `a17cac31b`, Phase 3 `29f6624d0`, Phase 5 `095db9bed`.
 - Unity 6000.4.7f1 compiled the current checkout with zero script compilation errors. Source and fixture diffs checked. Automated tests and Editor/Development Player captures pending user testing.
 - Configured AI decision intervals: Easy 4 s, Medium 2.5 s, Hard 1.25 s, Ultra Hard 0.5 s. A decision can build once per group and events can trigger earlier decisions. Measure actual calls/s in the capture.
+
+### Partial implementation review · 2026-11-14
+
+- Scope: four implementation commits above against live source at `1a5f45d05`; unrelated dirty work excluded. No actionable correctness regression found.
+- Verified by source: force/aim collection lifetimes, native route defensive copy, profile reuse inputs, fighter reset, keyframe array ownership, formation ordering, cached predicates, shield-generator parity, HUD invalidation, map scratch initialization and simulator impact ordering.
+- Non-test checks: `git diff --check cd8ba087e 095db9bed` clean; `unity command recompile_status --json` reports last compilation completed, `failed=false`, no errors. No fresh compile requested.
+- Tests reviewed, not run: `EnemyUnitCommanderTests`, `EnemyDefenseStrategyTests` (EnemyAi); `ShipRouteTests`, `ShipRotationKinematicsTests`, `ShipNavigationServiceTests`, `FormationModelTests` (Navigation); `FighterFlightTests`, `SquadronTargetSelectorTests` (Squadrons); `NetworkTickReplicationTests` (Networking).
+- Additional fixtures reviewed: `HealthModelTests`, `UnitSaveTests`, `HazardServiceTests`, `HazardZoneTests`, `MapLayoutGeneratorTests`, `DecorAsteroidBuilderTests`, `EntityComponentLifecycleTests`, `SimulationGameplayTests`, `SurvivalUiPrefabTests`, `BattleSimulationTests`, `BattleWorkflowTests`, `BattlePerformanceCaptureReportTests`. Existing expectations remain valid; no code or test edits.
+- Coverage gaps: direct narrow-health capture parity; last-commander cleanup; repeated formation tie ordering; grouped defense snapshot construction; HUD cache transitions; alternating `FieldGrid` traversal reuse; simulator impact-buffer reuse and writer-wait attribution.
+- No runtime, seeded parity or allocation-performance result established. Phase 0 captures, replicated-state revision/timer work and Phase 4 measurement gates stay open.
 
 ### Phase 0 · Baseline
 
@@ -111,7 +121,7 @@ created: 2026-11-14
 - [x] `HazardShape` rents temporary bake arrays, and `FieldGrid` reuses its traversal queue and flags. Added a repeated-bake distance fixture. Seeded runtime verification is pending.
 - [x] Reviewed `NavigationHazardRaster`. Its source snapshot, native costs and boundaries live with the map snapshot and are already shared by clearance/height layers. Keep that ownership.
 - [x] `MonteCarloRunner` reads stopwatch timestamps directly. `BattleSimulation` reuses retired impact buckets and stores impacts as values in insertion order.
-- [x] `BattleHitchCapture` records writer wait in `capture_write_wait_ms`. Include it in hitch interpretation.
+- [x] Reviewed existing `BattleHitchCapture` writer-wait reporting (`ebf260217`, predates Phase 5): `capture_write_wait_ms`. Include it in hitch interpretation.
 - [x] Reviewed `ReplayNotifier`. Its observer snapshot is allocated only on state/speed transitions, preserving callback mutation semantics.
 
 ### Replicated-state revision design

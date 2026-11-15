@@ -24,8 +24,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         public float2 Start;
         public float Height;
         public bool Escape;
-        public int RepairCount;
-        public int RepairLimit;
+        public NativeReference<int2> RepairMetrics;
 
         public void Execute()
         {
@@ -48,8 +47,9 @@ namespace EmpireAtWar.Services.ShipNavigation
             // Each repair changes only the adjoining tangents; a pierced disk is inserted
             // at the first intersecting leg. The shared budget bounds repeated repairs.
             int index = 0;
-            RepairCount = 0;
-            RepairLimit = (Disks.Length + Circles.Length) * 4 + 16;
+            int repairs = 0;
+            int repairLimit = (Disks.Length + Circles.Length) * 4 + 16;
+            RepairMetrics.Value = new int2(repairs, repairLimit);
             while (Circles[index].Next >= 0)
             {
                 ShipRouteCircle a = Circles[index];
@@ -101,7 +101,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                     int arcBlocker = ShipRouteGeometry.FindBlocker(arc, Disks, DiskBuckets, Layout, a.DiskIndex);
                     if (arcBlocker >= 0)
                     {
-                        if (++RepairCount > RepairLimit)
+                        RepairMetrics.Value = new int2(++repairs, repairLimit);
+                        if (repairs > repairLimit)
                         {
                             Failure.Value = FAILURE_ARC_REPAIR;
                             return false;
@@ -121,7 +122,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                     line, Disks, DiskBuckets, Layout, a.DiskIndex, b.DiskIndex, Escape && index == 0);
                 if (blocker >= 0)
                 {
-                    if (++RepairCount > RepairLimit)
+                    RepairMetrics.Value = new int2(++repairs, repairLimit);
+                    if (repairs > repairLimit)
                     {
                         Failure.Value = FAILURE_LINE_REPAIR;
                         return false;

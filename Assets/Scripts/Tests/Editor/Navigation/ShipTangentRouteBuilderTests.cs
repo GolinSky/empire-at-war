@@ -8,6 +8,7 @@ using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Services.ShipNavigation;
 using NUnit.Framework;
 using Unity.Collections;
+using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -39,6 +40,7 @@ namespace EmpireAtWar.Tests.Editor
             using var circles = new NativeList<ShipRouteCircle>(4, Allocator.TempJob);
             using var pieces = new NativeList<ShipRoutePiece>(4, Allocator.TempJob);
             using var failure = new NativeReference<int>(Allocator.TempJob);
+            using var repairMetrics = new NativeReference<int2>(Allocator.TempJob);
             var start = new float2(-10f, 0f);
             circles.Add(new ShipRouteCircle(start, 0f, 1));
             circles.Add(new ShipRouteCircle(new float2(10f, 0f), 0f, 1));
@@ -46,12 +48,13 @@ namespace EmpireAtWar.Tests.Editor
             var job = new ShipTangentRouteJob
             {
                 Disks = disks, DiskBuckets = buckets, Layout = layout,
-                Circles = circles, Pieces = pieces, Failure = failure, Start = start
+                Circles = circles, Pieces = pieces, Failure = failure, Start = start, RepairMetrics = repairMetrics
             };
-            job.Execute();
+            job.Schedule().Complete();
 
             Assert.That(failure.Value, Is.EqualTo(ShipTangentRouteJob.FAILURE_NONE));
-            Assert.That(job.RepairCount, Is.InRange(1, job.RepairLimit));
+            Assert.That(repairMetrics.Value.x, Is.InRange(1, repairMetrics.Value.y));
+            Assert.That(repairMetrics.Value.y, Is.EqualTo(32), "The scheduled job must publish its repair budget.");
             Assert.That(circles.Length, Is.LessThanOrEqualTo(6), "Repairs must make progress rather than repeat disks.");
             var obstacles = new[]
             {
@@ -73,6 +76,7 @@ namespace EmpireAtWar.Tests.Editor
             using var circles = new NativeList<ShipRouteCircle>(4, Allocator.TempJob);
             using var pieces = new NativeList<ShipRoutePiece>(4, Allocator.TempJob);
             using var failure = new NativeReference<int>(Allocator.TempJob);
+            using var repairMetrics = new NativeReference<int2>(Allocator.TempJob);
             var start = new float2(-10f, 0f);
             var goal = new float2(10f, 0f);
             circles.Add(new ShipRouteCircle(start, 0f, 1));
@@ -85,7 +89,7 @@ namespace EmpireAtWar.Tests.Editor
             new ShipTangentRouteJob
             {
                 Disks = disks, DiskBuckets = buckets, Layout = layout,
-                Circles = circles, Pieces = pieces, Failure = failure, Start = start
+                Circles = circles, Pieces = pieces, Failure = failure, Start = start, RepairMetrics = repairMetrics
             }.Execute();
 
             if (secondSign < 0)

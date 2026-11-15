@@ -26,6 +26,8 @@ namespace EmpireAtWar.Tests.Editor
             "HP_Procursator_TLTL_02|HP_Procursator_TLTL_03|HP_Procursator_TLTL_04|HP_Procursator_TLTL_06|HP_Procursator_TLTL_07")]
         [TestCase("Empire/Tector", 150f,
             "HP_ISD2_Weapon_03|HP_ISD2_Weapon_04")]
+        [TestCase("Rebellion/BothanAssaultCruiser", 150f,
+            "MediumTurbolaser_0_0|MediumTurbolaser_0_1|MediumTurbolaser_1_0|MediumTurbolaser_1_1")]
         [TestCase("Rebellion/BothanAssaultCruiser", 300f,
             "DualHeavyTurbolaser_1_1")]
         [TestCase("Rebellion/CD273", 150f,

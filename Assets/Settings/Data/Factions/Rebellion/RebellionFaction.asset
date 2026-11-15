@@ -31,7 +31,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 2200
-        <BuildTime>k__BackingField: 30
+        <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: a5d07dd53c680c6408f3e98f4ce75765,
           type: 3}
@@ -51,7 +51,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 1
         <Price>k__BackingField: 1250
-        <BuildTime>k__BackingField: 25
+        <BuildTime>k__BackingField: 20
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 68a48dec07691c448a7ed517f75c5a1a,
           type: 3}
@@ -72,8 +72,8 @@ MonoBehaviour:
         <Name>k__BackingField: Mon Calamari Star Cruiser / MC80
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 6000
-        <BuildTime>k__BackingField: 40
+        <Price>k__BackingField: 8000
+        <BuildTime>k__BackingField: 55
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: b95f55f2e2f204f42a94f0c44c5baa85,
           type: 3}
@@ -99,8 +99,8 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 25000
-        <BuildTime>k__BackingField: 70
-        <UnitCapacity>k__BackingField: 25
+        <BuildTime>k__BackingField: 80
+        <UnitCapacity>k__BackingField: 40
         <Icon>k__BackingField: {fileID: 21300000, guid: f71730a251297854b97875858cdb2249,
           type: 3}
     - key: 304
@@ -141,8 +141,8 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 20000
-        <BuildTime>k__BackingField: 65
-        <UnitCapacity>k__BackingField: 25
+        <BuildTime>k__BackingField: 80
+        <UnitCapacity>k__BackingField: 35
         <Icon>k__BackingField: {fileID: 21300000, guid: d1df96d57bfbbb049952971439112bf5,
           type: 3}
     - key: 306
@@ -161,7 +161,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 3500
-        <BuildTime>k__BackingField: 40
+        <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: fe1f61f0ff4f03a47a7a2a16340c510d,
           type: 3}
@@ -180,7 +180,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 3500
-        <BuildTime>k__BackingField: 32
+        <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 469dd9f50be001b43938f09f7cdbcb4f,
           type: 3}
@@ -199,7 +199,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 2200
-        <BuildTime>k__BackingField: 32
+        <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: 2e88496bcd539524c9cf43ae79b88a88,
           type: 3}
@@ -220,7 +220,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 2400
-        <BuildTime>k__BackingField: 35
+        <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 27b2ca6d030fce64fa71f572cb392d6d,
           type: 3}
@@ -240,7 +240,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 3000
-        <BuildTime>k__BackingField: 42
+        <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: db3ba52ed373c8242844c936a9497696,
           type: 3}
@@ -261,7 +261,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 4000
-        <BuildTime>k__BackingField: 40
+        <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: ae063a7eec8a5af4696394f297681415,
           type: 3}
@@ -281,7 +281,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 5000
-        <BuildTime>k__BackingField: 60
+        <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 66c1ea9cf4e49774d99aff299b8237ca,
           type: 3}
@@ -303,7 +303,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 4200
-        <BuildTime>k__BackingField: 48
+        <BuildTime>k__BackingField: 30
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 1583a68acc7d9f9488c947c5470db384,
           type: 3}
@@ -325,7 +325,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 12000
-        <BuildTime>k__BackingField: 72
+        <BuildTime>k__BackingField: 65
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: 0884e62f660956f45a6dc8ef863d13cc,
           type: 3}
@@ -347,7 +347,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 4800
-        <BuildTime>k__BackingField: 58
+        <BuildTime>k__BackingField: 35
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 60f458712418dd74393a49293c347c81,
           type: 3}
@@ -367,7 +367,7 @@ MonoBehaviour:
         <Name>k__BackingField: Endurance Fleet Carrier
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 15000
+        <Price>k__BackingField: 10000
         <BuildTime>k__BackingField: 65
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: 937b502e2d2d8684ca9920ab2b5d9a0d,
@@ -390,7 +390,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 5000
-        <BuildTime>k__BackingField: 50
+        <BuildTime>k__BackingField: 45
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: 610b88b3ef1d84c40a8468e8780db2b4,
           type: 3}
@@ -430,8 +430,8 @@ MonoBehaviour:
         <Name>k__BackingField: Mediator Battlecruiser
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 10000
-        <BuildTime>k__BackingField: 60
+        <Price>k__BackingField: 15000
+        <BuildTime>k__BackingField: 65
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: 7c9824186eb64db48a578111cfce264b,
           type: 3}
@@ -450,7 +450,7 @@ MonoBehaviour:
         <Name>k__BackingField: MC80b Remonda
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 6000
+        <Price>k__BackingField: 9000
         <BuildTime>k__BackingField: 45
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: 4b20a06ec4c30014daec0d6a75029d2a,

@@ -16,7 +16,7 @@ MonoBehaviour:
   <ShowBattleMarker>k__BackingField: 0
   <Speed>k__BackingField: 6
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
-  <HeightTier>k__BackingField: 2
+  <HeightTier>k__BackingField: 1
   <HullBottom>k__BackingField: -54.060955
   <HullTop>k__BackingField: 56.103107
   <RotationSpeed>k__BackingField: 2.5

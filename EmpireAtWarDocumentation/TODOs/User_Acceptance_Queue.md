@@ -129,7 +129,7 @@ created: "2026-10-29\r"
 
 ## Gameplay and Balance
 
-- [ ] [[Done/Features/Artillery_Ship_Standoff_Plan]] — In battle, confirm approach and retreat for the five artillery ships with individual and formation Attack. Check main/secondary facing, auto-power, shorter launcher tradeoff, partial and full launcher loss, restoration, moving targets and blocked routes. Spot-check ordinary behavior on Profundity and AttackMove/Guard/Hunt.
+- [ ] [[Done/Features/Artillery_Ship_Standoff_Plan]] — In battle, confirm approach and retreat for the five artillery ships with individual and formation Attack. Check main/secondary facing, auto-power, shorter launcher tradeoff, partial and full launcher loss, restoration, moving targets and blocked routes. Include a 4+ ship formation Attack (far-side slots) and a blocked approach against a stationary target. Spot-check ordinary behavior on Profundity and AttackMove/Guard/Hunt.
 - [ ] [[Done/Features/Artillery_Ship_Standoff_Plan]] — Compare matched baseline/changed Editor and Windows Development Player fleet captures: same seed, counts, orders and map; record revisions and dirty files. Check path requests, `NavigationPathSearch`, `NavigationNearestReachable`, steady-state allocations, and CPU median/p95/p99.
 
 - [ ] [[Done/Features/Capital_Siege_And_Forward_Batteries_Plan]] — At fixed distances against a same-level station and platform, compare HeavyCapital/Capital shield and hull DPS with identical research and game speed.
@@ -388,5 +388,5 @@ created: "2026-10-29\r"
 
 ### Ship Rotation Snaps and Tangent Failures
 
-- [ ] [[Done/Bugs/Ship_Rotation_Snaps_And_Tangent_Failures]] — Repeat obstacle reroutes, overspeed tight arcs and fallback corners in battle; correlate any remaining snap with frame/build/agent-registration capture IDs. The four historical log failures have no captured geometry.
+- User confirmed working rotation on 2026-11-15. Remaining battle code-2 failure is captured and owned by [[TODOs/Bugs/Ship_Tangent_Arc_Repair_Loop]].
 - [ ] [[Done/Bugs/Ship_Rotation_Snaps_And_Tangent_Failures]] — Verify online clients display smooth host-driven heading and route changes.

@@ -91,7 +91,7 @@ MonoBehaviour:
             type: 3}
           projectileSpeed: 220
           color: {r: 0.45, g: 1, b: 0.25, a: 1}
-          size: {x: 18, y: 18, z: 18}
+          size: {x: 90, y: 90, z: 90}
         impactSize: 36
         firingDelay: 0
         stunDuration: 0
