@@ -1,5 +1,4 @@
 using System;
-using EmpireAtWar.Entities.MainMenu.Skirmish;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
