@@ -89,7 +89,7 @@ namespace EmpireAtWar.Tests.Editor
         public void HelloAfterHostLeft_DoesNotCreateMember()
         {
             Invoke("OnHello", new NetworkConnectionToClient(7, "127.0.0.1"), new LobbyHelloMessage
-                { Version = Application.version, Protocol = 1, Name = "Late client" });
+                { Version = Application.version, Protocol = 2, Name = "Late client" });
             Assert.That(_online.Members, Is.Empty);
             Assert.That(Get<List<(NetworkConnectionToClient Connection, float At)>>("_pendingKicks"), Is.Empty);
         }
@@ -124,7 +124,7 @@ namespace EmpireAtWar.Tests.Editor
             if (credential == "private-credential") credential = original;
             Invoke("OnHello", new NetworkConnectionToClient(7, "127.0.0.1"), new LobbyHelloMessage
             {
-                Version = Application.version, Protocol = 1, MatchId = match,
+                Version = Application.version, Protocol = 2, MatchId = match,
                 Credential = credential, Name = "Client"
             });
             Assert.That(lobby.TryGetMember(1, out LobbyMember member), Is.True);

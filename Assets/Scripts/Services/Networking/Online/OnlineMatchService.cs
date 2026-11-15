@@ -26,7 +26,7 @@ namespace EmpireAtWar.Services.Networking.Online
         IOnlineLocalSlot
     {
         public const float RECONNECT_GRACE_SECONDS = ReconnectReservations.GRACE_SECONDS;
-        private const int RECONNECT_PROTOCOL = 1;
+        private const int LOBBY_PROTOCOL_VERSION = 2;
         private const float CONNECT_TIMEOUT_SECONDS = 30f;
         private const float KICK_DISCONNECT_DELAY = 0.5f;
 
@@ -624,14 +624,14 @@ namespace EmpireAtWar.Services.Networking.Online
             NetworkClient.OnConnectedEvent -= SendHello;
             NetworkClient.Send(new LobbyHelloMessage
                 { Name = _steam.PersonaName, Version = Application.version, SteamId = _steam.LocalSteamId,
-                    Protocol = RECONNECT_PROTOCOL, MatchId = _recovering ? _recovery.MatchId : string.Empty,
+                    Protocol = LOBBY_PROTOCOL_VERSION, MatchId = _recovering ? _recovery.MatchId : string.Empty,
                     Credential = _recovering ? _recovery.Credential : string.Empty });
         }
 
         private void OnHello(NetworkConnectionToClient connection, LobbyHelloMessage hello)
         {
             if (Role != OnlineRole.Host) return;
-            if (hello.Version != Application.version || hello.Protocol != RECONNECT_PROTOCOL)
+            if (hello.Version != Application.version || hello.Protocol != LOBBY_PROTOCOL_VERSION)
             {
                 Reject(connection, OnlineError.VersionMismatch);
                 return;

@@ -64,13 +64,15 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.CanStart, Is.True);
         }
 
-        [Test]
-        public void CaptureAndApplyLobby_EightRowsKeepTheirChoices()
+        [TestCase(7)]
+        [TestCase(15)]
+        public void CaptureAndApplyLobby_EightRowsKeepTheirChoices(int colorIndex)
         {
             SkirmishModel host = new SkirmishModel();
             host.SelectMapSize(MapSize.Large);
             host.SelectSlotOccupant(7, SkirmishSlotOccupant.AiHard);
             host.SelectSlotTeam(7, 7);
+            host.SelectSlotColor(7, colorIndex);
             SkirmishModel client = new SkirmishModel();
             client.BeginClientLobby();
             client.ApplyLobby(host.CaptureLobby(), SkirmishModel.NO_MEMBER);
@@ -78,7 +80,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(client.Slots.Count, Is.EqualTo(8));
             Assert.That(client.Slots[7].Occupant, Is.EqualTo(SkirmishSlotOccupant.AiHard));
             Assert.That(client.Slots[7].Team, Is.EqualTo(7));
-            Assert.That(client.Slots[7].ColorIndex, Is.EqualTo(7));
+            Assert.That(client.Slots[7].ColorIndex, Is.EqualTo(colorIndex));
             Assert.That(client.MapSize, Is.EqualTo(MapSize.Large));
         }
 
@@ -92,10 +94,12 @@ namespace EmpireAtWar.Tests.Editor
                 model.SelectSlotOccupant(i, SkirmishSlotOccupant.AiMedium);
                 model.SelectSlotTeam(i, i);
             }
+            model.SelectSlotColor(7, 15);
             BattleDefinition original = model.CreateBattle();
             BattleDefinition rebuilt = SkirmishSetupSave.From(original).Rebuild();
 
             Assert.That(rebuilt.Players.Count, Is.EqualTo(8));
+            Assert.That(rebuilt.Slots[7].ColorIndex, Is.EqualTo(15));
             Assert.That(rebuilt.Map.Seed, Is.EqualTo(original.Map.Seed));
             for (int i = 0; i < rebuilt.Slots.Count; i++)
             {

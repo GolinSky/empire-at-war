@@ -79,7 +79,7 @@ CBUFFER_END
 // The palette is a GLOBAL array uploaded once per match from C# (TeamColorPalette).
 // It is not inside UnityPerMaterial, so all ships share it and nothing about it
 // breaks batching.
-#define MAX_TEAM_COLORS 8
+#define MAX_TEAM_COLORS 16
 float4 _TeamColors[MAX_TEAM_COLORS];
 
 // Which palette entry a renderer uses comes from MeshRenderer.SetShaderUserValue(uint).

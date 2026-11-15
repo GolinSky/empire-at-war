@@ -41,7 +41,7 @@ namespace EmpireAtWar.Models.Players
         public const int MIN_PLAYERS = 2;
         public const int MAX_PLAYERS = 8;
         /// <summary>Size of the team color palette; must match MAX_TEAM_COLORS in ShipLitInput.hlsl.</summary>
-        public const int MAX_TEAM_COLORS = 8;
+        public const int MAX_TEAM_COLORS = 16;
 
         public static int GetMaxPlayers(MapSize size) => size switch
         {

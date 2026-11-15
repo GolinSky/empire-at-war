@@ -150,6 +150,11 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(model.Slots[1].ColorIndex, Is.EqualTo(0));
                 Assert.That(enemyColor.value, Is.EqualTo(0));
 
+                Assert.That(humanColor.options.Count, Is.EqualTo(16));
+                Assert.That(humanColor.options[15].text, Does.Contain("Warm Silver"));
+                humanColor.value = 15;
+                Assert.That(model.Slots[0].ColorIndex, Is.EqualTo(15));
+
                 Toggle superWeapons = (Toggle)serializedPopup.FindProperty("superWeaponsToggle").objectReferenceValue;
                 superWeapons.isOn = false;
                 Assert.That(model.CreateBattle().HasFeature(BattleFeatures.SuperWeapons), Is.False);
