@@ -33,6 +33,7 @@ namespace EmpireAtWar.Components.Weapon
         private const float ENGAGE_RANGE_FACTOR = 0.8f;
         // A hull too large for its range stops near hull contact, give or take navigation slack.
         private const float CONTACT_ENGAGE_FACTOR = 1.15f;
+        private const float HARD_POINT_APPROACH_RANGE_FACTOR = 0.95f;
         // Continuous weapons such as beams land their damage in ticks this far apart.
         public const float DAMAGE_TICK_INTERVAL = 0.1f;
         // A hardpoint that found nothing to fire at waits a random time in this range before selecting again,
@@ -390,6 +391,39 @@ namespace EmpireAtWar.Components.Weapon
         {
             return distance <= Mathf.Max(GetEngagementRange(targetClass) * ENGAGE_RANGE_FACTOR,
                 contactDistance * CONTACT_ENGAGE_FACTOR);
+        }
+
+        public bool TryGetHardPointApproach(AttackData target, out Vector3 offset)
+        {
+            offset = Vector3.zero;
+            target.RefreshStaleUnits();
+            ShipClass targetClass = target.TargetClass;
+            float closestGap = float.PositiveInfinity;
+            foreach (WeaponHardPoint weapon in hardPoints)
+            {
+                if (weapon.IsDestroyed || weapon.StrikecraftOnly || !weapon.CanEngage(targetClass)) continue;
+                float range = weapon.MaxAttackDistance;
+                Vector3 origin = weapon.transform.position;
+                foreach (IHardPointModel point in target.Units)
+                {
+                    if (!target.CanTarget(point)) continue;
+                    Vector3 direction = point.Position - origin;
+                    direction.y = 0f;
+                    float distance = direction.magnitude;
+                    if (distance <= range)
+                    {
+                        offset = Vector3.zero;
+                        return true;
+                    }
+
+                    float gap = distance - range;
+                    if (gap >= closestGap) continue;
+                    closestGap = gap;
+                    offset = direction * ((distance - range * HARD_POINT_APPROACH_RANGE_FACTOR) / distance);
+                }
+            }
+
+            return closestGap < float.PositiveInfinity;
         }
 
         public bool CanUseSiegeApproach(IEntity target) =>

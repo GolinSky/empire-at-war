@@ -32,6 +32,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private IHealthModelObserver _mainTarget;
         private IEntity _mainTargetEntity;
         private IHardPointModel _focusedHardPoint;
+        private AttackData _attackData;
 
         private Transform _mainTargetTransform;
 
@@ -124,12 +125,12 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 throw new InvalidOperationException("AttackTargetState requires a target before Enter.");
             }
 
-            if (_mainTargetEntity.TryGetFacade(out IHealthFacade healthFacade))
+            if (_mainTargetEntity.TryGetFacade(out IHealthFacade _))
             {
-                AttackData attackData = _focusedHardPoint == null || _focusedHardPoint.IsDestroyed
+                _attackData = _focusedHardPoint == null || _focusedHardPoint.IsDestroyed
                     ? _attackDataFactory.ConstructData(_mainTargetEntity)
                     : _attackDataFactory.ConstructHardPointData(_mainTargetEntity, _focusedHardPoint.Id);
-                _weaponComponent.AddTarget(attackData, AttackType.MainTarget);
+                _weaponComponent.AddTarget(_attackData, AttackType.MainTarget);
                 UpdateMoveState();
             }
 
@@ -146,7 +147,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (_focusedHardPoint != null && _focusedHardPoint.IsDestroyed)
             {
                 _focusedHardPoint = null;
-                _weaponComponent.AddTarget(_attackDataFactory.ConstructData(_mainTargetEntity), AttackType.MainTarget);
+                _attackData = _attackDataFactory.ConstructData(_mainTargetEntity);
+                _weaponComponent.AddTarget(_attackData, AttackType.MainTarget);
             }
 
             UpdateMoveState(deltaTime);
@@ -155,6 +157,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         public void Exit()
         {
             _weaponComponent.ResetTarget();
+            _attackData = null;
             ResetPursuit();
         }
 
@@ -187,6 +190,16 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         private void UpdateMoveState(float deltaTime = 0f)
         {
+            // A large ship's circular footprint can extend far beyond its nearest hardpoints.
+            if (_attackData != null && _mainTarget.ShipClass == ShipClass.HeavyCapital &&
+                _mainTargetEntity.TryGetFacade(out INavigationFootprintFacade footprint) &&
+                footprint.NavigationRadius > _weaponComponent.AttackDistance &&
+                _weaponComponent.TryGetHardPointApproach(_attackData, out Vector3 offset))
+            {
+                UpdateHardPointApproach(offset, deltaTime);
+                return;
+            }
+
             if (_artilleryCapability != null && TryUpdateArtilleryMove(deltaTime)) return;
             if (RetryStalledMove(deltaTime)) return;
 
@@ -232,6 +245,31 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             }
 
             MoveToPursuitDestination(standoffPosition, preserveCourse: true);
+        }
+
+        private void UpdateHardPointApproach(Vector3 offset, float deltaTime)
+        {
+            if (offset == Vector3.zero)
+            {
+                if (_shipMoveComponent.IsMoving || _hasPursuitDestination) _shipMoveComponent.Stop();
+                _shipMoveComponent.LookAtTarget(_mainTargetEntity);
+                ResetPursuit();
+                return;
+            }
+
+            Vector3 position = _shipMoveComponent.CurrentPosition;
+            if (_hasPursuitDestination)
+            {
+                if (_shipMoveComponent.IsMoving) return;
+                _stallRetryTimer -= deltaTime;
+                if (_stallRetryTimer > 0f) return;
+                _stallAttempt = PlanarGeometry.Distance(position, _lastAttemptPosition) < 0.1f ? _stallAttempt + 1 : 0;
+            }
+
+            float angle = STALL_BEARING_STEP_DEGREES * ((_stallAttempt + 1) / 2) *
+                          (_stallAttempt % 2 == 1 ? 1f : -1f);
+            MoveToPursuitDestination(position + Quaternion.AngleAxis(angle, Vector3.up) * offset,
+                preserveCourse: _stallAttempt == 0);
         }
 
         private bool TryUpdateArtilleryMove(float deltaTime)

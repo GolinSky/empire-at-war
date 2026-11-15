@@ -70,6 +70,25 @@ namespace EmpireAtWar.Tests.Weapon
         }
 
         [Test]
+        public void HardPointApproach_UsesPlanarMountRangeAndFocusedTarget()
+        {
+            List<WeaponHardPoint> mounts = ConfigureMounts(1);
+            mounts[0].transform.position = Vector3.left * 10f;
+            AttackData group = Group(2);
+            group.Units[0].Transform.position = new Vector3(120f, 600f, 0f);
+            group.Units[1].Transform.position = new Vector3(80f, 600f, 0f);
+            AttackData focused = new AttackData(group.TargetHealth, new HealthFacadeStub(), group.Units[0],
+                group.TargetEntity);
+
+            Assert.That(_weapon.TryGetHardPointApproach(group, out Vector3 offset), Is.True);
+            Assert.That(offset, Is.EqualTo(Vector3.zero));
+            Assert.That(_weapon.TryGetHardPointApproach(focused, out offset), Is.True);
+            Assert.That(offset.x, Is.EqualTo(35f).Within(0.001f));
+            Assert.That(offset.y, Is.Zero);
+            Assert.That(offset.z, Is.Zero);
+        }
+
+        [Test]
         public void NoEligibleTargets_DelaysOnlyThatMount()
         {
             List<WeaponHardPoint> mounts = ConfigureMounts(2);

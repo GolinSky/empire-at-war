@@ -116,7 +116,7 @@ MonoBehaviour:
     damage: 32
     shotsPerSalvo: 4
     shotInterval: 0.25
-    reload: 10
+    reload: 5
     range: 550
     strikecraftOnly: 0
     preferredTarget: 2
@@ -138,7 +138,7 @@ MonoBehaviour:
     damage: 72
     shotsPerSalvo: 2
     shotInterval: 0.4
-    reload: 12
+    reload: 6
     range: 350
     strikecraftOnly: 0
     preferredTarget: 2
@@ -160,7 +160,7 @@ MonoBehaviour:
     damage: 51.2
     shotsPerSalvo: 1
     shotInterval: 0
-    reload: 15
+    reload: 7.5
     range: 350
     strikecraftOnly: 0
     preferredTarget: 2
@@ -279,7 +279,7 @@ MonoBehaviour:
     damage: 32
     shotsPerSalvo: 1
     shotInterval: 0.5
-    reload: 15
+    reload: 7.5
     range: 80
     strikecraftOnly: 0
     preferredTarget: 0
@@ -301,7 +301,7 @@ MonoBehaviour:
     damage: 72
     shotsPerSalvo: 1
     shotInterval: 0.4
-    reload: 8
+    reload: 4
     range: 60
     strikecraftOnly: 0
     preferredTarget: 0
@@ -987,8 +987,8 @@ MonoBehaviour:
     damageMultiplier: 1.2784091
     reloadMultiplier: 2
     rangeMultiplier: 1.5
-    reason: 'Executor stays overpowered: keeps its former long-range reach, reload
-      and expected damage (accuracy folded into damage).'
+    reason: 'Executor stays overpowered: keeps its former long-range reach and expected
+      damage (accuracy folded into damage).'
     overrideVisual: 1
     shotPrefab: {fileID: 4988471887356409813, guid: 8c6fbf9f84c8f0c40830f503215d55f4,
       type: 3}

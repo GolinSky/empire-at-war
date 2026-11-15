@@ -223,6 +223,34 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(_movement.IsMoving, Is.False);
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Attack_ClosesInsideOversizedHullUntilAWeaponReaches(bool formation)
+        {
+            _target.Health.ShipClass = ShipClass.HeavyCapital;
+            _target.HasHealthFacade = true;
+            _target.NavigationRadius = 550f;
+            _weapon.HardPointApproach = Vector3.right * 200f;
+            AttackTargetState state = new AttackTargetState(new AttackDataFactory(), _weapon, _movement,
+                new ArtilleryCapability(100f));
+            state.SetData(_target, formation ? Vector3.forward * 20f : Vector3.zero,
+                UnitOrderModel.NO_HARD_POINT);
+
+            state.Enter();
+
+            Assert.That(_movement.IsMoving, Is.True);
+            Assert.That(_movement.Destination, Is.EqualTo(Vector3.right * 200f));
+            _movement.CurrentPosition = Vector3.right * 180f;
+            _weapon.HardPointApproach = Vector3.zero;
+            state.Tick(0.1f);
+            Assert.That(_movement.IsMoving, Is.False);
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
+
+            _weapon.HardPointApproach = Vector3.right * 50f;
+            state.Tick(0.1f);
+            Assert.That(_movement.Destination, Is.EqualTo(Vector3.right * 230f));
+        }
+
         [Test]
         public void Attack_TargetKilled_NoRadarContactGoesIdle()
         {
@@ -716,12 +744,18 @@ namespace EmpireAtWar.Tests.Movement
         {
             public string Id => nameof(Weapon);
             public bool UseSiegeApproach { get; set; }
+            public Vector3 HardPointApproach { get; set; }
             public float AttackDistance => 100f;
             public TargetPreference PreferredTarget => TargetPreference.Ships;
             public float GetEngagementRange(ShipClass targetClass) => 100f;
             public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass) =>
                 distance <= Mathf.Max(80f, contactDistance * 1.15f);
             public bool CanUseSiegeApproach(IEntity target) => UseSiegeApproach;
+            public bool TryGetHardPointApproach(AttackData target, out Vector3 offset)
+            {
+                offset = HardPointApproach;
+                return true;
+            }
             public void AddTarget(AttackData data, AttackType type) { }
             public bool HasTarget(IHealthFacade healthFacade) => false;
             public void ResetTarget() { }
@@ -749,7 +783,8 @@ namespace EmpireAtWar.Tests.Movement
             }
         }
 
-        private sealed class Target : IEntity, IEntityTransformFacade, INavigationFootprintFacade, IStationHullFacade
+        private sealed class Target : IEntity, IEntityTransformFacade, INavigationFootprintFacade, IStationHullFacade,
+            IHealthFacade
         {
             public long Id { get; set; } = 1;
             public Health Health { get; } = new Health();
@@ -759,15 +794,18 @@ namespace EmpireAtWar.Tests.Movement
             public float NavigationRadius { get; set; } = 5f;
             public float HullRadius { get; set; }
             public bool HasStationHull { get; set; } = true;
+            public bool HasHealthFacade { get; set; }
             public float HullBottom => -1f;
             public float HullTop => 1f;
             public float GetHullRadius(Vector3 center) => HullRadius;
+            public void ApplyDamage(float damage, DamageType damageType, int id) => throw new NotSupportedException();
             public Target(Transform transform) => Transform = transform;
             public T GetFacade<T>() where T : IEntityFacade =>
                 this is T facade ? facade : throw new InvalidOperationException(typeof(T).Name);
             public bool TryGetFacade<T>(out T facade) where T : IEntityFacade
             {
-                if ((HasStationHull || typeof(T) != typeof(IStationHullFacade)) && this is T found)
+                if ((HasStationHull || typeof(T) != typeof(IStationHullFacade)) &&
+                    (HasHealthFacade || typeof(T) != typeof(IHealthFacade)) && this is T found)
                 { facade = found; return true; }
                 facade = default;
                 return false;

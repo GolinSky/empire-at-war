@@ -3,6 +3,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Mvc;
+using UnityEngine;
 
 namespace EmpireAtWar.Components.Weapon
 {
@@ -23,6 +24,9 @@ namespace EmpireAtWar.Components.Weapon
         bool HasTarget(IHealthFacade healthFacade);
 
         bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass);
+
+        /// <summary>Offset to bring a target hardpoint into a live mount's range, or zero if already in reach.</summary>
+        bool TryGetHardPointApproach(AttackData target, out Vector3 offset);
 
         bool CanUseSiegeApproach(IEntity target);
 
