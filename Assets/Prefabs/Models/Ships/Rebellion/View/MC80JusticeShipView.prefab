@@ -384,7 +384,7 @@ MonoBehaviour:
   <Id>k__BackingField: 18
   yAxisRange:
     <Min>k__BackingField: -180
-    <Max>k__BackingField: 0
+    <Max>k__BackingField: 15
   mainBattery: 0
   <WeaponType>k__BackingField: 23
 --- !u!1 &1548036783646193313
@@ -3028,7 +3028,7 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 17
   yAxisRange:
-    <Min>k__BackingField: 0
+    <Min>k__BackingField: -15
     <Max>k__BackingField: 180
   mainBattery: 0
   <WeaponType>k__BackingField: 23
@@ -3291,7 +3291,7 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 20
   yAxisRange:
-    <Min>k__BackingField: 0
+    <Min>k__BackingField: -15
     <Max>k__BackingField: 180
   mainBattery: 0
   <WeaponType>k__BackingField: 23
@@ -3349,7 +3349,7 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 21
   yAxisRange:
-    <Min>k__BackingField: 0
+    <Min>k__BackingField: -15
     <Max>k__BackingField: 180
   mainBattery: 0
   <WeaponType>k__BackingField: 23
@@ -3408,7 +3408,7 @@ MonoBehaviour:
   <Id>k__BackingField: 23
   yAxisRange:
     <Min>k__BackingField: -180
-    <Max>k__BackingField: 0
+    <Max>k__BackingField: 15
   mainBattery: 0
   <WeaponType>k__BackingField: 23
 --- !u!1 &7739712001282755089
@@ -3527,7 +3527,7 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 16
   yAxisRange:
-    <Min>k__BackingField: 0
+    <Min>k__BackingField: -15
     <Max>k__BackingField: 180
   mainBattery: 0
   <WeaponType>k__BackingField: 23
@@ -3586,7 +3586,7 @@ MonoBehaviour:
   <Id>k__BackingField: 19
   yAxisRange:
     <Min>k__BackingField: -180
-    <Max>k__BackingField: 0
+    <Max>k__BackingField: 15
   mainBattery: 0
   <WeaponType>k__BackingField: 23
 --- !u!1 &8523815626721708810
@@ -3754,7 +3754,7 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 22
   yAxisRange:
-    <Min>k__BackingField: 0
+    <Min>k__BackingField: -15
     <Max>k__BackingField: 180
   mainBattery: 0
   <WeaponType>k__BackingField: 23

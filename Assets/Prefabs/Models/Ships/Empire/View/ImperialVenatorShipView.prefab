@@ -21659,7 +21659,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Max>k__BackingField
-      value: -2
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -21795,6 +21795,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 1.4148955
       objectReference: {fileID: 0}
@@ -21802,11 +21807,6 @@ PrefabInstance:
         type: 3}
       propertyPath: <Id>k__BackingField
       value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
-      propertyPath: mainBattery
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -22256,6 +22256,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 1.4148955
       objectReference: {fileID: 0}
@@ -22263,11 +22268,6 @@ PrefabInstance:
         type: 3}
       propertyPath: <Id>k__BackingField
       value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
-      propertyPath: mainBattery
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -22755,6 +22755,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 1.4148955
       objectReference: {fileID: 0}
@@ -22762,11 +22767,6 @@ PrefabInstance:
         type: 3}
       propertyPath: <Id>k__BackingField
       value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
-      propertyPath: mainBattery
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -22922,6 +22922,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 1.4148955
       objectReference: {fileID: 0}
@@ -22929,11 +22934,6 @@ PrefabInstance:
         type: 3}
       propertyPath: <Id>k__BackingField
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
-      propertyPath: mainBattery
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -23089,13 +23089,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
-      propertyPath: destroyedVfxScale
-      value: 1.4148955
+      propertyPath: mainBattery
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
-      propertyPath: mainBattery
-      value: 1
+      propertyPath: destroyedVfxScale
+      value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -23851,7 +23851,7 @@ PrefabInstance:
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: yAxisRange.<Min>k__BackingField
-      value: 1
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 2072181763970441969, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -23982,17 +23982,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 1.4148955
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
       propertyPath: <Id>k__BackingField
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
-      propertyPath: mainBattery
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
@@ -24149,6 +24149,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 1.4148955
       objectReference: {fileID: 0}
@@ -24156,11 +24161,6 @@ PrefabInstance:
         type: 3}
       propertyPath: <Id>k__BackingField
       value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
-      propertyPath: mainBattery
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
@@ -24478,6 +24478,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}
+      propertyPath: mainBattery
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
+        type: 3}
       propertyPath: destroyedVfxScale
       value: 1.4148955
       objectReference: {fileID: 0}
@@ -24485,11 +24490,6 @@ PrefabInstance:
         type: 3}
       propertyPath: <Id>k__BackingField
       value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
-        type: 3}
-      propertyPath: mainBattery
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1396921986716529170, guid: 23702bc0e5303b740b61f1b451630b85,
         type: 3}

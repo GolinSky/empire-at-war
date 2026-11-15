@@ -56,7 +56,7 @@ MonoBehaviour:
   <Id>k__BackingField: 32
   yAxisRange:
     <Min>k__BackingField: -159
-    <Max>k__BackingField: 1
+    <Max>k__BackingField: 15
   mainBattery: 0
   <WeaponType>k__BackingField: 14
 --- !u!135 &3987369241989925882
@@ -357,7 +357,7 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 0
   yAxisRange:
-    <Min>k__BackingField: -3
+    <Min>k__BackingField: -15
     <Max>k__BackingField: 170
   mainBattery: 0
   <WeaponType>k__BackingField: 91
@@ -12471,7 +12471,7 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 6
   yAxisRange:
-    <Min>k__BackingField: -8
+    <Min>k__BackingField: -15
     <Max>k__BackingField: 172
   mainBattery: 1
   <WeaponType>k__BackingField: 3
@@ -12848,7 +12848,7 @@ MonoBehaviour:
   <Id>k__BackingField: 1
   yAxisRange:
     <Min>k__BackingField: -169
-    <Max>k__BackingField: 5
+    <Max>k__BackingField: 15
   mainBattery: 0
   <WeaponType>k__BackingField: 91
 --- !u!135 &2070918640324346603
@@ -13070,7 +13070,7 @@ MonoBehaviour:
   <Id>k__BackingField: 16
   yAxisRange:
     <Min>k__BackingField: -160
-    <Max>k__BackingField: 7
+    <Max>k__BackingField: 15
   mainBattery: 0
   <WeaponType>k__BackingField: 5
 --- !u!135 &5234639964737289373
@@ -13465,7 +13465,7 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 17
   yAxisRange:
-    <Min>k__BackingField: -6
+    <Min>k__BackingField: -15
     <Max>k__BackingField: 161
   mainBattery: 0
   <WeaponType>k__BackingField: 5
@@ -13545,7 +13545,7 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
   yAxisRange:
-    <Min>k__BackingField: -8
+    <Min>k__BackingField: -15
     <Max>k__BackingField: 171
   mainBattery: 1
   <WeaponType>k__BackingField: 3
@@ -19846,7 +19846,7 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 33
   yAxisRange:
-    <Min>k__BackingField: 0
+    <Min>k__BackingField: -15
     <Max>k__BackingField: 160
   mainBattery: 0
   <WeaponType>k__BackingField: 14

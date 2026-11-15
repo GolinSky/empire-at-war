@@ -246,7 +246,7 @@ MonoBehaviour:
   <Id>k__BackingField: 23
   yAxisRange:
     <Min>k__BackingField: -119
-    <Max>k__BackingField: -2
+    <Max>k__BackingField: 15
   mainBattery: 0
   <WeaponType>k__BackingField: 2
 --- !u!1 &1565821256370357371
@@ -7668,7 +7668,7 @@ MonoBehaviour:
   <Id>k__BackingField: 2
   yAxisRange:
     <Min>k__BackingField: -154
-    <Max>k__BackingField: -1
+    <Max>k__BackingField: 15
   mainBattery: 0
   <WeaponType>k__BackingField: 11
 --- !u!1 &8237747616351706017
