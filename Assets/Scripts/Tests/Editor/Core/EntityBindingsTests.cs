@@ -1,6 +1,7 @@
 using System.Linq;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -36,7 +37,12 @@ namespace EmpireAtWar.Tests.Entities
                     Assert.That(bindings.SquadronIcon, Is.Not.Null, path);
                 }
                 else
+                {
                     Assert.That(bindings.Health, Is.Not.Empty, path);
+                    foreach (HardPoint hardPoint in bindings.Health.SelectMany(health => health.ShipUnits))
+                        Assert.That(bindings.Injectables, Does.Contain(hardPoint),
+                            $"{path}: health hardpoint '{hardPoint.name}' (Id {hardPoint.Id}) must be injected.");
+                }
                 if (view is ShipEntity)
                 {
                     Assert.That(bindings.ShipMove, Is.Not.Null, path);
