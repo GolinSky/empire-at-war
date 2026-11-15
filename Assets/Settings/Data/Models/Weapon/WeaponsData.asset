@@ -643,12 +643,13 @@ MonoBehaviour:
     rangeMultiplier: 1
     reason: 'Shared Venator main battery: damage increased 30% from its previous
       0.9 multiplier to 1.17.'
-    overrideVisual: 0
-    shotPrefab: {fileID: 0}
-    projectileSpeed: 0
+    overrideVisual: 1
+    shotPrefab: {fileID: 7321861820164456527, guid: 319c2b84ba285084286ce78e1b8932ad,
+      type: 3}
+    projectileSpeed: 172.9
     size: {x: 1, y: 1, z: 1}
     overrideColor: 1
-    color: {r: 0, g: 0.78, b: 1, a: 1}
+    color: {r: 0.3137255, g: 0.3137255, b: 1, a: 1}
   - weaponType: 10
     displayName: Light Ion Cannon
     family: 2
