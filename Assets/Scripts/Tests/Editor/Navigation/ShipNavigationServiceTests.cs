@@ -1068,6 +1068,30 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void Replan_UsesActualHullHeadingAndBrakesDespiteZeroReportedTurn()
+        {
+            var ship = new GameObject("Misaligned reroute");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation);
+                navigation.IsDeferred = false;
+                component.MoveToPosition(Vector3.forward * 50f);
+                for (int i = 0; i < 100; i++) TickMotion(component, 0.02f);
+                var motion = (ShipMovementTweenPlayer)typeof(ShipMoveComponent).GetField("_motion",
+                    BindingFlags.Instance | BindingFlags.NonPublic).GetValue(component);
+                Assert.That(motion.CurrentPathTangent.Value, Is.EqualTo(Vector3.forward));
+                ship.transform.rotation = Quaternion.LookRotation(Vector3.right);
+                SetPrivateField(component, "_lastPlanTime", -100f);
+                component.MoveToPosition(Vector3.forward * 80f);
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(2));
+                Assert.That(navigation.LastForward, Is.EqualTo(ship.transform.forward));
+                Assert.That(motion.IsBraking, Is.True,
+                    "The recording planner reports zero TurnDuration; actual hull mismatch still requires braking.");
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        [Test]
         public void DeferredCorrection_QueuesPlanAfterCurrentLeg()
         {
             GameObject ship = new GameObject("Deferred correction");
@@ -1433,6 +1457,8 @@ namespace EmpireAtWar.Tests.Movement
                 else PendingPlans.Enqueue(requester);
             }
 
+            public Vector3 LastForward { get; private set; }
+
             public ShipNavigationPlan Plan(
                 IShipNavigationAgent agent,
                 Vector3 forward,
@@ -1446,6 +1472,7 @@ namespace EmpireAtWar.Tests.Movement
             {
                 PlanCallCount++;
                 LastDestination = requestedDestination;
+                LastForward = forward;
                 return new ShipNavigationPlan(
                     destination: requestedDestination,
                     detour: null,

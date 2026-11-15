@@ -24,6 +24,8 @@ namespace EmpireAtWar.Services.ShipNavigation
         public float2 Start;
         public float Height;
         public bool Escape;
+        public int RepairCount;
+        public int RepairLimit;
 
         public void Execute()
         {
@@ -43,11 +45,11 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         private bool RepairTangents()
         {
-            // Each repair changes only the adjoining tangents. A removed corner is never
-            // revisited; a pierced disk is inserted at the first intersecting leg.
+            // Each repair changes only the adjoining tangents; a pierced disk is inserted
+            // at the first intersecting leg. The shared budget bounds repeated repairs.
             int index = 0;
-            int repairs = 0;
-            int repairLimit = (Disks.Length + Circles.Length) * 4 + 16;
+            RepairCount = 0;
+            RepairLimit = (Disks.Length + Circles.Length) * 4 + 16;
             while (Circles[index].Next >= 0)
             {
                 ShipRouteCircle a = Circles[index];
@@ -99,7 +101,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                     int arcBlocker = ShipRouteGeometry.FindBlocker(arc, Disks, DiskBuckets, Layout, a.DiskIndex);
                     if (arcBlocker >= 0)
                     {
-                        if (++repairs > repairLimit)
+                        if (++RepairCount > RepairLimit)
                         {
                             Failure.Value = FAILURE_ARC_REPAIR;
                             return false;
@@ -119,7 +121,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                     line, Disks, DiskBuckets, Layout, a.DiskIndex, b.DiskIndex, Escape && index == 0);
                 if (blocker >= 0)
                 {
-                    if (++repairs > repairLimit)
+                    if (++RepairCount > RepairLimit)
                     {
                         Failure.Value = FAILURE_LINE_REPAIR;
                         return false;
@@ -128,7 +130,18 @@ namespace EmpireAtWar.Services.ShipNavigation
                     float side = ShipRouteGeometry.Cross(to - from, disk.xy - from);
                     int sign = side > 0f ? -1 : side < 0f ? 1 : (b.Sign != 0 ? b.Sign : a.Sign);
                     if (sign == 0) sign = 1;
-                    InsertAfter(index, new ShipRouteCircle(disk.xy, disk.z, sign, blocker));
+                    var corner = new ShipRouteCircle(disk.xy, disk.z, sign, blocker);
+                    // Overlapping disks cannot use opposite winding: that internal tangent
+                    // does not exist. Otherwise each start leg can insert the other disk again.
+                    if (!ShipRouteGeometry.Tangent(a, corner, out _, out _) ||
+                        !ShipRouteGeometry.Tangent(corner, b, out _, out _))
+                    {
+                        corner.Sign = -sign;
+                        if (!ShipRouteGeometry.Tangent(a, corner, out _, out _) ||
+                            !ShipRouteGeometry.Tangent(corner, b, out _, out _))
+                            corner.Sign = sign;
+                    }
+                    InsertAfter(index, corner);
                     index = math.max(0, a.Previous);
                     continue;
                 }

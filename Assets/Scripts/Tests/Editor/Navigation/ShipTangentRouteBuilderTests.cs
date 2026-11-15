@@ -20,6 +20,48 @@ namespace EmpireAtWar.Tests.Editor
         private const float CLEARANCE = 0.25f;
         private const float TOLERANCE = 0.002f;
 
+        [TestCase(1f)]
+        [TestCase(-1f)]
+        public void OverlappingBlockersOnOppositeSides_RepairWithoutAlternatingInsertions(float mirror)
+        {
+            // The nearest disk chooses a wrap side which intersects the other disk.
+            // Choosing each new side from its line alone alternates these disks until code 3.
+            var input = new[]
+            {
+                new float3(-2f, -1.65f * mirror, 1.66f),
+                new float3(-1.5f, 2.25f * mirror, 2.49f)
+            };
+            using var disks = new NativeArray<float3>(input, Allocator.TempJob);
+            using var buckets = new NativeParallelMultiHashMap<int, int>(128, Allocator.TempJob);
+            var layout = new NavMeshBuckets(new float2(-100f), new float2(100f));
+            for (int i = 0; i < input.Length; i++)
+                layout.Insert(buckets, i, input[i].xy - input[i].z, input[i].xy + input[i].z);
+            using var circles = new NativeList<ShipRouteCircle>(4, Allocator.TempJob);
+            using var pieces = new NativeList<ShipRoutePiece>(4, Allocator.TempJob);
+            using var failure = new NativeReference<int>(Allocator.TempJob);
+            var start = new float2(-10f, 0f);
+            circles.Add(new ShipRouteCircle(start, 0f, 1));
+            circles.Add(new ShipRouteCircle(new float2(10f, 0f), 0f, 1));
+
+            var job = new ShipTangentRouteJob
+            {
+                Disks = disks, DiskBuckets = buckets, Layout = layout,
+                Circles = circles, Pieces = pieces, Failure = failure, Start = start
+            };
+            job.Execute();
+
+            Assert.That(failure.Value, Is.EqualTo(ShipTangentRouteJob.FAILURE_NONE));
+            Assert.That(job.RepairCount, Is.InRange(1, job.RepairLimit));
+            Assert.That(circles.Length, Is.LessThanOrEqualTo(6), "Repairs must make progress rather than repeat disks.");
+            var obstacles = new[]
+            {
+                new RadarContact(new Vector3(input[0].x, 0f, input[0].y), input[0].z - CLEARANCE, false),
+                new RadarContact(new Vector3(input[1].x, 0f, input[1].y), input[1].z - CLEARANCE, false)
+            };
+            AssertGeometry(new ShipRoute(pieces.AsArray().ToArray()), obstacles,
+                100f, Vector3.left * 10f, Vector3.right * 10f);
+        }
+
         [TestCase(1)]
         [TestCase(-1)]
         public void AdjacentCopiesOfDiskCircle_MergeOnlyMatchingTurnDirections(int secondSign)

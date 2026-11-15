@@ -39,7 +39,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             IShipPathGraph pathGraph,
             List<Vector3> waypoints,
             float heightTolerance,
-            float clearance)
+            float clearance,
+            int registrationId)
         {
             Vector3 origin = agent.NavigationPosition;
             if ((destination - origin).sqrMagnitude < 0.000001f)
@@ -61,7 +62,12 @@ namespace EmpireAtWar.Services.ShipNavigation
             float minimumTurnRadius = ShipRotationKinematics.CalculateMinimumTurnRadius(
                 Mathf.Max(agent.NavigationSpeed, 0f),
                 Mathf.Max(agent.NavigationRotationSpeed, Mathf.Epsilon));
-            ShipRoute route = ShipTangentRouteBuilder.Build(pathGraph, waypoints, forward, minimumTurnRadius, allowEscape);
+            var context = new ShipTangentFailureSnapshot.AgentContext
+            {
+                IsAvailable = true, RegistrationId = registrationId, CurrentSpeed = agent.NavigationCurrentSpeed,
+                Clearance = clearance, Height = agent.NavigationHeight
+            };
+            ShipRoute route = ShipTangentRouteBuilder.Build(pathGraph, waypoints, forward, minimumTurnRadius, allowEscape, context);
             float turnDuration = Vector3.Angle(forward, route.InitialTangent) <= 1f ? 0f : ShipRotationKinematics.CalculateTurnDuration(
                 Quaternion.LookRotation(PlanarGeometry.NormalizeDirection(forward, Vector3.forward), Vector3.up),
                 route.InitialTangent, Mathf.Max(agent.NavigationRotationSpeed, Mathf.Epsilon));

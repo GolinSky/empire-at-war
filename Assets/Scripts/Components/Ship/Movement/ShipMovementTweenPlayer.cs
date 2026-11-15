@@ -40,6 +40,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         private bool _isSelected;
         private bool _hasLookDirection;
         private bool _isTurningToRoute;
+        private bool _isRecoveringHeading;
         private bool _isBraking;
         private bool _isReplicaRoute;
         private Vector3[] _displayedRoute = Array.Empty<Vector3>();
@@ -157,8 +158,9 @@ namespace EmpireAtWar.Components.Ship.Movement
             _turnAcceleration = turnAcceleration;
             _maximumBankAngle = maximumBankAngle;
             _isBraking = false;
-            _isTurningToRoute = plan.TurnDuration > Mathf.Epsilon &&
-                Vector3.Angle(_rootTransform.forward, _route.InitialTangent) > ROUTE_HEADING_TOLERANCE;
+            _isRecoveringHeading = false;
+            _isTurningToRoute = Vector3.Angle(_rootTransform.forward,
+                _route.InitialTangent) > ROUTE_HEADING_TOLERANCE;
             if (_isTurningToRoute)
             {
                 // The hull turns in place before it moves, so it starts the route from rest.
@@ -178,6 +180,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _pathCompleted = null;
             _currentPathTangent = null;
             _isTurningToRoute = false;
+            _isRecoveringHeading = false;
             _isBraking = false;
             ClearRoute();
         }
@@ -211,23 +214,50 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void TickRoute(float deltaTime)
         {
+            if (_isBraking && _currentSpeed <= Mathf.Epsilon)
+            {
+                StopPath();
+                return;
+            }
             if (_isTurningToRoute)
             {
                 _route.EvaluateDistance(_routeDistance, ref _pieceIndex,
                     out Vector3 turnTangent, out _);
                 StepRotation(turnTangent, deltaTime);
-                if (Vector3.Angle(_rootTransform.forward, turnTangent) > ROUTE_HEADING_TOLERANCE)
+                if (Vector3.Angle(_rootTransform.forward, turnTangent) > 0.01f)
                     return;
                 _isTurningToRoute = false;
+                return;
             }
 
-            if (_isBraking)
+            bool recoveringHeading = _isRecoveringHeading;
+            if (_isBraking || recoveringHeading)
             {
                 float previousSpeed = _currentSpeed;
                 _currentSpeed = Mathf.MoveTowards(_currentSpeed, 0f,
                     _speedProfile.Acceleration * deltaTime);
                 _routeDistance = Mathf.Min(_route.Length,
                     _routeDistance + (previousSpeed + _currentSpeed) * 0.5f * deltaTime);
+                if (_nextTurnPiece < _route.Pieces.Count &&
+                    _routeDistance >= _route.GetPieceStartDistance(_nextTurnPiece))
+                {
+                    // If there is not enough stopping distance, stop at the checked corner.
+                    // Never integrate onto its outgoing leg with residual speed or yaw.
+                    _routeDistance = _route.GetPieceStartDistance(_nextTurnPiece);
+                    _rootTransform.position = _route.Pieces[_nextTurnPiece].Start;
+                    if (_isBraking)
+                    {
+                        StopPath();
+                        return;
+                    }
+                    _currentSpeed = 0f;
+                    _pieceIndex = _nextTurnPiece;
+                    _isRecoveringHeading = false;
+                    _isTurningToRoute = true;
+                    RebuildSpeedProfile();
+                    FindNextTurn();
+                    return;
+                }
             }
             else
             {
@@ -254,10 +284,14 @@ namespace EmpireAtWar.Components.Ship.Movement
             _currentPathTangent = routeTangent;
             if (!_isTurningToRoute)
             {
-                if (_currentSpeed > _speedProfile.GetSpeedLimit(_pieceIndex) + Mathf.Epsilon)
+                if (recoveringHeading ||
+                    _currentSpeed > _speedProfile.GetSpeedLimit(_pieceIndex) + Mathf.Epsilon)
                 {
-                    // Replans can enter their first arc above its limit; brake without snapping yaw.
+                    // Keep recovery after crossing the speed limit; a speed cap does not
+                    // establish heading alignment. Brake to rest so even a tight arc can align.
                     StepRotation(routeTangent, deltaTime);
+                    _isRecoveringHeading = Vector3.Angle(_rootTransform.forward,
+                        routeTangent) > 0.01f;
                 }
                 else
                 {
@@ -271,6 +305,21 @@ namespace EmpireAtWar.Components.Ship.Movement
             {
                 if (_currentSpeed <= Mathf.Epsilon || _routeDistance >= _route.Length)
                     StopPath();
+                return;
+            }
+            if (recoveringHeading)
+            {
+                if (!_isRecoveringHeading || _currentSpeed <= Mathf.Epsilon ||
+                    _routeDistance >= _route.Length)
+                {
+                    if (_isRecoveringHeading)
+                    {
+                        _currentSpeed = 0f;
+                        _isTurningToRoute = true;
+                        _isRecoveringHeading = false;
+                    }
+                    RebuildSpeedProfile();
+                }
                 return;
             }
             if (_profileTime < _speedProfile.Duration) return;

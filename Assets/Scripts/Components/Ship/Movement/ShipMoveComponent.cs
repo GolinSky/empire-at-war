@@ -397,7 +397,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             }
             destination.y = transform.position.y;
             ShipNavigationPlan plan = _shipNavigationService.Plan(this,
-                _motion.CurrentPathTangent ?? transform.forward,
+                transform.forward,
                 destination, Array.Empty<RadarContact>(), HEIGHT_TOLERANCE,
                 NavigationRadius, _mapModel.SizeRange,
                 preserveCourse && _motion.CurrentPathTangent.HasValue);
@@ -421,7 +421,8 @@ namespace EmpireAtWar.Components.Ship.Movement
                 Model.Defer(destination.ToNumerics());
                 return;
             }
-            if (plan.TurnDuration > Mathf.Epsilon && _motion.HasMomentum)
+            if (_motion.HasMomentum &&
+                Vector3.Angle(transform.forward, plan.Route.InitialTangent) > 1f)
             {
                 // Brake on the validated route, then plan the turn from the actual stop point.
                 _motion.BrakeForReplan();

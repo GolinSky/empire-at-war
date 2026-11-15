@@ -9,22 +9,26 @@ namespace EmpireAtWar.Services.ShipNavigation
 {
     internal static class ShipTangentRouteBuilder
     {
+        private static long _nextBuildId;
         private const float COINCIDENT_TOLERANCE = 0.001f;
         // An endpoint on an obstacle's clearance edge joins the mesh through a link this short;
         // a turn rounded there, or a start circle this small, is an in-place turn with a heading kink.
         private const float MIN_TURN_RADIUS = 0.05f;
 
         public static ShipRoute Build(IShipPathGraph graph, IReadOnlyList<Vector3> waypoints,
-            Vector3 forward, float turnRadius, bool allowEscape)
+            Vector3 forward, float turnRadius, bool allowEscape,
+            ShipTangentFailureSnapshot.AgentContext context = default)
         {
             // Dropping an endpoint link can leave a disk repair with no consistent side;
             // the uncollapsed corners still route there, with an in-place turn at the link.
-            return Build(graph, waypoints, forward, turnRadius, allowEscape, true) ??
-                Build(graph, waypoints, forward, turnRadius, allowEscape, false);
+            long buildId = ++_nextBuildId;
+            return Build(graph, waypoints, forward, turnRadius, allowEscape, true, buildId, context) ??
+                Build(graph, waypoints, forward, turnRadius, allowEscape, false, buildId, context);
         }
 
         private static ShipRoute Build(IShipPathGraph graph, IReadOnlyList<Vector3> waypoints,
-            Vector3 forward, float turnRadius, bool allowEscape, bool collapseLinks)
+            Vector3 forward, float turnRadius, bool allowEscape, bool collapseLinks, long buildId,
+            ShipTangentFailureSnapshot.AgentContext context)
         {
             using var circleStorage = new NativeList<ShipRouteCircle>(waypoints.Count + 4, Allocator.TempJob);
             var circles = circleStorage;
@@ -114,14 +118,17 @@ namespace EmpireAtWar.Services.ShipNavigation
                 }
             }
             using var failure = new NativeReference<int>(Allocator.TempJob);
-            new ShipTangentRouteJob
+            var job = new ShipTangentRouteJob
             {
                 Disks = graph.Disks, DiskBuckets = graph.DiskBuckets, Layout = graph.Layout,
                 Circles = circles, Pieces = pieces, Failure = failure, Start = start, Height = height,
                 Escape = directEscape
-            }.Run();
+            };
+            job.RunByRef();
             if (failure.Value != ShipTangentRouteJob.FAILURE_NONE)
             {
+                ShipTangentFailureSnapshot.Create(graph, waypoints, forward, turnRadius, allowEscape,
+                    collapseLinks, buildId, context, job).SaveAndReport();
                 if (collapsed) return null;
                 string message = $"[ShipNavigation] Tangent route build failed (code {failure.Value}); " +
                     "following the funnel polyline with turns in place.";

@@ -405,7 +405,8 @@ namespace EmpireAtWar.Services.ShipNavigation
                         pathGraph,
                         _waypoints,
                         heightTolerance,
-                        clearance);
+                        clearance,
+                        registrationId);
                 }
 
                 if (!candidatePlan.IsStationary)

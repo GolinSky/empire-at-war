@@ -233,9 +233,13 @@ namespace EmpireAtWar.Tests.Movement
                 Quaternion beforeRotation = root.transform.rotation;
                 ShipRoutePiece arc = ShipRoutePiece.Arc(root.transform.position,
                     root.transform.forward, 20f, 0.2f);
-                ShipRoute curved = new ShipRoute(new[] { arc });
-                motion.PlayPath(new ShipNavigationPlan(curved, arc.End,
-                    null, 0f, 10f), 10f, 30f, 30f, 0f, null);
+                ShipRoute curved = new ShipRoute(new[]
+                {
+                    arc, ShipRoutePiece.Line(arc.End, arc.End + arc.EndTangent * 30f)
+                });
+                bool completed = false;
+                motion.PlayPath(new ShipNavigationPlan(curved, curved.Pieces[1].End,
+                    null, 0f, 10f), 10f, 30f, 30f, 0f, () => completed = true);
 
                 Assert.That(motion.CurrentSpeed, Is.EqualTo(beforeSpeed));
                 motion.Tick(0.02f);
@@ -246,6 +250,110 @@ namespace EmpireAtWar.Tests.Movement
                     Is.LessThanOrEqualTo(30f * 0.02f + 0.01f));
                 Assert.That(Vector3.Angle(root.transform.forward,
                     motion.CurrentPathTangent.Value), Is.GreaterThan(0.1f));
+                bool reachedLine = false;
+                for (int i = 0; i < 3000 && !completed; i++)
+                {
+                    beforeRotation = root.transform.rotation;
+                    motion.Tick(0.02f);
+                    Assert.That(Quaternion.Angle(beforeRotation, root.transform.rotation),
+                        Is.LessThanOrEqualTo(30f * 0.02f + 0.01f), $"Frame {i}");
+                    reachedLine |= Vector3.Dot(root.transform.position - arc.End, arc.EndTangent) > 1f;
+                }
+                Assert.That(reachedLine, Is.True);
+                Assert.That(completed, Is.True, "Heading recovery must resume and complete the route.");
+                Assert.That(Vector3.Angle(root.transform.forward, arc.EndTangent), Is.LessThan(0.1f));
+            }
+            finally
+            {
+                motion.Release();
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        [TestCase(0.2f)]
+        [TestCase(20f)]
+        public void BrakeForReplan_DoesNotCrossSharpCorner(float distanceToCorner)
+        {
+            var root = new GameObject("Braking ship");
+            var body = new GameObject("Body");
+            body.transform.SetParent(root.transform);
+            var motion = new ShipMovementTweenPlayer(root.transform, body.transform,
+                root.AddComponent<LineRenderer>(), Ease.Linear);
+            try
+            {
+                var straight = new ShipRoute(new[]
+                {
+                    ShipRoutePiece.Line(Vector3.zero, Vector3.forward * 1000f)
+                });
+                motion.PlayPath(new ShipNavigationPlan(straight, Vector3.forward * 1000f,
+                    null, 0f, 100f), 10f, 30f, 30f, 0f, null);
+                for (int i = 0; i < 100; i++) motion.Tick(0.02f);
+                Vector3 corner = root.transform.position + Vector3.forward * distanceToCorner;
+                var route = new ShipRoute(new[]
+                {
+                    ShipRoutePiece.Line(root.transform.position, corner),
+                    ShipRoutePiece.Line(corner, corner + Vector3.right * 50f)
+                });
+                bool completed = false;
+                motion.PlayPath(new ShipNavigationPlan(route, route.Pieces[1].End,
+                    null, 0f, 10f), 10f, 30f, 30f, 0f, () => completed = true);
+                motion.BrakeForReplan();
+                for (int i = 0; i < 200 && motion.IsBraking; i++)
+                {
+                    Quaternion before = root.transform.rotation;
+                    motion.Tick(0.02f);
+                    Assert.That(root.transform.position.x, Is.Zero.Within(0.0001f));
+                    Assert.That(root.transform.position.z, Is.LessThanOrEqualTo(corner.z));
+                    Assert.That(Quaternion.Angle(before, root.transform.rotation),
+                        Is.LessThanOrEqualTo(0.61f));
+                }
+                Assert.That(motion.IsBraking, Is.False);
+                Assert.That(motion.HasMomentum, Is.False);
+                Assert.That(completed, Is.False);
+                Assert.That(Vector3.Angle(root.transform.forward, Vector3.forward), Is.LessThan(0.01f));
+                if (distanceToCorner < 1f)
+                    Assert.That(Vector3.Distance(root.transform.position, corner), Is.LessThan(0.001f));
+            }
+            finally
+            {
+                motion.Release();
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ZeroTurnDuration_AlignsActualHullBeforeMoving(bool brakeDuringTurn)
+        {
+            var root = new GameObject("Misaligned ship");
+            var body = new GameObject("Body");
+            body.transform.SetParent(root.transform);
+            var motion = new ShipMovementTweenPlayer(root.transform, body.transform,
+                root.AddComponent<LineRenderer>(), Ease.Linear);
+            try
+            {
+                var route = new ShipRoute(new[] { ShipRoutePiece.Line(Vector3.zero, Vector3.right * 20f) });
+                bool completed = false;
+                motion.PlayPath(new ShipNavigationPlan(route, Vector3.right * 20f,
+                    null, 0f, 10f), 10f, 30f, 30f, 0f, () => completed = true);
+                motion.Tick(0.02f);
+                Assert.That(root.transform.position, Is.EqualTo(Vector3.zero));
+                Assert.That(Vector3.Angle(root.transform.forward, Vector3.right), Is.GreaterThan(80f));
+                if (brakeDuringTurn) motion.BrakeForReplan();
+                for (int i = 0; i < 1000 && !completed; i++)
+                {
+                    Quaternion before = root.transform.rotation;
+                    motion.Tick(0.02f);
+                    Assert.That(Quaternion.Angle(before, root.transform.rotation), Is.LessThanOrEqualTo(0.61f));
+                    if (brakeDuringTurn)
+                    {
+                        Assert.That(root.transform.position, Is.EqualTo(Vector3.zero));
+                        Assert.That(motion.IsBraking, Is.False);
+                        Assert.That(motion.HasMomentum, Is.False);
+                        break;
+                    }
+                }
+                Assert.That(completed, Is.EqualTo(!brakeDuringTurn));
             }
             finally
             {

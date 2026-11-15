@@ -2,6 +2,7 @@ using Unity.Mathematics;
 
 namespace EmpireAtWar.Services.ShipNavigation
 {
+    [System.Serializable]
     internal struct ShipRouteCircle
     {
         public float2 Center;

@@ -377,3 +377,8 @@ created: "2026-10-29\r"
 - [ ] [[Done/Bugs/Multiplayer_Reconnect_Flow]] — Verify no duplicate units and restored ownership/health/orders, credits/production/reserve/research/cooldowns and Survival before input; inspect recovery/loading UI on both PCs.
 - [ ] [[Done/Bugs/Multiplayer_Reconnect_Flow]] — Run Networking, Ui and GameFlow tests when explicitly authorized; authored/updated fixtures were compiled but not executed.
 - [ ] [[Done/Bugs/Multiplayer_Reconnect_Flow]] — Capture matching host/client Steam Join Game logs to establish historical server-disconnect cause; client evidence proves lobby/transport success only.
+
+### Ship Rotation Snaps and Tangent Failures
+
+- [ ] [[Done/Bugs/Ship_Rotation_Snaps_And_Tangent_Failures]] — Repeat obstacle reroutes, overspeed tight arcs and fallback corners in battle; correlate any remaining snap with frame/build/agent-registration capture IDs. The four historical log failures have no captured geometry.
+- [ ] [[Done/Bugs/Ship_Rotation_Snaps_And_Tangent_Failures]] — Verify online clients display smooth host-driven heading and route changes.
