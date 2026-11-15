@@ -7,6 +7,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
     internal sealed class BattleMarkerProjection
     {
         private const float CELL_PITCH = 84f;
+        private const float CELL_PADDING = 12f;
         private const float MIN_CELL_PITCH = 42f;
         private const float CENTER_RESPONSE = 12f;
         private const int LOCAL_PLACEMENT_RINGS = 5;
@@ -51,29 +52,23 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                     continue;
                 }
 
-                if (!marker.IsSquadron)
+                if (!grouping.TryGetSlot(marker.EntityId, out long id, out Vector2Int cell))
                 {
                     DrawStandalone(marker, zoom, blend);
                     if (marker.IsShown) _occupied.Add(marker.ScreenRect);
                     continue;
                 }
 
-                if (grouping.TryGetSlot(marker.EntityId, out long id, out Vector2Int cell))
-                    AccumulateGroup(id, cell, marker.Position);
+                AccumulateGroup(id, cell, marker.Position, marker.VisualSize);
             }
 
-            float pitch = CELL_PITCH * zoom;
-            PrepareGroups(pitch, zoom, centerBlend);
+            PrepareGroups(zoom, centerBlend);
             PlacePartitions(markers, grouping, zoom);
             for (int i = 0; i < markers.Count; i++)
             {
                 var marker = (BattleMarker)markers[i];
-                if (!marker.IsVisible || !marker.IsSquadron) continue;
-                if (!grouping.TryGetSlot(marker.EntityId, out long id, out Vector2Int cell))
-                {
-                    DrawStandalone(marker, zoom, blend);
-                    continue;
-                }
+                if (!marker.IsVisible ||
+                    !grouping.TryGetSlot(marker.EntityId, out long id, out Vector2Int cell)) continue;
 
                 Grid group = _groups[_groupIndices[id]];
                 if (group.Count < 2)
@@ -86,7 +81,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 if (partition.OnScreen)
                 {
                     Vector2 center = partition.Screen + ((Vector2)cell - partition.CellCenter) * group.Pitch;
-                    marker.Display(center, _viewport, zoom, group.Pitch, blend, id, cell, group.Pitch / pitch);
+                    marker.Display(center, _viewport, zoom, group.Pitch, blend, id, cell,
+                        group.Pitch / (group.BasePitch * zoom));
                 }
                 else
                 {
@@ -96,7 +92,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             ResetGroups();
         }
 
-        private void AccumulateGroup(long id, Vector2Int cell, Vector3 position)
+        private void AccumulateGroup(long id, Vector2Int cell, Vector3 position, float visualSize)
         {
             if (!_groupIndices.TryGetValue(id, out int index))
             {
@@ -108,10 +104,11 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             Grid group = _groups[index];
             group.AddCell(cell);
             group.Sum += position;
+            group.BasePitch = Mathf.Max(group.BasePitch, Mathf.Max(CELL_PITCH, visualSize + CELL_PADDING));
             _groups[index] = group;
         }
 
-        private void PrepareGroups(float pitch, float zoom, float blend)
+        private void PrepareGroups(float zoom, float blend)
         {
             for (int i = 0; i < _groups.Count; i++)
             {
@@ -123,7 +120,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 group.Screen.y += 60f * zoom;
                 Vector2Int dimensions = group.Max - group.Min + Vector2Int.one;
                 float fitPitch = Mathf.Min(_usable.width / dimensions.x, _usable.height / dimensions.y);
-                group.Pitch = Mathf.Min(pitch, Mathf.Max(MIN_CELL_PITCH, fitPitch));
+                group.Pitch = Mathf.Min(group.BasePitch * zoom, Mathf.Max(MIN_CELL_PITCH, fitPitch));
                 group.CellsPerPartition = new Vector2Int(
                     Mathf.Max(1, Mathf.FloorToInt(_usable.width / group.Pitch)),
                     Mathf.Max(1, Mathf.FloorToInt(_usable.height / group.Pitch)));
@@ -145,7 +142,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             for (int i = 0; i < markers.Count; i++)
             {
                 var marker = (BattleMarker)markers[i];
-                if (!marker.IsVisible || !marker.IsSquadron ||
+                if (!marker.IsVisible ||
                     !grouping.TryGetSlot(marker.EntityId, out long id, out Vector2Int cell))
                     continue;
                 Grid group = _groups[_groupIndices[id]];
@@ -298,6 +295,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                     group.WasActive = group.Count >= 2;
                     group.Count = 0;
                     group.Sum = Vector3.zero;
+                    group.BasePitch = 0f;
                     _groups[i] = group;
                 }
                 else
@@ -339,6 +337,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             public Vector2Int Partition;
             public Vector2Int CellsPerPartition;
             public float Pitch;
+            public float BasePitch;
             public Vector3 Sum;
             public Vector3 Center;
             public Vector2 Screen;

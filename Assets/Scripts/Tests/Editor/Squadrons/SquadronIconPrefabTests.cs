@@ -1,9 +1,13 @@
+using System.Reflection;
+using System.Threading;
 using EmpireAtWar.Components.Selection.Marquee;
 using EmpireAtWar.Components.Squadrons.Icon;
+using EmpireAtWar.Models.Players;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityCamera = UnityEngine.Camera;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -13,6 +17,154 @@ namespace EmpireAtWar.Tests.Editor
         private const string SQUADRON_PREFAB_FOLDER = "Assets/Prefabs/Models/Squadrons";
         private const string FRAME_SHADER = "EmpireAtWar/UI/Squadron Frame";
         private const string ICON_SHADER = "EmpireAtWar/UI/Squadron Icon";
+        private const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void NearbyShipMarkers_ShareGridWithShipsAndSquadrons(bool secondIsSquadron)
+        {
+            GameObject root = new GameObject("MarkerLayer", typeof(RectTransform));
+            try
+            {
+                BattleMarkerLayer layer = CreateLayer(root);
+                BattleMarker first = CreateMarker(layer, root.transform, 1, false);
+                BattleMarker second = CreateMarker(layer, root.transform, 2, secondIsSquadron);
+                SquadronIconGrouping grouping = GetGrouping(layer);
+                UpdateGrouping(layer, grouping, 3);
+
+                Assert.That(grouping.TryGetSlot(first.EntityId, out long firstGroup, out Vector2Int firstCell), Is.True);
+                Assert.That(grouping.TryGetSlot(second.EntityId, out long secondGroup, out Vector2Int secondCell), Is.True);
+                Assert.That(secondGroup, Is.EqualTo(firstGroup));
+                Assert.That(secondCell, Is.Not.EqualTo(firstCell));
+
+                var cameraObject = new GameObject("MarkerCamera");
+                cameraObject.transform.SetParent(root.transform, false);
+                UnityCamera camera = cameraObject.AddComponent<UnityCamera>();
+                camera.transform.position = new Vector3(0f, 0f, -100f);
+                camera.pixelRect = Screen.safeArea;
+                float zoom = Mathf.Min(1f, camera.pixelWidth / 300f, camera.pixelHeight / 300f);
+                new BattleMarkerProjection().Draw(layer.Markers, grouping, camera, zoom, 0.1f);
+
+                Assert.That(first.IsShown, Is.True);
+                Assert.That(second.IsShown, Is.True);
+                Assert.That(second.ScreenRect.center.y, Is.EqualTo(first.ScreenRect.center.y).Within(0.001f));
+                Assert.That(Mathf.Abs(second.ScreenRect.center.x - first.ScreenRect.center.x),
+                    Is.EqualTo(first.ScreenRect.width).Within(0.001f));
+                Assert.That(first.ScreenRect.width, Is.EqualTo(122.88f * zoom).Within(0.001f));
+                Assert.That(first.VisualSize * zoom, Is.LessThan(first.ScreenRect.width));
+                Assert.That(second.VisualSize * zoom, Is.LessThan(second.ScreenRect.width));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void HiddenOrUnregisteredShip_CannotRecoverSlotFromPendingSnapshot(bool unregister)
+        {
+            GameObject root = new GameObject("MarkerLayer", typeof(RectTransform));
+            try
+            {
+                BattleMarkerLayer layer = CreateLayer(root);
+                BattleMarker ship = CreateMarker(layer, root.transform, 1, false);
+                CreateMarker(layer, root.transform, 2, true);
+                CreateMarker(layer, root.transform, 3, true);
+                SquadronIconGrouping grouping = GetGrouping(layer);
+                UpdateGrouping(layer, grouping, 3);
+                Assert.That(grouping.TryGetSlot(ship.EntityId, out _, out _), Is.True);
+
+                Schedule(layer);
+                Assert.That(grouping.HasPendingSnapshot, Is.True);
+                if (unregister) ship.Unregister();
+                else ship.SetVisible(false);
+                Assert.That(grouping.TryGetSlot(ship.EntityId, out _, out _), Is.False);
+                Consume(grouping);
+                Assert.That(grouping.TryGetSlot(ship.EntityId, out _, out _), Is.False);
+                UpdateGrouping(layer, grouping, 3);
+                Assert.That(grouping.TryGetSlot(ship.EntityId, out _, out _), Is.False);
+                Assert.That(grouping.TryGetSlot(2, out long group, out _), Is.True);
+                Assert.That(grouping.TryGetSlot(3, out long otherGroup, out _), Is.True);
+                Assert.That(otherGroup, Is.EqualTo(group));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        [Test]
+        public void ShipMotion_UsesAnchorAndResetsBaselineOnRegistration()
+        {
+            GameObject root = new GameObject("MarkerLayer", typeof(RectTransform));
+            try
+            {
+                BattleMarkerLayer layer = CreateLayer(root);
+                BattleMarker ship = CreateMarker(layer, root.transform, 1, false);
+                ship.AnchorTransform.position = new Vector3(3f, 0f, 4f);
+                ship.SampleMotion(0.1f);
+                Assert.That(ship.Position, Is.EqualTo(new Vector3(3f, 0f, 4f)));
+                Assert.That(ship.Velocity, Is.EqualTo(new Vector3(30f, 0f, 40f)));
+                ship.SampleMotion(0.1f);
+                Assert.That(ship.Velocity, Is.EqualTo(Vector3.zero));
+
+                ship.Unregister();
+                ship.AnchorTransform.position = new Vector3(500f, 0f, 500f);
+                ship.Register(1, new PlayerId(0));
+                ship.SampleMotion(0.1f);
+                Assert.That(ship.Velocity, Is.EqualTo(Vector3.zero), "Reused markers must not inherit teleport velocity.");
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        private static BattleMarkerLayer CreateLayer(GameObject root)
+        {
+            BattleMarkerLayer layer = root.AddComponent<BattleMarkerLayer>();
+            typeof(BattleMarkerLayer).GetField("_root", PRIVATE_INSTANCE).SetValue(layer, root.transform);
+            return layer;
+        }
+
+        private static BattleMarker CreateMarker(BattleMarkerLayer layer, Transform parent, long id, bool isSquadron)
+        {
+            var anchor = new GameObject("Anchor");
+            anchor.transform.SetParent(parent, false);
+            var icon = new GameObject("Marker", typeof(RectTransform));
+            var marker = new BattleMarker(layer, (RectTransform)icon.transform, null, null,
+                visualSize: isSquadron ? 72f : 110.88f, isSquadron: isSquadron)
+            {
+                AnchorTransform = anchor.transform,
+                SampleVisibility = () => { }
+            };
+            marker.Register(id, new PlayerId(0));
+            marker.SetVisible(true);
+            return marker;
+        }
+
+        private static SquadronIconGrouping GetGrouping(BattleMarkerLayer layer) =>
+            (SquadronIconGrouping)typeof(BattleMarkerLayer).GetField("_grouping", PRIVATE_INSTANCE).GetValue(layer);
+
+        private static void Schedule(BattleMarkerLayer layer)
+        {
+            typeof(BattleMarkerLayer).GetField("_dirty", PRIVATE_INSTANCE).SetValue(layer, true);
+            typeof(BattleMarkerLayer).GetField("_elapsed", PRIVATE_INSTANCE).SetValue(layer, 0.1f);
+            layer.Tick();
+        }
+
+        private static void UpdateGrouping(BattleMarkerLayer layer, SquadronIconGrouping grouping, int ticks)
+        {
+            for (int i = 0; i < ticks; i++)
+            {
+                Schedule(layer);
+                Consume(grouping);
+            }
+        }
+
+        private static void Consume(SquadronIconGrouping grouping) =>
+            Assert.That(SpinWait.SpinUntil(grouping.TryComplete, 5000), Is.True, "Grouping job did not complete.");
 
         [Test]
         public void ClickAndMarquee_UseTheDisplayedRectangleWhileJoiningAGrid()

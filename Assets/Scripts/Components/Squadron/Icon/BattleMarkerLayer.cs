@@ -114,7 +114,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             ((BattleMarker)marker).DrawOrder = _nextDrawOrder++;
             _indices.Add(marker, _markers.Count);
             _markers.Add(marker);
-            if (marker.IsSquadron) _dirty = true;
+            _dirty = true;
         }
 
         public void Unregister(IBattleMarker marker)
@@ -129,7 +129,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             }
 
             _markers.RemoveAt(last);
-            if (marker.IsSquadron) InvalidateMembership(marker.EntityId);
+            InvalidateMembership(marker.EntityId);
         }
 
         public void InvalidateMembership(long entityId)
@@ -142,6 +142,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         public void Tick()
         {
             if (_disposed) return;
+            for (int i = 0; i < _markers.Count; i++)
+                ((BattleMarker)_markers[i]).SampleMotion(Time.deltaTime);
             _elapsed += Time.deltaTime;
             if (_grouping.HasPendingSnapshot || !_dirty && _elapsed < SNAPSHOT_INTERVAL) return;
 
@@ -160,7 +162,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 for (int i = 0; i < _markers.Count; i++)
                 {
                     var marker = (BattleMarker)_markers[i];
-                    if (!marker.IsSquadron || !marker.IsVisible) continue;
+                    if (!marker.IsVisible) continue;
                     Vector3 position = marker.Position;
                     Vector3 velocity = marker.Velocity;
                     _grouping.Add(marker.EntityId, marker.Owner.GetHashCode(),

@@ -30,6 +30,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         internal readonly float ClickSize;
         internal readonly float ScreenOffset;
+        internal float VisualSize => _visualSize;
         internal Transform AnchorTransform { get; set; }
         internal Vector3 Position => IsSquadron ? _position : AnchorTransform.position;
         internal Vector3 Velocity { get; set; }
@@ -38,6 +39,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         internal Action SampleVisibility { get; set; }
 
         private Vector3 _position;
+        private Vector3 _previousPosition;
 
         public BattleMarker(IBattleMarkerLayer layer, RectTransform root, Image frame, Image icon,
             float visualSize = 72f, float clickSize = 132f, float screenOffset = 60f, bool isSquadron = false)
@@ -56,6 +58,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         {
             EntityId = entityId;
             Owner = owner;
+            _previousPosition = Position;
+            Velocity = Vector3.zero;
             _layer.Attach(_root);
             _root.sizeDelta = Vector2.one * _visualSize;
             _root.gameObject.SetActive(false);
@@ -82,6 +86,14 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         public void SetPosition(Vector3 position) => _position = position;
 
+        internal void SampleMotion(float deltaTime)
+        {
+            if (IsSquadron || deltaTime <= 0f) return;
+            Vector3 position = Position;
+            Velocity = (position - _previousPosition) / deltaTime;
+            _previousPosition = position;
+        }
+
         internal void ResetPosition(Vector3 position)
         {
             _position = position;
@@ -95,7 +107,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             if (IsVisible == visible) return;
             IsVisible = visible;
             if (!visible) Hide();
-            if (_registered && IsSquadron) _layer.InvalidateMembership(EntityId);
+            if (_registered) _layer.InvalidateMembership(EntityId);
         }
 
         public void SetColor(Color color, bool selected)
