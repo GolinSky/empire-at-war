@@ -2366,7 +2366,7 @@ MonoBehaviour:
     <Min>k__BackingField: -174
     <Max>k__BackingField: -6
   mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  <WeaponType>k__BackingField: 3
 --- !u!1 &466808128489599747
 GameObject:
   m_ObjectHideFlags: 0
@@ -12619,7 +12619,7 @@ MonoBehaviour:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 177.5
   mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  <WeaponType>k__BackingField: 3
 --- !u!1 &2749919736907420296
 GameObject:
   m_ObjectHideFlags: 0
@@ -13565,7 +13565,7 @@ MonoBehaviour:
     <Min>k__BackingField: -168
     <Max>k__BackingField: 10
   mainBattery: 0
-  <WeaponType>k__BackingField: 90
+  <WeaponType>k__BackingField: 89
 --- !u!1 &2943661462270165323
 GameObject:
   m_ObjectHideFlags: 0
@@ -13967,7 +13967,7 @@ MonoBehaviour:
     <Min>k__BackingField: -9
     <Max>k__BackingField: 169
   mainBattery: 0
-  <WeaponType>k__BackingField: 90
+  <WeaponType>k__BackingField: 89
 --- !u!1 &3042565725632669082
 GameObject:
   m_ObjectHideFlags: 0
@@ -19074,7 +19074,7 @@ MonoBehaviour:
     <Min>k__BackingField: -177.5
     <Max>k__BackingField: 15
   mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  <WeaponType>k__BackingField: 3
 --- !u!1 &3946557474697488280
 GameObject:
   m_ObjectHideFlags: 0
@@ -29168,7 +29168,7 @@ MonoBehaviour:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 171
   mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  <WeaponType>k__BackingField: 3
 --- !u!1 &4913104839702261264
 GameObject:
   m_ObjectHideFlags: 0
@@ -32872,7 +32872,7 @@ MonoBehaviour:
     <Min>k__BackingField: -177.5
     <Max>k__BackingField: 15
   mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  <WeaponType>k__BackingField: 3
 --- !u!1 &5756798349325642346
 GameObject:
   m_ObjectHideFlags: 0
@@ -36142,7 +36142,7 @@ MonoBehaviour:
     <Min>k__BackingField: -177.5
     <Max>k__BackingField: 15
   mainBattery: 0
-  <WeaponType>k__BackingField: 90
+  <WeaponType>k__BackingField: 89
 --- !u!1 &6473663925312121459
 GameObject:
   m_ObjectHideFlags: 0
@@ -37418,7 +37418,7 @@ MonoBehaviour:
     <Min>k__BackingField: -168
     <Max>k__BackingField: 10
   mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  <WeaponType>k__BackingField: 3
 --- !u!1 &6701439236005384143
 GameObject:
   m_ObjectHideFlags: 0
@@ -44466,7 +44466,7 @@ MonoBehaviour:
     <Min>k__BackingField: -168
     <Max>k__BackingField: 10
   mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  <WeaponType>k__BackingField: 3
 --- !u!1 &8181962551650067985
 GameObject:
   m_ObjectHideFlags: 0
@@ -45865,7 +45865,7 @@ MonoBehaviour:
     <Min>k__BackingField: -9
     <Max>k__BackingField: 169
   mainBattery: 0
-  <WeaponType>k__BackingField: 2
+  <WeaponType>k__BackingField: 3
 --- !u!1 &8436558328196187134
 GameObject:
   m_ObjectHideFlags: 0
@@ -49305,7 +49305,7 @@ MonoBehaviour:
     <Min>k__BackingField: -15
     <Max>k__BackingField: 177.5
   mainBattery: 0
-  <WeaponType>k__BackingField: 90
+  <WeaponType>k__BackingField: 89
 --- !u!1 &9221386549082295840
 GameObject:
   m_ObjectHideFlags: 0
