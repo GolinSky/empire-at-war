@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e580e579044741caae6ff7662bce890d, type: 3}
+  m_Name: SecutorShipData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
+  <MinMoveCoefficient>k__BackingField: 0.4
+  <ShowBattleMarker>k__BackingField: 0
+  <Speed>k__BackingField: 13
+  heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
+  <HeightTier>k__BackingField: 2
+  <HullBottom>k__BackingField: -24.640524
+  <HullTop>k__BackingField: 24.25173
+  <RotationSpeed>k__BackingField: 3
+  <TurnAcceleration>k__BackingField: 3
+  <HyperSpaceDuration>k__BackingField: 0.6
+  <BodyRotationMaxAngle>k__BackingField: 5
+  <NavigationRadius>k__BackingField: 180
+  <IgnoresMapObstacles>k__BackingField: 0
+  <DestroyDelay>k__BackingField: 0.35
+  <Wreck>k__BackingField: {fileID: 11400000, guid: 387116ec058070e459c477fea516d0f4,
+    type: 2}
+  <ShipClass>k__BackingField: 5
+  <Hull>k__BackingField: 43100
+  <Shields>k__BackingField: 30000
+  shieldRegenTiers: {fileID: 11400000, guid: 3425d6ddc79a6b649990974111258ac9, type: 2}
+  <ShieldRegenTier>k__BackingField: 3
+  <ShieldRegenerateDelay>k__BackingField: 1
+  <Range>k__BackingField: 750
+  <Delay>k__BackingField: 0.25
+  abilities: 
+  hangarBays:
+  - squadronType: 2
+    reserve: 8
+    maxActive: 2
+  - squadronType: 3
+    reserve: 4
+    maxActive: 1
+  <HangarInitialDelay>k__BackingField: 4
+  <HangarLaunchInterval>k__BackingField: 6
+  weaponLoadout:
+  - weaponType: 3
+    count: 5
+  - weaponType: 9
+    count: 24
+  - weaponType: 66
+    count: 2
+  - weaponType: 69
+    count: 6
+  - weaponType: 91
+    count: 3

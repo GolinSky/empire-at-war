@@ -240,6 +240,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98cc13f6eabdcdc4488655f94aaf3827
+    m_Address: SecutorWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9bd2f2df149e04b4394a3896d5aa989a
     m_Address: V19TorrentSquadronView
     m_ReadOnly: 0
@@ -262,6 +267,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a207a69345e0f0342918bfc9bd573bcf
     m_Address: VWingReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2e78d6509a8b2048899d1388919f73c
+    m_Address: SecutorShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -322,6 +332,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e729efb8cb5397d4897846837479da6e
     m_Address: HeavyDreadnoughtShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eafb6b90d5fa00a4e81e1c5f9276f79b
+    m_Address: SecutorReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -1638,3 +1638,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: SecutorShipView
+      value:
+        m_AssetGUID: a2e78d6509a8b2048899d1388919f73c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: SecutorShipData
+      value:
+        m_AssetGUID: 697073cd21415784290bd2b9bda856c8
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

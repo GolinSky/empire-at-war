@@ -230,6 +230,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cce3c98ec18d704b8fcd6fd28baef17
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/SecutorIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5f8bc4a82cc113244b19a13b489bb0f0
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/CaptorIcon.png
     m_ReadOnly: 0
