@@ -70,12 +70,11 @@ Shader "EmpireAtWar/CaptureZoneGrid"
                 float2 position = input.uv * 2.0 - 1.0;
                 float radius = length(position);
                 float2 pixel = fwidth(position);
-                float radialProgress = saturate(radius);
-                half outwardFade = radialProgress * radialProgress * radialProgress;
-
                 #if defined(_SQUARE_GRID)
                 const float CELL_SPACING = 0.018;
                 const float CORNER_RADIUS = 0.13;
+                const float RIM_RADIUS = 0.99;
+                const float RADIAL_FALLOFF = 64.0;
                 float2 cell = abs(frac(position / CELL_SPACING) - 0.5);
                 float2 corner = cell - (0.47 - CORNER_RADIUS);
                 float distance = length(max(corner, 0.0)) + min(max(corner.x, corner.y), 0.0) - CORNER_RADIUS;
@@ -84,17 +83,21 @@ Shader "EmpireAtWar/CaptureZoneGrid"
                 // Fade unresolved cells at distant zoom levels to avoid shimmer.
                 half detail = 1.0 - smoothstep(0.3, 0.85, pixelWidth);
                 float edgeWidth = max(fwidth(radius), 0.001);
-                half circle = 1.0 - smoothstep(1.0, 1.0 + edgeWidth, radius);
-                // Keep mid-radius lines faint while fading continuously from the rim to the center.
-                half grid = (0.012 + cells * detail * 0.988) * outwardFade * 0.5 * circle;
+                float rimDistance = radius - RIM_RADIUS;
+                half circle = 1.0 - smoothstep(-edgeWidth, 0.0, rimDistance);
+                float inwardProgress = saturate(-rimDistance / RIM_RADIUS);
+                float radialFade = (1.0 - inwardProgress) / (1.0 + RADIAL_FALLOFF * inwardProgress);
+                half grid = (0.012 + cells * detail * 0.988) * radialFade * 0.5 * circle;
 
                 float angle = atan2(position.y, position.x + 0.000001);
                 float dash = abs(frac(angle * (24.0 / TWO_PI) + 0.5) - 0.5);
-                half rim = LineCoverage(abs(radius - 0.99), 0.0035, edgeWidth);
+                half rim = LineCoverage(abs(rimDistance), 0.0035, edgeWidth);
                 rim *= 0.5 * (1.0 - smoothstep(0.33, 0.43, dash));
-                half alpha = max(grid, rim * circle);
+                half alpha = max(grid, rim);
                 #else
                 float pixelWidth = max(pixel.x, pixel.y);
+                float radialProgress = saturate(radius);
+                half outwardFade = radialProgress * radialProgress * radialProgress;
 
                 // Four rings and twelve radial spokes, with a clear center.
                 float ringIndex = clamp(round(radius / 0.22), 1.0, 4.0);
