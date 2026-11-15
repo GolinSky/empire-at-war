@@ -1,5 +1,6 @@
 using System.Linq;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Editor.Balance;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;
@@ -10,6 +11,39 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Ships")]
     public sealed class ForwardMainBatteryTests
     {
+        [TestCase("Providence", 14)]
+        [TestCase("Captor", 10)]
+        [TestCase("Invincible", 24)]
+        [TestCase("PatrolFrigate", 7)]
+        [TestCase("C9979", 2)]
+        [TestCase("Dispatcher", 17)]
+        [TestCase("Bulwark", 13)]
+        [TestCase("Wavecrest", 15)]
+        public void SavedSeparatistForwardMountsConvergeAheadOfHull(string ship, int expectedCount)
+        {
+            string path = $"Assets/Prefabs/Models/Ships/Separatist/View/{ship}ShipView.prefab";
+            GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            WeaponHardPoint[] mounts = BalancePrefabBindings.Components(view).OfType<WeaponComponent>()
+                .SelectMany(component => BalancePrefabBindings.References(component, "hardPoints"))
+                .Cast<WeaponHardPoint>()
+                .Where(mount => mount.MinYaw <= 45f && mount.MaxYaw >= -45f).ToArray();
+
+            Assert.That(mounts, Has.Length.EqualTo(expectedCount));
+            foreach (WeaponHardPoint mount in mounts)
+            {
+                foreach (float distance in new[] { 300f, 600f })
+                foreach (float angle in new[] { -4f, 0f, 4f })
+                {
+                    Vector3 target = view.transform.position + view.transform.rotation *
+                        Quaternion.Euler(0f, angle, 0f) * Vector3.forward * distance;
+                    // Check convergence from the actual mount offset, independently of weapon range.
+                    Assert.That(WeaponTargetSelector.TryCalculateAim(target, mount.Position,
+                        mount.transform.parent.rotation, float.MaxValue, mount.MinYaw, mount.MaxYaw,
+                        out _, out _), Is.True, $"{ship}/{mount.name}: {distance} units, {angle} degrees");
+                }
+            }
+        }
+
         [TestCase("Empire/ISDII", 8)]
         [TestCase("Empire/Tector", 8)]
         [TestCase("Empire/ImperialVenator", 8)]

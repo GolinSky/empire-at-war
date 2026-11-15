@@ -568,7 +568,7 @@ MonoBehaviour:
   <Id>k__BackingField: 3
   yAxisRange:
     <Min>k__BackingField: -180
-    <Max>k__BackingField: -36
+    <Max>k__BackingField: 15
   mainBattery: 0
   <WeaponType>k__BackingField: 8
 --- !u!1 &6621416345267948375
