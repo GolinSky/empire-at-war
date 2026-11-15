@@ -282,6 +282,7 @@
 ### Bugs
 
 - [x] **Fix ship rotation snaps and tangent route failures** → [[Done/Bugs/Ship_Rotation_Snaps_And_Tangent_Failures]]
+  - Verification 2026-11-15: residual remove/reinsert loop confirmed in direct job inputs (both mirrors: code 2, 33/32 repairs); normal builder passes the same layout. Gameplay reachability remains unproven; see plan verification evidence. No repair change made.
   - Completed 2026-11-15: bounded heading recovery, actual-hull handoff, corner-safe braking, reproduced overlapping-disk winding repair and Editor/Development-only four-file failure snapshots. EditMode Navigation 260/260 and Ships 209/209 passed; battle/online acceptance → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Restore a dropped/crashed multiplayer session through in-game Reconnect** → [[Done/Bugs/Multiplayer_Reconnect_Flow|Multiplayer Reconnect Flow]]
