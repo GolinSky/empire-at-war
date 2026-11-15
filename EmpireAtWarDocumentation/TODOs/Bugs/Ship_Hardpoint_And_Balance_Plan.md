@@ -44,7 +44,13 @@ tags:
 
 ## Implementation
 
-### Recusant — restrictive hardpoint layout confirmed
+### Recusant
+
+- 2026-11-15: four side medium dual lasers → heavy dual turbolasers. Two rear-left medium turbolasers → medium quad turbolasers. Retained firing arcs. Renamed the six mounts to match their weapon types.
+- Current 10-mount loadout: 5 heavy dual turbolasers, 3 medium quad turbolasers, 2 strikecraft-only point-defense lasers. Nominal DPS 442.400 total / 391.200 anti-ship / 93.792 straight ahead / 203.616 peak single-bearing anti-ship.
+- Verified saved arcs and Unity-loaded prefab against the baked loadout after targeted reserialization. No new Unity console errors. Tests and battle checks pending.
+
+#### November 13 baseline
 
 - Serialized audit: 10 weapon mounts match `RecusantShipData` loadout. Raw sum 264.872 DPS includes 51.2 strikecraft-only point defense; non-PD sum = 213.672 DPS.
 - Heavy dual: 54.912 DPS, yaw −42°…43°, range 585. Medium quad: 38.88 DPS, yaw −90°…90°, range 517.5.
@@ -260,7 +266,7 @@ tags:
 1. [ ] Revalidate affected prefab bindings, inherited transforms, unlocked mounts, range multipliers and loadouts against current assets before implementation.
 2. [ ] Choose one wrapped-yaw representation; make target eligibility, facing solver, turret aiming and authoring agree at ±180° and across the seam.
 3. [ ] Correct Peleset/Recalcitrant handling without widening intended physical sectors; verify same target is admitted consistently by serial/batched targeting and facing.
-4. [ ] Confirm intended Recusant rear-left versus forward sectors; resolve single/dual naming discrepancy and verify any corrected loadout matches the prefab.
+4. [x] Retain the Recusant firing sectors for the approved loadout swap. Rename the upgraded mounts and verify the baked loadout matches the prefab. Battle output remains under item 7.
 5. [ ] Review Dispatcher, Resolute/Venator II and Arquitens narrow arcs against model placement and intended weapon roles; record fix or justified retention for each.
 6. [ ] Separate shared-prefab attacker identity; establish per-unit/mount firing exposure and blocking reasons needed to measure arc effects.
 7. [ ] Review Mandator economics and Recusant output after arc/attribution corrections; account for carrier output, support, upgrades and population restrictions.

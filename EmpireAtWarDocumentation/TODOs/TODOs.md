@@ -69,7 +69,7 @@
 
 
 - [ ] **Ship hardpoints, firing angles and balance** → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]
-  - Status: todo (2026-11-13). Peleset/Recalcitrant wrapped-yaw mismatch; Recusant DPS/coverage; Dispatcher/Resolute/Arquitens narrow arcs; Mandator economics; shared-prefab telemetry and Venator II description. Findings recorded; fixes unimplemented.
+  - Status: in progress (2026-11-15). Recusant weapon profile swaps saved and verified with existing arcs. Recusant battle output, Peleset/Recalcitrant wrapped yaw, Dispatcher/Resolute/Arquitens arcs, Mandator economics and shared-prefab telemetry remain under review.
 
 
 - [ ] **Rebalance carrier deployment and squadron stats** → [[TODOs/Bugs/Carrier_and_Squadron_Rebalance|Carrier and Squadron Rebalance]]

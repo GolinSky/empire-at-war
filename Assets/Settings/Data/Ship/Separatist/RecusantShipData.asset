@@ -41,14 +41,8 @@ MonoBehaviour:
   <HangarLaunchInterval>k__BackingField: 8
   weaponLoadout:
   - weaponType: 3
-    count: 1
-  - weaponType: 4
-    count: 1
-  - weaponType: 5
-    count: 1
+    count: 5
   - weaponType: 62
     count: 2
   - weaponType: 90
-    count: 1
-  - weaponType: 94
-    count: 4
+    count: 3
