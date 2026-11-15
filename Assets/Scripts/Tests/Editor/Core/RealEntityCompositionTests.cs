@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Hangar;
+using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Squadrons.Flight;
 using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Components.Ship.Audio;
@@ -51,6 +52,8 @@ using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
+using EmpireAtWar.Services.UnitExplosion;
+using EmpireAtWar.Services.UnitWreck;
 using EmpireAtWar.Services.VContainer;
 using EmpireAtWar.Services.Factory;
 using EmpireAtWar.Services.Settings;
@@ -261,6 +264,81 @@ namespace EmpireAtWar.Tests.Editor
                 Is.SameAs(_battle.Container.Resolve<UnitCombatProfileCatalog>()));
             Assert.That(ai.Container.Resolve<ForceCompositionBuilder>(),
                 Is.SameAs(_battle.Container.Resolve<ForceCompositionBuilder>()));
+        }
+
+        [Test, Category("EnemyAi")]
+        public void AiPlayer_CompletesOneReplacementAfterBothStationsAreDestroyed()
+        {
+            BuildSaveProject();
+            MapLayout layout;
+            using (LifetimeScope.Enqueue(builder =>
+            {
+                if (!ReferenceEquals(builder.ApplicationOrigin, _battle)) return;
+                var effects = new StationDeathEffectsStub();
+                builder.RegisterInstance<IUnitExplosionService>(effects);
+                builder.RegisterInstance<IUnitWreckService>(effects);
+            })) layout = BuildSaveBattle();
+            AiPlayerScope ai = _battle.GetComponentsInChildren<AiPlayerScope>(true).Single();
+            PlayerSlot owner = ai.Container.Resolve<PlayerSlot>();
+            var stations = _battle.Container.Resolve<IStationRegistry>();
+            var production = ai.Container.Resolve<EnemyFactionController>();
+            var model = ai.Container.Resolve<EnemyFactionModel>();
+            var request = new SecondStationUnitRequest(model.SecondStationFactionData);
+            Vector3 home = layout.GetStationPosition(owner.Id);
+            ai.Container.Resolve<SpaceStationFactory>().Create(owner.Id, owner.Faction, home);
+            ai.Container.Resolve<EconomyModel>().Restore(100000f, 0f);
+            _battle.Container.Resolve<IVisionService>().Register(owner.Id, _root.transform, 100000f);
+
+            Assert.That(stations.TryGetLivingStation(owner.Id, out IEntity primary), Is.True);
+            production.Purchase(request);
+            production.Advance(request.FactionData.BuildTime);
+            Assert.That(model.AdditionalStationsBuilt, Is.EqualTo(1));
+            IEntity backup = _battle.Container.Resolve<IEntityLocator>().Entities.Single(entity =>
+                entity.Owner == owner.Id && entity.TryGetFacade(out ISecondStationFacade _));
+
+            KillStation(backup);
+            production.Purchase(request);
+            Assert.That(production.PendingBuilds, Is.Empty, "A replacement must wait while the primary stands.");
+            KillStation(primary);
+            Assert.That(stations.TryGetLivingStation(owner.Id, out _), Is.False);
+
+            var patrol = _battle.Container.Resolve<TeamIntelRegistry>().GetPatrol(owner.Team);
+            patrol.Register("sector:test", new FormationPoint(0f, 0f), "sector", 1f);
+            patrol.Observe("sector:test", Time.time);
+            var recovery = ai.Container.Resolve<EnemyRecoveryAnchor>();
+            recovery.Update(Vector3.zero, 1f, false, false, Time.time, (_, _) => true, canCapture: false);
+            var strategy = ai.Container.Resolve<EnemyProductionStrategy>();
+            strategy.Start();
+            strategy.Tick(0f);
+            Assert.That(production.PendingBuilds.Single().Request, Is.TypeOf<SecondStationUnitRequest>());
+            production.Advance(request.FactionData.BuildTime);
+            Assert.That(model.AdditionalStationsBuilt, Is.EqualTo(2));
+            Assert.That(stations.TryGetLivingStation(owner.Id, out IEntity replacement), Is.True);
+
+            KillStation(replacement);
+            recovery.Update(Vector3.zero, 1f, false, false, Time.time, (_, _) => true, canCapture: false);
+            strategy.Tick(request.FactionData.BuildTime);
+            production.Purchase(request);
+            Assert.That(production.PendingBuilds, Is.Empty);
+            Assert.That(production.CanQueue(request.Id, request.FactionData.MaxCount), Is.False);
+            Assert.That(stations.TryGetLivingStation(owner.Id, out _), Is.False);
+        }
+
+        private static void KillStation(IEntity station)
+        {
+            // Station release schedules Unity's runtime-only Destroy call.
+            LogAssert.Expect(LogType.Error, new Regex("Destroy may not be called from edit mode"));
+            Transform view = station.GetFacade<IEntityTransformFacade>().Transform;
+            view.parent.GetComponent<EntityLifetimeScope>().Container.Resolve<HealthModel>().Kill();
+        }
+
+        private sealed class StationDeathEffectsStub : IUnitExplosionService, IUnitWreckService
+        {
+            public string Id => nameof(StationDeathEffectsStub);
+
+            public void Spawn(IReadOnlyList<Renderer> hullRenderers, float coverageScale) { }
+
+            public void Spawn(UnitWreckData data, Transform unit, PlayerId owner, float delay) { }
         }
 
         [Test]

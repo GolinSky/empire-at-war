@@ -74,7 +74,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         public bool IsUpgradingSecondStation => _builds.Builds.Any(build => build.Request is SecondStationLevelUnitRequest);
         public IReadOnlyList<EnemyPendingBuild> PendingBuilds => _builds.Builds;
 
-        public bool CanQueue(string requestId, int maxCount) => _builds.CanAdd(requestId, maxCount);
+        private bool CanBuildSecondStation => !_secondStation.IsBuilt &&
+            (_productionAccess.ProductionHost != Owner || Model.CanBuildAdditionalStation(_productionAccess.HasHostBase));
+
+        public bool CanQueue(string requestId, int maxCount) =>
+            (requestId != SecondStationUnitRequest.REQUEST_ID || CanBuildSecondStation) &&
+            _builds.CanAdd(requestId, maxCount);
         public float GetQueueRemainingTime(string requestId) => _builds.GetRemainingTime(requestId);
 
         public void ReserveExternalPipeline(string requestId) => _builds.ReserveExternalPipeline(requestId);
@@ -173,12 +178,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void Purchase(UnitRequest unitRequest)
         {
+            bool canPurchase = _productionAccess.CanProduce;
+            if (unitRequest is SecondStationUnitRequest)
+            {
+                bool selfHosted = _productionAccess.ProductionHost == Owner;
+                canPurchase = selfHosted
+                    ? canPurchase || _enemyStructurePlacementService.IsRecovering
+                    : canPurchase && _enemyStructurePlacementService.IsRecovering;
+            }
             if (!CanQueue(unitRequest.Id, unitRequest.FactionData.MaxCount) ||
-                !_productionAccess.CanProduce ||
+                !canPurchase ||
                 unitRequest is LevelUnitRequest &&
                 (_productionAccess.ProductionHost != Owner || !_productionAccess.HasHostBase) ||
-                unitRequest is SecondStationUnitRequest && _productionAccess.ProductionHost != Owner &&
-                !_enemyStructurePlacementService.IsRecovering ||
                 unitRequest is SecondStationLevelUnitRequest secondLevel &&
                 (!_secondStation.IsBuilt || secondLevel.Level != _secondStation.CurrentLevel))
             {
@@ -356,6 +367,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     Vector3 stationPosition = GenerateMapCoordinates(unitRequest);
                     Track(_stationFactory.CreateSecond(Owner, _owner.Faction, stationPosition),
                         secondStationUnitRequest);
+                    if (_productionAccess.ProductionHost == Owner)
+                        Model.AdditionalStationsBuilt++;
                     _enemyStructurePlacementService.RecordStationBuilt(stationPosition);
                     break;
                 case SecondStationLevelUnitRequest secondStationLevelUnitRequest:
@@ -393,6 +406,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void AdoptSecondStation(SpaceStationEntity station, SecondStationUnitRequest unitRequest)
         {
+            // A living second station in an older save establishes at least one completed build.
+            if (_productionAccess.ProductionHost == Owner && Model.AdditionalStationsBuilt == 0)
+                Model.AdditionalStationsBuilt = 1;
             AdoptReservation(unitRequest);
             Track(station, unitRequest);
         }
@@ -449,11 +465,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private void ExecuteBuild(UnitRequest unitRequest)
         {
-            if (unitRequest is LevelUnitRequest
+            if (unitRequest is SecondStationUnitRequest && !CanBuildSecondStation ||
+                (unitRequest is LevelUnitRequest
                     ? !_productionAccess.HasHostBase
                     : unitRequest is SecondStationLevelUnitRequest
                         ? !_secondStation.IsBuilt
-                        : !_productionAccess.CanProduce && _productionAccess.ProductionHost != Owner)
+                        : !_productionAccess.CanProduce && _productionAccess.ProductionHost != Owner))
             {
                 if (unitRequest is ShipUnitRequest) _unitLimitModel.CancelShipOrder();
                 ReleaseUnit(unitRequest);

@@ -42,6 +42,15 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void StationLossKeepsRecoveryActivePastTwentyQuietSeconds()
+        {
+            var latch = new EnemyRecoveryLatch();
+            latch.Update(0f, 1f, 0.8f, false, true, false);
+            latch.Update(90f, 1f, 0.8f, false, true, false);
+            Assert.That(latch.IsActive, Is.True);
+        }
+
+        [Test]
         public void StandingBackupStationBlocksRecovery()
         {
             var latch = new EnemyRecoveryLatch();
@@ -57,7 +66,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(latch.IsActive, Is.True);
             Assert.That(latch.Update(1f, 0.4f, 0.8f, true, false, true, canRebuild: false), Is.True);
             Assert.That(latch.IsActive, Is.False);
-            Assert.That(latch.Trigger, Is.EqualTo("backupStanding"));
+            Assert.That(latch.Trigger, Is.EqualTo("rebuildUnavailable"));
         }
 
         [Test]

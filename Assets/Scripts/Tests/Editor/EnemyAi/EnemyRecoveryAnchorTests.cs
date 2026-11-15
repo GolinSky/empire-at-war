@@ -28,6 +28,7 @@ namespace EmpireAtWar.Tests.Editor
         private TeamIntelRegistry _intel;
         private ZoneSource _zones;
         private EnemyRecoveryAnchor _recovery;
+        private EnemyFactionModel _faction;
 
         [SetUp]
         public void SetUp()
@@ -36,9 +37,20 @@ namespace EmpireAtWar.Tests.Editor
             _owner = _roster.Get(TestPlayers.Ally);
             _intel = new TeamIntelRegistry();
             _zones = new ZoneSource();
+            _faction = new EnemyFactionModel(null, null);
             _recovery = new EnemyRecoveryAnchor(null, _zones, _roster, new EntityLocator(),
                 new BattleAreaService(_roster), new Map(), _intel, _owner, null,
-                new EnemyStationPressureTracker(), new SecondStationLevelModel());
+                new EnemyStationPressureTracker(), new SecondStationLevelModel(), _faction);
+        }
+
+        [Test]
+        public void LostFinalStation_DoesNotEnterRecovery()
+        {
+            _faction.AdditionalStationsBuilt = 2;
+            AddZone(TestPlayers.Human, new Vector3(1000f, 0f, 0f));
+            Update(canCapture: false);
+            Assert.That(_recovery.IsActive, Is.False);
+            Assert.That(_recovery.TryGetBuildAnchor(out _), Is.False);
         }
 
         [TestCase(false)]

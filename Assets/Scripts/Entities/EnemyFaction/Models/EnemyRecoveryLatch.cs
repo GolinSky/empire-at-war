@@ -12,8 +12,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool IsActive { get; private set; }
         public string Trigger { get; private set; } = "none";
 
-        /// <param name="canRebuild">False while a backup station already stands: relocation has nothing to build,
-        /// so recovery neither starts nor stays on (it would only block patrols and free placement).</param>
+        /// <param name="canRebuild">Whether station construction is available for recovery.</param>
         public bool Update(float now, float advantage, float retreatAdvantage, bool underAttack,
             bool stationLost, bool critical, bool canRebuild = true)
         {
@@ -26,7 +25,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 if (IsActive)
                 {
                     IsActive = false;
-                    Trigger = "backupStanding";
+                    Trigger = "rebuildUnavailable";
                 }
                 return previous != IsActive;
             }
@@ -41,14 +40,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 else if (critical) Enter("critical");
                 else if (weak && now - _weakSince >= WEAK_SECONDS) Enter("fleetWeak");
             }
-            bool recovered = advantage >= 1f && !underAttack && !critical;
+            bool recovered = !stationLost && advantage >= 1f && !underAttack && !critical;
             _recoveredSince = IsActive && recovered
                 ? (_recoveredSince < 0f ? now : _recoveredSince) : -1f;
             if (IsActive && _recoveredSince >= 0f && now - _recoveredSince >= RECOVERED_SECONDS)
             {
                 IsActive = false;
                 Trigger = "recovered";
-                _replacementBuilt = stationLost;
             }
             return previous != IsActive;
         }

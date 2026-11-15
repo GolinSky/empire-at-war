@@ -27,6 +27,16 @@ namespace EmpireAtWar.Tests.Editor
         private const string SHARED_DATA = "Assets/Settings/Data/Factions/Shared/";
 
         [Test]
+        public void AiStationConstructionCount_RoundTripsAndDefaultsToZeroForOlderSaves()
+        {
+            PlayerSave save = PlayerSave.Create(TestPlayers.Enemy);
+            save.AiAdditionalStationsBuilt = 2;
+
+            Assert.That(JsonUtility.FromJson<PlayerSave>(JsonUtility.ToJson(save)).AiAdditionalStationsBuilt, Is.EqualTo(2));
+            Assert.That(JsonUtility.FromJson<PlayerSave>("{\"player\":1}").AiAdditionalStationsBuilt, Is.Zero);
+        }
+
+        [Test]
         public void UnitRequest_EveryKind_RebuildsTheSameRequestFromFactionData()
         {
             FactionRoster roster = CreateRoster(FactionType.Empire);

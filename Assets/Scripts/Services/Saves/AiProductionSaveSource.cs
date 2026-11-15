@@ -45,6 +45,7 @@ namespace EmpireAtWar.Services.Saves
         {
             save.StationLevel = _faction.CurrentLevel;
             save.SecondStationLevel = _secondStation.CurrentLevel;
+            save.AiAdditionalStationsBuilt = _faction.AdditionalStationsBuilt;
             save.Research = ResearchSave.CaptureAll(_research);
             save.PendingBuilds = _controller.PendingBuilds
                 .Select(build => UnitRequestSave.From(build.Request, build.TimeLeft)).ToArray();
@@ -56,6 +57,10 @@ namespace EmpireAtWar.Services.Saves
         {
             // A hosted ally copies its host's level.
             if (_production.ProductionHost == Owner) _faction.CurrentLevel = save.StationLevel;
+            _faction.AdditionalStationsBuilt = save.AiAdditionalStationsBuilt;
+            // Older saves can still show the retained level of a destroyed second station.
+            if (_production.ProductionHost == Owner && _faction.AdditionalStationsBuilt == 0 && save.SecondStationLevel > 1)
+                _faction.AdditionalStationsBuilt = 1;
             _secondStation.CurrentLevel = save.SecondStationLevel;
             ResearchSave.RestoreAll(save.Research, _research);
             for (int i = 0; i < save.ShipOrders; i++) _limits.RecordShipOrder();

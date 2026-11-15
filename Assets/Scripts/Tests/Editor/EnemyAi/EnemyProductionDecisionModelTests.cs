@@ -986,6 +986,38 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void StationlessRecovery_OrdersOnlyAReplacementStation()
+        {
+            var reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition = CopyDefinition(FactionType.Republic, Array.Empty<ShipType>());
+            try
+            {
+                var purchases = new RecordingPurchaseProcessor();
+                var strategy = new EnemyProductionStrategy(
+                    factionModel: CreateFactionModel(definition), research: null,
+                    purchaseProcessor: purchases, requestFactory: new UnitRequestFactory(),
+                    economyModel: new EconomyModelStub(10000f), stateProvider: new StateProviderStub(),
+                    decisionModel: new EnemyProductionDecisionModel(), unitLimitModel: new EnemyUnitLimitModel(),
+                    reinforcementData: reinforcementData, enemyStructurePlacementService: new StructurePlacementServiceStub(),
+                    productionAccess: new OperationalProductionAccess { CanProduce = false },
+                    forceBuilder: null, profileCatalog: null, counterModel: null, intelRegistry: new TeamIntelRegistry(),
+                    owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), stationPressure: new EnemyStationPressureTracker(),
+                    secondStation: new SecondStationLevelModel(), recovery: new EnemyRecoveryPolicyStub { IsActive = true });
+
+                strategy.Start();
+                strategy.Tick(0f);
+
+                Assert.That(purchases.RequestCount, Is.EqualTo(1));
+                Assert.That(purchases.LastRequest, Is.TypeOf<SecondStationUnitRequest>());
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
+
         private static void ReserveEconomicFloor(
             EnemyFactionModel factionModel,
             EnemyUnitLimitModel unitLimitModel,
@@ -1182,7 +1214,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public PlayerId ProductionHost => TestPlayers.Enemy;
 
-            public bool CanProduce => true;
+            public bool CanProduce { get; set; } = true;
             public bool HasHostBase => CanProduce;
 
             public bool TryGetProductionBase(out IEntity station) =>

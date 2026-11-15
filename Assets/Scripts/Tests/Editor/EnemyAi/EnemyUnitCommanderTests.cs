@@ -1463,7 +1463,8 @@ namespace EmpireAtWar.Tests.Editor
                     Report(blocker);
                 }
                 var recovery = new EnemyRecoveryAnchor(zones, new ZoneSource(roster), roster, locator,
-                    null, null, intel, owner, production, pressure, new SecondStationLevelModel());
+                    null, null, intel, owner, production, pressure, new SecondStationLevelModel(),
+                    new EnemyFactionModel(null, null));
                 var builder = new EnemyStrategicContextBuilder(null, zones, Array.Empty<IEnemyCaptureObjectiveSource>(),
                     locator, game, roster, new ForceCompositionBuilder(locator, catalog), intel,
                     new VisionService(roster, fogEnabled: false), owner, production, hazards,
@@ -2274,7 +2275,7 @@ namespace EmpireAtWar.Tests.Editor
         private static EnemyRecoveryAnchor CreateRecovery(PlayerRoster roster, ZoneSource zones = null) =>
             new EnemyRecoveryAnchor(null, zones ?? new ZoneSource(roster), roster, new EntityLocator(), null, null,
                 new TeamIntelRegistry(), roster.Get(TestPlayers.Enemy), null, new EnemyStationPressureTracker(),
-                new SecondStationLevelModel());
+                new SecondStationLevelModel(), new EnemyFactionModel(null, null));
 
         private static EnemyCaptureObjective SelectCapture(EnemyStrategicContextBuilder builder, float now = 0f) =>
             (EnemyCaptureObjective)typeof(EnemyStrategicContextBuilder)

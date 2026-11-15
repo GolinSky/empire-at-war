@@ -35,6 +35,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IProductionAccess _production;
         private readonly EnemyStationPressureTracker _pressure;
         private readonly SecondStationLevelModel _secondStation;
+        private readonly EnemyFactionModel _faction;
         private readonly EnemyAdvantageSmoother _smoother = new EnemyAdvantageSmoother();
         private readonly EnemyRecoveryLatch _latch = new EnemyRecoveryLatch();
         private readonly EnemyTargetCommitment _commitment = new EnemyTargetCommitment();
@@ -57,9 +58,10 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyRecoveryAnchor(IReinforcementZonesSystem reinforcementZones, IReinforcementZoneSource zones,
             IPlayerRoster roster, IEntityLocator entities, IBattleAreaService areas, IMapModelObserver map,
             TeamIntelRegistry registry, PlayerSlot owner, IProductionAccess production,
-            EnemyStationPressureTracker pressure, SecondStationLevelModel secondStation)
+            EnemyStationPressureTracker pressure, SecondStationLevelModel secondStation, EnemyFactionModel faction)
         {
             _secondStation = secondStation;
+            _faction = faction;
             _reinforcementZones = reinforcementZones;
             _zones = zones;
             _roster = roster;
@@ -85,7 +87,7 @@ namespace EmpireAtWar.Services.Enemy
             _advantage = _smoother.Fleet;
             if (_latch.Update(now, _advantage, EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage,
                     underAttack || _pressure.HasPressure, !hasOwnStation, _pressure.IsStationCritical,
-                    !_secondStation.IsBuilt))
+                    !_secondStation.IsBuilt && _faction.CanBuildAdditionalStation(hasOwnStation)))
                 RecordMode();
             if (!IsActive) { _anchor = null; return; }
             SelectAnchor(now, hasOwnStation);

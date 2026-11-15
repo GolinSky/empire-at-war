@@ -646,6 +646,54 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SecondStation_CanRebuildOnceAfterLosingBothBases()
+        {
+            var data = ScriptableObject.CreateInstance<ReinforcementData>();
+            try
+            {
+                var faction = new FactionData();
+                SetBackingField(faction, nameof(FactionData.MaxCount), 1);
+                SetBackingField(faction, nameof(FactionData.BuildTime), 10);
+                var request = new SecondStationUnitRequest(faction);
+                var wallet = new TrackingWallet();
+                var model = new EnemyFactionModel(null, null);
+                var access = new OperationalProductionAccess();
+                var placement = new UnavailableStructurePlacement();
+                var secondStation = new SecondStationLevelModel();
+                var controller = new EnemyFactionController(aiState: new IdleAiState(), model: model,
+                    shipFactory: null, miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null,
+                    secondStation: secondStation, research: null, economyProvider: new TrackingEconomyProvider(),
+                    wallet: wallet, shipSpawnPoints: null, unitLimitModel: new EnemyUnitLimitModel(),
+                    reinforcementData: data, enemyStructurePlacementService: placement, productionAccess: access,
+                    squadronLauncher: null, squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry());
+
+                Assert.That(controller.CanQueue(request.Id, 1), Is.True, "The initial backup is available.");
+                model.AdditionalStationsBuilt = 1;
+                Assert.That(controller.CanQueue(request.Id, 1), Is.False, "The primary still stands.");
+                access.CanProduce = false;
+                secondStation.IsBuilt = true;
+                Assert.That(controller.CanQueue(request.Id, 1), Is.False, "The backup still stands.");
+                secondStation.IsBuilt = false;
+                placement.IsRecovering = true;
+                controller.Purchase(request);
+                Assert.That(controller.PendingBuilds.Count, Is.EqualTo(1));
+                Assert.That(wallet.SpendCount, Is.EqualTo(1));
+                Assert.That(model.AdditionalStationsBuilt, Is.EqualTo(1), "Only completed builds count.");
+
+                model.AdditionalStationsBuilt = 2;
+                controller.Advance(10f);
+                Assert.That(controller.PendingBuilds, Is.Empty, "A stale queued build must be canceled.");
+                Assert.That(wallet.RefundCount, Is.EqualTo(1));
+                Assert.That(controller.CanQueue(request.Id, 1), Is.False, "The replacement used the last slot.");
+                controller.Purchase(request);
+                Assert.That(wallet.SpendCount, Is.EqualTo(1));
+                controller.LateDispose();
+            }
+            finally { UnityEngine.Object.DestroyImmediate(data); }
+        }
+
+        [Test]
         public void StationUpgrade_WaitsForBuildTimeAndBlocksASecondPurchase()
         {
             var data = ScriptableObject.CreateInstance<ReinforcementData>();

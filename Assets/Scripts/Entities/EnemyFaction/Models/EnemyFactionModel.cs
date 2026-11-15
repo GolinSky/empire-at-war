@@ -11,6 +11,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 {
     public class EnemyFactionModel : IModel, IFactionLevelObserver
     {
+        private const int MAX_ADDITIONAL_STATIONS = 2;
+
         private readonly StationLevelData _stationLevels;
         private readonly FactionRoster _roster;
 
@@ -18,6 +20,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         public event Action<int> OnLevelUpgraded;
         public event Action<int> LevelUpgradeCompleted;
+
+        public int AdditionalStationsBuilt { get; set; }
+
+        public bool CanBuildAdditionalStation(bool hasStation) =>
+            AdditionalStationsBuilt < MAX_ADDITIONAL_STATIONS &&
+            (AdditionalStationsBuilt == 0 || !hasStation);
 
         public void CompleteLevelUpgrade()
         {
