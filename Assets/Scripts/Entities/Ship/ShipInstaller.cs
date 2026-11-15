@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Selection;
+using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Ship.Abilities;
@@ -56,7 +57,10 @@ namespace EmpireAtWar.Ship
             EntityFeatureBindings.RegisterRadar(builder, Bindings);
             EntityFeatureBindings.RegisterWeapons(builder, Bindings, Data.ShipClass);
             foreach (var weapon in Bindings.Weapons)
+            {
                 weapon.ConfigureWeaponPower(Data.Abilities.Contains(ShipAbilityId.BoostWeaponPower));
+                weapon.ConfigureArtillery(Data.UsesArtilleryStandoff);
+            }
             EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));
             if (Data.ShowBattleMarker)
                 builder.Register<ShipBattleMarker>(Lifetime.Singleton).AsImplementedInterfaces();
@@ -84,10 +88,12 @@ namespace EmpireAtWar.Ship
                 .WithParameter("unitTypeId", UnitTypeId.Ship(_shipType));
         }
 
-        private static void RegisterOrders(IContainerBuilder builder)
+        private void RegisterOrders(IContainerBuilder builder)
         {
             builder.Register<ShipStateMachine>(Lifetime.Singleton);
-            builder.Register<AttackTargetState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<AttackTargetState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces()
+                .WithParameter<IArtilleryCapability>(resolver =>
+                    Data.UsesArtilleryStandoff ? resolver.Resolve<IArtilleryCapability>() : null);
             builder.Register<IdleState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.Register<NavigateState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.Register<AttackMoveState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();

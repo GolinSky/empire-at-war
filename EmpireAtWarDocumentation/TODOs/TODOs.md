@@ -356,6 +356,9 @@
 
 ### Features
 
+- [x] **Artillery ships keep launcher distance; ordinary combat after launcher destruction** → [[Done/Features/Artillery_Ship_Standoff_Plan|Artillery Ship Standoff Plan]]
+  - 2026-11-15: verified six loadouts; five opted in, Profundity excluded. Explicit Attack uses surviving launcher reach, with ordinary pursuit after launcher loss. Editor and Windows player scripts compiled and five assets saved. Tests not run. Gameplay and CPU acceptance → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **Destroy one ship from its UI card** → [[Done/Features/Ship_Ui_Destroy_Plan|Ship UI destruction plan]]
   - Completed 2026-11-15: right-click → Destroy ship → generic Yes/No confirmation and authoritative normal death. Ownership, card reuse, and replication regressions authored. Unity compilation and saved bindings verified. Tests not run; offline and online acceptance → [[TODOs/User_Acceptance_Queue]].
 

@@ -129,6 +129,9 @@ created: "2026-10-29\r"
 
 ## Gameplay and Balance
 
+- [ ] [[Done/Features/Artillery_Ship_Standoff_Plan]] — In battle, confirm approach and retreat for the five artillery ships with individual and formation Attack. Check main/secondary facing, auto-power, shorter launcher tradeoff, partial and full launcher loss, restoration, moving targets and blocked routes. Spot-check ordinary behavior on Profundity and AttackMove/Guard/Hunt.
+- [ ] [[Done/Features/Artillery_Ship_Standoff_Plan]] — Compare matched baseline/changed Editor and Windows Development Player fleet captures: same seed, counts, orders and map; record revisions and dirty files. Check path requests, `NavigationPathSearch`, `NavigationNearestReachable`, steady-state allocations, and CPU median/p95/p99.
+
 - [ ] [[Done/Features/Capital_Siege_And_Forward_Batteries_Plan]] — At fixed distances against a same-level station and platform, compare HeavyCapital/Capital shield and hull DPS with identical research and game speed.
 - [ ] [[Done/Features/Capital_Siege_And_Forward_Batteries_Plan]] — In an uncheated battle, confirm close/far Executor reach, forward batteries and stable stationary facing. Disable/destroy the main battery and confirm fallback and recovery, including Pelta/Centax and Power to Main Batteries.
 - [ ] [[Done/Features/Capital_Siege_And_Forward_Batteries_Plan]] — Run the authored Combat, Ships, Navigation, Squadrons, Simulation and EnemyAi regressions when explicitly requested.

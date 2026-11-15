@@ -27,7 +27,7 @@ using EmpireAtWar.Lifecycle;
 namespace EmpireAtWar.Components.Weapon
 {
     public class WeaponComponent: MonoComponent<WeaponModel>, IWeaponComponent, IInitializable, ITickable, IWeaponPresenter,
-        IWeaponFireEvents, IWeaponFacing, IRespawnable, IAutoPowerWeaponObserver, IWeaponTargetReplica
+        IWeaponFireEvents, IWeaponFacing, IRespawnable, IAutoPowerWeaponObserver, IWeaponTargetReplica, IArtilleryCapability
     {
         // The ship stops a bit inside its range so hardpoints on the far side of the hull still reach.
         private const float ENGAGE_RANGE_FACTOR = 0.8f;
@@ -67,6 +67,7 @@ namespace EmpireAtWar.Components.Weapon
         private ShotPoolPrewarmer _poolPrewarmer;
         private ShipAbilityCatalog _abilityCatalog;
         private bool _hasWeaponPower;
+        private ArtilleryCapability _artillery;
         private List<AttackData> _attackDataList = new List<AttackData>();
         // Candidates in priority order: a hardpoint slot in the coordinator's target table and an index into
         // _candidateGroups. A group's candidates are contiguous; groups without candidates are not listed.
@@ -122,6 +123,11 @@ namespace EmpireAtWar.Components.Weapon
 
         public float AttackDistance => Model.MaxWeaponRange * _modifiers.VisionMultiplier;
 
+        public int ArtilleryRevision => _artillery == null ? 0 : _artillery.ArtilleryRevision;
+
+        public float GetArtilleryRange(ShipClass targetClass) =>
+            _artillery == null ? 0f : _artillery.GetArtilleryRange(targetClass);
+
         public TargetPreference PreferredTarget { get; private set; }
 
         [Inject]
@@ -161,6 +167,9 @@ namespace EmpireAtWar.Components.Weapon
 
         public void ConfigureWeaponPower(bool enabled) => _hasWeaponPower = enabled;
 
+        public void ConfigureArtillery(bool enabled) =>
+            _artillery = enabled ? new ArtilleryCapability() : null;
+
         public void Initialize()
         {
             _isInitialized = true;
@@ -195,8 +204,12 @@ namespace EmpireAtWar.Components.Weapon
                     WeaponHardPoint.ExpectedShotsInFlight(profile, reloadMultiplier, intervalMultiplier));
                 hardPoint.PrepareEffects();
                 hardPoint.ShotEmitted += OnShotEmitted;
+                if (_artillery != null)
+                    _artillery.RegisterMount(hardPoint, profile.Family, _viewTransform.position);
             }
 
+            if (_artillery != null)
+                _artillery.UpdateVisionMultiplier(_modifiers.VisionMultiplier);
             _modifiers.Changed += OnModifiersChanged;
             _poolPrewarmer.RequestPrewarm(profiles, reloadMultiplier, intervalMultiplier);
             Dictionary<ShipClass, float> engagementRanges = new Dictionary<ShipClass, float>();
@@ -244,6 +257,8 @@ namespace EmpireAtWar.Components.Weapon
 #endif
             _modifiers.Changed -= OnModifiersChanged;
             _attackCoordinator.Unregister(this);
+            if (_artillery != null)
+                _artillery.Clear();
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
                 hardPoint.ShotEmitted -= OnShotEmitted;
@@ -266,6 +281,8 @@ namespace EmpireAtWar.Components.Weapon
 
         private void OnModifiersChanged()
         {
+            if (_artillery != null)
+                _artillery.UpdateVisionMultiplier(_modifiers.VisionMultiplier);
             bool changed = false;
             foreach (WeaponHardPoint hardPoint in hardPoints)
                 changed |= hardPoint.RefreshTiming();

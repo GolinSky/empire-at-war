@@ -42,6 +42,12 @@ verification: source-and-assets
 - Engagement distance is the longest reach covering at least `60%` of effective DPS against the target class. No effective damage → use the longest weapon reach.
 - This engagement heuristic uses the hull/class matrix; it is not a full shield-aware combat simulator.
 
+### Artillery standoff
+
+- Explicit Attack, including formation Attack: Victory I, Republic Victory, MC30c, Recalcitrant and Peleset use the longest surviving launcher reach. Profundity, AttackMove, Guard and Hunt retain ordinary engagement.
+- Approach to 90% of effective launcher reach, hold through 95%, and reopen distance below 80%. Hull clearance can raise the band; no reachable band → ordinary pursuit.
+- The longest surviving missile or torpedo determines distance. Shorter launchers and guns may be out of range until the longer mounts are lost. All usable launchers gone → ordinary pursuit.
+
 ### Capital siege and hull facing
 
 - HeavyCapital mounted weapons deal ×1.5 damage against the main station, second station and every defense platform. Ordinary Capital ships deal ×1.0. Mining facilities, other targets and direct-damage abilities retain their existing damage rules.

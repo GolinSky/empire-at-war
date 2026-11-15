@@ -39,6 +39,14 @@ verification: "Source, serialized mount arcs, Unity compilation, and loaded
 - Facing samples 2° yaw steps around the hull pivot. Eligible flagged batteries score first using planar reach and the target selector's parent-local yaw. Use secondary coverage only when the main batteries have no firing solution.
 - Siege damage ×1.5 applies to eligible HeavyCapital mounted fire and impact reservations before tick splitting. Nominal profile DPS is unchanged; hit chance, armor, shields, abilities and in-flight limits still affect delivery.
 
+### Artillery engagement
+
+- `ShipData.UsesArtilleryStandoff` opts ships into launcher distance in `AttackTargetState`. Ordinary DPS coverage is still the fallback.
+- `ArtilleryCapability` caches the maximum eligible surviving missile/torpedo reach per target class. Reach = range after Fleet Command − distance from mount to hull root; the offset bounds the planar separation even while banking.
+- Launcher destruction/restoration, Fleet Command range changes and respawn invalidate the cache. Reload, salvo timing and ion disable do not change distance.
+- Route changes use hysteresis: 90% intended radius, 95% outer gate, 80% retreat trigger, with hull clearance. Failed routes retry every 0.5 s, up to six alternate bearings per stable target and reach.
+- Facing and auto-power still use actual per-hardpoint reach. Scope and gameplay/CPU acceptance → [[Done/Features/Artillery_Ship_Standoff_Plan]].
+
 ### Projectile-flight delays
 
 - Audit baseline (before `e18290ca9`): `AttackSequenceState` held `WaitingForEffects` until every shot effect finished → real cycle = max(reload, burst + flight + visual tail). Recorded battle telemetry reflects this gate.

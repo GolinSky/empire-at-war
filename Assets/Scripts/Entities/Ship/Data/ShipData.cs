@@ -26,6 +26,10 @@ namespace EmpireAtWar.Entities.Ship.Data
         [Header("Ship Settings")]
         [field: SerializeField] public float MinMoveCoefficient { get; private set; }
 
+        [Tooltip("Explicit Attack orders use the reach of surviving missile and torpedo hardpoints.")]
+        [SerializeField] private bool usesArtilleryStandoff;
+        public bool UsesArtilleryStandoff => usesArtilleryStandoff;
+
         [Header("Battle Marker")]
         [Tooltip("Shows this ship's icon above its hull in battle.")]
         [field: SerializeField] public bool ShowBattleMarker { get; private set; }

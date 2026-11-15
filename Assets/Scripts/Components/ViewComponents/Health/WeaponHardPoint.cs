@@ -42,6 +42,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private float _turnEndTime = float.NegativeInfinity;
 
         public event System.Action<WeaponProfile, Transform, float> ShotEmitted;
+        internal event System.Action DestructionChanged;
 
         [field:SerializeField] public WeaponType WeaponType { get; private set; }
         protected IWeaponPresenter WeaponPresenter { get; private set; }
@@ -273,17 +274,17 @@ namespace EmpireAtWar.ViewComponents.Health
         protected override void OnStateUpdated(float healthPercentage)
         {
             base.OnStateUpdated(healthPercentage);
-            if (healthPercentage <= 0f)
+            bool wasDestroyed = Destroyed;
+            Destroyed = healthPercentage <= 0f;
+            if (Destroyed)
             {
-                Destroyed = true;
                 if (_attackCoordinator != null)
                     _attackCoordinator.CancelSequence(this, _sequence.Generation);
                 _sequence.StopEmitting(_sequence.Generation);
             }
-            else
-            {
-                Destroyed = false;
-            }
+
+            if (Destroyed != wasDestroyed && DestructionChanged != null)
+                DestructionChanged.Invoke();
         }
 
 #if UNITY_EDITOR

@@ -1,10 +1,12 @@
 using EmpireAtWar.Components.AttackComponent;
 using System;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Utils;
@@ -18,10 +20,15 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private const float MINIMUM_RANGE_FACTOR = 0.5f;
         private const float STALL_RETRY_INTERVAL = 0.5f;
         private const float STALL_BEARING_STEP_DEGREES = 20f;
+        private const float ARTILLERY_APPROACH_FACTOR = 0.9f;
+        private const float ARTILLERY_HOLD_FACTOR = 0.95f;
+        private const float ARTILLERY_RETREAT_FACTOR = 0.8f;
+        private const int ARTILLERY_STALL_RETRIES = 6;
 
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IWeaponComponent _weaponComponent;
         private readonly IShipMovement _shipMoveComponent;
+        private readonly IArtilleryCapability _artilleryCapability;
         private IHealthModelObserver _mainTarget;
         private IEntity _mainTargetEntity;
         private IHardPointModel _focusedHardPoint;
@@ -37,6 +44,12 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private bool _hasPursuitDestination;
         private bool _wasMoving;
         private bool _isClosingRange;
+        private int _artilleryRevision = -1;
+        private ShipClass _artilleryTargetClass;
+        private float _artilleryReach;
+        private bool _usesArtillery;
+        private bool _isArtilleryRetreat;
+        private Vector3 _artilleryPlanTargetPosition;
 
         private Vector3 TargetPosition => _mainTargetTransform.position;
         // The distance depends on what is being attacked: heavy guns hold back from capitals, lasers close on corvettes.
@@ -56,11 +69,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         public AttackTargetState(
             IAttackDataFactory attackDataFactory,
             IWeaponComponent weaponComponent,
-            IShipMovement shipMoveComponent)
+            IShipMovement shipMoveComponent,
+            IArtilleryCapability artilleryCapability = null)
         {
             _attackDataFactory = attackDataFactory;
             _weaponComponent = weaponComponent;
             _shipMoveComponent = shipMoveComponent;
+            _artilleryCapability = artilleryCapability;
         }
 
         public void SetData(IEntity mainTarget, Vector3 formationOffset, int hardPointId)
@@ -79,13 +94,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 : _mainTargetEntity.GetFacade<IHardPointsFacade>().HardPoints[hardPointId];
             formationOffset.y = 0f;
             _formationOffset = formationOffset;
-            if (targetChanged)
-            {
-                _hasPursuitDestination = false;
-                _isClosingRange = false;
-                _stallAttempt = 0;
-                _wasMoving = false;
-            }
+            if (targetChanged) ResetPursuit();
         }
 
         public void SetData(IEntity mainTarget)
@@ -146,6 +155,11 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         public void Exit()
         {
             _weaponComponent.ResetTarget();
+            ResetPursuit();
+        }
+
+        private void ResetPursuit()
+        {
             _hasPursuitDestination = false;
             _isClosingRange = false;
             _stallAttempt = 0;
@@ -173,6 +187,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         private void UpdateMoveState(float deltaTime = 0f)
         {
+            if (_artilleryCapability != null && TryUpdateArtilleryMove(deltaTime)) return;
             if (RetryStalledMove(deltaTime)) return;
 
             if (_formationOffset.sqrMagnitude > Mathf.Epsilon)
@@ -217,6 +232,83 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             }
 
             MoveToPursuitDestination(standoffPosition, preserveCourse: true);
+        }
+
+        private bool TryUpdateArtilleryMove(float deltaTime)
+        {
+            float previousReach = _artilleryReach;
+            int revision = _artilleryCapability.ArtilleryRevision;
+            ShipClass targetClass = _mainTarget.ShipClass;
+            if (_artilleryRevision != revision || _artilleryTargetClass != targetClass)
+            {
+                _artilleryRevision = revision;
+                _artilleryTargetClass = targetClass;
+                _artilleryReach = _artilleryCapability.GetArtilleryRange(targetClass);
+            }
+
+            Vector3 targetPosition = TargetPosition;
+            float contact = 0f;
+            if (_artilleryReach > 0f)
+            {
+                // A station's map keep-out radius can be much larger than its live navigation hull.
+                contact = _mainTargetEntity.TryGetFacade(out IStationHullFacade hull)
+                    ? _shipMoveComponent.NavigationRadius + hull.GetHullRadius(targetPosition) + 1f
+                    : ShipEngagement.ContactDistance(_shipMoveComponent, _mainTargetEntity);
+            }
+            bool useArtillery = _artilleryReach > contact;
+            if (useArtillery != _usesArtillery || (useArtillery && previousReach != _artilleryReach))
+                ResetPursuit();
+            _usesArtillery = useArtillery;
+            if (!useArtillery) return false;
+
+            float distanceSquared = PlanarGeometry.DistanceSquared(_shipMoveComponent.CurrentPosition, targetPosition);
+            float holdDistance = Mathf.Max(_artilleryReach * ARTILLERY_HOLD_FACTOR, Mathf.Min(_artilleryReach, contact + 1f));
+            float retreatDistance = Mathf.Max(_artilleryReach * ARTILLERY_RETREAT_FACTOR, contact);
+            bool retreat = distanceSquared < retreatDistance * retreatDistance;
+            bool hold = !retreat && distanceSquared <= holdDistance * holdDistance;
+            bool moving = _shipMoveComponent.IsMoving;
+            _stallRetryTimer -= deltaTime;
+
+            // Finish the committed leg unless the target crosses the opposite edge of the band.
+            if (_hasPursuitDestination && moving && (hold || retreat == _isArtilleryRetreat)) return true;
+            if (hold)
+            {
+                if (moving) _shipMoveComponent.Stop();
+                _shipMoveComponent.LookAtTarget(_mainTargetEntity);
+                ResetPursuit();
+                return true;
+            }
+
+            if (_hasPursuitDestination)
+            {
+                if (!moving) _shipMoveComponent.LookAtTarget(_mainTargetEntity);
+                if (_stallRetryTimer > 0f) return true;
+                float replanDistance = Mathf.Max(_shipMoveComponent.NavigationRadius,
+                    _artilleryReach * (ARTILLERY_HOLD_FACTOR - ARTILLERY_APPROACH_FACTOR));
+                bool targetMoved = PlanarGeometry.DistanceSquared(_artilleryPlanTargetPosition, targetPosition) >=
+                                   replanDistance * replanDistance;
+                if (retreat != _isArtilleryRetreat || targetMoved)
+                    _stallAttempt = 0;
+                else if (_stallAttempt >= ARTILLERY_STALL_RETRIES)
+                    return true;
+                else
+                    _stallAttempt++;
+            }
+
+            float approachDistance = Mathf.Max(_artilleryReach * ARTILLERY_APPROACH_FACTOR, contact);
+            Vector3 fromTarget = _shipMoveComponent.CurrentPosition - targetPosition;
+            Vector3 bearing = PlanarGeometry.NormalizeDirection(retreat ? fromTarget : _formationOffset, fromTarget);
+            if (_stallAttempt > 0)
+            {
+                float angle = STALL_BEARING_STEP_DEGREES * ((_stallAttempt + 1) / 2) *
+                              (_stallAttempt % 2 == 1 ? 1f : -1f);
+                bearing = Quaternion.AngleAxis(angle, Vector3.up) * bearing;
+            }
+
+            if (_stallAttempt == 0) _artilleryPlanTargetPosition = targetPosition;
+            _isArtilleryRetreat = retreat;
+            MoveToPursuitDestination(targetPosition + bearing * approachDistance, preserveCourse: _stallAttempt == 0);
+            return true;
         }
 
         private bool RetryStalledMove(float deltaTime)

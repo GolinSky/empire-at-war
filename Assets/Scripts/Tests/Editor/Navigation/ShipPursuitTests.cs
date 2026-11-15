@@ -259,6 +259,99 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(_movement.MoveCount, Is.EqualTo(1));
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Attack_ArtilleryUsesLauncherRingForApproachAndRetreat(bool formation)
+        {
+            ArtilleryCapability artillery = new ArtilleryCapability(200f);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
+            Vector3 offset = formation ? Vector3.forward * 20f : Vector3.zero;
+            state.SetData(_target, offset, UnitOrderModel.NO_HARD_POINT);
+
+            state.Tick(0.1f);
+
+            Vector3 bearing = formation ? Vector3.forward : Vector3.left;
+            Assert.That(_movement.Destination, Is.EqualTo(_target.Transform.position + bearing * 180f));
+            _movement.FinishLeg();
+            _target.Transform.position -= bearing * 8f;
+            for (int i = 0; i < 10; i++) state.Tick(0.1f);
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
+
+            _target.Transform.position += bearing * 40f;
+            state.Tick(0.1f);
+
+            Assert.That(_movement.MoveCount, Is.EqualTo(2));
+            Assert.That(_movement.Destination, Is.EqualTo(_target.Transform.position + bearing * 180f));
+        }
+
+        [Test]
+        public void Attack_ArtilleryRangeRevisionReplacesCommittedLegAndLastLauncherLossRestoresOrdinaryAttack()
+        {
+            ArtilleryCapability artillery = new ArtilleryCapability(200f);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
+            state.SetData(_target);
+            state.Tick(0.1f);
+
+            artillery.SetReach(60f);
+            state.Tick(0.1f);
+
+            Assert.That(_movement.MoveCount, Is.EqualTo(2));
+            Assert.That(_movement.Destination.x, Is.EqualTo(446f).Within(0.001f));
+
+            artillery.SetReach(0f);
+            state.Tick(0.1f);
+
+            Assert.That(_movement.MoveCount, Is.EqualTo(3));
+            Assert.That(_movement.Destination.x, Is.EqualTo(435f).Within(0.001f));
+        }
+
+        [Test]
+        public void Attack_ArtilleryBlockedRetreatRetriesAtIntervalsAndWaitsForTargetToMove()
+        {
+            ArtilleryCapability artillery = new ArtilleryCapability(200f);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
+            _target.Transform.position = Vector3.right * 100f;
+            _movement.FailMoves = true;
+            state.SetData(_target);
+            state.Tick(0.1f);
+            Vector3 firstDestination = _movement.Destination;
+
+            state.Tick(0.25f);
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
+            state.Tick(0.25f);
+            Assert.That(_movement.Destination, Is.Not.EqualTo(firstDestination));
+            Assert.That(_movement.LastPreserveCourse, Is.False);
+            for (int i = 0; i < 20; i++) state.Tick(0.5f);
+            Assert.That(_movement.MoveCount, Is.EqualTo(7));
+
+            _target.Transform.position += Vector3.right * 20f;
+            state.Tick(0.5f);
+
+            Assert.That(_movement.MoveCount, Is.EqualTo(8));
+            Assert.That(_movement.Destination.x, Is.EqualTo(-60f).Within(0.001f));
+        }
+
+        [TestCase(185f, 190f)]
+        [TestCase(205f, 210f)]
+        public void Attack_ArtilleryUsesContactFloorAndOrdinaryEngagementWhenLauncherCannotReach(
+            float targetHullRadius, float expectedDistance)
+        {
+            ArtilleryCapability artillery = new ArtilleryCapability(200f);
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
+            // This target models a mobile ship here, so the navigation radius is its live footprint.
+            _target.NavigationRadius = targetHullRadius;
+            _target.HasStationHull = false;
+            state.SetData(_target);
+
+            state.Tick(0.1f);
+            _movement.FinishLeg();
+            state.Tick(0.1f);
+
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
+            Assert.That(Vector3.Distance(_movement.CurrentPosition, _target.Transform.position),
+                Is.EqualTo(expectedDistance).Within(0.001f));
+        }
+
         [Test]
         public void SharedPursuit_NewTargetReplacesCourse_ThenWaitsForArrival()
         {
@@ -642,6 +735,20 @@ namespace EmpireAtWar.Tests.Movement
             public bool HasEnemy(IEntity entity) => Enemies.Contains(entity);
         }
 
+        private sealed class ArtilleryCapability : IArtilleryCapability
+        {
+            private float _range;
+            public int ArtilleryRevision { get; private set; }
+            public ArtilleryCapability(float range) => _range = range;
+            public float GetArtilleryRange(ShipClass targetClass) => _range;
+
+            public void SetReach(float range)
+            {
+                _range = range;
+                ArtilleryRevision++;
+            }
+        }
+
         private sealed class Target : IEntity, IEntityTransformFacade, INavigationFootprintFacade, IStationHullFacade
         {
             public long Id { get; set; } = 1;
@@ -651,6 +758,7 @@ namespace EmpireAtWar.Tests.Movement
             public Transform Transform { get; }
             public float NavigationRadius { get; set; } = 5f;
             public float HullRadius { get; set; }
+            public bool HasStationHull { get; set; } = true;
             public float HullBottom => -1f;
             public float HullTop => 1f;
             public float GetHullRadius(Vector3 center) => HullRadius;
@@ -659,7 +767,8 @@ namespace EmpireAtWar.Tests.Movement
                 this is T facade ? facade : throw new InvalidOperationException(typeof(T).Name);
             public bool TryGetFacade<T>(out T facade) where T : IEntityFacade
             {
-                if (this is T found) { facade = found; return true; }
+                if ((HasStationHull || typeof(T) != typeof(IStationHullFacade)) && this is T found)
+                { facade = found; return true; }
                 facade = default;
                 return false;
             }
