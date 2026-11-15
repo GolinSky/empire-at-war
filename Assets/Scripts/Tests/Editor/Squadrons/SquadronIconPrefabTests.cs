@@ -43,7 +43,7 @@ namespace EmpireAtWar.Tests.Editor
                 camera.transform.position = new Vector3(0f, 0f, -100f);
                 camera.pixelRect = Screen.safeArea;
                 float zoom = Mathf.Min(1f, camera.pixelWidth / 300f, camera.pixelHeight / 300f);
-                new BattleMarkerProjection().Draw(layer.Markers, grouping, camera, zoom, 0.1f);
+                new BattleMarkerProjection().Draw(layer.Markers, grouping, camera, zoom);
 
                 Assert.That(first.IsShown, Is.True);
                 Assert.That(second.IsShown, Is.True);
@@ -126,6 +126,217 @@ namespace EmpireAtWar.Tests.Editor
             BattleMarkerLayer layer = root.AddComponent<BattleMarkerLayer>();
             typeof(BattleMarkerLayer).GetField("_root", PRIVATE_INSTANCE).SetValue(layer, root.transform);
             return layer;
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void RemovingEdgeMarker_PreservesSurvivorPositionsAndPitchThroughFinalSurvivor(bool removedIsShip)
+        {
+            GameObject root = new GameObject("MarkerLayer", typeof(RectTransform));
+            try
+            {
+                BattleMarkerLayer layer = CreateLayer(root);
+                BattleMarker first = CreateMarker(layer, root.transform, 1, true);
+                BattleMarker second = CreateMarker(layer, root.transform, 2, true);
+                BattleMarker removed = CreateMarker(layer, root.transform, 3, !removedIsShip);
+                first.SetPosition(new Vector3(-10f, 0f, 0f));
+                if (removedIsShip) removed.AnchorTransform.position = new Vector3(10f, 0f, 0f);
+                else removed.SetPosition(new Vector3(10f, 0f, 0f));
+                SquadronIconGrouping grouping = GetGrouping(layer);
+                UpdateGrouping(layer, grouping, 3);
+                UnityCamera camera = CreateProjectionCamera(root.transform, out float zoom);
+                var projection = new BattleMarkerProjection();
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                Assert.That(first.IsShown && second.IsShown && removed.IsShown, Is.True);
+                Rect firstBefore = first.ScreenRect;
+                Rect secondBefore = second.ScreenRect;
+
+                removed.Unregister();
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                Assert.That(first.ScreenRect, Is.EqualTo(firstBefore));
+                Assert.That(second.ScreenRect, Is.EqualTo(secondBefore));
+                for (int frame = 0; frame < 20; frame++)
+                {
+                    UpdateGrouping(layer, grouping, 1);
+                    projection.Draw(layer.Markers, grouping, camera, zoom);
+                    Assert.That(first.ScreenRect, Is.EqualTo(firstBefore));
+                    Assert.That(second.ScreenRect, Is.EqualTo(secondBefore));
+                }
+
+                first.Unregister();
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                Assert.That(second.ScreenRect, Is.EqualTo(secondBefore));
+                for (int frame = 0; frame < 20; frame++)
+                {
+                    UpdateGrouping(layer, grouping, 1);
+                    projection.Draw(layer.Markers, grouping, camera, zoom);
+                    Assert.That(second.IsShown, Is.True);
+                    Assert.That(second.ScreenRect, Is.EqualTo(secondBefore));
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        [Test]
+        public void DepartingSquadron_DoesNotDragStationaryGridBeforeOrAfterSplit()
+        {
+            GameObject root = new GameObject("MarkerLayer", typeof(RectTransform));
+            try
+            {
+                BattleMarkerLayer layer = CreateLayer(root);
+                BattleMarker first = CreateMarker(layer, root.transform, 1, true);
+                BattleMarker second = CreateMarker(layer, root.transform, 2, true);
+                BattleMarker departing = CreateMarker(layer, root.transform, 3, true);
+                SquadronIconGrouping grouping = GetGrouping(layer);
+                UpdateGrouping(layer, grouping, 3);
+                Assert.That(grouping.TryGetSlot(first.EntityId, out long originalGroup, out _), Is.True);
+                UnityCamera camera = CreateProjectionCamera(root.transform, out float zoom);
+                var projection = new BattleMarkerProjection();
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                Rect firstBefore = first.ScreenRect;
+                Rect secondBefore = second.ScreenRect;
+
+                departing.SetPosition(new Vector3(30f, 0f, 0f));
+                for (int frame = 0; frame < 10; frame++)
+                {
+                    projection.Draw(layer.Markers, grouping, camera, zoom);
+                    Assert.That(first.ScreenRect, Is.EqualTo(firstBefore));
+                    Assert.That(second.ScreenRect, Is.EqualTo(secondBefore));
+                }
+
+                departing.SetPosition(new Vector3(200f, 0f, 0f));
+                UpdateGrouping(layer, grouping, 4);
+                Assert.That(grouping.TryGetSlot(departing.EntityId, out long departingGroup, out _), Is.True);
+                Assert.That(departingGroup, Is.Not.EqualTo(originalGroup));
+                for (int frame = 0; frame < 10; frame++)
+                {
+                    projection.Draw(layer.Markers, grouping, camera, zoom);
+                    Assert.That(first.ScreenRect, Is.EqualTo(firstBefore));
+                    Assert.That(second.ScreenRect, Is.EqualTo(secondBefore));
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        [Test]
+        public void ReusedReplicaEntityId_DoesNotRestoreDeadMarkersGridState()
+        {
+            GameObject root = new GameObject("MarkerLayer", typeof(RectTransform));
+            try
+            {
+                BattleMarkerLayer layer = CreateLayer(root);
+                BattleMarker survivor = CreateMarker(layer, root.transform, 1, true);
+                BattleMarker reused = CreateMarker(layer, root.transform, 2, true);
+                SquadronIconGrouping grouping = GetGrouping(layer);
+                UpdateGrouping(layer, grouping, 3);
+                UnityCamera camera = CreateProjectionCamera(root.transform, out float zoom);
+                var projection = new BattleMarkerProjection();
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                Rect survivorBefore = survivor.ScreenRect;
+                Assert.That(reused.ProjectionGroup, Is.Not.Zero);
+
+                // Reliable online death can arrive while the local grouping job is still pending.
+                Schedule(layer);
+                reused.Unregister();
+                Consume(grouping);
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                Assert.That(survivor.ScreenRect, Is.EqualTo(survivorBefore));
+
+                // The squadron pool restores the host's same entity ID at a new spawn location.
+                reused.ResetPosition(new Vector3(200f, 0f, 0f));
+                reused.Register(2, new PlayerId(0));
+                reused.SetVisible(true);
+                Assert.That(reused.ProjectionGroup, Is.Zero);
+                UpdateGrouping(layer, grouping, 3);
+                Assert.That(grouping.TryGetSlot(2, out _, out _), Is.False);
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                Assert.That(survivor.ScreenRect, Is.EqualTo(survivorBefore));
+
+                reused.SetPosition(Vector3.zero);
+                UpdateGrouping(layer, grouping, 3);
+                Assert.That(grouping.TryGetSlot(1, out long survivorGroup, out _), Is.True);
+                Assert.That(grouping.TryGetSlot(2, out long reusedGroup, out _), Is.True);
+                Assert.That(reusedGroup, Is.EqualTo(survivorGroup));
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                Assert.That(survivor.ScreenRect, Is.EqualTo(survivorBefore));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        [Test]
+        public void Grid_IgnoresSmallAnchorJitterButFollowsSharedMovementAndCamera()
+        {
+            GameObject root = new GameObject("MarkerLayer", typeof(RectTransform));
+            try
+            {
+                BattleMarkerLayer layer = CreateLayer(root);
+                BattleMarker first = CreateMarker(layer, root.transform, 1, true);
+                BattleMarker second = CreateMarker(layer, root.transform, 2, true);
+                SquadronIconGrouping grouping = GetGrouping(layer);
+                UpdateGrouping(layer, grouping, 3);
+                UnityCamera camera = CreateProjectionCamera(root.transform, out float zoom);
+                var projection = new BattleMarkerProjection();
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                Rect firstBefore = first.ScreenRect;
+                Rect secondBefore = second.ScreenRect;
+
+                for (int frame = 0; frame < 20; frame++)
+                {
+                    Vector3 jitter = new Vector3(frame % 2 == 0 ? 0.25f : -0.25f, 0f, 0f);
+                    first.SetPosition(jitter);
+                    second.SetPosition(jitter);
+                    projection.Draw(layer.Markers, grouping, camera, zoom);
+                    Assert.That(first.ScreenRect, Is.EqualTo(firstBefore));
+                    Assert.That(second.ScreenRect, Is.EqualTo(secondBefore));
+                }
+
+                first.SetPosition(new Vector3(20f, 0f, 0f));
+                second.SetPosition(new Vector3(20f, 0f, 0f));
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                Vector2 movement = first.ScreenRect.center - firstBefore.center;
+                Assert.That(movement.x, Is.GreaterThan(15f).And.LessThanOrEqualTo(20f));
+                Assert.That(movement.y, Is.EqualTo(0f).Within(0.001f));
+                Assert.That(Vector2.Distance(second.ScreenRect.center - secondBefore.center, movement),
+                    Is.LessThan(0.001f));
+                Rect stopped = first.ScreenRect;
+                for (int frame = 0; frame < 20; frame++)
+                {
+                    projection.Draw(layer.Markers, grouping, camera, zoom);
+                    Assert.That(first.ScreenRect, Is.EqualTo(stopped), "No trailing drift after shared movement stops.");
+                }
+
+                camera.transform.position += new Vector3(10f, 0f, 0f);
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                Assert.That(first.ScreenRect.center.x, Is.EqualTo(stopped.center.x - 10f).Within(0.001f));
+                Assert.That(first.ScreenRect.center.y, Is.EqualTo(stopped.center.y).Within(0.001f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        private static UnityCamera CreateProjectionCamera(Transform parent, out float zoom)
+        {
+            var cameraObject = new GameObject("MarkerCamera");
+            cameraObject.transform.SetParent(parent, false);
+            UnityCamera camera = cameraObject.AddComponent<UnityCamera>();
+            camera.transform.position = new Vector3(0f, 0f, -100f);
+            camera.pixelRect = Screen.safeArea;
+            camera.orthographic = true;
+            camera.orthographicSize = camera.pixelHeight * 0.5f;
+            camera.aspect = (float)camera.pixelWidth / camera.pixelHeight;
+            zoom = Mathf.Min(1f, camera.pixelWidth / 600f, camera.pixelHeight / 600f);
+            return camera;
         }
 
         private static BattleMarker CreateMarker(BattleMarkerLayer layer, Transform parent, long id, bool isSquadron)

@@ -182,7 +182,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             Vector3 position = _cameraService.CameraPosition;
             float zoom = Mathf.InverseLerp(_cameraData.ZoomRange.Min, _cameraData.ZoomRange.Max, position.y);
             using (LayoutSampler.Auto())
-                _projection.Draw(_markers, _grouping, camera, Mathf.Lerp(1.5f, 0.5f, zoom), Time.deltaTime);
+                _projection.Draw(_markers, _grouping, camera, Mathf.Lerp(1.5f, 0.5f, zoom));
         }
 
         public void LateDispose()

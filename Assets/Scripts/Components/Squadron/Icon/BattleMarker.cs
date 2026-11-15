@@ -37,6 +37,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         internal PlayerId Owner { get; private set; }
         internal bool IsVisible { get; private set; }
         internal Action SampleVisibility { get; set; }
+        internal long ProjectionGroup { get; set; }
+        internal Vector3 ProjectionOffset { get; set; }
 
         private Vector3 _position;
         private Vector3 _previousPosition;
@@ -64,6 +66,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             _root.sizeDelta = Vector2.one * _visualSize;
             _root.gameObject.SetActive(false);
             _zoom = 0f;
+            ProjectionGroup = 0;
             _registered = true;
             _layer.Register(this);
         }

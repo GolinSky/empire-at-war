@@ -17,7 +17,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         private static readonly ProfilerMarker ConsumeMarker = new ProfilerMarker("Battle.Markers.Grouping.Consume");
 
         private readonly Dictionary<long, SquadronGroupingJob.Member> _published = new(INITIAL_CAPACITY);
-        private readonly Dictionary<long, int> _groupCounts = new(INITIAL_CAPACITY);
         private readonly HashSet<long> _forgotten = new(INITIAL_CAPACITY);
 
         private NativeList<SquadronGroupingJob.Member> _snapshot = new(INITIAL_CAPACITY, Allocator.Persistent);
@@ -51,7 +50,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             _buckets.Capacity = nextCapacity;
             _occupied.Capacity = nextCapacity;
             _published.EnsureCapacity(nextCapacity);
-            _groupCounts.EnsureCapacity(nextCapacity);
         }
 
         public void Add(long id, int owner, Vector2 position, Vector2 velocity)
@@ -95,15 +93,12 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             HasPendingSnapshot = false;
             LastCandidateCount = _batchState.Value.CandidateCount;
             _published.Clear();
-            _groupCounts.Clear();
             for (int i = 0; i < _members.Length; i++)
             {
                 SquadronGroupingJob.Member member = _members[i];
                 if (_forgotten.Contains(member.EntityId))
                     continue;
                 _published.Add(member.EntityId, member);
-                _groupCounts.TryGetValue(member.GroupId, out int count);
-                _groupCounts[member.GroupId] = count + 1;
             }
             _forgotten.Clear();
             return true;
@@ -112,7 +107,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         public bool TryGetSlot(long id, out long groupId, out Vector2Int cell)
         {
             if (_published.TryGetValue(id, out SquadronGroupingJob.Member member) &&
-                _groupCounts[member.GroupId] > 1)
+                member.HasGrid)
             {
                 groupId = member.GroupId;
                 cell = new Vector2Int(member.Cell.x, member.Cell.y);
@@ -125,14 +120,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         public void Forget(long id)
         {
-            if (_published.Remove(id, out SquadronGroupingJob.Member member))
-            {
-                int remaining = _groupCounts[member.GroupId] - 1;
-                if (remaining == 0)
-                    _groupCounts.Remove(member.GroupId);
-                else
-                    _groupCounts[member.GroupId] = remaining;
-            }
+            _published.Remove(id);
 
             if (HasPendingSnapshot)
                 _forgotten.Add(id);

@@ -162,7 +162,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SparseOuterCellsCompactOnlyAfterMembershipSettles()
+        public void SparseOuterCellsRemainInPlaceAfterMembershipSettles()
         {
             using var grouping = new SquadronIconGrouping();
             var initial = new Sample[9];
@@ -170,14 +170,34 @@ namespace EmpireAtWar.Tests.Editor
                 initial[i] = new Sample(i + 1, 0);
             Update(grouping, initial, 3);
             long id = ReadCell(grouping, 9, out Vector2Int outerCell);
+            ReadCell(grouping, 1, out Vector2Int firstCell);
             var remaining = new[] { new Sample(1, 0), new Sample(9, 0) };
 
             Update(grouping, remaining, 10);
             Assert.That(ReadCell(grouping, 9, out Vector2Int before), Is.EqualTo(id));
             Assert.That(before, Is.EqualTo(outerCell));
-            Update(grouping, remaining, 8);
+            Update(grouping, remaining, 100);
             Assert.That(ReadCell(grouping, 9, out Vector2Int after), Is.EqualTo(id));
-            Assert.That(after, Is.Not.EqualTo(outerCell));
+            Assert.That(after, Is.EqualTo(outerCell));
+            Assert.That(ReadCell(grouping, 1, out Vector2Int firstAfter), Is.EqualTo(id));
+            Assert.That(firstAfter, Is.EqualTo(firstCell));
+        }
+
+        [Test]
+        public void FinalSurvivorRetainsItsGridAndCell()
+        {
+            using var grouping = new SquadronIconGrouping();
+            Update(grouping, new[] { new Sample(1, 0), new Sample(2, 2), new Sample(3, 4) }, 3);
+            long group = ReadCell(grouping, 3, out Vector2Int originalCell);
+
+            grouping.Forget(1);
+            grouping.Forget(2);
+            Assert.That(ReadCell(grouping, 3, out Vector2Int immediateCell), Is.EqualTo(group));
+            Assert.That(immediateCell, Is.EqualTo(originalCell));
+
+            Update(grouping, new[] { new Sample(3, 4) }, 100);
+            Assert.That(ReadCell(grouping, 3, out Vector2Int settledCell), Is.EqualTo(group));
+            Assert.That(settledCell, Is.EqualTo(originalCell));
         }
 
         private static long ReadCell(SquadronIconGrouping grouping, long id, out Vector2Int cell)

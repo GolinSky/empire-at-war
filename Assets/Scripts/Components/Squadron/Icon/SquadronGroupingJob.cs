@@ -18,7 +18,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         private const float JOIN_DWELL = 0.2f;
         private const float LEAVE_DWELL = 0.3f;
         private const float DWELL_EPSILON = 0.00001f;
-        private const float COMPACTION_DWELL = 1.5f;
 
         private static readonly ProfilerMarker ReconcileMarker = new ProfilerMarker("Battle.Markers.Grouping.Reconcile");
 
@@ -48,7 +47,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
             RestoreGroups(ref state);
             SplitGroups(ref state);
-            CompactSparseGroups();
             BuildRepresentativeOrder();
             JoinNearbyGroups(ref state);
             for (int i = 0; i < Members.Length; i++)
@@ -101,7 +99,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 group.Seed = seedIndex;
                 group.Head = -1;
                 group.Count = 0;
-                group.MemberSignature = 0;
                 for (int memberIndex = first; memberIndex >= 0;)
                 {
                     Member member = Members[memberIndex];
@@ -116,7 +113,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                         Group split = Groups[splitIndex];
                         split.Head = memberIndex;
                         split.Count = 1;
-                        split.MemberSignature = MemberSignature(member.EntityId);
                         Groups[splitIndex] = split;
                         member.GroupId = split.Id;
                         member.IsSeed = true;
@@ -130,7 +126,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                         member.Next = group.Head;
                         group.Head = memberIndex;
                         group.Count++;
-                        group.MemberSignature ^= MemberSignature(member.EntityId);
                     }
                     Members[memberIndex] = member;
                     Occupied.TryAdd(new OccupiedCell(member.GroupId, member.Slot), 0);
@@ -177,39 +172,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 if (Compatible(member, alternative, LEAVE_RADIUS, LEAVE_SPEED)) alternativeCount++;
             }
             return alternativeCount > retained ? best : group.Seed;
-        }
-
-        private void CompactSparseGroups()
-        {
-            for (int i = 0; i < Groups.Length; i++)
-            {
-                Group group = Groups[i];
-                Member seed = Members[group.Seed];
-                float settledAge = seed.PriorCount == group.Count && seed.PriorSignature == group.MemberSignature
-                    ? math.min(seed.SettledAge + Elapsed, COMPACTION_DWELL)
-                    : 0f;
-                seed.SettledAge = settledAge;
-                seed.PriorCount = group.Count;
-                seed.PriorSignature = group.MemberSignature;
-                Members[group.Seed] = seed;
-                if (settledAge < COMPACTION_DWELL)
-                    continue;
-
-                // Sort-free compaction only moves outliers that need over twice the occupied cells.
-                // Nearby vacancies remain available for reinforcements without shifting survivors.
-                int outerSlot = group.Count * 2;
-                for (int index = group.Head; index >= 0; index = Members[index].Next)
-                {
-                    Member member = Members[index];
-                    if (member.Slot < outerSlot)
-                        continue;
-
-                    Occupied.Remove(new OccupiedCell(group.Id, member.Slot));
-                    member.Slot = ClaimFirstVacancy(ref group);
-                    Members[index] = member;
-                }
-                Groups[i] = group;
-            }
         }
 
         private static float DistanceScore(Member member, float2 center, float2 velocity)
@@ -335,6 +297,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 if (!preserveCells || !Occupied.TryAdd(new OccupiedCell(target.Id, member.Slot), 0))
                     member.Slot = ClaimFirstVacancy(ref target);
                 member.GroupId = target.Id;
+                member.HasGrid = true;
                 member.IsSeed = false;
                 member.JoinTarget = 0;
                 member.JoinAge = 0f;
@@ -345,6 +308,9 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 index = next;
             }
             target.Count += incoming.Count;
+            Member seed = Members[target.Seed];
+            seed.HasGrid = true;
+            Members[target.Seed] = seed;
         }
 
         private int ClaimFirstVacancy(ref Group group)
@@ -368,8 +334,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             return math.distancesq(a.Position, b.Position) <= radius * radius &&
                    math.distancesq(a.Velocity, b.Velocity) <= speed * speed;
         }
-
-        private static uint MemberSignature(long id) => math.hash(new int2((int)id, (int)(id >> 32)));
 
         internal static int2 GetCell(int slot)
         {
@@ -433,14 +397,12 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             public int Owner;
             public int Slot;
             public int Next;
-            public int PriorCount;
-            public uint PriorSignature;
             public int2 Cell;
             public float2 Position;
             public float2 Velocity;
             public float JoinAge;
             public float LeaveAge;
-            public float SettledAge;
+            public bool HasGrid;
             public bool IsSeed;
         }
 
@@ -453,7 +415,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             public int Head;
             public int Count;
             public int FirstVacancy;
-            public uint MemberSignature;
             public float2 PositionSum;
             public float2 VelocitySum;
         }
