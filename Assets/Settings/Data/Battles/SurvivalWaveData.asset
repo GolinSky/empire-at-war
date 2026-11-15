@@ -168,6 +168,12 @@ MonoBehaviour:
       - isSquadron: 1
         unitId: 6
         quantity: 6
+      - isSquadron: 0
+        unitId: 17
+        quantity: 2
+      - isSquadron: 0
+        unitId: 18
+        quantity: 2
       spawnGroupCount: 4
   - faction: 1
     waves:
@@ -305,13 +311,13 @@ MonoBehaviour:
         quantity: 3
       - isSquadron: 0
         unitId: 103
-        quantity: 3
+        quantity: 5
       - isSquadron: 0
         unitId: 104
-        quantity: 3
+        quantity: 4
       - isSquadron: 0
         unitId: 109
-        quantity: 2
+        quantity: 3
       - isSquadron: 1
         unitId: 101
         quantity: 6
@@ -500,13 +506,13 @@ MonoBehaviour:
         quantity: 1
       - isSquadron: 0
         unitId: 305
-        quantity: 3
+        quantity: 4
       - isSquadron: 0
         unitId: 330
-        quantity: 3
+        quantity: 4
       - isSquadron: 0
         unitId: 326
-        quantity: 1
+        quantity: 3
       - isSquadron: 1
         unitId: 301
         quantity: 6
@@ -653,13 +659,13 @@ MonoBehaviour:
         quantity: 2
       - isSquadron: 0
         unitId: 205
-        quantity: 3
+        quantity: 5
       - isSquadron: 0
         unitId: 207
-        quantity: 3
+        quantity: 4
       - isSquadron: 0
         unitId: 214
-        quantity: 2
+        quantity: 3
       - isSquadron: 0
         unitId: 217
         quantity: 2

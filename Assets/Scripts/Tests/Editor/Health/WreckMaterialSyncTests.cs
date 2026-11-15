@@ -24,7 +24,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             "Assets/Prefabs/Models/Ships/Empire/View/ISDIShipView.prefab",
             "Assets/Prefabs/Models/Ships/Empire/View/ISDIIShipView.prefab",
-            "Assets/Prefabs/Models/Ships/Republic/View/CentaxShipView.prefab"
+            "Assets/Prefabs/Models/Ships/Republic/View/CentaxShipView.prefab",
+            "Assets/Prefabs/Models/Ships/Republic/View/ProcuratorShipView.prefab"
         };
 
         private static IEnumerable<string> WreckedViews() =>
@@ -33,6 +34,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("Assets/Prefabs/Models/Ships/Empire/View/ISDIShipView.prefab", "Assets/Art/Models/EmpireShips/ISDI/ISDIWreck.fbx", 35)]
         [TestCase("Assets/Prefabs/Models/Ships/Empire/View/ISDIIShipView.prefab", "Assets/Art/Models/EmpireShips/ISDIIReplacement/ISDIIDeath.fbx", 25)]
         [TestCase("Assets/Prefabs/Models/Ships/Republic/View/CentaxShipView.prefab", "Assets/Art/Models/RepublicShips/Centax/CentaxWreck.fbx", 3)]
+        [TestCase("Assets/Prefabs/Models/Ships/Republic/View/ProcuratorShipView.prefab", "Assets/Art/Models/RepublicShips/Procurator/ProcuratorWreck.fbx", 5)]
         public void AuthoredDeathWreck_PreservesSourceGeometryAndBoundMaterials(string viewPath, string sourcePath, int meshCount)
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(viewPath);

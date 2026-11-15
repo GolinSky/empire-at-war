@@ -2601,6 +2601,40 @@ MonoBehaviour:
           localFeedback: 0
         useAlarmOverride: 0
         ready: {fileID: 8300000, guid: 111ef6fd4812c174d9bd4de32312224d, type: 3}
+    - key: 18
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: 8bfe6502d7bb1af4f8ba586cbbe50506, type: 3}
+          clips:
+            array: []
+          volume: 0.16
+          priority: 10
+          cooldown: 0
+          maxInstances: 12
+          loop: 1
+          localFeedback: 0
+        explosion:
+          clip: {fileID: 8300000, guid: b4c1fac01ddf63a46a974cd735be5f89, type: 3}
+          clips:
+            array: []
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 8
+          loop: 0
+          localFeedback: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 5
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+          localFeedback: 0
+        useAlarmOverride: 0
+        ready: {fileID: 0}
   squadrons:
     keyValue:
     - key: 0

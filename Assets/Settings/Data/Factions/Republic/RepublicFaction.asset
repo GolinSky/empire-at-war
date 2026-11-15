@@ -321,6 +321,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 18
         <Icon>k__BackingField: {fileID: 21300000, guid: 5cce3c98ec18d704b8fcd6fd28baef17,
           type: 3}
+    - key: 18
+      value:
+        matchups: {fileID: 11400000, guid: acb60228465cc1d4bb579ccc741c5675, type: 2}
+        displayName: Procurator
+        description: Kuat Drive Yards sector-defense battlecruiser with 13,020 hull
+          and 9,000 shields. Eight medium dual turbolaser batteries, fourteen light
+          turbolaser batteries and six proton torpedo launchers. Deploys one ARC-170
+          and one V-wing squadron, with two replacement squadrons of each type.
+        role: Battlecruiser / Fleet anchor
+        iconKey: b1f55dd8e83a85345a26f49b8c3deebf:21300000
+        isHero: 0
+        <Name>k__BackingField: Procurator-class Battlecruiser
+        <MaxCount>k__BackingField: 2
+        <AvailableLevel>k__BackingField: 5
+        <Price>k__BackingField: 10000
+        <BuildTime>k__BackingField: 90
+        <UnitCapacity>k__BackingField: 12
+        <Icon>k__BackingField: {fileID: 21300000, guid: b1f55dd8e83a85345a26f49b8c3deebf,
+          type: 3}
   squadrons:
     keyValue:
     - key: 2

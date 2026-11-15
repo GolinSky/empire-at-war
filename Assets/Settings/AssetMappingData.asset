@@ -1652,3 +1652,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: ProcuratorShipView
+      value:
+        m_AssetGUID: 4e8d726992cd9304c839a5d6fdacfed4
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ProcuratorShipData
+      value:
+        m_AssetGUID: 2009de7188f93784eb3436f6e5b931c6
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
