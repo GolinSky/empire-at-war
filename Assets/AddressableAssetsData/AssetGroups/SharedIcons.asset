@@ -555,6 +555,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d30c4e015c7eb8b4786c009c186ed7df
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/DiamondIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d3a12bad07832e841a42db7ba1eb25fc
     m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/DarthVaderTIEAdvancedIcon.png
     m_ReadOnly: 0
@@ -672,6 +677,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f7655a1be55b2a74aa984b640ec46f5d
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/DispatcherIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f786c5540a32883458104436e8362962
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/LupusIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

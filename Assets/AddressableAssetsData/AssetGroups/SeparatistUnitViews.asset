@@ -45,6 +45,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f95884aa07c3a5429c4255a6ebcef86
+    m_Address: LupusReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10c6c42b711ea6b419c8b3cc30151274
+    m_Address: DiamondShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 15a9af9ada565cc49ab040e8a975fca8
     m_Address: SevranceTannGinivexSquadronView
     m_ReadOnly: 0
@@ -150,8 +160,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 602f3ebc90dcdd3418e6e8af908c98c1
+    m_Address: LupusWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 631223976984cbf41b0fcf0a20d2088b
     m_Address: AsajjVentressGinivexReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6743fcf0478e51842aba7b356a90e05e
+    m_Address: LupusShipView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -280,6 +300,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb17444443132e94789fdbcb012bf57f
+    m_Address: DiamondWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bd29176fd4ab1b4468eaa548f2356465
     m_Address: BulwarkIIShipView
     m_ReadOnly: 0
@@ -297,6 +322,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c72a6cc0e3fc5e748b1117e99581c872
     m_Address: ProvidenceWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca655ce0049a1e0449e24e3dcee9810f
+    m_Address: DiamondReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

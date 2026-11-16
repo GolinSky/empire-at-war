@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e580e579044741caae6ff7662bce890d, type: 3}
+  m_Name: DiamondShipData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
+  <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
+  <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -14.708813, y: -25.365108}
+  - {x: -11.360288, y: -33.555527}
+  - {x: -10.488805, y: -34.01764}
+  - {x: -0.33950496, y: -35}
+  - {x: 0.3395107, y: -35}
+  - {x: 10.48881, y: -34.01763}
+  - {x: 11.360294, y: -33.555523}
+  - {x: 14.708814, y: -25.365097}
+  - {x: 12.636592, y: -8.356548}
+  - {x: 1.555959, y: 34.884434}
+  - {x: 1.3963076, y: 34.99567}
+  - {x: -1.3963475, y: 34.99567}
+  - {x: -1.5559989, y: 34.884434}
+  - {x: -12.636602, y: -8.356556}
+  <Speed>k__BackingField: 40
+  heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
+  <HeightTier>k__BackingField: 5
+  <HullBottom>k__BackingField: -47.034767
+  <HullTop>k__BackingField: 47.030323
+  <RotationSpeed>k__BackingField: 35
+  <TurnAcceleration>k__BackingField: 35
+  <HyperSpaceDuration>k__BackingField: 0.6
+  <BodyRotationMaxAngle>k__BackingField: 20
+  <NavigationRadius>k__BackingField: 40
+  <IgnoresMapObstacles>k__BackingField: 0
+  <DestroyDelay>k__BackingField: 0.35
+  <Wreck>k__BackingField: {fileID: 11400000, guid: 187bcb207b582af4a8096a39884464c4,
+    type: 2}
+  <ShipClass>k__BackingField: 3
+  <Hull>k__BackingField: 3000
+  <Shields>k__BackingField: 3000
+  shieldRegenTiers: {fileID: 11400000, guid: 3425d6ddc79a6b649990974111258ac9, type: 2}
+  <ShieldRegenTier>k__BackingField: 1
+  <ShieldRegenerateDelay>k__BackingField: 1
+  <Range>k__BackingField: 665
+  <Delay>k__BackingField: 0.25
+  abilities: 05000000
+  hangarBays: []
+  <HangarInitialDelay>k__BackingField: 4
+  <HangarLaunchInterval>k__BackingField: 8
+  weaponLoadout:
+  - weaponType: 5
+    count: 2
+  - weaponType: 23
+    count: 4

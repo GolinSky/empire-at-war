@@ -180,6 +180,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f3272933ef51704d8ed1dddf15bb08c
+    m_Address: DiamondShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5098f4ce0a8a47d48ba69455dc83af79
     m_Address: RecusantShipData
     m_ReadOnly: 0
@@ -332,6 +337,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9864bdd7b03aa4d4d812b8f34e008399
     m_Address: ISDIIShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99317e4a169c59248b9689bcaf804710
+    m_Address: LupusShipData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

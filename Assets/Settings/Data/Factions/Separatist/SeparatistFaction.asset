@@ -45,7 +45,7 @@ MonoBehaviour:
         <Name>k__BackingField: Recusant
         <MaxCount>k__BackingField: 30
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 3500
+        <Price>k__BackingField: 4000
         <BuildTime>k__BackingField: 35
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: dcdfa3aa3e1fabb44b5e337f8aa8370f,
@@ -81,7 +81,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 40
         <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 15000
-        <BuildTime>k__BackingField: 90
+        <BuildTime>k__BackingField: 80
         <UnitCapacity>k__BackingField: 25
         <Icon>k__BackingField: {fileID: 21300000, guid: 8128fcc8b8e454e47ab592309d37208e,
           type: 3}
@@ -172,7 +172,7 @@ MonoBehaviour:
         <Name>k__BackingField: Dispatcher-class Frigate
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 3400
+        <Price>k__BackingField: 3500
         <BuildTime>k__BackingField: 35
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: f7655a1be55b2a74aa984b640ec46f5d,
@@ -251,7 +251,7 @@ MonoBehaviour:
         <Name>k__BackingField: Wavecrest-class Frigate
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 2
-        <Price>k__BackingField: 3500
+        <Price>k__BackingField: 3000
         <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 4
         <Icon>k__BackingField: {fileID: 21300000, guid: 6659a938f240057468564cb0ee980865,
@@ -292,7 +292,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 18000
         <BuildTime>k__BackingField: 75
-        <UnitCapacity>k__BackingField: 25
+        <UnitCapacity>k__BackingField: 20
         <Icon>k__BackingField: {fileID: 21300000, guid: 868302fc85b4fef429aefdbe75fef36b,
           type: 3}
     - key: 115
@@ -330,6 +330,42 @@ MonoBehaviour:
         <BuildTime>k__BackingField: 45
         <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: 34af1e9f1e28dc242a62e5ea6c6ecf71,
+          type: 3}
+    - key: 118
+      value:
+        matchups: {fileID: 11400000, guid: d287e5075f25f314c8af45510857c243, type: 2}
+        displayName: Lupus Missile Frigate
+        description: A Separatist missile frigate with two medium turbolasers, four
+          dual heavy laser cannons, and two dual heavy missile launchers. Power to
+          Weapons increases its firing rate.
+        role: Frigate / Missile Artillery
+        iconKey: f786c5540a32883458104436e8362962:21300000
+        isHero: 0
+        <Name>k__BackingField: Lupus Missile Frigate
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 3000
+        <BuildTime>k__BackingField: 25
+        <UnitCapacity>k__BackingField: 2
+        <Icon>k__BackingField: {fileID: 21300000, guid: f786c5540a32883458104436e8362962,
+          type: 3}
+    - key: 117
+      value:
+        matchups: {fileID: 11400000, guid: 3ea27b769466dcb469a45c482dee4037, type: 2}
+        displayName: Diamond
+        description: 3,000 hull and 3,000 shields with frigate shield regeneration.
+          Two dual medium turbolasers and four medium laser cannons. Boost Weapon
+          Power increases rate of fire.
+        role: "Frigate \xB7 Escort"
+        iconKey: d30c4e015c7eb8b4786c009c186ed7df:21300000
+        isHero: 0
+        <Name>k__BackingField: Diamond-class Cruiser
+        <MaxCount>k__BackingField: 30
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 2500
+        <BuildTime>k__BackingField: 28
+        <UnitCapacity>k__BackingField: 3
+        <Icon>k__BackingField: {fileID: 21300000, guid: d30c4e015c7eb8b4786c009c186ed7df,
           type: 3}
   squadrons:
     keyValue:
