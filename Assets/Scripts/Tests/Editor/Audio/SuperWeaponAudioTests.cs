@@ -16,6 +16,7 @@ using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.BattleNotifications;
+using EmpireAtWar.Services.Input;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -207,13 +208,14 @@ namespace EmpireAtWar.Tests.Editor
                 OwnedEntity target = new OwnedEntity(TestPlayers.Enemy);
                 IPlayerCommandSink commands = new DirectSuperWeaponSink(new HumanSuperWeaponCommandHandler(
                     TestPlayers.Slot(TestPlayers.CreateDuel(), TestPlayers.Human), model, fire, new PlayerCommandHandlers()), target);
+                using InputActionsProvider inputActions = new InputActionsProvider();
                 SuperWeaponPresenter presenter = new SuperWeaponPresenter(
                     superWeaponFireService: fire, viewProvider: null, routeNavigation: null, abilities: null,
                     localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), uiService: null, cancelRouter: null, tooltipService: null,
                     faction: null, bindings: null, battleState: null, model: model,
                     targeting: new SuperWeaponTargetingModel(), unitTargeting: null, data: null,
                     interfaceAudio: audio, interfaceData: data, commands: commands,
-                    notifications: new BattleNotificationFeed());
+                    notifications: new BattleNotificationFeed(), pointer: null, inputActions: inputActions);
                 SetField(presenter, "_view", new View());
                 var states = (Dictionary<SuperWeaponType, SuperWeaponState>)typeof(SuperWeaponPresenter)
                     .GetField("_lastStates", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(presenter);
@@ -368,6 +370,7 @@ namespace EmpireAtWar.Tests.Editor
             public void SetState(SuperWeaponType type, SuperWeaponState state, bool canFire) { }
             public void SetPending(SuperWeaponType? type) { }
             public void SetOpen(bool open) { }
+            public bool ContainsScreenPoint(Vector2 position) => throw new NotSupportedException();
             public void SetAvailable(bool available) { }
             public void SetBattleAvailable(bool available) { }
             public void SetRemaining(SuperWeaponType type, float seconds) { }

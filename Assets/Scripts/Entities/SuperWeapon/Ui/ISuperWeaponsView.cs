@@ -1,5 +1,6 @@
 using EmpireAtWar.Components.Ui.Tooltip;
 using System;
+using UnityEngine;
 
 namespace EmpireAtWar.Entities.SuperWeapons.Ui
 {
@@ -21,6 +22,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         void SetPending(SuperWeaponType? type);
 
         void SetOpen(bool open);
+
+        bool ContainsScreenPoint(Vector2 position);
 
         void SetAvailable(bool available);
 

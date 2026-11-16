@@ -89,6 +89,10 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
             popup.SetActive(open);
         }
 
+        public bool ContainsScreenPoint(Vector2 position) =>
+            RectTransformUtility.RectangleContainsScreenPoint((RectTransform)popup.transform, position, null) ||
+            RectTransformUtility.RectangleContainsScreenPoint((RectTransform)orbitalButton.transform, position, null);
+
         public void SetBattleAvailable(bool available) => orbitalButton.interactable = available;
 
         public void SetRemaining(SuperWeaponType type, float seconds)

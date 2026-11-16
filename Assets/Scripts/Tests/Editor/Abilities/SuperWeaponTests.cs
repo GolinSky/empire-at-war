@@ -9,17 +9,22 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.SuperWeapons;
+using EmpireAtWar.Entities.SuperWeapons.Controller;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
+using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Mvc;
+using EmpireAtWar.Ui.Base;
 using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
 using UnityEditor;
@@ -505,6 +510,79 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(button, Is.Not.Null);
                 Assert.That(button.transition, Is.EqualTo(Selectable.Transition.ColorTint));
                 Assert.That(buttonData.FindProperty("pendingHighlight").objectReferenceValue, Is.Not.Null);
+            }
+        }
+
+        [Test]
+        public void OrbitalPopup_OutsidePressDismissesWithoutCancelingTargetingAfterClose()
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/SkirmishGame/CoreGameUi.prefab");
+            try
+            {
+                ISuperWeaponsView view = root.GetComponent<CoreGameUi>().SuperWeaponsView;
+                SerializedObject viewData = new SerializedObject((SuperWeaponsView)view);
+                GameObject popup = (GameObject)viewData.FindProperty("popup").objectReferenceValue;
+                Button toggle = (Button)viewData.FindProperty("orbitalButton").objectReferenceValue;
+                Vector2 popupCenter = ScreenCenter((RectTransform)popup.transform);
+                Vector2 toggleCenter = ScreenCenter((RectTransform)toggle.transform);
+                Vector2 outside = new Vector2(-10000, -10000);
+                OrbitalPointer pointer = new OrbitalPointer();
+                SuperWeaponTargetingModel targeting = new SuperWeaponTargetingModel();
+                using InputActionsProvider inputActions = new InputActionsProvider();
+                SuperWeaponPresenter presenter = new SuperWeaponPresenter(
+                    superWeaponFireService: null, viewProvider: new OrbitalViewProvider(view), routeNavigation: null,
+                    abilities: new ShipAbilityService(null, null, null), localPlayer: null, uiService: null,
+                    cancelRouter: new UiCancelRouter(null), tooltipService: null, faction: null, bindings: null,
+                    battleState: null, model: new SuperWeaponModel(), targeting: targeting,
+                    unitTargeting: new UnitActionTargetingModel(), data: null, interfaceAudio: null, interfaceData: null,
+                    commands: null, notifications: null, pointer: pointer, inputActions: inputActions);
+                presenter.Activate(true);
+
+                toggle.onClick.Invoke();
+                pointer.Press(popupCenter);
+                Assert.That(popup.activeSelf, Is.True);
+                pointer.Press(toggleCenter);
+                Assert.That(popup.activeSelf, Is.True, "The toggle handles its own click on release.");
+                toggle.onClick.Invoke();
+                Assert.That(popup.activeSelf, Is.False);
+
+                toggle.onClick.Invoke();
+                pointer.Press(outside);
+                Assert.That(popup.activeSelf, Is.False);
+                Assert.That(presenter.IsFocused, Is.False);
+
+                targeting.Start(SuperWeaponType.IonCannon);
+                pointer.Press(outside);
+                Assert.That(targeting.Pending, Is.EqualTo(SuperWeaponType.IonCannon));
+                presenter.Activate(false);
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        private static Vector2 ScreenCenter(RectTransform rect) =>
+            RectTransformUtility.WorldToScreenPoint(null, rect.TransformPoint(rect.rect.center));
+
+        private sealed class OrbitalViewProvider : ISuperWeaponsViewProvider
+        {
+            public OrbitalViewProvider(ISuperWeaponsView view) => SuperWeaponsView = view;
+            public ISuperWeaponsView SuperWeaponsView { get; }
+        }
+
+        private sealed class OrbitalPointer : IPointerInput
+        {
+            public event Action<Vector2> PrimaryPressed;
+            public event Action<Vector2> PrimaryReleased { add { } remove { } }
+            public Vector2 Position { get; private set; }
+            public bool HasPosition => true;
+            public int ClickCount => 1;
+
+            public void Press(Vector2 position)
+            {
+                Position = position;
+                PrimaryPressed(position);
             }
         }
 

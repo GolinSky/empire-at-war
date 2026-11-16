@@ -19,6 +19,8 @@ using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Input;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace EmpireAtWar.Entities.SuperWeapons.Controller
 {
@@ -42,6 +44,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         private ISuperWeaponsView _view;
         private readonly IPlayerFactionModelObserver _faction;
         private readonly IInputBindings _bindings;
+        private readonly IPointerInput _pointer;
+        private readonly InputAction _command;
         private readonly INotifier<BattleState> _battleState;
 
         private readonly SuperWeaponModel _model;
@@ -65,7 +69,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             UnitActionTargetingModel unitTargeting,
             SuperWeaponData data, IInterfaceSfxService interfaceAudio,
             InterfaceSfxData interfaceData, IPlayerCommandSink commands,
-            IBattleNotifications notifications)
+            IBattleNotifications notifications, IPointerInput pointer, InputActionsProvider inputActions)
             : base(uiService, cancelRouter)
         {
             _notifications = notifications;
@@ -84,6 +88,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _data = data;
             _faction = faction;
             _bindings = bindings;
+            _pointer = pointer;
+            _command = inputActions.Actions.Battle.Command;
             _battleState = battleState;
         }
 
@@ -126,6 +132,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _view.Pressed += HandlePressed;
             _view.ToggleRequested += TogglePopup;
             _view.CloseRequested += ClosePopup;
+            _pointer.PrimaryPressed += HandlePointerPressed;
+            _command.started += HandleCommandPressed;
             _model.OnStateChanged += HandleStateChanged;
             _targeting.Changed += RenderPending;
             _targeting.TargetSubmitted += HandleTargetSubmitted;
@@ -147,6 +155,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _view.Pressed -= HandlePressed;
             _view.ToggleRequested -= TogglePopup;
             _view.CloseRequested -= ClosePopup;
+            _pointer.PrimaryPressed -= HandlePointerPressed;
+            _command.started -= HandleCommandPressed;
             _isOpen = false;
             _model.OnStateChanged -= HandleStateChanged;
             _targeting.Changed -= RenderPending;
@@ -249,6 +259,13 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         {
             if (_abilities.IsWaitingForTarget) ClosePopup();
         }
+
+        private void HandlePointerPressed(Vector2 position)
+        {
+            if (_isOpen && !_view.ContainsScreenPoint(position)) ClosePopup();
+        }
+
+        private void HandleCommandPressed(InputAction.CallbackContext context) => HandlePointerPressed(_pointer.Position);
 
         // A pending target selection makes this the selected UI, so Escape cancels it first.
         protected override bool HandleCancel()
