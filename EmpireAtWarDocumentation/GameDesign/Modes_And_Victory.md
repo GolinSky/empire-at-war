@@ -30,8 +30,8 @@ verification: Inspected current match rules, mode presets, BattleVictoryService,
 
 - A player becomes eligible for defeat after a base has been observed alive; delayed initial spawning does not trigger defeat.
 - `DestroyOpponentBase` → no living player base remains. A second station also counts as a base.
-- `DestroyEnemyFleet` → no living base AND zero living non-base entities AND no pending reinforcement.
-- Non-base entities include ships, squadrons, defense platforms and mining facilities; remaining structures can prevent destroy-all victory.
+- `DestroyEnemyFleet` → no living base, ships, non-base structures, sites under construction, or non-squadron reserves.
+- Deployed and reserve squadrons alone cannot keep a player in the battle.
 - Teams remain alive while any player on that team remains alive.
 - No surviving teams → draw. Local team eliminated → defeat. Only the local team survives → victory.
 - Outcome evaluation runs during `BattleState.Running`; the first result is retained.

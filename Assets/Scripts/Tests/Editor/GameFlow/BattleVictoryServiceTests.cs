@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
@@ -9,6 +10,8 @@ using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.SpaceStation;
+using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
@@ -95,13 +98,37 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Collection_TracksPendingReserveUntilConsumed()
+        public void FleetCondition_EndsWithOnlyEnemySquadronsRemaining()
+        {
+            var roster = TestPlayers.CreateDuel();
+            var entities = new EntityLocator();
+            var victory = new BattleVictoryModel();
+            var service = new BattleVictoryService(null, new ShipService(), entities, roster,
+                TestPlayers.CreateLocalPlayer(roster), new PlayerRegistry(), null, victory,
+                Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()));
+            entities.AddEntity(new Unit(1, TestPlayers.Human, true));
+            var enemyBase = new Unit(2, TestPlayers.Enemy, true);
+            entities.AddEntity(enemyBase);
+            entities.AddEntity(new Entity(new Health(), entities,
+                new[] { new UnitTypeFacade(UnitTypeId.Squadron(SquadronType.Delta7)) }, TestPlayers.Enemy, 3,
+                Array.Empty<IPooledEntityEvents>(), Array.Empty<IHangarLaunchEvents>()));
+
+            Assert.That(victory.Evaluate(BattleVictoryCondition.DestroyEnemyFleet, Collect(service), new TeamId(0)),
+                Is.EqualTo(BattleOutcome.None));
+            enemyBase.Health.IsDestroyed = true;
+            Assert.That(victory.Evaluate(BattleVictoryCondition.DestroyEnemyFleet, Collect(service), new TeamId(0)),
+                Is.EqualTo(BattleOutcome.PlayerVictory));
+        }
+
+        [Test]
+        public void Collection_TracksNonSquadronReserveUntilConsumed()
         {
             var roster = TestPlayers.CreateDuel();
             var registry = new PlayerRegistry();
             var reserve = new ReinforcementModel(null);
             var request = new ShipUnitRequest(new FactionData(), ShipType.Venator);
             registry.RegisterReinforcementReserve(TestPlayers.Enemy, reserve);
+            reserve.AddReinforcement(new SquadronUnitRequest(new FactionData(), SquadronType.Delta7));
             reserve.AddReinforcement(request);
             var service = new BattleVictoryService(null, new ShipService(), new EntityLocator(), roster,
                 TestPlayers.CreateLocalPlayer(roster), registry, null, new BattleVictoryModel(),

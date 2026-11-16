@@ -65,17 +65,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private bool _isInitialized;
 
         private PlayerId Owner => _owner.Id;
-        // Each station pays by its own level; the second station only while it stands.
-        public float Income => DEFAULT_INCOME *
-            (Model.CurrentLevel + (_secondStation.IsBuilt ? _secondStation.CurrentLevel : 0)) *
-            _research.StationIncomeMultiplier;
+        public float Income => DEFAULT_INCOME * Model.CurrentLevel * _research.StationIncomeMultiplier;
         public bool HasPendingReinforcement => _builds.Count > 0;
         public bool IsUpgradingStation => _builds.Builds.Any(build => build.Request is LevelUnitRequest);
         public bool IsUpgradingSecondStation => _builds.Builds.Any(build => build.Request is SecondStationLevelUnitRequest);
         public IReadOnlyList<EnemyPendingBuild> PendingBuilds => _builds.Builds;
 
         private bool CanBuildSecondStation => !_secondStation.IsBuilt &&
-            (_productionAccess.ProductionHost != Owner || Model.CanBuildAdditionalStation(_productionAccess.HasHostBase));
+            Model.CanBuildAdditionalStation(_productionAccess.HasHostBase, _productionAccess.ProductionHost != Owner);
 
         public bool CanQueue(string requestId, int maxCount) =>
             (requestId != SecondStationUnitRequest.REQUEST_ID || CanBuildSecondStation) &&
@@ -140,8 +137,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _enemyStructurePlacementService.Reset();
             _economyProvider.AddProvider(this);
             Model.OnLevelUpgraded += RecalculateIncome;
-            _secondStation.OnLevelUpgraded += RecalculateIncome;
-            _secondStation.BuiltChanged += RecalculateIncome;
             _playerRegistry.RegisterAiStationCheat(Owner, this);
             _isInitialized = true;
         }
@@ -157,8 +152,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
             _economyProvider.RemoveProvider(this);
             Model.OnLevelUpgraded -= RecalculateIncome;
-            _secondStation.OnLevelUpgraded -= RecalculateIncome;
-            _secondStation.BuiltChanged -= RecalculateIncome;
             _playerRegistry.UnregisterAiStationCheat(Owner);
             _isInitialized = false;
         }
@@ -179,13 +172,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         public void Purchase(UnitRequest unitRequest)
         {
             bool canPurchase = _productionAccess.CanProduce;
-            if (unitRequest is SecondStationUnitRequest)
-            {
-                bool selfHosted = _productionAccess.ProductionHost == Owner;
-                canPurchase = selfHosted
-                    ? canPurchase || _enemyStructurePlacementService.IsRecovering
-                    : canPurchase && _enemyStructurePlacementService.IsRecovering;
-            }
+            if (unitRequest is SecondStationUnitRequest && _productionAccess.ProductionHost != Owner)
+                canPurchase = canPurchase && _enemyStructurePlacementService.IsRecovering;
             if (!CanQueue(unitRequest.Id, unitRequest.FactionData.MaxCount) ||
                 !canPurchase ||
                 unitRequest is LevelUnitRequest &&
@@ -367,8 +355,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     Vector3 stationPosition = GenerateMapCoordinates(unitRequest);
                     Track(_stationFactory.CreateSecond(Owner, _owner.Faction, stationPosition),
                         secondStationUnitRequest);
-                    if (_productionAccess.ProductionHost == Owner)
-                        Model.AdditionalStationsBuilt++;
+                    Model.AdditionalStationsBuilt++;
                     _enemyStructurePlacementService.RecordStationBuilt(stationPosition);
                     break;
                 case SecondStationLevelUnitRequest secondStationLevelUnitRequest:
@@ -407,7 +394,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         public void AdoptSecondStation(SpaceStationEntity station, SecondStationUnitRequest unitRequest)
         {
             // A living second station in an older save establishes at least one completed build.
-            if (_productionAccess.ProductionHost == Owner && Model.AdditionalStationsBuilt == 0)
+            if (Model.AdditionalStationsBuilt == 0)
                 Model.AdditionalStationsBuilt = 1;
             AdoptReservation(unitRequest);
             Track(station, unitRequest);
@@ -453,8 +440,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         }
 
         private void RecalculateIncome(int level) => _economyProvider.RecalculateIncome(this);
-
-        private void RecalculateIncome(bool isBuilt) => _economyProvider.RecalculateIncome(this);
 
         private void ReleaseUnit(UnitRequest unitRequest)
         {

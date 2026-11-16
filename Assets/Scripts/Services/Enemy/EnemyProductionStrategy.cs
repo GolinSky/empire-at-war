@@ -122,9 +122,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Tick(float deltaTime)
         {
-            bool canProduce = _productionAccess.CanProduce;
-            if (!canProduce && (_productionAccess.ProductionHost != _owner.Id || !_recovery.IsActive ||
-                !_purchaseProcessor.CanQueue(SecondStationUnitRequest.REQUEST_ID, _factionModel.SecondStationFactionData.MaxCount)))
+            if (!_productionAccess.CanProduce)
             {
                 return;
             }
@@ -151,10 +149,7 @@ namespace EmpireAtWar.Services.Enemy
                 _hasDecided = true;
                 _decisionTimer += EnemyAiStagger.Offset(_owner.Id, _decisionTimer);
             }
-            if (canProduce)
-                EvaluateProduction(profile);
-            else
-                TryBuySecondStation(_enemyStructurePlacementService.TryGetPosition(out _));
+            EvaluateProduction(profile);
         }
 
         private void EvaluateProduction(EnemyAiDifficultyProfile profile)
@@ -334,7 +329,7 @@ namespace EmpireAtWar.Services.Enemy
             _purchaseProcessor.Purchase(request);
         }
 
-        // A backup station once the economy can spare it, or a replacement during recovery.
+        // A backup station once the economy can spare it, or a hosted ally's first station during recovery.
         private bool TryBuySecondStation(bool canPlaceStructure)
         {
             FactionData data = _factionModel.SecondStationFactionData;

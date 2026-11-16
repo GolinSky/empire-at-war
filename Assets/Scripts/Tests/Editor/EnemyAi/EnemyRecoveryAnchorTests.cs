@@ -14,6 +14,7 @@ using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.SpawnBlocking;
+using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Views.ReinforcementZones;
 using NUnit.Framework;
 using UnityEngine;
@@ -33,20 +34,30 @@ namespace EmpireAtWar.Tests.Editor
         [SetUp]
         public void SetUp()
         {
+            CreateRecovery(TestPlayers.Human);
+        }
+
+        private void CreateRecovery(PlayerId productionHost)
+        {
             _roster = TestPlayers.CreateTeamGame();
             _owner = _roster.Get(TestPlayers.Ally);
             _intel = new TeamIntelRegistry();
             _zones = new ZoneSource();
             _faction = new EnemyFactionModel(null, null);
-            _recovery = new EnemyRecoveryAnchor(null, _zones, _roster, new EntityLocator(),
-                new BattleAreaService(_roster), new Map(), _intel, _owner, null,
+            var entities = new EntityLocator();
+            _recovery = new EnemyRecoveryAnchor(null, _zones, _roster, entities,
+                new BattleAreaService(_roster), new Map(), _intel, _owner,
+                new SelfProductionAccess(productionHost, new StationRegistry(entities), _roster),
                 new EnemyStationPressureTracker(), new SecondStationLevelModel(), _faction);
         }
 
-        [Test]
-        public void LostFinalStation_DoesNotEnterRecovery()
+        [TestCase(0)]
+        [TestCase(1)]
+        [TestCase(2)]
+        public void LostFinalStation_DoesNotEnterRecovery(int stationsBuilt)
         {
-            _faction.AdditionalStationsBuilt = 2;
+            CreateRecovery(TestPlayers.Ally);
+            _faction.AdditionalStationsBuilt = stationsBuilt;
             AddZone(TestPlayers.Human, new Vector3(1000f, 0f, 0f));
             Update(canCapture: false);
             Assert.That(_recovery.IsActive, Is.False);

@@ -146,9 +146,8 @@ namespace EmpireAtWar.Services.Battle
                 {
                     _aliveBases[entity.Owner.Index] |= !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits;
                 }
-                else if (!entity.HealthModel.IsDestroyed)
+                else if (!entity.HealthModel.IsDestroyed && !entity.IsSquadron())
                 {
-                    // Ships, squadrons, defense platforms and mining facilities all keep a player in the battle.
                     _unitCounts[entity.Owner.Index]++;
                 }
             }
@@ -167,7 +166,8 @@ namespace EmpireAtWar.Services.Battle
                     player.Team,
                     _unitCounts[index],
                     _aliveBases[index],
-                    _playerRegistry.HasPendingReinforcement(player.Id)));
+                    _playerRegistry.TryGetReinforcementReserve(player.Id, out var reserve) &&
+                    reserve.HasNonSquadronReserve));
             }
         }
 

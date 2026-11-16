@@ -61,7 +61,7 @@ namespace EmpireAtWar.Services.Saves
             if (_production.ProductionHost == Owner) _faction.CurrentLevel = save.StationLevel;
             _faction.AdditionalStationsBuilt = save.AiAdditionalStationsBuilt;
             // Older saves can still show the retained level of a destroyed second station.
-            if (_production.ProductionHost == Owner && _faction.AdditionalStationsBuilt == 0 && save.SecondStationLevel > 1)
+            if (_faction.AdditionalStationsBuilt == 0 && save.SecondStationLevel > 1)
                 _faction.AdditionalStationsBuilt = 1;
             _secondStation.CurrentLevel = save.SecondStationLevel;
             ResearchSave.RestoreAll(save.Research, _research);

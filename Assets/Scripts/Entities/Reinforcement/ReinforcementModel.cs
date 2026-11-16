@@ -64,6 +64,19 @@ namespace EmpireAtWar.Models.Reinforcement
         public bool CanDeployPreview { get; set; }
         public bool HasReserve => _reserveCounts.Count > 0;
 
+        public bool HasNonSquadronReserve
+        {
+            get
+            {
+                foreach (UnitRequest request in _reserveRequests.Values)
+                {
+                    if (request is not SquadronUnitRequest) return true;
+                }
+
+                return false;
+            }
+        }
+
         public ReinforcementModel(ReinforcementData data)
         {
             _data = data;

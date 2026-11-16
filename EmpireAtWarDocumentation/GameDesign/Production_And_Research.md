@@ -61,7 +61,7 @@ verification: Inspected EnemyBuildQueue, PlayerFactionModel, FactionService, Ene
 - Maximum station level: 5. Default battle builder starts at level 1; Survival starts at level 5.
 - Level changes affect available roster entries, station combat stats/model, and station-derived income.
 - Station upgrade requests have `MaxCount = 1` and `UnitCapacity = 0`.
-- Second Station: 3,000 credits, 90 s, level 1 entry. It starts at level 1, upgrades through its own level chain at the same prices and durations, and shares the production queue, research and limits. A standing second station can keep production available after the main station is lost.
+- Second Station: 3,000 credits, 90 s, level 1 entry. It starts at level 1, upgrades through its own level chain at the same prices and durations, and shares the production queue, research and limits. A standing second station can keep production available after the main station is lost. Its construction and upgrades add no credit income.
 
 ### Research lines
 | Line | Required levels | Credits by tier | Time by tier | Latest-tier effect |

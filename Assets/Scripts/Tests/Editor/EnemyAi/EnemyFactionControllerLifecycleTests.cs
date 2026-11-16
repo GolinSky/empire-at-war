@@ -616,9 +616,11 @@ namespace EmpireAtWar.Tests.Editor
             finally { UnityEngine.Object.DestroyImmediate(data); }
         }
 
-        [TestCase(false, 0)]
-        [TestCase(true, 1)]
-        public void HostedSecondStation_RequiresRecovery(bool recovering, int expectedPurchases)
+        [TestCase(false, 0, 0)]
+        [TestCase(true, 0, 1)]
+        [TestCase(true, 1, 0)]
+        public void HostedSecondStation_RequiresRecoveryAndAnUnusedStationSlot(
+            bool recovering, int stationsBuilt, int expectedPurchases)
         {
             var data = ScriptableObject.CreateInstance<ReinforcementData>();
             try
@@ -628,7 +630,7 @@ namespace EmpireAtWar.Tests.Editor
                 SetBackingField(faction, nameof(FactionData.BuildTime), 10);
                 var wallet = new TrackingWallet();
                 var controller = new EnemyFactionController(aiState: new IdleAiState(),
-                    model: new EnemyFactionModel(null, null), shipFactory: null,
+                    model: new EnemyFactionModel(null, null) { AdditionalStationsBuilt = stationsBuilt }, shipFactory: null,
                     miningFacilityFactory: null, defendPlatformFactory: null, stationFactory: null,
                     secondStation: new SecondStationLevelModel(), research: null,
                     economyProvider: new TrackingEconomyProvider(), wallet: wallet, shipSpawnPoints: null,
@@ -646,7 +648,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SecondStation_CanRebuildOnceAfterLosingBothBases()
+        public void SecondStation_RequiresLivingPrimaryAndAnUnusedStationSlot()
         {
             var data = ScriptableObject.CreateInstance<ReinforcementData>();
             try
@@ -670,24 +672,19 @@ namespace EmpireAtWar.Tests.Editor
 
                 Assert.That(controller.CanQueue(request.Id, 1), Is.True, "The initial backup is available.");
                 model.AdditionalStationsBuilt = 1;
-                Assert.That(controller.CanQueue(request.Id, 1), Is.False, "The primary still stands.");
-                access.CanProduce = false;
+                Assert.That(controller.CanQueue(request.Id, 1), Is.False, "The backup slot has been used.");
+                access.HasHostBaseOverride = false;
                 secondStation.IsBuilt = true;
                 Assert.That(controller.CanQueue(request.Id, 1), Is.False, "The backup still stands.");
                 secondStation.IsBuilt = false;
                 placement.IsRecovering = true;
                 controller.Purchase(request);
-                Assert.That(controller.PendingBuilds.Count, Is.EqualTo(1));
-                Assert.That(wallet.SpendCount, Is.EqualTo(1));
-                Assert.That(model.AdditionalStationsBuilt, Is.EqualTo(1), "Only completed builds count.");
-
-                model.AdditionalStationsBuilt = 2;
-                controller.Advance(10f);
-                Assert.That(controller.PendingBuilds, Is.Empty, "A stale queued build must be canceled.");
-                Assert.That(wallet.RefundCount, Is.EqualTo(1));
-                Assert.That(controller.CanQueue(request.Id, 1), Is.False, "The replacement used the last slot.");
+                Assert.That(wallet.SpendCount, Is.Zero, "A destroyed backup cannot be rebuilt.");
+                model.AdditionalStationsBuilt = 0;
+                Assert.That(controller.CanQueue(request.Id, 1), Is.False, "An allied base cannot replace the primary.");
                 controller.Purchase(request);
-                Assert.That(wallet.SpendCount, Is.EqualTo(1));
+                Assert.That(wallet.SpendCount, Is.Zero);
+                Assert.That(controller.PendingBuilds, Is.Empty);
                 controller.LateDispose();
             }
             finally { UnityEngine.Object.DestroyImmediate(data); }
@@ -920,7 +917,8 @@ namespace EmpireAtWar.Tests.Editor
             public PlayerId ProductionHost { get; set; } = TestPlayers.Enemy;
 
             public bool CanProduce { get; set; } = true;
-            public bool HasHostBase => CanProduce;
+            public bool? HasHostBaseOverride { get; set; }
+            public bool HasHostBase => HasHostBaseOverride ?? CanProduce;
 
             public bool TryGetProductionBase(out IEntity station) =>
                 throw new NotImplementedException();

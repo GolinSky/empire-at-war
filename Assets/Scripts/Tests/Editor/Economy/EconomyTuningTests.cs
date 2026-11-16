@@ -87,7 +87,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void SecondStation_AddsIncomeByItsOwnLevelWhileItStands()
+        public void SecondStation_BuildUpgradeAndLossDoNotChangeIncome()
         {
             FactionRoster roster = CreateRoster("Empire");
             FactionResearchModel research = new FactionResearchModel(roster);
@@ -100,9 +100,9 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(station.Income, Is.EqualTo(45f));
             secondStation.IsBuilt = true;
-            Assert.That(station.Income, Is.EqualTo(60f));
+            Assert.That(station.Income, Is.EqualTo(45f));
             secondStation.CompleteLevelUpgrade();
-            Assert.That(station.Income, Is.EqualTo(75f));
+            Assert.That(station.Income, Is.EqualTo(45f));
             secondStation.HandleLost();
             Assert.That(station.Income, Is.EqualTo(45f));
         }

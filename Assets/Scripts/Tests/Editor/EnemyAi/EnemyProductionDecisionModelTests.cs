@@ -987,7 +987,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void StationlessRecovery_OrdersOnlyAReplacementStation()
+        public void StationlessRecovery_DoesNotOrderAReplacementStation()
         {
             var reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
             FactionDefinition definition = CopyDefinition(FactionType.Republic, Array.Empty<ShipType>());
@@ -1008,8 +1008,7 @@ namespace EmpireAtWar.Tests.Editor
                 strategy.Start();
                 strategy.Tick(0f);
 
-                Assert.That(purchases.RequestCount, Is.EqualTo(1));
-                Assert.That(purchases.LastRequest, Is.TypeOf<SecondStationUnitRequest>());
+                Assert.That(purchases.RequestCount, Is.Zero);
             }
             finally
             {

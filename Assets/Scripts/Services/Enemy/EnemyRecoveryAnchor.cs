@@ -87,7 +87,8 @@ namespace EmpireAtWar.Services.Enemy
             _advantage = _smoother.Fleet;
             if (_latch.Update(now, _advantage, EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage,
                     underAttack || _pressure.HasPressure, !hasOwnStation, _pressure.IsStationCritical,
-                    !_secondStation.IsBuilt && _faction.CanBuildAdditionalStation(hasOwnStation)))
+                    !_secondStation.IsBuilt && _faction.CanBuildAdditionalStation(hasOwnStation,
+                        _production.ProductionHost != _owner.Id)))
                 RecordMode();
             if (!IsActive) { _anchor = null; return; }
             SelectAnchor(now, hasOwnStation);
