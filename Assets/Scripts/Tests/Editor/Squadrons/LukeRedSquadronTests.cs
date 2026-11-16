@@ -51,7 +51,9 @@ namespace EmpireAtWar.Tests.Editor
 
             WeaponHardPoint[] guns = view.GetComponentsInChildren<WeaponHardPoint>(true);
             Assert.That(guns.Select(gun => gun.Id).Distinct().Count(), Is.EqualTo(24));
-            SerializedProperty registered = new SerializedObject(view.GetComponent<WeaponComponent>()).FindProperty("hardPoints");
+            WeaponComponent weapons = view.GetComponentInChildren<WeaponComponent>(true);
+            Assert.That(weapons, Is.Not.Null);
+            SerializedProperty registered = new SerializedObject(weapons).FindProperty("hardPoints");
             Assert.That(registered.arraySize, Is.EqualTo(24));
             Assert.That(Enumerable.Range(0, registered.arraySize)
                 .Select(index => registered.GetArrayElementAtIndex(index).objectReferenceValue), Is.EquivalentTo(guns));

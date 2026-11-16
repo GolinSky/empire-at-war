@@ -568,9 +568,13 @@ namespace EmpireAtWar.Tests.Editor
                 string iconFolder = unitName == "YWingBomber" || unitName == "TIEAvenger"
                     ? "ShipIcon"
                     : "SquadronIcon";
-                // Icons are grouped by faction: <iconFolder>/<Faction>/<Unit>Icon.png.
+                string iconExtension = unitName == "AsajjVentressGinivex" || unitName == "SevranceTannGinivex"
+                    ? "tga"
+                    : "png";
+                // The Ginivex heroes use their imported portrait sprites.
                 Assert.That(AssetDatabase.GetAssetPath(unitIcon.sprite),
-                    Does.StartWith($"Assets/Art/Textures/Ui/Icons/{iconFolder}/").And.EndWith($"/{unitName}Icon.png"), path);
+                    Does.StartWith($"Assets/Art/Textures/Ui/Icons/{iconFolder}/")
+                        .And.EndWith($"/{unitName}Icon.{iconExtension}"), path);
                 Assert.That(unitIcon.preserveAspect, Is.True, path);
                 Assert.That(unitIcon.rectTransform.sizeDelta, Is.EqualTo(new Vector2(-13.5f, -13.5f)), path);
                 Assert.That(unitIcon.rectTransform.anchoredPosition, Is.EqualTo(new Vector2(0f, -1.5f)), path);
