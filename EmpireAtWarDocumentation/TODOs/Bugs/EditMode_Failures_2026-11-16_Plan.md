@@ -14,7 +14,7 @@ created: 2026-11-16
 - Total 3,992 · passed 3,925 · failed 63 · skipped 4. PlayMode passed (user report).
 - Initial HEAD at analysis: `d2a8868da`.
 - Rerun `Assets/TestResults_20261116_204943.xml`: 3,958 passed, 30 failed, 4 skipped. No newly failing cases. Remaining: A 2, B 12, C 7, F 6, G 3.
-- 4 of 63 failures come from the shared-AI work; 31 come from one UI line; 28 from content, HUD and input work.
+- Latest user run `Assets/TestResults_20261116_205825.xml`: 3,960 passed, 28 failed, 4 skipped. Remaining: A 1, B 12, C 7, F 6, G 2. No newly failing cases.
 
 | Group | Fixture | Fails | Origin |
 |---|---|---|---|
@@ -34,7 +34,9 @@ created: 2026-11-16
 - [x] `28f4a760c`: deactivate all production cards before refreshing tutorial markers on an inactive route. Disabled cards unregister anchors; showing the HUD refreshes them. All 31 archived failures followed the changed path.
 - User rerun: `RealEntityCompositionTests` 33/35; both failures occur during save restoration. `SavedSkirmish_RestoresPlayerStateStructuresAndOwnerBookkeepingIntoNewBattle` logs from `TutorialAnchor.Mark`; `SquadronPrewarm_AfterRestore_AllocatesIdsPastRestoredEntitiesAndRespawnsWithoutCollision` logs from `FactionUnitUi.Destroy`.
 - [x] `456c9a5d9`: use immediate destruction for replaced runtime-created cards and anchors in EditMode, keep deferred destruction in PlayMode.
-- [ ] Verify `Core` after the follow-up fix.
+- Latest user run: `Core` 153/154. The prewarm case passed. The save restoration fixture still expected four removed HUD errors.
+- [x] `e9dce256e`: removed stale log expectations while keeping all save restoration assertions.
+- [ ] Verify `Core` after fixture cleanup.
 
 ### D — shared AI test doubles (2 tests)
 - `Commander_ShipRemovedMidMultiFrameCycle_DoesNotThrow`: `NullReferenceException` at `EnemyStrategicContextBuilder.IncludeNearbyOwn` (`:1221`). `TestEntity.GetFacade` returns null for `IEntityTransformFacade`.
@@ -50,44 +52,29 @@ created: 2026-11-16
 - [x] User rerun `TestResults_20261116_204943.xml`: `EnemyAi` 481/481; `EnemyDecisionSchedulingTests` 14/14 and `EnemyProductionStrategyTests` 12/12.
 
 ### C — control group input (7 tests)
-- All recall/assign requests are empty; `CommandSettingControlsPreviewAndAssignment` false.
-- Suspect (unverified): `ControlGroupInput.HandleFocusChanged` sets `_waitForRelease = true`; `SetUp` calls `SetFocus(true)` after `Initialize()` and the first `Tick` may not clear it when the Editor window is unfocused or the simulated keyboard reports no release edge.
-- [ ] Reproduce with the Editor focused and unfocused. Result differs → test must not depend on `Application.isFocused`; inject focus into `ControlGroupInput` instead of reading the static.
-- [ ] Result same → debug `_waitForRelease` / `_pendingIndex` flow against `InputSettingsData.ControlGroupModifier`.
-- Tests: `BattleInput`.
+- [x] `204700835`: EditMode Input System updates default to editor updates, which skip action callbacks. Fixture uses manual player updates and the simulated keyboard. TearDown restores original settings.
+- Tests: `BattleInput`. Assertions preserved.
 
 ### B — selection ring and health anchor fit (12 tests)
-- `ShipSelectionRing_InitializationFitsHullWithoutMovingHealthAnchor`.
-
-| Prefab | Expected | Actual |
-|---|---|---|
-| `BulwarkIIShipView` | 0.88–0.96 | 0.438 |
-| `DHOmniShipView` | 0.88–0.96 | 0.686 |
-| `RecusantDreadnoughtShipView` | 0.88–0.96 | 0.675 |
-| `DiamondShipView` | 0.88–0.96 | 4.764 |
-| `LupusShipView` | 0.88–0.96 | 4.234 |
-| `AnakinSkywalkerEta2`, `MaceWinduEta2`, `ObiWanKenobiEta2` squadron views | 8.775 ± 0.001 | 7.915 |
-| `PloKoonDelta7BSquadronView` | 8.370 ± 0.001 | 7.915 |
-| `AsajjVentressGinivex`, `SevranceTannGinivex`, `TIEDefender` squadron views | 1.1–1.2 | 0.963–0.971 |
-
-- [ ] Ships: ring size not fitted to hull on five Separatist prefabs (two are >4× hull → likely wrong unit or missing fit). Re-run the project's ring-fit tool on those prefabs; follow [[Rules/UI_UX_GUIDELINES]] and Unity Asset Persistence rules.
-- [ ] Hero squadrons: all four report 7.915 → one shared value overrides per-prefab anchors. Find the shared source before touching prefabs.
-- [ ] After prefab edits: confirm each unit still spawns and `ShipData` hardpoint coverage is intact.
-- Tests: `Health`.
+- [x] `74462ddbe`: fit ring geometry for Bulwark II, DH Omni, Diamond, Lupus and Recusant Dreadnought. Unity readback shows 0.92 visible width relative to hull and centered placement. Health anchors retain their authored positions.
+- [x] Fit Ginivex and TIE Defender squadron rings to 1.15 × formation dimensions. Synchronize four Jedi hero preview scales to their authored ring sizes. Unity readback confirms all seven preview dimensions and ratios.
+- Tests: `Health` (`HealthOverlayAnchorTests`).
 
 ### F — new unit content (6 tests)
-- [ ] `BalanceInventoryTests.FullRegisteredPreset_CanCaptureCurrentSchemaWithoutRuntimeWrites`: `Lupus Missile Frigate / HP_Lupus_Laser_01 / Unlock Level` below minimum 1 → set a valid unlock level on the Lupus hardpoint data.
-- [ ] `WeaponTaxonomyTests.EveryUnitRadar_ReachesItsLongestGun`: `LupusShipData` radar range shorter than its longest weapon → raise radar range or correct the weapon.
-- [ ] `SquadronIconPrefabTests.SquadronViews_MarkerRootIsAssignedAndHasNoOwnCanvas`: `AsajjVentressGinivexSquadronView` icon is not `.../SquadronIcon/<faction>/AsajjVentressGinivexIcon.png` → add/assign the icon (commit `1745e04fd` changed Ginivex portraits).
-- [ ] `UnitSpawnViewTests.PlacementPrefabs_DeclareHologramMaterialUsedByEveryListedRenderer`: `AsajjVentressGinivexReinforcementView` `Box01` has no Hologram slot → add the slot or remove the stray renderer.
-- [ ] `LukeRedSquadronTests.SavedFormation_BindsLukeAndFiveWingmenToHealthFlightAndWeapons`: "Object at index 0 is null" → a serialized reference on the Luke squadron prefab is missing.
-- [ ] `SurvivalGameplayTests.AuthoredWaves_IncludeEveryUnlockedShipWithEqualTierCounts`: Republic wave 4 does not contain every unlocked ship → update survival wave data for the changed roster.
+- [x] `825769050`: eight Lupus hardpoints unlock at level 1. Radar reaches its longest weapon. Editor validation checked all 18,499 registered balance fields with zero errors.
+- [x] Asajj and Sevrance use their distinct imported portraits. Both placement previews bind all four declared renderers to the hologram material in Unity.
+- [x] Luke fixture resolves the child `WeaponComponent` and checks exact membership of all 24 hardpoints.
+- [x] Add Tector and five Separatist ships to their unlocked survival waves. Source checks cover all 20 waves, equal tier totals, hero counts and carryover.
 - Tests: `Balance`, `Combat`, `Squadrons`, `Economy`, `GameFlow`.
 
-### G — HUD projection and layout (3 tests)
-- [ ] `StructureStatusIconPresenterTests.DestroyedIconTracksCameraPanRotationAndZoomOnBattleCanvas(false/true)`: icon is not 42 px above the structure. This is the unrun regression listed in [[TODOs/User_Acceptance_Queue]] for [[Done/Bugs/Structure_Status_Icons_Projection]] → reopen that plan or fix here; remove its queue line either way.
-- [ ] `SquadronIconPrefabTests.RemovingEdgeMarker_PreservesSurvivorPositionsAndPitchThroughFinalSurvivor(true)`: y 254.4 vs 340.8 (one 86.4 row lower) → survivor marker shifts a row when a ship marker is removed.
-- Tests: `Ui`, `Squadrons`.
+### G — HUD projection and layout (2 failures, one prior intermittent case)
+- [x] `b62c671a2`: render the disabled fixture camera before checking actual icon position. A Unity probe reproduced the 33.54 px orthographic pan error and confirmed rendering updates the camera canvas plane. Both coordinate assertions remain.
+- [x] `RemovingEdgeMarker_PreservesSurvivorPositionsAndPitchThroughFinalSurvivor(true)` passed in `205825`. Initialize the ship marker at its stationary position before registration and check shared group membership to remove the previous fixture's velocity dependence.
+- Tests: `Ui`, `Squadrons`. Live structure icon acceptance remains in [[TODOs/User_Acceptance_Queue]].
+
+## Verification
+- Unity imported and reserialized all 16 changed prefabs and data assets. Asset reloads and script compilation succeeded, with no new import or compilation errors in Console.
+- [ ] Run standard full EditMode on the fixed revision and review results. No tests were run under the local override.
 
 ## Rules
 - Order: A → D → E → C → F → B → G. A unblocks 31 tests and reveals real composition results; D and E gate the AI plan.
@@ -106,4 +93,4 @@ created: 2026-11-16
 - `Assets/Scripts/Services/Input/ControlGroupInput.cs`, `Assets/Scripts/Tests/Editor/BattleInput/ControlGroupInputTests.cs`
 
 ## TODO
-- Related: [[TODOs/Optimization/Shared_Team_AI_Plan]] (waiting for Core verification after the HUD restore fix), [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]].
+- Related: [[TODOs/Optimization/Shared_Team_AI_Plan]] (waiting for Core verification after stale HUD log expectations were removed), [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]].
