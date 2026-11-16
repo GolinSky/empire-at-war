@@ -1673,3 +1673,24 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: TIEDefenderSquadronView
+      value:
+        m_AssetGUID: bc52f438256a6dd4aba7adc3f33bb954
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TIEDefenderSquadronData
+      value:
+        m_AssetGUID: 29c76cf4fc3a41b8a86bfa438996928e
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: TIEDefenderReinforcementView
+      value:
+        m_AssetGUID: 68c5a6579b2a4ac4a2538e41627e1346
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

@@ -510,6 +510,24 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 8ed5c98fc325a8d4c9c82c74f72e7bd0,
           type: 3}
+    - key: 207
+      value:
+        matchups: {fileID: 11400000, guid: 848c7b1e5e8642d0bdc648dc0c28b681, type: 2}
+        displayName: TIE Defender
+        description: Three shielded elite fighters. Each has 105 hull, 50 shields,
+          four laser cannons and a proton torpedo launcher. Torpedoes deal 72 damage
+          per fighter before target modifiers and can fire once per attack run.
+        role: Elite multirole fighter
+        iconKey: e18689d7f5884dd8aa29ea1e58dffee2:21300000
+        isHero: 0
+        <Name>k__BackingField: TIE Defender Squadron
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 1000
+        <BuildTime>k__BackingField: 22
+        <UnitCapacity>k__BackingField: 2
+        <Icon>k__BackingField: {fileID: 21300000, guid: e18689d7f5884dd8aa29ea1e58dffee2,
+          type: 3}
   research:
     keyValue:
     - key: 0

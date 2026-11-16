@@ -100,6 +100,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29c76cf4fc3a41b8a86bfa438996928e
+    m_Address: TIEDefenderSquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2eb413ef673c4f0428fa6071e1634573
     m_Address: NTB630SquadronData
     m_ReadOnly: 0

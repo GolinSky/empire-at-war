@@ -145,6 +145,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68c5a6579b2a4ac4a2538e41627e1346
+    m_Address: TIEDefenderReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6d3fc6fd8c8219942a1473edcc762f67
     m_Address: ISDIWreckView
     m_ReadOnly: 0
@@ -267,6 +272,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b6ab4d2cbadbb02498d2028321510173
     m_Address: EmpireSpaceStationLevel4WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc52f438256a6dd4aba7adc3f33bb954
+    m_Address: TIEDefenderSquadronView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

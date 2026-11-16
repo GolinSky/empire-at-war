@@ -104,5 +104,7 @@ namespace EmpireAtWar.Components.AttackComponent
         XWingProtonTorpedo = 155,
         LightDualIonCannon = 156,
         YWingBomberProtonTorpedo = 157,
+        TIEDefenderLaser = 158,
+        TIEDefenderProtonTorpedo = 159,
     }
 }

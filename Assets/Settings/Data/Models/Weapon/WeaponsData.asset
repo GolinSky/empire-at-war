@@ -2281,3 +2281,39 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 158
+    displayName: TIE Defender Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: TIEDefender
+    damageMultiplier: 1.2
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: TIE Defender dogfight damage per cannon.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 159
+    displayName: TIE Defender Proton Torpedo
+    family: 23
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: TIEDefender
+    damageMultiplier: 1
+    reloadMultiplier: 1.375
+    rangeMultiplier: 1
+    reason: TIE Defender ship-only torpedo per attack run.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}

@@ -540,6 +540,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e18689d7f5884dd8aa29ea1e58dffee2
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/TIEDefenderIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e54026c071416a845b2d23e814c1e8d5
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ArquitensImperialCruiserIcon.png
     m_ReadOnly: 0
