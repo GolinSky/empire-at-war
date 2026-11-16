@@ -27,7 +27,7 @@ namespace EmpireAtWar.Presenters.Cheats
         private readonly List<PlayerSlot> _enemies = new();
 
         private readonly FactionCatalog _factionCatalog;
-        private readonly Dictionary<ShipType, FactionData> _shipData = new();
+        private FactionType _selectedFaction;
 
         public CheatPresenter(
             ICheatView view,
@@ -114,21 +114,10 @@ namespace EmpireAtWar.Presenters.Cheats
 
         private List<FactionType> BuildShipCatalog()
         {
-            _shipData.Clear();
             List<FactionType> factions = new List<FactionType>();
             foreach (FactionDefinition faction in _factionCatalog.Factions)
             {
                 factions.Add(faction.FactionType);
-                foreach (KeyValuePair<ShipType, FactionData> ship in faction.Ships)
-                {
-                    if (_shipData.ContainsKey(ship.Key))
-                    {
-                        throw new InvalidOperationException(
-                            $"Ship {ship.Key} is configured for more than one faction.");
-                    }
-
-                    _shipData.Add(ship.Key, ship.Value);
-                }
             }
 
             return factions;
@@ -136,6 +125,7 @@ namespace EmpireAtWar.Presenters.Cheats
 
         private void SelectFaction(FactionType factionType)
         {
+            _selectedFaction = factionType;
             List<ShipType> ships = new List<ShipType>(_factionCatalog.Get(factionType).Ships.Keys);
             ships.Sort((left, right) => ((int)left).CompareTo((int)right));
             _view.SetShips(ships);
@@ -150,13 +140,13 @@ namespace EmpireAtWar.Presenters.Cheats
 
         private void AddReinforcement(ShipType shipType)
         {
-            _cheatService.AddShipReinforcement(CreateRequest(shipType));
+            _cheatService.AddShipReinforcement(CreateRequest(_selectedFaction, shipType));
             _view.SetStatus($"Added {shipType} to reinforcement.");
         }
 
         private void SpawnForce(ShipType shipType)
         {
-            bool spawned = _cheatService.ForceSpawnShipAtDefaultZone(CreateRequest(shipType));
+            bool spawned = _cheatService.ForceSpawnShipAtDefaultZone(CreateRequest(_selectedFaction, shipType));
             _view.SetStatus(spawned
                 ? $"Spawned {shipType} at the default zone."
                 : "No player-owned reinforcement zone is available.");
@@ -212,7 +202,7 @@ namespace EmpireAtWar.Presenters.Cheats
             Dictionary<ShipType, FactionData> ships = _factionCatalog.Get(faction).Ships;
             foreach (ShipType type in ships.Keys)
             {
-                if (_cheatService.ForceSpawnShipAtDefaultZone(CreateRequest(type))) spawned++;
+                if (_cheatService.ForceSpawnShipAtDefaultZone(CreateRequest(faction, type))) spawned++;
             }
             _view.SetStatus($"Spawned {spawned} of {ships.Count} {faction} ships; others had no valid spawn position.");
         }
@@ -272,14 +262,9 @@ namespace EmpireAtWar.Presenters.Cheats
             _view.SetStatus($"Upgraded {upgraded} of {_enemies.Count} enemy stations by one level.");
         }
 
-        private ShipUnitRequest CreateRequest(ShipType shipType)
+        private ShipUnitRequest CreateRequest(FactionType faction, ShipType shipType)
         {
-            if (!_shipData.TryGetValue(shipType, out FactionData factionData))
-            {
-                throw new InvalidOperationException($"Ship {shipType} has no faction data.");
-            }
-
-            return new ShipUnitRequest(factionData, shipType);
+            return new ShipUnitRequest(_factionCatalog.Get(faction).Ships[shipType], shipType);
         }
     }
 }

@@ -78,8 +78,8 @@ tags:
 ## TODO
 
 - Phase 3 target chosen by user: Windows / Direct3D11 on this PC (2026-11-16). Earlier unrelated `IVisionService.IsRevealed` compile failure cleared after refresh; latest Editor reports `scriptCompilationFailed = false`.
-- Only discovered local Windows Player is `Builds/MusicReplacementWindows/EmpireAtWar.exe` dated 2026-10-22; it is not a before/after build for these changes.
-- Next: build a pinned baseline, then run one-variable experiments with the acceptance protocol above. Do not retain speculative Phase 3 rewrites without measurements.
+- Two Windows Development builds succeeded, but battle startup failed on a shared Tector entry in `CheatPresenter`. Source fix preserves faction-specific data; no matched capture obtained. See [[TODOs/Optimization/Custom_Shader_Fixes_Plan - Research]].
+- User requested continuation without tests or further builds. Phase 3 measurements are deferred; no speculative shader candidates retained in production.
 - User visual acceptance remains for flash-off origin, wreck transition/dissolve and zone masking, and orthographic soft particles.
 - Rendering performance acceptance shares the capture gate of [[TODOs/Optimization/Battle_FPS_Recovery_Plan]].
 
@@ -91,3 +91,11 @@ tags:
 - Reviewed Map: `SpaceHazardPresentationTests`, `PlanetObstaclePresentationTests`, `DecorAsteroidBuilderTests`; Health: `WreckCutPlanTests`, `WreckMaterialSyncTests`; Combat: `ShieldSurfaceClipParityTests`, `BoltParticleSimulationTests`. Existing binding/geometry/material-property contracts remain valid; no expectations weakened. Added `WreckMaterialSyncTests.IsdiiiWreck_AlphaClippingSurvivesMaterialRebuild` (Health) for the opaque hull and retained steelgirder cutout, covering saved and source-copy/reassigned-shader keywords. Ui contracts unchanged.
 - Tests not run under local execution override. No render acceptance or Development Player capture performed.
 - Reusable guidance extracted to [[Rules/BATTLE_PERFORMANCE_GUIDELINES#Custom shader fixes · 2026-11-16]]. Plan stays active because Phase 3 has unimplemented scope.
+
+## Startup blocker follow-up — 2026-11-16
+
+- `CheatPresenter` no longer flattens all factions into a unique ship-type dictionary. Individual requests use the selected faction; Spawn All uses its requested faction. Shared Tector roster entries remain intact.
+- Abilities regression coverage added for shared-ship initialization and faction-specific requests; reviewed against `CheatServiceTests`. Tests and further Player builds not run, as requested.
+- Reusable rule: shared ship types are valid across faction definitions; faction-sensitive requests must retain faction identity.
+
+- Follow-up verification: `CheatPresenterTests` imported; Editor C# compilation completed with `scriptCompilationFailed = false`. Five Abilities regression cases authored and source-reviewed, not executed. `git diff --check` clean.
