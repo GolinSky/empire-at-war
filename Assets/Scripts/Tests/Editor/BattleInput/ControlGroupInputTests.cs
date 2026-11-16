@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Settings;
 using NUnit.Framework;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 
@@ -12,6 +12,10 @@ namespace EmpireAtWar.Tests.Editor
     [Category("BattleInput")]
     public sealed class ControlGroupInputTests
     {
+        private const string RUN_PLAYER_UPDATES_IN_EDIT_MODE = "RUN_PLAYER_UPDATES_IN_EDIT_MODE";
+
+        private InputSettings _originalSettings;
+        private InputSettings _testSettings;
         private InputActionsProvider _provider;
         private ControlGroupInput _input;
         private SettingsService _settings;
@@ -21,8 +25,14 @@ namespace EmpireAtWar.Tests.Editor
         [SetUp]
         public void SetUp()
         {
+            _originalSettings = InputSystem.settings;
+            _testSettings = Object.Instantiate(_originalSettings);
+            _testSettings.updateMode = InputSettings.UpdateMode.ProcessEventsManually;
+            _testSettings.SetInternalFeatureFlag(RUN_PLAYER_UPDATES_IN_EDIT_MODE, true);
+            InputSystem.settings = _testSettings;
             _provider = new InputActionsProvider();
             _keyboard = InputSystem.AddDevice<Keyboard>();
+            _provider.Actions.devices = new InputDevice[] { _keyboard };
             _settings = new SettingsService(new MemoryRepository(), new List<ISettingsApplier>());
             _settings.Initialize();
             _input = new ControlGroupInput(_provider, _settings);
@@ -41,6 +51,8 @@ namespace EmpireAtWar.Tests.Editor
             _input.LateDispose();
             _provider.Dispose();
             InputSystem.RemoveDevice(_keyboard);
+            InputSystem.settings = _originalSettings;
+            Object.DestroyImmediate(_testSettings);
         }
 
         [TestCase(Key.Digit1, 1)]
@@ -131,6 +143,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private void State(params Key[] keys)
         {
+            _keyboard.MakeCurrent();
             InputSystem.QueueStateEvent(_keyboard, new KeyboardState(keys));
             InputSystem.Update();
         }
