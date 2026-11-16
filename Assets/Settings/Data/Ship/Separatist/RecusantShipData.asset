@@ -80,7 +80,11 @@ MonoBehaviour:
   weaponLoadout:
   - weaponType: 3
     count: 5
+  - weaponType: 5
+    count: 6
   - weaponType: 62
     count: 2
-  - weaponType: 90
+  - weaponType: 89
     count: 3
+  - weaponType: 90
+    count: 6
