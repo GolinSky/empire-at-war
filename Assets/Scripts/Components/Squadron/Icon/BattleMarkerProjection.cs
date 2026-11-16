@@ -231,10 +231,11 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         private Vector2 FindPlacement(Vector2 center, Vector2 halfSize, Vector2 previousOffset, float pitch,
             bool constrainToViewport)
         {
+            // Collision offsets are temporary: return to the world anchor once it is clear.
+            if (IsFree(center, halfSize)) return center;
             Vector2 previous = center + previousOffset;
             if (constrainToViewport) previous = ClampCenter(previous, halfSize);
             if (IsFree(previous, halfSize)) return previous;
-            if (IsFree(center, halfSize)) return center;
 
             // Try the nearest edge-aligned moves as well as surrounding cells. The bounded search
             // lets transient congestion overlap instead of making projected markers vanish.

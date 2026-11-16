@@ -224,6 +224,63 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public void MovingGrid_ReturnsToItsWorldAnchorAfterClearingAnotherGrid(bool isSquadron)
+        {
+            GameObject root = new GameObject("MarkerLayer", typeof(RectTransform));
+            try
+            {
+                BattleMarkerLayer layer = CreateLayer(root);
+                BattleMarker first = CreateMarker(layer, root.transform, 1, isSquadron);
+                BattleMarker second = CreateMarker(layer, root.transform, 2, isSquadron);
+                BattleMarker movingFirst = CreateMarker(layer, root.transform, 3, isSquadron);
+                BattleMarker movingSecond = CreateMarker(layer, root.transform, 4, isSquadron);
+                Vector3 position = new Vector3(0f, 0f, 200f);
+                movingFirst.SetPosition(position);
+                movingSecond.SetPosition(position);
+                movingFirst.AnchorTransform.position = position;
+                movingSecond.AnchorTransform.position = position;
+                SquadronIconGrouping grouping = GetGrouping(layer);
+                UpdateGrouping(layer, grouping, 3);
+                Assert.That(grouping.TryGetSlot(first.EntityId, out long stationaryGroup, out _), Is.True);
+                Assert.That(grouping.TryGetSlot(movingFirst.EntityId, out long movingGroup, out _), Is.True);
+                Assert.That(movingGroup, Is.Not.EqualTo(stationaryGroup));
+                Assert.That(grouping.TryGetSlot(movingSecond.EntityId, out long secondMovingGroup, out _), Is.True);
+                Assert.That(secondMovingGroup, Is.EqualTo(movingGroup));
+                UnityCamera camera = CreateProjectionCamera(root.transform, out float zoom);
+                var projection = new BattleMarkerProjection();
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                Rect stationaryBefore = first.ScreenRect;
+                Assert.That(movingFirst.IsShown, Is.True);
+                Assert.That(movingSecond.IsShown, Is.True);
+                Assert.That(movingFirst.ScreenRect.Overlaps(first.ScreenRect), Is.False);
+                Assert.That(movingFirst.ScreenRect.Overlaps(second.ScreenRect), Is.False);
+
+                position.x = 300f * zoom;
+                movingFirst.SetPosition(position);
+                movingSecond.SetPosition(position);
+                movingFirst.AnchorTransform.position = position;
+                movingSecond.AnchorTransform.position = position;
+                projection.Draw(layer.Markers, grouping, camera, zoom);
+                Rect movedFirst = movingFirst.ScreenRect;
+                Rect movedSecond = movingSecond.ScreenRect;
+                Assert.That(first.ScreenRect, Is.EqualTo(stationaryBefore));
+
+                // An unobstructed projection is the expected placement once the grids separate.
+                new BattleMarkerProjection().Draw(new IBattleMarker[] { movingFirst, movingSecond },
+                    grouping, camera, zoom);
+                Assert.That(Vector2.Distance(movedFirst.center, movingFirst.ScreenRect.center),
+                    Is.LessThanOrEqualTo(2.01f), "Only the two-pixel anchor dead zone may remain.");
+                Assert.That(Vector2.Distance(movedSecond.center, movingSecond.ScreenRect.center),
+                    Is.LessThanOrEqualTo(2.01f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+            }
+        }
+
         [Test]
         public void ReusedReplicaEntityId_DoesNotRestoreDeadMarkersGridState()
         {
