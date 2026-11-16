@@ -364,6 +364,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public TooltipHoverView TooltipHover => null;
             public event Action<SuperWeaponType> Pressed { add { } remove { } }
+            public event Action<SuperWeaponType> PurchaseRequested { add { } remove { } }
             public event Action ToggleRequested { add { } remove { } }
             public event Action CloseRequested { add { } remove { } }
             public void Initialize() { }

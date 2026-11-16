@@ -1204,6 +1204,7 @@ GameObject:
   - component: {fileID: 1625099232424867772}
   - component: {fileID: 4680289866951321434}
   - component: {fileID: 6260279202040386549}
+  - component: {fileID: 5733177375610946667}
   - component: {fileID: 6741031356240414731}
   - component: {fileID: 3048946918515453318}
   - component: {fileID: 4082559219380582906}
@@ -1358,6 +1359,50 @@ MonoBehaviour:
     - {r: 0.1254902, g: 0.18039216, b: 0.2509804, a: 1}
     - {r: 0.1254902, g: 0.18039216, b: 0.2509804, a: 1}
     m_Rotation: 0
+--- !u!114 &5733177375610946667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266089834694690095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 0
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 1.17, g: 1.23, b: 1.44, a: 1}
+    m_PressedColor: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+    m_SelectedColor: {r: 1.17, g: 1.23, b: 1.44, a: 1}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.08
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 6260279202040386549}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &6741031356240414731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1371,6 +1416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.SuperWeapons.Ui.SuperWeaponButton
   button: {fileID: 5416271686199147987}
+  rowButton: {fileID: 5733177375610946667}
   pendingHighlight: {fileID: 4727994670202779751}
   stateText: {fileID: 7862675013886877023}
   actionText: {fileID: 5336758960521051293}
@@ -12612,6 +12658,7 @@ GameObject:
   - component: {fileID: 8098764780976527029}
   - component: {fileID: 5074355327191093695}
   - component: {fileID: 2120941307801188634}
+  - component: {fileID: 2439545178034623130}
   - component: {fileID: 8288821068393060810}
   - component: {fileID: 3693921003757912117}
   - component: {fileID: 2100317897434906163}
@@ -12766,6 +12813,50 @@ MonoBehaviour:
     - {r: 0.1254902, g: 0.18039216, b: 0.2509804, a: 1}
     - {r: 0.1254902, g: 0.18039216, b: 0.2509804, a: 1}
     m_Rotation: 0
+--- !u!114 &2439545178034623130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6127812881559489670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 0
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 1.17, g: 1.23, b: 1.44, a: 1}
+    m_PressedColor: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+    m_SelectedColor: {r: 1.17, g: 1.23, b: 1.44, a: 1}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.08
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 2120941307801188634}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &8288821068393060810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12779,6 +12870,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.SuperWeapons.Ui.SuperWeaponButton
   button: {fileID: 8080576091132871337}
+  rowButton: {fileID: 2439545178034623130}
   pendingHighlight: {fileID: 7770299013056724404}
   stateText: {fileID: 4906570057928844693}
   actionText: {fileID: 1927725288838458754}
@@ -14543,6 +14635,7 @@ GameObject:
   - component: {fileID: 8321693410016717639}
   - component: {fileID: 8467834075956548179}
   - component: {fileID: 4910367704413108148}
+  - component: {fileID: 6160148108838497450}
   - component: {fileID: 1055753615229521555}
   - component: {fileID: 1654875771341575954}
   - component: {fileID: 4039485811599714650}
@@ -14697,6 +14790,50 @@ MonoBehaviour:
     - {r: 0.1254902, g: 0.18039216, b: 0.2509804, a: 1}
     - {r: 0.1254902, g: 0.18039216, b: 0.2509804, a: 1}
     m_Rotation: 0
+--- !u!114 &6160148108838497450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6668451971063991549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_Navigation:
+    m_Mode: 0
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 1.17, g: 1.23, b: 1.44, a: 1}
+    m_PressedColor: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+    m_SelectedColor: {r: 1.17, g: 1.23, b: 1.44, a: 1}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.08
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 0
+  m_TargetGraphic: {fileID: 4910367704413108148}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1055753615229521555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14710,6 +14847,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.SuperWeapons.Ui.SuperWeaponButton
   button: {fileID: 3681261458562950311}
+  rowButton: {fileID: 6160148108838497450}
   pendingHighlight: {fileID: 3158238649828747720}
   stateText: {fileID: 8514845805970415197}
   actionText: {fileID: 4085126520021456929}

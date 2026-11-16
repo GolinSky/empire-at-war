@@ -8,6 +8,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
     public sealed class SuperWeaponButton : MonoBehaviour
     {
         [SerializeField] private Button button;
+        [SerializeField] private Button rowButton;
         [SerializeField] private GameObject pendingHighlight;
         [SerializeField] private TMP_Text stateText;
         [SerializeField] private TMP_Text actionText;
@@ -25,22 +26,32 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         private static readonly Color32 Outline = new(52, 67, 87, 255);
         private static readonly Color32 LightText = new(242, 240, 230, 255);
         private static readonly Color32 DarkText = new(16, 26, 41, 255);
-        private static readonly Color32 AimFill = new(39, 70, 91, 255);
 
         public event Action<SuperWeaponType> Pressed;
+        public event Action<SuperWeaponType> PurchaseRequested;
 
         public SuperWeaponType WeaponType => weaponType;
 
-        public void Initialize() => button.onClick.AddListener(HandleClick);
+        public void Initialize()
+        {
+            button.onClick.AddListener(HandlePurchase);
+            rowButton.onClick.AddListener(HandleClick);
+        }
 
-        public void Dispose() => button.onClick.RemoveListener(HandleClick);
+        public void Dispose()
+        {
+            button.onClick.RemoveListener(HandlePurchase);
+            rowButton.onClick.RemoveListener(HandleClick);
+        }
 
         public void Render(SuperWeaponState state, bool canAct, string detail, float progress)
         {
             bool charging = state == SuperWeaponState.Charging;
             bool ready = state == SuperWeaponState.Ready && canAct;
-            bool buy = state == SuperWeaponState.Unavailable && canAct;
-            button.interactable = canAct;
+            bool showPurchase = state == SuperWeaponState.Unavailable;
+            button.gameObject.SetActive(showPurchase);
+            button.interactable = showPurchase && canAct;
+            rowButton.interactable = !showPurchase && canAct;
             contentGroup.alpha = 1f;
             pendingHighlight.SetActive(_pending);
             stateText.text = _pending ? "Targeting" : detail;
@@ -48,15 +59,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
             background.OutlineColor = _pending || charging ? Gold : ready ? Blue : Outline;
             buildProgress.enabled = charging;
             buildProgress.fillAmount = progress;
-            actionText.text = state switch
-            {
-                SuperWeaponState.Charging => "Cancel build",
-                SuperWeaponState.Ready when _pending => "Cancel aim",
-                SuperWeaponState.Ready => canAct ? "Aim" : "Waiting",
-                _ => "Buy charge"
-            };
-            actionText.color = buy ? DarkText : LightText;
-            button.targetGraphic.color = buy ? Gold : ready ? AimFill : Slate;
+            actionText.color = canAct ? DarkText : LightText;
+            button.targetGraphic.color = canAct ? Gold : Slate;
         }
 
         public void SetPending(bool pending)
@@ -66,5 +70,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         }
 
         private void HandleClick() => Pressed?.Invoke(weaponType);
+
+        private void HandlePurchase() => PurchaseRequested?.Invoke(weaponType);
     }
 }

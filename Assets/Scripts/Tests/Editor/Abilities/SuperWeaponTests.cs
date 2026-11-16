@@ -497,7 +497,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void CoreGamePrefab_HasOneWiredButtonPerSuperWeapon()
+        public void CoreGamePrefab_WiresPurchaseAndRowButtonsForEverySuperWeapon()
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
                 "Assets/Prefabs/Ui/SkirmishGame/CoreGameUi.prefab");
@@ -516,6 +516,12 @@ namespace EmpireAtWar.Tests.Editor
                 Button button = (Button)buttonData.FindProperty("button").objectReferenceValue;
                 Assert.That(button, Is.Not.Null);
                 Assert.That(button.transition, Is.EqualTo(Selectable.Transition.ColorTint));
+                Button rowButton = (Button)buttonData.FindProperty("rowButton").objectReferenceValue;
+                Assert.That(rowButton, Is.Not.Null);
+                Assert.That(rowButton.gameObject, Is.SameAs(weapon.gameObject));
+                Assert.That(rowButton.targetGraphic.raycastTarget, Is.True);
+                Assert.That(rowButton.transition, Is.EqualTo(Selectable.Transition.ColorTint));
+                Assert.That(button.transform.parent, Is.SameAs(rowButton.transform));
                 Assert.That(buttonData.FindProperty("pendingHighlight").objectReferenceValue, Is.Not.Null);
                 Assert.That(buttonData.FindProperty("actionText").objectReferenceValue, Is.Not.Null);
                 Image progress = (Image)buttonData.FindProperty("buildProgress").objectReferenceValue;
@@ -554,44 +560,56 @@ namespace EmpireAtWar.Tests.Editor
         {
             using OrbitalMenuFixture menu = new OrbitalMenuFixture();
             const SuperWeaponType WEAPON = SuperWeaponType.IonCannon;
-            Button action = (Button)menu.Row.FindProperty("button").objectReferenceValue;
+            Button purchase = (Button)menu.Row.FindProperty("button").objectReferenceValue;
+            Button row = (Button)menu.Row.FindProperty("rowButton").objectReferenceValue;
             TMP_Text label = (TMP_Text)menu.Row.FindProperty("actionText").objectReferenceValue;
             TMP_Text detail = (TMP_Text)menu.Row.FindProperty("stateText").objectReferenceValue;
             Image progress = (Image)menu.Row.FindProperty("buildProgress").objectReferenceValue;
             menu.Toggle.onClick.Invoke();
 
-            Assert.That(action.interactable, Is.False);
+            Assert.That(purchase.interactable, Is.False);
             Assert.That(detail.text, Is.EqualTo("Requires station level 3"));
             menu.SecondStation.IsBuilt = true;
             menu.SecondStation.CurrentLevel = 3;
             menu.Presenter.Tick();
-            Assert.That(action.interactable, Is.False);
-            Assert.That(detail.text, Does.Contain("CR short"));
+            Assert.That(purchase.gameObject.activeSelf, Is.True);
+            Assert.That(purchase.interactable, Is.False);
+            Assert.That(row.interactable, Is.False);
+            string purchaseDetail = $"{menu.Request.FactionData.Price:N0} CR · {menu.Request.FactionData.BuildTime:0} s build";
+            Assert.That(detail.text, Is.EqualTo(purchaseDetail));
             menu.Economy.AddMoney(menu.Request.FactionData.Price);
             menu.Presenter.Tick();
-            Assert.That(action.interactable, Is.True);
+            Assert.That(purchase.interactable, Is.True);
+            Assert.That(detail.text, Is.EqualTo(purchaseDetail));
             Assert.That(label.text, Is.EqualTo("Buy charge"));
-            action.onClick.Invoke();
+            row.onClick.Invoke();
+            Assert.That(menu.Production.Purchased, Is.Null);
+            purchase.onClick.Invoke();
             Assert.That(menu.Production.Purchased?.Kind, Is.EqualTo(UnitRequestKind.SuperWeapon));
             Assert.That(menu.Production.Purchased?.Key, Is.EqualTo((int)WEAPON));
 
             menu.Faction.Advance(menu.Request.FactionData.BuildTime / 2f);
             menu.Presenter.Tick();
-            Assert.That(label.text, Is.EqualTo("Cancel build"));
+            Assert.That(purchase.gameObject.activeSelf, Is.False);
+            Assert.That(row.interactable, Is.True);
             Assert.That(progress.enabled, Is.True);
             Assert.That(progress.fillAmount, Is.EqualTo(0.5f).Within(0.001f));
-            action.onClick.Invoke();
+            purchase.onClick.Invoke();
+            Assert.That(menu.Production.Canceled, Is.Null);
+            row.onClick.Invoke();
             Assert.That(menu.Production.Canceled?.RequestId, Is.EqualTo(menu.Request.Id));
             Assert.That(menu.Economy.Money, Is.EqualTo(menu.InitialMoney + menu.Request.FactionData.Price));
 
             menu.Weapons.Restore(WEAPON, SuperWeaponState.Ready, 10f);
             menu.Presenter.Tick();
-            Assert.That(action.interactable, Is.False);
-            Assert.That(label.text, Is.EqualTo("Waiting"));
+            Assert.That(purchase.gameObject.activeSelf, Is.False);
+            Assert.That(row.interactable, Is.False);
+            Assert.That(detail.text, Does.StartWith("Cooldown"));
             menu.Weapons.Tick(10f);
             menu.Presenter.Tick();
-            Assert.That(label.text, Is.EqualTo("Aim"));
-            action.onClick.Invoke();
+            Assert.That(row.interactable, Is.True);
+            Assert.That(detail.text, Does.StartWith("Ready"));
+            row.onClick.Invoke();
             Assert.That(menu.Popup.activeSelf, Is.False);
             Assert.That(menu.Targeting.Pending, Is.EqualTo(WEAPON));
         }

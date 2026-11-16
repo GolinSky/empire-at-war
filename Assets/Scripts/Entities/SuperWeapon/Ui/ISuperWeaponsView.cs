@@ -8,6 +8,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
     {
         TooltipHoverView TooltipHover { get; }
         event Action<SuperWeaponType> Pressed;
+        event Action<SuperWeaponType> PurchaseRequested;
 
         event Action ToggleRequested;
 

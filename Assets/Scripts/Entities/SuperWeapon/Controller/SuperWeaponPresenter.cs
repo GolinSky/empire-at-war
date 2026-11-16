@@ -149,6 +149,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 _view.TooltipHover,
                 HandleTooltipHover, _tooltips);
             _view.Pressed += HandlePressed;
+            _view.PurchaseRequested += HandlePurchaseRequested;
             _view.ToggleRequested += TogglePopup;
             _view.CloseRequested += ClosePopup;
             _pointer.PrimaryPressed += HandlePointerPressed;
@@ -175,6 +176,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             if (_view == null) return;
             _tooltipHover.Dispose();
             _view.Pressed -= HandlePressed;
+            _view.PurchaseRequested -= HandlePurchaseRequested;
             _view.ToggleRequested -= TogglePopup;
             _view.CloseRequested -= ClosePopup;
             _pointer.PrimaryPressed -= HandlePointerPressed;
@@ -200,7 +202,9 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 SuperWeaponProfile profile = _data.GetProfile(type);
                 SuperWeaponState state = _model.GetState(type);
                 ProductionQueueSnapshot queue = FindQueue(_faction.GetProductionQueueSnapshots(), type);
-                string detail = GetRowDetail(type, state, queue, out _, out _);
+                string detail = GetRowDetail(type, state, queue, out bool canAct, out _);
+                if (canAct && queue != null) detail += " · Click the row to cancel construction";
+                else if (canAct && state == SuperWeaponState.Ready) detail += " · Click the row to aim";
                 return new TooltipContent(title: type.ToString(),
                     description: $"Fire at a hostile ship or station; fighters are not valid targets. Choose with {TooltipBindings.Get(_bindings, "Battle", "Command")}; cancel with {TooltipBindings.Get(_bindings, "Ui", "Cancel")}.",
                     stats: new[]
@@ -233,13 +237,6 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 return;
             }
 
-            if (_model.CanPurchase(type))
-            {
-                if (_purchases.TryGetValue(type, out SuperWeaponUnitRequest request) && GetPurchaseBlocker(request) == null)
-                    _commands.Submit(PurchaseUnitCommand.From(_localPlayer.Id, request));
-                return;
-            }
-
             if (!_model.CanFire(type)) return;
             _unitTargeting.Cancel();
             _abilities.CancelTargeting();
@@ -248,6 +245,14 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _view.SetOpen(false);
             _tooltips.HideAll();
             _targeting.Start(type);
+        }
+
+        private void HandlePurchaseRequested(SuperWeaponType type)
+        {
+            if (_isBattleEnded || !_isOpen || !_model.CanPurchase(type)) return;
+            if (_purchases.TryGetValue(type, out SuperWeaponUnitRequest request) &&
+                GetPurchaseBlocker(request) == null && _economy.Money >= request.FactionData.Price)
+                _commands.Submit(PurchaseUnitCommand.From(_localPlayer.Id, request));
         }
 
         private void HandleTargetSubmitted(SuperWeaponType type, IEntity target)
@@ -395,8 +400,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             }
 
             string blocker = GetPurchaseBlocker(request);
-            canAct = blocker == null;
             FactionData data = request.FactionData;
+            canAct = blocker == null && _economy.Money >= data.Price;
             return blocker ?? $"{data.Price:N0} CR · {data.BuildTime:0} s build{cooldownText}";
         }
 
@@ -407,7 +412,6 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             FactionData data = request.FactionData;
             int level = Math.Max(_faction.CurrentLevel, _secondStation.IsBuilt ? _secondStation.CurrentLevel : 1);
             if (level < data.AvailableLevel) return $"Requires station level {data.AvailableLevel}";
-            if (_economy.Money < data.Price) return $"{data.Price:N0} CR · {Math.Ceiling(data.Price - _economy.Money):N0} CR short";
             return _faction.CanQueueUnit(request) ? null : "Production queue full";
         }
 

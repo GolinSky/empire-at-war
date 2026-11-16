@@ -18,6 +18,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         private readonly HashSet<SuperWeaponType> _readyWeapons = new();
 
         public event Action<SuperWeaponType> Pressed;
+        public event Action<SuperWeaponType> PurchaseRequested;
 
         public event Action ToggleRequested;
 
@@ -45,6 +46,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
             {
                 button.Initialize();
                 button.Pressed += HandlePressed;
+                button.PurchaseRequested += HandlePurchaseRequested;
             }
             SetPending(null);
         }
@@ -57,6 +59,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
             foreach (SuperWeaponButton button in buttons)
             {
                 button.Pressed -= HandlePressed;
+                button.PurchaseRequested -= HandlePurchaseRequested;
                 button.Dispose();
             }
         }
@@ -82,6 +85,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         }
 
         private void HandlePressed(SuperWeaponType type) => Pressed?.Invoke(type);
+
+        private void HandlePurchaseRequested(SuperWeaponType type) => PurchaseRequested?.Invoke(type);
 
         private void HandleToggle() => ToggleRequested();
 
