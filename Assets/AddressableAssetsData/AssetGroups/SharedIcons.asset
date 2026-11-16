@@ -525,6 +525,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbb36475babac7c448e384cde9579370
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Separatist/HyenaBomberIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cc08d3ef304a00a4999b7602cc4d17d0
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/RecalcitrantIcon.png
     m_ReadOnly: 0

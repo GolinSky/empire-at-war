@@ -63,7 +63,7 @@ MonoBehaviour:
   - squadronType: 100
     reserve: 8
     maxActive: 2
-  - squadronType: 101
+  - squadronType: 106
     reserve: 8
     maxActive: 2
   - squadronType: 102

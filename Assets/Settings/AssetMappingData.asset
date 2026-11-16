@@ -1799,3 +1799,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: HyenaBomberSquadronView
+      value:
+        m_AssetGUID: 6f02095480fd84a40a4e9fed3541003f
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: HyenaBomberSquadronData
+      value:
+        m_AssetGUID: b9805c5a1892fbb4aa72aa19f62dc09c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

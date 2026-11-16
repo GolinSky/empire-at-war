@@ -716,6 +716,13 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: 106
+      value:
+        m_AssetGUID: 8e48547b93d8241429f88ef2cd69661c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
   spawnFacilityWrapper:
     keyValue:
     - key: 3

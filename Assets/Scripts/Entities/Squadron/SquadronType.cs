@@ -22,6 +22,7 @@ namespace EmpireAtWar.Entities.Squadrons
         JangoFettSlaveI = 103,
         AsajjVentressGinivex = 104,
         SevranceTannGinivex = 105,
+        HyenaBomber = 106,
 
         //empire
         TIEFighter = 200,

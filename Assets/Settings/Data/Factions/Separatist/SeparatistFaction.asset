@@ -404,6 +404,25 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 84aba55e039b6ef458aa00f39b06050f,
           type: 3}
+    - key: 106
+      value:
+        matchups: {fileID: 11400000, guid: cfd79fcde45f938438f66f8a3a6f392e, type: 2}
+        displayName: Hyena Bomber
+        description: Ten Hyena bombers designed to strike capital ships and stations.
+          Each craft carries two laser cannons and one proton torpedo launcher, with
+          70 hull and no shields. Hyena torpedoes hit 20% harder than the Advanced
+          Droid Bomber's.
+        role: "Bomber squadron \xB7 Anti-capital"
+        iconKey: cbb36475babac7c448e384cde9579370:21300000
+        isHero: 0
+        <Name>k__BackingField: Hyena-class Bomber Squadron
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 3
+        <Price>k__BackingField: 400
+        <BuildTime>k__BackingField: 10
+        <UnitCapacity>k__BackingField: 1
+        <Icon>k__BackingField: {fileID: 21300000, guid: cbb36475babac7c448e384cde9579370,
+          type: 3}
   research:
     keyValue:
     - key: 0

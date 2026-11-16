@@ -385,6 +385,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9805c5a1892fbb4aa72aa19f62dc09c
+    m_Address: HyenaBomberSquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b9cd9fb343dcee144b7e5f1102053754
     m_Address: AssaultFrigateMkIIShipData
     m_ReadOnly: 0

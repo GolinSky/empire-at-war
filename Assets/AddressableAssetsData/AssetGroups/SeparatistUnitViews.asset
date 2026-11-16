@@ -165,6 +165,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f02095480fd84a40a4e9fed3541003f
+    m_Address: HyenaBomberSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 76b110f4b976620489e2f84386ec5661
     m_Address: DispatcherWreckView
     m_ReadOnly: 0
@@ -202,6 +207,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8c5c117da3372cc4bac3ac26e7813f3b
     m_Address: WavecrestWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e48547b93d8241429f88ef2cd69661c
+    m_Address: HyenaBomberReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
