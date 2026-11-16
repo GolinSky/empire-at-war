@@ -3367,6 +3367,78 @@ MonoBehaviour:
           localFeedback: 0
         useAlarmOverride: 0
         ready: {fileID: 0}
+    - key: 104
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: 77a71ada5820409ebba8347fae4c67e8, type: 3}
+          clips:
+            array: []
+          volume: 0.69
+          priority: 10
+          cooldown: 0
+          maxInstances: 12
+          loop: 1
+          localFeedback: 0
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: 014be0ea7a7f42fabe1de22b2a657342, type: 3}
+            - {fileID: 8300000, guid: 55c809c0f6b34d40897dc7d14eb0200b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 8
+          loop: 0
+          localFeedback: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 5
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+          localFeedback: 0
+        useAlarmOverride: 0
+        ready: {fileID: 0}
+    - key: 105
+      value:
+        engine:
+          clip: {fileID: 8300000, guid: 77a71ada5820409ebba8347fae4c67e8, type: 3}
+          clips:
+            array: []
+          volume: 0.69
+          priority: 10
+          cooldown: 0
+          maxInstances: 12
+          loop: 1
+          localFeedback: 0
+        explosion:
+          clip: {fileID: 0}
+          clips:
+            array:
+            - {fileID: 8300000, guid: 014be0ea7a7f42fabe1de22b2a657342, type: 3}
+            - {fileID: 8300000, guid: 55c809c0f6b34d40897dc7d14eb0200b, type: 3}
+          volume: 0.65
+          priority: 65
+          cooldown: 0
+          maxInstances: 8
+          loop: 0
+          localFeedback: 0
+        alarm:
+          clip: {fileID: 8300000, guid: d105f3706327c274db845257a59e3bdf, type: 3}
+          clips:
+            array: []
+          volume: 0.5
+          priority: 5
+          cooldown: 2
+          maxInstances: 1
+          loop: 0
+          localFeedback: 0
+        useAlarmOverride: 0
+        ready: {fileID: 0}
   abilityActivated:
     clip: {fileID: 8300000, guid: 196314a27370f86468e5cf6135952eda, type: 3}
     clips:

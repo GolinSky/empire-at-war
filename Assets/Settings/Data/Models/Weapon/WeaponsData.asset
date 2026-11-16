@@ -2389,3 +2389,39 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 1
     color: {r: 0.2, g: 1, b: 0.25, a: 1}
+  - weaponType: 167
+    displayName: Ginivex Laser Cannon
+    family: 25
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: AsajjVentressGinivex
+    damageMultiplier: 18
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Two hero fighter cannons, matched to Jango Fett's primary gun output.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 168
+    displayName: Ginivex Laser Cannon
+    family: 25
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: SevranceTannGinivex
+    damageMultiplier: 18
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Two hero fighter cannons, matched to Jango Fett's primary gun output.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}

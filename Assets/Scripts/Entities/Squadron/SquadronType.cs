@@ -20,6 +20,8 @@ namespace EmpireAtWar.Entities.Squadrons
         DroidBomber = 101,
         Vulture = 102,
         JangoFettSlaveI = 103,
+        AsajjVentressGinivex = 104,
+        SevranceTannGinivex = 105,
 
         //empire
         TIEFighter = 200,

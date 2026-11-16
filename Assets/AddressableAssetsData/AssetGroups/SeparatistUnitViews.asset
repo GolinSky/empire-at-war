@@ -40,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15a9af9ada565cc49ab040e8a975fca8
+    m_Address: SevranceTannGinivexSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1707aa5c38f75584798f5dec8f24ea9b
     m_Address: InvincibleReinforcementView
     m_ReadOnly: 0
@@ -135,6 +140,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 631223976984cbf41b0fcf0a20d2088b
+    m_Address: AsajjVentressGinivexReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 685827b325ffd064db3c88a889cc7c42
     m_Address: RecalcitrantShipView
     m_ReadOnly: 0
@@ -195,6 +205,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 950219a24d5659c4b80629162677d9c1
+    m_Address: SevranceTannGinivexReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9571c4609d1e6624faa6c4025de1f938
     m_Address: LucrehulkReinforcementView
     m_ReadOnly: 0
@@ -207,6 +222,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a0f0f836d24c5aa49996d4a12fef975e
     m_Address: Belbullab22ReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a52a1eb6ae143bd4e92b8d384177fc54
+    m_Address: AsajjVentressGinivexSquadronView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

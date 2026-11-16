@@ -1771,3 +1771,31 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: AsajjVentressGinivexSquadronData
+      value:
+        m_AssetGUID: 7b05636c79a41334e9f7b5924ac9cb5d
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: AsajjVentressGinivexSquadronView
+      value:
+        m_AssetGUID: a52a1eb6ae143bd4e92b8d384177fc54
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: SevranceTannGinivexSquadronData
+      value:
+        m_AssetGUID: b842b5168de4b464d96bac811d936437
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: SevranceTannGinivexSquadronView
+      value:
+        m_AssetGUID: 15a9af9ada565cc49ab040e8a975fca8
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

@@ -365,6 +365,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84aba55e039b6ef458aa00f39b06050f
+    m_Address: GinivexIcon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 84c93b9211168f64bb4f04d91c77bf0a
     m_Address: Assets/Art/Textures/Ui/Icons/Research/ImprovedWeaponsIcon.png
     m_ReadOnly: 0

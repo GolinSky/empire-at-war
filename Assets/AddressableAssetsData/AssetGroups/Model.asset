@@ -125,6 +125,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b05636c79a41334e9f7b5924ac9cb5d
+    m_Address: AsajjVentressGinivexSquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 84600a7480cad2b46937e09ca1f373d6
     m_Address: DefendPlatformData
     m_ReadOnly: 0
@@ -162,6 +167,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b8062674d66d079419593e17879a77b8
     m_Address: SceneData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b842b5168de4b464d96bac811d936437
+    m_Address: SevranceTannGinivexSquadronData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
