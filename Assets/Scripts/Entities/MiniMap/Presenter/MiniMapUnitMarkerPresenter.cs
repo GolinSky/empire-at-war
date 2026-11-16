@@ -25,6 +25,7 @@ namespace EmpireAtWar.Presenters.MiniMap
         private readonly ISlowTickService _slowTick;
         private readonly CombatModifiers _modifiers;
         private readonly IReadOnlyList<IVisionFootprintFacade> _footprints;
+        private readonly long _entityId;
 
         private readonly MiniMapData _miniMapData;
         private readonly Transform _viewTransform;
@@ -43,7 +44,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             PlayerId owner,
             SelectionType selectionType, CombatModifiers modifiers,
             ISlowTickService slowTick,
-            MarkType? markTypeOverride, IReadOnlyList<IVisionFootprintFacade> footprints)
+            MarkType? markTypeOverride, IReadOnlyList<IVisionFootprintFacade> footprints, long entityId)
         {
             _slowTick = slowTick;
             _localPlayer = localPlayer;
@@ -56,6 +57,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             _visionService = visionService;
             _modifiers = modifiers;
             _footprints = footprints;
+            _entityId = entityId;
         }
 
         public void Initialize()
@@ -121,12 +123,13 @@ namespace EmpireAtWar.Presenters.MiniMap
                 _localPlayer.IsFriendly(_owner) || !_modifiers.IsCloaked &&
                 (_footprints.Count > 0
                     ? _visionService.IsVisible(_localPlayer.Id, _footprints[0])
-                    : _visionService.IsVisible(_localPlayer.Id, position)));
+                    : _visionService.IsRevealed(_localPlayer.Id, _entityId) ||
+                      _visionService.IsVisible(_localPlayer.Id, position)));
         }
 
         private void HandleRevealChanged(PlayerId viewer, long entityId, bool active)
         {
-            if (_footprints.Count > 0 && _footprints[0].EntityId == entityId && _localPlayer.IsFriendly(viewer))
+            if (_entityId == entityId && _localPlayer.IsFriendly(viewer))
                 RefreshMarker();
         }
 

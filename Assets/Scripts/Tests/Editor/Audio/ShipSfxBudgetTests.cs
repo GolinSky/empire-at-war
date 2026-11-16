@@ -7,8 +7,18 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Ship.EntityFacades;
+using EmpireAtWar.Services.Camera;
+using EmpireAtWar.Services.Vision;
 using NUnit.Framework;
+using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Jobs;
+using Utilities.ScriptUtils.Math;
+using UnityCamera = UnityEngine.Camera;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -87,6 +97,99 @@ namespace EmpireAtWar.Tests.Editor
         {
             SetField(_service, "_interfaceSfx", new AnnouncingInterface());
             Assert.That(_service.TryPlayVoice(null), Is.False);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void HostileAudio_UsesHullOrFiringRevealAndStillHonorsCloak(bool firingReveal)
+        {
+            var root = new GameObject("Audio vision test");
+            var cameraData = ScriptableObject.CreateInstance<CameraData>();
+            SetField(cameraData, "<ZoomRange>k__BackingField", new FloatRange());
+            var transforms = new TransformAccessArray(1);
+            var audible = new NativeArray<byte>(1, Allocator.Temp);
+            try
+            {
+                UnityCamera camera = root.AddComponent<UnityCamera>();
+                CameraService cameraService = root.AddComponent<CameraService>();
+                SetField(cameraService, "sceneCamera", camera);
+                var unitObject = new GameObject("Hull");
+                unitObject.transform.SetParent(root.transform);
+                unitObject.transform.position = new Vector3(0f, 0f, 100f);
+                var entity = new AudibleEntity(unitObject.transform);
+                var entities = new EntityLocator();
+                entities.AddEntity(entity);
+                var players = TestPlayers.CreateDuel();
+                var player = TestPlayers.CreateLocalPlayer(players);
+                var vision = new VisionService(players, true, () => 0f);
+                var source = new GameObject("Vision source");
+                source.transform.SetParent(root.transform);
+                source.transform.position = new Vector3(0f, 0f, 150f);
+                if (firingReveal) vision.Reveal(player.Id, entity.Id, 5f);
+                else vision.Register(player.Id, source.transform, 5f);
+                Assert.That(vision.IsVisible(player.Id, unitObject.transform.position), Is.False);
+                SetField(_service, "_cameraService", cameraService);
+                SetField(_service, "_cameraData", cameraData);
+                SetField(_service, "_visionService", vision);
+                SetField(_service, "_localPlayer", player);
+                SetField(_service, "_entities", entities);
+                var handle = new ShipSfxHandle(entity.Id, entity.Owner, entity.HealthModel, entity.Modifiers);
+                object[] gainArgs = { entity.Owner, handle, unitObject.transform.position, false, 0f };
+                MethodInfo getGain = typeof(ShipSfxService).GetMethod("GetGain", PRIVATE_INSTANCE);
+                Assert.That((float)getGain.Invoke(_service, gainArgs), Is.GreaterThan(0f));
+
+                var ambience = (ShipAmbienceService)FormatterServices.GetUninitializedObject(typeof(ShipAmbienceService));
+                transforms.Add(unitObject.transform);
+                SetField(ambience, "_units", new List<IEntity> { entity });
+                SetField(ambience, "_transforms", transforms);
+                SetField(ambience, "_audible", audible);
+                SetField(ambience, "_vision", vision);
+                SetField(ambience, "_player", player);
+                MethodInfo refreshMask = typeof(ShipAmbienceService).GetMethod("RefreshMask", PRIVATE_INSTANCE);
+                refreshMask.Invoke(ambience, null);
+                Assert.That(audible[0], Is.EqualTo(1));
+
+                entity.Modifiers.SetCloaked(true);
+                Assert.That((float)getGain.Invoke(_service, gainArgs), Is.Zero);
+                refreshMask.Invoke(ambience, null);
+                Assert.That(audible[0], Is.Zero);
+                entity.Modifiers.SetCloaked(false);
+                vision.Unregister(source.transform);
+                vision.ForgetReveals(entity.Id);
+                Assert.That((float)getGain.Invoke(_service, gainArgs), Is.Zero);
+                refreshMask.Invoke(ambience, null);
+                Assert.That(audible[0], Is.Zero);
+            }
+            finally
+            {
+                transforms.Dispose();
+                audible.Dispose();
+                UnityEngine.Object.DestroyImmediate(cameraData);
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
+        private sealed class AudibleEntity : IEntity, ICombatModifiersFacade
+        {
+            private readonly ShipVisionFootprint _footprint;
+            public long Id => 42;
+            public PlayerId Owner => TestPlayers.Enemy;
+            public IHealthModelObserver HealthModel { get; } = new HealthStub();
+            public CombatModifiers Modifiers { get; } = new CombatModifiers();
+
+            public AudibleEntity(Transform transform) => _footprint = new ShipVisionFootprint(transform, Id,
+                new[] { new Vector2(-20f, -50f), new Vector2(20f, -50f), new Vector2(0f, 50f) });
+
+            public bool TryGetFacade<TFacade>(out TFacade entityFacade) where TFacade : IEntityFacade
+            {
+                if (_footprint is TFacade footprint) { entityFacade = footprint; return true; }
+                if (this is TFacade modifiers) { entityFacade = modifiers; return true; }
+                entityFacade = default;
+                return false;
+            }
+
+            public TFacade GetFacade<TFacade>() where TFacade : IEntityFacade =>
+                TryGetFacade(out TFacade facade) ? facade : throw new InvalidOperationException();
         }
 
         private void AddSlot(int index, SfxProfile sound, bool engine, ShipSfxHandle owner = null)

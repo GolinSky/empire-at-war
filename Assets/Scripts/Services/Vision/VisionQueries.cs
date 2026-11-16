@@ -9,6 +9,7 @@ namespace EmpireAtWar.Services.Vision
         public static bool IsVisible(this IVisionService vision, PlayerId viewer, IEntity entity) =>
             entity.TryGetFacade(out IVisionFootprintFacade footprint)
                 ? vision.IsVisible(viewer, footprint)
-                : vision.IsVisible(viewer, entity.GetFacade<IEntityTransformFacade>().Transform.position);
+                : vision.IsRevealed(viewer, entity.Id) ||
+                  vision.IsVisible(viewer, entity.GetFacade<IEntityTransformFacade>().Transform.position);
     }
 }

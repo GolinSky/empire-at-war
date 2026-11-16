@@ -22,11 +22,11 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(true, false, false, false, ShipClass.Capital)]
         [TestCase(false, true, false, false, ShipClass.Capital)]
         [TestCase(false, false, true, false, ShipClass.Capital)]
-        [TestCase(false, false, false, false, ShipClass.Structure)]
-        [TestCase(false, false, false, false, ShipClass.Fighter)]
-        [TestCase(false, false, false, false, ShipClass.Bomber)]
-        [TestCase(false, false, false, false, ShipClass.Interceptor)]
-        [TestCase(false, false, false, false, ShipClass.HeroStrikecraft)]
+        [TestCase(false, false, false, true, ShipClass.Structure)]
+        [TestCase(false, false, false, true, ShipClass.Fighter)]
+        [TestCase(false, false, false, true, ShipClass.Bomber)]
+        [TestCase(false, false, false, true, ShipClass.Interceptor)]
+        [TestCase(false, false, false, true, ShipClass.HeroStrikecraft)]
         public void EmittedShot_RevealsOnlyLivingHostileTargetOnAuthority(bool replica, bool allied, bool destroyed,
             bool expected, ShipClass attackerClass)
         {
@@ -34,7 +34,7 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 float clock = 0f;
-                var vision = new VisionService(TestPlayers.CreateTeamGame(), true, () => clock);
+                var vision = new VisionService(TestPlayers.CreateTeamGame(), true, () => clock, 7f);
                 WeaponComponent weapon = root.AddComponent<WeaponComponent>();
                 Set(weapon, "_visionService", vision);
                 Set(weapon, "_playerRoster", TestPlayers.CreateTeamGame());
@@ -60,8 +60,12 @@ namespace EmpireAtWar.Tests.Editor
                 clock = 5f;
                 vision.Tick();
                 vision.CopyActiveReveals(reveals);
-                Assert.That(reveals.Count, Is.EqualTo(1), "The last shot refreshes the five-second window.");
-                clock = 9f;
+                Assert.That(reveals.Count, Is.EqualTo(1), "The last shot refreshes the configured window.");
+                clock = 10f;
+                vision.Tick();
+                vision.CopyActiveReveals(reveals);
+                Assert.That(reveals.Count, Is.EqualTo(1), "The configured duration replaces the former five-second constant.");
+                clock = 11f;
                 vision.Tick();
                 vision.CopyActiveReveals(reveals);
                 Assert.That(reveals, Is.Empty);

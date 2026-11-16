@@ -75,6 +75,28 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void RevealBeforeSpawn_IsDroppedAndDoesNotCarryIntoLaterSpawn()
+        {
+            var vision = new VisionService(TestPlayers.CreateTeamGame(), true, () => 0f);
+            var entities = new EntityLocator();
+            var receiver = new ClientVisionRevealReceiver(vision, entities);
+            var reveals = new List<VisionReveal>();
+
+            Receive(receiver, true);
+            vision.CopyActiveReveals(reveals);
+            Assert.That(reveals, Is.Empty);
+
+            entities.AddEntity(new Entity(null, entities, Array.Empty<IEntityFacade>(), TestPlayers.Enemy, 42,
+                null, null));
+            vision.CopyActiveReveals(reveals);
+            Assert.That(reveals, Is.Empty, "An ignored pre-spawn message must not be replayed.");
+
+            Receive(receiver, true);
+            vision.CopyActiveReveals(reveals);
+            Assert.That(reveals.Count, Is.EqualTo(1), "A fresh reveal is accepted after the entity exists.");
+        }
+
+        [Test]
         public void ReplicaExposure_PersistsUntilHostEndsIt_AndDespawnClearsReusedIds()
         {
             float clock = 0f;

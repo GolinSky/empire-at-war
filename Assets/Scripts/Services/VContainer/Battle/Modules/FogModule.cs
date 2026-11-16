@@ -32,8 +32,9 @@ namespace EmpireAtWar.Services.VContainer
 
         public void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot) { }
 
-        private static void RegisterVision(IContainerBuilder builder, bool fogEnabled) =>
-            builder.Register(resolver => new VisionService(resolver.Resolve<IPlayerRelations>(), fogEnabled),
+        private void RegisterVision(IContainerBuilder builder, bool fogEnabled) =>
+            builder.Register(resolver => new VisionService(resolver.Resolve<IPlayerRelations>(), fogEnabled,
+                    _fog.FiringRevealSeconds),
                 Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
     }
 }

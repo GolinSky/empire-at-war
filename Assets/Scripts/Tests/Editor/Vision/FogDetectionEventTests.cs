@@ -33,7 +33,7 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     vision, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()),
                     Array.Empty<IIonStunViewSource>(), new CombatModifiers(), new SlowTicks(),
-                    Array.Empty<IVisionFootprintFacade>()
+                    Array.Empty<IVisionFootprintFacade>(), 42L
                 });
                 List<bool> visible = new List<bool>();
                 fog.VisibilityChanged += visible.Add;
@@ -78,7 +78,7 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     vision, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()),
                     Array.Empty<IIonStunViewSource>(), modifiers, new SlowTicks(),
-                    Array.Empty<IVisionFootprintFacade>()
+                    Array.Empty<IVisionFootprintFacade>(), 42L
                 });
                 var visibility = new List<bool>();
                 fog.VisibilityChanged += visible =>
@@ -120,8 +120,9 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [Test]
-        public void FiringReveal_RefreshesHullImmediately_AndCloakStillHidesIt()
+        [TestCase(true)]
+        [TestCase(false)]
+        public void FiringReveal_RefreshesHullImmediately_AndCloakStillHidesIt(bool hasFootprint)
         {
             var owner = new GameObject("Firing fog");
             FogVisibilityComponent fog = owner.AddComponent<FogVisibilityComponent>();
@@ -142,11 +143,15 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     vision, TestPlayers.CreateLocalPlayer(TestPlayers.CreateTeamGame()),
                     Array.Empty<IIonStunViewSource>(), modifiers, new SlowTicks(),
-                    new IVisionFootprintFacade[] { footprint }
+                    hasFootprint ? new IVisionFootprintFacade[] { footprint } : Array.Empty<IVisionFootprintFacade>(), 42L
                 });
                 fog.Initialize();
                 Assert.That(hull.forceRenderingOff, Is.True);
-                vision.Reveal(TestPlayers.Human, 42, 5f);
+                vision.Reveal(TestPlayers.Enemy, 42, 5f);
+                Assert.That(hull.forceRenderingOff, Is.True);
+                vision.Reveal(TestPlayers.Ally, 99, 5f);
+                Assert.That(hull.forceRenderingOff, Is.True);
+                vision.Reveal(TestPlayers.Ally, 42, 5f);
                 Assert.That(hull.forceRenderingOff, Is.False);
                 modifiers.SetCloaked(true);
                 Assert.That(hull.forceRenderingOff, Is.True);
@@ -163,24 +168,109 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void ShipCadence_StaggersChecksSkipsCatchupAndResetsAfterRespawn()
+        {
+            var firstOwner = new GameObject("First fog ship");
+            var secondOwner = new GameObject("Second fog ship");
+            var pointOwner = new GameObject("Fog structure");
+            var vision = new Vision();
+            var slowTicks = new SlowTicks();
+            FogVisibilityComponent first = Configure(firstOwner, vision, slowTicks, 40, true);
+            FogVisibilityComponent second = Configure(secondOwner, vision, slowTicks, 45, true);
+            FogVisibilityComponent point = Configure(pointOwner, vision, slowTicks, 46, false);
+            try
+            {
+                first.Initialize();
+                second.Initialize();
+                point.Initialize();
+                Assert.That(slowTicks.Registered, Is.EqualTo(new[] { point }));
+                vision.HullQueries = 0;
+                vision.Visible = true;
+                first.Advance(0.06f);
+                second.Advance(0.06f);
+                point.Advance(0.06f);
+                Assert.That(first.IsHiddenByFog, Is.True);
+                Assert.That(second.IsHiddenByFog, Is.False);
+                Assert.That(point.IsHiddenByFog, Is.True);
+                first.Advance(0.05f);
+                second.Advance(0.05f);
+                Assert.That(first.IsHiddenByFog, Is.False);
+                Assert.That(vision.HullQueries, Is.EqualTo(2));
+                point.SlowTick();
+                Assert.That(point.IsHiddenByFog, Is.False);
+
+                first.Advance(5f);
+                Assert.That(vision.HullQueries, Is.EqualTo(3), "One query, not a backlog replay.");
+                first.Despawn();
+                first.Advance(1f);
+                Assert.That(vision.HullQueries, Is.EqualTo(3));
+                vision.Visible = false;
+                first.Respawn();
+                vision.Visible = true;
+                first.Advance(0.06f);
+                Assert.That(first.IsHiddenByFog, Is.True);
+                first.Advance(0.05f);
+                Assert.That(first.IsHiddenByFog, Is.False);
+                Assert.That(slowTicks.Registered, Is.EqualTo(new[] { point }));
+            }
+            finally
+            {
+                first.LateDispose();
+                second.LateDispose();
+                point.LateDispose();
+                UnityEngine.Object.DestroyImmediate(firstOwner);
+                UnityEngine.Object.DestroyImmediate(secondOwner);
+                UnityEngine.Object.DestroyImmediate(pointOwner);
+            }
+        }
+
+        private static FogVisibilityComponent Configure(GameObject owner, Vision vision, SlowTicks slowTicks,
+            long entityId, bool hasFootprint)
+        {
+            FogVisibilityComponent fog = owner.AddComponent<FogVisibilityComponent>();
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            typeof(FogVisibilityComponent).GetField("renderers", PRIVATE_INSTANCE)
+                .SetValue(fog, Array.Empty<Renderer>());
+            var footprint = new ShipVisionFootprint(owner.transform, entityId, new[]
+            {
+                new Vector2(-1f, -1f), new Vector2(1f, -1f), new Vector2(0f, 1f)
+            });
+            typeof(FogVisibilityComponent).GetMethod("Construct", PRIVATE_INSTANCE).Invoke(fog, new object[]
+            {
+                vision, TestPlayers.CreateLocalPlayer(TestPlayers.CreateTeamGame()),
+                Array.Empty<IIonStunViewSource>(), new CombatModifiers(), slowTicks,
+                hasFootprint ? new IVisionFootprintFacade[] { footprint } : Array.Empty<IVisionFootprintFacade>(), entityId
+            });
+            return fog;
+        }
+
         private sealed class Vision : IVisionService
         {
             public event Action<PlayerId, long, bool> RevealChanged { add { } remove { } }
             public bool Visible;
             public bool FogEnabled => true;
+            public float FiringRevealSeconds => 5f;
+            public bool IsRevealed(PlayerId viewer, long entityId) => false;
             public IReadOnlyList<OwnedCircle> Sources => Array.Empty<OwnedCircle>();
             public void Register(PlayerId owner, Transform source, float radius) { }
             public void Unregister(Transform source) { }
             public bool IsVisible(PlayerId viewer, Vector3 position) => Visible;
-            public bool IsVisible(PlayerId viewer, IVisionFootprintFacade footprint) => Visible;
+            public int HullQueries;
+            public bool IsVisible(PlayerId viewer, IVisionFootprintFacade footprint)
+            {
+                HullQueries++;
+                return Visible;
+            }
             public void Reveal(PlayerId viewer, long entityId, float duration) { }
             public bool IsAreaVisible(PlayerId viewer, Vector3 position, float radius) => Visible;
         }
 
         private sealed class SlowTicks : ISlowTickService
         {
-            public void Add(ISlowTickable tickable) { }
-            public void Remove(ISlowTickable tickable) { }
+            public readonly List<ISlowTickable> Registered = new List<ISlowTickable>();
+            public void Add(ISlowTickable tickable) => Registered.Add(tickable);
+            public void Remove(ISlowTickable tickable) => Registered.Remove(tickable);
         }
     }
 }

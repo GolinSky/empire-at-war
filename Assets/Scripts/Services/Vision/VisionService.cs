@@ -10,8 +10,6 @@ namespace EmpireAtWar.Services.Vision
 {
     public sealed class VisionService : IVisionService, ITickable
     {
-        public const float FIRING_REVEAL_SECONDS = 5f;
-
         private readonly IPlayerRelations _relations;
         private readonly Func<float> _time;
         private readonly OwnedCircleSet _sources = new OwnedCircleSet();
@@ -21,15 +19,17 @@ namespace EmpireAtWar.Services.Vision
 
         public event Action<PlayerId, long, bool> RevealChanged;
         public bool FogEnabled { get; }
+        public float FiringRevealSeconds { get; }
         public IReadOnlyList<OwnedCircle> Sources => _sources.Circles;
 
-        public VisionService(IPlayerRelations relations, bool fogEnabled = true)
-            : this(relations, fogEnabled, () => Time.time) { }
+        public VisionService(IPlayerRelations relations, bool fogEnabled = true, float firingRevealSeconds = 5f)
+            : this(relations, fogEnabled, () => Time.time, firingRevealSeconds) { }
 
-        public VisionService(IPlayerRelations relations, bool fogEnabled, Func<float> time)
+        public VisionService(IPlayerRelations relations, bool fogEnabled, Func<float> time, float firingRevealSeconds = 5f)
         {
             _relations = relations;
             FogEnabled = fogEnabled;
+            FiringRevealSeconds = firingRevealSeconds;
             _time = time;
         }
 
@@ -88,7 +88,7 @@ namespace EmpireAtWar.Services.Vision
                 RemoveReveal(_expired[i].Viewer, _expired[i].EntityId);
         }
 
-        private bool IsRevealed(PlayerId viewer, long entityId)
+        public bool IsRevealed(PlayerId viewer, long entityId)
         {
             if (!_reveals.TryGetValue(entityId, out Dictionary<PlayerId, float> viewers)) return false;
             foreach (PlayerId revealedTo in viewers.Keys)

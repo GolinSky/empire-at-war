@@ -56,7 +56,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 _remaining = Mathf.Max(_remaining, travelTime);
             }
             if (fired && _session.IsAuthority)
-                _vision.Reveal(target.Owner, caster.Entity.Id, VisionService.FIRING_REVEAL_SECONDS);
+                _vision.Reveal(target.Owner, caster.Entity.Id, _vision.FiringRevealSeconds);
         }
 
         public void Advance(float deltaTime)

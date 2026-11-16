@@ -7,9 +7,9 @@ system:
   - stealth
 design_state: implemented
 verified: 2026-11-16
-verification: Source and affected fixtures reviewed; Unity compilation completed
-  without errors; 72 ship hull outlines baked, saved and read back. Tests, live
-  gameplay, multiplayer and CPU profiling not run.
+verification: Review fixes source/fixtures reviewed; Unity compilation clean and
+  SceneContext firingRevealSeconds=5 imported, reserialized, saved and read
+  back. Tests, gameplay, multiplayer and matched CPU profiling not run.
 ---
 # Visibility
 
@@ -36,13 +36,13 @@ verification: Source and affected fixtures reviewed; Unity compilation completed
 ### Entity presentation
 
 - Friendly entities use an always-visible fog facade. Hostile entities use `FogVisibilityComponent`.
-- A hostile ship is hidden when cloaked, or when neither hull overlap nor a current firing reveal grants visibility. Other hostile entities retain their existing point/circular rules.
-- `FogVisibilityComponent` updates renderers/ion-stun effects on the slow fog tick. Cloak and matching firing-reveal transitions refresh synchronously.
+- A hostile ship is hidden when cloaked, or when neither hull overlap nor a current firing reveal grants visibility. Other hostile entities use point/circular vision plus their entity-ID firing reveal.
+- `FogVisibilityComponent` updates hostile ships at staggered 10 Hz; other entities retain the 1 Hz slow tick. Cloak and matching firing-reveal transitions refresh synchronously.
 - All four faction station view prefabs set `staysRevealedOnceSeen = true`: once revealed, those station renderers stay drawn.
 - Ships use `ShipData.VisionHull` through `IVisionFootprintFacade`; their legacy reveal radius no longer controls hull detection. Ships do not stay permanently revealed.
 - Station discovery uses its footprint radius; vision need not reach the station's center.
 - Small-ship battle markers use the hull fog facade and visibility event. Friendly markers stay visible in cloak.
-- Squadron battle markers sample allied point vision at 10 Hz. Enemy cloak and hull concealment immediately remove the marker from selection and group layout. Hidden members never contribute to the displayed group center.
+- Squadron battle markers sample allied point vision or an entity-ID firing reveal at 10 Hz. Enemy cloak and hull concealment immediately remove the marker from selection and group layout. Hidden members never contribute to the displayed group center.
 - Ship minimap markers use the same hull/firing query; matching firing-reveal transitions refresh immediately. Friendly markers remain visible.
 
 ### Radar and targeting
@@ -57,9 +57,10 @@ verification: Source and affected fixtures reviewed; Unity compilation completed
 
 ### Firing reveal
 
-- An authoritative actual weapon emission reveals the firing ship to the attacked player and allies for **5 scaled seconds after its last shot**; misses also reveal.
+- An authoritative actual weapon emission reveals the attacker (ship, squadron or structure) to the attacked player and allies for **5 scaled seconds after its last shot**; misses also reveal.
+- Duration is serialized as `FogOfWarSystem.firingRevealSeconds` on `SceneContext.prefab` (currently 5 s); `FogModule` supplies `IVisionService.FiringRevealSeconds`. Host settings govern expiry.
 - Proton/Composite Beam emission and live damage ticks refresh the timer. Ion Shot requires an emitted projectile; attack orders, target assignment and failed emission do not reveal.
-- Firing reveal exposes only that ship. It does not reveal nearby ships or clear terrain fog; cloak still wins.
+- Firing reveal exposes only that entity. It does not reveal nearby ships or clear terrain fog; cloak still wins.
 - The host owns expiry. Reliable reveal/hide transitions are coalesced per entity/viewer; repeated shots refresh the timer without a packet per projectile.
 - Reconnect baseline sends current reveals after entity spawns. Clients retain reveal state until the host hides it; despawn clears state for reused IDs.
 
@@ -76,6 +77,8 @@ verification: Source and affected fixtures reviewed; Unity compilation completed
 ## Implementation
 
 - `ShipVisionHullBaker.BakeAll()` bakes explicitly bound hull meshes into `ShipData.visionHull`; all 72 mapped ship data assets are saved. Executor: 26 points; Mandator: 21.
+- `WeaponLoadoutBaker.BakeAll()` also refreshes vision hulls. Saved-hull regression compares current prefab geometry at 0.001 coordinate tolerance, alongside nondegenerate checks.
+- Live ship SFX/ambience use shared entity hull/reveal visibility and retain cloak gating. Detached/world sounds keep point rules. Entity tooltips already use fog-aware hover; obstacle tooltip hits retain point rules.
 - Persistent prefab assets require authored `activeSelf` ancestor checks; `activeInHierarchy` is false outside a scene. Disabled renderers/inactive helpers are excluded.
 - `ShipVisionFootprint` reuses world vertices/bounds and refreshes only when its root matrix changes. Vision uses cached allied circles, circle/bounds rejection, then polygon edges/containment; no runtime mesh scan.
 - Firing expiry scans only active reveal records. Target capture retains its per-entity/viewer visibility cache; no additional fleet scan or per-projectile network message.
@@ -99,7 +102,8 @@ verification: Source and affected fixtures reviewed; Unity compilation completed
 - Convex outlines approximate concave gaps. The root-relative rest-pose outline follows rotation/scale but deliberately ignores cosmetic body banking.
 - A rotated hull remains visible while it overlaps vision; rotation that genuinely removes the last overlap can hide it after firing reveal expires.
 - Re-bake vision hulls after changing ship hull geometry or its prefab transforms.
-- Live fog-edge visuals, five-second return fire, online/reconnect behavior and matched CPU workload remain user acceptance gates; source inspection is not a passing test run.
+- Live fog-edge visuals, five-second return fire, online/reconnect behavior and matched CPU workload remain user acceptance gates; source inspection is not a passing test run. Review fixes → [[Done/Bugs/Fog_Hull_Visibility_Review_Fixes]].
+- Ship cadence is staggered by entity ID and skips catch-up queries. The global reveal event remains fan-out; change it only if CPU capture establishes cost.
 
 - Disabling fog reveals positions but does not remove the separate cloak checks in radar/target selection.
 - Permanent station renderer discovery is distinct from current vision-circle coverage.

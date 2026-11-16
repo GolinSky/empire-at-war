@@ -223,6 +223,8 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class HiddenVision : IVisionService
         {
             public event Action<PlayerId, long, bool> RevealChanged { add { } remove { } }
+            public float FiringRevealSeconds => 5f;
+            public bool IsRevealed(PlayerId viewer, long entityId) => false;
             public bool Visible;
             public bool FogEnabled => true;
             public IReadOnlyList<OwnedCircle> Sources => Array.Empty<OwnedCircle>();

@@ -33,6 +33,7 @@ namespace EmpireAtWar.Editor.AI
         [MenuItem("Tools/Empire At War/Units/AI/Bake Weapon Loadouts")]
         public static void BakeAll()
         {
+            ShipVisionHullBaker.BakeAll();
             StringBuilder report = new StringBuilder("Weapon loadouts baked:\n");
             foreach (ShipData data in LoadAll<ShipData>(SHIP_DATA_FOLDER))
             {

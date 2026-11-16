@@ -60,7 +60,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _view.PlayBeam(GetMuzzle(caster), target.GetFacade<IEntityTransformFacade>().Transform,
                 definition.Duration, _profile);
             if (_session.IsAuthority)
-                _vision.Reveal(target.Owner, caster.Entity.Id, VisionService.FIRING_REVEAL_SECONDS);
+                _vision.Reveal(target.Owner, caster.Entity.Id, _vision.FiringRevealSeconds);
         }
 
         public void Advance(float deltaTime)
@@ -81,7 +81,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _health.ApplyDamage(_damagePerSecond * _pendingTime * _caster.Modifiers.GetDamageMultiplier(_target),
                 _damageType, hardPointId);
             if (_session.IsAuthority && _pendingTime > 0f)
-                _vision.Reveal(_target.Owner, _caster.Entity.Id, VisionService.FIRING_REVEAL_SECONDS);
+                _vision.Reveal(_target.Owner, _caster.Entity.Id, _vision.FiringRevealSeconds);
             _pendingTime = 0f;
         }
 

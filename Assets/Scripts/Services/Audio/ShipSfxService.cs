@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Vision;
@@ -25,6 +26,7 @@ namespace EmpireAtWar.Services.Audio
         private readonly IAudioService _audioService;
         private readonly ICameraService _cameraService;
         private readonly IVisionService _visionService;
+        private readonly IEntityLocator _entities;
         private readonly ILocalPlayer _localPlayer;
         private readonly IInterfaceSfxService _interfaceSfx;
         private readonly IMusicService _music;
@@ -50,7 +52,7 @@ namespace EmpireAtWar.Services.Audio
 
         public ShipSfxService(IAudioService audioService, ICameraService cameraService, IVisionService visionService,
             ILocalPlayer localPlayer, ShipSfxSources sources, ShipSfxData data, CameraData cameraData,
-            IInterfaceSfxService interfaceSfx, IMusicService music)
+            IInterfaceSfxService interfaceSfx, IMusicService music, IEntityLocator entities)
         {
             _sources = sources;
             _data = data;
@@ -58,6 +60,7 @@ namespace EmpireAtWar.Services.Audio
             _cameraService = cameraService;
             _cameraData = cameraData;
             _visionService = visionService;
+            _entities = entities;
             _localPlayer = localPlayer;
             _interfaceSfx = interfaceSfx;
             _music = music;
@@ -292,7 +295,9 @@ namespace EmpireAtWar.Services.Audio
             Vector3 viewport = _cameraService.WorldToViewportPoint(position);
             pan = Mathf.Clamp((viewport.x - 0.5f) * 1.6f, -0.8f, 0.8f);
             if (viewport.z <= 0f || !_localPlayer.IsFriendly(owner) &&
-                (ship != null && ship.IsCloaked || !_visionService.IsVisible(_localPlayer.Id, position))) return 0f;
+                (ship != null && ship.IsCloaked || !(ship != null && _entities.TryGetEntity(ship.Id, out IEntity entity)
+                    ? _visionService.IsVisible(_localPlayer.Id, entity)
+                    : _visionService.IsVisible(_localPlayer.Id, position)))) return 0f;
             // Two-argument Max: the params overload allocates an array on every call.
             float outside = Mathf.Max(Mathf.Max(0f, Mathf.Max(-viewport.x, viewport.x - 1f)),
                 Mathf.Max(-viewport.y, viewport.y - 1f));

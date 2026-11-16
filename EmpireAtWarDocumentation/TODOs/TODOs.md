@@ -289,6 +289,9 @@
 
 ### Bugs
 
+- [x] **Fog hull visibility — review fixes** → [[Done/Bugs/Fog_Hull_Visibility_Review_Fixes]]
+  - Completed 2026-11-16: all-attacker reveal, staggered 10 Hz ships, serialized duration, hull bake guard, audio and replication coverage. Tooltip finding disproved. Unity compilation/save verified; tests, gameplay and matched CPU capture → acceptance queue.
+
 - [x] **Multiselect Attack / Attack Move leaves ships overlapped** → [[Done/Bugs/Multiselect_Attack_Overlap|Implementation and acceptance]]
   - Review fixes 2026-11-16: ignore passing ships, re-close from the current target side, clear completed/failed settling intent. Unity compilation: 0 errors; Navigation regression cases added, not run.
   - Initial investigation 2026-11-16: source-verified range-stop bypass, collapsed combat offsets and bounded arrival repair; no runtime reproduction or baseline CPU capture.

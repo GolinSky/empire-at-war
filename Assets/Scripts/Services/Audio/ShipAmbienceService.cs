@@ -154,7 +154,7 @@ namespace EmpireAtWar.Services.Audio
                 bool audible = transform != null && !unit.HealthModel.IsDestroyed &&
                     (_player.IsFriendly(unit.Owner) ||
                      (!unit.GetFacade<ICombatModifiersFacade>().Modifiers.IsCloaked &&
-                      _vision.IsVisible(_player.Id, transform.position)));
+                      _vision.IsVisible(_player.Id, unit)));
                 _audible[i] = audible ? (byte)1 : (byte)0;
             }
             _nextMask = Time.unscaledTime + MASK_INTERVAL;

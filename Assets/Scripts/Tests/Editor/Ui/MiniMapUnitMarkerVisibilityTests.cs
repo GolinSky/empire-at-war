@@ -19,8 +19,9 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Ui")]
     public sealed class MiniMapUnitMarkerVisibilityTests
     {
-        [Test]
-        public void ShipMarkerUsesHullAndFiringRevealButStillRejectsCloak()
+        [TestCase(true)]
+        [TestCase(false)]
+        public void MarkerUsesHullOrPointAndFiringRevealButStillRejectsCloak(bool hasFootprint)
         {
             GameObject target = new GameObject("Target");
             GameObject source = new GameObject("Source");
@@ -39,18 +40,22 @@ namespace EmpireAtWar.Tests.Editor
                 });
                 presenter = new MiniMapUnitMarkerPresenter(new Health(), vision,
                     TestPlayers.CreateLocalPlayer(relations), data, target.transform, TestPlayers.Enemy,
-                    SelectionType.Ship, modifiers, new SlowTicks(), null, new IVisionFootprintFacade[] { footprint });
+                    SelectionType.Ship, modifiers, new SlowTicks(), null,
+                    hasFootprint ? new IVisionFootprintFacade[] { footprint } : Array.Empty<IVisionFootprintFacade>(), 7);
                 presenter.Initialize();
                 MiniMapMarker marker = data.Markers[0];
                 vision.Register(TestPlayers.Human, source.transform, 100f);
 
                 Assert.That(vision.IsVisible(TestPlayers.Human, target.transform.position), Is.False);
                 presenter.SlowTick();
-                Assert.That(marker.Visible, Is.True);
+                Assert.That(marker.Visible, Is.EqualTo(hasFootprint));
                 vision.Unregister(source.transform);
                 presenter.SlowTick();
                 Assert.That(marker.Visible, Is.False);
 
+                vision.Reveal(TestPlayers.Enemy, 7, 5f);
+                vision.Reveal(TestPlayers.Ally, 8, 5f);
+                Assert.That(marker.Visible, Is.False, "Other viewers and entity IDs do not reveal this marker.");
                 vision.Reveal(TestPlayers.Ally, 7, 5f);
                 Assert.That(marker.Visible, Is.True);
                 now = 5f;

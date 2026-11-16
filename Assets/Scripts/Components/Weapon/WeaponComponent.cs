@@ -302,10 +302,9 @@ namespace EmpireAtWar.Components.Weapon
 
         private void OnAttackEmitted(AttackData attackData)
         {
-            if (_followsHost || _attackerClass == ShipClass.Structure || _attackerClass.IsStrikecraft() ||
-                attackData.IsDestroyed ||
+            if (_followsHost || attackData.IsDestroyed ||
                 !_playerRoster.IsHostile(_owner, attackData.TargetEntity.Owner)) return;
-            _visionService.Reveal(attackData.TargetEntity.Owner, _entityId, VisionService.FIRING_REVEAL_SECONDS);
+            _visionService.Reveal(attackData.TargetEntity.Owner, _entityId, _visionService.FiringRevealSeconds);
         }
 
         public void AddTarget(AttackData attackData, AttackType attackType)

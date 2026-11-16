@@ -91,13 +91,21 @@ namespace EmpireAtWar.Tests.Editor
             foreach (string guid in guids)
             {
                 ShipData data = AssetDatabase.LoadAssetAtPath<ShipData>(AssetDatabase.GUIDToAssetPath(guid));
-                Assert.That(WeaponLoadoutBaker.LoadShipView(data), Is.Not.Null, data.name);
+                GameObject prefab = WeaponLoadoutBaker.LoadShipView(data);
+                Assert.That(prefab, Is.Not.Null, data.name);
                 Assert.That(data.VisionHull.Count, Is.GreaterThanOrEqualTo(3), data.name);
+                Vector2[] measuredHull = ShipVisionHullBaker.MeasureHull(prefab);
+                Assert.That(data.VisionHull.Count, Is.EqualTo(measuredHull.Length),
+                    $"{data.name}: re-bake vision hull after changing ship geometry.");
                 float twiceArea = 0f;
                 Vector2 previous = data.VisionHull[data.VisionHull.Count - 1];
                 for (int i = 0; i < data.VisionHull.Count; i++)
                 {
                     Vector2 current = data.VisionHull[i];
+                    Assert.That(current.x, Is.EqualTo(measuredHull[i].x).Within(0.001f),
+                        $"{data.name}: stale vision hull vertex {i} (x).");
+                    Assert.That(current.y, Is.EqualTo(measuredHull[i].y).Within(0.001f),
+                        $"{data.name}: stale vision hull vertex {i} (z).");
                     twiceArea += previous.x * current.y - previous.y * current.x;
                     previous = current;
                 }

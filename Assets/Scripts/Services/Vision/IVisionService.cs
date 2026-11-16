@@ -9,13 +9,15 @@ namespace EmpireAtWar.Services.Vision
 {
     /// <summary>
     /// Allied vision circles reveal points and intersecting ship hulls in the XZ plane.
-    /// A firing reveal additionally exposes one ship to the attacked player's team.
+    /// A firing reveal additionally exposes one attacker to the attacked player's team.
     /// </summary>
     public interface IVisionService
     {
         event Action<PlayerId, long, bool> RevealChanged;
 
         bool FogEnabled { get; }
+
+        float FiringRevealSeconds { get; }
 
         IReadOnlyList<OwnedCircle> Sources { get; }
 
@@ -27,6 +29,8 @@ namespace EmpireAtWar.Services.Vision
         bool IsVisible(PlayerId viewer, Vector3 position);
 
         bool IsVisible(PlayerId viewer, IVisionFootprintFacade footprint);
+
+        bool IsRevealed(PlayerId viewer, long entityId);
 
         /// <summary>Reveals an attacker to the attacked player's team for a scaled-time duration.</summary>
         void Reveal(PlayerId viewer, long entityId, float duration);

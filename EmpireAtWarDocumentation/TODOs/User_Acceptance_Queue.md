@@ -424,3 +424,10 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Check mining/Battle Asteroid and satellite capture/build/destruction, relay capture, fogged destruction, away/return, menu/cinematic/pause, burst events, map reload and online client; review 48 px world / 26 px minimap readability and ordinary HUD panel overlap.
 - [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Run authored Capture/Ui/Networking regressions when explicitly authorized; local test execution was disabled.
 - [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Profile matched idle/many-reminder/camera-pan/destruction workloads; record source/active/visible counts, CPU and allocations. Zero-allocation target and CPU budget are unmeasured.
+
+## Fog Hull Visibility
+
+- [ ] [[Done/Bugs/Fog_Hull_Visibility_Review_Fixes]] — Run non-explicit Vision, Combat, Networking, Ui, Squadrons, Abilities, BattleInput, Capture and Audio checks on explicit request; tests not run.
+- [ ] [[Done/Bugs/Fog_Hull_Visibility_Review_Fixes]] — Matched large-battle CPU capture versus `d19023145`: vision, acquisition, 10 Hz fog checks and reveal fan-out; remove `profiler.data` after analysis. No performance claim yet.
+- [ ] [[Done/Bugs/Fog_Hull_Visibility_Review_Fixes]] — In-game hull edge/rotation, squadron/structure/ship firing reveal, marker/audio visibility, five-second expiry and cloak precedence.
+- [ ] [[Done/Bugs/Fog_Hull_Visibility_Review_Fixes]] — Online reveal/hide parity and reconnect mid-reveal baseline.

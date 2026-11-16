@@ -90,7 +90,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         private void RefreshVisibility()
         {
             _marker.SetVisible(_localPlayer.IsFriendly(_owner) ||
-                !_modifiers.IsCloaked && !_fog.IsHiddenByFog && _vision.IsVisible(_localPlayer.Id, transform.position));
+                !_modifiers.IsCloaked && !_fog.IsHiddenByFog &&
+                (_vision.IsRevealed(_localPlayer.Id, _entityId) || _vision.IsVisible(_localPlayer.Id, transform.position)));
         }
 
         private void HandleFogVisibility(bool visible)

@@ -17,6 +17,7 @@ using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.OwnedAreas;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.Squadrons;
@@ -353,6 +354,60 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void IconSampling_FiringRevealRespectsEntityTeamCloakFogAndExpiry()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            GameObject root = new GameObject("Revealed squadron marker");
+            _objects.Add(root);
+            SquadronIconComponent icon = root.AddComponent<SquadronIconComponent>();
+            PlayerRoster players = TestPlayers.CreateTeamGame();
+            float clock = 0f;
+            var vision = new VisionService(players, true, () => clock);
+            var modifiers = new CombatModifiers();
+            var fog = new FogStub();
+            typeof(SquadronIconComponent).GetMethod("Construct", PRIVATE_INSTANCE).Invoke(icon, new object[]
+            {
+                vision, TestPlayers.CreateLocalPlayer(players), new SelectionModel(), TestPlayers.Enemy,
+                null, null, 42L, modifiers, fog
+            });
+            var marker = (BattleMarker)typeof(SquadronIconComponent).GetField("_marker", PRIVATE_INSTANCE).GetValue(icon);
+
+            marker.SampleVisibility();
+            Assert.That(marker.IsVisible, Is.False, "There are no vision circles at the squadron point.");
+            vision.Reveal(TestPlayers.Human, 43, 5f);
+            vision.Reveal(TestPlayers.SecondEnemy, 42, 5f);
+            marker.SampleVisibility();
+            Assert.That(marker.IsVisible, Is.False, "Another entity or an opposing team's reveal must not expose this marker.");
+
+            vision.Reveal(TestPlayers.Ally, 42, 5f);
+            marker.SampleVisibility();
+            Assert.That(marker.IsVisible, Is.True, "An allied firing reveal exposes the marker outside point vision.");
+            modifiers.SetCloaked(true);
+            marker.SampleVisibility();
+            Assert.That(marker.IsVisible, Is.False, "Cloak wins over an active reveal.");
+            modifiers.SetCloaked(false);
+            marker.SampleVisibility();
+            Assert.That(marker.IsVisible, Is.True);
+            fog.IsHiddenByFog = true;
+            marker.SampleVisibility();
+            Assert.That(marker.IsVisible, Is.False, "A concealed hull must not contribute its marker.");
+            fog.IsHiddenByFog = false;
+            marker.SampleVisibility();
+            Assert.That(marker.IsVisible, Is.True);
+
+            clock = 5f;
+            vision.Tick();
+            marker.SampleVisibility();
+            Assert.That(marker.IsVisible, Is.False, "The next marker sample removes an expired reveal.");
+        }
+
+        private sealed class FogStub : IFogVisibilityFacade
+        {
+            public event Action<bool> VisibilityChanged { add { } remove { } }
+            public bool IsHiddenByFog { get; set; }
+        }
+
         private sealed class FlightStub : ISquadronFlightComponent
         {
             public FlightStub(IFighterFlightData data, int count = 0) { Data = data; Count = count; }
@@ -461,6 +516,8 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class VisionSpy : IVisionService
         {
             public event Action<PlayerId, long, bool> RevealChanged { add { } remove { } }
+            public float FiringRevealSeconds => 5f;
+            public bool IsRevealed(PlayerId viewer, long entityId) => false;
             public HashSet<Vector3> Hidden { get; } = new HashSet<Vector3>();
             public int Reads { get; private set; }
             public bool IsVisible(PlayerId viewer, Vector3 position) { Reads++; return !Hidden.Contains(position); }

@@ -1,6 +1,7 @@
 using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Ship.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Vision;
 using NUnit.Framework;
 using UnityEngine;
@@ -169,6 +170,25 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_vision.IsVisible(TestPlayers.Enemy, footprint), Is.True);
             _vision.ForgetReveals(42);
             Assert.That(_vision.IsVisible(TestPlayers.Enemy, footprint), Is.False);
+        }
+
+        [Test]
+        public void EntityWithoutHull_RevealSharesWithAlliesAndExpiresWithoutRevealingNearbySpace()
+        {
+            var target = new Entity(null, null,
+                new IEntityFacade[] { new EntityTransformFacade(_root.transform) }, TestPlayers.Enemy, 42, null, null);
+            var neighbor = new Entity(null, null,
+                new IEntityFacade[] { new EntityTransformFacade(_root.transform) }, TestPlayers.Enemy, 43, null, null);
+            Assert.That(_vision.IsVisible(TestPlayers.Human, target), Is.False);
+            _vision.Reveal(TestPlayers.Human, target.Id, 5f);
+            Assert.That(_vision.IsVisible(TestPlayers.Human, target), Is.True);
+            Assert.That(_vision.IsVisible(TestPlayers.Ally, target), Is.True);
+            Assert.That(_vision.IsVisible(TestPlayers.Enemy, target), Is.False);
+            Assert.That(_vision.IsVisible(TestPlayers.Human, neighbor), Is.False);
+            Assert.That(_vision.IsVisible(TestPlayers.Human, _root.transform.position), Is.False);
+            _now = 5f;
+            _vision.Tick();
+            Assert.That(_vision.IsVisible(TestPlayers.Human, target), Is.False);
         }
 
         private Transform CreateSource(Vector3 position)

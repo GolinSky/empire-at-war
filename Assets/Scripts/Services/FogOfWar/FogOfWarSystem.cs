@@ -20,6 +20,9 @@ namespace EmpireAtWar.Services.FogOfWar
         [Header("Fog Map Settings")]
         [SerializeField, Min(1f), Tooltip("Map side the fog plane was authored for.")]
         private float fogReferenceSide = 600f;
+        [SerializeField, Min(0f), Tooltip("Seconds an attacker stays revealed to the attacked team after its last shot.")]
+        private float firingRevealSeconds = 5f;
+        public float FiringRevealSeconds => firingRevealSeconds;
         [Tooltip("Resolution of the dynamic mask texture")]
         public int textureResolution = 256;
 
