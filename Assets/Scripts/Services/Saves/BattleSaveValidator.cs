@@ -311,11 +311,10 @@ namespace EmpireAtWar.Services.Saves
                 ShipType.InterdictorStarDestroyer when slots.Length == 1 && slots[0] is { Id: ShipAbilityId.BoostWeaponPower }
                     => new[] { slots[0], AbilitySlotSave.Ready(ShipAbilityId.DauntlessSensorJamming) },
                 ShipType.Praetor when slots.Length == 1 && slots[0] is { Id: ShipAbilityId.FullSalvo }
-                    => new[]
-                    {
-                        slots[0], AbilitySlotSave.Ready(ShipAbilityId.BoostShieldPower),
-                        AbilitySlotSave.Ready(ShipAbilityId.BoostWeaponPower)
-                    },
+                    => new[] { slots[0], AbilitySlotSave.Ready(ShipAbilityId.BoostShieldPower) },
+                ShipType.Praetor when slots.Length == 3 && slots[0] is { Id: ShipAbilityId.FullSalvo } &&
+                    slots[1] is { Id: ShipAbilityId.BoostShieldPower } && slots[2] is { Id: ShipAbilityId.BoostWeaponPower }
+                    => new[] { slots[0], slots[1] },
                 _ => slots
             };
         }

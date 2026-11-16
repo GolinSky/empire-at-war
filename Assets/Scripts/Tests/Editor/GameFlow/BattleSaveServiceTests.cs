@@ -380,10 +380,12 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(ShipType.InterdictorStarDestroyer, FactionType.Empire, ShipAbilityId.BoostWeaponPower,
             ShipAbilityId.BoostWeaponPower, ShipAbilityId.None, ShipAbilityId.DauntlessSensorJamming, ShipAbilityId.None)]
         [TestCase(ShipType.Praetor, FactionType.Republic, ShipAbilityId.FullSalvo, ShipAbilityId.FullSalvo,
-            ShipAbilityId.None, ShipAbilityId.BoostShieldPower, ShipAbilityId.BoostWeaponPower)]
+            ShipAbilityId.None, ShipAbilityId.BoostShieldPower, ShipAbilityId.None)]
+        [TestCase(ShipType.Praetor, FactionType.Republic, ShipAbilityId.FullSalvo, ShipAbilityId.FullSalvo,
+            ShipAbilityId.BoostShieldPower, ShipAbilityId.BoostShieldPower, ShipAbilityId.BoostWeaponPower)]
         public void Validator_MigratesLegacyShipLoadoutsAndPreservesCooldown(ShipType shipType, FactionType faction,
             ShipAbilityId savedPrimary, ShipAbilityId expectedPrimary, ShipAbilityId savedSecondary,
-            ShipAbilityId expectedSecondary, ShipAbilityId expectedTertiary)
+            ShipAbilityId expectedSecondary, ShipAbilityId savedTertiary)
         {
             using var assets = new CachedAssetService(new AddressableHandleLoader());
             BattleDefinition defaults = SkirmishPreset.Default();
@@ -405,11 +407,11 @@ namespace EmpireAtWar.Tests.Editor
             float[] damage = Enumerable.Repeat(0.25f, savedHardPointCount).ToArray();
             AbilitySlotSave primary = JsonUtility.FromJson<AbilitySlotSave>(
                 $"{{\"id\":{(int)savedPrimary},\"state\":{(int)ShipAbilityState.Recovering},\"timeLeft\":19}}");
-            AbilitySlotSave[] savedAbilities = savedSecondary == ShipAbilityId.None ? new[] { primary } : new[]
-            {
-                primary,
-                AbilitySlotSave.From(new ShipAbilitySlot(null, new ShipAbilityDefinition(), savedSecondary))
-            };
+            AbilitySlotSave[] savedAbilities = new[] { savedSecondary, savedTertiary }
+                .Where(id => id != ShipAbilityId.None)
+                .Select(AbilitySlotSave.Ready)
+                .Prepend(primary)
+                .ToArray();
             UnitSave ship = UnitSave.Create(1, human.Id, UnitTypeId.Ship(shipType), Vector3.zero,
                 Quaternion.identity, UnitHealthSave.ForShip(0.5f, 0.25f, damage), null).WithAbilities(savedAbilities);
             if (data.HangarBays.Count > 0)
@@ -433,10 +435,12 @@ namespace EmpireAtWar.Tests.Editor
             AbilitySlotSave[] migrated = ship.Abilities;
             validator.Validate(save, battle);
             Assert.That(ship.Abilities, Is.SameAs(migrated));
-            Assert.That(migrated.Select(slot => slot.Id), Is.EqualTo(
-                new[] { expectedPrimary, expectedSecondary, expectedTertiary }.Where(id => id != ShipAbilityId.None)));
+            Assert.That(migrated.Select(slot => slot.Id), Is.EqualTo(expectedSecondary == ShipAbilityId.None
+                ? new[] { expectedPrimary } : new[] { expectedPrimary, expectedSecondary }));
             Assert.That(migrated[0].State, Is.EqualTo(ShipAbilityState.Recovering));
             Assert.That(migrated[0].TimeLeft, Is.EqualTo(19f));
+            if (savedSecondary != ShipAbilityId.None && savedSecondary == expectedSecondary)
+                Assert.That(migrated[1], Is.SameAs(savedAbilities[1]));
             foreach (AbilitySlotSave slot in migrated.Skip(savedAbilities.Length))
             {
                 Assert.That(slot.State, Is.EqualTo(ShipAbilityState.Ready));
