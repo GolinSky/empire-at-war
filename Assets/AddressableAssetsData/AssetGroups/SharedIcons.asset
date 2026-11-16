@@ -450,6 +450,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1f8bfa9146242d981a63136ff2190b3
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/DHOmniIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a5d07dd53c680c6408f3e98f4ce75765
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/NebulonBIcon.png
     m_ReadOnly: 0

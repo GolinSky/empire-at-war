@@ -295,6 +295,24 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 25
         <Icon>k__BackingField: {fileID: 21300000, guid: 868302fc85b4fef429aefdbe75fef36b,
           type: 3}
+    - key: 115
+      value:
+        matchups: {fileID: 0}
+        displayName: DH-Omni Supply Ship
+        description: Deploys two Belbullab-22, two Hyena bomber, and two Vulture
+          squadrons at once. Carries eight launches of each type, including the initial
+          deployment.
+        role: "Capital \xB7 Carrier"
+        iconKey: a1f8bfa9146242d981a63136ff2190b3:21300000
+        isHero: 0
+        <Name>k__BackingField: DH-Omni Supply Ship
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 8000
+        <BuildTime>k__BackingField: 55
+        <UnitCapacity>k__BackingField: 14
+        <Icon>k__BackingField: {fileID: 21300000, guid: a1f8bfa9146242d981a63136ff2190b3,
+          type: 3}
   squadrons:
     keyValue:
     - key: 100

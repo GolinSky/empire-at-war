@@ -1841,3 +1841,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: DHOmniShipView
+      value:
+        m_AssetGUID: 0cd3690fa6913274e97f4411701039a3
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: DHOmniShipData
+      value:
+        m_AssetGUID: ebbb9e0481826684d8042d3b02935644
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

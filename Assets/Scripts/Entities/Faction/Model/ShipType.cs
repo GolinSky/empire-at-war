@@ -39,6 +39,7 @@ namespace EmpireAtWar.Models.Factions
         Bulwark = 112,
         Recalcitrant = 113,
         RecusantDreadnought = 114,
+        DHOmni = 115,
 
         //empire
         Victory = 200,

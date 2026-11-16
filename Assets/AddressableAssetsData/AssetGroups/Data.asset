@@ -490,6 +490,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebbb9e0481826684d8042d3b02935644
+    m_Address: DHOmniShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ec216abba7e33ee4996e32829baec56f
     m_Address: MaceWinduEta2SquadronData
     m_ReadOnly: 0
