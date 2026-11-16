@@ -50,13 +50,20 @@ namespace EmpireAtWar.Services.TacticalMarkers
             point = default;
             exists = true;
             ICaptureSite site = FindSite(targetId);
-            if (site != null) point = site.Center;
-            else if (targetId >= 0 && _entities.TryGetEntity(targetId, out IEntity entity) &&
+            if (site != null)
+            {
+                point = site.Center;
+                return _vision.IsVisible(sender, point);
+            }
+            if (targetId >= 0 && _entities.TryGetEntity(targetId, out IEntity entity) &&
                      !entity.HealthModel.IsDestroyed &&
                      entity.TryGetFacade(out IEntityTransformFacade transform))
+            {
                 point = transform.Transform.position;
-            else { exists = false; return false; }
-            return _vision.IsVisible(sender, point);
+                return _vision.IsVisible(sender, entity);
+            }
+            exists = false;
+            return false;
         }
     }
 }

@@ -59,7 +59,7 @@ namespace EmpireAtWar.Entities.Squadrons
                 if (best != null && (tier > bestTier || tier == bestTier && (score > bestScore ||
                     score == bestScore && radar.Enemies.IndexOf(candidate) >= radar.Enemies.IndexOf(best)))) continue;
                 if (candidate.IsCloaked()) continue;
-                if (!_visionService.IsVisible(_side, position)) continue;
+                if (!_visionService.IsVisible(_side, candidate)) continue;
                 best = candidate;
                 bestTier = tier;
                 bestScore = score;
@@ -89,7 +89,7 @@ namespace EmpireAtWar.Entities.Squadrons
                 float score = Score(candidate, distance);
                 if (tier > bestTier || tier == bestTier && score >= bestScore) continue;
                 if (candidate.IsCloaked()) continue;
-                if (!_visionService.IsVisible(_side, position)) continue;
+                if (!_visionService.IsVisible(_side, candidate)) continue;
                 best = candidate;
                 bestTier = tier;
                 bestScore = score;
@@ -109,7 +109,7 @@ namespace EmpireAtWar.Entities.Squadrons
                 IEntity fought = combat.Target;
                 if (fought != null && IsValidEnemy(fought) && !fought.HealthModel.ShipClass.IsStrikecraft() &&
                     !fought.IsCloaked() &&
-                    _visionService.IsVisible(_side, fought.GetFacade<IEntityTransformFacade>().Transform.position))
+                    _visionService.IsVisible(_side, fought))
                     return fought;
             }
 

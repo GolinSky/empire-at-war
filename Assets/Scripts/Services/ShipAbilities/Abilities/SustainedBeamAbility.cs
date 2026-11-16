@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
@@ -18,6 +20,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private readonly WeaponProfile _profile;
         private readonly DamageType _damageType;
         private readonly float _damage;
+        private readonly IVisionService _vision;
+        private readonly IMatchSession _session;
         private BeamShot _view;
         private IShipAbilityFacade _caster;
         private IEntity _target;
@@ -28,12 +32,14 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private float _pendingTime;
 
         protected SustainedBeamAbility(ImpactEffectPresenter impactPresenter, WeaponProfile profile,
-            DamageType damageType, float damage)
+            DamageType damageType, float damage, IVisionService vision, IMatchSession session)
         {
             _impactPresenter = impactPresenter;
             _profile = profile;
             _damageType = damageType;
             _damage = damage;
+            _vision = vision;
+            _session = session;
         }
 
         public bool IsComplete => _timeLeft <= 0f || _target.HealthModel.IsDestroyed ||
@@ -53,6 +59,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _view.PrepareImpact(_impactPresenter, target.HealthModel, _damageType, _damage, 1.5f, true);
             _view.PlayBeam(GetMuzzle(caster), target.GetFacade<IEntityTransformFacade>().Transform,
                 definition.Duration, _profile);
+            if (_session.IsAuthority)
+                _vision.Reveal(target.Owner, caster.Entity.Id, VisionService.FIRING_REVEAL_SECONDS);
         }
 
         public void Advance(float deltaTime)
@@ -72,6 +80,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             }
             _health.ApplyDamage(_damagePerSecond * _pendingTime * _caster.Modifiers.GetDamageMultiplier(_target),
                 _damageType, hardPointId);
+            if (_session.IsAuthority && _pendingTime > 0f)
+                _vision.Reveal(_target.Owner, _caster.Entity.Id, VisionService.FIRING_REVEAL_SECONDS);
             _pendingTime = 0f;
         }
 

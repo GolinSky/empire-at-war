@@ -28,6 +28,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         }
 
         public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
-            new IonShotAbility(this, dependencies.BoltFlights);
+            new IonShotAbility(this, dependencies.BoltFlights, dependencies.Vision, dependencies.Session);
     }
 }

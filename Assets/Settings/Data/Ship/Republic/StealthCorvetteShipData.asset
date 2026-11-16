@@ -13,7 +13,24 @@ MonoBehaviour:
   m_Name: StealthCorvetteShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 1
+  visionHull:
+  - {x: -0.48768654, y: -4.5085063}
+  - {x: -0.23974742, y: -5.234703}
+  - {x: 0.23974739, y: -5.234703}
+  - {x: 0.48768654, y: -4.5085063}
+  - {x: 0.48768654, y: -4.208791}
+  - {x: 0.47133955, y: 2.1338346}
+  - {x: 0.3985014, y: 3.368664}
+  - {x: 0.38952523, y: 3.5030189}
+  - {x: 0.37184772, y: 3.637374}
+  - {x: 0.0000000908931, y: 5.2347035}
+  - {x: -0.37184757, y: 3.637374}
+  - {x: -0.38952515, y: 3.5030189}
+  - {x: -0.3985013, y: 3.368664}
+  - {x: -0.47133964, y: 2.1338346}
+  - {x: -0.48768654, y: -4.208791}
   <Speed>k__BackingField: 35
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 7

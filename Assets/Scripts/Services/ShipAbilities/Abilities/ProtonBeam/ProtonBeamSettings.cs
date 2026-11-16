@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public DamageType DamageType => damageType;
 
         public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
-            new ProtonBeamAbility(this, dependencies.ImpactPresenter, dependencies.WeaponsData);
+            new ProtonBeamAbility(this, dependencies.ImpactPresenter, dependencies.WeaponsData,
+                dependencies.Vision, dependencies.Session);
     }
 }

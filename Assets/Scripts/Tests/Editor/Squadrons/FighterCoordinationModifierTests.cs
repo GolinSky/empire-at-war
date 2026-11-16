@@ -11,6 +11,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
+using EmpireAtWar.Services.Vision;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -32,7 +33,9 @@ namespace EmpireAtWar.Tests.Editor
                 var entities = new EntityLocator();
                 entities.AddEntity(squadron);
                 IStoppableShipAbility ability = (IStoppableShipAbility)new FighterCoordinationSettings().CreateAbility(
-                    new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null, null));
+                    new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null, null,
+                        new VisionService(TestPlayers.CreateTeamGame(), fogEnabled: false),
+                        new OfflineSession(TestPlayers.Human)));
 
                 ability.Start(caster, new ShipAbilityDefinition(), null);
                 Assert.That(squadron.Modifiers.AccuracyMultiplier, Is.EqualTo(affected ? 1.2f : 1f));
@@ -56,7 +59,9 @@ namespace EmpireAtWar.Tests.Editor
             {
                 var entities = new EntityLocator();
                 entities.AddEntity(ally);
-                var dependencies = new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null, null);
+                var dependencies = new ShipAbilityDependencies(entities, TestPlayers.CreateTeamGame(), null, null, null, null,
+                    new VisionService(TestPlayers.CreateTeamGame(), fogEnabled: false),
+                    new OfflineSession(TestPlayers.Human));
                 var settings = new FighterCoordinationSettings();
                 IStoppableShipAbility first = (IStoppableShipAbility)settings.CreateAbility(dependencies);
                 IStoppableShipAbility second = (IStoppableShipAbility)settings.CreateAbility(dependencies);

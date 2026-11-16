@@ -13,7 +13,19 @@ MonoBehaviour:
   m_Name: CR70ShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 1
+  visionHull:
+  - {x: -4.6119595, y: -7.405979}
+  - {x: -4.289807, y: -7.8748937}
+  - {x: 4.2898116, y: -7.8748937}
+  - {x: 4.6119494, y: -7.405979}
+  - {x: 4.6119494, y: -5.270124}
+  - {x: 0.48368242, y: 7.491803}
+  - {x: -0.29014236, y: 7.8748927}
+  - {x: -0.3063341, y: 7.8748927}
+  - {x: -0.64018774, y: 7.5661077}
+  - {x: -4.6119595, y: -5.270124}
   <Speed>k__BackingField: 35
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 7

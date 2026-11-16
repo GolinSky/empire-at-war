@@ -13,7 +13,25 @@ MonoBehaviour:
   m_Name: CorellianBattlecruiserShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -15.597494, y: -51.7044}
+  - {x: -8.305141, y: -69.7372}
+  - {x: -8.046202, y: -70}
+  - {x: 8.205019, y: -70}
+  - {x: 8.463959, y: -69.7372}
+  - {x: 15.756302, y: -51.7044}
+  - {x: 15.756302, y: -41.06664}
+  - {x: 5.853198, y: 60.20002}
+  - {x: 5.748758, y: 60.666653}
+  - {x: 2.412704, y: 67.20004}
+  - {x: 0.5537675, y: 70.00001}
+  - {x: -0.39492467, y: 70.00001}
+  - {x: -2.253979, y: 67.20004}
+  - {x: -5.589984, y: 60.666653}
+  - {x: -5.694424, y: 60.20002}
+  - {x: -15.597494, y: -41.06664}
   <Speed>k__BackingField: 25
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 3

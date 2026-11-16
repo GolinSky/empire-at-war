@@ -13,6 +13,33 @@ MonoBehaviour:
   m_Name: HeavyDreadnoughtShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
+  <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -6.793067, y: -36.051685}
+  - {x: -6.297667, y: -36.503708}
+  - {x: 6.297668, y: -36.503708}
+  - {x: 6.7930665, y: -36.051685}
+  - {x: 6.7930665, y: -33.110027}
+  - {x: 6.641318, y: -6.0573773}
+  - {x: 6.375216, y: 13.360119}
+  - {x: 5.8693895, y: 23.989592}
+  - {x: 5.7095075, y: 26.36068}
+  - {x: 5.3964286, y: 29.205992}
+  - {x: 4.832516, y: 32.0513}
+  - {x: 4.129177, y: 34.48829}
+  - {x: 3.3794563, y: 35.910946}
+  - {x: 3.0670724, y: 36.503716}
+  - {x: -3.0670729, y: 36.503716}
+  - {x: -3.379455, y: 35.910946}
+  - {x: -4.129175, y: 34.48829}
+  - {x: -4.8325205, y: 32.0513}
+  - {x: -5.396435, y: 29.205992}
+  - {x: -5.7095137, y: 26.36068}
+  - {x: -5.8693957, y: 23.989592}
+  - {x: -6.3816247, y: 13.360119}
+  - {x: -6.6413183, y: -6.0573773}
+  - {x: -6.793067, y: -33.110027}
   <Speed>k__BackingField: 25
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 5
@@ -23,6 +50,7 @@ MonoBehaviour:
   <HyperSpaceDuration>k__BackingField: 0.6
   <BodyRotationMaxAngle>k__BackingField: 15
   <NavigationRadius>k__BackingField: 34.51656
+  <IgnoresMapObstacles>k__BackingField: 0
   <DestroyDelay>k__BackingField: 0.35
   <Wreck>k__BackingField: {fileID: 11400000, guid: c39f2c586ded865499d93f7db3f87eb2,
     type: 2}

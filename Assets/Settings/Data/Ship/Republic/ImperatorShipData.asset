@@ -13,7 +13,26 @@ MonoBehaviour:
   m_Name: ImperatorShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -46.640835, y: -65.63306}
+  - {x: -45.389393, y: -66.68855}
+  - {x: -23.719797, y: -76.83819}
+  - {x: -4.004188, y: -83.06704}
+  - {x: 0.00007217136, y: -83.99885}
+  - {x: 4.0043325, y: -83.06704}
+  - {x: 23.719782, y: -76.83819}
+  - {x: 45.389378, y: -66.68855}
+  - {x: 46.64082, y: -65.63306}
+  - {x: 3.1683292, y: 77.951355}
+  - {x: 2.264715, y: 80.658356}
+  - {x: 1.0063843, y: 83.996124}
+  - {x: 0.0032764766, y: 83.99885}
+  - {x: -0.0032923494, y: 83.99885}
+  - {x: -1.0064001, y: 83.996124}
+  - {x: -2.264731, y: 80.658356}
+  - {x: -3.168345, y: 77.951355}
   <Speed>k__BackingField: 16
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 2

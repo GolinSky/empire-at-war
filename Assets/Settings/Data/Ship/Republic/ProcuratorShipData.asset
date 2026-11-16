@@ -13,7 +13,24 @@ MonoBehaviour:
   m_Name: ProcuratorShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -82.91437, y: -69.81114}
+  - {x: -2.492821, y: -130}
+  - {x: 2.5230193, y: -129.99875}
+  - {x: 82.91421, y: -69.76968}
+  - {x: 77.282555, y: -54.308662}
+  - {x: 24.914228, y: 89.460556}
+  - {x: 16.255692, y: 113.2312}
+  - {x: 6.897399, y: 126.49486}
+  - {x: 0.10987405, y: 130}
+  - {x: -0.1629663, y: 129.99994}
+  - {x: -0.2098032, y: 129.99992}
+  - {x: -6.995574, y: 126.49139}
+  - {x: -16.34715, y: 113.22305}
+  - {x: -43.003765, y: 39.927723}
+  - {x: -59.28048, y: -4.826967}
   <Speed>k__BackingField: 12
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 1

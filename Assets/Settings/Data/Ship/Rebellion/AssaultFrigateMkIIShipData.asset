@@ -13,7 +13,23 @@ MonoBehaviour:
   m_Name: AssaultFrigateMkIIShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -34.798325, y: -7.82018}
+  - {x: -22.599575, y: -50}
+  - {x: -22.057697, y: -50}
+  - {x: 22.602535, y: -49.999996}
+  - {x: 34.79832, y: -7.8201737}
+  - {x: 34.145817, y: -6.462999}
+  - {x: 8.140804, y: 42.135906}
+  - {x: 5.5527196, y: 46.42821}
+  - {x: 2.8051813, y: 49.09392}
+  - {x: 0.0014712281, y: 50.000008}
+  - {x: -2.8022387, y: 49.09392}
+  - {x: -5.549777, y: 46.428207}
+  - {x: -8.137957, y: 42.135906}
+  - {x: -34.145824, y: -6.463005}
   <Speed>k__BackingField: 25
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 4

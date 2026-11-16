@@ -13,7 +13,32 @@ MonoBehaviour:
   m_Name: TitanShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -103.527115, y: -199.5839}
+  - {x: -51.265404, y: -218.09189}
+  - {x: -0.00002557993, y: -236.24678}
+  - {x: 0.00010551032, y: -236.24677}
+  - {x: 51.265354, y: -218.09189}
+  - {x: 103.52688, y: -199.5839}
+  - {x: 103.52702, y: -199.58376}
+  - {x: 103.52702, y: -199.58371}
+  - {x: 97.67996, y: -174.29755}
+  - {x: 49.353, y: 34.692642}
+  - {x: 48.43741, y: 38.652096}
+  - {x: 31.041119, y: 113.881676}
+  - {x: 30.125525, y: 117.841125}
+  - {x: 2.8514054, y: 235.78487}
+  - {x: 1.9799346, y: 236.17105}
+  - {x: 0.3631624, y: 236.24675}
+  - {x: -0.36321354, y: 236.24675}
+  - {x: -1.9795352, y: 236.17105}
+  - {x: -2.8514566, y: 235.78487}
+  - {x: -30.125525, y: 117.841125}
+  - {x: -31.041119, y: 113.881676}
+  - {x: -49.353, y: 34.692646}
+  - {x: -102.75141, y: -196.22931}
   <Speed>k__BackingField: 14
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 1

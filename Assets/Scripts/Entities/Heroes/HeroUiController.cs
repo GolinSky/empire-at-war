@@ -122,7 +122,7 @@ namespace EmpireAtWar.Entities.Heroes
         }
 
         private bool CanFocus(IEntity hero) => _localPlayer.IsFriendly(hero.Owner) ||
-            _vision.IsVisible(_localPlayer.Id, hero.GetFacade<IEntityTransformFacade>().Transform.position);
+            _vision.IsVisible(_localPlayer.Id, hero);
 
         private void RefreshVisibility()
         {

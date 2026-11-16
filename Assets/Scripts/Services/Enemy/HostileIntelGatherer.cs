@@ -76,7 +76,7 @@ namespace EmpireAtWar.Services.Enemy
                 }
 
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (!_vision.IsVisible(_owner.Id, position))
+                if (!_vision.IsVisible(_owner.Id, entity))
                 {
                     continue;
                 }

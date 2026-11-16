@@ -13,7 +13,27 @@ MonoBehaviour:
   m_Name: GladiatorShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -28.949997, y: -36.512104}
+  - {x: -28.07676, y: -37.911266}
+  - {x: -27.76202, y: -38.41206}
+  - {x: -11.303992, y: -42.563625}
+  - {x: 11.304012, y: -42.563625}
+  - {x: 27.76196, y: -38.41206}
+  - {x: 28.076782, y: -37.911266}
+  - {x: 28.950016, y: -36.512104}
+  - {x: 10.564472, y: 34.579296}
+  - {x: 9.326394, y: 39.366516}
+  - {x: 8.471112, y: 42.67357}
+  - {x: 6.6564994, y: 45}
+  - {x: -6.6564794, y: 45}
+  - {x: -8.471092, y: 42.67357}
+  - {x: -9.326373, y: 39.366516}
+  - {x: -10.564452, y: 34.579296}
+  - {x: -12.898564, y: 25.553999}
+  - {x: -25.994589, y: -25.084387}
   <Speed>k__BackingField: 25
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 2

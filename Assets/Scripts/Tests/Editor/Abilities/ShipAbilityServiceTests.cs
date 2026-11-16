@@ -9,6 +9,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Abilities;
+using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Saves;
@@ -123,9 +124,11 @@ namespace EmpireAtWar.Tests.Editor
         {
             WeaponsData weapons = UnityEditor.AssetDatabase.LoadAssetAtPath<WeaponsData>(
                 "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            var vision = new VisionService(TestPlayers.CreateDuel(), fogEnabled: false);
+            var session = new OfflineSession(TestPlayers.Human);
             SustainedBeamAbility beam = composite
-                ? new CompositeBeamAbility(new CompositeBeamSettings(), null, weapons)
-                : new ProtonBeamAbility(new ProtonBeamSettings(), null, weapons);
+                ? new CompositeBeamAbility(new CompositeBeamSettings(), null, weapons, vision, session)
+                : new ProtonBeamAbility(new ProtonBeamSettings(), null, weapons, vision, session);
             FakeCommand caster = CreateCaster();
             FakeCommand target = CreateCaster();
             caster.Modifiers.Add(new CombatStatModifier(2f, 1f, 1f, 1f, 1f));
@@ -145,6 +148,63 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(beam.IsComplete, Is.False);
             target.Modifiers.SetCloaked(true);
             Assert.That(beam.IsComplete, Is.True);
+        }
+
+        [TestCase(false, true)]
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        [TestCase(true, false)]
+        public void BeamDamage_OnlyAuthorityRefreshesFiringRevealUntilFiveSecondsAfterLastTick(
+            bool composite, bool authority)
+        {
+            WeaponsData weapons = UnityEditor.AssetDatabase.LoadAssetAtPath<WeaponsData>(
+                "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            float now = 0f;
+            var vision = new VisionService(TestPlayers.CreateDuel(), true, () => now);
+            var session = new OnlineSession(authority, TestPlayers.Human);
+            SustainedBeamAbility beam = composite
+                ? new CompositeBeamAbility(new CompositeBeamSettings(), null, weapons, vision, session)
+                : new ProtonBeamAbility(new ProtonBeamSettings(), null, weapons, vision, session);
+            FakeCommand caster = CreateCaster();
+            FakeCommand target = CreateCaster();
+            var enemy = new FakeEntity(target, target.FakeHealth, TestPlayers.Enemy, 2);
+            _targetView = new GameObject("Hidden beam caster");
+            var footprint = new ShipVisionFootprint(_targetView.transform, caster.Entity.Id,
+                new[] { Vector2.zero, Vector2.right, Vector2.up });
+            SetBeamField(beam, "_caster", caster);
+            SetBeamField(beam, "_target", enemy);
+            SetBeamField(beam, "_health", target.FakeHealth);
+            SetBeamField(beam, "_damagePerSecond", 100f);
+            SetBeamField(beam, "_timeLeft", 1f);
+
+            beam.Advance(0.2f);
+            Assert.That(vision.IsVisible(TestPlayers.Enemy, footprint), Is.EqualTo(authority));
+            Assert.That(vision.IsVisible(TestPlayers.Human, footprint), Is.False);
+            now = 4f;
+            beam.Advance(0.2f);
+            now = 5.1f;
+            vision.Tick();
+            Assert.That(vision.IsVisible(TestPlayers.Enemy, footprint), Is.EqualTo(authority));
+            now = 9.1f;
+            vision.Tick();
+            Assert.That(vision.IsVisible(TestPlayers.Enemy, footprint), Is.False);
+        }
+
+        [Test]
+        public void IonShot_NoLiveMemberEmits_NoFiringReveal()
+        {
+            var vision = new VisionService(TestPlayers.CreateDuel());
+            int revealCount = 0;
+            vision.RevealChanged += (viewer, entity, active) => revealCount++;
+            var ability = new IonShotAbility(new IonShotSettings(), null, vision,
+                new OfflineSession(TestPlayers.Human));
+            FakeCommand caster = CreateCaster();
+            FakeCommand target = CreateCaster();
+            target.FakeHealth.Units = new IHardPointModel[] { new IonCannonStub() };
+
+            ability.Start(caster, new ShipAbilityDefinition(), target.Entity);
+
+            Assert.That(revealCount, Is.Zero);
         }
 
         private static void SetBeamField(SustainedBeamAbility beam, string name, object value) =>
@@ -433,6 +493,35 @@ namespace EmpireAtWar.Tests.Editor
             vision.Register(TestPlayers.Human, _targetView.transform, 10f);
             sink.Submit(command);
             Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            service.LateDispose();
+        }
+
+        [Test]
+        public void AuthorityAcceptsHullOverlapAndFiringRevealWithoutCenterVision()
+        {
+            var relations = TestPlayers.CreateTeamGame();
+            var vision = new VisionService(relations);
+            var service = new ShipAbilityService(new FakeFactory(), relations, vision);
+            var caster = CreateCaster(targeted: true);
+            _targetView = new GameObject("Target");
+            _targetView.transform.position = Vector3.right * 300f;
+            var target = new FakeEntity(null, new FakeHealth(_targetView.transform), TestPlayers.Enemy, id: 2)
+            {
+                Footprint = new ShipVisionFootprint(_targetView.transform, 2, new[]
+                {
+                    new Vector2(-250f, 0f), new Vector2(50f, -50f), new Vector2(50f, 50f)
+                })
+            };
+            Transform source = new GameObject("Vision Source").transform;
+            source.SetParent(_targetView.transform);
+            vision.Register(TestPlayers.Human, source, 100f);
+
+            Assert.That(vision.IsVisible(TestPlayers.Human, _targetView.transform.position), Is.False);
+            Assert.That(service.CanTarget(caster, caster.Slots[0].Definition, target), Is.True);
+            vision.Unregister(source);
+            Assert.That(service.CanTarget(caster, caster.Slots[0].Definition, target), Is.False);
+            vision.Reveal(TestPlayers.Ally, target.Id, 5f);
+            Assert.That(service.CanTarget(caster, caster.Slots[0].Definition, target), Is.True);
             service.LateDispose();
         }
 
@@ -1088,6 +1177,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class FakeEntity : IEntity
         {
             private readonly IShipAbilityFacade _command;
+            public IVisionFootprintFacade Footprint { get; set; }
 
             public long Id { get; }
             public IHealthModelObserver HealthModel { get; }
@@ -1108,6 +1198,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryGetFacade<TCommand>(out TCommand entityCommand)
                 where TCommand : IEntityFacade
             { if (HealthModel is TCommand transformFacade) { entityCommand = transformFacade; return true; }
+                if (Footprint is TCommand footprint) { entityCommand = footprint; return true; }
                 if (_command is TCommand matching)
                 {
                     entityCommand = matching;

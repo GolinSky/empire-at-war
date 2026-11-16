@@ -422,7 +422,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         public bool IsVisibleHostile(PlayerId viewer, IEntity target) =>
             target != null && !target.HealthModel.IsDestroyed && !target.IsCloaked() &&
             _relations.IsHostile(viewer, target.Owner) &&
-            (!_vision.FogEnabled || _vision.IsVisible(viewer, target.GetFacade<IEntityTransformFacade>().Transform.position));
+            (!_vision.FogEnabled || _vision.IsVisible(viewer, target));
 
         private static bool TryFindSlot(IShipAbilityFacade caster, ShipAbilityId id, out ShipAbilitySlot slot)
         {

@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Entities.Ship.EntityFacades.Combat;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
@@ -375,6 +376,42 @@ namespace EmpireAtWar.Tests.Weapon
             vision.Register(TestPlayers.Ally, source, 10f);
             capture.ClearTargets();
             Assert.That(capture.CanAcquire(first, TestPlayers.Human, vision, out wreck), Is.False);
+        }
+
+        [Test]
+        public void CanAcquire_UsesHullOverlapAndFiringRevealWithoutCenterVision()
+        {
+            using TargetSelectionCapture capture = new TargetSelectionCapture();
+            HealthStub health = new HealthStub();
+            CombatModifiers modifiers = new CombatModifiers();
+            HardPointStub unit = Unit(Vector3.right * 300f);
+            var footprint = new ShipVisionFootprint(unit.Transform, 7, new[]
+            {
+                new Vector2(-250f, 0f), new Vector2(50f, -50f), new Vector2(50f, 50f)
+            });
+            Entity entity = new Entity(health, null,
+                new IEntityFacade[] { new CombatModifiersFacade(modifiers), new EntityTransformFacade(unit.Transform), footprint },
+                TestPlayers.Enemy, 7, Array.Empty<IPooledEntityEvents>(), Array.Empty<IHangarLaunchEvents>());
+            AttackData group = new AttackData(health, null, unit, entity);
+            VisionService vision = new VisionService(TestPlayers.CreateTeamGame());
+            Transform source = Unit(Vector3.zero).Transform;
+            vision.Register(TestPlayers.Human, source, 100f);
+
+            Assert.That(vision.IsVisible(TestPlayers.Human, unit.Transform.position), Is.False);
+            Assert.That(capture.CanAcquire(group, TestPlayers.Human, vision, out _), Is.True);
+            Assert.That(capture.CanAcquire(group, TestPlayers.Enemy, vision, out _), Is.False);
+
+            vision.Unregister(source);
+            capture.ClearTargets();
+            Assert.That(capture.CanAcquire(group, TestPlayers.Human, vision, out _), Is.False);
+            vision.Reveal(TestPlayers.Human, entity.Id, 5f);
+            capture.ClearTargets();
+            Assert.That(capture.CanAcquire(group, TestPlayers.Human, vision, out _), Is.True);
+            Assert.That(capture.CanAcquire(group, TestPlayers.Ally, vision, out _), Is.True);
+
+            modifiers.SetCloaked(true);
+            capture.ClearTargets();
+            Assert.That(capture.CanAcquire(group, TestPlayers.Human, vision, out _), Is.False);
         }
 
         private sealed class FogStub : IFogVisibilityFacade

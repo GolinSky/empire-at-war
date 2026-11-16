@@ -13,7 +13,23 @@ MonoBehaviour:
   m_Name: NebulonBShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -3.2020433, y: -15.263494}
+  - {x: -3.0279593, y: -15.749787}
+  - {x: 3.0009017, y: -15.749787}
+  - {x: 3.202052, y: -15.263494}
+  - {x: 3.202052, y: -11.066404}
+  - {x: 2.3195863, y: 11.168631}
+  - {x: 2.0948243, y: 12.877296}
+  - {x: 1.1408324, y: 15.245288}
+  - {x: 0.049495965, y: 15.749786}
+  - {x: -0.04951708, y: 15.749786}
+  - {x: -1.1408535, y: 15.245288}
+  - {x: -2.0970383, y: 12.877296}
+  - {x: -2.3196075, y: 11.168631}
+  - {x: -3.2017128, y: -13.998585}
   <Speed>k__BackingField: 30
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 7

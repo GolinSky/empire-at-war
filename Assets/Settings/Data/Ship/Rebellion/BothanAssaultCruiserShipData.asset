@@ -15,6 +15,22 @@ MonoBehaviour:
   <MinMoveCoefficient>k__BackingField: 0.4
   usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -23.790731, y: -62.22974}
+  - {x: -11.442543, y: -79.91485}
+  - {x: -10.0083685, y: -79.99999}
+  - {x: 10.008438, y: -79.99999}
+  - {x: 11.44246, y: -79.91485}
+  - {x: 23.790802, y: -62.22974}
+  - {x: 23.79065, y: -45.267906}
+  - {x: 23.786835, y: -45.166435}
+  - {x: 2.7605052, y: 74.044334}
+  - {x: 0.5295152, y: 78.33907}
+  - {x: -0.68188137, y: 79.99999}
+  - {x: -0.72948885, y: 79.99999}
+  - {x: -2.7604358, y: 74.044334}
+  - {x: -23.786917, y: -45.166435}
+  - {x: -23.790731, y: -45.267906}
   <Speed>k__BackingField: 25
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 5

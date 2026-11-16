@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Extensions;
 using EmpireAtWar.Models.Health;
@@ -22,6 +24,7 @@ namespace EmpireAtWar.Presenters.MiniMap
         private readonly ILocalPlayer _localPlayer;
         private readonly ISlowTickService _slowTick;
         private readonly CombatModifiers _modifiers;
+        private readonly IReadOnlyList<IVisionFootprintFacade> _footprints;
 
         private readonly MiniMapData _miniMapData;
         private readonly Transform _viewTransform;
@@ -40,7 +43,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             PlayerId owner,
             SelectionType selectionType, CombatModifiers modifiers,
             ISlowTickService slowTick,
-            MarkType? markTypeOverride)
+            MarkType? markTypeOverride, IReadOnlyList<IVisionFootprintFacade> footprints)
         {
             _slowTick = slowTick;
             _localPlayer = localPlayer;
@@ -52,6 +55,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             _healthModel = healthModel;
             _visionService = visionService;
             _modifiers = modifiers;
+            _footprints = footprints;
         }
 
         public void Initialize()
@@ -67,6 +71,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             _marker.SetPosition(position.x, position.z);
             _marker.SetVisible(_localPlayer.IsFriendly(_owner));
             _miniMapData.AddMarker(_marker);
+            _visionService.RevealChanged += HandleRevealChanged;
             _slowTick.Add(this);
         }
 
@@ -113,7 +118,16 @@ namespace EmpireAtWar.Presenters.MiniMap
             Vector3 position = _viewTransform.position;
             _marker.SetPosition(position.x, position.z);
             _marker.SetVisible(
-                _localPlayer.IsFriendly(_owner) || !_modifiers.IsCloaked && _visionService.IsVisible(_localPlayer.Id, position));
+                _localPlayer.IsFriendly(_owner) || !_modifiers.IsCloaked &&
+                (_footprints.Count > 0
+                    ? _visionService.IsVisible(_localPlayer.Id, _footprints[0])
+                    : _visionService.IsVisible(_localPlayer.Id, position)));
+        }
+
+        private void HandleRevealChanged(PlayerId viewer, long entityId, bool active)
+        {
+            if (_footprints.Count > 0 && _footprints[0].EntityId == entityId && _localPlayer.IsFriendly(viewer))
+                RefreshMarker();
         }
 
         private void RemoveMarker()
@@ -124,6 +138,7 @@ namespace EmpireAtWar.Presenters.MiniMap
             }
 
             _slowTick.Remove(this);
+            _visionService.RevealChanged -= HandleRevealChanged;
             _marker.SetVisible(false);
             _miniMapData.RemoveMarker(_marker);
             _marker = null;

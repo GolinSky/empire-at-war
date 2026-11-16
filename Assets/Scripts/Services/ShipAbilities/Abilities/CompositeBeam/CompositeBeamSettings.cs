@@ -22,6 +22,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             target.IsPlayerBase();
 
         public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
-            new CompositeBeamAbility(this, dependencies.ImpactPresenter, dependencies.WeaponsData);
+            new CompositeBeamAbility(this, dependencies.ImpactPresenter, dependencies.WeaponsData,
+                dependencies.Vision, dependencies.Session);
     }
 }

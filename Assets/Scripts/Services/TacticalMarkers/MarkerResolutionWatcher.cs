@@ -71,7 +71,7 @@ namespace EmpireAtWar.Services.TacticalMarkers
                 if (_relations.IsHostile(marker.Sender, entity.Owner) && !entity.HealthModel.IsDestroyed &&
                     entity.TryGetFacade(out IEntityTransformFacade transform) &&
                     (transform.Transform.position - marker.Point).sqrMagnitude <= _settings.ObjectiveRadius * _settings.ObjectiveRadius &&
-                    _vision.IsVisible(marker.Sender, transform.Transform.position)) return true;
+                    _vision.IsVisible(marker.Sender, entity)) return true;
             return false;
         }
     }

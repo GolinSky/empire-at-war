@@ -13,7 +13,32 @@ MonoBehaviour:
   m_Name: C9979ShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 1
+  visionHull:
+  - {x: -29.168274, y: -5.047404}
+  - {x: -28.746622, y: -6.1130195}
+  - {x: -28.359964, y: -6.525213}
+  - {x: -27.323336, y: -7.013847}
+  - {x: -1.3246204, y: -11.0043125}
+  - {x: -0.81901747, y: -11.024841}
+  - {x: 0.81901795, y: -11.024841}
+  - {x: 1.3245652, y: -11.0043125}
+  - {x: 27.323336, y: -7.013842}
+  - {x: 28.359964, y: -6.525208}
+  - {x: 28.746622, y: -6.11307}
+  - {x: 29.168272, y: -5.0473986}
+  - {x: 29.168272, y: 6.036252}
+  - {x: 28.746622, y: 7.1018677}
+  - {x: 28.359962, y: 7.5140047}
+  - {x: 27.323334, y: 8.002694}
+  - {x: 3.8644834, y: 11.024849}
+  - {x: 2.7100196, y: 11.024849}
+  - {x: -3.8624837, y: 11.024848}
+  - {x: -27.323338, y: 8.002689}
+  - {x: -28.359966, y: 7.5139995}
+  - {x: -28.746624, y: 7.101863}
+  - {x: -29.168274, y: 6.036247}
   <Speed>k__BackingField: 35
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 7

@@ -224,7 +224,7 @@ namespace EmpireAtWar.Components.Weapon
             var key = (entity, viewer);
             if (!_visibility.TryGetValue(key, out bool visible))
             {
-                visible = visionService.IsVisible(viewer, entity.GetFacade<IEntityTransformFacade>().Transform.position);
+                visible = visionService.IsVisible(viewer, entity);
                 _visibility.Add(key, visible);
             }
             return visible;

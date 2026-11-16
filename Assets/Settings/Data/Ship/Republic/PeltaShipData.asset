@@ -13,7 +13,21 @@ MonoBehaviour:
   m_Name: PeltaShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 1
+  visionHull:
+  - {x: -11.720141, y: -10.431878}
+  - {x: -0.8104798, y: -14.922919}
+  - {x: 0.8105301, y: -14.922919}
+  - {x: 11.72014, y: -10.431881}
+  - {x: 11.72014, y: -9.540505}
+  - {x: 3.4827442, y: 13.683317}
+  - {x: 2.9832146, y: 14.234281}
+  - {x: 0.37521335, y: 14.922919}
+  - {x: -0.37522, y: 14.922919}
+  - {x: -2.983221, y: 14.234281}
+  - {x: -3.4827511, y: 13.683317}
+  - {x: -11.720141, y: -9.540507}
   <Speed>k__BackingField: 30
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 7

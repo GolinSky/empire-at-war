@@ -456,7 +456,7 @@ namespace EmpireAtWar.Services.Enemy
                 bool isShip = sighting.UnitTypeId.IsShip;
                 if (!_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) ||
                     entity.HealthModel.IsDestroyed || !entity.HealthModel.HasUnits || entity.IsCloaked() ||
-                    !_vision.IsVisible(_owner.Id, entity.GetFacade<IEntityTransformFacade>().Transform.position))
+                    !_vision.IsVisible(_owner.Id, entity))
                 {
                     continue;
                 }
@@ -525,7 +525,7 @@ namespace EmpireAtWar.Services.Enemy
 
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                 // A retained or new raid also needs a survivable position and route, not only a safe target.
-                if (!_vision.IsVisible(_owner.Id, position) || IsDefended(position, now) ||
+                if (!_vision.IsVisible(_owner.Id, entity) || IsDefended(position, now) ||
                     !IsRouteSafe(origin, position, 0f, false)) continue;
                 bool isMine = entity.TryGetFacade(out IMiningFacilityFacade _);
                 if (ReferenceEquals(entity, _raidTarget) && GetIonCost(position) == 0f)
@@ -596,7 +596,7 @@ namespace EmpireAtWar.Services.Enemy
                     !_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity entity) ||
                     entity.HealthModel.IsDestroyed || !entity.HealthModel.HasUnits ||
                     entity.IsCloaked() ||
-                    !_vision.IsVisible(_owner.Id, entity.GetFacade<IEntityTransformFacade>().Transform.position))
+                    !_vision.IsVisible(_owner.Id, entity))
                 {
                     continue;
                 }
@@ -957,7 +957,7 @@ namespace EmpireAtWar.Services.Enemy
                         hostile.HealthModel.IsDestroyed || !hostile.HealthModel.HasUnits || hostile.IsCloaked() ||
                         !hostile.TryGetFacade(out IUnitCombatObserverFacade combat)) continue;
                     Vector3 position = hostile.GetFacade<IEntityTransformFacade>().Transform.position;
-                    if (!_vision.IsVisible(_owner.Id, position)) continue;
+                    if (!_vision.IsVisible(_owner.Id, hostile)) continue;
                     float hostileRadius = hostile.TryGetFacade(out INavigationFootprintFacade body) ? body.NavigationRadius : 0f;
                     float distance = PlanarDistance(position, center);
                     if (!CanThreatenStation(distance, footprint, hostileRadius, combat.WeaponRange)) continue;

@@ -13,6 +13,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
@@ -152,6 +153,18 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(Select(CreateSelector(side: side), seen), Is.SameAs(visible));
             Assert.That(_vision.Reads, Is.EqualTo(2));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Selection_UsesHullVisibilityWhenTheCenterIsHidden(bool seen)
+        {
+            IEntity target = AddTarget(30f, ShipClass.Capital, hasFootprint: true);
+            _vision.Hidden.Add(target.GetFacade<IEntityTransformFacade>().Transform.position);
+
+            Assert.That(Select(CreateSelector(ShipClass.Bomber), seen), Is.SameAs(target));
+            Assert.That(_vision.Reads, Is.EqualTo(1));
+            Assert.That(Combat(target).Reads, Is.EqualTo(1));
         }
 
         [Test]
@@ -384,13 +397,20 @@ namespace EmpireAtWar.Tests.Editor
                 side ?? TestPlayers.Human, new SquadronHealthData { ShipClass = shipClass });
         }
 
-        private IEntity AddTarget(float distance, ShipClass shipClass = ShipClass.Fighter, PlayerId? owner = null)
+        private IEntity AddTarget(float distance, ShipClass shipClass = ShipClass.Fighter, PlayerId? owner = null,
+            bool hasFootprint = false)
         {
             GameObject item = new GameObject("Target");
             _objects.Add(item);
             item.transform.position = Vector3.forward * distance;
+            var facades = new List<IEntityFacade> { new EntityTransformFacade(item.transform), new CombatSpy() };
+            if (hasFootprint)
+                facades.Add(new ShipVisionFootprint(item.transform, _candidates.Count + 1, new[]
+                {
+                    new Vector2(-5f, -10f), new Vector2(5f, -10f), new Vector2(0f, 10f)
+                }));
             Entity entity = new Entity(new HealthStub { ShipClass = shipClass }, _locator,
-                new IEntityFacade[] { new EntityTransformFacade(item.transform), new CombatSpy() },
+                facades.ToArray(),
                 owner ?? TestPlayers.Enemy, _candidates.Count + 1, System.Array.Empty<IPooledEntityEvents>(),
                 System.Array.Empty<IHangarLaunchEvents>());
             _locator.AddEntity(entity);
@@ -440,9 +460,12 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class VisionSpy : IVisionService
         {
+            public event Action<PlayerId, long, bool> RevealChanged { add { } remove { } }
             public HashSet<Vector3> Hidden { get; } = new HashSet<Vector3>();
             public int Reads { get; private set; }
             public bool IsVisible(PlayerId viewer, Vector3 position) { Reads++; return !Hidden.Contains(position); }
+            public bool IsVisible(PlayerId viewer, IVisionFootprintFacade footprint) { Reads++; return true; }
+            public void Reveal(PlayerId viewer, long entityId, float duration) => throw new NotSupportedException();
             public bool FogEnabled => true;
             public IReadOnlyList<OwnedCircle> Sources => throw new NotSupportedException();
             public void Register(PlayerId owner, Transform source, float radius) => throw new NotSupportedException();

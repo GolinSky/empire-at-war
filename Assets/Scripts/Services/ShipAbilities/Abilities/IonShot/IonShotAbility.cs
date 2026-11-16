@@ -1,4 +1,6 @@
 using EmpireAtWar.Components.Combat;
+using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -12,6 +14,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     {
         private readonly IonShotSettings _settings;
         private readonly BoltFlightBatch _boltFlights;
+        private readonly IVisionService _vision;
+        private readonly IMatchSession _session;
         private readonly CombatStatModifier _disable = new CombatStatModifier(1f, 1f, 0f, 1f, 1f);
         private IEntity _target;
         public IEntity Target => _target;
@@ -26,10 +30,13 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public bool SurvivesCasterDeath => true;
         public bool SurvivesHazardSuppression => true;
 
-        public IonShotAbility(IonShotSettings settings, BoltFlightBatch boltFlights)
+        public IonShotAbility(IonShotSettings settings, BoltFlightBatch boltFlights,
+            IVisionService vision, IMatchSession session)
         {
             _settings = settings;
             _boltFlights = boltFlights;
+            _vision = vision;
+            _session = session;
         }
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
@@ -37,15 +44,19 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _target = target;
             _targetModifiers = target.GetFacade<ICombatModifiersFacade>().Modifiers;
             IHardPointModel targetUnit = target.HealthModel.GetShipUnits(HardPointType.Any)[0];
+            bool fired = false;
             foreach (IHardPointModel member in caster.Health.GetShipUnits(HardPointType.Any))
             {
                 if (member.IsDestroyed) continue;
                 ShotEffect shot = Object.Instantiate(_settings.Projectile.ShotPrefab);
                 float travelTime = shot.Fire(member.Transform, targetUnit.Transform, targetUnit.Pivot,
                     Vector3.zero, _settings.Projectile, _boltFlights);
+                fired = true;
                 shot.RetireAfterCompletion();
                 _remaining = Mathf.Max(_remaining, travelTime);
             }
+            if (fired && _session.IsAuthority)
+                _vision.Reveal(target.Owner, caster.Entity.Id, VisionService.FIRING_REVEAL_SECONDS);
         }
 
         public void Advance(float deltaTime)

@@ -1,16 +1,20 @@
 using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
+using System;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.OwnedAreas;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.Vision
 {
     /// <summary>
-    /// Every player's vision, under one rule: a point is visible to a viewer when it lies inside the
-    /// radius of a source owned by that viewer's team. Distances ignore height (XZ plane only).
+    /// Allied vision circles reveal points and intersecting ship hulls in the XZ plane.
+    /// A firing reveal additionally exposes one ship to the attacked player's team.
     /// </summary>
     public interface IVisionService
     {
+        event Action<PlayerId, long, bool> RevealChanged;
+
         bool FogEnabled { get; }
 
         IReadOnlyList<OwnedCircle> Sources { get; }
@@ -21,6 +25,11 @@ namespace EmpireAtWar.Services.Vision
         void Unregister(Transform source);
 
         bool IsVisible(PlayerId viewer, Vector3 position);
+
+        bool IsVisible(PlayerId viewer, IVisionFootprintFacade footprint);
+
+        /// <summary>Reveals an attacker to the attacked player's team for a scaled-time duration.</summary>
+        void Reveal(PlayerId viewer, long entityId, float duration);
 
         /// <summary>True when any part of the XZ circle around the position is visible to the viewer.</summary>
         bool IsAreaVisible(PlayerId viewer, Vector3 position, float radius);

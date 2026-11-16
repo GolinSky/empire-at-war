@@ -37,7 +37,7 @@ namespace EmpireAtWar.Services.Tutorial
                 if (!_player.IsHostile(entity.Owner) || entity.HealthModel.IsDestroyed ||
                     !entity.TryGetFacade(out IEntityTransformFacade transform)) continue;
                 Vector3 position = transform.Transform.position;
-                if (!_vision.IsVisible(_player.Id, position)) continue;
+                if (!_vision.IsVisible(_player.Id, entity)) continue;
                 _position = position;
                 IsMet = true;
                 return;

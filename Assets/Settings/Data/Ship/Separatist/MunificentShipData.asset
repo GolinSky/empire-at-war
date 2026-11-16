@@ -13,6 +13,48 @@ MonoBehaviour:
   m_Name: MunificentShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
+  <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -21.873909, y: -3.0774832}
+  - {x: -21.796982, y: -4.516617}
+  - {x: -21.658388, y: -6.4588227}
+  - {x: -21.347017, y: -8.425217}
+  - {x: -5.145187, y: -36.90493}
+  - {x: -3.6457887, y: -38.904102}
+  - {x: -2.320848, y: -39.87421}
+  - {x: -1.6991103, y: -40.2158}
+  - {x: 1.6991459, y: -40.2158}
+  - {x: 2.3208838, y: -39.87421}
+  - {x: 3.6458244, y: -38.904102}
+  - {x: 5.1452227, y: -36.90493}
+  - {x: 21.347054, y: -8.425217}
+  - {x: 21.658367, y: -6.4588227}
+  - {x: 21.79696, y: -4.516617}
+  - {x: 21.873888, y: -3.0774832}
+  - {x: 21.873888, y: -0.68476707}
+  - {x: 21.830387, y: -0.44466594}
+  - {x: 21.217402, y: 1.3492547}
+  - {x: 7.6930084, y: 39.420353}
+  - {x: 6.88118, y: 41.314533}
+  - {x: 6.610552, y: 41.945923}
+  - {x: 6.1906533, y: 42.874287}
+  - {x: 5.628693, y: 43.976093}
+  - {x: 5.3477135, y: 44.526993}
+  - {x: 5.066679, y: 45.077896}
+  - {x: 3.7764685, y: 46.408}
+  - {x: -3.7764978, y: 46.408}
+  - {x: -5.066708, y: 45.077896}
+  - {x: -5.6286683, y: 43.976093}
+  - {x: -6.1906285, y: 42.874287}
+  - {x: -6.610527, y: 41.945923}
+  - {x: -6.881154, y: 41.314533}
+  - {x: -7.151782, y: 40.68314}
+  - {x: -7.4224095, y: 40.051746}
+  - {x: -7.692983, y: 39.420353}
+  - {x: -21.217363, y: 1.3492547}
+  - {x: -21.830412, y: -0.44466594}
+  - {x: -21.873909, y: -0.68476707}
   <Speed>k__BackingField: 25
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 5
@@ -23,6 +65,7 @@ MonoBehaviour:
   <HyperSpaceDuration>k__BackingField: 0.6
   <BodyRotationMaxAngle>k__BackingField: 20
   <NavigationRadius>k__BackingField: 31.473606
+  <IgnoresMapObstacles>k__BackingField: 0
   <DestroyDelay>k__BackingField: 0.35
   <Wreck>k__BackingField: {fileID: 11400000, guid: a6364366659ffb24e95bbf82c62b1cd6,
     type: 2}

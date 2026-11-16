@@ -19,6 +19,7 @@ namespace EmpireAtWar.Services.Networking
         private readonly NetworkTickService _ticks;
         private readonly HostReplicatedStateSender _states;
         private readonly HostWeaponTargetSender _weaponTargets;
+        private readonly HostVisionRevealSender _visionReveals;
         private readonly HostMatchStateSender _matchState;
         private readonly HostCombatEventSender _combat;
         private readonly HostShipRouteSender _routes;
@@ -26,8 +27,9 @@ namespace EmpireAtWar.Services.Networking
 
         public HostBattleStartGate(OnlineMatchService online, NetworkTickService ticks, HostReplicatedStateSender states,
             HostWeaponTargetSender weaponTargets, HostMatchStateSender matchState, HostCombatEventSender combat,
-            HostShipRouteSender routes, HostUnitOrderSender orders)
+            HostShipRouteSender routes, HostUnitOrderSender orders, HostVisionRevealSender visionReveals)
         {
+            _visionReveals = visionReveals;
             _routes = routes;
             _orders = orders;
             _weaponTargets = weaponTargets;
@@ -65,6 +67,7 @@ namespace EmpireAtWar.Services.Networking
         {
             if (!_online.IsBattleLoaded(connection)) return;
             _ticks.SendBaseline(connection);
+            _visionReveals.SendBaseline(connection);
             _states.SendBaseline(connection);
             // After the spawns: targets refer to entities the client now has.
             _weaponTargets.SendBaseline(connection);

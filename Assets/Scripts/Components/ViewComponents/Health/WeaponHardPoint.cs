@@ -42,6 +42,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private float _turnEndTime = float.NegativeInfinity;
 
         public event System.Action<WeaponProfile, Transform, float> ShotEmitted;
+        public event System.Action<AttackData> AttackEmitted;
         internal event System.Action DestructionChanged;
 
         [field:SerializeField] public WeaponType WeaponType { get; private set; }
@@ -228,6 +229,7 @@ namespace EmpireAtWar.ViewComponents.Health
             }
 
             _sequence.RecordShotEmission(sequenceGeneration);
+            if (AttackEmitted != null) AttackEmitted.Invoke(attackData);
             if (ShotEmitted != null) ShotEmitted.Invoke(_profile, transform, DelayBetweenShots);
             if (isHit)
             {

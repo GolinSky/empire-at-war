@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Models.Players;
@@ -221,12 +222,15 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class HiddenVision : IVisionService
         {
+            public event Action<PlayerId, long, bool> RevealChanged { add { } remove { } }
             public bool Visible;
             public bool FogEnabled => true;
             public IReadOnlyList<OwnedCircle> Sources => Array.Empty<OwnedCircle>();
             public void Register(PlayerId owner, Transform source, float radius) { }
             public void Unregister(Transform source) { }
             public bool IsVisible(PlayerId viewer, Vector3 position) => Visible;
+            public bool IsVisible(PlayerId viewer, IVisionFootprintFacade footprint) => Visible;
+            public void Reveal(PlayerId viewer, long entityId, float duration) { }
             public bool IsAreaVisible(PlayerId viewer, Vector3 position, float radius) => Visible;
         }
 

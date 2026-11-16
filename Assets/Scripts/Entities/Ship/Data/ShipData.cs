@@ -34,6 +34,11 @@ namespace EmpireAtWar.Entities.Ship.Data
         [Tooltip("Shows this ship's icon above its hull in battle.")]
         [field: SerializeField] public bool ShowBattleMarker { get; private set; }
 
+        [Header("Fog Visibility")]
+        [Tooltip("Baked root-local XZ hull outline. Vision overlapping any part reveals the whole ship.")]
+        [SerializeField] private Vector2[] visionHull = System.Array.Empty<Vector2>();
+        public IReadOnlyList<Vector2> VisionHull => visionHull;
+
         [Header("Movement Settings")]
         [field: SerializeField] public float Speed { get; private set; }
         [SerializeField] private ShipHeightTiersData heightTiers;

@@ -13,7 +13,24 @@ MonoBehaviour:
   m_Name: CentaxShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 1
+  visionHull:
+  - {x: -3.5433583, y: 7.1003914}
+  - {x: -3.543358, y: -1.757978}
+  - {x: -3.5433578, y: -7.0730157}
+  - {x: -3.2228162, y: -17.880259}
+  - {x: -1.3626064, y: -20.89209}
+  - {x: 1.3626357, y: -20.89209}
+  - {x: 3.2228453, y: -17.880259}
+  - {x: 3.543347, y: -7.0730157}
+  - {x: 3.5433464, y: 7.100392}
+  - {x: 3.1434264, y: 15.572629}
+  - {x: 2.2487068, y: 20.033632}
+  - {x: 0.45878994, y: 20.89209}
+  - {x: -0.4587626, y: 20.89209}
+  - {x: -2.2487192, y: 20.033632}
+  - {x: -3.1434386, y: 15.572629}
   <Speed>k__BackingField: 30
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 7

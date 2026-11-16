@@ -165,7 +165,7 @@ namespace EmpireAtWar.Services.TacticalMarkers
         private bool TryKnownPoint(IEntity target, out Vector3 point)
         {
             point = target.GetFacade<IEntityTransformFacade>().Transform.position;
-            if (_vision.IsVisible(_owner.Id, point)) return true;
+            if (_vision.IsVisible(_owner.Id, target)) return true;
             foreach (HostileSighting sighting in _intel.Sightings)
                 if (sighting.EntityId == target.Id && _intel.GetConfidence(sighting, Time.time) > 0f)
                 { point = ToVector(sighting.Position); return true; }

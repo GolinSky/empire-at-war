@@ -13,7 +13,29 @@ MonoBehaviour:
   m_Name: RaiderCorvetteShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 1
+  visionHull:
+  - {x: -3.1639163, y: -5.893547}
+  - {x: -3.0386484, y: -6.606631}
+  - {x: -2.9545484, y: -6.9922595}
+  - {x: -2.050456, y: -7.528453}
+  - {x: -0.79390305, y: -7.874892}
+  - {x: 0.79390246, y: -7.874892}
+  - {x: 2.0504556, y: -7.5284534}
+  - {x: 2.954548, y: -6.99226}
+  - {x: 3.038648, y: -6.6066313}
+  - {x: 3.163916, y: -5.893548}
+  - {x: 2.944651, y: -4.6305656}
+  - {x: 2.9317608, y: -4.564616}
+  - {x: 2.9249563, y: -4.529804}
+  - {x: 0.27819914, y: 7.740855}
+  - {x: 0.0000022455638, y: 7.874892}
+  - {x: -0.27819464, y: 7.740855}
+  - {x: -2.9249558, y: -4.529803}
+  - {x: -2.9317603, y: -4.5646152}
+  - {x: -2.9427698, y: -4.620943}
+  - {x: -2.9446504, y: -4.630565}
   <Speed>k__BackingField: 35
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 7

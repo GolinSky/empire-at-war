@@ -135,7 +135,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             EntityLocator entities = new EntityLocator();
             IPlayerRelations relations = TestPlayers.CreateDuel();
-            var dependencies = new ShipAbilityDependencies(entities, relations, null, null, null, null);
+            var dependencies = new ShipAbilityDependencies(entities, relations, null, null, null, null,
+                new VisionService(relations, fogEnabled: false), new OfflineSession(TestPlayers.Human));
             ShipAbilityService service = new ShipAbilityService(new ShipAbilityFactory(dependencies), relations,
                 new VisionService(relations, fogEnabled: false));
             ShipAbilityDefinition definition = new ShipAbilityDefinition();

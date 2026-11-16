@@ -21,7 +21,7 @@ verification: Source and fixtures reviewed, Unity recompiled, two assets
 
 | Issue | Implemented fix |
 |---|---|
-| A host accepted a known hostile ID through fog. | `ShipAbilityService.CanTarget` checks live uncloaked hostiles, caster-team vision at the target center, and the settings target rule. Authority rechecks on execution and on arrival for queued casts. |
+| A host accepted a known hostile ID through fog. | `ShipAbilityService.CanTarget` checks live uncloaked hostiles, caster-team hull visibility or current firing reveal for ships (point visibility for other targets), and the settings target rule. Authority rechecks on execution and on arrival for queued casts. |
 | AI, auto-power, and squadron approach used center distance alone. | Use `ShipAbilityRange`. Planar range is the greater of the configured range and `1.15 × (caster footprint radius + target footprint radius)`. Auto-power expands its spatial search using the largest captured footprint and checks the exact range per candidate. |
 | Fighter Reinforcements required a local launch slot even on remote clients. | `IHangarCommand.CanRequestReplacement` permits a replica to submit a request. The host checks the live reserve, active bay capacity, and launch budget before spawning. |
 | Tractor Beam and Fighter Coordination had empty `Advance` methods. | `ICompletableShipAbility` handles completion and cleanup. `IAdvancingShipAbility` adds ticking. `IShipAbilityInterruptionPolicy` declares caster-death and hazard survival independently. |

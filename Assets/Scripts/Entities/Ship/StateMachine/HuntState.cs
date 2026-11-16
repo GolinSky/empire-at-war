@@ -56,7 +56,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _retargetTimer -= deltaTime;
             if (_retargetTimer <= 0f || _target != null &&
                 (_target.HealthModel.IsDestroyed || _target.IsCloaked() ||
-                 !_visionService.IsVisible(_side, _target.GetFacade<IEntityTransformFacade>().Transform.position)))
+                 !_visionService.IsVisible(_side, _target)))
             {
                 FindTarget();
                 _retargetTimer = _settings.HuntRetargetInterval;
@@ -95,7 +95,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 bool isPreferred = ShipEngagement.IsPreferred(entity, _weapon);
                 if (hasPreferred && !isPreferred) continue;
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (!_visionService.IsVisible(_side, position)) continue;
+                if (!_visionService.IsVisible(_side, entity)) continue;
                 float distance = (position - _movement.CurrentPosition).sqrMagnitude;
                 if (distance >= nearest && (hasPreferred || !isPreferred)) continue;
                 hasPreferred = isPreferred;

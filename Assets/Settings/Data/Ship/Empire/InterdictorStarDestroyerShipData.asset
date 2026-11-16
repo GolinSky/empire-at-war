@@ -13,7 +13,28 @@ MonoBehaviour:
   m_Name: InterdictorStarDestroyerShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -47.08183, y: -65.62707}
+  - {x: -26.548635, y: -77.4975}
+  - {x: 0.000047518955, y: -83.998856}
+  - {x: 26.54866, y: -77.4975}
+  - {x: 47.08186, y: -65.62707}
+  - {x: 47.081913, y: -65.6225}
+  - {x: 45.606762, y: -59.616123}
+  - {x: 45.486088, y: -59.21193}
+  - {x: 15.1092825, y: 42.03976}
+  - {x: 9.201001, y: 61.693176}
+  - {x: 2.6225374, y: 82.48841}
+  - {x: 0.40291694, y: 83.99885}
+  - {x: -0.40278926, y: 83.99885}
+  - {x: -2.6225116, y: 82.48841}
+  - {x: -9.200975, y: 61.693176}
+  - {x: -15.109257, y: 42.03976}
+  - {x: -45.48606, y: -59.21193}
+  - {x: -45.606735, y: -59.616123}
+  - {x: -47.08183, y: -65.62249}
   <Speed>k__BackingField: 20
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 2

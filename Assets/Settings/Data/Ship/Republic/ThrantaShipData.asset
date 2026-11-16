@@ -13,7 +13,20 @@ MonoBehaviour:
   m_Name: ThrantaShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 1
+  visionHull:
+  - {x: -4.3809505, y: -7.9758325}
+  - {x: -3.3989303, y: -12.911774}
+  - {x: -3.2722015, y: -13.097326}
+  - {x: -2.8578076, y: -13.27362}
+  - {x: 2.8578165, y: -13.27362}
+  - {x: 3.2721846, y: -13.097326}
+  - {x: 3.3989391, y: -12.911774}
+  - {x: 4.3809595, y: -7.9758325}
+  - {x: 1.921585, y: 12.867881}
+  - {x: -0.000008416868, y: 13.474485}
+  - {x: -1.9215763, y: 12.867881}
   <Speed>k__BackingField: 17.5
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 7

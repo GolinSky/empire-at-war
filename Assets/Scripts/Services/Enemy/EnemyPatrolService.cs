@@ -94,7 +94,7 @@ namespace EmpireAtWar.Services.Enemy
                 string id = $"structure:{entity.Id}";
                 _liveIntel.Add(id);
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (_vision.IsVisible(_owner.Id, position) || entity.IsPlayerBase())
+                if (_vision.IsVisible(_owner.Id, entity) || entity.IsPlayerBase())
                     Memory.Register(id, ToPoint(position), "hostileStructure", 2f);
             }
             foreach (HostileSighting sighting in _intel.Sightings)

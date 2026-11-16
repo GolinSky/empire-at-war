@@ -49,6 +49,7 @@ namespace EmpireAtWar.Components.Weapon
         private IVisionService _visionService;
         private IPlayerRoster _playerRoster;
         private PlayerId _owner;
+        private long _entityId;
         private ShipClass _attackerClass;
         private FactionType _faction;
         private string _telemetryName;
@@ -138,8 +139,9 @@ namespace EmpireAtWar.Components.Weapon
             IVisionService visionService, IPlayerRoster playerRoster, PlayerId owner,
             ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, ShotPoolPrewarmer poolPrewarmer,
             [Key(EntityBindType.ViewTransform)] Transform viewTransform, IMatchSession session,
-            ShipAbilityCatalog abilityCatalog, ShipClass attackerClass)
+            ShipAbilityCatalog abilityCatalog, ShipClass attackerClass, long entityId)
         {
+            _entityId = entityId;
             _abilityCatalog = abilityCatalog;
             _attackerClass = attackerClass;
             _followsHost = !session.IsAuthority;
@@ -205,6 +207,7 @@ namespace EmpireAtWar.Components.Weapon
                     WeaponHardPoint.ExpectedShotsInFlight(profile, reloadMultiplier, intervalMultiplier));
                 hardPoint.PrepareEffects();
                 hardPoint.ShotEmitted += OnShotEmitted;
+                hardPoint.AttackEmitted += OnAttackEmitted;
                 if (_artillery != null)
                     _artillery.RegisterMount(hardPoint, profile.Family, _viewTransform.position);
             }
@@ -263,6 +266,7 @@ namespace EmpireAtWar.Components.Weapon
             foreach (WeaponHardPoint hardPoint in hardPoints)
             {
                 hardPoint.ShotEmitted -= OnShotEmitted;
+                hardPoint.AttackEmitted -= OnAttackEmitted;
                 hardPoint.ReleaseAttackSequence();
             }
 
@@ -294,6 +298,14 @@ namespace EmpireAtWar.Components.Weapon
         {
             BattleTelemetry.RecordShot(_faction, _telemetryName);
             if (ShotEmitted != null) ShotEmitted.Invoke(profile, muzzle, effectiveInterval);
+        }
+
+        private void OnAttackEmitted(AttackData attackData)
+        {
+            if (_followsHost || _attackerClass == ShipClass.Structure || _attackerClass.IsStrikecraft() ||
+                attackData.IsDestroyed ||
+                !_playerRoster.IsHostile(_owner, attackData.TargetEntity.Owner)) return;
+            _visionService.Reveal(attackData.TargetEntity.Owner, _entityId, VisionService.FIRING_REVEAL_SECONDS);
         }
 
         public void AddTarget(AttackData attackData, AttackType attackType)
@@ -366,8 +378,7 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         private bool CanAcquire(AttackData group) =>
-            !group.IsDestroyed && group.CanAcquireTarget && _visionService.IsVisible(_owner,
-                group.TargetEntity.GetFacade<IEntityTransformFacade>().Transform.position);
+            !group.IsDestroyed && group.CanAcquireTarget && _visionService.IsVisible(_owner, group.TargetEntity);
 
         // Strikecraft only when anti-strikecraft weapons carry most of the firepower, e.g. a laser corvette.
         private static TargetPreference GetLoadoutPreference(List<WeaponProfile> profiles)

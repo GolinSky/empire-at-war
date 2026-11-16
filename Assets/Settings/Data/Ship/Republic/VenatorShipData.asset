@@ -13,7 +13,29 @@ MonoBehaviour:
   m_Name: VenatorShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -27.323107, y: -41.889076}
+  - {x: -27.161455, y: -43.026127}
+  - {x: -8.172004, y: -63.861786}
+  - {x: -2.1328185, y: -66.24871}
+  - {x: 0.038698595, y: -66.2486}
+  - {x: 2.209921, y: -66.24632}
+  - {x: 2.245738, y: -66.2338}
+  - {x: 8.244338, y: -63.861786}
+  - {x: 27.269588, y: -43.026127}
+  - {x: 27.432417, y: -41.889076}
+  - {x: 27.401503, y: -38.384}
+  - {x: 4.9647293, y: 49.096287}
+  - {x: 4.1205063, y: 51.441998}
+  - {x: 2.268159, y: 52.847057}
+  - {x: 0.971363, y: 53.13465}
+  - {x: -0.862667, y: 53.13465}
+  - {x: -2.1588988, y: 52.847057}
+  - {x: -4.011213, y: 51.441998}
+  - {x: -4.855968, y: 49.096287}
+  - {x: -27.2922, y: -38.384}
   <Speed>k__BackingField: 18
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 3

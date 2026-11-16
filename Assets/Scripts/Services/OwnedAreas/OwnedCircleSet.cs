@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Vision;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.OwnedAreas
@@ -55,6 +56,22 @@ namespace EmpireAtWar.Services.OwnedAreas
                 if (dx * dx + dz * dz <= radius * radius) return true;
             }
 
+            return false;
+        }
+
+        public bool AnyIntersects(IReadOnlyList<Vector2> hull, Rect bounds,
+            IPlayerRelations relations, PlayerId team)
+        {
+            List<Vector3> circles = GetSnapshot(relations, team, true);
+            for (int i = 0; i < circles.Count; i++)
+            {
+                Vector3 circle = circles[i];
+                float dx = circle.x - Mathf.Clamp(circle.x, bounds.xMin, bounds.xMax);
+                float dz = circle.y - Mathf.Clamp(circle.y, bounds.yMin, bounds.yMax);
+                if (dx * dx + dz * dz > circle.z * circle.z) continue;
+                if (VisionHullGeometry.IntersectsCircle(hull, new Vector2(circle.x, circle.y), circle.z))
+                    return true;
+            }
             return false;
         }
 

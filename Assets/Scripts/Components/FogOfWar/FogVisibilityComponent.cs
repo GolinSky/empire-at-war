@@ -14,11 +14,11 @@ using EmpireAtWar.Components.Combat;
 namespace EmpireAtWar.Components.FogOfWar
 {
     /// <summary>
-    /// Stops drawing an opponent unit while its position is covered by the player's fog of war.
+    /// Draws an opponent ship while its hull overlaps vision or a firing reveal is active.
     /// Uses <see cref="Renderer.forceRenderingOff"/> so it never fights code that toggles <see cref="Renderer.enabled"/>.
     /// The ion stun effect spawned at runtime is hidden with the unit. Bound only for opponent entities.
     /// Static buildings such as space stations stay drawn once discovered. Fog is rechecked about once per second;
-    /// cloak changes are applied immediately.
+    /// cloak and firing-reveal changes are applied immediately.
     /// </summary>
     public sealed class FogVisibilityComponent : MonoBehaviour, IInitializable, ISlowTickable, ILateDisposable,
         IFogVisibilityFacade, IRespawnable, IDespawnable
@@ -27,6 +27,7 @@ namespace EmpireAtWar.Components.FogOfWar
         private ILocalPlayer _localPlayer;
         private ISlowTickService _slowTick;
         private CombatModifiers _modifiers;
+        private IReadOnlyList<IVisionFootprintFacade> _footprints;
 
         [SerializeField] private Renderer[] renderers;
         [Tooltip("XZ footprint radius: the unit is revealed when vision reaches any part of it.")]
@@ -46,13 +47,14 @@ namespace EmpireAtWar.Components.FogOfWar
         [Inject]
         private void Construct(IVisionService visionService, ILocalPlayer localPlayer,
             IReadOnlyList<IIonStunViewSource> ionStunSources, CombatModifiers modifiers,
-            ISlowTickService slowTick)
+            ISlowTickService slowTick, IReadOnlyList<IVisionFootprintFacade> footprints)
         {
             _slowTick = slowTick;
             _visionService = visionService;
             _localPlayer = localPlayer;
             _modifiers = modifiers;
             _ionStunSources = ionStunSources;
+            _footprints = footprints;
         }
 
         public void Initialize()
@@ -82,6 +84,7 @@ namespace EmpireAtWar.Components.FogOfWar
             }
 
             _modifiers.CloakChanged += RefreshVisibility;
+            _visionService.RevealChanged += OnRevealChanged;
             _slowTick.Add(this);
         }
 
@@ -95,6 +98,7 @@ namespace EmpireAtWar.Components.FogOfWar
             _isReleased = true;
             _slowTick.Remove(this);
             _modifiers.CloakChanged -= RefreshVisibility;
+            _visionService.RevealChanged -= OnRevealChanged;
             foreach (IIonStunViewSource ionStunSource in _ionStunSources)
             {
                 ionStunSource.IonStunViewSpawned -= TrackIonStun;
@@ -122,7 +126,14 @@ namespace EmpireAtWar.Components.FogOfWar
         }
 
         private bool IsCoveredByFog() =>
-            _modifiers.IsCloaked || !_visionService.IsAreaVisible(_localPlayer.Id, transform.position, revealRadius);
+            _modifiers.IsCloaked || !(_footprints.Count > 0
+                ? _visionService.IsVisible(_localPlayer.Id, _footprints[0])
+                : _visionService.IsAreaVisible(_localPlayer.Id, transform.position, revealRadius));
+
+        private void OnRevealChanged(PlayerId viewer, long entityId, bool visible)
+        {
+            if (_footprints.Count > 0 && _footprints[0].EntityId == entityId) RefreshVisibility();
+        }
 
         private void TrackIonStun(IIonStunRenderers ionStun)
         {

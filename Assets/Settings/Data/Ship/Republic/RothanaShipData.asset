@@ -13,7 +13,30 @@ MonoBehaviour:
   m_Name: RothanaShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -40.644398, y: -27.904316}
+  - {x: -39.020214, y: -33.39477}
+  - {x: -35.218964, y: -46.222893}
+  - {x: -34.6453, y: -48.15834}
+  - {x: -21.407637, y: -64.68884}
+  - {x: -6.0458903, y: -79.86541}
+  - {x: -1.5987122, y: -79.99999}
+  - {x: 1.6198274, y: -79.99999}
+  - {x: 6.0670056, y: -79.86541}
+  - {x: 21.396914, y: -64.68884}
+  - {x: 34.645313, y: -48.15834}
+  - {x: 39.02022, y: -33.39477}
+  - {x: 40.644405, y: -27.904316}
+  - {x: 6.0507464, y: 77.46704}
+  - {x: 5.2161894, y: 79.36393}
+  - {x: 4.8071914, y: 79.75786}
+  - {x: 0.3768452, y: 80}
+  - {x: -0.35572997, y: 80}
+  - {x: -4.807181, y: 79.75786}
+  - {x: -5.216179, y: 79.36393}
+  - {x: -6.050736, y: 77.46704}
   <Speed>k__BackingField: 16
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 1

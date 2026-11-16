@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.FogOfWar;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.OwnedAreas;
@@ -30,7 +32,8 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(FogVisibilityComponent).GetMethod("Construct", PRIVATE_INSTANCE).Invoke(fog, new object[]
                 {
                     vision, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()),
-                    Array.Empty<IIonStunViewSource>(), new CombatModifiers(), new SlowTicks()
+                    Array.Empty<IIonStunViewSource>(), new CombatModifiers(), new SlowTicks(),
+                    Array.Empty<IVisionFootprintFacade>()
                 });
                 List<bool> visible = new List<bool>();
                 fog.VisibilityChanged += visible.Add;
@@ -74,7 +77,8 @@ namespace EmpireAtWar.Tests.Editor
                 typeof(FogVisibilityComponent).GetMethod("Construct", PRIVATE_INSTANCE).Invoke(fog, new object[]
                 {
                     vision, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()),
-                    Array.Empty<IIonStunViewSource>(), modifiers, new SlowTicks()
+                    Array.Empty<IIonStunViewSource>(), modifiers, new SlowTicks(),
+                    Array.Empty<IVisionFootprintFacade>()
                 });
                 var visibility = new List<bool>();
                 fog.VisibilityChanged += visible =>
@@ -116,14 +120,60 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void FiringReveal_RefreshesHullImmediately_AndCloakStillHidesIt()
+        {
+            var owner = new GameObject("Firing fog");
+            FogVisibilityComponent fog = owner.AddComponent<FogVisibilityComponent>();
+            MeshRenderer hull = owner.AddComponent<MeshRenderer>();
+            var modifiers = new CombatModifiers();
+            float now = 0f;
+            var vision = new VisionService(TestPlayers.CreateTeamGame(), true, () => now);
+            var footprint = new ShipVisionFootprint(owner.transform, 42, new[]
+            {
+                new Vector2(-1f, -1f), new Vector2(1f, -1f), new Vector2(0f, 1f)
+            });
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            try
+            {
+                typeof(FogVisibilityComponent).GetField("renderers", PRIVATE_INSTANCE)
+                    .SetValue(fog, new Renderer[] { hull });
+                typeof(FogVisibilityComponent).GetMethod("Construct", PRIVATE_INSTANCE).Invoke(fog, new object[]
+                {
+                    vision, TestPlayers.CreateLocalPlayer(TestPlayers.CreateTeamGame()),
+                    Array.Empty<IIonStunViewSource>(), modifiers, new SlowTicks(),
+                    new IVisionFootprintFacade[] { footprint }
+                });
+                fog.Initialize();
+                Assert.That(hull.forceRenderingOff, Is.True);
+                vision.Reveal(TestPlayers.Human, 42, 5f);
+                Assert.That(hull.forceRenderingOff, Is.False);
+                modifiers.SetCloaked(true);
+                Assert.That(hull.forceRenderingOff, Is.True);
+                modifiers.SetCloaked(false);
+                Assert.That(hull.forceRenderingOff, Is.False);
+                now = 5f;
+                vision.Tick();
+                Assert.That(hull.forceRenderingOff, Is.True);
+            }
+            finally
+            {
+                fog.LateDispose();
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+
         private sealed class Vision : IVisionService
         {
+            public event Action<PlayerId, long, bool> RevealChanged { add { } remove { } }
             public bool Visible;
             public bool FogEnabled => true;
             public IReadOnlyList<OwnedCircle> Sources => Array.Empty<OwnedCircle>();
             public void Register(PlayerId owner, Transform source, float radius) { }
             public void Unregister(Transform source) { }
             public bool IsVisible(PlayerId viewer, Vector3 position) => Visible;
+            public bool IsVisible(PlayerId viewer, IVisionFootprintFacade footprint) => Visible;
+            public void Reveal(PlayerId viewer, long entityId, float duration) { }
             public bool IsAreaVisible(PlayerId viewer, Vector3 position, float radius) => Visible;
         }
 

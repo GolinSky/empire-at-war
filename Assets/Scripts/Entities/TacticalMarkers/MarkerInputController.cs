@@ -129,7 +129,7 @@ namespace EmpireAtWar.Entities.TacticalMarkers
             {
                 if (entity.HealthModel.IsDestroyed || !entity.TryGetFacade(out IEntityTransformFacade view)) continue;
                 Vector3 point = view.Transform.position;
-                if (!_vision.IsVisible(_local.Id, point)) continue;
+                if (!_vision.IsVisible(_local.Id, entity)) continue;
                 float distance = (_miniMap.WorldToScreenPoint(point) - screen).sqrMagnitude;
                 if (distance >= nearest) continue;
                 nearest = distance; _point = point; _target = entity.Id;

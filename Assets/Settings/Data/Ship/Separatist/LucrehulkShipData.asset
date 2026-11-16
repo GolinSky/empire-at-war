@@ -13,7 +13,29 @@ MonoBehaviour:
   m_Name: LucrehulkShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -147.19107, y: 0.007194012}
+  - {x: -142.17574, y: -38.086834}
+  - {x: -127.47127, y: -73.584946}
+  - {x: -104.079796, y: -104.067726}
+  - {x: -33.469868, y: -185.34383}
+  - {x: 33.469975, y: -185.34383}
+  - {x: 104.079895, y: -104.067726}
+  - {x: 127.47137, y: -73.584946}
+  - {x: 142.17583, y: -38.086834}
+  - {x: 147.19116, y: 0.007194012}
+  - {x: 142.17583, y: 38.101223}
+  - {x: 127.47137, y: 73.59903}
+  - {x: 104.079895, y: 104.0818}
+  - {x: 73.59553, y: 127.47233}
+  - {x: 36.46172, y: 147.50162}
+  - {x: -36.461613, y: 147.50162}
+  - {x: -73.59543, y: 127.47233}
+  - {x: -104.079796, y: 104.0818}
+  - {x: -127.47127, y: 73.59903}
+  - {x: -142.17574, y: 38.101223}
   <Speed>k__BackingField: 14
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 1

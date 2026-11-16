@@ -183,7 +183,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 if (!_superWeaponFireService.CanTarget(_owner.Id, entity)) continue;
                 Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (!_vision.IsVisible(_owner.Id, position)) continue;
+                if (!_vision.IsVisible(_owner.Id, entity)) continue;
                 float score = type == SuperWeaponType.IonCannon
                     ? entity.HealthModel.Shields
                     : entity.HealthModel.Hull;

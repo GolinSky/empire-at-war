@@ -13,7 +13,27 @@ MonoBehaviour:
   m_Name: PatrolFrigateShipData
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
   <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 1
+  visionHull:
+  - {x: -5.689693, y: 10.850733}
+  - {x: -5.4424586, y: 4.352216}
+  - {x: -1.7643697, y: -31.772593}
+  - {x: -0.90449136, y: -39.890297}
+  - {x: -0.15166023, y: -40.54852}
+  - {x: 0.09789295, y: -40.54852}
+  - {x: 0.85064965, y: -39.890297}
+  - {x: 5.388589, y: 4.352216}
+  - {x: 5.689669, y: 10.850733}
+  - {x: 4.4682093, y: 29.422365}
+  - {x: 3.8888083, y: 32.36128}
+  - {x: 2.879402, y: 36.71761}
+  - {x: 1.5195101, y: 39.561047}
+  - {x: -0.02690023, y: 40.548527}
+  - {x: -1.5733105, y: 39.561047}
+  - {x: -2.9332716, y: 36.71761}
+  - {x: -3.9426088, y: 32.36128}
+  - {x: -4.522079, y: 29.422365}
   <Speed>k__BackingField: 30
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 6
