@@ -14,7 +14,8 @@ created: 2026-11-16
 - Total 3,992 · passed 3,925 · failed 63 · skipped 4. PlayMode passed (user report).
 - Initial HEAD at analysis: `d2a8868da`.
 - Rerun `Assets/TestResults_20261116_204943.xml`: 3,958 passed, 30 failed, 4 skipped. No newly failing cases. Remaining: A 2, B 12, C 7, F 6, G 3.
-- Latest user run `Assets/TestResults_20261116_205825.xml`: 3,960 passed, 28 failed, 4 skipped. Remaining: A 1, B 12, C 7, F 6, G 2. No newly failing cases.
+- User run `Assets/TestResults_20261116_205825.xml`: 3,960 passed, 28 failed, 4 skipped. Remaining: A 1, B 12, C 7, F 6, G 2.
+- Latest user run `Assets/TestResults_20261116_212228.xml`: 3,986 passed, 2 failed, 4 skipped. All prior failures cleared except both G projection cases, now blocked by an Editor backbuffer size mismatch.
 
 | Group | Fixture | Fails | Origin |
 |---|---|---|---|
@@ -36,7 +37,7 @@ created: 2026-11-16
 - [x] `456c9a5d9`: use immediate destruction for replaced runtime-created cards and anchors in EditMode, keep deferred destruction in PlayMode.
 - Latest user run: `Core` 153/154. The prewarm case passed. The save restoration fixture still expected four removed HUD errors.
 - [x] `e9dce256e`: removed stale log expectations while keeping all save restoration assertions.
-- [ ] Verify `Core` after fixture cleanup.
+- [x] User run `212228`: `Core` 154/154 after fixture cleanup.
 
 ### D — shared AI test doubles (2 tests)
 - `Commander_ShipRemovedMidMultiFrameCycle_DoesNotThrow`: `NullReferenceException` at `EnemyStrategicContextBuilder.IncludeNearbyOwn` (`:1221`). `TestEntity.GetFacade` returns null for `IEntityTransformFacade`.
@@ -69,6 +70,7 @@ created: 2026-11-16
 
 ### G — HUD projection and layout (2 failures, one prior intermittent case)
 - [x] `b62c671a2`: render the disabled fixture camera before checking actual icon position. A Unity probe reproduced the 33.54 px orthographic pan error and confirmed rendering updates the camera canvas plane. Both coordinate assertions remain.
+- [x] `cb6275285`: render the projection fixture to a temporary 800 × 600 texture. The prior run used the Editor backbuffer and logged an attachment-size mismatch before position assertions. Standalone Unity probe rendered 10 frames across both camera modes with 0.000069 px maximum error. Test rerun pending.
 - [x] `RemovingEdgeMarker_PreservesSurvivorPositionsAndPitchThroughFinalSurvivor(true)` passed in `205825`. Initialize the ship marker at its stationary position before registration and check shared group membership to remove the previous fixture's velocity dependence.
 - Tests: `Ui`, `Squadrons`. Live structure icon acceptance remains in [[TODOs/User_Acceptance_Queue]].
 
@@ -93,4 +95,4 @@ created: 2026-11-16
 - `Assets/Scripts/Services/Input/ControlGroupInput.cs`, `Assets/Scripts/Tests/Editor/BattleInput/ControlGroupInputTests.cs`
 
 ## TODO
-- Related: [[TODOs/Optimization/Shared_Team_AI_Plan]] (waiting for Core verification after stale HUD log expectations were removed), [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]].
+- Related: [[TODOs/Optimization/Shared_Team_AI_Plan]] (Core and EnemyAi verification passed in `212228`), [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]].
