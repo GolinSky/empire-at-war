@@ -51,7 +51,7 @@ MonoBehaviour:
   - {x: -24.350557, y: 1.748047}
   - {x: -25.58954, y: -3.5323284}
   - {x: -26.215729, y: -8.991795}
-  <Speed>k__BackingField: 26
+  <Speed>k__BackingField: 40
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 3
   <HullBottom>k__BackingField: -9.082022
@@ -66,8 +66,8 @@ MonoBehaviour:
   <Wreck>k__BackingField: {fileID: 11400000, guid: 829943384fadd1e419598522d846cf47,
     type: 2}
   <ShipClass>k__BackingField: 4
-  <Hull>k__BackingField: 18400
-  <Shields>k__BackingField: 17600
+  <Hull>k__BackingField: 19000
+  <Shields>k__BackingField: 18000
   shieldRegenTiers: {fileID: 11400000, guid: 44b427ab8d3b478397680d1181fc7fea, type: 2}
   <ShieldRegenTier>k__BackingField: 3
   <ShieldRegenerateDelay>k__BackingField: 1

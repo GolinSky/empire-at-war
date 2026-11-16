@@ -32,7 +32,7 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 4000
-        <BuildTime>k__BackingField: 35
+        <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 3896a253ad3c5024b8b7260fb0c214a9,
           type: 3}
@@ -57,8 +57,8 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 7500
-        <BuildTime>k__BackingField: 60
-        <UnitCapacity>k__BackingField: 8
+        <BuildTime>k__BackingField: 65
+        <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: b8f66d736a9c0a841b8957320119ca55,
           type: 3}
     - key: 203
@@ -78,8 +78,8 @@ MonoBehaviour:
         <Name>k__BackingField: "Victory II Star Destroyer \u2014 Advanced Loadout"
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 4200
-        <BuildTime>k__BackingField: 40
+        <Price>k__BackingField: 4500
+        <BuildTime>k__BackingField: 45
         <UnitCapacity>k__BackingField: 5
         <Icon>k__BackingField: {fileID: 21300000, guid: 73509b3f4bebe5542ba69d62230fff68,
           type: 3}
@@ -120,8 +120,8 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 5
         <Price>k__BackingField: 8000
-        <BuildTime>k__BackingField: 65
-        <UnitCapacity>k__BackingField: 8
+        <BuildTime>k__BackingField: 70
+        <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: 5c33cff1e56f4c246956a7183bb94b02,
           type: 3}
     - key: 207
@@ -142,9 +142,9 @@ MonoBehaviour:
         <Name>k__BackingField: Executor Star Dreadnought
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 50000
-        <BuildTime>k__BackingField: 120
-        <UnitCapacity>k__BackingField: 60
+        <Price>k__BackingField: 70000
+        <BuildTime>k__BackingField: 140
+        <UnitCapacity>k__BackingField: 50
         <Icon>k__BackingField: {fileID: 21300000, guid: ebec4f97ee2c2454883747a62531d2c9,
           type: 3}
     - key: 208
@@ -208,8 +208,8 @@ MonoBehaviour:
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 7000
-        <BuildTime>k__BackingField: 60
-        <UnitCapacity>k__BackingField: 8
+        <BuildTime>k__BackingField: 65
+        <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: f0a9b1821246f484dbc3d7fcaa7828d1,
           type: 3}
     - key: 211
@@ -268,8 +268,8 @@ MonoBehaviour:
         <Name>k__BackingField: Titan-class Battlecruiser
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 5
-        <Price>k__BackingField: 20000
-        <BuildTime>k__BackingField: 80
+        <Price>k__BackingField: 25000
+        <BuildTime>k__BackingField: 90
         <UnitCapacity>k__BackingField: 35
         <Icon>k__BackingField: {fileID: 21300000, guid: d92e0b25eb3e0d94ab8f1713e2ec1b84,
           type: 3}
@@ -290,7 +290,7 @@ MonoBehaviour:
         <AvailableLevel>k__BackingField: 4
         <Price>k__BackingField: 15000
         <BuildTime>k__BackingField: 85
-        <UnitCapacity>k__BackingField: 25
+        <UnitCapacity>k__BackingField: 20
         <Icon>k__BackingField: {fileID: 21300000, guid: 106240983beaf6b4e87c2b4ed41fd259,
           type: 3}
     - key: 215
@@ -329,9 +329,9 @@ MonoBehaviour:
         <Name>k__BackingField: Gladiator-class Star Destroyer
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 4800
+        <Price>k__BackingField: 4500
         <BuildTime>k__BackingField: 40
-        <UnitCapacity>k__BackingField: 8
+        <UnitCapacity>k__BackingField: 6
         <Icon>k__BackingField: {fileID: 21300000, guid: f38f2a09297bc734d89c94affa2d83f6,
           type: 3}
     - key: 217
@@ -352,9 +352,9 @@ MonoBehaviour:
         <Name>k__BackingField: Interdictor Star Destroyer
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 6500
+        <Price>k__BackingField: 6000
         <BuildTime>k__BackingField: 55
-        <UnitCapacity>k__BackingField: 10
+        <UnitCapacity>k__BackingField: 8
         <Icon>k__BackingField: {fileID: 21300000, guid: 1eb602fdb62be8f4f9214ecdb7cf4e20,
           type: 3}
     - key: 320
@@ -373,7 +373,7 @@ MonoBehaviour:
         <Name>k__BackingField: Quasar Fire
         <MaxCount>k__BackingField: 3
         <AvailableLevel>k__BackingField: 2
-        <Price>k__BackingField: 2400
+        <Price>k__BackingField: 2000
         <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 27b2ca6d030fce64fa71f572cb392d6d,
