@@ -146,7 +146,8 @@ namespace EmpireAtWar.Services.Battle
                 {
                     _aliveBases[entity.Owner.Index] |= !entity.HealthModel.IsDestroyed && entity.HealthModel.HasUnits;
                 }
-                else if (!entity.HealthModel.IsDestroyed && !entity.IsSquadron())
+                // The fleet is ships only: squadrons and defense platforms alone do not keep a player alive.
+                else if (!entity.HealthModel.IsDestroyed && entity.IsShip())
                 {
                     _unitCounts[entity.Owner.Index]++;
                 }

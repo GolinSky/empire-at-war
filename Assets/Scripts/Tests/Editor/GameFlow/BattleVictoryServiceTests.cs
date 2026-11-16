@@ -121,6 +121,28 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void FleetCondition_EndsWithOnlyEnemyDefensePlatformsRemaining()
+        {
+            var roster = TestPlayers.CreateDuel();
+            var entities = new EntityLocator();
+            var victory = new BattleVictoryModel();
+            var service = new BattleVictoryService(null, new ShipService(), entities, roster,
+                TestPlayers.CreateLocalPlayer(roster), new PlayerRegistry(), null, victory,
+                Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()));
+            entities.AddEntity(new Unit(1, TestPlayers.Human, true));
+            var enemyBase = new Unit(2, TestPlayers.Enemy, true);
+            entities.AddEntity(enemyBase);
+            entities.AddEntity(new Unit(3, TestPlayers.Enemy, false, isShip: false));
+
+            Assert.That(Collect(service).Find(value => value.Player == TestPlayers.Enemy).UnitCount, Is.Zero);
+            Assert.That(victory.Evaluate(BattleVictoryCondition.DestroyEnemyFleet, Collect(service), new TeamId(0)),
+                Is.EqualTo(BattleOutcome.None));
+            enemyBase.Health.IsDestroyed = true;
+            Assert.That(victory.Evaluate(BattleVictoryCondition.DestroyEnemyFleet, Collect(service), new TeamId(0)),
+                Is.EqualTo(BattleOutcome.PlayerVictory));
+        }
+
+        [Test]
         public void Collection_TracksNonSquadronReserveUntilConsumed()
         {
             var roster = TestPlayers.CreateDuel();
@@ -208,6 +230,7 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class Unit : IEntity, IPlayerBaseFacade, IShipEntity
         {
             private readonly bool _isBase;
+            private readonly UnitTypeFacade _shipType;
             public long Id { get; }
             public PlayerId Owner { get; }
             public UnityEngine.Vector3 WorldPosition => default;
@@ -217,11 +240,18 @@ namespace EmpireAtWar.Tests.Editor
             public UnitOrderType CurrentOrder => default;
             public Health Health { get; } = new Health();
             public IHealthModelObserver HealthModel => Health;
-            public Unit(long id, PlayerId owner, bool isBase) { Id = id; Owner = owner; _isBase = isBase; }
+            public Unit(long id, PlayerId owner, bool isBase, bool isShip = true)
+            {
+                Id = id;
+                Owner = owner;
+                _isBase = isBase;
+                _shipType = !isBase && isShip ? new UnitTypeFacade(UnitTypeId.Ship(ShipType.Venator)) : null;
+            }
             public T GetFacade<T>() where T : IEntityFacade => throw new NotSupportedException();
             public bool TryGetFacade<T>(out T facade) where T : IEntityFacade
             {
                 if (_isBase && typeof(T) == typeof(IPlayerBaseFacade)) { facade = (T)(object)this; return true; }
+                if (_shipType != null && typeof(T) == typeof(IUnitTypeFacade)) { facade = (T)(object)_shipType; return true; }
                 facade = default;
                 return false;
             }
