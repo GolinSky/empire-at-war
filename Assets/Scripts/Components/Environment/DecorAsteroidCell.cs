@@ -10,6 +10,7 @@ namespace EmpireAtWar.Components.Environment
         public Bounds Bounds { get; private set; }
         public Matrix4x4[] Matrices { get; private set; }
         public Bounds[] InstanceBounds { get; private set; }
+        public float[] Occlusion { get; private set; }
 
         public void Add(Matrix4x4 matrix, Bounds localBounds)
         {
@@ -32,6 +33,7 @@ namespace EmpireAtWar.Components.Environment
         {
             Matrices = _matrices.ToArray();
             InstanceBounds = _bounds.ToArray();
+            Occlusion = new float[Matrices.Length];
             _matrices.Clear();
             _bounds.Clear();
         }

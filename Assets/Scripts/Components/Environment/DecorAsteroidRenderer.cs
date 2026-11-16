@@ -11,6 +11,7 @@ namespace EmpireAtWar.Components.Environment
     {
         private const int BATCH_SIZE = 511;
         private const float CELL_SIZE = 1000f;
+        private static readonly int _neighborOcclusionId = Shader.PropertyToID("_NeighborOcclusion");
         [SerializeField] private DecorAsteroidMesh[] meshes;
         [SerializeField, Min(1f)] private float debrisDistance = 2200f;
         [SerializeField, Min(1f)] private float mediumDistance = 5000f;
@@ -18,15 +19,19 @@ namespace EmpireAtWar.Components.Environment
         [SerializeField, Min(1f)] private float lodDistance = 1000f;
         private readonly Matrix4x4[] _batch = new Matrix4x4[BATCH_SIZE];
         private readonly Matrix4x4[] _lowBatch = new Matrix4x4[BATCH_SIZE];
+        private readonly float[] _batchOcclusion = new float[BATCH_SIZE];
+        private readonly float[] _lowBatchOcclusion = new float[BATCH_SIZE];
         private readonly Plane[] _planes = new Plane[6];
         private DecorAsteroidCell[][] _cells = Array.Empty<DecorAsteroidCell[]>();
         private Material[][] _materials = Array.Empty<Material[]>();
         private Camera _camera;
+        private MaterialPropertyBlock _properties;
 
         public void Configure(IReadOnlyList<AsteroidSpot> rocks, Camera camera)
         {
             ReleaseMaterials();
             _camera = camera;
+            _properties = new MaterialPropertyBlock();
             Dictionary<Vector3Int, DecorAsteroidCell>[] cells = new Dictionary<Vector3Int, DecorAsteroidCell>[meshes.Length];
             _materials = new Material[meshes.Length][];
             for (int i = 0; i < meshes.Length; i++)
@@ -65,11 +70,24 @@ namespace EmpireAtWar.Components.Environment
             }
 
             _cells = new DecorAsteroidCell[cells.Length][];
+            List<Bounds> bounds = new List<Bounds>(rocks.Count);
             for (int i = 0; i < cells.Length; i++)
             {
                 _cells[i] = new List<DecorAsteroidCell>(cells[i].Values).ToArray();
-                foreach (DecorAsteroidCell cell in _cells[i]) cell.Seal();
+                foreach (DecorAsteroidCell cell in _cells[i])
+                {
+                    cell.Seal();
+                    bounds.AddRange(cell.InstanceBounds);
+                }
             }
+            float[] occlusion = DecorAsteroidOcclusion.Calculate(bounds);
+            int offset = 0;
+            foreach (DecorAsteroidCell[] group in _cells)
+                foreach (DecorAsteroidCell cell in group)
+                {
+                    Array.Copy(occlusion, offset, cell.Occlusion, 0, cell.Occlusion.Length);
+                    offset += cell.Occlusion.Length;
+                }
         }
 
         private void LateUpdate()
@@ -108,6 +126,7 @@ namespace EmpireAtWar.Components.Environment
                             distanceSquared >= lodDistance * lodDistance;
                         if (lowDetail)
                         {
+                            _lowBatchOcclusion[lowCount] = cell.Occlusion[j];
                             _lowBatch[lowCount++] = cell.Matrices[j];
                             if (lowCount != BATCH_SIZE) continue;
                             DrawBatch(i, lowCount, camera, true);
@@ -115,6 +134,7 @@ namespace EmpireAtWar.Components.Environment
                         }
                         else
                         {
+                            _batchOcclusion[count] = cell.Occlusion[j];
                             _batch[count++] = cell.Matrices[j];
                             if (count != BATCH_SIZE) continue;
                             DrawBatch(i, count, camera, false);
@@ -129,11 +149,13 @@ namespace EmpireAtWar.Components.Environment
 
         private void DrawBatch(int index, int count, Camera camera, bool lowDetail)
         {
+            _properties.SetFloatArray(_neighborOcclusionId, lowDetail ? _lowBatchOcclusion : _batchOcclusion);
             for (int submesh = 0; submesh < _materials[index].Length; submesh++)
             {
                 RenderParams parameters = new RenderParams(_materials[index][submesh])
                 {
                     camera = camera,
+                    matProps = _properties,
                     layer = gameObject.layer,
                     shadowCastingMode = ShadowCastingMode.Off,
                     receiveShadows = false,
