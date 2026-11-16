@@ -97,6 +97,73 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(restored.Credential, Is.EqualTo("private-credential"));
         }
 
+        [TestCase("127.0.0.1", 7777, true)]
+        [TestCase("127.0.0.2", 7777, false)]
+        [TestCase("127.0.0.1", 7778, false)]
+        public void JoinByIp_UsesCredentialOnlyForSavedEndpoint(string address, int port, bool recovers)
+        {
+            RememberSession();
+            var transport = _transportObject.GetComponent<KcpTransport>();
+            typeof(KcpTransport).GetMethod("Awake", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(transport, null);
+            transport.Port = (ushort)port;
+            var manager = _transportObject.AddComponent<OnlineNetworkManager>();
+            manager.autoCreatePlayer = false;
+            manager.dontDestroyOnLoad = false;
+            manager.runInBackground = false;
+            Set("_root", _transportObject);
+            Set("_manager", manager);
+            Set("_kcp", transport);
+            LobbyHelloMessage? hello = null;
+            void Capture(NetworkDiagnostics.MessageInfo info)
+            {
+                if (info.message is LobbyHelloMessage message) hello = message;
+            }
+
+            NetworkDiagnostics.OutMessageEvent += Capture;
+            try
+            {
+                _online.JoinByIp(address);
+                var state = typeof(NetworkClient).GetField("connectState", BindingFlags.Static | BindingFlags.NonPublic);
+                state.SetValue(null, Enum.Parse(state.FieldType, "Connected"));
+                Invoke("SendHello");
+
+                Assert.That(_online.IsReconnecting, Is.EqualTo(recovers));
+                Assert.That(_store.TryLoad(out _, out _), Is.EqualTo(recovers));
+                Assert.That(hello.HasValue, Is.True);
+                Assert.That(hello.Value.MatchId, Is.EqualTo(recovers ? "match" : string.Empty));
+                Assert.That(hello.Value.Credential, Is.EqualTo(recovers ? "private-credential" : string.Empty));
+            }
+            finally
+            {
+                NetworkDiagnostics.OutMessageEvent -= Capture;
+                manager.StopClient();
+                NetworkManager.ResetStatics();
+            }
+        }
+
+        [TestCase(10UL, false)]
+        [TestCase(20UL, true)]
+        public void SteamJoinDuringBattle_IgnoresCurrentLobbyAndReservesSeatOnSwitch(ulong lobbyId, bool switches)
+        {
+            RememberSession();
+            SetProperty("Role", OnlineRole.Client);
+            SetProperty("IsInBattle", true);
+            Set("_clientLobby", 10UL);
+            Set("_root", _transportObject);
+            Set("_manager", _transportObject.AddComponent<OnlineNetworkManager>());
+            int exits = 0;
+            _online.HostLeft += () => exits++;
+
+            Assert.That(Invoke("BeginSteamJoin", lobbyId), Is.EqualTo(switches));
+
+            Assert.That(_online.IsInBattle, Is.EqualTo(!switches));
+            Assert.That(Get<bool>("_awaitingSteamHost"), Is.EqualTo(switches));
+            Assert.That(exits, Is.EqualTo(switches ? 1 : 0));
+            Assert.That(_online.HasRecovery, Is.True);
+            Assert.That(_store.TryLoad(out _, out _), Is.True);
+        }
+
         [Test]
         public void HelloAfterHostLeft_DoesNotCreateMember()
         {

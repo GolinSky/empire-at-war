@@ -172,6 +172,10 @@ namespace EmpireAtWar.Entities.Menu
                     "Resume" => "Close the pause menu and resume the battle.",
                     "Restart Battle" => "Start this battle again with the same setup and map. Current progress will be lost.",
                     "Options" => "Edit display, camera and key-binding settings.",
+                    "Exit" when _session.IsOnline && _session.IsAuthority =>
+                        "End the match for all players and return to the main menu.",
+                    "Exit" when _session.IsOnline =>
+                        "Leave the battle. You can rejoin from Multiplayer or Steam within 5 minutes. After that an AI takes your slot.",
                     "Exit" => "Exit this battle and return to the main menu.",
                     _ => throw new ArgumentOutOfRangeException(nameof(key))
                 }));

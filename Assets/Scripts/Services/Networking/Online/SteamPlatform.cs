@@ -45,7 +45,7 @@ namespace EmpireAtWar.Services.Networking.Online
 
         public event Action<string> HostLobbyReady;
         public event Action<string> JoinedHost;
-        public event Action JoinStarting;
+        internal Func<ulong, bool> TryBeginJoin { get; set; }
         public event Action<OnlineError> Failed;
         /// <summary>An in-game lobby invite arrived (<see cref="HasPendingInvite"/>).</summary>
         public event Action InviteReceived;
@@ -133,7 +133,7 @@ namespace EmpireAtWar.Services.Networking.Online
             SteamMatchmaking.SetLobbyData(_lobby, MODE_DATA, mode);
         }
 
-        /// <summary>Host: a lobby in battle drops out of the Server Browser; rejoins still use invites and IP.</summary>
+        /// <summary>Host: in-battle lobbies are excluded from public discovery.</summary>
         public void SetHostedLobbyInBattle(bool inBattle)
         {
             if (!_isHost || !InLobby) return;
@@ -202,7 +202,7 @@ namespace EmpireAtWar.Services.Networking.Online
 
         public void Join(CSteamID lobby)
         {
-            JoinStarting?.Invoke();
+            if (TryBeginJoin != null && !TryBeginJoin(lobby.m_SteamID)) return;
             _isHost = false;
             _requestedLobby = lobby;
             // Reuse an unfinished request for this lobby instead of issuing overlapping joins to it.

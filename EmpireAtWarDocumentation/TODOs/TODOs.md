@@ -367,6 +367,9 @@
 
 ### Features
 
+- [x] **Rejoin an online battle after Pause Exit** → [[Done/Features/Rejoin_After_Battle_Exit_Plan|Rejoin After Battle Exit Plan]]
+  - Completed 2026-11-16. Client Exit preserves the 300 s reservation for Multiplayer, Steam, Server Browser and matching IP recovery. Unity compiled. Tests and two-PC acceptance → [[TODOs/User_Acceptance_Queue#Multiplayer Reconnect]]. Parent → [[TODOs/Features/Multiplayer_Plan]].
+
 - [x] **Artillery ships keep launcher distance; ordinary combat after launcher destruction** → [[Done/Features/Artillery_Ship_Standoff_Plan|Artillery Ship Standoff Plan]]
   - 2026-11-15: verified six loadouts; five opted in, Profundity excluded. Explicit Attack uses surviving launcher reach, with ordinary pursuit after launcher loss. Editor and Windows player scripts compiled and five assets saved. Tests not run. Gameplay and CPU acceptance → [[TODOs/User_Acceptance_Queue]].
 

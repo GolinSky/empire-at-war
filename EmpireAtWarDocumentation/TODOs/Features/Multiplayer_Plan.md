@@ -348,6 +348,7 @@ Play
 
 ## TODO / Open Questions
 
+- Client Pause Exit recovery implemented 2026-11-16 → [[Done/Features/Rejoin_After_Battle_Exit_Plan]].
 - Reconnect implementation completed 2026-11-15: persistent crash recovery, UI/progress, credential-safe reclaim and bounded grace/loading → [[Done/Bugs/Multiplayer_Reconnect_Flow]]. Unity compiled; tests not run. Two-PC acceptance and historical Steam rejection diagnosis → [[TODOs/User_Acceptance_Queue]].
 - Remaining user acceptance: two-PC checks above (add: Survival client sees wave number/countdown advance, wins after wave 5, no start-wave button), Survival lobby avatar chips, offline smoke test, spike bandwidth numbers.
 - Phase 6 (online saving): deferred by user 2026-11-08; not v1.

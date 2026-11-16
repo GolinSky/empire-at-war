@@ -84,7 +84,11 @@ namespace EmpireAtWar.Tests.Editor
             CSteamID lobby = new CSteamID(10);
             AddRequest(steam, lobby);
             CallResult<LobbyEnter_t> original = Requests(steam)[lobby];
-            steam.JoinStarting += steam.Leave;
+            steam.TryBeginJoin = _ =>
+            {
+                steam.Leave();
+                return true;
+            };
 
             steam.Join(lobby);
             steam.Leave();

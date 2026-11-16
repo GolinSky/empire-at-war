@@ -4,9 +4,12 @@ using System.Reflection;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Services.Networking;
 using EmpireAtWar.Services.Networking.Online;
+using EmpireAtWar.Services.Networking.Online.Messages;
 using EmpireAtWar.Utils;
+using kcp2k;
 using Mirror;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -18,6 +21,7 @@ namespace EmpireAtWar.Tests.Editor
         private ReconnectSessionStore _store;
         private ReplayNotifier<BattleState> _state;
         private OnlineBattleLifetime _lifetime;
+        private GameObject _network;
 
         [SetUp]
         public void SetUp()
@@ -36,6 +40,7 @@ namespace EmpireAtWar.Tests.Editor
         [TearDown]
         public void TearDown()
         {
+            if (_network != null) UnityEngine.Object.DestroyImmediate(_network);
             if (Directory.Exists(_directory)) Directory.Delete(_directory, true);
         }
 
@@ -63,14 +68,68 @@ namespace EmpireAtWar.Tests.Editor
             _lifetime.LateDispose();
         }
 
-        [Test]
-        public void VoluntaryBattleExit_LeavesAndClearsRecovery()
+        [TestCase(false)]
+        [TestCase(true)]
+        public void VoluntaryClientExit_KeepsRecoveryWithoutLeaveMessage(bool battleBegun)
         {
+            _network = new GameObject("Lifetime test manager");
+            _network.SetActive(false);
+            Set("_manager", _network.AddComponent<OnlineNetworkManager>());
+            Set("<Role>k__BackingField", OnlineRole.Client);
+            Set("<IsInBattle>k__BackingField", true);
+            Set("<HasBegun>k__BackingField", battleBegun);
+            Set("<RecoveryFromStartup>k__BackingField", !battleBegun);
+            int exits = 0;
+            _online.HostLeft += () => exits++;
+            var stateField = typeof(NetworkClient).GetField("connectState", BindingFlags.Static | BindingFlags.NonPublic);
+            object previousState = stateField.GetValue(null);
+            stateField.SetValue(null, Enum.Parse(stateField.FieldType, "Connected"));
+            try { _lifetime.LateDispose(); }
+            finally { stateField.SetValue(null, previousState); }
+
+            Assert.That(_online.Role, Is.EqualTo(OnlineRole.None));
+            Assert.That(_online.HasRecovery, Is.True);
+            Assert.That(_store.TryLoad(out ReconnectSessionRecord record, out _), Is.True);
+            Assert.That(record.Credential, Is.EqualTo("private-credential"));
+            Assert.That(_online.RecoveryFromStartup, Is.False);
+            Assert.That(_online.RecoveryStatus, Does.Contain("5-minute"));
+            Assert.That(_online.LastError, Is.EqualTo(OnlineError.None));
+            Assert.That(exits, Is.Zero);
+        }
+
+        [Test]
+        public void VoluntaryHostExit_LeavesAndAnnouncesHostLeft()
+        {
+            var previousTransport = Transport.active;
+            _network = new GameObject("Lifetime test transport");
+            _network.SetActive(false);
+            var transport = _network.AddComponent<KcpTransport>();
+            typeof(KcpTransport).GetField("config", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(transport, new KcpConfig());
+            const int REMOTE_ID = 7;
+            OnlineError announcement = OnlineError.None;
+            void Capture(NetworkDiagnostics.MessageInfo info)
+            {
+                if (info.message is LobbyRejectedMessage message) announcement = message.Reason;
+            }
+
             Set("<Role>k__BackingField", OnlineRole.Host);
-            _lifetime.LateDispose();
+            Set("<IsInBattle>k__BackingField", true);
+            Transport.active = transport;
+            NetworkServer.connections.Add(REMOTE_ID, new NetworkConnectionToClient(REMOTE_ID));
+            NetworkDiagnostics.OutMessageEvent += Capture;
+            try { _lifetime.LateDispose(); }
+            finally
+            {
+                NetworkDiagnostics.OutMessageEvent -= Capture;
+                NetworkServer.connections.Remove(REMOTE_ID);
+                Transport.active = previousTransport;
+            }
+
             Assert.That(_online.Role, Is.EqualTo(OnlineRole.None));
             Assert.That(_online.HasRecovery, Is.False);
             Assert.That(_store.TryLoad(out _, out _), Is.False);
+            Assert.That(announcement, Is.EqualTo(OnlineError.HostLeft));
         }
 
         [Test]

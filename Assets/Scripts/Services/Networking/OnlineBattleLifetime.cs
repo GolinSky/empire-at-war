@@ -5,8 +5,8 @@ using EmpireAtWar.Services.Networking.Online;
 namespace EmpireAtWar.Services.Networking
 {
     /// <summary>
-    /// The online session ends with its battle scene, so the next battle starts offline — unless the match is
-    /// restarting, when every PC reloads the battle and stays connected.
+    /// Closes the battle's online connection on scene exit. Clients can recover their seat after exiting
+    /// a live match, and a restart keeps the existing connection.
     /// </summary>
     public sealed class OnlineBattleLifetime : IInitializable, ILateDisposable, IObserver<BattleState>
     {
@@ -31,7 +31,9 @@ namespace EmpireAtWar.Services.Networking
         public void LateDispose()
         {
             _battleState.RemoveObserver(this);
-            if (_generation == _online.BattleGeneration && !_online.IsReloading && _online.Role != OnlineRole.None) _online.Leave();
+            if (_generation != _online.BattleGeneration || _online.IsReloading || _online.Role == OnlineRole.None) return;
+            if (_online.Role == OnlineRole.Client && _online.IsInBattle && _online.HasRecovery) _online.SuspendBattle();
+            else _online.Leave();
         }
     }
 }

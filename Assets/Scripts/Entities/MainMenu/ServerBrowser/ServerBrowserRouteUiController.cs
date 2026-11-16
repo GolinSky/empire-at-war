@@ -7,8 +7,7 @@ using EmpireAtWar.Ui.Base;
 namespace EmpireAtWar.Entities.MainMenu.ServerBrowser
 {
     /// <summary>
-    /// Join Game screen: lists open Steam lobbies of this version and joins one, or joins by IP. Entering the lobby
-    /// closes this screen; the online route then shows the lobby.
+    /// Join Game screen: lists open Steam lobbies and the player's saved battle, or joins by IP.
     /// </summary>
     public sealed class ServerBrowserRouteUiController : UiController, IServerBrowserRoute, IServerBrowserPresenter,
         IInitializable, ILateDisposable
@@ -17,6 +16,7 @@ namespace EmpireAtWar.Entities.MainMenu.ServerBrowser
         private readonly List<ServerBrowserRowState> _rows = new List<ServerBrowserRowState>();
         private ServerBrowserUi _ui;
         private bool _isOpen;
+        private bool _hasRejoinRow;
 
         public ServerBrowserRouteUiController(IUiService uiService, IUiCancelRouter cancelRouter,
             OnlineMatchService online) : base(uiService, cancelRouter)
@@ -58,7 +58,8 @@ namespace EmpireAtWar.Entities.MainMenu.ServerBrowser
         // Back while connecting cancels the join.
         public void Close()
         {
-            if (_online.Role != OnlineRole.None) _online.Leave();
+            if (_online.IsReconnecting) _online.CancelReconnect();
+            else if (_online.Role != OnlineRole.None) _online.Leave();
             Hide();
         }
 
@@ -68,7 +69,17 @@ namespace EmpireAtWar.Entities.MainMenu.ServerBrowser
             Render();
         }
 
-        public void JoinLobby(int index) => _online.JoinListedLobby(_online.Steam.ListedLobbies[index]);
+        public void JoinLobby(int index)
+        {
+            if (_hasRejoinRow && index == 0)
+            {
+                _online.Reconnect();
+                return;
+            }
+
+            int lobbyIndex = _hasRejoinRow ? index - 1 : index;
+            _online.JoinListedLobby(_online.Steam.ListedLobbies[lobbyIndex]);
+        }
 
         public void JoinByIp(string address)
         {
@@ -85,7 +96,7 @@ namespace EmpireAtWar.Entities.MainMenu.ServerBrowser
         private void OnOnlineChanged()
         {
             if (!_isOpen) return;
-            if (_online.IsInLobby) Hide();
+            if (_online.IsInLobby || _online.IsInBattle) Hide();
             else Render();
         }
 
@@ -101,6 +112,8 @@ namespace EmpireAtWar.Entities.MainMenu.ServerBrowser
             if (!_isOpen) return;
             bool connecting = _online.Role == OnlineRole.Client && !_online.IsInLobby;
             _rows.Clear();
+            _hasRejoinRow = _online.CanRejoinFromServerBrowser;
+            if (_hasRejoinRow) _rows.Add(new ServerBrowserRowState("Saved battle", "REJOIN", string.Empty));
             foreach (SteamLobbyListing lobby in _online.Steam.ListedLobbies)
             {
                 string host = lobby.HostName.Length > 0 ? lobby.HostName : "Unknown host";
@@ -117,6 +130,7 @@ namespace EmpireAtWar.Entities.MainMenu.ServerBrowser
             if (connecting) return "Connecting to the host...";
             if (!_online.Steam.IsInitialized) return "Steam not detected: the lobby list needs Steam. Join a LAN / IP game by address below.";
             if (_online.Steam.IsListingLobbies) return "Searching for open lobbies...";
+            if (_hasRejoinRow) return "Rejoin your saved battle, choose an open lobby, or join a host by IP.";
             return _rows.Count == 0 ? "No open lobbies found. Refresh, or join a host by IP."
                 : "Choose a lobby to join, or join a host by IP.";
         }

@@ -65,6 +65,8 @@ namespace EmpireAtWar.Services.Networking.Online
         private ulong _clientLobby;
 
         public bool HasRecovery => _recovery != null;
+        public bool CanRejoinFromServerBrowser => HasRecovery && _recovery.Transport == ReconnectTransport.Steam &&
+            _recovery.LobbyId != 0 && _steam.IsInitialized && _recovery.SteamId == _steam.LocalSteamId;
         public bool RecoveryFromStartup { get; private set; }
         public bool IsReconnecting => _recovering && Role == OnlineRole.Client && !HasBegun;
         public string RecoveryStatus { get; private set; } = string.Empty;
@@ -151,7 +153,7 @@ namespace EmpireAtWar.Services.Networking.Online
         {
             if (!_steam.TryInitialize()) return false;
             _steam.JoinedHost += JoinSteamHost;
-            _steam.JoinStarting += BeginSteamJoin;
+            _steam.TryBeginJoin = BeginSteamJoin;
             _steam.Failed += OnSteamFailed;
             // The Steam lobby (invite button) and in-game invites arrive later through Steam callbacks.
             _steam.HostLobbyReady += OnSteamLobbyReady;
@@ -223,12 +225,7 @@ namespace EmpireAtWar.Services.Networking.Online
             // Quitting the application is not an explicit Leave: the saved record survives for the next launch's
             // Rejoin previous match, and no LobbyLeaveMessage revokes the credential on the host.
             if (Role == OnlineRole.Host) Leave();
-            else if (Role == OnlineRole.Client)
-            {
-                _leaving = true;
-                _manager.StopClient();
-                _leaving = false;
-            }
+            else if (Role == OnlineRole.Client) StopClientWithoutLeave();
             _steam.Shutdown();
             if (_root != null) Object.Destroy(_root);
         }
@@ -320,6 +317,16 @@ namespace EmpireAtWar.Services.Networking.Online
 
         public void JoinByIp(string address)
         {
+            if (HasRecovery && _recovery.Transport == ReconnectTransport.Kcp &&
+                string.Equals(_recovery.Host, address, StringComparison.OrdinalIgnoreCase))
+            {
+                EnterOnline();
+                if (_recovery.Port == _kcp.Port)
+                {
+                    Reconnect();
+                    return;
+                }
+            }
             Leave();
             StartClient(ReconnectTransport.Kcp, address, 0);
         }
@@ -367,6 +374,41 @@ namespace EmpireAtWar.Services.Networking.Online
             if (LastError != OnlineError.RecoveryStorageFailed) LastError = OnlineError.None;
             NotifyChanged();
             if (wasInBattle) HostLeft?.Invoke();
+        }
+
+        public void SuspendBattle()
+        {
+            if (Role != OnlineRole.Client || !IsInBattle || !HasRecovery || _matchEnded) return;
+            RecoveryFromStartup = false;
+            ReturnToRecovery("You left the battle. Rejoin before the host's 5-minute window ends.");
+        }
+
+        public void CancelReconnect()
+        {
+            if (!IsReconnecting || IsInBattle) return;
+            ReturnToRecovery("Reconnect to check the host's session, or Leave to dismiss it.");
+        }
+
+        private void ReturnToRecovery(string status)
+        {
+            StopClientWithoutLeave();
+            _steam.Leave();
+            _steam.ClearPresence();
+            ResetMatch(OnlineRole.None);
+            LastError = OnlineError.None;
+            RecoveryStatus = status;
+            NotifyChanged();
+        }
+
+        private void StopClientWithoutLeave()
+        {
+            _attempt++;
+            _awaitingSteamHost = false;
+            _recovering = false;
+            NetworkClient.OnConnectedEvent -= SendHello;
+            _leaving = true;
+            _manager.StopClient();
+            _leaving = false;
         }
 
         public void Leave()
@@ -620,7 +662,7 @@ namespace EmpireAtWar.Services.Networking.Online
             NetworkClient.RegisterHandler<LobbyRejectedMessage>(message =>
             {
                 if (attempt != _attempt || Role != OnlineRole.Client) return;
-                ClearRecovery();
+                if (_recovering || IsInBattle) ClearRecovery();
                 Fail(message.Reason);
                 DisconnectClient();
             });
@@ -806,37 +848,43 @@ namespace EmpireAtWar.Services.Networking.Online
         {
             if (!_awaitingSteamHost) return;
             _awaitingSteamHost = false;
-            // Steam Join Game can reuse the saved credential, without matching a display name.
+            // Keep the previous battle recoverable while joining an unrelated Steam lobby.
             _recovering = HasRecovery && _recovery.Transport == ReconnectTransport.Steam &&
-                _recovery.Host == hostSteamId && _recovery.SteamId == _steam.LocalSteamId;
-            if (!_recovering) ClearRecovery();
-            if (_recovering) RecoveryStatus = "Connecting - checking session";
+                _recovery.LobbyId == _steam.LobbyId && _recovery.Host == hostSteamId;
+            if (_recovering)
+            {
+                if (_recovery.SteamId != _steam.LocalSteamId)
+                {
+                    ClearRecovery();
+                    Fail(OnlineError.ReconnectRejected);
+                    DisconnectClient();
+                    return;
+                }
+                _recoveryDeadline = 0f;
+                RecoveryStatus = "Connecting - checking session";
+            }
             StartClient(ReconnectTransport.Steam, hostSteamId, _steam.LobbyId);
         }
 
-        private void BeginSteamJoin()
+        private bool BeginSteamJoin(ulong lobbyId)
         {
-            // An invite during a live battle must not transfer ownership under that battle's scope.
             if (IsInBattle)
             {
-                Leave();
+                ulong currentLobby = Role == OnlineRole.Host ? _steam.LobbyId : _clientLobby;
+                if (lobbyId != 0 && lobbyId == currentLobby) return false;
+                if (Role == OnlineRole.Client && HasRecovery) SuspendBattle();
+                else Leave();
                 HostLeft?.Invoke();
             }
-            // Keep the record until the destination is known; a matching invite is a recovery attempt.
-            ReconnectSessionRecord recovery = _recovery;
-            _recovery = null;
-            _leaving = true;
-            if (Role == OnlineRole.Client) _manager.StopClient();
-            else if (Role == OnlineRole.Host) _manager.StopHost();
-            _leaving = false;
+            if (Role == OnlineRole.Client) StopClientWithoutLeave();
+            else if (Role == OnlineRole.Host) Leave();
             _steam.Leave();
-            _attempt++;
-            _recovery = recovery;
             EnterOnline();
             ResetMatch(OnlineRole.Client);
             _awaitingSteamHost = true;
             _connectDeadline = Time.unscaledTime + CONNECT_TIMEOUT_SECONDS;
             NotifyChanged();
+            return true;
         }
 
         private void OnSteamFailed(OnlineError error)

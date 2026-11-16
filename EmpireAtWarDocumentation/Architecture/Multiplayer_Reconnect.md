@@ -37,7 +37,10 @@ verification: Live source and reliable baseline ordering inspected; automated
 ## Edge Cases
 
 - Project-lifetime `HostLeftBattleExit` handles loss during preloading as well as an active battle. `OnlineBattleLifetime` captures `BattleGeneration`; stale scene disposal cannot close a replacement session.
-- Temporary failure retains the record. Application quit (`OnlineMatchService.LateDispose`) is not a Leave: client stops the transport without `LobbyLeaveMessage` and keeps the record; host quit still announces `HostLeft`. Leave/Dismiss, kick, completed match and terminal rejection clear it.
+- Client Pause Exit and application quit stop the transport without `LobbyLeaveMessage`. The saved record survives, and the host starts its normal reservation on disconnect. Host Pause Exit announces `HostLeft`.
+- Same KCP host and port → Join by IP uses the saved record. Steam Join Game and invites reuse the record for the matching lobby, host and account. Server Browser shows a private REJOIN row from the current Steam account's saved record and connects to the stored host.
+- A Steam request for the current battle lobby is ignored. Switching to another Steam game from battle suspends the current seat and keeps the record while joining the other lobby. Starting the replacement battle saves its own record.
+- Temporary failures retain recovery. Leave/Dismiss, kick, completed match and terminal rejection of the recorded session clear it.
 - Early Steam rejoin is transport-safe: FizzySteamworks `NextServer` (default `UseNextGenSteamNetworking = true`) keys connections by `HSteamNetConnection`, so a second connection from the same SteamID is accepted. `LegacyServer` keys by SteamID and would not be.
 - Recovery countdown text rebuilds and raises `Changed` only when the whole-second value changes, not every frame. Explicit connected Leave revokes the host credential; unreachable Dismiss clears only local state.
 - Host restart preserves match ID/credentials and outstanding reservation deadlines. Successful recovery keeps the record for another crash.
@@ -50,4 +53,4 @@ verification: Live source and reliable baseline ordering inspected; automated
 - `Assets/Scripts/Services/Networking/Online/OnlineMatchService.cs`, `OnlineLobby.cs`, `ReconnectReservations.cs`, `ReconnectSessionStore.cs`.
 - `Assets/Scripts/Services/Networking/HostBattleStartGate.cs`, `HostUnitOrderSender.cs`, `OnlineBattleLifetime.cs`, `HostLeftBattleExit.cs`.
 - `Assets/Scripts/Entities/MainMenu/Online/`, `Assets/Scripts/Entities/Loading/`, `Assets/Scripts/Services/SceneService/SceneService.cs`.
-- [[Done/Bugs/Multiplayer_Reconnect_Flow]]; [[TODOs/Features/Multiplayer_Plan]].
+- [[Done/Bugs/Multiplayer_Reconnect_Flow]], [[Done/Features/Rejoin_After_Battle_Exit_Plan]], [[TODOs/Features/Multiplayer_Plan]].

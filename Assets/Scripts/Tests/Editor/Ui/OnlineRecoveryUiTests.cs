@@ -30,6 +30,7 @@ namespace EmpireAtWar.Tests.Editor
                 var reconnectLabel = (TMP_Text)fields.FindProperty("reconnectLabel").objectReferenceValue;
                 var dismissLabel = (TMP_Text)fields.FindProperty("dismissRecoveryLabel").objectReferenceValue;
                 var host = (Button)fields.FindProperty("hostSteamButton").objectReferenceValue;
+                var joinGame = (Button)fields.FindProperty("joinGameButton").objectReferenceValue;
 
                 view.Render("Checking session", false, string.Empty, true, true, true);
                 Assert.That(reconnect.gameObject.activeSelf, Is.True);
@@ -45,6 +46,9 @@ namespace EmpireAtWar.Tests.Editor
                 view.Render("Connection lost", false, string.Empty, true, true);
                 Assert.That(reconnectLabel.text, Is.EqualTo("RECONNECT"));
                 Assert.That(dismissLabel.text, Is.EqualTo("LEAVE"));
+                Assert.That(joinGame.gameObject.activeSelf, Is.True);
+                joinGame.OnPointerClick(new PointerEventData(null) { button = PointerEventData.InputButton.Left });
+                Assert.That(presenter.OpenBrowserCount, Is.EqualTo(1));
                 view.Render("Ready", false, string.Empty, true);
                 Assert.That(reconnect.gameObject.activeSelf, Is.False);
                 Assert.That(dismiss.gameObject.activeSelf, Is.False);
@@ -98,11 +102,12 @@ namespace EmpireAtWar.Tests.Editor
         {
             public int ReconnectCount { get; private set; }
             public int DismissCount { get; private set; }
+            public int OpenBrowserCount { get; private set; }
             public void Reconnect() => ReconnectCount++;
             public void DismissRecovery() => DismissCount++;
             public void HostSteamLobby() { }
             public void HostLanGame() { }
-            public void OpenServerBrowser() { }
+            public void OpenServerBrowser() => OpenBrowserCount++;
             public void AcceptInvite() { }
             public void RetrySteam() { }
             public void Close() { }
