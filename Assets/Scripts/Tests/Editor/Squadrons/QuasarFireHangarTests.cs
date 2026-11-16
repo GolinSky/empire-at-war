@@ -1,13 +1,36 @@
 using System.Collections.Generic;
+using System.Linq;
 using EmpireAtWar.Components.Hangar;
+using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons;
+using EmpireAtWar.Models.Factions;
 using NUnit.Framework;
+using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
     [Category("Squadrons")]
     public sealed class QuasarFireHangarTests
     {
+        [Test]
+        public void QuasarFire_IsAnEmpireCarrierWithThreeTieBays()
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<FactionCatalog>(AssetDatabase.GUIDToAssetPath(
+                AssetDatabase.FindAssets("t:FactionCatalog").Single()));
+            Assert.That(catalog.Factions.Where(faction => faction.Ships.ContainsKey(ShipType.QuasarFire))
+                .Select(faction => faction.FactionType), Is.EqualTo(new[] { FactionType.Empire }));
+
+            var ship = AssetDatabase.LoadAssetAtPath<ShipData>(AssetDatabase.GUIDToAssetPath(
+                AssetDatabase.FindAssets("QuasarFireShipData t:ShipData").Single()));
+            Assert.That(ship.HangarBays.Select(bay => (bay.SquadronType, bay.Reserve, bay.MaxActive)),
+                Is.EqualTo(new[]
+                {
+                    (SquadronType.TIEFighter, 6, 2),
+                    (SquadronType.TIEBomber, 3, 1),
+                    (SquadronType.TIEInterceptor, 3, 1)
+                }));
+        }
+
         [Test]
         public void Replacement_RequiresALostSquadronAndConsumesOneReserve()
         {

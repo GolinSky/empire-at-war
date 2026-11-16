@@ -20,14 +20,15 @@ namespace EmpireAtWar.Services.Saves
         private readonly EnemyUnitLimitModel _limits;
         private readonly IUnitRequestFactory _requests;
         private readonly FactionRoster _roster;
+        private readonly FactionCatalog _factions;
         private readonly StationLevelData _levels;
         private readonly IProductionAccess _production;
         private readonly SecondStationLevelModel _secondStation;
 
         public AiProductionSaveSource(PlayerSaveRegistry registry, PlayerSlot owner, EnemyFactionModel faction,
             FactionResearchModel research, EnemyFactionController controller, EnemyUnitLimitModel limits,
-            IUnitRequestFactory requests, FactionRoster roster, StationLevelData levels, IProductionAccess production,
-            SecondStationLevelModel secondStation)
+            IUnitRequestFactory requests, FactionRoster roster, FactionCatalog factions, StationLevelData levels,
+            IProductionAccess production, SecondStationLevelModel secondStation)
             : base(registry, owner)
         {
             _secondStation = secondStation;
@@ -38,6 +39,7 @@ namespace EmpireAtWar.Services.Saves
             _limits = limits;
             _requests = requests;
             _roster = roster;
+            _factions = factions;
             _levels = levels;
         }
 
@@ -65,7 +67,7 @@ namespace EmpireAtWar.Services.Saves
             ResearchSave.RestoreAll(save.Research, _research);
             for (int i = 0; i < save.ShipOrders; i++) _limits.RecordShipOrder();
             foreach (UnitRequestSave build in save.PendingBuilds)
-                _controller.RestorePendingBuild(build.ToRequest(_requests, _roster, _levels), build.TimeLeft);
+                _controller.RestorePendingBuild(build.RestoreRequest(_requests, _roster, _levels, _factions), build.TimeLeft);
         }
 
         public override void RestoreAfterUnits(PlayerSave save, BattleRestoreContext context)
@@ -76,7 +78,7 @@ namespace EmpireAtWar.Services.Saves
                 {
                     var shipType = unit.UnitType.ShipType;
                     _controller.AdoptShip(context.Ships[unit.Id],
-                        _requests.ConstructUnitRequest(_roster.Ships[shipType], shipType));
+                        UnitRequestSave.RestoreShipRequest(_requests, _roster, _factions, shipType));
                 }
                 else if (save.PaidSquadrons.Contains(unit.Id))
                 {

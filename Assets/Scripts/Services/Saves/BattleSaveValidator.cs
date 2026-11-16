@@ -241,7 +241,7 @@ namespace EmpireAtWar.Services.Saves
             {
                 ShipType shipType = unit.UnitType.ShipType;
                 if (!Enum.IsDefined(typeof(ShipType), shipType) || shipType == ShipType.ISDIII ||
-                    (rosters.TryGetValue(unit.Owner, out FactionRoster roster) && !roster.Ships.ContainsKey(shipType)))
+                    (rosters.TryGetValue(unit.Owner, out FactionRoster roster) && !UnitRequestSave.CanRestoreShip(roster, shipType)))
                     throw new InvalidDataException($"Ship {shipType} cannot be restored for {unit.Owner}.");
                 ShipData data = _assets.Load<ShipData>(shipsData.GetShipDataPath(shipType));
                 ShipEntity view = _assets.LoadComponent<ShipEntity>(shipType + "ShipView");
@@ -386,7 +386,7 @@ namespace EmpireAtWar.Services.Saves
                 bool valid = request.Kind switch
                 {
                     UnitRequestKind.Ship => Enum.IsDefined(typeof(ShipType), (ShipType)request.Key) &&
-                        roster.Ships.ContainsKey((ShipType)request.Key),
+                        UnitRequestSave.CanRestoreShip(roster, (ShipType)request.Key),
                     UnitRequestKind.Squadron => Enum.IsDefined(typeof(SquadronType), (SquadronType)request.Key) &&
                         roster.Squadrons.ContainsKey((SquadronType)request.Key),
                     UnitRequestKind.Level => request.Key >= 1 && levels.GetLevelFactionData(request.Key) != null,

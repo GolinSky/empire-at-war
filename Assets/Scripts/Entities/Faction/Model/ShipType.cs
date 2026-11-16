@@ -58,6 +58,7 @@ namespace EmpireAtWar.Models.Factions
         Allegiance = 213,
         Gladiator = 216,
         InterdictorStarDestroyer = 217,
+        QuasarFire = 320,
 
         //rebellion
         NebulonB = 300,
@@ -71,7 +72,6 @@ namespace EmpireAtWar.Models.Factions
         BothanAssaultCruiser = 312,
         Dauntless = 310,
         CD273 = 308,
-        QuasarFire = 320,
         Liberator = 321,
         MC30c = 307,
         Nebula = 330,

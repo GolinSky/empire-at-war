@@ -24,11 +24,12 @@ namespace EmpireAtWar.Services.Saves
         private readonly PlayerFactionModel _faction;
         private readonly IUnitRequestFactory _requests;
         private readonly FactionRoster _roster;
+        private readonly FactionCatalog _factions;
         private readonly StationLevelData _levels;
 
         public ReinforcementSaveSource(PlayerSaveRegistry registry, PlayerSlot owner, ReinforcementModel reinforcements,
             ReinforcementService reinforcementService, PlayerFactionModel faction, IUnitRequestFactory requests,
-            FactionRoster roster, StationLevelData levels)
+            FactionRoster roster, FactionCatalog factions, StationLevelData levels)
             : base(registry, owner)
         {
             _reinforcements = reinforcements;
@@ -36,6 +37,7 @@ namespace EmpireAtWar.Services.Saves
             _faction = faction;
             _requests = requests;
             _roster = roster;
+            _factions = factions;
             _levels = levels;
         }
 
@@ -50,7 +52,7 @@ namespace EmpireAtWar.Services.Saves
         {
             foreach (UnitRequestSave reserved in save.Reserve)
             {
-                UnitRequest request = reserved.ToRequest(_requests, _roster, _levels);
+                UnitRequest request = reserved.RestoreRequest(_requests, _roster, _levels, _factions);
                 // A built structure keeps its limit slot while it waits to be placed.
                 if (request is MiningFacilityUnitRequest || request is DefendPlatformUnitRequest ||
                     request is SecondStationUnitRequest)
@@ -68,8 +70,8 @@ namespace EmpireAtWar.Services.Saves
             {
                 if (unit.UnitType.IsShip)
                 {
-                    _reinforcements.UpdateShipData(_requests.ConstructUnitRequest(
-                        _roster.Ships[unit.UnitType.ShipType], unit.UnitType.ShipType));
+                    _reinforcements.UpdateShipData(UnitRequestSave.RestoreShipRequest(
+                        _requests, _roster, _factions, unit.UnitType.ShipType));
                     _reinforcements.AddUnitCapacity(unit.UnitType.ShipType);
                     context.Ships[unit.Id].OnRelease += _reinforcements.RemoveUnitCapacity;
                 }

@@ -357,6 +357,27 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 10
         <Icon>k__BackingField: {fileID: 21300000, guid: 1eb602fdb62be8f4f9214ecdb7cf4e20,
           type: 3}
+    - key: 320
+      value:
+        matchups: {fileID: 11400000, guid: fcb215fee41020c4490034316e324e2b, type: 2}
+        displayName: Quasar Fire
+        description: Light carrier with two light turbolasers and two point-defense
+          lasers. Boost Weapon Power halves weapon reload and time between shots
+          and halves speed and shield regeneration for 7 s. Recovers in 50 s. Requires
+          escorts. Deploys 2 TIE Fighter squadrons, 1 TIE Interceptor squadron and
+          1 TIE Bomber squadron at once. Carries 12 total squadron launches, including
+          the initial deployment.
+        role: Light carrier / Squadron support
+        iconKey: 27b2ca6d030fce64fa71f572cb392d6d:21300000
+        isHero: 0
+        <Name>k__BackingField: Quasar Fire
+        <MaxCount>k__BackingField: 3
+        <AvailableLevel>k__BackingField: 2
+        <Price>k__BackingField: 2400
+        <BuildTime>k__BackingField: 25
+        <UnitCapacity>k__BackingField: 3
+        <Icon>k__BackingField: {fileID: 21300000, guid: 27b2ca6d030fce64fa71f572cb392d6d,
+          type: 3}
   squadrons:
     keyValue:
     - key: 200

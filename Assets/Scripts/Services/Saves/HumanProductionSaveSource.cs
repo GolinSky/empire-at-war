@@ -16,12 +16,13 @@ namespace EmpireAtWar.Services.Saves
         private readonly IEconomyProvider _economyProvider;
         private readonly IUnitRequestFactory _requests;
         private readonly FactionRoster _roster;
+        private readonly FactionCatalog _factions;
         private readonly StationLevelData _levels;
         private readonly SecondStationLevelModel _secondStation;
 
         public HumanProductionSaveSource(PlayerSaveRegistry registry, PlayerSlot owner, PlayerFactionModel faction,
             FactionResearchModel research, FactionService factionService, IEconomyProvider economyProvider,
-            IUnitRequestFactory requests, FactionRoster roster, StationLevelData levels,
+            IUnitRequestFactory requests, FactionRoster roster, FactionCatalog factions, StationLevelData levels,
             SecondStationLevelModel secondStation)
             : base(registry, owner)
         {
@@ -32,6 +33,7 @@ namespace EmpireAtWar.Services.Saves
             _economyProvider = economyProvider;
             _requests = requests;
             _roster = roster;
+            _factions = factions;
             _levels = levels;
         }
 
@@ -51,7 +53,7 @@ namespace EmpireAtWar.Services.Saves
             _economyProvider.RecalculateIncome(_factionService);
             ResearchSave.RestoreAll(save.Research, _research);
             _faction.RestoreQueue(save.Production.Select(item =>
-                new ProductionQueueItem(item.ToRequest(_requests, _roster, _levels), item.TimeLeft)));
+                new ProductionQueueItem(item.RestoreRequest(_requests, _roster, _levels, _factions), item.TimeLeft)));
         }
     }
 }

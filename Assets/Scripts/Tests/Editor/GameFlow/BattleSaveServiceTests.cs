@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.CaptureSites;
@@ -302,6 +303,13 @@ namespace EmpireAtWar.Tests.Editor
             BattleSave save = BattleSave.Create(header, BattleSetupSave.From(battle),
                 CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 500f), new[] { ship, squadron },
                 Array.Empty<StructureSave>());
+            FactionCatalog factions = assets.Load<FactionCatalog>(nameof(FactionCatalog));
+            var quasar = new ShipUnitRequest(factions.Get(FactionType.Empire).Ships[ShipType.QuasarFire],
+                ShipType.QuasarFire);
+            PlayerSave rebelState = PlayerSave.Create(rebel.Id);
+            rebelState.Production = new[] { UnitRequestSave.From(quasar, 12f) };
+            rebelState.Reserve = new[] { UnitRequestSave.From(quasar) };
+            save.Players = new[] { rebelState };
             var validator = new BattleSaveValidator(assets);
 
             save.ObservedBases = new[] { int.MaxValue };
