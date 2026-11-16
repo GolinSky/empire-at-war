@@ -137,7 +137,8 @@ namespace EmpireAtWar.Tests.Editor
                 SkirmishModel model = new SkirmishModel();
                 popup.SetModel(model);
                 popup.AssignPresenter(new SkirmishPresenterStub(model));
-                popup.SetData(AssetDatabase.LoadAssetAtPath<TeamColorPalette>(PALETTE_PATH));
+                TeamColorPalette teamColors = AssetDatabase.LoadAssetAtPath<TeamColorPalette>(PALETTE_PATH);
+                popup.SetData(teamColors);
                 popup.Initialize();
                 model.Changed += popup.Render;
 
@@ -146,16 +147,23 @@ namespace EmpireAtWar.Tests.Editor
                 TMP_Dropdown humanOccupant = GetRowDropdown(rows, 0, "occupantDropdown");
                 TMP_Dropdown thirdOccupant = GetRowDropdown(rows, 2, "occupantDropdown");
                 TMP_Dropdown thirdFaction = GetRowDropdown(rows, 2, "factionDropdown");
+                var thirdRow = (SkirmishSlotRowView)rows.GetArrayElementAtIndex(2).objectReferenceValue;
+                using var serializedThird = new SerializedObject(thirdRow);
+                var thirdEdge = (Graphic)serializedThird.FindProperty("colorEdge").objectReferenceValue;
                 Button startGameButton = serializedPopup.FindProperty("startGameButton").objectReferenceValue as Button;
 
                 Assert.That(humanOccupant.interactable, Is.False);
                 Assert.That(thirdFaction.interactable, Is.False);
+                Assert.That(thirdEdge.enabled, Is.True);
+                Assert.That(thirdEdge.color, Is.EqualTo((Color)new Color32(232, 110, 108, 255)));
                 Assert.That(startGameButton.interactable, Is.True);
 
                 thirdOccupant.value = (int)SkirmishSlotOccupant.AiHard;
 
                 Assert.That(model.Slots[2].Occupant, Is.EqualTo(SkirmishSlotOccupant.AiHard));
                 Assert.That(thirdFaction.interactable, Is.True);
+                Assert.That(thirdEdge.enabled, Is.True);
+                Assert.That(thirdEdge.color, Is.EqualTo(teamColors.GetColor(model.Slots[2].ColorIndex)));
 
                 var humanRow = (SkirmishSlotRowView)rows.GetArrayElementAtIndex(0).objectReferenceValue;
                 var enemyRow = (SkirmishSlotRowView)rows.GetArrayElementAtIndex(1).objectReferenceValue;

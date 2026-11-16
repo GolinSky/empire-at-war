@@ -113,8 +113,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             occupantDropdown.RefreshShownValue();
             factionDropdown.RefreshShownValue();
             teamDropdown.RefreshShownValue();
-            colorEdge.color = playerColor;
-            colorEdge.enabled = slot.IsOpen;
+            bool isClosed = slot.Occupant == SkirmishSlotOccupant.Closed;
+            colorEdge.color = isClosed ? (Color)new Color32(232, 110, 108, 255) : playerColor;
+            colorEdge.enabled = slot.IsOpen || isClosed;
             configurationGroup.alpha = slot.IsOpen ? 1f : 0.38f;
             slotLabelGroup.alpha = slot.IsOpen ? 1f : 0.5f;
         }
