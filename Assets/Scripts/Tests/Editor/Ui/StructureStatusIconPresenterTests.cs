@@ -45,6 +45,7 @@ namespace EmpireAtWar.Tests.Editor
             _camera.orthographicSize = 5f;
             _camera.nearClipPlane = 0.3f;
             _camera.farClipPlane = 100f;
+            _camera.targetTexture = RenderTexture.GetTemporary(1024, 768, 24);
             _camera.pixelRect = new Rect(50f, 25f, 800f, 600f);
             var cameraService = _camera.gameObject.AddComponent<CameraService>();
             SetField(cameraService, "sceneCamera", _camera);
@@ -199,8 +200,6 @@ namespace EmpireAtWar.Tests.Editor
         public void DestroyedIconTracksCameraPanRotationAndZoomOnBattleCanvas(bool perspective)
         {
             _camera.orthographic = !perspective;
-            // Give manual rendering a fixed surface independent of the Editor Game view.
-            _camera.targetTexture = RenderTexture.GetTemporary(_camera.pixelWidth, _camera.pixelHeight, 24);
             _camera.rect = new Rect(0f, 0f, 1f, 1f);
             Canvas canvas = _layer.gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
