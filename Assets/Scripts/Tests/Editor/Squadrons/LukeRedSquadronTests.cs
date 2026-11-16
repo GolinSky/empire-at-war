@@ -94,8 +94,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(luke.TotalHull, Is.EqualTo(4200f));
             Assert.That(luke.TotalShields, Is.EqualTo(2900f));
             Assert.That(luke.ShipClass, Is.EqualTo(ShipClass.HeroStrikecraft));
-            Assert.That(luke.CombatSpeed, Is.EqualTo(78f));
-            Assert.That(luke.CruiseSpeed, Is.EqualTo(68f));
+            Assert.That(luke.CombatSpeed, Is.EqualTo(101.4f));
+            Assert.That(luke.CruiseSpeed, Is.EqualTo(88.4f));
             Assert.That(luke.WeaponLoadout.Select(weapon => (weapon.WeaponType, weapon.Count)), Is.EquivalentTo(new[]
             {
                 (WeaponType.LukeSkywalkerLaser, 4), (WeaponType.RedSquadronEscortLaser, 20)

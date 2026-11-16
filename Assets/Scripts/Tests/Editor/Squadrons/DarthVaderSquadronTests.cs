@@ -81,8 +81,8 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(vader.CruiseSpeed, Is.LessThan(republic.CruiseSpeed), hero);
                 Assert.That(vader.CombatSpeed, Is.LessThan(republic.CombatSpeed), hero);
             }
-            Assert.That(vader.CruiseSpeed, Is.EqualTo(58f));
-            Assert.That(vader.CombatSpeed, Is.EqualTo(66f));
+            Assert.That(vader.CruiseSpeed, Is.EqualTo(75.4f));
+            Assert.That(vader.CombatSpeed, Is.EqualTo(85.8f));
         }
 
         [Test]

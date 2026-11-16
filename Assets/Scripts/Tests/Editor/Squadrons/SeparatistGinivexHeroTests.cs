@@ -17,8 +17,8 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Squadrons")]
     public sealed class SeparatistGinivexHeroTests
     {
-        [TestCase(SquadronType.AsajjVentressGinivex, WeaponType.AsajjVentressLaser, 2800f, 1400f, 58f, 64f)]
-        [TestCase(SquadronType.SevranceTannGinivex, WeaponType.SevranceTannLaser, 3000f, 1200f, 56f, 60f)]
+        [TestCase(SquadronType.AsajjVentressGinivex, WeaponType.AsajjVentressLaser, 2800f, 1400f, 75.4f, 83.2f)]
+        [TestCase(SquadronType.SevranceTannGinivex, WeaponType.SevranceTannLaser, 3000f, 1200f, 72.8f, 78f)]
         public void Heroes_AreUniqueSeparatistSingleFightersWithoutAbilities(
             SquadronType type, WeaponType weaponType, float hull, float shields, float cruise, float combat)
         {
