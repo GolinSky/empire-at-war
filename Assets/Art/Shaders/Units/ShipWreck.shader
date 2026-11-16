@@ -75,6 +75,14 @@ Shader "EmpireAtWar/Ship Wreck"
             Cull Off
             ZWrite On
 
+            Stencil
+            {
+                Ref 4
+                WriteMask 4
+                Comp Always
+                Pass Replace
+            }
+
             HLSLPROGRAM
             #pragma target 3.5
             #pragma vertex ShipWreckPassVertex

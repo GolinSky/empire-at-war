@@ -69,6 +69,29 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(ShipWreckBuilder.FindWreckedViewPaths(), Is.Not.Empty);
         }
 
+        [TestCase("ISDIII_ISDII_diff_Material1", false)]
+        [TestCase("ISDIII_steelgirder_Material", true)]
+        public void IsdiiiWreck_AlphaClippingSurvivesMaterialRebuild(string materialName, bool alphaClip)
+        {
+            Material source = AssetDatabase.LoadAssetAtPath<Material>(
+                $"Assets/Art/Materials/Models/EmpireShips/ISDIII/{materialName}.mat");
+            Material wreck = AssetDatabase.LoadAssetAtPath<Material>(
+                $"Assets/Art/Materials/Wrecks/Empire/ISDIII/{materialName}_Wreck.mat");
+            Assert.That(source, Is.Not.Null);
+            Assert.That(wreck, Is.Not.Null);
+            Assert.That(wreck.IsKeywordEnabled("_ALPHATEST_ON"), Is.EqualTo(alphaClip));
+
+            Material rebuilt = new Material(source) { shader = wreck.shader };
+            try
+            {
+                Assert.That(rebuilt.IsKeywordEnabled("_ALPHATEST_ON"), Is.EqualTo(alphaClip));
+            }
+            finally
+            {
+                Object.DestroyImmediate(rebuilt);
+            }
+        }
+
         [TestCaseSource(nameof(WreckedViews))]
         public void Wreck_MatchesViewScaleAndMeshes(string viewPath)
         {

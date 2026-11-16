@@ -97,6 +97,9 @@
 
 ### Optimization
 
+- [ ] **Fix confirmed custom-shader defects, then measure shader optimizations** → [[TODOs/Optimization/Custom_Shader_Fixes_Plan|Custom Shader Fixes Plan]]; [[Artifacts/Audits/Custom_Shader_Audit_2026-11-16|November 16 shader audit]]
+  - 2026-11-16: Phases 1–2 resolved: hazard flash guard, wreck noise skip, local soft-particle variant + orthographic depth, wreck zone stencil and ISD III hull alpha fix. User kept rim/fog fade. Compiled output rejected planet/decor edits; 30 targeted D3D stages compiled cleanly. Tests not run. Latest C# compilation succeeds; Phase 3 Windows/D3D11 Player baseline/captures and visual acceptance remain.
+
 
 - [ ] **Remove recurring allocations and redundant scans; gate Jobs/Burst candidates behind captures** → [[TODOs/Optimization/CPU_Allocation_And_Jobs_Plan|CPU Allocation and Jobs Plan]]
   - 2026-11-14 · Phases 1–2, Phase 3 scan/HUD work and Phase 5 loading/editor work committed; independent source review found no actionable correctness regressions. Last Unity compilation reports no errors; committed diff check clean. Tests not run; coverage gaps and matched Editor/Development Player captures remain. Replicated-state timer design and measured Jobs/Burst candidates remain active.

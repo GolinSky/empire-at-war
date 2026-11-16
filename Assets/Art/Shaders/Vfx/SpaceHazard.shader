@@ -85,8 +85,12 @@ Shader "EmpireAtWar/SpaceHazard"
                 float ridge = 1 - abs(SAMPLE_TEXTURE2D(_Noise, sampler_Noise, (w + t * (2 / 1.1)) / 8).b * 2 - 1);
                 float filament = pow(saturate(ridge), 18) * smoothstep(0.45, 0.75, fine) * _Ion *
                     (0.6 + 0.4 * sin(_Time.y * 3 + n * 20)) * 2;
-                float2 toFlash = p - _Flash.xy;
-                float flash = _Flash.w * exp(-dot(toFlash, toFlash) / (_Flash.z * _Flash.z));
+                float flash = 0;
+                if (_Flash.w > 0)
+                {
+                    float2 toFlash = p - _Flash.xy;
+                    flash = _Flash.w * exp(-dot(toFlash, toFlash) / (_Flash.z * _Flash.z));
+                }
                 float sparkle = pow(saturate(SAMPLE_TEXTURE2D(_Noise, sampler_Noise, p * (0.09 / 8)).a), 14) * (1 - _Ion) * 1.5;
                 col += _AccentColor.rgb * (filament * 1.4 + flash) + sparkle;
 

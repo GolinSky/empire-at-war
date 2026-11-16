@@ -23,7 +23,7 @@ Shader "EmpireAtWar/Vfx/Particle Legacy Unlit"
             #pragma vertex Vert
             #pragma fragment Frag
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Fog.hlsl"
-            #pragma multi_compile _ SOFTPARTICLES_ON
+            #pragma shader_feature_local_fragment _ SOFTPARTICLES_ON
             #pragma shader_feature_local_fragment _ _LEGACY_ADDITIVE _LEGACY_PREMULTIPLY
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
@@ -50,7 +50,10 @@ Shader "EmpireAtWar/Vfx/Particle Legacy Unlit"
             half4 Frag(Varyings input) : SV_Target
             {
                 #if defined(SOFTPARTICLES_ON)
-                    float sceneDepth = LinearEyeDepth(SampleSceneDepth(input.positionCS.xy / _ScaledScreenParams.xy), _ZBufferParams);
+                    float rawDepth = SampleSceneDepth(GetNormalizedScreenSpaceUV(input.positionCS));
+                    float sceneDepth = IsPerspectiveProjection()
+                        ? LinearEyeDepth(rawDepth, _ZBufferParams)
+                        : LinearDepthToEyeDepth(rawDepth);
                     input.color.a *= saturate(_InvFade * (sceneDepth - input.eyeDepth));
                 #endif
                 half4 color = input.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);

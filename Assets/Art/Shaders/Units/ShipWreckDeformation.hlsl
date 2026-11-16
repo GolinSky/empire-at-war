@@ -137,12 +137,15 @@ half ClipWreck(float3 restPositionOS, float interpolatedPart, float2 uv)
     clip(GetWreckAge());
     clip(0.001 - abs(interpolatedPart - round(interpolatedPart)));
 
+    float progress = GetWreckDissolveProgress(round(interpolatedPart));
+    if (progress == 0.0)
+        return 0.0h;
+
     float3 noisePosition = restPositionOS * GetObjectScale() * _WreckDissolveNoiseScale;
     float noise = WreckValueNoise(noisePosition) * 0.65 + WreckValueNoise(noisePosition * 2.7) * 0.35;
-    float progress = GetWreckDissolveProgress(round(interpolatedPart));
     float remaining = noise - progress * 1.01;
     clip(remaining);
-    return progress > 0.0 ? 1.0h - saturate(remaining / max(_WreckDissolveEdgeWidth, 0.001)) : 0.0h;
+    return 1.0h - saturate(remaining / max(_WreckDissolveEdgeWidth, 0.001));
 }
 
 // Heat left by the explosion: 1 at the swap, cooling to 0 over the glow duration.

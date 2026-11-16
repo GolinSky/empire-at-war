@@ -230,3 +230,14 @@ tags:
 - Advance clocks only after the same transition was displayed in the previous frame and remains eligible; a long first frame or returning HUD must not consume unseen notifications.
 - Cache event positions independently of facility transforms. Subscribe to every capture source; reset pools/state on map-source changes and unsubscribe/release on scope disposal.
 - Source/Unity compilation verified; zero-allocation target and CPU budget remain unmeasured. Matched workload acceptance → [[Done/Features/Structure_Status_Icons_Plan]].
+
+### Custom shader fixes · 2026-11-16
+
+- Disabled hazard flash uses zero strength and may have zero radius: evaluate its Gaussian only when `_Flash.w > 0`; otherwise contribute zero.
+- `ClipWreck` must preserve alpha, appearance-time and torn-triangle clipping before its zero-dissolve early return. At zero progress, nonnegative value noise cannot discard a pixel; all four passes share this include.
+- Wreck Forward writes stencil bit 4 (`WriteMask 4`) to hide capture/reinforcement markers behind visible hulls; preserve outline bit 8. User retained wreck team rim and current fog-grid minification.
+- Particle compatibility uses material-local fragment `SOFTPARTICLES_ON`; preserve material-authored keyword retention and legacy blend math. Convert depth by perspective/orthographic projection, as in `TurbolaserBolt`.
+- Inspect compiled code before removing apparent duplicate work: Coruscant D3D already removes overwritten colour/emission but retains mesh base alpha/smoothness. Decor `_CLUSTER_LIGHT_LOOP` changes main-light attenuation and must remain.
+- Alpha clipping on an all-zero-alpha opaque hull discards the whole surface: cleared the ISD III `ISDII_diff_Material1_Wreck` keyword; retained mixed-alpha steelgirder cutouts. Check actual texture alpha/import settings before keyword cleanup.
+- Source/import and 30 targeted D3D stage compilations verified; tests/render acceptance/Player measurements not run. Latest C# compilation succeeded; Windows/D3D11 Player experiments remain active. Owner/evidence → [[TODOs/Optimization/Custom_Shader_Fixes_Plan]].
+- Clear the same stale alpha keyword on the source hull material: `ShipWreckBuilder` copies source materials before assigning the wreck shader, which can reactivate a formerly invalid keyword. Health regression covers saved and rebuilt hull/girder keyword states; authored, not run.
