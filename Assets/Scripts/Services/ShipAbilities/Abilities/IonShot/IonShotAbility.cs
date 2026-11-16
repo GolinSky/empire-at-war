@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class IonShotAbility : IPhasedShipAbility, ITargetedShipAbility
+    public sealed class IonShotAbility : IAdvancingShipAbility, ITargetedShipAbility, IShipAbilityInterruptionPolicy
     {
         private readonly IonShotSettings _settings;
         private readonly BoltFlightBatch _boltFlights;
@@ -24,6 +24,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public bool IsComplete => _complete;
         public bool SurvivesCasterDeath => true;
+        public bool SurvivesHazardSuppression => true;
 
         public IonShotAbility(IonShotSettings settings, BoltFlightBatch boltFlights)
         {

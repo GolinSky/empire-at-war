@@ -11,7 +11,7 @@ using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class FighterCoordinationAbility : IPhasedShipAbility, IReplicaPersistentShipAbility
+    public sealed class FighterCoordinationAbility : ICompletableShipAbility, IReplicaPersistentShipAbility
     {
         private readonly IEntityLocator _entities;
         private readonly FighterCoordinationSettings _settings;
@@ -21,7 +21,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         private CombatModifiers _casterModifiers;
 
         public bool IsComplete => _commandArray.IsDestroyed || _casterModifiers.AbilitiesSuppressed;
-        public bool SurvivesCasterDeath => false;
 
         public FighterCoordinationAbility(IEntityLocator entities, FighterCoordinationSettings settings,
             IPlayerRelations relations)
@@ -33,8 +32,9 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
-            _commandArray = caster.Health.GetShipUnits(HardPointType.CommandArray)
-                .First(point => point.HardPointType == HardPointType.CommandArray && !point.IsDestroyed);
+            HardPointType subsystem = _settings.RequiredSubsystem;
+            _commandArray = caster.Health.GetShipUnits(subsystem)
+                .First(point => point.HardPointType == subsystem && !point.IsDestroyed);
             _casterModifiers = caster.Modifiers;
             foreach (IEntity entity in _entities.Entities)
             {
@@ -51,8 +51,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
                 _affected.Add(modifiers);
             }
         }
-
-        public void Advance(float deltaTime) { }
 
         public void Stop()
         {

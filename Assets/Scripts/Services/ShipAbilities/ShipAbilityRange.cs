@@ -17,14 +17,17 @@ namespace EmpireAtWar.Services.ShipAbilities
         public static bool IsInRange(Vector3 casterPosition, float casterRadius, IEntity target, float range)
         {
             Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
-            float contactRange = (casterRadius + FootprintRadius(target)) * CONTACT_RANGE_FACTOR;
-            return PlanarGeometry.Distance(casterPosition, targetPosition) <= Mathf.Max(range, contactRange);
+            return PlanarGeometry.Distance(casterPosition, targetPosition) <=
+                MaximumDistance(casterRadius, FootprintRadius(target), range);
         }
 
         public static bool IsInRange(IShipAbilityFacade caster, IEntity target, float range) =>
             IsInRange(caster.WorldPosition, FootprintRadius(caster.Entity), target, range);
 
-        private static float FootprintRadius(IEntity entity) =>
+        internal static float MaximumDistance(float casterRadius, float targetRadius, float range) =>
+            Mathf.Max(range, (casterRadius + targetRadius) * CONTACT_RANGE_FACTOR);
+
+        internal static float FootprintRadius(IEntity entity) =>
             entity.TryGetFacade(out INavigationFootprintFacade footprint) ? footprint.NavigationRadius : 0f;
     }
 }

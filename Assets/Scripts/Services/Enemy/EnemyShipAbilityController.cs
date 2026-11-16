@@ -5,7 +5,6 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Services.ShipAbilities;
-using EmpireAtWar.Services.Vision;
 using UnityEngine;
 using VContainer;
 using EmpireAtWar.Lifecycle;
@@ -23,7 +22,6 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IEntityLocator _entities;
         private readonly IEnemyAiStateProvider _state;
         private readonly IPlayerRelations _relations;
-        private readonly IVisionService _vision;
         private readonly SimulationModel _simulation;
 
         private readonly PlayerSlot _owner;
@@ -44,7 +42,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public EnemyShipAbilityController(IEntityLocator entities,
             IEnemyAiStateProvider state, IPlayerRelations relations,
-            ShipAbilityService shipAbilityService, IVisionService vision,
+            ShipAbilityService shipAbilityService,
             PlayerSlot owner, ShipAbilityAutoUse autoUse, SimulationModel simulation = null)
         {
             _owner = owner;
@@ -53,7 +51,6 @@ namespace EmpireAtWar.Services.Enemy
             _relations = relations;
             _shipAbilityService = shipAbilityService;
             _autoUse = autoUse;
-            _vision = vision;
             _simulation = simulation;
         }
 
@@ -129,20 +126,20 @@ namespace EmpireAtWar.Services.Enemy
                     _shipAbilityService.TryActivate(caster, slot.Id, null);
                 return;
             }
-            float searchRange = definition.AiUse == ShipAbilityAiUse.Defensive
-                ? caster.RadarRange :
-                definition.RequiresEnemyTarget ? definition.Range : caster.RadarRange;
-            CollectTargets(caster, searchRange);
             if (definition.AiUse == ShipAbilityAiUse.Defensive &&
-                (caster.Health.ShieldPercentage >= profile.RetreatShieldThreshold ||
-                 _targets.Count == 0)) return;
+                caster.Health.ShieldPercentage >= profile.RetreatShieldThreshold) return;
             if (definition.AiUse == ShipAbilityAiUse.Escape &&
                 _state.CurrentState != EnemyStrategicState.RetreatValue) return;
-            if (definition.AiUse == ShipAbilityAiUse.Offensive && _targets.Count == 0) return;
+            if (definition.AiUse == ShipAbilityAiUse.Defensive ||
+                definition.AiUse == ShipAbilityAiUse.Offensive && !definition.RequiresEnemyTarget)
+            {
+                CollectTargets(caster, definition, inAbilityRange: false);
+                if (_targets.Count == 0) return;
+            }
 
             if (definition.RequiresEnemyTarget)
             {
-                CollectTargets(caster, definition.Range);
+                CollectTargets(caster, definition, inAbilityRange: true);
                 // Target eligibility differs by ability; a rejected preferred target must not block the rest.
                 while (_targets.Count > 0)
                 {
@@ -156,19 +153,22 @@ namespace EmpireAtWar.Services.Enemy
             _shipAbilityService.TryActivate(caster, slot.Id, null);
         }
 
-        private void CollectTargets(IShipAbilityFacade caster, float range)
+        private void CollectTargets(IShipAbilityFacade caster, ShipAbilityDefinition definition, bool inAbilityRange)
         {
             _targets.Clear();
             foreach (IEntity entity in _hostiles)
             {
                 if (!_entities.TryGetEntity(entity.Id, out IEntity current) ||
-                    !ReferenceEquals(current, entity) || entity.HealthModel.IsDestroyed || entity.IsCloaked())
-                    continue;
-                Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                if (!_vision.IsVisible(_owner.Id, position) ||
-                    PlanarGeometry.Distance(caster.WorldPosition, position) > range)
-                    continue;
-                _targets.Add(entity);
+                    !ReferenceEquals(current, entity)) continue;
+                if (inAbilityRange)
+                {
+                    if (_shipAbilityService.CanTarget(caster, definition, entity) &&
+                        ShipAbilityRange.IsInRange(caster, entity, definition.Range)) _targets.Add(entity);
+                }
+                else if (_shipAbilityService.IsVisibleHostile(_owner.Id, entity) &&
+                         PlanarGeometry.Distance(caster.WorldPosition,
+                             entity.GetFacade<IEntityTransformFacade>().Transform.position) <= caster.RadarRange)
+                    _targets.Add(entity);
             }
         }
 

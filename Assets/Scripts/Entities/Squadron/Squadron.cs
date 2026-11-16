@@ -474,8 +474,7 @@ namespace EmpireAtWar.Entities.Squadrons
                 return;
             }
 
-            Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
-            if (PlanarGeometry.Distance(_abilityCaster.WorldPosition, targetPosition) > _pendingAbilityRange) return;
+            if (!ShipAbilityRange.IsInRange(_abilityCaster, target, _pendingAbilityRange)) return;
             // The squadron keeps engaging the target after the cast.
             _orders.Replace(UnitOrderType.Attack, target: target);
             _abilities.TryActivate(_abilityCaster, _pendingAbilityId, target);

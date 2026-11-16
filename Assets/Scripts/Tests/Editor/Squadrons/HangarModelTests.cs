@@ -7,6 +7,8 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Networking;
+using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEngine;
@@ -39,7 +41,8 @@ namespace EmpireAtWar.Tests.Editor
                 if (individualBay) SetField(component, "bayHardPoints", new[] { hardPoint });
                 var model = new HangarModel(data);
                 typeof(HangarComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Invoke(component, new object[] { data, healthComponent, model, null, null, default(PlayerId), 0L });
+                    .Invoke(component, new object[] { data, healthComponent, model, null, null, default(PlayerId), 0L,
+                        new OfflineSession(TestPlayers.Human) });
                 component.Initialize();
                 Assert.That(model.TryLaunch(INITIAL_DELAY, out _), Is.True);
                 hardPointModel.ApplyDamage(hardPointModel.MaxHealth);
@@ -62,6 +65,40 @@ namespace EmpireAtWar.Tests.Editor
             {
                 component.Release();
                 adapter.Dispose();
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        [TestCase(false, false, true)]
+        [TestCase(true, false, false)]
+        [TestCase(true, true, true)]
+        public void ReplacementRequest_UsesLaunchBudgetOnlyOnAuthority(bool authority, bool launchBudgetOpen,
+            bool canRequest)
+        {
+            var root = new GameObject("Replacement request test");
+            try
+            {
+                var data = new TestHangarData(new HangarBay(SquadronType.Delta7, 3, 1));
+                var model = new HangarModel(data);
+                Assert.That(model.TryLaunch(INITIAL_DELAY, out _), Is.True);
+                model.SquadronLost(0);
+                var component = root.AddComponent<HangarComponent>();
+                ISquadronLaunchSlots launchSlots = launchBudgetOpen
+                    ? new SquadronLaunchSlots()
+                    : new ClosedSquadronLaunchSlots();
+                typeof(HangarComponent).GetMethod("Construct", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(component, new object[] { data, null, model, null, launchSlots, TestPlayers.Human, 0L,
+                        new OnlineSession(authority, TestPlayers.Human) });
+
+                Assert.That(component.CanRequestReplacement, Is.EqualTo(canRequest));
+                if (!authority)
+                {
+                    Assert.That(component.TryLaunchReplacement(), Is.False);
+                    Assert.That(model.GetReserve(0), Is.EqualTo(2));
+                }
+            }
+            finally
+            {
                 Object.DestroyImmediate(root);
             }
         }

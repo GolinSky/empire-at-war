@@ -12,6 +12,7 @@ using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.BattleNotifications;
@@ -35,7 +36,9 @@ namespace EmpireAtWar.Tests.Editor
                 ShipSfxSources sources = root.AddComponent<ShipSfxSources>();
                 AudioSource voice = root.AddComponent<AudioSource>();
                 SetField(sources, "voice", voice);
-                ShipAbilityService abilities = new ShipAbilityService(null, TestPlayers.CreateDuel());
+                var relations = TestPlayers.CreateDuel();
+                ShipAbilityService abilities = new ShipAbilityService(null, relations,
+                    new VisionService(relations, fogEnabled: false));
                 InterfaceSfxService service = new InterfaceSfxService(data, shipData, sources);
                 AbilityTargetingSfx targeting = new AbilityTargetingSfx(abilities, service,
                     TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()));

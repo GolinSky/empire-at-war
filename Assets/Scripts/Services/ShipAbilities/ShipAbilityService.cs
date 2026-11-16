@@ -8,6 +8,7 @@ using VContainer;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Services.PlayerCommands;
+using EmpireAtWar.Services.Vision;
 
 namespace EmpireAtWar.Services.ShipAbilities
 {
@@ -19,6 +20,7 @@ namespace EmpireAtWar.Services.ShipAbilities
     {
         private readonly IShipAbilityFactory _shipAbilityFactory;
         private readonly IPlayerRelations _relations;
+        private readonly IVisionService _vision;
 
         private readonly List<ShipAbilitySlot> _running = new List<ShipAbilitySlot>();
         private readonly List<IEntity> _pendingCasters = new List<IEntity>();
@@ -39,20 +41,22 @@ namespace EmpireAtWar.Services.ShipAbilities
         public IReadOnlyList<IEntity> PendingCasters => _pendingCasters;
 
         /// <summary>Standalone: player requests execute at once on this instance.</summary>
-        public ShipAbilityService(IShipAbilityFactory shipAbilityFactory, IPlayerRelations relations)
+        public ShipAbilityService(IShipAbilityFactory shipAbilityFactory, IPlayerRelations relations, IVisionService vision)
         {
             _shipAbilityFactory = shipAbilityFactory;
             _relations = relations;
+            _vision = vision;
             _requestExecution = Execute;
         }
 
         /// <summary>Battle: player requests become <see cref="ShipAbilityCommand"/>s from the local player.</summary>
         [Inject]
-        public ShipAbilityService(IShipAbilityFactory shipAbilityFactory, IPlayerRelations relations,
+        public ShipAbilityService(IShipAbilityFactory shipAbilityFactory, IPlayerRelations relations, IVisionService vision,
             IPlayerCommandSink commands, ILocalPlayer localPlayer, PlayerCommandHandlers commandHandlers)
         {
             _shipAbilityFactory = shipAbilityFactory;
             _relations = relations;
+            _vision = vision;
             _commandHandlers = commandHandlers;
             _requestExecution = (casters, id, target, cancel) =>
                 commands.Submit(ShipAbilityCommand.Create(localPlayer.Id, id, casters, target, cancel));
@@ -129,9 +133,10 @@ namespace EmpireAtWar.Services.ShipAbilities
             if (!IsWaitingForTarget) return false;
             for (int i = 0; i < _pendingCasters.Count; i++)
             {
-                // Out-of-range casters still count: SubmitTarget sends them to the target.
-                if (_pendingCasters[i].TryGetFacade(out IShipAbilityFacade command) &&
-                    TryFindUsableSlot(command, PendingAbilityId, target, out _))
+                IEntity entity = _pendingCasters[i];
+                if (entity.TryGetFacade(out IShipAbilityFacade command) &&
+                    TryFindUsableSlot(command, PendingAbilityId, target, out ShipAbilitySlot slot) &&
+                    (IsInRange(slot, target) || entity.TryGetFacade(out IShipAbilityCastFacade _)))
                     return true;
             }
             return false;
@@ -140,15 +145,7 @@ namespace EmpireAtWar.Services.ShipAbilities
         public void SubmitTarget(IEntity target)
         {
             if (!IsWaitingForTarget) return;
-            bool accepted = false;
-            for (int i = 0; i < _pendingCasters.Count && !accepted; i++)
-            {
-                if (!_pendingCasters[i].TryGetFacade(out IShipAbilityFacade command)) continue;
-                accepted = CanActivateNow(command, PendingAbilityId, target) ||
-                    TryFindUsableSlot(command, PendingAbilityId, target, out _) &&
-                    _pendingCasters[i].TryGetFacade(out IShipAbilityCastFacade _);
-            }
-            if (!accepted)
+            if (!IsValidTarget(target))
             {
                 TargetRejected?.Invoke(_pendingCasters);
                 return;
@@ -173,10 +170,9 @@ namespace EmpireAtWar.Services.ShipAbilities
                     continue;
                 }
 
-                if (TryActivate(command, id, target) || target == null) continue;
-                // Out-of-range casters fly to the target and use the ability on arrival.
-                if (TryFindUsableSlot(command, id, target, out ShipAbilitySlot slot) &&
-                    casters[i].TryGetFacade(out IShipAbilityCastFacade cast))
+                if (!TryFindUsableSlot(command, id, target, out ShipAbilitySlot slot)) continue;
+                if (IsInRange(slot, target)) Activate(slot, target);
+                else if (casters[i].TryGetFacade(out IShipAbilityCastFacade cast))
                     cast.CastAbility(id, target, slot.Definition.Range);
             }
         }
@@ -194,14 +190,13 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         private bool CanCancel(IShipAbilityFacade caster, ShipAbilityId id) =>
             TryFindSlot(caster, id, out ShipAbilitySlot slot) &&
-            slot.State == ShipAbilityState.Active && slot.Definition.CanCancel;
+            slot.CanCancel;
 
-        private bool CanActivateNow(IShipAbilityFacade caster, ShipAbilityId id, IEntity target)
-        {
-            if (!TryFindUsableSlot(caster, id, target, out ShipAbilitySlot slot)) return false;
-            return !slot.Definition.RequiresEnemyTarget ||
-                ShipAbilityRange.IsInRange(caster, target, slot.Definition.Range);
-        }
+        private bool CanActivateNow(IShipAbilityFacade caster, ShipAbilityId id, IEntity target) =>
+            TryFindUsableSlot(caster, id, target, out ShipAbilitySlot slot) && IsInRange(slot, target);
+
+        private static bool IsInRange(ShipAbilitySlot slot, IEntity target) =>
+            !slot.Definition.RequiresEnemyTarget || ShipAbilityRange.IsInRange(slot.Owner, target, slot.Definition.Range);
 
         public void CancelTargeting()
         {
@@ -271,14 +266,15 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         public bool TryActivate(IShipAbilityFacade caster, ShipAbilityId id, IEntity target)
         {
-            if (!TryFindUsableSlot(caster, id, target, out ShipAbilitySlot slot)) return false;
-            ShipAbilityDefinition definition = slot.Definition;
-            if (definition.RequiresEnemyTarget && !ShipAbilityRange.IsInRange(caster, target, definition.Range))
-                return false;
-
-            Start(slot, caster, target);
-            Activated?.Invoke(caster, id, target);
+            if (!TryFindUsableSlot(caster, id, target, out ShipAbilitySlot slot) || !IsInRange(slot, target)) return false;
+            Activate(slot, target);
             return true;
+        }
+
+        private void Activate(ShipAbilitySlot slot, IEntity target)
+        {
+            Start(slot, slot.Owner, target);
+            Activated?.Invoke(slot.Owner, slot.Id, target);
         }
 
         /// <summary>
@@ -349,37 +345,39 @@ namespace EmpireAtWar.Services.ShipAbilities
                 // Baselines do not replay transient phases. Only the host decides when their active state ends.
                 if (slot.IsReplicaState)
                 {
-                    if (slot.RunningAbility is IPhasedShipAbility replica && !replica.IsComplete)
+                    if (slot.RunningAbility is IAdvancingShipAbility replica && !replica.IsComplete)
                         replica.Advance(deltaTime);
                     slot.Elapse(deltaTime);
                     continue;
                 }
-                if (slot.Owner.Health.IsDestroyed &&
-                    !(slot.State == ShipAbilityState.Active && slot.RunningAbility is IPhasedShipAbility persistent && persistent.SurvivesCasterDeath))
+                var completion = slot.RunningAbility as ICompletableShipAbility;
+                var interruption = slot.RunningAbility as IShipAbilityInterruptionPolicy;
+                if (slot.Owner.Health.IsDestroyed && (interruption == null || !interruption.SurvivesCasterDeath))
                 {
                     if (slot.State == ShipAbilityState.Active) Stop(slot);
                     _running.RemoveAt(i);
                     continue;
                 }
 
-                if (slot.State == ShipAbilityState.Active && slot.Owner.Modifiers.AbilitiesSuppressed &&
-                    (!(slot.RunningAbility is IPhasedShipAbility) ||
-                     slot.Owner.Modifiers.IsAbilitySuppressed &&
-                     !((IPhasedShipAbility)slot.RunningAbility).SurvivesCasterDeath))
+                var modifiers = slot.Owner.Modifiers;
+                // Completable effects decide how ion disable affects their current phase.
+                if (slot.State == ShipAbilityState.Active &&
+                    (modifiers.IsIonDisabled && completion == null ||
+                     modifiers.IsAbilitySuppressed && (interruption == null || !interruption.SurvivesHazardSuppression)))
                 {
                     Stop(slot);
                     continue;
                 }
 
-                if (slot.State == ShipAbilityState.Active && slot.RunningAbility is IPhasedShipAbility phased)
+                if (slot.State == ShipAbilityState.Active && completion != null)
                 {
-                    if (phased.IsComplete)
+                    bool complete = completion.IsComplete;
+                    if (!complete && completion is IAdvancingShipAbility advancing)
                     {
-                        Stop(slot);
-                        continue;
+                        advancing.Advance(deltaTime);
+                        complete = advancing.IsComplete;
                     }
-                    phased.Advance(deltaTime);
-                    if (phased.IsComplete)
+                    if (complete)
                     {
                         Stop(slot);
                         continue;
@@ -413,16 +411,18 @@ namespace EmpireAtWar.Services.ShipAbilities
         }
 
         private bool TryFindUsableSlot(IShipAbilityFacade caster, ShipAbilityId id, IEntity target,
-            out ShipAbilitySlot slot)
-        {
-            slot = null;
-            if (caster.Modifiers.IsCloaked && id != ShipAbilityId.Cloak) return false;
-            if (!TryFindSlot(caster, id, out slot) || !slot.CanActivate) return false;
-            return !slot.Definition.RequiresEnemyTarget ||
-                   (target != null && !target.HealthModel.IsDestroyed && !target.IsCloaked() &&
-                    _relations.IsHostile(caster.Entity.Owner, target.Owner) &&
-                    (!(slot.Definition.Settings is IShipAbilityTargetRule rule) || rule.CanTarget(caster, target)));
-        }
+            out ShipAbilitySlot slot) =>
+            TryFindSlot(caster, id, out slot) && slot.CanActivate &&
+            (!slot.Definition.RequiresEnemyTarget || CanTarget(caster, slot.Definition, target));
+
+        public bool CanTarget(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target) =>
+            IsVisibleHostile(caster.Entity.Owner, target) &&
+            (!(definition.Settings is IShipAbilityTargetRule rule) || rule.CanTarget(caster, target));
+
+        public bool IsVisibleHostile(PlayerId viewer, IEntity target) =>
+            target != null && !target.HealthModel.IsDestroyed && !target.IsCloaked() &&
+            _relations.IsHostile(viewer, target.Owner) &&
+            (!_vision.FogEnabled || _vision.IsVisible(viewer, target.GetFacade<IEntityTransformFacade>().Transform.position));
 
         private static bool TryFindSlot(IShipAbilityFacade caster, ShipAbilityId id, out ShipAbilitySlot slot)
         {

@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public abstract class SustainedBeamAbility : IPhasedShipAbility, ITargetedShipAbility, IReplicaPersistentShipAbility
+    public abstract class SustainedBeamAbility : IAdvancingShipAbility, ITargetedShipAbility, IReplicaPersistentShipAbility
     {
         private const float DAMAGE_TICK_INTERVAL = 0.2f;
         private readonly ImpactEffectPresenter _impactPresenter;
@@ -38,21 +38,18 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
         public bool IsComplete => _timeLeft <= 0f || _target.HealthModel.IsDestroyed ||
             _target.IsCloaked() || _caster.Modifiers.AbilitiesSuppressed;
-        public bool SurvivesCasterDeath => false;
 
         protected abstract Transform GetMuzzle(IShipAbilityFacade caster);
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
-            // Resolve the beam prefab first: a wrong prefab must fail before anything is spawned.
-            BeamShot beamPrefab = (BeamShot)_profile.ShotPrefab;
             _caster = caster;
             _target = target;
             _health = target.GetFacade<IHealthFacade>();
             _timeLeft = definition.Duration;
             _damagePerSecond = _damage / definition.Duration;
             _pendingTime = 0f;
-            _view = Object.Instantiate(beamPrefab);
+            _view = Object.Instantiate(_profile.BeamPrefab);
             _view.PrepareImpact(_impactPresenter, target.HealthModel, _damageType, _damage, 1.5f, true);
             _view.PlayBeam(GetMuzzle(caster), target.GetFacade<IEntityTransformFacade>().Transform,
                 definition.Duration, _profile);

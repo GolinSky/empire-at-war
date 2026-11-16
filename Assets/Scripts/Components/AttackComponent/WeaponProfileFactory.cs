@@ -29,18 +29,19 @@ namespace EmpireAtWar.Components.AttackComponent
             // Squadrons aim by flying, so their weapons never turn.
             float turnRate = family.Platform == WeaponPlatform.Squadron ? 0f : family.TurnRate * caliberTurnRate;
 
-            ShotEffect shotPrefab = barrels > 1 && family.MultiBarrelShotPrefab != null
-                ? family.MultiBarrelShotPrefab
-                : family.ShotPrefab;
+            ShotEffect shotPrefab = barrels > 1 ? family.MultiBarrelShotPrefab : null;
             if (definition.Mount == WeaponMount.Quad && family.QuadShotPrefab != null)
                 shotPrefab = family.QuadShotPrefab;
             if (definition.Mount == WeaponMount.Octuple && family.OctupleShotPrefab != null)
                 shotPrefab = family.OctupleShotPrefab;
+            BeamShot beamPrefab = shotPrefab == null ? family.BeamPrefab : null;
+            if (shotPrefab == null) shotPrefab = family.ShotPrefab;
             float projectileSpeed = family.ProjectileSpeed;
             Vector3 size = family.Size;
             if (definition.OverrideVisual)
             {
                 shotPrefab = definition.ShotPrefab;
+                beamPrefab = definition.BeamPrefab;
                 projectileSpeed = definition.ProjectileSpeed;
                 size = definition.Size;
             }
@@ -65,7 +66,7 @@ namespace EmpireAtWar.Components.AttackComponent
             return new WeaponProfile(definition.WeaponType, definition.DisplayName, family.Family, family.DamageType,
                 damage, shots, interval, reload, range, family.StrikecraftOnly, family.Interceptable, shotPrefab,
                 projectileSpeed, color, size, usesFactionColor, family.TargetSizeBias && hasCaliber, caliber.DamageBias,
-                caliber.AccuracyBias, turnRate, family.PreferredTarget);
+                caliber.AccuracyBias, turnRate, family.PreferredTarget, beamPrefab);
         }
     }
 }

@@ -89,8 +89,9 @@ namespace EmpireAtWar.Tests.Movement
             GameObject fighterObject = new GameObject("Near fighter");
             GameObject capitalObject = new GameObject("Far capital");
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            var abilityRelations = TestPlayers.CreateDuel();
             ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
-                TestPlayers.CreateDuel());
+                abilityRelations, new VisionService(abilityRelations, fogEnabled: false));
             try
             {
                 deadObject.transform.position = new Vector3(0f, 0f, 150f);
@@ -262,8 +263,9 @@ namespace EmpireAtWar.Tests.Movement
         public void Attack_TargetKilled_NoRadarContactGoesIdle()
         {
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            var abilityRelations = TestPlayers.CreateDuel();
             ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
-                TestPlayers.CreateDuel());
+                abilityRelations, new VisionService(abilityRelations, fogEnabled: false));
             Radar radar = new Radar();
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
@@ -689,8 +691,9 @@ namespace EmpireAtWar.Tests.Movement
         {
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
             RecordingAbility ability = new RecordingAbility();
+            var abilityRelations = TestPlayers.CreateDuel();
             ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(ability),
-                TestPlayers.CreateDuel());
+                abilityRelations, new VisionService(abilityRelations, fogEnabled: false));
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
             _orderSettings = ScriptableObject.CreateInstance<UnitOrderSettings>();
@@ -716,8 +719,9 @@ namespace EmpireAtWar.Tests.Movement
         public void Guard_RepeatedExplicitOrderCancelsCloak()
         {
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.Cloak);
+            var abilityRelations = TestPlayers.CreateDuel();
             ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new CloakAbility()),
-                TestPlayers.CreateDuel());
+                abilityRelations, new VisionService(abilityRelations, fogEnabled: false));
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
             _orderSettings = ScriptableObject.CreateInstance<UnitOrderSettings>();
@@ -742,8 +746,9 @@ namespace EmpireAtWar.Tests.Movement
         public void AttackMove_SameDestinationNewEngagementReplacesMembership()
         {
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            var abilityRelations = TestPlayers.CreateDuel();
             ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
-                TestPlayers.CreateDuel());
+                abilityRelations, new VisionService(abilityRelations, fogEnabled: false));
             Radar radar = new Radar();
             AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
@@ -778,6 +783,9 @@ namespace EmpireAtWar.Tests.Movement
                 Entity = entity;
                 _movement = movement;
                 ShipAbilityDefinition definition = new ShipAbilityDefinition();
+                typeof(ShipAbilityDefinition).GetField("settings", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .SetValue(definition, id == ShipAbilityId.Cloak
+                        ? (ShipAbilitySettings)new CloakSettings() : new BoostEnginePowerSettings());
                 typeof(ShipAbilityDefinition).GetField("canCancel", BindingFlags.NonPublic | BindingFlags.Instance)
                     .SetValue(definition, true);
                 Slots = new[] { new ShipAbilitySlot(this, definition, id) };

@@ -36,6 +36,7 @@ namespace EmpireAtWar.Components.Hangar
             new List<(ISquadron Squadron, int Bay, Action Handler)>();
         private ISquadronSpawner _squadronSpawner;
         private ISquadronLaunchSlots _launchSlots;
+        private IMatchSession _session;
 
         public event Action<ISquadron> SquadronLaunched;
 
@@ -47,12 +48,13 @@ namespace EmpireAtWar.Components.Hangar
         [Inject]
         private void Construct(IHangarData data, IHealthModelObserver health, HangarModel model,
             ISquadronSpawner squadronSpawner, ISquadronLaunchSlots launchSlots,
-            PlayerId owner, long entityId)
+            PlayerId owner, long entityId, IMatchSession session)
         {
             SetModel(model);
             _data = data;
             _squadronSpawner = squadronSpawner;
             _launchSlots = launchSlots;
+            _session = session;
             _owner = owner;
             _carrierId = entityId;
             _health = health;
@@ -191,11 +193,14 @@ namespace EmpireAtWar.Components.Hangar
 
         public ISquadron GetLaunched(int index) => _launched[index].Squadron;
 
-        public bool CanLaunchReplacement =>!_isReleased && _launchSlots.IsAvailable && Model.CanLaunchReplacement;
+        // Reserve and active bay counts live on the authority.
+        public bool CanRequestReplacement => !_isReleased &&
+            (!_session.IsAuthority || _launchSlots.IsAvailable && Model.CanLaunchReplacement);
 
         public bool TryLaunchReplacement()
         {
-            if (!CanLaunchReplacement || !Model.TryLaunchReplacement(out int bay)) return false;
+            if (_isReleased || !_session.IsAuthority || !_launchSlots.IsAvailable ||
+                !Model.TryLaunchReplacement(out int bay)) return false;
             _launchSlots.Take();
             LaunchFromBay(bay, "replacement");
             return true;

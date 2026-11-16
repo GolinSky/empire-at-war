@@ -4,13 +4,12 @@ using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class RapidDeploymentAbility : IPhasedShipAbility
+    public sealed class RapidDeploymentAbility : IAdvancingShipAbility
     {
         private IHangarCommand _hangar;
         private int _remaining;
 
         public bool IsComplete => _remaining == 0;
-        public bool SurvivesCasterDeath => false;
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {

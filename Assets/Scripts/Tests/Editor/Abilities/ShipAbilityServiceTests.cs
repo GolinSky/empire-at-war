@@ -26,6 +26,8 @@ using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.UiRouting;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.Services.Settings;
+using EmpireAtWar.Services.PlayerCommands;
+using EmpireAtWar.Services.Vision;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -39,7 +41,9 @@ namespace EmpireAtWar.Tests.Editor
         public void HazardSuppression_StopsAbilityButCooldownStillProgresses()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
             caster.Modifiers.AddAbilitySuppression();
@@ -53,26 +57,36 @@ namespace EmpireAtWar.Tests.Editor
             service.Clear();
         }
 
-        [TestCase(false)]
-        [TestCase(true)]
-        public void HazardSuppression_OnlyAllowsAlreadyFiredPhasedAbilitiesToContinue(bool fired)
+        [TestCase(false, false)]
+        [TestCase(true, true)]
+        [TestCase(false, true)]
+        [TestCase(true, false)]
+        public void HazardSuppression_UsesItsOwnSurvivalPolicy(bool survivesDeath, bool survivesSuppression)
         {
-            RecordingPhasedAbility ability = new RecordingPhasedAbility { SurvivesCasterDeath = fired };
-            ShipAbilityService service = new ShipAbilityService(new PhasedFactory(ability), TestPlayers.CreateDuel());
+            var ability = new RecordingAdvancingAbility
+            {
+                SurvivesCasterDeath = survivesDeath,
+                SurvivesHazardSuppression = survivesSuppression
+            };
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new SingleAbilityFactory(ability),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
             caster.Modifiers.AddAbilitySuppression();
             service.Advance(0.1f);
-            Assert.That(ability.AdvanceCount, Is.EqualTo(fired ? 1 : 0));
+            Assert.That(ability.AdvanceCount, Is.EqualTo(survivesSuppression ? 1 : 0));
             Assert.That(caster.Slots[0].State,
-                Is.EqualTo(fired ? ShipAbilityState.Active : ShipAbilityState.Recovering));
+                Is.EqualTo(survivesSuppression ? ShipAbilityState.Active : ShipAbilityState.Recovering));
             service.Clear();
         }
 
         [Test]
         public void TargetingFeedback_RejectsInvalidTargetAndOnlyReportsExplicitCancel()
         {
-            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster(targeted: true);
             int rejected = 0;
             int canceled = 0;
@@ -109,7 +123,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             WeaponsData weapons = UnityEditor.AssetDatabase.LoadAssetAtPath<WeaponsData>(
                 "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
-            IPhasedShipAbility beam = composite
+            SustainedBeamAbility beam = composite
                 ? new CompositeBeamAbility(new CompositeBeamSettings(), null, weapons)
                 : new ProtonBeamAbility(new ProtonBeamSettings(), null, weapons);
             FakeCommand caster = CreateCaster();
@@ -133,7 +147,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(beam.IsComplete, Is.True);
         }
 
-        private static void SetBeamField(IPhasedShipAbility beam, string name, object value) =>
+        private static void SetBeamField(SustainedBeamAbility beam, string name, object value) =>
             typeof(SustainedBeamAbility).GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).SetValue(beam, value);
 
         [TearDown]
@@ -145,8 +159,10 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void PhasedAbility_IonDisabledBeforeTick_StopsWithoutAdvancing()
         {
-            RecordingPhasedAbility ability = new RecordingPhasedAbility();
-            ShipAbilityService service = new ShipAbilityService(new PhasedFactory(ability), TestPlayers.CreateDuel());
+            RecordingAdvancingAbility ability = new RecordingAdvancingAbility();
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new SingleAbilityFactory(ability),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
             service.Advance(0.1f);
@@ -164,8 +180,10 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void PhasedAbility_ContinuesDuringIonDisable_WhenItsEffectPersists()
         {
-            RecordingPhasedAbility ability = new RecordingPhasedAbility { CancelOnIonDisable = false };
-            ShipAbilityService service = new ShipAbilityService(new PhasedFactory(ability), TestPlayers.CreateDuel());
+            RecordingAdvancingAbility ability = new RecordingAdvancingAbility { CancelOnIonDisable = false };
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new SingleAbilityFactory(ability),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
             caster.Modifiers.SetIonDisabled(true);
@@ -178,10 +196,31 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void CompletableAbility_StopsWhenCompleteWithoutTickWork()
+        {
+            var ability = new RecordingCompletableAbility();
+            var relations = TestPlayers.CreateDuel();
+            var service = new ShipAbilityService(new SingleAbilityFactory(ability),
+                relations, new VisionService(relations, fogEnabled: false));
+            FakeCommand caster = CreateCaster();
+            Assert.That(service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null), Is.True);
+
+            service.Advance(0.1f);
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+
+            ability.IsComplete = true;
+            service.Advance(0.1f);
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
+            Assert.That(ability.StopCount, Is.EqualTo(1));
+        }
+
+        [Test]
         public void PhasedAbility_CompletesDuringTick_StopsInSameTick()
         {
-            RecordingPhasedAbility ability = new RecordingPhasedAbility { CompleteOnAdvance = true };
-            ShipAbilityService service = new ShipAbilityService(new PhasedFactory(ability), TestPlayers.CreateDuel());
+            RecordingAdvancingAbility ability = new RecordingAdvancingAbility { CompleteOnAdvance = true };
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new SingleAbilityFactory(ability),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
 
@@ -223,7 +262,9 @@ namespace EmpireAtWar.Tests.Editor
         public void Activation_ProgressesThroughDurationAndRecovery()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
 
             Assert.That(service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null), Is.True);
@@ -248,7 +289,9 @@ namespace EmpireAtWar.Tests.Editor
         public void ZeroRecovery_ReactivatedAbility_ElapsesOncePerAdvance()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster(recoveryDelay: 0f);
 
             service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
@@ -266,7 +309,9 @@ namespace EmpireAtWar.Tests.Editor
         public void Cancel_StopsOnceAndEntersFullRecovery_OnlyWhenAllowed()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             service.Press(new IEntity[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
 
@@ -279,7 +324,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(factory.Created[0].StopCount, Is.EqualTo(1));
 
             FakeCommand fixedDuration = CreateCaster(canCancel: false);
-            ShipAbilityService fixedService = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            ShipAbilityService fixedService = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
             fixedService.Press(new IEntity[] { fixedDuration.Entity }, ShipAbilityId.BoostEnginePower);
             fixedService.Press(new IEntity[] { fixedDuration.Entity }, ShipAbilityId.BoostEnginePower);
             Assert.That(fixedDuration.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
@@ -290,7 +336,9 @@ namespace EmpireAtWar.Tests.Editor
         public void CasterDeath_StopsActiveAbilityOnce()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
             caster.FakeHealth.IsDestroyedValue = true;
@@ -329,7 +377,9 @@ namespace EmpireAtWar.Tests.Editor
         public void Targeting_RejectsOutOfRangeAndActivatesInRange()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
             int cancellations = 0;
             service.TargetingCanceled += _ => cancellations++;
             FakeCommand caster = CreateCaster(targeted: true);
@@ -340,18 +390,75 @@ namespace EmpireAtWar.Tests.Editor
             service.Press(new IEntity[] { caster.Entity }, ShipAbilityId.BoostEnginePower);
             Assert.That(service.IsWaitingForTarget, Is.True);
             _targetView.transform.position = Vector3.right * 11f;
-            Assert.That(service.IsValidTarget(target), Is.True);
+            Assert.That(service.IsValidTarget(target), Is.False);
             Assert.That(factory.Created, Is.Empty, "Hovering a target must not construct an ability.");
             service.SubmitTarget(target);
             Assert.That(service.IsWaitingForTarget, Is.True);
             Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
 
             _targetView.transform.position = Vector3.right * 9f;
+            Assert.That(service.IsValidTarget(target), Is.True);
             service.SubmitTarget(target);
             Assert.That(service.IsWaitingForTarget, Is.False);
             Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
             Assert.That(cancellations, Is.Zero, "An accepted target must not play the targeting-canceled cue.");
             service.LateDispose();
+        }
+
+        [Test]
+        public void AuthorityRejectsKnownTargetsHiddenFromTheCasterTeam()
+        {
+            var relations = TestPlayers.CreateDuel();
+            var vision = new VisionService(relations);
+            var factory = new FakeFactory();
+            var service = new ShipAbilityService(factory, relations, vision);
+            var caster = CreateCaster(targeted: true);
+            _targetView = new GameObject("Target");
+            _targetView.transform.position = Vector3.right * 5f;
+            var target = new FakeEntity(null, new FakeHealth(_targetView.transform), TestPlayers.Enemy, id: 2);
+            var entities = new EntityLocator();
+            entities.AddEntity(caster.Entity);
+            entities.AddEntity(target);
+            var handlers = new PlayerCommandHandlers();
+            handlers.RegisterAbilities(service);
+            var sink = new AuthorityCommandSink(entities, null, handlers, null);
+            ShipAbilityCommand command = ShipAbilityCommand.Create(TestPlayers.Human, caster.Slots[0].Id,
+                new[] { caster.Entity }, target, cancel: false);
+
+            vision.Register(TestPlayers.Enemy, _targetView.transform, 10f);
+            sink.Submit(command);
+            Assert.That(factory.Created, Is.Empty);
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
+
+            vision.Register(TestPlayers.Human, _targetView.transform, 10f);
+            sink.Submit(command);
+            Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Active));
+            service.LateDispose();
+        }
+
+        [Test]
+        public void MissingSettings_FailsAvailabilityCheck()
+        {
+            FakeCommand caster = CreateCaster();
+            SetField(caster.Slots[0].Definition, "settings", null);
+
+            Assert.Throws<NullReferenceException>(() => _ = caster.Slots[0].IsAvailable);
+        }
+
+        [Test]
+        public void CloakedCaster_CannotArmAnUnavailableTargetedAbility()
+        {
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(),
+                relations, new VisionService(relations, fogEnabled: false));
+            FakeCommand caster = CreateCaster(targeted: true);
+            ShipAbilitySlot slot = caster.Slots[0];
+            SetField(slot.Definition, "settings", new BoostEnginePowerSettings());
+            caster.Modifiers.SetCloaked(true);
+
+            Assert.That(slot.CanPress, Is.False);
+            service.Press(new[] { caster.Entity }, slot.Id);
+            Assert.That(service.IsWaitingForTarget, Is.False);
         }
 
         [Test]
@@ -361,7 +468,9 @@ namespace EmpireAtWar.Tests.Editor
             SetField(definition, "settings", new FighterReinforcementsSettings());
             SetField(definition, "recoveryDelay", 30f);
             var caster = new FakeCommand(definition, id: ShipAbilityId.FighterReinforcements);
-            var service = new ShipAbilityService(new ShipAbilityFactory(null), TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            var service = new ShipAbilityService(new ShipAbilityFactory(null),
+                relations, new VisionService(relations, fogEnabled: false));
             int rejections = 0;
             service.TargetRejected += _ => rejections++;
             ShipAbilitySlot slot = caster.Slots[0];
@@ -386,7 +495,9 @@ namespace EmpireAtWar.Tests.Editor
         public void GroupPress_PreservesActiveAbilityAndActivatesReadyShip()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand first = CreateCaster();
             FakeCommand second = CreateCaster();
             service.TryActivate(first, ShipAbilityId.BoostEnginePower, null);
@@ -407,7 +518,9 @@ namespace EmpireAtWar.Tests.Editor
         public void GroupPress_WhenAllAbilitiesActive_PreservesThem()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand first = CreateCaster();
             FakeCommand second = CreateCaster();
             IEntity[] casters = { first.Entity, second.Entity };
@@ -430,7 +543,9 @@ namespace EmpireAtWar.Tests.Editor
         public void GroupPress_SingleShipGroup_PreservesActiveAbility()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
             service.Advance(1f);
@@ -449,7 +564,9 @@ namespace EmpireAtWar.Tests.Editor
         public void GroupPress_ActivatesOnlyReadySlots()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand first = CreateCaster();
             FakeCommand second = CreateCaster();
             service.TryActivate(first, ShipAbilityId.BoostEnginePower, null);
@@ -466,7 +583,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void TargetingPruning_PreservesSurvivingCastersAndClearsLastCaster()
         {
-            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand first = CreateCaster(targeted: true);
             FakeCommand second = CreateCaster(targeted: true);
             service.Press(new IEntity[] { first.Entity, second.Entity }, ShipAbilityId.BoostEnginePower);
@@ -482,7 +601,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void AbilityButtonSelectingAlreadyActiveCaster_ShowsDurationImmediatelyWithReadyGroupMember()
         {
-            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand active = CreateCaster();
             FakeCommand ready = CreateCaster();
             service.TryActivate(active, ShipAbilityId.BoostEnginePower, null);
@@ -513,7 +634,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void AbilityButtonAutomaticStart_RendersBeforeAnotherUiUpdateAndReleasesPooledSlots()
         {
-            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand first = CreateCaster();
             FakeCommand second = CreateCaster();
             List<ShipAbilitySlot> pooledSlots = new List<ShipAbilitySlot> { first.Slots[0] };
@@ -575,7 +698,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void ShipUiEscape_CancelsArmedAbilityBeforePauseMenuFallback()
         {
-            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster(targeted: true);
             AbilityCancelInput input = new AbilityCancelInput();
             UiCancelRouter router = new UiCancelRouter(input);
@@ -629,7 +754,9 @@ namespace EmpireAtWar.Tests.Editor
         public void UnknownAbilityId_TryActivateReturnsFalse()
         {
             FakeFactory factory = new FakeFactory();
-            ShipAbilityService service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
 
             Assert.That(service.TryActivate(caster, ShipAbilityId.ProtonBeam, null), Is.False);
@@ -639,7 +766,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Save_ActiveAbility_BecomesRecoveringForRemainingPlusFullRecovery()
         {
-            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             service.TryActivate(caster, ShipAbilityId.BoostEnginePower, null);
             service.Advance(2f);
@@ -654,7 +783,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void SlotStateChanged_ReportsLifecycleTransitionsWithoutPerFrameElapsedNotifications()
         {
-            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             ShipAbilitySlot slot = caster.Slots[0];
             int stateChanges = 0;
@@ -690,7 +821,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Restore_LongCooldown_BarStartsFullAndCountsDownToReady()
         {
-            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             ShipAbilitySlot slot = caster.Slots[0];
             float cooldown = slot.Definition.RecoveryDelay * 2f;
@@ -708,7 +841,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void Restore_ActiveState_IsRejected()
         {
-            ShipAbilityService service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService service = new ShipAbilityService(new FakeFactory(),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
 
             Assert.Throws<ArgumentException>(() => service.Restore(caster.Slots[0], ShipAbilityState.Active, 1f));
@@ -718,7 +853,9 @@ namespace EmpireAtWar.Tests.Editor
         public void ReplicaSnapshot_KeepsTransientActiveWithoutReplayingItsAction()
         {
             var factory = new FakeFactory();
-            var service = new ShipAbilityService(factory, TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            var service = new ShipAbilityService(factory,
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             ShipAbilitySlot slot = caster.Slots[0];
             int activationNotifications = 0;
@@ -744,7 +881,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void ReplicaSnapshot_RestoresPersistentEffectOnceAndStopsAtHostRecovery()
         {
-            var service = new ShipAbilityService(new CloakFactory(), TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            var service = new ShipAbilityService(new CloakFactory(),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             ShipAbilitySlot slot = caster.Slots[0];
             service.RestoreReplicaState(caster, slot.Id, ShipAbilityState.Active, 2f, null);
@@ -767,7 +906,9 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void AuthorityAbility_ReportsAutomaticRecoveryAndReadyForClientSnapshots()
         {
-            var service = new ShipAbilityService(new FakeFactory(), TestPlayers.CreateDuel());
+            var relations = TestPlayers.CreateDuel();
+            var service = new ShipAbilityService(new FakeFactory(),
+                relations, new VisionService(relations, fogEnabled: false));
             FakeCommand caster = CreateCaster();
             var states = new List<ShipAbilityState>();
             service.StateChanged += slot => states.Add(slot.State);
@@ -789,6 +930,7 @@ namespace EmpireAtWar.Tests.Editor
             SetField(definition, "canCancel", canCancel);
             SetField(definition, "requiresEnemyTarget", targeted);
             SetField(definition, "range", 10f);
+            SetField(definition, "settings", new BoostEnginePowerSettings());
             return new FakeCommand(definition);
         }
 
@@ -851,16 +993,16 @@ namespace EmpireAtWar.Tests.Editor
             public void Stop() => StopCount++;
         }
 
-        private sealed class PhasedFactory : IShipAbilityFactory
+        private sealed class SingleAbilityFactory : IShipAbilityFactory
         {
-            private readonly IPhasedShipAbility _ability;
+            private readonly IShipAbility _ability;
 
-            public PhasedFactory(IPhasedShipAbility ability) { _ability = ability; }
+            public SingleAbilityFactory(IShipAbility ability) { _ability = ability; }
 
             public IShipAbility Create(ShipAbilityDefinition definition) => _ability;
         }
 
-        private sealed class RecordingPhasedAbility : IPhasedShipAbility
+        private sealed class RecordingAdvancingAbility : IAdvancingShipAbility, IShipAbilityInterruptionPolicy
         {
             private IShipAbilityFacade _caster;
             private bool _complete;
@@ -871,6 +1013,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool CancelOnIonDisable { get; set; } = true;
             public bool IsComplete => _complete || CancelOnIonDisable && _caster.Modifiers.IsIonDisabled;
             public bool SurvivesCasterDeath { get; set; }
+            public bool SurvivesHazardSuppression { get; set; }
 
             public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target) => _caster = caster;
             public void Advance(float deltaTime)
@@ -878,6 +1021,16 @@ namespace EmpireAtWar.Tests.Editor
                 AdvanceCount++;
                 _complete = CompleteOnAdvance;
             }
+            public void Stop() => StopCount++;
+        }
+
+        private sealed class RecordingCompletableAbility : ICompletableShipAbility
+        {
+            public bool IsComplete { get; set; }
+            public int StopCount { get; private set; }
+
+            public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target) => IsComplete = false;
+
             public void Stop() => StopCount++;
         }
 
@@ -911,6 +1064,7 @@ namespace EmpireAtWar.Tests.Editor
             public void EndAbilityFacing() => IsAbilityFacing = false;
 
             public bool CanLaunchReplacement { get; set; }
+            public bool CanRequestReplacement => CanLaunchReplacement;
             public bool TryLaunchReplacement()
             {
                 if (!CanLaunchReplacement) return false;
@@ -935,13 +1089,14 @@ namespace EmpireAtWar.Tests.Editor
         {
             private readonly IShipAbilityFacade _command;
 
-            public long Id => 1;
+            public long Id { get; }
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner { get; }
 
             public FakeEntity(IShipAbilityFacade command, IHealthModelObserver health,
-                PlayerId owner)
+                PlayerId owner, long id = 1)
             {
+                Id = id;
                 _command = command;
                 Owner = owner;
                 HealthModel = health;

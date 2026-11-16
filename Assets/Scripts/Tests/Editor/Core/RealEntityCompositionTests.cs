@@ -599,7 +599,8 @@ namespace EmpireAtWar.Tests.Editor
             var catalog = _battle.Container.Resolve<ShipAbilityCatalog>();
             var profiles = _battle.Container.Resolve<UnitCombatProfileCatalog>();
             var combat = new AutoPowerCombatSnapshot(entities, local,
-                new VisionService(_battle.Container.Resolve<IPlayerRoster>(), fogEnabled: false),
+                new ShipAbilityService(null, _battle.Container.Resolve<IPlayerRoster>(),
+                    _battle.Container.Resolve<IVisionService>()),
                 profiles, new ForceCompositionBuilder(entities, profiles), catalog);
             combat.Capture();
             Assert.That(combat.Decide(caster.GetFacade<IShipAbilityFacade>(), caster.GetFacade<IShipAutoPowerFacade>(),

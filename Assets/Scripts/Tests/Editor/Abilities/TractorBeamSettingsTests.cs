@@ -1,14 +1,28 @@
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Combat;
 using System.Reflection;
+using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using NUnit.Framework;
+using UnityEditor;
 
 namespace EmpireAtWar.Tests.Editor
 {
     [Category("Abilities")]
     public sealed class TractorBeamSettingsTests
     {
+        [Test]
+        public void Catalog_ResolvesTypedTractorBeamPrefab()
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(
+                "Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset");
+            var settings = (TractorBeamSettings)catalog.Get(ShipAbilityId.TractorBeam).Settings;
+
+            Assert.That(settings.Beam.BeamPrefab, Is.Not.Null);
+            Assert.That(AssetDatabase.GetAssetPath(settings.Beam.BeamPrefab),
+                Is.EqualTo("Assets/Prefabs/Vfx/Projectiles/TractorBeamView.prefab"));
+        }
+
         [Test]
         public void AbilityStop_RemovesItsMovementPenalty_AndPreservesOtherModifiers()
         {

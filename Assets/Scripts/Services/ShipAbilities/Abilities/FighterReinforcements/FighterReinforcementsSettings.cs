@@ -8,7 +8,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     public sealed class FighterReinforcementsSettings : ShipAbilitySettings, IShipAbilityReadiness
     {
         public bool IsReady(IShipAbilityFacade caster) =>
-            caster.Entity.GetFacade<IHangarCommand>().CanLaunchReplacement;
+            caster.Entity.GetFacade<IHangarCommand>().CanRequestReplacement;
 
         public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>
             new FighterReinforcementsAbility();

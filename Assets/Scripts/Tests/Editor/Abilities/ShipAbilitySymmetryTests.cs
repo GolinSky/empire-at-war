@@ -10,6 +10,7 @@ using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using NUnit.Framework;
 using UnityEngine;
@@ -117,7 +118,8 @@ namespace EmpireAtWar.Tests.Editor
         public void SensorJamming_CasterIonDisabled_Completes()
         {
             TestCommand caster = new TestCommand(id: 1, owner: TestPlayers.Human);
-            IPhasedShipAbility ability = new SensorJammingAbility(new EntityLocator(), relations: null);
+            ICompletableShipAbility ability = new SensorJammingAbility(
+                new EntityLocator(), relations: null, settings: new SensorJammingSettings());
 
             ability.Start(caster, new ShipAbilityDefinition(), null);
             Assert.That(ability.IsComplete, Is.False);
@@ -133,11 +135,14 @@ namespace EmpireAtWar.Tests.Editor
         {
             EntityLocator entities = new EntityLocator();
             IPlayerRelations relations = TestPlayers.CreateDuel();
-            ShipAbilityService service = new ShipAbilityService(new SensorJammingFactory(entities, relations), relations);
+            var dependencies = new ShipAbilityDependencies(entities, relations, null, null, null, null);
+            ShipAbilityService service = new ShipAbilityService(new ShipAbilityFactory(dependencies), relations,
+                new VisionService(relations, fogEnabled: false));
             ShipAbilityDefinition definition = new ShipAbilityDefinition();
             SetField(definition, "duration", 30f);
             SetField(definition, "recoveryDelay", 5f);
             SetField(definition, "range", 100f);
+            SetField(definition, "settings", new SensorJammingSettings());
             TestCommand first = new TestCommand(TestPlayers.Human, 1, definition);
             TestCommand second = new TestCommand(TestPlayers.Human, 2, definition);
             GameObject targetView = new GameObject("Jammed target");
@@ -188,20 +193,6 @@ namespace EmpireAtWar.Tests.Editor
                 UnityEngine.Object.DestroyImmediate(targetView);
             }
             Assert.That(target.Modifiers.HasTemporaryEffects, Is.False);
-        }
-
-        private sealed class SensorJammingFactory : IShipAbilityFactory
-        {
-            private readonly IEntityLocator _entities;
-            private readonly IPlayerRelations _relations;
-
-            public SensorJammingFactory(IEntityLocator entities, IPlayerRelations relations)
-            {
-                _entities = entities;
-                _relations = relations;
-            }
-
-            public IShipAbility Create(ShipAbilityDefinition definition) => new SensorJammingAbility(_entities, _relations);
         }
 
         private static TSettings CreateSettings<TSettings>(string modifierField, CombatStatModifier modifier)
@@ -306,24 +297,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasShields => true;
 
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) =>
-                hardPointType == HardPointType.SensorArray
-                    ? new IHardPointModel[] { new SensorArrayStub() }
-                    : Array.Empty<IHardPointModel>();
-        }
-
-        private sealed class SensorArrayStub : IHardPointModel
-        {
-            public event Action OnHardPointHealthChanged { add { } remove { } }
-            public event Action OnDestroyed { add { } remove { } }
-
-            public HardPointType HardPointType => HardPointType.SensorArray;
-            public float HealthPercentage => 1f;
-            public int Id => 0;
-            public int Generation => 0;
-            public bool IsDestroyed => false;
-            public Vector3 Position => Vector3.zero;
-            public Transform Transform => null;
-            public Transform Pivot => null;
+                Array.Empty<IHardPointModel>();
         }
     }
 }

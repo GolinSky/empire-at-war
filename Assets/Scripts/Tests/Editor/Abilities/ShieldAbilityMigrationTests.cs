@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using NUnit.Framework;
 using UnityEditor;
@@ -44,7 +45,7 @@ namespace EmpireAtWar.Tests.Editor
 
             ShipAbilityDefinition definition = Catalog().Get(save.Id);
             var slot = new ShipAbilitySlot(null, definition, save.Id);
-            new ShipAbilityService(null, null).Restore(slot, save.State, save.TimeLeft);
+            new ShipAbilityService(null, null, new VisionService(null, fogEnabled: false)).Restore(slot, save.State, save.TimeLeft);
 
             Assert.That(slot.State, Is.EqualTo(ShipAbilityState.Recovering));
             Assert.That(slot.TimeLeft, Is.EqualTo(83.5f));

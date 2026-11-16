@@ -31,6 +31,7 @@ namespace EmpireAtWar.Components.AttackComponent
 
         [Header("Visual")]
         [SerializeField] private ShotEffect shotPrefab;
+        [SerializeField] private BeamShot beamPrefab;
         [Tooltip("Units per second. Ignored by beams.")]
         [SerializeField] private float projectileSpeed;
         [SerializeField] private Color color = Color.white;
@@ -53,7 +54,7 @@ namespace EmpireAtWar.Components.AttackComponent
             float damage, int shotsPerSalvo, float shotInterval, float reload, float range, bool strikecraftOnly,
             bool interceptable, ShotEffect shotPrefab, float projectileSpeed, Color color, Vector3 size,
             bool usesFactionColor, bool hasTargetSizeBias, ShipClassValues damageBias, ShipClassValues accuracyBias,
-            float turnRate, TargetPreference preferredTarget = TargetPreference.Any)
+            float turnRate, TargetPreference preferredTarget = TargetPreference.Any, BeamShot beamPrefab = null)
         {
             this.weaponType = weaponType;
             this.displayName = displayName;
@@ -66,6 +67,7 @@ namespace EmpireAtWar.Components.AttackComponent
             this.strikecraftOnly = strikecraftOnly;
             this.interceptable = interceptable;
             this.shotPrefab = shotPrefab;
+            this.beamPrefab = beamPrefab;
             this.projectileSpeed = projectileSpeed;
             this.color = color;
             this.size = size;
@@ -88,7 +90,8 @@ namespace EmpireAtWar.Components.AttackComponent
         public float Range => range;
         public bool StrikecraftOnly => strikecraftOnly;
         public bool Interceptable => interceptable;
-        public ShotEffect ShotPrefab => shotPrefab;
+        public ShotEffect ShotPrefab => beamPrefab != null ? beamPrefab : shotPrefab;
+        public BeamShot BeamPrefab => beamPrefab;
         public float ProjectileSpeed => projectileSpeed;
         public Color Color => color;
         public Vector3 Size => size;
@@ -103,7 +106,7 @@ namespace EmpireAtWar.Components.AttackComponent
         public WeaponProfile WithColor(Color boltColor) => new WeaponProfile(weaponType, displayName, Family, damageType,
             damage, shotsPerSalvo, shotInterval, reload, range, strikecraftOnly, interceptable, shotPrefab,
             projectileSpeed, boltColor, size, false, _hasTargetSizeBias, _damageBias, _accuracyBias, _turnRate,
-            _preferredTarget);
+            _preferredTarget, beamPrefab);
 
         public WeaponProfile WithRangeMultiplier(float multiplier)
         {
@@ -115,7 +118,7 @@ namespace EmpireAtWar.Components.AttackComponent
                 damage, shotsPerSalvo, shotInterval, reload, range * multiplier,
                 strikecraftOnly, interceptable, shotPrefab, projectileSpeed, color, size,
                 _usesFactionColor, _hasTargetSizeBias, _damageBias, _accuracyBias, _turnRate,
-                _preferredTarget);
+                _preferredTarget, beamPrefab);
         }
 
         public WeaponProfile WithWarheadMultipliers(float damageMultiplier, float reloadMultiplier)
@@ -127,7 +130,7 @@ namespace EmpireAtWar.Components.AttackComponent
                 damage * damageMultiplier, shotsPerSalvo, shotInterval, reload * reloadMultiplier,
                 range, strikecraftOnly, interceptable, shotPrefab, projectileSpeed, color, size,
                 _usesFactionColor, _hasTargetSizeBias, _damageBias, _accuracyBias, _turnRate,
-                _preferredTarget);
+                _preferredTarget, beamPrefab);
         }
 
         public float GetDamageBias(ShipClass targetClass) => _hasTargetSizeBias ? _damageBias[targetClass] : 1f;

@@ -10,7 +10,6 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Enemy;
-using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Utils;
 using UnityEngine;
 
@@ -27,17 +26,18 @@ namespace EmpireAtWar.Services.ShipAbilities
         private readonly ForceComposition _engagedHostile = new ForceComposition();
         private readonly IEntityLocator _entities;
         private readonly ILocalPlayer _player;
-        private readonly IVisionService _vision;
+        private readonly ShipAbilityService _abilities;
         private readonly UnitCombatProfileCatalog _profiles;
         private readonly ForceCompositionBuilder _forces;
         private readonly AutoPowerTuning _tuning;
+        private float _maxTargetFootprint;
 
-        public AutoPowerCombatSnapshot(IEntityLocator entities, ILocalPlayer player, IVisionService vision,
+        public AutoPowerCombatSnapshot(IEntityLocator entities, ILocalPlayer player, ShipAbilityService abilities,
             UnitCombatProfileCatalog profiles, ForceCompositionBuilder forces, ShipAbilityCatalog catalog)
         {
             _entities = entities;
             _player = player;
-            _vision = vision;
+            _abilities = abilities;
             _profiles = profiles;
             _forces = forces;
             _tuning = catalog.AutoPower;
@@ -46,10 +46,12 @@ namespace EmpireAtWar.Services.ShipAbilities
         public void Capture()
         {
             _units.Clear();
+            _maxTargetFootprint = 0f;
             foreach (List<int> cell in _cells.Values) cell.Clear();
             foreach (IEntity entity in _entities.Entities)
                 if (!entity.HealthModel.IsDestroyed && entity.TryGetFacade(out IUnitTypeFacade _))
                 {
+                    _maxTargetFootprint = Mathf.Max(_maxTargetFootprint, ShipAbilityRange.FootprintRadius(entity));
                     Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
                     var key = (Mathf.FloorToInt(position.x / CELL_SIZE), Mathf.FloorToInt(position.z / CELL_SIZE));
                     if (!_cells.TryGetValue(key, out List<int> cell))
@@ -65,14 +67,16 @@ namespace EmpireAtWar.Services.ShipAbilities
         /// <summary>Nearest acceptable visible hostile in ability range; warships before strikecraft.</summary>
         public IEntity FindTarget(IShipAbilityFacade caster, ShipAbilityDefinition definition)
         {
-            IShipAbilityTargetRule rule = definition.Settings as IShipAbilityTargetRule;
             IEntity target = null;
             bool targetStrikecraft = true;
             float nearest = float.PositiveInfinity;
-            CollectNearby(caster.WorldPosition, definition.Range);
+            float searchRange = ShipAbilityRange.MaximumDistance(ShipAbilityRange.FootprintRadius(caster.Entity),
+                _maxTargetFootprint, definition.Range);
+            CollectNearby(caster.WorldPosition, searchRange);
             foreach ((IEntity entity, Vector3 position) in _nearby)
             {
-                if (!IsVisibleHostile(entity, position) || rule != null && !rule.CanTarget(caster, entity)) continue;
+                if (!_abilities.CanTarget(caster, definition, entity) ||
+                    !ShipAbilityRange.IsInRange(caster, entity, definition.Range)) continue;
                 bool strikecraft = entity.HealthModel.ShipClass.IsStrikecraft();
                 float distance = PlanarGeometry.Distance(caster.WorldPosition, position);
                 if (strikecraft && !targetStrikecraft || strikecraft == targetStrikecraft && distance >= nearest)
@@ -99,7 +103,7 @@ namespace EmpireAtWar.Services.ShipAbilities
             CollectNearby(caster.WorldPosition, caster.RadarRange);
             foreach ((IEntity entity, Vector3 position) in _nearby)
             {
-                if (IsVisibleHostile(entity, position))
+                if (_abilities.IsVisibleHostile(_player.Id, entity))
                 {
                     _forces.AddUnit(_hostile, entity);
                     if (!automation.CanEngage(entity.HealthModel.ShipClass, position)) continue;
@@ -178,8 +182,5 @@ namespace EmpireAtWar.Services.ShipAbilities
         private bool IsLive(IEntity entity) =>
             _entities.TryGetEntity(entity.Id, out IEntity registered) && ReferenceEquals(entity, registered) &&
             !entity.HealthModel.IsDestroyed;
-
-        private bool IsVisibleHostile(IEntity entity, Vector3 position) =>
-            _player.IsHostile(entity.Owner) && !entity.IsCloaked() && _vision.IsVisible(_player.Id, position);
     }
 }

@@ -499,6 +499,7 @@ MonoBehaviour:
           interceptable: 0
           shotPrefab: {fileID: 7024622963710226239, guid: 4c64ce939665a8c41b8c02abac97cb87,
             type: 3}
+          beamPrefab: {fileID: 0}
           projectileSpeed: 35
           color: {r: 1, g: 1, b: 1, a: 1}
           size: {x: 1.2, y: 1.2, z: 1.2}
@@ -554,7 +555,8 @@ MonoBehaviour:
           range: 75
           strikecraftOnly: 0
           interceptable: 0
-          shotPrefab: {fileID: 383474084171235543, guid: 1f1a771756f8831439df9261368929ab,
+          shotPrefab: {fileID: 0}
+          beamPrefab: {fileID: 383474084171235543, guid: 1f1a771756f8831439df9261368929ab,
             type: 3}
           projectileSpeed: 0
           color: {r: 0.2, g: 0.9, b: 0.45, a: 1}

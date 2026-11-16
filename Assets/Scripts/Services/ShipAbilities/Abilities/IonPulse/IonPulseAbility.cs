@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class IonPulseAbility : IPhasedShipAbility, ITargetedShipAbility
+    public sealed class IonPulseAbility : IAdvancingShipAbility, ITargetedShipAbility, IShipAbilityInterruptionPolicy
     {
         private readonly IonPulseSettings _settings;
         private readonly IEntityLocator _entities;
@@ -37,6 +37,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public bool IsComplete => _cancelled || (_model.HasFired &&
             _model.WaveComplete && _stuns.Count == 0);
         public bool SurvivesCasterDeath => _model.HasFired;
+        public bool SurvivesHazardSuppression => _model.HasFired;
 
         public IonPulseAbility(IonPulseSettings settings, IEntityLocator entities, IPlayerRelations relations)
         {
@@ -160,10 +161,11 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             bearing.y = 0f;
             IHardPointModel best = null;
             float bestAngle = float.MaxValue;
-            foreach (IHardPointModel cannon in _caster.Health.GetShipUnits(HardPointType.IonPulseCannon))
+            HardPointType subsystem = _settings.RequiredSubsystem;
+            foreach (IHardPointModel cannon in _caster.Health.GetShipUnits(subsystem))
             {
                 // GetShipUnits falls back to every live hardpoint once no cannon is left, so the type is checked again.
-                if (cannon.IsDestroyed || cannon.HardPointType != HardPointType.IonPulseCannon) continue;
+                if (cannon.IsDestroyed || cannon.HardPointType != subsystem) continue;
                 float angle = Vector3.Angle(ship.right * CannonSide(ship, cannon), bearing);
                 if (angle >= bestAngle) continue;
                 bestAngle = angle;

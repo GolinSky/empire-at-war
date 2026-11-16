@@ -9,24 +9,26 @@ using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using NUnit.Framework;
 using UnityEngine;
 
 namespace EmpireAtWar.Tests.Editor
 {
     [Category("Abilities")]
-    [TestFixture(ShipAbilityId.IonPulse, HardPointType.IonPulseCannon)]
-    [TestFixture(ShipAbilityId.TractorBeam, HardPointType.TractorBeam)]
-    [TestFixture(ShipAbilityId.DauntlessSensorJamming, HardPointType.SensorArray)]
-    [TestFixture(ShipAbilityId.FighterCoordination, HardPointType.CommandArray)]
+    [TestFixture(typeof(IonPulseSettings), HardPointType.IonPulseCannon)]
+    [TestFixture(typeof(TractorBeamSettings), HardPointType.TractorBeam)]
+    [TestFixture(typeof(SensorJammingSettings), HardPointType.SensorArray)]
+    [TestFixture(typeof(FighterCoordinationSettings), HardPointType.CommandArray)]
     public sealed class ShipAbilitySubsystemAvailabilityTests
     {
-        private readonly ShipAbilityId _abilityId;
+        private readonly Type _settingsType;
         private readonly HardPointType _requiredType;
 
-        public ShipAbilitySubsystemAvailabilityTests(ShipAbilityId abilityId, HardPointType requiredType)
+        public ShipAbilitySubsystemAvailabilityTests(Type settingsType, HardPointType requiredType)
         {
-            _abilityId = abilityId;
+            _settingsType = settingsType;
             _requiredType = requiredType;
         }
 
@@ -50,8 +52,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(caster.Slots[0].IsAvailable, Is.True);
             Assert.That(caster.Slots[0].CanActivate, Is.True);
             Assert.That(caster.Slots[0].CanPress, Is.True);
-            ShipAbilityService service = new ShipAbilityService(null, null);
-            service.Press(new IEntity[] { caster }, _abilityId);
+            ShipAbilityService service = new ShipAbilityService(null, null, new VisionService(null, fogEnabled: false));
+            service.Press(new IEntity[] { caster }, caster.Slots[0].Id);
             Assert.That(service.IsWaitingForTarget, Is.True);
         }
 
@@ -61,10 +63,11 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(caster.Slots[0].IsAvailable, Is.False);
             Assert.That(caster.Slots[0].CanActivate, Is.False);
             Assert.That(caster.Slots[0].CanPress, Is.False);
-            ShipAbilityService service = new ShipAbilityService(null, null);
-            service.Press(new IEntity[] { caster }, _abilityId);
+            ShipAbilityService service = new ShipAbilityService(null, null, new VisionService(null, fogEnabled: false));
+            ShipAbilityId id = caster.Slots[0].Id;
+            service.Press(new IEntity[] { caster }, id);
             Assert.That(service.IsWaitingForTarget, Is.False);
-            Assert.That(service.TryActivate(caster, _abilityId, null), Is.False);
+            Assert.That(service.TryActivate(caster, id, null), Is.False);
         }
 
         private TestCaster CreateCaster(params HardPointModel[] hardPoints)
@@ -72,7 +75,10 @@ namespace EmpireAtWar.Tests.Editor
             ShipAbilityDefinition definition = new ShipAbilityDefinition();
             typeof(ShipAbilityDefinition).GetField("requiresEnemyTarget",
                 BindingFlags.Instance | BindingFlags.NonPublic).SetValue(definition, true);
-            return new TestCaster(_abilityId, definition, hardPoints);
+            typeof(ShipAbilityDefinition).GetField("settings",
+                BindingFlags.Instance | BindingFlags.NonPublic).SetValue(definition, Activator.CreateInstance(_settingsType));
+            // Settings own the requirement, independent of the slot ID.
+            return new TestCaster(ShipAbilityId.BoostEnginePower, definition, hardPoints);
         }
 
         private sealed class TestCaster : IShipAbilityFacade, IEntity

@@ -39,6 +39,7 @@ namespace EmpireAtWar.Components.AttackComponent
 
         [Header("Visual")]
         [SerializeField] private ShotEffect shotPrefab;
+        [SerializeField] private BeamShot beamPrefab;
         [Tooltip("Used by Dual and Triple mounts, and larger mounts without a dedicated prefab. Leave empty to use the normal shot.")]
         [SerializeField] private ShotEffect multiBarrelShotPrefab;
         [SerializeField] private ShotEffect quadShotPrefab;
@@ -63,7 +64,8 @@ namespace EmpireAtWar.Components.AttackComponent
         public bool Interceptable => interceptable;
         public bool TargetSizeBias => targetSizeBias;
         public float TurnRate => turnRate;
-        public ShotEffect ShotPrefab => shotPrefab;
+        public ShotEffect ShotPrefab => beamPrefab != null ? beamPrefab : shotPrefab;
+        public BeamShot BeamPrefab => beamPrefab;
         public ShotEffect MultiBarrelShotPrefab => multiBarrelShotPrefab;
         public ShotEffect QuadShotPrefab => quadShotPrefab;
         public ShotEffect OctupleShotPrefab => octupleShotPrefab;

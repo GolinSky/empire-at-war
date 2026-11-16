@@ -9,7 +9,7 @@ namespace EmpireAtWar.Services.ShipAbilities
 
         bool IsWaitingForTarget { get; }
 
-        /// <summary>True when at least one pending caster would accept the target, ignoring range.</summary>
+        /// <summary>True when a pending caster can cast now or approach the target to cast.</summary>
         bool IsValidTarget(IEntity target);
 
         void SubmitTarget(IEntity target);

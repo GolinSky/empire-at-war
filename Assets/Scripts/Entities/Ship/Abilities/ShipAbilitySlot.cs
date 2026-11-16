@@ -1,7 +1,5 @@
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using System;
-using EmpireAtWar.Models.Health;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Services.ShipAbilities;
 
 namespace EmpireAtWar.Entities.Ship.Abilities
@@ -22,17 +20,12 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public IShipAbility RunningAbility { get; private set; }
         internal bool IsReplicaState { get; private set; }
         public bool IsAvailable => !Owner.Health.IsDestroyed && !Owner.Modifiers.AbilitiesSuppressed &&
-            (Id != ShipAbilityId.IonPulse ||
-                HasLiveHardPoint(HardPointType.IonPulseCannon)) &&
-            (Id != ShipAbilityId.TractorBeam ||
-                HasLiveHardPoint(HardPointType.TractorBeam)) &&
-            (Id != ShipAbilityId.DauntlessSensorJamming ||
-                HasLiveHardPoint(HardPointType.SensorArray)) &&
-            (Id != ShipAbilityId.FighterCoordination ||
-                HasLiveHardPoint(HardPointType.CommandArray));
+            Definition.Settings.HasRequiredSubsystem(Owner.Health);
         public bool CanActivate => State == ShipAbilityState.Ready && IsAvailable &&
+            (!Owner.Modifiers.IsCloaked || Definition.Settings is { CanActivateWhileCloaked: true }) &&
             (!(Definition.Settings is IShipAbilityReadiness readiness) || readiness.IsReady(Owner));
-        public bool CanPress => CanActivate || State == ShipAbilityState.Active && Definition.CanCancel && IsAvailable;
+        public bool CanCancel => State == ShipAbilityState.Active && Definition.CanCancel && IsAvailable;
+        public bool CanPress => CanActivate || CanCancel;
         public float Progress01 => State switch
         {
             ShipAbilityState.Active => Definition.Duration > 0f ? TimeLeft / Definition.Duration : 0f,
@@ -47,17 +40,6 @@ namespace EmpireAtWar.Entities.Ship.Abilities
             Definition = definition;
             Owner = owner;
             _recoveryTotal = definition.RecoveryDelay;
-        }
-
-        private bool HasLiveHardPoint(HardPointType type)
-        {
-            var points = Owner.Health.HardPointModels;
-            for (int i = 0; i < points.Count; i++)
-            {
-                IReadOnlyHardPointModel point = points[i];
-                if (point.HardPointType == type && !point.IsDestroyed) return true;
-            }
-            return false;
         }
 
         internal void Activate(IShipAbility ability)

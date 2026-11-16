@@ -15,6 +15,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         [SerializeField] private WeaponProfile beam;
 
         public float SpeedMultiplier => speedMultiplier;
+        internal override HardPointType RequiredSubsystem => HardPointType.TractorBeam;
         public WeaponProfile Beam => beam;
 
         public bool CanTarget(ShipClass shipClass) => Array.IndexOf(targetClasses, shipClass) >= 0;

@@ -37,6 +37,7 @@ namespace EmpireAtWar.Components.AttackComponent
         [Tooltip("Use this shot prefab, speed and size instead of the family's.")]
         [SerializeField] private bool overrideVisual;
         [SerializeField] private ShotEffect shotPrefab;
+        [SerializeField] private BeamShot beamPrefab;
         [SerializeField, Min(0f)] private float projectileSpeed;
         [SerializeField] private Vector3 size = Vector3.one;
         [Tooltip("Use this bolt color instead of the family or faction color.")]
@@ -56,7 +57,8 @@ namespace EmpireAtWar.Components.AttackComponent
         public float RangeMultiplier => rangeMultiplier;
         public string Reason => reason;
         public bool OverrideVisual => overrideVisual;
-        public ShotEffect ShotPrefab => shotPrefab;
+        public ShotEffect ShotPrefab => beamPrefab != null ? beamPrefab : shotPrefab;
+        public BeamShot BeamPrefab => beamPrefab;
         public float ProjectileSpeed => projectileSpeed;
         public Vector3 Size => size;
         public bool OverrideColor => overrideColor;

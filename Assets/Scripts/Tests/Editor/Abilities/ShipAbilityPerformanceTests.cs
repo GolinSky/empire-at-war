@@ -10,6 +10,7 @@ using EmpireAtWar.Entities.ShipUi;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,18 +19,20 @@ using TMPro;
 namespace EmpireAtWar.Tests.Editor
 {
     [Category("Abilities")]
-    [TestFixture(ShipAbilityId.TractorBeam, HardPointType.TractorBeam)]
-    [TestFixture(ShipAbilityId.DauntlessSensorJamming, HardPointType.SensorArray)]
-    [TestFixture(ShipAbilityId.FighterCoordination, HardPointType.CommandArray)]
+    [TestFixture(ShipAbilityId.TractorBeam, HardPointType.TractorBeam, typeof(TractorBeamSettings))]
+    [TestFixture(ShipAbilityId.DauntlessSensorJamming, HardPointType.SensorArray, typeof(SensorJammingSettings))]
+    [TestFixture(ShipAbilityId.FighterCoordination, HardPointType.CommandArray, typeof(FighterCoordinationSettings))]
     public sealed class ShipAbilityPerformanceTests
     {
         private readonly ShipAbilityId _abilityId;
         private readonly HardPointType _requiredType;
+        private readonly Type _settingsType;
 
-        public ShipAbilityPerformanceTests(ShipAbilityId abilityId, HardPointType requiredType)
+        public ShipAbilityPerformanceTests(ShipAbilityId abilityId, HardPointType requiredType, Type settingsType)
         {
             _abilityId = abilityId;
             _requiredType = requiredType;
+            _settingsType = settingsType;
         }
 
         [Test]
@@ -120,6 +123,8 @@ namespace EmpireAtWar.Tests.Editor
         private TestCaster CreateCaster(params HardPointModel[] hardPoints)
         {
             ShipAbilityDefinition definition = new ShipAbilityDefinition();
+            typeof(ShipAbilityDefinition).GetField("settings",
+                BindingFlags.Instance | BindingFlags.NonPublic).SetValue(definition, Activator.CreateInstance(_settingsType));
             typeof(ShipAbilityDefinition).GetField("requiresEnemyTarget",
                 BindingFlags.Instance | BindingFlags.NonPublic).SetValue(definition, true);
             return new TestCaster(_abilityId, definition, hardPoints);

@@ -24,6 +24,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public float WaveThickness => waveThickness;
         public float DisableDuration => disableDuration;
 
+        internal override HardPointType RequiredSubsystem => HardPointType.IonPulseCannon;
+
         public override float GetEffectDuration(float activeDuration) => disableDuration;
 
         // The hull cannot turn during the hyperspace arrival, so the pulse waits until the ship is in the battle.

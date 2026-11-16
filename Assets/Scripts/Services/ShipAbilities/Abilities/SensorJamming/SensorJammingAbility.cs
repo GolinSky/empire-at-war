@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
 using EmpireAtWar.Components.Combat;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Players;
@@ -9,23 +7,24 @@ using EmpireAtWar.Utils;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class SensorJammingAbility : IPhasedShipAbility, IReplicaPersistentShipAbility
+    public sealed class SensorJammingAbility : IAdvancingShipAbility, IReplicaPersistentShipAbility
     {
         private readonly IEntityLocator _entities;
         private readonly IPlayerRelations _relations;
+        private readonly SensorJammingSettings _settings;
         private readonly HashSet<CombatModifiers> _affected = new HashSet<CombatModifiers>();
         private readonly HashSet<CombatModifiers> _nearby = new HashSet<CombatModifiers>();
         private IShipAbilityFacade _caster;
         private float _range;
 
-        public SensorJammingAbility(IEntityLocator entities, IPlayerRelations relations)
+        public SensorJammingAbility(IEntityLocator entities, IPlayerRelations relations, SensorJammingSettings settings)
         {
             _entities = entities;
             _relations = relations;
+            _settings = settings;
         }
 
-        public bool IsComplete => !HasSensor(_caster) || _caster.Modifiers.AbilitiesSuppressed;
-        public bool SurvivesCasterDeath => false;
+        public bool IsComplete => !_settings.HasRequiredSubsystem(_caster.Health) || _caster.Modifiers.AbilitiesSuppressed;
 
         public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
         {
@@ -56,10 +55,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _affected.Clear();
             _nearby.Clear();
         }
-
-        private static bool HasSensor(IShipAbilityFacade caster) =>
-            caster.Health.GetShipUnits(HardPointType.SensorArray)
-                .Any(point => point.HardPointType == HardPointType.SensorArray && !point.IsDestroyed);
 
         private bool RemoveDistant(CombatModifiers modifiers)
         {

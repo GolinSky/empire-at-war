@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipAbilities.Abilities
 {
-    public sealed class TractorBeamAbility : IPhasedShipAbility, ITargetedShipAbility, IReplicaPersistentShipAbility
+    public sealed class TractorBeamAbility : ICompletableShipAbility, ITargetedShipAbility, IReplicaPersistentShipAbility
     {
         private readonly TractorBeamSettings _settings;
         private readonly CombatStatModifier _movementPenalty;
@@ -26,7 +26,6 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public bool IsComplete => _hardPoint.IsDestroyed || _target.HealthModel.IsDestroyed || _target.IsCloaked() || _targetTransform == null ||
             _caster.Modifiers.AbilitiesSuppressed ||
             !ShipAbilityRange.IsInRange(_caster, _target, _range);
-        public bool SurvivesCasterDeath => false;
 
         public TractorBeamAbility(TractorBeamSettings settings)
         {
@@ -39,18 +38,15 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _caster = caster;
             _target = target;
             _range = definition.Range;
-            _hardPoint = caster.Health.GetShipUnits(HardPointType.TractorBeam)
-                .First(point => point.HardPointType == HardPointType.TractorBeam && !point.IsDestroyed);
+            HardPointType subsystem = _settings.RequiredSubsystem;
+            _hardPoint = caster.Health.GetShipUnits(subsystem)
+                .First(point => point.HardPointType == subsystem && !point.IsDestroyed);
             _targetTransform = target.GetFacade<IEntityTransformFacade>().Transform;
             _targetModifiers = target.GetFacade<ICombatModifiersFacade>().Modifiers;
-            // Resolve the beam prefab first: a wrong prefab must fail before the target is slowed.
-            BeamShot beamPrefab = (BeamShot)_settings.Beam.ShotPrefab;
-            _applied = _targetModifiers.Add(_movementPenalty);
-            _view = Object.Instantiate(beamPrefab);
+            _view = Object.Instantiate(_settings.Beam.BeamPrefab);
             _view.PlayBeam(_hardPoint.Transform, _targetTransform, definition.Duration, _settings.Beam);
+            _applied = _targetModifiers.Add(_movementPenalty);
         }
-
-        public void Advance(float deltaTime) { }
 
         public void Stop()
         {
