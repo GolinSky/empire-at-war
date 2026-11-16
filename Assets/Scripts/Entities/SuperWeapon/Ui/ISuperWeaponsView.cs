@@ -17,7 +17,9 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
 
         void Dispose();
 
-        void SetState(SuperWeaponType type, SuperWeaponState state, bool canFire);
+        void SetReady(SuperWeaponType type, bool ready);
+
+        void SetRow(SuperWeaponType type, SuperWeaponState state, bool canAct, string detail, float progress);
 
         void SetPending(SuperWeaponType? type);
 
@@ -28,7 +30,5 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         void SetAvailable(bool available);
 
         void SetBattleAvailable(bool available);
-
-        void SetRemaining(SuperWeaponType type, float seconds);
     }
 }

@@ -1,14 +1,18 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Faction.Ui;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.Stations;
+using EmpireAtWar.Ui.Base;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -21,6 +25,44 @@ namespace EmpireAtWar.Tests.Editor
     [Category("BattleInput")]
     public sealed class FactionUnitAvailabilityTests
     {
+        [Test]
+        public void StationProduction_DoesNotCreateOrbitalPurchaseCards()
+        {
+            const string FACTION_ASSETS = "Assets/Settings/Data/Factions/";
+            const string SHARED_ASSETS = FACTION_ASSETS + "Shared/";
+            var roster = new FactionRoster(
+                AssetDatabase.LoadAssetAtPath<FactionDefinition>(FACTION_ASSETS + "Republic/RepublicFaction.asset"),
+                AssetDatabase.LoadAssetAtPath<MiningFacilityCatalog>(SHARED_ASSETS + "MiningFacilityCatalog.asset"),
+                AssetDatabase.LoadAssetAtPath<DefendPlatformCatalog>(SHARED_ASSETS + "DefendPlatformCatalog.asset"),
+                AssetDatabase.LoadAssetAtPath<SuperWeaponCatalog>(SHARED_ASSETS + "SuperWeaponCatalog.asset"));
+            StationLevelData levels = AssetDatabase.LoadAssetAtPath<StationLevelData>(
+                SHARED_ASSETS + "StationLevelData.asset");
+            GameObject root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/UiService.prefab");
+            FactionUi view = Object.Instantiate(AssetDatabase.LoadAssetAtPath<FactionUi>(
+                "Assets/Prefabs/Ui/Factions/FactionUi.prefab"), root.transform);
+            try
+            {
+                view.SetContentLayout(root.GetComponent<UiPlacement>().FactionLayout);
+                view.SetModel(new PlayerFactionModel(levels, roster) { SelectionType = SelectionType.Base });
+                view.SetResearch(new FactionResearchModel(roster));
+                view.AssignPresenter(new UnlockedPresenter());
+                view.SetData(roster);
+                view.SetUnitRequestFactory(new UnitRequestFactory());
+                view.SetSecondStation(new SecondStationLevelModel(), levels);
+                view.Initialize();
+
+                Assert.That(roster.SuperWeapons, Is.Not.Empty);
+                FactionUnitUi[] cards = view.GetComponentsInChildren<FactionUnitUi>(true);
+                Assert.That(cards.Any(card => card.Request is ShipUnitRequest), Is.True);
+                Assert.That(cards.Any(card => card.Request is SuperWeaponUnitRequest), Is.False);
+            }
+            finally
+            {
+                view.Dispose();
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
         [TestCase(false, false, false)]
         [TestCase(true, true, false)]
         [TestCase(true, false, true)]

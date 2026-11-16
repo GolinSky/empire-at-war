@@ -6,20 +6,26 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.DefendPlatform;
+using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.SuperWeapons.Controller;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Model;
 using EmpireAtWar.Models.Health;
+using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Components.Hangar;
@@ -27,6 +33,7 @@ using EmpireAtWar.Mvc;
 using EmpireAtWar.Ui.Base;
 using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -510,60 +517,183 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(button, Is.Not.Null);
                 Assert.That(button.transition, Is.EqualTo(Selectable.Transition.ColorTint));
                 Assert.That(buttonData.FindProperty("pendingHighlight").objectReferenceValue, Is.Not.Null);
+                Assert.That(buttonData.FindProperty("actionText").objectReferenceValue, Is.Not.Null);
+                Image progress = (Image)buttonData.FindProperty("buildProgress").objectReferenceValue;
+                Assert.That(progress, Is.Not.Null);
+                Assert.That(progress.type, Is.EqualTo(Image.Type.Filled));
             }
         }
 
         [Test]
         public void OrbitalPopup_OutsidePressDismissesWithoutCancelingTargetingAfterClose()
         {
-            GameObject root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/SkirmishGame/CoreGameUi.prefab");
-            try
-            {
-                ISuperWeaponsView view = root.GetComponent<CoreGameUi>().SuperWeaponsView;
-                SerializedObject viewData = new SerializedObject((SuperWeaponsView)view);
-                GameObject popup = (GameObject)viewData.FindProperty("popup").objectReferenceValue;
-                Button toggle = (Button)viewData.FindProperty("orbitalButton").objectReferenceValue;
-                Vector2 popupCenter = ScreenCenter((RectTransform)popup.transform);
-                Vector2 toggleCenter = ScreenCenter((RectTransform)toggle.transform);
-                Vector2 outside = new Vector2(-10000, -10000);
-                OrbitalPointer pointer = new OrbitalPointer();
-                SuperWeaponTargetingModel targeting = new SuperWeaponTargetingModel();
-                using InputActionsProvider inputActions = new InputActionsProvider();
-                SuperWeaponPresenter presenter = new SuperWeaponPresenter(
-                    superWeaponFireService: null, viewProvider: new OrbitalViewProvider(view), routeNavigation: null,
-                    abilities: new ShipAbilityService(null, null, null), localPlayer: null, uiService: null,
-                    cancelRouter: new UiCancelRouter(null), tooltipService: null, faction: null, bindings: null,
-                    battleState: null, model: new SuperWeaponModel(), targeting: targeting,
-                    unitTargeting: new UnitActionTargetingModel(), data: null, interfaceAudio: null, interfaceData: null,
-                    commands: null, notifications: null, pointer: pointer, inputActions: inputActions);
-                presenter.Activate(true);
+            using OrbitalMenuFixture menu = new OrbitalMenuFixture();
+            Vector2 popupCenter = ScreenCenter((RectTransform)menu.Popup.transform);
+            Vector2 toggleCenter = ScreenCenter((RectTransform)menu.Toggle.transform);
+            Vector2 outside = new Vector2(-10000, -10000);
+            menu.Toggle.onClick.Invoke();
+            menu.Pointer.Press(popupCenter);
+            Assert.That(menu.Popup.activeSelf, Is.True);
+            menu.Pointer.Press(toggleCenter);
+            Assert.That(menu.Popup.activeSelf, Is.True, "The toggle handles its own click on release.");
+            menu.Toggle.onClick.Invoke();
+            Assert.That(menu.Popup.activeSelf, Is.False);
 
-                toggle.onClick.Invoke();
-                pointer.Press(popupCenter);
-                Assert.That(popup.activeSelf, Is.True);
-                pointer.Press(toggleCenter);
-                Assert.That(popup.activeSelf, Is.True, "The toggle handles its own click on release.");
-                toggle.onClick.Invoke();
-                Assert.That(popup.activeSelf, Is.False);
+            menu.Toggle.onClick.Invoke();
+            menu.Pointer.Press(outside);
+            Assert.That(menu.Popup.activeSelf, Is.False);
+            Assert.That(menu.Presenter.IsFocused, Is.False);
 
-                toggle.onClick.Invoke();
-                pointer.Press(outside);
-                Assert.That(popup.activeSelf, Is.False);
-                Assert.That(presenter.IsFocused, Is.False);
+            menu.Targeting.Start(SuperWeaponType.IonCannon);
+            menu.Pointer.Press(outside);
+            Assert.That(menu.Targeting.Pending, Is.EqualTo(SuperWeaponType.IonCannon));
+        }
 
-                targeting.Start(SuperWeaponType.IonCannon);
-                pointer.Press(outside);
-                Assert.That(targeting.Pending, Is.EqualTo(SuperWeaponType.IonCannon));
-                presenter.Activate(false);
-            }
-            finally
-            {
-                PrefabUtility.UnloadPrefabContents(root);
-            }
+        [Test]
+        public void OrbitalRow_UsesTheProductionQueueThenAimsAReadyCharge()
+        {
+            using OrbitalMenuFixture menu = new OrbitalMenuFixture();
+            const SuperWeaponType WEAPON = SuperWeaponType.IonCannon;
+            Button action = (Button)menu.Row.FindProperty("button").objectReferenceValue;
+            TMP_Text label = (TMP_Text)menu.Row.FindProperty("actionText").objectReferenceValue;
+            TMP_Text detail = (TMP_Text)menu.Row.FindProperty("stateText").objectReferenceValue;
+            Image progress = (Image)menu.Row.FindProperty("buildProgress").objectReferenceValue;
+            menu.Toggle.onClick.Invoke();
+
+            Assert.That(action.interactable, Is.False);
+            Assert.That(detail.text, Is.EqualTo("Requires station level 3"));
+            menu.SecondStation.IsBuilt = true;
+            menu.SecondStation.CurrentLevel = 3;
+            menu.Presenter.Tick();
+            Assert.That(action.interactable, Is.False);
+            Assert.That(detail.text, Does.Contain("CR short"));
+            menu.Economy.AddMoney(menu.Request.FactionData.Price);
+            menu.Presenter.Tick();
+            Assert.That(action.interactable, Is.True);
+            Assert.That(label.text, Is.EqualTo("Buy charge"));
+            action.onClick.Invoke();
+            Assert.That(menu.Production.Purchased?.Kind, Is.EqualTo(UnitRequestKind.SuperWeapon));
+            Assert.That(menu.Production.Purchased?.Key, Is.EqualTo((int)WEAPON));
+
+            menu.Faction.Advance(menu.Request.FactionData.BuildTime / 2f);
+            menu.Presenter.Tick();
+            Assert.That(label.text, Is.EqualTo("Cancel build"));
+            Assert.That(progress.enabled, Is.True);
+            Assert.That(progress.fillAmount, Is.EqualTo(0.5f).Within(0.001f));
+            action.onClick.Invoke();
+            Assert.That(menu.Production.Canceled?.RequestId, Is.EqualTo(menu.Request.Id));
+            Assert.That(menu.Economy.Money, Is.EqualTo(menu.InitialMoney + menu.Request.FactionData.Price));
+
+            menu.Weapons.Restore(WEAPON, SuperWeaponState.Ready, 10f);
+            menu.Presenter.Tick();
+            Assert.That(action.interactable, Is.False);
+            Assert.That(label.text, Is.EqualTo("Waiting"));
+            menu.Weapons.Tick(10f);
+            menu.Presenter.Tick();
+            Assert.That(label.text, Is.EqualTo("Aim"));
+            action.onClick.Invoke();
+            Assert.That(menu.Popup.activeSelf, Is.False);
+            Assert.That(menu.Targeting.Pending, Is.EqualTo(WEAPON));
         }
 
         private static Vector2 ScreenCenter(RectTransform rect) =>
             RectTransformUtility.WorldToScreenPoint(null, rect.TransformPoint(rect.rect.center));
+
+        private sealed class OrbitalMenuFixture : IDisposable
+        {
+            private const string SHARED = "Assets/Settings/Data/Factions/Shared/";
+            private readonly GameObject _root = PrefabUtility.LoadPrefabContents(
+                "Assets/Prefabs/Ui/SkirmishGame/CoreGameUi.prefab");
+            private readonly InputActionsProvider _inputActions = new InputActionsProvider();
+            public int InitialMoney => 3200;
+            public OrbitalPointer Pointer { get; } = new OrbitalPointer();
+            public SuperWeaponModel Weapons { get; } = new SuperWeaponModel();
+            public SuperWeaponTargetingModel Targeting { get; } = new SuperWeaponTargetingModel();
+            public SecondStationLevelModel SecondStation { get; } = new SecondStationLevelModel();
+            public PlayerFactionModel Faction { get; }
+            public EconomyModel Economy { get; }
+            public OrbitalProduction Production { get; }
+            public SuperWeaponUnitRequest Request { get; }
+            public GameObject Popup { get; }
+            public Button Toggle { get; }
+            public SerializedObject Row { get; }
+            public SuperWeaponPresenter Presenter { get; }
+
+            public OrbitalMenuFixture()
+            {
+                SuperWeaponsView view = (SuperWeaponsView)_root.GetComponent<CoreGameUi>().SuperWeaponsView;
+                SerializedObject viewData = new SerializedObject(view);
+                Popup = (GameObject)viewData.FindProperty("popup").objectReferenceValue;
+                Toggle = (Button)viewData.FindProperty("orbitalButton").objectReferenceValue;
+                SuperWeaponButton row = Array.Find(Popup.GetComponentsInChildren<SuperWeaponButton>(true),
+                    candidate => candidate.WeaponType == SuperWeaponType.IonCannon);
+                Row = new SerializedObject(row);
+
+                FactionRoster roster = new FactionRoster(AssetDatabase.LoadAssetAtPath<FactionDefinition>(
+                    "Assets/Settings/Data/Factions/Republic/RepublicFaction.asset"),
+                    AssetDatabase.LoadAssetAtPath<MiningFacilityCatalog>(SHARED + "MiningFacilityCatalog.asset"),
+                    AssetDatabase.LoadAssetAtPath<DefendPlatformCatalog>(SHARED + "DefendPlatformCatalog.asset"),
+                    AssetDatabase.LoadAssetAtPath<SuperWeaponCatalog>(SHARED + "SuperWeaponCatalog.asset"));
+                Faction = new PlayerFactionModel(null, roster);
+                Economy = new EconomyModel(null, InitialMoney);
+                UnitRequestFactory factory = new UnitRequestFactory();
+                Request = factory.ConstructUnitRequest(roster.SuperWeapons[SuperWeaponType.IonCannon], SuperWeaponType.IonCannon);
+                Production = new OrbitalProduction(this);
+                PlayerCommandHandlers handlers = new PlayerCommandHandlers();
+                ILocalPlayer local = TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel());
+                handlers.RegisterProduction(local.Id, Production);
+                Presenter = new SuperWeaponPresenter(
+                    superWeaponFireService: null, viewProvider: new OrbitalViewProvider(view), routeNavigation: null,
+                    abilities: new ShipAbilityService(null, null, null), localPlayer: local, uiService: null,
+                    cancelRouter: new UiCancelRouter(null), tooltipService: null, faction: Faction, bindings: null,
+                    battleState: null, model: Weapons, targeting: Targeting,
+                    unitTargeting: new UnitActionTargetingModel(), data: null, interfaceAudio: null, interfaceData: null,
+                    commands: new AuthorityCommandSink(null, null, handlers, null), notifications: null, pointer: Pointer,
+                    inputActions: _inputActions, roster: roster, requestFactory: factory, economy: Economy,
+                    secondStation: SecondStation, productionAccess: new OrbitalProductionAccess());
+                Presenter.Activate(true);
+            }
+
+            public void Dispose()
+            {
+                Presenter.Activate(false);
+                _inputActions.Dispose();
+                PrefabUtility.UnloadPrefabContents(_root);
+            }
+        }
+
+        private sealed class OrbitalProduction : IProductionCommandHandler
+        {
+            private readonly OrbitalMenuFixture _menu;
+            public PurchaseUnitCommand? Purchased { get; private set; }
+            public CancelPurchaseCommand? Canceled { get; private set; }
+
+            public OrbitalProduction(OrbitalMenuFixture menu) => _menu = menu;
+
+            public void Purchase(PurchaseUnitCommand command)
+            {
+                Purchased = command;
+                Assert.That(_menu.Economy.TrySpend(_menu.Request.FactionData.Price), Is.True);
+                _menu.Faction.QueueUnit(_menu.Request);
+                _menu.Weapons.StartCharging(_menu.Request.Key);
+            }
+
+            public void Cancel(CancelPurchaseCommand command)
+            {
+                Canceled = command;
+                Assert.That(_menu.Faction.TryCancelCurrentUnit(command.RequestId, out UnitRequest request), Is.True);
+                _menu.Weapons.CancelCharging(_menu.Request.Key);
+                _menu.Economy.AddMoney(request.FactionData.Price);
+            }
+        }
+
+        private sealed class OrbitalProductionAccess : IProductionAccess
+        {
+            public bool CanProduce => true;
+            public bool HasHostBase => true;
+            public PlayerId ProductionHost => TestPlayers.Human;
+            public bool TryGetProductionBase(out IEntity productionBase) => throw new NotSupportedException();
+        }
 
         private sealed class OrbitalViewProvider : ISuperWeaponsViewProvider
         {

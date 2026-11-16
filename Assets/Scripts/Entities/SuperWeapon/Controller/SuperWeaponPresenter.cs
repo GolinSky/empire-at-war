@@ -2,6 +2,7 @@ using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
 using EmpireAtWar.Services.Tooltip;
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Entities.BaseEntity;
@@ -17,15 +18,17 @@ using VContainer;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.Stations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace EmpireAtWar.Entities.SuperWeapons.Controller
 {
     /// <summary>
-    /// Player superweapon buttons: a ready weapon starts targeting, the next valid enemy click fires it.
+    /// Manages orbital charge purchases and targeting from the battle HUD.
     /// Binds to the core UI through its route so it works regardless of container initialization order.
     /// </summary>
     public sealed class SuperWeaponPresenter : UiController, IInitializable, ILateDisposable, ISkirmishUiRoute, ITickable,
@@ -35,14 +38,23 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         private readonly IInterfaceSfxService _interfaceAudio;
         private readonly InterfaceSfxData _interfaceData;
         private readonly IBattleNotifications _notifications;
-        private readonly System.Collections.Generic.Dictionary<SuperWeaponType, SuperWeaponState> _lastStates = new();
+        private static readonly SuperWeaponType[] WeaponTypes =
+            (SuperWeaponType[])Enum.GetValues(typeof(SuperWeaponType));
+
+        private readonly Dictionary<SuperWeaponType, SuperWeaponState> _lastStates = new();
+        private readonly Dictionary<SuperWeaponType, SuperWeaponUnitRequest> _purchases = new();
         private bool _isBattleRunning;
         private readonly ISuperWeaponFireService _superWeaponFireService;
         private readonly ISuperWeaponsViewProvider _viewProvider;
         private readonly ISkirmishRouteNavigation _routeNavigation;
         private readonly IShipAbilityTargeting _abilities;
         private ISuperWeaponsView _view;
-        private readonly IPlayerFactionModelObserver _faction;
+        private readonly PlayerFactionModel _faction;
+        private readonly FactionRoster _roster;
+        private readonly IUnitRequestFactory _requestFactory;
+        private readonly IEconomyModelObserver _economy;
+        private readonly SecondStationLevelModel _secondStation;
+        private readonly IProductionAccess _productionAccess;
         private readonly IInputBindings _bindings;
         private readonly IPointerInput _pointer;
         private readonly InputAction _command;
@@ -63,13 +75,15 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             ISkirmishRouteNavigation routeNavigation, IShipAbilityTargeting abilities,
             ILocalPlayer localPlayer,
             IUiService uiService, IUiCancelRouter cancelRouter,
-            ITooltipService tooltipService, IPlayerFactionModelObserver faction, IInputBindings bindings,
+            ITooltipService tooltipService, PlayerFactionModel faction, IInputBindings bindings,
             INotifier<BattleState> battleState, SuperWeaponModel model,
             SuperWeaponTargetingModel targeting,
             UnitActionTargetingModel unitTargeting,
             SuperWeaponData data, IInterfaceSfxService interfaceAudio,
             InterfaceSfxData interfaceData, IPlayerCommandSink commands,
-            IBattleNotifications notifications, IPointerInput pointer, InputActionsProvider inputActions)
+            IBattleNotifications notifications, IPointerInput pointer, InputActionsProvider inputActions,
+            FactionRoster roster, IUnitRequestFactory requestFactory, IEconomyModelObserver economy,
+            SecondStationLevelModel secondStation, IProductionAccess productionAccess)
             : base(uiService, cancelRouter)
         {
             _notifications = notifications;
@@ -87,6 +101,11 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _tooltips = new TooltipRequests(tooltipService);
             _data = data;
             _faction = faction;
+            _roster = roster;
+            _requestFactory = requestFactory;
+            _economy = economy;
+            _secondStation = secondStation;
+            _productionAccess = productionAccess;
             _bindings = bindings;
             _pointer = pointer;
             _command = inputActions.Actions.Battle.Command;
@@ -140,10 +159,13 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             _unitTargeting.Changed += HandleUnitTargetingChanged;
             _abilities.TargetingChanged += HandleAbilityTargetingChanged;
 
-            foreach (SuperWeaponType type in Enum.GetValues(typeof(SuperWeaponType)))
+            foreach (var entry in _roster.SuperWeapons)
+                _purchases.Add(entry.Key, _requestFactory.ConstructUnitRequest(entry.Value, entry.Key));
+
+            foreach (SuperWeaponType type in WeaponTypes)
             {
                 _lastStates[type] = _model.GetState(type);
-                _view.SetState(type, _model.GetState(type), _model.CanFire(type));
+                _view.SetReady(type, _model.CanFire(type));
             }
             RenderPending();
         }
@@ -167,19 +189,18 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             Unfocus();
             _view.Dispose();
             _view = null;
+            _purchases.Clear();
         }
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source)
         {
             SuperWeaponType type = Enum.Parse<SuperWeaponType>((string)key);
-            _tooltips.Show(source, type, anchor, () => _view != null, () =>
+            _tooltips.Show(source, type, anchor, () => _isOpen, () =>
             {
                 SuperWeaponProfile profile = _data.GetProfile(type);
                 SuperWeaponState state = _model.GetState(type);
-                float remaining = 0f;
-                foreach (var queue in _faction.GetProductionQueueSnapshots())
-                    if (queue.UnitRequest is SuperWeaponUnitRequest request && request.Key == type)
-                        remaining = queue.RemainingBuildTime;
+                ProductionQueueSnapshot queue = FindQueue(_faction.GetProductionQueueSnapshots(), type);
+                string detail = GetRowDetail(type, state, queue, out _, out _);
                 return new TooltipContent(title: type.ToString(),
                     description: $"Fire at a hostile ship or station; fighters are not valid targets. Choose with {TooltipBindings.Get(_bindings, "Battle", "Command")}; cancel with {TooltipBindings.Get(_bindings, "Ui", "Cancel")}.",
                     stats: new[]
@@ -191,19 +212,31 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                         new TooltipStat(label: "Area damage", current: profile.AreaDamage),
                         new TooltipStat(label: "Area radius", current: profile.AreaRadius),
                         new TooltipStat(label: "Stun duration (s)", current: profile.StunDuration)
-                    }, status: state == SuperWeaponState.Charging ? $"Construction: {remaining:0.#} s remaining"
-                        : state == SuperWeaponState.Ready && !_model.CanFire(type) ? $"Cooldown: can fire in {_model.GetCooldownRemaining(type):0.#} s"
-                        : state == SuperWeaponState.Ready ? "Ready: click to select a target"
-                        : "Unavailable: build a new charge at the station");
+                    }, status: detail);
             });
         }
 
         private void HandlePressed(SuperWeaponType type)
         {
-            if (_isBattleEnded) return;
+            if (_isBattleEnded || !_isOpen) return;
             if (_targeting.Pending == type)
             {
                 _targeting.Cancel();
+                return;
+            }
+
+            ProductionQueueSnapshot queue = FindQueue(_faction.GetProductionQueueSnapshots(), type);
+            if (queue != null)
+            {
+                if (_economy != null)
+                    _commands.Submit(new CancelPurchaseCommand(_localPlayer.Id, queue.UnitRequest.Id));
+                return;
+            }
+
+            if (_model.CanPurchase(type))
+            {
+                if (_purchases.TryGetValue(type, out SuperWeaponUnitRequest request) && GetPurchaseBlocker(request) == null)
+                    _commands.Submit(PurchaseUnitCommand.From(_localPlayer.Id, request));
                 return;
             }
 
@@ -213,6 +246,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             // The dropdown only picks the weapon; the target is chosen on the battlefield.
             _isOpen = false;
             _view.SetOpen(false);
+            _tooltips.HideAll();
             _targeting.Start(type);
         }
 
@@ -241,7 +275,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         {
             SuperWeaponState previous = _lastStates[type];
             _lastStates[type] = state;
-            _view.SetState(type, state, _model.CanFire(type));
+            _view.SetReady(type, _model.CanFire(type));
             if (!_model.CanFire(type) && _targeting.Pending == type) _targeting.Cancel();
             if (_model.IsRestoring || !_isBattleRunning) return;
             if (previous == SuperWeaponState.Unavailable && state == SuperWeaponState.Charging)
@@ -291,6 +325,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 return;
             }
             _isOpen = true;
+            RenderRows();
             _view.SetOpen(true);
             RenderPending();
         }
@@ -299,6 +334,7 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
         {
             _isOpen = false;
             _view.SetOpen(false);
+            _tooltips.HideAll();
             _targeting.Cancel();
             RenderPending();
         }
@@ -312,13 +348,81 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
                 if (_isOpen || _targeting.Pending != null) ClosePopup();
                 return;
             }
-            if (!_isOpen) return;
-            foreach (var queue in _faction.GetProductionQueueSnapshots())
-                if (queue.UnitRequest is SuperWeaponUnitRequest request)
-                    _view.SetRemaining(request.Key, queue.RemainingBuildTime);
-            foreach (SuperWeaponType type in Enum.GetValues(typeof(SuperWeaponType)))
-                if (_model.GetState(type) == SuperWeaponState.Ready && !_model.CanFire(type))
-                    _view.SetRemaining(type, _model.GetCooldownRemaining(type));
+            if (_isOpen) RenderRows();
+        }
+
+        private void RenderRows()
+        {
+            IReadOnlyList<ProductionQueueSnapshot> queues = _faction.GetProductionQueueSnapshots();
+            foreach (SuperWeaponType type in WeaponTypes)
+            {
+                ProductionQueueSnapshot queue = FindQueue(queues, type);
+                SuperWeaponState state = queue != null ? SuperWeaponState.Charging : _model.GetState(type);
+                string detail = GetRowDetail(type, state, queue, out bool canAct, out float progress);
+                _view.SetRow(type, state, canAct, detail, progress);
+            }
+        }
+
+        private string GetRowDetail(SuperWeaponType type, SuperWeaponState state, ProductionQueueSnapshot queue,
+            out bool canAct, out float progress)
+        {
+            float cooldown = _model.GetCooldownRemaining(type);
+            string cooldownText = cooldown > 0f ? $" · Cooldown {FormatTime(cooldown)}" : "";
+            progress = 0f;
+            if (queue != null)
+            {
+                canAct = _economy != null;
+                progress = Mathf.Clamp01(1f - queue.RemainingBuildTime / queue.UnitRequest.FactionData.BuildTime);
+                return $"Building {FormatTime(queue.RemainingBuildTime)}{cooldownText}";
+            }
+
+            if (state == SuperWeaponState.Charging)
+            {
+                canAct = false;
+                return $"Building{cooldownText}";
+            }
+
+            if (state == SuperWeaponState.Ready)
+            {
+                canAct = _model.CanFire(type);
+                return canAct ? "Ready · 1 charge" : $"Cooldown {FormatTime(cooldown)}";
+            }
+
+            if (!_purchases.TryGetValue(type, out SuperWeaponUnitRequest request))
+            {
+                canAct = false;
+                return "Unavailable for this faction";
+            }
+
+            string blocker = GetPurchaseBlocker(request);
+            canAct = blocker == null;
+            FactionData data = request.FactionData;
+            return blocker ?? $"{data.Price:N0} CR · {data.BuildTime:0} s build{cooldownText}";
+        }
+
+        private string GetPurchaseBlocker(SuperWeaponUnitRequest request)
+        {
+            if (_economy == null) return "Purchases unavailable";
+            if (!_productionAccess.CanProduce || !_productionAccess.HasHostBase) return "Requires a production station";
+            FactionData data = request.FactionData;
+            int level = Math.Max(_faction.CurrentLevel, _secondStation.IsBuilt ? _secondStation.CurrentLevel : 1);
+            if (level < data.AvailableLevel) return $"Requires station level {data.AvailableLevel}";
+            if (_economy.Money < data.Price) return $"{data.Price:N0} CR · {Math.Ceiling(data.Price - _economy.Money):N0} CR short";
+            return _faction.CanQueueUnit(request) ? null : "Production queue full";
+        }
+
+        private static ProductionQueueSnapshot FindQueue(IReadOnlyList<ProductionQueueSnapshot> queues,
+            SuperWeaponType type)
+        {
+            foreach (ProductionQueueSnapshot queue in queues)
+                if (queue.UnitRequest is SuperWeaponUnitRequest request && request.Key == type) return queue;
+            return null;
+        }
+
+        private static string FormatTime(float seconds)
+        {
+            int rounded = Mathf.CeilToInt(seconds);
+            return $"{rounded / 60:00}:{rounded % 60:00}";
         }
     }
 }

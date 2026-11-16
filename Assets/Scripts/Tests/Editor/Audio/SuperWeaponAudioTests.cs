@@ -215,7 +215,8 @@ namespace EmpireAtWar.Tests.Editor
                     faction: null, bindings: null, battleState: null, model: model,
                     targeting: new SuperWeaponTargetingModel(), unitTargeting: null, data: null,
                     interfaceAudio: audio, interfaceData: data, commands: commands,
-                    notifications: new BattleNotificationFeed(), pointer: null, inputActions: inputActions);
+                    notifications: new BattleNotificationFeed(), pointer: null, inputActions: inputActions,
+                    roster: null, requestFactory: null, economy: null, secondStation: null, productionAccess: null);
                 SetField(presenter, "_view", new View());
                 var states = (Dictionary<SuperWeaponType, SuperWeaponState>)typeof(SuperWeaponPresenter)
                     .GetField("_lastStates", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(presenter);
@@ -367,13 +368,13 @@ namespace EmpireAtWar.Tests.Editor
             public event Action CloseRequested { add { } remove { } }
             public void Initialize() { }
             public void Dispose() { }
-            public void SetState(SuperWeaponType type, SuperWeaponState state, bool canFire) { }
+            public void SetReady(SuperWeaponType type, bool ready) { }
+            public void SetRow(SuperWeaponType type, SuperWeaponState state, bool canAct, string detail, float progress) { }
             public void SetPending(SuperWeaponType? type) { }
             public void SetOpen(bool open) { }
             public bool ContainsScreenPoint(Vector2 position) => throw new NotSupportedException();
             public void SetAvailable(bool available) { }
             public void SetBattleAvailable(bool available) { }
-            public void SetRemaining(SuperWeaponType type, float seconds) { }
         }
     }
 }

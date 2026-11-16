@@ -10,14 +10,22 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
         [SerializeField] private Button button;
         [SerializeField] private GameObject pendingHighlight;
         [SerializeField] private TMP_Text stateText;
+        [SerializeField] private TMP_Text actionText;
+        [SerializeField] private Image buildProgress;
         [SerializeField] private CanvasGroup contentGroup;
         [SerializeField] private MPUIKIT.MPImage background;
 
         [SerializeField] private SuperWeaponType weaponType;
-        private SuperWeaponState _state;
-        private bool _isCoolingDown;
-
         private bool _pending;
+
+        private static readonly Color32 Gold = new(210, 169, 94, 255);
+        private static readonly Color32 Blue = new(109, 184, 226, 255);
+        private static readonly Color32 Warning = new(232, 110, 108, 255);
+        private static readonly Color32 Slate = new(32, 46, 64, 255);
+        private static readonly Color32 Outline = new(52, 67, 87, 255);
+        private static readonly Color32 LightText = new(242, 240, 230, 255);
+        private static readonly Color32 DarkText = new(16, 26, 41, 255);
+        private static readonly Color32 AimFill = new(39, 70, 91, 255);
 
         public event Action<SuperWeaponType> Pressed;
 
@@ -27,38 +35,34 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
 
         public void Dispose() => button.onClick.RemoveListener(HandleClick);
 
-        public void SetState(SuperWeaponState state, bool canFire)
+        public void Render(SuperWeaponState state, bool canAct, string detail, float progress)
         {
-            _state = state;
-            _isCoolingDown = state == SuperWeaponState.Ready && !canFire;
-            button.interactable = canFire;
-            contentGroup.alpha = state == SuperWeaponState.Unavailable ? 0.35f : 1f;
-            RenderState();
+            bool charging = state == SuperWeaponState.Charging;
+            bool ready = state == SuperWeaponState.Ready && canAct;
+            bool buy = state == SuperWeaponState.Unavailable && canAct;
+            button.interactable = canAct;
+            contentGroup.alpha = 1f;
+            pendingHighlight.SetActive(_pending);
+            stateText.text = _pending ? "Targeting" : detail;
+            stateText.color = _pending || charging ? Gold : canAct ? Blue : Warning;
+            background.OutlineColor = _pending || charging ? Gold : ready ? Blue : Outline;
+            buildProgress.enabled = charging;
+            buildProgress.fillAmount = progress;
+            actionText.text = state switch
+            {
+                SuperWeaponState.Charging => "Cancel build",
+                SuperWeaponState.Ready when _pending => "Cancel aim",
+                SuperWeaponState.Ready => canAct ? "Aim" : "Waiting",
+                _ => "Buy charge"
+            };
+            actionText.color = buy ? DarkText : LightText;
+            button.targetGraphic.color = buy ? Gold : ready ? AimFill : Slate;
         }
 
         public void SetPending(bool pending)
         {
             _pending = pending;
             pendingHighlight.SetActive(pending);
-            RenderState();
-        }
-
-        public void SetRemaining(float seconds)
-        {
-            if ((_state == SuperWeaponState.Charging || _isCoolingDown) && !_pending)
-                stateText.text = $"{(int)seconds / 60:00}:{(int)seconds % 60:00}";
-        }
-
-        private void RenderState()
-        {
-            stateText.text = _pending ? "TARGETING" : _isCoolingDown ? "COOLDOWN" : _state.ToString().ToUpperInvariant();
-            stateText.color = _pending || _state == SuperWeaponState.Charging
-                ? new Color32(210, 169, 94, 255)
-                : _isCoolingDown ? new Color32(232, 110, 108, 255)
-                : new Color32(109, 184, 226, 255);
-            background.OutlineColor = _pending ? new Color32(210, 169, 94, 255)
-                : _state == SuperWeaponState.Ready ? new Color32(109, 184, 226, 255)
-                : new Color32(52, 67, 87, 255);
         }
 
         private void HandleClick() => Pressed?.Invoke(weaponType);

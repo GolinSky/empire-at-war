@@ -101,13 +101,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
             AddUi(_unitRequestFactory.ConstructSecondStationRequest(_stationLevels.GetSecondStationFactionData(_roster.FactionType)));
             CreateSecondLevelUnit();
 
-            foreach (var data in _roster.SuperWeapons)
-            {
-                AddUi(_unitRequestFactory.ConstructUnitRequest(
-                    data.Value,
-                    data.Key));
-            }
-
             foreach (ResearchType researchType in _research.ResearchTypes)
             {
                 CreateResearchUnit(researchType);
@@ -229,8 +222,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         {
             ShipUnitRequest or SquadronUnitRequest => unitsRow,
             DefendPlatformUnitRequest or MiningFacilityUnitRequest or SecondStationUnitRequest
-                or ResearchUnitRequest or LevelUnitRequest or SecondStationLevelUnitRequest
-                or SuperWeaponUnitRequest => supportRow,
+                or ResearchUnitRequest or LevelUnitRequest or SecondStationLevelUnitRequest => supportRow,
             _ => throw new ArgumentOutOfRangeException(nameof(request))
         };
 

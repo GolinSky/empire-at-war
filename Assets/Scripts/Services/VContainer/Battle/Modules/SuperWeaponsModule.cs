@@ -43,7 +43,9 @@ namespace EmpireAtWar.Services.VContainer
 
         public void ConfigureLocalPlayer(IContainerBuilder builder, BattlePlayer player, Transform playerRoot)
         {
-            builder.Register<SuperWeaponPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            var presenter = builder.Register<SuperWeaponPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            if (!player.Has(BattleFeatures.Economy))
+                presenter.WithParameter("economy", (object)null);
             builder.Register<SuperWeaponNotifier>(Lifetime.Singleton)
                 .AsImplementedInterfaces();
         }

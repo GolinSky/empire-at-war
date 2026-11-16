@@ -61,13 +61,17 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
             }
         }
 
-        public void SetState(SuperWeaponType type, SuperWeaponState state, bool canFire)
+        public void SetReady(SuperWeaponType type, bool ready)
         {
-            if (canFire) _readyWeapons.Add(type);
+            if (ready) _readyWeapons.Add(type);
             else _readyWeapons.Remove(type);
             readyIndicator.SetActive(_readyWeapons.Count > 0);
+        }
+
+        public void SetRow(SuperWeaponType type, SuperWeaponState state, bool canAct, string detail, float progress)
+        {
             foreach (SuperWeaponButton button in buttons)
-                if (button.WeaponType == type) button.SetState(state, canFire);
+                if (button.WeaponType == type) button.Render(state, canAct, detail, progress);
         }
 
         public void SetPending(SuperWeaponType? type)
@@ -94,11 +98,5 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
             RectTransformUtility.RectangleContainsScreenPoint((RectTransform)orbitalButton.transform, position, null);
 
         public void SetBattleAvailable(bool available) => orbitalButton.interactable = available;
-
-        public void SetRemaining(SuperWeaponType type, float seconds)
-        {
-            foreach (SuperWeaponButton button in buttons)
-                if (button.WeaponType == type) button.SetRemaining(seconds);
-        }
     }
 }
