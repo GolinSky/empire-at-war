@@ -20,5 +20,7 @@ namespace EmpireAtWar.Components.AttackComponent
         InterceptorLaser = 14,
         /// <summary>Hero strikecraft guns: beat every squadron, hurt corvettes, and hit other heroes normally.</summary>
         HeroLaser = 15,
+        /// <summary>Precision ability damage: bypasses shields and hardpoints to strike the hull directly.</summary>
+        PrecisionStrike = 16,
     }
 }

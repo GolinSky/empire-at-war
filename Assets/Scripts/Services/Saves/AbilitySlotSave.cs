@@ -34,7 +34,8 @@ namespace EmpireAtWar.Services.Saves
             ? new AbilitySlotSave
             {
                 id = slot.Id, state = ShipAbilityState.Recovering,
-                timeLeft = slot.TimeLeft + slot.Definition.RecoveryDelay
+                timeLeft = (slot.RunningAbility is IShipAbilityRemainingTime timed
+                    ? timed.RemainingTime : slot.TimeLeft) + slot.Definition.RecoveryDelay
             }
             : new AbilitySlotSave { id = slot.Id, state = slot.State, timeLeft = slot.TimeLeft };
     }

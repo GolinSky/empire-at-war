@@ -60,6 +60,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 281bc338547624140b9b17b4a2feeafc
+    m_Address: LukeRedSquadronReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 28bf33787dff4614bb4849edba83c999
     m_Address: RebellionSecondStationReinforcementView
     m_ReadOnly: 0
@@ -222,6 +227,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8d9399b59c088904495f676c8fd57cf7
     m_Address: EnduranceWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ddd571940f0a3a4eac50765b1f16f3b
+    m_Address: LukeRedSquadronSquadronView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

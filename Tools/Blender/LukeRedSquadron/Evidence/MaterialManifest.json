@@ -1,0 +1,130 @@
+[
+  {
+    "index": 0,
+    "mesh": "Plane01",
+    "hidden": false,
+    "shader": "MeshAdditive.fx",
+    "signature": "16b7ac99a1b658402c94cf8f345bcb4a71bf4682aabc460030d635dba2d5aaa0",
+    "material": "LukeRedSquadron_M000_S00_16b7ac99a1b6",
+    "textures": {
+      "albedo": "Assets/Art/Textures/Models/RebellionShips/LukeRedSquadron/LukeRedSquadron_XY_Wing_Engine_Glow.png"
+    }
+  },
+  {
+    "index": 1,
+    "mesh": "Plane02",
+    "hidden": false,
+    "shader": "MeshAdditive.fx",
+    "signature": "16b7ac99a1b658402c94cf8f345bcb4a71bf4682aabc460030d635dba2d5aaa0",
+    "material": "LukeRedSquadron_M001_S00_16b7ac99a1b6",
+    "textures": {
+      "albedo": "Assets/Art/Textures/Models/RebellionShips/LukeRedSquadron/LukeRedSquadron_XY_Wing_Engine_Glow.png"
+    }
+  },
+  {
+    "index": 2,
+    "mesh": "Plane03",
+    "hidden": false,
+    "shader": "MeshAdditive.fx",
+    "signature": "16b7ac99a1b658402c94cf8f345bcb4a71bf4682aabc460030d635dba2d5aaa0",
+    "material": "LukeRedSquadron_M002_S00_16b7ac99a1b6",
+    "textures": {
+      "albedo": "Assets/Art/Textures/Models/RebellionShips/LukeRedSquadron/LukeRedSquadron_XY_Wing_Engine_Glow.png"
+    }
+  },
+  {
+    "index": 3,
+    "mesh": "Plane04",
+    "hidden": false,
+    "shader": "MeshAdditive.fx",
+    "signature": "16b7ac99a1b658402c94cf8f345bcb4a71bf4682aabc460030d635dba2d5aaa0",
+    "material": "LukeRedSquadron_M003_S00_16b7ac99a1b6",
+    "textures": {
+      "albedo": "Assets/Art/Textures/Models/RebellionShips/LukeRedSquadron/LukeRedSquadron_XY_Wing_Engine_Glow.png"
+    }
+  },
+  {
+    "index": 4,
+    "mesh": "Wing2",
+    "hidden": false,
+    "shader": "MeshBumpColorize.fx",
+    "signature": "24c8e3a0e6ae5e3dc6a6bfef7359424fcb5aad03d0823394d1d7392e1eb46c55",
+    "material": "LukeRedSquadron_M004_S00_24c8e3a0e6ae",
+    "textures": {
+      "albedo": "Assets/Art/Textures/Models/RebellionShips/LukeRedSquadron/LukeRedSquadron_T_Wings_diffuse.png",
+      "normal": "Assets/Art/Textures/Models/RebellionShips/LukeRedSquadron/LukeRedSquadron_T_Wings_NS.png"
+    }
+  },
+  {
+    "index": 5,
+    "mesh": "Shadowmesh",
+    "hidden": true,
+    "shader": "MeshShadowVolume.fx",
+    "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+    "material": "LukeRedSquadron_M005_S00_6c4b7839f50b",
+    "textures": {}
+  },
+  {
+    "index": 6,
+    "mesh": "Wing1_Shadowmesh",
+    "hidden": true,
+    "shader": "MeshShadowVolume.fx",
+    "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+    "material": "LukeRedSquadron_M006_S00_6c4b7839f50b",
+    "textures": {}
+  },
+  {
+    "index": 7,
+    "mesh": "Wing2_Shadowmesh",
+    "hidden": true,
+    "shader": "MeshShadowVolume.fx",
+    "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+    "material": "LukeRedSquadron_M007_S00_6c4b7839f50b",
+    "textures": {}
+  },
+  {
+    "index": 8,
+    "mesh": "Wing1",
+    "hidden": false,
+    "shader": "MeshBumpColorize.fx",
+    "signature": "24c8e3a0e6ae5e3dc6a6bfef7359424fcb5aad03d0823394d1d7392e1eb46c55",
+    "material": "LukeRedSquadron_M008_S00_24c8e3a0e6ae",
+    "textures": {
+      "albedo": "Assets/Art/Textures/Models/RebellionShips/LukeRedSquadron/LukeRedSquadron_T_Wings_diffuse.png",
+      "normal": "Assets/Art/Textures/Models/RebellionShips/LukeRedSquadron/LukeRedSquadron_T_Wings_NS.png"
+    }
+  },
+  {
+    "index": 9,
+    "mesh": "Astrodroid",
+    "hidden": false,
+    "shader": "MeshBumpColorize.fx",
+    "signature": "3dec4ae7589128bb9175ed5adae3f001585d81507abbc8ed687058f12fa2cc49",
+    "material": "LukeRedSquadron_M009_S00_3dec4ae75891",
+    "textures": {
+      "albedo": "Assets/Art/Textures/Models/RebellionShips/LukeRedSquadron/LukeRedSquadron_T_AstroDroid_diffuse.png",
+      "normal": "Assets/Art/Textures/Models/RebellionShips/LukeRedSquadron/LukeRedSquadron_T_AstroDroid_normal.png"
+    }
+  },
+  {
+    "index": 10,
+    "mesh": "Collision",
+    "hidden": true,
+    "shader": "MeshCollision.fx",
+    "signature": "a4028ae693045c51861978a695439be5c701d14fb628537fb50b299bde26de5e",
+    "material": "LukeRedSquadron_M010_S00_a4028ae69304",
+    "textures": {}
+  },
+  {
+    "index": 11,
+    "mesh": "Plane",
+    "hidden": false,
+    "shader": "MeshBumpColorize.fx",
+    "signature": "7d22af097026c766afbf3d968f5340b8e4ee3848ad636a4981c845186dc6378d",
+    "material": "LukeRedSquadron_M011_S00_7d22af097026",
+    "textures": {
+      "albedo": "Assets/Art/Textures/Models/RebellionShips/LukeRedSquadron/LukeRedSquadron_T_Fuselage_diffuse.png",
+      "normal": "Assets/Art/Textures/Models/RebellionShips/LukeRedSquadron/LukeRedSquadron_T_Fuselage_NS.png"
+    }
+  }
+]

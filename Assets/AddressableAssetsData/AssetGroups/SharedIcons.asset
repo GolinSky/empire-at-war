@@ -415,6 +415,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94df6c4c4e8a4cc47b956c7e85b516f4
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Rebellion/LukeRedSquadronIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 988c54fd851290641a5fe8c93eff1927
     m_Address: Assets/Art/Textures/Ui/Icons/Ui/AotrGolanIIIDefensePlatformIcon.png
     m_ReadOnly: 0

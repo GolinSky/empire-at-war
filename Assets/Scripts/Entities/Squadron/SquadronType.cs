@@ -39,5 +39,6 @@ namespace EmpireAtWar.Entities.Squadrons
         XWing = 300,
         YWingBomber = 301,
         HanSoloMillenniumFalcon = 302,
+        LukeRedSquadron = 303,
     }
 }

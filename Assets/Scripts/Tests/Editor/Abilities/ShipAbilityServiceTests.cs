@@ -8,6 +8,9 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.ViewComponents.Weapon;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Ship.EntityFacades;
 using EmpireAtWar.Models.Health;
@@ -205,6 +208,158 @@ namespace EmpireAtWar.Tests.Editor
             ability.Start(caster, new ShipAbilityDefinition(), target.Entity);
 
             Assert.That(revealCount, Is.Zero);
+        }
+
+        [TestCase(ShipClass.Capital, true)]
+        [TestCase(ShipClass.HeavyCapital, true)]
+        [TestCase(ShipClass.Structure, true)]
+        [TestCase(ShipClass.Fighter, false)]
+        [TestCase(ShipClass.Bomber, false)]
+        [TestCase(ShipClass.Interceptor, false)]
+        [TestCase(ShipClass.HeroStrikecraft, false)]
+        [TestCase(ShipClass.Corvette, false)]
+        [TestCase(ShipClass.Frigate, false)]
+        [TestCase(ShipClass.Cruiser, false)]
+        public void LuckyShot_OnlyTargetsCapitalShipsAndStructures(ShipClass targetClass, bool allowed)
+        {
+            var settings = new LuckyShotSettings();
+            var caster = CreateCaster();
+            caster.FakeHealth.Units = new IHardPointModel[] { new IonCannonStub() };
+            var target = CreateCaster();
+            target.FakeHealth.ShipClass = targetClass;
+            Assert.That(settings.CanTarget(caster, target.Entity), Is.EqualTo(allowed));
+            caster.FakeHealth.Units = new IHardPointModel[] { new IonCannonStub { Id = 1 } };
+            Assert.That(settings.CanTarget(caster, target.Entity), Is.False, "Wingmen cannot fire Luke's ability.");
+            caster.FakeHealth.Units = Array.Empty<IHardPointModel>();
+            Assert.That(settings.CanTarget(caster, target.Entity), Is.False);
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void LuckyShot_WindsUpThenOnlyAuthorityHitsOnceAndRecoversForSixtySeconds(bool authority)
+        {
+            var relations = TestPlayers.CreateDuel();
+            var vision = new VisionService(relations, fogEnabled: false);
+            var entities = new EntityLocator();
+            var catalog = UnityEditor.AssetDatabase.LoadAssetAtPath<ShipAbilityCatalog>(
+                "Assets/Settings/Data/Models/ShipAbilities/ShipAbilityCatalog.asset");
+            ShipAbilityDefinition definition = catalog.Get(ShipAbilityId.LuckyShot);
+            var settings = (LuckyShotSettings)definition.Settings;
+            var matrix = UnityEditor.AssetDatabase.LoadAssetAtPath<DamageMatrixData>(
+                "Assets/Settings/Data/Models/Weapon/DamageMatrixData.asset");
+            var ability = new LuckyShotAbility(settings, entities, null,
+                new ImpactEffectPresenter(null, matrix), vision,
+                new OnlineSession(authority, TestPlayers.Human));
+            var service = new ShipAbilityService(new SingleAbilityFactory(ability), relations, vision);
+            var muzzle = new GameObject("LukeMuzzle");
+            _targetView = new GameObject("LuckyShotTarget");
+            _targetView.transform.position = Vector3.forward * 100f;
+            var targetHealth = new FakeHealth(_targetView.transform);
+            var target = new FakeEntity(null, targetHealth, TestPlayers.Enemy, 2);
+            entities.AddEntity(target);
+            var caster = new FakeCommand(definition, muzzle.transform, ShipAbilityId.LuckyShot);
+            caster.FakeHealth.Units = new IHardPointModel[] { new IonCannonStub { Transform = muzzle.transform } };
+            ShotEffect shot = null;
+            try
+            {
+                Assert.That(service.TryActivate(caster, ShipAbilityId.LuckyShot, target), Is.True);
+                Assert.That(caster.AttackTarget, Is.EqualTo(authority ? target : null));
+                service.Advance(settings.Windup * 0.5f);
+                Assert.That(targetHealth.DamageReceived, Is.Zero);
+                Assert.That(ability.SurvivesCasterDeath, Is.False);
+                AbilitySlotSave windingUp = AbilitySlotSave.From(caster.Slots[0]);
+                Assert.That(windingUp.State, Is.EqualTo(ShipAbilityState.Recovering));
+                Assert.That(windingUp.TimeLeft, Is.EqualTo(60f + settings.Windup * 0.5f +
+                    100f / settings.Projectile.ProjectileSpeed).Within(0.001f));
+                service.Advance(settings.Windup * 0.5f);
+                shot = (ShotEffect)typeof(LuckyShotAbility)
+                    .GetField("_shot", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(ability);
+                Assert.That(shot, Is.Not.Null);
+                Assert.That(targetHealth.DamageReceived, Is.Zero, "Launch is not impact.");
+                Assert.That(ability.SurvivesCasterDeath, Is.True);
+                AbilitySlotSave inFlight = AbilitySlotSave.From(caster.Slots[0]);
+                Assert.That(inFlight.TimeLeft, Is.EqualTo(60f + 100f / settings.Projectile.ProjectileSpeed)
+                    .Within(0.001f));
+                var loaded = new FakeCommand(definition, muzzle.transform, ShipAbilityId.LuckyShot);
+                var restoredService = new ShipAbilityService(new FakeFactory(), relations, vision);
+                restoredService.Restore(loaded.Slots[0], inFlight.State, inFlight.TimeLeft);
+                Assert.That(loaded.Slots[0].RunningAbility, Is.Null, "Loading must not replay the shot.");
+                Assert.That(loaded.Slots[0].TimeLeft, Is.EqualTo(inFlight.TimeLeft));
+                restoredService.Clear();
+                service.Advance(100f / settings.Projectile.ProjectileSpeed + 0.01f);
+                Assert.That(targetHealth.DamageReceived, Is.EqualTo(authority ? 4000f : 0f));
+                if (authority) Assert.That(targetHealth.LastDamageType, Is.EqualTo(DamageType.PrecisionStrike));
+                Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
+                Assert.That(caster.Slots[0].TimeLeft, Is.EqualTo(60f));
+                service.Advance(59f);
+                Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
+                service.Advance(1f);
+                Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
+                Assert.That(targetHealth.DamageReceived, Is.EqualTo(authority ? 4000f : 0f));
+            }
+            finally
+            {
+                service.Clear();
+                if (shot != null) UnityEngine.Object.DestroyImmediate(shot.gameObject);
+                UnityEngine.Object.DestroyImmediate(muzzle);
+            }
+        }
+
+        [Test]
+        public void LuckyShot_RemovedTargetDuringWindupCancelsWithoutDamage()
+        {
+            var entities = new EntityLocator();
+            var ability = new LuckyShotAbility(new LuckyShotSettings(), entities, null, null,
+                new VisionService(TestPlayers.CreateDuel(), fogEnabled: false),
+                new OfflineSession(TestPlayers.Human));
+            FakeCommand caster = CreateCaster();
+            caster.FakeHealth.Units = new IHardPointModel[] { new IonCannonStub() };
+            FakeCommand target = CreateCaster();
+            entities.AddEntity(target.Entity);
+            ability.Start(caster, new ShipAbilityDefinition(), target.Entity);
+            entities.RemoveEntity(target.Entity);
+            ability.Advance(2f);
+            Assert.That(ability.IsComplete, Is.True);
+            Assert.That(target.FakeHealth.DamageReceived, Is.Zero);
+            ability.Stop();
+        }
+
+        [TestCase(UnitOrderType.Move)]
+        [TestCase(UnitOrderType.None)]
+        public void LuckyShot_MoveOrStopDuringWindupCancelsWithoutLaunching(UnitOrderType order)
+        {
+            var entities = new EntityLocator();
+            var ability = new LuckyShotAbility(new LuckyShotSettings(), entities, null, null,
+                new VisionService(TestPlayers.CreateDuel(), fogEnabled: false),
+                new OfflineSession(TestPlayers.Human));
+            FakeCommand caster = CreateCaster();
+            caster.FakeHealth.Units = new IHardPointModel[] { new IonCannonStub() };
+            FakeCommand target = CreateCaster();
+            entities.AddEntity(target.Entity);
+            ability.Start(caster, new ShipAbilityDefinition(), target.Entity);
+            caster.CurrentOrder = order;
+            ability.Advance(2f);
+            Assert.That(ability.IsComplete, Is.True);
+            Assert.That(ability.SurvivesCasterDeath, Is.False);
+            Assert.That(target.FakeHealth.DamageReceived, Is.Zero);
+            ability.Stop();
+        }
+
+        [Test]
+        public void LuckyShot_ReplicaActivationAfterLeaderLossDoesNotFireFromAWingman()
+        {
+            var ability = new LuckyShotAbility(new LuckyShotSettings(), new EntityLocator(), null, null,
+                new VisionService(TestPlayers.CreateDuel(), fogEnabled: false),
+                new OnlineSession(false, TestPlayers.Human));
+            FakeCommand caster = CreateCaster();
+            caster.FakeHealth.Units = new IHardPointModel[] { new IonCannonStub { Id = 1 } };
+            FakeCommand target = CreateCaster();
+            ability.Start(caster, new ShipAbilityDefinition(), target.Entity);
+            ability.Advance(2f);
+            Assert.That(ability.IsComplete, Is.True);
+            Assert.That(ability.SurvivesCasterDeath, Is.False);
+            Assert.That(target.FakeHealth.DamageReceived, Is.Zero);
+            ability.Stop();
         }
 
         private static void SetBeamField(SustainedBeamAbility beam, string name, object value) =>
@@ -1129,15 +1284,16 @@ namespace EmpireAtWar.Tests.Editor
             public event Action OnDestroyed { add { } remove { } }
             public HardPointType HardPointType => HardPointType.IonPulseCannon;
             public float HealthPercentage => 1f;
-            public int Id => 0;
+            public int Id { get; set; }
             public int Generation => 0;
             public bool IsDestroyed => false;
-            public Vector3 Position => Vector3.right;
-            public Transform Transform => null;
+            public Vector3 Position => Transform == null ? Vector3.right : Transform.position;
+            public Transform Transform { get; set; }
             public Transform Pivot => null;
         }
 
-        private sealed class FakeCommand : IShipAbilityFacade, ICombatModifiersFacade, IAbilityFacingFacade, IHangarCommand
+        private sealed class FakeCommand : IShipAbilityFacade, ICombatModifiersFacade, IAbilityFacingFacade, IHangarCommand,
+            IAttackFacade, IUnitOrderObserverFacade
         {
             public IReadOnlyList<ShipAbilitySlot> Slots { get; }
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
@@ -1146,6 +1302,14 @@ namespace EmpireAtWar.Tests.Editor
             public FakeHealth FakeHealth { get; }
             public IHealthModelObserver Health => FakeHealth;
             public float RadarRange => 20f;
+            public float NavigationRadius => 0f;
+            public UnitOrderType CurrentOrder { get; set; }
+            public IEntity AttackTarget { get; private set; }
+            public void Attack(IEntity target, Vector3 formationOffset)
+            {
+                AttackTarget = target;
+                CurrentOrder = UnitOrderType.Attack;
+            }
 
             public bool IsAbilityFacing { get; private set; }
             public void BeginAbilityFacing() => IsAbilityFacing = true;
@@ -1214,7 +1378,12 @@ namespace EmpireAtWar.Tests.Editor
         {
             public float NavigationRadius { get; set; }
             public float DamageReceived { get; private set; }
-            public void ApplyDamage(float damage, DamageType damageType, int id) => DamageReceived += damage;
+            public DamageType LastDamageType { get; private set; }
+            public void ApplyDamage(float damage, DamageType damageType, int id)
+            {
+                DamageReceived += damage;
+                LastDamageType = damageType;
+            }
 
             public event Action OnDestroy { add { } remove { } }
 
@@ -1222,7 +1391,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
             public float Hull => 1f;
-            public ShipClass ShipClass => ShipClass.Capital;
+            public ShipClass ShipClass { get; set; } = ShipClass.Capital;
             public bool HasLiveHardPoints => true;
             public float HullPercentage => 1f;
             public float Shields => 1f;

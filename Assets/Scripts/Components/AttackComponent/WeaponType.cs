@@ -114,5 +114,7 @@ namespace EmpireAtWar.Components.AttackComponent
         AsajjVentressLaser = 167,
         SevranceTannLaser = 168,
         DarthVaderEscortLaser = 165,
+        LukeSkywalkerLaser = 169,
+        RedSquadronEscortLaser = 170,
     }
 }

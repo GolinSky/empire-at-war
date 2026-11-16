@@ -97,6 +97,44 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void PrecisionStrike_HitsHullWithoutDamagingShieldsOrHardpoints()
+        {
+            HealthModel model = CreateModel(SHIELDS, out HardPointModel weapon, out HardPointModel engine,
+                out HardPointModel generator);
+            model.ApplyDamage(400f, DamageType.PrecisionStrike, 0);
+
+            Assert.That(model.Hull, Is.EqualTo(HULL - 400f));
+            Assert.That(model.Shields, Is.EqualTo(SHIELDS));
+            Assert.That(weapon.Health, Is.EqualTo(100f));
+            Assert.That(engine.Health, Is.EqualTo(200f));
+            Assert.That(generator.Health, Is.EqualTo(150f));
+        }
+
+        [TestCase(0f, 1000f, 0)]
+        [TestCase(0.5f, 800f, 0)]
+        [TestCase(3f, 0f, 1)]
+        public void PrecisionStrike_RespectsDefensesAndRaisesDeathOnce(float damageTaken, float hull, int deaths)
+        {
+            var modifiers = new CombatModifiers();
+            modifiers.Add(new CombatStatModifier(1f, 1f, 1f, 1f, damageTaken));
+            var model = new HealthModel(new HealthDataStub(SHIELDS), _matrix, modifiers,
+                new HardPointHealthBudget());
+            int destroyed = 0;
+            model.OnDestroy += () => destroyed++;
+
+            model.ApplyDamage(400f, DamageType.PrecisionStrike, 0);
+
+            Assert.That(model.Hull, Is.EqualTo(hull));
+            Assert.That(model.Shields, Is.EqualTo(SHIELDS));
+            Assert.That(destroyed, Is.EqualTo(deaths));
+            if (deaths > 0)
+            {
+                model.ApplyDamage(400f, DamageType.PrecisionStrike, 0);
+                Assert.That(destroyed, Is.EqualTo(1));
+            }
+        }
+
+        [Test]
         public void CopyShipUnits_ReplacesBufferWithLiveUnitsThenInstalledWrecks()
         {
             const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;

@@ -473,6 +473,23 @@ MonoBehaviour:
         autoPower: 0
         settings:
           rid: 2035977045847834708
+    - key: 56
+      value:
+        icon: {fileID: 21300000, guid: ee7b79f13d927674cb535bcd3d3a2042, type: 3}
+        displayName: Lucky Shot
+        description: Luke makes a 1.25 s attack run, then fires a precision proton
+          strike for 4,000 base hull damage, bypassing shields. Targets capital ships
+          and structures only. Move/Stop cancels preparation. 60 s cooldown.
+        duration: 0
+        recoveryDelay: 60
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 1
+        range: 350
+        aiUse: 2
+        autoPower: 0
+        settings:
+          rid: 2035977048858300924
   autoPower:
     decisionInterval: 0.5
     castersPerFrame: 4
@@ -491,6 +508,29 @@ MonoBehaviour:
       type: {class: ReplenishWingmenSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}
       data: 
+    - rid: 2035977048858300924
+      type: {class: LuckyShotSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        damage: 4000
+        windup: 1.25
+        projectile:
+          weaponType: 155
+          displayName: X-Wing Proton Torpedo
+          damageType: 16
+          damage: 4000
+          shotsPerSalvo: 1
+          shotInterval: 0
+          reload: 60
+          range: 350
+          strikecraftOnly: 0
+          interceptable: 0
+          shotPrefab: {fileID: 7024622963710226239, guid: 482c282e2e1cf0c4482a04dcbcf91f9f,
+            type: 3}
+          beamPrefab: {fileID: 0}
+          projectileSpeed: 220
+          color: {r: 0.3, g: 0.6, b: 1, a: 1}
+          size: {x: 9, y: 9, z: 9}
     - rid: 6801466862182334539
       type: {class: IonPulseSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}

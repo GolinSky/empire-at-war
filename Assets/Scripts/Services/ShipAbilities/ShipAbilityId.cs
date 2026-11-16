@@ -31,5 +31,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         FighterCoordination = 52,
         HarmonicBomb = 54,
         ReplenishWingmen = 55,
+        LuckyShot = 56,
     }
 }

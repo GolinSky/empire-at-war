@@ -365,6 +365,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7dfa6174bec6f046939a0e3c883c3c6
+    m_Address: LukeRedSquadronSquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: aa026bcca8a16424cabf9e740a21ce0c
     m_Address: PloKoonDelta7BSquadronData
     m_ReadOnly: 0

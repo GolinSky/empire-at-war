@@ -220,6 +220,13 @@ namespace EmpireAtWar.Models.Health
             }
 
             damage *= _modifiers.DamageTakenMultiplier;
+            if (damageType == DamageType.PrecisionStrike)
+            {
+                DamageHull(damage);
+                OnValueChanged?.Invoke();
+                if (IsDestroyed) OnDestroy?.Invoke();
+                return;
+            }
             if (AbsorbsDamage(damageType))
             {
                 // The part of the hit the shields could not hold carries on to the hull.

@@ -1,0 +1,96 @@
+{
+  "sourceTextures": [
+    {
+      "size": [
+        128,
+        128
+      ],
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\XY_Wing_Engine_Glow.dds",
+      "sha256": "b4341a5cd41d8138fb3a2fb754fa84c80438dba603e84b4f971edaed239ee644"
+    },
+    {
+      "size": [
+        1024,
+        1024
+      ],
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\T_Wings_diffuse.dds",
+      "sha256": "2d67d9a03f6dd3b2379e2e1a5fb4afd619dfebe9be681cd27da3d72330ca91cf"
+    },
+    {
+      "size": [
+        1024,
+        1024
+      ],
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\T_Wings_NS.dds",
+      "sha256": "0d3f0f9b23fbd5967470ee698421a5dfcfb596d66ec57a41b03ff772c0d39c20"
+    },
+    {
+      "size": [
+        512,
+        512
+      ],
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\T_AstroDroid_diffuse.dds",
+      "sha256": "de698529749ec262bc924927809504b07241c0eac1f90c338cd6fe3d17516442"
+    },
+    {
+      "size": [
+        512,
+        512
+      ],
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\T_AstroDroid_normal.dds",
+      "sha256": "693fd6083840cd781e85a562b959a35ab2abd684700fe8fc932f0da8d343bbb4"
+    },
+    {
+      "size": [
+        1024,
+        1024
+      ],
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\T_Fuselage_diffuse.dds",
+      "sha256": "f2a82bad2c85e52534451f9578a39d5be08e78cf8e3184fd2ecab71af0a371bd"
+    },
+    {
+      "size": [
+        1024,
+        1024
+      ],
+      "source": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1397421866\\Data\\ART\\TEXTURES\\T_Fuselage_NS.dds",
+      "sha256": "c678f8f976b7263bfc544cf4cc8c633a452e650a25ffdc1b0c2b105fd8e687fd"
+    }
+  ],
+  "outputs": {
+    "LukeRedSquadron.fbx": "b61f68704a08d3b9975da9ef4badad8efe34caf024a8c08d8e07c29d09e4752b",
+    "LukeRedSquadronIcon.png": "14a9c99cf251ad3e58704d197f7d87c2009a17cf518ffb046cf250ee84e6d801",
+    "LukeRedSquadron_T_AstroDroid_diffuse.png": "a58073f35a2b8a79197042c9c8ecb4986f277b15c4d0112fd4fb5659049a7f14",
+    "LukeRedSquadron_T_AstroDroid_normal.png": "d1a3905ca35869ef7216d9ebce7c879a7ac3f7924e94f1d93651cfb9eaecc926",
+    "LukeRedSquadron_T_Fuselage_diffuse.png": "0ab4e9900b237b1530b863b3cc4ba67edb76faf6a19c864b9841f1edcefd156e",
+    "LukeRedSquadron_T_Fuselage_NS.png": "60e022c3374a2b4ae3ffd17073602e1d5c65aa4f328630ce101ff0b62691c847",
+    "LukeRedSquadron_T_Wings_diffuse.png": "fe01d2a8c08a68666a9c17833903f53dbbedfb6f9489a45ac666322d387aa3fa",
+    "LukeRedSquadron_T_Wings_NS.png": "3e245ef75ee7302e1e59b82db075cb56d45b26e43ba626698c2f19e34ac6960b",
+    "LukeRedSquadron_XY_Wing_Engine_Glow.png": "47de15d938a6f2b10a934734bb7de268605546228d9e094a754fdf564d17e019"
+  },
+  "bounds": {
+    "min": [
+      -3.315962553024292,
+      -5.302220344543457,
+      -1.8108590841293335
+    ],
+    "max": [
+      3.315962553024292,
+      2.4709906578063965,
+      1.810915470123291
+    ],
+    "size": [
+      6.631925106048584,
+      7.7732110023498535,
+      3.621774673461914
+    ]
+  },
+  "iconAlphaBounds": [
+    62,
+    73,
+    476,
+    405
+  ],
+  "visibleTriangles": 9099,
+  "maxNormalVectorError": 0.004243795701019349
+}

@@ -2585,3 +2585,43 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 169
+    displayName: Luke's Precision Laser Cannon
+    family: 25
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 2
+    unit: LukeRedSquadron
+    damageMultiplier: 10.125
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Four source-mounted lasers deliver 450 raw DPS; five escorts add 200
+      for 650 total.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    beamPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+  - weaponType: 170
+    displayName: Red Squadron Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 2
+    unit: LukeRedSquadron
+    damageMultiplier: 0.9
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Twenty escort lasers deliver 200 raw DPS; Luke's four lasers add 450
+      for 650 total.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    beamPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}

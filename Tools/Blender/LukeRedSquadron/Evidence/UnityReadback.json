@@ -1,0 +1,191 @@
+{
+  "MemberCount": 6,
+  "TotalHull": 4200.0,
+  "TotalShields": 2900.0,
+  "LeaderHull": 3600.0,
+  "LeaderShields": 2600.0,
+  "CruiseSpeed": 68.0,
+  "CombatSpeed": 78.0,
+  "dps": 650.0,
+  "leaderDamageType": "HeroLaser",
+  "otherMaxDps": 526.0,
+  "otherMaxHull": 3548.0,
+  "otherMaxShields": 2400.0,
+  "bindings": {
+    "health": 6,
+    "flight": 6,
+    "guns": 24,
+    "injectables": 30
+  },
+  "ability": {
+    "DisplayName": "Lucky Shot",
+    "Range": 350.0,
+    "RecoveryDelay": 60.0,
+    "Damage": 4000.0,
+    "Windup": 1.25,
+    "projectile": "ProtonTorpedoShot",
+    "icon": "TorpedoSalvoIcon"
+  },
+  "roster": {
+    "Price": 6000,
+    "BuildTime": 40,
+    "UnitCapacity": 3,
+    "MaxCount": 1,
+    "AvailableLevel": 4,
+    "IsHero": true
+  },
+  "addresses": [
+    {
+      "path": "Assets/Prefabs/Models/Squadrons/LukeRedSquadronSquadronView.prefab",
+      "address": "LukeRedSquadronSquadronView",
+      "group": "RebellionUnitViews"
+    },
+    {
+      "path": "Assets/Prefabs/Ui/Reinforcement/LukeRedSquadronReinforcementView.prefab",
+      "address": "LukeRedSquadronReinforcementView",
+      "group": "RebellionUnitViews"
+    },
+    {
+      "path": "Assets/Settings/Data/Squadron/LukeRedSquadronSquadronData.asset",
+      "address": "LukeRedSquadronSquadronData",
+      "group": "Data"
+    }
+  ],
+  "fighters": [
+    {
+      "Id": 0,
+      "name": "Luke Skywalker",
+      "guns": [
+        {
+          "Id": 0,
+          "type": "LukeSkywalkerLaser"
+        },
+        {
+          "Id": 1,
+          "type": "LukeSkywalkerLaser"
+        },
+        {
+          "Id": 2,
+          "type": "LukeSkywalkerLaser"
+        },
+        {
+          "Id": 3,
+          "type": "LukeSkywalkerLaser"
+        }
+      ]
+    },
+    {
+      "Id": 1,
+      "name": "Wedge Antilles",
+      "guns": [
+        {
+          "Id": 4,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 5,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 6,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 7,
+          "type": "RedSquadronEscortLaser"
+        }
+      ]
+    },
+    {
+      "Id": 2,
+      "name": "Biggs Darklighter",
+      "guns": [
+        {
+          "Id": 8,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 9,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 10,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 11,
+          "type": "RedSquadronEscortLaser"
+        }
+      ]
+    },
+    {
+      "Id": 3,
+      "name": "Red Leader",
+      "guns": [
+        {
+          "Id": 12,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 13,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 14,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 15,
+          "type": "RedSquadronEscortLaser"
+        }
+      ]
+    },
+    {
+      "Id": 4,
+      "name": "Hobbie",
+      "guns": [
+        {
+          "Id": 16,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 17,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 18,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 19,
+          "type": "RedSquadronEscortLaser"
+        }
+      ]
+    },
+    {
+      "Id": 5,
+      "name": "Porkins",
+      "guns": [
+        {
+          "Id": 20,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 21,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 22,
+          "type": "RedSquadronEscortLaser"
+        },
+        {
+          "Id": 23,
+          "type": "RedSquadronEscortLaser"
+        }
+      ]
+    }
+  ],
+  "meshes": 48,
+  "missingMaterials": 0,
+  "output": "F:\\Private\\empire-at-war\\Temp\\LukeRedSquadron\\Previews\\"
+}

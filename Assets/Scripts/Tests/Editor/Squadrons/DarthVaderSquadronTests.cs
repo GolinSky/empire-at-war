@@ -98,10 +98,14 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(vader.MemberShields, Is.EqualTo(tie.MemberShields));
             Assert.That(vader.TotalHull, Is.EqualTo(3200f + 6 * tie.MemberHull));
             Assert.That(vader.TotalShields, Is.EqualTo(2400f + 6 * tie.MemberShields));
+            SquadronData luke = LoadData("LukeRedSquadron");
+            Assert.That(luke, Is.Not.Null);
+            Assert.That(vader.TotalHull, Is.LessThan(luke.TotalHull));
+            Assert.That(vader.TotalShields, Is.LessThan(luke.TotalShields));
             foreach (string guid in AssetDatabase.FindAssets("t:SquadronData", new[] { DATA_FOLDER }))
             {
                 SquadronData other = AssetDatabase.LoadAssetAtPath<SquadronData>(AssetDatabase.GUIDToAssetPath(guid));
-                if (other == vader) continue;
+                if (other == vader || other == luke) continue;
                 Assert.That(vader.TotalHull, Is.GreaterThan(other.TotalHull), other.name);
                 Assert.That(vader.TotalShields, Is.GreaterThan(other.TotalShields), other.name);
             }
