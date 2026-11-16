@@ -9,7 +9,8 @@ reviewed: 2026-10-20
 # Mandator Import
 
 > [!info] Import record
-> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]]. Open acceptance work remains in its linked TODO plan.
+> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]].
+> Plan: [[TODOs/Features/Mandator_Import]].
 
 ## Decision
 - Read [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE|ALO Model Import — Blender to Unity]].

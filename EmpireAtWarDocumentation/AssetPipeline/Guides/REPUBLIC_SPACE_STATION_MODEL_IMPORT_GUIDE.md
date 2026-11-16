@@ -52,7 +52,7 @@ reviewed: 2026-10-20
 - All prefabs: `Assets/Prefabs/Models/Stations/`.
 - Runtime configuration: `StationLevelView.levelModels` on `RepublicSpaceStationView.prefab`.
 - Build configuration: `Tools/Blender/SpaceStations/Republic.json`.
-- Routing: `Assets/Settings/AssetMappingData.asset`, key `RepublicSpaceStationView`; retain its existing GUID and Addressables `View` entry.
+- Routing: `Assets/Settings/AssetMappingData.asset`, key `RepublicSpaceStationView`; retain its existing GUID and address in `RepublicUnitViews`. See [[AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE]].
 
 ### Convert and import
 1. Run preparation and capture the existing station size/routing before rebuilding.

@@ -122,8 +122,10 @@ graph TD
 ## Placement & Naming Rules
 
 1. **Type-First**: Asset placement is determined by type at the root level (`Art/Models`, `Art/Materials`, `Art/Textures`).
-2. **Model Categories**: Meshes, materials, and textures must use consistent categories:
-   - `RepublicShips`: Republic vessels (AWing, Acclamator, Arquitens, Delta7, StarDestroyer1, StarDestroyer2, HeavyDreadnought, Thranta, Venator, AcclamatorAssault).
+2. **Model Categories**: Reuse these categories under `Art/Models`, `Art/Materials/Models` and `Art/Textures/Models`:
+   - `EmpireShips`: Empire vessels (AcclamatorAssault, Gladiator, Victory).
+   - `RebellionShips`: Rebellion vessels (CorellianCorvette, Endurance, HomeOne).
+   - `RepublicShips`: Republic vessels (Acclamator, Arquitens, Delta7, HeavyDreadnought, Thranta, Venator).
    - `SeparatistShips`: Separatist vessels (Belbullab22, Lucrehulk, Munificent, Providence, Recusant).
    - `SpaceStations`: Space stations (SpaceStationModular, Freeport, OpenSpaceStation, GangutStation, RefuelingStation, AsteroidMiningFacility, VestaStation, HaloStation).
    - `DefendPlatforms`: Defense installations (XQ6Platform).

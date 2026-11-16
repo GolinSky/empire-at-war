@@ -10,11 +10,12 @@ reviewed: 2026-10-20
 # Dispatcher-class Frigate Import
 
 > [!info] Import record
-> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]]. Open acceptance work remains in its linked TODO plan.
+> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]].
+> Plan: [[Done/Features/Dispatcher_Import]].
 
 ## Decision
 
-- Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; acceptance: [[Done/Features/Dispatcher_Import]].
+- Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; user acceptance → [[TODOs/User_Acceptance_Queue]].
 - Unit: CIS Dispatcher-class Frigate, formerly Techno Union Frigate. `Tecno Destroyer` remains source provenance, not another roster unit.
 - Size: user requested existing Munificent length → `82.56805` project units.
 - Source ALOs: `CIS_TecnoDestroyer.ALO` and `CIS_TecnoDestroyer_D.ALO`; static damaged model supplies the wreck.

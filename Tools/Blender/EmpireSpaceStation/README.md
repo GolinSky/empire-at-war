@@ -14,7 +14,7 @@ Dedicated guide: `Architecture/SPACE_STATION_MODEL_IMPORT_GUIDE.md` in `empire-v
 
 - Visual/gameplay prefabs: `Assets/Prefabs/Models/Stations/`.
 - Level configuration: `StationLevelView.levelModels` on `EmpireSpaceStationView.prefab`.
-- Routing: `Assets/Settings/AssetMappingData.asset`, key `EmpireSpaceStationView`; same address in the existing Addressables `View` group.
+- Routing: `Assets/Settings/AssetMappingData.asset`, key `EmpireSpaceStationView`; same address in the existing Addressables `EmpireUnitViews` group.
 - Meshes: `Assets/Art/Models/SpaceStations/EmpireSpaceStation/LevelN/EmpireSpaceStationLevelN.fbx`; separate pieces in `Attachments/`.
 - Materials/textures: `Assets/Art/{Materials,Textures}/Models/SpaceStations/EmpireSpaceStation/`.
 - Shields: `Assets/Art/Models/Shields/EmpireSpaceStationLevelNShield.asset`.

@@ -143,7 +143,7 @@ acceptance: pending-user
 - Integration: `Assets/Scripts/Services/Selection/SelectionQuery.cs`; `Services/VContainer/Registrations/SkirmishServiceRegistrations.cs`; `Editor/Squadron/SquadronViewPrefabBuilder.cs`; ship entity bindings; approved ship and squadron prefabs.
 - Ship data: `Assets/Settings/Data/Ship/**/<Ship>ShipData.asset` (`ShipClass`).
 - Existing regression locations: `Assets/Scripts/Tests/Editor/Squadrons/SquadronIconPrefabTests.cs`; `Assets/Scripts/Tests/Editor/BattleInput/SelectionQueryTests.cs`.
-- Guidance: [[Rules/UI_UX_GUIDELINES]], [[Rules/BATTLE_PERFORMANCE_GUIDELINES]], [[Architecture/PROJECT_ORGANIZATION]], [[TODOs/Optimization/Late_Battle_CPU_Fix_Plan]].
+- Guidance: [[Rules/UI_UX_GUIDELINES]], [[Rules/BATTLE_PERFORMANCE_GUIDELINES]], [[Architecture/PROJECT_ORGANIZATION]], [[Done/Optimization/Late_Battle_CPU_Fix_Plan]].
 - Before new UI implementation read UI_CODE_BUILD_GUIDE; before new asset folders read PROJECT_ORGANIZATION; before imports/Addressables work read ADDRESSABLES_BUNDLE_GUIDE. Preserve Addressables structure.
 
 ## Implementation record

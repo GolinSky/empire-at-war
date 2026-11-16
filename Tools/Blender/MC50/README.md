@@ -1,6 +1,6 @@
 # MC50 Medium Cruiser
 
-- Guide: vault `Architecture/ALO_MODEL_IMPORT_GUIDE`; balance: `GameDesign/Rebel units`, MC50 section.
+- Guide: vault `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE`; balance: `GameDesign/Proposals/Rebel units`, MC50 section.
 - Source: Workshop `1770851727`, `Data/Art/Models/Rebel_Mon_Calamari_MC_50.alo`. Textures are in `Data/Art/Textures`; `Texturesc` does not exist.
 - Rebellion ship ID `311`.
 - Hull/shields/speed: `4,200 / 3,000 / 27`; price/build time: `3,400 / 42 s`.

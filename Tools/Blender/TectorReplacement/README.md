@@ -1,6 +1,6 @@
 # Tector Remake visual replacement
 
-- Completed: 2026-10-12. Read vault `Architecture/ALO_MODEL_IMPORT_GUIDE.md` before implementation.
+- Completed: 2026-10-12. Read vault `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md` before implementation.
 - Source: `D:/SteamLibrary/steamapps/workshop/content/32470/1770851727/Data/Art/Models/Empire_Imperial_SD_Tector.ALO`; textures from the adjacent `Textures/` directory.
 - User decision: use the new hull without turret meshes; no Remake loadout or balance is copied. Follow-up cleanup removed unused legacy hull/turret assets from the project.
 - Existing visual/gameplay/placement/wreck prefab GUIDs and icon/silhouette metadata are preserved. No data or Addressables changes.

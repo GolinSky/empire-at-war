@@ -334,12 +334,12 @@
     "outputs": [
       {
         "role": "art",
-        "path": "Assets/Prefabs/Models/Ships/Rebellion/Endurance.prefab",
+        "path": "Assets/Prefabs/Models/Ships/Rebellion/Models/Endurance.prefab",
         "guid": "1814173cdc0b0ce4dbb2047811f65d2b"
       },
       {
         "role": "view",
-        "path": "Assets/Prefabs/Models/Ships/Rebellion/EnduranceShipView.prefab",
+        "path": "Assets/Prefabs/Models/Ships/Rebellion/View/EnduranceShipView.prefab",
         "guid": "869c8abfc930a964892aef3ee3c9f4a6"
       },
       {
@@ -9060,7 +9060,7 @@
     "shipUiGuid": "5d122ff846ebd9c42b0d93d92110997b",
     "tooltipGuid": "f5fb2ca4ac1d3a848a445314158b9a6e",
     "reinforcementGuid": "1c157dade5de42e4081ffe3ef1dd634f",
-    "viewGroupGuid": "32461b8e25b2de54088abd16d13c9065",
+    "viewGroupGuid": "66da0a9184837824c93979a17bd1989d",
     "dataGroupGuid": "9c71a107867fe5b43bdb412240236182",
     "addressableSettingsGuid": "047fa9cc3c5486249abbfc6c5974195d",
     "viewRole": "view",

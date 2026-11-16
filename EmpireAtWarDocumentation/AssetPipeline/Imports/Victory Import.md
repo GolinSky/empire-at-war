@@ -9,7 +9,8 @@ reviewed: 2026-10-20
 # Victory Import
 
 > [!info] Import record
-> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]]. Open acceptance work remains in its linked TODO plan.
+> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]].
+> Plan: [[Done/Features/Victory_Import]].
 
 ## Goal
 
@@ -69,7 +70,7 @@ reviewed: 2026-10-20
 
 ## Files
 
-- Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; active acceptance plan: [[Done/Features/Victory_Import|Victory Import]].
+- Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; user acceptance → [[TODOs/User_Acceptance_Queue]].
 - Victory art: `Assets/Art/{Models,Materials/Models,Textures/Models}/EmpireShips/Victory/`.
 - TIE art: corresponding `EmpireShips/TIEFighter/` and `EmpireShips/TIEBomber/` folders.
 - Main prefab/data: `Assets/Prefabs/Models/Ships/VictoryShipView.prefab`, `Assets/Settings/Data/Ship/VictoryShipData.asset`.

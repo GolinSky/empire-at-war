@@ -4,7 +4,7 @@ Empire `ShipType.VictoryII = 203`; hull/shields/speed 12,000/10,000/20.
 
 - Source unit: AOTR `E_Victory_Star_Destroyer_2_Fighters`; `EV_VSD_II.ALO`.
 - Sources remain in Workshop `1397421866`; audit with `python Tools/Blender/prepare_victory_ii.py`.
-- Read vault `Architecture/ALO_MODEL_IMPORT_GUIDE`, `Architecture/PROJECT_ORGANIZATION`, and `Rules/UI_UX_GUIDELINES` before rebuilding assets.
+- Read vault `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE`, `Architecture/PROJECT_ORGANIZATION`, and `Rules/UI_UX_GUIDELINES` before rebuilding assets.
 - Run Blender conversion only in a dedicated Blender 3.6.23 MCP process on port 9880, with ALAMO enabled and safe mode on. `Convert.py` and `VerifyGeometry.py` fail if connected to another port; they clear only the isolated process.
 - Launch the isolated process with a Python startup script that sets `bpy.context.scene.blendermcp_auto_start_server = False`, `blendermcp_port = 9880`, then calls `bpy.ops.blendermcp.start_server()`. Do not change the primary MCP connection or Blender preferences.
 - Execute `Convert.py` through the existing MCP SDK client configured temporarily for port 9880. Redirect output to `Temp/VictoryIIImport/ConversionLog.txt`; create `Output/Textures` first.
@@ -21,4 +21,4 @@ Source/FBX/Unity counts: hull 40 meshes / 24,024 triangles / 180 bones; each tur
 
 Visible bounds: 65.43347 x 42.26736 x 110; bank +/-8 degrees; vertical range -24.06689..21.44096; navigation radius 69. Gameplay root scale 1, bow +Z, up +Y. Placement disables additive glow planes; wreck contains only opaque hull/turrets. Icons are transparent 512x512; all eight team palettes and placement/wreck were rendered.
 
-Integration evidence and packed sources: `output/aotr-empire-units/VictoryII-Converted/`. Vault reference: `GameDesign/Victory II Import`; active runtime acceptance: `TODOs/Features/VictoryII_Import`. No automated Unity tests or Play Mode run. Economy derives from source advanced XML; size, movement, weapon/system balance, limit and copied matchups are provisional.
+Integration evidence and packed sources: `output/aotr-empire-units/VictoryII-Converted/`. Vault reference: `AssetPipeline/Imports/Victory II Import`; completed plan: `Done/Features/VictoryII_Import`; open runtime checks: `TODOs/User_Acceptance_Queue`. No automated Unity tests or Play Mode run. Economy derives from source advanced XML; size, movement, weapon/system balance, limit and copied matchups are provisional.

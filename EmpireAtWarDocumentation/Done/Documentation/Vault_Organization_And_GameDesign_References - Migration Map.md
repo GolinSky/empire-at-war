@@ -73,8 +73,8 @@ completed: 2026-10-20
 | `GameDesign/Republic at War - Republic Unit Stats Reference.md` | [[GameDesign/References/Republic at War - Republic Unit Stats Reference]] |
 | `GameDesign/Unit description.md` | [[GameDesign/References/Unit description]] |
 | `GameDesign/Unit Stats Comparison - 2026-09-27.md` | [[Artifacts/Audits/Unit_Stats_2026-09-27/Unit Stats Comparison - 2026-09-27]] |
-| `TODOs/Battle GameDesign basics.md` | [[GameDesign/References/Battle GameDesign basics]] |
-| `TODOs/Empire at War, Republic at War combat — short version.md` | [[GameDesign/References/Empire at War, Republic at War combat — short version]] |
+| `TODOs/Battle GameDesign basics.md` | Moved to `GameDesign/References/Battle GameDesign basics.md` in 2026-10. Retired 2026-11-16. Original content remains in Git history. Current project rules → [[GameDesign/Combat]]. |
+| `TODOs/Empire at War, Republic at War combat — short version.md` | Moved to `GameDesign/References/Empire at War, Republic at War combat — short version.md` in 2026-10. Retired 2026-11-16. Original content remains in Git history. Current project rules → [[GameDesign/Combat]]. |
 | `Features/CONTROLS_ANALYSIS.md` | [[GameDesign/References/CONTROLS_ANALYSIS]] |
 | `Architecture/GRAPHIFY_GUIDE.md` | [[Tooling/GRAPHIFY_GUIDE]] |
 | `Architecture/SCRIPTS_CODE_AUDIT_2026-09-12.md` | [[Artifacts/Audits/Scripts_2026-09-12/SCRIPTS_CODE_AUDIT_2026-09-12]] |

@@ -1,3 +1,11 @@
+---
+type: engineering-reference
+system:
+  - ui
+verified: 2026-11-16
+verification: Read the shared menu button variants and sampled Skirmish prefab
+  colors, dropdown states, typography and layout. No runtime review for this update.
+---
 # UI/UX Recipe Manual
 
 - Mandatory standards: UI/UX architecture and visual design.
@@ -7,16 +15,9 @@
 
 ## Visual Refresh Override · 2026-11-12
 
-- Current project UI palette supersedes the older color literals below: navy `#101A29`, primary/selected gold `#D2A95E`, enabled text `#F2F0E6`, informational/shield cyan `#6DB8E2`, warning/destructive red `#E86E6C`.
-- Related surface/border shades: `#202E40` / `#344357`. Preserve meaningful health/team colors, artwork tint, alpha and border geometry.
-- Penpot font roles: Rajdhani 600 HUD, Rajdhani 700 menu headings; Inter Tight 700 menu controls and Inter Tight 500 supporting menu text. Inter and Inter Tight are different families.
-- Shared menu assets: `Assets/Prefabs/Ui/ButtonsTemplate/CommonMenuButton.prefab`; variants `PrimaryMenuButton.prefab` and `DestructiveMenuButton.prefab`. Primary → navy label on gold; common → off-white on slate; destructive → red outline.
-- Standard rectangular actions across all 11 menu screens inherit font, tint and interaction states (47 instances verified 2026-11-12). Close/X controls and compound list rows retain specialized layouts. Override only labels, tooltip keys, layout and availability on instances. Main Menu QUIT uses common; Pause EXIT uses destructive.
+- Standard rectangular actions across all 11 menu screens inherited font, tint and interaction states in the 2026-11-12 review (47 instances).
 - Initial size adjustment: common menu labels 27 → 23 TMP units; small authored text 10–17 → +2 TMP units. These values are not rendered glyph heights; full viewport/combat acceptance remains with [[TODOs/Refactoring/RTS_UI_Refresh_Plan]].
 - Verification: saved prefab inheritance/references and 1920×1080 isolated menu renders. Do not treat prefab previews as live menu-route, online availability or battle readability validation.
-
-- Dropdown readability correction (2026-11-13): shared fill `#344357`, existing outline geometry with `#6D8BA8` border, off-white `#F2F0E6` captions and procedural chevrons. Hover/focus `#415670`, pressed `#202E40`, disabled fill multiplier `0.75` RGB / alpha `1`; retain runtime disabled-content fading. Popup surface `#202E40`, rows share control fill/states, selected checkmark gold `#D2A95E`. These values supersede older dropdown literals below.
-- Skirmish section headers have no numeric prefixes; titles start at x `36`. Battle Settings and Players panels both use height `712` canvas units.
 
 ## 1. Component Choice (Optional MPUIKit Integration)
 
@@ -40,61 +41,53 @@
 
 ## 3. Existing Panel MPImage Preservation Rule
 
-- **Preserve Panel Outlines & Borders**: Do NOT override, strip, or alter pre-existing border outlines, outline colors (e.g. `#1F87E6` / `rgba(31, 135, 230, 0.85)`), outline widths (`1.5`), or corner radii on existing panel `MPImage` components (`MiddlePanel`, `ShipActions`, `Panel`, `UpperPanel`).
+- Preserve authored border colors, widths and corner radii on existing panel `MPImage` components (`MiddlePanel`, `ShipActions`, `Panel`, `UpperPanel`).
 - **Rationale**: Existing panel containers have curated structural border outlines and corner radii designed for HUD layout alignment.
   - UI refactors must focus on buttons, controls, and legacy bitmap conversion without disturbing intentional panel container styling.
 
-## 4. Harmonious 3-Color Palette System
+## 4. Palette and Typography
 
-- **3-Color Wheel Harmony Rule**: dark canvas → muted structural accents → bright text/actions.
-- No arbitrary or high-luminance canvas backgrounds.
+| Role | Color |
+|---|---|
+| Navy panel base | `#101A29` |
+| Slate surface and common button fill | `#202E40` |
+| Common outline and dropdown fill | `#344357` |
+| Enabled menu text | `#F2F0E6` |
+| Primary action, selection and header divider | `#D2A95E` |
+| Information, shield and value accents | `#6DB8E2` |
+| Warning and destructive accents | `#E86E6C` |
 
-### Color 1: Dominant Dark Base (Low-Luminance Canvas & Containers)
-
-- **Root Panel Background**: Deep Dark Space Navy (`#080C14` / `rgba(8, 12, 20, 0.96)`).
-  - Low-brightness dark canvas.
-- **Field Cards / Section Containers**: Dark Slate Navy (`#0F172A` / `rgba(15, 23, 42, 0.85)`).
-- **Control Boxes & Dropdowns**: Dark Control Box (`#182232` / `rgba(24, 34, 50, 0.95)`).
-- **Dropdown List Item Popups (`Template` & `Item Background`)**: Dark Slate Item Row (`#141E2C` / `rgba(20, 30, 44, 0.95)`).
-  - **Never leave item backgrounds bright grey!**
-
-### Color 2: Structural Accents & Secondary Labels
-
-- **Field Labels (`FactionName`, etc.)**: Muted Slate Blue (`#94A3B8` / `rgba(148, 163, 184, 1.0)`).
-- **Header Accent Line (`HeaderDivider`)**: Glowing Cyan Line (`#38BDF8` / `rgba(56, 189, 248, 0.9)`).
-- **Container Outlines**: Muted Slate Blue (`#1E293B` / `rgba(30, 41, 59, 0.60)`).
-
-### Color 3: High-Contrast Bright Text & Action Accents
-
-- **Dropdown Captions (`Label`) & List Item Text (`Item Label`)**: Bright Crisp White (`#F8FAFC` / `rgba(248, 250, 252, 1.0)`).
-  - **NEVER use dark greyed text for preview values!**
-- **Dropdown Arrows (`Arrow`) & Checkmarks (`Item Checkmark`)**: Bright Accent White (`#F8FAFC`).
-- **Primary Action Buttons (`StartGameButton`, `StartDemoButton`)**: Electric Blue (`#2563EB`) with bright glowing cyan/blue border (`#60A5FA` / `OutlineWidth = 1.5f`).
-- **Numeric & Value Highlights (`StartingMoneyValueText`)**: Bright Cyan (`#38BDF8`).
+- Preserve health and team colors, artwork tint, authored alpha and border geometry.
+- Penpot font roles: Rajdhani 600 HUD, Rajdhani 700 menu headings, Inter Tight 700 menu controls and Inter Tight 500 supporting menu text.
 
 ## 5. Component Design Rules
+
+### Menu Buttons
+
+- Shared prefabs in `Assets/Prefabs/Ui/ButtonsTemplate/`: `CommonMenuButton.prefab` uses off-white text on slate, `PrimaryMenuButton.prefab` uses navy text on gold, `DestructiveMenuButton.prefab` uses a red outline.
+- Inherit typography, tint and interaction states. Override labels, tooltip keys, layout and availability on instances. Main Menu QUIT uses common and Pause EXIT uses destructive. Close/X controls and compound list rows have specialized layouts.
 
 ### Header Banners (`HeaderBanner`)
 
 - **Header Title Label Rule**: Header banners must **NOT** look like clickable buttons (no rounded box shape or border outline on the banner container).
-- Style headers as clean title labels (`TitleText`): Font Size = 28, Bold, Uppercase, High-Contrast Cyan/White (`#E2E8F0` / `#38BDF8`).
-- Position a 2px high horizontal cyan accent divider line (`HeaderDivider`, `#38BDF8`) directly beneath the title text.
+- Use a legible title label and a thin gold `HeaderDivider`. The Skirmish divider is `1` canvas unit high.
+- Skirmish section titles start at x `36` and omit numeric prefixes. Battle Settings and Players panels both use height `712` canvas units.
 
 ### Close Buttons (`CloseButton`)
 
-- Container: circle, dark slate `#1E293B`, subtle red border `#EF4444`, width `1.5`. Optional MPUIKit implementation: `MPImage` with `DrawShape.Circle`.
-- Visual Icon: Must contain an explicit child `CloseButtonText` (`TextMeshProUGUI`) displaying a bold standard ASCII `"X"` text icon (Font Size = 22, `#F8FAFC`).
+- Preserve the specialized close control layout and outline. For a circular MPUIKit control, use `MPImage` with `DrawShape.Circle`.
+- Use a dedicated `CloseButtonText` (`TextMeshProUGUI`) child with an off-white ASCII `X`. The Skirmish close icon uses `24` TMP units.
 
 ### Dropdowns (`TMP_Dropdown`)
 
-- Closed caption `Label` text: `enableAutoSizing = true`, `fontSizeMin = 6` (strictly < 12), `fontSizeMax = 20`, color = `#F8FAFC`.
-- Template item `Item Label` text: `enableAutoSizing = true`, `fontSizeMin = 6` (strictly < 12), `fontSizeMax = 20`, color = `#F8FAFC`.
-- Template item background: `#141E2C` (dark slate).
+- Use off-white captions and option labels with autosizing for long values. Skirmish controls commonly use `6`–`24` TMP units.
+- Control fill `#344357`, outline `#6D8BA8`, procedural chevron. Hover/focus `#415670`, pressed `#202E40`. Disabled fill tints RGB by `0.75` with alpha `1`; preserve separate runtime content fading.
+- Popup surface `#202E40`. Rows share the control fill and states. Selected checkmarks use gold.
 
 ### Money & Value Controls (Sliders)
 
 - For numerical ranges (e.g. Starting Money), prefer a Slider over a Dropdown. MPUIKit styling is optional.
-- Value display text (`StartingMoneyValueText`): `enableAutoSizing = true`, `fontSizeMin = 6`, `fontSizeMax = initial max` (e.g. 26), text color = `#38BDF8`, container width enlarged (`sizeDelta = (110, 40)`) to prevent overlapping or truncation when values scale.
+- Use the value accent for `StartingMoneyValueText`. The saved Skirmish control uses a `120 × 30` canvas-unit label with autosizing from `6` to `40` TMP units.
 
 ## 6. Class Inheritance & Serialized Image Binding Safety
 
@@ -112,13 +105,13 @@
 - Before committing any UI change, verify:
 - [ ] Do the chosen components support the design? MPUIKit is optional; conversion is not required.
 - [ ] Are all `Button` components configured with `Color Tint` (`m_Transition: 1`) and `m_SpriteState` cleared to `{fileID: 0}`?
-- [ ] Are pre-existing panel `MPImage` outlines, outline colors (`#1F87E6`), and widths (`1.5`) preserved?
+- [ ] Are authored panel `MPImage` outlines and widths preserved?
 - [ ] Are root GameObjects kept free of background `MPImage` overlays?
 - [ ] Are pre-existing icon GameObjects (`Your icon`, `Icon`, `MoneyIcon`, `ShipIcon`) kept 100% intact?
 - [ ] Have serialized `[SerializeField] Image` fields on gameplay views (`ReinforcementUi`, `CoreGameUi`, `ShipUi`) been preserved as standard `Image`?
 - [ ] Do sub-item views (`FactionUnitUi`, `PipelineView`, `MarkView`) inherit from `MonoBehaviour`?
-- [ ] Does the UI follow the 3-Color Wheel Harmony System (Dark Base, Muted Accent, Bright Text)?
-- [ ] Are dropdown preview values bright crisp white (`#F8FAFC`), not greyed out?
+- [ ] Do controls use the palette and inherit shared menu button states?
+- [ ] Are enabled dropdown values off-white and legible?
 - [ ] Does `HeaderBanner` look like a clean title label with a divider line (and not a button box)?
 - [ ] Does `CloseButton` have a clear ASCII `"X"` text icon visual?
 - [ ] Is `fontSizeMin` set to less than 12 (e.g. 6) on all auto-sized text objects?

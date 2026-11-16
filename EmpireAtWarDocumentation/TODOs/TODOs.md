@@ -29,6 +29,9 @@
 - [ ] **Online multiplayer (Mirror host-authoritative, 20 Hz tick, Steam relay via FizzySteamworks) alongside offline** → [[TODOs/Features/Multiplayer_Plan|Multiplayer Plan]]; [[TODOs/Features/Multiplayer_Plan - Research|Research]]
   - Status: in progress 2026-11-07. Scope: Skirmish (PvP/co-op, AI slots) + Survival co-op; 2–4 friends. Done: Mirror 96.11.3 + FizzySteamworks 6.0.1 in `Assets/Plugins/Mirror`, Steamworks.NET 2025.164.1 (UPM); Phase 0 spike scene `Assets/Sandbox/Multiplayer/MultiplayerSpike.unity` (code compiles; not run); Phase 1 `IMatchSession`/`OfflineSession`, issues #1, #2, #3, #13 (N-human rules, `Humans`, AI-ally production host, `HumanPlayerScope` sim/local split). Phase 1 code complete 2026-11-07 (#1–#6, #9, #13, #14): command sink for every player action (orders, production, construction, super weapons, abilities, reinforcement deploy), sequential authority ids, per-team victory, Survival co-op (Medium/Large). EditMode: no new failures vs baseline (18 pre-existing). Next: user smoke-tests offline Skirmish/Survival + runs the Phase 0 spike on two machines; then Phase 2 (needs lobby UI design sign-off) and Phase 3 (needs spike bandwidth numbers).
 
+- [ ] **Finish settings implementation** → [[TODOs/Features/Settings_Implementation_Plan|Settings Implementation Plan]]
+  - Remaining implementation and planned checks live in the settings plan. Completed audit follow-ups have their own entry under Done.
+
 - [ ] **Gameplay analytics (UGS Analytics: match wins, factions, duration, performance)** → [[TODOs/Features/Gameplay_Analytics|Gameplay Analytics]]
   - Status: in progress 2026-11-02; Phases 0–3 code done (packages, `IAnalyticsService`, UGS adapter, consent popup + Settings toggle, match/abandon/survival-wave tracking, per-minute performance samples; `BattleSimulation` excluded). Next: user links UGS project + checks popup in-game; Phase 4 schemas/dashboards/dev-build verification.
 
@@ -133,18 +136,12 @@
   - **Pass 2 (2026-10-24)**: 462/507 model textures compressed under screening, 47 meshes Low; Addressables bundles 1.53 GB → 1.03 GB, payload 6.46 → 2.66 GB; related EditMode tests pass. Mesh gate 3° rerun: 478 models at Low, bundles → 989.8 MB. In-game visual check pending.
   - **Next**: remaining categories, matched gameplay memory/loading/DSP captures, audio listening/startup/loop/crossfade and intended-scale visual acceptance; macOS module + actual Mac validation. Plan stays active.
 
-- [ ] **Fix late-match CPU collapse on Mac (selection markers, shot prewarm, squadron orders, snapshot copy, allocations)** → [[TODOs/Optimization/Late_Battle_CPU_Fix_Plan|Late Battle CPU Fix Plan]]; evidence `Docs/Audits/2026-10-29-Live-Battle-CPU`
-  - Remaining tests completed 2026-10-30: `BattleInput` 206, `Squadrons` 81, `EnemyAi` 193, `Map` 37, `Ui` 224, `Vision` 61, `Navigation` 164, `Core` 127 — all passed (1,093 executions / 1,078 distinct names). Marker tag assertion casing fixed; Map/Core/Ui transient failures passed on rerun. Reports → `Logs/Tests/20261030-LateBattleCPU/summary.json`.
-  - 2026-10-30: selection shader/attack-only updates, shared shot storage + loading prewarm, capped squadron/capture updates, shared spatial targeting, transform snapshot job, centralized icon projection and allocation fixes implemented. Unity compilation/shader/import and source checks passed; tests not run.
-  - Follow-up 2026-10-30: user-authorized crowded PC battle; capture geometry scan microbenchmark −42.0% with identical tallies; destroyed-target pilot exception fixed. Post-fix capture max 1.2845 ms / Console 0 errors. Actual prewarm 72 creations / 6 prefabs, maximum Awake 0.2357 ms; old 27 ms cost not reproduced.
-  - Review fixes 2026-10-30: roster/completion prewarm share a 4 ms loading budget; Add/Invalidate refresh all capture areas on the next tick. Added unrun Capture regressions; scripts imported/compiled, diff check passed. Mac/Metal + PC multi-selection/attack visual checks remain open.
-  - Remaining: historical M2 shot/capture root causes and matched Editor + Development Player acceptance. New evidence → `Docs/Audits/2026-10-30-Late-Battle-CPU/analysis.md`; tests not run. Plan remains active.
 - [ ] **Attribute and reduce remaining battle CPU cost** → [[TODOs/Optimization/Battle_CPU_Performance_Plan|CPU profiling and follow-up]]; [[TODOs/Optimization/Battle_CPU_Performance_Plan - Research|2026-10-11 capture comparison and agent findings]]
   - 2026-11-06 M2 Editor: FPS history and hitch rows verified live. Detailed summaries misreported Game view resolution; follow-up recorded in the plan.
   - Frame 41354 follow-up: a reproduced 2.040 s Editor hitch traced to GC during Unity Pipeline command-list encoding. Original 721.25 ms cause remains unconfirmed. See the CPU plan.
   - Experimental catalog patch reverted; project uses the official registry package. Editor GC hitches persisted during the patched fleet run; see the CPU plan for the GUI allocation stack.
   - **Next**: fixed-camera matched workload + Development Player acceptance and longer repair/respawn coverage. Current frame median **33.76 ms** vs 36.10, with more squadrons and different rendering workload; no isolated speedup claim. Broader attribution remains open.
-  - Single CPU owner since 2026-10-29: absorbed open items of Battle CPU Fixes, Battle Attack and Burst Jobs plans.
+  - Single battle CPU owner: absorbed open items from Battle CPU Fixes, Battle Attack, Burst Jobs and [[Done/Optimization/Late_Battle_CPU_Fix_Plan|Late Battle CPU]]. Historical M2 spikes, matched runs and late-battle visual checks → [[TODOs/Optimization/Battle_CPU_Performance_Plan#Late-battle CPU follow-up]].
   - 2026-10-29 live audit: M2 Editor/Performant/1× conventional median 264.521 ms, p95 411.922 ms; prewarm Awake 27.244 ms/frame in later Profiler window. CSV + CPU/allocation ancestry + graph/debug evidence → repository `Docs/Audits/2026-10-29-Live-Battle-CPU/analysis.md`. No stop/pause, tests or gameplay edits; broader optimization remains active.
 
 - [ ] **Remove startup/loading-screen freezes (sync Addressables loads, squadron prewarm)** → [[TODOs/Optimization/Loading_Freeze_Plan|Loading Freeze Plan]]
@@ -201,7 +198,7 @@
   - Status: in progress 2026-11-02; user chose Diagnostics independent of usage consent. Local capture/context, consent wording, development probes and optional Jenkins symbols implemented; Editor/player-branch compilation clean, tests not run. Setup rechecked 2026-11-02: Cloud linked, effective Diagnostics enabled, Editor exceptions disabled, compilation clean. Company set to `GolinSkyCompany` and saved 2026-11-02; symbol credential, installed uploader and live job upload stage absent. Standalone upload verification remains pending. Guidance → [[Tooling/Crash_Reporting]].
 
 - [ ] **Unify ALO imports with recipe-driven tools and concurrent-agent coordination** → [[TODOs/Tooling/Unified_ALO_Import_Pipeline|Unified ALO Import Pipeline]]; [[TODOs/Tooling/Unified_ALO_Import_Pipeline - Research|Tooling audit and reuse candidates]]
-  - Status: in progress 2026-10-28; job/lock/journal infrastructure and Rothana recipe implemented; `apply` disabled.
+  - Status: in progress; job/lock/journal infrastructure and Rothana recipe implemented; `apply` disabled. On 2026-11-16, aligned Rothana and Endurance recipe group GUIDs and prefab paths with saved assets; Editor migration gates remain open.
   - Next: production conversion + Editor acceptance; Endurance/Rebel recipes; station/derivative adapters; concurrency recovery acceptance.
 
 - [ ] **Add Jenkins GitHub draft releases** → [[TODOs/Tooling/Jenkins_GitHub_Releases|Jenkins GitHub Releases]]
@@ -256,8 +253,15 @@
   - **Next**: verify equivalent head/trail material sharing, remove unnecessary bolt texture CPU copies, measure scoped fade/shader experiments and validate the full faction/mount/ability/superweapon variation matrix.
   - Merged 2026-10-29 into [[TODOs/Optimization/Battle_FPS_Recovery_Plan]].
 
+- [x] **Consolidate the late-battle CPU fix record** → [[Done/Optimization/Late_Battle_CPU_Fix_Plan|Late Battle CPU Fix Record]]; evidence `Docs/Audits/2026-10-29-Live-Battle-CPU`
+  - Remaining tests completed 2026-10-30: `BattleInput` 206, `Squadrons` 81, `EnemyAi` 193, `Map` 37, `Ui` 224, `Vision` 61, `Navigation` 164, `Core` 127 — all passed (1,093 executions / 1,078 distinct names). Marker tag assertion casing fixed; Map/Core/Ui transient failures passed on rerun. Reports → `Logs/Tests/20261030-LateBattleCPU/summary.json`.
+  - 2026-10-30: selection shader/attack-only updates, shared shot storage + loading prewarm, capped squadron/capture updates, shared spatial targeting, transform snapshot job, centralized icon projection and allocation fixes implemented. Unity compilation/shader/import and source checks passed; tests not run.
+  - Follow-up 2026-10-30: user-authorized crowded PC battle; capture geometry scan microbenchmark −42.0% with identical tallies; destroyed-target pilot exception fixed. Post-fix capture max 1.2845 ms / Console 0 errors. Actual prewarm 72 creations / 6 prefabs, maximum Awake 0.2357 ms; old 27 ms cost not reproduced.
+  - Review fixes 2026-10-30: roster/completion prewarm share a 4 ms loading budget; Add/Invalidate refresh all capture areas on the next tick. Added unrun Capture regressions; scripts imported/compiled, diff check passed. Mac/Metal + PC multi-selection/attack visual checks remain open.
+  - Remaining: historical M2 shot/capture root causes and matched Editor + Development Player acceptance. New evidence → `Docs/Audits/2026-10-30-Late-Battle-CPU/analysis.md`; tests not run. These investigations and acceptance transferred to [[TODOs/Optimization/Battle_CPU_Performance_Plan#Late-battle CPU follow-up]] on 2026-11-16.
+
 - [x] **Apply battle CPU fixes (targeting, due events, audio mix, navigation, squadrons)** → [[Done/Optimization/Battle_CPU_Fixes_Plan|Battle CPU Fixes Plan]]; [[Done/Optimization/Battle_CPU_Fixes_Plan - Research|Phase 8 acceptance checklist]]
-  - **Remaining**: matched ≥3×10 s captures at 1×/4×, controlled warm-selection/visual and combat behavior gates, Development Player confirmation, and Phase 7 visual-wait removal. Plan stays in progress.
+  - **Remaining**: matched ≥3×10 s captures at 1×/4×, controlled warm-selection/visual and combat behavior gates, Development Player confirmation, with remaining scope in the active CPU plan. Phase 7 readiness was implemented in [[Done/Bugs/Boost_Weapon_Power_Fire_Rate_Fix]].
   - Merged 2026-10-29 into [[TODOs/Optimization/Battle_CPU_Performance_Plan]].
 
 - [x] **Optimize battle attacks and projectile reuse** → [[Done/Optimization/Battle_Attack_Optimization_Plan|Attack preparation, commit and pooling]]; [[Done/Optimization/Battle_Attack_Optimization_Plan - Research|Implementation history and phase gates]]
@@ -296,7 +300,7 @@
   - Implemented 2026-11-15: persisted recovery, credential/verified-Steam rebind, fixed 300 s/180 s deadlines, loading progress and lifecycle fixes. Unity compiled; tests not run. Two-PC acceptance and historical host-log diagnosis → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Boost Weapon Power firing rate** → [[Done/Bugs/Boost_Weapon_Power_Fire_Rate_Fix|Boost Weapon Power Fire Rate Fix]]
-  - Completed 2026-11-14: faster burst spacing/reloads, bounded overlap and prewarm admission, pending-wait retiming and effective-interval audio. Unity compile/import verified; tests not run. Gameplay/profiling → [[TODOs/User_Acceptance_Queue#Boost Weapon Power Firing Rate Fix]].
+  - Completed 2026-11-14: faster burst spacing/reloads, bounded overlap and prewarm admission, pending-wait retiming and effective-interval audio. Unity compile/import verified; tests not run. User accepted on 2026-11-16.
 
 
 - [x] **Fix AI battle-log follow-ups (capture safety bounce, patrol shutdown, stuck recovery latch, locale log numbers)** → [[Done/Bugs/Enemy_AI_Battle_Log_Followup_Fixes]]
@@ -564,7 +568,7 @@
   - **Remaining**: user in-game check of generated maps and economy/AI feel.
   - Closed 2026-10-29 by backlog triage; user gates → [[TODOs/User_Acceptance_Queue]].
 
-- [x] **Close settings audit follow-ups** (Wave 1) → [[Done/Features/Settings_Audit_Followups|Settings Audit Follow-ups]]; [[TODOs/Features/Settings_Implementation_Plan|Settings Implementation Plan]]
+- [x] **Close settings audit follow-ups** (Wave 1) → [[Done/Features/Settings_Audit_Followups|Settings Audit Follow-ups]]
   - **Remaining**: remaining settings core EditMode tests; live category/rebind interaction; manual restart-persistence, display Keep/Revert/timeout, and corrupt-file checks.
   - Closed 2026-10-29 by backlog triage; user gates → [[TODOs/User_Acceptance_Queue]].
 
@@ -686,7 +690,7 @@
   - Closed 2026-10-29 by backlog triage; user gates → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Battle startup sequence (state/speed notifiers, async map, gated systems)** → [[Done/Refactoring/Battle_Startup_Sequence_Plan|Battle Startup Sequence Plan]]
-  - **Remaining**: Play Mode acceptance (fade, fog, camera drift, hitch, Zenject graph, Esc during loading, pause/speed/menu/end/exit). Fader added 2026-10-04.
+  - **Remaining**: Play Mode acceptance (fade, fog, camera drift, hitch, VContainer battle-scope startup, Esc during loading, pause/speed/menu/end/exit). Fader added 2026-10-04.
   - Closed 2026-10-29 by backlog triage; user gates → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Rework UI before VContainer migration** → [[Done/Refactoring/UI_Service_Refactoring|UI Rework Before VContainer]]; [[Done/Refactoring/UI_Service_Refactoring - Research|UI inventory, placement and SoulsLikeTemplate comparison]]

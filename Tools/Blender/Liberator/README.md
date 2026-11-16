@@ -2,7 +2,7 @@
 
 - Source: REMAKE 4.0 Workshop `1770851727`, `Data/Art/Models/Rebel_Liberator.ALO`; XML `Liberator_Carrier_R` resolves fifteen attachments, including engine glow and fourteen turret models.
 - Textures: `Data/Art/Textures/` in that Workshop. The supplied `Texturesc` path is a typo; no folder with that name exists.
-- Balance: vault `GameDesign/Rebel units.md`, Liberator Cruiser section. Workshop XML provides art and attachment positions, not project balance.
+- Balance: vault `GameDesign/Proposals/Rebel units.md`, Liberator Cruiser section. Workshop XML provides art and attachment positions, not project balance.
 - Ship enum `Liberator=321`; ability enum `LiberatorRapidDeployment=51`. Existing IDs remain unchanged.
 
 ## Gameplay

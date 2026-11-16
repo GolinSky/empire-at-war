@@ -9,7 +9,8 @@ reviewed: 2026-10-20
 # MC75 Profundity Import
 
 > [!info] Import record
-> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]]. Open acceptance work remains in its linked TODO plan.
+> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]].
+> Plan: [[Done/Features/MC75_Profundity_Import]].
 
 ## Goal
 - Rebellion capital ship `ShipType.MC75Profundity = 304`; AOTR model `RV_Profundity.ALO`.
@@ -42,7 +43,7 @@ reviewed: 2026-10-20
 - Eight owner palettes, unowned icon, opaque-only placement and fresh-wreck shader preview rendered; blue/green and placement/wreck inspected. Icons `512 × 512`, alpha bounds `(52,119)..(449,359)`.
 - Saved prefab references, roster, ship-data/view mappings, existing Addressables `View`/`Data`, three icon consumers, reinforcement, abilities and audio registrations inspected. No donor-model dependencies remain.
 - Unity imports and compilation complete; no MC75 import/serialization errors. Unrelated concurrent TIE Avenger builder logged a float-property error. Main menu scene remained clean.
-- No automated tests or Play Mode run. Runtime and provisional balance acceptance remain in [[Done/Features/MC75_Profundity_Import]].
+- No automated tests or Play Mode run. Runtime and balance acceptance → [[TODOs/User_Acceptance_Queue]].
 
 ## Files
 - Installed source: `D:/SteamLibrary/steamapps/workshop/content/32470/1397421866/Data/ART/MODELS/RV_Profundity.ALO`; XML `SpaceUnitsCapital.xml`, `Hardpoints_Rebel_Space.xml`.

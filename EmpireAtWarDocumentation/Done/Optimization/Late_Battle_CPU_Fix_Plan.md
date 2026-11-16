@@ -1,10 +1,15 @@
 ---
 category: Optimization
-status: in-progress
+status: done
 created: 2026-10-30
 updated: 2026-10-30
+completed: 2026-11-16
+disposition: merged
+merged_into: "[[TODOs/Optimization/Battle_CPU_Performance_Plan]]"
 ---
 # Late-battle CPU fix plan (Mac M2)
+
+> Historical implementation and profiling record. Merged into [[TODOs/Optimization/Battle_CPU_Performance_Plan#Late-battle CPU follow-up]] on 2026-11-16. Historical M2 attribution and matched acceptance remain owned by that active plan.
 
 ## Goal
 - Fix the late-match CPU collapse: 2250 s battle, 83 ships / 321 squadrons / 454 weapons → median 264.5 ms (3.8 FPS), p95 411.9 ms. GPU only ~18 ms → CPU bound.
@@ -112,7 +117,7 @@ updated: 2026-10-30
 - Reusable rules extracted to [[Rules/BATTLE_PERFORMANCE_GUIDELINES#CPU scheduling and snapshots]].
 
 ## TODO
-- Remaining implementation investigation: expensive shot prefab identification/repair and capture-spike attribution. Keep this plan active; instrumentation does not establish those fixes.
+- Remaining implementation investigation: expensive shot prefab identification/repair and capture-spike attribution. Instrumentation had yet to establish those fixes at this checkpoint.
 - Runtime gates: select-all marker orientation/culling/attack feedback, cross-owner shot colors/impact/teardown, loading duration, order response/capture latency, icon projection/visibility/clicks and telemetry scene-exit output.
 - Matched acceptance: same Full-map seed `1875278133`, comparable late-match populations/orders/camera/settings, M2 Editor + Development Player; report median/p95/p99, Copy time, instantiate identity/cost and allocation rate. This Windows Editor check does not establish M2 speedup.
 - Accepted overload tradeoff: 321 due squadrons at ≤32 updates/frame need at least 11 frames per full pass (~0.37 s at 30 FPS); ordinary capped capture sampling retains cached strength between refreshes. Registration/restore invalidation refreshes all areas together.
@@ -126,16 +131,16 @@ updated: 2026-10-30
 - Capture geometry is refreshed once per due area, not frozen for the site's lifetime. Generic callback samplers retain their old behavior. Added unrun `CaptureStrengthSamplerTests`.
 - New fixes imported/compiled; fresh crowded validation Console = 0 errors. Final Editor stopped, profiler disabled, clean saved `MainMenuScene`; no scene/prefab/font mutations.
 - Tests not run (`Capture`, `Squadrons`), per local override. Source and paired diagnostic parity checks are not automated-test results.
-- Reusable snapshot/lifetime rules updated in [[Rules/BATTLE_PERFORMANCE_GUIDELINES#CPU scheduling and snapshots]]. Plan stays active for the unreproduced historical M2 causes and matched acceptance.
+- Reusable snapshot/lifetime rules updated in [[Rules/BATTLE_PERFORMANCE_GUIDELINES#CPU scheduling and snapshots]]. The original checkpoint kept the historical M2 causes and matched acceptance open.
 
 ## Implementation — review fixes 2026-10-30
 - Loading shot creation now shares a 4 ms budget across all prefab targets; cancellation is checked per iteration and frame wait. One expensive Awake can exceed the budget; runtime caps are unchanged.
 - Capture registration/invalidation refreshes all areas before the next site's/zone's capture update. Two added `Capture` regressions cover five initial areas, invalidation while fresh, resumed 2/2/1 refreshes and adding a sixth area while existing samples are fresh; tests not run.
 - Unity imported/compiled the three changed scripts; `isCompiling = false`, `isUpdating = false`, `scriptCompilationFailed = false`; `git diff --check` passed. Console retains 28 earlier shader-warmup keyword-space errors from 10:18 UTC; no new errors after refresh (cursor 106).
 - Independent source review found no actionable loading-queue/cancellation/runtime-cap issue. No Play Mode, performance capture, Player build or automated tests run for this follow-up.
-- Selection batching/origin/culling and attack animation checks remain open on Mac/Metal and PC. Historical M2 prewarm/capture-spike investigations keep the overall plan active.
+- Selection batching/origin/culling and attack animation checks remain open on Mac/Metal and PC. Historical M2 prewarm/capture-spike investigations were open at this checkpoint.
 - Reusable rules updated in [[Rules/BATTLE_PERFORMANCE_GUIDELINES#CPU scheduling and snapshots]].
-- Follow-up 2026-10-30: earlier shader-warmup Console errors were reproduced and resolved in [[Done/Bugs/Shader_Warmup_Keyword_Errors]]. `GameFlow` 153/153, `Combat` 220/220 and `Capture` 101/101 now passed; `GameFlow` repeated after the startup fix. Fresh/restored Windows Play Mode startup produced 0 new errors. Historical M2 investigations and marker acceptance remain open.
+- Follow-up 2026-10-30: earlier shader-warmup Console errors were reproduced and resolved in [[Done/Bugs/Shader_Warmup_Keyword_Errors]]. `GameFlow` 153/153, `Combat` 220/220 and `Capture` 101/101 now passed; `GameFlow` repeated after the startup fix. Fresh/restored Windows Play Mode startup produced 0 new errors. Historical M2 investigations and marker acceptance transferred to the active Battle CPU plan.
 
 ## Implementation — remaining tests 2026-10-30
 - Fixed two marker test cases: `Material.GetTag("DisableBatching", false)` returns `true` on this Editor; assertion now compares case-insensitively. Shader/material and runtime marker code unchanged.
@@ -143,4 +148,4 @@ updated: 2026-10-30
 - Initial `Core` failure caught an unrelated Pipeline `/api/exec` main-thread timeout (5,000 ms). `Core` rerun 127/127 passed without restore-code changes.
 - Initial spinner timing assertion returned 0° rotation. Source uses `Time.unscaledDeltaTime`; full `Ui` rerun passed 224/224 unchanged. Shared Editor activity may have affected timing; no spinner production/test change made.
 - Final Editor: stopped, clean saved `MainMenuScene`, compilation/update idle, `scriptCompilationFailed=false`; changed-test `git diff --check` passed.
-- No new production guidance: only a test assertion changed. Historical M2 root-cause investigations and visual/performance acceptance remain open; plan stays active.
+- No new production guidance: only a test assertion changed. Historical M2 root-cause investigations and visual/performance acceptance transferred to the active Battle CPU plan.

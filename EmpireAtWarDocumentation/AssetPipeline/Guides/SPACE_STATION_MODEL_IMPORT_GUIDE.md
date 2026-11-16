@@ -125,7 +125,7 @@ reviewed: 2026-10-20
 ### 5. Faction and upgrade wiring
 
 - `Assets/Settings/AssetMappingData.asset`: key `RebellionSpaceStationView` → the new gameplay prefab; other faction station keys retain their existing references.
-- Existing Addressables `View` group: address `RebellionSpaceStationView`; no group/schema reorganization.
+- Keep address `RebellionSpaceStationView` in `RebellionUnitViews`. Faction station ownership follows [[AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE]].
 - `Assets/Settings/Data/Factions/Shared/StationLevelData.asset`: existing maximum level `5`, costs and upgrade timing.
 - `Assets/Settings/Data/Models/SpaceStation/SpaceStationData.asset`: existing per-level health/shield multipliers, weapon health and hangar configuration.
 - `SpaceStation` applies current faction level during initialization and listens to the existing `OnLevelUpgraded` event.
@@ -155,7 +155,7 @@ reviewed: 2026-10-20
 
 ### Imperial Stations — 2026-10-07
 
-- Empire only: `Assets/Settings/AssetMappingData.asset`, key `EmpireSpaceStationView` → `Assets/Prefabs/Models/Stations/Empire/EmpireSpaceStationView.prefab`; existing Addressables `View` group.
+- Empire only: `Assets/Settings/AssetMappingData.asset`, key `EmpireSpaceStationView` → `Assets/Prefabs/Models/Stations/Empire/EmpireSpaceStationView.prefab`; originally registered in generic `View`. Current owner: `EmpireUnitViews`.
 - Level mapping: `StationLevelView.levelModels` on `EmpireSpaceStationView.prefab`; elements `0..4` map to levels `1..5`.
 - Distinct originals: `EB_STATION_01.ALO` → `EmpireSpaceStationLevel1.prefab`, through `EB_STATION_05.ALO` → `EmpireSpaceStationLevel5.prefab`. All prefabs: `Assets/Prefabs/Models/Stations/`.
 - FBXs: `Assets/Art/Models/SpaceStations/EmpireSpaceStation/LevelN/EmpireSpaceStationLevelN.fbx`; separate artwork in `Attachments/`.
@@ -177,7 +177,7 @@ reviewed: 2026-10-20
 
 ### Republic Stations — 2026-10-07
 
-- Republic only: existing `RepublicSpaceStationView.prefab` GUID, `AssetMappingData.asset` key `RepublicSpaceStationView`, and Addressables `View` entry.
+- Republic only: existing `RepublicSpaceStationView.prefab` GUID, `AssetMappingData.asset` key `RepublicSpaceStationView`, and original Addressables registration in generic `View`. Current owner: `RepublicUnitViews`.
 - `ReB_Shipyard_Level_01–05.ALO` → `RepublicSpaceStationLevel1–5.prefab`; `StationLevelView.levelModels[0..4]` swaps the distinct original hulls.
 - RaW XML names `Empire_Star_Base_1–5` represent Republic. Weapon art is embedded; `StationMount.Art=null` keeps hull geometry visible after hardpoint destruction.
 - All five models retain 204 bones, source UVs, and exact authored normals. Normal restoration after Blender export avoids degenerate-face/custom-normal changes.
@@ -228,5 +228,5 @@ reviewed: 2026-10-20
 - `Assets/Scripts/Components/ViewComponents/Station/StationLevelView.cs` — explicit level mapping and visual updates.
 - `Assets/Scripts/Entities/SpaceStation/SpaceStation.cs` — existing upgrade-event integration.
 - `Assets/Scripts/Components/ViewComponents/Health/Shield.cs` — shield surface replacement.
-- `Assets/Scripts/Tests/Editor/StationLevelViewTests.cs` — model identity, initial/upgraded level, faction isolation, attachment and shield tests.
+- `Assets/Scripts/Tests/Editor/Ui/StationLevelViewTests.cs` — model identity, initial/upgraded level, faction isolation, attachment and shield tests.
 - `Temp/RebelStationImport/` — editable blends, conversion/source audits, raw Unity geometry, measured verification, test results and previews.

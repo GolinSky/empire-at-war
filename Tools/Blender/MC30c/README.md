@@ -5,7 +5,7 @@
 - Rebellion `ShipType.MC30c = 307`; `MC30cTorpedoSalvo = 36`; cluster-bomb profile `81`.
 - Source art: Workshop `1770851727`, `Data/Art/Models/Rebel_Mon_Calamari_MC_30.ALO`.
 - Requested `Texturesc` directory is absent; all nine original references resolve in `Data/Art/Textures`.
-- Gameplay authority: vault `GameDesign/Rebel units`; Remake XML stats are retained as source evidence, not applied as balance.
+- Gameplay authority: vault `GameDesign/Proposals/Rebel units`; Remake XML stats are retained as source evidence, not applied as balance.
 - Hull/shields/speed `1,800/2,400/42`; cost `2,500`; build `32 s`; torpedo rate +50%, active `6 s`, recovery `30 s`.
 - User approved burst-projectile cluster bombs. Six-shot medium barrage-missile bursts use the existing taxonomy and visuals; dedicated area damage is not implemented.
 - No hangar. XML death clone `RV_MC30CMONCAL_D.ALO` is absent; project wreck derives from the live hull.

@@ -1,7 +1,7 @@
 # Assault Frigate Mk II
 
 - Art: Remake 4.0, Workshop `1770851727`; `Data/Art/Models/Rebel_Assault_Frigate_MK2.alo` plus all 14 XML-referenced `Rebel_Assault_Frigate_MK2_QLC_*.ALO` attachments. Textures resolved under `Data/Art/Textures`; supplied `Texturesc` path does not exist.
-- Balance: vault `GameDesign/Rebel units`, Assault Frigate Mk II section. This reference defines project balance, not Remake source balance. Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE`.
+- Balance: vault `GameDesign/Proposals/Rebel units`, Assault Frigate Mk II section. This reference defines project balance, not Remake source balance. Guide: `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE`.
 - Reference values: hull `3500`, shields `3000`, speed `31 units/s`, price `3200 credits`, build `40 s`. No hangar or fighter substitution.
 - Gameplay: 4 medium turbolasers (`4`), 2 light quad turbolasers (`82`), 4 heavy laser cannons (`28`), 2 point-defense lasers (`14`), 1 engine, 1 shield generator. All 14 hardpoints are targetable and have health entries.
 - Power to Shields (`45`): shield regeneration x1.6, damage/speed x0.8, active `8 s`, recovery after expiry `35 s`. Own managed settings object; other ships' shield settings remain unchanged.

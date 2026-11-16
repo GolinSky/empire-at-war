@@ -4,21 +4,22 @@ system:
   - modes
   - victory
 design_state: implemented
-verified: 2026-10-20
-verification: source-and-assets
+verified: 2026-11-16
+verification: Inspected current match rules, mode presets, BattleVictoryService, SurvivalOutcomeRule and SurvivalWaveDirector. Counted authored wave entries. No runtime checks.
 ---
 # Modes and Victory
 
 ## Goal
 
 - Current rules for Skirmish, Survival and runtime Battle Simulation.
-- Source and serialized-data snapshot: 2026-10-20. Runtime acceptance and difficulty balance were not re-tested for this reference.
 
 ## Rules
 
 ### Skirmish
 
-- 2–4 players; exactly one human; at least two opposing teams; each slot has a unique color from the 8-color palette.
+- 2–8 players overall. Map caps: Small `4`, Medium `6`, Large `8`.
+- Offline requires exactly one human. Online requires at least one human and permits multiple.
+- At least two opposing teams. Each slot uses a unique color from the 16-color palette.
 - Players choose faction/team; the setup supplies planet, map size, victory condition, starting credits and superweapon toggle.
 - Full map generation uses a seed. A fresh battle chooses a new seed; a saved Skirmish rebuilds with its recorded seed.
 - Human and AI opponent roles own stations and production. AI players may share the human's team.
@@ -27,9 +28,9 @@ verification: source-and-assets
 
 ### Skirmish victory
 
-- A player becomes eligible for defeat only after its station has been observed alive; delayed initial spawning is not defeat.
-- `DestroyOpponentBase` → that player's station is no longer alive.
-- `DestroyEnemyFleet` → station lost AND zero living non-base entities AND no pending reinforcement.
+- A player becomes eligible for defeat after a base has been observed alive; delayed initial spawning does not trigger defeat.
+- `DestroyOpponentBase` → no living player base remains. A second station also counts as a base.
+- `DestroyEnemyFleet` → no living base AND zero living non-base entities AND no pending reinforcement.
 - Non-base entities include ships, squadrons, defense platforms and mining facilities; remaining structures can prevent destroy-all victory.
 - Teams remain alive while any player on that team remains alive.
 - No surviving teams → draw. Local team eliminated → defeat. Only the local team survives → victory.
@@ -37,21 +38,21 @@ verification: source-and-assets
 
 ### Survival
 
-- One human plus optional AI ally versus one wave-attacker owner. The ally shares the human's team.
+- Solo or online co-op humans plus an optional AI ally versus one wave-attacker owner. Co-op requires a Medium or Large map.
 - Setup selects player/ally/enemy faction, map size, AI difficulty and superweapon toggle; the Survival preset uses Coruscant.
-- Human station starts at level 5. The ally has no own station and uses hosted production; its player state remains separate.
+- Each human has a station starting at level 5. The AI ally uses hosted production and has separate player state.
 - Wave attackers have no station, economy, research or normal production. Waves spawn authored units directly.
 - Five waves. Preparation is 120 s before wave 1 and 60 s between waves; Start Wave Now ends the remaining preparation.
 - A wave clears after its pending spawn queue is empty, no living wave-attacker entities remain, and the 1 s spawn-settle delay expires.
 - Surviving carrier-launched squadrons count as remaining attackers.
-- Clear wave 5 → victory. Lose the human's living station → defeat.
-- Wave units receive Attack Move toward the human station; newly discovered attackers and idle ships receive that order again.
+- Clear wave 5 → victory. Lose every human player's living base → defeat.
+- Wave units receive Attack Move toward the first human with a living station.
 - Credits and production follow [[GameDesign/Economy]] and [[GameDesign/Production_And_Research]]; the wave director grants no kill bounty.
 
 ### Battle Simulation
 
 - Two opposing AI-controlled sides; both fleets must contain at least one entry.
-- The setup records factions, ship/squadron fleet entries, starting distance, time limit and normal/fast speed.
+- The setup records factions, ship/squadron fleet entries, starting distance, time limit, normal/fast speed, and whether to use hangars and abilities.
 - Empty Large map at Coruscant; no economy, stations, mining, capture sites, fog or superweapons.
 - Initial draft defaults: distance 2,000 world units, time limit 300 s, normal speed.
 - Outcome evaluation waits for initial spawning to finish.
@@ -62,7 +63,8 @@ verification: source-and-assets
 
 ## Important Values
 
-- Authored wave totals below are from `SurvivalWaveData.asset`; all four factions have these totals, with faction-specific unit identities.
+- Base wave totals below are from `SurvivalWaveData.asset`. All four factions have these totals with faction-specific units.
+- Each additional defender, including the AI ally, adds 50% of each authored quantity. The director rounds each entry up.
 - Direct squadrons are counted as squadron groups, not individual fighter craft; carrier launches are additional.
 
 | Wave | Ships | Direct squadrons | Spawn groups |
@@ -71,14 +73,13 @@ verification: source-and-assets
 | 2 | 14 | 3 | 2 |
 | 3 | 28 | 4 | 3 |
 | 4 | 38 | 5 | 4 |
-| 5 | 46 | 6 | 4 |
+| 5 | 52 | 6 | 4 |
 
 ## Edge Cases
 
 - Ship unlock tier changes → update `SurvivalWaveData.asset` for every faction. Per-tier ship totals are 2 × the largest faction roster for that tier; `SurvivalGameplayTests` checks totals and unlock coverage.
-- Mode victory rules differ: Skirmish is team elimination; Survival protects the human station; Simulation has a time-limit draw.
 - General battle time scale: normal 1, fast 4, paused/ended 0. Preparation and Simulation elapsed time use scaled battle time.
-- Saving supports Skirmish and Survival only: [[GameDesign/Save_And_Load]].
+- Save availability and format: [[GameDesign/Save_And_Load]].
 - Source verification establishes authored behavior, not combat difficulty, faction fairness or complete runtime acceptance.
 
 ## Files

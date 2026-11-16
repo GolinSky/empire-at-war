@@ -7,7 +7,7 @@ status: in-progress
 ## Goal
 
 - PC settings screen (display, graphics, camera, key bindings) with one versioned save file.
-- Spec: `RTS_PC_Settings_Logic_Data_UI.md` (external; DI adapted to Zenject).
+- Spec: `RTS_PC_Settings_Logic_Data_UI.md` (original external spec). Live registration is in VContainer’s `ProjectScope`.
 
 ## Decision
 
@@ -22,7 +22,7 @@ status: in-progress
 - `SettingsService` (`ISettingsService`, `ICameraPreferences`): Saved / Draft, `IsDirty => !Draft.Matches(Saved)` (`SettingsService.cs:23`), `ApplyAsync` / `KeepDisplay` / `RevertDisplayAsync` / `DiscardAsync` / `ResetDraftToDefaults`.
 - `JsonSettingsRepository`: `persistentDataPath/settings.json`; temp write → `File.Replace` + `.bak`; unreadable file → `.corrupt` copy + backup load.
 - First run imports legacy PlayerPrefs `QualityPreset`, `InputBindingOverrides`.
-- Applier order = `ProjectContextInstaller` binding order: `DisplaySettingsApplier` → `GraphicsSettingsApplier` → `InputBindingService`.
+- `ProjectScope` registers `DisplaySettingsApplier`, `GraphicsSettingsApplier`, `AudioSettingsApplier` and `InputBindingService`.
 - Display change → 15 s Keep/Revert prompt (`Time.unscaledTime`); timeout / Escape → revert.
 - `InputBindingService`: suspends all enabled maps during capture, Escape cancels, cross-map chord conflicts (`BindingConflicts`), Replace / Swap / Cancel.
 - Camera: `CameraService` (pan/zoom multipliers, invert zoom), `CameraInput` (edge scrolling).
@@ -42,7 +42,7 @@ status: in-progress
 - [x] Phase 4 — camera preferences
 - [x] Phase 5 — audio: `AudioSettingsApplier` (`Services/Audio`) sets `MasterVolume` / `MusicVolume` / `VoiceVolume` / `SfxVolume` on `Assets/Audio/AudioMixer.mixer`
   - dB = authored level + `20·log10(volume)`; volume 0 → −80 dB; 1 keeps authored mix (Master authored −10 dB).
-  - Mixer injected via `ProjectContextInstaller.audioMixer`; `SfxDuckVolume` stays owned by `ShipSfxService`.
+  - 2026-09-30 setup used the legacy installer. Current mixer binding → `ProjectScope.audioMixer`. `SfxDuckVolume` stays owned by `ShipSfxService`.
   - Sliders preview live through `IAudioSettingsPreview`; Discard re-applies saved volumes.
   - Mute when unfocused (default On) → master −80 dB via `Application.focusChanged`; stored volume untouched.
   - Verified 2026-09-30 Play Mode: 50% master → −16.02 dB, 25% music → −12.04 dB, Discard restores, unfocused → −80 dB.

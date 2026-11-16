@@ -4,8 +4,8 @@ system:
   - production
   - research
 design_state: implemented
-verified: 2026-10-20
-verification: source-and-assets
+verified: 2026-11-16
+verification: Inspected EnemyBuildQueue, PlayerFactionModel, FactionService, EnemyFactionController and the serialized station, population and faction research data.
 ---
 # Production and Research
 
@@ -23,7 +23,7 @@ verification: source-and-assets
 - Requests of the same ID form a FIFO queue; each pipeline builds one item at a time.
 - `FactionData.MaxCount` limits the pending count in a pipeline. Completed ships normally leave this queue count.
 - Structure requests reserve their type slot through queued, reserve-pool, and deployed states; cancellation or destruction releases it.
-- Resolute has an additional unique reservation spanning production and owned existence.
+- Hero requests have a unique reservation spanning production and owned existence.
 - Build progress uses elapsed game time; excess time after one completion advances the next item in the same pipeline.
 - Cancel removes the active/head request, retains following requests, and refunds the full price.
 - Completed station upgrade → level increases; completed research → next tier applies; completed superweapon charge → weapon becomes ready.
@@ -34,16 +34,17 @@ verification: source-and-assets
 - Human ship/squadron population is checked when creating a reinforcement placement, not when buying or building it.
 - Completed reserve units can wait while deployed population is full.
 - Human population increments on deployment and is released with the deployed ship/squadron.
-- Already completed reserves remain deployable after station loss while the battle continues; placement still requires valid space/vision.
-- New human purchases stop without a production base; an unfinished item that completes without one is refunded.
+- Completed reserves remain deployable after base loss while the battle continues, subject to placement rules.
+- New purchases require a production base. Self-hosted ordinary builds can finish into reserve after base loss. Hosted builds and requests that require a specific base can refund on completion if production access is lost.
 - Structure placement restrictions are separate from production admission; see [[GameDesign/Capture_And_Structures]].
 
 ### AI production
 - AI reserves per-type count and population before spending; a failed payment releases that reservation.
 - AI reservation counts include pending builds and living deployed units; destruction releases the reservation.
-- All AI pending builds count down independently; the human 7-pipeline FIFO model is not used.
+- AI builds sharing a request ID advance FIFO. Up to 7 distinct request-ID pipelines advance concurrently.
+- Completed ships awaiting deployment release their production lane. For AI purchase and deployment policy, see [[Architecture/Enemy_AI_Objectives]].
 - AI completed units spawn automatically; they do not enter the human placement reserve.
-- AI station upgrade spends its price and increases level immediately; it does not wait for the human upgrade build time.
+- AI station upgrades spend their price and complete through the timed build queue.
 - AI research holds a reservation for its line until completion, preventing a second pending purchase of that line.
 - A hosted AI ally follows its host's station level and production availability; it cannot buy a host station upgrade.
 
@@ -52,14 +53,15 @@ verification: source-and-assets
 ### Station progression
 | Upgrade | Required level | Credits | Human build time |
 |---|---:|---:|---:|
-| Level 2 | 1 | 2,000 | 160 s |
-| Level 3 | 2 | 3,200 | 200 s |
-| Level 4 | 3 | 4,000 | 240 s |
-| Level 5 | 4 | 5,500 | 280 s |
+| Level 2 | 1 | 2,000 | 80 s |
+| Level 3 | 2 | 3,200 | 120 s |
+| Level 4 | 3 | 4,000 | 180 s |
+| Level 5 | 4 | 5,500 | 220 s |
 
 - Maximum station level: 5. Default battle builder starts at level 1; Survival starts at level 5.
 - Level changes affect available roster entries, station combat stats/model, and station-derived income.
 - Station upgrade requests have `MaxCount = 1` and `UnitCapacity = 0`.
+- Second Station: 3,000 credits, 90 s, level 1 entry. It starts at level 1, upgrades through its own level chain at the same prices and durations, and shares the production queue, research and limits. A standing second station can keep production available after the main station is lost.
 
 ### Research lines
 | Line | Required levels | Credits by tier | Time by tier | Latest-tier effect |
@@ -83,7 +85,7 @@ verification: source-and-assets
 
 ## Edge Cases
 - Human and AI `MaxCount` semantics differ: human queue count versus AI pending-plus-living reservations.
-- Human structure lifetime limits and Resolute uniqueness are explicit exceptions to the queue-only rule.
+- Human structure lifetime limits and hero uniqueness are explicit exceptions to the queue-only rule.
 - Human `FactionService.TryPurchaseUnit` does not itself recheck `AvailableLevel`; level gating is in the production UI. Do not treat this API as a complete admission validator.
 - Human placement capacity checks cover ships and squadrons; structure placement does not consume the catalog's population value. AI reserves the `UnitCapacity` on all supported requests.
 - Self-hosted AI builds may still complete after its station falls; a squadron with no living launch station refunds instead.
@@ -91,7 +93,6 @@ verification: source-and-assets
 - Human cancellation and reinforcement-placement cancellation are different: canceling a placement keeps the completed reserve item.
 - Research effects are faction-local; shared facility payments use the facility owner's research, as defined in [[GameDesign/Economy]].
 - These asymmetries describe current implementation, not a decision that human/AI behavior should remain different.
-- Verification: live source and serialized assets read on 2026-10-20; no runtime test was run for this reference.
 
 ## Files
 - `Assets/Scripts/Entities/Faction/Model/PlayerFactionModel.cs` — `CanQueueUnit`, `QueueUnit`, `TryCancelCurrentUnit`, `AdvancePipeline`.

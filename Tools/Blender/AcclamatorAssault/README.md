@@ -1,6 +1,6 @@
 # Acclamator Assault Ship — Imperial Loadout
 
-- Integrated on 2026-10-07 using `Architecture/ALO_MODEL_IMPORT_GUIDE.md`.
+- Integrated on 2026-10-07 using `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`.
 - `Temp/ALO_MODEL_MAP.txt` was absent. `output/aotr-empire-units/ship-catalog.csv` identifies `E_Acclamator_Assault_Ship_Fighters` → `ev_acclamator.ALO`.
 - Source directory: `D:/SteamLibrary/steamapps/workshop/content/32470/1397421866/Data/`.
 - Main source: `ART/MODELS/ev_acclamator.ALO`; six separate models: `T_DTL_Acc_01.ALO` through `T_DTL_Acc_06.ALO`. No duplicate turret geometry added.

@@ -5,8 +5,8 @@ system:
   - factions
   - hangars
 design_state: implemented
-verified: 2026-10-20
-verification: source-and-assets
+verified: 2026-11-16
+verification: Counted faction roster entries and inspected the saved CR90, Vulture and Endurance assets, ShipClass, WeaponType and ShipAbilityId.
 ---
 # Units and Factions
 
@@ -25,27 +25,17 @@ verification: source-and-assets
 
 ## Important Values
 
-### Build rosters — saved 2026-10-20
+### Faction rosters
 
-| Faction | Ship entries | Squadron entries | Squadron roster |
-|---|---:|---:|---|
-| Republic | 12 | 5 | ARC-170, BTL-B Y-Wing, NTB-630, V-19 Torrent, V-Wing |
-| Separatist | 9 | 3 | Belbullab-22, Advanced Droid Bomber, Vulture Droid |
-| Rebellion | 17 | 3 | A-Wing, T-65 X-Wing, BTL-A4 Y-Wing Bomber |
-| Empire | 14 | 6 | TIE Fighter, Bomber, Avenger, Interceptor, Brute, Punisher |
-
-- Total: `52` ship entries and `17` squadron entries. Counts are a dated roster snapshot, not population limits or all available art.
-- Republic ships: Venator I/II, Arquitens, Acclamator, Heavy Dreadnought, Thranta, Rothana, Resolute, Pride of the Core, Imperator, IPV-2C Stealth Corvette, Victory.
-- Separatist ships: Providence, Recusant, Munificent, Lucrehulk, Malevolence, Captor, Patrol Frigate, C-9979, Dispatcher.
-- Rebellion ships: Nebulon-B, CR90, MC80, Home One, MC75 Profundity, MC80 Independence, Corellian Battlecruiser, MC30c, CD-273, Quasar Fire, MC50, Assault Frigate Mk II, Dauntless, Liberator, Nebula, Bothan Assault Cruiser, Endurance.
-- Empire ships: Victory I/II Advanced Loadout, ISD I/II, ArquitensImperialCruiser, Executor, Raider, AcclamatorAssault, Tector, Imperial Venator, Procursator, Titan, Allegiance, Tartan.
+- Read each faction’s `ships` and `squadrons` tables in the linked faction assets for current roster membership, prices and limits.
 
 ### Current examples
 
-- CR90: `Corvette`; anti-fighter/anti-bomber role; `500` hull, `800` shields, speed `40` units/s; eight baked Light Laser Cannon mounts.
-- CR90 purchase: `1,250` credits, `25 s`, level `1`, population `1`, maximum `10`. Its data has no hangar bays and ability ID `14` (Power to Engines).
-- Vulture: `Fighter`; `7` members, each `35` hull / `0` shields; base combined hull `245`. Cruise/combat speed `34.5/39` units/s; baked loadout `28` fighter-laser mounts.
-- Combat classes: Fighter, Bomber, Interceptor, Corvette, Frigate, Cruiser, Capital, HeavyCapital, Structure. They select matrix/bias behavior; a display-name phrase does not define a new class.
+- CR90: `Corvette`, anti-fighter/anti-bomber. Base hull/shields `600/600`, speed `35` units/s. Eight baked `Laser` and two `PointDefense` mounts.
+- CR90 purchase: `1,250` credits, `20 s`, level `1`, population `3`, maximum `10`. No hangar bays. Power to Engines uses `BoostEnginePower` (ID `4`).
+- Vulture: `Fighter` with `13` members, each `44` hull and `0` shields. Base combined hull `572`, cruise/combat speed `43.2/48` units/s, and `52` baked weapon mounts.
+- Endurance: three hangar bays with `8` reserve and `2` maximum active squadrons each.
+- Combat classes: Fighter, Bomber, Interceptor, Corvette, Frigate, Cruiser, Capital, HeavyCapital, Structure, HeroStrikecraft. They select matrix/bias behavior; a display-name phrase does not define a new class.
 - Shared superweapon permissions currently match across all four factions: Ion Cannon, Hypervelocity Gun, Plasma Cannon. See [[GameDesign/Abilities_And_Superweapons]].
 
 ## Implementation
@@ -74,10 +64,9 @@ verification: source-and-assets
 
 ## Edge Cases
 
-- CR90 source conflict: its old import record says `750/600/24.5`; the fleet proposal says `500/800/80`; current saved hull/shields/speed are `500/800/40`. These are separate snapshots, not interchangeable specifications.
-- Endurance's saved bays currently contain `reserve/maxActive = 1/1, 1/1, 0/0, 0/0`; the older `6 active + 6 replacements` proposal/import is not the current asset configuration.
+- The CR90 and Endurance import records and fleet proposals preserve their dated figures. Use the saved unit assets for current values.
 - Runtime health, movement and damage can differ from base data through research, abilities, station levels and environmental modifiers.
-- Verified from C# and saved assets on `2026-10-20`; no battle simulation, Play Mode or automated tests were run for this reference.
+- The 2026-11-16 check covers source and serialized data.
 
 ## Files
 

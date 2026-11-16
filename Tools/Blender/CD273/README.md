@@ -1,6 +1,6 @@
 # CD-273 Corellian Destroyer
 
-- Guide: vault `Architecture/ALO_MODEL_IMPORT_GUIDE`; balance: `GameDesign/Rebel units`, unit 4.
+- Guide: vault `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE`; balance: `GameDesign/Proposals/Rebel units`, unit 4.
 - Source: Remake 4.0, Workshop `1770851727`; XML `Data/Xml/Units/Space/Units_Space_Rebel_CHG.xml`, `Corellian_Destroyer` → `Rebel_CD_273.ALO`. Textures resolve from `Data/Art/Textures` (`Texturesc` does not exist).
 - Source files stay unchanged; `Prepare.py` records binary slots, shader parameters, texture provenance and SHA-256 hashes. No separate turret art is referenced. Two ALA files exist (`IDLE_00`, `DIE_00`); animations and animated EaW shader effects are not converted.
 - Conversion uses an isolated Blender 3.6.23 MCP listener on `9896`, protocol 13, telemetry disabled. The shared listener and other Blender work stay untouched.

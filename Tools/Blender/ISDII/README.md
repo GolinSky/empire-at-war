@@ -4,7 +4,7 @@
 
 - Empire ship `205`; displayed name `ISD II`.
 - Source: AOTR workshop `1397421866`, `E_Imperial_Star_Destroyer_2_Fighters` inheriting `T_Imperial_Star_Destroyer_2`.
-- Model map: `Temp/ALO_MODEL_MAP.txt`; import rules: vault `Architecture/ALO_MODEL_IMPORT_GUIDE.md`.
+- Model map: `Temp/ALO_MODEL_MAP.txt`; import rules: vault `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`.
 - `ImportEvidence.json` records source SHA-256 values, all 11 FBX roundtrip reports and final test results.
 
 ## Geometry

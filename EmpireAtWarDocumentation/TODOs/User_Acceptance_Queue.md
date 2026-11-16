@@ -179,7 +179,7 @@ created: "2026-10-29\r"
   - [ ] Run `SerializedReferenceTests` (on request only).
   - [ ] Play check: main menu + skirmish, no missing references; range cheat draws rings.
 - [[Done/Refactoring/Battle_Startup_Sequence_Plan]]
-  - [ ] Acceptance in Play Mode: no fog fade-in, no camera drift, no first-frame hitch, Zenject graph resolves (orchestrator ↔ `CameraService` cycle relies on method injection), Esc ignored while loading, pause/speed/menu/end/exit.
+  - [ ] Acceptance in Play Mode: no fog fade-in, no camera drift, no first-frame hitch, the VContainer battle scope resolves its startup dependencies, Esc ignored while loading, pause/speed/menu/end/exit.
 - [[Done/Refactoring/Ship_Squadron_Entity_Simplification_Plan]]
   - [ ] Validate recorded behavior changes in a skirmish (merged in PR #16).
 - [[Done/Refactoring/Zenject_To_VContainer_Migration]]

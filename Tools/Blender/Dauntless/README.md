@@ -1,6 +1,6 @@
 # Dauntless Heavy Cruiser
 
-- Guide: vault `Architecture/ALO_MODEL_IMPORT_GUIDE`; import record: `GameDesign/Dauntless Import`.
+- Guide: vault `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE`; import record: `AssetPipeline/Imports/Dauntless Import`.
 - Source: Workshop `1770851727`, `Neutral_Dauntless_Cruiser.ALO`. Correct texture folder ends in `Data/Art/Textures`, not `Texturesc`.
 - Project balance from `Rebel units`: hull 10,000; shields 5,500; speed 17; price 5,600; build 60 s. Remake XML balance is retained as source evidence.
 - Loadout: 8 heavy turbolasers, 4 medium dual turbolasers, 4 heavy ion cannons, 2 point-defense lasers; 2 engines, shield, hangar, sensor. All 23 targets have explicit health and fog bindings.

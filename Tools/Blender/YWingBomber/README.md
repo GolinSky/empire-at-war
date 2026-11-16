@@ -3,7 +3,7 @@
 - AOTR 2.11.9 unit `R_Y_Wing`; model-map source `RV_Y_WING.ALO` plus `RV_Y_WING_TURRET.ALO` at `Turretbase`.
 - Rebellion squadron `YWingBomber = 301`. Republic `YWing = 3` remains the separate BTL-B.
 - Source root: `D:/SteamLibrary/steamapps/workshop/content/32470/1397421866/Data/ART`.
-- Follow vault `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; preserve original sources and Blender's other scenes. Safe mode stays enabled.
+- Follow vault `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; preserve original sources and Blender's other scenes. Safe mode stays enabled.
 
 ## Conversion
 
@@ -32,4 +32,4 @@
 - Saved/live readback: six health/flight members, 24 weapon/fog bindings, 24 team renderers, zero missing scripts/broken references. Rebellion-only roster, mappings, Addressables, icon consumers and placement verified.
 - Transparent 512px model icon, all eight distinct team renders, blue/green paint and six-craft deployment preview checked. Source hashes unchanged. No automated tests or combat Play Mode started by this task.
 - Scoped archive: `output/aotr-rebel-units/YWingBomber-Converted/`; includes FBXs, textures, reports, previews and the source `Credits_and_Permissions.pdf`.
-- Vault reference: `GameDesign/Y-Wing Bomber Import.md`; acceptance plan: `TODOs/Features/YWingBomber_Import.md`.
+- Vault reference: `AssetPipeline/Imports/Y-Wing Bomber Import.md`; completed plan: `Done/Features/YWingBomber_Import.md`.

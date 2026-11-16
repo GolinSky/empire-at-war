@@ -115,7 +115,7 @@ Ended       BattleResult received · timeScale 0 · HUD disabled
    - Prefab `Assets/Prefabs/Ui/Fade/FadeUi.prefab`, Addressable `FadeUi` in `Ui` group; resolve + references verified in Editor.
    - EditMode test `FadeUiPrefab_HasAssignedReferencesAndCoverBlocksInput`; `EXPECTED_SCREEN_PREFAB_COUNT` 14 → 18 (was already stale at 17).
    - Not done: fade on exit to menu.
-6. [ ] Acceptance in Play Mode: no fog fade-in, no camera drift, no first-frame hitch, Zenject graph resolves (orchestrator ↔ `CameraService` cycle relies on method injection), Esc ignored while loading, pause/speed/menu/end/exit.
+6. [ ] Acceptance in Play Mode: no fog fade-in, no camera drift, no first-frame hitch, the VContainer battle scope resolves its startup dependencies, Esc ignored while loading, pause/speed/menu/end/exit.
 
 ## Progress (2026-10-04)
 

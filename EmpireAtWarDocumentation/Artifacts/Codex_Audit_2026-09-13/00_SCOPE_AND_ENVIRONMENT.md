@@ -29,7 +29,7 @@ tags: [codex, configuration, audit]
 - [[Artifacts/Codex_Audit_2026-09-13/07_HANDOFF|Repair handoff and completion checklist]]
 - `inventory.json`: paths, sizes, modification times and SHA-256 hashes of 27 inspected declarative/reference files.
   - It contains no file bodies.
-- `patches/`: three small, unapplied documentation proposals.
+- [[Artifacts/Codex_Audit_2026-09-13/patches/README|Unapplied documentation proposals]] — three patches retained with the audit.
   - These do not repair configuration or authorize changes.
 
 ## Environment and scope

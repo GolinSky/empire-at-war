@@ -9,7 +9,7 @@ merged_into: "[[TODOs/Optimization/Battle_CPU_Performance_Plan]]"
 ---
 # Battle CPU fixes — implementation plan
 
-> Merged 2026-10-29 into [[TODOs/Optimization/Battle_CPU_Performance_Plan]]: open items transferred there; this note is history.
+> Historical implementation record. Merged on 2026-10-29 into [[TODOs/Optimization/Battle_CPU_Performance_Plan]], which owns unfinished work. Checkboxes below record the original plan at the time. The firing-readiness proposal was superseded by [[Done/Bugs/Boost_Weapon_Power_Fire_Rate_Fix]]. The removed-caster exception was fixed in the active plan’s October 12 stress-audit follow-up.
 
 ## Goal
 - Cut main-thread cost in battle; latest evidence is CPU-bound: median CPU 96.6 ms, GPU 3.0 ms ([[TODOs/Optimization/Battle_CPU_Performance_Plan - Research]]).

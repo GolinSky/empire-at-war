@@ -15,7 +15,8 @@ reviewed: 2026-10-20
 # X-Wing Import
 
 > [!info] Import record
-> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]]. Open acceptance work remains in its linked TODO plan.
+> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]].
+> Plan: [[Done/Features/XWing_Import]].
 
 ## Goal
 
@@ -71,7 +72,7 @@ reviewed: 2026-10-20
 - Roster, icons, placement, mapping and Addressables resolve to X-Wing assets; ability settings resolve to `LockSFoilsSettings`.
 - Eight distinct palettes rendered; blue/green inspected. Transparent 512 × 512 actual-model icon/silhouette are uncropped; alpha bounds `(34,80)..(457,414)`.
 - Final script compilation clean; no new console import/serialization errors. Dirty `MainMenuScene` preserved.
-- No automated tests or Play Mode executed. Runtime combat/toggle/placement/destruction and balance acceptance remain in [[Done/Features/XWing_Import]].
+- No automated tests or Play Mode executed. Runtime combat, toggle, placement, destruction and balance acceptance → [[TODOs/User_Acceptance_Queue]].
 
 ## Edge Cases
 

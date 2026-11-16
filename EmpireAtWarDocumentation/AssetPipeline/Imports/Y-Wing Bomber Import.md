@@ -15,7 +15,8 @@ reviewed: 2026-10-20
 # BTL-A4 Y-Wing Bomber Import
 
 > [!info] Import record
-> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]]. Open acceptance work remains in its linked TODO plan.
+> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]].
+> Plan: [[Done/Features/YWingBomber_Import]].
 
 ## Decision
 
@@ -78,4 +79,4 @@ reviewed: 2026-10-20
 
 ## TODO
 
-- [[Done/Features/YWingBomber_Import|Clean-skirmish acceptance and provisional balance/source-difference review]].
+- Clean-skirmish acceptance and provisional balance review → [[TODOs/User_Acceptance_Queue]].

@@ -25,8 +25,8 @@ reviewed: 2026-10-20
 - Read [[Architecture/PROJECT_ORGANIZATION]] before creating asset folders; read [[Rules/UI_UX_GUIDELINES]] before changing UI assets and [[Rules/UI_CODE_BUILD_GUIDE]] for new UI features.
 - Keep original ALO/DDS files unchanged. Work in a fresh Blender scene; preserve geometry, UVs, attachment names, hierarchy and authored hidden state.
 - Use the existing Blender MCP connection and official Unity CLI/`unity mcp` bridge. Inspect live versions and command schemas; these are pinned working versions, not a claim about the latest releases.
-- Separate source facts from project balance choices. Use [[GameDesign/References/Republic at War - Republic Unit Stats Reference]] for Republic unit data, retaining its provenance/version caveats.
-- Preserve existing `.meta` GUIDs, Addressables group structure and unrelated user changes. Do not run automated tests without an explicit request or discard/save unrelated dirty scenes.
+- Use live Unity assets and code for project balance. Record source measurements as provenance and link [[GameDesign/Units_And_Factions]] for data ownership.
+- Read [[AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE]] before Unity registration. Preserve existing `.meta` GUIDs, Addressables group structure and unrelated user changes. Do not run automated tests without an explicit request or discard/save unrelated dirty scenes.
 - Reuse existing MVP responsibilities: models own rules/state; views render and hold explicit references; existing entities/presenters coordinate components. A new ship normally needs assets and registrations, not new combat logic.
 
 ## Implementation
@@ -146,11 +146,11 @@ bpy.ops.import_scene.fbx(
 | `ShipType` | Unique explicit enum value; never renumber existing entries. Rothana = `7`. |
 | `ShipsData` | Ship type → correct ship-data asset reference |
 | `AssetMappingData` | `<Ship>ShipView` → correct gameplay prefab |
-| Existing Addressables groups | View/data entries and expected addresses; retain group structure |
+| Existing Addressables groups | Main view, wreck and placement preview in the owning faction’s `UnitViews` group. Preserve the current data owner, addresses, aliases and labels. See [[AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE]]. |
 | Republic `FactionsData` | Roster entry, role/description, cost, level, limits, population, icon and matchups |
 | `ShipUiData.shipIconWrapper` | Ship type → correct ship sprite |
 | `TooltipIconData.icons` | Correct sprite identifier/reference, including local file ID |
-| `ReinforcementData.spawnShipWrapper` | Ship type → `AssetReferenceGameObject` to its own placement prefab (write `value.m_AssetGUID`); prefab must be an Addressables entry in `View`, address `<Ship>ReinforcementView` |
+| `ReinforcementData.spawnShipWrapper` | Ship type → `AssetReferenceGameObject` to its own placement prefab (write `value.m_AssetGUID`); placement prefab is an Addressables entry in the same faction group as the gameplay view; address `<Ship>ReinforcementView` |
 | Ship data dependencies | Wreck data, height tier, supported weapon profiles and abilities |
 | `ShipIconGenerator.MAPPINGS` | New ship included for future icon regeneration |
 
@@ -160,7 +160,8 @@ bpy.ops.import_scene.fbx(
 ### 7. Build the separate preview, wreck and icon
 
 - **Placement preview:** create `<Ship>ReinforcementView.prefab` with the same visible geometry, size and orientation; assign the shared `Assets/Art/Materials/Vfx/Hologram.mat` to visible slots and to `UnitSpawnView.hologramMaterial`. Only slots using that material are tinted; every listed `meshRenderers` entry must have one (`UnitSpawnViewTests`).
-- Add the prefab to the `View` Addressables group (address = prefab name) and reference it from `ReinforcementData` as an AssetReference (since 2026-10-24; a direct prefab reference pulls ship art into the Model bundle). Older `Tools/Blender/*/Register.cs` scripts still write `objectReferenceValue` — don't copy that line. Fit trigger bounds and use the existing kinematic/no-gravity setup. Strip helpers (step 7a) and keep prefab root at identity; spawn height comes from ship data.
+- Put the prefab in its faction’s `UnitViews` group and reference its GUID through `ReinforcementData`. Preserve the `<Ship>ReinforcementView` address. Fit trigger bounds and use the existing kinematic/no-gravity setup. Strip helpers (step 7a) and keep prefab root at identity; spawn height comes from ship data.
+- Before rerunning a model-specific registrar, check its exact group and registry writes. For example, the legacy `Tools/Blender/Bulwark/Register.cs` would move the saved Separatist preview back to generic `View`. `Tools/Blender/Gladiator/Register.cs` shows the faction group and placement AssetReference wiring.
 - **Wreck:** create dedicated wreck materials and data, using only intended visible opaque hull meshes. Preserve team-livery settings where the wreck shader uses them.
 - **Icon:** render the actual model with transparent background at `512 × 512`, matching existing framing. Inspect alpha, silhouette and crop; assign the imported sprite to all three icon consumers.
 - Icon and wreck generators must respect disabled helper renderers. Do not enable every renderer or regenerate unrelated ships as part of one import.
@@ -228,7 +229,7 @@ bpy.ops.import_scene.fbx(
 - No Play Mode combat verification or automated Unity test suite was run. Fire arcs, hangar launches, abilities, shields, fog/selection, reinforcement placement and death/wreck behavior still need an authorized runtime check.
 - Gameplay cost/speed/scale, regeneration and hangar timing remain provisional; working references and renders do not establish balance.
 - EaW animated shader effects, refraction/proxy particles and animation retargeting were not recreated. Source weapon geometry is static.
-- There is no checked-in general one-command Unity ship integration builder. Temporary integration scripts are not a reusable pipeline; this guide and the saved Rothana assets are the repeatable reference.
+- The unified importer is under migration. `Tools/AloImport/README.md` and `capabilities.json` describe supported stages. Follow the model-specific workflow for any case outside those capabilities.
 
 ## Important Values
 
@@ -249,8 +250,8 @@ bpy.ops.import_scene.fbx(
 - [[AssetPipeline/Guides/SPACE_STATION_MODEL_IMPORT_GUIDE]] — five original Rebel station models, Rebellion-only level mapping, attachment/shield setup, rebuild commands and verification.
 - `Tools/Blender/README.md` — installed versions, exact Rothana hardpoint mapping, conversion decisions and verification evidence.
 - `Tools/Blender/Start-Blender.ps1`, `mcp_call.py`, `export_rothana.py` — launcher, MCP SDK fallback and model-specific exporter.
-- `Assets/Prefabs/Models/Ships/RothanaShipView.prefab` and `Assets/Prefabs/Ui/Reinforcement/RothanaReinforcementView.prefab` — gameplay and placement examples.
-- `Assets/Settings/Data/Ship/RothanaShipData.asset` — ship values and dependencies; `Assets/Settings/Data/Reinforcement/ReinforcementData.asset` — preview registry.
+- `Assets/Prefabs/Models/Ships/Republic/View/RothanaShipView.prefab` and `Assets/Prefabs/Ui/Reinforcement/RothanaReinforcementView.prefab` — gameplay and placement examples.
+- `Assets/Settings/Data/Ship/Republic/RothanaShipData.asset` — ship values and dependencies; `Assets/Settings/Data/Reinforcement/ReinforcementData.asset` — preview registry.
 - `Assets/Art/Shaders/Units/ShipLitInput.hlsl`, `Assets/Scripts/Components/TeamColor/TeamColorView.cs`, `Assets/Scripts/Editor/Rendering/TeamLiveryAnalyzer.cs` — livery contract and detection limits.
 - `Assets/Scripts/Editor/ShipIconGenerator.cs`, `Assets/Scripts/Editor/Rendering/ShipWreckBuilder.cs` — generators must preserve hidden-renderer state.
 

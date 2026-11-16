@@ -10,7 +10,7 @@ updated: 2026-10-20
 
 - Guides describe reusable workflows; import records retain source provenance, integration decisions and dated validation.
 - Recorded stats are snapshots. [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]] describe current data ownership and rules.
-- Each record states its plan in the header banner (`> Plan:`). Open user acceptance lives in [[TODOs/User_Acceptance_Queue]]; a historical record does not close that work.
+- Import records link their execution plan in the `> Plan:` banner when one exists. System-wide status lives in [[TODOs/TODOs]] and open user acceptance in [[TODOs/User_Acceptance_Queue]].
 - [[AssetPipeline/Imports/Empire Fleet Source Mapping]] is unverified proposal material, not a completed integration record.
 
 ## Implementation
@@ -44,6 +44,7 @@ updated: 2026-10-20
 - [[AssetPipeline/Imports/Empire Fleet Source Mapping]]
 - [[AssetPipeline/Imports/Endurance Fleet Carrier Import]]
 - [[AssetPipeline/Imports/Executor Model Import]]
+- [[AssetPipeline/Imports/Gladiator Import]]
 - [[AssetPipeline/Imports/Home One Import]]
 - [[AssetPipeline/Imports/Imperator Import]]
 - [[AssetPipeline/Imports/Imperial Venator Import]]
@@ -61,10 +62,13 @@ updated: 2026-10-20
 - [[AssetPipeline/Imports/Nebulon-B Import]]
 - [[AssetPipeline/Imports/NTB-630 Import]]
 - [[AssetPipeline/Imports/Patrol Frigate Import]]
+- [[AssetPipeline/Imports/Praetor Import]]
+- [[AssetPipeline/Imports/Procurator Import]]
 - [[AssetPipeline/Imports/Pelta Import]]
 - [[AssetPipeline/Imports/Quasar Fire Import]]
 - [[AssetPipeline/Imports/Raider Corvette Import]]
 - [[AssetPipeline/Imports/Recalcitrant Import]]
+- [[AssetPipeline/Imports/Secutor Import]]
 - [[AssetPipeline/Imports/Stealth Corvette Import]]
 - [[AssetPipeline/Imports/Tector Star Destroyer Import]]
 - [[AssetPipeline/Imports/Titan Import]]

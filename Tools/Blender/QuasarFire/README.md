@@ -1,7 +1,7 @@
 # Quasar Fire import
 
 - Source: Remake workshop `1770851727`, `Data/Art/Models/Rebel_Quasar.ALO`; textures from `Data/Art/Textures`.
-- Gameplay reference: vault `GameDesign/Rebel units.md`. Remake XML supplies sockets and material provenance, not balance.
+- Gameplay reference: vault `GameDesign/Proposals/Rebel units.md`. Remake XML supplies sockets and material provenance, not balance.
 - `ShipType.QuasarFire = 320`; `ShipAbilityId.FighterReinforcements = 50`. IDs avoid concurrent MC30c imports.
 - Hull/shields/speed: `1700 / 1300 / 34`; price/build time: `2400 / 35 s`.
 - Nine targetable hardpoints: two light turbolasers (`TurboLaser`), two point defense, one engine, two hangars, two tractor generators.

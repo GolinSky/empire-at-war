@@ -2,14 +2,13 @@
 type: index
 system:
   - game-design
-updated: 2026-10-20
+updated: 2026-11-16
 ---
 # GameDesign
 
 ## Rules
 
-- Current references below were checked against code and serialized assets on 2026-10-20. They describe implementation, not proof of balanced gameplay.
-- Runtime data remains authoritative; each reference identifies its source files and scope. Reverify values after balance changes.
+- Live code and saved assets establish current behavior and values. Each reference records the scope and date of its verification.
 - Proposals, external research and import snapshots retain their own status; do not copy their values into assets without a design decision.
 
 ## Files
@@ -28,8 +27,7 @@ updated: 2026-10-20
 | Persistence | [[GameDesign/Save_And_Load]] | Save/load, autosave, restored state and exclusions |
 
 - [[GameDesign/Proposals/Empire Fleet Import]]; [[GameDesign/Proposals/Rebel units]] — preserved proposals, including superseded choices.
-- [[GameDesign/References/Republic at War - Republic Unit Stats Reference]]; [[GameDesign/References/Unit description]] — external/unverified unit references.
-- [[GameDesign/References/Battle GameDesign basics]]; [[GameDesign/References/Empire at War, Republic at War combat — short version]] — external combat research.
+- [[GameDesign/References/Unit description]]; [[GameDesign/References/Awakening of the Rebellion - Capital Ship Reference]] — external unit references.
 - [[GameDesign/References/CONTROLS_ANALYSIS]] — original EaW controls, not current project bindings.
 - [[AssetPipeline/00_AssetPipeline]] — model conversion, source mapping and import evidence.
 - [[Architecture/00_Architecture]]; [[Tooling/00_Tooling]]; [[TODOs/TODOs]] — implementation, authoring tools and execution.

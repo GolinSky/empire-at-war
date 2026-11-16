@@ -3,7 +3,7 @@ category: Bugs
 status: done
 created: 2026-11-14
 completed: 2026-11-14
-acceptance: pending-user
+acceptance: passed
 ---
 # Boost Weapon Power Firing Rate Fix
 
@@ -129,9 +129,9 @@ Real cycle = max(reload, burst + flight + visual/muzzle tail) because of the eff
 - [x] Categories: `Combat`, `Abilities`; plus `Audio` (step 5), `Balance` (adapter), `Networking` if replica persistence changes.
 - [x] Tests disabled under local override; report as not run.
 - [x] Compile; import/save `ShipAbilityCatalog.asset` via Unity persistence flow (re-serialize changed path only).
-- [x] User acceptance queued (not performed): same weapon, stationary durable target, fixed distance/game speed; shot timestamps/counts and damage before/during/after; close vs far range; mid-reload/mid-burst activation; expiry; cancel; owner/target death; slow missiles; profiler capture for Instantiate/Update cost.
+- [x] Runtime acceptance criteria recorded at implementation closure: same weapon, stationary durable target, fixed distance/game speed; shot timestamps/counts and damage before/during/after; close vs far range; mid-reload/mid-burst activation; expiry; cancel; owner/target death; slow missiles; profiler capture for Instantiate/Update cost.
 - [x] Update canonical weapon timing guidance (`Rules/BATTLE_PERFORMANCE_GUIDELINES` shot-storage bullet: in-flight cap contract) and link here before closure.
-- [x] Close to `Done/Bugs` with `acceptance: pending-user`; runtime gates → `TODOs/User_Acceptance_Queue.md`.
+- [x] Moved to `Done/Bugs` at implementation closure with runtime checks pending.
 
 ## Verification and outcome
 
@@ -141,12 +141,12 @@ Real cycle = max(reload, burst + flight + visual/muzzle tail) because of the eff
 - Final emission now ends its salvo immediately; removed the extra trailing inter-shot wait. Pending waits retime on modifier changes; one-shot-per-frame gate remains.
 - `Battle.Projectile.Instantiate.*` also wraps budgeted prewarm. User capture must distinguish nested `Prewarm.*` and check `AttackSequenceDiagnostics.PoolExpansions` for on-demand growth.
 - Guidance extracted → [[Rules/BATTLE_PERFORMANCE_GUIDELINES#Weapon cadence and pooled overlap · 2026-11-14]]; stale Boost values corrected → [[GameDesign/Abilities_And_Superweapons]].
-- Gameplay, audio and profiler gates → [[TODOs/User_Acceptance_Queue#Boost Weapon Power Firing Rate Fix]].
+- User confirmed acceptance on 2026-11-16. No open queue entry remains.
 
 ## Rules
 
 - Read `Rules/BATTLE_PERFORMANCE_GUIDELINES.md` (shot storage, prewarm budgets: 4 ms loading, ≤1 shot/frame runtime) before pool changes.
-- Implementation closed with `acceptance: pending-user`; no test or runtime performance pass claimed.
+- At implementation closure, runtime checks were pending. The 2026-11-16 user confirmation records acceptance. Automated tests were not run by the agent.
 
 ## Files
 

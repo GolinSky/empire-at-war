@@ -15,12 +15,13 @@ reviewed: 2026-10-20
 # C-9979 Lander Import
 
 > [!info] Import record
-> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]]. Open acceptance work remains in its linked TODO plan.
+> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]].
+> Plan: [[Done/Features/C9979_Import]].
 
 ## Goal
 
 - Static space/skirmish transport from RaW 1.2.1 `SeV_c9979.ALO`; [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
-- Remaining acceptance: [[Done/Features/C9979_Import]].
+- User acceptance → [[TODOs/User_Acceptance_Queue]].
 
 ## Rules
 

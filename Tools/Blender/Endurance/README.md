@@ -5,7 +5,7 @@
 - Remake 4.0, Workshop `1770851727`; installed source under `D:/SteamLibrary/steamapps/workshop/content/32470/1770851727/Data/`.
 - Art: `Art/Models/Endurance_Fleet_Carrier.ALO`; skirmish unit `Endurance_Fleet_Carrier_MP`. Actual texture directory: `Art/Textures/`.
 - Full assembly: hull + command bridge + control tower + 12 turret pieces. Combat bridge belongs to another variant and is excluded.
-- Project balance comes from vault `GameDesign/Rebel units.md`, section 9: hull 9,000; shields 7,000; speed 18; price 6,000; build time 65 s.
+- Project balance comes from vault `GameDesign/Proposals/Rebel units.md`, section 9: hull 9,000; shields 7,000; speed 18; price 6,000; build time 65 s.
 - User-approved complement: X-Wings only, six active plus six replacements.
 
 ## Gameplay mapping

@@ -11,8 +11,23 @@ updated: 2026-11-07
 - Keep separate evidence for sustained cost, occasional stalls, rendering submission and GPU execution.
 - Execution order: allocation attribution + target preparation → combat application and squadron ticks → navigation and ship/audio → matched acceptance.
 
+## Current work
+
+- This is the active battle CPU plan. Historical implementations and measurements → [[Done/Optimization/Battle_CPU_Fixes_Plan]], [[Done/Optimization/Late_Battle_CPU_Fix_Plan]], and the research links below. Reusable procedure → [[Rules/EMPIRE_AT_WAR_OPTIMIZATION_COOKBOOK#Loading, battle CPU and UI]].
+- Attribute sustained costs and rare stalls separately. Start with matched fixed-camera Editor and Development Player runs and current native/managed attribution. Preserve the dated baselines below.
+- Scoped implementation plans → [[TODOs/Optimization/CPU_Allocation_And_Jobs_Plan]] for the audited allocation, jobs and networking changes, and [[TODOs/Optimization/Ship_Facing_Solve_CPU_Plan]] for solver behavior and parity. Reuse the matched battle captures here as evidence for both.
+
+### Late-battle CPU follow-up
+
+- [ ] Reproduce the M2 shot-prewarm anomaly with per-prefab/Awake markers. Current Windows probe did not reproduce the historical ~27 ms cost. Identify the prefab and cause before changing it.
+- [ ] Attribute the historical M2 capture-site spike only if reproduced with a native stack. The crowded Windows capture establishes a different workload.
+- [ ] Run matched Mac M2 Editor and Development Player captures (Full map, seed `1875278133`, comparable late-match populations/orders/camera/settings). Record median/p95/p99, target Copy cost, prefab Instantiate counts/cost and allocation rate.
+- [ ] Verify mass selection, orientation/culling and attack feedback on Mac/Metal and PC. Check shared-shot colors, impact, owner release/teardown and loading time. Check squadron order response, capture latency, icon projection/visibility/clicks, and telemetry scene-exit output.
+- Measure large-selection observer churn if it remains material. Under overload, 321 due squadrons at 32 updates/frame need at least 11 frames per pass. Capture samples retain their cached strength between ordinary refreshes.
+- Implementation, Windows probes and dated test results → [[Done/Optimization/Late_Battle_CPU_Fix_Plan]].
+
 ## Decision
-- Current baseline: 2026-10-11 15:25 Kyiv, 78 frames / 10.143 s, 4× speed, High Fidelity, 2560×1440; median 123.010 ms / 8.1 FPS.
+- Historical baseline: 2026-10-11 15:25 Kyiv, 78 frames / 10.143 s, 4× speed, High Fidelity, 2560×1440; median 123.010 ms / 8.1 FPS.
 - Fresh 15:31 sample: 12 frames; median CPU 96.584 ms, GPU 2.965 ms. Short diagnostic sample, not a benchmark.
 - Radar: live source now has centralized `RadarScanService`; latest battle marker average 8.581 ms versus historical 656.729 ms. Different workloads/marker coverage → observational improvement, not controlled speedup.
 - Fix execution plan: [[Done/Optimization/Battle_CPU_Fixes_Plan]].
@@ -179,7 +194,7 @@ updated: 2026-11-07
 - 120-frame workload means: **199.68 ship order calls /216.21 squadron flights /441.01 weapon ticks**; prior **125.71/156.58/307.11**. ShotEffect updates **2,554 vs 2,040/frame**, Canvas batches **294 vs 161/frame**.
 - Scoped costs: UI batching inclusive **5.691 ms** (was 2.972), projectile tracking self **3.628** (1.874), transforms self **2.519** (1.040), fog self **2.043** (1.148), full targeting inclusive **2.749** (1.617). Parents/children overlap; no complete CPU hierarchy or algorithmic scaling claim.
 - [ ] Attribute timer callbacks: four **14.38–20.42 ms** spikes, each ~12 ms self; scheduled production is a known consumer but exact callbacks are unconfirmed. CSV ship orders peak **11.16 ms**; navigation max **2.63 ms**.
-- [ ] Fix removed-entity AI ability caster lifetime: runtime stack `EntityLocator.GetEntity → ShipAbilityFacade.Entity → EnemyShipAbilityController.UseNextCasters:90`. Later Lucrehulk spawn-position failure/refund occurred outside timed windows.
+- Historical removed-entity caster exception is fixed (see Stress-audit fixes below). A separate Lucrehulk spawn-position failure/refund occurred outside timed windows.
 - No repeated order lockstep: one 218-check catch-up after **80.14 ms EditorLoop**, then spread resumes; upkeep max **2.855 ms**. Both fire snapshots have 0 stale anchors. CSV allocations max **437 KB**, earlier 72.4 MB outlier absent.
 - Capture limitation: full export filled F:, binary incomplete; moved only this task's partial **2.46 GB** file to C:. All selected scopes recovered from **120 valid live frames**; later full-summary recovery expired. Gameplay CSV complete; no game changes, no Play Mode transition. Keep matched Player acceptance open.
 
@@ -221,14 +236,9 @@ updated: 2026-11-07
 - [ ] EditMode parity test: random tilted/rolled parents, ranges and arcs → job and serial return the same `CandidateIndex` and aim.
 - [ ] Check first-frame audibility: new voices start at volume 0 in `_audioService.Play(..., 0f, ...)`; flushing in the same frame keeps them audible without a one-frame gap.
 - [ ] From Phase 0 counters, find the requesters of burst plans (stationary pursuit retries suspected).
-- [ ] `AttackSequenceState`: remove `_activeEffects`, `WaitingForEffects`, `RegisterEffect`, `TryCompleteEffect`; `StopEmitting` → `Ready`.
-- [ ] `WeaponHardPoint`: drop `RegisterEffect` in `EmitScheduledShot` and `OnTurretEffectCompleted`; fire rate = salvo + `_reloadTimer` only.
-- [ ] `ShotEffectPool`: remove the `effectCompleted` callback; pool still owns leases, drain and retirement.
-- [ ] Size `maxIdle` for overlapping salvos (measured active high-water, not just `ShotsPerSalvo`) so overlap does not add Instantiate/Destroy churn (current 462 creations / 78 frames).
-- [ ] Update attack plan contract: "Busy means emitting or waiting for leased effects" → superseded.
+- [x] Firing readiness and overlap implemented in [[Done/Bugs/Boost_Weapon_Power_Fire_Rate_Fix]]. Emission ends in Ready, while the live in-flight cap and completion accounting preserve cross-salvo leases. The user accepted the fix on 2026-11-16.
 - [ ] Matched captures vs Phase 0 baseline: ≥3 × 10 s per variant at 1× and separately 4×, fixed scenario/camera/population/settings; CPU/frame median/p95/p99, bytes/frame, GC stalls.
 - [ ] Behavior: target priority, range/arc/tilt edges, shot counts, impact timing, pause, owner/hardpoint death, pool drain, first-frame audio/ducking, routes/reservations and squadron formations/member loss.
-- [ ] Phase 7 prerequisite for whole-plan acceptance: live source still has `WaitingForEffects`, effect-completion callbacks and `ShotsPerSalvo` pool cap. Finish its fire-rate/overlap gates, or explicitly limit acceptance to phases 0–6.
 - [ ] Development Player confirmation of the largest gains. Tests/builds/scenario resets were not run against the protected live session.
 - [ ] Remove unused `StringBuilder` and vertex/UV formatting in `MPImageHelper.AddQuad` (`Assets/ThirdParty/MPUIKit/Runtime/Scripts/Utility/MPImageHelper.cs:240`): **656,712 B / 40 frames**, 16.4 KB/frame (21.4% of captured allocation). Inspect material-update strings and subscription churn afterward; no fix in this audit.
 - [ ] UI canvas routing follow-up (2026-10-12): [[TODOs/Optimization/UI_Canvas_Routing_Optimization_Plan|dedicated plan]] + [[TODOs/Optimization/UI_Canvas_Routing_Optimization_Plan - Research|investigation]]. Historical selected UI self samples total **7.695 ms/frame**, including **3.490 ms/frame** Canvas update/batching/clipping; no per-Canvas attribution or measured gain. Service-owned placement, route/layout migration and capture-site UI extraction are pending; keep MPImage allocation cleanup owned here.
@@ -237,7 +247,6 @@ updated: 2026-11-07
 - [ ] Matched target/effect/particle recaptures and controlled warm-selection repeats remain open. CSV pool misses: **160 projectile creations / 10 s**, 0.527 inclusive ms/frame; inspect per-weapon capacity/retirement before resizing. Exact 11.3 ms CSV ship-order spike and combat visual acceptance remain unverified.
 - [ ] Attribute projectile pool misses/retirement by owner and prefab before resizing; slow CSV instantiation **1.826 ms/frame**, one **31.881 ms** spike. UI batching and fog refresh remain measured costs.
 - [ ] Attribute slow CSV **778.534 ms / 72,440,805 B** frame and subsequent **62.700 ms impact processing**; source unknown, allocation stacks absent. Saved Profiler binary retained; short 120-frame summary covers a later window. Keep matched Player acceptance open.
-- [ ] Fix observed removed-caster exception: `EnemyShipAbilityController.UseNextCasters` dereferences `caster.Entity` after EntityLocator removal, before checking destroyed health. Separate later Lucrehulk production failure/refund: no open spawn position.
 - [ ] `ClipperRegistry.Cull` **1.58 ms/frame** (UI RectMask2D) in 19:18 capture; route to UI canvas routing plan. Projectile pool misses 210 / 90 frames remain. Also `WeaponComponent.UnsubscribeIfUnused` delegate removal 227 KB / 40 frames; `CanvasUpdate.PreRender` 4.8 ms UI spike.
 - [ ] Unattributed: 5 MB CSV allocation frames and a 9-frame squadron-order streak (~12.3 ms); neither reproduced under Profiler.
 
@@ -272,12 +281,12 @@ updated: 2026-11-07
 - 90-frame raw ancestry: ShotPoolPrewarmer → Instantiate.Awake 91 calls / 2452.0 ms (27.244 ms/frame); 0.5 ms source budget checks only between creations. Squadron orders self 19.529 ms/frame; target Copy 10.086; capture-site Tick max inclusive 283.327 ms.
 - 24-frame GC stacks: main-thread 4,239,756 B / 80,730 calls; telemetry flush ancestry ≥1,379,952 B, hazard refresh 464,136 B. Restored GC recording to None while playing/unpaused.
 - Project Auditor zero-result invalid as coverage: no registered modules. Rendering Debugger partial (destroyed CameraSelector); Render Graph two executions complete. Profiler export main-thread stall separately identified as tool overhead.
-- [ ] Attribute individual prewarm Awake, capture-site spike descendants and telemetry/hazard/AI allocation expressions; validate fixes only in matched captures. Existing broader scope stays in progress.
+- Open M2 prewarm and capture-site attribution → [[#Late-battle CPU follow-up]]. Verify remaining allocation sources in matched captures.
 - Guidance extraction: no new universal production rule; workload-specific findings remain with this plan/research and repository evidence.
 
 ### Live Editor capture verification · 2026-11-06
 
-- M2, High Fidelity, 2560×1440. Opening → fleet: 197.94 → 126.98 average FPS, p95 6.48 → 10.68 ms in separate 60 s windows with different workloads. All 10 detailed-capture hitches matched rolling rows across three captures. [Local audit](../../../Logs/BattleAudit/20261106T172531Z-live-hitch/analysis.md)
+- M2, High Fidelity, 2560×1440. Opening → fleet: 197.94 → 126.98 average FPS, p95 6.48 → 10.68 ms in separate 60 s windows with different workloads. All 10 detailed-capture hitches matched rolling rows across three captures. [[Artifacts/Audits/Optimization_2026-11-06/Optimization_Audit|Retained audit]]
 - Profiler exports coincided with stalls of 14.97 s and 15.55 s. Exclude both from gameplay baselines.
 - Frame 41354 (721.25 ms): no original CPU stack. In reproduction, Unity Pipeline command-list encoding triggered managed GC during a 2.040 s hitch; main thread waited for the GC lock in `ShotEffectPool.Detach`. With native profiling off, collections coincided with 951/885 ms hitches, but not a separate 645 ms interval. [Trace evidence](../../../Docs/Audits/2026-11-06-Battle-Hitch/analysis.md)
 - 2026-11-06 Pipeline catalog experiment (reverted; project uses registry `0.6.0-exp.1`): repeated full polls reused the 309,524-byte response in 76 blocks. Matched-seed fleet, 208 successful requests. A 1,705 ms GC hitch remained with the Profiler off; a separately traced 1,350 ms hitch started collection in Editor GUI layout. [Rerun evidence](../../../Docs/Audits/2026-11-06-Pipeline-Catalog-Fix/analysis.md)

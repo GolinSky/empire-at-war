@@ -158,7 +158,7 @@ created: 2026-11-14
 
 ## TODO
 
-- [ ] User decision: new standalone plan (current) or fold into [[TODOs/Optimization/Battle_CPU_Performance_Plan]] as the single CPU owner.
+- Battle-wide attribution and matched capture coordination → [[TODOs/Optimization/Battle_CPU_Performance_Plan]]. This plan tracks the specific allocation, jobs and networking implementation items.
 - [ ] User decision: `SlowTickService` per-frame cap (contract change).
 - [ ] Matched Editor and Development Player allocation captures after the code handoff. Use the pre-change revision above and record dirty paths per [[Rules/BATTLE_PERFORMANCE_GUIDELINES#Important Values]].
 - [ ] Run the reviewed fixtures and verify seeded map output during user testing.

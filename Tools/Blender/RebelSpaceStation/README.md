@@ -1,6 +1,6 @@
 # Rebel space station import
 
-Dedicated guide: [SPACE_STATION_MODEL_IMPORT_GUIDE](../../../EmpireAtWarDocumentation/Architecture/SPACE_STATION_MODEL_IMPORT_GUIDE.md).
+Dedicated guide: [SPACE_STATION_MODEL_IMPORT_GUIDE](../../../EmpireAtWarDocumentation/AssetPipeline/Guides/SPACE_STATION_MODEL_IMPORT_GUIDE.md).
 
 These scripts rebuild the five **vanilla Rebel** station models and their Rebellion-only level mapping. They are model-specific; other stations require a fresh binary audit and explicit attachment mapping.
 
@@ -91,7 +91,7 @@ unity command test_status --json
 - FBX import scale `0.02`; common nested scale approximately `12.3978834`; unit-scale gameplay root. Level 5's XZ diameter matches the previous station's `299.302856` units. The other levels retain their own source dimensions.
 - Hull material: `EmpireAtWar/Ship Lit`, direct source-alpha team mask, normal-map green flip. Additive lights use the existing project light-material convention. The alpha mask is **not inverted**.
 - Existing 17 gameplay hardpoints and combat/unlock profiles are retained. `Tools/Blender/SpaceStations/Rebellion.json` records their exact source attachment mapping; locked hardpoints have no mount until their unlock level. `GameplayLaunchExit` preserves source `Spawn_00` X/Z and sits 8 units below the current collider.
-- Only `AssetMappingData`'s `RebellionSpaceStationView` entry changes faction routing. The existing Addressables `View` group is reused. No new level/economy configuration is introduced.
+- Only `AssetMappingData`'s `RebellionSpaceStationView` entry changes faction routing. Keep the same address in the existing Addressables `RebellionUnitViews` group. No new level/economy configuration is introduced.
 - No Rebel damaged/wreck ALO or ALA animation was supplied. The obsolete Republic wreck fallback is removed for Rebellion; explosion behavior remains. EaW destruction shaders, animated lights and proxy particles are not recreated.
 
 ## Integrity checks

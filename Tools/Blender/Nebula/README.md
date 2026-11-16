@@ -5,7 +5,7 @@
 - Rebellion `ShipType.Nebula = 330`; `NebulaOverchargeWeapons = 38`.
 - Source: Remake Workshop `1770851727`, `Data/Art/Models/Rebel_Nebula_Star_Destroyer_Prototype.ALO` and 15 XML-attached turret ALOs.
 - Source textures: `Data/Art/Textures/`; original ALO/DDS files remain unchanged.
-- Gameplay reference: vault `GameDesign/Rebel units.md`, Nebula section; these project stats replace Remake XML balance.
+- Gameplay reference: vault `GameDesign/Proposals/Rebel units.md`, Nebula section; these project stats replace Remake XML balance.
 - User-approved squadron: X-Wing `300`.
 
 ## Gameplay

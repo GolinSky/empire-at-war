@@ -1,6 +1,6 @@
 # Corellian Battlecruiser
 
-- Guide: vault `Architecture/ALO_MODEL_IMPORT_GUIDE`; reference: `GameDesign/Corellian Battlecruiser Import`.
+- Guide: vault `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE`; reference: `AssetPipeline/Imports/Corellian Battlecruiser Import`.
 - Requested `Temp/ALO_MODEL_MAP.txt` is absent. Catalog `output/aotr-rebel-units/ship-catalog.csv` and installed AOTR XML resolve `R_Corellian_Battlecruiser` → `CV_Battlecruiser.ALO`, Workshop `1397421866`.
 - `Prepare.py` resolves source inheritance and audits binary materials/bones, textures and unchanged input hashes. Four separate turret models are required for the art; their source weapons are excluded to preserve the requested 17-weapon loadout.
 - Start portable Blender 3.6.23 with `Tools/Blender/Start-Blender.ps1`; verify MCP protocol 13 and the registered ALO operator. Create a fresh `CorellianBattlecruiser Source` scene and import the main ALO without animations.

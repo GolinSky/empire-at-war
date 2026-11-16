@@ -14,7 +14,8 @@ reviewed: 2026-10-20
 # Victory II Star Destroyer
 
 > [!info] Import record
-> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]]. Open acceptance work remains in its linked TODO plan.
+> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]].
+> Plan: [[Done/Features/VictoryII_Import]].
 
 ## Goal
 
@@ -72,4 +73,4 @@ reviewed: 2026-10-20
 - `output/aotr-empire-units/VictoryII-Converted/` — packed blends, FBXs, textures and verification evidence.
 - `Assets/Prefabs/Models/Ships/VictoryIIShipView.prefab`
 - `Assets/Settings/Data/Ship/VictoryIIShipData.asset`
-- [[Done/Features/VictoryII_Import]] — runtime acceptance.
+- Runtime acceptance → [[TODOs/User_Acceptance_Queue]].

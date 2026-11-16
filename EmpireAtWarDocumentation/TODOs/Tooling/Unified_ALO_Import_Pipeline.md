@@ -52,6 +52,13 @@ tags:
 - Non-test verification: pipeline C# compiled with Unity's bundled compiler; current recipe/schema validation and Python syntax inspection passed. Tests/test preparation disabled by latest user instruction and AGENTS override; earlier test results are historical only.
 - Remaining: live Editor import/candidate parity, production Rothana conversion/publication acceptance, complete Endurance/Rebel recipes and adapters, create/render/derivative capabilities, full concurrent publication/recovery acceptance and measured workflow comparison.
 
+### Recipe ownership check · 2026-11-16
+
+- Rothana and Endurance recipes now match their saved faction Addressables groups, gameplay/preview addresses, and relocated art/gameplay prefab paths. All existing output GUIDs still match their `.meta` files.
+- The old generic `View` GUID made read-only registration verification expect the wrong group. The publication writer would move both entries there if enabled. Saved entries were already correctly grouped.
+- Recipe changes require a fresh immutable job. The enabled Editor stage is `verify`; publication and migration gates remain open. See `Tools/AloImport/capabilities.json`.
+- [ ] Reconcile the recipe gameplay baselines with source and saved assets, then run full verification. `AloExistingShipBuilder` checks exact hangar count and values. Rothana now has three bays (`6/2`, `6/2`, `3/1` reserve/active), and Endurance has three bays of `8/2`. Both recipe hangar snapshots predate these changes. The ownership check did not run Editor stages or tests.
+
 ### 1. File ownership and placement
 
 | Location | Purpose |
@@ -282,7 +289,7 @@ Historical numbers below are regression seeds; Phase 0 verifies exact source var
 - Reload saved prefabs/data: no missing scripts, broken mandatory references, accidental donor dependencies or invalid component injection.
 - Verify target IDs, health entries, weapon arcs/muzzles, banking hierarchy, hangar capacity/reserve semantics and source anchor placement.
 - Verify root scale/orientation, gameplay bounds and fitted collider/shield/ion/selection/navigation/launch geometry.
-- Resolve all registrations by typed identity/GUID, including placement AssetReference in existing View group and all three icon consumers.
+- Resolve registrations by typed identity/GUID. Verify the main view and placement AssetReference in the same existing faction `UnitViews` group, plus all three icon consumers. Ownership → [[AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE]].
 - Render geometry-only previews: transparent 512×512 icon; placement; live/wreck across all eight palettes; inspect silhouettes, crop and contrasting colors.
 - Rerun apply twice: stable existing GUIDs, no duplicates, no unplanned path changes; no serialized diff on unchanged second run apart from evidence metadata.
 - Import/serialization/compilation clean for changed scope. Runtime firing, hangar behavior, damage/abilities/fog/selection/death acceptance remains separately reported if not run.

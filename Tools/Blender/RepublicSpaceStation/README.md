@@ -1,6 +1,6 @@
 # Republic Station Import
 
-Dedicated setup/rebuild guide: [Republic Space Station Model Import Guide](../../../EmpireAtWarDocumentation/Architecture/REPUBLIC_SPACE_STATION_MODEL_IMPORT_GUIDE.md).
+Dedicated setup/rebuild guide: [Republic Space Station Model Import Guide](../../../EmpireAtWarDocumentation/AssetPipeline/Guides/REPUBLIC_SPACE_STATION_MODEL_IMPORT_GUIDE.md).
 
 - Source: Republic at War, Workshop `1129810972`, `ReB_Shipyard_Level_01–05.ALO`.
 - Faction: Republic only. Source XML names `Empire_Star_Base_1–5` are Republic units.

@@ -15,7 +15,8 @@ reviewed: 2026-10-20
 # NTB-630 Naval Bomber Import
 
 > [!info] Import record
-> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]]. Open acceptance work remains in its linked TODO plan.
+> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]].
+> Plan: [[TODOs/Features/NTB630_Import]].
 
 ## Decision
 - Source: RaW 1.2.1 `Data/Art/Models/ReV_ntb630.ALO`; user-requested Republic early-game anti-capital bomber.

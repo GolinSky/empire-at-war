@@ -1,8 +1,10 @@
 # Blender / Rothana conversion
 
+Before running a historical `Register.cs` script, check its writes against the saved registries and the [Addressables bundle guide](../../EmpireAtWarDocumentation/AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE.md). Older scripts can move faction entries back into generic `View`. Use the [ALO guide](../../EmpireAtWarDocumentation/AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md) for current registration and verification.
+
 ## Mon Calamari Star Cruiser / MC80 — 2026-10-05
 
-- Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference: `GameDesign/Mon Calamari Cruiser Import.md`. Vanilla `output/eaw-rebel-ships/DATA/ART/MODELS/RV_MONCALCRUISER.ALO`, damaged `_D.ALO` and six `HP00_*` pod variants; original ALO/DDS hashes unchanged.
+- Guide: `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; reference: `AssetPipeline/Imports/Mon Calamari Cruiser Import.md`. Vanilla `output/eaw-rebel-ships/DATA/ART/MODELS/RV_MONCALCRUISER.ALO`, damaged `_D.ALO` and six `HP00_*` pod variants; original ALO/DDS hashes unchanged.
 - Stage textures with `uv run --with pillow python Tools/Blender/prepare_mon_cal_cruiser_textures.py`. Import each variant into its own `<VARIANT> Source` scene in Blender 3.6.23; run `export_mon_cal_cruiser.py` through MCP with its matching `VARIANT`. Complete ALAMO helper cleanup only on the new scene. No root repair: main/damaged/pods already retain 71/79/77 bones.
 - Eight exported models preserve 47 meshes and all source triangle corners/UVs/parents. Main/damaged triangles 7,290/4,177; pod totals F-L/F-R/M-L/M-R/B-L/B-R 52/58/93/130/221/272. Blender max geometry error 0.000070222 source units; Unity corner/bone error ≤0.000002416/0.000001527 project units. Eight DDS→PNG conversions are pixel-identical.
 - Type-first `RebellionShips/MonCalCruiser` art folders; own visual/gameplay/placement/damaged wreck assets. Attach pod roots to the model using the main `HP00_*` local positions; do not inherit scaled FBX bone transforms. Centered size 86.52927 × 23.62375 × 160 units, bow +Z/up +Y, gameplay roots scale 1. Hull-alpha inverse team mask; all eight living/wreck palettes rendered, blue/green inspected. Transparent actual-model icon/silhouette 512 × 512, uncropped.
@@ -14,7 +16,7 @@
 
 ## Corellian Corvette / CR90 — 2026-10-05
 
-- Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference: `GameDesign/Corellian Corvette Import.md`. Vanilla `output/eaw-rebel-ships/DATA/ART/MODELS/RV_CORVETTE.ALO`; dedicated wreck `RV_CORVETTE_D.ALO`. Original ALO/DDS hashes unchanged.
+- Guide: `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; reference: `AssetPipeline/Imports/Corellian Corvette Import.md`. Vanilla `output/eaw-rebel-ships/DATA/ART/MODELS/RV_CORVETTE.ALO`; dedicated wreck `RV_CORVETTE_D.ALO`. Original ALO/DDS hashes unchanged.
 - Stage textures with `uv run --with pillow python Tools/Blender/prepare_corellian_corvette_textures.py`. Import into `CorellianCorvette Source` in Blender 3.6.23, then run `export_corellian_corvette.py` once through MCP; set `VARIANT = 'CorellianCorvetteWreck'` for the damaged source scene. Complete any ALAMO global-helper cleanup failure only on the new scene; preserve other scenes and the installed add-on. Restore only the binary-verified identity Root if absent.
 - Intact/damaged imports retain `13/3` meshes, `3,684/2,446` triangles and `17/12` bones. Blender maximum corner error `0.000110729/0.0000133514` source units; Unity ≤`0.000000475` project units, correct bone parents/UVs. Helpers and authored hidden engine effects remain disabled; source shaders/ALA/proxy animations are outside static conversion.
 - Type-first `RebellionShips/CorellianCorvette` art folders; own visual, gameplay, placement and damaged wreck prefabs. Centered living size `12.72498 × 10.07087 × 30` units; bow +Z/up +Y, roots scale 1. Hull-alpha inverse supplies the team mask. All eight living/wreck colors rendered, blue/green inspected; transparent 512 × 512 icon/silhouette uncropped.
@@ -24,7 +26,7 @@
 
 ## IPV-2C Stealth Corvette — 2026-10-05
 
-- Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/Stealth Corvette Import.md`; acceptance plan `TODOs/Features/StealthCorvette_Import.md`.
+- Guide: `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; reference `AssetPipeline/Imports/Stealth Corvette Import.md`; completed plan `Done/Features/StealthCorvette_Import.md`.
 - Source: RaW `ReV_Stealthship.ALO`; mesh/textures/rigging Warbnull. Original ALO and both DDS hashes unchanged. Run `uv run --with pillow python Tools/Blender/prepare_stealth_corvette_textures.py`, import into a fresh Blender 3.6.23 `StealthCorvette Source` scene, then run `export_stealth_corvette.py` once through MCP. Restore only the binary-verified identity Root: 14 imported → 15 bones.
 - Four meshes / 15,184 triangles retained through FBX and Unity. Blender maximum geometry/bone error 0.000014949/0.000005245 source units; Unity geometry/bone error ≤0.000000225/0.000000090 project units; parents match. Visible hull, effect shell and Collision UVs verified. Unity remaps disabled Shadow UVs by ≤0.000782482; packed blend/FBX preserves original corners.
 - Both DDS→PNG conversions are pixel-identical, 1024 × 1024. Source hull alpha supplies the linear team mask (3.6116% coverage); living and wreck ownership/material bindings verified. All eight living/wreck palettes rendered; blue/green inspected. Actual-model transparent 512 × 512 icon/silhouette are uncropped.
@@ -37,7 +39,7 @@
 
 ## V-19 Torrent — 2026-10-05
 
-- Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/V-19 Torrent Import.md`; acceptance plan `TODOs/Features/V19Torrent_Import.md`.
+- Guide: `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; reference `AssetPipeline/Imports/V-19 Torrent Import.md`; acceptance plan `TODOs/Features/V19Torrent_Import.md`.
 - Source: RaW `ReV_v19_torrent.ALO`; original ALO and three referenced DDS hashes unchanged. Credits: mesh/textures Evillejedi; rigging z3r0x (`credits.txt`, V-19 entry).
 - Stage textures/binary audit with `uv run --with pillow python Tools/Blender/prepare_v19_torrent_textures.py`. Run `export_v19_torrent.py` once through Blender MCP on a fresh `V19Torrent Source` import. Requires Blender 3.6.23 and 23 imported bones; restore the binary-verified identity Root → 24 bones. Preserve deployed wings, attachments and four hidden helpers.
 - Source 12 meshes / 4,020 triangles → FBX/Unity 3,960; 60 zero-area engine faces removed. All nondegenerate triangle corners/UVs and bone names/parents match. Blender geometry/bone error ≤0.000164265/0.000106171 source units; Unity ≤0.000003258/0.000002030 project units, UV error 0. DDS→PNG pixels match exactly.
@@ -50,7 +52,7 @@
 
 ## Imperator-class Star Destroyer — 2026-10-05
 
-- Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/Imperator Import.md`; remaining acceptance plan `TODOs/Features/Imperator_Import.md`.
+- Guide: `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; reference `AssetPipeline/Imports/Imperator Import.md`; completed plan `Done/Features/Imperator_Import.md`.
 - Source: RaW 1.2.1 `EV_StarDestroyer_MKI.ALO` and `EV_Stardestroyer_MKI_D.ALO`. Both ALO and eight referenced DDS hashes remain unchanged. Credits: mesh/textures Evillejedi; rigging Warbnull (`credits.txt`, Star Destroyer row).
 - Prepare PNGs and binary bone audits with the bundle's `Scripts/Prepare.py` and hull-alpha mask with `PrepareMasks.py`. Run `export_imperator.py` once through Blender MCP on a fresh `Imperator Source` scene; for the damaged variant use `VARIANT = 'ImperatorWreck'` and `ImperatorWreck Source`. Paths are specific to this checkout; create the output folder first. Restore only the identity Root verified in each binary: intact 168 bones, damaged 75.
 - Preserve all 26 intact meshes / 34,974 triangles and six damaged meshes / 36,119 triangles, attachment names and parents. Blender maximum bone/geometry errors: intact 0.000669512/0.000111991, wreck 0.000092703/0.000145560 source units. Unity bone error ≤0.000013604 project units; corner positions ≤0.000004053, no parent mismatches. DDS→PNG conversions are pixel-identical.
@@ -66,7 +68,7 @@
 
 ## Dispatcher-class Frigate — 2026-10-05
 
-- Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/Dispatcher Import.md`; acceptance plan `TODOs/Features/Dispatcher_Import.md`.
+- Guide: `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; reference `AssetPipeline/Imports/Dispatcher Import.md`; completed plan `Done/Features/Dispatcher_Import.md`.
 - Source: `C:/Users/golin/Documents/CIS_Space_Units2014_checked/CIS_Space_Units/Tecno Destroyer/CIS_TecnoDestroyer.ALO` and `CIS_TecnoDestroyer_D.ALO`. All five original ALO/DDS/ALA hashes and the supplemental RaW `bluethruster.dds` hash remain unchanged.
 - Use separate portable Blender 3.6.23 processes with `--background --factory-startup --python`; shared C9979 Blender session is preserved. Package `Scripts/Audit.py` imports each variant; `prepare_dispatcher_textures.py` converts DDS with Pillow; `export_dispatcher.py -- Dispatcher` / `-- DispatcherWreck` exports the audited source blends. No preference or MCP configuration changes.
 - Restore only the binary-verified identity `Root`: intact 43 bones, wreck 34. Preserve all seven intact meshes, two wreck meshes, UVs and case-sensitive/duplicate attachment names. Blender FBX geometry error ≤0.000048852 source units; bone error ≤0.000068665. Unity bone error ≤0.000001198 project units, no bone parent mismatches; the armature container folds into the imported model root.
@@ -82,7 +84,7 @@
 
 ## C-9979 Lander — 2026-10-05
 
-- Guide: Obsidian `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/C-9979 Import.md`; acceptance plan `TODOs/Features/C9979_Import.md`.
+- Guide: Obsidian `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; reference `AssetPipeline/Imports/C-9979 Import.md`; completed plan `Done/Features/C9979_Import.md`.
 - Source: RaW 1.2.1 `SeV_c9979.ALO`. Original ALO and three DDS hashes unchanged. Credits: Evillejedi mesh/textures; z3r0x rigging.
 - Run `prepare_c9979_textures.py` with Pillow first. In Blender 3.6.23, import with animations disabled into `C9979 Source`, then run `export_c9979.py` once through MCP as direct code. Restore only the binary-verified identity Root omitted by ALAMO.
 - Three meshes / 4,182 triangles / eight bones, four muzzle attachments and all UVs preserved. Hull/lights visible; Collision disabled. Maximum Blender geometry displacement `0.000003053` source units; Unity bone error `0.000000090946` project units, correct parents. DDS-to-PNG conversions are pixel-identical; hull alpha supplies the linear team mask.
@@ -95,7 +97,7 @@
 
 ## NTB-630 — 2026-10-05
 
-- Guide: Obsidian `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/NTB-630 Import.md`; acceptance plan `TODOs/Features/NTB630_Import.md`.
+- Guide: Obsidian `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; reference `AssetPipeline/Imports/NTB-630 Import.md`; acceptance plan `TODOs/Features/NTB630_Import.md`.
 - Source: RaW 1.2.1 `ReV_ntb630.ALO`. Run `prepare_ntb630_textures.py` with Pillow, then `export_ntb630.py` using portable Blender 3.6.23 with `--background --factory-startup --python`. This deliberately avoids the shared Blender instance used by another agent; no preference or MCP connection changes.
 - Eight meshes / 5,097 triangles / fourteen verified bones survive Blender and Unity imports. Restore only the binary-verified identity `Root`; preserve all UVs, attachments and five disabled helpers. Maximum Blender bone/geometry error `0.000002876 / 0.000005723` source units; Unity bone error `0.0000001062` project units, no parent mismatches. Original ALO and four DDS hashes unchanged; PNG conversions are pixel-identical.
 - Art: type-first `RepublicShips/NTB630` folders. Visual/gameplay: `Assets/Prefabs/Models/Squadrons/NTB630.prefab`, `NTB630SquadronView.prefab`; placement: `Assets/Prefabs/Ui/Reinforcement/NTB630ReinforcementView.prefab`. Centered craft size `2.650344 × 0.853184 × 4`; bow +Z, up +Y, prefab roots scale 1. Gameplay/placement formation bounds match.
@@ -109,7 +111,7 @@
 
 ## ARC-170 — 2026-10-04
 
-- Guide: Obsidian `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/ARC-170 Import.md`; remaining work `TODOs/Features/ARC170_Import.md`.
+- Guide: Obsidian `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; reference `AssetPipeline/Imports/ARC-170 Import.md`; remaining work `TODOs/Features/ARC170_Import.md`.
 - Source: `F:/EaW/Republic_at_War_121_MINIMAL/Mods/Republic_At_War/Data/Art/Models/ReV_arc170.ALO`; original ALO and four DDS hashes unchanged. Credits: `Mesh-Evillejedi | Texture-Evillejedi/z3r0x | Rigging-z3r0x` (RaW 1.2.1).
 - Run `prepare_arc170_textures.py` with Pillow first. In a fresh Blender 3.6.23 file, import the ALO with animations disabled, name the scene `ARC170 Source`, then run `export_arc170.py` once through MCP. The binary has 21 bones; restore only its verified identity Root omitted by ALAMO.
 - Preserve 15 meshes, 21 bones, six visible hull/astromech/S-Foil surfaces and nine disabled helpers. Blender source 4,691 triangles → FBX reimport 4,685: six duplicate faces collapse in the disabled flashes; all four unique position/UV triangles per flash remain. Unity imports all 4,691 source triangles.
@@ -125,7 +127,7 @@
 
 ## CIS Patrol Frigate — 2026-10-04
 
-- Reference: Obsidian `GameDesign/Patrol Frigate Import.md`; active acceptance plan `TODOs/Features/Patrol_Frigate_Import.md`. `ShipType.PatrolFrigate = 106`, separate from Recusant.
+- Reference: Obsidian `AssetPipeline/Imports/Patrol Frigate Import.md`; completed plan `Done/Features/Patrol_Frigate_Import.md`. `ShipType.PatrolFrigate = 106`, separate from Recusant.
 - Source: `C:/Users/golin/Documents/CIS_Space_Units2014_checked/CIS_Space_Units/Recusant Patrol/CIS_Recusant_Patrol.ALO`; all five original ALO/DDS/ALA hashes unchanged. Credits: Evillejedi model, Evillejedi/Nawrocki textures, Nomada_Firefox rigging.
 - Exporter: `Tools/Blender/export_patrol_frigate.py`, once on a fresh matching Blender import; create `Temp/PatrolFrigateImport/Output/Textures` first. Restores the identity Root verified in the 33-bone binary source; preserves duplicate attachment `PPTW_PTWSA2.001` and uses `EaWName` for validation-object suffix changes.
 - Nine meshes, three visible, six disabled helpers. Source 7,021 triangles → FBX 6,989 → Unity 6,987; 34 zero-area faces removed, all 6,986 nondegenerate faces retained. Positions/UVs and bone names/parents checked; maximum Blender/Unity bone displacement 0.0000457764 source / 0.00000145024 project units.
@@ -139,7 +141,7 @@
 
 ## Vulture Droid — 2026-10-04
 
-- Import reference: Obsidian `GameDesign/Vulture Droid Import.md`; `SquadronType.Vulture = 102`. Source: `C:/Users/golin/Documents/CIS_Space_Units2014_checked/CIS_Space_Units/Vulture/CIS_VULTURE.ALO`; original ALO/DDS hashes unchanged.
+- Import reference: Obsidian `AssetPipeline/Imports/Vulture Droid Import.md`; `SquadronType.Vulture = 102`. Source: `C:/Users/golin/Documents/CIS_Space_Units2014_checked/CIS_Space_Units/Vulture/CIS_VULTURE.ALO`; original ALO/DDS hashes unchanged.
 - Exporter: `Tools/Blender/export_vulture.py`, run once through Blender MCP on a fresh matching import. Create `Temp/VultureImport/Output/Textures` first. Expects 13 imported bones; restores the identity Root verified in the 14-bone binary source.
 - Seven meshes: one visible hull and six hidden collision/shadow/muzzle-flash helpers. Source 2,471 triangles → FBX/Unity 2,407; 64 zero-area flash faces removed, all 2,303 hull triangles retained. All nondegenerate triangle positions/UVs, bone names/parents and bounds preserved. Maximum bone displacement: Blender `0.000007154` source units, Unity `0.00000016792` units.
 - Art uses `SeparatistShips/Vulture` in the type-first art folders. Visual/gameplay: `Assets/Prefabs/Models/Squadrons/Vulture.prefab`, `VultureSquadronView.prefab`; seven-member placement: `Assets/Prefabs/Ui/Reinforcement/VultureReinforcementView.prefab`. Visible member size `2.41040 × 1.02828 × 4`, bow `+Z`, up `+Y`; root scale 1.
@@ -151,7 +153,7 @@
 
 ## Advanced Droid Bomber — 2026-10-04
 
-- Import reference: Obsidian `GameDesign/Droid Bomber Import.md`; early-game Trade Federation / Advanced Droid Bomber, `SquadronType.DroidBomber = 101`.
+- Import reference: Obsidian `AssetPipeline/Imports/Droid Bomber Import.md`; early-game Trade Federation / Advanced Droid Bomber, `SquadronType.DroidBomber = 101`.
 - Source: `C:/Users/golin/Documents/CIS_Space_Units2014_checked/CIS_Space_Units/DroidBomber/Cis_DroidBomber.ALO`. Original ALO/DDS files are unchanged. Pack credits: Berruga (model), Berruga and Chris Boudreaux (textures), Nomada_Firefox (rigging).
 - Exporter: `Tools/Blender/export_droid_bomber.py`, run once through Blender MCP on a fresh matching import. Expects 45 imported bones; restores the identity `Root` verified in the 46-bone binary source. Create `Temp/DroidBomberImport/Output/Textures` first.
 - Conversion: 35 meshes, 46 bones and 28 visible meshes; preserve seven hidden collision/muzzle-flash helpers. Blender round trip preserves every nondegenerate triangle's positions and UVs; 306 zero-area source faces are dropped in Blender and another 39 in Unity, leaving 2,278 triangles. Bone displacement: Blender `0.000002563` source units; Unity `0.00000004391` project units.
@@ -280,12 +282,12 @@ For the saved export script, use `{"tool":"execute_blender_code","code_file":"F:
 - Power to Weapons uses existing `BoostWeaponPower` tuning; original shield/engine tradeoffs and Victory/Frigate armor/shield types are not recreated by the current project data model.
 - Hangar uses the user-selected Vulture/Droid Bomber complement: 11 Vulture + 8 Droid Bomber total squadron launches; two bays, one active per type (2 overall); first launch after 4 s, shared interval 8 s. Both squadron data/view mappings resolve. Reserves include the first launched active squadron.
 - Hull and wreck livery: hue `0.67`, range `0.08`, minimum saturation `0.25`, strength `1`. All eight palettes rendered; blue/green inspected. Icon is a transparent `512 × 512` render of the model.
-- Saved assets have no missing scripts or broken references. Imports/compilation and post-save Console checks passed; no automated tests or Play Mode were run. Pending acceptance is tracked in Obsidian `TODOs/Features/Captor_Import.md`.
+- Saved assets have no missing scripts or broken references. Imports/compilation and post-save Console checks passed; no automated tests or Play Mode were run. Completed integration record: `Done/Features/Captor_Import.md`; open acceptance: `TODOs/User_Acceptance_Queue.md`.
 - Credits: model `Evillejedi`; textures `Evillejedi`, modified by `Nawrocki`; rig `Nomada_Firefox`. Pack README asks contacting its author before public-mod use.
 
 ## Mandator II / Pride of the Core — 2026-10-04
 
-- Read Obsidian `Architecture/ALO_MODEL_IMPORT_GUIDE.md`. User-approved sources: RaW `ReV_Mandator.ALO` for the living ship; `ReV_Mandator_D.ALO` for its wreck. Source SHA-256 values remained unchanged.
+- Read Obsidian `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`. User-approved sources: RaW `ReV_Mandator.ALO` for the living ship; `ReV_Mandator_D.ALO` for its wreck. Source SHA-256 values remained unchanged.
 - Packed editable Blender files, FBXs, PNGs, reports and palette previews: `F:/EaW/Republic_at_War_121_MINIMAL/Mods/Republic_At_War/Data/Art/Models/ReV_Mandator-Converted/`.
 - Exporter: `Tools/Blender/export_mandator.py`. Import each ALO separately in Blender **3.6.23** with ALAMO, animations disabled. Use a fresh file: the upstream shadow-welding step scans objects across scenes.
 - Name the source scene `Mandator Source` or `Mandator Wreck Source`. Create `Temp/MandatorImport/Output/Textures`, then run the exporter once through Blender MCP. It expects 104 or 69 imported bones and restores the verified binary identity `Root` → 105 or 70 bones.
@@ -305,7 +307,7 @@ For the saved export script, use `{"tool":"execute_blender_code","code_file":"F:
 
 ## BTL-B Y-Wing — 2026-10-05
 
-- Read `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; source `F:/EaW/Republic_at_War_121_MINIMAL/Mods/Republic_At_War/Data/Art/Models/ReV_ywing.ALO`. Original ALO and three DDS SHA-256 values remain unchanged.
+- Read `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; source `F:/EaW/Republic_at_War_121_MINIMAL/Mods/Republic_At_War/Data/Art/Models/ReV_ywing.ALO`. Original ALO and three DDS SHA-256 values remain unchanged.
 - Packed Blender source, FBX, lossless PNGs, scripts, reports, credits and previews: sibling `ReV_ywing-Converted/` folder. `prepare_ywing_textures.py` stages the DDS conversions; run `export_ywing.py` once through MCP on a fresh Blender 3.6.23 import named `YWing Source`.
 - Binary source has 13 bones; restore only its verified identity `Root`, removed by ALAMO. Two source engine attachments share `PE_Ywing_Proto`; the importer names the second `PE_Ywing_Proto.001`. Both positions and their parent remain intact.
 - Source: 4 meshes / 2,846 triangles. Blender FBX reimport and Unity: 4 / 2,814. Hull retains 2,786 triangles and collision 12; each disabled flash helper changes 24 → 8 by collapsing duplicate faces. Unique position/UV geometry remains unchanged.
@@ -317,12 +319,12 @@ For the saved export script, use `{"tool":"execute_blender_code","code_file":"F:
 - Passive astromech repair: provisional 1 hull point/s on each surviving craft, capped at its maximum; destroyed members stay destroyed. Other squadron assets default to no repair and no abilities.
 - Provisional economy: tech 2, cost 500, build 8 s, population 1, limit 10. Cruise/combat 22/25 units/s, below NTB-630's current 24/27. Shield regeneration interval 1 s. Existing global weapon profiles remain unchanged.
 - Hull alpha supplies the linear team mask, HSV livery disabled; normal green channel flipped. Eight palettes rendered, blue/green inspected; neutral hull details retained. Isolated Ion Shot render confirms white head/trail.
-- Reloaded saved prefabs: five hulls, five health/flight members, fifteen weapons; no missing scripts, broken references or donor dependencies. Import/compile checks passed; unrelated existing camera/empty-third-party-assembly warnings remain. MainMenu scene stayed clean; no automated tests or Play Mode run. Runtime and balance acceptance: `TODOs/Features/YWing_Import.md`.
+- Reloaded saved prefabs: five hulls, five health/flight members, fifteen weapons; no missing scripts, broken references or donor dependencies. Import/compile checks passed; unrelated existing camera/empty-third-party-assembly warnings remain. MainMenu scene stayed clean; no automated tests or Play Mode run. Completed integration record: `Done/Features/YWing_Import.md`; open runtime and balance checks: `TODOs/User_Acceptance_Queue.md`.
 - Full supplied RaW credits retained. No Y-Wing-specific attribution line was identifiable; `SOURCE_CREDITS.txt` records unresolved individual authors rather than guessing.
 
 ## Home One / Admiral Ackbar — 2026-10-05
 
-- Read Obsidian `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; import reference: `GameDesign/Home One Import.md`.
+- Read Obsidian `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; import reference: `AssetPipeline/Imports/Home One Import.md`.
 - Sources: `output/eaw-rebel-ships/DATA/ART/MODELS/RV_HOMEONE.ALO`, `RV_HOMEONE_D.ALO`, eight weapon pods and shield-generator pod. Original ALO/DDS hashes remain unchanged.
 - Preparation/export: `prepare_home_one_textures.py`, `export_home_one.py`; Blender 3.6.23 + ALAMO, animations disabled. Import each variant into its `<VARIANT> Source` scene; audited source roots remain intact.
 - Packed Blender files, FBXs, textures, reports and previews are staged in ignored `Temp/HomeOneImport/`. The exporter is model-specific; choose its `VARIANT` for each source.
@@ -340,7 +342,7 @@ For the saved export script, use `{"tool":"execute_blender_code","code_file":"F:
 
 ## T-65 X-Wing — 2026-10-05
 
-- Guide: `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference: `GameDesign/X-Wing Import.md`. Source is vanilla `output/eaw-rebel-ships/DATA/ART/MODELS/RV_XWING.ALO`, with Deploy/Undeploy ALA and three DDS files. Source hashes remain unchanged.
+- Guide: `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; reference: `AssetPipeline/Imports/X-Wing Import.md`. Source is vanilla `output/eaw-rebel-ships/DATA/ART/MODELS/RV_XWING.ALO`, with Deploy/Undeploy ALA and three DDS files. Source hashes remain unchanged.
 - Run `prepare_xwing.py` with Pillow, then `prepare_xwing_animations.py` from the repository root. Import a fresh ALO into Blender's `XWing Source` scene, execute generated `Temp/XWingImport/ImportAnimations.py` through MCP, then execute `export_xwing.py`. Do not repeat the root repair on an already prepared rig.
 - Original ALA uses an 18-byte header; the installed importer expects a different compressed header. The model-specific parser decodes 31 frames at 30 fps, quantized translations and quaternion tracks. Restore only the binary-verified identity `Root`; preserve duplicate engine attachment names and parents.
 - Source/FBX/Unity: 14 bones, 10 meshes, 2,639 triangles. Unity rest-bone error ≤0.000001672 units; triangle-corner error ≤0.000000158. Visible hull UVs match; Unity merges nearby UVs on the disabled low-detail hull by ≤0.000344. Packed blend/FBX retain source UVs.
@@ -349,11 +351,11 @@ For the saved export script, use `{"tool":"execute_blender_code","code_file":"F:
 - Five-craft gameplay and placement each contain 25 visible sections / 8,660 triangles. Member length 4; formation bounds 23.16832 × 2.48642 × 12; navigation radius 16, spacing 5, selection diameter 32. Sizes and movement/range tuning are provisional.
 - `SquadronType.XWing = 300`, `WeaponType.XWingLaser = 24`, `ShipAbilityId.LockSFoils = 18`. Rebellion roster, Addressables, mapping, placement, HUD/tooltip icons, audio and matchups are registered. Health/shield/regen 60/20/3 per fighter; 20 unique lasers. Closed wings apply speed ×1.3, fire delay ×3, regeneration ×3 until toggled off.
 - All DDS conversions and alpha-derived team mask are pixel-identical; all eight palettes rendered, blue/green inspected. Transparent 512 × 512 icon and silhouette are uncropped. Three prefabs reload without missing scripts or broken references; final compilation/import checks are clean. No automated tests or Play Mode run.
-- Packed source, textures, FBX, integration scripts and reports: `output/eaw-rebel-ships/XWing-Converted/`. Runtime and balance acceptance remain recorded in `TODOs/Features/XWing_Import.md`.
+- Packed source, textures, FBX, integration scripts and reports: `output/eaw-rebel-ships/XWing-Converted/`. Completed integration record: `Done/Features/XWing_Import.md`; open runtime and balance checks: `TODOs/User_Acceptance_Queue.md`.
 
 ## MC75 Profundity — 2026-10-06
 
-- Read `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/MC75 Profundity Import.md`. Model map resolves AOTR `R_MC75_Profundity` to installed `RV_Profundity.ALO` under workshop `1397421866`.
+- Read `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; reference `AssetPipeline/Imports/MC75 Profundity Import.md`. Model map resolves AOTR `R_MC75_Profundity` to installed `RV_Profundity.ALO` under workshop `1397421866`.
 - Run `prepare_mc75_profundity.py` with Pillow from the repository root. Import the ALO with ALAMO in Blender 3.6.23, animations disabled, into an isolated scene named `MC75Profundity Source`; execute `export_mc75_profundity.py` once through Blender MCP. Never repeat the root repair on an already converted rig.
 - Exporter preserves world geometry while replacing importer constraints with bone parenting; restores only the binary-verified identity `Root` (146 imported → 147 bones). Packed blend, FBX, textures, source/conversion/Unity reports and previews live in ignored `Temp/MC75ProfundityImport/`.
 - Source/FBX/Unity: 17 meshes / 73,588 triangles / 147 bones. All Unity triangle counts and UV presence match; seven source shadow meshes stay disabled. Blender bone/corner displacement ≤0.000455058/0.000344001 source units; Unity bone displacement ≤0.000001585 project units, no parent mismatches. Source ALO and seven DDS hashes unchanged; decoded PNG pixels match DDS exactly.
@@ -363,34 +365,34 @@ For the saved export script, use `{"tool":"execute_blender_code","code_file":"F:
 - IDs 0..11 are targetable: six Med Lrg Proton TRP, two medium ion torpedoes, two shields, engine, hangar. Non-targetable IDs 12..33: twelve light close-range turbolasers, four heavy lasers, six point defense. Weapon/fog bindings 30/34; every mount matches its authored muzzle/attachment with zero displacement.
 - Dedicated weapon profiles 25..28; existing point defense 14 reused. Full Salvo 19 lasts 20 s with 60 s recovery: missile/rocket/torpedo shot interval and reload ×0.33, other weapons ×3, restored to ×1 on stop. Uses existing interceptable projectile classification; existing energy modifiers still compose normally.
 - Separate team masks select source cyan/red paint; alpha is unsuitable for inversion (max 115). Hull/wreck HSV recoloring disabled; normal green flipped. Eight palettes, own transparent 512-pixel icon/silhouette, placement and fresh-wreck shader preview rendered. Preview-only wreck material clones freeze time; runtime parameters remain in UnitWreckView/UnitWreckData.
-- Four saved prefabs have no missing scripts, broken references or donor-model dependencies. Roster, data/view, existing Addressables groups, UI/tooltip, placement, abilities and audio registered. Import/compile checks complete; no MC75 serialization/import errors, no automated tests or Play Mode run. Runtime/balance acceptance stays active in `TODOs/Features/MC75_Profundity_Import.md`.
+- Four saved prefabs have no missing scripts, broken references or donor-model dependencies. Roster, data/view, existing Addressables groups, UI/tooltip, placement, abilities and audio registered. Import/compile checks complete; no MC75 serialization/import errors, no automated tests or Play Mode run. Completed integration record: `Done/Features/MC75_Profundity_Import.md`; open runtime and balance checks: `TODOs/User_Acceptance_Queue.md`.
 
 ## Victory I Star Destroyer — 2026-10-06
 
-- Read `Architecture/ALO_MODEL_IMPORT_GUIDE.md`; reference `GameDesign/Victory I Import.md`. Live AOTR advanced variant `E_Victory_Star_Destroyer_1_Fighters` uses Workshop `1397421866` hull `EV_VSD_I.ALO`, six `T_VSD_DTL_01..06.ALO` turrets and `EV_TIE_INTERCEPTOR_E.ALO` fighters. Original model/texture/XML files are unchanged.
+- Read `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`; reference `AssetPipeline/Imports/Victory I Import.md`. Live AOTR advanced variant `E_Victory_Star_Destroyer_1_Fighters` uses Workshop `1397421866` hull `EV_VSD_I.ALO`, six `T_VSD_DTL_01..06.ALO` turrets and `EV_TIE_INTERCEPTOR_E.ALO` fighters. Original model/texture/XML files are unchanged.
 - `prepare_victory_i.py` audits binary bone counts, XML inheritance and source hashes. Model-specific conversion/integration scripts: `Tools/Blender/VictoryI/`; packed blends, FBXs, lossless PNGs and verification evidence: `output/aotr-empire-units/VictoryI-Converted/`. Blender 3.6.23 MCP safe mode, separate port 9880; identity Root restoration is binary-backed.
 - Source → FBX → Unity: hull 44 meshes / 21,749 triangles / 178 bones; turret 6 / 1,138 / 8. Authored helpers remain disabled. UV difference 0; Blender geometry error ≤0.000299454 source units; Unity bone error ≤0.00000470913 units. Bone parents match.
 - Turret instances attach to `T_01..06`; compensate each nested FBX root's coordinate rotation and scale before parenting. Visual size 67.5321 × 38.1539 × 110, bow +Z/up +Y; bank ±8°, height −20.4312..19.4099, navigation radius 70. Collider/shield/ion/selection/launch bounds fit the new hull.
 - Dedicated Empire ship `VictoryI = 202`; supplied hull/shields/speed 12,000/8,000/175. Targets IDs 0..9: four 4-shot artillery rockets, two 6-shot barrage rockets, shield, two engines and tractor. Additional weapons: six dual light turbolasers and four heavy lasers. Hangar is non-targetable; two TIE-Interceptor launches, one active.
 - Full Salvo 19 and shared Tractor Beam 22 registered; Interceptor data/view references resolve. All faction, Addressables, ship data, three icon consumers and own preview/wreck registrations verified. Source-alpha team masks, eight palettes and transparent 512-pixel icon inspected.
 - `HangarComponent.isDestroyable` defaults true for existing hangars; this ship sets false and keeps its hangar outside the health list. Weapon profiles 34/35/36 and matching firing audio added; original Victory assets retained.
-- Saved asset checks passed with no missing scripts or broken references; no new Unity import/serialization/production compile errors. No automated tests or Play Mode run. Runtime acceptance and provisional balance/source differences remain in `TODOs/Features/VictoryI_Import.md`.
+- Saved asset checks passed with no missing scripts or broken references; no new Unity import/serialization/production compile errors. No automated tests or Play Mode run. Completed integration record: `Done/Features/VictoryI_Import.md`; open runtime and balance checks: `TODOs/User_Acceptance_Queue.md`.
 
 
 ## Victory II Star Destroyer - 2026-10-06
 
-- Read `Architecture/ALO_MODEL_IMPORT_GUIDE`; reference `GameDesign/Victory II Import`. AOTR advanced unit `E_Victory_Star_Destroyer_2_Fighters` uses `EV_VSD_II.ALO`; source stats 12,000 hull / 10,000 shields; user speed 20.
+- Read `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE`; reference `AssetPipeline/Imports/Victory II Import`. AOTR advanced unit `E_Victory_Star_Destroyer_2_Fighters` uses `EV_VSD_II.ALO`; source stats 12,000 hull / 10,000 shields; user speed 20.
 - Model-specific scripts: `Tools/Blender/VictoryII/README.md`. Blender 3.6.23 MCP safe mode, isolated port 9880; primary conversion session preserved. Binary-verified identity Root restoration; source hidden flags, UVs and parents retained.
 - Hull 40 meshes / 24,024 triangles / 180 bones; each of two distinct turret files 4 / 1,447 / 6. Six turrets attach to T_01..06; compensate their nested rig rotation/scale. Non-lens Unity geometry error <=0.000002101 raw units; documented engine glow-plane error <=0.008128 raw (~0.088 gameplay units). Gameplay muzzle/system bindings have zero displacement; source attachment error <=0.000000958 raw units.
 - Empire ship `VictoryII = 203`: 10 targets (4 dual + 2 single medium turbo-ions, shield, two engines, tractor), 18 weapons; 6 medium 3-burst turbolasers + 6 heavy lasers and hangar are non-targetable. Shared TIE-Interceptor: two launches, one active. Shared Boost Weapon Power 12 + Tractor Beam 22; new weapon profiles 37/38 and firing audio.
 - Saved visual/gameplay/opaque-hull hologram/wreck/icons, Empire roster, data/view Addressables and three icon mappings. Bounds 65.43347 x 42.26736 x 110, bank +/-8 degrees, navigation radius 69. Eight team palettes and own placement/wreck/icon renders inspected.
-- Source hashes, metadata, saved references and import/compile checks verified; shared entries preserved. Packed blends/FBXs/textures/evidence: `output/aotr-empire-units/VictoryII-Converted/`. No automated Unity tests or Play Mode run. Runtime acceptance and provisional source/balance differences remain in `TODOs/Features/VictoryII_Import.md`; death-clone ALA is not converted.
+- Source hashes, metadata, saved references and import/compile checks verified; shared entries preserved. Packed blends/FBXs/textures/evidence: `output/aotr-empire-units/VictoryII-Converted/`. No automated Unity tests or Play Mode run. Completed integration record: `Done/Features/VictoryII_Import.md`; open runtime and balance checks: `TODOs/User_Acceptance_Queue.md`; death-clone ALA is not converted.
 
 ## ArquitensImperialCruiser - 2026-10-06
 
-- Read `Architecture/ALO_MODEL_IMPORT_GUIDE`; source AOTR `E_Arquitens_Light_Cruiser` uses `ev_arquitens.ALO`. Procedure: `ArquitensImperialCruiser/README.md`; vault reference: `GameDesign/ArquitensImperialCruiser Import`.
+- Read `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE`; source AOTR `E_Arquitens_Light_Cruiser` uses `ev_arquitens.ALO`. Procedure: `ArquitensImperialCruiser/README.md`; vault reference: `AssetPipeline/Imports/ArquitensImperialCruiser Import`.
 - Isolated Blender 3.6.23 MCP port 9882; identity Root restored from binary audit. Hull: 10 meshes / 13,861 triangles / 78 bones. Quad turret: 6 / 680 / 8; dual turret: 4 / 436 / 7; eight mounted instances from two byte-identical families.
 - Source/FBX vertex and UV checks passed; Unity mesh/triangle counts and all bone parents/positions verified. Vertex welding disabled to retain eight tiny triangles. Centered length 40 units, bow +Z/up +Y.
 - Empire ship 204: hull/shields/speed 1,300/1,200/30, zero targetable systems, four two-shot light long-range turbolasers and four two-shot laser cannons, no fighters. Dedicated weapon/audio profiles 39/40; Boost Weapon Power 23 with activation/execution/recovery audio.
 - Own fitted shield, all 51 team renderer bindings, fog/hull-only health, opaque placement, shader-breaking wreck, actual-model icons, roster/data/view Addressables/UI mappings saved. Eight live/wreck palettes and placement/icon renders inspected.
-- All 21 original source hashes unchanged; saved references/imports/compilation verified. Editable blends/FBXs/textures/credits/evidence: `output/aotr-empire-units/ArquitensImperialCruiser-Converted/`. No Unity tests or Play Mode run by this import; runtime/provisional balance acceptance: `TODOs/Features/ArquitensAdvanced_Import.md`.
+- All 21 original source hashes unchanged; saved references/imports/compilation verified. Editable blends/FBXs/textures/credits/evidence: `output/aotr-empire-units/ArquitensImperialCruiser-Converted/`. No Unity tests or Play Mode run by this import; completed integration record: `Done/Features/ArquitensAdvanced_Import.md`; open runtime and balance checks: `TODOs/User_Acceptance_Queue.md`.

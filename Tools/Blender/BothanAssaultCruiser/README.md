@@ -1,7 +1,7 @@
 # Bothan Assault Cruiser
 
 - Source: Remake 4.0, Workshop `1770851727`, `Neutral_Bothan_Cruiser.ALO`; resolved from `Bothan_Assault_Cruiser_MP`. Textures are under `Data/Art/Textures`.
-- Balance: vault `GameDesign/Rebel units`, not Remake XML. Hull `7,200`, shields `6,500`, speed `22`, price `5,200`, build `58 s`.
+- Balance: vault `GameDesign/Proposals/Rebel units`, not Remake XML. Hull `7,200`, shields `6,500`, speed `22`, price `5,200`, build `58 s`.
 - Workflow: `uv run --with pillow python Tools/Blender/BothanAssaultCruiser/Prepare.py` → `python Tools/Blender/BothanAssaultCruiser/Convert.py` → `uv run --with pillow python Tools/Blender/BothanAssaultCruiser/Stage.py`.
 - Unity: `unity command run_script --file Tools/Blender/BothanAssaultCruiser/<File>.cs --json` for `BuildArt`, `BuildGameplay`, `Persist`, `Render`, `Register`, `Verify`. Inspect nested `result.success`.
 - Package: `uv run --with pillow python Tools/Blender/BothanAssaultCruiser/Package.py`; output `output/remake-rebel-units/BothanAssaultCruiser-Converted`.

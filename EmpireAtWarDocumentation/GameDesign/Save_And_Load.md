@@ -4,21 +4,21 @@ system:
   - saves
   - persistence
 design_state: implemented
-verified: 2026-10-20
-verification: source-and-assets
+verified: 2026-11-16
+verification: Inspected the save header, validator, production save sources, autosave and pause-menu availability. Original UI and input snapshot dated 2026-10-20.
 ---
 # Save and Load
 
 ## Goal
 
 - Current player save/load behavior and the state preserved by a battle save.
-- Source and serialized UI/input snapshot: 2026-10-20. No save round-trip or interactive acceptance test ran for this reference.
+- Save format and compatibility checked 2026-11-16. UI and input snapshot dated 2026-10-20.
 
 ## Rules
 
 ### Supported modes and slots
 
-- Skirmish and Survival support saves. Battle Simulation does not.
+- Player save controls support offline Skirmish and Survival. Online matches and Battle Simulation have no save controls.
 - Save capture is permitted while Running or Paused; Loading, Ended and concurrent save writes are refused.
 - Default F5 → quicksave; F9 → quickload for the current mode. Saved input rebinding may override these keys.
 - Quicksave and autosave each overwrite one dedicated slot per mode; named slots are separate.
@@ -31,7 +31,7 @@ verification: source-and-assets
 
 ### Autosave
 
-- Interval: 300 seconds of elapsed battle time; the clock advances only while Running.
+- Offline interval: 300 seconds of elapsed battle time; the clock advances only while Running.
 - Time is scaled: 4× speed advances battle seconds faster; paused time does not advance the battle clock.
 - A restored battle starts a fresh 300-second interval.
 - Survival also requests autosave on WaveActive → Preparation, after waves 1–4.
@@ -46,9 +46,9 @@ verification: source-and-assets
 - Camera position, rotation and target zoom height.
 - Living ships/squadrons: stable entity ID, owner/type, position/rotation, health and current order.
 - Ship health stores hull/shield/hardpoint fractions; squadron health stores per-member hull/shield values.
-- Stations, mining facilities and defense platforms: identity, owner/type, position and health; hangar state where present.
+- Main and second stations, mining facilities and defense platforms: identity, owner/type, position and health; hangar state where present.
 - Ability slot states/timers; hangar state and launched-squadron relationships.
-- Per-player money, station level, completed research, production queue, built reserve, paid AI builds, AI ship-order count and superweapon state.
+- Per-player money, main and second station levels, completed research, production queue, built reserve, paid AI builds, AI ship-order count and superweapon state.
 - Capture-site owner, state, capture progress, facility/construction state and operational facility link.
 - Relay owner, capturing player, capture progress and contested flag.
 - Victory model memory of which players' stations were already observed alive.
@@ -68,8 +68,9 @@ verification: source-and-assets
 
 ## Important Values
 
-- Current format: `BattleSaveHeader.CURRENT_VERSION = 2`.
-- Compatibility is exact version equality. Older/newer formats are refused; no migration is performed.
+- New saves use format `5`. The loader accepts versions `4` and `5`.
+- Version `4` hangar stocks migrate to the current bay data during validation.
+- The validator also handles known hardpoint and ability-slot layouts for specific ships. Layouts outside the supported migrations fail validation.
 - Files are written to a temporary file, then replaced/moved into the slot path.
 - Capture happens before background file writing; Unity state is captured on the calling main-thread flow.
 - `autosave.json` and `quicksave.json` are independent in Skirmish and Survival.
@@ -78,15 +79,15 @@ verification: source-and-assets
 
 - Save state is not a complete simulation snapshot: live projectiles, VFX, selection/UI targeting, fog-grid/discovery presentation and active ability effects are not serialized.
 - Unit save records do not preserve weapon reload, shield-regeneration delay or movement interpolation internals.
-- Balance assets are not embedded in the save. Restoration uses current unit definitions; a saved ability-slot mismatch raises an error.
+- Restoration uses current unit definitions. Unsupported hardpoint or ability-slot layouts and mismatched squadron member counts fail validation.
 - Saved game speed does not record a paused-state flag; do not assume loading returns to a paused battle.
 - Quickload is refused while the battle is loading, ended or writing a save.
-- The v2 relay state and separate save/load browsers supersede older plan descriptions of format v1.
+- Earlier plans record v1 and v2 save formats. Use the header and validator for current compatibility.
 - [[GameDesign/Modes_And_Victory]], [[GameDesign/Economy]], [[GameDesign/Production_And_Research]], [[GameDesign/Capture_And_Structures]] define the restored systems.
 
 ## Files
 
-- `Assets/Scripts/Services/Saves/BattleSave.cs`; `Assets/Scripts/Services/Saves/BattleSaveHeader.cs` — serialized state and version.
+- `Assets/Scripts/Services/Saves/BattleSave.cs`; `Assets/Scripts/Services/Saves/BattleSaveHeader.cs`; `Assets/Scripts/Services/Saves/BattleSaveValidator.cs` — serialized state, version and compatibility.
 - `Assets/Scripts/Services/Saves/BattleSaveService.cs`; `Assets/Scripts/Services/Saves/JsonBattleSaveRepository.cs` — capture, restrictions, storage.
 - `Assets/Scripts/Services/Saves/BattleSaveActions.cs`; `Assets/Scripts/Services/Saves/BattleSaveSlot.cs` — player actions and names.
 - `Assets/Scripts/Services/Saves/AutosaveSchedule.cs`; `Assets/Scripts/Services/Saves/BattleClock.cs`; `Assets/Scripts/Services/Saves/SurvivalAutosave.cs`.

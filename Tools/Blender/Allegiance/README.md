@@ -1,7 +1,7 @@
 # Allegiance-class Battlecruiser
 
 - Source: Remake 4.0 workshop `1770851727`, `Allegiance_Star_Destroyer_MP`, selected `Empire_Allegiance_Star_Destroyer_Hangar.ALO` plus 53 XML-referenced turret ALOs.
-- Read vault `Architecture/ALO_MODEL_IMPORT_GUIDE` and `GameDesign/Empire Fleet Import` before rebuilding. Use a fresh isolated Blender 3.6.23 session with ALAMO and MCP protocol 13; never run `Convert.py` in another import's session.
+- Read vault `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE` and `GameDesign/Proposals/Empire Fleet Import` before rebuilding. Use a fresh isolated Blender 3.6.23 session with ALAMO and MCP protocol 13; never run `Convert.py` in another import's session.
 - `AuditSource.py`: XML inheritance, binary bones/materials, texture resolution and original SHA-256 hashes → `Temp/AllegianceImport/SourceAudit.json`.
 - `Convert.py`: source-specific embedded audit, restored identity Roots, binary-restored material slots, packed blends, FBXs and round trips. Execute through the existing Blender MCP connection and capture `CONVERSION_JSON` as `ConversionReport.json`.
 - `Stage.py`: shared original-pixel PNGs and 54 FBXs under dedicated `EmpireShips/Allegiance` folders. Run with `uv run --with pillow python Tools/Blender/Allegiance/Stage.py`.

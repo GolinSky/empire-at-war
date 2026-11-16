@@ -2,7 +2,7 @@
 
 - Empire ship `ISDII = 205`; replaced in place on 2026-10-09. Existing gameplay, data, preview, icon and Addressable GUIDs remain valid.
 - Source: `D:/SteamLibrary/steamapps/workshop/content/32470/1770851727/Data`, unit `Star_Destroyer_II`.
-- Policy: vault `Architecture/ALO_MODEL_IMPORT_GUIDE.md`, `PROJECT_ORGANIZATION` and UI guides. Historical `../ISDII/` imports from Workshop `1397421866` are obsolete.
+- Policy: vault `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE.md`, `PROJECT_ORGANIZATION` and UI guides. Historical `../ISDII/` imports from Workshop `1397421866` are obsolete.
 
 ## Source assembly
 

@@ -3,7 +3,7 @@
 - Empire ship `ImperialVenator = 211`; dedicated ability `ImperialVenatorIntensifyFirepower = 35`.
 - Source: `D:/SteamLibrary/steamapps/workshop/content/32470/1770851727/Data`.
 - Read `ALO_MODEL_IMPORT_GUIDE`, `PROJECT_ORGANIZATION`, `UI_UX_GUIDELINES`, `UI_CODE_BUILD_GUIDE` through `empire-vault` before implementation.
-- Vault reference: `GameDesign/Imperial Venator Import`; completion plan: `Done/Features/ImperialVenator_Import`.
+- Vault reference: `AssetPipeline/Imports/Imperial Venator Import`; completion plan: `Done/Features/ImperialVenator_Import`.
 
 ## Source evidence
 

@@ -26,7 +26,7 @@ reviewed: 2026-10-20
 
 - Read [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]], [[Architecture/PROJECT_ORGANIZATION]] and repository `AGENTS.md`.
 - Source Workshop ID: `1129810972`. Preserve installed ALO/DDS/XML files and existing Unity GUIDs.
-- Reuse existing station upgrade/combat data, hardpoint IDs, unlock levels and Addressables structure.
+- Reuse existing station upgrade/combat data, hardpoint IDs and unlock levels. Keep `SeparatistSpaceStationView` in `SeparatistUnitViews` per [[AssetPipeline/Guides/ADDRESSABLES_BUNDLE_GUIDE]].
 - Use official `unity` CLI; builders must save all assets. Check nested `data.result.success` and reload saved prefabs.
 
 ## Decision
@@ -131,5 +131,5 @@ reviewed: 2026-10-20
 - `Assets/Art/Models/SpaceStations/CisSpaceStation/LevelN/CisSpaceStationLevelN.fbx` — source-derived FBXs.
 - `Assets/Art/{Materials,Textures}/Models/SpaceStations/CisSpaceStation/` — shared art.
 - `Assets/Art/Models/Shields/CisSpaceStationLevelNShield.asset` — per-level shield surfaces.
-- `Assets/Scripts/Tests/Editor/CisStationImportTests.cs`, `StationLevelViewTests.cs` — fidelity, materials, faction isolation and real upgrade handler.
+- `Assets/Scripts/Tests/Editor/Ships/CisStationImportTests.cs`, `Assets/Scripts/Tests/Editor/Ui/StationLevelViewTests.cs` — fidelity, materials, faction isolation and real upgrade handler.
 - `Temp/CisStationImport/` — packed editable blends, audits, raw Unity data, verified reports, tests and previews.

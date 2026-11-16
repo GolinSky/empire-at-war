@@ -15,11 +15,12 @@ reviewed: 2026-10-20
 # Stealth Corvette Import
 
 > [!info] Import record
-> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]]. Open acceptance work remains in its linked TODO plan.
+> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]].
+> Plan: [[Done/Features/StealthCorvette_Import]].
 
 ## Goal
 - Republic IPV-2C Stealth Corvette: imported model, four weapons, cloaking, roster, own placement/wreck/icons and team colors.
-- Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; acceptance: [[Done/Features/StealthCorvette_Import]].
+- Guide: [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]]; user acceptance → [[TODOs/User_Acceptance_Queue]].
 
 ## Important Values
 - User/local RaW XML: hull `850`, shields `900`, regeneration `15/s`; cost `2150`, build `18 s`, tech `3`, population `2`, limit `1`.

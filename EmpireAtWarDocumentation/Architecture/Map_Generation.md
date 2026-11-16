@@ -60,5 +60,5 @@ verification: Legacy Open Field fingerprints and quick/exhaustive generation
 - `Assets/Scripts/Entities/Map/{MapLayoutView,MapGenerationSettings,MapSizeSettings,ZoneSpot}.cs`.
 - `Assets/Prefabs/View/ReinforcementZones/{ReinforcementZone,MainReinforcementZone}.prefab`.
 - `Assets/Settings/Data/Models/Map/MapGenerationSettings.asset`.
-- `Assets/Scripts/Tests/Editor/{MapLayoutGeneratorTests,SerializedReferenceTests}.cs`.
+- `Assets/Scripts/Tests/Editor/Map/MapLayoutGeneratorTests.cs` and `Assets/Scripts/Tests/Editor/Core/SerializedReferenceTests.cs`.
 - [[Done/Features/Main_Relay_Map_Layout_Adjustments]] — implementation and acceptance owner.

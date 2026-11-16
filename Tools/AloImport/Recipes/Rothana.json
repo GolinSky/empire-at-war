@@ -142,12 +142,12 @@
       },
       {
         "role": "art",
-        "path": "Assets/Prefabs/Models/Ships/Republic/Rothana.prefab",
+        "path": "Assets/Prefabs/Models/Ships/Republic/Models/Rothana.prefab",
         "guid": "0953bfb937901dd479ddb0204ae44d17"
       },
       {
         "role": "view",
-        "path": "Assets/Prefabs/Models/Ships/Republic/RothanaShipView.prefab",
+        "path": "Assets/Prefabs/Models/Ships/Republic/View/RothanaShipView.prefab",
         "guid": "a5fb369e6e2e1954fa87deac0371f5ab"
       },
       {
@@ -3494,7 +3494,7 @@
     "shipUiGuid": "5d122ff846ebd9c42b0d93d92110997b",
     "tooltipGuid": "f5fb2ca4ac1d3a848a445314158b9a6e",
     "reinforcementGuid": "1c157dade5de42e4081ffe3ef1dd634f",
-    "viewGroupGuid": "32461b8e25b2de54088abd16d13c9065",
+    "viewGroupGuid": "692b58dbd0494de49b165cd71ecf1b0a",
     "dataGroupGuid": "9c71a107867fe5b43bdb412240236182",
     "viewRole": "view",
     "dataRole": "ship-data",

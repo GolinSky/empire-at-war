@@ -4,8 +4,8 @@ system:
   - capture
   - structures
 design_state: implemented
-verified: 2026-10-20
-verification: source-and-assets
+verified: 2026-11-16
+verification: Inspected capture-site data and binding, construction dispatch, structure catalog times and station stats. Other behavior is described by the linked source and its dated checks.
 ---
 # Capture and Structures
 
@@ -34,12 +34,12 @@ verification: source-and-assets
 - Only Owned sites start construction; each site supports one construction/facility.
 - Human construction requires a currently revealed friendly/allied owned site and sufficient credits.
 - The selected human player pays; the finished facility is created for the site's owner.
-- Both facility options use the same site build flow; the presenter's options are not restricted by the site's visual prefab type.
+- Facility choices are validated against the site kind. Mining sites allow Asteroid Mine and Battle Asteroid. Satellite sites allow Quad Laser, Turbolaser, Ion, Mass Driver and Missile satellites.
 - Construction advances by `deltaTime / BuildTime` and completes at 100%; the entity then spawns at the site's facility position.
 - Constructing sites remain capturable; enemy completion of capture deletes construction progress without refund.
 - Contested capture alone does not pause construction.
 - Operational sites cannot be captured. Destroy facility → site becomes Neutral → capture is available again.
-- AI chooses its own empty sites without hostile units inside; it chooses Battle Asteroid when its battle-site count is below its mining-site count, otherwise Mining.
+- AI construction on its own empty sites requires the absence of hostile units in the ring. Its fallback builds an Asteroid Mine on eligible mining sites; the objective-driven route uses its selected site and facility.
 - Site construction does not enter the ordinary production queue or reserve-pool type limits.
 
 ### Relay capture and reinforcement deployment
@@ -83,16 +83,15 @@ verification: source-and-assets
 ### Capture-site defaults
 | Setting | Current value |
 |---|---:|
-| CaptureSite prefab radius | 60 world units |
-| BattleAsteroidCaptureSite prefab radius | 60 world units |
-| Both prefab capture durations | 12 s |
+| Mining site base radius / duration | 60 world units / 10 s |
+| Satellite site base radius / duration | 500 world units / 6 s |
 | Capture speed per net ship | 1 |
 | Squadron capture weight | 0.5 |
 | Strength refresh interval | 0.25 s |
 
-- One uncontested ship → nominal 12 s; one uncontested squadron → nominal 24 s; two net ships → nominal 6 s.
-- Timings assume continuous presence and a fresh strength sample; sampling can delay recognition of entry/exit.
-- Runtime capture uses each view's duration/radius; prefab overrides remain authoritative.
+- One uncontested ship → 10 s Mining / 6 s Satellite. One squadron → 20 s / 12 s. Two net ships → 5 s / 3 s.
+- Timings assume continuous presence and a fresh strength sample. Sampling can delay recognition of entry or exit.
+- `CaptureSiteData` supplies duration and base radius by kind. The view multiplies the radius by the largest absolute X/Z transform scale.
 
 ### Site facilities
 | Facility | Credits | Build time | Base hull / shields | Income/payment | Spawn block radius |
@@ -100,23 +99,24 @@ verification: source-and-assets
 | Asteroid Mine | 600 | 25 s | 2,500 / 1,200 | 60 | 160 |
 | Battle Asteroid | 1,600 | 30 s | 3,500 / 1,800 | 10 | 200 |
 
-- Both income sources pay every allied player; research multipliers and payment cadence are defined in [[GameDesign/Economy]].
+- Asteroid Mine and Battle Asteroid pay allied players. Research multipliers and payment cadence are defined in [[GameDesign/Economy]].
 - Construction cost/time comes from `CaptureSiteData`; operational stats come from the facility/platform model assets.
+- Satellite-site construction (credits / seconds): Quad Laser `300 / 21`, Turbolaser `500 / 25`, Ion `400 / 23`, Mass Driver `1,600 / 47`, Missile `1,000 / 35`.
 
 ### Ordinary catalog entries
 | Structure | Required level | Credits | Build time | MaxCount | Catalog population |
 |---|---:|---:|---:|---:|---:|
 | Mining Facility | 0 | 1,000 | 5 s | 5 | 0 |
 | XQ-6 | 1 | 1,000 | 5 s | 5 | 0 |
-| Golan III | 1 | 8,250 | 120 s | 2 | 3 |
-| XQ-3 Empress | 1 | 7,500 | 120 s | 2 | 3 |
+| Golan III | 1 | 8,250 | 50 s | 2 | 3 |
+| XQ-3 Empress | 1 | 7,500 | 50 s | 2 | 3 |
 
 - Ordinary Mining Facility base hull/shields: 1,500/800; income: 20/payment; spawn block radius: 400.
 - Faction roster membership determines which catalog entries are offered. These rows describe the shared catalogs.
 - Human/AI population handling differs for structures; see [[GameDesign/Production_And_Research]].
 
 ### Stations
-- Shared station base values: 12,000 hull, 8,000 shields, 240 shield regeneration value, 3 s regeneration delay.
+- Shared station base values: 36,000 hull, 24,000 shields, 240 shield regeneration value, 3 s regeneration delay.
 - Station base radar detection range and fog vision radius: 900 world units each; hostile spawn block radius: 1,200 world units.
 - Station mounts use their own `profile.Range × VisionMultiplier`; `StationCombatPresenter` forwards radar-acquired enemies but does not give every weapon a 900-unit reach.
 - Level 1–5 hull multipliers: 1, 1.4, 1.9, 2.6, 3.5.
@@ -131,11 +131,11 @@ verification: source-and-assets
 - A capture completion is processed before construction completion in each site update; an enemy capture that completes first cancels that build.
 - Once entered, a site remains known terrain; current vision is required for updated ownership rendering and the human build selection.
 - Generated map loading removes all sites when `CaptureSites` is disabled and removes mining-layout sites when `MiningSites` is disabled.
-- Source/asset verification on 2026-10-20 covers these rules and current values; runtime play behavior was not tested in this documentation task.
+- The 2026-11-16 check covers site settings, construction dispatch and authored structure values.
 
 ## Files
 - `Assets/Scripts/Entities/ReinforcementZones/ReinforcementZoneModel.cs`; `Assets/Scripts/Services/ReinforcementZones/ReinforcementZonesSystem.cs` — relay capture, per-frame strength, ownership, home/relay vision and blockers.
-- `Assets/Scripts/Services/SpawnBlocking/SpawnBlockerService.cs`; `Assets/Scripts/Services/OwnedAreas/OwnedCircleSet.cs` — non-allied circle exclusions, including neutral blockers.
+- `Assets/Scripts/Services/SpawnBlocking/BattleAreaService.cs`; `Assets/Scripts/Services/OwnedAreas/OwnedCircleSet.cs` — non-allied circle exclusions, including neutral blockers.
 - `Assets/Scripts/Services/Reinforcement/ShipReinforcementPlacement.cs`; `Assets/Scripts/Services/Reinforcement/SquadronReinforcementPlacement.cs` — human deployment checks.
 - `Assets/Prefabs/View/ReinforcementZones/ReinforcementZone.prefab`; `Assets/Settings/Data/ReinforcementZones/ReinforcementZoneData.asset` — relay radius, duration, weights and spawn-block/vision radii.
 - `Assets/Scripts/Entities/BaseEntity/EntityComponentData.cs`; `Assets/Scripts/Entities/SpaceStation/SpaceStationInstaller.cs`; `Assets/Scripts/Components/Weapon/StationCombatPresenter.cs`; `Assets/Scripts/Components/Weapon/WeaponComponent.cs` — radar/vision binding and per-mount weapon range.
@@ -146,7 +146,7 @@ verification: source-and-assets
 - `Assets/Scripts/Services/Reinforcement/ReinforcementSpawnRule.cs`; `Assets/Scripts/Services/Reinforcement/StructureSpawnClearance.cs`; `Assets/Scripts/Services/Enemy/EnemyStructurePlacementService.cs` — placement constraints.
 - `Assets/Scripts/Services/Reinforcement/MiningFacilityReinforcementPlacement.cs`; `Assets/Scripts/Services/Reinforcement/DefendPlatformReinforcementPlacement.cs` — placement and slot release.
 - `Assets/Scripts/Entities/SpaceStation/SpaceStation.cs`; `Assets/Scripts/Entities/Map/BattleMapLoader.cs` — station level changes and map feature filtering.
-- `Assets/Prefabs/View/CaptureSites/CaptureSite.prefab`; `Assets/Prefabs/View/CaptureSites/BattleAsteroidCaptureSite.prefab` — capture radius/duration.
-- `Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset` — capture weights and facility construction.
+- `Assets/Prefabs/View/CaptureSites/CaptureSite.prefab`; `Assets/Prefabs/View/CaptureSites/SatelliteCaptureSite.prefab` — mining and satellite view bindings.
+- `Assets/Scripts/Entities/Map/MapLayoutView.cs`; `Assets/Scripts/Entities/CaptureSites/CaptureSiteView.cs`; `Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset` — settings binding, radius, duration, weights and facility construction.
 - `Assets/Settings/Data/Models/MiningFacilities/MiningFacilityData.asset`; `Assets/Settings/Data/Models/MiningFacilities/AsteroidMiningFacilityData.asset`; `Assets/Settings/Data/Models/DefendPlatform/AsteroidDefendPlatformData.asset` — facility stats.
 - `Assets/Settings/Data/Factions/Shared/MiningFacilityCatalog.asset`; `Assets/Settings/Data/Factions/Shared/DefendPlatformCatalog.asset`; `Assets/Settings/Data/Models/SpaceStation/SpaceStationData.asset` — ordinary structure/catalog/station values.

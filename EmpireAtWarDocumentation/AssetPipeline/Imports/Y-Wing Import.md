@@ -15,12 +15,13 @@ reviewed: 2026-10-20
 # Y-Wing Import
 
 > [!info] Import record
-> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]]. Open acceptance work remains in its linked TODO plan.
+> Integration and verification evidence recorded at the dates below. Gameplay values are snapshots and may differ from current assets. Current rules/data ownership: [[GameDesign/Units_And_Factions]], [[GameDesign/Combat]] and [[GameDesign/Economy]].
+> Plan: [[Done/Features/YWing_Import]].
 
 ## Goal
 
 - Five Republic BTL-B heavy bombers / anti-capital strikecraft, imported through [[AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE]].
-- Runtime and balance acceptance: [[Done/Features/YWing_Import]].
+- Runtime and balance acceptance → [[TODOs/User_Acceptance_Queue]].
 
 ## Important Values
 

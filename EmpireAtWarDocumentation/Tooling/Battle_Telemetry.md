@@ -1,12 +1,12 @@
 ---
-type: technical-reference
+type: engineering-reference
 system:
   - tooling
   - balance
   - ai
-verified: 2026-11-14
-verification: Live-source review of patrol/recovery event writers and Unity
-  compilation; new telemetry not runtime-tested.
+verified: 2026-11-16
+verification: Reviewed live damage, AI decision, ship-order and squadron CSV
+  writers and their flush and scene lifecycle hooks. No runtime recording run.
 ---
 # Battle Telemetry
 
@@ -17,9 +17,9 @@ verification: Live-source review of patrol/recovery event writers and Unity
 ## Rules
 
 - Editor and `DEVELOPMENT_BUILD` only; compiled out of release builds.
-- Recording runs only in Play Mode; EditMode tests drive AI code without writing files.
-- One battle → damage, AI decision and ship-order CSVs; each writer resets on every Single scene load. Match scene and nearby filename timestamps.
-- Files flush every `10 s` and on quit; AI decisions and ship orders also flush when Editor Play Mode exits.
+- Battle recording runs in the Editor during Play Mode and in Development Players. EditMode tests exercise AI code without writing AI telemetry files.
+- Match the scene name and nearby filename timestamps across damage, AI decision, ship-order and squadron CSVs. A stream with no data can be absent.
+- Damage starts on the first recorded event and flushes on unload of its active scene or application quit. AI decision, ship-order and squadron streams flush on an event after `10 s` unscaled time, on Single scene loads, on application quit and when Editor Play Mode exits.
 - One battle is one sample: fleet composition and player habits vary. Compare several battles before retuning.
 - Format `RecordEvent` details with `FormattableString.Invariant`: a non-English system locale writes `132,9` / `бесконечность`, which breaks numeric parsing. Some older call sites (controller, counter-selection) still use the current culture → [[Done/Bugs/Enemy_AI_Battle_Log_Followup_Fixes]].
 
@@ -38,7 +38,7 @@ verification: Live-source review of patrol/recovery event writers and Unity
 
 - First line: `# battle seconds (unscaled),<n>`.
 - `shots` rows: `faction, unit, shots, activeSeconds` (first → last shot of that unit type).
-- `impact` rows: `faction, unit, damageType, targetFaction, target, impacts, fleetCommandImpacts, rawDamage, shieldLoss, hullLoss, effective/raw, kills`.
+- `impact` rows include `faction, unit, damageType, targetFaction, target, impacts, fleetCommandImpacts, rawDamage, shieldLoss, hullLoss, effective/raw, kills, wastedImpacts, wastedRawDamage`. Wasted impacts arrived after the target died.
 - `unit` = attacker prefab name (`MunificentShipView`); `target` = `UnitTypeId` (`Munificent`) or `Structure` (platforms, stations).
 - `effective/raw` < 1 → matrix/accuracy/Fleet Command mitigation; > 1 → shield-piercing or hardpoint hull multiplier.
 - `fleetCommandImpacts` = hits fired while the attacker had Resolute/Home One Fleet Command.
@@ -76,9 +76,9 @@ verification: Live-source review of patrol/recovery event writers and Unity
 ## Implementation
 
 1. Play a battle; stop Play Mode.
-2. Open the matching scene's latest damage, AI and ship-order files.
+2. Open the matching scene's damage, AI, ship-order and squadron files.
 3. Damage: sum `shieldLoss + hullLoss` per faction/unit; divide by battle seconds for rates; `kills × price` for value lost.
-4. Squadron health check: `shots ÷ squadrons lost` per side (player ≈ 200–280 is healthy; AI was 60–140).
+4. Compare `shots ÷ squadrons lost` per side and use the squadron stream to attribute launches, losses and orders to carriers. Earlier observations of player `200–280` and AI `60–140` are historical samples.
 5. AI: time per state (`decision` row gaps), count `CaptureZone ↔ RetreatValue` flips, `rallying` share, purchase mix.
 6. Exchange ratio = AI ship value lost ÷ player ship value lost; exclude squadrons (hangar launches are free).
 
@@ -126,3 +126,4 @@ verification: Live-source review of patrol/recovery event writers and Unity
 - Acceptance: compare matched battle logs with the ten checks in [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]]. Source verification is not runtime coverage or balance acceptance.
 
 - 2026-11-14 review: recoveryAnchor, recoveryMode and anchor objectiveSwitch fields use invariant numeric formatting and `;` separators; position fields use `(X Z)` at F1 precision. Fix → [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]].
+- 2026-11-14 evidence: patrol/recovery event writers passed source review and Unity compilation. Runtime telemetry acceptance remained pending.

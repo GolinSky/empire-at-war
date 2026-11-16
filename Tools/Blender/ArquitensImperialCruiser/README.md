@@ -1,7 +1,7 @@
 # ArquitensImperialCruiser
 
 - Source: AOTR 2.11.9 workshop `1397421866`, unit `E_Arquitens_Light_Cruiser`, `ev_arquitens.ALO`.
-- Read vault `Architecture/ALO_MODEL_IMPORT_GUIDE` before conversion. Reference: `GameDesign/ArquitensImperialCruiser Import`.
+- Read vault `AssetPipeline/Guides/ALO_MODEL_IMPORT_GUIDE` before conversion. Reference: `AssetPipeline/Imports/ArquitensImperialCruiser Import`.
 - Use isolated Blender 3.6.23 + ALAMO MCP port `9882`; `Convert.py` and `VerifyGeometry.py` reject another port.
 - `Prepare.py` audits installed XML, binary bones, DDS files and SHA-256 hashes into `Temp/ArquitensImperialCruiserImport/SourceAudit.json`.
 - `Convert.py` restores the binary-verified identity Root, exports three unique FBXs and packed blends, and checks mesh/triangle/bone/UV-layer/bounds round trips. Capture `CONVERSION_JSON` as `ConversionReport.json`.

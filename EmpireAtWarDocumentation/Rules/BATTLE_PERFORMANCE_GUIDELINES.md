@@ -29,7 +29,7 @@ verification: "Nebula/hazard/settings source, Unity compilation, saved
   with 0 new errors; GameFlow 153 passed before/after, Combat 220 and Capture
   101 passed. Mac not run."
 tags:
-  - "flag/important\r"
+  - flag/important
 ---
 # Battle Performance Guidelines
 
@@ -118,7 +118,7 @@ tags:
 - Budget target searches, but validate model target lifetime before every pilot tick. Dead Attack/Guard targets stop; dead opportunistic engagements disengage and resume their course, including Hunt. Cached view transforms must not outlive their target.
 - Profiler frame indices accumulate across captures. Use exact ranges or explicitly clear an idle buffer after saving; top-40 summaries cannot recover uninstrumented descendants. Reproduction/verified CPU evidence → `Docs/Audits/2026-10-30-Late-Battle-CPU/analysis.md`.
 
-- Source/Editor compile verified 2026-10-30; runtime speedup unmeasured. Owner and open investigations → [[TODOs/Optimization/Late_Battle_CPU_Fix_Plan]].
+- Source/Editor compile verified 2026-10-30; runtime speedup unmeasured. Historical evidence → [[Done/Optimization/Late_Battle_CPU_Fix_Plan]]. Open investigations → [[TODOs/Optimization/Battle_CPU_Performance_Plan#Late-battle CPU follow-up]].
 - Interval timers alone do not bound overloaded-frame work. Squadron orders cap 64 visits / 32 updates per frame; ordinary capture sampling caps 4 visits / 2 area refreshes. `CaptureStrengthSampler.Add` / `Invalidate` require every area to refresh on the next tick, bypassing deadlines/caps before capture progresses; subsequent ticks resume limits. Preserve elapsed time without replaying missed intervals; validate order/capture latency under overload.
 - Shot storage is battle-scoped per prefab; mount leases retain profile/color/callback state. Owner release lets in-flight shots return; battle teardown cancels them. Roster/live-station loading prewarm drains one queue with a 4 ms per-frame creation budget across prefab targets; runtime prewarm creates ≤1 shot/frame. Budget checks cannot interrupt an individual Awake.
 - A 0.5 ms prewarm budget checked between creations cannot interrupt one expensive Awake. Use `Battle.Projectile.Prewarm.<prefab>` / `Instantiate.<prefab>` markers before changing native prefab components.
