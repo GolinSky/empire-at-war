@@ -20,7 +20,6 @@ using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.BattleNotifications;
-using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.Stations;
 
 namespace EmpireAtWar.Entities.Faction.Ui
@@ -40,6 +39,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private readonly IUiPlacement _placement;
         private readonly IEconomyModelObserver _economy;
         private readonly ICoreGameHudStatus _hud;
+        private readonly IFactionProductionMenusProvider _productionMenusProvider;
         private readonly INotifier<BattleState> _battleState;
 
         private readonly FactionRoster _roster;
@@ -78,9 +78,11 @@ namespace EmpireAtWar.Entities.Faction.Ui
             IBattleNotifications notifications,
             SecondStationLevelModel secondStation,
             StationLevelData stationLevels,
-            IProductionAccess productionAccess) : base(uiService, cancelRouter)
+            IProductionAccess productionAccess,
+            IFactionProductionMenusProvider productionMenusProvider) : base(uiService, cancelRouter)
         {
             _productionAccess = productionAccess;
+            _productionMenusProvider = productionMenusProvider;
             _secondStation = secondStation;
             _stationLevels = stationLevels;
             _interfaceAudio = interfaceAudio;
@@ -206,6 +208,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public void Tick()
         {
             _hud.SetProductionStatus(_model.FactionType.GetDisplayName(), _model.CurrentLevel);
+            _hud.SetProductionMenusAvailable(_isTooltipActive && _productionAccess.CanProduce && !_isBattleEnded);
             if (_ui != null) _ui.RefreshAvailability(_economy.Money, _isBattleEnded);
         }
 
@@ -218,6 +221,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             {
                 _ui = CreateUi<FactionUi>();
                 _ui.SetContentLayout(_placement.FactionLayout);
+                _ui.SetProductionMenus(_productionMenusProvider.ProductionMenus);
                 _ui.SetModel(_model);
                 _ui.SetResearch(_research);
                 _ui.AssignPresenter(this);
@@ -244,7 +248,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         {
             UnitRequest request = (UnitRequest)key;
             _tooltips.Show(source, request.Id, anchor,
-                () => _isTooltipActive && _model.SelectionType == SelectionType.Base,
+                () => _isTooltipActive && ((TooltipTrigger)source).isActiveAndEnabled,
                 () => BuildTooltip(request));
         }
 

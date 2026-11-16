@@ -2,6 +2,7 @@ using System;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.Faction.Ui;
 using EmpireAtWar.Entities.SuperWeapons.Ui;
 using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Ui.Base;
@@ -30,6 +31,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         [SerializeField] private DictionaryWrapper<GameSpeed, Sprite> speedUpSprites;
         [SerializeField] private UnitActionsView unitActionsView;
         [SerializeField] private SuperWeaponsView superWeaponsView;
+        [SerializeField] private FactionProductionMenus productionMenus;
         [SerializeField] private GameObject contextualPopup;
         [SerializeField] private GameObject selectionSlots;
         [SerializeField] private Button clearFleetButton;
@@ -45,6 +47,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         private bool _isShipGroupLayout;
         private bool _isContentVisible;
         private bool _isSpectator;
+        private bool _canProduce;
         private bool _hasTimeControls = true;
         private (bool ended, bool visible)? _lastHudStatus;
         private int _displayedDurationSeconds = -1;
@@ -53,6 +56,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
 
         public IUnitActionsView UnitActionsView => unitActionsView;
         public ISuperWeaponsView SuperWeaponsView => superWeaponsView;
+        public FactionProductionMenus ProductionMenus => productionMenus;
         public Transform ContextualPopup => contextualPopup.transform;
 
         public void Initialize()
@@ -65,6 +69,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             clearFleetButton.onClick.AddListener(_presenter.ClearFleetSelection);
             // Hidden until a super weapon presenter binds; battles without super weapons have none.
             superWeaponsView.SetAvailable(false);
+            productionMenus.Initialize();
             unitActionsView.SetAvailable(false);
             _isInitialized = true;
         }
@@ -81,6 +86,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             reinforcementButton.onClick.RemoveListener(_presenter.ToggleReinforcement);
             videoModeButton.onClick.RemoveListener(_presenter.StartCinematic);
             clearFleetButton.onClick.RemoveListener(_presenter.ClearFleetSelection);
+            productionMenus.Dispose();
             SetReinforcementReady(false);
             _isInitialized = false;
         }
@@ -131,7 +137,14 @@ namespace EmpireAtWar.Entities.CoreGameUi
         {
             _isSpectator = spectator;
             reinforcementButton.gameObject.SetActive(!spectator);
+            SetProductionMenusAvailable(_canProduce);
             UpdateShipActionsVisibility();
+        }
+
+        public void SetProductionMenusAvailable(bool canProduce)
+        {
+            _canProduce = canProduce;
+            productionMenus.SetAvailable(canProduce && !_isSpectator);
         }
 
         public void SetPopulationCapacity(int current, int max)

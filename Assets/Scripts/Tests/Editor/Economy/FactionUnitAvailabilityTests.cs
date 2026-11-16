@@ -4,6 +4,7 @@ using System.Reflection;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.CoreGameUi;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Faction.Ui;
 using EmpireAtWar.Entities.MiningFacility;
@@ -28,8 +29,13 @@ namespace EmpireAtWar.Tests.Editor
     [Category("BattleInput")]
     public sealed class FactionUnitAvailabilityTests
     {
-        [Test]
-        public void StationProduction_DoesNotCreateOrbitalPurchaseCards()
+        [TestCase(SelectionType.Base, false)]
+        [TestCase(SelectionType.Base, true)]
+        [TestCase(SelectionType.MiningFacility, false)]
+        [TestCase(SelectionType.None, false)]
+        [TestCase(SelectionType.Ship, false)]
+        [TestCase(SelectionType.DefendPlatform, false)]
+        public void ProductionCards_AreRoutedToTheCorrectMenus(SelectionType selectionType, bool secondStation)
         {
             const string FACTION_ASSETS = "Assets/Settings/Data/Factions/";
             const string SHARED_ASSETS = FACTION_ASSETS + "Shared/";
@@ -43,23 +49,46 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = PrefabUtility.LoadPrefabContents("Assets/Prefabs/Ui/UiService.prefab");
             FactionUi view = Object.Instantiate(AssetDatabase.LoadAssetAtPath<FactionUi>(
                 "Assets/Prefabs/Ui/Factions/FactionUi.prefab"), root.transform);
+            CoreGameUi hud = Object.Instantiate(AssetDatabase.LoadAssetAtPath<CoreGameUi>(
+                "Assets/Prefabs/Ui/SkirmishGame/CoreGameUi.prefab"), root.transform);
             try
             {
                 view.SetContentLayout(root.GetComponent<UiPlacement>().FactionLayout);
-                view.SetModel(new PlayerFactionModel(levels, roster) { SelectionType = SelectionType.Base });
+                view.SetProductionMenus(hud.ProductionMenus);
+                var model = new PlayerFactionModel(levels, roster)
+                {
+                    SelectionType = selectionType,
+                    IsSecondStationSelected = secondStation
+                };
+                view.SetModel(model);
                 view.SetResearch(new FactionResearchModel(roster));
                 view.AssignPresenter(new UnlockedPresenter());
                 view.SetData(roster);
                 view.SetUnitRequestFactory(new UnitRequestFactory());
-                view.SetSecondStation(new SecondStationLevelModel(), levels);
+                view.SetSecondStation(new SecondStationLevelModel { IsBuilt = true }, levels);
                 view.Initialize();
 
                 Assert.That(roster.SuperWeapons, Is.Not.Empty);
                 FactionUnitUi[] cards = view.GetComponentsInChildren<FactionUnitUi>(true);
                 Assert.That(cards.Any(card => card.Request is ShipUnitRequest), Is.True);
-                Assert.That(cards.Any(card => card.Request is SuperWeaponUnitRequest), Is.False);
+                Assert.That(cards.All(card => card.Request is ShipUnitRequest or SquadronUnitRequest
+                    or LevelUnitRequest or SecondStationLevelUnitRequest), Is.True);
+                Assert.That(cards.Any(card => card.Request is LevelUnitRequest), Is.True);
+                Assert.That(cards.Any(card => card.Request is SecondStationLevelUnitRequest), Is.True);
+                var researchCards = hud.ProductionMenus.ResearchCards.GetComponentsInChildren<FactionUnitUi>(true);
+                Assert.That(researchCards.Any(card => card.Request is ResearchUnitRequest
+                    { Key: ResearchType.IncreasedProduction }), Is.True);
+                Assert.That(researchCards.Any(card => card.Request is ResearchUnitRequest
+                    { Key: ResearchType.IncreasedStationIncome }), Is.True);
+                Assert.That(researchCards.All(card => card.Request is ResearchUnitRequest), Is.True);
+                var structures = hud.ProductionMenus.StructureCards.GetComponentsInChildren<FactionUnitUi>(true);
+                Assert.That(structures.Any(card => card.Request is MiningFacilityUnitRequest), Is.True);
+                Assert.That(structures.Any(card => card.Request is DefendPlatformUnitRequest), Is.True);
+                Assert.That(structures.Any(card => card.Request is SecondStationUnitRequest), Is.True);
+                Assert.That(structures.All(card => card.Request is MiningFacilityUnitRequest or
+                    DefendPlatformUnitRequest or SecondStationUnitRequest), Is.True);
 
-                foreach (FactionUnitUi card in cards)
+                foreach (FactionUnitUi card in cards.Concat(researchCards).Concat(structures))
                 {
                     var background = (MPImage)card.GetComponent<Button>().targetGraphic;
                     var (width, color) = card.Request switch
@@ -71,6 +100,25 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(background.OutlineWidth, Is.EqualTo(width), card.RequestId);
                     Assert.That((Color32)background.OutlineColor, Is.EqualTo(color), card.RequestId);
                 }
+
+                view.RefreshAvailability(10000f, false);
+                foreach (FactionUnitUi card in cards)
+                {
+                    bool expected = selectionType == SelectionType.Base && (card.Request switch
+                    {
+                        LevelUnitRequest => !secondStation,
+                        SecondStationLevelUnitRequest => secondStation,
+                        _ => true
+                    });
+                    Assert.That(card.gameObject.activeSelf, Is.EqualTo(expected), card.Request.Id);
+                }
+                foreach (FactionUnitUi card in researchCards)
+                {
+                    bool expected = card.Request is not ResearchUnitRequest { Key: ResearchType.IncreasedProduction }
+                                    || selectionType == SelectionType.MiningFacility;
+                    Assert.That(card.gameObject.activeSelf, Is.EqualTo(expected), card.Request.Id);
+                }
+                Assert.That(structures.All(card => card.gameObject.activeSelf), Is.True);
             }
             finally
             {
@@ -285,7 +333,8 @@ namespace EmpireAtWar.Tests.Editor
                 model: model, research: null, unitRequestFactory: null, routeNavigation: null,
                 tooltipService: null, economy: null, hud: null, battleState: null, roster: null,
                 reinforcements: null, assets: null, shipsData: null, interfaceAudio: null, notifications: null,
-                secondStation: new SecondStationLevelModel(), stationLevels: null, productionAccess: new OwnBaseAccess());
+                secondStation: new SecondStationLevelModel(), stationLevels: null, productionAccess: new OwnBaseAccess(),
+                productionMenusProvider: null);
         }
 
         private sealed class AvailabilityPresenter : IFactionPresenter

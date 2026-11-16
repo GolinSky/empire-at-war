@@ -14,14 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: facilities_all
   title: More mining facilities
-  body: Keep buying the marked mining facility until you reach the limit. Each one
-    adds credits.
+  body: Open Structures and keep buying the marked mining facility until you reach
+    the limit. Each one adds credits.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
   anchor: 27
-  anchorFallback: 0
+  anchorFallback: 37
+  blockPointerOutsideSpotlight: 0
   target: 0
+  hideTargetMarker: 0
   completion: 75
   completionCount: 1
   listenFromShown: 0

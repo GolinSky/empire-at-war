@@ -10,6 +10,7 @@ using EmpireAtWar.Entities.UnitActions.Ui;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.Faction.Ui;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Selection;
@@ -24,7 +25,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
 {
     [LifecycleOrder(Initialize = LifecycleOrders.CORE_HUD_INITIALIZE)]
     public class CoreGameUiController : UiController, ICoreGamePresenter, ISkirmishRouteNavigation,
-        IUnitActionsViewProvider, ISuperWeaponsViewProvider, ICoreGameHudStatus,
+        IUnitActionsViewProvider, ISuperWeaponsViewProvider, IFactionProductionMenusProvider, ICoreGameHudStatus,
         IObserver<ISelectionSubject>, IObserver<BattleState>, IObserver<GameSpeed>,
         IInitializable, ILateDisposable, ITickable
     {
@@ -38,6 +39,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         private ISelectionContext _lastSelectionContext;
         private readonly ITooltipService _tooltipService;
         private readonly IInputBindings _bindings;
+        private readonly IPointerInput _pointer;
         private readonly IMatchSession _session;
         private readonly ILocalPlayer _localPlayer;
         private readonly BattleDefinition _battle;
@@ -64,6 +66,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
 
         public IUnitActionsView UnitActionsView => _ui.UnitActionsView;
         public ISuperWeaponsView SuperWeaponsView => _ui.SuperWeaponsView;
+        public FactionProductionMenus ProductionMenus => _ui.ProductionMenus;
         public void SetMode(string label, bool spectator) => _ui.SetMode(label, spectator);
         public void SetPopulationCapacity(int current, int max)
         {
@@ -84,7 +87,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             ITooltipService tooltipService,
             IInputBindings bindings,
             IMatchSession session, BattleDefinition battle, BattleClock clock,
-            ILocalPlayer localPlayer) : base(uiService, cancelRouter)
+            ILocalPlayer localPlayer, IPointerInput pointer) : base(uiService, cancelRouter)
         {
             _localPlayer = localPlayer;
             _placement = placement;
@@ -98,6 +101,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _tooltips = new TooltipRequests(tooltipService);
             _tooltipService = tooltipService;
             _bindings = bindings;
+            _pointer = pointer;
             _session = session;
             _battle = battle;
             _clock = clock;
@@ -108,8 +112,11 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _ui = CreateUi<CoreGameUi>();
             _ui.transform.SetAsFirstSibling();
             _ui.ContextualPopup.SetParent(_placement.ContextualSlot, false);
+            ProductionMenus.SetPopupParent(_placement.ContextualSlot);
             _ui.AssignPresenter(this);
             _ui.Initialize();
+            ProductionMenus.OpenChanged += HandleProductionMenuOpen;
+            _pointer.PrimaryPressed += ProductionMenus.DismissOutside;
             if (_session.IsOnline) _ui.DisableTimeControls();
             _ui.SetReinforcementReady(_hasReadyReinforcement);
             if (_populationCapacity.HasValue)
@@ -169,6 +176,9 @@ namespace EmpireAtWar.Entities.CoreGameUi
             if (_tooltipHover != null) _tooltipHover.Dispose();
             if (_ui != null)
             {
+                _pointer.PrimaryPressed -= ProductionMenus.DismissOutside;
+                ProductionMenus.OpenChanged -= HandleProductionMenuOpen;
+                Unfocus();
                 _ui.Dispose();
             }
         }
@@ -264,6 +274,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
                 (state == BattleState.Running || state == BattleState.Paused));
             if (IsBattleEnded)
             {
+                _ui.SetProductionMenusAvailable(false);
                 _hasReadyReinforcement = false;
                 _ui.SetReinforcementReady(false);
             }
@@ -335,6 +346,21 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _stationLevel = level;
         }
 
+        public void SetProductionMenusAvailable(bool available) =>
+            _ui.SetProductionMenusAvailable(available && !IsBattleEnded);
+
+        private void HandleProductionMenuOpen(bool open)
+        {
+            if (open) Focus();
+            else Unfocus();
+        }
+
+        protected override bool HandleCancel()
+        {
+            ProductionMenus.Close();
+            return true;
+        }
+
         public void NotifyReinforcementReady()
         {
             if (IsBattleEnded || IsRouteActive(SkirmishUiRoutePosition.Reinforcement)) return;
@@ -385,6 +411,8 @@ namespace EmpireAtWar.Entities.CoreGameUi
                     "Speed" => "Switch the battle speed.",
                     "Clear fleet" => "Deselect all currently selected units.",
                     "Orbital" => "Open orbital weapons. Construct a charge at the station, then choose a ready weapon and a target.",
+                    "Research" => "Open research. Select a mining facility to see its production upgrade.",
+                    "Structures" => "Open construction for mining facilities, defense platforms, and the second station.",
                     "Reinforcements" => "Open or close available reinforcements. Drag a card into a friendly deployment zone.",
                     "Cinematic" => $"Enter cinematic camera mode. Exit with {TooltipBindings.Get(_bindings, "Ui", "Cancel")}.",
                     _ => throw new ArgumentOutOfRangeException(nameof(key))

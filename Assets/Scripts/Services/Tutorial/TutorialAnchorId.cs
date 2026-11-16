@@ -48,5 +48,6 @@ namespace EmpireAtWar.Services.Tutorial
         SetupStart = 35,
         /// <summary>Build panel of the selected capture site (Mine, Battle Asteroid, satellite).</summary>
         SiteBuildPanel = 36,
+        StructuresButton = 37,
     }
 }

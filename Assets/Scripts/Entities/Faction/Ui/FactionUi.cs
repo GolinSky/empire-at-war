@@ -24,7 +24,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         [SerializeField] private RectTransform unitsRow;
         [SerializeField] private RectTransform supportRow;
         [SerializeField] private UnityEngine.UI.ContentSizeFitter layoutFitter;
-        [Tooltip("The panel's BuildPanel anchor; it also marks the level-up, research and first ship buttons.")]
+        [Tooltip("The panel's BuildPanel anchor also marks individual production cards.")]
         [SerializeField] private TutorialAnchor tutorialAnchor;
         private readonly List<FactionUnitUi> _factionUnitsUi =
             new List<FactionUnitUi>();
@@ -36,11 +36,15 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private StationLevelData _stationLevels;
         private FactionRoster _roster;
         private UiContentLayout _contentLayout;
+        private FactionProductionMenus _productionMenus;
 
         private bool _isInitialized;
         private bool _isRouteActive = true;
 
         public TooltipHoverView TooltipHover => tooltipHover;
+
+        public void SetProductionMenus(FactionProductionMenus productionMenus) =>
+            _productionMenus = productionMenus;
 
         public void SetContentLayout(UiContentLayout layout)
         {
@@ -51,7 +55,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public void Initialize()
         {
             if (_model == null || _research == null || _presenter == null || _roster == null ||
-                _unitRequestFactory == null || _secondStation == null || _stationLevels == null)
+                _unitRequestFactory == null || _secondStation == null || _stationLevels == null ||
+                _productionMenus == null)
             {
                 throw new InvalidOperationException(
                     "Faction UI dependencies must be set before initialization.");
@@ -127,6 +132,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             _secondStation.OnLevelUpgraded -= UpdateSecondLevelUnit;
             _secondStation.BuiltChanged -= HandleSecondStationBuiltChanged;
             _research.OnResearchCompleted -= UpdateResearchUnit;
+            _productionMenus.Close();
             if (_contentLayout != null) _contentLayout.DetachContent();
             _isInitialized = false;
         }
@@ -171,7 +177,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         public void RefreshAvailability(float credits, bool battleEnded)
         {
-            if (!_isRouteActive || _model.SelectionType != SelectionType.Base) return;
+            if (!_isRouteActive) return;
             var queues = _model.GetProductionQueueSnapshots();
             foreach (FactionUnitUi unit in _factionUnitsUi)
             {
@@ -180,7 +186,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
                     if (queue.UnitRequest.Id == unit.RequestId) queued = true;
                 bool unlocked = _presenter.IsUnitAvailable(unit.FactionData);
                 bool atLimit = _presenter.IsUnitLimitReached(unit.Request);
-                unit.SetActive(unlocked && !(atLimit && HidesAtLimit(unit)));
+                unit.SetActive(IsInProductionMenu(unit.Request, _model.SelectionType) &&
+                               unlocked && !(atLimit && HidesAtLimit(unit)));
                 unit.RenderAvailability(unlocked,
                     credits >= unit.FactionData.Price, queued, battleEnded, atLimit);
             }
@@ -223,8 +230,10 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private RectTransform GetRow(UnitRequest request) => request switch
         {
             ShipUnitRequest or SquadronUnitRequest => unitsRow,
-            DefendPlatformUnitRequest or MiningFacilityUnitRequest or SecondStationUnitRequest
-                or ResearchUnitRequest or LevelUnitRequest or SecondStationLevelUnitRequest => supportRow,
+            LevelUnitRequest or SecondStationLevelUnitRequest => supportRow,
+            ResearchUnitRequest => _productionMenus.ResearchCards,
+            DefendPlatformUnitRequest or MiningFacilityUnitRequest or SecondStationUnitRequest =>
+                _productionMenus.StructureCards,
             _ => throw new ArgumentOutOfRangeException(nameof(request))
         };
 
@@ -327,12 +336,15 @@ namespace EmpireAtWar.Entities.Faction.Ui
             unit.FactionData.IsHero || unit.Request is MiningFacilityUnitRequest or DefendPlatformUnitRequest
                 or LevelUnitRequest or ResearchUnitRequest or SecondStationUnitRequest or SecondStationLevelUnitRequest;
 
-        // Each station offers only its own level-up; everything else is shared by both.
-        private bool IsOnSelectedStation(UnitRequest request) => request switch
+        private bool IsInProductionMenu(UnitRequest request, SelectionType selectionType) => request switch
         {
-            LevelUnitRequest => !_model.IsSecondStationSelected,
-            SecondStationLevelUnitRequest => _model.IsSecondStationSelected,
-            _ => true
+            ResearchUnitRequest { Key: ResearchType.IncreasedProduction } =>
+                selectionType == SelectionType.MiningFacility,
+            ResearchUnitRequest or DefendPlatformUnitRequest or MiningFacilityUnitRequest
+                or SecondStationUnitRequest => true,
+            LevelUnitRequest => selectionType == SelectionType.Base && !_model.IsSecondStationSelected,
+            SecondStationLevelUnitRequest => selectionType == SelectionType.Base && _model.IsSecondStationSelected,
+            _ => selectionType == SelectionType.Base
         };
 
         private void HandleSelectionChanged(SelectionType selectionType)
@@ -342,10 +354,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         private void RefreshUnitVisibility(SelectionType selectionType)
         {
-            bool isSelectionVisible =
-                _isRouteActive && selectionType == SelectionType.Base;
-
-            FactionUnitUi firstShip = null, firstScout = null, firstResearch = null, level = null;
+            FactionUnitUi firstShip = null, firstScout = null, level = null;
             FactionUnitUi economyResearch = null, fleetResearch = null, newShip = null, miningFacility = null;
             bool isNewShipCarrier = false;
             foreach (FactionUnitUi unitUi in _factionUnitsUi
@@ -355,9 +364,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
                          .ThenByDescending(unit => _presenter.IsUnitAvailable(unit.FactionData)))
             {
                 unitUi.transform.SetAsLastSibling();
-                bool isShown = isSelectionVisible && _presenter.IsUnitAvailable(unitUi.FactionData) &&
+                bool isShown = _isRouteActive && _presenter.IsUnitAvailable(unitUi.FactionData) &&
                                !(HidesAtLimit(unitUi) && _presenter.IsUnitLimitReached(unitUi.Request)) &&
-                               IsOnSelectedStation(unitUi.Request);
+                               IsInProductionMenu(unitUi.Request, selectionType);
                 unitUi.SetActive(isShown);
                 if (!isShown) continue;
                 switch (unitUi.Request)
@@ -380,7 +389,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
                         if (firstScout == null) firstScout = unitUi;
                         break;
                     case ResearchUnitRequest research:
-                        if (firstResearch == null) firstResearch = unitUi;
                         bool isEconomy = ResearchGroup.IsEconomy(research.Key);
                         if (isEconomy && economyResearch == null) economyResearch = unitUi;
                         if (!isEconomy && fleetResearch == null) fleetResearch = unitUi;
@@ -395,7 +403,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
             }
             MarkTutorialButton(TutorialAnchorId.BuildShipButton, firstShip);
             MarkTutorialButton(TutorialAnchorId.ScoutShipButton, firstScout);
-            MarkTutorialButton(TutorialAnchorId.ResearchButton, firstResearch);
             MarkTutorialButton(TutorialAnchorId.LevelUpButton, level);
             MarkTutorialButton(TutorialAnchorId.EconomyResearchButton, economyResearch);
             MarkTutorialButton(TutorialAnchorId.FleetResearchButton, fleetResearch);

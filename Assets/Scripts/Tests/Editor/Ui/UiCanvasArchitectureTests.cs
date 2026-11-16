@@ -8,6 +8,12 @@ using EmpireAtWar.Entities.Faction.Ui;
 using EmpireAtWar.Entities.CoreGameUi;
 using EmpireAtWar.Entities.Reinforcement;
 using EmpireAtWar.Entities.TutorialUi;
+using System.Collections.Generic;
+using System.Reflection;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.Selection;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -284,6 +290,55 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(SelectionType.Base, true)]
+        [TestCase(SelectionType.MiningFacility, false)]
+        [TestCase(SelectionType.DefendPlatform, false)]
+        [TestCase(SelectionType.None, false)]
+        public void CoreGameUiController_ShowsProductionContentForSelectedStations(
+            SelectionType selectionType, bool expectedVisible)
+        {
+            GameObject serviceRoot = PrefabUtility.LoadPrefabContents(UI_SERVICE_PREFAB_PATH);
+            GameObject hudRoot = PrefabUtility.LoadPrefabContents(CORE_GAME_PREFAB_PATH);
+            try
+            {
+                UiService service = serviceRoot.GetComponent<UiService>();
+                CoreGameUi hud = hudRoot.GetComponent<CoreGameUi>();
+                var controller = new CoreGameUiController(
+                    uiService: service, placement: service.Placement, cancelRouter: null,
+                    selectionService: null, battleState: null, gameSpeed: null, skirmishFlow: null,
+                    battleVictoryNotifier: null, cinematicCamera: null, tooltipService: null,
+                    bindings: null, session: null, battle: null, clock: null, localPlayer: null, pointer: null);
+                typeof(CoreGameUiController).GetField("_ui", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(controller, hud);
+                typeof(CoreGameUiController).GetMethod("UpdateContentVisibility",
+                        BindingFlags.Instance | BindingFlags.NonPublic)
+                    .Invoke(controller, new object[] { new ProductionSelectionContext(selectionType) });
+
+                Assert.That(service.Placement.FactionLayout.gameObject.activeSelf, Is.EqualTo(expectedVisible));
+                Assert.That(((UiPlacement)service.Placement).ShipLayout.gameObject.activeSelf, Is.False);
+                var panel = (Image)new SerializedObject(hud).FindProperty("panelImage").objectReferenceValue;
+                Assert.That(panel.gameObject.activeSelf, Is.EqualTo(expectedVisible));
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(hudRoot);
+                PrefabUtility.UnloadPrefabContents(serviceRoot);
+            }
+        }
+
+        private sealed class ProductionSelectionContext : ISelectionContext
+        {
+            public ProductionSelectionContext(SelectionType selectionType) => SelectionType = selectionType;
+            public IEntity Entity => null;
+            public IReadOnlyList<IEntity> Entities => System.Array.Empty<IEntity>();
+            public IEntitySelectionFacade SelectionFacade => null;
+            public SelectionType SelectionType { get; }
+            public bool HasSelectable => SelectionType != SelectionType.None;
+            public int Count => HasSelectable ? 1 : 0;
+            public SelectionScope Scope => SelectionScope.Local;
+            public bool Contains(IEntity entity) => false;
+        }
+
         [Test]
         public void FadeUiPrefab_HasAssignedReferencesAndCoverBlocksInput()
         {
@@ -322,7 +377,7 @@ namespace EmpireAtWar.Tests.Editor
                 string[] requiredReferences =
                 {
                     "canvasGroup", "timeButton", "speedUpButton", "reinforcementButton", "videoModeButton",
-                    "timeImage", "speedUpImage", "panelImage", "contextualPopup"
+                    "timeImage", "speedUpImage", "panelImage", "contextualPopup", "productionMenus"
                 };
                 foreach (string field in requiredReferences)
                 {
@@ -349,6 +404,38 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(presenter.SpeedUpCount, Is.EqualTo(1));
                 Assert.That(presenter.ReinforcementCount, Is.EqualTo(1));
                 Assert.That(presenter.CinematicCount, Is.EqualTo(1));
+
+                ui.SetProductionMenusAvailable(true);
+                var menus = ui.ProductionMenus;
+                var serializedMenus = new SerializedObject(menus);
+                Button research = (Button)serializedMenus.FindProperty("researchButton").objectReferenceValue;
+                Button structures = (Button)serializedMenus.FindProperty("structuresButton").objectReferenceValue;
+                Button close = (Button)serializedMenus.FindProperty("closeButton").objectReferenceValue;
+                foreach (Button launcher in new[]
+                         {
+                             (Button)serializedUi.FindProperty("reinforcementButton").objectReferenceValue,
+                             (Button)serializedUi.FindProperty("videoModeButton").objectReferenceValue,
+                             (Button)new SerializedObject((MonoBehaviour)ui.SuperWeaponsView)
+                                 .FindProperty("orbitalButton").objectReferenceValue,
+                             research, structures
+                         })
+                {
+                    Rect rect = ((RectTransform)launcher.transform).rect;
+                    Assert.That(rect.width, Is.EqualTo(rect.height));
+                    Assert.That(rect.width, Is.LessThan(66f));
+                }
+
+                research.onClick.Invoke();
+                Assert.That(menus.IsOpen && menus.ResearchCards.gameObject.activeSelf, Is.True);
+                Assert.That(menus.StructureCards.gameObject.activeSelf, Is.False);
+                structures.onClick.Invoke();
+                Assert.That(menus.IsOpen && menus.StructureCards.gameObject.activeSelf, Is.True);
+                Assert.That(menus.ResearchCards.gameObject.activeSelf, Is.False);
+                close.onClick.Invoke();
+                Assert.That(menus.IsOpen, Is.False);
+                structures.onClick.Invoke();
+                ui.SetMode("Spectator", true);
+                Assert.That(menus.IsOpen || research.gameObject.activeSelf || structures.gameObject.activeSelf, Is.False);
 
                 ui.Dispose();
                 ((Button)serializedUi.FindProperty("timeButton").objectReferenceValue).onClick.Invoke();

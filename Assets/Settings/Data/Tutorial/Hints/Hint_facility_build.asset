@@ -14,14 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: facility_build
   title: Mining facility
-  body: Buy the marked mining facility. It earns credits.
+  body: Open Structures and buy the marked mining facility to earn credits.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
   anchor: 27
-  anchorFallback: 0
+  anchorFallback: 37
+  blockPointerOutsideSpotlight: 0
   target: 0
+  hideTargetMarker: 0
   completion: 70
+  completionCount: 1
   listenFromShown: 0
   requires:
   - state: 2

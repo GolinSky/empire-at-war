@@ -14,14 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Services.Tutorial.HintDefinition
   id: research_fleet
   title: Fleet research
-  body: Buy the marked research to make your units stronger.
+  body: Open Research and buy the marked upgrade to make your units stronger.
   inputActions: []
   inputControls:
   - <Mouse>/leftButton
   anchor: 25
-  anchorFallback: 0
+  anchorFallback: 18
+  blockPointerOutsideSpotlight: 0
   target: 0
+  hideTargetMarker: 0
   completion: 67
+  completionCount: 1
   listenFromShown: 1
   requires:
   - state: 2
