@@ -162,10 +162,10 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: e053a1b798d6f5f4d85501286790670d, type: 2}
         displayName: Dispatcher
         description: Fast CIS assault frigate, formerly the Techno Union Frigate.
-          Four twin turbolasers, seven turbolasers, two lasers, four point-defense
-          cannons and three ion cannons deliver strong offensive firepower. Thin
-          shields favor hit-and-run attacks. Boost Weapon Power halves weapon reload
-          and time between shots.
+          Seven medium quad turbolasers, four medium dual turbolasers, two heavy
+          dual turbolasers, three medium dual ion cannons and four point-defense
+          lasers provide firepower. Thin shields favor hit-and-run attacks. Boost
+          Weapon Power halves weapon reload and time between shots.
         role: Cruiser / Fast assault / Hit-and-run
         iconKey: f7655a1be55b2a74aa984b640ec46f5d:21300000
         isHero: 0
