@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e580e579044741caae6ff7662bce890d, type: 3}
+  m_Name: BulwarkIIShipData
+  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Entities.Ship.ShipData
+  <MinMoveCoefficient>k__BackingField: 0.4
+  usesArtilleryStandoff: 0
+  <ShowBattleMarker>k__BackingField: 0
+  visionHull:
+  - {x: -27.181982, y: -6.687832}
+  - {x: -27.100458, y: -7.1455736}
+  - {x: -14.615627, y: -45.948208}
+  - {x: -12.915301, y: -49.80676}
+  - {x: -10.853196, y: -52.70668}
+  - {x: -8.52858, y: -54.84499}
+  - {x: -6.0476003, y: -56.450027}
+  - {x: -4.74627, y: -57.11922}
+  - {x: 4.74627, y: -57.11922}
+  - {x: 6.0476003, y: -56.450027}
+  - {x: 8.52858, y: -54.84499}
+  - {x: 10.853196, y: -52.70668}
+  - {x: 12.915301, y: -49.80676}
+  - {x: 14.615627, y: -45.948208}
+  - {x: 27.100458, y: -7.1455736}
+  - {x: 27.181982, y: -6.687832}
+  - {x: 27.158745, y: -5.3725886}
+  - {x: 26.891737, y: 7.8152666}
+  - {x: 26.776392, y: 9.138621}
+  - {x: 26.695452, y: 9.513566}
+  - {x: 19.372448, y: 29.895681}
+  - {x: 14.411137, y: 42.551662}
+  - {x: 8.336926, y: 57.10961}
+  - {x: 8.273004, y: 57.119217}
+  - {x: -8.273004, y: 57.119217}
+  - {x: -8.336926, y: 57.10961}
+  - {x: -14.411137, y: 42.551662}
+  - {x: -19.372448, y: 29.895672}
+  - {x: -26.695452, y: 9.513565}
+  - {x: -26.776392, y: 9.138621}
+  - {x: -26.891737, y: 7.8152666}
+  - {x: -27.158745, y: -5.3725886}
+  <Speed>k__BackingField: 35
+  heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
+  <HeightTier>k__BackingField: 3
+  <HullBottom>k__BackingField: -19.78412
+  <HullTop>k__BackingField: 19.784124
+  <RotationSpeed>k__BackingField: 7.5
+  <TurnAcceleration>k__BackingField: 7.5
+  <HyperSpaceDuration>k__BackingField: 0.6
+  <BodyRotationMaxAngle>k__BackingField: 10
+  <NavigationRadius>k__BackingField: 60
+  <IgnoresMapObstacles>k__BackingField: 0
+  <DestroyDelay>k__BackingField: 0.35
+  <Wreck>k__BackingField: {fileID: 11400000, guid: 3bb4585db8f7abc43b3df93490fa763e,
+    type: 2}
+  <ShipClass>k__BackingField: 4
+  <Hull>k__BackingField: 10000
+  <Shields>k__BackingField: 9000
+  shieldRegenTiers: {fileID: 11400000, guid: 3425d6ddc79a6b649990974111258ac9, type: 2}
+  <ShieldRegenTier>k__BackingField: 3
+  <ShieldRegenerateDelay>k__BackingField: 1
+  <Range>k__BackingField: 750
+  <Delay>k__BackingField: 0.25
+  abilities: 05000000
+  hangarBays:
+  - squadronType: 102
+    reserve: 4
+    maxActive: 2
+  - squadronType: 101
+    reserve: 2
+    maxActive: 1
+  - squadronType: 100
+    reserve: 2
+    maxActive: 1
+  <HangarInitialDelay>k__BackingField: 4
+  <HangarLaunchInterval>k__BackingField: 1
+  weaponLoadout:
+  - weaponType: 3
+    count: 12
+  - weaponType: 91
+    count: 6

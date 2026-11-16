@@ -313,6 +313,24 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 14
         <Icon>k__BackingField: {fileID: 21300000, guid: a1f8bfa9146242d981a63136ff2190b3,
           type: 3}
+    - key: 116
+      value:
+        matchups: {fileID: 11400000, guid: 00cf8508d4c6fd84ab8a4c8ed631dc4c, type: 2}
+        displayName: Bulwark Mk II
+        description: 10,000 hull and 9,000 shields. Engages capital ships with twelve
+          heavy dual turbolaser batteries and six heavy dual ion cannon batteries.
+          Power to Weapons boosts its salvos.
+        role: Capital / Battle line carrier
+        iconKey: 34af1e9f1e28dc242a62e5ea6c6ecf71:21300000
+        isHero: 0
+        <Name>k__BackingField: Bulwark Mk II
+        <MaxCount>k__BackingField: 10
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 6000
+        <BuildTime>k__BackingField: 45
+        <UnitCapacity>k__BackingField: 8
+        <Icon>k__BackingField: {fileID: 21300000, guid: 34af1e9f1e28dc242a62e5ea6c6ecf71,
+          type: 3}
   squadrons:
     keyValue:
     - key: 100

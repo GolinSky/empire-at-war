@@ -1855,3 +1855,17 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: BulwarkIIShipView
+      value:
+        m_AssetGUID: bd29176fd4ab1b4468eaa548f2356465
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: BulwarkIIShipData
+      value:
+        m_AssetGUID: 7790c7d3126b0c544993b0b188aed949
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

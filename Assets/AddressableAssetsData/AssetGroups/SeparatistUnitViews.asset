@@ -280,6 +280,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd29176fd4ab1b4468eaa548f2356465
+    m_Address: BulwarkIIShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c21ef5f0cf4422b40984dc091bb8444f
     m_Address: DispatcherReinforcementView
     m_ReadOnly: 0
@@ -332,6 +337,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e699427aaff7c854bbccc6f6ff25a9ed
     m_Address: PelesetShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7bef1fa03f03154294451dafd88978a
+    m_Address: BulwarkIIWreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e98210589b0213942962774e6d9f2b93
+    m_Address: BulwarkIIReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

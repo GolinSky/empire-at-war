@@ -290,6 +290,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7790c7d3126b0c544993b0b188aed949
+    m_Address: BulwarkIIShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7bc708a10959cdc4997c1eb7b4d3da0a
     m_Address: ImperatorShipData
     m_ReadOnly: 0

@@ -135,6 +135,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34af1e9f1e28dc242a62e5ea6c6ecf71
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/BulwarkIIIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3896a253ad3c5024b8b7260fb0c214a9
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/VictoryIIcon.png
     m_ReadOnly: 0

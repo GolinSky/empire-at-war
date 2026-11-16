@@ -40,6 +40,7 @@ namespace EmpireAtWar.Editor
             new ShipMappingInfo { ShipType = ShipType.Recalcitrant, PrefabName = "Separatist/RecalcitrantShipView.prefab", IconFileName = "RecalcitrantIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Wavecrest, PrefabName = "Separatist/WavecrestShipView.prefab", IconFileName = "WavecrestIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Bulwark, PrefabName = "Separatist/BulwarkShipView.prefab", IconFileName = "BulwarkIcon.png" },
+            new ShipMappingInfo { ShipType = ShipType.BulwarkII, PrefabName = "Separatist/View/BulwarkIIShipView.prefab", IconFileName = "Separatist/BulwarkIIIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Recusant, PrefabName = "Separatist/RecusantShipView.prefab", IconFileName = "RecusantIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Munificent, PrefabName = "Separatist/MunificentShipView.prefab", IconFileName = "MunificentIcon.png" },
             new ShipMappingInfo { ShipType = ShipType.Lucrehulk, PrefabName = "Separatist/LucrehulkShipView.prefab", IconFileName = "LucrehulkIcon.png" },
