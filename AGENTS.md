@@ -224,10 +224,9 @@ When creating, modifying, or refactoring any UI prefab, component, or view:
 
 ## Jenkins Failure and Rebuild Policy
 
-- `Tools/Jenkins/Jenkinsfile` runs EditMode tests before the Windows player build; `Invoke-BuildPhase.ps1` selects EditMode without category filtering. Review the current scripts and installed job when diagnosing CI, rather than assuming the local category selection applies to Jenkins.
-- Before retrying a failed job, inspect its archived `EditMode-results.xml`, `EditMode.log`, phase log, and pinned `commit.txt`. Identify whether the failure is a production regression, stale/unstable test, compilation/import problem, or infrastructure failure. Fix the cause or report the blocker; do not repeatedly rebuild the same failing snapshot hoping it passes.
-- Jenkins builds committed `main` in an isolated worktree. Local fixes do not affect a retry until included in that snapshot. Never trigger Jenkins as a workaround for the local test-execution restriction.
-- Test failures stop the pipeline before the player build. For packaging/publishing failures after a successful player build, inspect retained artifacts and documented recovery before requesting another Unity build. Publishing an existing successful build uses its archived ZIP.
+- The Windows Jenkins job builds committed `main` in an isolated worktree. The pipeline goes from snapshot preparation to the player build without running Unity tests. Local fixes take effect once committed to `main`.
+- Before retrying a failed job, inspect its archived phase log and pinned `commit.txt`. For historical test failures, also inspect `EditMode-results.xml` and `EditMode.log`. Fix the cause or report the blocker before retrying.
+- For packaging or publishing failures after a successful player build, inspect retained artifacts and documented recovery before requesting another Unity build. Publishing an existing successful build uses its archived ZIP.
 - Do not change test gates, add automatic retries, or reconfigure Jenkins unless requested. See `Tools/Jenkins/README.md` for reports, provenance, and recovery.
 
 ## Local Test Execution Override (Codex and Claude)

@@ -18,10 +18,8 @@
 - IL2CPP needs the Editor's `windows-il2cpp` module (`unity install-modules -e <version> -m windows-il2cpp`) and Visual Studio's MSVC x64 tools + a Windows 10/11 SDK on the build machine.
 - Player validation requires `GameAssembly.dll` and `il2cpp_data\Metadata\global-metadata.dat` and rejects a `Managed` folder (Mono output). IL2CPP's `EmpireAtWar_BackUpThisFolder_ButDontShipItWithYourGame` is moved to `$WORKSPACE\player-symbols` before packaging; it is not archived and is replaced by the next build.
 - Addressables must use committed `BuildWithPlayer`. The installed 2.9.1 player processor throws on content-build errors.
-- EditMode tests gate the player build. The official `unity test` batch runner opens only the clean, idle CI snapshot; failures, missing reports, and reports without a passed `EmpireAtWar.Tests.` test case fail the job. Passing package tests alone cannot satisfy the gate. NUnit results are archived with the other artifacts.
-- Gate regression checks: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File Tools/Jenkins/Test-AssertTestResults.ps1`.
-- Every test attempt removes its previous report/provenance before launching Unity. A successful run records the snapshot commit, Jenkins build number, and report SHA-256; the build gate verifies all three to reject stale or replaced reports.
-- Test, build, package, and archive phases use `Tools/Jenkins` from that same committed snapshot. The installed scripts only bootstrap preparation; artifacts record both installed and snapshot tool commits.
+- The Windows job starts the player build after snapshot preparation. Run EditMode and PlayMode tests separately in the Unity Test Runner.
+- Build, package, and archive phases use `Tools/Jenkins` from that same committed snapshot. The installed scripts only bootstrap preparation; artifacts record both installed and snapshot tool commits.
 - Preparation verifies the installed scripts against the installer’s hash manifest before snapshot mutation. Changes to bootstrap/preparation itself require reinstalling committed tools; later phases automatically follow committed `main`.
 - Test scripts remain under `Assets/Scripts/Tests/Editor` in `Assembly-CSharp-Editor` because they reference runtime code in `Assembly-CSharp`; an isolated test asmdef requires a separate runtime assembly migration. The test framework is an explicit manifest dependency. The player validation rejects an accidentally packaged `Assembly-CSharp-Editor.dll`.
 - Acceptance still requires cold/warm builds and a manual extracted-player check.

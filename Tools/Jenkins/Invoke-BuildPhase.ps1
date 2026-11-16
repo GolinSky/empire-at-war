@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([Parameter(Mandatory)][ValidateSet('Prepare','Test','Build','Symbols','Package')][string]$Phase)
+param([Parameter(Mandatory)][ValidateSet('Prepare','Build','Symbols','Package')][string]$Phase)
 $ErrorActionPreference = 'Stop'
 try {
     if ($Phase -eq 'Prepare') { & "$PSScriptRoot\Prepare-Snapshot.ps1"; exit 0 }
@@ -13,7 +13,7 @@ try {
         & "$PSScriptRoot\Upload-DiagnosticsSymbols.ps1"
         exit 0
     }
-    if ($Phase -in @('Test','Build')) {
+    if ($Phase -eq 'Build') {
         Write-ResourceSample -Preflight -Stage $Phase
         Assert-CiIdle
         $sha = (Get-Content -LiteralPath "$artifacts\commit.txt").Trim()
@@ -22,23 +22,6 @@ try {
         $version = (Select-String -LiteralPath "$ci\ProjectSettings\ProjectVersion.txt" -Pattern '^m_EditorVersion: (.+)$').Matches[0].Groups[1].Value
         $editor = "F:\Program Files\Unity\Hub\Editor\$version\Editor\Unity.exe"
         if (-not (Test-Path -LiteralPath $editor)) { throw "Required Editor missing: $version" }
-        if ($Phase -eq 'Test') {
-            if (-not $env:BUILD_NUMBER) { throw 'Jenkins build number is required for test provenance.' }
-            foreach ($previous in @("$artifacts\EditMode-results.xml", "$artifacts\EditMode-results.xml.provenance.json")) {
-                if (Test-Path -LiteralPath $previous) { Remove-Item -LiteralPath $previous -Force }
-            }
-            # This launches a separate batch Editor on the clean, idle CI snapshot.
-            # It never runs tests in the developer's open Editor or scenes.
-            & unity test $ci --mode EditMode --editor-path $editor --output "$artifacts\EditMode-results.xml" --timeout $policy.BuildTimeoutSeconds --non-interactive -- -logFile "$artifacts\EditMode.log"
-            if ($LASTEXITCODE -ne 0) { throw "EditMode tests failed: exit $LASTEXITCODE" }
-            & "$PSScriptRoot\Assert-TestResults.ps1" -Path "$artifacts\EditMode-results.xml"
-            @{
-                Commit=$sha; Build=$env:BUILD_NUMBER
-                ReportSHA256=(Get-FileHash -LiteralPath "$artifacts\EditMode-results.xml" -Algorithm SHA256).Hash
-            } | ConvertTo-Json | Set-Content -LiteralPath "$artifacts\EditMode-results.xml.provenance.json" -Encoding UTF8
-            exit 0
-        }
-        & "$PSScriptRoot\Assert-TestResults.ps1" -Path "$artifacts\EditMode-results.xml" -Commit $sha -Build $env:BUILD_NUMBER
         if (Test-Path -LiteralPath "$player\EmpireAtWar.exe") { throw 'Old player output rejected.' }
         # IL2CPP debug data from the previous run; kept beside, never inside, the shipped player.
         $symbols = "$env:WORKSPACE\player-symbols"

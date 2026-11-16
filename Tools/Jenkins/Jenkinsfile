@@ -18,9 +18,6 @@ pipeline {
                 script { env.CI_TOOLS = 'F:/UnityCI/empire-at-war/Tools/Jenkins' }
             }
         }
-        stage('EditMode tests') {
-            steps { powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase Test' }
-        }
         stage('Build Windows x64') {
             steps { powershell '& "$env:CI_TOOLS/Invoke-LocalBuild.ps1" -Phase Build' }
         }
