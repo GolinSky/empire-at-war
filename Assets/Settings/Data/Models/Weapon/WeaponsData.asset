@@ -2096,9 +2096,9 @@ MonoBehaviour:
     family: 20
     caliber: 0
     mount: 1
-    scope: 2
+    scope: 1
     faction: 1
-    unit: DroidBomber
+    unit: 
     damageMultiplier: 0.3465
     reloadMultiplier: 1
     rangeMultiplier: 1
@@ -2115,9 +2115,9 @@ MonoBehaviour:
     family: 23
     caliber: 0
     mount: 1
-    scope: 2
+    scope: 1
     faction: 1
-    unit: DroidBomber
+    unit: 
     damageMultiplier: 0.42666668
     reloadMultiplier: 1
     rangeMultiplier: 1
