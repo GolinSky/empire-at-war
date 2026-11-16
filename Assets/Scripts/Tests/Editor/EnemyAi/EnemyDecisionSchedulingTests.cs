@@ -44,6 +44,19 @@ namespace EmpireAtWar.Tests.Editor
     [Category("EnemyAi")]
     public sealed class EnemyDecisionSchedulingTests
     {
+        private readonly List<GameObject> _entityObjects = new List<GameObject>();
+
+        [TearDown]
+        public void DestroyEntityObjects()
+        {
+            foreach (GameObject entityObject in _entityObjects)
+            {
+                UnityEngine.Object.DestroyImmediate(entityObject);
+            }
+
+            _entityObjects.Clear();
+        }
+
         [Test]
         public void SquadronPlayers_StartAtDifferentOffsets_AndPausePreservesCountdown()
         {
@@ -265,22 +278,26 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(snapshot.LivingUnits.Count, Is.Zero);
                 Assert.That(snapshot.GetOwnedUnits(TestPlayers.Enemy).Count, Is.Zero);
 
-                var ownShip = new TestEntity(1, TestPlayers.Enemy, new TestHealthModel { ShipClass = ShipClass.Capital })
+                var ownShip = new TestEntity(1, TestPlayers.Enemy, new TestHealthModel { ShipClass = ShipClass.Capital },
+                    CreateTransform())
                 {
                     IsUnit = true,
                     UnitTypeId = UnitTypeId.Ship(ShipType.Venator)
                 };
-                var hostileBase = new TestEntity(2, TestPlayers.Human, new TestHealthModel { ShipClass = ShipClass.Structure })
+                var hostileBase = new TestEntity(2, TestPlayers.Human, new TestHealthModel { ShipClass = ShipClass.Structure },
+                    CreateTransform())
                 {
                     IsUnit = false,
                     IsPlayerBase = true
                 };
-                var hostileMine = new TestEntity(3, TestPlayers.Human, new TestHealthModel { ShipClass = ShipClass.Structure })
+                var hostileMine = new TestEntity(3, TestPlayers.Human, new TestHealthModel { ShipClass = ShipClass.Structure },
+                    CreateTransform())
                 {
                     IsUnit = false,
                     IsMiningFacility = true
                 };
-                var destroyedShip = new TestEntity(4, TestPlayers.Human, new TestHealthModel { IsDestroyed = true })
+                var destroyedShip = new TestEntity(4, TestPlayers.Human, new TestHealthModel { IsDestroyed = true },
+                    CreateTransform())
                 {
                     IsUnit = true,
                     UnitTypeId = UnitTypeId.Ship(ShipType.Venator)
@@ -354,7 +371,8 @@ namespace EmpireAtWar.Tests.Editor
             service.Initialize();
             try
             {
-                var hostile = new TestEntity(10, TestPlayers.Human, new TestHealthModel { ShipClass = ShipClass.Capital })
+                var hostile = new TestEntity(10, TestPlayers.Human, new TestHealthModel { ShipClass = ShipClass.Capital },
+                    CreateTransform())
                 {
                     IsUnit = true,
                     UnitTypeId = UnitTypeId.Ship(ShipType.Venator)
@@ -429,14 +447,18 @@ namespace EmpireAtWar.Tests.Editor
                 new EnemyStrategicDecisionModel(), builder, new EnemyTaskForceExecutor(orders),
                 owner, patrol, patrolShips, battleState, scheduler);
 
-            var entity1 = new TestEntity(1, owner.Id, new TestHealthModel()) { IsUnit = true, UnitTypeId = venator };
-            var entity2 = new TestEntity(2, owner.Id, new TestHealthModel()) { IsUnit = true, UnitTypeId = venator };
-            var entity3 = new TestEntity(3, owner.Id, new TestHealthModel()) { IsUnit = true, UnitTypeId = venator };
-            var entity4 = new TestEntity(4, owner.Id, new TestHealthModel()) { IsUnit = true, UnitTypeId = venator };
-            var ship1 = new TestShip(entity1.Id, owner.Id, Vector3.zero);
-            var ship2 = new TestShip(entity2.Id, owner.Id, new Vector3(5000f, 0f, 0f));
-            var ship3 = new TestShip(entity3.Id, owner.Id, new Vector3(5010f, 0f, 0f));
-            var ship4 = new TestShip(entity4.Id, owner.Id, new Vector3(5020f, 0f, 0f));
+            var entity1 = new TestEntity(1, owner.Id, new TestHealthModel(), CreateTransform())
+                { IsUnit = true, UnitTypeId = venator };
+            var entity2 = new TestEntity(2, owner.Id, new TestHealthModel(), CreateTransform(new Vector3(5000f, 0f, 0f)))
+                { IsUnit = true, UnitTypeId = venator };
+            var entity3 = new TestEntity(3, owner.Id, new TestHealthModel(), CreateTransform(new Vector3(5010f, 0f, 0f)))
+                { IsUnit = true, UnitTypeId = venator };
+            var entity4 = new TestEntity(4, owner.Id, new TestHealthModel(), CreateTransform(new Vector3(5020f, 0f, 0f)))
+                { IsUnit = true, UnitTypeId = venator };
+            var ship1 = new TestShip(entity1.Id, owner.Id, entity1.Transform.position);
+            var ship2 = new TestShip(entity2.Id, owner.Id, entity2.Transform.position);
+            var ship3 = new TestShip(entity3.Id, owner.Id, entity3.Transform.position);
+            var ship4 = new TestShip(entity4.Id, owner.Id, entity4.Transform.position);
             entities.AddEntity(entity1);
             entities.AddEntity(entity2);
             entities.AddEntity(entity3);
@@ -472,6 +494,15 @@ namespace EmpireAtWar.Tests.Editor
                 scheduler.LateDispose();
                 navigation.Dispose();
             }
+        }
+
+        private Transform CreateTransform(Vector3 position = default)
+        {
+            var entityObject = new GameObject(nameof(TestEntity));
+            _entityObjects.Add(entityObject);
+            Transform transform = entityObject.transform;
+            transform.position = position;
+            return transform;
         }
 
         private static EnemyUnitCommander CreateShipCommander(
@@ -523,7 +554,8 @@ namespace EmpireAtWar.Tests.Editor
             new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), null, null, null,
                 null, null, null, new TeamIntelRegistry(), owner, null, null, state, snapshot, scheduler);
 
-        private sealed class TestEntity : IEntity, ICombatModifiersFacade, IUnitTypeFacade, IMiningFacilityFacade, IPlayerBaseFacade
+        private sealed class TestEntity : IEntity, IEntityTransformFacade, ICombatModifiersFacade, IUnitTypeFacade,
+            IMiningFacilityFacade, IPlayerBaseFacade
         {
             public bool IsUnit { get; set; }
             public bool IsMiningFacility { get; set; }
@@ -533,12 +565,14 @@ namespace EmpireAtWar.Tests.Editor
             public long Id { get; }
             public IHealthModelObserver HealthModel { get; }
             public PlayerId Owner { get; }
+            public Transform Transform { get; }
 
-            public TestEntity(long id, PlayerId owner, IHealthModelObserver healthModel)
+            public TestEntity(long id, PlayerId owner, IHealthModelObserver healthModel, Transform transform)
             {
                 Id = id;
                 Owner = owner;
                 HealthModel = healthModel;
+                Transform = transform;
             }
 
             public TFacade GetFacade<TFacade>() where TFacade : IEntityFacade
