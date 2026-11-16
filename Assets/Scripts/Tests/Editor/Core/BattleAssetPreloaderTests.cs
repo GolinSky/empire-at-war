@@ -81,6 +81,7 @@ namespace EmpireAtWar.Tests.Editor
                                 assets.LoadComponent<UnitWreckView>(stationWreck.PrefabKey);
                     }
                     assets.LoadPrefab("CoreGameUi");
+                    assets.LoadPrefab("ControlGroupUi");
                     foreach (DefendPlatformType platform in Enum.GetValues(typeof(DefendPlatformType)))
                     {
                         DefendPlatformData data = assets.Load<DefendPlatformData>(DefendPlatformAssets.GetDataName(platform));

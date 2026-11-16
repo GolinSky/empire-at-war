@@ -180,6 +180,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4fa5ae7a169f304d8625bc5f5e22509
+    m_Address: ControlGroupUi
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f343dde1580f9c449aa91a6c5d650dff
     m_Address: MainMenuUi
     m_ReadOnly: 0

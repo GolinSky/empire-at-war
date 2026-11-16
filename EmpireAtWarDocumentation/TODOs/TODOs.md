@@ -397,6 +397,9 @@
 
 - [x] **Import the Recusant Dreadnought as a CIS Heavy Capital** → [[Done/Features/Recusant_Dreadnought_Import|Recusant Dreadnought Import]]
   - Completed 2026-11-16. Saved 2,542 m scale, 30,000 hull, 35,000 shields, 29 weapon hardpoints and Boost Weapon Power. Verified 26 forward-capable mounts at 300 units and 1,393.184 raw all-mount DPS. In-game acceptance is queued.
+- [x] **Squad control groups (10 slots, 1–9 then 0, preview + shared replacement confirmation)** → [[Done/Features/Squad_Control_Groups_Plan|Squad Control Groups Plan]]
+  - Implemented 2026-11-16: fixed top-row keys, optional Mac Command, heroes-first icons, battle saves, notifier feedback and Alt-tab-preserved replacement popup. Top-center squad preview with slate slots and larger icons. Unity prefab read-back and 1920×1080 preview verified. Tests not run under local override. Play/platform gates → [[TODOs/User_Acceptance_Queue]].
+
 
 - [x] **Rejoin an online battle after Pause Exit** → [[Done/Features/Rejoin_After_Battle_Exit_Plan|Rejoin After Battle Exit Plan]]
   - Review fix 2026-11-16: leaving another Steam lobby preserves the saved battle; source and related GameFlow/Networking/Ui tests reviewed, tests not run. Acceptance remains pending.

@@ -294,6 +294,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         public void SetInvertZoom(bool isOn) => _draftEditor.SetInvertZoom(isOn);
 
+        public void SelectSquadModifier(int index) => _draftEditor.SelectSquadModifier(index);
+
         public void SetAutoPowerAbilities(bool isOn) => _draftEditor.SetAutoPowerAbilities(isOn);
 
         public void SetShowHints(bool isOn) => _draftEditor.SetShowHints(isOn);

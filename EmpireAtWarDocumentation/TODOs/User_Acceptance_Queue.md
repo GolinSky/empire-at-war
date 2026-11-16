@@ -438,3 +438,10 @@ created: "2026-10-29\r"
 
 - [ ] [[Done/Bugs/Structure_Status_Icons_Projection]] — Check local mining/Battle Asteroid and satellite destruction under fog, camera pan/rotation/zoom and offscreen return; icons stay above structures and receive their full displayed lifetime.
 - [ ] [[Done/Bugs/Structure_Status_Icons_Projection]] — Run `Ui` regressions when explicitly requested, including real-canvas position and two-source reactivation coverage; authored and compiled, not run.
+
+## Squad Control Groups
+
+- [ ] [[Done/Features/Squad_Control_Groups_Plan]] — Windows battle play: hold Ctrl, assign/recall all ten top-row slots (0 last), numpad exclusion, overlapping groups, death/pool reuse, Replace/Cancel/Escape, Alt-tab popup retention, fresh inputs and notifier feedback; save/load preserves slots.
+- [ ] [[Done/Features/Squad_Control_Groups_Plan]] — Mac hardware: left/right Ctrl and optional Command setting, US/non-US top-row layouts, OS shortcut interactions; no numpad activation.
+- [ ] [[Done/Features/Squad_Control_Groups_Plan]] — Visual acceptance: top-center squad preview and notification spacing, heroes/type icon priority, counts, and selected/empty/highlight contrast across battle backgrounds and supported resolutions.
+- [ ] [[Done/Features/Squad_Control_Groups_Plan]] — Run authored/affected BattleInput, Ui, GameFlow and Core coverage plus changed Abilities/Economy mocks only when explicitly authorized; tests were not run under local override.

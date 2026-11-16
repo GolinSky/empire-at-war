@@ -66,6 +66,16 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SquadModifierHasBoundDropdownWithBothOptions()
+        {
+            SerializedObject ui = new SerializedObject(LoadPrefab().GetComponent<SettingsUi>());
+            SettingsDropdownRow row = (SettingsDropdownRow)ui.FindProperty("squadModifierRow").objectReferenceValue;
+            Assert.That(row, Is.Not.Null);
+            TMPro.TMP_Dropdown dropdown = (TMPro.TMP_Dropdown)new SerializedObject(row).FindProperty("dropdown").objectReferenceValue;
+            Assert.That(dropdown.options.ConvertAll(option => option.text), Is.EqualTo(new[] { "Control", "Command" }));
+        }
+
+        [Test]
         public void GameplayTabContainsBoundAutoPowerToggle()
         {
             GameObject prefab = LoadPrefab();

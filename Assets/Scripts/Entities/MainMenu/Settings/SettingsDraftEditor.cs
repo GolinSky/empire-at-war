@@ -9,6 +9,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
     public sealed class SettingsDraftEditor
     {
         private const string UNLIMITED_FRAME_RATE_LABEL = "Unlimited";
+        private static readonly string[] SQUAD_MODIFIER_LABELS = { "Control", "Command" };
 
         private readonly ISettingsService _settingsService;
         private readonly IGraphicsOptions _graphicsOptions;
@@ -91,9 +92,16 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                 camera.ZoomSpeedMultiplier,
                 camera.EdgeScrolling,
                 camera.InvertZoom);
+            _model.SetSquadModifier(new SettingsChoice(SQUAD_MODIFIER_LABELS, (int)Draft.Input.ControlGroupModifier, true));
             _model.SetGameplay(Draft.Gameplay.AutoPowerAbilities, Draft.Gameplay.ShowHints);
             _model.SetPrivacy(Draft.Privacy.ShareUsageData);
             _model.SetDirty(_settingsService.IsDirty);
+        }
+
+        public void SelectSquadModifier(int index)
+        {
+            Draft.Input.ControlGroupModifier = (ControlGroupModifier)index;
+            Refresh();
         }
 
         public void SelectQuality(int index)

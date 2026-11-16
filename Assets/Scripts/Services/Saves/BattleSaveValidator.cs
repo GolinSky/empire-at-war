@@ -20,6 +20,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.ControlGroups;
 using EmpireAtWar.Ship;
 using ShipEntity = EmpireAtWar.Ship.Ship;
 using SpaceStationEntity = EmpireAtWar.Entities.SpaceStation.SpaceStation;
@@ -49,6 +50,7 @@ namespace EmpireAtWar.Services.Saves
         {
             ValidateMapCounts(save, definition);
             ValidateSurvival(save, definition);
+            ValidateControlGroups(save.ControlGroups);
 
             FactionCatalog factions = _assets.Load<FactionCatalog>(nameof(FactionCatalog));
             MiningFacilityCatalog mines = _assets.Load<MiningFacilityCatalog>(nameof(MiningFacilityCatalog));
@@ -107,6 +109,18 @@ namespace EmpireAtWar.Services.Saves
                 foreach ((UnitSave unit, HangarSave hangar) in migratedHangars)
                     unit.WithHangar(hangar);
                 save.Header.FinishHangarMigration();
+            }
+        }
+
+        public static void ValidateControlGroups(ControlGroupSave[] groups)
+        {
+            var slots = new HashSet<(PlayerId Owner, int Slot)>();
+            foreach (ControlGroupSave group in groups)
+            {
+                if (group.Slot < 0 || group.Slot >= ControlGroupModel.SLOT_COUNT)
+                    throw new InvalidDataException($"Saved squad slot {group.Slot} is outside 0–9.");
+                if (!slots.Add((group.Owner, group.Slot)))
+                    throw new InvalidDataException($"Duplicate saved squad slot {group.Slot} for player {group.Owner}.");
             }
         }
 

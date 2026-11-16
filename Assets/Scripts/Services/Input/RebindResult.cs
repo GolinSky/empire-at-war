@@ -7,5 +7,6 @@ namespace EmpireAtWar.Services.Input
         Conflict = 2,
         /// <summary>A chord's key was pressed with another number of modifiers than the chord needs; nothing changed.</summary>
         WrongModifierCount = 3,
+        Reserved = 4,
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Mvc;
@@ -12,6 +13,8 @@ namespace EmpireAtWar.Services.Battle
         void RemoveSelectable(ISelectionContext selectionContext);
 
         void SelectEntity(IEntity entity);
+
+        void SelectEntities(IReadOnlyList<IEntity> entities);
 
         void SelectCurrentUnitsByType(UnitTypeId unitTypeId);
     }

@@ -43,6 +43,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
 
         void SetInvertZoom(bool isOn);
 
+        void SelectSquadModifier(int index);
+
         void SetAutoPowerAbilities(bool isOn);
 
         void SetShowHints(bool isOn);

@@ -16,6 +16,9 @@ using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Input;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.Factions;
+using EmpireAtWar.Services.ControlGroups;
+using EmpireAtWar.Services.Saves;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Views.MiniMap;
 using EmpireAtWar.Entities.MiniMap;
 using NUnit.Framework;
@@ -28,6 +31,92 @@ namespace EmpireAtWar.Tests.Selection
     [Category("BattleInput")]
     public sealed class SelectionInputTests
     {
+        [Test]
+        public void ControlGroupRecallReplacesSelectionAndDeadCandidateDoesNotEraseExistingGroup()
+        {
+            var local = TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel());
+            var input = new FakeInputService();
+            var locator = new EntityLocator();
+            var selection = new SelectionService(input, input, input, locator, new FakeSelectionQuery(),
+                new FakeMarqueeSelectionPresenter(), local);
+            var first = new FakeEntity(new FakeSelectionCommand(SelectionType.Ship), local.Id, 1,
+                new UnitTypeFacade(UnitTypeId.Ship(ShipType.Venator)));
+            var second = new FakeEntity(new FakeSelectionCommand(SelectionType.Ship), local.Id, 2,
+                new UnitTypeFacade(UnitTypeId.Ship(ShipType.Acclamator)));
+            locator.AddEntity(first);
+            locator.AddEntity(second);
+            var groups = new ControlGroupService(new ControlGroupModel(), locator, selection, local);
+            groups.Initialize();
+            try
+            {
+                selection.SelectEntities(new[] { first, second, first });
+                CollectionAssert.AreEqual(new long[] { 1, 2 }, groups.CaptureSelection());
+                groups.Assign(0, groups.CaptureSelection());
+                selection.SelectEntity(second);
+                Assert.That(groups.Recall(0), Is.True);
+                Assert.That(selection.PlayerSelectionContext.Count, Is.EqualTo(2));
+                second.Health.Destroy();
+                Assert.That(groups.Assign(0, new long[] { 2 }), Is.Zero);
+                Assert.That(groups.GetCount(0), Is.EqualTo(1));
+                Assert.That(groups.Recall(0), Is.True);
+                Assert.That(selection.PlayerSelectionContext.Entity, Is.SameAs(first));
+                Assert.That(groups.Recall(8), Is.False);
+                Assert.That(selection.PlayerSelectionContext.Entity, Is.SameAs(first));
+                locator.RemoveEntity(first);
+                Assert.That(groups.HasMembers(0), Is.False);
+            }
+            finally
+            {
+                groups.LateDispose();
+                selection.LateDispose();
+            }
+        }
+
+        [Test]
+        public void GroupCaptureFiltersStructuresAndSaveRestoresOnlyLocalLivingMembers()
+        {
+            var local = TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel());
+            var input = new FakeInputService();
+            var locator = new EntityLocator();
+            var selection = new SelectionService(input, input, input, locator, new FakeSelectionQuery(),
+                new FakeMarqueeSelectionPresenter(), local);
+            var ship = new FakeEntity(new FakeSelectionCommand(SelectionType.Ship), local.Id, 1,
+                new UnitTypeFacade(UnitTypeId.Ship(ShipType.Venator)));
+            var structure = new FakeEntity(new FakeSelectionCommand(SelectionType.Base), local.Id, 2);
+            locator.AddEntity(ship);
+            locator.AddEntity(structure);
+            var groups = new ControlGroupService(new ControlGroupModel(), locator, selection, local);
+            var source = new ControlGroupSaveSource(groups, local);
+            try
+            {
+                selection.SelectEntities(new[] { ship, structure });
+                CollectionAssert.AreEqual(new long[] { 1 }, groups.CaptureSelection());
+                groups.Assign(0, groups.CaptureSelection());
+                var save = new BattleSave();
+                source.Capture(save);
+                Assert.That(save.ControlGroups[0].Slot, Is.Zero);
+                Assert.That(save.ControlGroups[0].Members, Is.EqualTo(new long[] { 1 }));
+                save.ControlGroups = new[]
+                {
+                    ControlGroupSave.Create(0, local.Id, new long[] { 1, 2, 999 }),
+                    ControlGroupSave.Create(5, TestPlayers.Enemy, new long[] { 1 })
+                };
+                source.RestoreBeforeUnits(save);
+                Assert.That(groups.HasMembers(0), Is.False);
+                source.RestoreAfterUnits(new BattleRestoreContext(save));
+                Assert.That(groups.GetCount(0), Is.EqualTo(1));
+                Assert.That(groups.HasMembers(5), Is.False);
+                source.RestoreBeforeUnits(new BattleSave());
+                source.RestoreAfterUnits(new BattleRestoreContext(new BattleSave()));
+                Assert.That(groups.HasMembers(0), Is.False);
+            }
+            finally
+            {
+                groups.LateDispose();
+                selection.LateDispose();
+            }
+        }
+
         [TestCase(false, false, 0)]
         [TestCase(false, true, 0)]
         [TestCase(true, false, 0)]
@@ -395,7 +484,7 @@ namespace EmpireAtWar.Tests.Selection
             }
         }
 
-        private sealed class FakeInputService : IPointerGestures, IPointerInput, ISelectionInput
+        internal sealed class FakeInputService : IPointerGestures, IPointerInput, ISelectionInput
         {
             public event Action<Vector2> WorldPressed;
 
@@ -432,7 +521,7 @@ namespace EmpireAtWar.Tests.Selection
             }
         }
 
-        private sealed class FakeSelectionQuery : ISelectionQuery
+        internal sealed class FakeSelectionQuery : ISelectionQuery
         {
             private readonly Dictionary<Vector2, List<SelectionEntry>> _selections =
                 new Dictionary<Vector2, List<SelectionEntry>>();
@@ -495,13 +584,13 @@ namespace EmpireAtWar.Tests.Selection
             }
         }
 
-        private sealed class FakeMarqueeSelectionPresenter :
+        internal sealed class FakeMarqueeSelectionPresenter :
             IMarqueeSelectionPresenter
         {
             public event Action<MarqueeRectangle> Completed { add { } remove { } }
         }
 
-        private sealed class FakeSelectionCommand : IEntitySelectionFacade
+        internal sealed class FakeSelectionCommand : IEntitySelectionFacade
         {
             public SelectionType SelectionType { get; set; }
             public bool IsSelected { get; private set; }
@@ -518,7 +607,7 @@ namespace EmpireAtWar.Tests.Selection
             }
         }
 
-        private sealed class FakeHealth : IHealthModelObserver
+        internal sealed class FakeHealth : IHealthModelObserver
         {
             public event Action OnDestroy;
             public event Action OnValueChanged { add { } remove { } }
@@ -544,7 +633,7 @@ namespace EmpireAtWar.Tests.Selection
             }
         }
 
-        private sealed class FakeEntity : GameEntity
+        internal sealed class FakeEntity : GameEntity
         {
             private readonly IEntitySelectionFacade _selectionCommand;
             private readonly IEntityFacade[] _extraFacades;

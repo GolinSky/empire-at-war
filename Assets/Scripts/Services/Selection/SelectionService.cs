@@ -117,6 +117,22 @@ namespace EmpireAtWar.Services.Battle
             SetSelection(GetScope(entity), _selectionBuffer);
         }
 
+        public void SelectEntities(IReadOnlyList<IEntity> entities)
+        {
+            _selectionBuffer.Clear();
+            for (int i = 0; i < entities.Count; i++)
+            {
+                IEntity entity = entities[i];
+                if (_localPlayer.IsLocal(entity.Owner) && !entity.HealthModel.IsDestroyed &&
+                    entity.TryGetFacade(out IEntitySelectionFacade command))
+                    _selectionBuffer.Add(new SelectionEntry(entity, command));
+            }
+            if (_selectionBuffer.Count == 0) return;
+            _lastTappedEntityId = null;
+            if (_otherSelectionContext.HasSelectable) ClearSelection(SelectionScope.Other);
+            SetSelection(SelectionScope.Local, _selectionBuffer);
+        }
+
         public void SelectCurrentUnitsByType(UnitTypeId unitTypeId)
         {
             _selectionBuffer.Clear();

@@ -1197,6 +1197,7 @@ namespace EmpireAtWar.Tests.Editor
             public ISelectionContext OtherSelectionContext => null;
             public void RemoveSelectable(ISelectionContext selectionContext) { }
             public void SelectEntity(IEntity entity) => throw new NotSupportedException();
+            public void SelectEntities(IReadOnlyList<IEntity> entities) => throw new System.NotSupportedException();
             public void SelectCurrentUnitsByType(UnitTypeId unitTypeId) { }
             public void AddObserver(IObserver<ISelectionSubject> observer) { }
             public void RemoveObserver(IObserver<ISelectionSubject> observer) { }

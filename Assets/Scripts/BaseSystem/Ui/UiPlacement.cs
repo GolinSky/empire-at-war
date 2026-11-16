@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Entities.BattleNotifications;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.CoreGameUi;
+using EmpireAtWar.Entities.ControlGroups;
 using EmpireAtWar.Entities.Economy.Ui;
 using EmpireAtWar.Entities.EndGameUi;
 using EmpireAtWar.Entities.Faction.Ui;
@@ -65,6 +66,7 @@ namespace EmpireAtWar.Ui.Base
                 _parents = new Dictionary<Type, Transform>
                 {
                     { typeof(CoreGameUi), defaultCanvas.transform },
+                    { typeof(ControlGroupUi), dynamicCanvas.transform },
                     { typeof(SurvivalHudUi), dynamicCanvas.transform },
                     { typeof(SimulationHudUi), dynamicCanvas.transform },
                     { typeof(SimulationSetupUi), modalSlot },

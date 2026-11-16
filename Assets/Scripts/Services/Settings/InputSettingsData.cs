@@ -8,6 +8,13 @@ namespace EmpireAtWar.Services.Settings
     {
         /// <summary>Output of <c>InputActionAsset.SaveBindingOverridesAsJson</c>; empty means authored defaults.</summary>
         [SerializeField] private string bindingOverridesJson = string.Empty;
+        [SerializeField] private ControlGroupModifier controlGroupModifier;
+
+        public ControlGroupModifier ControlGroupModifier
+        {
+            get => controlGroupModifier;
+            set => controlGroupModifier = value;
+        }
 
         public string BindingOverridesJson
         {
@@ -17,7 +24,7 @@ namespace EmpireAtWar.Services.Settings
 
         public bool Matches(InputSettingsData other)
         {
-            return bindingOverridesJson == other.bindingOverridesJson;
+            return bindingOverridesJson == other.bindingOverridesJson && controlGroupModifier == other.controlGroupModifier;
         }
     }
 }

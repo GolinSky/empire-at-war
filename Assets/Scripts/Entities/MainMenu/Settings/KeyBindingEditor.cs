@@ -82,6 +82,10 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
                     Refresh();
                     _model.SetPrompt(CreateConflictPrompt(slot));
                     break;
+                case RebindResult.Reserved:
+                    _model.SetPrompt(SettingsPrompt.None);
+                    _model.SetStatus("Top-row number keys are reserved for squads.");
+                    break;
                 case RebindResult.WrongModifierCount:
                     _model.SetPrompt(SettingsPrompt.None);
                     _model.SetStatus($"{slot.Label} unchanged: {CaptureInstruction(slot)}.");

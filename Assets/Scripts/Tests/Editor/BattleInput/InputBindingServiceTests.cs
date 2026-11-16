@@ -36,6 +36,15 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SquadBindingsAreFixedHiddenAndReserveTopRowDigits()
+        {
+            Assert.That(_service.RebindableSlots.Any(slot => ControlGroupBindings.IsFixedAction(slot.Action)), Is.False);
+            Assert.That(Rebind("Select Visible", Key.LeftCtrl, Key.Digit1), Is.EqualTo(RebindResult.Reserved));
+            Assert.That(Display("Select Visible"), Is.EqualTo("Ctrl+A"));
+            Assert.That(_service.PendingConflicts, Is.Empty);
+        }
+
+        [Test]
         public void ModifierShortcuts_AreOneRowShowingTheWholeChord()
         {
             Assert.That(Display("Select Visible"), Is.EqualTo("Ctrl+A"));

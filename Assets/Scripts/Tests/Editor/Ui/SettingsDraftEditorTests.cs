@@ -105,6 +105,18 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SquadModifierEditsDraftAndModelWithoutChangingSavedPreference()
+        {
+            _editor.Open();
+            _editor.SelectSquadModifier((int)ControlGroupModifier.Command);
+            Assert.That(_model.SquadModifier.Options, Is.EqualTo(new[] { "Control", "Command" }));
+            Assert.That(_model.SquadModifier.Index, Is.EqualTo((int)ControlGroupModifier.Command));
+            Assert.That(_settingsService.Draft.Input.ControlGroupModifier, Is.EqualTo(ControlGroupModifier.Command));
+            Assert.That(_settingsService.Saved.Input.ControlGroupModifier, Is.EqualTo(ControlGroupModifier.Ctrl));
+            Assert.That(_model.IsDirty, Is.True);
+        }
+
+        [Test]
         public void SetAutoPowerAbilities_ChangesDraftAndModelOnly()
         {
             _editor.Open();

@@ -22,6 +22,18 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SquadModifierDefaultsToControlAndPersistsIndependentlyOfBindings()
+        {
+            SettingsData original = SettingsData.FromJson("{}");
+            Assert.That(original.Input.ControlGroupModifier, Is.EqualTo(ControlGroupModifier.Ctrl));
+            SettingsData changed = original.Clone();
+            changed.Input.ControlGroupModifier = ControlGroupModifier.Command;
+            Assert.That(changed.Matches(original), Is.False);
+            Assert.That(changed.Clone().Input.ControlGroupModifier, Is.EqualTo(ControlGroupModifier.Command));
+            Assert.That(changed.Input.BindingOverridesJson, Is.Empty);
+        }
+
+        [Test]
         public void Gameplay_ExplicitFalseSurvivesCloneAndOldEmptySectionDefaultsOn()
         {
             SettingsData disabled = SettingsData.FromJson("{\"gameplay\":{\"autoPowerAbilities\":false}}");

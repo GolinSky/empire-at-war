@@ -41,6 +41,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         [SerializeField] private SettingsSliderRow zoomSpeedRow;
         [SerializeField] private SettingsToggleRow edgeScrollingRow;
         [SerializeField] private SettingsToggleRow invertZoomRow;
+        [SerializeField] private SettingsDropdownRow squadModifierRow;
         [SerializeField] private SettingsToggleRow autoPowerAbilitiesRow;
         [SerializeField] private SettingsToggleRow showHintsRow;
         [SerializeField] private Button resetHintsButton;
@@ -129,6 +130,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             zoomSpeedRow.Render(_model.ZoomSpeed);
             edgeScrollingRow.Render(_model.EdgeScrolling);
             invertZoomRow.Render(_model.InvertZoom);
+            squadModifierRow.Render(_model.SquadModifier);
             autoPowerAbilitiesRow.Render(_model.AutoPowerAbilities);
             showHintsRow.Render(_model.ShowHints);
             shareUsageDataRow.Render(_model.ShareUsageData);
@@ -188,6 +190,9 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             edgeScrollingRow.ValueChanged += _presenter.SetEdgeScrolling;
             invertZoomRow.Initialize();
             invertZoomRow.ValueChanged += _presenter.SetInvertZoom;
+            squadModifierRow.gameObject.SetActive(Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXEditor);
+            squadModifierRow.Initialize();
+            squadModifierRow.ValueChanged += _presenter.SelectSquadModifier;
             autoPowerAbilitiesRow.Initialize();
             autoPowerAbilitiesRow.ValueChanged += _presenter.SetAutoPowerAbilities;
             showHintsRow.Initialize();
@@ -239,6 +244,8 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
             edgeScrollingRow.Dispose();
             invertZoomRow.ValueChanged -= _presenter.SetInvertZoom;
             invertZoomRow.Dispose();
+            squadModifierRow.ValueChanged -= _presenter.SelectSquadModifier;
+            squadModifierRow.Dispose();
             autoPowerAbilitiesRow.ValueChanged -= _presenter.SetAutoPowerAbilities;
             showHintsRow.ValueChanged -= _presenter.SetShowHints;
             showHintsRow.Dispose();

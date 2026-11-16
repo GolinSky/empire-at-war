@@ -599,6 +599,114 @@ namespace EmpireAtWar.Services.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlGroup1"",
+                    ""type"": ""Button"",
+                    ""id"": ""99a816d8-8416-4809-bd2f-32a70c693006"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlGroup2"",
+                    ""type"": ""Button"",
+                    ""id"": ""62e1bf0e-e124-419d-8172-76b9a5d50a3c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlGroup3"",
+                    ""type"": ""Button"",
+                    ""id"": ""ac73d049-3722-4ef5-ba87-306fde3c0eb4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlGroup4"",
+                    ""type"": ""Button"",
+                    ""id"": ""f6529b15-96ce-4efa-bc35-7be7380d04da"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlGroup5"",
+                    ""type"": ""Button"",
+                    ""id"": ""6efef2ba-3d05-44ef-bcba-eb40757db0d7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlGroup6"",
+                    ""type"": ""Button"",
+                    ""id"": ""bceb580f-a00f-4f09-b7ad-29d1c8459d5f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlGroup7"",
+                    ""type"": ""Button"",
+                    ""id"": ""25a8ec75-4910-4416-93ae-6f2e42bb4385"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlGroup8"",
+                    ""type"": ""Button"",
+                    ""id"": ""6413220b-e5d7-41ef-9b8f-c883b11d6ef6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlGroup9"",
+                    ""type"": ""Button"",
+                    ""id"": ""4e9944ca-052e-4e6b-9a26-02b96effa651"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlGroup0"",
+                    ""type"": ""Button"",
+                    ""id"": ""38ddb9f9-6392-4663-ba93-e5fe15b64cb5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlGroupModifierCtrl"",
+                    ""type"": ""Button"",
+                    ""id"": ""a3fa9ad5-43a6-4b05-8e4d-852fa328f7ef"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlGroupModifierCommand"",
+                    ""type"": ""Button"",
+                    ""id"": ""0d2b58ce-a313-4cd2-9d50-1e06b90d9f3c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -744,6 +852,149 @@ namespace EmpireAtWar.Services.Input
                     ""action"": ""PlaceMarker"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""618b2633-a536-415d-a203-2ca0d6ec6e86"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ControlGroup1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""247407c5-6850-4d68-88d7-d9037702e080"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ControlGroup2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6f047c22-efea-43af-bd3f-53f6477c9ad2"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ControlGroup3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44fe10e8-bb98-4d36-9fde-a889c319cdf6"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ControlGroup4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cc22d78b-f268-4b0c-918b-bfb020270292"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ControlGroup5"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""68e79e11-7a9a-4037-bc17-bc49a2034a95"",
+                    ""path"": ""<Keyboard>/6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ControlGroup6"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""049a8f71-a263-4b2d-b9b6-92b72a6888f5"",
+                    ""path"": ""<Keyboard>/7"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ControlGroup7"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a4a183be-60be-466c-b6f2-529fcf9d6b1b"",
+                    ""path"": ""<Keyboard>/8"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ControlGroup8"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""837d752e-8e49-443f-9269-62e95e1bbc89"",
+                    ""path"": ""<Keyboard>/9"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ControlGroup9"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7e7ddf15-d704-4bea-994c-22580ad0fd74"",
+                    ""path"": ""<Keyboard>/0"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ControlGroup0"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""afbee75f-d721-49bb-a527-ca3d70a65401"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ControlGroupModifierCtrl"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a30e2bfa-1d9b-457f-9997-605b278f2058"",
+                    ""path"": ""<Keyboard>/leftMeta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ControlGroupModifierCommand"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f565042-1c3b-4a8f-9977-e50274ad41af"",
+                    ""path"": ""<Keyboard>/rightMeta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ControlGroupModifierCommand"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -820,6 +1071,18 @@ namespace EmpireAtWar.Services.Input
             m_Battle_QuickSave = m_Battle.FindAction("QuickSave", throwIfNotFound: true);
             m_Battle_QuickLoad = m_Battle.FindAction("QuickLoad", throwIfNotFound: true);
             m_Battle_PlaceMarker = m_Battle.FindAction("PlaceMarker", throwIfNotFound: true);
+            m_Battle_ControlGroup1 = m_Battle.FindAction("ControlGroup1", throwIfNotFound: true);
+            m_Battle_ControlGroup2 = m_Battle.FindAction("ControlGroup2", throwIfNotFound: true);
+            m_Battle_ControlGroup3 = m_Battle.FindAction("ControlGroup3", throwIfNotFound: true);
+            m_Battle_ControlGroup4 = m_Battle.FindAction("ControlGroup4", throwIfNotFound: true);
+            m_Battle_ControlGroup5 = m_Battle.FindAction("ControlGroup5", throwIfNotFound: true);
+            m_Battle_ControlGroup6 = m_Battle.FindAction("ControlGroup6", throwIfNotFound: true);
+            m_Battle_ControlGroup7 = m_Battle.FindAction("ControlGroup7", throwIfNotFound: true);
+            m_Battle_ControlGroup8 = m_Battle.FindAction("ControlGroup8", throwIfNotFound: true);
+            m_Battle_ControlGroup9 = m_Battle.FindAction("ControlGroup9", throwIfNotFound: true);
+            m_Battle_ControlGroup0 = m_Battle.FindAction("ControlGroup0", throwIfNotFound: true);
+            m_Battle_ControlGroupModifierCtrl = m_Battle.FindAction("ControlGroupModifierCtrl", throwIfNotFound: true);
+            m_Battle_ControlGroupModifierCommand = m_Battle.FindAction("ControlGroupModifierCommand", throwIfNotFound: true);
             // Ui
             m_Ui = asset.FindActionMap("Ui", throwIfNotFound: true);
             m_Ui_Cancel = m_Ui.FindAction("Cancel", throwIfNotFound: true);
@@ -1205,6 +1468,18 @@ namespace EmpireAtWar.Services.Input
         private readonly InputAction m_Battle_QuickSave;
         private readonly InputAction m_Battle_QuickLoad;
         private readonly InputAction m_Battle_PlaceMarker;
+        private readonly InputAction m_Battle_ControlGroup1;
+        private readonly InputAction m_Battle_ControlGroup2;
+        private readonly InputAction m_Battle_ControlGroup3;
+        private readonly InputAction m_Battle_ControlGroup4;
+        private readonly InputAction m_Battle_ControlGroup5;
+        private readonly InputAction m_Battle_ControlGroup6;
+        private readonly InputAction m_Battle_ControlGroup7;
+        private readonly InputAction m_Battle_ControlGroup8;
+        private readonly InputAction m_Battle_ControlGroup9;
+        private readonly InputAction m_Battle_ControlGroup0;
+        private readonly InputAction m_Battle_ControlGroupModifierCtrl;
+        private readonly InputAction m_Battle_ControlGroupModifierCommand;
         /// <summary>
         /// Provides access to input actions defined in input action map "Battle".
         /// </summary>
@@ -1248,6 +1523,54 @@ namespace EmpireAtWar.Services.Input
             /// Provides access to the underlying input action "Battle/PlaceMarker".
             /// </summary>
             public InputAction @PlaceMarker => m_Wrapper.m_Battle_PlaceMarker;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/ControlGroup1".
+            /// </summary>
+            public InputAction @ControlGroup1 => m_Wrapper.m_Battle_ControlGroup1;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/ControlGroup2".
+            /// </summary>
+            public InputAction @ControlGroup2 => m_Wrapper.m_Battle_ControlGroup2;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/ControlGroup3".
+            /// </summary>
+            public InputAction @ControlGroup3 => m_Wrapper.m_Battle_ControlGroup3;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/ControlGroup4".
+            /// </summary>
+            public InputAction @ControlGroup4 => m_Wrapper.m_Battle_ControlGroup4;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/ControlGroup5".
+            /// </summary>
+            public InputAction @ControlGroup5 => m_Wrapper.m_Battle_ControlGroup5;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/ControlGroup6".
+            /// </summary>
+            public InputAction @ControlGroup6 => m_Wrapper.m_Battle_ControlGroup6;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/ControlGroup7".
+            /// </summary>
+            public InputAction @ControlGroup7 => m_Wrapper.m_Battle_ControlGroup7;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/ControlGroup8".
+            /// </summary>
+            public InputAction @ControlGroup8 => m_Wrapper.m_Battle_ControlGroup8;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/ControlGroup9".
+            /// </summary>
+            public InputAction @ControlGroup9 => m_Wrapper.m_Battle_ControlGroup9;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/ControlGroup0".
+            /// </summary>
+            public InputAction @ControlGroup0 => m_Wrapper.m_Battle_ControlGroup0;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/ControlGroupModifierCtrl".
+            /// </summary>
+            public InputAction @ControlGroupModifierCtrl => m_Wrapper.m_Battle_ControlGroupModifierCtrl;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/ControlGroupModifierCommand".
+            /// </summary>
+            public InputAction @ControlGroupModifierCommand => m_Wrapper.m_Battle_ControlGroupModifierCommand;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1298,6 +1621,42 @@ namespace EmpireAtWar.Services.Input
                 @PlaceMarker.started += instance.OnPlaceMarker;
                 @PlaceMarker.performed += instance.OnPlaceMarker;
                 @PlaceMarker.canceled += instance.OnPlaceMarker;
+                @ControlGroup1.started += instance.OnControlGroup1;
+                @ControlGroup1.performed += instance.OnControlGroup1;
+                @ControlGroup1.canceled += instance.OnControlGroup1;
+                @ControlGroup2.started += instance.OnControlGroup2;
+                @ControlGroup2.performed += instance.OnControlGroup2;
+                @ControlGroup2.canceled += instance.OnControlGroup2;
+                @ControlGroup3.started += instance.OnControlGroup3;
+                @ControlGroup3.performed += instance.OnControlGroup3;
+                @ControlGroup3.canceled += instance.OnControlGroup3;
+                @ControlGroup4.started += instance.OnControlGroup4;
+                @ControlGroup4.performed += instance.OnControlGroup4;
+                @ControlGroup4.canceled += instance.OnControlGroup4;
+                @ControlGroup5.started += instance.OnControlGroup5;
+                @ControlGroup5.performed += instance.OnControlGroup5;
+                @ControlGroup5.canceled += instance.OnControlGroup5;
+                @ControlGroup6.started += instance.OnControlGroup6;
+                @ControlGroup6.performed += instance.OnControlGroup6;
+                @ControlGroup6.canceled += instance.OnControlGroup6;
+                @ControlGroup7.started += instance.OnControlGroup7;
+                @ControlGroup7.performed += instance.OnControlGroup7;
+                @ControlGroup7.canceled += instance.OnControlGroup7;
+                @ControlGroup8.started += instance.OnControlGroup8;
+                @ControlGroup8.performed += instance.OnControlGroup8;
+                @ControlGroup8.canceled += instance.OnControlGroup8;
+                @ControlGroup9.started += instance.OnControlGroup9;
+                @ControlGroup9.performed += instance.OnControlGroup9;
+                @ControlGroup9.canceled += instance.OnControlGroup9;
+                @ControlGroup0.started += instance.OnControlGroup0;
+                @ControlGroup0.performed += instance.OnControlGroup0;
+                @ControlGroup0.canceled += instance.OnControlGroup0;
+                @ControlGroupModifierCtrl.started += instance.OnControlGroupModifierCtrl;
+                @ControlGroupModifierCtrl.performed += instance.OnControlGroupModifierCtrl;
+                @ControlGroupModifierCtrl.canceled += instance.OnControlGroupModifierCtrl;
+                @ControlGroupModifierCommand.started += instance.OnControlGroupModifierCommand;
+                @ControlGroupModifierCommand.performed += instance.OnControlGroupModifierCommand;
+                @ControlGroupModifierCommand.canceled += instance.OnControlGroupModifierCommand;
             }
 
             /// <summary>
@@ -1333,6 +1692,42 @@ namespace EmpireAtWar.Services.Input
                 @PlaceMarker.started -= instance.OnPlaceMarker;
                 @PlaceMarker.performed -= instance.OnPlaceMarker;
                 @PlaceMarker.canceled -= instance.OnPlaceMarker;
+                @ControlGroup1.started -= instance.OnControlGroup1;
+                @ControlGroup1.performed -= instance.OnControlGroup1;
+                @ControlGroup1.canceled -= instance.OnControlGroup1;
+                @ControlGroup2.started -= instance.OnControlGroup2;
+                @ControlGroup2.performed -= instance.OnControlGroup2;
+                @ControlGroup2.canceled -= instance.OnControlGroup2;
+                @ControlGroup3.started -= instance.OnControlGroup3;
+                @ControlGroup3.performed -= instance.OnControlGroup3;
+                @ControlGroup3.canceled -= instance.OnControlGroup3;
+                @ControlGroup4.started -= instance.OnControlGroup4;
+                @ControlGroup4.performed -= instance.OnControlGroup4;
+                @ControlGroup4.canceled -= instance.OnControlGroup4;
+                @ControlGroup5.started -= instance.OnControlGroup5;
+                @ControlGroup5.performed -= instance.OnControlGroup5;
+                @ControlGroup5.canceled -= instance.OnControlGroup5;
+                @ControlGroup6.started -= instance.OnControlGroup6;
+                @ControlGroup6.performed -= instance.OnControlGroup6;
+                @ControlGroup6.canceled -= instance.OnControlGroup6;
+                @ControlGroup7.started -= instance.OnControlGroup7;
+                @ControlGroup7.performed -= instance.OnControlGroup7;
+                @ControlGroup7.canceled -= instance.OnControlGroup7;
+                @ControlGroup8.started -= instance.OnControlGroup8;
+                @ControlGroup8.performed -= instance.OnControlGroup8;
+                @ControlGroup8.canceled -= instance.OnControlGroup8;
+                @ControlGroup9.started -= instance.OnControlGroup9;
+                @ControlGroup9.performed -= instance.OnControlGroup9;
+                @ControlGroup9.canceled -= instance.OnControlGroup9;
+                @ControlGroup0.started -= instance.OnControlGroup0;
+                @ControlGroup0.performed -= instance.OnControlGroup0;
+                @ControlGroup0.canceled -= instance.OnControlGroup0;
+                @ControlGroupModifierCtrl.started -= instance.OnControlGroupModifierCtrl;
+                @ControlGroupModifierCtrl.performed -= instance.OnControlGroupModifierCtrl;
+                @ControlGroupModifierCtrl.canceled -= instance.OnControlGroupModifierCtrl;
+                @ControlGroupModifierCommand.started -= instance.OnControlGroupModifierCommand;
+                @ControlGroupModifierCommand.performed -= instance.OnControlGroupModifierCommand;
+                @ControlGroupModifierCommand.canceled -= instance.OnControlGroupModifierCommand;
             }
 
             /// <summary>
@@ -1631,6 +2026,90 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnPlaceMarker(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ControlGroup1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnControlGroup1(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ControlGroup2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnControlGroup2(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ControlGroup3" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnControlGroup3(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ControlGroup4" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnControlGroup4(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ControlGroup5" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnControlGroup5(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ControlGroup6" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnControlGroup6(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ControlGroup7" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnControlGroup7(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ControlGroup8" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnControlGroup8(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ControlGroup9" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnControlGroup9(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ControlGroup0" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnControlGroup0(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ControlGroupModifierCtrl" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnControlGroupModifierCtrl(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ControlGroupModifierCommand" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnControlGroupModifierCommand(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Ui" which allows adding and removing callbacks.

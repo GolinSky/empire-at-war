@@ -21,7 +21,7 @@ namespace EmpireAtWar.Services.Input
             {
                 foreach (InputAction action in map.actions)
                 {
-                    AddSlots(action, slots);
+                    if (!ControlGroupBindings.IsFixedAction(action)) AddSlots(action, slots);
                 }
             }
 

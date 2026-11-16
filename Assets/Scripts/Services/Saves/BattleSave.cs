@@ -14,6 +14,7 @@ namespace EmpireAtWar.Services.Saves
         [SerializeField] private UnitSave[] units = Array.Empty<UnitSave>();
         [SerializeField] private StructureSave[] structures = Array.Empty<StructureSave>();
         [SerializeField] private PlayerSave[] players = Array.Empty<PlayerSave>();
+        [SerializeField] private ControlGroupSave[] controlGroups = Array.Empty<ControlGroupSave>();
         [SerializeField] private CaptureSiteSave[] captureSites = Array.Empty<CaptureSiteSave>();
         [SerializeField] private ReinforcementZoneSave[] reinforcementZones = Array.Empty<ReinforcementZoneSave>();
         [SerializeField] private int[] observedBases = Array.Empty<int>();
@@ -28,6 +29,7 @@ namespace EmpireAtWar.Services.Saves
         public UnitSave[] Units => units;
         public StructureSave[] Structures => structures;
         public PlayerSave[] Players { get => players; set => players = value; }
+        public ControlGroupSave[] ControlGroups { get => controlGroups; set => controlGroups = value; }
         /// <summary>In map layout order; empty when the battle has no capture sites.</summary>
         public CaptureSiteSave[] CaptureSites { get => captureSites; set => captureSites = value; }
         /// <summary>Relay ownership and capture state, in map layout order.</summary>

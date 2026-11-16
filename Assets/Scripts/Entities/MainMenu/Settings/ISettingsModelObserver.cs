@@ -29,6 +29,7 @@ namespace EmpireAtWar.Entities.MainMenu.Settings
         float ZoomSpeed { get; }
         bool EdgeScrolling { get; }
         bool InvertZoom { get; }
+        SettingsChoice SquadModifier { get; }
 
         bool AutoPowerAbilities { get; }
         bool ShowHints { get; }

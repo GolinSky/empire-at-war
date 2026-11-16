@@ -178,6 +178,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("PauseMenuUi", "modalSlot")]
         [TestCase("SettingsUi", "modalSlot")]
         [TestCase("AcceptPopupUi", "modalSlot")]
+        [TestCase("ControlGroupUi", "dynamicCanvas")]
         [TestCase("PopupBlockerUi", "modalSlot")]
         [TestCase("SteamInvitePopupUi", "modalSlot")]
         [TestCase("TooltipUi", "tooltipSlot")]

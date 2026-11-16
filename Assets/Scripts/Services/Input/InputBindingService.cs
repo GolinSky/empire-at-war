@@ -75,6 +75,13 @@ namespace EmpireAtWar.Services.Input
                 _asset.LoadBindingOverridesFromJson(overridesJson);
             }
 
+            foreach (InputAction action in _asset.FindActionMap("Battle", true).actions)
+                if (ControlGroupBindings.IsFixedAction(action)) action.RemoveAllBindingOverrides();
+            foreach (BindingSlot slot in _slots)
+                if (ControlGroupBindings.IsReserved(slot))
+                    for (int i = slot.FirstPartIndex; i < slot.FirstPartIndex + slot.PartCount; i++)
+                        slot.Action.RemoveBindingOverride(i);
+
             BindingsChanged?.Invoke();
         }
 
@@ -184,7 +191,7 @@ namespace EmpireAtWar.Services.Input
         {
             foreach (BindingSlot slot in _slots)
             {
-                if (BindingConflicts.Find(slot, _slots).Count > 0)
+                if (ControlGroupBindings.IsReserved(slot) || BindingConflicts.Find(slot, _slots).Count > 0)
                 {
                     return true;
                 }
@@ -258,6 +265,12 @@ namespace EmpireAtWar.Services.Input
 
         private RebindResult EvaluateRebind()
         {
+            if (ControlGroupBindings.IsReserved(_reboundSlot))
+            {
+                RestoreOverrides(_reboundSlot, _previousOverridePaths);
+                return RebindResult.Reserved;
+            }
+
             _pendingConflicts = BindingConflicts.Find(_reboundSlot, _slots);
             if (_pendingConflicts.Count > 0)
             {
