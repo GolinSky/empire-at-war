@@ -845,10 +845,6 @@ namespace EmpireAtWar.Tests.Editor
                 layout.GetStationPosition(humanSlot.Id) + Vector3.forward * 300f);
 
             human.Container.Resolve<EconomyModel>().Restore(4321f, 7f);
-            // The faction UI swaps its level and research buttons with Object.Destroy, which edit mode rejects:
-            // one error per level change and per completed tier, both now and on restore.
-            Regex editModeDestroy = new Regex("Destroy may not be called from edit mode");
-            for (int i = 0; i < 4; i++) LogAssert.Expect(LogType.Error, editModeDestroy);
             PlayerFactionModel faction = human.Container.Resolve<PlayerFactionModel>();
             faction.CurrentLevel = 2;
             FactionResearchModel research = human.Container.Resolve<FactionResearchModel>();
