@@ -69,13 +69,6 @@ namespace EmpireAtWar.Controllers.Game
             await Awaitable.NextFrameAsync(cancellationToken);
             await _mapLoader.LoadAsync(cancellationToken);
             await _shots.PrewarmRosterAsync(_assets, _battle, cancellationToken);
-            // Prewarmed squadrons take entity ids, which only the authority allocates; a client builds the
-            // host's squadrons on demand under the host's ids.
-            if (_session.IsAuthority)
-            {
-                foreach (PlayerSlot player in _playerRoster.Players)
-                    await _playerRegistry.GetSquadronPrewarmer(player.Id).PrewarmAsync(cancellationToken);
-            }
             // Online clients get the host's stations as replicated spawns.
             if (!_restore.TryRestore())
             {
@@ -85,6 +78,14 @@ namespace EmpireAtWar.Controllers.Game
                         _playerRegistry.GetStationSpawner(player.Id).Spawn();
                 }
                 _cameraService.MoveTo(_mapModel.GetStationPosition(_localPlayer.Id));
+            }
+            // Prewarmed squadrons take entity ids, which only the authority allocates; a client builds the
+            // host's squadrons on demand under the host's ids. Run after restore/station spawn so
+            // UniqueIdGenerator is already past all restored ids before stowed squadrons allocate new ones.
+            if (_session.IsAuthority)
+            {
+                foreach (PlayerSlot player in _playerRoster.Players)
+                    await _playerRegistry.GetSquadronPrewarmer(player.Id).PrewarmAsync(cancellationToken);
             }
             // Spawned stations register their fog vision in their contexts' Start.
             await Awaitable.NextFrameAsync(cancellationToken);

@@ -426,6 +426,50 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test, Category("Squadrons")]
+        public void SquadronPrewarm_AfterRestore_AllocatesIdsPastRestoredEntitiesAndRespawnsWithoutCollision()
+        {
+            BuildSaveProject();
+            BuildSaveBattle();
+            HumanPlayerScope player = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
+            player.Container.Resolve<SpaceStationFactory>().Create(player.Container.Resolve<PlayerSlot>().Id,
+                FactionType.Republic, Vector3.zero);
+            _battle.Container.Resolve<SkirmishStateModel>().SetState(BattleState.Running);
+            BattleSave saved = BattleSave.FromJson(
+                _battle.Container.Resolve<BattleSaveService>().Capture(BattleSaveSlot.Quicksave).ToJson());
+            long restoredId = saved.Structures.Single().Id;
+            DisposeRoot(_battle);
+            BuildSaveBattle();
+            player = _battle.GetComponentsInChildren<HumanPlayerScope>(true).Single();
+            PlayerSlot owner = player.Container.Resolve<PlayerSlot>();
+            SquadronPool pool = player.Container.Resolve<SquadronPool>();
+            IEntityLocator locator = _battle.Container.Resolve<IEntityLocator>();
+
+            _battle.Container.Resolve<BattleRestorer>().Restore(saved);
+            Assert.That(locator.Entities.Select(entity => entity.Id), Contains.Item(restoredId));
+
+            var prewarmed = new List<(Squadron Squadron, SquadronType Type)>();
+            using (IEnumerator<Squadron> slices = GetPrewarmSlices(pool, CancellationToken.None))
+            {
+                while (slices.MoveNext())
+                {
+                    Squadron squadron = slices.Current;
+                    Assert.That(squadron.EntityId, Is.GreaterThan(restoredId));
+                    SquadronType type = squadron.transform.parent.GetComponent<EntityLifetimeScope>()
+                        .Container.Resolve<SquadronType>();
+                    prewarmed.Add((squadron, type));
+                }
+            }
+
+            Assert.That(prewarmed, Is.Not.Empty);
+            foreach ((Squadron squadron, SquadronType type) in prewarmed)
+            {
+                Squadron spawned = pool.Spawn(owner.Id, type, Vector3.zero, Quaternion.identity);
+                Assert.That(spawned.EntityId, Is.GreaterThan(restoredId));
+                Assert.That(locator.GetEntity(spawned.EntityId), Is.Not.Null);
+            }
+        }
+
         private static IEnumerator<Squadron> GetPrewarmSlices(SquadronPool pool, CancellationToken cancellationToken) =>
             ((IEnumerable<Squadron>)typeof(SquadronPool).GetMethod("CreatePrewarmed",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
