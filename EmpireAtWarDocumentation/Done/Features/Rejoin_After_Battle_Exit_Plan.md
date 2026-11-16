@@ -26,6 +26,8 @@ acceptance: pending-user
 - `SuspendBattle` stops the transport without `LobbyLeaveMessage` and keeps `reconnect-session.dat`. Returning to Multiplayer shows Reconnect and Leave. Quitting afterward offers Rejoin previous match at startup.
 - Join by IP checks the stored KCP host and port. Rejoin sends the existing credential. A different endpoint starts a fresh join.
 - Steam rejoin matches saved lobby, host and account. Back from a Server Browser reconnect cancels the attempt and preserves the record.
+- Review fix 2026-11-16: lobby Leave / Back while joining another Steam lobby used `Leave()` and deleted the saved battle. `OnlineMatchService.LeaveLobby()` now keeps it outside an active battle or identified reconnect. Server Browser reconnect cancellation also keeps it.
+- Scope: new hosting and joining a different IP endpoint still clear recovery before connecting.
 - Pause Exit tooltip explains the reconnect window to clients and the match-ending action to hosts.
 - Reusable rules and edge cases → [[Architecture/Multiplayer_Reconnect]].
 
@@ -33,4 +35,6 @@ acceptance: pending-user
 
 - Unity script compilation completed with zero reported errors on 2026-11-16.
 - Updated `OnlineBattleLifetimeTests`, `OnlineMatchRecoveryTests`, `SteamPlatformLifecycleTests`, and `OnlineRecoveryUiTests`. Reviewed `PauseMenuUiPrefabTests` and `ModalRouteInputTests`; existing wiring and assertions still apply.
+- Review fix compiled with zero errors on 2026-11-16. Added tests: `OnlineMatchRecoveryTests` (`LeaveLobby` keep/dismiss, Steam account mismatch), `ServerBrowserRecoveryTests` (Back keeps saved battle), and a no-`LobbyLeaveMessage` assertion in `OnlineBattleLifetimeTests`. Not run.
+- Commit review 2026-11-16: inspected all four `LeaveLobby()` callers, session teardown, Steam/IP join paths, and the GameFlow/Networking/Ui test changes; no introduced production defect found. Compilation and tests were not rerun during this review.
 - Automated tests and two-PC acceptance are pending → [[TODOs/User_Acceptance_Queue#Multiplayer Reconnect]].

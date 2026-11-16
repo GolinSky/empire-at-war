@@ -59,7 +59,7 @@ namespace EmpireAtWar.Entities.MainMenu.ServerBrowser
         public void Close()
         {
             if (_online.IsReconnecting) _online.CancelReconnect();
-            else if (_online.Role != OnlineRole.None) _online.Leave();
+            else if (_online.Role != OnlineRole.None) _online.LeaveLobby();
             Hide();
         }
 

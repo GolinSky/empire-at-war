@@ -82,11 +82,28 @@ namespace EmpireAtWar.Tests.Editor
             int exits = 0;
             _online.HostLeft += () => exits++;
             var stateField = typeof(NetworkClient).GetField("connectState", BindingFlags.Static | BindingFlags.NonPublic);
+            PropertyInfo connectionProperty = typeof(NetworkClient).GetProperty(nameof(NetworkClient.connection));
             object previousState = stateField.GetValue(null);
-            stateField.SetValue(null, Enum.Parse(stateField.FieldType, "Connected"));
-            try { _lifetime.LateDispose(); }
-            finally { stateField.SetValue(null, previousState); }
+            NetworkConnectionToServer previousConnection = NetworkClient.connection;
+            int leaveMessages = 0;
+            void Capture(NetworkDiagnostics.MessageInfo info)
+            {
+                if (info.message is LobbyLeaveMessage) leaveMessages++;
+            }
 
+            // A live connection: an explicit Leave would send LobbyLeaveMessage through it.
+            stateField.SetValue(null, Enum.Parse(stateField.FieldType, "Connected"));
+            connectionProperty.SetValue(null, new NetworkConnectionToServer());
+            NetworkDiagnostics.OutMessageEvent += Capture;
+            try { _lifetime.LateDispose(); }
+            finally
+            {
+                NetworkDiagnostics.OutMessageEvent -= Capture;
+                connectionProperty.SetValue(null, previousConnection);
+                stateField.SetValue(null, previousState);
+            }
+
+            Assert.That(leaveMessages, Is.Zero, "Exit must not revoke the seat on the host.");
             Assert.That(_online.Role, Is.EqualTo(OnlineRole.None));
             Assert.That(_online.HasRecovery, Is.True);
             Assert.That(_store.TryLoad(out ReconnectSessionRecord record, out _), Is.True);

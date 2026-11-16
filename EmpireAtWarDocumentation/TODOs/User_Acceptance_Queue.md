@@ -397,7 +397,8 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Rejoin_After_Battle_Exit_Plan]] — On two PCs, use Pause Exit → Join by IP with the saved KCP endpoint. Verify the original seat is restored.
 - [ ] [[Done/Features/Rejoin_After_Battle_Exit_Plan]] — Use Pause Exit, quit the game, then launch and choose Rejoin previous match.
 - [ ] [[Done/Features/Rejoin_After_Battle_Exit_Plan]] — Use Pause Exit and wait past 300 s. Verify host AI takes over and the client can no longer rejoin. Repeat with disconnected Leave to verify it clears the local record and AI takes over on expiry.
-- [ ] [[Done/Features/Rejoin_After_Battle_Exit_Plan]] — Run the updated GameFlow, Networking and Ui fixtures when explicitly authorized.
+- [ ] [[Done/Features/Rejoin_After_Battle_Exit_Plan]] — Pause Exit → join another Steam lobby → Leave it (or Back while connecting). Verify Multiplayer still offers Reconnect to the saved battle.
+- [ ] [[Done/Features/Rejoin_After_Battle_Exit_Plan]] — Run the updated GameFlow, Networking and Ui fixtures (incl. new `ServerBrowserRecoveryTests`) when explicitly authorized.
 
 - [ ] [[Done/Bugs/Multiplayer_Reconnect_Flow]] — Two-PC Steam/KCP loss and forced-process crash → restart/rejoin; measure startup/loading, near-expiry acceptance, repeated crash deadline, AI takeover, kick/Leave and host exit.
 - [ ] [[Done/Bugs/Multiplayer_Reconnect_Flow]] — Verify no duplicate units and restored ownership/health/orders, credits/production/reserve/research/cooldowns and Survival before input; inspect recovery/loading UI on both PCs.

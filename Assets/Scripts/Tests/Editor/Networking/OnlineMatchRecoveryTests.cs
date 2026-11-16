@@ -165,6 +165,60 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void LeaveLobby_FromAnotherHost_KeepsSavedBattle()
+        {
+            RememberSession();
+            SetProperty("Role", OnlineRole.Client);
+            Set("_manager", _transportObject.AddComponent<OnlineNetworkManager>());
+
+            _online.LeaveLobby();
+
+            Assert.That(_online.Role, Is.EqualTo(OnlineRole.None));
+            Assert.That(_online.HasRecovery, Is.True);
+            Assert.That(_store.TryLoad(out ReconnectSessionRecord restored, out _), Is.True);
+            Assert.That(restored.Credential, Is.EqualTo("private-credential"));
+            Assert.That(_online.RecoveryStatus, Does.Contain("Reconnect"));
+        }
+
+        [TestCase(true, false)]
+        [TestCase(false, true)]
+        public void LeaveLobby_FromSavedBattleSession_DismissesRecovery(bool recovering, bool inBattle)
+        {
+            RememberSession();
+            SetProperty("Role", OnlineRole.Client);
+            SetProperty("IsInBattle", inBattle);
+            Set("_recovering", recovering);
+            Set("_manager", _transportObject.AddComponent<OnlineNetworkManager>());
+
+            _online.LeaveLobby();
+
+            Assert.That(_online.Role, Is.EqualTo(OnlineRole.None));
+            Assert.That(_online.HasRecovery, Is.False);
+            Assert.That(_store.TryLoad(out _, out _), Is.False);
+        }
+
+        [Test]
+        public void SteamJoinToSavedLobby_WithAnotherAccount_RejectsAndClearsRecovery()
+        {
+            const string HOST = "76561198000000001";
+            var record = new ReconnectSessionRecord { Transport = ReconnectTransport.Steam, Host = HOST,
+                SteamId = 99UL, MatchId = "match", Credential = "private-credential", SlotIndex = 1 };
+            _store.Save(record);
+            Set("_recovery", record);
+            SetProperty("Role", OnlineRole.Client);
+            Set("_awaitingSteamHost", true);
+            Set("_root", _transportObject);
+            Set("_manager", _transportObject.AddComponent<OnlineNetworkManager>());
+
+            Invoke("JoinSteamHost", HOST);
+
+            Assert.That(_online.LastError, Is.EqualTo(OnlineError.ReconnectRejected));
+            Assert.That(_online.Role, Is.EqualTo(OnlineRole.None));
+            Assert.That(_online.HasRecovery, Is.False);
+            Assert.That(_store.TryLoad(out _, out _), Is.False);
+        }
+
+        [Test]
         public void HelloAfterHostLeft_DoesNotCreateMember()
         {
             Invoke("OnHello", new NetworkConnectionToClient(7, "127.0.0.1"), new LobbyHelloMessage

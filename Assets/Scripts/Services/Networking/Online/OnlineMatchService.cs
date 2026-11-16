@@ -415,6 +415,26 @@ namespace EmpireAtWar.Services.Networking.Online
         public void Leave()
         {
             ClearRecovery();
+            CloseSession();
+        }
+
+        /// <summary>
+        /// Lobby Leave or Back while joining. A saved battle from another host stays recoverable; leaving the saved
+        /// battle's own session or rejoin attempt dismisses it like <see cref="Leave"/>.
+        /// </summary>
+        public void LeaveLobby()
+        {
+            if (!HasRecovery || IsInBattle || _recovering)
+            {
+                Leave();
+                return;
+            }
+            RecoveryStatus = "Reconnect to check the host's session, or Leave to dismiss it.";
+            CloseSession();
+        }
+
+        private void CloseSession()
+        {
             _attempt++;
             _awaitingSteamHost = false;
             _recovering = false;

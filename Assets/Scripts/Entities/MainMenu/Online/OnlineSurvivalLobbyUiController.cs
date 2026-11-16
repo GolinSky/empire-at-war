@@ -101,7 +101,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Close()
         {
             CloseInvitePicker();
-            _online.Leave();
+            _online.LeaveLobby();
         }
 
         protected override bool HandleCancel()

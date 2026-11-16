@@ -72,7 +72,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Close()
         {
             // Back while connecting cancels the join.
-            if (_online.Role != OnlineRole.None) _online.Leave();
+            if (_online.Role != OnlineRole.None) _online.LeaveLobby();
             _isOpen = false;
             _ui.Hide();
             Unfocus();

@@ -124,7 +124,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         {
             _planetPicker.Close();
             CloseInvitePicker();
-            _online.Leave();
+            _online.LeaveLobby();
         }
 
         protected override bool HandleCancel()
