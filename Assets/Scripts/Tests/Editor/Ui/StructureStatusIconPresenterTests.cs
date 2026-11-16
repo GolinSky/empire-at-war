@@ -247,6 +247,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(Vector2.Distance(icon.anchoredPosition, anchored), Is.LessThan(0.01f),
                 "Placement must not depend on the canvas's previous world transform.");
             Canvas.ForceUpdateCanvases();
+            // The disabled fixture camera only updates its screen-space canvas plane when it renders.
+            _camera.Render();
             Vector2 rendered = _camera.WorldToScreenPoint(icon.position);
             Assert.That(Vector2.Distance(rendered, expected), Is.LessThan(0.1f),
                 "The rendered icon center must remain 42 pixels above its structure.");

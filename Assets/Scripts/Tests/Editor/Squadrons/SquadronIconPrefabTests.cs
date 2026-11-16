@@ -138,12 +138,14 @@ namespace EmpireAtWar.Tests.Editor
                 BattleMarkerLayer layer = CreateLayer(root);
                 BattleMarker first = CreateMarker(layer, root.transform, 1, true);
                 BattleMarker second = CreateMarker(layer, root.transform, 2, true);
-                BattleMarker removed = CreateMarker(layer, root.transform, 3, !removedIsShip);
+                BattleMarker removed = CreateMarker(layer, root.transform, 3, !removedIsShip,
+                    new Vector3(10f, 0f, 0f));
                 first.SetPosition(new Vector3(-10f, 0f, 0f));
-                if (removedIsShip) removed.AnchorTransform.position = new Vector3(10f, 0f, 0f);
-                else removed.SetPosition(new Vector3(10f, 0f, 0f));
                 SquadronIconGrouping grouping = GetGrouping(layer);
                 UpdateGrouping(layer, grouping, 3);
+                Assert.That(grouping.TryGetSlot(first.EntityId, out long group, out _), Is.True);
+                Assert.That(grouping.TryGetSlot(removed.EntityId, out long removedGroup, out _), Is.True);
+                Assert.That(removedGroup, Is.EqualTo(group));
                 UnityCamera camera = CreateProjectionCamera(root.transform, out float zoom);
                 var projection = new BattleMarkerProjection();
                 projection.Draw(layer.Markers, grouping, camera, zoom);
@@ -472,10 +474,12 @@ namespace EmpireAtWar.Tests.Editor
             return camera;
         }
 
-        private static BattleMarker CreateMarker(BattleMarkerLayer layer, Transform parent, long id, bool isSquadron)
+        private static BattleMarker CreateMarker(BattleMarkerLayer layer, Transform parent, long id, bool isSquadron,
+            Vector3 position = default)
         {
             var anchor = new GameObject("Anchor");
             anchor.transform.SetParent(parent, false);
+            anchor.transform.position = position;
             var icon = new GameObject("Marker", typeof(RectTransform));
             var marker = new BattleMarker(layer, (RectTransform)icon.transform, null, null,
                 visualSize: isSquadron ? 72f : 110.88f, isSquadron: isSquadron)
@@ -483,6 +487,7 @@ namespace EmpireAtWar.Tests.Editor
                 AnchorTransform = anchor.transform,
                 SampleVisibility = () => { }
             };
+            marker.SetPosition(position);
             marker.Register(id, new PlayerId(0));
             marker.SetVisible(true);
             return marker;
