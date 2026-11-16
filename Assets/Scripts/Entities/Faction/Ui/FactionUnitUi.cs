@@ -95,7 +95,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         public void Destroy()
         {
-            Destroy(gameObject);
+            if (Application.isPlaying) Destroy(gameObject);
+            else DestroyImmediate(gameObject);
         }
     }
 }

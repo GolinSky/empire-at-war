@@ -47,11 +47,9 @@ namespace EmpireAtWar.Entities.TutorialUi
         /// <summary>Gives a spawned element an anchor id; moving the id to another element clears the old mark.</summary>
         public void Mark(TutorialAnchorId markId, RectTransform element, UiHighlight highlight)
         {
-            if (_marks.TryGetValue(markId, out TutorialAnchor existing))
-            {
-                if (existing != null && existing.target == element) return;
-                if (existing != null) Destroy(existing);
-            }
+            if (_marks.TryGetValue(markId, out TutorialAnchor existing) && existing != null &&
+                existing.target == element) return;
+            Unmark(markId);
             TutorialAnchor mark = element.gameObject.AddComponent<TutorialAnchor>();
             mark.id = markId;
             mark.target = element;
@@ -62,9 +60,9 @@ namespace EmpireAtWar.Entities.TutorialUi
 
         public void Unmark(TutorialAnchorId markId)
         {
-            if (!_marks.TryGetValue(markId, out TutorialAnchor existing)) return;
-            if (existing != null) Destroy(existing);
-            _marks.Remove(markId);
+            if (!_marks.Remove(markId, out TutorialAnchor existing) || existing == null) return;
+            if (Application.isPlaying) Destroy(existing);
+            else DestroyImmediate(existing);
         }
 
         /// <summary>
