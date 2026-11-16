@@ -217,11 +217,11 @@ tags:
 
 - Combat stops use `IShipMovement.HoldPosition(target)`; explicit Stop/new orders/state exits cancel the hold. Do not call Stop every combat tick or cancel an active settling leg with preserve-course pursuit.
 - `ShipNavigationService` owns one authority-only 5 Hz numeric Burst spacing batch; snapshot/index are O(N), queries visit ≤64 occupants with fair cursors. Cell width ≥2 × maximum radius makes 3×3 current-overlap queries radius-aware.
-- Consume only completed jobs; revalidate registration/revision/target/position/eligibility. Complete ownership before resize or disposal. Nonselected, disabled and stopped ships remain blockers; obstacle-exempt ships receive no correction.
+- Consume only completed jobs; revalidate registration/revision/target/position/eligibility. Complete ownership before resize or disposal. Only stopped occupants block settling: exclude active/queued movement and nonzero current speed in snapshots and live revalidation. Nonselected/disabled stopped ships remain anchors; obstacle-exempt ships receive no correction. Hash moving state so stopped occupancy wakes failed corrections.
 - Admit ≤1 correction from spare capacity within the existing 4-plan/frame, 2 ms check-between-plans limit; normal orders win. Route followers, static graphs, hazard costs and hull-height rules remain unchanged.
 - Scoped reservation grid checks current/active/pending centers with ≤256 visited centers and ≤64 cells/candidate; saturation means blocked. Never add O(N) per-candidate revalidation.
 - Failed corrections use 1 s cooldown and pair/target/local-occupancy/reservation-change suppression. Whole-cell hashes cover unvisited dense occupants; `ReservationVersion` is O(1), unlike the position-scanning `Version` getter. Unrelated reservation edits can conservatively wake work.
-- Distinct attack bearings survive closing; full firing space is not guaranteed. No direct Transform separation, moving obstacles in static graphs, per-ship jobs or continuous collision-avoidance claim.
+- Distinct attack bearings apply on initial approach; after holding, ordinary/artillery re-closing uses the current ship-side bearing and preserves committed routes. Clear settling intent on arrival or failed planning. Full firing space is not guaranteed. No direct Transform separation, moving obstacles in static graphs, per-ship jobs or continuous collision-avoidance claim.
 - Inspect `Battle.Spacing.Snapshot/Index/Consume`, worker `ShipSpacingJob`, navigation markers and `Spacing*` service counters. Source/Unity compilation verified; tests and matched Editor/Development Player CPU/overlap acceptance pending → [[Done/Bugs/Multiselect_Attack_Overlap]].
 
 ### Structure status icons · 2026-11-16

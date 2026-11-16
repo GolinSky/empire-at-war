@@ -45,6 +45,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private bool _hasPursuitDestination;
         private bool _wasMoving;
         private bool _isClosingRange;
+        private bool _hasHeldPosition;
         private int _artilleryRevision = -1;
         private ShipClass _artilleryTargetClass;
         private float _artilleryReach;
@@ -58,7 +59,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private Vector3 MovementTargetPosition => TargetPosition + _formationOffset +
             _formationOffset.normalized * ShipEngagement.ContactDistance(_shipMoveComponent, _mainTargetEntity);
         private Vector3 StandoffPosition => ShipEngagement.GetStandoffPosition(
-            _shipMoveComponent, _weaponComponent, _mainTargetEntity, _formationOffset);
+            _shipMoveComponent, _weaponComponent, _mainTargetEntity,
+            _hasHeldPosition ? Vector3.zero : _formationOffset);
         private bool IsInRange => ShipEngagement.IsInRange(_shipMoveComponent, _weaponComponent,
             _mainTargetEntity, TargetPosition);
         private float PursuitDestinationUpdateDistance => Mathf.Max(
@@ -170,6 +172,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             _hasPursuitDestination = false;
             _isClosingRange = false;
+            _hasHeldPosition = false;
             _stallAttempt = 0;
             _wasMoving = false;
         }
@@ -181,6 +184,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _shipMoveComponent.HoldPosition(_mainTargetEntity);
                 _shipMoveComponent.LookAtTarget(_mainTargetEntity);
                 _isClosingRange = true;
+                _hasHeldPosition = true;
                 _hasPursuitDestination = false;
                 return;
             }
@@ -320,6 +324,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _shipMoveComponent.HoldPosition(_mainTargetEntity);
                 _shipMoveComponent.LookAtTarget(_mainTargetEntity);
                 ResetPursuit();
+                _hasHeldPosition = true;
                 return true;
             }
 
@@ -341,7 +346,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             float approachDistance = Mathf.Max(_artilleryReach * ARTILLERY_APPROACH_FACTOR, contact);
             Vector3 fromTarget = _shipMoveComponent.CurrentPosition - targetPosition;
-            Vector3 bearing = PlanarGeometry.NormalizeDirection(retreat ? fromTarget : _formationOffset, fromTarget);
+            Vector3 bearing = PlanarGeometry.NormalizeDirection(
+                retreat || _hasHeldPosition ? fromTarget : _formationOffset, fromTarget);
             if (_stallAttempt > 0)
             {
                 float angle = STALL_BEARING_STEP_DEGREES * ((_stallAttempt + 1) / 2) *

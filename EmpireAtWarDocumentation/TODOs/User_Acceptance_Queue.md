@@ -410,6 +410,8 @@ created: "2026-10-29\r"
 
 ## Multiselect Attack Overlap
 
+- [ ] [[Done/Bugs/Multiselect_Attack_Overlap]] — Verify passing ships do not displace holding ships, stopped overlaps still settle, and ordinary/artillery re-closing stays on the current side after target drift.
+
 - [ ] [[Done/Bugs/Multiselect_Attack_Overlap]] — Run authorized Navigation/BattleInput/EnemyAi regressions; Combat/Ships behavior review covered by navigation integration fixtures. Tests were not run under the checkout override.
 - [ ] [[Done/Bugs/Multiselect_Attack_Overlap]] — Check same-target Attack/Attack Move, Guard/Hunt, minimum-range/hardpoint/artillery holds, dense/mixed-height fleets, map edges/full firing space, ion disable, Stop/new orders, target replacement and multiplayer authority in-game.
 - [ ] [[Done/Bugs/Multiselect_Attack_Overlap]] — Compare matched Editor/Development Player overlap duration, CPU p95/p99, GC/frame, queue age, saturation, correction and route-build counters. Source preserves CPU limits; no measured CPU neutrality or improvement yet.

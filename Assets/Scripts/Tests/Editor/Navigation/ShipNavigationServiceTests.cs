@@ -1085,6 +1085,34 @@ namespace EmpireAtWar.Tests.Movement
             finally { Object.DestroyImmediate(ship); }
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CombatHold_FinishedSettlingDoesNotStopAgainOnCancel(bool stationary)
+        {
+            var ship = new GameObject("Finished combat settling");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation);
+                SetPrivateField(component, "_isNavigationRegistered", true);
+                navigation.IsDeferred = false;
+                navigation.IsStationary = stationary;
+                component.HoldPosition(new SpacingTarget(ship.transform));
+
+                Assert.That(component.TrySettle(Vector3.forward * 25f, component.SpacingRevision),
+                    Is.EqualTo(!stationary));
+                if (!stationary) TickMotion(component, 1000f);
+                Assert.That(component.IsMoving, Is.False);
+                Assert.That(component.CanSettle, Is.True);
+                int stops = navigation.StopCallCount;
+
+                component.CancelCombatHold();
+
+                Assert.That(navigation.StopCallCount, Is.EqualTo(stops));
+                Assert.That(component.CanSettle, Is.False);
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
         [TestCase("stop")]
         [TestCase("order")]
         [TestCase("target")]
@@ -1529,6 +1557,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             public string Id => nameof(RecordingShipNavigationService);
             public int PlanCallCount { get; private set; }
+            public int StopCallCount { get; private set; }
             public int PendingCancellationCount { get; private set; }
             public Vector3 LastDestination { get; private set; }
             public bool IsDeferred { get; set; } = true;
@@ -1549,6 +1578,7 @@ namespace EmpireAtWar.Tests.Movement
 
             public void Stop(IShipNavigationAgent agent)
             {
+                StopCallCount++;
             }
 
             public void CancelPendingDestination(IShipNavigationAgent agent)

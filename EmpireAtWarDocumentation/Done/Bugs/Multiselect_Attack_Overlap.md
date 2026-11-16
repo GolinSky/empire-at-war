@@ -27,17 +27,17 @@ acceptance: pending-user
 ### Combat slots and holds
 
 - `UnitOrderService.AttackOffsets`: O(N) single angular ring, clockwise from group-side bearing; radius = max(2R, R / sin(π/N)) for N > 2, otherwise 2R. R = largest receiver navigation radius.
-- Hull-relative offsets retain distinct bearings; `AttackTargetState` adds live `ContactDistance` radially without independently clamping rings. Closing pursuit retains the assigned bearing.
+- Hull-relative offsets retain distinct bearings; `AttackTargetState` adds live `ContactDistance` radially without independently clamping rings. Initial closing retains the assigned bearing. After the first combat hold, re-closing uses the ship’s current side of the target; committed routes remain stable.
 - `ShipOrderRunner` retains offsets on replacement attacks. Coincident-center standoff uses a nonzero fallback direction.
 - `HoldPosition(target)` stops the original approach once, then preserves a checked settling leg across repeated range holds and preserve-course pursuit.
 - Attack, Attack Move, Guard, Hunt, minimum-range, hardpoint and artillery hold branches use this intent. Target loss/change, state exit, ability approach, new orders and explicit Stop cancel it.
-- Normal arrival correction remains bounded to one retry. Settling arrival skips that independent retry; the shared coordinator owns subsequent correction timing.
+- Normal arrival correction remains bounded to one retry. Settling arrival skips that independent retry; the shared coordinator owns subsequent correction timing. Arrival or stationary planning failure clears settling intent before later cancellation.
 
 ### Snapshot and bounded queries
 
 - One `ShipSpacingCoordinator` owned by battle `ShipNavigationService`; authority-only, suspended when scaled delta time is zero.
 - Reusable persistent native buffers; one `ShipSpacingJob : IJobParallelFor` batch when due at most every 0.2 s, without catch-up.
-- Main thread snapshots registrations, revisions, positions, radii, vertical spans and eligibility. Jobs contain numeric data only; no entity or Transform access.
+- Main thread snapshots registrations, revisions, positions, radii, vertical spans, eligibility and moving state (active/queued movement or nonzero current speed). Moving occupants never trigger settling; consume rechecks blocker movement. Jobs contain numeric data only; no entity or Transform access.
 - Center cells use width max(2 × largest radius, 1); 3 × 3 cells therefore cover every current penetrating pair, including large/small hull combinations.
 - O(N) index build creates contiguous cell ranges and full-cell quantized occupancy hashes. Each query checks at most 64 occupants and 9 cell hashes.
 - Fair cursors rotate bounded occupant visits; rejected candidates consume the cap. Saturation never establishes clearance. Full-neighborhood hashes detect changes outside the visited slice.
@@ -83,6 +83,11 @@ acceptance: pending-user
 - User gates → [[TODOs/User_Acceptance_Queue#Multiselect Attack Overlap]]: authorized test runs, in-game overlap/lifecycle checks and matched Editor/Development Player CPU comparison.
 
 ## Verification
+
+- Review fixes 2026-11-16: passing/turning/braking ships excluded from overlap correction, near-side ordinary/artillery re-close after holding, terminal settle cleanup. Movement state participates in occupancy hashes.
+- Added regression cases in `ShipSpacingJobTests`, `ShipSpacingCoordinatorTests`, `ShipPursuitTests`, and `ShipNavigationServiceTests` (Navigation; production also touches Ships). Existing hold, cooldown, failure, stall, replacement and initial-formation contracts reviewed.
+- Review-fix Unity 6000.4.7f1 compilation completed with 0 errors. Tests not run under the checkout override; in-game and CPU gates remain pending.
+- Updated reusable rules in [[Rules/BATTLE_PERFORMANCE_GUIDELINES#Combat overlap settling · 2026-11-16]].
 
 - Unity 6000.4.7f1 script recompilation completed with 0 errors; changed sources and new script metadata imported. Editor console reported 0 errors.
 - Independent source review and scoped `git diff --check` completed. Regression tests were authored/reviewed, not executed.

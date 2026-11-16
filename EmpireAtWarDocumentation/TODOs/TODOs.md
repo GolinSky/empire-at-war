@@ -287,6 +287,7 @@
 ### Bugs
 
 - [x] **Multiselect Attack / Attack Move leaves ships overlapped** → [[Done/Bugs/Multiselect_Attack_Overlap|Implementation and acceptance]]
+  - Review fixes 2026-11-16: ignore passing ships, re-close from the current target side, clear completed/failed settling intent. Unity compilation: 0 errors; Navigation regression cases added, not run.
   - Initial investigation 2026-11-16: source-verified range-stop bypass, collapsed combat offsets and bounded arrival repair; no runtime reproduction or baseline CPU capture.
   - 2026-11-16: revalidated; added Guard/Hunt/minimum-range stops, clamp-inside-hull case, group replacement-target convergence, O(N) registry clearance cost.
   - Completed 2026-11-16: distinct angular attack slots, replacement intent, shared bounded Burst settling and spatial reservation checks. Existing four-plan/2 ms budget preserved; Unity compilation 0 errors, source/diff review complete. Tests not run; gameplay and matched CPU acceptance queued.

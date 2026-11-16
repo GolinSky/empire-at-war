@@ -66,6 +66,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                         Bottom = agent.NavigationHullSpan.Bottom,
                         Top = agent.NavigationHullSpan.Top,
                         Eligible = eligible,
+                        Moving = agent.NavigationCurrentSpeed > 0f || entry.Spacing != null && entry.Spacing.IsMoving,
                         Anchored = eligible && IsFailureUnchanged(entry,
                             entry.Spacing.SpacingRevision, position, entry.TargetPosition),
                         Cursor = entry.Cursor
@@ -98,7 +99,9 @@ namespace EmpireAtWar.Services.ShipNavigation
                     if (!result.HasCorrection || agent == null || !agent.CanSettle ||
                         agent.SpacingRevision != result.Revision || now < entry.NextCorrection ||
                         !_entries.TryGetValue(result.BlockerId, out Entry blocker)) continue;
-                    if (!ReferenceEquals(blocker, _snapshot[result.BlockerIndex])) continue;
+                    if (!ReferenceEquals(blocker, _snapshot[result.BlockerIndex]) ||
+                        blocker.Agent.NavigationCurrentSpeed > 0f ||
+                        blocker.Spacing != null && blocker.Spacing.IsMoving) continue;
                     ShipSpacingInput blockerInput = _batch.Inputs[result.BlockerIndex];
                     Vector3 position = agent.NavigationPosition;
                     Vector3 blockerPosition = blocker.Agent.NavigationPosition;

@@ -459,6 +459,7 @@ namespace EmpireAtWar.Components.Ship.Movement
                     $"TurnSpeed={NavigationRotationSpeed:F1}, Stationary={plan.IsStationary}");
             if (plan.IsStationary)
             {
+                _isSettling = false;
                 // Autonomous pursuit waits for a changed destination or a fresh order.
                 _failedDestination = destination;
                 _motion.StopPath();
@@ -499,7 +500,11 @@ namespace EmpireAtWar.Components.Ship.Movement
                     }
                     Model.Arrive(transform.position.ToNumerics());
                     // The shared spacing batch owns subsequent corrections and their cooldown.
-                    if (_isSettling) return;
+                    if (_isSettling)
+                    {
+                        _isSettling = false;
+                        return;
+                    }
                     if (!_shipNavigationService.IsPositionClear(this,
                             plannedDestination, NavigationRadius))
                     {

@@ -15,6 +15,8 @@ namespace EmpireAtWar.Tests.Movement
         [TestCase("stopped")]
         [TestCase("own-position")]
         [TestCase("blocker-position")]
+        [TestCase("blocker-moving")]
+        [TestCase("blocker-braking")]
         [TestCase("unregistered")]
         [TestCase("reused-registration")]
         [TestCase("reused-blocker")]
@@ -34,6 +36,8 @@ namespace EmpireAtWar.Tests.Movement
                 case "stopped": ship.CanSettle = false; break;
                 case "own-position": ship.NavigationPosition += Vector3.forward * 2f; break;
                 case "blocker-position": blocker.NavigationPosition += Vector3.forward * 2f; break;
+                case "blocker-moving": blocker.IsMoving = true; break;
+                case "blocker-braking": blocker.NavigationCurrentSpeed = 1f; break;
                 case "unregistered": coordinator.Unregister(2); break;
                 case "reused-registration": coordinator.Unregister(2); coordinator.Register(2, replacement); break;
                 case "reused-blocker": coordinator.Unregister(1); coordinator.Register(1, replacement); break;
@@ -43,6 +47,27 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(coordinator.TryCorrect(0f), Is.False);
             Assert.That(ship.Attempts, Is.Zero);
             Assert.That(replacement.Attempts, Is.Zero);
+        }
+
+        [TestCase(true, 0f)]
+        [TestCase(false, 1f)]
+        public void PassingShip_DoesNotDisplaceHolderUntilStopped(bool moving, float speed)
+        {
+            using var coordinator = new ShipSpacingCoordinator(new ShipDestinationRegistry());
+            var blocker = new Agent { CanSettle = false, IsMoving = moving, NavigationCurrentSpeed = speed };
+            var ship = new Agent { NavigationPosition = Vector3.right * 2f };
+            coordinator.Register(1, blocker);
+            coordinator.Register(2, ship);
+
+            Snapshot(coordinator, 0f);
+            Assert.That(coordinator.TryCorrect(0f), Is.False);
+            Assert.That(ship.Attempts, Is.Zero);
+
+            blocker.IsMoving = false;
+            blocker.NavigationCurrentSpeed = 0f;
+            Snapshot(coordinator, 1f);
+            Assert.That(coordinator.TryCorrect(1f), Is.True);
+            Assert.That(ship.Attempts, Is.EqualTo(1));
         }
 
         [Test]
@@ -197,11 +222,12 @@ namespace EmpireAtWar.Tests.Movement
             public ShipHullSpan NavigationHullSpan => new ShipHullSpan(-5f, 5f);
             public float NavigationRadius => 5f;
             public float NavigationSpeed => 10f;
-            public float NavigationCurrentSpeed => 0f;
+            public float NavigationCurrentSpeed { get; set; }
             public float NavigationRotationSpeed => 30f;
             public bool IgnoresMapObstacles => false;
             public int SpacingRevision { get; set; }
             public bool CanSettle { get; set; } = true;
+            public bool IsMoving { get; set; }
             public Vector3 SpacingTargetPosition { get; set; }
             public bool AcceptCorrection { get; set; } = true;
             public int Attempts { get; private set; }

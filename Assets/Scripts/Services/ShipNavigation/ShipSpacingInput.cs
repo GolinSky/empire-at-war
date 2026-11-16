@@ -11,6 +11,7 @@ namespace EmpireAtWar.Services.ShipNavigation
         public float Bottom;
         public float Top;
         public bool Eligible;
+        public bool Moving;
         public bool Anchored;
         public int Cursor;
     }

@@ -29,7 +29,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 BlockerIndex = -1,
                 NextCursor = own.Cursor
             };
-            if (!own.Eligible)
+            if (!own.Eligible || own.Moving)
             {
                 Results[index] = result;
                 return;
@@ -72,6 +72,7 @@ namespace EmpireAtWar.Services.ShipNavigation
                 }
                 if (otherIndex == index) continue;
                 ShipSpacingInput other = Inputs[otherIndex];
+                if (other.Moving) continue;
                 if (own.Bottom >= other.Top || other.Bottom >= own.Top) continue;
                 float2 separation = own.Position - other.Position;
                 float radius = own.Radius + other.Radius;
@@ -104,6 +105,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             uint footprint = math.hash(new int3(input.RegistrationId,
                 (int)math.floor(input.Position.x * 10f),
                 (int)math.floor(input.Position.y * 10f)));
+            if (input.Moving) footprint ^= 0x9e3779b9u;
             return math.hash(new uint4(footprint,
                 math.asuint(input.Radius), math.asuint(input.Bottom), math.asuint(input.Top)));
         }

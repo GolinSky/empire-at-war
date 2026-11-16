@@ -83,6 +83,36 @@ namespace EmpireAtWar.Tests.Movement
 
         [TestCase(false)]
         [TestCase(true)]
+        public void Attack_FormationReclosesFromCurrentSideAfterHolding(bool artillery)
+        {
+            _target.Transform.position = Vector3.right * (artillery ? 180f : 90f);
+            var state = new AttackTargetState(null, _weapon, _movement,
+                artillery ? new ArtilleryCapability(200f) : null);
+            state.SetData(_target, Vector3.right * 20f, UnitOrderModel.NO_HARD_POINT);
+            state.Tick(0.1f);
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+            Assert.That(_movement.MoveCount, Is.Zero);
+
+            _target.Transform.position = Vector3.right * 500f;
+            state.Tick(0.1f);
+
+            Vector3 destination = Vector3.right * (artillery ? 320f : 435f);
+            Assert.That(_movement.Destination, Is.EqualTo(destination));
+            Assert.That(_movement.LastPreserveCourse, Is.True);
+            _movement.CurrentPosition = Vector3.forward * 100f;
+            state.Tick(0.1f);
+            Assert.That(_movement.Destination, Is.EqualTo(destination));
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
+
+            state.SetData(new Target(_target.Transform) { Id = 2 }, Vector3.right * 20f,
+                UnitOrderModel.NO_HARD_POINT);
+            state.Tick(0.1f);
+            Assert.That(_movement.Destination.x, Is.GreaterThan(_target.Transform.position.x),
+                "A new target must retain the initial assigned formation approach.");
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
         public void Attack_TargetKilled_AttacksNearestPreferredRadarContactEvenOutOfRange(bool formation)
         {
             GameObject deadObject = new GameObject("Dead enemy");

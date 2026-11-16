@@ -6,6 +6,7 @@ namespace EmpireAtWar.Services.ShipNavigation
     {
         int SpacingRevision { get; }
         bool CanSettle { get; }
+        bool IsMoving { get; }
         Vector3 SpacingTargetPosition { get; }
         bool TrySettle(Vector3 destination, int revision);
     }

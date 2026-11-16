@@ -34,6 +34,22 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(Solve(ships, 1).HasCorrection, Is.False);
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public void MovingShip_DoesNotBlockOrReceiveCorrection(bool eligible)
+        {
+            var ships = new[] { Ship(1, float2.zero), Ship(2, new float2(2f, 0f)) };
+            ships[1].Moving = true;
+            ships[1].Eligible = eligible;
+
+            Assert.That(Solve(ships, 0).HasCorrection, Is.False);
+            Assert.That(Solve(ships, 1).HasCorrection, Is.False);
+            uint movingHash = Solve(ships, 0).OccupancyHash;
+            ships[1].Moving = false;
+            Assert.That(Solve(ships, 0).OccupancyHash, Is.Not.EqualTo(movingHash));
+            Assert.That(Solve(ships, eligible ? 1 : 0).HasCorrection, Is.True);
+        }
+
         [Test]
         public void FailedAnchoredBlocker_LowerRegistrationCanYield()
         {
