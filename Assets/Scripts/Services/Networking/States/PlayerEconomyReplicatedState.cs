@@ -13,7 +13,7 @@ using UnityEngine;
 namespace EmpireAtWar.Services.Networking.States
 {
     /// <summary>
-    /// One human's credits, income timer, production queue and research, sent only to that player. Their client
+    /// One human's credits, income total and timer, production queue and research, sent only to that player. Their client
     /// pays no income and advances no production; purchases already go to the host as commands.
     /// </summary>
     public sealed class PlayerEconomyReplicatedState : ReplicatedState
@@ -51,6 +51,7 @@ namespace EmpireAtWar.Services.Networking.States
         public override string Capture() => JsonUtility.ToJson(new Snapshot
         {
             Money = _economy.Money,
+            TotalIncome = _economyService.TotalIncome,
             IncomeTimeLeft = _economy.IncomeTimeLeft,
             Production = _faction.QueuedItems
                 .Select(item => UnitRequestSave.From(item.UnitRequest, item.RemainingBuildTime)).ToArray(),
@@ -61,6 +62,7 @@ namespace EmpireAtWar.Services.Networking.States
         public override void Apply(string json)
         {
             Snapshot snapshot = JsonUtility.FromJson<Snapshot>(json);
+            _economyService.ApplyReplicatedIncome(snapshot.TotalIncome);
             _economy.Restore(snapshot.Money, snapshot.IncomeTimeLeft);
             ResearchSave.RestoreAll(snapshot.Research, _research);
             _faction.ReplaceQueue(snapshot.Production.Select(item =>
@@ -78,6 +80,7 @@ namespace EmpireAtWar.Services.Networking.States
         private sealed class Snapshot
         {
             public float Money;
+            public float TotalIncome;
             public float IncomeTimeLeft;
             public UnitRequestSave[] Production;
             public UnitRequestSave[] Reservations;

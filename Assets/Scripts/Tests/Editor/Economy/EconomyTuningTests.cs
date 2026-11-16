@@ -9,6 +9,8 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Economy;
 using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.Services.Networking;
+using EmpireAtWar.Services.Networking.States;
 using EmpireAtWar.Services.Saves;
 using NUnit.Framework;
 using UnityEditor;
@@ -172,6 +174,66 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(tibannaData.ComponentData.ShieldRegenerateDelay,
                 Is.EqualTo(originalData.ComponentData.ShieldRegenerateDelay));
             Assert.That(tibannaData.ComponentData.SpawnBlockRadius, Is.EqualTo(originalData.ComponentData.SpawnBlockRadius));
+        }
+
+        [Test]
+        [Category("Networking")]
+        public void ClientIncome_UsesHostSnapshotsDespiteLocalProviderAndResearchChanges()
+        {
+            FactionRoster roster = CreateRoster("Empire");
+            StationLevelData levels = Load<StationLevelData>(SHARED_PATH + "StationLevelData.asset");
+            EconomyData data = Load<EconomyData>("Assets/Settings/Data/Economy/EconomyData.asset");
+            var owner = TestPlayers.CreateDuel().Get(TestPlayers.Human);
+            var hostResearch = new FactionResearchModel(roster);
+            var clientResearch = new FactionResearchModel(roster);
+            var hostMoney = new EconomyModel(data, 500f);
+            var clientMoney = new EconomyModel(data, 100f);
+            var host = new EconomyService(hostMoney, data, new BattleStateNotifier(),
+                new PlayerRegistry(), owner, hostResearch);
+            var client = new EconomyService(clientMoney, data, new BattleStateNotifier(),
+                new PlayerRegistry(), owner, clientResearch);
+            var hostState = new PlayerEconomyReplicatedState(new ReplicatedStateRegistry(), null, owner,
+                hostMoney, host, new PlayerFactionModel(levels, roster), null, hostResearch, null, roster, levels);
+            var clientState = new PlayerEconomyReplicatedState(new ReplicatedStateRegistry(), null, owner,
+                clientMoney, client, new PlayerFactionModel(levels, roster), null, clientResearch, null, roster, levels);
+            host.Initialize();
+            client.Initialize();
+            client.FollowHost();
+            try
+            {
+                // The client may lack an allied mine's research or a newly replicated station's income.
+                var hostMine = new FixedIncomeProvider();
+                host.AddProvider(hostMine);
+                hostResearch.Complete(ResearchType.IncreasedStationIncome);
+                float incomeAtMoneyChanged = -1f;
+                clientMoney.OnMoneyChanged += _ => incomeAtMoneyChanged = client.TotalIncome;
+                clientState.Apply(hostState.Capture());
+                Assert.That(client.TotalIncome, Is.EqualTo(63.6f).Within(0.0001f));
+                Assert.That(incomeAtMoneyChanged, Is.EqualTo(host.TotalIncome));
+                Assert.That(clientMoney.Money, Is.EqualTo(500f));
+
+                var clientMine = new FixedIncomeProvider();
+                client.AddProvider(clientMine);
+                clientResearch.Complete(ResearchType.IncreasedStationIncome);
+                client.RemoveProvider(clientMine);
+                Assert.That(client.TotalIncome, Is.EqualTo(host.TotalIncome),
+                    "Local provider and research changes must not overwrite the host's income.");
+                client.Tick();
+                Assert.That(clientMoney.Money, Is.EqualTo(500f), "A client must not pay income locally.");
+                Assert.That(clientMoney.IncomeTimeLeft, Is.Zero);
+
+                host.RemoveProvider(hostMine);
+                clientState.Apply(hostState.Capture());
+                Assert.That(host.TotalIncome, Is.EqualTo(3.6f).Within(0.0001f));
+                Assert.That(client.TotalIncome, Is.EqualTo(host.TotalIncome),
+                    "The next snapshot must reflect income lost when a host-side mine is destroyed.");
+                Assert.That(incomeAtMoneyChanged, Is.EqualTo(host.TotalIncome));
+            }
+            finally
+            {
+                client.LateDispose();
+                host.LateDispose();
+            }
         }
 
         private static FactionRoster CreateRoster(string faction)

@@ -27,12 +27,13 @@ namespace EmpireAtWar.Services.Economy
         private readonly List<IIncomeProvider> _incomeProviders = new();
 
         private float _commonIncome;
+        private float _replicatedIncome;
         // Income is paid only while the battle runs, never during loading.
         private bool _isRunning;
         private bool _followsHost;
 
         public float Income => DEFAULT_INCOME * _research.StationIncomeMultiplier;
-        public float TotalIncome => _commonIncome;
+        public float TotalIncome => _followsHost ? _replicatedIncome : _commonIncome;
 
         public EconomyService(
             EconomyModel model,
@@ -73,6 +74,8 @@ namespace EmpireAtWar.Services.Economy
 
         /// <summary>Online client: income is paid on the host; credits are replicated.</summary>
         public void FollowHost() => _followsHost = true;
+
+        public void ApplyReplicatedIncome(float income) => _replicatedIncome = income;
 
         public void Tick()
         {
