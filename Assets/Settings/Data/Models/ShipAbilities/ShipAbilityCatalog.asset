@@ -16,7 +16,7 @@ MonoBehaviour:
     keyValue:
     - key: 8
       value:
-        icon: {fileID: 21300000, guid: 2e60ab884151e074caf67bb570ba533b, type: 3}
+        icon: {fileID: 21300000, guid: f167f742e71945ff938dd7e6408a5c0a, type: 3}
         displayName: Ion Pulse
         description: Turn the nearest ion cannon broadside to the target, then fire
           a slow ion wave. Enemy ships hit are disabled for 10 s. No hull damage.
@@ -293,7 +293,7 @@ MonoBehaviour:
           rid: 7607833764655792209
     - key: 9
       value:
-        icon: {fileID: 21300000, guid: 2e60ab884151e074caf67bb570ba533b, type: 3}
+        icon: {fileID: 21300000, guid: f167f742e71945ff938dd7e6408a5c0a, type: 3}
         displayName: Ion Shot
         description: Surviving craft fire white ion projectiles that disable the
           target for 3 s on arrival. No hull damage. 20 s recovery.
