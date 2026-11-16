@@ -54,7 +54,7 @@ MonoBehaviour:
   - {x: -6.7266965, y: 45.268948}
   - {x: -7.255286, y: 42.753128}
   - {x: -18.384045, y: -11.353005}
-  <Speed>k__BackingField: 20
+  <Speed>k__BackingField: 26
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 3
   <HullBottom>k__BackingField: -13.741152
