@@ -238,6 +238,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [TestCase("Research", 1, 1)]
+        [TestCase("MiningResearch", 1, 1)]
         [TestCase("Level", 1, 1)]
         [TestCase("Ship", 3, 10)]
         [TestCase("Ship", 1, 1)]
@@ -257,12 +258,16 @@ namespace EmpireAtWar.Tests.Editor
             UnitRequest request = kind switch
             {
                 "Research" => new ResearchUnitRequest(data, ResearchType.ImprovedWeapons, 1),
+                "MiningResearch" => new ResearchUnitRequest(data, ResearchType.IncreasedProduction, 1),
                 "Level" => new LevelUnitRequest(data, 1),
                 "Structure" => new MiningFacilityUnitRequest(data, MiningFacilityType.CommonMiner),
                 "Squadron" => new SquadronUnitRequest(data, SquadronType.TIEFighter),
                 _ => new ShipUnitRequest(data, ShipType.HomeOne)
             };
-            var model = new PlayerFactionModel(null, null) { SelectionType = SelectionType.Base };
+            var model = new PlayerFactionModel(null, null)
+            {
+                SelectionType = kind == "MiningResearch" ? SelectionType.MiningFacility : SelectionType.Base
+            };
             FactionUiController presenter = CreatePresenter(model);
             FactionUnitUi prefab = AssetDatabase.LoadAssetAtPath<FactionUnitUi>(
                 "Assets/Prefabs/Ui/Factions/FactionUnit.prefab");

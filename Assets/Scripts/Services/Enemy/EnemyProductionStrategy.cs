@@ -67,9 +67,6 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<UnitTypeId> _candidateIds = new List<UnitTypeId>();
         private readonly List<FactionData> _candidateData = new List<FactionData>();
 
-        private float _decisionTimer;
-        private bool _hasDecided;
-
         private int _observedReleaseVersion;
 
         public float DefenseReserve { get; private set; }
@@ -94,7 +91,7 @@ namespace EmpireAtWar.Services.Enemy
             EnemyStationPressureTracker stationPressure,
             SecondStationLevelModel secondStation,
             IEnemyRecoveryPolicy recovery,
-            EnemyAiScheduler scheduler = null)
+            EnemyAiScheduler scheduler)
         {
             _secondStation = secondStation;
             _recovery = recovery;
@@ -120,21 +117,22 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Start()
         {
-            _decisionTimer = 0f;
-            _hasDecided = false;
             _observedReleaseVersion = _unitLimitModel.ReleaseVersion;
-            if (_scheduler != null && _workHandle == null)
+            if (_workHandle == null)
             {
                 EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(_owner.Difficulty);
                 float interval = Mathf.Max(MINIMUM_PRODUCTION_INTERVAL, profile.DecisionInterval * 2f);
-                float initialDelay = EnemyAiStagger.Offset(_owner.Id, interval);
-                _workHandle = _scheduler.Register(_owner.Id, interval, initialDelay, RunScheduledProduction);
+                _workHandle = _scheduler.Register(_owner.Id, interval, 0f, RunScheduledProduction);
+            }
+            else
+            {
+                _scheduler.MarkDue(_workHandle);
             }
         }
 
         public void Dispose()
         {
-            _scheduler?.Unregister(_workHandle);
+            _scheduler.Unregister(_workHandle);
             _workHandle = null;
         }
 
@@ -148,32 +146,8 @@ namespace EmpireAtWar.Services.Enemy
             if (_observedReleaseVersion != _unitLimitModel.ReleaseVersion)
             {
                 _observedReleaseVersion = _unitLimitModel.ReleaseVersion;
-                _decisionTimer = 0f;
-                _scheduler?.MarkDue(_workHandle);
+                _scheduler.MarkDue(_workHandle);
             }
-
-            if (_scheduler != null)
-            {
-                return;
-            }
-
-            _decisionTimer -= deltaTime;
-            if (_decisionTimer > 0f)
-            {
-                return;
-            }
-
-            EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(
-                _owner.Difficulty);
-            _decisionTimer = Mathf.Max(
-                MINIMUM_PRODUCTION_INTERVAL,
-                profile.DecisionInterval * 2f);
-            if (!_hasDecided)
-            {
-                _hasDecided = true;
-                _decisionTimer += EnemyAiStagger.Offset(_owner.Id, _decisionTimer);
-            }
-            EvaluateProduction(profile);
         }
 
         private void RunScheduledProduction()

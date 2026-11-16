@@ -71,8 +71,6 @@ namespace EmpireAtWar.Services.Enemy
             new Dictionary<IShipEntity, Vector3>();
 
         private EnemyAiScheduler.WorkHandle _workHandle;
-        private float _decisionTimer;
-        private float _timeSinceDecision = float.PositiveInfinity;
         private bool _cycleInProgress;
         private int _nextGroupIndex;
         private bool _cycleHasPressure;
@@ -160,7 +158,7 @@ namespace EmpireAtWar.Services.Enemy
             EnemyStrategicContextBuilder contextBuilder,
             EnemyTaskForceExecutor taskForceExecutor,
             PlayerSlot owner, EnemyPatrolService patrol, EnemyPatrolShipController patrolShips,
-            INotifier<BattleState> battleState, EnemyAiScheduler scheduler = null)
+            INotifier<BattleState> battleState, EnemyAiScheduler scheduler)
         {
             _owner = owner;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -188,23 +186,20 @@ namespace EmpireAtWar.Services.Enemy
             _entityLocator.EntityRemoved += HandleEntityChanged;
             // Player scopes initialize before the asynchronous map load finishes.
             float interval = EnemyAiDifficultyProfile.Get(_owner.Difficulty).DecisionInterval;
-            _decisionTimer = EnemyAiStagger.Offset(_owner.Id, interval);
-            if (_scheduler != null)
-            {
-                _workHandle = _scheduler.Register(
-                    _owner.Id,
-                    interval,
-                    _decisionTimer,
-                    RunScheduledUnit,
-                    () => _contextBuilder.StationCritical,
-                    () => _cycleInProgress);
-            }
+            float initialDelay = EnemyAiStagger.Offset(_owner.Id, interval);
+            _workHandle = _scheduler.Register(
+                _owner.Id,
+                interval,
+                initialDelay,
+                RunScheduledUnit,
+                () => _contextBuilder.StationCritical,
+                () => _cycleInProgress);
             _battleState.AddObserver(this);
         }
 
         public void LateDispose()
         {
-            _scheduler?.Unregister(_workHandle);
+            _scheduler.Unregister(_workHandle);
             _workHandle = null;
             _battleState.RemoveObserver(this);
             _isRunning = false;
@@ -227,14 +222,6 @@ namespace EmpireAtWar.Services.Enemy
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             DecisionDiagnostics.Tick(Time.deltaTime);
 #endif
-            if (_scheduler != null) return;
-
-            _timeSinceDecision += Time.deltaTime;
-            _decisionTimer -= Time.deltaTime;
-            if (_decisionTimer <= 0f)
-            {
-                EvaluateAndExecute();
-            }
         }
 
         private void HandleShipChanged(IShipEntity ship)
@@ -254,6 +241,8 @@ namespace EmpireAtWar.Services.Enemy
                 throw new ArgumentNullException(nameof(ship));
             }
 
+            _ships.Remove(ship);
+            if (_cyclePatrolShip == ship) _cyclePatrolShip = null;
             _zoneExitTargets.Remove(ship);
             HandleWorldChanged();
         }
@@ -273,18 +262,7 @@ namespace EmpireAtWar.Services.Enemy
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (_isRunning) WorldChangeNotifications++;
 #endif
-            if (_scheduler != null && _workHandle != null)
-            {
-                _scheduler.MarkDirty(_workHandle, MINIMUM_WORLD_CHANGE_DECISION_GAP);
-                return;
-            }
-
-            // Removal events also arrive during teardown, after zone views may be destroyed.
-            // Defer world queries to a later gameplay tick, on a frame of this player's own.
-            // Churn must not accelerate full decisions beyond the fastest difficulty's normal cadence.
-            float delay = Mathf.Max(EnemyAiStagger.WorldChangeDelay(_owner.Id),
-                MINIMUM_WORLD_CHANGE_DECISION_GAP - _timeSinceDecision);
-            _decisionTimer = Mathf.Min(_decisionTimer, delay);
+            _scheduler.MarkDirty(_workHandle, MINIMUM_WORLD_CHANGE_DECISION_GAP);
         }
 
         private void RunScheduledUnit()
@@ -300,27 +278,18 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
-        private void EvaluateAndExecute()
-        {
-            BeginDecisionCycle();
-            while (!EvaluateNextGroup())
-            {
-            }
-            FinishDecisionCycle();
-        }
-
         private void BeginDecisionCycle()
         {
-            _timeSinceDecision = 0f;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             DecisionDiagnostics.Record();
             using var marker = DecisionDiagnostics.Marker.Auto();
 #endif
-            _decisionTimer = EnemyAiDifficultyProfile.Get(_owner.Difficulty).DecisionInterval;
             _patrol.Sample(Time.time);
             _ships.Clear();
             foreach (IShipEntity ship in _shipService.Ships)
-                if (ship.Owner == _owner.Id && _entityLocator.TryGetEntity(ship.EntityId, out GameEntity _))
+                if (ship.Owner == _owner.Id &&
+                    _entityLocator.TryGetEntity(ship.EntityId, out GameEntity entity) &&
+                    !entity.HealthModel.IsDestroyed)
                     _ships.Add(ship);
             (bool HasPressure, bool GatherReinforcements) station;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -356,6 +325,7 @@ namespace EmpireAtWar.Services.Enemy
             using var marker = DecisionDiagnostics.Marker.Auto();
 #endif
             EnemyShipTaskGroup group = _taskGroups.Groups[_nextGroupIndex++];
+            PruneDeadShips(group.Ships);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BUILD_GROUP_MARKER.Auto())
 #endif
@@ -414,24 +384,51 @@ namespace EmpireAtWar.Services.Enemy
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (CAPTURE_PROBE_MARKER.Auto())
 #endif
+            {
+                PruneDeadShips(_ships);
                 _taskGroups.TryCreateCaptureGroup(_ships, _reservedCaptureObjectives, _cycleHasPressure);
-            if (_cyclePatrolShip != null) _ships.Add(_cyclePatrolShip);
+            }
+            if (_cyclePatrolShip != null && _entityLocator.TryGetEntity(_cyclePatrolShip.EntityId, out GameEntity patrolEntity) &&
+                !patrolEntity.HealthModel.IsDestroyed)
+            {
+                _ships.Add(_cyclePatrolShip);
+            }
+        }
+
+        private void PruneDeadShips(List<IShipEntity> ships)
+        {
+            for (int i = ships.Count - 1; i >= 0; i--)
+            {
+                if (!_entityLocator.TryGetEntity(ships[i].EntityId, out GameEntity entity) ||
+                    entity.HealthModel.IsDestroyed)
+                {
+                    ships.RemoveAt(i);
+                }
+            }
         }
 
         private void MoveShipsOutOfDefaultZone(IReadOnlyList<IShipEntity> ships)
         {
             List<IShipEntity> unassignedShips = new List<IShipEntity>();
+            List<GameEntity> unassignedEntities = new List<GameEntity>();
             List<FormationPoint> positions = new List<FormationPoint>();
             List<float> radii = new List<float>();
             float maximumRadius = 0f;
             foreach (IShipEntity ship in ships)
             {
+                if (!_entityLocator.TryGetEntity(ship.EntityId, out GameEntity shipEntity) ||
+                    shipEntity.HealthModel.IsDestroyed)
+                {
+                    _zoneExitTargets.Remove(ship);
+                    continue;
+                }
+
                 if (_zoneExitTargets.TryGetValue(ship, out Vector3 target))
                 {
                     if (_reinforcementZonesSystem.TryGetDefaultZoneExitPosition(
                             _owner.Id, ship.WorldPosition, ship.NavigationRadius, out _))
                     {
-                        _unitOrderService.IssueMove(new[] { _entityLocator.GetEntity(ship.EntityId) },
+                        _unitOrderService.IssueMove(new[] { shipEntity },
                             new[] { target });
                         continue;
                     }
@@ -446,11 +443,12 @@ namespace EmpireAtWar.Services.Enemy
                 {
                     _zoneExitTargets.Remove(ship);
                     if (ship.CurrentOrder != UnitOrderType.None)
-                        _unitOrderService.IssueStop(new[] { _entityLocator.GetEntity(ship.EntityId) });
+                        _unitOrderService.IssueStop(new[] { shipEntity });
                     continue;
                 }
 
                 unassignedShips.Add(ship);
+                unassignedEntities.Add(shipEntity);
                 positions.Add(ToPoint(ship.WorldPosition));
                 radii.Add(ship.NavigationRadius);
                 maximumRadius = Mathf.Max(maximumRadius, ship.NavigationRadius);
@@ -477,8 +475,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 Vector3 target = ToVector(destinations[i]);
                 _zoneExitTargets.Add(unassignedShips[i], target);
-                _unitOrderService.IssueMove(new[] {
-                    _entityLocator.GetEntity(unassignedShips[i].EntityId) },
+                _unitOrderService.IssueMove(new[] { unassignedEntities[i] },
                     new[] { target });
             }
         }

@@ -151,7 +151,8 @@ namespace EmpireAtWar.Services.SceneService
                 while (_recovery.IsActive) await Awaitable.NextFrameAsync(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
                 foreach (GameObject root in loadingScene.GetRootGameObjects()) root.SetActive(false);
-                SceneManager.UnloadSceneAsync(loadingScene);
+                // Fire-and-forget: roots are already inactive and nothing depends on the unload finishing.
+                _ = SceneManager.UnloadSceneAsync(loadingScene);
                 _loadingScene = default;
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)

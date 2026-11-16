@@ -11,6 +11,9 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Utils;
 using UnityEngine;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+using Unity.Profiling;
+#endif
 
 namespace EmpireAtWar.Entities.Ship.StateMachine
 {
@@ -19,12 +22,18 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         // A moving ship only halts early when the target closes inside this fraction.
         private const float MINIMUM_RANGE_FACTOR = 0.5f;
         private const float STALL_RETRY_INTERVAL = 0.5f;
+        private const float HARD_POINT_SCAN_INTERVAL = 0.1f;
         private const float STALL_BEARING_STEP_DEGREES = 20f;
         private const float ARTILLERY_APPROACH_FACTOR = 0.9f;
         private const float ARTILLERY_HOLD_FACTOR = 0.95f;
         private const float ARTILLERY_RETREAT_FACTOR = 0.8f;
         private const int ARTILLERY_STALL_RETRIES = 6;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private static readonly ProfilerMarker _hardPointApproachMarker = new ProfilerMarker("Battle.Ship.Attack.HardPointApproach");
+        private static readonly ProfilerMarker _artilleryMarker = new ProfilerMarker("Battle.Ship.Attack.Artillery");
+        private static readonly ProfilerMarker _holdLookAtMarker = new ProfilerMarker("Battle.Ship.Attack.HoldLookAt");
+#endif
         private readonly IAttackDataFactory _attackDataFactory;
         private readonly IWeaponComponent _weaponComponent;
         private readonly IShipMovement _shipMoveComponent;
@@ -41,6 +50,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private Vector3 _lastAttemptPosition;
         private float _stallRetryTimer;
         private int _stallAttempt;
+        private bool _hasHardPointApproach;
+        private float _hardPointScanTimer;
 
         private bool _hasPursuitDestination;
         private bool _wasMoving;
@@ -131,6 +142,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 throw new InvalidOperationException("AttackTargetState requires a target before Enter.");
             }
 
+            _hasHardPointApproach = false;
             if (_mainTargetEntity.TryGetFacade(out IHealthFacade _))
             {
                 _attackData = _focusedHardPoint == null || _focusedHardPoint.IsDestroyed
@@ -153,6 +165,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (_focusedHardPoint != null && _focusedHardPoint.IsDestroyed)
             {
                 _focusedHardPoint = null;
+                _hasHardPointApproach = false;
                 _attackData = _attackDataFactory.ConstructData(_mainTargetEntity);
                 _weaponComponent.AddTarget(_attackData, AttackType.MainTarget);
             }
@@ -175,14 +188,14 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _hasHeldPosition = false;
             _stallAttempt = 0;
             _wasMoving = false;
+            _hasHardPointApproach = false;
         }
 
         private void UpdateFormationMove()
         {
             if (IsInRange && (!_isClosingRange || !_shipMoveComponent.IsMoving))
             {
-                _shipMoveComponent.HoldPosition(_mainTargetEntity);
-                _shipMoveComponent.LookAtTarget(_mainTargetEntity);
+                HoldAndLookAtTarget();
                 _isClosingRange = true;
                 _hasHeldPosition = true;
                 _hasPursuitDestination = false;
@@ -203,11 +216,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (_attackData != null && _mainTarget.ShipClass == ShipClass.HeavyCapital &&
                 _mainTargetEntity.TryGetFacade(out INavigationFootprintFacade footprint) &&
                 footprint.NavigationRadius > _weaponComponent.AttackDistance &&
-                _weaponComponent.TryGetHardPointApproach(_attackData, out Vector3 offset))
-            {
-                UpdateHardPointApproach(offset, deltaTime);
-                return;
-            }
+                TryUpdateHardPointApproach(deltaTime)) return;
 
             if (_artilleryCapability != null && TryUpdateArtilleryMove(deltaTime)) return;
             if (RetryStalledMove(deltaTime)) return;
@@ -229,16 +238,14 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             float range = _shipMoveComponent.GetRange(TargetPosition);
             if (!_shipMoveComponent.IsMoving && IsInRange)
             {
-                _shipMoveComponent.HoldPosition(_mainTargetEntity);
-                _shipMoveComponent.LookAtTarget(_mainTargetEntity);
+                HoldAndLookAtTarget();
                 _hasPursuitDestination = false;
                 return;
             }
 
             if (_shipMoveComponent.IsMoving && range <= EngagementRange * MINIMUM_RANGE_FACTOR)
             {
-                _shipMoveComponent.HoldPosition(_mainTargetEntity);
-                _shipMoveComponent.LookAtTarget(_mainTargetEntity);
+                HoldAndLookAtTarget();
                 _hasPursuitDestination = false;
                 return;
             }
@@ -257,12 +264,38 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             MoveToPursuitDestination(standoffPosition, preserveCourse: true);
         }
 
+        private bool TryUpdateHardPointApproach(float deltaTime)
+        {
+            _hardPointScanTimer -= deltaTime;
+            // A committed leg ignores the offset until it ends, so a scan only has to catch mount-range entry.
+            // Arrival and a new target rescan at once; a moving target is followed by the leg that starts on arrival.
+            if (_hasHardPointApproach && _hasPursuitDestination && _shipMoveComponent.IsMoving &&
+                _hardPointScanTimer > 0f) return true;
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using var scope = _hardPointApproachMarker.Auto();
+#endif
+            _hardPointScanTimer = HARD_POINT_SCAN_INTERVAL;
+            _hasHardPointApproach = _weaponComponent.TryGetHardPointApproach(_attackData, out Vector3 offset);
+            if (!_hasHardPointApproach) return false;
+            UpdateHardPointApproach(offset, deltaTime);
+            return true;
+        }
+
+        private void HoldAndLookAtTarget()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using var scope = _holdLookAtMarker.Auto();
+#endif
+            _shipMoveComponent.HoldPosition(_mainTargetEntity);
+            _shipMoveComponent.LookAtTarget(_mainTargetEntity);
+        }
+
         private void UpdateHardPointApproach(Vector3 offset, float deltaTime)
         {
             if (offset == Vector3.zero)
             {
-                _shipMoveComponent.HoldPosition(_mainTargetEntity);
-                _shipMoveComponent.LookAtTarget(_mainTargetEntity);
+                HoldAndLookAtTarget();
                 ResetPursuit();
                 return;
             }
@@ -284,6 +317,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         private bool TryUpdateArtilleryMove(float deltaTime)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using var scope = _artilleryMarker.Auto();
+#endif
             float previousReach = _artilleryReach;
             int revision = _artilleryCapability.ArtilleryRevision;
             ShipClass targetClass = _mainTarget.ShipClass;
@@ -321,8 +357,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (_hasPursuitDestination && moving && (hold || retreat == _isArtilleryRetreat)) return true;
             if (hold)
             {
-                _shipMoveComponent.HoldPosition(_mainTargetEntity);
-                _shipMoveComponent.LookAtTarget(_mainTargetEntity);
+                HoldAndLookAtTarget();
                 ResetPursuit();
                 _hasHeldPosition = true;
                 return true;

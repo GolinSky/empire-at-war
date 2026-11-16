@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using EmpireAtWar.Controllers.Factions;
+using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
@@ -18,6 +19,7 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Stations;
+using EmpireAtWar.Utils;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -694,6 +696,9 @@ namespace EmpireAtWar.Tests.Editor
 
                 RecordingPurchaseProcessor purchaseProcessor =
                     new RecordingPurchaseProcessor();
+                var entities = new EntityLocator();
+                var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
+                scheduler.Initialize();
                 EnemyProductionStrategy strategy = new EnemyProductionStrategy(
                     factionModel: factionModel,
                     research: new FactionResearchModel(CreateRoster(definition)),
@@ -707,17 +712,19 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     productionAccess: new OperationalProductionAccess(),
                     // No hostile units exist, so the size-based selection runs; every ship rates the same per credit.
-                    forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
-                        new UnitCombatProfileCatalog(null, null, null, null)),
+                    forceBuilder: new ForceCompositionBuilder(entities,
+                        new UnitCombatProfileCatalog(null, null, null, null), new AiWorldSnapshot(entities)),
                     profileCatalog: UniformValueCatalog(definition),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
                     secondStation: new SecondStationLevelModel(),
-                    recovery: new EnemyRecoveryPolicyStub());
+                    recovery: new EnemyRecoveryPolicyStub(),
+                    scheduler: scheduler);
 
                 strategy.Start();
                 strategy.Tick(0f);
+                scheduler.Step(0f);
 
                 Assert.That(
                     purchaseProcessor.LastRequest,
@@ -774,6 +781,9 @@ namespace EmpireAtWar.Tests.Editor
 
                 RecordingPurchaseProcessor purchaseProcessor =
                     new RecordingPurchaseProcessor();
+                var entities = new EntityLocator();
+                var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
+                scheduler.Initialize();
                 EnemyProductionStrategy strategy = new EnemyProductionStrategy(
                     factionModel: factionModel,
                     // All research is done so only the ship rebuild competes for money.
@@ -788,14 +798,15 @@ namespace EmpireAtWar.Tests.Editor
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     productionAccess: new OperationalProductionAccess(),
                     // No hostile units exist, so the size-based selection runs; every ship rates the same per credit.
-                    forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
-                        new UnitCombatProfileCatalog(null, null, null, null)),
+                    forceBuilder: new ForceCompositionBuilder(entities,
+                        new UnitCombatProfileCatalog(null, null, null, null), new AiWorldSnapshot(entities)),
                     profileCatalog: UniformValueCatalog(definition),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
                     secondStation: new SecondStationLevelModel(),
-                    recovery: new EnemyRecoveryPolicyStub());
+                    recovery: new EnemyRecoveryPolicyStub(),
+                    scheduler: scheduler);
 
                 UnitLimitKey capacityHolder = GetUnitId<ShipUnitRequest>("capacity-holder");
                 int heldCapacity = MAX_UNIT_CAPACITY - unitLimitModel.CurrentUnitCapacity -
@@ -873,6 +884,9 @@ namespace EmpireAtWar.Tests.Editor
 
                 // No ships are listed, so the minimum-fleet rule cannot claim the purchase.
                 RecordingPurchaseProcessor purchaseProcessor = new RecordingPurchaseProcessor();
+                var entities = new EntityLocator();
+                var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
+                scheduler.Initialize();
                 EnemyProductionStrategy strategy = new EnemyProductionStrategy(
                     factionModel: factionModel,
                     research: research,
@@ -885,17 +899,19 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     productionAccess: new OperationalProductionAccess(),
-                    forceBuilder: new ForceCompositionBuilder(new EntityLocator(),
-                        new UnitCombatProfileCatalog(null, null, null, null)),
+                    forceBuilder: new ForceCompositionBuilder(entities,
+                        new UnitCombatProfileCatalog(null, null, null, null), new AiWorldSnapshot(entities)),
                     profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
                     secondStation: new SecondStationLevelModel(),
-                    recovery: new EnemyRecoveryPolicyStub());
+                    recovery: new EnemyRecoveryPolicyStub(),
+                    scheduler: scheduler);
 
                 strategy.Start();
                 strategy.Tick(0f);
+                scheduler.Step(0f);
 
                 Assert.That(purchaseProcessor.LastRequest, Is.TypeOf<ResearchUnitRequest>());
                 ResearchUnitRequest request = (ResearchUnitRequest)purchaseProcessor.LastRequest;
@@ -953,6 +969,9 @@ namespace EmpireAtWar.Tests.Editor
                 pressure.Update(1, 490f, 1000f, 4f);
                 Assert.That(pressure.IsStationCritical, Is.True);
                 var purchases = new RecordingPurchaseProcessor();
+                var entities = new EntityLocator();
+                var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
+                scheduler.Initialize();
                 var strategy = new EnemyProductionStrategy(
                     factionModel: factionModel,
                     research: CreateCompletedResearch(definition),
@@ -965,17 +984,19 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     productionAccess: new OperationalProductionAccess(),
-                    forceBuilder: new ForceCompositionBuilder(new EntityLocator(), catalog),
+                    forceBuilder: new ForceCompositionBuilder(entities, catalog, new AiWorldSnapshot(entities)),
                     profileCatalog: catalog,
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
                     stationPressure: pressure,
                     secondStation: new SecondStationLevelModel(),
-                    recovery: new EnemyRecoveryPolicyStub());
+                    recovery: new EnemyRecoveryPolicyStub(),
+                    scheduler: scheduler);
 
                 strategy.Start();
                 strategy.Tick(0f);
+                scheduler.Step(0f);
 
                 Assert.That(purchases.LastRequest, Is.TypeOf<SquadronUnitRequest>());
             }
@@ -994,6 +1015,8 @@ namespace EmpireAtWar.Tests.Editor
             try
             {
                 var purchases = new RecordingPurchaseProcessor();
+                var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
+                scheduler.Initialize();
                 var strategy = new EnemyProductionStrategy(
                     factionModel: CreateFactionModel(definition), research: null,
                     purchaseProcessor: purchases, requestFactory: new UnitRequestFactory(),
@@ -1003,10 +1026,12 @@ namespace EmpireAtWar.Tests.Editor
                     productionAccess: new OperationalProductionAccess { CanProduce = false },
                     forceBuilder: null, profileCatalog: null, counterModel: null, intelRegistry: new TeamIntelRegistry(),
                     owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy), stationPressure: new EnemyStationPressureTracker(),
-                    secondStation: new SecondStationLevelModel(), recovery: new EnemyRecoveryPolicyStub { IsActive = true });
+                    secondStation: new SecondStationLevelModel(), recovery: new EnemyRecoveryPolicyStub { IsActive = true },
+                    scheduler: scheduler);
 
                 strategy.Start();
                 strategy.Tick(0f);
+                scheduler.Step(0f);
 
                 Assert.That(purchases.RequestCount, Is.Zero);
             }

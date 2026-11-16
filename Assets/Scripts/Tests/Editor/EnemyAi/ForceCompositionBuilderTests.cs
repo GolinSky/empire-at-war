@@ -32,7 +32,8 @@ namespace EmpireAtWar.Tests.Editor
             HostileIntelModel intel = new HostileIntelModel();
             intel.Report(new HostileSighting(1, UnitTypeId.Squadron(SquadronType.Vulture), TestPlayers.Human,
                 new FormationPoint(0f, 0f), HULL, SHIELDS, 1f, seenAt: 0f));
-            ForceCompositionBuilder builder = new ForceCompositionBuilder(new EntityLocator(), catalog);
+            var entities = new EntityLocator();
+            ForceCompositionBuilder builder = new ForceCompositionBuilder(entities, catalog, new AiWorldSnapshot(entities));
             ForceComposition force = new ForceComposition();
 
             // Stale but remembered: trust in the position has faded, the unit's strength has not.

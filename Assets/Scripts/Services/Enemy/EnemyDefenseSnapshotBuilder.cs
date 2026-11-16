@@ -57,7 +57,7 @@ namespace EmpireAtWar.Services.Enemy
             IEconomyModelObserver money, EconomyService economy, EconomyData economyData,
             EnemyProductionStrategy production, IEnemyAiDebugInfo strategy,
             IAssetService assets, CaptureSiteData siteData, WeaponsData weapons, DamageMatrixData damage,
-            IProductionAccess productionAccess, AiWorldSnapshot worldSnapshot = null)
+            IProductionAccess productionAccess, AiWorldSnapshot worldSnapshot)
         {
             _sites = sites;
             _presence = presence;
@@ -151,27 +151,14 @@ namespace EmpireAtWar.Services.Enemy
         {
             _bases.Clear();
             if (_padIndices.Count == 0) return;
-            if (_worldSnapshot != null)
+            IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
+            for (int i = 0; i < bases.Count; i++)
             {
-                IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
-                for (int i = 0; i < bases.Count; i++)
-                {
-                    AiWorldSnapshot.Entry entry = bases[i];
-                    bool own = entry.Owner == _productionAccess.ProductionHost;
-                    bool hostile = _players.IsHostile(_owner.Id, entry.Owner);
-                    if (own || hostile)
-                        _bases.Add((entry.Position, own, hostile));
-                }
-                return;
-            }
-
-            foreach (IEntity entity in _entities.Entities)
-            {
-                if (!entity.IsPlayerBase() || entity.HealthModel.IsDestroyed) continue;
-                bool own = entity.Owner == _productionAccess.ProductionHost;
-                bool hostile = _players.IsHostile(_owner.Id, entity.Owner);
+                AiWorldSnapshot.Entry entry = bases[i];
+                bool own = entry.Owner == _productionAccess.ProductionHost;
+                bool hostile = _players.IsHostile(_owner.Id, entry.Owner);
                 if (own || hostile)
-                    _bases.Add((entity.GetFacade<IEntityTransformFacade>().Transform.position, own, hostile));
+                    _bases.Add((entry.Position, own, hostile));
             }
         }
 

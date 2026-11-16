@@ -6,7 +6,6 @@ using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.ReinforcementZones;
-using EmpireAtWar.Services.TacticalMarkers;
 using UnityEngine;
 using static EmpireAtWar.Utils.FormationConversion;
 
@@ -23,7 +22,6 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly IPlayerRoster _roster;
         private readonly IReinforcementZoneSource _zones;
-        private readonly IReadOnlyList<IEnemyCaptureObjectiveSource> _captureSources;
         private readonly UnitCombatProfileCatalog _catalog;
         private readonly AiWorldSnapshot _worldSnapshot;
         private readonly HostileIntelModel _intel;
@@ -49,7 +47,6 @@ namespace EmpireAtWar.Services.Enemy
             HostileIntelModel intel,
             IPlayerRoster roster,
             IReinforcementZoneSource zones,
-            IReadOnlyList<IEnemyCaptureObjectiveSource> captureSources,
             UnitCombatProfileCatalog catalog,
             AiWorldSnapshot worldSnapshot)
         {
@@ -58,7 +55,6 @@ namespace EmpireAtWar.Services.Enemy
             _intel = intel;
             _roster = roster;
             _zones = zones;
-            _captureSources = captureSources;
             _catalog = catalog;
             _worldSnapshot = worldSnapshot;
         }
@@ -115,44 +111,30 @@ namespace EmpireAtWar.Services.Enemy
                 }
             }
 
-            if (_captureSources != null)
-            {
-                for (int i = 0; i < _captureSources.Count; i++)
-                {
-                    IEnemyCaptureObjectiveSource source = _captureSources[i];
-                    if (!(source is AllyAiMarkerSource))
-                    {
-                        source.AddStrategicObjectives(_baseCaptureObjectives, _intel);
-                    }
-                }
-            }
-
             _usedPoolCount = 0;
             _structureThreats.Clear();
             _objectiveThreats.Clear();
 
-            if (_worldSnapshot != null)
+            IReadOnlyList<AiWorldSnapshot.Entry> raidStructures = _worldSnapshot.RaidStructures;
+            for (int i = 0; i < raidStructures.Count; i++)
             {
-                IReadOnlyList<AiWorldSnapshot.Entry> structures = _worldSnapshot.Structures;
-                for (int i = 0; i < structures.Count; i++)
+                AiWorldSnapshot.Entry entry = raidStructures[i];
+                if (!_roster.IsHostile(RepresentativePlayer, entry.Owner) || entry.Entity.HealthModel.IsDestroyed)
                 {
-                    AiWorldSnapshot.Entry entry = structures[i];
-                    if (!_roster.IsHostile(RepresentativePlayer, entry.Owner) || entry.IsUnit || entry.IsPlayerBase)
-                    {
-                        continue;
-                    }
-
-                    ForceComposition threat = NextForce();
-                    BuildThreatNear(threat, entry.Position);
-                    _structureThreats[entry.Id] = threat;
+                    continue;
                 }
+
+                ForceComposition threat = NextForce();
+                BuildThreatNear(threat, entry.Position, THREAT_RADIUS_SQUARED);
+                _structureThreats[entry.Id] = threat;
             }
 
             for (int i = 0; i < _baseCaptureObjectives.Count; i++)
             {
                 EnemyCaptureObjective objective = _baseCaptureObjectives[i];
                 ForceComposition threat = NextForce();
-                BuildThreatNear(threat, objective.Position);
+                float radius = THREAT_RADIUS + objective.Radius;
+                BuildThreatNear(threat, objective.Position, radius * radius);
                 _objectiveThreats[objective.Id] = threat;
             }
         }
@@ -162,6 +144,20 @@ namespace EmpireAtWar.Services.Enemy
 
         public bool TryGetObjectiveThreat(string objectiveId, out ForceComposition threat) =>
             _objectiveThreats.TryGetValue(objectiveId, out threat);
+
+        public ForceComposition GetOrBuildObjectiveThreat(string objectiveId, Vector3 position, float radius)
+        {
+            if (_objectiveThreats.TryGetValue(objectiveId, out ForceComposition threat))
+            {
+                return threat;
+            }
+
+            threat = NextForce();
+            float totalRadius = THREAT_RADIUS + radius;
+            BuildThreatNear(threat, position, totalRadius * totalRadius);
+            _objectiveThreats[objectiveId] = threat;
+            return threat;
+        }
 
         public void BuildKnownFromConfident(ForceComposition force, Predicate<HostileSighting> include)
         {
@@ -188,7 +184,7 @@ namespace EmpireAtWar.Services.Enemy
             return _zoneIds[index];
         }
 
-        private void BuildThreatNear(ForceComposition threat, Vector3 center)
+        private void BuildThreatNear(ForceComposition threat, Vector3 center, float radiusSquared)
         {
             threat.Clear();
             for (int i = 0; i < _confidentSightings.Count; i++)
@@ -196,7 +192,7 @@ namespace EmpireAtWar.Services.Enemy
                 HostileSighting sighting = _confidentSightings[i];
                 Vector3 offset = ToVector(sighting.Position) - center;
                 offset.y = 0f;
-                if (offset.sqrMagnitude <= THREAT_RADIUS_SQUARED)
+                if (offset.sqrMagnitude <= radiusSquared)
                 {
                     threat.Add(_catalog.Get(sighting.UnitTypeId), sighting.Hull, sighting.Shields, sighting.OffenseScale);
                 }

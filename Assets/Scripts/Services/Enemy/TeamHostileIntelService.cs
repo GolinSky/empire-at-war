@@ -132,7 +132,9 @@ namespace EmpireAtWar.Services.Enemy
                 for (int i = 0; i < units.Count; i++)
                 {
                     AiWorldSnapshot.Entry entry = units[i];
-                    if (entry.IsCloaked || !_playerRoster.IsHostile(viewer, entry.Owner))
+                    if (!_playerRoster.IsHostile(viewer, entry.Owner) ||
+                        entry.Entity.HealthModel.IsDestroyed ||
+                        entry.Entity.IsCloaked())
                     {
                         continue;
                     }

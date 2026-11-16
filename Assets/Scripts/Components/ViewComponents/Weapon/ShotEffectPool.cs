@@ -19,8 +19,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private readonly BoltFlightBatch _boltFlights;
         private readonly ShotEffectCache _cache;
         private readonly bool _ownsCache;
-        private readonly int _prewarmThreshold;
-        private int _expandedPrewarmThreshold;
         private readonly Dictionary<ShotEffect, int> _active;
         private readonly Action<ShotEffect, int> _onCompleted;
         private readonly Action<ShotEffect, int> _onDestroyed;
@@ -29,14 +27,30 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         public event Action<ShotEffectPool> Retired;
 
-        public bool IsPrewarmed => _cache.TotalCount >= _prewarmThreshold;
-        internal bool IsExpandedCapacityPrewarmed => _cache.TotalCount >= _expandedPrewarmThreshold;
+        internal LinkedListNode<ShotEffectPool> AdmissionNode { get; }
+        internal int WaitingShots { get; set; }
+        internal int ReservedShots { get; set; }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        internal float AdmissionStartedAt { get; set; }
+#endif
 
-        internal void IncreaseCapacity(int capacity, int threshold)
+        internal void IncreaseCapacity(int capacity)
         {
             _active.EnsureCapacity(capacity);
-            _expandedPrewarmThreshold = threshold;
         }
+
+        internal bool TryReserveSalvo(int shots, int inFlightCap = int.MaxValue)
+        {
+            if (_released) throw new InvalidOperationException("Cannot admit a salvo from a released pool.");
+            if (_active.Count + shots > inFlightCap)
+            {
+                CancelReservation();
+                return false;
+            }
+            return _cache.TryReserve(this, shots);
+        }
+
+        internal void CancelReservation() => _cache.CancelReservation(this);
 
         public ShotEffectPool(WeaponProfile profile, Transform owner, Action<int> effectCompleted,
             ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights)
@@ -46,7 +60,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         }
 
         internal ShotEffectPool(WeaponProfile profile, Transform owner, Action<int> effectCompleted,
-            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, ShotEffectCache cache, int capacity = 0, int prewarmThreshold = 0)
+            ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, ShotEffectCache cache, int capacity = 0)
         {
             _profile = profile;
             _owner = owner;
@@ -54,7 +68,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _impactPresenter = impactPresenter;
             _boltFlights = boltFlights;
             _cache = cache;
-            _prewarmThreshold = prewarmThreshold;
+            AdmissionNode = new LinkedListNode<ShotEffectPool>(this);
             _active = new Dictionary<ShotEffect, int>(capacity);
             _onCompleted = OnEffectCompleted;
             _onDestroyed = OnEffectDestroyed;
@@ -84,7 +98,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         private ShotEffect Acquire()
         {
-            ShotEffect effect = _cache.Acquire();
+            ShotEffect effect = _cache.Acquire(this);
             effect.EffectCompleted += _onCompleted;
             effect.EffectDestroyed += _onDestroyed;
             return effect;
@@ -94,6 +108,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             if (_released) return;
             _released = true;
+            CancelReservation();
             _effectCompleted = null;
             AttackSequenceDiagnostics.RecordOwnerlessActive(_active.Count);
             // Shared storage keeps idle shots and accepts these active leases after they finish.

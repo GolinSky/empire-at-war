@@ -20,7 +20,7 @@ namespace EmpireAtWar.Tests.Editor
             foreach (ShipAbilityId id in new[] { ShipAbilityId.DauntlessSensorJamming,
                          ShipAbilityId.FighterReinforcements, ShipAbilityId.LiberatorRapidDeployment,
                          ShipAbilityId.MC30cTorpedoSalvo, ShipAbilityId.FighterCoordination,
-                         ShipAbilityId.ReplenishWingmen })
+                         ShipAbilityId.ReplenishWingmen, ShipAbilityId.LuckyShot })
                 foreach (string stat in new[] { "duration", "recoveryDelay", "range", "aiUse" })
                     Assert.That(inventory.Fields.Values.Any(field => field.Stat == $"ability/{(int)id}/{stat}"),
                         Is.True, $"{id}: {stat}");
@@ -29,6 +29,10 @@ namespace EmpireAtWar.Tests.Editor
                 field.Dependency == nameof(TorpedoSalvoSettings) && field.Stat.EndsWith("/fireDelayMultiplier")), Is.True);
             Assert.That(inventory.Fields.Values.Any(field =>
                 field.Dependency == nameof(FighterCoordinationSettings) && field.Stat.EndsWith("/commandRadius")), Is.True);
+            foreach (string stat in new[] { "damage", "windup", "projectile/projectileSpeed" })
+                Assert.That(inventory.Fields.Values.Any(field =>
+                    field.Dependency == nameof(LuckyShotSettings) && field.Stat == $"settings/{(int)ShipAbilityId.LuckyShot}/{stat}"),
+                    Is.True, $"LuckyShot: {stat}");
         }
 
         [Test]

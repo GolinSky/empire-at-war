@@ -85,7 +85,10 @@ namespace EmpireAtWar.Tests.Movement
         [TestCase(true)]
         public void Attack_FormationReclosesFromCurrentSideAfterHolding(bool artillery)
         {
-            _target.Transform.position = Vector3.right * (artillery ? 180f : 90f);
+            _target.Transform.position = Vector3.right * (artillery ? 180f : 70f);
+            if (!artillery)
+                Assert.That(ShipEngagement.IsInRange(_movement, _weapon, _target, _target.Transform.position),
+                    Is.True, "The normal weapon must start inside its 80 m engagement range.");
             var state = new AttackTargetState(null, _weapon, _movement,
                 artillery ? new ArtilleryCapability(200f) : null);
             state.SetData(_target, Vector3.right * 20f, UnitOrderModel.NO_HARD_POINT);
@@ -287,6 +290,85 @@ namespace EmpireAtWar.Tests.Movement
             _weapon.HardPointApproach = Vector3.right * 50f;
             state.Tick(0.1f);
             Assert.That(_movement.Destination, Is.EqualTo(Vector3.right * 230f));
+        }
+
+        [Test]
+        public void Attack_HardPointScanIsBoundedWhileMovingAndStillDetectsRangeEntry()
+        {
+            AttackTargetState state = StartOversizedHullApproach();
+            _weapon.HardPointApproach = Vector3.zero;
+
+            for (int i = 0; i < 4; i++) state.Tick(0.02f);
+
+            Assert.That(_weapon.HardPointApproachCalls, Is.EqualTo(1));
+            Assert.That(_movement.IsMoving, Is.True);
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
+            state.Tick(0.021f);
+            Assert.That(_weapon.HardPointApproachCalls, Is.EqualTo(2));
+            Assert.That(_movement.IsMoving, Is.False);
+        }
+
+        [Test]
+        public void Attack_HardPointApproachArrivalBypassesScanInterval()
+        {
+            AttackTargetState state = StartOversizedHullApproach();
+            _movement.FinishLeg();
+            _weapon.HardPointApproach = Vector3.zero;
+
+            state.Tick(0.001f);
+
+            Assert.That(_weapon.HardPointApproachCalls, Is.EqualTo(2));
+            Assert.That(_movement.IsMoving, Is.False);
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Attack_HardPointScanStaysBoundedWhileTargetMoves(bool rotation)
+        {
+            AttackTargetState state = StartOversizedHullApproach();
+            _weapon.HardPointApproach = Vector3.zero;
+
+            for (int i = 0; i < 4; i++)
+            {
+                if (rotation) _target.Transform.rotation *= Quaternion.Euler(0f, 5f, 0f);
+                else _target.Transform.position += Vector3.right;
+                state.Tick(0.02f);
+            }
+
+            Assert.That(_weapon.HardPointApproachCalls, Is.EqualTo(1),
+                "A moving target must not force a full mount scan on every frame of a committed leg.");
+            Assert.That(_movement.IsMoving, Is.True);
+            state.Tick(0.021f);
+            Assert.That(_weapon.HardPointApproachCalls, Is.EqualTo(2));
+            Assert.That(_movement.IsMoving, Is.False, "Mount-range entry is still detected within one interval.");
+        }
+
+        [Test]
+        public void Attack_NewHardPointTargetBypassesScanInterval()
+        {
+            AttackTargetState state = StartOversizedHullApproach();
+            var next = new Target(_target.Transform) { Id = 2, HasHealthFacade = true, NavigationRadius = 550f };
+            next.Health.ShipClass = ShipClass.HeavyCapital;
+            _weapon.HardPointApproach = Vector3.zero;
+
+            state.SetData(next);
+            state.Enter();
+
+            Assert.That(_weapon.HardPointApproachCalls, Is.EqualTo(2));
+            Assert.That(_movement.IsMoving, Is.False);
+        }
+
+        private AttackTargetState StartOversizedHullApproach()
+        {
+            _target.Health.ShipClass = ShipClass.HeavyCapital;
+            _target.HasHealthFacade = true;
+            _target.NavigationRadius = 550f;
+            _weapon.HardPointApproach = Vector3.right * 200f;
+            var state = new AttackTargetState(new AttackDataFactory(), _weapon, _movement);
+            state.SetData(_target);
+            state.Enter();
+            return state;
         }
 
         [Test]
@@ -992,6 +1074,7 @@ namespace EmpireAtWar.Tests.Movement
             public string Id => nameof(Weapon);
             public bool UseSiegeApproach { get; set; }
             public Vector3 HardPointApproach { get; set; }
+            public int HardPointApproachCalls { get; private set; }
             public float AttackDistance => 100f;
             public TargetPreference PreferredTarget => TargetPreference.Ships;
             public float GetEngagementRange(ShipClass targetClass) => 100f;
@@ -1000,6 +1083,7 @@ namespace EmpireAtWar.Tests.Movement
             public bool CanUseSiegeApproach(IEntity target) => UseSiegeApproach;
             public bool TryGetHardPointApproach(AttackData target, out Vector3 offset)
             {
+                HardPointApproachCalls++;
                 offset = HardPointApproach;
                 return true;
             }

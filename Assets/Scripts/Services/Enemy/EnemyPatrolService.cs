@@ -48,7 +48,7 @@ namespace EmpireAtWar.Services.Enemy
         public EnemyPatrolService(TeamIntelRegistry registry, PlayerSlot owner, IMapModelObserver map,
             IReinforcementZoneSource zones, IReadOnlyList<ICaptureSiteDirectory> siteDirectories, IVisionService vision,
             IBattleAreaService areas, IEntityLocator entities, IPlayerRoster players,
-            AiWorldSnapshot worldSnapshot = null)
+            AiWorldSnapshot worldSnapshot)
         {
             Memory = registry.GetPatrol(owner.Team);
             _intel = registry.Get(owner.Team);
@@ -90,31 +90,15 @@ namespace EmpireAtWar.Services.Enemy
                 }
             }
             _liveIntel.Clear();
-            if (_worldSnapshot != null)
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = _worldSnapshot.Structures;
+            for (int i = 0; i < structures.Count; i++)
             {
-                IReadOnlyList<AiWorldSnapshot.Entry> structures = _worldSnapshot.Structures;
-                for (int i = 0; i < structures.Count; i++)
-                {
-                    AiWorldSnapshot.Entry entry = structures[i];
-                    if (!_players.IsHostile(_owner.Id, entry.Owner)) continue;
-                    string id = $"structure:{entry.Id}";
-                    _liveIntel.Add(id);
-                    if (_vision.IsVisible(_owner.Id, entry.Entity) || entry.IsPlayerBase)
-                        Memory.Register(id, ToPoint(entry.Position), "hostileStructure", 2f);
-                }
-            }
-            else
-            {
-                foreach (IEntity entity in _entities.Entities)
-                {
-                    if (entity.HealthModel.ShipClass != ShipClass.Structure || entity.HealthModel.IsDestroyed ||
-                        !_players.IsHostile(_owner.Id, entity.Owner)) continue;
-                    string id = $"structure:{entity.Id}";
-                    _liveIntel.Add(id);
-                    Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                    if (_vision.IsVisible(_owner.Id, entity) || entity.IsPlayerBase())
-                        Memory.Register(id, ToPoint(position), "hostileStructure", 2f);
-                }
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (!_players.IsHostile(_owner.Id, entry.Owner)) continue;
+                string id = $"structure:{entry.Id}";
+                _liveIntel.Add(id);
+                if (_vision.IsVisible(_owner.Id, entry.Entity) || entry.IsPlayerBase)
+                    Memory.Register(id, ToPoint(entry.Position), "hostileStructure", 2f);
             }
             foreach (HostileSighting sighting in _intel.Sightings)
             {

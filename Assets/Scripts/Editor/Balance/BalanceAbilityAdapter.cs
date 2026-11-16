@@ -25,6 +25,7 @@ namespace EmpireAtWar.Editor.Balance
             [typeof(FighterReinforcementsSettings)] = Array.Empty<string>(),
             [typeof(RapidDeploymentSettings)] = Array.Empty<string>(),
             [typeof(ReplenishWingmenSettings)] = Array.Empty<string>(),
+            [typeof(LuckyShotSettings)] = new[] { "damage", "windup", "projectile" },
             [typeof(TorpedoSalvoSettings)] = new[] { "fireDelayMultiplier" },
             [typeof(FighterCoordinationSettings)] = new[] { "commandRadius" },
             [typeof(FullSalvoSettings)] = new[] { "projectileFireDelayMultiplier", "otherFireDelayMultiplier" },

@@ -84,6 +84,7 @@ namespace EmpireAtWar.Components.Weapon
         private readonly HashSet<AttackData> _liveGroupsAtRebuild = new HashSet<AttackData>();
         private readonly Dictionary<IHardPointModel, Vector3> _targetPositions = new Dictionary<IHardPointModel, Vector3>();
         private readonly List<Vector3> _facingTargetPositions = new List<Vector3>();
+        private readonly List<Vector3> _approachPoints = new List<Vector3>();
         private readonly List<IHardPointModel> _facingTargetUnits = new List<IHardPointModel>();
         // Index = hardpoint: its firepower share when choosing the hull facing.
         private int[] _facingWeights = Array.Empty<int>();
@@ -215,7 +216,7 @@ namespace EmpireAtWar.Components.Weapon
             if (_artillery != null)
                 _artillery.UpdateVisionMultiplier(_modifiers.VisionMultiplier);
             _modifiers.Changed += OnModifiersChanged;
-            _poolPrewarmer.RequestPrewarm(profiles, reloadMultiplier, intervalMultiplier);
+            _poolPrewarmer.RequestPrewarm(profiles);
             Dictionary<ShipClass, float> engagementRanges = new Dictionary<ShipClass, float>();
             float maxRange = 0f;
             foreach (ShipClass targetClass in (ShipClass[])Enum.GetValues(typeof(ShipClass)))
@@ -409,26 +410,30 @@ namespace EmpireAtWar.Components.Weapon
             target.RefreshStaleUnits();
             ShipClass targetClass = target.TargetClass;
             float closestGap = float.PositiveInfinity;
+            // Target points are read once: a capital pair is over a hundred mounts against as many points.
+            _approachPoints.Clear();
+            foreach (IHardPointModel point in target.Units)
+                if (target.CanTarget(point)) _approachPoints.Add(point.Position);
             foreach (WeaponHardPoint weapon in hardPoints)
             {
                 if (weapon.IsDestroyed || weapon.StrikecraftOnly || !weapon.CanEngage(targetClass)) continue;
                 float range = weapon.MaxAttackDistance;
                 Vector3 origin = weapon.transform.position;
-                foreach (IHardPointModel point in target.Units)
+                for (int i = 0; i < _approachPoints.Count; i++)
                 {
-                    if (!target.CanTarget(point)) continue;
-                    Vector3 direction = point.Position - origin;
+                    Vector3 direction = _approachPoints[i] - origin;
                     direction.y = 0f;
-                    float distance = direction.magnitude;
-                    if (distance <= range)
+                    float distanceSquared = direction.sqrMagnitude;
+                    if (distanceSquared <= range * range)
                     {
                         offset = Vector3.zero;
                         return true;
                     }
 
-                    float gap = distance - range;
-                    if (gap >= closestGap) continue;
-                    closestGap = gap;
+                    float closestDistance = range + closestGap;
+                    if (distanceSquared >= closestDistance * closestDistance) continue;
+                    float distance = Mathf.Sqrt(distanceSquared);
+                    closestGap = distance - range;
                     offset = direction * ((distance - range * HARD_POINT_APPROACH_RANGE_FACTOR) / distance);
                 }
             }
@@ -597,6 +602,7 @@ namespace EmpireAtWar.Components.Weapon
             for (int i = 0; i < hardPoints.Count; i++)
             {
                 WeaponHardPoint weapon = hardPoints[i];
+                if (weapon.IsDestroyed) weapon.CancelPendingAdmission();
                 if (!weapon.IsDestroyed && !weapon.IsBusy && Time.time >= _retryAt[i])
                     _attackCoordinator.QueueTargetSelection(this, weapon);
             }
@@ -716,7 +722,11 @@ namespace EmpireAtWar.Components.Weapon
         internal void CommitTargetSelection(WeaponHardPoint weapon, int targetVersion,
             WeaponTargetSelectionJob.Result result, AttackData group, IHardPointModel unit, int generation)
         {
-            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked) return;
+            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked)
+            {
+                weapon.CancelPendingAdmission();
+                return;
+            }
 
             // Ship positions in the selection batch may be a few batches old, so the pick is re-aimed live.
             if (_targetVersion != targetVersion || result.CandidateIndex >= 0 &&
@@ -770,7 +780,11 @@ namespace EmpireAtWar.Components.Weapon
                 WeaponHardPoint weapon = salvo.HardPoint;
                 if (weapon.IsDestroyed || _modifiers.IsCloaked || !CanAcquire(salvo.Group) ||
                     salvo.Unit.Generation != salvo.TargetGeneration ||
-                    !IsTargetValid(salvo.Group, salvo.Unit) || !HasFiringSolution(weapon, salvo.Unit.Position)) continue;
+                    !IsTargetValid(salvo.Group, salvo.Unit) || !HasFiringSolution(weapon, salvo.Unit.Position))
+                {
+                    weapon.CancelPendingAdmission();
+                    continue;
+                }
                 weapon.Attack(salvo.Group, salvo.Unit);
             }
         }
@@ -786,12 +800,17 @@ namespace EmpireAtWar.Components.Weapon
 
         internal void CommitTargetSelectionSerial(WeaponHardPoint weapon)
         {
-            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked) return;
+            if (_isReleased || weapon.IsDestroyed || weapon.IsBusy || _modifiers.IsCloaked)
+            {
+                weapon.CancelPendingAdmission();
+                return;
+            }
             if (!TryFireWeapon(weapon)) DelayRetry(weapon);
         }
 
         private void DelayRetry(WeaponHardPoint weapon)
         {
+            weapon.CancelPendingAdmission();
             _retryAt[hardPoints.IndexOf(weapon)] =
                 Time.time + UnityEngine.Random.Range(MIN_RETRY_INTERVAL, MAX_RETRY_INTERVAL);
         }

@@ -71,6 +71,8 @@ namespace EmpireAtWar.ViewComponents.Health
 
         internal bool RefreshTiming()
         {
+            if (_modifiers.IsIonDisabled || _modifiers.IsCloaked || !_modifiers.CanFireWeapon(mainBattery))
+                CancelPendingAdmission();
             var timing = GetTimingMultipliers();
             PendingShotIntervalRatio = timing.interval / _intervalMultiplier;
             bool changed = timing.reload != _reloadMultiplier || timing.interval != _intervalMultiplier;
@@ -198,15 +200,20 @@ namespace EmpireAtWar.ViewComponents.Health
 
         internal bool TryStartScheduledSequence(out int generation)
         {
-            int inFlightCap = _inFlightCap;
-            if (_modifiers.IsIonDisabled || _modifiers.IsCloaked || !_modifiers.CanFireWeapon(mainBattery) ||
-                !GetPool().IsPrewarmed)
+            generation = _sequence.Generation;
+            if (_sequence.CurrentStatus != AttackSequenceState.Status.Ready) return false;
+            if (_modifiers.IsIonDisabled || _modifiers.IsCloaked || !_modifiers.CanFireWeapon(mainBattery))
             {
-                generation = _sequence.Generation;
+                CancelPendingAdmission();
                 return false;
             }
-            if (_effectPool.IsExpandedCapacityPrewarmed) inFlightCap = Mathf.Max(inFlightCap, _timingInFlightCap);
-            if (!_sequence.TryStart(_profile.ShotsPerSalvo, inFlightCap, out generation)) return false;
+            int inFlightCap = Mathf.Max(_inFlightCap, _timingInFlightCap);
+            if (!GetPool().TryReserveSalvo(_profile.ShotsPerSalvo, inFlightCap)) return false;
+            if (!_sequence.TryStart(_profile.ShotsPerSalvo, inFlightCap, out generation))
+            {
+                _effectPool.CancelReservation();
+                return false;
+            }
             _reloadTimer.ChangeDelay(_profile.Reload * GetTimingMultipliers().reload).StartTimer();
             return true;
         }
@@ -214,7 +221,17 @@ namespace EmpireAtWar.ViewComponents.Health
         internal bool IsEmitting(int generation) => !IsDestroyed && !_modifiers.IsIonDisabled && !_modifiers.IsCloaked &&
             _modifiers.CanFireWeapon(mainBattery) && _sequence.IsEmitting(generation);
 
-        internal void StopEmitting(int generation) => _sequence.StopEmitting(generation);
+        internal void StopEmitting(int generation)
+        {
+            if (!_sequence.IsEmitting(generation)) return;
+            _sequence.StopEmitting(generation);
+            _effectPool.CancelReservation();
+        }
+
+        internal void CancelPendingAdmission()
+        {
+            if (!_sequence.IsBusy && _effectPool != null) _effectPool.CancelReservation();
+        }
 
         internal void EmitScheduledShot(AttackData attackData, IHardPointModel hardPointModel, int sequenceGeneration)
         {
@@ -280,6 +297,7 @@ namespace EmpireAtWar.ViewComponents.Health
             Destroyed = healthPercentage <= 0f;
             if (Destroyed)
             {
+                CancelPendingAdmission();
                 if (_attackCoordinator != null)
                     _attackCoordinator.CancelSequence(this, _sequence.Generation);
                 _sequence.StopEmitting(_sequence.Generation);

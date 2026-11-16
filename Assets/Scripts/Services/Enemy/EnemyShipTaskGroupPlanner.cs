@@ -19,7 +19,7 @@ namespace EmpireAtWar.Services.Enemy
         private EnemyShipTaskGroup _captureGroup;
         private EnemyShipTaskGroup _mainGroup;
         private readonly EnemyShipTaskGroup _idleGroup;
-        private readonly EnemyShipTaskGroup _captureCandidate;
+        private readonly EnemyStrategicContextBuilder _captureProbe;
 
         public IReadOnlyList<EnemyShipTaskGroup> Groups => _groups;
 
@@ -30,7 +30,7 @@ namespace EmpireAtWar.Services.Enemy
             _contextBuilder = contextBuilder;
             _orders = orders;
             _idleGroup = new EnemyShipTaskGroup(contextBuilder, decisionModel, executor);
-            _captureCandidate = CreateGroup(true);
+            _captureProbe = contextBuilder.CreateGroupBuilder();
             _groups.Add(_idleGroup);
         }
 
@@ -131,22 +131,18 @@ namespace EmpireAtWar.Services.Enemy
                 if (ship.CurrentOrder != UnitOrderType.Retreat && ship.CurrentOrder != UnitOrderType.Attack)
                     _unassigned.Add(ship);
             _unassigned.Sort((a, b) => b.NavigationSpeed.CompareTo(a.NavigationSpeed));
-            EnemyShipTaskGroup candidate = _captureCandidate;
+            _captureProbe.BeginCaptureProbe(reservedObjectives);
             foreach (IShipEntity ship in _unassigned)
             {
-                candidate.Ships.Clear();
+                if (!_captureProbe.CanDetachForCapture(ship)) continue;
+                EnemyShipTaskGroup candidate = CreateGroup(true);
                 candidate.Ships.Add(ship);
-                EnemyStrategicSnapshot snapshot = candidate.ContextBuilder.Build(candidate.Ships,
-                    reservedObjectives).Snapshot;
-                if (!snapshot.HasCaptureTarget || snapshot.LocalAdvantage <=
-                    EnemyAiDifficultyProfile.Get(snapshot.Difficulty).RetreatAdvantage) continue;
                 foreach (EnemyShipTaskGroup group in _groups) group.Ships.Remove(ship);
                 candidate.NoViableCaptureSince = -1f;
                 _captureGroup = candidate;
                 _groups.Add(candidate);
                 return;
             }
-            candidate.Ships.Clear();
         }
 
         private void MergeNearbyGroups()

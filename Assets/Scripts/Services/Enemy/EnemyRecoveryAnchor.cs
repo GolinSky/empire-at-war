@@ -60,7 +60,7 @@ namespace EmpireAtWar.Services.Enemy
             IPlayerRoster roster, IEntityLocator entities, IBattleAreaService areas, IMapModelObserver map,
             TeamIntelRegistry registry, PlayerSlot owner, IProductionAccess production,
             EnemyStationPressureTracker pressure, SecondStationLevelModel secondStation, EnemyFactionModel faction,
-            AiWorldSnapshot worldSnapshot = null)
+            AiWorldSnapshot worldSnapshot)
         {
             _secondStation = secondStation;
             _faction = faction;
@@ -149,29 +149,16 @@ namespace EmpireAtWar.Services.Enemy
                     entity.TryGetFacade(out IUnitCombatObserverFacade combat)) range = combat.WeaponRange;
                 if (BlocksPlacement(ToVector(sighting.Position), range + HOSTILE_MARGIN)) return false;
             }
-            if (_worldSnapshot != null)
+            IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
+            for (int i = 0; i < bases.Count; i++)
             {
-                IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
-                for (int i = 0; i < bases.Count; i++)
-                {
-                    AiWorldSnapshot.Entry entry = bases[i];
-                    if (!_roster.IsHostile(_owner.Id, entry.Owner)) continue;
-                    float range = entry.Entity.TryGetFacade(out IUnitCombatObserverFacade combat)
-                        ? combat.WeaponRange
-                        : UNKNOWN_WEAPON_RANGE;
-                    if (BlocksPlacement(entry.Position, range + HOSTILE_MARGIN))
-                        return false;
-                }
-            }
-            else
-            {
-                foreach (IEntity entity in _entities.Entities)
-                {
-                    if (!entity.IsPlayerBase() || !_roster.IsHostile(_owner.Id, entity.Owner) || entity.HealthModel.IsDestroyed) continue;
-                    float range = entity.TryGetFacade(out IUnitCombatObserverFacade combat) ? combat.WeaponRange : UNKNOWN_WEAPON_RANGE;
-                    if (BlocksPlacement(entity.GetFacade<IEntityTransformFacade>().Transform.position, range + HOSTILE_MARGIN))
-                        return false;
-                }
+                AiWorldSnapshot.Entry entry = bases[i];
+                if (!_roster.IsHostile(_owner.Id, entry.Owner) || entry.Entity.HealthModel.IsDestroyed) continue;
+                float range = entry.Entity.TryGetFacade(out IUnitCombatObserverFacade combat)
+                    ? combat.WeaponRange
+                    : UNKNOWN_WEAPON_RANGE;
+                if (BlocksPlacement(entry.Position, range + HOSTILE_MARGIN))
+                    return false;
             }
             foreach (EnemyPatrolPoint point in _registry.GetPatrol(_owner.Team).Entries)
             {
@@ -200,21 +187,12 @@ namespace EmpireAtWar.Services.Enemy
             foreach (HostileSighting sighting in _intel.Sightings)
                 if (_roster.IsHostile(_owner.Id, sighting.Owner) && _intel.GetConfidence(sighting, Time.time) > 0f)
                     nearest = Mathf.Min(nearest, Distance(position, ToVector(sighting.Position)));
-            if (_worldSnapshot != null)
+            IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
+            for (int i = 0; i < bases.Count; i++)
             {
-                IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
-                for (int i = 0; i < bases.Count; i++)
-                {
-                    AiWorldSnapshot.Entry entry = bases[i];
-                    if (_roster.IsHostile(_owner.Id, entry.Owner))
-                        nearest = Mathf.Min(nearest, Distance(position, entry.Position));
-                }
-            }
-            else
-            {
-                foreach (IEntity entity in _entities.Entities)
-                    if (entity.IsPlayerBase() && _roster.IsHostile(_owner.Id, entity.Owner) && !entity.HealthModel.IsDestroyed)
-                        nearest = Mathf.Min(nearest, Distance(position, entity.GetFacade<IEntityTransformFacade>().Transform.position));
+                AiWorldSnapshot.Entry entry = bases[i];
+                if (_roster.IsHostile(_owner.Id, entry.Owner) && !entry.Entity.HealthModel.IsDestroyed)
+                    nearest = Mathf.Min(nearest, Distance(position, entry.Position));
             }
             foreach (EnemyPatrolPoint point in _registry.GetPatrol(_owner.Team).Entries)
                 if (point.Kind == "hostileStructure") nearest = Mathf.Min(nearest, Distance(position, ToVector(point.Position)));
@@ -261,22 +239,12 @@ namespace EmpireAtWar.Services.Enemy
                 string kind = zone.Owner == _owner.Id ? "ownZone" : _roster.Get(zone.Owner).IsAi ? "allyZoneAi" : "allyZoneHuman";
                 Add($"zone:{i}", kind, ToVector(ToPoint(zone.Center)), zone.Radius, null, ref rejectedUnsafe);
             }
-            if (_worldSnapshot != null)
+            IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
+            for (int i = 0; i < bases.Count; i++)
             {
-                IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
-                for (int i = 0; i < bases.Count; i++)
-                {
-                    AiWorldSnapshot.Entry entry = bases[i];
-                    if (_roster.IsAllied(_owner.Id, entry.Owner))
-                        Add($"station:{entry.Id}", "allyStation", entry.Position, 0f, null, ref rejectedUnsafe);
-                }
-            }
-            else
-            {
-                foreach (IEntity entity in _entities.Entities)
-                    if (entity.IsPlayerBase() && _roster.IsAllied(_owner.Id, entity.Owner) && !entity.HealthModel.IsDestroyed)
-                        Add($"station:{entity.Id}", "allyStation", entity.GetFacade<IEntityTransformFacade>().Transform.position,
-                            0f, null, ref rejectedUnsafe);
+                AiWorldSnapshot.Entry entry = bases[i];
+                if (_roster.IsAllied(_owner.Id, entry.Owner) && !entry.Entity.HealthModel.IsDestroyed)
+                    Add($"station:{entry.Id}", "allyStation", entry.Position, 0f, null, ref rejectedUnsafe);
             }
             if (_candidates.Count == 0)
                 foreach (var point in _registry.GetPatrol(_owner.Team).Entries)

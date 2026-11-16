@@ -1,4 +1,5 @@
 using EmpireAtWar.Components.Movement.Formation;
+using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Services.Enemy;
 using NUnit.Framework;
@@ -24,8 +25,9 @@ namespace EmpireAtWar.Tests.Editor
             var roster = TestPlayers.CreateDuel();
             var owner = roster.Get(TestPlayers.Enemy);
             var registry = new TeamIntelRegistry();
+            var entities = new EntityLocator();
             var patrol = new EnemyPatrolService(registry, owner, null, null, Array.Empty<ICaptureSiteDirectory>(),
-                new VisionService(roster), new OpenAreas(), null, roster);
+                new VisionService(roster), new OpenAreas(), entities, roster, new AiWorldSnapshot(entities));
             patrol.Memory.NextSampleTime = float.PositiveInfinity;
             patrol.Memory.Register("stalled", new FormationPoint(10f, 0f), "sector", 1f);
             if (hasAlternative) patrol.Memory.Register("other", new FormationPoint(100f, 0f), "sector", 1f);

@@ -263,6 +263,13 @@ namespace EmpireAtWar.Tests.Editor
                 Is.SameAs(_battle.Container.Resolve<UnitCombatProfileCatalog>()));
             Assert.That(ai.Container.Resolve<ForceCompositionBuilder>(),
                 Is.SameAs(_battle.Container.Resolve<ForceCompositionBuilder>()));
+            Assert.That(ai.Container.Resolve<AiWorldSnapshot>(),
+                Is.SameAs(_battle.Container.Resolve<AiWorldSnapshot>()));
+            Assert.That(ai.Container.Resolve<EnemyAiScheduler>(),
+                Is.SameAs(_battle.Container.Resolve<EnemyAiScheduler>()));
+            Assert.That(ai.Container.Resolve<EnemyUnitCommander>(), Is.Not.Null);
+            Assert.That(ai.Container.Resolve<EnemySquadronCommander>(), Is.Not.Null);
+            Assert.That(ai.Container.Resolve<EnemyStrategicContextBuilder>(), Is.Not.Null);
         }
 
         [TestCase(true)]
@@ -314,6 +321,7 @@ namespace EmpireAtWar.Tests.Editor
             var strategy = ai.Container.Resolve<EnemyProductionStrategy>();
             strategy.Start();
             strategy.Tick(0f);
+            _battle.Container.Resolve<EnemyAiScheduler>().Step(0f);
             production.Purchase(request);
             Assert.That(production.PendingBuilds, Is.Empty);
             Assert.That(production.CanQueue(request.Id, request.FactionData.MaxCount), Is.False);
@@ -641,7 +649,7 @@ namespace EmpireAtWar.Tests.Editor
             var combat = new AutoPowerCombatSnapshot(entities, local,
                 new ShipAbilityService(null, _battle.Container.Resolve<IPlayerRoster>(),
                     _battle.Container.Resolve<IVisionService>()),
-                profiles, new ForceCompositionBuilder(entities, profiles), catalog);
+                profiles, new ForceCompositionBuilder(entities, profiles, _battle.Container.Resolve<AiWorldSnapshot>()), catalog);
             combat.Capture();
             Assert.That(combat.Decide(caster.GetFacade<IShipAbilityFacade>(), caster.GetFacade<IShipAutoPowerFacade>(),
                 AutoPowerShieldLoss.None), Is.EqualTo(AutoPowerRole.Weapons), "The fixture must establish a useful engagement.");

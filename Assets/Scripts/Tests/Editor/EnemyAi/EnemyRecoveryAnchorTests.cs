@@ -48,7 +48,8 @@ namespace EmpireAtWar.Tests.Editor
             _recovery = new EnemyRecoveryAnchor(null, _zones, _roster, entities,
                 new BattleAreaService(_roster), new Map(), _intel, _owner,
                 new SelfProductionAccess(productionHost, new StationRegistry(entities), _roster),
-                new EnemyStationPressureTracker(), new SecondStationLevelModel(), _faction);
+                new EnemyStationPressureTracker(), new SecondStationLevelModel(), _faction,
+                new AiWorldSnapshot(entities));
         }
 
         [TestCase(0)]

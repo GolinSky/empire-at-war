@@ -12,9 +12,6 @@ using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Repository;
-using EmpireAtWar.Services.ShipAbilities;
-using EmpireAtWar.Services.ShipAbilities.Abilities;
-using System.Linq;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine;
 using EmpireAtWar.Lifecycle;
@@ -30,33 +27,34 @@ namespace EmpireAtWar.ViewComponents.Weapon
         private const double LOADING_BUDGET_MILLISECONDS = 4.0;
         private const int MAX_CREATIONS_PER_FRAME = 1;
 
-        private readonly Queue<(ShotEffectCache Cache, int Target)> _pending =
-            new Queue<(ShotEffectCache, int)>();
+        private readonly Queue<ShotEffectCache> _pending = new Queue<ShotEffectCache>();
+        private readonly HashSet<ShotEffectCache> _queued = new HashSet<ShotEffectCache>();
         private readonly Dictionary<ShotEffect, ShotEffectCache> _caches =
             new Dictionary<ShotEffect, ShotEffectCache>();
         private readonly Dictionary<ShotEffectCache, int> _targets = new Dictionary<ShotEffectCache, int>();
         private readonly Dictionary<ShotEffectPool, (ShotEffectCache Cache, int Capacity)> _pools =
             new Dictionary<ShotEffectPool, (ShotEffectCache, int)>();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public IEnumerable<ShotEffectCache> Caches => _caches.Values;
+#endif
 
         public ShotEffectPool CreatePool(WeaponProfile profile, Transform owner, Action<int> completed,
             ImpactEffectPresenter impacts, BoltFlightBatch flights, int target)
         {
             ShotEffectCache cache = GetCache(profile.ShotPrefab);
-            int threshold = cache.RegisterCapacity(target);
-            var pool = new ShotEffectPool(profile, owner, completed, impacts, flights, cache, target, threshold);
+            cache.RegisterCapacity(target);
+            var pool = new ShotEffectPool(profile, owner, completed, impacts, flights, cache, target);
             _pools.Add(pool, (cache, target));
             pool.Retired += OnRetired;
-            Enqueue(cache, threshold);
             return pool;
         }
 
         internal void IncreaseCapacity(ShotEffectPool pool, int capacity)
         {
             (ShotEffectCache cache, int previousCapacity) = _pools[pool];
-            int threshold = cache.RegisterCapacity(capacity - previousCapacity);
+            cache.RegisterCapacity(capacity - previousCapacity);
             _pools[pool] = (cache, capacity);
-            pool.IncreaseCapacity(capacity, threshold);
-            Enqueue(cache, threshold);
+            pool.IncreaseCapacity(capacity);
         }
 
         private ShotEffectCache GetCache(ShotEffect prefab)
@@ -64,28 +62,43 @@ namespace EmpireAtWar.ViewComponents.Weapon
             if (!_caches.TryGetValue(prefab, out ShotEffectCache cache))
             {
                 cache = new ShotEffectCache(prefab);
+                cache.DemandChanged += Enqueue;
                 _caches.Add(prefab, cache);
+                _targets.Add(cache, 0);
             }
             return cache;
         }
 
-        private void Enqueue(ShotEffectCache cache, int target)
+        private void Enqueue(ShotEffectCache cache)
         {
-            if (_targets.TryGetValue(cache, out int current) && current >= target) return;
-            _targets[cache] = target;
-            _pending.Enqueue((cache, target));
+            if (_queued.Add(cache)) _pending.Enqueue(cache);
         }
 
-        public void RequestPrewarm(IReadOnlyList<WeaponProfile> profiles,
-            float reloadMultiplier = 1f, float intervalMultiplier = 1f)
+        public void RequestPrewarm(IReadOnlyList<WeaponProfile> profiles)
         {
             var targets = new Dictionary<ShotEffect, int>();
             foreach (WeaponProfile profile in profiles)
             {
                 targets.TryGetValue(profile.ShotPrefab, out int count);
-                targets[profile.ShotPrefab] = count + WeaponHardPoint.ExpectedShotsInFlight(profile, reloadMultiplier, intervalMultiplier);
+                targets[profile.ShotPrefab] = count + WeaponHardPoint.ExpectedShotsInFlight(profile);
             }
-            foreach (KeyValuePair<ShotEffect, int> target in targets) Enqueue(GetCache(target.Key), target.Value);
+            foreach (KeyValuePair<ShotEffect, int> target in targets) WarmLoadout(GetCache(target.Key), target.Value);
+        }
+
+        private void WarmLoadout(ShotEffectCache cache, int target)
+        {
+            _targets[cache] = Math.Max(_targets[cache], target);
+            Enqueue(cache);
+        }
+
+        private bool PrewarmNext(bool loading)
+        {
+            ShotEffectCache cache = _pending.Dequeue();
+            _queued.Remove(cache);
+            int target = Math.Max(_targets[cache], cache.RequiredCount);
+            bool created = cache.PrewarmOne(target, loading);
+            if (cache.TotalCount < target) Enqueue(cache);
+            return created;
         }
 
         public async Awaitable CompletePrewarmAsync(CancellationToken cancellationToken)
@@ -95,12 +108,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             while (_pending.Count > 0)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                (ShotEffectCache cache, int target) = _pending.Peek();
-                if (!cache.PrewarmOne(target))
-                {
-                    _pending.Dequeue();
-                    continue;
-                }
+                if (!PrewarmNext(true)) continue;
                 if (Stopwatch.GetTimestamp() - start < budget) continue;
                 await Awaitable.NextFrameAsync(cancellationToken);
                 start = Stopwatch.GetTimestamp();
@@ -118,9 +126,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
         public void Clear()
         {
             _pending.Clear();
+            _queued.Clear();
             _targets.Clear();
             foreach (ShotEffectPool pool in new List<ShotEffectPool>(_pools.Keys)) pool.DestroyAll();
-            foreach (ShotEffectCache cache in _caches.Values) cache.DestroyAll();
+            foreach (ShotEffectCache cache in _caches.Values)
+            {
+                cache.DemandChanged -= Enqueue;
+                cache.DestroyAll();
+            }
             _caches.Clear();
         }
 
@@ -134,9 +147,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             while (_pending.Count > 0 && created < MAX_CREATIONS_PER_FRAME &&
                    Stopwatch.GetTimestamp() - start < budget)
             {
-                (ShotEffectCache cache, int target) = _pending.Peek();
-                if (cache.PrewarmOne(target)) created++;
-                else _pending.Dequeue();
+                if (PrewarmNext(false)) created++;
             }
         }
 
@@ -147,8 +158,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
             WeaponsData weapons = assets.Load<WeaponsData>(nameof(WeaponsData));
             FactionCatalog factions = assets.Load<FactionCatalog>(nameof(FactionCatalog));
             ShipsData ships = assets.Load<ShipsData>(nameof(ShipsData));
-            var boost = (BoostWeaponPowerSettings)assets.Load<ShipAbilityCatalog>(nameof(ShipAbilityCatalog))
-                .Get(ShipAbilityId.BoostWeaponPower).Settings;
             var targets = new Dictionary<ShotEffect, int>();
             var factionsSeen = new HashSet<FactionType>();
             HashSet<SquadronType> squadrons = BattleAssetPreload.Squadrons(assets, battle);
@@ -158,10 +167,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 foreach (var ship in factions.Get(slot.Faction).Ships.Keys)
                 {
                     ShipData data = assets.Load<ShipData>(ships.GetShipDataPath(ship));
-                    bool boosted = data.Abilities.Contains(ShipAbilityId.BoostWeaponPower);
-                    AddLoadout(data.WeaponLoadout, weapons, slot.Faction, targets,
-                        reloadMultiplier: boosted ? boost.StatModifier.FireDelayMultiplier : 1f,
-                        intervalMultiplier: boosted ? boost.ShotIntervalMultiplier : 1f);
+                    AddLoadout(data.WeaponLoadout, weapons, slot.Faction, targets);
                 }
                 foreach (SquadronType squadron in squadrons)
                 {
@@ -180,15 +186,14 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 UnityEngine.Debug.Log($"[ShotPoolPrewarmer] Roster target: {target.Key.name} = {target.Value} shots.");
 #endif
                 cancellationToken.ThrowIfCancellationRequested();
-                Enqueue(cache, target.Value);
+                WarmLoadout(cache, target.Value);
             }
             await CompletePrewarmAsync(cancellationToken);
         }
 
         private static void AddLoadout(IReadOnlyList<WeaponLoadoutEntry> loadout, WeaponsData weapons,
             FactionType faction, Dictionary<ShotEffect, int> targets,
-            float warheadDamageMultiplier = 1f, float warheadReloadMultiplier = 1f,
-            float reloadMultiplier = 1f, float intervalMultiplier = 1f)
+            float warheadDamageMultiplier = 1f, float warheadReloadMultiplier = 1f)
         {
             var unitTargets = new Dictionary<ShotEffect, int>();
             foreach (WeaponLoadoutEntry entry in loadout)
@@ -197,7 +202,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
                     .WithWarheadMultipliers(warheadDamageMultiplier, warheadReloadMultiplier);
                 unitTargets.TryGetValue(profile.ShotPrefab, out int count);
                 unitTargets[profile.ShotPrefab] = count + entry.Count *
-                    WeaponHardPoint.ExpectedShotsInFlight(profile, reloadMultiplier, intervalMultiplier);
+                    WeaponHardPoint.ExpectedShotsInFlight(profile);
             }
             foreach (KeyValuePair<ShotEffect, int> target in unitTargets)
             {

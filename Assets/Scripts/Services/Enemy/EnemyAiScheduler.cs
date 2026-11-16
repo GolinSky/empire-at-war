@@ -53,11 +53,11 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         private readonly INotifier<BattleState> _battleState;
-        private readonly Func<double> _elapsedMs;
         private readonly List<WorkHandle> _items = new List<WorkHandle>();
         private readonly List<WorkHandle> _due = new List<WorkHandle>();
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
+        private Func<double> _elapsedMs;
         private bool _isRunning;
         private float _battleClock;
 
@@ -67,20 +67,24 @@ namespace EmpireAtWar.Services.Enemy
         public float BattleClock => _battleClock;
         public bool IsRunning => _isRunning;
 
-        public EnemyAiScheduler(INotifier<BattleState> battleState, Func<double> elapsedMs = null)
+        public EnemyAiScheduler(INotifier<BattleState> battleState)
         {
             _battleState = battleState;
+        }
+
+        internal void SetElapsedMsProviderForTests(Func<double> elapsedMs)
+        {
             _elapsedMs = elapsedMs;
         }
 
         public void Initialize()
         {
-            _battleState?.AddObserver(this);
+            _battleState.AddObserver(this);
         }
 
         public void LateDispose()
         {
-            _battleState?.RemoveObserver(this);
+            _battleState.RemoveObserver(this);
             _isRunning = false;
             _items.Clear();
             _due.Clear();

@@ -4,11 +4,11 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.MiningFacility;
-using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
+using Unity.Profiling;
 using UnityEngine;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 
@@ -26,15 +26,12 @@ namespace EmpireAtWar.Services.Enemy
             public readonly long Id;
             public readonly PlayerId Owner;
             public readonly Vector3 Position;
-            public readonly float NavigationRadius;
             public readonly bool HasUnitType;
             public readonly UnitTypeId UnitTypeId;
             public readonly ShipClass ShipClass;
             public readonly bool IsPlayerBase;
             public readonly bool IsUnit;
-            public readonly bool IsSecondStation;
             public readonly bool IsMiningFacility;
-            public readonly bool IsCloaked;
             public readonly bool HasUnits;
             public readonly float Hull;
             public readonly float Shields;
@@ -44,15 +41,12 @@ namespace EmpireAtWar.Services.Enemy
             public Entry(
                 GameEntity entity,
                 Vector3 position,
-                float navigationRadius,
                 bool hasUnitType,
                 UnitTypeId unitTypeId,
                 ShipClass shipClass,
                 bool isPlayerBase,
                 bool isUnit,
-                bool isSecondStation,
                 bool isMiningFacility,
-                bool isCloaked,
                 bool hasUnits,
                 float hull,
                 float shields,
@@ -63,15 +57,12 @@ namespace EmpireAtWar.Services.Enemy
                 Id = entity.Id;
                 Owner = entity.Owner;
                 Position = position;
-                NavigationRadius = navigationRadius;
                 HasUnitType = hasUnitType;
                 UnitTypeId = unitTypeId;
                 ShipClass = shipClass;
                 IsPlayerBase = isPlayerBase;
                 IsUnit = isUnit;
-                IsSecondStation = isSecondStation;
                 IsMiningFacility = isMiningFacility;
-                IsCloaked = isCloaked;
                 HasUnits = hasUnits;
                 Hull = hull;
                 Shields = shields;
@@ -81,15 +72,18 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         private static readonly Entry[] EMPTY_ENTRIES = System.Array.Empty<Entry>();
+        private static readonly ProfilerMarker REBUILD_MARKER = new ProfilerMarker("EnemyAI.WorldSnapshot.Rebuild");
 
         private readonly IEntityLocator _entityLocator;
         private readonly List<Entry> _allLiving = new List<Entry>();
         private readonly List<Entry> _livingUnits = new List<Entry>();
         private readonly List<Entry> _structures = new List<Entry>();
+        private readonly List<Entry> _raidStructures = new List<Entry>();
         private readonly List<Entry> _bases = new List<Entry>();
         private readonly Dictionary<PlayerId, List<Entry>> _unitsByOwner = new Dictionary<PlayerId, List<Entry>>();
 
         private int _builtFrame = -1;
+        private int _lastEntityCount = -1;
         private bool _dirty = true;
 
         public AiWorldSnapshot(IEntityLocator entityLocator)
@@ -121,6 +115,15 @@ namespace EmpireAtWar.Services.Enemy
             {
                 EnsureCurrent();
                 return _structures;
+            }
+        }
+
+        public IReadOnlyList<Entry> RaidStructures
+        {
+            get
+            {
+                EnsureCurrent();
+                return _raidStructures;
             }
         }
 
@@ -156,12 +159,14 @@ namespace EmpireAtWar.Services.Enemy
         public void EnsureCurrent()
         {
             int frame = Time.frameCount;
-            if (!_dirty && _builtFrame == frame)
+            int entityCount = _entityLocator.Entities.Count;
+            if (!_dirty && _builtFrame == frame && _lastEntityCount == entityCount)
             {
                 return;
             }
 
             _builtFrame = frame;
+            _lastEntityCount = entityCount;
             _dirty = false;
             Rebuild();
         }
@@ -170,9 +175,11 @@ namespace EmpireAtWar.Services.Enemy
 
         private void Rebuild()
         {
+            using var sample = REBUILD_MARKER.Auto();
             _allLiving.Clear();
             _livingUnits.Clear();
             _structures.Clear();
+            _raidStructures.Clear();
             _bases.Clear();
             foreach (List<Entry> list in _unitsByOwner.Values)
             {
@@ -182,7 +189,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (GameEntity entity in _entityLocator.Entities)
             {
                 IHealthModelObserver health = entity.HealthModel;
-                if (health.IsDestroyed)
+                if (health.IsDestroyed || !health.HasUnits)
                 {
                     continue;
                 }
@@ -190,38 +197,32 @@ namespace EmpireAtWar.Services.Enemy
                 Vector3 position = entity.TryGetFacade(out IEntityTransformFacade transformFacade)
                     ? transformFacade.Transform.position
                     : Vector3.zero;
-                float navigationRadius = entity.TryGetFacade(out INavigationFootprintFacade footprint)
-                    ? footprint.NavigationRadius
-                    : 0f;
                 bool hasUnitType = entity.TryGetFacade(out IUnitTypeFacade unitFacade);
                 UnitTypeId unitTypeId = hasUnitType ? unitFacade.UnitTypeId : default;
-                int hangarSquadrons = entity.TryGetFacade(out IHangarAirWingFacade airWing)
+                bool isUnit = entity.IsUnit();
+                bool isPlayerBase = entity.IsPlayerBase();
+                bool isMiningFacility = !isUnit && !isPlayerBase && entity.TryGetFacade(out IMiningFacilityFacade _);
+                float offenseScale = hasUnitType ? ForceCompositionBuilder.GetOffenseScale(health) : 1f;
+                int hangarSquadrons = hasUnitType && unitTypeId.IsShip && entity.TryGetFacade(out IHangarAirWingFacade airWing)
                     ? airWing.LaunchedCount + airWing.PendingLaunchCount
                     : 0;
 
                 Entry entry = new Entry(
                     entity: entity,
                     position: position,
-                    navigationRadius: navigationRadius,
                     hasUnitType: hasUnitType,
                     unitTypeId: unitTypeId,
                     shipClass: health.ShipClass,
-                    isPlayerBase: entity.IsPlayerBase(),
-                    isUnit: entity.IsUnit(),
-                    isSecondStation: entity.TryGetFacade(out ISecondStationFacade _),
-                    isMiningFacility: entity.TryGetFacade(out IMiningFacilityFacade _),
-                    isCloaked: entity.IsCloaked(),
+                    isPlayerBase: isPlayerBase,
+                    isUnit: isUnit,
+                    isMiningFacility: isMiningFacility,
                     hasUnits: health.HasUnits,
                     hull: health.Hull,
                     shields: health.Shields,
-                    offenseScale: ForceCompositionBuilder.GetOffenseScale(health),
+                    offenseScale: offenseScale,
                     hangarSquadrons: hangarSquadrons);
 
                 _allLiving.Add(entry);
-                if (!entry.HasUnits)
-                {
-                    continue;
-                }
 
                 if (entry.HasUnitType)
                 {
@@ -237,6 +238,11 @@ namespace EmpireAtWar.Services.Enemy
                 if (entry.ShipClass == ShipClass.Structure)
                 {
                     _structures.Add(entry);
+                }
+
+                if (!entry.IsUnit && !entry.IsPlayerBase)
+                {
+                    _raidStructures.Add(entry);
                 }
 
                 if (entry.IsPlayerBase)

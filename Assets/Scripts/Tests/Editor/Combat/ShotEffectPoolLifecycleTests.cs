@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.ViewComponents.Weapon;
 using EmpireAtWar.ViewComponents.Health;
@@ -50,70 +51,209 @@ namespace EmpireAtWar.Tests.Weapon
         }
 
         [Test]
-        public void SharedPrewarm_KeepsRetiringOwnersCapacityUntilLastLeaseReturns()
+        public void SharedAdmission_ReservesEntireSalvoAndReusesOwnerlessShots()
         {
-            var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
-                "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
-            var profile = WeaponProfileFactory.Create(new WeaponDefinition(), weapons.GetFamily(WeaponFamily.Torpedo),
-                weapons.GetCaliber(WeaponCaliber.Medium), weapons.GetMount(WeaponMount.Single));
+            WeaponProfile profile = Profile();
             var prewarmer = new ShotPoolPrewarmer();
-            ShotEffectPool first = prewarmer.CreatePool(profile, null, _ => { }, null, null, 2);
-            ShotEffectPool second = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1);
+            ShotEffectPool first = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1000);
+            ShotEffectPool second = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1000);
             try
             {
-                first.Prewarm(2);
-                Assert.That(first.IsPrewarmed, Is.True, "An earlier owner only waits for its own admission threshold.");
-                Assert.That(second.IsPrewarmed, Is.False, "Both owners' full caps must fit in shared storage.");
-                ShotEffect leased = Lease(first);
-                first.Release();
-                Assert.That(second.IsPrewarmed, Is.False, "A retiring owner's in-flight lease still reserves its cap.");
-                Return(first, leased);
-                Assert.That(second.IsPrewarmed, Is.False, "An existing admission threshold stays fixed after retirement.");
-                second.Prewarm(3);
-                Assert.That(second.IsPrewarmed, Is.True);
-
-                ShotEffectPool third = prewarmer.CreatePool(profile, null, _ => { }, null, null, 3);
-                Assert.That(second.IsPrewarmed, Is.True, "A reinforcement must not pause admitted owners.");
-                Assert.That(third.IsPrewarmed, Is.False);
-                third.Prewarm(4);
-                Assert.That(second.IsPrewarmed, Is.True);
-                Assert.That(third.IsPrewarmed, Is.True);
+                first.Prewarm(3);
+                Assert.That(first.TryReserveSalvo(2), Is.True);
+                Assert.That(second.TryReserveSalvo(2), Is.False, "One spare shot cannot admit half a salvo.");
+                ShotEffect a = Lease(first);
+                ShotEffect b = Lease(first);
                 int created = AttackSequenceDiagnostics.PoolCreated;
-                var shots = new List<ShotEffect>();
-                shots.Add(Lease(second));
-                for (int i = 0; i < 3; i++) shots.Add(Lease(third));
+                first.Release();
+                Assert.That(second.TryReserveSalvo(2), Is.False);
+                Return(first, a);
+                Assert.That(second.TryReserveSalvo(2), Is.True, "Completed orphan leases immediately serve another mount.");
+                ShotEffect c = Lease(second);
+                ShotEffect d = Lease(second);
+                Assert.That(c, Is.Not.SameAs(d));
+                Assert.That(c, Is.Not.SameAs(b));
+                Assert.That(d, Is.Not.SameAs(b));
+                Return(first, b);
+                Return(second, c);
+                Return(second, d);
                 Assert.That(AttackSequenceDiagnostics.PoolCreated, Is.EqualTo(created));
-                Return(second, shots[0]);
-                for (int i = 1; i < shots.Count; i++) Return(third, shots[i]);
+                Assert.That(Cache(first).PeakInUse, Is.EqualTo(3));
             }
-            finally
+            finally { prewarmer.Clear(); }
+        }
+
+        [Test]
+        public void SharedAdmission_OlderLargeSalvoCannotBeStarvedBySmallSalvos()
+        {
+            WeaponProfile profile = Profile();
+            var prewarmer = new ShotPoolPrewarmer();
+            ShotEffectPool first = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1000);
+            ShotEffectPool second = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1000);
+            try
             {
-                prewarmer.Clear();
+                first.Prewarm(1);
+                Assert.That(first.TryReserveSalvo(2), Is.False);
+                Assert.That(second.TryReserveSalvo(1), Is.False, "A later small salvo must not repeatedly steal the head's shots.");
+                first.Prewarm(2);
+                Assert.That(second.TryReserveSalvo(1), Is.False);
+                Assert.That(first.TryReserveSalvo(2), Is.True);
+                ShotEffect a = Lease(first);
+                ShotEffect b = Lease(first);
+                Return(first, a);
+                Assert.That(first.TryReserveSalvo(1), Is.False, "A new request joins behind the existing waiter.");
+                Assert.That(second.TryReserveSalvo(1), Is.True);
+                ShotEffect c = Lease(second);
+                Return(first, b);
+                Assert.That(first.TryReserveSalvo(1), Is.True);
+                first.CancelReservation();
+                Return(second, c);
             }
+            finally { prewarmer.Clear(); }
+        }
+
+        [Test]
+        public void CancelledAdmission_RemovesGrowthDemandAndUnblocksNextMount()
+        {
+            WeaponProfile profile = Profile();
+            var prewarmer = new ShotPoolPrewarmer();
+            ShotEffectPool first = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1000);
+            ShotEffectPool second = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1000);
+            try
+            {
+                first.Prewarm(1);
+                Assert.That(first.TryReserveSalvo(100), Is.False);
+                Assert.That(second.TryReserveSalvo(1), Is.False);
+                first.Release();
+                Assert.That(Cache(first).WaitingCount, Is.EqualTo(1));
+                Assert.That(second.TryReserveSalvo(1), Is.True);
+                second.CancelReservation();
+                int created = AttackSequenceDiagnostics.PoolCreated;
+                prewarmer.Tick();
+                Assert.That(AttackSequenceDiagnostics.PoolCreated, Is.EqualTo(created), "Retired demand must not create obsolete shots.");
+                Assert.That(Cache(first).RequiredCount, Is.Zero);
+            }
+            finally { prewarmer.Clear(); }
         }
 
         [TestCase(WeaponFamily.Turbolaser)]
         [TestCase(WeaponFamily.Torpedo)]
-        public void BoostedPrewarm_ReservesAllMountCapsForSharedPrefab(WeaponFamily family)
+        public void WarmLoadout_UsesNormalCadenceWhileBoostedLogicalCapacityDoesNotAllocate(WeaponFamily family)
         {
-            var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
-                "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
-            var profile = WeaponProfileFactory.Create(new WeaponDefinition(), weapons.GetFamily(family),
-                weapons.GetCaliber(WeaponCaliber.Medium), weapons.GetMount(WeaponMount.Single));
+            WeaponProfile profile = Profile(family);
             var prewarmer = new ShotPoolPrewarmer();
             try
             {
-                prewarmer.RequestPrewarm(new[] { profile, profile }, 0.1f, 0.1f);
+                prewarmer.RequestPrewarm(new[] { profile, profile });
                 var targets = (IDictionary)typeof(ShotPoolPrewarmer)
                     .GetField("_targets", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(prewarmer);
                 Assert.That(targets.Count, Is.EqualTo(1));
-                foreach (DictionaryEntry target in targets)
-                    Assert.That(target.Value, Is.EqualTo(2 * WeaponHardPoint.ExpectedShotsInFlight(profile, 0.1f, 0.1f)));
-                Assert.That(WeaponHardPoint.ExpectedShotsInFlight(profile, 0.1f, 0.1f),
-                    Is.GreaterThan(WeaponHardPoint.ExpectedShotsInFlight(profile)));
+                int baseline = 2 * WeaponHardPoint.ExpectedShotsInFlight(profile);
+                foreach (DictionaryEntry target in targets) Assert.That(target.Value, Is.EqualTo(baseline));
+                int boosted = WeaponHardPoint.ExpectedShotsInFlight(profile, 0.1f, 0.1f);
+                Assert.That(boosted, Is.GreaterThan(WeaponHardPoint.ExpectedShotsInFlight(profile)));
+                ShotEffectPool pool = prewarmer.CreatePool(profile, null, _ => { }, null, null, boosted * 100);
+                Assert.That(Cache(pool).TotalCount, Is.Zero);
+                Assert.That(Cache(pool).RequiredCount, Is.Zero);
+                foreach (DictionaryEntry target in targets) Assert.That(target.Value, Is.EqualTo(baseline));
+            }
+            finally { prewarmer.Clear(); }
+        }
+
+        [Test]
+        public void Admission_RejectsOverflowWithoutSynchronousCreation()
+        {
+            WeaponProfile profile = Profile();
+            var prewarmer = new ShotPoolPrewarmer();
+            ShotEffectPool pool = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1000);
+            try
+            {
+                int created = AttackSequenceDiagnostics.PoolCreated;
+                Assert.That(pool.TryReserveSalvo(2), Is.False);
+                Assert.That(Cache(pool).RequiredCount, Is.EqualTo(2));
+                Assert.That(AttackSequenceDiagnostics.PoolCreated, Is.EqualTo(created));
+                Assert.Throws<System.InvalidOperationException>(() => Cache(pool).Acquire(pool));
+                pool.Prewarm(2);
+                Assert.That(pool.TryReserveSalvo(2, 2), Is.True);
+                ShotEffect a = Lease(pool);
+                ShotEffect b = Lease(pool);
+                Assert.That(pool.TryReserveSalvo(1, 2), Is.False, "Physical availability cannot bypass the mount's overlap cap.");
+                Assert.That(Cache(pool).WaitingCount, Is.Zero);
+                Return(pool, a);
+                Assert.That(pool.TryReserveSalvo(1, 2), Is.True);
+                pool.CancelReservation();
+                Return(pool, b);
+                Assert.That(Cache(pool).OnDemandExpansions, Is.Zero);
+            }
+            finally { prewarmer.Clear(); }
+        }
+
+        [TestCase(1f)]
+        [TestCase(0.1f)]
+        public void SteadySalvos_ReuseFullNormalOrBoostedOverlapWithoutAdmissionWait(float cadence)
+        {
+            WeaponProfile profile = Profile();
+            int cap = WeaponHardPoint.ExpectedShotsInFlight(profile, cadence, cadence);
+            var prewarmer = new ShotPoolPrewarmer();
+            ShotEffectPool pool = prewarmer.CreatePool(profile, null, _ => { }, null, null, cap);
+            var flying = new Queue<ShotEffect>();
+            try
+            {
+                pool.Prewarm(cap);
+                int created = AttackSequenceDiagnostics.PoolCreated;
+                for (int salvo = 0; salvo < 100; salvo++)
+                {
+                    while (flying.Count + profile.ShotsPerSalvo > cap) Return(pool, flying.Dequeue());
+                    Assert.That(pool.TryReserveSalvo(profile.ShotsPerSalvo, cap), Is.True);
+                    for (int shot = 0; shot < profile.ShotsPerSalvo; shot++) flying.Enqueue(Lease(pool));
+                }
+                while (flying.Count > 0) Return(pool, flying.Dequeue());
+                Assert.That(Cache(pool).AdmissionWaits, Is.Zero);
+                Assert.That(AttackSequenceDiagnostics.PoolCreated, Is.EqualTo(created));
+                Assert.That(Cache(pool).PeakInUse, Is.EqualTo(cap));
+            }
+            finally { prewarmer.Clear(); }
+        }
+
+        [Test]
+        public void ScheduledSalvo_WaitsBeforeReloadAndReturnsUnusedReservationOnCancellation()
+        {
+            WeaponProfile profile = Profile();
+            var prewarmer = new ShotPoolPrewarmer();
+            var mount = new GameObject("Admission mount");
+            try
+            {
+                var weapon = mount.AddComponent<WeaponHardPoint>();
+                var modifiers = new CombatModifiers();
+                weapon.SetData(profile, profile.Range, 0f, null, null, modifiers, null, null, null, prewarmer);
+                weapon.PrepareEffects();
+                var pool = (ShotEffectPool)typeof(WeaponHardPoint).GetField("_effectPool",
+                    BindingFlags.Instance | BindingFlags.NonPublic).GetValue(weapon);
+                object reload = typeof(WeaponHardPoint).GetField("_reloadTimer",
+                    BindingFlags.Instance | BindingFlags.NonPublic).GetValue(weapon);
+                var sequence = (AttackSequenceState)typeof(WeaponHardPoint).GetField("_sequence",
+                    BindingFlags.Instance | BindingFlags.NonPublic).GetValue(weapon);
+                Assert.That(weapon.TryStartScheduledSequence(out _), Is.False);
+                Assert.That(reload.GetType().GetProperty("HasStarted").GetValue(reload), Is.False,
+                    "Waiting for storage must not start the reload clock.");
+                Assert.That(sequence.CurrentStatus, Is.EqualTo(AttackSequenceState.Status.Ready),
+                    "Waiting for storage must not start the sequence.");
+                Assert.That(Cache(pool).WaitingCount, Is.EqualTo(profile.ShotsPerSalvo));
+                modifiers.SetIonDisabled(true);
+                weapon.RefreshTiming();
+                Assert.That(Cache(pool).WaitingCount, Is.Zero);
+                modifiers.SetIonDisabled(false);
+                pool.Prewarm(profile.ShotsPerSalvo);
+                Assert.That(weapon.TryStartScheduledSequence(out int generation), Is.True);
+                Assert.That(Cache(pool).ReservedCount, Is.EqualTo(profile.ShotsPerSalvo));
+                weapon.StopEmitting(generation - 1);
+                Assert.That(Cache(pool).ReservedCount, Is.EqualTo(profile.ShotsPerSalvo));
+                weapon.StopEmitting(generation);
+                Assert.That(Cache(pool).ReservedCount, Is.Zero);
             }
             finally
             {
+                Object.DestroyImmediate(mount);
                 prewarmer.Clear();
             }
         }
@@ -249,9 +389,21 @@ namespace EmpireAtWar.Tests.Weapon
             }
         }
 
+        private static WeaponProfile Profile(WeaponFamily family = WeaponFamily.Torpedo)
+        {
+            var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
+                "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
+            return WeaponProfileFactory.Create(new WeaponDefinition(), weapons.GetFamily(family),
+                weapons.GetCaliber(WeaponCaliber.Medium), weapons.GetMount(WeaponMount.Single));
+        }
+
+        private static ShotEffectCache Cache(ShotEffectPool pool) => (ShotEffectCache)typeof(ShotEffectPool)
+            .GetField("_cache", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(pool);
+
         // Play needs a live target and a ticking timer to finish a shot, so tests lease and return shots directly.
         private static ShotEffect Lease(ShotEffectPool pool)
         {
+            if (pool.ReservedShots == 0) Assert.That(pool.TryReserveSalvo(1), Is.True);
             var effect = (ShotEffect)typeof(ShotEffectPool)
                 .GetMethod("Acquire", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(pool, null);
             ((IDictionary)typeof(ShotEffectPool).GetField("_active", BindingFlags.Instance | BindingFlags.NonPublic)

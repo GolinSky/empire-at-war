@@ -10,7 +10,6 @@ namespace EmpireAtWar.Services.Enemy
         private readonly TeamIntelRegistry _intelRegistry;
         private readonly IPlayerRoster _roster;
         private readonly IReinforcementZoneSource _zones;
-        private readonly IReadOnlyList<IEnemyCaptureObjectiveSource> _captureSources;
         private readonly UnitCombatProfileCatalog _catalog;
         private readonly AiWorldSnapshot _worldSnapshot;
         private readonly Dictionary<TeamId, TeamAiPicture> _pictures = new Dictionary<TeamId, TeamAiPicture>();
@@ -19,14 +18,12 @@ namespace EmpireAtWar.Services.Enemy
             TeamIntelRegistry intelRegistry,
             IPlayerRoster roster,
             IReinforcementZoneSource zones,
-            IReadOnlyList<IEnemyCaptureObjectiveSource> captureSources,
             UnitCombatProfileCatalog catalog,
             AiWorldSnapshot worldSnapshot)
         {
             _intelRegistry = intelRegistry;
             _roster = roster;
             _zones = zones;
-            _captureSources = captureSources;
             _catalog = catalog;
             _worldSnapshot = worldSnapshot;
         }
@@ -41,7 +38,6 @@ namespace EmpireAtWar.Services.Enemy
                     _intelRegistry.Get(owner.Team),
                     _roster,
                     _zones,
-                    _captureSources,
                     _catalog,
                     _worldSnapshot);
                 _pictures.Add(owner.Team, picture);
