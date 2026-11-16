@@ -50,7 +50,8 @@ created: 2026-11-16
 ### Phase 2 — One planner per team (no behaviour change)
 - [x] Remove per-AI `HostileIntelGatherer` and run `TeamHostileIntelService` + `AiTeamMembership` once per active AI team (live `entry.Entity.IsCloaked()` check).
 - [x] New `TeamAiPicture` per team (`EnsureRefreshed` on `AssessStation`, `Build`, `SelectCaptureObjective`, `BeginCaptureProbe`, `IsMarkerApproachSafe`, `FindRaidTarget`, `FindClosestKnownShip`, `IsDefended`): confident hostile sightings, hostile force near raid structures, `zone:{i}` capture objectives, and on-demand `GetOrBuildObjectiveThreat` for both `zone:{i}` and per-player `site:{i}` objectives (`EnemySiteObjectives` stays per-player in `EnemyStrategicContextBuilder`).
-- [x] `IsDefended` and `IsObjectiveSafe` read cached per-structure / per-objective threats (skipping zero-distance `IsRouteSafe` when covered); `IsRouteSafe` sums from `TeamAiPicture.BuildKnownFromConfident`.
+- [x] `IsDefended` reads cached per-structure threats. `IsObjectiveSafe` uses the cached objective threat only at zero route distance (same 1,000 radius and team hostility as the route filter → equivalent). Moving fleets always run `IsRouteSafe` over origin + route + destination (`b1d549d07`); `IsRouteSafe` sums from `TeamAiPicture.BuildKnownFromConfident`.
+- Why not pre-reject with the cached destination threat: `CombatMatchup.Advantage` is non-monotonic, so destination-only can fail while the full route passes.
 - Keep per group: origin, own force, ion risk, smoothing, commitment, stall history.
 - Tests: `EnemyAi`, `Vision`.
 
@@ -97,11 +98,15 @@ created: 2026-11-16
 3. Phase 0 baseline (still open): same Full Large map and seed at 1, 3, 6 AIs. `MatchRules` caps Full Small at 4 slots and Full Medium at 6; 6 AIs plus the human need 7. Record per frame: `EnemyAI.Scheduler.Tick`, `EnemyAI.WorldSnapshot.Rebuild`, `EnemyAI.Ship.Build`, `EnemyAI.Context.*`, `EnemyAI.Production.Evaluate`; plus `StarvationRunCount` and decisions/s per difficulty. Record nested markers for attribution and exclude double-counting from frame totals.
 4. Decide from step 3:
    - Scheduler tick p95 ≤ budget at 6 AIs → Phase 5 proof in a Development Player, then close Phases 1–3.
-   - One unit still > budget → shrink the unit, in this order: skip `TeamAiPicture` structure threats when no group evaluates raids; reuse zone `EnemyCaptureObjective` instances between refreshes (currently reallocated on every refresh frame); pass snapshot positions into `IncludeNearbyOwn`; split `BeginDecisionCycle` (station assessment + reconcile) into its own unit.
+   - One unit still > budget → shrink the unit, in this order: `b1d549d07` removed the cached early-reject, so each moving-fleet capture candidate costs one confident-sightings pass in `IsRouteSafe` — check `EnemyAI.Context.*` for it first; skip `TeamAiPicture` structure threats when no group evaluates raids; reuse zone `EnemyCaptureObjective` instances between refreshes (currently reallocated on every refresh frame); pass snapshot positions into `IncludeNearbyOwn`; split `BeginDecisionCycle` (station assessment + reconcile) into its own unit.
    - `StarvationRunCount` rising → budget too small for the AI count; raise interval per difficulty before raising the budget.
 5. Source check complete: `CombatMatchup.Advantage` is non-monotonic. Adding an unarmed, quickly killable class can lower `TimeToDestroy(own, hostile)` because it raises the killable durability share. For fixed own survival of 50,000 s, increasing killable durability from 1 to 2 while killable time rises from 100 to 100.1 s (plus 1,000 unkillable hull) raises advantage from about 0.71 to 1.00. `b1d549d07`: use cached objective threat only at zero route distance. Moving fleets evaluate the complete route before applying the safety threshold. Added `EnemyAi` regression for both sides of the 0.8 threshold.
 6. Cleanup completed in `b1d549d07`. Scheduler methods require a registered handle. Callers own optional pre-start and teardown state. `TeamAiPicture` uses the required zone source; affected fixtures supply empty stubs. Unity compiled in Edit Mode. The production matchup probe measured 0.70675 at the destination and 0.99850 over the full route. New NUnit cases were not run.
-7. Phase 4 (cooperation) only after step 4 passes and the user approves each item.
+7. Review of `b1d549d07` · 2026-11-16: no correctness regressions found. Zero-distance cached path matches the route filter; event subscriptions now follow `Register` and unsubscribe before `Unregister`; `EnemyProductionStrategy.Tick` before `Start` is a valid no-op. Test gate reopened: step 1's passing run predates this commit.
+   - User: run `EnemyAi` (expect 481 + 2 new `CaptureSelection_UsesFullRouteForceWhenLocalMatchupFails` cases).
+   - Watch: `CreateContextBuilder` now replaces null `zones` with an empty `ZoneSource`; tests that passed null zones get an empty source instead.
+   - Minor: scheduler `ArgumentNullException` throws duplicate the NRE `handle.Removed` would raise; keep or drop per "let failures surface naturally".
+8. Phase 4 (cooperation) only after step 4 passes and the user approves each item.
 
 ## TODO
 - User: confirm the AI frame budget (proposed 2 ms) and whether slower decisions under load are acceptable.

@@ -108,7 +108,7 @@
   - 2026-11-16: plan written from post-fix captures (frame avg 14.0 ms, p95 26.3, max 420; main-thread bound). Nothing implemented. Next: Phase 0 baseline + user test run, then Phase 1 AI decision markers.
 
 - [ ] **Shared team AI: world snapshot, one planner per team, budgeted AI scheduler, allied cooperation** → [[TODOs/Optimization/Shared_Team_AI_Plan|Shared Team AI Plan]]
-  - 2026-11-16: Phases 1–3 committed in `434b9d97a`. HUD teardown and shared AI fixture fixes committed. User confirmed full EditMode passed. Full-route capture evaluation and scheduler/zone cleanup committed in `b1d549d07`. Three-AI battle and scaling checks deferred for the code-only pass. Phase 4 still requires item approvals.
+  - 2026-11-16: Phases 1–3 committed in `434b9d97a`. HUD teardown and shared AI fixture fixes committed. User confirmed full EditMode passed. Full-route capture evaluation and scheduler/zone cleanup committed in `b1d549d07`; reviewed, no regressions found; `EnemyAi` rerun pending for its 2 new cases. Three-AI battle and scaling checks deferred for the code-only pass. Phase 4 still requires item approvals.
 
 - [ ] **Remove recurring allocations and redundant scans; gate Jobs/Burst candidates behind captures** → [[TODOs/Optimization/CPU_Allocation_And_Jobs_Plan|CPU Allocation and Jobs Plan]]
   - 2026-11-14 · Phases 1–2, Phase 3 scan/HUD work and Phase 5 loading/editor work committed; independent source review found no actionable correctness regressions. Last Unity compilation reports no errors; committed diff check clean. Tests not run; coverage gaps and matched Editor/Development Player captures remain. Replicated-state timer design and measured Jobs/Burst candidates remain active.
