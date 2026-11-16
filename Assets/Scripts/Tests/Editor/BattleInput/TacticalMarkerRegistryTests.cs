@@ -254,6 +254,7 @@ namespace EmpireAtWar.Tests.Editor
             public float CaptureProgress => 0;
             public float ConstructionProgress => 0;
             public Vector3 Center { get; set; } = new Vector3(0, 10, 0);
+            public Vector3 FacilityPosition => Center;
             public bool IsRevealed => true;
             public bool IsOperational => true;
             public float PointerHitDistance(Ray ray) => 0;

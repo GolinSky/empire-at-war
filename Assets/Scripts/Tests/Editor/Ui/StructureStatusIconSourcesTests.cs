@@ -51,6 +51,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(sources.Model.Get(0).MinimapActive, Is.True);
             Assert.That(sources.GetPosition(0), Is.EqualTo(position));
             events.Emit(site, TestPlayers.Enemy, CaptureSiteStatusTransition.Destroyed, position);
+            sources.Model.Advance(0, 1f, true, true);
             Assert.That(sources.Model.ActiveCount, Is.Zero);
             sources.LateDispose();
         }
@@ -64,6 +65,7 @@ namespace EmpireAtWar.Tests.Editor
             sources.Initialize();
             site.Owner = PlayerId.None;
             events.Emit(site, TestPlayers.Human, CaptureSiteStatusTransition.OwnershipLost, Vector3.zero);
+            sources.Model.Advance(0, 1f, true, true);
             Assert.That(sources.Model.ActiveCount, Is.Zero);
             site.Owner = TestPlayers.Human;
             events.Emit(site, PlayerId.None, CaptureSiteStatusTransition.Captured, Vector3.zero);
@@ -96,6 +98,69 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(first.SubscriberCount, Is.Zero);
             Assert.That(second.SubscriberCount, Is.Zero);
             Assert.That(relays.SubscriberCount, Is.Zero);
+        }
+
+        [TestCase(CaptureSiteKind.Mining)]
+        [TestCase(CaptureSiteKind.Satellite)]
+        public void StartupAndMapReplacementUseTheSameFacilityAnchorAsLiveCapture(CaptureSiteKind kind)
+        {
+            var site = new Site { Owner = TestPlayers.Human, Kind = kind,
+                Center = new Vector3(12f, 3f, 8f), FacilityPosition = new Vector3(12f, 15f, 8f) };
+            var events = new SiteEvents(site);
+            StructureStatusIconSources sources = Create(new RelayEvents(), events);
+            sources.Initialize();
+            Assert.That(sources.GetPosition(0), Is.EqualTo(site.FacilityPosition));
+            Assert.That(sources.Model.Get(0).WorldActive, Is.True);
+            Assert.That(sources.Model.Get(0).MinimapActive, Is.False);
+            events.Emit(site, PlayerId.None, CaptureSiteStatusTransition.Captured, site.FacilityPosition);
+            Assert.That(sources.GetPosition(0), Is.EqualTo(site.FacilityPosition));
+            var replacement = new Site { Owner = TestPlayers.Human, Kind = kind,
+                State = CaptureSiteState.Constructing, Center = new Vector3(-8f, 2f, 4f),
+                FacilityPosition = new Vector3(-8f, 20f, 4f) };
+            events.Replace(replacement);
+            Assert.That(sources.GetPosition(0), Is.EqualTo(replacement.FacilityPosition));
+            Assert.That(sources.Model.Get(0).WorldActive, Is.EqualTo(kind == CaptureSiteKind.Mining));
+            Assert.That(sources.Model.Get(0).MinimapActive, Is.False);
+            sources.LateDispose();
+        }
+
+        [TestCase(CaptureSiteKind.Mining)]
+        [TestCase(CaptureSiteKind.Satellite)]
+        public void ConstructionPurchaseDismissesOnlySatelliteReminderAndCompletionStillShowsBuilt(CaptureSiteKind kind)
+        {
+            var site = new Site { Owner = TestPlayers.Human, Kind = kind };
+            var events = new SiteEvents(site);
+            StructureStatusIconSources sources = Create(new RelayEvents(), events);
+            sources.Initialize();
+            events.Emit(site, PlayerId.None, CaptureSiteStatusTransition.Captured, Vector3.zero);
+            sources.Model.Advance(0, 1f, true, true);
+            site.State = CaptureSiteState.Constructing;
+            events.Emit(site, TestPlayers.Human, CaptureSiteStatusTransition.ConstructionStarted, Vector3.zero);
+            sources.Model.Advance(0, 1f, true, true);
+            Assert.That(sources.Model.Get(0).WorldActive, Is.EqualTo(kind == CaptureSiteKind.Mining));
+            Assert.That(sources.Model.Get(0).MinimapActive, Is.EqualTo(kind == CaptureSiteKind.Mining));
+            site.State = CaptureSiteState.Operational;
+            events.Emit(site, TestPlayers.Human, CaptureSiteStatusTransition.Built, Vector3.zero);
+            Assert.That(sources.Model.Get(0).State, Is.EqualTo(StructureStatusIconState.Built));
+            Assert.That(sources.Model.Get(0).WorldActive, Is.True);
+            Assert.That(sources.Model.Get(0).MinimapActive, Is.True);
+            sources.LateDispose();
+        }
+
+        [Test]
+        public void ConstructingSatelliteBaselineAndCoalescedCaptureNeverRestorePurchaseReminder()
+        {
+            var site = new Site { Owner = TestPlayers.Human, Kind = CaptureSiteKind.Satellite,
+                State = CaptureSiteState.Constructing };
+            var events = new SiteEvents(site);
+            StructureStatusIconSources sources = Create(new RelayEvents(), events);
+            sources.Initialize();
+            Assert.That(sources.Model.ActiveCount, Is.Zero);
+            events.Emit(site, PlayerId.None, CaptureSiteStatusTransition.Captured, Vector3.zero);
+            Assert.That(sources.Model.ActiveCount, Is.Zero);
+            events.Emit(site, TestPlayers.Human, CaptureSiteStatusTransition.Baseline, Vector3.zero);
+            Assert.That(sources.Model.ActiveCount, Is.Zero);
+            sources.LateDispose();
         }
 
         private static StructureStatusIconSources Create(RelayEvents relays, params SiteEvents[] sites) =>
@@ -132,7 +197,8 @@ namespace EmpireAtWar.Tests.Editor
             public SiteFacilityType FacilityType => SiteFacilityType.Mining;
             public float CaptureProgress => 0f;
             public float ConstructionProgress => 0f;
-            public Vector3 Center => Vector3.zero;
+            public Vector3 Center { get; set; }
+            public Vector3 FacilityPosition { get; set; }
             public bool IsRevealed => false;
             public bool IsOperational => State == CaptureSiteState.Operational;
             public float PointerHitDistance(Ray ray) => throw new NotSupportedException();

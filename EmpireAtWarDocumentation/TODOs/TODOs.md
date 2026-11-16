@@ -289,6 +289,9 @@
 
 ### Bugs
 
+- [x] **Fix structure status icon projection and unseen expiry** → [[Done/Bugs/Structure_Status_Icons_Projection]]
+  - Completed 2026-11-16: viewport-relative placement, fresh-event reprojection and actual-position regressions. Unity compilation successful; tests and live battle acceptance pending.
+
 - [x] **Fog hull visibility — review fixes** → [[Done/Bugs/Fog_Hull_Visibility_Review_Fixes]]
   - Completed 2026-11-16: all-attacker reveal, staggered 10 Hz ships, serialized duration, hull bake guard, audio and replication coverage. Tooltip finding disproved. Unity compilation/save verified; tests, gameplay and matched CPU capture → acceptance queue.
 
@@ -384,9 +387,10 @@
 ### Features
 
 - [x] **Mining, satellite and relay state icons in world/minimap** → [[Done/Features/Structure_Status_Icons_Plan|Structure Status Icons Plan]]; [[Done/Features/Structure_Status_Icons_Plan - Research|Source research]]
-  - Planned 2026-11-16: mining/satellite captured until built; built/destroyed and relay captured until seen on screen for 2 s, regardless of fog; all minimap event icons hold 3 s then fade. Event-driven state, pooled views, independent timers. Revalidated against live source 2026-11-16 (Battle Asteroid default + stable event consumers added; Battle Asteroid uses mining rules, user-confirmed). No implementation or tests run.
-
-  - Completed 2026-11-16: event-driven pooled world/minimap icons, independent clocks, shared artwork and per-map snapshot suppression. Unity compilation/assets/isolated preview verified; tests not run. User gates → [[TODOs/User_Acceptance_Queue]].
+  - Planned 2026-11-16: mining/satellite captured until built; built/destroyed and relay captured until seen on screen for 2 s, regardless of fog; all minimap event icons hold 3 s then fade. Event-driven state, pooled views, independent timers. Battle Asteroid uses mining rules (user-confirmed).
+  - Completed 2026-11-16 (`e35feafc0`): event-driven pooled world/minimap icons, independent clocks, shared artwork and per-map snapshot suppression. Unity compilation/assets/isolated preview verified; tests not run. User gates → [[TODOs/User_Acceptance_Queue]].
+  - Review fixes 2026-11-16: unified rebuild/live facility anchors, removed unused capture/loss pings, added deterministic presenter coverage and updated interface doubles. Source/diff verified; final Unity compilation successful, tests not run. See plan and acceptance queue.
+  - Purchase/fade correction 2026-11-16: satellite reminder dismissed on purchase; all status icons fade/crossfade, independent clocks retained. Ui/Capture/Networking regressions updated; live acceptance pending.
 
 - [x] **Darth Vader hero squadron: Remake TIE Advanced + 6 escorts** → [[Done/Features/DarthVader_Squadron_Import]]
   - Completed 2026-11-16: mixed leader/escort durability, Replenish Wingmen, Empire registrations and saved visual/stat verification; tests not run, user gates in acceptance queue.

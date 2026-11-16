@@ -21,12 +21,8 @@ namespace EmpireAtWar.Entities.MiniMap
         private const float FADE_DURATION = 0.3f;
         private const float ORIGIN_MAP_ALPHA = 0.8f;
         private const int MAX_ALERTS = 8;
-        private const float CAPTURED_ALERT_SECONDS = 4f;
-        private const float LOST_ALERT_SECONDS = 5f;
         private const float COMBAT_ALERT_SECONDS = 3f;
         private const float COMBAT_DISC_ALPHA = 0.35f;
-        private static readonly Color CAPTURED_ALERT_COLOR = new Color32(109, 184, 226, 255);
-        private static readonly Color LOST_ALERT_COLOR = new Color32(210, 169, 94, 255);
         private static readonly Color COMBAT_ALERT_COLOR = new Color(232f / 255f, 110f / 255f, 108f / 255f, 0.85f);
 
         [SerializeField] private RectTransform miniMapRectTransform;
@@ -153,12 +149,6 @@ namespace EmpireAtWar.Entities.MiniMap
             Vector2 position = GetPosition(worldPoint);
             switch (alertType)
             {
-                case MiniMapAlertType.Captured:
-                    view.Play(position, CAPTURED_ALERT_COLOR, 0f, CAPTURED_ALERT_SECONDS);
-                    break;
-                case MiniMapAlertType.Lost:
-                    view.Play(position, LOST_ALERT_COLOR, 0f, LOST_ALERT_SECONDS);
-                    break;
                 case MiniMapAlertType.Combat:
                     view.Play(position, COMBAT_ALERT_COLOR, COMBAT_DISC_ALPHA, COMBAT_ALERT_SECONDS);
                     break;

@@ -13,6 +13,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         float CaptureProgress { get; }
         float ConstructionProgress { get; }
         Vector3 Center { get; }
+        Vector3 FacilityPosition { get; }
         bool IsRevealed { get; }
         bool IsOperational { get; }
 

@@ -173,13 +173,14 @@ namespace EmpireAtWar.Tests.Editor
             _presenter.SetFacility(42);
             _presenter.SetConstructionProgress(complete ? 1f : 0.5f);
             _presenter.SetConstructionProgress(complete ? 1f : 0.5f);
-            Assert.That(changes.Count, Is.EqualTo(complete ? 1 : 0));
-            if (complete) Assert.That(changes[0].Transition, Is.EqualTo(CaptureSiteStatusTransition.Built));
-
-            _presenter.ReleaseFacility();
-            _presenter.ReleaseFacility();
-
             Assert.That(changes.Count, Is.EqualTo(complete ? 2 : 1));
+            Assert.That(changes[0].Transition, Is.EqualTo(CaptureSiteStatusTransition.ConstructionStarted));
+            if (complete) Assert.That(changes[1].Transition, Is.EqualTo(CaptureSiteStatusTransition.Built));
+
+            _presenter.ReleaseFacility();
+            _presenter.ReleaseFacility();
+
+            Assert.That(changes.Count, Is.EqualTo(complete ? 3 : 2));
             CaptureSiteStatusChange destroyed = changes[changes.Count - 1];
             Assert.That(destroyed.Transition, Is.EqualTo(CaptureSiteStatusTransition.Destroyed));
             Assert.That(destroyed.PreviousOwner, Is.EqualTo(TestPlayers.Human));
@@ -219,6 +220,22 @@ namespace EmpireAtWar.Tests.Editor
             "{\"Sites\":[" + JsonUtility.ToJson(CaptureSiteSave.Create(owner, state, PlayerId.None,
                 0f, SiteFacilityType.Mining, state == CaptureSiteState.Operational ? 1f : 0f, 0)) + "]}";
 
+        [Test, Category("Networking")]
+        public void HostSnapshots_ReportConstructionPurchaseOnceWithoutReplayingBaseline()
+        {
+            CaptureSitesSystem system = CreateSystem();
+            var replication = new CaptureSitesReplicatedState(null, null, system);
+            var changes = new List<CaptureSiteStatusChange>();
+            system.StatusChanged += changes.Add;
+            replication.Apply(SiteSnapshot(TestPlayers.Human, CaptureSiteState.Owned));
+            string constructing = SiteSnapshot(TestPlayers.Human, CaptureSiteState.Constructing);
+            replication.Apply(constructing);
+            replication.Apply(constructing);
+            Assert.That(changes.Count, Is.EqualTo(1));
+            Assert.That(changes[0].Transition, Is.EqualTo(CaptureSiteStatusTransition.ConstructionStarted));
+            Assert.That(changes[0].Site, Is.SameAs(_presenter));
+        }
+
         private CaptureSitesSystem CreateSystem()
         {
             var system = _tooltipObject.AddComponent<CaptureSitesSystem>();
@@ -233,8 +250,18 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(SiteFacilityType.Mining)]
         [TestCase(SiteFacilityType.BattleAsteroid)]
+        [TestCase(SiteFacilityType.QuadLaserSatellite)]
         public void ConstructionStartedEmitsOnlyAfterSuccessfulPaymentAndNotRestore(SiteFacilityType type)
         {
+            if (type == SiteFacilityType.QuadLaserSatellite)
+            {
+                _presenter.Dispose();
+                var tooltips = new TooltipService(new FixedClock(), new TooltipModel(), new TooltipTiming(0.35f, 0.1f));
+                var data = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
+                    "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
+                _presenter = new CaptureSitePresenter(_view, TestPlayers.CreateLocalPlayer(_roster),
+                    tooltips, new CaptureSiteModel(_roster, 10f, 1f), data, CaptureSiteKind.Satellite);
+            }
             CaptureSitesSystem system = CreateSystem();
             var registry = new PlayerRegistry();
             var builder = new BuilderStub();
@@ -242,6 +269,11 @@ namespace EmpireAtWar.Tests.Editor
             typeof(CaptureSitesSystem).GetField("_playerRegistry", BindingFlags.Instance | BindingFlags.NonPublic)
                 .SetValue(system, registry);
             int starts = 0;
+            int statusStarts = 0;
+            _presenter.StatusChanged += change =>
+            {
+                if (change.Transition == CaptureSiteStatusTransition.ConstructionStarted) statusStarts++;
+            };
             system.ConstructionStarted += (payer, facility) =>
             {
                 Assert.That(payer, Is.EqualTo(TestPlayers.Human));
@@ -255,10 +287,12 @@ namespace EmpireAtWar.Tests.Editor
             MethodInfo start = typeof(CaptureSitesSystem).GetMethod("TryStartConstruction", BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(start.Invoke(system, new object[] { _presenter, type, TestPlayers.Human }), Is.False);
             Assert.That(starts, Is.Zero);
+            Assert.That(statusStarts, Is.Zero);
             Assert.That(builder.BuildCount, Is.Zero);
             builder.CanSpend = true;
             Assert.That(start.Invoke(system, new object[] { _presenter, type, TestPlayers.Human }), Is.True);
             Assert.That(starts, Is.EqualTo(1));
+            Assert.That(statusStarts, Is.EqualTo(1));
             Assert.That(builder.BuildCount, Is.EqualTo(1));
             Assert.That(_presenter.FacilityId, Is.EqualTo(1));
             Assert.That(_presenter.IsCapturable, Is.False);

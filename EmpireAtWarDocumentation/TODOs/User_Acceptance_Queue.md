@@ -422,8 +422,9 @@ created: "2026-10-29\r"
 
 ## Structure Status Icons
 
-- [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Check mining/Battle Asteroid and satellite capture/build/destruction, relay capture, fogged destruction, away/return, menu/cinematic/pause, burst events, map reload and online client; review 48 px world / 26 px minimap readability and ordinary HUD panel overlap.
-- [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Run authored Capture/Ui/Networking regressions when explicitly authorized; local test execution was disabled.
+- [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Check satellite purchase dismisses captured on world/minimap, failed purchase keeps it, completion shows built, and all statuses fade smoothly including replacements. Check online/save-load constructing satellites do not regain reminders. World: 0.2 s in / 0.3 s out inside 2 s; minimap: 0.2 s in + 3 s hold + 0.3 s out.
+
+- [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Run authored Capture/Ui/Networking regressions and affected BattleInput/EnemyAi/GameFlow interface fixtures when explicitly authorized; local test execution was disabled. Final purchase/fade correction compiled successfully on 2026-11-16.
 - [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Profile matched idle/many-reminder/camera-pan/destruction workloads; record source/active/visible counts, CPU and allocations. Zero-allocation target and CPU budget are unmeasured.
 
 ## Fog Hull Visibility
@@ -432,3 +433,8 @@ created: "2026-10-29\r"
 - [ ] [[Done/Bugs/Fog_Hull_Visibility_Review_Fixes]] — Matched large-battle CPU capture versus `d19023145`: vision, acquisition, 10 Hz fog checks and reveal fan-out; remove `profiler.data` after analysis. No performance claim yet.
 - [ ] [[Done/Bugs/Fog_Hull_Visibility_Review_Fixes]] — In-game hull edge/rotation, squadron/structure/ship firing reveal, marker/audio visibility, five-second expiry and cloak precedence.
 - [ ] [[Done/Bugs/Fog_Hull_Visibility_Review_Fixes]] — Online reveal/hide parity and reconnect mid-reveal baseline.
+
+## Structure Status Icon Projection
+
+- [ ] [[Done/Bugs/Structure_Status_Icons_Projection]] — Check local mining/Battle Asteroid and satellite destruction under fog, camera pan/rotation/zoom and offscreen return; icons stay above structures and receive their full displayed lifetime.
+- [ ] [[Done/Bugs/Structure_Status_Icons_Projection]] — Run `Ui` regressions when explicitly requested, including real-canvas position and two-source reactivation coverage; authored and compiled, not run.

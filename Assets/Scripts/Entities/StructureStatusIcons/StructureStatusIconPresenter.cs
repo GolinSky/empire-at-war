@@ -37,7 +37,6 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
         private int _version = -1;
         private Matrix4x4 _cameraMatrix;
         private Rect _viewport;
-        private Rect _layerRect;
         private RectTransform _worldParent;
         private bool _disposed;
 
@@ -55,7 +54,9 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
             _inputLock = inputLock;
         }
 
-        public void LateTick()
+        public void LateTick() => Advance(Time.unscaledDeltaTime);
+
+        private void Advance(float seconds)
         {
             if (_disposed || _miniMap.View == null) return;
             MiniMapUi view = _miniMap.View;
@@ -72,18 +73,17 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
             _previousCount = 0;
             if (model.ActiveCount == 0) return;
             Matrix4x4 matrix = _camera.projectionMatrix * _camera.worldToCameraMatrix;
-            bool reproject = rebuilt || matrix != _cameraMatrix || _viewport != _camera.pixelRect ||
-                             _layerRect != _worldParent.rect;
+            bool reproject = rebuilt || matrix != _cameraMatrix || _viewport != _camera.pixelRect;
             _cameraMatrix = matrix;
             _viewport = _camera.pixelRect;
-            _layerRect = _worldParent.rect;
             bool worldDisplayed = _hud.IsHudVisible && !_cinematic.IsActive && !_inputLock.IsLocked;
             bool mapDisplayed = worldDisplayed && view.IsVisible && view.gameObject.activeInHierarchy;
             for (int i = model.ActiveCount - 1; i >= 0; i--)
             {
                 int source = model.GetActiveSource(i);
                 Vector3 anchor = _sources.GetPosition(source);
-                if (reproject || _anchors[source] != anchor)
+                bool sameTransition = _revisions[source] == _sources.GetRevision(source);
+                if (reproject || !sameTransition || _anchors[source] != anchor)
                 {
                     _anchors[source] = anchor;
                     Project(source, anchor);
@@ -91,16 +91,16 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
                 StructureStatusIconRecord record = model.Get(source);
                 _world[source].SetAppearance(_data.StructureStatusIcons, record.Kind, record.State);
                 _map[source].SetAppearance(_data.StructureStatusIcons, record.Kind, record.State);
-                bool sameTransition = _revisions[source] == _sources.GetRevision(source);
-                model.Advance(source, Time.unscaledDeltaTime,
+                model.Advance(source, seconds,
                     sameTransition && _worldDisplayed[source] && worldDisplayed && _inside[source],
                     sameTransition && _mapDisplayed[source] && mapDisplayed);
                 record = model.Get(source);
                 _worldDisplayed[source] = worldDisplayed && record.WorldActive && _inside[source];
                 _mapDisplayed[source] = mapDisplayed && record.MinimapActive;
                 _revisions[source] = _sources.GetRevision(source);
-                _world[source].Display(_worldDisplayed[source], 1f, _projected[source]);
-                _map[source].Display(_mapDisplayed[source], record.MinimapAlpha, view.GetPosition(anchor));
+                float fadeSeconds = sameTransition ? seconds : 0f;
+                _world[source].Display(_worldDisplayed[source], record.WorldAlpha, _projected[source], fadeSeconds);
+                _map[source].Display(_mapDisplayed[source], record.MinimapAlpha, view.GetPosition(anchor), fadeSeconds);
                 _previous[_previousCount++] = source;
             }
         }
@@ -113,8 +113,7 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
             _inside[source] = point.z > _camera.nearClipPlane && point.z < _camera.farClipPlane &&
                 point.x >= _viewport.xMin + halfSize && point.x <= _viewport.xMax - halfSize &&
                 point.y >= _viewport.yMin + halfSize && point.y <= _viewport.yMax - halfSize;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(_worldParent, point, _camera, out Vector2 local);
-            _projected[source] = local - _worldParent.rect.min;
+            _projected[source] = (Vector2)point - _viewport.min;
         }
 
         private void Prewarm(MiniMapUi view)

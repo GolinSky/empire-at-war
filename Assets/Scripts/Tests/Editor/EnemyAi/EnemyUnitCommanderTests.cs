@@ -2385,6 +2385,7 @@ private sealed class ZoneSource : IReinforcementZoneSource
             public float CaptureProgress => 0f;
             public float ConstructionProgress => 0f;
             public Vector3 Center { get; }
+            public Vector3 FacilityPosition => Center;
             public bool IsRevealed => true;
             public float PointerHitDistance(Ray ray) => float.PositiveInfinity;
             public bool IsOperational => false;

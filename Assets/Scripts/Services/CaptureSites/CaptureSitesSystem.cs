@@ -215,6 +215,8 @@ namespace EmpireAtWar.Services.CaptureSites
             else if (site.Owner != previousOwner)
                 transition = previousState is CaptureSiteState.Constructing or CaptureSiteState.Operational
                     ? CaptureSiteStatusTransition.Destroyed : CaptureSiteStatusTransition.OwnershipLost;
+            else if (site.State == CaptureSiteState.Constructing && previousState != CaptureSiteState.Constructing)
+                transition = CaptureSiteStatusTransition.ConstructionStarted;
             else
                 return;
             StatusChanged?.Invoke(new CaptureSiteStatusChange(site, site.FacilityPosition, previousOwner, site.Owner, transition));

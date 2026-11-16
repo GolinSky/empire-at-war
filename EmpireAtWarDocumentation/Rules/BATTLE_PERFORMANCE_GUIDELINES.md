@@ -241,3 +241,12 @@ tags:
 - Alpha clipping on an all-zero-alpha opaque hull discards the whole surface: cleared the ISD III `ISDII_diff_Material1_Wreck` keyword; retained mixed-alpha steelgirder cutouts. Check actual texture alpha/import settings before keyword cleanup.
 - Source/import and 30 targeted D3D stage compilations verified; tests/render acceptance/Player measurements not run. Latest C# compilation succeeded; Windows/D3D11 Player experiments remain active. Owner/evidence → [[TODOs/Optimization/Custom_Shader_Fixes_Plan]].
 - Clear the same stale alpha keyword on the source hull material: `ShipWreckBuilder` copies source materials before assigning the wreck shader, which can reactivate a formerly invalid keyword. Health regression covers saved and rebuilt hull/girder keyword states; authored, not run.
+
+### Structure icon projection correction · 2026-11-16
+
+- On the unscaled `BattleMarkerLayer` screen-space camera canvas, place bottom-left-anchored icons at projected screen point minus camera `pixelRect.min`, matching `BattleMarker`. Avoid ray conversion through the canvas world plane during camera updates.
+- Reproject a fresh source revision even if its anchor is unchanged: inactive sources can retain old coordinates while other active sources update the shared camera cache.
+- Position regressions must assert rendered screen coordinates on a real canvas across camera changes, not only active flags and clocks. Fix/source/compilation evidence → [[Done/Bugs/Structure_Status_Icons_Projection]]; tests and live acceptance pending.
+
+- Structure status fade clocks: 0.2 s in / 0.3 s out; world transient stays within 2 s, minimap retains full 3 s opaque hold. Dismiss snapshots current alpha and is idempotent; baseline/map teardown clears immediately.
+- State replacement crossfades use three prewarmed outgoing graphics per display, disabled after fading. Advance from the shared presenter; no per-icon Update/tween or event-time view allocation. Gameplay rules → [[GameDesign/Capture_And_Structures#Structure status icons]].

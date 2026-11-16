@@ -21,10 +21,11 @@ acceptance: pending-user
 
 | Structure / event | World icon lifetime | Minimap event icon lifetime |
 |---|---|---|
-| Mining / satellite captured | Until the player finishes building the facility; clear if ownership is lost | 3 s at full opacity, then fade |
-| Mining / satellite built | Until displayed on screen for 2 s | 3 s at full opacity, then fade |
-| Mining / satellite destroyed | Until displayed on screen for 2 s, including under fog | 3 s at full opacity, then fade |
-| Relay captured | Until displayed on screen for 2 s | 3 s at full opacity, then fade |
+| Mining captured | Until the player finishes building the facility; fade out if ownership is lost | 0.2 s fade-in, 3 s hold, 0.3 s fade-out |
+| Satellite captured | Fade out when construction is successfully purchased or ownership is lost | Same fades; purchase dismisses the current reminder |
+| Mining / satellite built | Until displayed on screen for 2 s | 0.2 s fade-in, 3 s hold, 0.3 s fade-out |
+| Mining / satellite destroyed | Until displayed on screen for 2 s, including under fog | 0.2 s fade-in, 3 s hold, 0.3 s fade-out |
+| Relay captured | Until displayed on screen for 2 s | 0.2 s fade-in, 3 s hold, 0.3 s fade-out |
 
 - Fog does not hide these icons or gate their timers. A destroyed mine will commonly be under fog.
 - World and minimap lifetimes are independent. Minimap expiry never consumes the world icon's unseen time.
@@ -36,10 +37,10 @@ acceptance: pending-user
 ### Planning defaults
 
 - **Seen:** 2 s accumulated while the world icon is actually displayed inside the active battle-camera viewport. Offscreen/behind-camera or hidden world HUD → preserve remaining time; fog is irrelevant.
-- **Captured until built:** retain the mining/satellite captured icon through construction; successful completion replaces it with built. Failed payment or selection cancellation does not clear it.
+- **Purchase correction (user, 2026-11-16):** successful satellite purchase dismisses captured on both displays; mining keeps its reminder through construction. Completion shows built. Failed payment or menu cancellation keeps the reminder.
 - **Audience:** local player's captures/builds and destruction of their facilities, matching existing notification filtering. Ownership at destruction is the previous owner.
 - **Clock:** unscaled presentation seconds, independent of battle speed. Suspend a display's clock while that HUD is hidden/covered by a full-screen menu or cinematic mode.
-- **Fade:** proposed minimap fade duration = 0.3 s after the complete 3 s hold; total = 3.3 s. The user specified the hold, not the fade duration.
+- **Fade (user follow-up, 2026-11-16):** all status icons fade in/out. Implementation defaults: 0.2 s in / 0.3 s out; minimap keeps a full 3 s hold (3.5 s total). World transient fades fit inside its existing 2 s display lifetime. State replacements crossfade old/new artwork; dismissal starts from current alpha.
 - **Artwork:** one shared structure glyph plus captured/built/destroyed state treatment; distinguish states by shape as well as color. Reuse suitable existing art; final appearance remains a visual acceptance gate.
 - **Battle Asteroid (user-confirmed 2026-11-16):** mining sites also build `SiteFacilityType.BattleAsteroid`. It follows the mining facility's captured/built/destroyed rules; glyph chosen by site kind (asteroid site vs satellite pad), not by facility type.
 - These defaults are implementation choices, not additional confirmed user requirements.
@@ -66,7 +67,7 @@ acceptance: pending-user
 2. [x] Implement deterministic presentation state and lifetimes.
    - One world icon and one minimap icon per source; refresh only on a new transition, never on recurring state reads.
    - Consume world time only when displayed; retain pending offscreen events. Keep minimap time independent of world visibility.
-   - On startup/load, reconstruct locally owned non-operational mining/satellite reminders; do not replay historical built/destroyed/relay-captured events.
+   - On startup/load, reconstruct locally owned non-operational mining reminders and unpurchased satellite reminders; do not replay historical built/destroyed/relay-captured events.
    - Verify: 1 s seen → offscreen → 1 s seen dismisses; 2 s under fog dismisses; 2 s offscreen does not.
 
 3. [x] Add passive pooled world icons above stable site anchors.
@@ -95,7 +96,7 @@ acceptance: pending-user
 ## Important Values
 
 - World transient acknowledgement: **2 s displayed**, independent of fog.
-- Minimap: **3 s hold + proposed 0.3 s fade**; latest event restarts the source's minimap lifetime.
+- Minimap: **0.2 s fade-in + 3 s hold + 0.3 s fade-out = 3.5 s**; latest event restarts the source's minimap lifetime.
 - Complexity target: O(active records) in one presentation loop; no scan over all entities, no all-pairs work.
 - Allocation target: **0 B/frame from steady-state icon updates after warmup**. Measure it; this plan does not claim achieved performance.
 - Prewarm views/buffers from actual source count. No runtime Instantiate/Destroy per event; no coroutine/tween allocation per icon.
@@ -117,7 +118,7 @@ acceptance: pending-user
 
 - [[Done/Features/Structure_Status_Icons_Plan - Research]] — verified hook points, current limitations and affected tests.
 - [[Rules/UI_UX_GUIDELINES]], [[Rules/UI_CODE_BUILD_GUIDE]], [[Rules/BATTLE_PERFORMANCE_GUIDELINES]] — read during planning.
-- [[TODOs/TODOs]] — active Features entry.
+- [[TODOs/TODOs]] — completed Features entry.
 
 ## Implementation Evidence
 - Completed 2026-11-16: distinct capture/built/destroyed/ownership-loss events; per-map network baselines; pure independent clocks; passive source-sized pools; shared six-sprite artwork; combat alerts retained.
@@ -127,3 +128,40 @@ acceptance: pending-user
 - Reviewed unchanged `MiniMapUiLifecycleTests`, `UiCanvasArchitectureTests`, capture model/defense-satellite contracts, and `RealEntityCompositionTests`: existing subscriptions, prefab layouts, capture rules and marker counts remain valid.
 - User acceptance: live camera/fog/menu/cinematic/online/reload/burst scenarios; ordinary HUD panel overlap and small-icon readability; targeted test execution; matched CPU/GC profiling. No measured zero-allocation or CPU-speedup claim.
 - Reusable behavior extracted to [[GameDesign/Capture_And_Structures]] and [[Rules/BATTLE_PERFORMANCE_GUIDELINES]]. Open user gates → [[TODOs/User_Acceptance_Queue]].
+
+## Source Verification · 2026-11-16
+
+Commit `e35feafc0` reviewed against every rule above by source inspection. Tests not run (local override).
+
+- Confirmed: transitions `Captured`/`Built`/`Destroyed`/`OwnershipLost`/`Baseline`; destroyed only when a facility existed (`hadFacility`) or replay saw Constructing/Operational → owner none; neutralization → `OwnershipLost` → clear.
+- Confirmed: audience = local owner (capture/build), local previous owner (destroyed). Mining-kind site → Mining glyph, so Battle Asteroid follows mining rules.
+- Confirmed: world clock advances only while HUD visible, not cinematic, not input-locked, icon inside viewport (28.8 px margin) and same revision as last frame; fog never read. Captured mining/satellite = persistent until next transition. Minimap 3 s hold + 0.3 s fade, independent clock.
+- Confirmed: online baselines keyed by `MapVersion`; relay `RestoreZones` still fires `OwnershipChanged`; per-relay event only on real owner change. Existing `ICaptureSiteEvents` contracts unchanged.
+- Confirmed: source-sized pools prewarmed on map change; `raycastTarget = false`; no per-icon `Update`; views released on map rebuild and `LateDispose`.
+
+### Review fixes · 2026-11-16
+
+- Fixed anchor mismatch: `ICaptureSite.FacilityPosition` now supplies rebuild positions, matching live notifications. `StructureStatusIconSourcesTests` covers mining/satellite startup and replacement with nonzero height offsets.
+- Removed unused `Captured`/`Lost` minimap enum members, durations, colors and handling. Retained `Combat = 2` and its behavior.
+- Added `StructureStatusIconPresenterTests`: explicit elapsed time, revision gating, HUD/cinematic/input-lock pauses, independent minimap visibility, viewport/clip margins, camera movement, expiry/clear, rebuild/disposal and missing-view startup. `LateTick` delegates unscaled time to private `Advance(float)` for deterministic coverage.
+- Updated interface doubles in `TacticalMarkerRegistryTests` (BattleInput), `EnemyUnitCommanderTests` (EnemyAi), and `BattleVictoryModelTests` (GameFlow). Reviewed Ui model/view/minimap lifecycle/combat tests and Capture/Networking replay assertions; unchanged contracts need no expectation edits.
+- Verification: source/diff inspection only; tests not run under local override. Unity refresh command failed with a 5000 ms main-thread timeout, so this follow-up compilation is unverified. Existing acceptance queue remains open.
+- Reusable anchor rule recorded in [[GameDesign/Capture_And_Structures]]. Plan/research remain in `Done/Features`; only user acceptance remains.
+- Layout remains code-built; prefab conversion is outside this fix.
+## Failed Acceptance · 2026-11-16
+
+- User reports missing destruction icons, icons detached from structures and unstable camera-motion positioning.
+- Implemented bug follow-up: [[Done/Bugs/Structure_Status_Icons_Projection]]. Failed visual gate removed from acceptance queue; automated-test and profiling gates remain.
+- Investigation identified a canvas-plane projection/cache mismatch and missing rendered-position assertions. Runtime reproduction and implementation remain open; previous source verification did not establish correct rendered placement.
+
+- Projection fix completed 2026-11-16 → [[Done/Bugs/Structure_Status_Icons_Projection]]: shared battle-marker coordinates, event-revision cache invalidation, actual-position tests. Unity compilation successful; live acceptance and test execution pending.
+
+## Purchase and Fade Correction · 2026-11-16
+
+- [x] Satellite purchase emits `ConstructionStarted` after successful payment; authoritative and replicated transitions dismiss captured on both displays. Failed payment and menu cancellation preserve it.
+- [x] Constructing satellites do not restore capture reminders on save/load, first online snapshot or coalesced capture+construction updates. Mining/Battle Asteroid reminders retain their until-built rule.
+- [x] Shared presentation clocks drive 0.2 s fade-in and 0.3 s fade-out. Explicit dismissal preserves current alpha; repeated dismissal does not restart it. World/minimap clocks remain independent and pause with their display gates.
+- [x] Views prewarm three outgoing graphics for state crossfades. No event-time allocations, per-icon Update, tween or extra Canvas; outgoing graphics disable when faded.
+- [x] Updated `Ui` model/source/presenter/view and `Capture`/`Networking` event regressions. Reviewed existing interface doubles (`BattleInput`, `EnemyAi`, `GameFlow`) and minimap lifecycle contracts.
+- Unity compilation succeeded (`scriptCompilationFailed = false`) after final changes. Tests not run under local restriction; visual acceptance remains queued.
+- Canonical behavior updated in [[GameDesign/Capture_And_Structures]]; reusable timing/view rules in [[Rules/BATTLE_PERFORMANCE_GUIDELINES]]. Earlier source-verification descriptions are historical and superseded by this correction.

@@ -45,11 +45,12 @@ verification: Inspected capture-site data and binding, construction dispatch,
 - Site construction does not enter the ordinary production queue or reserve-pool type limits.
 
 ### Structure status icons
-- Local mine/satellite capture → world reminder remains through construction; completion replaces it. Ownership loss clears it.
+- Local mine capture → world reminder remains through construction; completion replaces it. Satellite capture → reminder fades out on successful construction purchase. Ownership loss fades either reminder out.
 - Built/destroyed facilities and captured relays → 2 s accumulated displayed world time. Offscreen, hidden HUD, cinematic and modal input lock suspend acknowledgement; fog does not hide icons.
-- Minimap uses the same glyph/badge and an independent 3 s hold + 0.3 s fade. Each source keeps its own slot; a newer transition replaces the previous icon.
+- All status icons: 0.2 s fade-in / 0.3 s fade-out; world transient fades fit inside 2 s. Minimap: independent 0.2 s in + full 3 s hold + 0.3 s out (3.5 s total). New states crossfade artwork in the source's existing slot.
 - Battle Asteroid uses the mining-site glyph and timing. Empty-site neutralization never creates a destroyed notification.
-- Save/first online snapshot restores current local non-operational site reminders only; no historical transient replay. Map replacement resets presentation and snapshot baselines.
+- Save/first online snapshot restores local non-operational mining and unpurchased satellite reminders only; no historical transient replay. Map replacement resets presentation and snapshot baselines.
+- Startup/map rebuild and live site notifications use `ICaptureSite.FacilityPosition` (`Center + FacilityHeightOffset`); the anchor survives facility release. Generic minimap alerts retain combat only.
 - Source/Unity compilation and isolated artwork render verified 2026-11-16; tests and live visual/performance acceptance pending → [[Done/Features/Structure_Status_Icons_Plan]].
 
 ### Relay capture and reinforcement deployment

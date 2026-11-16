@@ -228,6 +228,7 @@ namespace EmpireAtWar.Tests.Editor
             public float CaptureProgress => 0f;
             public float ConstructionProgress => 0.5f;
             public Vector3 Center => Vector3.zero;
+            public Vector3 FacilityPosition => Center;
             public bool IsRevealed => false;
             public float PointerHitDistance(Ray ray) => float.PositiveInfinity;
             public bool IsOperational => false;

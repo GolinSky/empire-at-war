@@ -113,6 +113,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         public void StartConstruction(SiteFacilityType facilityType)
         {
             _model.StartConstruction(facilityType);
+            NotifyStatus(Owner, CaptureSiteStatusTransition.ConstructionStarted);
         }
 
         public void SetFacility(long facilityId) => FacilityId = facilityId;

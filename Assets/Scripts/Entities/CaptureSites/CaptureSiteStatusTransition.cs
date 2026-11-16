@@ -6,6 +6,7 @@ namespace EmpireAtWar.Entities.CaptureSites
         Built,
         Destroyed,
         OwnershipLost,
-        Baseline
+        Baseline,
+        ConstructionStarted
     }
 }

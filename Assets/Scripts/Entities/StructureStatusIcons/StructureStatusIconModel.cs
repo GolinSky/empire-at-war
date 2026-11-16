@@ -6,7 +6,9 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
     {
         public const float WORLD_DISPLAY_SECONDS = 2f;
         public const float MINIMAP_HOLD_SECONDS = 3f;
-        public const float MINIMAP_FADE_SECONDS = 0.3f;
+        public const float FADE_IN_SECONDS = 0.2f;
+        public const float FADE_OUT_SECONDS = 0.3f;
+        public const float MINIMAP_TOTAL_SECONDS = FADE_IN_SECONDS + MINIMAP_HOLD_SECONDS + FADE_OUT_SECONDS;
 
         private StructureStatusIconRecord[] _records = Array.Empty<StructureStatusIconRecord>();
         private int[] _activeSources = Array.Empty<int>();
@@ -53,6 +55,20 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
             Activate(sourceIndex);
         }
 
+        public void Dismiss(int sourceIndex)
+        {
+            ref StructureStatusIconRecord record = ref _records[sourceIndex];
+            if (record.IsDismissing) return;
+            record.WorldDismissAlpha = record.WorldAlpha;
+            record.MinimapDismissAlpha = record.MinimapAlpha;
+            record.IsDismissing = true;
+            record.WorldSecondsLeft = FADE_OUT_SECONDS;
+            record.MinimapSeconds = 0f;
+            record.WorldActive &= record.WorldDismissAlpha > 0f;
+            record.MinimapActive &= record.MinimapDismissAlpha > 0f;
+            if (!record.WorldActive && !record.MinimapActive) Clear(sourceIndex);
+        }
+
         public void Clear(int sourceIndex)
         {
             _records[sourceIndex] = default;
@@ -67,15 +83,20 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
         public void Advance(int sourceIndex, float seconds, bool worldDisplayed, bool minimapDisplayed)
         {
             ref StructureStatusIconRecord record = ref _records[sourceIndex];
-            if (record.WorldActive && worldDisplayed && !record.IsPersistent)
+            if (record.WorldActive && worldDisplayed)
             {
-                record.WorldSecondsLeft = Math.Max(0f, record.WorldSecondsLeft - seconds);
-                record.WorldActive = record.WorldSecondsLeft > 0f;
+                record.WorldFadeInSeconds = Math.Min(FADE_IN_SECONDS, record.WorldFadeInSeconds + seconds);
+                if (!record.IsPersistent || record.IsDismissing)
+                {
+                    record.WorldSecondsLeft = Math.Max(0f, record.WorldSecondsLeft - seconds);
+                    record.WorldActive = record.WorldSecondsLeft > 0f;
+                }
             }
             if (record.MinimapActive && minimapDisplayed)
             {
                 record.MinimapSeconds += seconds;
-                record.MinimapActive = record.MinimapSeconds < MINIMAP_HOLD_SECONDS + MINIMAP_FADE_SECONDS;
+                record.MinimapActive = record.MinimapSeconds <
+                    (record.IsDismissing ? FADE_OUT_SECONDS : MINIMAP_TOTAL_SECONDS);
             }
             if (!record.WorldActive && !record.MinimapActive) Clear(sourceIndex);
         }
