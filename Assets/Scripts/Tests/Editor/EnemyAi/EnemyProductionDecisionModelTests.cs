@@ -820,6 +820,7 @@ namespace EmpireAtWar.Tests.Editor
 
                 strategy.Start();
                 strategy.Tick(0f);
+                scheduler.Step(0f);
 
                 if (expectedShip.HasValue)
                 {
@@ -831,12 +832,14 @@ namespace EmpireAtWar.Tests.Editor
                         Is.EqualTo(expectedShip.Value));
 
                     strategy.Tick(0f);
+                    scheduler.Step(0f);
                     Assert.That(purchaseProcessor.RequestCount, Is.EqualTo(1));
 
                     unitLimitModel.Release(
                         GetUnitId<ShipUnitRequest>(ShipType.Munificent.ToString()),
                         existingShipData.UnitCapacity);
                     strategy.Tick(0f);
+                    scheduler.Step(0f);
 
                     Assert.That(purchaseProcessor.RequestCount, Is.EqualTo(2));
                     Assert.That(
@@ -850,6 +853,7 @@ namespace EmpireAtWar.Tests.Editor
                     {
                         unitLimitModel.Release(capacityHolder, heldCapacity);
                         strategy.Tick(0f);
+                        scheduler.Step(0f);
                         Assert.That(purchaseProcessor.LastRequest, Is.TypeOf<ShipUnitRequest>());
                         Assert.That(((ShipUnitRequest)purchaseProcessor.LastRequest).Key,
                             Is.EqualTo(ShipType.Recusant));
@@ -922,6 +926,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(unitLimitModel.TryReserve(UnitLimitKey.From(request),
                     request.FactionData.MaxCount, request.FactionData.UnitCapacity, MAX_UNIT_CAPACITY), Is.True);
                 strategy.Tick(10f);
+                scheduler.Step(10f);
 
                 Assert.That(purchaseProcessor.RequestCount, Is.EqualTo(1));
             }
