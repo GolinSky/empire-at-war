@@ -414,24 +414,27 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(MapSize.Small)]
         [TestCase(MapSize.Medium)]
         [TestCase(MapSize.Large)]
-        public void Survival_SatellitePadsBelongToPlayerAndSurroundEachMiningPoint(MapSize mapSize)
+        public void Survival_EachPointHasOneNeutralMineAndThreePlayerSatellitePads(MapSize mapSize)
         {
             BattleDefinition battle = SurvivalPreset.Create(new SurvivalSettings(FactionType.Empire, null,
                 FactionType.Rebellion, mapSize, EnemyAiDifficulty.Medium, true)).Build();
             MapLayout layout = new SurvivalLayoutGenerator(_settings, _radii).Generate(battle);
-            int pads = 0;
-            int mines = 0;
+            int pointCount = _settings.GetSize(mapSize).SurvivalMiningSiteCount;
+            var points = layout.Sites.ToLookup(site => site.PointId);
+            Assert.That(points.Count, Is.EqualTo(pointCount));
+            for (int i = 0; i < pointCount; i++)
+            {
+                Assert.That(points[i].Count(site => site.Kind == CaptureSiteKind.Mining), Is.EqualTo(1));
+                Assert.That(points[i].Count(site => site.Kind == CaptureSiteKind.Satellite), Is.EqualTo(3));
+            }
             foreach (SiteSpot site in layout.Sites)
             {
                 AssertInside(site.Center, layout, "Survival capture site");
-                Assert.That(site.PointId, Is.InRange(0, _settings.GetSize(mapSize).SurvivalMiningSiteCount - 1));
                 if (site.Kind == CaptureSiteKind.Mining)
                 {
-                    mines++;
                     Assert.That(site.Owner, Is.EqualTo(PlayerId.None));
                     continue;
                 }
-                pads++;
                 Assert.That(site.Kind, Is.EqualTo(CaptureSiteKind.Satellite));
                 Assert.That(site.Owner, Is.EqualTo(battle.Humans.Single().Slot.Id));
                 foreach (SiteSpot other in layout.Sites)
@@ -442,8 +445,6 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(PlanarGeometry.Distance(site.Center, zone.Center),
                         Is.GreaterThanOrEqualTo(_settings.SatelliteFootprintRadius + _radii.Zone));
             }
-            Assert.That(pads, Is.EqualTo(_settings.GetSize(mapSize).SurvivalMiningSiteCount * 3));
-            Assert.That(pads, Is.EqualTo(mines));
         }
 
         private float GetSiteRadius(CaptureSiteKind kind) => kind switch

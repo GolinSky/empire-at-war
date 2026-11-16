@@ -16,7 +16,7 @@ namespace EmpireAtWar.Entities.Map
     {
         private readonly MapGenerationSettings _settings;
         private readonly MapLayoutView _mapLayoutView;
-        private readonly IGameModelObserver _gameModel;
+        private readonly GameData _gameData;
         private readonly MapModel _mapModel;
         private readonly BattleDefinition _battle;
         private readonly IShipSpawnClearance _spawnClearance;
@@ -27,13 +27,13 @@ namespace EmpireAtWar.Entities.Map
         public BattleMapLoader(
             MapGenerationSettings settings,
             MapLayoutView mapLayoutView,
-            IGameModelObserver gameModel,
+            GameData gameData,
             MapModel mapModel, BattleDefinition battle,
             IShipSpawnClearance spawnClearance)
         {
             _settings = settings;
             _mapLayoutView = mapLayoutView;
-            _gameModel = gameModel;
+            _gameData = gameData;
             _mapModel = mapModel;
             _battle = battle;
             _spawnClearance = spawnClearance;
@@ -41,13 +41,15 @@ namespace EmpireAtWar.Entities.Map
 
         public async Awaitable LoadAsync(CancellationToken cancellationToken)
         {
-            MapSize mapSize = _gameModel.MapSize;
-            IReadOnlyList<PlayerSlot> players = _gameModel.Players;
+            MapSize mapSize = _gameData.MapSize;
+            IReadOnlyList<PlayerSlot> players = _gameData.Players;
             // Prefab radii are read through the Unity API, so they are taken on the main thread.
             MapLayoutGenerator generator = new MapLayoutGenerator(_settings, _mapLayoutView.FeatureRadii);
             SurvivalLayoutGenerator survivalGenerator = new SurvivalLayoutGenerator(_settings, _mapLayoutView.FeatureRadii);
             // DictionaryWrapper builds its dictionaries on first read; build them here so the worker only reads.
-            _settings.GetSize(mapSize);
+            MapSizeSettings size = _settings.GetSize(mapSize);
+            bool useLegacyMiningLayout = _battle.Map.Type == MapType.Survival &&
+                _gameData.PendingBattleSave?.CaptureSites.Length == SurvivalLayoutGenerator.GetSiteCount(size, true);
             _settings.GetStationRadius(players[0].Faction);
             _settings.GetRockLayer(AsteroidSize.Large);
             MapLayout simulationLayout = _battle.Map.Type == MapType.Empty
@@ -58,7 +60,7 @@ namespace EmpireAtWar.Entities.Map
 
             await Awaitable.BackgroundThreadAsync();
             MapLayout layout = _battle.Map.Type == MapType.Survival
-                ? survivalGenerator.Generate(_battle)
+                ? survivalGenerator.Generate(_battle, useLegacyMiningLayout)
                 : _battle.Map.Type == MapType.Empty ? simulationLayout
                 : generator.Generate(mapSize, players, new Random(_battle.Map.Seed), _battle.Map.Seed,
                     _battle.Map.Planet);

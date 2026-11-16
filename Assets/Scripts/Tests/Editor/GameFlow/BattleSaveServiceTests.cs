@@ -511,6 +511,28 @@ namespace EmpireAtWar.Tests.Editor
                 Does.Contain("reinforcement zones; the map has"));
         }
 
+        [TestCase(24)]
+        [TestCase(36)]
+        public void Validator_AcceptsCurrentAndLegacySurvivalSiteCounts(int siteCount)
+        {
+            using var assets = new CachedAssetService(new AddressableHandleLoader());
+            MapGenerationSettings settings = AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(
+                "Assets/Settings/Data/Models/Map/MapGenerationSettings.asset");
+            BattleDefinition definition = SurvivalPreset.Create(new SurvivalSettings(FactionType.Empire, null,
+                FactionType.Rebellion, MapSize.Small, EnemyAiDifficulty.Medium, true)).Build();
+            BattleSaveHeader header = BattleSaveHeader.Create(GameMode.Survival, BattleSaveSlot.Quicksave,
+                DateTime.UtcNow, 10f, GameSpeed.Normal);
+            BattleSave save = BattleSave.Create(header, BattleSetupSave.From(definition),
+                CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 500f),
+                Array.Empty<UnitSave>(), Array.Empty<StructureSave>());
+            save.Survival = SurvivalSave.Create(1, SurvivalPhase.Preparation, 0f, 0, Array.Empty<UnitTypeSave>(), 0, 0f);
+            save.CaptureSites = Enumerable.Range(0, siteCount).Select(_ => CaptureSiteSave.Create(
+                PlayerId.None, CaptureSiteState.Neutral, PlayerId.None, 0f, SiteFacilityType.Mining, 0f, 0L)).ToArray();
+
+            var validator = new BattleSaveValidator(assets, settings);
+            Assert.DoesNotThrow(() => validator.Validate(save, definition));
+        }
+
         private static CaptureSiteSave[] CreateDefaultCaptureSites(MapGenerationSettings mapSettings, BattleDefinition definition)
         {
             MapSizeSettings size = mapSettings.GetSize(definition.Map.Size)

@@ -77,7 +77,7 @@ namespace EmpireAtWar.Entities.Map
         [field: SerializeField, Min(0f)] public float StationCornerJitter { get; private set; } = 180f;
         [field: FormerlySerializedAs("<MiningPointCount>k__BackingField"),
                 FormerlySerializedAs("<MiningSiteCount>k__BackingField"), SerializeField, Min(2),
-                Tooltip("Mining points in the unchanged Survival ring; each has three mines and satellite pads.")]
+                Tooltip("Mining points in the Survival ring; each has one mine and three satellite pads.")]
         public int SurvivalMiningSiteCount { get; private set; }
         [field: SerializeField, Min(0)] public int HazardCount { get; private set; } = 2;
         [field: SerializeField] public Vector2 HazardLengthShare { get; private set; } = new Vector2(0.35f, 0.5f);

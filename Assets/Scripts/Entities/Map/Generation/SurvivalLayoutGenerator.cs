@@ -10,6 +10,8 @@ namespace EmpireAtWar.Entities.Map.Generation
 {
     public sealed class SurvivalLayoutGenerator
     {
+        private const int SATELLITE_PADS_PER_POINT = 3;
+
         private readonly MapGenerationSettings _settings;
         private readonly MapFeatureRadii _radii;
         public SurvivalLayoutGenerator(MapGenerationSettings settings, MapFeatureRadii radii)
@@ -18,7 +20,11 @@ namespace EmpireAtWar.Entities.Map.Generation
             _radii = radii;
         }
 
-        public MapLayout Generate(BattleDefinition battle)
+        internal static int GetSiteCount(MapSizeSettings size, bool useLegacyMiningLayout) =>
+            size.SurvivalMiningSiteCount * (SATELLITE_PADS_PER_POINT +
+                (useLegacyMiningLayout ? SATELLITE_PADS_PER_POINT : 1));
+
+        public MapLayout Generate(BattleDefinition battle, bool useLegacyMiningLayout = false)
         {
             MapSizeSettings size = _settings.GetSize(battle.Map.Size);
             Vector2 middle = (size.Bounds.Min + size.Bounds.Max) * 0.5f;
@@ -72,11 +78,17 @@ namespace EmpireAtWar.Entities.Map.Generation
                 float turn = i * 360f / size.SurvivalMiningSiteCount;
                 Vector3 direction = Quaternion.Euler(0f, turn, 0f) * Vector3.forward;
                 Vector3 point = new Vector3(middle.x, 0f, middle.y) + direction * miningRadius;
-                for (int site = 0; site < PointOfInterestPlacer.SITES_PER_MINING_POINT; site++)
+                if (!useLegacyMiningLayout)
+                    sites.Add(new SiteSpot(point, CaptureSiteKind.Mining, PlayerId.None, i));
+                // Older saves restore capture sites by index, so keep their original positions and order.
+                for (int site = 0; site < SATELLITE_PADS_PER_POINT; site++)
                 {
-                    Vector3 mineOffset = Quaternion.Euler(0f, site * 120f, 0f) * direction * mineSpread;
+                    if (useLegacyMiningLayout)
+                    {
+                        Vector3 mineOffset = Quaternion.Euler(0f, site * 120f, 0f) * direction * mineSpread;
+                        sites.Add(new SiteSpot(point + mineOffset, CaptureSiteKind.Mining, PlayerId.None, i));
+                    }
                     Vector3 padOffset = Quaternion.Euler(0f, site * 120f + 60f, 0f) * direction * satelliteSpread;
-                    sites.Add(new SiteSpot(point + mineOffset, CaptureSiteKind.Mining, PlayerId.None, i));
                     // Satellite pads start owned by the defenders, shared out between co-op humans.
                     sites.Add(new SiteSpot(point + padOffset, CaptureSiteKind.Satellite, humans[i % humans.Count].Slot.Id, i));
                 }

@@ -127,7 +127,10 @@ namespace EmpireAtWar.Services.Saves
             if (definition.HasFeature(BattleFeatures.CaptureSites) && definition.HasFeature(BattleFeatures.MiningSites))
             {
                 if (definition.Map.Type == MapType.Survival)
-                    expectedSites = size.SurvivalMiningSiteCount * PointOfInterestPlacer.SITES_PER_MINING_POINT * 2;
+                {
+                    if (save.CaptureSites.Length == SurvivalLayoutGenerator.GetSiteCount(size, true)) return;
+                    expectedSites = SurvivalLayoutGenerator.GetSiteCount(size, false);
+                }
                 else if (definition.Map.Type == MapType.Full)
                     expectedSites = definition.Slots.Count * 2 + _mapSettings.MainZoneMiningCount +
                         _mapSettings.MainZoneSatelliteCount + 2 * size.AdditionalZonePairCount *

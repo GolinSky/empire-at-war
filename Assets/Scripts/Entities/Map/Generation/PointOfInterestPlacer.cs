@@ -11,7 +11,6 @@ namespace EmpireAtWar.Entities.Map.Generation
     /// </summary>
     public sealed class PointOfInterestPlacer
     {
-        // Survival keeps its existing three-site clusters.
         public const int SITES_PER_MINING_POINT = 3;
         public const float MINING_SITE_SPACING_SHARE = 0.25f;
         private const float MIRROR_TOLERANCE = 1f;
