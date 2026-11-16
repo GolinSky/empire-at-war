@@ -97,6 +97,9 @@
   - Target-specific task forces implemented 2026-11-01: counter-based strike selection, assembly readiness, retained membership and guard screen. Runtime acceptance pending; tests authored, not run.
   - Battle follow-up implemented 2026-11-01: caliber/population valuation, home defense deployment, persistent main-force assembly and active bounded screens. Latest 17:27 battle: capital buying and main-force attacks improved; siege response, emergency production and capture clearance remain open; parent retains broader balance scope. Evidence/priorities → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Battle Review]].
 
+- [ ] **Fix 63 EditMode failures from the 2026-11-16 full run (31 from one tutorial-anchor `Destroy`, 4 shared-AI, rest content/HUD/input)** → [[TODOs/Bugs/EditMode_Failures_2026-11-16_Plan|EditMode Failures 2026-11-16]]
+  - 2026-11-16: A, D, and E source fixes committed. EditMode `Core` and `EnemyAi` verification remains open and gates [[TODOs/Optimization/Shared_Team_AI_Plan]]. Remaining fixes: C → F → B → G.
+
 - [ ] **Replace silent null returns with fail-fast/Try APIs** (Wave 1) → [[TODOs/Bugs/Fail_Fast_Null_Returns|Fail-Fast Null Returns]]
   - Next gate: see the linked plan; detailed recorded progress is retained in the historical backlog snapshot.
 
@@ -108,7 +111,7 @@
   - 2026-11-16: plan written from post-fix captures (frame avg 14.0 ms, p95 26.3, max 420; main-thread bound). Nothing implemented. Next: Phase 0 baseline + user test run, then Phase 1 AI decision markers.
 
 - [ ] **Shared team AI: world snapshot, one planner per team, budgeted AI scheduler, allied cooperation** → [[TODOs/Optimization/Shared_Team_AI_Plan|Shared Team AI Plan]]
-  - 2026-11-16: Phases 1–3 code and review fixes implemented (required `EnemyAiScheduler` / `AiWorldSnapshot` / `TeamAiPictureRegistry` wiring, per-player `EnemySiteObjectives` + `TeamAiPicture.GetOrBuildObjectiveThreat`, mid-decision ship removal hardening, `EnemyAI.WorldSnapshot.Rebuild` profiler marker with trimmed lookups, dead `HostileIntelGatherer`/fallback paths removed); tests updated and not run locally. Next: Phase 0/5 scaling captures and Phase 4 user approvals.
+  - 2026-11-16: Phases 1–3 committed in `434b9d97a`. HUD teardown and shared AI fixture fixes committed. Next: standard EditMode `EnemyAi` and `Core`, 3-AI battle check, then scaling captures. Phase 4 still requires item approvals.
 
 - [ ] **Remove recurring allocations and redundant scans; gate Jobs/Burst candidates behind captures** → [[TODOs/Optimization/CPU_Allocation_And_Jobs_Plan|CPU Allocation and Jobs Plan]]
   - 2026-11-14 · Phases 1–2, Phase 3 scan/HUD work and Phase 5 loading/editor work committed; independent source review found no actionable correctness regressions. Last Unity compilation reports no errors; committed diff check clean. Tests not run; coverage gaps and matched Editor/Development Player captures remain. Replicated-state timer design and measured Jobs/Burst candidates remain active.

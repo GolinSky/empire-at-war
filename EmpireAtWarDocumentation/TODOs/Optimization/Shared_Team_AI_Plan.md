@@ -90,6 +90,19 @@ created: 2026-11-16
 - `Assets/Scripts/Services/Enemy/EnemyUnitCommander.cs`, `EnemyStrategicContextBuilder.cs`, `EnemyShipTaskGroupPlanner.cs`, `EnemySquadronCommander.cs`, `EnemyProductionStrategy.cs`, `EnemyRecoveryAnchor.cs`, `EnemyPatrolService.cs`, `EnemyDefenseSnapshotBuilder.cs`, `TeamIntelRegistry.cs`, `ForceCompositionBuilder.cs`, `EnemyAiStagger.cs`
 - `Assets/Scripts/Services/TacticalMarkers/AllyAiMarkerSource.cs`, `AllyAiMarkerEmitter.cs`
 
+## Next Steps · 2026-11-16
+- State: Phases 0 (markers), 1, 2, 3 committed (`434b9d97a`). Full EditMode run: 63 failed of 3,992; 4 from this plan. PlayMode passed. No performance measurement yet.
+1. Gate — source fixes for groups A, D, E of [[TODOs/Bugs/EditMode_Failures_2026-11-16_Plan]] committed (`28f4a760c`, `b94af9697`, `92e7e4fdc`). Reviewed `RealEntityCompositionTests`, `EnemyDecisionSchedulingTests`, and `EnemyProductionStrategyTests` against the archived failures. Tests were not run under the local override. Resume with standard EditMode `EnemyAi` and `Core` results before further AI changes or battle verification.
+2. Gate — one real battle: start a skirmish with 3 AIs; check Console for container or scheduler errors; confirm AIs build, capture relay zones and capture sites, raid, and defend the station.
+3. Phase 0 baseline (still open): same Full Large map and seed at 1, 3, 6 AIs. `MatchRules` caps Full Small at 4 slots and Full Medium at 6; 6 AIs plus the human need 7. Record per frame: `EnemyAI.Scheduler.Tick`, `EnemyAI.WorldSnapshot.Rebuild`, `EnemyAI.Ship.Build`, `EnemyAI.Context.*`, `EnemyAI.Production.Evaluate`; plus `StarvationRunCount` and decisions/s per difficulty. Record nested markers for attribution and exclude double-counting from frame totals.
+4. Decide from step 3:
+   - Scheduler tick p95 ≤ budget at 6 AIs → Phase 5 proof in a Development Player, then close Phases 1–3.
+   - One unit still > budget → shrink the unit, in this order: skip `TeamAiPicture` structure threats when no group evaluates raids; reuse zone `EnemyCaptureObjective` instances between refreshes (currently reallocated on every refresh frame); pass snapshot positions into `IncludeNearbyOwn`; split `BeginDecisionCycle` (station assessment + reconcile) into its own unit.
+   - `StarvationRunCount` rising → budget too small for the AI count; raise interval per difficulty before raising the budget.
+5. Source check complete: `CombatMatchup.Advantage` is non-monotonic. Adding an unarmed, quickly killable class can lower `TimeToDestroy(own, hostile)` because it raises the killable durability share. For fixed own survival of 50,000 s, increasing killable durability from 1 to 2 while killable time rises from 100 to 100.1 s (plus 1,000 unkillable hull) raises advantage from about 0.71 to 1.00. Once the EditMode gate passes, use cached objective threat only at zero route distance and evaluate complete route threat for other captures.
+6. Cleanup: `handle == null` guards in `EnemyAiScheduler`, `_zones != null` in `TeamAiPicture` (project no-silent-null rule).
+7. Phase 4 (cooperation) only after step 4 passes and the user approves each item.
+
 ## TODO
 - User: confirm the AI frame budget (proposed 2 ms) and whether slower decisions under load are acceptable.
 - User: approve Phase 4 items one by one; they change how allied AIs play.
