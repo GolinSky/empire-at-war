@@ -340,7 +340,7 @@ namespace EmpireAtWar.Tests.Editor
             profiles.Add(vulture, new UnitCombatProfile(ShipClass.Fighter, 100f, 50f,
                 new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots],
                 new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>()));
-            var registry = new TeamAiPictureRegistry(intelRegistry, roster, null, catalog, snapshot);
+            var registry = new TeamAiPictureRegistry(intelRegistry, roster, new TestZoneSource(), catalog, snapshot);
             PlayerSlot enemy = roster.Get(TestPlayers.Enemy);
             HostileIntelModel intel = intelRegistry.Get(enemy.Team);
             intel.Report(new HostileSighting(1, vulture,
@@ -515,7 +515,7 @@ namespace EmpireAtWar.Tests.Editor
             var snapshot = new AiWorldSnapshot(entities);
             var intelRegistry = new TeamIntelRegistry();
             var catalog = new UnitCombatProfileCatalog(null, null, null, null);
-            var pictures = new TeamAiPictureRegistry(intelRegistry, roster, null, catalog, snapshot);
+            var pictures = new TeamAiPictureRegistry(intelRegistry, roster, new TestZoneSource(), catalog, snapshot);
             var builder = new EnemyStrategicContextBuilder(null, null, Array.Empty<IEnemyCaptureObjectiveSource>(),
                 entities, null, roster, null, intelRegistry, null, owner, null, null, null, null, null, null,
                 snapshot, pictures);

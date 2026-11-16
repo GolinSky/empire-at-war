@@ -118,7 +118,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             if (handle == null)
             {
-                return;
+                throw new ArgumentNullException(nameof(handle));
             }
 
             handle.Removed = true;
@@ -127,7 +127,12 @@ namespace EmpireAtWar.Services.Enemy
 
         public void MarkDirty(WorkHandle handle, float minimumGap)
         {
-            if (handle == null || handle.Removed)
+            if (handle == null)
+            {
+                throw new ArgumentNullException(nameof(handle));
+            }
+
+            if (handle.Removed)
             {
                 return;
             }
@@ -144,7 +149,12 @@ namespace EmpireAtWar.Services.Enemy
 
         public void MarkDue(WorkHandle handle)
         {
-            if (handle == null || handle.Removed)
+            if (handle == null)
+            {
+                throw new ArgumentNullException(nameof(handle));
+            }
+
+            if (handle.Removed)
             {
                 return;
             }
@@ -159,7 +169,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             if (handle == null)
             {
-                return 0f;
+                throw new ArgumentNullException(nameof(handle));
             }
 
             return Mathf.Max(0f, handle.DueTime - _battleClock);

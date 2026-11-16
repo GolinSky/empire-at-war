@@ -133,8 +133,11 @@ namespace EmpireAtWar.Services.Enemy
 
         public void LateDispose()
         {
-            _scheduler.Unregister(_workHandle);
-            _workHandle = null;
+            if (_workHandle != null)
+            {
+                _scheduler.Unregister(_workHandle);
+                _workHandle = null;
+            }
             _battleState.RemoveObserver(this);
             _isRunning = false;
             foreach (KeyValuePair<ISquadron, CommandedSquadron> pair in _squadrons)

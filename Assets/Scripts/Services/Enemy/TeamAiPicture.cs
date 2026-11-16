@@ -90,25 +90,22 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             _baseCaptureObjectives.Clear();
-            if (_zones != null)
+            IReadOnlyList<ReinforcementZonePresenter> zones = _zones.Zones;
+            for (int i = 0; i < zones.Count; i++)
             {
-                IReadOnlyList<ReinforcementZonePresenter> zones = _zones.Zones;
-                for (int i = 0; i < zones.Count; i++)
+                ReinforcementZonePresenter zone = zones[i];
+                if (!zone.IsCapturable || _roster.IsAllied(RepresentativePlayer, zone.Owner))
                 {
-                    ReinforcementZonePresenter zone = zones[i];
-                    if (!zone.IsCapturable || _roster.IsAllied(RepresentativePlayer, zone.Owner))
-                    {
-                        continue;
-                    }
-
-                    _baseCaptureObjectives.Add(new EnemyCaptureObjective(
-                        GetZoneId(i),
-                        EnemyCaptureObjectiveType.ReinforcementZone,
-                        zone.Owner,
-                        ToVector(ToPoint(zone.Center)),
-                        zone.Radius,
-                        zone.CaptureProgress));
+                    continue;
                 }
+
+                _baseCaptureObjectives.Add(new EnemyCaptureObjective(
+                    GetZoneId(i),
+                    EnemyCaptureObjectiveType.ReinforcementZone,
+                    zone.Owner,
+                    ToVector(ToPoint(zone.Center)),
+                    zone.Radius,
+                    zone.CaptureProgress));
             }
 
             _usedPoolCount = 0;

@@ -973,23 +973,10 @@ namespace EmpireAtWar.Services.Enemy
                 _objectiveSafetyReason = "destination ion cost exceeds the current position.";
                 return false;
             }
-            if (!escaping && objectiveId != null)
+            if (!escaping && objectiveId != null && PlanarDistance(origin, destination) <= Mathf.Epsilon)
             {
                 ForceComposition cachedThreat = _teamPicture.GetOrBuildObjectiveThreat(objectiveId, destination, radius);
-                if (!cachedThreat.IsEmpty)
-                {
-                    float advantage = CombatMatchup.Advantage(_groupScoped ? _ownForce : _localOwnForce, cachedThreat);
-                    float threshold = EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage * safetyScale;
-                    if (advantage <= threshold)
-                    {
-                        _objectiveSafetyReason = $"hostile: known route/local force advantage {advantage:F2} <= safety threshold {threshold:F2}.";
-                        return false;
-                    }
-                }
-                if (PlanarDistance(origin, destination) <= Mathf.Epsilon)
-                {
-                    return true;
-                }
+                return IsThreatSafe(cachedThreat, safetyScale);
             }
             return IsRouteSafe(origin, destination, radius, escaping, safetyScale);
         }
@@ -1004,8 +991,13 @@ namespace EmpireAtWar.Services.Enemy
             _routeDestinationRadius = LOCAL_ENGAGEMENT_RADIUS + radius;
             _routeEscaping = escaping;
             _teamPicture.BuildKnownFromConfident(_objectiveThreat, _includeRouteThreat);
-            if (_objectiveThreat.IsEmpty) return true;
-            float advantage = CombatMatchup.Advantage(_groupScoped ? _ownForce : _localOwnForce, _objectiveThreat);
+            return IsThreatSafe(_objectiveThreat, safetyScale);
+        }
+
+        private bool IsThreatSafe(ForceComposition threat, float safetyScale)
+        {
+            if (threat.IsEmpty) return true;
+            float advantage = CombatMatchup.Advantage(_groupScoped ? _ownForce : _localOwnForce, threat);
             float threshold = EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage * safetyScale;
             if (advantage > threshold) return true;
             _objectiveSafetyReason = $"hostile: known route/local force advantage {advantage:F2} <= safety threshold {threshold:F2}.";

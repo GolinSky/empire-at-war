@@ -1795,6 +1795,49 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(objective.Position, Is.EqualTo(Vector3.right * 10f));
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CaptureSelection_UsesFullRouteForceWhenLocalMatchupFails(bool hasRouteFighter)
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+            PlayerSlot owner = roster.Get(TestPlayers.Enemy);
+            Vector3 destination = Vector3.right * 3000f;
+            var zones = new ZoneSource(roster, destination);
+            var catalog = new UnitCombatProfileCatalog(null, null, null, null);
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                .GetField("_profiles", flags).GetValue(catalog);
+            var capitalDamage = new float[ForceComposition.ClassSlots];
+            capitalDamage[(int)ShipClass.Capital] = 1f;
+            var noDamage = new float[ForceComposition.ClassSlots];
+            var noHangar = Array.Empty<UnitCombatProfile>();
+            UnitTypeId capital = UnitTypeId.Ship(ShipType.Venator);
+            UnitTypeId frigate = UnitTypeId.Ship(ShipType.Arquitens);
+            UnitTypeId fighter = UnitTypeId.Squadron(SquadronType.Vulture);
+            profiles.Add(capital, new UnitCombatProfile(ShipClass.Capital, 1f, 0f, capitalDamage, noDamage, noDamage, noHangar));
+            profiles.Add(frigate, new UnitCombatProfile(ShipClass.Frigate, 1000f, 0f, noDamage, noDamage, noDamage, noHangar));
+            profiles.Add(fighter, new UnitCombatProfile(ShipClass.Fighter, 1f, 0f, noDamage, noDamage, noDamage, noHangar));
+            var registry = new TeamIntelRegistry();
+            HostileIntelModel intel = registry.Get(owner.Team);
+            intel.Report(new HostileSighting(1, capital, TestPlayers.Human, new FormationPoint(3000f, 0f), 1f, 0f, 1f, 0f));
+            intel.Report(new HostileSighting(2, frigate, TestPlayers.Human, new FormationPoint(3000f, 0f), 1000f, 0f, 1f, 0f));
+            if (hasRouteFighter)
+                intel.Report(new HostileSighting(3, fighter, TestPlayers.Human, new FormationPoint(1500f, 0f), 1f, 0f, 1f, 0f));
+
+            var builder = CreateContextBuilder(null, null, Array.Empty<IEnemyCaptureObjectiveSource>(),
+                new EntityLocator(), null, roster, catalog, registry, new VisionService(roster, fogEnabled: false),
+                owner, null, new TestHazards(), zones, null, new EnemyStationPressureTracker(), CreateRecovery(roster, zones));
+            var ships = (List<IShipEntity>)typeof(EnemyStrategicContextBuilder).GetField("_ownShips", flags).GetValue(builder);
+            ships.Add(new FakeShip(destination, 4));
+            var ownForce = (ForceComposition)typeof(EnemyStrategicContextBuilder).GetField("_localOwnForce", flags).GetValue(builder);
+            ownForce.Add(CombatForce(50000f, 0.01f, fighterDps: 10f));
+
+            // The route fighter increases the killable hull share, raising advantage from 0.71 to 1.00.
+            EnemyCaptureObjective selected = SelectCapture(builder);
+            if (hasRouteFighter) Assert.That(selected?.Id, Is.EqualTo("zone:0"));
+            else Assert.That(selected, Is.Null);
+        }
+
         [Test]
         public void CaptureSelection_WithoutZonesSelectsSatelliteAfterOwningAllLocalMines()
         {
@@ -2413,13 +2456,14 @@ namespace EmpireAtWar.Tests.Editor
         private static EnemyStrategicContextBuilder CreateContextBuilder(
             IShipService ships, IReinforcementZonesSystem reinforcementZones,
             IReadOnlyList<IEnemyCaptureObjectiveSource> captureSources, IEntityLocator entities, IGameModelObserver game,
-            IPlayerRoster roster, UnitCombatProfileCatalog catalog, TeamIntelRegistry intel, IVisionService vision,
+            PlayerRoster roster, UnitCombatProfileCatalog catalog, TeamIntelRegistry intel, IVisionService vision,
             PlayerSlot owner, IProductionAccess production, IHazardService hazards, IReinforcementZoneSource zones,
             IShipNavigationService navigation, EnemyStationPressureTracker pressure, EnemyRecoveryAnchor recovery,
             AiWorldSnapshot snapshot = null)
         {
             snapshot ??= new AiWorldSnapshot(entities);
             catalog ??= new UnitCombatProfileCatalog(null, null, null, null);
+            zones ??= new ZoneSource(roster);
             return new EnemyStrategicContextBuilder(ships, reinforcementZones, captureSources, entities, game, roster,
                 new ForceCompositionBuilder(entities, catalog, snapshot), intel, vision, owner, production, hazards, zones,
                 navigation, pressure, recovery, snapshot, new TeamAiPictureRegistry(intel, roster, zones, catalog, snapshot));

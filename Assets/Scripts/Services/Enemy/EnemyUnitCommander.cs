@@ -179,11 +179,6 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Initialize()
         {
-            _shipService.ShipAdded += HandleShipChanged;
-            _shipService.ShipRemoved += HandleShipRemoved;
-            _reinforcementZonesSystem.OwnershipChanged += HandleWorldChanged;
-            _entityLocator.EntityAdded += HandleEntityChanged;
-            _entityLocator.EntityRemoved += HandleEntityChanged;
             // Player scopes initialize before the asynchronous map load finishes.
             float interval = EnemyAiDifficultyProfile.Get(_owner.Difficulty).DecisionInterval;
             float initialDelay = EnemyAiStagger.Offset(_owner.Id, interval);
@@ -194,13 +189,16 @@ namespace EmpireAtWar.Services.Enemy
                 RunScheduledUnit,
                 () => _contextBuilder.StationCritical,
                 () => _cycleInProgress);
+            _shipService.ShipAdded += HandleShipChanged;
+            _shipService.ShipRemoved += HandleShipRemoved;
+            _reinforcementZonesSystem.OwnershipChanged += HandleWorldChanged;
+            _entityLocator.EntityAdded += HandleEntityChanged;
+            _entityLocator.EntityRemoved += HandleEntityChanged;
             _battleState.AddObserver(this);
         }
 
         public void LateDispose()
         {
-            _scheduler.Unregister(_workHandle);
-            _workHandle = null;
             _battleState.RemoveObserver(this);
             _isRunning = false;
             _shipService.ShipAdded -= HandleShipChanged;
@@ -209,6 +207,11 @@ namespace EmpireAtWar.Services.Enemy
             _reinforcementZonesSystem.OwnershipChanged -= HandleWorldChanged;
             _entityLocator.EntityAdded -= HandleEntityChanged;
             _entityLocator.EntityRemoved -= HandleEntityChanged;
+            if (_workHandle != null)
+            {
+                _scheduler.Unregister(_workHandle);
+                _workHandle = null;
+            }
         }
 
         public void UpdateState(BattleState state)

@@ -132,13 +132,14 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Dispose()
         {
+            if (_workHandle == null) return;
             _scheduler.Unregister(_workHandle);
             _workHandle = null;
         }
 
         public void Tick(float deltaTime)
         {
-            if (!_productionAccess.CanProduce)
+            if (_workHandle == null || !_productionAccess.CanProduce)
             {
                 return;
             }
