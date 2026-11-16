@@ -161,7 +161,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(definition.IsToggle, Is.False);
             Assert.That(definition.Settings, Is.TypeOf<LuckyShotSettings>());
             var settings = (LuckyShotSettings)definition.Settings;
-            Assert.That(settings.Damage, Is.EqualTo(4000f));
+            Assert.That(settings.Damage, Is.EqualTo(8000f));
             Assert.That(settings.Windup, Is.EqualTo(1.25f));
         }
 

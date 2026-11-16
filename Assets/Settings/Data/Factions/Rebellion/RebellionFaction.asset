@@ -521,7 +521,7 @@ MonoBehaviour:
         displayName: Luke Skywalker
         description: Luke leads five elite Red Squadron X-wings. Superior lasers
           dominate squadron duels. Lucky Shot launches a precision proton strike
-          for 4,000 base hull damage through shields against capital ships and structures;
+          for 8,000 base hull damage through shields against any enemy ship or structure.
           60 s cooldown.
         role: Hero / Elite fighter squadron
         iconKey: 94df6c4c4e8a4cc47b956c7e85b516f4:21300000

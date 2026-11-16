@@ -10,7 +10,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
     [Serializable]
     public sealed class LuckyShotSettings : ShipAbilitySettings, IShipAbilityTargetRule
     {
-        [SerializeField] private float damage = 4000f;
+        [SerializeField] private float damage = 8000f;
         [SerializeField] private float windup = 1.25f;
         [SerializeField] private WeaponProfile projectile;
 
@@ -18,8 +18,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public float Windup => windup;
         public WeaponProfile Projectile => projectile;
 
-        public bool CanTarget(ShipClass shipClass) => shipClass == ShipClass.Capital ||
-            shipClass == ShipClass.HeavyCapital || shipClass == ShipClass.Structure;
+        public bool CanTarget(ShipClass shipClass) => shipClass is ShipClass.Corvette or ShipClass.Frigate or
+            ShipClass.Cruiser or ShipClass.Capital or ShipClass.HeavyCapital or ShipClass.Structure;
 
         public bool CanTarget(IShipAbilityFacade caster, IEntity target)
         {

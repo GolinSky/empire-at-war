@@ -217,10 +217,10 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(ShipClass.Bomber, false)]
         [TestCase(ShipClass.Interceptor, false)]
         [TestCase(ShipClass.HeroStrikecraft, false)]
-        [TestCase(ShipClass.Corvette, false)]
-        [TestCase(ShipClass.Frigate, false)]
-        [TestCase(ShipClass.Cruiser, false)]
-        public void LuckyShot_OnlyTargetsCapitalShipsAndStructures(ShipClass targetClass, bool allowed)
+        [TestCase(ShipClass.Corvette, true)]
+        [TestCase(ShipClass.Frigate, true)]
+        [TestCase(ShipClass.Cruiser, true)]
+        public void LuckyShot_TargetsShipsAndStructures(ShipClass targetClass, bool allowed)
         {
             var settings = new LuckyShotSettings();
             var caster = CreateCaster();
@@ -254,7 +254,7 @@ namespace EmpireAtWar.Tests.Editor
             var muzzle = new GameObject("LukeMuzzle");
             _targetView = new GameObject("LuckyShotTarget");
             _targetView.transform.position = Vector3.forward * 100f;
-            var targetHealth = new FakeHealth(_targetView.transform);
+            var targetHealth = new FakeHealth(_targetView.transform) { ShipClass = ShipClass.Corvette };
             var target = new FakeEntity(null, targetHealth, TestPlayers.Enemy, 2);
             entities.AddEntity(target);
             var caster = new FakeCommand(definition, muzzle.transform, ShipAbilityId.LuckyShot);
@@ -287,7 +287,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(loaded.Slots[0].TimeLeft, Is.EqualTo(inFlight.TimeLeft));
                 restoredService.Clear();
                 service.Advance(100f / settings.Projectile.ProjectileSpeed + 0.01f);
-                Assert.That(targetHealth.DamageReceived, Is.EqualTo(authority ? 4000f : 0f));
+                Assert.That(targetHealth.DamageReceived, Is.EqualTo(authority ? 8000f : 0f));
                 if (authority) Assert.That(targetHealth.LastDamageType, Is.EqualTo(DamageType.PrecisionStrike));
                 Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
                 Assert.That(caster.Slots[0].TimeLeft, Is.EqualTo(60f));
@@ -295,7 +295,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
                 service.Advance(1f);
                 Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Ready));
-                Assert.That(targetHealth.DamageReceived, Is.EqualTo(authority ? 4000f : 0f));
+                Assert.That(targetHealth.DamageReceived, Is.EqualTo(authority ? 8000f : 0f));
             }
             finally
             {
