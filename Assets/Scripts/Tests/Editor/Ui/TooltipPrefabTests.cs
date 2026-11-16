@@ -1,5 +1,6 @@
 using System.Linq;
 using EmpireAtWar.Entities.Tooltip;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
 using NUnit.Framework;
@@ -50,6 +51,21 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That(entry.IconKeys.Count, Is.InRange(1, slots), data.name + "/" + entry.Label);
                     foreach (string key in entry.IconKeys)
                         Assert.That(icons.Resolve(key), Is.Not.Null, data.name + "/" + entry.Label);
+                }
+            }
+        }
+
+        [Test]
+        public void FactionUnitIconKeysResolve()
+        {
+            var icons = AssetDatabase.LoadAssetAtPath<TooltipIconData>(ICON_DATA_PATH);
+            foreach (string guid in AssetDatabase.FindAssets("t:" + nameof(FactionDefinition)))
+            {
+                var faction = AssetDatabase.LoadAssetAtPath<FactionDefinition>(AssetDatabase.GUIDToAssetPath(guid));
+                foreach (FactionData entry in faction.Ships.Values.Concat(faction.Squadrons.Values))
+                {
+                    Assert.That(entry.IconKey, Is.Not.Empty, $"{faction.name}/{entry.Name}");
+                    Assert.That(icons.Resolve(entry.IconKey), Is.Not.Null, $"{faction.name}/{entry.Name}");
                 }
             }
         }
