@@ -83,7 +83,12 @@ namespace EmpireAtWar.Tests.Editor
             if (_sources != null) _sources.LateDispose();
             if (_map != null) UnityEngine.Object.DestroyImmediate(_map.gameObject);
             if (_layer != null) UnityEngine.Object.DestroyImmediate(_layer.gameObject);
-            if (_camera != null) UnityEngine.Object.DestroyImmediate(_camera.gameObject);
+            if (_camera != null)
+            {
+                RenderTexture target = _camera.targetTexture;
+                UnityEngine.Object.DestroyImmediate(_camera.gameObject);
+                if (target != null) RenderTexture.ReleaseTemporary(target);
+            }
         }
 
         [Test]
@@ -194,6 +199,9 @@ namespace EmpireAtWar.Tests.Editor
         public void DestroyedIconTracksCameraPanRotationAndZoomOnBattleCanvas(bool perspective)
         {
             _camera.orthographic = !perspective;
+            // Give manual rendering a fixed surface independent of the Editor Game view.
+            _camera.targetTexture = RenderTexture.GetTemporary(_camera.pixelWidth, _camera.pixelHeight, 24);
+            _camera.rect = new Rect(0f, 0f, 1f, 1f);
             Canvas canvas = _layer.gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
             canvas.worldCamera = _camera;
