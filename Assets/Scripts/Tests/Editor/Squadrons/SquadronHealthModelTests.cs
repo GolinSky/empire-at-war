@@ -224,11 +224,97 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.GetMemberShields(1), Is.EqualTo(1f));
         }
 
+        [Test]
+        public void LeaderStats_ApplyOnlyToFirstMemberAndSurviveSaveRestore()
+        {
+            var data = new TestHealthData { LeaderHull = 3200f, LeaderShields = 2400f };
+            var model = new SquadronHealthModel(data, _matrix, new CombatModifiers());
+            HardPointModel[] members = CreateMembers();
+            model.InitializeMembers(members);
+            Assert.That(model.MaxHull, Is.EqualTo(3200f + 2f * MEMBER_HULL));
+            Assert.That(model.MaxShields, Is.EqualTo(2400f + 2f * MEMBER_SHIELDS));
+            Assert.That(members[1].Health, Is.EqualTo(MEMBER_HULL));
+
+            model.Restore(new[] { 0.5f, 1f, 1f }, new[] { 0.25f, 1f, 1f });
+            Assert.That(members[0].Health, Is.EqualTo(1600f));
+            Assert.That(model.GetMemberShields(0), Is.EqualTo(600f));
+            model.RegenerateShields(10000f);
+            Assert.That(model.GetMemberShields(0), Is.EqualTo(2400f));
+            Assert.That(model.GetMemberShields(1), Is.EqualTo(MEMBER_SHIELDS));
+        }
+
+        [Test]
+        public void ProtectedLeader_TakesDamageOnlyAfterEscortsAreLost()
+        {
+            var data = new TestHealthData { LeaderHull = 3200f, ProtectLeaderUntilEscortsLost = true };
+            var model = new SquadronHealthModel(data, _matrix, new CombatModifiers());
+            HardPointModel[] members = CreateMembers();
+            model.InitializeMembers(members);
+            model.ApplyDamage(MEMBER_HULL, DamageType.ProtonTorpedo, 0);
+            Assert.That(members[1].IsDestroyed, Is.True);
+            Assert.That(members[0].Health, Is.EqualTo(3200f));
+            model.ApplyDamage(MEMBER_HULL, DamageType.ProtonTorpedo, 0);
+            Assert.That(members[2].IsDestroyed, Is.True);
+            model.ApplyDamage(100f, DamageType.ProtonTorpedo, 0);
+            Assert.That(members[0].Health, Is.EqualTo(3100f));
+        }
+
+        [Test]
+        public void ReplenishWingmen_RestoresOnlyDeadEscortsWithoutHealingSurvivors()
+        {
+            SquadronHealthModel model = CreateModel(out HardPointModel[] members);
+            model.ApplyDamage(10f, DamageType.ProtonTorpedo, 0);
+            model.ApplyDamage(20f, DamageType.ProtonTorpedo, 1);
+            model.ApplyDamage(MEMBER_HULL, DamageType.ProtonTorpedo, 2);
+            Assert.That(model.CanReplenishWingmen, Is.True);
+            int oldGeneration = members[2].Generation;
+
+            model.ReplenishWingmen();
+
+            Assert.That(members[0].Health, Is.EqualTo(MEMBER_HULL - 10f));
+            Assert.That(members[1].Health, Is.EqualTo(MEMBER_HULL - 20f));
+            Assert.That(members[2].Health, Is.EqualTo(MEMBER_HULL));
+            Assert.That(members[2].Generation, Is.GreaterThan(oldGeneration));
+            Assert.That(model.GetMemberShields(2), Is.EqualTo(MEMBER_SHIELDS));
+            Assert.That(model.AliveCount, Is.EqualTo(MEMBER_COUNT));
+            Assert.That(model.CanReplenishWingmen, Is.False);
+        }
+
+        [Test]
+        public void ReplenishWingmen_RequiresLivingLeaderAndNeverRevivesDeadSquadron()
+        {
+            SquadronHealthModel model = CreateModel(out HardPointModel[] members);
+            model.ApplyDamage(MEMBER_HULL, DamageType.ProtonTorpedo, 0);
+            model.ApplyDamage(MEMBER_HULL, DamageType.ProtonTorpedo, 1);
+            Assert.That(model.CanReplenishWingmen, Is.False);
+            model.ReplenishWingmen();
+            Assert.That(members[0].IsDestroyed, Is.True);
+            Assert.That(members[1].IsDestroyed, Is.True);
+            model.Kill();
+            model.ReplenishWingmen();
+            Assert.That(model.IsDestroyed, Is.True);
+            Assert.That(model.AliveCount, Is.Zero);
+        }
+
+        [Test]
+        public void ReplenishWingmen_PreservesShieldSuppression()
+        {
+            SquadronHealthModel model = CreateModel(out _);
+            model.ApplyDamage(MEMBER_HULL, DamageType.ProtonTorpedo, 1);
+            model.SetShieldSuppressed(true);
+            model.ReplenishWingmen();
+            Assert.That(model.AliveCount, Is.EqualTo(MEMBER_COUNT));
+            Assert.That(model.GetMemberShields(1), Is.Zero);
+        }
+
         private sealed class TestHealthData : ISquadronHealthData
         {
             public ShipClass ShipClass => ShipClass.Fighter;
             public float MemberHull => MEMBER_HULL;
             public float MemberShields => MEMBER_SHIELDS;
+            public float LeaderHull { get; set; }
+            public float LeaderShields { get; set; }
+            public bool ProtectLeaderUntilEscortsLost { get; set; }
             public float ShieldRegenerateValue => 1f;
             public float ShieldRegenerateDelay => 1f;
             public float LaserShieldDamageMultiplier => 1f;

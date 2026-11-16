@@ -7,6 +7,9 @@ namespace EmpireAtWar.Components.Squadrons.Health
         ShipClass ShipClass { get; }
         float MemberHull { get; }
         float MemberShields { get; }
+        float LeaderHull { get; }
+        float LeaderShields { get; }
+        bool ProtectLeaderUntilEscortsLost { get; }
         float ShieldRegenerateValue { get; }
         float ShieldRegenerateDelay { get; }
         float LaserShieldDamageMultiplier { get; }

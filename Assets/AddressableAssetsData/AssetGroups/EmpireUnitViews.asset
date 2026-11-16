@@ -65,6 +65,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f05a68611749764e84ea4fd0ccc7c36
+    m_Address: DarthVaderTIEAdvancedSquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2f201f3499a8bfc4ba07003aa8343973
     m_Address: ArquitensImperialCruiserShipView
     m_ReadOnly: 0
@@ -272,6 +277,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b6ab4d2cbadbb02498d2028321510173
     m_Address: EmpireSpaceStationLevel4WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bbc595c1d14c6ba4bae2cec61441da1c
+    m_Address: DarthVaderTIEAdvancedReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

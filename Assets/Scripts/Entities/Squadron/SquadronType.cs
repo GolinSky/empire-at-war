@@ -33,6 +33,7 @@ namespace EmpireAtWar.Entities.Squadrons
         TIEPunisher = 205,
         BobaFettSlaveI = 206,
         TIEDefender = 207,
+        DarthVaderTIEAdvanced = 208,
 
         //rebellion
         XWing = 300,

@@ -86,8 +86,8 @@ namespace EmpireAtWar.Services.Enemy
         {
             SquadronData data = _assetService.Load<SquadronData>(squadronType + SQUADRON_DATA_POSTFIX);
             return UnitCombatProfileFactory.Create(data.ShipClass,
-                data.MemberHull * data.MemberCount,
-                data.MemberShields * data.MemberCount,
+                data.TotalHull,
+                data.TotalShields,
                 data.WeaponLoadout, _weaponsData, _damageMatrix,
                 Array.Empty<UnitCombatProfile>(), data.WarheadDamageMultiplier, data.WarheadReloadMultiplier);
         }

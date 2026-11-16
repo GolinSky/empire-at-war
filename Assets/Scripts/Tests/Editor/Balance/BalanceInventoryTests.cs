@@ -19,7 +19,8 @@ namespace EmpireAtWar.Tests.Editor
 
             foreach (ShipAbilityId id in new[] { ShipAbilityId.DauntlessSensorJamming,
                          ShipAbilityId.FighterReinforcements, ShipAbilityId.LiberatorRapidDeployment,
-                         ShipAbilityId.MC30cTorpedoSalvo, ShipAbilityId.FighterCoordination })
+                         ShipAbilityId.MC30cTorpedoSalvo, ShipAbilityId.FighterCoordination,
+                         ShipAbilityId.ReplenishWingmen })
                 foreach (string stat in new[] { "duration", "recoveryDelay", "range", "aiUse" })
                     Assert.That(inventory.Fields.Values.Any(field => field.Stat == $"ability/{(int)id}/{stat}"),
                         Is.True, $"{id}: {stat}");

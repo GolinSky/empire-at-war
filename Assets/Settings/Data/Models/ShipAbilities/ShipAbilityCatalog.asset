@@ -457,6 +457,22 @@ MonoBehaviour:
         autoPower: 0
         settings:
           rid: 7607833764655792235
+    - key: 55
+      value:
+        icon: {fileID: 21300000, guid: 2caa7c29d34ca0546baf50d44d6e1153, type: 3}
+        displayName: Replenish Wingmen
+        description: Replace destroyed TIE escorts while Vader survives, up to six
+          escorts. Does not repair surviving fighters. 60 s cooldown.
+        duration: 0
+        recoveryDelay: 60
+        canCancel: 0
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 0
+        aiUse: 2
+        autoPower: 0
+        settings:
+          rid: 2035977045847834708
   autoPower:
     decisionInterval: 0.5
     castersPerFrame: 4
@@ -471,6 +487,10 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 2035977045847834708
+      type: {class: ReplenishWingmenSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data: 
     - rid: 6801466862182334539
       type: {class: IonPulseSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}

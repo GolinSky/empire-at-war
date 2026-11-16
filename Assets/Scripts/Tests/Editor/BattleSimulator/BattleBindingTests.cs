@@ -65,5 +65,26 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(field.Read(), Is.EqualTo(before));
             }
         }
+
+        [Test]
+        public void DraftLeaderHealth_IsCopiedSeparatelyFromEscorts()
+        {
+            BalanceRegistration registry = BalanceInventory.BuildCombat();
+            BalanceUnit unit = registry.Units.First(u => u.Kind == BalanceUnitKind.Squadron);
+            BalanceField hull = registry.FieldsFor(unit.Data).Single(f => f.Stat == "LeaderHull");
+            BalanceField shields = registry.FieldsFor(unit.Data).Single(f => f.Stat == "LeaderShields");
+            string before = hull.Read();
+            var draft = new BalanceDraft();
+            draft.Set(hull.Snapshot(), "3200");
+            draft.Set(shields.Snapshot(), "2400");
+            using (var factory = new SimUnitFactory(registry, draft))
+            {
+                SimUnitDefinition definition = factory.Build(unit);
+                Assert.That(definition.LeaderHull, Is.EqualTo(3200f));
+                Assert.That(definition.LeaderShields, Is.EqualTo(2400f));
+                Assert.That(definition.MemberHull, Is.Not.EqualTo(definition.LeaderHull));
+            }
+            Assert.That(hull.Read(), Is.EqualTo(before));
+        }
     }
 }

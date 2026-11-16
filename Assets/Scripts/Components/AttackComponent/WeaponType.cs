@@ -110,7 +110,9 @@ namespace EmpireAtWar.Components.AttackComponent
         ObiWanKenobiLaser = 161,
         MaceWinduLaser = 162,
         AnakinSkywalkerLaser = 163,
+        DarthVaderLaser = 164,
         AsajjVentressLaser = 167,
         SevranceTannLaser = 168,
+        DarthVaderEscortLaser = 165,
     }
 }

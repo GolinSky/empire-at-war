@@ -1799,6 +1799,20 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: DarthVaderTIEAdvancedSquadronView
+      value:
+        m_AssetGUID: 2f05a68611749764e84ea4fd0ccc7c36
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: DarthVaderTIEAdvancedSquadronData
+      value:
+        m_AssetGUID: 427e50c39850a5a47ac2e508cf681442
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
     - key: HyenaBomberSquadronView
       value:
         m_AssetGUID: 6f02095480fd84a40a4e9fed3541003f

@@ -259,3 +259,10 @@ bpy.ops.import_scene.fbx(
 
 - Selection sizing must account for the shared sprite's visible fraction (`1038 / 1254`); fit `ringSize` to visible renderer bounds × `1.15 / visibleFraction`, and center marker XZ without moving the health anchor. Verified by `HealthOverlayAnchorTests` for Gladiator.
 - Replacing derived stripe GameObjects can invalidate `Ship.explosionHullRenderers`; rebuild that explicit list from current opaque hull renderers before saving. Verified by `ShipExplosionPrefabTests`; reusable example: `Tools/Blender/Gladiator/BuildLivery.cs`.
+
+### Hero fighter import evidence — 2026-11-16
+
+- FBX normalization: multiply imported root scale by target/measured length; do not replace the root scale. Remake Vader FBX root scale 100 caused a 100× undersized prefab when overwritten. Verify the saved formation alongside existing fighters.
+- Mixed hero squads: `SquadronData.LeaderHull > 0` enables first-member hull/shields; remaining members use `MemberHull/MemberShields`. Consumers use `TotalHull/TotalShields`; regeneration counts shielded living members.
+- Escort replenishment: restore dead member health through `SetHealth` (new target generation), restore view and flight slot, clear trails; preserve wounded survivors. Require living leader and at least one dead escort.
+- Vader provenance/conversion/material/muzzle decisions: `Tools/Blender/DarthVader/README.md` and `Evidence/`; implementation record [[Done/Features/DarthVader_Squadron_Import]].

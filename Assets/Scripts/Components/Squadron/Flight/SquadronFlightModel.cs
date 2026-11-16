@@ -56,6 +56,14 @@ namespace EmpireAtWar.Components.Squadrons.Flight
 
         public void Kill(int index) => _alive[index] = false;
 
+        public void RestoreMember(int index, Vector3 position, Vector3 forward)
+        {
+            _fighters[index].Reset(position, forward, _data.CruiseSpeed);
+            _alive[index] = true;
+            _targets[index] = position + forward * _data.LoiterRadius;
+            _speeds[index] = _data.CruiseSpeed;
+        }
+
         public void SetSteering(int index, Vector3 target, float speed)
         {
             _targets[index] = target;

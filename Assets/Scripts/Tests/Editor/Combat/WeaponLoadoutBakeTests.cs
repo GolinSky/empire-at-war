@@ -106,7 +106,7 @@ namespace EmpireAtWar.Tests.Editor
                      WeaponLoadoutBaker.LoadAll<SquadronData>(WeaponLoadoutBaker.SQUADRON_DATA_FOLDER))
             {
                 AssertRated(data.name, UnitCombatProfileFactory.Create(data.ShipClass,
-                    data.MemberHull * data.MemberCount, data.MemberShields * data.MemberCount,
+                    data.TotalHull, data.TotalShields,
                     data.WeaponLoadout, weapons, matrix, Array.Empty<UnitCombatProfile>()), data.WeaponLoadout);
             }
         }

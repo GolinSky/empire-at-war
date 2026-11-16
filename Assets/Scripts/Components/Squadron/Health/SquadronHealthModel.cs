@@ -40,8 +40,18 @@ namespace EmpireAtWar.Components.Squadrons.Health
         public bool HasUnits => !IsDestroyed && Members.Length > 0;
         public bool HasLiveHardPoints => AliveCount > 0;
         public int AliveCount { get; private set; }
-        public float MaxHull => _data.MemberHull * Members.Length * _hullMultiplier;
-        public float MaxShields => _data.MemberShields * Members.Length * _shieldsMultiplier;
+        public int ShieldedAliveCount { get; private set; }
+        public float MaxHull => Members.Length == 0 ? 0f :
+            (GetMemberHull(0) + _data.MemberHull * (Members.Length - 1)) * _hullMultiplier;
+        public float MaxShields => Members.Length == 0 ? 0f :
+            (GetMemberMaxShields(0) + _data.MemberShields * (Members.Length - 1)) * _shieldsMultiplier;
+        public bool CanReplenishWingmen => !IsDestroyed && Members.Length > 1 &&
+            !Members[0].IsDestroyed && AliveCount < Members.Length;
+
+        private float GetMemberHull(int index) => index == 0 && _data.LeaderHull > 0f
+            ? _data.LeaderHull : _data.MemberHull;
+        private float GetMemberMaxShields(int index) => index == 0 && _data.LeaderHull > 0f
+            ? _data.LeaderShields : _data.MemberShields;
 
         public SquadronHealthModel(ISquadronHealthData data, DamageMatrixData damageMatrix,
             CombatModifiers modifiers)
@@ -64,8 +74,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
             for (int i = 0; i < members.Count; i++)
             {
                 Members[i] = members[i];
-                Members[i].SetHealth(_data.MemberHull * _hullMultiplier, 1f);
-                _shields[i] = IsShieldSuppressed ? 0f : _data.MemberShields * _shieldsMultiplier;
+                Members[i].SetHealth(GetMemberHull(i) * _hullMultiplier, 1f);
+                _shields[i] = IsShieldSuppressed ? 0f : GetMemberMaxShields(i) * _shieldsMultiplier;
             }
 
             Recalculate();
@@ -75,7 +85,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
 
         public float GetMemberShieldPercentage(int memberId)
         {
-            float max = _data.MemberShields * _shieldsMultiplier;
+            float max = GetMemberMaxShields(memberId) * _shieldsMultiplier;
             return max <= 0f ? 0f : _shields[memberId] / max;
         }
 
@@ -96,7 +106,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
             {
                 if (isReplica) Members[i].ApplyReplicaHealth(memberHull[i]);
                 else Members[i].Restore(memberHull[i]);
-                _shields[i] = Members[i].IsDestroyed || IsShieldSuppressed ? 0f : _data.MemberShields * _shieldsMultiplier * memberShields[i];
+                _shields[i] = Members[i].IsDestroyed || IsShieldSuppressed ? 0f : GetMemberMaxShields(i) * _shieldsMultiplier * memberShields[i];
             }
 
             Recalculate();
@@ -138,6 +148,16 @@ namespace EmpireAtWar.Components.Squadrons.Health
 
         public void ApplyDamage(float damage, DamageType damageType, int memberId)
         {
+            if (_data.ProtectLeaderUntilEscortsLost && memberId == 0 && !IsDestroyed &&
+                !Members[0].IsDestroyed)
+            {
+                for (int i = 1; i < Members.Length; i++)
+                {
+                    if (Members[i].IsDestroyed) continue;
+                    memberId = i;
+                    break;
+                }
+            }
             HardPointModel member = Members[memberId];
             if (IsDestroyed || member.IsDestroyed)
             {
@@ -190,7 +210,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
             {
                 if (!Members[i].IsDestroyed)
                 {
-                    _shields[i] = Math.Min(_data.MemberShields * _shieldsMultiplier, _shields[i] + value);
+                    _shields[i] = Math.Min(GetMemberMaxShields(i) * _shieldsMultiplier, _shields[i] + value);
                 }
             }
 
@@ -213,6 +233,19 @@ namespace EmpireAtWar.Components.Squadrons.Health
             OnValueChanged?.Invoke();
         }
 
+        public void ReplenishWingmen()
+        {
+            if (!CanReplenishWingmen) return;
+            for (int i = 1; i < Members.Length; i++)
+            {
+                if (!Members[i].IsDestroyed) continue;
+                Members[i].SetHealth(GetMemberHull(i) * _hullMultiplier, 1f);
+                _shields[i] = IsShieldSuppressed ? 0f : GetMemberMaxShields(i) * _shieldsMultiplier;
+            }
+            Recalculate();
+            OnValueChanged?.Invoke();
+        }
+
         public void SetShieldSuppressed(bool suppressed)
         {
             if (IsShieldSuppressed == suppressed) return;
@@ -227,17 +260,20 @@ namespace EmpireAtWar.Components.Squadrons.Health
             float hull = 0f;
             float shields = 0f;
             int alive = 0;
+            int shieldedAlive = 0;
             for (int i = 0; i < Members.Length; i++)
             {
                 if (Members[i].IsDestroyed) continue;
                 hull += Members[i].Health;
                 shields += _shields[i];
                 alive++;
+                if (GetMemberMaxShields(i) > 0f) shieldedAlive++;
             }
 
             Hull = hull;
             Shields = shields;
             AliveCount = alive;
+            ShieldedAliveCount = shieldedAlive;
         }
     }
 }

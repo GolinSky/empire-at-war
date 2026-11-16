@@ -47,6 +47,22 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void RestoreMember_ResetsLostFighterWithoutMovingSurvivors()
+        {
+            var model = new SquadronFlightModel(_data, new CombatModifiers());
+            model.Spawn(new[] { Vector3.Zero, Vector3.One }, Vector3.UnitZ);
+            model.Kill(1);
+            Vector3 replacementPosition = new Vector3(20f, 0f, 30f);
+            model.RestoreMember(1, replacementPosition, Vector3.UnitX);
+            Assert.That(model.IsAlive(1), Is.True);
+            Assert.That(model.Get(1).Position, Is.EqualTo(replacementPosition));
+            Assert.That(model.Get(1).Forward, Is.EqualTo(Vector3.UnitX));
+            Assert.That(model.Get(0).Position, Is.EqualTo(Vector3.Zero));
+            model.Step(DELTA_TIME);
+            Assert.That(model.Get(1).Position.X, Is.GreaterThan(replacementPosition.X));
+        }
+
+        [Test]
         public void Step_RollsRightWingDownWhenTurningRight()
         {
             FighterKinematics fighter = new FighterKinematics(Vector3.Zero, Vector3.UnitZ, 10f);

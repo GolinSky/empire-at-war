@@ -18,6 +18,9 @@ created: "2026-10-29\r"
 
 ## Imported Units
 
+- [[Done/Features/DarthVader_Squadron_Import]] — In-battle deployment, Remake model + six escorts, balance, escort loss/replenishment/60 s cooldown, multiplayer/save restoration.
+- [[Done/Features/DarthVader_Squadron_Import]] — Automated Squadrons/Abilities/Combat/Balance/Simulation and asset checks remain unrun under local restriction; explicit test request required.
+
 - [ ] [[Done/Features/Recusant_Dreadnought_Import]] — Build and deploy the CIS dreadnought in skirmish. Check roster availability, placement clearance, forward convergence, Boost Weapon Power, squadron launches and wreck transition.
 - [ ] [[Done/Features/Recusant_Dreadnought_Import]] — Check team markings and engine and ship-order sound in battle.
 

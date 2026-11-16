@@ -68,6 +68,9 @@ namespace EmpireAtWar.Editor.BattleSimulator
                     definition.ShipClass = squadron.ShipClass;
                     definition.MemberHull = squadron.MemberHull;
                     definition.MemberShields = squadron.MemberShields;
+                    definition.LeaderHull = squadron.LeaderHull;
+                    definition.LeaderShields = squadron.LeaderShields;
+                    definition.ProtectLeaderUntilEscortsLost = squadron.ProtectLeaderUntilEscortsLost;
                     definition.ShieldRegenerateDelay = squadron.ShieldRegenerateDelay;
                     definition.ShieldRegenerateValue = squadron.ShieldRegenerateValue;
                     definition.LaserShieldDamageMultiplier = squadron.LaserShieldDamageMultiplier;

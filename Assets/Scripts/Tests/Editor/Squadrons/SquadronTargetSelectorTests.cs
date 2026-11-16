@@ -475,6 +475,9 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class SquadronHealthData : ISquadronHealthData
         {
+            public float LeaderHull => 0f;
+            public float LeaderShields => 0f;
+            public bool ProtectLeaderUntilEscortsLost => false;
             public ShipClass ShipClass { get; set; }
             public float MemberHull => 1f;
             public float MemberShields => 0f;

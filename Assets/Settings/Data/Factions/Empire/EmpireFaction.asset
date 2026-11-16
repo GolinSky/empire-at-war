@@ -528,6 +528,24 @@ MonoBehaviour:
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: e18689d7f5884dd8aa29ea1e58dffee2,
           type: 3}
+    - key: 208
+      value:
+        matchups: {fileID: 0}
+        displayName: Darth Vader
+        description: Vader's shielded TIE Advanced leads six TIE escorts. Heavy lasers
+          overpower Republic Jedi fighters; Replenish Wingmen replaces destroyed
+          escorts every 60 seconds while Vader survives.
+        role: Hero / Fighter squadron
+        iconKey: d3a12bad07832e841a42db7ba1eb25fc:21300000
+        isHero: 1
+        <Name>k__BackingField: Darth Vader - TIE Advanced
+        <MaxCount>k__BackingField: 1
+        <AvailableLevel>k__BackingField: 4
+        <Price>k__BackingField: 5000
+        <BuildTime>k__BackingField: 35
+        <UnitCapacity>k__BackingField: 2
+        <Icon>k__BackingField: {fileID: 21300000, guid: d3a12bad07832e841a42db7ba1eb25fc,
+          type: 3}
   research:
     keyValue:
     - key: 0

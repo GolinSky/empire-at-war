@@ -1,0 +1,361 @@
+[
+  {
+    "mesh": "DarthVader_TIE_Cockpit_Interior",
+    "sourceMesh": "TIE_Cockpit_Interior",
+    "index": 0,
+    "material": "DarthVader_M00",
+    "slot": 0,
+    "shader": "MeshGloss.fx",
+    "hidden": false,
+    "parameters": {
+      "Emissive": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "Diffuse": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "Specular": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "Shininess": [
+        0.0
+      ],
+      "BaseTexture": "Empire_TIE_Cockpit.dds"
+    },
+    "textures": {
+      "BaseTexture": "F:\\Private\\empire-at-war\\Temp\\VaderImport\\Output\\Empire_TIE_Cockpit.png"
+    },
+    "normalConvention": "directx-source; _OpenGL.png derivative has green flipped"
+  },
+  {
+    "mesh": "DarthVader_TIE_Cockpit",
+    "sourceMesh": "TIE_Cockpit",
+    "index": 1,
+    "material": "DarthVader_M01",
+    "slot": 0,
+    "shader": "MeshBumpColorize.fx",
+    "hidden": false,
+    "parameters": {
+      "Emissive": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "Diffuse": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "Specular": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "Shininess": [
+        32.0
+      ],
+      "Colorization": [
+        0.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "UVOffset": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "BaseTexture": "Empire_TIE_Interceptor.dds",
+      "NormalTexture": "Empire_TIE_Interceptor_B.dds"
+    },
+    "textures": {
+      "BaseTexture": "F:\\Private\\empire-at-war\\Temp\\VaderImport\\Output\\Empire_TIE_Interceptor.png",
+      "NormalTexture": "F:\\Private\\empire-at-war\\Temp\\VaderImport\\Output\\Empire_TIE_Interceptor_B.png"
+    },
+    "normalConvention": "directx-source; _OpenGL.png derivative has green flipped"
+  },
+  {
+    "mesh": "DarthVader_TIE_Cockpit_Interior_Light",
+    "sourceMesh": "TIE_Cockpit_Interior_Light",
+    "index": 2,
+    "material": "DarthVader_M02",
+    "slot": 0,
+    "shader": "MeshAdditive.fx",
+    "hidden": false,
+    "parameters": {
+      "BaseTexture": "Empire_TIE_Cockpit.dds",
+      "UVScrollRate": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "Color": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    "textures": {
+      "BaseTexture": "F:\\Private\\empire-at-war\\Temp\\VaderImport\\Output\\Empire_TIE_Cockpit.png"
+    },
+    "normalConvention": "directx-source; _OpenGL.png derivative has green flipped"
+  },
+  {
+    "mesh": "DarthVader_TIE_Cockpit_Glass",
+    "sourceMesh": "TIE_Cockpit_Glass",
+    "index": 3,
+    "material": "DarthVader_M03",
+    "slot": 0,
+    "shader": "MeshAdditive.fx",
+    "hidden": false,
+    "parameters": {
+      "BaseTexture": "Empire_TIE_Defender.dds",
+      "UVScrollRate": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "Color": [
+        0.10588236153125763,
+        0.10588236153125763,
+        0.10588236153125763,
+        0.0
+      ]
+    },
+    "textures": {
+      "BaseTexture": "F:\\Private\\empire-at-war\\Temp\\VaderImport\\Output\\Empire_TIE_Defender.png"
+    },
+    "normalConvention": "directx-source; _OpenGL.png derivative has green flipped"
+  },
+  {
+    "mesh": "DarthVader_TIE_Bomber",
+    "sourceMesh": "TIE_Bomber",
+    "index": 4,
+    "material": "DarthVader_M04",
+    "slot": 0,
+    "shader": "MeshBumpColorize.fx",
+    "hidden": false,
+    "parameters": {
+      "Emissive": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "Diffuse": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "Specular": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "Shininess": [
+        32.0
+      ],
+      "Colorization": [
+        0.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "UVOffset": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "BaseTexture": "Empire_TIE_Bomber.dds",
+      "NormalTexture": "Empire_TIE_Bomber_B.dds"
+    },
+    "textures": {
+      "BaseTexture": "F:\\Private\\empire-at-war\\Temp\\VaderImport\\Output\\Empire_TIE_Bomber.png",
+      "NormalTexture": "F:\\Private\\empire-at-war\\Temp\\VaderImport\\Output\\Empire_TIE_Bomber_B.png"
+    },
+    "normalConvention": "directx-source; _OpenGL.png derivative has green flipped"
+  },
+  {
+    "mesh": "DarthVader_TIE_Hunter",
+    "sourceMesh": "TIE_Hunter",
+    "index": 5,
+    "material": "DarthVader_M05",
+    "slot": 0,
+    "shader": "MeshBumpColorize.fx",
+    "hidden": false,
+    "parameters": {
+      "Emissive": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "Diffuse": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "Specular": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "Shininess": [
+        32.0
+      ],
+      "Colorization": [
+        0.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "UVOffset": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "BaseTexture": "Empire_TIE_Hunter.dds",
+      "NormalTexture": "Empire_TIE_Hunter_B.dds"
+    },
+    "textures": {
+      "BaseTexture": "F:\\Private\\empire-at-war\\Temp\\VaderImport\\Output\\Empire_TIE_Hunter.png",
+      "NormalTexture": "F:\\Private\\empire-at-war\\Temp\\VaderImport\\Output\\Empire_TIE_Hunter_B.png"
+    },
+    "normalConvention": "directx-source; _OpenGL.png derivative has green flipped"
+  },
+  {
+    "mesh": "DarthVader_Twin Ion Engines01",
+    "sourceMesh": "Twin Ion Engines01",
+    "index": 6,
+    "material": "DarthVader_M06",
+    "slot": 0,
+    "shader": "MeshAdditive.fx",
+    "hidden": false,
+    "parameters": {
+      "BaseTexture": "Empire_TIE_Hunter.dds",
+      "UVScrollRate": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "Color": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    "textures": {
+      "BaseTexture": "F:\\Private\\empire-at-war\\Temp\\VaderImport\\Output\\Empire_TIE_Hunter.png"
+    },
+    "normalConvention": "directx-source; _OpenGL.png derivative has green flipped"
+  },
+  {
+    "mesh": "DarthVader_Shadow",
+    "sourceMesh": "Shadow",
+    "index": 7,
+    "material": "DarthVader_M07",
+    "slot": 0,
+    "shader": "MeshShadowVolume.fx",
+    "hidden": true,
+    "parameters": {
+      "DebugColor": [
+        0.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "textures": {},
+    "normalConvention": "directx-source; _OpenGL.png derivative has green flipped"
+  },
+  {
+    "mesh": "DarthVader_Shield",
+    "sourceMesh": "Shield",
+    "index": 8,
+    "material": "DarthVader_M08",
+    "slot": 0,
+    "shader": "MeshShield.fx",
+    "hidden": true,
+    "parameters": {
+      "Color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "EdgeBrightness": [
+        0.5
+      ],
+      "BaseUVScale": [
+        20.0
+      ],
+      "WaveUVScale": [
+        1.0
+      ],
+      "DistortUVScale": [
+        1.0
+      ],
+      "BaseUVScrollRate": [
+        1.0
+      ],
+      "WaveUVScrollRate": [
+        1.0
+      ],
+      "DistortUVScrollRate": [
+        1.0
+      ],
+      "BaseTexture": "None.dds",
+      "WaveTexture": "None.dds",
+      "DistortionTexture": "None.dds"
+    },
+    "textures": {
+      "BaseTexture": "F:\\Private\\empire-at-war\\Temp\\VaderImport\\Output\\None.png",
+      "WaveTexture": "F:\\Private\\empire-at-war\\Temp\\VaderImport\\Output\\None.png",
+      "DistortionTexture": "F:\\Private\\empire-at-war\\Temp\\VaderImport\\Output\\None.png"
+    },
+    "normalConvention": "directx-source; _OpenGL.png derivative has green flipped"
+  },
+  {
+    "mesh": "DarthVader_Collision",
+    "sourceMesh": "Collision",
+    "index": 9,
+    "material": "DarthVader_M09",
+    "slot": 0,
+    "shader": "MeshCollision.fx",
+    "hidden": true,
+    "parameters": {
+      "Color": [
+        0.0,
+        0.0,
+        1.0,
+        0.5
+      ]
+    },
+    "textures": {},
+    "normalConvention": "directx-source; _OpenGL.png derivative has green flipped"
+  }
+]

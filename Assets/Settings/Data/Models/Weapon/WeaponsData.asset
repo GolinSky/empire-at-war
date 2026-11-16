@@ -2547,3 +2547,41 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 164
+    displayName: Vader Heavy Laser Cannon
+    family: 25
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: DarthVaderTIEAdvanced
+    damageMultiplier: 18
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Two lasers deliver 400 raw DPS, above Republic hero fighters.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    beamPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 1
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+  - weaponType: 165
+    displayName: Vader Escort Laser Cannon
+    family: 20
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 3
+    unit: DarthVaderTIEAdvanced
+    damageMultiplier: 0.945
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Standard TIE laser tuning with explicit Vader squadron ownership.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    beamPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}

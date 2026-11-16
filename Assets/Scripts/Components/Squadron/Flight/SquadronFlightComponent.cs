@@ -136,6 +136,16 @@ namespace EmpireAtWar.Components.Squadrons.Flight
                 {
                     Model.Kill(i);
                 }
+                else if (!fighters[i].IsDestroyed && !Model.IsAlive(i))
+                {
+                    _poseBatch.CompletePlacement();
+                    NumericsVector3 heading = Model.GetHeading();
+                    NumericsVector3 slot = SquadronFormation.GetSlot(i, Model.Data.FormationSpacing);
+                    NumericsVector3 position = Model.GetCentroid() + SquadronFormation.ToWorld(slot, heading);
+                    Model.RestoreMember(i, position, heading);
+                    fighters[i].ApplyPose(position.ToUnity(), heading.ToUnity(), 0f);
+                    fighters[i].ClearTrails();
+                }
             }
 
             Model.Step(deltaTime);

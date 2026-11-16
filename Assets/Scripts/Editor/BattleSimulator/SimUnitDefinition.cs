@@ -23,6 +23,9 @@ namespace EmpireAtWar.Editor.BattleSimulator
         public float ShieldRegenerateDelay { get; set; }
         public float MemberHull { get; set; }
         public float MemberShields { get; set; }
+        public float LeaderHull { get; set; }
+        public float LeaderShields { get; set; }
+        public bool ProtectLeaderUntilEscortsLost { get; set; }
         public float LaserShieldDamageMultiplier { get; set; }
         public bool UsesHullHardPointBudget => !IsSquadron;
         public HardPointHealthBudget HealthBudget { get; set; } = new HardPointHealthBudget();

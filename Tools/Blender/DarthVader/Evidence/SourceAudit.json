@@ -1,0 +1,755 @@
+{
+  "pieceId": "DarthVader",
+  "file": "D:\\SteamLibrary\\steamapps\\workshop\\content\\32470\\1770851727\\Data\\Art\\Models\\Empire_TIE_Advanced.ALO",
+  "sha256": "a6794ed982835783f7c28b057f8fcd3f9528800fe182165df70a8182214b59d6",
+  "bones": [
+    {
+      "index": 0,
+      "name": "Root",
+      "parent_index": 4294967295,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "index": 1,
+      "name": "TIE_Cockpit_Interior",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        1.0,
+        0.0,
+        -0.0,
+        0.0,
+        -0.0,
+        -1.1920928955078125e-07,
+        -0.9999999403953552,
+        7.05076317331077e-08,
+        0.0,
+        0.9999999403953552,
+        -1.1920928955078125e-07,
+        0.0
+      ]
+    },
+    {
+      "index": 2,
+      "name": "TIE_Cockpit",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        1.0,
+        0.0,
+        -0.0,
+        0.0,
+        -0.0,
+        -1.1920928955078125e-07,
+        -0.9999999403953552,
+        7.05076317331077e-08,
+        0.0,
+        0.9999999403953552,
+        -1.1920928955078125e-07,
+        0.0
+      ]
+    },
+    {
+      "index": 3,
+      "name": "TIE_Cockpit_Interior_Light",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        1.0,
+        0.0,
+        -0.0,
+        0.0,
+        -0.0,
+        -1.1920928955078125e-07,
+        -0.9999999403953552,
+        7.05076317331077e-08,
+        0.0,
+        0.9999999403953552,
+        -1.1920928955078125e-07,
+        0.0
+      ]
+    },
+    {
+      "index": 4,
+      "name": "TIE_Cockpit_Glass",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        1.0,
+        0.0,
+        -0.0,
+        0.0,
+        -0.0,
+        -1.1920928955078125e-07,
+        -0.9999999403953552,
+        7.05076317331077e-08,
+        0.0,
+        0.9999999403953552,
+        -1.1920928955078125e-07,
+        0.0
+      ]
+    },
+    {
+      "index": 5,
+      "name": "TIE_Bomber",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        1.0,
+        0.0,
+        -0.0,
+        0.0,
+        -0.0,
+        -1.1920928955078125e-07,
+        -0.9999999403953552,
+        -1.805301685919858e-08,
+        0.0,
+        0.9999999403953552,
+        -1.1920928955078125e-07,
+        0.0
+      ]
+    },
+    {
+      "index": 6,
+      "name": "TIE_Hunter",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        1.0,
+        0.0,
+        -0.0,
+        0.0,
+        -0.0,
+        -1.1920928955078125e-07,
+        -0.9999999403953552,
+        7.05076317331077e-08,
+        0.0,
+        0.9999999403953552,
+        -1.1920928955078125e-07,
+        0.0
+      ]
+    },
+    {
+      "index": 7,
+      "name": "Twin Ion Engines01",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        1.0,
+        0.0,
+        -0.0,
+        0.0,
+        -0.0,
+        -1.1920928955078125e-07,
+        -0.9999999403953552,
+        7.05076317331077e-08,
+        0.0,
+        0.9999999403953552,
+        -1.1920928955078125e-07,
+        0.0
+      ]
+    },
+    {
+      "index": 8,
+      "name": "MuzzleB_00",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        -1.1920928955078125e-07,
+        0.9999999403953552,
+        0.0,
+        -6.21292781829834,
+        -0.9999999403953552,
+        -1.1920928955078125e-07,
+        0.0,
+        -1.4345695972442627,
+        0.0,
+        0.0,
+        1.0,
+        8.562549425050747e-08
+      ]
+    },
+    {
+      "index": 9,
+      "name": "MuzzleB_01",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        -1.1920928955078125e-07,
+        0.9999999403953552,
+        0.0,
+        6.213000297546387,
+        -0.9999999403953552,
+        -1.1920928955078125e-07,
+        0.0,
+        -1.4345695972442627,
+        0.0,
+        0.0,
+        1.0,
+        8.562549425050747e-08
+      ]
+    },
+    {
+      "index": 10,
+      "name": "HP_01",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        -1.1920928955078125e-07,
+        0.9999999403953552,
+        0.0,
+        1.2499516799380217e-07,
+        -0.9999999403953552,
+        -1.1920928955078125e-07,
+        0.0,
+        -3.5183680057525635,
+        0.0,
+        0.0,
+        1.0,
+        -2.6539556980133057
+      ]
+    },
+    {
+      "index": 11,
+      "name": "Shadow",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        1.0,
+        0.0,
+        -0.0,
+        0.0,
+        -0.0,
+        -1.1920928955078125e-07,
+        -0.9999999403953552,
+        7.05076317331077e-08,
+        0.0,
+        0.9999999403953552,
+        -1.1920928955078125e-07,
+        0.0
+      ]
+    },
+    {
+      "index": 12,
+      "name": "Shield",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        1.0,
+        0.0,
+        -0.0,
+        0.0,
+        -0.0,
+        -1.1920928955078125e-07,
+        -0.9999999403953552,
+        2.812757968902588,
+        0.0,
+        0.9999999403953552,
+        -1.1920928955078125e-07,
+        0.0
+      ]
+    },
+    {
+      "index": 13,
+      "name": "Collision",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        1.0,
+        0.0,
+        -0.0,
+        0.0,
+        -0.0,
+        1.7881393432617188e-07,
+        -0.9999999403953552,
+        0.0,
+        0.0,
+        0.9999999403953552,
+        1.7881393432617188e-07,
+        0.0
+      ]
+    },
+    {
+      "index": 14,
+      "name": "MuzzleA_00",
+      "parent_index": 0,
+      "visible": 1,
+      "billboard": 0,
+      "matrix": [
+        -1.1920928955078125e-07,
+        0.9999999403953552,
+        0.0,
+        1.2499516799380217e-07,
+        -0.9999999403953552,
+        -1.1920928955078125e-07,
+        0.0,
+        -3.5183680057525635,
+        0.0,
+        0.0,
+        1.0,
+        -2.6539556980133057
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "object_index": 0,
+      "bone_index": 1
+    },
+    {
+      "object_index": 1,
+      "bone_index": 2
+    },
+    {
+      "object_index": 2,
+      "bone_index": 3
+    },
+    {
+      "object_index": 3,
+      "bone_index": 4
+    },
+    {
+      "object_index": 4,
+      "bone_index": 5
+    },
+    {
+      "object_index": 5,
+      "bone_index": 6
+    },
+    {
+      "object_index": 6,
+      "bone_index": 7
+    },
+    {
+      "object_index": 7,
+      "bone_index": 11
+    },
+    {
+      "object_index": 8,
+      "bone_index": 12
+    },
+    {
+      "object_index": 9,
+      "bone_index": 13
+    }
+  ],
+  "proxies": [],
+  "meshes": [
+    {
+      "index": 0,
+      "object_index": 0,
+      "name": "TIE_Cockpit_Interior",
+      "hidden": false,
+      "collision": false,
+      "materials": [
+        {
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Shininess": [
+              0.0
+            ],
+            "BaseTexture": "Empire_TIE_Cockpit.dds"
+          },
+          "shader": "MeshGloss.fx",
+          "signature": "cad81d84ee1efed4fc1113802e87ba9bf736646fce647590720034b5b5520bce",
+          "slot": 0,
+          "vertexCount": 362,
+          "triangleCount": 165
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "object_index": 1,
+      "name": "TIE_Cockpit",
+      "hidden": false,
+      "collision": false,
+      "materials": [
+        {
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "Empire_TIE_Interceptor.dds",
+            "NormalTexture": "Empire_TIE_Interceptor_B.dds"
+          },
+          "shader": "MeshBumpColorize.fx",
+          "signature": "f311421b7524c289cb99f979a2e7866a45a7ead132d259390d04a928d464777b",
+          "slot": 0,
+          "vertexCount": 947,
+          "triangleCount": 733
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "object_index": 2,
+      "name": "TIE_Cockpit_Interior_Light",
+      "hidden": false,
+      "collision": false,
+      "materials": [
+        {
+          "properties": {
+            "BaseTexture": "Empire_TIE_Cockpit.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          },
+          "shader": "MeshAdditive.fx",
+          "signature": "2a10365b22307c2c12b1a220d28f9a151f41e812153bcb9bc02e486dea014dd5",
+          "slot": 0,
+          "vertexCount": 320,
+          "triangleCount": 150
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "object_index": 3,
+      "name": "TIE_Cockpit_Glass",
+      "hidden": false,
+      "collision": false,
+      "materials": [
+        {
+          "properties": {
+            "BaseTexture": "Empire_TIE_Defender.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              0.10588236153125763,
+              0.10588236153125763,
+              0.10588236153125763,
+              0.0
+            ]
+          },
+          "shader": "MeshAdditive.fx",
+          "signature": "e1b741d119826c27612208952887648898db6af4f7fe59f9d3fb50f59b7c203c",
+          "slot": 0,
+          "vertexCount": 168,
+          "triangleCount": 56
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "object_index": 4,
+      "name": "TIE_Bomber",
+      "hidden": false,
+      "collision": false,
+      "materials": [
+        {
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "Empire_TIE_Bomber.dds",
+            "NormalTexture": "Empire_TIE_Bomber_B.dds"
+          },
+          "shader": "MeshBumpColorize.fx",
+          "signature": "869a2a36ea1a73994e2125bb7d5e966dc721b866710081ba1c0272cc96096ba1",
+          "slot": 0,
+          "vertexCount": 816,
+          "triangleCount": 272
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "object_index": 5,
+      "name": "TIE_Hunter",
+      "hidden": false,
+      "collision": false,
+      "materials": [
+        {
+          "properties": {
+            "Emissive": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Diffuse": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Specular": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            "Shininess": [
+              32.0
+            ],
+            "Colorization": [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            "UVOffset": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "BaseTexture": "Empire_TIE_Hunter.dds",
+            "NormalTexture": "Empire_TIE_Hunter_B.dds"
+          },
+          "shader": "MeshBumpColorize.fx",
+          "signature": "e733b1c6bbeeae0b1e6fece7e85c9c82a3718b0c906fc7308dde790d3a123ce3",
+          "slot": 0,
+          "vertexCount": 2688,
+          "triangleCount": 910
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "object_index": 6,
+      "name": "Twin Ion Engines01",
+      "hidden": false,
+      "collision": false,
+      "materials": [
+        {
+          "properties": {
+            "BaseTexture": "Empire_TIE_Hunter.dds",
+            "UVScrollRate": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              0.0
+            ]
+          },
+          "shader": "MeshAdditive.fx",
+          "signature": "ba3fc2c482468f7fd01032c650ce2fa74826f8348825f005bd192c61080bbbed",
+          "slot": 0,
+          "vertexCount": 144,
+          "triangleCount": 48
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "object_index": 7,
+      "name": "Shadow",
+      "hidden": false,
+      "collision": false,
+      "materials": [
+        {
+          "properties": {
+            "DebugColor": [
+              0.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "shader": "MeshShadowVolume.fx",
+          "signature": "6c4b7839f50bd9b02e1ae9baf09f9e63be968698e89556e06873d3a9577885d7",
+          "slot": 0,
+          "vertexCount": 6320,
+          "triangleCount": 8486
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "object_index": 8,
+      "name": "Shield",
+      "hidden": true,
+      "collision": true,
+      "materials": [
+        {
+          "properties": {
+            "Color": [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            "EdgeBrightness": [
+              0.5
+            ],
+            "BaseUVScale": [
+              20.0
+            ],
+            "WaveUVScale": [
+              1.0
+            ],
+            "DistortUVScale": [
+              1.0
+            ],
+            "BaseUVScrollRate": [
+              1.0
+            ],
+            "WaveUVScrollRate": [
+              1.0
+            ],
+            "DistortUVScrollRate": [
+              1.0
+            ],
+            "BaseTexture": "None.dds",
+            "WaveTexture": "None.dds",
+            "DistortionTexture": "None.dds"
+          },
+          "shader": "MeshShield.fx",
+          "signature": "83a5404ddafcc68384e5c4a600e82c95cb537da99dc943116ae6d5a09af784f3",
+          "slot": 0,
+          "vertexCount": 89,
+          "triangleCount": 120
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "object_index": 9,
+      "name": "Collision",
+      "hidden": true,
+      "collision": true,
+      "materials": [
+        {
+          "properties": {
+            "Color": [
+              0.0,
+              0.0,
+              1.0,
+              0.5
+            ]
+          },
+          "shader": "MeshCollision.fx",
+          "signature": "a4028ae693045c51861978a695439be5c701d14fb628537fb50b299bde26de5e",
+          "slot": 0,
+          "vertexCount": 630,
+          "triangleCount": 396
+        }
+      ]
+    }
+  ]
+}

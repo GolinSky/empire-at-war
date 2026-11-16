@@ -382,6 +382,9 @@
 
   - Completed 2026-11-16: event-driven pooled world/minimap icons, independent clocks, shared artwork and per-map snapshot suppression. Unity compilation/assets/isolated preview verified; tests not run. User gates → [[TODOs/User_Acceptance_Queue]].
 
+- [x] **Darth Vader hero squadron: Remake TIE Advanced + 6 escorts** → [[Done/Features/DarthVader_Squadron_Import]]
+  - Completed 2026-11-16: mixed leader/escort durability, Replenish Wingmen, Empire registrations and saved visual/stat verification; tests not run, user gates in acceptance queue.
+
 - [x] **Import the Recusant Dreadnought as a CIS Heavy Capital** → [[Done/Features/Recusant_Dreadnought_Import|Recusant Dreadnought Import]]
   - Completed 2026-11-16. Saved 2,542 m scale, 30,000 hull, 35,000 shields, 29 weapon hardpoints and Boost Weapon Power. Verified 26 forward-capable mounts at 300 units and 1,393.184 raw all-mount DPS. In-game acceptance is queued.
 

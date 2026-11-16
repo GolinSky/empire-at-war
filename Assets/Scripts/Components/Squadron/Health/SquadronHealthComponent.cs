@@ -21,7 +21,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
     /// </summary>
     [LifecycleOrder(Initialize = LifecycleOrders.HEALTH_INITIALIZE)]
     public sealed class SquadronHealthComponent : MonoComponent<SquadronHealthModel>, ISquadronHealthComponent,
-        IHealthModelObserver, IHealthTooltipObserver, ISquadronMembersFacade, IInitializable, ITickable, ILateDisposable
+        IHealthModelObserver, IHealthTooltipObserver, ISquadronMembersFacade, IReplenishWingmenFacade,
+        IInitializable, ITickable, ILateDisposable
     {
         private ITimer _regenerateShieldsTimer;
         private readonly ITimer _shieldRecoveryTimer = TimerFactory.ConstructTimer();
@@ -51,6 +52,8 @@ namespace EmpireAtWar.Components.Squadrons.Health
         private SquadronData Data { get; set; }
 
         public int FighterCount => fighters.Count;
+        public bool CanReplenishWingmen => Model.CanReplenishWingmen;
+        public void ReplenishWingmen() => Model.ReplenishWingmen();
         public IReadOnlyList<IHardPointModel> Members => _adapters;
         public bool Destroyed => Model.IsDestroyed;
         public IHealthModelObserver HealthModelObserver => this;
@@ -59,7 +62,7 @@ namespace EmpireAtWar.Components.Squadrons.Health
         public float Hull => Model.Hull;
         public bool IsShieldRecovering => _shieldRecovering && !_shieldRecoveryTimer.IsComplete;
         public float ShieldRegeneration => Model.IsShieldSuppressed || IsShieldRecovering ? 0f
-            : Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier * Model.AliveCount;
+            : Model.ShieldRegenerateValue * _modifiers.ShieldRegenMultiplier * Model.ShieldedAliveCount;
         public float ShieldRegenerationInterval => Model.ShieldRegenerateDelay;
         public float HullPercentage => Model.HullPercentage;
         public float Shields => Model.Shields;

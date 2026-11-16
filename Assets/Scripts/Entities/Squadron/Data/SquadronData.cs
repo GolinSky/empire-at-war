@@ -55,6 +55,17 @@ namespace EmpireAtWar.Entities.Squadrons.Data
         [Tooltip("Hull points repaired per second on each surviving fighter.")]
         [field: SerializeField] public float HullRepairPerSecond { get; private set; }
 
+        [Header("Hero leader (first fighter)")]
+        [Tooltip("Positive hull enables a distinct leader; zero keeps every fighter identical.")]
+        [field: SerializeField] public float LeaderHull { get; private set; }
+        [field: SerializeField] public float LeaderShields { get; private set; }
+        [field: SerializeField] public bool ProtectLeaderUntilEscortsLost { get; private set; }
+
+        public float TotalHull => MemberCount <= 0 ? 0f :
+            MemberHull * (MemberCount - 1) + (LeaderHull > 0f ? LeaderHull : MemberHull);
+        public float TotalShields => MemberCount <= 0 ? 0f :
+            MemberShields * (MemberCount - 1) + (LeaderHull > 0f ? LeaderShields : MemberShields);
+
         [Header("Abilities")]
         [field: SerializeField] public ShipAbilityId[] Abilities { get; private set; } = System.Array.Empty<ShipAbilityId>();
 

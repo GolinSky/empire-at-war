@@ -30,5 +30,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         MC30cTorpedoSalvo = 36,
         FighterCoordination = 52,
         HarmonicBomb = 54,
+        ReplenishWingmen = 55,
     }
 }

@@ -1,0 +1,148 @@
+{
+  "sourceSha256": "a6794ed982835783f7c28b057f8fcd3f9528800fe182165df70a8182214b59d6",
+  "bones": 15,
+  "boneError": 5.331201499700045e-07,
+  "boundsMin": [
+    -8.950274467468262,
+    -7.470791339874268,
+    -6.347545623779297
+  ],
+  "boundsMax": [
+    8.950274467468262,
+    12.191974639892578,
+    6.347546577453613
+  ],
+  "attachments": {
+    "MuzzleB_00": [
+      -6.21292781829834,
+      -1.4345695972442627,
+      8.562549425050747e-08
+    ],
+    "MuzzleB_01": [
+      6.213000297546387,
+      -1.4345695972442627,
+      8.562549425050747e-08
+    ],
+    "HP_01": [
+      1.2499516799380217e-07,
+      -3.5183680057525635,
+      -2.6539556980133057
+    ],
+    "MuzzleA_00": [
+      1.2499516799380217e-07,
+      -3.5183680057525635,
+      -2.6539556980133057
+    ]
+  },
+  "meshes": [
+    {
+      "name": "TIE_Cockpit_Interior",
+      "index": 0,
+      "maxErrors": {
+        "geometry": 3.424640802978114e-07,
+        "uvPixels": 0,
+        "normal": 1.981013969522932e-06
+      },
+      "normalCheck": "passed"
+    },
+    {
+      "name": "TIE_Cockpit",
+      "index": 1,
+      "maxErrors": {
+        "geometry": 4.915124923727108e-07,
+        "uvPixels": 0,
+        "normal": 0.0002662616772072398
+      },
+      "normalCheck": "passed"
+    },
+    {
+      "name": "TIE_Cockpit_Interior_Light",
+      "index": 2,
+      "maxErrors": {
+        "geometry": 3.4180265133552583e-07,
+        "uvPixels": 0,
+        "normal": 1.156641147752108e-05
+      },
+      "normalCheck": "passed"
+    },
+    {
+      "name": "TIE_Cockpit_Glass",
+      "index": 3,
+      "maxErrors": {
+        "geometry": 3.3974141549760496e-07,
+        "uvPixels": 0,
+        "normal": 1.4379133811742687e-06
+      },
+      "normalCheck": "passed"
+    },
+    {
+      "name": "TIE_Bomber",
+      "index": 4,
+      "maxErrors": {
+        "geometry": 9.5367431640625e-07,
+        "uvPixels": 0,
+        "normal": 6.141905760159862e-05
+      },
+      "normalCheck": "passed"
+    },
+    {
+      "name": "TIE_Hunter",
+      "index": 5,
+      "maxErrors": {
+        "geometry": 2.980232238769531e-07,
+        "uvPixels": 0,
+        "normal": 9.113998205273247e-05
+      },
+      "normalCheck": "passed"
+    },
+    {
+      "name": "Twin Ion Engines01",
+      "index": 6,
+      "maxErrors": {
+        "geometry": 4.915124923727108e-07,
+        "uvPixels": 0,
+        "normal": 4.7460563317234486e-06
+      },
+      "normalCheck": "passed"
+    },
+    {
+      "name": "Shadow",
+      "index": 7,
+      "maxErrors": {
+        "geometry": 9.5367431640625e-07,
+        "uvPixels": 0,
+        "normal": 0
+      },
+      "normalCheck": "excluded"
+    },
+    {
+      "name": "Shield",
+      "index": 8,
+      "maxErrors": {
+        "geometry": 2.132480599880018e-06,
+        "uvPixels": 0,
+        "normal": 3.139260503425298e-05
+      },
+      "normalCheck": "passed"
+    },
+    {
+      "name": "Collision",
+      "index": 9,
+      "maxErrors": {
+        "geometry": 4.264961199760036e-06,
+        "uvPixels": 0,
+        "normal": 0
+      },
+      "normalCheck": "excluded"
+    }
+  ],
+  "visibleTriangles": 2334,
+  "totalTriangles": 11336,
+  "texturePixelEquality": "9 DDS to RGBA PNG conversions passed",
+  "iconAlphaBounds": [
+    24,
+    63,
+    496,
+    444
+  ]
+}

@@ -540,6 +540,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3a12bad07832e841a42db7ba1eb25fc
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Empire/DarthVaderTIEAdvancedIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d612310c959d0bb4d93c64dba1f5b3f4
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ImperialVenatorIcon.png
     m_ReadOnly: 0
