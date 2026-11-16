@@ -98,7 +98,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
                 throw new InvalidOperationException("Skirmish UI dependencies must be set before initialization.");
             }
 
-            string[] factionOptions = Enum.GetNames(typeof(FactionType));
+            string[] factionOptions = FactionDisplayNames.GetAll();
             string[] teamOptions = CreateTeamOptions(_model.TeamCount);
             colorPalette.Initialize(_palette);
             colorPalette.ColorSelected += SelectColor;

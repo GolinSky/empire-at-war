@@ -93,7 +93,7 @@ namespace EmpireAtWar.Views.Cheats
             for (int index = 0; index < factions.Count; index++)
             {
                 _factions[index] = factions[index];
-                _factionNames[index] = factions[index].ToString();
+                _factionNames[index] = factions[index].GetDisplayName();
             }
 
             _selectedFaction = 0;
@@ -166,7 +166,7 @@ namespace EmpireAtWar.Views.Cheats
             _moneyAmount = GUILayout.TextField(_moneyAmount, 16);
             foreach (PlayerSlot enemy in _enemies)
             {
-                if (GUILayout.Button($"Add Money: {enemy.Id} ({enemy.Faction})", GUILayout.Height(36f)))
+                if (GUILayout.Button($"Add Money: {enemy.Id} ({enemy.Faction.GetDisplayName()})", GUILayout.Height(36f)))
                     AddEnemyMoneyRequested?.Invoke(enemy.Id, _moneyAmount);
             }
             GUILayout.Space(8f);
@@ -175,7 +175,7 @@ namespace EmpireAtWar.Views.Cheats
             GUILayout.Space(8f);
             foreach (PlayerSlot enemy in _enemies)
             {
-                if (GUILayout.Button($"Level Up Station: {enemy.Id} ({enemy.Faction})", GUILayout.Height(36f)))
+                if (GUILayout.Button($"Level Up Station: {enemy.Id} ({enemy.Faction.GetDisplayName()})", GUILayout.Height(36f)))
                     LevelUpEnemyStationRequested?.Invoke(enemy.Id);
             }
             if (GUILayout.Button("Level Up All Enemy Stations", GUILayout.Height(36f)))
@@ -368,7 +368,7 @@ namespace EmpireAtWar.Views.Cheats
             GUILayout.Label("Spawn one of every ship at your default zone");
             foreach (FactionType faction in _factions)
             {
-                if (GUILayout.Button($"Spawn All {faction} Ships", GUILayout.Height(36f)))
+                if (GUILayout.Button($"Spawn All {faction.GetDisplayName()} Ships", GUILayout.Height(36f)))
                     SpawnAllShipsRequested?.Invoke(faction);
             }
             GUILayout.Space(8f);

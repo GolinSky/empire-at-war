@@ -199,7 +199,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         public void Tick()
         {
-            _hud.SetProductionStatus(_model.FactionType.ToString(), _model.CurrentLevel);
+            _hud.SetProductionStatus(_model.FactionType.GetDisplayName(), _model.CurrentLevel);
             if (_ui != null) _ui.RefreshAvailability(_economy.Money, _isBattleEnded);
         }
 

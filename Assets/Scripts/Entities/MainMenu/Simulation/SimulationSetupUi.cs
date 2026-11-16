@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Ui.Base;
@@ -34,7 +33,8 @@ namespace EmpireAtWar.Entities.MainMenu.Simulation
         public void Initialize(string[] typeNames)
         {
             if (_initialized) return;
-            foreach (var dropdown in factions) Fill(dropdown, Enum.GetNames(typeof(FactionType)));
+            string[] factionNames = FactionDisplayNames.GetAll();
+            foreach (var dropdown in factions) Fill(dropdown, factionNames);
             foreach (var dropdown in unitTypes) Fill(dropdown, typeNames);
             factions[0].onValueChanged.AddListener(FactionA); factions[1].onValueChanged.AddListener(FactionB);
             unitTypes[0].onValueChanged.AddListener(TypeA); unitTypes[1].onValueChanged.AddListener(TypeB);

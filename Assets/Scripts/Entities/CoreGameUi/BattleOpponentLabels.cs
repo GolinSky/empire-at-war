@@ -1,6 +1,7 @@
 using System.Linq;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 
 namespace EmpireAtWar.Entities.CoreGameUi
@@ -21,12 +22,13 @@ namespace EmpireAtWar.Entities.CoreGameUi
 
         private static string FormatSlot(PlayerSlot slot)
         {
-            if (!slot.IsAi) return slot.Faction.ToString();
+            string factionName = slot.Faction.GetDisplayName();
+            if (!slot.IsAi) return factionName;
 
             string difficulty = slot.Difficulty == EnemyAiDifficulty.UltraHard
                 ? "Ultra Hard"
                 : slot.Difficulty.ToString();
-            return $"{slot.Faction} · {difficulty} AI";
+            return $"{factionName} · {difficulty} AI";
         }
     }
 }

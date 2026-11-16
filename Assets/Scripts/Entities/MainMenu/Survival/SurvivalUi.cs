@@ -49,10 +49,11 @@ namespace EmpireAtWar.Entities.MainMenu.Survival
         public void Initialize()
         {
             if (_initialized) return;
-            Fill(playerFaction, Enum.GetNames(typeof(FactionType)));
-            Fill(enemyFaction, Enum.GetNames(typeof(FactionType)));
+            string[] factionNames = FactionDisplayNames.GetAll();
+            Fill(playerFaction, factionNames);
+            Fill(enemyFaction, factionNames);
             List<string> allies = new List<string> { "None" };
-            allies.AddRange(Enum.GetNames(typeof(FactionType)));
+            allies.AddRange(factionNames);
             Fill(allyFaction, allies);
             Fill(mapSize, Array.ConvertAll(_mapSizes, size => size.ToString()));
             Fill(difficulty, Enum.GetNames(typeof(EnemyAiDifficulty)));

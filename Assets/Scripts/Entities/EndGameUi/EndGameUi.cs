@@ -1,5 +1,6 @@
 using System;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
@@ -88,7 +89,7 @@ namespace EmpireAtWar.Entities.EndGameUi
             }
             playerBaseText.gameObject.SetActive(result.Mode != GameMode.BattleSimulation);
             enemyBaseText.gameObject.SetActive(result.Mode != GameMode.BattleSimulation);
-            playerFactionText.text = result.PlayerFaction.ToString().ToUpperInvariant();
+            playerFactionText.text = result.PlayerFaction.GetDisplayName().ToUpperInvariant();
             enemyFactionText.text = enemyFactions.ToUpperInvariant();
             playerFleetText.text = result.PlayerShipCount.ToString();
             enemyFleetText.text = result.EnemyShipCount.ToString();

@@ -31,6 +31,8 @@ namespace EmpireAtWar.Tests.Editor
                              "enemyFaction", "mapSize", "difficulty", "superWeapons" })
                     Assert.That(fields.FindProperty(field).objectReferenceValue, Is.Not.Null, field);
                 Assert.That(((Button)fields.FindProperty("startButton").objectReferenceValue).interactable, Is.True);
+                TMP_Dropdown enemies = (TMP_Dropdown)fields.FindProperty("enemyFaction").objectReferenceValue;
+                Assert.That(enemies.options[(int)FactionType.Separatist].text, Is.EqualTo("Confederation"));
                 TMP_Dropdown allies = (TMP_Dropdown)fields.FindProperty("allyFaction").objectReferenceValue;
                 Assert.That(allies.options.Count, Is.EqualTo(Enum.GetValues(typeof(FactionType)).Length + 1));
                 allies.value = 1;

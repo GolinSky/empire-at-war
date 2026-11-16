@@ -2158,7 +2158,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SEPARATIST
+  m_text: CONFEDERATION
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 556998c8ebb46bc40be3c7d0e7d94ba1, type: 2}
   m_sharedMaterial: {fileID: -2697744041012372576, guid: 556998c8ebb46bc40be3c7d0e7d94ba1,

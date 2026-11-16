@@ -204,7 +204,7 @@ namespace EmpireAtWar.Presenters.Cheats
             {
                 if (_cheatService.ForceSpawnShipAtDefaultZone(CreateRequest(faction, type))) spawned++;
             }
-            _view.SetStatus($"Spawned {spawned} of {ships.Count} {faction} ships; others had no valid spawn position.");
+            _view.SetStatus($"Spawned {spawned} of {ships.Count} {faction.GetDisplayName()} ships; others had no valid spawn position.");
         }
 
         private void AddPlatformReinforcement(DefendPlatformType type)
