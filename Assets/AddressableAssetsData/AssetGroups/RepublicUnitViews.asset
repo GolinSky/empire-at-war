@@ -35,6 +35,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 04e4b7a25c5d6364595b57c4d05c8498
+    m_Address: ObiWanKenobiEta2SquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0554626448e8b4148bc58a7027cbcde8
     m_Address: CarrackShipView
     m_ReadOnly: 0
@@ -52,6 +57,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1078bb84727c6ff4faa95ae4830a3f6c
     m_Address: ImperatorReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11c523bf64151a2419d98dd962661876
+    m_Address: MaceWinduEta2ReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -95,6 +105,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22718c715016caf4b96a3b53d6f7b39b
+    m_Address: AnakinSkywalkerEta2ReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 22aad1d1d6cecd043901814978cdaac2
     m_Address: VenatorReinforcementView
     m_ReadOnly: 0
@@ -107,6 +122,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 25718b59b3750974d9ac1171b96d9d15
     m_Address: RepublicSecondStationReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 298fb034e3364074f80529fba40e54a2
+    m_Address: ObiWanKenobiEta2ReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -170,6 +190,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51268c83be359784cb3a5ed157fc270f
+    m_Address: MaceWinduEta2SquadronView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 53589a42733efd045a38ce1daed1d855
     m_Address: StealthCorvetteReinforcementView
     m_ReadOnly: 0
@@ -182,6 +207,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 58e6e88b2a439b640b5456b0614efea7
     m_Address: RepublicSpaceStationLevel2WreckView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59dc120da15dbab42823a3394b9f315c
+    m_Address: PloKoonDelta7BSquadronView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -315,6 +345,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c52526bcb11edf0408e9b0052fee3fa4
+    m_Address: PloKoonDelta7BReinforcementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d166f0cf4f7468448a5b143f5caea212
     m_Address: PraetorWreckView
     m_ReadOnly: 0
@@ -377,6 +412,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fc7aebf02658d714e9bfece118aa89b3
     m_Address: PraetorShipView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe0cfb0c61073c440badb4099784f482
+    m_Address: AnakinSkywalkerEta2SquadronView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

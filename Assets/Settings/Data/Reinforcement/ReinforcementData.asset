@@ -674,6 +674,34 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: 7
+      value:
+        m_AssetGUID: c52526bcb11edf0408e9b0052fee3fa4
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 8
+      value:
+        m_AssetGUID: 298fb034e3364074f80529fba40e54a2
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 9
+      value:
+        m_AssetGUID: 11c523bf64151a2419d98dd962661876
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: 10
+      value:
+        m_AssetGUID: 22718c715016caf4b96a3b53d6f7b39b
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
   spawnFacilityWrapper:
     keyValue:
     - key: 3

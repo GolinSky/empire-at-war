@@ -2317,3 +2317,75 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 160
+    displayName: Delta-7B Laser Cannon
+    family: 25
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: PloKoonDelta7B
+    damageMultiplier: 11.925
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Two source-mounted laser cannons deliver 265 raw DPS.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 1
+    color: {r: 1, g: 0.19, b: 0.16, a: 1}
+  - weaponType: 161
+    displayName: Eta-2 Actis Laser Cannon
+    family: 25
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: ObiWanKenobiEta2
+    damageMultiplier: 12.375001
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Two source-mounted laser cannons deliver 275 raw DPS.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 1
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+  - weaponType: 162
+    displayName: Eta-2 Actis Laser Cannon
+    family: 25
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: MaceWinduEta2
+    damageMultiplier: 14.625001
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Two source-mounted laser cannons deliver 325 raw DPS.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 1
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}
+  - weaponType: 163
+    displayName: Eta-2 Actis Laser Cannon
+    family: 25
+    caliber: 0
+    mount: 1
+    scope: 2
+    faction: 0
+    unit: AnakinSkywalkerEta2
+    damageMultiplier: 16.425001
+    reloadMultiplier: 1
+    rangeMultiplier: 1
+    reason: Two source-mounted laser cannons deliver 365 raw DPS.
+    overrideVisual: 0
+    shotPrefab: {fileID: 0}
+    projectileSpeed: 0
+    size: {x: 1, y: 1, z: 1}
+    overrideColor: 1
+    color: {r: 0.2, g: 1, b: 0.25, a: 1}

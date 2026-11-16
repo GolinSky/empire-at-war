@@ -1715,3 +1715,59 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: PloKoonDelta7BSquadronView
+      value:
+        m_AssetGUID: 59dc120da15dbab42823a3394b9f315c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: PloKoonDelta7BSquadronData
+      value:
+        m_AssetGUID: aa026bcca8a16424cabf9e740a21ce0c
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ObiWanKenobiEta2SquadronView
+      value:
+        m_AssetGUID: 04e4b7a25c5d6364595b57c4d05c8498
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: ObiWanKenobiEta2SquadronData
+      value:
+        m_AssetGUID: e16d24b6fd431174890c88d44662eacf
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MaceWinduEta2SquadronView
+      value:
+        m_AssetGUID: 51268c83be359784cb3a5ed157fc270f
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: MaceWinduEta2SquadronData
+      value:
+        m_AssetGUID: ec216abba7e33ee4996e32829baec56f
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: AnakinSkywalkerEta2SquadronView
+      value:
+        m_AssetGUID: fe0cfb0c61073c440badb4099784f482
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: AnakinSkywalkerEta2SquadronData
+      value:
+        m_AssetGUID: e26a91451f4ed50499a50ba503318e61
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

@@ -360,6 +360,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa026bcca8a16424cabf9e740a21ce0c
+    m_Address: PloKoonDelta7BSquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ac3cef40f42f6f441963970d79701570
     m_Address: NebulaShipData
     m_ReadOnly: 0
@@ -445,6 +450,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e16d24b6fd431174890c88d44662eacf
+    m_Address: ObiWanKenobiEta2SquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e26a91451f4ed50499a50ba503318e61
+    m_Address: AnakinSkywalkerEta2SquadronData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e284ab2feb0cac14eaef8a8417e4db74
     m_Address: BulwarkShipData
     m_ReadOnly: 0
@@ -457,6 +472,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e9f22e2f3db4d4f43999221f208cce86
     m_Address: PeltaShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec216abba7e33ee4996e32829baec56f
+    m_Address: MaceWinduEta2SquadronData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

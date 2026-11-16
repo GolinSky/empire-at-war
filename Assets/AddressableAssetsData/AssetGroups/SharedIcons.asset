@@ -70,6 +70,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ff6ed4901c849a3b9b3b62d802b2974
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Republic/PloKoonDelta7BIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 24f8965bbafc2b848a0264f86b98ec21
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/PelesetIcon.png
     m_ReadOnly: 0
@@ -300,6 +305,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6de8ee785958456fa2a7a988106d3be1
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Republic/ObiWanKenobiEta2Icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6deef1e660f9c3a41b4d343f91418382
     m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/TIEBomberIcon.png
     m_ReadOnly: 0
@@ -317,6 +327,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 793233063a2c3d241ab5dbc0af1a35d4
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/YWingBomberIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a6957f9f1c843079f92b6cff955f684
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Republic/AnakinSkywalkerEta2Icon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -397,6 +412,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 988c54fd851290641a5fe8c93eff1927
     m_Address: Assets/Art/Textures/Ui/Icons/Ui/AotrGolanIIIDefensePlatformIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98a9def4b3404d5a843243b37768b618
+    m_Address: Assets/Art/Textures/Ui/Icons/SquadronIcon/Republic/MaceWinduEta2Icon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

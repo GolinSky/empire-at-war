@@ -10,6 +10,10 @@ namespace EmpireAtWar.Entities.Squadrons
         NTB630 = 4,
         V19Torrent = 5,
         VWing = 6,
+        PloKoonDelta7B = 7,
+        ObiWanKenobiEta2 = 8,
+        MaceWinduEta2 = 9,
+        AnakinSkywalkerEta2 = 10,
 
         //separatist
         Belbullab22 = 100,

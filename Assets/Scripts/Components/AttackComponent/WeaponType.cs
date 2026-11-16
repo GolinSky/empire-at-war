@@ -106,5 +106,9 @@ namespace EmpireAtWar.Components.AttackComponent
         YWingBomberProtonTorpedo = 157,
         TIEDefenderLaser = 158,
         TIEDefenderProtonTorpedo = 159,
+        PloKoonLaser = 160,
+        ObiWanKenobiLaser = 161,
+        MaceWinduLaser = 162,
+        AnakinSkywalkerLaser = 163,
     }
 }
