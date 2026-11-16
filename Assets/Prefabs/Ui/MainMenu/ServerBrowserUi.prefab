@@ -739,8 +739,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: AT WAR
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: f9193e97902a74542bb3bb8ea0a4ef8d, type: 2}
-  m_sharedMaterial: {fileID: 7231912859836816641, guid: f9193e97902a74542bb3bb8ea0a4ef8d,
+  m_fontAsset: {fileID: 11400000, guid: 50c3032c622cded41b57f11ff327ac28, type: 2}
+  m_sharedMaterial: {fileID: -4404504341670938789, guid: 50c3032c622cded41b57f11ff327ac28,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -2110,7 +2110,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   borderColor: {r: 0.20392157, g: 0.2627451, b: 0.34117648, a: 1}
-  bevel: 10
+  cornerRadius: 10
 --- !u!1 &8327542372612938414
 GameObject:
   m_ObjectHideFlags: 0
@@ -2178,8 +2178,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: EMPIRE
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 556998c8ebb46bc40be3c7d0e7d94ba1, type: 2}
-  m_sharedMaterial: {fileID: -2697744041012372576, guid: 556998c8ebb46bc40be3c7d0e7d94ba1,
+  m_fontAsset: {fileID: 11400000, guid: 50c3032c622cded41b57f11ff327ac28, type: 2}
+  m_sharedMaterial: {fileID: -4404504341670938789, guid: 50c3032c622cded41b57f11ff327ac28,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -2592,8 +2592,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: SERVER BROWSER
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 556998c8ebb46bc40be3c7d0e7d94ba1, type: 2}
-  m_sharedMaterial: {fileID: -2697744041012372576, guid: 556998c8ebb46bc40be3c7d0e7d94ba1,
+  m_fontAsset: {fileID: 11400000, guid: 50c3032c622cded41b57f11ff327ac28, type: 2}
+  m_sharedMaterial: {fileID: -4404504341670938789, guid: 50c3032c622cded41b57f11ff327ac28,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
