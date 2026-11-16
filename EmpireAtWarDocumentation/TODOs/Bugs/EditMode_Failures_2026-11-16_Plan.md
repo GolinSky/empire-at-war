@@ -12,7 +12,8 @@ created: 2026-11-16
 ## Important Values
 - Run: `Assets/TestResults_20261116_202833.xml`, 2026-11-16 18:22 UTC, 32 s.
 - Total 3,992 · passed 3,925 · failed 63 · skipped 4. PlayMode passed (user report).
-- HEAD at analysis: `d2a8868da`.
+- Initial HEAD at analysis: `d2a8868da`.
+- Rerun `Assets/TestResults_20261116_204943.xml`: 3,958 passed, 30 failed, 4 skipped. No newly failing cases. Remaining: A 2, B 12, C 7, F 6, G 3.
 - 4 of 63 failures come from the shared-AI work; 31 come from one UI line; 28 from content, HUD and input work.
 
 | Group | Fixture | Fails | Origin |
@@ -31,7 +32,9 @@ created: 2026-11-16
 - Cause: `TutorialAnchor.Unmark` calls `Destroy(existing)` → Unity logs an error in edit mode → every composition test fails in body or TearDown.
 - Path: `FactionUiController.LateDispose` → `FactionUi.Hide` → `RefreshUnitVisibility` → `MarkTutorialButton` → `TutorialAnchor.Unmark` (`Assets/Scripts/Entities/TutorialUi/TutorialAnchor.cs:66`).
 - [x] `28f4a760c`: deactivate all production cards before refreshing tutorial markers on an inactive route. Disabled cards unregister anchors; showing the HUD refreshes them. All 31 archived failures followed the changed path.
-- [ ] Re-run `Core` (`RealEntityCompositionTests`). These 31 currently hide any real composition failure, including the new AI container assertions.
+- User rerun: `RealEntityCompositionTests` 33/35; both failures occur during save restoration. `SavedSkirmish_RestoresPlayerStateStructuresAndOwnerBookkeepingIntoNewBattle` logs from `TutorialAnchor.Mark`; `SquadronPrewarm_AfterRestore_AllocatesIdsPastRestoredEntitiesAndRespawnsWithoutCollision` logs from `FactionUnitUi.Destroy`.
+- [x] `456c9a5d9`: use immediate destruction for replaced runtime-created cards and anchors in EditMode, keep deferred destruction in PlayMode.
+- [ ] Verify `Core` after the follow-up fix.
 
 ### D — shared AI test doubles (2 tests)
 - `Commander_ShipRemovedMidMultiFrameCycle_DoesNotThrow`: `NullReferenceException` at `EnemyStrategicContextBuilder.IncludeNearbyOwn` (`:1221`). `TestEntity.GetFacade` returns null for `IEntityTransformFacade`.
@@ -44,7 +47,7 @@ created: 2026-11-16
 - `UltraHardRebuild_SavesForPriorityShipAndRechecksLosses(5000, Recusant, false)` and `(5000, null, true)`: expected a `ShipUnitRequest`, got null. Cases `1500` and `0` pass.
 - [x] `92e7e4fdc`: advance the scheduler after production startup, repeated same-time ticks, and capacity or ship releases. Also advance it before the income-research duplicate assertion.
 - `Start` registers due work. `Tick` marks work due on a release-version change. `Step` evaluates purchases. Recusant costs 4,000 against the fixture's 5,000 starting credits.
-- [ ] Verify groups D and E in standard EditMode `EnemyAi`. Tests were not run under the local override.
+- [x] User rerun `TestResults_20261116_204943.xml`: `EnemyAi` 481/481; `EnemyDecisionSchedulingTests` 14/14 and `EnemyProductionStrategyTests` 12/12.
 
 ### C — control group input (7 tests)
 - All recall/assign requests are empty; `CommandSettingControlsPreviewAndAssignment` false.
@@ -103,4 +106,4 @@ created: 2026-11-16
 - `Assets/Scripts/Services/Input/ControlGroupInput.cs`, `Assets/Scripts/Tests/Editor/BattleInput/ControlGroupInputTests.cs`
 
 ## TODO
-- Related: [[TODOs/Optimization/Shared_Team_AI_Plan]] (waiting for Core and EnemyAi verification of A, D, E), [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]].
+- Related: [[TODOs/Optimization/Shared_Team_AI_Plan]] (waiting for Core verification after the HUD restore fix), [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]].
