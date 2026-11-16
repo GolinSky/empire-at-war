@@ -1,5 +1,6 @@
 using static EmpireAtWar.Utils.FormationConversion;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Models.Health;
 using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Components.Movement.Formation;
@@ -45,6 +46,9 @@ namespace EmpireAtWar.Services.UnitOrders
         private readonly IBattleAreaService _battleAreas;
         private readonly List<SelectionEntry> _attackCandidates = new List<SelectionEntry>();
         private SelectionEntry _pressedMarker;
+        private IEntity _pressedHardPointOwner;
+        private int _pressedHardPointId;
+        private bool _hasPressedHardPoint;
 
         private readonly UnitActionTargetingModel _targeting;
         private readonly SuperWeaponTargetingModel _superWeapons;
@@ -87,6 +91,8 @@ namespace EmpireAtWar.Services.UnitOrders
             _gestures.WorldCommanded -= HandleCommand;
             _orderInput.QueueWaypointReleased -= HandleModifierReleased;
             _pressedMarker = default;
+            _pressedHardPointOwner = null;
+            _hasPressedHardPoint = false;
         }
 
         public void FinishWaypoints()
@@ -136,7 +142,8 @@ namespace EmpireAtWar.Services.UnitOrders
         private void HandleCommandPressed(Vector2 screen)
         {
             _pressedMarker = default;
-            if (!_hardPointHover.TryGetHovered(out _, out _))
+            _hasPressedHardPoint = _hardPointHover.TryGetAttackTarget(out _pressedHardPointOwner, out _pressedHardPointId);
+            if (!_hasPressedHardPoint)
                 _query.TryFindMarkerAt(screen, out _pressedMarker);
         }
 
@@ -149,9 +156,13 @@ namespace EmpireAtWar.Services.UnitOrders
                 return;
 
             // A hardpoint marker wins over the hull or whatever else is under it.
-            IEntity hardPointOwner = null;
-            int hardPointId = default;
-            bool hasHardPoint = !capturedMarker && _hardPointHover.TryGetHovered(out hardPointOwner, out hardPointId);
+            IEntity hardPointOwner = _pressedHardPointOwner;
+            int hardPointId = _pressedHardPointId;
+            bool hasHardPoint = _hasPressedHardPoint;
+            _pressedHardPointOwner = null;
+            _hasPressedHardPoint = false;
+            if (!hasHardPoint && !capturedMarker)
+                hasHardPoint = _hardPointHover.TryGetAttackTarget(out hardPointOwner, out hardPointId);
             bool hasUnit = capturedMarker || hasHardPoint || _query.TryFindAt(screen, out hit);
             IEntity target = hasHardPoint ? hardPointOwner : hasUnit ? hit.Entity : null;
             if (_superWeapons.Pending != null)
@@ -167,6 +178,14 @@ namespace EmpireAtWar.Services.UnitOrders
                     _abilities.SubmitTarget(target);
                 else _abilities.CancelTargeting();
                 return;
+            }
+
+            if (hasHardPoint)
+            {
+                if (hardPointOwner.HealthModel.IsDestroyed) return;
+                IReadOnlyList<IReadOnlyHardPointModel> hardPoints = hardPointOwner.HealthModel.HardPointModels;
+                if (hardPointId >= hardPoints.Count || !hardPoints[hardPointId].IsInstalled ||
+                    hardPoints[hardPointId].IsDestroyed) return;
             }
 
             List<IEntity> receivers = Snapshot();

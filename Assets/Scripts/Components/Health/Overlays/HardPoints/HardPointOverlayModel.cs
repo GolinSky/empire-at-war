@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 
@@ -10,6 +11,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
     public sealed class HardPointOverlayModel : IHardPointHoverObserver
     {
         private bool _isHoveredTargetable;
+        private readonly List<int> _hoverCandidates = new List<int>();
 
         public IEntity InspectedShip { get; private set; }
         public int HoveredHardPointId { get; private set; } = UnitOrderModel.NO_HARD_POINT;
@@ -18,9 +20,16 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 
         public void Inspect(IEntity ship, int hoveredHardPointId, bool isHoveredTargetable)
         {
+            _hoverCandidates.Clear();
             InspectedShip = ship;
             HoveredHardPointId = ship == null ? UnitOrderModel.NO_HARD_POINT : hoveredHardPointId;
             _isHoveredTargetable = isHoveredTargetable;
+        }
+
+        public void SetHoverCandidates(IReadOnlyList<int> candidates)
+        {
+            _hoverCandidates.Clear();
+            for (int index = 0; index < candidates.Count; index++) _hoverCandidates.Add(candidates[index]);
         }
 
         public void SetTarget(IEntity ship, int hardPointId)
@@ -39,6 +48,17 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             ship = InspectedShip;
             hardPointId = HoveredHardPointId;
             return ship != null && hardPointId != UnitOrderModel.NO_HARD_POINT && _isHoveredTargetable;
+        }
+
+        public bool TryGetAttackTarget(out IEntity ship, out int hardPointId)
+        {
+            if (!TryGetHovered(out ship, out hardPointId)) return false;
+            if (TargetedShip == null || TargetedShip.Id != ship.Id) return true;
+
+            int targetedIndex = _hoverCandidates.IndexOf(TargetedHardPointId);
+            if (targetedIndex >= 0)
+                hardPointId = _hoverCandidates[(targetedIndex + 1) % _hoverCandidates.Count];
+            return true;
         }
     }
 }

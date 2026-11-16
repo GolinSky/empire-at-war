@@ -44,6 +44,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             _icon.color = Color.HSVToRGB(Mathf.Clamp01(data.HealthPercentage) * HEALTH_HUE_RANGE,
                 HEALTH_SATURATION, HEALTH_BRIGHTNESS);
             _targetRing.gameObject.SetActive(data.IsTargeted);
+            if (data.IsTargeted) _root.SetAsLastSibling();
 
             if (!gameObject.activeSelf)
             {

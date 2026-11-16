@@ -41,6 +41,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(outline.effectDistance, Is.EqualTo(new Vector2(1f, -1f)));
             Assert.That(outline.useGraphicAlpha, Is.True);
             Assert.That(_targetRing.raycastTarget, Is.False);
+            Assert.That(_targetRing.GetComponent<CanvasRenderer>(), Is.Not.Null,
+                "A valid ring mesh cannot render without its CanvasRenderer.");
             Assert.That(_targetRing.gameObject.activeSelf, Is.False);
             Assert.That((Color32)_targetRing.color, Is.EqualTo(new Color32(210, 169, 94, 255)));
         }

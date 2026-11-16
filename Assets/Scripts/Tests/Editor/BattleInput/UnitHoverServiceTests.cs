@@ -140,6 +140,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsOverUi(Vector2 point) => OverUi;
             public bool TryGetHovered(out IEntity owner, out int id)
             { owner = HardPointOwner; id = 3; return owner != null; }
+            public bool TryGetAttackTarget(out IEntity owner, out int id) => TryGetHovered(out owner, out id);
         }
 
         private sealed class QueryStub : ISelectionQuery

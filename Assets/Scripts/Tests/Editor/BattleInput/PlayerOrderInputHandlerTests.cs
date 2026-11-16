@@ -39,6 +39,7 @@ namespace EmpireAtWar.Tests.Editor
         private FakeAbilities _abilities;
         private UnitActionTargetingModel _targeting;
         private FakeOrders _orders;
+        private HardPointOverlayModel _hardPointHover;
         private FakeCamera _camera;
         private BattleAreaService _areas;
         private GameObject _siteView;
@@ -56,13 +57,14 @@ namespace EmpireAtWar.Tests.Editor
             _abilities = new FakeAbilities();
             _targeting = new UnitActionTargetingModel();
             _orders = new FakeOrders();
+            _hardPointHover = new HardPointOverlayModel();
             _camera = new FakeCamera();
             _areas = new BattleAreaService(TestPlayers.CreateDuel());
             _siteView = new GameObject("Site");
             _siteView.transform.position = new Vector3(10f, 3f, 20f);
             _handler = new PlayerOrderInputHandler(gestures: _input, orderInput: _input, selectionService: _selection, query: _query,
                 cameraService: _camera, layerService: null, abilities: _abilities, targeting: _targeting, playerOrders: _orders, superWeapons: new SuperWeaponTargetingModel(),
-                hardPointHover: new HardPointOverlayModel(),
+                hardPointHover: _hardPointHover,
                 localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), battleAreas: _areas,
                 siteDirectories: Array.Empty<ICaptureSiteDirectory>());
             _handler.Initialize();
@@ -107,6 +109,128 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Attack));
             Assert.That(_orders.LastTarget, Is.SameAs(_enemy));
+        }
+
+        [Test]
+        public void RightClick_HardPointKeepsPressedTargetWhenHoverChanges()
+        {
+            InstallHardPoints();
+            _hardPointHover.Inspect(_enemy, 0, true);
+            _input.PressRight(Vector2.zero);
+            _hardPointHover.Inspect(_enemy, 1, true);
+            _input.RightClick(Vector2.one);
+
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(_orders.LastTarget, Is.SameAs(_enemy));
+            Assert.That(_orders.LastHardPointId, Is.Zero);
+        }
+
+        [Test]
+        public void RightClick_HardPointKeepsPressedTargetWhenPointerLeavesShip()
+        {
+            InstallHardPoints();
+            _hardPointHover.Inspect(_enemy, 1, true);
+            _input.PressRight(Vector2.zero);
+            _hardPointHover.Inspect(null, -1, false);
+            _query.ReturnEnemy = false;
+            _input.RightClick(Vector2.one);
+
+            Assert.That(_orders.LastTarget, Is.SameAs(_enemy));
+            Assert.That(_orders.LastHardPointId, Is.EqualTo(1));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void RightClick_HardPointLostDuringPressDoesNotRetarget(bool uninstalled)
+        {
+            HardPointModel[] points = InstallHardPoints();
+            _hardPointHover.Inspect(_enemy, 0, true);
+            _input.PressRight(Vector2.zero);
+            if (uninstalled) points[0].Uninstall();
+            else points[0].ApplyDamage(100f);
+            _hardPointHover.Inspect(_enemy, 1, true);
+            _input.RightClick(Vector2.one);
+
+            Assert.That(_orders.LastAction, Is.Null);
+        }
+
+        [Test]
+        public void RightClick_OverlappingHardPointsCycleAfterAcceptedOrders()
+        {
+            InstallHardPoints();
+            _hardPointHover.Inspect(_enemy, 0, true);
+            _hardPointHover.SetHoverCandidates(new[] { 0, 1 });
+            _input.PressRight(Vector2.zero);
+            _input.RightClick(Vector2.zero);
+            Assert.That(_orders.LastHardPointId, Is.Zero);
+
+            _hardPointHover.SetTarget(_orders.LastTarget, _orders.LastHardPointId);
+            _input.PressRight(Vector2.zero);
+            _input.RightClick(Vector2.zero);
+            Assert.That(_orders.LastHardPointId, Is.EqualTo(1));
+
+            _hardPointHover.SetTarget(_orders.LastTarget, _orders.LastHardPointId);
+            _input.PressRight(Vector2.zero);
+            _input.RightClick(Vector2.zero);
+            Assert.That(_orders.LastHardPointId, Is.Zero);
+        }
+
+        [Test]
+        public void HardPointCycle_ReachesEveryCoincidentHardPoint()
+        {
+            _hardPointHover.Inspect(_enemy, 0, true);
+            _hardPointHover.SetHoverCandidates(new[] { 0, 1, 2 });
+            for (int expected = 0; expected < 6; expected++)
+            {
+                Assert.That(_hardPointHover.TryGetAttackTarget(out IEntity owner, out int id), Is.True);
+                Assert.That(id, Is.EqualTo(expected % 3));
+                _hardPointHover.SetTarget(owner, id);
+            }
+        }
+
+        [Test]
+        public void HardPointCycle_DoesNotAdvanceUntilAnOrderIsAccepted_AndInspectionClearsCandidates()
+        {
+            _hardPointHover.Inspect(_enemy, 0, true);
+            _hardPointHover.SetHoverCandidates(new[] { 0, 1 });
+            _hardPointHover.SetTarget(_enemy, 0);
+            Assert.That(_hardPointHover.TryGetAttackTarget(out _, out int first), Is.True);
+            Assert.That(_hardPointHover.TryGetAttackTarget(out _, out int repeated), Is.True);
+            Assert.That(first, Is.EqualTo(1));
+            Assert.That(repeated, Is.EqualTo(first));
+
+            _hardPointHover.Inspect(_enemy, 0, true);
+            Assert.That(_hardPointHover.TryGetAttackTarget(out _, out int nextInspection), Is.True);
+            Assert.That(nextInspection, Is.Zero);
+
+            _hardPointHover.Inspect(null, -1, false);
+            Assert.That(_hardPointHover.TryGetAttackTarget(out _, out _), Is.False);
+        }
+
+        [Test]
+        public void RightClick_CapturedHardPointDoesNotOverrideAbilityTargeting()
+        {
+            HardPointModel[] points = InstallHardPoints();
+            _hardPointHover.Inspect(_enemy, 0, true);
+            _abilities.IsWaitingForTarget = true;
+            _input.PressRight(Vector2.zero);
+            points[0].ApplyDamage(100f);
+            _input.RightClick(Vector2.zero);
+
+            Assert.That(_abilities.Submitted, Is.SameAs(_enemy));
+            Assert.That(_orders.LastAction, Is.Null);
+        }
+
+        private HardPointModel[] InstallHardPoints()
+        {
+            HardPointModel[] points =
+            {
+                new HardPointModel(HardPointType.Weapon, 0),
+                new HardPointModel(HardPointType.Engines, 1)
+            };
+            foreach (HardPointModel point in points) point.SetHealth(100f, 1f);
+            ((FakeHealth)_enemy.HealthModel).HardPointModels = points;
+            return points;
         }
 
         [TestCase(true)]
@@ -574,6 +698,7 @@ namespace EmpireAtWar.Tests.Editor
             public IEntity LastTarget { get; private set; }
             public Vector3 LastPoint { get; private set; }
             public int WaypointCount { get; private set; }
+            public int LastHardPointId { get; private set; } = -1;
 
             public void IssueMove(IReadOnlyList<IEntity> units, Vector3 point)
             { LastAction = UnitActionId.Move; LastPoint = point; }
@@ -582,7 +707,8 @@ namespace EmpireAtWar.Tests.Editor
             { LastAction = UnitActionId.Attack; LastTarget = target; }
 
             public void IssueHardPointAttack(IReadOnlyList<IEntity> units, IEntity target,
-                int hardPointId) => LastAction = UnitActionId.Attack;
+                int hardPointId)
+            { LastAction = UnitActionId.Attack; LastTarget = target; LastHardPointId = hardPointId; }
 
             public void IssueAttackMove(IReadOnlyList<IEntity> units, Vector3 point)
             { LastAction = UnitActionId.AttackMove; LastPoint = point; }
@@ -644,7 +770,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public event Action OnValueChanged { add { } remove { } }
 
-            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels { get; set; } = Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
             public bool HasLiveHardPoints => true;

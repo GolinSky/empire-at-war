@@ -4,6 +4,7 @@ using UnityEngine.UI;
 namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 {
     /// <summary>A hollow selection ring with dark edges for contrast against the battle.</summary>
+    [RequireComponent(typeof(CanvasRenderer))]
     public sealed class HardPointTargetRing : MaskableGraphic
     {
         private const int SEGMENTS = 48;
@@ -34,8 +35,8 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
                 vertices.AddVert(center + direction * outer, tint, Vector2.zero);
                 vertices.AddVert(center + nextDirection * outer, tint, Vector2.zero);
                 vertices.AddVert(center + nextDirection * inner, tint, Vector2.zero);
-                vertices.AddTriangle(index, index + 1, index + 2);
-                vertices.AddTriangle(index, index + 2, index + 3);
+                vertices.AddTriangle(index, index + 2, index + 1);
+                vertices.AddTriangle(index, index + 3, index + 2);
             }
         }
     }
