@@ -49,6 +49,8 @@ namespace EmpireAtWar.Services.Enemy
                 ContextBuilder.AlliedMarkers.SelectRequest(Context, DecisionModel.IsRecovering);
             if (request != null && request.Type != TacticalMarkerType.Retreat &&
                 !ContextBuilder.IsMarkerApproachSafe(request.Point)) request = null;
+            if (request == null && IsMainForce && !Context.Snapshot.WithdrawFromForwardStation)
+                request = ContextBuilder.SelectAllyDefenseRequest(DecisionModel.IsRecovering);
             if (request != null)
             {
                 next = new EnemyStrategicDecision($"Accepted allied {request.Type} request.",
@@ -72,6 +74,7 @@ namespace EmpireAtWar.Services.Enemy
             if (!DecisionModel.IsRecovering) RecoveryStartedAt = -1f;
             if (request != null)
                 Executor.ExecuteMarker(request,
+                    ContextBuilder.AlliedMarkers != null &&
                     ContextBuilder.AlliedMarkers.TryGetAttackTarget(request, out var attackTarget) ? attackTarget : null,
                     Context);
             else if (IsMainForce && Decision.State == EnemyStrategicState.Hold && !Context.Snapshot.IsRegrouped)

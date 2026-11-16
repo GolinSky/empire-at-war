@@ -8,6 +8,8 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class EnemyPatrolMemory
     {
         private readonly Dictionary<string, EnemyPatrolPoint> _points = new Dictionary<string, EnemyPatrolPoint>();
+        private static readonly Comparison<RankedPoint> RANK_POINTS = CompareRankedPoints;
+        private readonly List<RankedPoint> _ranked = new List<RankedPoint>();
         public IReadOnlyCollection<EnemyPatrolPoint> Entries => _points.Values;
         public float NextSampleTime { get; set; }
         public float NextCoverageTime { get; set; }
@@ -36,25 +38,57 @@ namespace EmpireAtWar.Services.Enemy
             point.LastSeenTime = now;
         }
 
+        /// <summary>
+        /// The highest-scoring eligible point; ties keep enumeration order. Eligibility (path and threat queries)
+        /// is evaluated in score order and stops after the best and runner-up eligible points.
+        /// </summary>
         public EnemyPatrolPoint Select(FormationPoint origin, float now, Func<EnemyPatrolPoint, bool> eligible,
             out float runnerUp)
         {
-            EnemyPatrolPoint best = null;
-            float bestScore = 0f;
-            runnerUp = 0f;
+            _ranked.Clear();
+            int index = 0;
             foreach (EnemyPatrolPoint point in _points.Values)
             {
                 float score = point.Score(origin, now);
-                if (score <= 0f || !eligible(point)) continue;
-                if (score > bestScore)
+                if (score > 0f) _ranked.Add(new RankedPoint(point, score, index));
+                index++;
+            }
+            _ranked.Sort(RANK_POINTS);
+
+            EnemyPatrolPoint best = null;
+            runnerUp = 0f;
+            foreach (RankedPoint ranked in _ranked)
+            {
+                if (!eligible(ranked.Point)) continue;
+                if (best == null)
                 {
-                    runnerUp = bestScore;
-                    bestScore = score;
-                    best = point;
+                    best = ranked.Point;
+                    continue;
                 }
-                else runnerUp = Math.Max(runnerUp, score);
+                runnerUp = ranked.Score;
+                break;
             }
             return best;
+        }
+
+        private static int CompareRankedPoints(RankedPoint left, RankedPoint right)
+        {
+            int score = right.Score.CompareTo(left.Score);
+            return score != 0 ? score : left.Index.CompareTo(right.Index);
+        }
+
+        private readonly struct RankedPoint
+        {
+            public readonly EnemyPatrolPoint Point;
+            public readonly float Score;
+            public readonly int Index;
+
+            public RankedPoint(EnemyPatrolPoint point, float score, int index)
+            {
+                Point = point;
+                Score = score;
+                Index = index;
+            }
         }
     }
 }

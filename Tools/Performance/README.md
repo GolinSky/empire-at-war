@@ -18,6 +18,7 @@
 | `SetupCrowdedBattle.ArmPrewarmDelayed` | Requests 12 extra cached shots per currently used prefab after 3 game seconds, so a profiler can start before the real ordered Tick creates them |
 | `ProbeLiveShots.Main` / `Start` | Actual unfired clone per frame in a running battle; Start returns before completion for overlapping profiler capture |
 | `DecodeShotAwake.Run(first,last)` | Raw Awake/Copy/Produce attribution by prefab and creation source; select the exact new capture range |
+| `ProfileTeamAi.Launch(n)` / `Status` / `Start(warmup, seconds)` | Shared Team AI scaling: Full Large seed 1875278133, human + `n` UltraHard AIs (odd = enemy team, even = ally team); writes AI marker mean/p95/p99/max per frame, starvation and executed units to `Logs/TeamAiProfile/ai{n}.json` |
 | `ProfileCaptureGeometry.Main` | Paired same-frame registry scans with live versus refresh-scoped geometry; validates identical strength values |
 
 ```powershell

@@ -103,6 +103,29 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(memory.Entries, Is.Empty);
         }
 
+        [Test]
+        public void SelectReturnsBestEligibleAndStopsCheckingAfterRunnerUp()
+        {
+            var memory = new EnemyPatrolMemory();
+            memory.Register("far", new FormationPoint(400f, 0f), "sector", 1f);
+            memory.Register("nearest", new FormationPoint(10f, 0f), "sector", 1f);
+            memory.Register("near", new FormationPoint(100f, 0f), "sector", 1f);
+            memory.Register("mid", new FormationPoint(200f, 0f), "sector", 1f);
+            var checkedIds = new List<string>();
+
+            EnemyPatrolPoint best = memory.Select(default, 0f, point =>
+            {
+                checkedIds.Add(point.Id);
+                return point.Id != "nearest";
+            }, out float runnerUp);
+
+            memory.TryGet("mid", out EnemyPatrolPoint mid);
+            Assert.That(best.Id, Is.EqualTo("near"), "The highest-scoring eligible point wins.");
+            Assert.That(runnerUp, Is.EqualTo(mid.Score(default, 0f)));
+            Assert.That(checkedIds, Is.EqualTo(new[] { "nearest", "near", "mid" }),
+                "Eligibility runs in score order and stops after the runner-up.");
+        }
+
         [TestCase(EnemyAiDifficulty.Easy, 3, false, false)]
         [TestCase(EnemyAiDifficulty.Medium, 3, false, true)]
         [TestCase(EnemyAiDifficulty.Hard, 3, true, false)]

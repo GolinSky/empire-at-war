@@ -38,6 +38,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public TeamId Team { get; }
         public PlayerId RepresentativePlayer { get; private set; }
+        public TeamAiCooperation Cooperation { get; } = new TeamAiCooperation();
         public IReadOnlyList<HostileSighting> ConfidentSightings => _confidentSightings;
         public IReadOnlyList<EnemyCaptureObjective> BaseCaptureObjectives => _baseCaptureObjectives;
 

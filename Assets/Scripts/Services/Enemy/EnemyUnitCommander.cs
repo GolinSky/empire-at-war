@@ -86,6 +86,8 @@ namespace EmpireAtWar.Services.Enemy
         private static readonly ProfilerMarker EXECUTOR_MARKER = new ProfilerMarker("EnemyAI.Ship.Executor");
         private static readonly ProfilerMarker CAPTURE_PROBE_MARKER = new ProfilerMarker("EnemyAI.Ship.CaptureProbe");
         private static readonly ProfilerMarker TELEMETRY_MARKER = new ProfilerMarker("EnemyAI.Ship.Telemetry");
+        private static readonly ProfilerMarker PATROL_SAMPLE_MARKER = new ProfilerMarker("EnemyAI.Ship.PatrolSample");
+        private static readonly ProfilerMarker PATROL_SELECT_MARKER = new ProfilerMarker("EnemyAI.Ship.PatrolSelect");
         public EnemyDecisionDiagnostics DecisionDiagnostics { get; }
         public int WorldChangeNotifications { get; private set; }
 #endif
@@ -207,6 +209,7 @@ namespace EmpireAtWar.Services.Enemy
             _reinforcementZonesSystem.OwnershipChanged -= HandleWorldChanged;
             _entityLocator.EntityAdded -= HandleEntityChanged;
             _entityLocator.EntityRemoved -= HandleEntityChanged;
+            _contextBuilder.TeamCooperation.RemovePlayer(_owner.Id);
             if (_workHandle != null)
             {
                 _scheduler.Unregister(_workHandle);
@@ -287,7 +290,10 @@ namespace EmpireAtWar.Services.Enemy
             DecisionDiagnostics.Record();
             using var marker = DecisionDiagnostics.Marker.Auto();
 #endif
-            _patrol.Sample(Time.time);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (PATROL_SAMPLE_MARKER.Auto())
+#endif
+                _patrol.Sample(Time.time);
             _ships.Clear();
             foreach (IShipEntity ship in _shipService.Ships)
                 if (ship.Owner == _owner.Id &&
@@ -301,8 +307,11 @@ namespace EmpireAtWar.Services.Enemy
                 station = _contextBuilder.AssessStation(_ships);
             _cycleHasPressure = station.HasPressure;
             GatherReinforcements = station.GatherReinforcements;
-            _cyclePatrolShip = _patrolShips.Select(_ships,
-                _contextBuilder.StationCritical || _contextBuilder.ForwardStationFallback.HasValue);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (PATROL_SELECT_MARKER.Auto())
+#endif
+                _cyclePatrolShip = _patrolShips.Select(_ships,
+                    _contextBuilder.StationCritical || _contextBuilder.ForwardStationFallback.HasValue);
             if (_cyclePatrolShip != null) _ships.Remove(_cyclePatrolShip);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (RECONCILE_MARKER.Auto())
@@ -333,6 +342,7 @@ namespace EmpireAtWar.Services.Enemy
             using (BUILD_GROUP_MARKER.Auto())
 #endif
                 group.Evaluate(_reservedCaptureObjectives, Time.time);
+            _contextBuilder.TeamCooperation.AddReservations(_owner.Id, _reservedCaptureObjectives);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (EXECUTOR_MARKER.Auto())
 #endif
@@ -360,6 +370,7 @@ namespace EmpireAtWar.Services.Enemy
             _cycleInProgress = false;
             if (_cyclePrimary == null)
             {
+                _contextBuilder.TeamCooperation.PublishReservations(_owner.Id, _reservedCaptureObjectives);
                 if (_cyclePatrolShip != null) _ships.Add(_cyclePatrolShip);
                 return;
             }
@@ -391,6 +402,7 @@ namespace EmpireAtWar.Services.Enemy
                 PruneDeadShips(_ships);
                 _taskGroups.TryCreateCaptureGroup(_ships, _reservedCaptureObjectives, _cycleHasPressure);
             }
+            _contextBuilder.TeamCooperation.PublishReservations(_owner.Id, _reservedCaptureObjectives);
             if (_cyclePatrolShip != null && _entityLocator.TryGetEntity(_cyclePatrolShip.EntityId, out GameEntity patrolEntity) &&
                 !patrolEntity.HealthModel.IsDestroyed)
             {

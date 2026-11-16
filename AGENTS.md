@@ -246,6 +246,7 @@ These rules apply whenever agents run Unity tests.
 4. Never invoke dialog-producing APIs such as `EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo`, `EditorSceneManager.EnsureUntitledSceneHasBeenSaved`, `EditorUtility.DisplayDialog`, or `DisplayDialogComplex` in agent automation.
 5. Start tests with `async_tests=true` and poll `test_status` until completion, failure, cancellation, or timeout.
 6. If a test command times out, do not retry immediately. Inspect `test_status`, Editor status, Console, and `Editor.log`, then confirm no previous test remains active.
+7. Hung run limit: if a test-related background task has run ~20 minutes, or the Unity CLI stops responding (status/`test_status`/`cancel_tests` time out) while tests run, stop the agent's background task immediately, attempt `cancel_tests` once, do not start another run or keep polling, and report the blocker to the user.
 
 ## Test Selection
 

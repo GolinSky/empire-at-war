@@ -1770,6 +1770,29 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void CaptureSelection_SkipsObjectiveReservedByAlliedAi()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            ZoneSource zones = new ZoneSource(roster, Vector3.right * 100f, Vector3.right * 1000f);
+            EnemyStrategicContextBuilder builder = CaptureBuilder(roster, zones, new SiteSource(), new TestHazards());
+            builder.TeamCooperation.PublishReservations(TestPlayers.SecondEnemy, new[] { "zone:0" });
+
+            Assert.That(SelectCapture(builder).Id, Is.EqualTo("zone:1"));
+        }
+
+        [Test]
+        public void CaptureSelection_KeepsHeldObjectiveAgainstHigherIndexAllyClaim()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            ZoneSource zones = new ZoneSource(roster, Vector3.right * 100f, Vector3.right * 1000f);
+            EnemyStrategicContextBuilder builder = CaptureBuilder(roster, zones, new SiteSource(), new TestHazards());
+            builder.TeamCooperation.PublishReservations(TestPlayers.Enemy, new[] { "zone:0" });
+            builder.TeamCooperation.AddReservations(TestPlayers.SecondEnemy, new[] { "zone:0" });
+
+            Assert.That(SelectCapture(builder).Id, Is.EqualTo("zone:0"));
+        }
+
+        [Test]
         public void CaptureSelection_PrefersCloserZoneOverFartherMine()
         {
             PlayerRoster roster = TestPlayers.CreateDuel();

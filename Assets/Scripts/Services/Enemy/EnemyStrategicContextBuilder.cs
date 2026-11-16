@@ -149,6 +149,8 @@ namespace EmpireAtWar.Services.Enemy
         private bool _routeEscaping;
         private readonly HashSet<long> _stationThreats = new HashSet<long>();
         private readonly List<EnemyCaptureObjective> _captureCandidates = new List<EnemyCaptureObjective>();
+        private static readonly Comparison<RankedCapture> RANK_CAPTURES = CompareRankedCaptures;
+        private readonly List<RankedCapture> _rankedCaptures = new List<RankedCapture>();
         private EnemyCaptureObjective _captureObjective;
         private readonly EnemyTargetCommitment _captureCommitment = new EnemyTargetCommitment();
         private readonly EnemyAdvantageSmoother _advantageSmoother = new EnemyAdvantageSmoother();
@@ -167,6 +169,8 @@ namespace EmpireAtWar.Services.Enemy
         public bool StationCritical => _stationPressure.IsStationCritical;
         public Vector3? ForwardStationFallback { get; private set; }
         public AllyAiMarkerSource AlliedMarkers { get; }
+        public TeamAiCooperation TeamCooperation => _teamPicture.Cooperation;
+        private TacticalMarker _allyDefenseMarker;
         private readonly List<IShipEntity> _ownShips = new List<IShipEntity>();
         private readonly HashSet<long> _ownShipIds = new HashSet<long>();
         private readonly List<FormationPoint> _formationPositions = new List<FormationPoint>();
@@ -196,6 +200,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly ForceComposition _ownForce = new ForceComposition();
         private readonly ForceComposition _ownTeamForce = new ForceComposition();
         private readonly ForceComposition _focusTeamForce = new ForceComposition();
+        private readonly ForceComposition _combinedStrikeForce = new ForceComposition();
         private readonly ForceComposition _baseThreatForce = new ForceComposition();
         private readonly ForceComposition _localThreatForce = new ForceComposition();
         private readonly ForceComposition _localOwnForce = new ForceComposition();
@@ -300,10 +305,31 @@ namespace EmpireAtWar.Services.Enemy
 
             _captureReason = "";
             foreach (EnemyCaptureObjective objective in _captureCandidates)
-                if ((_reservedCaptureObjectives == null || !_reservedCaptureObjectives.Contains(objective.Id)) &&
+                if (!IsCaptureReserved(objective.Id) &&
                     IsObjectiveSafe(origin, objective.Position, objective.Radius, false, 1f, objective.Id)) return true;
             return false;
         }
+
+        /// <summary>
+        /// A Defend request for an allied AI station when this player's main force is the team's nearest available
+        /// responder and the approach is safe; null otherwise.
+        /// </summary>
+        public TacticalMarker SelectAllyDefenseRequest(bool recovering)
+        {
+            if (recovering || _stationPressure.HasPressure ||
+                !_teamPicture.Cooperation.TryGetDefenseAssignment(_owner.Id, Time.time, out PlayerId requester, out Vector3 station) ||
+                !IsMarkerApproachSafe(station)) return null;
+            long id = -100L - requester.Index;
+            if (_allyDefenseMarker == null || _allyDefenseMarker.Id != id ||
+                (_allyDefenseMarker.Point - station).sqrMagnitude > 1f)
+                _allyDefenseMarker = new TacticalMarker(id, TacticalMarkerType.Defend, requester, _owner.Team, station,
+                    -1, Time.time, Time.time + TeamAiCooperation.STALE_SECONDS);
+            return _allyDefenseMarker;
+        }
+
+        private bool IsCaptureReserved(string objectiveId) =>
+            _reservedCaptureObjectives != null && _reservedCaptureObjectives.Contains(objectiveId) ||
+            _teamPicture.Cooperation.IsReservedByAlly(_owner.Id, objectiveId);
 
         public bool IsMarkerApproachSafe(Vector3 point)
         {
@@ -320,6 +346,10 @@ namespace EmpireAtWar.Services.Enemy
                 ? _withdrawingFromStation
                 : FindOwnBase(origin);
             BuildBaseThreat(ownBase);
+            if (ownBase != null && _stationPressure.IsStationCritical)
+                _teamPicture.Cooperation.RequestDefense(_owner.Id,
+                    ownBase.GetFacade<IEntityTransformFacade>().Transform.position, now);
+            else _teamPicture.Cooperation.ClearDefense(_owner.Id);
             _groupScoped = false;
             _ownShips.Clear();
             _ownShips.AddRange(ships);
@@ -451,7 +481,17 @@ namespace EmpireAtWar.Services.Enemy
                 : 1f / CombatMatchup.Advantage(_ownForce, _baseThreatForce);
 
             float localRaw = CombatMatchup.Advantage(_localOwnForce, _localThreatForce);
-            float fleetRaw = CombatMatchup.Advantage(ships == null ? _ownTeamForce : _ownForce, _focusTeamForce);
+            ForceComposition strikeForce = _ownForce;
+            if (ships != null && preferStrategicObjectives)
+            {
+                // Allied main forces aimed at the same enemy attack together once their summed strength passes.
+                _teamPicture.Cooperation.PublishStrike(self, _ownForce, focusEnemy, origin,
+                    !_recovery.IsActive && !_stationPressure.HasPressure && !forwardFallback.HasValue, now);
+                _combinedStrikeForce.CopyFrom(_ownForce);
+                _teamPicture.Cooperation.AddAlliedStrikeStrength(_combinedStrikeForce, self, focusEnemy, now);
+                strikeForce = _combinedStrikeForce;
+            }
+            float fleetRaw = CombatMatchup.Advantage(ships == null ? _ownTeamForce : strikeForce, _focusTeamForce);
             _advantageSmoother.Sample(localRaw, fleetRaw, now,
                 !_localThreatForce.IsEmpty, !_focusTeamForce.IsEmpty);
             EnemyStrategicSnapshot snapshot = new EnemyStrategicSnapshot(
@@ -684,8 +724,8 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// The hostile player whose living station is closest to <paramref name="home"/>;
-        /// once every hostile station is gone, the owner of the closest hostile ship.
+        /// The team's shared focus while it keeps a living station; otherwise the hostile player whose living station
+        /// is closest to <paramref name="home"/>; once every hostile station is gone, the owner of the closest hostile ship.
         /// </summary>
         private PlayerId FindFocusEnemy(Vector3 home)
         {
@@ -693,13 +733,24 @@ namespace EmpireAtWar.Services.Enemy
             GameEntity closestStation = FindClosestEntity(EntityRoles.IsPlayerBase,
                 owner => _playerRoster.IsHostile(self, owner),
                 home);
-            if (closestStation != null)
+            PlayerId focus;
+            if (closestStation == null)
             {
-                return closestStation.Owner;
+                GameEntity closestShip = FindClosestKnownShip(home, Time.time);
+                focus = closestShip != null ? closestShip.Owner : PlayerId.None;
+            }
+            else
+            {
+                // Allies keep the team's focus while that enemy still has a living station.
+                PlayerId shared = _teamPicture.Cooperation.FocusEnemy;
+                if (!shared.IsNone && shared != closestStation.Owner && _playerRoster.IsHostile(self, shared) &&
+                    FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == shared, home) != null)
+                    return shared;
+                focus = closestStation.Owner;
             }
 
-            GameEntity closestShip = FindClosestKnownShip(home, Time.time);
-            return closestShip != null ? closestShip.Owner : PlayerId.None;
+            _teamPicture.Cooperation.FocusEnemy = focus;
+            return focus;
         }
 
         /// <summary>Retains a visible, safe fleet target; otherwise chooses the nearest known ship.</summary>
@@ -794,11 +845,14 @@ namespace EmpireAtWar.Services.Enemy
             float bestScore = float.NegativeInfinity;
             float retainedScore = 0f;
             string invalidReason = "ownedOrRemoved";
-            foreach (EnemyCaptureObjective candidate in _captureCandidates)
+            // Rank by the cheap score first; the expensive safety checks then run only until the best safe
+            // candidate is found, plus the current objective, whose stall and retention state must update.
+            _rankedCaptures.Clear();
+            for (int i = 0; i < _captureCandidates.Count; i++)
             {
-                bool isCurrent = _captureObjective != null && candidate.Id == _captureObjective.Id &&
-                                 candidate.Owner == _captureObjective.Owner;
-                if (_reservedCaptureObjectives != null && _reservedCaptureObjectives.Contains(candidate.Id))
+                EnemyCaptureObjective candidate = _captureCandidates[i];
+                bool isCurrent = IsCurrentCapture(candidate);
+                if (IsCaptureReserved(candidate.Id))
                 {
                     CaptureReservedByOtherGroup = true;
                     if (isCurrent) invalidReason = "reserved";
@@ -809,6 +863,14 @@ namespace EmpireAtWar.Services.Enemy
                     if (isCurrent) invalidReason = "stalled";
                     continue;
                 }
+                _rankedCaptures.Add(new RankedCapture(candidate, -GetCaptureScore(origin, candidate), i));
+            }
+            _rankedCaptures.Sort(RANK_CAPTURES);
+            foreach (RankedCapture ranked in _rankedCaptures)
+            {
+                EnemyCaptureObjective candidate = ranked.Candidate;
+                bool isCurrent = IsCurrentCapture(candidate);
+                if (best != null && !isCurrent) continue;
                 if (!IsObjectiveSafe(origin, candidate.Position, candidate.Radius, false,
                         isCurrent ? RETAIN_SAFETY_SCALE : 1f, candidate.Id))
                 {
@@ -843,9 +905,8 @@ namespace EmpireAtWar.Services.Enemy
                         continue;
                     }
                 }
-                float score = -GetCaptureScore(origin, candidate);
-                if (best == null || candidate.IsThreatened && !best.IsThreatened ||
-                    candidate.IsThreatened == best.IsThreatened && score > bestScore)
+                float score = ranked.Score;
+                if (best == null)
                 {
                     best = candidate;
                     bestScore = score;
@@ -858,7 +919,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 EnemyCaptureObjective relay = _recovery.PendingCaptureObjective;
                 if (!(relay.Id == _rejectedCaptureId && now < _captureRetryAt) &&
-                    (_reservedCaptureObjectives == null || !_reservedCaptureObjectives.Contains(relay.Id)) &&
+                    !IsCaptureReserved(relay.Id) &&
                     IsObjectiveSafe(origin, relay.Position, relay.Radius, false, 1f, relay.Id))
                 {
                     best = relay;
@@ -889,6 +950,33 @@ namespace EmpireAtWar.Services.Enemy
             CaptureReservedByOtherGroup &= next == null;
             _captureReason += next == null ? " NoViableObjective: no safe capture destination." : $" Selected {next.Id}.";
             return next;
+        }
+
+        private bool IsCurrentCapture(EnemyCaptureObjective candidate) =>
+            _captureObjective != null && candidate.Id == _captureObjective.Id &&
+            candidate.Owner == _captureObjective.Owner;
+
+        /// <summary>Threatened first, then higher score, then original order: the order the old linear scan preferred.</summary>
+        private static int CompareRankedCaptures(RankedCapture left, RankedCapture right)
+        {
+            if (left.Candidate.IsThreatened != right.Candidate.IsThreatened)
+                return left.Candidate.IsThreatened ? -1 : 1;
+            int score = right.Score.CompareTo(left.Score);
+            return score != 0 ? score : left.Index.CompareTo(right.Index);
+        }
+
+        private readonly struct RankedCapture
+        {
+            public readonly EnemyCaptureObjective Candidate;
+            public readonly float Score;
+            public readonly int Index;
+
+            public RankedCapture(EnemyCaptureObjective candidate, float score, int index)
+            {
+                Candidate = candidate;
+                Score = score;
+                Index = index;
+            }
         }
 
         public void RecordStabilityEvent(string kind, string details) =>
