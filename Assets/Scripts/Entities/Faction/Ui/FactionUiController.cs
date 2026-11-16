@@ -296,7 +296,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
             foreach (ProductionQueueSnapshot queue in _model.GetProductionQueueSnapshots())
                 if (queue.UnitRequest.Id == request.Id)
                 {
-                    stats.Add(new TooltipStat(label: "Queued", current: queue.Count, max: data.MaxCount));
+                    stats.Add(new TooltipStat(label: "Queued", current: queue.Count,
+                        max: PlayerFactionModel.GetQueueLimit(request)));
                     stats.Add(new TooltipStat(label: "Next completion (s)", current: queue.RemainingBuildTime, format: "0"));
                     if (request is ResearchUnitRequest) status = "Already researching";
                 }

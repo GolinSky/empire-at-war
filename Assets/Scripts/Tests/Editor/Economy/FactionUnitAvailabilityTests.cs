@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Faction.Ui;
 using EmpireAtWar.Entities.MiningFacility;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
@@ -179,12 +180,14 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase("Research", 1)]
-        [TestCase("Level", 1)]
-        [TestCase("Ship", 2)]
-        [TestCase("Structure", 2)]
-        [TestCase("Hero", 1)]
-        public void PurchaseLimit_DisablesCardUntilCapacityIsReleased(string kind, int maxCount)
+        [TestCase("Research", 1, 1)]
+        [TestCase("Level", 1, 1)]
+        [TestCase("Ship", 3, 10)]
+        [TestCase("Ship", 1, 1)]
+        [TestCase("Squadron", 20, 10)]
+        [TestCase("Structure", 2, 2)]
+        [TestCase("Hero", 3, 1)]
+        public void PurchaseLimit_DisablesCardUntilCapacityIsReleased(string kind, int maxCount, int queueLimit)
         {
             var data = new FactionData();
             typeof(FactionData).GetField("<MaxCount>k__BackingField", BindingFlags.Instance | BindingFlags.NonPublic)
@@ -199,6 +202,7 @@ namespace EmpireAtWar.Tests.Editor
                 "Research" => new ResearchUnitRequest(data, ResearchType.ImprovedWeapons, 1),
                 "Level" => new LevelUnitRequest(data, 1),
                 "Structure" => new MiningFacilityUnitRequest(data, MiningFacilityType.CommonMiner),
+                "Squadron" => new SquadronUnitRequest(data, SquadronType.TIEFighter),
                 _ => new ShipUnitRequest(data, ShipType.HomeOne)
             };
             var model = new PlayerFactionModel(null, null) { SelectionType = SelectionType.Base };
@@ -218,18 +222,19 @@ namespace EmpireAtWar.Tests.Editor
                     BindingFlags.Instance | BindingFlags.NonPublic).GetValue(view)).Add(card);
                 view.SetModel(model);
                 view.AssignPresenter(presenter);
-                for (int count = 0; count < maxCount; count++)
+                for (int count = 0; count < queueLimit; count++)
                 {
                     view.RefreshAvailability(0f, false);
                     Assert.That(button.interactable, Is.True, "Cards below their own limit remain purchasable.");
                     model.QueueUnit(request);
                 }
 
-                bool hidesAtLimit = kind != "Ship";
+                bool hidesAtLimit = kind is not ("Ship" or "Squadron");
                 Assert.That(presenter.IsUnitLimitReached(request), Is.True);
+                Assert.That(model.CanQueueUnit(request), Is.False);
                 view.RefreshAvailability(0f, false);
                 Assert.That(card.gameObject.activeSelf, Is.EqualTo(!hidesAtLimit),
-                    "Heroes, structures, upgrades and research hide at their limit; ship queue limits only block.");
+                    "Heroes, structures, upgrades and research hide at their limit.");
                 Assert.That(button.interactable, Is.False, "Reaching the purchase limit must disable the card.");
 
                 Assert.That(model.TryCancelCurrentUnit(request.Id, out _), Is.True);
@@ -238,7 +243,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(button.interactable, Is.True, "Releasing a purchase must re-enable the card.");
 
                 model.QueueUnit(request);
-                model.Advance(10f * maxCount);
+                model.Advance(10f * queueLimit);
                 view.RefreshAvailability(0f, false);
                 bool hasLifetimeLimit = kind == "Structure" || kind == "Hero";
                 Assert.That(card.gameObject.activeSelf, Is.EqualTo(!hasLifetimeLimit));

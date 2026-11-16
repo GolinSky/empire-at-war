@@ -30,6 +30,7 @@ namespace EmpireAtWar.Models.Factions
     public class PlayerFactionModel : Model, IPlayerFactionModelObserver
     {
         public const int MAX_ACTIVE_PIPELINES = 7;
+        private const int STANDARD_UNIT_QUEUE_LIMIT = 10;
 
         private readonly StationLevelData _stationLevels;
         private readonly FactionRoster _roster;
@@ -119,9 +120,19 @@ namespace EmpireAtWar.Models.Factions
                 return true;
             }
 
-            return unitRequest.FactionData.MaxCount <= 0 ||
+            int queueLimit = GetQueueLimit(unitRequest);
+            return queueLimit <= 0 ||
                 (_productionQueues.TryGetValue(unitRequest.Id, out Queue<ProductionQueueItem> queue) &&
-                    queue.Count >= unitRequest.FactionData.MaxCount);
+                    queue.Count >= queueLimit);
+        }
+
+        internal static int GetQueueLimit(UnitRequest unitRequest)
+        {
+            FactionData data = unitRequest.FactionData;
+            if (data.MaxCount <= 1 || unitRequest is not (ShipUnitRequest or SquadronUnitRequest))
+                return data.MaxCount;
+
+            return data.IsHero ? 1 : STANDARD_UNIT_QUEUE_LIMIT;
         }
 
         public void QueueUnit(UnitRequest unitRequest)
