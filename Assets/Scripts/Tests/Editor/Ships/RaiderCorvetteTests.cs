@@ -67,6 +67,7 @@ namespace EmpireAtWar.Tests.Editor
             {
                 ability.Start(caster, definition, null);
                 Assert.That(caster.Modifiers.DamageMultiplier, Is.EqualTo(1.5f));
+                Assert.That(caster.Modifiers.SpeedMultiplier, Is.EqualTo(1.2f * 1.125f));
                 Assert.That(caster.Modifiers.ShieldRegenMultiplier, Is.Zero);
                 Assert.That(caster.Modifiers.DamageTakenMultiplier, Is.EqualTo(.75f));
                 ability.Stop();
