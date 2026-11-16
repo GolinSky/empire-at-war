@@ -20,9 +20,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
         private IUnitRequestFactory _unitRequestFactory;
 
         [SerializeField] private FactionUnitUi factionUnitPrefab;
+        [SerializeField] private FactionUnitUi stationUnitPrefab;
         [SerializeField] private TooltipHoverView tooltipHover;
         [SerializeField] private RectTransform unitsRow;
-        [SerializeField] private RectTransform supportRow;
         [SerializeField] private UnityEngine.UI.ContentSizeFitter layoutFitter;
         [Tooltip("The panel's BuildPanel anchor also marks individual production cards.")]
         [SerializeField] private TutorialAnchor tutorialAnchor;
@@ -218,7 +218,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         private FactionUnitUi AddUi(UnitRequest unitRequest)
         {
-            FactionUnitUi unitUi = Instantiate(factionUnitPrefab, GetRow(unitRequest));
+            RectTransform row = GetRow(unitRequest);
+            FactionUnitUi unitUi = Instantiate(row == unitsRow ? stationUnitPrefab : factionUnitPrefab, row);
             unitUi.SetData(unitRequest.FactionData, this, unitRequest);
             if (unitRequest is ShipUnitRequest or SquadronUnitRequest)
                 unitUi.SetClassFrame(_presenter.GetUnitClass(unitRequest));
@@ -229,8 +230,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         private RectTransform GetRow(UnitRequest request) => request switch
         {
-            ShipUnitRequest or SquadronUnitRequest => unitsRow,
-            LevelUnitRequest or SecondStationLevelUnitRequest => supportRow,
+            ShipUnitRequest or SquadronUnitRequest or LevelUnitRequest or SecondStationLevelUnitRequest => unitsRow,
             ResearchUnitRequest => _productionMenus.ResearchCards,
             DefendPlatformUnitRequest or MiningFacilityUnitRequest or SecondStationUnitRequest =>
                 _productionMenus.StructureCards,
@@ -266,25 +266,11 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 return;
             }
 
-            _levelFactionUnitUi = Instantiate(factionUnitPrefab, supportRow);
-            LevelUnitRequest levelUnitRequest =
-                _unitRequestFactory.ConstructUnitRequest(
-                    levelData,
-                    _model.CurrentLevel);
-            _levelFactionUnitUi.SetData(levelData, this, levelUnitRequest);
-            tooltipHover.Register(_levelFactionUnitUi.TooltipTrigger);
-            _factionUnitsUi.Add(_levelFactionUnitUi);
+            _levelFactionUnitUi = AddUi(_unitRequestFactory.ConstructUnitRequest(levelData, _model.CurrentLevel));
         }
 
         private void UpdateUnits(int level)
         {
-            int unitIndex = _levelFactionUnitUi != null
-                ? _factionUnitsUi.IndexOf(_levelFactionUnitUi)
-                : _factionUnitsUi.Count;
-            int siblingIndex = _levelFactionUnitUi != null
-                ? _levelFactionUnitUi.transform.GetSiblingIndex()
-                : supportRow.childCount;
-
             if (_levelFactionUnitUi != null)
             {
                 _factionUnitsUi.Remove(_levelFactionUnitUi);
@@ -294,13 +280,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
             }
 
             CreateLevelUnit();
-            if (_levelFactionUnitUi != null)
-            {
-                _factionUnitsUi.Remove(_levelFactionUnitUi);
-                _factionUnitsUi.Insert(unitIndex, _levelFactionUnitUi);
-                _levelFactionUnitUi.transform.SetSiblingIndex(siblingIndex);
-            }
-
             RefreshUnitVisibility(_model.SelectionType);
         }
 

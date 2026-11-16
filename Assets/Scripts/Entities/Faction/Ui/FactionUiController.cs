@@ -190,8 +190,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             DefendPlatformUnitRequest => 6,
             SecondStationUnitRequest => 6,
             MiningFacilityUnitRequest => 7,
-            LevelUnitRequest => -1,
-            SecondStationLevelUnitRequest => -1,
+            LevelUnitRequest or SecondStationLevelUnitRequest => int.MaxValue,
             ResearchUnitRequest => 10,
             _ => throw new ArgumentOutOfRangeException(nameof(request))
         };

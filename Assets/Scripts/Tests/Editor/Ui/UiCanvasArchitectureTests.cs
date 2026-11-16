@@ -423,6 +423,14 @@ namespace EmpireAtWar.Tests.Editor
                     Rect rect = ((RectTransform)launcher.transform).rect;
                     Assert.That(rect.width, Is.EqualTo(rect.height));
                     Assert.That(rect.width, Is.LessThan(66f));
+                    var icon = (RectTransform)launcher.transform.Find("Icon");
+                    Assert.That(icon, Is.Not.Null, launcher.name);
+                    bool usesGeneratedIcon = launcher == research || launcher == structures;
+                    float iconSize = usesGeneratedIcon ? 23f : 16.1f;
+                    Assert.That(icon.rect.width * icon.localScale.x, Is.EqualTo(iconSize).Within(0.01f), launcher.name);
+                    Assert.That(icon.rect.height * icon.localScale.y, Is.EqualTo(iconSize).Within(0.01f), launcher.name);
+                    if (usesGeneratedIcon)
+                        Assert.That(icon.GetComponent<Image>().sprite, Is.Not.Null, launcher.name);
                 }
 
                 research.onClick.Invoke();

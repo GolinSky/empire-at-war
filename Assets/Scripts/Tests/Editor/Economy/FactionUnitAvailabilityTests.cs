@@ -62,7 +62,7 @@ namespace EmpireAtWar.Tests.Editor
                 };
                 view.SetModel(model);
                 view.SetResearch(new FactionResearchModel(roster));
-                view.AssignPresenter(new UnlockedPresenter());
+                view.AssignPresenter(new UnlockedPresenter(CreatePresenter(model)));
                 view.SetData(roster);
                 view.SetUnitRequestFactory(new UnitRequestFactory());
                 view.SetSecondStation(new SecondStationLevelModel { IsBuilt = true }, levels);
@@ -75,6 +75,15 @@ namespace EmpireAtWar.Tests.Editor
                     or LevelUnitRequest or SecondStationLevelUnitRequest), Is.True);
                 Assert.That(cards.Any(card => card.Request is LevelUnitRequest), Is.True);
                 Assert.That(cards.Any(card => card.Request is SecondStationLevelUnitRequest), Is.True);
+                Transform stationGrid = cards.First().transform.parent;
+                Assert.That(cards.All(card => card.transform.parent == stationGrid), Is.True);
+                Assert.That(stationGrid.GetComponent<GridLayoutGroup>().constraintCount, Is.EqualTo(2));
+                if (selectionType == SelectionType.Base)
+                {
+                    FactionUnitUi lastCard = cards.Last(card => card.gameObject.activeSelf);
+                    Assert.That(lastCard.Request.GetType(), Is.EqualTo(secondStation
+                        ? typeof(SecondStationLevelUnitRequest) : typeof(LevelUnitRequest)));
+                }
                 var researchCards = hud.ProductionMenus.ResearchCards.GetComponentsInChildren<FactionUnitUi>(true);
                 Assert.That(researchCards.Any(card => card.Request is ResearchUnitRequest
                     { Key: ResearchType.IncreasedProduction }), Is.True);
@@ -148,7 +157,7 @@ namespace EmpireAtWar.Tests.Editor
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 ((List<FactionUnitUi>)cardsField.GetValue(view)).Add(card);
                 typeof(FactionUi).GetField("_presenter", BindingFlags.Instance | BindingFlags.NonPublic)
-                    .SetValue(view, new UnlockedPresenter());
+                    .SetValue(view, new UnlockedPresenter(CreatePresenter(null)));
                 typeof(FactionUi).GetField("_isRouteActive", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(view, true);
                 MethodInfo refresh = typeof(FactionUi).GetMethod("RefreshUnitVisibility",
@@ -363,6 +372,10 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class UnlockedPresenter : IFactionPresenter
         {
+            private readonly FactionUiController _stationPresenter;
+
+            public UnlockedPresenter(FactionUiController stationPresenter) => _stationPresenter = stationPresenter;
+
             public void TryPurchaseUnit(UnitRequest unitRequest) { }
             public bool IsUnitAvailable(FactionData data) => true;
             public bool IsUnlockedAtCurrentLevel(FactionData data) => false;
@@ -371,7 +384,10 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsUnitLimitReached(UnitRequest request) => false;
             public ShipClass GetUnitClass(UnitRequest request) =>
                 request is SquadronUnitRequest ? ShipClass.Fighter : ShipClass.Capital;
-            public int GetUnitSortOrder(UnitRequest request) => 0;
+            public int GetUnitSortOrder(UnitRequest request) =>
+                request is LevelUnitRequest or SecondStationLevelUnitRequest
+                    ? _stationPresenter.GetUnitSortOrder(request)
+                    : 0;
         }
     }
 }
