@@ -292,7 +292,16 @@ namespace EmpireAtWar.Services.Saves
 
         private static AbilitySlotSave[] MigrateShipAbilities(ShipType shipType, AbilitySlotSave[] slots)
         {
-            if (slots == null || slots.Length == 0) return slots;
+            if (slots == null || slots.Length == 0)
+            {
+                if (shipType == ShipType.Secutor)
+                    return new[]
+                    {
+                        AbilitySlotSave.Ready(ShipAbilityId.BoostShieldPower),
+                        AbilitySlotSave.Ready(ShipAbilityId.BoostWeaponPower)
+                    };
+                return slots;
+            }
             return shipType switch
             {
                 ShipType.QuasarFire when slots.Length == 2 && slots[0] is { Id: ShipAbilityId.BoostWeaponPower } &&

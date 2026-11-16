@@ -444,6 +444,38 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Validator_AddsReadyAbilitiesToLegacySecutor()
+        {
+            using var assets = new CachedAssetService(new AddressableHandleLoader());
+            BattleDefinition defaults = SkirmishPreset.Default();
+            var human = new PlayerSlot(TestPlayers.Human, new TeamId(0), FactionType.Republic,
+                PlayerController.Human, EnemyAiDifficulty.Medium, 0);
+            BattleDefinition battle = SkirmishPreset.Create(new[] { human, defaults.Slots[1] }, defaults.Map.Planet,
+                defaults.Map.Size, defaults.VictoryCondition, defaults.StartingMoney, true, 0).Build();
+            int hardPointCount = assets.LoadComponent<ShipEntity>("SecutorShipView").Bindings.Health[0].ShipUnits.Count;
+            HangarSave hangar = HangarSave.Create(new[] { 6, 3 }, 1f, Array.Empty<LaunchedSquadronSave>());
+            UnitSave ship = UnitSave.Create(1, human.Id, UnitTypeId.Ship(ShipType.Secutor), Vector3.zero,
+                Quaternion.identity, UnitHealthSave.ForShip(1f, 1f, Enumerable.Repeat(1f, hardPointCount).ToArray()),
+                null).WithHangar(hangar);
+            BattleSaveHeader header = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave,
+                DateTime.UtcNow, 0f, GameSpeed.Normal);
+            BattleSave save = BattleSave.Create(header, BattleSetupSave.From(battle),
+                CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 500f), new[] { ship },
+                Array.Empty<StructureSave>());
+            var validator = new BattleSaveValidator(assets);
+
+            validator.Validate(save, battle);
+
+            AbilitySlotSave[] slots = ship.Abilities;
+            Assert.That(slots.Select(slot => slot.Id), Is.EqualTo(new[]
+                { ShipAbilityId.BoostShieldPower, ShipAbilityId.BoostWeaponPower }));
+            Assert.That(slots.Select(slot => slot.State), Is.All.EqualTo(ShipAbilityState.Ready));
+            Assert.That(ship.Hangar, Is.SameAs(hangar));
+            validator.Validate(save, battle);
+            Assert.That(ship.Abilities, Is.SameAs(slots));
+        }
+
+        [Test]
         public void Validator_RequiresTheFalconsConfiguredInvulnerabilitySlot()
         {
             using var assets = new CachedAssetService(new AddressableHandleLoader());
