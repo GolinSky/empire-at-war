@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.DefendPlatform;
@@ -13,6 +14,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Ui.Base;
+using MPUIKIT;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -55,6 +57,19 @@ namespace EmpireAtWar.Tests.Editor
                 FactionUnitUi[] cards = view.GetComponentsInChildren<FactionUnitUi>(true);
                 Assert.That(cards.Any(card => card.Request is ShipUnitRequest), Is.True);
                 Assert.That(cards.Any(card => card.Request is SuperWeaponUnitRequest), Is.False);
+
+                foreach (FactionUnitUi card in cards)
+                {
+                    var background = (MPImage)card.GetComponent<Button>().targetGraphic;
+                    var (width, color) = card.Request switch
+                    {
+                        SquadronUnitRequest => (2f, new Color32(222, 223, 218, 255)),
+                        ShipUnitRequest => (2f, new Color32(214, 164, 121, 255)),
+                        _ => (1f, new Color32(210, 169, 94, 255))
+                    };
+                    Assert.That(background.OutlineWidth, Is.EqualTo(width), card.RequestId);
+                    Assert.That((Color32)background.OutlineColor, Is.EqualTo(color), card.RequestId);
+                }
             }
             finally
             {
@@ -278,6 +293,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsCarrier(UnitRequest request) => false;
             public bool IsScout(UnitRequest request) => false;
             public bool IsUnitLimitReached(UnitRequest request) => HeroReserved;
+            public ShipClass GetUnitClass(UnitRequest request) => throw new System.NotSupportedException();
             public int GetUnitSortOrder(UnitRequest request) => 0;
         }
 
@@ -299,6 +315,8 @@ namespace EmpireAtWar.Tests.Editor
             public bool IsCarrier(UnitRequest request) => false;
             public bool IsScout(UnitRequest request) => false;
             public bool IsUnitLimitReached(UnitRequest request) => false;
+            public ShipClass GetUnitClass(UnitRequest request) =>
+                request is SquadronUnitRequest ? ShipClass.Fighter : ShipClass.Capital;
             public int GetUnitSortOrder(UnitRequest request) => 0;
         }
     }

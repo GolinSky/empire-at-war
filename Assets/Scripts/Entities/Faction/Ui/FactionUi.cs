@@ -213,6 +213,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
         {
             FactionUnitUi unitUi = Instantiate(factionUnitPrefab, GetRow(unitRequest));
             unitUi.SetData(unitRequest.FactionData, this, unitRequest);
+            if (unitRequest is ShipUnitRequest or SquadronUnitRequest)
+                unitUi.SetClassFrame(_presenter.GetUnitClass(unitRequest));
             tooltipHover.Register(unitUi.TooltipTrigger);
             _factionUnitsUi.Add(unitUi);
             return unitUi;

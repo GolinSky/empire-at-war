@@ -151,13 +151,19 @@ namespace EmpireAtWar.Entities.Faction.Ui
             _assets.Load<ShipData>(_shipsData.GetShipDataPath(ship.Key)).HangarBays.Count > 0;
 
         public bool IsScout(UnitRequest request) => request is SquadronUnitRequest ||
-            request is ShipUnitRequest ship &&
-            _assets.Load<ShipData>(_shipsData.GetShipDataPath(ship.Key)).ShipClass is
+            request is ShipUnitRequest && GetUnitClass(request) is
                 ShipClass.Fighter or ShipClass.Interceptor or ShipClass.Bomber;
+
+        public ShipClass GetUnitClass(UnitRequest request) => request switch
+        {
+            SquadronUnitRequest squadron => _assets.Load<SquadronData>(squadron.Key + nameof(SquadronData)).ShipClass,
+            ShipUnitRequest ship => _assets.Load<ShipData>(_shipsData.GetShipDataPath(ship.Key)).ShipClass,
+            _ => throw new ArgumentOutOfRangeException(nameof(request))
+        };
 
         public int GetUnitSortOrder(UnitRequest request) => request switch
         {
-            SquadronUnitRequest squadron => _assets.Load<SquadronData>(squadron.Key + nameof(SquadronData)).ShipClass switch
+            SquadronUnitRequest => GetUnitClass(request) switch
             {
                 ShipClass.Fighter => 0,
                 ShipClass.Interceptor => 1,
@@ -165,7 +171,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 ShipClass.HeroStrikecraft => 3,
                 _ => throw new ArgumentOutOfRangeException(nameof(request))
             },
-            ShipUnitRequest ship => _assets.Load<ShipData>(_shipsData.GetShipDataPath(ship.Key)).ShipClass switch
+            ShipUnitRequest => GetUnitClass(request) switch
             {
                 ShipClass.Fighter => 4,
                 ShipClass.Interceptor => 5,

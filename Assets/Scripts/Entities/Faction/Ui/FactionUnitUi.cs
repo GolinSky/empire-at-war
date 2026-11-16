@@ -1,7 +1,10 @@
+using System;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ui;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
+using MPUIKIT;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +13,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
 {
     public class FactionUnitUi : MonoBehaviour
     {
+        private const float CLASS_FRAME_WIDTH = 2f;
+
         private FactionUi _factionView;
 
         [SerializeField] private TooltipTrigger tooltipTrigger;
@@ -18,6 +23,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         [SerializeField] private TextMeshProUGUI tierText;
         [SerializeField] private Image unitIconImage;
         [SerializeField] private Button purchaseButton;
+        [SerializeField] private MPImage cardBackground;
         [SerializeField] private UiHighlight tutorialHighlight;
         [SerializeField] private GameObject queuedHighlight;
         private UnitRequest _unitRequest;
@@ -28,6 +34,24 @@ namespace EmpireAtWar.Entities.Faction.Ui
         public string RequestId => _unitRequest.Id;
         public UnitRequest Request => _unitRequest;
         public FactionData FactionData { get; private set; }
+
+        public void SetClassFrame(ShipClass shipClass)
+        {
+            if (shipClass == ShipClass.Structure) return;
+
+            cardBackground.OutlineColor = shipClass switch
+            {
+                ShipClass.Fighter or ShipClass.Interceptor or ShipClass.Bomber or ShipClass.HeroStrikecraft =>
+                    new Color32(222, 223, 218, 255),
+                ShipClass.Corvette => new Color32(141, 182, 153, 255),
+                ShipClass.Frigate => new Color32(134, 172, 213, 255),
+                ShipClass.Cruiser => new Color32(180, 160, 209, 255),
+                ShipClass.Capital => new Color32(214, 164, 121, 255),
+                ShipClass.HeavyCapital => new Color32(199, 133, 138, 255),
+                _ => throw new ArgumentOutOfRangeException(nameof(shipClass))
+            };
+            cardBackground.OutlineWidth = CLASS_FRAME_WIDTH;
+        }
 
         public void RenderAvailability(bool unlocked, bool affordable, bool queued, bool battleEnded,
             bool atLimit = false)

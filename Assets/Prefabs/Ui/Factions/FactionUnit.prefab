@@ -108,6 +108,7 @@ MonoBehaviour:
   tierText: {fileID: 296264282637977761}
   unitIconImage: {fileID: 4859507491399935640}
   purchaseButton: {fileID: 651671216248046380}
+  cardBackground: {fileID: 2058160215538798344}
   tutorialHighlight: {fileID: 8162747345852354025}
   queuedHighlight: {fileID: 7015856029000383180}
 --- !u!222 &9037979142701862360

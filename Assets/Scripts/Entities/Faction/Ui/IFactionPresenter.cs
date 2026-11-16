@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Models.Factions;
 
@@ -14,6 +15,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
         bool IsCarrier(UnitRequest request);
         bool IsScout(UnitRequest request);
         bool IsUnitLimitReached(UnitRequest request);
+        ShipClass GetUnitClass(UnitRequest request);
         int GetUnitSortOrder(UnitRequest request);
     }
 }
