@@ -1417,7 +1417,7 @@ namespace EmpireAtWar.Tests.Editor
             var views = new List<GameObject>();
             var hazards = new TestHazards();
             var obstacles = new RetreatObstacleProvider();
-            var navigation = new ShipNavigationService(obstacles, hazards);
+            var navigation = new ShipNavigationService(obstacles, hazards, new OfflineSession(PlayerId.None));
             var game = ScriptableObject.CreateInstance<GameData>();
             try
             {
@@ -1856,7 +1856,7 @@ namespace EmpireAtWar.Tests.Editor
             zones.Zones[0].Restore(TestPlayers.Enemy, PlayerId.None, 0f, false);
             TestHazards hazards = new TestHazards();
             RetreatObstacleProvider obstacles = new RetreatObstacleProvider();
-            ShipNavigationService navigation = new ShipNavigationService(obstacles, hazards);
+            ShipNavigationService navigation = new ShipNavigationService(obstacles, hazards, new OfflineSession(PlayerId.None));
             UnitOrderSettings settings = ScriptableObject.CreateInstance<UnitOrderSettings>();
             SpaceHazardData hazardData = ScriptableObject.CreateInstance<SpaceHazardData>();
             GameObject view = new GameObject("Retreat reservation test");
@@ -2205,7 +2205,7 @@ namespace EmpireAtWar.Tests.Editor
             var obstacles = new RetreatObstacleProvider();
             obstacles.Contacts.Add(new RadarContact(center + Vector3.forward * 30f, 5f, false));
             var hazards = new TestHazards();
-            var navigation = new ShipNavigationService(obstacles, hazards);
+            var navigation = new ShipNavigationService(obstacles, hazards, new OfflineSession(PlayerId.None));
             try
             {
                 var builder = CaptureBuilder(roster, new ZoneSource(roster, center), new SiteSource(), hazards, navigation);
@@ -2229,7 +2229,7 @@ namespace EmpireAtWar.Tests.Editor
             Vector3 center = Vector3.right * 100f;
             var obstacles = new RetreatObstacleProvider();
             var hazards = new TestHazards();
-            var navigation = new ShipNavigationService(obstacles, hazards);
+            var navigation = new ShipNavigationService(obstacles, hazards, new OfflineSession(PlayerId.None));
             try
             {
                 var builder = CaptureBuilder(roster, new ZoneSource(roster, center), new SiteSource(), hazards, navigation);

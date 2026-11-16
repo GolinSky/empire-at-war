@@ -4,6 +4,7 @@ using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.SpaceStation;
+using EmpireAtWar.Utils;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
@@ -90,7 +91,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         }
 
         public static Vector3 GetStandoffPosition(IShipMovement movement,
-            IWeaponComponent weapon, IEntity target)
+            IWeaponComponent weapon, IEntity target, Vector3 formationOffset = default)
         {
             Vector3 targetPosition = target.GetFacade<IEntityTransformFacade>().Transform.position;
             float distance = UsesCloseSiegeApproach(movement, weapon, target)
@@ -99,7 +100,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                     ContactDistance(movement, target));
             Vector3 fromTarget = movement.CurrentPosition - targetPosition;
             fromTarget.y = 0f;
-            return targetPosition + fromTarget.normalized * distance;
+            return targetPosition + PlanarGeometry.NormalizeDirection(formationOffset, fromTarget) * distance;
         }
 
         // A footprint larger than nominal weapon reach makes the normal contact slack a substantial loss

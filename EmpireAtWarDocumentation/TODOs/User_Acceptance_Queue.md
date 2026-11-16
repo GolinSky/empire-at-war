@@ -403,3 +403,9 @@ created: "2026-10-29\r"
 - [ ] [[Done/Bugs/Ship_Rotation_Snaps_And_Tangent_Failures]] — Verify online clients display smooth host-driven heading and route changes.
 
 - [ ] [[Done/Bugs/Ship_Tangent_Arc_Repair_Loop]] + [[Done/Bugs/Ship_Tangent_Line_Repair_Loop]] — Repeat the affected battle/reroute scenario; verify no tangent-repair error or visible regression. Exact captured input and smaller loop cases pass automated tests; live battle replay remains pending.
+
+## Multiselect Attack Overlap
+
+- [ ] [[Done/Bugs/Multiselect_Attack_Overlap]] — Run authorized Navigation/BattleInput/EnemyAi regressions; Combat/Ships behavior review covered by navigation integration fixtures. Tests were not run under the checkout override.
+- [ ] [[Done/Bugs/Multiselect_Attack_Overlap]] — Check same-target Attack/Attack Move, Guard/Hunt, minimum-range/hardpoint/artillery holds, dense/mixed-height fleets, map edges/full firing space, ion disable, Stop/new orders, target replacement and multiplayer authority in-game.
+- [ ] [[Done/Bugs/Multiselect_Attack_Overlap]] — Compare matched Editor/Development Player overlap duration, CPU p95/p99, GC/frame, queue age, saturation, correction and route-build counters. Source preserves CPU limits; no measured CPU neutrality or improvement yet.

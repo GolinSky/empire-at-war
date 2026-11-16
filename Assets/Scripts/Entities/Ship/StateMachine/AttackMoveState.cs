@@ -89,7 +89,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _hasSearched = true;
                 if (_engagementTarget == null || _engagement.HasPreferred(_isPreferred))
                 {
-                    _engagementTarget = _engagement.SelectTarget(_member, _rangeTo, _isPreferred);
+                    IEntity selectedTarget = _engagement.SelectTarget(_member, _rangeTo, _isPreferred);
+                    if (selectedTarget != _engagementTarget) _movement.CancelCombatHold();
+                    _engagementTarget = selectedTarget;
                     if (_engagementTarget != null)
                     {
                         _weapon.AddTarget(_attackDataFactory.ConstructData(_engagementTarget), AttackType.MainTarget);
@@ -104,7 +106,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 if (ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon))
                 {
-                    if (_movement.IsMoving) _movement.Stop();
+                    _movement.HoldPosition(_engagementTarget);
                     _movement.LookAtTarget(_engagementTarget);
                 }
                 else ShipEngagement.Pursue(_movement, _weapon, _engagementTarget);
@@ -119,6 +121,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public void Exit()
         {
+            _movement.CancelCombatHold();
             _engagement.Leave(_member);
             _engagementTarget = null;
             _weapon.ResetTarget();

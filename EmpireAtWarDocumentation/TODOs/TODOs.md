@@ -286,6 +286,12 @@
 
 ### Bugs
 
+- [x] **Multiselect Attack / Attack Move leaves ships overlapped** → [[Done/Bugs/Multiselect_Attack_Overlap|Implementation and acceptance]]
+  - Initial investigation 2026-11-16: source-verified range-stop bypass, collapsed combat offsets and bounded arrival repair; no runtime reproduction or baseline CPU capture.
+  - 2026-11-16: revalidated; added Guard/Hunt/minimum-range stops, clamp-inside-hull case, group replacement-target convergence, O(N) registry clearance cost.
+  - Completed 2026-11-16: distinct angular attack slots, replacement intent, shared bounded Burst settling and spatial reservation checks. Existing four-plan/2 ms budget preserved; Unity compilation 0 errors, source/diff review complete. Tests not run; gameplay and matched CPU acceptance queued.
+
+
 - [x] **Fix remaining tangent line-repair loop** → [[Done/Bugs/Ship_Tangent_Line_Repair_Loop]]
   - Completed 2026-11-15: remove covered obsolete corner and insert blocker in the same repair. Six failing seeded/mirrored regressions now pass; Navigation 280/280 passed. Live battle acceptance remains queued.
 

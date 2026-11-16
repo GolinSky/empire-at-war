@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Services.Hazards;
 using EmpireAtWar.Entities.Map.Hazards;
+using EmpireAtWar.Models.Players;
 using System.Diagnostics;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Components.Radar;
@@ -134,6 +135,7 @@ namespace EmpireAtWar.Services.ShipNavigation
 
         private readonly IMapObstacleContactProvider _mapObstacleContactProvider;
         private readonly IHazardService _hazards;
+        private readonly IMatchSession _session;
 
         private readonly List<RadarContact> _mapObstacleContacts =
             new List<RadarContact>();
@@ -144,15 +146,29 @@ namespace EmpireAtWar.Services.ShipNavigation
         private readonly List<Vector3> _waypoints = new List<Vector3>();
         private readonly ShipNavigationCache _cache = new ShipNavigationCache();
         private readonly Queue<IShipPlanRequester> _planQueue = new Queue<IShipPlanRequester>();
+        private readonly ShipSpacingCoordinator _spacing;
+
+        public int SpacingVisitedPairs => _spacing.VisitedPairs;
+        public int SpacingSaturatedQueries => _spacing.SaturatedQueries;
+        public int SpacingCorrections => _spacing.Corrections;
+        public int SpacingFailedCorrections => _spacing.FailedCorrections;
+        public int SpacingReservationSaturations => _spacing.ReservationSaturations;
+        public float SpacingQueueAge => _spacing.QueueAge;
 
         public void LateTick()
         {
             long start = Stopwatch.GetTimestamp();
-            for (int i = 0; i < MAX_QUEUED_PLANS_PER_FRAME && _planQueue.Count > 0; i++)
+            int plans = 0;
+            for (; plans < MAX_QUEUED_PLANS_PER_FRAME && _planQueue.Count > 0; plans++)
             {
-                if (i > 0 && Stopwatch.GetTimestamp() - start > PLAN_BUDGET_TICKS) break;
+                if (plans > 0 && Stopwatch.GetTimestamp() - start > PLAN_BUDGET_TICKS) break;
                 _planQueue.Dequeue().ExecuteQueuedPlan();
             }
+            if (!_session.IsAuthority || Time.deltaTime <= 0f) return;
+            _spacing.Tick(Time.time);
+            if (plans < MAX_QUEUED_PLANS_PER_FRAME && _planQueue.Count == 0 &&
+                Stopwatch.GetTimestamp() - start < PLAN_BUDGET_TICKS)
+                _spacing.TryCorrect(Time.time);
         }
 
         public void RequestPlan(IShipPlanRequester requester) => _planQueue.Enqueue(requester);
@@ -161,13 +177,19 @@ namespace EmpireAtWar.Services.ShipNavigation
         internal void PrepareMap(Vector2Range mapRange, IReadOnlyList<IHazardSource> hazards) =>
             _cache.GetRaster(mapRange, hazards);
 
-        public void Dispose() => _cache.Dispose();
+        public void Dispose()
+        {
+            _spacing.Dispose();
+            _cache.Dispose();
+        }
 
         public ShipNavigationService(
-            IMapObstacleContactProvider mapObstacleContactProvider, IHazardService hazards)
+            IMapObstacleContactProvider mapObstacleContactProvider, IHazardService hazards, IMatchSession session)
         {
             _mapObstacleContactProvider = mapObstacleContactProvider;
             _hazards = hazards;
+            _session = session;
+            _spacing = new ShipSpacingCoordinator(_destinationRegistry);
         }
 
         public ShipNavigationPlan Plan(
@@ -440,12 +462,14 @@ namespace EmpireAtWar.Services.ShipNavigation
                 agent.NavigationHullSpan,
                 ToPoint(initialFinalPosition));
             _registrationIds.Add(agent, registrationId);
+            _spacing.Register(registrationId, agent);
         }
 
         public void Unregister(IShipNavigationAgent agent)
         {
             _cache.RemoveStationary(agent);
             int registrationId = GetRegistrationId(agent);
+            _spacing.Unregister(registrationId);
             _destinationRegistry.Unregister(registrationId);
             _registrationIds.Remove(agent);
         }

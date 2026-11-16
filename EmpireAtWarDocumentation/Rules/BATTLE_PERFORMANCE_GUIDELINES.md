@@ -212,3 +212,14 @@ tags:
 - Keep `EarliestFrame = frame + 1`: at most one shot per mount per frame, no catch-up. A `0.02 s` interval typically rounds up to `0.033 s` at 60 fps; exact 10× sustained DPS is not promised. Projectile damage/speed and shots per salvo remain unchanged.
 - Verify no on-demand expansion with `AttackSequenceDiagnostics.PoolExpansions`; budgeted warm creation also emits `Battle.Projectile.Instantiate.*` nested under `Prewarm.*`. Measure workload counters, frame times and active-effect Update cost in a matched user capture.
 - Source and Unity compilation/import verified; authored Combat/Abilities/Audio regressions not run. Gameplay and profiling acceptance → [[Done/Bugs/Boost_Weapon_Power_Fire_Rate_Fix]].
+
+### Combat overlap settling · 2026-11-16
+
+- Combat stops use `IShipMovement.HoldPosition(target)`; explicit Stop/new orders/state exits cancel the hold. Do not call Stop every combat tick or cancel an active settling leg with preserve-course pursuit.
+- `ShipNavigationService` owns one authority-only 5 Hz numeric Burst spacing batch; snapshot/index are O(N), queries visit ≤64 occupants with fair cursors. Cell width ≥2 × maximum radius makes 3×3 current-overlap queries radius-aware.
+- Consume only completed jobs; revalidate registration/revision/target/position/eligibility. Complete ownership before resize or disposal. Nonselected, disabled and stopped ships remain blockers; obstacle-exempt ships receive no correction.
+- Admit ≤1 correction from spare capacity within the existing 4-plan/frame, 2 ms check-between-plans limit; normal orders win. Route followers, static graphs, hazard costs and hull-height rules remain unchanged.
+- Scoped reservation grid checks current/active/pending centers with ≤256 visited centers and ≤64 cells/candidate; saturation means blocked. Never add O(N) per-candidate revalidation.
+- Failed corrections use 1 s cooldown and pair/target/local-occupancy/reservation-change suppression. Whole-cell hashes cover unvisited dense occupants; `ReservationVersion` is O(1), unlike the position-scanning `Version` getter. Unrelated reservation edits can conservatively wake work.
+- Distinct attack bearings survive closing; full firing space is not guaranteed. No direct Transform separation, moving obstacles in static graphs, per-ship jobs or continuous collision-avoidance claim.
+- Inspect `Battle.Spacing.Snapshot/Index/Consume`, worker `ShipSpacingJob`, navigation markers and `Spacing*` service counters. Source/Unity compilation verified; tests and matched Editor/Development Player CPU/overlap acceptance pending → [[Done/Bugs/Multiselect_Attack_Overlap]].

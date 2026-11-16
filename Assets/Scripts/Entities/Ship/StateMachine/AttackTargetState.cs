@@ -55,10 +55,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private Vector3 TargetPosition => _mainTargetTransform.position;
         // The distance depends on what is being attacked: heavy guns hold back from capitals, lasers close on corvettes.
         private float EngagementRange => _weaponComponent.GetEngagementRange(_mainTarget.ShipClass);
-        private Vector3 MovementTargetPosition => TargetPosition +
-            Vector3.ClampMagnitude(_formationOffset, EngagementRange * 0.8f);
+        private Vector3 MovementTargetPosition => TargetPosition + _formationOffset +
+            _formationOffset.normalized * ShipEngagement.ContactDistance(_shipMoveComponent, _mainTargetEntity);
         private Vector3 StandoffPosition => ShipEngagement.GetStandoffPosition(
-            _shipMoveComponent, _weaponComponent, _mainTargetEntity);
+            _shipMoveComponent, _weaponComponent, _mainTargetEntity, _formationOffset);
         private bool IsInRange => ShipEngagement.IsInRange(_shipMoveComponent, _weaponComponent,
             _mainTargetEntity, TargetPosition);
         private float PursuitDestinationUpdateDistance => Mathf.Max(
@@ -95,7 +95,11 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 : _mainTargetEntity.GetFacade<IHardPointsFacade>().HardPoints[hardPointId];
             formationOffset.y = 0f;
             _formationOffset = formationOffset;
-            if (targetChanged) ResetPursuit();
+            if (targetChanged)
+            {
+                _shipMoveComponent.CancelCombatHold();
+                ResetPursuit();
+            }
         }
 
         public void SetData(IEntity mainTarget)
@@ -156,6 +160,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public void Exit()
         {
+            _shipMoveComponent.CancelCombatHold();
             _weaponComponent.ResetTarget();
             _attackData = null;
             ResetPursuit();
@@ -173,7 +178,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             if (IsInRange && (!_isClosingRange || !_shipMoveComponent.IsMoving))
             {
-                if (_shipMoveComponent.IsMoving) _shipMoveComponent.Stop();
+                _shipMoveComponent.HoldPosition(_mainTargetEntity);
                 _shipMoveComponent.LookAtTarget(_mainTargetEntity);
                 _isClosingRange = true;
                 _hasPursuitDestination = false;
@@ -220,6 +225,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             float range = _shipMoveComponent.GetRange(TargetPosition);
             if (!_shipMoveComponent.IsMoving && IsInRange)
             {
+                _shipMoveComponent.HoldPosition(_mainTargetEntity);
                 _shipMoveComponent.LookAtTarget(_mainTargetEntity);
                 _hasPursuitDestination = false;
                 return;
@@ -227,7 +233,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             if (_shipMoveComponent.IsMoving && range <= EngagementRange * MINIMUM_RANGE_FACTOR)
             {
-                _shipMoveComponent.Stop();
+                _shipMoveComponent.HoldPosition(_mainTargetEntity);
                 _shipMoveComponent.LookAtTarget(_mainTargetEntity);
                 _hasPursuitDestination = false;
                 return;
@@ -251,7 +257,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             if (offset == Vector3.zero)
             {
-                if (_shipMoveComponent.IsMoving || _hasPursuitDestination) _shipMoveComponent.Stop();
+                _shipMoveComponent.HoldPosition(_mainTargetEntity);
                 _shipMoveComponent.LookAtTarget(_mainTargetEntity);
                 ResetPursuit();
                 return;
@@ -311,7 +317,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (_hasPursuitDestination && moving && (hold || retreat == _isArtilleryRetreat)) return true;
             if (hold)
             {
-                if (moving) _shipMoveComponent.Stop();
+                _shipMoveComponent.HoldPosition(_mainTargetEntity);
                 _shipMoveComponent.LookAtTarget(_mainTargetEntity);
                 ResetPursuit();
                 return true;

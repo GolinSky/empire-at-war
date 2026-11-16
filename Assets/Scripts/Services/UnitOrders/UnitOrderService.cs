@@ -83,13 +83,27 @@ namespace EmpireAtWar.Services.UnitOrders
         private List<Vector3> AttackOffsets(IReadOnlyList<IEntity> receivers, IEntity target)
         {
             List<IAttackFacade> commands = Collect<IAttackFacade>(receivers);
+            List<Vector3> offsets = new List<Vector3>(commands.Count);
+            if (commands.Count == 0) return offsets;
+            Vector3 center = Vector3.zero;
+            float maximumRadius = 0f;
+            for (int i = 0; i < commands.Count; i++)
+            {
+                center += commands[i].WorldPosition;
+                maximumRadius = Mathf.Max(maximumRadius, commands[i].NavigationRadius);
+            }
+            center /= commands.Count;
             Vector3 point = target.GetFacade<IEntityTransformFacade>().Transform.position;
-            List<Vector3> slots = Compact(commands, point,
-                command => command.WorldPosition, command => command.NavigationRadius,
-                target.TryGetFacade(out INavigationFootprintFacade footprint) ? footprint.NavigationRadius : 0f);
-            List<Vector3> offsets = new List<Vector3>(slots.Count);
-            foreach (Vector3 slot in slots)
-                offsets.Add(new Vector3(slot.x - point.x, 0f, slot.z - point.z));
+            float heading = Mathf.Atan2(center.z - point.z, center.x - point.x);
+            // One ring retains distinct bearings when combat closes to firing range. Concentric rings do not.
+            // Offsets are hull-relative: the attack state adds live target contact clearance.
+            float radius = commands.Count <= 2 ? maximumRadius * 2f :
+                Mathf.Max(maximumRadius * 2f, maximumRadius / Mathf.Sin(Mathf.PI / commands.Count));
+            for (int i = 0; i < commands.Count; i++)
+            {
+                float angle = heading - Mathf.PI * 2f * i / commands.Count;
+                offsets.Add(new Vector3(Mathf.Cos(angle) * radius, 0f, Mathf.Sin(angle) * radius));
+            }
             return offsets;
         }
 

@@ -27,7 +27,7 @@ using NumericsVector3 = System.Numerics.Vector3;
 namespace EmpireAtWar.Components.Ship.Movement
 {
     public class ShipMoveComponent : MonoComponent<ShipMoveModel>, IShipMoveComponent,
-        IShipNavigationAgent, IShipPlanRequester, IShipRouteReplicaFacade, IInitializable, ITickable, ILateDisposable
+        IShipSpacingAgent, IShipPlanRequester, IShipRouteReplicaFacade, IInitializable, ITickable, ILateDisposable
     {
         public const float MINIMUM_NAVIGATION_RADIUS = 1f;
         private const float HEIGHT_TOLERANCE = 0.5f;
@@ -85,6 +85,16 @@ namespace EmpireAtWar.Components.Ship.Movement
         private int _facingRequestFrame = -1;
         private int _facingRefreshReason;
         private bool _facingQueued;
+        private IEntity _combatHoldTarget;
+        private Transform _combatHoldTransform;
+        private bool _isSettling;
+        private int _spacingRevision;
+
+        public int SpacingRevision => _spacingRevision;
+        public bool CanSettle => _combatHoldTarget != null && !_combatHoldTarget.HealthModel.IsDestroyed &&
+            !_isReleased && _isNavigationRegistered && !IgnoresMapObstacles &&
+            !_modifiers.IsIonDisabled && NavigationSpeed > 0f && !IsMoving && !_motion.IsBraking;
+        public Vector3 SpacingTargetPosition => _combatHoldTarget == null ? Vector3.zero : _combatHoldTransform.position;
 
         public event Action<Vector3> DestinationChanged;
 
@@ -185,6 +195,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         public override void Release()
         {
             if (_isReleased) return;
+            CancelCombatHold();
             _isReleased = true;
             _pendingFacingTarget = null;
             _hasQueuedPlan = false;
@@ -200,8 +211,46 @@ namespace EmpireAtWar.Components.Ship.Movement
             _motion.RouteDisplayChanged -= HandleRouteDisplayChanged;
         }
 
-        public void MoveToPosition(Vector3 position, bool preserveCourse = false) =>
+        public void MoveToPosition(Vector3 position, bool preserveCourse = false)
+        {
+            // Finish a checked settling leg even if it briefly leaves firing range.
+            if (preserveCourse && _isSettling && IsMoving) return;
+            CancelCombatHold();
             SetTargetPosition(position, preserveCourse);
+        }
+
+        public void HoldPosition(IEntity target)
+        {
+            if (_combatHoldTarget == target) return;
+            Stop();
+            _combatHoldTarget = target;
+            _combatHoldTransform = target.GetFacade<IEntityTransformFacade>().Transform;
+        }
+
+        public void CancelCombatHold()
+        {
+            _spacingRevision++;
+            _combatHoldTarget = null;
+            _combatHoldTransform = null;
+            if (_isSettling)
+            {
+                _isSettling = false;
+                Stop();
+            }
+        }
+
+        public bool TrySettle(Vector3 destination, int revision)
+        {
+            if (revision != _spacingRevision || !CanSettle) return false;
+            _isSettling = true;
+            _hasArrivalCorrection = false;
+            _failedDestination = null;
+            Model.Request(destination.ToNumerics());
+            _lastPlanTime = Time.time;
+            Plan(destination);
+            DestinationChanged?.Invoke(Model.Destination.ToUnity());
+            return IsMoving;
+        }
 
         private void SetTargetPosition(Vector3 requestedPosition, bool preserveCourse = false)
         {
@@ -340,6 +389,8 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void Stop()
         {
+            _isSettling = false;
+            CancelCombatHold();
             _hasQueuedPlan = false;
             _failedDestination = null;
             _hasArrivalCorrection = false;
@@ -447,6 +498,8 @@ namespace EmpireAtWar.Components.Ship.Movement
                         return;
                     }
                     Model.Arrive(transform.position.ToNumerics());
+                    // The shared spacing batch owns subsequent corrections and their cooldown.
+                    if (_isSettling) return;
                     if (!_shipNavigationService.IsPositionClear(this,
                             plannedDestination, NavigationRadius))
                     {

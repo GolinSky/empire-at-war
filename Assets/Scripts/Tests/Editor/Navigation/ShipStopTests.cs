@@ -91,6 +91,9 @@ namespace EmpireAtWar.Tests.Editor
 
             public void MoveToPosition(Vector3 position, bool preserveCourse = false) { }
 
+            public void HoldPosition(IEntity target) { Stop(); }
+            public void CancelCombatHold() { }
+
             public void LookAtTarget(IEntity target) { }
             public void LookInDirection(Vector3 direction) { }
 

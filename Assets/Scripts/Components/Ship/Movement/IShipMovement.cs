@@ -18,5 +18,9 @@ namespace EmpireAtWar.Components.Ship.Movement
         float GetRange(Vector3 targetPosition);
 
         void Stop();
+
+        // Combat holds allow budgeted spacing; explicit Stop never does.
+        void HoldPosition(IEntity target);
+        void CancelCombatHold();
     }
 }

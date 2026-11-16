@@ -69,7 +69,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             }
             if (ShipEngagement.CanEngage(_target, _movement, _weapon))
             {
-                if (_movement.IsMoving) _movement.Stop();
+                _movement.HoldPosition(_target);
                 _movement.LookAtTarget(_target);
             }
             else ShipEngagement.Pursue(_movement, _weapon, _target);
@@ -77,6 +77,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public void Exit()
         {
+            _movement.CancelCombatHold();
             _target = null;
             _weapon.ResetTarget();
         }
@@ -103,6 +104,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             }
 
             if (closest == _target) return;
+            _movement.CancelCombatHold();
             _target = closest;
             _weapon.ResetTarget();
             if (_target != null)

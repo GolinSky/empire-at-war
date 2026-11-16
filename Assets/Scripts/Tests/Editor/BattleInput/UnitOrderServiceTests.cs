@@ -239,7 +239,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void GuardAndAttack_KeepSmallEscortOutsideLargeTarget()
+        public void GuardReservesTargetHull_AttackIssuesHullRelativeSlot()
         {
             FakeEntity escort = Entity(1, TestPlayers.Human);
             FakeEntity target = Entity(2, TestPlayers.Human);
@@ -249,7 +249,45 @@ namespace EmpireAtWar.Tests.Editor
             _unitOrderService.IssueGuard(new IEntity[] { escort }, target, new[] { Vector3.zero });
             Assert.That(escort.Command.LastPoint.magnitude, Is.GreaterThan(105f));
             _unitOrderService.IssueAttack(new IEntity[] { escort }, target);
-            Assert.That(escort.Command.LastPoint.magnitude, Is.GreaterThan(105f));
+            Assert.That(escort.Command.LastPoint.magnitude, Is.EqualTo(10f).Within(0.001f));
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Attack_LargeGroupKeepsDistinctFiringBearingsAndMixedHullClearance(bool mixedRadii)
+        {
+            const int SHIP_COUNT = 19;
+            var ships = new FakeEntity[SHIP_COUNT];
+            var receivers = new IEntity[SHIP_COUNT];
+            FakeEntity target = Entity(100, TestPlayers.Enemy);
+            target.Command.NavigationRadius = 100f;
+            for (int i = 0; i < SHIP_COUNT; i++)
+            {
+                ships[i] = Entity(i + 1, TestPlayers.Human);
+                ships[i].Command.NavigationRadius = mixedRadii ? 2f + i % 4 : 5f;
+                receivers[i] = ships[i];
+            }
+
+            _unitOrderService.IssueAttack(receivers, target);
+
+            for (int i = 0; i < SHIP_COUNT; i++)
+            {
+                Vector3 offset = ships[i].Command.LastPoint;
+                float contact = target.Command.NavigationRadius + ships[i].Command.NavigationRadius;
+                Vector3 effective = offset + offset.normalized * contact;
+                Assert.That(effective.magnitude, Is.GreaterThan(contact));
+                for (int j = 0; j < i; j++)
+                {
+                    Vector3 other = ships[j].Command.LastPoint;
+                    float otherContact = target.Command.NavigationRadius + ships[j].Command.NavigationRadius;
+                    float clearance = ships[i].Command.NavigationRadius + ships[j].Command.NavigationRadius;
+                    Assert.That(Vector3.Distance(effective, other + other.normalized * otherContact),
+                        Is.GreaterThanOrEqualTo(clearance - 0.001f));
+                    // A feasible 65-unit firing ring must not merge concentric-ring bearings.
+                    Assert.That(Vector3.Distance(offset.normalized * 65f, other.normalized * 65f),
+                        Is.GreaterThanOrEqualTo(clearance - 0.001f));
+                }
+            }
         }
 
         [Test]

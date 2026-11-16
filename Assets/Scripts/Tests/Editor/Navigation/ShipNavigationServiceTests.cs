@@ -13,6 +13,10 @@ using EmpireAtWar.Services.ShipNavigation;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Components.Ship.Health;
+using EmpireAtWar.Models.Health;
+using EmpireAtWar.Ship;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Stations;
@@ -68,7 +72,7 @@ namespace EmpireAtWar.Tests.Movement
                 HazardShape zone = TestHazards.CreateEllipse(data, Vector3.zero, Vector3.forward, 30f, 20f);
                 ShipNavigationService service = new ShipNavigationService(
                     new FakeMapObstacleContactProvider(System.Array.Empty<RadarContact>()),
-                    new TestHazards { Sources = new IHazardSource[] { zone } });
+                    new TestHazards { Sources = new IHazardSource[] { zone } }, new OfflineSession(TestPlayers.Human));
                 _services.Add(service);
                 FakeAgent agent = new FakeAgent(new Vector3(-80f, 0f, 0f), 0f, 4f, 10f, 30f);
                 ShipNavigationPlan around = Plan(service, agent, new Vector3(80f, 0f, 0f));
@@ -285,7 +289,7 @@ namespace EmpireAtWar.Tests.Movement
                 HazardShape zone = TestHazards.CreateEllipse(data, Vector3.zero, Vector3.forward, 30f, 20f);
                 var service = new ShipNavigationService(
                     new FakeMapObstacleContactProvider(new[] { new RadarContact(Vector3.zero, 30f, false) }),
-                    new TestHazards { Sources = new IHazardSource[] { zone } });
+                    new TestHazards { Sources = new IHazardSource[] { zone } }, new OfflineSession(TestPlayers.Human));
                 _services.Add(service);
                 Vector3 destination = new Vector3(300f, 0f, 0f);
                 var parked = new FakeAgent(destination, 0f, 5f, 10f, 30f);
@@ -1048,6 +1052,105 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void CombatHold_RepeatedRangeStopsPreserveSettlingAndDoNotReplanOnArrival()
+        {
+            var ship = new GameObject("Combat settling");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation);
+                SetPrivateField(component, "_isNavigationRegistered", true);
+                navigation.IsDeferred = false;
+                var target = new SpacingTarget(ship.transform);
+                component.HoldPosition(target);
+                int revision = component.SpacingRevision;
+
+                Assert.That(component.TrySettle(Vector3.forward * 25f, revision), Is.True);
+                for (int i = 0; i < 20; i++)
+                {
+                    component.HoldPosition(target);
+                    component.MoveToPosition(Vector3.right * 50f, preserveCourse: true);
+                }
+
+                Assert.That(component.SpacingRevision, Is.EqualTo(revision));
+                Assert.That(component.IsMoving, Is.True);
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(1));
+                Assert.That(navigation.LastDestination, Is.EqualTo(Vector3.forward * 25f));
+                navigation.IsClear = false;
+                TickMotion(component, 1000f);
+                Assert.That(component.IsMoving, Is.False);
+                Assert.That(component.CanSettle, Is.True);
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(1));
+                Assert.That(navigation.PendingPlans, Is.Empty);
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        [TestCase("stop")]
+        [TestCase("order")]
+        [TestCase("target")]
+        [TestCase("cancel")]
+        public void CombatHold_ReplacementInvalidatesOldResultsAndSettling(string replacement)
+        {
+            var ship = new GameObject("Replace combat settling");
+            try
+            {
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation);
+                SetPrivateField(component, "_isNavigationRegistered", true);
+                navigation.IsDeferred = false;
+                var target = new SpacingTarget(ship.transform);
+                component.HoldPosition(target);
+                int revision = component.SpacingRevision;
+                Assert.That(component.TrySettle(Vector3.forward * 25f, revision), Is.True);
+
+                switch (replacement)
+                {
+                    case "stop": component.Stop(); break;
+                    case "order": component.MoveToPosition(Vector3.forward * 50f); break;
+                    case "target": component.HoldPosition(new SpacingTarget(ship.transform)); break;
+                    case "cancel": component.CancelCombatHold(); break;
+                }
+
+                Assert.That(component.SpacingRevision, Is.GreaterThan(revision));
+                int plans = navigation.PlanCallCount;
+                Assert.That(component.TrySettle(Vector3.back * 25f, revision), Is.False);
+                Assert.That(navigation.PlanCallCount, Is.EqualTo(plans));
+                Assert.That(component.CanSettle, Is.EqualTo(replacement == "target"));
+                if (replacement != "order") Assert.That(component.IsMoving, Is.False);
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        [TestCase("hyperspace")]
+        [TestCase("ion")]
+        [TestCase("immobile")]
+        [TestCase("unregistered")]
+        [TestCase("released")]
+        [TestCase("obstacle-exempt")]
+        [TestCase("destroyed-target")]
+        public void CombatHold_IneligibleShipsCannotRequestCorrections(string condition)
+        {
+            var ship = new GameObject("Ineligible combat settling");
+            try
+            {
+                var modifiers = new CombatModifiers();
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation,
+                    isReady: condition != "hyperspace", ignoresMapObstacles: condition == "obstacle-exempt",
+                    modifiers: modifiers);
+                SetPrivateField(component, "_isNavigationRegistered", condition != "unregistered");
+                SetPrivateField(component, "_isReleased", condition == "released");
+                var target = new SpacingTarget(ship.transform) { IsDestroyed = condition == "destroyed-target" };
+                component.HoldPosition(target);
+                if (condition == "ion") modifiers.SetIonDisabled(true);
+                if (condition == "immobile") GetModel(component).ApplyMoveCoefficient(0f);
+
+                Assert.That(component.CanSettle, Is.False);
+                Assert.That(component.TrySettle(Vector3.forward * 25f, component.SpacingRevision), Is.False);
+                Assert.That(navigation.PlanCallCount, Is.Zero);
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        [Test]
         public void Arrival_DoesNotReplaceNewerQueuedOrder()
         {
             GameObject ship = new GameObject("New order at arrival");
@@ -1132,7 +1235,7 @@ namespace EmpireAtWar.Tests.Movement
                 new RadarContact(new Vector3(0f, 0f, -60f), 65f, false)
             };
             var provider = new FakeMapObstacleContactProvider(obstacles);
-            var service = new ShipNavigationService(provider, new TestHazards());
+            var service = new ShipNavigationService(provider, new TestHazards(), new OfflineSession(TestPlayers.Human));
             _services.Add(service);
             var origin = new Vector3(-85f, 0f, 0f);
             var positions = new[]
@@ -1161,7 +1264,7 @@ namespace EmpireAtWar.Tests.Movement
             {
                 new RadarContact(Vector3.zero, 10f, false)
             });
-            var service = new ShipNavigationService(provider, new TestHazards());
+            var service = new ShipNavigationService(provider, new TestHazards(), new OfflineSession(TestPlayers.Human));
             _services.Add(service);
             var origin = new Vector3(-80f, 0f, 0f);
             var positions = new[] { origin, Vector3.zero };
@@ -1184,7 +1287,7 @@ namespace EmpireAtWar.Tests.Movement
             ShipNavigationService service = new ShipNavigationService(
                 new FakeMapObstacleContactProvider(
                     staticObstacles ??
-                    System.Array.Empty<RadarContact>()), new TestHazards());
+                    System.Array.Empty<RadarContact>()), new TestHazards(), new OfflineSession(TestPlayers.Human));
             _services.Add(service);
             return service;
         }
@@ -1219,11 +1322,13 @@ namespace EmpireAtWar.Tests.Movement
             GameObject gameObject,
             out RecordingShipNavigationService recordingShipNavigationService,
             bool isReady = true,
-            bool ignoresMapObstacles = false)
+            bool ignoresMapObstacles = false,
+            CombatModifiers modifiers = null)
         {
             recordingShipNavigationService = new RecordingShipNavigationService();
+            modifiers ??= new CombatModifiers();
             ShipMoveModel model = new ShipMoveModel(
-                new FakeShipMoveData { IgnoresMapObstacles = ignoresMapObstacles }, new CombatModifiers());
+                new FakeShipMoveData { IgnoresMapObstacles = ignoresMapObstacles }, modifiers);
             if (isReady)
             {
                 model.FinishArrival();
@@ -1234,7 +1339,7 @@ namespace EmpireAtWar.Tests.Movement
                 BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(construct, Is.Not.Null);
             construct.Invoke(component, new object[] { new FakeMapModel(_mapRange), null,
-                recordingShipNavigationService, new IgnoredSpawnClearance(), null, null, null, model, null,
+                recordingShipNavigationService, new IgnoredSpawnClearance(), null, null, null, model, modifiers,
                 ShipType.Arquitens, Vector3.zero, TestPlayers.Human, ShipSpawnPose.Hyperspace, 1L,
                 new EmpireAtWar.Services.Ships.ShipFacingSolveScheduler() });
             System.Type motionType = typeof(ShipMoveComponent).Assembly.GetType(
@@ -1261,6 +1366,32 @@ namespace EmpireAtWar.Tests.Movement
             public void ReleaseLanding(object ship)
             {
             }
+        }
+
+        private sealed class SpacingTarget : IEntity, IEntityTransformFacade, IHealthModelObserver
+        {
+            public long Id => 1;
+            public PlayerId Owner => TestPlayers.Enemy;
+            public IHealthModelObserver HealthModel => this;
+            public Transform Transform { get; }
+            public bool IsDestroyed { get; set; }
+            public bool HasUnits => true;
+            public SpacingTarget(Transform transform) => Transform = transform;
+            public T GetFacade<T>() where T : IEntityFacade => (T)(IEntityFacade)this;
+            public bool TryGetFacade<T>(out T facade) where T : IEntityFacade
+            { facade = this is T value ? value : default; return facade != null; }
+            public event System.Action OnDestroy { add { } remove { } }
+            public event System.Action OnValueChanged { add { } remove { } }
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => System.Array.Empty<HardPointModel>();
+            public float Hull => 1f;
+            public ShipClass ShipClass => ShipClass.Capital;
+            public bool HasLiveHardPoints => true;
+            public float HullPercentage => 1f;
+            public float Shields => 1f;
+            public float ShieldPercentage => 1f;
+            public bool IsLostShieldGenerator => false;
+            public bool HasShields => true;
+            public IHardPointModel[] GetShipUnits(HardPointType type) => System.Array.Empty<IHardPointModel>();
         }
 
         private static ShipMoveModel GetModel(ShipMoveComponent component)

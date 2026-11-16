@@ -53,6 +53,9 @@ namespace EmpireAtWar.Tests.Editor
                 WorldMoveCount++;
             }
 
+            public void HoldPosition(IEntity target) { Stop(); }
+            public void CancelCombatHold() { }
+
             public void LookAtTarget(IEntity target)
             {
             }

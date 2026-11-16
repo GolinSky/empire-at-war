@@ -22,6 +22,7 @@ using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.Ship;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Patterns.StateMachine;
 using EmpireAtWar.Tests.Editor;
 using NUnit.Framework;
 using UnityEngine;
@@ -80,8 +81,9 @@ namespace EmpireAtWar.Tests.Movement
                 Is.EqualTo(65f).Within(0.001f));
         }
 
-        [Test]
-        public void Attack_TargetKilled_AttacksNearestPreferredRadarContactEvenOutOfRange()
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Attack_TargetKilled_AttacksNearestPreferredRadarContactEvenOutOfRange(bool formation)
         {
             GameObject deadObject = new GameObject("Dead enemy");
             GameObject fighterObject = new GameObject("Near fighter");
@@ -109,7 +111,8 @@ namespace EmpireAtWar.Tests.Movement
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
                     new IdleState(_movement, _weapon, radar), null, attack, null, null, null, null, abilities, caster, radar, null);
                 runner.Start();
-                runner.Attack(_target, Vector3.zero);
+                Vector3 offset = formation ? Vector3.forward * 20f : Vector3.zero;
+                runner.Attack(_target, offset);
 
                 _target.Health.IsDestroyed = true;
                 runner.Tick(0.1f);
@@ -117,6 +120,8 @@ namespace EmpireAtWar.Tests.Movement
                 // The weapon prefers ships: the far capital wins over the nearer fighter; the dead contact is skipped.
                 Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Attack));
                 Assert.That(orders.Target, Is.SameAs(capital));
+                Assert.That(orders.Offset.X, Is.EqualTo(offset.x));
+                Assert.That(orders.Offset.Z, Is.EqualTo(offset.z));
                 Assert.That(machine.CurrentState, Is.SameAs(attack));
                 // The stub has no health facade, so the new attack plans its approach on the next tick.
                 runner.Tick(0.1f);
@@ -152,7 +157,8 @@ namespace EmpireAtWar.Tests.Movement
             {
                 state.Tick(i == 0 ? 0.25f : 0.5f);
                 float angle = 20f * (i / 2 + 1) * (i % 2 == 0 ? 1f : -1f);
-                Vector3 expected = _target.Transform.position + Quaternion.AngleAxis(angle, Vector3.up) * Vector3.left * 65f;
+                Vector3 bearing = formation ? Vector3.forward : Vector3.left;
+                Vector3 expected = _target.Transform.position + Quaternion.AngleAxis(angle, Vector3.up) * bearing * 65f;
                 Assert.That(Vector3.Distance(_movement.Destination, expected), Is.LessThan(0.001f));
                 Assert.That(_movement.LastPreserveCourse, Is.False);
                 Assert.That(_movement.MoveCount, Is.EqualTo(i + 2));
@@ -180,7 +186,8 @@ namespace EmpireAtWar.Tests.Movement
             state.Tick(0.1f);
             state.Tick(0.5f);
 
-            Vector3 expected = _target.Transform.position + Quaternion.AngleAxis(20f, Vector3.up) * Vector3.left * 65f;
+            Vector3 bearing = formation ? Vector3.forward : Vector3.left;
+            Vector3 expected = _target.Transform.position + Quaternion.AngleAxis(20f, Vector3.up) * bearing * 65f;
             Assert.That(Vector3.Distance(_movement.Destination, expected), Is.LessThan(0.001f));
             Assert.That(_movement.LastPreserveCourse, Is.False);
         }
@@ -403,6 +410,74 @@ namespace EmpireAtWar.Tests.Movement
             ShipEngagement.Pursue(_movement, _weapon, _target);
             Assert.That(Vector3.Distance(_movement.Destination, _target.Transform.position),
                 Is.EqualTo(105f));
+        }
+
+        [TestCase(0f, false)]
+        [TestCase(100f, false)]
+        [TestCase(500f, true)]
+        public void Attack_ThreeFormationRingsKeepHullClearanceWithoutRangeProjection(float targetRadius, bool mixedRadii)
+        {
+            const int SHIP_COUNT = 19;
+            var positions = new List<FormationPoint>();
+            var radii = new List<float>();
+            var offsets = new List<FormationPoint>();
+            var destinations = new List<Vector3>();
+            _target.Transform.position = new Vector3(5000f, 0f, 0f);
+            _target.NavigationRadius = targetRadius;
+            for (int i = 0; i < SHIP_COUNT; i++)
+            {
+                positions.Add(new FormationPoint(-5000f, i * 100f));
+                radii.Add(mixedRadii ? 5f + i % 4 * 10f : 40f);
+            }
+            FormationModel.CalculateCompactDestinations(positions, radii, default, offsets, float.Epsilon);
+
+            for (int i = 0; i < SHIP_COUNT; i++)
+            {
+                var movement = new Movement { NavigationRadius = radii[i] };
+                var state = new AttackTargetState(null, _weapon, movement);
+                state.SetData(_target, new Vector3(offsets[i].X, 0f, offsets[i].Z), UnitOrderModel.NO_HARD_POINT);
+                state.Tick(0.1f);
+                destinations.Add(movement.Destination);
+                Assert.That(Vector3.Distance(movement.Destination, _target.Transform.position),
+                    Is.GreaterThanOrEqualTo(targetRadius + radii[i]));
+                for (int j = 0; j < i; j++)
+                    Assert.That(Vector3.Distance(destinations[i], destinations[j]),
+                        Is.GreaterThanOrEqualTo(radii[i] + radii[j] - 0.001f), $"Ships {i} and {j}");
+            }
+        }
+
+        [Test]
+        public void Attack_FormationSlotUsesLiveContactClearanceAfterTargetReplacement()
+        {
+            var state = new AttackTargetState(null, _weapon, _movement);
+            Vector3 offset = Vector3.forward * 20f;
+            state.SetData(_target, offset, UnitOrderModel.NO_HARD_POINT);
+            state.Tick(0.1f);
+            _movement.Stop();
+            var replacement = new Target(_target.Transform) { Id = 2, NavigationRadius = 200f };
+            state.SetData(replacement, offset, UnitOrderModel.NO_HARD_POINT);
+            state.Tick(0.1f);
+            Assert.That(_movement.Destination, Is.EqualTo(replacement.Transform.position + Vector3.forward * 225f));
+        }
+
+        [Test]
+        public void SharedPursuit_CoincidentCentersUseStableNonzeroStandoff()
+        {
+            _movement.CurrentPosition = _target.Transform.position;
+            Vector3 first = ShipEngagement.GetStandoffPosition(_movement, _weapon, _target);
+            Vector3 second = ShipEngagement.GetStandoffPosition(_movement, _weapon, _target);
+            Assert.That(first, Is.EqualTo(second));
+            Assert.That(Vector3.Distance(first, _target.Transform.position), Is.EqualTo(65f).Within(0.001f));
+        }
+
+        [Test]
+        public void SharedPursuit_FormationBearingSurvivesOwnDetour()
+        {
+            Vector3 offset = Vector3.forward * 20f;
+            Vector3 first = ShipEngagement.GetStandoffPosition(_movement, _weapon, _target, offset);
+            _movement.CurrentPosition = new Vector3(900f, 0f, 100f);
+            Assert.That(ShipEngagement.GetStandoffPosition(_movement, _weapon, _target, offset), Is.EqualTo(first));
+            Assert.That(first, Is.EqualTo(_target.Transform.position + Vector3.forward * 65f));
         }
 
         [TestCase(true, 321f)]
@@ -709,6 +784,119 @@ namespace EmpireAtWar.Tests.Movement
             }
         }
 
+        [TestCase("attack")]
+        [TestCase("formation")]
+        [TestCase("minimum-range")]
+        [TestCase("hardpoint")]
+        [TestCase("artillery")]
+        [TestCase("attack-move")]
+        [TestCase("guard")]
+        [TestCase("hunt")]
+        public void CombatRangeHold_AllBranchesPreserveCorrectionAndCancelItOnExit(string branch)
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            _target.Transform.position = Vector3.right * 40f;
+            _orderSettings = ScriptableObject.CreateInstance<UnitOrderSettings>();
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            IBaseState state;
+            if (branch == "attack-move")
+            {
+                var attackMove = new AttackMoveState(_movement, _weapon, radar, null);
+                attackMove.SetData(Vector3.forward * 100f, new AttackMoveEngagement());
+                attackMove.Enter();
+                typeof(AttackMoveState).GetField("_engagementTarget", PRIVATE_INSTANCE).SetValue(attackMove, _target);
+                state = attackMove;
+            }
+            else if (branch == "guard")
+            {
+                var guard = new GuardState(_movement, _weapon, radar, null, _orderSettings);
+                guard.SetData(_target, Vector3.zero);
+                typeof(GuardState).GetField("_engagementTarget", PRIVATE_INSTANCE).SetValue(guard, _target);
+                state = guard;
+            }
+            else if (branch == "hunt")
+            {
+                var players = TestPlayers.CreateDuel();
+                var vision = new VisionService(players);
+                vision.Register(TestPlayers.Human, _target.Transform, 100f);
+                var hunt = new HuntState(_movement, _weapon, null, new EntityLocator(), players,
+                    vision, _orderSettings, TestPlayers.Human);
+                typeof(HuntState).GetField("_target", PRIVATE_INSTANCE).SetValue(hunt, _target);
+                typeof(HuntState).GetField("_retargetTimer", PRIVATE_INSTANCE).SetValue(hunt, 100f);
+                state = hunt;
+            }
+            else
+            {
+                if (branch == "artillery") _target.Transform.position = Vector3.right * 180f;
+                if (branch == "hardpoint")
+                {
+                    _target.Health.ShipClass = ShipClass.HeavyCapital;
+                    _target.NavigationRadius = 150f;
+                    _target.HasHealthFacade = true;
+                }
+                var attack = new AttackTargetState(new AttackDataFactory(), _weapon, _movement,
+                    branch == "artillery" ? new ArtilleryCapability(200f) : null);
+                attack.SetData(_target, branch == "formation" ? Vector3.forward * 20f : Vector3.zero,
+                    UnitOrderModel.NO_HARD_POINT);
+                if (branch == "minimum-range") _movement.MoveToPosition(Vector3.forward * 100f);
+                attack.Enter();
+                state = attack;
+            }
+
+            state.Tick(0.1f);
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+            _movement.BeginSettling(Vector3.forward * 3f);
+            int plans = _movement.MoveCount;
+            for (int i = 0; i < 5; i++) state.Tick(0.1f);
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+            Assert.That(_movement.IsMoving, Is.True);
+            Assert.That(_movement.Destination, Is.EqualTo(Vector3.forward * 3f));
+            Assert.That(_movement.MoveCount, Is.EqualTo(plans));
+
+            state.Exit();
+            Assert.That(_movement.HeldTarget, Is.Null);
+            Assert.That(_movement.IsMoving, Is.False);
+        }
+
+        [Test]
+        public void Attack_ChangingTargetCancelsOldCorrectionBeforeNextTick()
+        {
+            _target.Transform.position = Vector3.right * 40f;
+            var state = new AttackTargetState(null, _weapon, _movement);
+            state.SetData(_target);
+            state.Tick(0.1f);
+            _movement.BeginSettling(Vector3.forward * 3f);
+
+            state.SetData(new Target(_target.Transform) { Id = 2 });
+
+            Assert.That(_movement.HeldTarget, Is.Null);
+            Assert.That(_movement.IsMoving, Is.False);
+        }
+
+        [Test]
+        public void Guard_LosingTargetAtHomeCancelsCorrectionWithoutStartingFollow()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            _orderSettings = ScriptableObject.CreateInstance<UnitOrderSettings>();
+            _movement.CurrentPosition = _target.Transform.position;
+            var radar = new Radar();
+            radar.Enemies.Add(_target);
+            var state = new GuardState(_movement, _weapon, radar, null, _orderSettings);
+            state.SetData(_target, Vector3.zero);
+            typeof(GuardState).GetField("_engagementTarget", PRIVATE_INSTANCE).SetValue(state, _target);
+            state.Tick(0.1f);
+            _movement.BeginSettling(_movement.CurrentPosition + Vector3.forward * 3f);
+            int plans = _movement.MoveCount;
+
+            radar.Enemies.Remove(_target);
+            state.Tick(0.1f);
+
+            Assert.That(_movement.HeldTarget, Is.Null);
+            Assert.That(_movement.IsMoving, Is.False);
+            Assert.That(_movement.MoveCount, Is.EqualTo(plans));
+        }
+
         private sealed class AbilityFactory : IShipAbilityFactory
         {
             private readonly IShipAbility _ability;
@@ -724,6 +912,9 @@ namespace EmpireAtWar.Tests.Movement
 
         private sealed class Movement : IShipMovement
         {
+            private IEntity _heldTarget;
+            private bool _isSettling;
+            public IEntity HeldTarget => _heldTarget;
             public Vector3 CurrentPosition { get; set; }
             public Vector3 Destination { get; private set; }
             public bool IsMoving { get; private set; }
@@ -732,12 +923,30 @@ namespace EmpireAtWar.Tests.Movement
             public float NavigationRadius { get; set; } = 5f;
             public int MoveCount { get; private set; }
             public void MoveToPosition(Vector3 position, bool preserveCourse = false)
-            { Destination = position; IsMoving = !FailMoves; LastPreserveCourse = preserveCourse; MoveCount++; }
+            {
+                if (preserveCourse && _isSettling && IsMoving) return;
+                CancelCombatHold();
+                Destination = position; IsMoving = !FailMoves; LastPreserveCourse = preserveCourse; MoveCount++;
+            }
+            public void BeginSettling(Vector3 destination)
+            { _isSettling = true; Destination = destination; IsMoving = true; MoveCount++; }
             public void FinishLeg() { CurrentPosition = Destination; IsMoving = false; }
             public void LookAtTarget(IEntity target) { }
             public void LookInDirection(Vector3 direction) { }
             public float GetRange(Vector3 position) => Vector3.Distance(CurrentPosition, position);
-            public void Stop() => IsMoving = false;
+            public void Stop() { CancelCombatHold(); IsMoving = false; }
+            public void HoldPosition(IEntity target)
+            {
+                if (ReferenceEquals(_heldTarget, target)) return;
+                Stop();
+                _heldTarget = target;
+            }
+            public void CancelCombatHold()
+            {
+                if (_isSettling) IsMoving = false;
+                _isSettling = false;
+                _heldTarget = null;
+            }
         }
 
         private sealed class Weapon : IWeaponComponent

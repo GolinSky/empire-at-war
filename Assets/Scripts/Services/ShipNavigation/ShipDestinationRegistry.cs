@@ -6,12 +6,25 @@ namespace EmpireAtWar.Services.ShipNavigation
 {
     public sealed class ShipDestinationRegistry
     {
-
+        private const int MAX_SPATIAL_QUERY_VISITS = 256;
+        private const int MAX_SPATIAL_QUERY_CELLS = 64;
         private readonly Dictionary<int, Entry> _entries =
             new Dictionary<int, Entry>();
+        private readonly Dictionary<(int X, int Z), int> _spatialCells = new Dictionary<(int, int), int>();
+        private readonly List<List<SpatialPoint>> _spatialBuckets = new List<List<SpatialPoint>>();
+        private int _spatialBucketCount;
+        private bool _spatialQueries;
+        private bool _spatialDirty;
+        private float _maximumRadius;
+        private float _spatialCellSize;
+
+        public int SpatialQuerySaturations { get; private set; }
 
         private int _nextRegistrationId;
         private int _version;
+
+        // Unlike Version, this never scans live positions. Changes conservatively wake failed spacing work.
+        public int ReservationVersion { get; private set; }
 
         public int Version
         {
@@ -47,7 +60,9 @@ namespace EmpireAtWar.Services.ShipNavigation
                 navigationRadius: navigationRadius,
                 hullSpan: hullSpan,
                 activeFinalPosition: initialFinalPosition));
+            _spatialDirty = true;
             _version++;
+            ReservationVersion++;
             return registrationId;
         }
 
@@ -55,7 +70,9 @@ namespace EmpireAtWar.Services.ShipNavigation
         {
             GetEntry(registrationId);
             _entries.Remove(registrationId);
+            _spatialDirty = true;
             _version++;
+            ReservationVersion++;
         }
 
         public bool HasClearance(
@@ -87,9 +104,14 @@ namespace EmpireAtWar.Services.ShipNavigation
             }
 
             if (!entry.ActiveFinalPosition.HasValue || !PositionsEqual(entry.ActiveFinalPosition.Value, position) ||
-                entry.PendingFinalPosition.HasValue) _version++;
+                entry.PendingFinalPosition.HasValue)
+            {
+                _version++;
+                ReservationVersion++;
+            }
             entry.ActiveFinalPosition = position;
             entry.PendingFinalPosition = null;
+            _spatialDirty = true;
         }
 
         public void ReservePendingFinalPosition(
@@ -104,15 +126,25 @@ namespace EmpireAtWar.Services.ShipNavigation
                     "The ship's deferred final position is already occupied.");
             }
 
-            if (!entry.PendingFinalPosition.HasValue || !PositionsEqual(entry.PendingFinalPosition.Value, position)) _version++;
+            if (!entry.PendingFinalPosition.HasValue || !PositionsEqual(entry.PendingFinalPosition.Value, position))
+            {
+                _version++;
+                ReservationVersion++;
+            }
             entry.PendingFinalPosition = position;
+            _spatialDirty = true;
         }
 
         public void CancelPendingFinalPosition(int registrationId)
         {
             Entry entry = GetEntry(registrationId);
-            if (entry.PendingFinalPosition.HasValue) _version++;
+            if (entry.PendingFinalPosition.HasValue)
+            {
+                _version++;
+                ReservationVersion++;
+            }
             entry.PendingFinalPosition = null;
+            _spatialDirty = true;
         }
 
         public void Stop(int registrationId)
@@ -120,9 +152,120 @@ namespace EmpireAtWar.Services.ShipNavigation
             Entry entry = GetEntry(registrationId);
             FormationPoint position = entry.CurrentPosition();
             if (!entry.ActiveFinalPosition.HasValue || !PositionsEqual(entry.ActiveFinalPosition.Value, position) ||
-                entry.PendingFinalPosition.HasValue) _version++;
+                entry.PendingFinalPosition.HasValue)
+            {
+                _version++;
+                ReservationVersion++;
+            }
             entry.ActiveFinalPosition = position;
             entry.PendingFinalPosition = null;
+            _spatialDirty = true;
+        }
+
+        /// <summary>Snapshots occupancy for one synchronous correction plan. Do not span movement updates.</summary>
+        public void BeginSpatialQueries()
+        {
+            if (_spatialQueries) throw new InvalidOperationException("Spatial query scope is already active.");
+            _spatialQueries = true;
+            _spatialDirty = true;
+            SpatialQuerySaturations = 0;
+        }
+
+        public void EndSpatialQueries()
+        {
+            _spatialQueries = false;
+            for (int i = 0; i < _spatialBucketCount; i++) _spatialBuckets[i].Clear();
+            _spatialBucketCount = 0;
+            _spatialCells.Clear();
+        }
+
+        private void RebuildSpatialIndex()
+        {
+            _spatialCells.Clear();
+            for (int i = 0; i < _spatialBucketCount; i++) _spatialBuckets[i].Clear();
+            _spatialBucketCount = 0;
+            _maximumRadius = 1f;
+            foreach (Entry entry in _entries.Values)
+                _maximumRadius = Math.Max(_maximumRadius, entry.NavigationRadius);
+            _spatialCellSize = _maximumRadius * 2f;
+            foreach (KeyValuePair<int, Entry> pair in _entries)
+            {
+                Entry entry = pair.Value;
+                AddSpatialPoint(pair.Key, entry, entry.CurrentPosition());
+                if (entry.ActiveFinalPosition.HasValue)
+                    AddSpatialPoint(pair.Key, entry, entry.ActiveFinalPosition.Value);
+                if (entry.PendingFinalPosition.HasValue)
+                    AddSpatialPoint(pair.Key, entry, entry.PendingFinalPosition.Value);
+            }
+            _spatialDirty = false;
+        }
+
+        private void AddSpatialPoint(int registrationId, Entry entry, FormationPoint position)
+        {
+            var cell = ((int)Math.Floor(position.X / _spatialCellSize),
+                (int)Math.Floor(position.Z / _spatialCellSize));
+            if (!_spatialCells.TryGetValue(cell, out int bucket))
+            {
+                bucket = _spatialBucketCount++;
+                if (bucket == _spatialBuckets.Count) _spatialBuckets.Add(new List<SpatialPoint>());
+                _spatialCells.Add(cell, bucket);
+            }
+            _spatialBuckets[bucket].Add(new SpatialPoint(registrationId, entry, position));
+        }
+
+        private bool IsSpatialPositionClear(FormationPoint position, float radius,
+            ShipHullSpan hullSpan, int? ignoredRegistrationId)
+        {
+            if (_spatialDirty) RebuildSpatialIndex();
+            float extent = radius + _maximumRadius;
+            int minX = (int)Math.Floor((position.X - extent) / _spatialCellSize);
+            int maxX = (int)Math.Floor((position.X + extent) / _spatialCellSize);
+            int minZ = (int)Math.Floor((position.Z - extent) / _spatialCellSize);
+            int maxZ = (int)Math.Floor((position.Z + extent) / _spatialCellSize);
+            int cells = 0;
+            int visits = 0;
+            for (int x = minX; x <= maxX; x++)
+            {
+                for (int z = minZ; z <= maxZ; z++)
+                {
+                    if (++cells > MAX_SPATIAL_QUERY_CELLS)
+                    {
+                        SpatialQuerySaturations++;
+                        return false;
+                    }
+                    if (!_spatialCells.TryGetValue((x, z), out int bucket)) continue;
+                    List<SpatialPoint> points = _spatialBuckets[bucket];
+                    for (int i = 0; i < points.Count; i++)
+                    {
+                        if (++visits > MAX_SPATIAL_QUERY_VISITS)
+                        {
+                            SpatialQuerySaturations++;
+                            return false;
+                        }
+                        SpatialPoint point = points[i];
+                        if (point.RegistrationId == ignoredRegistrationId ||
+                            !point.Entry.HullSpan.Overlaps(hullSpan)) continue;
+                        if (!FormationModel.HasClearance(position, radius,
+                                point.Position, point.Entry.NavigationRadius))
+                            return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private readonly struct SpatialPoint
+        {
+            public readonly int RegistrationId;
+            public readonly Entry Entry;
+            public readonly FormationPoint Position;
+
+            public SpatialPoint(int registrationId, Entry entry, FormationPoint position)
+            {
+                RegistrationId = registrationId;
+                Entry = entry;
+                Position = position;
+            }
         }
 
         private bool IsPositionClear(
@@ -132,6 +275,8 @@ namespace EmpireAtWar.Services.ShipNavigation
             int? ignoredRegistrationId)
         {
             ValidateRadius(navigationRadius);
+            if (_spatialQueries)
+                return IsSpatialPositionClear(position, navigationRadius, hullSpan, ignoredRegistrationId);
             foreach (KeyValuePair<int, Entry> pair in _entries)
             {
                 Entry entry = pair.Value;

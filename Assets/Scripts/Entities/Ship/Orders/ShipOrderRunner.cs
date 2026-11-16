@@ -61,6 +61,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         public void BeginAbilityFacing()
         {
+            _movement.CancelCombatHold();
             IsAbilityFacing = true;
             _stateMachine.SetState(_idleState);
             _movement.Stop();
@@ -211,6 +212,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         public void CastAbility(ShipAbilityId id, IEntity target, float range)
         {
+            _movement.CancelCombatHold();
             _pendingAbilityId = id;
             _pendingAbilityTarget = target;
             IsAbilityFacing = false;
@@ -230,6 +232,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             IReadOnlyList<FormationPoint> waypoints = null, int targetHardPointId = UnitOrderModel.NO_HARD_POINT,
             AttackMoveEngagement engagement = null)
         {
+            _movement.CancelCombatHold();
             if (_orders.Current != UnitOrderType.None || _pendingAbilityTarget != null)
                 RecordOrder("cancel", $"Replaced by {type}.");
             IsAbilityFacing = false;
@@ -317,7 +320,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 IEntity nextTarget = ShipEngagement.FindNearestEnemy(_radar, _movement, _weapon, inRangeOnly: false);
                 if (nextTarget != null)
                 {
-                    Issue(UnitOrderType.Attack, target: nextTarget);
+                    Issue(UnitOrderType.Attack, target: nextTarget, offset: _orders.Offset);
                     return;
                 }
             }

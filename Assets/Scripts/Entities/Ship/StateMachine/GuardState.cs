@@ -68,6 +68,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 (_isReturning || _engagementTarget.HealthModel.IsDestroyed || _engagementTarget.IsCloaked() ||
                  !_radar.Enemies.Contains(_engagementTarget)))
             {
+                _movement.CancelCombatHold();
                 _weapon.ResetTarget();
                 _engagementTarget = null;
             }
@@ -83,6 +84,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 if (enemy != null && enemy != _engagementTarget &&
                     (_engagementTarget == null || ShipEngagement.IsPreferred(enemy, _weapon)))
                 {
+                    _movement.CancelCombatHold();
                     _engagementTarget = enemy;
                     _weapon.AddTarget(_attackDataFactory.ConstructData(enemy), AttackType.MainTarget);
                     if (!ShipEngagement.CanEngage(enemy, _movement, _weapon))
@@ -96,7 +98,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _isFollowing = false;
                 if (ShipEngagement.CanEngage(_engagementTarget, _movement, _weapon))
                 {
-                    if (_movement.IsMoving) _movement.Stop();
+                    _movement.HoldPosition(_engagementTarget);
                     _movement.LookAtTarget(_engagementTarget);
                 }
                 else ShipEngagement.Pursue(_movement, _weapon, _engagementTarget);
@@ -107,6 +109,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         public void Exit()
         {
+            _movement.CancelCombatHold();
             _engagementTarget = null;
             _isReturning = false;
             _weapon.ResetTarget();
