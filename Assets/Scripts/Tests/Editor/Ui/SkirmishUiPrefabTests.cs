@@ -40,12 +40,26 @@ namespace EmpireAtWar.Tests.Editor
                     SkirmishSlotRowView row = rows.GetArrayElementAtIndex(i).objectReferenceValue as SkirmishSlotRowView;
                     Assert.That(row, Is.Not.Null, $"Slot row {i} is not bound.");
                     SerializedObject serializedRow = new SerializedObject(row);
-                    foreach (string field in new[] { "titleText", "occupantDropdown", "factionDropdown", "teamDropdown", "colorDropdown" })
+                    foreach (string field in new[] { "titleText", "occupantDropdown", "factionDropdown", "teamDropdown", "colorButton", "colorLabel" })
                     {
                         Assert.That(serializedRow.FindProperty(field).objectReferenceValue, Is.Not.Null,
                             $"Slot row {i} has no {field}.");
                     }
                 }
+
+                var paletteView = (SkirmishColorPaletteView)serializedPopup.FindProperty("colorPalette").objectReferenceValue;
+                Assert.That(paletteView, Is.Not.Null);
+                Assert.That(paletteView.IsOpen, Is.False);
+                using var serializedPalette = new SerializedObject(paletteView);
+                foreach (string field in new[] { "bounds", "panel", "dismissButton", "closeButton", "colorName", "selectedMarker" })
+                    Assert.That(serializedPalette.FindProperty(field).objectReferenceValue, Is.Not.Null, field);
+                SerializedProperty swatches = serializedPalette.FindProperty("swatches");
+                Assert.That(swatches.arraySize, Is.EqualTo(MatchRules.MAX_TEAM_COLORS));
+                for (int i = 0; i < swatches.arraySize; i++)
+                    Assert.That(swatches.GetArrayElementAtIndex(i).objectReferenceValue, Is.Not.Null, $"Swatch {i}");
+                GridLayoutGroup grid = paletteView.GetComponentInChildren<GridLayoutGroup>(true);
+                Assert.That(grid.constraint, Is.EqualTo(GridLayoutGroup.Constraint.FixedColumnCount));
+                Assert.That(grid.constraintCount, Is.EqualTo(4));
 
                 foreach (string field in new[]
                          {
@@ -143,19 +157,35 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(model.Slots[2].Occupant, Is.EqualTo(SkirmishSlotOccupant.AiHard));
                 Assert.That(thirdFaction.interactable, Is.True);
 
-                TMP_Dropdown humanColor = GetRowDropdown(rows, 0, "colorDropdown");
-                TMP_Dropdown enemyColor = GetRowDropdown(rows, 1, "colorDropdown");
-                humanColor.value = enemyColor.value;
+                var humanRow = (SkirmishSlotRowView)rows.GetArrayElementAtIndex(0).objectReferenceValue;
+                var enemyRow = (SkirmishSlotRowView)rows.GetArrayElementAtIndex(1).objectReferenceValue;
+                var palette = (SkirmishColorPaletteView)serializedPopup.FindProperty("colorPalette").objectReferenceValue;
+                using var serializedPalette = new SerializedObject(palette);
+                SerializedProperty swatches = serializedPalette.FindProperty("swatches");
+                var red = (Button)swatches.GetArrayElementAtIndex(1).objectReferenceValue;
+                var silver = (Button)swatches.GetArrayElementAtIndex(15).objectReferenceValue;
+                humanRow.ColorButton.onClick.Invoke();
+                Assert.That(palette.IsOpen, Is.True);
+                red.onClick.Invoke();
+                Assert.That(palette.IsOpen, Is.False);
 
                 // Taking a color that another row uses swaps the two colors.
                 Assert.That(model.Slots[0].ColorIndex, Is.EqualTo(1));
                 Assert.That(model.Slots[1].ColorIndex, Is.EqualTo(0));
-                Assert.That(enemyColor.value, Is.EqualTo(0));
+                using var serializedEnemy = new SerializedObject(enemyRow);
+                var enemyColor = (TMP_Text)serializedEnemy.FindProperty("colorLabel").objectReferenceValue;
+                Assert.That(enemyColor.text, Does.Contain("Blue"));
 
-                Assert.That(humanColor.options.Count, Is.EqualTo(16));
-                Assert.That(humanColor.options[15].text, Does.Contain("Warm Silver"));
-                humanColor.value = 15;
+                humanRow.ColorButton.onClick.Invoke();
+                Assert.That(popup.CloseColorPalette(), Is.True);
+                silver.onClick.Invoke();
+                Assert.That(model.Slots[0].ColorIndex, Is.EqualTo(1));
+                humanRow.ColorButton.onClick.Invoke();
+                silver.onClick.Invoke();
                 Assert.That(model.Slots[0].ColorIndex, Is.EqualTo(15));
+                using var serializedHuman = new SerializedObject(humanRow);
+                var humanColor = (TMP_Text)serializedHuman.FindProperty("colorLabel").objectReferenceValue;
+                Assert.That(humanColor.text, Does.Contain("Warm Silver"));
 
                 Toggle superWeapons = (Toggle)serializedPopup.FindProperty("superWeaponsToggle").objectReferenceValue;
                 superWeapons.isOn = false;
@@ -192,7 +222,7 @@ namespace EmpireAtWar.Tests.Editor
                     SerializedProperty rows = serializedPopup.FindProperty("slotRows");
                     var row = (SkirmishSlotRowView)rows.GetArrayElementAtIndex(1).objectReferenceValue;
                     TMP_Dropdown dropdown = GetRowDropdown(rows, 1, "occupantDropdown");
-                    row.Initialize(1, new[] { "Republic" }, new[] { "Team 1" }, new[] { "Blue" });
+                    row.Initialize(1, new[] { "Republic" }, new[] { "Team 1" });
                     string[] humanOptions = { "Friend", "Kick" };
                     string[] vacantOptions = { "Closed", "AI Easy", "AI Medium", "AI Hard", "AI Ultra Hard", "Open" };
                     bool alreadyHuman = initialOccupant == SkirmishSlotOccupant.Human;
@@ -202,7 +232,7 @@ namespace EmpireAtWar.Tests.Editor
                     };
                     int initialIndex = alreadyHuman ? 0
                         : initialOccupant == SkirmishSlotOccupant.Vacant ? 5 : (int)initialOccupant;
-                    row.Render(slot, Color.white, new SkirmishSlotRowState("Slot", "HUMAN",
+                    row.Render(slot, Color.white, "Blue", new SkirmishSlotRowState("Slot", "HUMAN",
                         alreadyHuman ? humanOptions : vacantOptions, initialIndex,
                         true, true, true, null));
                     int commands = 0;
@@ -221,7 +251,7 @@ namespace EmpireAtWar.Tests.Editor
                     slot.Occupant = SkirmishSlotOccupant.Human;
                     // Same display name/options must still invalidate a replaced member's popup.
                     slot.MemberId = revokeEditing ? 1 : 2;
-                    row.Render(slot, Color.white, new SkirmishSlotRowState("Friend", "HUMAN",
+                    row.Render(slot, Color.white, "Blue", new SkirmishSlotRowState("Friend", "HUMAN",
                         humanOptions, 0, !revokeEditing, true, true, null));
 
                     Assert.That(dropdown.interactable, Is.False, "Old popup must not reopen during its fade.");

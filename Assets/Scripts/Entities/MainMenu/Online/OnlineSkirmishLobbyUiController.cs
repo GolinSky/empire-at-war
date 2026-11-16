@@ -129,6 +129,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         protected override bool HandleCancel()
         {
+            if (_ui.CloseColorPalette()) return true;
+
             Close();
             return true;
         }

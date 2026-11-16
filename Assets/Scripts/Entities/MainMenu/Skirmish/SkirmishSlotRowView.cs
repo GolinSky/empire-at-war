@@ -17,7 +17,8 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private TMP_Dropdown occupantDropdown;
         [SerializeField] private TMP_Dropdown factionDropdown;
         [SerializeField] private TMP_Dropdown teamDropdown;
-        [SerializeField] private TMP_Dropdown colorDropdown;
+        [SerializeField] private Button colorButton;
+        [SerializeField] private TMP_Text colorLabel;
         [SerializeField] private TMP_Text roleText;
         [SerializeField] private Graphic colorEdge;
         [SerializeField] private CanvasGroup configurationGroup;
@@ -39,24 +40,24 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         public event Action<int, int> TeamChanged;
 
-        public event Action<int, int> ColorChanged;
+        public event Action<int> ColorRequested;
+
+        public Button ColorButton => colorButton;
 
         public void Initialize(
             int rowIndex,
             IReadOnlyList<string> factionOptions,
-            IReadOnlyList<string> teamOptions,
-            IReadOnlyList<string> colorOptions)
+            IReadOnlyList<string> teamOptions)
         {
             _rowIndex = rowIndex;
             slotIndexText.text = (rowIndex + 1).ToString("00");
             SetOptions(factionDropdown, factionOptions);
             SetOptions(teamDropdown, teamOptions);
-            SetOptions(colorDropdown, colorOptions);
 
             occupantDropdown.onValueChanged.AddListener(HandleOccupantChanged);
             factionDropdown.onValueChanged.AddListener(HandleFactionChanged);
             teamDropdown.onValueChanged.AddListener(HandleTeamChanged);
-            colorDropdown.onValueChanged.AddListener(HandleColorChanged);
+            colorButton.onClick.AddListener(RequestColor);
         }
 
         public void Dispose()
@@ -64,10 +65,10 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             occupantDropdown.onValueChanged.RemoveListener(HandleOccupantChanged);
             factionDropdown.onValueChanged.RemoveListener(HandleFactionChanged);
             teamDropdown.onValueChanged.RemoveListener(HandleTeamChanged);
-            colorDropdown.onValueChanged.RemoveListener(HandleColorChanged);
+            colorButton.onClick.RemoveListener(RequestColor);
         }
 
-        public void Render(SkirmishSlotSetup slot, Color playerColor, SkirmishSlotRowState state)
+        public void Render(SkirmishSlotSetup slot, Color playerColor, string colorName, SkirmishSlotRowState state)
         {
             bool optionsChanged = !_occupantOptions.SequenceEqual(state.OccupantOptions);
             if (occupantDropdown.IsExpanded && (optionsChanged || _memberId != slot.MemberId ||
@@ -98,15 +99,15 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             occupantDropdown.SetValueWithoutNotify(state.OccupantIndex);
             factionDropdown.SetValueWithoutNotify((int)slot.Faction);
             teamDropdown.SetValueWithoutNotify(slot.Team);
-            colorDropdown.SetValueWithoutNotify(slot.ColorIndex);
+            string hex = ColorUtility.ToHtmlStringRGB(playerColor);
+            colorLabel.text = $"<mark=#{hex}FF padding=\"0,0,-20,-20\">  </mark>  {colorName}";
             occupantDropdown.interactable = state.OccupantEditable && !_discardOccupantSelection;
             factionDropdown.interactable = state.DetailsEditable;
             teamDropdown.interactable = state.TeamEditable;
-            colorDropdown.interactable = state.DetailsEditable;
+            colorButton.interactable = state.DetailsEditable;
             occupantDropdown.RefreshShownValue();
             factionDropdown.RefreshShownValue();
             teamDropdown.RefreshShownValue();
-            colorDropdown.RefreshShownValue();
             colorEdge.color = playerColor;
             colorEdge.enabled = slot.IsOpen;
             configurationGroup.alpha = slot.IsOpen ? 1f : 0.38f;
@@ -149,6 +150,6 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         private void HandleTeamChanged(int value) => TeamChanged?.Invoke(_rowIndex, value);
 
-        private void HandleColorChanged(int value) => ColorChanged?.Invoke(_rowIndex, value);
+        private void RequestColor() => ColorRequested?.Invoke(_rowIndex);
     }
 }

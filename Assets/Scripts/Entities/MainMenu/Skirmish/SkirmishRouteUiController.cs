@@ -90,9 +90,10 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             Unfocus();
         }
 
-        // Escape closes the open menu screen and returns to mode selection.
         protected override bool HandleCancel()
         {
+            if (_ui.CloseColorPalette()) return true;
+
             Close();
             return true;
         }

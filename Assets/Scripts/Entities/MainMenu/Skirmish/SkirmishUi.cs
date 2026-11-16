@@ -43,6 +43,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private Button inviteButton;
         [SerializeField] private LobbyModeSwitchView lobbyModeSwitch;
         [SerializeField] private SkirmishSlotRowView[] slotRows;
+        [SerializeField] private SkirmishColorPaletteView colorPalette;
         [SerializeField] private Button planetButton;
         [SerializeField] private TMP_Text planetLabel;
         [SerializeField] private Button planetPreviewButton;
@@ -71,6 +72,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         private bool _isInitialized;
         private Button _planetOpener;
+        private int _colorSlot = -1;
+        private int _colorMember;
+        private SkirmishSlotOccupant _colorOccupant;
 
         public event Action PlanetSelectionRequested;
 
@@ -96,15 +100,16 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
             string[] factionOptions = Enum.GetNames(typeof(FactionType));
             string[] teamOptions = CreateTeamOptions(_model.TeamCount);
-            string[] colorOptions = CreateColorOptions(_palette);
+            colorPalette.Initialize(_palette);
+            colorPalette.ColorSelected += SelectColor;
             for (int i = 0; i < slotRows.Length; i++)
             {
                 SkirmishSlotRowView row = slotRows[i];
-                row.Initialize(i, factionOptions, teamOptions, colorOptions);
+                row.Initialize(i, factionOptions, teamOptions);
                 row.OccupantChanged += HandleOccupantChanged;
                 row.FactionChanged += _presenter.SelectSlotFaction;
                 row.TeamChanged += _presenter.SelectSlotTeam;
-                row.ColorChanged += _presenter.SelectSlotColor;
+                row.ColorRequested += OpenColorPalette;
             }
 
             SetData<MapSize>(mapSizeDropdown);
@@ -135,12 +140,15 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             {
                 return;
             }
+            CloseColorPalette();
+            colorPalette.ColorSelected -= SelectColor;
+            colorPalette.Dispose();
             foreach (SkirmishSlotRowView row in slotRows)
             {
                 row.OccupantChanged -= HandleOccupantChanged;
                 row.FactionChanged -= _presenter.SelectSlotFaction;
                 row.TeamChanged -= _presenter.SelectSlotTeam;
-                row.ColorChanged -= _presenter.SelectSlotColor;
+                row.ColorRequested -= OpenColorPalette;
                 row.Dispose();
             }
 
@@ -204,19 +212,6 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             return options;
         }
 
-        // A colored mark supplies the swatch without depending on a symbol font.
-        private static string[] CreateColorOptions(TeamColorPalette palette)
-        {
-            string[] options = new string[palette.Count];
-            for (int i = 0; i < palette.Count; i++)
-            {
-                string hex = ColorUtility.ToHtmlStringRGB(palette.GetColor(i));
-                options[i] = $"<mark=#{hex}FF padding=\"0,0,-20,-20\">  </mark>  {palette.GetName(i)}";
-            }
-
-            return options;
-        }
-
         private void SetData<TEnum>(TMP_Dropdown dropdown)
         {
             dropdown.options.Clear();
@@ -244,7 +239,17 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         {
             for (int i = 0; i < slotRows.Length; i++)
             {
-                slotRows[i].Render(_model.Slots[i], _palette.GetColor(_model.Slots[i].ColorIndex), CreateRowState(i));
+                SkirmishSlotSetup slot = _model.Slots[i];
+                slotRows[i].Render(slot, _palette.GetColor(slot.ColorIndex), _palette.GetName(slot.ColorIndex),
+                    CreateRowState(i));
+            }
+
+            if (colorPalette.IsOpen)
+            {
+                if (CanSelectColor())
+                    colorPalette.SetSelection(_model.Slots[_colorSlot].ColorIndex);
+                else
+                    CloseColorPalette();
             }
 
             bool canEditSettings = _model.CanEditSettings;
@@ -332,6 +337,47 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         }
 
         private void RaiseInviteRequested() => InviteRequested?.Invoke();
+
+        public override void Hide()
+        {
+            CloseColorPalette();
+            base.Hide();
+        }
+
+        public bool CloseColorPalette() => colorPalette.Close();
+
+        private void OpenColorPalette(int slotIndex)
+        {
+            if (!_model.CanEditDetails(slotIndex)) return;
+
+            SkirmishSlotSetup slot = _model.Slots[slotIndex];
+            _colorSlot = slotIndex;
+            _colorMember = slot.MemberId;
+            _colorOccupant = slot.Occupant;
+            colorPalette.Open(slotRows[slotIndex].ColorButton, slot.ColorIndex, GetColorSwapHint);
+        }
+
+        private string GetColorSwapHint(int colorIndex)
+        {
+            for (int i = 0; i < _model.Slots.Count; i++)
+            {
+                if (i != _colorSlot && _model.Slots[i].ColorIndex == colorIndex)
+                    return $"   ·   Swaps with slot {i + 1:00}";
+            }
+
+            return string.Empty;
+        }
+
+        private bool CanSelectColor()
+        {
+            SkirmishSlotSetup slot = _model.Slots[_colorSlot];
+            return slot.MemberId == _colorMember && slot.Occupant == _colorOccupant && _model.CanEditDetails(_colorSlot);
+        }
+
+        private void SelectColor(int colorIndex)
+        {
+            if (CanSelectColor()) _presenter.SelectSlotColor(_colorSlot, colorIndex);
+        }
 
         public Texture2D GetPlanetPreview(PlanetType planet) => planet switch
         {
