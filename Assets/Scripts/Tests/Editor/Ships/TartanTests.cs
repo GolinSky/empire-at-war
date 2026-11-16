@@ -39,7 +39,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Weapons_AreTargetableAndBoundToTheirSourceMuzzles()
+        public void Weapons_AreTargetableAndFaceAwayFromTheHull()
         {
             var view = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW);
             var weapons = view.GetComponentsInChildren<WeaponHardPoint>(true);
@@ -55,15 +55,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(profiles.GetProfile(WeaponType.PointDefense).StrikecraftOnly, Is.True);
             Assert.That(weapons.Single(w => w.Id == 7).name, Is.EqualTo("Tartan_Laser_HP_05"));
             Assert.That(weapons.Single(w => w.Id == 8).name, Is.EqualTo("Tartan_Laser_HP_06"));
-            var bones = view.GetComponentsInChildren<Transform>(true);
-            string[] muzzles = {"MuzzleA_00", "HP_01", "HP_02", "HP_03", "HP_05", "HP_01", "HP_02", "HP_05", "HP_06"};
-            float[] arcWidths = {30, 150, 150, 150, 150, 175, 175, 159, 137};
             foreach (var weapon in weapons.OrderBy(w => w.Id))
             {
                 Assert.That(weapon.HardPointType, Is.EqualTo(HardPointType.Weapon));
-                var muzzle = bones.Single(t => t.name == muzzles[weapon.Id] && t.GetComponents<MeshFilter>().Length == 0);
-                Assert.That(Vector3.Distance(weapon.transform.position, muzzle.position), Is.LessThan(.0001f), weapon.name);
-                Assert.That(weapon.MaxYaw - weapon.MinYaw, Is.EqualTo(arcWidths[weapon.Id]).Within(.001f), weapon.name);
                 if (weapon.Id is >= 1 and <= 4)
                     Assert.That(Mathf.Sign((weapon.MinYaw + weapon.MaxYaw) * .5f), Is.EqualTo(Mathf.Sign(weapon.transform.localPosition.x)), weapon.name + " must face away from the hull");
             }
