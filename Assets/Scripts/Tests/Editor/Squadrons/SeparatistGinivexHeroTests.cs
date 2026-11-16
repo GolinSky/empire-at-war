@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Models.ShipUi;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
 using UnityEditor;
@@ -34,6 +35,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(entry.UnitCapacity, Is.EqualTo(2));
             Assert.That(entry.Icon, Is.Not.Null);
             Assert.That(entry.IconKey, Is.Not.Empty);
+            var ui = AssetDatabase.LoadAssetAtPath<ShipUiData>("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");
+            Assert.That(ui.GetSquadronIcon(type), Is.EqualTo(entry.Icon));
 
             var data = AssetDatabase.LoadAssetAtPath<SquadronData>(
                 $"Assets/Settings/Data/Squadron/{type}SquadronData.asset");
