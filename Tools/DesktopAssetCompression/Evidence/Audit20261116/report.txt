@@ -1,0 +1,66 @@
+SAFE DESKTOP COMPRESSION — 2026-11-16
+
+COMPLETED
+- 266 previously uncompressed textures now use desktop compression: 143 DXT1, 24 DXT5, 99 BC7.
+- Six stars_only skybox faces use DXT1; Providence_Hull_Specular uses DXT5.
+- 78 previously uncompressed model importers now use Low compression.
+- Previously compressed textures/meshes were left unchanged.
+- No Read/Write flag, source dimensions, mipmaps, color space, source image/model/audio, GUID, scene or prefab changes by this pass.
+- All changes imported and saved through official Unity CLI.
+
+REMAINING UNCOMPRESSED (intentional)
+Textures 419 -> 153:
+  45 known historical quality exceptions preserved without retries.
+  86 new candidates restored after failing the same RGB/alpha/normal quality gates.
+  16 textures cannot use block compression at their current dimensions; no resizing performed.
+  2 hazard data textures + 4 Editor/tooling exclusions.
+Models Off 99 -> 21:
+  13 historical failed quality exceptions.
+  5 Rebel station exact-copy geometry contracts.
+  2 historical collider exclusions + 1 current collider source.
+This task prioritizes safe compression and preserved quality over forcing every asset into a lossy format.
+
+VERIFICATION
+- Live readback of 6,378 importer settings: no unexpected changes to inventoried non-compression properties.
+- Every retained texture kept dimensions/mips/GUID/ReadWrite and resolves to the intended format.
+- Unity validates all 266 texture formats for StandaloneWindows64 and StandaloneOSX.
+- Configured desktop APIs: Windows Direct3D11/Direct3D12; macOS Metal.
+- Every model retained identity/topology/colors/bones/tangent signs; all UV channels compared.
+- Geometry maxima: relative position 7.87e-7, UV 8.94e-6, normal 2.9475 degrees, tangent 2.9687 degrees.
+- 71 protected texture/model exception metadata files are byte-identical.
+- Some legacy vendor importers were upgraded to current Unity serialization on save; four newly restored textures retain equivalent serialization-only changes.
+- No new Console errors. Import warnings surfaced for Mediator/Bulwark LOD naming, HeavyDreadnought source polygons/missing normals, and obsolete Venator/SpaceStationModular external material settings. Imported mesh topology matched the pre-pass baseline.
+- Relevant test contracts reviewed; no expectation changes required. Tests not run under local override.
+- No Player build, actual Mac render, listening, or matched runtime memory capture. Format validation is not cross-device visual acceptance.
+- Texture payload arithmetic: 2,382,748,275 bytes less across all retained textures, 250,411,532 bytes less across declared roots. Most total savings are vendor content outside those roots. These are not measured build-size or simultaneous memory savings.
+
+READ/WRITE FINDINGS — NOTHING CHANGED
+- 498 project models are candidates for disabling Read/Write after resolved-hierarchy/Player validation; 496 are reachable from declared roots.
+- Examples: Executor, AotrGolanIII, Procurator, MC80Independence, Praetor, ISDI.
+- Hold MiningFacility.fbx and Turret_Space_Base.fbx for collider review.
+- Hold ParticleProFX beam.obj for vendor VFX review; WavecrestEngineHelper.fbx for source/helper review.
+- No imported vertex/index CPU access or runtime combining was found in project runtime code. Nested/imported hierarchies and Player requirements prevent calling the candidate list a proven-safe whitelist.
+
+UNUSED CANDIDATES — NOTHING DELETED
+- 1,210 files / 167.06 MiB have no serialized GUID or literal filename references found.
+- SpaceSkies Free: 67 outside-root files / 482.20 MiB; no external serialized consumers found.
+- Unused Stagit subset: 170 files / 291.02 MiB; preserve active stars_only textures/material.
+- Largest own no-reference candidates:
+  7.71 MiB GangutStation_Set03_MetallicSmoothness.png
+  5.86 MiB SpaceStationModular.fbx
+  5.56 MiB GangutStation_Set01_MetallicSmoothness.png
+  5.02 MiB GangutStation_Set02_MetallicSmoothness.png
+  4.22 MiB HeavyTurbolaserCannon_Surface_ShipLit_MetallicSmoothness.png
+- Preserve AsteroidMiningFacility.dae (prefab/builder source), HeavyDreadnought.blend (conversion source), and Sci-Fi UI atlas (include-in-build).
+- Static no-reference results are review candidates, not deletion guarantees. Constructed paths, external tools and directory scans can escape reference searches.
+- Source sizes are unchanged by importer compression.
+
+FILES
+compression-results.csv — exact outcome for every one of the 419 textures and 99 models.
+mesh-readwrite-review.csv / mesh-readwrite-review.txt — full candidate and hold lists.
+unreferenced-leaf-candidates.csv — narrow no-reference shortlist.
+unused-content-candidates.csv / unused-assets-report.txt — broader grouped review with referrers.
+platform-verification.json — target validity and preserved texture identity/dimensions.
+before-inventory.json / after-inventory.json — live import settings.
+before-metas.json / Textures / Meshes — rollback metadata and per-asset screening evidence.
+Tools/DesktopAssetCompression/Evidence/SafeDesktop20261116.json — retained repository evidence.

@@ -61,3 +61,10 @@ tags:
 - Covered startup and variant warmup → [[Done/Refactoring/Battle_Startup_Sequence_Plan]] · [[Done/Bugs/Shader_Warmup_Keyword_Errors]]. Particle/material ownership on exit → [[Done/Bugs/Scene_Teardown_And_Material_Leaks]].
 - Hazards, capture and rendering dependencies → [[Done/Features/Space_Hazards_Shape_Rework_Plan]] · [[Done/Refactoring/Capture_Reinforcement_Tally_Dedup]] · [[Done/Refactoring/Fog_Disabled_Stand_Ins]] · [[Done/Refactoring/ShipLit_Autodesk_Material_Conversion_Plan]].
 - Status and user-only checks → [[TODOs/TODOs]] · [[TODOs/User_Acceptance_Queue]].
+
+
+### Safe desktop compression audit · 2026-11-16
+- Unity's compression checkbox can coexist with an explicit uncompressed default format. Verify effective Standalone output and target format validity; Windows/macOS share Standalone overrides. Chosen DXT1/DXT5/BC7 formats validated in Unity 6000.4.7f1; actual Mac rendering remains a separate gate.
+- Preserve failed quality candidates even when a global compression inventory flags them. Sharp UI can fail BC7; incompatible block dimensions require a separate resizing/padding decision. Compression does not authorize changing Read/Write or reducing already-compressed assets again.
+- Unused discovery must include ProjectSettings and include-in-build Sprite Atlases, plus source/tool consumers. No scene/Addressables path does not prove safe deletion; mining-facility DAE and HeavyDreadnought Blend remain authoring inputs.
+- Evidence → `Tools/DesktopAssetCompression/Evidence/SafeDesktop20261116.json`; full reports `output/DesktopAssetCompression/Audit20261116/`. Owner → [[TODOs/Optimization/Desktop_Asset_Compression_Plan]].

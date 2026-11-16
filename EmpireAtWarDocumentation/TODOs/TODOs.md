@@ -131,7 +131,8 @@
 - [ ] **Centralize UI canvas routing and replace custom capture-site screen UI** → [[TODOs/Optimization/UI_Canvas_Routing_Optimization_Plan|UI Canvas Routing Optimization]]; [[TODOs/Optimization/UI_Canvas_Routing_Optimization_Plan - Research|Canvas inventory, view mapping and historical CPU attribution]]
   - **Next**: Play Mode behavior and matched performance/Development Player acceptance. New performance analysis explicitly deferred by the user; no savings claimed.
 
-- [ ] **Apply moderate desktop asset compression** → [[TODOs/Optimization/Desktop_Asset_Compression_Plan|Desktop Asset Compression Plan]]
+- [ ] **Apply moderate desktop asset compression** → [[TODOs/Optimization/Desktop_Asset_Compression_Plan|Desktop Asset Compression Plan]]; [[Artifacts/Audits/Asset_Import_Audit_2026-11-16|November 16 asset audit and findings]]
+  - **2026-11-16 safe pass**: 266 additional textures compressed (six skybox faces + Providence Specular included), 78 models → Low; 153 textures / 21 models remain as quality, dimension, data/tooling or collider exceptions. Read/Write and already-compressed assets unchanged. Windows/macOS format validity + live import/disk/geometry checks passed; tests/builds/Mac rendering not run. Evidence: `Tools/DesktopAssetCompression/Evidence/SafeDesktop20261116.json`; Read/Write and unused CSVs in `output/DesktopAssetCompression/Audit20261116/`.
   - **2026-11-12 selected retry**: 6/10 large textures retained as explicit Standalone BC7; four restored for alpha-error gate failures. Import/disk readback verified, no new Console errors; no tests/build/runtime memory measurement. Evidence: `Tools/DesktopAssetCompression/Evidence/SelectedTextures20261112.json`.
   - **Pass 2 (2026-10-24)**: 462/507 model textures compressed under screening, 47 meshes Low; Addressables bundles 1.53 GB → 1.03 GB, payload 6.46 → 2.66 GB; related EditMode tests pass. Mesh gate 3° rerun: 478 models at Low, bundles → 989.8 MB. In-game visual check pending.
   - **Next**: remaining categories, matched gameplay memory/loading/DSP captures, audio listening/startup/loop/crossfade and intended-scale visual acceptance; macOS module + actual Mac validation. Plan stays active.
@@ -150,7 +151,7 @@
 
 - [ ] **Shrink remaining build size and runtime memory (textures, UI, music, SFX, Read/Write, player build)** → [[TODOs/Optimization/Asset_Size_Followup_Plan|Asset Size Follow-up]]
   - Start 2026-10-24: 989.8 MB bundles, payload 2,564 MB (textures 90 %). Top levers: unused alpha → DXT1 (≤ −400 MB est.), texel-density resolution caps, 45 restored sharp-alpha textures, music out of `Model` bundle.
-  - Next size fix → pilot the four Providence hull maps against a successful current layout. Their explicit RGBA32 default format is verified. The sharp-alpha retry follows its own visual gates.
+  - Providence Albedo/Emissive/Normal pilot completed November 7; Specular compressed to Standalone DXT5 on November 16 under the unchanged pixel gate. No new packed-size measurement; current static reachability does not prove packed inclusion. Preserve known sharp-alpha exceptions. Broader unused-alpha/resolution/audio/runtime work remains.
 
 - [ ] **Remove Addressables bundle duplication and fix asset-mapping tools** → [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan|Addressables Bundle Remediation]]; [[TODOs/Optimization/Addressables_Bundle_Remediation_Plan - Research|Audit 2026-10-24 findings]]
   - Status: Phases 0–6 done 2026-10-24; 0 duplicated payload (1.53 GB content). Phases 3–6 + music fix uncommitted.

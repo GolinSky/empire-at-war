@@ -1,0 +1,55 @@
+Mesh Read/Write review — 2026-11-16
+
+No Read/Write flags, assets, code or tests were changed. No tests or Unity operations were run by this audit.
+
+502 imported models currently have Read/Write enabled:
+- 498 project models are candidates after resolved-hierarchy and Player validation (496 reachable from the prior live build-root inventory).
+- 2 model sources have direct MeshCollider uses: retain until collider-specific review.
+- 1 third-party mesh needs vendor/VFX review.
+- 1 unreferenced helper source needs authoring-pipeline review.
+
+Best large candidate examples:
+Assets/Art/Models/EmpireShips/Executor/Executor.fbx
+Assets/Art/Models/SpaceStations/AotrGolanIII/AotrGolanIII.fbx
+Assets/Art/Models/RepublicShips/Procurator/Procurator.fbx
+Assets/Art/Models/RebellionShips/MC80Independence/MC80Independence.fbx
+Assets/Art/Models/RepublicShips/Praetor/Praetor.fbx
+Assets/Art/Models/EmpireShips/ISDI/ISDIWreck.fbx
+Assets/Art/Models/EmpireShips/ISDI/ISDI.fbx
+
+Retain pending collider review:
+- Assets/Art/Models/SpaceStations/VanillaMiningFacilities/MiningFacility.fbx -> Assets/Prefabs/View/CaptureSites/CaptureSite.prefab (one direct collider).
+- Assets/Art/Models/DefendPlatforms/DefenseSatellites/Turret_Space_Base.fbx -> Assets/Prefabs/View/CaptureSites/SatelliteCaptureSite.prefab (three direct colliders).
+These serialize non-convex colliders with CookingOptions 30. This does not establish that CPU readability is mandatory in every configuration, but collider transforms/cooking/Player behavior must be checked before changing it.
+
+Other held sources:
+- Assets/ThirdParty/ParticleProFX/Content/Mesh/beam.obj: vendor VFX mesh. Direct reference found in MeshFilter, not ParticleSystem shape, but imported/instantiated hierarchy requires verification.
+- Assets/Art/Models/SeparatistShips/Wavecrest/WavecrestEngineHelper.fbx: no direct references in scanned YAML; source-authoring/tool usage remains possible.
+
+Evidence:
+- Scanned direct model-GUID references in Assets .prefab, .unity and .asset YAML files <=10 MiB. ModelImporter GUIDs mapped from .meta. Full per-model findings in mesh-static-reference-audit.json and mesh-readwrite-review.csv.
+- 502 readable model reference blocks: 3,266 MeshFilter, 715 Transform correspondence, 208 PrefabInstance, 59 MeshRenderer correspondence, four MeshCollider. No direct references in ParticleSystem, ParticleSystemRenderer, SkinnedMeshRenderer or MonoBehaviour blocks.
+- None of the readable importers has addCollider enabled.
+- Searched runtime project code for vertex/index/normal/UV access, mesh combining, read-only MeshData, runtime NavMesh building, CanvasRenderer.SetMesh and StaticBatchingUtility: no imported mesh CPU-data consumer found.
+- NebulaImpostor constructor creates its own Mesh; its vertices/UV/triangles writes do not require imported assets to remain readable.
+- UnitWreckView, FogOfWarSystem read sharedMesh.bounds; Shield assigns sharedMesh. These are not CPU vertex-array access.
+- ThirdParty VolumetricLines generates its own meshes. Mirror PredictionUtils.MoveMeshColliders has a readability warning/requirement for moved colliders; no project runtime invocation of this utility found in the searched code.
+- Editor-only import/build/bake scripts use mesh data. Editor outside game/render loop can read non-readable meshes; this does not establish a runtime need, but editor tool assumptions still deserve review if flags are changed later.
+- No new measured Player-memory savings are claimed. Importer Read/Write enabled retains a CPU copy; exact savings depend on meshes/subassets loaded.
+
+Important limitations:
+This is a candidate list, not a guaranteed-safe disable whitelist. Static serialized references do not fully resolve nested prefab variants, source-model embedded hierarchy/skins, Terrain detail data, dynamically assigned references, package binaries, or runtime transforms/cooking. No Read/Write change is authorized in this task.
+To approve a later change: resolve instantiated hierarchy; inspect MeshCollider, ParticleSystem shape/renderer GPU-instancing, Terrain details, SkinnedMeshRenderer and runtime batching/NavMesh consumers; validate representative Windows and macOS Players.
+
+Tests reviewed (source only; no execution):
+- StationLevelViewTests (Ui): DomeRepair_PreservesGeometryAndKeepsDomeUvJoinsContinuous compares Rebel station source Levels 1–5 vertices, triangles, normals and bounds exactly with baked Hull.asset files. Preserve the existing source-compression exceptions; do not loosen these assertions.
+- CisStationImportTests (Ships): exact hull triangle counts, full normal/UV arrays and expected shared mesh/asset paths.
+- ExecutorShipTests (Ships): bound renderers/materials/mesh references, hierarchy scale, missing components, settings/Addressable mappings.
+- UnitHelperMeshTests (Ships): no strippable helper meshes in unit prefabs.
+- PlanetCatalogTests (Map): generated planet sphere/ring meshes are already GPU-only (isReadable false), expected vertex count and bindings.
+- WreckCutPlanTests (Health): procedural cut-plan invariants, no imported CPU mesh dependency.
+No updates needed for this read-only review. These tests must remain intact during compression work.
+
+Unity documentation:
+https://docs.unity.com/en-us/engine/6000.6/script-reference/unityengine/mesh/isreadable
+Unity lists CPU mesh operations, runtime StaticBatchingUtility.Combine, runtime NavMesh construction, certain collider transforms/cooking, and particle shape/renderer requirements as reasons for readability. Documentation is 6000.6; project Editor is 6000.4.7f1. Live/source evidence takes precedence.

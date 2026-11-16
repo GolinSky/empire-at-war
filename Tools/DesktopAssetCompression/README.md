@@ -57,3 +57,18 @@ unity command run_script --file Tools/DesktopAssetCompression/DesktopCompression
 - Fix the existing planet shader error in its own task.
 
 API references: [texture format resolution](https://docs.unity3d.com/6000.4/Documentation/ScriptReference/TextureImporter.GetAutomaticFormat.html), [effective audio sample settings](https://docs.unity3d.com/6000.4/Documentation/ScriptReference/AudioImporter.GetOverrideSampleSettings.html).
+
+## Safe desktop pass — 2026-11-16
+
+- Full `Assets` inventory: 4,690 TextureImporters, 598 ModelImporters and 1,090 AudioImporters. Before: 419 effective uncompressed textures and 99 models with compression Off.
+- Retained 266 desktop texture changes: 143 DXT1, 24 DXT5, 99 BC7. Six `stars_only` skybox faces use DXT1; Providence hull Specular uses DXT5. Existing compressed assets remain unchanged; no Crunch, resolution, mipmap, color-space or Read/Write changes.
+- Remaining 153 uncompressed textures: 45 historical quality exceptions, 86 newly restored quality failures, 16 incompatible dimensions (preserved), two hazard data textures and four Editor/tooling exclusions. Known exceptions were not retried. Sharp UI can fail even BC7; preserve the quality gates.
+- Retained Low compression on 78 previously uncompressed models. Remaining 21 Off: 13 historical failures, five Rebel station exact-copy contracts, two historical collider exclusions, one current collider reference. All previously compressed meshes remain unchanged.
+- Geometry checks preserve local IDs, mesh/vertex counts, indices/topology, colors, bones, UV channels and tangent signs. Gates: position 0.05% of bounds diagonal; UV 1/4096; normal/tangent 3°. Read/Write unchanged across all 598 models.
+- All 266 retained texture dimensions/mips/GUIDs and effective formats read back. Live Unity format validation accepts every chosen format for Windows and macOS; configured APIs are Windows D3D11/D3D12 and macOS Metal. Actual Mac rendering, Player builds and runtime memory captures were not run.
+- Texture payload arithmetic: 2,382,748,275 B smaller across all retained assets; 250,411,532 B across declared scene/Resources/Addressables dependencies. Most of the total concerns vendor content outside those roots. These are dimension/mipmap/format calculations, not measured build savings or simultaneous residency.
+- All 71 classified texture/model exclusions retain byte-identical metadata. Unity upgraded legacy importer serialization while saving some candidates; four restored vendor textures retain only such serialization changes, with effective settings unchanged. No source image/model/audio files changed.
+- Reviewed affected fixture contracts; no expectation updates required. Tests not run under the local override. No new Console errors after the pass.
+- Read/Write report: 498 project candidates require resolved-hierarchy/Player validation; two collider holds, one vendor VFX hold and one source/helper review. No flags changed. Unused report: 1,210 no-reference candidates, not deletion approval; protect atlas/include-in-build content, ProjectSettings dependencies and authoring inputs.
+- Retained evidence: `Evidence/SafeDesktop20261116.json`; scripts: `DesktopCompressionSafeTextures.cs`, `DesktopCompressionSafeMeshes.cs`. Full rollback metadata, per-asset outcomes, platform verification and review CSVs: `output/DesktopAssetCompression/Audit20261116/`.
+- The original normal-map percentile bins reported their lower edge. All eleven retained normal maps remain below 3.3° even using the upper edge, below the 6° gate; the new script reports the conservative upper edge for future runs.

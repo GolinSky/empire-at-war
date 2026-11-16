@@ -97,3 +97,10 @@ created: 2026-10-24
 - Music: retain 119 ordered bindings / 53 GUIDs as typed AssetReferences. Existing Audio group uses labels `MusicMenu`/`MusicBattle`; original mixer/SFX entries stay together. Model bundle 146,471,297 → 2,654,062 B; baseline → clean final closure 172,468,675 → 28,636,447 B. No codec/volume changes.
 - Readability: 30 shipped render-only satellite FBXs; exclude collider base, animated/skinned geometry, shields and wreck hulls. Five packed prefab loads: 248 unique meshes, 329,046 vertices unchanged; 240 become non-readable. Reported native memory 32,741,320 → 13,821,774 B. Editor object memory did not expose the saving.
 - Evidence → [content, memory and import tables](../../../Docs/Audits/2026-11-07-Optimization-Fixes/README.md). Windows and perceptual listening/visual gates remain separate; broader unused-alpha, UI, SFX and shader work stays active.
+
+
+### Implementation · 2026-11-16 follow-up
+- User explicitly requested Providence Specular compression: retain Standalone DXT5, 2048²/mips/GUID/color space unchanged; linear RGB RMSE 0.184/255, max alpha error 0. No new build/layout; November 7 packed exclusion remains historical, not contradicted by static dependency reachability.
+- Broader safe pass → [[TODOs/Optimization/Desktop_Asset_Compression_Plan#Implementation — 2026-11-16 safe desktop pass]]; 266 textures + 78 Low models retained, known quality exceptions preserved. No Read/Write flags changed.
+- Current Read/Write audit finds no imported vertex/index CPU reads in project runtime source; 498 project candidates still require resolved-hierarchy/Player checks. Retain collider/vendor/helper reviews; prior source-only assertions about runtime wreck cutting are not a current safety whitelist.
+- Unused reports distinguish no-reference candidates, outside-root content and authoring inputs. No deletion. Full lists/evidence → `output/DesktopAssetCompression/Audit20261116/`; retained importer evidence → `Tools/DesktopAssetCompression/Evidence/SafeDesktop20261116.json`.

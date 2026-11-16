@@ -1,0 +1,28 @@
+Retained compression review — 2026-11-16
+
+Reviewed all 78 retained mesh result records and both one-shot sources:
+Tools/DesktopAssetCompression/DesktopCompressionSafeMeshes.cs
+Tools/DesktopAssetCompression/DesktopCompressionSafeTextures.cs
+
+No blocking issue found in the recorded retained outcomes.
+Mesh comparison verifies local file IDs/name, vertex count, all submesh indices/topology, vertex colors, bindposes/bone weights, all UV channel lengths, normals/tangents lengths and tangent signs. It skips collider references, skin/bone/blendshape/animation and only changes Off -> Low. Read/Write is checked unchanged. Failed geometry comparisons restore Off and SaveAssets.
+Recorded retained maximum errors: relative position 7.869332388881489e-7; UV 8.940696716308594e-6; normals 2.947495698928833 degrees; tangents 2.968672275543213 degrees. All within recorded existing project gates.
+Texture comparison preserves dimensions/mip count/readability, uses linear GPU readback, verifies effective compressed format and restores failed candidates. UI gets BC7; other colors DXT then BC7; normals DXT5. No resolution reduction/Crunch.
+
+Minor tooling precision issue:
+NormalError p99 histogram returns lower bin edge in 0.1-degree buckets, so may underreport actual percentile by <0.1 degrees. Current 11 retained normal maps have p99 at most 3.2 degrees (true percentile <3.3), safely below6. This cannot affect this run's decisions. Recommend upper bucket bound for future conservative gate/reporting. Parent informed.
+
+Test search:
+All 78 retained exact paths/GUIDs/file names/stems searched against all Assets/Scripts/Tests C# files. Results recorded in mesh-retained-test-matches.json. Direct serialized consumer paths/file names also searched (mesh-retained-consumer-test-matches.json, no literal matches; many tests construct paths).
+No test expectation changes are required:
+- WreckMaterialSyncTests (Health): ProcuratorWreck explicit path, mesh counts/bindings/material/shader/shared-mesh identity assertions. Compression preserves IDs/topology and does not change materials or prefab scale.
+- ForwardMainBatteryTests (Ships): MC80Justice/HeavyDreadnought/Wavecrest/Bulwark named mounts, firing-arc/aim constraints and counts; importer geometry compression changes no mounts/transforms.
+- ShipAssetIntegrityTests (Ships): HeavyDreadnought hardpoint/hangar settings; unchanged.
+- ShipHeightTierTests (Navigation): HeavyDreadnought data tier/height; unchanged.
+- ShieldAbilityMigrationTests (Abilities): Wavecrest ability slot/data IDs; unchanged.
+- BattleAssetPreloaderTests (Core): Peleset/Recalcitrant wreck keys/load availability; GUIDs and aliases unchanged.
+- EconomyTuningTests (Economy): TibannaGasStation economy/health values; unchanged.
+- RealEntityCompositionTests (Core): MillenniumFalcon hero reservation/prewarm exclusion; unrelated model-name hit, unchanged.
+- BattleSaveServiceTests (GameFlow): MillenniumFalcon/Interdictor loadout/save migration and hardpoint data; unchanged.
+- Earlier review: StationLevelViewTests exact Rebel station baked/source geometry constraints remain valid because those source exceptions are not in the 78 retained paths; CisStationImportTests exact triangle counts/UV normals unaffected. UnitHelperMeshTests and PlanetCatalogTests need no expectation change.
+No tests run, assertions changed, assets mutated or Unity operations performed by reviewer. Source review is not a passing test run.

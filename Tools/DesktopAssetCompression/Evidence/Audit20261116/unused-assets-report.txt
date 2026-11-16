@@ -1,0 +1,53 @@
+UNUSED ASSET REVIEW — 2026-11-16
+
+No assets deleted or modified. No Unity operations or tests run by this audit.
+Scope: all current Assets source files and metadata; prior same-day live Unity dependency graph; serialized GUID reverse references in Assets and ProjectSettings; literal filenames in project code and Tools.
+Build roots: three enabled scenes, explicit Addressables entries (no folder entries found), all Resources paths; expanded conservatively for ProjectSettings, StreamingAssets, include-in-build Sprite Atlas dependencies.
+Added 23 protected files missed by the initial scene/Addressables-only dependency scan, including app icon, quality/render pipeline assets and the Sci-Fi UI atlas.
+
+RESULTS
+- 5,217 art/audio/model/serialized-content candidates outside expanded roots; 1390.65 MiB source. This is not an unused/deletable count.
+- 1,210 have no serialized GUID references or literal filename references found; 167.06 MiB. Includes standalone demo scenes and source assets, so still requires owner/use review.
+- 3,907 remain referenced by other assets outside roots; remove/reorganize only as a reviewed group, never as isolated files.
+- 100 have code/tool filename references: preserve as tool/source inputs until those workflows are retired.
+- Remaining outside-root files include 611 Editor/test files and 2,044 code/document/support files; these are not cleanup targets merely because dependency roots miss them.
+
+LARGE GROUPS
+- Assets/ThirdParty/SpaceSkies Free: 67 files / 482.20 MiB outside roots. No external serialized GUID consumers found for that group. Highest-value third-party example/content cleanup candidate.
+- Assets/ThirdParty/Stagit/SkyboxEarthPlanets: 170 outside-root files / 291.02 MiB. Do NOT delete the whole pack: the six stars_only textures and their active material remain used/protected.
+- Assets/Art/Textures/Models/RepublicShips/HeavyDreadnought: nine files / 69.79 MiB outside roots, still referenced by alternate model/wreck materials.
+
+LARGEST PROJECT-OWNED NO-REFERENCE CANDIDATES
+- 7.7107 MiB: Assets/Art/Textures/Models/SpaceStations/GangutStation/GangutStation_Set03_MetallicSmoothness.png
+- 5.8585 MiB: Assets/Art/Models/SpaceStations/SpaceStationModular/SpaceStationModular.fbx
+- 5.5604 MiB: Assets/Art/Textures/Models/SpaceStations/GangutStation/GangutStation_Set01_MetallicSmoothness.png
+- 5.0249 MiB: Assets/Art/Textures/Models/SpaceStations/GangutStation/GangutStation_Set02_MetallicSmoothness.png
+- 4.2162 MiB: Assets/Art/Textures/Models/Cannons/HeavyTurbolaserCannon/HeavyTurbolaserCannon_Surface_ShipLit_MetallicSmoothness.png
+- 2.6491 MiB: Assets/Art/Models/RepublicShips/Vwing/Textures/dull_metal_normal-ogl.png
+- 1.8479 MiB: Assets/Art/Models/RepublicShips/Vwing/Textures/dull_metal_roughness.png
+- 1.4901 MiB: Assets/Art/Textures/Models/SpaceStations/GangutStation/GangutStation_Set03_Roughness.jpg
+- 1.255 MiB: Assets/Art/Textures/Ui/Icons/ShipAbilities/HitAndRunIcon.png
+- 1.1437 MiB: Assets/Art/Textures/Models/SpaceStations/GangutStation/GangutStation_Set03_Albedo.jpg
+- 1.0288 MiB: Assets/Art/Models/Planets/kamino/Kamino.blend
+- 1.0173 MiB: Assets/Art/Textures/Models/EmpireShips/TIEInterceptor/TIEInterceptor_EV_Tie_F_I_Def_Diffuse_Albedo.png
+- 0.9686 MiB: Assets/Art/Textures/Models/SpaceStations/GangutStation/GangutStation_Set02_Albedo.jpg
+- 0.9551 MiB: Assets/Art/Textures/Models/EmpireShips/Gladiator/Gladiator_Empire_Gladiator_B_TeamMask.png
+- 0.819 MiB: Assets/Art/Textures/Models/SpaceStations/GangutStation/GangutStation_Set03_Occlusion.png
+
+PRESERVE / MISLEADING LARGE FILES
+- AsteroidMiningFacility.dae (99.86 MiB): referenced by AsteroidDebrisA, AsteroidDebrisB and AsteroidRockMedium prefabs; also by AsteroidMiningFacilityAssetBuilder.cs. Outside runtime roots does not make this a disposable file.
+- HeavyDreadnought.blend (11.93 MiB): Tools/Blender/HeavyDreadnought/{Convert.py,Verify.cs} refer to it; source input.
+- Sci-Fi UI atlas.png (64.03 MiB): SpriteAtlasImporter bindAsDefault=1; atlas itself has uncompressed packing settings. Protected conservatively as include-in-build content, contrary to the earlier narrow-root result.
+
+LIMITS
+- This is a static candidate inventory, not a clean build stripping report or proof of deletion safety.
+- Literal scan can miss constructed paths, directory enumeration, shader names, external tooling and binary-importer name-based references. Code/support files are excluded from the cleanup shortlist.
+- AssetDatabase/Addressables/Resources root reachability is an over-approximation in some cases and a custom loader can introduce additional roots.
+- Source bytes exclude .meta and do not equal bundle size, player size or runtime memory.
+- Sprite atlas inclusion is protected conservatively; packed output was not built/verified.
+
+FILES
+- unused-content-candidates.csv: content-only candidates with paths, sizes, category and known referrers.
+- unreferenced-leaf-candidates.csv: narrowest no-reference shortlist.
+- unused-candidates.csv: complete outside-root inventory, including code/doc/editor/test context.
+- unused-summary.json and unused-reference-graph.json: counts, protection additions and reverse-reference evidence.
