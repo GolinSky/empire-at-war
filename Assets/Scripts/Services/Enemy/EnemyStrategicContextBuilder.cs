@@ -28,6 +28,9 @@ using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Services.TacticalMarkers;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+using Unity.Profiling;
+#endif
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -181,6 +184,15 @@ namespace EmpireAtWar.Services.Enemy
 
         private readonly PlayerSlot _owner;
         private readonly IProductionAccess _productionAccess;
+        private readonly AiWorldSnapshot _worldSnapshot;
+        private readonly TeamAiPicture _teamPicture;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private static readonly ProfilerMarker FIND_RAID_TARGET_MARKER = new ProfilerMarker("EnemyAI.Context.FindRaidTarget");
+        private static readonly ProfilerMarker SELECT_CAPTURE_OBJECTIVE_MARKER = new ProfilerMarker("EnemyAI.Context.SelectCaptureObjective");
+        private static readonly ProfilerMarker BUILD_BASE_THREAT_MARKER = new ProfilerMarker("EnemyAI.Context.BuildBaseThreat");
+        private static readonly ProfilerMarker FORCE_BUILDS_MARKER = new ProfilerMarker("EnemyAI.Context.ForceBuilds");
+        private static readonly ProfilerMarker ADD_TARGET_FORCE_MARKER = new ProfilerMarker("EnemyAI.Context.AddTargetForce");
+#endif
         private readonly ForceComposition _ownForce = new ForceComposition();
         private readonly ForceComposition _ownTeamForce = new ForceComposition();
         private readonly ForceComposition _focusTeamForce = new ForceComposition();
@@ -204,7 +216,9 @@ namespace EmpireAtWar.Services.Enemy
             IReinforcementZoneSource zones,
             IShipNavigationService navigation,
             EnemyStationPressureTracker stationPressure,
-            EnemyRecoveryAnchor recovery)
+            EnemyRecoveryAnchor recovery,
+            AiWorldSnapshot worldSnapshot = null,
+            TeamAiPictureRegistry teamPictures = null)
         {
             _vision = vision;
             _hazards = hazards;
@@ -224,6 +238,8 @@ namespace EmpireAtWar.Services.Enemy
             _navigation = navigation;
             _stationPressure = stationPressure;
             _recovery = recovery;
+            _worldSnapshot = worldSnapshot;
+            _teamPicture = teamPictures?.GetOrCreate(owner);
             _includeDefender = IncludeDefender;
             _includeRouteThreat = IncludeRouteThreat;
             _includeNearbyOwn = IncludeNearbyOwn;
@@ -248,6 +264,8 @@ namespace EmpireAtWar.Services.Enemy
             _productionAccess = source._productionAccess;
             _stationPressure = source._stationPressure;
             _recovery = source._recovery;
+            _worldSnapshot = source._worldSnapshot;
+            _teamPicture = source._teamPicture;
             _stationAssessment = source;
             _includeDefender = IncludeDefender;
             _includeRouteThreat = IncludeRouteThreat;
@@ -255,6 +273,36 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         public EnemyStrategicContextBuilder CreateGroupBuilder() => new EnemyStrategicContextBuilder(this);
+
+        // A detachment search borrows only scratch forces and geometry; it must not advance a group's
+        // smoothing, objective commitment or stalled-objective history for ships it does not select.
+        public void BeginCaptureProbe(ISet<string> reservedObjectives)
+        {
+            _reservedCaptureObjectives = reservedObjectives;
+            CollectCaptureObjectives();
+        }
+
+        public bool CanDetachForCapture(IShipEntity ship)
+        {
+            if (_captureCandidates.Count == 0) return false;
+            GameEntity entity = _entityLocator.GetEntity(ship.EntityId);
+            if (entity.HealthModel.IsDestroyed || !entity.HealthModel.HasUnits) return false;
+            _groupScoped = true;
+            _ownShips.Clear();
+            _ownShips.Add(ship);
+            _ownForce.Clear();
+            _forceBuilder.AddUnit(_ownForce, entity);
+            Vector3 origin = ship.WorldPosition;
+            BuildHostilesNear(_localThreatForce, origin, LOCAL_ENGAGEMENT_RADIUS);
+            if (CombatMatchup.Advantage(_ownForce, _localThreatForce) <=
+                EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage) return false;
+
+            _captureReason = "";
+            foreach (EnemyCaptureObjective objective in _captureCandidates)
+                if ((_reservedCaptureObjectives == null || !_reservedCaptureObjectives.Contains(objective.Id)) &&
+                    IsObjectiveSafe(origin, objective.Position, objective.Radius, false)) return true;
+            return false;
+        }
 
         public bool IsMarkerApproachSafe(Vector3 point) =>
             IsObjectiveSafe(ToVector(CalculateFleetCenter(_ownShips)), point, AllyAiMarkerSource.REQUEST_RADIUS, false);
@@ -318,27 +366,65 @@ namespace EmpireAtWar.Services.Enemy
             _strategicCenter = enemyBaseTarget == null ? home :
                 (home + enemyBaseTarget.GetFacade<IEntityTransformFacade>().Transform.position) * 0.5f;
             float now = Time.time;
+            _teamPicture?.EnsureRefreshed(now);
             _fleetTarget = FindClosestKnownShip(origin, now);
             GameEntity enemyFleetTarget = _fleetTarget;
             int focusTeamShipCount = CountKnownShips(focusEnemy, now);
             int ownedCapturableZoneCount = _reinforcementZonesSystem.GetOwnedCapturableZoneCount(self);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (FORCE_BUILDS_MARKER.Auto())
+            {
+#endif
             _forceBuilder.Build(_ownForce, entity => entity.Owner == self &&
                 (!_groupScoped || _ownShipIds.Contains(entity.Id)));
             if (ships == null)
                 _forceBuilder.Build(_ownTeamForce, entity => _playerRoster.IsAllied(self, entity.Owner));
             _forceBuilder.BuildKnown(_focusTeamForce, _intel, now,
                 sighting => focusEnemy != PlayerId.None && _playerRoster.IsAllied(focusEnemy, sighting.Owner));
-            GameEntity defenseTarget = BuildBaseThreat(ownBase);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            }
+#endif
+            GameEntity defenseTarget;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BUILD_BASE_THREAT_MARKER.Auto())
+            {
+#endif
+            defenseTarget = BuildBaseThreat(ownBase);
             _forceBuilder.BuildKnown(_baseThreatForce, _intel, now, sighting => _stationThreats.Contains(sighting.EntityId));
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            }
+#endif
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (FORCE_BUILDS_MARKER.Auto())
+            {
+#endif
             BuildHostilesNear(_localThreatForce, origin, LOCAL_ENGAGEMENT_RADIUS);
             BuildOwnNear(_localOwnForce, origin, LOCAL_ENGAGEMENT_RADIUS);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            }
+#endif
             _localThreat = FindLocalThreat(origin, now);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (FIND_RAID_TARGET_MARKER.Auto())
+            {
+#endif
             _raidTarget = FindRaidTarget(origin, now);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            }
+#endif
             if (!_groupScoped)
                 _recovery.Update(origin, CombatMatchup.Advantage(_ownTeamForce, _focusTeamForce),
                     _localThreat != null, HasOwnStation(), now,
                     (position, radius) => ownShips.Count == 0 || IsObjectiveSafe(origin, position, radius, true), ownShips.Count > 0, !_focusTeamForce.IsEmpty);
-            EnemyCaptureObjective captureObjective = SelectCaptureObjective(origin, now);
+            EnemyCaptureObjective captureObjective;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (SELECT_CAPTURE_OBJECTIVE_MARKER.Auto())
+            {
+#endif
+            captureObjective = SelectCaptureObjective(origin, now);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            }
+#endif
             Vector3? retreatAnchor = forwardFallback ?? FindRetreatAnchor(origin, ownBase);
             string recoveryReason = retreatAnchor.HasValue
                 ? "Validated a safe home or allied relay anchor."
@@ -391,11 +477,18 @@ namespace EmpireAtWar.Services.Enemy
                 AddEscortingAirWing(force, entity);
                 _shipForces.Add(ship, force);
             }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (ADD_TARGET_FORCE_MARKER.Auto())
+            {
+#endif
             AddTargetForce(enemyFleetTarget, now);
             AddTargetForce(enemyBaseTarget, now);
             AddTargetForce(_raidTarget, now);
             AddTargetForce(_localThreat, now);
             AddTargetForce(defenseTarget, now);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            }
+#endif
             return new EnemyStrategicContext(
                 snapshot: snapshot,
                 ships: ownShips,
@@ -512,34 +605,66 @@ namespace EmpireAtWar.Services.Enemy
             bool closestIsMine = false;
             bool keepsPrevious = false;
             float closestDistance = float.MaxValue;
-            foreach (GameEntity entity in _entityLocator.Entities)
+            if (_worldSnapshot != null)
             {
-                if (!_playerRoster.IsHostile(_owner.Id, entity.Owner) ||
-                    entity.IsUnit() ||
-                    entity.IsPlayerBase() ||
-                    entity.HealthModel.IsDestroyed ||
-                    !entity.HealthModel.HasUnits)
+                IReadOnlyList<AiWorldSnapshot.Entry> structures = _worldSnapshot.Structures;
+                for (int i = 0; i < structures.Count; i++)
                 {
-                    continue;
-                }
+                    AiWorldSnapshot.Entry entry = structures[i];
+                    if (!_playerRoster.IsHostile(_owner.Id, entry.Owner) || entry.IsUnit || entry.IsPlayerBase)
+                    {
+                        continue;
+                    }
 
-                Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
-                // A retained or new raid also needs a survivable position and route, not only a safe target.
-                if (!_vision.IsVisible(_owner.Id, entity) || IsDefended(position, now) ||
-                    !IsRouteSafe(origin, position, 0f, false)) continue;
-                bool isMine = entity.TryGetFacade(out IMiningFacilityFacade _);
-                if (ReferenceEquals(entity, _raidTarget) && GetIonCost(position) == 0f)
-                    keepsPrevious = true;
-                float distance = GetTargetScore(origin, position);
-                if (closest != null && (closestIsMine && !isMine ||
-                    closestIsMine == isMine && distance >= closestDistance))
+                    Vector3 position = entry.Position;
+                    if (!_vision.IsVisible(_owner.Id, entry.Entity) || IsDefended(entry.Id, position, now) ||
+                        !IsRouteSafe(origin, position, 0f, false)) continue;
+                    bool isMine = entry.IsMiningFacility;
+                    if (ReferenceEquals(entry.Entity, _raidTarget) && GetIonCost(position) == 0f)
+                        keepsPrevious = true;
+                    float distance = GetTargetScore(origin, position);
+                    if (closest != null && (closestIsMine && !isMine ||
+                        closestIsMine == isMine && distance >= closestDistance))
+                    {
+                        continue;
+                    }
+
+                    closest = entry.Entity;
+                    closestIsMine = isMine;
+                    closestDistance = distance;
+                }
+            }
+            else
+            {
+                foreach (GameEntity entity in _entityLocator.Entities)
                 {
-                    continue;
-                }
+                    if (!_playerRoster.IsHostile(_owner.Id, entity.Owner) ||
+                        entity.IsUnit() ||
+                        entity.IsPlayerBase() ||
+                        entity.HealthModel.IsDestroyed ||
+                        !entity.HealthModel.HasUnits)
+                    {
+                        continue;
+                    }
 
-                closest = entity;
-                closestIsMine = isMine;
-                closestDistance = distance;
+                    Vector3 position = entity.GetFacade<IEntityTransformFacade>().Transform.position;
+                    // A retained or new raid also needs a survivable position and route, not only a safe target.
+                    if (!_vision.IsVisible(_owner.Id, entity) || IsDefended(position, now) ||
+                        !IsRouteSafe(origin, position, 0f, false)) continue;
+                    bool isMine = entity.TryGetFacade(out IMiningFacilityFacade _);
+                    if (ReferenceEquals(entity, _raidTarget) && GetIonCost(position) == 0f)
+                        keepsPrevious = true;
+                    float distance = GetTargetScore(origin, position);
+                    if (closest != null && (closestIsMine && !isMine ||
+                        closestIsMine == isMine && distance >= closestDistance))
+                    {
+                        continue;
+                    }
+
+                    closest = entity;
+                    closestIsMine = isMine;
+                    closestDistance = distance;
+                }
             }
 
             // Preserve an existing raid unless a mining target becomes available.
@@ -547,10 +672,29 @@ namespace EmpireAtWar.Services.Enemy
                 ? _raidTarget : closest;
         }
 
+        private bool IsDefended(long entityId, Vector3 position, float now)
+        {
+            if (_teamPicture != null && _teamPicture.TryGetStructureThreat(entityId, out ForceComposition cachedThreat))
+            {
+                return !cachedThreat.IsEmpty &&
+                    CombatMatchup.Advantage(_ownForce, cachedThreat) <
+                    EnemyAiDifficultyProfile.Get(_owner.Difficulty).RequiredAttackRatio;
+            }
+
+            return IsDefended(position, now);
+        }
+
         private bool IsDefended(Vector3 position, float now)
         {
             _nearbyCenter = position;
-            _forceBuilder.BuildKnown(_objectiveThreat, _intel, now, _includeDefender);
+            if (_teamPicture != null)
+            {
+                _teamPicture.BuildKnownFromConfident(_objectiveThreat, _includeDefender);
+            }
+            else
+            {
+                _forceBuilder.BuildKnown(_objectiveThreat, _intel, now, _includeDefender);
+            }
             return !_objectiveThreat.IsEmpty &&
                 CombatMatchup.Advantage(_ownForce, _objectiveThreat) <
                 EnemyAiDifficultyProfile.Get(_owner.Difficulty).RequiredAttackRatio;
@@ -649,21 +793,37 @@ namespace EmpireAtWar.Services.Enemy
             return cost;
         }
 
+        private void CollectCaptureObjectives()
+        {
+            _captureCandidates.Clear();
+            if (_teamPicture != null)
+            {
+                IReadOnlyList<EnemyCaptureObjective> cached = _teamPicture.BaseCaptureObjectives;
+                for (int i = 0; i < cached.Count; i++)
+                {
+                    _captureCandidates.Add(cached[i]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < _zones.Zones.Count; i++)
+                {
+                    ReinforcementZonePresenter zone = _zones.Zones[i];
+                    if (!zone.IsCapturable || _playerRoster.IsAllied(_owner.Id, zone.Owner)) continue;
+                    _captureCandidates.Add(new EnemyCaptureObjective($"zone:{i}", EnemyCaptureObjectiveType.ReinforcementZone,
+                        zone.Owner, ToVector(ToPoint(zone.Center)), zone.Radius, zone.CaptureProgress));
+                }
+                foreach (IEnemyCaptureObjectiveSource source in _captureSources)
+                    if (!(source is AllyAiMarkerSource)) source.AddStrategicObjectives(_captureCandidates, _intel);
+            }
+            if (AlliedMarkers != null) AlliedMarkers.AddStrategicObjectives(_captureCandidates, _intel);
+        }
+
         private EnemyCaptureObjective SelectCaptureObjective(Vector3 origin, float now)
         {
             CaptureReservedByOtherGroup = false;
             _captureReason = "Ranking viable capture objectives.";
-            _captureCandidates.Clear();
-            for (int i = 0; i < _zones.Zones.Count; i++)
-            {
-                ReinforcementZonePresenter zone = _zones.Zones[i];
-                if (!zone.IsCapturable || _playerRoster.IsAllied(_owner.Id, zone.Owner)) continue;
-                _captureCandidates.Add(new EnemyCaptureObjective($"zone:{i}", EnemyCaptureObjectiveType.ReinforcementZone,
-                    zone.Owner, ToVector(ToPoint(zone.Center)), zone.Radius, zone.CaptureProgress));
-            }
-            foreach (IEnemyCaptureObjectiveSource source in _captureSources)
-                if (!(source is AllyAiMarkerSource)) source.AddStrategicObjectives(_captureCandidates, _intel);
-            if (AlliedMarkers != null) AlliedMarkers.AddStrategicObjectives(_captureCandidates, _intel);
+            CollectCaptureObjectives();
 
             EnemyCaptureObjective best = null;
             EnemyCaptureObjective retained = null;
@@ -861,7 +1021,10 @@ namespace EmpireAtWar.Services.Enemy
             _routeSegment.y = 0f;
             _routeDestinationRadius = LOCAL_ENGAGEMENT_RADIUS + radius;
             _routeEscaping = escaping;
-            _forceBuilder.BuildKnown(_objectiveThreat, _intel, Time.time, _includeRouteThreat);
+            if (_teamPicture != null)
+                _teamPicture.BuildKnownFromConfident(_objectiveThreat, _includeRouteThreat);
+            else
+                _forceBuilder.BuildKnown(_objectiveThreat, _intel, Time.time, _includeRouteThreat);
             if (_objectiveThreat.IsEmpty) return true;
             float advantage = CombatMatchup.Advantage(_groupScoped ? _ownForce : _localOwnForce, _objectiveThreat);
             float threshold = EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage * safetyScale;
@@ -894,6 +1057,14 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool HasOwnStation()
         {
+            if (_worldSnapshot != null)
+            {
+                IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
+                for (int i = 0; i < bases.Count; i++)
+                    if (bases[i].Owner == _owner.Id) return true;
+                return false;
+            }
+
             foreach (GameEntity entity in _entityLocator.Entities)
                 if (entity.Owner == _owner.Id && entity.IsPlayerBase() && !entity.HealthModel.IsDestroyed) return true;
             return false;
@@ -1080,6 +1251,17 @@ namespace EmpireAtWar.Services.Enemy
         private void BuildHostilesNear(ForceComposition force, Vector3 center, float radius)
         {
             float radiusSquared = radius * radius;
+            if (_teamPicture != null)
+            {
+                _teamPicture.BuildKnownFromConfident(force, sighting =>
+                {
+                    Vector3 offset = ToVector(sighting.Position) - center;
+                    offset.y = 0f;
+                    return offset.sqrMagnitude <= radiusSquared;
+                });
+                return;
+            }
+
             _forceBuilder.BuildKnown(force, _intel, Time.time, sighting =>
             {
                 Vector3 offset = ToVector(sighting.Position) - center;
@@ -1092,6 +1274,27 @@ namespace EmpireAtWar.Services.Enemy
         {
             GameEntity closest = null;
             float closestDistance = float.MaxValue;
+            if (_worldSnapshot != null)
+            {
+                IReadOnlyList<AiWorldSnapshot.Entry> all = _worldSnapshot.AllLiving;
+                for (int i = 0; i < all.Count; i++)
+                {
+                    AiWorldSnapshot.Entry entry = all[i];
+                    if (!entry.HasUnits || !includeOwner(entry.Owner) || !hasRole(entry.Entity))
+                    {
+                        continue;
+                    }
+
+                    float distance = (entry.Position - origin).sqrMagnitude;
+                    if (distance < closestDistance)
+                    {
+                        closest = entry.Entity;
+                        closestDistance = distance;
+                    }
+                }
+                return closest;
+            }
+
             foreach (GameEntity entity in _entityLocator.Entities)
             {
                 if (!includeOwner(entity.Owner) ||

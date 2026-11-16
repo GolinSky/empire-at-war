@@ -134,6 +134,10 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<UnitHighlightService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerColors>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<TeamIntelRegistry>(Lifetime.Singleton);
+            builder.Register<AiWorldSnapshot>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<TeamHostileIntelService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<TeamAiPictureRegistry>(Lifetime.Singleton);
+            builder.Register<EnemyAiScheduler>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             Factions = Assets.Load<FactionCatalog>(nameof(FactionCatalog));
             builder.RegisterInstance(Factions).AsImplementedInterfaces().AsSelf();
             builder.Register<PlayerScopeBootstrap>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

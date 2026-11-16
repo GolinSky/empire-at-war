@@ -43,9 +43,9 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<SquadronPool>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<TeamBaseSquadronLauncher>(Lifetime.Singleton).As<ISquadronLauncher>();
             builder.Register<EnemyStrategicDecisionModel>(Lifetime.Singleton);
+            builder.Register<AiTeamMembership>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<AllyAiMarkerSource>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<AllyAiMarkerEmitter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
-            builder.Register<HostileIntelGatherer>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<EnemyStrategicContextBuilder>(Lifetime.Singleton);
             builder.Register<EnemyStationPressureTracker>(Lifetime.Singleton);
             builder.Register<EnemyRecoveryAnchor>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

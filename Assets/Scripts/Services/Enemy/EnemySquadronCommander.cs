@@ -13,7 +13,6 @@ using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Services.ReinforcementZones;
 using UnityEngine;
-using Utilities.ScriptUtils.Time;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 using static EmpireAtWar.Utils.FormationConversion;
@@ -44,7 +43,11 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IPlayerRoster _playerRoster;
         private readonly ForceCompositionBuilder _forceBuilder;
         private readonly UnitCombatProfileCatalog _profileCatalog;
-        private readonly ITimer _decisionTimer = TimerFactory.ConstructTimer(DECISION_INTERVAL);
+        private float _decisionTimer;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public EnemyDecisionDiagnostics PeriodicDiagnostics { get; }
+        public EnemyDecisionDiagnostics LaunchDiagnostics { get; }
+#endif
 
         private readonly PlayerSlot _owner;
         private readonly Dictionary<ISquadron, CommandedSquadron> _squadrons =
@@ -67,7 +70,10 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyPatrolService _patrol;
         private readonly EnemyPatrolSafety _patrolSafety;
         private readonly INotifier<BattleState> _battleState;
+        private readonly AiWorldSnapshot _worldSnapshot;
+        private readonly EnemyAiScheduler _scheduler;
 
+        private EnemyAiScheduler.WorkHandle _workHandle;
         private bool _isRunning;
 
         private Vector3? _stationDefense;
@@ -91,12 +97,19 @@ namespace EmpireAtWar.Services.Enemy
             IEnemyStructurePlacementService structurePlacement,
             TeamIntelRegistry intelRegistry,
             PlayerSlot owner, EnemyPatrolService patrol, EnemyPatrolSafety patrolSafety,
-            INotifier<BattleState> battleState)
+            INotifier<BattleState> battleState, AiWorldSnapshot worldSnapshot = null,
+            EnemyAiScheduler scheduler = null)
         {
             _owner = owner;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            PeriodicDiagnostics = new EnemyDecisionDiagnostics("EnemyAI.Squadron.Periodic." + owner.Id);
+            LaunchDiagnostics = new EnemyDecisionDiagnostics("EnemyAI.Squadron.Launch." + owner.Id);
+#endif
             _patrol = patrol;
             _patrolSafety = patrolSafety;
             _battleState = battleState;
+            _worldSnapshot = worldSnapshot;
+            _scheduler = scheduler;
             _intel = intelRegistry.Get(owner.Team);
             _structurePlacement = structurePlacement;
             _captureSources = captureSources;
@@ -109,6 +122,11 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Initialize()
         {
+            _decisionTimer = EnemyAiStagger.Offset(_owner.Id, DECISION_INTERVAL);
+            if (_scheduler != null)
+            {
+                _workHandle = _scheduler.Register(_owner.Id, DECISION_INTERVAL, _decisionTimer, RunPeriodicPass);
+            }
             _battleState.AddObserver(this);
         }
 
@@ -119,6 +137,8 @@ namespace EmpireAtWar.Services.Enemy
 
         public void LateDispose()
         {
+            _scheduler?.Unregister(_workHandle);
+            _workHandle = null;
             _battleState.RemoveObserver(this);
             _isRunning = false;
             foreach (KeyValuePair<ISquadron, CommandedSquadron> pair in _squadrons)
@@ -133,6 +153,10 @@ namespace EmpireAtWar.Services.Enemy
         {
             Track(squadron, squadronType);
             if (!_isRunning) return;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            LaunchDiagnostics.Record();
+            using var marker = LaunchDiagnostics.Marker.Auto();
+#endif
 
             AssessThreats();
             AssignEscorts();
@@ -145,12 +169,28 @@ namespace EmpireAtWar.Services.Enemy
             // Player scopes tick while the asynchronous map load is still in progress.
             if (!_isRunning) return;
 
-            if (!_decisionTimer.IsComplete)
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            PeriodicDiagnostics.Tick(Time.deltaTime);
+            LaunchDiagnostics.Tick(Time.deltaTime);
+#endif
+            if (_scheduler != null) return;
+
+            _decisionTimer -= Time.deltaTime;
+            if (_decisionTimer > 0f)
             {
                 return;
             }
 
-            _decisionTimer.StartTimer();
+            _decisionTimer = DECISION_INTERVAL;
+            RunPeriodicPass();
+        }
+
+        private void RunPeriodicPass()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            PeriodicDiagnostics.Record();
+            using var marker = PeriodicDiagnostics.Marker.Auto();
+#endif
             _patrol.Sample(Time.time);
             TrackOwnedSquadrons();
             AssessThreats();
@@ -166,6 +206,22 @@ namespace EmpireAtWar.Services.Enemy
 
         private void TrackOwnedSquadrons()
         {
+            if (_worldSnapshot != null)
+            {
+                IReadOnlyList<AiWorldSnapshot.Entry> owned = _worldSnapshot.GetOwnedUnits(_owner.Id);
+                for (int i = 0; i < owned.Count; i++)
+                {
+                    AiWorldSnapshot.Entry entry = owned[i];
+                    if (entry.UnitTypeId.IsSquadron &&
+                        entry.Entity.TryGetFacade(out ISquadron squadron) && !_squadrons.ContainsKey(squadron))
+                    {
+                        Track(squadron, entry.UnitTypeId.SquadronType,
+                            entry.Entity.GetFacade<IUnitOrderObserverFacade>());
+                    }
+                }
+                return;
+            }
+
             foreach (IEntity entity in _entityLocator.Entities)
             {
                 if (entity.Owner == _owner.Id && !entity.HealthModel.IsDestroyed &&
@@ -272,6 +328,28 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             // Station locations are part of the map, so the AI may head for them without having seen them.
+            if (_worldSnapshot != null)
+            {
+                IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
+                for (int i = 0; i < bases.Count; i++)
+                {
+                    AiWorldSnapshot.Entry entry = bases[i];
+                    if (!_playerRoster.IsHostile(_owner.Id, entry.Owner))
+                    {
+                        continue;
+                    }
+
+                    float distance = (entry.Position - origin).sqrMagnitude;
+                    if (distance < closest)
+                    {
+                        closest = distance;
+                        position = entry.Position;
+                    }
+                }
+
+                return closest < float.MaxValue;
+            }
+
             foreach (IEntity entity in _entityLocator.Entities)
             {
                 if (!entity.IsPlayerBase() || !_playerRoster.IsHostile(_owner.Id, entity.Owner) ||
@@ -342,10 +420,22 @@ namespace EmpireAtWar.Services.Enemy
             PlayerId self = _owner.Id;
             float now = Time.time;
             _ownShipPositions.Clear();
-            foreach (IEntity entity in _entityLocator.Entities)
+            if (_worldSnapshot != null)
             {
-                if (entity.Owner == self && entity.IsShip() && !entity.HealthModel.IsDestroyed)
-                    _ownShipPositions.Add(entity.GetFacade<IEntityTransformFacade>().Transform.position);
+                IReadOnlyList<AiWorldSnapshot.Entry> owned = _worldSnapshot.GetOwnedUnits(self);
+                for (int i = 0; i < owned.Count; i++)
+                {
+                    if (owned[i].UnitTypeId.IsShip)
+                        _ownShipPositions.Add(owned[i].Position);
+                }
+            }
+            else
+            {
+                foreach (IEntity entity in _entityLocator.Entities)
+                {
+                    if (entity.Owner == self && entity.IsShip() && !entity.HealthModel.IsDestroyed)
+                        _ownShipPositions.Add(entity.GetFacade<IEntityTransformFacade>().Transform.position);
+                }
             }
 
             // Only strikecraft that can reach an own ship need escorts; distant wings are not a local threat.
@@ -360,13 +450,30 @@ namespace EmpireAtWar.Services.Enemy
                 return;
             }
 
-            foreach (IEntity entity in _entityLocator.Entities)
+            if (_worldSnapshot != null)
             {
-                if (entity.Owner == self && entity.IsShip() && !entity.HealthModel.IsDestroyed &&
-                    StrikecraftThreat(entity) > 0f &&
-                    HasHostileStrikecraftNear(entity.GetFacade<IEntityTransformFacade>().Transform.position, now))
+                IReadOnlyList<AiWorldSnapshot.Entry> owned = _worldSnapshot.GetOwnedUnits(self);
+                for (int i = 0; i < owned.Count; i++)
                 {
-                    _escortTargets.Add(entity);
+                    AiWorldSnapshot.Entry entry = owned[i];
+                    if (entry.UnitTypeId.IsShip &&
+                        StrikecraftThreat(entry.Entity) > 0f &&
+                        HasHostileStrikecraftNear(entry.Position, now))
+                    {
+                        _escortTargets.Add(entry.Entity);
+                    }
+                }
+            }
+            else
+            {
+                foreach (IEntity entity in _entityLocator.Entities)
+                {
+                    if (entity.Owner == self && entity.IsShip() && !entity.HealthModel.IsDestroyed &&
+                        StrikecraftThreat(entity) > 0f &&
+                        HasHostileStrikecraftNear(entity.GetFacade<IEntityTransformFacade>().Transform.position, now))
+                    {
+                        _escortTargets.Add(entity);
+                    }
                 }
             }
 

@@ -41,6 +41,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly WeaponsData _weapons;
         private readonly DamageMatrixData _damage;
         private readonly IProductionAccess _productionAccess;
+        private readonly AiWorldSnapshot _worldSnapshot;
         private readonly ForceComposition _own = new ForceComposition();
         private readonly ForceComposition _hostile = new ForceComposition();
         private readonly List<EnemyDefenseOption> _options = new List<EnemyDefenseOption>();
@@ -56,7 +57,7 @@ namespace EmpireAtWar.Services.Enemy
             IEconomyModelObserver money, EconomyService economy, EconomyData economyData,
             EnemyProductionStrategy production, IEnemyAiDebugInfo strategy,
             IAssetService assets, CaptureSiteData siteData, WeaponsData weapons, DamageMatrixData damage,
-            IProductionAccess productionAccess)
+            IProductionAccess productionAccess, AiWorldSnapshot worldSnapshot = null)
         {
             _sites = sites;
             _presence = presence;
@@ -75,6 +76,7 @@ namespace EmpireAtWar.Services.Enemy
             _weapons = weapons;
             _damage = damage;
             _productionAccess = productionAccess;
+            _worldSnapshot = worldSnapshot;
         }
 
         public bool IsReady => _strategy.HasDecision;
@@ -149,6 +151,20 @@ namespace EmpireAtWar.Services.Enemy
         {
             _bases.Clear();
             if (_padIndices.Count == 0) return;
+            if (_worldSnapshot != null)
+            {
+                IReadOnlyList<AiWorldSnapshot.Entry> bases = _worldSnapshot.Bases;
+                for (int i = 0; i < bases.Count; i++)
+                {
+                    AiWorldSnapshot.Entry entry = bases[i];
+                    bool own = entry.Owner == _productionAccess.ProductionHost;
+                    bool hostile = _players.IsHostile(_owner.Id, entry.Owner);
+                    if (own || hostile)
+                        _bases.Add((entry.Position, own, hostile));
+                }
+                return;
+            }
+
             foreach (IEntity entity in _entities.Entities)
             {
                 if (!entity.IsPlayerBase() || entity.HealthModel.IsDestroyed) continue;

@@ -18,6 +18,9 @@ using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Services.Ships;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+using Unity.Profiling;
+#endif
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -47,6 +50,8 @@ namespace EmpireAtWar.Services.Enemy
         IEnemyAiDebugInfo,
         IEnemyAiStateProvider
     {
+        private const float MINIMUM_WORLD_CHANGE_DECISION_GAP = 0.5f;
+
         private readonly IShipService _shipService;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly IEntityLocator _entityLocator;
@@ -59,12 +64,33 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyStrategicContextBuilder _contextBuilder;
         private readonly EnemyPatrolService _patrol;
         private readonly EnemyPatrolShipController _patrolShips;
+        private readonly EnemyAiScheduler _scheduler;
         private readonly List<IShipEntity> _ships = new List<IShipEntity>();
         private readonly HashSet<string> _reservedCaptureObjectives = new HashSet<string>();
         private readonly Dictionary<IShipEntity, Vector3> _zoneExitTargets =
             new Dictionary<IShipEntity, Vector3>();
 
+        private EnemyAiScheduler.WorkHandle _workHandle;
         private float _decisionTimer;
+        private float _timeSinceDecision = float.PositiveInfinity;
+        private bool _cycleInProgress;
+        private int _nextGroupIndex;
+        private bool _cycleHasPressure;
+        private IShipEntity _cyclePatrolShip;
+        private EnemyShipTaskGroup _cyclePrimary;
+        private int _cycleBodyCount;
+        private int _cycleRallyingCount;
+        private string _cycleGroupSummary = "";
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private static readonly ProfilerMarker ASSESS_STATION_MARKER = new ProfilerMarker("EnemyAI.Ship.AssessStation");
+        private static readonly ProfilerMarker RECONCILE_MARKER = new ProfilerMarker("EnemyAI.Ship.Reconcile");
+        private static readonly ProfilerMarker BUILD_GROUP_MARKER = new ProfilerMarker("EnemyAI.Ship.Build");
+        private static readonly ProfilerMarker EXECUTOR_MARKER = new ProfilerMarker("EnemyAI.Ship.Executor");
+        private static readonly ProfilerMarker CAPTURE_PROBE_MARKER = new ProfilerMarker("EnemyAI.Ship.CaptureProbe");
+        private static readonly ProfilerMarker TELEMETRY_MARKER = new ProfilerMarker("EnemyAI.Ship.Telemetry");
+        public EnemyDecisionDiagnostics DecisionDiagnostics { get; }
+        public int WorldChangeNotifications { get; private set; }
+#endif
 
         private bool _hasDecision;
         private bool _isRunning;
@@ -134,11 +160,15 @@ namespace EmpireAtWar.Services.Enemy
             EnemyStrategicContextBuilder contextBuilder,
             EnemyTaskForceExecutor taskForceExecutor,
             PlayerSlot owner, EnemyPatrolService patrol, EnemyPatrolShipController patrolShips,
-            INotifier<BattleState> battleState)
+            INotifier<BattleState> battleState, EnemyAiScheduler scheduler = null)
         {
             _owner = owner;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DecisionDiagnostics = new EnemyDecisionDiagnostics("EnemyAI.Ship.Decision." + owner.Id);
+#endif
             _patrol = patrol;
             _patrolShips = patrolShips;
+            _scheduler = scheduler;
             _shipService = shipService;
             _reinforcementZonesSystem = reinforcementZonesSystem;
             _entityLocator = entityLocator;
@@ -157,13 +187,25 @@ namespace EmpireAtWar.Services.Enemy
             _entityLocator.EntityAdded += HandleEntityChanged;
             _entityLocator.EntityRemoved += HandleEntityChanged;
             // Player scopes initialize before the asynchronous map load finishes.
-            _decisionTimer = EnemyAiStagger.Offset(_owner.Id,
-                EnemyAiDifficultyProfile.Get(_owner.Difficulty).DecisionInterval);
+            float interval = EnemyAiDifficultyProfile.Get(_owner.Difficulty).DecisionInterval;
+            _decisionTimer = EnemyAiStagger.Offset(_owner.Id, interval);
+            if (_scheduler != null)
+            {
+                _workHandle = _scheduler.Register(
+                    _owner.Id,
+                    interval,
+                    _decisionTimer,
+                    RunScheduledUnit,
+                    () => _contextBuilder.StationCritical,
+                    () => _cycleInProgress);
+            }
             _battleState.AddObserver(this);
         }
 
         public void LateDispose()
         {
+            _scheduler?.Unregister(_workHandle);
+            _workHandle = null;
             _battleState.RemoveObserver(this);
             _isRunning = false;
             _shipService.ShipAdded -= HandleShipChanged;
@@ -182,7 +224,12 @@ namespace EmpireAtWar.Services.Enemy
         public void Tick()
         {
             if (!_isRunning) return;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DecisionDiagnostics.Tick(Time.deltaTime);
+#endif
+            if (_scheduler != null) return;
 
+            _timeSinceDecision += Time.deltaTime;
             _decisionTimer -= Time.deltaTime;
             if (_decisionTimer <= 0f)
             {
@@ -223,64 +270,152 @@ namespace EmpireAtWar.Services.Enemy
 
         private void HandleWorldChanged()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (_isRunning) WorldChangeNotifications++;
+#endif
+            if (_scheduler != null && _workHandle != null)
+            {
+                _scheduler.MarkDirty(_workHandle, MINIMUM_WORLD_CHANGE_DECISION_GAP);
+                return;
+            }
+
             // Removal events also arrive during teardown, after zone views may be destroyed.
             // Defer world queries to a later gameplay tick, on a frame of this player's own.
-            _decisionTimer = Mathf.Min(_decisionTimer, EnemyAiStagger.WorldChangeDelay(_owner.Id));
+            // Churn must not accelerate full decisions beyond the fastest difficulty's normal cadence.
+            float delay = Mathf.Max(EnemyAiStagger.WorldChangeDelay(_owner.Id),
+                MINIMUM_WORLD_CHANGE_DECISION_GAP - _timeSinceDecision);
+            _decisionTimer = Mathf.Min(_decisionTimer, delay);
+        }
+
+        private void RunScheduledUnit()
+        {
+            if (!_cycleInProgress)
+            {
+                BeginDecisionCycle();
+            }
+
+            if (EvaluateNextGroup())
+            {
+                FinishDecisionCycle();
+            }
         }
 
         private void EvaluateAndExecute()
         {
+            BeginDecisionCycle();
+            while (!EvaluateNextGroup())
+            {
+            }
+            FinishDecisionCycle();
+        }
+
+        private void BeginDecisionCycle()
+        {
+            _timeSinceDecision = 0f;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            DecisionDiagnostics.Record();
+            using var marker = DecisionDiagnostics.Marker.Auto();
+#endif
             _decisionTimer = EnemyAiDifficultyProfile.Get(_owner.Difficulty).DecisionInterval;
             _patrol.Sample(Time.time);
             _ships.Clear();
             foreach (IShipEntity ship in _shipService.Ships)
                 if (ship.Owner == _owner.Id && _entityLocator.TryGetEntity(ship.EntityId, out GameEntity _))
                     _ships.Add(ship);
-            var station = _contextBuilder.AssessStation(_ships);
+            (bool HasPressure, bool GatherReinforcements) station;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (ASSESS_STATION_MARKER.Auto())
+#endif
+                station = _contextBuilder.AssessStation(_ships);
+            _cycleHasPressure = station.HasPressure;
             GatherReinforcements = station.GatherReinforcements;
-            IShipEntity patrolShip = _patrolShips.Select(_ships,
+            _cyclePatrolShip = _patrolShips.Select(_ships,
                 _contextBuilder.StationCritical || _contextBuilder.ForwardStationFallback.HasValue);
-            if (patrolShip != null) _ships.Remove(patrolShip);
-            _taskGroups.Reconcile(_ships, station.HasPressure);
+            if (_cyclePatrolShip != null) _ships.Remove(_cyclePatrolShip);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (RECONCILE_MARKER.Auto())
+#endif
+                _taskGroups.Reconcile(_ships, _cycleHasPressure);
             _reservedCaptureObjectives.Clear();
-            EnemyShipTaskGroup primary = null;
-            int bodyCount = 0;
-            int rallyingCount = 0;
-            string groupSummary = "";
-            foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
+            _nextGroupIndex = 0;
+            _cyclePrimary = null;
+            _cycleBodyCount = 0;
+            _cycleRallyingCount = 0;
+            _cycleGroupSummary = "";
+            _cycleInProgress = true;
+        }
+
+        private bool EvaluateNextGroup()
+        {
+            if (_nextGroupIndex >= _taskGroups.Groups.Count)
             {
+                return true;
+            }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using var marker = DecisionDiagnostics.Marker.Auto();
+#endif
+            EnemyShipTaskGroup group = _taskGroups.Groups[_nextGroupIndex++];
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BUILD_GROUP_MARKER.Auto())
+#endif
                 group.Evaluate(_reservedCaptureObjectives, Time.time);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (EXECUTOR_MARKER.Auto())
+#endif
+            {
                 if (!group.HasMarkerRequest && (group.Decision.State == EnemyStrategicState.RebuildFleet ||
                     group.Decision.State == EnemyStrategicState.Hold &&
                     (!group.IsMainForce || group.Context.Snapshot.IsRegrouped)))
                     MoveShipsOutOfDefaultZone(group.Ships);
                 else
                     foreach (IShipEntity ship in group.Ships) _zoneExitTargets.Remove(ship);
-                bodyCount += group.Executor.BodyCount;
-                rallyingCount += group.Executor.RallyingCount;
-                if (primary == null || primary.IsCaptureDetachment && !group.IsCaptureDetachment ||
-                    primary.IsCaptureDetachment == group.IsCaptureDetachment && group.Ships.Count > primary.Ships.Count)
-                    primary = group;
-                groupSummary += $" {(group.IsCaptureDetachment ? "Capture" : group.IsMainForce ? "Main" : "Combat")} group: " +
-                    $"{group.Ships.Count} ships, {group.Decision.State}.";
             }
-            _lastContext = primary.Context;
-            EnemyStrategicSnapshot snapshot = primary.Context.Snapshot;
+            _cycleBodyCount += group.Executor.BodyCount;
+            _cycleRallyingCount += group.Executor.RallyingCount;
+            if (_cyclePrimary == null || _cyclePrimary.IsCaptureDetachment && !group.IsCaptureDetachment ||
+                _cyclePrimary.IsCaptureDetachment == group.IsCaptureDetachment && group.Ships.Count > _cyclePrimary.Ships.Count)
+                _cyclePrimary = group;
+            _cycleGroupSummary += $" {(group.IsCaptureDetachment ? "Capture" : group.IsMainForce ? "Main" : "Combat")} group: " +
+                $"{group.Ships.Count} ships, {group.Decision.State}.";
+
+            return _nextGroupIndex >= _taskGroups.Groups.Count;
+        }
+
+        private void FinishDecisionCycle()
+        {
+            _cycleInProgress = false;
+            if (_cyclePrimary == null)
+            {
+                if (_cyclePatrolShip != null) _ships.Add(_cyclePatrolShip);
+                return;
+            }
+
+            _lastContext = _cyclePrimary.Context;
+            EnemyStrategicSnapshot snapshot = _cyclePrimary.Context.Snapshot;
             LastSnapshot = new EnemyStrategicSnapshot(snapshot.VictoryCondition, snapshot.Difficulty,
-                _ships.Count + (patrolShip == null ? 0 : 1), snapshot.EnemyShipCount, snapshot.OwnedCapturableZoneCount,
+                _ships.Count + (_cyclePatrolShip == null ? 0 : 1), snapshot.EnemyShipCount, snapshot.OwnedCapturableZoneCount,
                 snapshot.FleetAdvantage, snapshot.BaseThreatRatio, snapshot.HasCaptureTarget,
                 snapshot.HasEnemyBaseTarget, snapshot.HasOwnBase, snapshot.HasThreatenedSite,
                 snapshot.LocalAdvantage, snapshot.HasLocalThreat, snapshot.HasRaidTarget,
                 snapshot.IsRegrouped, snapshot.HasStationPressure, snapshot.HasSafeRetreat,
                 snapshot.HasEconomyRaidTarget, snapshot.LocalRaw, snapshot.FleetRaw,
                 snapshot.RecoveryMode, snapshot.RecoveryCapturePending, snapshot.WithdrawFromForwardStation);
-            _recoveryStartedAt = primary.RecoveryStartedAt;
-            _actionReason = primary.Executor.ActionReason + groupSummary;
-            PublishDecision(primary.Decision, bodyCount, rallyingCount);
-            if (_contextBuilder.AlliedMarkers != null)
-                _contextBuilder.AlliedMarkers.Observe(primary.Context, primary.Decision);
-            _taskGroups.TryCreateCaptureGroup(_ships, _reservedCaptureObjectives, station.HasPressure);
-            if (patrolShip != null) _ships.Add(patrolShip);
+            _recoveryStartedAt = _cyclePrimary.RecoveryStartedAt;
+            _actionReason = _cyclePrimary.Executor.ActionReason + _cycleGroupSummary;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (TELEMETRY_MARKER.Auto())
+#endif
+            {
+                PublishDecision(_cyclePrimary.Decision, _cycleBodyCount, _cycleRallyingCount);
+                if (_contextBuilder.AlliedMarkers != null)
+                    _contextBuilder.AlliedMarkers.Observe(_cyclePrimary.Context, _cyclePrimary.Decision);
+            }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (CAPTURE_PROBE_MARKER.Auto())
+#endif
+                _taskGroups.TryCreateCaptureGroup(_ships, _reservedCaptureObjectives, _cycleHasPressure);
+            if (_cyclePatrolShip != null) _ships.Add(_cyclePatrolShip);
         }
 
         private void MoveShipsOutOfDefaultZone(IReadOnlyList<IShipEntity> ships)

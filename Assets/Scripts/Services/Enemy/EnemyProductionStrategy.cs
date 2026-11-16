@@ -56,6 +56,9 @@ namespace EmpireAtWar.Services.Enemy
         private readonly HostileIntelModel _intel;
         private readonly EnemyStationPressureTracker _stationPressure;
         private readonly SecondStationLevelModel _secondStation;
+        private readonly EnemyAiScheduler _scheduler;
+
+        private EnemyAiScheduler.WorkHandle _workHandle;
 
         private readonly ForceComposition _ownForce = new ForceComposition();
         private readonly ForceComposition _hostileForce = new ForceComposition();
@@ -90,10 +93,12 @@ namespace EmpireAtWar.Services.Enemy
             PlayerSlot owner,
             EnemyStationPressureTracker stationPressure,
             SecondStationLevelModel secondStation,
-            IEnemyRecoveryPolicy recovery)
+            IEnemyRecoveryPolicy recovery,
+            EnemyAiScheduler scheduler = null)
         {
             _secondStation = secondStation;
             _recovery = recovery;
+            _scheduler = scheduler;
             _owner = owner;
             _stationPressure = stationPressure;
             _forceBuilder = forceBuilder;
@@ -118,6 +123,19 @@ namespace EmpireAtWar.Services.Enemy
             _decisionTimer = 0f;
             _hasDecided = false;
             _observedReleaseVersion = _unitLimitModel.ReleaseVersion;
+            if (_scheduler != null && _workHandle == null)
+            {
+                EnemyAiDifficultyProfile profile = EnemyAiDifficultyProfile.Get(_owner.Difficulty);
+                float interval = Mathf.Max(MINIMUM_PRODUCTION_INTERVAL, profile.DecisionInterval * 2f);
+                float initialDelay = EnemyAiStagger.Offset(_owner.Id, interval);
+                _workHandle = _scheduler.Register(_owner.Id, interval, initialDelay, RunScheduledProduction);
+            }
+        }
+
+        public void Dispose()
+        {
+            _scheduler?.Unregister(_workHandle);
+            _workHandle = null;
         }
 
         public void Tick(float deltaTime)
@@ -131,6 +149,12 @@ namespace EmpireAtWar.Services.Enemy
             {
                 _observedReleaseVersion = _unitLimitModel.ReleaseVersion;
                 _decisionTimer = 0f;
+                _scheduler?.MarkDue(_workHandle);
+            }
+
+            if (_scheduler != null)
+            {
+                return;
             }
 
             _decisionTimer -= deltaTime;
@@ -150,6 +174,16 @@ namespace EmpireAtWar.Services.Enemy
                 _decisionTimer += EnemyAiStagger.Offset(_owner.Id, _decisionTimer);
             }
             EvaluateProduction(profile);
+        }
+
+        private void RunScheduledProduction()
+        {
+            if (!_productionAccess.CanProduce)
+            {
+                return;
+            }
+
+            EvaluateProduction(EnemyAiDifficultyProfile.Get(_owner.Difficulty));
         }
 
         private void EvaluateProduction(EnemyAiDifficultyProfile profile)

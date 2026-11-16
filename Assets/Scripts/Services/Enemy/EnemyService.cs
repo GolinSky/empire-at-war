@@ -52,6 +52,7 @@ namespace EmpireAtWar.Services.Enemy
 
         public void LateDispose()
         {
+            _productionStrategy.Dispose();
             _playerRegistry.UnregisterStationSpawner(_owner.Id);
             _battleState.RemoveObserver(this);
         }

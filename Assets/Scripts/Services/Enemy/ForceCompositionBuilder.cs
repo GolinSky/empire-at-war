@@ -16,11 +16,16 @@ namespace EmpireAtWar.Services.Enemy
     {
         private readonly IEntityLocator _entityLocator;
         private readonly UnitCombatProfileCatalog _catalog;
+        private readonly AiWorldSnapshot _worldSnapshot;
 
-        public ForceCompositionBuilder(IEntityLocator entityLocator, UnitCombatProfileCatalog catalog)
+        public ForceCompositionBuilder(
+            IEntityLocator entityLocator,
+            UnitCombatProfileCatalog catalog,
+            AiWorldSnapshot worldSnapshot = null)
         {
             _entityLocator = entityLocator;
             _catalog = catalog;
+            _worldSnapshot = worldSnapshot;
         }
 
         /// <summary>Clears <paramref name="force"/> and fills it with every living unit <paramref name="include"/> accepts.</summary>
@@ -34,6 +39,27 @@ namespace EmpireAtWar.Services.Enemy
             if (unitCounts != null)
             {
                 unitCounts.Clear();
+            }
+
+            if (_worldSnapshot != null)
+            {
+                IReadOnlyList<AiWorldSnapshot.Entry> units = _worldSnapshot.LivingUnits;
+                for (int i = 0; i < units.Count; i++)
+                {
+                    AiWorldSnapshot.Entry entry = units[i];
+                    if (!include(entry.Entity))
+                    {
+                        continue;
+                    }
+
+                    force.Add(_catalog.Get(entry.UnitTypeId), entry.Hull, entry.Shields, entry.OffenseScale);
+                    if (unitCounts != null)
+                    {
+                        unitCounts.TryGetValue(entry.UnitTypeId, out int count);
+                        unitCounts[entry.UnitTypeId] = count + 1;
+                    }
+                }
+                return;
             }
 
             foreach (GameEntity entity in _entityLocator.Entities)
@@ -68,6 +94,20 @@ namespace EmpireAtWar.Services.Enemy
         {
             liveShips.Clear();
             int count = 0;
+            if (_worldSnapshot != null)
+            {
+                IReadOnlyList<AiWorldSnapshot.Entry> owned = _worldSnapshot.GetOwnedUnits(owner);
+                for (int i = 0; i < owned.Count; i++)
+                {
+                    AiWorldSnapshot.Entry entry = owned[i];
+                    if (!entry.UnitTypeId.IsShip) continue;
+                    liveShips.TryGetValue(entry.UnitTypeId, out int ships);
+                    liveShips[entry.UnitTypeId] = ships + 1;
+                    count += entry.HangarSquadrons;
+                }
+                return count;
+            }
+
             foreach (GameEntity entity in _entityLocator.Entities)
             {
                 if (entity.Owner != owner || entity.HealthModel.IsDestroyed || !entity.HealthModel.HasUnits ||
