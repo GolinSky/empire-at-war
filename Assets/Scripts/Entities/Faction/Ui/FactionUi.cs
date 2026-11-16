@@ -333,6 +333,13 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         private void RefreshUnitVisibility(SelectionType selectionType)
         {
+            if (!_isRouteActive)
+            {
+                foreach (FactionUnitUi unitUi in _factionUnitsUi)
+                    unitUi.SetActive(false);
+                return;
+            }
+
             FactionUnitUi firstShip = null, firstScout = null, level = null;
             FactionUnitUi economyResearch = null, fleetResearch = null, newShip = null, miningFacility = null;
             bool isNewShipCarrier = false;
@@ -343,7 +350,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                          .ThenByDescending(unit => _presenter.IsUnitAvailable(unit.FactionData)))
             {
                 unitUi.transform.SetAsLastSibling();
-                bool isShown = _isRouteActive && _presenter.IsUnitAvailable(unitUi.FactionData) &&
+                bool isShown = _presenter.IsUnitAvailable(unitUi.FactionData) &&
                                !(HidesAtLimit(unitUi) && _presenter.IsUnitLimitReached(unitUi.Request)) &&
                                IsInProductionMenu(unitUi.Request, selectionType);
                 unitUi.SetActive(isShown);
