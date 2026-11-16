@@ -413,3 +413,9 @@ created: "2026-10-29\r"
 - [ ] [[Done/Bugs/Multiselect_Attack_Overlap]] — Run authorized Navigation/BattleInput/EnemyAi regressions; Combat/Ships behavior review covered by navigation integration fixtures. Tests were not run under the checkout override.
 - [ ] [[Done/Bugs/Multiselect_Attack_Overlap]] — Check same-target Attack/Attack Move, Guard/Hunt, minimum-range/hardpoint/artillery holds, dense/mixed-height fleets, map edges/full firing space, ion disable, Stop/new orders, target replacement and multiplayer authority in-game.
 - [ ] [[Done/Bugs/Multiselect_Attack_Overlap]] — Compare matched Editor/Development Player overlap duration, CPU p95/p99, GC/frame, queue age, saturation, correction and route-build counters. Source preserves CPU limits; no measured CPU neutrality or improvement yet.
+
+## Structure Status Icons
+
+- [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Check mining/Battle Asteroid and satellite capture/build/destruction, relay capture, fogged destruction, away/return, menu/cinematic/pause, burst events, map reload and online client; review 48 px world / 26 px minimap readability and ordinary HUD panel overlap.
+- [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Run authored Capture/Ui/Networking regressions when explicitly authorized; local test execution was disabled.
+- [ ] [[Done/Features/Structure_Status_Icons_Plan]] — Profile matched idle/many-reminder/camera-pan/destruction workloads; record source/active/visible counts, CPU and allocations. Zero-allocation target and CPU budget are unmeasured.

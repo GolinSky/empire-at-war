@@ -30,7 +30,7 @@ namespace EmpireAtWar.Services.CaptureSites
     public sealed class CaptureSitesSystem : MonoBehaviour, ICaptureSiteDirectory, ICaptureSiteEvents,
         ICaptureSitePresence, ICaptureSiteConstruction, ICaptureSiteSaveState, IInitializable, ITickable,
         ILateDisposable, IUiCancelHandler, IObserver<BattleMap>, ICaptureSiteBuildSelection,
-        ISiteConstructionCommandHandler
+        ISiteConstructionCommandHandler, ICaptureSiteStatusEvents
     {
         private const float SATELLITE_ORDER_RADIUS = 2f;
         private static readonly ProfilerMarker CaptureMarker = new ProfilerMarker("Battle.Capture.Site.Model");
@@ -62,6 +62,7 @@ namespace EmpireAtWar.Services.CaptureSites
         private bool _followsHost;
 
         public IReadOnlyList<ICaptureSite> Sites => _sites;
+        public int MapVersion { get; private set; }
         /// <summary>In map layout order, so a seeded rebuild matches saved sites by index.</summary>
         public IReadOnlyList<CaptureSitePresenter> SitePresenters => _sites;
         public event Action SitesChanged;
@@ -70,6 +71,7 @@ namespace EmpireAtWar.Services.CaptureSites
         public event Action<PlayerId, SiteFacilityType> SiteLost;
         public event Action<PlayerId, SiteFacilityType> ConstructionStarted;
         public event Action<PlayerId, SiteFacilityType> ConstructionCompleted;
+        public event Action<CaptureSiteStatusChange> StatusChanged;
         public CaptureSitePresenter SelectedSite => _selectedSite;
         public Vector2 SelectionScreenPosition => _cameraService.WorldToScreenPoint(_selectedSite.FacilityPosition);
         public bool CanAfford(float price) => GetBuilder(_localPlayer.Id).CanAfford(price);
@@ -122,6 +124,7 @@ namespace EmpireAtWar.Services.CaptureSites
         public void UpdateState(BattleMap battleMap)
         {
             ClearSites();
+            MapVersion++;
             foreach (CaptureSiteView view in battleMap.SiteViews)
             {
                 CaptureSiteModel model = new CaptureSiteModel(
@@ -132,6 +135,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 _sites.Add(site);
                 site.Captured += HandleSiteCaptured;
                 site.Lost += HandleSiteLost;
+                site.StatusChanged += HandleStatusChanged;
                 Transform source = view.transform;
                 _areaSources.Add(source);
                 float footprintRadius = view.Kind == CaptureSiteKind.Satellite ? _mapSettings.SatelliteFootprintRadius : site.Radius;
@@ -172,6 +176,7 @@ namespace EmpireAtWar.Services.CaptureSites
             {
                 site.Captured -= HandleSiteCaptured;
                 site.Lost -= HandleSiteLost;
+                site.StatusChanged -= HandleStatusChanged;
                 site.ConstructionCompleted -= HandleConstructionCompleted;
                 site.Dispose();
             }
@@ -200,6 +205,19 @@ namespace EmpireAtWar.Services.CaptureSites
                 ConstructionStarted?.Invoke(site.Owner, site.FacilityType);
             if (site.State == CaptureSiteState.Operational && previousState != CaptureSiteState.Operational)
                 ConstructionCompleted?.Invoke(site.Owner, site.FacilityType);
+
+            CaptureSiteStatusTransition transition;
+            if (site.State == CaptureSiteState.Operational &&
+                (previousState != CaptureSiteState.Operational || previousOwner != site.Owner))
+                transition = CaptureSiteStatusTransition.Built;
+            else if (site.Owner != previousOwner && site.Owner != PlayerId.None)
+                transition = CaptureSiteStatusTransition.Captured;
+            else if (site.Owner != previousOwner)
+                transition = previousState is CaptureSiteState.Constructing or CaptureSiteState.Operational
+                    ? CaptureSiteStatusTransition.Destroyed : CaptureSiteStatusTransition.OwnershipLost;
+            else
+                return;
+            StatusChanged?.Invoke(new CaptureSiteStatusChange(site, site.FacilityPosition, previousOwner, site.Owner, transition));
         }
 
         public void Tick()
@@ -245,6 +263,8 @@ namespace EmpireAtWar.Services.CaptureSites
             SiteCaptured?.Invoke(previousOwner, owner, type);
 
         private void HandleSiteLost(PlayerId owner, SiteFacilityType type) => SiteLost?.Invoke(owner, type);
+
+        private void HandleStatusChanged(CaptureSiteStatusChange change) => StatusChanged?.Invoke(change);
 
         private void HandleConstructionCompleted(PlayerId owner, SiteFacilityType type) =>
             ConstructionCompleted?.Invoke(owner, type);

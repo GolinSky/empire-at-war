@@ -51,6 +51,7 @@ namespace EmpireAtWar.Entities.MiniMap
         private readonly INotifier<BattleMap> _battleMap;
         private readonly IReadOnlyList<IMiniMapOverlaySource> _overlaySources;
         private MiniMapUi _miniMapView;
+        public MiniMapUi View => _miniMapView;
         private readonly IPlayerColors _playerColors;
 
         private readonly MiniMapData _model;

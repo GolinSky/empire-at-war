@@ -14,6 +14,7 @@ using EmpireAtWar.Entities.MainMenu.Settings;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Menu;
 using EmpireAtWar.Entities.MiniMap;
+using EmpireAtWar.Entities.StructureStatusIcons;
 using EmpireAtWar.Entities.ShipUi;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.Tooltip;
@@ -222,6 +223,8 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<MiniMapUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ReinforcementZoneMiniMapPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<MiniMapAlertPresenter>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<StructureStatusIconSources>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<StructureStatusIconPresenter>(Lifetime.Singleton).AsImplementedInterfaces();
             if (Battle.Mode != GameMode.BattleSimulation)
                 builder.Register<BaseMiniMapPresenter>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<CinematicCameraModel>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

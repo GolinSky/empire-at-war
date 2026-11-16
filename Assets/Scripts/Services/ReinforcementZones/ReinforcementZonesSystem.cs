@@ -23,7 +23,7 @@ using EmpireAtWar.Services.Ships;
 namespace EmpireAtWar.Services.ReinforcementZones
 {
     public sealed class ReinforcementZonesSystem : MonoBehaviour, IReinforcementZonesSystem, IReinforcementZoneSource,
-        IInitializable, ILateDisposable, ITickable, IObserver<BattleMap>
+        IInitializable, ILateDisposable, ITickable, IObserver<BattleMap>, IRelayStatusEvents
     {
         private IVisionService _visionService;
         private IBattleAreaWriter _areas;
@@ -45,8 +45,11 @@ namespace EmpireAtWar.Services.ReinforcementZones
         [SerializeField, FormerlySerializedAs("_spawnEdgePadding"), Min(0f)] private float spawnEdgePadding = 3f;
 
         public event Action OwnershipChanged;
+        public event Action<RelayOwnershipChange> RelayOwnershipChanged;
+        public event Action RelaySourcesChanged;
 
         public IReadOnlyList<ReinforcementZonePresenter> Zones => _zones;
+        public int MapVersion { get; private set; }
 
         [Inject]
         private void Construct(
@@ -88,6 +91,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
         public void UpdateState(BattleMap battleMap)
         {
             UnregisterMap();
+            MapVersion++;
             _zoneViews = battleMap.ZoneViews;
             _homes.Clear();
             foreach (ZoneSpot spot in battleMap.Layout.Zones)
@@ -124,6 +128,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 _strengthSampler.Add(zone.Contains);
                 RegisterRelay(view, view.StartingOwner);
             }
+            RelaySourcesChanged?.Invoke();
         }
 
         /// <summary>Online client: zone capture comes from the host (<see cref="RestoreZones"/>); zones only render.</summary>
@@ -131,7 +136,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
 
         public void Tick() => TickZones(Time.deltaTime);
 
-        public void RestoreZones(IReadOnlyList<ReinforcementZoneSave> saves)
+        public void RestoreZones(IReadOnlyList<ReinforcementZoneSave> saves, bool notifyTransitions = false)
         {
             if (saves.Count != _zones.Count)
                 throw new InvalidOperationException($"Saved {saves.Count} reinforcement zones; the map has {_zones.Count}.");
@@ -141,8 +146,11 @@ namespace EmpireAtWar.Services.ReinforcementZones
             for (int i = 0; i < _zones.Count; i++)
             {
                 ReinforcementZoneSave save = saves[i];
+                PlayerId previousOwner = _zones[i].Owner;
                 _zones[i].Restore(save.Owner, save.CapturingPlayer, save.CaptureProgress, save.IsContested);
                 RegisterRelay(_zoneViews[i], save.Owner);
+                if (notifyTransitions && _zones[i].IsCapturable && previousOwner != save.Owner)
+                    RelayOwnershipChanged?.Invoke(new RelayOwnershipChange(_zones[i], previousOwner));
             }
 
             // Visibility waits until every relay is registered: one zone's relay can reveal another.
@@ -159,10 +167,13 @@ namespace EmpireAtWar.Services.ReinforcementZones
             for (int i = 0; i < _zones.Count; i++)
             {
                 ReinforcementZonePresenter zone = _zones[i];
+                PlayerId previousOwner = zone.Owner;
                 if (!_followsHost && zone.Tick(deltaTime, _strengthSampler[i]))
                 {
                     RegisterRelay(_zoneViews[i], zone.Owner);
                     OwnershipChanged?.Invoke();
+                    if (zone.IsCapturable)
+                        RelayOwnershipChanged?.Invoke(new RelayOwnershipChange(zone, previousOwner));
                 }
 
                 // The circle stays visible; labels and minimap markers require current vision.

@@ -223,3 +223,10 @@ tags:
 - Failed corrections use 1 s cooldown and pair/target/local-occupancy/reservation-change suppression. Whole-cell hashes cover unvisited dense occupants; `ReservationVersion` is O(1), unlike the position-scanning `Version` getter. Unrelated reservation edits can conservatively wake work.
 - Distinct attack bearings survive closing; full firing space is not guaranteed. No direct Transform separation, moving obstacles in static graphs, per-ship jobs or continuous collision-avoidance claim.
 - Inspect `Battle.Spacing.Snapshot/Index/Consume`, worker `ShipSpacingJob`, navigation markers and `Spacing*` service counters. Source/Unity compilation verified; tests and matched Editor/Development Player CPU/overlap acceptance pending → [[Done/Bugs/Multiselect_Attack_Overlap]].
+
+### Structure status icons · 2026-11-16
+- Separate passive world/minimap views from selectable entity markers. Share one serialized glyph/badge mapping; no per-icon Canvas, Update, raycast target, tween or fog query.
+- Prewarm one view per source per display. Process a dense active-source list; cache stationary projections until camera/viewport/layout/anchor changes. Latest source revision replaces both lifetimes.
+- Advance clocks only after the same transition was displayed in the previous frame and remains eligible; a long first frame or returning HUD must not consume unseen notifications.
+- Cache event positions independently of facility transforms. Subscribe to every capture source; reset pools/state on map-source changes and unsubscribe/release on scope disposal.
+- Source/Unity compilation verified; zero-allocation target and CPU budget remain unmeasured. Matched workload acceptance → [[Done/Features/Structure_Status_Icons_Plan]].

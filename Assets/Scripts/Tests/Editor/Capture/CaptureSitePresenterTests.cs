@@ -4,6 +4,8 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.Services.Networking.States;
+using EmpireAtWar.Services.Saves;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
@@ -137,6 +139,85 @@ namespace EmpireAtWar.Tests.Editor
             _presenter.SetVisibility(true);
             Assert.That(_view.IsVisible, Is.True);
         }
+
+        [Test]
+        public void StatusChanges_EmptyNeutralizationClearsReminderWithoutDestruction()
+        {
+            _presenter.Restore(TestPlayers.Enemy, CaptureSiteState.Owned, PlayerId.None, 0f,
+                SiteFacilityType.Mining, 0f);
+            var changes = new List<CaptureSiteStatusChange>();
+            _presenter.StatusChanged += changes.Add;
+
+            _presenter.TickCapture(20f, TestPlayers.DuelTally(_roster, 1f, 0f));
+            _presenter.TickCapture(10f, TestPlayers.DuelTally(_roster, 1f, 0f));
+
+            Assert.That(changes.Count, Is.EqualTo(2));
+            Assert.That(changes[0].Transition, Is.EqualTo(CaptureSiteStatusTransition.OwnershipLost));
+            Assert.That(changes[0].PreviousOwner, Is.EqualTo(TestPlayers.Enemy));
+            Assert.That(changes[0].Owner, Is.EqualTo(PlayerId.None));
+            Assert.That(changes[1].Transition, Is.EqualTo(CaptureSiteStatusTransition.Captured));
+            Assert.That(changes[1].Owner, Is.EqualTo(TestPlayers.Human));
+            Assert.That(changes[1].Site, Is.SameAs(_presenter));
+        }
+
+        [TestCase(SiteFacilityType.Mining, false)]
+        [TestCase(SiteFacilityType.Mining, true)]
+        [TestCase(SiteFacilityType.BattleAsteroid, false)]
+        [TestCase(SiteFacilityType.BattleAsteroid, true)]
+        public void StatusChanges_CompletionAndDestructionAreSingleTransitions(SiteFacilityType type, bool complete)
+        {
+            _presenter.Restore(TestPlayers.Human, CaptureSiteState.Owned, PlayerId.None, 0f, type, 0f);
+            var changes = new List<CaptureSiteStatusChange>();
+            _presenter.StatusChanged += changes.Add;
+            _presenter.StartConstruction(type);
+            _presenter.SetFacility(42);
+            _presenter.SetConstructionProgress(complete ? 1f : 0.5f);
+            _presenter.SetConstructionProgress(complete ? 1f : 0.5f);
+            Assert.That(changes.Count, Is.EqualTo(complete ? 1 : 0));
+            if (complete) Assert.That(changes[0].Transition, Is.EqualTo(CaptureSiteStatusTransition.Built));
+
+            _presenter.ReleaseFacility();
+            _presenter.ReleaseFacility();
+
+            Assert.That(changes.Count, Is.EqualTo(complete ? 2 : 1));
+            CaptureSiteStatusChange destroyed = changes[changes.Count - 1];
+            Assert.That(destroyed.Transition, Is.EqualTo(CaptureSiteStatusTransition.Destroyed));
+            Assert.That(destroyed.PreviousOwner, Is.EqualTo(TestPlayers.Human));
+            Assert.That(destroyed.Position, Is.EqualTo(_view.FacilityPosition));
+            Assert.That(_presenter.FacilityId, Is.Zero);
+        }
+
+        [Test, Category("Networking")]
+        [TestCase(CaptureSiteState.Owned, CaptureSiteStatusTransition.OwnershipLost)]
+        [TestCase(CaptureSiteState.Constructing, CaptureSiteStatusTransition.Destroyed)]
+        [TestCase(CaptureSiteState.Operational, CaptureSiteStatusTransition.Destroyed)]
+        public void HostSnapshots_SuppressBaselineAndDuplicatesAndClassifyLoss(
+            CaptureSiteState state, CaptureSiteStatusTransition expected)
+        {
+            CaptureSitesSystem system = CreateSystem();
+            var replication = new CaptureSitesReplicatedState(null, null, system);
+            var changes = new List<CaptureSiteStatusChange>();
+            var baselines = new List<CaptureSiteStatusChange>();
+            system.StatusChanged += changes.Add;
+            _presenter.StatusChanged += baselines.Add;
+            string owned = SiteSnapshot(TestPlayers.Human, state);
+            replication.Apply(owned);
+            replication.Apply(owned);
+            Assert.That(changes, Is.Empty);
+            Assert.That(baselines.Count, Is.EqualTo(1));
+            Assert.That(baselines[0].Transition, Is.EqualTo(CaptureSiteStatusTransition.Baseline));
+
+            string neutral = SiteSnapshot(PlayerId.None, CaptureSiteState.Neutral);
+            replication.Apply(neutral);
+            replication.Apply(neutral);
+            Assert.That(changes.Count, Is.EqualTo(1));
+            Assert.That(changes[0].Transition, Is.EqualTo(expected));
+            Assert.That(changes[0].PreviousOwner, Is.EqualTo(TestPlayers.Human));
+        }
+
+        private static string SiteSnapshot(PlayerId owner, CaptureSiteState state) =>
+            "{\"Sites\":[" + JsonUtility.ToJson(CaptureSiteSave.Create(owner, state, PlayerId.None,
+                0f, SiteFacilityType.Mining, state == CaptureSiteState.Operational ? 1f : 0f, 0)) + "]}";
 
         private CaptureSitesSystem CreateSystem()
         {

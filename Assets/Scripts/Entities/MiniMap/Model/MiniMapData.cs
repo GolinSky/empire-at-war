@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EmpireAtWar.Entities.StructureStatusIcons;
 using EmpireAtWar.Models.SkirmishCamera;
 using EmpireAtWar.Views.MiniMap;
 using UnityEngine;
@@ -30,6 +31,8 @@ namespace EmpireAtWar.Models.MiniMap
     [CreateAssetMenu(fileName = nameof(MiniMapData), menuName = "Data/MiniMapData")]
     public class MiniMapData : Data, IModel, IMiniMapModelObserver
     {
+        [SerializeField] private StructureStatusIconArtwork structureStatusIcons;
+        public StructureStatusIconArtwork StructureStatusIcons => structureStatusIcons;
         private readonly List<MiniMapMarker> _markers = new List<MiniMapMarker>();
         private readonly List<MiniMapObstacle> _obstacles = new List<MiniMapObstacle>();
         private readonly List<MiniMapHazard> _hazards = new List<MiniMapHazard>();

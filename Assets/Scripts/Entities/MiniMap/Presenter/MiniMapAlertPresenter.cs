@@ -2,55 +2,42 @@ using System.Collections.Generic;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
-using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.MiniMap;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.SkirmishCamera;
-using EmpireAtWar.Presenters.ReinforcementZones;
-using EmpireAtWar.Services.CaptureSites;
-using EmpireAtWar.Services.ReinforcementZones;
 using UnityEngine;
 using VContainer;
 
 namespace EmpireAtWar.Presenters.MiniMap
 {
     /// <summary>
-    /// Pings the minimap when the local player captures or loses a capture site, satellite or reinforcement zone,
-    /// and where local units take damage. Reads only replicated state (owners, health), so online clients ping too.
+    /// Pings where local units take damage, including replicated health changes on online clients.
     /// Combat pings are limited to one per map cell per <see cref="COMBAT_COOLDOWN_SECONDS"/>.
     /// </summary>
     [LifecycleOrder(Initialize = LifecycleOrders.HUD_PRESENTERS_INITIALIZE)]
-    public sealed class MiniMapAlertPresenter : IInitializable, ILateTickable, ILateDisposable, IObserver<BattleState>
+    public sealed class MiniMapAlertPresenter : IInitializable, ILateDisposable, IObserver<BattleState>
     {
         private const float COMBAT_COOLDOWN_SECONDS = 4f;
         private const int COMBAT_CELLS_PER_SIDE = 10;
 
         private readonly MiniMapData _miniMapData;
         private readonly IMapModelObserver _map;
-        private readonly IReadOnlyList<ICaptureSiteDirectory> _siteDirectories;
-        private readonly ReinforcementZonesSystem _zones;
         private readonly IEntityLocator _entities;
         private readonly ILocalPlayer _localPlayer;
         private readonly INotifier<BattleState> _battleState;
-        private readonly Dictionary<ICaptureSite, PlayerId> _siteOwners = new Dictionary<ICaptureSite, PlayerId>();
-        private readonly Dictionary<ReinforcementZonePresenter, PlayerId> _zoneOwners =
-            new Dictionary<ReinforcementZonePresenter, PlayerId>();
         private readonly Dictionary<long, HealthWatch> _watches = new Dictionary<long, HealthWatch>();
         private readonly Dictionary<int, float> _combatCellReadyAt = new Dictionary<int, float>();
         private bool _running;
 
         public MiniMapAlertPresenter(MiniMapData miniMapData, IMapModelObserver map,
-            IReadOnlyList<ICaptureSiteDirectory> siteDirectories,
-            ReinforcementZonesSystem zones, IEntityLocator entities, ILocalPlayer localPlayer,
+            IEntityLocator entities, ILocalPlayer localPlayer,
             INotifier<BattleState> battleState)
         {
             _miniMapData = miniMapData;
             _map = map;
-            _siteDirectories = siteDirectories;
-            _zones = zones;
             _entities = entities;
             _localPlayer = localPlayer;
             _battleState = battleState;
@@ -58,16 +45,11 @@ namespace EmpireAtWar.Presenters.MiniMap
 
         public void Initialize() => _battleState.AddObserver(this);
 
-        // Owners are snapshotted once the battle runs, so loading and save restore never ping.
+        // Existing health is the initial baseline, so loading never pings.
         public void UpdateState(BattleState state)
         {
             if (state != BattleState.Running || _running) return;
             _running = true;
-            SnapshotSites();
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
-                if (zone.IsCapturable) _zoneOwners.Add(zone, zone.Owner);
-            for (int i = 0; i < _siteDirectories.Count; i++)
-                _siteDirectories[i].SitesChanged += SnapshotSites;
             _entities.EntityAdded += HandleEntityAdded;
             _entities.EntityRemoved += HandleEntityRemoved;
             foreach (IEntity entity in _entities.Entities) HandleEntityAdded(entity);
@@ -78,50 +60,10 @@ namespace EmpireAtWar.Presenters.MiniMap
             _battleState.RemoveObserver(this);
             if (!_running) return;
             _running = false;
-            for (int i = 0; i < _siteDirectories.Count; i++)
-                _siteDirectories[i].SitesChanged -= SnapshotSites;
             _entities.EntityAdded -= HandleEntityAdded;
             _entities.EntityRemoved -= HandleEntityRemoved;
             foreach (HealthWatch watch in _watches.Values) watch.Dispose();
             _watches.Clear();
-        }
-
-        // A few dozen owner compares per frame; ownership has no positional event to subscribe to.
-        public void LateTick()
-        {
-            if (!_running) return;
-            for (int i = 0; i < _siteDirectories.Count; i++)
-            {
-                IReadOnlyList<ICaptureSite> sites = _siteDirectories[i].Sites;
-                for (int j = 0; j < sites.Count; j++)
-                {
-                    ICaptureSite site = sites[j];
-                    PlayerId previous = _siteOwners[site];
-                    if (previous == site.Owner) continue;
-                    _siteOwners[site] = site.Owner;
-                    PingOwnerChange(previous, site.Owner, site.Center);
-                }
-            }
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
-            {
-                if (!_zoneOwners.TryGetValue(zone, out PlayerId previous) || previous == zone.Owner) continue;
-                _zoneOwners[zone] = zone.Owner;
-                PingOwnerChange(previous, zone.Owner, zone.Center);
-            }
-        }
-
-        private void SnapshotSites()
-        {
-            _siteOwners.Clear();
-            for (int i = 0; i < _siteDirectories.Count; i++)
-                foreach (ICaptureSite site in _siteDirectories[i].Sites)
-                    _siteOwners.Add(site, site.Owner);
-        }
-
-        private void PingOwnerChange(PlayerId previous, PlayerId owner, Vector3 position)
-        {
-            if (_localPlayer.IsLocal(owner)) _miniMapData.AddAlert(MiniMapAlertType.Captured, position);
-            else if (_localPlayer.IsLocal(previous)) _miniMapData.AddAlert(MiniMapAlertType.Lost, position);
         }
 
         private void HandleEntityAdded(IEntity entity)

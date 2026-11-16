@@ -11,6 +11,7 @@ namespace EmpireAtWar.Services.Networking.States
     public sealed class ReinforcementZonesReplicatedState : ReplicatedState
     {
         private readonly ReinforcementZonesSystem _zones;
+        private int _baselineMapVersion = -1;
 
         public ReinforcementZonesReplicatedState(ReplicatedStateRegistry registry, IMatchSession session,
             ReinforcementZonesSystem zones) : base(registry, session)
@@ -26,7 +27,12 @@ namespace EmpireAtWar.Services.Networking.States
                 zone.CaptureProgress, zone.IsContested)).ToArray()
         });
 
-        public override void Apply(string json) => _zones.RestoreZones(JsonUtility.FromJson<Snapshot>(json).Zones);
+        public override void Apply(string json)
+        {
+            _zones.RestoreZones(JsonUtility.FromJson<Snapshot>(json).Zones,
+                notifyTransitions: _baselineMapVersion == _zones.MapVersion);
+            _baselineMapVersion = _zones.MapVersion;
+        }
 
         protected override void FollowHost() => _zones.FollowHost();
 

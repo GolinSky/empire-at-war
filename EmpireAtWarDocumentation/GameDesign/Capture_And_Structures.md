@@ -5,7 +5,9 @@ system:
   - structures
 design_state: implemented
 verified: 2026-11-16
-verification: Inspected capture-site data and binding, construction dispatch, structure catalog times and station stats. Other behavior is described by the linked source and its dated checks.
+verification: Inspected capture-site data and binding, construction dispatch,
+  structure catalog times and station stats. Other behavior is described by the
+  linked source and its dated checks.
 ---
 # Capture and Structures
 
@@ -41,6 +43,14 @@ verification: Inspected capture-site data and binding, construction dispatch, st
 - Operational sites cannot be captured. Destroy facility → site becomes Neutral → capture is available again.
 - AI construction on its own empty sites requires the absence of hostile units in the ring. Its fallback builds an Asteroid Mine on eligible mining sites; the objective-driven route uses its selected site and facility.
 - Site construction does not enter the ordinary production queue or reserve-pool type limits.
+
+### Structure status icons
+- Local mine/satellite capture → world reminder remains through construction; completion replaces it. Ownership loss clears it.
+- Built/destroyed facilities and captured relays → 2 s accumulated displayed world time. Offscreen, hidden HUD, cinematic and modal input lock suspend acknowledgement; fog does not hide icons.
+- Minimap uses the same glyph/badge and an independent 3 s hold + 0.3 s fade. Each source keeps its own slot; a newer transition replaces the previous icon.
+- Battle Asteroid uses the mining-site glyph and timing. Empty-site neutralization never creates a destroyed notification.
+- Save/first online snapshot restores current local non-operational site reminders only; no historical transient replay. Map replacement resets presentation and snapshot baselines.
+- Source/Unity compilation and isolated artwork render verified 2026-11-16; tests and live visual/performance acceptance pending → [[Done/Features/Structure_Status_Icons_Plan]].
 
 ### Relay capture and reinforcement deployment
 - Relays use `ReinforcementZoneModel`, separately from facility capture sites. Capture immediately changes ownership; it requires no facility purchase or construction.

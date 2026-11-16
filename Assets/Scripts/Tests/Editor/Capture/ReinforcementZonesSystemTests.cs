@@ -20,6 +20,7 @@ using UnityEngine;
 using EmpireAtWar.Services.Ships;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.Networking.States;
 
 namespace EmpireAtWar.Tests.Editor
 {
@@ -93,6 +94,54 @@ namespace EmpireAtWar.Tests.Editor
                 Object.DestroyImmediate(data);
             }
         }
+
+        [Test, Category("Networking")]
+        public void RelaySnapshots_SuppressBaselineAndDuplicatesAndResetAfterMapReplacement()
+        {
+            GameObject root = new GameObject(nameof(ReinforcementZonesSystemTests));
+            ReinforcementZoneData data = ScriptableObject.CreateInstance<ReinforcementZoneData>();
+            try
+            {
+                ReinforcementZoneView zone = CreateZone(root.transform, PlayerId.None, true, Vector3.zero);
+                ReinforcementZonesSystem system = CreateSystem(root, data, zone);
+                var replication = new ReinforcementZonesReplicatedState(null, null, system);
+                var changes = new List<RelayOwnershipChange>();
+                int legacyChanges = 0;
+                int sourceChanges = 0;
+                system.RelayOwnershipChanged += changes.Add;
+                system.OwnershipChanged += () => legacyChanges++;
+                system.RelaySourcesChanged += () => sourceChanges++;
+                string human = RelaySnapshot(TestPlayers.Human);
+                string enemy = RelaySnapshot(TestPlayers.Enemy);
+
+                replication.Apply(human);
+                replication.Apply(human);
+                Assert.That(changes, Is.Empty);
+                replication.Apply(enemy);
+                replication.Apply(enemy);
+                Assert.That(changes.Count, Is.EqualTo(1));
+                Assert.That(changes[0].PreviousOwner, Is.EqualTo(TestPlayers.Human));
+                Assert.That(changes[0].Owner, Is.EqualTo(TestPlayers.Enemy));
+                Assert.That(changes[0].Zone, Is.SameAs(system.Zones[0]));
+                Assert.That(legacyChanges, Is.EqualTo(4), "Existing restore notifications retain their contract.");
+                Assert.That(sourceChanges, Is.Zero);
+
+                system.UpdateState(CreateMap(zone));
+                replication.Apply(human);
+                Assert.That(sourceChanges, Is.EqualTo(1));
+                Assert.That(changes.Count, Is.EqualTo(1), "A replacement map starts a fresh silent baseline.");
+                system.RestoreZones(new[] { ReinforcementZoneSave.Create(TestPlayers.Enemy, PlayerId.None, 0f, false) });
+                Assert.That(changes.Count, Is.EqualTo(1), "Save restoration does not replay captured icons.");
+            }
+            finally
+            {
+                Object.DestroyImmediate(root);
+                Object.DestroyImmediate(data);
+            }
+        }
+
+        private static string RelaySnapshot(PlayerId owner) =>
+            "{\"Zones\":[" + JsonUtility.ToJson(ReinforcementZoneSave.Create(owner, PlayerId.None, 0f, false)) + "]}";
 
         [Test]
         public void RelaySave_RestoringNeutralRemovesPreviousVisionAndBlocksEveryTeam()
@@ -299,6 +348,8 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(vision.IsVisible(TestPlayers.Enemy, edge), Is.False);
                 if (!initiallyOwned) Assert.That(vision.Sources, Is.Empty);
                 int enemyCaptures = 0;
+                var statusChanges = new List<RelayOwnershipChange>();
+                system.RelayOwnershipChanged += statusChanges.Add;
                 system.OwnershipChanged += () =>
                 {
                     if (system.Zones[0].Owner != TestPlayers.Enemy) return;
@@ -322,6 +373,11 @@ namespace EmpireAtWar.Tests.Editor
                 tick.Invoke(system, new object[] { zone.CaptureDuration });
 
                 Assert.That(enemyCaptures, Is.EqualTo(1));
+                Assert.That(statusChanges.Count, Is.EqualTo(initiallyOwned ? 2 : 1));
+                RelayOwnershipChange captured = statusChanges[statusChanges.Count - 1];
+                Assert.That(captured.PreviousOwner, Is.EqualTo(PlayerId.None));
+                Assert.That(captured.Owner, Is.EqualTo(TestPlayers.Enemy));
+                Assert.That(captured.Position, Is.EqualTo(zone.Center));
                 Assert.That(vision.IsVisible(TestPlayers.Enemy, edge), Is.True);
                 Assert.That(vision.IsVisible(TestPlayers.SecondEnemy, edge), Is.True);
                 Assert.That(vision.IsVisible(TestPlayers.Human, edge), Is.False);

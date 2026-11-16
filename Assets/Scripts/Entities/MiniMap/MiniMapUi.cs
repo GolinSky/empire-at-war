@@ -66,6 +66,7 @@ namespace EmpireAtWar.Entities.MiniMap
             _presenter = presenter;
         }
         public TooltipHoverView TooltipHover => tooltipHover;
+        public Transform StructureIconParent => alertTemplate.transform.parent;
         private Rect MiniMapRect => miniMapRectTransform.rect;
 
         public void Initialize()

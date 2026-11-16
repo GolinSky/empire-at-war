@@ -30,6 +30,7 @@ namespace EmpireAtWar.Entities.CaptureSites
             remove => _model.Lost -= value;
         }
         public event Action<PlayerId, SiteFacilityType> ConstructionCompleted;
+        public event Action<CaptureSiteStatusChange> StatusChanged;
 
         public CaptureSiteKind Kind { get; }
         public int PointId { get; }
@@ -91,14 +92,22 @@ namespace EmpireAtWar.Entities.CaptureSites
         /// <returns>True when the site changed owner.</returns>
         public bool TickCapture(float deltaTime, CaptureStrength tally)
         {
-            return _model.TickCapture(deltaTime, tally);
+            PlayerId previousOwner = Owner;
+            bool changed = _model.TickCapture(deltaTime, tally);
+            if (changed)
+                NotifyStatus(previousOwner, Owner == PlayerId.None
+                    ? CaptureSiteStatusTransition.OwnershipLost : CaptureSiteStatusTransition.Captured);
+            return changed;
         }
 
         /// <returns>True on the frame the facility finishes construction.</returns>
         public void SetConstructionProgress(float progress)
         {
             if (_model.SetConstructionProgress(progress))
+            {
                 ConstructionCompleted?.Invoke(Owner, FacilityType);
+                NotifyStatus(Owner, CaptureSiteStatusTransition.Built);
+            }
         }
 
         public void StartConstruction(SiteFacilityType facilityType)
@@ -110,16 +119,24 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         public void ReleaseFacility()
         {
+            PlayerId previousOwner = Owner;
+            bool hadFacility = HasFacility;
             FacilityId = 0;
             _model.ReleaseFacility();
+            if (hadFacility)
+                NotifyStatus(previousOwner, CaptureSiteStatusTransition.Destroyed);
         }
 
         public void Restore(PlayerId owner, CaptureSiteState state, PlayerId capturingPlayer, float captureProgress,
-            SiteFacilityType facilityType, float constructionProgress)
+            SiteFacilityType facilityType, float constructionProgress, bool notifyBaseline = true)
         {
             _model.Restore(owner, state, capturingPlayer, captureProgress, facilityType, constructionProgress);
             Render();
+            if (notifyBaseline) NotifyStatus(owner, CaptureSiteStatusTransition.Baseline);
         }
+
+        private void NotifyStatus(PlayerId previousOwner, CaptureSiteStatusTransition transition) =>
+            StatusChanged?.Invoke(new CaptureSiteStatusChange(this, FacilityPosition, previousOwner, Owner, transition));
 
         public void Render()
         {

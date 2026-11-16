@@ -12,6 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 330de582d576410cb60d703ffb555647, type: 3}
   m_Name: MiniMapData
   m_EditorClassIdentifier: 
+  structureStatusIcons:
+    mining: {fileID: 21300000, guid: e1a3b7efd1e34449599253d8289fb2cd, type: 3}
+    satellite: {fileID: 21300000, guid: 104554077a380465180036e258f26014, type: 3}
+    relay: {fileID: 21300000, guid: dddf8957c8987c748aa70a0e2b78a3eb, type: 3}
+    captured: {fileID: 21300000, guid: e0861093ea4beea47b2bb74392beb56a, type: 3}
+    built: {fileID: 21300000, guid: 07236d8aff75dfd418de82283a28d943, type: 3}
+    destroyed: {fileID: 21300000, guid: d926a478a083a7d48b22f6f407a8c9e7, type: 3}
   <MarkWrapper>k__BackingField:
     keyValue:
     - key: 0
