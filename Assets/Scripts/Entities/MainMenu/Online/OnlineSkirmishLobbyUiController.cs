@@ -228,7 +228,11 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private void OnModelChanged()
         {
             if (!_isOpen) return;
-            if (IsHost && !_applyingSetup) _online.PublishSetup(JsonUtility.ToJson(_model.CaptureLobby()));
+            if (IsHost && !_applyingSetup)
+            {
+                _appliedSetup = JsonUtility.ToJson(_model.CaptureLobby());
+                _online.PublishSetup(_appliedSetup);
+            }
             _ui.Render();
         }
 

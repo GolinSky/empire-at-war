@@ -255,6 +255,9 @@ namespace EmpireAtWar.Tests.Editor
                         humanOptions, 0, !revokeEditing, true, true, null));
 
                     Assert.That(dropdown.interactable, Is.False, "Old popup must not reopen during its fade.");
+                    Assert.That(dropdown.transition, Is.EqualTo(revokeEditing
+                        ? Selectable.Transition.ColorTint : Selectable.Transition.None),
+                        "Only a real permission change should show the disabled tint.");
                     dropdown.value = 1;
                     Assert.That(commands, Is.Zero, "A stale selection must not kick the newly seated player.");
                     Assert.That(dropdown.value, Is.Zero);
@@ -265,6 +268,7 @@ namespace EmpireAtWar.Tests.Editor
                     yield return null;
                     Assert.That(dropdown.IsExpanded, Is.False);
                     Assert.That(dropdown.interactable, Is.EqualTo(!revokeEditing));
+                    Assert.That(dropdown.transition, Is.EqualTo(Selectable.Transition.ColorTint));
                     if (revokeEditing)
                     {
                         dropdown.value = 1;

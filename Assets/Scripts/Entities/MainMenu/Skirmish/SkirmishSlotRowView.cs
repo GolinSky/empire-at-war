@@ -32,6 +32,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         private SkirmishSlotOccupant _occupant;
         private bool _occupantEditable;
         private bool _discardOccupantSelection;
+        private Selectable.Transition _occupantTransition;
         private readonly List<string> _occupantOptions = new List<string>();
 
         public event Action<int, int> OccupantChanged;
@@ -50,6 +51,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             IReadOnlyList<string> teamOptions)
         {
             _rowIndex = rowIndex;
+            _occupantTransition = occupantDropdown.transition;
             slotIndexText.text = (rowIndex + 1).ToString("00");
             SetOptions(factionDropdown, factionOptions);
             SetOptions(teamDropdown, teamOptions);
@@ -101,6 +103,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             teamDropdown.SetValueWithoutNotify(slot.Team);
             string hex = ColorUtility.ToHtmlStringRGB(playerColor);
             colorLabel.text = $"<mark=#{hex}FF padding=\"0,0,-20,-20\">  </mark>  {colorName}";
+            // Closing a stale popup blocks input without flashing the disabled tint.
+            occupantDropdown.transition = state.OccupantEditable && _discardOccupantSelection
+                ? Selectable.Transition.None : _occupantTransition;
             occupantDropdown.interactable = state.OccupantEditable && !_discardOccupantSelection;
             factionDropdown.interactable = state.DetailsEditable;
             teamDropdown.interactable = state.TeamEditable;
@@ -132,6 +137,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             {
                 _discardOccupantSelection = false;
                 occupantDropdown.interactable = _occupantEditable;
+                occupantDropdown.transition = _occupantTransition;
             }
         }
 
