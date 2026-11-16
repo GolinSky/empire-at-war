@@ -34,6 +34,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(entry.BuildTime, Is.EqualTo(25));
             Assert.That(entry.UnitCapacity, Is.EqualTo(2));
             Assert.That(entry.Icon, Is.Not.Null);
+            Assert.That(AssetDatabase.GetAssetPath(entry.Icon),
+                Is.EqualTo($"Assets/Art/Textures/Ui/Icons/SquadronIcon/Separatist/{type}Icon.tga"));
             Assert.That(entry.IconKey, Is.Not.Empty);
             var ui = AssetDatabase.LoadAssetAtPath<ShipUiData>("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");
             Assert.That(ui.GetSquadronIcon(type), Is.EqualTo(entry.Icon));

@@ -449,7 +449,7 @@ MonoBehaviour:
         description: Asajj Ventress pilots a single shielded Ginivex fighter. Twin
           laser cannons engage enemy fighters and bombers. No special abilities.
         role: Hero / Fighter hunter
-        iconKey: 84aba55e039b6ef458aa00f39b06050f:21300000
+        iconKey: cc23652a48fda724ea466faf46c57032:21300000
         isHero: 1
         <Name>k__BackingField: "Asajj Ventress \u2014 Ginivex"
         <MaxCount>k__BackingField: 1
@@ -457,7 +457,7 @@ MonoBehaviour:
         <Price>k__BackingField: 1500
         <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 2
-        <Icon>k__BackingField: {fileID: 21300000, guid: 84aba55e039b6ef458aa00f39b06050f,
+        <Icon>k__BackingField: {fileID: 21300000, guid: cc23652a48fda724ea466faf46c57032,
           type: 3}
     - key: 105
       value:
@@ -466,7 +466,7 @@ MonoBehaviour:
         description: Sev'rance Tann pilots a single shielded Ginivex fighter. Twin
           laser cannons engage enemy fighters and bombers. No special abilities.
         role: Hero / Fighter hunter
-        iconKey: 84aba55e039b6ef458aa00f39b06050f:21300000
+        iconKey: 2ad40480f52fcfd4ba5458a7fe8aee1a:21300000
         isHero: 1
         <Name>k__BackingField: "Sev'rance Tann \u2014 Ginivex"
         <MaxCount>k__BackingField: 1
@@ -474,7 +474,7 @@ MonoBehaviour:
         <Price>k__BackingField: 1500
         <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 2
-        <Icon>k__BackingField: {fileID: 21300000, guid: 84aba55e039b6ef458aa00f39b06050f,
+        <Icon>k__BackingField: {fileID: 21300000, guid: 2ad40480f52fcfd4ba5458a7fe8aee1a,
           type: 3}
     - key: 106
       value:
