@@ -1,0 +1,58 @@
+[
+  {
+    "sourceId": "Hangar",
+    "socket": "HP_HANGAR",
+    "sourcePosition": [
+      0.0,
+      -282.7183837890625,
+      0.29170656204223633
+    ],
+    "position": [
+      -0.0,
+      -3.99487,
+      33.10269
+    ]
+  },
+  {
+    "sourceId": "Engine_01",
+    "socket": "HP_ENGINES_01",
+    "sourcePosition": [
+      0.0,
+      667.988525390625,
+      120.71286010742188
+    ],
+    "position": [
+      -0.0,
+      8.55802,
+      -66.00048
+    ]
+  },
+  {
+    "sourceId": "Engine_02",
+    "socket": "HP_ENGINES_02",
+    "sourcePosition": [
+      140.0,
+      794.3648071289062,
+      -95.28713989257812
+    ],
+    "position": [
+      -14.59382,
+      -13.95816,
+      -79.17414
+    ]
+  },
+  {
+    "sourceId": "Engine_03",
+    "socket": "HP_ENGINES_03",
+    "sourcePosition": [
+      -140.0,
+      794.3648071289062,
+      -95.28713989257812
+    ],
+    "position": [
+      14.59382,
+      -13.95816,
+      -79.17414
+    ]
+  }
+]

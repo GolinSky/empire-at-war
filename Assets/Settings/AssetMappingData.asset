@@ -1694,3 +1694,24 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
+    - key: RecusantDreadnoughtShipView
+      value:
+        m_AssetGUID: 22bdaba382d1a334ebc7ab74a5d028f1
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: RecusantDreadnoughtShipData
+      value:
+        m_AssetGUID: 5cfe1457f6a65cb46a369fc81f54997d
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0
+    - key: RecusantDreadnoughtWreckView
+      value:
+        m_AssetGUID: 1fc059eac83357f41bb6c4e3c447feaf
+        m_SubObjectName: 
+        m_SubObjectType: 
+        m_SubObjectGUID: 
+        m_EditorAssetChanged: 0

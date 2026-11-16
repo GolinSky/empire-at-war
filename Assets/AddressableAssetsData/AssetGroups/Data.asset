@@ -225,6 +225,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cfe1457f6a65cb46a369fc81f54997d
+    m_Address: RecusantDreadnoughtShipData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 63d3d356ed5d781469d8411e38fb3498
     m_Address: CD273ShipData
     m_ReadOnly: 0

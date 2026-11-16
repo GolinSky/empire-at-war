@@ -1,0 +1,1002 @@
+[
+  {
+    "weaponType": 85,
+    "sourceId": "Turbo_01",
+    "socket": "WEAP_TURBO_UH_01_90",
+    "sourcePosition": [
+      0.0,
+      -725.7379760742188,
+      -172.37820434570312
+    ],
+    "position": [
+      -0.0,
+      -21.99425,
+      79.28373
+    ],
+    "sourceAim": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -45.0,
+    "maxYaw": 45.0,
+    "fireBoneA": "WEAP_TURBO_UH_01_90_FP00",
+    "fireBoneB": "WEAP_TURBO_UH_01_90_FP01",
+    "id": 0
+  },
+  {
+    "weaponType": 3,
+    "sourceId": "Turbo_02",
+    "socket": "WEAP_TURBO_HD_01_90",
+    "sourcePosition": [
+      0.0,
+      -1011.6466674804688,
+      -47.20918273925781
+    ],
+    "position": [
+      -0.0,
+      -8.94644,
+      109.0873
+    ],
+    "sourceAim": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -45.0,
+    "maxYaw": 45.0,
+    "fireBoneA": "WEAP_TURBO_HD_01_90_FP00",
+    "fireBoneB": "WEAP_TURBO_HD_01_90_FP01",
+    "id": 1
+  },
+  {
+    "weaponType": 3,
+    "sourceId": "Turbo_03",
+    "socket": "WEAP_TURBO_HD_02_270",
+    "sourcePosition": [
+      0.0,
+      -1011.6466674804688,
+      80.92552185058594
+    ],
+    "position": [
+      -0.0,
+      4.41052,
+      109.0873
+    ],
+    "sourceAim": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -135.0,
+    "maxYaw": 135.0,
+    "fireBoneA": "WEAP_TURBO_HD_02_270_FP00",
+    "fireBoneB": "WEAP_TURBO_HD_02_270_FP01",
+    "id": 2
+  },
+  {
+    "weaponType": 3,
+    "sourceId": "Turbo_04",
+    "socket": "WEAP_TURBO_HD_03_360",
+    "sourcePosition": [
+      0.0,
+      -120.52630615234375,
+      -110.48063659667969
+    ],
+    "position": [
+      -0.0,
+      -15.54195,
+      16.19553
+    ],
+    "sourceAim": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -180,
+    "maxYaw": 180,
+    "fireBoneA": "WEAP_TURBO_HD_03_360_FP00",
+    "fireBoneB": "WEAP_TURBO_HD_03_360_FP01",
+    "id": 3
+  },
+  {
+    "weaponType": 3,
+    "sourceId": "Turbo_05",
+    "socket": "WEAP_TURBO_HD_04_360",
+    "sourcePosition": [
+      0.0,
+      -10.63683795928955,
+      -110.48063659667969
+    ],
+    "position": [
+      -0.0,
+      -15.54195,
+      4.74048
+    ],
+    "sourceAim": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -180,
+    "maxYaw": 180,
+    "fireBoneA": "WEAP_TURBO_HD_04_360_FP00",
+    "fireBoneB": "WEAP_TURBO_HD_04_360_FP01",
+    "id": 4
+  },
+  {
+    "weaponType": 3,
+    "sourceId": "Turbo_06",
+    "socket": "WEAP_TURBO_HD_05_330",
+    "sourcePosition": [
+      2.384185791015625e-06,
+      181.662841796875,
+      -98.5351333618164
+    ],
+    "position": [
+      -0.0,
+      -14.29673,
+      -15.30513
+    ],
+    "sourceAim": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 180,
+    "minYaw": -165,
+    "maxYaw": 165,
+    "fireBoneA": "WEAP_TURBO_HD_05_330_FP00",
+    "fireBoneB": "WEAP_TURBO_HD_05_330_FP01",
+    "id": 5
+  },
+  {
+    "weaponType": 3,
+    "sourceId": "Turbo_07",
+    "socket": "WEAP_TURBO_HS_01_360",
+    "sourcePosition": [
+      0.0,
+      -69.54241943359375,
+      190.2229766845703
+    ],
+    "position": [
+      -0.0,
+      15.80386,
+      10.88089
+    ],
+    "sourceAim": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -180,
+    "maxYaw": 180,
+    "fireBoneA": "WEAP_TURBO_HS_01_360_FP00",
+    "fireBoneB": "WEAP_TURBO_HS_01_360_FP01",
+    "id": 6
+  },
+  {
+    "weaponType": 91,
+    "sourceId": "Turbo_08",
+    "socket": "WEAP_TURBO_LD_01_185",
+    "sourcePosition": [
+      45.0,
+      -288.5174560546875,
+      -78.54778289794922
+    ],
+    "position": [
+      -4.69087,
+      -12.21322,
+      33.70719
+    ],
+    "sourceAim": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -180,
+    "maxYaw": 2.5,
+    "fireBoneA": "WEAP_TURBO_LD_01_185_FP00",
+    "fireBoneB": "WEAP_TURBO_LD_01_185_FP01",
+    "id": 7
+  },
+  {
+    "weaponType": 91,
+    "sourceId": "Turbo_09",
+    "socket": "WEAP_TURBO_LD_02_185",
+    "sourcePosition": [
+      -45.0,
+      -288.5174560546875,
+      -78.54778289794922
+    ],
+    "position": [
+      4.69087,
+      -12.21322,
+      33.70719
+    ],
+    "sourceAim": [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -2.5,
+    "maxYaw": 180,
+    "fireBoneA": "WEAP_TURBO_LD_02_185_FP00",
+    "fireBoneB": "WEAP_TURBO_LD_02_185_FP01",
+    "id": 8
+  },
+  {
+    "weaponType": 90,
+    "sourceId": "Laser_01",
+    "socket": "WEAP_LASER_MD_01_180",
+    "sourcePosition": [
+      33.0,
+      -639.8277587890625,
+      123.53488159179688
+    ],
+    "position": [
+      -3.43997,
+      8.85219,
+      70.32832
+    ],
+    "sourceAim": [
+      0.9805800914764404,
+      -0.19611907005310059,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -168.69,
+    "maxYaw": 11.31,
+    "fireBoneA": "WEAP_LASER_MD_01_180_FP00",
+    "fireBoneB": "WEAP_LASER_MD_01_180_FP01",
+    "id": 9
+  },
+  {
+    "weaponType": 90,
+    "sourceId": "Laser_02",
+    "socket": "WEAP_LASER_MD_02_180",
+    "sourcePosition": [
+      -33.0,
+      -639.8277587890625,
+      123.53488159179688
+    ],
+    "position": [
+      3.43997,
+      8.85219,
+      70.32832
+    ],
+    "sourceAim": [
+      -0.9805855751037598,
+      -0.1961154192686081,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -11.31,
+    "maxYaw": 168.69,
+    "fireBoneA": "WEAP_LASER_MD_02_180_FP00",
+    "fireBoneB": "WEAP_LASER_MD_02_180_FP01",
+    "id": 10
+  },
+  {
+    "weaponType": 90,
+    "sourceId": "Laser_03",
+    "socket": "WEAP_LASER_MD_03_180",
+    "sourcePosition": [
+      31.0,
+      -830.2704467773438,
+      97.20999145507812
+    ],
+    "position": [
+      -3.23149,
+      6.10804,
+      90.18036
+    ],
+    "sourceAim": [
+      0.988936722278595,
+      -0.14833784103393555,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -171.469,
+    "maxYaw": 8.531,
+    "fireBoneA": "WEAP_LASER_MD_03_180_FP00",
+    "fireBoneB": "WEAP_LASER_MD_03_180_FP01",
+    "id": 11
+  },
+  {
+    "weaponType": 90,
+    "sourceId": "Laser_04",
+    "socket": "WEAP_LASER_MD_04_180",
+    "sourcePosition": [
+      -31.0,
+      -830.2704467773438,
+      97.20999145507812
+    ],
+    "position": [
+      3.23149,
+      6.10804,
+      90.18036
+    ],
+    "sourceAim": [
+      -0.9889326095581055,
+      -0.14833784103393555,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -8.531,
+    "maxYaw": 171.469,
+    "fireBoneA": "WEAP_LASER_MD_04_180_FP00",
+    "fireBoneB": "WEAP_LASER_MD_04_180_FP01",
+    "id": 12
+  },
+  {
+    "weaponType": 90,
+    "sourceId": "Laser_05",
+    "socket": "WEAP_LASER_MD_05_180",
+    "sourcePosition": [
+      35.0,
+      277.1768798828125,
+      29.41161346435547
+    ],
+    "position": [
+      -3.64845,
+      -0.95937,
+      -25.26166
+    ],
+    "sourceAim": [
+      0.9950368404388428,
+      0.09950750321149826,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -180,
+    "maxYaw": -5.711,
+    "fireBoneA": "WEAP_LASER_MD_05_180_FP00",
+    "fireBoneB": "WEAP_LASER_MD_05_180_FP01",
+    "id": 13
+  },
+  {
+    "weaponType": 90,
+    "sourceId": "Laser_06",
+    "socket": "WEAP_LASER_MD_06_180",
+    "sourcePosition": [
+      -35.0,
+      277.1768798828125,
+      29.41161346435547
+    ],
+    "position": [
+      3.64845,
+      -0.95937,
+      -25.26166
+    ],
+    "sourceAim": [
+      -0.9950616359710693,
+      0.09950372576713562,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": 5.71,
+    "maxYaw": 180,
+    "fireBoneA": "WEAP_LASER_MD_06_180_FP00",
+    "fireBoneB": "WEAP_LASER_MD_06_180_FP01",
+    "id": 14
+  },
+  {
+    "weaponType": 94,
+    "sourceId": "Laser_07",
+    "socket": "WEAP_LASER_LD_01_200",
+    "sourcePosition": [
+      35.0,
+      -256.98785400390625,
+      181.8895263671875
+    ],
+    "position": [
+      -3.64845,
+      14.93517,
+      30.42049
+    ],
+    "sourceAim": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -180,
+    "maxYaw": 10.0,
+    "fireBoneA": "WEAP_LASER_LD_01_200_FP00",
+    "fireBoneB": "WEAP_LASER_LD_01_200_FP01",
+    "id": 15
+  },
+  {
+    "weaponType": 94,
+    "sourceId": "Laser_08",
+    "socket": "WEAP_LASER_LD_02_200",
+    "sourcePosition": [
+      -35.0,
+      -256.98785400390625,
+      181.8895263671875
+    ],
+    "position": [
+      3.64845,
+      14.93517,
+      30.42049
+    ],
+    "sourceAim": [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    "duplicate": false,
+    "sourceOffset": [
+      0,
+      0,
+      0
+    ],
+    "parentYaw": 0,
+    "minYaw": -10.0,
+    "maxYaw": 180,
+    "fireBoneA": "WEAP_LASER_LD_02_200_FP00",
+    "fireBoneB": "WEAP_LASER_LD_02_200_FP01",
+    "id": 16
+  },
+  {
+    "weaponType": 3,
+    "sourceId": "Turbo_02",
+    "socket": "WEAP_TURBO_HD_01_90",
+    "sourcePosition": [
+      0.0,
+      -1011.6466674804688,
+      -47.20918273925781
+    ],
+    "position": [
+      -2.04738,
+      -8.29479,
+      112.36693
+    ],
+    "sourceAim": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "duplicate": true,
+    "sourceOffset": [
+      19.640749503232804,
+      -31.46183663472584,
+      6.251340847180607
+    ],
+    "parentYaw": 0,
+    "minYaw": -70,
+    "maxYaw": 70,
+    "fireBoneA": null,
+    "fireBoneB": null,
+    "sourceTarget": [
+      31.0,
+      -1047.6466674804688,
+      -47.20918273925781
+    ],
+    "surfaceMesh": "Recusant",
+    "id": 17
+  },
+  {
+    "weaponType": 3,
+    "sourceId": "Turbo_03",
+    "socket": "WEAP_TURBO_HD_02_270",
+    "sourcePosition": [
+      0.0,
+      -1011.6466674804688,
+      80.92552185058594
+    ],
+    "position": [
+      1.70236,
+      5.39687,
+      111.96647
+    ],
+    "sourceAim": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "duplicate": true,
+    "sourceOffset": [
+      -16.330917406861932,
+      -27.620233100589758,
+      9.462173050148024
+    ],
+    "parentYaw": 0,
+    "minYaw": -135,
+    "maxYaw": 135,
+    "fireBoneA": null,
+    "fireBoneB": null,
+    "sourceTarget": [
+      -31.0,
+      -1047.6466674804688,
+      80.92552185058594
+    ],
+    "surfaceMesh": "Recusant",
+    "id": 18
+  },
+  {
+    "weaponType": 3,
+    "sourceId": "Turbo_04",
+    "socket": "WEAP_TURBO_HD_03_360",
+    "sourcePosition": [
+      0.0,
+      -120.52630615234375,
+      -110.48063659667969
+    ],
+    "position": [
+      -6.20027,
+      -13.12919,
+      20.98663
+    ],
+    "sourceAim": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "duplicate": true,
+    "sourceOffset": [
+      59.47983005575161,
+      -45.96151633497806,
+      23.145878832758655
+    ],
+    "parentYaw": 0,
+    "minYaw": -150,
+    "maxYaw": 150,
+    "fireBoneA": null,
+    "fireBoneB": null,
+    "sourceTarget": [
+      62.0,
+      -160.52630615234375,
+      -110.48063659667969
+    ],
+    "surfaceMesh": "Recusant",
+    "id": 19
+  },
+  {
+    "weaponType": 3,
+    "sourceId": "Turbo_05",
+    "socket": "WEAP_TURBO_HD_04_360",
+    "sourcePosition": [
+      0.0,
+      -10.63683795928955,
+      -110.48063659667969
+    ],
+    "position": [
+      3.92761,
+      -15.37406,
+      8.84375
+    ],
+    "sourceAim": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "duplicate": true,
+    "sourceOffset": [
+      -37.677993105488056,
+      -39.36302586857499,
+      1.6105688607285202
+    ],
+    "parentYaw": 0,
+    "minYaw": -150,
+    "maxYaw": 150,
+    "fireBoneA": null,
+    "fireBoneB": null,
+    "sourceTarget": [
+      -63.0,
+      -52.63683795928955,
+      -110.48063659667969
+    ],
+    "surfaceMesh": "Recusant",
+    "id": 20
+  },
+  {
+    "weaponType": 3,
+    "sourceId": "Turbo_06",
+    "socket": "WEAP_TURBO_HD_05_330",
+    "sourcePosition": [
+      2.384185791015625e-06,
+      181.662841796875,
+      -98.5351333618164
+    ],
+    "position": [
+      -4.00043,
+      -14.29673,
+      -10.92699
+    ],
+    "sourceAim": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "duplicate": true,
+    "sourceOffset": [
+      38.37657966057467,
+      -42.00000320872036,
+      0.0
+    ],
+    "parentYaw": 0,
+    "minYaw": -150,
+    "maxYaw": 150,
+    "fireBoneA": null,
+    "fireBoneB": null,
+    "sourceTarget": [
+      58.00000238418579,
+      139.662841796875,
+      -98.5351333618164
+    ],
+    "surfaceMesh": "Recusant",
+    "id": 21
+  },
+  {
+    "weaponType": 3,
+    "sourceId": "Turbo_07",
+    "socket": "WEAP_TURBO_HS_01_360",
+    "sourcePosition": [
+      0.0,
+      -69.54241943359375,
+      190.2229766845703
+    ],
+    "position": [
+      2.47639,
+      14.38635,
+      15.85139
+    ],
+    "sourceAim": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "duplicate": true,
+    "sourceOffset": [
+      -23.756243449854182,
+      -47.68248144401177,
+      -13.598268683599656
+    ],
+    "parentYaw": 0,
+    "minYaw": -150,
+    "maxYaw": 150,
+    "fireBoneA": null,
+    "fireBoneB": null,
+    "sourceTarget": [
+      -55.0,
+      -114.54241943359375,
+      190.2229766845703
+    ],
+    "surfaceMesh": "Recusant",
+    "id": 22
+  },
+  {
+    "weaponType": 90,
+    "sourceId": "Laser_01",
+    "socket": "WEAP_LASER_MD_01_180",
+    "sourcePosition": [
+      33.0,
+      -639.8277587890625,
+      123.53488159179688
+    ],
+    "position": [
+      -4.40707,
+      8.47578,
+      64.74428
+    ],
+    "sourceAim": [
+      0.9805800914764404,
+      -0.19611907005310059,
+      0.0
+    ],
+    "duplicate": true,
+    "sourceOffset": [
+      9.277486576197475,
+      53.56823038391872,
+      -3.6109282712955775
+    ],
+    "parentYaw": 0,
+    "minYaw": -175,
+    "maxYaw": 20,
+    "fireBoneA": null,
+    "fireBoneB": null,
+    "sourceTarget": [
+      53.0,
+      -586.8277587890625,
+      123.53488159179688
+    ],
+    "surfaceMesh": "Recusant",
+    "id": 23
+  },
+  {
+    "weaponType": 90,
+    "sourceId": "Laser_02",
+    "socket": "WEAP_LASER_MD_02_180",
+    "sourcePosition": [
+      -33.0,
+      -639.8277587890625,
+      123.53488159179688
+    ],
+    "position": [
+      4.40707,
+      8.47578,
+      64.74428
+    ],
+    "sourceAim": [
+      -0.9805855751037598,
+      -0.1961154192686081,
+      0.0
+    ],
+    "duplicate": true,
+    "sourceOffset": [
+      -9.277486576197475,
+      53.56823038391872,
+      -3.6109282712955775
+    ],
+    "parentYaw": 0,
+    "minYaw": -20,
+    "maxYaw": 175,
+    "fireBoneA": null,
+    "fireBoneB": null,
+    "sourceTarget": [
+      -53.0,
+      -586.8277587890625,
+      123.53488159179688
+    ],
+    "surfaceMesh": "Recusant",
+    "id": 24
+  },
+  {
+    "weaponType": 90,
+    "sourceId": "Laser_03",
+    "socket": "WEAP_LASER_MD_03_180",
+    "sourcePosition": [
+      31.0,
+      -830.2704467773438,
+      97.20999145507812
+    ],
+    "position": [
+      -3.54208,
+      6.10804,
+      94.97547
+    ],
+    "sourceAim": [
+      0.988936722278595,
+      -0.14833784103393555,
+      0.0
+    ],
+    "duplicate": true,
+    "sourceOffset": [
+      2.979570534630753,
+      -46.000002549712235,
+      0.0
+    ],
+    "parentYaw": 0,
+    "minYaw": -175,
+    "maxYaw": 20,
+    "fireBoneA": null,
+    "fireBoneB": null,
+    "sourceTarget": [
+      51.0,
+      -876.2704467773438,
+      97.20999145507812
+    ],
+    "surfaceMesh": "Recusant",
+    "id": 25
+  },
+  {
+    "weaponType": 90,
+    "sourceId": "Laser_04",
+    "socket": "WEAP_LASER_MD_04_180",
+    "sourcePosition": [
+      -31.0,
+      -830.2704467773438,
+      97.20999145507812
+    ],
+    "position": [
+      3.54208,
+      6.10804,
+      94.97547
+    ],
+    "sourceAim": [
+      -0.9889326095581055,
+      -0.14833784103393555,
+      0.0
+    ],
+    "duplicate": true,
+    "sourceOffset": [
+      -2.979570534630753,
+      -46.000002549712235,
+      0.0
+    ],
+    "parentYaw": 0,
+    "minYaw": -20,
+    "maxYaw": 175,
+    "fireBoneA": null,
+    "fireBoneB": null,
+    "sourceTarget": [
+      -51.0,
+      -876.2704467773438,
+      97.20999145507812
+    ],
+    "surfaceMesh": "Recusant",
+    "id": 26
+  },
+  {
+    "weaponType": 90,
+    "sourceId": "Laser_05",
+    "socket": "WEAP_LASER_MD_05_180",
+    "sourcePosition": [
+      35.0,
+      277.1768798828125,
+      29.41161346435547
+    ],
+    "position": [
+      -5.29824,
+      -2.95448,
+      -19.00717
+    ],
+    "sourceAim": [
+      0.9950368404388428,
+      0.09950750321149826,
+      0.0
+    ],
+    "duplicate": true,
+    "sourceOffset": [
+      15.826547854464422,
+      -60.00000099517774,
+      -19.139332145553063
+    ],
+    "parentYaw": 0,
+    "minYaw": -175,
+    "maxYaw": 20,
+    "fireBoneA": null,
+    "fireBoneB": null,
+    "sourceTarget": [
+      57.0,
+      217.1768798828125,
+      29.41161346435547
+    ],
+    "surfaceMesh": "Recusant",
+    "id": 27
+  },
+  {
+    "weaponType": 90,
+    "sourceId": "Laser_06",
+    "socket": "WEAP_LASER_MD_06_180",
+    "sourcePosition": [
+      -35.0,
+      277.1768798828125,
+      29.41161346435547
+    ],
+    "position": [
+      5.29824,
+      -2.95448,
+      -19.00717
+    ],
+    "sourceAim": [
+      -0.9950616359710693,
+      0.09950372576713562,
+      0.0
+    ],
+    "duplicate": true,
+    "sourceOffset": [
+      -15.826547854464422,
+      -60.00000099517774,
+      -19.139332145553063
+    ],
+    "parentYaw": 0,
+    "minYaw": -20,
+    "maxYaw": 175,
+    "fireBoneA": null,
+    "fireBoneB": null,
+    "sourceTarget": [
+      -57.0,
+      217.1768798828125,
+      29.41161346435547
+    ],
+    "surfaceMesh": "Recusant",
+    "id": 28
+  }
+]

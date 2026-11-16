@@ -38,6 +38,7 @@ namespace EmpireAtWar.Models.Factions
         Wavecrest = 111,
         Bulwark = 112,
         Recalcitrant = 113,
+        RecusantDreadnought = 114,
 
         //empire
         Victory = 200,

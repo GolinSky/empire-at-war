@@ -14,6 +14,9 @@ created: "2026-10-29\r"
 
 ## Imported Units
 
+- [ ] [[Done/Features/Recusant_Dreadnought_Import]] — Build and deploy the CIS dreadnought in skirmish. Check roster availability, placement clearance, forward convergence, Boost Weapon Power, squadron launches and wreck transition.
+- [ ] [[Done/Features/Recusant_Dreadnought_Import]] — Check team markings and engine and ship-order sound in battle.
+
 - [ ] [[Done/Features/Jango_Fett_Slave_I]] — Check placement silhouette, one portrait/target, order and death audio, and Jango’s activation line on a successful bomb drop.
 - [ ] [[Done/Features/Jango_Fett_Slave_I]] — Measure overshoot, firing passes and reacquisition against Belbullab-22 and Vulture wings using the shared duel protocol. Check AI purchase and rebuy frequency.
 - [ ] [[Done/Features/Jango_Fett_Slave_I]] — Verify each owner’s limit across queue, cancellation, holding, deployment, death and repurchase. Check save/load and pooled respawn.

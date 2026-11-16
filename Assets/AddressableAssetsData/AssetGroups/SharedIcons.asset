@@ -355,6 +355,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 868302fc85b4fef429aefdbe75fef36b
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Separatist/RecusantDreadnoughtIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8759435b430b0024899c5095289c56b5
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/PeltaIcon.png
     m_ReadOnly: 0

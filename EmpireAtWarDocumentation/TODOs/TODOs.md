@@ -367,6 +367,9 @@
 
 ### Features
 
+- [x] **Import the Recusant Dreadnought as a CIS Heavy Capital** → [[Done/Features/Recusant_Dreadnought_Import|Recusant Dreadnought Import]]
+  - Completed 2026-11-16. Saved 2,542 m scale, 30,000 hull, 35,000 shields, 29 weapon hardpoints and Boost Weapon Power. Verified 26 forward-capable mounts at 300 units and 1,393.184 raw all-mount DPS. In-game acceptance is queued.
+
 - [x] **Rejoin an online battle after Pause Exit** → [[Done/Features/Rejoin_After_Battle_Exit_Plan|Rejoin After Battle Exit Plan]]
   - Completed 2026-11-16. Client Exit preserves the 300 s reservation for Multiplayer, Steam, Server Browser and matching IP recovery. Unity compiled. Tests and two-PC acceptance → [[TODOs/User_Acceptance_Queue#Multiplayer Reconnect]]. Parent → [[TODOs/Features/Multiplayer_Plan]].
 
