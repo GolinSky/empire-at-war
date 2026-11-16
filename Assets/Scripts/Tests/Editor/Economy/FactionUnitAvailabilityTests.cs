@@ -10,7 +10,6 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.Stations;
 using NUnit.Framework;
-using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -153,9 +152,7 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = new GameObject("Faction purchase limit test");
             FactionUi view = root.AddComponent<FactionUi>();
             FactionUnitUi card = Object.Instantiate(prefab, root.transform);
-            SerializedObject serializedCard = new SerializedObject(card);
-            Button button = (Button)serializedCard.FindProperty("purchaseButton").objectReferenceValue;
-            TMP_Text stateText = (TMP_Text)serializedCard.FindProperty("stateText").objectReferenceValue;
+            Button button = (Button)new SerializedObject(card).FindProperty("purchaseButton").objectReferenceValue;
 
             try
             {
@@ -168,7 +165,6 @@ namespace EmpireAtWar.Tests.Editor
                 {
                     view.RefreshAvailability(0f, false);
                     Assert.That(button.interactable, Is.True, "Cards below their own limit remain purchasable.");
-                    Assert.That(stateText.text, Is.Empty, "Cards below their limit show no status text when queued.");
                     model.QueueUnit(request);
                 }
 
@@ -178,7 +174,6 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(card.gameObject.activeSelf, Is.EqualTo(!hidesAtLimit),
                     "Heroes, structures, upgrades and research hide at their limit; ship queue limits only block.");
                 Assert.That(button.interactable, Is.False, "Reaching the purchase limit must disable the card.");
-                Assert.That(stateText.text, Is.EqualTo("LIMIT REACHED"));
 
                 Assert.That(model.TryCancelCurrentUnit(request.Id, out _), Is.True);
                 view.RefreshAvailability(0f, false);

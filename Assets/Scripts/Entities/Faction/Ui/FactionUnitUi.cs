@@ -19,7 +19,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
         [SerializeField] private Image unitIconImage;
         [SerializeField] private Button purchaseButton;
         [SerializeField] private UiHighlight tutorialHighlight;
-        [SerializeField] private TextMeshProUGUI stateText;
         [SerializeField] private GameObject queuedHighlight;
         private UnitRequest _unitRequest;
         private (bool unlocked, bool affordable, bool queued, bool ended, bool atLimit)? _availability;
@@ -39,7 +38,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
             purchaseButton.interactable = unlocked && !battleEnded && !atLimit;
             unitIconImage.color = new Color(1f, 1f, 1f, unlocked ? 1f : 0.25f);
             unitPriceText.color = affordable ? new Color32(242, 240, 230, 255) : new Color32(232, 110, 108, 255);
-            stateText.text = atLimit ? "LIMIT REACHED" : "";
             queuedHighlight.SetActive(queued);
         }
 
