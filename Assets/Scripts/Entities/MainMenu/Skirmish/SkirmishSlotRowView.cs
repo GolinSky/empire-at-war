@@ -26,6 +26,11 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         [SerializeField] private RawImage avatarImage;
 
         private int _rowIndex;
+        private int _memberId;
+        private int _occupantIndex;
+        private SkirmishSlotOccupant _occupant;
+        private bool _occupantEditable;
+        private bool _discardOccupantSelection;
         private readonly List<string> _occupantOptions = new List<string>();
 
         public event Action<int, int> OccupantChanged;
@@ -64,7 +69,20 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         public void Render(SkirmishSlotSetup slot, Color playerColor, SkirmishSlotRowState state)
         {
-            if (!_occupantOptions.SequenceEqual(state.OccupantOptions))
+            bool optionsChanged = !_occupantOptions.SequenceEqual(state.OccupantOptions);
+            if (occupantDropdown.IsExpanded && (optionsChanged || _memberId != slot.MemberId ||
+                _occupant != slot.Occupant || _occupantEditable != state.OccupantEditable))
+            {
+                // TMP keeps the old popup alive during its closing fade.
+                _discardOccupantSelection = true;
+                occupantDropdown.Hide();
+            }
+
+            _memberId = slot.MemberId;
+            _occupant = slot.Occupant;
+            _occupantIndex = state.OccupantIndex;
+            _occupantEditable = state.OccupantEditable;
+            if (optionsChanged)
             {
                 _occupantOptions.Clear();
                 _occupantOptions.AddRange(state.OccupantOptions);
@@ -81,7 +99,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             factionDropdown.SetValueWithoutNotify((int)slot.Faction);
             teamDropdown.SetValueWithoutNotify(slot.Team);
             colorDropdown.SetValueWithoutNotify(slot.ColorIndex);
-            occupantDropdown.interactable = state.OccupantEditable;
+            occupantDropdown.interactable = state.OccupantEditable && !_discardOccupantSelection;
             factionDropdown.interactable = state.DetailsEditable;
             teamDropdown.interactable = state.TeamEditable;
             colorDropdown.interactable = state.DetailsEditable;
@@ -107,7 +125,25 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             dropdown.RefreshShownValue();
         }
 
-        private void HandleOccupantChanged(int value) => OccupantChanged?.Invoke(_rowIndex, value);
+        private void LateUpdate()
+        {
+            if (_discardOccupantSelection && !occupantDropdown.IsExpanded)
+            {
+                _discardOccupantSelection = false;
+                occupantDropdown.interactable = _occupantEditable;
+            }
+        }
+
+        private void HandleOccupantChanged(int value)
+        {
+            if (_discardOccupantSelection || !occupantDropdown.interactable)
+            {
+                occupantDropdown.SetValueWithoutNotify(_occupantIndex);
+                return;
+            }
+
+            OccupantChanged?.Invoke(_rowIndex, value);
+        }
 
         private void HandleFactionChanged(int value) => FactionChanged?.Invoke(_rowIndex, value);
 

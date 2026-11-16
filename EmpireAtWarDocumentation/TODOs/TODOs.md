@@ -292,6 +292,9 @@
   - Completed 2026-11-16: distinct angular attack slots, replacement intent, shared bounded Burst settling and spatial reservation checks. Existing four-plan/2 ms budget preserved; Unity compilation 0 errors, source/diff review complete. Tests not run; gameplay and matched CPU acceptance queued.
 
 
+- [x] **Online Skirmish friend join / second-slot closure breaks lobby** → [[Done/Bugs/Online_Skirmish_Join_Slot_Race|Completed fix]]
+  - 2026-11-16: authoritative seating before broadcast; closed rows auto-open through 8 humans; stale dropdown actions blocked. Unity compilation and source/diff checks clean; regression tests added, not run. User declined reproduction prerequisite; test execution gate queued.
+
 - [x] **Fix remaining tangent line-repair loop** → [[Done/Bugs/Ship_Tangent_Line_Repair_Loop]]
   - Completed 2026-11-15: remove covered obsolete corner and insert blocker in the same repair. Six failing seeded/mirrored regressions now pass; Navigation 280/280 passed. Live battle acceptance remains queued.
 

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
@@ -13,6 +15,70 @@ namespace EmpireAtWar.Tests.Editor
     [Category("GameFlow")]
     public sealed class SkirmishModelTests
     {
+        [Test]
+        public void SeatMembers_ClosedRowsOpenForSevenFriendsWithStableUniqueSeats()
+        {
+            var model = new SkirmishModel();
+            model.BeginHostLobby(0, "Host");
+            model.SelectSlotOccupant(1, SkirmishSlotOccupant.Closed);
+            var members = new List<SkirmishLobbySeat> { new SkirmishLobbySeat(0, "Host", true, 0UL) };
+
+            for (int i = 1; i < MatchRules.MAX_PLAYERS; i++)
+            {
+                members.Add(new SkirmishLobbySeat(i, $"Friend {i}", false, (ulong)i));
+                model.SeatMembers(members);
+                Assert.That(model.HumanCount, Is.EqualTo(i + 1));
+                for (int row = 0; row <= i; row++)
+                {
+                    Assert.That(model.Slots[row].IsHuman, Is.True);
+                    Assert.That(model.Slots[row].MemberId, Is.EqualTo(row));
+                }
+            }
+
+            Assert.That(model.CreateMemberSlots().Count, Is.EqualTo(8));
+            var client = new SkirmishModel();
+            client.BeginClientLobby();
+            client.ApplyLobby(model.CaptureLobby(), 7);
+            Assert.That(client.HumanCount, Is.EqualTo(8));
+            Assert.That(client.IsLocalSlot(7), Is.True);
+            Assert.That(client.CanEditDetails(7), Is.True);
+            Assert.That(client.CanEditDetails(0), Is.False);
+        }
+
+        [Test]
+        public void SeatMembers_DepartureAndRejoin_PreserveOtherPlayersAndSeatChoices()
+        {
+            var model = new SkirmishModel();
+            model.BeginHostLobby(0, "Host");
+            var members = new List<SkirmishLobbySeat>
+            {
+                new SkirmishLobbySeat(0, "Host", true, 0UL),
+                new SkirmishLobbySeat(1, "Leaving", true, 11UL),
+                new SkirmishLobbySeat(2, "Staying", true, 22UL)
+            };
+            model.SeatMembers(members);
+            model.TryEditMemberSlot(2, FactionType.Separatist, 3, 15);
+            members.RemoveAt(1);
+            model.SeatMembers(members);
+            Assert.That(model.Slots[1].Occupant, Is.EqualTo(SkirmishSlotOccupant.Vacant));
+            Assert.That(model.Slots[1].MemberId, Is.EqualTo(SkirmishModel.NO_MEMBER));
+            model.SelectSlotOccupant(1, SkirmishSlotOccupant.Closed);
+
+            members.Add(new SkirmishLobbySeat(9, "Rejoined", false, 11UL));
+            model.SeatMembers(members);
+
+            Assert.That(model.Slots[1].MemberId, Is.EqualTo(9));
+            Assert.That(model.Slots[1].IsHuman, Is.True);
+            Assert.That(model.Slots[1].Ready, Is.False);
+            Assert.That(model.Slots[2].MemberId, Is.EqualTo(2));
+            Assert.That(model.Slots[2].Faction, Is.EqualTo(FactionType.Separatist));
+            Assert.That(model.Slots[2].Team, Is.EqualTo(3));
+            Assert.That(model.Slots[2].ColorIndex, Is.EqualTo(15));
+            Assert.That(model.Slots[2].Ready, Is.True);
+            Assert.That(model.Slots.Where(row => row.IsHuman).Select(row => row.MemberId),
+                Is.EquivalentTo(new[] { 0, 2, 9 }));
+        }
+
         [Test]
         public void TutorialSetup_EightViewRowsStillBuildOnlyItsFixedDuel()
         {

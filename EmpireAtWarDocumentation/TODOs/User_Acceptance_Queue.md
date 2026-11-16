@@ -5,6 +5,10 @@ created: "2026-10-29\r"
 ---
 # User Acceptance Queue
 
+## Online Skirmish Lobby
+
+- [ ] [[Done/Bugs/Online_Skirmish_Join_Slot_Race]] — Run authored regression coverage in `Networking`, `GameFlow` and `Ui` when explicitly authorized; source review and Unity compilation passed. User declined reproduction as a prerequisite.
+
 ## Rules
 
 - One line per user-only gate (in-game, listening, visual, tests on request) of a closed plan; policy → root `AGENTS.md` Plan Lifecycle step 4.

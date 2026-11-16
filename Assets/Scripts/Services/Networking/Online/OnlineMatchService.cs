@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using EmpireAtWar.Commands.Game;
 using EmpireAtWar.Entities.Game;
+using EmpireAtWar.Entities.MainMenu.Skirmish;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Networking.Online.Messages;
@@ -288,7 +289,7 @@ namespace EmpireAtWar.Services.Networking.Online
             _manager.UseTransport(steamLobby ? _multiplex : _kcp);
             _manager.StartHost();
             if (steamLobby) _steam.CreateLobby(capacity, Mode.ToString());
-            NotifyChanged();
+            BroadcastLobby();
         }
 
         /// <summary>Host, in the lobby: Survival seats fewer members, so it is refused while too many are in.</summary>
@@ -917,9 +918,28 @@ namespace EmpireAtWar.Services.Networking.Online
 
         private string LobbyStatus() => $"In {Mode} lobby {_lobby.Members.Count}/{_lobby.Capacity}";
 
+        // Seat every accepted member before publishing; lobby correctness must not depend on a visible UI.
+        private void SynchronizeSkirmishSetup()
+        {
+            SkirmishModel setup = new SkirmishModel();
+            if (SetupJson.Length == 0)
+                setup.BeginHostLobby(OnlineLobby.HOST_CONNECTION_ID, _steam.PersonaName);
+            else
+                setup.ApplyLobby(JsonUtility.FromJson<SkirmishLobbySnapshot>(SetupJson), OnlineLobby.HOST_CONNECTION_ID);
+            setup.SeatMembers(_lobby.Members
+                .Where(member => member.Connected)
+                .Select(member => new SkirmishLobbySeat(member.ConnectionId, member.Name, member.Ready, member.SteamId))
+                .ToList());
+            SetupJson = JsonUtility.ToJson(setup.CaptureLobby());
+        }
+
         private void BroadcastLobby()
         {
-            if (Role == OnlineRole.Host && !IsInBattle) _steam.SetStatus(LobbyStatus());
+            if (Role == OnlineRole.Host && !IsInBattle)
+            {
+                if (Mode == LobbyMode.Skirmish) SynchronizeSkirmishSetup();
+                _steam.SetStatus(LobbyStatus());
+            }
             LobbyMember[] members = new LobbyMember[_lobby.Members.Count];
             for (int i = 0; i < members.Length; i++) members[i] = _lobby.Members[i];
             foreach (NetworkConnectionToClient connection in NetworkServer.connections.Values)

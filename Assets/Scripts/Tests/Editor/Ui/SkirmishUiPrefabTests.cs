@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
@@ -10,6 +11,7 @@ using NUnit.Framework;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.TestTools;
 using UnityEngine.UI;
 
 namespace EmpireAtWar.Tests.Editor
@@ -165,6 +167,102 @@ namespace EmpireAtWar.Tests.Editor
             {
                 PrefabUtility.UnloadPrefabContents(root);
             }
+        }
+
+        [UnityTest]
+        public IEnumerator OccupantPopup_RosterChangeRejectsOldChoicesAndPreservesFreshKick()
+        {
+            yield return new EnterPlayMode();
+            var scenarios = new[]
+            {
+                (SkirmishSlotOccupant.Closed, false),
+                (SkirmishSlotOccupant.Vacant, false),
+                (SkirmishSlotOccupant.AiMedium, false),
+                (SkirmishSlotOccupant.Human, false),
+                (SkirmishSlotOccupant.Human, true)
+            };
+            foreach (var (initialOccupant, revokeEditing) in scenarios)
+            {
+                GameObject root = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_PATH));
+                try
+                {
+                    root.AddComponent<Canvas>();
+                    SkirmishUi popup = root.GetComponent<SkirmishUi>();
+                    using var serializedPopup = new SerializedObject(popup);
+                    SerializedProperty rows = serializedPopup.FindProperty("slotRows");
+                    var row = (SkirmishSlotRowView)rows.GetArrayElementAtIndex(1).objectReferenceValue;
+                    TMP_Dropdown dropdown = GetRowDropdown(rows, 1, "occupantDropdown");
+                    row.Initialize(1, new[] { "Republic" }, new[] { "Team 1" }, new[] { "Blue" });
+                    string[] humanOptions = { "Friend", "Kick" };
+                    string[] vacantOptions = { "Closed", "AI Easy", "AI Medium", "AI Hard", "AI Ultra Hard", "Open" };
+                    bool alreadyHuman = initialOccupant == SkirmishSlotOccupant.Human;
+                    var slot = new SkirmishSlotSetup(initialOccupant, FactionType.Republic, 0, 0)
+                    {
+                        MemberId = alreadyHuman ? 1 : SkirmishModel.NO_MEMBER
+                    };
+                    int initialIndex = alreadyHuman ? 0
+                        : initialOccupant == SkirmishSlotOccupant.Vacant ? 5 : (int)initialOccupant;
+                    row.Render(slot, Color.white, new SkirmishSlotRowState("Slot", "HUMAN",
+                        alreadyHuman ? humanOptions : vacantOptions, initialIndex,
+                        true, true, true, null));
+                    int commands = 0;
+                    int selected = -1;
+                    row.OccupantChanged += (index, value) =>
+                    {
+                        Assert.That(index, Is.EqualTo(1));
+                        commands++;
+                        selected = value;
+                    };
+                    yield return null; // TMP_Dropdown.Start initializes the fade runner.
+                    dropdown.alphaFadeSpeed = 0f;
+                    dropdown.Show();
+                    Assert.That(dropdown.IsExpanded, Is.True, initialOccupant.ToString());
+
+                    slot.Occupant = SkirmishSlotOccupant.Human;
+                    // Same display name/options must still invalidate a replaced member's popup.
+                    slot.MemberId = revokeEditing ? 1 : 2;
+                    row.Render(slot, Color.white, new SkirmishSlotRowState("Friend", "HUMAN",
+                        humanOptions, 0, !revokeEditing, true, true, null));
+
+                    Assert.That(dropdown.interactable, Is.False, "Old popup must not reopen during its fade.");
+                    dropdown.value = 1;
+                    Assert.That(commands, Is.Zero, "A stale selection must not kick the newly seated player.");
+                    Assert.That(dropdown.value, Is.Zero);
+                    Assert.That(dropdown.captionText.text, Is.EqualTo("Friend"));
+
+                    // Even a zero-duration TMP fade destroys its list through a deferred coroutine.
+                    yield return null;
+                    yield return null;
+                    Assert.That(dropdown.IsExpanded, Is.False);
+                    Assert.That(dropdown.interactable, Is.EqualTo(!revokeEditing));
+                    if (revokeEditing)
+                    {
+                        dropdown.value = 1;
+                        Assert.That(commands, Is.Zero);
+                    }
+                    else
+                    {
+                        dropdown.Show();
+                        Assert.That(dropdown.IsExpanded, Is.True);
+                        dropdown.value = 1;
+                        Assert.That(commands, Is.EqualTo(1), "A fresh explicit Kick must remain available.");
+                        Assert.That(selected, Is.EqualTo(1));
+                    }
+
+                    row.Dispose();
+                }
+                finally
+                {
+                    UnityEngine.Object.Destroy(root);
+                }
+                yield return null;
+            }
+        }
+
+        [UnityTearDown]
+        public IEnumerator ExitPlayModeAfterDropdownTest()
+        {
+            if (Application.isPlaying) yield return new ExitPlayMode();
         }
 
         private static TMP_Dropdown GetRowDropdown(SerializedProperty rows, int index, string field)

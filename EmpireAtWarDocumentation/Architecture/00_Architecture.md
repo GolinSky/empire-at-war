@@ -14,6 +14,7 @@ updated: 2026-11-16
 
 ## Files
 
+- [[Architecture/Online_Skirmish_Lobby]] — automatic seating up to eight humans, consistent snapshots and dropdown ownership.
 - [[Architecture/Multiplayer_Reconnect]] — persisted client recovery, host identity/deadlines and loading lifecycle.
 
 - [[Architecture/PROJECT_ORGANIZATION]] — asset/script placement policy; unresolved policy work: [[TODOs/Refactoring/Project_Organization_Followup]].

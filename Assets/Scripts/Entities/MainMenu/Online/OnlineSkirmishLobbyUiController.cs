@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.Ui.Tooltip;
 using EmpireAtWar.Entities.Tooltip;
@@ -21,9 +20,8 @@ using UnityEngine;
 namespace EmpireAtWar.Entities.MainMenu.Online
 {
     /// <summary>
-    /// Online Skirmish lobby on the Skirmish setup screen. The host's screen is the truth: members are seated in
-    /// rows, every change is published to the clients, and members' own row edits arrive as requests. A client
-    /// renders the host's snapshot; its Start button toggles ready and Close leaves the lobby.
+    /// Online Skirmish setup screen. The service seats members before publishing snapshots to both host and
+    /// clients. Host setup edits and members' own row edits are published through the service.
     /// </summary>
     public sealed class OnlineSkirmishLobbyUiController : UiController, ISkirmishPresenter, IOnlineSkirmishLobbyScreen,
         ISkirmishAvatarSource, IInitializable, ILateDisposable
@@ -40,6 +38,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private SkirmishUi _ui;
         private PopupHandle _invitePicker;
         private bool _isOpen;
+        private bool _applyingSetup;
         private string _appliedSetup = string.Empty;
 
         public OnlineSkirmishLobbyUiController(IUiService uiService, IUiCancelRouter cancelRouter,
@@ -101,10 +100,10 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 _tooltipHover = new TooltipHoverSubscription(_ui.TooltipHover, HandleTooltipHover, _tooltips);
             }
 
-            _isOpen = true;
             _appliedSetup = string.Empty;
             if (IsHost) _model.BeginHostLobby(OnlineLobby.HOST_CONNECTION_ID, _online.Steam.PersonaName);
             else _model.BeginClientLobby();
+            _isOpen = true;
             Sync();
             _ui.Show();
             Focus();
@@ -200,11 +199,19 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 CloseInvitePicker();
                 return;
             }
-            if (IsHost) _model.SeatMembers(CreateSeats());
-            else if (_online.SetupJson.Length > 0 && _online.SetupJson != _appliedSetup)
+            if (_online.SetupJson.Length > 0 && _online.SetupJson != _appliedSetup)
             {
-                _appliedSetup = _online.SetupJson;
-                _model.ApplyLobby(JsonUtility.FromJson<SkirmishLobbySnapshot>(_appliedSetup), _online.LocalConnectionId);
+                _applyingSetup = true;
+                try
+                {
+                    _model.ApplyLobby(JsonUtility.FromJson<SkirmishLobbySnapshot>(_online.SetupJson),
+                        IsHost ? OnlineLobby.HOST_CONNECTION_ID : _online.LocalConnectionId);
+                    _appliedSetup = _online.SetupJson;
+                }
+                finally
+                {
+                    _applyingSetup = false;
+                }
             }
 
             bool canInvite = IsHost && _online.IsSteamLobby;
@@ -219,8 +226,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private void OnModelChanged()
         {
             if (!_isOpen) return;
+            if (IsHost && !_applyingSetup) _online.PublishSetup(JsonUtility.ToJson(_model.CaptureLobby()));
             _ui.Render();
-            if (IsHost) _online.PublishSetup(JsonUtility.ToJson(_model.CaptureLobby()));
         }
 
         private void ApplyMemberEdit(int connectionId, LobbySlotEditMessage edit) =>
@@ -244,11 +251,6 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         }
 
         public bool TryGetAvatar(ulong steamId, out Texture2D avatar) => _online.Steam.TryGetAvatar(steamId, out avatar);
-
-        private List<SkirmishLobbySeat> CreateSeats() => _online.Members
-            .Where(member => member.Connected)
-            .Select(member => new SkirmishLobbySeat(member.ConnectionId, member.Name, member.Ready, member.SteamId))
-            .ToList();
 
         private void HandleTooltipHover(object key, TooltipAnchor anchor, object source) =>
             _tooltips.Show(source, key, anchor, () => _isOpen, () => new TooltipContent(title: (string)key,
