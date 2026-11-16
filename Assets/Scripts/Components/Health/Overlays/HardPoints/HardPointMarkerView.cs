@@ -14,6 +14,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 
         private RectTransform _root;
         private Image _icon;
+        private HardPointTargetRing _targetRing;
 
         public static HardPointMarkerView Create(RectTransform parent)
         {
@@ -42,6 +43,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             _icon.sprite = data.Icon;
             _icon.color = Color.HSVToRGB(Mathf.Clamp01(data.HealthPercentage) * HEALTH_HUE_RANGE,
                 HEALTH_SATURATION, HEALTH_BRIGHTNESS);
+            _targetRing.gameObject.SetActive(data.IsTargeted);
 
             if (!gameObject.activeSelf)
             {
@@ -74,6 +76,16 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             outline.effectColor = new Color(0.03f, 0.04f, 0.06f, 0.9f);
             outline.effectDistance = new Vector2(1f, -1f);
             outline.useGraphicAlpha = true;
+
+            GameObject ringObject = new("TargetRing", typeof(RectTransform));
+            ringObject.layer = root.gameObject.layer;
+            RectTransform ringRect = (RectTransform)ringObject.transform;
+            ringRect.SetParent(root, false);
+            ringRect.sizeDelta = new Vector2(44f, 44f);
+            _targetRing = ringObject.AddComponent<HardPointTargetRing>();
+            _targetRing.color = new Color32(210, 169, 94, 255);
+            _targetRing.raycastTarget = false;
+            ringObject.SetActive(false);
         }
     }
 }

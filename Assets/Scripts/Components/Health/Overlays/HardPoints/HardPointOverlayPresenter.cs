@@ -21,7 +21,8 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
     /// </summary>
     public sealed class HardPointOverlayPresenter : IInitializable, ILateDisposable, ITickable, IHardPointOverlayLayout
     {
-        private const float HIT_HALF_SIZE = 20f;
+        // Includes the 55-unit targeted ring and a gap; independent of hover/target state.
+        private const float MARKER_SPACING = 60f;
         /// <summary>Reference pixels per unit of marker scale when hardpoints are crowded.</summary>
         private const float FULL_SIZE_SPACING = 36f;
         private const float REFERENCE_SHIP_RADIUS = 40f;
@@ -42,6 +43,8 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 
         private readonly List<Vector2> _markerPositions = new List<Vector2>();
         private readonly List<float> _markerSpacings = new List<float>();
+        private readonly List<int> _markerIds = new List<int>();
+        private Rect _markerBounds;
 
         public HardPointOverlayPresenter(
             IHardPointOverlayView view,
@@ -97,19 +100,23 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         {
             IEntity ship = _model.InspectedShip;
             int hovered = UnitOrderModel.NO_HARD_POINT;
+            bool keepInspection = false;
 
-            // Markers can reach beyond the hull, so the inspected ship stays while the cursor is on one of them.
+            // Keep the expanded layout reachable outside the hull, including gaps between its markers.
             if (ship != null && IsVisible(ship))
             {
                 hovered = FindMarkerAt(ship, cursor);
+                keepInspection = hovered != UnitOrderModel.NO_HARD_POINT ||
+                                 _markerPositions.Count > 0 && _markerBounds.Contains(cursor);
             }
 
             if (hovered == UnitOrderModel.NO_HARD_POINT)
             {
-                ship = GetShipUnderCursor(cursor);
-                if (ship != null)
+                IEntity underCursor = GetShipUnderCursor(cursor);
+                if (underCursor != null || !keepInspection)
                 {
-                    hovered = FindMarkerAt(ship, cursor);
+                    ship = underCursor;
+                    if (ship != null) hovered = FindMarkerAt(ship, cursor);
                 }
             }
 
@@ -126,7 +133,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             if (inspected != null)
             {
                 IReadOnlyList<IHardPointStatus> hardPoints = GetHardPoints(inspected);
-                float scale = GetMarkerScale(inspected);
+                float scale = PrepareMarkerLayout(inspected);
                 for (int id = 0; id < hardPoints.Count; id++)
                 {
                     if (hardPoints[id].IsInstalled && TryShowMarker(slot, inspected, hardPoints[id], scale))
@@ -139,7 +146,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             IEntity targeted = _model.TargetedShip;
             if (targeted != null && (inspected == null || targeted.Id != inspected.Id) && IsVisible(targeted) &&
                 TryShowMarker(slot, targeted, GetHardPoints(targeted)[_model.TargetedHardPointId],
-                    GetMarkerScale(targeted)))
+                    PrepareMarkerLayout(targeted)))
             {
                 slot++;
             }
@@ -155,15 +162,14 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
                 return false;
             }
 
-            float halfSize = HIT_HALF_SIZE * _view.ScaleFactor * GetMarkerScale(ship);
-            int hovered = GetHoveredMarker(ship);
+            float halfSize = MARKER_SPACING * 0.5f * _view.ScaleFactor * PrepareMarkerLayout(ship);
             bool hasMarkers = false;
             foreach (IHardPointStatus hardPoint in GetHardPoints(ship))
             {
                 if (hardPoint.IsInstalled && !hardPoint.IsDestroyed &&
-                    TryGetScreenPosition(hardPoint, out Vector2 position))
+                    TryGetMarkerPosition(hardPoint.Id, out Vector2 position))
                 {
-                    float markerTop = position.y + halfSize * GetMarkerEmphasis(ship, hardPoint.Id, hovered);
+                    float markerTop = position.y + halfSize;
                     screenTop = Mathf.Max(screenTop, markerTop);
                     hasMarkers = true;
                 }
@@ -174,7 +180,7 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
 
         private bool TryShowMarker(int slot, IEntity ship, IHardPointStatus hardPoint, float scale)
         {
-            if (hardPoint.IsDestroyed || !TryGetScreenPosition(hardPoint, out Vector2 screenPosition))
+            if (hardPoint.IsDestroyed || !TryGetMarkerPosition(hardPoint.Id, out Vector2 screenPosition))
             {
                 return false;
             }
@@ -191,9 +197,9 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
         }
 
         /// <summary>
-        /// Sizes markers by apparent hull size, with a spacing cap and a readable minimum.
+        /// Sizes markers by apparent hull size, then separates their shared render and hit positions.
         /// </summary>
-        private float GetMarkerScale(IEntity ship)
+        private float PrepareMarkerLayout(IEntity ship)
         {
             Vector3 position = ship.GetFacade<IEntityTransformFacade>().Transform.position;
             float depth = Mathf.Max(1f, _cameraService.WorldToViewportPoint(position).z);
@@ -204,18 +210,15 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             float scale = Mathf.Lerp(MIN_MARKER_SCALE, MAX_MARKER_SCALE, apparentSize / (1f + apparentSize));
 
             _markerPositions.Clear();
+            _markerIds.Clear();
             foreach (IHardPointStatus hardPoint in GetHardPoints(ship))
             {
                 if (hardPoint.IsInstalled && !hardPoint.IsDestroyed &&
                     TryGetScreenPosition(hardPoint, out Vector2 markerPosition))
                 {
                     _markerPositions.Add(markerPosition);
+                    _markerIds.Add(hardPoint.Id);
                 }
-            }
-
-            if (_markerPositions.Count < 2)
-            {
-                return scale;
             }
 
             _markerSpacings.Clear();
@@ -233,47 +236,43 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
                 _markerSpacings.Add(nearest);
             }
 
-            _markerSpacings.Sort();
-            float spacing = Mathf.Sqrt(_markerSpacings[_markerSpacings.Count / 2]) / _view.ScaleFactor;
-            return Mathf.Max(MIN_MARKER_SCALE, Mathf.Min(scale, spacing / FULL_SIZE_SPACING));
+            if (_markerPositions.Count > 1)
+            {
+                _markerSpacings.Sort();
+                float spacing = Mathf.Sqrt(_markerSpacings[_markerSpacings.Count / 2]) / _view.ScaleFactor;
+                scale = Mathf.Max(MIN_MARKER_SCALE, Mathf.Min(scale, spacing / FULL_SIZE_SPACING));
+            }
+
+            float separation = MARKER_SPACING * _view.ScaleFactor * scale;
+            HardPointMarkerLayout.Separate(_markerPositions, separation);
+            if (_markerPositions.Count > 0)
+            {
+                Vector2 min = _markerPositions[0];
+                Vector2 max = min;
+                foreach (Vector2 marker in _markerPositions)
+                {
+                    min = Vector2.Min(min, marker);
+                    max = Vector2.Max(max, marker);
+                }
+                Vector2 padding = Vector2.one * separation * 0.5f;
+                _markerBounds = Rect.MinMaxRect(min.x - padding.x, min.y - padding.y,
+                    max.x + padding.x, max.y + padding.y);
+            }
+            return scale;
         }
 
         private int FindMarkerAt(IEntity ship, Vector2 cursor)
         {
-            IReadOnlyList<IHardPointStatus> hardPoints = GetHardPoints(ship);
-            float hitHalfSize = HIT_HALF_SIZE * _view.ScaleFactor * GetMarkerScale(ship);
+            float halfSize = MARKER_SPACING * 0.5f * _view.ScaleFactor * PrepareMarkerLayout(ship);
+            int index = HardPointMarkerLayout.FindClosest(_markerPositions, cursor, halfSize);
+            return index < 0 ? UnitOrderModel.NO_HARD_POINT : _markerIds[index];
+        }
 
-            // Keep the current marker while the cursor stays on it so overlapping markers do not flicker.
-            int hovered = GetHoveredMarker(ship);
-            if (hovered != UnitOrderModel.NO_HARD_POINT &&
-                hardPoints[hovered].IsInstalled &&
-                !hardPoints[hovered].IsDestroyed &&
-                TryGetScreenPosition(hardPoints[hovered], out Vector2 hoveredPosition) &&
-                IsInside(hoveredPosition, cursor, hitHalfSize * GetMarkerEmphasis(ship, hovered, hovered)))
-            {
-                return hovered;
-            }
-
-            int closest = UnitOrderModel.NO_HARD_POINT;
-            float closestDistance = float.MaxValue;
-            foreach (IHardPointStatus hardPoint in hardPoints)
-            {
-                if (!hardPoint.IsInstalled || hardPoint.IsDestroyed ||
-                    !TryGetScreenPosition(hardPoint, out Vector2 position) ||
-                    !IsInside(position, cursor, hitHalfSize * GetMarkerEmphasis(ship, hardPoint.Id, hovered)))
-                {
-                    continue;
-                }
-
-                float distance = (position - cursor).sqrMagnitude;
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closest = hardPoint.Id;
-                }
-            }
-
-            return closest;
+        private bool TryGetMarkerPosition(int id, out Vector2 position)
+        {
+            int index = _markerIds.IndexOf(id);
+            position = index < 0 ? default : _markerPositions[index];
+            return index >= 0;
         }
 
         private IEntity GetShipUnderCursor(Vector2 cursor)
@@ -334,11 +333,5 @@ namespace EmpireAtWar.Components.Ship.Health.HardPointOverlay
             _model.InspectedShip != null && _model.InspectedShip.Id == ship.Id
                 ? _model.HoveredHardPointId
                 : UnitOrderModel.NO_HARD_POINT;
-
-        private float GetMarkerEmphasis(IEntity ship, int id, int hovered) =>
-            HardPointMarkerData.GetEmphasisScale(id == hovered, _model.IsTargeted(ship, id));
-
-        private static bool IsInside(Vector2 position, Vector2 cursor, float halfSize) =>
-            Mathf.Abs(position.x - cursor.x) <= halfSize && Mathf.Abs(position.y - cursor.y) <= halfSize;
     }
 }

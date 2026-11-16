@@ -11,6 +11,7 @@ namespace EmpireAtWar.Tests.Editor
         private GameObject _root;
         private HardPointMarkerView _marker;
         private Image _icon;
+        private HardPointTargetRing _targetRing;
 
         [SetUp]
         public void SetUp()
@@ -18,6 +19,7 @@ namespace EmpireAtWar.Tests.Editor
             _root = new GameObject("MarkerTest", typeof(RectTransform));
             _marker = HardPointMarkerView.Create((RectTransform)_root.transform);
             _icon = _marker.transform.GetChild(0).GetComponent<Image>();
+            _targetRing = _marker.transform.GetChild(1).GetComponent<HardPointTargetRing>();
         }
 
         [TearDown]
@@ -27,9 +29,9 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Create_ContainsOnlyTheLargerIcon()
+        public void Create_ContainsHealthIconAndNonBlockingHiddenTargetRing()
         {
-            Assert.That(_marker.transform.childCount, Is.EqualTo(1));
+            Assert.That(_marker.transform.childCount, Is.EqualTo(2));
             Assert.That(_icon.rectTransform.sizeDelta, Is.EqualTo(new Vector2(25f, 25f)));
             Assert.That(_icon.raycastTarget, Is.False);
 
@@ -38,6 +40,62 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(outline.effectColor, Is.EqualTo(new Color(0.03f, 0.04f, 0.06f, 0.9f)));
             Assert.That(outline.effectDistance, Is.EqualTo(new Vector2(1f, -1f)));
             Assert.That(outline.useGraphicAlpha, Is.True);
+            Assert.That(_targetRing.raycastTarget, Is.False);
+            Assert.That(_targetRing.gameObject.activeSelf, Is.False);
+            Assert.That((Color32)_targetRing.color, Is.EqualTo(new Color32(210, 169, 94, 255)));
+        }
+
+        [Test]
+        public void Show_TargetRingTracksTargetingWithoutChangingHealthColor()
+        {
+            _marker.Show(Vector2.zero,
+                new HardPointMarkerData(null, Vector2.zero, 0.5f, true, false, false, 1f));
+            Color healthColor = _icon.color;
+            Assert.That(_targetRing.gameObject.activeSelf, Is.False);
+
+            _marker.Show(Vector2.zero,
+                new HardPointMarkerData(null, Vector2.zero, 0.5f, true, true, false, 1f));
+            Assert.That(_targetRing.gameObject.activeInHierarchy, Is.True);
+            Assert.That(_icon.color, Is.EqualTo(healthColor));
+
+            _marker.Show(Vector2.zero,
+                new HardPointMarkerData(null, Vector2.zero, 0.5f, false, true, false, 1f));
+            Assert.That(_targetRing.gameObject.activeInHierarchy, Is.True);
+            Assert.That(_icon.color, Is.EqualTo(healthColor));
+
+            _marker.Show(Vector2.zero,
+                new HardPointMarkerData(null, Vector2.zero, 0.5f, false, true, true, 1f));
+            Assert.That(_targetRing.gameObject.activeInHierarchy, Is.False);
+
+            _marker.Show(Vector2.zero,
+                new HardPointMarkerData(null, Vector2.zero, 0.5f, false, false, false, 1f));
+            Assert.That(_marker.gameObject.activeSelf, Is.True);
+            Assert.That(_targetRing.gameObject.activeSelf, Is.False);
+            Assert.That(_icon.color, Is.EqualTo(healthColor));
+        }
+
+        [Test]
+        public void TargetRing_HasHollowCenterAndContrastingGoldAndDarkBands()
+        {
+            using VertexHelper vertices = new();
+            typeof(HardPointTargetRing).GetMethod("OnPopulateMesh",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic |
+                System.Reflection.BindingFlags.DeclaredOnly)
+                .Invoke(_targetRing, new object[] { vertices });
+
+            Assert.That(vertices.currentIndexCount, Is.GreaterThan(0));
+            bool hasGold = false;
+            bool hasDarkBorder = false;
+            UIVertex vertex = default;
+            for (int index = 0; index < vertices.currentVertCount; index++)
+            {
+                vertices.PopulateUIVertex(ref vertex, index);
+                Assert.That(vertex.position.magnitude, Is.InRange(17.99f, 22.01f));
+                hasGold |= vertex.color.Equals((Color32)_targetRing.color);
+                hasDarkBorder |= vertex.color.r < 20 && vertex.color.g < 20 && vertex.color.b < 20;
+            }
+            Assert.That(hasGold, Is.True);
+            Assert.That(hasDarkBorder, Is.True);
         }
 
         [TestCase(1f, 0.3375f, 0.75f)]
