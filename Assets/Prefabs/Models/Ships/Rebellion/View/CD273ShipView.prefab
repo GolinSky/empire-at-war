@@ -1689,7 +1689,7 @@ Transform:
   m_GameObject: {fileID: 3795302149942611206}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -2.611905, y: 0.36610729, z: 17.844898}
+  m_LocalPosition: {x: -3.0619056, y: -0.53389364, z: 18.294897}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1717,8 +1717,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 4
   yAxisRange:
-    <Min>k__BackingField: -176
-    <Max>k__BackingField: -10
+    <Min>k__BackingField: -177
+    <Max>k__BackingField: 44
   mainBattery: 0
   <WeaponType>k__BackingField: 13
 --- !u!1 &3946728022218975876

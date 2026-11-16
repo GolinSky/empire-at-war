@@ -9,6 +9,7 @@ namespace EmpireAtWar.Components.Weapon
     internal sealed class ArtilleryCapability : IArtilleryCapability
     {
         private readonly List<(WeaponHardPoint Mount, float Offset)> _launchers = new();
+        private readonly List<(WeaponHardPoint Mount, float Offset)> _mainBatteries = new();
         private readonly Dictionary<ShipClass, float> _ranges = new();
         private float _visionMultiplier = 1f;
 
@@ -16,12 +17,14 @@ namespace EmpireAtWar.Components.Weapon
 
         public void RegisterMount(WeaponHardPoint mount, WeaponFamily family, Vector3 hullPosition)
         {
-            if (mount.StrikecraftOnly ||
-                family is not (WeaponFamily.Missile or WeaponFamily.Torpedo or WeaponFamily.IonTorpedo))
-                return;
+            if (mount.StrikecraftOnly) return;
+            bool launcher = family is WeaponFamily.Missile or WeaponFamily.Torpedo or WeaponFamily.IonTorpedo;
+            if (!launcher && !mount.IsMainBattery) return;
 
             // The full offset bounds the planar offset even when the hull banks.
-            _launchers.Add((mount, Vector3.Distance(hullPosition, mount.Position)));
+            float offset = Vector3.Distance(hullPosition, mount.Position);
+            if (launcher) _launchers.Add((mount, offset));
+            if (mount.IsMainBattery) _mainBatteries.Add((mount, offset));
             mount.DestructionChanged += InvalidateRanges;
             InvalidateRanges();
         }
@@ -37,7 +40,11 @@ namespace EmpireAtWar.Components.Weapon
         {
             foreach (var launcher in _launchers)
                 launcher.Mount.DestructionChanged -= InvalidateRanges;
+            foreach (var main in _mainBatteries)
+                if (!_launchers.Exists(launcher => launcher.Mount == main.Mount))
+                    main.Mount.DestructionChanged -= InvalidateRanges;
             _launchers.Clear();
+            _mainBatteries.Clear();
             InvalidateRanges();
         }
 
@@ -50,6 +57,16 @@ namespace EmpireAtWar.Components.Weapon
                 if (!mount.IsDestroyed && mount.CanEngage(targetClass))
                     range = Mathf.Max(range, mount.MaxAttackDistance - offset);
             }
+
+            // Hold where surviving main batteries still reach; otherwise the facing solver falls back
+            // to launchers and can swing the stern toward the target.
+            float mainReach = 0f;
+            foreach (var (mount, offset) in _mainBatteries)
+            {
+                if (!mount.IsDestroyed && mount.CanEngage(targetClass))
+                    mainReach = Mathf.Max(mainReach, mount.MaxAttackDistance - offset);
+            }
+            if (mainReach > 0f) range = Mathf.Min(range, mainReach);
 
             _ranges.Add(targetClass, range);
             return range;

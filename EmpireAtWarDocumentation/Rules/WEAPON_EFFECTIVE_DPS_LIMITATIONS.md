@@ -43,6 +43,7 @@ verification: "Source, serialized mount arcs, Unity compilation, and loaded
 
 - `ShipData.UsesArtilleryStandoff` opts ships into launcher distance in `AttackTargetState`. Ordinary DPS coverage is still the fallback.
 - `ArtilleryCapability` caches the maximum eligible surviving missile/torpedo reach per target class. Reach = range after Fleet Command − distance from mount to hull root; the offset bounds the planar separation even while banking.
+- Band reach = min(launcher reach, longest surviving eligible main-battery reach, same offset formula). No live main battery → launcher reach. Main destruction invalidates the cache. Live values: Republic Victory 501.9, Victory I 484.4 (was ≈689 launcher-only).
 - Launcher destruction/restoration, Fleet Command range changes and respawn invalidate the cache. Reload, salvo timing and ion disable do not change distance.
 - Route changes use hysteresis: 90% intended radius, 95% outer gate, 80% retreat trigger, with hull clearance. Failed routes retry every 0.5 s, up to six alternate bearings per stable target and reach.
 - Facing and auto-power still use actual per-hardpoint reach. Scope and gameplay/CPU acceptance → [[Done/Features/Artillery_Ship_Standoff_Plan]].
@@ -83,6 +84,11 @@ verification: "Source, serialized mount arcs, Unity compilation, and loaded
 - All 37 Empire/Rebellion roster ships were audited; the siege audit then covered 25 layouts incl. Republic (`Tools/BattleAudit/CapitalSiegeAudit.md`). Separatist/Rebellion arcs outside those layouts are unaudited.
 - Gate removal raised unboosted long-flight DPS without stat changes (user-accepted): Missile cycle ~12.9 → 10 s (+27% at max range), Ion ~7.2 → 6 s (+20%). Executor turbolaser/ion gain more (flight > reload).
 - Battle_20261114_125915 predates the gate removal → its Executor delivered-damage figures are not current-cadence evidence. Re-capture before siege tuning; do not silently compensate away the user-approved 1.5× rule.
+- Mount flush with the deck → horizontal hull-clear rays skim the deck → short or rear-only arcs; the fallback facing solve can then swing the stern at the target. Seat turrets ≈1 unit above the deck, then reprobe (`HardPointArcProbe`); a rear-seam arc keeps its larger half.
+  - Roster pass 2026-11-16 (55 views, ~370 mounts): moved ≤ clamp(1.5% hull length, 0.6, 3) units toward clear yaw; new arc = hull-clear ∪ original (never narrower), except wrong-side/invalid → hull-clear. Kept: 360° and ≥270° design arcs, `ISDIIOctupleTurbolaser`/`ISDIIQuadIonCannon` fixed arcs (`ISDIIShipTests`). Centax remapped onto hull flanks/spine. Evidence: `Logs/BalanceAudit/2026-11-16/hardpoint_audit*.csv`.
+  - Avoid replacing arcs with the raw hull-clear arc: side guns carry a deliberate ≈15° bow overlap for forward convergence (`ForwardMainBatteryTests`); the raw arc drops it and can flip to the other side.
+  - Still stern-on after mains die: Executor, Lucrehulk (360° secondaries clustered aft; range geometry, not arcs).
+  - Republic Acclamator (2026-11-16, bone-less mesh): deck y ≈ 2.0–2.7, mounts at y 3.0–3.3. L1/R1 (∓8, 28) [-170,40]/[-39,171]; L2/R2 (∓16.1, 12) [-180,30]/[-29,180]; L3 (-21, -4) [-180,27]; torpedo (0, 43) [-147,148]. Loadout unchanged (L3 has no right-side twin).
 - `ShipEngagement` standoff (0.65×) sits inside the 0.8× gate. AttackMove/Guard/Hunt pursue only while `CanEngage` is false → a ship inside the gate does not move closer, even when individual mounts are out of reach.
 
 ## Files

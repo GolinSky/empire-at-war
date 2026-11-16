@@ -110,12 +110,12 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase("Providence", 14)]
+        [TestCase("Providence", 16)]
         [TestCase("Captor", 10)]
-        [TestCase("Invincible", 24)]
-        [TestCase("PatrolFrigate", 7)]
-        [TestCase("C9979", 2)]
-        [TestCase("Dispatcher", 17)]
+        [TestCase("Invincible", 26)]
+        [TestCase("PatrolFrigate", 8)]
+        [TestCase("C9979", 6)]
+        [TestCase("Dispatcher", 19)]
         [TestCase("Bulwark", 13)]
         [TestCase("Wavecrest", 15)]
         public void SavedSeparatistForwardMountsConvergeAheadOfHull(string ship, int expectedCount)

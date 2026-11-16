@@ -73,6 +73,33 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void ArtilleryRange_StaysInsideSurvivingMainBatteryReach()
+        {
+            GameObject hull = new GameObject("ArtilleryHull");
+            try
+            {
+                CombatModifiers modifiers = new CombatModifiers();
+                ArtilleryCapability artillery = new ArtilleryCapability();
+                WeaponHardPoint missile = AddMount(hull, modifiers, WeaponFamily.Missile, DamageType.ConcussionMissile,
+                    700f, Vector3.forward * 10f);
+                WeaponHardPoint sternMain = AddMount(hull, modifiers, WeaponFamily.Turbolaser, DamageType.Turbolaser,
+                    500f, Vector3.back * 30f);
+                typeof(WeaponHardPoint).GetField("mainBattery", PRIVATE_INSTANCE).SetValue(sternMain, true);
+                artillery.RegisterMount(missile, WeaponFamily.Missile, hull.transform.position);
+                artillery.RegisterMount(sternMain, WeaponFamily.Turbolaser, hull.transform.position);
+
+                Assert.That(artillery.GetArtilleryRange(ShipClass.Capital), Is.EqualTo(470f));
+
+                sternMain.UpdateData(0f);
+                Assert.That(artillery.GetArtilleryRange(ShipClass.Capital), Is.EqualTo(690f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(hull);
+            }
+        }
+
+        [Test]
         public void CanEngageMainWeapon_RecognizesLaunchersBeyondGunRange()
         {
             GameObject hull = new GameObject("ArtilleryHull");

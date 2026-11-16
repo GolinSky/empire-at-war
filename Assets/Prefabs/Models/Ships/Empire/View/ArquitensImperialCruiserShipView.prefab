@@ -271,7 +271,7 @@ Transform:
   m_GameObject: {fileID: 1762934955629605546}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.013233653, z: -0, w: 0.99991244}
-  m_LocalPosition: {x: -3.28, y: 1.9265671, z: 1.44}
+  m_LocalPosition: {x: -3.28, y: 2.629829, z: 1.7916311}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -299,8 +299,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 2
   yAxisRange:
-    <Min>k__BackingField: -119
-    <Max>k__BackingField: 6
+    <Min>k__BackingField: -152
+    <Max>k__BackingField: 94
   mainBattery: 1
   <WeaponType>k__BackingField: 90
 --- !u!1 &2127806957622263956
@@ -391,7 +391,7 @@ Transform:
   m_GameObject: {fileID: 3799632698582763316}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.0007975808, z: -0, w: 0.9999997}
-  m_LocalPosition: {x: 3.0345201, y: 1.936552, z: 1.4408408}
+  m_LocalPosition: {x: 3.0345204, y: 2.639814, z: 1.7924719}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -419,8 +419,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 3
   yAxisRange:
-    <Min>k__BackingField: -6
-    <Max>k__BackingField: 118
+    <Min>k__BackingField: -94
+    <Max>k__BackingField: 152
   mainBattery: 1
   <WeaponType>k__BackingField: 90
 --- !u!1 &4043774101225216996
@@ -633,7 +633,7 @@ Transform:
   m_GameObject: {fileID: 4609842530250849160}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.49971542, y: 0.06457548, z: 14.529484}
+  m_LocalPosition: {x: 0.49971542, y: -0.6386864, z: 14.529484}
   m_LocalScale: {x: 7.175053, y: 7.175053, z: 7.175053}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -661,8 +661,8 @@ MonoBehaviour:
   <HardPointType>k__BackingField: 0
   <Id>k__BackingField: 10
   yAxisRange:
-    <Min>k__BackingField: -16
-    <Max>k__BackingField: 0
+    <Min>k__BackingField: -139
+    <Max>k__BackingField: 146
   mainBattery: 0
   <WeaponType>k__BackingField: 128
 --- !u!1 &4891785547253868335

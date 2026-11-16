@@ -20,6 +20,7 @@ acceptance: pending-user
 - Approach to 90%, hold through 95%, and retreat below 80% of effective launcher reach. Raise the thresholds for hull clearance; fall back to ordinary pursuit when clearance leaves no usable launcher band.
 - Profundity remains ordinary: its 455 torpedo range is shorter than its 517.5 turbolasers. No weapon range changes.
 - Mixed batteries can hold beyond shorter launcher and gun reach until longer mounts are destroyed.
+- Superseded 2026-11-16: the band is capped at surviving main-battery reach. Holding beyond it made Victory I turn its stern (mains out of reach → facing fell back to rear-arc missiles). See [[Rules/WEAPON_EFFECTIVE_DPS_LIMITATIONS#Artillery engagement]].
 
 ## Implementation
 

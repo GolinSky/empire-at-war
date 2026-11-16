@@ -46,7 +46,8 @@ verification: source-and-assets
 
 - Explicit Attack, including formation Attack: Victory I, Republic Victory, MC30c, Recalcitrant and Peleset use the longest surviving launcher reach. Profundity, AttackMove, Guard and Hunt retain ordinary engagement.
 - Approach to 90% of effective launcher reach, hold through 95%, and reopen distance below 80%. Hull clearance can raise the band; no reachable band → ordinary pursuit.
-- The longest surviving missile or torpedo determines distance. Shorter launchers and guns may be out of range until the longer mounts are lost. All usable launchers gone → ordinary pursuit.
+- The longest surviving missile or torpedo determines distance, capped at the longest surviving main-battery reach (2026-11-16). Shorter launchers and secondary guns may be out of range. All usable launchers gone → ordinary pursuit; all main batteries gone → launcher reach only.
+- Why the cap: beyond main reach the facing solver falls back to secondaries and can turn the stern to the target (Victory I: stern mains, rear-quarter missile arcs).
 
 ### Capital siege and hull facing
 
