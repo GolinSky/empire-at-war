@@ -6,6 +6,11 @@ namespace EmpireAtWar.Editor.Balance
         Price,
         HeightLevel,
         AvailabilityLevel,
-        Class
+        Class,
+        Health,
+        Shield,
+        Dps,
+        BuildTime,
+        Speed
     }
 }

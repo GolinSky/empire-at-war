@@ -29,7 +29,7 @@ namespace EmpireAtWar.Editor.Balance
             EnumField order = new EnumField("Order by", state.CompareSort)
             {
                 name = "compare-order",
-                tooltip = "Ascending order using draft values. Drag cards to switch to Manual."
+                tooltip = "Ascending order using draft values; Health and Shield are per member for squadrons, DPS is the base estimate. Drag cards to switch to Manual."
             };
             order.RegisterValueChangedCallback(evt => controller.SortCompare((BalanceCompareSort)evt.newValue));
             heading.Add(order);

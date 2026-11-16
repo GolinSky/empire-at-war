@@ -17,6 +17,10 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(BalanceCompareSort.Price, "Price", "Hull")]
         [TestCase(BalanceCompareSort.HeightLevel, "HeightTier", "HeightTier")]
         [TestCase(BalanceCompareSort.AvailabilityLevel, "AvailableLevel", "Speed")]
+        [TestCase(BalanceCompareSort.Health, "Hull", "Hull")]
+        [TestCase(BalanceCompareSort.Shield, "Shields", "Shields")]
+        [TestCase(BalanceCompareSort.BuildTime, "BuildTime", "Hull")]
+        [TestCase(BalanceCompareSort.Speed, "Speed", "Speed")]
         public void NumericOrder_UsesDraftValuesAndLeavesMissingStatsLast(BalanceCompareSort sort, string stat, string property)
         {
             BalanceRegistration registry = new BalanceRegistration();

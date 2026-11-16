@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.ViewComponents.Health;
 using UnityEngine.UIElements;
 
@@ -74,6 +75,12 @@ namespace EmpireAtWar.Editor.Balance
                 row.Add(BalanceStatSlider.Create(field, draft, value => edit(field, value), maxima[stat]));
                 if (field.Shared) Text(row, field.DescribeScope(field.Users), "balance-scope");
             }
+            bool squadron = unit.Kind == BalanceUnitKind.Squadron;
+            BalanceField regenTier = Field(unit, registry, "ShieldRegenTier");
+            if (regenTier != null) Editable(card, "Shield regen tier", regenTier, draft, usage, edit);
+            else Editable(card, squadron ? "Shield regen / member (HP)" : "Shield regen (HP)", Field(unit, registry, "ShieldRegenerateValue"), draft, usage, edit);
+            Editable(card, "Shield regen delay (s)", Field(unit, registry, "ShieldRegenerateDelay"), draft, usage, edit);
+            Metric(card, squadron ? "Shield regen / member" : "Shield regen", ShieldRegenRate(unit, registry, draft), "HP/s");
 
             Section(card, "Mobility & economy");
             Editable(card, "Speed (u/s)", Field(unit, registry, "Speed", "CruiseSpeed"), draft, usage, edit);
@@ -207,6 +214,29 @@ namespace EmpireAtWar.Editor.Balance
             row.EnableInClassList("balance-changed", value != saved);
             string error = usage.Validate(field, value);
             if (error.Length != 0) container.Add(new HelpBox(error, HelpBoxMessageType.Error));
+        }
+
+        // Runtime restores the regen amount once per regen delay, so the rate is amount / delay.
+        private static string ShieldRegenRate(BalanceUnit unit, BalanceRegistration registry, BalanceDraft draft)
+        {
+            BalanceField delayField = Field(unit, registry, "ShieldRegenerateDelay");
+            double? delay = delayField == null ? null : Number(delayField.DraftValue(draft));
+            double? amount = ShieldRegenAmount(unit, registry, draft);
+            return delay > 0 && amount.HasValue ? (amount.Value / delay.Value).ToString(CultureInfo.InvariantCulture) : "N/A";
+        }
+
+        private static double? ShieldRegenAmount(BalanceUnit unit, BalanceRegistration registry, BalanceDraft draft)
+        {
+            BalanceField tier = Field(unit, registry, "ShieldRegenTier");
+            if (tier == null)
+            {
+                BalanceField value = Field(unit, registry, "ShieldRegenerateValue");
+                return value == null ? null : Number(value.DraftValue(draft));
+            }
+            using UnityEditor.SerializedObject data = new UnityEditor.SerializedObject(unit.Data);
+            ShipShieldRegenTiersData tiers = (ShipShieldRegenTiersData)data.FindProperty("shieldRegenTiers").objectReferenceValue;
+            if (tiers == null) return null;
+            return tiers.GetRegenerateValue((ShieldRegenTier)int.Parse(tier.DraftValue(draft), CultureInfo.InvariantCulture));
         }
 
         private static double? Number(string value) =>

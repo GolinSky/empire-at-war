@@ -10,16 +10,28 @@ namespace EmpireAtWar.Editor.Balance
         public static void Sort(BalanceRegistration registry, BalanceWindowState state)
         {
             if (state.CompareSort == BalanceCompareSort.Manual) return;
-            var units = state.Pins.Select(id => registry.Units.FirstOrDefault(unit => unit.Id == id)).Where(unit => unit != null);
+            var units = state.Pins.Select(id => registry.Units.FirstOrDefault(unit => unit.Id == id)).Where(unit => unit != null).ToList();
+            if (state.CompareSort == BalanceCompareSort.Dps)
+            {
+                using BalanceDpsEstimator estimator = new BalanceDpsEstimator(registry);
+                state.Pins = units.OrderBy(unit => Dps(estimator.Estimate(unit, state.Draft))).Select(unit => unit.Id).ToList();
+                return;
+            }
             state.Pins = units.OrderBy(unit => state.CompareSort switch
             {
                 BalanceCompareSort.Price => Value(unit, registry, state, "Price"),
                 BalanceCompareSort.HeightLevel => Value(unit, registry, state, "HeightTier", "Height"),
                 BalanceCompareSort.AvailabilityLevel => Value(unit, registry, state, "AvailableLevel"),
                 BalanceCompareSort.Class => ClassRank(unit),
+                BalanceCompareSort.Health => Value(unit, registry, state, "Hull", "MemberHull"),
+                BalanceCompareSort.Shield => Value(unit, registry, state, "Shields", "MemberShields"),
+                BalanceCompareSort.BuildTime => Value(unit, registry, state, "BuildTime"),
+                BalanceCompareSort.Speed => Value(unit, registry, state, "Speed", "CruiseSpeed"),
                 _ => throw new InvalidOperationException("Unknown comparison order: " + state.CompareSort)
             }).Select(unit => unit.Id).ToList();
         }
+
+        private static double Dps(BalanceDpsEstimate estimate) => estimate.HasValue ? estimate.Value : double.PositiveInfinity;
 
         public static bool Move(BalanceWindowState state, string source, string target, bool after)
         {
