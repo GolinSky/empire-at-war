@@ -310,6 +310,12 @@ namespace EmpireAtWar.Services.Saves
                     slots[1] is { Id: ShipAbilityId.TractorBeam } => new[] { slots[0] },
                 ShipType.InterdictorStarDestroyer when slots.Length == 1 && slots[0] is { Id: ShipAbilityId.BoostWeaponPower }
                     => new[] { slots[0], AbilitySlotSave.Ready(ShipAbilityId.DauntlessSensorJamming) },
+                ShipType.Praetor when slots.Length == 1 && slots[0] is { Id: ShipAbilityId.FullSalvo }
+                    => new[]
+                    {
+                        slots[0], AbilitySlotSave.Ready(ShipAbilityId.BoostShieldPower),
+                        AbilitySlotSave.Ready(ShipAbilityId.BoostWeaponPower)
+                    },
                 _ => slots
             };
         }

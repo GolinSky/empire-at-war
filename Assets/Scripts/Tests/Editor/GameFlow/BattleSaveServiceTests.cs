@@ -372,16 +372,18 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [TestCase(ShipType.MC50, FactionType.Rebellion, (ShipAbilityId)40, ShipAbilityId.BoostWeaponPower,
-            ShipAbilityId.None, ShipAbilityId.None)]
+            ShipAbilityId.None, ShipAbilityId.None, ShipAbilityId.None)]
         [TestCase(ShipType.QuasarFire, FactionType.Rebellion, ShipAbilityId.BoostWeaponPower,
-            ShipAbilityId.BoostWeaponPower, ShipAbilityId.TractorBeam, ShipAbilityId.None)]
+            ShipAbilityId.BoostWeaponPower, ShipAbilityId.TractorBeam, ShipAbilityId.None, ShipAbilityId.None)]
         [TestCase(ShipType.BothanAssaultCruiser, FactionType.Rebellion, ShipAbilityId.BothanCoordinatedAssault,
-            ShipAbilityId.BothanCoordinatedAssault, ShipAbilityId.TractorBeam, ShipAbilityId.None)]
+            ShipAbilityId.BothanCoordinatedAssault, ShipAbilityId.TractorBeam, ShipAbilityId.None, ShipAbilityId.None)]
         [TestCase(ShipType.InterdictorStarDestroyer, FactionType.Empire, ShipAbilityId.BoostWeaponPower,
-            ShipAbilityId.BoostWeaponPower, ShipAbilityId.None, ShipAbilityId.DauntlessSensorJamming)]
+            ShipAbilityId.BoostWeaponPower, ShipAbilityId.None, ShipAbilityId.DauntlessSensorJamming, ShipAbilityId.None)]
+        [TestCase(ShipType.Praetor, FactionType.Republic, ShipAbilityId.FullSalvo, ShipAbilityId.FullSalvo,
+            ShipAbilityId.None, ShipAbilityId.BoostShieldPower, ShipAbilityId.BoostWeaponPower)]
         public void Validator_MigratesLegacyShipLoadoutsAndPreservesCooldown(ShipType shipType, FactionType faction,
             ShipAbilityId savedPrimary, ShipAbilityId expectedPrimary, ShipAbilityId savedSecondary,
-            ShipAbilityId expectedSecondary)
+            ShipAbilityId expectedSecondary, ShipAbilityId expectedTertiary)
         {
             using var assets = new CachedAssetService(new AddressableHandleLoader());
             BattleDefinition defaults = SkirmishPreset.Default();
@@ -431,16 +433,17 @@ namespace EmpireAtWar.Tests.Editor
             AbilitySlotSave[] migrated = ship.Abilities;
             validator.Validate(save, battle);
             Assert.That(ship.Abilities, Is.SameAs(migrated));
-            Assert.That(migrated.Select(slot => slot.Id), Is.EqualTo(expectedSecondary == ShipAbilityId.None
-                ? new[] { expectedPrimary } : new[] { expectedPrimary, expectedSecondary }));
+            Assert.That(migrated.Select(slot => slot.Id), Is.EqualTo(
+                new[] { expectedPrimary, expectedSecondary, expectedTertiary }.Where(id => id != ShipAbilityId.None)));
             Assert.That(migrated[0].State, Is.EqualTo(ShipAbilityState.Recovering));
             Assert.That(migrated[0].TimeLeft, Is.EqualTo(19f));
-            if (interdictor)
+            foreach (AbilitySlotSave slot in migrated.Skip(savedAbilities.Length))
             {
-                Assert.That(migrated[1].State, Is.EqualTo(ShipAbilityState.Ready));
-                Assert.That(migrated[1].TimeLeft, Is.Zero);
-                Assert.That(ship.Health.HardPoints, Is.EqualTo(damage.Append(1f)));
+                Assert.That(slot.State, Is.EqualTo(ShipAbilityState.Ready));
+                Assert.That(slot.TimeLeft, Is.Zero);
             }
+            if (interdictor)
+                Assert.That(ship.Health.HardPoints, Is.EqualTo(damage.Append(1f)));
         }
 
         [Test]
