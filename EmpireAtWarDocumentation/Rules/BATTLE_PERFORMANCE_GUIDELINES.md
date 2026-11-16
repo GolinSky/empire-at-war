@@ -206,8 +206,8 @@ tags:
 
 - `AttackSequenceState` becomes ready after the last emitted shot; leased effects from older salvos still count until completion. Admit a full salvo only when `activeEffects + ShotsPerSalvo ≤ inFlightCap`; pool release suppresses old callbacks and resets sequence counting.
 - `WeaponHardPoint.ExpectedShotsInFlight` = `shots × (1 + ceil(flight / max(reload × reloadMult, (shots − 1) × interval × intervalMult, 0.01 s)))`. Ships assigned ability `5` size for its catalog multipliers (`0.1 / 0.1`); other units use `1 / 1`.
-- Create mount pools during weapon initialization; reserve summed per-prefab capacity through owner release until the final orphan effect returns. Each pool waits for its fixed admission threshold; newly arriving units do not revoke existing mounts’ admission. Pre-size the active lease dictionary to the mount cap.
-- Reinforcements may wait for budgeted pool growth before firing; never create shots synchronously to bypass admission. Roster prewarm covers the largest loadout, while registered live demand grows the shared target. No new per-frame mount scan or per-shot allocation was introduced.
+- Create mount pools during weapon initialization; retain logical per-mount normal/Boost in-flight caps and pre-size lease dictionaries. Physical shared-cache admission uses FIFO whole-salvo reservations; active leases survive owner release until completion. Summed-capacity fixed thresholds were replaced on 2026-11-16.
+- Reinforcements and first large/Boost demand may wait for budgeted pool growth; never instantiate synchronously while firing. Roster prewarm covers the largest normal-cadence loadout. Physical target = max(loading floor, active + reserved + waiting shots); cancel obsolete requests and retain returned shots. Runtime creation remains at most one clone/frame.
 - `CombatModifiers.Changed` retimes remaining reload and pending inter-shot waits only after effective multiplier changes. Generic `FireDelayMultiplier` is reload-only; `WeaponPowerShotIntervalMultiplier` controls Boost spacing. Full Salvo, torpedo and main-battery channels affect both.
 - Keep `EarliestFrame = frame + 1`: at most one shot per mount per frame, no catch-up. A `0.02 s` interval typically rounds up to `0.033 s` at 60 fps; exact 10× sustained DPS is not promised. Projectile damage/speed and shots per salvo remain unchanged.
 - Verify no on-demand expansion with `AttackSequenceDiagnostics.PoolExpansions`; budgeted warm creation also emits `Battle.Projectile.Instantiate.*` nested under `Prewarm.*`. Measure workload counters, frame times and active-effect Update cost in a matched user capture.
@@ -250,3 +250,21 @@ tags:
 
 - Structure status fade clocks: 0.2 s in / 0.3 s out; world transient stays within 2 s, minimap retains full 3 s opaque hold. Dismiss snapshots current alpha and is idempotent; baseline/map teardown clears immediately.
 - State replacement crossfades use three prewarmed outgoing graphics per display, disabled after fading. Advance from the shared presenter; no per-icon Update/tween or event-time view allocation. Gameplay rules → [[GameDesign/Capture_And_Structures#Structure status icons]].
+
+### Capture probes and decision cadence · 2026-11-16
+
+- Capture detachment probes evaluate all sorted candidates in the same decision. Collect objectives once; use each candidate's raw local advantage and shared objective-safety rules. Do not advance shared smoothing, commitment or stall history for rejected candidates.
+- Squadron periodic decisions start at per-player offsets. Ship world-change events preserve earlier deadlines and enforce a 0.5 s gap since the last decision; duplicate events must not postpone a pending decision. Pauses freeze both clocks.
+- Committed heavy-capital pursuit scans run at most every 100 ms (`HARD_POINT_SCAN_INTERVAL`), moving target or not. Arrival and target replacement rescan at once. Why: a committed leg discards the offset; the scan only detects mount-range entry. Avoid: target-pose invalidation → every-frame scans against a translating target.
+- `WeaponComponent.TryGetHardPointApproach` reads target points once per scan into `_approachPoints`, then compares squared distances. Avoid per-pair `Transform.position`/`CanTarget` reads (130 mounts × 177 points).
+- Dev markers separate hardpoint, artillery, hold/look-at and per-player decision paths. Report periodic and launch counts separately; rates use running gameplay time.
+- Measure pool peak active leases, pending/reserved shots, creation and admission latency. A calm zero-wait sample does not establish overflow behavior or boosted DPS.
+- Evidence and verification → [[Done/Optimization/Live_Battle_CPU_And_Pool_Demand]]. Evolving Editor samples are not matched FPS comparisons.
+
+### Heavy-capital and boosted-demand measurements · 2026-11-16
+- Controlled `profiler` replay: Praetor 130 mounts vs Executor 177 targetable points → hardpoint scan median 4.548 ms. Stationary-position pursuit skips 51/60 scans, averages 0.688 ms/frame; translating target invalidated every frame, 4.405 ms/frame (pre-fix). Pose invalidation removed and scan inner loop reduced afterwards; post-fix cost not yet measured live.
+- Actual boosted-overflow proof requires emitted boosted shots and pending demand from the same prefab during overlapping frames. Verified 57 boosted QuadProjectile emissions in four intervals with waiting positive on every sampled frame.
+- Stress growth: Quad 108→225, Concussion 200→375; max 1 clone/frame globally, zero synchronous expansion/unmatched completion. Peak queue 408 shots, max ended-request wait 6.238 s. Correct bounded growth can still cause long firing delays; pick an admission-latency budget before choosing headroom.
+- Target death cancels demand. Queue clearance alone does not prove every queued request was served. Record cancellation/target lifetime separately from successful admission and continued emissions.
+- Diagnostic observers must cache immutable entity IDs/owner metadata before destruction; export must not resolve a dead caster. Use checkpoints and clean callbacks before reloading.
+- Evidence/remaining decisions → [[Done/Optimization/Live_Battle_CPU_And_Pool_Demand]]. Editor branch attribution is not a matched whole-battle FPS result.

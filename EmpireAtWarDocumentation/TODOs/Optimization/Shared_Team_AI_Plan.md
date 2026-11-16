@@ -41,28 +41,28 @@ created: 2026-11-16
 - Gate: the 1 → 3 → 6 curve defines the "before" slope. No slope → stop; fix the single-AI cost instead.
 
 ### Phase 1 — Battle-wide world snapshot (no behaviour change)
-- [x] New battle-scope `AiWorldSnapshot`: built at most once per frame, on first request.
-- Contents: living entities split by owner and role (bases, structures, units), cached position, footprint radius, unit type, hull/shields, offense scale.
-- [x] Replace per-player entity loops in `EnemyStrategicContextBuilder`, `ForceCompositionBuilder.Build`, `EnemyRecoveryAnchor`, `EnemySquadronCommander`, `EnemyPatrolService`, `EnemyDefenseSnapshotBuilder` with snapshot reads.
-- Edge: an entity removed mid-frame → consumers still check `IsDestroyed`/`TryGetEntity` before issuing orders.
-- Tests: `EnemyAi`, `Squadrons`.
+- [x] New battle-scope `AiWorldSnapshot`: built at most once per frame, on first request (`EnemyAI.WorldSnapshot.Rebuild` marker; skips destroyed/unitless entities before facade lookups).
+- Contents: living entities with units split by owner and role (bases, structures, raid structures, units), cached position, unit type, ship class, base/unit/mining flags, hull/shields, offense scale (units only), and ship hangar count.
+- [x] Replace per-player entity loops in `EnemyStrategicContextBuilder`, `ForceCompositionBuilder.Build`, `EnemyRecoveryAnchor`, `EnemySquadronCommander`, `EnemyPatrolService`, `EnemyDefenseSnapshotBuilder` with snapshot reads and remove legacy fallback branches.
+- Edge: an entity removed mid-frame or mid-cycle → `EnemyUnitCommander`, `EnemyStrategicContextBuilder`, `ForceCompositionBuilder`, `EnemyRecoveryAnchor`, and `TeamAiPicture` check `IsDestroyed`/`TryGetEntity` and store resolved entities rather than calling `GetEntity` across frames.
+- Tests: `EnemyAi`, `Squadrons`, `Core` (`RealEntityCompositionTests`).
 
 ### Phase 2 — One planner per team (no behaviour change)
-- [x] Move `HostileIntelGatherer` from `AiPlayerScope` to one instance per team. Verified `VisionService` is ally-shared (`_relations.IsAllied`); implemented `TeamHostileIntelService` + `AiTeamMembership`.
-- [x] New `TeamAiPicture` per team, refreshed on demand/scheduler: confident hostile sightings, hostile force near each capture objective and each structure, capture-objective candidate list with stable IDs (no per-decision `$"zone:{i}"` strings).
-- [x] `IsDefended`, `IsRouteSafe` threat sums and `FindRaidTarget` read cached per-objective/per-structure hostile forces instead of calling `BuildKnown` per query.
+- [x] Remove per-AI `HostileIntelGatherer` and run `TeamHostileIntelService` + `AiTeamMembership` once per active AI team (live `entry.Entity.IsCloaked()` check).
+- [x] New `TeamAiPicture` per team (`EnsureRefreshed` on `AssessStation`, `Build`, `SelectCaptureObjective`, `BeginCaptureProbe`, `IsMarkerApproachSafe`, `FindRaidTarget`, `FindClosestKnownShip`, `IsDefended`): confident hostile sightings, hostile force near raid structures, `zone:{i}` capture objectives, and on-demand `GetOrBuildObjectiveThreat` for both `zone:{i}` and per-player `site:{i}` objectives (`EnemySiteObjectives` stays per-player in `EnemyStrategicContextBuilder`).
+- [x] `IsDefended` and `IsObjectiveSafe` read cached per-structure / per-objective threats (skipping zero-distance `IsRouteSafe` when covered); `IsRouteSafe` sums from `TeamAiPicture.BuildKnownFromConfident`.
 - Keep per group: origin, own force, ion risk, smoothing, commitment, stall history.
 - Tests: `EnemyAi`, `Vision`.
 
 ### Phase 3 — AI scheduler with a frame budget (latency changes, decisions do not)
-- [x] One battle-scope `EnemyAiScheduler` replaces per-commander timers and `EnemyAiStagger`.
+- [x] One battle-scope `EnemyAiScheduler` (required constructor takes `INotifier<BattleState>`, plus `SetElapsedMsProviderForTests`) replaces per-commander timers, legacy fallback paths, and `EnemyAiStagger.WorldChangeDelay` (`EnemyAiStagger.Offset` remains for initial staggering and `EnemyShipAbilityController`).
 - Work unit: one task-group evaluation, one squadron-commander pass, one production tick.
 - Rules: each unit keeps its due time from its owner's difficulty interval; scheduler runs due units oldest-first until the budget is spent; the rest wait a frame.
-- [x] Split `EnemyUnitCommander.EvaluateAndExecute` into reconcile (cheap, once) + one group per unit of work.
+- [x] Split `EnemyUnitCommander.EvaluateAndExecute` into reconcile (cheap, once) + one group per unit of work (removed dead `EvaluateAndExecute`).
 - [x] World-change events mark owners dirty; keep the 0.5 s minimum gap.
 - Edge: paused battle freezes due times. Station under attack (`StationCritical`) jumps the queue.
 - Edge: starvation → cap max delay (e.g. 2 × interval), then run regardless of budget and count it.
-- Tests: `EnemyAi` (`EnemyDecisionSchedulingTests`), ordering and eventual completion only, no wall-clock assumptions. (Authored; not run locally per test-execution override.)
+- Tests: `EnemyAi` (`EnemyDecisionSchedulingTests`, `EnemyUnitCommanderTests`, `EnemyProductionDecisionModelTests`, `EnemyPatrolMemoryTests`, `EnemyRecoveryAnchorTests`, `ForceCompositionBuilderTests`) and `Core` (`RealEntityCompositionTests`), ordering and eventual completion only, no wall-clock assumptions. (Authored; not run locally per test-execution override.)
 
 ### Phase 4 — Team cooperation (behaviour change, needs user approval per item)
 - [ ] Team-level capture reservations: today `_reservedCaptureObjectives` lives in each `EnemyUnitCommander`, so two allied AIs can commit to the same objective.
@@ -86,12 +86,13 @@ created: 2026-11-16
 
 ## Files
 - `Assets/Scripts/Services/VContainer/Scopes/Players/AiPlayerScope.cs`, `SkirmishScope.cs`
-- `Assets/Scripts/Services/Enemy/EnemyUnitCommander.cs`, `EnemyStrategicContextBuilder.cs`, `EnemyShipTaskGroupPlanner.cs`, `EnemySquadronCommander.cs`, `HostileIntelGatherer.cs`, `TeamIntelRegistry.cs`, `ForceCompositionBuilder.cs`, `EnemyAiStagger.cs`
+- `Assets/Scripts/Services/Enemy/AiWorldSnapshot.cs`, `TeamHostileIntelService.cs`, `AiTeamMembership.cs`, `TeamAiPicture.cs`, `TeamAiPictureRegistry.cs`, `EnemyAiScheduler.cs`, `EnemyDecisionDiagnostics.cs`
+- `Assets/Scripts/Services/Enemy/EnemyUnitCommander.cs`, `EnemyStrategicContextBuilder.cs`, `EnemyShipTaskGroupPlanner.cs`, `EnemySquadronCommander.cs`, `EnemyProductionStrategy.cs`, `EnemyRecoveryAnchor.cs`, `EnemyPatrolService.cs`, `EnemyDefenseSnapshotBuilder.cs`, `TeamIntelRegistry.cs`, `ForceCompositionBuilder.cs`, `EnemyAiStagger.cs`
 - `Assets/Scripts/Services/TacticalMarkers/AllyAiMarkerSource.cs`, `AllyAiMarkerEmitter.cs`
 
 ## TODO
 - User: confirm the AI frame budget (proposed 2 ms) and whether slower decisions under load are acceptable.
 - User: approve Phase 4 items one by one; they change how allied AIs play.
-- Unverified: whether `_entityLocator.Entities` scans or intel passes dominate a decision — Phase 0 markers decide the order of Phases 1 and 2.
+- Unmeasured: single-unit decision duration, `AiWorldSnapshot` rebuild cost (`EnemyAI.WorldSnapshot.Rebuild`), and whether the 2 ms frame budget holds under load remain unmeasured until Phase 0 and Phase 5 captures run.
 - Unverified: `EnemyProductionStrategy` (796 lines) not read for this plan; include it in Phase 0 markers.
 - Related: [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]] (Phase 1 there is replaced by Phases 0–3 here), [[Done/Optimization/Live_Battle_CPU_And_Pool_Demand]], [[Done/Optimization/Enemy_Production_CPU_Spike_Plan]].

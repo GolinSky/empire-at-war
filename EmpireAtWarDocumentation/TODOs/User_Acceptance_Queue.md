@@ -439,6 +439,9 @@ created: "2026-10-29\r"
 - [ ] [[Done/Bugs/Structure_Status_Icons_Projection]] — Check local mining/Battle Asteroid and satellite destruction under fog, camera pan/rotation/zoom and offscreen return; icons stay above structures and receive their full displayed lifetime.
 - [ ] [[Done/Bugs/Structure_Status_Icons_Projection]] — Run `Ui` regressions when explicitly requested, including real-canvas position and two-source reactivation coverage; authored and compiled, not run.
 
+## Live battle CPU and pool demand
+- [ ] Matched Development Player timing and acceptable admission-latency budget → [[Done/Optimization/Live_Battle_CPU_And_Pool_Demand]]. Heavy-capital and boosted-overflow live verification completed: moving target cost ~4.41 ms/frame before the 2026-11-16 scan fix (re-measure Praetor vs moving Executor; run `Navigation` + `Combat`); stressed requests waited up to 6.24 s.
+
 ## Squad Control Groups
 
 - [ ] [[Done/Features/Squad_Control_Groups_Plan]] — Windows battle play: hold Ctrl, assign/recall all ten top-row slots (0 last), numpad exclusion, overlapping groups, death/pool reuse, Replace/Cancel/Escape, Alt-tab popup retention, fresh inputs and notifier feedback; save/load preserves slots.

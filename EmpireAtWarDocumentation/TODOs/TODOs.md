@@ -15,6 +15,9 @@
 
 
 
+
+
+
 - [ ] **Forbidden UI SFX** → [[Done/Features/Ui_Sfx_System#Deferred follow-up|Deferred forbidden cue]].
 - [ ] **Dynamic in-game tutorial (in-match hints: camera, select, move, minimap, build, counters tooltip, build queue, abilities + auto-power, level up, research, map systems)** → [[TODOs/Features/Ingame_Tutorial_Plan|In-Game Tutorial Plan]]
   - UI spotlight migration 2026-11-11: shared UI frames replaced by a 65% dim overlay with target cutout; added per-element `IUiHighlight` API and own-graphic 1.2 s pulse (compile/bindings verified, visual check pending); optional pointer blocking defaults off. Loading-time minimap `HideTarget` exception fixed 2026-11-11 with marker lifecycle tracking; compiled, startup replay pending. User-authorized tests: Ui 274/274 and Core 150/150 passed; visual acceptance pending.
@@ -71,6 +74,8 @@
 
 
 
+
+
 - [ ] **Ship hardpoints, firing angles and balance** → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]
   - Status: in progress (2026-11-15). Recusant weapon profile swaps saved and verified with existing arcs. Recusant battle output, Peleset/Recalcitrant wrapped yaw, Dispatcher/Resolute/Arquitens arcs, Mandator economics and shared-prefab telemetry remain under review.
 
@@ -97,9 +102,13 @@
 
 ### Optimization
 
-- [ ] **Fix confirmed custom-shader defects, then measure shader optimizations** → [[TODOs/Optimization/Custom_Shader_Fixes_Plan|Custom Shader Fixes Plan]]; [[Artifacts/Audits/Custom_Shader_Audit_2026-11-16|November 16 shader audit]]
-  - 2026-11-16: Phases 1–2 resolved: hazard flash guard, wreck noise skip, local soft-particle variant + orthographic depth, wreck zone stencil and ISD III hull alpha fix. User kept rim/fog fade. Compiled output rejected planet/decor edits; 30 targeted D3D stages compiled cleanly. Tests not run. Two Windows Development builds succeeded; startup exposed a shared-Tector catalog defect, now corrected in source. Further builds/tests stopped at user request. Phase 3 matched captures and visual acceptance remain; see [[TODOs/Optimization/Custom_Shader_Fixes_Plan - Research|experiment evidence]].
 
+
+- [ ] **Live battle CPU sweep: AI decision spikes, stalls/GC, pool pre-grow, attack state, squadrons, steady costs** → [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan|Live Battle CPU Sweep Plan]]
+  - 2026-11-16: plan written from post-fix captures (frame avg 14.0 ms, p95 26.3, max 420; main-thread bound). Nothing implemented. Next: Phase 0 baseline + user test run, then Phase 1 AI decision markers.
+
+- [ ] **Shared team AI: world snapshot, one planner per team, budgeted AI scheduler, allied cooperation** → [[TODOs/Optimization/Shared_Team_AI_Plan|Shared Team AI Plan]]
+  - 2026-11-16: Phases 1–3 code and review fixes implemented (required `EnemyAiScheduler` / `AiWorldSnapshot` / `TeamAiPictureRegistry` wiring, per-player `EnemySiteObjectives` + `TeamAiPicture.GetOrBuildObjectiveThreat`, mid-decision ship removal hardening, `EnemyAI.WorldSnapshot.Rebuild` profiler marker with trimmed lookups, dead `HostileIntelGatherer`/fallback paths removed); tests updated and not run locally. Next: Phase 0/5 scaling captures and Phase 4 user approvals.
 
 - [ ] **Remove recurring allocations and redundant scans; gate Jobs/Burst candidates behind captures** → [[TODOs/Optimization/CPU_Allocation_And_Jobs_Plan|CPU Allocation and Jobs Plan]]
   - 2026-11-14 · Phases 1–2, Phase 3 scan/HUD work and Phase 5 loading/editor work committed; independent source review found no actionable correctness regressions. Last Unity compilation reports no errors; committed diff check clean. Tests not run; coverage gaps and matched Editor/Development Player captures remain. Replicated-state timer design and measured Jobs/Burst candidates remain active.
@@ -122,6 +131,9 @@
   - Findings: nebula ≈7 ms residual frame cost in B view; pan p99 73.54 ms / max 404.51 ms; A ≥90 FPS not sustained. Mac Player blocked by Windows-only BuildInfoWriter callback; capture GPU/resolution/screenshot caveats documented.
   - Remaining: Player/build-support fix, PC matched historical captures, full visual/VFX acceptance and absorbed attribution/experiments; see plan/research. No historical Player build resumed.
   - Single rendering owner since 2026-10-29: absorbed Rendering Audit, Particle Rendering and Projectile VFX plans, plus hazard decor/overdraw measurement; newly absorbed items remain outside this execution's listed phases.
+
+- [ ] **Fix confirmed custom-shader defects, then measure shader optimizations** → [[TODOs/Optimization/Custom_Shader_Fixes_Plan|Custom Shader Fixes Plan]]; [[Artifacts/Audits/Custom_Shader_Audit_2026-11-16|November 16 shader audit]]
+  - 2026-11-16: Phases 1–2 resolved: hazard flash guard, wreck noise skip, local soft-particle variant + orthographic depth, wreck zone stencil and ISD III hull alpha fix. User kept rim/fog fade. Compiled output rejected planet/decor edits; 30 targeted D3D stages compiled cleanly. Tests not run. Two Windows Development builds succeeded; startup exposed a shared-Tector catalog defect, now corrected in source. Further builds/tests stopped at user request. Phase 3 matched captures and visual acceptance remain; see [[TODOs/Optimization/Custom_Shader_Fixes_Plan - Research|experiment evidence]].
 
 - [ ] **Nebula + hazard GPU optimization and upscaler settings** → [[TODOs/Optimization/Mac_Nebula_Hazard_GPU_Plan|Mac Nebula and Hazard GPU Plan]]
   - 2026-10-29 PC implementation: nebula bake/toggle, hazard H1/H2, resolution + Bilinear/FSR 1/STP, hazard audit pose and BuildInfo path. DLSS/FSR 2 rejected with reasons in plan.
@@ -231,6 +243,8 @@
 ## Done
 
 ### Optimization
+
+- [x] **Live battle CPU and pool demand** → [[Done/Optimization/Live_Battle_CPU_And_Pool_Demand]] — implemented/tested; heavy-capital/Boost live verification complete; moving-target cost and admission-latency limitations recorded.
 
 - [x] **Remove enemy AI production spikes** → [[Done/Optimization/Enemy_Production_CPU_Spike_Plan|Enemy Production CPU Spike Plan]]
   - 2026-11-14: cheap checks, threat snapshot and per-frame query reuse. Same map and AI after restoring an autosave: production tick max 4.55 ms versus 294.08 ms in the original live capture. Twelve full-map scans peaked at 3.30 ms. Unity compiled with zero errors. Automated tests not run.
@@ -386,6 +400,9 @@
 
 ### Features
 
+- [x] **Squad control groups (10 slots, 1–9 then 0, preview + shared replacement confirmation)** → [[Done/Features/Squad_Control_Groups_Plan|Squad Control Groups Plan]]
+  - Implemented 2026-11-16: fixed top-row keys, optional Mac Command, heroes-first icons, battle saves, notifier feedback and Alt-tab-preserved replacement popup. Top-center squad preview with slate slots and larger icons. Unity prefab read-back and 1920×1080 preview verified. Tests not run under local override. Play/platform gates → [[TODOs/User_Acceptance_Queue]].
+
 - [x] **Mining, satellite and relay state icons in world/minimap** → [[Done/Features/Structure_Status_Icons_Plan|Structure Status Icons Plan]]; [[Done/Features/Structure_Status_Icons_Plan - Research|Source research]]
   - Planned 2026-11-16: mining/satellite captured until built; built/destroyed and relay captured until seen on screen for 2 s, regardless of fog; all minimap event icons hold 3 s then fade. Event-driven state, pooled views, independent timers. Battle Asteroid uses mining rules (user-confirmed).
   - Completed 2026-11-16 (`e35feafc0`): event-driven pooled world/minimap icons, independent clocks, shared artwork and per-map snapshot suppression. Unity compilation/assets/isolated preview verified; tests not run. User gates → [[TODOs/User_Acceptance_Queue]].
@@ -397,9 +414,6 @@
 
 - [x] **Import the Recusant Dreadnought as a CIS Heavy Capital** → [[Done/Features/Recusant_Dreadnought_Import|Recusant Dreadnought Import]]
   - Completed 2026-11-16. Saved 2,542 m scale, 30,000 hull, 35,000 shields, 29 weapon hardpoints and Boost Weapon Power. Verified 26 forward-capable mounts at 300 units and 1,393.184 raw all-mount DPS. In-game acceptance is queued.
-- [x] **Squad control groups (10 slots, 1–9 then 0, preview + shared replacement confirmation)** → [[Done/Features/Squad_Control_Groups_Plan|Squad Control Groups Plan]]
-  - Implemented 2026-11-16: fixed top-row keys, optional Mac Command, heroes-first icons, battle saves, notifier feedback and Alt-tab-preserved replacement popup. Top-center squad preview with slate slots and larger icons. Unity prefab read-back and 1920×1080 preview verified. Tests not run under local override. Play/platform gates → [[TODOs/User_Acceptance_Queue]].
-
 
 - [x] **Rejoin an online battle after Pause Exit** → [[Done/Features/Rejoin_After_Battle_Exit_Plan|Rejoin After Battle Exit Plan]]
   - Review fix 2026-11-16: leaving another Steam lobby preserves the saved battle; source and related GameFlow/Networking/Ui tests reviewed, tests not run. Acceptance remains pending.
