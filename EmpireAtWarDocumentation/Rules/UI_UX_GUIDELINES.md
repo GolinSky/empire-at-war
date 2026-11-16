@@ -140,3 +140,9 @@ verification: Read the shared menu button variants and sampled Skirmish prefab
 - ShipActions main button labels share fixed font size `11.5`; `ATTACK MOVE` measures `63.83` in its `66`-unit label. Keep secondary target labels and panel heading separate.
 
 - Hover feedback: dark control surfaces → `#415670`, primary gold → `#F6D089`, fade `0.08 s`; use per-channel Color Tint relative to the target Graphic fill. Preserve normal, selected, pressed and disabled state colors. Keep shared menu state styling inherited.
+
+## EditMode UI fixtures
+
+- Camera-space canvas tests that manually render a disabled camera should use a fixed offscreen `RenderTexture`. Release the temporary target after destroying or detaching the camera. Test viewport offsets separately because a texture target renders over its full surface.
+- `Canvas.ForceUpdateCanvases` updates layout. A render synchronizes the camera canvas plane after pan, rotation or zoom.
+- Input System action fixtures use isolated manual player updates, restrict actions to the simulated device, and restore global settings on teardown. Editor updates alone skip action callbacks.

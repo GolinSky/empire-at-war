@@ -1,7 +1,8 @@
 ---
 category: Bugs
-status: in-progress
+status: done
 created: 2026-11-16
+completed: 2026-11-16
 ---
 # EditMode Failures 2026-11-16
 
@@ -43,7 +44,7 @@ created: 2026-11-16
 - `Commander_ShipRemovedMidMultiFrameCycle_DoesNotThrow`: `NullReferenceException` at `EnemyStrategicContextBuilder.IncludeNearbyOwn` (`:1221`). `TestEntity.GetFacade` returns null for `IEntityTransformFacade`.
 - `TeamHostileIntelService_TracksTeamMembershipAcrossJoinAndLeave`: `NullReferenceException` in `VisionQueries.IsVisible` for the same reason.
 - [x] `b94af9697`: fixture entities supply `IEntityTransformFacade` with real transforms at their ships' positions. TearDown destroys the backing GameObjects. Both archived stacks required the facade.
-- [ ] Production follow-up (same area, optional): `IncludeNearbyOwn` still reads the live `Transform` per entity per force build. `ForceCompositionBuilder.Build` already iterates snapshot entries → add an overload that passes the entry position. Do only with a marker showing it matters.
+- Optional position caching remains in [[TODOs/Optimization/Shared_Team_AI_Plan]] and depends on profiling.
 - Tests: `EnemyAi`.
 
 ### E — production strategy after scheduler change (2 cases)
@@ -76,7 +77,8 @@ created: 2026-11-16
 
 ## Verification
 - Unity imported and reserialized all 16 changed prefabs and data assets. Asset reloads and script compilation succeeded, with no new import or compilation errors in Console.
-- [ ] Run standard full EditMode on the fixed revision and review results. No tests were run under the local override.
+- [x] User confirmed full EditMode passed on 2026-11-16 after the offscreen projection fix. Follow-up XML was not supplied.
+- Reusable offscreen canvas and synthetic input fixture guidance → [[Rules/UI_UX_GUIDELINES#EditMode UI fixtures]].
 
 ## Rules
 - Order: A → D → E → C → F → B → G. A unblocks 31 tests and reveals real composition results; D and E gate the AI plan.
