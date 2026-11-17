@@ -554,7 +554,12 @@ namespace EmpireAtWar.Components.Ship.Movement
             bool anchored = _modifiers.IsAnchored;
             if (anchored == _isAnchored) return;
             _isAnchored = anchored;
-            if (!anchored) return;
+            if (!anchored)
+            {
+                // A well that ends mid-brake must not stop an order issued after it ended (e.g. Retreat).
+                _isAnchorBraking = false;
+                return;
+            }
             _hasQueuedPlan = false;
             if (_motion.HasMomentum || _motion.IsBraking)
             {

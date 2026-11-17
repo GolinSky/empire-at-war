@@ -365,6 +365,40 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        public void GravityWell_EmitterPausesWhileOffCameraAndStopsWithTheAbility()
+        {
+            IPlayerRelations relations = TestPlayers.CreateDuel();
+            GameObject cameraObject = new GameObject("Battle camera", typeof(UnityEngine.Camera));
+            UnityEngine.Camera camera = cameraObject.GetComponent<UnityEngine.Camera>();
+            camera.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+            var effects = new GravityWellEffects(relations, new OfflineSession(TestPlayers.Human), camera);
+            var caster = new TestCommand(TestPlayers.Human, 1);
+            try
+            {
+                caster.CullBounds = new Bounds(new Vector3(0f, 0f, 100f), Vector3.one * 10f);
+                effects.StartEmitter(caster);
+                Assert.That(caster.Emitting, Is.True);
+                effects.Tick();
+                Assert.That(caster.OnScreen, Is.True);
+
+                caster.CullBounds = new Bounds(new Vector3(0f, 0f, -100f), Vector3.one * 10f);
+                effects.Tick();
+                Assert.That(caster.OnScreen, Is.False, "Behind the camera stops new particles.");
+
+                effects.StopEmitter(caster);
+                Assert.That(caster.Emitting, Is.False);
+                caster.CullBounds = new Bounds(new Vector3(0f, 0f, 100f), Vector3.one * 10f);
+                effects.Tick();
+                Assert.That(caster.OnScreen, Is.False, "A stopped emitter is no longer tracked.");
+            }
+            finally
+            {
+                effects.LateDispose();
+                UnityEngine.Object.DestroyImmediate(cameraObject);
+            }
+        }
+
         private static GravityWellEffects CreateWellEffects(IPlayerRelations relations, GravityWellSettings settings,
             out GameObject prefabObject)
         {
@@ -372,7 +406,7 @@ namespace EmpireAtWar.Tests.Editor
             GravityWellView view = prefabObject.AddComponent<GravityWellView>();
             SetField(view, "ring", prefabObject.GetComponent<LineRenderer>());
             SetField(settings, "viewPrefab", view);
-            return new GravityWellEffects(relations, new OfflineSession(TestPlayers.Human));
+            return new GravityWellEffects(relations, new OfflineSession(TestPlayers.Human), null);
         }
 
         private static void DestroyWellEffects(GameObject prefabObject)
@@ -412,7 +446,10 @@ namespace EmpireAtWar.Tests.Editor
         {
             public ISelectionModelObserver Selection { get; } = new SelectionModel();
             public bool Emitting { get; private set; }
+            public bool OnScreen { get; private set; } = true;
+            public Bounds CullBounds { get; set; } = new Bounds(Vector3.zero, Vector3.one * 10f);
             public void SetEmitting(bool emitting) => Emitting = emitting;
+            public void SetOnScreen(bool onScreen) => OnScreen = onScreen;
             public IReadOnlyList<ShipAbilitySlot> Slots { get; } = Array.Empty<ShipAbilitySlot>();
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
             public Vector3 WorldPosition => Vector3.zero;

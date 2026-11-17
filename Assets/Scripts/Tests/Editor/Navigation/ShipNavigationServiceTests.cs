@@ -984,6 +984,44 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void GravityWellAnchor_RefusesTravelAndReleasingMidBrakeKeepsTheNextOrder()
+        {
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            GameObject ship = new GameObject("Anchored ship");
+            try
+            {
+                CombatModifiers modifiers = new CombatModifiers();
+                ShipMoveComponent component = CreateReadyComponent(ship, out var navigation, modifiers: modifiers);
+                MethodInfo syncAnchor = typeof(ShipMoveComponent).GetMethod("SyncAnchor", PRIVATE_INSTANCE);
+                FieldInfo anchorBraking = typeof(ShipMoveComponent).GetField("_isAnchorBraking", PRIVATE_INSTANCE);
+                object motion = typeof(ShipMoveComponent).GetField("_motion", PRIVATE_INSTANCE).GetValue(component);
+                FieldInfo motionBraking = motion.GetType().GetField("_isBraking", PRIVATE_INSTANCE);
+                Assert.That(syncAnchor, Is.Not.Null);
+                Assert.That(anchorBraking, Is.Not.Null);
+                Assert.That(motionBraking, Is.Not.Null);
+
+                // The well starts while the ship is still braking from its last leg.
+                motionBraking.SetValue(motion, true);
+                modifiers.AddMovementAnchor();
+                syncAnchor.Invoke(component, null);
+                Assert.That(anchorBraking.GetValue(component), Is.True);
+                component.MoveToPosition(Vector3.forward * 50f);
+                Assert.That(navigation.PlanCallCount, Is.Zero, "An anchored ship never plans travel.");
+
+                // Retreat ends the well before the brake finishes, then issues its move.
+                modifiers.RemoveMovementAnchor();
+                syncAnchor.Invoke(component, null);
+                Assert.That(anchorBraking.GetValue(component), Is.False);
+                motionBraking.SetValue(motion, false);
+                component.MoveToPosition(Vector3.forward * 50f);
+                Assert.That(component.IsMoving, Is.True);
+                component.Tick();
+                Assert.That(component.IsMoving, Is.True, "The finished brake must not stop the order issued after the well.");
+            }
+            finally { Object.DestroyImmediate(ship); }
+        }
+
+        [Test]
         public void QueuedOrders_OnlyPlanLatestDestination()
         {
             GameObject ship = new GameObject("Queued orders");

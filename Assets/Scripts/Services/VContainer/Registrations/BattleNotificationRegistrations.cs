@@ -22,6 +22,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<MapNotifier>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<BattleOutcomeNotifier>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<AbilityTargetingNotifier>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<GravityWellOrderNotifier>(Lifetime.Singleton).AsImplementedInterfaces();
         }
     }
 }

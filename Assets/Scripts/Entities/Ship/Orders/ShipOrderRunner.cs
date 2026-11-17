@@ -218,6 +218,8 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         public void CastAbility(ShipAbilityId id, IEntity target, float range)
         {
+            // An anchored ship cannot approach; in-range casts never reach this path.
+            if (RejectWhileAnchored(UnitOrderType.UseAbility)) return;
             _movement.CancelCombatHold();
             _pendingAbilityId = id;
             _pendingAbilityTarget = target;

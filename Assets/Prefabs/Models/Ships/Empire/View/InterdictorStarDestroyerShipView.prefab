@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 166427219454740129}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 17.8, y: -8, z: -5}
+  m_LocalPosition: {x: 17.8, y: 0, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -25778,7 +25778,7 @@ Transform:
   m_GameObject: {fileID: 4080048604049125302}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -26.2, y: -8, z: -34.9}
+  m_LocalPosition: {x: -26.2, y: 0, z: -34.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -31202,7 +31202,7 @@ Transform:
   m_GameObject: {fileID: 5903644201354461672}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -17.8, y: -8, z: -5}
+  m_LocalPosition: {x: -17.8, y: 0, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -37777,11 +37777,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc2b2862b5d7be0488be282090aeffb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Weapon.GravityWellEmitter
-  domeAnchors:
-  - {fileID: 4386170149166378366}
-  - {fileID: 1373971164810893338}
-  - {fileID: 1405293580020823116}
-  - {fileID: 4745827352171646385}
   systems:
   - {fileID: 7747282499512528871}
   - {fileID: 1131439700774560408}
@@ -37792,6 +37787,7 @@ MonoBehaviour:
   - {fileID: 8547041593867765013}
   - {fileID: 6855033967227218768}
   - {fileID: 7877741059429913006}
+  cullRadius: 120
 --- !u!1 &7296051739524971614
 GameObject:
   m_ObjectHideFlags: 0
@@ -43439,7 +43435,7 @@ Transform:
   m_GameObject: {fileID: 8784390238023574566}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 26.2, y: -8, z: -34.9}
+  m_LocalPosition: {x: 26.2, y: 0, z: -34.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

@@ -36,22 +36,28 @@ tags:
 - Prefab: `GravityWellEmitter` → 4 dome anchors, per dome `Charge` (sphere-shell radius 26, radial velocity −28, trails, 45/s) + `Glow` (26 u pulse, 1.4 s), plus one `BridgeWash` halo. 9 systems total; renderers added to `FogVisibilityComponent.renderers` (enemy domes hidden under fog).
 - New assets: `Assets/Art/Textures/Vfx/GravityWellSoftDot.png`, `Assets/Art/Materials/Vfx/GravityWellCharge.mat`, `GravityWellGlow.mat` (`EmpireAtWar/Vfx/Particle Legacy Unlit`, additive).
 
-## Deviations / Deferred
+## Review fixes (2026-11-17, second commit)
+- **Bug:** `ShipMoveComponent._isAnchorBraking` survived the anchor's removal → a Retreat (which cancels the well) or move issued mid-brake was wiped by the deferred `Stop()`. Fix: `SyncAnchor` clears the flag on the falling edge.
+- **Ability approach:** `ShipOrderRunner.CastAbility` refuses while anchored (`RejectWhileAnchored(UseAbility)`); in-range casts never reach it.
+- **Camera gating:** `GravityWellEffects` is now `ITickable` with `cameraService.SceneCamera`; tracks active emitters (`StartEmitter`/`StopEmitter`) and calls `SetOnScreen(TestPlanesAABB(frustum, CullBounds))` each tick. Off-screen → `emission.enabled = false`, live particles drain. `GravityWellEmitter.cullRadius = 120` (hull bounds 102 × 66 × 173).
+- **Refused-order notification:** new `GravityWellOrderNotifier` (battle notifications) posts Feedback "Gravity well active: ship cannot move" (group `gravity-well-anchored`) when the local player's Move/WaypointMove/AttackMove/Guard/Hunt order includes an anchored selected ship.
+- **Dead field:** removed unused `GravityWellEmitter.domeAnchors` (prefab reserialized; orphan data gone).
+- **Dome placement:** domes are on the **dorsal** hull beside the bridge; vertex clusters span y −21…−1.3 (apex ≈ −1.3). Anchors at y −8 put glows inside the opaque caps. Moved anchors to `(±26.2, 0, −34.9)` / `(±17.8, 0, −5.0)`. Preview-scene renders at 50° and 30° pitch show glow + charge trails on all four domes and the bridge halo.
+
+## Decisions kept
 - No emissive `MaterialPropertyBlock` boost on the hull (would fight `UnitRenderStateComponent` property blocks); halo particle instead.
-- No battle-camera-bounds emission gating (`ExplosionVfx.sustainedEmitters` style); fog gating only.
-- No player-facing notification for a rejected order (no existing order-rejection feedback path); telemetry only.
-- Enemy AI: commanders re-issue orders on their own cadence; rejection is silent and cheap. Not profiled.
-- Domes sit on the ventral side (y −21.8…−0.2); look from the in-game camera is unverified.
+- Enemy AI: rejection is silent and cheap (telemetry only in Editor/Development). Not profiled.
 
 ## Tests (authored; not run — local override)
-- `ShipAbilitySymmetryTests`: Interdict start/stop/ion/replica/death set and clear `IsAnchored` and `SetEmitting`; ring follows selection and stops after release; fakes now supply real `GravityWellEffects` + test view prefab.
-- `InterdictorGravityWellTests` (`Ships`): prefab binds emitter with 4 anchors and non-null systems; anchor counter semantics.
-- `ShipPursuitTests.AnchoredShip_RefusesMovementOrdersAndStillAttacks`: move-type orders refused, `Attack` accepted, current order kept.
-- Not covered: `ShipMoveComponent` brake-on-anchor (MonoBehaviour with navigation service) — in-game gate.
+- `ShipAbilitySymmetryTests`: Interdict start/stop/ion/replica/death set and clear `IsAnchored` and emitting; ring follows selection; new `GravityWell_EmitterPausesWhileOffCameraAndStopsWithTheAbility`.
+- `InterdictorGravityWellTests` (`Ships`): emitter bound, `cullRadius > 0`, systems non-null and not play-on-awake, effects on 4 distinct dome parents; anchor counter semantics.
+- `ShipPursuitTests` (`Navigation`): `AnchoredShip_RefusesMovementOrdersAndStillAttacks` (now also AttackMove + ability approach); new `AnchoredShip_RetreatEndsTheGravityWellAndLeaves`; tractor-approach test now passes a caster.
+- `ShipNavigationServiceTests` (`Navigation`): new `GravityWellAnchor_RefusesTravelAndReleasingMidBrakeKeepsTheNextOrder` (regression for the brake-flag bug).
 
 ## Outcome & Verification
 - Unity compile clean (`get_console_logs --severity error` → 0); prefab/materials reserialized and saved; prefab contract read back via `eval` (`emitter=True anchors=4 systems=9 fogRenderers=67`).
-- Not run: EditMode tests, in-game check.
+- Review fixes: recompile 0 errors, prefab reserialized (`domeAnchors` gone, `cullRadius: 120`), preview-scene renders checked.
+- Not run: EditMode tests (`Abilities`, `Ships`, `Navigation`, `Ui`), in-game check.
 - Reusable guidance: none extracted beyond the counted-flag `CombatModifiers` pattern (same as ion pulse disable).
 
 ## TODO

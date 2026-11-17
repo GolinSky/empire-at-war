@@ -31,7 +31,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _emitter = caster.Entity.GetFacade<IGravityWellEmitterFacade>();
             _caster.Health.OnDestroy += Stop;
             _caster.Modifiers.AddMovementAnchor();
-            _emitter.SetEmitting(true);
+            _effects.StartEmitter(_emitter);
             _areas.Register(BattleAreaLayer.SpawnBlock, caster.Entity.Owner, _casterTransform, definition.Range);
             _view = _effects.Show(_settings.ViewPrefab, caster.Entity.Owner, _casterTransform, definition.Range,
                 caster.Entity.GetFacade<IEntitySelectionObserverFacade>().Selection);
@@ -43,7 +43,7 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             {
                 _caster.Health.OnDestroy -= Stop;
                 _caster.Modifiers.RemoveMovementAnchor();
-                _emitter.SetEmitting(false);
+                _effects.StopEmitter(_emitter);
                 _emitter = null;
                 _caster = null;
             }

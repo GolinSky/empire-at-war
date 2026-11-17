@@ -732,7 +732,8 @@ namespace EmpireAtWar.Tests.Movement
             machine.SetState(idle);
             NavigateState navigate = new NavigateState(_movement);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                idle, navigate, null, null, null, null, new AbilityApproachState(_movement), null, null, new Radar(), null);
+                idle, navigate, null, null, null, null, new AbilityApproachState(_movement), null,
+                new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower), new Radar(), null);
 
             runner.CastAbility(ShipAbilityId.TractorBeam, _target, 100f);
             Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.UseAbility));
@@ -906,21 +907,51 @@ namespace EmpireAtWar.Tests.Movement
             ShipStateMachine machine = new ShipStateMachine();
             AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                new IdleState(_movement, _weapon, radar), null, attack, null, null, null, null, abilities, caster, radar, null);
+                new IdleState(_movement, _weapon, radar), null, attack, null, null, null,
+                new AbilityApproachState(_movement), abilities, caster, radar, null);
             runner.Start();
             caster.Modifiers.AddMovementAnchor();
 
             runner.MoveTo(new Vector3(500f, 0f, 0f));
             runner.MoveAlong(new[] { new Vector3(500f, 0f, 0f) });
+            runner.AttackMoveTo(new Vector3(500f, 0f, 0f), new AttackMoveEngagement());
             runner.Hunt();
             runner.Guard(_target, Vector3.zero);
+            runner.CastAbility(ShipAbilityId.TractorBeam, _target, 100f);
             Assert.That(orders.Current, Is.EqualTo(UnitOrderType.None));
+            Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.None), "An anchored ship cannot approach to cast.");
             Assert.That(_movement.MoveCount, Is.Zero);
 
             runner.Attack(_target, Vector3.zero);
             Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Attack));
             runner.MoveTo(new Vector3(500f, 0f, 0f));
             Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Attack), "A refused order keeps the current one.");
+            abilities.Clear();
+        }
+
+        [Test]
+        public void AnchoredShip_RetreatEndsTheGravityWellAndLeaves()
+        {
+            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.Interdict);
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new AnchorAbility()),
+                relations, new VisionService(relations, fogEnabled: false));
+            Radar radar = new Radar();
+            UnitOrderModel orders = new UnitOrderModel();
+            ShipStateMachine machine = new ShipStateMachine();
+            ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
+                new IdleState(_movement, _weapon, radar), new NavigateState(_movement), null, null, null, null,
+                new AbilityApproachState(_movement), abilities, caster, radar, null);
+            runner.Start();
+            Assert.That(abilities.TryActivate(caster, ShipAbilityId.Interdict, null), Is.True);
+            Assert.That(caster.Modifiers.IsAnchored, Is.True);
+
+            runner.Retreat(new Vector3(500f, 0f, 0f));
+
+            Assert.That(caster.Slots[0].State, Is.Not.EqualTo(ShipAbilityState.Active));
+            Assert.That(caster.Modifiers.IsAnchored, Is.False);
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Retreat));
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
             abilities.Clear();
         }
 
@@ -1065,6 +1096,23 @@ namespace EmpireAtWar.Tests.Movement
             private readonly IShipAbility _ability;
             public AbilityFactory(IShipAbility ability) => _ability = ability;
             public IShipAbility Create(ShipAbilityDefinition definition) => _ability;
+        }
+
+        private sealed class AnchorAbility : IStoppableShipAbility
+        {
+            private IShipAbilityFacade _caster;
+            public void Start(IShipAbilityFacade caster, ShipAbilityDefinition definition, IEntity target)
+            {
+                _caster = caster;
+                caster.Modifiers.AddMovementAnchor();
+            }
+
+            public void Stop()
+            {
+                if (_caster == null) return;
+                _caster.Modifiers.RemoveMovementAnchor();
+                _caster = null;
+            }
         }
 
         private sealed class RecordingAbility : IShipAbility

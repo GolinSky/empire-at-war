@@ -459,5 +459,5 @@ created: "2026-10-29\r"
 
 ## Interdictor Gravity Well
 
-- [ ] [[Done/Features/Interdictor_Gravity_Well_Anchor_And_Vfx_Plan]] — In-game: Interdictor brakes and stays put while the well is active (move orders ignored, turns and fires, `Retreat` cancels the well); ring visible only while selected; 4 dome VFX (look from the battle camera, fog hiding on enemy ships). Also run `Abilities`, `Ships` and `Navigation` EditMode suites when explicitly authorized (not run under local override).
+- [ ] [[Done/Features/Interdictor_Gravity_Well_Anchor_And_Vfx_Plan]] — In-game: Interdictor brakes and stays put while the well is active (move orders ignored, turns and fires, `Retreat` cancels the well); ring visible only while selected; refused move shows "Gravity well active" card; Retreat right after activation still leaves; 4 dorsal dome VFX (look in battle, pause off-screen, fog hiding on enemy ships). Also run `Abilities`, `Ships` and `Navigation` EditMode suites when explicitly authorized (not run under local override).
 - [ ] [[Done/Features/Interdictor_Gravity_Well_Plan]] — Run affected EditMode test suites (`Abilities`, `Balance`, `GameFlow`, `Squadrons`, `Economy`, `Navigation`) when explicitly authorized; tests were updated and compiled cleanly (0 errors) but not executed under local override.

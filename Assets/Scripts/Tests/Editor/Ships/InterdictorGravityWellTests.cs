@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Ship.Data;
@@ -26,14 +27,18 @@ namespace EmpireAtWar.Tests.Editor
             GravityWellEmitter emitter = view.GetComponent<EntityBindings>().GravityWellEmitter;
             Assert.That(emitter, Is.Not.Null);
             SerializedObject config = new SerializedObject(emitter);
-            SerializedProperty anchors = config.FindProperty("domeAnchors");
             SerializedProperty systems = config.FindProperty("systems");
-            Assert.That(anchors.arraySize, Is.EqualTo(DOME_COUNT));
             Assert.That(systems.arraySize, Is.GreaterThan(0));
-            for (int i = 0; i < anchors.arraySize; i++)
-                Assert.That(anchors.GetArrayElementAtIndex(i).objectReferenceValue, Is.Not.Null);
+            Assert.That(config.FindProperty("cullRadius").floatValue, Is.GreaterThan(0f));
+            HashSet<Transform> domes = new HashSet<Transform>();
             for (int i = 0; i < systems.arraySize; i++)
-                Assert.That(systems.GetArrayElementAtIndex(i).objectReferenceValue, Is.Not.Null);
+            {
+                ParticleSystem system = (ParticleSystem)systems.GetArrayElementAtIndex(i).objectReferenceValue;
+                Assert.That(system, Is.Not.Null);
+                Assert.That(system.main.playOnAwake, Is.False, "Domes stay dark until the well starts.");
+                if (system.transform.parent != emitter.transform) domes.Add(system.transform.parent);
+            }
+            Assert.That(domes.Count, Is.EqualTo(DOME_COUNT), "Each hull dome has its own effects.");
         }
 
         [Test]
