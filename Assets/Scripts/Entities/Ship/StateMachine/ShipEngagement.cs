@@ -1,6 +1,5 @@
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Movement;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
@@ -30,19 +29,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (UsesCloseSiegeApproach(movement, weapon, target))
                 return distance <= SiegeStandoffDistance(movement, target, targetPosition) + SIEGE_CLEARANCE_MARGIN;
 
-            ShipClass targetClass = target.HealthModel.ShipClass;
-            if (weapon.HasEnoughRange(distance, 0f, targetClass)) return true;
-            if (!weapon.HasEnoughRange(distance, ContactDistance(movement, target), targetClass)) return false;
-
-            // Contact slack only counts once a mount really reaches the target's near edge; a large
-            // navigation radius must not park the ship out of weapon range.
-            Vector3 toShip = movement.CurrentPosition - targetPosition;
-            toShip.y = 0f;
-            float targetRadius = target.TryGetFacade(out INavigationFootprintFacade footprint)
-                ? footprint.NavigationRadius
-                : 0f;
-            Vector3 nearEdge = targetPosition + PlanarGeometry.NormalizeDirection(toShip, Vector3.forward) * targetRadius;
-            return weapon.CanEngageMainWeapon(targetClass, nearEdge);
+            return weapon.HasEnoughRange(distance, ContactDistance(movement, target), target.HealthModel.ShipClass);
         }
 
         /// <summary>An enemy the ship's loadout is built for; AI target searches take these before the others.</summary>

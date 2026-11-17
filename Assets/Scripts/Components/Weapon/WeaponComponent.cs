@@ -131,6 +131,9 @@ namespace EmpireAtWar.Components.Weapon
         public float GetArtilleryRange(ShipClass targetClass) =>
             _artillery == null ? 0f : _artillery.GetArtilleryRange(targetClass);
 
+        public bool HasMainBatteryCover(ShipClass targetClass) =>
+            _artillery != null && _artillery.HasMainBatteryCover(targetClass);
+
         public TargetPreference PreferredTarget { get; private set; }
 
         [Inject]
