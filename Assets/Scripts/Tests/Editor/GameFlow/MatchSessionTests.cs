@@ -44,7 +44,7 @@ namespace EmpireAtWar.Tests.Editor
         [Category("Networking")]
         public void OnlineLocalSlot_OutsideBattle_ReturnsFalseAndNoPlayer()
         {
-            IOnlineLocalSlot online = new OnlineMatchService(null, new OnlineRecoveryProgress());
+            IOnlineLocalSlot online = new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false));
 
             Assert.That(online.TryGetLocalSlot(out PlayerId player), Is.False);
             Assert.That(player, Is.EqualTo(PlayerId.None));

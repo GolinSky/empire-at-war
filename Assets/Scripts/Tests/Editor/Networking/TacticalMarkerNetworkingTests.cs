@@ -36,7 +36,7 @@ namespace EmpireAtWar.Tests.Editor
                 NetworkServer.connections.Clear();
                 foreach (RecordingConnection connection in new[] { ally, enemy, unloaded, unknown })
                     NetworkServer.connections.Add(connection.connectionId, connection);
-                OnlineMatchService online = new OnlineMatchService(null, new OnlineRecoveryProgress());
+                OnlineMatchService online = new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false));
                 HashSet<int> loaded = (HashSet<int>)typeof(OnlineMatchService)
                     .GetField("_loaded", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(online);
                 loaded.UnionWith(new[] { 71, 72, 74 });

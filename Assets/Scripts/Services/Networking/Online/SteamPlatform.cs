@@ -25,6 +25,7 @@ namespace EmpireAtWar.Services.Networking.Online
         /// <summary>Spacewar while developing; replace with the game's own App ID.</summary>
         private const string STEAM_APP_ID = "480";
 
+        private readonly bool _apiEnabled;
         private CallResult<LobbyCreated_t> _lobbyCreated;
         private CallResult<LobbyMatchList_t> _lobbyList;
         private readonly List<SteamLobbyListing> _listedLobbies = new List<SteamLobbyListing>();
@@ -81,10 +82,22 @@ namespace EmpireAtWar.Services.Networking.Online
         public IReadOnlyList<SteamLobbyListing> ListedLobbies => _listedLobbies;
         public bool IsListingLobbies { get; private set; }
 
+        /// <param name="apiEnabled">False never calls the Steam API: test containers must not start or stop the
+        /// real Steam client, which cannot be re-initialized reliably inside one Editor process.</param>
+        public SteamPlatform(bool apiEnabled)
+        {
+            _apiEnabled = apiEnabled;
+        }
+
         public bool TryInitialize()
         {
             if (IsInitialized)
                 return true;
+            if (!_apiEnabled)
+            {
+                Status = "Steam disabled for this container";
+                return false;
+            }
 
             // Steam reads the App ID from these variables when no steam_appid.txt sits beside the executable.
             Environment.SetEnvironmentVariable("SteamAppId", STEAM_APP_ID);
@@ -289,6 +302,12 @@ namespace EmpireAtWar.Services.Networking.Online
             Leave();
             foreach (CallResult<LobbyEnter_t> join in _lobbyJoins.Values) join.Dispose();
             _lobbyJoins.Clear();
+            _lobbyCreated.Dispose();
+            _lobbyList.Dispose();
+            _joinRequested.Dispose();
+            _lobbyInvite.Dispose();
+            _presenceJoinRequested.Dispose();
+            _avatarLoaded.Dispose();
             SteamAPI.Shutdown();
             IsInitialized = false;
         }

@@ -33,7 +33,7 @@ namespace EmpireAtWar.Services.Networking.Online
 
         private readonly IGameCommand _gameCommand;
         private readonly OnlineRecoveryProgress _recoveryProgress;
-        private readonly SteamPlatform _steam = new SteamPlatform();
+        private readonly SteamPlatform _steam;
         private readonly OnlineLobby _lobby = new OnlineLobby();
         private readonly HashSet<int> _loaded = new HashSet<int>();
         private readonly ReconnectReservations _reservations = new ReconnectReservations();
@@ -72,10 +72,11 @@ namespace EmpireAtWar.Services.Networking.Online
         public bool IsReconnecting => _recovering && Role == OnlineRole.Client && !HasBegun;
         public string RecoveryStatus { get; private set; } = string.Empty;
 
-        public OnlineMatchService(IGameCommand gameCommand, OnlineRecoveryProgress recoveryProgress)
+        public OnlineMatchService(IGameCommand gameCommand, OnlineRecoveryProgress recoveryProgress, SteamPlatform steam)
         {
             _gameCommand = gameCommand;
             _recoveryProgress = recoveryProgress;
+            _steam = steam;
             _recoveryStore = new ReconnectSessionStore(Application.persistentDataPath);
         }
 

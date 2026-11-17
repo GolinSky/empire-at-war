@@ -103,6 +103,10 @@ namespace EmpireAtWar.Services.VContainer
             builder.RegisterInstance(new BattleSaveValidator(Assets, mapGenerationSettings));
             builder.Register<GameController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<OnlineRecoveryProgress>(Lifetime.Singleton);
+            // Steam only while playing and outside test runs: tests build project containers and enter Play Mode
+            // repeatedly, and the Steam API cannot be started and stopped reliably inside one Editor process.
+            builder.RegisterInstance(new SteamPlatform(
+                apiEnabled: Application.isPlaying && !SteamTestIsolation.IsActive));
             builder.Register<OnlineMatchService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HostLeftBattleExit>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SceneLoader>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

@@ -28,7 +28,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(NetworkServer.active || NetworkClient.active, Is.False, "Requires no running network session.");
             _directory = Path.Combine(Path.GetTempPath(), "OnlineMatchRecoveryTests-" + Guid.NewGuid().ToString("N"));
             _store = new ReconnectSessionStore(_directory);
-            _online = new OnlineMatchService(null, new OnlineRecoveryProgress());
+            _online = new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false));
             Set("_recoveryStore", _store);
             _previousTransport = Transport.active;
             _prepared = true;

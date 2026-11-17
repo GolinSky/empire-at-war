@@ -10,9 +10,26 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class SteamPlatformLifecycleTests
     {
         [Test]
+        public void TestRun_KeepsSteamIsolationActive()
+        {
+            Assert.That(SteamTestIsolation.IsActive, Is.True,
+                "SteamTestIsolationGuard must keep the real Steam API off for the whole test run.");
+        }
+
+        [Test]
+        public void DisabledPlatform_NeverInitializesSteam()
+        {
+            var steam = new SteamPlatform(apiEnabled: false);
+
+            Assert.That(steam.TryInitialize(), Is.False);
+            Assert.That(steam.IsInitialized, Is.False);
+            steam.Shutdown();
+        }
+
+        [Test]
         public void Leave_BeforeLobbyCompletes_ClearsHostAndPendingJoin()
         {
-            var steam = new SteamPlatform();
+            var steam = new SteamPlatform(apiEnabled: false);
             Set(steam, "_isHost", true);
             Set(steam, "_requestedLobby", new CSteamID(10));
 
@@ -25,7 +42,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void CancelledLobbyCreationFailure_DoesNotReplaceCurrentStatus()
         {
-            var steam = new SteamPlatform();
+            var steam = new SteamPlatform(apiEnabled: false);
             Set(steam, "_isHost", true);
             int failures = 0;
             steam.Failed += _ => failures++;
@@ -41,7 +58,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void CancelledJoinCompletion_DoesNotPublishFailureOrConnect()
         {
-            var steam = new SteamPlatform();
+            var steam = new SteamPlatform(apiEnabled: false);
             CSteamID lobby = new CSteamID(10);
             AddRequest(steam, lobby);
             Set(steam, "_requestedLobby", lobby);
@@ -62,7 +79,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void SupersededJoinFailure_DoesNotInvalidateNewTarget()
         {
-            var steam = new SteamPlatform();
+            var steam = new SteamPlatform(apiEnabled: false);
             CSteamID oldLobby = new CSteamID(10);
             CSteamID newLobby = new CSteamID(20);
             AddRequest(steam, oldLobby);
@@ -80,7 +97,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void RejoinSamePendingLobby_ReusesOriginalOperation()
         {
-            var steam = new SteamPlatform();
+            var steam = new SteamPlatform(apiEnabled: false);
             CSteamID lobby = new CSteamID(10);
             AddRequest(steam, lobby);
             CallResult<LobbyEnter_t> original = Requests(steam)[lobby];
@@ -103,7 +120,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void StaleSuccessForAcceptedLobby_DoesNotLeaveOrConnectAgain()
         {
-            var steam = new SteamPlatform();
+            var steam = new SteamPlatform(apiEnabled: false);
             CSteamID lobby = new CSteamID(10);
             AddRequest(steam, lobby);
             Set(steam, "_lobby", lobby);
@@ -120,7 +137,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(true, OnlineError.ConnectionFailed)]
         public void CurrentJoinFailure_ClearsPendingAndReportsReason(bool ioFailure, OnlineError expected)
         {
-            var steam = new SteamPlatform();
+            var steam = new SteamPlatform(apiEnabled: false);
             CSteamID lobby = new CSteamID(10);
             AddRequest(steam, lobby);
             Set(steam, "_requestedLobby", lobby);

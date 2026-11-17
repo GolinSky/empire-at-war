@@ -37,7 +37,7 @@ namespace EmpireAtWar.Tests.Editor
             _connection = new NetworkConnectionToClient(71);
             NetworkServer.connections.Clear();
             NetworkServer.connections.Add(_connection.connectionId, _connection);
-            var online = new OnlineMatchService(null, new OnlineRecoveryProgress());
+            var online = new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false));
             typeof(OnlineMatchService).GetProperty("HasBegun").SetValue(online, true);
             ((HashSet<int>)typeof(OnlineMatchService).GetField("_loaded", BindingFlags.Instance | BindingFlags.NonPublic)
                 .GetValue(online)).Add(_connection.connectionId);

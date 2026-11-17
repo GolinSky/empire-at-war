@@ -76,6 +76,7 @@ using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.TacticalMarkers;
 using EmpireAtWar.Services.UnitOrders;
+using EmpireAtWar.Services.Networking.Online;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -230,6 +231,16 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(registry.Markers.Count, Is.EqualTo(1));
             registry.Dispose();
             Assert.Throws<InvalidOperationException>(() => { var handler = handlers.TacticalMarkers; });
+        }
+
+        [Test]
+        public void ProjectContainer_NeverStartsRealSteam()
+        {
+            BuildSaveProject();
+
+            SteamPlatform steam = _project.Container.Resolve<OnlineMatchService>().Steam;
+            Assert.That(steam.IsInitialized, Is.False, "Composition tests must not start the real Steam client.");
+            Assert.That(steam.Status, Does.Contain("disabled"));
         }
 
         [Test]

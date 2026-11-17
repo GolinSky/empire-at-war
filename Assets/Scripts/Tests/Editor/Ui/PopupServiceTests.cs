@@ -140,7 +140,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void SteamInviteOverPicker_EscapeRestoresSelectionAndDuplicateOpenReusesPicker()
         {
-            var steam = new SteamPopupService(_ui, _popups, _confirm, new OnlineMatchService(null, new OnlineRecoveryProgress()));
+            var steam = new SteamPopupService(_ui, _popups, _confirm, new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false)));
             PopupHandle picker = steam.OpenInvitePicker();
             Assert.That(steam.OpenInvitePicker(), Is.SameAs(picker));
             Assert.That(_root.GetComponentsInChildren<SteamInvitePopupUi>(true).Length, Is.EqualTo(1));
@@ -170,7 +170,7 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void RepeatedPickerOpenClose_BalancesAvatarSubscriptions()
         {
-            var online = new OnlineMatchService(null, new OnlineRecoveryProgress());
+            var online = new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false));
             var steam = new SteamPopupService(_ui, _popups, _confirm, online);
             FieldInfo avatarLoaded = typeof(SteamPlatform).GetField("AvatarLoaded",
                 BindingFlags.Instance | BindingFlags.NonPublic);
@@ -192,7 +192,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(LobbyMode.Survival)]
         public void LobbyLeave_ClosesCoveredPickerAndKeepsTopInvite(LobbyMode mode)
         {
-            var online = new OnlineMatchService(null, new OnlineRecoveryProgress());
+            var online = new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false));
             var steam = new SteamPopupService(_ui, _popups, _confirm, online);
             IOnlineLobbyScreen lobby = mode == LobbyMode.Skirmish
                 ? new OnlineSkirmishLobbyUiController(_ui, _router, online,

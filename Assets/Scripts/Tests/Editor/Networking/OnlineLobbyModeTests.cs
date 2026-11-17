@@ -142,7 +142,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             Assert.That(NetworkServer.active || NetworkClient.active, Is.False, "Requires no running network session.");
             Assert.That(NetworkServer.connections, Is.Empty);
-            var online = new OnlineMatchService(null, new OnlineRecoveryProgress());
+            var online = new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false));
             typeof(OnlineMatchService).GetProperty(nameof(OnlineMatchService.Role)).SetValue(online, OnlineRole.Host);
             typeof(OnlineMatchService).GetProperty(nameof(OnlineMatchService.Mode)).SetValue(online, LobbyMode.Skirmish);
             lobby = (OnlineLobby)typeof(OnlineMatchService)
@@ -192,7 +192,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(LobbyMode.Survival)]
         public void SwitchLobbyMode_IsRefusedWhenNotHosting(LobbyMode mode)
         {
-            var online = new OnlineMatchService(null, new OnlineRecoveryProgress());
+            var online = new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false));
 
             Assert.That(online.CanSwitchLobbyMode(mode), Is.False);
             Assert.Throws<System.InvalidOperationException>(() => online.SwitchLobbyMode(mode));
