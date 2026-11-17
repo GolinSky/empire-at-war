@@ -116,7 +116,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("PatrolFrigate", 8)]
         [TestCase("C9979", 6)]
         [TestCase("Dispatcher", 19)]
-        [TestCase("Bulwark", 13)]
+        [TestCase("Bulwark", 19)]
         [TestCase("Wavecrest", 15)]
         public void SavedSeparatistForwardMountsConvergeAheadOfHull(string ship, int expectedCount)
         {
