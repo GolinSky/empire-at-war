@@ -317,8 +317,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         private bool IsInProductionMenu(UnitRequest request, SelectionType selectionType) => request switch
         {
-            ResearchUnitRequest { Key: ResearchType.IncreasedProduction } =>
-                selectionType == SelectionType.MiningFacility,
             ResearchUnitRequest or DefendPlatformUnitRequest or MiningFacilityUnitRequest
                 or SecondStationUnitRequest => true,
             LevelUnitRequest => selectionType == SelectionType.Base && !_model.IsSecondStationSelected,
