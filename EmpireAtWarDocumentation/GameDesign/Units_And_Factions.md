@@ -5,8 +5,8 @@ system:
   - factions
   - hangars
 design_state: implemented
-verified: 2026-11-16
-verification: Counted faction roster entries and inspected the saved CR90, Vulture and Endurance assets, ShipClass, WeaponType and ShipAbilityId.
+verified: 2026-11-17
+verification: Checked faction roster entries, 7-tier warship class ladder, 27 class/tier reassignments, Nebulon-B 600 m resize, and saved CR90, Vulture and Endurance assets.
 ---
 # Units and Factions
 
@@ -35,7 +35,16 @@ verification: Counted faction roster entries and inspected the saved CR90, Vultu
 - CR90 purchase: `1,250` credits, `20 s`, level `1`, population `3`, maximum `10`. No hangar bays. Power to Engines uses `BoostEnginePower` (ID `4`).
 - Vulture: `Fighter` with `13` members, each `44` hull and `0` shields. Base combined hull `572`, cruise/combat speed `43.2/48` units/s, and `52` baked weapon mounts.
 - Endurance: three hangar bays with `8` reserve and `2` maximum active squadrons each.
-- Combat classes: Fighter, Bomber, Interceptor, Corvette, Frigate, Cruiser, Capital, HeavyCapital, Structure, HeroStrikecraft. They select matrix/bias behavior; a display-name phrase does not define a new class.
+- Combat classes (`ShipClass`): Fighter (`0`), Bomber (`1`), Interceptor (`7`), HeroStrikecraft (`9`), Corvette (`2`), Frigate (`3`), Cruiser (`8`), HeavyCruiser (`10`), Capital (`4`), BattleCruiser (`5`), Dreadnought (`11`), Structure (`6`). They select matrix/bias behavior; a display-name phrase does not define a new class.
+- Warship class ladder (2026-11-17): `Corvette → Frigate → Cruiser → HeavyCruiser → Capital → BattleCruiser → Dreadnought`. `NebulonB` resized from 300 m (`31.5` units) to 600 m (`63.0` units, `Cruiser`).
+- 2026-11-17 warship class and matching `ShieldRegenTier` reassignments (`Cruiser`/`Frigate`/`HeavyCruiser`/`Capital`/`BattleCruiser`/`Dreadnought`; unlisted ships retain prior class and `ShieldRegenTier`):
+  - `Frigate`: `Carrack` (from `Corvette`), `AcclamatorAssault` (from `Cruiser`).
+  - `Cruiser`: `Acclamator`, `Centax`, `NebulonB`, `Munificent`, `Captor` (all from `Frigate`).
+  - `HeavyCruiser`: `Gladiator`, `MC80Freedom`, `DHOmni` (from `Capital`); `Victory`, `VictoryI`, `VictoryII`, `HeavyDreadnought`, `MC75Profundity`, `BothanAssaultCruiser`, `Liberator`, `MC30c`, `CorellianBattlecruiser`, `Dispatcher`, `Recusant`, `Peleset` (from `Cruiser`).
+  - `Capital`: `Dauntless` (from `Cruiser`).
+  - `BattleCruiser` (serialized ID `5`, renamed from `HeavyCapital`): `MediatorBattlecruiser` (from `Capital`); `Allegiance`, `Titan`, `Procurator`, `Secutor`, `HomeOne`, `MC80Independence`, `RecusantDreadnought`, `Invincible`, `Lucrehulk`, `Malevolence` hold ID `5`.
+  - `Dreadnought` (serialized tier ID `5` replacing `Executor`): `Executor`, `Praetor`, `Mandator`.
+- Saved `ShipData` distribution (76 total; every asset matches its `ShieldRegenTier`): `Corvette` 9, `Frigate` 7, `Cruiser` 10, `HeavyCruiser` 15, `Capital` 21, `BattleCruiser` 11, `Dreadnought` 3.
 - Shared superweapon permissions currently match across all four factions: Ion Cannon, Hypervelocity Gun, Plasma Cannon. See [[GameDesign/Abilities_And_Superweapons]].
 
 ## Implementation

@@ -5,7 +5,7 @@ system:
   - weapons
   - health
 design_state: implemented
-verified: 2026-10-20
+verified: 2026-11-17
 verification: source-and-assets
 ---
 # Combat
@@ -51,10 +51,10 @@ verification: source-and-assets
 
 ### Capital siege and hull facing
 
-- HeavyCapital mounted weapons deal ×1.5 damage against the main station, second station and every defense platform. Ordinary Capital ships deal ×1.0. Mining facilities, other targets and direct-damage abilities retain their existing damage rules.
+- `Dreadnought` mounted weapons deal ×1.5 damage and `BattleCruiser` mounted weapons deal ×1.2 damage against the main station, second station and every defense platform (`SiegeDamage.GetMultiplier`). `Capital`, `HeavyCruiser` and smaller classes deal ×1.0. Mining facilities, other targets and direct-damage abilities retain their existing damage rules.
 - Apply the factor before the shield/hull calculation and the damage tick split. Caliber, research, mitigation, shield piercing and hardpoint overflow still apply.
 - Stationary ships favor the nearest sampled heading with the most usable main-battery DPS, using real mount and target hardpoint positions. When no main battery has a solution, they use eligible surviving secondaries. Navigation controls heading during travel.
-- Contact-limited HeavyCapitals approach eligible structures to navigation hull contact plus 1 unit. The station uses its live hull envelope and the hold gate adds a further 1-unit tolerance.
+- Contact-limited `BattleCruiser` and `Dreadnought` ships approach eligible structures to navigation hull contact plus 1 unit. The station uses its live hull envelope and the hold gate adds a further 1-unit tolerance.
 
 ### Target selection
 
@@ -109,7 +109,11 @@ verification: source-and-assets
 | InterceptorLaser matrix (`14`) | Fighter `1×`/`0.75`; Bomber `2.5×`/`0.9`; Interceptor `1.5×`/`0.8`; Hero `0.3×`/`0.4`; Corvette `0.1×`; ship shields `0.5 × 0.4` |
 | HeroLaser matrix (`15`) | Fighter/Bomber `2×`/`0.95`; Interceptor `2×`/`0.9`; Hero `1×`/`0.8`; Corvette `0.4×`; Frigate `0.25×`; Capital `0.1×`; ship shields `0.5 × 0.6` |
 | Ion damage matrix | Shields `3×`; ordinary ship/structure hull `0.1×`; strikecraft hull `0×`; non-piercing |
-| ProtonTorpedo matrix | Shield-piercing; Capital hull `1.25×`, HeavyCapital hull `1.5×` |
+| ProtonTorpedo matrix | Shield-piercing; `HeavyCruiser` `1.1875×`, `Capital` `1.25×`, `BattleCruiser` `1.5×`, `Dreadnought` `1.75×` |
+| Warship class ladder | `Corvette → Frigate → Cruiser → HeavyCruiser → Capital → BattleCruiser → Dreadnought`; `HeavyCruiser` matrix interpolates `Cruiser`–`Capital`, `BattleCruiser` keeps prior `HeavyCapital`, `Dreadnought` steps beyond (`Laser` `0.15×`, `Turbolaser` `0.7×`, `HeroLaser` `0.05×`) |
+| Weapon caliber biases | `Light` dmg `1/1/0.95/0.925/0.9/0.85/0.8` (acc `1`); `Medium` dmg `0.85/1/.../1` (acc `0.85/1/.../1`); `Heavy` dmg `0.6/0.95/1.1/1.175/1.25/1.35/1.45` (acc `0.55/0.85/0.95/0.975/1/1/1`) |
+| Hardpoint class minimums | `Corvette` `100`, `Frigate` `150`, `Cruiser` `200`, `HeavyCruiser` `225`, `Capital` `250`, `BattleCruiser` `300`, `Dreadnought` `350` |
+| Shield regen tiers (per tick) | `Shared`/`Wavecrest` (`Frigate` `30` on Wavecrest) `5/25/90/117/216/400/1111`; `Empire` `4.75/23.75/85.5/111/205/380/600`; `Rebellion` `5.5/27.5/99/129/238/440/1222` |
 
 - Matrix rows describe one stage of the calculation, not final damage after weapon caliber, research and abilities.
 - Example: CR90's saved loadout is eight `Light Laser Cannon` mounts. Its current base durability and purchase cost are in [[GameDesign/Units_And_Factions]].
@@ -123,7 +127,7 @@ verification: source-and-assets
 - `ShipData.Range` is radar; historical notes describing it as weapon range predate the per-weapon system.
 - Point-defense target restrictions and missile interception are separate mechanisms; inspect `StrikecraftOnly`, `Interceptable` and installed interceptor components.
 - General weapon profiles are derived; ability/superweapon settings also contain serialized profiles with their own values. Do not apply the family factory formula to every stored profile.
-- Verified from current source and saved rule assets on `2026-10-20`; runtime behavior and balance were not playtested in this documentation pass.
+- Verified from current source and saved rule assets on `2026-11-17`; runtime behavior and balance were not playtested in this documentation pass.
 
 ## Files
 

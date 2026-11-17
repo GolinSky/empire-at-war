@@ -48,8 +48,10 @@ created: 2026-10-29
 | Corvette | 100 |
 | Frigate | 150 |
 | Cruiser | 200 |
+| HeavyCruiser | 225 |
 | Capital | 250 |
-| HeavyCapital | 300 |
+| BattleCruiser | 300 |
+| Dreadnought | 350 |
 
 - Worked examples (`R = 1.15`):
   - CR90 hull `600`, 10 W + E + SG (ΣW 13): computed `53/80` → floor `100` each; Σ `1200` = `2.0×` (now `3.67×`).

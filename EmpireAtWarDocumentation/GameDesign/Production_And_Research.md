@@ -4,8 +4,8 @@ system:
   - production
   - research
 design_state: implemented
-verified: 2026-11-16
-verification: Inspected EnemyBuildQueue, PlayerFactionModel, FactionService, EnemyFactionController and the serialized station, population and faction research data.
+verified: 2026-11-17
+verification: Inspected EnemyBuildQueue, PlayerFactionModel, FactionService, EnemyFactionController and the serialized station, population and faction research data (updated 7-class ladder).
 ---
 # Production and Research
 
@@ -76,7 +76,7 @@ verification: Inspected EnemyBuildQueue, PlayerFactionModel, FactionService, Ene
 
 - Republic, Empire, Rebellion: Enhanced Shields. Separatist: Enhanced Engines instead.
 - The other five lines appear in all four faction assets.
-- Weapons/Shields/Engines tier I affects Corvette + Frigate; tier II adds Cruiser + Capital; tier III adds HeavyCapital.
+- Weapons/Shields/Engines tier I affects Corvette + Frigate; tier II adds Cruiser + HeavyCruiser + Capital; tier III adds BattleCruiser + Dreadnought.
 - Fighter, Bomber, and Interceptor are absent from those three lines' affected-class arrays.
 - Research entries have `MaxCount = 1` and `UnitCapacity = 0`.
 - Only the highest completed tier of each line contributes effects; tiers within one line do not stack.

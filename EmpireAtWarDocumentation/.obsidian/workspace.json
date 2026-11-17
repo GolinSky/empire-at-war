@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "GameDesign/Capture_And_Structures.md",
+                "file": "TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Capture_And_Structures"
+              "title": "Capital_Movement_And_Class_Rework_Fixes"
             }
           }
         ]
@@ -43,7 +43,7 @@
                 "sortOrder": "alphabetical",
                 "autoReveal": false,
                 "showSearch": true,
-                "searchQuery": "structure"
+                "searchQuery": "Capital Movement and Class Rework Fixes"
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -187,6 +187,21 @@
   },
   "active": "6840d7bc3222d620",
   "lastOpenFiles": [
+    "Done/Features/Interdictor_Gravity_Well_Anchor_And_Vfx_Plan.md",
+    "TODOs/User_Acceptance_Queue.md.tmp.31052.e80f7d11297d",
+    "TODOs/Features/Interdictor_Gravity_Well_Anchor_And_Vfx_Plan.md",
+    "Done/Features/Interdictor_Gravity_Well_Plan.md",
+    "GameDesign/Capture_And_Structures.md",
+    "TODOs/Features/Interdictor_Gravity_Well_Plan.md",
+    "TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes.md.tmp.36104.34d43ae8b9de",
+    "Done/Refactoring/ISDIII_Thranta_Removal.md",
+    "TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes.md.tmp.36104.2ea5a221fd6c",
+    "TODOs/Tooling/Unity_Pipeline_1_0_Update.md",
+    "TODOs/Refactoring/ISDIII_Thranta_Removal.md",
+    "TODOs/TODOs.md.tmp.10912.953868e3797b",
+    "TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes.md",
+    "TODOs/Refactoring/Ship_Class_Rework_Plan.md",
+    "Done/Refactoring/Ship_Class_Rework_Plan.md",
     "Done/Bugs/EditMode_Failures_2026-11-16_Plan.md",
     "TODOs/Bugs/EditMode_Failures_2026-11-16_Plan.md",
     "TODOs/Optimization/Shared_Team_AI_Plan.md",
@@ -202,28 +217,13 @@
     "TODOs/Optimization/Custom_Shader_Fixes_Plan - Research.md",
     "Done/Bugs/Fog_Hull_Visibility_Review_Fixes.md",
     "Done/Bugs/Multiselect_Attack_Overlap.md",
-    "TODOs/Bugs/Multiselect_Attack_Overlap.md",
-    "TODOs/Optimization/Custom_Shader_Fixes_Plan.md",
-    "TODOs/Bugs/Fog_Hull_Visibility_Review_Fixes.md",
-    "AssetPipeline/Imports/Hyena Bomber Import.md",
-    "Done/Features/Structure_Status_Icons_Plan - Research.md",
-    "Done/Features/Structure_Status_Icons_Plan.md",
-    "Done/Features/DarthVader_Squadron_Import.md",
-    "TODOs/Features/Structure_Status_Icons_Plan - Research.md",
-    "TODOs/Features/Structure_Status_Icons_Plan.md",
-    "TODOs/Features/DarthVader_Squadron_Import.md",
-    "Done/Bugs/Online_Skirmish_Join_Slot_Race.md",
     "TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan.md.tmp.24432.63e099c503dd",
     "TODOs/TODOs.md.tmp.37680.5fe2a9633524",
     "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md.tmp.37680.0b93a8afc968",
     "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md.tmp.37680.7b109c8b5e09",
     "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md.tmp.37680.00533bf80565",
     "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md.tmp.37680.69545f8653d2",
-    "sed59Mdr7",
     "Artifacts/Audits/Optimization_2026-11-06/Station_camera.png",
-    "Artifacts/Audits/Optimization_2026-11-06/Station_destruction.png",
-    "Artifacts/Audits/Optimization_2026-11-06",
-    "TODOs/sedHoE5uX",
-    "TODOs/sed2g2Anb"
+    "Artifacts/Audits/Optimization_2026-11-06/Station_destruction.png"
   ]
 }
