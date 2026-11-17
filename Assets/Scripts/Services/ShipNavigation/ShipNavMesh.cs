@@ -91,7 +91,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             _routeCorners.Clear();
             BeginSearch();
             float2 goal = new float2(destination.x, destination.z);
-            int triangle = FindReachableGoal(goal, out float2 exit);
+            int triangle = FindReachableGoal(goal, RoutingOriginRegion(), out float2 exit);
             if (triangle < 0) return false;
             if (!_search.TryFindPath(_mesh, _originTriangle, triangle, _entry, exit, _hazards.Cells,
                     _hazards.Costs, _hazards.HasExtraCost)) return false;
@@ -124,13 +124,13 @@ namespace EmpireAtWar.Services.ShipNavigation
         public bool IsKnownUnreachable(Vector3 position)
         {
             // The planner tries its direct course before forcing any triangulation.
-            return _hasSearched && FindReachableGoal(new float2(position.x, position.z), out _) < 0;
+            return _hasSearched && FindReachableGoal(new float2(position.x, position.z), RoutingOriginRegion(), out _) < 0;
         }
 
         public bool IsReachable(Vector3 position)
         {
             BeginSearch();
-            return FindReachableGoal(new float2(position.x, position.z), out _) >= 0;
+            return FindReachableGoal(new float2(position.x, position.z), SpawnOriginRegion(), out _) >= 0;
         }
 
         public void FillReachability(Vector3[] positions, bool[] reachable)
@@ -190,7 +190,7 @@ namespace EmpireAtWar.Services.ShipNavigation
             _discardReachability = false;
             _reachabilityHandle = new NavMeshReachabilityJob
             {
-                Layout = _mesh.Layout, OriginRegion = _originTriangle < 0 ? 0 : _mesh.Regions[_originTriangle],
+                Layout = _mesh.Layout, OriginRegion = SpawnOriginRegion(),
                 Clearance = _clearance, Goals = _reachabilityPoints, Reachable = _reachabilityResults,
                 Obstacles = _obstacles, DiskBuckets = _diskBuckets,
                 Buckets = _mesh.TriangleBuckets, Regions = _mesh.Regions,
@@ -200,13 +200,25 @@ namespace EmpireAtWar.Services.ShipNavigation
             JobHandle.ScheduleBatchedJobs();
         }
 
-        private int FindReachableGoal(float2 goal, out float2 exit)
+        // Zero is the blocked label, so it never matches a goal.
+        private int RoutingOriginRegion() => _originTriangle < 0 ? 0 : _mesh.Regions[_originTriangle];
+
+        // The station origin sits inside its own keep-out disk. When no legal escape leg exists
+        // (neighbouring disks overlap it), spawn checks use the nearest free region instead of
+        // rejecting every position; routing keeps the strict origin.
+        private int SpawnOriginRegion()
+        {
+            if (_originTriangle >= 0) return _mesh.Regions[_originTriangle];
+            int nearest = _mesh.FindNearest(_origin, 0, out _);
+            return nearest < 0 ? 0 : _mesh.Regions[nearest];
+        }
+
+        private int FindReachableGoal(float2 goal, int originRegion, out float2 exit)
         {
             exit = goal;
             // A goal inside an inflated disk always fails the exit leg check below; reject it
             // before the locator falls back to scanning every triangle.
-            if (_originTriangle < 0 || IsInsideObstacle(goal)) return -1;
-            int originRegion = _mesh.Regions[_originTriangle];
+            if (originRegion == 0 || IsInsideObstacle(goal)) return -1;
             int triangle = _mesh.FindNearest(goal, 0, out exit, originRegion);
             if (triangle < 0 || _mesh.Regions[triangle] != originRegion) return -1;
             return NavMeshEscapeJob.CanConnect(exit, goal, _obstacles, _clearance, false) ? triangle : -1;

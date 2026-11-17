@@ -55,7 +55,7 @@ public static class RegisterRecusantDreadnought
         SetGuid(wreck.FindProperty("prefab"), WRECK);
         Save(wreck);
         var data = CopyData("Assets/Settings/Data/Ship/Separatist/InvincibleShipData.asset", DATA);
-        Field(data, "ShipClass").intValue = (int)ShipClass.HeavyCapital;
+        Field(data, "ShipClass").intValue = (int)ShipClass.BattleCruiser;
         Field(data, "Hull").floatValue = 30000;
         Field(data, "Shields").floatValue = 35000;
         Field(data, "HullBottom").floatValue = bottom;

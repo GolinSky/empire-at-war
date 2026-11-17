@@ -22,6 +22,6 @@ public static class FinalizeTitan
         data.FindProperty("<ShipClass>k__BackingField").intValue=5;
         data.ApplyModifiedPropertiesWithoutUndo();EditorUtility.SetDirty(data.targetObject);
         AssetDatabase.SaveAssets();
-        return "Saved source material tints and HeavyCapital ship class.";
+        return "Saved source material tints and BattleCruiser ship class.";
     }
 }

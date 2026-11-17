@@ -74,6 +74,7 @@ namespace EmpireAtWar.Entities.Map
 
             await _mapLayoutView.BuildAsync(layout, cancellationToken);
             _mapModel.SetLayout(layout);
+            BattleMapTelemetry.Write(_battle, players, layout);
             Publish(new BattleMap(
                 layout: layout,
                 zoneViews: _mapLayoutView.ZoneViews,

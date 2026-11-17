@@ -24,7 +24,7 @@ public static class RegisterQuasarFire
         var strong=matchups.FindProperty("strongAgainst");strong.arraySize=1;
         Matchup(strong.GetArrayElementAtIndex(0),"Squadron support","Assets/Art/Textures/Ui/Icons/SquadronIcon/Rebellion/XWingIcon.png");
         var weak=matchups.FindProperty("weakAgainst");weak.arraySize=1;
-        Matchup(weak.GetArrayElementAtIndex(0),"Heavy capital ships","Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISDIIcon.png");Save(matchups);
+        Matchup(weak.GetArrayElementAtIndex(0),"Battlecruisers and dreadnoughts","Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISDIIcon.png");Save(matchups);
         var faction=Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset");
         var row=Upsert(faction.FindProperty("ships.keyValue"),SHIP_ID);var value=row.FindPropertyRelative("value");
         value.FindPropertyRelative("matchups").objectReferenceValue=matchups.targetObject;
