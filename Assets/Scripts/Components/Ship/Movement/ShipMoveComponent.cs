@@ -27,7 +27,7 @@ using NumericsVector3 = System.Numerics.Vector3;
 namespace EmpireAtWar.Components.Ship.Movement
 {
     public class ShipMoveComponent : MonoComponent<ShipMoveModel>, IShipMoveComponent,
-        IShipSpacingAgent, IShipPlanRequester, IShipRouteReplicaFacade, IInitializable, ITickable, ILateDisposable
+        IShipSpacingAgent, IShipPlanRequester, IShipMovementDiagnostics, IShipRouteReplicaFacade, IInitializable, ITickable, ILateDisposable
     {
         public const float MINIMUM_NAVIGATION_RADIUS = 1f;
         private const float HEIGHT_TOLERANCE = 0.5f;
@@ -95,6 +95,18 @@ namespace EmpireAtWar.Components.Ship.Movement
             !_isReleased && _isNavigationRegistered && !IgnoresMapObstacles &&
             !_modifiers.IsIonDisabled && NavigationSpeed > 0f && !IsMoving && !_motion.IsBraking;
         public Vector3 SpacingTargetPosition => _combatHoldTarget == null ? Vector3.zero : _combatHoldTransform.position;
+
+        public string MovementDiagnostics
+        {
+            get
+            {
+                Vector3 destination = Model.Destination.ToUnity();
+                return string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                    "{0};{1};{2};{3};{4};{5};{6:F1};{7:F1};{8:F1}", Model.Phase, _hasQueuedPlan ? 1 : 0,
+                    _isInPlanQueue ? 1 : 0, _motion.IsBraking ? 1 : 0, _isSettling ? 1 : 0,
+                    _failedDestination.HasValue ? 1 : 0, destination.x, destination.z, _motion.CurrentSpeed);
+            }
+        }
 
         public event Action<Vector3> DestinationChanged;
 

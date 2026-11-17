@@ -24,7 +24,7 @@ namespace EmpireAtWar.Services.Enemy
         private const string HEADER = "timeScaledSinceStartup,timeUnscaledSinceStartup,kind,player,entityId," +
             "order,state,targetId,destinationX,destinationZ,x,z,moving,contacts,preferredContactId," +
             "preferredDistance,preferredInRange,trackedContactId,radarRange,weaponRange,visionMultiplier," +
-            "ionDisabled,cloaked,facingDot,hull,shields,reason";
+            "ionDisabled,cloaked,facingDot,hull,shields,reason,movement";
         private static readonly Dictionary<UnitOrderModel, float> _nextSample = new Dictionary<UnitOrderModel, float>();
         private static readonly StringBuilder _lines = new StringBuilder();
         private static string _path;
@@ -112,7 +112,7 @@ namespace EmpireAtWar.Services.Enemy
                 movement.GetRange(preferred.GetFacade<IEntityTransformFacade>().Transform.position);
             _lines.AppendLine(string.Format(CultureInfo.InvariantCulture,
                 "{0:F2},{1:F2},{2},{3},{4},{5},{6},{7},{8:F1},{9:F1},{10:F1},{11:F1},{12},{13},{14}," +
-                "{15:F1},{16},{17},{18:F1},{19:F1},{20:F2},{21},{22},{23:F3},{24:F1},{25:F1},\"{26}\"",
+                "{15:F1},{16},{17},{18:F1},{19:F1},{20:F2},{21},{22},{23:F3},{24:F1},{25:F1},\"{26}\",{27}",
                 Time.time, Time.unscaledTime, kind, source.Owner, source.EntityId, orders.Current, state,
                 orders.Target == null ? 0L : orders.Target.Id, destination.x, destination.z, position.x, position.z,
                 movement.IsMoving ? 1 : 0, radar.Enemies.Count, preferred == null ? 0L : preferred.Id,
@@ -120,7 +120,8 @@ namespace EmpireAtWar.Services.Enemy
                 tracked == null ? 0L : tracked.Id, source.RadarRange, weapon.AttackDistance,
                 caster.Modifiers.VisionMultiplier, caster.Modifiers.IsIonDisabled ? 1 : 0,
                 caster.Modifiers.IsCloaked ? 1 : 0, facingDot, caster.Health.Hull, caster.Health.Shields,
-                reason.Replace("\"", "\"\"")));
+                reason.Replace("\"", "\"\""),
+                movement is IShipMovementDiagnostics diagnostics ? diagnostics.MovementDiagnostics : ""));
             if (kind == "release") _nextSample.Remove(orders);
             if (Time.unscaledTime >= _nextFlush) Flush();
 #endif
