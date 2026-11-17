@@ -34,6 +34,8 @@ namespace EmpireAtWar.Services.Saves
     {
         private const int LEGACY_CD273_HARDPOINT_COUNT = 10;
         private const int CD273_HARDPOINT_COUNT = 16;
+        private const int LEGACY_DH_OMNI_HARDPOINT_COUNT = 4;
+        private const int DH_OMNI_HARDPOINT_COUNT = 14;
         private const int LEGACY_INTERDICTOR_HARDPOINT_COUNT = 23;
         private const int INTERDICTOR_HARDPOINT_COUNT = 24;
 
@@ -266,6 +268,7 @@ namespace EmpireAtWar.Services.Saves
                 (int legacyCount, int currentCount) = shipType switch
                 {
                     ShipType.CD273 => (LEGACY_CD273_HARDPOINT_COUNT, CD273_HARDPOINT_COUNT),
+                    ShipType.DHOmni => (LEGACY_DH_OMNI_HARDPOINT_COUNT, DH_OMNI_HARDPOINT_COUNT),
                     ShipType.InterdictorStarDestroyer => (LEGACY_INTERDICTOR_HARDPOINT_COUNT, INTERDICTOR_HARDPOINT_COUNT),
                     _ => (0, 0)
                 };

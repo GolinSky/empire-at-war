@@ -333,22 +333,27 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(ship.Hangar.Launched.Single().Bay, Is.Zero);
         }
 
-        [Test]
-        public void Validator_MigratesCd273HardpointsOnceAndPreservesExistingDamage()
+        [TestCase(ShipType.CD273, FactionType.Rebellion, 10, 6)]
+        [TestCase(ShipType.DHOmni, FactionType.Separatist, 4, 10)]
+        public void Validator_MigratesAppendedHardpointsOnceAndPreservesExistingDamage(
+            ShipType shipType, FactionType faction, int legacyCount, int addedCount)
         {
             using var assets = new CachedAssetService(new AddressableHandleLoader());
             BattleDefinition defaults = SkirmishPreset.Default();
-            var rebel = new PlayerSlot(TestPlayers.Human, new TeamId(0), FactionType.Rebellion,
+            var human = new PlayerSlot(TestPlayers.Human, new TeamId(0), faction,
                 PlayerController.Human, EnemyAiDifficulty.Medium, 0);
-            BattleDefinition battle = SkirmishPreset.Create(new[] { rebel, defaults.Slots[1] }, defaults.Map.Planet,
+            BattleDefinition battle = SkirmishPreset.Create(new[] { human, defaults.Slots[1] }, defaults.Map.Planet,
                 defaults.Map.Size, defaults.VictoryCondition, defaults.StartingMoney, true, 0).Build();
-            ShipData shipData = assets.Load<ShipData>("CD273ShipData");
+            ShipData shipData = assets.Load<ShipData>(assets.Load<ShipsData>(nameof(ShipsData)).GetShipDataPath(shipType));
             ShipAbilityCatalog abilities = assets.Load<ShipAbilityCatalog>(nameof(ShipAbilityCatalog));
-            float[] originalHardPoints = { 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f };
-            UnitSave ship = UnitSave.Create(1, rebel.Id, UnitTypeId.Ship(ShipType.CD273), Vector3.zero,
+            float[] originalHardPoints = Enumerable.Range(1, legacyCount).Select(index => index / 10f).ToArray();
+            UnitSave ship = UnitSave.Create(1, human.Id, UnitTypeId.Ship(shipType), Vector3.zero,
                 Quaternion.identity, UnitHealthSave.ForShip(0.5f, 0.25f, originalHardPoints), null)
                 .WithAbilities(shipData.Abilities.Select(id =>
                     AbilitySlotSave.From(new ShipAbilitySlot(null, abilities.Get(id), id))).ToArray());
+            if (shipData.HangarBays.Count > 0)
+                ship.WithHangar(HangarSave.Create(shipData.HangarBays.Select(bay => bay.Reserve).ToArray(), 0f,
+                    Array.Empty<LaunchedSquadronSave>()));
             BattleSaveHeader header = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave,
                 DateTime.UtcNow, 0f, GameSpeed.Normal);
             BattleSave save = BattleSave.Create(header, BattleSetupSave.From(battle),
@@ -368,7 +373,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(ship.Health, Is.SameAs(migrated));
             Assert.That(migrated.Hull, Is.EqualTo(0.5f));
             Assert.That(migrated.Shields, Is.EqualTo(0.25f));
-            Assert.That(migrated.HardPoints, Is.EqualTo(originalHardPoints.Concat(Enumerable.Repeat(1f, 6))));
+            Assert.That(migrated.HardPoints, Is.EqualTo(originalHardPoints.Concat(Enumerable.Repeat(1f, addedCount))));
         }
 
         [TestCase(ShipType.MC50, FactionType.Rebellion, (ShipAbilityId)40, ShipAbilityId.BoostWeaponPower,
