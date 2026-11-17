@@ -84,3 +84,12 @@ tags:
 - Removed `WeaponsData` ISDIII Composite Beam rule; removed tests `ShipFactory_ISDIII_*`, `PlayableRostersAndAuthoredWaves_ExcludeISDIII`, `IsdiiiWreck_*`, ISDIII/Thranta cases in height-tier/asset-integrity/marker/taxonomy tests.
 - Verification: Unity recompile OK, Console 0 errors, no `ISDIII`/`Thranta` left in `Assets` except the kept texture, ISD II icon. Tests not run (local override).
 - Reusable guidance: none (one-off content removal).
+
+
+## Follow-up (2026-11-17): ISD icon names
+- Verified removal: no `ShipType` 6/206 ship entries remain; remaining `key: 6/206` are squadron/ability dictionaries. 107 files in `D:\EmpireAtWarUnusedContent`; `ISDII` icon and `ISDIII_Lightmesh_Windows_Albedo.png` (used by `VictoryII_Lightmesh_Windows_Material.mat`) kept on purpose.
+- Renamed ambiguous icons via `AssetDatabase.RenameAsset` (GUIDs kept): `ISDIIcon.png` → `ISD1Icon.png` (`b8f66d73…`), `ISDIIIcon.png` → `ISD2Icon.png` (`5c33cff1…`). Addressables addresses set to the new paths.
+- Path strings updated: `Editor/ShipIconGenerator.cs`, `Tests/Editor/Ships/ISDIIShipTests.cs` (`Ships`), `Tools/Blender/*` import/render/verify scripts. Evidence JSON left as history.
+- Same fix for Victory: `VictoryIIcon.png` → `Victory1Icon.png` (`3896a253…`, Victory I), `VictoryIIIcon.png` → `Victory2Icon.png` (`73509b3f…`, Victory II); `ShipIconGenerator.cs` + `Tools/Blender/VictoryI*`, `VictoryII*` scripts updated. `VictoryIcon.png` (original Victory) unchanged.
+- Rule: name icons for numbered ships with Arabic numerals (`ISD2Icon`, `Victory1Icon`) so the `Icon` suffix can't merge into a Roman numeral.
+- Verification: both sprites load by new path; recompile clean. Tests not run.

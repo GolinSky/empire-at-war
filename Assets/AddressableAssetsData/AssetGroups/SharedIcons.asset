@@ -141,7 +141,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3896a253ad3c5024b8b7260fb0c214a9
-    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/VictoryIIcon.png
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/Victory1Icon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -236,7 +236,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5c33cff1e56f4c246956a7183bb94b02
-    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIIcon.png
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISD2Icon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -321,7 +321,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 73509b3f4bebe5542ba69d62230fff68
-    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/VictoryIIIcon.png
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/Victory2Icon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -501,7 +501,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b8f66d736a9c0a841b8957320119ca55
-    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIcon.png
+    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISD1Icon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

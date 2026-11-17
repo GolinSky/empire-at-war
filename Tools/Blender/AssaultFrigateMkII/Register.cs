@@ -27,7 +27,7 @@ public static class RegisterAssaultFrigateMkII
         Matchup(strong.GetArrayElementAtIndex(0), "Corvettes", "Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/CorellianCorvetteIcon.png");
         Matchup(strong.GetArrayElementAtIndex(1), "Frigates", "Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/ArquitensIcon.png");
         var weak = matchups.FindProperty("weakAgainst"); weak.arraySize = 1;
-        Matchup(weak.GetArrayElementAtIndex(0), "Battlecruisers and dreadnoughts", "Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISDIIIcon.png"); Save(matchups);
+        Matchup(weak.GetArrayElementAtIndex(0), "Battlecruisers and dreadnoughts", "Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISD2Icon.png"); Save(matchups);
         var faction = Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset");
         var value = Upsert(faction.FindProperty("ships.keyValue"), SHIP_ID).FindPropertyRelative("value");
         value.FindPropertyRelative("matchups").objectReferenceValue = matchups.targetObject;

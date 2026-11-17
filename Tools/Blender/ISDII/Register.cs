@@ -35,7 +35,7 @@ public static class RegisterISDII
         definition.FindPropertyRelative("aiUse").intValue=1;
         definition.FindPropertyRelative("settings").managedReferenceValue=new PowerToMainBatteriesSettings();
         Save(catalog);
-        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISDIIIcon.png");
+        var icon=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISD2Icon.png");
         AssetDatabase.TryGetGUIDAndLocalFileIdentifier(icon,out string iconGuid,out long localId);
         string iconKey=iconGuid+":"+localId;
         var settings=AddressableAssetSettingsDefaultObject.Settings;

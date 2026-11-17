@@ -23,7 +23,7 @@ public static class RegisterMC50
         Matchup(strong.GetArrayElementAtIndex(0),"Light cruisers","Assets/Art/Textures/Ui/Icons/ShipIcon/Rebellion/CorellianCorvetteIcon.png");
         Matchup(strong.GetArrayElementAtIndex(1),"Frigates","Assets/Art/Textures/Ui/Icons/ShipIcon/Republic/ArquitensIcon.png");
         var weak=matchups.FindProperty("weakAgainst");weak.arraySize=1;
-        Matchup(weak.GetArrayElementAtIndex(0),"Battlecruisers and dreadnoughts","Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISDIIcon.png");Save(matchups);
+        Matchup(weak.GetArrayElementAtIndex(0),"Battlecruisers and dreadnoughts","Assets/Art/Textures/Ui/Icons/ShipIcon/Empire/ISD1Icon.png");Save(matchups);
         var faction=Load("Assets/Settings/Data/Factions/Rebellion/RebellionFaction.asset");
         var row=Upsert(faction.FindProperty("ships.keyValue"),SHIP_ID);var value=row.FindPropertyRelative("value");
         value.FindPropertyRelative("matchups").objectReferenceValue=matchups.targetObject;
