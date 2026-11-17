@@ -21,8 +21,6 @@ MonoBehaviour:
     key: 2ce1aa3deeeb0a541bb85a35a38c9390:21300000
   - sprite: {fileID: 21300000, guid: 003f227a5109a5745879774b3be70886, type: 3}
     key: 003f227a5109a5745879774b3be70886:21300000
-  - sprite: {fileID: 21300000, guid: 28476024afa7c5f47bd010e6e4460dc4, type: 3}
-    key: 28476024afa7c5f47bd010e6e4460dc4:21300000
   - sprite: {fileID: 21300000, guid: 60d91c69afc54ad4fa9b45f6990ff8af, type: 3}
     key: 60d91c69afc54ad4fa9b45f6990ff8af:21300000
   - sprite: {fileID: 21300000, guid: dcdfa3aa3e1fabb44b5e337f8aa8370f, type: 3}
@@ -131,8 +129,6 @@ MonoBehaviour:
     key: 73509b3f4bebe5542ba69d62230fff68:21300000
   - sprite: {fileID: 21300000, guid: e54026c071416a845b2d23e814c1e8d5, type: 3}
     key: e54026c071416a845b2d23e814c1e8d5:21300000
-  - sprite: {fileID: 21300000, guid: dcd7ea16edf5bfd4ca9c2f1c95c1fda4, type: 3}
-    key: dcd7ea16edf5bfd4ca9c2f1c95c1fda4:21300000
   - sprite: {fileID: 21300000, guid: 5c33cff1e56f4c246956a7183bb94b02, type: 3}
     key: 5c33cff1e56f4c246956a7183bb94b02:21300000
   - sprite: {fileID: 21300000, guid: 793233063a2c3d241ab5dbc0af1a35d4, type: 3}

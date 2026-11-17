@@ -17,7 +17,6 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(ShipType.CorellianCorvette)]
         [TestCase(ShipType.CD273)]
         [TestCase(ShipType.CR70)]
-        [TestCase(ShipType.Thranta)]
         [TestCase(ShipType.Carrack)]
         [TestCase(ShipType.StealthCorvette)]
         [TestCase(ShipType.PatrolFrigate)]

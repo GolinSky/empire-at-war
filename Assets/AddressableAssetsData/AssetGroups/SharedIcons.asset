@@ -95,11 +95,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 28476024afa7c5f47bd010e6e4460dc4
-    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ThrantaIcon.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 288617a7a5fb04cdbaa3bf9ce791ba44
     m_Address: Assets/Art/Textures/Ui/Icons/FacilityIcon/MiningAsteroidIcon.png
     m_ReadOnly: 0
@@ -597,11 +592,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: db3ba52ed373c8242844c936a9497696
     m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/MC50Icon.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: dcd7ea16edf5bfd4ca9c2f1c95c1fda4
-    m_Address: Assets/Art/Textures/Ui/Icons/ShipIcon/ISDIIIIcon.png
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

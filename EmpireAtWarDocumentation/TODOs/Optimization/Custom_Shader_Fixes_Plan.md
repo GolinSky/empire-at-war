@@ -45,7 +45,7 @@ tags:
 1. [x] Wreck team rim: user chose to keep it (2026-11-16); shader and material values unchanged.
 2. [x] Wreck stencil: user chose to hide zone markers behind wrecks. Forward pass now writes bit 4 with `WriteMask 4`; bit 8 remains untouched. In-game visual acceptance pending.
 3. [x] Fog grid: user chose the current fade-away appearance (2026-11-16); both shaders unchanged.
-4. [x] Two ISD III wreck materials reviewed. Disabled `_ALPHATEST_ON` only on `ISDIII_ISDII_diff_Material1_Wreck.mat`: its base texture alpha is uniformly 0, imported FromInput/DXT5, so cutoff 0.5 discards the entire surface. Retained `ISDIII_steelgirder_Material_Wreck.mat` clipping: its texture has mixed 0–255 alpha. Also cleared the stale keyword from the source hull material so wreck-material rebuilds cannot restore it. Both materials saved/read back through Unity.
+4. [x] Two ISD III wreck materials reviewed. Disabled `_ALPHATEST_ON` only on `ISDIII_ISDII_diff_Material1_Wreck.mat`: its base texture alpha is uniformly 0, imported FromInput/DXT5, so cutoff 0.5 discards the entire surface. Retained `ISDIII_steelgirder_Material_Wreck.mat` clipping: its texture has mixed 0–255 alpha. Also cleared the stale keyword from the source hull material so wreck-material rebuilds cannot restore it. Both materials saved/read back through Unity. (2026-11-17: ISD III content removed to `D:\EmpireAtWarUnusedContent`; these materials no longer exist in the project.)
 
 ### Phase 3 — Measured experiments (one variable each)
 

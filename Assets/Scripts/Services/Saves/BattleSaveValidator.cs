@@ -171,7 +171,7 @@ namespace EmpireAtWar.Services.Saves
             {
                 UnitTypeId type = pending.UnitType;
                 if (type.IsShip
-                    ? !Enum.IsDefined(typeof(ShipType), type.ShipType) || type.ShipType == ShipType.ISDIII
+                    ? !Enum.IsDefined(typeof(ShipType), type.ShipType)
                     : !Enum.IsDefined(typeof(SquadronType), type.SquadronType))
                     throw new InvalidDataException($"Saved pending wave unit {type} is not valid.");
             }
@@ -259,7 +259,7 @@ namespace EmpireAtWar.Services.Saves
             if (unit.UnitType.IsShip)
             {
                 ShipType shipType = unit.UnitType.ShipType;
-                if (!Enum.IsDefined(typeof(ShipType), shipType) || shipType == ShipType.ISDIII ||
+                if (!Enum.IsDefined(typeof(ShipType), shipType) ||
                     (rosters.TryGetValue(unit.Owner, out FactionRoster roster) && !UnitRequestSave.CanRestoreShip(roster, shipType)))
                     throw new InvalidDataException($"Ship {shipType} cannot be restored for {unit.Owner}.");
                 ShipData data = _assets.Load<ShipData>(shipsData.GetShipDataPath(shipType));

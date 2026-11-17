@@ -413,20 +413,6 @@ MonoBehaviour:
         m_SubObjectType: 
         m_SubObjectGUID: 
         m_EditorAssetChanged: 0
-    - key: ThrantaShipData
-      value:
-        m_AssetGUID: 5ce2c057b641be14fb1ec8cb5304b8ef
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: ThrantaShipView
-      value:
-        m_AssetGUID: d67ee971a66b0ae4b9242ecb0497df01
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
     - key: SuperWeaponData
       value:
         m_AssetGUID: 10f22eac8c754ca45a75fa878f460d6b
@@ -892,20 +878,6 @@ MonoBehaviour:
     - key: ArquitensImperialCruiserShipData
       value:
         m_AssetGUID: 0a5dd52da80dd4b409e816ecbec32d68
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: ISDIIIShipView
-      value:
-        m_AssetGUID: 7f428c58ff383cf47b93c8ab3f55b2f5
-        m_SubObjectName: 
-        m_SubObjectType: 
-        m_SubObjectGUID: 
-        m_EditorAssetChanged: 0
-    - key: ISDIIIShipData
-      value:
-        m_AssetGUID: a3858034bc188a740997a46830d4827e
         m_SubObjectName: 
         m_SubObjectType: 
         m_SubObjectGUID: 

@@ -666,6 +666,12 @@
 - [x] **Implement unit actions (ship orders)** → [[Done/Features/SHIP_ACTIONS_PLAN|Unit Actions (Ship Orders) implementation plan]]
 
 ### Refactoring
+- [x] **Remove ISD III and Thranta from the project; move content to `D:\EmpireAtWarUnusedContent`** → [[Done/Refactoring/ISDIII_Thranta_Removal|ISD III and Thranta Removal]]
+  - Completed 2026-11-17, `acceptance: pending-user`. Removed enum values, guards, data/Addressables entries, tests and 107 files (+`.meta`); kept one window texture used by VictoryII. Unity compiles, Console 0 errors; tests not run (local override). User gate → [[TODOs/User_Acceptance_Queue]].
+
+- [x] **Rework ship classes: add HeavyCruiser/Dreadnought, HeavyCapital → BattleCruiser, reassign ships, damage matrix, shield regen, Nebulon-B 600 m** → [[Done/Refactoring/Ship_Class_Rework_Plan|Ship Class Rework Plan]]
+  - Completed 2026-11-17, `acceptance: pending-user`. Added `HeavyCruiser` and `Dreadnought`, renamed `HeavyCapital` → `BattleCruiser` (preserving enum IDs + `[FormerlySerializedAs]`), updated siege multipliers (`1.5x`/`1.2x`), rule/matrix/regen/research assets, 27 `ShipData` reassignments, 600 m `NebulonB` resize + vision hull rebake, and 13 EditMode test files. `BalanceInventory.Build()` 0 errors / 157 units; 76/76 `ShipData` verified; Console 0 errors; Unity tests not run (local override). User gates → [[TODOs/User_Acceptance_Queue]].
+
 
 - [x] **Replace inline namespace-qualified type references with usings (429 lines / 143 files)** → [[Done/Refactoring/Namespace_Qualified_Type_Cleanup|Namespace-Qualified Type Cleanup]]
   - Completed 2026-11-12. Shortened 428 lines across 140 C# files, including test source. Four collision cases retained. All six batches compiled in Unity. Tests not run.

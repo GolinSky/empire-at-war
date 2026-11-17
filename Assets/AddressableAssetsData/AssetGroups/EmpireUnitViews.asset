@@ -190,11 +190,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7f428c58ff383cf47b93c8ab3f55b2f5
-    m_Address: ISDIIIShipView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 814cc8ad470584b428d077524557f0e9
     m_Address: ProcursatorWreckView
     m_ReadOnly: 0
@@ -257,11 +252,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: acbada99ccf162c4cb4f265697f1ba94
     m_Address: AllegianceWreckView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ada404c36f4a00645b4b938e1346fe99
-    m_Address: ISDIIIWreckView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -387,11 +377,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f519b0e4e4b4e864eb47d5a125297426
     m_Address: ISDIIReinforcementView
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: fafbf467e9fb7e24abf014a67b14fe2f
-    m_Address: ISDIIIReinforcementView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

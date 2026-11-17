@@ -326,8 +326,6 @@ namespace EmpireAtWar.Tests.Editor
             Dictionary<string, FactionType[]> unitFactions = UnitFactions();
             foreach ((string unit, IReadOnlyList<WeaponLoadoutEntry> loadout) in Loadouts())
             {
-                // Retired data remains available for authoring, but has no playable faction.
-                if (unit == nameof(ShipType.ISDIII)) continue;
                 foreach (WeaponLoadoutEntry entry in loadout)
                 {
                     WeaponDefinition definition = weapons.GetDefinition(entry.WeaponType);

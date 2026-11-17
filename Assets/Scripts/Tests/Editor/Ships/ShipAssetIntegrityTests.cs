@@ -40,7 +40,6 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("AcclamatorAssault")]
         [TestCase("VictoryI")]
         [TestCase("VictoryII")]
-        [TestCase("ISDIII")]
         public void RepairedShip_EveryHardPointIsTargetableAndHasHealth(string ship)
         {
             GameObject view = AssetDatabase.LoadAssetAtPath<GameObject>(
