@@ -41,7 +41,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d527ae09983319446aaedf47d57b6d60, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TeamMaskMap:
@@ -53,7 +53,7 @@ Material:
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _Metallic: 0.15
-    - _OcclusionStrength: 1
+    - _OcclusionStrength: 0.35
     - _Smoothness: 0.25
     - _TeamEmissionTint: 0.5
     - _TeamLiveryHue: 0
