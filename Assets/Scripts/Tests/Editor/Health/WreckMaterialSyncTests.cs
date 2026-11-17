@@ -31,7 +31,7 @@ namespace EmpireAtWar.Tests.Editor
         private static IEnumerable<string> WreckedViews() =>
             ShipWreckBuilder.FindWreckedViewPaths().Except(AUTHORED_WRECK_VIEWS);
 
-        [TestCase("Assets/Prefabs/Models/Ships/Empire/View/ISDIShipView.prefab", "Assets/Art/Models/EmpireShips/ISDI/ISDIWreck.fbx", 35)]
+        [TestCase("Assets/Prefabs/Models/Ships/Empire/View/ISDIShipView.prefab", "Assets/Art/Models/EmpireShips/ISDI/ISDIWreck.fbx", 27)]
         [TestCase("Assets/Prefabs/Models/Ships/Empire/View/ISDIIShipView.prefab", "Assets/Art/Models/EmpireShips/ISDIIReplacement/ISDIIDeath.fbx", 25)]
         [TestCase("Assets/Prefabs/Models/Ships/Republic/View/CentaxShipView.prefab", "Assets/Art/Models/RepublicShips/Centax/CentaxWreck.fbx", 3)]
         [TestCase("Assets/Prefabs/Models/Ships/Republic/View/ProcuratorShipView.prefab", "Assets/Art/Models/RepublicShips/Procurator/ProcuratorWreck.fbx", 5)]
