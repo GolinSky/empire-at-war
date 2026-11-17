@@ -50,11 +50,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BumpScale: 1
+    - _BumpScale: 1.35
     - _Cutoff: 0.5
     - _Metallic: 0.1
     - _OcclusionStrength: 1
-    - _Smoothness: 0.25
+    - _Smoothness: 0.22
     - _TeamEmissionTint: 0.5
     - _TeamLiveryHue: 0
     - _TeamLiveryHueRange: 0.07
