@@ -53,7 +53,7 @@ MonoBehaviour:
   <HeightTier>k__BackingField: 3
   <HullBottom>k__BackingField: -19.78412
   <HullTop>k__BackingField: 19.784124
-  <RotationSpeed>k__BackingField: 7.5
+  <RotationSpeed>k__BackingField: 15
   <TurnAcceleration>k__BackingField: 7.5
   <HyperSpaceDuration>k__BackingField: 0.6
   <BodyRotationMaxAngle>k__BackingField: 10
