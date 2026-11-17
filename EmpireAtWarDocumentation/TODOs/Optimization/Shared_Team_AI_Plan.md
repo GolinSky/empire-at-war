@@ -36,7 +36,7 @@ created: 2026-11-16
 ## Implementation
 
 ### Phase 0 — Baseline and scaling test
-- [ ] Build a repeatable skirmish at 1, 3 and 6 AI players (same map, seed, fleet caps). Record AI ms/frame (sum of AI markers), p95, max.
+- [x] Build a repeatable skirmish (`Tools/Performance/ProfileTeamAi.cs`, Full Large seed 1875278133, UltraHard AIs alternating enemy/ally; reports in `Logs/TeamAiProfile/`) at 1, 3 and 6 AI players (same map, seed, fleet caps). Record AI ms/frame (sum of AI markers), p95, max.
 - [x] Add sub-markers inside `Build` and `EvaluateAndExecute` (shared with [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan#Phase 1 — AI decision spikes (8.8–11.8 ms per call, ~6 per second across three AIs)]]).
 - Gate: the 1 → 3 → 6 curve defines the "before" slope. No slope → stop; fix the single-AI cost instead.
 
@@ -66,9 +66,9 @@ created: 2026-11-16
 - Tests: `EnemyAi` (`EnemyDecisionSchedulingTests`, `EnemyUnitCommanderTests`, `EnemyProductionDecisionModelTests`, `EnemyPatrolMemoryTests`, `EnemyRecoveryAnchorTests`, `ForceCompositionBuilderTests`) and `Core` (`RealEntityCompositionTests`), ordering and eventual completion only, no wall-clock assumptions. (Authored; not run locally per test-execution override.)
 
 ### Phase 4 — Team cooperation (behaviour change, needs user approval per item)
-- [ ] Team-level capture reservations: today `_reservedCaptureObjectives` lives in each `EnemyUnitCommander`, so two allied AIs can commit to the same objective.
-- [ ] Shared focus enemy and combined-force check for attacks: allies join one attack when their summed advantage passes, instead of each judging alone.
-- [ ] Shared station defense: nearest allied group answers, others keep their task.
+- [x] Team-level capture reservations (`TeamAiCooperation`, user-approved 2026-11-17): commanders publish reservations; ally claim blocks; double claim → lower player index keeps it.
+- [x] Shared focus enemy + combined-force attacks: team focus kept while it has a living station; main-force `fleetRaw` adds fresh (≤10 s), available allied main forces on the same focus.
+- [x] Shared station defense: `StationCritical` publishes a request; nearest available allied main force answers via synthetic Defend marker (approach-safety checked); others keep their task.
 - Rule: a human ally is never commanded; the planner only reads their units as allied strength and still answers their markers.
 - Avoid: merging allied fleets into one task group; ships keep their owner's orders, difficulty and retreat rules.
 - Tests: `EnemyAi`; in-game acceptance by user.
@@ -90,6 +90,17 @@ created: 2026-11-16
 - `Assets/Scripts/Services/Enemy/AiWorldSnapshot.cs`, `TeamHostileIntelService.cs`, `AiTeamMembership.cs`, `TeamAiPicture.cs`, `TeamAiPictureRegistry.cs`, `EnemyAiScheduler.cs`, `EnemyDecisionDiagnostics.cs`
 - `Assets/Scripts/Services/Enemy/EnemyUnitCommander.cs`, `EnemyStrategicContextBuilder.cs`, `EnemyShipTaskGroupPlanner.cs`, `EnemySquadronCommander.cs`, `EnemyProductionStrategy.cs`, `EnemyRecoveryAnchor.cs`, `EnemyPatrolService.cs`, `EnemyDefenseSnapshotBuilder.cs`, `TeamIntelRegistry.cs`, `ForceCompositionBuilder.cs`, `EnemyAiStagger.cs`
 - `Assets/Scripts/Services/TacticalMarkers/AllyAiMarkerSource.cs`, `AllyAiMarkerEmitter.cs`
+
+## Progress · 2026-11-17
+- Budget confirmed by user: 2 ms; slower decisions under load accepted. Phase 4 approved (all three items) and implemented.
+- Optimizations (same choices, fewer checks): `SelectCaptureObjective` ranks by score and safety-checks only until best + current; `EnemyPatrolMemory.Select` checks eligibility (path `IsReachable` + scans) in score order, stops after runner-up. New markers `EnemyAI.Ship.PatrolSample` / `PatrolSelect`.
+- Editor Play Mode, 60 s after 90 s warmup, `EnemyAI.Scheduler.Tick` ms/frame (before → after):
+  - 1 AI: mean 0.12 → 0.03, p99 6.36 → 1.48, max 13.8 → 7.2
+  - 3 AIs: mean 0.58 → 0.18, p95 3.68 → 1.18, p99 8.34 → 2.33
+  - 6 AIs: mean 2.19 → 0.53, p95 10.65 → 2.68, p99 11.99 → 3.45, max 21.8 → 8.2; starvation 0 in all runs
+- Before attribution (6 AIs): `PatrolSelect` p95 9.4 ms was the largest unit; `SelectCaptureObjective` p95 3.3 ms.
+- Tests: `EnemyAi` 492/492 after all changes. `Core` 154/154 before the selection/patrol changes; final `Core` rerun hung the Editor (CLI timeouts) and was stopped — result unknown.
+- Remaining: 6-AI p95 2.68 ms > 2 ms budget; single units still reach 5–8 ms (`Ship.Build`, `PatrolSelect`). Next shrink: split `BeginDecisionCycle` (station + patrol select) into its own unit. Phase 5 Development Player proof. In-game acceptance of Phase 4.
 
 ## Next Steps · 2026-11-16
 - State: Phases 0 (markers), 1, 2, 3 committed (`434b9d97a`). Full EditMode run: 63 failed of 3,992; 4 from this plan. PlayMode passed. No performance measurement yet.
