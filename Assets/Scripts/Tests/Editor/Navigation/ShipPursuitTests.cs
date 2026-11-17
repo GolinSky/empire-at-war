@@ -480,6 +480,32 @@ namespace EmpireAtWar.Tests.Movement
             Assert.That(_movement.Destination.x, Is.EqualTo(-60f).Within(0.001f));
         }
 
+        [Test]
+        public void Attack_ArtilleryWithMainBatteryCoverHoldsInsideLauncherBandInsteadOfBackingOff()
+        {
+            ArtilleryCapability artillery = new ArtilleryCapability(200f) { MainBatteriesCover = true };
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
+            _target.Transform.position = Vector3.right * 100f;
+            state.SetData(_target);
+
+            state.Tick(0.1f);
+
+            Assert.That(_movement.MoveCount, Is.EqualTo(0));
+        }
+
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public void IsInRange_ContactSlackRequiresAMountToReachTheTargetHull(bool canReachHull, bool expected)
+        {
+            _movement.NavigationRadius = 300f;
+            _target.NavigationRadius = 200f;
+            _target.Transform.position = Vector3.right * 500f;
+            _weapon.CanReachHull = canReachHull;
+
+            Assert.That(ShipEngagement.IsInRange(_movement, _weapon, _target, _target.Transform.position),
+                Is.EqualTo(expected));
+        }
+
         [TestCase(185f, 190f)]
         [TestCase(205f, 210f)]
         public void Attack_ArtilleryUsesContactFloorAndOrdinaryEngagementWhenLauncherCannotReach(
@@ -1081,6 +1107,8 @@ namespace EmpireAtWar.Tests.Movement
             public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass) =>
                 distance <= Mathf.Max(80f, contactDistance * 1.15f);
             public bool CanUseSiegeApproach(IEntity target) => UseSiegeApproach;
+            public bool CanReachHull { get; set; } = true;
+            public bool CanEngageMainWeapon(ShipClass targetClass, Vector3 position) => CanReachHull;
             public bool TryGetHardPointApproach(AttackData target, out Vector3 offset)
             {
                 HardPointApproachCalls++;
@@ -1106,6 +1134,8 @@ namespace EmpireAtWar.Tests.Movement
             public int ArtilleryRevision { get; private set; }
             public ArtilleryCapability(float range) => _range = range;
             public float GetArtilleryRange(ShipClass targetClass) => _range;
+            public bool MainBatteriesCover { get; set; }
+            public bool HasMainBatteryCover(ShipClass targetClass) => MainBatteriesCover;
 
             public void SetReach(float range)
             {

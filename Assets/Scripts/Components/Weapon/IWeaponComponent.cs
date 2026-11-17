@@ -30,6 +30,9 @@ namespace EmpireAtWar.Components.Weapon
 
         bool CanUseSiegeApproach(IEntity target);
 
+        /// <summary>True when a live ship-capable mount reaches <paramref name="position"/> in the plane.</summary>
+        bool CanEngageMainWeapon(ShipClass targetClass, Vector3 position);
+
         void ResetTarget();
     }
 }

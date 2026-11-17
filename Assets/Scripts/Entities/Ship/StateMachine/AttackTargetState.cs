@@ -60,6 +60,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private int _artilleryRevision = -1;
         private ShipClass _artilleryTargetClass;
         private float _artilleryReach;
+        private bool _artilleryHasMainCover;
         private bool _usesArtillery;
         private bool _isArtilleryRetreat;
         private Vector3 _artilleryPlanTargetPosition;
@@ -329,6 +330,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _artilleryTargetClass = targetClass;
                 _artilleryReach = _artilleryCapability.GetArtilleryRange(targetClass);
             }
+                _artilleryHasMainCover = _artilleryCapability.HasMainBatteryCover(targetClass);
 
             Vector3 targetPosition = TargetPosition;
             float contact = 0f;
@@ -347,7 +349,11 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             float distanceSquared = PlanarGeometry.DistanceSquared(_shipMoveComponent.CurrentPosition, targetPosition);
             float holdDistance = Mathf.Max(_artilleryReach * ARTILLERY_HOLD_FACTOR, Mathf.Min(_artilleryReach, contact + 1f));
-            float retreatDistance = Mathf.Max(_artilleryReach * ARTILLERY_RETREAT_FACTOR, contact);
+            // Backing off turns the stern to the target. Main batteries that already reach it only back off
+            // when the hulls touch.
+            float retreatDistance = _artilleryHasMainCover
+                ? contact + 1f
+                : Mathf.Max(_artilleryReach * ARTILLERY_RETREAT_FACTOR, contact);
             bool retreat = distanceSquared < retreatDistance * retreatDistance;
             bool hold = !retreat && distanceSquared <= holdDistance * holdDistance;
             bool moving = _shipMoveComponent.IsMoving;
