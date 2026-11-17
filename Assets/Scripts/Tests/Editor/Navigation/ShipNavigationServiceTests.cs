@@ -992,6 +992,7 @@ namespace EmpireAtWar.Tests.Movement
             {
                 CombatModifiers modifiers = new CombatModifiers();
                 ShipMoveComponent component = CreateReadyComponent(ship, out var navigation, modifiers: modifiers);
+                navigation.IsDeferred = false;
                 MethodInfo syncAnchor = typeof(ShipMoveComponent).GetMethod("SyncAnchor", PRIVATE_INSTANCE);
                 FieldInfo anchorBraking = typeof(ShipMoveComponent).GetField("_isAnchorBraking", PRIVATE_INSTANCE);
                 object motion = typeof(ShipMoveComponent).GetField("_motion", PRIVATE_INSTANCE).GetValue(component);
