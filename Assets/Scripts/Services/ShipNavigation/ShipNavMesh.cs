@@ -282,9 +282,17 @@ namespace EmpireAtWar.Services.ShipNavigation
                     throw;
                 }
             }
-            _originTriangle = _mesh.FindNearest(_origin, 0, out _entry);
-            if (_originTriangle >= 0 && !NavMeshEscapeJob.CanConnect(_origin, _entry, _obstacles, _clearance, true))
+            // An embedded origin has many near-equal exits; the plain nearest triangle can be a cut-off pocket.
+            if (IsInsideObstacle(_origin))
+            {
                 _originTriangle = _mesh.FindEscape(_origin, _obstacles, _clearance, out _entry);
+            }
+            else
+            {
+                _originTriangle = _mesh.FindNearest(_origin, 0, out _entry);
+                if (_originTriangle >= 0 && !NavMeshEscapeJob.CanConnect(_origin, _entry, _obstacles, _clearance, true))
+                    _originTriangle = _mesh.FindEscape(_origin, _obstacles, _clearance, out _entry);
+            }
             _hasSearched = true;
         }
 

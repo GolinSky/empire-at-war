@@ -16,12 +16,19 @@ namespace EmpireAtWar.Services.ShipNavigation
         [ReadOnly] public NativeArray<int> Regions;
         public NativeReference<NavMeshLocator.Result> Location;
         private double _best;
+        private int _bestRegionSize;
         private NavMeshLocator.Result _result;
 
         public void Execute()
         {
             _best = double.PositiveInfinity;
+            _bestRegionSize = 0;
             _result = new NavMeshLocator.Result { Triangle = -1, Point = Origin };
+            int maxRegion = 0;
+            for (int id = 0; id < Regions.Length; id++) maxRegion = math.max(maxRegion, Regions[id]);
+            // A local, not a field: the job safety system rejects unassigned container fields at schedule time.
+            var regionSizes = new NativeArray<int>(maxRegion + 1, Allocator.Temp);
+            for (int id = 0; id < Regions.Length; id++) regionSizes[Regions[id]]++;
             var tangents = new NativeList<double2>(Allocator.Temp);
             for (int i = 0; i < Obstacles.Length; i++)
             {
@@ -41,11 +48,11 @@ namespace EmpireAtWar.Services.ShipNavigation
                 float2 c = Positions[Triangles[first + 2]];
                 var triangle = new NavMeshTriangle(a, b, c);
                 double2 closest = triangle.ClosestPoint(Origin);
-                if (math.distancesq((double2)Origin, closest) >= _best) continue;
-                Consider(id, triangle.RoundInside(closest));
-                Consider(id, a);
-                Consider(id, b);
-                Consider(id, c);
+                if (math.distance((double2)Origin, closest) > _best + Clearance) continue;
+                Consider(id, triangle.RoundInside(closest), regionSizes);
+                Consider(id, a, regionSizes);
+                Consider(id, b, regionSizes);
+                Consider(id, c, regionSizes);
 
                 // An embedded disk permits the outward half-plane from the origin.
                 // With overlapping disks the only legal directions can lie on its boundary.
@@ -53,15 +60,17 @@ namespace EmpireAtWar.Services.ShipNavigation
                 {
                     double2 direction = tangents[i];
                     if (!triangle.ClipLine(Origin, direction, out double enter, out double exit)) continue;
-                    ConsiderIntersection(id, triangle, direction, enter, exit);
-                    ConsiderIntersection(id, triangle, direction, exit, enter);
+                    ConsiderIntersection(id, triangle, direction, enter, exit, regionSizes);
+                    ConsiderIntersection(id, triangle, direction, exit, enter, regionSizes);
                 }
             }
             tangents.Dispose();
+            regionSizes.Dispose();
             Location.Value = _result;
         }
 
-        private void ConsiderIntersection(int id, NavMeshTriangle triangle, double2 direction, double edge, double otherEdge)
+        private void ConsiderIntersection(int id, NavMeshTriangle triangle, double2 direction, double edge, double otherEdge,
+            NativeArray<int> regionSizes)
         {
             float2 candidate = (float2)((double2)Origin + direction * edge);
             if (!triangle.Contains(candidate))
@@ -76,14 +85,22 @@ namespace EmpireAtWar.Services.ShipNavigation
                     if (!triangle.Contains(candidate)) return;
                 }
             }
-            Consider(id, candidate);
+            Consider(id, candidate, regionSizes);
         }
 
-        private void Consider(int id, float2 candidate)
+        // A disk centred on the origin (a station's own keep-out) makes every direction legal and many exits
+        // nearly equidistant. Within one clearance of the nearest exit, the larger region wins, so a sliver
+        // pocket the inflated disk cuts off at a map corner never becomes the origin's region.
+        private void Consider(int id, float2 candidate, NativeArray<int> regionSizes)
         {
-            double distance = math.distancesq((double2)Origin, (double2)candidate);
-            if (distance >= _best || !CanConnect(Origin, candidate, Obstacles, Clearance, true)) return;
+            double distance = math.distance((double2)Origin, (double2)candidate);
+            int regionSize = regionSizes[Regions[id]];
+            bool better = math.abs(distance - _best) <= Clearance
+                ? regionSize > _bestRegionSize || (regionSize == _bestRegionSize && distance < _best)
+                : distance < _best;
+            if (!better || !CanConnect(Origin, candidate, Obstacles, Clearance, true)) return;
             _best = distance;
+            _bestRegionSize = regionSize;
             _result = new NavMeshLocator.Result { Triangle = id, Point = candidate };
         }
 

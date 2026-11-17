@@ -228,6 +228,26 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void StationCentredOriginNearCornerResolvesToMainRegionNotCornerPocket()
+        {
+            // A station's keep-out disk is centred on the spawn origin. Inflated, it cuts off a corner pocket
+            // whose nearest exit ties with the open map's; reachability must still flood the open map.
+            var station = new RadarContact(new Vector3(-60f, HEIGHT, -60f), 39f, false);
+            var origin = new Vector3(-60f, HEIGHT, -60f);
+            var openMap = new[] { new Vector3(60f, HEIGHT, 60f), new Vector3(60f, HEIGHT, -60f), new Vector3(-60f, HEIGHT, 60f) };
+            using var cache = new ShipNavigationCache();
+            IShipPathGraph graph = cache.GetGraph(new[] { station }, Bounds(100f, 100f), origin, CLEARANCE, _noHazards);
+
+            var batch = new bool[openMap.Length];
+            graph.FillReachability(openMap, batch);
+            for (int i = 0; i < openMap.Length; i++)
+            {
+                Assert.That(graph.IsReachable(openMap[i]), Is.True, $"Scalar {openMap[i]}");
+                Assert.That(batch[i], Is.True, $"Batch {openMap[i]}");
+            }
+        }
+
+        [Test]
         public void BatchReachabilityMatchesScalarAtDiskEdgesAndMapBoundaries()
         {
             var obstacles = new[]
