@@ -10,8 +10,10 @@ namespace EmpireAtWar.Components.Ship.Health
         Corvette = 2,
         Frigate = 3,
         Cruiser = 8,
+        HeavyCruiser = 10,
         Capital = 4,
-        HeavyCapital = 5,
+        BattleCruiser = 5,
+        Dreadnought = 11,
         Structure = 6,
     }
 }

@@ -19,7 +19,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public WeaponProfile Projectile => projectile;
 
         public bool CanTarget(ShipClass shipClass) => shipClass is ShipClass.Corvette or ShipClass.Frigate or
-            ShipClass.Cruiser or ShipClass.Capital or ShipClass.HeavyCapital or ShipClass.Structure;
+            ShipClass.Cruiser or ShipClass.HeavyCruiser or ShipClass.Capital or ShipClass.BattleCruiser or
+            ShipClass.Dreadnought or ShipClass.Structure;
 
         public bool CanTarget(IShipAbilityFacade caster, IEntity target)
         {

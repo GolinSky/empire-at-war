@@ -24,9 +24,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
         private readonly float[] _hullDps = new float[ClassSlots];
         private readonly float[] _shieldDps = new float[ClassSlots];
         private readonly float[] _piercingDps = new float[ClassSlots];
-        private float _heavyCapitalStructureHullDps;
-        private float _heavyCapitalStructureShieldDps;
-        private float _heavyCapitalStructurePiercingDps;
+        private float _siegeBonusHullDps;
+        private float _siegeBonusShieldDps;
+        private float _siegeBonusPiercingDps;
 
         public int UnitCount { get; private set; }
         public bool IsEmpty => UnitCount == 0;
@@ -48,11 +48,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                 _piercingDps[index] += profile.PiercingDps(target) * offenseScale;
             }
 
-            if (profile.ShipClass == ShipClass.HeavyCapital)
+            float siegeBonus = SiegeDamage.GetMultiplier(profile.ShipClass, StructureKind.SpaceStation) - 1f;
+            if (siegeBonus > 0f)
             {
-                _heavyCapitalStructureHullDps += profile.HullDps(ShipClass.Structure) * offenseScale;
-                _heavyCapitalStructureShieldDps += profile.ShieldDps(ShipClass.Structure) * offenseScale;
-                _heavyCapitalStructurePiercingDps += profile.PiercingDps(ShipClass.Structure) * offenseScale;
+                _siegeBonusHullDps += siegeBonus * profile.HullDps(ShipClass.Structure) * offenseScale;
+                _siegeBonusShieldDps += siegeBonus * profile.ShieldDps(ShipClass.Structure) * offenseScale;
+                _siegeBonusPiercingDps += siegeBonus * profile.PiercingDps(ShipClass.Structure) * offenseScale;
             }
 
             UnitCount++;
@@ -83,9 +84,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                 _shieldDps[i] += other._shieldDps[i];
                 _piercingDps[i] += other._piercingDps[i];
             }
-            _heavyCapitalStructureHullDps += other._heavyCapitalStructureHullDps;
-            _heavyCapitalStructureShieldDps += other._heavyCapitalStructureShieldDps;
-            _heavyCapitalStructurePiercingDps += other._heavyCapitalStructurePiercingDps;
+            _siegeBonusHullDps += other._siegeBonusHullDps;
+            _siegeBonusShieldDps += other._siegeBonusShieldDps;
+            _siegeBonusPiercingDps += other._siegeBonusPiercingDps;
             UnitCount += other.UnitCount;
         }
 
@@ -96,9 +97,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             Array.Copy(other._hullDps, _hullDps, ClassSlots);
             Array.Copy(other._shieldDps, _shieldDps, ClassSlots);
             Array.Copy(other._piercingDps, _piercingDps, ClassSlots);
-            _heavyCapitalStructureHullDps = other._heavyCapitalStructureHullDps;
-            _heavyCapitalStructureShieldDps = other._heavyCapitalStructureShieldDps;
-            _heavyCapitalStructurePiercingDps = other._heavyCapitalStructurePiercingDps;
+            _siegeBonusHullDps = other._siegeBonusHullDps;
+            _siegeBonusShieldDps = other._siegeBonusShieldDps;
+            _siegeBonusPiercingDps = other._siegeBonusPiercingDps;
             UnitCount = other.UnitCount;
         }
 
@@ -109,9 +110,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             Array.Clear(_hullDps, 0, ClassSlots);
             Array.Clear(_shieldDps, 0, ClassSlots);
             Array.Clear(_piercingDps, 0, ClassSlots);
-            _heavyCapitalStructureHullDps = 0f;
-            _heavyCapitalStructureShieldDps = 0f;
-            _heavyCapitalStructurePiercingDps = 0f;
+            _siegeBonusHullDps = 0f;
+            _siegeBonusShieldDps = 0f;
+            _siegeBonusPiercingDps = 0f;
             UnitCount = 0;
         }
 
@@ -123,10 +124,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
 
         internal (float Hull, float Shields, float Piercing) DamageRates(ShipClass target, StructureKind? kind)
         {
-            float bonus = target == ShipClass.Structure ? SiegeDamage.GetMultiplier(ShipClass.HeavyCapital, kind) - 1f : 0f;
-            return (HullDps(target) + bonus * _heavyCapitalStructureHullDps,
-                ShieldDps(target) + bonus * _heavyCapitalStructureShieldDps,
-                PiercingDps(target) + bonus * _heavyCapitalStructurePiercingDps);
+            bool applySiege = target == ShipClass.Structure && SiegeDamage.IsEligibleTarget(kind);
+            return (HullDps(target) + (applySiege ? _siegeBonusHullDps : 0f),
+                ShieldDps(target) + (applySiege ? _siegeBonusShieldDps : 0f),
+                PiercingDps(target) + (applySiege ? _siegeBonusPiercingDps : 0f));
         }
     }
 }

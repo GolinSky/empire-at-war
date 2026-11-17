@@ -214,7 +214,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private void UpdateMoveState(float deltaTime = 0f)
         {
             // A large ship's circular footprint can extend far beyond its nearest hardpoints.
-            if (_attackData != null && _mainTarget.ShipClass == ShipClass.HeavyCapital &&
+            if (_attackData != null &&
+                (_mainTarget.ShipClass == ShipClass.BattleCruiser || _mainTarget.ShipClass == ShipClass.Dreadnought) &&
                 _mainTargetEntity.TryGetFacade(out INavigationFootprintFacade footprint) &&
                 footprint.NavigationRadius > _weaponComponent.AttackDistance &&
                 TryUpdateHardPointApproach(deltaTime)) return;
@@ -329,8 +330,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _artilleryRevision = revision;
                 _artilleryTargetClass = targetClass;
                 _artilleryReach = _artilleryCapability.GetArtilleryRange(targetClass);
-            }
                 _artilleryHasMainCover = _artilleryCapability.HasMainBatteryCover(targetClass);
+            }
 
             Vector3 targetPosition = TargetPosition;
             float contact = 0f;

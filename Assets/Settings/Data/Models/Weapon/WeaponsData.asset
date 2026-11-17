@@ -394,8 +394,10 @@ MonoBehaviour:
       corvette: 1
       frigate: 1
       cruiser: 0.95
+      heavyCruiser: 0.925
       capital: 0.9
-      heavyCapital: 0.85
+      battleCruiser: 0.85
+      dreadnought: 0.8
       structure: 0.9
       heroStrikecraft: 1
     accuracyBias:
@@ -405,8 +407,10 @@ MonoBehaviour:
       corvette: 1
       frigate: 1
       cruiser: 1
+      heavyCruiser: 1
       capital: 1
-      heavyCapital: 1
+      battleCruiser: 1
+      dreadnought: 1
       structure: 1
       heroStrikecraft: 1
   - caliber: 1
@@ -420,8 +424,10 @@ MonoBehaviour:
       corvette: 0.85
       frigate: 1
       cruiser: 1
+      heavyCruiser: 1
       capital: 1
-      heavyCapital: 1
+      battleCruiser: 1
+      dreadnought: 1
       structure: 1
       heroStrikecraft: 0.8
     accuracyBias:
@@ -431,8 +437,10 @@ MonoBehaviour:
       corvette: 0.85
       frigate: 1
       cruiser: 1
+      heavyCruiser: 1
       capital: 1
-      heavyCapital: 1
+      battleCruiser: 1
+      dreadnought: 1
       structure: 1
       heroStrikecraft: 0.8
   - caliber: 2
@@ -446,8 +454,10 @@ MonoBehaviour:
       corvette: 0.6
       frigate: 0.95
       cruiser: 1.1
+      heavyCruiser: 1.175
       capital: 1.25
-      heavyCapital: 1.35
+      battleCruiser: 1.35
+      dreadnought: 1.45
       structure: 1.25
       heroStrikecraft: 0.6
     accuracyBias:
@@ -457,8 +467,10 @@ MonoBehaviour:
       corvette: 0.55
       frigate: 0.85
       cruiser: 0.95
+      heavyCruiser: 0.975
       capital: 1
-      heavyCapital: 1
+      battleCruiser: 1
+      dreadnought: 1
       structure: 1
       heroStrikecraft: 0.6
   mounts:

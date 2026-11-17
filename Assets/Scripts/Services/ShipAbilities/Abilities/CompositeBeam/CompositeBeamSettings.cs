@@ -15,10 +15,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
         public float Damage => damage;
 
         public bool CanTarget(IShipAbilityFacade caster, IEntity target) =>
-            target.HealthModel.ShipClass == ShipClass.Frigate ||
-            target.HealthModel.ShipClass == ShipClass.Cruiser ||
-            target.HealthModel.ShipClass == ShipClass.Capital ||
-            target.HealthModel.ShipClass == ShipClass.HeavyCapital ||
+            target.HealthModel.ShipClass is ShipClass.Frigate or ShipClass.Cruiser or ShipClass.HeavyCruiser or
+                ShipClass.Capital or ShipClass.BattleCruiser or ShipClass.Dreadnought ||
             target.IsPlayerBase();
 
         public override IShipAbility CreateAbility(ShipAbilityDependencies dependencies) =>

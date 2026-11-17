@@ -49,8 +49,10 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(ShipClass.Bomber, false)]
         [TestCase(ShipClass.Interceptor, false)]
         [TestCase(ShipClass.Cruiser, false)]
+        [TestCase(ShipClass.HeavyCruiser, false)]
         [TestCase(ShipClass.Capital, false)]
-        [TestCase(ShipClass.HeavyCapital, false)]
+        [TestCase(ShipClass.BattleCruiser, false)]
+        [TestCase(ShipClass.Dreadnought, false)]
         [TestCase(ShipClass.Structure, false)]
         public void CanTarget_DefaultsToCorvettesAndFrigates(ShipClass shipClass, bool expected) =>
             Assert.That(new TractorBeamSettings().CanTarget(shipClass), Is.EqualTo(expected));

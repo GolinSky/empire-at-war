@@ -251,10 +251,11 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(result.Units[0].Shots, Is.EqualTo(1));
         }
 
-        [TestCase(ShipClass.HeavyCapital, StructureKind.SpaceStation, DamageType.Turbolaser, 60f, 120f)]
-        [TestCase(ShipClass.HeavyCapital, StructureKind.DefendPlatform, DamageType.ProtonTorpedo, 0f, 180f)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.SpaceStation, DamageType.Turbolaser, 60f, 120f)]
+        [TestCase(ShipClass.BattleCruiser, StructureKind.SpaceStation, DamageType.Turbolaser, 60f, 84f)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.DefendPlatform, DamageType.ProtonTorpedo, 0f, 180f)]
         [TestCase(ShipClass.Capital, StructureKind.SecondStation, DamageType.Turbolaser, 60f, 60f)]
-        [TestCase(ShipClass.HeavyCapital, StructureKind.MiningFacility, DamageType.Turbolaser, 60f, 60f)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.MiningFacility, DamageType.Turbolaser, 60f, 60f)]
         public void SiegeDamage_UsesExplicitStructureKindForShieldAndHullLoss(ShipClass attacker, StructureKind kind,
             DamageType damageType, float shieldLoss, float hullLoss)
         {

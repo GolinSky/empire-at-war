@@ -119,7 +119,7 @@ namespace EmpireAtWar.Services.TacticalMarkers
             {
                 if (_reportedCapitals.Contains(sighting.EntityId) || _intel.GetConfidence(sighting, Time.time) <= 0f) continue;
                 ShipClass shipClass = _profiles.Get(sighting.UnitTypeId).ShipClass;
-                if (shipClass != ShipClass.Capital && shipClass != ShipClass.HeavyCapital) continue;
+                if (shipClass is not (ShipClass.Capital or ShipClass.BattleCruiser or ShipClass.Dreadnought)) continue;
                 if (Emit(TacticalMarkerType.Look, ToVector(sighting.Position), sighting.EntityId))
                     _reportedCapitals.Add(sighting.EntityId);
                 return;

@@ -131,7 +131,7 @@ namespace EmpireAtWar.Services.BattleNotifications
             FactionData data = unitType.IsShip
                 ? _factions.GetShipFactionData(unitType.ShipType)
                 : _factions.GetSquadronFactionData(unitType.SquadronType);
-            if (data.IsHero || shipClass == ShipClass.Capital || shipClass == ShipClass.HeavyCapital)
+            if (data.IsHero || shipClass is ShipClass.Capital or ShipClass.BattleCruiser or ShipClass.Dreadnought)
                 _notifications.Post(BattleNotificationPriority.Urgent, $"{data.Name} destroyed", iconKey: data.IconKey);
             else if (unitType.IsShip)
                 _notifications.Post(BattleNotificationPriority.Tactical, $"{data.Name} lost", "loss.ship", "{0} ships lost",

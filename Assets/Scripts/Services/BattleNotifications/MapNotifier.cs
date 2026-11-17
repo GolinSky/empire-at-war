@@ -70,7 +70,7 @@ namespace EmpireAtWar.Services.BattleNotifications
             if (effect == null) return;
             FactionData data = _factions.GetShipFactionData(unit.UnitTypeId.ShipType);
             ShipClass shipClass = entity.HealthModel.ShipClass;
-            bool isHighValue = data.IsHero || shipClass == ShipClass.Capital || shipClass == ShipClass.HeavyCapital;
+            bool isHighValue = data.IsHero || shipClass is ShipClass.Capital or ShipClass.BattleCruiser or ShipClass.Dreadnought;
             if (!isHighValue && !_selection.PlayerSelectionContext.Contains(entity)) return;
             _notifications.Post(BattleNotificationPriority.Tactical, $"{data.Name} entered {hazard.DisplayName} — {effect}",
                 $"hazard.{hazard.DisplayName}", $"{{0}} ships entered {hazard.DisplayName} — {effect}", iconKey: data.IconKey);

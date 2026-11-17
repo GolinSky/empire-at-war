@@ -268,7 +268,7 @@ namespace EmpireAtWar.Tests.Movement
         [TestCase(true)]
         public void Attack_ClosesInsideOversizedHullUntilAWeaponReaches(bool formation)
         {
-            _target.Health.ShipClass = ShipClass.HeavyCapital;
+            _target.Health.ShipClass = ShipClass.BattleCruiser;
             _target.HasHealthFacade = true;
             _target.NavigationRadius = 550f;
             _weapon.HardPointApproach = Vector3.right * 200f;
@@ -349,7 +349,7 @@ namespace EmpireAtWar.Tests.Movement
         {
             AttackTargetState state = StartOversizedHullApproach();
             var next = new Target(_target.Transform) { Id = 2, HasHealthFacade = true, NavigationRadius = 550f };
-            next.Health.ShipClass = ShipClass.HeavyCapital;
+            next.Health.ShipClass = ShipClass.BattleCruiser;
             _weapon.HardPointApproach = Vector3.zero;
 
             state.SetData(next);
@@ -361,7 +361,7 @@ namespace EmpireAtWar.Tests.Movement
 
         private AttackTargetState StartOversizedHullApproach()
         {
-            _target.Health.ShipClass = ShipClass.HeavyCapital;
+            _target.Health.ShipClass = ShipClass.BattleCruiser;
             _target.HasHealthFacade = true;
             _target.NavigationRadius = 550f;
             _weapon.HardPointApproach = Vector3.right * 200f;
@@ -964,7 +964,7 @@ namespace EmpireAtWar.Tests.Movement
                 if (branch == "artillery") _target.Transform.position = Vector3.right * 180f;
                 if (branch == "hardpoint")
                 {
-                    _target.Health.ShipClass = ShipClass.HeavyCapital;
+                    _target.Health.ShipClass = ShipClass.BattleCruiser;
                     _target.NavigationRadius = 150f;
                     _target.HasHealthFacade = true;
                 }

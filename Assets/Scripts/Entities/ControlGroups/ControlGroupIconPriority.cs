@@ -22,8 +22,10 @@ namespace EmpireAtWar.Entities.ControlGroups
 
         private static int Rank(ShipClass shipClass) => shipClass switch
         {
-            ShipClass.HeavyCapital => 8,
-            ShipClass.Capital => 7,
+            ShipClass.Dreadnought => 10,
+            ShipClass.BattleCruiser => 9,
+            ShipClass.Capital => 8,
+            ShipClass.HeavyCruiser => 7,
             ShipClass.Cruiser => 6,
             ShipClass.Frigate => 5,
             ShipClass.Corvette => 4,

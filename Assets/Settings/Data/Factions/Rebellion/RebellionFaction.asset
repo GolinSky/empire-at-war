@@ -19,12 +19,12 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: f2965c2e6d7e7ea42abf7182f9b60c04, type: 2}
         displayName: Nebulon-B
-        description: Rebel general-purpose frigate effective against corvettes and
+        description: Rebel general-purpose cruiser effective against corvettes and
           light cruisers. Four turbolaser batteries, four laser cannon batteries
           and targetable engines. Boost Shield Power doubles shield regeneration,
           reduces speed by 45% and reduces weapon damage by 5% for 15 s. Recovers
           in 40 s.
-        role: General-purpose frigate / Anti-corvette
+        role: General-purpose cruiser / Anti-corvette
         iconKey: a5d07dd53c680c6408f3e98f4ce75765:21300000
         isHero: 0
         <Name>k__BackingField: Nebulon-B Frigate
@@ -60,13 +60,13 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 061d31c86b87ab34ca40a0d06290c8a5, type: 2}
         displayName: MC80
         description: Heavy Rebel capital ship with 14,662.5 hull, 13,200 shields
-          and 198/s shield regeneration. Eight heavy turbolaser, four heavy quad
+          and 238/s shield regeneration. Eight heavy turbolaser, four heavy quad
           turbolaser, four dual heavy turbolaser, two dual medium turbolaser and
           two heavy ion cannon batteries, four point-defense guns and targetable
           engines. No targetable shield generator. Boost Shield Power doubles shield
           regeneration, reduces speed by 45% and reduces weapon damage by 5% for
           15 s. Recovers in 40 s. Strong against frigates; vulnerable to bombers.
-        role: Heavy capital ship / Anti-frigate
+        role: Capital ship / Anti-frigate
         iconKey: b95f55f2e2f204f42a94f0c44c5baa85:21300000
         isHero: 0
         <Name>k__BackingField: Mon Calamari Star Cruiser / MC80
@@ -619,7 +619,7 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: 84c93b9211168f64bb4f04d91c77bf0a,
               type: 3}
           effects:
-          - shipClasses: 02000000030000000800000004000000
+          - shipClasses: 0200000003000000080000000a00000004000000
             stat: 1
             multiplier: 1.25
         - factionData:
@@ -639,7 +639,7 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: 84c93b9211168f64bb4f04d91c77bf0a,
               type: 3}
           effects:
-          - shipClasses: 0200000003000000080000000400000005000000
+          - shipClasses: 0200000003000000080000000a00000004000000050000000b000000
             stat: 1
             multiplier: 1.25
     - key: 2
@@ -682,7 +682,7 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: 46e861879378cc441bb7260e899b7559,
               type: 3}
           effects:
-          - shipClasses: 02000000030000000800000004000000
+          - shipClasses: 0200000003000000080000000a00000004000000
             stat: 4
             multiplier: 1.25
         - factionData:
@@ -702,7 +702,7 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: 46e861879378cc441bb7260e899b7559,
               type: 3}
           effects:
-          - shipClasses: 0200000003000000080000000400000005000000
+          - shipClasses: 0200000003000000080000000a00000004000000050000000b000000
             stat: 4
             multiplier: 1.25
     - key: 4

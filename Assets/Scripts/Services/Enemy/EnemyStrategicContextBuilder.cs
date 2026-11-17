@@ -398,7 +398,7 @@ namespace EmpireAtWar.Services.Enemy
                 IHealthModelObserver health = shipEntity.HealthModel;
                 float durability = health.Hull + health.Shields;
                 if (durability <= 0f) continue;
-                float capitalWeight = health.ShipClass == ShipClass.Capital || health.ShipClass == ShipClass.HeavyCapital ? 2f : 1f;
+                float capitalWeight = health.ShipClass is ShipClass.Capital or ShipClass.BattleCruiser or ShipClass.Dreadnought ? 2f : 1f;
                 _ionRiskWeight = Mathf.Max(_ionRiskWeight, 1f + capitalWeight * health.Shields / durability);
             }
             Vector3 origin = ToVector(CalculateFleetCenter(ownShips));

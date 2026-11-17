@@ -63,14 +63,14 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void ClassOrder_GroupsSquadronsAndUsesShipSizeSequence()
         {
-            string[] classes = { "Bomber", "Interceptor", "Corvette", "Frigate", "Cruiser", "Capital", "HeavyCapital", "Structure" };
+            string[] classes = { "Bomber", "Interceptor", "Corvette", "Frigate", "Cruiser", "HeavyCruiser", "Capital", "BattleCruiser", "Dreadnought", "Structure" };
             BalanceRegistration registry = new BalanceRegistration();
             for (int i = 0; i < classes.Length; i++)
                 registry.Units.Add(new BalanceUnit { Id = i.ToString(), Class = classes[i], Kind = i < 2 ? BalanceUnitKind.Squadron : BalanceUnitKind.Ship });
             BalanceWindowState state = new BalanceWindowState
                 { Pins = registry.Units.Select(unit => unit.Id).Reverse().ToList(), CompareSort = BalanceCompareSort.Class };
             BalanceCompareOrder.Sort(registry, state);
-            Assert.That(state.Pins, Is.EqualTo(new[] { "1", "0", "2", "3", "4", "5", "6", "7" }));
+            Assert.That(state.Pins, Is.EqualTo(new[] { "1", "0", "2", "3", "4", "5", "6", "7", "8", "9" }));
         }
 
         [TestCase("a", "c", true, "b,c,a,d")]

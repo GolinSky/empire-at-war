@@ -96,11 +96,11 @@ MonoBehaviour:
   <DestroyDelay>k__BackingField: 0.35
   <Wreck>k__BackingField: {fileID: 11400000, guid: be6ae42ea1ae9e946b7befc65cbe5c02,
     type: 2}
-  <ShipClass>k__BackingField: 8
+  <ShipClass>k__BackingField: 10
   <Hull>k__BackingField: 6500
   <Shields>k__BackingField: 7800
   shieldRegenTiers: {fileID: 11400000, guid: 44b427ab8d3b478397680d1181fc7fea, type: 2}
-  <ShieldRegenTier>k__BackingField: 2
+  <ShieldRegenTier>k__BackingField: 6
   <ShieldRegenerateDelay>k__BackingField: 1
   <Range>k__BackingField: 600
   <Delay>k__BackingField: 0.25

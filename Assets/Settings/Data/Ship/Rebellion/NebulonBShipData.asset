@@ -16,39 +16,39 @@ MonoBehaviour:
   usesArtilleryStandoff: 0
   <ShowBattleMarker>k__BackingField: 0
   visionHull:
-  - {x: -3.2020433, y: -15.263494}
-  - {x: -3.0279593, y: -15.749787}
-  - {x: 3.0009017, y: -15.749787}
-  - {x: 3.202052, y: -15.263494}
-  - {x: 3.202052, y: -11.066404}
-  - {x: 2.3195863, y: 11.168631}
-  - {x: 2.0948243, y: 12.877296}
-  - {x: 1.1408324, y: 15.245288}
-  - {x: 0.049495965, y: 15.749786}
-  - {x: -0.04951708, y: 15.749786}
-  - {x: -1.1408535, y: 15.245288}
-  - {x: -2.0970383, y: 12.877296}
-  - {x: -2.3196075, y: 11.168631}
-  - {x: -3.2017128, y: -13.998585}
+  - {x: -6.4040866, y: -30.526987}
+  - {x: -6.0559187, y: -31.499575}
+  - {x: 6.0018034, y: -31.499575}
+  - {x: 6.404104, y: -30.526987}
+  - {x: 6.404104, y: -22.132809}
+  - {x: 4.6391726, y: 22.337261}
+  - {x: 4.1896486, y: 25.754593}
+  - {x: 2.2816648, y: 30.490576}
+  - {x: 0.09899193, y: 31.499573}
+  - {x: -0.09903416, y: 31.499573}
+  - {x: -2.281707, y: 30.490576}
+  - {x: -4.1940765, y: 25.754593}
+  - {x: -4.639215, y: 22.337261}
+  - {x: -6.4034257, y: -27.99717}
   <Speed>k__BackingField: 50
   heightTiers: {fileID: 11400000, guid: f4dc0cc9c112ddb4d8209fb4b8d1d9de, type: 2}
   <HeightTier>k__BackingField: 7
-  <HullBottom>k__BackingField: -9.701007
-  <HullTop>k__BackingField: 9.851282
+  <HullBottom>k__BackingField: -19.402014
+  <HullTop>k__BackingField: 19.702564
   <RotationSpeed>k__BackingField: 30
   <TurnAcceleration>k__BackingField: 30
   <HyperSpaceDuration>k__BackingField: 0.6
   <BodyRotationMaxAngle>k__BackingField: 5
-  <NavigationRadius>k__BackingField: 16.199781
+  <NavigationRadius>k__BackingField: 32.399563
   <IgnoresMapObstacles>k__BackingField: 0
   <DestroyDelay>k__BackingField: 0.35
   <Wreck>k__BackingField: {fileID: 11400000, guid: 37155bd962c75e343a41b72aecbe5596,
     type: 2}
-  <ShipClass>k__BackingField: 3
+  <ShipClass>k__BackingField: 8
   <Hull>k__BackingField: 3900
   <Shields>k__BackingField: 3900
   shieldRegenTiers: {fileID: 11400000, guid: 44b427ab8d3b478397680d1181fc7fea, type: 2}
-  <ShieldRegenTier>k__BackingField: 1
+  <ShieldRegenTier>k__BackingField: 2
   <ShieldRegenerateDelay>k__BackingField: 1
   <Range>k__BackingField: 600
   <Delay>k__BackingField: 0.25

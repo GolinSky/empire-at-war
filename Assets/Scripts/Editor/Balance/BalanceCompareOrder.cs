@@ -58,16 +58,18 @@ namespace EmpireAtWar.Editor.Balance
         private static int ClassRank(BalanceUnit unit)
         {
             if (unit.Kind == BalanceUnitKind.Squadron) return 0;
-            if (!Enum.TryParse(unit.Class, out ShipClass shipClass)) return 6;
+            if (!Enum.TryParse(unit.Class, out ShipClass shipClass)) return 8;
             return shipClass switch
             {
-                ShipClass.Fighter or ShipClass.Bomber or ShipClass.Interceptor => 0,
+                ShipClass.Fighter or ShipClass.Bomber or ShipClass.Interceptor or ShipClass.HeroStrikecraft => 0,
                 ShipClass.Corvette => 1,
                 ShipClass.Frigate => 2,
                 ShipClass.Cruiser => 3,
-                ShipClass.Capital => 4,
-                ShipClass.HeavyCapital => 5,
-                _ => 6
+                ShipClass.HeavyCruiser => 4,
+                ShipClass.Capital => 5,
+                ShipClass.BattleCruiser => 6,
+                ShipClass.Dreadnought => 7,
+                _ => 8
             };
         }
     }

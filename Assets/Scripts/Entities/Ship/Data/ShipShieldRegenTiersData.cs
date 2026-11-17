@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace EmpireAtWar.Entities.Ship.Data
 {
@@ -13,10 +14,10 @@ namespace EmpireAtWar.Entities.Ship.Data
         [SerializeField, Min(0f)] private float corvette = 5f;
         [SerializeField, Min(0f)] private float frigate = 25f;
         [SerializeField, Min(0f)] private float cruiser = 90f;
-        [SerializeField, Min(0f)] private float capital = 180f;
-        [SerializeField, Min(0f)] private float heavyCapital = 400f;
-        [Tooltip("The Executor stays overpowered: its own tier keeps its former regeneration.")]
-        [SerializeField, Min(0f)] private float executor = 1111.1111f;
+        [SerializeField, Min(0f)] private float heavyCruiser = 117f;
+        [SerializeField, Min(0f)] private float capital = 216f;
+        [FormerlySerializedAs("heavyCapital"), SerializeField, Min(0f)] private float battleCruiser = 400f;
+        [FormerlySerializedAs("executor"), SerializeField, Min(0f)] private float dreadnought = 1111f;
 
         public float GetRegenerateValue(ShieldRegenTier tier)
         {
@@ -25,9 +26,10 @@ namespace EmpireAtWar.Entities.Ship.Data
                 case ShieldRegenTier.Corvette: return corvette;
                 case ShieldRegenTier.Frigate: return frigate;
                 case ShieldRegenTier.Cruiser: return cruiser;
+                case ShieldRegenTier.HeavyCruiser: return heavyCruiser;
                 case ShieldRegenTier.Capital: return capital;
-                case ShieldRegenTier.HeavyCapital: return heavyCapital;
-                case ShieldRegenTier.Executor: return executor;
+                case ShieldRegenTier.BattleCruiser: return battleCruiser;
+                case ShieldRegenTier.Dreadnought: return dreadnought;
                 default: throw new ArgumentOutOfRangeException(nameof(tier), tier, null);
             }
         }

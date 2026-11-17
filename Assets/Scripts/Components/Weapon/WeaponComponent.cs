@@ -445,7 +445,8 @@ namespace EmpireAtWar.Components.Weapon
         }
 
         public bool CanUseSiegeApproach(IEntity target) =>
-            _attackerClass == ShipClass.HeavyCapital && target.TryGetFacade(out IStructureKindFacade structure) &&
+            (_attackerClass == ShipClass.BattleCruiser || _attackerClass == ShipClass.Dreadnought) &&
+            target.TryGetFacade(out IStructureKindFacade structure) &&
             SiegeDamage.IsEligibleTarget(structure.Kind);
 
         public bool CanEngageMainWeapon(ShipClass targetClass, Vector3 position)
@@ -1096,7 +1097,8 @@ namespace EmpireAtWar.Components.Weapon
             IEntity target = attackData.TargetEntity;
             float damage = profile.Damage * profile.GetDamageBias(attackData.TargetClass) *
                            _modifiers.GetDamageMultiplier(target);
-            if (_attackerClass == ShipClass.HeavyCapital && target.TryGetFacade(out IStructureKindFacade structure))
+            if ((_attackerClass == ShipClass.BattleCruiser || _attackerClass == ShipClass.Dreadnought) &&
+                target.TryGetFacade(out IStructureKindFacade structure))
                 damage *= SiegeDamage.GetMultiplier(_attackerClass, structure.Kind);
             int ticks = Mathf.Max(1, Mathf.CeilToInt(damageDuration / DAMAGE_TICK_INTERVAL));
             float expectedLoss = EstimateLoss(attackData, hardPointModel, damage, profile.DamageType) / ticks;

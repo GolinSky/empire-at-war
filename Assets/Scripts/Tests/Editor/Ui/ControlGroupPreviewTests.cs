@@ -30,7 +30,7 @@ namespace EmpireAtWar.Tests.Editor
             var icons = AssetDatabase.LoadAssetAtPath<ShipUiData>("Assets/Settings/Data/Models/ShipUi/ShipUiData.asset");
             var selector = new ControlGroupIconSelector(catalog, icons);
             var hero = new PreviewEntity(UnitTypeId.Squadron(SquadronType.DarthVaderTIEAdvanced), ShipClass.HeroStrikecraft);
-            var destroyer = new PreviewEntity(UnitTypeId.Ship(ShipType.Executor), ShipClass.HeavyCapital);
+            var destroyer = new PreviewEntity(UnitTypeId.Ship(ShipType.Executor), ShipClass.Dreadnought);
             var fighter = new PreviewEntity(UnitTypeId.Squadron(SquadronType.TIEFighter), ShipClass.Fighter);
             var members = new List<IEntity> { fighter, fighter, fighter, destroyer, destroyer, hero };
             selector.Select(members, out Sprite first, out Sprite second);
@@ -46,15 +46,17 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void HeroSquadron_PrecedesHeavyCapital()
+        public void HeroSquadron_PrecedesDreadnought()
         {
             Assert.That(ControlGroupIconPriority.Compare(
                 UnitTypeId.Squadron(SquadronType.DarthVaderTIEAdvanced), ShipClass.HeroStrikecraft, true,
-                UnitTypeId.Ship(ShipType.Executor), ShipClass.HeavyCapital, false), Is.LessThan(0));
+                UnitTypeId.Ship(ShipType.Executor), ShipClass.Dreadnought, false), Is.LessThan(0));
         }
 
-        [TestCase(ShipClass.HeavyCapital, ShipClass.Capital)]
-        [TestCase(ShipClass.Capital, ShipClass.Cruiser)]
+        [TestCase(ShipClass.Dreadnought, ShipClass.BattleCruiser)]
+        [TestCase(ShipClass.BattleCruiser, ShipClass.Capital)]
+        [TestCase(ShipClass.Capital, ShipClass.HeavyCruiser)]
+        [TestCase(ShipClass.HeavyCruiser, ShipClass.Cruiser)]
         [TestCase(ShipClass.Cruiser, ShipClass.Frigate)]
         [TestCase(ShipClass.Frigate, ShipClass.Corvette)]
         [TestCase(ShipClass.Corvette, ShipClass.Bomber)]

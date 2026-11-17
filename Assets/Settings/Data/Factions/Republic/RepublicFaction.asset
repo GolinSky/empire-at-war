@@ -310,7 +310,7 @@ MonoBehaviour:
         displayName: Secutor
         description: Late Republic heavy warship armed with turbolasers, laser cannons,
           ion cannons and proton torpedoes. Its hangars carry Republic interceptors.
-        role: Heavy capital / Battle carrier
+        role: Battlecruiser / Battle carrier
         iconKey: 5cce3c98ec18d704b8fcd6fd28baef17:21300000
         isHero: 0
         <Name>k__BackingField: Secutor-class Star Destroyer
@@ -328,7 +328,7 @@ MonoBehaviour:
         description: A Republic battlecruiser built to hold the line. Heavy shielding
           protects dense turbolaser and ion batteries. Embarks ARC-170 and V-wing
           squadrons.
-        role: Heavy capital / Defensive battlecruiser
+        role: Dreadnought / Defensive battlecruiser
         iconKey: d984efa2c59c0e2488e1bb83e5bc3935:21300000
         isHero: 0
         <Name>k__BackingField: Praetor-class Battlecruiser
@@ -636,7 +636,7 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: 84c93b9211168f64bb4f04d91c77bf0a,
               type: 3}
           effects:
-          - shipClasses: 02000000030000000800000004000000
+          - shipClasses: 0200000003000000080000000a00000004000000
             stat: 1
             multiplier: 1.25
         - factionData:
@@ -656,7 +656,7 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: 84c93b9211168f64bb4f04d91c77bf0a,
               type: 3}
           effects:
-          - shipClasses: 0200000003000000080000000400000005000000
+          - shipClasses: 0200000003000000080000000a00000004000000050000000b000000
             stat: 1
             multiplier: 1.25
     - key: 2
@@ -699,7 +699,7 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: 46e861879378cc441bb7260e899b7559,
               type: 3}
           effects:
-          - shipClasses: 02000000030000000800000004000000
+          - shipClasses: 0200000003000000080000000a00000004000000
             stat: 4
             multiplier: 1.25
         - factionData:
@@ -719,7 +719,7 @@ MonoBehaviour:
             <Icon>k__BackingField: {fileID: 21300000, guid: 46e861879378cc441bb7260e899b7559,
               type: 3}
           effects:
-          - shipClasses: 0200000003000000080000000400000005000000
+          - shipClasses: 0200000003000000080000000a00000004000000050000000b000000
             stat: 4
             multiplier: 1.25
     - key: 4

@@ -71,10 +71,12 @@ namespace EmpireAtWar.Tests.Editor
                 Math.Min(1f, matrix.GetAccuracy(weapon.DamageType, target) * weapon.GetAccuracyBias(target));
         }
 
-        [TestCase(ShipClass.Capital, 1.25f)]
-        [TestCase(ShipClass.HeavyCapital, 1.35f)]
-        [TestCase(ShipClass.Corvette, 0.33f)]
-        public void CombatRating_HeavyWeaponsApplyCaliberDamageAndAccuracy(ShipClass target, float caliberFactor)
+        [TestCase(ShipClass.HeavyCruiser)]
+        [TestCase(ShipClass.Capital)]
+        [TestCase(ShipClass.BattleCruiser)]
+        [TestCase(ShipClass.Dreadnought)]
+        [TestCase(ShipClass.Corvette)]
+        public void CombatRating_HeavyWeaponsApplyCaliberDamageAndAccuracy(ShipClass target)
         {
             WeaponsData weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(WEAPONS_DATA);
             DamageMatrixData matrix = AssetDatabase.LoadAssetAtPath<DamageMatrixData>(DAMAGE_MATRIX);
@@ -83,7 +85,8 @@ namespace EmpireAtWar.Tests.Editor
                 new[] { new WeaponLoadoutEntry(WeaponType.HeavyTurboLaser, 1) },
                 weapons, matrix, Array.Empty<UnitCombatProfile>());
             float expectedHitDps = weapon.Damage * weapon.ShotsPerSalvo / weapon.Reload *
-                matrix.GetAccuracy(weapon.DamageType, target) * caliberFactor;
+                Math.Min(1f, matrix.GetAccuracy(weapon.DamageType, target) * weapon.GetAccuracyBias(target)) *
+                weapon.GetDamageBias(target);
 
             Assert.That(profile.HullDps(target), Is.EqualTo(expectedHitDps *
                 matrix.GetDamageMultiplier(weapon.DamageType, target)).Within(0.001f));

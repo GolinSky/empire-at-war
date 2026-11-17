@@ -121,7 +121,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(null, 1)]
         public void Select_PredictsSiegeDamageOnlyAgainstEligibleStructures(StructureKind? kind, int best)
         {
-            var heavy = ForceOfClass(ShipClass.HeavyCapital, 100f, (ShipClass.Structure, 8f));
+            var heavy = ForceOfClass(ShipClass.Dreadnought, 100f, (ShipClass.Structure, 8f));
             var capital = Force(100f, (ShipClass.Structure, 10f));
             var selected = new List<int>();
             var model = new EnemyTaskForceSelectionModel();
@@ -134,9 +134,9 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void TimeToDestroyTarget_BonusesOnlyHeavyCapitalDpsInMixedForce()
+        public void TimeToDestroyTarget_BonusesOnlySiegeShipDpsInMixedForce()
         {
-            var heavy = ForceOfClass(ShipClass.HeavyCapital, 100f, (ShipClass.Structure, 40f));
+            var heavy = ForceOfClass(ShipClass.Dreadnought, 100f, (ShipClass.Structure, 40f));
             var capital = Force(100f, (ShipClass.Structure, 40f));
             var combined = new ForceComposition();
             combined.CopyFrom(capital);

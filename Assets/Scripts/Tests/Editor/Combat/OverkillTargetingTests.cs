@@ -20,13 +20,16 @@ namespace EmpireAtWar.Tests.Editor
     [Category("Combat")]
     public sealed class OverkillTargetingTests
     {
-        [TestCase(ShipClass.HeavyCapital, StructureKind.SpaceStation, 1.5f)]
-        [TestCase(ShipClass.HeavyCapital, StructureKind.SecondStation, 1.5f)]
-        [TestCase(ShipClass.HeavyCapital, StructureKind.DefendPlatform, 1.5f)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.SpaceStation, 1.5f)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.SecondStation, 1.5f)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.DefendPlatform, 1.5f)]
+        [TestCase(ShipClass.BattleCruiser, StructureKind.SpaceStation, 1.2f)]
+        [TestCase(ShipClass.BattleCruiser, StructureKind.SecondStation, 1.2f)]
+        [TestCase(ShipClass.BattleCruiser, StructureKind.DefendPlatform, 1.2f)]
         [TestCase(ShipClass.Capital, StructureKind.SpaceStation, 1f)]
         [TestCase(ShipClass.Structure, StructureKind.DefendPlatform, 1f)]
-        [TestCase(ShipClass.HeavyCapital, StructureKind.MiningFacility, 1f)]
-        [TestCase(ShipClass.HeavyCapital, null, 1f)]
+        [TestCase(ShipClass.Dreadnought, StructureKind.MiningFacility, 1f)]
+        [TestCase(ShipClass.Dreadnought, null, 1f)]
         public void ApplyDamage_ScalesEachScheduledTickAndReservationOnce(ShipClass attacker, StructureKind? kind,
             float factor)
         {
@@ -51,7 +54,7 @@ namespace EmpireAtWar.Tests.Editor
                     .Invoke(weapon, new object[] { null, null, coordinator, modifiers, null, matrix, null, null, null,
                         null, PlayerId.None, null, null, null, owner.transform, new OfflineSession(PlayerId.None), null, attacker, 2L });
                 coordinator.Register(weapon);
-                var bias = new ShipClassValues(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1.25f, 1f);
+                var bias = new ShipClassValues(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1.25f, 1f);
                 var profile = new WeaponProfile(WeaponType.TurboLaser, "Test", WeaponFamily.Turbolaser,
                     DamageType.Turbolaser, 120f, 1, 0f, 1f, 100f, false, false, null, 100f, Color.white,
                     Vector3.one, false, true, bias, default, 0f);

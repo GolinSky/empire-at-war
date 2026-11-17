@@ -210,8 +210,10 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(revealCount, Is.Zero);
         }
 
+        [TestCase(ShipClass.HeavyCruiser, true)]
         [TestCase(ShipClass.Capital, true)]
-        [TestCase(ShipClass.HeavyCapital, true)]
+        [TestCase(ShipClass.BattleCruiser, true)]
+        [TestCase(ShipClass.Dreadnought, true)]
         [TestCase(ShipClass.Structure, true)]
         [TestCase(ShipClass.Fighter, false)]
         [TestCase(ShipClass.Bomber, false)]

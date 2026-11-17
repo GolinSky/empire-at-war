@@ -47,7 +47,7 @@ namespace EmpireAtWar.Ship
             builder.Register(resolver => new ShipVisionFootprint(View.transform,
                     resolver.Resolve<long>(), Data.VisionHull), Lifetime.Singleton).AsImplementedInterfaces();
             EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.Ship, SelectionType.Ship);
-            if (Data.ShipClass == ShipClass.Capital || Data.ShipClass == ShipClass.HeavyCapital)
+            if (Data.ShipClass is ShipClass.HeavyCruiser or ShipClass.Capital or ShipClass.BattleCruiser or ShipClass.Dreadnought)
             {
                 builder.Register(resolver => new ShipMarqueeHull(View.transform,
                     resolver.Resolve<ShipSpawnClearance>().GetLocalHullBounds(_shipType)), Lifetime.Singleton)

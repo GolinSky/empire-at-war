@@ -46,8 +46,10 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 ShipClass.Corvette => new Color32(141, 182, 153, 255),
                 ShipClass.Frigate => new Color32(134, 172, 213, 255),
                 ShipClass.Cruiser => new Color32(180, 160, 209, 255),
+                ShipClass.HeavyCruiser => new Color32(196, 146, 193, 255),
                 ShipClass.Capital => new Color32(214, 164, 121, 255),
-                ShipClass.HeavyCapital => new Color32(199, 133, 138, 255),
+                ShipClass.BattleCruiser => new Color32(199, 133, 138, 255),
+                ShipClass.Dreadnought => new Color32(212, 102, 108, 255),
                 _ => throw new ArgumentOutOfRangeException(nameof(shipClass))
             };
             cardBackground.OutlineWidth = CLASS_FRAME_WIDTH;

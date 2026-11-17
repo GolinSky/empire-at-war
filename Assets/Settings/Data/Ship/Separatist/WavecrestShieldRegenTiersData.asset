@@ -15,6 +15,7 @@ MonoBehaviour:
   corvette: 5
   frigate: 30
   cruiser: 90
-  capital: 180
-  heavyCapital: 400
-  executor: 1111.1111
+  heavyCruiser: 117
+  capital: 216
+  battleCruiser: 400
+  dreadnought: 1111

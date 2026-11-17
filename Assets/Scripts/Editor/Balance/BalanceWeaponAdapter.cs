@@ -14,7 +14,7 @@ namespace EmpireAtWar.Editor.Balance
         public const string DEFINITION_MARKER = "damageMultiplier";
 
         private static readonly string[] CLASSES =
-            { "fighter", "bomber", "interceptor", "corvette", "frigate", "cruiser", "capital", "heavyCapital", "structure" };
+            { "fighter", "bomber", "interceptor", "corvette", "frigate", "cruiser", "heavyCruiser", "capital", "battleCruiser", "dreadnought", "structure" };
 
         public static void Register(BalanceRegistration registry)
         {

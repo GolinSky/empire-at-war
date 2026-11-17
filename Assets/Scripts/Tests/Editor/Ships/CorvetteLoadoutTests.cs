@@ -19,7 +19,6 @@ namespace EmpireAtWar.Tests.Editor
         // Republic at War 1.5.5 gives these corvettes no point defense.
         private static readonly string[] NO_POINT_DEFENSE =
         {
-            "Assets/Settings/Data/Ship/Republic/CarrackShipData.asset",
             "Assets/Settings/Data/Ship/Republic/CR70ShipData.asset",
             STEALTH_DATA,
             "Assets/Settings/Data/Ship/Separatist/PatrolFrigateShipData.asset",
@@ -32,7 +31,7 @@ namespace EmpireAtWar.Tests.Editor
             WeaponsData weapons = BalanceRegistration.One<WeaponsData>();
             BalanceUnit[] corvettes = registry.Units.Where(unit =>
                 unit.Data is ShipData data && data.ShipClass == ShipClass.Corvette).ToArray();
-            Assert.That(corvettes.Length, Is.EqualTo(9));
+            Assert.That(corvettes.Length, Is.EqualTo(8));
 
             foreach (BalanceUnit unit in corvettes)
             {
@@ -93,7 +92,7 @@ namespace EmpireAtWar.Tests.Editor
             BalanceRegistration registry = BalanceInventory.BuildCombat();
             BalanceUnit[] corvettes = registry.Units.Where(unit =>
                 unit.Data is ShipData data && data.ShipClass == ShipClass.Corvette).ToArray();
-            Assert.That(corvettes.Length, Is.EqualTo(9));
+            Assert.That(corvettes.Length, Is.EqualTo(8));
 
             foreach (BalanceUnit unit in corvettes)
             {

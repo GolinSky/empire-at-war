@@ -68,7 +68,7 @@ namespace EmpireAtWar.Tests.CinematicCamera
             {
                 new(id: 1, position: new NumericsVector3(0f, 0f, 0f), shipClass: ShipClass.Frigate, owner: TestPlayers.Human, secondsSinceDamaged: 0.5f),
                 new(id: 2, position: new NumericsVector3(50f, 0f, 0f), shipClass: ShipClass.Frigate, owner: TestPlayers.Enemy, secondsSinceDamaged: float.PositiveInfinity),
-                new(id: 3, position: new NumericsVector3(5000f, 0f, 0f), shipClass: ShipClass.HeavyCapital, owner: TestPlayers.Human, secondsSinceDamaged: float.PositiveInfinity),
+                new(id: 3, position: new NumericsVector3(5000f, 0f, 0f), shipClass: ShipClass.BattleCruiser, owner: TestPlayers.Human, secondsSinceDamaged: float.PositiveInfinity),
             };
 
             bool found = scorer.TrySelect(candidates, -1, out CinematicSelection selection);

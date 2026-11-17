@@ -11,7 +11,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
     public sealed class UnitCombatProfile
     {
         private static readonly ShipClass[] _warshipClasses =
-            { ShipClass.Corvette, ShipClass.Frigate, ShipClass.Cruiser, ShipClass.Capital, ShipClass.HeavyCapital };
+            { ShipClass.Corvette, ShipClass.Frigate, ShipClass.Cruiser, ShipClass.HeavyCruiser, ShipClass.Capital, ShipClass.BattleCruiser, ShipClass.Dreadnought };
         private static readonly ShipClass[] _strikecraftClasses =
             { ShipClass.Fighter, ShipClass.Bomber, ShipClass.Interceptor, ShipClass.HeroStrikecraft };
 

@@ -1158,7 +1158,7 @@ namespace EmpireAtWar.Tests.Editor
                 // Combat value is sqrt(durability x average warship damage): price x price gives value = price.
                 float[] rates = new float[ForceComposition.ClassSlots];
                 foreach (ShipClass target in new[] { ShipClass.Corvette, ShipClass.Frigate, ShipClass.Cruiser,
-                             ShipClass.Capital, ShipClass.HeavyCapital })
+                             ShipClass.HeavyCruiser, ShipClass.Capital, ShipClass.BattleCruiser, ShipClass.Dreadnought })
                     rates[(int)target] = ship.Value.Price;
                 profiles.Add(UnitTypeId.Ship(ship.Key), new UnitCombatProfile(ShipClass.Frigate, ship.Value.Price, 0f,
                     rates, new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots],
