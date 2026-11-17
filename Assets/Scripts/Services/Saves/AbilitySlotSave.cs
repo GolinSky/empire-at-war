@@ -26,6 +26,9 @@ namespace EmpireAtWar.Services.Saves
         internal static AbilitySlotSave Ready(ShipAbilityId abilityId) =>
             new AbilitySlotSave { id = abilityId, state = ShipAbilityState.Ready };
 
+        internal AbilitySlotSave WithId(ShipAbilityId abilityId) =>
+            new AbilitySlotSave { id = abilityId, state = state, timeLeft = timeLeft };
+
         /// <summary>
         /// An active ability is saved as recovering for its remaining time plus the full recovery delay;
         /// its running effect is not saved.

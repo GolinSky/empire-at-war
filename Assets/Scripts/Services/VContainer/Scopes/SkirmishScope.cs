@@ -200,6 +200,7 @@ namespace EmpireAtWar.Services.VContainer
             AssetRegistrations.RegisterShared<ShipAbilityCatalog>(builder, Assets);
             builder.Register<HarmonicBombEffects>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HarmonicBombService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<GravityWellEffects>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipAbilityDependencies>(Lifetime.Singleton);
             builder.Register<ShipAbilityAutoUse>(Lifetime.Singleton);
             builder.Register<ShipAbilityFactory>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

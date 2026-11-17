@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Audio;
@@ -77,6 +78,21 @@ namespace EmpireAtWar.Tests.Editor
             for (int i = 0; i < abilities.arraySize; i++)
                 Assert.That(abilities.GetArrayElementAtIndex(i).FindPropertyRelative("start.priority").floatValue,
                     Is.GreaterThan(alarm), $"abilities[{i}].start");
+        }
+
+        [Test]
+        public void EveryConfiguredShipAbilityResolvesSfx()
+        {
+            ShipSfxData data = AssetDatabase.LoadAssetAtPath<ShipSfxData>(DATA_PATH);
+            Assert.That(data, Is.Not.Null);
+            string[] guids = AssetDatabase.FindAssets("t:ShipData", new[] { "Assets/Settings/Data/Ship" });
+            Assert.That(guids, Is.Not.Empty);
+            foreach (string guid in guids)
+            {
+                ShipData ship = AssetDatabase.LoadAssetAtPath<ShipData>(AssetDatabase.GUIDToAssetPath(guid));
+                foreach (ShipAbilityId ability in ship.Abilities)
+                    Assert.That(data.GetAbility(ability), Is.Not.Null, $"{ship.name}:{ability}");
+            }
         }
 
         private static void AssertUnit(ShipUnitAudioProfile profile, string unit)

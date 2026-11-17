@@ -21,6 +21,7 @@ namespace EmpireAtWar.Editor.Balance
             [typeof(LockSFoilsSettings)] = new[] { "statModifier" },
             [typeof(PowerToMainBatteriesSettings)] = new[] { "fireDelayMultiplier", "statModifier" },
             [typeof(CloakSettings)] = Array.Empty<string>(),
+            [typeof(GravityWellSettings)] = Array.Empty<string>(),
             [typeof(SensorJammingSettings)] = Array.Empty<string>(),
             [typeof(FighterReinforcementsSettings)] = Array.Empty<string>(),
             [typeof(RapidDeploymentSettings)] = Array.Empty<string>(),

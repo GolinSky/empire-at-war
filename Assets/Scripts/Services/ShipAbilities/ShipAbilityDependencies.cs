@@ -2,6 +2,8 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
+using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.ViewComponents.Weapon;
 
@@ -17,10 +19,13 @@ namespace EmpireAtWar.Services.ShipAbilities
         public HarmonicBombService HarmonicBombs { get; }
         public IVisionService Vision { get; }
         public IMatchSession Session { get; }
+        public IBattleAreaWriter BattleAreas { get; }
+        public GravityWellEffects GravityWells { get; }
 
         public ShipAbilityDependencies(IEntityLocator entities, IPlayerRelations relations,
             ImpactEffectPresenter impactPresenter, WeaponsData weaponsData, BoltFlightBatch boltFlights,
-            HarmonicBombService harmonicBombs, IVisionService vision, IMatchSession session)
+            HarmonicBombService harmonicBombs, IVisionService vision, IMatchSession session,
+            IBattleAreaWriter battleAreas, GravityWellEffects gravityWells)
         {
             Entities = entities;
             Relations = relations;
@@ -30,6 +35,8 @@ namespace EmpireAtWar.Services.ShipAbilities
             HarmonicBombs = harmonicBombs;
             Vision = vision;
             Session = session;
+            BattleAreas = battleAreas;
+            GravityWells = gravityWells;
         }
     }
 }

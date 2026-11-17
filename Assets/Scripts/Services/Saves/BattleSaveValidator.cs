@@ -326,7 +326,10 @@ namespace EmpireAtWar.Services.Saves
                 ShipType.BothanAssaultCruiser when slots.Length == 2 && slots[0] is { Id: ShipAbilityId.BothanCoordinatedAssault } &&
                     slots[1] is { Id: ShipAbilityId.TractorBeam } => new[] { slots[0] },
                 ShipType.InterdictorStarDestroyer when slots.Length == 1 && slots[0] is { Id: ShipAbilityId.BoostWeaponPower }
-                    => new[] { slots[0], AbilitySlotSave.Ready(ShipAbilityId.DauntlessSensorJamming) },
+                    => new[] { slots[0].WithId(ShipAbilityId.DauntlessSensorJamming), AbilitySlotSave.Ready(ShipAbilityId.Interdict) },
+                ShipType.InterdictorStarDestroyer when slots.Length == 2 && slots[0] is { Id: ShipAbilityId.BoostWeaponPower } &&
+                    slots[1] is { Id: ShipAbilityId.DauntlessSensorJamming }
+                    => new[] { slots[1], AbilitySlotSave.Ready(ShipAbilityId.Interdict) },
                 ShipType.Praetor when slots.Length == 1 && slots[0] is { Id: ShipAbilityId.FullSalvo }
                     => new[] { slots[0], AbilitySlotSave.Ready(ShipAbilityId.BoostShieldPower) },
                 ShipType.Praetor when slots.Length == 3 && slots[0] is { Id: ShipAbilityId.FullSalvo } &&

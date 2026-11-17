@@ -147,6 +147,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         public void MoveTo(Vector3 worldPosition)
         {
+            if (RejectWhileAnchored(UnitOrderType.Move)) return;
             FormationPoint destination = ToPoint(worldPosition);
             if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Move, destination)) return;
             Issue(UnitOrderType.Move, destination);
@@ -171,6 +172,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         public void AttackMoveTo(Vector3 destination, AttackMoveEngagement engagement)
         {
+            if (RejectWhileAnchored(UnitOrderType.AttackMove)) return;
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint point = ToPoint(destination);
             if (_pendingAbilityTarget == null && _orders.Engagement == engagement &&
@@ -180,6 +182,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         public void Guard(IEntity friendly, Vector3 offset)
         {
+            if (RejectWhileAnchored(UnitOrderType.Guard)) return;
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint formationOffset = ToPoint(offset);
             if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Guard, target: friendly, offset: formationOffset)) return;
@@ -188,7 +191,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         public void MoveAlong(IReadOnlyList<Vector3> waypoints)
         {
-            if (waypoints.Count == 0) return;
+            if (waypoints.Count == 0 || RejectWhileAnchored(UnitOrderType.WaypointMove)) return;
             List<FormationPoint> points = new List<FormationPoint>(waypoints.Count);
             foreach (Vector3 waypoint in waypoints) points.Add(ToPoint(waypoint));
             if (_pendingAbilityTarget == null && _orders.MatchesWaypoints(points)) return;
@@ -197,6 +200,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         public void Hunt()
         {
+            if (RejectWhileAnchored(UnitOrderType.Hunt)) return;
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             if (_pendingAbilityTarget == null && _orders.Current == UnitOrderType.Hunt) return;
             Issue(UnitOrderType.Hunt);
@@ -204,6 +208,8 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         public void Retreat(Vector3 destination)
         {
+            // Retreat must never soft-lock behind a gravity well: it ends the well first.
+            _abilities.TryCancel(_abilityCaster, ShipAbilityId.Interdict);
             FormationPoint point = ToPoint(destination);
             if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Retreat, point)) return;
             _weapon.ResetTarget();
@@ -225,6 +231,14 @@ namespace EmpireAtWar.Entities.Ship.Orders
         {
             _weapon.ResetTarget();
             Issue(UnitOrderType.None);
+        }
+
+        // Movement orders are refused, not queued: the current order stays and nothing replays when the well ends.
+        private bool RejectWhileAnchored(UnitOrderType type)
+        {
+            if (!_abilityCaster.Modifiers.IsAnchored) return false;
+            RecordOrder("rejected", $"{type} refused: anchored by gravity well.");
+            return true;
         }
 
         private void Issue(UnitOrderType type, FormationPoint destination = default,
@@ -335,8 +349,9 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private void RecordOrder(string kind, string reason)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            string state = _stateMachine.CurrentState != null ? _stateMachine.CurrentState.GetType().Name : "uninitialized";
             ShipOrderTelemetry.Record(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
-                kind, reason, _stateMachine.CurrentState.GetType().Name);
+                kind, reason, state);
 #endif
         }
 

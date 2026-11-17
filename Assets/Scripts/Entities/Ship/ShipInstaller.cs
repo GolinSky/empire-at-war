@@ -78,6 +78,8 @@ namespace EmpireAtWar.Ship
             if (LocalPlayer.IsLocal(Owner)) EntityFeatureBindings.RegisterComponent(builder, Bindings.AudioDialog);
             RegisterOrders(builder);
             builder.Register<ShipAbilityFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            if (Data.Abilities.Contains(ShipAbilityId.Interdict))
+                EntityFeatureBindings.RegisterComponent(builder, Bindings.GravityWellEmitter);
             builder.Register<ShipAutoPowerFacade>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             if (Data.Abilities.Contains(ShipAbilityId.CompositeBeam))
                 builder.Register<CompositeBeamFacade>(Lifetime.Singleton).AsImplementedInterfaces();

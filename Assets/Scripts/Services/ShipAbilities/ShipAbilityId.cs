@@ -32,5 +32,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         HarmonicBomb = 54,
         ReplenishWingmen = 55,
         LuckyShot = 56,
+        Interdict = 57,
     }
 }

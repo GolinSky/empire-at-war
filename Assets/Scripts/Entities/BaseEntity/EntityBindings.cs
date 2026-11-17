@@ -10,6 +10,7 @@ using EmpireAtWar.Components.Squadrons.Health;
 using EmpireAtWar.Components.Squadrons.Icon;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.ViewComponents.Squadrons;
+using EmpireAtWar.ViewComponents.Weapon;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.BaseEntity
@@ -29,6 +30,7 @@ namespace EmpireAtWar.Entities.BaseEntity
         [field: SerializeField] public SquadronFlightComponent SquadronFlight { get; private set; }
         [field: SerializeField] public SquadronIconComponent SquadronIcon { get; private set; }
         [field: SerializeField] public SFoilsView SFoils { get; private set; }
+        [field: SerializeField] public GravityWellEmitter GravityWellEmitter { get; private set; }
         [field: SerializeField] public MonoBehaviour[] Injectables { get; private set; }
     }
 }

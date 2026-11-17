@@ -451,3 +451,13 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Squad_Control_Groups_Plan]] — Mac hardware: left/right Ctrl and optional Command setting, US/non-US top-row layouts, OS shortcut interactions; no numpad activation.
 - [ ] [[Done/Features/Squad_Control_Groups_Plan]] — Visual acceptance: top-center squad preview and notification spacing, heroes/type icon priority, counts, and selected/empty/highlight contrast across battle backgrounds and supported resolutions.
 - [ ] [[Done/Features/Squad_Control_Groups_Plan]] — Run authored/affected BattleInput, Ui, GameFlow and Core coverage plus changed Abilities/Economy mocks only when explicitly authorized; tests were not run under local override.
+
+## Ship Class Rework
+
+- [ ] [[Done/Refactoring/Ship_Class_Rework_Plan]] — In-game skirmish, balance, UI class frames/sorting, siege multipliers (`BattleCruiser` 1.2× / `Dreadnought` 1.5×), and 600 m `NebulonB` visual/collision/shield/wreck verification.
+- [ ] [[Done/Refactoring/Ship_Class_Rework_Plan]] — Run affected EditMode test suites (`Abilities`, `Balance`, `BattleInput`, `Simulation`, `Combat`, `EnemyAi`, `Navigation`, `Ui`, `Ships`) when explicitly authorized; 13 test files were updated cleanly and not executed under local override.
+
+## Interdictor Gravity Well
+
+- [ ] [[Done/Features/Interdictor_Gravity_Well_Anchor_And_Vfx_Plan]] — In-game: Interdictor brakes and stays put while the well is active (move orders ignored, turns and fires, `Retreat` cancels the well); ring visible only while selected; 4 dome VFX (look from the battle camera, fog hiding on enemy ships). Also run `Abilities`, `Ships` and `Navigation` EditMode suites when explicitly authorized (not run under local override).
+- [ ] [[Done/Features/Interdictor_Gravity_Well_Plan]] — Run affected EditMode test suites (`Abilities`, `Balance`, `GameFlow`, `Squadrons`, `Economy`, `Navigation`) when explicitly authorized; tests were updated and compiled cleanly (0 errors) but not executed under local override.

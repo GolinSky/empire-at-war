@@ -5,6 +5,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
@@ -31,7 +32,8 @@ namespace EmpireAtWar.Tests.Editor
                 new EntityLocator(), TestPlayers.CreateDuel(), new ImpactEffectPresenter(null, null),
                 AssetDatabase.LoadAssetAtPath<WeaponsData>("Assets/Settings/Data/Models/Weapon/WeaponsData.asset"),
                 new BoltFlightBatch(), null, new VisionService(TestPlayers.CreateDuel(), fogEnabled: false),
-                new OfflineSession(TestPlayers.Human));
+                new OfflineSession(TestPlayers.Human), new BattleAreaService(TestPlayers.CreateDuel()),
+                new GravityWellEffects(TestPlayers.CreateDuel(), new OfflineSession(TestPlayers.Human)));
             IShipAbilityFactory factory = new ShipAbilityFactory(dependencies);
 
             foreach (Type settingsType in TypeCache.GetTypesDerivedFrom<ShipAbilitySettings>())

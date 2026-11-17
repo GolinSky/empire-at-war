@@ -9,15 +9,6 @@
 
 ### Features
 
-
-
-
-
-
-
-
-
-
 - [ ] **Forbidden UI SFX** → [[Done/Features/Ui_Sfx_System#Deferred follow-up|Deferred forbidden cue]].
 - [ ] **Dynamic in-game tutorial (in-match hints: camera, select, move, minimap, build, counters tooltip, build queue, abilities + auto-power, level up, research, map systems)** → [[TODOs/Features/Ingame_Tutorial_Plan|In-Game Tutorial Plan]]
   - UI spotlight migration 2026-11-11: shared UI frames replaced by a 65% dim overlay with target cutout; added per-element `IUiHighlight` API and own-graphic 1.2 s pulse (compile/bindings verified, visual check pending); optional pointer blocking defaults off. Loading-time minimap `HideTarget` exception fixed 2026-11-11 with marker lifecycle tracking; compiled, startup replay pending. User-authorized tests: Ui 274/274 and Core 150/150 passed; visual acceptance pending.
@@ -76,6 +67,8 @@
 
 
 
+- [ ] **Capital attack movement + class rework fixes** → [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes]]
+  - Status: in progress (2026-11-17). Done: map seed/layout log (`BattleMapTelemetry` → `_map.csv`). ISD I spawn fixed and user-confirmed 2026-11-17 (a station-centred origin tied between the main region and a corner pocket; the larger region now wins). Next: Phase 1/2 movement issues and the uncommitted class-rework edits. Then the Titan/Allegiance freeze, Executor holding out of reach, Tector stern-first retreat at stations, and class-rework review defects.
 - [ ] **Ship hardpoints, firing angles and balance** → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]
   - Status: in progress (2026-11-15). Recusant weapon profile swaps saved and verified with existing arcs. Recusant battle output, Peleset/Recalcitrant wrapped yaw, Dispatcher/Resolute/Arquitens arcs, Mandator economics and shared-prefab telemetry remain under review.
 
@@ -175,12 +168,6 @@
 
 ### Refactoring
 
-
-
-
-
-
-
 - [ ] **Refresh the RTS HUD and menus with the navy and gold palette** → [[TODOs/Refactoring/RTS_UI_Refresh_Plan|RTS UI Refresh Plan]] · [[TODOs/Refactoring/RTS_UI_Refresh_Plan - Research|Research and audit evidence]]
   - Dropdown correction (2026-11-13): 38 dropdowns share brighter slate fill, clearer borders/chevrons and popup states. Skirmish section numbers removed; Players/Battle Settings heights match at 712. Saved read-back and previews verified; tests not run. Broader phases remain active.
   - First phase implemented (2026-11-12): verified Penpot → shared common/primary/destructive menu prefabs → all-UI palette, Rajdhani/Inter Tight and modest sizing. Follow-up: 47 menu actions across 11 screens inherit shared styles; 156 prefabs pass missing-reference checks; Unity saves/import checks clean. Tests not run.
@@ -216,6 +203,9 @@
 - [ ] **Unify ALO imports with recipe-driven tools and concurrent-agent coordination** → [[TODOs/Tooling/Unified_ALO_Import_Pipeline|Unified ALO Import Pipeline]]; [[TODOs/Tooling/Unified_ALO_Import_Pipeline - Research|Tooling audit and reuse candidates]]
   - Status: in progress; job/lock/journal infrastructure and Rothana recipe implemented; `apply` disabled. On 2026-11-16, aligned Rothana and Endurance recipe group GUIDs and prefab paths with saved assets; Editor migration gates remain open.
   - Next: production conversion + Editor acceptance; Endurance/Rebel recipes; station/derivative adapters; concurrency recovery acceptance.
+
+- [ ] **Update Unity Pipeline package 0.6.0-exp.1 → 1.0.0** → [[TODOs/Tooling/Unity_Pipeline_1_0_Update|Unity Pipeline 1.0 Update]]
+  - Status: investigated 2026-11-17; safe with command-name sweep (AGENTS.md, AloImport worker, Tool READMEs). Not started.
 
 - [ ] **Add Jenkins GitHub draft releases** → [[TODOs/Tooling/Jenkins_GitHub_Releases|Jenkins GitHub Releases]]
   - **Remaining**: user adds `github-releases` credential and selects source build/tag; first live upload and recovery acceptance.
@@ -402,6 +392,11 @@
 - [x] **Implement Game Design Balance Editor** → [[Done/Tooling/GameDesign_Balance_Editor|Game Design Balance Editor]]; [[Done/Tooling/GameDesign_Balance_Editor - Research|Data ownership and feasibility]]
 
 ### Features
+
+- [x] **Interdictor Gravity Well follow-up: anchor ship while active (orders rejected, turn + fire allowed), range ring only when selected, dome generator VFX** → [[Done/Features/Interdictor_Gravity_Well_Anchor_And_Vfx_Plan|Gravity Well Anchor & VFX Plan]]
+  - Completed 2026-11-17, `acceptance: pending-user`. `CombatModifiers` movement anchor, `ShipMoveComponent` brake/refuse, `ShipOrderRunner` rejects move-type orders (`Retreat` cancels the well), selected-only ring, `GravityWellEmitter` dome VFX on the view prefab. Compile clean; tests not run (local override). Gates → [[TODOs/User_Acceptance_Queue]].
+- [x] **Interdictor ability "Activate Gravity Well" (block hostile reinforcement drop-ins in an adjustable bubble around the ship; default range 900)** → [[Done/Features/Interdictor_Gravity_Well_Plan|Interdictor Gravity Well Plan]]
+  - Completed 2026-11-17, `acceptance: pending-user`. `Interdict = 57` (`30 s` active, `60 s` recovery, cancellable, `900` range, `HardPointType.Any`), `BattleAreaLayer.SpawnBlock` registration, pooled `GravityWellField.prefab` ring VFX, `InterdictIcon.png` Sprite, `InterdictorStarDestroyerShipData` (`[DauntlessSensorJamming, Interdict]`), save migrations, balance adapter and test updates. Unity compile, reserialization and Console (`0` errors) verified; tests not run (local override). User gates → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Squad control groups (10 slots, 1–9 then 0, preview + shared replacement confirmation)** → [[Done/Features/Squad_Control_Groups_Plan|Squad Control Groups Plan]]
   - Implemented 2026-11-16: fixed top-row keys, optional Mac Command, heroes-first icons, battle saves, notifier feedback and Alt-tab-preserved replacement popup. Top-center squad preview with slate slots and larger icons. Unity prefab read-back and 1920×1080 preview verified. Tests not run under local override. Play/platform gates → [[TODOs/User_Acceptance_Queue]].
@@ -666,12 +661,12 @@
 - [x] **Implement unit actions (ship orders)** → [[Done/Features/SHIP_ACTIONS_PLAN|Unit Actions (Ship Orders) implementation plan]]
 
 ### Refactoring
+
 - [x] **Remove ISD III and Thranta from the project; move content to `D:\EmpireAtWarUnusedContent`** → [[Done/Refactoring/ISDIII_Thranta_Removal|ISD III and Thranta Removal]]
   - Completed 2026-11-17, `acceptance: pending-user`. Removed enum values, guards, data/Addressables entries, tests and 107 files (+`.meta`); kept one window texture used by VictoryII. Unity compiles, Console 0 errors; tests not run (local override). User gate → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Rework ship classes: add HeavyCruiser/Dreadnought, HeavyCapital → BattleCruiser, reassign ships, damage matrix, shield regen, Nebulon-B 600 m** → [[Done/Refactoring/Ship_Class_Rework_Plan|Ship Class Rework Plan]]
   - Completed 2026-11-17, `acceptance: pending-user`. Added `HeavyCruiser` and `Dreadnought`, renamed `HeavyCapital` → `BattleCruiser` (preserving enum IDs + `[FormerlySerializedAs]`), updated siege multipliers (`1.5x`/`1.2x`), rule/matrix/regen/research assets, 27 `ShipData` reassignments, 600 m `NebulonB` resize + vision hull rebake, and 13 EditMode test files. `BalanceInventory.Build()` 0 errors / 157 units; 76/76 `ShipData` verified; Console 0 errors; Unity tests not run (local override). User gates → [[TODOs/User_Acceptance_Queue]].
-
 
 - [x] **Replace inline namespace-qualified type references with usings (429 lines / 143 files)** → [[Done/Refactoring/Namespace_Qualified_Type_Cleanup|Namespace-Qualified Type Cleanup]]
   - Completed 2026-11-12. Shortened 428 lines across 140 C# files, including test source. Four collision cases retained. All six batches compiled in Unity. Tests not run.

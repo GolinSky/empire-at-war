@@ -33,6 +33,7 @@ namespace EmpireAtWar.Components.Combat
         private bool _superWeaponDisabled;
         private bool _isConstructing;
         private int _ionPulseDisables;
+        private int _movementAnchors;
         private int _sensorJammers;
         private int _fighterCoordinations;
         private int _abilitySuppressions;
@@ -44,9 +45,11 @@ namespace EmpireAtWar.Components.Combat
         public float AccuracyMultiplier =>
             (_sensorJammers > 0 ? SENSOR_JAMMING_ACCURACY_MULTIPLIER : UNMODIFIED_MULTIPLIER) *
             (_fighterCoordinations > 0 ? FIGHTER_COORDINATION_ACCURACY_MULTIPLIER : UNMODIFIED_MULTIPLIER);
+        /// <summary>Translation is blocked; turning and firing stay available.</summary>
+        public bool IsAnchored => _movementAnchors > 0;
         public bool IsIonDisabled => _superWeaponDisabled || _ionPulseDisables > 0;
         /// <summary>Effects that abilities or attackers remove later; fleet command is re-evaluated by position instead.</summary>
-        public bool HasTemporaryEffects => _active.Count > 0 || _sensorJammers > 0 || _fighterCoordinations > 0 || IsIonDisabled || IsCloaked || _mainBatteriesActive ||
+        public bool HasTemporaryEffects => _active.Count > 0 || _sensorJammers > 0 || _fighterCoordinations > 0 || IsAnchored || IsIonDisabled || IsCloaked || _mainBatteriesActive ||
                                            _focusTarget != null || _projectileFireDelayMultiplier != 1f ||
                                            _otherFireDelayMultiplier != 1f || _torpedoFireDelayMultiplier != 1f ||
                                            WeaponPowerShotIntervalMultiplier != 1f;
@@ -186,6 +189,19 @@ namespace EmpireAtWar.Components.Combat
         {
             if (_ionPulseDisables == 0) throw new InvalidOperationException("No ion pulse disable is active.");
             _ionPulseDisables--;
+            Changed?.Invoke();
+        }
+
+        public void AddMovementAnchor()
+        {
+            _movementAnchors++;
+            Changed?.Invoke();
+        }
+
+        public void RemoveMovementAnchor()
+        {
+            if (_movementAnchors == 0) throw new InvalidOperationException("No movement anchor is active.");
+            _movementAnchors--;
             Changed?.Invoke();
         }
 

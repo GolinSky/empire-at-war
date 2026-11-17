@@ -1,5 +1,7 @@
 using System;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Models.Selection;
+using EmpireAtWar.ViewComponents.Weapon;
 using System.Collections.Generic;
 using System.Reflection;
 using EmpireAtWar.Components.Combat;
@@ -10,6 +12,7 @@ using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.ShipAbilities;
+using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using NUnit.Framework;
@@ -136,7 +139,7 @@ namespace EmpireAtWar.Tests.Editor
             EntityLocator entities = new EntityLocator();
             IPlayerRelations relations = TestPlayers.CreateDuel();
             var dependencies = new ShipAbilityDependencies(entities, relations, null, null, null, null,
-                new VisionService(relations, fogEnabled: false), new OfflineSession(TestPlayers.Human));
+                new VisionService(relations, fogEnabled: false), new OfflineSession(TestPlayers.Human), null, null);
             ShipAbilityService service = new ShipAbilityService(new ShipAbilityFactory(dependencies), relations,
                 new VisionService(relations, fogEnabled: false));
             ShipAbilityDefinition definition = new ShipAbilityDefinition();
@@ -196,6 +199,189 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(target.Modifiers.HasTemporaryEffects, Is.False);
         }
 
+        [Test]
+        public void GravityWell_StartBlocksHostilesInRangeAndLeavesAlliesAndOutsideOpen()
+        {
+            IPlayerRelations relations = TestPlayers.CreateTeamGame();
+            var areas = new BattleAreaService(relations);
+            GameObject casterView = new GameObject("Interdictor");
+            ShipAbilityDefinition definition = new ShipAbilityDefinition();
+            SetField(definition, "range", 100f);
+            GravityWellSettings settings = new GravityWellSettings();
+            GravityWellEffects effects = CreateWellEffects(relations, settings, out GameObject wellPrefab);
+            SetField(definition, "settings", settings);
+            var caster = new TestCommand(TestPlayers.Human, 1, definition, casterView.transform, ShipAbilityId.Interdict);
+            var ability = new GravityWellAbility(areas, effects, settings);
+            try
+            {
+                ability.Start(caster, definition, null);
+
+                Assert.That(areas.IsBlocked(TestPlayers.Enemy, new Vector3(50f, 0f, 0f)), Is.True);
+                Assert.That(areas.IsBlocked(TestPlayers.SecondEnemy, new Vector3(0f, 0f, 99f)), Is.True);
+                Assert.That(areas.IsBlocked(TestPlayers.Enemy, new Vector3(101f, 0f, 0f)), Is.False);
+                Assert.That(areas.IsBlocked(TestPlayers.Human, Vector3.zero), Is.False);
+                Assert.That(areas.IsBlocked(TestPlayers.Ally, Vector3.zero), Is.False);
+
+                ability.Stop();
+                Assert.That(areas.IsBlocked(TestPlayers.Enemy, Vector3.zero), Is.False);
+            }
+            finally
+            {
+                ability.Stop();
+                UnityEngine.Object.DestroyImmediate(casterView);
+                DestroyWellEffects(wellPrefab);
+            }
+        }
+
+        [Test]
+        public void GravityWell_MovingCasterMovesBlockedBubbleWithoutTicks()
+        {
+            IPlayerRelations relations = TestPlayers.CreateTeamGame();
+            var areas = new BattleAreaService(relations);
+            GameObject casterView = new GameObject("Interdictor");
+            ShipAbilityDefinition definition = new ShipAbilityDefinition();
+            SetField(definition, "range", 100f);
+            GravityWellSettings settings = new GravityWellSettings();
+            GravityWellEffects effects = CreateWellEffects(relations, settings, out GameObject wellPrefab);
+            SetField(definition, "settings", settings);
+            var caster = new TestCommand(TestPlayers.Human, 1, definition, casterView.transform, ShipAbilityId.Interdict);
+            var ability = new GravityWellAbility(areas, effects, settings);
+            try
+            {
+                ability.Start(caster, definition, null);
+                casterView.transform.position = new Vector3(500f, 0f, 0f);
+
+                Assert.That(areas.Get(BattleAreaLayer.SpawnBlock).Count, Is.EqualTo(1));
+                Assert.That(areas.IsBlocked(TestPlayers.Enemy, Vector3.zero), Is.False);
+                Assert.That(areas.IsBlocked(TestPlayers.Enemy, new Vector3(500f, 0f, 0f)), Is.True);
+                Assert.That(areas.IsBlocked(TestPlayers.Enemy, new Vector3(601f, 0f, 0f)), Is.False);
+            }
+            finally
+            {
+                ability.Stop();
+                UnityEngine.Object.DestroyImmediate(casterView);
+                DestroyWellEffects(wellPrefab);
+            }
+        }
+
+        [Test]
+        public void GravityWell_ClearsOnIonDisableCasterDeathAndReplicaRecovery()
+        {
+            IPlayerRelations relations = TestPlayers.CreateDuel();
+            var areas = new BattleAreaService(relations);
+            GravityWellSettings wellSettings = new GravityWellSettings();
+            GravityWellEffects effects = CreateWellEffects(relations, wellSettings, out GameObject wellPrefab);
+            var dependencies = new ShipAbilityDependencies(new EntityLocator(), relations, null, null, null, null,
+                new VisionService(relations, fogEnabled: false), new OfflineSession(TestPlayers.Human), areas, effects);
+            var service = new ShipAbilityService(new ShipAbilityFactory(dependencies), relations,
+                new VisionService(relations, fogEnabled: false));
+            ShipAbilityDefinition definition = new ShipAbilityDefinition();
+            SetField(definition, "duration", 30f);
+            SetField(definition, "recoveryDelay", 60f);
+            SetField(definition, "canCancel", true);
+            SetField(definition, "range", 100f);
+            SetField(definition, "settings", wellSettings);
+            GameObject casterView = new GameObject("Interdictor");
+            var caster = new TestCommand(TestPlayers.Human, 1, definition, casterView.transform, ShipAbilityId.Interdict);
+            try
+            {
+                Assert.That(service.TryActivate(caster, ShipAbilityId.Interdict, null), Is.True);
+                Assert.That(areas.Get(BattleAreaLayer.SpawnBlock).Count, Is.EqualTo(1));
+                Assert.That(caster.Modifiers.IsAnchored, Is.True);
+                Assert.That(caster.Emitting, Is.True);
+
+                caster.Modifiers.SetIonDisabled(true);
+                service.Advance(0.1f);
+                Assert.That(caster.Slots[0].State, Is.EqualTo(ShipAbilityState.Recovering));
+                Assert.That(areas.Get(BattleAreaLayer.SpawnBlock), Is.Empty);
+                Assert.That(caster.Modifiers.IsAnchored, Is.False);
+                Assert.That(caster.Emitting, Is.False);
+                caster.Modifiers.SetIonDisabled(false);
+
+                service.RestoreReplicaState(caster, ShipAbilityId.Interdict, ShipAbilityState.Active, 15f, null);
+                service.RestoreReplicaState(caster, ShipAbilityId.Interdict, ShipAbilityState.Active, 10f, null);
+                Assert.That(areas.Get(BattleAreaLayer.SpawnBlock).Count, Is.EqualTo(1));
+                Assert.That(caster.Modifiers.IsAnchored, Is.True);
+
+                service.RestoreReplicaState(caster, ShipAbilityId.Interdict, ShipAbilityState.Recovering, 60f, null);
+                Assert.That(areas.Get(BattleAreaLayer.SpawnBlock), Is.Empty);
+                Assert.That(caster.Modifiers.IsAnchored, Is.False);
+
+                service.RestoreReplicaState(caster, ShipAbilityId.Interdict, ShipAbilityState.Active, 12f, null);
+                Assert.That(areas.Get(BattleAreaLayer.SpawnBlock).Count, Is.EqualTo(1));
+
+                caster.FakeHealth.TriggerDestroy();
+                Assert.That(areas.Get(BattleAreaLayer.SpawnBlock), Is.Empty);
+                Assert.That(caster.Modifiers.IsAnchored, Is.False);
+                service.Advance(0.1f);
+                Assert.That(areas.Get(BattleAreaLayer.SpawnBlock), Is.Empty);
+                Assert.That(areas.IsBlocked(TestPlayers.Enemy, Vector3.zero), Is.False);
+            }
+            finally
+            {
+                service.LateDispose();
+                UnityEngine.Object.DestroyImmediate(casterView);
+                DestroyWellEffects(wellPrefab);
+            }
+        }
+
+        [Test]
+        public void GravityWell_RingShowsOnlyWhileCasterIsSelectedAndAbilityActive()
+        {
+            IPlayerRelations relations = TestPlayers.CreateDuel();
+            var areas = new BattleAreaService(relations);
+            GameObject casterView = new GameObject("Interdictor");
+            ShipAbilityDefinition definition = new ShipAbilityDefinition();
+            SetField(definition, "range", 100f);
+            GravityWellSettings settings = new GravityWellSettings();
+            GravityWellEffects effects = CreateWellEffects(relations, settings, out GameObject wellPrefab);
+            SetField(definition, "settings", settings);
+            var caster = new TestCommand(TestPlayers.Human, 1, definition, casterView.transform, ShipAbilityId.Interdict);
+            var ability = new GravityWellAbility(areas, effects, settings);
+            SelectionModel selection = (SelectionModel)caster.Selection;
+            try
+            {
+                ability.Start(caster, definition, null);
+                GravityWellView view = GameObject.Find("Gravity Wells").GetComponentInChildren<GravityWellView>();
+                LineRenderer ring = view.GetComponent<LineRenderer>();
+                Assert.That(ring.enabled, Is.False);
+
+                selection.IsSelected = true;
+                Assert.That(ring.enabled, Is.True);
+                selection.IsSelected = false;
+                Assert.That(ring.enabled, Is.False);
+
+                ability.Stop();
+                Assert.That(view.gameObject.activeSelf, Is.False);
+                ring.enabled = false;
+                selection.IsSelected = true;
+                Assert.That(ring.enabled, Is.False, "A released view must not follow selection again.");
+            }
+            finally
+            {
+                ability.Stop();
+                UnityEngine.Object.DestroyImmediate(casterView);
+                DestroyWellEffects(wellPrefab);
+            }
+        }
+
+        private static GravityWellEffects CreateWellEffects(IPlayerRelations relations, GravityWellSettings settings,
+            out GameObject prefabObject)
+        {
+            prefabObject = new GameObject("GravityWellPrefab", typeof(LineRenderer));
+            GravityWellView view = prefabObject.AddComponent<GravityWellView>();
+            SetField(view, "ring", prefabObject.GetComponent<LineRenderer>());
+            SetField(settings, "viewPrefab", view);
+            return new GravityWellEffects(relations, new OfflineSession(TestPlayers.Human));
+        }
+
+        private static void DestroyWellEffects(GameObject prefabObject)
+        {
+            UnityEngine.Object.DestroyImmediate(prefabObject);
+            GameObject root = GameObject.Find("Gravity Wells");
+            if (root != null) UnityEngine.Object.DestroyImmediate(root);
+        }
+
         private static TSettings CreateSettings<TSettings>(string modifierField, CombatStatModifier modifier)
             where TSettings : ShipAbilitySettings, new()
         {
@@ -221,23 +407,28 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(modifiers.DamageTakenMultiplier, Is.EqualTo(1f));
         }
 
-        private sealed class TestCommand : IShipAbilityFacade, IAttackFacade, ICombatModifiersFacade
+        private sealed class TestCommand : IShipAbilityFacade, IAttackFacade, ICombatModifiersFacade,
+            IGravityWellEmitterFacade, IEntitySelectionObserverFacade
         {
+            public ISelectionModelObserver Selection { get; } = new SelectionModel();
+            public bool Emitting { get; private set; }
+            public void SetEmitting(bool emitting) => Emitting = emitting;
             public IReadOnlyList<ShipAbilitySlot> Slots { get; } = Array.Empty<ShipAbilitySlot>();
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
             public Vector3 WorldPosition => Vector3.zero;
             public IEntity Entity { get; }
-            public IHealthModelObserver Health { get; }
+            public FakeHealth FakeHealth { get; }
+            public IHealthModelObserver Health => FakeHealth;
             public float RadarRange => 100f;
             public float NavigationRadius => 1f;
 
-            public TestCommand(PlayerId owner, long id, ShipAbilityDefinition definition = null, Transform transform = null)
+            public TestCommand(PlayerId owner, long id, ShipAbilityDefinition definition = null,
+                Transform transform = null, ShipAbilityId abilityId = ShipAbilityId.DauntlessSensorJamming)
             {
-                FakeHealth health = new FakeHealth { Transform = transform };
-                Health = health;
-                Entity = new TestEntity(id: id, owner: owner, health: health, command: this);
+                FakeHealth = new FakeHealth { Transform = transform };
+                Entity = new TestEntity(id: id, owner: owner, health: FakeHealth, command: this);
                 if (definition != null)
-                    Slots = new[] { new ShipAbilitySlot(this, definition, ShipAbilityId.DauntlessSensorJamming) };
+                    Slots = new[] { new ShipAbilitySlot(this, definition, abilityId) };
             }
 
             public void Attack(IEntity target, Vector3 formationOffset) { }
@@ -278,7 +469,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeHealth : IHealthModelObserver, IEntityTransformFacade
         {
-            public event Action OnDestroy { add { } remove { } }
+            public event Action OnDestroy;
 
             public event Action OnValueChanged { add { } remove { } }
 
@@ -290,12 +481,18 @@ namespace EmpireAtWar.Tests.Editor
             public float HullPercentage => 1f;
             public float Shields => 1f;
             public float ShieldPercentage => 1f;
-            public bool IsDestroyed => false;
+            public bool IsDestroyed { get; private set; }
             public bool IsLostShieldGenerator => false;
             public bool HasUnits => true;
             public PlayerId Owner => TestPlayers.Human;
             public Transform Transform { get; set; }
             public bool HasShields => true;
+
+            public void TriggerDestroy()
+            {
+                IsDestroyed = true;
+                OnDestroy?.Invoke();
+            }
 
             public IHardPointModel[] GetShipUnits(HardPointType hardPointType) =>
                 Array.Empty<IHardPointModel>();

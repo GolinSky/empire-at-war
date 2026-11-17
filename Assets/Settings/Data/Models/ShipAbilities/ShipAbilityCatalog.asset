@@ -490,6 +490,22 @@ MonoBehaviour:
         autoPower: 0
         settings:
           rid: 2035977048858300924
+    - key: 57
+      value:
+        icon: {fileID: 21300000, guid: 917c0ed2f47f71f42b24d04e609f4908, type: 3}
+        displayName: Activate Gravity Well
+        description: Blocks enemy reinforcement drop-ins within the field around
+          the ship, forcing the enemy to spawn ships outside the bubble.
+        duration: 30
+        recoveryDelay: 60
+        canCancel: 1
+        isToggle: 0
+        requiresEnemyTarget: 0
+        range: 900
+        aiUse: 2
+        autoPower: 0
+        settings:
+          rid: 2035977070347550801
   autoPower:
     decisionInterval: 0.5
     castersPerFrame: 4
@@ -531,6 +547,12 @@ MonoBehaviour:
           projectileSpeed: 220
           color: {r: 0.3, g: 0.6, b: 1, a: 1}
           size: {x: 9, y: 9, z: 9}
+    - rid: 2035977070347550801
+      type: {class: GravityWellSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
+        asm: Assembly-CSharp}
+      data:
+        viewPrefab: {fileID: 1838102808029866456, guid: b88f679593772ab4992be65f1cbd6cd5,
+          type: 3}
     - rid: 6801466862182334539
       type: {class: IonPulseSettings, ns: EmpireAtWar.Services.ShipAbilities.Abilities,
         asm: Assembly-CSharp}

@@ -342,6 +342,13 @@ namespace EmpireAtWar.Services.ShipAbilities
             for (int i = _running.Count - 1; i >= 0; i--)
             {
                 ShipAbilitySlot slot = _running[i];
+                var interruption = slot.RunningAbility as IShipAbilityInterruptionPolicy;
+                if (slot.Owner.Health.IsDestroyed && (interruption == null || !interruption.SurvivesCasterDeath))
+                {
+                    if (slot.State == ShipAbilityState.Active) Stop(slot);
+                    _running.RemoveAt(i);
+                    continue;
+                }
                 // Baselines do not replay transient phases. Only the host decides when their active state ends.
                 if (slot.IsReplicaState)
                 {
@@ -351,13 +358,6 @@ namespace EmpireAtWar.Services.ShipAbilities
                     continue;
                 }
                 var completion = slot.RunningAbility as ICompletableShipAbility;
-                var interruption = slot.RunningAbility as IShipAbilityInterruptionPolicy;
-                if (slot.Owner.Health.IsDestroyed && (interruption == null || !interruption.SurvivesCasterDeath))
-                {
-                    if (slot.State == ShipAbilityState.Active) Stop(slot);
-                    _running.RemoveAt(i);
-                    continue;
-                }
 
                 var modifiers = slot.Owner.Modifiers;
                 // Completable effects decide how ion disable affects their current phase.

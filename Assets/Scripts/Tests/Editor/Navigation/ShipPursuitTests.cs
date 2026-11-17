@@ -894,6 +894,36 @@ namespace EmpireAtWar.Tests.Movement
             runner.Release();
         }
 
+        [Test]
+        public void AnchoredShip_RefusesMovementOrdersAndStillAttacks()
+        {
+            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            var relations = TestPlayers.CreateDuel();
+            ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
+                relations, new VisionService(relations, fogEnabled: false));
+            Radar radar = new Radar();
+            UnitOrderModel orders = new UnitOrderModel();
+            ShipStateMachine machine = new ShipStateMachine();
+            AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
+            ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
+                new IdleState(_movement, _weapon, radar), null, attack, null, null, null, null, abilities, caster, radar, null);
+            runner.Start();
+            caster.Modifiers.AddMovementAnchor();
+
+            runner.MoveTo(new Vector3(500f, 0f, 0f));
+            runner.MoveAlong(new[] { new Vector3(500f, 0f, 0f) });
+            runner.Hunt();
+            runner.Guard(_target, Vector3.zero);
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.None));
+            Assert.That(_movement.MoveCount, Is.Zero);
+
+            runner.Attack(_target, Vector3.zero);
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Attack));
+            runner.MoveTo(new Vector3(500f, 0f, 0f));
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Attack), "A refused order keeps the current one.");
+            abilities.Clear();
+        }
+
         private sealed class AbilityCaster : IShipAbilityFacade
         {
             private readonly Movement _movement;

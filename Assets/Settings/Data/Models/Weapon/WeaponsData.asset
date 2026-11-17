@@ -1150,6 +1150,26 @@ MonoBehaviour:
     size: {x: 1, y: 1, z: 1}
     overrideColor: 0
     color: {r: 1, g: 1, b: 1, a: 1}
+  - weaponType: 45
+    displayName: Composite Beam
+    family: 8
+    caliber: 2
+    mount: 1
+    scope: 0
+    faction: 0
+    unit: 
+    damageMultiplier: 4
+    reloadMultiplier: 1.5
+    rangeMultiplier: 0.625
+    reason: 'Composite Beam ability: one huge, slow shot.'
+    overrideVisual: 1
+    shotPrefab: {fileID: 0}
+    beamPrefab: {fileID: 383474084171235543, guid: 3c7eb2540db56a04a9448f731881de79,
+      type: 3}
+    projectileSpeed: 0
+    size: {x: 1.5, y: 1.5, z: 1.5}
+    overrideColor: 0
+    color: {r: 1, g: 1, b: 1, a: 1}
   - weaponType: 46
     displayName: Light Dual Fighter Laser Cannon
     family: 20

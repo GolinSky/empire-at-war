@@ -383,7 +383,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(ShipType.BothanAssaultCruiser, FactionType.Rebellion, ShipAbilityId.BothanCoordinatedAssault,
             ShipAbilityId.BothanCoordinatedAssault, ShipAbilityId.TractorBeam, ShipAbilityId.None, ShipAbilityId.None)]
         [TestCase(ShipType.InterdictorStarDestroyer, FactionType.Empire, ShipAbilityId.BoostWeaponPower,
-            ShipAbilityId.BoostWeaponPower, ShipAbilityId.None, ShipAbilityId.DauntlessSensorJamming, ShipAbilityId.None)]
+            ShipAbilityId.DauntlessSensorJamming, ShipAbilityId.None, ShipAbilityId.Interdict, ShipAbilityId.None)]
         [TestCase(ShipType.Praetor, FactionType.Republic, ShipAbilityId.FullSalvo, ShipAbilityId.FullSalvo,
             ShipAbilityId.None, ShipAbilityId.BoostShieldPower, ShipAbilityId.None)]
         [TestCase(ShipType.Praetor, FactionType.Republic, ShipAbilityId.FullSalvo, ShipAbilityId.FullSalvo,
@@ -453,6 +453,44 @@ namespace EmpireAtWar.Tests.Editor
             }
             if (interdictor)
                 Assert.That(ship.Health.HardPoints, Is.EqualTo(damage.Append(1f)));
+        }
+
+        [Test]
+        public void Validator_MigratesTwoSlotLegacyInterdictorAndPreservesSensorJammingCooldown()
+        {
+            using var assets = new CachedAssetService(new AddressableHandleLoader());
+            BattleDefinition defaults = SkirmishPreset.Default();
+            var human = new PlayerSlot(TestPlayers.Human, new TeamId(0), FactionType.Empire,
+                PlayerController.Human, EnemyAiDifficulty.Medium, 0);
+            BattleDefinition battle = SkirmishPreset.Create(new[] { human, defaults.Slots[1] }, defaults.Map.Planet,
+                defaults.Map.Size, defaults.VictoryCondition, defaults.StartingMoney, true, 0).Build();
+            ShipData data = assets.Load<ShipData>(assets.Load<ShipsData>(nameof(ShipsData)).GetShipDataPath(ShipType.InterdictorStarDestroyer));
+            int hardPointCount = assets.LoadComponent<ShipEntity>("InterdictorStarDestroyerShipView").Bindings.Health[0].ShipUnits.Count;
+            AbilitySlotSave legacyBoost = JsonUtility.FromJson<AbilitySlotSave>(
+                $"{{\"id\":{(int)ShipAbilityId.BoostWeaponPower},\"state\":{(int)ShipAbilityState.Recovering},\"timeLeft\":19}}");
+            AbilitySlotSave legacyJamming = JsonUtility.FromJson<AbilitySlotSave>(
+                $"{{\"id\":{(int)ShipAbilityId.DauntlessSensorJamming},\"state\":{(int)ShipAbilityState.Recovering},\"timeLeft\":12}}");
+            UnitSave ship = UnitSave.Create(1, human.Id, UnitTypeId.Ship(ShipType.InterdictorStarDestroyer), Vector3.zero,
+                    Quaternion.identity, UnitHealthSave.ForShip(0.5f, 0.25f, Enumerable.Repeat(1f, hardPointCount).ToArray()), null)
+                .WithAbilities(new[] { legacyBoost, legacyJamming })
+                .WithHangar(HangarSave.Create(data.HangarBays.Select(bay => bay.Reserve).ToArray(), 0f,
+                    Array.Empty<LaunchedSquadronSave>()));
+            BattleSaveHeader header = BattleSaveHeader.Create(GameMode.Skirmish, BattleSaveSlot.Quicksave,
+                DateTime.UtcNow, 0f, GameSpeed.Normal);
+            BattleSave save = BattleSave.Create(header, BattleSetupSave.From(battle),
+                CameraPoseSave.Create(Vector3.zero, Quaternion.identity, 500f), new[] { ship },
+                Array.Empty<StructureSave>());
+            var validator = new BattleSaveValidator(assets);
+
+            validator.Validate(save, battle);
+
+            Assert.That(ship.Abilities.Select(slot => slot.Id),
+                Is.EqualTo(new[] { ShipAbilityId.DauntlessSensorJamming, ShipAbilityId.Interdict }));
+            Assert.That(ship.Abilities[0], Is.SameAs(legacyJamming));
+            Assert.That(ship.Abilities[0].State, Is.EqualTo(ShipAbilityState.Recovering));
+            Assert.That(ship.Abilities[0].TimeLeft, Is.EqualTo(12f));
+            Assert.That(ship.Abilities[1].State, Is.EqualTo(ShipAbilityState.Ready));
+            Assert.That(ship.Abilities[1].TimeLeft, Is.Zero);
         }
 
         [Test]

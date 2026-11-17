@@ -88,12 +88,14 @@ namespace EmpireAtWar.Components.Ship.Movement
         private IEntity _combatHoldTarget;
         private Transform _combatHoldTransform;
         private bool _isSettling;
+        private bool _isAnchored;
+        private bool _isAnchorBraking;
         private int _spacingRevision;
 
         public int SpacingRevision => _spacingRevision;
         public bool CanSettle => _combatHoldTarget != null && !_combatHoldTarget.HealthModel.IsDestroyed &&
             !_isReleased && _isNavigationRegistered && !IgnoresMapObstacles &&
-            !_modifiers.IsIonDisabled && NavigationSpeed > 0f && !IsMoving && !_motion.IsBraking;
+            !_modifiers.IsIonDisabled && !_modifiers.IsAnchored && NavigationSpeed > 0f && !IsMoving && !_motion.IsBraking;
         public Vector3 SpacingTargetPosition => _combatHoldTarget == null ? Vector3.zero : _combatHoldTransform.position;
 
         public string MovementDiagnostics
@@ -172,7 +174,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _motion = new ShipMovementTweenPlayer(transform, bodyTransform,
                 lineRenderer, hyperSpaceEase);
             _motion.RouteDisplayChanged += HandleRouteDisplayChanged;
-            _modifiers.Changed += UpdateRouteSpeed;
+            _modifiers.Changed += HandleModifiersChanged;
             // The spawner already validated this point; the ship lands exactly where it was placed.
             Quaternion rotation = _spawnPose.IsRestored ? _spawnPose.Rotation : _stationFacingService.GetRotation(_owner);
             Model.ConfigureSpawnPose(_startPosition.ToNumerics(), rotation.ToNumerics());
@@ -203,6 +205,11 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void Tick()
         {
             if (!_modifiers.IsIonDisabled) _motion.Tick(Time.deltaTime);
+            if (_isAnchorBraking && !_motion.IsBraking)
+            {
+                _isAnchorBraking = false;
+                Stop();
+            }
             if (_hasQueuedPlan && !_isInPlanQueue && !_motion.IsBraking && IsRepathDue()) EnqueuePlan();
         }
 
@@ -213,7 +220,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _isReleased = true;
             _pendingFacingTarget = null;
             _hasQueuedPlan = false;
-            _modifiers.Changed -= UpdateRouteSpeed;
+            _modifiers.Changed -= HandleModifiersChanged;
             _shipSpawnClearance.ReleaseLanding(this);
             if (_isNavigationRegistered)
             {
@@ -227,6 +234,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         public void MoveToPosition(Vector3 position, bool preserveCourse = false)
         {
+            if (_modifiers.IsAnchored) return;
             // Finish a checked settling leg even if it briefly leaves firing range.
             if (preserveCourse && _isSettling && IsMoving) return;
             CancelCombatHold();
@@ -301,6 +309,7 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private void QueuePlan(Vector3 destination, bool preserveCourse)
         {
+            if (_modifiers.IsAnchored) return;
             _queuedDestination = destination;
             _queuedPreserveCourse = preserveCourse;
             _hasQueuedPlan = true;
@@ -437,7 +446,7 @@ namespace EmpireAtWar.Components.Ship.Movement
             _shipSpawnClearance.ReleaseLanding(this);
             HyperSpaceCompleted?.Invoke();
             NumericsVector3? queued = Model.FinishArrival();
-            if (queued.HasValue) QueuePlan(queued.Value.ToUnity(), false);
+            if (queued.HasValue && !_modifiers.IsAnchored) QueuePlan(queued.Value.ToUnity(), false);
             else Model.Arrive(transform.position.ToNumerics());
         }
 
@@ -531,6 +540,28 @@ namespace EmpireAtWar.Components.Ship.Movement
                         QueuePlan(plannedDestination, false);
                     }
                 });
+        }
+
+        private void HandleModifiersChanged()
+        {
+            UpdateRouteSpeed();
+            SyncAnchor();
+        }
+
+        // Anchoring brakes on the checked route, then Tick clears the leftover movement state.
+        private void SyncAnchor()
+        {
+            bool anchored = _modifiers.IsAnchored;
+            if (anchored == _isAnchored) return;
+            _isAnchored = anchored;
+            if (!anchored) return;
+            _hasQueuedPlan = false;
+            if (_motion.HasMomentum || _motion.IsBraking)
+            {
+                _motion.BrakeForReplan();
+                _isAnchorBraking = true;
+            }
+            else Stop();
         }
 
         private void UpdateRouteSpeed()

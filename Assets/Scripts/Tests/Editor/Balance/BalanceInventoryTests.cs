@@ -17,7 +17,7 @@ namespace EmpireAtWar.Tests.Editor
             BalanceRegistration inventory = new BalanceRegistration();
             BalanceAbilityAdapter.Register(inventory);
 
-            foreach (ShipAbilityId id in new[] { ShipAbilityId.DauntlessSensorJamming,
+            foreach (ShipAbilityId id in new[] { ShipAbilityId.DauntlessSensorJamming, ShipAbilityId.Interdict,
                          ShipAbilityId.FighterReinforcements, ShipAbilityId.LiberatorRapidDeployment,
                          ShipAbilityId.MC30cTorpedoSalvo, ShipAbilityId.FighterCoordination,
                          ShipAbilityId.ReplenishWingmen, ShipAbilityId.LuckyShot })
