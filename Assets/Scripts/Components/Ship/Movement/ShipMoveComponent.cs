@@ -100,6 +100,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         {
             get
             {
+                // The order runner records its first sample before this component's Initialize builds the motion.
+                if (_motion == null) return "uninitialized";
                 Vector3 destination = Model.Destination.ToUnity();
                 return string.Format(System.Globalization.CultureInfo.InvariantCulture,
                     "{0};{1};{2};{3};{4};{5};{6:F1};{7:F1};{8:F1}", Model.Phase, _hasQueuedPlan ? 1 : 0,
