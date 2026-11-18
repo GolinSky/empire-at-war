@@ -300,9 +300,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 reason = "Withdraw from the outmatched forward station and regroup at the primary station.";
                 Bypass = "forwardStationFallback";
             }
-            // A living station under attack is defended; recovery may not pull the fleet to a distant relay.
-            else if (snapshot.OwnShipCount > 0 && snapshot.RecoveryMode && withdrawForRecovery &&
-                !(snapshot.HasStationPressure && snapshot.HasOwnBase && state == EnemyStrategicState.DefendBase))
+            else if (snapshot.OwnShipCount > 0 && snapshot.RecoveryMode && withdrawForRecovery)
             {
                 if (snapshot.RecoveryCapturePending && snapshot.HasCaptureTarget)
                 {

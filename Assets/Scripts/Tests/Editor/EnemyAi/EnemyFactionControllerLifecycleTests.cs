@@ -418,11 +418,11 @@ namespace EmpireAtWar.Tests.Editor
 
                 controller.Purchase(blocked);
                 Assert.That(wallet.SpendCount, Is.EqualTo(2), "The blocked ship retains its unit limit reservation.");
-                // Each retry queries the default zone, then falls back to a random spawn point.
+                // Each retry queries the living stations, the default zone, then falls back to a random spawn point.
                 controller.Advance(0.5f);
-                Assert.That(spawnPoints.BlockedShipAttempts, Is.EqualTo(2));
+                Assert.That(spawnPoints.BlockedShipAttempts, Is.EqualTo(3));
                 controller.Advance(0.5f);
-                Assert.That(spawnPoints.BlockedShipAttempts, Is.EqualTo(4));
+                Assert.That(spawnPoints.BlockedShipAttempts, Is.EqualTo(6));
                 Assert.That(wallet.RefundCount, Is.Zero);
 
                 spawnPoints.IsBlocked = false;

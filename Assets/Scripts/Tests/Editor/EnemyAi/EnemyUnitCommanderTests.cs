@@ -1395,9 +1395,10 @@ namespace EmpireAtWar.Tests.Editor
 
             executor.Execute(decision, Context(new IShipEntity[] { ship }));
 
+            // A diverted ship returns in combat posture, to the circle edge on its side, never by a blind Move.
             Assert.That(orders.Calls.Count, Is.EqualTo(1));
-            Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.Move));
-            Assert.That(orders.Calls[0].Point, Is.EqualTo(new Vector3(55f, 0f, -55f)));
+            Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(Vector3.Distance(orders.Calls[0].Point, new Vector3(55f, 0f, -55f)), Is.EqualTo(0.9f).Within(0.01f));
         }
 
         [Test]
@@ -1415,14 +1416,12 @@ namespace EmpireAtWar.Tests.Editor
             executor.Execute(decision, context, now: 4f);
             Assert.That(orders.Calls, Is.Empty);
             executor.Execute(decision, context, now: 5f);
-            Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.Move));
+            Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.AttackMove));
 
+            // A ship left in a plain Move outside the circle is put back into combat posture.
             ship.CurrentOrder = UnitOrderType.Move;
             orders.Calls.Clear();
             executor.Execute(decision, context, now: 6f);
-            Assert.That(orders.Calls, Is.Empty);
-            ship.WorldPosition = context.CaptureTarget;
-            executor.Execute(decision, context, now: 7f);
             Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.AttackMove));
         }
 
@@ -2002,10 +2001,8 @@ namespace EmpireAtWar.Tests.Editor
 
             EnemyCaptureObjective objective = SelectCapture(builder);
 
-            if (hasUnownedLocalMine)
-                Assert.That(objective.Id, Is.EqualTo("site:0"));
-            else
-                Assert.That(objective, Is.Null);
+            // A pad waits for its point's mines; a point without mines (a zone) is held by satellites alone.
+            Assert.That(objective.Id, Is.EqualTo(hasUnownedLocalMine ? "site:0" : "site:1"));
         }
 
         [TestCase(false)]
