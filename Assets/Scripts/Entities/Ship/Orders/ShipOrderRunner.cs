@@ -51,6 +51,8 @@ namespace EmpireAtWar.Entities.Ship.Orders
         // Online clients show the host's order; ships there never run their own (see ApplyReplicaOrder).
         public UnitOrderType CurrentOrder => _replicaOrder ??
             (_pendingAbilityTarget != null ? UnitOrderType.UseAbility : _orders.Current);
+        public IEntity AttackTarget =>
+            !_replicaOrder.HasValue && CurrentOrder == UnitOrderType.Attack ? _orders.Target : null;
         public int OrderRevision => _orders.Revision;
         /// <summary>Online client: the host just gave this ship a new order.</summary>
         public event Action<UnitOrderType> ReplicaOrderIssued;

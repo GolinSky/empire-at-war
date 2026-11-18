@@ -12,10 +12,12 @@ using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Networking.Messages;
 using EmpireAtWar.Services.PlayerCommands;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.UnitOrders;
+using Mirror;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -120,10 +122,28 @@ namespace EmpireAtWar.Tests.Editor
             _handlers.RegisterAbilities(abilities);
 
             _sink.Submit(new ShipAbilityCommand(TestPlayers.Human, ShipAbilityId.Cloak, new long[] { 1, 2 },
-                UnitOrderCommand.NO_TARGET, false));
+                UnitOrderCommand.NO_TARGET, false, automatic: true));
 
             Assert.That(abilities.Casters, Is.EqualTo(new IEntity[] { _own }));
             Assert.That(abilities.Target, Is.Null);
+            Assert.That(abilities.Automatic, Is.True);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ShipAbilityCommand_RoundTripsAutomaticFlag(bool automatic)
+        {
+            var command = new ShipAbilityCommand(TestPlayers.Human, ShipAbilityId.ConcentrateFire,
+                new long[] { 1 }, 2, cancel: false, automatic: automatic);
+            using NetworkWriterPooled writer = NetworkWriterPool.Get();
+            writer.WriteShipAbilityCommand(command);
+            using NetworkReaderPooled reader = NetworkReaderPool.Get(writer.ToArraySegment());
+
+            ShipAbilityCommand received = reader.ReadShipAbilityCommand();
+
+            Assert.That(received.CasterIds, Is.EqualTo(command.CasterIds));
+            Assert.That(received.TargetId, Is.EqualTo(command.TargetId));
+            Assert.That(received.Automatic, Is.EqualTo(automatic));
         }
 
         [Test]
@@ -308,11 +328,14 @@ namespace EmpireAtWar.Tests.Editor
         {
             public List<IEntity> Casters { get; private set; }
             public IEntity Target { get; private set; }
+            public bool Automatic { get; private set; }
 
-            public void Execute(IReadOnlyList<IEntity> casters, ShipAbilityId id, IEntity target, bool cancel)
+            public void Execute(IReadOnlyList<IEntity> casters, ShipAbilityId id, IEntity target, bool cancel,
+                bool automatic = false)
             {
                 Casters = new List<IEntity>(casters);
                 Target = target;
+                Automatic = automatic;
             }
         }
 

@@ -3,6 +3,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Presenters.ReinforcementZones;
+using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.ReinforcementZones;
 using UnityEngine;
@@ -75,11 +76,25 @@ namespace EmpireAtWar.Services.ShipSpawning
             return TryFindOpenPosition(owner, shipType, _data.HomeAreaRadius, out position);
         }
 
-        public bool TryGetSpawnPositionAround(PlayerId owner, ShipType shipType, Vector3 anchor, out Vector3 position)
+        public bool TryGetDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+            PlacementThreatSnapshot threats, out Vector3 position)
         {
-            _anchors.Clear();
-            _anchors.Add(anchor);
-            return TryFindOpenPosition(owner, shipType, _data.HomeAreaRadius, out position);
+            float radius = _data.HomeAreaRadius;
+            var centroid = threats.GetLocalCentroid(anchor.x, anchor.z, radius);
+            Vector2 towardThreat = new Vector2(centroid.X - anchor.x, centroid.Z - anchor.z).normalized;
+            for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
+            {
+                Vector2 offset = Random.insideUnitCircle * radius;
+                // Sample behind the station first, then also allow clear positions on its flanks.
+                if (attempt < MAX_RANDOM_SPAWN_ATTEMPTS / 2 && Vector2.Dot(offset, towardThreat) > 0f)
+                    offset = Vector2.Reflect(offset, towardThreat);
+                position = new Vector3(anchor.x + offset.x, 0f, anchor.z + offset.y);
+                if (threats.IsSafe(position.x, position.z, 0f) &&
+                    _spawnRule.CanSpawnShip(owner, shipType, position)) return true;
+            }
+
+            position = default;
+            return false;
         }
 
         private bool TryFindOpenPosition(PlayerId owner, ShipType shipType, float searchRadius, out Vector3 position)

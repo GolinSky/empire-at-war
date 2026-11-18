@@ -41,6 +41,58 @@ namespace EmpireAtWar.Tests.Editor
     {
         private GameObject _targetView;
 
+        [TestCase(true, 8f)]
+        [TestCase(true, 20f)]
+        [TestCase(false, 8f)]
+        public void ConcentrateFire_AuthorityPreservesOrdersOnlyForAutomaticCasts(bool automatic, float orderedDistance)
+        {
+            _targetView = new GameObject("Ordered target");
+            GameObject nearbyView = new GameObject("Nearby target");
+            ShipAbilityCatalog catalog = ScriptableObject.CreateInstance<ShipAbilityCatalog>();
+            try
+            {
+                _targetView.transform.position = Vector3.right * orderedDistance;
+                nearbyView.transform.position = Vector3.right;
+                var ordered = new FakeEntity(null, new FakeHealth(_targetView.transform), TestPlayers.Enemy, 2);
+                var nearby = new FakeEntity(null, new FakeHealth(nearbyView.transform), TestPlayers.Enemy, 3);
+                var settings = new ConcentrateFireSettings();
+                var caster = CreateCaster(targeted: true);
+                var ally = new FakeCommand(new ShipAbilityDefinition(), entityId: 4);
+                var idle = new FakeCommand(new ShipAbilityDefinition(), entityId: 5);
+                var definition = caster.Slots[0].Definition;
+                SetField(definition, "settings", settings);
+                caster.Attack(ordered, Vector3.zero, null);
+                ally.Attack(automatic ? nearby : ordered, Vector3.zero, null);
+                var entities = new EntityLocator();
+                entities.AddEntity(caster.Entity);
+                entities.AddEntity(ordered);
+                entities.AddEntity(nearby);
+                entities.AddEntity(ally.Entity);
+                entities.AddEntity(idle.Entity);
+                var roster = TestPlayers.CreateDuel();
+                var service = new ShipAbilityService(new SingleAbilityFactory(new ConcentrateFireAbility(entities, settings)),
+                    roster, new VisionService(roster, fogEnabled: false));
+                var combat = new AutoPowerCombatSnapshot(entities, null, service, null, null, catalog);
+                Assert.That(combat.FindTarget(caster, definition), Is.SameAs(orderedDistance <= 10f ? ordered : null));
+
+                service.Execute(new[] { caster.Entity }, caster.Slots[0].Id, nearby, cancel: false, automatic: automatic);
+
+                bool cast = !automatic || orderedDistance <= 10f;
+                Assert.That(caster.Slots[0].State, Is.EqualTo(cast ? ShipAbilityState.Active : ShipAbilityState.Ready));
+                Assert.That(caster.AttackTarget, Is.SameAs(automatic ? ordered : nearby));
+                Assert.That(caster.AttackCount, Is.EqualTo(automatic ? 1 : 2));
+                Assert.That(ally.AttackTarget, Is.SameAs(nearby));
+                Assert.That(ally.AttackCount, Is.EqualTo(automatic ? 1 : 2));
+                Assert.That(idle.AttackTarget, Is.SameAs(cast ? automatic ? ordered : nearby : null));
+                service.Clear();
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(nearbyView);
+                UnityEngine.Object.DestroyImmediate(catalog);
+            }
+        }
+
         [Test]
         public void HazardSuppression_StopsAbilityButCooldownStillProgresses()
         {
@@ -1321,8 +1373,10 @@ namespace EmpireAtWar.Tests.Editor
             public float NavigationRadius => 0f;
             public UnitOrderType CurrentOrder { get; set; }
             public IEntity AttackTarget { get; private set; }
+            public int AttackCount { get; private set; }
             public void Attack(IEntity target, Vector3 formationOffset, GroupPace pace)
             {
+                AttackCount++;
                 AttackTarget = target;
                 CurrentOrder = UnitOrderType.Attack;
             }
@@ -1345,10 +1399,10 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryLaunchImmediately() => throw new NotSupportedException();
 
             public FakeCommand(ShipAbilityDefinition definition, Transform transform = null,
-                ShipAbilityId id = ShipAbilityId.BoostEnginePower)
+                ShipAbilityId id = ShipAbilityId.BoostEnginePower, long entityId = 1)
             {
                 FakeHealth = new FakeHealth(transform);
-                _entity = new FakeEntity(command: this, owner: TestPlayers.Human, health: FakeHealth);
+                _entity = new FakeEntity(command: this, owner: TestPlayers.Human, health: FakeHealth, id: entityId);
                 Slots = new[] { new ShipAbilitySlot(id: id,
                     definition: definition, owner: this) };
             }

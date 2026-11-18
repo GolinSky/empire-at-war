@@ -13,22 +13,26 @@ namespace EmpireAtWar.Services.PlayerCommands
         public long[] CasterIds { get; }
         public long TargetId { get; }
         public bool Cancel { get; }
+        public bool Automatic { get; }
 
-        public ShipAbilityCommand(PlayerId issuer, ShipAbilityId abilityId, long[] casterIds, long targetId, bool cancel)
+        public ShipAbilityCommand(PlayerId issuer, ShipAbilityId abilityId, long[] casterIds, long targetId, bool cancel,
+            bool automatic = false)
         {
             Issuer = issuer;
             AbilityId = abilityId;
             CasterIds = casterIds;
             TargetId = targetId;
             Cancel = cancel;
+            Automatic = automatic;
         }
 
         public static ShipAbilityCommand Create(PlayerId issuer, ShipAbilityId abilityId, IReadOnlyList<IEntity> casters,
-            IEntity target, bool cancel)
+            IEntity target, bool cancel, bool automatic = false)
         {
             long[] ids = new long[casters.Count];
             for (int i = 0; i < ids.Length; i++) ids[i] = casters[i].Id;
-            return new ShipAbilityCommand(issuer, abilityId, ids, target == null ? UnitOrderCommand.NO_TARGET : target.Id, cancel);
+            return new ShipAbilityCommand(issuer, abilityId, ids, target == null ? UnitOrderCommand.NO_TARGET : target.Id,
+                cancel, automatic);
         }
     }
 }

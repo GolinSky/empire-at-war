@@ -206,7 +206,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "production-wait",
                     FormattableString.Invariant($"critical=True;etaSeconds=Infinity;timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};") +
-                    "reason=no affordable combat unit with available population and production lane");
+                    "reason=no affordable combat unit can arrive before station loss");
             }
             if (hasShipOption && !canBuildShip)
             {
@@ -345,7 +345,7 @@ namespace EmpireAtWar.Services.Enemy
             FactionData data = _factionModel.SecondStationFactionData;
             bool isBackup = _productionAccess.HasHostBase;
             if (_productionAccess.ProductionHost != _owner.Id && !_recovery.IsActive ||
-                _stationPressure.IsStationCritical && !_recovery.IsActive ||
+                _stationPressure.IsStationCritical ||
                 !canPlaceStructure || _secondStation.IsBuilt || !IsAffordable(data) ||
                 !CanReserve<SecondStationUnitRequest>(SecondStationUnitRequest.REQUEST_ID, data) ||
                 isBackup && !_recovery.IsActive && (_factionModel.CurrentLevel < SECOND_STATION_MIN_LEVEL ||
@@ -519,7 +519,6 @@ namespace EmpireAtWar.Services.Enemy
             selected = default;
             bool found = false;
             float bestPriority = float.MaxValue;
-            float selectedArrival = float.PositiveInfinity;
             foreach (KeyValuePair<ShipType, FactionData> option
                      in _factionModel.ShipFactionData)
             {
@@ -537,6 +536,9 @@ namespace EmpireAtWar.Services.Enemy
 
                 int reservedCount = _unitLimitModel.GetReservedCount<ShipUnitRequest>(
                     option.Key.ToString());
+                UnitTypeId unitType = UnitTypeId.Ship(option.Key);
+                float combatValuePerCredit = _profileCatalog.Get(unitType).GetCombatValue() /
+                    Math.Max(1, option.Value.Price);
                 float priority = _decisionModel.CalculateShipPriority(
                     _stateProvider.CurrentState,
                     shipCount,
@@ -544,23 +546,19 @@ namespace EmpireAtWar.Services.Enemy
                     option.Value.BuildTime,
                     option.Value.UnitCapacity,
                     option.Value.MaxCount,
-                    _profileCatalog.Get(UnitTypeId.Ship(option.Key)).GetCombatValue() / Math.Max(1, option.Value.Price));
+                    combatValuePerCredit);
                 if (_stationPressure.IsStationCritical)
                 {
-                    float combatValue = _profileCatalog.Get(UnitTypeId.Ship(option.Key)).GetCombatValue();
-                    if (combatValue <= 0f) continue;
-                    float arrival = GetArrivalSeconds(UnitTypeId.Ship(option.Key), option.Value);
-                    bool timely = arrival <= _stationPressure.EstimatedTimeToLossSeconds;
-                    bool selectedTimely = found && selectedArrival <= _stationPressure.EstimatedTimeToLossSeconds;
-                    if (selectedTimely && !timely) continue;
-                    if (timely && !selectedTimely) found = false;
-                    priority = arrival / combatValue;
+                    if (combatValuePerCredit <= 0f) continue;
+                    float arrival = GetArrivalSeconds(unitType, option.Value);
+                    if (float.IsPositiveInfinity(arrival) || !(arrival <= _stationPressure.EstimatedTimeToLossSeconds))
+                        continue;
+                    priority = Math.Max(1f, arrival) / combatValuePerCredit;
                 }
                 if (!found || priority < bestPriority ||
                     priority == bestPriority && option.Value.Price < selected.Value.Price)
                 {
                     selected = option;
-                    selectedArrival = GetArrivalSeconds(UnitTypeId.Ship(option.Key), option.Value);
                     bestPriority = priority;
                     found = true;
                 }

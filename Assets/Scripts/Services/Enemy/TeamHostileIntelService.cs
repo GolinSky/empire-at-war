@@ -120,6 +120,7 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             IReadOnlyList<AiWorldSnapshot.Entry> units = _worldSnapshot.LivingUnits;
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = _worldSnapshot.RaidStructures;
             foreach (TeamEntry team in _teams.Values)
             {
                 if (team.Members.Count == 0)
@@ -154,6 +155,11 @@ namespace EmpireAtWar.Services.Enemy
                         entry.OffenseScale,
                         now));
                 }
+                foreach (AiWorldSnapshot.Entry entry in structures)
+                    if (entry.IsMiningFacility && _playerRoster.IsHostile(viewer, entry.Owner) &&
+                        !entry.Entity.HealthModel.IsDestroyed && _vision.IsVisible(viewer, entry.Entity))
+                        team.Intel.ReportMine(new HostileSighting(entry.Id, entry.UnitTypeId, entry.Owner,
+                            ToPoint(entry.Position), entry.Hull, entry.Shields, entry.OffenseScale, now));
             }
         }
 

@@ -14,10 +14,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         public void Sample(float local, float fleet, float now, bool hasLocalThreat = true, bool hasFleetThreat = true)
         {
-            float blend = _initialized ? 1f - (float)Math.Exp(-Math.Max(0f, now - _lastTime) /
-                ADVANTAGE_SMOOTHING_SECONDS) : 1f;
-            Local = !hasLocalThreat || !_hadLocalThreat ? local : Local + (local - Local) * blend;
-            Fleet = !hasFleetThreat || !_hadFleetThreat ? fleet : Fleet + (fleet - Fleet) * blend;
+            if (_initialized && now <= _lastTime) return;
+
+            float blend = 1f - (float)Math.Exp(-(now - _lastTime) / ADVANTAGE_SMOOTHING_SECONDS);
+            Local = !hasLocalThreat || !_hadLocalThreat || local <= Local ? local : Local + (local - Local) * blend;
+            Fleet = !hasFleetThreat || !_hadFleetThreat || fleet <= Fleet ? fleet : Fleet + (fleet - Fleet) * blend;
             _hadLocalThreat = hasLocalThreat;
             _hadFleetThreat = hasFleetThreat;
             _lastTime = now;

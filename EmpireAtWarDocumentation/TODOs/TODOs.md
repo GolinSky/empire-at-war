@@ -318,6 +318,8 @@
 
 ### Bugs
 
+- [x] **UltraHard AI collapse (2026-11-18 battle) + player Attack order lost to auto-power** → [[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]
+  - Completed 2026-11-18. Six fixes implemented, Unity compilation passed and related fixtures updated. In-game acceptance → [[TODOs/User_Acceptance_Queue]]. Parent → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]].
 - [x] **Ship ability event throws for destroyed caster (online host, 9× per session)** → [[Done/Bugs/Ship_Ability_Event_Destroyed_Caster]]
   - Completed 2026-11-18: events use stable `EntityId`; regression test added, not run.
 - [x] **Fix 63 EditMode failures from the 2026-11-16 full run (31 from one tutorial-anchor `Destroy`, 4 shared-AI, rest content/HUD/input)** → [[Done/Bugs/EditMode_Failures_2026-11-16_Plan|EditMode Failures 2026-11-16]]

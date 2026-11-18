@@ -13,6 +13,7 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
         private readonly Squadron _squadron;
 
         public UnitOrderType CurrentOrder => _squadron.CurrentOrder;
+        public IEntity AttackTarget => _squadron.AttackTarget;
         public int OrderRevision => _squadron.OrderRevision;
 
         public void ApplyReplicaOrder(UnitOrderType order, bool isNewOrder) =>

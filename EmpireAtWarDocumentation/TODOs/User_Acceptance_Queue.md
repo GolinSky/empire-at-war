@@ -288,6 +288,10 @@ created: "2026-10-29\r"
 - [ ] [[Done/Bugs/Enemy_AI_Independent_Task_Groups]] — In-game: available squadrons spread across capture objectives; scouts, escorts and active carrier guards keep their assignments.
 - [ ] [[Done/Bugs/Enemy_AI_Independent_Task_Groups]] — On explicit request, execute EnemyAi regressions (11 new cases); tests were not run under the local override.
 
+## Enemy AI UltraHard Collapse and Attack Order Loss
+
+- [ ] [[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]] — In-game acceptance for the UltraHard AI and player Attack-order fixes. Unity compilation passed. Regressions authored and reviewed without a local test run.
+
 ## Enemy AI Endgame Defense and Capture
 
 - [ ] [[Done/Bugs/Enemy_AI_Endgame_Defense_And_Capture_Fix]] — Siege: no defense gap > 5 s while the station loses durability; defenders have targets in range within 15 s of latch; single superweapon hit does not recall the fleet.

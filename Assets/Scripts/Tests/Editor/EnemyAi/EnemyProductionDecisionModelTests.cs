@@ -937,9 +937,10 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase(false)]
-        [TestCase(true)]
-        public void CriticalStation_BuysFastSquadronWithoutMinimumFleet(bool hasUnlockedShip)
+        [TestCase(false, true)]
+        [TestCase(true, true)]
+        [TestCase(true, false)]
+        public void CriticalStation_BuysSquadronOnlyWhenItCanArriveInTime(bool hasUnlockedShip, bool timely)
         {
             ReinforcementData reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
             FactionDefinition definition = CopyDefinition(FactionType.Republic,
@@ -964,7 +965,7 @@ namespace EmpireAtWar.Tests.Editor
                 }
                 foreach (var squadron in factionModel.SquadronFactionData)
                 {
-                    SetBackingField(squadron.Value, nameof(FactionData.BuildTime), 5);
+                    SetBackingField(squadron.Value, nameof(FactionData.BuildTime), timely ? 2 : 5);
                     profiles.Add(UnitTypeId.Squadron(squadron.Key), profile);
                 }
                 Assert.That(factionModel.SquadronFactionData.Count, Is.GreaterThan(0));
@@ -1003,7 +1004,10 @@ namespace EmpireAtWar.Tests.Editor
                 strategy.Tick(0f);
                 scheduler.Step(0f);
 
-                Assert.That(purchases.LastRequest, Is.TypeOf<SquadronUnitRequest>());
+                if (timely)
+                    Assert.That(purchases.LastRequest, Is.TypeOf<SquadronUnitRequest>());
+                else
+                    Assert.That(purchases.RequestCount, Is.Zero);
             }
             finally
             {

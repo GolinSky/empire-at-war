@@ -7,6 +7,6 @@ namespace EmpireAtWar.Services.PlayerCommands
     public interface IShipAbilityCommandHandler
     {
         /// <summary>Authority side of a player's ability press or target pick; casters are already issuer-owned.</summary>
-        void Execute(IReadOnlyList<IEntity> casters, ShipAbilityId id, IEntity target, bool cancel);
+        void Execute(IReadOnlyList<IEntity> casters, ShipAbilityId id, IEntity target, bool cancel, bool automatic = false);
     }
 }

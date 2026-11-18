@@ -443,8 +443,10 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private sealed class TestCommand : IShipAbilityFacade, IAttackFacade, ICombatModifiersFacade,
-            IGravityWellEmitterFacade, IEntitySelectionObserverFacade
+            IGravityWellEmitterFacade, IEntitySelectionObserverFacade, IUnitOrderObserverFacade
         {
+            public UnitOrderType CurrentOrder => UnitOrderType.None;
+            public IEntity AttackTarget => null;
             public ISelectionModelObserver Selection { get; } = new SelectionModel();
             public bool Emitting { get; private set; }
             public bool OnScreen { get; private set; } = true;

@@ -113,6 +113,7 @@ namespace EmpireAtWar.Entities.Squadrons
         public float NavigationRadius => Data.NavigationRadius;
         // Online clients show the host's order (see ApplyReplicaOrder).
         public UnitOrderType CurrentOrder => _replicaOrder ?? _orders.Current;
+        internal IEntity AttackTarget => CurrentOrder == UnitOrderType.Attack ? _orders.Target : null;
         public int OrderRevision => _orders.Revision;
         private UnitOrderType? _replicaOrder;
         public bool IsDestroyed => _health.Destroyed;

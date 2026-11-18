@@ -22,18 +22,21 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Smoothing_DampsAlternatingMeasurementsAndIgnoresDuplicateTick()
+        public void Smoothing_AppliesDropsImmediatelyAndDampsRecovery()
         {
             var smoother = new EnemyAdvantageSmoother();
-            smoother.Sample(0.9f, 0.9f, 0f);
-            for (int i = 1; i <= 20; i++)
-            {
-                smoother.Sample(i % 2 == 0 ? 0.78f : 1.03f, 1f, i);
-                Assert.That(smoother.Local, Is.InRange(0.8f, 1f));
-            }
-            float previous = smoother.Local;
-            smoother.Sample(10f, 10f, 20f);
-            Assert.That(smoother.Local, Is.EqualTo(previous));
+            smoother.Sample(3f, 4f, 0f);
+            smoother.Sample(0.2f, 0.4f, 1f);
+            Assert.That(smoother.Local, Is.EqualTo(0.2f));
+            Assert.That(smoother.Fleet, Is.EqualTo(0.4f));
+
+            smoother.Sample(0.1f, 0.1f, 1f);
+            Assert.That(smoother.Local, Is.EqualTo(0.2f));
+            Assert.That(smoother.Fleet, Is.EqualTo(0.4f));
+
+            smoother.Sample(3f, 4f, 2f);
+            Assert.That(smoother.Local, Is.GreaterThan(0.2f).And.LessThan(3f));
+            Assert.That(smoother.Fleet, Is.GreaterThan(0.4f).And.LessThan(4f));
         }
 
         [Test]
@@ -66,7 +69,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Retreat_LeavesOnlyAfterExitThresholdAndMinimumHold()
+        public void Retreat_ReentryIsImmediateAndExitRequiresRecoveryThreshold()
         {
             var model = new EnemyStrategicDecisionModel();
             float cutoff = EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.Medium).RetreatAdvantage;
@@ -74,16 +77,12 @@ namespace EmpireAtWar.Tests.Editor
                 Is.EqualTo(EnemyStrategicState.RetreatValue));
             Assert.That(model.Evaluate(Snapshot(cutoff * 1.1f), now: 20f).State,
                 Is.EqualTo(EnemyStrategicState.RetreatValue));
+            Assert.That(model.SwitchHeld, Is.True);
             Assert.That(model.Evaluate(Snapshot(cutoff * 1.25f), now: 21f).State,
                 Is.EqualTo(EnemyStrategicState.EngageLocal));
             Assert.That(model.Evaluate(Snapshot(cutoff - 0.05f), now: 22f).State,
-                Is.EqualTo(EnemyStrategicState.EngageLocal));
-            Assert.That(model.SwitchHeld, Is.True);
-            Assert.That(model.Evaluate(Snapshot(cutoff - 0.05f), now: 23f).State,
-                Is.EqualTo(EnemyStrategicState.EngageLocal));
-            Assert.That(model.SwitchHeld, Is.False);
-            Assert.That(model.Evaluate(Snapshot(cutoff - 0.05f), now: 30f).State,
                 Is.EqualTo(EnemyStrategicState.RetreatValue));
+            Assert.That(model.SwitchHeld, Is.False);
         }
 
         [Test]
@@ -97,6 +96,20 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.Evaluate(Snapshot(0.1f, ships: 0), now: 2f).State,
                 Is.EqualTo(EnemyStrategicState.RebuildFleet));
             Assert.That(model.Bypass, Is.EqualTo("noShips"));
+        }
+
+        [Test]
+        public void CorneredFleetBrieflyCommitsToAnAvailableTacticalObjective()
+        {
+            var model = new EnemyStrategicDecisionModel();
+            Assert.That(model.Evaluate(Snapshot(0.1f, safe: false), now: 0f).State,
+                Is.EqualTo(EnemyStrategicState.EngageLocal));
+            EnemyStrategicSnapshot hasCapture = Snapshot(0.1f, safe: false, hasCapture: true);
+            Assert.That(model.Evaluate(hasCapture, now: 0.5f).State,
+                Is.EqualTo(EnemyStrategicState.EngageLocal));
+            Assert.That(model.SwitchHeld, Is.True);
+            Assert.That(model.Evaluate(hasCapture, now: 3f).State,
+                Is.EqualTo(EnemyStrategicState.CaptureZone));
         }
 
         [Test]
@@ -149,7 +162,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void PressureWithoutDefenseTransition_DoesNotBypassCaptureRetreatHold()
+        public void PressureWithoutDefenseTransition_DoesNotDelayCaptureDetachmentRetreat()
         {
             var model = new EnemyStrategicDecisionModel();
             EnemyStrategicSnapshot UnderPressure(float local) => new EnemyStrategicSnapshot(
@@ -159,16 +172,14 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.Evaluate(UnderPressure(1f), captureDetachment: true, now: 0f).State,
                 Is.EqualTo(EnemyStrategicState.CaptureZone));
             Assert.That(model.Evaluate(UnderPressure(0.5f), captureDetachment: true, now: 1f).State,
-                Is.EqualTo(EnemyStrategicState.CaptureZone));
-            Assert.That(model.Bypass, Is.EqualTo("none"));
-            Assert.That(model.SwitchHeld, Is.True);
-            Assert.That(model.Evaluate(UnderPressure(0.5f), captureDetachment: true, now: 9f).State,
                 Is.EqualTo(EnemyStrategicState.RetreatValue));
+            Assert.That(model.SwitchHeld, Is.False);
         }
 
-        private static EnemyStrategicSnapshot Snapshot(float local, bool safe = true, int ships = 2) =>
+        private static EnemyStrategicSnapshot Snapshot(float local, bool safe = true, int ships = 2,
+            bool hasCapture = false) =>
             new EnemyStrategicSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.Medium,
-                ships, 4, 0, 0.5f, 0f, false, false, true,
+                ships, 4, 0, 0.5f, 0f, hasCapture, false, true,
                 localAdvantage: local, hasLocalThreat: true, hasSafeRetreat: safe);
     }
 }

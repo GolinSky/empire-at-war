@@ -3,6 +3,7 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
+using EmpireAtWar.Utils;
 using UnityEngine;
 using static EmpireAtWar.Utils.FormationConversion;
 
@@ -15,6 +16,7 @@ namespace EmpireAtWar.Services.Enemy
         /// across the site edge does not flip the fleet between site defense and raiding every evaluation.
         /// </summary>
         private const float THREAT_GRACE_SECONDS = 6f;
+        private const float FACILITY_POSITION_TOLERANCE_SQUARED = 1f;
 
         private readonly Dictionary<int, float> _threatenedUntil = new Dictionary<int, float>();
         private readonly ICaptureSiteDirectory _sites;
@@ -39,10 +41,29 @@ namespace EmpireAtWar.Services.Enemy
             {
                 ICaptureSite site = _sites.Sites[i];
                 bool threatened = IsThreatened(i, site, intel, Time.time);
-                if (!threatened && !IsCapturable(site)) continue;
+                long? blockingFacilityId = null;
+                float progress = site.CaptureProgress;
+                bool isMine = site.Kind == CaptureSiteKind.Mining;
+                if (!threatened && !IsCapturable(site))
+                {
+                    if (!isMine || site.FacilityType != SiteFacilityType.Mining ||
+                        !_players.IsHostile(_owner.Id, site.Owner) ||
+                        site.State != CaptureSiteState.Constructing && site.State != CaptureSiteState.Operational) continue;
+                    foreach (HostileSighting mine in intel.Mines)
+                    {
+                        if (mine.Owner != site.Owner || PlanarGeometry.DistanceSquared(
+                            ToVector(mine.Position), site.FacilityPosition) > FACILITY_POSITION_TOLERANCE_SQUARED)
+                            continue;
+                        blockingFacilityId = mine.EntityId;
+                        // Damage to the facility is progress toward opening the site.
+                        progress = mine.Hull + mine.Shields;
+                        break;
+                    }
+                    if (!blockingFacilityId.HasValue) continue;
+                }
                 objectives.Add(new EnemyCaptureObjective($"site:{i}", EnemyCaptureObjectiveType.Facility,
                     site.Owner, ToVector(ToPoint(site.Center)), _data.GetSettings(site.Kind).Radius,
-                    site.CaptureProgress, threatened));
+                    progress, threatened, isMine: isMine, blockingFacilityId: blockingFacilityId));
             }
         }
 

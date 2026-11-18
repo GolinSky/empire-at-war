@@ -1,5 +1,6 @@
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Enemy;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.ShipSpawning
@@ -13,7 +14,8 @@ namespace EmpireAtWar.Services.ShipSpawning
 
         bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position);
 
-        /// <summary>Finds an arrival point within the home-area radius of an arbitrary anchor, such as a surviving station.</summary>
-        bool TryGetSpawnPositionAround(PlayerId owner, ShipType shipType, Vector3 anchor, out Vector3 position);
+        /// <summary>Finds a safe arrival point near the defended station or its fallback rally.</summary>
+        bool TryGetDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+            PlacementThreatSnapshot threats, out Vector3 position);
     }
 }

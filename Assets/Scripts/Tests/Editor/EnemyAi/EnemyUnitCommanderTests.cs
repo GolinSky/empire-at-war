@@ -452,6 +452,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeSquadron : IEntity, ISquadron, IUnitTypeFacade, IUnitOrderObserverFacade
         {
+            public IEntity AttackTarget => null;
             public event Action Released;
             public UnitOrderType CurrentOrder { get; set; }
             public int OrdersReceived { get; private set; }
@@ -727,10 +728,11 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        [TestCase(true, true)]
-        [TestCase(false, false)]
-        [TestCase(true, false)]
-        public void RaidSelection_AlliedOrHiddenMineCannotReplaceVisibleHostileStructure(bool allied, bool visible)
+        [TestCase(true, true, false)]
+        [TestCase(false, false, false)]
+        [TestCase(true, false, true)]
+        [TestCase(false, false, true)]
+        public void RaidSelection_HiddenMinesRequireHostileTeamIntel(bool allied, bool visible, bool remembered)
         {
             GameObject structureView = new GameObject("Structure");
             GameObject mineView = new GameObject("Mine");
@@ -749,14 +751,19 @@ namespace EmpireAtWar.Tests.Editor
                 locator.AddEntity(structure);
                 var vision = new VisionService(roster);
                 vision.Register(TestPlayers.Enemy, scoutView.transform, visible ? 200f : 20f);
+                var intel = new TeamIntelRegistry();
+                if (remembered)
+                    intel.Get(roster.Get(TestPlayers.Enemy).Team).ReportMine(new HostileSighting(
+                        mine.Id, default, mine.Owner, new FormationPoint(100f, 0f), 100f, 0f, 1f, 0f));
                 var builder = CreateContextBuilder(null, null, Array.Empty<IEnemyCaptureObjectiveSource>(), locator, null, roster,
-                    null, new TeamIntelRegistry(), vision, roster.Get(TestPlayers.Enemy),
+                    null, intel, vision, roster.Get(TestPlayers.Enemy),
                     null, new TestHazards(), null, null, new EnemyStationPressureTracker(), CreateRecovery(roster));
                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
                 typeof(EnemyStrategicContextBuilder).GetField("_raidTarget", flags).SetValue(builder, mine);
                 MethodInfo find = typeof(EnemyStrategicContextBuilder).GetMethod("FindRaidTarget", flags);
 
-                Assert.That(find.Invoke(builder, new object[] { Vector3.zero, 0f }), Is.SameAs(structure));
+                Assert.That(find.Invoke(builder, new object[] { Vector3.zero, 0f }),
+                    Is.SameAs(!allied && remembered ? mine : structure));
             }
             finally
             {
@@ -1394,6 +1401,55 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void CaptureZone_StationaryAttackMoveIsOverriddenUntilInsideTheCircle()
+        {
+            var ship = new FakeShip(Vector3.zero, 1);
+            var orders = new FakeOrderService();
+            var executor = new EnemyTaskForceExecutor(orders);
+            var decision = new EnemyStrategicDecision("test", EnemyStrategicState.CaptureZone, 1);
+            var context = Context(new IShipEntity[] { ship });
+            executor.Execute(decision, context, now: 0f);
+            ship.CurrentOrder = UnitOrderType.AttackMove;
+            orders.Calls.Clear();
+
+            executor.Execute(decision, context, now: 4f);
+            Assert.That(orders.Calls, Is.Empty);
+            executor.Execute(decision, context, now: 5f);
+            Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.Move));
+
+            ship.CurrentOrder = UnitOrderType.Move;
+            orders.Calls.Clear();
+            executor.Execute(decision, context, now: 6f);
+            Assert.That(orders.Calls, Is.Empty);
+            ship.WorldPosition = context.CaptureTarget;
+            executor.Execute(decision, context, now: 7f);
+            Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.AttackMove));
+        }
+
+        [Test]
+        public void CaptureZone_AttacksBlockingMineBeforeMovingIntoItsSite()
+        {
+            var facility = new FakeEntity(new FakeHealthModel(null), TestPlayers.Human, 2) { IsMine = true };
+            var ships = new IShipEntity[] { new FakeShip(Vector3.zero, 1) };
+            var orders = new FakeOrderService();
+            var executor = new EnemyTaskForceExecutor(orders);
+            var decision = new EnemyStrategicDecision("test", EnemyStrategicState.CaptureZone, 1);
+            var blocked = new EnemyCaptureObjective("site:0", EnemyCaptureObjectiveType.Facility, TestPlayers.Human,
+                Vector3.right * 50f, 10f, 100f, isMine: true, blockingFacilityId: facility.Id);
+
+            executor.Execute(decision, Context(ships, captureObjective: blocked, captureBlockingFacility: facility));
+            Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(orders.Calls.Single().Target, Is.SameAs(facility));
+
+            orders.Calls.Clear();
+            var clear = new EnemyCaptureObjective(blocked.Id, blocked.Kind, PlayerId.None,
+                blocked.Position, blocked.Radius, 0f, isMine: true);
+            executor.Execute(decision, Context(ships, captureObjective: clear));
+            Assert.That(orders.Calls.Single().Action, Is.EqualTo(UnitActionId.AttackMove));
+            Assert.That(orders.Calls.Single().Point, Is.EqualTo(clear.Position));
+        }
+
+        [Test]
         public void RetreatValue_ChangedAnchorRedirectsRetreatingShip()
         {
             FakeShip ship = new FakeShip(id: 1, position: Vector3.zero);
@@ -1717,6 +1773,32 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(squadrons.HasTargets, Is.EqualTo(present));
         }
 
+        [TestCase(CaptureSiteState.Constructing)]
+        [TestCase(CaptureSiteState.Operational)]
+        public void BuiltHostileMine_RemainsAnObjectiveAfterVisionIsLost(CaptureSiteState state)
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            var site = new CaptureSiteStub(Vector3.zero) { Owner = TestPlayers.Human, FacilityState = state };
+            IEnemyCaptureObjectiveSource source = SiteObjectives(new SiteSource(site), roster)[0];
+            var objectives = new List<EnemyCaptureObjective>();
+            var intel = new HostileIntelModel();
+
+            source.AddStrategicObjectives(objectives, intel);
+            Assert.That(objectives, Is.Empty);
+            intel.ReportMine(new HostileSighting(2, default, TestPlayers.Human, default, 100f, 0f, 1f, 0f));
+            intel.ForgetExpired(1000f);
+            source.AddStrategicObjectives(objectives, intel);
+            Assert.That(objectives.Single().BlockingFacilityId, Is.EqualTo(2));
+
+            objectives.Clear();
+            intel.Forget(2);
+            site.Owner = PlayerId.None;
+            site.FacilityState = null;
+            source.AddStrategicObjectives(objectives, intel);
+            Assert.That(objectives.Single().Id, Is.EqualTo("site:0"));
+            Assert.That(objectives.Single().BlockingFacilityId, Is.Null);
+        }
+
         [Test]
         public void CaptureSelection_SelectsCloserMine()
         {
@@ -1813,6 +1895,21 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(objective.Kind, Is.EqualTo(EnemyCaptureObjectiveType.ReinforcementZone));
             Assert.That(objective.Position, Is.EqualTo(Vector3.right * 10f));
+        }
+
+        [Test]
+        public void MainForceCaptureSelection_PicksNearbyMineOverDistantCentralRelay()
+        {
+            PlayerRoster roster = TestPlayers.CreateDuel();
+            Vector3 relay = Vector3.right * 800f;
+            var zones = new ZoneSource(roster, relay);
+            var sites = new SiteSource(new CaptureSiteStub(Vector3.right * 100f));
+            EnemyStrategicContextBuilder builder = CaptureBuilder(roster, zones, sites, new TestHazards());
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            typeof(EnemyStrategicContextBuilder).GetField("_preferStrategicObjectives", flags).SetValue(builder, true);
+            typeof(EnemyStrategicContextBuilder).GetField("_strategicCenter", flags).SetValue(builder, relay);
+
+            Assert.That(SelectCapture(builder).Id, Is.EqualTo("site:0"));
         }
 
         [Test]
@@ -2155,8 +2252,24 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(builder.CanDetachForCapture(strong), Is.True);
         }
 
+        [Test]
+        public void CaptureProbe_LoneShipCanDetachForSafeMine()
+        {
+            var (builder, _, strong, _) = CaptureProbeBuilder(withMine: true);
+            var ships = new IShipEntity[] { strong };
+            var orders = new FakeOrderService();
+            var planner = new EnemyShipTaskGroupPlanner(builder, new EnemyStrategicDecisionModel(),
+                new EnemyTaskForceExecutor(orders), orders);
+            planner.Reconcile(ships);
+            planner.TryCreateCaptureGroup(ships, new HashSet<string>(), stationPressure: false);
+            planner.Reconcile(ships);
+
+            Assert.That(planner.Groups.Single().IsCaptureDetachment, Is.True);
+            Assert.That(planner.Groups.Single().Ships.Single(), Is.SameAs(strong));
+        }
+
         private static (EnemyStrategicContextBuilder Builder, FakeShip Weak, FakeShip Strong, FakeShip Slower)
-            CaptureProbeBuilder()
+            CaptureProbeBuilder(bool withMine = false)
         {
             PlayerRoster roster = TestPlayers.CreateDuel();
             var locator = new EntityLocator();
@@ -2175,7 +2288,9 @@ namespace EmpireAtWar.Tests.Editor
             intel.Get(roster.Get(TestPlayers.Enemy).Team).Report(new HostileSighting(4, type, TestPlayers.Human,
                 new FormationPoint(0f, 0f), 100f, 0f, 1f, Time.time));
             // Candidates are already inside the zone; no navigation, station, raid or retreat query is needed.
-            var builder = CreateContextBuilder(null, null, Array.Empty<IEnemyCaptureObjectiveSource>(),
+            var builder = CreateContextBuilder(null, null, withMine
+                    ? SiteObjectives(new SiteSource(new CaptureSiteStub(Vector3.zero)), roster)
+                    : Array.Empty<IEnemyCaptureObjectiveSource>(),
                 locator, null, roster, catalog, intel, null,
                 roster.Get(TestPlayers.Enemy), null, new TestHazards(), new ZoneSource(roster, Vector3.zero),
                 null, new EnemyStationPressureTracker(), null);
@@ -2515,7 +2630,7 @@ namespace EmpireAtWar.Tests.Editor
             RefreshTeamPicture(builder, now);
             return (EnemyCaptureObjective)typeof(EnemyStrategicContextBuilder)
                 .GetMethod("SelectCaptureObjective", BindingFlags.Instance | BindingFlags.NonPublic)
-                .Invoke(builder, new object[] { Vector3.zero, now });
+                .Invoke(builder, new object[] { Vector3.zero, now, false });
         }
 
         private static void RefreshTeamPicture(EnemyStrategicContextBuilder builder, float now)
@@ -2545,7 +2660,7 @@ namespace EmpireAtWar.Tests.Editor
             IReadOnlyDictionary<IEntity, ForceComposition> targetForces = null,
             IEntity localThreatTarget = null,
             EnemyStationPressureTracker stationPressure = null,
-            Func<Vector3, float, bool> isPointClear = null)
+            Func<Vector3, float, bool> isPointClear = null, IEntity captureBlockingFacility = null)
         {
             if (ownBase != null && stationPressure == null)
             {
@@ -2583,7 +2698,8 @@ namespace EmpireAtWar.Tests.Editor
                 defenseTarget: defenseTarget, retreatAnchor: retreatAnchor,
                 shipForces: shipForces ?? defaultShipForces, targetForces: targetForces ?? defaultTargetForces,
                 localThreatTarget: localThreatTarget, stationPressure: stationPressure,
-                isDefensePointClear: isPointClear ?? ((point, radius) => true));
+                isDefensePointClear: isPointClear ?? ((point, radius) => true),
+                captureBlockingFacility: captureBlockingFacility);
         }
 
 private sealed class ZoneSource : IReinforcementZoneSource
@@ -2623,7 +2739,9 @@ private sealed class ZoneSource : IReinforcementZoneSource
             public CaptureSiteKind Kind { get; set; } = CaptureSiteKind.Mining;
             public int PointId { get; set; }
             public PlayerId Owner { get; set; } = PlayerId.None;
-            public CaptureSiteState State => Owner == PlayerId.None ? CaptureSiteState.Neutral : CaptureSiteState.Owned;
+            public CaptureSiteState? FacilityState { get; set; }
+            public CaptureSiteState State => FacilityState ??
+                (Owner == PlayerId.None ? CaptureSiteState.Neutral : CaptureSiteState.Owned);
             public SiteFacilityType FacilityType => SiteFacilityType.Mining;
             public float CaptureProgress => 0f;
             public float ConstructionProgress => 0f;

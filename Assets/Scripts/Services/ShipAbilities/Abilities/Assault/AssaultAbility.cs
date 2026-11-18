@@ -21,7 +21,8 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
 
             _modifiers = caster.Modifiers;
             _applied = _modifiers.Add(_settings.StatModifier);
-            attack.Attack(target, Vector3.zero);
+            if (caster.Entity.GetFacade<IUnitOrderObserverFacade>().AttackTarget != target)
+                attack.Attack(target, Vector3.zero);
         }
 
         public void Stop() => _modifiers.Remove(_applied);

@@ -48,6 +48,7 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>Closest known undefended hostile structure; null when none.</summary>
         public GameEntity RaidTarget { get; }
         public EnemyCaptureObjective CaptureObjective { get; }
+        public GameEntity CaptureBlockingFacility { get; }
         public GameEntity DefenseTarget { get; }
         public string StationPressureReason { get; }
         public EnemyStationPressureTracker StationPressure { get; }
@@ -78,7 +79,8 @@ namespace EmpireAtWar.Services.Enemy
             Vector3? retreatAnchor = null,
             string recoveryReason = "",
             EnemyStationPressureTracker stationPressure = null,
-            Func<Vector3, float, bool> isDefensePointClear = null)
+            Func<Vector3, float, bool> isDefensePointClear = null,
+            GameEntity captureBlockingFacility = null)
         {
             Snapshot = snapshot;
             Ships = ships;
@@ -92,6 +94,7 @@ namespace EmpireAtWar.Services.Enemy
             LocalThreatTarget = localThreatTarget;
             RaidTarget = raidTarget;
             CaptureObjective = captureObjective;
+            CaptureBlockingFacility = captureBlockingFacility;
             DefenseTarget = defenseTarget;
             StationPressureReason = stationPressureReason;
             RetreatAnchor = retreatAnchor;
@@ -170,6 +173,10 @@ namespace EmpireAtWar.Services.Enemy
         public bool RecoveryActive => _recovery.IsActive;
         public bool StationCritical => _stationPressure.IsStationCritical;
         public Vector3? ForwardStationFallback { get; private set; }
+
+        public void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
+            _recovery.FillPlacementThreats(threats);
+
         public AllyAiMarkerSource AlliedMarkers { get; }
         public TeamAiCooperation TeamCooperation => _teamPicture.Cooperation;
         private TacticalMarker _allyDefenseMarker;
@@ -290,7 +297,7 @@ namespace EmpireAtWar.Services.Enemy
             CollectCaptureObjectives();
         }
 
-        public bool CanDetachForCapture(IShipEntity ship)
+        public bool CanDetachForCapture(IShipEntity ship, bool mineOnly = false)
         {
             if (_captureCandidates.Count == 0) return false;
             if (!_entityLocator.TryGetEntity(ship.EntityId, out GameEntity entity) ||
@@ -302,12 +309,14 @@ namespace EmpireAtWar.Services.Enemy
             _forceBuilder.AddUnit(_ownForce, entity);
             Vector3 origin = ship.WorldPosition;
             BuildHostilesNear(_localThreatForce, origin, LOCAL_ENGAGEMENT_RADIUS);
+            if (ship.CurrentOrder == UnitOrderType.Attack && !_localThreatForce.IsEmpty) return false;
             if (CombatMatchup.Advantage(_ownForce, _localThreatForce) <=
                 EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage) return false;
 
             _captureReason = "";
             foreach (EnemyCaptureObjective objective in _captureCandidates)
-                if (!IsCaptureReserved(objective.Id) &&
+                if ((!mineOnly || objective.IsMine && !objective.BlockingFacilityId.HasValue) &&
+                    !IsCaptureReserved(objective.Id) &&
                     IsObjectiveSafe(origin, objective.Position, objective.Radius, false, 1f, objective.Id)) return true;
             return false;
         }
@@ -369,7 +378,8 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>The returned collections and their force compositions are borrowed until the next Build on this builder.</summary>
         public EnemyStrategicContext Build(IReadOnlyList<IShipEntity> ships = null,
-            ISet<string> reservedCaptureObjectives = null, bool preferStrategicObjectives = false)
+            ISet<string> reservedCaptureObjectives = null, bool preferStrategicObjectives = false,
+            bool unbuiltMinesOnly = false)
         {
             _preferStrategicObjectives = preferStrategicObjectives;
             PlayerId self = _owner.Id;
@@ -468,7 +478,7 @@ namespace EmpireAtWar.Services.Enemy
             using (SELECT_CAPTURE_OBJECTIVE_MARKER.Auto())
             {
 #endif
-            captureObjective = SelectCaptureObjective(origin, now);
+            captureObjective = SelectCaptureObjective(origin, now, unbuiltMinesOnly);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
 #endif
@@ -547,6 +557,10 @@ namespace EmpireAtWar.Services.Enemy
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
 #endif
+            GameEntity blockingFacility = null;
+            if (captureObjective?.BlockingFacilityId is long facilityId &&
+                _entityLocator.TryGetEntity(facilityId, out GameEntity facility) && !facility.HealthModel.IsDestroyed)
+                blockingFacility = facility;
             return new EnemyStrategicContext(
                 snapshot: snapshot,
                 ships: ownShips,
@@ -560,6 +574,7 @@ namespace EmpireAtWar.Services.Enemy
                 localThreatTarget: _localThreat,
                 raidTarget: _raidTarget,
                 captureObjective: captureObjective,
+                captureBlockingFacility: blockingFacility,
                 defenseTarget: defenseTarget,
                 stationPressureReason: !_stationPressure.HasPressure ? "No recent station pressure." :
                     defenseTarget == null ? "Station losing durability; attacker not visible" :
@@ -674,9 +689,14 @@ namespace EmpireAtWar.Services.Enemy
                 }
 
                 Vector3 position = entry.Position;
-                if (!_vision.IsVisible(_owner.Id, entry.Entity) || IsDefended(entry.Id, position, now) ||
-                    !IsRouteSafe(origin, position, 0f, false)) continue;
                 bool isMine = entry.IsMiningFacility;
+                if (!_vision.IsVisible(_owner.Id, entry.Entity))
+                {
+                    if (!isMine || !_intel.TryGetMine(entry.Id, out HostileSighting known) ||
+                        known.Owner != entry.Owner) continue;
+                    position = ToVector(known.Position);
+                }
+                if (IsDefended(entry.Id, position, now) || !IsRouteSafe(origin, position, 0f, false)) continue;
                 if (ReferenceEquals(entry.Entity, _raidTarget) && GetIonCost(position) == 0f)
                     keepsPrevious = true;
                 float distance = GetTargetScore(origin, position);
@@ -836,7 +856,7 @@ namespace EmpireAtWar.Services.Enemy
             if (AlliedMarkers != null) AlliedMarkers.AddStrategicObjectives(_captureCandidates, _intel);
         }
 
-        private EnemyCaptureObjective SelectCaptureObjective(Vector3 origin, float now)
+        private EnemyCaptureObjective SelectCaptureObjective(Vector3 origin, float now, bool unbuiltMinesOnly)
         {
             _teamPicture.EnsureRefreshed(now);
             CaptureReservedByOtherGroup = false;
@@ -854,6 +874,7 @@ namespace EmpireAtWar.Services.Enemy
             for (int i = 0; i < _captureCandidates.Count; i++)
             {
                 EnemyCaptureObjective candidate = _captureCandidates[i];
+                if (unbuiltMinesOnly && (!candidate.IsMine || candidate.BlockingFacilityId.HasValue)) continue;
                 bool isCurrent = IsCurrentCapture(candidate);
                 if (IsCaptureReserved(candidate.Id))
                 {
@@ -874,8 +895,11 @@ namespace EmpireAtWar.Services.Enemy
                 EnemyCaptureObjective candidate = ranked.Candidate;
                 bool isCurrent = IsCurrentCapture(candidate);
                 if (best != null && !isCurrent) continue;
-                if (!IsObjectiveSafe(origin, candidate.Position, candidate.Radius, false,
-                        isCurrent ? RETAIN_SAFETY_SCALE : 1f, candidate.Id))
+                float safetyScale = isCurrent ? RETAIN_SAFETY_SCALE : 1f;
+                bool safe = candidate.BlockingFacilityId.HasValue
+                    ? IsRouteSafe(origin, candidate.Position, candidate.Radius, false, safetyScale)
+                    : IsObjectiveSafe(origin, candidate.Position, candidate.Radius, false, safetyScale, candidate.Id);
+                if (!safe)
                 {
                     // Raw strength estimates dip for a tick as squadrons launch or die; only a sustained
                     // hostile advantage drops the current objective.
@@ -1001,11 +1025,11 @@ namespace EmpireAtWar.Services.Enemy
         private float GetCaptureScore(Vector3 origin, EnemyCaptureObjective candidate)
         {
             if (!_preferStrategicObjectives) return GetTargetScore(origin, candidate.Position) - candidate.PriorityBonus;
-            // The main fleet contests strategic relays; detachments continue collecting nearby facilities.
-            // Every term is in linear map units: a squared travel term outgrew relay preference on large maps.
-            float relayPenalty = candidate.Kind == EnemyCaptureObjectiveType.ReinforcementZone ? 0f : 2000f;
-            return PlanarDistance(_strategicCenter, candidate.Position) * 2f +
-                   GetTravelCost(origin, candidate.Position) + relayPenalty - candidate.PriorityBonus;
+            // Value is measured in equivalent travel distance. Relays open deployment lanes; mines fund production.
+            float value = candidate.Kind == EnemyCaptureObjectiveType.ReinforcementZone
+                ? Mathf.Max(0f, 400f - PlanarDistance(_strategicCenter, candidate.Position) * 0.25f)
+                : candidate.IsMine ? 300f : 0f;
+            return GetTravelCost(origin, candidate.Position) - value - candidate.PriorityBonus;
         }
 
         private float GetTravelCost(Vector3 origin, Vector3 position)

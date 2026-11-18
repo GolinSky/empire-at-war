@@ -37,6 +37,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
     {
         private const float DEFAULT_INCOME = 15f;
         private const float DEPLOYMENT_RETRY_INTERVAL = 1f;
+        private const float DEFENSE_DEPLOYMENT_WAIT_SECONDS = 20f;
 
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
@@ -55,6 +56,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly ReinforcementData _reinforcementData;
         private readonly PlayerSlot _owner;
         private readonly EnemyBuildQueue _builds = new EnemyBuildQueue();
+        private readonly PlacementThreatSnapshot _defenseDeploymentThreats = new PlacementThreatSnapshot();
         private readonly HashSet<long> _builtSquadrons = new HashSet<long>();
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
@@ -239,11 +241,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 _stationTelemetryAt = Time.time + 15f;
                 _hadStation = hasStation;
             }
-            Advance(Time.deltaTime);
+            AdvanceBuilds(Time.deltaTime, hasRally && defendHome);
         }
 
-        public void Advance(float deltaTime) => _builds.Advance(deltaTime, ExecuteBuild,
-            _aiState.GatherReinforcements && _productionAccess.CanProduce);
+        public void Advance(float deltaTime) => AdvanceBuilds(deltaTime,
+            _aiState.TryGetReinforcementRally(out _, out bool defendHome) && defendHome);
+
+        private void AdvanceBuilds(float deltaTime, bool defendHome) =>
+            _builds.Advance(deltaTime, ExecuteBuild,
+                _productionAccess.CanProduce && (defendHome || _aiState.GatherReinforcements),
+                defendHome ? (_aiState.IsStationCritical ? 0f : DEFENSE_DEPLOYMENT_WAIT_SECONDS) :
+                    EnemyBuildQueue.MAX_DEPLOYMENT_WAIT_SECONDS);
 
         /// <summary>Puts back a saved build: its reservation is taken again and it keeps its time left.</summary>
         public void RestorePendingBuild(UnitRequest unitRequest, float timeLeft)
@@ -295,20 +303,32 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     break;
                 case ShipUnitRequest shipUnitRequest:
                     bool hasRally = _aiState.TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
+                    if (defendHome && !_productionAccess.CanProduce)
+                    {
+                        // The strategic snapshot can still name a defense rally after its station falls.
+                        hasRally = false;
+                        defendHome = false;
+                    }
                     // Ships arrive at the home of whichever team base builds them, borrowed from an ally or not.
                     PlayerId home = !_productionAccess.HasHostBase &&
                                     _productionAccess.TryGetProductionBase(out var productionBase)
                         ? productionBase.Owner
                         : _productionAccess.ProductionHost;
                     Vector3 position;
-                    // Defenders arrive at the threatened station itself; after the primary falls it is not the home area.
-                    bool foundPosition = hasRally
-                        ? defendHome
-                            ? _shipSpawnPoints.TryGetSpawnPositionAround(home, shipUnitRequest.Key, rally, out position) ||
-                              _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(home, shipUnitRequest.Key, out position)
-                            : _shipSpawnPoints.TryGetSpawnPositionNear(home, shipUnitRequest.Key, rally, out position)
-                        : _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(home, shipUnitRequest.Key, out position) ||
-                          _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipUnitRequest.Key, out position);
+                    bool foundPosition;
+                    if (hasRally && defendHome)
+                    {
+                        _aiState.FillDefenseDeploymentThreats(_defenseDeploymentThreats);
+                        foundPosition = _shipSpawnPoints.TryGetDefenseSpawnPosition(home, shipUnitRequest.Key,
+                            rally, _defenseDeploymentThreats, out position);
+                    }
+                    else
+                    {
+                        foundPosition = hasRally
+                            ? _shipSpawnPoints.TryGetSpawnPositionNear(home, shipUnitRequest.Key, rally, out position)
+                            : _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(home, shipUnitRequest.Key, out position) ||
+                              _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipUnitRequest.Key, out position);
+                    }
                     if (!foundPosition)
                     {
                         if (_productionAccess.CanProduce)
@@ -316,7 +336,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                             // Keep the completed ship paid and reserved while its arrival area is blocked.
                             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deploymentBlocked",
                                 $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally}");
-                            _builds.Add(shipUnitRequest, DEPLOYMENT_RETRY_INTERVAL);
+                            _builds.RetryShipDeployment(shipUnitRequest, DEPLOYMENT_RETRY_INTERVAL);
                             return;
                         }
 

@@ -337,6 +337,26 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(index, Is.EqualTo(expected));
         }
 
+        [TestCase(20f, false, -1)]
+        [TestCase(50f, true, 1)]
+        public void CounterProduction_CriticalStationUsesArrivalDeadlineAndPrice(
+            float timeToLoss, bool expectedSelection, int expectedIndex)
+        {
+            UnitCombatProfile capital = Profile(ShipClass.Capital, 8000f, 4000f, (ShipClass.Capital, 60f));
+            ProductionCandidate[] candidates =
+            {
+                new ProductionCandidate(capital, 4000, arrivalSeconds: 30f),
+                new ProductionCandidate(capital, 1000, arrivalSeconds: 50f)
+            };
+
+            bool selected = new EnemyCounterProductionModel(new NeutralShipClassMatchups()).TrySelect(
+                Force(capital), Force(capital, capital), candidates, out int index,
+                isStationCritical: true, timeToLossSeconds: timeToLoss);
+
+            Assert.That(selected, Is.EqualTo(expectedSelection));
+            Assert.That(index, Is.EqualTo(expectedIndex));
+        }
+
         private sealed class FavorClass : IShipClassMatchups
         {
             private readonly ShipClass _favored;

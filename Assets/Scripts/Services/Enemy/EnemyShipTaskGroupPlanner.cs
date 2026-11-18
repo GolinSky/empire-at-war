@@ -40,7 +40,7 @@ namespace EmpireAtWar.Services.Enemy
             foreach (IShipEntity ship in ships) _members.Add(ship);
             foreach (EnemyShipTaskGroup group in _groups)
                 group.Ships.RemoveAll(ship => !_members.Contains(ship));
-            if (_captureGroup != null && (stationPressure || ships.Count < 2 || _captureGroup.Ships.Count == 0 ||
+            if (_captureGroup != null && (stationPressure || _captureGroup.Ships.Count == 0 ||
                 _captureGroup.NoViableCaptureSince >= 0f &&
                 Time.time - _captureGroup.NoViableCaptureSince >= DETACHMENT_GRACE_SECONDS &&
                 !_captureGroup.DecisionModel.IsRecovering))
@@ -125,17 +125,17 @@ namespace EmpireAtWar.Services.Enemy
         public void TryCreateCaptureGroup(IReadOnlyList<IShipEntity> ships,
             ISet<string> reservedObjectives, bool stationPressure)
         {
-            if (stationPressure || _captureGroup != null || ships.Count < 2) return;
+            if (stationPressure || _captureGroup != null || ships.Count == 0) return;
             _unassigned.Clear();
             foreach (IShipEntity ship in ships)
-                if (ship.CurrentOrder != UnitOrderType.Retreat && ship.CurrentOrder != UnitOrderType.Attack)
+                if (ship.CurrentOrder != UnitOrderType.Retreat)
                     _unassigned.Add(ship);
             _unassigned.Sort((a, b) => b.NavigationSpeed.CompareTo(a.NavigationSpeed));
             _captureProbe.BeginCaptureProbe(reservedObjectives);
             foreach (IShipEntity ship in _unassigned)
             {
-                if (!_captureProbe.CanDetachForCapture(ship)) continue;
-                EnemyShipTaskGroup candidate = CreateGroup(true);
+                if (!_captureProbe.CanDetachForCapture(ship, mineOnly: ships.Count == 1)) continue;
+                EnemyShipTaskGroup candidate = CreateGroup(true, unbuiltMinesOnly: ships.Count == 1);
                 candidate.Ships.Add(ship);
                 foreach (EnemyShipTaskGroup group in _groups) group.Ships.Remove(ship);
                 candidate.NoViableCaptureSince = -1f;
@@ -170,9 +170,9 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
-        private EnemyShipTaskGroup CreateGroup(bool capture) => new EnemyShipTaskGroup(
+        private EnemyShipTaskGroup CreateGroup(bool capture, bool unbuiltMinesOnly = false) => new EnemyShipTaskGroup(
             _contextBuilder.CreateGroupBuilder(), new EnemyStrategicDecisionModel(),
-            new EnemyTaskForceExecutor(_orders), capture);
+            new EnemyTaskForceExecutor(_orders), capture, unbuiltMinesOnly);
 
         private static float DistanceSquared(Vector3 first, Vector3 second)
         {

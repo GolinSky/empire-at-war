@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.Utils;
 using UnityEngine;
 
@@ -38,5 +39,6 @@ namespace EmpireAtWar.Services.ShipAbilities
         public ShipAbilityAiUse AiUse => aiUse;
         public AutoPowerRole AutoPower => autoPower;
         public ShipAbilitySettings Settings => settings;
+        internal bool IssuesAttackOrder => settings is AssaultSettings or ConcentrateFireSettings or LuckyShotSettings;
     }
 }

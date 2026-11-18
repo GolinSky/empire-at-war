@@ -11,6 +11,25 @@ namespace EmpireAtWar.Services.Enemy
 
         public void Add(float x, float z, float radius) => _threats.Add((x, z, radius));
 
+        public (float X, float Z) GetLocalCentroid(float x, float z, float searchRadius)
+        {
+            float sumX = 0f;
+            float sumZ = 0f;
+            int count = 0;
+            foreach (var threat in _threats)
+            {
+                float dx = x - threat.X;
+                float dz = z - threat.Z;
+                float reach = threat.Radius + searchRadius;
+                if (dx * dx + dz * dz > reach * reach) continue;
+                sumX += threat.X;
+                sumZ += threat.Z;
+                count++;
+            }
+
+            return count > 0 ? (sumX / count, sumZ / count) : (x, z);
+        }
+
         public bool IsSafe(float x, float z, float clearance)
         {
             foreach (var threat in _threats)

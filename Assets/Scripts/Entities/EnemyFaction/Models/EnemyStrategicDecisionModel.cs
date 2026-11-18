@@ -132,6 +132,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// <summary>Bonus for the current state so near-equal options do not flip every decision.</summary>
         private const float HYSTERESIS = 0.05f;
         public const float MIN_STATE_SECONDS = 8f;
+        private const float CORNERED_STATE_SECONDS = 2.5f;
         public const float RETREAT_EXIT_SCALE = 1.25f;
         /// <summary>Fleet advantage, as a multiple of the attack ratio, at which attacking outranks capturing.</summary>
         public const float PRESS_ADVANTAGE_SCALE = 2f;
@@ -217,6 +218,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         private bool _hasLastState;
         private bool _hadBase;
         private float _stateStartedAt;
+        private bool _startedWhileCornered;
         private bool _holdEpisode;
         public float StateHeldSeconds { get; private set; }
         public bool SwitchHeld { get; private set; }
@@ -316,11 +318,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 Bypass = "defend";
             BestScore = bestScore;
             RunnerUpScore = runnerUp;
-            bool held = _hasLastState && state != _lastState && Bypass == "none" &&
-                !float.IsNaN(now) && StateHeldSeconds < MIN_STATE_SECONDS &&
+            bool cornered = Bypass == "cornered";
+            bool shortCommitment = cornered || _startedWhileCornered;
+            bool held = _hasLastState && state != _lastState && (Bypass == "none" || cornered) &&
+                !float.IsNaN(now) && StateHeldSeconds < (shortCommitment ? CORNERED_STATE_SECONDS : MIN_STATE_SECONDS) &&
                 (_lastState != EnemyStrategicState.CaptureZone || snapshot.HasCaptureTarget) &&
                 (_lastState != EnemyStrategicState.EngageLocal || snapshot.HasLocalThreat) &&
-                IsCommittedState(state) && IsCommittedState(_lastState);
+                IsCommittedState(state, shortCommitment) && IsCommittedState(_lastState, shortCommitment);
             if (held)
             {
                 BlockedState = state;
@@ -356,7 +360,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 }
             }
 
-            if (!_hasLastState || _lastState != state) _stateStartedAt = float.IsNaN(now) ? 0f : now;
+            if (!_hasLastState || _lastState != state)
+            {
+                _stateStartedAt = float.IsNaN(now) ? 0f : now;
+                if (commit) _startedWhileCornered = cornered;
+            }
             _hadBase = snapshot.HasOwnBase;
             _lastState = state;
             _hasLastState = true;
@@ -375,9 +383,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 reason: reason);
         }
 
-        private static bool IsCommittedState(EnemyStrategicState state) =>
-            state == EnemyStrategicState.RetreatValue || state == EnemyStrategicState.EngageLocal ||
-            state == EnemyStrategicState.CaptureZone;
+        private static bool IsCommittedState(EnemyStrategicState state, bool cornered) =>
+            state == EnemyStrategicState.EngageLocal || state == EnemyStrategicState.CaptureZone ||
+            cornered && state == EnemyStrategicState.Hold;
 
         private static int CalculateCommittedShipCount(
             EnemyStrategicState state,

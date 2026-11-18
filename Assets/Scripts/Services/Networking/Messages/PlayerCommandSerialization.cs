@@ -144,11 +144,12 @@ namespace EmpireAtWar.Services.Networking.Messages
             writer.WriteArray(command.CasterIds);
             writer.WriteLong(command.TargetId);
             writer.WriteBool(command.Cancel);
+            writer.WriteBool(command.Automatic);
         }
 
         public static ShipAbilityCommand ReadShipAbilityCommand(this NetworkReader reader) => new ShipAbilityCommand(
             reader.ReadPlayerId(), (ShipAbilityId)reader.ReadInt(), reader.ReadArray<long>(), reader.ReadLong(),
-            reader.ReadBool());
+            reader.ReadBool(), reader.ReadBool());
 
         public static void WriteDeployReinforcementCommand(this NetworkWriter writer, DeployReinforcementCommand command)
         {

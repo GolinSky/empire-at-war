@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Units;
@@ -64,9 +65,20 @@ namespace EmpireAtWar.Services.ShipAbilities
                 }
         }
 
-        /// <summary>Nearest acceptable visible hostile in ability range; warships before strikecraft.</summary>
+        /// <summary>Prefer the explicit attack target, then nearby hostiles in range.</summary>
         public IEntity FindTarget(IShipAbilityFacade caster, ShipAbilityDefinition definition)
         {
+            IUnitOrderObserverFacade order = caster.Entity.GetFacade<IUnitOrderObserverFacade>();
+            if (order.CurrentOrder == UnitOrderType.Attack)
+            {
+                IEntity ordered = order.AttackTarget;
+                if (ordered != null && IsLive(ordered) && _abilities.CanTarget(caster, definition, ordered) &&
+                    ShipAbilityRange.IsInRange(caster, ordered, definition.Range))
+                    return ordered;
+                // Remote clients know the order type; authority resolves the target from the actual order.
+                if (ordered != null && definition.IssuesAttackOrder)
+                    return null;
+            }
             IEntity target = null;
             bool targetStrikecraft = true;
             float nearest = float.PositiveInfinity;

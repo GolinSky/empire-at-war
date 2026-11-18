@@ -12,9 +12,16 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Intel
     public sealed class HostileIntelModel : Model
     {
         private readonly Dictionary<long, HostileSighting> _sightings = new Dictionary<long, HostileSighting>();
+        private readonly Dictionary<long, HostileSighting> _mines = new Dictionary<long, HostileSighting>();
         private readonly List<long> _expired = new List<long>();
 
         public IReadOnlyCollection<HostileSighting> Sightings => _sightings.Values;
+        public IReadOnlyCollection<HostileSighting> Mines => _mines.Values;
+
+        // Mines are stationary. Keep their last known location until the facility is removed.
+        public void ReportMine(HostileSighting sighting) => _mines[sighting.EntityId] = sighting;
+
+        public bool TryGetMine(long entityId, out HostileSighting sighting) => _mines.TryGetValue(entityId, out sighting);
 
         public void Report(HostileSighting sighting)
         {
@@ -30,6 +37,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Intel
         public void Forget(long entityId)
         {
             _sightings.Remove(entityId);
+            _mines.Remove(entityId);
         }
 
         public float GetConfidence(HostileSighting sighting, float now) =>

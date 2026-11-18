@@ -4,9 +4,9 @@ system:
   - ai
   - capture
   - combat
-verified: 2026-11-14
-verification: Live-source and DI review, Unity script compilation/import; tests
-  and Play Mode not run. Patrol/recovery battle acceptance pending.
+verified: 2026-11-18
+verification: Live-source review and Unity script compilation. Regression
+  fixtures reviewed and updated. Unity tests and battle acceptance pending.
 ---
 # Enemy AI Objectives
 
@@ -28,7 +28,7 @@ verification: Live-source and DI review, Unity script compilation/import; tests
 - Each strategic decision scans capture targets; capture completion releases the objective for the next safe target. `EnemySiteConstructionController` checks every `3 s` and prioritizes building mines on owned, uncontested sites when affordable; existing income and production systems fund further ships.
 - 2026-10-31: removed `MinimumControlledZones` tuning and the satellite eligibility gate. `Loading_20261031_011454_ai.csv` showed repeated zone attempts starving facility selection under the previous quota. Combat interruptions remain possible; this change does not guarantee uninterrupted capture.
 - Retain valid objective/active engagement; stopped ships outside its circle are reissued. Idle ships inside remain assigned.
-- Capture diversion beyond closest approach + max(800, radius + 2 × ship navigation radius) → return movement; valid engagements are retained.
+- Capture diversion beyond the distance leash, or 5 s outside the circle without meaningful approach progress while AttackMoving → Move into the circle. AttackMove can resume at the objective.
 - No approach/capture progress for 20 s of executed capture → reject objective for 20 s and consider alternatives. `EnemyUnitCommander` reports the executed objective after each decision; defense/retreat/hold/rebuild pause the accumulated stall budget. A new objective or approach/capture progress resets it. Objective owner/availability changes invalidate commitment.
 - Safety uses known target/route threat, ion cost and clear capture-area samples. It does not prove full physical path connectivity; stall recovery handles lack of movement.
 - Retreat anchors share recovery safety: safe home/allied relay normally; active relocation uses the committed recovery anchor. Dead default zones are excluded.
@@ -36,18 +36,18 @@ verification: Live-source and DI review, Unity script compilation/import; tests
 
 ### Mining objectives (2026-11-01)
 
-- Visible hostile mining facilities outrank other raid structures; cached non-mining targets yield to eligible mines.
+- Visible or remembered hostile mines outrank other raid structures. Team intel retains observed stationary mines until removal. Unseen, unobserved mines are unavailable.
 - Mining raid utility `0.66` exceeds ordinary capture plus hysteresis (`0.65`). Threatened-site defense disables the mining rule; base defense, retreat and decisive attack remain higher.
 - Raid defenders: known ships and squadrons within `1000`; evaluate this group's `CombatMatchup.Advantage` against difficulty `RequiredAttackRatio`, not presence of any ship.
 - Raid route: new and retained raids also pass `IsRouteSafe` (known hostiles at origin, within `1000` of the route, or near target vs `RetreatAdvantage`). Same check as capture/retreat objectives, without footprint clearance.
-- Built/construction mines must be destroyed before capture becomes eligible. Site location/ownership is globally known; direct building raids require current visibility.
+- A constructing or operational hostile mine with team intel is a strategic objective. The fleet attacks the facility before entering the circle. Once it is destroyed, the site can be captured normally.
 - At least one eligible squadron remains available to capture while objectives exist. Scouts use surplus; carrier guards and escorts do not count as available.
 - Safe owned empty mines may build with fewer than two warships; ownership, contesting and affordability remain checked by capture construction. The two-warship gate still applies to satellite construction.
 - Source comparison and counter limits → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Research]].
 
 ### Independent task groups (2026-10-31)
 
-- With more than one ship, reserve the fastest eligible ship with a safe, unreserved capture target as a capture detachment. Combat groups reserve objectives before extraction; the reused detachment executes next decision tick. Attack/Retreat ships are excluded from initial selection.
+- Reserve the fastest eligible ship with a safe, unreserved objective as a capture detachment. A lone ship may detach for an unblocked mine. Retreating ships and ships currently attacking amid local threats are excluded. Combat groups reserve objectives before extraction.
 - Capture detachment keeps its own capture/retreat/hold/rebuild policy; station pressure recalls it. Release requires 10 s with no available objective and no recovery; reservations by another group also consume that grace period so idle ships rejoin combat.
 - Opening combat groups join within 800 and split beyond 1600. At six available combat ships, retain one main force and recruit distant nonrecovering groups; station pressure concentrates available ships immediately. Main-force membership survives travel separation.
 - Group origin, local force, offensive strength, route safety, capture stall budget and recovery state are independent. Distant or nonassigned ships do not lend strength to a detached capture route.
@@ -77,8 +77,8 @@ verification: Live-source and DI review, Unity script compilation/import; tests
 - Strikecraft cap: own force (live + pending) clears known hostile strikecraft in ≤ `30 s` → skip `UnitCombatProfile.IsStrikecraftSpecialist()` candidates (own-weapon average hull DPS vs strikecraft > vs warships). Current specialists: Carrack, CR70, Centax; not Venator/Resolute. Telemetry `counter-selection` → `strikecraftCovered`.
 - Cap applies to counter selection only; the size-based `TrySelectShip` fallback is unchanged.
 - Rank unlocked, type-limit-eligible ships before checking free population; wait for the chosen reinforcement instead of filling smaller gaps. Queue reservations count toward used population.
-- Home defense → default-home deployment only; blocked arrivals stay paid/reserved and retry. Otherwise choose valid home/held relay nearest the main fleet rally.
-- Main capture scoring favors relays near the midpoint of home/enemy stations; detached captures retain distance/ion scoring.
+- Home defense → sample the rear half first and reject locations within known hostile weapon reach plus safety margin. Paid, blocked ships wait outside production lanes and retry every 1 s. Gather ready ships for up to 20 s. Critical pressure releases ready ships immediately. Normal deployment uses the valid rally zone.
+- Main capture scoring balances travel and ion cost against strategic value. Central relays receive up to 400 units of equivalent travel value and mining sites receive 300. A closer mine can beat a distant central relay.
 - Scattered main force with no viable offensive target rallies instead of stopping permanently.
 - Telemetry distinguishes selection, accepted/rejected purchase, completion, deployment/blockage, capacity waits and station health/loss. Existing purchase rows still mean attempts.
 
@@ -109,7 +109,7 @@ verification: Live-source and DI review, Unity script compilation/import; tests
 - Useful counter ships intercept visible targets inside that leash without assembly waiting. Contact loss/leash exit ends interception; completed defense-point orders are retained until the target changes or the point moves >200 units.
 - Ongoing station damage with no defender target in range for 8 s → first advance jumps to known gap − own weapon range + ship clearance, bounded by the leash. Static clearance checks ignore transient navigation reservations.
 - Critical = latched pressure AND (durability <50% maximum OR estimated loss time <120 s). Critical production compares affordable ships and squadrons fitting available population, bypassing ordinary fleet ratios; site mines/satellites and new superweapon charging purchases pause. Paid charging and firing continue.
-- Emergency ranking uses useful combat value / arrival seconds; useful candidates arriving before station loss outrank late candidates. Arrival = matching request-ID queue delay + build time + base-speed travel to last known threat; no bearing → queue + build only. Squadron travel uses cruise speed. No known hostile composition → rank combat value / arrival seconds.
+- Critical production rejects candidates arriving after estimated station loss. Rank timely combat gain by matchup, available credits/population and arrival time. Arrival = matching request-ID queue delay + build time + base-speed travel to last known threat. No bearing → queue + build only. Squadron travel uses cruise speed. No timely candidate → save credits.
 - `EnemyBuildQueue` serializes identical request IDs; different IDs advance in parallel. Human `ProductionQueueSnapshot` is not the AI queue. Normal capital reservations remain unchanged outside critical pressure.
 - Each committed ship captures if its clearance fits the centre or one of four half-radius interior samples; only failed-fit ships AttackMove to perimeter points at objective radius + their own navigation radius. Capture receivers are batched per identical fitted point through `IssueAttackMove`, preserving compact formation and shared contacts/target distribution. A new/recovering member regroups its point's eligible ships; unchanged groups retain orders. Failed-fit escorts rejoin capture when fit becomes available. Strategic fit uses minimum clearance to admit any fitting capturer and ignores transient reservations; obstacle, ion and known hostile-route checks remain.
 - Reservation API cannot identify owners; `transientReservation` means a ship reservation blocked the sampled point, not proof of a hostile or friendly owner. Tactical order placement still applies clearance.
@@ -117,8 +117,8 @@ verification: Live-source and DI review, Unity script compilation/import; tests
 
 ### Patrol and recovery relocation (2026-11-14)
 
-- Each task group smooths local/fleet advantage with a 4 s exponential average. Empty-force → real-contact transitions reset that channel, preventing the no-enemy sentinel `100` from delaying retreat.
-- Retreat enters at difficulty `RetreatAdvantage`, exits at ×1.25; Engage/Retreat/Capture hold 8 s unless ships/base/defense/cornering or target validity requires a change. Capture/patrol/anchor targets hold 10 s and require ≥20% better utility; invalid targets release immediately.
+- Each task group applies local/fleet advantage drops immediately and smooths rises with a 4 s exponential average. A change in contact presence resets that channel.
+- Retreat enters immediately at difficulty `RetreatAdvantage` and exits at ×1.25. EngageLocal/CaptureZone use an 8 s commitment. Cornered tactical choices, including Hold, use 2.5 s while the previous objective stays viable. Capture/patrol/anchor targets hold 10 s and require ≥20% better utility. Invalid targets release immediately.
 - `TeamIntelRegistry` owns team `EnemyPatrolMemory`: 6×6 sector centers, relays, mining/satellite sites and unexpired intel. Sample allied visibility on AI ticks at 3 s cadence; score staleness × value / (1 + distance). Values: allied mine 5, neutral mine/relay/pad 3, hostile structure 2, empty sector/other intel 1.
 - Squadron scout priority: allied marker → missing build space → common patrol/intel score → known hostile base. Normal+ detaches the cheapest available corvette when spare ships exist; defense, recovery and combat task-force need release it. Easy uses squadrons only.
 - `EnemyRecoveryAnchor` updates in `AssessStation`, before task-group decisions. With station construction available, recovery triggers when the AI has no station, pressure is critical, or a weak fleet is under attack for 5 s. It clears after 20 s parity without pressure or successful station construction.
@@ -127,7 +127,7 @@ verification: Live-source and DI review, Unity script compilation/import; tests
 - Free placement: anchor rings → safety-ranked allied zones → map rings from anchor; every candidate passes live spawn and hostile-reach checks. Known weapon reach +100 units is excluded (unknown reach 500); lost-home exclusion max(64 units, own default-home radius) plus placement footprint during recovery.
 - Destroyed-structure exclusion = max(32 units, placement radius), last 10 positions. Sites keep fixed mine/satellite placement. Completion revalidates anchor ownership, contesting, recent sector visibility and safety; no candidate → existing refund path.
 - A self-hosted AI can complete one backup station while its primary stands. Losing the primary before completion cancels and refunds the build when it reaches completion. A completed backup can keep production running after the primary falls.
-- A hosted AI may build its first station during recovery while allied production is available. Each AI can complete its additional station slot once, even if that station later falls. Recovery overrides the critical-station purchase gate.
+- A hosted AI may build its first station during recovery while allied production is available. Each AI can complete its additional station slot once. Skip additional station purchases while critical.
 - Modes using `DirectCombatAiState` do not run strategic recovery/patrol ship decisions; ordinary strategic AI, including applicable Survival AI slots, uses the same policy. Transient patrol/commitment/latch state is reassessed after load; no save schema change.
 - Implementation/acceptance → [[Done/Features/Enemy_AI_Patrol_And_Recovery_Relocation]]; event fields → [[Tooling/Battle_Telemetry]]. Tests authored; battle acceptance remains user-gated.
 
@@ -136,6 +136,6 @@ verification: Live-source and DI review, Unity script compilation/import; tests
 - A viable threatened owned site immediately preempts a normal capture target, bypassing target age and score margin; unsafe, reserved and stalled objectives remain excluded.
 - A living station stays defended during backup construction unless smoothed local advantage falls below difficulty RetreatAdvantage (0.7 Medium/Hard; 0.8 Easy/UltraHard). Withdrawal retains the existing ×1.25 exit threshold; station loss still directs survivors to the recovery anchor.
 - Reinforcement rally follows the actual DefendBase decision during recovery; pressure alone does not redirect withdrawn groups home.
-- Pressure bypasses minimum state duration only when entering DefendBase, not for arbitrary capture/engage/retreat switches while pressure remains latched.
+- Station-pressure defense and viable retreat take priority over offensive commitment. See [[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]].
 - Placement/scout map search still checks threats per candidate. Worst-case source complexity is candidate count × (sightings + entities + patrol points); profile a blocked large map before optimizing. No measured timing or performance pass claimed.
 - Fix and verification → [[Done/Bugs/Enemy_AI_Patrol_Recovery_Review_Fixes]].

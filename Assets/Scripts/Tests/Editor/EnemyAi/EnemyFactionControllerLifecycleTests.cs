@@ -47,9 +47,10 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(queue.Builds[0].TimeLeft, Is.Zero);
 
             queue.Add(escort, 5f);
-            queue.Advance(1f, arrived.Add, gatherShips: !immediateDefense);
+            float waitLimit = immediateDefense ? 0f : EnemyBuildQueue.MAX_DEPLOYMENT_WAIT_SECONDS;
+            queue.Advance(1f, arrived.Add, gatherShips: true, deploymentWaitLimit: waitLimit);
             Assert.That(arrived.Count, Is.EqualTo(immediateDefense ? 1 : 0));
-            queue.Advance(4f, arrived.Add, gatherShips: !immediateDefense);
+            queue.Advance(4f, arrived.Add, gatherShips: true, deploymentWaitLimit: waitLimit);
             Assert.That(arrived, Is.EqualTo(new UnitRequest[] { flagship, escort }));
             Assert.That(queue.Builds, Is.Empty);
         }
@@ -88,11 +89,27 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(queue.Builds, Is.Empty);
         }
 
-        [TestCase(true, true)]
-        [TestCase(false, true)]
-        [TestCase(false, false)]
-        public void Withdrawal_ReleasesReadyShipAtFallbackOrDefaultZoneWithoutLosingBlockedPurchase(
-            bool fallbackAvailable, bool defaultZoneAvailable)
+        [Test]
+        public void RetryDeployment_DoesNotOccupyAnotherShipBuildOfTheSameType()
+        {
+            EnemyBuildQueue queue = new EnemyBuildQueue();
+            FactionData data = new FactionData();
+            var queued = new ShipUnitRequest(data, ShipType.Venator);
+            var blocked = new ShipUnitRequest(data, ShipType.Venator);
+            List<UnitRequest> arrived = new List<UnitRequest>();
+            queue.Add(queued, 15f);
+            queue.RetryShipDeployment(blocked, 1f);
+
+            queue.Advance(1f, arrived.Add);
+
+            Assert.That(arrived, Is.EqualTo(new[] { blocked }));
+            Assert.That(queue.Builds.Count, Is.EqualTo(1));
+            Assert.That(queue.Builds[0].TimeLeft, Is.EqualTo(14f));
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void HomeDefense_DeploysCompletedWaveTogetherOrRetriesWithoutUsingDefaultZone(bool defenseAvailable)
         {
             var data = ScriptableObject.CreateInstance<ReinforcementData>();
             var shipObject = new GameObject("Withdrawal reinforcement");
@@ -103,10 +120,11 @@ namespace EmpireAtWar.Tests.Editor
                 SetBackingField(faction, nameof(FactionData.MaxCount), 1);
                 SetBackingField(faction, nameof(FactionData.BuildTime), 2);
                 SetBackingField(faction, nameof(FactionData.UnitCapacity), 1);
-                var ai = new RallyAiState { GatherReinforcements = true };
+                Vector3 fallback = new Vector3(40f, 0f, -900f);
+                var ai = new RallyAiState { Rally = fallback };
                 var wallet = new TrackingWallet();
                 var limits = new EnemyUnitLimitModel();
-                var spawnPoints = new RallyShipSpawnPoints(fallbackAvailable, defaultZoneAvailable);
+                var spawnPoints = new RallyShipSpawnPoints { IsAvailable = defenseAvailable };
                 var factory = new TrackingShipFactory(shipObject.AddComponent<ShipEntity>());
                 var controller = new EnemyFactionController(aiState: ai, model: new EnemyFactionModel(null, null),
                     shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null,
@@ -118,39 +136,42 @@ namespace EmpireAtWar.Tests.Editor
                     squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
                     playerRegistry: new PlayerRegistry());
                 var request = new ShipUnitRequest(faction, ShipType.Venator);
+                var escort = new ShipUnitRequest(faction, ShipType.Recusant);
                 controller.Purchase(request);
-                controller.Advance(2f);
+                controller.Advance(1f);
+                controller.Purchase(escort);
+                controller.Advance(1f);
                 Assert.That(controller.PendingBuilds[0].TimeLeft, Is.Zero);
                 Assert.That(factory.Created, Is.Empty);
                 Assert.That(spawnPoints.Calls, Is.Empty);
 
-                Vector3 fallback = new Vector3(40f, 0f, -900f);
-                ai.Rally = fallback;
-                ai.GatherReinforcements = false;
-                controller.Advance(0f);
+                controller.Advance(1f);
 
-                Assert.That(spawnPoints.Calls, Is.EqualTo(fallbackAvailable
-                    ? new[] { "around" } : new[] { "around", "default" }));
+                Assert.That(spawnPoints.Calls, Is.EqualTo(new[] { "defense", "defense" }));
                 Assert.That(spawnPoints.Anchor, Is.EqualTo(fallback));
                 Assert.That(spawnPoints.Owner, Is.EqualTo(TestPlayers.Enemy));
-                Assert.That(spawnPoints.ShipType, Is.EqualTo(ShipType.Venator));
-                Assert.That(wallet.SpendCount, Is.EqualTo(1));
+                Assert.That(wallet.SpendCount, Is.EqualTo(2));
                 Assert.That(wallet.RefundCount, Is.Zero);
-                Assert.That(limits.CurrentUnitCapacity, Is.EqualTo(1));
-                if (fallbackAvailable || defaultZoneAvailable)
-                {
-                    Assert.That(factory.Created, Is.EqualTo(new[] { ShipType.Venator }));
-                    Assert.That(factory.Positions, Is.EqualTo(new[]
-                        { fallbackAvailable ? fallback + Vector3.right : RallyShipSpawnPoints.DefaultPosition }));
-                    Assert.That(controller.PendingBuilds, Is.Empty);
-                }
-                else
+                Assert.That(limits.CurrentUnitCapacity, Is.EqualTo(2));
+                if (!defenseAvailable)
                 {
                     Assert.That(factory.Created, Is.Empty);
-                    Assert.That(controller.PendingBuilds.Count, Is.EqualTo(1));
+                    Assert.That(controller.PendingBuilds.Count, Is.EqualTo(2));
                     Assert.That(controller.PendingBuilds[0].Request, Is.SameAs(request));
-                    Assert.That(controller.PendingBuilds[0].TimeLeft, Is.GreaterThan(0f));
+                    Assert.That(controller.PendingBuilds[0].TimeLeft, Is.Zero);
+                    Assert.That(controller.PendingBuilds[1].Request, Is.SameAs(escort));
+                    Assert.That(controller.PendingBuilds[1].TimeLeft, Is.Zero);
+
+                    spawnPoints.IsAvailable = true;
+                    controller.Advance(0.5f);
+                    Assert.That(spawnPoints.Calls.Count, Is.EqualTo(2));
+                    controller.Advance(0.5f);
+                    Assert.That(spawnPoints.Calls, Is.EqualTo(new[] { "defense", "defense", "defense", "defense" }));
                 }
+
+                Assert.That(factory.Created, Is.EqualTo(new[] { ShipType.Venator, ShipType.Recusant }));
+                Assert.That(factory.Positions, Is.EqualTo(new[] { fallback + Vector3.right, fallback + Vector3.right }));
+                Assert.That(controller.PendingBuilds, Is.Empty);
             }
             finally
             {
@@ -375,7 +396,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(factory.Created, Is.EqualTo(new[] { ShipType.Recusant }));
                 Assert.That(controller.PendingBuilds.Count, Is.EqualTo(1));
                 Assert.That(controller.PendingBuilds[0].Request, Is.SameAs(blocked));
-                Assert.That(controller.PendingBuilds[0].TimeLeft, Is.EqualTo(1f));
+                Assert.That(controller.PendingBuilds[0].TimeLeft, Is.Zero);
                 Assert.That(wallet.RefundCount, Is.Zero);
                 Assert.That(limits.CurrentUnitCapacity, Is.EqualTo(2));
                 Assert.That(limits.ShipOrdersCount, Is.EqualTo(2));
@@ -752,7 +773,6 @@ namespace EmpireAtWar.Tests.Editor
         {
             public EnemyStrategicState CurrentState => EnemyStrategicState.RetreatValue;
             public int ActiveShipCount => 0;
-            public bool GatherReinforcements { get; set; }
             public Vector3 Rally { get; set; }
 
             public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
@@ -761,39 +781,32 @@ namespace EmpireAtWar.Tests.Editor
                 defendHome = true;
                 return true;
             }
+
+            public void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) => threats.Clear();
         }
 
         private sealed class RallyShipSpawnPoints : IShipSpawnPoints
         {
-            public static readonly Vector3 DefaultPosition = new Vector3(20f, 0f, -700f);
-            private readonly bool _fallbackAvailable;
-            private readonly bool _defaultZoneAvailable;
             public List<string> Calls { get; } = new List<string>();
+            public bool IsAvailable { get; set; }
             public Vector3 Anchor { get; private set; }
             public PlayerId Owner { get; private set; }
-            public ShipType ShipType { get; private set; }
 
-            public RallyShipSpawnPoints(bool fallbackAvailable, bool defaultZoneAvailable)
+            public bool TryGetDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, out Vector3 position)
             {
-                _fallbackAvailable = fallbackAvailable;
-                _defaultZoneAvailable = defaultZoneAvailable;
-            }
-
-            public bool TryGetSpawnPositionAround(PlayerId owner, ShipType shipType, Vector3 anchor, out Vector3 position)
-            {
-                Calls.Add("around");
+                Calls.Add("defense");
                 Owner = owner;
-                ShipType = shipType;
                 Anchor = anchor;
                 position = anchor + Vector3.right;
-                return _fallbackAvailable;
+                return IsAvailable;
             }
 
             public bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
             {
                 Calls.Add("default");
-                position = DefaultPosition;
-                return _defaultZoneAvailable;
+                position = new Vector3(20f, 0f, -700f);
+                return true;
             }
 
             public bool TryGetSpawnPositionNear(PlayerId owner, ShipType shipType, Vector3 target, out Vector3 position)
@@ -830,7 +843,8 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position) =>
                 TryGetRandomSpawnPosition(owner, shipType, out position);
 
-            public bool TryGetSpawnPositionAround(PlayerId owner, ShipType shipType, Vector3 anchor, out Vector3 position) =>
+            public bool TryGetDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, out Vector3 position) =>
                 TryGetRandomSpawnPosition(owner, shipType, out position);
         }
 

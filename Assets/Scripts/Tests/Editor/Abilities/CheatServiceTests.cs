@@ -8,6 +8,7 @@ using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Cheats;
+using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.ShipSpawning;
 using EmpireAtWar.Ship;
 using NUnit.Framework;
@@ -128,7 +129,8 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
-            public bool TryGetSpawnPositionAround(PlayerId owner, ShipType shipType, Vector3 anchor, out Vector3 position) =>
+            public bool TryGetDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, out Vector3 position) =>
                 TryGetDefaultZoneSpawnPosition(owner, shipType, out position);
         }
 

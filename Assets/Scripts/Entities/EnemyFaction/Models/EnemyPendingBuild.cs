@@ -8,6 +8,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public UnitRequest Request { get; }
         public float TimeLeft { get; private set; }
         internal float DeploymentWait { get; private set; }
+        internal float DeploymentRetryIn { get; set; }
+        internal bool IsReadyForDeployment => TimeLeft == 0f && DeploymentRetryIn == 0f;
 
         public EnemyPendingBuild(UnitRequest request, float timeLeft)
         {

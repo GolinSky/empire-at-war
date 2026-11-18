@@ -8,6 +8,7 @@ using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Models.SkirmishCamera;
+using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Reinforcement;
 using EmpireAtWar.Services.ReinforcementZones;
 using EmpireAtWar.Services.ShipSpawning;
@@ -122,6 +123,30 @@ namespace EmpireAtWar.Tests.Editor
 
             Assert.That(spawnPoints.TryGetDefaultZoneSpawnPosition(
                 TestPlayers.SecondEnemy, ShipType.Arquitens, out _), Is.False);
+        }
+
+        [Test]
+        public void DefenseSpawn_PrefersRearOfStationWhenBothSidesAreOpen()
+        {
+            ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Ally, new OpenEverywhere());
+            var threats = new PlacementThreatSnapshot();
+            threats.Add(HOME.x + _data.HomeAreaRadius * 0.5f, HOME.z, _data.HomeAreaRadius * 0.25f);
+
+            Assert.That(spawnPoints.TryGetDefenseSpawnPosition(TestPlayers.Human, ShipType.Arquitens,
+                HOME, threats, out Vector3 position), Is.True);
+            Assert.That(position.x, Is.LessThanOrEqualTo(HOME.x));
+            Assert.That(PlanarDistance(position, HOME), Is.LessThanOrEqualTo(_data.HomeAreaRadius + 0.01f));
+        }
+
+        [Test]
+        public void DefenseSpawn_WhenEnemyRangeCoversRally_RejectsOtherwiseOpenPositions()
+        {
+            ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Ally, new OpenEverywhere());
+            var threats = new PlacementThreatSnapshot();
+            threats.Add(HOME.x + _data.HomeAreaRadius, HOME.z, _data.HomeAreaRadius * 2f + 1f);
+
+            Assert.That(spawnPoints.TryGetDefenseSpawnPosition(TestPlayers.Human, ShipType.Arquitens,
+                HOME, threats, out _), Is.False);
         }
 
         [Test]

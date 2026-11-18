@@ -8,7 +8,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     /// <summary>The AI's paid builds, using the player's per-ID production pipelines.</summary>
     public sealed class EnemyBuildQueue
     {
-        private const float MAX_DEPLOYMENT_WAIT_SECONDS = 6f;
+        internal const float MAX_DEPLOYMENT_WAIT_SECONDS = 6f;
 
         private EnemyPendingBuild _lastShipInGroup;
         private readonly List<EnemyPendingBuild> _builds = new List<EnemyPendingBuild>();
@@ -37,6 +37,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         public void Add(UnitRequest request, float timeLeft) => _builds.Add(new EnemyPendingBuild(request, timeLeft));
 
+        public void RetryShipDeployment(ShipUnitRequest request, float retryDelay)
+        {
+            var build = new EnemyPendingBuild(request, 0f) { DeploymentRetryIn = retryDelay };
+            // Once the area opens, the already-held ship can depart with any other ships ready to deploy.
+            build.WaitForDeployment(float.PositiveInfinity);
+            _builds.Add(build);
+        }
+
         public float GetRemainingTime(string requestId)
         {
             float remaining = 0f;
@@ -50,7 +58,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public void ReleaseExternalPipeline(string requestId) => _externalPipelines.Remove(requestId);
 
         /// <summary>Builds each ID in FIFO order; different IDs advance in parallel.</summary>
-        public void Advance(float deltaTime, Action<UnitRequest> complete, bool gatherShips = false)
+        public void Advance(float deltaTime, Action<UnitRequest> complete, bool gatherShips = false,
+            float deploymentWaitLimit = MAX_DEPLOYMENT_WAIT_SECONDS)
         {
             if (deltaTime < 0f) throw new ArgumentOutOfRangeException(nameof(deltaTime));
 
@@ -93,14 +102,19 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     i++;
                     continue;
                 }
+                float retryElapsed = Math.Min(remaining, build.DeploymentRetryIn);
+                build.DeploymentRetryIn -= retryElapsed;
+                remaining -= retryElapsed;
+                if (build.DeploymentRetryIn > 0f)
+                {
+                    i++;
+                    continue;
+                }
                 if (gatherShips && isShip)
                 {
                     build.WaitForDeployment(remaining);
-                    if (build.DeploymentWait < MAX_DEPLOYMENT_WAIT_SECONDS)
-                    {
-                        i++;
-                        continue;
-                    }
+                    i++;
+                    continue;
                 }
 
                 _finished.Add(build.Request);
@@ -108,14 +122,14 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
 
             if (gatherShips)
-                CollectReadyGroup();
+                CollectReadyGroup(deploymentWaitLimit);
             else
                 _lastShipInGroup = null;
 
             for (int i = 0; i < _finished.Count; i++) complete(_finished[i]);
         }
 
-        private void CollectReadyGroup()
+        private void CollectReadyGroup(float deploymentWaitLimit)
         {
             // Include the ships already ordered when the first ship finishes. Later orders form the next group.
             if (_lastShipInGroup == null || !_builds.Contains(_lastShipInGroup))
@@ -127,20 +141,28 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 {
                     if (!(build.Request is ShipUnitRequest)) continue;
                     ordered++;
-                    hasReadyShip |= build.TimeLeft == 0f;
+                    hasReadyShip |= build.IsReadyForDeployment;
                     last = build;
                 }
-                if (!hasReadyShip || ordered < 2) return;
+                if (!hasReadyShip || ordered == 1 && last.DeploymentWait < deploymentWaitLimit) return;
                 _lastShipInGroup = last;
             }
 
             int end = _builds.IndexOf(_lastShipInGroup);
+            bool allReady = true;
+            bool waitExpired = false;
             for (int i = 0; i <= end; i++)
-                if (_builds[i].Request is ShipUnitRequest && _builds[i].TimeLeft > 0f) return;
+            {
+                EnemyPendingBuild build = _builds[i];
+                if (!(build.Request is ShipUnitRequest)) continue;
+                allReady &= build.IsReadyForDeployment;
+                waitExpired |= build.IsReadyForDeployment && build.DeploymentWait >= deploymentWaitLimit;
+            }
+            if (!allReady && !waitExpired) return;
 
             for (int i = 0; i <= end;)
             {
-                if (_builds[i].Request is ShipUnitRequest)
+                if (_builds[i].Request is ShipUnitRequest && _builds[i].IsReadyForDeployment)
                 {
                     _finished.Add(_builds[i].Request);
                     _builds.RemoveAt(i);

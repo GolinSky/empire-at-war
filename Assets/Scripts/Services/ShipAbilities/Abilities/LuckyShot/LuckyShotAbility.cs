@@ -68,8 +68,9 @@ namespace EmpireAtWar.Services.ShipAbilities.Abilities
             _remaining = _settings.Windup;
             if (_session.IsAuthority)
             {
-                caster.Entity.GetFacade<IAttackFacade>().Attack(target, Vector3.zero);
                 _orders = caster.Entity.GetFacade<IUnitOrderObserverFacade>();
+                if (_orders.AttackTarget != target)
+                    caster.Entity.GetFacade<IAttackFacade>().Attack(target, Vector3.zero);
             }
         }
 

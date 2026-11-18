@@ -54,10 +54,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
 
             double baseline = hostile.IsEmpty ? 0.0 : Math.Log(CombatMatchup.Advantage(own, hostile));
             double bestScore = 0.0;
-            bool hasTimelyCandidate = false;
             for (int i = 0; i < candidates.Count; i++)
             {
                 ProductionCandidate candidate = candidates[i];
+                if (isStationCritical && (float.IsPositiveInfinity(candidate.ArrivalSeconds) ||
+                    !(candidate.ArrivalSeconds <= timeToLossSeconds))) continue;
                 if (StrikecraftCovered && candidate.Profile.IsStrikecraftSpecialist()) continue;
                 _candidateForce.CopyFrom(own);
                 _candidateForce.AddNew(candidate.Profile, candidate.IncludeHangar);
@@ -79,15 +80,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
                                Math.Sqrt(1 + candidate.OwnedCount);
                 if (isStationCritical)
                 {
-                    bool isTimely = candidate.ArrivalSeconds <= timeToLossSeconds;
-                    if (hasTimelyCandidate && !isTimely) continue;
-                    if (isTimely && !hasTimelyCandidate)
-                    {
-                        bestScore = 0.0;
-                        hasTimelyCandidate = true;
-                    }
-                    score = gain * preference /
-                            Math.Max(1f, candidate.ArrivalSeconds);
+                    score = gain * preference / (resourceCost * Math.Max(1f, candidate.ArrivalSeconds));
                 }
                 if (score > bestScore)
                 {

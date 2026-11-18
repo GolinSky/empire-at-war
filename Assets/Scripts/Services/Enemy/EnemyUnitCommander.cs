@@ -40,7 +40,10 @@ namespace EmpireAtWar.Services.Enemy
         EnemyStrategicState CurrentState { get; }
         int ActiveShipCount { get; }
         bool GatherReinforcements => false;
+        bool IsStationCritical => false;
         bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
+        void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
+            throw new InvalidOperationException("This AI does not provide station-defense deployment threats.");
     }
 
     public sealed class EnemyUnitCommander :
@@ -109,6 +112,10 @@ namespace EmpireAtWar.Services.Enemy
             _hasDecision ? LastDecision.State : EnemyStrategicState.RebuildFleet;
         public int ActiveShipCount => _ships.Count;
         public bool GatherReinforcements { get; private set; }
+        public bool IsStationCritical => _contextBuilder.StationCritical;
+
+        public void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
+            _contextBuilder.FillDefenseDeploymentThreats(threats);
 
         public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
         {

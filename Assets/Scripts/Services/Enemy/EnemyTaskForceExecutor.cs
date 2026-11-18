@@ -25,6 +25,7 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class EnemyTaskForceExecutor
     {
         private const float CAPTURE_TARGET_EPSILON_SQUARED = 1f;
+        private const float CAPTURE_APPROACH_STALL_SECONDS = 5f;
 
         private readonly IUnitOrderService _unitOrderService;
         private GameEntity _battleTarget;
@@ -56,7 +57,8 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool _hasCaptureTarget;
         private EnemyCaptureObjective _captureObjective;
-        private readonly Dictionary<IShipEntity, float> _captureDistances = new Dictionary<IShipEntity, float>();
+        private readonly Dictionary<IShipEntity, (float Distance, float ImprovedAt)> _captureApproaches =
+            new Dictionary<IShipEntity, (float, float)>();
         private readonly Dictionary<IShipEntity, Vector3> _captureEscortPoints = new Dictionary<IShipEntity, Vector3>();
         private Vector3? _retreatAnchor;
         public string ActionReason { get; private set; } = "";
@@ -93,7 +95,7 @@ namespace EmpireAtWar.Services.Enemy
             return target == null || _attackForce.Assemble(context, target, decision.CommittedShipCount);
         }
 
-        public void Execute(EnemyStrategicDecision decision, EnemyStrategicContext context)
+        public void Execute(EnemyStrategicDecision decision, EnemyStrategicContext context, float? now = null)
         {
             _markerId = -1;
             _markerShips.Clear();
@@ -101,7 +103,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 _assignedShips.Clear();
                 _rallyAnchors.Clear();
-                _captureDistances.Clear();
+                _captureApproaches.Clear();
                 _hasCaptureTarget = false;
                 _defenseStation = null;
                 _defensePoints.Clear();
@@ -119,9 +121,9 @@ namespace EmpireAtWar.Services.Enemy
             _bodyMembers.RemoveWhere(ship => !context.Receivers.ContainsKey(ship));
             ForgetLostRallies(context);
             _lostShips.Clear();
-            foreach (IShipEntity ship in _captureDistances.Keys)
+            foreach (IShipEntity ship in _captureApproaches.Keys)
                 if (!context.Receivers.ContainsKey(ship)) _lostShips.Add(ship);
-            foreach (IShipEntity ship in _lostShips) _captureDistances.Remove(ship);
+            foreach (IShipEntity ship in _lostShips) _captureApproaches.Remove(ship);
             _lostShips.Clear();
             foreach (IShipEntity ship in _strikeTargets.Keys)
                 if (!context.Receivers.ContainsKey(ship)) _lostShips.Add(ship);
@@ -130,7 +132,7 @@ namespace EmpireAtWar.Services.Enemy
             switch (decision.State)
             {
                 case EnemyStrategicState.CaptureZone:
-                    ExecuteCapture(decision, context);
+                    ExecuteCapture(decision, context, now ?? Time.time);
                     return;
                 case EnemyStrategicState.HuntFleet:
                     IssueAttackOrHunt(context, decision.CommittedShipCount, context.EnemyFleetTarget);
@@ -303,7 +305,7 @@ namespace EmpireAtWar.Services.Enemy
         private int CompareDefenseDistance(IShipEntity first, IShipEntity second) =>
             PlanarDistance(first.WorldPosition, _defenseCenter).CompareTo(PlanarDistance(second.WorldPosition, _defenseCenter));
 
-        private void ExecuteCapture(EnemyStrategicDecision decision, EnemyStrategicContext context)
+        private void ExecuteCapture(EnemyStrategicDecision decision, EnemyStrategicContext context, float now)
         {
             _captureShips.Clear();
             _captureShips.AddRange(context.Ships);
@@ -314,13 +316,14 @@ namespace EmpireAtWar.Services.Enemy
             EnemyCaptureObjective objective = context.CaptureObjective;
             bool sameObjective = objective == null ? _captureObjective == null :
                 _captureObjective != null && objective.Id == _captureObjective.Id &&
-                objective.Kind == _captureObjective.Kind && objective.Owner == _captureObjective.Owner;
+                objective.Kind == _captureObjective.Kind && objective.Owner == _captureObjective.Owner &&
+                objective.BlockingFacilityId == _captureObjective.BlockingFacilityId;
             bool sameTarget = _hasCaptureTarget && sameObjective &&
                 (_captureTarget - context.CaptureTarget).sqrMagnitude <= CAPTURE_TARGET_EPSILON_SQUARED;
             if (!sameTarget)
             {
                 _assignedShips.Clear();
-                _captureDistances.Clear();
+                _captureApproaches.Clear();
                 _captureEscortPoints.Clear();
             }
             _captureTarget = context.CaptureTarget;
@@ -331,6 +334,21 @@ namespace EmpireAtWar.Services.Enemy
             {
                 RallyBody(context, anchor);
                 ActionReason = $"Assembling capture force: {_body.Count}/{count} ships in the body.";
+                return;
+            }
+            if (context.CaptureBlockingFacility is GameEntity facility && !facility.HealthModel.IsDestroyed)
+            {
+                var attackers = new List<GameEntity>();
+                foreach (IShipEntity ship in _body)
+                {
+                    GameEntity receiver = context.Receivers[ship];
+                    if (!sameTarget || !_assignedShips.Contains(ship) || ship.CurrentOrder != UnitOrderType.Attack ||
+                        receiver.GetFacade<IUnitOrderObserverFacade>().AttackTarget != facility)
+                        attackers.Add(receiver);
+                }
+                if (attackers.Count > 0) _unitOrderService.IssueAttack(attackers, facility);
+                ActionReason = "Clear the hostile mine before capturing the site.";
+                FinishCaptureAssignments(context, anchor, count);
                 return;
             }
             var captureGroups = new Dictionary<Vector3, List<GameEntity>>();
@@ -365,14 +383,20 @@ namespace EmpireAtWar.Services.Enemy
                 Vector3 offset = ship.WorldPosition - _captureTarget;
                 offset.y = 0f;
                 float distance = offset.magnitude;
-                if (!_captureDistances.TryGetValue(ship, out float closest)) closest = distance;
-                _captureDistances[ship] = Math.Min(closest, distance);
+                if (!sameTarget || wasEscort || !_assignedShips.Contains(ship) || distance <= radius ||
+                    !_captureApproaches.TryGetValue(ship, out var approach) || distance + 1f < approach.Distance)
+                {
+                    approach = (distance, now);
+                    _captureApproaches[ship] = approach;
+                }
                 float leash = Math.Max(FleetCohesion.RADIUS, radius + ship.NavigationRadius * 2f);
-                bool diverted = distance > closest + leash;
-                if (sameTarget && !wasEscort && ship.CurrentOrder == UnitOrderType.AttackMove && diverted)
+                bool diverted = distance > approach.Distance + leash;
+                bool stalled = distance > radius && now - approach.ImprovedAt >= CAPTURE_APPROACH_STALL_SECONDS;
+                if (sameTarget && !wasEscort && ship.CurrentOrder == UnitOrderType.AttackMove && (diverted || stalled))
                 {
                     _unitOrderService.IssueMove(new[] { context.Receivers[ship] }, capturePoint);
-                    ActionReason = "Capture diversion exceeded its leash; return to the objective.";
+                    ActionReason = stalled ? "Capture approach stalled outside the objective; move into the circle." :
+                        "Capture diversion exceeded its leash; return to the objective.";
                     continue;
                 }
                 if (sameTarget && !wasEscort && ship.CurrentOrder == UnitOrderType.Move && distance > radius)
@@ -396,6 +420,11 @@ namespace EmpireAtWar.Services.Enemy
                     "New capture objective; approach with a bounded combat diversion.";
             else if (ActionReason == decision.Reason)
                 ActionReason = "Retain capture assignment and active engagement; arrived ships remain in the circle.";
+            FinishCaptureAssignments(context, anchor, count);
+        }
+
+        private void FinishCaptureAssignments(EnemyStrategicContext context, IShipEntity anchor, int count)
+        {
             _assignedShips.Clear();
             _assignedShips.UnionWith(_body);
             RallyStragglers(context, anchor);

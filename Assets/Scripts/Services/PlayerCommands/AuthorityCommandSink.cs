@@ -101,7 +101,7 @@ namespace EmpireAtWar.Services.PlayerCommands
             if (casters.Count == 0 ||
                 command.TargetId != UnitOrderCommand.NO_TARGET && !_entities.TryGetEntity(command.TargetId, out target))
                 return;
-            _handlers.Abilities.Execute(casters, command.AbilityId, target, command.Cancel);
+            _handlers.Abilities.Execute(casters, command.AbilityId, target, command.Cancel, command.Automatic);
         }
 
         public void Submit(DeployReinforcementCommand command) =>
