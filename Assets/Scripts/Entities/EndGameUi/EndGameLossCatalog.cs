@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
@@ -18,10 +19,12 @@ namespace EmpireAtWar.Entities.EndGameUi
         private readonly StationLevelData _stations;
         private readonly DefendPlatformCatalog _platforms;
         private readonly MiningFacilityCatalog _facilities;
+        private readonly CaptureSiteData _sites;
 
         public EndGameLossCatalog(FactionCatalog factions, IShipIconProvider icons, StationLevelData stations,
-            DefendPlatformCatalog platforms, MiningFacilityCatalog facilities)
+            DefendPlatformCatalog platforms, MiningFacilityCatalog facilities, CaptureSiteData sites)
         {
+            _sites = sites;
             _factions = factions;
             _icons = icons;
             _stations = stations;
@@ -49,15 +52,26 @@ namespace EmpireAtWar.Entities.EndGameUi
                     return ($"{loss.StationFaction.GetDisplayName()} Space Station (Level {loss.StationLevel})",
                         _stations.GetSecondStationFactionData(loss.StationFaction).Icon, loss.Count);
                 case BattleLossKind.DefendPlatform:
+                    if (loss.DefendPlatformType == DefendPlatformType.BattleAsteroid)
+                        return Describe(_sites.GetCost(SiteFacilityType.BattleAsteroid), loss.Count);
                     var platform = _platforms.Get(loss.DefendPlatformType);
                     return Describe(platform, platform.Icon, loss.Count);
                 case BattleLossKind.MiningFacility:
-                    var facility = _facilities.Get(loss.MiningFacilityType);
+                    // Site-built miners have no purchase entry; the capture-site data names them.
+                    if (loss.MiningFacilityType == MiningFacilityType.AsteroidMiner)
+                        return Describe(_sites.GetCost(SiteFacilityType.Mining), loss.Count);
+                    // A battle miner is the common miner placed on a battle map.
+                    var facility = _facilities.Get(loss.MiningFacilityType == MiningFacilityType.BattleMiner
+                        ? MiningFacilityType.CommonMiner
+                        : loss.MiningFacilityType);
                     return Describe(facility, facility.Icon, loss.Count);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(loss));
             }
         }
+
+        private static (string Name, Sprite Icon, int Count) Describe(SiteFacilityCost cost, int count) =>
+            (cost.Name, cost.Icon, count);
 
         private static (string Name, Sprite Icon, int Count) Describe(FactionData data, Sprite icon, int count) =>
             (string.IsNullOrWhiteSpace(data.DisplayName) ? data.Name : data.DisplayName, icon, count);

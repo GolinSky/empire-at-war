@@ -404,6 +404,15 @@ namespace EmpireAtWar.Entities.Ship.Orders
                     Issue(UnitOrderType.Attack, target: nextTarget, offset: _orders.Offset);
                     return;
                 }
+
+                // Nothing on this ship's radar: sweep toward where the target died instead of idling in place.
+                if (_stateMachine.CurrentState == _attackTargetState)
+                {
+                    RecordOrder("complete", "Target destroyed; attack-moving to its last position.");
+                    Issue(UnitOrderType.AttackMove, ToPoint(_attackTargetState.LastTargetPosition),
+                        engagement: new AttackMoveEngagement());
+                    return;
+                }
             }
 
             RecordOrder("complete", _orders.Target != null && _orders.Target.HealthModel.IsDestroyed

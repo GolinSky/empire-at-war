@@ -16,6 +16,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         private readonly HashSet<string> _pipelineIds = new HashSet<string>();
         private readonly HashSet<string> _externalPipelines = new HashSet<string>();
         private readonly Dictionary<string, float> _remainingTime = new Dictionary<string, float>();
+        private readonly Dictionary<ShipUnitRequest, float> _blockedSeconds = new Dictionary<ShipUnitRequest, float>();
 
         public int Count => _builds.Count;
         public IReadOnlyList<EnemyPendingBuild> Builds => _builds;
@@ -43,7 +44,15 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             // Once the area opens, the already-held ship can depart with any other ships ready to deploy.
             build.WaitForDeployment(float.PositiveInfinity);
             _builds.Add(build);
+            _blockedSeconds.TryGetValue(request, out float blocked);
+            _blockedSeconds[request] = blocked + retryDelay;
         }
+
+        /// <summary>Seconds a completed ship has been held because its arrival area was blocked.</summary>
+        public float GetDeploymentBlockedSeconds(ShipUnitRequest request) =>
+            _blockedSeconds.TryGetValue(request, out float blocked) ? blocked : 0f;
+
+        public void ClearDeploymentBlock(ShipUnitRequest request) => _blockedSeconds.Remove(request);
 
         public float GetRemainingTime(string requestId)
         {
@@ -178,6 +187,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public void Clear()
         {
             _builds.Clear();
+            _blockedSeconds.Clear();
             _lastShipInGroup = null;
             _externalPipelines.Clear();
         }

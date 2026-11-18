@@ -107,6 +107,20 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(queue.Builds[0].TimeLeft, Is.EqualTo(14f));
         }
 
+        [Test]
+        public void RetryDeployment_AccumulatesBlockedSecondsUntilCleared()
+        {
+            EnemyBuildQueue queue = new EnemyBuildQueue();
+            var ship = new ShipUnitRequest(new FactionData(), ShipType.Venator);
+
+            queue.RetryShipDeployment(ship, 1f);
+            queue.RetryShipDeployment(ship, 1f);
+            Assert.That(queue.GetDeploymentBlockedSeconds(ship), Is.EqualTo(2f));
+
+            queue.ClearDeploymentBlock(ship);
+            Assert.That(queue.GetDeploymentBlockedSeconds(ship), Is.Zero);
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         public void HomeDefense_DeploysCompletedWaveTogetherOrRetriesWithoutUsingDefaultZone(bool defenseAvailable)

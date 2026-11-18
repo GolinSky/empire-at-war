@@ -37,6 +37,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
     {
         private const float DEFAULT_INCOME = 15f;
         private const float DEPLOYMENT_RETRY_INTERVAL = 1f;
+        private const float MAX_DEPLOYMENT_HOLD_SECONDS = 8f;
         private const float DEFENSE_DEPLOYMENT_WAIT_SECONDS = 20f;
 
         private readonly IEconomyProvider _economyProvider;
@@ -329,6 +330,18 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                             : _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(home, shipUnitRequest.Key, out position) ||
                               _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipUnitRequest.Key, out position);
                     }
+                    bool forced = !foundPosition && _productionAccess.CanProduce &&
+                                  _builds.GetDeploymentBlockedSeconds(shipUnitRequest) >= MAX_DEPLOYMENT_HOLD_SECONDS;
+                    if (forced)
+                    {
+                        // A threat near the station must not hold a paid ship forever: arrive where the spawn rule allows.
+                        foundPosition = hasRally &&
+                                        _shipSpawnPoints.TryGetSpawnPositionNear(home, shipUnitRequest.Key, rally, out position) ||
+                                        _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipUnitRequest.Key, out position);
+                        if (foundPosition)
+                            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deploymentForced",
+                                $"unit={shipUnitRequest.Id};rally={rally};spawn={position}");
+                    }
                     if (!foundPosition)
                     {
                         if (_productionAccess.CanProduce)
@@ -347,6 +360,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
                     EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deployment",
                         $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally};spawn={position}");
+                    _builds.ClearDeploymentBlock(shipUnitRequest);
                     Track(_shipFactory.Create(Owner, shipUnitRequest.Key, position), shipUnitRequest);
                     break;
                 case SquadronUnitRequest squadronUnitRequest:

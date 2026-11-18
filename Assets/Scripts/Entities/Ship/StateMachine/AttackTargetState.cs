@@ -89,6 +89,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         /// <summary>The ship has held at firing range on the current target since it was set; a group pace no longer applies.</summary>
         public bool HasReachedRange { get; private set; }
 
+        /// <summary>Where the target was on the last tick it was alive; valid after the target is destroyed.</summary>
+        public Vector3 LastTargetPosition { get; private set; }
+
         public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits || _mainTargetEntity.IsCloaked();
 
         public AttackTargetState(
@@ -205,6 +208,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 return;
             }
+
+            LastTargetPosition = TargetPosition;
 
             // Once the chosen hardpoint is gone the order keeps going against the whole ship.
             if (_focusedHardPoint != null && _focusedHardPoint.IsDestroyed)
