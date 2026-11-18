@@ -30,7 +30,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         private ICinematicCameraModelObserver _cinematic;
         private RectTransform _squadronRoot;
         private RectTransform _shipRoot;
-        private SquadronLeaderLines _leaderLines;
         private Material _iconMaterial;
         private Material _frameMaterial;
         private float _elapsed;
@@ -57,7 +56,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             // Squadron and ship markers move independently; separate canvases keep one from rebuilding the other's batches.
             _shipRoot = CreateSubCanvas("ShipMarkers", canvas);
             _squadronRoot = CreateSubCanvas("SquadronMarkers", canvas);
-            _leaderLines = new SquadronLeaderLines(_squadronRoot);
         }
 
         private RectTransform CreateSubCanvas(string name, Canvas parent)
@@ -201,14 +199,12 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             if (_cinematic.IsActive)
             {
                 for (int i = 0; i < _markers.Count; i++) ((BattleMarker)_markers[i]).Hide();
-                _leaderLines.Begin();
-                _leaderLines.End();
                 return;
             }
 
             using (LayoutSampler.Auto())
                 _projection.Draw(_markers, _hulls, _grouping, _cameraService.SceneCamera, CurrentZoomScale(),
-                    Time.unscaledDeltaTime, _leaderLines);
+                    Time.unscaledDeltaTime);
         }
 
         private float CurrentZoomScale()

@@ -13,7 +13,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         private const float JOIN_PITCHES = 1.25f;
         private const float LEAVE_PITCHES = 3f;
         private const float PLACEMENT_SMOOTH_TIME = 0.12f;
-        private const float LEADER_PIXELS = 150f;
         private const float HULL_PADDING = 4f;
 
         private readonly SquadronClusterPlacement _placement = new SquadronClusterPlacement();
@@ -54,8 +53,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         }
 
         public void Draw(IReadOnlyList<IBattleMarker> markers, IReadOnlyList<IBattleHull> hulls,
-            SquadronIconGrouping grouping, UnityEngine.Camera camera, float zoom, float deltaTime,
-            SquadronLeaderLines leaderLines)
+            SquadronIconGrouping grouping, UnityEngine.Camera camera, float zoom, float deltaTime)
         {
             Prepare(camera);
             _frame++;
@@ -64,7 +62,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             AddHullObstacles(hulls);
             DrawShips(markers, zoom, deltaTime);
             GatherClusters(markers, grouping, zoom);
-            PlaceClusters(pitch, zoom, deltaTime, leaderLines);
+            PlaceClusters(pitch, zoom, deltaTime);
             DrawSquadrons(markers, pitch, zoom, deltaTime);
             RemoveStaleClusters();
         }
@@ -160,13 +158,12 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             }
         }
 
-        private void PlaceClusters(float pitch, float zoom, float deltaTime, SquadronLeaderLines leaderLines)
+        private void PlaceClusters(float pitch, float zoom, float deltaTime)
         {
             // Larger clusters claim space first; _active keeps its order because markers index into it.
             _order.Clear();
             _order.AddRange(_active);
             _order.Sort(_compare);
-            leaderLines.Begin();
             for (int i = 0; i < _order.Count; i++)
             {
                 SquadronClusterState state = _order[i];
@@ -185,16 +182,9 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 }
 
                 state.Center = state.Centroid + state.Placement.Value;
-                var rect = new Rect(state.Center - state.Size * 0.5f, state.Size);
-                _placement.AddObstacle(rect);
-                if (!rect.Overlaps(_viewport)) continue;
-                Vector2 edge = new Vector2(Mathf.Clamp(state.Centroid.x, rect.xMin, rect.xMax),
-                    Mathf.Clamp(state.Centroid.y, rect.yMin, rect.yMax));
-                if (Vector2.Distance(edge, state.Centroid) > LEADER_PIXELS * zoom)
-                    leaderLines.Draw(state.Centroid, edge, _viewport);
+                _placement.AddObstacle(new Rect(state.Center - state.Size * 0.5f, state.Size));
             }
 
-            leaderLines.End();
         }
 
         private void DrawSquadrons(IReadOnlyList<IBattleMarker> markers, float pitch, float zoom, float deltaTime)

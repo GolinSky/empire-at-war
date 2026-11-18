@@ -19,7 +19,6 @@ namespace EmpireAtWar.Tests.Editor
         private UnityCamera _camera;
         private TestLayer _layer;
         private BattleMarkerProjection _projection;
-        private SquadronLeaderLines _lines;
         private SquadronIconGrouping _grouping;
         private readonly List<IBattleHull> _hulls = new List<IBattleHull>();
 
@@ -38,7 +37,6 @@ namespace EmpireAtWar.Tests.Editor
             _grouping = new SquadronIconGrouping();
             _layer = new TestLayer(_grouping, _root.transform);
             _projection = new BattleMarkerProjection();
-            _lines = new SquadronLeaderLines((RectTransform)_root.transform);
         }
 
         [TearDown]
@@ -163,7 +161,7 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private void Draw() => _projection.Draw(_layer.Markers, _hulls, _grouping, _camera, ZOOM, FRAME, _lines);
+        private void Draw() => _projection.Draw(_layer.Markers, _hulls, _grouping, _camera, ZOOM, FRAME);
 
         private BattleMarker CreateSquadron(long id, float x) => CreateMarker(id, true, new Vector3(x, 0f, 0f));
 
