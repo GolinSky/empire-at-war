@@ -24,6 +24,15 @@
 - Test scripts remain under `Assets/Scripts/Tests/Editor` in `Assembly-CSharp-Editor` because they reference runtime code in `Assembly-CSharp`; an isolated test asmdef requires a separate runtime assembly migration. The test framework is an explicit manifest dependency. The player validation rejects an accidentally packaged `Assembly-CSharp-Editor.dll`.
 - Acceptance still requires cold/warm builds and a manual extracted-player check.
 
+## Historical test failures
+
+- Full project-owned test file/category inventory: [TEST_INVENTORY.md](TEST_INVENTORY.md). Mandatory agent test-maintenance and rebuild rules: [AGENTS.md](../../AGENTS.md#test-maintenance-with-every-change).
+- Through build 65, the Test phase selected `EditMode` without a category, fixture, or assembly filter. A failure stopped the job before `Build Windows x64`.
+- Archived evidence inspected on 2026-11-14: build **57** had **3,102 passed / 0 failed / 4 skipped**; build **61** had **3,363 passed / 1 failed / 4 skipped**. These are historical runtime cases, not current source-file counts or verification of later commits.
+- Build 61 failed `ShipNavigationServiceTests.FacingRefreshQueueCarriesExcessRequestsToNextFrame`: expected 1–2 callbacks, observed 3. Its snapshot was `7fcb6078bd03af9f5e7b42bb347a8d8dbf865f97`; source allows up to 8 callbacks within a 1 ms budget. Commit `822babf2e` subsequently updates the test to queue 9 requests and check overflow/order; no fresh test result was obtained during this audit.
+- Diagnose the archived `EditMode-results.xml`, `EditMode.log`, `Test-process.log`, and `commit.txt` before retrying. Keep valid regression assertions; update stale assumptions alongside intentional changes. Repeating the same failed snapshot is not a fix.
+- A publish retry can reuse a successful build's archived ZIP.
+
 ## Diagnostics symbols
 
 - `UPLOAD_DIAGNOSTICS_SYMBOLS` defaults to `false` while the Unity Cloud project and upload credentials are unconfigured. When selected, the Pipeline uploads after a successful Windows build and before packaging; upload failure fails the job and preserves the player for recovery.

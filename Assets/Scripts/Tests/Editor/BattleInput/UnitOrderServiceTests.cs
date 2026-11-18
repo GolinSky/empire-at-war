@@ -313,34 +313,33 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(false)]
         [TestCase(true)]
-        public void Attack_ShipsShareOnePaceAndSquadronsGetNone(bool hardPoint)
-        {
-            FakeEntity target = Entity(100, TestPlayers.Enemy);
-            FakeEntity first = Entity(1, TestPlayers.Human);
-            FakeEntity second = Entity(2, TestPlayers.Human);
-            FakeEntity squadron = Entity(50, TestPlayers.Human, new[] { typeof(IAttackFacade) });
-            IEntity[] receivers = { first, squadron, second };
-
-            if (hardPoint) _unitOrderService.IssueHardPointAttack(receivers, target, 0);
-            else _unitOrderService.IssueAttack(receivers, target);
-
-            Assert.That(first.Command.LastPace, Is.Not.Null);
-            Assert.That(second.Command.LastPace, Is.SameAs(first.Command.LastPace));
-            Assert.That(squadron.Command.LastPace, Is.Null);
-        }
-
-        [Test]
-        public void Attack_SingleShipOrShipWithSquadronsGetsNoPace()
+        public void Attack_ShipsAndSquadronsShareOnePaceAndStationsGetNone(bool hardPoint)
         {
             FakeEntity target = Entity(100, TestPlayers.Enemy);
             FakeEntity ship = Entity(1, TestPlayers.Human);
             FakeEntity squadron = Entity(50, TestPlayers.Human, new[] { typeof(IAttackFacade) });
             FakeEntity station = Entity(60, TestPlayers.Human, new[] { typeof(IHardPointAttackFacade) });
+            IEntity[] receivers = { ship, squadron, station };
 
-            _unitOrderService.IssueAttack(new IEntity[] { ship, squadron, station }, target);
+            if (hardPoint) _unitOrderService.IssueHardPointAttack(receivers, target, 0);
+            else _unitOrderService.IssueAttack(receivers, target);
+
+            Assert.That(ship.Command.LastPace, Is.Not.Null);
+            Assert.That(squadron.Command.LastPace, Is.SameAs(ship.Command.LastPace));
+            Assert.That(station.Command.LastPace, Is.Null);
+        }
+
+        [Test]
+        public void Attack_SingleMovingUnitGetsNoPace()
+        {
+            FakeEntity target = Entity(100, TestPlayers.Enemy);
+            FakeEntity ship = Entity(1, TestPlayers.Human);
+            FakeEntity station = Entity(60, TestPlayers.Human, new[] { typeof(IHardPointAttackFacade) });
+
+            _unitOrderService.IssueHardPointAttack(new IEntity[] { ship, station }, target, 0);
 
             Assert.That(ship.Command.LastPace, Is.Null);
-            Assert.That(squadron.Command.LastPace, Is.Null);
+            Assert.That(station.Command.LastPace, Is.Null);
         }
 
         [Test]

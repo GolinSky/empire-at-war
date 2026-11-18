@@ -14,7 +14,10 @@ acceptance: pending-user
 - Implemented with the recommended decisions; Unity compile passed. EditMode tests added/updated, not run (local override).
 
 ## Decision
-- Scope: ships only (receivers with `IAttackFacade` + `IHardPointAttackFacade`). Squadrons and stationary attackers ignore the pace. Why: fighters at capital pace cannot screen.
+- Scope (changed 2026-11-18 by user request): every moving receiver (`IAttackFacade`) joins — ships and squadrons. Stations (`StationaryAttackFacade`, no `IAttackFacade`) get no pace. Superseded: ships-only scope; squadrons pulled ahead (ARC-170 `81`, V-wing `87`, Y-wing `41` vs Venator `30`, Venator II `25`).
+- Pace exists when ≥ 2 moving receivers: e.g. one Venator + its squadrons share a pace.
+- Squadron release: `SquadronPilot.IsInAttackZone` (centroid within `ExtendDistance + target radius`, where attack passes start), any non-Attack order, squadron released.
+- Squadron pace speed = `CombatSpeed × SpeedMultiplier`; `+∞` when ion-disabled or `≤ 0`.
 - Orders: `Attack` + hard-point attack only. `AttackMove`, `Move`, waypoint move unchanged.
 - Pace = live minimum uncapped speed (`ShipMoveModel.BaseSpeed`) of remaining members; `+∞` with < 2 members.
 - Release per ship: attack state holds at firing range (`AttackTargetState.HasReachedRange`), any new order/Stop, ability approach (state leaves attack), ship released. Never re-capped on later pursuit.
@@ -29,6 +32,8 @@ acceptance: pending-user
 - `ShipOrderRunner`: `JoinPace` after Attack/AttackHardPoint (incl. same-target refresh), `LeavePace` in `Issue`/`Release`, `UpdatePace` after `CompleteOrder` in `Tick` → `IShipMovement.SetSpeedCap(pace)`.
 - `ShipMoveModel`: `BaseSpeed`, `SpeedCap` (`+∞` = uncapped), `Speed = min(BaseSpeed, SpeedCap)`.
 - `ShipMoveComponent.PaceSpeed`: `+∞` while Arriving, ion-disabled or anchored (never holds group back). `SetSpeedCap` → `_motion.SetRouteSpeed` only when the cap changes.
+- Squadrons: `Squadron.Attack(target, offset, pace)` → `JoinPace`; `UpdatePace` in `Tick` after `_pilot.Tick`; `LeavePace` in `Release(bool)`. `ISquadronFlightComponent.SetSpeedCap` → `SquadronFlightModel.SpeedCap`, applied in `Step` as `min(steer speed × SpeedMultiplier, SpeedCap)`.
+- `UnitOrderService`: hard-point branch passes the pace (and slot) only to receivers with `IAttackFacade`.
 
 ## Edge Cases
 - Ship already in range on issue → held on Enter/first tick → leaves before moving capped.
@@ -39,7 +44,8 @@ acceptance: pending-user
 - New `GroupPaceTests` (`Navigation`): min, leave, report, < 2 members.
 - `ShipMoveModelTests.SpeedCap_LimitsSpeedOnlyBelowOwnSpeedAndKeepsEngineDamage` (`Navigation`).
 - `ShipPursuitTests.Runner_GroupAttackApproachesAtSlowestPaceUntilInRangeOrNewOrder` (`Navigation`).
-- `UnitOrderServiceTests` (`BattleInput`): ships share one pace / squadrons none; single ship none.
+- `UnitOrderServiceTests` (`BattleInput`): `Attack_ShipsAndSquadronsShareOnePaceAndStationsGetNone`, `Attack_SingleMovingUnitGetsNoPace` (replace the ships-only tests).
+- `FighterFlightTests.SpeedCap_SlowsFightersUntilRemoved` (`Squadrons`); `SquadronTargetSelectorTests.FlightStub` gains `SetSpeedCap`.
 - Fakes updated: `NavigateStateTests`, `ShipStopTests`, `ShipPursuitTests` movement; `ShipAbilityServiceTests`, `ShipAbilitySymmetryTests`, `UnitActionsPresenterTests`, `UnitOrderServiceTests` attack fakes.
 - Reusable guidance: none extracted (feature-specific behaviour, documented here).
 

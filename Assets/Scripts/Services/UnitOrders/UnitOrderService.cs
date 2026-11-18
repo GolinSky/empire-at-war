@@ -162,16 +162,15 @@ namespace EmpireAtWar.Services.UnitOrders
                 if (!IsAlive(receiver)) continue;
                 if (targetsHardPoint && receiver.TryGetFacade(out IHardPointAttackFacade hardPointAttack))
                 {
-                    Vector3 offset = receiver.TryGetFacade(out IAttackFacade _)
-                        ? offsets[movingIndex++]
-                        : Vector3.zero;
-                    hardPointAttack.AttackHardPoint(target, hardPointId, offset, pace);
+                    // Stations cannot move: no slot and no pace.
+                    bool moves = receiver.TryGetFacade(out IAttackFacade _);
+                    Vector3 offset = moves ? offsets[movingIndex++] : Vector3.zero;
+                    hardPointAttack.AttackHardPoint(target, hardPointId, offset, moves ? pace : null);
                     issued++;
                 }
                 else if (receiver.TryGetFacade(out IAttackFacade attack))
                 {
-                    attack.Attack(target, offsets[movingIndex++],
-                        receiver.TryGetFacade(out IHardPointAttackFacade _) ? pace : null);
+                    attack.Attack(target, offsets[movingIndex++], pace);
                     issued++;
                 }
                 else if (receiver.TryGetFacade(out IFocusFireFacade focus))
@@ -186,13 +185,14 @@ namespace EmpireAtWar.Services.UnitOrders
             if (issued > 0) AttackIssued?.Invoke(receivers, target, hardPointId);
         }
 
-        // Moving ships (attack plus hardpoint targeting) of a group order share one pace so they arrive together.
+        // Moving units (ships and squadrons) of a group order share one pace so they arrive together;
+        // stations have no IAttackFacade and never join.
         private static GroupPace CreatePace(IReadOnlyList<IEntity> receivers)
         {
-            int ships = 0;
+            int movers = 0;
             foreach (IEntity receiver in receivers)
-                if (IsAlive(receiver) && receiver.TryGetFacade(out IAttackFacade _) &&
-                    receiver.TryGetFacade(out IHardPointAttackFacade _) && ++ships > 1) return new GroupPace();
+                if (IsAlive(receiver) && receiver.TryGetFacade(out IAttackFacade _) && ++movers > 1)
+                    return new GroupPace();
             return null;
         }
 

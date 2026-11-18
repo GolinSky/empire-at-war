@@ -16,6 +16,13 @@ class BattleAttributionTests(unittest.TestCase):
         self.assertEqual(2, result['episodes'])
         self.assertEqual([35.0], result['gaps_seconds'])
 
+    def test_hitch_period_ignores_instrument_busy_frames(self):
+        rows = [{'frame': '1', 'seconds': '0', 'frame_duration_ms': '300', 'instrument_busy': '0'},
+                {'frame': '50', 'seconds': '35', 'frame_duration_ms': '4000', 'instrument_busy': '1'}]
+        result = hitch_period(rows, value)
+        self.assertEqual(1, result['frames_over_200ms'])
+        self.assertEqual(1, result['episodes'])
+
     def test_game_caller_skips_framework_allocator(self):
         self.assertEqual('EmpireAtWar.Ship.Tick:42', game_caller([
             'System.String.Concat:0', 'EmpireAtWar.Ship.Tick:42']))

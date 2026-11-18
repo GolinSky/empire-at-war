@@ -82,8 +82,11 @@ def summarize_hitches(path):
 
     rows = read_csv(path)
     by_frame = {int(row['frame']): row for row in rows}
-    triggers = sorted((row for row in rows if row['is_hitch'] == '1'),
+    # Frames flagged instrument_busy were disturbed by Profiler saves/snapshots/decoding: report, never rank.
+    busy = [row for row in rows if row.get('instrument_busy') == '1' and row['is_hitch'] == '1']
+    triggers = sorted((row for row in rows if row['is_hitch'] == '1' and row.get('instrument_busy') != '1'),
                       key=lambda row: value(row, 'frame_duration_ms'), reverse=True)
+    print(f'{len(busy)} instrument_busy trigger frames excluded from gameplay numbers.')
     period = hitch_period(rows, value)
     print('>200 ms hitch episodes: ' + json.dumps(period))
     for row in triggers:

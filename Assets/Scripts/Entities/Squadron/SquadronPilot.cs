@@ -58,6 +58,10 @@ namespace EmpireAtWar.Entities.Squadrons
         public Vector3 LoiterCenter => _loiterCenter;
         public bool IsTravelling => _mode == Mode.Travel;
         public bool IsFighting => _mode == Mode.Engage;
+        /// <summary>Engaging and close enough that fighters fly attack passes rather than the approach.</summary>
+        public bool IsInAttackZone => _mode == Mode.Engage &&
+            Vector3.Distance(_flight.Centroid, _target.GetFacade<IEntityTransformFacade>().Transform.position) <=
+            Data.ExtendDistance + _targetRadius;
         private IFighterFlightData Data => _flight.Data;
 
         public int GetAttackRun(int fighterIndex) => _mode == Mode.Engage ? _attackRuns[fighterIndex] : 0;

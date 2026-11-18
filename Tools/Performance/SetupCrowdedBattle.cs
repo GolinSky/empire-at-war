@@ -147,7 +147,7 @@ public static class SetupCrowdedBattle
             .Resolve<EmpireAtWar.ViewComponents.Weapon.ShotPoolPrewarmer>();
         var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
         var caches = (System.Collections.IDictionary)prewarmer.GetType().GetField("_caches", flags).GetValue(prewarmer);
-        var enqueue = prewarmer.GetType().GetMethod("Enqueue", flags);
+        var enqueue = prewarmer.GetType().GetMethod("WarmLoadout", flags);
         var rows = new System.Collections.Generic.List<object>();
         foreach (System.Collections.DictionaryEntry entry in caches)
         {

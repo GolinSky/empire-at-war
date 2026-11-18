@@ -125,6 +125,8 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         public void Steer(int index, Vector3 target, float speed) =>
             Model.SetSteering(index, target.ToNumerics(), speed);
 
+        public void SetSpeedCap(float cap) => Model.SetSpeedCap(cap);
+
         public void Step(float deltaTime)
         {
             for (int i = 0; i < fighters.Count; i++)

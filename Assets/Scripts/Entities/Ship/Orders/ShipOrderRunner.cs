@@ -128,11 +128,20 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 return;
             }
             _stateMachine.Tick(deltaTime);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            bool attacking = _stateMachine.CurrentState == _attackTargetState;
+            string attackEvent = attacking ? _attackTargetState.TakeAttackEvent() : null;
+            if (attackEvent != null)
+                ShipOrderTelemetry.Record(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
+                    attackEvent.StartsWith("leg:") ? "attackLeg" : "attackHold", attackEvent,
+                    nameof(AttackTargetState), _attackTargetState.AttackDiagnostics);
+#endif
             if (_stateMachine.CurrentState.IsComplete) CompleteOrder();
             UpdatePace();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             ShipOrderTelemetry.Sample(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
-                _stateMachine.CurrentState.GetType().Name);
+                _stateMachine.CurrentState.GetType().Name,
+                _stateMachine.CurrentState == _attackTargetState ? _attackTargetState.AttackDiagnostics : "");
 #endif
         }
 

@@ -529,7 +529,7 @@ MonoBehaviour:
         <Name>k__BackingField: Luke Skywalker - Red Squadron
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 6000
+        <Price>k__BackingField: 3000
         <BuildTime>k__BackingField: 40
         <UnitCapacity>k__BackingField: 3
         <Icon>k__BackingField: {fileID: 21300000, guid: 94df6c4c4e8a4cc47b956c7e85b516f4,

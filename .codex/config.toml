@@ -27,6 +27,9 @@ tool_timeout_sec = 120
 [mcp_servers.empire-vault]
 url = "http://127.0.0.1:9123/mcp"
 
+[mcp_servers.empire-vault.tools.read_note]
+approval_mode = "approve"
+
 [mcp_servers.graphify]
 enabled = true
 command = "uvx"

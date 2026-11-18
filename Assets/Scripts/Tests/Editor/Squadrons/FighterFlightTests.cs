@@ -36,6 +36,32 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SpeedCap_SlowsFightersUntilRemoved()
+        {
+            var free = new SquadronFlightModel(_data, new CombatModifiers());
+            var capped = new SquadronFlightModel(_data, new CombatModifiers());
+            free.Spawn(new[] { Vector3.Zero }, Vector3.UnitZ);
+            capped.Spawn(new[] { Vector3.Zero }, Vector3.UnitZ);
+            capped.SetSpeedCap(_data.CombatSpeed * 0.5f);
+            Vector3 ahead = new Vector3(0f, 0f, 10000f);
+            free.SetSteering(0, ahead, _data.CombatSpeed);
+            capped.SetSteering(0, ahead, _data.CombatSpeed);
+
+            for (int i = 0; i < 50; i++)
+            {
+                free.Step(DELTA_TIME);
+                capped.Step(DELTA_TIME);
+            }
+
+            Assert.That(capped.Get(0).Position.Z, Is.LessThan(free.Get(0).Position.Z));
+            Assert.That(capped.Get(0).Speed, Is.LessThanOrEqualTo(_data.CombatSpeed * 0.5f + 0.001f));
+
+            capped.SetSpeedCap(float.PositiveInfinity);
+            for (int i = 0; i < 50; i++) capped.Step(DELTA_TIME);
+            Assert.That(capped.Get(0).Speed, Is.GreaterThan(_data.CombatSpeed * 0.5f));
+        }
+
+        [Test]
         public void Step_LimitsTurnRate()
         {
             FighterKinematics fighter = new FighterKinematics(Vector3.Zero, Vector3.UnitZ, 10f);

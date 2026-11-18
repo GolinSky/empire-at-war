@@ -1,0 +1,27 @@
+VFX art refresh — 2026-11-13
+
+Generated with the built-in image_gen tool. Final assets:
+Assets/Art/Textures/Vfx/HardpointFire_Flipbook.png
+Assets/Art/Textures/Vfx/ExplosionFire_Flipbook.png
+
+Fire prompt:
+Game VFX texture atlas: exactly 4 by 4 regular grid, 16 square cells, square image. Each cell contains ONE small centered photorealistic orange turbulent flame puff, with at least 25% empty BLACK padding on ALL FOUR sides of EVERY cell. The sixteen puffs are consecutive subtly changing animation frames of a LOOPING fire, all similar size and brightness. Round irregular billowing compact flame, fine curling orange tongues, amber detail, small yellow hot areas, dark gaps; not star shaped, no radial streaks, no white blob. Same center and scale in each cell. Flame occupies only central HALF width and HALF height of each square cell. This is an additive particle texture: background must be absolutely pure solid black RGB 0,0,0 everywhere between puffs. NO smoke, NO glow outside flame silhouette, NO grid lines, NO text, NO labels, NO scenery. Crisp detailed volumetric flames. 1024x1024.
+
+Explosion prompt:
+Production game VFX explosion flipbook atlas. Square image, exactly 4 columns and 4 rows of equal square cells, 16 sequential frames left to right then next row. A realistic turbulent FIREBALL EXPLOSION evolving through time: first row ignition expands; second row maximum fiery billowing turbulence; third row cooling orange curls; fourth row dims to faint red embers and final nearly black. Each frame perfectly centered in its equal cell with at least 20 percent PURE BLACK padding on every side. Maximum puff diameter 60 percent cell width. Finely detailed volumetric orange flames with folded curling surfaces, small yellow hot areas, dark internal gaps. Cinematic physical fire simulation, not stylized, not stars, not smooth balls, no white blown-out core. For additive particle rendering: absolutely pure BLACK background RGB zero across all space between puffs; NO smoke, floor, glow clouds, lines, labels or text. Flame shapes must stay entirely inside each cell. 1024x1024.
+
+Integration:
+- Unity imports at 1024x1024, BC7 on Standalone, mipmaps enabled, unreadable on CPU.
+- Alpha is derived from grayscale in the importer to preserve the existing alpha/premultiplied shader paths; no additive shader migration was made.
+- Both flipbooks use 4x4 cells. Fire cycles four times per particle lifetime; explosion plays once. This trades temporal samples for larger frames. In-game motion acceptance remains pending.
+- Hardpoint smoke reuses smokeSheet04 through the already-bound matppfx_smoke07, with warm-gray color and opacity fade.
+- Original third-party assets remain unchanged. Copied materials have both current and legacy texture references updated.
+
+Verification:
+- Unity imported and saved textures, materials and all three explosion prefabs.
+- Isolated preview scenes rendered before/after with fixed particle seeds; user scenes untouched.
+- Particle caps, rates, lifetime extrema, burst counts, looping flags, culling, shadows and renderer identities matched before/after.
+- Pooling, camera/fog suppression and sustained-emitter bindings unchanged.
+- Captured console: zero errors. Tests not run under the local override.
+- Full battle GPU profiling and animation acceptance not performed; no FPS claim.
+- Unity-generated prefab override entries retain serializer-standard empty 'value: ' whitespace.

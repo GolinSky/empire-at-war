@@ -20,6 +20,9 @@ namespace EmpireAtWar.Components.Squadrons.Flight
 
         void Step(float deltaTime);
 
+        /// <summary>Limits every fighter's speed to a group pace; PositiveInfinity removes the cap.</summary>
+        void SetSpeedCap(float cap);
+
         /// <summary>Spawns the fighters again in formation at the launch point of a reused squadron.</summary>
         void Respawn(Vector3 position, Quaternion rotation);
     }

@@ -88,7 +88,9 @@ def memory_diff(before, after, output):
 
 def hitch_period(rows, number):
     # Collapse consecutive slow frames into episodes, retaining per-frame counts.
-    slow = sorted((row for row in rows if (number(row, 'frame_duration_ms') or 0) > 200),
+    # Frames disturbed by the instruments themselves are not gameplay hitches.
+    slow = sorted((row for row in rows if (number(row, 'frame_duration_ms') or 0) > 200
+                   and row.get('instrument_busy') != '1'),
                   key=lambda row: int(row['frame']))
     episodes = [row for i, row in enumerate(slow)
                 if i == 0 or int(row['frame']) > int(slow[i - 1]['frame']) + 1]
@@ -111,7 +113,7 @@ def compare_runs(editor, player, output):
                 rows[(row.get('run_id', path.stem), row['frame'])] = row
         if not sources:
             raise ValueError(f'{folder}: no hitch CSVs')
-        triggers = [row for row in rows.values() if row.get('is_hitch') == '1']
+        triggers = [row for row in rows.values() if row.get('is_hitch') == '1' and row.get('instrument_busy') != '1']
         durations = [value(row, 'frame_duration_ms') for row in triggers]
         return {'files': [str(path) for path in sources], 'triggers': len(triggers),
                 'median_hitch_ms': statistics.median(durations) if durations else None,

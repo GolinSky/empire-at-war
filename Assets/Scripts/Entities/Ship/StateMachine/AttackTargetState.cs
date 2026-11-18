@@ -61,6 +61,14 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private bool _isArtilleryRetreat;
         private Vector3 _artilleryPlanTargetPosition;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private const string REASON_MOVING = "moving";
+        private string _holdReason = "none";
+        private string _moveReason = "none";
+        private string _pendingEvent;
+        private int _legCount;
+#endif
+
         private Vector3 TargetPosition => _mainTargetTransform.position;
         // The distance depends on what is being attacked: heavy guns hold back from capitals, lasers close on corvettes.
         private float EngagementRange => _weaponComponent.GetEngagementRange(_mainTarget.ShipClass);
@@ -125,6 +133,37 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             SetData(mainTarget, Vector3.zero, UnitOrderModel.NO_HARD_POINT);
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        /// <summary>Telemetry only: key=value pairs describing why this ship holds or moves on an Attack order.</summary>
+        public string AttackDiagnostics
+        {
+            get
+            {
+                if (_mainTargetEntity == null) return "";
+                Vector3 position = _shipMoveComponent.CurrentPosition;
+                Vector3 target = TargetPosition;
+                float slotBearing = _formationOffset.sqrMagnitude > 0f
+                    ? Mathf.Atan2(_formationOffset.x, _formationOffset.z) * Mathf.Rad2Deg : float.NaN;
+                float destDistance = _hasPursuitDestination ? PlanarGeometry.Distance(_pursuitDestination, target) : -1f;
+                return string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                    "hold={0};move={1};legs={2};dist={3:F0};inReach={4};inRange={5};pursuing={6};held={7};" +
+                    "slotBearing={8:F0};slotMag={9:F0};destDist={10:F0};artillery={11};artReach={12:F0};engage={13:F0}",
+                    _holdReason, _moveReason, _legCount, PlanarGeometry.Distance(position, target),
+                    IsInReach ? 1 : 0, IsInRange ? 1 : 0, _hasPursuitDestination ? 1 : 0, _hasHeldPosition ? 1 : 0,
+                    slotBearing, _formationOffset.magnitude, destDistance, _usesArtillery ? 1 : 0,
+                    _artilleryReach, EngagementRange);
+            }
+        }
+
+        /// <summary>Telemetry only: the hold/leg change since the last call, or null.</summary>
+        public string TakeAttackEvent()
+        {
+            string pending = _pendingEvent;
+            _pendingEvent = null;
+            return pending;
+        }
+#endif
 
         public bool IsTheSameTarget(IEntity entity)
         {
@@ -218,6 +257,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _wasMoving = _shipMoveComponent.IsMoving;
             if (ShouldHold)
             {
+                NoteHold(_hasPursuitDestination && _shipMoveComponent.IsMoving ? "pursuitStop" : "inReach");
                 HoldAndLookAtTarget();
                 _hasHeldPosition = true;
                 _hasPursuitDestination = false;
@@ -235,7 +275,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 return;
             }
 
-            MoveToPursuitDestination(standoffPosition, preserveCourse: true);
+            MoveToPursuitDestination(standoffPosition, preserveCourse: true, "approach");
         }
 
         private bool TryUpdateHardPointApproach(float deltaTime)
@@ -270,6 +310,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         {
             if (offset == Vector3.zero)
             {
+                NoteHold("hardPointInReach");
                 HoldAndLookAtTarget();
                 ResetPursuit();
                 return;
@@ -287,7 +328,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             float angle = STALL_BEARING_STEP_DEGREES * ((_stallAttempt + 1) / 2) *
                           (_stallAttempt % 2 == 1 ? 1f : -1f);
             MoveToPursuitDestination(position + Quaternion.AngleAxis(angle, Vector3.up) * offset,
-                preserveCourse: _stallAttempt == 0);
+                preserveCourse: _stallAttempt == 0, _stallAttempt == 0 ? "hardPointApproach" : "hardPointStallRetry");
         }
 
         private bool TryUpdateArtilleryMove(float deltaTime)
@@ -333,6 +374,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (_hasPursuitDestination && moving && (hold || retreat == _isArtilleryRetreat)) return true;
             if (hold)
             {
+                NoteHold("artilleryBand");
                 HoldAndLookAtTarget();
                 ResetPursuit();
                 _hasHeldPosition = true;
@@ -368,7 +410,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             if (_stallAttempt == 0) _artilleryPlanTargetPosition = targetPosition;
             _isArtilleryRetreat = retreat;
-            MoveToPursuitDestination(targetPosition + bearing * approachDistance, preserveCourse: _stallAttempt == 0);
+            MoveToPursuitDestination(targetPosition + bearing * approachDistance, preserveCourse: _stallAttempt == 0,
+                retreat ? "contactRetreat" : _stallAttempt == 0 ? "artilleryApproach" : "artilleryStallRetry");
             return true;
         }
 
@@ -390,12 +433,31 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                           (_stallAttempt % 2 == 0 ? 1f : -1f);
             Vector3 offset = Quaternion.AngleAxis(angle, Vector3.up) * (StandoffPosition - TargetPosition);
             _stallAttempt++;
-            MoveToPursuitDestination(TargetPosition + offset, preserveCourse: false);
+            MoveToPursuitDestination(TargetPosition + offset, preserveCourse: false, "stallRetry");
             return true;
         }
 
-        private void MoveToPursuitDestination(Vector3 destination, bool preserveCourse)
+        [System.Diagnostics.Conditional("UNITY_EDITOR"), System.Diagnostics.Conditional("DEVELOPMENT_BUILD")]
+        private void NoteHold(string reason)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (_holdReason == reason) return;
+            _holdReason = reason;
+            _pendingEvent = "hold:" + reason;
+#endif
+        }
+
+        private void MoveToPursuitDestination(Vector3 destination, bool preserveCourse, string reason)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _moveReason = reason;
+            _holdReason = REASON_MOVING;
+            _legCount++;
+            _pendingEvent = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                "leg:{0} dest=({1:F0},{2:F0}) destDist={3:F0} dist={4:F0} preserveCourse={5}", reason,
+                destination.x, destination.z, PlanarGeometry.Distance(destination, TargetPosition),
+                PlanarGeometry.Distance(_shipMoveComponent.CurrentPosition, TargetPosition), preserveCourse ? 1 : 0);
+#endif
             _pursuitDestination = destination;
             _hasPursuitDestination = true;
             _lastAttemptPosition = _shipMoveComponent.CurrentPosition;

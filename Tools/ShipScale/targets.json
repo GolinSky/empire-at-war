@@ -175,8 +175,8 @@
   },
   {
     "id": "NebulonB",
-    "meters": 300,
-    "baseline": 31.5,
+    "meters": 600,
+    "baseline": 63.0,
     "preserve": false
   },
   {

@@ -27,9 +27,8 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
 
         public void MoveTo(Vector3 worldPosition) => _squadron.MoveTo(worldPosition);
 
-        // Fighters keep their own speed: at a capital ship's pace they could not screen the group.
         public void Attack(IEntity target, Vector3 formationOffset, GroupPace pace) =>
-            _squadron.Attack(target, formationOffset);
+            _squadron.Attack(target, formationOffset, pace);
 
         // Fighters swarm whatever their own radar finds, so squadrons do not join the shared engagement.
         public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement) =>

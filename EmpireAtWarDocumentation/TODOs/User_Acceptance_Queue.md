@@ -15,7 +15,8 @@ created: "2026-10-29\r"
 
 ## Group Attack Pace
 
-- [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — Rerun `UnitOrderServiceTests.Attack_ShipsShareOnePaceAndSquadronsGetNone` (`BattleInput`) after the squadron-pace fix; the in-game pace was confirmed in the 2026-11-18 battle log.
+- [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — In battle, attack with a Venator + its squadrons: confirm the fighters stay with the ships until the attack zone, then fly their own passes.
+- [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — Run `BattleInput` and `Squadrons` EditMode categories (`UnitOrderServiceTests`, `FighterFlightTests`) when authorized; compile passed.
 
 ## Content Removal
 

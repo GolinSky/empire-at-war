@@ -17,6 +17,8 @@ namespace EmpireAtWar.Components.Squadrons.Flight
         private float[] _speeds = Array.Empty<float>();
 
         public IFighterFlightData Data => _data;
+        /// <summary>Group pace limit on every fighter; <see cref="float.PositiveInfinity"/> when uncapped.</summary>
+        public float SpeedCap { get; private set; } = float.PositiveInfinity;
         public int Count => _fighters.Length;
 
         public SquadronFlightModel(IFighterFlightData data, CombatModifiers modifiers)
@@ -70,6 +72,8 @@ namespace EmpireAtWar.Components.Squadrons.Flight
             _speeds[index] = speed;
         }
 
+        public void SetSpeedCap(float cap) => SpeedCap = cap;
+
         public void Step(float deltaTime)
         {
             float speedMultiplier = _modifiers.SpeedMultiplier;
@@ -77,7 +81,7 @@ namespace EmpireAtWar.Components.Squadrons.Flight
             {
                 if (_alive[i])
                 {
-                    _fighters[i].Step(_targets[i], _speeds[i] * speedMultiplier, _data, deltaTime);
+                    _fighters[i].Step(_targets[i], Math.Min(_speeds[i] * speedMultiplier, SpeedCap), _data, deltaTime);
                 }
             }
         }

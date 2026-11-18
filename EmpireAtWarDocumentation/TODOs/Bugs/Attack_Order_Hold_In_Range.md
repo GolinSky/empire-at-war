@@ -62,12 +62,10 @@ created: 2026-11-18
 2. [x] **Approach point**: `AttackTargetState` uses the slot as a side only. Approach = target + slot direction × standoff distance. Remove the `MovementTargetPosition` leg (offset magnitude + contact).
 3. [x] **Hold band** (design B): hold at 100% reach (any ship-capable mount, main batteries first) whether stopped or moving; resume only beyond 100%; a pursuing ship stops at 80% (predicted for a receding target). Replace the `!IsMoving && IsInRange` hold test.
 4. [x] **Same-target re-issue**: `ShipOrderRunner.Attack` with the same target updates the offset without `CancelCombatHold`/state re-entry; `AttackTargetState` keeps `_hasHeldPosition`.
-5. [x] **Artillery**: `TryUpdateArtilleryMove` holds while any main battery reaches; retreat only at hull contact; approach along `fromTarget`.
-6. [ ] (partial: `refresh` rows only) Telemetry (Editor/dev): per Attack sample log slot direction, hold/resume thresholds and the reason for each move.
-- Open question for the user: should artillery ships hold at launcher range when their guns cannot reach?
+5. [ ] **Artillery**: hold within eligible main-battery range and retreat only at hull contact without turning away. Contact-only retreat is implemented. Launcher-only fallback remains (see Remaining).
+6. [x] **Telemetry**: instrument Attack samples, hold transitions and new legs. The 18:25 battle exercised the new CSV fields.
 
-## Progress (2026-11-18, source-verified; compiles; tests not run — local override)
-- [x] Steps 1–5 implemented. Step 6 (telemetry) only partly: `ShipOrderRunner` records a `refresh` entry; per-sample hold/resume reasons not added.
+## Initial progress 2026-11-18
 - Deviations: ring spacing is an even spread over ±60° (slots sorted by current bearing), not neighbour-radius spacing; offset magnitude is only the max ship radius (direction is all the state uses). Artillery keeps the formation side for a fresh approach, `fromTarget` once held/retreating; `HasMainBatteryCover` no longer read by `AttackTargetState`.
 - Hold: new `IWeaponComponent.IsWithinReach` (100%) + `ShipEngagement.IsInReach`; `AttackTargetState.ShouldHold` = pursuing ? 80% : 100%. Formation path merged into the standoff path; `MovementTargetPosition` and `_isClosingRange` removed.
 - Same-target re-issue: `ShipOrderRunner.TryRefreshAttackSlot` + `UnitOrderModel.UpdateOffset`; `SetData` resets only on target/hardpoint change.
@@ -86,21 +84,35 @@ created: 2026-11-18
 - Wrong-way travel per player 1.1–2.2% of moving samples. The visible "random direction" moves are AI order churn and patrol flip-flop (see the AI plan), not attack-order legs.
 - The playtest build (`8787a78e1`) already had the hull-spaced arc; no run-away legs were seen. A dedicated group-attack check is still needed (below).
 
-## To finish (2026-11-18)
-1. Step 6 telemetry: per Attack sample log `slotBearing`, `holdReason` (`inReach`/`pursuitStop`/`artilleryBand`/`contactRetreat`) and `moveReason` for every new leg (`ShipOrderTelemetry`).
-2. User gate (in game): select 10–20 ships incl. squadrons, attack one station/capital — no ship leaves toward the map edge; ships already in reach do not move on re-click; a fleeing target is chased and the ship stops at ~80%.
-3. Answer the open question: artillery ships hold at launcher range when guns cannot reach? (record decision).
-4. Tests not run: `UnitOrderServiceTests` (arc), `ShipPursuitTests` (hold/refresh/artillery) — user runs `Navigation` + `BattleInput`.
-- Done when: steps 1–3 done and the user gate passes → move to `Done/Bugs` with `acceptance: pending-user` if only the gate remains.
+## Decision 2026-11-18 (user)
+- Artillery ships do NOT hold at launcher range when their guns cannot reach. An artillery ship has main batteries assigned as missiles/torpedoes; that range is the only stop/keep-distance range.
+- Too close → no turn-around/retreat rotation; retreat only at hull contact.
 
-## Agent handoff
-- Implement steps 1–5 in order; do not change `ENGAGE_RANGE_FACTOR` users outside `AttackTargetState`/`ShipEngagement` without noting it.
-- Do not run tests (local override); update/add tests listed below and report them as not run.
-- Hand back: list changed files, which steps are done, and any deviation from designs A/B, then ask the user for review.
+## Telemetry implemented 2026-11-18
+- `AttackTargetState.AttackDiagnostics` and `TakeAttackEvent()` → `ShipOrderRunner.Tick` → `ShipOrderTelemetry` writes the `attack` column in `persistentDataPath/BattleTelemetry/*_ai_orders.csv`.
+- Five-second `sample` rows capture hold/move reasons, pursuit and hold flags, range flags, formation bearing and magnitude, target and destination distances, and artillery reach. `attackHold` and `attackLeg` capture transitions.
+- Compare the `destDist` and `dist` values in the `attackLeg` reason. A positive difference is an outward leg. The reason identifies the permitted `contactRetreat` exception. The CSV rounds distances to whole units.
 
-## Tests (review/update; not run — local override)
-- `Navigation`/`Ships`: `ShipPursuitTests`, AttackTargetState tests, artillery hold tests (H3 main-battery hold).
-- New: re-issued same-target Attack while holding in range → no `MoveToPosition`; ship at 0.5 × reach with guns in range → holds.
+## Battle verification 2026-11-18
+- Source: `persistentDataPath/BattleTelemetry/Loading_20261118_182527_ai_orders.csv`. 9,599 rows, 777 Attack samples, 454 logged legs and 210 hold transitions.
+- 453 approach legs (414 ordinary, 35 artillery, 4 hardpoint) had `destDist <= dist`. The sole outward destination was the hull-contact exception at 619.63 s: Player3 ship 702 → target 695, 288 → 626 units (+338), `artReach=696`, `preserveCourse=1`. The order was replaced 0.52 s later, so the run did not establish whether a complete retreat preserves facing.
+- 158 `inReach` holds and 42 `pursuitStop` holds. Every pursuit stop had `inReach=1` and `inRange=1`; the CSV has no target velocity to identify a controlled fleeing-target case.
+- 88 same-target refresh rows reported that the order was kept (5 Player0). Thirty were stationary, including 15 whose preceding same-target diagnostic showed `held=1`. The event verifies order reuse; the latest prior diagnostic and movement fields provide evidence of held ships staying put.
+- Same-frame Attack issues included 16 Player3 ships against target 372 (59.11 s) and 13 Player0 ships against target 544 (125.45 s). The companion squadron log shows a Player0 V-wing attacking 544 at that time. The logs do not identify shared selection or target class, so a controlled mixed-group station/capital scenario remains unverified.
+- All 10 `artilleryBand` holds were within computed `artReach`. Four had ordinary `inReach=0`. That flag uses a different range calculation; neither field identifies the eligible main batteries or proves the launcher-only fallback was exercised.
+
+## Test report 2026-11-18
+- `Assets/TestResults_20261118_184635.xml` (EditMode, 16:43:32–16:44:03 UTC): 4,114 total, 4,052 passed, 58 failed, 4 skipped. This audit read the supplied report and did not rerun tests.
+- `Navigation` / `ShipPursuitTests`: 70 passed, 4 failed. Hold across full reach, pursuit stop, same-target refresh and all seven artillery state cases passed. Failures: target replacement expects old offset magnitude in the destination (225 vs 205); three old compact-ring cases expect hull spacing the new capped arc does not promise, including two strict float comparisons. Replace old ring expectations with live bearing-only and contact contracts while retaining meaningful clearance coverage.
+- `BattleInput` / `UnitOrderServiceTests`: 27 passed, 3 failed. Two squadron `GroupPace` failures predate source fix `264854d96` and need a rerun. `GuardReservesTargetHull_AttackIssuesHullRelativeSlot` still expects the old 10-unit magnitude; the bearing token uses the 5-unit ship radius.
+- `Combat`: 37 failures share a null reference at `WeaponHardPoint.ExpectedShotsInFlight`. It blocked the real artillery range and hardpoint approach assertions, including `WeaponRangeTests` fixtures that pass a null shot prefab. The other 14 failures span squadron, capture, game flow, abilities, core, economy and enemy AI fixtures.
+
+## Remaining
+- [ ] Enforce the recorded artillery decision when every eligible main battery is absent, destroyed or unable to engage the target. `ArtilleryCapability.GetArtilleryRange` currently clamps launcher reach only when `mainReach > 0`, so it can still return launcher-only reach. Verify whole-order behavior, including the fallback to ordinary engagement.
+- [ ] Verify that a hull-contact retreat completes without turning away. The state requests ordinary movement with `preserveCourse` on the first attempt, and the observed retreat ended before it could establish facing behavior.
+- [ ] Reconcile obsolete formation assertions and restore the blocked weapon fixture coverage. Rerun the affected `Navigation`, `BattleInput` and `Combat` cases when authorized.
+- [ ] Confirm the exact mixed-group attack on a station/capital and fleeing-target pursuit cases if closing playtest acceptance.
+- Keep active while the artillery rule and affected regression coverage remain unresolved. The instrumented battle confirms no outward approach legs and confirms the expected contact-retreat exception.
 
 ## Files
 - `Entities/Ship/StateMachine/AttackTargetState.cs`, `ShipEngagement.cs`

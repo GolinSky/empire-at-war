@@ -81,8 +81,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             {
                 Cluster cluster = Clusters[i];
                 int first = cluster.Head;
-                int originalSize = cluster.Count;
-                float2 originalSum = cluster.PositionSum;
+                MarkOutliers(first, cluster.Count, cluster.PositionSum);
                 cluster.Head = -1;
                 cluster.Count = 0;
                 cluster.PositionSum = float2.zero;
@@ -90,14 +89,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 {
                     Member member = Members[index];
                     int next = member.Next;
-                    bool apart = false;
-                    if (originalSize > 1)
-                    {
-                        float2 others = (originalSum - member.Position) / (originalSize - 1);
-                        apart = math.distancesq(member.Position, others) > LeavePx * LeavePx;
-                    }
-
-                    member.LeaveAge = apart ? member.LeaveAge + Elapsed : 0f;
+                    member.LeaveAge = member.Apart ? member.LeaveAge + Elapsed : 0f;
+                    member.Apart = false;
                     if (member.LeaveAge + DWELL_EPSILON >= LEAVE_DWELL)
                     {
                         int splitIndex = CreateCluster(++NextClusterId.Value, member.Owner);
@@ -126,6 +119,35 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 }
 
                 Clusters[i] = cluster;
+            }
+        }
+
+        // Peels off the farthest member first, so one distant squadron cannot drag the
+        // remaining members' reference point away and make them leave too.
+        private void MarkOutliers(int first, int count, float2 sum)
+        {
+            float leaveSq = LeavePx * LeavePx;
+            while (count > 1)
+            {
+                int farthest = -1;
+                float farthestSq = leaveSq;
+                for (int index = first; index >= 0; index = Members[index].Next)
+                {
+                    Member member = Members[index];
+                    if (member.Apart) continue;
+                    float2 others = (sum - member.Position) / (count - 1);
+                    float distanceSq = math.distancesq(member.Position, others);
+                    if (distanceSq <= farthestSq) continue;
+                    farthest = index;
+                    farthestSq = distanceSq;
+                }
+
+                if (farthest < 0) return;
+                Member outlier = Members[farthest];
+                outlier.Apart = true;
+                Members[farthest] = outlier;
+                sum -= outlier.Position;
+                count--;
             }
         }
 
@@ -280,6 +302,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             public float2 Position;
             public float JoinAge;
             public float LeaveAge;
+            public bool Apart;
         }
 
         internal struct Cluster

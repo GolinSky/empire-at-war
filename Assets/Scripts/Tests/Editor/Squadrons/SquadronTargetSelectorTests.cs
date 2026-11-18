@@ -421,6 +421,7 @@ namespace EmpireAtWar.Tests.Editor
             public Vector3 GetPosition(int index) => Centroid;
             public Vector3 GetForward(int index) => Heading;
             public void Steer(int index, Vector3 target, float speed) { }
+            public void SetSpeedCap(float cap) { }
             public void Step(float deltaTime)
             {
                 if (StepCentroid.HasValue) Centroid = StepCentroid.Value;

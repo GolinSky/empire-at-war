@@ -495,7 +495,7 @@ MonoBehaviour:
         <Name>k__BackingField: "Plo Koon \u2014 Delta-7B"
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 2
-        <Price>k__BackingField: 2000
+        <Price>k__BackingField: 1200
         <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 1ff6ed4901c849a3b9b3b62d802b2974,
@@ -512,7 +512,7 @@ MonoBehaviour:
         <Name>k__BackingField: "Obi-Wan Kenobi \u2014 Eta-2 Actis"
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 3500
+        <Price>k__BackingField: 2000
         <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 6de8ee785958456fa2a7a988106d3be1,
@@ -529,7 +529,7 @@ MonoBehaviour:
         <Name>k__BackingField: "Mace Windu \u2014 Eta-2 Actis"
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 4
-        <Price>k__BackingField: 3500
+        <Price>k__BackingField: 2000
         <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 98a9def4b3404d5a843243b37768b618,
@@ -546,7 +546,7 @@ MonoBehaviour:
         <Name>k__BackingField: "Anakin Skywalker \u2014 Eta-2 Actis"
         <MaxCount>k__BackingField: 1
         <AvailableLevel>k__BackingField: 3
-        <Price>k__BackingField: 3500
+        <Price>k__BackingField: 2000
         <BuildTime>k__BackingField: 25
         <UnitCapacity>k__BackingField: 2
         <Icon>k__BackingField: {fileID: 21300000, guid: 7a6957f9f1c843079f92b6cff955f684,

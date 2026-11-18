@@ -69,6 +69,9 @@ namespace EmpireAtWar.Entities.Squadrons
         private IShipAbilityFacade _abilityCaster;
         private CombatModifiers _modifiers;
         private IEntity _engaged;
+        // Host-only and not saved, like the ships' pace.
+        private GroupPace _pace;
+        private int _paceMember;
 
         private UnitOrderModel _orders;
         private SquadronPilot _pilot;
@@ -268,6 +271,7 @@ namespace EmpireAtWar.Entities.Squadrons
             using (BattleProfilerMarkers.SquadronPilot.Auto())
 #endif
             _pilot.Tick(deltaTime);
+            UpdatePace();
             Vector3 previousPosition = _flight.Centroid;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.SquadronFlight.Auto())
@@ -308,15 +312,60 @@ namespace EmpireAtWar.Entities.Squadrons
             _pilot.FlyTo(worldPosition);
         }
 
-        public void Attack(IEntity target, Vector3 formationOffset)
+        public void Attack(IEntity target, Vector3 formationOffset, GroupPace pace = null)
         {
             // Fighters swarm the target, so a formation offset has no meaning for squadrons.
-            if (!SquadronTargetSelector.IsAlive(target) || target.IsCloaked() ||
-                _orders.Matches(UnitOrderType.Attack, target: target)) return;
-            _orders.Replace(UnitOrderType.Attack, target: target);
-            foreach (IAudioDialogShipComponent audioDialog in _audioDialogs)
-                audioDialog.HandleAttack(target.GetFacade<IEntityTransformFacade>().Transform.position);
-            Engage(target);
+            if (!SquadronTargetSelector.IsAlive(target) || target.IsCloaked()) return;
+            if (!_orders.Matches(UnitOrderType.Attack, target: target))
+            {
+                _orders.Replace(UnitOrderType.Attack, target: target);
+                foreach (IAudioDialogShipComponent audioDialog in _audioDialogs)
+                    audioDialog.HandleAttack(target.GetFacade<IEntityTransformFacade>().Transform.position);
+                Engage(target);
+            }
+
+            JoinPace(pace);
+        }
+
+        // Approach speed for the group pace; a squadron that cannot fly never holds the group back.
+        private float PaceSpeed
+        {
+            get
+            {
+                float speed = _flight.Data.CombatSpeed * _modifiers.SpeedMultiplier;
+                return _modifiers.IsIonDisabled || speed <= 0f ? float.PositiveInfinity : speed;
+            }
+        }
+
+        // A repeated order joins its new group; the squadron leaves the old one first.
+        private void JoinPace(GroupPace pace)
+        {
+            LeavePace();
+            if (pace == null) return;
+            _pace = pace;
+            _paceMember = pace.Join(PaceSpeed);
+        }
+
+        private void LeavePace()
+        {
+            if (_pace == null) return;
+            _pace.Leave(_paceMember);
+            _pace = null;
+            _flight.SetSpeedCap(float.PositiveInfinity);
+        }
+
+        // The group approaches together; fighters fly their own passes once in the attack zone.
+        private void UpdatePace()
+        {
+            if (_pace == null) return;
+            if (_orders.Current != UnitOrderType.Attack || _pilot.IsInAttackZone)
+            {
+                LeavePace();
+                return;
+            }
+
+            _pace.Report(_paceMember, PaceSpeed);
+            _flight.SetSpeedCap(_pace.Pace);
         }
 
         public void CastAbility(ShipAbilityId id, IEntity target, float range)
@@ -592,6 +641,7 @@ namespace EmpireAtWar.Entities.Squadrons
             if (destroyed) RecordTelemetry("destroyed", "Squadron destroyed.");
 #endif
             _isReleased = true;
+            LeavePace();
             _orderScheduler.Unregister(UpdateOrder);
             _radar.Enemies.ItemAdded -= HandleEnemyAdded;
             _weaponFireEvents.ShotEmitted -= HandleShotEmitted;
