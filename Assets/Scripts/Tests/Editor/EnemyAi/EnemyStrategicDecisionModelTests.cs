@@ -460,10 +460,10 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.HuntFleet));
         }
 
-        [TestCase(EnemyAiDifficulty.Easy, 4f, 0.5f, 1, 0.75f)]
-        [TestCase(EnemyAiDifficulty.Medium, 2.5f, 0.65f, 1, 1f)]
-        [TestCase(EnemyAiDifficulty.Hard, 1.25f, 0.8f, 2, 1.25f)]
-        [TestCase(EnemyAiDifficulty.UltraHard, 0.5f, 1f, 3, 1.5f)]
+        [TestCase(EnemyAiDifficulty.Easy, 4f, 0.5f, 1, 1.5f)]
+        [TestCase(EnemyAiDifficulty.Medium, 2.5f, 0.65f, 1, 1.25f)]
+        [TestCase(EnemyAiDifficulty.Hard, 1.25f, 0.8f, 2, 1f)]
+        [TestCase(EnemyAiDifficulty.UltraHard, 0.5f, 1f, 3, 0.75f)]
         public void DifficultyProfile_UsesExpectedStrategicConfiguration(
             EnemyAiDifficulty difficulty,
             float decisionInterval,
@@ -479,6 +479,17 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(profile.DefenseThreatRatio, Is.EqualTo(defenseThreatRatio));
             Assert.That(profile.RetreatAdvantage, Is.LessThan(profile.HuntAdvantage));
             Assert.That(EnemyAiDifficultyProfile.Get(difficulty), Is.SameAs(profile));
+        }
+
+        [Test]
+        public void DifficultyProfile_HarderAiDefendsEarlier()
+        {
+            Assert.That(EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.UltraHard).DefenseThreatRatio,
+                Is.LessThan(EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.Hard).DefenseThreatRatio));
+            Assert.That(EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.Hard).DefenseThreatRatio,
+                Is.LessThan(EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.Medium).DefenseThreatRatio));
+            Assert.That(EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.Medium).DefenseThreatRatio,
+                Is.LessThan(EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.Easy).DefenseThreatRatio));
         }
 
         [Test]

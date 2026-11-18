@@ -31,7 +31,7 @@ created: 2026-11-18
 
 ## Plan
 - [ ] Release telemetry: battle time + player id on `[EnemyAI]`, `[EnemyAI:Production]`, `[EnemyAI:SuperWeapon]` lines (shared with [[TODOs/Optimization/Online_Battle_Low_FPS]] Phase 0).
-- [ ] Invert/realign `defenseThreatRatio` (harder AI defends earlier), or compare attackers against home defences + forces within N seconds of the base.
+- [x] Invert/realign `defenseThreatRatio` (harder AI defends earlier): Easy 1.5, Normal 1.25, Hard 1, UltraHard 0.75 (2026-11-18). Local-force comparison not done.
 - [ ] Proportional response: send a detachment sized to the base threat (task force) instead of `committedFleetRatio` 1; keep the main fight if local advantage holds.
 - [ ] Treat station damage source as a sighting (reveal attacker) for threat.
 - [ ] Cap superweapon spend share per AI (e.g., ≤ 20% of income) and log per player.
