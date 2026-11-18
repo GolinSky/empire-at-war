@@ -13,7 +13,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         private const float JOIN_PITCHES = 1.25f;
         private const float LEAVE_PITCHES = 3f;
         private const float PLACEMENT_SMOOTH_TIME = 0.12f;
-        private const float LEADER_PIXELS = 90f;
+        private const float LEADER_PIXELS = 150f;
         private const float HULL_PADDING = 4f;
 
         private readonly SquadronClusterPlacement _placement = new SquadronClusterPlacement();

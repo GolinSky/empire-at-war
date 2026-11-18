@@ -7,8 +7,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
     /// <summary>Pooled thin lines tying a displaced grid back to its squadrons.</summary>
     internal sealed class SquadronLeaderLines
     {
-        private const float THICKNESS = 2f;
-        private static readonly Color LINE_COLOR = new Color(1f, 1f, 1f, 0.45f);
+        private const float THICKNESS = 1f;
+        private static readonly Color LINE_COLOR = new Color(1f, 1f, 1f, 0.25f);
 
         private readonly List<RectTransform> _lines = new List<RectTransform>();
         private readonly RectTransform _parent;
