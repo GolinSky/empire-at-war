@@ -42,6 +42,7 @@ namespace EmpireAtWar.Tests.Editor
         [TearDown]
         public void TearDown()
         {
+            _hulls.Clear();
             _grouping.Dispose();
             Object.DestroyImmediate(_root);
         }

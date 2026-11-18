@@ -31,6 +31,9 @@ namespace EmpireAtWar.Services.Enemy
         public float ThreatY { get; private set; }
         public float ThreatZ { get; private set; }
 
+        internal bool WasDamagedRecently(long stationId, float now, float duration) =>
+            _stationId == stationId && now - LastDamageTime <= duration;
+
         public void ObserveThreatPosition(float x, float y, float z)
         {
             HasThreatPosition = true;

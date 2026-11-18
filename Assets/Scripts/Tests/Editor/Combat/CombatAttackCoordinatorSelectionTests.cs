@@ -23,8 +23,10 @@ namespace EmpireAtWar.Tests.Weapon
         {
             CombatAttackCoordinator coordinator = new CombatAttackCoordinator();
             List<GameObject> owners = new List<GameObject>();
+            GameObject shotObject = new GameObject("Shot");
             try
             {
+                BoltShot shot = shotObject.AddComponent<BoltShot>();
                 for (int i = 0; i < requestCount; i++)
                 {
                     GameObject ownerObject = new GameObject("WeaponOwner");
@@ -34,7 +36,7 @@ namespace EmpireAtWar.Tests.Weapon
                     hardPointObject.transform.SetParent(ownerObject.transform);
                     WeaponHardPoint hardPoint = hardPointObject.AddComponent<WeaponHardPoint>();
                     hardPoint.SetData(new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser,
-                        DamageType.Laser, 1f, 1, 0f, 1f, 100f, false, false, null, 100f, Color.white,
+                        DamageType.Laser, 1f, 1, 0f, 1f, 100f, false, false, shot, 100f, Color.white,
                         Vector3.one, false, false, default, default, 0f),
                         100f, 0f, weapon, coordinator, new CombatModifiers(), null, null, null, null);
                     typeof(WeaponComponent).GetField("hardPoints", BindingFlags.Instance | BindingFlags.NonPublic)
@@ -65,6 +67,7 @@ namespace EmpireAtWar.Tests.Weapon
             finally
             {
                 foreach (GameObject owner in owners) Object.DestroyImmediate(owner);
+                Object.DestroyImmediate(shotObject);
                 coordinator.Dispose();
             }
         }

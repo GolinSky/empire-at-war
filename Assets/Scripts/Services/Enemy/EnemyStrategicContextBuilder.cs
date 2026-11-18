@@ -1169,35 +1169,36 @@ namespace EmpireAtWar.Services.Enemy
             return new FormationPoint(x / ships.Count, z / ships.Count);
         }
 
-        /// <summary>Currently visible hostiles whose effective attack reach covers the station footprint.</summary>
+        /// <summary>Visible or damage-revealed hostiles whose attack reach covers the station footprint.</summary>
         private GameEntity BuildBaseThreat(GameEntity ownBase)
         {
             _stationThreats.Clear();
-            if (ownBase != null) RevealStationAttackers(ownBase);
             GameEntity target = null;
             float closest = float.MaxValue;
             if (ownBase != null)
             {
+                float now = Time.time;
+                bool recentlyDamaged = _stationPressure.WasDamagedRecently(ownBase.Id, now, DAMAGE_REVEAL_SECONDS);
+                if (recentlyDamaged) RevealStationAttackers(ownBase, now);
                 Vector3 center = ownBase.GetFacade<IEntityTransformFacade>().Transform.position;
                 float footprint = ownBase.GetFacade<INavigationFootprintFacade>().NavigationRadius;
                 foreach (HostileSighting sighting in _intel.Sightings)
                 {
                     if (!_playerRoster.IsHostile(_owner.Id, sighting.Owner) ||
-                        _intel.GetConfidence(sighting, Time.time) <= 0f ||
+                        _intel.GetConfidence(sighting, now) <= 0f ||
                         !_entityLocator.TryGetEntity(sighting.EntityId, out GameEntity hostile) ||
                         hostile.HealthModel.IsDestroyed || !hostile.HealthModel.HasUnits || hostile.IsCloaked() ||
                         !hostile.TryGetFacade(out IUnitCombatObserverFacade combat)) continue;
+                    bool attackingBase = combat.IsAttacking(ownBase);
+                    if (!_vision.IsVisible(_owner.Id, hostile) && !(recentlyDamaged && attackingBase)) continue;
                     Vector3 position = hostile.GetFacade<IEntityTransformFacade>().Transform.position;
-                    // A unit attacking the station is known by its damage even without current vision.
-                    if (!_vision.IsVisible(_owner.Id, hostile) && !combat.IsAttacking(ownBase)) continue;
                     float hostileRadius = hostile.TryGetFacade(out INavigationFootprintFacade body) ? body.NavigationRadius : 0f;
                     float distance = PlanarDistance(position, center);
                     if (!CanThreatenStation(distance, footprint, hostileRadius, combat.WeaponRange)) continue;
                     // Hull-edge reach requires a commanded or weapon-tracked station attack. Other contacts must be
                     // close enough to engage from their centre or at their navigation contact distance.
-                    if (!combat.IsAttacking(ownBase) && distance > Mathf.Max(combat.WeaponRange, footprint + hostileRadius)) continue;
+                    if (!attackingBase && distance > Mathf.Max(combat.WeaponRange, footprint + hostileRadius)) continue;
                     _stationThreats.Add(hostile.Id);
-                    bool attackingBase = combat.IsAttacking(ownBase);
                     bool previousAttacksBase = target != null && target.GetFacade<IUnitCombatObserverFacade>().IsAttacking(ownBase);
                     if (target == null || attackingBase && !previousAttacksBase ||
                         attackingBase == previousAttacksBase && distance < closest)
@@ -1227,10 +1228,8 @@ namespace EmpireAtWar.Services.Enemy
         /// Recent station damage proves its source exists: hostile units now attacking the station are reported to
         /// the team intel even when no scout or radar currently sees them.
         /// </summary>
-        private void RevealStationAttackers(GameEntity ownBase)
+        private void RevealStationAttackers(GameEntity ownBase, float now)
         {
-            float now = Time.time;
-            if (now - _stationPressure.LastDamageTime > DAMAGE_REVEAL_SECONDS) return;
             IReadOnlyList<AiWorldSnapshot.Entry> units = _worldSnapshot.LivingUnits;
             for (int i = 0; i < units.Count; i++)
             {

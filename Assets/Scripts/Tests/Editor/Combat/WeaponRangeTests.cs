@@ -8,6 +8,7 @@ using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Cheats;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Health;
+using EmpireAtWar.ViewComponents.Weapon;
 using NUnit.Framework;
 using UnityEngine;
 using Utilities.ScriptUtils.Time;
@@ -170,9 +171,10 @@ namespace EmpireAtWar.Tests.Editor
             mountObject.transform.SetParent(hull.transform, false);
             mountObject.transform.localPosition = offset;
             WeaponHardPoint mount = mountObject.AddComponent<WeaponHardPoint>();
+            BoltShot shot = mountObject.AddComponent<BoltShot>();
             typeof(HardPoint).GetField("spawnDestroyedExplosion", PRIVATE_INSTANCE).SetValue(mount, false);
             WeaponProfile profile = new WeaponProfile(default, family.ToString(), family, damageType, 1f,
-                1, 0f, 1f, range, false, false, null, 100f, Color.white, Vector3.one,
+                1, 0f, 1f, range, false, false, shot, 100f, Color.white, Vector3.one,
                 false, false, default, default, 0f);
             mount.SetData(profile, range, 0f, null, null, modifiers, null, null, null, null);
             return mount;

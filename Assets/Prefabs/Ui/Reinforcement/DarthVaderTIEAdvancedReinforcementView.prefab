@@ -62,23 +62,11 @@ MonoBehaviour:
   - {fileID: 3673312939455945827}
   - {fileID: 5512067585699999176}
   - {fileID: 2452739103549245052}
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 8964601146594271791}
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 7569608950081286965}
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 9105850172143272529}
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 2199420957157884066}
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 3718681378912067248}
-  - {fileID: 0}
-  - {fileID: 0}
   hologramMaterial: {fileID: 2100000, guid: 4a28dce88e7c1ee4a97e1b87b8b54550, type: 2}
   height: 11
 --- !u!54 &4949737023463851470

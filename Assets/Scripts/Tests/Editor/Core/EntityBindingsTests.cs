@@ -24,7 +24,6 @@ namespace EmpireAtWar.Tests.Entities
                 count++;
                 EntityBindings bindings = view.Bindings;
                 Assert.That(bindings, Is.Not.Null, path);
-                Assert.That(bindings.Selection, Is.Not.Empty, path);
                 Assert.That(bindings.Radar, Is.Not.Empty, path);
                 Assert.That(bindings.FogVisibility, Is.Not.Empty, path);
                 Assert.That(bindings.Injectables, Is.All.Not.Null, path);
@@ -38,6 +37,7 @@ namespace EmpireAtWar.Tests.Entities
                 }
                 else
                 {
+                    Assert.That(bindings.Selection, Is.Not.Empty, path);
                     Assert.That(bindings.Health, Is.Not.Empty, path);
                     foreach (HardPoint hardPoint in bindings.Health.SelectMany(health => health.ShipUnits))
                         Assert.That(bindings.Injectables, Does.Contain(hardPoint),

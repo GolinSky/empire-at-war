@@ -239,17 +239,20 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void GuardReservesTargetHull_AttackIssuesHullRelativeSlot()
+        public void GuardReservesTargetHull_AttackSlotPointsTowardEscortSide()
         {
             FakeEntity escort = Entity(1, TestPlayers.Human);
             FakeEntity target = Entity(2, TestPlayers.Human);
+            escort.Command.WorldPosition = Vector3.forward * 200f;
             target.Command.NavigationRadius = 100f;
             _unitOrderService.IssueGuard(new IEntity[] { escort }, target);
             Assert.That(escort.Command.LastPoint.magnitude, Is.GreaterThan(105f));
             _unitOrderService.IssueGuard(new IEntity[] { escort }, target, new[] { Vector3.zero });
             Assert.That(escort.Command.LastPoint.magnitude, Is.GreaterThan(105f));
             _unitOrderService.IssueAttack(new IEntity[] { escort }, target);
-            Assert.That(escort.Command.LastPoint.magnitude, Is.EqualTo(10f).Within(0.001f));
+            Assert.That(escort.Command.LastAction, Is.EqualTo(UnitActionId.Attack));
+            Assert.That(Vector3.Distance(escort.Command.LastPoint.normalized, Vector3.forward),
+                Is.LessThan(0.001f));
         }
 
         [TestCase(false)]

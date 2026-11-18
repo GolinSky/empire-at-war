@@ -340,7 +340,8 @@ namespace EmpireAtWar.Tests.Editor
             FactionRoster roster = CreateRoster(FactionType.Empire);
             var option = roster.SuperWeapons.First();
             EnemyFactionModel faction = new EnemyFactionModel(null, roster) { CurrentLevel = option.Value.AvailableLevel };
-            EconomyModel economy = new EconomyModel(null, option.Value.Price * 3f);
+            float startingMoney = option.Value.Price * 10f;
+            EconomyModel economy = new EconomyModel(null, startingMoney);
             SuperWeaponModel model = new SuperWeaponModel();
             var pressure = new EnemyStationPressureTracker();
             pressure.Update(1, 400f, 1000f, 0f, 2);
@@ -351,7 +352,7 @@ namespace EmpireAtWar.Tests.Editor
                 "TryPurchase", BindingFlags.Instance | BindingFlags.NonPublic);
 
             Assert.That(purchase.Invoke(controller, new object[] { option.Key, option.Value }), Is.False);
-            Assert.That(economy.Money, Is.EqualTo(option.Value.Price * 3f));
+            Assert.That(economy.Money, Is.EqualTo(startingMoney));
             Assert.That(model.GetState(option.Key), Is.EqualTo(SuperWeaponState.Unavailable));
 
             pressure.Reset();
@@ -359,7 +360,7 @@ namespace EmpireAtWar.Tests.Editor
             pressure.Update(1, 400f, 1000f, 1f, 2);
             controller.AdvanceCharging(option.Value.BuildTime);
             Assert.That(model.CanFire(option.Key), Is.True);
-            Assert.That(economy.Money, Is.EqualTo(option.Value.Price * 2f));
+            Assert.That(economy.Money, Is.EqualTo(startingMoney - option.Value.Price));
         }
 
         [Test]
@@ -391,7 +392,8 @@ namespace EmpireAtWar.Tests.Editor
             FactionRoster roster = CreateRoster(FactionType.Empire);
             var option = roster.SuperWeapons.First();
             EnemyFactionModel faction = new EnemyFactionModel(null, roster) { CurrentLevel = option.Value.AvailableLevel };
-            EconomyModel economy = new EconomyModel(null, option.Value.Price * 3f);
+            float startingMoney = option.Value.Price * 10f;
+            EconomyModel economy = new EconomyModel(null, startingMoney);
             SuperWeaponModel model = new SuperWeaponModel();
             QueuePurchaseProcessor production = new QueuePurchaseProcessor();
             FactionData data = CreateFactionData(1, 10);
@@ -404,7 +406,7 @@ namespace EmpireAtWar.Tests.Editor
                 "TryPurchase", BindingFlags.Instance | BindingFlags.NonPublic);
 
             Assert.That(purchase.Invoke(controller, new object[] { option.Key, option.Value }), Is.False);
-            Assert.That(economy.Money, Is.EqualTo(option.Value.Price * 3f));
+            Assert.That(economy.Money, Is.EqualTo(startingMoney));
             production.Queue.RemoveAll(request => request.Id == "7");
             Assert.That(purchase.Invoke(controller, new object[] { option.Key, option.Value }), Is.True);
             Assert.That(production.CanQueue("7", 1), Is.False);

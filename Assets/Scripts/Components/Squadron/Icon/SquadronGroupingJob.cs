@@ -187,7 +187,15 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                     float distance = math.distance(centroid, other);
                     float extra = math.max(0f, (SquadronClusterLayout.Columns(incoming.Count) +
                         SquadronClusterLayout.Columns(candidate.Count)) * 0.5f - 1f) * Pitch;
-                    if (distance > JoinPx + extra || distance >= bestDistance) continue;
+                    if (distance > JoinPx + extra || distance > bestDistance) continue;
+                    if (best >= 0 && distance == bestDistance)
+                    {
+                        Cluster current = Clusters[best];
+                        if (candidate.Count < current.Count ||
+                            (candidate.Count == current.Count && candidate.Id >= current.Id))
+                            continue;
+                    }
+
                     best = index;
                     bestDistance = distance;
                 }

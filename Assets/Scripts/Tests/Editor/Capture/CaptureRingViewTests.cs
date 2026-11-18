@@ -43,7 +43,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void CaptureColor_CyclesInTwoSeconds_AndRepeatedRenderDoesNotRestart()
+        public void CaptureColor_CyclesInOneSecond_AndRepeatedRenderDoesNotRestart()
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/View/CaptureSites/CaptureSite.prefab");
             GameObject root = Object.Instantiate(prefab);
@@ -60,16 +60,16 @@ namespace EmpireAtWar.Tests.Editor
                 Color neutral = ring.GetColor(OwnerRelation.Neutral, false);
                 Color player = ring.GetColor(OwnerRelation.Own, false);
 
-                tween.Goto(0.5f);
+                tween.Goto(0.25f);
                 ring.Render(OwnerRelation.Neutral, false, false, false, OwnerRelation.Own);
                 renderer.GetPropertyBlock(block);
                 Color halfway = block.GetColor("_BaseColor");
                 Assert.That(halfway.r, Is.EqualTo((neutral.r + player.r) * 0.5f).Within(0.001f));
                 Assert.That(halfway.g, Is.EqualTo((neutral.g + player.g) * 0.5f).Within(0.001f));
-                tween.Goto(1f);
+                tween.Goto(0.5f);
                 renderer.GetPropertyBlock(block);
                 AssertColorEqual(block.GetColor("_BaseColor"), player);
-                tween.Goto(2f);
+                tween.Goto(1f);
                 renderer.GetPropertyBlock(block);
                 AssertColorEqual(block.GetColor("_BaseColor"), neutral);
 
@@ -103,7 +103,7 @@ namespace EmpireAtWar.Tests.Editor
                 AssertColorEqual(block.GetColor("_BaseColor"), ring.GetColor(OwnerRelation.Own, false));
                 var tween = (Tween)typeof(CaptureRingView).GetField("_blinkTween", BindingFlags.Instance | BindingFlags.NonPublic)
                     .GetValue(ring);
-                tween.Goto(1f);
+                tween.Goto(0.5f);
                 renderer.GetPropertyBlock(block);
                 AssertColorEqual(block.GetColor("_BaseColor"), ring.GetColor(OwnerRelation.Enemy, false));
                 ring.SetVisibility(false);

@@ -32,6 +32,7 @@ namespace EmpireAtWar.Tests.Weapon
         private readonly List<GameObject> _objects = new List<GameObject>();
         private CombatAttackCoordinator _coordinator;
         private WeaponComponent _weapon;
+        private BoltShot _shot;
         private DebugRangeCircle _circle;
 
         [SetUp]
@@ -40,6 +41,7 @@ namespace EmpireAtWar.Tests.Weapon
             _coordinator = new CombatAttackCoordinator();
             GameObject weaponObject = Track(new GameObject("Weapon"));
             _weapon = weaponObject.AddComponent<WeaponComponent>();
+            _shot = weaponObject.AddComponent<BoltShot>();
             typeof(WeaponComponent).GetField("_attackCoordinator", PRIVATE_INSTANCE).SetValue(_weapon, _coordinator);
             typeof(WeaponComponent).GetField("_visionService", PRIVATE_INSTANCE)
                 .SetValue(_weapon, new VisionService(TestPlayers.CreateDuel(), false));
@@ -305,9 +307,9 @@ namespace EmpireAtWar.Tests.Weapon
             mount.SetData(arc);
         }
 
-        private static WeaponProfile Profile(DamageType damageType = DamageType.Laser) =>
+        private WeaponProfile Profile(DamageType damageType = DamageType.Laser) =>
             new WeaponProfile(WeaponType.Laser, "Test", WeaponFamily.Laser, damageType, 1f, 1, 0f, 1f, 100f,
-                false, false, null, 100f, Color.white, Vector3.one, false, false, default, default, 45f);
+                false, false, _shot, 100f, Color.white, Vector3.one, false, false, default, default, 45f);
 
         private sealed class AttackRunStub : IFighterAttackRunObserver
         {

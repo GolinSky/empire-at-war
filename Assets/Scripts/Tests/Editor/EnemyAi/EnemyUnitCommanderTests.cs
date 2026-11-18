@@ -1611,6 +1611,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("weapon-tracked", true)]
         [TestCase("unrelated", false)]
         [TestCase("hidden", false)]
+        [TestCase("hidden-after-damage", true)]
         [TestCase("cloaked", false)]
         [TestCase("destroyed", false)]
         [TestCase("lost", false)]
@@ -1624,7 +1625,8 @@ namespace EmpireAtWar.Tests.Editor
                 attackerView.transform.position = Vector3.right * (condition == "out-of-range" ? 1600f : 1300f);
                 PlayerRoster roster = TestPlayers.CreateDuel();
                 PlayerSlot owner = roster.Get(TestPlayers.Enemy);
-                FakeEntity station = new FakeEntity(new FakeHealthModel(stationView.transform), owner.Id, 10)
+                var stationHealth = new FakeHealthModel(stationView.transform);
+                FakeEntity station = new FakeEntity(stationHealth, owner.Id, 10)
                     { NavigationRadius = 800f };
                 FakeHealthModel attackerHealth = new FakeHealthModel(attackerView.transform)
                     { IsDestroyed = condition == "destroyed" };
@@ -1639,9 +1641,11 @@ namespace EmpireAtWar.Tests.Editor
                 EntityLocator locator = new EntityLocator();
                 if (condition != "lost") locator.AddEntity(attacker);
                 TeamIntelRegistry registry = new TeamIntelRegistry();
-                registry.Get(owner.Team).Report(new HostileSighting(attacker.Id,
-                    UnitTypeId.Ship(ShipType.Venator), attacker.Owner,
-                    new FormationPoint(attackerView.transform.position.x, 0f), 1f, 1f, 1f, Time.time));
+                bool damagedRecently = condition == "hidden-after-damage";
+                if (!damagedRecently)
+                    registry.Get(owner.Team).Report(new HostileSighting(attacker.Id,
+                        UnitTypeId.Ship(ShipType.Venator), attacker.Owner,
+                        new FormationPoint(attackerView.transform.position.x, 0f), 1f, 1f, 1f, Time.time));
                 UnitCombatProfileCatalog catalog = new UnitCombatProfileCatalog(null, null, null, null);
                 Dictionary<UnitTypeId, UnitCombatProfile> profiles =
                     (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
@@ -1650,9 +1654,15 @@ namespace EmpireAtWar.Tests.Editor
                     new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots],
                     new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>()));
                 var pressure = new EnemyStationPressureTracker();
+                if (damagedRecently)
+                {
+                    pressure.Update(station.Id, 2f, 2f, Time.time - 1f);
+                    stationHealth.Shields = 0f;
+                    pressure.Update(station.Id, 1f, 2f, Time.time);
+                }
                 EnemyStrategicContextBuilder builder = CreateContextBuilder(
                     null, null, Array.Empty<IEnemyCaptureObjectiveSource>(), locator, null, roster, catalog,
-                    registry, new VisionService(roster, fogEnabled: condition == "hidden"), owner,
+                    registry, new VisionService(roster, fogEnabled: condition == "hidden" || damagedRecently), owner,
                     null, new TestHazards(), null, null, pressure, CreateRecovery(roster));
 
                 object target = typeof(EnemyStrategicContextBuilder)

@@ -660,38 +660,23 @@ namespace EmpireAtWar.Tests.Movement
                 Is.EqualTo(105f));
         }
 
-        [TestCase(0f, false)]
-        [TestCase(100f, false)]
-        [TestCase(500f, true)]
-        public void Attack_ThreeFormationRingsKeepHullClearanceWithoutRangeProjection(float targetRadius, bool mixedRadii)
+        [TestCase(0f, 40f, 65f)]
+        [TestCase(100f, 40f, 140f)]
+        [TestCase(500f, 5f, 505f)]
+        public void Attack_FormationSlotUsesBearingAndStopsAtStandoff(
+            float targetRadius, float shipRadius, float expectedDistance)
         {
-            const int SHIP_COUNT = 19;
-            var positions = new List<FormationPoint>();
-            var radii = new List<float>();
-            var offsets = new List<FormationPoint>();
-            var destinations = new List<Vector3>();
+            Vector3 slot = new Vector3(20f, 0f, 40f);
             _target.Transform.position = new Vector3(5000f, 0f, 0f);
             _target.NavigationRadius = targetRadius;
-            for (int i = 0; i < SHIP_COUNT; i++)
-            {
-                positions.Add(new FormationPoint(-5000f, i * 100f));
-                radii.Add(mixedRadii ? 5f + i % 4 * 10f : 40f);
-            }
-            FormationModel.CalculateCompactDestinations(positions, radii, default, offsets, float.Epsilon);
+            var movement = new Movement { NavigationRadius = shipRadius };
+            var state = new AttackTargetState(null, _weapon, movement);
+            state.SetData(_target, slot, UnitOrderModel.NO_HARD_POINT);
 
-            for (int i = 0; i < SHIP_COUNT; i++)
-            {
-                var movement = new Movement { NavigationRadius = radii[i] };
-                var state = new AttackTargetState(null, _weapon, movement);
-                state.SetData(_target, new Vector3(offsets[i].X, 0f, offsets[i].Z), UnitOrderModel.NO_HARD_POINT);
-                state.Tick(0.1f);
-                destinations.Add(movement.Destination);
-                Assert.That(Vector3.Distance(movement.Destination, _target.Transform.position),
-                    Is.GreaterThanOrEqualTo(targetRadius + radii[i]));
-                for (int j = 0; j < i; j++)
-                    Assert.That(Vector3.Distance(destinations[i], destinations[j]),
-                        Is.GreaterThanOrEqualTo(radii[i] + radii[j] - 0.001f), $"Ships {i} and {j}");
-            }
+            state.Tick(0.1f);
+
+            Vector3 expected = _target.Transform.position + slot.normalized * expectedDistance;
+            Assert.That(Vector3.Distance(movement.Destination, expected), Is.LessThan(0.001f));
         }
 
         [Test]
@@ -705,7 +690,7 @@ namespace EmpireAtWar.Tests.Movement
             var replacement = new Target(_target.Transform) { Id = 2, NavigationRadius = 200f };
             state.SetData(replacement, offset, UnitOrderModel.NO_HARD_POINT);
             state.Tick(0.1f);
-            Assert.That(_movement.Destination, Is.EqualTo(replacement.Transform.position + Vector3.forward * 225f));
+            Assert.That(_movement.Destination, Is.EqualTo(replacement.Transform.position + Vector3.forward * 205f));
         }
 
         [Test]

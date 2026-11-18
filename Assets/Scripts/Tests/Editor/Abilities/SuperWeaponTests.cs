@@ -2,6 +2,7 @@ using EmpireAtWar.Entities.CoreGameUi;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using DG.Tweening;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Weapon;
@@ -567,16 +568,22 @@ namespace EmpireAtWar.Tests.Editor
             Image progress = (Image)menu.Row.FindProperty("buildProgress").objectReferenceValue;
             menu.Toggle.onClick.Invoke();
 
-            Assert.That(purchase.interactable, Is.False);
+            Assert.That(purchase.interactable, Is.True);
             Assert.That(detail.text, Is.EqualTo("Requires station level 3"));
+            purchase.onClick.Invoke();
+            Assert.That(menu.Production.Purchased, Is.Null);
+            Assert.That(menu.Audio.Rejections, Is.EqualTo(1));
             menu.SecondStation.IsBuilt = true;
             menu.SecondStation.CurrentLevel = 3;
             menu.Presenter.Tick();
             Assert.That(purchase.gameObject.activeSelf, Is.True);
-            Assert.That(purchase.interactable, Is.False);
+            Assert.That(purchase.interactable, Is.True);
             Assert.That(row.interactable, Is.False);
             string purchaseDetail = $"{menu.Request.FactionData.Price:N0} CR · {menu.Request.FactionData.BuildTime:0} s build";
             Assert.That(detail.text, Is.EqualTo(purchaseDetail));
+            purchase.onClick.Invoke();
+            Assert.That(menu.Production.Purchased, Is.Null);
+            Assert.That(menu.Audio.Rejections, Is.EqualTo(2));
             menu.Economy.AddMoney(menu.Request.FactionData.Price);
             menu.Presenter.Tick();
             Assert.That(purchase.interactable, Is.True);
@@ -625,6 +632,7 @@ namespace EmpireAtWar.Tests.Editor
             private readonly InputActionsProvider _inputActions = new InputActionsProvider();
             public int InitialMoney => 3200;
             public OrbitalPointer Pointer { get; } = new OrbitalPointer();
+            public OrbitalInterfaceAudio Audio { get; } = new OrbitalInterfaceAudio();
             public SuperWeaponModel Weapons { get; } = new SuperWeaponModel();
             public SuperWeaponTargetingModel Targeting { get; } = new SuperWeaponTargetingModel();
             public SecondStationLevelModel SecondStation { get; } = new SecondStationLevelModel();
@@ -665,7 +673,7 @@ namespace EmpireAtWar.Tests.Editor
                     abilities: new ShipAbilityService(null, null, null), localPlayer: local, uiService: null,
                     cancelRouter: new UiCancelRouter(null), tooltipService: null, faction: Faction, bindings: null,
                     battleState: null, model: Weapons, targeting: Targeting,
-                    unitTargeting: new UnitActionTargetingModel(), data: null, interfaceAudio: null, interfaceData: null,
+                    unitTargeting: new UnitActionTargetingModel(), data: null, interfaceAudio: Audio, interfaceData: null,
                     commands: new AuthorityCommandSink(null, null, handlers, null), notifications: null, pointer: Pointer,
                     inputActions: _inputActions, roster: roster, requestFactory: factory, economy: Economy,
                     secondStation: SecondStation, productionAccess: new OrbitalProductionAccess());
@@ -675,9 +683,21 @@ namespace EmpireAtWar.Tests.Editor
             public void Dispose()
             {
                 Presenter.Activate(false);
+                DOTween.Kill(Row.FindProperty("background").objectReferenceValue);
                 _inputActions.Dispose();
                 PrefabUtility.UnloadPrefabContents(_root);
             }
+        }
+
+        private sealed class OrbitalInterfaceAudio : IInterfaceSfxService
+        {
+            public bool IsAnnouncing => false;
+            public int Rejections { get; private set; }
+            public void PlayRejected() => Rejections++;
+            public void PlayAbilityTargetingCanceled() { }
+            public void PlayAnnouncement(AudioClip clip) { }
+            public bool TryPlayAnnouncement(AudioClip clip, AnnouncementPriority priority) => false;
+            public bool TryPlayStationUpgrade(AudioClip clip, AudioClip newConstruction) => false;
         }
 
         private sealed class OrbitalProduction : IProductionCommandHandler

@@ -14,6 +14,7 @@ namespace EmpireAtWar.Tests.Weapon
     {
         private GameObject _mount;
         private WeaponHardPoint _weapon;
+        private BoltShot _shot;
         private WeaponProfile _profile;
         private CombatModifiers _modifiers;
         private ITimer _reload;
@@ -23,6 +24,7 @@ namespace EmpireAtWar.Tests.Weapon
         {
             _mount = new GameObject("Cadence mount");
             _weapon = _mount.AddComponent<WeaponHardPoint>();
+            _shot = _mount.AddComponent<BoltShot>();
             _profile = Profile(3, 0.2f, 4f, 450f, 172.9f);
             _modifiers = new CombatModifiers();
             _weapon.SetData(_profile, _profile.Range, 0f, null, null, _modifiers, null, null, null, null);
@@ -128,9 +130,9 @@ namespace EmpireAtWar.Tests.Weapon
             Assert.That(WeaponHardPoint.ExpectedShotsInFlight(profile, 0.1f, 0.1f), Is.EqualTo(boosted));
         }
 
-        private static WeaponProfile Profile(int shots, float interval, float reload, float range, float speed) =>
+        private WeaponProfile Profile(int shots, float interval, float reload, float range, float speed) =>
             new WeaponProfile(WeaponType.Laser, "Cadence", WeaponFamily.Laser, DamageType.Laser,
-                7f, shots, interval, reload, range, false, false, null, speed, Color.white,
+                7f, shots, interval, reload, range, false, false, _shot, speed, Color.white,
                 Vector3.one, false, false, default, default, 0f);
     }
 }
