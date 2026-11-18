@@ -88,7 +88,6 @@ namespace EmpireAtWar.Tests.Editor
                 new HangarBay(SquadronType.XWing, 2, 1),
                 new HangarBay(SquadronType.YWing, 2, 1)
             };
-            public int HangarMaxActive => -1;
             public float HangarInitialDelay => 4f;
             public float HangarLaunchInterval => 8f;
         }
