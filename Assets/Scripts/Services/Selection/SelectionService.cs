@@ -74,6 +74,8 @@ namespace EmpireAtWar.Services.Battle
             _gestures.DragStarted += HandleDragStarted;
             _selectionInput.SelectAllRequested += HandleSelectAllUnitsPressed;
             _selectionInput.SelectVisibleRequested += HandleSelectVisibleUnitsPressed;
+            _selectionInput.SelectSquadronsRequested += HandleSelectSquadronsRequested;
+            _selectionInput.SelectShipsRequested += HandleSelectShipsRequested;
             _marqueeSelectionPresenter.Completed += HandleMarqueeCompleted;
             _entityLocator.EntityRemoved += HandleEntityRemoved;
         }
@@ -86,6 +88,8 @@ namespace EmpireAtWar.Services.Battle
             _pressedMarker = default;
             _selectionInput.SelectAllRequested -= HandleSelectAllUnitsPressed;
             _selectionInput.SelectVisibleRequested -= HandleSelectVisibleUnitsPressed;
+            _selectionInput.SelectSquadronsRequested -= HandleSelectSquadronsRequested;
+            _selectionInput.SelectShipsRequested -= HandleSelectShipsRequested;
             _marqueeSelectionPresenter.Completed -= HandleMarqueeCompleted;
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
             foreach (IEntity entity in _deathSubscriptions)
@@ -281,20 +285,28 @@ namespace EmpireAtWar.Services.Battle
             SetSelection(SelectionScope.Local, _selectionBuffer);
         }
 
-        private void HandleSelectAllUnitsPressed()
-        {
-            _lastTappedEntityId = null;
-            _selectionBuffer.Clear();
-            _selectionQuery.CollectAllPlayerUnits(_selectionBuffer);
-            ResetAllSelections();
-            SetSelection(SelectionScope.Local, _selectionBuffer);
-        }
+        private void HandleSelectAllUnitsPressed() => SelectPlayerUnits(visibleOnly: false);
 
-        private void HandleSelectVisibleUnitsPressed()
+        private void HandleSelectVisibleUnitsPressed() => SelectPlayerUnits(visibleOnly: true);
+
+        private void HandleSelectSquadronsRequested(bool visibleOnly) =>
+            SelectPlayerUnits(visibleOnly, entry => !entry.Entity.IsSquadron());
+
+        private void HandleSelectShipsRequested(bool visibleOnly) =>
+            SelectPlayerUnits(visibleOnly, entry => !entry.Entity.IsShip());
+
+        private void SelectPlayerUnits(bool visibleOnly, System.Predicate<SelectionEntry> exclude = null)
         {
             _lastTappedEntityId = null;
             _selectionBuffer.Clear();
-            _selectionQuery.CollectVisiblePlayerUnits(_selectionBuffer);
+            if (visibleOnly)
+                _selectionQuery.CollectVisiblePlayerUnits(_selectionBuffer);
+            else
+                _selectionQuery.CollectAllPlayerUnits(_selectionBuffer);
+
+            if (exclude != null)
+                _selectionBuffer.RemoveAll(exclude);
+
             ResetAllSelections();
             SetSelection(SelectionScope.Local, _selectionBuffer);
         }

@@ -37,6 +37,8 @@ namespace EmpireAtWar.Services.Camera
                     : Vector2.zero;
                 // Selection and zoom shortcuts must not also move the camera.
                 if (!_battle.SelectVisible.IsPressed() && !_battle.SelectAll.IsPressed() &&
+                    !_battle.SelectVisibleSquadrons.IsPressed() && !_battle.SelectAllSquadrons.IsPressed() &&
+                    !_battle.SelectVisibleShips.IsPressed() && !_battle.SelectAllShips.IsPressed() &&
                     !_camera.ZoomIn.IsPressed() && !_camera.ZoomOut.IsPressed())
                 {
                     direction += _camera.Move.ReadValue<Vector2>();

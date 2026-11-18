@@ -49,6 +49,10 @@ namespace EmpireAtWar.Tests.Editor
         {
             Assert.That(Display("Select Visible"), Is.EqualTo("Ctrl+A"));
             Assert.That(Display("Select All"), Is.EqualTo("Ctrl+Shift+A"));
+            Assert.That(Display("Select Visible Squadrons"), Is.EqualTo("Ctrl+Q"));
+            Assert.That(Display("Select All Squadrons"), Is.EqualTo("Ctrl+Shift+Q"));
+            Assert.That(Display("Select Visible Ships"), Is.EqualTo("Ctrl+W"));
+            Assert.That(Display("Select All Ships"), Is.EqualTo("Ctrl+Shift+W"));
             Assert.That(Display("Zoom In"), Is.EqualTo("Alt+W"));
             Assert.That(Display("Zoom Out"), Is.EqualTo("Alt+S"));
             Assert.That(Display("Reset Zoom"), Is.EqualTo("Home"));

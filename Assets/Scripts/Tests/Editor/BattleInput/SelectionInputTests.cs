@@ -19,10 +19,13 @@ using EmpireAtWar.Services.Factions;
 using EmpireAtWar.Services.ControlGroups;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Entities.Units;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Views.MiniMap;
 using EmpireAtWar.Entities.MiniMap;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UI;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 
@@ -31,6 +34,66 @@ namespace EmpireAtWar.Tests.Selection
     [Category("BattleInput")]
     public sealed class SelectionInputTests
     {
+        [TestCase(Key.Q, false)]
+        [TestCase(Key.Q, true)]
+        [TestCase(Key.W, false)]
+        [TestCase(Key.W, true)]
+        public void BulkSelectionShortcut_SelectsOnlyMatchingUnitsInRequestedScope(Key key, bool entireMap)
+        {
+            using var provider = new InputActionsProvider();
+            Keyboard keyboard = InputSystem.AddDevice<Keyboard>();
+            var local = TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel());
+            var pointer = new FakeInputService();
+            var input = new SelectionInput(provider);
+            var query = new FakeSelectionQuery();
+            var selection = new SelectionService(pointer, pointer, input, new EntityLocator(), query,
+                new FakeMarqueeSelectionPresenter(), local);
+            UnitTypeId ship = UnitTypeId.Ship(ShipType.Venator);
+            UnitTypeId squadron = UnitTypeId.Squadron(SquadronType.XWing);
+
+            FakeEntity AddUnit(UnitTypeId unitType, long id, bool visible)
+            {
+                var command = new FakeSelectionCommand(SelectionType.Ship);
+                var entity = new FakeEntity(command, local.Id, id, new UnitTypeFacade(unitType));
+                var entry = new SelectionEntry(entity, command);
+                query.AllUnits.Add(entry);
+                if (visible) query.VisibleUnits.Add(entry);
+                return entity;
+            }
+
+            FakeEntity visibleShip = AddUnit(ship, 1, visible: true);
+            FakeEntity offscreenShip = AddUnit(ship, 2, visible: false);
+            FakeEntity visibleSquadron = AddUnit(squadron, 3, visible: true);
+            FakeEntity offscreenSquadron = AddUnit(squadron, 4, visible: false);
+            FakeEntity expectedVisible = key == Key.Q ? visibleSquadron : visibleShip;
+            FakeEntity expectedOffscreen = key == Key.Q ? offscreenSquadron : offscreenShip;
+            provider.Actions.asset.devices = new InputDevice[] { keyboard };
+            provider.Actions.Battle.Enable();
+            selection.Initialize();
+            try
+            {
+                InputSystem.QueueStateEvent(keyboard, entireMap
+                    ? new KeyboardState(Key.LeftCtrl, Key.LeftShift)
+                    : new KeyboardState(Key.LeftCtrl));
+                InputSystem.Update();
+                InputSystem.QueueStateEvent(keyboard, entireMap
+                    ? new KeyboardState(Key.LeftCtrl, Key.LeftShift, key)
+                    : new KeyboardState(Key.LeftCtrl, key));
+                InputSystem.Update();
+                input.Tick();
+
+                CollectionAssert.AreEquivalent(
+                    entireMap ? new[] { expectedVisible, expectedOffscreen } : new[] { expectedVisible },
+                    selection.PlayerSelectionContext.Entities);
+            }
+            finally
+            {
+                selection.LateDispose();
+                provider.Actions.Battle.Disable();
+                InputSystem.RemoveDevice(keyboard);
+            }
+        }
+
         [Test]
         public void ControlGroupRecallReplacesSelectionAndDeadCandidateDoesNotEraseExistingGroup()
         {
@@ -509,6 +572,10 @@ namespace EmpireAtWar.Tests.Selection
 
             public event Action SelectAllRequested { add { } remove { } }
 
+            public event Action<bool> SelectSquadronsRequested { add { } remove { } }
+
+            public event Action<bool> SelectShipsRequested { add { } remove { } }
+
             public Vector2 Position => Vector2.zero;
             public int ClickCount => 1;
             public bool HasPosition => true;
@@ -525,6 +592,10 @@ namespace EmpireAtWar.Tests.Selection
         {
             private readonly Dictionary<Vector2, List<SelectionEntry>> _selections =
                 new Dictionary<Vector2, List<SelectionEntry>>();
+
+            public List<SelectionEntry> AllUnits { get; } = new List<SelectionEntry>();
+
+            public List<SelectionEntry> VisibleUnits { get; } = new List<SelectionEntry>();
 
             public void Add(Vector2 position, SelectionEntry selection)
             {
@@ -571,10 +642,14 @@ namespace EmpireAtWar.Tests.Selection
 
             public void CollectAllPlayerUnits(ICollection<SelectionEntry> results)
             {
+                foreach (SelectionEntry entry in AllUnits)
+                    results.Add(entry);
             }
 
             public void CollectVisiblePlayerUnits(ICollection<SelectionEntry> results)
             {
+                foreach (SelectionEntry entry in VisibleUnits)
+                    results.Add(entry);
             }
 
             public void CollectInside(

@@ -13,6 +13,10 @@ namespace EmpireAtWar.Services.Battle
 
         public event Action SelectAllRequested;
 
+        public event Action<bool> SelectSquadronsRequested;
+
+        public event Action<bool> SelectShipsRequested;
+
         public SelectionInput(InputActionsProvider provider)
         {
             _battle = provider.Actions.Battle;
@@ -20,7 +24,7 @@ namespace EmpireAtWar.Services.Battle
 
         public void Tick()
         {
-            // Ctrl+Shift+A also satisfies the Ctrl+A shortcut, so the longer one is checked first.
+            // For each key, the map-wide chord also satisfies the visible chord.
             if (_battle.SelectAll.enabled && _battle.SelectAll.WasPerformedThisFrame())
             {
                 SelectAllRequested?.Invoke();
@@ -28,6 +32,22 @@ namespace EmpireAtWar.Services.Battle
             else if (_battle.SelectVisible.enabled && _battle.SelectVisible.WasPerformedThisFrame())
             {
                 SelectVisibleRequested?.Invoke();
+            }
+            else if (_battle.SelectAllSquadrons.enabled && _battle.SelectAllSquadrons.WasPerformedThisFrame())
+            {
+                SelectSquadronsRequested?.Invoke(false);
+            }
+            else if (_battle.SelectVisibleSquadrons.enabled && _battle.SelectVisibleSquadrons.WasPerformedThisFrame())
+            {
+                SelectSquadronsRequested?.Invoke(true);
+            }
+            else if (_battle.SelectAllShips.enabled && _battle.SelectAllShips.WasPerformedThisFrame())
+            {
+                SelectShipsRequested?.Invoke(false);
+            }
+            else if (_battle.SelectVisibleShips.enabled && _battle.SelectVisibleShips.WasPerformedThisFrame())
+            {
+                SelectShipsRequested?.Invoke(true);
             }
         }
     }

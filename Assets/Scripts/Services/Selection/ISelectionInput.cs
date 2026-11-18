@@ -7,5 +7,9 @@ namespace EmpireAtWar.Services.Battle
         event Action SelectVisibleRequested;
 
         event Action SelectAllRequested;
+
+        event Action<bool> SelectSquadronsRequested;
+
+        event Action<bool> SelectShipsRequested;
     }
 }

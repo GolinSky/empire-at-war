@@ -565,6 +565,42 @@ namespace EmpireAtWar.Services.Input
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""SelectVisibleSquadrons"",
+                    ""type"": ""Button"",
+                    ""id"": ""3e561314-6a64-4da2-a2d1-9f54acc62e34"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectAllSquadrons"",
+                    ""type"": ""Button"",
+                    ""id"": ""2fff2e89-d808-48b2-8d65-08959c156962"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectVisibleShips"",
+                    ""type"": ""Button"",
+                    ""id"": ""946f1b98-af67-477a-859d-e817dc1f5797"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectAllShips"",
+                    ""type"": ""Button"",
+                    ""id"": ""7a0d4994-e356-4fe7-a65f-e825c9232a5c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""QueueWaypoint"",
                     ""type"": ""Button"",
                     ""id"": ""f13b81be-6c25-4b46-bc3c-68859567e9f9"",
@@ -806,6 +842,160 @@ namespace EmpireAtWar.Services.Input
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""SelectAll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Ctrl+Q"",
+                    ""id"": ""471e4565-1e2d-451a-b7e6-5a63991de4bf"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectVisibleSquadrons"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""e60d2961-7adb-4992-92c7-2357a42cd811"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SelectVisibleSquadrons"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""7d48aeff-c891-405a-821a-bdd0a8dd078c"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SelectVisibleSquadrons"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Ctrl+Shift+Q"",
+                    ""id"": ""36ea2e93-0928-433c-be65-4896fbaab7c3"",
+                    ""path"": ""TwoModifiers"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectAllSquadrons"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier1"",
+                    ""id"": ""f8662646-b202-4d41-8c85-1db10e4e5647"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SelectAllSquadrons"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""modifier2"",
+                    ""id"": ""e57862be-071d-4d9b-830f-aa95ff345d9d"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SelectAllSquadrons"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""239c7414-a1ee-4f53-afed-a6ea5e5affda"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SelectAllSquadrons"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Ctrl+W"",
+                    ""id"": ""3f23f33f-26fb-4598-8e8a-ea4f0f97c867"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectVisibleShips"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""3f888353-aadb-4529-9ac3-d4ff89edf589"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SelectVisibleShips"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""5daeb940-94da-424a-be22-707620a65451"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SelectVisibleShips"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Ctrl+Shift+W"",
+                    ""id"": ""bc32cd05-176e-4f40-b317-884dda959be3"",
+                    ""path"": ""TwoModifiers"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectAllShips"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier1"",
+                    ""id"": ""898a3704-eaca-4ecc-8297-81a1771f163b"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SelectAllShips"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""modifier2"",
+                    ""id"": ""64a7edc4-0833-449e-995a-632f18e125c1"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SelectAllShips"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""61a419bb-07ee-48ec-bff6-9690b9eb9144"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SelectAllShips"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -1067,6 +1257,10 @@ namespace EmpireAtWar.Services.Input
             m_Battle_Command = m_Battle.FindAction("Command", throwIfNotFound: true);
             m_Battle_SelectVisible = m_Battle.FindAction("SelectVisible", throwIfNotFound: true);
             m_Battle_SelectAll = m_Battle.FindAction("SelectAll", throwIfNotFound: true);
+            m_Battle_SelectVisibleSquadrons = m_Battle.FindAction("SelectVisibleSquadrons", throwIfNotFound: true);
+            m_Battle_SelectAllSquadrons = m_Battle.FindAction("SelectAllSquadrons", throwIfNotFound: true);
+            m_Battle_SelectVisibleShips = m_Battle.FindAction("SelectVisibleShips", throwIfNotFound: true);
+            m_Battle_SelectAllShips = m_Battle.FindAction("SelectAllShips", throwIfNotFound: true);
             m_Battle_QueueWaypoint = m_Battle.FindAction("QueueWaypoint", throwIfNotFound: true);
             m_Battle_QuickSave = m_Battle.FindAction("QuickSave", throwIfNotFound: true);
             m_Battle_QuickLoad = m_Battle.FindAction("QuickLoad", throwIfNotFound: true);
@@ -1464,6 +1658,10 @@ namespace EmpireAtWar.Services.Input
         private readonly InputAction m_Battle_Command;
         private readonly InputAction m_Battle_SelectVisible;
         private readonly InputAction m_Battle_SelectAll;
+        private readonly InputAction m_Battle_SelectVisibleSquadrons;
+        private readonly InputAction m_Battle_SelectAllSquadrons;
+        private readonly InputAction m_Battle_SelectVisibleShips;
+        private readonly InputAction m_Battle_SelectAllShips;
         private readonly InputAction m_Battle_QueueWaypoint;
         private readonly InputAction m_Battle_QuickSave;
         private readonly InputAction m_Battle_QuickLoad;
@@ -1507,6 +1705,22 @@ namespace EmpireAtWar.Services.Input
             /// Provides access to the underlying input action "Battle/SelectAll".
             /// </summary>
             public InputAction @SelectAll => m_Wrapper.m_Battle_SelectAll;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/SelectVisibleSquadrons".
+            /// </summary>
+            public InputAction @SelectVisibleSquadrons => m_Wrapper.m_Battle_SelectVisibleSquadrons;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/SelectAllSquadrons".
+            /// </summary>
+            public InputAction @SelectAllSquadrons => m_Wrapper.m_Battle_SelectAllSquadrons;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/SelectVisibleShips".
+            /// </summary>
+            public InputAction @SelectVisibleShips => m_Wrapper.m_Battle_SelectVisibleShips;
+            /// <summary>
+            /// Provides access to the underlying input action "Battle/SelectAllShips".
+            /// </summary>
+            public InputAction @SelectAllShips => m_Wrapper.m_Battle_SelectAllShips;
             /// <summary>
             /// Provides access to the underlying input action "Battle/QueueWaypoint".
             /// </summary>
@@ -1609,6 +1823,18 @@ namespace EmpireAtWar.Services.Input
                 @SelectAll.started += instance.OnSelectAll;
                 @SelectAll.performed += instance.OnSelectAll;
                 @SelectAll.canceled += instance.OnSelectAll;
+                @SelectVisibleSquadrons.started += instance.OnSelectVisibleSquadrons;
+                @SelectVisibleSquadrons.performed += instance.OnSelectVisibleSquadrons;
+                @SelectVisibleSquadrons.canceled += instance.OnSelectVisibleSquadrons;
+                @SelectAllSquadrons.started += instance.OnSelectAllSquadrons;
+                @SelectAllSquadrons.performed += instance.OnSelectAllSquadrons;
+                @SelectAllSquadrons.canceled += instance.OnSelectAllSquadrons;
+                @SelectVisibleShips.started += instance.OnSelectVisibleShips;
+                @SelectVisibleShips.performed += instance.OnSelectVisibleShips;
+                @SelectVisibleShips.canceled += instance.OnSelectVisibleShips;
+                @SelectAllShips.started += instance.OnSelectAllShips;
+                @SelectAllShips.performed += instance.OnSelectAllShips;
+                @SelectAllShips.canceled += instance.OnSelectAllShips;
                 @QueueWaypoint.started += instance.OnQueueWaypoint;
                 @QueueWaypoint.performed += instance.OnQueueWaypoint;
                 @QueueWaypoint.canceled += instance.OnQueueWaypoint;
@@ -1680,6 +1906,18 @@ namespace EmpireAtWar.Services.Input
                 @SelectAll.started -= instance.OnSelectAll;
                 @SelectAll.performed -= instance.OnSelectAll;
                 @SelectAll.canceled -= instance.OnSelectAll;
+                @SelectVisibleSquadrons.started -= instance.OnSelectVisibleSquadrons;
+                @SelectVisibleSquadrons.performed -= instance.OnSelectVisibleSquadrons;
+                @SelectVisibleSquadrons.canceled -= instance.OnSelectVisibleSquadrons;
+                @SelectAllSquadrons.started -= instance.OnSelectAllSquadrons;
+                @SelectAllSquadrons.performed -= instance.OnSelectAllSquadrons;
+                @SelectAllSquadrons.canceled -= instance.OnSelectAllSquadrons;
+                @SelectVisibleShips.started -= instance.OnSelectVisibleShips;
+                @SelectVisibleShips.performed -= instance.OnSelectVisibleShips;
+                @SelectVisibleShips.canceled -= instance.OnSelectVisibleShips;
+                @SelectAllShips.started -= instance.OnSelectAllShips;
+                @SelectAllShips.performed -= instance.OnSelectAllShips;
+                @SelectAllShips.canceled -= instance.OnSelectAllShips;
                 @QueueWaypoint.started -= instance.OnQueueWaypoint;
                 @QueueWaypoint.performed -= instance.OnQueueWaypoint;
                 @QueueWaypoint.canceled -= instance.OnQueueWaypoint;
@@ -1998,6 +2236,34 @@ namespace EmpireAtWar.Services.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnSelectAll(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "SelectVisibleSquadrons" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnSelectVisibleSquadrons(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "SelectAllSquadrons" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnSelectAllSquadrons(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "SelectVisibleShips" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnSelectVisibleShips(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "SelectAllShips" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnSelectAllShips(InputAction.CallbackContext context);
             /// <summary>
             /// Method invoked when associated input action "QueueWaypoint" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
