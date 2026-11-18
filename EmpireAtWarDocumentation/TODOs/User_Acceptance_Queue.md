@@ -15,8 +15,7 @@ created: "2026-10-29\r"
 
 ## Group Attack Pace
 
-- [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — In battle, select mixed-speed ships → attack: confirm they arrive together and each resumes own speed at firing range.
-- [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — Run `Navigation` and `BattleInput` EditMode categories when authorized; Unity compilation passed.
+- [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — Rerun `UnitOrderServiceTests.Attack_ShipsShareOnePaceAndSquadronsGetNone` (`BattleInput`) after the squadron-pace fix; the in-game pace was confirmed in the 2026-11-18 battle log.
 
 ## Content Removal
 

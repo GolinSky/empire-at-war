@@ -52,6 +52,11 @@ acceptance: pending-user
 - `Assets/Scripts/Entities/Ship/Orders/ShipOrderRunner.cs`, `Entities/Ship/StateMachine/AttackTargetState.cs`
 - `Assets/Scripts/Components/Ship/Movement/ShipMoveModel.cs`, `ShipMoveComponent.cs`, `IShipMovement.cs`
 
+## Verification (2026-11-18)
+- Battle log `Loading_20261118_182527_ai_orders.csv` (code `ee1dd83fa`): Player0 13-ship Attack at t≈106 s → ships 551–555 (own move max `30`) approached at `25` = slowest member; all members moved at one speed. No pace exceptions in `Editor-prev.log`.
+- Full EditMode run `Assets/TestResults_20261118_184635.xml`: 4114 total, 58 failed. 2 from this change: `UnitOrderServiceTests.Attack_ShipsShareOnePaceAndSquadronsGetNone(False/True)` → the non-hardpoint branch passed the pace to squadrons. Fix: `UnitOrderService` passes the pace only to receivers with `IHardPointAttackFacade`. Compile passed; rerun pending.
+- The other 56 failures are outside this change (no `GroupPace`/cap code on their stacks): `WeaponHardPoint.ExpectedShotsInFlight` NRE (`WeaponCandidate`/`Cadence`/`TurnRate`/`Range`/`CombatAttackCoordinatorSelection`, 37), `ShipPursuitTests` formation/standoff (4), `UnitOrderServiceTests.GuardReservesTargetHull_AttackIssuesHullRelativeSlot` (single-ship slot 5 vs 10, from attack-arc commit `8787a78e1`), `BattleMarkerProjection` (4), `SquadronIconGrouping` (2), `CaptureRingView` (2), `PlayerSave` AI super weapon (2), `SuperWeapon`, `EnemyUnitCommander`, `UnitSpawnView` (DarthVader prefab), `EntityBindings` (Delta7 prefab).
+
 ## TODO
 - [x] Decisions (recommended defaults applied)
 - [x] Steps 1–8

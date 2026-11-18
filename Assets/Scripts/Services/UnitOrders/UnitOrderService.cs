@@ -170,7 +170,8 @@ namespace EmpireAtWar.Services.UnitOrders
                 }
                 else if (receiver.TryGetFacade(out IAttackFacade attack))
                 {
-                    attack.Attack(target, offsets[movingIndex++], pace);
+                    attack.Attack(target, offsets[movingIndex++],
+                        receiver.TryGetFacade(out IHardPointAttackFacade _) ? pace : null);
                     issued++;
                 }
                 else if (receiver.TryGetFacade(out IFocusFireFacade focus))
