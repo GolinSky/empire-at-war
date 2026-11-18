@@ -2,16 +2,22 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ship;
+using UnityEngine;
 
 namespace EmpireAtWar.Services.Enemy
 {
     public sealed class EnemyPatrolShipController
     {
+        // After "no safe target" the corvette fights with the fleet for a while: re-assigning it on the next decision
+        // flipped its destination between the patrol point and the fleet order twice a second.
+        private const float NO_TARGET_RETRY_SECONDS = 10f;
+
         private readonly EnemyPatrolService _patrol;
         private readonly EnemyPatrolSafety _safety;
         private readonly EnemyFactionModel _faction;
@@ -19,6 +25,9 @@ namespace EmpireAtWar.Services.Enemy
         private readonly IUnitOrderService _orders;
         private readonly PlayerSlot _owner;
         private IShipEntity _ship;
+        private Vector3 _issuedTarget;
+        private bool _hasIssuedTarget;
+        private float _retryAt = float.NegativeInfinity;
 
         public EnemyPatrolShipController(EnemyPatrolService patrol, EnemyPatrolSafety safety,
             EnemyFactionModel faction, IEntityLocator entities, IUnitOrderService orders, PlayerSlot owner)
@@ -36,7 +45,8 @@ namespace EmpireAtWar.Services.Enemy
         /// It joins the fleet only when the station is about to fall or it is the last ship.</summary>
         public IShipEntity Select(IReadOnlyList<IShipEntity> ships, bool stationCritical)
         {
-            IShipEntity selected = CanPatrol(_owner.Difficulty, ships.Count, stationCritical)
+            IShipEntity selected = CanPatrol(_owner.Difficulty, ships.Count, stationCritical) &&
+                                   Time.time >= _retryAt
                 ? FindCheapest(ships) : null;
             if (selected != _ship)
             {
@@ -47,6 +57,7 @@ namespace EmpireAtWar.Services.Enemy
                         ships.Count <= 1 ? "lastShip" : "unavailable");
                 }
                 _ship = selected;
+                _hasIssuedTarget = false;
                 if (_ship != null) Log(_ship, "assigned", "cheapestCorvette");
             }
             if (_ship == null) return null;
@@ -55,9 +66,16 @@ namespace EmpireAtWar.Services.Enemy
             {
                 Log(_ship, "released", "noSafeTarget");
                 _ship = null;
+                _hasIssuedTarget = false;
+                _retryAt = Time.time + NO_TARGET_RETRY_SECONDS;
                 return null;
             }
+            // Re-issuing the same attack-move every decision rebuilt the route and braked the ship each time.
+            if (_hasIssuedTarget && _issuedTarget == target && _ship.CurrentOrder == UnitOrderType.AttackMove)
+                return _ship;
             _orders.IssueAttackMove(new[] { _entities.GetEntity(_ship.EntityId) }, target);
+            _issuedTarget = target;
+            _hasIssuedTarget = true;
             return _ship;
         }
 

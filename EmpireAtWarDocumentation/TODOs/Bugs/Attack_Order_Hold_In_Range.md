@@ -80,6 +80,12 @@ created: 2026-11-18
 - [x] (added `ShipPursuitTests.Runner_SameTargetReorderedKeepsHoldAndOnlyUpdatesSlot`) Missing test: `ShipOrderRunner` re-issued Attack on the same target does not `CancelCombatHold` or re-enter the state.
 - [x] (removed; test renamed `Attack_ArtilleryHoldsInsideLauncherBandInsteadOfBackingOff`) Orphan: `IArtilleryCapability.HasMainBatteryCover` (+ `ArtilleryCapability`, `WeaponComponent`, `ShipPursuitTests` stub) has no consumer after the retreat change; remove it.
 
+## Playtest 2026-11-18 check (`Logs/Playtests/20261118T1013Z/movement_audit.txt`, `scripts/movement_audit.py`)
+- Attack legs whose destination lies farther from the target than the ship (> 300 units, beyond weapon range): **2 samples in 32 min** (one AI ship, Player2). The map-edge run-away is gone.
+- Same-target re-clicks kept the hold: 704 `refresh` events (human 33).
+- Wrong-way travel per player 1.1–2.2% of moving samples. The visible "random direction" moves are AI order churn and patrol flip-flop (see the AI plan), not attack-order legs.
+- Not yet checked in game: the narrower hull-spaced arc (fix after this playtest build).
+
 ## Agent handoff
 - Implement steps 1–5 in order; do not change `ENGAGE_RANGE_FACTOR` users outside `AttackTargetState`/`ShipEngagement` without noting it.
 - Do not run tests (local override); update/add tests listed below and report them as not run.

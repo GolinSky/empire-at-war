@@ -125,3 +125,8 @@ created: 2026-11-16
 - Unmeasured: single-unit decision duration, `AiWorldSnapshot` rebuild cost (`EnemyAI.WorldSnapshot.Rebuild`), and whether the 2 ms frame budget holds under load remain unmeasured until Phase 0 and Phase 5 captures run.
 - Unverified: `EnemyProductionStrategy` (796 lines) not read for this plan; include it in Phase 0 markers.
 - Related: [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]] (Phase 1 there is replaced by Phases 0–3 here), [[Done/Optimization/Live_Battle_CPU_And_Pool_Demand]], [[Done/Optimization/Enemy_Production_CPU_Spike_Plan]].
+
+## Measurement 2026-11-18 (playtest + agent capture)
+- Editor, Cinematic, 4-player Large skirmish: 122 fps early → 52–64 fps at 170–230 entities; p95 26–37 ms; a 300–350 ms frame every minute from the start; GC 189 KB/frame mean, peak 17 MB; GPU 0.98 ms (CPU-bound).
+- Spike owner: enemy AI capture probe (+19.7 ms) and patrol select (+7.9 ms) every ~20 frames. Details and next steps: [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]] "Playtest 2026-11-18". Logs: `Logs/Playtests/20261118T1013Z/`, `Logs/BattleAudit/20261118T1050Z/`.
+- This plan: per-cycle AI cost is still the dominant spike (capture probe + patrol select ≈ 28 ms on one frame per cycle); the shared planner has not removed it.

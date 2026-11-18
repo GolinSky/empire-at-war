@@ -36,6 +36,11 @@ created: 2026-11-18
 - [ ] Development Player, host, 3 AI UltraHard, Cinematic and Performant presets; `render_audit_profiler` 90 frames at peak fight. Follow `Tools/BattleAudit/README.md`.
 - [ ] Split CPU: combat (target selection/due), AI, navigation, networking (health JSON, keyframes), rendering.
 
+### Offline playtest 2026-11-18 (reference for online)
+- 4-player Large skirmish in the Editor: 122 → 52–64 fps as entities grow to ~200; 300–350 ms frame every minute; spikes owned by AI capture probe/patrol select. Details: [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]] "Playtest 2026-11-18".
+- The online host runs the same AI for every AI slot, so these spikes apply to the host; the order churn (≈14k orders / 32 min) also feeds order replication.
+- Radar now scans once per frame (done in `e84297792`, test added in `8787a78e1`).
+
 ### Fixed-step pile-up (proposal 2026-11-18)
 - Fixed step 0.02 s; `Maximum Allowed Timestep` 0.333 s → at 10 FPS Unity runs 5 fixed steps per frame (up to 16 at 3 FPS).
 - Only two things run there: physics (needed for `UnitSpawnView` trigger checks; few moving colliders after the fighter-collider removal) and `RadarScanService.FixedTick`.

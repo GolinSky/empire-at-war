@@ -67,6 +67,11 @@ created: "2026-11-18\r"
 - [x] (revised: no per-frame cap, late shots launched ahead by their lateness via `ShotEffect.LateSeconds`; bolts and missiles only) Salvo cadence: `NextTime += DelayBetweenShots`; emit all shots due this frame (cap per frame), keeping the "no catch-up burst after a long frame" rule explicit with a bound.
 - [x] (`WeaponComponent.AttackOrDelay`: keeps its place in the storage queue) Failed admission → `DelayRetry` (no per-frame target selection).
 
+## Playtest 2026-11-18 data (`Logs/Playtests/20261118T1013Z/telemetry/Battle_20261118_121501.csv`)
+- Build `8787a78e1`+dirty: includes the split pools / deficit growth / cadence work from `3e4207e7e` only if the working copy had it; check `fps_history` source revision before comparing.
+- 674k shots in 32 min; squadrons 56% (Vulture 150k, ARC-170 105k), ships 44% (Recusant 28.8k, Praetor 26.1k).
+- No per-mount admission-wait data in this CSV; Phase 1 measurement still open.
+
 ## Agent handoff
 - Read this plan, its linked plans and the live source first; source wins over this note.
 - Follow `AGENTS.md`: no Play Mode, no tests (local override). Update/add the tests listed here and report them as not run.

@@ -162,3 +162,8 @@ created: 2026-11-14
 - [ ] User decision: `SlowTickService` per-frame cap (contract change).
 - [ ] Matched Editor and Development Player allocation captures after the code handoff. Use the pre-change revision above and record dirty paths per [[Rules/BATTLE_PERFORMANCE_GUIDELINES#Important Values]].
 - [ ] Run the reviewed fixtures and verify seeded map output during user testing.
+
+## Measurement 2026-11-18 (playtest + agent capture)
+- Editor, Cinematic, 4-player Large skirmish: 122 fps early → 52–64 fps at 170–230 entities; p95 26–37 ms; a 300–350 ms frame every minute from the start; GC 189 KB/frame mean, peak 17 MB; GPU 0.98 ms (CPU-bound).
+- Spike owner: enemy AI capture probe (+19.7 ms) and patrol select (+7.9 ms) every ~20 frames. Details and next steps: [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]] "Playtest 2026-11-18". Logs: `Logs/Playtests/20261118T1013Z/`, `Logs/BattleAudit/20261118T1050Z/`.
+- This plan: allocation stacks for the 1–17 MB GC frames are still uncaptured; capture them before new allocation work.

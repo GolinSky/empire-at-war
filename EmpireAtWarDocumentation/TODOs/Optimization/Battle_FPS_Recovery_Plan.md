@@ -275,3 +275,8 @@ tags:
 - `BeamVisuals` reuses its property block. `ShotEffectPool` caches completion/destruction delegates, removing repeated method-group creation during acquire/detach.
 - Bolt: remove CPU readability only. Packed texture native object memory 400,864 → 200,528 B; source image, format, size, alpha, clamp/mips and 1/2/4/8-bolt prefabs unchanged.
 - Evidence → [optimization verification](../../../Docs/Audits/2026-11-07-Optimization-Fixes/README.md). Tests not run under the local override.
+
+## Measurement 2026-11-18 (playtest + agent capture)
+- Editor, Cinematic, 4-player Large skirmish: 122 fps early → 52–64 fps at 170–230 entities; p95 26–37 ms; a 300–350 ms frame every minute from the start; GC 189 KB/frame mean, peak 17 MB; GPU 0.98 ms (CPU-bound).
+- Spike owner: enemy AI capture probe (+19.7 ms) and patrol select (+7.9 ms) every ~20 frames. Details and next steps: [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]] "Playtest 2026-11-18". Logs: `Logs/Playtests/20261118T1013Z/`, `Logs/BattleAudit/20261118T1050Z/`.
+- This plan: GPU 0.98 ms mean in the capture, so rendering is not the current limit on this machine.

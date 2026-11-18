@@ -332,3 +332,7 @@ updated: 2026-11-07
 - New 576 ms / 1.8 s native captures: main-thread `GfxDeviceClient::CreateGpuProgram` waits; render-worker `MTLCompilerScheduler::buildRequest`. Synchronous Metal GPU-program creation is now proven for these events.
 - Historical 198 ms event localized but not retroactively attributed; original 296 ms AssetBundle key/caller unresolved. Mono JIT also appears in a separate ~48 ms LateTick event; do not generalize it to IL2CPP.
 - Evidence, all earlier fixes and remaining work → [[TODOs/Optimization/Optimization_Audit_Fix_Plan - Research]]. Tests disabled; P0 open; no new production change or general FPS claim.
+
+## Measurement 2026-11-18 (playtest + agent capture)
+- Editor, Cinematic, 4-player Large skirmish: 122 fps early → 52–64 fps at 170–230 entities; p95 26–37 ms; a 300–350 ms frame every minute from the start; GC 189 KB/frame mean, peak 17 MB; GPU 0.98 ms (CPU-bound).
+- Spike owner: enemy AI capture probe (+19.7 ms) and patrol select (+7.9 ms) every ~20 frames. Details and next steps: [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]] "Playtest 2026-11-18". Logs: `Logs/Playtests/20261118T1013Z/`, `Logs/BattleAudit/20261118T1050Z/`.

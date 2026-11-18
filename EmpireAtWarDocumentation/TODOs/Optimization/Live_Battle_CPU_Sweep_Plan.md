@@ -41,6 +41,21 @@ created: 2026-11-16
 
 ## Implementation
 
+### Playtest 2026-11-18 12:13–12:47 (user, Editor, Cinematic, 2558×1239, 4 players Skirmish Full Large, seed −1922274398, source `8787a78e1`+dirty)
+- Archive: `Logs/Playtests/20261118T1013Z/` (telemetry, `fps_history_editor.csv`, Editor.log, `movement_audit.txt`, scripts). Saves for comparison: `saves/fps-mid-game.json` (12:21), `fps-late-game.json` (12:34), `fps-late-game-p2.json` (12:45); live copies in `%USERPROFILE%/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/Saves/Skirmish/`.
+- FPS by minute (`fps_history_editor.csv`, run `87d9cd81…`): 122 fps at 51 entities → 52–64 fps at 170–230 entities from minute 7 on; p95 26–37 ms.
+- **A ~300–350 ms frame in every 60 s window from minute 1 (51 entities) to the end** → periodic, not load-driven. Not attributed yet (candidates: GC, autosave, telemetry flush).
+- >50 ms frames per minute jump from 1–10 to 45–118 after minute 24 (late game).
+- Memory: 3.3 GB → 4.3 GB over 31 min (no plateau).
+- Agent CPU capture 10:45 UTC (`Logs/BattleAudit/20261118T1050Z/analysis.md`, 3205 frames): median 15.5 / p95 31.9 / p99 81 / max 340 ms; 154 frames > 50 ms every ~27 frames; GC 189 KB/frame mean, 117 frames > 1 MB, peak 17 MB; GPU 0.98 ms (CPU-bound).
+- Profiler spike frames (13 of 120, ~66 ms vs 22.8 ms): `EnemyAI.Ship.CaptureProbe` +19.7 ms, `EnemyAI.Ship.PatrolSelect` +7.9 ms, `EnemyAI.Ship.Build` +2.6 ms, `SelectCaptureObjective` +0.9, `AssessStation` +0.7, `WorldSnapshot.Rebuild` +0.6.
+- Steady: `Squadron.Flight` 0.90, `Weapon.Tick` 0.80, `EnemyShipAbilityController.Tick` 0.95, `WaitForJobGroupID` 0.76 (42 waits), `BattleVictoryService.Tick` 0.38 ms.
+- Source cause of `CaptureProbe`: `EnemyShipTaskGroupPlanner.TryCreateCaptureGroup` → for every unassigned ship `CanDetachForCapture` = `BuildHostilesNear` + `IsObjectiveSafe` for **every** capture candidate. When no ship qualifies it scans ships × objectives on every cycle.
+  - [ ] Fix: run the probe only when the candidate set or own ship set changed, or back off after a failed probe; cache `IsObjectiveSafe` per objective per cycle.
+- `PatrolSelect`: the patrol corvette was re-ordered every decision (see the AI plan); fixed 2026-11-18 in `EnemyPatrolShipController` (no repeat AttackMove for the same target; 10 s pause after "no safe target"). Re-measure.
+- Order churn (all AI): 13,991 orders issued / 13,064 cancelled in 32 min; one patrol corvette 3,292. Each re-issue rebuilds the ship's route.
+- Squadrons: 164 live at 39 s (41 per player at start), 1,484 launches (46/min); squadrons fired 56% of all shots (377k of 674k).
+
 ### Phase 0 — Baseline and acceptance of the last round
 - [ ] User runs `Navigation`, `Combat`, `EnemyAi` (scan fix and probe are untested since the last edit).
 - [ ] Re-measure Praetor (130 mounts) vs moving Executor (177 points): expect ≤0.7 ms/frame from the 100 ms cadence, lower with the cached-point scan.

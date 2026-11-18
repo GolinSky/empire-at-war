@@ -62,6 +62,13 @@ created: 2026-11-18
 - Guns per fighter: TIE Avenger/Vulture/ARC-170/TIE Interceptor 4, V-Wing 4, TIE Defender 5. Each is a `WeaponHardPoint` in target selection.
 
 ## Plan
+### Playtest 2026-11-18 (4 players, 32 min, after the trail/collider/ring removal)
+- 164 live squadrons at 39 s = **41 per player at battle start** (station + carrier start stock). 1,484 launches (46/min), median life 49 s.
+- Launches: ARC-170 343, Vulture 335, Y-Wing 236, Belbullab-22 184, V-Wing 171, Hyena 106, Droid Bomber 67, V-19 42.
+- **Squadrons fired 56% of all shots** (377k of 674k; Vulture alone 150k, ARC-170 105k).
+- Steady `Squadron.Flight` 0.90 ms/frame (agent capture); squadrons are not the spike owner (the AI is).
+- Next: measure with the start stock reduced or capped (41 per player × 4 from the first second), and with the fighter/ship pool split from the fire-rate work.
+
 ### Phase 1 — Measure (Development build)
 - [ ] Release-build line every 10 s: live squadrons and craft per player (with [[TODOs/Optimization/Online_Battle_Low_FPS]] Phase 0).
 - [ ] Profile 100 / 200 / 400 squadrons: split script / trails (`TrailRenderer` update + draws) / physics sync / fighter target selection / projectiles.

@@ -45,6 +45,17 @@ created: 2026-11-18
 - [x] (reused list + cached comparison) Minor: the defense path allocates and sorts a new ship list every tick; nearest ships are chosen regardless of strength.
 - Note: `BattleClock.CurrentElapsed` is static global state, acceptable for log lines only.
 
+## Playtest 2026-11-18 (Editor, 4 players, 32 min; `Logs/Playtests/20261118T1013Z/`)
+- **Order churn:** AI issued 13,991 orders and cancelled 13,064 (Player1 197/min, Player3 153/min, Player2 75/min; human 11/min). Every re-issue cancels the order and rebuilds the ship's route.
+- **Patrol corvette flip-flop (the "ships go in random directions" report):**
+  - Patrol frigate 209 (Player1) got 3,292 AttackMove orders, 3,139 of them < 0.6 s apart. Destination alternated between its patrol point and the fleet's point (e.g. (3944, 964) → (1210, −3102) → back).
+  - `EnemyPatrolShipController.Select` issued `IssueAttackMove` on every decision with a new `AttackMoveEngagement`, so `ShipOrderRunner.AttackMoveTo`'s repeat check (same engagement instance) never matched.
+  - Patrol log: 470 `assigned` / 465 `released;reason=noSafeTarget` → after each release the fleet ordered the ship elsewhere, and the next decision took it back.
+  - [x] Fixed 2026-11-18: no repeat AttackMove while the ship already moves to the same patrol target; after `noSafeTarget` the corvette stays with the fleet for `NO_TARGET_RETRY_SECONDS` (10 s). Recompile clean; tests not run.
+  - [ ] Test gap: `EnemyPatrolShipController` re-issue/back-off (needs a patrol-service fake; `TryGetTarget` is on the concrete `EnemyPatrolService`).
+- Human ships (Player0): wrong-way travel in 1.4% of moving samples (normal route turns); AI 1.1–2.2%.
+- [ ] Remaining churn: other AI paths also re-issue identical AttackMoves with new engagements (`EnemyTaskForceExecutor` capture/marker/screen calls). Consider an `IssueAttackMove` overload that keeps the ship's current engagement when the destination is unchanged.
+
 ## Agent handoff
 - Read this plan, its linked plans and the live source first; source wins over this note.
 - Follow `AGENTS.md`: no Play Mode, no tests (local override). Update/add the tests listed here and report them as not run.

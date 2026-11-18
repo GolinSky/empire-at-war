@@ -80,7 +80,8 @@
 - [ ] **Squadron FPS (icon stacking/grid out of scope: user rebuild)** → [[TODOs/Bugs/Squadron_Count_Stacking_And_FPS]]
   - 2026-11-18: 1v1 Editor peak 127 live squadrons (≈1,000 craft). Fixed (compiled, prefabs saved, tests not run): torpedo-mount per-frame target selection; removed 334 engine trails, 186 fighter colliders, squadron world selection rings (icon-only selection), 212 dead flash meshes, 234 fighter shadow casters. Next: fighters out of root hierarchy, mesh merge/LOD, remove model-embedded muzzle-flash meshes from all models (12 model files + reinforcement/ship prefabs), split fighter/ship projectile pools, radar per-frame tick.
 - [ ] **Enemy AI weak base defense + inconsistent UltraHard** → [[TODOs/Bugs/Enemy_AI_Base_Defense_And_Consistency]]
-  - 2026-11-18: UltraHard `defenseThreatRatio` 1.5 (highest bar) + whole-fleet commit. Nothing implemented; "lvl 3" meaning to confirm.
+  - 2026-11-18: UltraHard `defenseThreatRatio` 1.5 (highest bar) + whole-fleet commit. "lvl 3" meaning to confirm.
+  - 2026-11-18 playtest: AI order churn ≈14k orders/32 min; patrol corvette re-ordered every 0.5 s and flip-flopped with the fleet (the "random direction" ships) → fixed in `EnemyPatrolShipController`. Spikes: AI capture probe +19.7 ms, patrol select +7.9 ms (see Live CPU Sweep). Logs: `Logs/Playtests/20261118T1013Z/`.
 - [ ] **Ship hardpoints, firing angles and balance** → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]
   - Status: in progress (2026-11-15). Recusant weapon profile swaps saved and verified with existing arcs. Recusant battle output, Peleset/Recalcitrant wrapped yaw, Dispatcher/Resolute/Arquitens arcs, Mandator economics and shared-prefab telemetry remain under review.
 
