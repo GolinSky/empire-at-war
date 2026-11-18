@@ -81,7 +81,7 @@ namespace EmpireAtWar.Editor.Balance
         {
             Object data = unit.Data;
             bool ship = data is ShipData;
-            string combat = ship ? "Hull Shields ShieldRegenerateDelay Range Delay"
+            string combat = ship ? "Hull Shields ShieldRegenMultiplier ShieldRegenerateDelay Range Delay"
                 : "MemberHull MemberShields LeaderHull LeaderShields ProtectLeaderUntilEscortsLost ShieldRegenerateValue ShieldRegenerateDelay LaserShieldDamageMultiplier HullRepairPerSecond Range Delay VisionRange";
             string movement = ship ? "Speed RotationSpeed TurnAcceleration HyperSpaceDuration BodyRotationMaxAngle NavigationRadius MinMoveCoefficient"
                 : "CruiseSpeed CombatSpeed Acceleration TurnRate MaxBankAngle BankResponse Height FormationSpacing LoiterRadius NavigationRadius GuardRadius BreakDistance ExtendDistance";

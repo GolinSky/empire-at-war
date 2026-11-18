@@ -77,7 +77,11 @@ namespace EmpireAtWar.Editor.Balance
             }
             bool squadron = unit.Kind == BalanceUnitKind.Squadron;
             BalanceField regenTier = Field(unit, registry, "ShieldRegenTier");
-            if (regenTier != null) Editable(card, "Shield regen tier", regenTier, draft, usage, edit);
+            if (regenTier != null)
+            {
+                Editable(card, "Shield regen tier", regenTier, draft, usage, edit);
+                Editable(card, "Shield regen multiplier", Field(unit, registry, "ShieldRegenMultiplier"), draft, usage, edit);
+            }
             else Editable(card, squadron ? "Shield regen / member (HP)" : "Shield regen (HP)", Field(unit, registry, "ShieldRegenerateValue"), draft, usage, edit);
             Editable(card, "Shield regen delay (s)", Field(unit, registry, "ShieldRegenerateDelay"), draft, usage, edit);
             Metric(card, squadron ? "Shield regen / member" : "Shield regen", ShieldRegenRate(unit, registry, draft), "HP/s");
@@ -236,7 +240,9 @@ namespace EmpireAtWar.Editor.Balance
             using UnityEditor.SerializedObject data = new UnityEditor.SerializedObject(unit.Data);
             ShipShieldRegenTiersData tiers = (ShipShieldRegenTiersData)data.FindProperty("shieldRegenTiers").objectReferenceValue;
             if (tiers == null) return null;
-            return tiers.GetRegenerateValue((ShieldRegenTier)int.Parse(tier.DraftValue(draft), CultureInfo.InvariantCulture));
+            BalanceField multiplier = Field(unit, registry, "ShieldRegenMultiplier");
+            double? scale = Number(multiplier.DraftValue(draft));
+            return scale * tiers.GetRegenerateValue((ShieldRegenTier)int.Parse(tier.DraftValue(draft), CultureInfo.InvariantCulture));
         }
 
         private static double? Number(string value) =>

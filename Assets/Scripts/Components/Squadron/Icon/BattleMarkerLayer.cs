@@ -13,7 +13,8 @@ namespace EmpireAtWar.Components.Squadrons.Icon
     public sealed class BattleMarkerLayer : MonoBehaviour, IBattleMarkerLayer, ITickable, ILateTickable, ILateDisposable
     {
         private const float SNAPSHOT_INTERVAL = 0.1f;
-        private const float PLANE_DISTANCE_PAST_NEAR_CLIP = 0.05f;
+        // Below every HUD overlay (health/hardpoint overlays use -1, prefabs down to -10).
+        private const int MARKER_SORTING_ORDER = -20;
         private const float SHIP_MARKER_SCALE = 1.848f;
         private const float SHIP_FRAME_VERTICAL_INSET = 24f;
         private static readonly ProfilerMarker SnapshotSampler = new ProfilerMarker("Battle.Markers.Snapshot");
@@ -48,11 +49,12 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             _cinematic = cinematic;
             gameObject.layer = layerService.GetLayer(LayerKey.WorldUi);
             Canvas canvas = gameObject.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            // Overlay keeps vertices in screen pixels. A camera canvas at the near plane (29.9° FOV) puts
+            // one pixel at ~0.0002 world units, below float precision at map coordinates → icon/frame wobble.
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = MARKER_SORTING_ORDER;
             canvas.additionalShaderChannels = AdditionalCanvasShaderChannels.TexCoord1 |
                                               AdditionalCanvasShaderChannels.TexCoord2;
-            canvas.worldCamera = cameraService.SceneCamera;
-            canvas.planeDistance = cameraService.SceneCamera.nearClipPlane + PLANE_DISTANCE_PAST_NEAR_CLIP;
             // Squadron and ship markers move independently; separate canvases keep one from rebuilding the other's batches.
             _shipRoot = CreateSubCanvas("ShipMarkers", canvas);
             _squadronRoot = CreateSubCanvas("SquadronMarkers", canvas);

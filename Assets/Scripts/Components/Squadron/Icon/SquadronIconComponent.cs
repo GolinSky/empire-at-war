@@ -64,11 +64,11 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         public void Respawn() => Initialize();
 
-        public void AdvanceAnchor(Vector3 centroid, bool travelling, float deltaTime)
+        public void AdvanceAnchor(Vector3 centroid, float deltaTime)
         {
             if (_isReleased || deltaTime <= 0f) return;
 
-            if (_anchor.Advance(centroid, travelling, deltaTime))
+            if (_anchor.Advance(centroid, deltaTime))
                 _marker.ResetPosition(centroid);
             _marker.SetPosition(_anchor.Position);
         }

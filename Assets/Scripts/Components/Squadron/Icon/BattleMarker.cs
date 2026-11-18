@@ -137,7 +137,9 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 return;
             }
 
-            _root.anchoredPosition = _displayed - viewport.min;
+            // Whole pixels keep the icon's texel phase inside the frame fixed while the marker moves.
+            Vector2 local = _displayed - viewport.min;
+            _root.anchoredPosition = new Vector2(Mathf.Round(local.x), Mathf.Round(local.y));
             if (scale != _scale)
             {
                 _scale = scale;

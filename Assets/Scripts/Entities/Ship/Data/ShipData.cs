@@ -69,7 +69,9 @@ namespace EmpireAtWar.Entities.Ship.Data
         [SerializeField] private ShipShieldRegenTiersData shieldRegenTiers;
         [Tooltip("Regeneration tier; the ship's own class unless it is balanced on another class's regeneration.")]
         [field: SerializeField] public ShieldRegenTier ShieldRegenTier { get; private set; }
-        public float ShieldRegenerateValue => shieldRegenTiers.GetRegenerateValue(ShieldRegenTier);
+        [Tooltip("Per-ship scale on the tier's regeneration (1 = the tier value).")]
+        [field: SerializeField, Min(0f)] public float ShieldRegenMultiplier { get; private set; } = 1f;
+        public float ShieldRegenerateValue => shieldRegenTiers.GetRegenerateValue(ShieldRegenTier) * ShieldRegenMultiplier;
         [field: SerializeField] public float ShieldRegenerateDelay { get; private set; }
         public bool UsesHullHardPointBudget => true;
         public IReadOnlyList<HardPointHealth> HardPointHealth => System.Array.Empty<HardPointHealth>();
