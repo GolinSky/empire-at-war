@@ -151,7 +151,8 @@ follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 - `EnemyDefenseStrategy.TrySelect` = `TrySelectMandatory` (zones first, ignores production reserve) then `TrySelectScored`.
 - `EnemyDefensePad.IsZonePad` = point without mine sites. `EnemySiteObjectives`: pads of mine-less zones are capturable and carry priority bonus 600.
 - `EnemySiteConstructionController`: no fleet gate; a mine build no longer ends the tick.
-- Not done: a starting-station pad is built later to save early money only by cost ordering (no explicit rule); capture of pads by satellite range is not modelled.
+- Pad capture is by presence in the capture range: the capture force enters at 0.7 × radius on its arrival side instead of the centre (`approachPoint` in `ExecuteCapture`).
+- Starting-station pad: no explicit late-build rule; cost ordering is accepted (user, 2026-11-18).
 
 ## Open Decisions
 - Deploy hold length before forced spawn.

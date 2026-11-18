@@ -33,6 +33,7 @@ namespace EmpireAtWar.Services.Enemy
         private const float INTERCEPT_DISTANCE = 1500f;
         private const float NO_FIRING_SECONDS = 8f;
         private const float CAPTURE_EDGE_FRACTION = 0.9f;
+        private const float PAD_ENTRY_FRACTION = 0.7f;
         private const int READY_START_QUARTERS = 3;
         private const int READY_KEEP_QUARTERS = 2;
         private const float ANCHOR_DPS_SWITCH_FACTOR = 1.25f;
@@ -358,10 +359,20 @@ namespace EmpireAtWar.Services.Enemy
             var captureGroups = new Dictionary<Vector3, List<GameEntity>>();
             var changedPoints = new HashSet<Vector3>();
             float radius = context.CaptureObjective == null ? 1f : context.CaptureObjective.Radius;
+            // A satellite pad is captured by presence in its capture range, not by reaching its centre: the force
+            // stops just inside the circle on the side it arrives from, next to the pad's guns.
+            Vector3 approachPoint = _captureTarget;
+            if (objective != null && objective.Kind == EnemyCaptureObjectiveType.Facility && !objective.IsMine)
+            {
+                Vector3 fromPad = anchor.WorldPosition - _captureTarget;
+                fromPad.y = 0f;
+                if (fromPad.sqrMagnitude > Mathf.Epsilon)
+                    approachPoint = _captureTarget + fromPad.normalized * radius * PAD_ENTRY_FRACTION;
+            }
             int escortIndex = 0;
             foreach (IShipEntity ship in _body)
             {
-                Vector3 capturePoint = _captureTarget;
+                Vector3 capturePoint = approachPoint;
                 bool fits = context.IsDefensePointClear(capturePoint, ship.NavigationRadius);
                 for (int sample = 0; !fits && sample < 4; sample++)
                 {
