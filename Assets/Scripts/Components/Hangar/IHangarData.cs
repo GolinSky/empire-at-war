@@ -5,6 +5,7 @@ namespace EmpireAtWar.Components.Hangar
     public interface IHangarData
     {
         IReadOnlyList<HangarBay> HangarBays { get; }
+        int HangarMaxActive { get; }
         float HangarInitialDelay { get; }
         float HangarLaunchInterval { get; }
     }

@@ -10,6 +10,7 @@ namespace EmpireAtWar.Entities.SpaceStation
         private readonly SpaceStationData _data;
 
         public IReadOnlyList<HangarBay> HangarBays { get; }
+        public int HangarMaxActive => -1;
         public float HangarInitialDelay => _data.HangarInitialDelay;
         public float HangarLaunchInterval => _data.HangarLaunchInterval;
 

@@ -85,6 +85,8 @@ namespace EmpireAtWar.Entities.Ship.Data
         [Header("Hangar")]
         [Tooltip("Squadron bays; a ship with bays needs a HangarComponent on its view prefab.")]
         [SerializeField] private List<HangarBay> hangarBays = new List<HangarBay>();
+        [Tooltip("Max squadrons active simultaneously across all bays; 0 disables launches, -1 uses per-bay limits only.")]
+        [field: SerializeField, Min(-1)] public int HangarMaxActive { get; private set; } = -1;
         [field: SerializeField] public float HangarInitialDelay { get; private set; } = 4f;
         [field: SerializeField] public float HangarLaunchInterval { get; private set; } = 8f;
         public IReadOnlyList<HangarBay> HangarBays => hangarBays;

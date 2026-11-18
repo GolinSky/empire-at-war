@@ -37,6 +37,8 @@ namespace EmpireAtWar.Components.Hangar
                 for (int bay = 0; bay < BayCount; bay++)
                     if (!_disabled[bay])
                         count += Math.Min(_reserve[bay], Math.Max(0, _data.HangarBays[bay].MaxActive - _active[bay]));
+                if (_data.HangarMaxActive >= 0)
+                    count = Math.Min(count, Math.Max(0, _data.HangarMaxActive - TotalActive()));
                 return count;
             }
         }
@@ -98,7 +100,7 @@ namespace EmpireAtWar.Components.Hangar
 
         private int FindReplacementBay()
         {
-            if (!IsOperational) return -1;
+            if (!IsOperational || IsShipCapReached()) return -1;
             for (int i = 0; i < _reserve.Length; i++)
                 if (!_disabled[i] && _reserve[i] > 0 && _reserve[i] < _data.HangarBays[i].Reserve &&
                     _data.HangarBays[i].MaxActive > 0 && _active[i] == 0)
@@ -148,7 +150,7 @@ namespace EmpireAtWar.Components.Hangar
 
         private int FindLaunchBay(bool respectRelaunch)
         {
-            if (!IsOperational) return -1;
+            if (!IsOperational || IsShipCapReached()) return -1;
             int firstBay = respectRelaunch ? _nextAutomaticBay : 0;
             for (int offset = 0; offset < BayCount; offset++)
             {
@@ -159,6 +161,15 @@ namespace EmpireAtWar.Components.Hangar
                     return bay;
             }
             return -1;
+        }
+
+        private bool IsShipCapReached() => _data.HangarMaxActive >= 0 && TotalActive() >= _data.HangarMaxActive;
+
+        private int TotalActive()
+        {
+            int total = 0;
+            for (int i = 0; i < _active.Length; i++) total += _active[i];
+            return total;
         }
 
         /// <summary>Runs the launch timers without launching, for a frame whose launch slot is already taken.</summary>
