@@ -99,10 +99,24 @@ namespace EmpireAtWar.Editor.Balance
                     BalanceFieldOwner.UnitData, false, new[] { unit }, typeof(ShieldRegenTier));
                 using (SerializedObject serialized = new SerializedObject(data))
                 {
+                    ShieldRegenTiers(registry, (Object)serialized.FindProperty("shieldRegenTiers").objectReferenceValue, unit);
                     if (!combatOnly) Hangar(registry, data, serialized.FindProperty("hangarBays"), "hangarBays", unit);
                 }
             }
             foreach (BalanceField field in registry.FieldsFor(data)) unit.Fields[field.Stat] = field.Key;
+        }
+
+        private static void ShieldRegenTiers(BalanceRegistration registry, Object tiers, BalanceUnit unit)
+        {
+            foreach (ShieldRegenTier tier in Enum.GetValues(typeof(ShieldRegenTier)))
+            {
+                string name = tier.ToString();
+                string member = char.ToLowerInvariant(name[0]) + name.Substring(1);
+                string stat = "ShieldRegenTierValue/" + (int)tier;
+                BalanceField field = registry.Add(tiers, stat, member, BalanceFieldGroup.GlobalData, tiers.name + " / " + name + " shield regen (HP)",
+                    BalanceFieldOwner.SharedProfile, true, new[] { unit });
+                unit.Fields[stat] = field.Key;
+            }
         }
 
         public static void Health(BalanceRegistration registry, Object data, SerializedProperty entries, string key, BalanceUnit unit)
