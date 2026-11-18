@@ -18,6 +18,7 @@ using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Ui.Base;
 using MPUIKIT;
 using NUnit.Framework;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -90,6 +91,14 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(researchCards.Any(card => card.Request is ResearchUnitRequest
                     { Key: ResearchType.IncreasedStationIncome }), Is.True);
                 Assert.That(researchCards.All(card => card.Request is ResearchUnitRequest), Is.True);
+                foreach (FactionUnitUi card in researchCards)
+                {
+                    var tierText = (TextMeshProUGUI)new SerializedObject(card).FindProperty("tierText").objectReferenceValue;
+                    Assert.That(tierText.enableAutoSizing, Is.True, card.RequestId);
+                    Assert.That(tierText.fontSizeMin, Is.EqualTo(6f), card.RequestId);
+                    Assert.That(tierText.fontSizeMax, Is.EqualTo(14f), card.RequestId);
+                    Assert.That(tierText.textWrappingMode, Is.EqualTo(TextWrappingModes.NoWrap), card.RequestId);
+                }
                 var structures = hud.ProductionMenus.StructureCards.GetComponentsInChildren<FactionUnitUi>(true);
                 Assert.That(structures.Any(card => card.Request is MiningFacilityUnitRequest), Is.True);
                 Assert.That(structures.Any(card => card.Request is DefendPlatformUnitRequest), Is.True);
