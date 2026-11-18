@@ -142,7 +142,7 @@ created: 2026-11-18
 - Phase 1: `SquadronGroupingJob` rewritten — screen-pixel clusters, spatial hash, join/leave dwell (0.25/0.5 s), ranks compact, merge keeps larger first. Ships no longer group (they are obstacles).
 - Phase 2: `SquadronClusterLayout` (row-major, ≤4 cols, last row centered).
 - Phase 3: `BattleMarker.Display` = exact projected target + decaying follow spring (0.1 s) that absorbs layout-key changes; cluster placement spring 0.12 s; `SquadronMarkerAnchor` = SmoothDamp 0.15 s (cruise/tether/dead zones removed; `AdvanceAnchor(centroid, dt)`).
-- Phase 4: `SquadronClusterPlacement` (16 candidates, uniform obstacle grid, hysteresis), `ShipHullObstacle` registered for every ship via `IBattleMarkerLayer.RegisterHull`, leader lines (`SquadronLeaderLines`), hit rect = visual cell (`clickSize`/`followSharpness` removed).
+- Phase 4: `SquadronClusterPlacement` (16 candidates, uniform obstacle grid, hysteresis), `ShipHullObstacle` registered for every ship via `IBattleMarkerLayer.RegisterHull` (`SquadronLeaderLines`), hit rect = visual cell (`clickSize`/`followSharpness` removed).
 - Phase 5: squadron and ship markers on separate nested canvases; no per-frame allocations in the layout path.
 - Phase 6: rewrote `SquadronIconGroupingTests`, `SquadronIconPrefabTests`; new `SquadronClusterLayoutTests`, `SquadronClusterPlacementTests`, `BattleMarkerProjectionTests`; fixed `SelectionQueryTests` fake layer and `StructureStatusIconPresenterTests` root field.
 
@@ -160,3 +160,28 @@ created: 2026-11-18
 5. [ ] Ship-aware placement + hit rect.
 6. [ ] Render cost.
 7. [ ] Tests, guidance, acceptance queue.
+
+
+## Verification 2026-11-18 (implementation review + wobble fix)
+### Wobble root cause (fixed, uncommitted)
+- `BattleMarkerLayer` canvas was `ScreenSpaceCamera` at `nearClipPlane + 0.05` = 0.35 u. Main camera FOV 29.9° → 1 px ≈ 0.00017 u at 1080p.
+- Canvas vertices go through world space; float ulp at camera coords 2048–4096 u = 0.00024 u → 1–2 px rounding per vertex. Frame and icon vertices round independently → icon wobbles inside the frame; whole marker wobbles while the camera moves.
+- Earlier anchor-smoothing fix (`SquadronMarkerAnchor` 0.8 s settled) could not remove this: error is in rendering, not position.
+- Fix: `BattleMarkerLayer` → `RenderMode.ScreenSpaceOverlay`, `sortingOrder` −20 (below health/hardpoint overlays −1 and prefabs −10); `BattleMarker.Display` rounds `anchoredPosition` to whole pixels.
+- Side effects to check in-game: markers no longer pass through camera post-processing (bloom/tonemap) → colors may look slightly different. Structure status icons share the canvas → same fix applies to them.
+- Unity recompile: 0 errors. Tests not run (local override). Reviewed: `BattleMarkerProjectionTests`, `SquadronIconPrefabTests` (no canvas/anchoredPosition assertions), `StructureStatusIconPresenterTests` (own camera canvas; presenter math unchanged).
+
+### Capture `Logs/BattleAudit/20261118T150734656Z-attribution` (Editor)
+| Battle | Main avg | `BattleMarkerLayer.LateTick` | `.Tick` | `Canvas.BuildBatch` | GC |
+|---|---|---|---|---|---|
+| 150734 (3050 f) | 16.31 ms | 0.144 ms | 0.011 ms | 0.025 ms | 0 B |
+| 151035 (2038 f) | 20.01 ms | 0.166 ms | 0.014 ms | 0.027 ms | 0 B |
+- Markers ≈ 0.18–0.21 ms/frame ≈ 1% of main thread → within the 0.3 ms budget; not an FPS cause.
+- Spikes: 5 hitch frames with `LateTick` 2.7–3.4 ms (frames 13986, 14957, 15165, 15169; 21998 1.0 ms). Cause not attributed (no sub-markers in the capture). Candidates: placement overlap scan with many large hull rects; first-use list growth. Low priority.
+- Real FPS owners in this capture: `EnemyAiScheduler.Tick` 1.6–1.8 ms, `CombatAttackCoordinator.LateTick` 0.74–1.29 ms.
+
+### Implementation vs plan
+- Done: screen-space membership with hysteresis/dwell (Burst, 10 Hz); matrix layout (`SquadronClusterLayout`, 4 cols); springs (`ScreenSpring`); hull obstacles (`ShipHullObstacle`, `StationHullObstacle`); visual-size hit rect; separate ship/squadron sub-canvases; tests (`BattleMarkerProjectionTests`, `SquadronClusterLayoutTests`, `SquadronClusterPlacementTests`, `SquadronIconGroupingTests`).
+- Deviations: leader lines removed by user (`2303997e0`). Anchor uses 0.8 s smooth time when not travelling (adds lag in combat); revisit now that the render wobble is fixed.
+- Old `SquadronIconPrefabTests` grid/ship-sharing tests removed in `8a4b9d8db`: contracts changed (ships no longer share grids); replaced by the new fixtures.
+- Open: in-game acceptance (wobble gone, colors, ship clickability); optional spike follow-up.
