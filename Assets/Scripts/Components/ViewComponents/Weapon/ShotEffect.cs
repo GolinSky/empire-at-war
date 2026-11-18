@@ -124,6 +124,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
         /// <summary>Seconds after arrival over which the shot's damage is spread; 0 lands it all on arrival.</summary>
         public virtual float DamageDuration => 0f;
 
+        /// <summary>Seconds the lease outlasts the flight: trail fade, beam hold. Sizes pools and in-flight caps.</summary>
+        public virtual float PostImpactSeconds => 0f;
+
         public void ResetForPool()
         {
             muzzleFlash.Stop();

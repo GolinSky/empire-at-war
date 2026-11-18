@@ -168,6 +168,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
         // Beams deal damage continuously while they hold on the target.
         public override float DamageDuration => holdDuration;
 
+        public override float PostImpactSeconds => growthDuration + holdDuration + fadeDuration;
+
         private void SetOpacity(float opacity)
         {
             Color color = _beamColor;

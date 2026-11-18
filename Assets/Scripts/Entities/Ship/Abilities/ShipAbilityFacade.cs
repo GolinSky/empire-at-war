@@ -26,7 +26,6 @@ namespace EmpireAtWar.Entities.Ship.Abilities
         public CombatModifiers Modifiers { get; }
         public Vector3 WorldPosition => _viewTransform.position;
         public IEntity Entity => _entities.GetEntity(_entityId);
-        public long EntityId => _entityId;
         public IHealthModelObserver Health { get; }
         public float RadarRange { get; }
 

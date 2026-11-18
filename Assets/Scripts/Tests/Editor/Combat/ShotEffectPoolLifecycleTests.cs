@@ -84,7 +84,7 @@ namespace EmpireAtWar.Tests.Weapon
         }
 
         [Test]
-        public void SharedAdmission_OlderLargeSalvoCannotBeStarvedBySmallSalvos()
+        public void SharedAdmission_SmallSalvoIsAdmittedPastLargerWaiterAtTheHead()
         {
             WeaponProfile profile = Profile();
             var prewarmer = new ShotPoolPrewarmer();
@@ -94,22 +94,46 @@ namespace EmpireAtWar.Tests.Weapon
             {
                 first.Prewarm(1);
                 Assert.That(first.TryReserveSalvo(2), Is.False);
-                Assert.That(second.TryReserveSalvo(1), Is.False, "A later small salvo must not repeatedly steal the head's shots.");
-                first.Prewarm(2);
-                Assert.That(second.TryReserveSalvo(1), Is.False);
+                Assert.That(second.TryReserveSalvo(1), Is.True, "A salvo that fits must not wait behind a larger one.");
+                ShotEffect a = Lease(second);
+                first.Prewarm(3);
                 Assert.That(first.TryReserveSalvo(2), Is.True);
-                ShotEffect a = Lease(first);
                 ShotEffect b = Lease(first);
-                Return(first, a);
-                Assert.That(first.TryReserveSalvo(1), Is.False, "A new request joins behind the existing waiter.");
-                Assert.That(second.TryReserveSalvo(1), Is.True);
-                ShotEffect c = Lease(second);
+                ShotEffect c = Lease(first);
+                Return(second, a);
                 Return(first, b);
-                Assert.That(first.TryReserveSalvo(1), Is.True);
-                first.CancelReservation();
-                Return(second, c);
+                Return(first, c);
             }
             finally { prewarmer.Clear(); }
+        }
+
+        [Test]
+        public void StrikecraftAndShips_ShareNoCacheOrAdmissionQueue()
+        {
+            WeaponProfile profile = Profile();
+            var prewarmer = new ShotPoolPrewarmer();
+            ShotEffectPool ship = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1000);
+            ShotEffectPool fighter = prewarmer.CreatePool(profile, null, _ => { }, null, null, 1000, true);
+            try
+            {
+                Assert.That(Cache(fighter), Is.Not.SameAs(Cache(ship)));
+                Assert.That(Cache(fighter).IsStrikecraftGroup, Is.True);
+                Assert.That(fighter.TryReserveSalvo(3), Is.False);
+                Assert.That(Cache(ship).WaitingCount, Is.Zero, "Fighter demand must not queue on the ship cache.");
+            }
+            finally { prewarmer.Clear(); }
+        }
+
+        [TestCase(WeaponFamily.Turbolaser)]
+        [TestCase(WeaponFamily.Torpedo)]
+        public void ExpectedShotsInFlight_CoversFlightPlusPostImpactLease(WeaponFamily family)
+        {
+            WeaponProfile profile = Profile(family);
+            float lifetime = (profile.ProjectileSpeed > 0f ? profile.Range / profile.ProjectileSpeed : 0f) +
+                             profile.ShotPrefab.PostImpactSeconds;
+            float cycle = Mathf.Max(profile.Reload, (profile.ShotsPerSalvo - 1) * profile.ShotInterval, 0.01f);
+            Assert.That(WeaponHardPoint.ExpectedShotsInFlight(profile),
+                Is.GreaterThanOrEqualTo(profile.ShotsPerSalvo * Mathf.CeilToInt(lifetime / cycle)));
         }
 
         [Test]
@@ -123,9 +147,9 @@ namespace EmpireAtWar.Tests.Weapon
             {
                 first.Prewarm(1);
                 Assert.That(first.TryReserveSalvo(100), Is.False);
-                Assert.That(second.TryReserveSalvo(1), Is.False);
+                Assert.That(Cache(first).WaitingCount, Is.EqualTo(100));
                 first.Release();
-                Assert.That(Cache(first).WaitingCount, Is.EqualTo(1));
+                Assert.That(Cache(first).WaitingCount, Is.Zero);
                 Assert.That(second.TryReserveSalvo(1), Is.True);
                 second.CancelReservation();
                 int created = AttackSequenceDiagnostics.PoolCreated;

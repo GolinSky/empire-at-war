@@ -25,7 +25,7 @@ namespace EmpireAtWar.Components.Weapon
         internal const float DOOMED_MARGIN = 1.25f;
         // Leftover float error below this is dropped so finished targets leave the table.
         private const float INCOMING_EPSILON = 0.5f;
-        private const float MAX_CATCH_UP_SECONDS = 0.25f;
+        private const int MAX_SHOTS_PER_FRAME = 4;
 
         private readonly Dictionary<IWeaponPresenter, int> _owners = new Dictionary<IWeaponPresenter, int>();
         private readonly List<SequenceRecord> _sequences = new List<SequenceRecord>();
@@ -463,34 +463,40 @@ namespace EmpireAtWar.Components.Weapon
                 return;
             }
 
-            // A salvo started on a live hardpoint finishes even if that hardpoint dies; the health model spreads the hits.
-            // A salvo at a fighter stops when the fighter dies, freeing the weapon for a live one.
-            if (sequence.ShotsRemaining == 0 ||
-                !sequence.TargetGroup.CanAcquireTarget ||
-                sequence.Target.Generation != sequence.TargetGeneration ||
-                sequence.TargetGroup.IsDestroyed ||
-                !sequence.TargetGroup.Contains(sequence.Target) ||
-                !sequence.TargetGroup.CanStillHit(sequence.Target))
-            {
-                sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);
-                return;
-            }
-
-            sequence.HardPoint.EmitScheduledShot(sequence.TargetGroup, sequence.Target, sequence.HardPointGeneration);
-            if (!sequence.HardPoint.IsEmitting(sequence.HardPointGeneration))
-            {
-                sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);
-                return;
-            }
-            sequence.ShotsRemaining--;
-            if (sequence.ShotsRemaining == 0)
-            {
-                sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);
-                return;
-            }
-            // Advance from the scheduled time so a slow frame does not stretch the salvo; a long stall resets to now.
+            // Shots are paced from their scheduled times, so a slow frame emits every shot that fell due in it
+            // (bounded by MAX_SHOTS_PER_FRAME); any backlog beyond the bound is dropped, never replayed as a burst.
             float delay = sequence.HardPoint.DelayBetweenShots;
-            sequence.NextTime = Mathf.Max(sequence.NextTime + delay, now - MAX_CATCH_UP_SECONDS + delay);
+            for (int emitted = 0; emitted < MAX_SHOTS_PER_FRAME; emitted++)
+            {
+                // A salvo started on a live hardpoint finishes even if that hardpoint dies; the health model spreads the hits.
+                // A salvo at a fighter stops when the fighter dies, freeing the weapon for a live one.
+                if (sequence.ShotsRemaining == 0 ||
+                    !sequence.TargetGroup.CanAcquireTarget ||
+                    sequence.Target.Generation != sequence.TargetGeneration ||
+                    sequence.TargetGroup.IsDestroyed ||
+                    !sequence.TargetGroup.Contains(sequence.Target) ||
+                    !sequence.TargetGroup.CanStillHit(sequence.Target))
+                {
+                    sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);
+                    return;
+                }
+
+                sequence.HardPoint.EmitScheduledShot(sequence.TargetGroup, sequence.Target, sequence.HardPointGeneration);
+                if (!sequence.HardPoint.IsEmitting(sequence.HardPointGeneration))
+                {
+                    sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);
+                    return;
+                }
+                sequence.ShotsRemaining--;
+                if (sequence.ShotsRemaining == 0)
+                {
+                    sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);
+                    return;
+                }
+                sequence.NextTime += delay;
+                if (sequence.NextTime > now) break;
+            }
+            sequence.NextTime = Mathf.Max(sequence.NextTime, now);
             sequence.EarliestFrame = frame + 1;
             sequence.EventSequence = ++_nextEventSequence;
             _sequenceIndices.Add(sequence.EventSequence, _sequences.Count);

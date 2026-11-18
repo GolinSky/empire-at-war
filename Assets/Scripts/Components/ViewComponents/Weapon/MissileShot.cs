@@ -47,6 +47,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             return _travelTime;
         }
 
+        public override float PostImpactSeconds => trail.main.startLifetime.constantMax;
+
         protected override void Update()
         {
             if (_isFlying)

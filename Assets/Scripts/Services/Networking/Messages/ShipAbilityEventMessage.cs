@@ -17,7 +17,7 @@ namespace EmpireAtWar.Services.Networking.Messages
 
         public static ShipAbilityEventMessage Capture(ShipAbilitySlot slot) => new ShipAbilityEventMessage
         {
-            CasterId = slot.Owner.EntityId,
+            CasterId = slot.Owner.Entity.Id,
             Ability = slot.Id,
             TargetId = slot.RunningAbility is ITargetedShipAbility targeted ? targeted.Target.Id : 0,
             RestoreState = true,

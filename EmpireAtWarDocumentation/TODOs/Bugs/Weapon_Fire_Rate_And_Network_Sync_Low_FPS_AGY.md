@@ -1,6 +1,6 @@
 ---
 category: Bugs
-status: in-progress
+status: todo
 agent_marker: AGY
 created: 2026-11-18
 ---
@@ -65,8 +65,8 @@ created: 2026-11-18
 - Affected tests to review (do not run under local override): `Combat` (`ShotEffectCacheTests`, `CombatAttackCoordinatorTests`, `WeaponLoadoutBakeTests`), `Abilities`/`Networking` tests
 
 ## TODO
-- [x] Add `EntityId` to `IShipAbilityFacade` (default interface member `=> Entity.Id`; real facades return `_entityId`), used in `ShipAbilityEventMessage.Capture` and `HostCombatEventSender` (2026-11-18, source only)
-- [x] `ShotEffectCache.TryReserve`: a waiter behind the front may reserve when idle shots cover it plus the front's request
-- [ ] Scale `ShotPoolPrewarmer` roster prewarm (not done); runtime growth raised to 4 creations / 1.0 ms per frame (done); `ExpectedShotsInFlight` post-impact hold (not done)
-- [x] `CombatAttackCoordinator` intra-salvo drift fixed (`NextTime += delay`, `MAX_CATCH_UP_SECONDS = 0.25`); `WeaponComponent.Engage` fires at once when `turnSeconds <= Time.deltaTime`. Kept 1 shot/hardpoint/frame (no catch-up burst by design)
-- [x] Reviewed tests: `CombatAttackCoordinatorDueTests`, `WeaponCadenceTests`, `ShotEffectPoolLifecycleTests` unaffected by changes; all `IShipAbilityFacade` test fakes compile via default member. Tests not run (local override)
+- [ ] Add `EntityId` to `IShipAbilityFacade`, replace `slot.Owner.Entity.Id` in `ShipAbilityEventMessage.Capture`, and guard teardown events
+- [ ] Fix `ShotEffectCache.TryReserve` head-of-line stall and starvation interaction (done under [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]])
+- [ ] Scale `ShotPoolPrewarmer` roster prewarm & runtime growth and fix `ExpectedShotsInFlight` (done under [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]])
+- [ ] Decouple `CombatAttackCoordinator` intra-salvo cadence and `WeaponComponent.Engage` sub-frame turns from frame rate (cadence done under [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]]; `Engage` turn handoff and ability-sync crash still open)
+- [ ] Review affected EditMode tests in `Combat` and `Networking`

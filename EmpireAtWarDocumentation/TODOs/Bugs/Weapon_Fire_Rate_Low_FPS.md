@@ -1,7 +1,7 @@
 ---
 category: Bugs
-status: todo
-created: 2026-11-18
+status: in-progress
+created: "2026-11-18\r"
 ---
 # Weapon Fire Rate Drops at Low FPS
 
@@ -48,24 +48,24 @@ created: 2026-11-18
 
 ### Phase 2 — Decouple damage from VFX (decision needed)
 - [ ] Option A (recommended): damage sequence never waits for a bolt; when no bolt is free, skip the visual (or reuse oldest) but still schedule the impact.
-- [ ] Option B: keep gating, raise growth: time budget only (drop `MAX_CREATIONS_PER_FRAME = 1`), prewarm from expected fleet size, not one unit.
-- [ ] Remove FIFO head-of-line blocking (admit any waiter that fits).
+- [x] Option B parts done (2026-11-18): time budget only (`MAX_CREATIONS_PER_FRAME` removed), growth picks the cache with the largest deficit (waiting shots included), roster prewarm sums ship/platform demand per player slot. Option A decision still open.
+- [x] Remove FIFO head-of-line blocking (`TryReserve` admits any waiter that fits).
 
 ### Phase 2b — Split pools: strikecraft vs ships (user proposal 2026-11-18, agreed)
-- [ ] Key `ShotPoolPrewarmer._caches` by (shot prefab, pool group), where group = `Strikecraft` (owner class `IsStrikecraft()`) or `Ships` (ships, stations, platforms).
-- [ ] Separate admission FIFOs → fighter salvos can never block capital salvos, and the reverse.
-- [ ] Separate prewarm: ships from roster ship loadouts; fighters from squadron loadouts × expected live squadrons (station start count + carrier bays), not one unit.
+- [x] Key `ShotPoolPrewarmer._caches` by (shot prefab, pool group), where group = `Strikecraft` (owner class `IsStrikecraft()`) or `Ships` (ships, stations, platforms).
+- [x] Separate admission FIFOs → fighter salvos can never block capital salvos, and the reverse.
+- [x] Separate prewarm (done: ships summed per roster slot; fighters from summed built-squadron capacity `RegisteredCapacity`): ships from roster ship loadouts; fighters from squadron loadouts × expected live squadrons (station start count + carrier bays), not one unit.
 - [ ] Separate growth budget per group, weighted by waiting shots; fighter group may have a hard cap (skip the bolt visual when full; damage still applies once Phase 2 Option A lands).
 - Files: `ShotPoolPrewarmer.cs` (`CreatePool`, `GetCache`, `PrewarmRosterAsync`), `WeaponHardPoint.GetPool`.
 
 ### Phase 2c — In-flight estimate (must fix)
-- [ ] `WeaponHardPoint.ExpectedShotsInFlight` counts only `Range / ProjectileSpeed`. Add the post-impact visual lifetime: missile trail fade (`MissileShot.IsVisualComplete` waits for `trail.IsAlive` + intercept explosion) and bolt muzzle flash.
-- [ ] Beams: `BeamShot` has `ProjectileSpeed` 0 → flight 0 s → estimate = one salvo; use the beam duration (`DamageDuration`/beam visual length) instead.
-- [ ] Test (Combat): estimate ≥ shots alive at steady fire for missile, bolt and beam profiles (relationship, not tuned numbers).
+- [x] (done via `ShotEffect.PostImpactSeconds`; missile trail `startLifetime`, bolt muzzle flash not included) `WeaponHardPoint.ExpectedShotsInFlight` counts only `Range / ProjectileSpeed`. Add the post-impact visual lifetime: missile trail fade (`MissileShot.IsVisualComplete` waits for `trail.IsAlive` + intercept explosion) and bolt muzzle flash.
+- [x] (growth + hold + fade) Beams: `BeamShot` has `ProjectileSpeed` 0 → flight 0 s → estimate = one salvo; use the beam duration (`DamageDuration`/beam visual length) instead.
+- [x] (`ExpectedShotsInFlight_CoversFlightPlusPostImpactLease`, Turbolaser + Torpedo; beam not covered; not run) Test (Combat): estimate ≥ shots alive at steady fire for missile, bolt and beam profiles (relationship, not tuned numbers).
 
 ### Phase 3 — Frame independence
-- [ ] Salvo cadence: `NextTime += DelayBetweenShots`; emit all shots due this frame (cap per frame), keeping the "no catch-up burst after a long frame" rule explicit with a bound.
-- [ ] Failed admission → `DelayRetry` (no per-frame target selection).
+- [x] (`MAX_SHOTS_PER_FRAME = 4`, backlog dropped) Salvo cadence: `NextTime += DelayBetweenShots`; emit all shots due this frame (cap per frame), keeping the "no catch-up burst after a long frame" rule explicit with a bound.
+- [x] (`WeaponComponent.AttackOrDelay`: keeps its place in the storage queue) Failed admission → `DelayRetry` (no per-frame target selection).
 
 ## Agent handoff
 - Read this plan, its linked plans and the live source first; source wins over this note.

@@ -208,7 +208,8 @@ namespace EmpireAtWar.Components.Weapon
                 _facingWeights[i] = Mathf.Max(1, Mathf.RoundToInt(profile.DamagePerSecond * FACING_WEIGHT_SCALE));
                 hardPoint.SetData(profile, profile.Range, _damageMatrix.MissSpread,
                     this, _attackCoordinator, _modifiers, _impactPresenter, _boltFlights, _missiles, _poolPrewarmer,
-                    WeaponHardPoint.ExpectedShotsInFlight(profile, reloadMultiplier, intervalMultiplier));
+                    WeaponHardPoint.ExpectedShotsInFlight(profile, reloadMultiplier, intervalMultiplier),
+                    _attackerClass.IsStrikecraft());
                 hardPoint.PrepareEffects();
                 hardPoint.ShotEmitted += OnShotEmitted;
                 hardPoint.AttackEmitted += OnAttackEmitted;
@@ -219,7 +220,7 @@ namespace EmpireAtWar.Components.Weapon
             if (_artillery != null)
                 _artillery.UpdateVisionMultiplier(_modifiers.VisionMultiplier);
             _modifiers.Changed += OnModifiersChanged;
-            _poolPrewarmer.RequestPrewarm(profiles);
+            _poolPrewarmer.RequestPrewarm(profiles, _attackerClass.IsStrikecraft());
             Dictionary<ShipClass, float> engagementRanges = new Dictionary<ShipClass, float>();
             float maxRange = 0f;
             foreach (ShipClass targetClass in (ShipClass[])Enum.GetValues(typeof(ShipClass)))
@@ -762,9 +763,9 @@ namespace EmpireAtWar.Components.Weapon
         private void Engage(WeaponHardPoint weapon, AttackData group, IHardPointModel unit)
         {
             float turnSeconds = weapon.TurnTowards(unit.Position);
-            if (turnSeconds <= Time.deltaTime)
+            if (turnSeconds <= 0f)
             {
-                weapon.Attack(group, unit);
+                AttackOrDelay(weapon, group, unit);
                 return;
             }
 
@@ -794,8 +795,18 @@ namespace EmpireAtWar.Components.Weapon
                     weapon.CancelPendingAdmission();
                     continue;
                 }
-                weapon.Attack(salvo.Group, salvo.Unit);
+                AttackOrDelay(weapon, salvo.Group, salvo.Unit);
             }
+        }
+
+        // A mount that could not start (no free shot storage) stays queued for storage but waits before selecting
+        // a target again, instead of re-running target selection every frame.
+        private void AttackOrDelay(WeaponHardPoint weapon, AttackData group, IHardPointModel unit)
+        {
+            weapon.Attack(group, unit);
+            if (weapon.IsBusy) return;
+            _retryAt[hardPoints.IndexOf(weapon)] =
+                Time.time + UnityEngine.Random.Range(MIN_RETRY_INTERVAL, MAX_RETRY_INTERVAL);
         }
 
         private static bool HasFiringSolution(WeaponHardPoint weapon, Vector3 target)

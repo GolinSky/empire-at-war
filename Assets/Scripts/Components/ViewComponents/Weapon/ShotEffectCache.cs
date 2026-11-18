@@ -62,10 +62,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 _waitingCount += count - pool.WaitingShots;
                 pool.WaitingShots = count;
             }
-            // The front waiter keeps priority, but a smaller salvo behind it may go when idle shots cover both.
-            int free = _idle.Count - _reservedCount;
-            bool isFront = _waiting.First == pool.AdmissionNode;
-            if (free >= count && (isFront || free >= count + _waiting.First.Value.WaitingShots))
+            // Any waiter whose salvo fits is admitted; a larger salvo at the head must not block smaller ones.
+            if (_idle.Count - _reservedCount >= count)
             {
                 _waiting.Remove(pool.AdmissionNode);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -116,9 +114,13 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         public void ReleaseCapacity(int capacity) => _registeredCapacity -= capacity;
 
-        public ShotEffectCache(ShotEffect prefab)
+        /// <summary>Fighters and ships use separate caches of the same prefab so neither starves the other.</summary>
+        public bool IsStrikecraftGroup { get; }
+
+        public ShotEffectCache(ShotEffect prefab, bool strikecraftGroup = false)
         {
             _prefab = prefab;
+            IsStrikecraftGroup = strikecraftGroup;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _instantiateMarker = new ProfilerMarker("Battle.Projectile.Instantiate." + prefab.name);
             _prewarmMarker = new ProfilerMarker("Battle.Projectile.Prewarm." + prefab.name);

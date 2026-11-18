@@ -28,6 +28,7 @@ namespace EmpireAtWar.ViewComponents.Health
         private BoltFlightBatch _boltFlights;
         private ShotPoolPrewarmer _poolPrewarmer;
         private IncomingMissileRegistry _missiles;
+        private bool _strikecraftOwner;
         private int _inFlightCap;
         private int _timingInFlightCap;
         private int _requestedInFlightCap;
@@ -121,8 +122,9 @@ namespace EmpireAtWar.ViewComponents.Health
         public void SetData(WeaponProfile profile, float maxAttackDistance, float missSpread,
             IWeaponPresenter weaponPresenter, CombatAttackCoordinator attackCoordinator, CombatModifiers modifiers,
             ImpactEffectPresenter impactPresenter, BoltFlightBatch boltFlights, IncomingMissileRegistry missiles,
-            ShotPoolPrewarmer poolPrewarmer, int inFlightCap = 0)
+            ShotPoolPrewarmer poolPrewarmer, int inFlightCap = 0, bool strikecraftOwner = false)
         {
+            _strikecraftOwner = strikecraftOwner;
             _boltFlights = boltFlights;
             _poolPrewarmer = poolPrewarmer;
             _profile = profile;
@@ -274,7 +276,7 @@ namespace EmpireAtWar.ViewComponents.Health
         {
             if (_effectPool != null) return _effectPool;
             _effectPool = _poolPrewarmer.CreatePool(_profile, transform, OnTurretEffectCompleted,
-                _impactPresenter, _boltFlights, _inFlightCap);
+                _impactPresenter, _boltFlights, _inFlightCap, _strikecraftOwner);
             _requestedInFlightCap = _inFlightCap;
             ReserveShotsInFlight();
             return _effectPool;
@@ -285,7 +287,9 @@ namespace EmpireAtWar.ViewComponents.Health
 
         internal static int ExpectedShotsInFlight(WeaponProfile profile, float reloadMultiplier, float intervalMultiplier)
         {
-            float flightSeconds = profile.ProjectileSpeed > 0f ? profile.Range / profile.ProjectileSpeed : 0f;
+            // A lease lasts until the visual ends: flight plus trail fade or beam hold.
+            float flightSeconds = (profile.ProjectileSpeed > 0f ? profile.Range / profile.ProjectileSpeed : 0f) +
+                                  profile.ShotPrefab.PostImpactSeconds;
             float cycle = Mathf.Max(profile.Reload * reloadMultiplier,
                 (profile.ShotsPerSalvo - 1) * profile.ShotInterval * intervalMultiplier);
             int salvos = 1 + Mathf.CeilToInt(flightSeconds / Mathf.Max(cycle, 0.01f));
