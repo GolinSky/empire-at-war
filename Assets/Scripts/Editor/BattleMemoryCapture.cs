@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using EmpireAtWar.Services.Timing;
 using Unity.Pipeline.Commands;
 using Unity.Profiling.Memory;
 using UnityEditor;
@@ -106,6 +107,7 @@ namespace EmpireAtWar.Editor
         private static void Capture()
         {
             _capturing = true;
+            BattleInstrumentActivity.MarkBusy();
             int index = _snapshotIndex++;
             if (_snapshotIndex == 2) _scheduled = false;
             string path = Path.GetFullPath(Path.Combine(_directory, index == 0 ? "memory-05min.snap" : "memory-30min.snap"));
@@ -113,6 +115,7 @@ namespace EmpireAtWar.Editor
             MemoryProfiler.TakeSnapshot(path, (saved, success) =>
             {
                 _capturing = false;
+                BattleInstrumentActivity.MarkBusy();
                 BattleProfilerDecoder.WriteJson(Path.ChangeExtension(saved, ".json"), new
                 { success, requested_at_running_seconds = requestedAt, completed_utc = DateTime.UtcNow,
                     note = "Full Editor-process snapshot; snapshot acquisition stalls/allocates and is excluded from clean timing comparisons. Type/direct-owner export runs after user exits Play Mode." });

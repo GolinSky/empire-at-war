@@ -83,6 +83,14 @@ acceptance: pending-user
 - [ ] **Development Player:** use `Profiler.logFile` + `Profiler.enableBinaryLog` (continuous streaming to `.raw`) instead of `SaveProfile`; cut windows offline.
 - [ ] Also fix: `uncovered_ms` in the Editor (`frame − EditorLoop`, since `EditorLoop` already contains `PlayerLoop`), and the second CSV with 12 frames in 103 s.
 - Acceptance: a 4-minute armed run shows no frame > 1 s caused by the instruments, and every remaining > 200 ms frame is gameplay (GC/script/loading) or tagged `instrument_busy`.
+### Implemented 2026-11-18 (source only; Unity compiled 0 errors; tests not run)
+- Flight recorder only records hitches (frame, ms, UTC) during play; one `hitches.data` save + windows/callers/reports at pause or disarm. `live_export=true` restores old behavior. Hitches already out of the 300-frame buffer → `hitches-index.json` with `window_exported=false`. Defaults: `max_saves` 20, `cooldown_seconds` 5.
+- `BattleInstrumentActivity.MarkBusy()` (+5 frames) called by export, allocation decode and memory snapshot → hitch CSV column `instrument_busy`; `battle_audit.py`/`battle_attribution.py` exclude those rows.
+- `uncovered_ns` = frame − `EditorLoop` (Editor) / frame − `PlayerLoop` (Player).
+- Development Player: `Profiler.logFile` + `enableBinaryLog` streams `hitch_<match>.raw` during hitch monitoring.
+- 12-frames-in-103 s: cause not determinable offline; hitch summary now writes `observed_wall_seconds` next to `sampled_frames`.
+- Tests added: `HitchCsv_WritesInstrumentBusyColumn`, Python `test_hitch_period_ignores_instrument_busy_frames` (not run).
+- Allocation sweep decode still runs in play (needs stacks still in buffer); it is tagged `instrument_busy`.
 
 - H2/H3 still open; the allocation ranking (who allocates the bytes that trigger the GC) is the next read.
 

@@ -3732,7 +3732,7 @@ Transform:
   m_GameObject: {fileID: 5874433312327253254}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.4378052, y: 3.977971, z: -0.40525055}
+  m_LocalPosition: {x: -1.4378052, y: 14.9644985, z: -0.40525055}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4770,6 +4770,7 @@ MonoBehaviour:
   <SquadronFlight>k__BackingField: {fileID: 0}
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
+  <GravityWellEmitter>k__BackingField: {fileID: 0}
   <Injectables>k__BackingField:
   - {fileID: 6161228120499614423}
   - {fileID: 8184388198752121202}
@@ -4981,7 +4982,7 @@ Transform:
   m_GameObject: {fileID: 7901887884547694868}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.646285, y: 3.977971, z: -0.40525055}
+  m_LocalPosition: {x: 1.646285, y: 14.964494, z: -0.40525055}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

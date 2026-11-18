@@ -66,6 +66,9 @@ namespace EmpireAtWar.Services.Enemy
                 }
             }
 
+            if (data.HangarMaxActive >= 0 && hangar.Count > data.HangarMaxActive)
+                hangar.RemoveRange(data.HangarMaxActive, hangar.Count - data.HangarMaxActive);
+
             return UnitCombatProfileFactory.Create(data.ShipClass, data.Hull, data.Shields,
                 data.WeaponLoadout, _weaponsData, _damageMatrix, hangar);
         }

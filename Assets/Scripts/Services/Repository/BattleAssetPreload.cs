@@ -158,7 +158,9 @@ namespace EmpireAtWar.Repository
                 AddBay(squadrons, stations.GetHangarBay(faction));
                 foreach (ShipType ship in definition.Ships.Keys)
                 {
-                    foreach (HangarBay bay in assets.Load<ShipData>(ships.GetShipDataPath(ship)).HangarBays)
+                    ShipData shipData = assets.Load<ShipData>(ships.GetShipDataPath(ship));
+                    if (shipData.HangarMaxActive == 0) continue;
+                    foreach (HangarBay bay in shipData.HangarBays)
                         AddBay(squadrons, bay);
                 }
                 foreach (SquadronType squadron in definition.Squadrons.Keys) squadrons.Add(squadron);

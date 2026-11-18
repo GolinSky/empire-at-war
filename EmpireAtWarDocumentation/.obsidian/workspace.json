@@ -43,7 +43,7 @@
                 "sortOrder": "alphabetical",
                 "autoReveal": false,
                 "showSearch": true,
-                "searchQuery": "Capital Movement and Class Rework Fixes"
+                "searchQuery": ""
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -80,7 +80,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 521.5
   },
   "right": {
     "id": "5211f2974bfd8b63",
@@ -185,8 +185,25 @@
       "bases:Create new base": false
     }
   },
-  "active": "6840d7bc3222d620",
+  "active": "1261212fe2167d70",
   "lastOpenFiles": [
+    "TODOs/Features/Squadron_Bay_Rotation_Plan.md",
+    "TODOs/sediDLRcE",
+    "TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments.md",
+    "Tooling/Battle_Attribution_Instruments.md",
+    "Done/Tooling/Battle_Hitch_And_GC_Attribution_Instruments.md",
+    "Done/Bugs/Ship_Ability_Event_Destroyed_Caster.md",
+    "TODOs/Optimization/Online_Battle_Low_FPS_Host_And_Client_AGY.md",
+    "TODOs/Bugs/Weapon_Fire_Rate_And_Network_Sync_Low_FPS_AGY.md",
+    "TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes_AGY.md",
+    "TODOs/Bugs/Enemy_AI_Base_Defense_And_MidGame_Consistency_AGY.md",
+    "TODOs/Bugs/Attack_Order_Hold_In_Range_And_Formation_Offsets_AGY.md",
+    "TODOs/Bugs/Squadron_Count_Stacking_And_FPS.md",
+    "TODOs/Bugs/Enemy_AI_Base_Defense_And_Consistency.md",
+    "TODOs/Bugs/Attack_Order_Hold_In_Range.md",
+    "TODOs/Bugs/Ship_Ability_Event_Destroyed_Caster.md",
+    "TODOs/Optimization/Online_Battle_Low_FPS.md",
+    "TODOs/Bugs/Weapon_Fire_Rate_Low_FPS.md",
     "Done/Features/Interdictor_Gravity_Well_Anchor_And_Vfx_Plan.md",
     "TODOs/User_Acceptance_Queue.md.tmp.31052.e80f7d11297d",
     "TODOs/Features/Interdictor_Gravity_Well_Anchor_And_Vfx_Plan.md",
@@ -201,28 +218,11 @@
     "TODOs/TODOs.md.tmp.10912.953868e3797b",
     "TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes.md",
     "TODOs/Refactoring/Ship_Class_Rework_Plan.md",
-    "Done/Refactoring/Ship_Class_Rework_Plan.md",
-    "Done/Bugs/EditMode_Failures_2026-11-16_Plan.md",
-    "TODOs/Bugs/EditMode_Failures_2026-11-16_Plan.md",
-    "TODOs/Optimization/Shared_Team_AI_Plan.md",
-    "TODOs/Optimization/Live_Battle_CPU_Sweep_Plan.md",
-    "Done/Features/Squad_Control_Groups_Plan.md",
-    "GameDesign/Squad_Control_Groups.md",
-    "Done/Optimization/Live_Battle_CPU_And_Pool_Demand.md",
-    "TODOs/Features/Squad_Control_Groups_Plan.md",
-    "TODOs/Optimization/Live_Battle_CPU_And_Pool_Demand.md",
-    "Done/Bugs/Structure_Status_Icons_Projection.md",
-    "TODOs/Bugs/Structure_Status_Icons_Projection.md",
-    "GameDesign/References/Secutor, Procurator and Praetor - Workshop Reference.md",
-    "TODOs/Optimization/Custom_Shader_Fixes_Plan - Research.md",
-    "Done/Bugs/Fog_Hull_Visibility_Review_Fixes.md",
-    "Done/Bugs/Multiselect_Attack_Overlap.md",
     "TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan.md.tmp.24432.63e099c503dd",
     "TODOs/TODOs.md.tmp.37680.5fe2a9633524",
     "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md.tmp.37680.0b93a8afc968",
     "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md.tmp.37680.7b109c8b5e09",
     "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md.tmp.37680.00533bf80565",
-    "TODOs/Refactoring/Shared_Invite_Friends_Popup_Plan.md.tmp.37680.69545f8653d2",
     "Artifacts/Audits/Optimization_2026-11-06/Station_camera.png",
     "Artifacts/Audits/Optimization_2026-11-06/Station_destruction.png"
   ]

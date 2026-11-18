@@ -83,7 +83,7 @@ namespace EmpireAtWar.Services.Timing
             for (int i = 0; i < SelectedNames.Length; i++)
                 text.Append(i < 18 ? Columns[i] : CounterColumns[i - 17]).Append('=')
                     .AppendLine(SelectedNames[i] ?? "unavailable");
-            text.AppendLine("uncovered_ns = frame_duration_ns - player_loop_ns - editor_loop_ns; loops may overlap; negative values retained.");
+            text.AppendLine("uncovered_ns = frame_duration_ns - editor_loop_ns in the Editor (EditorLoop contains PlayerLoop), frame_duration_ns - player_loop_ns in a Player; negative values retained.");
             text.AppendLine("script_update_remainder_ns = max(0, script_update_ns - Tick/PostTick callback time); native scopes may not enclose VContainer callbacks.");
             return text.ToString();
         }
@@ -105,8 +105,9 @@ namespace EmpireAtWar.Services.Timing
             }
             frame.Workload[firstCounter] = _collectionDelta;
             for (int i = 0; i < 4; i++) frame.Workload[firstCounter + i + 1] = ReadValue(18 + i, unavailable);
-            long player = frame.Metrics[firstMetric + 1], editor = frame.Metrics[firstMetric + 2];
-            SetDerived(frame, firstMetric + 18, firstMarker, player == unavailable || editor == unavailable ? unavailable : frame.Metrics[0] - player - editor);
+            // EditorLoop already contains PlayerLoop in the Editor, so subtracting both double-counts.
+            long outer = frame.Metrics[firstMetric + (Application.isEditor ? 2 : 1)];
+            SetDerived(frame, firstMetric + 18, firstMarker, outer == unavailable ? unavailable : frame.Metrics[0] - outer);
             SetDerived(frame, firstMetric + 19, firstMarker, frame.CoordinatorNanoseconds);
             long scripts = frame.Metrics[firstMetric + 11];
             SetDerived(frame, firstMetric + 20, firstMarker, scripts == unavailable ? unavailable : Math.Max(0, scripts - frame.ScriptUpdateCoordinatorNanoseconds));

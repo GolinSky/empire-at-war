@@ -1626,6 +1626,7 @@ MonoBehaviour:
   <SquadronFlight>k__BackingField: {fileID: 0}
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
+  <GravityWellEmitter>k__BackingField: {fileID: 0}
   <Injectables>k__BackingField:
   - {fileID: 9145797507078906417}
   - {fileID: 8131253178256157612}
@@ -1706,7 +1707,7 @@ Transform:
   m_GameObject: {fileID: 3369283128615070378}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.90059644, y: -2.1819057, z: 0.014591217}
+  m_LocalPosition: {x: 0, y: 0.038546562, z: -9.095615}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

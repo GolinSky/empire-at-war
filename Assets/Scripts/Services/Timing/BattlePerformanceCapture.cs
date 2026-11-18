@@ -228,6 +228,12 @@ namespace EmpireAtWar.Services.Timing
             host._hitchSummaryPath = Path.Combine(CaptureDirectory, "Hitches", $"hitch_{matchId}_summary.txt");
             BattleSystemAttribution.BeginHitches();
             BattleSystemAttribution.Enabled = true;
+#if DEVELOPMENT_BUILD && !UNITY_EDITOR
+            // Stream the whole run to a .raw Profiler log instead of saving a buffer at hitch time; cut windows offline.
+            UnityEngine.Profiling.Profiler.logFile = Path.Combine(CaptureDirectory, "Hitches", $"hitch_{matchId}.raw");
+            UnityEngine.Profiling.Profiler.enableBinaryLog = true;
+            UnityEngine.Profiling.Profiler.enabled = true;
+#endif
         }
 
         internal static bool TryObserveHitchFrame()
@@ -258,6 +264,10 @@ namespace EmpireAtWar.Services.Timing
             _instance._hitches.FinishWindow();
             BattleSystemAttribution.WriteHitchSummary(_instance._hitchSummaryPath);
             _instance._hitches = null;
+#if DEVELOPMENT_BUILD && !UNITY_EDITOR
+            UnityEngine.Profiling.Profiler.enabled = false;
+            UnityEngine.Profiling.Profiler.enableBinaryLog = false;
+#endif
             _instance.ReleaseIdleRecorders();
         }
 
@@ -569,6 +579,7 @@ namespace EmpireAtWar.Services.Timing
             _latest.RealtimeSeconds = Time.realtimeSinceStartupAsDouble;
             float seconds = Time.unscaledDeltaTime;
             _latest.IsHitch = seconds > FrameTimeHistogram.HITCH_SECONDS;
+            _latest.InstrumentBusy = BattleInstrumentActivity.IsBusy(frame);
             _latest.Metrics[FRAME_DURATION] = (long)(seconds * 1000000000d);
             for (int i = MAIN_THREAD; i < FIRST_BUILTIN_METRIC; i++)
             {

@@ -17,6 +17,7 @@ namespace EmpireAtWar.Services.Timing
         private static readonly Dictionary<int, BattleSystemSample> _captureTotals = new Dictionary<int, BattleSystemSample>();
         private static readonly Dictionary<int, BattleSystemSample> _hitchTotals = new Dictionary<int, BattleSystemSample>();
         private static int _hitchFrames;
+        private static double _hitchStartSeconds;
         private static long _hitchOverheadNanoseconds;
         internal static bool Enabled;
 
@@ -136,7 +137,7 @@ namespace EmpireAtWar.Services.Timing
         }
 
         internal static void BeginCapture() => _captureTotals.Clear();
-        internal static void BeginHitches() { _hitchTotals.Clear(); _hitchFrames = 0; _hitchOverheadNanoseconds = 0; }
+        internal static void BeginHitches() { _hitchTotals.Clear(); _hitchFrames = 0; _hitchOverheadNanoseconds = 0; _hitchStartSeconds = Time.realtimeSinceStartupAsDouble; }
         internal static void AccumulateHitch(BattleCaptureFrame frame)
         {
             Accumulate(frame.UnityFrame, _hitchTotals);
@@ -167,7 +168,7 @@ namespace EmpireAtWar.Services.Timing
             try
             {
                 WriteSummary(path, _hitchFrames, _hitchTotals);
-                File.AppendAllText(path, FormattableString.Invariant($"sampled_frames={_hitchFrames}\nattribution_overhead_total_ms={_hitchOverheadNanoseconds / 1000000d:F6}\nattribution_overhead_mean_ms={_hitchOverheadNanoseconds / (1000000d * _hitchFrames):F6}\n"));
+                File.AppendAllText(path, FormattableString.Invariant($"sampled_frames={_hitchFrames}\nattribution_overhead_total_ms={_hitchOverheadNanoseconds / 1000000d:F6}\nattribution_overhead_mean_ms={_hitchOverheadNanoseconds / (1000000d * _hitchFrames):F6}\nobserved_wall_seconds={Time.realtimeSinceStartupAsDouble - _hitchStartSeconds:F3}\n"));
             }
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
             {

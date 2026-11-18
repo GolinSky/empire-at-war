@@ -356,6 +356,53 @@ namespace EmpireAtWar.Tests.Editor
             Assert.Throws<System.InvalidOperationException>(() => model.Restore(new[] { 1, 1 }, 0f));
         }
 
+        [Test]
+        public void HangarMaxActiveZero_DisablesAllLaunchesAndPendingCount()
+        {
+            var data = new TestHangarData(
+                new HangarBay(SquadronType.XWing, 4, 2),
+                new HangarBay(SquadronType.YWing, 2, 1))
+            {
+                HangarMaxActive = 0
+            };
+            var model = new HangarModel(data);
+
+            Assert.That(model.PendingLaunchCount, Is.Zero);
+            Assert.That(model.CanLaunchImmediately, Is.False);
+            Assert.That(model.TryLaunch(INITIAL_DELAY, out _), Is.False);
+            Assert.That(model.TryLaunchImmediately(out _), Is.False);
+            Assert.That(model.CanLaunchReplacement, Is.False);
+        }
+
+        [Test]
+        public void HangarMaxActiveOne_RotatesBaysOneAtATimeAsSquadronsDie()
+        {
+            var data = new TestHangarData(
+                new HangarBay(SquadronType.Vulture, 4, 2),
+                new HangarBay(SquadronType.DroidBomber, 2, 1),
+                new HangarBay(SquadronType.Belbullab22, 2, 1))
+            {
+                HangarMaxActive = 1
+            };
+            var model = new HangarModel(data);
+
+            Assert.That(model.PendingLaunchCount, Is.EqualTo(1));
+            Assert.That(model.TryLaunch(INITIAL_DELAY, out int bay0), Is.True);
+            Assert.That(bay0, Is.EqualTo(0));
+            Assert.That(model.PendingLaunchCount, Is.Zero);
+            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.False);
+
+            model.SquadronLost(0);
+            Assert.That(model.PendingLaunchCount, Is.EqualTo(1));
+            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out int bay1), Is.True);
+            Assert.That(bay1, Is.EqualTo(1));
+            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out _), Is.False);
+
+            model.SquadronLost(1);
+            Assert.That(model.TryLaunch(LAUNCH_INTERVAL, out int bay2), Is.True);
+            Assert.That(bay2, Is.EqualTo(2));
+        }
+
         private sealed class TestHangarData : IHangarData, IHealthData
         {
             public ShipClass ShipClass => ShipClass.Structure;
@@ -369,6 +416,7 @@ namespace EmpireAtWar.Tests.Editor
                 JsonUtility.FromJson<HardPointHealth>($"{{\"hardPointType\":{(int)HardPointType.Hangar},\"health\":100,\"hullDamageMultiplier\":1}}")
             };
             public IReadOnlyList<HangarBay> HangarBays { get; }
+            public int HangarMaxActive { get; set; } = -1;
             public float HangarInitialDelay => INITIAL_DELAY;
             public float HangarLaunchInterval { get; set; } = LAUNCH_INTERVAL;
 

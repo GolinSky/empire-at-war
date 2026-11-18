@@ -9,6 +9,8 @@
 
 ### Features
 
+- [ ] **Squadron bay rotation: ship-wide active squadron cap (Bulwark = 1)** → [[TODOs/Features/Squadron_Bay_Rotation_Plan|Squadron Bay Rotation Plan]]
+  - 2026-11-18: Gemini per-bay data edit reverted (`8925de639`); code/data back to pre-Gemini state. Plan: Phase 1 per-ship `HangarMaxActive` code, Phase 2 values (12 ships → 0, 28 → 1), Phase 3 cap-aware AI/preload readers, Phase 4 rotation for all except Venator/VenatorII/Lucrehulk/Secutor/MC80Independence/HomeOne/ImperialVenator/ISDI/ISDII. Bulwark Mk1 = 0 (confirmed).
 - [ ] **Forbidden UI SFX** → [[Done/Features/Ui_Sfx_System#Deferred follow-up|Deferred forbidden cue]].
 - [ ] **Dynamic in-game tutorial (in-match hints: camera, select, move, minimap, build, counters tooltip, build queue, abilities + auto-power, level up, research, map systems)** → [[TODOs/Features/Ingame_Tutorial_Plan|In-Game Tutorial Plan]]
   - UI spotlight migration 2026-11-11: shared UI frames replaced by a 65% dim overlay with target cutout; added per-element `IUiHighlight` API and own-graphic 1.2 s pulse (compile/bindings verified, visual check pending); optional pointer blocking defaults off. Loading-time minimap `HideTarget` exception fixed 2026-11-11 with marker lifecycle tracking; compiled, startup replay pending. User-authorized tests: Ui 274/274 and Core 150/150 passed; visual acceptance pending.

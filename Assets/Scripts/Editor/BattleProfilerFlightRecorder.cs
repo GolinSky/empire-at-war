@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Unity.Pipeline.Commands;
+using EmpireAtWar.Services.Timing;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -18,15 +19,17 @@ namespace EmpireAtWar.Editor
         private const string MENU = "Tools/Empire At War/Diagnostics/Performance/";
         private const string STATE_KEY = "EmpireAtWar.BattleProfiler.";
         private const int HISTORY_FRAMES = 300;
+        private const int EPISODE_FRAMES = 70;
         private static readonly PropertyInfo _history = typeof(ProfilerDriver).Assembly.GetType("UnityEditor.Profiling.ProfilerUserSettings", true)
             .GetProperty("frameCount", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly PropertyInfo _memoryMode = typeof(ProfilerDriver).GetProperty("memoryRecordMode", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly List<string> _allocations = new();
         private static readonly List<Task> _analysis = new();
+        private static readonly List<(int Frame, double Milliseconds, DateTime Utc)> _pending = new();
         private static string _directory;
         private static double _threshold, _cooldown, _lastSave, _sweepEnd, _nextSweep;
-        private static int _saveLimit, _saved, _pendingHitch = -1, _allocationFirst = -1, _lastSeen = -1;
-        private static bool _sweeping, _sweepOwnsSession;
+        private static int _saveLimit, _recorded, _lastRecorded, _allocationFirst = -1, _lastSeen = -1;
+        private static bool _sweeping, _sweepOwnsSession, _liveExport;
         internal static bool IsArmed { get; private set; }
         internal static bool IsSweeping => _sweeping;
         internal static Task CompleteAnalysis() => Task.WhenAll(_analysis.ToArray());
@@ -52,9 +55,10 @@ namespace EmpireAtWar.Editor
         [CliCommand("battle_hitch_profiler_arm", "Arms a bounded rolling native Profiler flight recorder without changing Play Mode.")]
         public static object Arm(
             [CliArg("threshold_ms", "Completed native Profiler frame threshold in milliseconds.")] double thresholdMs = 200,
-            [CliArg("max_saves", "Maximum hitch snapshots in this session.")] int maxSaves = 5,
-            [CliArg("cooldown_seconds", "Minimum real seconds between saves.")] double cooldownSeconds = 30,
+            [CliArg("max_saves", "Maximum hitches recorded in this session.")] int maxSaves = 20,
+            [CliArg("cooldown_seconds", "Minimum real seconds between recorded hitches.")] double cooldownSeconds = 5,
             [CliArg("gc_stacks", "Record GC allocation call stacks while armed (higher overhead).")] bool gcStacks = false,
+            [CliArg("live_export", "Export each hitch window during play (stalls the Editor for seconds). Default exports once at pause/disarm.")] bool liveExport = false,
             [CliArg("directory", "Shared output directory; empty creates a timestamped run.")] string directory = "")
         {
             if (IsArmed || RenderAuditProfilerTool.IsCapturing || Profiler.enableBinaryLog)
@@ -75,15 +79,15 @@ namespace EmpireAtWar.Editor
                 ProfilerDriver.enabled = false;
                 ProfilerDriver.ClearAllFrames();
                 _threshold = thresholdMs; _saveLimit = maxSaves; _cooldown = cooldownSeconds; _lastSave = double.NegativeInfinity;
-                _saved = 0; _pendingHitch = -1; _lastSeen = ProfilerDriver.lastFrameIndex;
+                _recorded = 0; _lastRecorded = int.MinValue; _liveExport = liveExport; _pending.Clear(); _lastSeen = ProfilerDriver.lastFrameIndex;
                 _history.SetValue(null, HISTORY_FRAMES);
                 SetMemoryMode(gcStacks);
                 ProfilerDriver.profileEditor = true;
                 ProfilerDriver.enabled = true;
                 IsArmed = true;
                 BattleProfilerDecoder.WriteJson(Path.Combine(_directory, "profiler-session.json"), new
-                { threshold_ms = thresholdMs, max_saves = maxSaves, cooldown_seconds = cooldownSeconds, history_frames = HISTORY_FRAMES, gc_stacks = gcStacks, profile_editor = true,
-                    native_data_scope = "SaveProfile exports the whole rolling buffer; JSON and caller trees select hitch-60 through hitch+10.",
+                { threshold_ms = thresholdMs, max_saves = maxSaves, cooldown_seconds = cooldownSeconds, live_export = liveExport, history_frames = HISTORY_FRAMES, gc_stacks = gcStacks, profile_editor = true,
+                    native_data_scope = "Hitches are recorded during play. One SaveProfile (hitches.data) plus JSON/caller trees are written at pause/disarm; hitches already rolled out of the 300-frame buffer are listed in hitches-index.json without a window.",
                     started_utc = DateTime.UtcNow, source_revision = revision, unity_version = Application.unityVersion });
                 return new { status = "armed", directory = _directory };
             }
@@ -112,10 +116,11 @@ namespace EmpireAtWar.Editor
             {
                 _sweepOwnsSession = false;
                 if (_sweeping) FinishSweep();
+                if (reason != "editor-exit") ExportPending();
                 BattleProfilerDecoder.WriteJson(Path.Combine(_directory, "profiler-status.json"), new
-                { status = "disarmed", reason, saved = _saved, pending_hitch = _pendingHitch, completed_utc = DateTime.UtcNow });
+                { status = "disarmed", reason, recorded = _recorded, completed_utc = DateTime.UtcNow });
             }
-            finally { IsArmed = false; _pendingHitch = -1; Restore(); }
+            finally { IsArmed = false; _pending.Clear(); Restore(); }
             return new { status = "disarmed", directory = _directory };
         }
 
@@ -131,7 +136,7 @@ namespace EmpireAtWar.Editor
             try
             {
                 if (!EditorApplication.isPlaying) { Disarm("play-mode-stopped"); return; }
-                if (EditorApplication.isPaused) return;
+                if (EditorApplication.isPaused) { ExportPending(); return; }
                 int last = ProfilerDriver.lastFrameIndex;
                 double now = EditorApplication.timeSinceStartup;
                 if (_sweeping && _allocationFirst < 0 && now >= _nextSweep && now < _sweepEnd)
@@ -140,14 +145,18 @@ namespace EmpireAtWar.Editor
                 for (int frame = first; frame <= last; frame++)
                 {
                     using var view = ProfilerDriver.GetRawFrameDataView(frame, 0);
-                    if (view.valid && view.frameTimeMs > _threshold && _pendingHitch < 0 && _saved < _saveLimit && now - _lastSave >= _cooldown)
-                        _pendingHitch = frame;
+                    if (!view.valid || view.frameTimeMs <= _threshold || _recorded >= _saveLimit
+                        || now - _lastSave < _cooldown || frame <= _lastRecorded + EPISODE_FRAMES) continue;
+                    // Recording only: exporting here would stall the very battle being measured.
+                    _pending.Add((frame, view.frameTimeMs, DateTime.UtcNow));
+                    _recorded++; _lastRecorded = frame; _lastSave = now;
                 }
                 _lastSeen = Math.Max(_lastSeen, last);
-                if (_pendingHitch >= 0 && last >= _pendingHitch + 10) SaveHitch();
+                if (_liveExport && _pending.Count > 0 && last >= _pending[0].Frame + 10) ExportPending();
                 if (_allocationFirst >= 0 && last >= _allocationFirst + 59)
                 {
                     string path = Path.Combine(_directory, $"allocation_{_allocationFirst}.json");
+                    BattleInstrumentActivity.MarkBusy();
                     ProfilerDriver.enabled = false;
                     try { BattleProfilerDecoder.WriteAllocations(_allocationFirst, _allocationFirst + 59, path); }
                     finally
@@ -162,31 +171,43 @@ namespace EmpireAtWar.Editor
             catch (Exception exception) { Debug.LogException(exception); Disarm("error"); }
         }
 
-        private static void SaveHitch()
+        // Saves the rolling buffer once and cuts every recorded hitch window from it. Hitches older than
+        // the buffer are indexed without a window; the hitch CSV still carries their timing.
+        private static void ExportPending()
         {
-            int hitch = _pendingHitch;
-            _pendingHitch = -1; _saved++;
-            int first = Math.Max(ProfilerDriver.firstFrameIndex, hitch - 60), last = hitch + 10;
-            string prefix = Path.Combine(_directory, $"hitch_{hitch}");
-            // Export/decoding can take seconds and allocate gigabytes. Never record that work into
-            // the next buffer, where it would trigger another hitch and recursively amplify itself.
-            // An in-progress allocation window must restart after the stopped interval too.
+            if (_pending.Count == 0) return;
+            var hitches = _pending.ToArray();
+            _pending.Clear();
+            // Export/decoding can take seconds and allocate gigabytes: flag those frames as instrument time and
+            // keep them out of the next buffer. An in-progress allocation window must restart too.
+            BattleInstrumentActivity.MarkBusy();
             _allocationFirst = -1;
             ProfilerDriver.enabled = false;
+            var index = new List<object>();
             try
             {
-                if (!ProfilerDriver.SaveProfile(prefix + ".data")) throw new IOException("ProfilerDriver.SaveProfile failed: " + prefix);
-                var summaries = RenderAuditProfilerTool.SummarizeFrames(Enumerable.Range(first, last - first + 1));
-                BattleProfilerDecoder.WriteJson(prefix + ".json", new { hitch_profiler_frame = hitch, first, last, profiler_frame_summaries = summaries });
-                using var view = ProfilerDriver.GetRawFrameDataView(hitch, 0);
-                string marker = FindTopMarker(view);
-                BattleProfilerDecoder.WriteCallers(marker, first, last, prefix + "-callers.json");
-                _analysis.Add(WriteHitchReport(prefix, marker, first, last));
+                int oldest = ProfilerDriver.firstFrameIndex, newest = ProfilerDriver.lastFrameIndex;
+                if (!ProfilerDriver.SaveProfile(Path.Combine(_directory, "hitches.data")))
+                    throw new IOException("ProfilerDriver.SaveProfile failed: " + _directory);
+                foreach (var hitch in hitches)
+                {
+                    bool inBuffer = hitch.Frame >= oldest && hitch.Frame <= newest;
+                    index.Add(new { profiler_frame = hitch.Frame, frame_ms = hitch.Milliseconds, recorded_utc = hitch.Utc, window_exported = inBuffer });
+                    if (!inBuffer) continue;
+                    int first = Math.Max(oldest, hitch.Frame - 60), last = Math.Min(newest, hitch.Frame + 10);
+                    string prefix = Path.Combine(_directory, $"hitch_{hitch.Frame}");
+                    var summaries = RenderAuditProfilerTool.SummarizeFrames(Enumerable.Range(first, last - first + 1));
+                    BattleProfilerDecoder.WriteJson(prefix + ".json", new { hitch_profiler_frame = hitch.Frame, first, last, profiler_frame_summaries = summaries });
+                    using var view = ProfilerDriver.GetRawFrameDataView(hitch.Frame, 0);
+                    string marker = FindTopMarker(view);
+                    BattleProfilerDecoder.WriteCallers(marker, first, last, prefix + "-callers.json");
+                    _analysis.Add(WriteHitchReport(prefix, marker, first, last));
+                }
             }
             finally
             {
-                _lastSave = EditorApplication.timeSinceStartup;
-                ProfilerDriver.enabled = true;
+                BattleProfilerDecoder.WriteJson(Path.Combine(_directory, "hitches-index.json"), index);
+                if (IsArmed) ProfilerDriver.enabled = true;
                 // Ignore the frame crossing the recording boundary as well as the stopped interval.
                 _lastSeen = ProfilerDriver.lastFrameIndex + 1;
             }

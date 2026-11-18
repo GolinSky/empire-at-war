@@ -9,6 +9,7 @@ namespace EmpireAtWar.Services.Timing
         public double RealtimeSeconds { get; set; }
         public bool IsHitch { get; set; }
         public double CaptureWriteWaitMs { get; set; }
+        public bool InstrumentBusy { get; set; }
         public BattleSystemSample[] AllocationTop { get; } = new BattleSystemSample[5];
         public BattleSystemSample[] TimeTop { get; } = new BattleSystemSample[5];
         public long CoordinatorNanoseconds { get; set; }
@@ -31,6 +32,7 @@ namespace EmpireAtWar.Services.Timing
             RealtimeSeconds = frame.RealtimeSeconds;
             IsHitch = frame.IsHitch;
             CaptureWriteWaitMs = frame.CaptureWriteWaitMs;
+            InstrumentBusy = frame.InstrumentBusy;
             Array.Copy(frame.AllocationTop, AllocationTop, 5);
             Array.Copy(frame.TimeTop, TimeTop, 5);
             CoordinatorNanoseconds = frame.CoordinatorNanoseconds;

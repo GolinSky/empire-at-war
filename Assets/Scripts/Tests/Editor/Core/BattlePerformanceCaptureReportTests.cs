@@ -45,6 +45,27 @@ namespace EmpireAtWar.Tests.Timing
         }
 
         [Test]
+        public void HitchCsv_WritesInstrumentBusyColumn()
+        {
+            string directory = Path.Combine(Path.GetTempPath(), "battle-busy-" + Guid.NewGuid());
+            string path = Path.Combine(directory, "hitch.csv");
+            var capture = new BattleHitchCapture(path, new[] { "frame_duration_ns" }, Array.Empty<string>(), 1, long.MinValue);
+            var frame = new BattleCaptureFrame(1, 0, 0) { UnityFrame = 7, IsHitch = true, InstrumentBusy = true };
+            try
+            {
+                capture.Observe(frame);
+                capture.FinishWindow();
+                string[] lines = File.ReadAllLines(path);
+                string[] header = lines[0].Split(',');
+                Assert.That(lines[1].Split(',')[Array.IndexOf(header, "instrument_busy")], Is.EqualTo("1"));
+            }
+            finally
+            {
+                if (Directory.Exists(directory)) Directory.Delete(directory, true);
+            }
+        }
+
+        [Test]
         public void CsvCounters_PreserveCounterUnitsUnavailableAndAttributionColumns()
         {
             string[] metrics = { "frame_duration_ns", "gc_collect_ns", "uncovered_ns" };

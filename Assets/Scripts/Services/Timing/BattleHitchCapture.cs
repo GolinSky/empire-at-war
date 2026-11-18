@@ -132,7 +132,7 @@ namespace EmpireAtWar.Services.Timing
             Directory.CreateDirectory(Path.GetDirectoryName(_path));
             using var writer = new StreamWriter(_path, true);
             if (writer.BaseStream.Length == 0)
-                BattlePerformanceCaptureReport.WriteCsvHeader(writer, "frame,seconds,is_hitch,capture_write_wait_ms", _metricNames, _workloadNames, _firstMarker);
+                BattlePerformanceCaptureReport.WriteCsvHeader(writer, "frame,seconds,is_hitch,capture_write_wait_ms,instrument_busy", _metricNames, _workloadNames, _firstMarker);
             for (int i = 0; i < count; i++)
             {
                 var frame = frames[i];
@@ -142,6 +142,7 @@ namespace EmpireAtWar.Services.Timing
                 writer.Write(frame.IsHitch ? ",1" : ",0");
                 writer.Write(',');
                 writer.Write(frame.CaptureWriteWaitMs.ToString("F3", CultureInfo.InvariantCulture));
+                writer.Write(frame.InstrumentBusy ? ",1" : ",0");
                 BattlePerformanceCaptureReport.WriteCsvCounters(writer, 0, frame.Metrics, frame.MarkerCounts,
                     frame.Workload, _metricNames.Length, _workloadNames.Length, _firstMarker, _unavailable, frame);
             }
