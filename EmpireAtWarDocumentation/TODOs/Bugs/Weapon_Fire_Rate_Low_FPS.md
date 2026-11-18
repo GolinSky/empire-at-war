@@ -68,9 +68,17 @@ created: "2026-11-18\r"
 - [x] (`WeaponComponent.AttackOrDelay`: keeps its place in the storage queue) Failed admission → `DelayRetry` (no per-frame target selection).
 
 ## Playtest 2026-11-18 data (`Logs/Playtests/20261118T1013Z/telemetry/Battle_20261118_121501.csv`)
-- Build `8787a78e1`+dirty: includes the split pools / deficit growth / cadence work from `3e4207e7e` only if the working copy had it; check `fps_history` source revision before comparing.
+- Build `8787a78e1`+dirty → **includes** `3e4207e7e` and `205afa55e` (split pools, deficit growth, any-fitting admission, cadence catch-up, slot-based stock). No low-fire-rate report from the user in this playtest (Editor, 40–80 fps).
 - 674k shots in 32 min; squadrons 56% (Vulture 150k, ARC-170 105k), ships 44% (Recusant 28.8k, Praetor 26.1k).
 - No per-mount admission-wait data in this CSV; Phase 1 measurement still open.
+
+## To finish (2026-11-18)
+1. Phase 1 measurement is still missing: the battle CSV has shots per unit but no admission waits. Log per pool group (`Strikecraft`/`Ships`) `AdmissionWaits`, `MaxAdmissionWaitSeconds`, `RuntimeCreated`, `PeakInUse` every 30 s and at battle end (dev only).
+2. Low-FPS repro (the original bug was at 10–20 fps): same save, `frameRateLimit` 15 vs uncapped, compare shots/min for 5 capital types and 3 squadron types. Accept when shots/min at 15 fps ≥ 90% of uncapped.
+3. Decide Phase 2 Option A (damage never waits for a bolt visual) only if step 2 still shows a gap.
+4. Separate growth budget per pool group (the last open 2b item) — only if step 1 shows one group starving the other.
+5. Online check: host at 3 humans + AI (the original report).
+- Done when: step 2 passes in Editor and on the online host, or the remaining gap has an owner.
 
 ## Agent handoff
 - Read this plan, its linked plans and the live source first; source wins over this note.

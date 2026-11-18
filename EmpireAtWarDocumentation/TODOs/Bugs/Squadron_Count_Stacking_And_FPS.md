@@ -63,16 +63,16 @@ created: 2026-11-18
 
 ## Plan
 ### Playtest 2026-11-18 (4 players, 32 min, after the trail/collider/ring removal)
-- 164 live squadrons at 39 s = **41 per player at battle start** (station + carrier start stock). 1,484 launches (46/min), median life 49 s.
+- ~~164 live at 39 s~~ **Correction:** those 164 `start` rows share one timestamp (39.33 s): the squadron pool pre-creates 41 per player (`SquadronPool`, sum of hangar `MaxActive`). Live (sampled) squadrons: 19 in minute 0, 63 at 3, 95 at 6, then **110–150 (≈30–45 per player) from minute 9**. 1,484 launches (46/min), median life 49 s.
 - Launches: ARC-170 343, Vulture 335, Y-Wing 236, Belbullab-22 184, V-Wing 171, Hyena 106, Droid Bomber 67, V-19 42.
 - **Squadrons fired 56% of all shots** (377k of 674k; Vulture alone 150k, ARC-170 105k).
 - Steady `Squadron.Flight` 0.90 ms/frame (agent capture); squadrons are not the spike owner (the AI is).
-- Next: measure with the start stock reduced or capped (41 per player × 4 from the first second), and with the fighter/ship pool split from the fire-rate work.
+- `squadron_summary.py` counts pooled `start` rows as live; use sampled entities per minute instead (fix the script).
 
 ### Phase 1 — Measure (Development build)
 - [ ] Release-build line every 10 s: live squadrons and craft per player (with [[TODOs/Optimization/Online_Battle_Low_FPS]] Phase 0).
-- [ ] Profile 100 / 200 / 400 squadrons: split script / trails (`TrailRenderer` update + draws) / physics sync / fighter target selection / projectiles.
-- [ ] Explain 76 live squadrons for one player 10–35 s into the battle (station + carrier start burst).
+- [ ] Profile ~150 live squadrons with the new attribution tools (`Tools/BattleAudit/Attribution.md`, Repeatable Attribution Run on `fps-mid-game`/`fps-late-game-p2`): split `Squadron.Flight`, fighter target selection, projectiles, transform hierarchy, rendering. Trails/colliders are already removed.
+- [x] Explained 2026-11-18: pool pre-creation (`start` rows at load), not live squadrons.
 
 ### Phase 2 — Fixes (decide after Phase 1)
 - [ ] Fighters out of the root hierarchy: parent fighters to a static container so moving the root (marker/selection anchor) no longer dirties the fighter subtrees; keep pooling/despawn working.
@@ -86,8 +86,17 @@ created: 2026-11-18
   - Do: delete the flash meshes at the source (Blender re-export) or strip `*Flash*` objects on import (`AssetPostprocessor.OnPostprocessModel`), then prune them from prefabs and fog renderer lists. Keep the `Muzzle*` transforms that guns use as fire points.
   - Leave `Prefabs/Vfx/*` flash renderers: they are the real muzzle-flash/explosion effects.
   - Verify: no missing references; guns still fire from their muzzles; reinforcement previews unchanged.
-- [ ] Fighter guns: own projectile pools (see [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]] "Split pools").
+- [x] Fighter guns: own projectile pools — done in `3e4207e7e` (strikecraft/ship pool groups, see the fire-rate plan).
 - [ ] Live squadron/craft cap scaling with player count (needs a design decision).
+
+## To finish (2026-11-18, after playtest + attribution tools)
+1. Fix `squadron_summary.py` live count (sampled entities, not `start` rows).
+2. Release-build squadron/craft counter (shared with Online low-FPS Phase 0).
+3. Measure with the Repeatable Attribution Run (one mid-game, one late-game save); record `Squadron.*` time, fighter target selection and squadron allocation in this plan.
+4. Pick from Phase 2 by measured cost: fighters out of the root hierarchy → mesh merge (Droid Bomber 34, A-Wing 25 renderers/fighter) → high-poly LOD (A-Wing 66k tris).
+5. Remove model muzzle-flash meshes from all models (12 model files + prefabs; list above).
+6. Decisions needed from the user: live squadron cap per player count; fewer gun mounts per fighter.
+- Done when: steps 1–5 complete or measured as not worth it, and decisions recorded.
 
 ## Agent handoff
 - Read this plan, its linked plans and the live source first; source wins over this note.

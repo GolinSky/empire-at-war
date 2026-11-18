@@ -60,7 +60,19 @@ created: "2026-11-16\r"
   - [ ] Fix: run the probe only when the candidate set or own ship set changed, or back off after a failed probe; cache `IsObjectiveSafe` per objective per cycle.
 - `PatrolSelect`: the patrol corvette was re-ordered every decision (see the AI plan); fixed 2026-11-18 in `EnemyPatrolShipController` (no repeat AttackMove for the same target; 10 s pause after "no safe target"). Re-measure.
 - Order churn (all AI): 13,991 orders issued / 13,064 cancelled in 32 min; one patrol corvette 3,292. Each re-issue rebuilds the ship's route.
-- Squadrons: 164 live at 39 s (41 per player at start), 1,484 launches (46/min); squadrons fired 56% of all shots (377k of 674k).
+- Squadrons: 110–150 live from minute 9 (the 164 at 39 s are pool pre-creation, not live); 1,484 launches (46/min); squadrons fired 56% of all shots (377k of 674k).
+
+### Next steps (ordered, 2026-11-18 — tools from `110bdf676`, see `Tools/BattleAudit/Attribution.md`)
+1. [ ] **Measure (user loads, agent captures):** Repeatable Attribution Run (4 min) on `fps-mid-game`, then on `fps-late-game-p2`; memory pair at minute 5/30 on a long replay; `battle_audit.py report <run>`. Write H1/H2/H3 verdicts into [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]].
+2. [ ] **~300 ms hitch every ~35 s:**
+   - If H1 (blocking GC): experiment `gcIncremental: 1` on the same save (project setting — needs user approval), and cut the top allocators from the allocation ranking.
+   - If H2 (Editor work): confirm in a Development Player; drop from gameplay targets.
+3. [ ] **GC 189 KB/frame:** fix the top 5 game callers from `allocation-ranking.json` (route through [[TODOs/Optimization/CPU_Allocation_And_Jobs_Plan]]).
+4. [ ] **AI spike (~28 ms per cycle):** capture probe back-off/caching (above) + patrol select re-measure after `e778d2c11`.
+5. [ ] **AI order churn (≈14k orders / 32 min):** engagement reuse for unchanged AttackMoves ([[TODOs/Bugs/Enemy_AI_Base_Defense_And_Consistency]] "To finish" 1); re-measure route planning and order cost.
+6. [ ] **Memory growth 3.3 → 4.3 GB:** owner from the snapshot diff.
+7. [ ] **Squadron steady cost:** per [[TODOs/Bugs/Squadron_Count_Stacking_And_FPS]] "To finish" 3–4.
+8. [ ] Re-run step 1 on the same saves; record before/after in this note.
 
 ### Phase 0 — Baseline and acceptance of the last round
 - [ ] User runs `Navigation`, `Combat`, `EnemyAi` (scan fix and probe are untested since the last edit).

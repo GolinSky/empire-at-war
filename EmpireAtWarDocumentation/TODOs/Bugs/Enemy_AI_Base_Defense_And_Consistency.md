@@ -1,6 +1,6 @@
 ---
 category: Bugs
-status: todo
+status: in-progress
 created: 2026-11-18
 ---
 # Enemy AI: Weak Base Defense and Inconsistent Difficulty
@@ -55,6 +55,14 @@ created: 2026-11-18
   - [ ] Test gap: `EnemyPatrolShipController` re-issue/back-off (needs a patrol-service fake; `TryGetTarget` is on the concrete `EnemyPatrolService`).
 - Human ships (Player0): wrong-way travel in 1.4% of moving samples (normal route turns); AI 1.1–2.2%.
 - [ ] Remaining churn: other AI paths also re-issue identical AttackMoves with new engagements (`EnemyTaskForceExecutor` capture/marker/screen calls). Consider an `IssueAttackMove` overload that keeps the ship's current engagement when the destination is unchanged.
+
+## To finish (2026-11-18)
+1. Order churn (largest measured AI issue): add `IUnitOrderService.IssueAttackMove` reuse of the receiver's current engagement when the destination is unchanged (or skip the call), and apply it to `EnemyTaskForceExecutor` capture/marker/screen paths. Target: issued orders per AI per minute < 30 (now 75–197).
+2. Patrol fix test (`EnemyPatrolShipController`): no repeat order for the same target; 10 s back-off after `noSafeTarget`.
+3. CPU spike owner (from Live CPU Sweep): capture probe +19.7 ms, patrol select +7.9 ms per cycle — fix tracked in [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]] "Playtest 2026-11-18"; re-measure after step 1 and the patrol fix.
+4. User replay: base raid at minute ~8 while the AI fleet fights elsewhere; check with `BattleTime=` logs that a detachment answers and the rest keeps fighting.
+5. Answer "lvl 3" (station level 3 or difficulty) and record it.
+- Status: `todo` is stale — fixes are implemented; set `in-progress`.
 
 ## Agent handoff
 - Read this plan, its linked plans and the live source first; source wins over this note.

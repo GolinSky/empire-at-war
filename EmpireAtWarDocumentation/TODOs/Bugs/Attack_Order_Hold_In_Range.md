@@ -58,12 +58,12 @@ created: 2026-11-18
 - Same target re-issued → keep hold state (`_hasHeldPosition`), ignore formation offset change while in range.
 
 ## Plan
-1. [ ] **Attack ring** (design A): `UnitOrderService.AttackOffsets` gives ships only, a ±60° arc on the group side, spacing from neighbour radii, capped at engagement range; squadrons get zero.
-2. [ ] **Approach point**: `AttackTargetState` uses the slot as a side only. Approach = target + slot direction × standoff distance. Remove the `MovementTargetPosition` leg (offset magnitude + contact).
-3. [ ] **Hold band** (design B): hold at 100% reach (any ship-capable mount, main batteries first) whether stopped or moving; resume only beyond 100%; a pursuing ship stops at 80% (predicted for a receding target). Replace the `!IsMoving && IsInRange` hold test.
-4. [ ] **Same-target re-issue**: `ShipOrderRunner.Attack` with the same target updates the offset without `CancelCombatHold`/state re-entry; `AttackTargetState` keeps `_hasHeldPosition`.
-5. [ ] **Artillery**: `TryUpdateArtilleryMove` holds while any main battery reaches; retreat only at hull contact; approach along `fromTarget`.
-6. [ ] Telemetry (Editor/dev): per Attack sample log slot direction, hold/resume thresholds and the reason for each move.
+1. [x] **Attack ring** (design A): `UnitOrderService.AttackOffsets` gives ships only, a ±60° arc on the group side, spacing from neighbour radii, capped at engagement range; squadrons get zero.
+2. [x] **Approach point**: `AttackTargetState` uses the slot as a side only. Approach = target + slot direction × standoff distance. Remove the `MovementTargetPosition` leg (offset magnitude + contact).
+3. [x] **Hold band** (design B): hold at 100% reach (any ship-capable mount, main batteries first) whether stopped or moving; resume only beyond 100%; a pursuing ship stops at 80% (predicted for a receding target). Replace the `!IsMoving && IsInRange` hold test.
+4. [x] **Same-target re-issue**: `ShipOrderRunner.Attack` with the same target updates the offset without `CancelCombatHold`/state re-entry; `AttackTargetState` keeps `_hasHeldPosition`.
+5. [x] **Artillery**: `TryUpdateArtilleryMove` holds while any main battery reaches; retreat only at hull contact; approach along `fromTarget`.
+6. [ ] (partial: `refresh` rows only) Telemetry (Editor/dev): per Attack sample log slot direction, hold/resume thresholds and the reason for each move.
 - Open question for the user: should artillery ships hold at launcher range when their guns cannot reach?
 
 ## Progress (2026-11-18, source-verified; compiles; tests not run — local override)
@@ -84,7 +84,14 @@ created: 2026-11-18
 - Attack legs whose destination lies farther from the target than the ship (> 300 units, beyond weapon range): **2 samples in 32 min** (one AI ship, Player2). The map-edge run-away is gone.
 - Same-target re-clicks kept the hold: 704 `refresh` events (human 33).
 - Wrong-way travel per player 1.1–2.2% of moving samples. The visible "random direction" moves are AI order churn and patrol flip-flop (see the AI plan), not attack-order legs.
-- Not yet checked in game: the narrower hull-spaced arc (fix after this playtest build).
+- The playtest build (`8787a78e1`) already had the hull-spaced arc; no run-away legs were seen. A dedicated group-attack check is still needed (below).
+
+## To finish (2026-11-18)
+1. Step 6 telemetry: per Attack sample log `slotBearing`, `holdReason` (`inReach`/`pursuitStop`/`artilleryBand`/`contactRetreat`) and `moveReason` for every new leg (`ShipOrderTelemetry`).
+2. User gate (in game): select 10–20 ships incl. squadrons, attack one station/capital — no ship leaves toward the map edge; ships already in reach do not move on re-click; a fleeing target is chased and the ship stops at ~80%.
+3. Answer the open question: artillery ships hold at launcher range when guns cannot reach? (record decision).
+4. Tests not run: `UnitOrderServiceTests` (arc), `ShipPursuitTests` (hold/refresh/artillery) — user runs `Navigation` + `BattleInput`.
+- Done when: steps 1–3 done and the user gate passes → move to `Done/Bugs` with `acceptance: pending-user` if only the gate remains.
 
 ## Agent handoff
 - Implement steps 1–5 in order; do not change `ENGAGE_RANGE_FACTOR` users outside `AttackTargetState`/`ShipEngagement` without noting it.
