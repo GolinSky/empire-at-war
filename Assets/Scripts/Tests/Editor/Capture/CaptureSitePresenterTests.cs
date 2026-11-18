@@ -61,6 +61,14 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void MiningSite_CaptureRangeExceedsVisualRing()
+        {
+            Assert.That(_presenter.CaptureRadius, Is.GreaterThan(_presenter.Radius));
+            Assert.That(_presenter.Contains(Vector3.right * _presenter.Radius * 1.2f), Is.True);
+            Assert.That(_presenter.Contains(Vector3.right * _presenter.CaptureRadius * 1.1f), Is.False);
+        }
+
+        [Test]
         public void EmptySite_RingRemainsAvailableWithoutCaptureStatus()
         {
             Assert.That(_view.IsVisible, Is.True);

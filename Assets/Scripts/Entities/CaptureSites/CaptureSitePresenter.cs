@@ -10,6 +10,8 @@ namespace EmpireAtWar.Entities.CaptureSites
 {
     public sealed class CaptureSitePresenter : ICaptureSite, IDisposable
     {
+        private const float MINING_CAPTURE_RANGE_MULTIPLIER = 1.5f;
+
         private readonly ICaptureSiteView _view;
         private readonly ILocalPlayer _localPlayer;
         private readonly CaptureSiteModel _model;
@@ -45,6 +47,8 @@ namespace EmpireAtWar.Entities.CaptureSites
         public Vector3 Center => _view.Center;
         public Vector3 FacilityPosition => _view.FacilityPosition;
         public float Radius => _view.Radius;
+        /// <summary>Range in which units capture or contest; the visual ring keeps <see cref="Radius"/>.</summary>
+        public float CaptureRadius => Kind == CaptureSiteKind.Mining ? Radius * MINING_CAPTURE_RANGE_MULTIPLIER : Radius;
         public bool IsRevealed { get; private set; }
         public bool IsOperational => _model.State == CaptureSiteState.Operational;
         public bool HasFacility => _model.State is CaptureSiteState.Constructing or CaptureSiteState.Operational;
@@ -86,7 +90,7 @@ namespace EmpireAtWar.Entities.CaptureSites
 
         public bool Contains(Vector3 position, float clearance = 0f)
         {
-            return PlanarGeometry.ContainsCircle(position, Center, Radius + clearance);
+            return PlanarGeometry.ContainsCircle(position, Center, CaptureRadius + clearance);
         }
 
         /// <returns>True when the site changed owner.</returns>

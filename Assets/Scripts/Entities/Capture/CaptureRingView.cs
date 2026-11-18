@@ -7,8 +7,8 @@ namespace EmpireAtWar.Entities.Capture
     public sealed class CaptureRingView : MonoBehaviour
     {
         private const float MIN_BLINK_OPACITY = 0.6f;
-        private const float BLINK_FADE_DURATION = 0.8f;
-        private const float CAPTURE_COLOR_FADE_DURATION = 1f;
+        private const float BLINK_FADE_DURATION = 0.4f;
+        private const float CAPTURE_COLOR_FADE_DURATION = 0.5f;
 
         [SerializeField] private MeshRenderer ringRenderer;
         [SerializeField] private Color neutralColor;

@@ -148,7 +148,7 @@ namespace EmpireAtWar.Services.CaptureSites
                 _strengthSampler.Add(position => PlanarGeometry.ContainsCircle(position, center, radius), () =>
                 {
                     center = site.Center;
-                    radius = site.Radius;
+                    radius = site.CaptureRadius;
                 });
             }
             SitesChanged?.Invoke();
