@@ -1398,7 +1398,7 @@ namespace EmpireAtWar.Tests.Editor
             // A diverted ship returns in combat posture, to the circle edge on its side, never by a blind Move.
             Assert.That(orders.Calls.Count, Is.EqualTo(1));
             Assert.That(orders.Calls[0].Action, Is.EqualTo(UnitActionId.AttackMove));
-            Assert.That(Vector3.Distance(orders.Calls[0].Point, new Vector3(55f, 0f, -55f)), Is.EqualTo(0.9f).Within(0.01f));
+            Assert.That(Vector3.Distance(orders.Calls[0].Point, new Vector3(55f, 0f, -55f)), Is.EqualTo(10f * 0.9f).Within(0.01f));
         }
 
         [Test]

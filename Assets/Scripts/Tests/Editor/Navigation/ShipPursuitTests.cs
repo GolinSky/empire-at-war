@@ -129,7 +129,7 @@ namespace EmpireAtWar.Tests.Movement
                 Radar radar = new Radar();
                 AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                    new IdleState(_movement, _weapon, radar), null, attack, null, null, null, null, abilities, caster, radar, null);
+                    new IdleState(_movement, _weapon, radar), null, attack, null, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
                 runner.Start();
                 runner.Attack(_target, Vector3.forward * 20f);
                 runner.Tick(0.1f);
@@ -163,7 +163,7 @@ namespace EmpireAtWar.Tests.Movement
                 AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
                     new ShipStateMachine(), new IdleState(_movement, _weapon, radar), null, attack, null, null, null,
-                    null, abilities, caster, radar, null);
+                    null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
                 GroupPace pace = new GroupPace();
                 float slower = _movement.PaceSpeed * 0.5f;
                 pace.Join(slower);
@@ -222,7 +222,7 @@ namespace EmpireAtWar.Tests.Movement
                 ShipStateMachine machine = new ShipStateMachine();
                 AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                    new IdleState(_movement, _weapon, radar), null, attack, null, null, null, null, abilities, caster, radar, null);
+                    new IdleState(_movement, _weapon, radar), null, attack, null, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
                 runner.Start();
                 Vector3 offset = formation ? Vector3.forward * 20f : Vector3.zero;
                 runner.Attack(_target, offset);
@@ -463,7 +463,7 @@ namespace EmpireAtWar.Tests.Movement
             IdleState idle = new IdleState(_movement, _weapon, radar);
             AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                idle, null, new AttackTargetState(null, _weapon, _movement), attackMove, null, null, null, abilities, caster, radar, null);
+                idle, null, new AttackTargetState(null, _weapon, _movement), attackMove, null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
             runner.Start();
             runner.Attack(_target, Vector3.zero);
 
@@ -841,7 +841,7 @@ namespace EmpireAtWar.Tests.Movement
             NavigateState navigate = new NavigateState(_movement);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
                 idle, navigate, null, null, null, null, new AbilityApproachState(_movement), null,
-                new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower), new Radar(), null);
+                new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower), new Radar(), null, new NoTeamContacts(), TestPlayers.Human);
 
             runner.CastAbility(ShipAbilityId.TractorBeam, _target, 100f);
             Assert.That(runner.CurrentOrder, Is.EqualTo(UnitOrderType.UseAbility));
@@ -934,7 +934,7 @@ namespace EmpireAtWar.Tests.Movement
             GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings);
             IdleState idle = new IdleState(_movement, _weapon, new Radar());
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                idle, null, null, null, guard, null, new AbilityApproachState(_movement), abilities, caster, new Radar(), null);
+                idle, null, null, null, guard, null, new AbilityApproachState(_movement), abilities, caster, new Radar(), null, new NoTeamContacts(), TestPlayers.Human);
             runner.Start();
             runner.Guard(_target, Vector3.forward * 20f);
             runner.CastAbility(ShipAbilityId.BoostEnginePower, _target, 100f);
@@ -962,7 +962,7 @@ namespace EmpireAtWar.Tests.Movement
             GuardState guard = new GuardState(_movement, _weapon, new Radar(), null, _orderSettings);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
                 new IdleState(_movement, _weapon, new Radar()), null, null, null, guard, null, null, abilities, caster,
-                new Radar(), null);
+                new Radar(), null, new NoTeamContacts(), TestPlayers.Human);
             runner.Start();
             runner.Guard(_target, Vector3.forward * 20f);
             Assert.That(abilities.TryActivate(caster, ShipAbilityId.Cloak, null), Is.True);
@@ -987,7 +987,7 @@ namespace EmpireAtWar.Tests.Movement
             AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
                 new ShipStateMachine(), new IdleState(_movement, _weapon, radar), null, null, attackMove,
-                null, null, null, abilities, caster, radar, null);
+                null, null, null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
             runner.Start();
             AttackMoveEngagement first = new AttackMoveEngagement();
             AttackMoveEngagement second = new AttackMoveEngagement();
@@ -1016,7 +1016,7 @@ namespace EmpireAtWar.Tests.Movement
             AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
                 new IdleState(_movement, _weapon, radar), null, attack, null, null, null,
-                new AbilityApproachState(_movement), abilities, caster, radar, null);
+                new AbilityApproachState(_movement), abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
             runner.Start();
             caster.Modifiers.AddMovementAnchor();
 
@@ -1049,7 +1049,7 @@ namespace EmpireAtWar.Tests.Movement
             ShipStateMachine machine = new ShipStateMachine();
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
                 new IdleState(_movement, _weapon, radar), new NavigateState(_movement), null, null, null, null,
-                new AbilityApproachState(_movement), abilities, caster, radar, null);
+                new AbilityApproachState(_movement), abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
             runner.Start();
             Assert.That(abilities.TryActivate(caster, ShipAbilityId.Interdict, null), Is.True);
             Assert.That(caster.Modifiers.IsAnchored, Is.True);

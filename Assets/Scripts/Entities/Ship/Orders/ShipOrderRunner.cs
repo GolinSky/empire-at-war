@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ship.Health;
 using static EmpireAtWar.Utils.FormationConversion;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly ShipAbilityService _abilities;
         private readonly IShipAbilityFacade _abilityCaster;
         private readonly IRadarComponent _radar;
-        // Absent only in unit tests that build a runner by hand.
         private readonly ITeamContacts _teamContacts;
         private readonly PlayerId _owner;
         private readonly List<IEntity> _teamCandidates = new List<IEntity>();
@@ -113,7 +113,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             , ShipOrderTelemetrySource telemetrySource
 #endif
-            , ITeamContacts teamContacts = null, PlayerId owner = default)
+            , ITeamContacts teamContacts, PlayerId owner)
         {
             _teamContacts = teamContacts;
             _owner = owner;
@@ -182,7 +182,12 @@ namespace EmpireAtWar.Entities.Ship.Orders
         {
             if (_isPursuing)
             {
-                if (_orders.Current != UnitOrderType.Attack) _isPursuing = false;
+                if (_orders.Current != UnitOrderType.Attack)
+                {
+                    // The chase ended on its own (target lost or killed): back to the post. A new order from outside wins.
+                    _isPursuing = false;
+                    if (_orders.Current == UnitOrderType.None) MoveTo(_pursuitOrigin);
+                }
                 else if ((_movement.CurrentPosition - _pursuitOrigin).sqrMagnitude > PURSUIT_LEASH * PURSUIT_LEASH)
                 {
                     _isPursuing = false;
@@ -430,21 +435,32 @@ namespace EmpireAtWar.Entities.Ship.Orders
         // Own radar first, then the group's shared contact, then what the team sees around where the target died.
         private IEntity FindReplacement()
         {
-            IEntity own = ShipEngagement.FindNearestEnemy(_radar, _movement, _weapon, inRangeOnly: false);
-            if (own != null) return own;
-            if (_group != null && _group.SharedReplacement != null)
-            {
-                IEntity shared = _group.SharedReplacement;
-                // A contact the group found far away is not worth a cross-map chase.
-                if (!shared.HealthModel.IsDestroyed && shared.HealthModel.HasUnits &&
-                    _movement.GetRange(shared.GetFacade<IEntityTransformFacade>().Transform.position) <=
-                    SHARED_REPLACEMENT_RANGE) return shared;
-            }
-            if (_teamContacts == null) return null;
+            ShipClass? deadClass = _attackTargetState.LastTargetClass;
+            IEntity own = ShipEngagement.FindNearestEnemy(_radar, _movement, _weapon, inRangeOnly: false, deadClass);
+            if (own != null && IsSameClass(own, deadClass)) return own;
+            IEntity shared = GetSharedReplacement();
+            if (shared != null && IsSameClass(shared, deadClass)) return shared;
+            if (own != null && !deadClass.HasValue) return own;
+            // The team scan is shared and cached, but it is still only worth asking when nothing of the class is near.
             _teamCandidates.Clear();
             _teamContacts.FillVisibleHostiles(_owner, _attackTargetState.LastTargetPosition, REPLACEMENT_RADIUS,
                 _teamCandidates);
-            return ShipEngagement.FindNearestEnemy(_teamCandidates, _movement, _weapon);
+            IEntity team = ShipEngagement.FindNearestEnemy(_teamCandidates, _movement, _weapon, deadClass);
+            if (team != null && IsSameClass(team, deadClass)) return team;
+            return own ?? shared ?? team;
+        }
+
+        private static bool IsSameClass(IEntity enemy, ShipClass? deadClass) =>
+            deadClass.HasValue && enemy.HealthModel.ShipClass == deadClass.Value;
+
+        // A contact the group found far away is not worth a cross-map chase.
+        private IEntity GetSharedReplacement()
+        {
+            if (_group == null || _group.SharedReplacement == null) return null;
+            IEntity shared = _group.SharedReplacement;
+            return !shared.HealthModel.IsDestroyed && shared.HealthModel.HasUnits &&
+                   _movement.GetRange(shared.GetFacade<IEntityTransformFacade>().Transform.position) <=
+                   SHARED_REPLACEMENT_RANGE ? shared : null;
         }
 
         private void CompleteOrder()
@@ -485,6 +501,14 @@ namespace EmpireAtWar.Entities.Ship.Orders
                     Issue(UnitOrderType.Attack, target: nextTarget, offset: slot);
                     _group = group;
                     if (group != null) group.SharedReplacement = nextTarget;
+                    return;
+                }
+
+                if (_isPursuing)
+                {
+                    _isPursuing = false;
+                    RecordOrder("complete", "Pursuit target destroyed; returning to the post.");
+                    MoveTo(_pursuitOrigin);
                     return;
                 }
 

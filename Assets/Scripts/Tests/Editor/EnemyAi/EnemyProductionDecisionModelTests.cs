@@ -46,7 +46,6 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(EnemyAiDifficulty.Easy, 0)]
         [TestCase(EnemyAiDifficulty.Medium, 1)]
         [TestCase(EnemyAiDifficulty.Hard, 2)]
-        [TestCase(EnemyAiDifficulty.UltraHard, 1)]
         public void DepletedFleet_RebuildsBeforeInfrastructureAndTechnology(
             EnemyAiDifficulty difficulty,
             int shipCount)
@@ -56,6 +55,34 @@ namespace EmpireAtWar.Tests.Editor
                     EnemyStrategicState.DefendBase, difficulty,
                     0, shipCount, 100, 0, 5, 5, 5,
                     true, true, true, true, true, true, true, true));
+
+            Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
+        }
+
+        [TestCase(true, EnemyProductionCategory.Mining)]
+        [TestCase(false, EnemyProductionCategory.None)]
+        public void UltraHardBelowMiningTarget_BuysOrSavesForMiningBeforeAnyShip(bool canBuildMining,
+            EnemyProductionCategory expected)
+        {
+            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.Hold, EnemyAiDifficulty.UltraHard,
+                    2, 0, 0, 0, 1, 5, 1,
+                    true, true, true, canBuildMining, true, true, true, true,
+                    canResearchIncome: true, canResearchCombat: true));
+
+            Assert.That(result, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void UltraHardAtMiningTarget_BuysMinimumFleetBeforeResearch()
+        {
+            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.Hold, EnemyAiDifficulty.UltraHard,
+                    5, 0, 0, 0, 1, 5, 1,
+                    true, true, true, true, true, true, true, true,
+                    canResearchIncome: true, canResearchCombat: true));
 
             Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
         }
@@ -437,10 +464,11 @@ namespace EmpireAtWar.Tests.Editor
         [Test]
         public void UltraHardZeroFleet_BuildsAffordableRecoveryShip()
         {
+            // The mining target is already met: with no fleet the next purchase is the recovery ship.
             EnemyProductionCategory result = EvaluateUltraHard(
                 shipCount: 0,
                 shipsOrdered: 0,
-                miningFacilityCount: 0,
+                miningFacilityCount: 3,
                 miningFacilityTarget: 3,
                 hasShipOption: true,
                 canBuildShip: true,
@@ -676,11 +704,13 @@ namespace EmpireAtWar.Tests.Editor
                 PlayerSlot owner = TestPlayers.CreateDuel(difficulty).Get(TestPlayers.Enemy);
 
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
+                // UltraHard targets every spawnable mining facility, the others their floor.
                 ReserveEconomicFloor(
                     factionModel,
                     unitLimitModel,
-                    EnemyAiDifficultyProfile.Get(difficulty)
-                        .MinimumMiningFacilities);
+                    difficulty == EnemyAiDifficulty.UltraHard
+                        ? factionModel.MiningFactions.First().Value.MaxCount
+                        : EnemyAiDifficultyProfile.Get(difficulty).MinimumMiningFacilities);
                 if (difficulty == EnemyAiDifficulty.UltraHard)
                 {
                     ReserveDefensePlatform(factionModel, unitLimitModel);
@@ -782,7 +812,7 @@ namespace EmpireAtWar.Tests.Editor
                 PlayerSlot owner = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy);
 
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
-                ReserveEconomicFloor(factionModel, unitLimitModel, 3);
+                ReserveEconomicFloor(factionModel, unitLimitModel, factionModel.MiningFactions.First().Value.MaxCount);
                 ReserveDefensePlatform(factionModel, unitLimitModel);
                 FactionData existingShipData =
                     factionModel.ShipFactionData[ShipType.Munificent];

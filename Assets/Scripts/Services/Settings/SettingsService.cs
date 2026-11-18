@@ -202,17 +202,17 @@ namespace EmpireAtWar.Services.Settings
             return SettingsApplyResult.Committed;
         }
 
-        public SettingsApplyResult SetLobbyOccupant(int slotIndex, int occupant)
+        public SettingsApplyResult SetLobbyOccupant(int slotIndex, int occupant, bool online = false)
         {
             SettingsData changed = Saved.Clone();
-            changed.Lobby.SetOccupantChoice(slotIndex, occupant);
+            changed.Lobby.SetOccupantChoice(slotIndex, occupant, online);
             if (!TrySave(changed))
             {
                 return SettingsApplyResult.SaveFailed;
             }
 
             Saved = changed;
-            Draft.Lobby.SetOccupantChoice(slotIndex, occupant);
+            Draft.Lobby.SetOccupantChoice(slotIndex, occupant, online);
             SavedChanged?.Invoke();
             return SettingsApplyResult.Committed;
         }

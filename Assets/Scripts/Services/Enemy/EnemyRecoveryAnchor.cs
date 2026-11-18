@@ -23,6 +23,8 @@ namespace EmpireAtWar.Services.Enemy
         private const float UNKNOWN_WEAPON_RANGE = 500f;
         private const float SECTOR_MAX_AGE = 60f;
         private const float MINIMUM_LOST_HOME_RADIUS = 64f;
+        private const string PRESSURED_STATION_KIND = "pressuredStation";
+        private const float PRESSURED_STATION_SCORE = 2f;
         private readonly IReinforcementZonesSystem _reinforcementZones;
         private readonly IReinforcementZoneSource _zones;
         private readonly IPlayerRoster _roster;
@@ -108,6 +110,8 @@ namespace EmpireAtWar.Services.Enemy
         public Vector3? FindRetreatAnchor(Vector3 origin, bool hasStation,
             Func<Vector3, float, bool> routeSafe)
         {
+            // Falling back to the besieged station is the retreat: the fleet fights under its guns, not at a far relay.
+            if (IsActive && _anchor != null && _anchor.Kind == PRESSURED_STATION_KIND) return _anchor.Position;
             if (IsActive) return _anchor == null || !routeSafe(_anchor.Position, 0f) ||
                 !IsPlacementSafe(_anchor.Position, 0f) ? null : _anchor.Position;
             if (hasStation && !_pressure.HasPressure &&
@@ -260,6 +264,12 @@ namespace EmpireAtWar.Services.Enemy
                         zone.Owner, position, zone.Radius, zone.CaptureProgress);
                     Add(capture.Id, "neutralRelay", position, zone.Radius, capture, ref rejectedUnsafe);
                 }
+            // A living station under pressure outranks every relay; safety filters do not apply to the place being defended.
+            if (_pressure.HasPressure && _pressure.StationId != 0 &&
+                _entities.TryGetEntity(_pressure.StationId, out IEntity pressured) &&
+                !pressured.HealthModel.IsDestroyed && _roster.IsAllied(_owner.Id, pressured.Owner))
+                _candidates.Add(new Candidate($"station:{pressured.Id}", PRESSURED_STATION_KIND,
+                    pressured.GetFacade<IEntityTransformFacade>().Transform.position, PRESSURED_STATION_SCORE, null));
             Candidate best = null;
             Candidate current = null;
             foreach (Candidate candidate in _candidates)

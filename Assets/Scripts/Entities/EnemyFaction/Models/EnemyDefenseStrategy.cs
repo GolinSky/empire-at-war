@@ -67,7 +67,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// Every owned pad's point gets its required satellites before any scored choice: three at a mine-less zone
         /// (relay or centre), one at a mining point. Money reserved for production does not apply.
         /// </summary>
-        private bool TrySelectMandatory(EnemyDefenseSnapshot snapshot, out EnemyDefenseChoice choice)
+        public bool TrySelectMandatory(EnemyDefenseSnapshot snapshot, out EnemyDefenseChoice choice)
         {
             choice = default;
             bool found = false;

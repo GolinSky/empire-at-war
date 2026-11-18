@@ -259,7 +259,7 @@ namespace EmpireAtWar.Tests.Editor
                 ? new OnlineSkirmishLobbyUiController(_ui, _router, online,
                     AssetDatabase.LoadAssetAtPath<TeamColorPalette>(
                         "Assets/Settings/Data/Models/Players/TeamColorPalette.asset"), null, new TooltipServiceStub(),
-                    steam, _popups, _confirm)
+                    steam, _popups, _confirm, new FakeSettingsService())
                 : new OnlineSurvivalLobbyUiController(_ui, _router, online, steam, _confirm);
             ((IInitializable)lobby).Initialize();
             return lobby;

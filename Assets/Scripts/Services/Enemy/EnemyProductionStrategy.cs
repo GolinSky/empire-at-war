@@ -245,8 +245,11 @@ namespace EmpireAtWar.Services.Enemy
             bool canResearchCombat = TrySelectResearch(false, out ResearchType combatResearch,
                                          out ResearchTierData combatTier) &&
                                      IsAffordable(combatTier.FactionData);
-            int miningFacilityTarget = profile.MinimumMiningFacilities + _stateProvider.ActiveShipCount /
-                (isUltraHard ? ULTRA_HARD_SHIPS_PER_MINING_FACILITY : SHIPS_PER_MINING_FACILITY);
+            // UltraHard fills every spawnable mining facility from the start; the others grow with the fleet.
+            int miningFacilityTarget = isUltraHard && hasMiningSelection
+                ? Math.Max(mining.Value.MaxCount, profile.MinimumMiningFacilities)
+                : profile.MinimumMiningFacilities + _stateProvider.ActiveShipCount /
+                  (isUltraHard ? ULTRA_HARD_SHIPS_PER_MINING_FACILITY : SHIPS_PER_MINING_FACILITY);
             int defensePlatformTarget = isUltraHard
                 ? 1 + _stateProvider.ActiveShipCount / 3
                 : 1;

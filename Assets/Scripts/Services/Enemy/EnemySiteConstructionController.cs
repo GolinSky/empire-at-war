@@ -43,17 +43,27 @@ namespace EmpireAtWar.Services.Enemy
             if (_stationPressure.IsStationCritical) return;
             if (!_decisionTimer.IsComplete) return;
             _decisionTimer.StartTimer();
+            // At a captured point: required satellites first, then mining, then optional scored defense. All three
+            // outrank ships. Satellite scores read the strategic snapshot, empty until the first strategic decision.
+            bool ready = _snapshotBuilder.IsReady;
+            EnemyDefenseSnapshot snapshot = ready ? _snapshotBuilder.Build() : default;
+            if (ready && _defense.TrySelectMandatory(snapshot, out var required))
+            {
+                StartSatellite(snapshot, required);
+                return;
+            }
             // Mines fund everything else, so an empty owned mine keeps the credits until it is built.
             if (HasEmptyOwnedMine())
             {
                 bool built = _construction.TryBuildOnOwnedSite(_owner.Id);
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild", $"kind=mine;started={built}");
+                if (built) return;
             }
-            // Satellites hold zones without a fleet and kill early raiders, so they never wait for ships.
-            // Satellite scores read the strategic snapshot, which is empty until the first strategic decision.
-            if (!_snapshotBuilder.IsReady) return;
-            var snapshot = _snapshotBuilder.Build();
-            if (!_defense.TrySelect(snapshot, out var choice)) return;
+            if (ready && _defense.TrySelectScored(snapshot, out var optional)) StartSatellite(snapshot, optional);
+        }
+
+        private void StartSatellite(EnemyDefenseSnapshot snapshot, EnemyDefenseChoice choice)
+        {
             if (_construction.TryStartConstruction(choice.SiteIndex, _owner.Id, choice.Type))
                 EnemyAiTelemetry.RecordSatellite(_owner.Id, _owner.Faction, choice, snapshot.Money, _defense.TopChoices);
             else

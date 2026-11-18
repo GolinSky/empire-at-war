@@ -11,6 +11,7 @@ using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Audio;
+using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Services.Networking.Online;
 using EmpireAtWar.Services.Networking.Online.Messages;
 using EmpireAtWar.Services.Popups;
@@ -32,6 +33,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private readonly TooltipRequests _tooltips;
         private readonly ISteamPopupService _steamPopups;
         private readonly IConfirmPopupService _confirmPopups;
+        private readonly ISettingsService _settings;
         private readonly SkirmishPlanetPicker _planetPicker;
         private TooltipHoverSubscription _tooltipHover;
         // The lobby keeps its own setup so the offline Skirmish screen is untouched.
@@ -46,9 +48,10 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public OnlineSkirmishLobbyUiController(IUiService uiService, IUiCancelRouter cancelRouter,
             OnlineMatchService online, TeamColorPalette palette, IMenuFactionSfxService factionAudio,
             ITooltipService tooltipService, ISteamPopupService steamPopups, IPopupService popups,
-            IConfirmPopupService confirmPopups)
+            IConfirmPopupService confirmPopups, ISettingsService settings)
             : base(uiService, cancelRouter)
         {
+            _settings = settings;
             _confirmPopups = confirmPopups;
             _tooltips = new TooltipRequests(tooltipService);
             _online = online;
@@ -105,7 +108,11 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             }
 
             _appliedSetup = string.Empty;
-            if (IsHost) _model.BeginHostLobby(OnlineLobby.HOST_CONNECTION_ID, _online.Steam.PersonaName);
+            if (IsHost)
+            {
+                _model.BeginHostLobby(OnlineLobby.HOST_CONNECTION_ID, _online.Steam.PersonaName);
+                RestoreHostOccupants();
+            }
             else _model.BeginClientLobby();
             _isOpen = true;
             Sync();
@@ -173,7 +180,22 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         {
             SkirmishSlotSetup slot = _model.Slots[slotIndex];
             if (slot.IsHuman) _online.Kick(slot.MemberId);
-            else _model.SelectSlotOccupant(slotIndex, (SkirmishSlotOccupant)occupantIndex);
+            else
+            {
+                _model.SelectSlotOccupant(slotIndex, (SkirmishSlotOccupant)occupantIndex);
+                _settings.SetLobbyOccupant(slotIndex, occupantIndex, online: true);
+            }
+        }
+
+        // The host's last choice for each non-human row, e.g. the AI difficulty, comes back with the lobby.
+        private void RestoreHostOccupants()
+        {
+            for (int i = 1; i < _model.Slots.Count; i++)
+            {
+                int saved = _settings.Saved.Lobby.GetOccupantChoice(i, online: true);
+                if (saved >= 0 && saved != (int)SkirmishSlotOccupant.Human && !_model.Slots[i].IsHuman)
+                    _model.SelectSlotOccupant(i, (SkirmishSlotOccupant)saved);
+            }
         }
 
         public void SelectSlotFaction(int slotIndex, int factionIndex)

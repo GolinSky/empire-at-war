@@ -1,3 +1,4 @@
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Radar;
 using EmpireAtWar.Components.Ship.Movement;
@@ -49,57 +50,51 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             weapon.PreferredTarget.Prefers(enemy.HealthModel.ShipClass);
 
         /// <summary>
-        /// The nearest live radar contact the loadout prefers; the nearest other one only while no preferred contact
-        /// qualifies. With <paramref name="inRangeOnly"/> only contacts the guns already reach count. Null when none.
+        /// The nearest live radar contact, best tier first: the previous target's class, then what the loadout
+        /// prefers, then anything. With <paramref name="inRangeOnly"/> only contacts the guns already reach count.
+        /// Null when none qualifies.
         /// </summary>
         public static IEntity FindNearestEnemy(IRadarComponent radar, IShipMovement movement, IWeaponComponent weapon,
-            bool inRangeOnly)
+            bool inRangeOnly, ShipClass? previousClass = null)
         {
-            IEntity nearest = null;
-            bool hasPreferred = false;
-            float nearestDistance = float.PositiveInfinity;
+            IEntity best = null;
+            int bestTier = -1;
+            float bestDistance = float.PositiveInfinity;
             // Indexed: ObservableList boxes its enumerator.
             for (int i = 0; i < radar.Enemies.Count; i++)
             {
                 IEntity enemy = radar.Enemies[i];
-                if (enemy.IsCloaked() || enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits) continue;
                 if (inRangeOnly && !CanEngage(enemy, movement, weapon)) continue;
-
-                bool isPreferred = IsPreferred(enemy, weapon);
-                if (hasPreferred && !isPreferred) continue;
-                float distance = movement.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
-                if (distance < nearestDistance || isPreferred && !hasPreferred)
-                {
-                    hasPreferred = isPreferred;
-                    nearestDistance = distance;
-                    nearest = enemy;
-                }
+                Offer(enemy, movement, weapon, previousClass, ref best, ref bestTier, ref bestDistance);
             }
 
-            return nearest;
+            return best;
         }
 
         /// <summary>Same choice as the radar overload, over an explicit candidate list (team contacts).</summary>
         public static IEntity FindNearestEnemy(IReadOnlyList<IEntity> candidates, IShipMovement movement,
-            IWeaponComponent weapon)
+            IWeaponComponent weapon, ShipClass? previousClass = null)
         {
-            IEntity nearest = null;
-            bool hasPreferred = false;
-            float nearestDistance = float.PositiveInfinity;
+            IEntity best = null;
+            int bestTier = -1;
+            float bestDistance = float.PositiveInfinity;
             for (int i = 0; i < candidates.Count; i++)
-            {
-                IEntity enemy = candidates[i];
-                if (enemy.IsCloaked() || enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits) continue;
-                bool isPreferred = IsPreferred(enemy, weapon);
-                if (hasPreferred && !isPreferred) continue;
-                float distance = movement.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
-                if (distance >= nearestDistance && !(isPreferred && !hasPreferred)) continue;
-                hasPreferred = isPreferred;
-                nearestDistance = distance;
-                nearest = enemy;
-            }
+                Offer(candidates[i], movement, weapon, previousClass, ref best, ref bestTier, ref bestDistance);
+            return best;
+        }
 
-            return nearest;
+        private static void Offer(IEntity enemy, IShipMovement movement, IWeaponComponent weapon,
+            ShipClass? previousClass, ref IEntity best, ref int bestTier, ref float bestDistance)
+        {
+            if (enemy.IsCloaked() || enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits) return;
+            int tier = previousClass.HasValue && enemy.HealthModel.ShipClass == previousClass.Value ? 2 :
+                IsPreferred(enemy, weapon) ? 1 : 0;
+            if (tier < bestTier) return;
+            float distance = movement.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
+            if (tier == bestTier && distance >= bestDistance) return;
+            best = enemy;
+            bestTier = tier;
+            bestDistance = distance;
         }
 
         /// <summary>

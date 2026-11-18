@@ -153,6 +153,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 return EnemyProductionCategory.Level;
             }
 
+            // Mining is the economy: UltraHard fills its mining target before any ship, level or research.
+            if (snapshot.Difficulty == EnemyAiDifficulty.UltraHard &&
+                snapshot.MiningFacilityCount < snapshot.MiningFacilityTarget && snapshot.HasMiningOption)
+            {
+                return snapshot.CanBuildMining ? EnemyProductionCategory.Mining : EnemyProductionCategory.None;
+            }
+
             if (NeedsMinimumFleet(snapshot.ShipCount) && snapshot.CanOrderShips && snapshot.CanBuildShip)
             {
                 return EnemyProductionCategory.Ship;
@@ -269,16 +276,16 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     : EnemyProductionCategory.None;
             }
 
-            if (snapshot.CanResearchIncome)
-            {
-                return EnemyProductionCategory.Research;
-            }
-
             if (snapshot.NeedsFleet && snapshot.HasShipOption)
             {
                 return snapshot.CanBuildShip
                     ? EnemyProductionCategory.Ship
                     : EnemyProductionCategory.None;
+            }
+
+            if (snapshot.CanResearchIncome)
+            {
+                return EnemyProductionCategory.Research;
             }
 
             if (IsLevelDue(snapshot, EnemyAiDifficultyProfile.Get(snapshot.Difficulty)) &&

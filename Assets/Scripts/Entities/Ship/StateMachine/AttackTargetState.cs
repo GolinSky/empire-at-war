@@ -92,6 +92,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         /// <summary>Where the target was on the last tick it was alive; valid after the target is destroyed.</summary>
         public Vector3 LastTargetPosition { get; private set; }
 
+        /// <summary>Class of the target on the last tick it was alive; null until the state has ticked.</summary>
+        public ShipClass? LastTargetClass { get; private set; }
+
         public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits || _mainTargetEntity.IsCloaked();
 
         public AttackTargetState(
@@ -210,6 +213,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             }
 
             LastTargetPosition = TargetPosition;
+            LastTargetClass = _mainTarget.ShipClass;
 
             // Once the chosen hardpoint is gone the order keeps going against the whole ship.
             if (_focusedHardPoint != null && _focusedHardPoint.IsDestroyed)

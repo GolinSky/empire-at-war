@@ -67,7 +67,7 @@ follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 - `ShipOrderRunner.CompleteOrder` (`ShipOrderRunner.cs:394-410`) → `ShipEngagement.FindNearestEnemy(_radar, …)` scans only this ship's `radar.Enemies` (500–750); on the kill frame that list held only the dead target.
 - `IdleState` engages only enemies already in weapon reach (`inRangeOnly: true`) and never moves.
 - Log: 65 "no replacement order" events; 521.14 s → 13 of 14 ships idle.
-- [x] (open) Replacement search: own radar, then visible hostiles known to the owner within a bounded radius of the dead target (team vision), preferring the previous target class. `ITeamContacts`/`TeamContactService` (0.5 s cache per viewer, radius 1,500 around the dead target).
+- [x] Replacement search: own radar, then visible hostiles known to the owner within a bounded radius of the dead target (team vision), preferring the previous target class. `ITeamContacts`/`TeamContactService` (0.5 s cache per viewer, radius 1,500 around the dead target).
 - [x] Group attack: ships ordered together share the replacement; one ship's contact serves the group. `GroupPace.SharedReplacement`, used within 3,000 range.
 - [x] Nothing found → attack-move to the dead target's last position (`AttackTargetState.LastTargetPosition`) instead of Idle.
 - [x] Idle ships attacked by a visible hostile inside radar turn and engage it (bounded pursuit) instead of only facing in-range targets. Hit within 3 s + radar contact → Attack with a 1,500 leash, then Move back.
@@ -90,7 +90,7 @@ follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 ### P1 — Recovery retreat overrides station defense
 - `EnemyStrategicDecisionModel.Evaluate:303-314`: in recovery mode with low local advantage, state becomes `RetreatValue`, replacing `DefendBase`.
 - Log: anchor relay at (1265.8, 1535.1), ~2,400 units from the attacked station; 8 DefendBase↔RetreatValue flips 328–394 s.
-- [x] Station pressure wins over the recovery override; retreat target = the threatened station, not a far relay. recovery override skipped while a living station is under pressure and state is `DefendBase`.
+- [x] Station pressure wins over the recovery override; retreat target = the threatened station, not a far relay. **Reverted in `1ae2c9236`**: skipping the override broke 3 `EnemyDecisionStabilityTests` recovery cases that require an outmatched fleet to withdraw. Redo without blocking withdrawal: keep the withdraw, retarget the recovery anchor to the pressured living station instead of the far relay. Those 3 cases must keep passing. Redone 2026-11-19: `EnemyRecoveryAnchor` adds a `pressuredStation` candidate (score 2) for the pressured living station and `FindRetreatAnchor` returns it unfiltered; the withdraw decision is unchanged.
 - Tests: `EnemyAi` (`EnemyDecisionStabilityTests`). Not run.
 
 ### P1 — Raid against a mine under construction
@@ -112,7 +112,7 @@ follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 ### P2 — Production priority on UltraHard
 - `EvaluateUltraHard` puts Ship last; Level 4 bought at 440.7 s at fleet ratio 0.47.
 - [x] Ship reservation: when fleet ratio < 1 or ships < main-force size, save for the selected ship; levels/research/defense wait. snapshot `NeedsFleet` (ships < 6 or advantage < 1).
-- [x] Share the reservation with `EnemySiteConstructionController` (satellites spend the same wallet). satellites need 6 ships.
+- [x] Share the reservation with `EnemySiteConstructionController` (satellites spend the same wallet). Superseded by Satellite-first: the 6-ship gate was removed in `7c3dfd19b` and mandatory satellites ignore the reserve; only `TrySelectScored` still respects it.
 - [x] Critical pressure: cap squadron purchases instead of lifting the cap. cap ×2 + 2.
 - Tests: `EnemyAi` (`EnemyProductionDecisionModelTests`). Not run; no stat-pinning asserts.
 
@@ -125,6 +125,7 @@ follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 ### P2 — Lobby difficulty
 - AI slot defaults to `AiMedium` and is not remembered.
 - [x] Persist the last AI difficulty per slot. `LobbySettingsData` + `ISettingsService.SetLobbyOccupant`; offline lobby only.
+- [x] Online lobby: persist the last AI difficulty per slot too. See Open Issues 7.
 - Tests: `Ui`. Not run.
 
 ## Order
@@ -142,7 +143,7 @@ follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 - `Entities/MainMenu/Skirmish/SkirmishModel.cs`
 
 ## Progress 2026-11-18
-- Done: all items checked above. Not done: online lobby difficulty persistence.
+- Done: all items checked above. Not done: online lobby difficulty persistence. 2026-11-19: recovery-retreat item reverted; see Open Issues.
 - Tests added/updated: `EndGameLossCatalogTests`, `FleetCohesionTests`, `EnemyProductionDecisionModelTests`, `EnemyFactionControllerLifecycleTests`, `LobbySettingsDataTests`. Not run (local override).
 
 ## Satellite-first (decided 2026-11-18)
@@ -154,6 +155,64 @@ follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 - Pad capture is by presence in the capture range: the capture force enters at 0.7 × radius on its arrival side instead of the centre (`approachPoint` in `ExecuteCapture`).
 - Starting-station pad: no explicit late-build rule; cost ordering is accepted (user, 2026-11-18).
 
-## Open Decisions
-- Deploy hold length before forced spawn.
-- Team-vision radius for replacement targets.
+## Decided
+- Deploy hold before forced spawn: `8 s`.
+- Team-vision replacement radius: `1,500`; shared group contact range `3,000`.
+
+## Verification 2026-11-19
+- Commits: `5d95cc29f`, `7c3dfd19b`, `0241671e8`, `1ae2c9236`. Source-inspected; no tests run by the agent.
+- User run (before `1ae2c9236`): 4,157 tests, 4,146 passed; the 7 failures were fixed in `1ae2c9236`.
+- User run after `1ae2c9236`: 1 failure left (below).
+
+## Open Issues (decided 2026-11-19)
+
+### 1. Failing test — capture edge distance
+- `EnemyUnitCommanderTests.CaptureZone_DistantCombatDiversionReturnsToObjective` (`:1401`): expected `0.9`, got `9`.
+- Cause: test forgot the radius; code returns `radius (10) × CAPTURE_EDGE_FRACTION (0.9)`.
+- [x] Fix the test: expect `10f * 0.9f`. Production code unchanged. Category `EnemyAi`. Done.
+
+### 2. Recovery retreat to a far relay (reverted)
+- [x] Keep the outmatched-fleet withdrawal; retarget the recovery anchor to the pressured living station, not the far relay. Done (see P1 recovery item).
+- The 3 `EnemyDecisionStabilityTests` recovery cases must keep passing.
+
+### 3. Opening and economy (user rules — follow, do not re-decide)
+- Mining = economy. Satellites = protection for mining and the way to take/hold a zone. Ships alone die fast → no money, no defense, no economy.
+- Opening order:
+  1. Buy all 5 spawnable mining facilities (`MiningFacilityCatalog.asset`: `MaxCount 5`, `1,000` each).
+  2. Groups split in parallel: one to the nearest neighbour zone, one to the central zone (4 mines + 6 pads), one to another zone (capture/patrol). No single "centre first" target.
+  3. At each captured point: capture the close satellite pads, build satellites, build mining on the sites.
+- Always: mining builds and satellites that protect mining or push/hold a zone outrank ships.
+
+Evidence (22:12 log, `Loading_20261118_221247_ai.csv`):
+- AI bought ships first: PatrolFrigate, C9979, Vulture, PatrolFrigate at 15.1–18.1 s. Cause: `NeedsMinimumFleet` (< 3 ships) runs before `EvaluateUltraHard` in `EnemyProductionDecisionModel`.
+- AI miners at 19.1, 20.1, 21.2, 42.2 s; 5th only at 160.8 s. Cause: UltraHard target = `MinimumMiningFacilities 3` + ships / 2. Research/level bought at 22–32 s before the 4th miner.
+- AI built 3 quad satellites on centre pads 7/9/8 at 66–72 s, then lost the centre.
+- Human: no ship until 45.8 s; first ships to the centre (79.7 s) and neighbour zone 3 (86.1 s); human ships spawned at the centre from 194 s; full fleet hit the AI home at 317.6 s. Human purchases are not logged.
+
+Actions:
+- [x] `EnemyProductionDecisionModel`: Mining until 5 facilities comes before `NeedsMinimumFleet`, ships, levels and research. UltraHard rule placed before `NeedsMinimumFleet`; ship-first tests updated.
+- [x] UltraHard `MiningFacilityTarget` = catalog `MaxCount` (5) from the start, not `3 + ships / 2` (`EnemyProductionStrategy.cs:248`). `Math.Max(mining.MaxCount, floor)` when a mining option exists.
+- [x] Opening capture: groups go to the nearest neighbour zone and the centre in parallel; the next group takes another zone or patrols. `EnemyShipTaskGroupPlanner`: up to 2 capture detachments in parallel until a main force exists (one ship each, at least one ship stays behind); reservations keep them on different objectives.
+- [x] Site construction at a captured point: close pads → satellites → mining. Required satellites and mining builds stay exempt from the ship reservation (`TrySelectMandatory`, mine build in `EnemySiteConstructionController.Tick` — keep). `EnemySiteConstructionController.Tick`: mandatory satellites → mine → scored satellites.
+- [x] Ship reservation (`NeedsFleet`) holds back only levels, research and scored (optional) defense. `NeedsFleet` now sits above income research too; mandatory satellites and mining are outside it.
+- Tests: `EnemyAi` (`EnemyProductionDecisionModelTests`); no stat-pinning asserts.
+
+### 4. Pursuit does not return to its post
+- `ShipOrderRunner.UpdatePursuit`: attacker dies, no replacement → attack-move to the dead target's spot; ship stays there.
+- [x] Before pursuit, save the previous order and position (`_pursuitOrigin` + prior order). Pursuit starts only from Idle, so the saved state is the origin position.
+- [x] Pursuit ends (kill with no replacement, leash, lost target) → restore the previous order, else Move back to the saved position. Kill without replacement and a chase that ends on its own both `MoveTo(_pursuitOrigin)`; an outside order wins.
+
+### 5. Replacement prefers the previous target class
+- [x] `FindReplacement`: prefer a candidate of the dead target's class (own radar, shared group contact, team contacts); fall back to the current weapon preference, then nearest. Tiers in `ShipEngagement`: previous class → loadout preference → nearest; `AttackTargetState.LastTargetClass`.
+- Record the dead target's class in `AttackTargetState` next to `LastTargetPosition`.
+
+### 6. Team vision must be a required dependency
+- `ShipOrderRunner` ctor: `ITeamContacts teamContacts = null, PlayerId owner = default`; `FindReplacement` silently skips team vision when null.
+- [x] Make both parameters required (no defaults, no null check); `ShipInstaller` already passes them. Done.
+- [x] Tests that build a runner (`ShipPursuitTests` and others) pass a fake `ITeamContacts`. `NoTeamContacts` fake.
+
+### 7. Online lobby AI difficulty
+- [x] Persist the last AI difficulty per slot in the online lobby (offline already done). Separate `onlineOccupantChoices`; `FakeSettingsService` for `PopupServiceTests`.
+
+### Tests
+- [x] Affected tests reviewed and updated. User re-runs `EnemyAi`, `Ships`, `BattleInput`, `Navigation`, `Capture`, `Ui`.

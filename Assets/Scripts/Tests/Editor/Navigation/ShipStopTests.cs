@@ -37,7 +37,8 @@ namespace EmpireAtWar.Tests.Editor
             stateMachine.SetState(new PassiveState());
             ShipOrderRunner runner = new ShipOrderRunner(orders: model, stateMachine: stateMachine, movement: movement, weapon: weapon,
                 cameraService: null, idleState: idle, navigateState: null, attackTargetState: null, attackMoveState: null, guardState: null, huntState: null,
-                abilityApproachState: null, abilities: null, abilityCaster: null, radar: null, telemetrySource: null);
+                abilityApproachState: null, abilities: null, abilityCaster: null, radar: null, telemetrySource: null,
+                teamContacts: new NoTeamContacts(), owner: TestPlayers.Human);
 
             runner.Stop();
 
