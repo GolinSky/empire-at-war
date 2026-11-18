@@ -62,6 +62,14 @@ acceptance: pending-user
 ## Comparison saves (2026-11-18, same battle)
 - `Logs/Playtests/20261118T1013Z/saves/fps-mid-game.json`, `fps-late-game.json`, `fps-late-game-p2.json` (also in `%USERPROFILE%/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/Saves/Skirmish/`).
 
+## Verdicts from the first attribution run (2026-11-18 13:09, `Logs/BattleAudit/20261118T130915435Z-attribution/`)
+- **H1 confirmed:** frames 9333 and 10117 spend 295.7 ms and 288.0 ms in `GC.Collect` inside PlayerLoop 315 / 327 ms → the ~300 ms hitch is a blocking full GC (`gcIncremental: 0`). Fix owner: [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan]] next-step 2.
+- Frames with 4.1–4.5 s `GC.Collect` and 17 s `EditorLoop` are Profiler snapshot saves (instrument overhead); exclude them.
+- Tool follow-ups (small, tooling owner):
+  - `uncovered_ms` is negative in most Editor hitch frames (−17 s … −20 ms) → in the Editor `EditorLoop` already contains `PlayerLoop`; use `frame − EditorLoop` in the Editor and `frame − PlayerLoop` in a Player.
+  - `battle_20261118_131216_070_summary.txt` has 12 frames in 103 s — check why the second CSV recorded almost nothing.
+- H2/H3 still open; the allocation ranking (who allocates the bytes that trigger the GC) is the next read.
+
 ## Agent handoff
 - Read `Tools/BattleAudit/README.md` first; reuse `BattlePerformanceCapture`, the rolling hitch capture and `battle_audit.py` instead of new parallel tools.
 - No gameplay/performance fixes in this plan; record findings in the owning optimization plan.

@@ -64,7 +64,7 @@ created: "2026-11-16\r"
 
 ### Next steps (ordered, 2026-11-18 — tools from `110bdf676`, see `Tools/BattleAudit/Attribution.md`)
 1. [ ] **Measure (user loads, agent captures):** Repeatable Attribution Run (4 min) on `fps-mid-game`, then on `fps-late-game-p2`; memory pair at minute 5/30 on a long replay; `battle_audit.py report <run>`. Write H1/H2/H3 verdicts into [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]].
-2. [ ] **~300 ms hitch every ~35 s:**
+2. [ ] **~300 ms hitch every ~35 s — H1 confirmed 2026-11-18: blocking `GC.Collect` 288–296 ms** (`Logs/BattleAudit/20261118T130915435Z-attribution`). Next: incremental GC experiment (needs approval) + cut allocations from the ranking. Original branches:
    - If H1 (blocking GC): experiment `gcIncremental: 1` on the same save (project setting — needs user approval), and cut the top allocators from the allocation ranking.
    - If H2 (Editor work): confirm in a Development Player; drop from gameplay targets.
 3. [ ] **GC 189 KB/frame:** fix the top 5 game callers from `allocation-ranking.json` (route through [[TODOs/Optimization/CPU_Allocation_And_Jobs_Plan]]).
