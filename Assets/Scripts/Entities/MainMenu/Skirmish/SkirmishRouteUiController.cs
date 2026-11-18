@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Popups;
+using EmpireAtWar.Services.Settings;
 using EmpireAtWar.Ui.Base;
 using VContainer;
 using EmpireAtWar.Lifecycle;
@@ -25,6 +26,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
 
         private readonly TeamColorPalette _teamColorPalette;
         private readonly SkirmishModel _model;
+        private readonly ISettingsService _settings;
         private readonly TooltipRequests _tooltips;
         private TooltipHoverSubscription _tooltipHover;
 
@@ -36,8 +38,9 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             IGameCommand gameCommand,
             ITooltipService tooltipService,
             SkirmishModel model, TeamColorPalette teamColorPalette,
-            IMenuFactionSfxService factionAudio, IPopupService popups) : base(uiService, cancelRouter)
+            IMenuFactionSfxService factionAudio, IPopupService popups, ISettingsService settings) : base(uiService, cancelRouter)
         {
+            _settings = settings;
             _planetPicker = new SkirmishPlanetPicker(uiService, popups);
             _teamColorPalette = teamColorPalette;
             _factionAudio = factionAudio;
@@ -65,6 +68,7 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         {
             if (_ui == null)
             {
+                RestoreAiOccupants();
                 _ui = CreateUi<SkirmishUi>();
                 _ui.SetModel(_model);
                 _ui.AssignPresenter(this);
@@ -114,6 +118,17 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
         public void SelectSlotOccupant(int slotIndex, int occupantIndex)
         {
             _model.SelectSlotOccupant(slotIndex, (SkirmishSlotOccupant)occupantIndex);
+            _settings.SetLobbyOccupant(slotIndex, occupantIndex);
+        }
+
+        private void RestoreAiOccupants()
+        {
+            for (int i = 1; i < _model.Slots.Count; i++)
+            {
+                int saved = _settings.Saved.Lobby.GetOccupantChoice(i);
+                if (saved >= (int)SkirmishSlotOccupant.Closed && saved <= (int)SkirmishSlotOccupant.AiUltraHard)
+                    _model.SelectSlotOccupant(i, (SkirmishSlotOccupant)saved);
+            }
         }
 
         public void SelectSlotFaction(int slotIndex, int factionIndex)

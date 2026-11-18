@@ -132,6 +132,10 @@ namespace EmpireAtWar.Tests.Editor
             public bool TryGetDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
                 PlacementThreatSnapshot threats, out Vector3 position) =>
                 TryGetDefaultZoneSpawnPosition(owner, shipType, out position);
+
+            public bool TryGetBestDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, out Vector3 position) =>
+                TryGetDefaultZoneSpawnPosition(owner, shipType, out position);
         }
 
         private sealed class EmptyEntityLocator : IEntityLocator

@@ -17,5 +17,9 @@ namespace EmpireAtWar.Services.ShipSpawning
         /// <summary>Finds a safe arrival point near the defended station or its fallback rally.</summary>
         bool TryGetDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
             PlacementThreatSnapshot threats, out Vector3 position);
+
+        /// <summary>Best open arrival point near the anchor when none is threat-free: farthest from the threats.</summary>
+        bool TryGetBestDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+            PlacementThreatSnapshot threats, out Vector3 position);
     }
 }

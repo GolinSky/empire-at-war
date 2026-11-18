@@ -18,6 +18,7 @@ namespace EmpireAtWar.Services.Settings
         [SerializeField] private InputSettingsData input = new InputSettingsData();
         [SerializeField] private GameplaySettingsData gameplay = new GameplaySettingsData();
         [SerializeField] private PrivacySettingsData privacy = new PrivacySettingsData();
+        [SerializeField] private LobbySettingsData lobby = new LobbySettingsData();
 
         [SerializeField] private int schemaVersion = CURRENT_SCHEMA_VERSION;
 
@@ -29,6 +30,7 @@ namespace EmpireAtWar.Services.Settings
         public InputSettingsData Input => input;
         public GameplaySettingsData Gameplay => gameplay;
         public PrivacySettingsData Privacy => privacy;
+        public LobbySettingsData Lobby => lobby;
 
         public string ToJson()
         {
@@ -53,7 +55,7 @@ namespace EmpireAtWar.Services.Settings
         {
             return display.Matches(other.display) && graphics.Matches(other.graphics) &&
                    audio.Matches(other.audio) && camera.Matches(other.camera) && input.Matches(other.input) && gameplay.Matches(other.gameplay) &&
-                   privacy.Matches(other.privacy);
+                   privacy.Matches(other.privacy) && lobby.Matches(other.lobby);
         }
 
         public SettingsData Clone()

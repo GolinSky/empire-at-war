@@ -202,6 +202,21 @@ namespace EmpireAtWar.Services.Settings
             return SettingsApplyResult.Committed;
         }
 
+        public SettingsApplyResult SetLobbyOccupant(int slotIndex, int occupant)
+        {
+            SettingsData changed = Saved.Clone();
+            changed.Lobby.SetOccupantChoice(slotIndex, occupant);
+            if (!TrySave(changed))
+            {
+                return SettingsApplyResult.SaveFailed;
+            }
+
+            Saved = changed;
+            Draft.Lobby.SetOccupantChoice(slotIndex, occupant);
+            SavedChanged?.Invoke();
+            return SettingsApplyResult.Committed;
+        }
+
         // Save before promoting, so a failed write never reports the draft as saved.
         private SettingsApplyResult Commit()
         {

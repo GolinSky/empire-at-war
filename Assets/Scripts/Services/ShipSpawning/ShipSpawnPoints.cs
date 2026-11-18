@@ -97,6 +97,30 @@ namespace EmpireAtWar.Services.ShipSpawning
             return false;
         }
 
+        public bool TryGetBestDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+            PlacementThreatSnapshot threats, out Vector3 position)
+        {
+            float radius = _data.HomeAreaRadius;
+            var centroid = threats.GetLocalCentroid(anchor.x, anchor.z, radius);
+            var threatCenter = new Vector2(centroid.X, centroid.Z);
+            bool found = false;
+            float bestDistance = float.NegativeInfinity;
+            position = default;
+            for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
+            {
+                Vector2 offset = Random.insideUnitCircle * radius;
+                var candidate = new Vector3(anchor.x + offset.x, 0f, anchor.z + offset.y);
+                if (!_spawnRule.CanSpawnShip(owner, shipType, candidate)) continue;
+                float distance = (new Vector2(candidate.x, candidate.z) - threatCenter).sqrMagnitude;
+                if (distance <= bestDistance) continue;
+                bestDistance = distance;
+                position = candidate;
+                found = true;
+            }
+
+            return found;
+        }
+
         private bool TryFindOpenPosition(PlayerId owner, ShipType shipType, float searchRadius, out Vector3 position)
         {
             if (_anchors.Count > 0)

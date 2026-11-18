@@ -16,7 +16,8 @@ namespace EmpireAtWar.Services.Enemy
     public sealed class EnemySiteConstructionController : ITickable
     {
         private const float DECISION_INTERVAL = 3f;
-        private const int MINIMUM_FLEET_SIZE = 2;
+        // Satellites spend the wallet the next ship needs, so they wait until a main force exists.
+        private const int MINIMUM_FLEET_SIZE = 6;
         private readonly ICaptureSiteDirectory _sites;
         private readonly ICaptureSitePresence _presence;
         private readonly ICaptureSiteConstruction _construction;
@@ -51,16 +52,20 @@ namespace EmpireAtWar.Services.Enemy
             // Mines fund everything else, so an empty owned mine keeps the credits until it is built.
             if (HasEmptyOwnedMine())
             {
-                _construction.TryBuildOnOwnedSite(_owner.Id);
+                bool built = _construction.TryBuildOnOwnedSite(_owner.Id);
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild", $"kind=mine;started={built}");
                 return;
             }
             if (CountOwnShips() < MINIMUM_FLEET_SIZE) return;
             // Satellite scores read the strategic snapshot, which is empty until the first strategic decision.
             if (!_snapshotBuilder.IsReady) return;
             var snapshot = _snapshotBuilder.Build();
-            if (_defense.TrySelect(snapshot, out var choice) &&
-                _construction.TryStartConstruction(choice.SiteIndex, _owner.Id, choice.Type))
+            if (!_defense.TrySelect(snapshot, out var choice)) return;
+            if (_construction.TryStartConstruction(choice.SiteIndex, _owner.Id, choice.Type))
                 EnemyAiTelemetry.RecordSatellite(_owner.Id, _owner.Faction, choice, snapshot.Money, _defense.TopChoices);
+            else
+                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild",
+                    $"kind=satellite;started=False;site={choice.SiteIndex};type={choice.Type}");
         }
 
         private bool HasEmptyOwnedMine()

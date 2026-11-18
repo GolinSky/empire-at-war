@@ -40,7 +40,8 @@ namespace EmpireAtWar.Services.Enemy
             for (int i = 0; i < _sites.Sites.Count; i++)
             {
                 ICaptureSite site = _sites.Sites[i];
-                bool threatened = IsThreatened(i, site, intel, Time.time);
+                // Satellite pads are defended by their own guns and squadrons; they never pull the ship fleet.
+                bool threatened = site.Kind != CaptureSiteKind.Satellite && IsThreatened(i, site, intel, Time.time);
                 long? blockingFacilityId = null;
                 float progress = site.CaptureProgress;
                 bool isMine = site.Kind == CaptureSiteKind.Mining;

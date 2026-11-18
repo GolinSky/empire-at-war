@@ -30,6 +30,22 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void FindAnchor_KeepsHeldAnchorUnlessAnotherHasClearlyMoreNeighbours()
+        {
+            List<FormationPoint> positions = new List<FormationPoint>
+            {
+                new FormationPoint(0f, 0f), new FormationPoint(300f, 0f), new FormationPoint(0f, 300f),
+                new FormationPoint(5000f, 0f)
+            };
+            // Ship 0 and 1 and 2 each have 2 neighbours; the earlier index wins the plain search.
+            Assert.That(FleetCohesion.FindAnchor(positions, RADIUS, heldIndex: 2), Is.EqualTo(2));
+
+            positions.Add(new FormationPoint(100f, 100f));
+            positions.Add(new FormationPoint(200f, 100f));
+            Assert.That(FleetCohesion.FindAnchor(positions, RADIUS, heldIndex: 3), Is.Not.EqualTo(3));
+        }
+
+        [Test]
         public void IsTogether_FailsWhileAnyShipIsOutsideTheBody()
         {
             List<FormationPoint> positions = new List<FormationPoint>

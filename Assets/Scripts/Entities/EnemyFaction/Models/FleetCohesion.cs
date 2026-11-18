@@ -34,6 +34,30 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             return anchor;
         }
 
+        /// <summary>Neighbours the best anchor must add over the held one before the anchor changes.</summary>
+        public const int ANCHOR_SWITCH_MARGIN = 2;
+
+        /// <summary>
+        /// Like <see cref="FindAnchor(IReadOnlyList{FormationPoint}, float)"/> but keeps <paramref name="heldIndex"/>
+        /// unless another ship has clearly more fleet-mates, so orders anchored to it are not re-issued every decision.
+        /// </summary>
+        public static int FindAnchor(IReadOnlyList<FormationPoint> positions, float radius, int heldIndex)
+        {
+            int best = FindAnchor(positions, radius);
+            if (heldIndex < 0 || heldIndex >= positions.Count || heldIndex == best) return best;
+            return CountNeighbours(positions, best, radius) >=
+                   CountNeighbours(positions, heldIndex, radius) + ANCHOR_SWITCH_MARGIN ? best : heldIndex;
+        }
+
+        private static int CountNeighbours(IReadOnlyList<FormationPoint> positions, int index, float radius)
+        {
+            float radiusSquared = radius * radius;
+            int neighbours = 0;
+            for (int j = 0; j < positions.Count; j++)
+                if (index != j && DistanceSquared(positions[index], positions[j]) <= radiusSquared) neighbours++;
+            return neighbours;
+        }
+
         /// <summary>True when every position is within <paramref name="radius"/> of the anchor; an empty fleet is together.</summary>
         public static bool IsTogether(IReadOnlyList<FormationPoint> positions, float radius)
         {

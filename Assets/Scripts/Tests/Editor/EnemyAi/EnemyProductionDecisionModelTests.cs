@@ -233,6 +233,21 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(result, Is.EqualTo(EnemyProductionCategory.Ship));
         }
 
+        [TestCase(true, true, EnemyProductionCategory.Ship)]
+        [TestCase(true, false, EnemyProductionCategory.None)]
+        [TestCase(false, true, EnemyProductionCategory.Level)]
+        public void UltraHardOutmatchedFleet_SavesForShipBeforeLevel(bool needsFleet, bool canBuildShip,
+            EnemyProductionCategory expected)
+        {
+            EnemyProductionCategory result = new EnemyProductionDecisionModel().Evaluate(
+                new EnemyProductionSnapshot(
+                    EnemyStrategicState.HuntFleet, EnemyAiDifficulty.UltraHard,
+                    3, 8, 5, 1, 2, 3, 1,
+                    true, true, canBuildShip, true, true, true, true, true, false, false, needsFleet: needsFleet));
+
+            Assert.That(result, Is.EqualTo(expected));
+        }
+
         [Test]
         public void UltraHardAtMiningTarget_ResearchesIncomeBeforeLevel()
         {

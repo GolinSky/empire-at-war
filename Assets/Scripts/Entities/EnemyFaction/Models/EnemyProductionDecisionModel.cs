@@ -43,6 +43,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool CanOrderShips { get; }
         public bool IsStationCritical { get; }
 
+        /// <summary>Fleet is small or outmatched: ships are saved for ahead of levels, combat research and defense.</summary>
+        public bool NeedsFleet { get; }
+
         public EnemyProductionSnapshot(
             EnemyStrategicState strategicState,
             EnemyAiDifficulty difficulty,
@@ -64,7 +67,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool canResearchIncome = false,
             bool canResearchCombat = false,
             bool canOrderShips = true,
-            bool isStationCritical = false)
+            bool isStationCritical = false,
+            bool needsFleet = false)
         {
             StrategicState = strategicState;
             Difficulty = difficulty;
@@ -87,6 +91,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             CanResearchCombat = canResearchCombat;
             CanOrderShips = canOrderShips;
             IsStationCritical = isStationCritical;
+            NeedsFleet = needsFleet;
         }
     }
 
@@ -267,6 +272,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             if (snapshot.CanResearchIncome)
             {
                 return EnemyProductionCategory.Research;
+            }
+
+            if (snapshot.NeedsFleet && snapshot.HasShipOption)
+            {
+                return snapshot.CanBuildShip
+                    ? EnemyProductionCategory.Ship
+                    : EnemyProductionCategory.None;
             }
 
             if (IsLevelDue(snapshot, EnemyAiDifficultyProfile.Get(snapshot.Difficulty)) &&

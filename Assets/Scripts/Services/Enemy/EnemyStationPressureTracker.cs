@@ -20,6 +20,7 @@ namespace EmpireAtWar.Services.Enemy
         private float _windowLoss;
         private float _startedAt;
 
+        public long StationId => _stationId;
         public bool HasPressure { get; private set; }
         public float DurabilityFraction => _maximumDurability > 0f ? _durability / _maximumDurability : 1f;
         public float EstimatedTimeToLossSeconds { get; private set; } = float.PositiveInfinity;

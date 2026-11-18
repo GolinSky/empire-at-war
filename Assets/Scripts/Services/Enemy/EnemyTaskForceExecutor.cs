@@ -32,6 +32,10 @@ namespace EmpireAtWar.Services.Enemy
         private GameEntity _defenseStation;
         private const float INTERCEPT_DISTANCE = 1500f;
         private const float NO_FIRING_SECONDS = 8f;
+        private const float CAPTURE_EDGE_FRACTION = 0.9f;
+        private const int READY_START_QUARTERS = 3;
+        private const int READY_KEEP_QUARTERS = 2;
+        private const float ANCHOR_DPS_SWITCH_FACTOR = 1.25f;
         private const float DEFENSE_POINT_CHANGE_SQUARED = 200f * 200f;
         private readonly Dictionary<IShipEntity, Vector3> _defensePoints = new Dictionary<IShipEntity, Vector3>();
         private readonly Dictionary<IShipEntity, GameEntity> _defenseTargets = new Dictionary<IShipEntity, GameEntity>();
@@ -394,13 +398,14 @@ namespace EmpireAtWar.Services.Enemy
                 bool stalled = distance > radius && now - approach.ImprovedAt >= CAPTURE_APPROACH_STALL_SECONDS;
                 if (sameTarget && !wasEscort && ship.CurrentOrder == UnitOrderType.AttackMove && (diverted || stalled))
                 {
-                    _unitOrderService.IssueMove(new[] { context.Receivers[ship] }, capturePoint);
+                    // Stay in combat posture: an attack-move to the circle edge, never a Move that ignores hostiles.
+                    Vector3 edgeDirection = offset.sqrMagnitude > Mathf.Epsilon ? offset.normalized : Vector3.right;
+                    _unitOrderService.IssueAttackMove(new[] { context.Receivers[ship] },
+                        _captureTarget + edgeDirection * radius * CAPTURE_EDGE_FRACTION);
                     ActionReason = stalled ? "Capture approach stalled outside the objective; move into the circle." :
                         "Capture diversion exceeded its leash; return to the objective.";
                     continue;
                 }
-                if (sameTarget && !wasEscort && ship.CurrentOrder == UnitOrderType.Move && distance > radius)
-                    continue;
                 if (!captureGroups.TryGetValue(capturePoint, out List<GameEntity> receivers))
                 {
                     receivers = new List<GameEntity>();
@@ -553,10 +558,23 @@ namespace EmpireAtWar.Services.Enemy
             }
             else _attackForce.Clear();
             IShipEntity anchor = SplitBody(attackers, count);
-            bool ready = !targeted || _body.Count * 4 >= count * 3 && _attackForce.IsReady(context, _body);
+            // A force that was ready for this target keeps attacking while most of the body stays together.
+            int requiredQuarters = _wasReady && _readyTarget == target ? READY_KEEP_QUARTERS : READY_START_QUARTERS;
+            bool ready = !targeted || _body.Count * 4 >= count * requiredQuarters && _attackForce.IsReady(context, _body);
+            _wasReady = ready && targeted;
+            _readyTarget = target;
             if (targeted && ready)
+            {
+                float anchorDps = _attackForce.TargetDps(context, anchor);
                 foreach (IShipEntity ship in _body)
-                    if (_attackForce.TargetDps(context, ship) > _attackForce.TargetDps(context, anchor)) anchor = ship;
+                {
+                    float dps = _attackForce.TargetDps(context, ship);
+                    if (dps <= anchorDps * ANCHOR_DPS_SWITCH_FACTOR) continue;
+                    anchor = ship;
+                    anchorDps = dps;
+                }
+                _heldAnchor = anchor;
+            }
             RallyStragglers(context, anchor, releaseBody: !targeted);
             if (ready)
             {
@@ -676,24 +694,27 @@ namespace EmpireAtWar.Services.Enemy
             int count, GameEntity target, out bool rebuilt)
         {
             bool rebuild = _battleTarget != target;
+            if (rebuild) _battleOffsets.Clear();
+            // A new target re-slots everyone; ships joining the same target only get slots of their own, so
+            // ships already engaged keep their orders.
+            _positions.Clear();
+            _radii.Clear();
+            _newSlotShips.Clear();
             for (int i = 0; i < count; i++)
-                rebuild |= !_battleOffsets.ContainsKey(ships[i]);
-            if (rebuild)
             {
-                _battleOffsets.Clear();
-                _positions.Clear();
-                _radii.Clear();
-                for (int i = 0; i < count; i++)
-                {
-                    _positions.Add(ToPoint(ships[i].WorldPosition));
-                    _radii.Add(ships[i].NavigationRadius);
-                }
+                if (_battleOffsets.ContainsKey(ships[i])) continue;
+                _newSlotShips.Add(ships[i]);
+                _positions.Add(ToPoint(ships[i].WorldPosition));
+                _radii.Add(ships[i].NavigationRadius);
+            }
+            if (_newSlotShips.Count > 0)
+            {
                 BattleFormationModel.CalculateDestinations(_positions, _radii,
                     default, _destinations,
                     target.TryGetFacade(out INavigationFootprintFacade footprint)
                         ? footprint.NavigationRadius : 0f);
-                for (int i = 0; i < count; i++)
-                    _battleOffsets.Add(ships[i], _destinations[i]);
+                for (int i = 0; i < _newSlotShips.Count; i++)
+                    _battleOffsets.Add(_newSlotShips[i], _destinations[i]);
             }
             rebuilt = rebuild;
             _battleTarget = target;
@@ -706,6 +727,12 @@ namespace EmpireAtWar.Services.Enemy
             return offsets;
         }
 
+        // Kept across decisions so anchored guard/attack orders are not re-issued by a one-ship fluctuation.
+        private IShipEntity _heldAnchor;
+        private bool _wasReady;
+        private GameEntity _readyTarget;
+        private readonly List<IShipEntity> _newSlotShips = new List<IShipEntity>();
+
         /// <summary>
         /// Splits the first <paramref name="count"/> ships into the main body around the anchor and the stragglers.
         /// Returns the anchor ship.
@@ -716,7 +743,11 @@ namespace EmpireAtWar.Services.Enemy
             _stragglers.Clear();
             _cohesionPoints.Clear();
             for (int i = 0; i < count; i++) _cohesionPoints.Add(ToPoint(ships[i].WorldPosition));
-            int anchorIndex = FleetCohesion.FindAnchor(_cohesionPoints, FleetCohesion.RADIUS);
+            int heldIndex = -1;
+            for (int i = 0; i < count; i++)
+                if (ships[i] == _heldAnchor) heldIndex = i;
+            int anchorIndex = FleetCohesion.FindAnchor(_cohesionPoints, FleetCohesion.RADIUS, heldIndex);
+            _heldAnchor = ships[anchorIndex];
             FormationPoint anchorPoint = _cohesionPoints[anchorIndex];
             for (int i = 0; i < count; i++)
             {

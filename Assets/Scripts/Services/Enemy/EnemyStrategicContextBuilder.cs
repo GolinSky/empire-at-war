@@ -700,6 +700,8 @@ namespace EmpireAtWar.Services.Enemy
                 if (ReferenceEquals(entry.Entity, _raidTarget) && GetIonCost(position) == 0f)
                     keepsPrevious = true;
                 float distance = GetTargetScore(origin, position);
+                // A target the hostile fleet reaches before this one is a race the raid loses.
+                if (HostileReachesFirst(origin, position, now)) distance *= RAID_CONTESTED_SCORE_FACTOR;
                 if (closest != null && (closestIsMine && !isMine ||
                     closestIsMine == isMine && distance >= closestDistance))
                 {
@@ -714,6 +716,19 @@ namespace EmpireAtWar.Services.Enemy
             // Preserve an existing raid unless a mining target becomes available.
             return keepsPrevious && (!closestIsMine || _raidTarget.TryGetFacade(out IMiningFacilityFacade _))
                 ? _raidTarget : closest;
+        }
+
+        private bool HostileReachesFirst(Vector3 origin, Vector3 position, float now)
+        {
+            float ownDistance = PlanarDistance(origin, position);
+            foreach (HostileSighting sighting in _intel.Sightings)
+            {
+                if (!_playerRoster.IsHostile(_owner.Id, sighting.Owner) || _intel.GetConfidence(sighting, now) <= 0f)
+                    continue;
+                float distance = PlanarDistance(position, ToVector(sighting.Position));
+                if (distance <= RAID_CONTEST_RADIUS && distance < ownDistance) return true;
+            }
+            return false;
         }
 
         private bool IsDefended(long entityId, Vector3 position, float now)
@@ -1024,7 +1039,6 @@ namespace EmpireAtWar.Services.Enemy
 
         private float GetCaptureScore(Vector3 origin, EnemyCaptureObjective candidate)
         {
-            if (!_preferStrategicObjectives) return GetTargetScore(origin, candidate.Position) - candidate.PriorityBonus;
             // Value is measured in equivalent travel distance. Relays open deployment lanes; mines fund production.
             float value = candidate.Kind == EnemyCaptureObjectiveType.ReinforcementZone
                 ? Mathf.Max(0f, 400f - PlanarDistance(_strategicCenter, candidate.Position) * 0.25f)
@@ -1105,8 +1119,34 @@ namespace EmpireAtWar.Services.Enemy
             _routeSegment.y = 0f;
             _routeDestinationRadius = LOCAL_ENGAGEMENT_RADIUS + radius;
             _routeEscaping = escaping;
+            if (IsInsideStaticDefense(origin, destination, radius))
+            {
+                _objectiveSafetyReason = "hostile: the route or destination is inside a visible static defense range.";
+                return false;
+            }
             _teamPicture.BuildKnownFromConfident(_objectiveThreat, _includeRouteThreat);
             return IsThreatSafe(_objectiveThreat, safetyScale);
+        }
+
+        /// <summary>Armed hostile structures (satellites, battle asteroids) are not units, so intel never lists them.</summary>
+        private bool IsInsideStaticDefense(Vector3 origin, Vector3 destination, float radius)
+        {
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = _worldSnapshot.RaidStructures;
+            Vector3 segment = destination - origin;
+            segment.y = 0f;
+            float lengthSquared = segment.sqrMagnitude;
+            for (int i = 0; i < structures.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (!_playerRoster.IsHostile(_owner.Id, entry.Owner) || entry.Entity.HealthModel.IsDestroyed ||
+                    !entry.Entity.TryGetFacade(out IUnitCombatObserverFacade combat) || combat.WeaponRange <= 0f ||
+                    !_vision.IsVisible(_owner.Id, entry.Entity)) continue;
+                Vector3 offset = entry.Position - origin;
+                offset.y = 0f;
+                float t = lengthSquared > 0f ? Mathf.Clamp01(Vector3.Dot(offset, segment) / lengthSquared) : 0f;
+                if (PlanarDistance(entry.Position, origin + segment * t) <= combat.WeaponRange + radius) return true;
+            }
+            return false;
         }
 
         private bool IsThreatSafe(ForceComposition threat, float safetyScale)
@@ -1267,10 +1307,33 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
+        private const float STATION_DAMAGED_FRACTION = 0.98f;
+        private const float RAID_CONTEST_RADIUS = 2500f;
+        private const float RAID_CONTESTED_SCORE_FACTOR = 4f;
+
         private GameEntity FindOwnBase(Vector3 origin)
         {
             PlayerId productionHost = _productionAccess.ProductionHost;
-            return FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == productionHost, origin);
+            // A station already under pressure stays tracked until it is quiet or lost; the tracker resets per station.
+            GameEntity tracked = null;
+            GameEntity mostDamaged = null;
+            float lowestFraction = STATION_DAMAGED_FRACTION;
+            IReadOnlyList<AiWorldSnapshot.Entry> all = _worldSnapshot.AllLiving;
+            for (int i = 0; i < all.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = all[i];
+                if (!entry.HasUnits || entry.Entity.HealthModel.IsDestroyed || entry.Owner != productionHost ||
+                    !EntityRoles.IsPlayerBase(entry.Entity)) continue;
+                if (_stationPressure.HasPressure && entry.Id == _stationPressure.StationId) tracked = entry.Entity;
+                float maximum = entry.Entity.GetFacade<IStationDurabilityFacade>().MaximumDurability;
+                float fraction = maximum > 0f
+                    ? (entry.Entity.HealthModel.Hull + entry.Entity.HealthModel.Shields) / maximum : 1f;
+                if (fraction >= lowestFraction) continue;
+                lowestFraction = fraction;
+                mostDamaged = entry.Entity;
+            }
+            if (tracked != null) return tracked;
+            return mostDamaged ?? FindClosestEntity(EntityRoles.IsPlayerBase, owner => owner == productionHost, origin);
         }
 
         private Vector3? FindForwardStationFallback(GameEntity station, Vector3 origin)

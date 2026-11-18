@@ -58,7 +58,7 @@ follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 - `ShipSpawnPoints.TryGetDefenseSpawnPosition` rejects any point within remembered hostile range + `HOSTILE_MARGIN = 100` (`EnemyRecoveryAnchor.cs:144-150`); a fleet at the station blocks all.
 - No rally → `TryGetDefaultZoneSpawnPosition` = original home zone, even when the only living station is elsewhere.
 - Log: 386–425 s (3 ships), 607.7–713.2 s (7 ships, ~16.6k credits).
-- [x] Bounded hold: `MAX_DEPLOYMENT_HOLD_SECONDS = 8` in `EnemyFactionController`, then spawn ignoring hostile range (`TryGetSpawnPositionNear` → random); event `deploymentForced`. Best-scored point not done.
+- [x] Bounded hold: `MAX_DEPLOYMENT_HOLD_SECONDS = 8` in `EnemyFactionController`, then spawn ignoring hostile range (`TryGetSpawnPositionNear` → random); event `deploymentForced`. Best point: `TryGetBestDefenseSpawnPosition` (farthest from threat centroid) used by the forced path.
 - [ ] Try every living owned station before giving up.
 - [ ] Without a rally, spawn at the nearest living owned station, not the fixed home zone.
 - Tests: `EnemyAi` (`EnemyFactionControllerLifecycleTests`), `Ships` (`ShipSpawnPointsTests`). Not run.
@@ -77,54 +77,54 @@ follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 - Raid/attack execution recomputes the anchor every decision (`EnemyTaskForceExecutor.SplitBody` → `FleetCohesion.FindAnchor`, then the highest-`TargetDps` ship).
 - `GuardSupport`/`RallyStragglers` re-issue Guard whenever the anchor changes; `ready` toggles Attack ↔ Guard; a new strike ship rebuilds `BattleOffsets` → re-issues Attack to all strike ships.
 - Log: 85 order replacements in 49 s (246–295 s) for ~13 ships. Each `Issue` resets approach and weapon targets.
-- [ ] Sticky anchor: keep it while alive and inside the body; switch only by a margin.
-- [ ] Hysteresis on `ready` and on strike/screen roles.
-- [ ] Adding a ship must not rebuild slots for ships already engaged.
+- [x] Sticky anchor: keep it while alive and inside the body; switch only by a margin. `FleetCohesion.FindAnchor(…, heldIndex)` margin 2; DPS anchor switch factor 1.25.
+- [x] Hysteresis on `ready` and on strike/screen roles. ready: start 3/4, keep 2/4 of body.
+- [x] Adding a ship must not rebuild slots for ships already engaged. `BattleOffsets` slots only new ships.
 - Tests: `EnemyAi` (`EnemyUnitCommanderTests`). Not run.
 
 ### P1 — Station loss not seen while a second station exists
 - `FindOwnBase(origin)` picks the station closest to the fleet center; `EnemyStationPressureTracker` resets on id change.
-- [ ] Track pressure per owned station; station selection = most threatened/damaged living station, not nearest.
+- [x] Track pressure per owned station; station selection = most threatened/damaged living station, not nearest. `FindOwnBase` keeps the pressured station, else most damaged (<98 %), else nearest.
 - Tests: `EnemyAi`. Not run.
 
 ### P1 — Recovery retreat overrides station defense
 - `EnemyStrategicDecisionModel.Evaluate:303-314`: in recovery mode with low local advantage, state becomes `RetreatValue`, replacing `DefendBase`.
 - Log: anchor relay at (1265.8, 1535.1), ~2,400 units from the attacked station; 8 DefendBase↔RetreatValue flips 328–394 s.
-- [ ] Station pressure wins over the recovery override; retreat target = the threatened station, not a far relay.
+- [x] Station pressure wins over the recovery override; retreat target = the threatened station, not a far relay. recovery override skipped while a living station is under pressure and state is `DefendBase`.
 - Tests: `EnemyAi` (`EnemyDecisionStabilityTests`). Not run.
 
 ### P1 — Raid against a mine under construction
 - 247–294 s: 9 strike ships on mine `101`; its hull rose 292 → 3,700 (construction finished); ships started 1,200–1,700 units away and arrived with the human fleet.
-- [ ] Raid target choice weights travel time and nearby hostile fleet arrival, not only "exposed income".
+- [x] Raid target choice weights travel time and nearby hostile fleet arrival, not only "exposed income". contested targets ×4 score.
 - Tests: `EnemyAi`. Not run.
 
 ### P1 — Capture scoring and satellite pads
-- [ ] Apply relay/mine value in `GetCaptureScore` to all groups, not only `IsMainForce`.
-- [ ] Owned satellite pads are not threatened objectives for ship groups (squadron assignments may keep them).
-- [ ] Capture stall: replace `stalled → IssueMove` (`EnemyTaskForceExecutor.cs:394-403`) with a re-issued AttackMove to the circle edge; never lock a ship in Move while `distance > radius`.
+- [x] Apply relay/mine value in `GetCaptureScore` to all groups, not only `IsMainForce`.
+- [x] Owned satellite pads are not threatened objectives for ship groups (squadron assignments may keep them).
+- [x] Capture stall: `stalled` → AttackMove to circle edge (0.9 radius); Move-lock removed.
 - Tests: `EnemyAi`, `Capture`. Not run.
 
 ### P1 — Threat model ignores defenses
 - AI intel records only entities with `IUnitTypeFacade` (ships, squadrons) (`AiWorldSnapshot.cs:228`); satellites, battle asteroids, stations are invisible to safety checks.
-- [ ] Add static defenses with their weapon range to objective/route threat.
+- [x] Add static defenses with their weapon range to objective/route threat. `IsInsideStaticDefense` in `IsRouteSafe` (visible armed structures).
 - Tests: `EnemyAi`. Not run.
 
 ### P2 — Production priority on UltraHard
 - `EvaluateUltraHard` puts Ship last; Level 4 bought at 440.7 s at fleet ratio 0.47.
-- [ ] Ship reservation: when fleet ratio < 1 or ships < main-force size, save for the selected ship; levels/research/defense wait.
-- [ ] Share the reservation with `EnemySiteConstructionController` (satellites spend the same wallet).
-- [ ] Critical pressure: cap squadron purchases instead of lifting the cap.
+- [x] Ship reservation: when fleet ratio < 1 or ships < main-force size, save for the selected ship; levels/research/defense wait. snapshot `NeedsFleet` (ships < 6 or advantage < 1).
+- [x] Share the reservation with `EnemySiteConstructionController` (satellites spend the same wallet). satellites need 6 ships.
+- [x] Critical pressure: cap squadron purchases instead of lifting the cap. cap ×2 + 2.
 - Tests: `EnemyAi` (`EnemyProductionDecisionModelTests`). Not run; no stat-pinning asserts.
 
 ### P2 — Missing expansion behaviour
 - AI builds satellites only for threatened points or mining income; it never uses a satellite on a held relay to push to nearby mines (the human's winning pattern).
 - [ ] Add a satellite-led expansion option after capturing a relay/site.
-- [ ] Log `EnemySiteConstructionController` attempts and failures (currently no telemetry).
+- [x] Log `EnemySiteConstructionController` attempts and failures (currently no telemetry). event `siteBuild`.
 - Tests: `EnemyAi`, `Capture`. Not run.
 
 ### P2 — Lobby difficulty
 - AI slot defaults to `AiMedium` and is not remembered.
-- [ ] Persist the last AI difficulty per slot.
+- [x] Persist the last AI difficulty per slot. `LobbySettingsData` + `ISettingsService.SetLobbyOccupant`; offline lobby only.
 - Tests: `Ui`. Not run.
 
 ## Order
@@ -142,7 +142,8 @@ follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 - `Entities/MainMenu/Skirmish/SkirmishModel.cs`
 
 ## Progress 2026-11-18
-- Done: loss-report crash, bounded deploy hold, attack-move after kill. Not done: other P0 sub-items marked open, all P1/P2. Tests not run (local override).
+- Done: all items checked above. Not done (remain unchecked): nearest-living-station spawn and trying every station, team-vision replacement search, group-shared replacement, idle ships pursuing attackers, satellite-led expansion option, online lobby difficulty persistence.
+- Tests added/updated: `EndGameLossCatalogTests`, `FleetCohesionTests`, `EnemyProductionDecisionModelTests`, `EnemyFactionControllerLifecycleTests`, `LobbySettingsDataTests`. Not run (local override).
 
 ## Open Decisions
 - Deploy hold length before forced spawn.

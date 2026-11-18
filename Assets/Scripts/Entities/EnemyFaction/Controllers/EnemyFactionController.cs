@@ -335,7 +335,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     if (forced)
                     {
                         // A threat near the station must not hold a paid ship forever: arrive where the spawn rule allows.
-                        foundPosition = hasRally &&
+                        foundPosition = hasRally && defendHome &&
+                                        _shipSpawnPoints.TryGetBestDefenseSpawnPosition(home, shipUnitRequest.Key,
+                                            rally, _defenseDeploymentThreats, out position) ||
+                                        hasRally &&
                                         _shipSpawnPoints.TryGetSpawnPositionNear(home, shipUnitRequest.Key, rally, out position) ||
                                         _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipUnitRequest.Key, out position);
                         if (foundPosition)

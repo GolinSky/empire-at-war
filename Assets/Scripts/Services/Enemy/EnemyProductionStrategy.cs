@@ -27,6 +27,8 @@ namespace EmpireAtWar.Services.Enemy
         private const float MINIMUM_PRODUCTION_INTERVAL = 1f;
 
         private const int SHIPS_PER_SQUADRON = 2;
+        private const int CRITICAL_EXTRA_SQUADRONS = 2;
+        private const int FLEET_RESERVATION_SHIP_COUNT = 6;
 
         /// <summary>Active ships per mining facility above the difficulty's minimum.</summary>
         private const int SHIPS_PER_MINING_FACILITY = 3;
@@ -187,7 +189,7 @@ namespace EmpireAtWar.Services.Enemy
             // and station upgrades.
             // With no ship type unlocked or the station critical, lift the cap for immediate reinforcements.
             bool canOrderShips = CanOrderAnyShip();
-            bool hasSquadronRoom = _stationPressure.IsStationCritical || HasSquadronRoom(shipCount);
+            bool hasSquadronRoom = HasSquadronRoom(shipCount);
             bool hasCounter = TrySelectCounterUnit(
                 !_stationPressure.IsStationCritical &&
                 canOrderShips && (_decisionModel.NeedsMinimumFleet(shipCount) || !hasSquadronRoom),
@@ -283,7 +285,8 @@ namespace EmpireAtWar.Services.Enemy
                     canResearchIncome,
                     canResearchCombat,
                     canOrderShips,
-                    _stationPressure.IsStationCritical));
+                    _stationPressure.IsStationCritical,
+                    NeedsFleet(shipCount)));
 
             bool buildSquadron = !_stationPressure.IsStationCritical && !hasCounter &&
                                  category == EnemyProductionCategory.Ship &&
@@ -586,9 +589,15 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>True while bought squadrons number fewer than one per <see cref="SHIPS_PER_SQUADRON"/> ships.</summary>
         /// <remarks>Carrier hangars count toward the cap so carriers are no way around it.</remarks>
+        /// <summary>The fleet is below main-force size or outmatched by what the team has seen.</summary>
+        private bool NeedsFleet(int shipCount) => shipCount < FLEET_RESERVATION_SHIP_COUNT ||
+            !_hostileForce.IsEmpty && CombatMatchup.Advantage(_ownForce, _hostileForce) < 1f;
+
         private bool HasSquadronRoom(int shipCount)
         {
             int cap = shipCount / SHIPS_PER_SQUADRON;
+            // A critical station may buy more wings for immediate defense, but still within a cap.
+            if (_stationPressure.IsStationCritical) cap = cap * 2 + CRITICAL_EXTRA_SQUADRONS;
             return cap > 0 && CountReservedSquadrons() + CountHangarSquadrons() < cap;
         }
 

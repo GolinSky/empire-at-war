@@ -84,7 +84,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             var model = new SkirmishModel();
             var audio = new SelectionAudio();
-            var controller = new SkirmishRouteUiController(null, null, null, null, model, null, audio, new UnexpectedPopupService());
+            var controller = new SkirmishRouteUiController(null, null, null, null, model, null, audio, new UnexpectedPopupService(), null);
             controller.SelectSlotFaction(0, (int)FactionType.Republic);
             controller.SelectSlotFaction(1, (int)FactionType.Empire);
             Assert.That(audio.Count, Is.Zero);
@@ -115,7 +115,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             var model = new SkirmishModel();
             var audio = new SelectionAudio();
-            _ = new SkirmishRouteUiController(null, null, null, null, model, null, audio, new UnexpectedPopupService());
+            _ = new SkirmishRouteUiController(null, null, null, null, model, null, audio, new UnexpectedPopupService(), null);
             model.SelectSlotFaction(0, FactionType.Empire);
             Assert.That(audio.Count, Is.Zero);
         }

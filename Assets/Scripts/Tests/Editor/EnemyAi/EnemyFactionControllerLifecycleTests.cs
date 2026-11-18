@@ -836,6 +836,14 @@ namespace EmpireAtWar.Tests.Editor
                 position = default;
                 return false;
             }
+
+            public bool TryGetBestDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, out Vector3 position)
+            {
+                Calls.Add("best");
+                position = default;
+                return false;
+            }
         }
 
         private sealed class BlockedShipSpawnPoints : IShipSpawnPoints
@@ -858,6 +866,10 @@ namespace EmpireAtWar.Tests.Editor
                 TryGetRandomSpawnPosition(owner, shipType, out position);
 
             public bool TryGetDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, out Vector3 position) =>
+                TryGetRandomSpawnPosition(owner, shipType, out position);
+
+            public bool TryGetBestDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
                 PlacementThreatSnapshot threats, out Vector3 position) =>
                 TryGetRandomSpawnPosition(owner, shipType, out position);
         }

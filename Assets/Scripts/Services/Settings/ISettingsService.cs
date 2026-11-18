@@ -41,5 +41,8 @@ namespace EmpireAtWar.Services.Settings
 
         /// <summary>Saves the show-hints flag at once (in-match "Turn off hints") without touching other draft edits.</summary>
         SettingsApplyResult SetShowHints(bool isOn);
+
+        /// <summary>Saves the occupant chosen for a skirmish lobby row at once, without touching other draft edits.</summary>
+        SettingsApplyResult SetLobbyOccupant(int slotIndex, int occupant);
     }
 }
