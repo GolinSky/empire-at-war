@@ -120,6 +120,8 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>Hostiles this close to the fleet center can engage it soon: twice the common ship weapon range (500).</summary>
         private const float LOCAL_ENGAGEMENT_RADIUS = 1000f;
+        /// <summary>Seconds after station damage during which its attackers are revealed to the team.</summary>
+        private const float DAMAGE_REVEAL_SECONDS = 5f;
 
         private readonly IShipService _shipService;
         private ISet<string> _reservedCaptureObjectives;
@@ -517,7 +519,8 @@ namespace EmpireAtWar.Services.Enemy
                 recoveryMode: _recovery.IsActive,
                 recoveryCapturePending: captureObjective != null && _recovery.PendingCaptureObjective != null &&
                     captureObjective.Id == _recovery.PendingCaptureObjective.Id,
-                withdrawFromForwardStation: forwardFallback.HasValue);
+                withdrawFromForwardStation: forwardFallback.HasValue,
+                isStationCritical: _stationPressure.IsStationCritical);
             _receivers.Clear();
             _shipForces.Clear();
             _targetForces.Clear();
@@ -1170,6 +1173,7 @@ namespace EmpireAtWar.Services.Enemy
         private GameEntity BuildBaseThreat(GameEntity ownBase)
         {
             _stationThreats.Clear();
+            if (ownBase != null) RevealStationAttackers(ownBase);
             GameEntity target = null;
             float closest = float.MaxValue;
             if (ownBase != null)
@@ -1184,7 +1188,8 @@ namespace EmpireAtWar.Services.Enemy
                         hostile.HealthModel.IsDestroyed || !hostile.HealthModel.HasUnits || hostile.IsCloaked() ||
                         !hostile.TryGetFacade(out IUnitCombatObserverFacade combat)) continue;
                     Vector3 position = hostile.GetFacade<IEntityTransformFacade>().Transform.position;
-                    if (!_vision.IsVisible(_owner.Id, hostile)) continue;
+                    // A unit attacking the station is known by its damage even without current vision.
+                    if (!_vision.IsVisible(_owner.Id, hostile) && !combat.IsAttacking(ownBase)) continue;
                     float hostileRadius = hostile.TryGetFacade(out INavigationFootprintFacade body) ? body.NavigationRadius : 0f;
                     float distance = PlanarDistance(position, center);
                     if (!CanThreatenStation(distance, footprint, hostileRadius, combat.WeaponRange)) continue;
@@ -1216,6 +1221,27 @@ namespace EmpireAtWar.Services.Enemy
                 }
             }
             return target;
+        }
+
+        /// <summary>
+        /// Recent station damage proves its source exists: hostile units now attacking the station are reported to
+        /// the team intel even when no scout or radar currently sees them.
+        /// </summary>
+        private void RevealStationAttackers(GameEntity ownBase)
+        {
+            float now = Time.time;
+            if (now - _stationPressure.LastDamageTime > DAMAGE_REVEAL_SECONDS) return;
+            IReadOnlyList<AiWorldSnapshot.Entry> units = _worldSnapshot.LivingUnits;
+            for (int i = 0; i < units.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = units[i];
+                if (!entry.HasUnitType || !_playerRoster.IsHostile(_owner.Id, entry.Owner) ||
+                    entry.Entity.HealthModel.IsDestroyed ||
+                    !entry.Entity.TryGetFacade(out IUnitCombatObserverFacade combat) ||
+                    !combat.IsAttacking(ownBase)) continue;
+                _intel.Report(new HostileSighting(entry.Id, entry.UnitTypeId, entry.Owner, ToPoint(entry.Position),
+                    entry.Hull, entry.Shields, entry.OffenseScale, now));
+            }
         }
 
         private GameEntity FindOwnBase(Vector3 origin)

@@ -20,6 +20,9 @@ namespace EmpireAtWar.Models.Economy
         public event Action<float> OnMoneyChanged;
 
         public float Money => _money;
+
+        /// <summary>Starting money plus everything added since; spending does not reduce it.</summary>
+        public float TotalEarned { get; private set; }
         /// <summary>Seconds until the next income payment; zero pays on the next running tick.</summary>
         public float IncomeTimeLeft { get; private set; }
 
@@ -43,10 +46,12 @@ namespace EmpireAtWar.Models.Economy
             }
 
             _money = startingMoney;
+            TotalEarned = startingMoney;
         }
 
         public void AddMoney(float amount)
         {
+            if (amount > 0f) TotalEarned += amount;
             SetMoney(_money + amount);
         }
 
@@ -77,6 +82,7 @@ namespace EmpireAtWar.Models.Economy
         public void Restore(float money, float incomeTimeLeft)
         {
             IncomeTimeLeft = incomeTimeLeft;
+            TotalEarned = Math.Max(TotalEarned, money);
             SetMoney(money);
         }
 

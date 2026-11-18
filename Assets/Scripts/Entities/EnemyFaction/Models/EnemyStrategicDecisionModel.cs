@@ -56,6 +56,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool RecoveryCapturePending { get; }
         public bool WithdrawFromForwardStation { get; }
 
+        /// <summary>The station is losing hull fast enough that the whole fleet must defend it.</summary>
+        public bool IsStationCritical { get; }
+
         public EnemyStrategicSnapshot(
             BattleVictoryCondition victoryCondition,
             EnemyAiDifficulty difficulty,
@@ -76,8 +79,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool hasSafeRetreat = true,
             bool hasEconomyRaidTarget = false,
             float localRaw = float.NaN, float fleetRaw = float.NaN, bool recoveryMode = false,
-            bool recoveryCapturePending = false, bool withdrawFromForwardStation = false)
+            bool recoveryCapturePending = false, bool withdrawFromForwardStation = false,
+            bool isStationCritical = false)
         {
+            IsStationCritical = isStationCritical;
             VictoryCondition = victoryCondition;
             Difficulty = difficulty;
             OwnShipCount = ownShipCount;
@@ -130,6 +135,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public const float RETREAT_EXIT_SCALE = 1.25f;
         /// <summary>Fleet advantage, as a multiple of the attack ratio, at which attacking outranks capturing.</summary>
         public const float PRESS_ADVANTAGE_SCALE = 2f;
+        /// <summary>Smallest fleet share sent to defend a base that is not yet critical.</summary>
+        public const float MIN_DEFENSE_SHARE = 0.34f;
+        /// <summary>Defenders sent per unit of attacker strength, so the detachment outmatches the raid.</summary>
+        public const float DEFENSE_MARGIN = 1.5f;
         private const string RECOVERING_REASON =
             "Regrouping at a safe anchor before selecting a viable local objective.";
 
@@ -362,7 +371,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
             return new EnemyStrategicDecision(
                 state: state,
-                committedShipCount: CalculateCommittedShipCount(state, snapshot.OwnShipCount, profile),
+                committedShipCount: CalculateCommittedShipCount(state, snapshot, profile),
                 reason: reason);
         }
 
@@ -372,9 +381,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         private static int CalculateCommittedShipCount(
             EnemyStrategicState state,
-            int ownShipCount,
+            EnemyStrategicSnapshot snapshot,
             EnemyAiDifficultyProfile profile)
         {
+            int ownShipCount = snapshot.OwnShipCount;
+            if (state == EnemyStrategicState.DefendBase && !snapshot.IsStationCritical)
+            {
+                // A raid is answered with a detachment sized to it; the rest keeps its fight.
+                float share = Math.Min(1f, Math.Max(MIN_DEFENSE_SHARE, snapshot.BaseThreatRatio * DEFENSE_MARGIN));
+                return Math.Max(1, Math.Min(ownShipCount, (int)Math.Ceiling(ownShipCount * (decimal)share)));
+            }
+
             if (state == EnemyStrategicState.RebuildFleet)
             {
                 return 0;

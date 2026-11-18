@@ -274,6 +274,7 @@ namespace EmpireAtWar.Tests.Editor
             PlayerSlot owner = TestPlayers.CreateDuel().Get(TestPlayers.Enemy);
             ProductionAccess production = new ProductionAccess { CanProduce = true };
             EconomyModel economy = new EconomyModel(null, option.Value.Price * 3f);
+            economy.AddMoney(option.Value.Price * 10f);
             SuperWeaponModel model = new SuperWeaponModel();
             model.Restore(option.Key, SuperWeaponState.Unavailable, 45f);
             EnemySuperWeaponController controller = new EnemySuperWeaponController(
@@ -311,6 +312,26 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(restoredModel.CanFire(option.Key), Is.False, "Loading must preserve the independent cooldown.");
             restoredModel.Tick(45f);
             Assert.That(restoredModel.CanFire(option.Key), Is.EqualTo(hasStation));
+        }
+
+        [Test]
+        public void Enemy_DoesNotSpendMoreThanItsShareOfEarningsOnSuperWeapons()
+        {
+            FactionRoster roster = CreateRoster(FactionType.Empire);
+            var option = roster.SuperWeapons.First();
+            EnemyFactionModel faction = new EnemyFactionModel(null, roster) { CurrentLevel = option.Value.AvailableLevel };
+            EconomyModel economy = new EconomyModel(null, option.Value.Price * 3f);
+            SuperWeaponModel model = new SuperWeaponModel();
+            EnemySuperWeaponController controller = new EnemySuperWeaponController(
+                null, null, null, new ProductionAccess { CanProduce = true }, model, faction, economy,
+                TestPlayers.CreateDuel().Get(TestPlayers.Enemy), new QueuePurchaseProcessor(), null, null,
+                new EnemyStationPressureTracker());
+            MethodInfo purchase = typeof(EnemySuperWeaponController).GetMethod(
+                "TryPurchase", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            Assert.That(purchase.Invoke(controller, new object[] { option.Key, option.Value }), Is.False);
+            economy.AddMoney(option.Value.Price * 20f);
+            Assert.That(purchase.Invoke(controller, new object[] { option.Key, option.Value }), Is.True);
         }
 
         [Test]

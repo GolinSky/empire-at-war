@@ -16,6 +16,7 @@ using VContainer;
 using EmpireAtWar.Lifecycle;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Ships;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -513,7 +514,7 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             Debug.Log(
-                $"[EnemyAI] Player={_owner.Id}:{_owner.Faction}, Difficulty={_owner.Difficulty}, " +
+                $"[EnemyAI] BattleTime={BattleClock.CurrentElapsed:F1}, Player={_owner.Id}:{_owner.Faction}, Difficulty={_owner.Difficulty}, " +
                 $"Objective={_gameModel.VictoryCondition}, State={decision.State}, " +
                 $"Committed={decision.CommittedShipCount}/{LastSnapshot.OwnShipCount}, " +
                 $"EnemyShips={LastSnapshot.EnemyShipCount}, " +

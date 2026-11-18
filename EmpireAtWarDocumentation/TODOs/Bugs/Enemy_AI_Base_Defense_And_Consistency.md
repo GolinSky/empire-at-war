@@ -30,12 +30,12 @@ created: 2026-11-18
 7. Argon (not yet verified): ally help only when `IsStationCritical` (< 50% HP or < 120 s to loss); `TeamAiCooperation` assigns at most 1 ally; `EnemyTaskForceExecutor` stops attacking fleets below 75% cohesion.
 
 ## Plan
-- [ ] Release telemetry: battle time + player id on `[EnemyAI]`, `[EnemyAI:Production]`, `[EnemyAI:SuperWeapon]` lines (shared with [[TODOs/Optimization/Online_Battle_Low_FPS]] Phase 0).
+- [x] Release telemetry (2026-11-18): `BattleTime=` (static `BattleClock.CurrentElapsed`) on `[EnemyAI]`, `[EnemyAI:Production]`, `[EnemyAI:SuperWeapon]`; superweapon lines also carry `Player=` and `SpentShare`. Shared with [[TODOs/Optimization/Online_Battle_Low_FPS]] Phase 0.
 - [x] Invert/realign `defenseThreatRatio` (harder AI defends earlier): Easy 1.5, Normal 1.25, Hard 1, UltraHard 0.75 (2026-11-18). Local-force comparison not done.
-- [ ] Proportional response: send a detachment sized to the base threat (task force) instead of `committedFleetRatio` 1; keep the main fight if local advantage holds.
-- [ ] Treat station damage source as a sighting (reveal attacker) for threat.
-- [ ] Cap superweapon spend share per AI (e.g., ≤ 20% of income) and log per player.
-- [ ] Replay: 2 humans attack fleet, 1 human raids base at minute ~8; compare AI losses before/after.
+- [x] Proportional response (2026-11-18): `DefendBase` commits `clamp(BaseThreatRatio × 1.5, 0.34, 1)` of ships; whole fleet only when `IsStationCritical`. Nearest ships defend; the rest keep their orders (no `StopRemaining`). `EnemyShipTaskGroup` no longer forces all ships for `DefendBase`.
+- [x] Station damage reveals attackers (2026-11-18): within 5 s of station damage, hostiles with `IsAttacking(ownBase)` are reported to team intel and pass the vision check in `BuildBaseThreat`.
+- [x] Superweapon spend cap (2026-11-18): `_spent + price ≤ 0.2 × EconomyModel.TotalEarned` (new property); tunable `MAX_SPEND_SHARE`.
+- [ ] Replay (user plays): 2 humans attack fleet, 1 human raids base at minute ~8; compare AI losses before/after using the new `BattleTime=` logs. Plan stays active until then.
 
 ## Agent handoff
 - Read this plan, its linked plans and the live source first; source wins over this note.
@@ -45,6 +45,9 @@ created: 2026-11-18
 
 ## Tests (not run — local override)
 - `EnemyAi`: `EnemyStrategicDecisionModel` tests (defense rule thresholds), defense strategy tests. Assert relationships (harder ≥ earlier defense), not tuned numbers.
+- Added/updated (not run): `EnemyStrategicDecisionModelTests` (detachment vs critical, larger raid → larger detachment, harder defends earlier); `PlayerSaveTests.Enemy_DoesNotSpendMoreThanItsShareOfEarningsOnSuperWeapons`; save test economy now earns extra so the cap allows its purchase.
+- Compile check: Unity recompile clean, no console errors.
+- No unit test for the attacker reveal (needs a full world snapshot).
 
 ## Files
 - `Entities/EnemyFaction/Models/EnemyAiDifficultyProfile.cs`, `EnemyStrategicDecisionModel.cs`, `EnemyDefenseStrategy.cs`

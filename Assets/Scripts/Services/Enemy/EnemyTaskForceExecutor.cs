@@ -186,14 +186,17 @@ namespace EmpireAtWar.Services.Enemy
             float gap = bearing.magnitude;
             bool hasBearing = pressure.HasThreatPosition && gap > 0f;
             if (hasBearing) bearing /= gap;
-            int count = Math.Min(decision.CommittedShipCount, context.Ships.Count);
+            // The ships nearest the station answer first; the rest keep their current fight.
+            List<IShipEntity> ships = new List<IShipEntity>(context.Ships);
+            ships.Sort((a, b) => PlanarDistance(a.WorldPosition, center).CompareTo(PlanarDistance(b.WorldPosition, center)));
+            int count = Math.Min(decision.CommittedShipCount, ships.Count);
             bool firing = false;
             for (int i = 0; i < count; i++)
             {
-                GameEntity entity = context.Receivers[context.Ships[i]];
+                GameEntity entity = context.Receivers[ships[i]];
                 if (!entity.TryGetFacade(out IUnitCombatObserverFacade combat) || combat.Target == null) continue;
                 Vector3 targetPosition = combat.Target.GetFacade<IEntityTransformFacade>().Transform.position;
-                firing |= PlanarDistance(context.Ships[i].WorldPosition, targetPosition) <= combat.WeaponRange;
+                firing |= PlanarDistance(ships[i].WorldPosition, targetPosition) <= combat.WeaponRange;
             }
             if (firing || Time.time - pressure.LastDamageTime > 5f || !hasBearing) _noFiringSince = -1f;
             else if (_noFiringSince < 0f) _noFiringSince = Time.time;
@@ -206,7 +209,7 @@ namespace EmpireAtWar.Services.Enemy
                 target.GetFacade<IEntityTransformFacade>().Transform.position) <= leash;
             if (intercept) _attackForce.Assemble(context, target, count);
             else _attackForce.Clear();
-            List<Vector3> interceptOffsets = intercept ? BattleOffsets(context.Ships, count, target) : null;
+            List<Vector3> interceptOffsets = intercept ? BattleOffsets(ships, count, target) : null;
             context.DefensePointReason = hasBearing
                 ? _defenseAdvance > 0f ? "Advance toward known threat: station damaged without defenders in range." :
                     "Threat-facing defense line from visible or last known intel."
@@ -216,7 +219,7 @@ namespace EmpireAtWar.Services.Enemy
             bool changedDefense = false;
             for (int i = 0; i < count; i++)
             {
-                IShipEntity ship = context.Ships[i];
+                IShipEntity ship = ships[i];
                 if (intercept && _attackForce.Ships.Contains(ship) && _attackForce.TargetDps(context, ship) > 0f)
                 {
                     if (!_defenseTargets.TryGetValue(ship, out GameEntity previous) || previous != target)
@@ -267,7 +270,6 @@ namespace EmpireAtWar.Services.Enemy
             if (changedDefense)
                 _unitOrderService.IssueAttackMove(defenseReceivers, defensePoints);
             ActionReason += "; " + context.DefensePointReason;
-            StopRemaining(context, context.Ships, count);
         }
 
         private void ExecuteCapture(EnemyStrategicDecision decision, EnemyStrategicContext context)

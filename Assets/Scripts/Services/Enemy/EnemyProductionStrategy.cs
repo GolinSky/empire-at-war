@@ -13,6 +13,7 @@ using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Models.Reinforcement;
 using Unity.Profiling;
 using UnityEngine;
@@ -323,7 +324,7 @@ namespace EmpireAtWar.Services.Enemy
             DefenseReserve = request.FactionData.Price;
 
             Debug.Log(
-                $"[EnemyAI:Production] Player={_owner.Id}:{_owner.Faction}, State={_stateProvider.CurrentState}, " +
+                $"[EnemyAI:Production] BattleTime={BattleClock.CurrentElapsed:F1}, Player={_owner.Id}:{_owner.Faction}, State={_stateProvider.CurrentState}, " +
                 $"FactionLevel={_factionModel.CurrentLevel}, Category={category}, Counter={hasCounter}, " +
                 $"Unit={request.Id}, Mining={miningFacilityCount}/{miningFacilityTarget}, " +
                 $"Defense={defensePlatformCount}/{defensePlatformTarget}, " +
@@ -657,7 +658,7 @@ namespace EmpireAtWar.Services.Enemy
 
             UnitRequest request = _requestFactory.ConstructUnitRequest(scout.Value, scout.Key);
             Debug.Log(
-                $"[EnemyAI:Production] Player={_owner.Id}:{_owner.Faction}, Category=Scout, Unit={request.Id}, " +
+                $"[EnemyAI:Production] BattleTime={BattleClock.CurrentElapsed:F1}, Player={_owner.Id}:{_owner.Faction}, Category=Scout, Unit={request.Id}, " +
                 $"Cost={request.FactionData.Price}, Money={_economyModel.Money}");
             _purchaseProcessor.Purchase(request);
             return true;

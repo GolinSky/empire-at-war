@@ -39,11 +39,11 @@ namespace EmpireAtWar.Services.Enemy
                 NoViableCaptureSince = -1f;
             else if (NoViableCaptureSince < 0f) NoViableCaptureSince = now;
             EnemyStrategicDecision next = DecisionModel.Evaluate(Context.Snapshot, IsCaptureDetachment, now: now, commit: false);
-            if (IsMainForce || next.State == EnemyStrategicState.DefendBase)
+            if (IsMainForce && next.State != EnemyStrategicState.DefendBase)
                 next = new EnemyStrategicDecision(next.Reason, next.State, Ships.Count);
             bool canAssemble = Executor.CanAssemble(next, Context);
             next = DecisionModel.Evaluate(Context.Snapshot, IsCaptureDetachment, allowOffense: canAssemble, now: now);
-            if (IsMainForce || next.State == EnemyStrategicState.DefendBase)
+            if (IsMainForce && next.State != EnemyStrategicState.DefendBase)
                 next = new EnemyStrategicDecision(next.Reason, next.State, Ships.Count);
             TacticalMarker request = Context.Snapshot.WithdrawFromForwardStation || ContextBuilder.AlliedMarkers == null ? null :
                 ContextBuilder.AlliedMarkers.SelectRequest(Context, DecisionModel.IsRecovering);

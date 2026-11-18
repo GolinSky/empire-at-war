@@ -482,6 +482,40 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SmallRaid_IsAnsweredByADetachmentNotTheWholeFleet()
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 20, enemyShipCount: 1, ownedCapturableZoneCount: 0,
+                    fleetAdvantage: 10f, baseThreatRatio: 0.2f, hasStationPressure: true));
+
+            Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.DefendBase));
+            Assert.That(decision.CommittedShipCount, Is.GreaterThan(0).And.LessThan(20));
+        }
+
+        [Test]
+        public void CriticalStation_IsDefendedByTheWholeFleet()
+        {
+            EnemyStrategicDecision decision = new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 20, enemyShipCount: 1, ownedCapturableZoneCount: 0,
+                    fleetAdvantage: 10f, baseThreatRatio: 0.2f, hasStationPressure: true, isStationCritical: true));
+
+            Assert.That(decision.CommittedShipCount, Is.EqualTo(20));
+        }
+
+        [Test]
+        public void StrongerAttackers_GetALargerDefenseDetachment()
+        {
+            int Committed(float ratio) => new EnemyStrategicDecisionModel().Evaluate(
+                CreateSnapshot(BattleVictoryCondition.DestroyEnemyFleet, EnemyAiDifficulty.UltraHard,
+                    ownShipCount: 20, enemyShipCount: 1, ownedCapturableZoneCount: 0,
+                    fleetAdvantage: 10f, baseThreatRatio: ratio, hasStationPressure: true)).CommittedShipCount;
+
+            Assert.That(Committed(0.6f), Is.GreaterThan(Committed(0.2f)));
+        }
+
+        [Test]
         public void DifficultyProfile_HarderAiDefendsEarlier()
         {
             Assert.That(EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.UltraHard).DefenseThreatRatio,
@@ -590,7 +624,8 @@ namespace EmpireAtWar.Tests.Editor
             bool hasStationPressure = false,
             bool hasSafeRetreat = true,
             bool hasEconomyRaidTarget = false,
-            bool withdrawFromForwardStation = false)
+            bool withdrawFromForwardStation = false,
+            bool isStationCritical = false)
         {
             return new EnemyStrategicSnapshot(
                 victoryCondition: victoryCondition,
@@ -607,6 +642,7 @@ namespace EmpireAtWar.Tests.Editor
                 localAdvantage: localAdvantage,
                 hasLocalThreat: hasLocalThreat,
                 hasRaidTarget: hasRaidTarget,
+                isStationCritical: isStationCritical,
                 isRegrouped: isRegrouped,
                 hasStationPressure: hasStationPressure,
                 hasSafeRetreat: hasSafeRetreat,

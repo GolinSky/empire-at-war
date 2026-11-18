@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Services.SuperWeapons;
 using EmpireAtWar.Services.Vision;
@@ -25,6 +26,8 @@ namespace EmpireAtWar.Services.Enemy
         private const float DECISION_INTERVAL = 5f;
         // Keep enough money aside that the superweapons never starve fleet production.
         private const float MONEY_RESERVE_MULTIPLIER = 2f;
+        // Superweapons may take at most this share of everything the AI has earned, so players meet similar fleets.
+        private const float MAX_SPEND_SHARE = 0.2f;
 
         private readonly ISuperWeaponFireService _superWeaponFireService;
         private readonly IEntityLocator _entities;
@@ -46,6 +49,7 @@ namespace EmpireAtWar.Services.Enemy
             new List<(IEntity, Vector3, float)>();
 
         private float _decisionTimer;
+        private float _spent;
         private bool _hasFireDelay;
         private float _fireDelayLeft;
 
@@ -127,6 +131,7 @@ namespace EmpireAtWar.Services.Enemy
                 // Same rule as player production: a charge that completes without a station is refunded.
                 _model.CancelCharging(type);
                 _economyModel.AddMoney(_factionModel.SuperWeapons[type].Price);
+                _spent -= _factionModel.SuperWeapons[type].Price;
             }
         }
 
@@ -136,13 +141,15 @@ namespace EmpireAtWar.Services.Enemy
                 !_production.CanQueue(type.ToString(), data.MaxCount) ||
                 data.AvailableLevel > _factionModel.CurrentLevel ||
                 _economyModel.Money < data.Price * MONEY_RESERVE_MULTIPLIER ||
+                _spent + data.Price > _economyModel.TotalEarned * MAX_SPEND_SHARE ||
                 !_economyModel.TrySpend(data.Price))
                 return false;
 
+            _spent += data.Price;
             _model.StartCharging(type);
             _chargeTimeLeft[type] = data.BuildTime;
             _production.ReserveExternalPipeline(type.ToString());
-            Debug.Log($"[EnemyAI:SuperWeapon] Purchased {type}, Cost={data.Price}, Money={_economyModel.Money}");
+            Debug.Log($"[EnemyAI:SuperWeapon] BattleTime={BattleClock.CurrentElapsed:F1}, Player={_owner.Id}:{_owner.Faction}, Purchased {type}, Cost={data.Price}, Money={_economyModel.Money}, SpentShare={_spent / _economyModel.TotalEarned:F2}");
             return true;
         }
 
@@ -168,7 +175,7 @@ namespace EmpireAtWar.Services.Enemy
 
             _model.Consume(type);
             _superWeaponFireService.Fire(_owner.Id, type, target);
-            Debug.Log($"[EnemyAI:SuperWeapon] Fired {type} at {target.HealthModel.ShipClass} ({target.Id})");
+            Debug.Log($"[EnemyAI:SuperWeapon] BattleTime={BattleClock.CurrentElapsed:F1}, Player={_owner.Id}:{_owner.Faction}, Fired {type} at {target.HealthModel.ShipClass} ({target.Id})");
             return true;
         }
 
