@@ -48,6 +48,27 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SeveralFixedStepsInOneFrame_ScanEachDueRadarOnce()
+        {
+            FakeEntity target = AddEntity(1, TestPlayers.Enemy, new Vector3(10f, 0f, 0f));
+            FakeScanner scanner = new FakeScanner(TestPlayers.Human, Vector3.zero) { DelayValue = 0f };
+            _service.Register(scanner);
+
+            // A low frame rate runs several fixed steps before one frame tick; positions cannot change between them.
+            _service.FixedTick();
+            _service.FixedTick();
+            _service.FixedTick();
+            Assert.That(scanner.ScanCount, Is.Zero, "Fixed steps only count due radars.");
+
+            _service.Tick();
+            Assert.That(scanner.ScanCount, Is.EqualTo(1));
+            Assert.That(scanner.LastScan, Is.EqualTo(new IEntity[] { target }));
+
+            _service.Tick();
+            Assert.That(scanner.ScanCount, Is.EqualTo(1), "A frame without a fixed step scans nothing.");
+        }
+
+        [Test]
         public void FixedTick_MovedTargetIsDeliveredInTheSameTick()
         {
             FakeEntity target = AddEntity(1, TestPlayers.Enemy, new Vector3(10f, 0f, 0f));

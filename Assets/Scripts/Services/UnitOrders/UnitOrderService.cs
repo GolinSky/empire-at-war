@@ -83,12 +83,14 @@ namespace EmpireAtWar.Services.UnitOrders
         }
 
         // Only ships get a slot, and a slot only picks the side: the attack state approaches along its direction
-        // to firing range. Slots spread over an arc on the group's own side, so none lies behind the target.
+        // to firing range. Neighbouring slots are spaced so the hulls clear each other even at hull contact with the
+        // target, and the whole arc stays within ATTACK_ARC_HALF_DEGREES of the group's own side.
         private List<Vector3> AttackOffsets(IReadOnlyList<IEntity> receivers, IEntity target)
         {
             List<Vector3> offsets = new List<Vector3>();
             List<int> shipIndices = new List<int>();
             List<Vector3> shipPositions = new List<Vector3>();
+            List<float> shipRadii = new List<float>();
             Vector3 center = Vector3.zero;
             float maximumRadius = 0f;
             foreach (IEntity receiver in receivers)
@@ -98,6 +100,7 @@ namespace EmpireAtWar.Services.UnitOrders
                 {
                     shipIndices.Add(offsets.Count);
                     shipPositions.Add(command.WorldPosition);
+                    shipRadii.Add(command.NavigationRadius);
                     center += command.WorldPosition;
                     maximumRadius = Mathf.Max(maximumRadius, command.NavigationRadius);
                 }
@@ -120,11 +123,24 @@ namespace EmpireAtWar.Services.UnitOrders
 
             // Slots follow the ships' current order around the target, so assignments do not cross.
             Array.Sort(order, (first, second) => sides[first].CompareTo(sides[second]));
+            float targetRadius = target.TryGetFacade(out INavigationFootprintFacade footprint)
+                ? footprint.NavigationRadius
+                : 0f;
+            float contact = targetRadius + maximumRadius;
+            float[] angles = new float[order.Length];
+            for (int slot = 1; slot < order.Length; slot++)
+            {
+                float clearance = shipRadii[order[slot - 1]] + shipRadii[order[slot]];
+                float step = contact > 0f ? 2f * Mathf.Asin(Mathf.Min(1f, clearance / (2f * contact))) : 0f;
+                angles[slot] = angles[slot - 1] + step;
+            }
+
+            float arc = angles[order.Length - 1];
             float halfArc = ATTACK_ARC_HALF_DEGREES * Mathf.Deg2Rad;
+            float scale = arc > 2f * halfArc ? 2f * halfArc / arc : 1f;
             for (int slot = 0; slot < order.Length; slot++)
             {
-                float fraction = order.Length == 1 ? 0f : slot / (float)(order.Length - 1) * 2f - 1f;
-                float angle = heading + fraction * halfArc;
+                float angle = heading + (angles[slot] - arc * 0.5f) * scale;
                 offsets[shipIndices[order[slot]]] = new Vector3(Mathf.Cos(angle) * maximumRadius, 0f,
                     Mathf.Sin(angle) * maximumRadius);
             }

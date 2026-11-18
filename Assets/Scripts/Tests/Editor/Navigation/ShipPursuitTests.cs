@@ -114,6 +114,41 @@ namespace EmpireAtWar.Tests.Movement
                 "A new target must retain the initial assigned formation approach.");
         }
 
+        [Test]
+        public void Runner_SameTargetReorderedKeepsHoldAndOnlyUpdatesSlot()
+        {
+            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            var abilityRelations = TestPlayers.CreateDuel();
+            ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
+                abilityRelations, new VisionService(abilityRelations, fogEnabled: false));
+            try
+            {
+                _target.Transform.position = Vector3.right * 95f;
+                UnitOrderModel orders = new UnitOrderModel();
+                ShipStateMachine machine = new ShipStateMachine();
+                Radar radar = new Radar();
+                AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
+                ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
+                    new IdleState(_movement, _weapon, radar), null, attack, null, null, null, null, abilities, caster, radar, null);
+                runner.Start();
+                runner.Attack(_target, Vector3.forward * 20f);
+                runner.Tick(0.1f);
+                Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+
+                runner.Attack(_target, Vector3.back * 20f);
+                runner.Tick(0.1f);
+
+                Assert.That(_movement.HeldTarget, Is.SameAs(_target), "The re-issued order must not cancel the hold.");
+                Assert.That(_movement.MoveCount, Is.Zero);
+                Assert.That(machine.CurrentState, Is.SameAs(attack));
+                Assert.That(orders.Offset.Z, Is.EqualTo(-20f));
+            }
+            finally
+            {
+                abilities.Clear();
+            }
+        }
+
         [TestCase(false)]
         [TestCase(true)]
         public void Attack_TargetKilled_AttacksNearestPreferredRadarContactEvenOutOfRange(bool formation)
@@ -523,9 +558,9 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void Attack_ArtilleryWithMainBatteryCoverHoldsInsideLauncherBandInsteadOfBackingOff()
+        public void Attack_ArtilleryHoldsInsideLauncherBandInsteadOfBackingOff()
         {
-            ArtilleryCapability artillery = new ArtilleryCapability(200f) { MainBatteriesCover = true };
+            ArtilleryCapability artillery = new ArtilleryCapability(200f);
             AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
             _target.Transform.position = Vector3.right * 100f;
             state.SetData(_target);
@@ -1241,8 +1276,6 @@ namespace EmpireAtWar.Tests.Movement
             public int ArtilleryRevision { get; private set; }
             public ArtilleryCapability(float range) => _range = range;
             public float GetArtilleryRange(ShipClass targetClass) => _range;
-            public bool MainBatteriesCover { get; set; }
-            public bool HasMainBatteryCover(ShipClass targetClass) => MainBatteriesCover;
 
             public void SetReach(float range)
             {

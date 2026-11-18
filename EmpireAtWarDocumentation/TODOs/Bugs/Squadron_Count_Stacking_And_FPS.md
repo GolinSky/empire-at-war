@@ -72,7 +72,7 @@ created: 2026-11-18
 - [ ] Merge fighter meshes to one renderer (one or two materials) per fighter: Droid Bomber, A-Wing, V-19, X-Wing, ARC-170 first.
 - [ ] Decimate or LOD the high-poly fighters (A-Wing 66k, Delta-7 28k, Belbullab-22 23k, V-Wing 22k triangles).
 - [ ] Fewer gun hardpoints per fighter (one mount with several muzzles, same DPS). Balance-neutral, needs your approval.
-- [ ] `RadarScanService`: run once per frame instead of `FixedTick` (see the low-FPS plan).
+- [x] `RadarScanService`: scans once per frame (2026-11-18). `FixedTick` only counts due radars (same stagger/interval in fixed steps, deduped via `RadarRegistration.IsQueued`); new `Tick` applies pending targets and runs one snapshot + job for all due radars. At 10 FPS: 1 snapshot/frame instead of up to 5. Tests: `RadarScanServiceTests` now step via `FixedTick` + `Tick`. Recompile clean; tests not run.
 - [ ] **Remove muzzle-flash meshes from all models (user request 2026-11-18).** Muzzle flashes come from the weapon VFX (`ShotEffect` muzzle flash, `Prefabs/Vfx/Projectiles`); model-embedded `*Flash*` meshes are dead weight.
   - Left in imported models (enabled in the source FBX/OBJ): TIE Fighter 2, X-Wing 4, ARC-170 2, NTB-630 2, V-19 2, Y-Wing 2, Droid Bomber 6, Ginivex 4, Hyena Bomber 4, Vulture 4, Corellian Corvette 8, Patrol Frigate 2, AotR Golan III 12 (12 model files).
   - Left in prefabs (disabled renderers): nested fighter prefabs in `Prefabs/Models/Squadrons` 24 (8 prefabs), reinforcement previews `Prefabs/Ui/Reinforcement` 146 (11 prefabs), Corellian Corvette model + view 8 + 8, Patrol Frigate model + view 2 + 2.

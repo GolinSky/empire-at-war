@@ -73,6 +73,13 @@ created: 2026-11-18
 - Same-target re-issue: `ShipOrderRunner.TryRefreshAttackSlot` + `UnitOrderModel.UpdateOffset`; `SetData` resets only on target/hardpoint change.
 - Tests edited (not run): `ShipPursuitTests` (artillery ring/retreat, 2 new hold tests), fakes in `ShipStopTests`, `SquadronTargetSelectorTests`.
 
+## Review 2026-11-18 (commit `001ab9e5b`)
+- Matches design: offsets for ships only (`IHardPointAttackFacade`), side-ordered arc, `MovementTargetPosition` leg removed, hold at full reach / stop at 80% while pursuing, same-target refresh in `ShipOrderRunner.TryRefreshAttackSlot`, artillery retreats only at hull contact.
+- [x] (fixed 2026-11-18) **Stale test (will fail):** `UnitOrderServiceTests.Attack_LargeGroupKeepsDistinctFiringBearingsAndMixedHullClearance` still asserts the old full ring; its `FakeCommand` has no `IHardPointAttackFacade`, so every offset is now zero. Rewrite for the arc contract: squadrons get zero, ship slots lie on the group's side of the target, slot order follows ship order, one ship gets its own bearing.
+- [x] (fixed 2026-11-18: neighbour step = `2·asin((rᵢ+rⱼ)/(2·contact))`, contact = target radius + largest ship radius; whole arc scaled to ≤ ±60°) **Arc width ignores group size:** fixed ±60° → two ships are sent 120° apart (long sideways legs). Use angular spacing from neighbour radii at standoff distance, capped at ±60° (design A.3).
+- [x] (added `ShipPursuitTests.Runner_SameTargetReorderedKeepsHoldAndOnlyUpdatesSlot`) Missing test: `ShipOrderRunner` re-issued Attack on the same target does not `CancelCombatHold` or re-enter the state.
+- [x] (removed; test renamed `Attack_ArtilleryHoldsInsideLauncherBandInsteadOfBackingOff`) Orphan: `IArtilleryCapability.HasMainBatteryCover` (+ `ArtilleryCapability`, `WeaponComponent`, `ShipPursuitTests` stub) has no consumer after the retreat change; remove it.
+
 ## Agent handoff
 - Implement steps 1–5 in order; do not change `ENGAGE_RANGE_FACTOR` users outside `AttackTargetState`/`ShipEngagement` without noting it.
 - Do not run tests (local override); update/add tests listed below and report them as not run.

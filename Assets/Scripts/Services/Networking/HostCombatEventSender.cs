@@ -131,7 +131,7 @@ namespace EmpireAtWar.Services.Networking
             if (!_online.HasBegun) return;
             _pendingAbilities.Enqueue((_events.Next(), new ShipAbilityEventMessage
             {
-                CasterId = caster.Entity.Id,
+                CasterId = caster.EntityId,
                 Ability = id,
                 TargetId = target == null ? NO_TARGET : target.Id
             }));
@@ -140,7 +140,7 @@ namespace EmpireAtWar.Services.Networking
         private void OnCanceled(IShipAbilityFacade caster, ShipAbilityId id)
         {
             if (!_online.HasBegun) return;
-            _pendingAbilities.Enqueue((_events.Next(), new ShipAbilityEventMessage { CasterId = caster.Entity.Id, Ability = id, Canceled = true }));
+            _pendingAbilities.Enqueue((_events.Next(), new ShipAbilityEventMessage { CasterId = caster.EntityId, Ability = id, Canceled = true }));
         }
     }
 }

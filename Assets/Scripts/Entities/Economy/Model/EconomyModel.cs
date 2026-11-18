@@ -21,7 +21,7 @@ namespace EmpireAtWar.Models.Economy
 
         public float Money => _money;
 
-        /// <summary>Starting money plus everything added since; spending does not reduce it.</summary>
+        /// <summary>Starting money plus everything earned since; spending and refunds do not change it.</summary>
         public float TotalEarned { get; private set; }
         /// <summary>Seconds until the next income payment; zero pays on the next running tick.</summary>
         public float IncomeTimeLeft { get; private set; }
@@ -54,6 +54,9 @@ namespace EmpireAtWar.Models.Economy
             if (amount > 0f) TotalEarned += amount;
             SetMoney(_money + amount);
         }
+
+        /// <summary>Returns spent money; a refund is not new earnings.</summary>
+        public void Refund(float amount) => SetMoney(_money + amount);
 
         public bool TrySpend(float amount)
         {

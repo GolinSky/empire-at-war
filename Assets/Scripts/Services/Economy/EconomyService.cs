@@ -92,7 +92,7 @@ namespace EmpireAtWar.Services.Economy
 
         public void Refund(UnitRequest unitRequest)
         {
-            _model.AddMoney(unitRequest.FactionData.Price);
+            _model.Refund(unitRequest.FactionData.Price);
         }
 
         public void AddMoney(float amount)

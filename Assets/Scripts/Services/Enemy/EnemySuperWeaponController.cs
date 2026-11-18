@@ -130,7 +130,7 @@ namespace EmpireAtWar.Services.Enemy
 
                 // Same rule as player production: a charge that completes without a station is refunded.
                 _model.CancelCharging(type);
-                _economyModel.AddMoney(_factionModel.SuperWeapons[type].Price);
+                _economyModel.Refund(_factionModel.SuperWeapons[type].Price);
                 _spent -= _factionModel.SuperWeapons[type].Price;
             }
         }

@@ -72,13 +72,6 @@ namespace EmpireAtWar.Components.Weapon
             return range;
         }
 
-        public bool HasMainBatteryCover(ShipClass targetClass)
-        {
-            foreach (var (mount, _) in _mainBatteries)
-                if (!mount.IsDestroyed && mount.CanEngage(targetClass)) return true;
-            return false;
-        }
-
         private void InvalidateRanges()
         {
             ArtilleryRevision++;

@@ -1236,7 +1236,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 AiWorldSnapshot.Entry entry = units[i];
                 if (!entry.HasUnitType || !_playerRoster.IsHostile(_owner.Id, entry.Owner) ||
-                    entry.Entity.HealthModel.IsDestroyed ||
+                    entry.Entity.HealthModel.IsDestroyed || entry.Entity.IsCloaked() ||
                     !entry.Entity.TryGetFacade(out IUnitCombatObserverFacade combat) ||
                     !combat.IsAttacking(ownBase)) continue;
                 _intel.Report(new HostileSighting(entry.Id, entry.UnitTypeId, entry.Owner, ToPoint(entry.Position),

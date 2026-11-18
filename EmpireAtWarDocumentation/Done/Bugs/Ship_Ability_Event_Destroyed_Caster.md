@@ -25,6 +25,10 @@ acceptance: pending-user
 - Done 2026-11-18. Verified by source inspection only; tests not run. No reusable guidance beyond: ability facades expose a stable `EntityId`; never read `Entity` on stop/teardown paths.
 - Pending user: confirm no `Not entity found` in next hosted battle log.
 
+## Regression 2026-11-18
+- Fire-rate commit `3e4207e7e` reverted the fix in all 5 files (`IShipAbilityFacade.EntityId`, both facades, `HostCombatEventSender`, `ShipAbilityEventMessage.Capture`).
+- Restored from `e84297792` in the review-fix commit; `ShipAbilityServiceTests.EventCapture_AfterCasterLeftLocator_UsesStableCasterId` guards it (not run).
+
 ## Agent handoff
 - Read this plan, its linked plans and the live source first; source wins over this note.
 - Follow `AGENTS.md`: no Play Mode, no tests (local override). Update/add the tests listed here and report them as not run.

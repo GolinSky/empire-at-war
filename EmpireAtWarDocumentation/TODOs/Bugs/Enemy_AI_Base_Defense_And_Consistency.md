@@ -37,6 +37,14 @@ created: 2026-11-18
 - [x] Superweapon spend cap (2026-11-18): `_spent + price ≤ 0.2 × EconomyModel.TotalEarned` (new property); tunable `MAX_SPEND_SHARE`.
 - [ ] Replay (user plays): 2 humans attack fleet, 1 human raids base at minute ~8; compare AI losses before/after using the new `BattleTime=` logs. Plan stays active until then.
 
+## Review 2026-11-18 (commits `026a1a48f`, `136268bb2`)
+- Good: harder AI defends earlier (relationship test), detachment sized to the raid with a full response when critical, battle time + player id in AI logs, superweapon spend share.
+- [x] (fixed 2026-11-18: `ReleaseUncommittedDefenders` — ships outside the detachment keep an Attack/AttackMove/Hunt fight; former defenders and stale non-combat orders are stopped) **Uncommitted remainder is unmanaged:** `EnemyTaskForceExecutor` no longer calls `StopRemaining`; ships beyond `CommittedShipCount` get no orders while the group is in `DefendBase`. When their current target dies they idle mid-map until the state changes. Split the defenders into their own task group (or keep running the previous state for the rest).
+- [x] (fixed: `IsCloaked()` skip) **Cloaked attackers revealed:** `RevealStationAttackers` reports attackers to team intel without an `IsCloaked()` check; other intel consumers can then see cloaked units. Skip cloaked units.
+- [x] (fixed: `EconomyModel.Refund` returns money without counting it as earnings; used by `EconomyService.Refund` and the superweapon refund. Save/load reset of `TotalEarned`/`_spent` remains, accepted.) Superweapon share: refunds go through `EconomyModel.AddMoney` → `TotalEarned` grows **and** `_spent` drops (double credit); production-cancel refunds also count as earnings. `TotalEarned`/`_spent` are not saved (reset on load). Count only income, not refunds.
+- [x] (reused list + cached comparison) Minor: the defense path allocates and sorts a new ship list every tick; nearest ships are chosen regardless of strength.
+- Note: `BattleClock.CurrentElapsed` is static global state, acceptable for log lines only.
+
 ## Agent handoff
 - Read this plan, its linked plans and the live source first; source wins over this note.
 - Follow `AGENTS.md`: no Play Mode, no tests (local override). Update/add the tests listed here and report them as not run.

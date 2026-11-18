@@ -43,6 +43,9 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Dictionary<IShipEntity, GameEntity> _strikeTargets = new Dictionary<IShipEntity, GameEntity>();
 
         private readonly List<IShipEntity> _captureShips = new List<IShipEntity>();
+        private readonly List<IShipEntity> _defenseShips = new List<IShipEntity>();
+        private Comparison<IShipEntity> _byDefenseDistance;
+        private Vector3 _defenseCenter;
         private readonly List<FormationPoint> _positions = new List<FormationPoint>();
         private readonly List<float> _radii = new List<float>();
         private readonly List<FormationPoint> _destinations = new List<FormationPoint>();
@@ -187,8 +190,12 @@ namespace EmpireAtWar.Services.Enemy
             bool hasBearing = pressure.HasThreatPosition && gap > 0f;
             if (hasBearing) bearing /= gap;
             // The ships nearest the station answer first; the rest keep their current fight.
-            List<IShipEntity> ships = new List<IShipEntity>(context.Ships);
-            ships.Sort((a, b) => PlanarDistance(a.WorldPosition, center).CompareTo(PlanarDistance(b.WorldPosition, center)));
+            List<IShipEntity> ships = _defenseShips;
+            ships.Clear();
+            ships.AddRange(context.Ships);
+            _defenseCenter = center;
+            _byDefenseDistance ??= CompareDefenseDistance;
+            ships.Sort(_byDefenseDistance);
             int count = Math.Min(decision.CommittedShipCount, ships.Count);
             bool firing = false;
             for (int i = 0; i < count; i++)
@@ -269,8 +276,32 @@ namespace EmpireAtWar.Services.Enemy
             }
             if (changedDefense)
                 _unitOrderService.IssueAttackMove(defenseReceivers, defensePoints);
+            ReleaseUncommittedDefenders(context, ships, count);
             ActionReason += "; " + context.DefensePointReason;
         }
+
+        // Ships outside the defense detachment keep a fight they are in (attack, attack-move, hunt). Former defenders
+        // and ships on stale non-combat orders stop, so nothing walks off on an order no state manages any more.
+        private void ReleaseUncommittedDefenders(EnemyStrategicContext context, IReadOnlyList<IShipEntity> ships,
+            int count)
+        {
+            // A new list per stop: order listeners may keep the receivers they were given.
+            List<GameEntity> released = null;
+            for (int i = count; i < ships.Count; i++)
+            {
+                IShipEntity ship = ships[i];
+                bool wasDefender = _defensePoints.Remove(ship) | _defenseTargets.Remove(ship);
+                UnitOrderType order = ship.CurrentOrder;
+                bool inFight = order == UnitOrderType.Attack || order == UnitOrderType.AttackMove ||
+                               order == UnitOrderType.Hunt;
+                if (order != UnitOrderType.None && (wasDefender || !inFight))
+                    (released ??= new List<GameEntity>()).Add(context.Receivers[ship]);
+            }
+            if (released != null) _unitOrderService.IssueStop(released);
+        }
+
+        private int CompareDefenseDistance(IShipEntity first, IShipEntity second) =>
+            PlanarDistance(first.WorldPosition, _defenseCenter).CompareTo(PlanarDistance(second.WorldPosition, _defenseCenter));
 
         private void ExecuteCapture(EnemyStrategicDecision decision, EnemyStrategicContext context)
         {

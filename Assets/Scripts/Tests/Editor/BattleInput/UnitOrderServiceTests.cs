@@ -254,40 +254,58 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(false)]
         [TestCase(true)]
-        public void Attack_LargeGroupKeepsDistinctFiringBearingsAndMixedHullClearance(bool mixedRadii)
+        public void Attack_SlotsStayOnGroupSideInShipOrderWithHullClearance(bool mixedRadii)
         {
             const int SHIP_COUNT = 19;
             var ships = new FakeEntity[SHIP_COUNT];
-            var receivers = new IEntity[SHIP_COUNT];
+            var receivers = new IEntity[SHIP_COUNT + 1];
             FakeEntity target = Entity(100, TestPlayers.Enemy);
             target.Command.NavigationRadius = 100f;
             for (int i = 0; i < SHIP_COUNT; i++)
             {
                 ships[i] = Entity(i + 1, TestPlayers.Human);
                 ships[i].Command.NavigationRadius = mixedRadii ? 2f + i % 4 : 5f;
+                // A line of ships north of the target, west to east.
+                ships[i].Command.WorldPosition = new Vector3((i - SHIP_COUNT / 2) * 50f, 0f, 1000f);
                 receivers[i] = ships[i];
             }
 
+            FakeEntity squadron = Entity(50, TestPlayers.Human, new[] { typeof(IAttackFacade) });
+            receivers[SHIP_COUNT] = squadron;
+
             _unitOrderService.IssueAttack(receivers, target);
 
+            Assert.That(squadron.Command.LastPoint, Is.EqualTo(Vector3.zero), "Squadrons get no ring slot.");
             for (int i = 0; i < SHIP_COUNT; i++)
             {
                 Vector3 offset = ships[i].Command.LastPoint;
-                float contact = target.Command.NavigationRadius + ships[i].Command.NavigationRadius;
-                Vector3 effective = offset + offset.normalized * contact;
-                Assert.That(effective.magnitude, Is.GreaterThan(contact));
-                for (int j = 0; j < i; j++)
-                {
-                    Vector3 other = ships[j].Command.LastPoint;
-                    float otherContact = target.Command.NavigationRadius + ships[j].Command.NavigationRadius;
-                    float clearance = ships[i].Command.NavigationRadius + ships[j].Command.NavigationRadius;
-                    Assert.That(Vector3.Distance(effective, other + other.normalized * otherContact),
-                        Is.GreaterThanOrEqualTo(clearance - 0.001f));
-                    // A feasible 65-unit firing ring must not merge concentric-ring bearings.
-                    Assert.That(Vector3.Distance(offset.normalized * 65f, other.normalized * 65f),
-                        Is.GreaterThanOrEqualTo(clearance - 0.001f));
-                }
+                Assert.That(offset.sqrMagnitude, Is.GreaterThan(0f));
+                Assert.That(Vector3.Angle(offset, Vector3.forward), Is.LessThanOrEqualTo(60.001f),
+                    "No slot lies behind the target.");
+                if (i == 0) continue;
+                Vector3 previous = ships[i - 1].Command.LastPoint;
+                // West-to-east ships keep their order around the target, so legs do not cross.
+                Assert.That(Vector3.SignedAngle(previous, offset, Vector3.up), Is.GreaterThan(0f));
+                float contact = target.Command.NavigationRadius + Mathf.Max(5f, ships[i].Command.NavigationRadius);
+                float clearance = ships[i].Command.NavigationRadius + ships[i - 1].Command.NavigationRadius;
+                Assert.That(Vector3.Distance(previous.normalized * contact, offset.normalized * contact),
+                    Is.GreaterThanOrEqualTo(clearance - 0.001f));
             }
+        }
+
+        [Test]
+        public void Attack_TwoShipsGetNeighbouringSlotsNotOppositeEdgesOfTheArc()
+        {
+            FakeEntity target = Entity(100, TestPlayers.Enemy);
+            target.Command.NavigationRadius = 100f;
+            FakeEntity first = Entity(1, TestPlayers.Human);
+            FakeEntity second = Entity(2, TestPlayers.Human);
+            first.Command.WorldPosition = new Vector3(-20f, 0f, 1000f);
+            second.Command.WorldPosition = new Vector3(20f, 0f, 1000f);
+
+            _unitOrderService.IssueAttack(new IEntity[] { first, second }, target);
+
+            Assert.That(Vector3.Angle(first.Command.LastPoint, second.Command.LastPoint), Is.LessThan(30f));
         }
 
         [Test]
@@ -379,7 +397,7 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
-        private sealed class FakeCommand : IMoveFacade, IAttackFacade,
+        private sealed class FakeCommand : IMoveFacade, IAttackFacade, IHardPointAttackFacade,
             IAttackMoveFacade, IStopFacade, IGuardFacade, IWaypointMoveFacade,
             IHuntFacade, IRetreatFacade, IFocusFireFacade, INavigationFootprintFacade
         {
@@ -387,7 +405,7 @@ namespace EmpireAtWar.Tests.Editor
             public UnitActionId LastAction { get; private set; }
             public Vector3 LastPoint { get; private set; }
             public AttackMoveEngagement LastEngagement { get; private set; }
-            public Vector3 WorldPosition => Vector3.zero;
+            public Vector3 WorldPosition { get; set; }
             public float NavigationRadius { get; set; } = 5f;
 
             public void MoveTo(Vector2 point) => Record(UnitActionId.Move, point);
@@ -395,6 +413,9 @@ namespace EmpireAtWar.Tests.Editor
             public void MoveTo(Vector3 point) => Record(UnitActionId.Move, point);
 
             public void Attack(IEntity target, Vector3 offset) =>
+                Record(UnitActionId.Attack, offset);
+
+            public void AttackHardPoint(IEntity target, int hardPointId, Vector3 offset) =>
                 Record(UnitActionId.Attack, offset);
 
             public void FocusFire(IEntity target) => Record(UnitActionId.Attack);
