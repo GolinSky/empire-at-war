@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Factions;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity.Orders;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.SpaceStation;
@@ -50,7 +53,7 @@ namespace EmpireAtWar.Tests.Editor
             victory.RestoreObservedBases(Array.ConvertAll(slots, slot => slot.Id));
             var service = new BattleVictoryService(null, ships, entities, roster,
                 TestPlayers.CreateLocalPlayer(roster), new PlayerRegistry(), null, victory,
-                Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()));
+                Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()), null);
 
             var states = Collect(service);
             Assert.That(states.Count, Is.EqualTo(8));
@@ -76,7 +79,7 @@ namespace EmpireAtWar.Tests.Editor
             var registry = new PlayerRegistry();
             var service = new BattleVictoryService(null, new ShipService(), entities, roster,
                 TestPlayers.CreateLocalPlayer(roster), registry, null, new BattleVictoryModel(),
-                Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()));
+                Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()), null);
             var humanBase = new Unit(1, TestPlayers.Human, true);
             var enemyBase = new Unit(2, TestPlayers.Enemy, true);
             var humanUnit = new Unit(3, TestPlayers.Human, false);
@@ -105,7 +108,7 @@ namespace EmpireAtWar.Tests.Editor
             var victory = new BattleVictoryModel();
             var service = new BattleVictoryService(null, new ShipService(), entities, roster,
                 TestPlayers.CreateLocalPlayer(roster), new PlayerRegistry(), null, victory,
-                Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()));
+                Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()), null);
             entities.AddEntity(new Unit(1, TestPlayers.Human, true));
             var enemyBase = new Unit(2, TestPlayers.Enemy, true);
             entities.AddEntity(enemyBase);
@@ -128,7 +131,7 @@ namespace EmpireAtWar.Tests.Editor
             var victory = new BattleVictoryModel();
             var service = new BattleVictoryService(null, new ShipService(), entities, roster,
                 TestPlayers.CreateLocalPlayer(roster), new PlayerRegistry(), null, victory,
-                Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()));
+                Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()), null);
             entities.AddEntity(new Unit(1, TestPlayers.Human, true));
             var enemyBase = new Unit(2, TestPlayers.Enemy, true);
             entities.AddEntity(enemyBase);
@@ -154,7 +157,7 @@ namespace EmpireAtWar.Tests.Editor
             reserve.AddReinforcement(request);
             var service = new BattleVictoryService(null, new ShipService(), new EntityLocator(), roster,
                 TestPlayers.CreateLocalPlayer(roster), registry, null, new BattleVictoryModel(),
-                Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()));
+                Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()), null);
             Assert.That(Collect(service).Find(value => value.Player == TestPlayers.Enemy).HasPendingReinforcement, Is.True);
             Assert.That(Collect(service).Find(value => value.Player == TestPlayers.Human).HasPendingReinforcement, Is.False);
             reserve.ConsumeReinforcement(request);
@@ -189,7 +192,8 @@ namespace EmpireAtWar.Tests.Editor
             }
             var service = new BattleVictoryService(null, ships, entities, roster,
                 TestPlayers.CreateLocalPlayer(roster), new PlayerRegistry(), null,
-                new BattleVictoryModel(), Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()));
+                new BattleVictoryModel(), Array.Empty<IBattleSurvivalSource>(), new BattleClock(new SkirmishStateModel()),
+                null);
             // Bind once so reflection and harness allocations are outside the measured region.
             var collect = (Action)Delegate.CreateDelegate(typeof(Action), service,
                 typeof(BattleVictoryService).GetMethod("CollectStates", BindingFlags.Instance | BindingFlags.NonPublic));
@@ -220,6 +224,103 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(states.Find(value => value.Player == TestPlayers.Enemy).UnitCount, Is.EqualTo(entityCount / 2 - 1));
             Assert.That(states.TrueForAll(value => value.IsBaseAlive), Is.True);
         }
+
+        [Test]
+        public void Losses_GroupAlliesAndOpponents_AndCountEachDestroyedSquadronLife()
+        {
+            var entities = new EntityLocator();
+            var state = new SkirmishStateModel();
+            var tracker = new BattleLossTracker(entities, TestPlayers.CreateLocalPlayer(TestPlayers.CreateTeamGame()), state);
+            var venator = new UnitTypeFacade(UnitTypeId.Ship(ShipType.Venator));
+            var local = CreateEntity(entities, 1, TestPlayers.Human, venator);
+            local.Initialize();
+            tracker.Initialize();
+            var beforeBattle = CreateEntity(entities, 2, TestPlayers.Human, venator);
+            beforeBattle.Initialize();
+            ((Health)beforeBattle.HealthModel).Destroy();
+
+            state.SetState(BattleState.Running);
+            var ally = CreateEntity(entities, 3, TestPlayers.Ally, venator);
+            var opposingFleet = CreateEntity(entities, 4, TestPlayers.SecondEnemy, venator);
+            var squadron = CreateEntity(entities, 5, TestPlayers.Enemy,
+                new UnitTypeFacade(UnitTypeId.Squadron(SquadronType.Delta7)));
+            var neutral = CreateEntity(entities, 6, PlayerId.None, venator);
+            foreach (Entity entity in new[] { ally, opposingFleet, squadron, neutral })
+                entity.Initialize();
+            entities.RemoveEntity(squadron); // Stowing a live squadron is not a loss.
+            Assert.That(tracker.GetEnemyLosses(), Is.Empty);
+            entities.AddEntity(squadron);
+            foreach (Entity entity in new[] { local, ally, opposingFleet, squadron, neutral })
+                ((Health)entity.HealthModel).Destroy();
+
+            entities.RemoveEntity(squadron);
+            ((Health)squadron.HealthModel).IsDestroyed = false;
+            entities.AddEntity(squadron);
+            BattleUnitLoss[] snapshot = tracker.GetEnemyLosses();
+            ((Health)squadron.HealthModel).Destroy();
+            state.SetState(BattleState.Ended);
+            var late = CreateEntity(entities, 7, TestPlayers.Enemy, venator);
+            late.Initialize();
+            ((Health)late.HealthModel).Destroy();
+
+            BattleUnitLoss playerLoss = tracker.GetPlayerLosses().Single();
+            Assert.That(playerLoss.UnitType, Is.EqualTo(UnitTypeId.Ship(ShipType.Venator)));
+            Assert.That(playerLoss.Count, Is.EqualTo(2));
+            Assert.That(tracker.GetEnemyLosses().Single(loss => loss.Kind == BattleLossKind.Ship).Count, Is.EqualTo(1));
+            Assert.That(tracker.GetEnemyLosses().Single(loss => loss.Kind == BattleLossKind.Squadron).Count, Is.EqualTo(2));
+            Assert.That(snapshot.Single(loss => loss.Kind == BattleLossKind.Squadron).Count, Is.EqualTo(1));
+            tracker.LateDispose();
+        }
+
+        [Test]
+        public void Losses_RestoreStructureTypesAndStationLevel_AndAccumulateAfterLoading()
+        {
+            var entities = new EntityLocator();
+            var state = new SkirmishStateModel();
+            var tracker = new BattleLossTracker(entities, TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), state);
+            tracker.Initialize();
+            var level = new SecondStationLevelModel();
+            var station = CreateEntity(entities, 1, TestPlayers.Human,
+                new StructureSaveFacade(1, TestPlayers.Human, StructureKind.SecondStation, (int)FactionType.Republic,
+                    null, null), new StationLevelFacade(level));
+            var platform = CreateEntity(entities, 2, TestPlayers.Enemy,
+                new StructureSaveFacade(2, TestPlayers.Enemy, StructureKind.DefendPlatform, (int)DefendPlatformType.GolanIII,
+                    null, null));
+            station.Initialize();
+            platform.Initialize();
+            state.SetState(BattleState.Running);
+            level.CurrentLevel = 3;
+            ((Health)station.HealthModel).Destroy();
+            ((Health)platform.HealthModel).Destroy();
+
+            BattleSave save = BattleSave.Create(null, null, default, Array.Empty<UnitSave>(), Array.Empty<StructureSave>());
+            tracker.Capture(save);
+            tracker.RestoreBeforeUnits(BattleSave.FromJson(save.ToJson()));
+
+            BattleUnitLoss stationLoss = tracker.GetPlayerLosses().Single();
+            Assert.That(stationLoss.Kind, Is.EqualTo(BattleLossKind.SpaceStation));
+            Assert.That(stationLoss.StationFaction, Is.EqualTo(FactionType.Republic));
+            Assert.That(stationLoss.StationLevel, Is.EqualTo(3));
+            Assert.That(stationLoss.Count, Is.EqualTo(1));
+            var rebuiltPlatform = CreateEntity(entities, 3, TestPlayers.Enemy,
+                new StructureSaveFacade(3, TestPlayers.Enemy, StructureKind.DefendPlatform, (int)DefendPlatformType.GolanIII,
+                    null, null));
+            rebuiltPlatform.Initialize();
+            ((Health)rebuiltPlatform.HealthModel).Destroy();
+            BattleUnitLoss platformLoss = tracker.GetEnemyLosses().Single();
+            Assert.That(platformLoss.Kind, Is.EqualTo(BattleLossKind.DefendPlatform));
+            Assert.That(platformLoss.DefendPlatformType, Is.EqualTo(DefendPlatformType.GolanIII));
+            Assert.That(platformLoss.Count, Is.EqualTo(2));
+
+            tracker.RestoreBeforeUnits(BattleSave.FromJson("{}"));
+            Assert.That(tracker.GetPlayerLosses(), Is.Empty);
+            Assert.That(tracker.GetEnemyLosses(), Is.Empty);
+            tracker.LateDispose();
+        }
+
+        private static Entity CreateEntity(EntityLocator entities, long id, PlayerId owner, params IEntityFacade[] facades) =>
+            new Entity(new Health(), entities, facades, owner, id,
+                Array.Empty<IPooledEntityEvents>(), Array.Empty<IHangarLaunchEvents>());
 
         private static List<PlayerBattleState> Collect(BattleVictoryService service)
         {
@@ -259,7 +360,7 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class Health : IHealthModelObserver
         {
-            public event Action OnDestroy { add { } remove { } }
+            public event Action OnDestroy;
             public event Action OnValueChanged { add { } remove { } }
             public ShipClass ShipClass => ShipClass.Capital;
             public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
@@ -274,6 +375,12 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasShields => false;
             public PlayerId Owner => default;
             public IHardPointModel[] GetShipUnits(HardPointType type) => Array.Empty<IHardPointModel>();
+
+            public void Destroy()
+            {
+                IsDestroyed = true;
+                OnDestroy?.Invoke();
+            }
         }
     }
 }

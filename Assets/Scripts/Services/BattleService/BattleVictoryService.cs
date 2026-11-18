@@ -28,6 +28,7 @@ namespace EmpireAtWar.Services.Battle
         private readonly IReadOnlyList<IBattleSurvivalSource> _survivalSources;
         private readonly INotifier<BattleState> _battleState;
         private readonly BattleClock _clock;
+        private readonly BattleLossTracker _losses;
 
         private readonly IBattleOutcomeRule _victoryModel;
         private readonly List<IObserver<BattleResult>> _observers = new();
@@ -50,7 +51,8 @@ namespace EmpireAtWar.Services.Battle
             INotifier<BattleState> battleState,
             IBattleOutcomeRule victoryModel,
             IReadOnlyList<IBattleSurvivalSource> survivalSources,
-            BattleClock clock)
+            BattleClock clock,
+            BattleLossTracker losses)
         {
             _survivalSources = survivalSources;
             _gameModel = gameModel;
@@ -62,6 +64,7 @@ namespace EmpireAtWar.Services.Battle
             _playerRegistry = playerRegistry;
             _battleState = battleState;
             _clock = clock;
+            _losses = losses;
         }
 
         public void Initialize()
@@ -208,9 +211,15 @@ namespace EmpireAtWar.Services.Battle
                 isPlayerBaseAlive: isPlayerBaseAlive,
                 isEnemyBaseAlive: isEnemyBaseAlive,
                 mode: _gameModel.GameMode,
-                durationSeconds: (int)_clock.Elapsed);
+                durationSeconds: (int)_clock.Elapsed,
+                playerLosses: _losses.GetPlayerLosses(),
+                enemyLosses: _losses.GetEnemyLosses());
         }
 
-        public void Reset() => _finalResult = null;
+        public void Reset()
+        {
+            _finalResult = null;
+            _losses.Reset();
+        }
     }
 }

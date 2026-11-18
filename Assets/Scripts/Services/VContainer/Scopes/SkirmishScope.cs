@@ -8,6 +8,7 @@ using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.CinematicCamera.Controller;
 using EmpireAtWar.Entities.CinematicCamera.Model;
 using EmpireAtWar.Entities.CoreGameUi;
+using EmpireAtWar.Entities.EndGameUi;
 using EmpireAtWar.Entities.ControlGroups;
 using EmpireAtWar.Entities.Fps;
 using EmpireAtWar.Entities.Game;
@@ -171,6 +172,7 @@ namespace EmpireAtWar.Services.VContainer
             // Mode services keep their entry-point order: after the player scopes, before the battle UI.
             BattleModes.Create(Battle, Assets, online).ConfigureBattle(builder);
             builder.Register<BattleClock>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<BattleLossTracker>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<BattleVictoryService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<UnitSaveService>(Lifetime.Singleton);
             builder.Register<PlayerSaveRegistry>(Lifetime.Singleton).AsSelf().As<IBattleSaveSource>();
@@ -259,6 +261,7 @@ namespace EmpireAtWar.Services.VContainer
                 builder.Register<MatchAnalyticsTracker>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
                 builder.Register<PerformanceAnalyticsSampler>(Lifetime.Singleton).AsImplementedInterfaces();
             }
+            builder.Register<EndGameLossCatalog>(Lifetime.Singleton);
             builder.Register<CoreGameUiController>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ControlGroupModel>(Lifetime.Singleton);
             builder.Register<ControlGroupService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

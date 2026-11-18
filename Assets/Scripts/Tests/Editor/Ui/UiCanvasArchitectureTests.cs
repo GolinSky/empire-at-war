@@ -307,7 +307,8 @@ namespace EmpireAtWar.Tests.Editor
                     uiService: service, placement: service.Placement, cancelRouter: null,
                     selectionService: null, battleState: null, gameSpeed: null, skirmishFlow: null,
                     battleVictoryNotifier: null, cinematicCamera: null, tooltipService: null,
-                    bindings: null, session: null, battle: null, clock: null, localPlayer: null, pointer: null);
+                    bindings: null, session: null, battle: null, clock: null, localPlayer: null, pointer: null,
+                    endGameLossCatalog: null);
                 typeof(CoreGameUiController).GetField("_ui", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(controller, hud);
                 typeof(CoreGameUiController).GetMethod("UpdateContentVisibility",

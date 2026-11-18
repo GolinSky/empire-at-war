@@ -17,6 +17,9 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
         private readonly Transform _viewTransform;
         private readonly HealthModel _health;
 
+        public StructureKind Kind => _kind;
+        public int TypeId => _type;
+
         /// <param name="type">The station's faction, or the facility or platform type, as its enum value.</param>
         public StructureSaveFacade(long entityId, PlayerId owner, StructureKind kind, int type,
             [Key(EntityBindType.ViewTransform)] Transform viewTransform, HealthModel health)

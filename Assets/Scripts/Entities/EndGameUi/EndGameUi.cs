@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using EmpireAtWar.Entities.Game;
-using EmpireAtWar.Models.Factions;
+using EmpireAtWar.Entities.Popups;
 using EmpireAtWar.Ui.Base;
 using TMPro;
 using UnityEngine;
 using EmpireAtWar.Components.Ui.Tooltip;
+using UnityEngine.UI;
 
 namespace EmpireAtWar.Entities.EndGameUi
 {
@@ -14,14 +16,11 @@ namespace EmpireAtWar.Entities.EndGameUi
         [SerializeField] private TMP_Text reasonText;
         [SerializeField] private TMP_Text battlefieldText;
         [SerializeField] private TMP_Text objectiveText;
-        [SerializeField] private TMP_Text playerFactionText;
-        [SerializeField] private TMP_Text enemyFactionText;
-        [SerializeField] private TMP_Text playerFleetText;
-        [SerializeField] private TMP_Text enemyFleetText;
-        [SerializeField] private TMP_Text playerBaseText;
-        [SerializeField] private TMP_Text enemyBaseText;
         [SerializeField] private TMP_Text battleDurationText;
-        [SerializeField] private UnityEngine.UI.Button returnToMenuButton;
+        [SerializeField] private ScrollRect playerLosses;
+        [SerializeField] private ScrollRect enemyLosses;
+        [SerializeField] private EndGameLossRow lossRowTemplate;
+        [SerializeField] private Button returnToMenuButton;
         [SerializeField] private TooltipHoverView tooltipHover;
 
         private IEndGamePresenter _presenter;
@@ -51,7 +50,9 @@ namespace EmpireAtWar.Entities.EndGameUi
 
         private void OnDestroy() => Dispose();
 
-        public void ShowResult(BattleResult result, string enemyFactions)
+        public void ShowResult(BattleResult result,
+            IReadOnlyList<(string Name, Sprite Icon, int Count)> friendlyLosses,
+            IReadOnlyList<(string Name, Sprite Icon, int Count)> hostileLosses)
         {
             outcomeText.text = result.Outcome switch
             {
@@ -71,8 +72,8 @@ namespace EmpireAtWar.Entities.EndGameUi
                 _ => fleetObjective ? "Both fleets have been destroyed." : "Both bases have been destroyed."
             };
 
-            battlefieldText.text = result.Planet.ToString().ToUpperInvariant();
-            battleDurationText.text = $"Battle duration: <color=#7DD3FC>{BattleDuration.Format(result.DurationSeconds)}</color>";
+            battlefieldText.text = PlanetSelectionPopupUi.GetPlanetName(result.Planet).ToUpperInvariant();
+            battleDurationText.text = $"Battle time  <color=#6DB8E2>{BattleDuration.Format(result.DurationSeconds)}</color>";
             objectiveText.text = fleetObjective ? "Destroy enemy fleet" : "Destroy opponent base";
             if (result.Mode == GameMode.Survival)
             {
@@ -80,24 +81,36 @@ namespace EmpireAtWar.Entities.EndGameUi
                 reasonText.text = result.Outcome == BattleOutcome.PlayerVictory
                     ? "All five waves have been defeated." : "Your station has been destroyed.";
             }
-            else if (result.Mode == GameMode.BattleSimulation)
-            {
-                objectiveText.text = "Battle simulation";
-                outcomeText.text = result.Outcome == BattleOutcome.Draw ? "DRAW"
-                    : result.Outcome == BattleOutcome.PlayerVictory ? "SIDE A WINS" : "SIDE B WINS";
-                reasonText.text = "Simulation complete.";
-            }
-            playerBaseText.gameObject.SetActive(result.Mode != GameMode.BattleSimulation);
-            enemyBaseText.gameObject.SetActive(result.Mode != GameMode.BattleSimulation);
-            playerFactionText.text = result.PlayerFaction.GetDisplayName().ToUpperInvariant();
-            enemyFactionText.text = enemyFactions.ToUpperInvariant();
-            playerFleetText.text = result.PlayerShipCount.ToString();
-            enemyFleetText.text = result.EnemyShipCount.ToString();
-            playerBaseText.text = result.IsPlayerBaseAlive ? "Operational" : "Destroyed";
-            enemyBaseText.text = result.IsEnemyBaseAlive ? "Operational" : "Destroyed";
+            RenderLosses(playerLosses, friendlyLosses);
+            RenderLosses(enemyLosses, hostileLosses);
             transform.SetAsLastSibling();
             Show();
             returnToMenuButton.Select();
+        }
+
+        private void RenderLosses(ScrollRect list, IReadOnlyList<(string Name, Sprite Icon, int Count)> losses)
+        {
+            foreach (Transform child in list.content)
+            {
+                child.gameObject.SetActive(false);
+                Destroy(child.gameObject);
+            }
+
+            if (losses.Count == 0)
+                AddRow(list.content, "No units lost", null, 0);
+            else
+                foreach (var loss in losses)
+                    AddRow(list.content, loss.Name, loss.Icon, loss.Count);
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(list.content);
+            list.verticalNormalizedPosition = 1f;
+        }
+
+        private void AddRow(RectTransform parent, string name, Sprite icon, int count)
+        {
+            EndGameLossRow row = Instantiate(lossRowTemplate, parent);
+            row.Show(name, icon, count);
+            row.gameObject.SetActive(true);
         }
 
         private void ReturnToMenu()

@@ -44,6 +44,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
         private readonly ILocalPlayer _localPlayer;
         private readonly BattleDefinition _battle;
         private readonly BattleClock _clock;
+        private readonly EndGameLossCatalog _endGameLossCatalog;
 
         private readonly Dictionary<SkirmishUiRoutePosition, List<ISkirmishUiRoute>> _routes = new();
         private readonly Dictionary<SkirmishUiRoutePosition, bool> _routeStates = new();
@@ -87,7 +88,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             ITooltipService tooltipService,
             IInputBindings bindings,
             IMatchSession session, BattleDefinition battle, BattleClock clock,
-            ILocalPlayer localPlayer, IPointerInput pointer) : base(uiService, cancelRouter)
+            ILocalPlayer localPlayer, IPointerInput pointer, EndGameLossCatalog endGameLossCatalog) : base(uiService, cancelRouter)
         {
             _localPlayer = localPlayer;
             _placement = placement;
@@ -105,6 +106,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _session = session;
             _battle = battle;
             _clock = clock;
+            _endGameLossCatalog = endGameLossCatalog;
         }
 
         public void Initialize()
@@ -128,7 +130,7 @@ namespace EmpireAtWar.Entities.CoreGameUi
             _endGamePresenter = new EndGameUiController(
                 uiService: UiService, cancelRouter: _cancelRouter,
                 battleVictoryNotifier: _battleVictoryNotifier,
-                enemyFactions: BattleOpponentLabels.Format(_battle, _session.LocalPlayerId, aiOnly: false),
+                lossCatalog: _endGameLossCatalog,
                 returnToMenu: _skirmishFlow.ExitSkirmish, tooltipService: _tooltipService);
             _selectionService.AddObserver(this);
 

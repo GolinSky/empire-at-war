@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.Planet;
 using EmpireAtWar.Models.Factions;
@@ -19,6 +20,8 @@ namespace EmpireAtWar.Entities.Game
         public bool IsPlayerBaseAlive { get; }
         public bool IsEnemyBaseAlive { get; }
         public int DurationSeconds { get; }
+        public IReadOnlyList<BattleUnitLoss> PlayerLosses { get; }
+        public IReadOnlyList<BattleUnitLoss> EnemyLosses { get; }
 
         public BattleResult(
             IReadOnlyList<FactionType> enemyFactions,
@@ -29,7 +32,8 @@ namespace EmpireAtWar.Entities.Game
             int playerShipCount,
             int enemyShipCount,
             bool isPlayerBaseAlive,
-            bool isEnemyBaseAlive, GameMode mode = GameMode.Skirmish, int durationSeconds = 0)
+            bool isEnemyBaseAlive, GameMode mode = GameMode.Skirmish, int durationSeconds = 0,
+            IReadOnlyList<BattleUnitLoss> playerLosses = null, IReadOnlyList<BattleUnitLoss> enemyLosses = null)
         {
             Outcome = outcome;
             Mode = mode;
@@ -42,6 +46,8 @@ namespace EmpireAtWar.Entities.Game
             IsPlayerBaseAlive = isPlayerBaseAlive;
             IsEnemyBaseAlive = isEnemyBaseAlive;
             DurationSeconds = durationSeconds;
+            PlayerLosses = playerLosses ?? Array.Empty<BattleUnitLoss>();
+            EnemyLosses = enemyLosses ?? Array.Empty<BattleUnitLoss>();
         }
     }
 }

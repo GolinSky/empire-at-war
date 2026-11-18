@@ -209,7 +209,7 @@ namespace EmpireAtWar.Tests.Editor
             BattleVictoryService service = new BattleVictoryService(null, new ShipService(), new EntityLocator(),
                 roster, TestPlayers.CreateLocalPlayer(roster), new PlayerRegistry(), null,
                 new BattleVictoryModel(), new[] { new ConstructingSitesSurvival(sites) },
-                new BattleClock(new SkirmishStateModel()));
+                new BattleClock(new SkirmishStateModel()), null);
             typeof(BattleVictoryService).GetMethod("CollectStates", BindingFlags.Instance | BindingFlags.NonPublic)
                 .Invoke(service, null);
             List<PlayerBattleState> states = (List<PlayerBattleState>)typeof(BattleVictoryService)

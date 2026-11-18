@@ -53,6 +53,8 @@ namespace EmpireAtWar.Services.Saves
             ValidateMapCounts(save, definition);
             ValidateSurvival(save, definition);
             ValidateControlGroups(save.ControlGroups);
+            ValidateLosses(save.PlayerLosses);
+            ValidateLosses(save.EnemyLosses);
 
             FactionCatalog factions = _assets.Load<FactionCatalog>(nameof(FactionCatalog));
             MiningFacilityCatalog mines = _assets.Load<MiningFacilityCatalog>(nameof(MiningFacilityCatalog));
@@ -123,6 +125,28 @@ namespace EmpireAtWar.Services.Saves
                     throw new InvalidDataException($"Saved squad slot {group.Slot} is outside 0–9.");
                 if (!slots.Add((group.Owner, group.Slot)))
                     throw new InvalidDataException($"Duplicate saved squad slot {group.Slot} for player {group.Owner}.");
+            }
+        }
+
+        private static void ValidateLosses(IReadOnlyList<BattleUnitLoss> losses)
+        {
+            var types = new HashSet<(BattleLossKind, int, int)>();
+            foreach (BattleUnitLoss loss in losses)
+            {
+                if (loss == null || loss.Count <= 0)
+                    throw new InvalidDataException("Saved battle losses must have positive counts.");
+                bool validType = loss.Kind switch
+                {
+                    BattleLossKind.Ship => Enum.IsDefined(typeof(ShipType), loss.UnitType.ShipType),
+                    BattleLossKind.Squadron => Enum.IsDefined(typeof(SquadronType), loss.UnitType.SquadronType),
+                    BattleLossKind.SpaceStation => Enum.IsDefined(typeof(FactionType), loss.StationFaction),
+                    BattleLossKind.DefendPlatform => Enum.IsDefined(typeof(DefendPlatformType), loss.DefendPlatformType),
+                    BattleLossKind.MiningFacility => Enum.IsDefined(typeof(MiningFacilityType), loss.MiningFacilityType),
+                    _ => false
+                };
+                bool validLevel = loss.Kind == BattleLossKind.SpaceStation ? loss.StationLevel > 0 : loss.StationLevel == 0;
+                if (!validType || !validLevel || !types.Add((loss.Kind, loss.TypeId, loss.StationLevel)))
+                    throw new InvalidDataException("Saved battle losses contain an invalid or duplicate type.");
             }
         }
 

@@ -5,6 +5,9 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
     /// <summary>Saves and restores a station, mining facility or defense platform.</summary>
     public interface IStructureSaveFacade : IEntityFacade
     {
+        StructureKind Kind { get; }
+        int TypeId { get; }
+
         StructureSave Capture();
 
         UnitHealthSave CaptureHealth();
