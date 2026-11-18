@@ -210,7 +210,7 @@ MonoBehaviour:
     - key: 200
       value:
         matchups: {fileID: 11400000, guid: 2b08713a371fcbd4c98840e4d71f3353, type: 2}
-        displayName: VSD
+        displayName: Victory
         description: Republic heavy cruiser built to destroy corvettes and frigates.
           Two enhanced turbolaser, four dual medium turbolaser, two dual heavy turbolaser,
           two concussion missile and one ion cannon battery; thirteen targetable

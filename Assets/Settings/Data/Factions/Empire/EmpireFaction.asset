@@ -28,7 +28,7 @@ MonoBehaviour:
         role: Artillery / Cruiser
         iconKey: 3896a253ad3c5024b8b7260fb0c214a9:21300000
         isHero: 0
-        <Name>k__BackingField: "Victory I Star Destroyer \u2014 Advanced Loadout"
+        <Name>k__BackingField: Victory I Star Destroyer
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 2
         <Price>k__BackingField: 4000
@@ -75,7 +75,7 @@ MonoBehaviour:
         role: Ion Support / Cruiser
         iconKey: 73509b3f4bebe5542ba69d62230fff68:21300000
         isHero: 0
-        <Name>k__BackingField: "Victory II Star Destroyer \u2014 Advanced Loadout"
+        <Name>k__BackingField: Victory II Star Destroyer
         <MaxCount>k__BackingField: 10
         <AvailableLevel>k__BackingField: 3
         <Price>k__BackingField: 4500
