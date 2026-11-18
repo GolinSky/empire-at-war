@@ -25,7 +25,6 @@ namespace EmpireAtWar.Components.Weapon
         internal const float DOOMED_MARGIN = 1.25f;
         // Leftover float error below this is dropped so finished targets leave the table.
         private const float INCOMING_EPSILON = 0.5f;
-        private const int MAX_SHOTS_PER_FRAME = 4;
 
         private readonly Dictionary<IWeaponPresenter, int> _owners = new Dictionary<IWeaponPresenter, int>();
         private readonly List<SequenceRecord> _sequences = new List<SequenceRecord>();
@@ -463,10 +462,10 @@ namespace EmpireAtWar.Components.Weapon
                 return;
             }
 
-            // Shots are paced from their scheduled times, so a slow frame emits every shot that fell due in it
-            // (bounded by MAX_SHOTS_PER_FRAME); any backlog beyond the bound is dropped, never replayed as a burst.
+            // Shots are paced from their scheduled times: a slow frame fires every later shot of this salvo that is
+            // already due, each launched ahead by how late it is. Catch-up never reaches past the frame's own length.
             float delay = sequence.HardPoint.DelayBetweenShots;
-            for (int emitted = 0; emitted < MAX_SHOTS_PER_FRAME; emitted++)
+            while (true)
             {
                 // A salvo started on a live hardpoint finishes even if that hardpoint dies; the health model spreads the hits.
                 // A salvo at a fighter stops when the fighter dies, freeing the weapon for a live one.
@@ -481,7 +480,8 @@ namespace EmpireAtWar.Components.Weapon
                     return;
                 }
 
-                sequence.HardPoint.EmitScheduledShot(sequence.TargetGroup, sequence.Target, sequence.HardPointGeneration);
+                sequence.HardPoint.EmitScheduledShot(sequence.TargetGroup, sequence.Target, sequence.HardPointGeneration,
+                    Mathf.Max(0f, now - sequence.NextTime));
                 if (!sequence.HardPoint.IsEmitting(sequence.HardPointGeneration))
                 {
                     sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);
@@ -496,7 +496,6 @@ namespace EmpireAtWar.Components.Weapon
                 sequence.NextTime += delay;
                 if (sequence.NextTime > now) break;
             }
-            sequence.NextTime = Mathf.Max(sequence.NextTime, now);
             sequence.EarliestFrame = frame + 1;
             sequence.EventSequence = ++_nextEventSequence;
             _sequenceIndices.Add(sequence.EventSequence, _sequences.Count);

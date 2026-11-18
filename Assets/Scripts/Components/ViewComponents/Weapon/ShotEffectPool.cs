@@ -76,7 +76,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         /// <returns>Seconds until the shot reaches the target.</returns>
         public float Play(AttackData attackData, IHardPointModel target, Vector3 aimOffset,
-            int sequenceGeneration, bool isHit, out ShotEffect effect)
+            int sequenceGeneration, bool isHit, out ShotEffect effect, float lateSeconds = 0f)
         {
             if (_released)
                 throw new InvalidOperationException("Cannot play an effect from a released pool.");
@@ -84,7 +84,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             effect = Acquire();
             effect.PrepareImpact(_impactPresenter, attackData.TargetHealth, _profile.DamageType, _profile.Damage,
                 GetImpactSize(attackData.TargetClass), isHit);
-            float duration = effect.Fire(_owner, target.Transform, target.Pivot, aimOffset, _profile, _boltFlights);
+            float duration = effect.Fire(_owner, target.Transform, target.Pivot, aimOffset, _profile, _boltFlights,
+                lateSeconds);
             _active.Add(effect, sequenceGeneration);
             AttackSequenceDiagnostics.RecordPoolActivated();
             return duration;

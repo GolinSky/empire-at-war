@@ -54,17 +54,17 @@ created: "2026-11-18\r"
 ### Phase 2b — Split pools: strikecraft vs ships (user proposal 2026-11-18, agreed)
 - [x] Key `ShotPoolPrewarmer._caches` by (shot prefab, pool group), where group = `Strikecraft` (owner class `IsStrikecraft()`) or `Ships` (ships, stations, platforms).
 - [x] Separate admission FIFOs → fighter salvos can never block capital salvos, and the reverse.
-- [x] Separate prewarm (done: ships summed per roster slot; fighters from summed built-squadron capacity `RegisteredCapacity`): ships from roster ship loadouts; fighters from squadron loadouts × expected live squadrons (station start count + carrier bays), not one unit.
+- [x] Separate prewarm (done via `ShotPoolPrewarmer.BuildStock`: per-faction demand × slots using that faction; fighters = station hangar `MaxActive` × squadron loadout; test `BuildStock_GrowsWithSlotCountPerFaction`): ships from roster ship loadouts; fighters from squadron loadouts × expected live squadrons (station start count + carrier bays), not one unit.
 - [ ] Separate growth budget per group, weighted by waiting shots; fighter group may have a hard cap (skip the bolt visual when full; damage still applies once Phase 2 Option A lands).
 - Files: `ShotPoolPrewarmer.cs` (`CreatePool`, `GetCache`, `PrewarmRosterAsync`), `WeaponHardPoint.GetPool`.
 
 ### Phase 2c — In-flight estimate (must fix)
-- [x] (done via `ShotEffect.PostImpactSeconds`; missile trail `startLifetime`, bolt muzzle flash not included) `WeaponHardPoint.ExpectedShotsInFlight` counts only `Range / ProjectileSpeed`. Add the post-impact visual lifetime: missile trail fade (`MissileShot.IsVisualComplete` waits for `trail.IsAlive` + intercept explosion) and bolt muzzle flash.
+- [x] (done via `ShotEffect.PostImpactSeconds`; missile trail lifetime + intercept explosion duration/lifetime, bolt muzzle flash not included) `WeaponHardPoint.ExpectedShotsInFlight` counts only `Range / ProjectileSpeed`. Add the post-impact visual lifetime: missile trail fade (`MissileShot.IsVisualComplete` waits for `trail.IsAlive` + intercept explosion) and bolt muzzle flash.
 - [x] (growth + hold + fade) Beams: `BeamShot` has `ProjectileSpeed` 0 → flight 0 s → estimate = one salvo; use the beam duration (`DamageDuration`/beam visual length) instead.
 - [x] (`ExpectedShotsInFlight_CoversFlightPlusPostImpactLease`, Turbolaser + Torpedo; beam not covered; not run) Test (Combat): estimate ≥ shots alive at steady fire for missile, bolt and beam profiles (relationship, not tuned numbers).
 
 ### Phase 3 — Frame independence
-- [x] (`MAX_SHOTS_PER_FRAME = 4`, backlog dropped) Salvo cadence: `NextTime += DelayBetweenShots`; emit all shots due this frame (cap per frame), keeping the "no catch-up burst after a long frame" rule explicit with a bound.
+- [x] (revised: no per-frame cap, late shots launched ahead by their lateness via `ShotEffect.LateSeconds`; bolts and missiles only) Salvo cadence: `NextTime += DelayBetweenShots`; emit all shots due this frame (cap per frame), keeping the "no catch-up burst after a long frame" rule explicit with a bound.
 - [x] (`WeaponComponent.AttackOrDelay`: keeps its place in the storage queue) Failed admission → `DelayRetry` (no per-frame target selection).
 
 ## Agent handoff

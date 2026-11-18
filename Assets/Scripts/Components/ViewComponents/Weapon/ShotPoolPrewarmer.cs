@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using EmpireAtWar.Components.AttackComponent;
+using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.Ship.Data;
+using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Models.Factions;
@@ -43,8 +45,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             ShotEffectCache cache = GetCache(profile.ShotPrefab, strikecraft);
             cache.RegisterCapacity(target);
-            // Squadrons are built before battle: their summed capacity is the expected live fighter demand.
-            if (strikecraft) WarmLoadout(cache, cache.RegisteredCapacity);
             var pool = new ShotEffectPool(profile, owner, completed, impacts, flights, cache, target);
             _pools.Add(pool, (cache, target));
             pool.Retired += OnRetired;
@@ -55,7 +55,6 @@ namespace EmpireAtWar.ViewComponents.Weapon
         {
             (ShotEffectCache cache, int previousCapacity) = _pools[pool];
             cache.RegisterCapacity(capacity - previousCapacity);
-            if (cache.IsStrikecraftGroup) WarmLoadout(cache, cache.RegisteredCapacity);
             _pools[pool] = (cache, capacity);
             pool.IncreaseCapacity(capacity);
         }
@@ -166,38 +165,66 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 PrewarmNext(false);
         }
 
-        /// <summary>Warm roster ship demand (summed) and the largest fighter demand, before battle Running.</summary>
+        /// <summary>Warm ship and station-fighter stock sized from the battle's slots, before battle Running.</summary>
         public async Awaitable PrewarmRosterAsync(IAssetService assets, BattleDefinition battle,
             CancellationToken cancellationToken)
         {
             WeaponsData weapons = assets.Load<WeaponsData>(nameof(WeaponsData));
             FactionCatalog factions = assets.Load<FactionCatalog>(nameof(FactionCatalog));
             ShipsData ships = assets.Load<ShipsData>(nameof(ShipsData));
-            // Ships: every player fields a fleet, so each roster ship and platform adds its own demand.
-            // Fighters: the largest single squadron here; squadron pools add their summed demand when they are built.
-            var shipTargets = new Dictionary<ShotEffect, int>();
-            var strikecraftTargets = new Dictionary<ShotEffect, int>();
-            HashSet<SquadronType> squadrons = BattleAssetPreload.Squadrons(assets, battle);
+            SpaceStationData stations = assets.Load<SpaceStationData>(nameof(SpaceStationData));
+            var slotsPerFaction = new Dictionary<FactionType, int>();
             foreach (var slot in battle.Slots)
             {
-                foreach (var ship in factions.Get(slot.Faction).Ships.Keys)
+                slotsPerFaction.TryGetValue(slot.Faction, out int slots);
+                slotsPerFaction[slot.Faction] = slots + 1;
+            }
+
+            // Ships: one of every faction ship and platform per slot using that faction.
+            Dictionary<ShotEffect, int> shipTargets = BuildStock(slotsPerFaction, faction =>
+            {
+                var demand = new Dictionary<ShotEffect, int>();
+                foreach (var ship in factions.Get(faction).Ships.Keys)
                 {
                     ShipData data = assets.Load<ShipData>(ships.GetShipDataPath(ship));
-                    AddLoadout(data.WeaponLoadout, weapons, slot.Faction, shipTargets, true);
-                }
-                foreach (SquadronType squadron in squadrons)
-                {
-                    SquadronData data = assets.Load<SquadronData>(squadron + "SquadronData");
-                    AddLoadout(data.WeaponLoadout, weapons, slot.Faction, strikecraftTargets, false,
-                        data.WarheadDamageMultiplier, data.WarheadReloadMultiplier);
+                    AddLoadout(data.WeaponLoadout, weapons, faction, demand);
                 }
                 foreach (string key in BattleAssetPreload.PlatformDataKeys())
-                    AddLoadout(assets.Load<DefendPlatformData>(key).WeaponLoadout, weapons, slot.Faction, shipTargets, true);
-            }
+                    AddLoadout(assets.Load<DefendPlatformData>(key).WeaponLoadout, weapons, faction, demand);
+                return demand;
+            });
+            // Fighters: the station's starting squadrons, each squadron's full loadout (all its fighters).
+            Dictionary<ShotEffect, int> strikecraftTargets = BuildStock(slotsPerFaction, faction =>
+            {
+                var demand = new Dictionary<ShotEffect, int>();
+                HangarBay bay = stations.GetHangarBay(faction);
+                SquadronData data = assets.Load<SquadronData>(bay.SquadronType + "SquadronData");
+                var squadron = new Dictionary<ShotEffect, int>();
+                AddLoadout(data.WeaponLoadout, weapons, faction, squadron,
+                    data.WarheadDamageMultiplier, data.WarheadReloadMultiplier);
+                foreach (KeyValuePair<ShotEffect, int> entry in squadron) demand[entry.Key] = entry.Value * bay.MaxActive;
+                return demand;
+            });
 
             WarmRoster(shipTargets, false, cancellationToken);
             WarmRoster(strikecraftTargets, true, cancellationToken);
             await CompletePrewarmAsync(cancellationToken);
+        }
+
+        /// <summary>Per-faction demand scaled by how many slots use that faction, summed per shot prefab.</summary>
+        internal static Dictionary<ShotEffect, int> BuildStock(IReadOnlyDictionary<FactionType, int> slotsPerFaction,
+            Func<FactionType, Dictionary<ShotEffect, int>> factionDemand)
+        {
+            var stock = new Dictionary<ShotEffect, int>();
+            foreach (KeyValuePair<FactionType, int> faction in slotsPerFaction)
+            {
+                foreach (KeyValuePair<ShotEffect, int> demand in factionDemand(faction.Key))
+                {
+                    stock.TryGetValue(demand.Key, out int current);
+                    stock[demand.Key] = current + demand.Value * faction.Value;
+                }
+            }
+            return stock;
         }
 
         private void WarmRoster(Dictionary<ShotEffect, int> targets, bool strikecraft,
@@ -215,7 +242,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
         }
 
         private static void AddLoadout(IReadOnlyList<WeaponLoadoutEntry> loadout, WeaponsData weapons,
-            FactionType faction, Dictionary<ShotEffect, int> targets, bool accumulate,
+            FactionType faction, Dictionary<ShotEffect, int> targets,
             float warheadDamageMultiplier = 1f, float warheadReloadMultiplier = 1f)
         {
             var unitTargets = new Dictionary<ShotEffect, int>();
@@ -230,7 +257,7 @@ namespace EmpireAtWar.ViewComponents.Weapon
             foreach (KeyValuePair<ShotEffect, int> target in unitTargets)
             {
                 targets.TryGetValue(target.Key, out int current);
-                targets[target.Key] = accumulate ? current + target.Value : Mathf.Max(current, target.Value);
+                targets[target.Key] = current + target.Value;
             }
         }
     }

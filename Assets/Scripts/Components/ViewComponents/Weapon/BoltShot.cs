@@ -75,7 +75,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
             _travelTime = travelTime;
             _anchor = start;
             _anchorDuration = travelTime;
-            _arrivalTime = Time.time + travelTime;
+            float late = Mathf.Min(LateSeconds, travelTime);
+            _arrivalTime = Time.time + travelTime - late;
             _isFlying = true;
             Vector3 direction = _lastAimPoint - start;
             transform.SetPositionAndRotation(start, direction.sqrMagnitude > 0f
@@ -101,9 +102,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
             // Bolt prefabs contain one static burst. Fly moves the local-space particles;
             // simulate just the initial emission, then leave simulation paused until impact.
             vfx.Simulate(PARTICLE_BURST_TIME, true, true, false);
-            _progress = 0f;
+            _progress = travelTime > 0f ? late / travelTime : 0f;
             if (!IsInFlightBatch) BoltFlights.Add(this);
-            return travelTime;
+            return travelTime - late;
         }
 
         /// <summary>

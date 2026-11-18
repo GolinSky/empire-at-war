@@ -237,12 +237,13 @@ namespace EmpireAtWar.ViewComponents.Health
             if (!_sequence.IsBusy && _effectPool != null) _effectPool.CancelReservation();
         }
 
-        internal void EmitScheduledShot(AttackData attackData, IHardPointModel hardPointModel, int sequenceGeneration)
+        internal void EmitScheduledShot(AttackData attackData, IHardPointModel hardPointModel, int sequenceGeneration,
+            float lateSeconds = 0f)
         {
             bool isHit = _hits.Roll(WeaponPresenter.GetHitChance(attackData, _profile), Random.value);
             Vector3 aimOffset = isHit ? Vector3.zero : Random.onUnitSphere * _missSpread;
             float duration = GetPool().Play(attackData, hardPointModel, aimOffset, sequenceGeneration, isHit,
-                out ShotEffect effect);
+                out ShotEffect effect, lateSeconds);
 
             if (!_sequence.RegisterEffect(sequenceGeneration))
             {

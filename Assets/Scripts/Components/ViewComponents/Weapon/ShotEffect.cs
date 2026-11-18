@@ -39,6 +39,8 @@ namespace EmpireAtWar.ViewComponents.Weapon
 
         public int LeaseId => _leaseId;
         protected bool IsStrikecraftTarget { get; private set; }
+        /// <summary>How long after its scheduled time this shot was fired; flying shots start that far ahead.</summary>
+        protected float LateSeconds { get; private set; }
         /// <summary>Moves the whole target unit; read it for the unit's travel, free of its turning.</summary>
         protected Transform TargetPivot { get; private set; }
         protected bool HasArmorImpact => _impactTarget != null &&
@@ -108,8 +110,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
         /// <summary>Plays the shot from <paramref name="muzzle"/> towards <paramref name="target"/> + offset.</summary>
         /// <returns>Seconds until the shot reaches its aim point.</returns>
         public float Fire(Transform muzzle, Transform target, Transform targetPivot, Vector3 aimOffset,
-            WeaponProfile profile, BoltFlightBatch boltFlights)
+            WeaponProfile profile, BoltFlightBatch boltFlights, float lateSeconds = 0f)
         {
+            LateSeconds = lateSeconds;
             TargetPivot = targetPivot;
             BoltFlights = boltFlights;
             muzzleFlash.Play(muzzle, ResolveAimPoint(muzzle.position, target.position + aimOffset),

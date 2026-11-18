@@ -4,6 +4,7 @@ using System.Reflection;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Weapon;
+using EmpireAtWar.Models.Factions;
 using EmpireAtWar.ViewComponents.Weapon;
 using EmpireAtWar.ViewComponents.Health;
 using NUnit.Framework;
@@ -105,6 +106,18 @@ namespace EmpireAtWar.Tests.Weapon
                 Return(first, c);
             }
             finally { prewarmer.Clear(); }
+        }
+
+        [Test]
+        public void BuildStock_GrowsWithSlotCountPerFaction()
+        {
+            ShotEffect prefab = Profile().ShotPrefab;
+            System.Func<FactionType, Dictionary<ShotEffect, int>> demand =
+                _ => new Dictionary<ShotEffect, int> { { prefab, 5 } };
+            var one = new Dictionary<FactionType, int> { { FactionType.Republic, 1 } };
+            var many = new Dictionary<FactionType, int> { { FactionType.Republic, 3 }, { FactionType.Empire, 2 } };
+            Assert.That(ShotPoolPrewarmer.BuildStock(many, demand)[prefab],
+                Is.GreaterThan(ShotPoolPrewarmer.BuildStock(one, demand)[prefab]));
         }
 
         [Test]
