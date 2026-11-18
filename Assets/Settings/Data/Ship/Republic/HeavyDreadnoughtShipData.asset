@@ -57,7 +57,8 @@ MonoBehaviour:
   <ShipClass>k__BackingField: 10
   <Hull>k__BackingField: 6000
   <Shields>k__BackingField: 4800
-  <ShieldRegenerateValue>k__BackingField: 117
+  shieldRegenTiers: {fileID: 11400000, guid: 3425d6ddc79a6b649990974111258ac9, type: 2}
+  <ShieldRegenTier>k__BackingField: 6
   <ShieldRegenerateDelay>k__BackingField: 1
   <Range>k__BackingField: 650
   <Delay>k__BackingField: 0.25
