@@ -9,10 +9,22 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     public sealed class EnemyDefenseStrategy
     {
         private const float HORIZON = 30f;
+        private const int ZONE_SATELLITES = 3;
+        private const int MINING_POINT_SATELLITES = 1;
+        private const float SQUADRON_HEAVY_SHARE = 0.4f;
+        private const float RICH_MONEY_FACTOR = 1.5f;
         private readonly List<EnemyDefenseChoice> _topChoices = new List<EnemyDefenseChoice>(3);
         public IReadOnlyList<EnemyDefenseChoice> TopChoices => _topChoices;
 
+        /// <summary>Required satellites first, then the best scored choice.</summary>
         public bool TrySelect(EnemyDefenseSnapshot snapshot, out EnemyDefenseChoice choice)
+        {
+            _topChoices.Clear();
+            return TrySelectMandatory(snapshot, out choice) || TrySelectScored(snapshot, out choice);
+        }
+
+        /// <summary>The threat- and income-scored choice among pads that already meet their required satellites.</summary>
+        public bool TrySelectScored(EnemyDefenseSnapshot snapshot, out EnemyDefenseChoice choice)
         {
             _topChoices.Clear();
             choice = default;
@@ -49,6 +61,73 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 }
             }
             return found;
+        }
+
+        /// <summary>
+        /// Every owned pad's point gets its required satellites before any scored choice: three at a mine-less zone
+        /// (relay or centre), one at a mining point. Money reserved for production does not apply.
+        /// </summary>
+        private bool TrySelectMandatory(EnemyDefenseSnapshot snapshot, out EnemyDefenseChoice choice)
+        {
+            choice = default;
+            bool found = false;
+            bool foundZone = false;
+            foreach (EnemyDefensePad pad in snapshot.Pads)
+            {
+                int required = pad.IsZonePad ? ZONE_SATELLITES : MINING_POINT_SATELLITES;
+                if (pad.HasHostiles || pad.Existing.Count >= required) continue;
+                if (!TryPickType(snapshot, pad, out EnemyDefenseOption option)) continue;
+                // Zones first, then the point with the most mines at stake.
+                float score = (pad.IsZonePad ? 10f : 0f) + pad.ProtectedMineShare;
+                if (found && (foundZone && !pad.IsZonePad || foundZone == pad.IsZonePad && score <= choice.Score))
+                    continue;
+                choice = new EnemyDefenseChoice(pad.SiteIndex, option.Type, score, option.Cost,
+                    pad.IsZonePad ? "Hold the zone with satellites" : "Mandatory mining-point satellite");
+                found = true;
+                foundZone = pad.IsZonePad;
+            }
+            return found;
+        }
+
+        // Turbolaser by default; quad laser when squadrons dominate; missile or mass driver once money is plentiful.
+        private static bool TryPickType(EnemyDefenseSnapshot snapshot, EnemyDefensePad pad, out EnemyDefenseOption picked)
+        {
+            picked = default;
+            bool hasPicked = false;
+            float squadronShare = GetSquadronShare(snapshot.Hostile);
+            SiteFacilityType wanted = squadronShare >= SQUADRON_HEAVY_SHARE
+                ? SiteFacilityType.QuadLaserSatellite : SiteFacilityType.TurbolaserSatellite;
+            EnemyDefenseOption heavy = default;
+            bool hasHeavy = false;
+            float heavyFit = 0f;
+            foreach (EnemyDefenseOption option in snapshot.Options)
+            {
+                if (option.Type == wanted) { picked = option; hasPicked = true; }
+                if (squadronShare >= SQUADRON_HEAVY_SHARE || option.Type != SiteFacilityType.MissileSatellite &&
+                    option.Type != SiteFacilityType.MassDriverSatellite) continue;
+                float fit = GetFit(snapshot, pad, option);
+                if (fit <= heavyFit) continue;
+                heavy = option;
+                hasHeavy = true;
+                heavyFit = fit;
+            }
+            if (!hasPicked) return false;
+            if (hasHeavy && snapshot.Money >= heavy.Cost * RICH_MONEY_FACTOR && pad.Existing.Count >= 1) picked = heavy;
+            return picked.Cost <= snapshot.Money;
+        }
+
+        private static float GetSquadronShare(ForceComposition hostile)
+        {
+            float total = 0f;
+            float squadrons = 0f;
+            foreach (ShipClass target in ForceComposition.Classes)
+            {
+                float durability = hostile.Hull(target) + hostile.Shields(target);
+                total += durability;
+                if (target == ShipClass.Fighter || target == ShipClass.Bomber || target == ShipClass.Interceptor)
+                    squadrons += durability;
+            }
+            return total > 0f ? squadrons / total : 0f;
         }
 
         private void RecordTop(EnemyDefenseChoice choice)

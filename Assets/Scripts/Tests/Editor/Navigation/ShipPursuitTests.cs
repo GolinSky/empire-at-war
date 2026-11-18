@@ -451,7 +451,7 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void Attack_TargetKilled_NoRadarContactGoesIdle()
+        public void Attack_TargetKilled_NoRadarContactAttackMovesToLastTargetPosition()
         {
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
             var abilityRelations = TestPlayers.CreateDuel();
@@ -461,16 +461,18 @@ namespace EmpireAtWar.Tests.Movement
             UnitOrderModel orders = new UnitOrderModel();
             ShipStateMachine machine = new ShipStateMachine();
             IdleState idle = new IdleState(_movement, _weapon, radar);
+            AttackMoveState attackMove = new AttackMoveState(_movement, _weapon, radar, null);
             ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
-                idle, null, new AttackTargetState(null, _weapon, _movement), null, null, null, null, abilities, caster, radar, null);
+                idle, null, new AttackTargetState(null, _weapon, _movement), attackMove, null, null, null, abilities, caster, radar, null);
             runner.Start();
             runner.Attack(_target, Vector3.zero);
 
             _target.Health.IsDestroyed = true;
             runner.Tick(0.1f);
 
-            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.None));
-            Assert.That(machine.CurrentState, Is.SameAs(idle));
+            // Nothing on this ship's radar: it sweeps toward where the target died instead of idling in place.
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.AttackMove));
+            Assert.That(machine.CurrentState, Is.SameAs(attackMove));
             abilities.Clear();
         }
 

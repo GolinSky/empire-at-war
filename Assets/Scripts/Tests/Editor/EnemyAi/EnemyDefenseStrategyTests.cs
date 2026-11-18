@@ -54,7 +54,7 @@ namespace EmpireAtWar.Tests.Editor
                 snapshot.Own.AddNew(new UnitCombatProfile(ShipClass.Cruiser, 1000f, 1000f, hullDps,
                     new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>()), false);
             }
-            Assert.That(strategy.TrySelect(snapshot, out var choice), Is.True);
+            Assert.That(strategy.TrySelectScored(snapshot, out var choice), Is.True);
             Assert.That(choice.Type, Is.EqualTo(expected), string.Join("; ", Describe(strategy)));
         }
 
@@ -62,32 +62,32 @@ namespace EmpireAtWar.Tests.Editor
         public void NoIntel_SelectsGeneralist()
         {
             var strategy = new EnemyDefenseStrategy();
-            Assert.That(strategy.TrySelect(Snapshot(new ForceComposition(), 2000f, 0f, Pad()), out var choice), Is.True);
+            Assert.That(strategy.TrySelectScored(Snapshot(new ForceComposition(), 2000f, 0f, Pad()), out var choice), Is.True);
             Assert.That(choice.Type, Is.EqualTo(SiteFacilityType.TurbolaserSatellite));
         }
 
         [Test]
         public void ProductionReserve_BlocksPeacetimeSpending()
         {
-            Assert.That(new EnemyDefenseStrategy().TrySelect(Snapshot(new ForceComposition(), 2000f, 2200f, Pad()), out _), Is.False);
+            Assert.That(new EnemyDefenseStrategy().TrySelectScored(Snapshot(new ForceComposition(), 2000f, 2200f, Pad()), out _), Is.False);
         }
 
         [Test]
         public void HostilesOnPad_BlockConstruction()
         {
-            Assert.That(new EnemyDefenseStrategy().TrySelect(Snapshot(new ForceComposition(), 5000f, 0f, Pad(hostiles: true)), out _), Is.False);
+            Assert.That(new EnemyDefenseStrategy().TrySelectScored(Snapshot(new ForceComposition(), 5000f, 0f, Pad(hostiles: true)), out _), Is.False);
         }
 
         [Test]
         public void ThreatenedPoint_CanSpendProductionReserve()
         {
-            Assert.That(new EnemyDefenseStrategy().TrySelect(Snapshot(new ForceComposition(), 2000f, 2200f, Pad(threatened: true)), out _), Is.True);
+            Assert.That(new EnemyDefenseStrategy().TrySelectScored(Snapshot(new ForceComposition(), 2000f, 2200f, Pad(threatened: true)), out _), Is.True);
         }
 
         [Test]
         public void Easy_StopsAtOneSatellitePerPoint()
         {
-            Assert.That(new EnemyDefenseStrategy().TrySelect(Snapshot(new ForceComposition(), 5000f, 0f,
+            Assert.That(new EnemyDefenseStrategy().TrySelectScored(Snapshot(new ForceComposition(), 5000f, 0f,
                 Pad(existing: new[] { SiteFacilityType.IonSatellite }), difficulty: EnemyAiDifficulty.Easy), out _), Is.False);
         }
 
@@ -98,10 +98,50 @@ namespace EmpireAtWar.Tests.Editor
             var snapshot = Snapshot(Force(ShipClass.Frigate, 3000f, 1000f), 10000f, 0f, Pad());
             snapshot = new EnemyDefenseSnapshot(snapshot.Money, snapshot.IncomePerSecond, 0f, snapshot.Strategic,
                 snapshot.Own, snapshot.Hostile, new[] { Pad(), new EnemyDefensePad(7, 1f, 0.8f, 0f, false, true, Array.Empty<SiteFacilityType>()) }, _options);
-            Assert.That(strategy.TrySelect(snapshot, out var choice), Is.True);
+            Assert.That(strategy.TrySelectScored(snapshot, out var choice), Is.True);
             Assert.That(choice.SiteIndex, Is.EqualTo(7));
             Assert.That(strategy.TopChoices.Count, Is.EqualTo(3));
             Assert.That(strategy.TopChoices[0].Score, Is.GreaterThanOrEqualTo(strategy.TopChoices[1].Score));
+        }
+
+        [Test]
+        public void Mandatory_ZonePadGetsThreeTurbolasersEvenUnderProductionReserve()
+        {
+            var strategy = new EnemyDefenseStrategy();
+            var zone = new EnemyDefensePad(3, 0f, 0.5f, float.PositiveInfinity, false, false,
+                Array.Empty<SiteFacilityType>(), isZonePad: true);
+            var snapshot = Snapshot(new ForceComposition(), 2000f, 5000f, zone);
+
+            Assert.That(strategy.TrySelect(snapshot, out var choice), Is.True);
+            Assert.That(choice.Type, Is.EqualTo(SiteFacilityType.TurbolaserSatellite));
+            Assert.That(choice.SiteIndex, Is.EqualTo(3));
+
+            var full = new EnemyDefensePad(3, 0f, 0.5f, float.PositiveInfinity, false, false,
+                new[] { SiteFacilityType.TurbolaserSatellite, SiteFacilityType.TurbolaserSatellite, SiteFacilityType.TurbolaserSatellite },
+                isZonePad: true);
+            Assert.That(strategy.TrySelect(Snapshot(new ForceComposition(), 2000f, 5000f, full), out _), Is.False);
+        }
+
+        [Test]
+        public void Mandatory_MiningPointGetsOneSatelliteAndQuadLaserAgainstSquadrons()
+        {
+            var strategy = new EnemyDefenseStrategy();
+            var snapshot = Snapshot(Force(ShipClass.Fighter, 600f, 0f), 2000f, 5000f, Pad());
+
+            Assert.That(strategy.TrySelect(snapshot, out var choice), Is.True);
+            Assert.That(choice.Type, Is.EqualTo(SiteFacilityType.QuadLaserSatellite));
+        }
+
+        [Test]
+        public void Mandatory_RichPointAddsAHeavySatelliteAfterTheFirst()
+        {
+            var strategy = new EnemyDefenseStrategy();
+            var zone = new EnemyDefensePad(3, 0f, 0.5f, float.PositiveInfinity, false, false,
+                new[] { SiteFacilityType.TurbolaserSatellite }, isZonePad: true);
+            var snapshot = Snapshot(Force(ShipClass.Capital, 10000f, 30000f), 20000f, 0f, zone);
+
+            Assert.That(strategy.TrySelect(snapshot, out var choice), Is.True);
+            Assert.That(choice.Type, Is.EqualTo(SiteFacilityType.MissileSatellite).Or.EqualTo(SiteFacilityType.MassDriverSatellite));
         }
 
         private EnemyDefenseSnapshot Snapshot(ForceComposition hostile, float money, float reserve, EnemyDefensePad pad,

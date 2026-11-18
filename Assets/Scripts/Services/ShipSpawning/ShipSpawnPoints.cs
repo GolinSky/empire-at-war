@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.ReinforcementZones;
@@ -20,6 +23,8 @@ namespace EmpireAtWar.Services.ShipSpawning
         private readonly IReinforcementSpawnRule _spawnRule;
         private readonly IPlayerRelations _relations;
         private readonly ReinforcementZoneData _data;
+        private readonly IEntityLocator _entities;
+        private readonly List<Vector3> _stationPositions = new List<Vector3>();
 
         private readonly List<Vector3> _anchors = new List<Vector3>();
 
@@ -28,8 +33,10 @@ namespace EmpireAtWar.Services.ShipSpawning
             IReinforcementZonesSystem zones,
             IReinforcementSpawnRule spawnRule,
             IPlayerRelations relations,
-            ReinforcementZoneData data)
+            ReinforcementZoneData data,
+            IEntityLocator entities)
         {
+            _entities = entities;
             _zoneSource = zoneSource;
             _zones = zones;
             _spawnRule = spawnRule;
@@ -91,6 +98,26 @@ namespace EmpireAtWar.Services.ShipSpawning
                 position = new Vector3(anchor.x + offset.x, 0f, anchor.z + offset.y);
                 if (threats.IsSafe(position.x, position.z, 0f) &&
                     _spawnRule.CanSpawnShip(owner, shipType, position)) return true;
+            }
+
+            position = default;
+            return false;
+        }
+
+        public bool TryGetStationSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
+        {
+            _stationPositions.Clear();
+            foreach (IEntity entity in _entities.Entities)
+                if (entity.Owner == owner && entity.IsPlayerBase() && !entity.HealthModel.IsDestroyed)
+                    _stationPositions.Add(entity.GetFacade<IEntityTransformFacade>().Transform.position);
+            // The station nearest the home zone is the usual arrival point; later ones take over when it is lost or blocked.
+            Vector3 reference = _zones.TryGetDefaultZoneCenter(owner, out Vector3 home) ? home : Vector3.zero;
+            _stationPositions.Sort((a, b) => (a - reference).sqrMagnitude.CompareTo((b - reference).sqrMagnitude));
+            foreach (Vector3 station in _stationPositions)
+            {
+                _anchors.Clear();
+                _anchors.Add(station);
+                if (TryFindOpenPosition(owner, shipType, _data.HomeAreaRadius, out position)) return true;
             }
 
             position = default;

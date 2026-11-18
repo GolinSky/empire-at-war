@@ -1,27 +1,22 @@
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.CaptureSites;
-using EmpireAtWar.Ship;
 using Utilities.ScriptUtils.Time;
 using VContainer;
 using EmpireAtWar.Lifecycle;
-using EmpireAtWar.Services.Ships;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 
 namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
-    /// Builds mines on safe owned sites as soon as affordable; satellite investment waits for a minimum fleet.
+    /// Builds mines on safe owned sites as soon as affordable, and the required satellites (three per zone, one per mining point) without waiting for a fleet.
     /// </summary>
     public sealed class EnemySiteConstructionController : ITickable
     {
         private const float DECISION_INTERVAL = 3f;
-        // Satellites spend the wallet the next ship needs, so they wait until a main force exists.
-        private const int MINIMUM_FLEET_SIZE = 6;
         private readonly ICaptureSiteDirectory _sites;
         private readonly ICaptureSitePresence _presence;
         private readonly ICaptureSiteConstruction _construction;
-        private readonly IShipService _shipService;
         private readonly ITimer _decisionTimer = TimerFactory.ConstructTimer(DECISION_INTERVAL);
         private readonly PlayerSlot _owner;
         private readonly EnemyDefenseSnapshotBuilder _snapshotBuilder;
@@ -29,7 +24,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyDefenseStrategy _defense;
 
         public EnemySiteConstructionController(ICaptureSiteDirectory sites, ICaptureSitePresence presence,
-            ICaptureSiteConstruction construction, IShipService shipService,
+            ICaptureSiteConstruction construction,
             PlayerSlot owner, EnemyDefenseSnapshotBuilder snapshotBuilder,
             EnemyDefenseStrategy defense,
             EnemyStationPressureTracker stationPressure)
@@ -38,7 +33,6 @@ namespace EmpireAtWar.Services.Enemy
             _sites = sites;
             _presence = presence;
             _construction = construction;
-            _shipService = shipService;
             _snapshotBuilder = snapshotBuilder;
             _defense = defense;
             _stationPressure = stationPressure;
@@ -54,9 +48,8 @@ namespace EmpireAtWar.Services.Enemy
             {
                 bool built = _construction.TryBuildOnOwnedSite(_owner.Id);
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild", $"kind=mine;started={built}");
-                return;
             }
-            if (CountOwnShips() < MINIMUM_FLEET_SIZE) return;
+            // Satellites hold zones without a fleet and kill early raiders, so they never wait for ships.
             // Satellite scores read the strategic snapshot, which is empty until the first strategic decision.
             if (!_snapshotBuilder.IsReady) return;
             var snapshot = _snapshotBuilder.Build();
@@ -77,12 +70,5 @@ namespace EmpireAtWar.Services.Enemy
             return false;
         }
 
-        private int CountOwnShips()
-        {
-            int count = 0;
-            foreach (IShipEntity ship in _shipService.Ships)
-                if (ship.Owner == _owner.Id) count++;
-            return count;
-        }
     }
 }

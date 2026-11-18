@@ -327,7 +327,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     {
                         foundPosition = hasRally
                             ? _shipSpawnPoints.TryGetSpawnPositionNear(home, shipUnitRequest.Key, rally, out position)
-                            : _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(home, shipUnitRequest.Key, out position) ||
+                            : _shipSpawnPoints.TryGetStationSpawnPosition(home, shipUnitRequest.Key, out position) ||
+                              _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(home, shipUnitRequest.Key, out position) ||
                               _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipUnitRequest.Key, out position);
                     }
                     bool forced = !foundPosition && _productionAccess.CanProduce &&
@@ -340,6 +341,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                             rally, _defenseDeploymentThreats, out position) ||
                                         hasRally &&
                                         _shipSpawnPoints.TryGetSpawnPositionNear(home, shipUnitRequest.Key, rally, out position) ||
+                                        _shipSpawnPoints.TryGetStationSpawnPosition(home, shipUnitRequest.Key, out position) ||
                                         _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipUnitRequest.Key, out position);
                         if (foundPosition)
                             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deploymentForced",

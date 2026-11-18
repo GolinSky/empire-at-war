@@ -11,6 +11,8 @@ using EmpireAtWar.Entities.Ship.StateMachine;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Services.TeamContacts;
+using EmpireAtWar.Models.Players;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.Orders;
 
@@ -27,6 +29,11 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly ShipAbilityService _abilities;
         private readonly IShipAbilityFacade _abilityCaster;
         private readonly IRadarComponent _radar;
+        // Absent only in unit tests that build a runner by hand.
+        private readonly ITeamContacts _teamContacts;
+        private readonly PlayerId _owner;
+        private readonly List<IEntity> _teamCandidates = new List<IEntity>();
+        private GroupPace _group;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private readonly ShipOrderTelemetrySource _telemetrySource;
 #endif
@@ -42,6 +49,20 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly AbilityApproachState _abilityApproachState;
         private ShipAbilityId _pendingAbilityId;
         private IEntity _pendingAbilityTarget;
+
+        private const float PURSUIT_DAMAGE_WINDOW = 3f;
+        private const float PURSUIT_CHECK_INTERVAL = 0.5f;
+        private const float PURSUIT_LEASH = 1500f;
+        // Team-vision replacement search around the dead target; ships do not cross the map for one.
+        private const float REPLACEMENT_RADIUS = 1500f;
+        private const float SHARED_REPLACEMENT_RANGE = 3000f;
+
+        // An idle ship hit by something it cannot yet reach chases it, within a leash of where it stood.
+        private float _lastHealth = float.PositiveInfinity;
+        private float _lastDamagedAt = float.NegativeInfinity;
+        private float _nextPursuitCheck;
+        private bool _isPursuing;
+        private Vector3 _pursuitOrigin;
 
         private UnitOrderType? _replicaOrder;
         // Host-only and not saved: a loaded attack resumes at the ship's own speed.
@@ -92,8 +113,10 @@ namespace EmpireAtWar.Entities.Ship.Orders
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             , ShipOrderTelemetrySource telemetrySource
 #endif
-            )
+            , ITeamContacts teamContacts = null, PlayerId owner = default)
         {
+            _teamContacts = teamContacts;
+            _owner = owner;
             _orders = orders;
             _stateMachine = stateMachine;
             _movement = movement;
@@ -139,12 +162,46 @@ namespace EmpireAtWar.Entities.Ship.Orders
                     nameof(AttackTargetState), _attackTargetState.AttackDiagnostics);
 #endif
             if (_stateMachine.CurrentState.IsComplete) CompleteOrder();
+            UpdatePursuit();
             UpdatePace();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             ShipOrderTelemetry.Sample(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
                 _stateMachine.CurrentState.GetType().Name,
                 _stateMachine.CurrentState == _attackTargetState ? _attackTargetState.AttackDiagnostics : "");
 #endif
+        }
+
+        /// <summary>Called on every health change; a drop marks the ship as recently attacked.</summary>
+        public void ObserveHealth(float totalHealth)
+        {
+            if (totalHealth < _lastHealth) _lastDamagedAt = Time.time;
+            _lastHealth = totalHealth;
+        }
+
+        private void UpdatePursuit()
+        {
+            if (_isPursuing)
+            {
+                if (_orders.Current != UnitOrderType.Attack) _isPursuing = false;
+                else if ((_movement.CurrentPosition - _pursuitOrigin).sqrMagnitude > PURSUIT_LEASH * PURSUIT_LEASH)
+                {
+                    _isPursuing = false;
+                    MoveTo(_pursuitOrigin);
+                }
+                return;
+            }
+
+            float now = Time.time;
+            if (_orders.Current != UnitOrderType.None || _pendingAbilityTarget != null ||
+                _stateMachine.CurrentState != _idleState || now - _lastDamagedAt > PURSUIT_DAMAGE_WINDOW ||
+                now < _nextPursuitCheck) return;
+            _nextPursuitCheck = now + PURSUIT_CHECK_INTERVAL;
+            IEntity attacker = ShipEngagement.FindNearestEnemy(_radar, _movement, _weapon, inRangeOnly: false);
+            if (attacker == null) return;
+            _pursuitOrigin = _movement.CurrentPosition;
+            RecordOrder("pursuit", $"Attacked while idle; pursuing {attacker.Id}.");
+            Issue(UnitOrderType.Attack, target: attacker);
+            _isPursuing = true;
         }
 
         public void Release()
@@ -193,6 +250,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
         // A repeated order joins its new group; the ship leaves the old one first.
         private void JoinPace(GroupPace pace)
         {
+            _group = pace;
             LeavePace();
             if (pace == null || _orders.Current != UnitOrderType.Attack) return;
             _pace = pace;
@@ -317,6 +375,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 RecordOrder("cancel", $"Replaced by {type}.");
             IsAbilityFacing = false;
             _pendingAbilityTarget = null;
+            _group = null;
             LeavePace();
             _orders.Replace(type, destination, target, offset, waypoints, targetHardPointId, engagement);
             RecordOrder("issued", "Requested order before state entry.");
@@ -368,6 +427,26 @@ namespace EmpireAtWar.Entities.Ship.Orders
             }
         }
 
+        // Own radar first, then the group's shared contact, then what the team sees around where the target died.
+        private IEntity FindReplacement()
+        {
+            IEntity own = ShipEngagement.FindNearestEnemy(_radar, _movement, _weapon, inRangeOnly: false);
+            if (own != null) return own;
+            if (_group != null && _group.SharedReplacement != null)
+            {
+                IEntity shared = _group.SharedReplacement;
+                // A contact the group found far away is not worth a cross-map chase.
+                if (!shared.HealthModel.IsDestroyed && shared.HealthModel.HasUnits &&
+                    _movement.GetRange(shared.GetFacade<IEntityTransformFacade>().Transform.position) <=
+                    SHARED_REPLACEMENT_RANGE) return shared;
+            }
+            if (_teamContacts == null) return null;
+            _teamCandidates.Clear();
+            _teamContacts.FillVisibleHostiles(_owner, _attackTargetState.LastTargetPosition, REPLACEMENT_RADIUS,
+                _teamCandidates);
+            return ShipEngagement.FindNearestEnemy(_teamCandidates, _movement, _weapon);
+        }
+
         private void CompleteOrder()
         {
             if (_pendingAbilityTarget != null)
@@ -398,10 +477,14 @@ namespace EmpireAtWar.Entities.Ship.Orders
             if (_orders.Current == UnitOrderType.Attack && _orders.Target.HealthModel.IsDestroyed)
             {
                 RecordOrder("complete", "Attack target destroyed; checking replacement contacts.");
-                IEntity nextTarget = ShipEngagement.FindNearestEnemy(_radar, _movement, _weapon, inRangeOnly: false);
+                IEntity nextTarget = FindReplacement();
                 if (nextTarget != null)
                 {
-                    Issue(UnitOrderType.Attack, target: nextTarget, offset: _orders.Offset);
+                    GroupPace group = _group;
+                    FormationPoint slot = _orders.Offset;
+                    Issue(UnitOrderType.Attack, target: nextTarget, offset: slot);
+                    _group = group;
+                    if (group != null) group.SharedReplacement = nextTarget;
                     return;
                 }
 

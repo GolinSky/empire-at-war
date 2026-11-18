@@ -200,7 +200,12 @@ namespace EmpireAtWar.Ship
 
         private void ResetShieldAudio() => _audioShipComponent.ResetShields(_healthComponent.HealthModelObserver);
 
-        private void HandleHealthChanged() => _audioShipComponent.HandleHealthChanged(_healthComponent.HealthModelObserver);
+        private void HandleHealthChanged()
+        {
+            IHealthModelObserver health = _healthComponent.HealthModelObserver;
+            _audioShipComponent.HandleHealthChanged(health);
+            _orders.ObserveHealth(health.Hull + health.Shields);
+        }
 
         private void Release(bool playDeathEffects)
         {

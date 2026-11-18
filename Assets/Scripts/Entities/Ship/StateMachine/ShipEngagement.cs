@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Utils;
+using System.Collections.Generic;
 using UnityEngine;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 
@@ -73,6 +74,29 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                     nearestDistance = distance;
                     nearest = enemy;
                 }
+            }
+
+            return nearest;
+        }
+
+        /// <summary>Same choice as the radar overload, over an explicit candidate list (team contacts).</summary>
+        public static IEntity FindNearestEnemy(IReadOnlyList<IEntity> candidates, IShipMovement movement,
+            IWeaponComponent weapon)
+        {
+            IEntity nearest = null;
+            bool hasPreferred = false;
+            float nearestDistance = float.PositiveInfinity;
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                IEntity enemy = candidates[i];
+                if (enemy.IsCloaked() || enemy.HealthModel.IsDestroyed || !enemy.HealthModel.HasUnits) continue;
+                bool isPreferred = IsPreferred(enemy, weapon);
+                if (hasPreferred && !isPreferred) continue;
+                float distance = movement.GetRange(enemy.GetFacade<IEntityTransformFacade>().Transform.position);
+                if (distance >= nearestDistance && !(isPreferred && !hasPreferred)) continue;
+                hasPreferred = isPreferred;
+                nearestDistance = distance;
+                nearest = enemy;
             }
 
             return nearest;

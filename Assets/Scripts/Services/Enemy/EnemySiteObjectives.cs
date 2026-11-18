@@ -17,6 +17,8 @@ namespace EmpireAtWar.Services.Enemy
         /// </summary>
         private const float THREAT_GRACE_SECONDS = 6f;
         private const float FACILITY_POSITION_TOLERANCE_SQUARED = 1f;
+        // Satellites hold a zone by themselves, so their pads are worth a detour in travel-distance units.
+        private const float SATELLITE_PAD_PRIORITY = 600f;
 
         private readonly Dictionary<int, float> _threatenedUntil = new Dictionary<int, float>();
         private readonly ICaptureSiteDirectory _sites;
@@ -64,7 +66,8 @@ namespace EmpireAtWar.Services.Enemy
                 }
                 objectives.Add(new EnemyCaptureObjective($"site:{i}", EnemyCaptureObjectiveType.Facility,
                     site.Owner, ToVector(ToPoint(site.Center)), _data.GetSettings(site.Kind).Radius,
-                    progress, threatened, isMine: isMine, blockingFacilityId: blockingFacilityId));
+                    progress, threatened, priorityBonus: site.Kind == CaptureSiteKind.Satellite ? SATELLITE_PAD_PRIORITY : 0f,
+                    isMine: isMine, blockingFacilityId: blockingFacilityId));
             }
         }
 
@@ -97,7 +100,14 @@ namespace EmpireAtWar.Services.Enemy
         {
             return (site.State == CaptureSiteState.Neutral || site.State == CaptureSiteState.Owned) &&
                    !_players.IsAllied(_owner.Id, site.Owner) &&
-                   (site.Kind != CaptureSiteKind.Satellite || OwnsPointMines(site.PointId));
+                   (site.Kind != CaptureSiteKind.Satellite || !PointHasMines(site.PointId) || OwnsPointMines(site.PointId));
+        }
+
+        private bool PointHasMines(int pointId)
+        {
+            foreach (ICaptureSite site in _sites.Sites)
+                if (site.Kind == CaptureSiteKind.Mining && site.PointId == pointId) return true;
+            return false;
         }
 
         private bool OwnsPointMines(int pointId)

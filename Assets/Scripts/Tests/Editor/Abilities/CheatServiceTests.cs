@@ -133,6 +133,12 @@ namespace EmpireAtWar.Tests.Editor
                 PlacementThreatSnapshot threats, out Vector3 position) =>
                 TryGetDefaultZoneSpawnPosition(owner, shipType, out position);
 
+            public bool TryGetStationSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
             public bool TryGetBestDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
                 PlacementThreatSnapshot threats, out Vector3 position) =>
                 TryGetDefaultZoneSpawnPosition(owner, shipType, out position);

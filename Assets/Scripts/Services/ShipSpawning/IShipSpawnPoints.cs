@@ -12,6 +12,9 @@ namespace EmpireAtWar.Services.ShipSpawning
 
         bool TryGetSpawnPositionNear(PlayerId owner, ShipType shipType, Vector3 target, out Vector3 position);
 
+        /// <summary>Open point around any living owned station, the one nearest the home zone first.</summary>
+        bool TryGetStationSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position);
+
         bool TryGetDefaultZoneSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position);
 
         /// <summary>Finds a safe arrival point near the defended station or its fallback rally.</summary>

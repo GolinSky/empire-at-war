@@ -55,6 +55,7 @@ using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using EmpireAtWar.Services.ShipSpawning;
+using EmpireAtWar.Services.TeamContacts;
 using EmpireAtWar.Services.SpawnBlocking;
 using EmpireAtWar.Services.Squadrons;
 using EmpireAtWar.Services.Stations;
@@ -223,6 +224,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ShipSpawnClearance>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipSpawnReachability>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<ShipSpawnPoints>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<TeamContactService>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ReinforcementSpawnRule>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<StructureSpawnClearance>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf()
                 .WithParameter(new[]

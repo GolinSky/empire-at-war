@@ -837,6 +837,12 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
+            public bool TryGetStationSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position)
+            {
+                position = default;
+                return false;
+            }
+
             public bool TryGetBestDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
                 PlacementThreatSnapshot threats, out Vector3 position)
             {
@@ -867,6 +873,9 @@ namespace EmpireAtWar.Tests.Editor
 
             public bool TryGetDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
                 PlacementThreatSnapshot threats, out Vector3 position) =>
+                TryGetRandomSpawnPosition(owner, shipType, out position);
+
+            public bool TryGetStationSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position) =>
                 TryGetRandomSpawnPosition(owner, shipType, out position);
 
             public bool TryGetBestDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,

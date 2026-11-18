@@ -106,7 +106,7 @@ namespace EmpireAtWar.Ship
             builder.Register<HuntState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.Register<AbilityApproachState>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.Register<UnitOrderModel>(Lifetime.Singleton);
-            builder.Register<ShipOrderRunner>(Lifetime.Singleton);
+            builder.Register<ShipOrderRunner>(Lifetime.Singleton).WithParameter(Owner);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             builder.Register<ShipOrderTelemetrySource>(Lifetime.Singleton);
 #endif

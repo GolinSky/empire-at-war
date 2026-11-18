@@ -59,18 +59,18 @@ follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 - No rally → `TryGetDefaultZoneSpawnPosition` = original home zone, even when the only living station is elsewhere.
 - Log: 386–425 s (3 ships), 607.7–713.2 s (7 ships, ~16.6k credits).
 - [x] Bounded hold: `MAX_DEPLOYMENT_HOLD_SECONDS = 8` in `EnemyFactionController`, then spawn ignoring hostile range (`TryGetSpawnPositionNear` → random); event `deploymentForced`. Best point: `TryGetBestDefenseSpawnPosition` (farthest from threat centroid) used by the forced path.
-- [ ] Try every living owned station before giving up.
-- [ ] Without a rally, spawn at the nearest living owned station, not the fixed home zone.
+- [x] Try every living owned station before giving up. `IShipSpawnPoints.TryGetStationSpawnPosition` tries each living station, nearest the home zone first.
+- [x] Without a rally, spawn at the nearest living owned station, not the fixed home zone. Station spawn runs before the home-zone fallback; the forced path also tries stations.
 - Tests: `EnemyAi` (`EnemyFactionControllerLifecycleTests`), `Ships` (`ShipSpawnPointsTests`). Not run.
 
 ### P0 — Player ships idle after a kill
 - `ShipOrderRunner.CompleteOrder` (`ShipOrderRunner.cs:394-410`) → `ShipEngagement.FindNearestEnemy(_radar, …)` scans only this ship's `radar.Enemies` (500–750); on the kill frame that list held only the dead target.
 - `IdleState` engages only enemies already in weapon reach (`inRangeOnly: true`) and never moves.
 - Log: 65 "no replacement order" events; 521.14 s → 13 of 14 ships idle.
-- [ ] (open) Replacement search: own radar, then visible hostiles known to the owner within a bounded radius of the dead target (team vision), preferring the previous target class.
-- [ ] Group attack: ships ordered together share the replacement; one ship's contact serves the group.
+- [x] (open) Replacement search: own radar, then visible hostiles known to the owner within a bounded radius of the dead target (team vision), preferring the previous target class. `ITeamContacts`/`TeamContactService` (0.5 s cache per viewer, radius 1,500 around the dead target).
+- [x] Group attack: ships ordered together share the replacement; one ship's contact serves the group. `GroupPace.SharedReplacement`, used within 3,000 range.
 - [x] Nothing found → attack-move to the dead target's last position (`AttackTargetState.LastTargetPosition`) instead of Idle.
-- [ ] Idle ships attacked by a visible hostile inside radar turn and engage it (bounded pursuit) instead of only facing in-range targets.
+- [x] Idle ships attacked by a visible hostile inside radar turn and engage it (bounded pursuit) instead of only facing in-range targets. Hit within 3 s + radar contact → Attack with a 1,500 leash, then Move back.
 - Tests: `Ships`, `BattleInput`. Not run.
 
 ### P1 — AI order churn
@@ -118,7 +118,7 @@ follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 
 ### P2 — Missing expansion behaviour
 - AI builds satellites only for threatened points or mining income; it never uses a satellite on a held relay to push to nearby mines (the human's winning pattern).
-- [ ] Add a satellite-led expansion option after capturing a relay/site.
+- [x] Add a satellite-led expansion option after capturing a relay/site. Decided 2026-11-18: satellites are the expansion; see Satellite-first below.
 - [x] Log `EnemySiteConstructionController` attempts and failures (currently no telemetry). event `siteBuild`.
 - Tests: `EnemyAi`, `Capture`. Not run.
 
@@ -142,8 +142,16 @@ follows: "[[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]"
 - `Entities/MainMenu/Skirmish/SkirmishModel.cs`
 
 ## Progress 2026-11-18
-- Done: all items checked above. Not done (remain unchecked): nearest-living-station spawn and trying every station, team-vision replacement search, group-shared replacement, idle ships pursuing attackers, satellite-led expansion option, online lobby difficulty persistence.
+- Done: all items checked above. Not done: online lobby difficulty persistence.
 - Tests added/updated: `EndGameLossCatalogTests`, `FleetCohesionTests`, `EnemyProductionDecisionModelTests`, `EnemyFactionControllerLifecycleTests`, `LobbySettingsDataTests`. Not run (local override).
+
+## Satellite-first (decided 2026-11-18)
+- Rules from the user: satellites on a relay/centre zone are the way to take it (3 turbolasers; no level-1 ship breaks them); one at every mining point is mandatory; satellites extend vision and are strong early.
+- Type: turbolaser by default; quad laser when hostile squadrons are ≥ 40 % of durability; missile or mass driver (best fit) once money ≥ 1.5× its cost and the point has ≥ 1 satellite.
+- `EnemyDefenseStrategy.TrySelect` = `TrySelectMandatory` (zones first, ignores production reserve) then `TrySelectScored`.
+- `EnemyDefensePad.IsZonePad` = point without mine sites. `EnemySiteObjectives`: pads of mine-less zones are capturable and carry priority bonus 600.
+- `EnemySiteConstructionController`: no fleet gate; a mine build no longer ends the tick.
+- Not done: a starting-station pad is built later to save early money only by cost ordering (no explicit rule); capture of pads by satellite range is not modelled.
 
 ## Open Decisions
 - Deploy hold length before forced spawn.

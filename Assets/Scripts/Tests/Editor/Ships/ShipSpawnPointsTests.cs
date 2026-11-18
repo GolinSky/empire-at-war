@@ -179,7 +179,7 @@ namespace EmpireAtWar.Tests.Editor
                 siteViews: System.Array.Empty<CaptureSiteView>(),
                 obstacles: System.Array.Empty<MapObstacle>(),
                 stationObstacles: System.Array.Empty<StationObstacle>()));
-            return new ShipSpawnPoints(system, system, rule, _roster, _data);
+            return new ShipSpawnPoints(system, system, rule, _roster, _data, null);
         }
 
         private static MapLayout CreateLayout(params ZoneSpot[] zones)

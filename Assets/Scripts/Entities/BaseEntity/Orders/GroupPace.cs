@@ -14,6 +14,9 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         // Member id → reported speed; NaN once the member left.
         private readonly List<float> _speeds = new List<float>();
 
+        /// <summary>The target the group fights on after its order's target died; the first ship to find one sets it.</summary>
+        public IEntity SharedReplacement { get; set; }
+
         private int _memberCount;
         private float _pace = float.PositiveInfinity;
         private bool _isDirty;

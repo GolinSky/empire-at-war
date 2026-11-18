@@ -14,9 +14,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool IsThreatened { get; }
         public IReadOnlyList<SiteFacilityType> Existing { get; }
 
+        /// <summary>The point has no mine sites: a relay or centre zone, held by satellites alone.</summary>
+        public bool IsZonePad { get; }
+
         public EnemyDefensePad(int siteIndex, float protectedMineShare, float exposure, float secondsSinceHostile,
-            bool hasHostiles, bool isThreatened, IReadOnlyList<SiteFacilityType> existing)
+            bool hasHostiles, bool isThreatened, IReadOnlyList<SiteFacilityType> existing, bool isZonePad = false)
         {
+            IsZonePad = isZonePad;
             SiteIndex = siteIndex;
             ProtectedMineShare = protectedMineShare;
             Exposure = exposure;
