@@ -143,7 +143,7 @@ namespace EmpireAtWar.Services.Timing
                 writer.Write(',');
                 writer.Write(frame.CaptureWriteWaitMs.ToString("F3", CultureInfo.InvariantCulture));
                 BattlePerformanceCaptureReport.WriteCsvCounters(writer, 0, frame.Metrics, frame.MarkerCounts,
-                    frame.Workload, _metricNames.Length, _workloadNames.Length, _firstMarker, _unavailable);
+                    frame.Workload, _metricNames.Length, _workloadNames.Length, _firstMarker, _unavailable, frame);
             }
         }
     }

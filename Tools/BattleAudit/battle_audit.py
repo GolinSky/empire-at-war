@@ -11,6 +11,10 @@ Commands:
   decoder callers <marker> <first> <last> <out.cs>
                                                Write a Unity eval script: count and time of <marker> per frame,
                                                grouped by its two enclosing markers.
+  allocations <ranking.json> <stacks.json> ... Merge exhaustive sampled stacks by game caller.
+  memory <before.json> <after.json> <diff.json> Compare type/owner totals from memory snapshots.
+  compare <editor-dir> <player-dir> <out.json> Compare hitch size/period (matched workloads required).
+  report <run-directory>                     Write analysis.md from saved run evidence.
 
 Run the eval scripts with the Unity MCP `eval_file` tool while the frames are still in the Profiler.
 """
@@ -19,6 +23,7 @@ import gzip
 import json
 import statistics
 import sys
+from battle_attribution import BUILTIN_PHASES, hitch_period, merge_allocations, memory_diff, compare_runs, write_report, archive_run
 from battle_history import nearest_rank, write_history
 
 CSV_COLUMNS = [
@@ -79,7 +84,17 @@ def summarize_hitches(path):
     by_frame = {int(row['frame']): row for row in rows}
     triggers = sorted((row for row in rows if row['is_hitch'] == '1'),
                       key=lambda row: value(row, 'frame_duration_ms'), reverse=True)
-    print(f'{len(triggers)} frames >50 ms; {len(rows)} context + trigger frames saved. Slowest ten:')
+    period = hitch_period(rows, value)
+    print('>200 ms hitch episodes: ' + json.dumps(period))
+    for row in triggers:
+        phases = [(value(row, column), column) for column in BUILTIN_PHASES
+                  if value(row, column) is not None]
+        dominant = max(phases, default=None)
+        named = f'{dominant[1]} {dominant[0]:.2f} ms' if dominant else 'unavailable'
+        print(f"frame {row['frame']}: dominant built-in {named}; "
+              f"PlayerLoop {timing(row, 'player_loop_ms')}; EditorLoop {timing(row, 'editor_loop_ms')}; "
+              f"GC collections {row.get('gc_collections', 'unavailable')}; uncovered {timing(row, 'uncovered_ms')}")
+    print(f'{len(triggers)} slow/allocation triggers; {len(rows)} context + trigger frames saved. Slowest ten:')
     for row in triggers[:10]:
         frame = int(row['frame'])
         before = [by_frame[i] for i in range(frame - 30, frame) if i in by_frame and by_frame[i]['is_hitch'] == '0']
@@ -131,12 +146,16 @@ var perFrame = new System.Collections.Generic.List<string>();
 var byMethod = new System.Collections.Generic.Dictionary<string, long[]>();
 var methods = new System.Collections.Generic.Dictionary<ulong, string>();
 var stack = new System.Collections.Generic.List<ulong>();
+var byStack = new System.Collections.Generic.Dictionary<string, long[]>();
+var stackMethods = new System.Collections.Generic.Dictionary<string, string[]>();
+var validFrames = new System.Collections.Generic.List<int>();
 long totalBytes = 0, totalCalls = 0;
 for (int frame = {first}; frame <= {last}; frame++)
 {{
     using (var view = UnityEditorInternal.ProfilerDriver.GetRawFrameDataView(frame, 0))
     {{
         if (!view.valid) continue;
+        validFrames.Add(frame);
         long frameBytes = 0;
         for (int i = 0; i < view.sampleCount; i++)
         {{
@@ -147,6 +166,7 @@ for (int frame = {first}; frame <= {last}; frame++)
             stack.Clear();
             view.GetSampleCallstack(i, stack);
             string key = "<no resolved stack>";
+            var resolved = new System.Collections.Generic.List<string>();
             foreach (ulong address in stack)
             {{
                 if (!methods.TryGetValue(address, out string name))
@@ -155,8 +175,17 @@ for (int frame = {first}; frame <= {last}; frame++)
                     name = string.IsNullOrEmpty(info.methodName) ? null : info.methodName + ":" + info.sourceFileLine;
                     methods[address] = name;
                 }}
-                if (name != null) {{ key = name; break; }}
+                if (name != null && resolved.Count < 14) resolved.Add(name);
             }}
+            if (resolved.Count > 0) key = resolved[0];
+            string stackKey = string.Join(" <- ", resolved);
+            if (!byStack.TryGetValue(stackKey, out long[] stackTotal))
+            {{
+                byStack[stackKey] = stackTotal = new long[2];
+                stackMethods[stackKey] = resolved.ToArray();
+            }}
+            stackTotal[0] += size;
+            stackTotal[1]++;
             if (!byMethod.TryGetValue(key, out long[] total)) byMethod[key] = total = new long[2];
             total[0] += size;
             total[1]++;
@@ -168,7 +197,10 @@ for (int frame = {first}; frame <= {last}; frame++)
 var top = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Take(System.Linq.Enumerable.Select(
     System.Linq.Enumerable.OrderByDescending(byMethod, p => p.Value[0]),
     p => new {{ method = p.Key, bytes = p.Value[0], calls = p.Value[1] }}), 30));
-var result = new {{ first = {first}, last = {last}, totalBytes, totalCalls, perFrame, top }};
+var stacks = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Select(byStack,
+    p => new {{ methods = stackMethods[p.Key], bytes = p.Value[0], calls = p.Value[1] }}));
+var result = new {{ first = {first}, last = {last}, totalBytes, totalCalls, perFrame, top, stacks,
+    frames = validFrames, frameCount = validFrames.Count }};
 System.IO.File.WriteAllText("{result}", Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented));
 return new {{ totalBytes, totalCalls, top = System.Linq.Enumerable.Take(top, 15) }};
 '''
@@ -244,6 +276,16 @@ def main():
         summarize_profiler(arguments[0])
     elif command == 'decoder':
         write_decoder(arguments)
+    elif command == 'allocations':
+        merge_allocations(arguments[0], arguments[1:])
+    elif command == 'memory':
+        memory_diff(*arguments)
+    elif command == 'compare':
+        compare_runs(*arguments)
+    elif command == 'report':
+        write_report(arguments[0])
+    elif command == 'archive':
+        archive_run(*arguments)
     else:
         raise SystemExit(__doc__)
 

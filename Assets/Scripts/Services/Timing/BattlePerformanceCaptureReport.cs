@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 using System;
 using System.Globalization;
 using System.IO;
@@ -28,12 +29,12 @@ namespace EmpireAtWar.Services.Timing
             string[] workloadNames,
             int firstMarkerMetric,
             BattlePerformanceCaptureMetadata metadata,
-            long unavailable)
+            long unavailable, BattleCaptureFrame[] attributionFrames = null)
         {
             Directory.CreateDirectory(directory);
             string prefix = $"battle_{captureStartUtc:yyyyMMdd_HHmmss_fff}";
             WriteCsv(Path.Combine(directory, $"{prefix}.csv"), frameCount, timestamps, samples, markerSampleCounts,
-                workloadSamples, metricNames, workloadNames, firstMarkerMetric, unavailable);
+                workloadSamples, metricNames, workloadNames, firstMarkerMetric, unavailable, attributionFrames);
             WriteSummary(Path.Combine(directory, $"{prefix}_summary.txt"), captureStartUtc, durationSeconds, stopReason,
                 frameCount, samples, markerSampleCounts, workloadSamples, recorderAvailable, metricNames, markerNames,
                 workloadNames, firstMarkerMetric, metadata, unavailable);
@@ -49,7 +50,7 @@ namespace EmpireAtWar.Services.Timing
             string[] metricNames,
             string[] workloadNames,
             int firstMarkerMetric,
-            long unavailable)
+            long unavailable, BattleCaptureFrame[] attributionFrames)
         {
             using StreamWriter writer = new StreamWriter(path, false, Encoding.UTF8);
             WriteCsvHeader(writer, "frame,seconds", metricNames, workloadNames, firstMarkerMetric);
@@ -59,7 +60,7 @@ namespace EmpireAtWar.Services.Timing
                 writer.Write(',');
                 writer.Write(timestamps[frame].ToString("F6", CultureInfo.InvariantCulture));
                 WriteCsvCounters(writer, frame, samples, markerSampleCounts, workloadSamples,
-                    metricNames.Length, workloadNames.Length, firstMarkerMetric, unavailable);
+                    metricNames.Length, workloadNames.Length, firstMarkerMetric, unavailable, attributionFrames == null ? null : attributionFrames[frame]);
             }
         }
 
@@ -85,12 +86,13 @@ namespace EmpireAtWar.Services.Timing
                 writer.Write(workloadNames[i]);
             }
 
+            for (int i = 1; i <= 5; i++) writer.Write($",alloc_top{i}_name,alloc_top{i}_bytes,time_top{i}_name,time_top{i}_ms");
             writer.WriteLine();
         }
 
         internal static void WriteCsvCounters(TextWriter writer, int frame, long[] samples,
             long[] markerSampleCounts, long[] workloadSamples, int metricCount, int workloadCount,
-            int firstMarkerMetric, long unavailable)
+            int firstMarkerMetric, long unavailable, BattleCaptureFrame attribution = null)
         {
             int sampleOffset = frame * metricCount;
             int markerOffset = frame * (metricCount - firstMarkerMetric);
@@ -110,10 +112,25 @@ namespace EmpireAtWar.Services.Timing
             for (int workload = 0; workload < workloadCount; workload++)
             {
                 writer.Write(',');
-                writer.Write(workloadSamples[workloadOffset + workload].ToString(CultureInfo.InvariantCulture));
+                writer.Write(FormatValue(workloadSamples[workloadOffset + workload], false, unavailable));
+            }
+            for (int i = 0; i < 5; i++)
+            {
+                BattleSystemSample allocation = attribution == null ? default : attribution.AllocationTop[i];
+                BattleSystemSample timing = attribution == null ? default : attribution.TimeTop[i];
+                writer.Write(',');
+                writer.Write(Quote(allocation.Name ?? "unavailable"));
+                writer.Write(',');
+                writer.Write(allocation.Bytes.ToString(CultureInfo.InvariantCulture));
+                writer.Write(',');
+                writer.Write(Quote(timing.Name ?? "unavailable"));
+                writer.Write(',');
+                writer.Write((timing.Nanoseconds / 1000000d).ToString("F6", CultureInfo.InvariantCulture));
             }
             writer.WriteLine();
         }
+
+        private static string Quote(string text) => "\"" + text.Replace("\"", "\"\"") + "\"";
 
         private static void WriteSummary(
             string path,
@@ -176,15 +193,21 @@ namespace EmpireAtWar.Services.Timing
         {
             long total = 0;
             long maximum = 0;
+            int availableFrames = 0;
             for (int frame = 0; frame < frameCount; frame++)
             {
                 long value = workloadSamples[frame * workloadNames.Length + index];
+                if (value == long.MinValue) continue;
+                availableFrames++;
                 total += value;
                 if (value > maximum) maximum = value;
             }
 
-            report.AppendFormat(CultureInfo.InvariantCulture, "{0} total={1} max={2}\n",
-                workloadNames[index], total, maximum);
+            if (availableFrames == 0)
+                report.AppendFormat(CultureInfo.InvariantCulture, "{0} unavailable\n", workloadNames[index]);
+            else
+                report.AppendFormat(CultureInfo.InvariantCulture, "{0} total={1} max={2}\n",
+                    workloadNames[index], total, maximum);
         }
 
         private static void AppendMetricSummary(
@@ -309,3 +332,5 @@ namespace EmpireAtWar.Services.Timing
         }
     }
 }
+
+#endif

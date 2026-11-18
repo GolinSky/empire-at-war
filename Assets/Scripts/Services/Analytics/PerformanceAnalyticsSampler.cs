@@ -77,6 +77,7 @@ namespace EmpireAtWar.Services.Analytics
             {
                 _skipTransitionFrame = false;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+                _history.ResetCollectionBaseline();
                 BattlePerformanceCapture.StartHitchMonitoring(_match.MatchId);
 #endif
                 return;

@@ -465,3 +465,11 @@ created: "2026-10-29\r"
 
 - [ ] [[Done/Features/Interdictor_Gravity_Well_Anchor_And_Vfx_Plan]] — In-game: Interdictor brakes and stays put while the well is active (move orders ignored, turns and fires, `Retreat` cancels the well); ring visible only while selected; refused move shows "Gravity well active" card; Retreat right after activation still leaves; 4 dorsal dome VFX (look in battle, pause off-screen, fog hiding on enemy ships). Also run `Abilities`, `Ships` and `Navigation` EditMode suites when explicitly authorized (not run under local override).
 - [ ] [[Done/Features/Interdictor_Gravity_Well_Plan]] — Run affected EditMode test suites (`Abilities`, `Balance`, `GameFlow`, `Squadrons`, `Economy`, `Navigation`) when explicitly authorized; tests were updated and compiled cleanly (0 errors) but not executed under local override.
+
+## Battle Hitch and GC Attribution Instruments
+
+- [ ] [[Done/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Run authored `Core` and Python parser regressions when requested; all execution deferred by user.
+- [ ] [[Done/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Replay `fps-mid-game`; ≥80% of >200 ms duration named; decide H1/H2 and correlate H3 with native callers.
+- [ ] [[Done/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — ≥5 min armed playtest produces a >200 ms native snapshot/report; verify ≥80% allocation coverage and top10 callers for mid/late saves.
+- [ ] [[Done/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Capture 5/30 min memory pair, inspect type/direct-owner growth and retained references; decide leak/cache/pool from evidence.
+- [ ] [[Done/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Matched Editor/Development Player 3 min replays for mid/late saves; verify cleanup, complete output folder/report and record a new baseline in Live Battle CPU Sweep.

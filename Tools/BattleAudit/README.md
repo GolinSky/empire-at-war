@@ -130,3 +130,10 @@ return new {
 - Known exclusion: `battle_20261029_213652_704` contains a 4.138 s outlier from a contaminated Editor capture. Keep the row for auditability; exclude it from gameplay baselines. The [retained investigation](../../Docs/Audits/2026-10-29-Live-Battle-CPU/analysis.md) identifies `battle_20261029_213712_952` as the main sample.
 - Audit: `Logs/BattleAudit/20261011T1412Z/battle_20261011_141152_737.csv` — 105 ms frame median, 52,310 candidates/frame.
 - Run history: `Logs/BattleAudit/2026101*` folders, each with `analysis.md` or `recapture.md`.
+
+## Continuous attribution instruments
+
+- [Hitch, allocation and memory instruments](Attribution.md): continuous CSV columns, native flight recorder, allocation sweeps, memory growth and repeatable Editor/Player procedure.
+- `battle_audit.py allocations <ranking.json> <stacks.json> ...` merges sampled allocation callers; `memory <before.json> <after.json> <diff.json>` compares type/owner totals.
+- `battle_audit.py compare <editor-dir> <player-dir> <out.json>` compares hitch size/period; `report <run-directory>` writes `analysis.md` from saved evidence.
+- Rolling windows now trigger on >50 ms **or >=1,000,000 GC bytes**. `is_hitch=1` means either condition. Never infer average battle FPS from this selected sample.

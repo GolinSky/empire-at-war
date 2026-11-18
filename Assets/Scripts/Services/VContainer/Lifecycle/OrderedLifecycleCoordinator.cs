@@ -4,6 +4,9 @@ using System.Linq;
 using System.Reflection;
 using Unity.Profiling;
 using VContainer.Internal;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+using EmpireAtWar.Services.Timing;
+#endif
 
 namespace EmpireAtWar.Lifecycle
 {
@@ -24,9 +27,21 @@ namespace EmpireAtWar.Lifecycle
         private readonly IFixedTickable[] _fixedTickables;
         private readonly ILateTickable[] _lateTickables;
         private readonly ProfilerMarker[] _tickMarkers;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private readonly int[] _tickAttribution;
+#endif
         private readonly ProfilerMarker[] _postTickMarkers;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private readonly int[] _postTickAttribution;
+#endif
         private readonly ProfilerMarker[] _fixedTickMarkers;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private readonly int[] _fixedTickAttribution;
+#endif
         private readonly ProfilerMarker[] _lateTickMarkers;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private readonly int[] _lateTickAttribution;
+#endif
         private readonly IOrderedDisposable[] _disposables;
         private readonly ILateDisposable[] _lateDisposables;
         private readonly LifecycleTickGate _tickGate;
@@ -48,9 +63,21 @@ namespace EmpireAtWar.Lifecycle
             _fixedTickables = Order(fixedTickables.Value, order => order.FixedTick);
             _lateTickables = Order(lateTickables.Value, order => order.LateTick);
             _tickMarkers = Markers(_tickables, "Tick()");
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _tickAttribution = Attribution(_tickables, "Tick()");
+#endif
             _postTickMarkers = Markers(_postTickables, "PostTick()");
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _postTickAttribution = Attribution(_postTickables, "PostTick()");
+#endif
             _fixedTickMarkers = Markers(_fixedTickables, "FixedTick()");
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _fixedTickAttribution = Attribution(_fixedTickables, "FixedTick()");
+#endif
             _lateTickMarkers = Markers(_lateTickables, "LateTick()");
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            _lateTickAttribution = Attribution(_lateTickables, "LateTick()");
+#endif
             _disposables = Order(disposables.Value, order => order.Dispose);
             _lateDisposables = Order(lateDisposables.Value, order => order.LateDispose);
             _tickGate = tickGate;
@@ -67,6 +94,9 @@ namespace EmpireAtWar.Lifecycle
             if (!_tickGate.IsTicking || _isDisposed) return;
             for (int i = 0; i < _tickables.Length; i++)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleSystemAttribution.Measure(_tickAttribution[i]))
+#endif
                 using (_tickMarkers[i].Auto())
                     _tickables[i].Tick();
             }
@@ -77,6 +107,9 @@ namespace EmpireAtWar.Lifecycle
             if (!_tickGate.IsTicking || _isDisposed) return;
             for (int i = 0; i < _postTickables.Length; i++)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleSystemAttribution.Measure(_postTickAttribution[i]))
+#endif
                 using (_postTickMarkers[i].Auto())
                     _postTickables[i].PostTick();
             }
@@ -87,6 +120,9 @@ namespace EmpireAtWar.Lifecycle
             if (!_tickGate.IsTicking || _isDisposed) return;
             for (int i = 0; i < _lateTickables.Length; i++)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleSystemAttribution.Measure(_lateTickAttribution[i]))
+#endif
                 using (_lateTickMarkers[i].Auto())
                     _lateTickables[i].LateTick();
             }
@@ -97,6 +133,9 @@ namespace EmpireAtWar.Lifecycle
             if (!_tickGate.IsTicking || _isDisposed) return;
             for (int i = 0; i < _fixedTickables.Length; i++)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                using (BattleSystemAttribution.Measure(_fixedTickAttribution[i]))
+#endif
                 using (_fixedTickMarkers[i].Auto())
                     _fixedTickables[i].FixedTick();
             }
@@ -114,6 +153,16 @@ namespace EmpireAtWar.Lifecycle
                 failures.Attempt(_lateDisposables[i].LateDispose);
             failures.ThrowIfAny();
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private static int[] Attribution<T>(T[] callbacks, string method)
+        {
+            var ids = new int[callbacks.Length];
+            for (int i = 0; i < callbacks.Length; i++)
+                ids[i] = BattleSystemAttribution.Register($"{callbacks[i].GetType().FullName}.{method}");
+            return ids;
+        }
+#endif
 
         private static ProfilerMarker[] Markers<T>(T[] callbacks, string method)
         {

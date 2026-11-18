@@ -1,0 +1,4 @@
+frame,seconds,is_hitch,frame_duration_ms,main_thread_ms,render_thread_ms,gpu_frame_ms,gc_allocated_bytes,capture_write_wait_ms,gc_collect_ms,player_loop_ms,editor_loop_ms,uncovered_ms,gc_collections
+100,10,1,320,12,1,2,1500000,0,300,315,unavailable,unavailable,1
+101,10.32,1,210,11,1,2,100,0,0,18,unavailable,unavailable,0
+200,45,1,350,15,1,2,17000000,0,330,345,unavailable,unavailable,1

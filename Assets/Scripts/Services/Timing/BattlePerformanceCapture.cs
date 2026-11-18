@@ -80,10 +80,12 @@ namespace EmpireAtWar.Services.Timing
         private const int TARGET_FALLBACK_INVALID_CANDIDATE = 60;
         private const int TARGET_FALLBACK_OUT_OF_SPAN = 61;
         private const int NAVIGATION_STATIONARY_REUSE = 62;
-        private const int METRIC_COUNT = 63;
+        private const int FIRST_BUILTIN_METRIC = 63;
+        private const int METRIC_COUNT = 85;
+        private const int FIRST_BUILTIN_COUNTER = 20;
         private const int FIRST_MARKER_METRIC = SHIP_TICK;
 
-        private static readonly string[] _metricNames =
+        private static readonly string[] _metricNames = CombineMetricNames(new string[]
         {
             "frame_duration_ns", "main_thread_ns", "render_thread_ns", "gpu_frame_ns", "gc_allocated_bytes", "draw_calls", "setpass_calls", "batches", "triangles",
             "ship_tick_ns", "weapon_tick_ns", "weapon_try_fire_ns", "projectile_get_or_create_ns", "projectile_instantiate_ns", "projectile_turret_update_ns", "projectile_laser_update_ns", "radar_scan_ns",
@@ -114,8 +116,8 @@ namespace EmpireAtWar.Services.Timing
             "target_fallback_invalid_candidate_ns",
             "target_fallback_out_of_span_ns",
             "navigation_stationary_reuse_ns",
-        };
-        private static readonly string[] _markerNames =
+        });
+        private static readonly string[] _markerNames = CombineMarkerNames(new string[]
         {
             BattleProfilerMarkers.SHIP_TICK,
             BattleProfilerMarkers.WEAPON_TICK,
@@ -171,19 +173,22 @@ namespace EmpireAtWar.Services.Timing
             BattleProfilerMarkers.TARGET_FALLBACK_INVALID_CANDIDATE,
             BattleProfilerMarkers.TARGET_FALLBACK_OUT_OF_SPAN,
             BattleProfilerMarkers.NAVIGATION_STATIONARY_REUSE,
-        };
-        private static readonly string[] _workloadNames =
+        });
+        private static readonly string[] _workloadNames = CombineCounterNames(new string[]
         {
             "completed_unity_frame", "target_requests", "target_candidates", "target_serial_calls", "target_job_calls", "target_fallbacks",
             "target_input_capacity", "target_position_capacity", "target_result_capacity", "target_buffer_growths",
             "due_records", "due_flagged", "due_committed", "due_serial_calls", "due_job_calls",
             "due_input_capacity", "due_result_capacity", "due_buffer_growths", "pending_sequences", "pending_impacts"
-        };
+        });
         private static BattlePerformanceCapture _instance;
         private readonly ProfilerRecorder[] _recorders = new ProfilerRecorder[METRIC_COUNT];
         private readonly bool[] _recorderAvailable = new bool[METRIC_COUNT];
         private readonly BattleCaptureFrame _latest = new BattleCaptureFrame(METRIC_COUNT, _markerNames.Length, _workloadNames.Length);
         private BattleHitchCapture _hitches;
+        private BattleBuiltinRecorders _builtins;
+        private string _hitchSummaryPath;
+        private BattleCaptureFrame[] _attributionFrames;
         private bool _skipFirstHitchFrame;
         private long[] _samples;
         private long[] _markerSampleCounts;
@@ -220,6 +225,9 @@ namespace EmpireAtWar.Services.Timing
             host._hitches = new BattleHitchCapture(Path.Combine(CaptureDirectory, "Hitches", $"hitch_{matchId}.csv"),
                 _metricNames, _workloadNames, FIRST_MARKER_METRIC, UNAVAILABLE);
             host._skipFirstHitchFrame = true;
+            host._hitchSummaryPath = Path.Combine(CaptureDirectory, "Hitches", $"hitch_{matchId}_summary.txt");
+            BattleSystemAttribution.BeginHitches();
+            BattleSystemAttribution.Enabled = true;
         }
 
         internal static bool TryObserveHitchFrame()
@@ -231,7 +239,9 @@ namespace EmpireAtWar.Services.Timing
                 host._skipFirstHitchFrame = false;
                 return false;
             }
-            host._hitches.Observe(host.ReadCompletedFrame());
+            var frame = host.ReadCompletedFrame();
+            BattleSystemAttribution.AccumulateHitch(frame);
+            host._hitches.Observe(frame);
             return true;
         }
 
@@ -246,6 +256,7 @@ namespace EmpireAtWar.Services.Timing
         {
             if (_instance == null || _instance._hitches == null) return;
             _instance._hitches.FinishWindow();
+            BattleSystemAttribution.WriteHitchSummary(_instance._hitchSummaryPath);
             _instance._hitches = null;
             _instance.ReleaseIdleRecorders();
         }
@@ -360,6 +371,8 @@ namespace EmpireAtWar.Services.Timing
                 _markerSampleCounts = new long[_frameLimit * _markerNames.Length];
                 _workloadSamples = new long[_frameLimit * _workloadNames.Length];
                 _timestamps = new float[_frameLimit];
+                _attributionFrames = new BattleCaptureFrame[_frameLimit];
+                for (int i = 0; i < _frameLimit; i++) _attributionFrames[i] = new BattleCaptureFrame(0, 0, 0);
             }
             _frameCount = 0;
             _metadata = CaptureMetadata();
@@ -370,6 +383,8 @@ namespace EmpireAtWar.Services.Timing
 
             EnsureRecorders();
             _capturing = true;
+            BattleSystemAttribution.Enabled = true;
+            BattleSystemAttribution.BeginCapture();
             Debug.Log($"Battle performance capture started for {seconds} seconds (up to {_frameLimit} frames).");
         }
 
@@ -403,7 +418,10 @@ namespace EmpireAtWar.Services.Timing
                         _workloadNames,
                         FIRST_MARKER_METRIC,
                         _metadata,
-                        UNAVAILABLE);
+                        UNAVAILABLE, _attributionFrames);
+                    string summaryPath = Path.Combine(directory, $"battle_{_captureStartUtc:yyyyMMdd_HHmmss_fff}_summary.txt");
+                    BattleSystemAttribution.WriteSummary(summaryPath, _frameCount);
+                    File.AppendAllText(summaryPath, "\nBuilt-in recorder selection (unavailable means absent in marker inventory):\n" + _builtins.DescribeSelection());
                     Debug.Log($"Battle performance capture saved to {directory}.");
                 }
                 finally
@@ -422,6 +440,7 @@ namespace EmpireAtWar.Services.Timing
         {
             if (_recorderAvailable[FRAME_DURATION]) return;
             _latest.UnityFrame = -1;
+            BattleSystemAttribution.ResetFrames();
             _pendingWorkload = default;
             StartRecorders();
             _recorderAvailable[FRAME_DURATION] = true;
@@ -434,6 +453,9 @@ namespace EmpireAtWar.Services.Timing
 
         private void StartRecorders()
         {
+            _builtins = new BattleBuiltinRecorders();
+            for (int i = 0; i < BattleBuiltinRecorders.Columns.Length; i++)
+                _recorderAvailable[FIRST_BUILTIN_METRIC + i] = _builtins.IsAvailable(i);
             StartRecorder(MAIN_THREAD, ProfilerCategory.Render, "CPU Main Thread Frame Time", ProfilerRecorderOptions.Default);
             StartRecorder(RENDER_THREAD, ProfilerCategory.Render, "CPU Render Thread Frame Time", ProfilerRecorderOptions.Default);
             StartRecorder(GPU_FRAME, ProfilerCategory.Render, "GPU Frame Time", ProfilerRecorderOptions.Default);
@@ -533,6 +555,9 @@ namespace EmpireAtWar.Services.Timing
             frame.Metrics.CopyTo(_samples, _frameCount * METRIC_COUNT);
             frame.MarkerCounts.CopyTo(_markerSampleCounts, _frameCount * _markerNames.Length);
             frame.Workload.CopyTo(_workloadSamples, _frameCount * _workloadNames.Length);
+            Array.Copy(frame.AllocationTop, _attributionFrames[_frameCount].AllocationTop, 5);
+            Array.Copy(frame.TimeTop, _attributionFrames[_frameCount].TimeTop, 5);
+            BattleSystemAttribution.AccumulateCapture(frame.UnityFrame);
             _frameCount++;
         }
 
@@ -545,7 +570,7 @@ namespace EmpireAtWar.Services.Timing
             float seconds = Time.unscaledDeltaTime;
             _latest.IsHitch = seconds > FrameTimeHistogram.HITCH_SECONDS;
             _latest.Metrics[FRAME_DURATION] = (long)(seconds * 1000000000d);
-            for (int i = MAIN_THREAD; i < METRIC_COUNT; i++)
+            for (int i = MAIN_THREAD; i < FIRST_BUILTIN_METRIC; i++)
             {
                 ProfilerRecorder recorder = _recorders[i];
                 // A capacity-one recorder can wrap before Count is observed.
@@ -570,6 +595,9 @@ namespace EmpireAtWar.Services.Timing
             if (_pendingWorkload.CompletedUnityFrame != frame) _pendingWorkload = default;
             _pendingWorkload.WriteTo(_latest.Workload, 0);
             _pendingWorkload = default;
+            BattleSystemAttribution.ReadFrame(frame, _latest);
+            _builtins.Read(_latest, FIRST_BUILTIN_METRIC, FIRST_MARKER_METRIC, FIRST_BUILTIN_COUNTER, UNAVAILABLE);
+            _latest.IsHitch |= _latest.Metrics[GC_ALLOCATED] != UNAVAILABLE && _latest.Metrics[GC_ALLOCATED] >= 1000000;
             return _latest;
         }
 
@@ -640,6 +668,8 @@ namespace EmpireAtWar.Services.Timing
 
         private void DisposeRecorders()
         {
+            BattleSystemAttribution.Enabled = false;
+            if (_builtins != null) { _builtins.Dispose(); _builtins = null; }
             for (int i = 0; i < _recorders.Length; i++)
             {
                 if (_recorders[i].Valid)
@@ -650,6 +680,28 @@ namespace EmpireAtWar.Services.Timing
                 _recorders[i] = default;
                 _recorderAvailable[i] = false;
             }
+        }
+
+        private static string[] CombineMetricNames(string[] names)
+        {
+            var result = new string[names.Length + BattleBuiltinRecorders.Columns.Length];
+            names.CopyTo(result, 0);
+            BattleBuiltinRecorders.Columns.CopyTo(result, names.Length);
+            return result;
+        }
+        private static string[] CombineMarkerNames(string[] names)
+        {
+            var result = new string[names.Length + BattleBuiltinRecorders.Columns.Length];
+            names.CopyTo(result, 0);
+            BattleBuiltinRecorders.Columns.CopyTo(result, names.Length);
+            return result;
+        }
+        private static string[] CombineCounterNames(string[] names)
+        {
+            var result = new string[names.Length + BattleBuiltinRecorders.CounterColumns.Length];
+            names.CopyTo(result, 0);
+            BattleBuiltinRecorders.CounterColumns.CopyTo(result, names.Length);
+            return result;
         }
 
         internal struct CombatWorkload

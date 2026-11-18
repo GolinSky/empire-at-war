@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using EmpireAtWar.Services.Timing;
+using EmpireAtWar.Services.Analytics;
 using NUnit.Framework;
 
 namespace EmpireAtWar.Tests.Timing
@@ -41,6 +42,89 @@ namespace EmpireAtWar.Tests.Timing
                 capture.FinishWindow();
                 if (Directory.Exists(directory)) Directory.Delete(directory, true);
             }
+        }
+
+        [Test]
+        public void CsvCounters_PreserveCounterUnitsUnavailableAndAttributionColumns()
+        {
+            string[] metrics = { "frame_duration_ns", "gc_collect_ns", "uncovered_ns" };
+            string[] counters = { "gc_collections", "gc_used_bytes" };
+            var frame = new BattleCaptureFrame(3, 2, 2);
+            frame.Metrics[0] = 250000000;
+            frame.Metrics[1] = 200000000;
+            frame.Metrics[2] = -1000000;
+            frame.MarkerCounts[0] = 1;
+            frame.MarkerCounts[1] = -1;
+            frame.Workload[0] = 1;
+            frame.Workload[1] = long.MinValue;
+            frame.AllocationTop[0] = new BattleSystemSample { Name = "Game.System.Tick()", Bytes = 4096 };
+            frame.TimeTop[0] = new BattleSystemSample { Name = "Game.System.Tick()", Nanoseconds = 2000000 };
+            using var writer = new StringWriter();
+            BattlePerformanceCaptureReport.WriteCsvHeader(writer, "frame", metrics, counters, 1);
+            writer.Write("42");
+            BattlePerformanceCaptureReport.WriteCsvCounters(writer, 0, frame.Metrics, frame.MarkerCounts,
+                frame.Workload, 3, 2, 1, long.MinValue, frame);
+            string[] lines = writer.ToString().Trim().Split('\n');
+            string[] header = lines[0].TrimEnd('\r').Split(',');
+            string[] row = lines[1].TrimEnd('\r').Split(',');
+            Assert.That(row.Length, Is.EqualTo(header.Length));
+            Assert.That(row[Array.IndexOf(header, "gc_collect_ms")], Is.EqualTo("200.000000"));
+            Assert.That(row[Array.IndexOf(header, "uncovered_ms")], Is.EqualTo("-1.000000"));
+            Assert.That(row[Array.IndexOf(header, "gc_collections")], Is.EqualTo("1"));
+            Assert.That(row[Array.IndexOf(header, "gc_used_bytes")], Is.EqualTo("unavailable"));
+            Assert.That(row[Array.IndexOf(header, "alloc_top1_name")], Is.EqualTo("\"Game.System.Tick()\""));
+            Assert.That(row[Array.IndexOf(header, "alloc_top1_bytes")], Is.EqualTo("4096"));
+            Assert.That(row[Array.IndexOf(header, "time_top1_ms")], Is.EqualTo("2.000000"));
+        }
+
+        [Test]
+        public void FpsHistory_UpgradesExistingRowsWithoutMixingColumnCounts()
+        {
+            string directory = Path.Combine(Path.GetTempPath(), "fps-schema-" + Guid.NewGuid());
+            string path = Path.Combine(directory, "history.csv");
+            try
+            {
+                Directory.CreateDirectory(directory);
+                string header = (string)typeof(BattleFpsHistory).GetField("HEADER", BindingFlags.Static | BindingFlags.NonPublic).GetRawConstantValue();
+                string oldHeader = header.Substring(0, header.IndexOf(",gc_used_mb", StringComparison.Ordinal));
+                File.WriteAllText(path, oldHeader + "\nold-row\n");
+                BattleFpsHistory.EnsureSchema(path);
+                Assert.That(File.ReadLines(path).First(), Is.EqualTo(header));
+                Assert.That(File.ReadLines(path).Last(), Is.EqualTo("old-row,unavailable,unavailable,unavailable"));
+                Assert.That(File.ReadAllText(path + ".schema-v1-backup"), Does.Contain(oldHeader));
+                BattleFpsHistory.EnsureSchema(path);
+                Assert.That(File.ReadLines(path).Count(), Is.EqualTo(2));
+            }
+            finally
+            {
+                if (Directory.Exists(directory)) Directory.Delete(directory, true);
+            }
+        }
+
+        [Test]
+        public void WorkloadSummary_DoesNotReportMissingCounterAsZero()
+        {
+            var report = new System.Text.StringBuilder();
+            typeof(BattlePerformanceCaptureReport).GetMethod("AppendWorkloadSummary", BindingFlags.Static | BindingFlags.NonPublic)
+                .Invoke(null, new object[] { report, 0, 2, new[] { "gc_used_bytes" }, new[] { long.MinValue, long.MinValue } });
+            Assert.That(report.ToString(), Is.EqualTo("gc_used_bytes unavailable\n"));
+        }
+
+        [Test]
+        public void RuntimeSchema_AlignsBuiltinMarkersCountersAndMetricCount()
+        {
+            var flags = BindingFlags.Static | BindingFlags.NonPublic;
+            var type = typeof(BattlePerformanceCapture);
+            string[] metrics = (string[])type.GetField("_metricNames", flags).GetValue(null);
+            string[] markers = (string[])type.GetField("_markerNames", flags).GetValue(null);
+            string[] workload = (string[])type.GetField("_workloadNames", flags).GetValue(null);
+            int count = (int)type.GetField("METRIC_COUNT", flags).GetRawConstantValue();
+            int first = (int)type.GetField("FIRST_MARKER_METRIC", flags).GetRawConstantValue();
+            Assert.That(metrics.Length, Is.EqualTo(count));
+            Assert.That(markers.Length, Is.EqualTo(count - first));
+            Assert.That(metrics, Does.Contain("player_loop_ns"));
+            Assert.That(metrics, Does.Contain("attribution_overhead_ns"));
+            Assert.That(workload.Skip(20), Is.EqualTo(BattleBuiltinRecorders.CounterColumns));
         }
 
         [Test]

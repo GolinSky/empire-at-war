@@ -30,6 +30,8 @@ namespace EmpireAtWar.Editor
 
         internal static bool IsCapturing => _activeCapture != null;
 
+        internal static List<object> SummarizeFrames(IEnumerable<int> frameIndices) => CaptureOperation.CaptureFrameSummaries(frameIndices);
+
         static RenderAuditProfilerTool()
         {
             RestoreStateIfNeeded();
@@ -63,7 +65,7 @@ namespace EmpireAtWar.Editor
 
         internal static Dictionary<string, object> BeginCapture(string directory, int frames, int timeoutSeconds, Action<Dictionary<string, object>> completed)
         {
-            if (_activeCapture != null)
+            if (_activeCapture != null || BattleProfilerFlightRecorder.IsArmed)
             {
                 return RenderAuditCaptureStatus.CreateResult("error", "Profiler capture is already running.");
             }
@@ -389,7 +391,7 @@ private static Dictionary<string, object> CaptureRenderingStats()
                 return validFrameIndices;
             }
 
-            private static List<object> CaptureFrameSummaries(IEnumerable<int> frameIndices)
+            internal static List<object> CaptureFrameSummaries(IEnumerable<int> frameIndices)
             {
                 var summaries = new List<object>();
                 foreach (var frameIndex in frameIndices)
