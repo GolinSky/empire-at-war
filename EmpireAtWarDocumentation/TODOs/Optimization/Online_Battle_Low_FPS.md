@@ -25,7 +25,7 @@ created: 2026-11-18
 - Spawns send full JSON unit saves (`HostTickReplicator.CreateSpawn`); squadron churn re-sends them.
 - Clients also run turret/projectile visuals from host target events → client FPS tracks host battle size; damage stays on host.
 - AI: 4 UltraHard AIs (`decisionInterval` 0.5 s) + ~650k credits/battle of superweapon purchases in 07/08 (`[EnemyAI:SuperWeapon]` 600+ lines).
-- Exception per destroyed ability caster in `Tick` → [[TODOs/Bugs/Ship_Ability_Event_Destroyed_Caster]].
+- Exception per destroyed ability caster in `Tick` → [[Done/Bugs/Ship_Ability_Event_Destroyed_Caster]].
 
 ## Plan
 ### Phase 0 — Release telemetry (no Development build needed)

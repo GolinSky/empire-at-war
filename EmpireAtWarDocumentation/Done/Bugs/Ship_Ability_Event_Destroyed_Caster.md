@@ -1,7 +1,9 @@
 ---
 category: Bugs
-status: todo
+status: done
 created: 2026-11-18
+completed: 2026-11-18
+acceptance: pending-user
 ---
 # Ship Ability Event Throws for a Destroyed Caster (online host)
 
@@ -15,9 +17,13 @@ created: 2026-11-18
 - The exception leaves `OrderedLifecycleCoordinator.Tick` → later tickables likely skip that frame (verify).
 
 ## Plan
-- [ ] Send the caster id stored on the slot/caster at activation, not via locator lookup; or skip the event when the caster was despawned (clients already despawn it).
-- [ ] Teardown: `HostCombatEventSender.LateDispose` unsubscribes before `ShipAbilityService.LateDispose` stops slots (check order).
-- [ ] Test (`Networking`/`Abilities`): ability stop after caster removal sends no throw.
+- [x] Caster id comes from `IShipAbilityFacade.EntityId` (stored id, no locator lookup) in `Capture`, `OnActivated`, `OnCanceled` (commit e84297792).
+- [x] Teardown order no longer matters: `Capture` cannot throw for a despawned caster.
+- [x] Test `ShipAbilityServiceTests.EventCapture_AfterCasterLeftLocator_UsesStableCasterId` (`Abilities`). Not run (local override).
+
+## Outcome
+- Done 2026-11-18. Verified by source inspection only; tests not run. No reusable guidance beyond: ability facades expose a stable `EntityId`; never read `Entity` on stop/teardown paths.
+- Pending user: confirm no `Not entity found` in next hosted battle log.
 
 ## Agent handoff
 - Read this plan, its linked plans and the live source first; source wins over this note.

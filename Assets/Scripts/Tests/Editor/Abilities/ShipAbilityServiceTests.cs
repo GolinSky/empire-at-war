@@ -61,6 +61,16 @@ namespace EmpireAtWar.Tests.Editor
             service.Clear();
         }
 
+        [Test]
+        public void EventCapture_AfterCasterLeftLocator_UsesStableCasterId()
+        {
+            FakeCommand caster = CreateCaster();
+            caster.Despawned = true;
+            ShipAbilityEventMessage message = default;
+            Assert.DoesNotThrow(() => message = ShipAbilityEventMessage.Capture(caster.Slots[0]));
+            Assert.That(message.CasterId, Is.EqualTo(caster.EntityId));
+        }
+
         [TestCase(false, false)]
         [TestCase(true, true)]
         [TestCase(false, true)]
@@ -1301,7 +1311,10 @@ namespace EmpireAtWar.Tests.Editor
             public IReadOnlyList<ShipAbilitySlot> Slots { get; }
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
             public Vector3 WorldPosition => Vector3.zero;
-            public IEntity Entity { get; }
+            private readonly IEntity _entity;
+            public bool Despawned { get; set; }
+            public IEntity Entity => Despawned ? throw new InvalidOperationException("Not entity found") : _entity;
+            public long EntityId => _entity.Id;
             public FakeHealth FakeHealth { get; }
             public IHealthModelObserver Health => FakeHealth;
             public float RadarRange => 20f;
@@ -1335,7 +1348,7 @@ namespace EmpireAtWar.Tests.Editor
                 ShipAbilityId id = ShipAbilityId.BoostEnginePower)
             {
                 FakeHealth = new FakeHealth(transform);
-                Entity = new FakeEntity(command: this, owner: TestPlayers.Human, health: FakeHealth);
+                _entity = new FakeEntity(command: this, owner: TestPlayers.Human, health: FakeHealth);
                 Slots = new[] { new ShipAbilitySlot(id: id,
                     definition: definition, owner: this) };
             }

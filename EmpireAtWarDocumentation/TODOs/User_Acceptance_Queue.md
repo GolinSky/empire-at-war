@@ -9,6 +9,10 @@ created: "2026-10-29\r"
 
 - [ ] [[Done/Bugs/Online_Skirmish_Join_Slot_Race]] — Run authored regression coverage in `Networking`, `GameFlow` and `Ui` when explicitly authorized; source review and Unity compilation passed. User declined reproduction as a prerequisite.
 
+## Online Battle
+
+- [ ] [[Done/Bugs/Ship_Ability_Event_Destroyed_Caster]] — Host a battle; confirm no `Not entity found` in `Player.log`. `Abilities` test added, not run.
+
 ## Content Removal
 
 - [ ] [[Done/Refactoring/ISDIII_Thranta_Removal]] — Run `Ships`, `Health`, `Navigation`, `Combat`, `GameFlow`, `Ui`, `Audio` EditMode categories when authorized; source review and Unity compilation passed.

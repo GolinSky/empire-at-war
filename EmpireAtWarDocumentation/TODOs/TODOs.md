@@ -79,7 +79,6 @@
   - 2026-11-18: main cause verified: `UnitOrderService.AttackOffsets` ring radius `R/sin(π/N)` counts squadrons (Executor in 22 units → 7,443) → legs to the map edge. Also artillery band, same-target re-issue reset. Nothing implemented.
 - [ ] **Squadron FPS (icon stacking/grid out of scope: user rebuild)** → [[TODOs/Bugs/Squadron_Count_Stacking_And_FPS]]
   - 2026-11-18: 1v1 Editor peak 127 live squadrons (≈1,000 craft). Fixed (compiled, prefabs saved, tests not run): torpedo-mount per-frame target selection; removed 334 engine trails, 186 fighter colliders, squadron world selection rings (icon-only selection), 212 dead flash meshes, 234 fighter shadow casters. Next: fighters out of root hierarchy, mesh merge/LOD, remove model-embedded muzzle-flash meshes from all models (12 model files + reinforcement/ship prefabs), split fighter/ship projectile pools, radar per-frame tick.
-- [ ] **Ship ability event throws for destroyed caster (online host, 9× per session)** → [[TODOs/Bugs/Ship_Ability_Event_Destroyed_Caster]]
 - [ ] **Enemy AI weak base defense + inconsistent UltraHard** → [[TODOs/Bugs/Enemy_AI_Base_Defense_And_Consistency]]
   - 2026-11-18: UltraHard `defenseThreatRatio` 1.5 (highest bar) + whole-fleet commit. Nothing implemented; "lvl 3" meaning to confirm.
 - [ ] **Ship hardpoints, firing angles and balance** → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]
@@ -310,6 +309,8 @@
 
 ### Bugs
 
+- [x] **Ship ability event throws for destroyed caster (online host, 9× per session)** → [[Done/Bugs/Ship_Ability_Event_Destroyed_Caster]]
+  - Completed 2026-11-18: events use stable `EntityId`; regression test added, not run.
 - [x] **Fix 63 EditMode failures from the 2026-11-16 full run (31 from one tutorial-anchor `Destroy`, 4 shared-AI, rest content/HUD/input)** → [[Done/Bugs/EditMode_Failures_2026-11-16_Plan|EditMode Failures 2026-11-16]]
   - Completed 2026-11-16: fixed the full failure set. User confirmed full EditMode passed after the offscreen projection fix.
 
