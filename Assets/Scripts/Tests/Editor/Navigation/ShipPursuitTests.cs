@@ -477,6 +477,65 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
+        public void FindNearestEnemy_PrefersThePreviousTargetClassOverANearerContact()
+        {
+            GameObject nearObject = new GameObject("Near frigate");
+            GameObject farObject = new GameObject("Far corvette");
+            try
+            {
+                nearObject.transform.position = new Vector3(0f, 0f, 200f);
+                farObject.transform.position = new Vector3(0f, 0f, 800f);
+                Target near = new Target(nearObject.transform) { Id = 2 };
+                near.Health.ShipClass = ShipClass.Frigate;
+                Target far = new Target(farObject.transform) { Id = 3 };
+                far.Health.ShipClass = ShipClass.Corvette;
+                IEntity[] candidates = { near, far };
+
+                Assert.That(ShipEngagement.FindNearestEnemy(candidates, _movement, _weapon), Is.SameAs(near));
+                Assert.That(ShipEngagement.FindNearestEnemy(candidates, _movement, _weapon, ShipClass.Corvette),
+                    Is.SameAs(far));
+            }
+            finally
+            {
+                Object.DestroyImmediate(nearObject);
+                Object.DestroyImmediate(farObject);
+            }
+        }
+
+        [Test]
+        public void IdlePursuit_ReturnsToTheStartingPostWhenTheAttackerDies()
+        {
+            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            var abilityRelations = TestPlayers.CreateDuel();
+            ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
+                abilityRelations, new VisionService(abilityRelations, fogEnabled: false));
+            Radar radar = new Radar();
+            radar.Enemies.Add(_target);
+            UnitOrderModel orders = new UnitOrderModel();
+            ShipStateMachine machine = new ShipStateMachine();
+            ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, orders, machine,
+                new IdleState(_movement, _weapon, radar), new NavigateState(_movement),
+                new AttackTargetState(null, _weapon, _movement), null, null, null, null, abilities, caster, radar, null,
+                new NoTeamContacts(), TestPlayers.Human);
+            Vector3 post = new Vector3(40f, 0f, 60f);
+            _movement.CurrentPosition = post;
+            runner.Start();
+
+            runner.ObserveHealth(100f);
+            runner.ObserveHealth(60f);
+            runner.Tick(0.1f);
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Attack));
+
+            _target.Health.IsDestroyed = true;
+            runner.Tick(0.1f);
+
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Move));
+            Assert.That(orders.Destination.X, Is.EqualTo(post.x).Within(0.01f));
+            Assert.That(orders.Destination.Z, Is.EqualTo(post.z).Within(0.01f));
+            abilities.Clear();
+        }
+
+        [Test]
         public void Attack_TargetClosesRange_StopsWithoutAnotherPlan()
         {
             AttackTargetState state = new AttackTargetState(null, _weapon, _movement);

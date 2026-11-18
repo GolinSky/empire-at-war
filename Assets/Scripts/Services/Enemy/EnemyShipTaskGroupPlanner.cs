@@ -130,13 +130,12 @@ namespace EmpireAtWar.Services.Enemy
             ISet<string> reservedObjectives, bool stationPressure)
         {
             if (stationPressure || ships.Count == 0) return;
-            int limit = _mainGroup == null ? OPENING_CAPTURE_GROUPS : 1;
+            bool opening = _mainGroup == null;
+            int limit = opening ? OPENING_CAPTURE_GROUPS : 1;
             if (_captureGroups.Count >= limit) return;
             _unassigned.Clear();
-            int detached = 0;
-            foreach (EnemyShipTaskGroup group in _captureGroups) detached += group.Ships.Count;
-            // Another detachment must leave ships behind for the rest of the fleet.
-            if (_captureGroups.Count > 0 && ships.Count - detached <= 1) return;
+            EnemyOpeningFocus focus = opening ? NextOpeningFocus() : EnemyOpeningFocus.None;
+            _captureProbe.OpeningFocus = focus;
             foreach (IShipEntity ship in ships)
                 if (ship.CurrentOrder != UnitOrderType.Retreat && !IsInCaptureGroup(ship))
                     _unassigned.Add(ship);
@@ -144,8 +143,11 @@ namespace EmpireAtWar.Services.Enemy
             _captureProbe.BeginCaptureProbe(reservedObjectives);
             foreach (IShipEntity ship in _unassigned)
             {
-                if (!_captureProbe.CanDetachForCapture(ship, mineOnly: ships.Count == 1)) continue;
-                EnemyShipTaskGroup candidate = CreateGroup(true, unbuiltMinesOnly: ships.Count == 1);
+                // The opening aims at zones, so a lone ship is not restricted to mines then.
+                bool mineOnly = ships.Count == 1 && !opening;
+                if (!_captureProbe.CanDetachForCapture(ship, mineOnly)) continue;
+                EnemyShipTaskGroup candidate = CreateGroup(true, unbuiltMinesOnly: mineOnly);
+                candidate.ContextBuilder.OpeningFocus = focus;
                 candidate.Ships.Add(ship);
                 foreach (EnemyShipTaskGroup group in _groups) group.Ships.Remove(ship);
                 candidate.NoViableCaptureSince = -1f;
@@ -153,6 +155,15 @@ namespace EmpireAtWar.Services.Enemy
                 _groups.Add(candidate);
                 return;
             }
+        }
+
+        // The first detachment goes to the nearest neighbour zone, the second to the centre; a lost one is replaced in kind.
+        private EnemyOpeningFocus NextOpeningFocus()
+        {
+            bool hasNeighbour = false;
+            foreach (EnemyShipTaskGroup group in _captureGroups)
+                hasNeighbour |= group.ContextBuilder.OpeningFocus == EnemyOpeningFocus.Neighbour;
+            return hasNeighbour ? EnemyOpeningFocus.Centre : EnemyOpeningFocus.Neighbour;
         }
 
         private bool IsInCaptureGroup(IShipEntity ship)

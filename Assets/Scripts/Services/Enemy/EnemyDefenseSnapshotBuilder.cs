@@ -47,8 +47,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<EnemyDefenseOption> _options = new List<EnemyDefenseOption>();
         private readonly List<EnemyDefensePad> _pads = new List<EnemyDefensePad>();
         private readonly List<int> _padIndices = new List<int>();
-        private readonly Dictionary<int, (int ProtectedMines, bool Threatened, List<SiteFacilityType> Existing, bool HasMines)> _sitesByPoint =
-            new Dictionary<int, (int, bool, List<SiteFacilityType>, bool)>();
+        private readonly Dictionary<int, (int ProtectedMines, bool Threatened, List<SiteFacilityType> Existing, int MineSites)> _sitesByPoint =
+            new Dictionary<int, (int, bool, List<SiteFacilityType>, int)>();
         private readonly List<(Vector3 Position, bool Own, bool Hostile)> _bases =
             new List<(Vector3, bool, bool)>();
 
@@ -114,11 +114,15 @@ namespace EmpireAtWar.Services.Enemy
                     ownDistance / Mathf.Max(1f, ownDistance + enemyDistance);
                 _pads.Add(new EnemyDefensePad(index, (float)point.ProtectedMines / PointOfInterestPlacer.SITES_PER_MINING_POINT,
                     exposure, lastSeen, _presence.HasHostileUnits(site, _owner.Id), point.Threatened || lastSeen <= 5f,
-                    point.Existing, !point.HasMines));
+                    point.Existing, IsZonePoint(point.MineSites)));
             }
             return new EnemyDefenseSnapshot(_money.Money, _economy.TotalIncome / _economyData.IncomeDelay,
                 _production.DefenseReserve, _strategy.LastSnapshot, _own, _hostile, _pads, _options);
         }
+
+        // A relay has no mines; the centre has more mine sites than an ordinary mining point. Both are held by satellites.
+        private static bool IsZonePoint(int mineSites) =>
+            mineSites == 0 || mineSites > PointOfInterestPlacer.SITES_PER_MINING_POINT;
 
         private void CapturePadPoints(IReadOnlyList<ICaptureSite> sites)
         {
@@ -131,7 +135,7 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 _padIndices.Add(i);
                 if (!_sitesByPoint.ContainsKey(site.PointId))
-                    _sitesByPoint.Add(site.PointId, (0, false, new List<SiteFacilityType>(), false));
+                    _sitesByPoint.Add(site.PointId, (0, false, new List<SiteFacilityType>(), 0));
             }
             if (_padIndices.Count == 0) return;
 
@@ -139,7 +143,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 ICaptureSite site = sites[i];
                 if (!_sitesByPoint.TryGetValue(site.PointId, out var point)) continue;
-                if (site.Kind == CaptureSiteKind.Mining) point.HasMines = true;
+                if (site.Kind == CaptureSiteKind.Mining) point.MineSites++;
                 if (site.Owner != _owner.Id)
                 {
                     _sitesByPoint[site.PointId] = point;

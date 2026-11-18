@@ -192,7 +192,7 @@ Evidence (22:12 log, `Loading_20261118_221247_ai.csv`):
 Actions:
 - [x] `EnemyProductionDecisionModel`: Mining until 5 facilities comes before `NeedsMinimumFleet`, ships, levels and research. UltraHard rule placed before `NeedsMinimumFleet`; ship-first tests updated.
 - [x] UltraHard `MiningFacilityTarget` = catalog `MaxCount` (5) from the start, not `3 + ships / 2` (`EnemyProductionStrategy.cs:248`). `Math.Max(mining.MaxCount, floor)` when a mining option exists.
-- [x] Opening capture: groups go to the nearest neighbour zone and the centre in parallel; the next group takes another zone or patrols. `EnemyShipTaskGroupPlanner`: up to 2 capture detachments in parallel until a main force exists (one ship each, at least one ship stays behind); reservations keep them on different objectives.
+- [x] Opening capture (see R3): groups go to the nearest neighbour zone and the centre in parallel; the next group takes another zone or patrols. `EnemyShipTaskGroupPlanner`: up to 2 capture detachments in parallel until a main force exists (one ship each, at least one ship stays behind); reservations keep them on different objectives.
 - [x] Site construction at a captured point: close pads → satellites → mining. Required satellites and mining builds stay exempt from the ship reservation (`TrySelectMandatory`, mine build in `EnemySiteConstructionController.Tick` — keep). `EnemySiteConstructionController.Tick`: mandatory satellites → mine → scored satellites.
 - [x] Ship reservation (`NeedsFleet`) holds back only levels, research and scored (optional) defense. `NeedsFleet` now sits above income research too; mandatory satellites and mining are outside it.
 - Tests: `EnemyAi` (`EnemyProductionDecisionModelTests`); no stat-pinning asserts.
@@ -215,4 +215,34 @@ Actions:
 - [x] Persist the last AI difficulty per slot in the online lobby (offline already done). Separate `onlineOccupantChoices`; `FakeSettingsService` for `PopupServiceTests`.
 
 ### Tests
-- [x] Affected tests reviewed and updated. User re-runs `EnemyAi`, `Ships`, `BattleInput`, `Navigation`, `Capture`, `Ui`.
+- [x] Affected tests reviewed and updated (see R5; two gaps listed there). User re-runs `EnemyAi`, `Ships`, `BattleInput`, `Navigation`, `Capture`, `Ui`.
+
+## Verification of `2955d807a` (2026-11-19)
+Source-inspected. No tests run by the agent.
+
+### Correct (no action)
+- Mining first: UltraHard rule sits before `NeedsMinimumFleet` (`EnemyProductionDecisionModel.Evaluate`); unaffordable miner → `None` (saves).
+- Mining target = catalog `MaxCount` 5 (`EnemyProductionStrategy.cs:249`).
+- `NeedsFleet` now above income research; mining + required satellites outside it.
+- Recovery: pressured living station added as anchor candidate, score `2` vs relays `≤ 1` → always wins; `FindRetreatAnchor` returns it without route filters. Withdrawal unchanged.
+- Pursuit: kill without replacement or chase ending on its own → `MoveTo(_pursuitOrigin)`; outside order wins. Pursuit starts only from Idle, so origin position = previous order.
+- Replacement tiers: previous class → loadout preference → nearest (`ShipEngagement.Offer`).
+- `ITeamContacts` + owner required; registered in `SkirmishScope.cs:227`; owner via `ShipInstaller` `WithParameter(Owner)`.
+- Online lobby: separate `onlineOccupantChoices`; host restores non-human rows on `BeginHostLobby`.
+- Capture edge test: expects `10f * 0.9f`.
+
+### Real issues
+- [x] **R1 — Centre pads locked behind all 4 centre mines.** `EnemySiteObjectives.cs:103`: a pad at a point with mines is capturable only when `OwnsPointMines` (every mine at the point owned). Centre = 4 mines + 6 pads → AI must take all 4 mines before any pad. Rule 3.3 says pads → satellites → mining. Fix: pads at a point are capturable without owning its mines. Fixed 2026-11-19: pads are capturable without owning the point mines (`EnemySiteObjectives.IsCapturable`); test renamed `CaptureSelection_SatellitePadIsCapturableBeforeItsPointMinesAreOwned`.
+- [x] **R2 — Centre gets 1 required satellite, not 3.** `EnemyDefensePad.IsZonePad` = point without mines → centre counts as a mining point → `MINING_POINT_SATELLITES = 1`. Satellite-first rule (2026-11-18): relay/centre zone = 3. Fix: the centre point (and relays) require 3 even with mines; other mining points 1. Fixed: `EnemyDefenseSnapshotBuilder.IsZonePoint` = no mines or more mine sites than `SITES_PER_MINING_POINT` (centre) → 3 required satellites.
+- [x] **R3 — Opening split does not match rule 3.2.** Fixed: `EnemyOpeningFocus` (Neighbour, Centre) on the group builder; `GetOpeningFocusAdjustment` shifts capture scores by 10,000 around the centre (largest capturable zone, reach 2 radii). `EnemyShipTaskGroupPlanner`: first detachment Neighbour, second Centre; no mines-only restriction and no left-behind rule in the opening; up to 2 detachments while no main force exists.
+  - First detachment with 1 AI ship: `CanDetachForCapture(mineOnly: ships.Count == 1)` + `CreateGroup(unbuiltMinesOnly: ...)` → mine sites only, never the centre or a zone.
+  - Second detachment needs `ships.Count - detached > 1` → only at 3+ ships (commit note "second decision cycle" is wrong).
+  - Each detachment = 1 ship. Neighbour zone / centre are not targeted; the split depends on capture score + reservation only.
+  - Fix: opening detachments target the nearest neighbour zone and the centre explicitly (centre pads/mines included), and the remaining group captures/patrols another zone.
+- [x] **R4 — Required-satellite start failure blocks mining.** `EnemySiteConstructionController.Tick` returns after `StartSatellite` even when `TryStartConstruction` fails (`siteBuild started=False`); the same pad is picked every 3 s → owned empty mines never build. Fix: fall through to mining when the start fails. Fixed: only a started required satellite ends the tick; a failed start falls through to mining.
+- [x] **R5 — No tests for new behaviour** (AGENTS.md test maintenance). Missing: pressured-station recovery anchor (`EnemyAi`), pursuit return to origin + outside-order wins (`Navigation`/`Ships`), previous-class replacement tier (`Navigation`), two opening capture detachments (`EnemyAi`), site construction order mandatory → mine → scored (`EnemyAi`/`Capture`), online occupant persistence in `LobbySettingsDataTests` (`Ui`). Added: `OnlineOccupantChoice_IsKeptSeparatelyFromOffline`, `TaskGroups_OpeningDetachmentsAreAimedAtNeighbourThenCentre`, `FindNearestEnemy_PrefersThePreviousTargetClassOverANearerContact`, `IdlePursuit_ReturnsToTheStartingPostWhenTheAttackerDies`. Still missing: pressured-station recovery anchor and the mandatory → mine → scored construction order (both need heavy collaborator setups).
+
+### Not issues (misunderstandings)
+- "Pursuit should restore the previous order": pursuit only starts with no order, so returning to the position is the full restore.
+- Mining before ships delays the first ship until 5 miners (5,000 credits): this is the rule; the human's first ship came at 45.8 s.
+

@@ -7,6 +7,19 @@ namespace EmpireAtWar.Tests.Editor
     public sealed class LobbySettingsDataTests
     {
         [Test]
+        public void OnlineOccupantChoice_IsKeptSeparatelyFromOffline()
+        {
+            var data = new SettingsData();
+            data.Lobby.SetOccupantChoice(1, 3, online: true);
+            data.Lobby.SetOccupantChoice(1, 4);
+            SettingsData loaded = SettingsData.FromJson(data.ToJson());
+
+            Assert.That(loaded.Lobby.GetOccupantChoice(1, online: true), Is.EqualTo(3));
+            Assert.That(loaded.Lobby.GetOccupantChoice(1), Is.EqualTo(4));
+            Assert.That(loaded.Lobby.GetOccupantChoice(2, online: true), Is.EqualTo(-1));
+        }
+
+        [Test]
         public void OccupantChoice_IsUnsetUntilChosenAndSurvivesJson()
         {
             var data = new SettingsData();

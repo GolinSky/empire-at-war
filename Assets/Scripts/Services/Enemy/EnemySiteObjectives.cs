@@ -99,27 +99,7 @@ namespace EmpireAtWar.Services.Enemy
         private bool IsCapturable(ICaptureSite site)
         {
             return (site.State == CaptureSiteState.Neutral || site.State == CaptureSiteState.Owned) &&
-                   !_players.IsAllied(_owner.Id, site.Owner) &&
-                   (site.Kind != CaptureSiteKind.Satellite || !PointHasMines(site.PointId) || OwnsPointMines(site.PointId));
-        }
-
-        private bool PointHasMines(int pointId)
-        {
-            foreach (ICaptureSite site in _sites.Sites)
-                if (site.Kind == CaptureSiteKind.Mining && site.PointId == pointId) return true;
-            return false;
-        }
-
-        private bool OwnsPointMines(int pointId)
-        {
-            bool hasMine = false;
-            foreach (ICaptureSite site in _sites.Sites)
-            {
-                if (site.Kind != CaptureSiteKind.Mining || site.PointId != pointId) continue;
-                if (site.Owner != _owner.Id) return false;
-                hasMine = true;
-            }
-            return hasMine;
+                   !_players.IsAllied(_owner.Id, site.Owner);
         }
 
         private bool HasKnownHostileInside(ICaptureSite site, HostileIntelModel intel)

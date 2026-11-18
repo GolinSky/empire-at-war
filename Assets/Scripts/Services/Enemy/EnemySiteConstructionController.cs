@@ -47,11 +47,9 @@ namespace EmpireAtWar.Services.Enemy
             // outrank ships. Satellite scores read the strategic snapshot, empty until the first strategic decision.
             bool ready = _snapshotBuilder.IsReady;
             EnemyDefenseSnapshot snapshot = ready ? _snapshotBuilder.Build() : default;
-            if (ready && _defense.TrySelectMandatory(snapshot, out var required))
-            {
-                StartSatellite(snapshot, required);
+            // A required satellite that cannot start must not block the mines behind it, so only a started one ends the tick.
+            if (ready && _defense.TrySelectMandatory(snapshot, out var required) && StartSatellite(snapshot, required))
                 return;
-            }
             // Mines fund everything else, so an empty owned mine keeps the credits until it is built.
             if (HasEmptyOwnedMine())
             {
@@ -62,13 +60,17 @@ namespace EmpireAtWar.Services.Enemy
             if (ready && _defense.TrySelectScored(snapshot, out var optional)) StartSatellite(snapshot, optional);
         }
 
-        private void StartSatellite(EnemyDefenseSnapshot snapshot, EnemyDefenseChoice choice)
+        private bool StartSatellite(EnemyDefenseSnapshot snapshot, EnemyDefenseChoice choice)
         {
             if (_construction.TryStartConstruction(choice.SiteIndex, _owner.Id, choice.Type))
+            {
                 EnemyAiTelemetry.RecordSatellite(_owner.Id, _owner.Faction, choice, snapshot.Money, _defense.TopChoices);
-            else
-                EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild",
-                    $"kind=satellite;started=False;site={choice.SiteIndex};type={choice.Type}");
+                return true;
+            }
+
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "siteBuild",
+                $"kind=satellite;started=False;site={choice.SiteIndex};type={choice.Type}");
+            return false;
         }
 
         private bool HasEmptyOwnedMine()

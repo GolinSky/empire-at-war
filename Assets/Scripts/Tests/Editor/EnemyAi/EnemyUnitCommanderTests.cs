@@ -1986,7 +1986,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(false)]
         [TestCase(true)]
-        public void CaptureSelection_SatelliteRequiresAllLocalMines(bool hasUnownedLocalMine)
+        public void CaptureSelection_SatellitePadIsCapturableBeforeItsPointMinesAreOwned(bool hasUnownedLocalMine)
         {
             PlayerRoster roster = TestPlayers.CreateDuel();
             CaptureSiteStub mine = new CaptureSiteStub(Vector3.right * 100f)
@@ -2001,8 +2001,8 @@ namespace EmpireAtWar.Tests.Editor
 
             EnemyCaptureObjective objective = SelectCapture(builder);
 
-            // A pad waits for its point's mines; a point without mines (a zone) is held by satellites alone.
-            Assert.That(objective.Id, Is.EqualTo(hasUnownedLocalMine ? "site:0" : "site:1"));
+            // Pads come first at every point: satellites hold the point, mines follow. Owning the mines is not required.
+            Assert.That(objective.Id, Is.EqualTo("site:1"));
         }
 
         [TestCase(false)]
@@ -2247,6 +2247,25 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(builder.CanDetachForCapture(strong), Is.False);
             builder.BeginCaptureProbe(new HashSet<string>());
             Assert.That(builder.CanDetachForCapture(strong), Is.True);
+        }
+
+        [Test]
+        public void TaskGroups_OpeningDetachmentsAreAimedAtNeighbourThenCentre()
+        {
+            var (builder, weak, strong, slower) = CaptureProbeBuilder();
+            var orders = new FakeOrderService();
+            var planner = new EnemyShipTaskGroupPlanner(builder, new EnemyStrategicDecisionModel(),
+                new EnemyTaskForceExecutor(orders), orders);
+            IShipEntity[] ships = { slower, weak, strong };
+            planner.Reconcile(ships);
+
+            planner.TryCreateCaptureGroup(ships, new HashSet<string>(), false);
+            planner.Reconcile(ships);
+            planner.TryCreateCaptureGroup(ships, new HashSet<string>(), false);
+
+            var focuses = planner.Groups.Where(group => group.IsCaptureDetachment)
+                .Select(group => group.ContextBuilder.OpeningFocus).ToArray();
+            Assert.That(focuses, Is.EqualTo(new[] { EnemyOpeningFocus.Neighbour, EnemyOpeningFocus.Centre }));
         }
 
         [Test]

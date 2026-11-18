@@ -112,6 +112,9 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyStrategicContextBuilder _stationAssessment;
         private GameEntity _withdrawingFromStation;
         private bool _preferStrategicObjectives;
+
+        /// <summary>Aims an opening capture detachment at the centre or at the nearest zone away from it.</summary>
+        public EnemyOpeningFocus OpeningFocus { get; set; }
         private Vector3 _strategicCenter;
 
         private const float CAPTURE_STALL_SECONDS = 20f;
@@ -1043,7 +1046,26 @@ namespace EmpireAtWar.Services.Enemy
             float value = candidate.Kind == EnemyCaptureObjectiveType.ReinforcementZone
                 ? Mathf.Max(0f, 400f - PlanarDistance(_strategicCenter, candidate.Position) * 0.25f)
                 : candidate.IsMine ? 300f : 0f;
-            return GetTravelCost(origin, candidate.Position) - value - candidate.PriorityBonus;
+            return GetTravelCost(origin, candidate.Position) - value - candidate.PriorityBonus +
+                   GetOpeningFocusAdjustment(candidate.Position);
+        }
+
+        // The centre is the capturable zone with the largest radius; its mines and pads sit within a couple of radii.
+        private float GetOpeningFocusAdjustment(Vector3 position)
+        {
+            if (OpeningFocus == EnemyOpeningFocus.None) return 0f;
+            ReinforcementZonePresenter centre = null;
+            for (int i = 0; i < _zones.Zones.Count; i++)
+            {
+                ReinforcementZonePresenter zone = _zones.Zones[i];
+                if (zone.IsCapturable && (centre == null || zone.Radius > centre.Radius)) centre = zone;
+            }
+            if (centre == null) return 0f;
+            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+                if (zone.IsCapturable && zone != centre && zone.Radius >= centre.Radius) return 0f;
+            bool inCentre = PlanarDistance(position, ToVector(ToPoint(centre.Center))) <= centre.Radius * CENTRE_REACH;
+            if (OpeningFocus == EnemyOpeningFocus.Centre) return inCentre ? -OPENING_FOCUS_WEIGHT : 0f;
+            return inCentre ? OPENING_FOCUS_WEIGHT : 0f;
         }
 
         private float GetTravelCost(Vector3 origin, Vector3 position)
@@ -1308,6 +1330,8 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         private const float STATION_DAMAGED_FRACTION = 0.98f;
+        private const float OPENING_FOCUS_WEIGHT = 10000f;
+        private const float CENTRE_REACH = 2f;
         private const float RAID_CONTEST_RADIUS = 2500f;
         private const float RAID_CONTESTED_SCORE_FACTOR = 4f;
 
