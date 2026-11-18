@@ -15,6 +15,8 @@ namespace EmpireAtWar.Services.UnitOrders
 {
     public sealed class UnitOrderService : IUnitOrderService
     {
+        private const float ATTACK_ARC_HALF_DEGREES = 60f;
+
         private readonly IEntityLocator _entityLocator;
         private readonly IReinforcementZonesSystem _zones;
 
@@ -80,30 +82,53 @@ namespace EmpireAtWar.Services.UnitOrders
             IssueAttack(receivers, target, AttackOffsets(receivers, target), hardPointId);
         }
 
+        // Only ships get a slot, and a slot only picks the side: the attack state approaches along its direction
+        // to firing range. Slots spread over an arc on the group's own side, so none lies behind the target.
         private List<Vector3> AttackOffsets(IReadOnlyList<IEntity> receivers, IEntity target)
         {
-            List<IAttackFacade> commands = Collect<IAttackFacade>(receivers);
-            List<Vector3> offsets = new List<Vector3>(commands.Count);
-            if (commands.Count == 0) return offsets;
+            List<Vector3> offsets = new List<Vector3>();
+            List<int> shipIndices = new List<int>();
+            List<Vector3> shipPositions = new List<Vector3>();
             Vector3 center = Vector3.zero;
             float maximumRadius = 0f;
-            for (int i = 0; i < commands.Count; i++)
+            foreach (IEntity receiver in receivers)
             {
-                center += commands[i].WorldPosition;
-                maximumRadius = Mathf.Max(maximumRadius, commands[i].NavigationRadius);
+                if (!IsAlive(receiver) || !receiver.TryGetFacade(out IAttackFacade command)) continue;
+                if (receiver.TryGetFacade(out IHardPointAttackFacade _))
+                {
+                    shipIndices.Add(offsets.Count);
+                    shipPositions.Add(command.WorldPosition);
+                    center += command.WorldPosition;
+                    maximumRadius = Mathf.Max(maximumRadius, command.NavigationRadius);
+                }
+
+                offsets.Add(Vector3.zero);
             }
-            center /= commands.Count;
+
+            if (shipIndices.Count == 0) return offsets;
+            center /= shipIndices.Count;
             Vector3 point = target.GetFacade<IEntityTransformFacade>().Transform.position;
             float heading = Mathf.Atan2(center.z - point.z, center.x - point.x);
-            // One ring retains distinct bearings when combat closes to firing range. Concentric rings do not.
-            // Offsets are hull-relative: the attack state adds live target contact clearance.
-            float radius = commands.Count <= 2 ? maximumRadius * 2f :
-                Mathf.Max(maximumRadius * 2f, maximumRadius / Mathf.Sin(Mathf.PI / commands.Count));
-            for (int i = 0; i < commands.Count; i++)
+            float[] sides = new float[shipIndices.Count];
+            int[] order = new int[shipIndices.Count];
+            for (int i = 0; i < sides.Length; i++)
             {
-                float angle = heading - Mathf.PI * 2f * i / commands.Count;
-                offsets.Add(new Vector3(Mathf.Cos(angle) * radius, 0f, Mathf.Sin(angle) * radius));
+                order[i] = i;
+                sides[i] = Mathf.DeltaAngle(heading * Mathf.Rad2Deg,
+                    Mathf.Atan2(shipPositions[i].z - point.z, shipPositions[i].x - point.x) * Mathf.Rad2Deg);
             }
+
+            // Slots follow the ships' current order around the target, so assignments do not cross.
+            Array.Sort(order, (first, second) => sides[first].CompareTo(sides[second]));
+            float halfArc = ATTACK_ARC_HALF_DEGREES * Mathf.Deg2Rad;
+            for (int slot = 0; slot < order.Length; slot++)
+            {
+                float fraction = order.Length == 1 ? 0f : slot / (float)(order.Length - 1) * 2f - 1f;
+                float angle = heading + fraction * halfArc;
+                offsets[shipIndices[order[slot]]] = new Vector3(Mathf.Cos(angle) * maximumRadius, 0f,
+                    Mathf.Sin(angle) * maximumRadius);
+            }
+
             return offsets;
         }
 

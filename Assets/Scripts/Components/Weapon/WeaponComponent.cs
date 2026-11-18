@@ -407,6 +407,11 @@ namespace EmpireAtWar.Components.Weapon
                 contactDistance * CONTACT_ENGAGE_FACTOR);
         }
 
+        public bool IsWithinReach(float distance, float contactDistance, ShipClass targetClass)
+        {
+            return distance <= Mathf.Max(GetEngagementRange(targetClass), contactDistance * CONTACT_ENGAGE_FACTOR);
+        }
+
         public bool TryGetHardPointApproach(AttackData target, out Vector3 offset)
         {
             offset = Vector3.zero;

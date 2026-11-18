@@ -73,6 +73,7 @@ namespace EmpireAtWar.Tests.Editor
             public bool HasTarget(IHealthFacade healthFacade) => false;
 
             public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass) => true;
+            public bool IsWithinReach(float distance, float contactDistance, ShipClass targetClass) => true;
             public bool CanUseSiegeApproach(IEntity target) => false;
             public bool TryGetHardPointApproach(AttackData target, out Vector3 offset) =>
                 throw new System.NotSupportedException();

@@ -1,6 +1,6 @@
 ---
 category: Bugs
-status: todo
+status: in-progress
 created: 2026-11-18
 ---
 # Attack Order: Hold When in Range, No Run-Away
@@ -65,6 +65,13 @@ created: 2026-11-18
 5. [ ] **Artillery**: `TryUpdateArtilleryMove` holds while any main battery reaches; retreat only at hull contact; approach along `fromTarget`.
 6. [ ] Telemetry (Editor/dev): per Attack sample log slot direction, hold/resume thresholds and the reason for each move.
 - Open question for the user: should artillery ships hold at launcher range when their guns cannot reach?
+
+## Progress (2026-11-18, source-verified; compiles; tests not run — local override)
+- [x] Steps 1–5 implemented. Step 6 (telemetry) only partly: `ShipOrderRunner` records a `refresh` entry; per-sample hold/resume reasons not added.
+- Deviations: ring spacing is an even spread over ±60° (slots sorted by current bearing), not neighbour-radius spacing; offset magnitude is only the max ship radius (direction is all the state uses). Artillery keeps the formation side for a fresh approach, `fromTarget` once held/retreating; `HasMainBatteryCover` no longer read by `AttackTargetState`.
+- Hold: new `IWeaponComponent.IsWithinReach` (100%) + `ShipEngagement.IsInReach`; `AttackTargetState.ShouldHold` = pursuing ? 80% : 100%. Formation path merged into the standoff path; `MovementTargetPosition` and `_isClosingRange` removed.
+- Same-target re-issue: `ShipOrderRunner.TryRefreshAttackSlot` + `UnitOrderModel.UpdateOffset`; `SetData` resets only on target/hardpoint change.
+- Tests edited (not run): `ShipPursuitTests` (artillery ring/retreat, 2 new hold tests), fakes in `ShipStopTests`, `SquadronTargetSelectorTests`.
 
 ## Agent handoff
 - Implement steps 1–5 in order; do not change `ENGAGE_RANGE_FACTOR` users outside `AttackTargetState`/`ShipEngagement` without noting it.

@@ -438,6 +438,7 @@ namespace EmpireAtWar.Tests.Editor
             public void AddTarget(AttackData attackData, AttackType attackType) => throw new NotSupportedException();
             public bool HasTarget(IHealthFacade healthFacade) => throw new NotSupportedException();
             public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass) => throw new NotSupportedException();
+            public bool IsWithinReach(float distance, float contactDistance, ShipClass targetClass) => throw new NotSupportedException();
             public bool CanUseSiegeApproach(IEntity target) => throw new NotSupportedException();
             public bool TryGetHardPointApproach(AttackData target, out Vector3 offset) =>
                 throw new NotSupportedException();

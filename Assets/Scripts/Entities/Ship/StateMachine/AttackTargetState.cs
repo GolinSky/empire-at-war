@@ -19,14 +19,11 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 {
     public class AttackTargetState: IBaseState
     {
-        // A moving ship only halts early when the target closes inside this fraction.
-        private const float MINIMUM_RANGE_FACTOR = 0.5f;
         private const float STALL_RETRY_INTERVAL = 0.5f;
         private const float HARD_POINT_SCAN_INTERVAL = 0.1f;
         private const float STALL_BEARING_STEP_DEGREES = 20f;
         private const float ARTILLERY_APPROACH_FACTOR = 0.9f;
         private const float ARTILLERY_HOLD_FACTOR = 0.95f;
-        private const float ARTILLERY_RETREAT_FACTOR = 0.8f;
         private const int ARTILLERY_STALL_RETRIES = 6;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -44,6 +41,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private AttackData _attackData;
 
         private Transform _mainTargetTransform;
+        private int _focusedHardPointId = UnitOrderModel.NO_HARD_POINT;
 
         private Vector3 _formationOffset;
         private Vector3 _pursuitDestination;
@@ -55,12 +53,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         private bool _hasPursuitDestination;
         private bool _wasMoving;
-        private bool _isClosingRange;
         private bool _hasHeldPosition;
         private int _artilleryRevision = -1;
         private ShipClass _artilleryTargetClass;
         private float _artilleryReach;
-        private bool _artilleryHasMainCover;
         private bool _usesArtillery;
         private bool _isArtilleryRetreat;
         private Vector3 _artilleryPlanTargetPosition;
@@ -68,13 +64,16 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private Vector3 TargetPosition => _mainTargetTransform.position;
         // The distance depends on what is being attacked: heavy guns hold back from capitals, lasers close on corvettes.
         private float EngagementRange => _weaponComponent.GetEngagementRange(_mainTarget.ShipClass);
-        private Vector3 MovementTargetPosition => TargetPosition + _formationOffset +
-            _formationOffset.normalized * ShipEngagement.ContactDistance(_shipMoveComponent, _mainTargetEntity);
         private Vector3 StandoffPosition => ShipEngagement.GetStandoffPosition(
             _shipMoveComponent, _weaponComponent, _mainTargetEntity,
             _hasHeldPosition ? Vector3.zero : _formationOffset);
         private bool IsInRange => ShipEngagement.IsInRange(_shipMoveComponent, _weaponComponent,
             _mainTargetEntity, TargetPosition);
+        private bool IsInReach => ShipEngagement.IsInReach(_shipMoveComponent, _weaponComponent,
+            _mainTargetEntity, TargetPosition);
+        // Hysteresis: a ship that is not mid-pursuit holds anywhere its guns reach; a pursuing ship stops
+        // at the nearer pursuit distance so a receding target does not cause stop/start at the edge.
+        private bool ShouldHold => _hasPursuitDestination && _shipMoveComponent.IsMoving ? IsInRange : IsInReach;
         private float PursuitDestinationUpdateDistance => Mathf.Max(
             _shipMoveComponent.NavigationRadius,
             EngagementRange * 0.1f);
@@ -100,7 +99,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 throw new ArgumentNullException(nameof(mainTarget));
             }
 
-            bool targetChanged = !IsTheSameTarget(mainTarget, formationOffset);
+            bool targetChanged = !IsTheSameTarget(mainTarget) ||
+                                 _focusedHardPointId != hardPointId;
+            _focusedHardPointId = hardPointId;
             _mainTargetEntity = mainTarget;
             _mainTarget = _mainTargetEntity.HealthModel;
             _mainTargetTransform = _mainTargetEntity.GetFacade<IEntityTransformFacade>().Transform;
@@ -185,30 +186,10 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private void ResetPursuit()
         {
             _hasPursuitDestination = false;
-            _isClosingRange = false;
             _hasHeldPosition = false;
             _stallAttempt = 0;
             _wasMoving = false;
             _hasHardPointApproach = false;
-        }
-
-        private void UpdateFormationMove()
-        {
-            if (IsInRange && (!_isClosingRange || !_shipMoveComponent.IsMoving))
-            {
-                HoldAndLookAtTarget();
-                _isClosingRange = true;
-                _hasHeldPosition = true;
-                _hasPursuitDestination = false;
-                return;
-            }
-
-            if (_hasPursuitDestination && _shipMoveComponent.IsMoving) return;
-
-            // After a formation leg, close any remaining gap from its actual endpoint.
-            if (_hasPursuitDestination) _isClosingRange = true;
-            Vector3 destination = _isClosingRange ? StandoffPosition : MovementTargetPosition;
-            MoveToPursuitDestination(destination, preserveCourse: true);
         }
 
         private void UpdateMoveState(float deltaTime = 0f)
@@ -223,31 +204,17 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             if (_artilleryCapability != null && TryUpdateArtilleryMove(deltaTime)) return;
             if (RetryStalledMove(deltaTime)) return;
 
-            if (_formationOffset.sqrMagnitude > Mathf.Epsilon)
-            {
-                UpdateFormationMove();
-                return;
-            }
-
-            // Hysteresis: a stopped ship resumes only once the target leaves engage range,
-            // and a pursuing ship brakes into a standoff point inside it.
+            // A ship holds while its guns reach the target and resumes only once it leaves that reach.
             if (_wasMoving && !_shipMoveComponent.IsMoving)
             {
                 _hasPursuitDestination = false;
             }
 
             _wasMoving = _shipMoveComponent.IsMoving;
-            float range = _shipMoveComponent.GetRange(TargetPosition);
-            if (!_shipMoveComponent.IsMoving && IsInRange)
+            if (ShouldHold)
             {
                 HoldAndLookAtTarget();
-                _hasPursuitDestination = false;
-                return;
-            }
-
-            if (_shipMoveComponent.IsMoving && range <= EngagementRange * MINIMUM_RANGE_FACTOR)
-            {
-                HoldAndLookAtTarget();
+                _hasHeldPosition = true;
                 _hasPursuitDestination = false;
                 return;
             }
@@ -330,7 +297,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 _artilleryRevision = revision;
                 _artilleryTargetClass = targetClass;
                 _artilleryReach = _artilleryCapability.GetArtilleryRange(targetClass);
-                _artilleryHasMainCover = _artilleryCapability.HasMainBatteryCover(targetClass);
             }
 
             Vector3 targetPosition = TargetPosition;
@@ -350,11 +316,8 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
             float distanceSquared = PlanarGeometry.DistanceSquared(_shipMoveComponent.CurrentPosition, targetPosition);
             float holdDistance = Mathf.Max(_artilleryReach * ARTILLERY_HOLD_FACTOR, Mathf.Min(_artilleryReach, contact + 1f));
-            // Backing off turns the stern to the target. Main batteries that already reach it only back off
-            // when the hulls touch.
-            float retreatDistance = _artilleryHasMainCover
-                ? contact + 1f
-                : Mathf.Max(_artilleryReach * ARTILLERY_RETREAT_FACTOR, contact);
+            // Backing off turns the stern to the target, so it only happens when the hulls touch.
+            float retreatDistance = contact + 1f;
             bool retreat = distanceSquared < retreatDistance * retreatDistance;
             bool hold = !retreat && distanceSquared <= holdDistance * holdDistance;
             bool moving = _shipMoveComponent.IsMoving;
@@ -412,7 +375,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                 return false;
             }
 
-            if (_shipMoveComponent.IsMoving || IsInRange) return false;
+            if (_shipMoveComponent.IsMoving || IsInReach) return false;
 
             _stallRetryTimer -= deltaTime;
             if (_stallRetryTimer > 0f) return true;
@@ -421,7 +384,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                           (_stallAttempt % 2 == 0 ? 1f : -1f);
             Vector3 offset = Quaternion.AngleAxis(angle, Vector3.up) * (StandoffPosition - TargetPosition);
             _stallAttempt++;
-            _isClosingRange = true;
             MoveToPursuitDestination(TargetPosition + offset, preserveCourse: false);
             return true;
         }

@@ -426,11 +426,51 @@ namespace EmpireAtWar.Tests.Movement
             for (int i = 0; i < 10; i++) state.Tick(0.1f);
             Assert.That(_movement.MoveCount, Is.EqualTo(1));
 
+            // Closing inside the launcher band never backs the ship off; only hull contact does.
             _target.Transform.position += bearing * 40f;
+            state.Tick(0.1f);
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
+
+            _target.Transform.position -= bearing * 100f;
             state.Tick(0.1f);
 
             Assert.That(_movement.MoveCount, Is.EqualTo(2));
             Assert.That(_movement.Destination, Is.EqualTo(_target.Transform.position + bearing * 180f));
+        }
+
+        [Test]
+        public void Attack_HoldsAnywhereInReachAndResumesOnlyBeyondIt()
+        {
+            _target.Transform.position = Vector3.right * 95f;
+            Assert.That(ShipEngagement.IsInRange(_movement, _weapon, _target, _target.Transform.position), Is.False,
+                "95 m is outside the 80 m pursuit stop distance but inside the 100 m reach.");
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            state.SetData(_target);
+
+            state.Tick(0.1f);
+
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+            Assert.That(_movement.MoveCount, Is.Zero);
+
+            _target.Transform.position = Vector3.right * 150f;
+            state.Tick(0.1f);
+
+            Assert.That(_movement.MoveCount, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Attack_SameTargetNewSlotKeepsHold()
+        {
+            _target.Transform.position = Vector3.right * 95f;
+            AttackTargetState state = new AttackTargetState(null, _weapon, _movement);
+            state.SetData(_target, Vector3.forward * 20f, UnitOrderModel.NO_HARD_POINT);
+            state.Tick(0.1f);
+
+            state.SetData(_target, Vector3.back * 20f, UnitOrderModel.NO_HARD_POINT);
+            state.Tick(0.1f);
+
+            Assert.That(_movement.MoveCount, Is.Zero);
+            Assert.That(_movement.HeldTarget, Is.SameAs(_target));
         }
 
         [Test]
@@ -460,6 +500,8 @@ namespace EmpireAtWar.Tests.Movement
             ArtilleryCapability artillery = new ArtilleryCapability(200f);
             AttackTargetState state = new AttackTargetState(null, _weapon, _movement, artillery);
             _target.Transform.position = Vector3.right * 100f;
+            // Hull contact (5 + 150 + 1) is the only retreat trigger.
+            _target.HullRadius = 150f;
             _movement.FailMoves = true;
             state.SetData(_target);
             state.Tick(0.1f);
@@ -1171,6 +1213,8 @@ namespace EmpireAtWar.Tests.Movement
             public float GetEngagementRange(ShipClass targetClass) => 100f;
             public bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass) =>
                 distance <= Mathf.Max(80f, contactDistance * 1.15f);
+            public bool IsWithinReach(float distance, float contactDistance, ShipClass targetClass) =>
+                distance <= Mathf.Max(100f, contactDistance * 1.15f);
             public bool CanUseSiegeApproach(IEntity target) => UseSiegeApproach;
             public bool TryGetHardPointApproach(AttackData target, out Vector3 offset)
             {

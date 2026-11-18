@@ -25,6 +25,9 @@ namespace EmpireAtWar.Components.Weapon
 
         bool HasEnoughRange(float distance, float contactDistance, ShipClass targetClass);
 
+        /// <summary>True while the guns reach the target at full engagement range, not just the pursuit stop distance.</summary>
+        bool IsWithinReach(float distance, float contactDistance, ShipClass targetClass);
+
         /// <summary>Offset to bring a target hardpoint into a live mount's range, or zero if already in reach.</summary>
         bool TryGetHardPointApproach(AttackData target, out Vector3 offset);
 

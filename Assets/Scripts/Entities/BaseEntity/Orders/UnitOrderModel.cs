@@ -40,6 +40,9 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             WaypointIndex = 0;
         }
 
+        /// <summary>Changes the formation slot of the current order without making it a new order.</summary>
+        public void UpdateOffset(FormationPoint offset) => Offset = offset;
+
         public void Clear() => Replace(UnitOrderType.None);
 
         public bool Matches(UnitOrderType type, FormationPoint destination = default,

@@ -158,6 +158,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint offset = ToPoint(formationOffset);
             if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Attack, target: target, offset: offset)) return;
+            if (TryRefreshAttackSlot(target, offset, UnitOrderModel.NO_HARD_POINT)) return;
             Issue(UnitOrderType.Attack, target: target, offset: offset);
         }
 
@@ -167,7 +168,21 @@ namespace EmpireAtWar.Entities.Ship.Orders
             FormationPoint offset = ToPoint(formationOffset);
             if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Attack, target: target, offset: offset,
                     targetHardPointId: hardPointId)) return;
+            if (TryRefreshAttackSlot(target, offset, hardPointId)) return;
             Issue(UnitOrderType.Attack, target: target, offset: offset, targetHardPointId: hardPointId);
+        }
+
+        // The same target ordered again only picks a new side: the ship keeps its hold and its current leg.
+        private bool TryRefreshAttackSlot(IEntity target, FormationPoint offset, int hardPointId)
+        {
+            if (_pendingAbilityTarget != null ||
+                !_orders.Matches(UnitOrderType.Attack, target: target, offset: _orders.Offset,
+                    targetHardPointId: hardPointId) ||
+                target.HealthModel.IsDestroyed) return false;
+            _orders.UpdateOffset(offset);
+            _attackTargetState.SetData(target, ToVector(offset), hardPointId);
+            RecordOrder("refresh", $"Attack on {target.Id} kept; slot updated.");
+            return true;
         }
 
         public void AttackMoveTo(Vector3 destination, AttackMoveEngagement engagement)

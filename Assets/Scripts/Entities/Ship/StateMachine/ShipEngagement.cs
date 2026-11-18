@@ -32,6 +32,17 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             return weapon.HasEnoughRange(distance, ContactDistance(movement, target), target.HealthModel.ShipClass);
         }
 
+        /// <summary>Full-reach test: an ordered ship holds while this is true and resumes only when it fails.</summary>
+        public static bool IsInReach(IShipMovement movement, IWeaponComponent weapon, IEntity target,
+            Vector3 targetPosition)
+        {
+            float distance = movement.GetRange(targetPosition);
+            if (UsesCloseSiegeApproach(movement, weapon, target))
+                return distance <= SiegeStandoffDistance(movement, target, targetPosition) + SIEGE_CLEARANCE_MARGIN;
+
+            return weapon.IsWithinReach(distance, ContactDistance(movement, target), target.HealthModel.ShipClass);
+        }
+
         /// <summary>An enemy the ship's loadout is built for; AI target searches take these before the others.</summary>
         public static bool IsPreferred(IEntity enemy, IWeaponComponent weapon) =>
             weapon.PreferredTarget.Prefers(enemy.HealthModel.ShipClass);
