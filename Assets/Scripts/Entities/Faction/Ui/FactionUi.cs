@@ -170,9 +170,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
             _stationLevels = stationLevels;
         }
 
-        public void BuyUnit(UnitRequest unitRequest)
+        public bool BuyUnit(UnitRequest unitRequest)
         {
-            _presenter.TryPurchaseUnit(unitRequest);
+            return _presenter.TryPurchaseUnit(unitRequest);
         }
 
         public void RefreshAvailability(float credits, bool battleEnded)

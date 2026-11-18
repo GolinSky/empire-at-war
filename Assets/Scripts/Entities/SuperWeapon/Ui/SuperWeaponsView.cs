@@ -77,6 +77,12 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
                 if (button.WeaponType == type) button.Render(state, canAct, detail, progress);
         }
 
+        public void BlinkRejected(SuperWeaponType type)
+        {
+            foreach (SuperWeaponButton button in buttons)
+                if (button.WeaponType == type) button.BlinkRejected();
+        }
+
         public void SetPending(SuperWeaponType? type)
         {
             targetingIndicator.SetActive(type.HasValue);

@@ -22,6 +22,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
 
         void SetRow(SuperWeaponType type, SuperWeaponState state, bool canAct, string detail, float progress);
 
+        void BlinkRejected(SuperWeaponType type);
+
         void SetPending(SuperWeaponType? type);
 
         void SetOpen(bool open);

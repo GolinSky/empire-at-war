@@ -87,7 +87,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         private void HandleClick()
         {
-            _factionView.BuyUnit(_unitRequest);
+            if (!_factionView.BuyUnit(_unitRequest)) UiRejectBlink.Play(cardBackground);
         }
 
         public void SetActive(bool isActive)

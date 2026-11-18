@@ -6,7 +6,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
 {
     public interface IFactionPresenter
     {
-        void TryPurchaseUnit(UnitRequest unitRequest);
+        /// <summary>Submits the purchase; false when it was rejected (the presenter already played the refusal).</summary>
+        bool TryPurchaseUnit(UnitRequest unitRequest);
 
         bool IsUnitAvailable(FactionData data);
         /// <summary>Unlocked by the current station level, for the tutorial's new-units mark.</summary>

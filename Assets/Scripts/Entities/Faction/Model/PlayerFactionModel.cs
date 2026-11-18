@@ -20,6 +20,7 @@ namespace EmpireAtWar.Models.Factions
         bool IsSecondStationSelected { get; }
         bool IsHeroReserved(UnitTypeId unitType);
         bool IsUnitLimitReached(UnitRequest unitRequest);
+        bool CanQueueUnit(UnitRequest unitRequest);
         FactionType FactionType { get; }
 
         FactionData GetCurrentLevelFactionData();

@@ -371,6 +371,7 @@ namespace EmpireAtWar.Tests.Editor
             public void Dispose() { }
             public void SetReady(SuperWeaponType type, bool ready) { }
             public void SetRow(SuperWeaponType type, SuperWeaponState state, bool canAct, string detail, float progress) { }
+            public void BlinkRejected(SuperWeaponType type) { }
             public void SetPending(SuperWeaponType? type) { }
             public void SetOpen(bool open) { }
             public bool ContainsScreenPoint(Vector2 position) => throw new NotSupportedException();

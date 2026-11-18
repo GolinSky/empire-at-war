@@ -129,16 +129,24 @@ namespace EmpireAtWar.Entities.Faction.Ui
             }
         }
 
-        public void TryPurchaseUnit(UnitRequest unitRequest)
+        public bool TryPurchaseUnit(UnitRequest unitRequest)
         {
             if (_economy.Money < unitRequest.FactionData.Price)
             {
                 _interfaceAudio.PlayRejected();
                 _notifications.Post(BattleNotificationPriority.Feedback,
                     "Insufficient credits", "credits");
-                return;
+                return false;
+            }
+            if (!_model.CanQueueUnit(unitRequest))
+            {
+                _interfaceAudio.PlayRejected();
+                _notifications.Post(BattleNotificationPriority.Feedback,
+                    "Production queue full", "queue-full");
+                return false;
             }
             _commands.Submit(PurchaseUnitCommand.From(_owner.Id, unitRequest));
+            return true;
         }
 
         // Units unlock by the higher of the two station levels; the queue, research and limits are shared.

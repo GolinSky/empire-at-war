@@ -252,7 +252,12 @@ namespace EmpireAtWar.Entities.SuperWeapons.Controller
             if (_isBattleEnded || !_isOpen || !_model.CanPurchase(type)) return;
             if (_purchases.TryGetValue(type, out SuperWeaponUnitRequest request) &&
                 GetPurchaseBlocker(request) == null && _economy.Money >= request.FactionData.Price)
+            {
                 _commands.Submit(PurchaseUnitCommand.From(_localPlayer.Id, request));
+                return;
+            }
+            _interfaceAudio.PlayRejected();
+            _view.BlinkRejected(type);
         }
 
         private void HandleTargetSubmitted(SuperWeaponType type, IEntity target)

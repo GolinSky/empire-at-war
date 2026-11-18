@@ -348,7 +348,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public bool Unlocked { get; set; }
             public bool HeroReserved { get; set; }
-            public void TryPurchaseUnit(UnitRequest unitRequest) { }
+            public bool TryPurchaseUnit(UnitRequest unitRequest) => true;
             public bool IsUnitAvailable(FactionData data) => Unlocked;
             public bool IsUnlockedAtCurrentLevel(FactionData data) => false;
             public bool IsCarrier(UnitRequest request) => false;
@@ -374,7 +374,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public UnlockedPresenter(FactionUiController stationPresenter) => _stationPresenter = stationPresenter;
 
-            public void TryPurchaseUnit(UnitRequest unitRequest) { }
+            public bool TryPurchaseUnit(UnitRequest unitRequest) => true;
             public bool IsUnitAvailable(FactionData data) => true;
             public bool IsUnlockedAtCurrentLevel(FactionData data) => false;
             public bool IsCarrier(UnitRequest request) => false;

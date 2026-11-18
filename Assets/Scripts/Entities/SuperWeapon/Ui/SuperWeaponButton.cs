@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Components.Ui;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -50,7 +51,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
             bool ready = state == SuperWeaponState.Ready && canAct;
             bool showPurchase = state == SuperWeaponState.Unavailable;
             button.gameObject.SetActive(showPurchase);
-            button.interactable = showPurchase && canAct;
+            // Blocked purchases stay clickable so the presenter can refuse them audibly and visibly.
+            button.interactable = showPurchase;
             rowButton.interactable = !showPurchase && canAct;
             contentGroup.alpha = 1f;
             pendingHighlight.SetActive(_pending);
@@ -68,6 +70,8 @@ namespace EmpireAtWar.Entities.SuperWeapons.Ui
             _pending = pending;
             pendingHighlight.SetActive(pending);
         }
+
+        public void BlinkRejected() => UiRejectBlink.Play(background);
 
         private void HandleClick() => Pressed?.Invoke(weaponType);
 
