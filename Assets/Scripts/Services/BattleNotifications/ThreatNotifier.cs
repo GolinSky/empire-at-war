@@ -10,6 +10,7 @@ using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Player;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.BattleNotifications
@@ -29,13 +30,15 @@ namespace EmpireAtWar.Services.BattleNotifications
         private readonly ILocalPlayer _local;
         private readonly FactionCatalog _factions;
         private readonly StationLevelData _stationLevels;
+        private readonly PlayerDisplayNames _names;
         private readonly Dictionary<IEntity, Subscription> _subscriptions = new Dictionary<IEntity, Subscription>();
         private readonly HashSet<IEntity> _visibleEnemies = new HashSet<IEntity>();
         private float _fleetQuietSince = float.NegativeInfinity;
 
         public ThreatNotifier(IBattleNotifications notifications, IEntityLocator entities, ILocalPlayer local,
-            FactionCatalog factions, StationLevelData stationLevels)
+            FactionCatalog factions, StationLevelData stationLevels, PlayerDisplayNames names)
         {
+            _names = names;
             _notifications = notifications;
             _entities = entities;
             _local = local;
@@ -69,11 +72,13 @@ namespace EmpireAtWar.Services.BattleNotifications
             var subscription = new Subscription();
             if (isOwn && (isStation || isMine)) WatchStructure(entity, subscription, isStation);
             if (isOwn && isUnit) WatchLoss(entity, subscription, unit.UnitTypeId);
-            if (isHostile && isStation)
+            if (!isOwn && isStation)
             {
                 subscription.Level = level;
+                string ownerName = _names.Get(entity.Owner);
                 subscription.LevelChanged = newLevel =>
-                    _notifications.Post(BattleNotificationPriority.Tactical, $"Enemy station reached level {newLevel}",
+                    _notifications.Post(BattleNotificationPriority.Tactical,
+                        $"{ownerName} station reached level {newLevel}",
                         iconKey: _stationLevels.GetLevelFactionData(newLevel - 1).IconKey);
                 level.LevelUpgraded += subscription.LevelChanged;
             }

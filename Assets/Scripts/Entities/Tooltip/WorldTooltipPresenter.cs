@@ -10,6 +10,7 @@ using EmpireAtWar.Components.Obstacles;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Camera;
 using EmpireAtWar.Services.Input;
+using EmpireAtWar.Services.Player;
 using EmpireAtWar.Services.Tooltip;
 using UnityEngine;
 using EmpireAtWar.Services.Vision;
@@ -26,6 +27,7 @@ namespace EmpireAtWar.Entities.Tooltip
         private readonly ILocalPlayer _local;
         private readonly IReadOnlyList<IWorldTooltipSource> _sources;
         private readonly ICameraService _cameraService;
+        private readonly PlayerDisplayNames _names;
 
         private readonly HardPointOverlayData _hardPointData;
         private readonly INotifier<BattleMap> _battleMap;
@@ -38,8 +40,9 @@ namespace EmpireAtWar.Entities.Tooltip
         public WorldTooltipPresenter(IHoveredEntityObserver hover, IPointerInput pointerInput,
             ITooltipService tooltipService, IVisionService visionService, ILocalPlayer local,
             IReadOnlyList<IWorldTooltipSource> sources, ICameraService cameraService, HardPointOverlayData hardPointData,
-            INotifier<BattleMap> battleMap)
+            INotifier<BattleMap> battleMap, PlayerDisplayNames names)
         {
+            _names = names;
             _hover = hover; _pointerInput = pointerInput; _tooltipService = tooltipService;
             _visionService = visionService; _local = local;
             _hardPointData = hardPointData; _sources = sources; _cameraService = cameraService;
@@ -74,7 +77,7 @@ namespace EmpireAtWar.Entities.Tooltip
             {
                 _handle = _tooltipService.Show(new TooltipContentProvider(this, entity.Id,
                     () => _hover.TryGetHovered(out IEntity current) && current.Id == entity.Id,
-                    () => EntityTooltipContent.Build(entity)), anchor);
+                    () => EntityTooltipContent.Build(entity, _names.Get(entity.Owner))), anchor);
             }
             else
             {

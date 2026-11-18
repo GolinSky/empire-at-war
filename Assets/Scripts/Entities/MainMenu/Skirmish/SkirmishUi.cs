@@ -309,12 +309,13 @@ namespace EmpireAtWar.Entities.MainMenu.Skirmish
             if (slot.IsHuman)
             {
                 string name = _model.IsOnline ? slot.PlayerName : HUMAN_OCCUPANT_LABEL;
-                string title = !_model.IsOnline ? "COMMANDER"
-                    : $"{slot.PlayerName.ToUpperInvariant()}   /   {(slot.Ready ? "READY" : "NOT READY")}";
+                string title = !_model.IsOnline ? "COMMANDER" : slot.Ready ? "READY" : "NOT READY";
+                // Online the name sits under the avatar; offline the role label keeps YOU.
+                string role = _model.IsOnline ? slot.PlayerName : "YOU";
                 string[] options = occupantEditable ? new[] { name, KICK_OPTION_LABEL } : new[] { name };
                 Texture2D avatar = null;
                 if (_model.IsOnline && slot.SteamId != 0UL) _avatars.TryGetAvatar(slot.SteamId, out avatar);
-                return new SkirmishSlotRowState(title, _model.IsLocalSlot(slotIndex) ? "YOU" : "HUMAN", options, 0,
+                return new SkirmishSlotRowState(title, role, options, 0,
                     occupantEditable, detailsEditable, teamEditable, avatar);
             }
 

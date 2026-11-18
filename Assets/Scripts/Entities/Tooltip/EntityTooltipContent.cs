@@ -8,7 +8,7 @@ namespace EmpireAtWar.Entities.Tooltip
 {
     public static class EntityTooltipContent
     {
-        public static TooltipContent Build(IEntity entity)
+        public static TooltipContent Build(IEntity entity, string ownerName)
         {
             IHealthModelObserver health = entity.HealthModel;
             var stats = new List<TooltipStat>();
@@ -19,7 +19,7 @@ namespace EmpireAtWar.Entities.Tooltip
             }
             string order = entity.TryGetFacade(out IUnitOrderObserverFacade orders)
                 ? $" · Order: {orders.CurrentOrder}" : "";
-            string status = $"Owner: {entity.Owner} · {health.ShipClass}{order}";
+            string status = $"Owner: {ownerName} · {health.ShipClass}{order}";
             if (entity.TryGetFacade(out ICombatModifiersFacade combat))
             {
                 var modifiers = combat.Modifiers;

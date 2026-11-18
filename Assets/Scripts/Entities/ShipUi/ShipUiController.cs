@@ -28,6 +28,9 @@ namespace EmpireAtWar.Entities.ShipUi
     public class ShipUiController : UiController, IShipUiPresenter, IInitializable,
         ILateDisposable, ISkirmishUiRoute, EmpireAtWar.IObserver<ISelectionSubject>, IAutoPowerToggleObserver
     {
+        // The ship UI only lists the local player's own selection.
+        private const string OWN_OWNER_LABEL = "You";
+
         public event System.Action AutoPowerToggled;
 
         private readonly ISelectionService _selectionService;
@@ -393,7 +396,7 @@ namespace EmpireAtWar.Entities.ShipUi
             if (key is IReadOnlyList<ShipAbilitySlot> slots)
                 return ShipAbilityTooltipContent.Build(slots, _bindings, _tooltipIcons);
             if (key is ShipUiEntry entry)
-                return EntityTooltipContent.Build(entry.Entity);
+                return EntityTooltipContent.Build(entry.Entity, OWN_OWNER_LABEL);
             if (key is ShipType || key is SquadronType)
             {
                 UnitTypeId unitTypeId = key is ShipType shipType
@@ -416,7 +419,7 @@ namespace EmpireAtWar.Entities.ShipUi
                     new TooltipStat(label: "Damaged", current: damaged)
                 }, status: "Click to select this unit type.");
             }
-            return EntityTooltipContent.Build(_playerSelectionContext.Entity);
+            return EntityTooltipContent.Build(_playerSelectionContext.Entity, OWN_OWNER_LABEL);
         }
     }
 }
