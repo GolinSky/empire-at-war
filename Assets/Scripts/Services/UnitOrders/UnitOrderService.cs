@@ -154,6 +154,7 @@ namespace EmpireAtWar.Services.UnitOrders
         {
             if (target == null || !IsAlive(target)) return;
             bool targetsHardPoint = hardPointId != UnitOrderModel.NO_HARD_POINT;
+            GroupPace pace = CreatePace(receivers);
             int movingIndex = 0;
             int issued = 0;
             foreach (IEntity receiver in receivers)
@@ -164,12 +165,12 @@ namespace EmpireAtWar.Services.UnitOrders
                     Vector3 offset = receiver.TryGetFacade(out IAttackFacade _)
                         ? offsets[movingIndex++]
                         : Vector3.zero;
-                    hardPointAttack.AttackHardPoint(target, hardPointId, offset);
+                    hardPointAttack.AttackHardPoint(target, hardPointId, offset, pace);
                     issued++;
                 }
                 else if (receiver.TryGetFacade(out IAttackFacade attack))
                 {
-                    attack.Attack(target, offsets[movingIndex++]);
+                    attack.Attack(target, offsets[movingIndex++], pace);
                     issued++;
                 }
                 else if (receiver.TryGetFacade(out IFocusFireFacade focus))
@@ -182,6 +183,16 @@ namespace EmpireAtWar.Services.UnitOrders
                 target.GetFacade<IEntityTransformFacade>().Transform.position, target,
                 targetHardPointId: hardPointId);
             if (issued > 0) AttackIssued?.Invoke(receivers, target, hardPointId);
+        }
+
+        // Moving ships (attack plus hardpoint targeting) of a group order share one pace so they arrive together.
+        private static GroupPace CreatePace(IReadOnlyList<IEntity> receivers)
+        {
+            int ships = 0;
+            foreach (IEntity receiver in receivers)
+                if (IsAlive(receiver) && receiver.TryGetFacade(out IAttackFacade _) &&
+                    receiver.TryGetFacade(out IHardPointAttackFacade _) && ++ships > 1) return new GroupPace();
+            return null;
         }
 
         public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point)

@@ -88,6 +88,8 @@ namespace EmpireAtWar.Tests.Editor
             public Vector3 CurrentPosition => Vector3.zero;
             public bool IsMoving => false;
             public float NavigationRadius => 1f;
+            public float PaceSpeed => 1f;
+            public void SetSpeedCap(float cap) { }
             public int StopCount { get; private set; }
 
             public void MoveToPosition(Vector3 position, bool preserveCourse = false) { }

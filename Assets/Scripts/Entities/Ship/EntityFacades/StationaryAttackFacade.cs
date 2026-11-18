@@ -2,6 +2,7 @@ using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Weapon;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using UnityEngine;
 
 namespace EmpireAtWar.Entities.Ship.EntityFacades
@@ -21,8 +22,8 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
         public void FocusFire(IEntity target) =>
             _weapon.AddTarget(_attackDataFactory.ConstructData(target), AttackType.MainTarget);
 
-        // Stations cannot move, so the formation offset does not apply.
-        public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset) =>
+        // Stations cannot move, so neither the formation offset nor the group pace applies.
+        public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset, GroupPace pace) =>
             _weapon.AddTarget(_attackDataFactory.ConstructHardPointData(target, hardPointId),
                 AttackType.MainTarget);
 

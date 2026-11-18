@@ -128,6 +128,9 @@ namespace EmpireAtWar.Components.Ship.Movement
             new ShipHullSpan(Model.Height + Model.HullBottom, Model.Height + Model.HullTop);
         public float NavigationRadius => Mathf.Max(Model.NavigationRadius, MINIMUM_NAVIGATION_RADIUS);
         public float NavigationSpeed => Model.Speed;
+        // Arriving, ion-disabled or anchored ships are not moving and must not stop the group.
+        public float PaceSpeed => Model.Phase == MovementPhase.Arriving || _modifiers.IsIonDisabled ||
+            _modifiers.IsAnchored ? float.PositiveInfinity : Model.BaseSpeed;
         public float NavigationCurrentSpeed => _motion.CurrentSpeed;
         public float NavigationRotationSpeed => Model.RotationSpeed;
         public bool IgnoresMapObstacles => Model.IgnoresMapObstacles;
@@ -431,6 +434,14 @@ namespace EmpireAtWar.Components.Ship.Movement
         public void ApplyMoveCoefficient(float coefficient)
         {
             Model.ApplyMoveCoefficient(coefficient);
+            _motion.SetRouteSpeed(Model.Speed);
+        }
+
+        // Like engine damage, a pace change only changes speed; the current route stays valid.
+        public void SetSpeedCap(float cap)
+        {
+            if (Model.SpeedCap == cap) return;
+            Model.SetSpeedCap(cap);
             _motion.SetRouteSpeed(Model.Speed);
         }
 

@@ -308,6 +308,38 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(Vector3.Angle(first.Command.LastPoint, second.Command.LastPoint), Is.LessThan(30f));
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        public void Attack_ShipsShareOnePaceAndSquadronsGetNone(bool hardPoint)
+        {
+            FakeEntity target = Entity(100, TestPlayers.Enemy);
+            FakeEntity first = Entity(1, TestPlayers.Human);
+            FakeEntity second = Entity(2, TestPlayers.Human);
+            FakeEntity squadron = Entity(50, TestPlayers.Human, new[] { typeof(IAttackFacade) });
+            IEntity[] receivers = { first, squadron, second };
+
+            if (hardPoint) _unitOrderService.IssueHardPointAttack(receivers, target, 0);
+            else _unitOrderService.IssueAttack(receivers, target);
+
+            Assert.That(first.Command.LastPace, Is.Not.Null);
+            Assert.That(second.Command.LastPace, Is.SameAs(first.Command.LastPace));
+            Assert.That(squadron.Command.LastPace, Is.Null);
+        }
+
+        [Test]
+        public void Attack_SingleShipOrShipWithSquadronsGetsNoPace()
+        {
+            FakeEntity target = Entity(100, TestPlayers.Enemy);
+            FakeEntity ship = Entity(1, TestPlayers.Human);
+            FakeEntity squadron = Entity(50, TestPlayers.Human, new[] { typeof(IAttackFacade) });
+            FakeEntity station = Entity(60, TestPlayers.Human, new[] { typeof(IHardPointAttackFacade) });
+
+            _unitOrderService.IssueAttack(new IEntity[] { ship, squadron, station }, target);
+
+            Assert.That(ship.Command.LastPace, Is.Null);
+            Assert.That(squadron.Command.LastPace, Is.Null);
+        }
+
         [Test]
         public void Retreat_UsesOwnStationThenDefaultZoneWhenStationDestroyed()
         {
@@ -405,6 +437,7 @@ namespace EmpireAtWar.Tests.Editor
             public UnitActionId LastAction { get; private set; }
             public Vector3 LastPoint { get; private set; }
             public AttackMoveEngagement LastEngagement { get; private set; }
+            public GroupPace LastPace { get; private set; }
             public Vector3 WorldPosition { get; set; }
             public float NavigationRadius { get; set; } = 5f;
 
@@ -412,11 +445,11 @@ namespace EmpireAtWar.Tests.Editor
 
             public void MoveTo(Vector3 point) => Record(UnitActionId.Move, point);
 
-            public void Attack(IEntity target, Vector3 offset) =>
-                Record(UnitActionId.Attack, offset);
+            public void Attack(IEntity target, Vector3 offset, GroupPace pace)
+            { LastPace = pace; Record(UnitActionId.Attack, offset); }
 
-            public void AttackHardPoint(IEntity target, int hardPointId, Vector3 offset) =>
-                Record(UnitActionId.Attack, offset);
+            public void AttackHardPoint(IEntity target, int hardPointId, Vector3 offset, GroupPace pace)
+            { LastPace = pace; Record(UnitActionId.Attack, offset); }
 
             public void FocusFire(IEntity target) => Record(UnitActionId.Attack);
 

@@ -8,6 +8,7 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Mvc;
@@ -468,7 +469,7 @@ namespace EmpireAtWar.Tests.Editor
                     Slots = new[] { new ShipAbilitySlot(this, definition, abilityId) };
             }
 
-            public void Attack(IEntity target, Vector3 formationOffset) { }
+            public void Attack(IEntity target, Vector3 formationOffset, GroupPace pace) { }
         }
 
         private sealed class TestEntity : IEntity

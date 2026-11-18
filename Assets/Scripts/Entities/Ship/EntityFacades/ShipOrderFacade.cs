@@ -43,11 +43,11 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
 
         public void MoveTo(Vector3 worldPosition) => _orders.MoveTo(worldPosition);
 
-        public void Attack(IEntity target, Vector3 formationOffset) =>
-            _orders.Attack(target, formationOffset);
+        public void Attack(IEntity target, Vector3 formationOffset, GroupPace pace) =>
+            _orders.Attack(target, formationOffset, pace);
 
-        public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset) =>
-            _orders.AttackHardPoint(target, hardPointId, formationOffset);
+        public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset, GroupPace pace) =>
+            _orders.AttackHardPoint(target, hardPointId, formationOffset, pace);
 
         public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement) =>
             _orders.AttackMoveTo(worldPosition, engagement);

@@ -19,7 +19,11 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         private float _speedCoefficient = 1f;
 
-        public float Speed => _shipMoveData.Speed * _speedCoefficient * _modifiers.SpeedMultiplier;
+        /// <summary>Own top speed: data, engine damage and combat modifiers, before any group speed cap.</summary>
+        public float BaseSpeed => _shipMoveData.Speed * _speedCoefficient * _modifiers.SpeedMultiplier;
+        public float Speed => Math.Min(BaseSpeed, SpeedCap);
+        /// <summary>Group pace limit; <see cref="float.PositiveInfinity"/> when uncapped.</summary>
+        public float SpeedCap { get; private set; } = float.PositiveInfinity;
         public float Height => _shipMoveData.Height;
         public float HullBottom => _shipMoveData.HullBottom;
         public float HullTop => _shipMoveData.HullTop;
@@ -54,6 +58,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         }
 
         public void ApplyMoveCoefficient(float coefficient) => _speedCoefficient = coefficient;
+
+        public void SetSpeedCap(float cap) => SpeedCap = cap;
 
         public bool IsSameRequest(NumericsVector3 destination) =>
             LastRequest.HasValue && PositionsEqual(LastRequest.Value, destination);

@@ -1321,7 +1321,7 @@ namespace EmpireAtWar.Tests.Editor
             public float NavigationRadius => 0f;
             public UnitOrderType CurrentOrder { get; set; }
             public IEntity AttackTarget { get; private set; }
-            public void Attack(IEntity target, Vector3 formationOffset)
+            public void Attack(IEntity target, Vector3 formationOffset, GroupPace pace)
             {
                 AttackTarget = target;
                 CurrentOrder = UnitOrderType.Attack;

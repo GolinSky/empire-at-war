@@ -371,7 +371,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public void MoveTo(Vector3 point) { }
 
-            public void Attack(IEntity target, Vector3 offset) { }
+            public void Attack(IEntity target, Vector3 offset, GroupPace pace) { }
 
             public void FocusFire(IEntity target) { }
 

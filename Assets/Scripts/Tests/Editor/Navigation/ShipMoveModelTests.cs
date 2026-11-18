@@ -129,6 +129,27 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.TakePending(), Is.EqualTo(pursuit));
         }
 
+        [Test]
+        public void SpeedCap_LimitsSpeedOnlyBelowOwnSpeedAndKeepsEngineDamage()
+        {
+            ShipMoveModel model = new ShipMoveModel(new ShipMoveDataStub(), new CombatModifiers());
+            float own = model.Speed;
+
+            model.SetSpeedCap(own * 0.5f);
+            Assert.That(model.Speed, Is.EqualTo(own * 0.5f));
+            Assert.That(model.BaseSpeed, Is.EqualTo(own), "Pace reports must not see their own cap.");
+
+            model.SetSpeedCap(own * 2f);
+            Assert.That(model.Speed, Is.EqualTo(own));
+
+            model.ApplyMoveCoefficient(0.25f);
+            Assert.That(model.Speed, Is.EqualTo(model.BaseSpeed));
+            Assert.That(model.BaseSpeed, Is.LessThan(own));
+
+            model.SetSpeedCap(float.PositiveInfinity);
+            Assert.That(model.Speed, Is.EqualTo(model.BaseSpeed));
+        }
+
         private sealed class ShipMoveDataStub : IShipMoveData
         {
             public float Speed => 10f;

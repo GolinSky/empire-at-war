@@ -13,6 +13,11 @@ created: "2026-10-29\r"
 
 - [ ] [[Done/Bugs/Ship_Ability_Event_Destroyed_Caster]] — Host a battle; confirm no `Not entity found` in `Player.log`. `Abilities` test added, not run.
 
+## Group Attack Pace
+
+- [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — In battle, select mixed-speed ships → attack: confirm they arrive together and each resumes own speed at firing range.
+- [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — Run `Navigation` and `BattleInput` EditMode categories when authorized; Unity compilation passed.
+
 ## Content Removal
 
 - [ ] [[Done/Refactoring/ISDIII_Thranta_Removal]] — Run `Ships`, `Health`, `Navigation`, `Combat`, `GameFlow`, `Ui`, `Audio` EditMode categories when authorized; source review and Unity compilation passed.

@@ -420,6 +420,8 @@
 
 ### Features
 
+- [x] **Group attack speed matching (ships move at slowest selected ship's speed)** → [[Done/Features/Group_Attack_Speed_Matching_Plan|Group Attack Speed Matching Plan]]
+  - Completed 2026-11-18, `acceptance: pending-user`. `GroupPace` shared per group `Attack`/hard-point attack (ships only, ≥ 2), `ShipMoveModel.SpeedCap`, release at firing range / new order. Unity compile clean; tests not run (local override). Gates → [[TODOs/User_Acceptance_Queue]].
 - [x] **Interdictor Gravity Well follow-up: anchor ship while active (orders rejected, turn + fire allowed), range ring only when selected, dome generator VFX** → [[Done/Features/Interdictor_Gravity_Well_Anchor_And_Vfx_Plan|Gravity Well Anchor & VFX Plan]]
   - Completed 2026-11-17, `acceptance: pending-user`. `CombatModifiers` movement anchor, `ShipMoveComponent` brake/refuse, `ShipOrderRunner` rejects move-type orders (`Retreat` cancels the well), selected-only ring, `GravityWellEmitter` dome VFX on the view prefab. Compile clean; tests not run (local override). Gates → [[TODOs/User_Acceptance_Queue]].
 - [x] **Interdictor ability "Activate Gravity Well" (block hostile reinforcement drop-ins in an adjustable bubble around the ship; default range 900)** → [[Done/Features/Interdictor_Gravity_Well_Plan|Interdictor Gravity Well Plan]]

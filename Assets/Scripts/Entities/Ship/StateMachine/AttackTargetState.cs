@@ -78,6 +78,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _shipMoveComponent.NavigationRadius,
             EngagementRange * 0.1f);
 
+        /// <summary>The ship has held at firing range on the current target since it was set; a group pace no longer applies.</summary>
+        public bool HasReachedRange { get; private set; }
+
         public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits || _mainTargetEntity.IsCloaked();
 
         public AttackTargetState(
@@ -114,6 +117,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 _shipMoveComponent.CancelCombatHold();
                 ResetPursuit();
+                HasReachedRange = false;
             }
         }
 
@@ -181,6 +185,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _weaponComponent.ResetTarget();
             _attackData = null;
             ResetPursuit();
+            HasReachedRange = false;
         }
 
         private void ResetPursuit()
@@ -256,6 +261,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using var scope = _holdLookAtMarker.Auto();
 #endif
+            HasReachedRange = true;
             _shipMoveComponent.HoldPosition(_mainTargetEntity);
             _shipMoveComponent.LookAtTarget(_mainTargetEntity);
         }

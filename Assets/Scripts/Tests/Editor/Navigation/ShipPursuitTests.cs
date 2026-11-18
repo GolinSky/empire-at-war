@@ -151,6 +151,50 @@ namespace EmpireAtWar.Tests.Movement
 
         [TestCase(false)]
         [TestCase(true)]
+        public void Runner_GroupAttackApproachesAtSlowestPaceUntilInRangeOrNewOrder(bool reachRange)
+        {
+            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            var abilityRelations = TestPlayers.CreateDuel();
+            ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
+                abilityRelations, new VisionService(abilityRelations, fogEnabled: false));
+            try
+            {
+                Radar radar = new Radar();
+                AttackTargetState attack = new AttackTargetState(null, _weapon, _movement);
+                ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
+                    new ShipStateMachine(), new IdleState(_movement, _weapon, radar), null, attack, null, null, null,
+                    null, abilities, caster, radar, null);
+                GroupPace pace = new GroupPace();
+                float slower = _movement.PaceSpeed * 0.5f;
+                pace.Join(slower);
+                runner.Start();
+
+                runner.Attack(_target, Vector3.zero, pace);
+                runner.Tick(0.1f);
+
+                Assert.That(_movement.IsMoving, Is.True);
+                Assert.That(_movement.SpeedCap, Is.EqualTo(slower));
+
+                if (reachRange)
+                {
+                    _movement.FinishLeg();
+                    _movement.CurrentPosition = _target.Transform.position + Vector3.left * 50f;
+                    runner.Tick(0.1f);
+                    Assert.That(_movement.HeldTarget, Is.SameAs(_target));
+                }
+                else runner.Stop();
+
+                Assert.That(_movement.SpeedCap, Is.EqualTo(float.PositiveInfinity));
+                Assert.That(pace.Pace, Is.EqualTo(float.PositiveInfinity), "The ship must have left the group.");
+            }
+            finally
+            {
+                abilities.Clear();
+            }
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
         public void Attack_TargetKilled_AttacksNearestPreferredRadarContactEvenOutOfRange(bool formation)
         {
             GameObject deadObject = new GameObject("Dead enemy");
@@ -1210,6 +1254,9 @@ namespace EmpireAtWar.Tests.Movement
             public bool LastPreserveCourse { get; private set; }
             public float NavigationRadius { get; set; } = 5f;
             public int MoveCount { get; private set; }
+            public float PaceSpeed { get; set; } = 10f;
+            public float SpeedCap { get; private set; } = float.PositiveInfinity;
+            public void SetSpeedCap(float cap) => SpeedCap = cap;
             public void MoveToPosition(Vector3 position, bool preserveCourse = false)
             {
                 if (preserveCourse && _isSettling && IsMoving) return;

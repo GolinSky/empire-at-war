@@ -44,6 +44,9 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private IEntity _pendingAbilityTarget;
 
         private UnitOrderType? _replicaOrder;
+        // Host-only and not saved: a loaded attack resumes at the ship's own speed.
+        private GroupPace _pace;
+        private int _paceMember;
 
         // Online clients show the host's order; ships there never run their own (see ApplyReplicaOrder).
         public UnitOrderType CurrentOrder => _replicaOrder ??
@@ -126,6 +129,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             }
             _stateMachine.Tick(deltaTime);
             if (_stateMachine.CurrentState.IsComplete) CompleteOrder();
+            UpdatePace();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             ShipOrderTelemetry.Sample(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
                 _stateMachine.CurrentState.GetType().Name);
@@ -137,6 +141,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
             RecordOrder("release", "Ship released; active order cancelled.");
             IsAbilityFacing = false;
             _pendingAbilityTarget = null;
+            LeavePace();
             _orders.Clear();
             // Leaves the shared attack-move engagement so the group stops counting this ship.
             if (_stateMachine.CurrentState == _attackMoveState) _stateMachine.SetState(_idleState);
@@ -153,23 +158,56 @@ namespace EmpireAtWar.Entities.Ship.Orders
             Issue(UnitOrderType.Move, destination);
         }
 
-        public void Attack(IEntity target, Vector3 formationOffset)
+        public void Attack(IEntity target, Vector3 formationOffset, GroupPace pace = null)
         {
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint offset = ToPoint(formationOffset);
-            if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Attack, target: target, offset: offset)) return;
-            if (TryRefreshAttackSlot(target, offset, UnitOrderModel.NO_HARD_POINT)) return;
-            Issue(UnitOrderType.Attack, target: target, offset: offset);
+            if (!(_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Attack, target: target, offset: offset)) &&
+                !TryRefreshAttackSlot(target, offset, UnitOrderModel.NO_HARD_POINT))
+                Issue(UnitOrderType.Attack, target: target, offset: offset);
+            JoinPace(pace);
         }
 
-        public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset)
+        public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset, GroupPace pace = null)
         {
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint offset = ToPoint(formationOffset);
-            if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Attack, target: target, offset: offset,
-                    targetHardPointId: hardPointId)) return;
-            if (TryRefreshAttackSlot(target, offset, hardPointId)) return;
-            Issue(UnitOrderType.Attack, target: target, offset: offset, targetHardPointId: hardPointId);
+            if (!(_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Attack, target: target, offset: offset,
+                    targetHardPointId: hardPointId)) &&
+                !TryRefreshAttackSlot(target, offset, hardPointId))
+                Issue(UnitOrderType.Attack, target: target, offset: offset, targetHardPointId: hardPointId);
+            JoinPace(pace);
+        }
+
+        // A repeated order joins its new group; the ship leaves the old one first.
+        private void JoinPace(GroupPace pace)
+        {
+            LeavePace();
+            if (pace == null || _orders.Current != UnitOrderType.Attack) return;
+            _pace = pace;
+            _paceMember = pace.Join(_movement.PaceSpeed);
+        }
+
+        private void LeavePace()
+        {
+            if (_pace == null) return;
+            _pace.Leave(_paceMember);
+            _pace = null;
+            _movement.SetSpeedCap(float.PositiveInfinity);
+        }
+
+        // The group approaches at its slowest member's speed; each ship fights at its own speed once in range.
+        private void UpdatePace()
+        {
+            if (_pace == null) return;
+            if (_stateMachine.CurrentState != _attackTargetState || _attackTargetState.HasReachedRange)
+            {
+                LeavePace();
+                return;
+            }
+
+            _pace.Report(_paceMember, _movement.PaceSpeed);
+            _movement.SetSpeedCap(_pace.Pace);
         }
 
         // The same target ordered again only picks a new side: the ship keeps its hold and its current leg.
@@ -268,6 +306,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 RecordOrder("cancel", $"Replaced by {type}.");
             IsAbilityFacing = false;
             _pendingAbilityTarget = null;
+            LeavePace();
             _orders.Replace(type, destination, target, offset, waypoints, targetHardPointId, engagement);
             RecordOrder("issued", "Requested order before state entry.");
             StartOrder();

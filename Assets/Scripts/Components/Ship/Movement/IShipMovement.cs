@@ -9,6 +9,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         Vector3 CurrentPosition { get; }
         bool IsMoving { get; }
         float NavigationRadius { get; }
+        /// <summary>Own uncapped top speed for group pacing; PositiveInfinity while the ship cannot move.</summary>
+        float PaceSpeed { get; }
 
         void MoveToPosition(Vector3 targetPosition, bool preserveCourse = false);
 
@@ -22,5 +24,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         // Combat holds allow budgeted spacing; explicit Stop never does.
         void HoldPosition(IEntity target);
         void CancelCombatHold();
+
+        /// <summary>Limits top speed to a group pace; PositiveInfinity removes the cap.</summary>
+        void SetSpeedCap(float cap);
     }
 }
