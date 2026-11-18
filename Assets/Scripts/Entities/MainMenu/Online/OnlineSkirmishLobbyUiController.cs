@@ -31,21 +31,25 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private readonly IMenuFactionSfxService _factionAudio;
         private readonly TooltipRequests _tooltips;
         private readonly ISteamPopupService _steamPopups;
+        private readonly IConfirmPopupService _confirmPopups;
         private readonly SkirmishPlanetPicker _planetPicker;
         private TooltipHoverSubscription _tooltipHover;
         // The lobby keeps its own setup so the offline Skirmish screen is untouched.
         private readonly SkirmishModel _model = new SkirmishModel();
         private SkirmishUi _ui;
         private PopupHandle _invitePicker;
+        private PopupHandle _leavePopup;
         private bool _isOpen;
         private bool _applyingSetup;
         private string _appliedSetup = string.Empty;
 
         public OnlineSkirmishLobbyUiController(IUiService uiService, IUiCancelRouter cancelRouter,
             OnlineMatchService online, TeamColorPalette palette, IMenuFactionSfxService factionAudio,
-            ITooltipService tooltipService, ISteamPopupService steamPopups, IPopupService popups)
+            ITooltipService tooltipService, ISteamPopupService steamPopups, IPopupService popups,
+            IConfirmPopupService confirmPopups)
             : base(uiService, cancelRouter)
         {
+            _confirmPopups = confirmPopups;
             _tooltips = new TooltipRequests(tooltipService);
             _online = online;
             _palette = palette;
@@ -113,14 +117,27 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         {
             _planetPicker.Close();
             _isOpen = false;
+            if (_leavePopup != null) _confirmPopups.Close(_leavePopup);
             _tooltips.HideAll();
             CloseInvitePicker();
             _ui.Hide();
             Unfocus();
         }
 
-        // X and Escape leave the lobby; the online route then closes this screen.
+        // X and Escape ask first; confirming leaves the lobby and the online route then closes this screen.
         public void Close()
+        {
+            if (_leavePopup != null) return;
+            _leavePopup = _confirmPopups.ShowAccept(
+                new AcceptPopupContent("Leave lobby?", "Leave the lobby and return to the Online screen?", "Leave", "Stay"),
+                result =>
+                {
+                    _leavePopup = null;
+                    if (result == ConfirmPopupResult.Accepted) Leave();
+                });
+        }
+
+        private void Leave()
         {
             _planetPicker.Close();
             CloseInvitePicker();

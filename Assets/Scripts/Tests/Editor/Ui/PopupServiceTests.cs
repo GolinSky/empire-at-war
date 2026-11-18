@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using EmpireAtWar.Entities.MainMenu.Online;
 using EmpireAtWar.Entities.MainMenu.Skirmish;
@@ -197,8 +198,9 @@ namespace EmpireAtWar.Tests.Editor
             IOnlineLobbyScreen lobby = mode == LobbyMode.Skirmish
                 ? new OnlineSkirmishLobbyUiController(_ui, _router, online,
                     AssetDatabase.LoadAssetAtPath<TeamColorPalette>(
-                        "Assets/Settings/Data/Models/Players/TeamColorPalette.asset"), null, new TooltipServiceStub(), steam, _popups)
-                : new OnlineSurvivalLobbyUiController(_ui, _router, online, steam);
+                        "Assets/Settings/Data/Models/Players/TeamColorPalette.asset"), null, new TooltipServiceStub(), steam, _popups,
+                    _confirm)
+                : new OnlineSurvivalLobbyUiController(_ui, _router, online, steam, _confirm);
             ((IInitializable)lobby).Initialize();
             try
             {
@@ -215,6 +217,9 @@ namespace EmpireAtWar.Tests.Editor
                 AcceptPopupUi top = _root.GetComponentInChildren<AcceptPopupUi>();
 
                 Click(lobbyView, "closeButton");
+                AcceptPopupUi leave = _root.GetComponentsInChildren<AcceptPopupUi>().Single(view => view != top);
+                Assert.That(_popups.IsOpen(picker), Is.True);
+                Click(leave, "acceptButton");
 
                 Assert.That(_popups.IsOpen(picker), Is.False);
                 Assert.That(_root.GetComponentsInChildren<SteamInvitePopupUi>(true), Is.Empty);

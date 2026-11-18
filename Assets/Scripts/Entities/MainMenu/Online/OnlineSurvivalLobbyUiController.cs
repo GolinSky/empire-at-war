@@ -29,16 +29,20 @@ namespace EmpireAtWar.Entities.MainMenu.Online
 
         private readonly OnlineMatchService _online;
         private readonly ISteamPopupService _steamPopups;
+        private readonly IConfirmPopupService _confirmPopups;
         // The lobby keeps its own setup so the offline Survival screen is untouched.
         private readonly SurvivalModel _model = new SurvivalModel();
         private SurvivalUi _ui;
         private PopupHandle _invitePicker;
+        private PopupHandle _leavePopup;
         private bool _isOpen;
         private string _appliedSetup = string.Empty;
 
         public OnlineSurvivalLobbyUiController(IUiService uiService, IUiCancelRouter cancelRouter,
-            OnlineMatchService online, ISteamPopupService steamPopups) : base(uiService, cancelRouter)
+            OnlineMatchService online, ISteamPopupService steamPopups, IConfirmPopupService confirmPopups)
+            : base(uiService, cancelRouter)
         {
+            _confirmPopups = confirmPopups;
             _online = online;
             _steamPopups = steamPopups;
         }
@@ -92,13 +96,26 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         public void Hide()
         {
             _isOpen = false;
+            if (_leavePopup != null) _confirmPopups.Close(_leavePopup);
             CloseInvitePicker();
             _ui.Hide();
             Unfocus();
         }
 
-        // X and Escape leave the lobby; the online route then closes this screen.
+        // X and Escape ask first; confirming leaves the lobby and the online route then closes this screen.
         public void Close()
+        {
+            if (_leavePopup != null) return;
+            _leavePopup = _confirmPopups.ShowAccept(
+                new AcceptPopupContent("Leave lobby?", "Leave the lobby and return to the Online screen?", "Leave", "Stay"),
+                result =>
+                {
+                    _leavePopup = null;
+                    if (result == ConfirmPopupResult.Accepted) Leave();
+                });
+        }
+
+        private void Leave()
         {
             CloseInvitePicker();
             _online.LeaveLobby();
