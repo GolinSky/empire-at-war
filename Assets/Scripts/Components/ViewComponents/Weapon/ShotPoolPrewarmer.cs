@@ -23,9 +23,9 @@ namespace EmpireAtWar.ViewComponents.Weapon
     /// </summary>
     public sealed class ShotPoolPrewarmer : ITickable, ILateDisposable
     {
-        private const double BUDGET_MILLISECONDS = 0.5;
+        private const double BUDGET_MILLISECONDS = 1.0;
         private const double LOADING_BUDGET_MILLISECONDS = 4.0;
-        private const int MAX_CREATIONS_PER_FRAME = 1;
+        private const int MAX_CREATIONS_PER_FRAME = 4;
 
         private readonly Queue<ShotEffectCache> _pending = new Queue<ShotEffectCache>();
         private readonly HashSet<ShotEffectCache> _queued = new HashSet<ShotEffectCache>();

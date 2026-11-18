@@ -23,6 +23,7 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
         public CombatModifiers Modifiers { get; }
         public Vector3 WorldPosition => _flight.Centroid;
         public IEntity Entity => _entities.GetEntity(_entityId);
+        public long EntityId => _entityId;
         public IHealthModelObserver Health { get; }
         public float RadarRange { get; }
 

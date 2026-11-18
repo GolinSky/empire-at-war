@@ -16,11 +16,12 @@ using EmpireAtWar.Lifecycle;
 namespace EmpireAtWar.Services.Radar
 {
     /// <summary>
-    /// Runs every radar due this fixed step as one Burst batch over entity positions.
-    /// Radars are staggered across fixed steps so they never all scan in the same step.
+    /// Runs every radar due this frame as one Burst batch over entity positions.
+    /// Due radars are counted per fixed step (staggered so they never all scan together) but scanned once per frame in
+    /// <see cref="Tick"/>, so a low frame rate does not rebuild the snapshot once per fixed step.
     /// Detected = hostile, not destroyed, has units, not cloaked, planar centre within range.
     /// </summary>
-    public sealed class RadarScanService : Service, IRadarScanService, IInitializable, IFixedTickable, IOrderedDisposable
+    public sealed class RadarScanService : Service, IRadarScanService, IInitializable, IFixedTickable, ITickable, IOrderedDisposable
     {
         private const int INITIAL_CAPACITY = 256;
         private const int BITS_PER_WORD = 64;
@@ -113,17 +114,19 @@ namespace EmpireAtWar.Services.Radar
             _radars.RemoveAt(last);
         }
 
-        public void FixedTick()
+        public void FixedTick() => CollectDueRadars();
+
+        public void Tick()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.RadarScan.Auto())
             {
 #endif
             ApplyPendingTargets();
-            CollectDueRadars();
             if (_dueRadars.Count > 0)
             {
                 ScanDueRadars();
+                _dueRadars.Clear();
             }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             }
@@ -236,6 +239,7 @@ namespace EmpireAtWar.Services.Radar
             for (int query = 0; query < _dueRadars.Count; query++)
             {
                 RadarRegistration registration = _dueRadars[query];
+                registration.IsQueued = false;
                 // A delivered scan can release another radar (unit death); skip it this step.
                 if (!registration.IsRegistered)
                 {
@@ -269,7 +273,6 @@ namespace EmpireAtWar.Services.Radar
 
         private void CollectDueRadars()
         {
-            _dueRadars.Clear();
             for (int i = 0; i < _radars.Count; i++)
             {
                 RadarRegistration registration = _radars[i];
@@ -279,7 +282,11 @@ namespace EmpireAtWar.Services.Radar
                 }
 
                 registration.StepsUntilScan = registration.IntervalSteps;
-                _dueRadars.Add(registration);
+                if (!registration.IsQueued)
+                {
+                    registration.IsQueued = true;
+                    _dueRadars.Add(registration);
+                }
             }
         }
 

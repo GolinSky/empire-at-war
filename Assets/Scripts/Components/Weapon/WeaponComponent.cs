@@ -757,7 +757,7 @@ namespace EmpireAtWar.Components.Weapon
         private void Engage(WeaponHardPoint weapon, AttackData group, IHardPointModel unit)
         {
             float turnSeconds = weapon.TurnTowards(unit.Position);
-            if (turnSeconds <= 0f)
+            if (turnSeconds <= Time.deltaTime)
             {
                 weapon.Attack(group, unit);
                 return;

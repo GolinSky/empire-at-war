@@ -54,12 +54,12 @@ namespace EmpireAtWar.Tests.Editor
             FakeScanner scanner = new FakeScanner(TestPlayers.Human, Vector3.zero) { DelayValue = 0f };
             _service.Register(scanner);
 
-            _service.FixedTick();
+            Step();
             Assert.That(scanner.ScanCount, Is.EqualTo(1));
             Assert.That(scanner.LastScan, Is.EqualTo(new IEntity[] { target }));
 
             target.GetFacade<IEntityTransformFacade>().Transform.position = new Vector3(200f, 0f, 0f);
-            _service.FixedTick();
+            Step();
             Assert.That(scanner.ScanCount, Is.EqualTo(2));
             Assert.That(scanner.LastScan, Is.Empty);
         }
@@ -81,11 +81,11 @@ namespace EmpireAtWar.Tests.Editor
                 first.OnScan = null;
             };
 
-            _service.FixedTick();
+            Step();
             Assert.That(first.LastScan, Is.EqualTo(new IEntity[] { original }));
             Assert.That(second.LastScan, Is.EqualTo(new IEntity[] { original }));
 
-            _service.FixedTick();
+            Step();
             Assert.That(first.LastScan, Is.EqualTo(new IEntity[] { replacement }));
             Assert.That(second.LastScan, Is.EqualTo(new IEntity[] { replacement }));
         }
@@ -137,7 +137,7 @@ namespace EmpireAtWar.Tests.Editor
             _service.Register(second);
             first.OnScan = () => _service.Unregister(second);
 
-            _service.FixedTick();
+            Step();
 
             Assert.That(first.ScanCount, Is.EqualTo(1));
             Assert.That(second.ScanCount, Is.Zero);
@@ -228,7 +228,7 @@ namespace EmpireAtWar.Tests.Editor
             for (int step = 0; step < intervalSteps; step++)
             {
                 int scansBefore = TotalScans(scanners);
-                _service.FixedTick();
+                Step();
                 Assert.That(TotalScans(scanners) - scansBefore, Is.EqualTo(1), $"Step {step}");
             }
 
@@ -245,7 +245,7 @@ namespace EmpireAtWar.Tests.Editor
             int scans = scanner.ScanCount;
             for (int i = 0; i < 50; i++)
             {
-                _service.FixedTick();
+                Step();
             }
 
             Assert.That(scanner.ScanCount, Is.EqualTo(scans));
@@ -266,6 +266,12 @@ namespace EmpireAtWar.Tests.Editor
             ((IOrderedDisposable)radar).Dispose();
 
             Assert.DoesNotThrow(radar.Release);
+        }
+
+        private void Step()
+        {
+            _service.FixedTick();
+            _service.Tick();
         }
 
         private FakeScanner Register(PlayerId owner, Vector3 center)
@@ -290,7 +296,7 @@ namespace EmpireAtWar.Tests.Editor
             int scans = scanner.ScanCount;
             for (int i = 0; i < 100 && scanner.ScanCount == scans; i++)
             {
-                _service.FixedTick();
+                Step();
             }
 
             Assert.That(scanner.ScanCount, Is.GreaterThan(scans), "The radar never scanned.");

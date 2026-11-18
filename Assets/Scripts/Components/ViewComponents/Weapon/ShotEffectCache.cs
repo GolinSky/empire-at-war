@@ -62,9 +62,12 @@ namespace EmpireAtWar.ViewComponents.Weapon
                 _waitingCount += count - pool.WaitingShots;
                 pool.WaitingShots = count;
             }
-            if (_waiting.First == pool.AdmissionNode && _idle.Count - _reservedCount >= count)
+            // The front waiter keeps priority, but a smaller salvo behind it may go when idle shots cover both.
+            int free = _idle.Count - _reservedCount;
+            bool isFront = _waiting.First == pool.AdmissionNode;
+            if (free >= count && (isFront || free >= count + _waiting.First.Value.WaitingShots))
             {
-                _waiting.RemoveFirst();
+                _waiting.Remove(pool.AdmissionNode);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 RecordWait(pool);
 #endif

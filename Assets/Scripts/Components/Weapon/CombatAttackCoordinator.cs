@@ -25,6 +25,7 @@ namespace EmpireAtWar.Components.Weapon
         internal const float DOOMED_MARGIN = 1.25f;
         // Leftover float error below this is dropped so finished targets leave the table.
         private const float INCOMING_EPSILON = 0.5f;
+        private const float MAX_CATCH_UP_SECONDS = 0.25f;
 
         private readonly Dictionary<IWeaponPresenter, int> _owners = new Dictionary<IWeaponPresenter, int>();
         private readonly List<SequenceRecord> _sequences = new List<SequenceRecord>();
@@ -487,7 +488,9 @@ namespace EmpireAtWar.Components.Weapon
                 sequence.HardPoint.StopEmitting(sequence.HardPointGeneration);
                 return;
             }
-            sequence.NextTime = now + sequence.HardPoint.DelayBetweenShots;
+            // Advance from the scheduled time so a slow frame does not stretch the salvo; a long stall resets to now.
+            float delay = sequence.HardPoint.DelayBetweenShots;
+            sequence.NextTime = Mathf.Max(sequence.NextTime + delay, now - MAX_CATCH_UP_SECONDS + delay);
             sequence.EarliestFrame = frame + 1;
             sequence.EventSequence = ++_nextEventSequence;
             _sequenceIndices.Add(sequence.EventSequence, _sequences.Count);

@@ -6,6 +6,7 @@ namespace EmpireAtWar.Services.Radar
         public int IntervalSteps { get; }
         public int StepsUntilScan { get; set; }
         public bool IsRegistered { get; set; } = true;
+        public bool IsQueued { get; set; }
 
         public RadarRegistration(IRadarScanner scanner, int intervalSteps, int stepsUntilScan)
         {
