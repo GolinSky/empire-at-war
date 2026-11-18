@@ -8,297 +8,215 @@ using Unity.Profiling;
 
 namespace EmpireAtWar.Components.Squadrons.Icon
 {
+    /// <summary>
+    /// Clusters squadrons by on-screen distance. Every squadron belongs to exactly one cluster;
+    /// a lone squadron is a 1×1 cluster. Ranks are compact and keep join order.
+    /// </summary>
     [BurstCompile]
     internal struct SquadronGroupingJob : IJob
     {
-        private const float JOIN_RADIUS = 70f;
-        private const float LEAVE_RADIUS = 1.35f * JOIN_RADIUS;
-        private const float JOIN_SPEED = 22f;
-        private const float LEAVE_SPEED = 1.5f * JOIN_SPEED;
-        private const float JOIN_DWELL = 0.2f;
-        private const float LEAVE_DWELL = 0.3f;
+        private const float JOIN_DWELL = 0.25f;
+        private const float LEAVE_DWELL = 0.5f;
         private const float DWELL_EPSILON = 0.00001f;
+        private const int MERGE_RANK_STRIDE = 8192;
+        private const float MAX_EXTRA_PITCHES = 3f;
 
         private static readonly ProfilerMarker ReconcileMarker = new ProfilerMarker("Battle.Markers.Grouping.Reconcile");
 
         [ReadOnly] public NativeList<Member> Snapshot;
         public NativeList<Member> Members;
-        public NativeList<Group> Groups;
-        public NativeList<GroupOrder> Order;
-        public NativeParallelHashMap<long, int> GroupById;
+        public NativeList<Cluster> Clusters;
+        public NativeList<ClusterOrder> Order;
+        public NativeList<RankKey> Ranked;
+        public NativeParallelHashMap<long, int> ClusterById;
         public NativeParallelMultiHashMap<Bucket, int> Buckets;
-        public NativeParallelHashMap<OccupiedCell, byte> Occupied;
-        public NativeReference<BatchState> Batch;
+        public NativeReference<long> NextClusterId;
         public float Elapsed;
+        public float JoinPx;
+        public float LeavePx;
+        public float Pitch;
 
         public void Execute()
         {
             using var scope = ReconcileMarker.Auto();
-            BatchState state = Batch.Value;
-            state.CandidateCount = 0;
             Members.Clear();
             Members.AddRange(Snapshot.AsArray());
             Members.Sort(new MemberComparer());
-            Groups.Clear();
+            Clusters.Clear();
             Order.Clear();
-            GroupById.Clear();
+            Ranked.Clear();
+            ClusterById.Clear();
             Buckets.Clear();
-            Occupied.Clear();
 
-            RestoreGroups(ref state);
-            SplitGroups(ref state);
-            BuildRepresentativeOrder();
-            JoinNearbyGroups(ref state);
-            for (int i = 0; i < Members.Length; i++)
-            {
-                Member member = Members[i];
-                member.Cell = GetCell(member.Slot);
-                Members[i] = member;
-            }
-            Batch.Value = state;
+            RestoreClusters();
+            SplitClusters();
+            BuildOrder();
+            JoinClusters();
+            AssignRanks();
         }
 
-        private void RestoreGroups(ref BatchState state)
+        private void RestoreClusters()
         {
             for (int i = 0; i < Members.Length; i++)
             {
                 Member member = Members[i];
-                int groupIndex;
-                if (member.GroupId == 0)
-                {
-                    groupIndex = CreateGroup(++state.NextGroupId, member.Owner, i);
-                }
-                else if (!GroupById.TryGetValue(member.GroupId, out groupIndex))
-                {
-                    groupIndex = CreateGroup(member.GroupId, member.Owner, i);
-                }
+                if (member.ClusterId == 0) member.ClusterId = ++NextClusterId.Value;
+                if (!ClusterById.TryGetValue(member.ClusterId, out int index))
+                    index = CreateCluster(member.ClusterId, member.Owner);
 
-                Group group = Groups[groupIndex];
-                member.GroupId = group.Id;
-                member.Next = group.Head;
-                if (member.IsSeed)
-                    group.Seed = i;
-                group.Head = i;
-                group.Count++;
-                group.PositionSum += member.Position;
-                group.VelocitySum += member.Velocity;
+                Cluster cluster = Clusters[index];
+                member.Next = cluster.Head;
+                cluster.Head = i;
+                cluster.Count++;
+                cluster.PositionSum += member.Position;
                 Members[i] = member;
-                Groups[groupIndex] = group;
+                Clusters[index] = cluster;
             }
         }
 
-        private void SplitGroups(ref BatchState state)
+        private void SplitClusters()
         {
-            int originalCount = Groups.Length;
+            int originalCount = Clusters.Length;
             for (int i = 0; i < originalCount; i++)
             {
-                Group group = Groups[i];
-                int seedIndex = SelectSeed(group, ref state.CandidateCount);
-                Member seed = Members[seedIndex];
-                int first = group.Head;
-                group.Seed = seedIndex;
-                group.Head = -1;
-                group.Count = 0;
-                for (int memberIndex = first; memberIndex >= 0;)
+                Cluster cluster = Clusters[i];
+                int first = cluster.Head;
+                int originalSize = cluster.Count;
+                float2 originalSum = cluster.PositionSum;
+                cluster.Head = -1;
+                cluster.Count = 0;
+                cluster.PositionSum = float2.zero;
+                for (int index = first; index >= 0;)
                 {
-                    Member member = Members[memberIndex];
+                    Member member = Members[index];
                     int next = member.Next;
-                    member.IsSeed = memberIndex == seedIndex;
-                    member.LeaveAge = Compatible(member, seed, LEAVE_RADIUS, LEAVE_SPEED)
-                        ? 0f
-                        : member.LeaveAge + Elapsed;
+                    bool apart = false;
+                    if (originalSize > 1)
+                    {
+                        float2 others = (originalSum - member.Position) / (originalSize - 1);
+                        apart = math.distancesq(member.Position, others) > LeavePx * LeavePx;
+                    }
+
+                    member.LeaveAge = apart ? member.LeaveAge + Elapsed : 0f;
                     if (member.LeaveAge + DWELL_EPSILON >= LEAVE_DWELL)
                     {
-                        int splitIndex = CreateGroup(++state.NextGroupId, member.Owner, memberIndex, group.Id);
-                        Group split = Groups[splitIndex];
-                        split.Head = memberIndex;
+                        int splitIndex = CreateCluster(++NextClusterId.Value, member.Owner);
+                        Cluster split = Clusters[splitIndex];
+                        split.Head = index;
                         split.Count = 1;
-                        Groups[splitIndex] = split;
-                        member.GroupId = split.Id;
-                        member.IsSeed = true;
+                        split.PositionSum = member.Position;
+                        Clusters[splitIndex] = split;
+                        member.ClusterId = split.Id;
                         member.Next = -1;
+                        member.Rank = 0;
                         member.LeaveAge = 0f;
                         member.JoinAge = 0f;
                         member.JoinTarget = 0;
                     }
                     else
                     {
-                        member.Next = group.Head;
-                        group.Head = memberIndex;
-                        group.Count++;
+                        member.Next = cluster.Head;
+                        cluster.Head = index;
+                        cluster.Count++;
+                        cluster.PositionSum += member.Position;
                     }
-                    Members[memberIndex] = member;
-                    Occupied.TryAdd(new OccupiedCell(member.GroupId, member.Slot), 0);
-                    memberIndex = next;
+
+                    Members[index] = member;
+                    index = next;
                 }
-                Groups[i] = group;
+
+                Clusters[i] = cluster;
             }
         }
 
-        private int SelectSeed(Group group, ref int candidateCount)
+        private void BuildOrder()
         {
-            Member seed = Members[group.Seed];
-            float2 center = group.PositionSum / group.Count;
-            float2 velocity = group.VelocitySum / group.Count;
-            float seedScore = DistanceScore(seed, center, velocity);
-            if (seedScore <= 0.25f)
-                return group.Seed;
-
-            int best = group.Seed;
-            for (int index = group.Head; index >= 0; index = Members[index].Next)
-            {
-                Member member = Members[index];
-                float score = DistanceScore(member, center, velocity);
-                if (score < seedScore || (score == seedScore && member.EntityId < Members[best].EntityId))
-                {
-                    best = index;
-                    seedScore = score;
-                }
-            }
-
-            if (best == group.Seed)
-                return best;
-
-            // Preserve the original identity on the side that keeps the most members.
-            // At equal size, retaining the original seed avoids a gratuitous slot change.
-            Member alternative = Members[best];
-            int retained = 0;
-            int alternativeCount = 0;
-            for (int index = group.Head; index >= 0; index = Members[index].Next)
-            {
-                Member member = Members[index];
-                candidateCount += 2;
-                if (Compatible(member, seed, LEAVE_RADIUS, LEAVE_SPEED)) retained++;
-                if (Compatible(member, alternative, LEAVE_RADIUS, LEAVE_SPEED)) alternativeCount++;
-            }
-            return alternativeCount > retained ? best : group.Seed;
+            for (int i = 0; i < Clusters.Length; i++)
+                Order.AddNoResize(new ClusterOrder { Index = i, Id = Clusters[i].Id, Count = Clusters[i].Count });
+            Order.Sort(new ClusterComparer());
         }
 
-        private static float DistanceScore(Member member, float2 center, float2 velocity)
+        private void JoinClusters()
         {
-            return math.distancesq(member.Position, center) / (LEAVE_RADIUS * LEAVE_RADIUS) +
-                   math.distancesq(member.Velocity, velocity) / (LEAVE_SPEED * LEAVE_SPEED);
-        }
-
-        private void BuildRepresentativeOrder()
-        {
-            for (int i = 0; i < Groups.Length; i++)
-            {
-                Group group = Groups[i];
-                Order.AddNoResize(new GroupOrder { Index = i, Id = group.Id, Count = group.Count });
-            }
-            Order.Sort(new GroupComparer());
-        }
-
-        private void JoinNearbyGroups(ref BatchState state)
-        {
+            float cellSize = JoinPx + MAX_EXTRA_PITCHES * Pitch;
             for (int i = 0; i < Order.Length; i++)
             {
-                int groupIndex = Order[i].Index;
-                Group group = Groups[groupIndex];
-                Member seed = Members[group.Seed];
-                var bucket = new Bucket(group.Owner, (int2)math.floor(seed.Position / JOIN_RADIUS),
-                    (int)math.floor(math.length(seed.Velocity) / JOIN_SPEED));
-                int targetIndex = FindTarget(group, seed, bucket, ref state.CandidateCount);
+                int clusterIndex = Order[i].Index;
+                Cluster cluster = Clusters[clusterIndex];
+                if (cluster.Count == 0) continue;
+                float2 centroid = cluster.PositionSum / cluster.Count;
+                int targetIndex = FindTarget(cluster, centroid, cellSize);
                 if (targetIndex < 0)
                 {
-                    ClearJoin(group);
-                    Buckets.Add(bucket, groupIndex);
+                    SetJoin(cluster, 0, 0f);
+                    Buckets.Add(new Bucket(cluster.Owner, (int2)math.floor(centroid / cellSize)), clusterIndex);
                     continue;
                 }
 
-                Group target = Groups[targetIndex];
-                float age = seed.JoinTarget == target.Id ? seed.JoinAge + Elapsed : 0f;
-                bool reunitesSplit = group.SplitFrom != 0 && group.SplitFrom == target.SplitFrom;
-                if (reunitesSplit || age + DWELL_EPSILON >= JOIN_DWELL)
+                Cluster target = Clusters[targetIndex];
+                Member head = Members[cluster.Head];
+                float age = head.JoinTarget == target.Id ? head.JoinAge + Elapsed : 0f;
+                if (age + DWELL_EPSILON >= JOIN_DWELL)
                 {
-                    Merge(group, ref target, reunitesSplit);
-                    Groups[targetIndex] = target;
+                    Merge(cluster, ref target);
+                    Clusters[targetIndex] = target;
+                    Cluster emptied = cluster;
+                    emptied.Head = -1;
+                    emptied.Count = 0;
+                    Clusters[clusterIndex] = emptied;
                     continue;
                 }
 
-                for (int memberIndex = group.Head; memberIndex >= 0; memberIndex = Members[memberIndex].Next)
-                {
-                    Member member = Members[memberIndex];
-                    member.JoinTarget = target.Id;
-                    member.JoinAge = age;
-                    Members[memberIndex] = member;
-                }
+                SetJoin(cluster, target.Id, age);
+                Buckets.Add(new Bucket(cluster.Owner, (int2)math.floor(centroid / cellSize)), clusterIndex);
             }
         }
 
-        private int FindTarget(Group incoming, Member seed, Bucket origin, ref int candidateCount)
+        private int FindTarget(Cluster incoming, float2 centroid, float cellSize)
         {
-            int bestIndex = -1;
-            int bestCount = 0;
-            long bestId = long.MaxValue;
+            int best = -1;
             float bestDistance = float.PositiveInfinity;
-            int minSpeed = math.max(0, origin.SpeedBand - 1);
-            int maxSpeed = origin.SpeedBand + 1;
-            for (int y = origin.Cell.y - 1; y <= origin.Cell.y + 1; y++)
-            for (int x = origin.Cell.x - 1; x <= origin.Cell.x + 1; x++)
-            for (int speed = minSpeed; speed <= maxSpeed; speed++)
+            int2 origin = (int2)math.floor(centroid / cellSize);
+            for (int y = origin.y - 1; y <= origin.y + 1; y++)
+            for (int x = origin.x - 1; x <= origin.x + 1; x++)
             {
-                // Speeds cannot differ by more than the velocity difference.
-                var neighbor = new Bucket(incoming.Owner, new int2(x, y), speed);
-                foreach (int index in Buckets.GetValuesForKey(neighbor))
+                foreach (int index in Buckets.GetValuesForKey(new Bucket(incoming.Owner, new int2(x, y))))
                 {
-                    Group candidate = Groups[index];
-                    Member targetSeed = Members[candidate.Seed];
-                    candidateCount++;
-                    float distance = math.distancesq(seed.Position, targetSeed.Position);
-                    if (candidate.Count < bestCount ||
-                        (candidate.Count == bestCount && (distance > bestDistance ||
-                            (distance == bestDistance && candidate.Id >= bestId))) ||
-                        !Compatible(seed, targetSeed, JOIN_RADIUS, JOIN_SPEED) ||
-                        !FitsGroup(incoming, targetSeed, ref candidateCount))
-                        continue;
-
-                    bestIndex = index;
-                    bestCount = candidate.Count;
+                    Cluster candidate = Clusters[index];
+                    float2 other = candidate.PositionSum / candidate.Count;
+                    float distance = math.distance(centroid, other);
+                    float extra = math.max(0f, (SquadronClusterLayout.Columns(incoming.Count) +
+                        SquadronClusterLayout.Columns(candidate.Count)) * 0.5f - 1f) * Pitch;
+                    if (distance > JoinPx + extra || distance >= bestDistance) continue;
+                    best = index;
                     bestDistance = distance;
-                    bestId = candidate.Id;
                 }
             }
-            return bestIndex;
+
+            return best;
         }
 
-        private bool FitsGroup(Group incoming, Member target, ref int candidateCount)
+        private void SetJoin(Cluster cluster, long targetId, float age)
         {
-            for (int index = incoming.Head; index >= 0; index = Members[index].Next)
-            {
-                if (index == incoming.Seed)
-                    continue;
-                candidateCount++;
-                if (!Compatible(Members[index], target, JOIN_RADIUS, JOIN_SPEED))
-                    return false;
-            }
-            return true;
-        }
-
-        private void ClearJoin(Group group)
-        {
-            for (int index = group.Head; index >= 0; index = Members[index].Next)
+            for (int index = cluster.Head; index >= 0; index = Members[index].Next)
             {
                 Member member = Members[index];
-                member.JoinTarget = 0;
-                member.JoinAge = 0f;
+                member.JoinTarget = targetId;
+                member.JoinAge = age;
                 Members[index] = member;
             }
         }
 
-        private void Merge(Group incoming, ref Group target, bool preserveCells)
+        private void Merge(Cluster incoming, ref Cluster target)
         {
+            // Incoming members keep their relative order and queue behind the target's members.
+            target.MergeBase += MERGE_RANK_STRIDE;
             for (int index = incoming.Head; index >= 0;)
             {
                 Member member = Members[index];
                 int next = member.Next;
-                Occupied.Remove(new OccupiedCell(member.GroupId, member.Slot));
-                if (!preserveCells || !Occupied.TryAdd(new OccupiedCell(target.Id, member.Slot), 0))
-                    member.Slot = ClaimFirstVacancy(ref target);
-                member.GroupId = target.Id;
-                member.HasGrid = true;
-                member.IsSeed = false;
+                member.ClusterId = target.Id;
+                member.Rank += target.MergeBase;
                 member.JoinTarget = 0;
                 member.JoinAge = 0f;
                 member.LeaveAge = 0f;
@@ -307,162 +225,93 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                 Members[index] = member;
                 index = next;
             }
+
             target.Count += incoming.Count;
-            Member seed = Members[target.Seed];
-            seed.HasGrid = true;
-            Members[target.Seed] = seed;
+            target.PositionSum += incoming.PositionSum;
         }
 
-        private int ClaimFirstVacancy(ref Group group)
+        private void AssignRanks()
         {
-            while (!Occupied.TryAdd(new OccupiedCell(group.Id, group.FirstVacancy), 0))
-                group.FirstVacancy++;
-            return group.FirstVacancy++;
-        }
-
-        private int CreateGroup(long id, int owner, int seed, long splitFrom = 0)
-        {
-            int index = Groups.Length;
-            Groups.AddNoResize(new Group { Id = id, Owner = owner, Seed = seed, Head = -1, SplitFrom = splitFrom });
-            if (splitFrom == 0)
-                GroupById.TryAdd(id, index);
-            return index;
-        }
-
-        private static bool Compatible(Member a, Member b, float radius, float speed)
-        {
-            return math.distancesq(a.Position, b.Position) <= radius * radius &&
-                   math.distancesq(a.Velocity, b.Velocity) <= speed * speed;
-        }
-
-        internal static int2 GetCell(int slot)
-        {
-            if (slot == 0)
-                return int2.zero;
-
-            // Complete concentric squares; the first nine slots fill a centered 3×3 grid.
-            // Inside a ring, cells nearest the center row/column come first and corners last,
-            // so two squadrons sit side by side and three form one row.
-            int ring = (int)math.ceil((math.sqrt(slot + 1f) - 1f) * 0.5f);
-            int innerSide = 2 * ring - 1;
-            int index = slot - innerSide * innerSide;
-            if (index < 4)
-                return GetRingCell(index, ring, 0);
-
-            index -= 4;
-            int edgeCells = 8 * (ring - 1);
-            if (index < edgeCells)
-                return GetRingCell(4 + index % 8, ring, index / 8 + 1);
-
-            return GetRingCell(index - edgeCells, ring, ring);
-        }
-
-        // Orders the cells of a ring that lie <paramref name="along"/> cells from a center line.
-        // Axis (along = 0) and corner (along = ring) positions use variants 0–3; the rest use 4–11.
-        private static int2 GetRingCell(int variant, int ring, int along)
-        {
-            if (along == ring)
+            for (int i = 0; i < Members.Length; i++)
+                Ranked.AddNoResize(new RankKey { ClusterId = Members[i].ClusterId, Rank = Members[i].Rank, Index = i,
+                    EntityId = Members[i].EntityId });
+            Ranked.Sort(new RankComparer());
+            int start = 0;
+            for (int i = 0; i <= Ranked.Length; i++)
             {
-                return variant switch
+                if (i < Ranked.Length && Ranked[i].ClusterId == Ranked[start].ClusterId) continue;
+                for (int j = start; j < i; j++)
                 {
-                    0 => new int2(ring, ring),
-                    1 => new int2(-ring, ring),
-                    2 => new int2(ring, -ring),
-                    _ => new int2(-ring, -ring)
-                };
-            }
+                    Member member = Members[Ranked[j].Index];
+                    member.Rank = j - start;
+                    member.Count = i - start;
+                    Members[Ranked[j].Index] = member;
+                }
 
-            return variant switch
-            {
-                0 => new int2(ring, 0),
-                1 => new int2(-ring, 0),
-                2 => new int2(0, ring),
-                3 => new int2(0, -ring),
-                4 => new int2(ring, along),
-                5 => new int2(ring, -along),
-                6 => new int2(-ring, along),
-                7 => new int2(-ring, -along),
-                8 => new int2(along, ring),
-                9 => new int2(-along, ring),
-                10 => new int2(along, -ring),
-                _ => new int2(-along, -ring)
-            };
+                start = i;
+            }
+        }
+
+        private int CreateCluster(long id, int owner)
+        {
+            int index = Clusters.Length;
+            Clusters.AddNoResize(new Cluster { Id = id, Owner = owner, Head = -1, MergeBase = 0 });
+            ClusterById.TryAdd(id, index);
+            return index;
         }
 
         internal struct Member
         {
             public long EntityId;
-            public long GroupId;
+            public long ClusterId;
             public long JoinTarget;
             public int Owner;
-            public int Slot;
+            public int Rank;
+            public int Count;
             public int Next;
-            public int2 Cell;
             public float2 Position;
-            public float2 Velocity;
             public float JoinAge;
             public float LeaveAge;
-            public bool HasGrid;
-            public bool IsSeed;
         }
 
-        internal struct Group
+        internal struct Cluster
         {
             public long Id;
-            public long SplitFrom;
             public int Owner;
-            public int Seed;
             public int Head;
             public int Count;
-            public int FirstVacancy;
+            public int MergeBase;
             public float2 PositionSum;
-            public float2 VelocitySum;
         }
 
-        internal struct GroupOrder
+        internal struct ClusterOrder
         {
             public int Index;
             public long Id;
             public int Count;
         }
 
-        internal struct BatchState
+        internal struct RankKey
         {
-            public long NextGroupId;
-            public int CandidateCount;
+            public long ClusterId;
+            public int Rank;
+            public int Index;
+            public long EntityId;
         }
 
         internal readonly struct Bucket : IEquatable<Bucket>
         {
             public readonly int Owner;
             public readonly int2 Cell;
-            public readonly int SpeedBand;
 
-            public Bucket(int owner, int2 cell, int speedBand)
+            public Bucket(int owner, int2 cell)
             {
                 Owner = owner;
                 Cell = cell;
-                SpeedBand = speedBand;
             }
 
-            public bool Equals(Bucket other) => Owner == other.Owner && math.all(Cell == other.Cell) &&
-                                               SpeedBand == other.SpeedBand;
-            public override int GetHashCode() => (int)math.hash(new int4(Cell, SpeedBand, Owner));
-        }
-
-        internal readonly struct OccupiedCell : IEquatable<OccupiedCell>
-        {
-            private readonly long _group;
-            private readonly int _slot;
-
-            public OccupiedCell(long group, int slot)
-            {
-                _group = group;
-                _slot = slot;
-            }
-
-            public bool Equals(OccupiedCell other) => _group == other._group && _slot == other._slot;
-            public override int GetHashCode() => (int)math.hash(new int3((int)_group, (int)(_group >> 32), _slot));
+            public bool Equals(Bucket other) => Owner == other.Owner && math.all(Cell == other.Cell);
+            public override int GetHashCode() => (int)math.hash(new int3(Cell, Owner));
         }
 
         private struct MemberComparer : IComparer<Member>
@@ -470,12 +319,23 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             public int Compare(Member left, Member right) => left.EntityId.CompareTo(right.EntityId);
         }
 
-        private struct GroupComparer : IComparer<GroupOrder>
+        private struct ClusterComparer : IComparer<ClusterOrder>
         {
-            public int Compare(GroupOrder left, GroupOrder right)
+            public int Compare(ClusterOrder left, ClusterOrder right)
             {
                 int count = right.Count.CompareTo(left.Count);
                 return count != 0 ? count : left.Id.CompareTo(right.Id);
+            }
+        }
+
+        private struct RankComparer : IComparer<RankKey>
+        {
+            public int Compare(RankKey left, RankKey right)
+            {
+                int cluster = left.ClusterId.CompareTo(right.ClusterId);
+                if (cluster != 0) return cluster;
+                int rank = left.Rank.CompareTo(right.Rank);
+                return rank != 0 ? rank : left.EntityId.CompareTo(right.EntityId);
             }
         }
     }

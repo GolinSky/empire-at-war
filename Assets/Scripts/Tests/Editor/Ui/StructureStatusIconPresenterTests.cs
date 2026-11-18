@@ -52,7 +52,7 @@ namespace EmpireAtWar.Tests.Editor
             _layer = new GameObject("StructureIconLayer", typeof(RectTransform), typeof(BattleMarkerLayer))
                 .GetComponent<BattleMarkerLayer>();
             ((RectTransform)_layer.transform).sizeDelta = new Vector2(800f, 600f);
-            SetField(_layer, "_root", (RectTransform)_layer.transform);
+            SetField(_layer, "_shipRoot", (RectTransform)_layer.transform);
             _map = UnityEngine.Object.Instantiate(AssetDatabase.LoadAssetAtPath<MiniMapUi>(
                 "Assets/Prefabs/Ui/MiniMap/MiniMapUi.prefab"));
             _map.gameObject.SetActive(true);

@@ -64,6 +64,7 @@ namespace EmpireAtWar.Ship
                 weapon.ConfigureArtillery(Data.UsesArtilleryStandoff);
             }
             EntityFeatureBindings.RegisterFog(builder, Bindings, !LocalPlayer.IsFriendly(Owner));
+            builder.Register<ShipHullObstacle>(Lifetime.Singleton).AsImplementedInterfaces();
             if (Data.ShowBattleMarker)
                 builder.Register<ShipBattleMarker>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ShipMoveModel>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();

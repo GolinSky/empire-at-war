@@ -133,7 +133,7 @@ namespace EmpireAtWar.Entities.StructureStatusIcons
             for (int i = 0; i < count; i++)
             {
                 _world[i] = StructureStatusIconView.Create(_worldParent, WORLD_SIZE, _layer.gameObject.layer);
-                _layer.Attach(_world[i].Root);
+                _layer.Attach(_world[i].Root, false);
                 _map[i] = StructureStatusIconView.Create(view.StructureIconParent, MINIMAP_SIZE, view.gameObject.layer);
                 _anchors[i] = new Vector3(float.NaN, float.NaN, float.NaN);
             }

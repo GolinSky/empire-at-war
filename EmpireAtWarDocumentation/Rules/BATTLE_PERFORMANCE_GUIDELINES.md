@@ -201,6 +201,9 @@ tags:
 - `SquadronIconGrouping` schedules one Burst job over persistent numeric buffers, keeps published slots until a batch is ready, and completes ownership before reuse or disposal. Renderer/UI state and vision queries stay on the main thread.
 - Compare matching Development Player workloads with `Battle.Markers.Vision`, `Snapshot`, `Grouping.Reconcile`, `Consume`, `Layout`, `HitQuery` and canvas rebuilds. Report candidate counts separately from worker time, main-thread p95 and managed allocations.
 - Layout and allocation budgets are unmeasured. Acceptance → [[TODOs/User_Acceptance_Queue#Small Ship Icons and Squadron Icon Grid]].
+- Rebuild 2026-11-18 ([[TODOs/Features/Squadron_Icon_Clustering_Rebuild]]): grouping runs in screen pixels (radii scale with zoom pitch), every squadron is a 1×1+ cluster with compact ranks, ships are obstacles not members.
+- Motion = exact projected anchor + decaying springs (cell 0.1 s, placement 0.12 s); camera motion never goes through a spring. No write thresholds or dead zones.
+- Placement queries a uniform screen grid of obstacles (ship hulls via `IBattleHull`, ship markers, placed grids); squadron and ship markers use separate nested canvases. Budgets still unmeasured.
 
 ### Weapon cadence and pooled overlap · 2026-11-14
 

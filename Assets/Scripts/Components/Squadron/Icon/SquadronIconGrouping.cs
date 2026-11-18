@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace EmpireAtWar.Components.Squadrons.Icon
 {
+    /// <summary>Publishes screen-space squadron clusters computed by a 10 Hz Burst job.</summary>
     internal sealed class SquadronIconGrouping : IDisposable
     {
         private const int INITIAL_CAPACITY = 32;
@@ -21,16 +22,15 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         private NativeList<SquadronGroupingJob.Member> _snapshot = new(INITIAL_CAPACITY, Allocator.Persistent);
         private NativeList<SquadronGroupingJob.Member> _members = new(INITIAL_CAPACITY, Allocator.Persistent);
-        private NativeList<SquadronGroupingJob.Group> _groups = new(INITIAL_CAPACITY * 2, Allocator.Persistent);
-        private NativeList<SquadronGroupingJob.GroupOrder> _order = new(INITIAL_CAPACITY * 2, Allocator.Persistent);
-        private NativeParallelHashMap<long, int> _groupById = new(INITIAL_CAPACITY, Allocator.Persistent);
+        private NativeList<SquadronGroupingJob.Cluster> _clusters = new(INITIAL_CAPACITY * 2, Allocator.Persistent);
+        private NativeList<SquadronGroupingJob.ClusterOrder> _order = new(INITIAL_CAPACITY * 2, Allocator.Persistent);
+        private NativeList<SquadronGroupingJob.RankKey> _ranked = new(INITIAL_CAPACITY, Allocator.Persistent);
+        private NativeParallelHashMap<long, int> _clusterById = new(INITIAL_CAPACITY, Allocator.Persistent);
         private NativeParallelMultiHashMap<SquadronGroupingJob.Bucket, int> _buckets = new(INITIAL_CAPACITY, Allocator.Persistent);
-        private NativeParallelHashMap<SquadronGroupingJob.OccupiedCell, byte> _occupied = new(INITIAL_CAPACITY, Allocator.Persistent);
-        private NativeReference<SquadronGroupingJob.BatchState> _batchState = new(Allocator.Persistent);
+        private NativeReference<long> _nextClusterId = new(Allocator.Persistent);
         private JobHandle _pending;
 
         public bool HasPendingSnapshot { get; private set; }
-        public int LastCandidateCount { get; private set; }
 
         public void BeginSnapshot(int capacity)
         {
@@ -44,40 +44,42 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             int nextCapacity = Mathf.NextPowerOfTwo(capacity);
             _snapshot.Capacity = nextCapacity;
             _members.Capacity = nextCapacity;
-            _groups.Capacity = nextCapacity * 2;
+            _ranked.Capacity = nextCapacity;
+            _clusters.Capacity = nextCapacity * 2;
             _order.Capacity = nextCapacity * 2;
-            _groupById.Capacity = nextCapacity;
-            _buckets.Capacity = nextCapacity;
-            _occupied.Capacity = nextCapacity;
+            _clusterById.Capacity = nextCapacity * 2;
+            _buckets.Capacity = nextCapacity * 2;
             _published.EnsureCapacity(nextCapacity);
         }
 
-        public void Add(long id, int owner, Vector2 position, Vector2 velocity)
+        public void Add(long id, int owner, Vector2 screen)
         {
             _published.TryGetValue(id, out SquadronGroupingJob.Member member);
             if (member.Owner != owner)
                 member = default;
             member.EntityId = id;
             member.Owner = owner;
-            member.Position = new float2(position.x, position.y);
-            member.Velocity = new float2(velocity.x, velocity.y);
+            member.Position = new float2(screen.x, screen.y);
             _snapshot.AddNoResize(member);
         }
 
-        public void Schedule(float elapsed = SNAPSHOT_INTERVAL)
+        public void Schedule(float elapsed, float joinPixels, float leavePixels, float pitch)
         {
             using var scope = ScheduleMarker.Auto();
             _pending = new SquadronGroupingJob
             {
                 Snapshot = _snapshot,
                 Members = _members,
-                Groups = _groups,
+                Clusters = _clusters,
                 Order = _order,
-                GroupById = _groupById,
+                Ranked = _ranked,
+                ClusterById = _clusterById,
                 Buckets = _buckets,
-                Occupied = _occupied,
-                Batch = _batchState,
-                Elapsed = Mathf.Clamp(elapsed, 0f, SNAPSHOT_INTERVAL)
+                NextClusterId = _nextClusterId,
+                Elapsed = Mathf.Clamp(elapsed, 0f, SNAPSHOT_INTERVAL),
+                JoinPx = joinPixels,
+                LeavePx = leavePixels,
+                Pitch = pitch
             }.Schedule();
             HasPendingSnapshot = true;
             JobHandle.ScheduleBatchedJobs();
@@ -91,7 +93,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             using var scope = ConsumeMarker.Auto();
             _pending.Complete();
             HasPendingSnapshot = false;
-            LastCandidateCount = _batchState.Value.CandidateCount;
             _published.Clear();
             for (int i = 0; i < _members.Length; i++)
             {
@@ -100,21 +101,24 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                     continue;
                 _published.Add(member.EntityId, member);
             }
+
             _forgotten.Clear();
             return true;
         }
 
-        public bool TryGetSlot(long id, out long groupId, out Vector2Int cell)
+        public bool TryGetCluster(long id, out long clusterId, out int rank, out int count)
         {
-            if (_published.TryGetValue(id, out SquadronGroupingJob.Member member) &&
-                member.HasGrid)
+            if (_published.TryGetValue(id, out SquadronGroupingJob.Member member))
             {
-                groupId = member.GroupId;
-                cell = new Vector2Int(member.Cell.x, member.Cell.y);
+                clusterId = member.ClusterId;
+                rank = member.Rank;
+                count = member.Count;
                 return true;
             }
-            groupId = 0;
-            cell = default;
+
+            clusterId = 0;
+            rank = 0;
+            count = 0;
             return false;
         }
 
@@ -131,12 +135,12 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             _pending.Complete();
             _snapshot.Dispose();
             _members.Dispose();
-            _groups.Dispose();
+            _clusters.Dispose();
             _order.Dispose();
-            _groupById.Dispose();
+            _ranked.Dispose();
+            _clusterById.Dispose();
             _buckets.Dispose();
-            _occupied.Dispose();
-            _batchState.Dispose();
+            _nextClusterId.Dispose();
         }
     }
 }

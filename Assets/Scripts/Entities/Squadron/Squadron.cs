@@ -276,9 +276,7 @@ namespace EmpireAtWar.Entities.Squadrons
             // LateTick applies the host root on replicas. Preserve it before local flight overwrites
             // the transform so the marker follows replicated motion, not the local fighter simulation.
             Vector3 markerCentroid = _isReplica ? previousPosition : _flight.Centroid;
-            bool travelling = _isReplica ? CurrentOrder.IsMoveOrder() : _pilot.IsTravelling;
-            _icon.AdvanceAnchor(markerCentroid, _isReplica ? markerCentroid : _pilot.MarkerIntent,
-                _flight.Data.CruiseSpeed, Data.LoiterRadius, travelling, _pilot.IsFighting, deltaTime);
+            _icon.AdvanceAnchor(markerCentroid, deltaTime);
             if (deltaTime > 0f && !_pilot.HasArrived)
             {
                 float speed = Vector3.Distance(previousPosition, _flight.Centroid) / deltaTime;

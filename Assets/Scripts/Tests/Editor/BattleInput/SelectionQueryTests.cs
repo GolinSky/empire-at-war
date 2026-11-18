@@ -111,7 +111,9 @@ namespace EmpireAtWar.Tests.Editor
             private readonly List<IBattleMarker> _markers = new List<IBattleMarker>();
             public IReadOnlyList<IBattleMarker> Markers => _markers;
             public BattleMarker CreateShipMarker(Sprite icon, Transform anchor) => throw new NotSupportedException();
-            public void Attach(RectTransform root) => throw new NotSupportedException();
+            public void Attach(RectTransform root, bool isSquadron) => throw new NotSupportedException();
+            public void RegisterHull(IBattleHull hull) => throw new NotSupportedException();
+            public void UnregisterHull(IBattleHull hull) => throw new NotSupportedException();
             public void Register(IBattleMarker marker) => _markers.Add(marker);
             public void Unregister(IBattleMarker marker) => _markers.Remove(marker);
             public void InvalidateMembership(long entityId) => throw new NotSupportedException();

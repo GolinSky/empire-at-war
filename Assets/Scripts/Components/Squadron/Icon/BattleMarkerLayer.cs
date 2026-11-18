@@ -21,13 +21,16 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         private static readonly ProfilerMarker CompletionSampler = new ProfilerMarker("Battle.Markers.Consume");
         private static readonly ProfilerMarker LayoutSampler = new ProfilerMarker("Battle.Markers.Layout");
         private readonly List<IBattleMarker> _markers = new List<IBattleMarker>();
+        private readonly List<IBattleHull> _hulls = new List<IBattleHull>();
         private readonly Dictionary<IBattleMarker, int> _indices = new Dictionary<IBattleMarker, int>();
         private readonly SquadronIconGrouping _grouping = new SquadronIconGrouping();
         private readonly BattleMarkerProjection _projection = new BattleMarkerProjection();
         private ICameraService _cameraService;
         private CameraData _cameraData;
         private ICinematicCameraModelObserver _cinematic;
-        private RectTransform _root;
+        private RectTransform _squadronRoot;
+        private RectTransform _shipRoot;
+        private SquadronLeaderLines _leaderLines;
         private Material _iconMaterial;
         private Material _frameMaterial;
         private float _elapsed;
@@ -51,7 +54,25 @@ namespace EmpireAtWar.Components.Squadrons.Icon
                                               AdditionalCanvasShaderChannels.TexCoord2;
             canvas.worldCamera = cameraService.SceneCamera;
             canvas.planeDistance = cameraService.SceneCamera.nearClipPlane + PLANE_DISTANCE_PAST_NEAR_CLIP;
-            _root = (RectTransform)transform;
+            // Squadron and ship markers move independently; separate canvases keep one from rebuilding the other's batches.
+            _shipRoot = CreateSubCanvas("ShipMarkers", canvas);
+            _squadronRoot = CreateSubCanvas("SquadronMarkers", canvas);
+            _leaderLines = new SquadronLeaderLines(_squadronRoot);
+        }
+
+        private RectTransform CreateSubCanvas(string name, Canvas parent)
+        {
+            var child = new GameObject(name, typeof(RectTransform));
+            child.layer = gameObject.layer;
+            var rect = (RectTransform)child.transform;
+            rect.SetParent(transform, false);
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            Canvas canvas = child.AddComponent<Canvas>();
+            canvas.additionalShaderChannels = parent.additionalShaderChannels;
+            return rect;
         }
 
         internal void SetMaterials(Material iconMaterial, Material frameMaterial)
@@ -60,9 +81,9 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             _frameMaterial = frameMaterial;
         }
 
-        public void Attach(RectTransform icon)
+        public void Attach(RectTransform icon, bool isSquadron)
         {
-            icon.SetParent(_root, false);
+            icon.SetParent(isSquadron ? _squadronRoot : _shipRoot, false);
             icon.SetAsLastSibling();
             icon.anchorMin = Vector2.zero;
             icon.anchorMax = Vector2.zero;
@@ -86,7 +107,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             icon.sprite = sprite;
             icon.preserveAspect = true;
             icon.rectTransform.anchoredPosition = new Vector2(0f, -2f);
-            return new BattleMarker(this, rect, frame, icon, 60f * SHIP_MARKER_SCALE, 120.96f, screenOffset: 80f)
+            return new BattleMarker(this, rect, frame, icon, 60f * SHIP_MARKER_SCALE, screenOffset: 80f)
                 { AnchorTransform = anchor };
         }
 
@@ -126,6 +147,10 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             InvalidateMembership(marker.EntityId);
         }
 
+        public void RegisterHull(IBattleHull hull) => _hulls.Add(hull);
+
+        public void UnregisterHull(IBattleHull hull) => _hulls.Remove(hull);
+
         public void InvalidateMembership(long entityId)
         {
             if (_disposed) return;
@@ -136,8 +161,6 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         public void Tick()
         {
             if (_disposed) return;
-            for (int i = 0; i < _markers.Count; i++)
-                ((BattleMarker)_markers[i]).SampleMotion(Time.deltaTime);
             _elapsed += Time.deltaTime;
             if (_grouping.HasPendingSnapshot || !_dirty && _elapsed < SNAPSHOT_INTERVAL) return;
 
@@ -152,18 +175,19 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
             using (SnapshotSampler.Auto())
             {
+                float zoom = CurrentZoomScale();
+                _projection.Prepare(_cameraService.SceneCamera);
                 _grouping.BeginSnapshot(_markers.Count);
                 for (int i = 0; i < _markers.Count; i++)
                 {
                     var marker = (BattleMarker)_markers[i];
-                    if (!marker.IsVisible) continue;
-                    Vector3 position = marker.Position;
-                    Vector3 velocity = marker.Velocity;
-                    _grouping.Add(marker.EntityId, marker.Owner.GetHashCode(),
-                        new Vector2(position.x, position.z), new Vector2(velocity.x, velocity.z));
+                    if (!marker.IsSquadron || !marker.IsVisible ||
+                        !_projection.TryProject(marker.Position, out Vector2 screen)) continue;
+                    _grouping.Add(marker.EntityId, marker.Owner.GetHashCode(), screen);
                 }
 
-                _grouping.Schedule(_elapsed);
+                _grouping.Schedule(_elapsed, BattleMarkerProjection.JoinPixels(zoom),
+                    BattleMarkerProjection.LeavePixels(zoom), BattleMarkerProjection.Pitch(zoom));
             }
             _elapsed = 0f;
             _dirty = false;
@@ -177,14 +201,21 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             if (_cinematic.IsActive)
             {
                 for (int i = 0; i < _markers.Count; i++) ((BattleMarker)_markers[i]).Hide();
+                _leaderLines.Begin();
+                _leaderLines.End();
                 return;
             }
 
-            UnityEngine.Camera camera = _cameraService.SceneCamera;
-            Vector3 position = _cameraService.CameraPosition;
-            float zoom = Mathf.InverseLerp(_cameraData.ZoomRange.Min, _cameraData.ZoomRange.Max, position.y);
             using (LayoutSampler.Auto())
-                _projection.Draw(_markers, _grouping, camera, Mathf.Lerp(1.5f, 0.5f, zoom));
+                _projection.Draw(_markers, _hulls, _grouping, _cameraService.SceneCamera, CurrentZoomScale(),
+                    Time.unscaledDeltaTime, _leaderLines);
+        }
+
+        private float CurrentZoomScale()
+        {
+            float zoom = Mathf.InverseLerp(_cameraData.ZoomRange.Min, _cameraData.ZoomRange.Max,
+                _cameraService.CameraPosition.y);
+            return Mathf.Lerp(1.5f, 0.5f, zoom);
         }
 
         public void LateDispose()

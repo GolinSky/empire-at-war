@@ -8,19 +8,17 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 {
     public sealed class BattleMarker : IBattleMarker, IDisposable
     {
-        private const float HIT_SETTLE_PIXELS = 0.5f;
+        private const float SMOOTH_TIME = 0.1f;
         private readonly IBattleMarkerLayer _layer;
         private readonly RectTransform _root;
         private readonly Image _frame;
         private readonly Image _icon;
         private readonly float _visualSize;
         private bool _registered;
-        private float _zoom;
-        private float _hitSize;
-        private Vector2 _layoutOffset;
-        private Vector2 _lastLayout;
-        private long _lastGroup;
-        private Vector2Int _lastCell;
+        private float _scale;
+        private long _layoutKey;
+        private ScreenSpring _follow;
+        private Vector2 _displayed;
 
         public long EntityId { get; private set; }
         public bool IsSquadron { get; }
@@ -28,30 +26,27 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         public Rect ScreenRect { get; private set; }
         public int DrawOrder { get; internal set; }
 
-        internal readonly float ClickSize;
         internal readonly float ScreenOffset;
         internal float VisualSize => _visualSize;
         internal Transform AnchorTransform { get; set; }
         internal Vector3 Position => IsSquadron ? _position : AnchorTransform.position;
-        internal Vector3 Velocity { get; set; }
         internal PlayerId Owner { get; private set; }
         internal bool IsVisible { get; private set; }
         internal Action SampleVisibility { get; set; }
-        internal long ProjectionGroup { get; set; }
-        internal Vector3 ProjectionOffset { get; set; }
+        internal Vector2 ProjectedAnchor { get; set; }
+        internal int ClusterSlot { get; set; }
+        internal int Rank { get; set; }
 
         private Vector3 _position;
-        private Vector3 _previousPosition;
 
         public BattleMarker(IBattleMarkerLayer layer, RectTransform root, Image frame, Image icon,
-            float visualSize = 72f, float clickSize = 132f, float screenOffset = 60f, bool isSquadron = false)
+            float visualSize = 72f, float screenOffset = 60f, bool isSquadron = false)
         {
             _layer = layer;
             _root = root;
             _frame = frame;
             _icon = icon;
             _visualSize = visualSize;
-            ClickSize = clickSize;
             ScreenOffset = screenOffset;
             IsSquadron = isSquadron;
         }
@@ -60,13 +55,10 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         {
             EntityId = entityId;
             Owner = owner;
-            _previousPosition = Position;
-            Velocity = Vector3.zero;
-            _layer.Attach(_root);
+            _layer.Attach(_root, IsSquadron);
             _root.sizeDelta = Vector2.one * _visualSize;
             _root.gameObject.SetActive(false);
-            _zoom = 0f;
-            ProjectionGroup = 0;
+            _scale = 0f;
             _registered = true;
             _layer.Register(this);
         }
@@ -89,18 +81,9 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         public void SetPosition(Vector3 position) => _position = position;
 
-        internal void SampleMotion(float deltaTime)
-        {
-            if (IsSquadron || deltaTime <= 0f) return;
-            Vector3 position = Position;
-            Velocity = (position - _previousPosition) / deltaTime;
-            _previousPosition = position;
-        }
-
         internal void ResetPosition(Vector3 position)
         {
             _position = position;
-            Velocity = Vector3.zero;
             if (_registered) _layer.InvalidateMembership(EntityId);
             Hide();
         }
@@ -128,49 +111,41 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             if (_root != null) _root.gameObject.SetActive(false);
         }
 
-        internal void Display(Vector2 center, Rect viewport, float zoom, float hitSize,
-            float blend, long groupId = 0, Vector2Int cell = default, float visualScale = 1f)
+        /// <summary>
+        /// Draws at <paramref name="target"/> plus a decaying offset. A new <paramref name="layoutKey"/>
+        /// (cluster, rank or membership change) folds the jump into the offset so motion stays continuous.
+        /// </summary>
+        internal void Display(Vector2 target, Rect viewport, float scale, long layoutKey, float deltaTime)
         {
-            float half = hitSize * 0.5f;
-            if (center.x < viewport.xMin - half || center.x > viewport.xMax + half ||
-                center.y < viewport.yMin - half || center.y > viewport.yMax + half)
+            float half = _visualSize * scale * 0.5f;
+            if (!IsShown)
+            {
+                _follow = default;
+            }
+            else if (layoutKey != _layoutKey)
+            {
+                _follow.Value = _displayed - target;
+            }
+
+            _layoutKey = layoutKey;
+            _follow.Step(Vector2.zero, SMOOTH_TIME, deltaTime);
+            _displayed = target + _follow.Value;
+            if (_displayed.x < viewport.xMin - half || _displayed.x > viewport.xMax + half ||
+                _displayed.y < viewport.yMin - half || _displayed.y > viewport.yMax + half)
             {
                 Hide();
                 return;
             }
 
-            if (!IsShown)
+            _root.anchoredPosition = _displayed - viewport.min;
+            if (scale != _scale)
             {
-                _layoutOffset = Vector2.zero;
-                _hitSize = hitSize;
-            }
-            else if (_lastGroup != groupId || _lastCell != cell)
-            {
-                _layoutOffset = _lastLayout + _layoutOffset - center;
-            }
-
-            _lastGroup = groupId;
-            _lastCell = cell;
-            _lastLayout = center;
-            _layoutOffset *= 1f - blend;
-            if (_layoutOffset.sqrMagnitude <= HIT_SETTLE_PIXELS * HIT_SETTLE_PIXELS)
-                _layoutOffset = Vector2.zero;
-            _hitSize = Mathf.Lerp(_hitSize, hitSize, blend);
-            if (Mathf.Abs(_hitSize - hitSize) <= HIT_SETTLE_PIXELS) _hitSize = hitSize;
-
-            Vector2 local = center + _layoutOffset - viewport.min;
-            if (!IsShown || (local - _root.anchoredPosition).sqrMagnitude > 0.25f)
-                _root.anchoredPosition = local;
-            float scale = zoom * visualScale;
-            if (scale != _zoom)
-            {
-                _zoom = scale;
+                _scale = scale;
                 _root.localScale = Vector3.one * scale;
             }
 
-            Vector2 displayed = _root.anchoredPosition + viewport.min;
-            Vector2 size = Vector2.one * _hitSize;
-            ScreenRect = new Rect(displayed - size * 0.5f, size);
+            Vector2 size = Vector2.one * (half * 2f);
+            ScreenRect = new Rect(_displayed - size * 0.5f, size);
             if (!IsShown)
             {
                 IsShown = true;

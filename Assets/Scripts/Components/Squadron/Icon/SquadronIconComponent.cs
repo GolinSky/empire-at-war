@@ -19,9 +19,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
         [SerializeField] private Image frameImage;
         [SerializeField] private Image iconImage;
         [SerializeField, Min(1f)] private float screenSize = 72f;
-        [SerializeField, Min(1f)] private float clickSize = 132f;
         [SerializeField] private float screenOffset = 60f;
-        [SerializeField, Min(0.01f)] private float followSharpness = 12f;
 
         private readonly SquadronMarkerAnchor _anchor = new SquadronMarkerAnchor();
         private BattleMarker _marker;
@@ -47,7 +45,7 @@ namespace EmpireAtWar.Components.Squadrons.Icon
             _entityId = entityId;
             _modifiers = modifiers;
             _fog = fog;
-            _marker = new BattleMarker(layer, iconRoot, frameImage, iconImage, screenSize, clickSize, screenOffset, true);
+            _marker = new BattleMarker(layer, iconRoot, frameImage, iconImage, screenSize, screenOffset, true);
             _marker.SampleVisibility = RefreshVisibility;
         }
 
@@ -66,15 +64,13 @@ namespace EmpireAtWar.Components.Squadrons.Icon
 
         public void Respawn() => Initialize();
 
-        public void AdvanceAnchor(Vector3 centroid, Vector3 intent, float cruiseSpeed, float loiterRadius,
-            bool travelling, bool fighting, float deltaTime)
+        public void AdvanceAnchor(Vector3 centroid, float deltaTime)
         {
             if (_isReleased || deltaTime <= 0f) return;
 
-            if (_anchor.Advance(centroid, intent, cruiseSpeed, loiterRadius, travelling, fighting, followSharpness, deltaTime))
+            if (_anchor.Advance(centroid, deltaTime))
                 _marker.ResetPosition(centroid);
             _marker.SetPosition(_anchor.Position);
-            _marker.Velocity = _anchor.Velocity;
         }
 
         public override void Release()

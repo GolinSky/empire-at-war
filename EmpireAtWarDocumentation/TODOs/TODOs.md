@@ -9,6 +9,7 @@
 
 ### Features
 
+- [ ] **Squadron icon clustering rebuild (screen-space matrix grid, smooth, ship-aware, cheap)** → [[TODOs/Features/Squadron_Icon_Clustering_Rebuild|Squadron Icon Clustering Rebuild]] — 2026-11-18: phases 1–6 implemented and compiled (tests not run); remaining: user capture, station hull obstacles, optional mesh batching.
 - [ ] **Squadron bay rotation: ship-wide active squadron cap (Bulwark = 1)** → [[TODOs/Features/Squadron_Bay_Rotation_Plan|Squadron Bay Rotation Plan]]
   - 2026-11-18: Gemini per-bay data edit reverted (`8925de639`); code/data back to pre-Gemini state. Plan: Phase 1 per-ship `HangarMaxActive` code, Phase 2 values (12 ships → 0, 28 → 1), Phase 3 cap-aware AI/preload readers, Phase 4 rotation for all except Venator/VenatorII/Lucrehulk/Secutor/MC80Independence/HomeOne/ImperialVenator/ISDI/ISDII. Bulwark Mk1 = 0 (confirmed).
 - [ ] **Forbidden UI SFX** → [[Done/Features/Ui_Sfx_System#Deferred follow-up|Deferred forbidden cue]].
