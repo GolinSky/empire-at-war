@@ -44,7 +44,7 @@ created: 2026-11-16
 ### Playtest 2026-11-18 12:13–12:47 (user, Editor, Cinematic, 2558×1239, 4 players Skirmish Full Large, seed −1922274398, source `8787a78e1`+dirty)
 - Archive: `Logs/Playtests/20261118T1013Z/` (telemetry, `fps_history_editor.csv`, Editor.log, `movement_audit.txt`, scripts). Saves for comparison: `saves/fps-mid-game.json` (12:21), `fps-late-game.json` (12:34), `fps-late-game-p2.json` (12:45); live copies in `%USERPROFILE%/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/Saves/Skirmish/`.
 - FPS by minute (`fps_history_editor.csv`, run `87d9cd81…`): 122 fps at 51 entities → 52–64 fps at 170–230 entities from minute 7 on; p95 26–37 ms.
-- **A ~300–350 ms frame in every 60 s window from minute 1 (51 entities) to the end** → periodic, not load-driven. Not attributed yet (candidates: GC, autosave, telemetry flush).
+- **A ~300–380 ms frame every ~35 s** (57 frames > 200 ms; gaps 30 → 41 s, growing as FPS drops) from minute 1 to the end. Recorded main-thread scopes cover only 5–29 ms of it. `gcIncremental: 0`. Attribution needs new instruments → [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]]. Hitch CSV: `Logs/Playtests/20261118T1013Z/telemetry/hitch_87d9cd81ee954b8995acc5e89400c902.csv`.
 - >50 ms frames per minute jump from 1–10 to 45–118 after minute 24 (late game).
 - Memory: 3.3 GB → 4.3 GB over 31 min (no plateau).
 - Agent CPU capture 10:45 UTC (`Logs/BattleAudit/20261118T1050Z/analysis.md`, 3205 frames): median 15.5 / p95 31.9 / p99 81 / max 340 ms; 154 frames > 50 ms every ~27 frames; GC 189 KB/frame mean, 117 frames > 1 MB, peak 17 MB; GPU 0.98 ms (CPU-bound).
