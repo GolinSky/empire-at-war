@@ -74,10 +74,6 @@ namespace EmpireAtWar.Components.Squadrons.Flight
 
             Model.Spawn(_spawnPositions, heading);
             ApplyPoses();
-            foreach (FighterView fighter in fighters)
-            {
-                fighter.ClearTrails();
-            }
 
             if (_poseSlots == null || _poseSlots.Length != fighters.Count)
                 _poseSlots = new int[fighters.Count];
@@ -144,7 +140,6 @@ namespace EmpireAtWar.Components.Squadrons.Flight
                     NumericsVector3 position = Model.GetCentroid() + SquadronFormation.ToWorld(slot, heading);
                     Model.RestoreMember(i, position, heading);
                     fighters[i].ApplyPose(position.ToUnity(), heading.ToUnity(), 0f);
-                    fighters[i].ClearTrails();
                 }
             }
 

@@ -207,6 +207,25 @@ namespace EmpireAtWar.Tests.Weapon
             Assert.That(mount.CanEngage(ShipClass.Capital), Is.True);
         }
 
+        [Test]
+        public void Torpedo_CanStartSalvoOnlyOnFreshAttackRun()
+        {
+            FighterTorpedoHardPoint mount = Track(new GameObject("Torpedo")).AddComponent<FighterTorpedoHardPoint>();
+            AttackRunCounter runs = new AttackRunCounter();
+            typeof(FighterTorpedoHardPoint).GetField("_attackRuns", PRIVATE_INSTANCE).SetValue(mount, runs);
+
+            Assert.That(mount.CanStartSalvo, Is.False, "No attack run outside an engagement.");
+
+            runs.Run = 1;
+            Assert.That(mount.CanStartSalvo, Is.True);
+
+            typeof(FighterTorpedoHardPoint).GetField("_firedRun", PRIVATE_INSTANCE).SetValue(mount, 1);
+            Assert.That(mount.CanStartSalvo, Is.False, "The run already fired its torpedo.");
+
+            runs.Run = 2;
+            Assert.That(mount.CanStartSalvo, Is.True);
+        }
+
         [TestCase(DamageType.Ion)]
         [TestCase(DamageType.IonCannon)]
         public void IonMount_DoesNotAcquireStrikecraft(DamageType damageType)
@@ -293,6 +312,12 @@ namespace EmpireAtWar.Tests.Weapon
         private sealed class AttackRunStub : IFighterAttackRunObserver
         {
             public int GetAttackRun(int fighterIndex) => 1;
+        }
+
+        private sealed class AttackRunCounter : IFighterAttackRunObserver
+        {
+            public int Run;
+            public int GetAttackRun(int fighterIndex) => Run;
         }
 
         [Test]

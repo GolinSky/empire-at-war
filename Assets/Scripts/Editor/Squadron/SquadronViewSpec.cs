@@ -12,13 +12,10 @@ namespace EmpireAtWar.Editor.Squadrons
         public Vector3 ModelEuler { get; }
         public Vector3 ModelOffset { get; }
         public float GunForward { get; }
-        public float ColliderRadius { get; }
-        public Vector3[] TrailOffsets { get; }
-        public Color TrailColor { get; }
 
-        public SquadronViewSpec(Vector3[] trailOffsets, string modelPath, SquadronType type,
-            Vector3 modelEuler, Vector3 modelOffset, Color trailColor, float modelScale,
-            float gunForward, float colliderRadius, int memberCount)
+        public SquadronViewSpec(string modelPath, SquadronType type,
+            Vector3 modelEuler, Vector3 modelOffset, float modelScale,
+            float gunForward, int memberCount)
         {
             Type = type;
             ModelPath = modelPath;
@@ -27,9 +24,6 @@ namespace EmpireAtWar.Editor.Squadrons
             ModelEuler = modelEuler;
             ModelOffset = modelOffset;
             GunForward = gunForward;
-            ColliderRadius = colliderRadius;
-            TrailOffsets = trailOffsets;
-            TrailColor = trailColor;
         }
     }
 }

@@ -9,6 +9,7 @@ using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Entities.Squadrons.EntityFacades;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Models.Selection;
 using EmpireAtWar.Services.Audio;
 using EmpireAtWar.Services.Selection;
 using EmpireAtWar.Services.ShipAbilities;
@@ -37,7 +38,11 @@ namespace EmpireAtWar.Entities.Squadrons
             builder.RegisterInstance(_squadronType);
             builder.RegisterInstance(_rotation);
             builder.Register<ShipSfxHandle>(Lifetime.Singleton);
-            EntityFeatureBindings.RegisterSelection(builder, Bindings, SelectionType.Ship, SelectionType.Ship);
+            // No world selection ring: the squadron icon shows the selected state.
+            builder.RegisterInstance(SelectionType.Ship);
+            builder.Register<SelectionModel>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<SquadronSelectionFacade>(Lifetime.Singleton).AsImplementedInterfaces()
+                .WithParameter("selectionType", SelectionType.Ship);
             EntityFeatureBindings.RegisterRadar(builder, Bindings);
             EntityFeatureBindings.RegisterWeapons(builder, Bindings, Data.ShipClass);
             foreach (var weapon in Bindings.Weapons)

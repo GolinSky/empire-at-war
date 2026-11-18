@@ -142,6 +142,11 @@ created: 2026-11-17
 - Height-aware contact distance (ships on non-overlapping height spans still get contact slack).
 - Tests not run (local override).
 
+### Follow-up 2026-11-18
+- Wrong-way / map-edge Attack legs (ISD II 256, 16:01) and "moves although in range" moved to [[TODOs/Bugs/Attack_Order_Hold_In_Range]] (artillery retreat band 0.8×reach → 0.9×reach leg; formation-side bearing; same-target re-issue resets hold).
+- Review corrections still to apply to this note: Phase 2/3 checkboxes not ticked though Report says done/decided; "Progress" still claims H1 check added (reverted `d813ee1ea`); Phase 0 says fix uncommitted (committed `aec386848`); footprint audit used half-length, Phase 2 item asks half-diagonal (ISD II 103.2 vs 91.46 open); note not committed.
+- 147 s Mandator 247 example: `Idle` 65–110 s and 154–175 s (fighting); turning only 15–59, 136–146, 185–207 s. Re-issued orders do not restart the turn; moving ships brake (`BrakeForReplan`) for routes > 1° off heading.
+
 ### Progress 2026-11-17 (agent run)
 - Phase 0 step 3/4 done in `ShipNavMesh.cs`: spawn checks (`IsReachable`, overlay job) use `SpawnOriginRegion()`. An unresolved origin falls back to the nearest free triangle's region instead of rejecting everything; routing keeps the strict origin (`RoutingOriginRegion()`). The overlay job already treats region 0 as blocked, so "floods region 0" did not occur in current code.
 - Not done: offline seed repro (step 1), per-origin isolation (step 5), regression tests (step 6). Origin sharing is correctness-neutral (origin is reset before each call) but thrashes the reachability cache.

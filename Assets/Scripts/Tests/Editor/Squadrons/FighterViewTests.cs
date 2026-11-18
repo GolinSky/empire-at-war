@@ -65,12 +65,10 @@ namespace EmpireAtWar.Tests.Editor
         public void Restore_DeadFighterDisablesItsViewWithoutExplosion_AndNextDeathExplodes()
         {
             (FighterView view, Transform body) = InactiveFighter(Quaternion.identity);
-            Collider hitCollider = view.gameObject.AddComponent<BoxCollider>();
             WeaponHardPoint gun = body.gameObject.AddComponent<WeaponHardPoint>();
             typeof(HardPoint).GetField("spawnDestroyedExplosion", BindingFlags.Instance | BindingFlags.NonPublic)
                 .SetValue(gun, false);
-            TrailRenderer trail = body.gameObject.AddComponent<TrailRenderer>();
-            view.SetEditorReferences(1, body, hitCollider, gun, new[] { trail });
+            view.SetEditorReferences(1, body, gun);
             SilentExplosions explosions = new SilentExplosions();
             ContainerBuilder builder = new ContainerBuilder();
             builder.RegisterInstance<IFighterExplosionPool>(explosions);
@@ -85,17 +83,13 @@ namespace EmpireAtWar.Tests.Editor
 
                 Assert.That(view.IsDestroyed, Is.True);
                 Assert.That(body.gameObject.activeSelf, Is.False);
-                Assert.That(hitCollider.enabled, Is.False);
                 Assert.That(gun.IsDestroyed, Is.True);
-                Assert.That(trail.emitting, Is.False);
                 Assert.That(explosions.PlayCount, Is.Zero);
 
                 model.SetHealth(100f, 1f);
 
                 Assert.That(body.gameObject.activeSelf, Is.True);
-                Assert.That(hitCollider.enabled, Is.True);
                 Assert.That(gun.IsDestroyed, Is.False);
-                Assert.That(trail.emitting, Is.True);
                 model.ApplyDamage(100f);
                 Assert.That(explosions.PlayCount, Is.EqualTo(1));
             }
@@ -110,7 +104,7 @@ namespace EmpireAtWar.Tests.Editor
             body.transform.SetParent(fighter.transform, false);
             body.transform.localRotation = rest;
             FighterView view = fighter.AddComponent<FighterView>();
-            view.SetEditorReferences(1, body.transform, null, null, System.Array.Empty<TrailRenderer>());
+            view.SetEditorReferences(1, body.transform, null);
             return (view, body.transform);
         }
 

@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using EmpireAtWar.Components.Ship.Selection;
-using EmpireAtWar.Components.Squadrons.Flight;
-using EmpireAtWar.Entities.Squadrons.Data;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Models.Selection;
 using EmpireAtWar.ViewComponents.Health;
@@ -25,63 +23,6 @@ namespace EmpireAtWar.Tests.Editor
 
         private static IEnumerable<string> ShipPrefabPaths =>
             Directory.GetFiles("Assets/Prefabs/Models/Ships", "*ShipView.prefab", SearchOption.AllDirectories);
-
-        private static IEnumerable<string> SquadronPrefabPaths =>
-            Directory.GetFiles("Assets/Prefabs/Models/Squadrons", "*SquadronView.prefab");
-
-        [TestCaseSource(nameof(SquadronPrefabPaths))]
-        public void SquadronSelectionRing_FitsRuntimeFormationAndMatchesSavedPreview(string prefabPath)
-        {
-            GameObject root = PrefabUtility.LoadPrefabContents(prefabPath);
-            try
-            {
-                string dataName = Path.GetFileNameWithoutExtension(prefabPath).Replace("View", "Data");
-                SquadronData data = AssetDatabase.LoadAssetAtPath<SquadronData>(
-                    $"Assets/Settings/Data/Squadron/{dataName}.asset");
-                Assert.That(data, Is.Not.Null);
-                SquadronFlightComponent flight = root.GetComponent<SquadronFlightComponent>();
-                SerializedProperty fighters = new SerializedObject(flight).FindProperty("fighters");
-                Assert.That(fighters.arraySize, Is.GreaterThan(0));
-                Vector2 centroid = Vector2.zero;
-                for (int i = 0; i < fighters.arraySize; i++)
-                {
-                    System.Numerics.Vector3 slot = SquadronFormation.GetSlot(i, data.FormationSpacing);
-                    centroid += new Vector2(slot.X, slot.Z);
-                }
-
-                centroid /= fighters.arraySize;
-                float radius = 0f;
-                for (int i = 0; i < fighters.arraySize; i++)
-                {
-                    Object fighter = fighters.GetArrayElementAtIndex(i).objectReferenceValue;
-                    SphereCollider hull = (SphereCollider)new SerializedObject(fighter)
-                        .FindProperty("hitCollider").objectReferenceValue;
-                    System.Numerics.Vector3 slot = SquadronFormation.GetSlot(i, data.FormationSpacing);
-                    float hullRadius = hull.radius * Mathf.Max(Mathf.Abs(hull.transform.lossyScale.x),
-                        Mathf.Abs(hull.transform.lossyScale.z));
-                    radius = Mathf.Max(radius, (new Vector2(slot.X, slot.Z) - centroid).magnitude + hullRadius);
-                }
-
-                SelectionComponent selection = root.GetComponent<SelectionComponent>();
-                SerializedObject serializedSelection = new SerializedObject(selection);
-                SpriteRenderer ring = (SpriteRenderer)serializedSelection.FindProperty("selectedRenderer")
-                    .objectReferenceValue;
-                Vector2 ringSize = serializedSelection.FindProperty("ringSize").vector2Value;
-                float ringWidth = ring.transform.parent.TransformVector(Vector3.right * ringSize.x).magnitude;
-                float ringHeight = ring.transform.parent.TransformVector(Vector3.up * ringSize.y).magnitude;
-                Assert.That(ringWidth * RING_VISIBLE_FRACTION / (2f * radius), Is.InRange(1.1f, 1.2f));
-                Assert.That(ringHeight * RING_VISIBLE_FRACTION / (2f * radius), Is.InRange(1.1f, 1.2f));
-                Vector3 spriteSize = ring.sprite.bounds.size;
-                Assert.That(ring.transform.TransformVector(Vector3.right * spriteSize.x).magnitude,
-                    Is.EqualTo(ringWidth).Within(0.001f));
-                Assert.That(ring.transform.TransformVector(Vector3.up * spriteSize.y).magnitude,
-                    Is.EqualTo(ringHeight).Within(0.001f));
-            }
-            finally
-            {
-                PrefabUtility.UnloadPrefabContents(root);
-            }
-        }
 
         [TestCaseSource(nameof(ShipPrefabPaths))]
         public void ShipSelectionRing_InitializationFitsHullWithoutMovingHealthAnchor(string prefabPath)

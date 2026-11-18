@@ -15,10 +15,8 @@ namespace EmpireAtWar.ViewComponents.Squadrons
     public sealed class FighterView : MonoBehaviour, IHardPoint
     {
         [SerializeField] private Transform body;
-        [SerializeField] private Collider hitCollider;
         [SerializeField] private WeaponHardPoint gun;
         [SerializeField] private WeaponHardPoint[] additionalGuns = System.Array.Empty<WeaponHardPoint>();
-        [SerializeField] private TrailRenderer[] engineTrails;
 
         private IFighterExplosionPool _explosions;
         private Quaternion _bodyRestRotation;
@@ -53,20 +51,12 @@ namespace EmpireAtWar.ViewComponents.Squadrons
         /// <summary>Records the pose's position for targeting; <see cref="FighterPoseBatch"/> moves the transform.</summary>
         public void RecordPosition(Vector3 position) => _position = position;
 
-        /// <summary>Moves the fighter at once, e.g. when it spawns and its trails are cleared right after.</summary>
+        /// <summary>Moves the fighter at once, e.g. when it spawns or is restored.</summary>
         public void ApplyPose(Vector3 position, Vector3 forward, float bank)
         {
             _position = position;
             transform.SetPositionAndRotation(position, Quaternion.LookRotation(forward, Vector3.up));
             body.localRotation = Quaternion.AngleAxis(bank, Vector3.forward) * _bodyRestRotation;
-        }
-
-        public void ClearTrails()
-        {
-            foreach (TrailRenderer trail in engineTrails)
-            {
-                trail.Clear();
-            }
         }
 
         public void UpdateData(float healthPercentage)
@@ -99,11 +89,6 @@ namespace EmpireAtWar.ViewComponents.Squadrons
                 additionalGun.UpdateData(0f);
             }
             body.gameObject.SetActive(false);
-            hitCollider.enabled = false;
-            foreach (TrailRenderer trail in engineTrails)
-            {
-                trail.emitting = false;
-            }
         }
 
         // A reused squadron brings its destroyed fighters back.
@@ -115,22 +100,14 @@ namespace EmpireAtWar.ViewComponents.Squadrons
                 additionalGun.UpdateData(_healthPercentage);
             }
             body.gameObject.SetActive(true);
-            hitCollider.enabled = true;
-            foreach (TrailRenderer trail in engineTrails)
-            {
-                trail.emitting = true;
-            }
         }
 
 #if UNITY_EDITOR
-        public void SetEditorReferences(int fighterId, Transform bodyTransform, Collider collider,
-            WeaponHardPoint weaponHardPoint, TrailRenderer[] trails)
+        public void SetEditorReferences(int fighterId, Transform bodyTransform, WeaponHardPoint weaponHardPoint)
         {
             id = fighterId;
             body = bodyTransform;
-            hitCollider = collider;
             gun = weaponHardPoint;
-            engineTrails = trails;
         }
 #endif
     }

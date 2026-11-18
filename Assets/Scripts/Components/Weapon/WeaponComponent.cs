@@ -607,7 +607,7 @@ namespace EmpireAtWar.Components.Weapon
             {
                 WeaponHardPoint weapon = hardPoints[i];
                 if (weapon.IsDestroyed) weapon.CancelPendingAdmission();
-                if (!weapon.IsDestroyed && !weapon.IsBusy && Time.time >= _retryAt[i])
+                if (!weapon.IsDestroyed && !weapon.IsBusy && weapon.CanStartSalvo && Time.time >= _retryAt[i])
                     _attackCoordinator.QueueTargetSelection(this, weapon);
             }
 

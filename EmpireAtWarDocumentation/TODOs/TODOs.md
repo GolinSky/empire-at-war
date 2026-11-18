@@ -69,6 +69,19 @@
 
 - [ ] **Capital attack movement + class rework fixes** → [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes]]
   - Status: in progress (2026-11-17). Done: map seed/layout log (`BattleMapTelemetry` → `_map.csv`). ISD I spawn fixed and user-confirmed 2026-11-17 (a station-centred origin tied between the main region and a corner pocket; the larger region now wins). Next: Phase 1/2 movement issues and the uncommitted class-rework edits. Then the Titan/Allegiance freeze, Executor holding out of reach, Tector stern-first retreat at stations, and class-rework review defects.
+- [ ] **[AGY] Weapon Fire Rate Degradation and Ability Sync Crash at Low FPS** → [[TODOs/Bugs/Weapon_Fire_Rate_And_Network_Sync_Low_FPS_AGY|Plan]]
+- [ ] **[AGY] Capital Movement and Class Rework Fixes (Audit & Reconciled Plan)** → [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes_AGY|Plan]]
+- [ ] **[AGY] Ship Attack Order Hold-in-Range Band and Formation Offset Fix** → [[TODOs/Bugs/Attack_Order_Hold_In_Range_And_Formation_Offsets_AGY|Plan]]
+- [ ] **[AGY] Enemy AI Mid-Fight Base Defense at Level 3 and Difficulty Consistency** → [[TODOs/Bugs/Enemy_AI_Base_Defense_And_MidGame_Consistency_AGY|Plan]]
+- [ ] **Weapon fire rate drops at low FPS (shots gated on visual projectile pool, 1 bolt/frame growth)** → [[TODOs/Bugs/Weapon_Fire_Rate_Low_FPS]]
+  - 2026-11-18: cause from source after online battles 2026-11-17 (logs `Logs/OnlineBattles/20261117T1650Z/`). Nothing implemented; Phase 1 measurement next.
+- [ ] **Attack order: hold while in range, no run-away / map-edge legs** → [[TODOs/Bugs/Attack_Order_Hold_In_Range]]
+  - 2026-11-18: main cause verified: `UnitOrderService.AttackOffsets` ring radius `R/sin(π/N)` counts squadrons (Executor in 22 units → 7,443) → legs to the map edge. Also artillery band, same-target re-issue reset. Nothing implemented.
+- [ ] **Squadron FPS (icon stacking/grid out of scope: user rebuild)** → [[TODOs/Bugs/Squadron_Count_Stacking_And_FPS]]
+  - 2026-11-18: 1v1 Editor peak 127 live squadrons (≈1,000 craft). Fixed (compiled, prefabs saved, tests not run): torpedo-mount per-frame target selection; removed 334 engine trails, 186 fighter colliders, squadron world selection rings (icon-only selection), 212 dead flash meshes, 234 fighter shadow casters. Next: fighters out of root hierarchy, mesh merge/LOD, remove model-embedded muzzle-flash meshes from all models (12 model files + reinforcement/ship prefabs), split fighter/ship projectile pools, radar per-frame tick.
+- [ ] **Ship ability event throws for destroyed caster (online host, 9× per session)** → [[TODOs/Bugs/Ship_Ability_Event_Destroyed_Caster]]
+- [ ] **Enemy AI weak base defense + inconsistent UltraHard** → [[TODOs/Bugs/Enemy_AI_Base_Defense_And_Consistency]]
+  - 2026-11-18: UltraHard `defenseThreatRatio` 1.5 (highest bar) + whole-fleet commit. Nothing implemented; "lvl 3" meaning to confirm.
 - [ ] **Ship hardpoints, firing angles and balance** → [[TODOs/Bugs/Ship_Hardpoint_And_Balance_Plan]]
   - Status: in progress (2026-11-15). Recusant weapon profile swaps saved and verified with existing arcs. Recusant battle output, Peleset/Recalcitrant wrapped yaw, Dispatcher/Resolute/Arquitens arcs, Mandator economics and shared-prefab telemetry remain under review.
 
@@ -96,6 +109,10 @@
 ### Optimization
 
 
+
+- [ ] **Online battle low FPS (3 humans vs 4 AI, 10–20 FPS) + release-build telemetry** → [[TODOs/Optimization/Online_Battle_Low_FPS]]
+  - 2026-11-18: logs archived and split per battle; release `Player.log` has no timing data. Decided: keep `Maximum Allowed Timestep` 0.333 (no slow motion above 3 FPS); move radar scans from fixed steps to one batched pass per frame. Next: Phase 0 release telemetry, Phase 1 Development capture.
+- [ ] **[AGY] Online Battle 10-20 FPS Host and Client Performance Optimization** → [[TODOs/Optimization/Online_Battle_Low_FPS_Host_And_Client_AGY|Plan]]
 
 - [ ] **Live battle CPU sweep: AI decision spikes, stalls/GC, pool pre-grow, attack state, squadrons, steady costs** → [[TODOs/Optimization/Live_Battle_CPU_Sweep_Plan|Live Battle CPU Sweep Plan]]
   - 2026-11-16: plan written from post-fix captures (frame avg 14.0 ms, p95 26.3, max 420; main-thread bound). Nothing implemented. Next: Phase 0 baseline + user test run, then Phase 1 AI decision markers.

@@ -13,6 +13,15 @@ namespace EmpireAtWar.ViewComponents.Health
         private IFighterAttackRunObserver _attackRuns;
         private int _firedRun;
         internal override bool ShipsOnly => true;
+        // One torpedo per attack run: outside a fresh run the mount would refuse, so it skips target selection.
+        internal override bool CanStartSalvo
+        {
+            get
+            {
+                int run = _attackRuns.GetAttackRun(fighterIndex);
+                return run != 0 && run != _firedRun;
+            }
+        }
 
         [Inject]
         private void Construct(IFighterAttackRunObserver attackRuns)
@@ -22,9 +31,8 @@ namespace EmpireAtWar.ViewComponents.Health
 
         public override void Attack(AttackData attackData, IHardPointModel hardPointModel)
         {
-            int run = _attackRuns.GetAttackRun(fighterIndex);
-            if (run == 0 || run == _firedRun) return;
-            if (TryAttack(attackData, hardPointModel)) _firedRun = run;
+            if (!CanStartSalvo) return;
+            if (TryAttack(attackData, hardPointModel)) _firedRun = _attackRuns.GetAttackRun(fighterIndex);
         }
 
         public override void RestartAttackSequence()
