@@ -130,7 +130,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(entry.IsHero, Is.True);
             Assert.That(entry.MaxCount, Is.EqualTo(1));
             Assert.That(entry.AvailableLevel, Is.EqualTo(4));
-            Assert.That(entry.Price, Is.EqualTo(6000));
+            Assert.That(entry.Price, Is.EqualTo(3000));
             Assert.That(entry.BuildTime, Is.EqualTo(40));
             Assert.That(entry.UnitCapacity, Is.EqualTo(3));
             Assert.That(entry.Icon, Is.Not.Null);

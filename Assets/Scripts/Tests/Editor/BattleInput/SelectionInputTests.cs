@@ -34,6 +34,8 @@ namespace EmpireAtWar.Tests.Selection
     [Category("BattleInput")]
     public sealed class SelectionInputTests
     {
+        private const string RUN_PLAYER_UPDATES_IN_EDIT_MODE = "RUN_PLAYER_UPDATES_IN_EDIT_MODE";
+
         [TestCase(Key.Q, false)]
         [TestCase(Key.Q, true)]
         [TestCase(Key.W, false)]
@@ -68,10 +70,16 @@ namespace EmpireAtWar.Tests.Selection
             FakeEntity expectedVisible = key == Key.Q ? visibleSquadron : visibleShip;
             FakeEntity expectedOffscreen = key == Key.Q ? offscreenSquadron : offscreenShip;
             provider.Actions.asset.devices = new InputDevice[] { keyboard };
-            provider.Actions.Battle.Enable();
             selection.Initialize();
+            InputSettings originalSettings = InputSystem.settings;
+            InputSettings testSettings = UnityEngine.Object.Instantiate(originalSettings);
             try
             {
+                testSettings.updateMode = InputSettings.UpdateMode.ProcessEventsManually;
+                testSettings.SetInternalFeatureFlag(RUN_PLAYER_UPDATES_IN_EDIT_MODE, true);
+                InputSystem.settings = testSettings;
+                provider.Actions.Battle.Enable();
+
                 InputSystem.QueueStateEvent(keyboard, entireMap
                     ? new KeyboardState(Key.LeftCtrl, Key.LeftShift)
                     : new KeyboardState(Key.LeftCtrl));
@@ -91,6 +99,10 @@ namespace EmpireAtWar.Tests.Selection
                 selection.LateDispose();
                 provider.Actions.Battle.Disable();
                 InputSystem.RemoveDevice(keyboard);
+                // The Input System caches feature flags even when the restored settings have none.
+                testSettings.SetInternalFeatureFlag(RUN_PLAYER_UPDATES_IN_EDIT_MODE, false);
+                InputSystem.settings = originalSettings;
+                UnityEngine.Object.DestroyImmediate(testSettings);
             }
         }
 
