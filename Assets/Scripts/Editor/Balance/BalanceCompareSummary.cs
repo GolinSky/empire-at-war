@@ -76,9 +76,7 @@ namespace EmpireAtWar.Editor.Balance
                 if (field.Shared) Text(row, field.DescribeScope(field.Users), "balance-scope");
             }
             bool squadron = unit.Kind == BalanceUnitKind.Squadron;
-            BalanceField regenTier = Field(unit, registry, "ShieldRegenTier");
-            if (regenTier != null) Editable(card, "Shield regen tier", regenTier, draft, usage, edit);
-            else Editable(card, squadron ? "Shield regen / member (HP)" : "Shield regen (HP)", Field(unit, registry, "ShieldRegenerateValue"), draft, usage, edit);
+            Editable(card, squadron ? "Shield regen / member (HP)" : "Shield regen (HP)", Field(unit, registry, "ShieldRegenerateValue"), draft, usage, edit);
             Editable(card, "Shield regen delay (s)", Field(unit, registry, "ShieldRegenerateDelay"), draft, usage, edit);
             Metric(card, squadron ? "Shield regen / member" : "Shield regen", ShieldRegenRate(unit, registry, draft), "HP/s");
 
@@ -221,22 +219,9 @@ namespace EmpireAtWar.Editor.Balance
         {
             BalanceField delayField = Field(unit, registry, "ShieldRegenerateDelay");
             double? delay = delayField == null ? null : Number(delayField.DraftValue(draft));
-            double? amount = ShieldRegenAmount(unit, registry, draft);
+            BalanceField amountField = Field(unit, registry, "ShieldRegenerateValue");
+            double? amount = amountField == null ? null : Number(amountField.DraftValue(draft));
             return delay > 0 && amount.HasValue ? (amount.Value / delay.Value).ToString(CultureInfo.InvariantCulture) : "N/A";
-        }
-
-        private static double? ShieldRegenAmount(BalanceUnit unit, BalanceRegistration registry, BalanceDraft draft)
-        {
-            BalanceField tier = Field(unit, registry, "ShieldRegenTier");
-            if (tier == null)
-            {
-                BalanceField value = Field(unit, registry, "ShieldRegenerateValue");
-                return value == null ? null : Number(value.DraftValue(draft));
-            }
-            using UnityEditor.SerializedObject data = new UnityEditor.SerializedObject(unit.Data);
-            ShipShieldRegenTiersData tiers = (ShipShieldRegenTiersData)data.FindProperty("shieldRegenTiers").objectReferenceValue;
-            if (tiers == null) return null;
-            return tiers.GetRegenerateValue((ShieldRegenTier)int.Parse(tier.DraftValue(draft), CultureInfo.InvariantCulture));
         }
 
         private static double? Number(string value) =>
