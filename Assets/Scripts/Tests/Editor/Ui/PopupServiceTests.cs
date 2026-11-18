@@ -14,6 +14,7 @@ using EmpireAtWar.Services.Popups;
 using EmpireAtWar.Services.Tooltip;
 using EmpireAtWar.Ui.Base;
 using NUnit.Framework;
+using Steamworks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -189,25 +190,45 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(LobbyMode.Skirmish, true)]
+        [TestCase(LobbyMode.Skirmish, false)]
+        [TestCase(LobbyMode.Survival, true)]
+        [TestCase(LobbyMode.Survival, false)]
+        public void JoinedLobby_ShowsInviteButtonOnlyForSteamMembers(LobbyMode mode, bool inSteamLobby)
+        {
+            var platform = new SteamPlatform(apiEnabled: false);
+            var online = new OnlineMatchService(null, new OnlineRecoveryProgress(), platform);
+            typeof(OnlineMatchService).GetProperty(nameof(OnlineMatchService.Role)).SetValue(online, OnlineRole.Client);
+            typeof(OnlineMatchService).GetProperty(nameof(OnlineMatchService.Mode)).SetValue(online, mode);
+            typeof(OnlineMatchService).GetField("_inLobby", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(online, true);
+            if (inSteamLobby)
+                typeof(SteamPlatform).GetField("_lobby", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(platform, new CSteamID(10));
+
+            var steam = new SteamPopupService(_ui, _popups, _confirm, online);
+            IOnlineLobbyScreen lobby = CreateLobby(mode, online, steam);
+            try
+            {
+                lobby.Show();
+                var inviteButton = (Button)new SerializedObject(GetLobbyView(mode))
+                    .FindProperty("inviteButton").objectReferenceValue;
+                Assert.That(inviteButton.gameObject.activeInHierarchy, Is.EqualTo(inSteamLobby));
+            }
+            finally { ((ILateDisposable)lobby).LateDispose(); }
+        }
+
         [TestCase(LobbyMode.Skirmish)]
         [TestCase(LobbyMode.Survival)]
         public void LobbyLeave_ClosesCoveredPickerAndKeepsTopInvite(LobbyMode mode)
         {
             var online = new OnlineMatchService(null, new OnlineRecoveryProgress(), new SteamPlatform(apiEnabled: false));
             var steam = new SteamPopupService(_ui, _popups, _confirm, online);
-            IOnlineLobbyScreen lobby = mode == LobbyMode.Skirmish
-                ? new OnlineSkirmishLobbyUiController(_ui, _router, online,
-                    AssetDatabase.LoadAssetAtPath<TeamColorPalette>(
-                        "Assets/Settings/Data/Models/Players/TeamColorPalette.asset"), null, new TooltipServiceStub(), steam, _popups,
-                    _confirm)
-                : new OnlineSurvivalLobbyUiController(_ui, _router, online, steam, _confirm);
-            ((IInitializable)lobby).Initialize();
+            IOnlineLobbyScreen lobby = CreateLobby(mode, online, steam);
             try
             {
                 lobby.Show();
-                BaseUi lobbyView = mode == LobbyMode.Skirmish
-                    ? _root.GetComponentInChildren<SkirmishUi>()
-                    : _root.GetComponentInChildren<SurvivalUi>();
+                BaseUi lobbyView = GetLobbyView(mode);
                 Click(lobbyView, "inviteButton");
                 SteamInvitePopupUi pickerView = _root.GetComponentInChildren<SteamInvitePopupUi>();
                 Assert.That(pickerView, Is.Not.Null);
@@ -231,6 +252,22 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally { ((ILateDisposable)lobby).LateDispose(); }
         }
+
+        private IOnlineLobbyScreen CreateLobby(LobbyMode mode, OnlineMatchService online, SteamPopupService steam)
+        {
+            IOnlineLobbyScreen lobby = mode == LobbyMode.Skirmish
+                ? new OnlineSkirmishLobbyUiController(_ui, _router, online,
+                    AssetDatabase.LoadAssetAtPath<TeamColorPalette>(
+                        "Assets/Settings/Data/Models/Players/TeamColorPalette.asset"), null, new TooltipServiceStub(),
+                    steam, _popups, _confirm)
+                : new OnlineSurvivalLobbyUiController(_ui, _router, online, steam, _confirm);
+            ((IInitializable)lobby).Initialize();
+            return lobby;
+        }
+
+        private BaseUi GetLobbyView(LobbyMode mode) => mode == LobbyMode.Skirmish
+            ? _root.GetComponentInChildren<SkirmishUi>()
+            : _root.GetComponentInChildren<SurvivalUi>();
 
         private static void Click(BaseUi view, string property)
         {

@@ -150,6 +150,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             if (!_online.IsInLobby || _online.IsInBattle || _online.Mode != LobbyMode.Survival)
             {
                 CloseInvitePicker();
+                _ui.SetInviteAvailable(false);
                 return;
             }
             if (!IsHost && _online.SetupJson.Length > 0 && _online.SetupJson != _appliedSetup)
@@ -158,7 +159,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 _model.ApplyLobby(JsonUtility.FromJson<SurvivalLobbySnapshot>(_appliedSetup));
             }
 
-            bool canInvite = IsHost && _online.IsSteamLobby;
+            bool canInvite = _online.IsSteamLobby;
             if (!canInvite) CloseInvitePicker();
             _ui.SetInviteAvailable(canInvite);
             if (IsHost) _ui.LobbyModeSwitch.Render(_online.Mode, _online.CanSwitchLobbyMode(LobbyMode.Survival));
@@ -182,7 +183,8 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             List<SurvivalLobbyMemberState> members = _online.Members.Select(CreateMemberState).ToList();
             string status = _online.LastError != OnlineError.None ? OnlineErrorText.Describe(_online.LastError)
                 : IsHost ? "Every member defends as a co-op commander of your faction."
-                : "The host picks the settings. Press READY when set.";
+                : "The host picks the settings. Press READY when set."
+                    + (_online.IsSteamLobby ? " Invite friends from Steam." : string.Empty);
             _ui.RenderLobby(IsHost, startText, IsHost || _online.IsInLobby,
                 $"{ready} / {count} COMMANDERS READY", status, members);
         }

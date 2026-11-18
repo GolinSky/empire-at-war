@@ -216,6 +216,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
             {
                 _planetPicker.Close();
                 CloseInvitePicker();
+                _ui.SetInviteAvailable(false);
                 return;
             }
             if (_online.SetupJson.Length > 0 && _online.SetupJson != _appliedSetup)
@@ -233,7 +234,7 @@ namespace EmpireAtWar.Entities.MainMenu.Online
                 }
             }
 
-            bool canInvite = IsHost && _online.IsSteamLobby;
+            bool canInvite = _online.IsSteamLobby;
             if (!_model.CanEditSettings) _planetPicker.Close();
             if (!canInvite) CloseInvitePicker();
             _ui.SetInviteAvailable(canInvite);
@@ -297,7 +298,9 @@ namespace EmpireAtWar.Entities.MainMenu.Online
         private string CreateStatus()
         {
             if (_online.LastError != OnlineError.None) return OnlineErrorText.Describe(_online.LastError);
-            if (!IsHost) return "Pick your faction, team and colour, then press READY. The host starts the battle.";
+            if (!IsHost)
+                return "Pick your faction, team and colour, then press READY. The host starts the battle."
+                    + (_online.IsSteamLobby ? " Invite friends from Steam." : string.Empty);
             string addresses = string.Join(", ", _online.LocalAddresses().Select(address => $"{address}:{_online.Port}"));
             return _online.IsSteamLobby
                 ? $"Friends join from a Steam invite or by IP {addresses}."
