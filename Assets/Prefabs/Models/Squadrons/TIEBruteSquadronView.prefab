@@ -625,8 +625,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView
   body: {fileID: 7868964377244862510}
   gun: {fileID: 5820496569238982026}
-  additionalGuns:
-  - {fileID: 8589873673612567203}
+  additionalGuns: []
   id: 9
 --- !u!1 &1242581212858381958
 GameObject:
@@ -675,8 +674,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView
   body: {fileID: 3445628092301574752}
   gun: {fileID: 648636078750513965}
-  additionalGuns:
-  - {fileID: 565493625863465966}
+  additionalGuns: []
   id: 2
 --- !u!1 &1361489466106901767
 GameObject:
@@ -687,7 +685,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1440678483279433517}
-  - component: {fileID: 4242737123837011065}
   m_Layer: 0
   m_Name: Laser1
   m_TagString: Untagged
@@ -710,31 +707,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3671905086766146048}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4242737123837011065
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1361489466106901767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 7
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 132
 --- !u!1 &1428384802208285893
 GameObject:
   m_ObjectHideFlags: 0
@@ -1035,34 +1007,24 @@ MonoBehaviour:
   <Injectables>k__BackingField:
   - {fileID: 7252515518634781708}
   - {fileID: 6613638165990424538}
-  - {fileID: 4703526279219485068}
   - {fileID: 6931640204659797866}
   - {fileID: 1492914715745579303}
-  - {fileID: 8288721859688979274}
   - {fileID: 5172304655462827634}
   - {fileID: 648636078750513965}
-  - {fileID: 565493625863465966}
   - {fileID: 259420035117182355}
   - {fileID: 5457266227013791141}
-  - {fileID: 4242737123837011065}
   - {fileID: 6547039513503621659}
   - {fileID: 4560810286331871579}
-  - {fileID: 5059652145581743966}
   - {fileID: 1473378422654766552}
   - {fileID: 8798271747660218373}
-  - {fileID: 2138688637093442434}
   - {fileID: 6013198594248867666}
   - {fileID: 9222628745844312993}
-  - {fileID: 3704850046154914401}
   - {fileID: 3901937817056708821}
   - {fileID: 1012139656040087749}
-  - {fileID: 1582027253066320920}
   - {fileID: 7697216144073844488}
   - {fileID: 1747755539116393852}
-  - {fileID: 2099170895136075804}
   - {fileID: 8825764225315861556}
   - {fileID: 5820496569238982026}
-  - {fileID: 8589873673612567203}
 --- !u!1 &1964703671033504438
 GameObject:
   m_ObjectHideFlags: 0
@@ -1110,8 +1072,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView
   body: {fileID: 7434562386418164105}
   gun: {fileID: 1012139656040087749}
-  additionalGuns:
-  - {fileID: 1582027253066320920}
+  additionalGuns: []
   id: 7
 --- !u!1 &2019728343221677854
 GameObject:
@@ -1122,7 +1083,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8710651376825407927}
-  - component: {fileID: 1582027253066320920}
   m_Layer: 0
   m_Name: Laser1
   m_TagString: Untagged
@@ -1145,31 +1105,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7434562386418164105}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1582027253066320920
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2019728343221677854}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 15
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 132
 --- !u!1 &2294449791605394967
 GameObject:
   m_ObjectHideFlags: 0
@@ -1285,8 +1220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView
   body: {fileID: 4760658252890499618}
   gun: {fileID: 8798271747660218373}
-  additionalGuns:
-  - {fileID: 2138688637093442434}
+  additionalGuns: []
   id: 5
 --- !u!1 &2379185703868357388
 GameObject:
@@ -1297,7 +1231,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7380998899000948807}
-  - component: {fileID: 8288721859688979274}
   m_Layer: 0
   m_Name: Laser1
   m_TagString: Untagged
@@ -1320,31 +1253,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2523049344320683127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8288721859688979274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2379185703868357388}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 3
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 132
 --- !u!1 &2495827143845422261
 GameObject:
   m_ObjectHideFlags: 0
@@ -1535,7 +1443,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7323174222895901350}
-  - component: {fileID: 4703526279219485068}
   m_Layer: 0
   m_Name: Laser1
   m_TagString: Untagged
@@ -1558,31 +1465,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1986493402761766347}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4703526279219485068
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2909380115753775582}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 1
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 132
 --- !u!1 &2911943860461669970
 GameObject:
   m_ObjectHideFlags: 0
@@ -2885,25 +2767,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Weapon.WeaponComponent
   hardPoints:
   - {fileID: 6613638165990424538}
-  - {fileID: 4703526279219485068}
   - {fileID: 1492914715745579303}
-  - {fileID: 8288721859688979274}
   - {fileID: 648636078750513965}
-  - {fileID: 565493625863465966}
   - {fileID: 5457266227013791141}
-  - {fileID: 4242737123837011065}
   - {fileID: 4560810286331871579}
-  - {fileID: 5059652145581743966}
   - {fileID: 8798271747660218373}
-  - {fileID: 2138688637093442434}
   - {fileID: 9222628745844312993}
-  - {fileID: 3704850046154914401}
   - {fileID: 1012139656040087749}
-  - {fileID: 1582027253066320920}
   - {fileID: 1747755539116393852}
-  - {fileID: 2099170895136075804}
   - {fileID: 5820496569238982026}
-  - {fileID: 8589873673612567203}
   rangeMultiplier: 1
 --- !u!1 &5135565965343061743
 GameObject:
@@ -2914,7 +2786,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3929771745483078459}
-  - component: {fileID: 565493625863465966}
   m_Layer: 0
   m_Name: Laser1
   m_TagString: Untagged
@@ -2937,31 +2808,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3445628092301574752}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &565493625863465966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5135565965343061743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 5
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 132
 --- !u!1 &5252482752516914478
 GameObject:
   m_ObjectHideFlags: 0
@@ -3162,8 +3008,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView
   body: {fileID: 1986493402761766347}
   gun: {fileID: 6613638165990424538}
-  additionalGuns:
-  - {fileID: 4703526279219485068}
+  additionalGuns: []
   id: 0
 --- !u!1 &5878451355233164673
 GameObject:
@@ -3272,7 +3117,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 691866680712516069}
-  - component: {fileID: 5059652145581743966}
   m_Layer: 0
   m_Name: Laser1
   m_TagString: Untagged
@@ -3295,31 +3139,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7940096611481518251}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5059652145581743966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6021391157629698376}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 9
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 132
 --- !u!1 &6047828546662962418
 GameObject:
   m_ObjectHideFlags: 0
@@ -3329,7 +3148,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2931878136986305838}
-  - component: {fileID: 2099170895136075804}
   m_Layer: 0
   m_Name: Laser1
   m_TagString: Untagged
@@ -3352,31 +3170,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3871238331604177752}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2099170895136075804
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6047828546662962418}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 17
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 132
 --- !u!1 &6363131916634107739
 GameObject:
   m_ObjectHideFlags: 0
@@ -3424,8 +3217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView
   body: {fileID: 2523049344320683127}
   gun: {fileID: 1492914715745579303}
-  additionalGuns:
-  - {fileID: 8288721859688979274}
+  additionalGuns: []
   id: 1
 --- !u!1 &6429909868340309939
 GameObject:
@@ -3474,8 +3266,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView
   body: {fileID: 7940096611481518251}
   gun: {fileID: 4560810286331871579}
-  additionalGuns:
-  - {fileID: 5059652145581743966}
+  additionalGuns: []
   id: 4
 --- !u!1 &6569912805619267524
 GameObject:
@@ -3581,8 +3372,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView
   body: {fileID: 1437786239874075060}
   gun: {fileID: 9222628745844312993}
-  additionalGuns:
-  - {fileID: 3704850046154914401}
+  additionalGuns: []
   id: 6
 --- !u!1 &6619611408229797400
 GameObject:
@@ -3625,7 +3415,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8684684769495753077}
-  - component: {fileID: 2138688637093442434}
   m_Layer: 0
   m_Name: Laser1
   m_TagString: Untagged
@@ -3648,31 +3437,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4760658252890499618}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2138688637093442434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6652440589453501271}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 11
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 132
 --- !u!1 &6681771247741286008
 GameObject:
   m_ObjectHideFlags: 0
@@ -3752,8 +3516,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView
   body: {fileID: 3671905086766146048}
   gun: {fileID: 5457266227013791141}
-  additionalGuns:
-  - {fileID: 4242737123837011065}
+  additionalGuns: []
   id: 3
 --- !u!1 &6920701745580216419
 GameObject:
@@ -4053,7 +3816,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3425799142595998264}
-  - component: {fileID: 3704850046154914401}
   m_Layer: 0
   m_Name: Laser1
   m_TagString: Untagged
@@ -4076,31 +3838,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1437786239874075060}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3704850046154914401
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7401219095074264068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 13
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 132
 --- !u!1 &7558947769973485759
 GameObject:
   m_ObjectHideFlags: 0
@@ -4246,7 +3983,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6383771239827685979}
-  - component: {fileID: 8589873673612567203}
   m_Layer: 0
   m_Name: Laser1
   m_TagString: Untagged
@@ -4269,31 +4005,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7868964377244862510}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8589873673612567203
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7801887521033674642}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 19
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 132
 --- !u!1 &8071494466846385590
 GameObject:
   m_ObjectHideFlags: 0
@@ -4527,8 +4238,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView
   body: {fileID: 3871238331604177752}
   gun: {fileID: 1747755539116393852}
-  additionalGuns:
-  - {fileID: 2099170895136075804}
+  additionalGuns: []
   id: 8
 --- !u!1 &8981259261695325294
 GameObject:

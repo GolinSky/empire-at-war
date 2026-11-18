@@ -3,6 +3,7 @@ using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.Timing;
+using EmpireAtWar.Services.Squadrons;
 using UnityEngine;
 using UnityEngine.Profiling;
 
@@ -16,6 +17,7 @@ namespace EmpireAtWar.Services.Analytics
         IObserver<BattleState>
     {
         private const float SAMPLE_WINDOW_SECONDS = 60f;
+        private const float SQUADRON_LOG_INTERVAL_SECONDS = 10f;
         private const long BYTES_PER_MB = 1024 * 1024;
 
         private readonly IAnalyticsService _analytics;
@@ -23,6 +25,9 @@ namespace EmpireAtWar.Services.Analytics
         private readonly IEntityLocator _entities;
         private readonly INotifier<BattleState> _battleState;
         private readonly FrameTimeHistogram _frames = new FrameTimeHistogram();
+        private readonly SquadronRegistry _squadrons;
+        private readonly BattleDefinition _battle;
+        private float _squadronLogSeconds;
 
         private BattleState _state;
         private bool _skipTransitionFrame;
@@ -31,12 +36,15 @@ namespace EmpireAtWar.Services.Analytics
 #endif
 
         public PerformanceAnalyticsSampler(IAnalyticsService analytics, MatchAnalyticsTracker match,
-            IEntityLocator entities, INotifier<BattleState> battleState, BattleDefinition battle)
+            IEntityLocator entities, INotifier<BattleState> battleState, BattleDefinition battle,
+            SquadronRegistry squadrons)
         {
             _analytics = analytics;
             _match = match;
             _entities = entities;
             _battleState = battleState;
+            _battle = battle;
+            _squadrons = squadrons;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             _history = new BattleFpsHistory(battle);
 #endif
@@ -85,6 +93,13 @@ namespace EmpireAtWar.Services.Analytics
 
             float seconds = Time.unscaledDeltaTime;
             if (seconds <= 0f) return;
+            _squadronLogSeconds += seconds;
+            if (_squadronLogSeconds >= SQUADRON_LOG_INTERVAL_SECONDS)
+            {
+                _squadronLogSeconds %= SQUADRON_LOG_INTERVAL_SECONDS;
+                foreach (var player in _battle.Players)
+                    Debug.Log($"[Squadrons] match={_match.MatchId} time={Time.time:F1} player={player.Slot.Id} live={_squadrons.GetLivingCount(player.Slot.Id)} craft={_squadrons.GetLivingCraftCount(player.Slot.Id)}");
+            }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!BattlePerformanceCapture.TryObserveHitchFrame()) return;
             _history.ObserveFrame(seconds > _frames.WorstSeconds);

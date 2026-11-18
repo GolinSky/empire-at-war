@@ -20,6 +20,7 @@
 | `DecodeShotAwake.Run(first,last)` | Raw Awake/Copy/Produce attribution by prefab and creation source; select the exact new capture range |
 | `ProfileTeamAi.Launch(n)` / `Status` / `Start(warmup, seconds)` | Shared Team AI scaling: Full Large seed 1875278133, human + `n` UltraHard AIs (odd = enemy team, even = ally team); writes AI marker mean/p95/p99/max per frame, starvation and executed units to `Logs/TeamAiProfile/ai{n}.json` |
 | `ProfileCaptureGeometry.Main` | Paired same-frame registry scans with live versus refresh-scoped geometry; validates identical strength values |
+| `StripModelMuzzleFlashes.Inspect` / `ApplyPrefabs(paths)` / `VerifyReferences(paths)` | Audits model-embedded Flash objects and mesh subassets; removes authored prefab copies and stale fog bindings after model reimport; verifies affected prefab references |
 
 ```powershell
 unity command run_script --file Tools/Performance/ProfileShotPrefabs.cs --entry ProfileShotPrefabs.Main --json
@@ -31,3 +32,6 @@ unity command run_script --file Tools/Performance/DecodeShotAwake.cs --entry Dec
 - Wait at least 60 seconds after stress spawning before the diagnostic capture. Keep state `Running`; an ended or paused battle does not service its normal prewarmer.
 - Profiler indices accumulate across recordings unless explicitly cleared. Read the loaded recording's first/last indices; never assume a later recording starts at 0.
 - Original M2 artifacts are not present locally. Windows results and synthetic controls do not establish the historical M2 root cause or a matched frame-rate improvement.
+
+- `ModelMuzzleFlashPostprocessor` strips embedded `*Flash*` nodes and unused flash mesh subassets from imports under `Assets/Art/Models`. It preserves child muzzle transforms and their world poses. Actual effects in `Assets/Prefabs/Vfx` are unchanged.
+- For existing assets, retain the `Inspect` prefab-path list before introducing/revising stripping. Reimport the models, then pass those paths as a single string-array argument to `ApplyPrefabs` and `VerifyReferences`; inherited objects disappear through import without unpacking prefab instances. Save and inspect Console errors after mutation.

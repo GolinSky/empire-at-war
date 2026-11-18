@@ -306,7 +306,6 @@ MonoBehaviour:
   <Injectables>k__BackingField:
   - {fileID: 4077365864478488655}
   - {fileID: 4108252559171419087}
-  - {fileID: 3534705979307517383}
 --- !u!114 &5924540072268233649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -560,7 +559,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Weapon.WeaponComponent
   hardPoints:
   - {fileID: 4108252559171419087}
-  - {fileID: 3534705979307517383}
   rangeMultiplier: 1
 --- !u!1 &4290506281479066762
 GameObject:
@@ -722,8 +720,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView
   body: {fileID: 790190071423982079}
   gun: {fileID: 4108252559171419087}
-  additionalGuns:
-  - {fileID: 3534705979307517383}
+  additionalGuns: []
   id: 0
 --- !u!1 &8838674565023388513
 GameObject:
@@ -734,7 +731,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2833140370410938126}
-  - component: {fileID: 3534705979307517383}
   m_Layer: 0
   m_Name: VentralQuadLaser
   m_TagString: Untagged
@@ -757,31 +753,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 790190071423982079}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3534705979307517383
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8838674565023388513}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 1
-  yAxisRange:
-    <Min>k__BackingField: -180
-    <Max>k__BackingField: 180
-  mainBattery: 0
-  <WeaponType>k__BackingField: 123
 --- !u!1001 &7891713653356037689
 PrefabInstance:
   m_ObjectHideFlags: 0

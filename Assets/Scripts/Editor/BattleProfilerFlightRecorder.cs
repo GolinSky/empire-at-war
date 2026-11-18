@@ -17,6 +17,7 @@ namespace EmpireAtWar.Editor
     {
         private const string MENU = "Tools/Empire At War/Diagnostics/Performance/";
         private const string STATE_KEY = "EmpireAtWar.BattleProfiler.";
+        private const int HISTORY_FRAMES = 300;
         private static readonly PropertyInfo _history = typeof(ProfilerDriver).Assembly.GetType("UnityEditor.Profiling.ProfilerUserSettings", true)
             .GetProperty("frameCount", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly PropertyInfo _memoryMode = typeof(ProfilerDriver).GetProperty("memoryRecordMode", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
@@ -71,15 +72,17 @@ namespace EmpireAtWar.Editor
             SessionState.SetInt(STATE_KEY + "history", (int)_history.GetValue(null));
             try
             {
+                ProfilerDriver.enabled = false;
+                ProfilerDriver.ClearAllFrames();
                 _threshold = thresholdMs; _saveLimit = maxSaves; _cooldown = cooldownSeconds; _lastSave = double.NegativeInfinity;
                 _saved = 0; _pendingHitch = -1; _lastSeen = ProfilerDriver.lastFrameIndex;
-                _history.SetValue(null, Math.Max(300, (int)_history.GetValue(null)));
+                _history.SetValue(null, HISTORY_FRAMES);
                 SetMemoryMode(gcStacks);
                 ProfilerDriver.profileEditor = true;
                 ProfilerDriver.enabled = true;
                 IsArmed = true;
                 BattleProfilerDecoder.WriteJson(Path.Combine(_directory, "profiler-session.json"), new
-                { threshold_ms = thresholdMs, max_saves = maxSaves, cooldown_seconds = cooldownSeconds, gc_stacks = gcStacks, profile_editor = true,
+                { threshold_ms = thresholdMs, max_saves = maxSaves, cooldown_seconds = cooldownSeconds, history_frames = HISTORY_FRAMES, gc_stacks = gcStacks, profile_editor = true,
                     native_data_scope = "SaveProfile exports the whole rolling buffer; JSON and caller trees select hitch-60 through hitch+10.",
                     started_utc = DateTime.UtcNow, source_revision = revision, unity_version = Application.unityVersion });
                 return new { status = "armed", directory = _directory };
@@ -132,7 +135,7 @@ namespace EmpireAtWar.Editor
                 int last = ProfilerDriver.lastFrameIndex;
                 double now = EditorApplication.timeSinceStartup;
                 if (_sweeping && _allocationFirst < 0 && now >= _nextSweep && now < _sweepEnd)
-                { _allocationFirst = last + 1; _nextSweep = now + 30; }
+                { _allocationFirst = Math.Max(last, _lastSeen) + 1; _nextSweep = now + 30; }
                 int first = Math.Max(_lastSeen + 1, ProfilerDriver.firstFrameIndex);
                 for (int frame = first; frame <= last; frame++)
                 {
@@ -140,12 +143,18 @@ namespace EmpireAtWar.Editor
                     if (view.valid && view.frameTimeMs > _threshold && _pendingHitch < 0 && _saved < _saveLimit && now - _lastSave >= _cooldown)
                         _pendingHitch = frame;
                 }
-                _lastSeen = last;
+                _lastSeen = Math.Max(_lastSeen, last);
                 if (_pendingHitch >= 0 && last >= _pendingHitch + 10) SaveHitch();
                 if (_allocationFirst >= 0 && last >= _allocationFirst + 59)
                 {
                     string path = Path.Combine(_directory, $"allocation_{_allocationFirst}.json");
-                    BattleProfilerDecoder.WriteAllocations(_allocationFirst, _allocationFirst + 59, path);
+                    ProfilerDriver.enabled = false;
+                    try { BattleProfilerDecoder.WriteAllocations(_allocationFirst, _allocationFirst + 59, path); }
+                    finally
+                    {
+                        ProfilerDriver.enabled = true;
+                        _lastSeen = ProfilerDriver.lastFrameIndex + 1;
+                    }
                     _allocations.Add(path); _allocationFirst = -1;
                 }
                 if (_sweeping && now >= _sweepEnd && _allocationFirst < 0) FinishSweep();
@@ -156,22 +165,37 @@ namespace EmpireAtWar.Editor
         private static void SaveHitch()
         {
             int hitch = _pendingHitch;
-            _pendingHitch = -1; _saved++; _lastSave = EditorApplication.timeSinceStartup;
+            _pendingHitch = -1; _saved++;
             int first = Math.Max(ProfilerDriver.firstFrameIndex, hitch - 60), last = hitch + 10;
             string prefix = Path.Combine(_directory, $"hitch_{hitch}");
-            if (!ProfilerDriver.SaveProfile(prefix + ".data")) throw new IOException("ProfilerDriver.SaveProfile failed: " + prefix);
-            var summaries = RenderAuditProfilerTool.SummarizeFrames(Enumerable.Range(first, last - first + 1));
-            BattleProfilerDecoder.WriteJson(prefix + ".json", new { hitch_profiler_frame = hitch, first, last, profiler_frame_summaries = summaries });
-            using var view = ProfilerDriver.GetRawFrameDataView(hitch, 0);
-            string marker = FindTopMarker(view);
-            BattleProfilerDecoder.WriteCallers(marker, first, last, prefix + "-callers.json");
-            _analysis.Add(WriteHitchReport(prefix, marker, first, last));
+            // Export/decoding can take seconds and allocate gigabytes. Never record that work into
+            // the next buffer, where it would trigger another hitch and recursively amplify itself.
+            // An in-progress allocation window must restart after the stopped interval too.
+            _allocationFirst = -1;
+            ProfilerDriver.enabled = false;
+            try
+            {
+                if (!ProfilerDriver.SaveProfile(prefix + ".data")) throw new IOException("ProfilerDriver.SaveProfile failed: " + prefix);
+                var summaries = RenderAuditProfilerTool.SummarizeFrames(Enumerable.Range(first, last - first + 1));
+                BattleProfilerDecoder.WriteJson(prefix + ".json", new { hitch_profiler_frame = hitch, first, last, profiler_frame_summaries = summaries });
+                using var view = ProfilerDriver.GetRawFrameDataView(hitch, 0);
+                string marker = FindTopMarker(view);
+                BattleProfilerDecoder.WriteCallers(marker, first, last, prefix + "-callers.json");
+                _analysis.Add(WriteHitchReport(prefix, marker, first, last));
+            }
+            finally
+            {
+                _lastSave = EditorApplication.timeSinceStartup;
+                ProfilerDriver.enabled = true;
+                // Ignore the frame crossing the recording boundary as well as the stopped interval.
+                _lastSeen = ProfilerDriver.lastFrameIndex + 1;
+            }
         }
 
         private static async Task WriteHitchReport(string prefix, string marker, int first, int last)
         {
-            await BattleProfilerDecoder.RunAudit(prefix + "-profiler.txt", "profiler", prefix + ".json");
-            await BattleProfilerDecoder.RunAudit(prefix + "-decoder.txt", "decoder", "callers", marker, first.ToString(), last.ToString(), prefix + "-callers.cs");
+            await BattleProfilerDecoder.RunAudit(prefix + "-profiler.txt", "profiler", prefix + ".json").ConfigureAwait(false);
+            await BattleProfilerDecoder.RunAudit(prefix + "-decoder.txt", "decoder", "callers", marker, first.ToString(), last.ToString(), prefix + "-callers.cs").ConfigureAwait(false);
             File.WriteAllText(prefix + ".md", $"# Hitch {Path.GetFileName(prefix)}\n\nProfiler range: {first}–{last}. Native `.data` also retains surrounding buffer frames.\n\n```text\n" +
                 File.ReadAllText(prefix + "-profiler.txt") + "\n```\n\n## Dominant marker caller tree\n\n```json\n" + File.ReadAllText(prefix + "-callers.json") + "\n```\n");
         }

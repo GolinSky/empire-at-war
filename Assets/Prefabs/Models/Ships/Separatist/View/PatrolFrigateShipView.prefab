@@ -5947,8 +5947,6 @@ MonoBehaviour:
   meshRenderers:
   - {fileID: 8065281056645520277}
   - {fileID: 4612873027375223806}
-  - {fileID: 5362831683338993385}
-  - {fileID: 3499858623269003595}
   - {fileID: 6697858850507550029}
   - {fileID: 8012635053647341878}
   - {fileID: 6896194605718455207}
@@ -5982,6 +5980,7 @@ MonoBehaviour:
   <SquadronFlight>k__BackingField: {fileID: 0}
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
+  <GravityWellEmitter>k__BackingField: {fileID: 0}
   <Injectables>k__BackingField:
   - {fileID: 170039148551410930}
   - {fileID: 181391027144432553}
@@ -7611,21 +7610,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 9100456708224336060}
   m_PrefabAsset: {fileID: 0}
---- !u!23 &3499858623269003595 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 5682047355801641463, guid: 1ad835c783e3eba4c9a9e71977fd89da,
-    type: 3}
-  m_PrefabInstance: {fileID: 9100456708224336060}
-  m_PrefabAsset: {fileID: 0}
 --- !u!23 &4612873027375223806 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4489920314996036418, guid: 1ad835c783e3eba4c9a9e71977fd89da,
-    type: 3}
-  m_PrefabInstance: {fileID: 9100456708224336060}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &5362831683338993385 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 3758194688422133333, guid: 1ad835c783e3eba4c9a9e71977fd89da,
     type: 3}
   m_PrefabInstance: {fileID: 9100456708224336060}
   m_PrefabAsset: {fileID: 0}

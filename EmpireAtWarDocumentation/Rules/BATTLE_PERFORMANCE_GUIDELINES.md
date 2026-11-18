@@ -268,3 +268,12 @@ tags:
 - Target death cancels demand. Queue clearance alone does not prove every queued request was served. Record cancellation/target lifetime separately from successful admission and continued emissions.
 - Diagnostic observers must cache immutable entity IDs/owner metadata before destruction; export must not resolve a dead caster. Use checkpoints and clean callbacks before reloading.
 - Evidence/remaining decisions → [[Done/Optimization/Live_Battle_CPU_And_Pool_Demand]]. Editor branch attribution is not a matched whole-battle FPS result.
+
+### Squadron budgets and model flashes · 2026-11-18
+
+- `SquadronRegistry` counts registered living entities; pooled `start` telemetry rows are not live population. `Tools/BattleAudit/squadron_summary.py` reports distinct sampled entities per minute, not an instantaneous concurrent peak.
+- `PerformanceAnalyticsSampler` writes `[Squadrons]` live-squadron/surviving-craft counts per roster player every 10 running unscaled seconds in Release too. Loading and pauses do not advance that interval.
+- One laser mount per fighter; separate torpedo, missile and ion channels remain. Scale existing shared weapon damage by removed battery DPS; rebake `SquadronData.weaponLoadout`. Compare raw DPS per prefab and retain per-fighter torpedo attack-run indices.
+- `ModelMuzzleFlashPostprocessor` strips embedded Flash nodes and unused mesh subassets under `Assets/Art/Models`, preserving child muzzle world poses. Preserve actual `Assets/Prefabs/Vfx` effects. Reimport, prune saved fog references, and audit missing references without unpacking inherited model instances.
+- Native profiler export/decoding must run with recording disabled; skip resume boundaries, restart interrupted allocation windows, and measure cooldown after export. A live failure captured its own export until a frame exceeded 2 GB; exclude these diagnostic stalls from gameplay attribution.
+- Source/import/compilation and raw-DPS/reference audits verified; automated tests not run. Outcomes and replay evidence → [[TODOs/Bugs/Squadron_Count_Stacking_And_FPS]].

@@ -16,6 +16,8 @@ namespace EmpireAtWar.Services.Squadrons
         private readonly IEntityLocator _entityLocator;
 
         private readonly List<IEntity> _squadrons = new List<IEntity>();
+        private readonly Dictionary<PlayerId, int> _livingCounts = new Dictionary<PlayerId, int>();
+        private bool _countsDirty = true;
 
         public SquadronRegistry(IEntityLocator entityLocator)
         {
@@ -33,7 +35,39 @@ namespace EmpireAtWar.Services.Squadrons
         {
             _entityLocator.EntityAdded -= HandleEntityAdded;
             _entityLocator.EntityRemoved -= HandleEntityRemoved;
+            foreach (IEntity squadron in _squadrons) squadron.HealthModel.OnDestroy -= InvalidateCounts;
         }
+
+        public int GetLivingCount(PlayerId owner)
+        {
+            if (_countsDirty)
+            {
+                _livingCounts.Clear();
+                foreach (IEntity squadron in _squadrons)
+                {
+                    if (squadron.HealthModel.IsDestroyed) continue;
+                    _livingCounts.TryGetValue(squadron.Owner, out int count);
+                    _livingCounts[squadron.Owner] = count + 1;
+                }
+                _countsDirty = false;
+            }
+            return _livingCounts.TryGetValue(owner, out int living) ? living : 0;
+        }
+
+        public int GetLivingCraftCount(PlayerId owner)
+        {
+            int count = 0;
+            foreach (IEntity squadron in _squadrons)
+            {
+                if (squadron.Owner != owner || squadron.HealthModel.IsDestroyed) continue;
+                var members = squadron.HealthModel.HardPointModels;
+                for (int index = 0; index < members.Count; index++)
+                    if (!members[index].IsDestroyed) count++;
+            }
+            return count;
+        }
+
+        private void InvalidateCounts() => _countsDirty = true;
 
         public void AddSquadronStrength(Func<Vector3, bool> contains, float weight, CaptureStrengthBuilder tally)
         {
@@ -71,12 +105,16 @@ namespace EmpireAtWar.Services.Squadrons
             if (entity.IsSquadron())
             {
                 _squadrons.Add(entity);
+                entity.HealthModel.OnDestroy += InvalidateCounts;
+                InvalidateCounts();
             }
         }
 
         private void HandleEntityRemoved(IEntity entity)
         {
-            _squadrons.Remove(entity);
+            if (!_squadrons.Remove(entity)) return;
+            entity.HealthModel.OnDestroy -= InvalidateCounts;
+            InvalidateCounts();
         }
     }
 }

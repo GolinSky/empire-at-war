@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4658358321546269910}
-  - component: {fileID: 6392357884911916617}
   m_Layer: 0
   m_Name: RightLaser
   m_TagString: Untagged
@@ -32,31 +31,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3791629174991104260}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6392357884911916617
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 902577136061371571}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 1
-  yAxisRange:
-    <Min>k__BackingField: -12
-    <Max>k__BackingField: 12
-  mainBattery: 0
-  <WeaponType>k__BackingField: 161
 --- !u!1 &2587475183260567810
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,7 +165,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Weapon.WeaponComponent
   hardPoints:
   - {fileID: 1237085294907023869}
-  - {fileID: 6392357884911916617}
   rangeMultiplier: 1
 --- !u!1 &3784440021127440995
 GameObject:
@@ -471,8 +444,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView
   body: {fileID: 3791629174991104260}
   gun: {fileID: 1237085294907023869}
-  additionalGuns:
-  - {fileID: 6392357884911916617}
+  additionalGuns: []
   id: 0
 --- !u!1 &7051410985179887280
 GameObject:
@@ -781,7 +753,6 @@ MonoBehaviour:
   <Injectables>k__BackingField:
   - {fileID: 5702111766094975648}
   - {fileID: 1237085294907023869}
-  - {fileID: 6392357884911916617}
 --- !u!1001 &8353367548489695888
 PrefabInstance:
   m_ObjectHideFlags: 0

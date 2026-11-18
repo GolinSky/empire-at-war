@@ -5,8 +5,12 @@ system:
   - factions
   - hangars
 design_state: implemented
-verified: 2026-11-17
-verification: Checked faction roster entries, 7-tier warship class ladder, 27 class/tier reassignments, Nebulon-B 600 m resize, and saved CR90, Vulture and Endurance assets.
+verified: 2026-11-18
+verification: Checked faction roster entries, 7-tier warship class ladder, 27
+  class/tier reassignments, Nebulon-B 600 m resize, and saved CR90, Vulture and
+  Endurance assets. Squadron cap source and consolidated Vulture serialized
+  mount count checked 2026-11-18; Unity compilation/import verified, tests and
+  gameplay acceptance not run.
 ---
 # Units and Factions
 
@@ -33,7 +37,7 @@ verification: Checked faction roster entries, 7-tier warship class ladder, 27 cl
 
 - CR90: `Corvette`, anti-fighter/anti-bomber. Base hull/shields `600/600`, speed `35` units/s. Eight baked `Laser` and two `PointDefense` mounts.
 - CR90 purchase: `1,250` credits, `20 s`, level `1`, population `3`, maximum `10`. No hangar bays. Power to Engines uses `BoostEnginePower` (ID `4`).
-- Vulture: `Fighter` with `13` members, each `44` hull and `0` shields. Base combined hull `572`, cruise/combat speed `43.2/48` units/s, and `52` baked weapon mounts.
+- Vulture: `Fighter` with `13` members, each `44` hull and `0` shields. Base combined hull `572`, cruise/combat speed `43.2/48` units/s, and `13` baked weapon mounts (one laser per fighter).
 - Endurance: three hangar bays with `8` reserve and `2` maximum active squadrons each.
 - Combat classes (`ShipClass`): Fighter (`0`), Bomber (`1`), Interceptor (`7`), HeroStrikecraft (`9`), Corvette (`2`), Frigate (`3`), Cruiser (`8`), HeavyCruiser (`10`), Capital (`4`), BattleCruiser (`5`), Dreadnought (`11`), Structure (`6`). They select matrix/bias behavior; a display-name phrase does not define a new class.
 - Warship class ladder (2026-11-17): `Corvette → Frigate → Cruiser → HeavyCruiser → Capital → BattleCruiser → Dreadnought`. `NebulonB` resized from 300 m (`31.5` units) to 600 m (`63.0` units, `Cruiser`).
@@ -68,6 +72,8 @@ verification: Checked faction roster entries, 7-tier warship class ladder, 27 cl
 - Each `HangarBay` identifies squadron type, initial reserve and maximum active squadrons.
 - Initial and replacement launches consume the same reserve: launch → reserve `−1`, active `+1`; do not add reserve and maximum active as separate supplies.
 - Launch requires an operational, enabled bay with reserve `>0` and active `< MaxActive`; launch interval throttles automatic launches.
+- Fresh squadron launches also require owner live count `< floor(160 / battle player count)`: 2 players → 80 each; 4 → 40; 7 → 22. Count uses the battle roster, including AI; unused fractions are not redistributed.
+- Cap denial preserves hangar reserve and pending survival launches. Existing over-cap save populations remain; restored/network-replica spawns and balance simulations bypass fresh-launch admission.
 - Losing a squadron frees an active slot. A disabled bay stops further launches; all bays disabled → hangar non-operational.
 - Carrier-provided squadrons need not match the faction's purchase roster. Read the carrier's current bays instead of inferring its complement from lore or model geometry.
 

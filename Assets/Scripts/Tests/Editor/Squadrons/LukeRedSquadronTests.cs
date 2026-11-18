@@ -46,15 +46,15 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(health.GetArrayElementAtIndex(i).objectReferenceValue, Is.EqualTo(fighters[i]));
                 WeaponType expected = i == 0 ? WeaponType.LukeSkywalkerLaser : WeaponType.RedSquadronEscortLaser;
                 Assert.That(fighters[i].GetComponentsInChildren<WeaponHardPoint>(true).Select(gun => gun.WeaponType),
-                    Is.EqualTo(Enumerable.Repeat(expected, 4)), fighters[i].name);
+                    Is.EqualTo(new[] { expected }), fighters[i].name);
             }
 
             WeaponHardPoint[] guns = view.GetComponentsInChildren<WeaponHardPoint>(true);
-            Assert.That(guns.Select(gun => gun.Id).Distinct().Count(), Is.EqualTo(24));
+            Assert.That(guns.Select(gun => gun.Id).Distinct().Count(), Is.EqualTo(6));
             WeaponComponent weapons = view.GetComponentInChildren<WeaponComponent>(true);
             Assert.That(weapons, Is.Not.Null);
             SerializedProperty registered = new SerializedObject(weapons).FindProperty("hardPoints");
-            Assert.That(registered.arraySize, Is.EqualTo(24));
+            Assert.That(registered.arraySize, Is.EqualTo(6));
             Assert.That(Enumerable.Range(0, registered.arraySize)
                 .Select(index => registered.GetArrayElementAtIndex(index).objectReferenceValue), Is.EquivalentTo(guns));
         }
@@ -98,13 +98,13 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(luke.CruiseSpeed, Is.EqualTo(88.4f));
             Assert.That(luke.WeaponLoadout.Select(weapon => (weapon.WeaponType, weapon.Count)), Is.EquivalentTo(new[]
             {
-                (WeaponType.LukeSkywalkerLaser, 4), (WeaponType.RedSquadronEscortLaser, 20)
+                (WeaponType.LukeSkywalkerLaser, 1), (WeaponType.RedSquadronEscortLaser, 5)
             }));
             WeaponsData weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
                 "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
             float dps = luke.WeaponLoadout.Sum(weapon => weapons.GetProfile(weapon.WeaponType).DamagePerSecond * weapon.Count);
             Assert.That(dps, Is.EqualTo(650f).Within(0.01f));
-            Assert.That(weapons.GetProfile(WeaponType.LukeSkywalkerLaser).DamagePerSecond * 4,
+            Assert.That(weapons.GetProfile(WeaponType.LukeSkywalkerLaser).DamagePerSecond,
                 Is.EqualTo(450f).Within(0.01f));
             Assert.That(weapons.GetProfile(WeaponType.LukeSkywalkerLaser).DamageType, Is.EqualTo(DamageType.HeroLaser),
                 "Luke must retain hero-versus-hero damage and accuracy instead of ordinary fighter penalties.");

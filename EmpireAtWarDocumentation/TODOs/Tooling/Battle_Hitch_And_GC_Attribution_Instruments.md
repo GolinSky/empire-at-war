@@ -1,8 +1,7 @@
 ---
 category: Tooling
-status: done
+status: in-progress
 created: 2026-11-18
-completed: 2026-11-18
 acceptance: pending-user
 ---
 # Battle Hitch and GC Attribution Instruments
@@ -68,6 +67,23 @@ acceptance: pending-user
 - Tool follow-ups (small, tooling owner):
   - `uncovered_ms` is negative in most Editor hitch frames (−17 s … −20 ms) → in the Editor `EditorLoop` already contains `PlayerLoop`; use `frame − EditorLoop` in the Editor and `frame − PlayerLoop` in a Player.
   - `battle_20261118_131216_070_summary.txt` has 12 frames in 103 s — check why the second CSV recorded almost nothing.
+## Reopened 2026-11-18 — instrument stalls during play
+### What happens
+- On a frame > 200 ms the flight recorder (`Assets/Scripts/Editor/BattleProfilerFlightRecorder.cs`) immediately, **on the main thread, while the battle runs**:
+  1. `ProfilerDriver.SaveProfile` writes the **whole rolling Profiler buffer** (≥ 300 frames of every marker; ~150 MB earlier) to `hitch_<frame>.data`.
+  2. Builds frame summaries (`WriteJson`) and the caller tree (`WriteCallers`) by walking that buffer.
+  3. Starts the Python audit scripts.
+- Saving and decoding allocate large managed buffers → a **full GC on a ~4 GB Editor heap (4.1–4.5 s `GC.Collect`)**, and the save itself blocks the Editor loop (**17 s `EditorLoop`**). Unity also runs `Profiler.CollectMethodsMetadata` for the export.
+- Result: the tool that should explain a 300 ms hitch creates a 4–17 s one, slows the following frames and pollutes the CSV/history of the same run.
+### Fix (proposed)
+- [ ] **Defer the export:** during play only record the hitch (native frame index, Unity frame, time, reason) in memory. Save and decode **once**, at disarm / battle end / pause, cutting each `[hitch − 60, hitch + 10]` window from that one save. No stall during measured gameplay.
+- [ ] **Keep the buffer small:** cap Profiler history at what the windows need (e.g. 300 frames) and keep GC call stacks off by default while armed.
+- [ ] **Decode outside play:** run `WriteCallers`/summaries and the Python audits after export, never in the frame after a hitch.
+- [ ] **Mark instrument frames:** add `instrument_busy` to the hitch/battle CSV for frames where the recorder, allocation sweep or memory snapshot ran (plus the next few frames); `battle_audit.py hitches/report` excludes them from gameplay numbers automatically.
+- [ ] **Development Player:** use `Profiler.logFile` + `Profiler.enableBinaryLog` (continuous streaming to `.raw`) instead of `SaveProfile`; cut windows offline.
+- [ ] Also fix: `uncovered_ms` in the Editor (`frame − EditorLoop`, since `EditorLoop` already contains `PlayerLoop`), and the second CSV with 12 frames in 103 s.
+- Acceptance: a 4-minute armed run shows no frame > 1 s caused by the instruments, and every remaining > 200 ms frame is gameplay (GC/script/loading) or tagged `instrument_busy`.
+
 - H2/H3 still open; the allocation ranking (who allocates the bytes that trigger the GC) is the next read.
 
 ## Agent handoff

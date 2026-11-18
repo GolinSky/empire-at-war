@@ -47,6 +47,6 @@ MonoBehaviour:
   <MemberCount>k__BackingField: 10
   weaponLoadout:
   - weaponType: 142
-    count: 20
+    count: 10
   - weaponType: 143
     count: 10

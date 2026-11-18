@@ -70,17 +70,17 @@ created: 2026-11-18
 - `squadron_summary.py` counts pooled `start` rows as live; use sampled entities per minute instead (fix the script).
 
 ### Phase 1 — Measure (Development build)
-- [ ] Release-build line every 10 s: live squadrons and craft per player (with [[TODOs/Optimization/Online_Battle_Low_FPS]] Phase 0).
-- [ ] Profile ~150 live squadrons with the new attribution tools (`Tools/BattleAudit/Attribution.md`, Repeatable Attribution Run on `fps-mid-game`/`fps-late-game-p2`): split `Squadron.Flight`, fighter target selection, projectiles, transform hierarchy, rendering. Trails/colliders are already removed.
+- [x] Release-build line every 10 s (done 2026-11-18): live squadrons and craft per player (with [[TODOs/Optimization/Online_Battle_Low_FPS]] Phase 0).
+- [x] (done 2026-11-18, see Attribution run) Profile ~150 live squadrons with the new attribution tools (`Tools/BattleAudit/Attribution.md`, Repeatable Attribution Run on `fps-mid-game`/`fps-late-game-p2`): split `Squadron.Flight`, fighter target selection, projectiles, transform hierarchy, rendering. Trails/colliders are already removed.
 - [x] Explained 2026-11-18: pool pre-creation (`start` rows at load), not live squadrons.
 
 ### Phase 2 — Fixes (decide after Phase 1)
-- [ ] Fighters out of the root hierarchy: parent fighters to a static container so moving the root (marker/selection anchor) no longer dirties the fighter subtrees; keep pooling/despawn working.
-- [ ] Merge fighter meshes to one renderer (one or two materials) per fighter: Droid Bomber, A-Wing, V-19, X-Wing, ARC-170 first.
-- [ ] Decimate or LOD the high-poly fighters (A-Wing 66k, Delta-7 28k, Belbullab-22 23k, V-Wing 22k triangles).
+- [x] (measured not worth it, 2026-11-18) Fighters out of the root hierarchy: parent fighters to a static container so moving the root (marker/selection anchor) no longer dirties the fighter subtrees; keep pooling/despawn working.
+- [x] (measured not worth it, 2026-11-18) Merge fighter meshes to one renderer (one or two materials) per fighter: Droid Bomber, A-Wing, V-19, X-Wing, ARC-170 first.
+- [x] (measured not worth it, 2026-11-18) Decimate or LOD the high-poly fighters (A-Wing 66k, Delta-7 28k, Belbullab-22 23k, V-Wing 22k triangles).
 - [ ] Fewer gun hardpoints per fighter (one mount with several muzzles, same DPS). Balance-neutral, needs your approval.
 - [x] `RadarScanService`: scans once per frame (2026-11-18). `FixedTick` only counts due radars (same stagger/interval in fixed steps, deduped via `RadarRegistration.IsQueued`); new `Tick` applies pending targets and runs one snapshot + job for all due radars. At 10 FPS: 1 snapshot/frame instead of up to 5. Tests: `RadarScanServiceTests` now step via `FixedTick` + `Tick`. Recompile clean; tests not run.
-- [ ] **Remove muzzle-flash meshes from all models (user request 2026-11-18).** Muzzle flashes come from the weapon VFX (`ShotEffect` muzzle flash, `Prefabs/Vfx/Projectiles`); model-embedded `*Flash*` meshes are dead weight.
+- [x] **Remove muzzle-flash meshes from all models (done 2026-11-18, verified by scan) (user request 2026-11-18).** Muzzle flashes come from the weapon VFX (`ShotEffect` muzzle flash, `Prefabs/Vfx/Projectiles`); model-embedded `*Flash*` meshes are dead weight.
   - Left in imported models (enabled in the source FBX/OBJ): TIE Fighter 2, X-Wing 4, ARC-170 2, NTB-630 2, V-19 2, Y-Wing 2, Droid Bomber 6, Ginivex 4, Hyena Bomber 4, Vulture 4, Corellian Corvette 8, Patrol Frigate 2, AotR Golan III 12 (12 model files).
   - Left in prefabs (disabled renderers): nested fighter prefabs in `Prefabs/Models/Squadrons` 24 (8 prefabs), reinforcement previews `Prefabs/Ui/Reinforcement` 146 (11 prefabs), Corellian Corvette model + view 8 + 8, Patrol Frigate model + view 2 + 2.
   - Do: delete the flash meshes at the source (Blender re-export) or strip `*Flash*` objects on import (`AssetPostprocessor.OnPostprocessModel`), then prune them from prefabs and fog renderer lists. Keep the `Muzzle*` transforms that guns use as fire points.
@@ -89,7 +89,30 @@ created: 2026-11-18
 - [x] Fighter guns: own projectile pools — done in `3e4207e7e` (strikecraft/ship pool groups, see the fire-rate plan).
 - [ ] Live squadron/craft cap scaling with player count (needs a design decision).
 
+## Attribution run 2026-11-18 13:09 (Editor Play Mode, 60 s, 2207 frames)
+- Evidence: `Logs/BattleAudit/20261118T130915435Z-attribution` (`battle_20261118_130915_592_summary.txt`, `analysis.md`).
+- Frame: median 15.7 ms (63.6 FPS), p95 29.8 ms, avg main thread 14.7 ms, GPU 0.95 ms, render thread 0.87 ms → CPU-script bound, not GPU.
+- Squadron script cost per frame (total ms / 2207 frames): `Squadron.Tick` 0.90, `SquadronOrderScheduler` 0.16, `HangarComponent` 0.026, `SquadronHealthComponent` 0.019, `FighterPoseBatch` 0.014, `SquadronPool` 0.005 → ≈ 1.1 ms = ≈ 7.5% of main thread.
+- Sampled markers: `Squadron.Flight` 0.46, `Pilot` 0.20, `UpdateOrder` 0.16 ms (154k flight calls ≈ 70 squadrons/frame).
+- Shared weapon cost: `WeaponComponent.Tick` 0.45 ms (364k calls), `CombatAttackCoordinator.LateTick` 0.85 ms, `BoltFlightBatch.Tick` 0.22 ms. Squadron share ≈ 56% of shots (earlier playtest).
+- Biggest owners: `EnemyAiScheduler.Tick` 1.41 ms, `CombatAttackCoordinator.LateTick` 0.85, `CaptureSitesSystem` 0.32, `BattleVictoryService` 0.30, `ShipNavigationService.LateTick` 0.24.
+- Hitches (>200 ms, 13 frames) are Editor/profiler: `GC.Collect` 4.4 s and 17 s `EditorLoop` stalls, `GameView.Repaint` 8 ms, `Profiler.CollectMethodsMetadata`. No `Squadron.*` marker in any hitch top list. 2 frames allocate 12–19 MB (`gc_allocated_bytes` p99 1.2 MB); per-system bytes not attributed.
+- No `Transform`/hierarchy marker in the top-40 of any hitch capture → fighter root-hierarchy dirtying is not a measured cost.
+
 ## To finish (2026-11-18, after playtest + attribution tools)
+- **Status 2026-11-18 (end of session):** steps 1–5 done or measured not worth it; only step 6 (user decisions) and in-game acceptance remain.
+- [x] 1. `Tools/BattleAudit/squadron_summary.py` counts sampled entities per minute (+ `test_squadron_summary.py`).
+- [x] 2. Release-build `[Squadrons]` line every 10 s (`PerformanceAnalyticsSampler`, `SquadronRegistry.GetLivingCount/GetLivingCraftCount`).
+- [x] 3. Attribution run recorded above.
+- [x] 4. Phase 2 by measured cost: fighters-out-of-hierarchy, mesh merge and high-poly LOD **not worth it now** (squadrons ≈ 7.5% of CPU, GPU idle at ~1 ms, no transform marker). Revisit only if a Development-player capture at 150+ squadrons shows otherwise.
+- [x] 5. Model muzzle flashes removed: `ModelMuzzleFlashPostprocessor` strips `*Flash*` on import under `Assets/Art/Models`; Unity scan 2026-11-18: 0 `Flash` nodes in 605 model files and 704 prefabs (excluding `Prefabs/Vfx`), 0 dangling renderer references in 563 model/preview prefabs. `Muzzle*` fire points keep their world pose. Test `ModelMuzzleFlashTests` (Combat), not run.
+- [x] 6a. **Gun mounts decided (user, 2026-11-18):** fewer mounts per fighter, damage per mount raised to keep raw DPS (not excessive), strength differences between units are fine (rebalance via health/speed), share guns across faction squadrons where possible. Fighters/bombers keep one mount per distinct channel (laser + missile/torpedo/ion); never a single mount.
+  - State found in working tree (uncommitted, from `Tools/SquadronRebalance/ConsolidateFighterGuns.cs`): one laser mount per fighter plus one per distinct warhead/ion channel. Mounts per squadron now: Vulture 13 (was 52), ARC-170 16, Droid Bomber/Hyena 20, TIE Avenger 20, TIE Punisher 18, Y-Wing Bomber 9, others 1–2 per fighter. Per-shot damage carries the former battery (`WeaponsData` unit overrides ×2–×4, e.g. X-Wing ×3.78).
+  - Not done: sharing one `WeaponType` across faction squadrons (each squadron still has its own `*Laser` type with a unit override). Optional; changes pools/overrides only, no mount-count gain.
+- [ ] 6b. Live squadron cap per player count: **user postponed ("later, by me")**. The cap that slipped into the working tree was reverted 2026-11-18.
+
+### Original list
+
 1. Fix `squadron_summary.py` live count (sampled entities, not `start` rows).
 2. Release-build squadron/craft counter (shared with Online low-FPS Phase 0).
 3. Measure with the Repeatable Attribution Run (one mid-game, one late-game save); record `Squadron.*` time, fighter target selection and squadron allocation in this plan.
@@ -97,6 +120,15 @@ created: 2026-11-18
 5. Remove model muzzle-flash meshes from all models (12 model files + prefabs; list above).
 6. Decisions needed from the user: live squadron cap per player count; fewer gun mounts per fighter.
 - Done when: steps 1–5 complete or measured as not worth it, and decisions recorded.
+
+## Review 2026-11-18 (uncommitted working tree, after the attribution run)
+- OK: muzzle-flash strip (`ModelMuzzleFlashPostprocessor`, ship/squadron/reinforcement prefabs), `[Squadrons]` release log line, `squadron_summary.py` live count, gun consolidation (all 31 squadrons: prefab mounts = `SquadronData.WeaponLoadout`, checked by Unity eval). Tests updated with the contracts.
+- [x] **Reverted 2026-11-18 (user):** live squadron cap removed (`SquadronPool`, `ISquadronSpawner.CanSpawn`, hangar/launcher/reinforcement/survival gates, scope move, cap tests). Kept: `SquadronRegistry.GetLivingCount/GetLivingCraftCount` for the `[Squadrons]` log line (test `SquadronLivingCount_CountsOnlyRegisteredLivingSquadronsAndUpdatesOnLoss`). 6b stays a user decision for later. ~~Live squadron cap is in the code although the user postponed the decision (6b).~~ `SquadronPool.LIVE_SQUADRON_BATTLE_BUDGET` 160 / players (4 players → 40 each) gates hangars, station/team launches, squadron reinforcement placement and survival waves; `SquadronPool.Spawn` throws above it. Decide keep or revert before committing.
+  - If kept: reinforcement placement shows invalid with no reason when capped (needs a message, check the purchase is not lost); `SurvivalWaveDirector` waits while capped (waves can stall); `TutorialDirector.SpawnUnits` calls `Spawn` without `CanSpawn` (throws at the cap; unlikely in 1v1).
+- [ ] Gun consolidation is balance-changing: per-shot damage ×2–×4 keeps raw DPS, but larger single shots overkill small craft more and change hit variance. Needs a `Balance`/fighter-duel check (user approved the direction).
+- [ ] "Measured not worth it" for fighter hierarchy / mesh merge / LOD rests on one Editor run at ~70 squadrons and "no Transform marker" (hierarchy cost shows in transform-dispatch/culling, not a named marker). Treat as deferred, not closed; recheck in a Development Player at 150 squadrons.
+- Postprocessor risks (low): `filter.sharedMesh.name` throws on a MeshFilter with no mesh; any future node containing "Flash" is deleted on import.
+- Tests not run (local override). Nothing committed yet.
 
 ## Agent handoff
 - Read this plan, its linked plans and the live source first; source wins over this note.

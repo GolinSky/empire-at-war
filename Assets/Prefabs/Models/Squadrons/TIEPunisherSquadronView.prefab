@@ -49,9 +49,7 @@ MonoBehaviour:
   gun: {fileID: 4448990948070784554}
   additionalGuns:
   - {fileID: 1831925536255079606}
-  - {fileID: 6247587129827627150}
   - {fileID: 314577690048349987}
-  - {fileID: 587696092907897941}
   id: 1
 --- !u!1 &173062375516243555
 GameObject:
@@ -62,7 +60,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9216377450684059877}
-  - component: {fileID: 5447389742843756946}
   m_Layer: 0
   m_Name: Warhead4
   m_TagString: Untagged
@@ -85,32 +82,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1348921547181889419}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5447389742843756946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 173062375516243555}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 24
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 148
-  fighterIndex: 4
 --- !u!1 &222173543486779068
 GameObject:
   m_ObjectHideFlags: 0
@@ -160,9 +131,7 @@ MonoBehaviour:
   gun: {fileID: 991351237206776713}
   additionalGuns:
   - {fileID: 8193822680500800288}
-  - {fileID: 4120292727323932827}
   - {fileID: 2654833010712816474}
-  - {fileID: 7003298773532446860}
   id: 3
 --- !u!1 &743579016571419556
 GameObject:
@@ -830,39 +799,27 @@ MonoBehaviour:
   - {fileID: 7252515518634781708}
   - {fileID: 5570273357040253014}
   - {fileID: 8636667302797291658}
-  - {fileID: 2900367578467593371}
   - {fileID: 1360830970604620304}
-  - {fileID: 4168571341654562615}
   - {fileID: 3021209620060285817}
   - {fileID: 4448990948070784554}
   - {fileID: 1831925536255079606}
-  - {fileID: 6247587129827627150}
   - {fileID: 314577690048349987}
-  - {fileID: 587696092907897941}
   - {fileID: 7374619905992584963}
   - {fileID: 1963267838523528994}
   - {fileID: 3233287197327161471}
-  - {fileID: 447950861201719523}
   - {fileID: 3922541779004307023}
-  - {fileID: 5492450292726628054}
   - {fileID: 2275420211560977593}
   - {fileID: 991351237206776713}
   - {fileID: 8193822680500800288}
-  - {fileID: 4120292727323932827}
   - {fileID: 2654833010712816474}
-  - {fileID: 7003298773532446860}
   - {fileID: 8147995408538193410}
   - {fileID: 1892279721064005579}
   - {fileID: 2830967672013451770}
-  - {fileID: 8553591196420937057}
   - {fileID: 3149010485683693523}
-  - {fileID: 5447389742843756946}
   - {fileID: 4378196833390426722}
   - {fileID: 4686332995214992523}
   - {fileID: 6991603893467154327}
-  - {fileID: 4481562641789763430}
   - {fileID: 3583351646429918123}
-  - {fileID: 2766231279281338890}
 --- !u!1 &2027209627855344304
 GameObject:
   m_ObjectHideFlags: 0
@@ -1056,7 +1013,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 146575332358846229}
-  - component: {fileID: 4481562641789763430}
   m_Layer: 0
   m_Name: Warhead2
   m_TagString: Untagged
@@ -1079,32 +1035,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6595203314908988800}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4481562641789763430
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2705605168484994612}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 27
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 147
-  fighterIndex: 5
 --- !u!1 &2844188569588097655
 GameObject:
   m_ObjectHideFlags: 0
@@ -1693,7 +1623,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5720748482420090345}
-  - component: {fileID: 2900367578467593371}
   m_Layer: 0
   m_Name: Warhead2
   m_TagString: Untagged
@@ -1716,32 +1645,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1986493402761766347}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2900367578467593371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3722351709348791154}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 2
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 147
-  fighterIndex: 0
 --- !u!1 &3738078422581389575
 GameObject:
   m_ObjectHideFlags: 0
@@ -1939,9 +1842,7 @@ MonoBehaviour:
   gun: {fileID: 1892279721064005579}
   additionalGuns:
   - {fileID: 2830967672013451770}
-  - {fileID: 8553591196420937057}
   - {fileID: 3149010485683693523}
-  - {fileID: 5447389742843756946}
   id: 4
 --- !u!1 &4135594536567668826
 GameObject:
@@ -2010,7 +1911,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8126274782846459579}
-  - component: {fileID: 447950861201719523}
   m_Layer: 0
   m_Name: Warhead2
   m_TagString: Untagged
@@ -2033,32 +1933,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5374242494190060853}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &447950861201719523
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4152790135342067039}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 12
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 147
-  fighterIndex: 2
 --- !u!1 &4241413047442615150
 GameObject:
   m_ObjectHideFlags: 0
@@ -2201,7 +2075,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2881024146217105638}
-  - component: {fileID: 4120292727323932827}
   m_Layer: 0
   m_Name: Warhead2
   m_TagString: Untagged
@@ -2224,32 +2097,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6215000419965577305}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4120292727323932827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4702905353052647987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 17
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 147
-  fighterIndex: 3
 --- !u!1 &4716236499125125853
 GameObject:
   m_ObjectHideFlags: 0
@@ -2374,7 +2221,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8618904550134918103}
-  - component: {fileID: 7003298773532446860}
   m_Layer: 0
   m_Name: Warhead4
   m_TagString: Untagged
@@ -2397,32 +2243,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6215000419965577305}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7003298773532446860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4853657642275766913}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 19
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 148
-  fighterIndex: 3
 --- !u!1 &4956031218302122045
 GameObject:
   m_ObjectHideFlags: 0
@@ -2505,34 +2325,22 @@ MonoBehaviour:
   hardPoints:
   - {fileID: 5570273357040253014}
   - {fileID: 8636667302797291658}
-  - {fileID: 2900367578467593371}
   - {fileID: 1360830970604620304}
-  - {fileID: 4168571341654562615}
   - {fileID: 4448990948070784554}
   - {fileID: 1831925536255079606}
-  - {fileID: 6247587129827627150}
   - {fileID: 314577690048349987}
-  - {fileID: 587696092907897941}
   - {fileID: 1963267838523528994}
   - {fileID: 3233287197327161471}
-  - {fileID: 447950861201719523}
   - {fileID: 3922541779004307023}
-  - {fileID: 5492450292726628054}
   - {fileID: 991351237206776713}
   - {fileID: 8193822680500800288}
-  - {fileID: 4120292727323932827}
   - {fileID: 2654833010712816474}
-  - {fileID: 7003298773532446860}
   - {fileID: 1892279721064005579}
   - {fileID: 2830967672013451770}
-  - {fileID: 8553591196420937057}
   - {fileID: 3149010485683693523}
-  - {fileID: 5447389742843756946}
   - {fileID: 4686332995214992523}
   - {fileID: 6991603893467154327}
-  - {fileID: 4481562641789763430}
   - {fileID: 3583351646429918123}
-  - {fileID: 2766231279281338890}
   rangeMultiplier: 1
 --- !u!1 &5083396191508843734
 GameObject:
@@ -2543,7 +2351,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6851568139956342130}
-  - component: {fileID: 587696092907897941}
   m_Layer: 0
   m_Name: Warhead4
   m_TagString: Untagged
@@ -2566,32 +2373,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1439480913481209126}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &587696092907897941
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5083396191508843734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 9
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 148
-  fighterIndex: 1
 --- !u!1 &5255774751441151446
 GameObject:
   m_ObjectHideFlags: 0
@@ -2698,9 +2479,7 @@ MonoBehaviour:
   gun: {fileID: 4686332995214992523}
   additionalGuns:
   - {fileID: 6991603893467154327}
-  - {fileID: 4481562641789763430}
   - {fileID: 3583351646429918123}
-  - {fileID: 2766231279281338890}
   id: 5
 --- !u!1 &5317983013424676567
 GameObject:
@@ -2788,9 +2567,7 @@ MonoBehaviour:
   gun: {fileID: 5570273357040253014}
   additionalGuns:
   - {fileID: 8636667302797291658}
-  - {fileID: 2900367578467593371}
   - {fileID: 1360830970604620304}
-  - {fileID: 4168571341654562615}
   id: 0
 --- !u!1 &5582048906556379167
 GameObject:
@@ -2801,7 +2578,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4000292829581398290}
-  - component: {fileID: 2766231279281338890}
   m_Layer: 0
   m_Name: Warhead4
   m_TagString: Untagged
@@ -2824,32 +2600,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6595203314908988800}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2766231279281338890
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5582048906556379167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 29
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 148
-  fighterIndex: 5
 --- !u!1 &5649670837903094777
 GameObject:
   m_ObjectHideFlags: 0
@@ -3007,7 +2757,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8370863788595130716}
-  - component: {fileID: 4168571341654562615}
   m_Layer: 0
   m_Name: Warhead4
   m_TagString: Untagged
@@ -3030,32 +2779,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1986493402761766347}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4168571341654562615
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5761235151009502324}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 4
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 148
-  fighterIndex: 0
 --- !u!1 &5763011555204906461
 GameObject:
   m_ObjectHideFlags: 0
@@ -3349,7 +3072,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6525735615451188606}
-  - component: {fileID: 8553591196420937057}
   m_Layer: 0
   m_Name: Warhead2
   m_TagString: Untagged
@@ -3372,32 +3094,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1348921547181889419}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8553591196420937057
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6476409157447772288}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 22
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 147
-  fighterIndex: 4
 --- !u!1 &6534172747973079333
 GameObject:
   m_ObjectHideFlags: 0
@@ -3407,7 +3103,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6672922385146770028}
-  - component: {fileID: 6247587129827627150}
   m_Layer: 0
   m_Name: Warhead2
   m_TagString: Untagged
@@ -3430,32 +3125,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1439480913481209126}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6247587129827627150
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6534172747973079333}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 7
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 147
-  fighterIndex: 1
 --- !u!1 &6537910523587146582
 GameObject:
   m_ObjectHideFlags: 0
@@ -3652,9 +3321,7 @@ MonoBehaviour:
   gun: {fileID: 1963267838523528994}
   additionalGuns:
   - {fileID: 3233287197327161471}
-  - {fileID: 447950861201719523}
   - {fileID: 3922541779004307023}
-  - {fileID: 5492450292726628054}
   id: 2
 --- !u!1 &7010599363961463077
 GameObject:
@@ -3702,7 +3369,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3015862574728980530}
-  - component: {fileID: 5492450292726628054}
   m_Layer: 0
   m_Name: Warhead4
   m_TagString: Untagged
@@ -3725,32 +3391,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5374242494190060853}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5492450292726628054
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7380025568884513208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e3c6bbd1f9a0f46bd9d7d67966d0d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.FighterTorpedoHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 14
-  yAxisRange:
-    <Min>k__BackingField: -90
-    <Max>k__BackingField: 90
-  mainBattery: 0
-  <WeaponType>k__BackingField: 148
-  fighterIndex: 2
 --- !u!1 &7409284993384808048
 GameObject:
   m_ObjectHideFlags: 0

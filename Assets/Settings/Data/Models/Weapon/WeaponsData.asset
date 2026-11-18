@@ -810,10 +810,11 @@ MonoBehaviour:
     scope: 0
     faction: 0
     unit: 
-    damageMultiplier: 1
+    damageMultiplier: 2
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: 
+    reason: Consolidated fighter weapon channel; damage per shot includes the former
+      battery (2x).
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -848,10 +849,12 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: BobaFettSlaveI
-    damageMultiplier: 19.125
+    damageMultiplier: 38.25
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Two independently firing Slave I cannons deliver a combined 425 raw DPS.
+    reason: 'Previous battery: Two independently firing Slave I cannons deliver a
+      combined 425 raw DPS. Consolidated fighter weapon channel; damage per shot
+      includes the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -944,10 +947,11 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: XWing
-    damageMultiplier: 0.945
+    damageMultiplier: 3.78
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: XWing squadron rebalance damage target.
+    reason: 'Previous battery: XWing squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (4x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -1276,10 +1280,12 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: JangoFettSlaveI
-    damageMultiplier: 18
+    damageMultiplier: 36
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Jango's two cannons each fire two 90-damage pulses per 0.9-second salvo.
+    reason: 'Previous battery: Jango''s two cannons each fire two 90-damage pulses
+      per 0.9-second salvo. Consolidated fighter weapon channel; damage per shot
+      includes the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -1845,10 +1851,12 @@ MonoBehaviour:
     scope: 2
     faction: 2
     unit: HanSoloMillenniumFalcon
-    damageMultiplier: 4.21875
+    damageMultiplier: 8.4375
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Dorsal and ventral quad turrets deliver 375 raw DPS together.
+    reason: 'Previous battery: Dorsal and ventral quad turrets deliver 375 raw DPS
+      together. Consolidated fighter weapon channel; damage per shot includes the
+      former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -1883,10 +1891,11 @@ MonoBehaviour:
     scope: 2
     faction: 1
     unit: Vulture
-    damageMultiplier: 0.34615386
+    damageMultiplier: 1.3846154
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Vulture squadron rebalance damage target.
+    reason: 'Previous battery: Vulture squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (4x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -1902,10 +1911,11 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEFighter
-    damageMultiplier: 0.945
+    damageMultiplier: 1.89
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: TIEFighter squadron rebalance damage target.
+    reason: 'Previous battery: TIEFighter squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -1921,10 +1931,11 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEBrute
-    damageMultiplier: 0.34615386
+    damageMultiplier: 0.6923077
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: TIEBrute squadron rebalance damage target.
+    reason: 'Previous battery: TIEBrute squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -1940,10 +1951,11 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEAvenger
-    damageMultiplier: 0.9225
+    damageMultiplier: 1.845
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: TIEAvenger squadron rebalance damage target.
+    reason: 'Previous battery: TIEAvenger squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -1959,10 +1971,11 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEAvenger
-    damageMultiplier: 0.375
+    damageMultiplier: 0.75
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: TIEAvenger squadron rebalance damage target.
+    reason: 'Previous battery: TIEAvenger squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -1978,10 +1991,11 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: ARC170
-    damageMultiplier: 0.31565657
+    damageMultiplier: 0.7867133
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: ARC170 squadron rebalance damage target.
+    reason: 'Previous battery: ARC170 squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (2.49230766x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2035,10 +2049,11 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: V19Torrent
-    damageMultiplier: 1.18125
+    damageMultiplier: 2.3625
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: V19Torrent squadron rebalance damage target.
+    reason: 'Previous battery: V19Torrent squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2054,10 +2069,11 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEInterceptor
-    damageMultiplier: 0.50625
+    damageMultiplier: 2.025
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: TIEInterceptor squadron rebalance damage target.
+    reason: 'Previous battery: TIEInterceptor squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (4x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2073,10 +2089,11 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: VWing
-    damageMultiplier: 0.7125
+    damageMultiplier: 2.85
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: VWing squadron rebalance damage target.
+    reason: 'Previous battery: VWing squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (4x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2092,10 +2109,11 @@ MonoBehaviour:
     scope: 2
     faction: 2
     unit: AWing
-    damageMultiplier: 1.125
+    damageMultiplier: 4.5
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: AWing squadron rebalance damage target.
+    reason: 'Previous battery: AWing squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (4x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2111,10 +2129,11 @@ MonoBehaviour:
     scope: 1
     faction: 1
     unit: 
-    damageMultiplier: 0.3465
+    damageMultiplier: 0.693
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: DroidBomber squadron rebalance damage target.
+    reason: 'Previous battery: DroidBomber squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2206,10 +2225,11 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEPunisher
-    damageMultiplier: 0.4148148
+    damageMultiplier: 0.8296296
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: TIEPunisher squadron rebalance damage target.
+    reason: 'Previous battery: TIEPunisher squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2225,10 +2245,11 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEPunisher
-    damageMultiplier: 0.375
+    damageMultiplier: 0.75
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: TIEPunisher squadron rebalance damage target.
+    reason: 'Previous battery: TIEPunisher squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2244,10 +2265,11 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: YWing
-    damageMultiplier: 0.88875
+    damageMultiplier: 1.7775
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: YWing squadron rebalance damage target.
+    reason: 'Previous battery: YWing squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2282,10 +2304,11 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: NTB630
-    damageMultiplier: 0.8775
+    damageMultiplier: 1.755
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: NTB630 squadron rebalance damage target.
+    reason: 'Previous battery: NTB630 squadron rebalance damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2396,10 +2419,11 @@ MonoBehaviour:
     scope: 2
     faction: 2
     unit: YWingBomber
-    damageMultiplier: 0.65843624
+    damageMultiplier: 1.3168725
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: YWingBomber squadron unit amount damage target.
+    reason: 'Previous battery: YWingBomber squadron unit amount damage target. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2415,10 +2439,11 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEDefender
-    damageMultiplier: 1.2
+    damageMultiplier: 4.8
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: TIE Defender dogfight damage per cannon.
+    reason: 'Previous battery: TIE Defender dogfight damage per cannon. Consolidated
+      fighter weapon channel; damage per shot includes the former battery (4x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2453,10 +2478,12 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: PloKoonDelta7B
-    damageMultiplier: 11.925
+    damageMultiplier: 23.85
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Two source-mounted laser cannons deliver 265 raw DPS.
+    reason: 'Previous battery: Two source-mounted laser cannons deliver 265 raw DPS.
+      Consolidated fighter weapon channel; damage per shot includes the former battery
+      (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2472,10 +2499,12 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: ObiWanKenobiEta2
-    damageMultiplier: 12.375001
+    damageMultiplier: 24.750002
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Two source-mounted laser cannons deliver 275 raw DPS.
+    reason: 'Previous battery: Two source-mounted laser cannons deliver 275 raw DPS.
+      Consolidated fighter weapon channel; damage per shot includes the former battery
+      (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2491,10 +2520,12 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: MaceWinduEta2
-    damageMultiplier: 14.625001
+    damageMultiplier: 29.250002
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Two source-mounted laser cannons deliver 325 raw DPS.
+    reason: 'Previous battery: Two source-mounted laser cannons deliver 325 raw DPS.
+      Consolidated fighter weapon channel; damage per shot includes the former battery
+      (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2510,10 +2541,12 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: AnakinSkywalkerEta2
-    damageMultiplier: 16.425001
+    damageMultiplier: 32.850002
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Two source-mounted laser cannons deliver 365 raw DPS.
+    reason: 'Previous battery: Two source-mounted laser cannons deliver 365 raw DPS.
+      Consolidated fighter weapon channel; damage per shot includes the former battery
+      (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2529,10 +2562,12 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: AsajjVentressGinivex
-    damageMultiplier: 18
+    damageMultiplier: 36
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Two hero fighter cannons, matched to Jango Fett's primary gun output.
+    reason: 'Previous battery: Two hero fighter cannons, matched to Jango Fett''s
+      primary gun output. Consolidated fighter weapon channel; damage per shot includes
+      the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2548,10 +2583,12 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: SevranceTannGinivex
-    damageMultiplier: 18
+    damageMultiplier: 36
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Two hero fighter cannons, matched to Jango Fett's primary gun output.
+    reason: 'Previous battery: Two hero fighter cannons, matched to Jango Fett''s
+      primary gun output. Consolidated fighter weapon channel; damage per shot includes
+      the former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2567,10 +2604,12 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: DarthVaderTIEAdvanced
-    damageMultiplier: 18
+    damageMultiplier: 36
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Two lasers deliver 400 raw DPS, above Republic hero fighters.
+    reason: 'Previous battery: Two lasers deliver 400 raw DPS, above Republic hero
+      fighters. Consolidated fighter weapon channel; damage per shot includes the
+      former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2586,10 +2625,12 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: DarthVaderTIEAdvanced
-    damageMultiplier: 0.945
+    damageMultiplier: 1.89
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Standard TIE laser tuning with explicit Vader squadron ownership.
+    reason: 'Previous battery: Standard TIE laser tuning with explicit Vader squadron
+      ownership. Consolidated fighter weapon channel; damage per shot includes the
+      former battery (2x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2605,11 +2646,12 @@ MonoBehaviour:
     scope: 2
     faction: 2
     unit: LukeRedSquadron
-    damageMultiplier: 10.125
+    damageMultiplier: 40.5
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Four source-mounted lasers deliver 450 raw DPS; five escorts add 200
-      for 650 total.
+    reason: 'Previous battery: Four source-mounted lasers deliver 450 raw DPS; five
+      escorts add 200 for 650 total. Consolidated fighter weapon channel; damage
+      per shot includes the former battery (4x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}
@@ -2625,11 +2667,12 @@ MonoBehaviour:
     scope: 2
     faction: 2
     unit: LukeRedSquadron
-    damageMultiplier: 0.9
+    damageMultiplier: 3.6
     reloadMultiplier: 1
     rangeMultiplier: 1
-    reason: Twenty escort lasers deliver 200 raw DPS; Luke's four lasers add 450
-      for 650 total.
+    reason: 'Previous battery: Twenty escort lasers deliver 200 raw DPS; Luke''s
+      four lasers add 450 for 650 total. Consolidated fighter weapon channel; damage
+      per shot includes the former battery (4x).'
     overrideVisual: 0
     shotPrefab: {fileID: 0}
     beamPrefab: {fileID: 0}

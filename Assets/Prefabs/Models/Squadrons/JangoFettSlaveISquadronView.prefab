@@ -84,7 +84,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Weapon.WeaponComponent
   hardPoints:
   - {fileID: 3878011029879453589}
-  - {fileID: 2958218021881310897}
   rangeMultiplier: 1
 --- !u!1 &1888534013145113352
 GameObject:
@@ -129,7 +128,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6779776642061463783}
-  - component: {fileID: 2958218021881310897}
   m_Layer: 0
   m_Name: RightLaser
   m_TagString: Untagged
@@ -152,31 +150,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 9021344931820696570}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2958218021881310897
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3656832421259272716}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6535a63451984d3d8510459aec130f3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Health.WeaponHardPoint
-  spawnDestroyedExplosion: 0
-  destroyedVfxAnchor: {fileID: 0}
-  destroyedVfxScale: 1
-  unlockLevel: 1
-  healthOverride: 0
-  healthWeight: 1
-  <HardPointType>k__BackingField: 0
-  <Id>k__BackingField: 1
-  yAxisRange:
-    <Min>k__BackingField: -12
-    <Max>k__BackingField: 12
-  mainBattery: 0
-  <WeaponType>k__BackingField: 125
 --- !u!1 &5889774833073907970
 GameObject:
   m_ObjectHideFlags: 0
@@ -600,8 +573,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.ViewComponents.Squadrons.FighterView
   body: {fileID: 9021344931820696570}
   gun: {fileID: 3878011029879453589}
-  additionalGuns:
-  - {fileID: 2958218021881310897}
+  additionalGuns: []
   id: 0
 --- !u!1 &7533040535667675648
 GameObject:
@@ -780,7 +752,6 @@ MonoBehaviour:
   <Injectables>k__BackingField:
   - {fileID: 2258187952481002173}
   - {fileID: 3878011029879453589}
-  - {fileID: 2958218021881310897}
 --- !u!1001 &7782521119210226231
 PrefabInstance:
   m_ObjectHideFlags: 0

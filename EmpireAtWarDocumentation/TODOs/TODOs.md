@@ -214,6 +214,10 @@
 
 ### Tooling
 
+- [ ] **Battle hitch and GC attribution instruments (built-in markers + GC counters in hitch CSV, per-system alloc, hitch-triggered Profiler snapshot, allocation sweep, memory snapshots)** → [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]]
+  - 2026-11-18: written after the playtest left the ~300 ms hitch (every ~35 s, outside all recorded scopes) and 189 KB/frame GC unattributed. All seven tooling phases implemented; Unity compilation and source checks complete. Tests/replay baselines and H1/H2/H3 verdicts deferred; acceptance pending in the user queue.
+  - 2026-11-18: reopened — H1 confirmed (blocking GC 288–296 ms); the recorder's own save/decode causes 4–17 s stalls during play → defer export to disarm, mark `instrument_busy`, fix `uncovered_ms` in the Editor.
+
 - [ ] **Crash and error reporting (Unity Diagnostics)** → [[TODOs/Tooling/Crash_And_Error_Reporting|Crash And Error Reporting]]
   - Status: in progress 2026-11-02; user chose Diagnostics independent of usage consent. Local capture/context, consent wording, development probes and optional Jenkins symbols implemented; Editor/player-branch compilation clean, tests not run. Setup rechecked 2026-11-02: Cloud linked, effective Diagnostics enabled, Editor exceptions disabled, compilation clean. Company set to `GolinSkyCompany` and saved 2026-11-02; symbol credential, installed uploader and live job upload stage absent. Standalone upload verification remains pending. Guidance → [[Tooling/Crash_Reporting]].
 
@@ -405,9 +409,6 @@
   - Completed 2026-10-20: 65 content moves, 10 current GameDesign references, repaired navigation and historical/proposal labels; static checks passed.
 
 ### Tooling
-
-- [x] **Battle hitch and GC attribution instruments (built-in markers + GC counters in hitch CSV, per-system alloc, hitch-triggered Profiler snapshot, allocation sweep, memory snapshots)** → [[Done/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]]
-  - 2026-11-18: written after the playtest left the ~300 ms hitch (every ~35 s, outside all recorded scopes) and 189 KB/frame GC unattributed. All seven tooling phases implemented; Unity compilation and source checks complete. Tests/replay baselines and H1/H2/H3 verdicts deferred; acceptance pending in the user queue.
 
 - [x] **Battle logic simulator (Editor Hub)** → [[Done/Tooling/Battle_Logic_Simulator|Battle Logic Simulator]]
 

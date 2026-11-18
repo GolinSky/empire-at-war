@@ -190,6 +190,63 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [Test]
+        [Category("Squadrons")]
+        public void SquadronLivingCount_CountsOnlyRegisteredLivingSquadronsAndUpdatesOnLoss()
+        {
+            var locator = new EntityLocator();
+            var registry = new SquadronRegistry(locator);
+            var objects = new List<GameObject>();
+            try
+            {
+                FakeEntity first = CreateEntity(1, TestPlayers.Human, 0f, true, false, objects);
+                locator.AddEntity(first);
+                locator.AddEntity(CreateEntity(2, TestPlayers.Human, 0f, true, false, objects));
+                locator.AddEntity(CreateEntity(3, TestPlayers.Human, 0f, true, true, objects));
+                locator.AddEntity(CreateEntity(4, TestPlayers.Human, 0f, false, false, objects));
+                Assert.That(registry.GetLivingCount(TestPlayers.Human), Is.EqualTo(2));
+                Assert.That(registry.GetLivingCount(TestPlayers.Enemy), Is.Zero);
+
+                ((FakeHealth)first.HealthModel).Destroy();
+                Assert.That(registry.GetLivingCount(TestPlayers.Human), Is.EqualTo(1));
+                locator.RemoveEntity(first);
+                Assert.That(registry.GetLivingCount(TestPlayers.Human), Is.EqualTo(1));
+            }
+            finally
+            {
+                registry.Dispose();
+                foreach (GameObject gameObject in objects) Object.DestroyImmediate(gameObject);
+            }
+        }
+
+        [Test]
+        public void SquadronCraftCount_ExcludesLostMembersAndUnregisteredSquadrons()
+        {
+            var objects = new List<GameObject>();
+            var locator = new EntityLocator();
+            var registry = new SquadronRegistry(locator);
+            try
+            {
+                FakeEntity squadron = CreateEntity(1, TestPlayers.Human, 0f, true, false, objects);
+                var living = new HardPointModel(HardPointType.Any, 0);
+                var lost = new HardPointModel(HardPointType.Any, 1);
+                living.SetHealth(10f, 1f);
+                lost.SetHealth(10f, 1f);
+                lost.ApplyDamage(10f);
+                ((FakeHealth)squadron.HealthModel).HardPointModels = new[] { living, lost };
+                locator.AddEntity(squadron);
+                Assert.That(registry.GetLivingCraftCount(TestPlayers.Human), Is.EqualTo(1));
+                locator.RemoveEntity(squadron);
+                Assert.That(registry.GetLivingCraftCount(TestPlayers.Human), Is.Zero);
+                Assert.That(registry.GetLivingCount(TestPlayers.Human), Is.Zero);
+            }
+            finally
+            {
+                registry.Dispose();
+                foreach (GameObject gameObject in objects) Object.DestroyImmediate(gameObject);
+            }
+        }
+
         private static FakeEntity CreateEntity(long id, PlayerId owner, float x, bool isSquadron, bool isDestroyed,
             List<GameObject> objects)
         {
@@ -265,7 +322,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public Transform Transform { get; }
             public bool IsDestroyed { get; private set; }
-            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels => Array.Empty<HardPointModel>();
+            public IReadOnlyList<IReadOnlyHardPointModel> HardPointModels { get; set; } = Array.Empty<HardPointModel>();
             public float Hull => 1f;
             public ShipClass ShipClass => ShipClass.Capital;
             public bool HasLiveHardPoints => true;

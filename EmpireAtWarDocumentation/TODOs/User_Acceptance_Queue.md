@@ -468,8 +468,8 @@ created: "2026-10-29\r"
 
 ## Battle Hitch and GC Attribution Instruments
 
-- [ ] [[Done/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Run authored `Core` and Python parser regressions when requested; all execution deferred by user.
-- [ ] [[Done/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Replay `fps-mid-game`; ≥80% of >200 ms duration named; decide H1/H2 and correlate H3 with native callers.
-- [ ] [[Done/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — ≥5 min armed playtest produces a >200 ms native snapshot/report; verify ≥80% allocation coverage and top10 callers for mid/late saves.
-- [ ] [[Done/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Capture 5/30 min memory pair, inspect type/direct-owner growth and retained references; decide leak/cache/pool from evidence.
-- [ ] [[Done/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Matched Editor/Development Player 3 min replays for mid/late saves; verify cleanup, complete output folder/report and record a new baseline in Live Battle CPU Sweep.
+- [ ] [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Run authored `Core` and Python parser regressions when requested; all execution deferred by user.
+- [ ] [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Replay `fps-mid-game`; ≥80% of >200 ms duration named; decide H1/H2 and correlate H3 with native callers.
+- [ ] [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — ≥5 min armed playtest produces a >200 ms native snapshot/report; verify ≥80% allocation coverage and top10 callers for mid/late saves.
+- [ ] [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Capture 5/30 min memory pair, inspect type/direct-owner growth and retained references; decide leak/cache/pool from evidence.
+- [ ] [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]] — Matched Editor/Development Player 3 min replays for mid/late saves; verify cleanup, complete output folder/report and record a new baseline in Live Battle CPU Sweep.

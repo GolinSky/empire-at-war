@@ -40,6 +40,7 @@ using EmpireAtWar.Models.ReinforcementZones;
 using EmpireAtWar.Presenters.MiniMap;
 using EmpireAtWar.Repository;
 using EmpireAtWar.Services.Battle;
+using EmpireAtWar.Services.Analytics;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.FogOfWar;
@@ -281,6 +282,11 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(ai.Container.Resolve<EnemyUnitCommander>(), Is.Not.Null);
             Assert.That(ai.Container.Resolve<EnemySquadronCommander>(), Is.Not.Null);
             Assert.That(ai.Container.Resolve<EnemyStrategicContextBuilder>(), Is.Not.Null);
+            const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+            var sampler = _battle.Container.Resolve<IEnumerable<ILifecycleTickable>>()
+                .OfType<PerformanceAnalyticsSampler>().Single();
+            Assert.That(typeof(PerformanceAnalyticsSampler).GetField("_squadrons", PRIVATE_INSTANCE).GetValue(sampler),
+                Is.SameAs(_battle.Container.Resolve<SquadronRegistry>()));
         }
 
         [TestCase(true)]

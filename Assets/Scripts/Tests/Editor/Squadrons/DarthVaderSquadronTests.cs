@@ -37,7 +37,7 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(flight.GetArrayElementAtIndex(i).objectReferenceValue, Is.EqualTo(fighters[i]));
                 WeaponType expected = i == 0 ? WeaponType.DarthVaderLaser : WeaponType.DarthVaderEscortLaser;
                 Assert.That(fighters[i].GetComponentsInChildren<WeaponHardPoint>(true).Select(g => g.WeaponType),
-                    Is.EqualTo(new[] { expected, expected }), "Fighter " + i);
+                    Is.EqualTo(new[] { expected }), "Fighter " + i);
             }
 
             GameObject tieView = AssetDatabase.LoadAssetAtPath<GameObject>(VIEW_FOLDER + "TIEFighterSquadronView.prefab");
@@ -67,9 +67,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(vader.MemberCount, Is.EqualTo(7));
             Assert.That(vader.WeaponLoadout.Select(w => (w.WeaponType, w.Count)), Is.EquivalentTo(new[]
             {
-                (WeaponType.DarthVaderLaser, 2), (WeaponType.DarthVaderEscortLaser, 12)
+                (WeaponType.DarthVaderLaser, 1), (WeaponType.DarthVaderEscortLaser, 6)
             }));
-            float leaderDps = weapons.GetProfile(WeaponType.DarthVaderLaser).DamagePerSecond * 2;
+            float leaderDps = weapons.GetProfile(WeaponType.DarthVaderLaser).DamagePerSecond;
             Assert.That(leaderDps, Is.EqualTo(400f).Within(0.01f));
             Assert.That(weapons.GetProfile(WeaponType.DarthVaderEscortLaser).DamagePerSecond,
                 Is.EqualTo(weapons.GetProfile(WeaponType.TIEFighterLaser).DamagePerSecond).Within(0.001f));

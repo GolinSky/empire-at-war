@@ -3,6 +3,7 @@ using EmpireAtWar.Models.Players;
 using EmpireAtWar.Components.FogOfWar;
 using EmpireAtWar.Mvc;
 using EmpireAtWar.Services.Vision;
+using EmpireAtWar.Services.Timing;
 using EmpireAtWar.Utils;
 using EmpireAtWar.ViewComponents.Squadrons;
 using UnityEngine;
@@ -143,13 +144,19 @@ namespace EmpireAtWar.Components.Squadrons.Flight
                 }
             }
 
-            Model.Step(deltaTime);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using (BattleProfilerMarkers.SquadronMovement.Auto())
+#endif
+                Model.Step(deltaTime);
             QueuePoses();
         }
 
         // The root moves now so selection, radar and icons see it this frame; fighters move in the pose batch.
         private void QueuePoses()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            using var marker = BattleProfilerMarkers.SquadronPoseQueue.Auto();
+#endif
             _poseBatch.CompletePlacement();
             transform.position = Model.GetCentroid().ToUnity();
             for (int i = 0; i < fighters.Count; i++)

@@ -12,6 +12,8 @@ namespace EmpireAtWar.Services.Timing
         public const string SQUADRON_ORDER = "Battle.Squadron.UpdateOrder";
         public const string SQUADRON_PILOT = "Battle.Squadron.Pilot";
         public const string SQUADRON_FLIGHT = "Battle.Squadron.Flight";
+        public const string SQUADRON_MOVEMENT = "Battle.Squadron.Movement";
+        public const string SQUADRON_POSE_QUEUE = "Battle.Squadron.PoseQueue";
         // Every fighter's pose written in one batch per frame.
         public const string SQUADRON_PLACEMENT = "Battle.Squadron.Placement";
         public const string DUE_SORT = "Battle.Attack.DueBatch.Sort";
@@ -86,6 +88,8 @@ namespace EmpireAtWar.Services.Timing
         public static readonly ProfilerMarker SquadronOrder = new ProfilerMarker(SQUADRON_ORDER);
         public static readonly ProfilerMarker SquadronPilot = new ProfilerMarker(SQUADRON_PILOT);
         public static readonly ProfilerMarker SquadronFlight = new ProfilerMarker(SQUADRON_FLIGHT);
+        public static readonly ProfilerMarker SquadronMovement = new ProfilerMarker(SQUADRON_MOVEMENT);
+        public static readonly ProfilerMarker SquadronPoseQueue = new ProfilerMarker(SQUADRON_POSE_QUEUE);
         public static readonly ProfilerMarker SquadronPlacement = new ProfilerMarker(SQUADRON_PLACEMENT);
         public static readonly ProfilerMarker DueSort = new ProfilerMarker(DUE_SORT);
         public static readonly ProfilerMarker DueLookup = new ProfilerMarker(DUE_LOOKUP);

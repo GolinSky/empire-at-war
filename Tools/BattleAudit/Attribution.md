@@ -13,9 +13,10 @@
 ## Native flight recorder
 
 - Menu: **Tools → Empire At War → Diagnostics → Performance → Arm Hitch Profiler**; optional GC allocation stack variant; **Disarm Hitch Profiler**. Tools never change Play Mode. One native profiler owner at a time, including Render Audit.
-- Defaults: threshold 200 ms, at least 300 frames of history, target decode `[hitch − 60, hitch + 10]`, bounded save count and cooldown.
+- Defaults: threshold 200 ms, 300 frames of history (previous setting restored on disarm), target decode `[hitch − 60, hitch + 10]`, bounded save count and cooldown.
 - Unity `ProfilerDriver.SaveProfile(string)` saves the entire rolling buffer; `.data` contains a superset of the requested range. Metadata records the exact decoded indices and missing startup context. Unity frame numbers are distinct from native Profiler indices.
 - Each hitch saves native `.data`, summary JSON, caller tree and Markdown attribution. Largest main-thread self marker is decoded automatically. Export/decoding perturbs subsequent frames: exclude instrument-generated stalls from gameplay conclusions.
+- Native recording stops during export/decoding. The resume boundary is skipped; interrupted allocation windows restart after it, and the hitch cooldown starts after export completes. This prevents the recorder from capturing its own large exports recursively. Report assembly runs off the Editor thread.
 - **Allocation Sweep (5 min)** captures 60 frames every 30 s with GCAlloc stacks. Up to 14 resolved methods preserve game callers above framework allocators. GC mode returns to `None` on completion, cancellation, error, Play Mode exit and assembly reload.
 - `allocation-ranking.json` merges exhaustive stacks by game caller. Denominator = every valid sampled frame, including zero-allocation frames; unsampled intervals are excluded. Unresolved callers remain explicit. Legacy truncated `top` tables must be regenerated.
 

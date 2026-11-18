@@ -50,7 +50,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(data.CombatSpeed, Is.EqualTo(combat));
             Assert.That(data.Abilities, Is.Empty);
             Assert.That(data.WeaponLoadout.Select(gun => (gun.WeaponType, gun.Count)),
-                Is.EqualTo(new[] { (weaponType, 2) }));
+                Is.EqualTo(new[] { (weaponType, 1) }));
 
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(
                 $"Assets/Prefabs/Models/Squadrons/{type}SquadronView.prefab");
@@ -66,11 +66,11 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(healthMembers.GetArrayElementAtIndex(0).objectReferenceValue, Is.EqualTo(fighter));
 
             WeaponHardPoint[] guns = prefab.GetComponentsInChildren<WeaponHardPoint>(true);
-            Assert.That(guns, Has.Length.EqualTo(2));
+            Assert.That(guns, Has.Length.EqualTo(1));
             Assert.That(guns.Select(gun => gun.WeaponType), Is.All.EqualTo(weaponType));
             var weapons = new SerializedObject(prefab.GetComponentInChildren<WeaponComponent>(true));
             SerializedProperty hardPoints = weapons.FindProperty("hardPoints");
-            Assert.That(hardPoints.arraySize, Is.EqualTo(2));
+            Assert.That(hardPoints.arraySize, Is.EqualTo(1));
             Assert.That(Enumerable.Range(0, hardPoints.arraySize)
                 .Select(index => hardPoints.GetArrayElementAtIndex(index).objectReferenceValue),
                 Is.EquivalentTo(guns));

@@ -34,6 +34,6 @@ verification: Live source review, Unity compilation with zero errors, Python AST
 - Pinned package snapshot adapter uses internal APIs; `BattleMemorySnapshotExporterTests` checks contracts. Revalidate on upgrade.
 
 ## Files
-- [[Done/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]]; [[TODOs/User_Acceptance_Queue#Battle Hitch and GC Attribution Instruments]].
+- [[TODOs/Tooling/Battle_Hitch_And_GC_Attribution_Instruments]]; [[TODOs/User_Acceptance_Queue#Battle Hitch and GC Attribution Instruments]].
 - `Assets/Scripts/Editor/BattleAttributionRun.cs`, `BattleProfilerFlightRecorder.cs`, `BattleProfilerDecoder.cs`, `BattleMemoryCapture.cs`, `BattleMemorySnapshotExporter.cs`.
 - `Assets/Scripts/Services/Timing/BattleBuiltinRecorders.cs`, `BattleSystemAttribution.cs`, `BattlePerformanceCapture.cs`; `Assets/Scripts/Services/Analytics/BattleFpsHistory.cs`.
