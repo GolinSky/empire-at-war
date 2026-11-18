@@ -74,13 +74,13 @@ MonoBehaviour:
   hangarBays:
   - squadronType: 100
     reserve: 8
-    maxActive: 1
+    maxActive: 2
   - squadronType: 106
     reserve: 8
-    maxActive: 0
+    maxActive: 2
   - squadronType: 102
     reserve: 8
-    maxActive: 0
+    maxActive: 2
   <HangarInitialDelay>k__BackingField: 4
   <HangarLaunchInterval>k__BackingField: 1
   weaponLoadout:
