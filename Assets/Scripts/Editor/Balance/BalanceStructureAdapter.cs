@@ -27,7 +27,8 @@ namespace EmpireAtWar.Editor.Balance
                         BalanceAssetResolver.Load<MiningFacilityData>(mapping.GetAssetKey(nameof(MiningFacilityData))), "Mining facility", "MiningFacilityView", mapping);
                 foreach (DefendPlatformType id in faction.DefendPlatforms)
                     Buildable(registry, faction, registry.Resolve<DefendPlatformCatalog>(), (int)id,
-                        BalanceAssetResolver.Load<DefendPlatformData>(mapping.GetAssetKey(nameof(DefendPlatformData))), "Defense platform", "DefendPlatformView", mapping);
+                        BalanceAssetResolver.Load<DefendPlatformData>(mapping.GetAssetKey(DefendPlatformAssets.GetDataName(id))), "Defense platform",
+                        DefendPlatformAssets.GetViewName(id), mapping);
                 CaptureSiteData sites = registry.Resolve<CaptureSiteData>();
                 foreach (SiteFacilityType type in sites.GetAllowedFacilities(CaptureSiteKind.Satellite))
                 {

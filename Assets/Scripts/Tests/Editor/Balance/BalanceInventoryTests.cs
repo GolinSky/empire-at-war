@@ -1,5 +1,6 @@
 using System.Linq;
 using EmpireAtWar.Editor.Balance;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
@@ -46,6 +47,19 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(inventory.Units.Where(unit => unit.Kind == BalanceUnitKind.Ship || unit.Kind == BalanceUnitKind.Squadron).All(unit => unit.Data != null && unit.Prefab != null && unit.Fields.ContainsKey("Price")), Is.True);
             Assert.That(inventory.Fields.Values.Any(field => field.Path.Contains("HullBottom") || field.Path.Contains("HullTop") || field.Path.Contains("MemberCount") || field.Path == "weaponLoadout"), Is.False);
             Assert.That(inventory.Fields.Values.All(field => !field.Key.Contains("Array.data") && !field.Key.Contains("rid:")), Is.True);
+        }
+
+        [Test]
+        public void DefensePlatforms_UseTheirOwnDataAndPrefab()
+        {
+            BalanceRegistration inventory = BalanceInventory.Build();
+            Assert.That(inventory.Errors, Is.Empty);
+            foreach (BalanceUnit unit in inventory.Units.Where(entry => entry.Id.Contains(nameof(DefendPlatformCatalog) + "/")))
+            {
+                DefendPlatformType type = (DefendPlatformType)int.Parse(unit.Id.Split('/').Last());
+                Assert.That(unit.Data.name, Is.EqualTo(DefendPlatformAssets.GetDataName(type)), unit.Id);
+                Assert.That(unit.Prefab.name, Is.EqualTo(DefendPlatformAssets.GetViewName(type)), unit.Id);
+            }
         }
 
         [Test]
