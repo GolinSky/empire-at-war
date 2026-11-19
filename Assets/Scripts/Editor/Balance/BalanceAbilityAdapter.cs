@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EmpireAtWar.Components.AttackComponent;
-using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Services.ShipAbilities.Abilities;
 using UnityEditor;
@@ -33,7 +32,7 @@ namespace EmpireAtWar.Editor.Balance
             [typeof(CompositeBeamSettings)] = new[] { "damage" },
             [typeof(HarmonicBombSettings)] = new[] { "radius", "minimumTargets" },
             [typeof(ProtonBeamSettings)] = new[] { "damage", "damageType" },
-            [typeof(TractorBeamSettings)] = new[] { "speedMultiplier", "targetClasses", "beam" },
+            [typeof(TractorBeamSettings)] = new[] { "speedMultiplier", "beam" },
             [typeof(IonShotSettings)] = new[] { "disableDuration", "projectile" },
             [typeof(ConcentrateFireSettings)] = new[] { "allyStatModifier", "commandRadius", "targetDamageMultiplier" },
             [typeof(IonPulseSettings)] = new[] { "alignmentTolerance", "waveSpeed", "waveRadius",
@@ -96,8 +95,7 @@ namespace EmpireAtWar.Editor.Balance
                 BalanceWeaponAdapter.Profile(registry, catalog, property, key + name + "/", BalanceFieldGroup.Abilities, context, users, alias, subtype);
             else
                 registry.Add(catalog, key + name, property.propertyPath, BalanceFieldGroup.Abilities, context, BalanceFieldOwner.SharedProfile, true, users,
-                    name == "damageType" ? typeof(DamageType)
-                    : name == "targetClasses" ? typeof(ShipClass) : null,
+                    name == "damageType" ? typeof(DamageType) : null,
                     minimum: name == "minimumTargets" ? 1 : 0, positive: name == "radius" || name == "waveSpeed" || name == "shotIntervalMultiplier" || name.EndsWith("FireDelayMultiplier"),
                     alias: alias, dependency: subtype, serializedTarget: settings.serializedObject);
         }

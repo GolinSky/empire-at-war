@@ -369,7 +369,7 @@ MonoBehaviour:
           four heavy turbolasers and four heavy laser cannons are not separately
           targetable. Boost Weapon Power halves weapon reload and time between shots
           and halves speed and shield regeneration for 7 s. Recovers in 50 s. Tractor
-          Beam restricts enemy movement. No hangars or fighter complement.
+          Beam slows enemy ships of a lower class. No hangars or fighter complement.
         role: Ship of the Line / Capital Ship
         iconKey: f0a9b1821246f484dbc3d7fcaa7828d1:21300000
         isHero: 0
@@ -448,8 +448,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 7b61aabb13894524ebe6a77baaaeba46, type: 2}
         displayName: V-19 Torrent
-        description: Eight V-19 Torrent fighters, each with 104 hull, 16 shields and
-          two laser cannons. Screens Republic capital ships and bombers, intercepting
+        description: Eight V-19 Torrent fighters, each with 104 hull, 16 shields
+          and two laser cannons. Screens Republic capital ships and bombers, intercepting
           hostile fighters and bombers. Vulnerable to corvettes and dedicated anti-fighter
           weapons. Each surviving craft regenerates 0.2 shield HP/s.
         role: Fighter / Squadron screen

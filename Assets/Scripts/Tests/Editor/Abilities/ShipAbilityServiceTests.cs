@@ -298,6 +298,22 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(settings.CanTarget(caster, target.Entity), Is.False);
         }
 
+        [TestCase(ShipClass.Capital, ShipClass.HeavyCruiser, true)]
+        [TestCase(ShipClass.Capital, ShipClass.Corvette, true)]
+        [TestCase(ShipClass.Capital, ShipClass.Capital, false)]
+        [TestCase(ShipClass.HeavyCruiser, ShipClass.Capital, false)]
+        [TestCase(ShipClass.Capital, ShipClass.Fighter, false)]
+        [TestCase(ShipClass.Capital, ShipClass.Structure, false)]
+        public void TractorBeam_TargetsOnlyLowerClassShips(ShipClass casterClass, ShipClass targetClass, bool allowed)
+        {
+            var settings = new TractorBeamSettings();
+            FakeCommand caster = CreateCaster();
+            caster.FakeHealth.ShipClass = casterClass;
+            FakeCommand target = CreateCaster();
+            target.FakeHealth.ShipClass = targetClass;
+            Assert.That(settings.CanTarget(caster, target.Entity), Is.EqualTo(allowed));
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         public void LuckyShot_WindsUpThenOnlyAuthorityHitsOnceAndRecoversForSixtySeconds(bool authority)

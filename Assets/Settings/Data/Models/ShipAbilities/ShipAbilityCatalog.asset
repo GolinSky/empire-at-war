@@ -361,9 +361,10 @@ MonoBehaviour:
       value:
         icon: {fileID: 21300000, guid: 44e885e262d0a944db799fce4dd7a43b, type: 3}
         displayName: Tractor Beam
-        description: Reduce a targeted enemy corvette or frigate to 25% speed. The
-          beam ends if the caster, target, or beam hardpoint is destroyed, the caster's
-          abilities are disabled, or the target cloaks or leaves range.
+        description: Reduce a targeted enemy ship of a lower class than this ship
+          to 25% speed. Fighters and structures are immune. The beam ends if the
+          caster, target, or beam hardpoint is destroyed, the caster's abilities
+          are disabled, or the target cloaks or leaves range.
         duration: 20
         recoveryDelay: 25
         canCancel: 1
@@ -626,7 +627,6 @@ MonoBehaviour:
         asm: Assembly-CSharp}
       data:
         speedMultiplier: 0.25
-        targetClasses: 0200000003000000
         beam:
           weaponType: 12
           displayName: Laser Beam

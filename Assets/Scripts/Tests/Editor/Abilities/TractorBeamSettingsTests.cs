@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Combat;
 using System.Reflection;
@@ -43,18 +44,35 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(modifiers.SpeedMultiplier, Is.EqualTo(2f));
         }
 
-        [TestCase(ShipClass.Corvette, true)]
-        [TestCase(ShipClass.Frigate, true)]
-        [TestCase(ShipClass.Fighter, false)]
-        [TestCase(ShipClass.Bomber, false)]
-        [TestCase(ShipClass.Interceptor, false)]
-        [TestCase(ShipClass.Cruiser, false)]
-        [TestCase(ShipClass.HeavyCruiser, false)]
-        [TestCase(ShipClass.Capital, false)]
-        [TestCase(ShipClass.BattleCruiser, false)]
-        [TestCase(ShipClass.Dreadnought, false)]
-        [TestCase(ShipClass.Structure, false)]
-        public void CanTarget_DefaultsToCorvettesAndFrigates(ShipClass shipClass, bool expected) =>
-            Assert.That(new TractorBeamSettings().CanTarget(shipClass), Is.EqualTo(expected));
+        [Test]
+        public void CanTarget_OnlyShipsOfALowerClassThanTheCaster()
+        {
+            var settings = new TractorBeamSettings();
+            for (int caster = 0; caster < HULLS_BY_SIZE.Length; caster++)
+                for (int target = 0; target < HULLS_BY_SIZE.Length; target++)
+                    Assert.That(settings.CanTarget(HULLS_BY_SIZE[caster], HULLS_BY_SIZE[target]),
+                        Is.EqualTo(target < caster), $"{HULLS_BY_SIZE[caster]} → {HULLS_BY_SIZE[target]}");
+        }
+
+        [TestCase(ShipClass.Fighter)]
+        [TestCase(ShipClass.Bomber)]
+        [TestCase(ShipClass.Interceptor)]
+        [TestCase(ShipClass.HeroStrikecraft)]
+        [TestCase(ShipClass.Structure)]
+        public void CanTarget_StrikecraftAndStructuresAreImmuneAndNeverCast(ShipClass immune)
+        {
+            var settings = new TractorBeamSettings();
+            foreach (ShipClass other in Enum.GetValues(typeof(ShipClass)))
+            {
+                Assert.That(settings.CanTarget(other, immune), Is.False, $"{other} → {immune}");
+                Assert.That(settings.CanTarget(immune, other), Is.False, $"{immune} → {other}");
+            }
+        }
+
+        private static readonly ShipClass[] HULLS_BY_SIZE =
+        {
+            ShipClass.Corvette, ShipClass.Frigate, ShipClass.Cruiser, ShipClass.HeavyCruiser, ShipClass.Capital,
+            ShipClass.BattleCruiser, ShipClass.Dreadnought
+        };
     }
 }
