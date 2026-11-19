@@ -183,7 +183,7 @@ Files: `%USERPROFILE%/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/BattleTelemet
 - **R8 (P1) NE zone attack.** 3–10 ships there 119–286 s; relay flipped 227 s, lost 263 s; objective switched relay ↔ mine ↔ pads; satellites not targeted first (A5 gap).
 - **R9 (P1) Ships late.** Follows R3.
 
-## Round 2 — steps (B1–B6 + B9 done 2026-11-19; B7, B8, B4 satellite types open)
+## Round 2 — steps (B1–B6, B8, B9 done 2026-11-19; B7 and B10 open)
 ### User rules added 2026-11-19 22:40
 - Wings fly **onto mining spots** in the centre: mine + nearby pads are captured together. Build mine or battle asteroid at once.
 - Both outer zones are visited at the start.
@@ -199,11 +199,11 @@ Files: `%USERPROFILE%/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/BattleTelemet
   - Contested spot: group advantage vs units within 500 ≥ 1 → fight there (attack-move onto the spot); else next spot; no spot → the pad nearest home. Never idle.
 - [x] **B2 Wing budget (R3, R9).** Opening purchase cap: free wings (station + bought) ≤ 6 for cheap wings, ≤ 4 otherwise, until the first ship is deployed. Bombers ≤ 3 per known hostile mine. Remove the uncapped `ignoreShipRatio` path. Mines and satellites are paid before extra wings.
 - [x] **B3 Outer zones at the start (R4).** One B group per outer zone: 1 wing each from the first decision (2 to the own-side or nearer zone when wings are cheap). Each lands on the zone's mine spot.
-- [ ] **B4 Group commitment (R5).** Commitment done; satellite threat by type and satellite raid order open (see Round 2 notes). A group keeps its zone until it is taken or the group is below 50 % of its wings. No per-pass zone switch. Raid target order inside a zone: mine → satellites → relay for bombers. Satellite threat vs wings by type (turbolaser low, quad laser high) instead of flat 60.
+- [x] **B4 Group commitment (R5).** Commitment, satellite threat by type and bomber raid order done (see Round 2 notes). A group keeps its zone until it is taken or the group is below 50 % of its wings. No per-pass zone switch. Raid target order inside a zone: mine → satellites → relay for bombers. Satellite threat vs wings by type (turbolaser low, quad laser high) instead of flat 60.
 - [x] **B5 Defend held zones (R6).** A zone where the team holds the relay or a satellite and hostiles are present = top tier. Force rated with own satellites **and own wings in the zone**. Ships are sent even below an even fight while own satellites stand (fight around them).
 - [x] **B6 Deploy in held zones (R7).** `EnemyFactionController.TryFindShipSpawnPosition`: spawn in the held zone nearest the ship's task (centre for the centre force, outer relay for that zone) when its spawn rule is open; else home. Check `ReinforcementSpawnRule.IsOpen` for AI-held capturable zones.
 - [ ] **B7 Route (R7).** Waypoint around a hostile-held centre for ship groups (deferred from A3).
-- [ ] **B8 Hostile zone order (R8, A5 gap).** Satellites → relay → pads for ships.
+- [x] **B8 Hostile zone order (R8, A5 gap).** Satellites → relay → pads for ships.
 - [x] **B9 Tests (`EnemyAi`).** Written, not run (local override); spawn-point and own-wing support covered only at allocator level. Group lands on a mine spot; never idle with a free spot in the zone; purchase cap; one group per outer zone; group keeps its zone across passes; held zone under attack is top tier and counts wings; spawn point picks a held zone.
 - [ ] **B10 Battle.** Same matchup. Gates: all 4 centre mines AI-owned or contested by 60 s; no wing circling > 15 s with a free site in its zone; wings bought ≤ cap before the first ship; first ship ≤ 45 s; NE and SW zones both visited by 40 s; ≥ 50 % of ships at the centre while it is held and attacked; ≥ 1 deployment outside the home zone once a relay is held.
 
@@ -225,9 +225,13 @@ Files: `%USERPROFILE%/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/BattleTelemet
 - `EnemyZoneObjective.IsHeld` (relay allied or own satellite/platform), `OwnStructures`, `IsHeldUnderAttack`. `OwnSupport` += own wings within 2 × radius.
 - `GetTier`: held under attack → −1 whatever the verdict. `TryFill`: held under attack with `OwnStructures > 0` → all free ships committed below even.
 - `EnemyZoneAllocator.DeployZone` = gather zone → best served zone → weak target. Planner `DeploymentPoint` = its centre; `TryGetReinforcementRally` prefers it over `GatherPoint` → `TryGetSpawnPositionNear` picks the held relay or station nearest it (spawn rule must be open).
+### B4 satellite types, B8 (2026-11-19, follow-up)
+- `IDefendPlatformTypeFacade` (registered in `DefendPlatformInstaller`) → `UnitCombatProfileCatalog.GetPlatform(type)` from `DefendPlatformData.WeaponLoadout` + damage matrix → `ForceCompositionBuilder.AddStructure`. `STATIC_DEFENSE_DPS` 60 and its flat profile deleted; `AddArmedStructures` takes the builder.
+- Bombers: mines first; idle bombers of an outer group then go **together** after the visible hostile satellite nearest them (inside the group's zone while it has one) when together advantage ≥ 1. Relay after that through normal group capture.
+- Ships: `EnemySiteObjectives` adds a known hostile satellite on a pad as a blocking-facility candidate (seen once → remembered while standing; matched by `FacilityPosition`). Ranking: `HOSTILE_SATELLITE_FIRST_BONUS` 2000 > relay 1000 → satellites → relay → pads. Executor attacks it through the existing blocking-facility branch.
+- Tests: `ArmedStructures_AreRatedByTheirPlatformTypesWeapons`, `SquadronRaid_BombersWithoutAMineHitTheSatelliteOfTheirZoneWhenTheyBeatIt` (×2), `SiteObjectives_HostileSatelliteBlocksItsPad`; static-defense raid test seeds a turbolaser profile. Ranking bonus not unit-tested. Compile 0 errors; not run.
 ### Open
-- **B4 satellite threat by type:** armed structures still a flat 60 DPS. Needs a platform-type facade (only `IStructureSaveFacade.TypeId` exposes it) and `UnitCombatProfileCatalog` profiles from `DefendPlatformData.WeaponLoadout`; test fakes need both.
-- **B7 route waypoint** and **B8 satellites → relay → pads** not started (B8 needs hostile satellites as blocking-facility candidates).
+- **B7 route waypoint** not started.
 - A held zone with no candidate site left gives its zone group nothing to capture (not verified).
 ### Verification
 - Unity recompile: 0 errors. Tests not run (local override).

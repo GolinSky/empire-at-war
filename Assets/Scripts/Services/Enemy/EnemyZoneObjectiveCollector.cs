@@ -31,17 +31,10 @@ namespace EmpireAtWar.Services.Enemy
         /// outside the zone is not counted against it.
         /// </summary>
         public const float ZONE_DEFENDER_MARGIN = 500f;
-        /// <summary>
-        /// Armed structures have no weapon profile in the AI catalog, so each one counts as this damage per second
-        /// against every class. Estimate, not calibrated against satellite or platform loadouts.
-        /// </summary>
-        public const float STATIC_DEFENSE_DPS = 60f;
         /// <summary>Weapon reach assumed for every armed structure: the common ship weapon range.</summary>
         public const float STATIC_DEFENSE_REACH = 500f;
         /// <summary>Before this battle time a zone nobody has seen is rated empty, so the opening is not stalled.</summary>
         public const float UNSCOUTED_GRACE_SECONDS = 180f;
-
-        private static readonly UnitCombatProfile STATIC_PROFILE = CreateStaticProfile();
 
         private readonly IReinforcementZoneSource _zones;
         private readonly IPlayerRoster _roster;
@@ -195,10 +188,10 @@ namespace EmpireAtWar.Services.Enemy
         /// <summary>
         /// Adds every visible armed hostile structure within <paramref name="reach"/> of <paramref name="centre"/> to
         /// <paramref name="defenders"/> and returns how many. Satellites and defend platforms are not units, so
-        /// intel never lists them.
+        /// intel never lists them. Each is rated by its platform type's weapon loadout.
         /// </summary>
         public static int AddArmedStructures(ForceComposition defenders, AiWorldSnapshot world, IPlayerRoster roster,
-            IVisionService vision, PlayerId owner, Vector3 centre, float reach)
+            IVisionService vision, ForceCompositionBuilder forces, PlayerId owner, Vector3 centre, float reach)
         {
             int count = 0;
             IReadOnlyList<AiWorldSnapshot.Entry> structures = world.RaidStructures;
@@ -207,7 +200,7 @@ namespace EmpireAtWar.Services.Enemy
                 AiWorldSnapshot.Entry entry = structures[i];
                 if (!IsArmedHostileStructure(entry, roster, vision, owner) ||
                     PlanarDistance(entry.Position, centre) > reach) continue;
-                defenders.Add(STATIC_PROFILE, entry.Entity.HealthModel.Hull, entry.Entity.HealthModel.Shields, 1f);
+                forces.AddStructure(defenders, entry.Entity);
                 count++;
             }
             return count;
@@ -227,7 +220,7 @@ namespace EmpireAtWar.Services.Enemy
                     !entry.Entity.TryGetFacade(out IStructureKindFacade structure) ||
                     structure.Kind != StructureKind.DefendPlatform ||
                     PlanarDistance(entry.Position, centre) > reach) continue;
-                support.Add(STATIC_PROFILE, entry.Entity.HealthModel.Hull, entry.Entity.HealthModel.Shields, 1f);
+                _forceBuilder.AddStructure(support, entry.Entity);
                 count++;
             }
             return count;
@@ -254,7 +247,8 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>Adds the visible armed hostile structures whose weapons cover <paramref name="position"/>.</summary>
         public int AddStaticDefenders(ForceComposition defenders, Vector3 position) =>
-            AddArmedStructures(defenders, _world, _roster, _vision, _owner, position, STATIC_DEFENSE_REACH);
+            AddArmedStructures(defenders, _world, _roster, _vision, _forceBuilder, _owner, position,
+                STATIC_DEFENSE_REACH);
 
         private int BuildDefenders(ForceComposition defenders, Vector3 centre, float radius)
         {
@@ -262,7 +256,7 @@ namespace EmpireAtWar.Services.Enemy
             float reach = ZONE_DEFENDER_MARGIN + radius;
             _defenderRadiusSquared = reach * reach;
             _picture.BuildKnownFromConfident(defenders, _includeDefender);
-            return AddArmedStructures(defenders, _world, _roster, _vision, _owner, centre,
+            return AddArmedStructures(defenders, _world, _roster, _vision, _forceBuilder, _owner, centre,
                 2f * radius + STATIC_DEFENSE_REACH);
         }
 
@@ -299,14 +293,6 @@ namespace EmpireAtWar.Services.Enemy
                 else if (_roster.IsHostile(_owner, station.Owner)) hostile = Mathf.Min(hostile, distance);
             }
             return allied <= hostile;
-        }
-
-        private static UnitCombatProfile CreateStaticProfile()
-        {
-            float[] dps = new float[ForceComposition.ClassSlots];
-            for (int i = 0; i < dps.Length; i++) dps[i] = STATIC_DEFENSE_DPS;
-            return new UnitCombatProfile(ShipClass.Structure, 0f, 0f, dps, dps,
-                new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>());
         }
 
         private static float PlanarDistance(Vector3 a, Vector3 b)

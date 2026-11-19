@@ -29,7 +29,9 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Opening wing cap before the first ship: 6 cheap / 4 otherwise (`EnemyWingPricing`); bombers ≤ 3 per known hostile mine; pending satellites/mines block extra wings.
 - Held zone (relay allied or own satellite) with hostiles → tier −1; with own satellites → free ships sent below an even fight. Own wings in the zone count as support.
 - New ships arrive at the held relay/station nearest `EnemyZoneAllocator.DeployZone` (gather zone → best served zone → weak target).
-- Open (owner plan): satellite threat still flat 60 DPS; no route waypoint; no satellite-first ship order.
+- Armed structures are rated by platform type (`IDefendPlatformTypeFacade` → `UnitCombatProfileCatalog.GetPlatform` from the weapon loadout); supersedes the flat 60 DPS profile below.
+- Bombers: mine → hostile satellite in their zone (together, power rule) → relay. Ships in a hostile zone: known hostile satellites (blocking-facility candidates, +2000) → relay (+1000) → pads.
+- Open (owner plan): no route waypoint around a hostile centre.
 
 ### Opening and wing groups (2026-11-19, A1–A7)
 

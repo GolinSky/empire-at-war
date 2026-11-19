@@ -399,7 +399,7 @@ namespace EmpireAtWar.Services.Enemy
                         attackers.Add(receiver);
                 }
                 if (attackers.Count > 0) _unitOrderService.IssueAttack(attackers, facility);
-                ActionReason = "Clear the hostile mine before capturing the site.";
+                ActionReason = "Destroy the hostile mine or satellite before capturing the site.";
                 FinishCaptureAssignments(context, anchor, count);
                 return;
             }

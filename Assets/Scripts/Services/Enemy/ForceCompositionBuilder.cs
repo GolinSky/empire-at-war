@@ -8,6 +8,7 @@ using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
 using GameEntity = EmpireAtWar.Entities.BaseEntity.IEntity;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.DefendPlatform;
 
 namespace EmpireAtWar.Services.Enemy
 {
@@ -63,6 +64,14 @@ namespace EmpireAtWar.Services.Enemy
         {
             IHealthModelObserver health = entity.HealthModel;
             force.Add(_catalog.Get(entity.GetFacade<IUnitTypeFacade>().UnitTypeId),
+                health.Hull, health.Shields, GetOffenseScale(health));
+        }
+
+        /// <summary>Adds a satellite or defend platform at its current health, rated by its platform type.</summary>
+        public void AddStructure(ForceComposition force, GameEntity structure)
+        {
+            IHealthModelObserver health = structure.HealthModel;
+            force.Add(_catalog.GetPlatform(structure.GetFacade<IDefendPlatformTypeFacade>().Type),
                 health.Hull, health.Shields, GetOffenseScale(health));
         }
 

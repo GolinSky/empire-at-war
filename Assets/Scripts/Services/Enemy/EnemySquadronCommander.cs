@@ -90,6 +90,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<ISquadron> _scoutPool = new List<ISquadron>();
         private readonly ForceComposition _raidForce = new ForceComposition();
         private readonly ForceComposition _raidDefenders = new ForceComposition();
+        private readonly List<ISquadron> _raidWings = new List<ISquadron>();
         private readonly Predicate<ISquadron> _leftGroup;
         private int _outerWingCount = 1;
 
@@ -830,6 +831,7 @@ namespace EmpireAtWar.Services.Enemy
 
         /// <summary>
         /// Outer groups raid known hostile mines: a group without a zone with all its wings, bombers at any time.
+        /// Bombers left without a mine then hit the hostile satellites of their zone (mine → satellites → relay).
         /// A wing raids a mine only when it at least matches the units and armed structures there (the power rule);
         /// no blanket structure-near-route block applies. One wing per mine, best damage per distance first.
         /// </summary>
@@ -837,7 +839,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             _raids.Clear();
             _reservedRaidTargets.Clear();
-            if (_stationDefense.HasValue || _intel.Mines.Count == 0) return;
+            if (_stationDefense.HasValue) return;
 
             while (true)
             {
@@ -875,6 +877,45 @@ namespace EmpireAtWar.Services.Enemy
                 _raids.Add(bestWing, bestMine);
                 _reservedRaidTargets.Add(bestMine.EntityId);
             }
+            foreach (EnemyWingGroup group in _outerGroups) AssignSatelliteRaid(group);
+        }
+
+        /// <summary>
+        /// The group's idle bombers go together after the visible hostile satellite nearest them (inside the group's
+        /// zone while it has one) when together they at least match it and whatever else covers it.
+        /// </summary>
+        private void AssignSatelliteRaid(EnemyWingGroup group)
+        {
+            _raidWings.Clear();
+            foreach (ISquadron wing in group.Members)
+                if (!_raids.ContainsKey(wing) && _squadrons[wing].Profile.ShipClass == ShipClass.Bomber)
+                    _raidWings.Add(wing);
+            if (_raidWings.Count == 0) return;
+
+            Vector3 origin = _raidWings[0].WorldPosition;
+            AiWorldSnapshot.Entry best = default;
+            float bestDistance = float.PositiveInfinity;
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = _worldSnapshot.RaidStructures;
+            for (int i = 0; i < structures.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (!EnemyZoneObjectiveCollector.IsArmedHostileStructure(entry, _playerRoster, _vision, _owner.Id) ||
+                    group.Zone != null && !EnemyShipTaskGroupPlanner.IsInZone(group.Zone, entry.Position)) continue;
+                float distance = PlanarDistanceSquared(origin, entry.Position);
+                if (distance >= bestDistance) continue;
+                best = entry;
+                bestDistance = distance;
+            }
+            if (float.IsPositiveInfinity(bestDistance)) return;
+
+            _raidForce.Clear();
+            foreach (ISquadron wing in _raidWings) AddWingForce(wing, _raidForce);
+            _raidDefenders.Clear();
+            FillTargetDefenders(best.Position, _raidDefenders);
+            if (CombatMatchup.Advantage(_raidForce, _raidDefenders) < EVEN_FIGHT) return;
+            var sighting = new HostileSighting(best.Id, default, best.Owner, ToPoint(best.Position),
+                best.Entity.HealthModel.Hull, best.Entity.HealthModel.Shields, 1f, Time.time);
+            foreach (ISquadron wing in _raidWings) _raids.Add(wing, sighting);
         }
 
         private bool WinsRaid(ISquadron wing, Vector3 mine)
@@ -896,7 +937,7 @@ namespace EmpireAtWar.Services.Enemy
             _ratedTarget = target;
             _forceBuilder.BuildKnown(defenders, _intel, Time.time, _includeTargetDefender);
             EnemyZoneObjectiveCollector.AddArmedStructures(defenders, _worldSnapshot, _playerRoster, _vision,
-                _owner.Id, target, EnemyZoneObjectiveCollector.DEFENDER_REACH);
+                _forceBuilder, _owner.Id, target, EnemyZoneObjectiveCollector.DEFENDER_REACH);
         }
 
         private bool IncludeTargetDefender(HostileSighting sighting) =>

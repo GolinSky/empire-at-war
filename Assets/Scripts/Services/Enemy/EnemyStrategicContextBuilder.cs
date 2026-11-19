@@ -176,10 +176,11 @@ namespace EmpireAtWar.Services.Enemy
         // Travel-distance units, on the SATELLITE_PAD_PRIORITY scale.
         private const float ALLY_BASE_MINE_PENALTY = 600f;
         /// <summary>
-        /// Inside a hostile zone the relay is taken before its pads: about one zone hop of travel. Satellites on the
-        /// way are fought by the attack-move order.
+        /// Inside a hostile zone the relay is taken before its pads: about one zone hop of travel.
         /// </summary>
         private const float HOSTILE_RELAY_FIRST_BONUS = 1000f;
+        /// <summary>Hostile satellites come before the relay: order inside a hostile zone is satellites → relay → pads.</summary>
+        private const float HOSTILE_SATELLITE_FIRST_BONUS = 2000f;
         private const float BASE_EXCLUSION_MARGIN = 900f;
         private float _hostileEconomyPressure = 1f;
         private readonly Dictionary<TeamId, int> _enemyTeamZones = new Dictionary<TeamId, int>();
@@ -1228,7 +1229,8 @@ namespace EmpireAtWar.Services.Enemy
                 float priority = -GetCaptureScore(origin, candidate);
                 bool hostileRelay = candidate.Kind == EnemyCaptureObjectiveType.ReinforcementZone &&
                     !candidate.Owner.IsNone && _playerRoster.IsHostile(_owner.Id, candidate.Owner);
-                _rankedCaptures.Add(new RankedCapture(candidate,
+                bool hostileSatellite = candidate.BlockingFacilityId.HasValue && !candidate.IsMine;
+                _rankedCaptures.Add(new RankedCapture(candidate, hostileSatellite ? priority + HOSTILE_SATELLITE_FIRST_BONUS :
                     hostileRelay ? priority + HOSTILE_RELAY_FIRST_BONUS : priority, i));
                 _zoneCandidates.Add(candidate);
                 _zonePriorities.Add(priority);

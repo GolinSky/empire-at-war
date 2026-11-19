@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Components.Hangar;
+using EmpireAtWar.Entities.DefendPlatform;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.Ship.Data;
 using EmpireAtWar.Entities.Squadrons;
@@ -13,7 +14,7 @@ using EmpireAtWar.Mvc;
 namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
-    /// Lazily rates every ship and squadron type from its live data assets, so balance edits to hull, shields,
+    /// Lazily rates every ship, squadron and defend platform type from its live data assets, so balance edits to hull, shields,
     /// weapons or the damage matrix reach the AI without a re-bake.
     /// </summary>
     public sealed class UnitCombatProfileCatalog
@@ -26,6 +27,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly DamageMatrixData _damageMatrix;
         private readonly Dictionary<UnitTypeId, UnitCombatProfile> _profiles =
             new Dictionary<UnitTypeId, UnitCombatProfile>();
+        private readonly Dictionary<DefendPlatformType, UnitCombatProfile> _platformProfiles =
+            new Dictionary<DefendPlatformType, UnitCombatProfile>();
 
         public UnitCombatProfileCatalog(
             IAssetService assetService,
@@ -71,6 +74,18 @@ namespace EmpireAtWar.Services.Enemy
 
             return UnitCombatProfileFactory.Create(data.ShipClass, data.Hull, data.Shields,
                 data.WeaponLoadout, _weaponsData, _damageMatrix, hangar);
+        }
+
+        /// <summary>A satellite or platform rated from its weapon loadout: turbolasers hurt wings little, quad lasers a lot.</summary>
+        public UnitCombatProfile GetPlatform(DefendPlatformType type)
+        {
+            if (_platformProfiles.TryGetValue(type, out UnitCombatProfile profile)) return profile;
+            DefendPlatformData data = _assetService.Load<DefendPlatformData>(DefendPlatformAssets.GetDataName(type));
+            profile = UnitCombatProfileFactory.Create(data.ComponentData.ShipClass, data.ComponentData.Hull,
+                data.ComponentData.Shields, data.WeaponLoadout, _weaponsData, _damageMatrix,
+                Array.Empty<UnitCombatProfile>());
+            _platformProfiles.Add(type, profile);
+            return profile;
         }
 
         public float GetShipTravelTime(ShipType shipType, float distance)

@@ -670,6 +670,141 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(escorts, Is.EquivalentTo(new ISquadron[] { carrierWing }), "A free wing keeps capturing.");
         }
 
+        [Test]
+        public void ArmedStructures_AreRatedByTheirPlatformTypesWeapons()
+        {
+            GameObject view = new GameObject("Satellite");
+            try
+            {
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                var locator = new EntityLocator();
+                var satellite = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Human, 1)
+                    { IsUnit = false, IsDefendPlatform = true };
+                locator.AddEntity(satellite);
+                UnitCombatProfileCatalog catalog = PlatformCatalog();
+                var snapshot = new AiWorldSnapshot(locator);
+                var forces = new ForceCompositionBuilder(locator, catalog, snapshot);
+                var vision = new VisionService(roster, fogEnabled: false);
+                var wing = new ForceComposition();
+                wing.AddNew(Rated(ShipClass.Fighter, 100f, 10f), false);
+
+                var turbolaser = new ForceComposition();
+                satellite.Type = DefendPlatformType.TurbolaserSatellite;
+                EnemyZoneObjectiveCollector.AddArmedStructures(turbolaser, snapshot, roster, vision, forces,
+                    TestPlayers.Enemy, Vector3.zero, 500f);
+                var quadLaser = new ForceComposition();
+                satellite.Type = DefendPlatformType.QuadLaserSatellite;
+                EnemyZoneObjectiveCollector.AddArmedStructures(quadLaser, snapshot, roster, vision, forces,
+                    TestPlayers.Enemy, Vector3.zero, 500f);
+
+                Assert.That(CombatMatchup.Advantage(wing, turbolaser), Is.GreaterThan(CombatMatchup.Advantage(wing, quadLaser)),
+                    "A wing fares better against the satellite whose guns hurt it less.");
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        [TestCase(DefendPlatformType.TurbolaserSatellite, true)]
+        [TestCase(DefendPlatformType.QuadLaserSatellite, false)]
+        public void SquadronRaid_BombersWithoutAMineHitTheSatelliteOfTheirZoneWhenTheyBeatIt(DefendPlatformType type,
+            bool expectsRaid)
+        {
+            GameObject view = new GameObject("Satellite");
+            try
+            {
+                Vector3 zoneCentre = Vector3.right * 500f;
+                view.transform.position = zoneCentre;
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                PlayerSlot owner = roster.Get(TestPlayers.Enemy);
+                var locator = new EntityLocator();
+                var satellite = new FakeEntity(new FakeHealthModel(view.transform) { Hull = 10f }, TestPlayers.Human, 50)
+                    { IsUnit = false, IsDefendPlatform = true, Type = type };
+                locator.AddEntity(satellite);
+                UnitCombatProfileCatalog catalog = PlatformCatalog();
+                var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                    .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
+                UnitCombatProfile bomber = Rated(ShipClass.Bomber, 100f, 10f);
+                profiles.Add(UnitTypeId.Squadron(SquadronType.Vulture), bomber);
+                var snapshot = new AiWorldSnapshot(locator);
+                var forces = new ForceCompositionBuilder(locator, catalog, snapshot);
+                var battleState = new ReplayNotifier<BattleState>(BattleState.Running);
+                var intel = new TeamIntelRegistry();
+                var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(),
+                    new ZoneSource(roster, -1, zoneCentre), locator, roster, forces, catalog, new ScoutPlacement(), intel,
+                    owner, null, null, battleState, snapshot, new EnemyAiScheduler(battleState),
+                    new VisionService(roster, fogEnabled: false));
+                BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+                var tracked = (Dictionary<ISquadron, CommandedSquadron>)typeof(EnemySquadronCommander)
+                    .GetField("_squadrons", flags).GetValue(commander);
+                var wings = new[] { new FakeSquadron(1, owner.Id), new FakeSquadron(2, owner.Id) };
+                foreach (FakeSquadron wing in wings)
+                {
+                    locator.AddEntity(wing);
+                    tracked.Add(wing, new CommandedSquadron(bomber, null));
+                }
+
+                foreach (string step in new[] { "CollectCaptureTargets", "UpdateGroups", "AssignRaiders" })
+                    typeof(EnemySquadronCommander).GetMethod(step, flags).Invoke(commander, null);
+
+                var raids = (Dictionary<ISquadron, HostileSighting>)typeof(EnemySquadronCommander)
+                    .GetField("_raids", flags).GetValue(commander);
+                if (expectsRaid)
+                {
+                    Assert.That(raids.Keys, Is.EquivalentTo(wings), "The bombers go together.");
+                    Assert.That(raids.Values.Select(raid => raid.EntityId), Is.All.EqualTo(satellite.Id));
+                }
+                else Assert.That(raids, Is.Empty, "Bombers do not fly into guns that beat them.");
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        [Test]
+        public void SiteObjectives_HostileSatelliteBlocksItsPad()
+        {
+            GameObject view = new GameObject("Satellite");
+            try
+            {
+                PlayerRoster roster = TestPlayers.CreateDuel();
+                var locator = new EntityLocator();
+                var satellite = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Human, 7)
+                    { IsUnit = false, IsDefendPlatform = true };
+                locator.AddEntity(satellite);
+                var site = new CaptureSiteStub(Vector3.zero)
+                    { Kind = CaptureSiteKind.Satellite, Owner = TestPlayers.Human, FacilityState = CaptureSiteState.Operational };
+                var sites = new SiteSource(site);
+                CaptureSiteData data = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
+                    "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
+                var vision = new VisionService(roster, fogEnabled: false);
+                var source = new EnemySiteObjectives(sites, sites, data, roster, roster.Get(TestPlayers.Enemy),
+                    new AiWorldSnapshot(locator), vision);
+                var objectives = new List<EnemyCaptureObjective>();
+
+                source.AddStrategicObjectives(objectives, new HostileIntelModel());
+
+                EnemyCaptureObjective objective = objectives.Single();
+                Assert.That(objective.BlockingFacilityId, Is.EqualTo(satellite.Id));
+                Assert.That(objective.IsMine, Is.False, "Ships rank a blocking non-mine facility before the relay.");
+            }
+            finally { UnityEngine.Object.DestroyImmediate(view); }
+        }
+
+        // Turbolaser satellites barely hurt strikecraft; quad laser satellites shred them.
+        private static UnitCombatProfileCatalog PlatformCatalog()
+        {
+            var catalog = new UnitCombatProfileCatalog(null, null, null, null);
+            var platforms = (Dictionary<DefendPlatformType, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                .GetField("_platformProfiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
+            platforms.Add(DefendPlatformType.TurbolaserSatellite, Rated(ShipClass.Structure, 10f, 0.1f));
+            platforms.Add(DefendPlatformType.QuadLaserSatellite, Rated(ShipClass.Structure, 10f, 100f));
+            return catalog;
+        }
+
+        private static UnitCombatProfile Rated(ShipClass shipClass, float hull, float dps)
+        {
+            float[] rates = Enumerable.Repeat(dps, ForceComposition.ClassSlots).ToArray();
+            return new UnitCombatProfile(shipClass, hull, 0f, rates, rates, new float[ForceComposition.ClassSlots],
+                Array.Empty<UnitCombatProfile>());
+        }
+
         private sealed class ScoutPlacement : IEnemyStructurePlacementService
         {
             public bool IsRecovering => false;
@@ -913,6 +1048,9 @@ namespace EmpireAtWar.Tests.Editor
                 var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
                     .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
                 profiles.Add(UnitTypeId.Ship(ShipType.Venator), profile);
+                ((Dictionary<DefendPlatformType, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                    .GetField("_platformProfiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog))
+                    .Add(DefendPlatformType.TurbolaserSatellite, profile);
                 var registry = new TeamIntelRegistry();
                 // Three hostiles midway: beyond the target's defense radius, on or off the raid route.
                 for (int i = 0; i < 3; i++)
@@ -3322,7 +3460,8 @@ namespace EmpireAtWar.Tests.Editor
             CaptureSiteData data = AssetDatabase.LoadAssetAtPath<CaptureSiteData>(
                 "Assets/Settings/Data/Models/CaptureSites/CaptureSiteData.asset");
             return new IEnemyCaptureObjectiveSource[] {
-                new EnemySiteObjectives(sites, sites, data, roster, roster.Get(TestPlayers.Enemy))
+                new EnemySiteObjectives(sites, sites, data, roster, roster.Get(TestPlayers.Enemy),
+                    new AiWorldSnapshot(new EntityLocator()), null)
             };
         }
 
@@ -3510,8 +3649,9 @@ namespace EmpireAtWar.Tests.Editor
 
         private sealed class FakeEntity : IEntity, ICombatModifiersFacade, IUnitTypeFacade, IMiningFacilityFacade,
             INavigationFootprintFacade, IUnitCombatObserverFacade, IStationDurabilityFacade, IPlayerBaseFacade, ISecondStationFacade,
-            IStructureKindFacade
+            IStructureKindFacade, IDefendPlatformTypeFacade
         {
+            public DefendPlatformType Type { get; set; } = DefendPlatformType.TurbolaserSatellite;
             public bool IsUnit { get; set; } = true;
             public bool IsDefendPlatform { get; set; }
             public StructureKind Kind => StructureKind.DefendPlatform;
@@ -3547,6 +3687,7 @@ namespace EmpireAtWar.Tests.Editor
                     !IsMine && typeof(TCommand) == typeof(IMiningFacilityFacade) ||
                     !IsBase && typeof(TCommand) == typeof(IPlayerBaseFacade) ||
                     !IsDefendPlatform && typeof(TCommand) == typeof(IStructureKindFacade) ||
+                    !IsDefendPlatform && typeof(TCommand) == typeof(IDefendPlatformTypeFacade) ||
                     !IsSecondStation && typeof(TCommand) == typeof(ISecondStationFacade))
                 { command = default; return false; }
                 if (this is TCommand self) { command = self; return true; }

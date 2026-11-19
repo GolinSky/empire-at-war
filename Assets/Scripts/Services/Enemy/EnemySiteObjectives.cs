@@ -30,10 +30,16 @@ namespace EmpireAtWar.Services.Enemy
         private readonly CaptureSiteData _data;
         private readonly IPlayerRoster _players;
         private readonly PlayerSlot _owner;
+        private readonly AiWorldSnapshot _world;
+        private readonly IVisionService _vision;
+        // Hostile satellites seen once: they cannot move, so they stay targets while they stand.
+        private readonly HashSet<long> _knownSatellites = new HashSet<long>();
 
         public EnemySiteObjectives(ICaptureSiteDirectory sites, ICaptureSitePresence presence, CaptureSiteData data,
-            IPlayerRoster players, PlayerSlot owner)
+            IPlayerRoster players, PlayerSlot owner, AiWorldSnapshot world, IVisionService vision)
         {
+            _world = world;
+            _vision = vision;
             _sites = sites;
             _presence = presence;
             _data = data;
@@ -60,7 +66,14 @@ namespace EmpireAtWar.Services.Enemy
                 float progress = site.CaptureProgress;
                 bool isMine = site.Kind == CaptureSiteKind.Mining;
                 var strength = _presence.GetTeamStrengths(site, _owner.Id);
-                if (!threatened && !IsCapturable(site))
+                if (!threatened && !IsCapturable(site) &&
+                    TryFindHostileSatellite(site, out long satelliteId, out float satelliteDurability))
+                {
+                    // A hostile satellite blocks its pad: ships destroy it first, then capture the pad.
+                    blockingFacilityId = satelliteId;
+                    progress = satelliteDurability;
+                }
+                else if (!threatened && !IsCapturable(site))
                 {
                     if (!isMine || site.FacilityType != SiteFacilityType.Mining ||
                         !_players.IsHostile(_owner.Id, site.Owner) ||
@@ -82,6 +95,29 @@ namespace EmpireAtWar.Services.Enemy
                     progress, threatened, priorityBonus: site.Kind == CaptureSiteKind.Satellite ? SATELLITE_PAD_PRIORITY : 0f,
                     isMine: isMine, blockingFacilityId: blockingFacilityId, hostileStrength: strength.Hostile));
             }
+        }
+
+        /// <summary>A known, standing hostile satellite on the pad; its id and remaining hull plus shields.</summary>
+        private bool TryFindHostileSatellite(ICaptureSite site, out long id, out float durability)
+        {
+            id = 0;
+            durability = 0f;
+            if (site.Kind != CaptureSiteKind.Satellite || !_players.IsHostile(_owner.Id, site.Owner) ||
+                site.State != CaptureSiteState.Constructing && site.State != CaptureSiteState.Operational) return false;
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = _world.RaidStructures;
+            for (int i = 0; i < structures.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (entry.Owner != site.Owner || entry.Entity.HealthModel.IsDestroyed ||
+                    PlanarGeometry.DistanceSquared(entry.Position, site.FacilityPosition) >
+                    FACILITY_POSITION_TOLERANCE_SQUARED) continue;
+                if (_vision.IsVisible(_owner.Id, entry.Entity)) _knownSatellites.Add(entry.Id);
+                if (!_knownSatellites.Contains(entry.Id)) return false;
+                id = entry.Id;
+                durability = entry.Entity.HealthModel.Hull + entry.Entity.HealthModel.Shields;
+                return true;
+            }
+            return false;
         }
 
         public void AddSquadronTargets(EnemySquadronCaptureAssignments assignments, HostileIntelModel intel)

@@ -35,6 +35,7 @@ namespace EmpireAtWar
             builder.RegisterInstance(_type);
             builder.RegisterInstance(Data.ComponentData).AsSelf().As<IRadarData, IFogVisionData, ISpawnBlockerData>();
             builder.Register<DefendPlatformTooltipFacade>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<DefendPlatformTypeFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<StructureKindFacade>(Lifetime.Singleton).AsImplementedInterfaces()
                 .WithParameter(StructureKind.DefendPlatform);
             builder.Register<StructureSaveFacade>(Lifetime.Singleton).AsImplementedInterfaces()
