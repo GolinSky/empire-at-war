@@ -123,11 +123,13 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That((Color32)background.OutlineColor, Is.EqualTo(color), card.RequestId);
 
                     var serializedCard = new SerializedObject(card);
-                    var icon = (Image)serializedCard.FindProperty("unitIconImage").objectReferenceValue;
                     var marker = (GameObject)serializedCard.FindProperty("queuedHighlight").objectReferenceValue;
                     var dot = marker.GetComponent<MPImage>();
                     Assert.That(marker.activeSelf, Is.False, card.RequestId);
-                    Assert.That(marker.transform.parent, Is.EqualTo(icon.transform), card.RequestId);
+                    Assert.That(dot.rectTransform.parent, Is.EqualTo(card.transform), card.RequestId);
+                    Assert.That(dot.rectTransform.anchorMin, Is.EqualTo(Vector2.up), card.RequestId);
+                    Assert.That(dot.rectTransform.anchorMax, Is.EqualTo(Vector2.up), card.RequestId);
+                    Assert.That(dot.rectTransform.anchoredPosition, Is.EqualTo(new Vector2(6f, -6f)), card.RequestId);
                     Assert.That(dot.DrawShape, Is.EqualTo(DrawShape.Circle), card.RequestId);
                     Assert.That(dot.raycastTarget, Is.False, card.RequestId);
                 }
