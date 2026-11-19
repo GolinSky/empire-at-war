@@ -117,6 +117,15 @@ namespace EmpireAtWar.Tests.Editor
                     };
                     Assert.That(background.OutlineWidth, Is.EqualTo(width), card.RequestId);
                     Assert.That((Color32)background.OutlineColor, Is.EqualTo(color), card.RequestId);
+
+                    var serializedCard = new SerializedObject(card);
+                    var icon = (Image)serializedCard.FindProperty("unitIconImage").objectReferenceValue;
+                    var marker = (GameObject)serializedCard.FindProperty("queuedHighlight").objectReferenceValue;
+                    var dot = marker.GetComponent<MPImage>();
+                    Assert.That(marker.activeSelf, Is.False, card.RequestId);
+                    Assert.That(marker.transform.parent, Is.EqualTo(icon.transform), card.RequestId);
+                    Assert.That(dot.DrawShape, Is.EqualTo(DrawShape.Circle), card.RequestId);
+                    Assert.That(dot.raycastTarget, Is.False, card.RequestId);
                 }
 
                 view.RefreshAvailability(10000f, false);
@@ -163,6 +172,7 @@ namespace EmpireAtWar.Tests.Editor
                 FieldInfo cardsField = typeof(FactionUi).GetField("_factionUnitsUi",
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 ((List<FactionUnitUi>)cardsField.GetValue(view)).Add(card);
+                view.SetModel(new PlayerFactionModel(null, null));
                 typeof(FactionUi).GetField("_presenter", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(view, new UnlockedPresenter(CreatePresenter(null)));
                 typeof(FactionUi).GetField("_isRouteActive", BindingFlags.Instance | BindingFlags.NonPublic)
@@ -250,6 +260,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase("Ship", 1, 1)]
         [TestCase("Squadron", 20, 10)]
         [TestCase("Structure", 2, 2)]
+        [TestCase("Defense", 1, 1)]
         [TestCase("Hero", 3, 1)]
         public void PurchaseLimit_DisablesCardUntilCapacityIsReleased(string kind, int maxCount, int queueLimit)
         {
@@ -266,6 +277,7 @@ namespace EmpireAtWar.Tests.Editor
                 "Research" => new ResearchUnitRequest(data, ResearchType.ImprovedWeapons, 1),
                 "Level" => new LevelUnitRequest(data, 1),
                 "Structure" => new MiningFacilityUnitRequest(data, MiningFacilityType.CommonMiner),
+                "Defense" => new DefendPlatformUnitRequest(data, DefendPlatformType.Xq6),
                 "Squadron" => new SquadronUnitRequest(data, SquadronType.TIEFighter),
                 _ => new ShipUnitRequest(data, ShipType.HomeOne)
             };
@@ -277,7 +289,9 @@ namespace EmpireAtWar.Tests.Editor
             GameObject root = new GameObject("Faction purchase limit test");
             FactionUi view = root.AddComponent<FactionUi>();
             FactionUnitUi card = Object.Instantiate(prefab, root.transform);
-            Button button = (Button)new SerializedObject(card).FindProperty("purchaseButton").objectReferenceValue;
+            var serializedCard = new SerializedObject(card);
+            var button = (Button)serializedCard.FindProperty("purchaseButton").objectReferenceValue;
+            var marker = (GameObject)serializedCard.FindProperty("queuedHighlight").objectReferenceValue;
 
             try
             {
@@ -293,28 +307,30 @@ namespace EmpireAtWar.Tests.Editor
                     model.QueueUnit(request);
                 }
 
-                bool hidesAtLimit = kind is not ("Ship" or "Squadron");
                 Assert.That(presenter.IsUnitLimitReached(request), Is.True);
                 Assert.That(model.CanQueueUnit(request), Is.False);
                 view.RefreshAvailability(0f, false);
-                Assert.That(card.gameObject.activeSelf, Is.EqualTo(!hidesAtLimit),
-                    "Heroes, structures, upgrades and research hide at their limit.");
+                Assert.That(card.gameObject.activeSelf, Is.True, "Queued cards stay visible at their limit.");
+                Assert.That(marker.activeSelf, Is.True, "Queued cards show their marker.");
                 Assert.That(button.interactable, Is.False, "Reaching the purchase limit must disable the card.");
 
                 Assert.That(model.TryCancelCurrentUnit(request.Id, out _), Is.True);
                 view.RefreshAvailability(0f, false);
                 Assert.That(card.gameObject.activeSelf, Is.True, "Releasing a purchase must restore the card.");
                 Assert.That(button.interactable, Is.True, "Releasing a purchase must re-enable the card.");
+                Assert.That(marker.activeSelf, Is.EqualTo(queueLimit > 1),
+                    "The marker stays visible while any copies remain queued.");
 
                 model.QueueUnit(request);
                 model.Advance(10f * queueLimit);
                 view.RefreshAvailability(0f, false);
-                bool hasLifetimeLimit = kind == "Structure" || kind == "Hero";
+                bool hasLifetimeLimit = kind is "Structure" or "Defense" or "Hero";
                 Assert.That(card.gameObject.activeSelf, Is.EqualTo(!hasLifetimeLimit));
                 Assert.That(button.interactable, Is.EqualTo(!hasLifetimeLimit),
                     "Completed structures and heroes retain their reservation; ordinary queues release capacity.");
+                Assert.That(marker.activeSelf, Is.False, "Completion clears the marker when the queue is empty.");
 
-                if (kind == "Structure") model.ReleaseStructure(request);
+                if (kind is "Structure" or "Defense") model.ReleaseStructure(request);
                 if (kind == "Hero") model.SetHeroReserved(UnitTypeId.Ship(ShipType.HomeOne), false);
                 view.RefreshAvailability(0f, false);
                 Assert.That(card.gameObject.activeSelf, Is.True, "Releasing a hero restores its card.");

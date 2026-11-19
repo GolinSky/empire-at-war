@@ -181,13 +181,11 @@ namespace EmpireAtWar.Entities.Faction.Ui
             var queues = _model.GetProductionQueueSnapshots();
             foreach (FactionUnitUi unit in _factionUnitsUi)
             {
-                bool queued = false;
-                foreach (var queue in queues)
-                    if (queue.UnitRequest.Id == unit.RequestId) queued = true;
+                bool queued = IsQueued(unit, queues);
                 bool unlocked = _presenter.IsUnitAvailable(unit.FactionData);
                 bool atLimit = _presenter.IsUnitLimitReached(unit.Request);
                 unit.SetActive(IsInProductionMenu(unit.Request, _model.SelectionType) &&
-                               unlocked && !(atLimit && HidesAtLimit(unit)));
+                               (queued || (unlocked && !(atLimit && HidesAtLimit(unit)))));
                 unit.RenderAvailability(unlocked,
                     credits >= unit.FactionData.Price, queued, battleEnded, atLimit);
             }
@@ -309,7 +307,14 @@ namespace EmpireAtWar.Entities.Faction.Ui
 
         private void HandleSecondStationBuiltChanged(bool isBuilt) => UpdateSecondLevelUnit(_secondStation.CurrentLevel);
 
-        // Heroes, structure population caps, station upgrades and research tiers hide at their limit.
+        private static bool IsQueued(FactionUnitUi unit, IReadOnlyList<ProductionQueueSnapshot> queues)
+        {
+            foreach (ProductionQueueSnapshot queue in queues)
+                if (queue.UnitRequest.Id == unit.RequestId) return true;
+            return false;
+        }
+
+        // Unqueued heroes, structures, station upgrades and research tiers hide at their limit.
         // Ship and squadron queue limits only block the card: it becomes buyable again as the queue drains.
         private static bool HidesAtLimit(FactionUnitUi unit) =>
             unit.FactionData.IsHero || unit.Request is MiningFacilityUnitRequest or DefendPlatformUnitRequest
@@ -341,6 +346,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             FactionUnitUi firstShip = null, firstScout = null, level = null;
             FactionUnitUi economyResearch = null, fleetResearch = null, newShip = null, miningFacility = null;
             bool isNewShipCarrier = false;
+            var queues = _model.GetProductionQueueSnapshots();
             foreach (FactionUnitUi unitUi in _factionUnitsUi
                          .OrderBy(unit => _presenter.GetUnitSortOrder(unit.Request))
                          .ThenBy(unit => unit.Request is ShipUnitRequest or SquadronUnitRequest
@@ -348,11 +354,11 @@ namespace EmpireAtWar.Entities.Faction.Ui
                          .ThenByDescending(unit => _presenter.IsUnitAvailable(unit.FactionData)))
             {
                 unitUi.transform.SetAsLastSibling();
-                bool isShown = _presenter.IsUnitAvailable(unitUi.FactionData) &&
-                               !(HidesAtLimit(unitUi) && _presenter.IsUnitLimitReached(unitUi.Request)) &&
-                               IsInProductionMenu(unitUi.Request, selectionType);
-                unitUi.SetActive(isShown);
-                if (!isShown) continue;
+                bool inMenu = IsInProductionMenu(unitUi.Request, selectionType);
+                bool normallyVisible = _presenter.IsUnitAvailable(unitUi.FactionData) &&
+                                       !(HidesAtLimit(unitUi) && _presenter.IsUnitLimitReached(unitUi.Request));
+                unitUi.SetActive(inMenu && (normallyVisible || IsQueued(unitUi, queues)));
+                if (!inMenu || !normallyVisible) continue;
                 switch (unitUi.Request)
                 {
                     case ShipUnitRequest:
