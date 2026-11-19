@@ -35,7 +35,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(false)]
         [TestCase(true)]
-        public void Reserve_HoldsMixedWaveUntilSupportOrImmediateDefense(bool immediateDefense)
+        public void Reserve_HoldsMixedWaveUntilSupportOrOpeningRelease(bool openingRelease)
         {
             EnemyBuildQueue queue = new EnemyBuildQueue();
             FactionData data = new FactionData();
@@ -48,16 +48,16 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(queue.Builds[0].TimeLeft, Is.Zero);
 
             queue.Add(escort, 5f);
-            int minimumReady = immediateDefense ? 0 : 2;
+            int minimumReady = openingRelease ? 0 : 2;
             queue.Advance(1f, arrived.Add, minimumReady);
-            Assert.That(arrived.Count, Is.EqualTo(immediateDefense ? 1 : 0));
+            Assert.That(arrived.Count, Is.EqualTo(openingRelease ? 1 : 0));
             queue.Advance(4f, arrived.Add, minimumReady);
             Assert.That(arrived, Is.EqualTo(new UnitRequest[] { flagship, escort }));
             Assert.That(queue.Builds, Is.Empty);
         }
 
         [Test]
-        public void Reserve_HomeDefenseCanReleaseLoneReadyShipBeforeSlowBatchFinishes()
+        public void Reserve_AtPopulationLimitCanReleaseLoneReadyShipBeforeSlowBatchFinishes()
         {
             EnemyBuildQueue queue = new EnemyBuildQueue();
             FactionData data = new FactionData();
@@ -99,6 +99,23 @@ namespace EmpireAtWar.Tests.Editor
             queue.Advance(0f, arrived.Add, minimumReadyCombatUnits: 2);
             Assert.That(arrived, Is.EqualTo(reserve));
             Assert.That(queue.Builds, Is.Empty);
+        }
+
+        [Test]
+        public void Reserve_DefenseRetryWaitsForAnotherReadyUnit()
+        {
+            var queue = new EnemyBuildQueue();
+            var data = new FactionData();
+            var blocked = new ShipUnitRequest(data, ShipType.Venator);
+            var escort = new ShipUnitRequest(data, ShipType.Recusant);
+            var arrived = new List<UnitRequest>();
+            queue.RetryShipDeployment(blocked, 1f);
+            queue.Add(escort, 5f);
+            queue.Advance(1f, arrived.Add, minimumReadyCombatUnits: 2, batchDeploymentRetries: true);
+            Assert.That(arrived, Is.Empty);
+
+            queue.Advance(4f, arrived.Add, minimumReadyCombatUnits: 2, batchDeploymentRetries: true);
+            Assert.That(arrived, Is.EqualTo(new UnitRequest[] { blocked, escort }));
         }
 
         [Test]
@@ -836,6 +853,9 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
+            public void ReserveDefenseLanding(object token, PlayerId owner, ShipType shipType, Vector3 position) { }
+            public void ReleaseDefenseLanding(object token) { }
+
             public bool TryGetBestDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
                 PlacementThreatSnapshot threats, out Vector3 position)
             {
@@ -870,6 +890,9 @@ namespace EmpireAtWar.Tests.Editor
 
             public bool TryGetStationSpawnPosition(PlayerId owner, ShipType shipType, out Vector3 position) =>
                 TryGetRandomSpawnPosition(owner, shipType, out position);
+
+            public void ReserveDefenseLanding(object token, PlayerId owner, ShipType shipType, Vector3 position) { }
+            public void ReleaseDefenseLanding(object token) { }
 
             public bool TryGetBestDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
                 PlacementThreatSnapshot threats, out Vector3 position) =>

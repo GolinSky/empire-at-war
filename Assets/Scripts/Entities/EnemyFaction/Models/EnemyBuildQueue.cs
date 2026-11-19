@@ -10,6 +10,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
     {
         private readonly List<EnemyPendingBuild> _builds = new List<EnemyPendingBuild>();
         private readonly List<UnitRequest> _finished = new List<UnitRequest>();
+        private readonly List<UnitRequest> _wave = new List<UnitRequest>();
         private readonly HashSet<string> _pipelineIds = new HashSet<string>();
         private readonly HashSet<string> _externalPipelines = new HashSet<string>();
         private readonly Dictionary<string, float> _remainingTime = new Dictionary<string, float>();
@@ -43,6 +44,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             _blockedSeconds[request] = blocked + retryDelay;
         }
 
+        public void RetrySquadronDeployment(SquadronUnitRequest request, float retryDelay) =>
+            _builds.Add(new EnemyPendingBuild(request, 0f) { DeploymentRetryIn = retryDelay });
+
         /// <summary>Seconds a completed ship has been held because its arrival area was blocked.</summary>
         public float GetDeploymentBlockedSeconds(ShipUnitRequest request) =>
             _blockedSeconds.TryGetValue(request, out float blocked) ? blocked : 0f;
@@ -63,11 +67,13 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         /// <summary>Builds each ID in FIFO order; different IDs advance in parallel.</summary>
         public void Advance(float deltaTime, Action<UnitRequest> complete, int minimumReadyCombatUnits = 0,
-            float deploymentWaitLimit = float.PositiveInfinity)
+            float deploymentWaitLimit = float.PositiveInfinity, bool batchDeploymentRetries = false,
+            Action<IReadOnlyList<UnitRequest>> deployWave = null)
         {
             if (deltaTime < 0f) throw new ArgumentOutOfRangeException(nameof(deltaTime));
 
             _finished.Clear();
+            _wave.Clear();
             _remainingTime.Clear();
             int readyCombatUnits = 0;
             bool releaseReadyCombat = false;
@@ -117,7 +123,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     continue;
                 }
                 if (minimumReadyCombatUnits > 0 && isCombatUnit &&
-                    !(build.Request is ShipUnitRequest ship && _blockedSeconds.ContainsKey(ship)))
+                    (batchDeploymentRetries || !(build.Request is ShipUnitRequest ship && _blockedSeconds.ContainsKey(ship))))
                 {
                     build.WaitForDeployment(remaining);
                     readyCombatUnits++;
@@ -137,7 +143,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                     EnemyPendingBuild build = _builds[i];
                     if (IsCombatUnit(build.Request) && build.IsReadyForDeployment)
                     {
-                        _finished.Add(build.Request);
+                        (deployWave == null ? _finished : _wave).Add(build.Request);
                         _builds.RemoveAt(i);
                     }
                     else i++;
@@ -145,6 +151,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             }
 
             for (int i = 0; i < _finished.Count; i++) complete(_finished[i]);
+            if (_wave.Count > 0) deployWave(_wave);
         }
 
         private static bool IsCombatUnit(UnitRequest request) =>

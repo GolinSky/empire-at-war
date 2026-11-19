@@ -85,6 +85,7 @@ completed: 2026-11-19
 - Hysteresis: merge threshold < link threshold < straggler threshold → no oscillation; no split besides detach.
 
 ### 6. Attack specifics
+- Superseded post-kill direct Attack rule → [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat#Reopened scope outcome]]. The cluster behavior below records the original implementation.
 - Target dies → each cluster uses its own `SharedReplacement` (search around cluster centroid, `REPLACEMENT_RADIUS`); `Attack` without replacement → attack-move to last position (existing); `AttackMove` → continue to original destination (existing).
 - Different combat ranges: keep per-ship hold at own firing range (`HasReachedRange`); cluster pace only governs the approach. No shared final position.
 - Cluster arriving first fights/holds immediately; no cross-cluster waiting (clusters are independent by construction).

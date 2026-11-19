@@ -4,5 +4,6 @@ namespace EmpireAtWar.Entities.MiningFacility
 {
     public interface IMiningFacilityFacade : IEntityFacade
     {
+        float GrossIncome { get; }
     }
 }

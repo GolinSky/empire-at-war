@@ -21,7 +21,6 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         private readonly List<int> _forwardedMembers = new List<int>();
 
         private PaceCluster _mergedInto;
-        private IEntity _sharedReplacement;
         private float _issuePace;
         private int _memberCount;
         private float _pace = float.PositiveInfinity;
@@ -42,15 +41,6 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         public float IssuePace => _mergedInto != null ? _mergedInto.IssuePace : _issuePace;
 
         /// <summary>The target the cluster fights on after its order's target died; the first ship to find one sets it.</summary>
-        public IEntity SharedReplacement
-        {
-            get => _mergedInto != null ? _mergedInto.SharedReplacement : _sharedReplacement;
-            set
-            {
-                if (_mergedInto != null) _mergedInto.SharedReplacement = value;
-                else _sharedReplacement = value;
-            }
-        }
 
         /// <summary>
         /// Slowest member speed meeting the straggler speed floor, or <see cref="float.PositiveInfinity"/> when fewer
@@ -216,8 +206,6 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             PaceCluster destination = target.Resolve();
             if (ReferenceEquals(source, destination)) return;
 
-            if (source._sharedReplacement != null && destination._sharedReplacement == null)
-                destination._sharedReplacement = source._sharedReplacement;
 
             for (int i = 0; i < source._speeds.Count; i++)
             {

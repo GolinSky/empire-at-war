@@ -251,7 +251,7 @@ namespace EmpireAtWar.Tests.Movement
 
         [TestCase(false)]
         [TestCase(true)]
-        public void Attack_TargetKilled_AttacksNearestPreferredRadarContactEvenOutOfRange(bool formation)
+        public void Attack_TargetKilled_PicksInReachContactAndHoldsWhenItLeaves(bool formation)
         {
             GameObject deadObject = new GameObject("Dead enemy");
             GameObject fighterObject = new GameObject("Near fighter");
@@ -263,7 +263,7 @@ namespace EmpireAtWar.Tests.Movement
             try
             {
                 deadObject.transform.position = new Vector3(0f, 0f, 150f);
-                fighterObject.transform.position = new Vector3(0f, 0f, 200f);
+                fighterObject.transform.position = new Vector3(0f, 0f, 80f);
                 capitalObject.transform.position = new Vector3(0f, 0f, 900f);
                 Target dead = new Target(deadObject.transform) { Id = 2 };
                 dead.Health.IsDestroyed = true;
@@ -286,16 +286,16 @@ namespace EmpireAtWar.Tests.Movement
                 _target.Health.IsDestroyed = true;
                 runner.Tick(0.1f);
 
-                // The weapon prefers ships: the far capital wins over the nearer fighter; the dead contact is skipped.
                 Assert.That(orders.Current, Is.EqualTo(UnitOrderType.Attack));
-                Assert.That(orders.Target, Is.SameAs(capital));
-                Assert.That(orders.Offset.X, Is.EqualTo(offset.x));
-                Assert.That(orders.Offset.Z, Is.EqualTo(offset.z));
+                Assert.That(orders.Target, Is.SameAs(fighter));
                 Assert.That(machine.CurrentState, Is.SameAs(attack));
-                // The stub has no health facade, so the new attack plans its approach on the next tick.
                 runner.Tick(0.1f);
-                Assert.That(_movement.IsMoving, Is.True);
-                Assert.That(Vector3.Distance(_movement.Destination, capital.Transform.position), Is.LessThan(100f));
+                Assert.That(_movement.IsMoving, Is.False);
+
+                fighterObject.transform.position = Vector3.forward * 300f;
+                runner.Tick(0.1f);
+                Assert.That(orders.Current, Is.EqualTo(UnitOrderType.None));
+                Assert.That(_movement.IsMoving, Is.False);
             }
             finally
             {
@@ -507,7 +507,7 @@ namespace EmpireAtWar.Tests.Movement
         }
 
         [Test]
-        public void Attack_TargetKilled_NoRadarContactAttackMovesToLastTargetPosition()
+        public void Attack_TargetKilled_NoRadarContactStaysInPlace()
         {
             AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
             var abilityRelations = TestPlayers.CreateDuel();
@@ -526,9 +526,9 @@ namespace EmpireAtWar.Tests.Movement
             _target.Health.IsDestroyed = true;
             runner.Tick(0.1f);
 
-            // Nothing on this ship's radar: it sweeps toward where the target died instead of idling in place.
-            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.AttackMove));
-            Assert.That(machine.CurrentState, Is.SameAs(attackMove));
+            Assert.That(orders.Current, Is.EqualTo(UnitOrderType.None));
+            Assert.That(machine.CurrentState, Is.SameAs(idle));
+            Assert.That(_movement.IsMoving, Is.False);
             abilities.Clear();
         }
 

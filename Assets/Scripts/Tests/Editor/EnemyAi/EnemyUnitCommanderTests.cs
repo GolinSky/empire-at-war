@@ -443,9 +443,10 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(capturers, Is.EqualTo(hasMine ? 1 : 0));
         }
 
-        [TestCase(3, false)]
-        [TestCase(4, true)]
-        public void SquadronRaid_UsesASurplusWingAgainstAnOuterMine(int wingCount, bool expectRaid)
+        [TestCase(3, 0)]
+        [TestCase(4, 1)]
+        [TestCase(5, 2)]
+        public void SquadronRaid_SendsSurplusWingsToDistinctMines(int wingCount, int expectedRaids)
         {
             PlayerRoster roster = TestPlayers.CreateDuel();
             PlayerSlot owner = roster.Get(TestPlayers.Enemy);
@@ -454,7 +455,9 @@ namespace EmpireAtWar.Tests.Editor
             var battleState = new ReplayNotifier<BattleState>(BattleState.Running);
             var zones = new ZoneSource(roster, 1, Vector3.right * 100f, Vector3.forward * 200f, Vector3.left * 300f);
             var commander = new EnemySquadronCommander(Array.Empty<IEnemyCaptureObjectiveSource>(), zones, locator, roster,
-                null, null, new ScoutPlacement(), intel, owner, null, null, battleState,
+                null, null, new ScoutPlacement(), intel, owner, null,
+                new EnemyPatrolSafety(intel, locator, roster, owner, null, null, null,
+                    new ForceCompositionBuilder(locator, null, new AiWorldSnapshot(locator))), battleState,
                 new AiWorldSnapshot(locator), new EnemyAiScheduler(battleState), null);
             var centreMine = new FakeEntity(new FakeHealthModel(null), TestPlayers.Human, 20) { IsMine = true, IsUnit = false };
             var outerMine = new FakeEntity(new FakeHealthModel(null), TestPlayers.Human, 21) { IsMine = true, IsUnit = false };
@@ -476,8 +479,12 @@ namespace EmpireAtWar.Tests.Editor
 
             typeof(EnemySquadronCommander).GetMethod("AssignCaptureTargets", flags).Invoke(commander, null);
 
-            var target = (IEntity)typeof(EnemySquadronCommander).GetField("_raidTarget", flags).GetValue(commander);
-            Assert.That(target, expectRaid ? Is.SameAs(outerMine) : Is.Null);
+            var raids = (Dictionary<ISquadron, HostileSighting>)typeof(EnemySquadronCommander)
+                .GetField("_raids", flags).GetValue(commander);
+            Assert.That(raids.Count, Is.EqualTo(expectedRaids));
+            Assert.That(raids.Values.Select(raid => raid.EntityId).Distinct().Count(), Is.EqualTo(expectedRaids));
+            if (expectedRaids == 2)
+                Assert.That(raids.Values.Select(raid => raid.EntityId), Is.EquivalentTo(new[] { centreMine.Id, outerMine.Id }));
             var assignments = (EnemySquadronCaptureAssignments)typeof(EnemySquadronCommander)
                 .GetField("_captureAssignments", flags).GetValue(commander);
             Assert.That(tracked.Keys.Count(squadron => assignments.TryGetTarget(squadron, out _)), Is.EqualTo(3));
@@ -1830,7 +1837,7 @@ namespace EmpireAtWar.Tests.Editor
             var squadrons = new EnemySquadronCaptureAssignments();
 
             source.AddStrategicObjectives(strategic, intel);
-            source.AddSquadronTargets(squadrons);
+            source.AddSquadronTargets(squadrons, new HostileIntelModel());
 
             Assert.That(strategic.Count, Is.EqualTo(known ? 1 : 0));
             if (known) Assert.That(strategic[0].IsThreatened, Is.True);
@@ -2330,7 +2337,7 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(false)]
         [TestCase(true)]
-        public void CaptureSelection_KeepsTheCentreAgainstDefendersThatRejectAnOrdinaryRelay(bool isCentre)
+        public void CaptureSelection_RejectsAnOutmatchedApproachForCentreAndOrdinaryRelay(bool isCentre)
         {
             var (builder, weak, _, _) = CaptureProbeBuilder(isCentre: isCentre);
             builder.BeginCaptureProbe(new HashSet<string>());
@@ -2338,7 +2345,7 @@ namespace EmpireAtWar.Tests.Editor
 
             EnemyCaptureObjective objective = SelectCapture(builder, Time.time);
 
-            Assert.That(objective != null, Is.EqualTo(isCentre));
+            Assert.That(objective, Is.Null);
         }
 
         [Test]
@@ -2796,6 +2803,8 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class ZoneSource : IReinforcementZoneSource
         {
             public IReadOnlyList<ReinforcementZonePresenter> Zones { get; }
+            public float SquadronCaptureWeight => 0.5f;
+            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) => default;
 
             public ZoneSource(PlayerRoster roster, params Vector3[] centers) : this(roster, -1, centers) { }
 
@@ -2868,7 +2877,7 @@ namespace EmpireAtWar.Tests.Editor
                 if (Objective != null) objectives.Add(Objective);
             }
 
-            public void AddSquadronTargets(EnemySquadronCaptureAssignments assignments) { }
+            public void AddSquadronTargets(EnemySquadronCaptureAssignments assignments, HostileIntelModel intel) { }
         }
 
         private sealed class SiteSource : ICaptureSiteDirectory, ICaptureSitePresence
@@ -2880,6 +2889,9 @@ namespace EmpireAtWar.Tests.Editor
             public SiteSource(params ICaptureSite[] sites) { Sites = sites; }
 
             public bool HasHostileUnits(ICaptureSite site, PlayerId owner) => HostilePresent;
+
+            public (float Friendly, float Hostile) GetTeamStrengths(ICaptureSite site, PlayerId owner) =>
+                (0f, HostilePresent ? 1f : 0f);
         }
 
         private sealed class FakeShip : IShipEntity
@@ -3043,6 +3055,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public bool IsUnit { get; set; } = true;
             public bool IsMine { get; set; }
+            public float GrossIncome { get; set; }
             public bool IsBase { get; set; }
             public bool IsSecondStation { get; set; }
             public IRetreatFacade RetreatCommand { get; set; }

@@ -31,7 +31,9 @@ namespace EmpireAtWar.Services.Saves
 
         public static UnitOrderSave From(UnitOrderModel order)
         {
-            if (order.Current == UnitOrderType.UseAbility) return new UnitOrderSave { type = UnitOrderType.None };
+            // Transient attacks after a kill are local opportunities. Loading them as explicit orders would allow pursuit.
+            if (order.Current == UnitOrderType.UseAbility || order.HoldAttackPosition)
+                return new UnitOrderSave { type = UnitOrderType.None };
             return new UnitOrderSave
             {
                 type = order.Current,

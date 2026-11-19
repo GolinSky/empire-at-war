@@ -41,8 +41,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public bool CanOrderShips { get; }
         public bool IsStationCritical { get; }
 
-        public bool CanBuyOpeningShip { get; }
-        public bool IsOpening { get; }
+        public bool CanResearchMining { get; }
 
         public EnemyProductionSnapshot(
             EnemyStrategicState strategicState,
@@ -64,8 +63,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             bool canResearchCombat = false,
             bool canOrderShips = true,
             bool isStationCritical = false,
-            bool canBuyOpeningShip = false,
-            bool isOpening = false)
+            bool canResearchMining = false)
         {
             StrategicState = strategicState;
             MiningFacilityCount = miningFacilityCount;
@@ -86,8 +84,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             CanResearchCombat = canResearchCombat;
             CanOrderShips = canOrderShips;
             IsStationCritical = isStationCritical;
-            CanBuyOpeningShip = canBuyOpeningShip;
-            IsOpening = isOpening;
+            CanResearchMining = canResearchMining;
         }
     }
 
@@ -137,21 +134,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 throw new ArgumentOutOfRangeException(nameof(snapshot.MiningFacilityCount));
 
             bool needsMining = snapshot.MiningFacilityCount < snapshot.MiningFacilityTarget && snapshot.HasMiningOption;
-            if (needsMining && (snapshot.IsOpening || !snapshot.IsStationCritical))
+            if (snapshot.CanResearchMining && !snapshot.IsStationCritical)
+                return EnemyProductionCategory.Research;
+
+            if (needsMining && (snapshot.CanBuildMining || !snapshot.IsStationCritical))
                 return snapshot.CanBuildMining ? EnemyProductionCategory.Mining : EnemyProductionCategory.None;
 
             if (snapshot.IsStationCritical)
                 return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
 
-            if (snapshot.CanBuyOpeningShip)
-                return EnemyProductionCategory.Ship;
-
             if (IsLevelDue(snapshot))
                 return snapshot.CanLevelUp ? EnemyProductionCategory.Level : EnemyProductionCategory.None;
-
-            // Once the first corvette is ordered (or the roster has none), level one builds squadrons.
-            if (snapshot.CurrentFactionLevel == 1)
-                return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
 
             if (NeedsMinimumFleet(snapshot.ShipCount) && snapshot.CanOrderShips && snapshot.HasShipOption)
                 return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
@@ -162,7 +155,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             if (snapshot.DefensePlatformCount < snapshot.DefensePlatformTarget && snapshot.CanBuildDefense)
                 return EnemyProductionCategory.Defense;
 
-            if (snapshot.StrategicState == EnemyStrategicState.Hold && snapshot.CanResearchCombat)
+            if (snapshot.CanResearchCombat)
                 return EnemyProductionCategory.Research;
 
             if (snapshot.HasShipOption)

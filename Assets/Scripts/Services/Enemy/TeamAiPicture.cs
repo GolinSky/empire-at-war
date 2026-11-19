@@ -106,7 +106,8 @@ namespace EmpireAtWar.Services.Enemy
                     zone.Owner,
                     ToVector(ToPoint(zone.Center)),
                     zone.Radius,
-                    zone.CaptureProgress));
+                    zone.CaptureProgress,
+                    hostileStrength: _zones.GetTeamStrengths(zone, RepresentativePlayer).Hostile));
             }
 
             _usedPoolCount = 0;

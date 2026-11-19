@@ -119,6 +119,27 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Assign_ContestedSiteRequiresEnoughWingsToWin()
+        {
+            var assignments = new EnemySquadronCaptureAssignments();
+            var site = Vector3.right * 100f;
+            var first = new Squadron(Vector3.zero);
+            var second = new Squadron(Vector3.zero);
+            var third = new Squadron(Vector3.zero);
+            assignments.AddTarget(site, requiredWings: 3);
+
+            assignments.Assign(new[] { first, second });
+            Assert.That(assignments.TryGetTarget(first, out _), Is.False);
+            Assert.That(assignments.TryGetTarget(second, out _), Is.False);
+
+            assignments.Assign(new[] { first, second, third });
+            Assert.That(assignments.TryGetTarget(first, out var target), Is.True);
+            Assert.That(target, Is.EqualTo(site));
+            Assert.That(assignments.TryGetTarget(second, out _), Is.True);
+            Assert.That(assignments.TryGetTarget(third, out _), Is.True);
+        }
+
+        [Test]
         public void Assign_NoTargetsLeavesSquadronsUnassigned()
         {
             var assignments = new EnemySquadronCaptureAssignments();

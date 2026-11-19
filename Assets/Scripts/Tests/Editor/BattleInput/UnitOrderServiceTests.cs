@@ -175,6 +175,17 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Save_LocalReplacementAttackRestoresAsIdle()
+        {
+            var order = new UnitOrderModel();
+            order.Replace(UnitOrderType.Attack, holdAttackPosition: true);
+            Assert.That(UnitOrderSave.From(order).Type, Is.EqualTo(UnitOrderType.None));
+
+            order.Replace(UnitOrderType.Attack);
+            Assert.That(UnitOrderSave.From(order).Type, Is.EqualTo(UnitOrderType.Attack));
+        }
+
+        [Test]
         public void AttackMove_SaveRoundTrip_RestoresOnlyMembersOfTheSameGroupTogether()
         {
             var restoredGroups = new Dictionary<string, AttackMoveEngagement>();

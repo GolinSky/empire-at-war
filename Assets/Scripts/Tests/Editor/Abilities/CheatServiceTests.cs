@@ -139,6 +139,9 @@ namespace EmpireAtWar.Tests.Editor
                 return false;
             }
 
+            public void ReserveDefenseLanding(object token, PlayerId owner, ShipType shipType, Vector3 position) { }
+            public void ReleaseDefenseLanding(object token) { }
+
             public bool TryGetBestDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
                 PlacementThreatSnapshot threats, out Vector3 position) =>
                 TryGetDefaultZoneSpawnPosition(owner, shipType, out position);

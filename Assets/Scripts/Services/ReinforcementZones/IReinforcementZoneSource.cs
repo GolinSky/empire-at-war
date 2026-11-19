@@ -1,3 +1,4 @@
+using EmpireAtWar.Models.Players;
 using System.Collections.Generic;
 using EmpireAtWar.Presenters.ReinforcementZones;
 
@@ -7,5 +8,7 @@ namespace EmpireAtWar.Services.ReinforcementZones
     public interface IReinforcementZoneSource
     {
         IReadOnlyList<ReinforcementZonePresenter> Zones { get; }
+        float SquadronCaptureWeight { get; }
+        (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner);
     }
 }

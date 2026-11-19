@@ -194,7 +194,7 @@ namespace EmpireAtWar.Services.TacticalMarkers
             }
         }
 
-        public void AddSquadronTargets(EnemySquadronCaptureAssignments assignments)
+        public void AddSquadronTargets(EnemySquadronCaptureAssignments assignments, HostileIntelModel intel)
         {
             foreach (TacticalMarker marker in _markers.Markers)
                 if (Accepted(marker) && (marker.Type == TacticalMarkerType.Capture || marker.Type == TacticalMarkerType.Defend))

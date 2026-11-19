@@ -120,7 +120,8 @@ namespace EmpireAtWar.Services.Enemy
         public bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome)
         {
             rally = default;
-            defendHome = false;
+            defendHome = _contextBuilder.TryGetDefendedStation(out rally);
+            if (defendHome) return true;
             if (!_hasDecision) return false;
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
             {
@@ -135,13 +136,6 @@ namespace EmpireAtWar.Services.Enemy
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
             {
                 if (!group.IsMainForce || group.Context == null) continue;
-                if (group.ContextBuilder.CentrePosition is Vector3 centre &&
-                    group.Decision.State is EnemyStrategicState.CaptureZone or EnemyStrategicState.GuardSite or
-                        EnemyStrategicState.EngageLocal)
-                {
-                    rally = centre;
-                    return true;
-                }
                 if (TryGetTaskRally(group, out rally)) return true;
             }
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)

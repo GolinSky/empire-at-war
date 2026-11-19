@@ -85,13 +85,13 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         /// <summary>The ship has held at firing range on the current target since it was set; a group pace no longer applies.</summary>
         public bool HasReachedRange { get; private set; }
 
-        /// <summary>Where the target was on the last tick it was alive; valid after the target is destroyed.</summary>
-        public Vector3 LastTargetPosition { get; private set; }
-
-        /// <summary>Class of the target on the last tick it was alive; null until the state has ticked.</summary>
+        /// <summary>Class of the current or completed target.</summary>
         public ShipClass? LastTargetClass { get; private set; }
 
-        public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits || _mainTargetEntity.IsCloaked();
+        private bool _holdPosition;
+
+        public bool IsComplete => _mainTarget == null || _mainTarget.IsDestroyed || !_mainTarget.HasUnits ||
+                                  _mainTargetEntity.IsCloaked() || _holdPosition && !IsInReach;
 
         public AttackTargetState(
             IAttackDataFactory attackDataFactory,
@@ -105,8 +105,9 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _artilleryCapability = artilleryCapability;
         }
 
-        public void SetData(IEntity mainTarget, Vector3 formationOffset, int hardPointId)
+        public void SetData(IEntity mainTarget, Vector3 formationOffset, int hardPointId, bool holdPosition = false)
         {
+            _holdPosition = holdPosition;
             if (mainTarget == null)
             {
                 throw new ArgumentNullException(nameof(mainTarget));
@@ -117,6 +118,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             _focusedHardPointId = hardPointId;
             _mainTargetEntity = mainTarget;
             _mainTarget = _mainTargetEntity.HealthModel;
+            LastTargetClass = _mainTarget.ShipClass;
             _mainTargetTransform = _mainTargetEntity.GetFacade<IEntityTransformFacade>().Transform;
             _focusedHardPoint = hardPointId == UnitOrderModel.NO_HARD_POINT
                 ? null
@@ -198,7 +200,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
                     ? _attackDataFactory.ConstructData(_mainTargetEntity)
                     : _attackDataFactory.ConstructHardPointData(_mainTargetEntity, _focusedHardPoint.Id);
                 _weaponComponent.AddTarget(_attackData, AttackType.MainTarget);
-                UpdateMoveState();
+                if (!IsComplete) UpdateMoveState();
             }
 
         }
@@ -209,9 +211,6 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
             {
                 return;
             }
-
-            LastTargetPosition = TargetPosition;
-            LastTargetClass = _mainTarget.ShipClass;
 
             // Once the chosen hardpoint is gone the order keeps going against the whole ship.
             if (_focusedHardPoint != null && _focusedHardPoint.IsDestroyed)
@@ -245,6 +244,12 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
 
         private void UpdateMoveState(float deltaTime = 0f)
         {
+            if (_holdPosition)
+            {
+                HoldAndLookAtTarget("replacementInReach");
+                return;
+            }
+
             // A large ship's circular footprint can extend far beyond its nearest hardpoints.
             if (_attackData != null &&
                 (_mainTarget.ShipClass == ShipClass.BattleCruiser || _mainTarget.ShipClass == ShipClass.Dreadnought) &&

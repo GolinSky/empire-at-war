@@ -16,6 +16,9 @@ namespace EmpireAtWar.Services.Reinforcement
 
         bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position);
 
+        // A station under siege can launch a defense wave within its own cover.
+        bool CanLaunchStationDefenseShip(PlayerId owner, ShipType shipType, Vector3 position);
+
         bool IsOpenForStructure(PlayerId owner, Vector3 position);
 
         bool CanSpawnStructure(PlayerId owner, Vector3 position);

@@ -322,8 +322,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             EnemyAiDifficultyProfile profile)
         {
             int ownShipCount = snapshot.OwnShipCount;
-            if (state == EnemyStrategicState.DefendBase && !snapshot.IsStationCritical)
+            if (state == EnemyStrategicState.DefendBase)
             {
+                if (snapshot.IsStationCritical) return ownShipCount;
                 // A raid is answered with a detachment sized to it; the rest keeps its fight.
                 float share = Math.Min(1f, Math.Max(MIN_DEFENSE_SHARE, snapshot.BaseThreatRatio * DEFENSE_MARGIN));
                 return Math.Max(1, Math.Min(ownShipCount, (int)Math.Ceiling(ownShipCount * (decimal)share)));
@@ -336,7 +337,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
             if (state == EnemyStrategicState.GuardSite) return ownShipCount;
 
-            return Math.Max(1, Math.Min(ownShipCount,
+            int maxCommitment = ownShipCount;
+            if (ownShipCount >= 3 && state is EnemyStrategicState.AssaultBase or EnemyStrategicState.HuntFleet)
+                maxCommitment--;
+            return Math.Max(1, Math.Min(maxCommitment,
                 (int)Math.Ceiling(ownShipCount * (decimal)profile.CommittedFleetRatio)));
         }
     }

@@ -49,6 +49,10 @@ namespace EmpireAtWar.Services.ReinforcementZones
         public event Action RelaySourcesChanged;
 
         public IReadOnlyList<ReinforcementZonePresenter> Zones => _zones;
+        public float SquadronCaptureWeight => _data.SquadronCaptureWeight;
+
+        public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) =>
+            _strengthSampler.GetTeamStrengths(_zones.IndexOf(zone), owner);
         public int MapVersion { get; private set; }
 
         [Inject]

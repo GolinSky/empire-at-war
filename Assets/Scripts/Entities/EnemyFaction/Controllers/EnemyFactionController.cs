@@ -38,7 +38,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private const float DEPLOYMENT_RETRY_INTERVAL = 1f;
         private const float MAX_DEPLOYMENT_HOLD_SECONDS = 8f;
         private const float LONE_REINFORCEMENT_WAIT_SECONDS = 12f;
-        private const int MINIMUM_REINFORCEMENT_GROUP = 2;
+        private const int MINIMUM_DEFENSE_WAVE = 2;
+        private const int MINIMUM_REINFORCEMENT_WAVE = 3;
 
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
@@ -58,6 +59,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly PlayerSlot _owner;
         private readonly EnemyBuildQueue _builds = new EnemyBuildQueue();
         private readonly PlacementThreatSnapshot _defenseDeploymentThreats = new PlacementThreatSnapshot();
+        private readonly Dictionary<ShipUnitRequest, (Vector3 Position, bool Forced)> _defenseLandings =
+            new Dictionary<ShipUnitRequest, (Vector3, bool)>();
         private readonly HashSet<long> _builtSquadrons = new HashSet<long>();
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
@@ -230,19 +233,79 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         private void AdvanceBuilds(float deltaTime, bool hasRally, bool defendHome)
         {
-            bool canProduce = _productionAccess.CanProduce;
-            bool holdReserve = canProduce && (defendHome || _aiState.HoldFinishedReinforcements) &&
-                               !_aiState.IsStationCritical;
-            // The first group can launch for capture before the commander has live units to assess.
-            bool needsFirstGroup = _aiState.ActiveShipCount == 0 && _builtSquadrons.Count == 0;
-            int minimumGroup = !holdReserve ? 0 : hasRally || needsFirstGroup
-                ? MINIMUM_REINFORCEMENT_GROUP : int.MaxValue;
-            // Opening, defense and a full population can leave no second unit able to join the group.
-            bool allowLoneUnit = defendHome || needsFirstGroup || hasRally &&
+            bool holdReserve = _productionAccess.CanProduce && (defendHome || _aiState.HoldFinishedReinforcements);
+            bool landingOpeningFleet = !defendHome && _aiState.ActiveShipCount < MINIMUM_REINFORCEMENT_WAVE;
+            int minimumGroup = !holdReserve || landingOpeningFleet ? 0 :
+                defendHome ? MINIMUM_DEFENSE_WAVE : hasRally ? MINIMUM_REINFORCEMENT_WAVE : int.MaxValue;
+            bool allowLoneUnit = hasRally && !defendHome &&
                                  _unitLimitModel.CurrentUnitCapacity >= _reinforcementData.MaxUnitCapacity;
             _builds.Advance(deltaTime, ExecuteBuild, minimumGroup,
-                allowLoneUnit ? LONE_REINFORCEMENT_WAIT_SECONDS : float.PositiveInfinity);
+                allowLoneUnit ? LONE_REINFORCEMENT_WAIT_SECONDS : float.PositiveInfinity,
+                batchDeploymentRetries: defendHome,
+                deployWave: defendHome && holdReserve ? DeployDefenseWave : null);
         }
+
+        private void DeployDefenseWave(IReadOnlyList<UnitRequest> wave)
+        {
+            if (!_productionAccess.CanProduce || !_aiState.TryGetReinforcementRally(out Vector3 rally, out bool defense) ||
+                !defense)
+            {
+                foreach (UnitRequest request in wave) ExecuteBuild(request);
+                return;
+            }
+
+            PlayerId home = GetDeploymentHost();
+            _aiState.FillDefenseDeploymentThreats(_defenseDeploymentThreats);
+            int squadronCount = 0;
+            try
+            {
+                foreach (UnitRequest request in wave)
+                {
+                    if (request is not ShipUnitRequest ship)
+                    {
+                        squadronCount++;
+                        continue;
+                    }
+
+                    bool found = _shipSpawnPoints.TryGetDefenseSpawnPosition(home, ship.Key, rally,
+                        _defenseDeploymentThreats, out Vector3 position);
+                    bool forced = !found && _builds.GetDeploymentBlockedSeconds(ship) >= MAX_DEPLOYMENT_HOLD_SECONDS;
+                    if (forced)
+                        found = _shipSpawnPoints.TryGetBestDefenseSpawnPosition(home, ship.Key, rally,
+                            _defenseDeploymentThreats, out position);
+                    if (!found)
+                    {
+                        EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deploymentBlocked",
+                            $"unit={ship.Id};homeDefense=True;rally={rally}");
+                        continue;
+                    }
+
+                    _shipSpawnPoints.ReserveDefenseLanding(ship, home, ship.Key, position);
+                    _defenseLandings.Add(ship, (position, forced));
+                }
+
+                bool canDeploy = _defenseLandings.Count + squadronCount >= MINIMUM_DEFENSE_WAVE;
+                foreach (UnitRequest request in wave)
+                {
+                    if (request is ShipUnitRequest ship && (!canDeploy || !_defenseLandings.ContainsKey(ship)))
+                        _builds.RetryShipDeployment(ship, DEPLOYMENT_RETRY_INTERVAL);
+                    else if (request is SquadronUnitRequest squadron && !canDeploy)
+                        _builds.RetrySquadronDeployment(squadron, DEPLOYMENT_RETRY_INTERVAL);
+                    else
+                        ExecuteBuild(request);
+                }
+            }
+            finally
+            {
+                foreach (ShipUnitRequest ship in _defenseLandings.Keys)
+                    _shipSpawnPoints.ReleaseDefenseLanding(ship);
+                _defenseLandings.Clear();
+            }
+        }
+
+        private PlayerId GetDeploymentHost() =>
+            !_productionAccess.HasHostBase && _productionAccess.TryGetProductionBase(out var productionBase)
+                ? productionBase.Owner : _productionAccess.ProductionHost;
 
         /// <summary>Puts back a saved build: its reservation is taken again and it keeps its time left.</summary>
         public void RestorePendingBuild(UnitRequest unitRequest, float timeLeft)
@@ -303,13 +366,19 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         defendHome = false;
                     }
                     // Ships arrive at the home of whichever team base builds them, borrowed from an ally or not.
-                    PlayerId home = !_productionAccess.HasHostBase &&
-                                    _productionAccess.TryGetProductionBase(out var productionBase)
-                        ? productionBase.Owner
-                        : _productionAccess.ProductionHost;
+                    PlayerId home = GetDeploymentHost();
                     Vector3 position;
                     bool foundPosition;
-                    if (hasRally && defendHome)
+                    if (_defenseLandings.Remove(shipUnitRequest, out var landing))
+                    {
+                        _shipSpawnPoints.ReleaseDefenseLanding(shipUnitRequest);
+                        position = landing.Position;
+                        foundPosition = true;
+                        if (landing.Forced)
+                            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deploymentForced",
+                                $"unit={shipUnitRequest.Id};rally={rally};spawn={position}");
+                    }
+                    else if (hasRally && defendHome)
                     {
                         _aiState.FillDefenseDeploymentThreats(_defenseDeploymentThreats);
                         foundPosition = _shipSpawnPoints.TryGetDefenseSpawnPosition(home, shipUnitRequest.Key,
@@ -327,14 +396,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                                   _builds.GetDeploymentBlockedSeconds(shipUnitRequest) >= MAX_DEPLOYMENT_HOLD_SECONDS;
                     if (forced)
                     {
-                        // A threat near the station must not hold a paid ship forever: arrive where the spawn rule allows.
-                        foundPosition = hasRally && defendHome &&
-                                        _shipSpawnPoints.TryGetBestDefenseSpawnPosition(home, shipUnitRequest.Key,
-                                            rally, _defenseDeploymentThreats, out position) ||
-                                        hasRally &&
-                                        _shipSpawnPoints.TryGetSpawnPositionNear(home, shipUnitRequest.Key, rally, out position) ||
-                                        _shipSpawnPoints.TryGetStationSpawnPosition(home, shipUnitRequest.Key, out position) ||
-                                        _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipUnitRequest.Key, out position);
+                        foundPosition = hasRally && defendHome
+                            ? _shipSpawnPoints.TryGetBestDefenseSpawnPosition(home, shipUnitRequest.Key, rally,
+                                _defenseDeploymentThreats, out position)
+                            : hasRally && _shipSpawnPoints.TryGetSpawnPositionNear(home, shipUnitRequest.Key, rally, out position) ||
+                              _shipSpawnPoints.TryGetStationSpawnPosition(home, shipUnitRequest.Key, out position) ||
+                              _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipUnitRequest.Key, out position);
                         if (foundPosition)
                             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deploymentForced",
                                 $"unit={shipUnitRequest.Id};rally={rally};spawn={position}");

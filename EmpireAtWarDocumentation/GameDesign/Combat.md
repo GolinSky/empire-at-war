@@ -50,6 +50,11 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - The longest surviving missile or torpedo determines distance, capped at the longest surviving main-battery reach (2026-11-16). Shorter launchers and secondary guns may be out of range. All usable launchers gone → ordinary pursuit; all main batteries gone → launcher reach only.
 - The cap keeps the approach goal within main-battery reach. In-range holds keep the attack target in the ship's forward half-plane.
 
+### Attack target destroyed
+
+- Direct Attack can replace a destroyed target with a contact already inside this ship’s weapon reach. The ship holds position and drops that automatic target if it leaves reach.
+- With no replacement, the ship holds. Explicit Attack can pursue. AttackMove continues to its ordered destination.
+
 ### Capital siege and hull facing
 
 - `Dreadnought` mounted weapons deal ×1.5 damage and `BattleCruiser` mounted weapons deal ×1.2 damage against the main station, second station and every defense platform (`SiegeDamage.GetMultiplier`). `Capital`, `HeavyCruiser` and smaller classes deal ×1.0. Mining facilities, other targets and direct-damage abilities retain their existing damage rules.

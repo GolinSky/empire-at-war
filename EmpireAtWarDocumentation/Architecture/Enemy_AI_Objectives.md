@@ -21,8 +21,8 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 ## Implementation
 
 - Capture identity: `EnemyCaptureObjective` carries ID, type, owner, position, radius, progress and emergency-defense flag.
-- Opening assignments fill nearest relay → authored main relay → next outer relay. The neighbour detachment can take the nearby home mine on departure. Ship groups filter by the assigned area. Squadrons cover these three areas in order and can keep pushing outer zones independently of the centre fleet.
-- Pads can be captured before their point mines. The authored `IsMain` relay identifies the centre, including offset map layouts. Centre objectives bypass hostile-strength rejection while retaining geometry, hazard and stall checks.
+- Opening assignments prioritize the authored main relay, nearest outer relay, then remaining relays. The neighbour ship detachment can take the nearby home mine on departure. Squadrons continue to uncovered pads and mines in every safe mining area.
+- Pads can be captured before their point mines. The authored `IsMain` relay identifies the centre, including offset layouts. A valid centre objective stays committed. Blocked approaches, stalled capture and a materially stronger hostile force allow a switch.
 - The main force captures or guards the centre. Local combat, home defense and decisive attacks can preempt centre duty. Other groups continue expanding and raiding.
 - `EnemySiteConstructionController` checks every `3 s`. After the opening miners and level 2 order, eligible required satellites precede mining and optional defense. Centre pads have the highest construction priority. Centre mines wait for three operational centre satellites.
 - 2026-10-31: removed `MinimumControlledZones` tuning and the satellite eligibility gate. `Loading_20261031_011454_ai.csv` showed repeated zone attempts starving facility selection under the previous quota. Combat interruptions remain possible; this change does not guarantee uninterrupted capture.
@@ -36,13 +36,15 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 ### Mining objectives (2026-11-01)
 
 - Visible or remembered hostile mines outrank other raid structures. Team intel retains observed stationary mines until removal. Unseen, unobserved mines are unavailable.
-- A surplus purchased squadron that damages structures raids remembered hostile mines outside the centre, including home sites, spawned facilities and outer mines. It attacks when the mine is visible and uses its remembered position under fog. The three opening wings retain capture priority.
+- Up to three surplus purchased squadrons select distinct visible or remembered mining facilities, including home sites, spawned miners and outer mines. They attack visible facilities and move to the last known position under fog.
 - Raid defenders: known ships and squadrons within `1000`; evaluate this group's `CombatMatchup.Advantage` against difficulty `RequiredAttackRatio`, not presence of any ship.
 - Raid route: new and retained raids also pass `IsRouteSafe` (known hostiles at origin, within `1000` of the route, or near target vs `RetreatAdvantage`). Same check as capture/retreat objectives, without footprint clearance.
 - A constructing or operational hostile mine with team intel is a strategic objective. The fleet attacks the facility before entering the circle. Once it is destroyed, the site can be captured normally.
 - At least one eligible squadron remains available to capture while objectives exist. Scouts use surplus; carrier guards and escorts do not count as available.
 - Site construction checks ownership, hostile presence and affordability without a minimum warship count.
 - Source comparison and counter limits → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance - Research]].
+
+- Fleet advantage divides by the hostile income lead, capped at `2×`. Compare observed or remembered mine claims and operating mine income, including the income research multiplier. Voluntary offensive orders and contested routes reject known forces outnumbering the group by `2:1` with at least three known warships.
 
 ### Independent task groups (2026-10-31)
 
@@ -51,14 +53,14 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Opening combat groups join within 800 and split beyond 1,600. At six available combat ships, form the main force. Station pressure can form it earlier. Main-force membership survives travel separation.
 - Group origin, local force, offensive strength, route safety, capture stall budget and recovery state are independent. Distant or nonassigned ships do not lend strength to a detached capture route.
 - Executed capture objectives reserve their IDs for the decision pass; later ship groups select other objectives. Main force evaluates first once formed; capture detachment chooses another objective.
-- Available squadrons cover threatened sites first, retain one valid assignment per objective, then choose the least-covered target by distance. Scouts, escorts and active carrier guards are excluded.
+- `CaptureStrengthSampler` caches player weights for each site and relay. The AI queries its team and the strongest hostile team. Squadrons cover threatened and opening sites in viable groups, retaining assignments. A tie requires another wing. Known hostiles near a mine suspend expansion into that mining site.
 - Squadron reservations release on role removal, pooling or target ineligibility.
 - Telemetry publishes the primary combat group's strategy/context with aggregate active/body/rallying counts and an action summary of all groups. It is not a separate telemetry row for each group.
 - Implementation and acceptance owner → [[Done/Bugs/Enemy_AI_Independent_Task_Groups]].
 
 ### Target-specific strike forces (2026-11-01)
 
-- `EnemyAttackTaskForce` selects persistent useful members for Hunt/Assault/Raid. Main force commits all its ships; small opening groups retain difficulty budgets.
+- `EnemyAttackTaskForce` selects persistent members for Hunt/Assault/Raid. Assault and hunt keep a ship uncommitted once the group has at least three ships. Forced local fights and critical station defense can commit all available ships.
 - `EnemyTaskForceSelectionModel` scores combined target + defender kill time using current hull/shields, surviving-weapon strength and class-specific DPS; capped matchup advantage rewards useful defender counters.
 - Nearby defenders come from team sightings within `1000` units. The visible unit target is added once at current strength; structure health is evaluated separately.
 - Insufficient total available strike strength → reevaluate with offensive rules disabled before execution. A viable but scattered strike force waits for assembly; a force that cannot win does not block other objectives.
@@ -76,9 +78,9 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Strikecraft cap: own force (live + pending) clears known hostile strikecraft in ≤ `30 s` → skip `UnitCombatProfile.IsStrikecraftSpecialist()` candidates (own-weapon average hull DPS vs strikecraft > vs warships). Current specialists: Carrack, CR70, Centax; not Venator/Resolute. Telemetry `counter-selection` → `strikecraftCovered`.
 - Cap applies to counter selection only; the size-based `TrySelectShip` fallback is unchanged.
 - Rank unlocked, type-limit-eligible ships before checking free population; wait for the chosen reinforcement instead of filling smaller gaps. Queue reservations count toward used population.
-- Every difficulty purchases the mining catalog maximum first when a placement is available, then permits one level-1 corvette and prioritizes the level-2 upgrade. Other level-1 combat purchases are squadrons. A single scout can reveal mining space when none is available. Site construction reserves funds ahead of optional production.
+- Every difficulty buys `IncreasedProduction` I with the opening miners, reserves for level 2, and buys tier II when it unlocks. Station upgrades leave normal combat pipelines open. Once the minimum fleet and defense are funded, combat research can queue every 30 s.
 - AI production rejects new second-station purchases and upgrades. Previously built stations load from saves. Paid pending backup-station requests and upgrades are refunded on the first production advance.
-- Paid combat units remain in the build queue as a reserve. A capture, defense or raid rally can release a group of ready ships and squadrons. Critical pressure releases all ready units. Blocked launches retry without charging again. Targeted ship deployment searches living allied stations and held relay spawn areas by distance, preferring a station at equal distance.
+- The first fleet deploys as builds finish. Following reinforcements stay paid in reserve until a task calls for a wave of at least three units. During a siege, two or more units deploy together from the station. Ship landings are staged behind the station and retries stay grouped.
 - Scattered main force with no viable offensive target rallies instead of stopping permanently.
 - Telemetry distinguishes selection, accepted/rejected purchase, completion, deployment/blockage, capacity waits and station health/loss. Existing purchase rows still mean attempts.
 
@@ -110,8 +112,8 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 - Defense line faces visible or last known threat intel; no bearing → four-point station ring. Line distance includes station/ship clearance and weapon reach, bounded by station radius + max(1,500, last observed attacker weapon range + 300) units. Support slots spread over a threat-facing arc bounded to ±30°. One `IssueAttackMove(receivers, destinations)` call preserves those slots and one shared engagement for contact sharing/target distribution; regroup support defenders together when a slot needs updating. Interceptors use cached fleet formation offsets.
 - Useful counter ships intercept visible targets inside that leash without assembly waiting. Contact loss/leash exit ends interception; completed defense-point orders are retained until the target changes or the point moves >200 units.
 - Ongoing station damage with no defender target in range for 8 s → first advance jumps to known gap − own weapon range + ship clearance, bounded by the leash. Static clearance checks ignore transient navigation reservations.
-- Critical = latched pressure AND (durability <50% maximum OR estimated loss time <120 s). Critical production compares affordable ships and squadrons fitting available population, bypassing ordinary fleet ratios; site mines/satellites and new superweapon charging purchases pause. Paid charging and firing continue.
-- Critical production rejects candidates arriving after estimated station loss. Rank timely combat gain by matchup, available credits/population and arrival time. Arrival = matching request-ID queue delay + build time + base-speed travel to last known threat. No bearing → queue + build only. Squadron travel uses cruise speed. No timely candidate → save credits.
+- Critical = latched pressure AND (durability <50% maximum OR estimated loss time <120 s). Replace affordable miners and prefer a timely ship to a squadron. Starting-tier corvettes are excluded at level 3+. Critical squadron buys use a three-wing cap including hangar wings. Site mines/satellites and new superweapon charging purchases pause.
+- Critical production rejects candidates arriving after estimated station loss. Arrival = same-ID queue delay + build time + travel at base speed to the last known threat. No bearing → queue + build only. Forced rear deployment can bypass hostile reinforcement influence while retaining map, visibility, hazard, neutral blocker, hull and reachability checks.
 - `EnemyBuildQueue` serializes identical request IDs; different IDs advance in parallel. Human `ProductionQueueSnapshot` is not the AI queue. Normal capital reservations remain unchanged outside critical pressure.
 - Each committed ship captures if its clearance fits the centre or one of four half-radius interior samples; only failed-fit ships AttackMove to perimeter points at objective radius + their own navigation radius. Capture receivers are batched per identical fitted point through `IssueAttackMove`, preserving compact formation and shared contacts/target distribution. A new/recovering member regroups its point's eligible ships; unchanged groups retain orders. Failed-fit escorts rejoin capture when fit becomes available. Strategic fit uses minimum clearance to admit any fitting capturer and ignores transient reservations; obstacle, ion and known hostile-route checks remain.
 - Reservation API cannot identify owners; `transientReservation` means a ship reservation blocked the sampled point, not proof of a hostile or friendly owner. Tactical order placement still applies clearance.

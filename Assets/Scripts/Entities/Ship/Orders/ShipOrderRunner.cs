@@ -33,7 +33,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly ITeamContacts _teamContacts;
         private readonly PlayerId _owner;
         private readonly List<IEntity> _teamCandidates = new List<IEntity>();
-        private PaceCluster _group;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private readonly ShipOrderTelemetrySource _telemetrySource;
 #endif
@@ -52,7 +51,6 @@ namespace EmpireAtWar.Entities.Ship.Orders
 
         // Team-vision replacement search around the dead target; ships do not cross the map for one.
         private const float REPLACEMENT_RADIUS = 1500f;
-        private const float SHARED_REPLACEMENT_RANGE = 3000f;
 
         private UnitOrderType? _replicaOrder;
         // Host-only and not saved: a loaded order resumes at the ship's own speed.
@@ -196,21 +194,21 @@ namespace EmpireAtWar.Entities.Ship.Orders
         {
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint offset = ToPoint(formationOffset);
-            bool matchedOrRefreshed = (_pendingAbilityTarget == null &&
+            bool matchedOrRefreshed = (!_orders.HoldAttackPosition && _pendingAbilityTarget == null &&
                 _orders.Matches(UnitOrderType.Attack, target: target, offset: offset)) ||
                 TryRefreshAttackSlot(target, offset, UnitOrderModel.NO_HARD_POINT);
             if (!matchedOrRefreshed)
                 Issue(UnitOrderType.Attack, target: target, offset: offset);
             bool alreadyInRange = matchedOrRefreshed &&
                 _stateMachine.CurrentState == _attackTargetState && _attackTargetState.HasReachedRange;
-            JoinPace(alreadyInRange ? null : pace, group: pace);
+            JoinPace(alreadyInRange ? null : pace);
         }
 
         public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset, PaceCluster pace = null)
         {
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint offset = ToPoint(formationOffset);
-            bool matchedOrRefreshed = (_pendingAbilityTarget == null &&
+            bool matchedOrRefreshed = (!_orders.HoldAttackPosition && _pendingAbilityTarget == null &&
                 _orders.Matches(UnitOrderType.Attack, target: target, offset: offset,
                     targetHardPointId: hardPointId)) ||
                 TryRefreshAttackSlot(target, offset, hardPointId);
@@ -218,13 +216,12 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 Issue(UnitOrderType.Attack, target: target, offset: offset, targetHardPointId: hardPointId);
             bool alreadyInRange = matchedOrRefreshed &&
                 _stateMachine.CurrentState == _attackTargetState && _attackTargetState.HasReachedRange;
-            JoinPace(alreadyInRange ? null : pace, group: pace);
+            JoinPace(alreadyInRange ? null : pace);
         }
 
         // A repeated order joins its new cluster; the ship leaves the old one first.
-        private void JoinPace(PaceCluster pace, PaceCluster group = null)
+        private void JoinPace(PaceCluster pace)
         {
-            _group = group ?? pace;
             LeavePace();
             if (pace == null || !IsPacedOrder(_orders.Current)) return;
             SamplePaceGeometry(out System.Numerics.Vector2 position, out float remaining,
@@ -377,7 +374,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
         // The same target ordered again only picks a new side: the ship keeps its hold and its current leg.
         private bool TryRefreshAttackSlot(IEntity target, FormationPoint offset, int hardPointId)
         {
-            if (_pendingAbilityTarget != null ||
+            if (_orders.HoldAttackPosition || _pendingAbilityTarget != null ||
                 !_orders.Matches(UnitOrderType.Attack, target: target, offset: _orders.Offset,
                     targetHardPointId: hardPointId) ||
                 target.HealthModel.IsDestroyed) return false;
@@ -469,16 +466,15 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private void Issue(UnitOrderType type, FormationPoint destination = default,
             IEntity target = null, FormationPoint offset = default,
             IReadOnlyList<FormationPoint> waypoints = null, int targetHardPointId = UnitOrderModel.NO_HARD_POINT,
-            AttackMoveEngagement engagement = null)
+            AttackMoveEngagement engagement = null, bool holdAttackPosition = false)
         {
             _movement.CancelCombatHold();
             if (_orders.Current != UnitOrderType.None || _pendingAbilityTarget != null)
                 RecordOrder("cancel", $"Replaced by {type}.");
             IsAbilityFacing = false;
             _pendingAbilityTarget = null;
-            _group = null;
             LeavePace();
-            _orders.Replace(type, destination, target, offset, waypoints, targetHardPointId, engagement);
+            _orders.Replace(type, destination, target, offset, waypoints, targetHardPointId, engagement, holdAttackPosition);
             RecordOrder("issued", "Requested order before state entry.");
             StartOrder();
         }
@@ -501,7 +497,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
                     }
 
                     _attackTargetState.SetData(_orders.Target, ToVector(_orders.Offset),
-                        _orders.TargetHardPointId);
+                        _orders.TargetHardPointId, _orders.HoldAttackPosition);
                     _stateMachine.SetState(_attackTargetState);
                     break;
                 case UnitOrderType.AttackMove:
@@ -528,38 +524,20 @@ namespace EmpireAtWar.Entities.Ship.Orders
             }
         }
 
-        // Own radar first, then the group's shared contact, then what the team sees around where the target died.
         private IEntity FindReplacement()
         {
             ShipClass? deadClass = _attackTargetState.LastTargetClass;
-            IEntity own = ShipEngagement.FindNearestEnemy(_radar, _movement, _weapon, inRangeOnly: false, deadClass);
-            if (own != null && IsSameClass(own, deadClass)) return own;
-            IEntity shared = GetSharedReplacement();
-            if (shared != null && IsSameClass(shared, deadClass)) return shared;
-            if (own != null && !deadClass.HasValue) return own;
-            // The team scan is shared and cached, but it is still only worth asking when nothing of the class is near.
+            IEntity own = ShipEngagement.FindNearestEnemy(_radar, _movement, _weapon, inRangeOnly: true, deadClass);
+            if (own != null && own.HealthModel.ShipClass == deadClass) return own;
+
             _teamCandidates.Clear();
-            Vector3 searchOrigin = _group != null && _group.TryGetCentroid(out System.Numerics.Vector2 centroid)
-                ? new Vector3(centroid.X, _attackTargetState.LastTargetPosition.y, centroid.Y)
-                : _attackTargetState.LastTargetPosition;
-            _teamContacts.FillVisibleHostiles(_owner, searchOrigin, REPLACEMENT_RADIUS,
+            _teamContacts.FillVisibleHostiles(_owner, _movement.CurrentPosition, REPLACEMENT_RADIUS,
                 _teamCandidates);
+            for (int i = _teamCandidates.Count - 1; i >= 0; i--)
+                if (!ShipEngagement.CanEngage(_teamCandidates[i], _movement, _weapon))
+                    _teamCandidates.RemoveAt(i);
             IEntity team = ShipEngagement.FindNearestEnemy(_teamCandidates, _movement, _weapon, deadClass);
-            if (team != null && IsSameClass(team, deadClass)) return team;
-            return own ?? shared ?? team;
-        }
-
-        private static bool IsSameClass(IEntity enemy, ShipClass? deadClass) =>
-            deadClass.HasValue && enemy.HealthModel.ShipClass == deadClass.Value;
-
-        // A contact the group found far away is not worth a cross-map chase.
-        private IEntity GetSharedReplacement()
-        {
-            if (_group == null || _group.SharedReplacement == null) return null;
-            IEntity shared = _group.SharedReplacement;
-            return !shared.HealthModel.IsDestroyed && shared.HealthModel.HasUnits &&
-                   _movement.GetRange(shared.GetFacade<IEntityTransformFacade>().Transform.position) <=
-                   SHARED_REPLACEMENT_RANGE ? shared : null;
+            return team != null && team.HealthModel.ShipClass == deadClass ? team : own ?? team;
         }
 
         private void CompleteOrder()
@@ -587,28 +565,13 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 return;
             }
 
-            // A ship that killed its target keeps fighting: it attacks the nearest radar contact its loadout prefers
-            // (fighters for a laser corvette), even one its guns do not reach yet.
             if (_orders.Current == UnitOrderType.Attack && _orders.Target.HealthModel.IsDestroyed)
             {
-                RecordOrder("complete", "Attack target destroyed; checking replacement contacts.");
+                RecordOrder("complete", "Attack target destroyed; checking contacts in weapons reach.");
                 IEntity nextTarget = FindReplacement();
                 if (nextTarget != null)
                 {
-                    PaceCluster group = _group;
-                    FormationPoint slot = _orders.Offset;
-                    Issue(UnitOrderType.Attack, target: nextTarget, offset: slot);
-                    _group = group;
-                    if (group != null) group.SharedReplacement = nextTarget;
-                    return;
-                }
-
-                // Nothing on this ship's radar: sweep toward where the target died instead of idling in place.
-                if (_stateMachine.CurrentState == _attackTargetState)
-                {
-                    RecordOrder("complete", "Target destroyed; attack-moving to its last position.");
-                    Issue(UnitOrderType.AttackMove, ToPoint(_attackTargetState.LastTargetPosition),
-                        engagement: new AttackMoveEngagement());
+                    Issue(UnitOrderType.Attack, target: nextTarget, holdAttackPosition: true);
                     return;
                 }
             }

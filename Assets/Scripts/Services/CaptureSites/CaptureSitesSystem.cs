@@ -343,6 +343,13 @@ namespace EmpireAtWar.Services.CaptureSites
             return true;
         }
 
+        public (float Friendly, float Hostile) GetTeamStrengths(ICaptureSite site, PlayerId owner)
+        {
+            for (int i = 0; i < _sites.Count; i++)
+                if (ReferenceEquals(_sites[i], site)) return _strengthSampler.GetTeamStrengths(i, owner);
+            throw new ArgumentException("Capture site is not registered.", nameof(site));
+        }
+
         public bool HasHostileUnits(ICaptureSite site, PlayerId owner)
         {
             foreach (IShipEntity ship in _shipService.Ships)

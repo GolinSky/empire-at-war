@@ -33,6 +33,9 @@ namespace EmpireAtWar.Models.Players
             _playerStrengths[owner.Index] += strength;
         }
 
+        public void CopyPlayerStrengths(float[] destination) =>
+            _playerStrengths.CopyTo(destination, 0);
+
         public CaptureStrength Build()
         {
             _teamStrengths.Clear();

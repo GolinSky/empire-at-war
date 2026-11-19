@@ -219,6 +219,8 @@ namespace EmpireAtWar.Tests.Editor
         {
             public List<ReinforcementZonePresenter> Items { get; } = new List<ReinforcementZonePresenter>();
             public IReadOnlyList<ReinforcementZonePresenter> Zones => Items;
+            public float SquadronCaptureWeight => 0.5f;
+            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) => default;
         }
 
         private sealed class Map : IMapModelObserver

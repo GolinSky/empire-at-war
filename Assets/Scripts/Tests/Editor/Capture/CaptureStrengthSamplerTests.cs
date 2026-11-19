@@ -37,6 +37,8 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(preparations, Is.EqualTo(1));
             Assert.That(predicates, Is.EqualTo(2), "One preparation is shared by every unit in the scan.");
             Assert.That(sampler[0].Advantage, Is.EqualTo(1f));
+            Assert.That(sampler.GetTeamStrengths(0, TestPlayers.Human), Is.EqualTo((1f, 0f)));
+            Assert.That(sampler.GetTeamStrengths(0, TestPlayers.Enemy), Is.EqualTo((0f, 1f)));
 
             currentCenter = Vector3.right * 10f;
             sampler.Tick(0.1f);

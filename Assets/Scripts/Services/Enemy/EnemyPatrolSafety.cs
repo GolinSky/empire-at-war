@@ -45,9 +45,10 @@ namespace EmpireAtWar.Services.Enemy
             _forces = forces;
         }
 
-        public bool IsObjectiveSafe(long unitId, Vector3 origin, Vector3 destination, float clearance, bool ship)
+        public bool IsObjectiveSafe(long unitId, Vector3 origin, Vector3 destination, float clearance, bool ship,
+            bool raiding = false)
         {
-            if (_areas.IsBlocked(_owner.Id, destination)) return false;
+            if (!raiding && _areas.IsBlocked(_owner.Id, destination)) return false;
             if (ship && (!_navigation.IsPositionClear(destination, clearance, includeReservations: false) ||
                 !_navigation.IsReachable(origin, destination, clearance, ShipHullSpan.Unbounded, _map.SizeRange))) return false;
             _forces.BuildKnown(_threatForce, _intel, Time.time, sighting =>
@@ -69,6 +70,7 @@ namespace EmpireAtWar.Services.Enemy
             {
                 if (!point.Id.StartsWith("structure:")) continue;
                 long id = long.Parse(point.Id.Substring("structure:".Length));
+                if (raiding && _intel.TryGetMine(id, out _)) continue;
                 float reach = _entities.TryGetEntity(id, out IEntity entity) &&
                     entity.TryGetFacade(out IUnitCombatObserverFacade combat) ? combat.WeaponRange : UNKNOWN_REACH;
                 if (DistanceToSegment(ToVector(point.Position), origin, destination) < reach + REACH_MARGIN) return false;

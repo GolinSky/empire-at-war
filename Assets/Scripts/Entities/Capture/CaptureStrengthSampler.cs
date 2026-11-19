@@ -20,6 +20,9 @@ namespace EmpireAtWar.Entities.Capture
         private readonly ISquadronRegistry _squadrons;
         private readonly CaptureStrengthBuilder _builder;
         private readonly float _squadronWeight;
+        private readonly IPlayerRoster _relations;
+        private readonly List<float[]> _playerStrengths = new List<float[]>();
+        private readonly Dictionary<TeamId, float> _hostileTeams = new Dictionary<TeamId, float>();
         private readonly List<(Func<Vector3, bool> Contains, Action Prepare)> _areas =
             new List<(Func<Vector3, bool> Contains, Action Prepare)>();
         private readonly List<CaptureStrength> _strengths = new List<CaptureStrength>();
@@ -35,14 +38,38 @@ namespace EmpireAtWar.Entities.Capture
         {
             _ships = ships;
             _squadrons = squadrons;
+            _relations = relations;
             _builder = new CaptureStrengthBuilder(relations);
             _squadronWeight = squadronWeight;
+        }
+
+        public (float Friendly, float Hostile) GetTeamStrengths(int index, PlayerId owner)
+        {
+            float friendly = 0f;
+            float hostile = 0f;
+            _hostileTeams.Clear();
+            foreach (PlayerSlot slot in _relations.Players)
+            {
+                float strength = _playerStrengths[index][slot.Id.Index];
+                if (_relations.IsAllied(owner, slot.Id))
+                    friendly += strength;
+                else if (strength > 0f && _relations.IsHostile(owner, slot.Id))
+                {
+                    _hostileTeams.TryGetValue(slot.Team, out float teamStrength);
+                    teamStrength += strength;
+                    _hostileTeams[slot.Team] = teamStrength;
+                    hostile = Mathf.Max(hostile, teamStrength);
+                }
+            }
+
+            return (friendly, hostile);
         }
 
         public void Add(Func<Vector3, bool> contains, Action prepare = null)
         {
             _areas.Add((contains, prepare));
             _strengths.Add(default);
+            _playerStrengths.Add(new float[MatchRules.MAX_PLAYERS]);
             _nextRefresh.Add(0f);
             _refreshAll = true;
         }
@@ -51,6 +78,7 @@ namespace EmpireAtWar.Entities.Capture
         {
             _areas.Clear();
             _strengths.Clear();
+            _playerStrengths.Clear();
             _nextRefresh.Clear();
             _cursor = 0;
             _refreshAll = false;
@@ -91,6 +119,7 @@ namespace EmpireAtWar.Entities.Capture
                 using (BuildMarker.Auto())
 #endif
                 _strengths[index] = _builder.Build();
+                _builder.CopyPlayerStrengths(_playerStrengths[index]);
             }
         }
     }

@@ -99,6 +99,17 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void StationDefenseLaunch_IgnoresHostileInfluenceButStillRespectsNeutralBlockers()
+        {
+            _blockers.Register(BattleAreaLayer.SpawnBlock, TestPlayers.Enemy, CreateTransform(Vector3.zero), 200f);
+            Assert.That(_rule.CanSpawnShip(TestPlayers.Human, ShipType.Arquitens, Vector3.zero), Is.False);
+            Assert.That(_rule.CanLaunchStationDefenseShip(TestPlayers.Human, ShipType.Arquitens, Vector3.zero), Is.True);
+
+            _blockers.Register(BattleAreaLayer.SpawnBlock, PlayerId.None, CreateTransform(Vector3.zero), 200f);
+            Assert.That(_rule.CanLaunchStationDefenseShip(TestPlayers.Human, ShipType.Arquitens, Vector3.zero), Is.False);
+        }
+
+        [Test]
         public void CanSpawnShip_RequiresClearHull()
         {
             _clearance.IsClearResult = false;

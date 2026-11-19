@@ -14,7 +14,7 @@ namespace EmpireAtWar.Services.Enemy
         private const int MAIN_FORCE_SHIP_COUNT = 6;
         private const float DETACHMENT_GRACE_SECONDS = 10f;
         private static readonly EnemyOpeningFocus[] OPENING_FOCUSES =
-            { EnemyOpeningFocus.Neighbour, EnemyOpeningFocus.Centre, EnemyOpeningFocus.Outer };
+            { EnemyOpeningFocus.Centre, EnemyOpeningFocus.Neighbour, EnemyOpeningFocus.Outer };
         private readonly EnemyStrategicContextBuilder _contextBuilder;
         private readonly IUnitOrderService _orders;
         private readonly List<EnemyShipTaskGroup> _groups = new List<EnemyShipTaskGroup>();

@@ -19,6 +19,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Intel
 
         /// <summary>Game time in seconds when the unit was seen.</summary>
         public float SeenAt { get; }
+        public float Income { get; }
 
         public HostileSighting(
             long entityId,
@@ -28,7 +29,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Intel
             float hull,
             float shields,
             float offenseScale,
-            float seenAt)
+            float seenAt, float income = 0f)
         {
             EntityId = entityId;
             UnitTypeId = unitTypeId;
@@ -38,6 +39,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Intel
             Shields = shields;
             OffenseScale = offenseScale;
             SeenAt = seenAt;
+            Income = income;
         }
     }
 }

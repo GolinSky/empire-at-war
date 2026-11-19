@@ -1,3 +1,4 @@
+using EmpireAtWar.Entities.MiningFacility;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
@@ -159,7 +160,8 @@ namespace EmpireAtWar.Services.Enemy
                     if (entry.IsMiningFacility && _playerRoster.IsHostile(viewer, entry.Owner) &&
                         !entry.Entity.HealthModel.IsDestroyed && _vision.IsVisible(viewer, entry.Entity))
                         team.Intel.ReportMine(new HostileSighting(entry.Id, entry.UnitTypeId, entry.Owner,
-                            ToPoint(entry.Position), entry.Hull, entry.Shields, entry.OffenseScale, now));
+                            ToPoint(entry.Position), entry.Hull, entry.Shields, entry.OffenseScale, now,
+                            entry.Entity.GetFacade<IMiningFacilityFacade>().GrossIncome));
             }
         }
 

@@ -28,8 +28,8 @@ namespace EmpireAtWar.Services.Enemy
         private const float MINIMUM_PRODUCTION_INTERVAL = 1f;
 
         private const int SHIPS_PER_SQUADRON = 2;
-        private const int CRITICAL_EXTRA_SQUADRONS = 2;
-        private const int OPENING_SQUADRON_TARGET = 6;
+        private const int MINIMUM_CAPTURE_WINGS = 3;
+        private const float COMBAT_RESEARCH_INTERVAL = 30f;
         private const int DEFENSE_PLATFORM_TARGET = 1;
 
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
@@ -62,6 +62,7 @@ namespace EmpireAtWar.Services.Enemy
         private readonly List<FactionData> _candidateData = new List<FactionData>();
 
         private int _observedReleaseVersion;
+        private float _nextCombatResearchTime;
 
         public float DefenseReserve { get; private set; }
         public bool PriorityConstructionPending
@@ -73,10 +74,8 @@ namespace EmpireAtWar.Services.Enemy
         public float OpeningLevelReserve => _factionModel.CurrentLevel == 1 && CanUpgradeStation
             ? _factionModel.GetCurrentLevelFactionData().Price : 0f;
 
-        public bool OpeningMiningPending => IsOpening && CountReservedMiningFacilities() < GetMiningFacilityTarget();
-
-        private bool IsOpening => _factionModel.CurrentLevel == 1 && _unitLimitModel.ShipOrdersCount == 0 &&
-                                  !_purchaseProcessor.IsUpgradingStation;
+        public bool OpeningMiningPending => _factionModel.CurrentLevel == 1 &&
+                                            CountReservedMiningFacilities() < GetMiningFacilityTarget();
 
         private bool CanUpgradeStation => _productionAccess.ProductionHost == _owner.Id &&
                                           _productionAccess.HasHostBase &&
@@ -185,26 +184,22 @@ namespace EmpireAtWar.Services.Enemy
 
             KeyValuePair<SquadronType, FactionData> squadron = default;
             KeyValuePair<ShipType, FactionData> ship = default;
-            bool atOpeningLevel = _factionModel.CurrentLevel == 1;
-            bool allowShips = !atOpeningLevel || _unitLimitModel.ShipOrdersCount == 0 && shipCount == 0;
-            bool canOrderShips = allowShips && CanOrderAnyShip();
-            bool hasSquadronRoom = atOpeningLevel
-                ? CountReservedSquadrons() < OPENING_SQUADRON_TARGET
-                : HasSquadronRoom(shipCount);
+            bool critical = _stationPressure.IsStationCritical;
+            bool canOrderShips = CanOrderAnyShip();
+            bool hasDefenseShip = critical && canOrderShips && TrySelectShip(shipCount, out ship);
+            bool hasSquadronRoom = HasSquadronRoom(shipCount);
+            bool needsCaptureWings = !critical && CountReservedSquadrons() + CountHangarSquadrons() <
+                MINIMUM_CAPTURE_WINGS;
             UnitTypeId counterId = default;
             FactionData counterData = null;
-            bool hasCounter = (!atOpeningLevel || _stationPressure.IsStationCritical) && TrySelectCounterUnit(
-                !_stationPressure.IsStationCritical &&
-                canOrderShips && (_decisionModel.NeedsMinimumFleet(shipCount) || !hasSquadronRoom),
-                hasSquadronRoom, allowShips, out counterId, out counterData);
-            bool hasShip = !hasCounter && canOrderShips && TrySelectShip(shipCount, out ship);
-            bool canBuyOpeningShip = atOpeningLevel && hasShip && !_purchaseProcessor.IsUpgradingStation &&
-                                     IsAffordable(ship.Value) && FitsRemainingCapacity(ship.Value);
-            if (atOpeningLevel && !_stationPressure.IsStationCritical)
-                hasShip = canBuyOpeningShip;
-            bool hasSquadronFallback = !_stationPressure.IsStationCritical && !hasCounter && !hasShip &&
-                                       (atOpeningLevel ? hasSquadronRoom : !canOrderShips) &&
-                                       TrySelectSquadron(shipCount, true, out squadron);
+            bool hasCounter = !hasDefenseShip && !needsCaptureWings && TrySelectCounterUnit(
+                !hasSquadronRoom || !critical && canOrderShips && _decisionModel.NeedsMinimumFleet(shipCount),
+                hasSquadronRoom, out counterId, out counterData);
+            bool hasSquadronFallback = !hasCounter && (needsCaptureWings || !critical && !canOrderShips) &&
+                                       TrySelectSquadron(shipCount, !canOrderShips, out squadron) &&
+                                       IsAffordable(squadron.Value);
+            bool hasShip = hasDefenseShip ||
+                           !critical && !hasCounter && !hasSquadronFallback && canOrderShips && TrySelectShip(shipCount, out ship);
             bool hasShipOption = hasCounter || hasShip || hasSquadronFallback;
             FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
             DefenseReserve = hasShipOption ? shipChoice.Price : 0f;
@@ -233,9 +228,11 @@ namespace EmpireAtWar.Services.Enemy
             bool canResearchIncome = TrySelectResearch(true, out ResearchType incomeResearch,
                                          out ResearchTierData incomeTier) &&
                                      IsAffordable(incomeTier.FactionData);
+            bool canResearchMining = canResearchIncome && incomeResearch == ResearchType.IncreasedProduction;
             bool canResearchCombat = TrySelectResearch(false, out ResearchType combatResearch,
                                          out ResearchTierData combatTier) &&
-                                     IsAffordable(combatTier.FactionData);
+                                     IsAffordable(combatTier.FactionData) &&
+                                     BattleClock.CurrentElapsed >= _nextCombatResearchTime;
             int miningFacilityTarget = GetMiningFacilityTarget();
 
             if (!_stationPressure.IsStationCritical && TryBuyScout(shipCount,
@@ -265,11 +262,11 @@ namespace EmpireAtWar.Services.Enemy
                 canResearchCombat,
                 canOrderShips,
                 _stationPressure.IsStationCritical,
-                canBuyOpeningShip,
-                IsOpening);
+                canResearchMining);
             EnemyProductionCategory category = _decisionModel.Evaluate(snapshot);
             if (PriorityConstructionPending && !_stationPressure.IsStationCritical &&
-                category is not (EnemyProductionCategory.Mining or EnemyProductionCategory.Level))
+                category is not (EnemyProductionCategory.Mining or EnemyProductionCategory.Level or EnemyProductionCategory.Research) &&
+                !(category == EnemyProductionCategory.Ship && _purchaseProcessor.IsUpgradingStation))
             {
                 return;
             }
@@ -279,7 +276,8 @@ namespace EmpireAtWar.Services.Enemy
             bool buildSquadron = !_stationPressure.IsStationCritical && !hasCounter &&
                                  category == EnemyProductionCategory.Ship &&
                                  (hasSquadronFallback ||
-                                  !atOpeningLevel && TrySelectSquadron(shipCount, false, out squadron) &&
+                                  !_decisionModel.NeedsMinimumFleet(shipCount) &&
+                                  TrySelectSquadron(shipCount, false, out squadron) &&
                                   IsAffordable(squadron.Value));
             UnitRequest request = category switch
             {
@@ -327,6 +325,8 @@ namespace EmpireAtWar.Services.Enemy
                     request.FactionData) : 0f,
                 _stationPressure.EstimatedTimeToLossSeconds);
             _purchaseProcessor.Purchase(request);
+            if (category == EnemyProductionCategory.Research && !canResearchIncome)
+                _nextCombatResearchTime = BattleClock.CurrentElapsed + COMBAT_RESEARCH_INTERVAL;
         }
 
         private int GetMiningFacilityTarget()
@@ -412,7 +412,6 @@ namespace EmpireAtWar.Services.Enemy
         private bool TrySelectCounterUnit(
             bool shipsOnly,
             bool hasSquadronRoom,
-            bool allowShips,
             out UnitTypeId selectedId,
             out FactionData selectedData)
         {
@@ -431,13 +430,14 @@ namespace EmpireAtWar.Services.Enemy
             {
                 UnitTypeId unitId = UnitTypeId.Ship(option.Key);
                 AddCounterOption<ShipUnitRequest>(unitId, option.Key.ToString(), option.Value,
-                    allowShips && IsAvailable(option.Value) && IsShipClassAllowed(unitId), hasSquadronRoom);
+                    IsAvailable(option.Value) && IsShipClassAllowed(unitId) &&
+                    IsAllowedUnderPressure(option.Value, unitId), hasSquadronRoom);
             }
 
             foreach (KeyValuePair<SquadronType, FactionData> option in _factionModel.SquadronFactionData)
             {
                 AddCounterOption<SquadronUnitRequest>(UnitTypeId.Squadron(option.Key), option.Key.ToString(),
-                    option.Value, !shipsOnly, hasSquadronRoom);
+                    option.Value, !shipsOnly && hasSquadronRoom, hasSquadronRoom);
             }
 
             if (!_counterModel.TrySelect(_ownForce, _hostileForce, _candidates, out int index,
@@ -508,6 +508,7 @@ namespace EmpireAtWar.Services.Enemy
                 // Affordability is checked after selection so the AI saves for higher-tier ships.
                 UnitTypeId unitType = UnitTypeId.Ship(option.Key);
                 if (!IsAvailable(option.Value) || !IsShipClassAllowed(unitType) ||
+                    !IsAllowedUnderPressure(option.Value, unitType) ||
                     !CanReserve<ShipUnitRequest>(
                         option.Key.ToString(),
                         option.Value, true))
@@ -571,11 +572,14 @@ namespace EmpireAtWar.Services.Enemy
         /// <remarks>Carrier hangars count toward the cap so carriers are no way around it.</remarks>
         private bool HasSquadronRoom(int shipCount)
         {
-            int cap = shipCount / SHIPS_PER_SQUADRON;
-            // A critical station may buy more wings for immediate defense, but still within a cap.
-            if (_stationPressure.IsStationCritical) cap = cap * 2 + CRITICAL_EXTRA_SQUADRONS;
-            return cap > 0 && CountReservedSquadrons() + CountHangarSquadrons() < cap;
+            int cap = _stationPressure.IsStationCritical ? MINIMUM_CAPTURE_WINGS :
+                Math.Max(MINIMUM_CAPTURE_WINGS, shipCount / SHIPS_PER_SQUADRON);
+            return CountReservedSquadrons() + CountHangarSquadrons() < cap;
         }
+
+        private bool IsAllowedUnderPressure(FactionData data, UnitTypeId id) =>
+            !_stationPressure.IsStationCritical || _factionModel.CurrentLevel < 3 ||
+            data.AvailableLevel > 1 || _profileCatalog.Get(id).ShipClass != ShipClass.Corvette;
 
         /// <summary>Live wings, usable carrier reserves and initial wings of ships still awaiting deployment.</summary>
         private int CountHangarSquadrons()
@@ -738,7 +742,9 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 }
 
-                if (selectedTier == null || tier.FactionData.Price < selectedTier.FactionData.Price)
+                if (selectedType == ResearchType.IncreasedProduction && selectedTier != null) continue;
+                if (researchType == ResearchType.IncreasedProduction || selectedTier == null ||
+                    tier.FactionData.Price < selectedTier.FactionData.Price)
                 {
                     selectedType = researchType;
                     selectedTier = tier;

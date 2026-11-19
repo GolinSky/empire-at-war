@@ -298,7 +298,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(EnemyAiDifficulty.Easy, 5)]
         [TestCase(EnemyAiDifficulty.Medium, 7)]
         [TestCase(EnemyAiDifficulty.Hard, 8)]
-        [TestCase(EnemyAiDifficulty.UltraHard, 10)]
+        [TestCase(EnemyAiDifficulty.UltraHard, 9)]
         public void Difficulty_CommitsExpectedFleetShare(
             EnemyAiDifficulty difficulty,
             int expectedCommittedShips)
@@ -459,7 +459,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(EnemyAiDifficulty.Easy, 4f, 0.5f, 1.5f)]
         [TestCase(EnemyAiDifficulty.Medium, 2.5f, 0.65f, 1.25f)]
         [TestCase(EnemyAiDifficulty.Hard, 1.25f, 0.8f, 1f)]
-        [TestCase(EnemyAiDifficulty.UltraHard, 0.5f, 1f, 0.75f)]
+        [TestCase(EnemyAiDifficulty.UltraHard, 0.5f, 0.85f, 0.75f)]
         public void DifficultyProfile_UsesExpectedStrategicConfiguration(
             EnemyAiDifficulty difficulty,
             float decisionInterval,

@@ -295,7 +295,10 @@ created: "2026-10-29\r"
 
 ## Enemy AI Active Play and Ship Combat
 
-- [ ] [[TODOs/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Run the affected EditMode categories, including EnemyAi, Ships, BattleInput, Navigation, Capture and Ui from F9, plus Map, Combat, Abilities, Economy, Squadrons, GameFlow and Core for the additional affected contracts.
+- [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Replay the UltraHard Republic and Separatist openings. Check mining research I within the opening, II at level 2, continued ship/wing production during the upgrade, early centre arrival, at least two safe expansion mining zones by about 4 min, and combat research after the minimum fleet.
+- [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Under siege verify no squadron purchase flood or level-1 corvette panic at level 3+, miner replacement when space and money permit, and grouped rear launches including forced launches.
+- [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Confirm viable squadron groups contest occupied circles, spare wings raid distinct mines, and outnumbered combat groups avoid hostile routes. Direct Attack holds when killed targets have no replacement within reach.
+- [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Run affected EditMode fixtures when explicitly authorized (EnemyAi, Capture, Ships, Navigation, BattleInput, Economy, GameFlow and dependent fixture bindings).
 
 ## Enemy AI Endgame Defense and Capture
 

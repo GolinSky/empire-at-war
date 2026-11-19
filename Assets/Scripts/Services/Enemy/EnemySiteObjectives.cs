@@ -1,3 +1,4 @@
+using EmpireAtWar.Services.Vision;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.EnemyFaction.Models.Intel;
@@ -19,8 +20,11 @@ namespace EmpireAtWar.Services.Enemy
         private const float FACILITY_POSITION_TOLERANCE_SQUARED = 1f;
         // Satellites hold a zone by themselves, so their pads are worth a detour in travel-distance units.
         private const float SATELLITE_PAD_PRIORITY = 600f;
+        private const float MINING_THREAT_MARGIN = 150f;
 
         private readonly Dictionary<int, float> _threatenedUntil = new Dictionary<int, float>();
+        private readonly Dictionary<ICaptureSite, PlayerId> _knownMineClaims =
+            new Dictionary<ICaptureSite, PlayerId>();
         private readonly ICaptureSiteDirectory _sites;
         private readonly ICaptureSitePresence _presence;
         private readonly CaptureSiteData _data;
@@ -47,6 +51,8 @@ namespace EmpireAtWar.Services.Enemy
                 long? blockingFacilityId = null;
                 float progress = site.CaptureProgress;
                 bool isMine = site.Kind == CaptureSiteKind.Mining;
+                var strength = _presence.GetTeamStrengths(site, _owner.Id);
+                if (isMine && !threatened && IsCapturable(site) && IsMiningThreatened(site, intel)) continue;
                 if (!threatened && !IsCapturable(site))
                 {
                     if (!isMine || site.FacilityType != SiteFacilityType.Mining ||
@@ -67,19 +73,39 @@ namespace EmpireAtWar.Services.Enemy
                 objectives.Add(new EnemyCaptureObjective($"site:{i}", EnemyCaptureObjectiveType.Facility,
                     site.Owner, ToVector(ToPoint(site.Center)), _data.GetSettings(site.Kind).Radius,
                     progress, threatened, priorityBonus: site.Kind == CaptureSiteKind.Satellite ? SATELLITE_PAD_PRIORITY : 0f,
-                    isMine: isMine, blockingFacilityId: blockingFacilityId));
+                    isMine: isMine, blockingFacilityId: blockingFacilityId, hostileStrength: strength.Hostile));
             }
         }
 
-        public void AddSquadronTargets(EnemySquadronCaptureAssignments assignments)
+        public void AddSquadronTargets(EnemySquadronCaptureAssignments assignments, HostileIntelModel intel)
         {
             foreach (ICaptureSite site in _sites.Sites)
             {
-                bool threatened = site.Owner == _owner.Id && _presence.HasHostileUnits(site, _owner.Id);
-                if (threatened || IsCapturable(site))
-                    assignments.AddTarget(ToVector(ToPoint(site.Center)), threatened,
-                        isSatellitePad: site.Kind == CaptureSiteKind.Satellite);
+                var strength = _presence.GetTeamStrengths(site, _owner.Id);
+                bool threatened = site.Owner == _owner.Id && strength.Hostile > 0f;
+                if (!threatened && (!IsCapturable(site) ||
+                    site.Kind == CaptureSiteKind.Mining && IsMiningThreatened(site, intel))) continue;
+
+                int requiredWings = Mathf.FloorToInt(strength.Hostile / _data.SquadronCaptureWeight) + 1;
+                assignments.AddTarget(ToVector(ToPoint(site.Center)), threatened,
+                    isSatellitePad: site.Kind == CaptureSiteKind.Satellite, requiredWings: requiredWings);
             }
+        }
+
+        public (int Allied, int Hostile) CountKnownMineClaims(PlayerId enemy, IVisionService vision)
+        {
+            int allied = 0;
+            int hostile = 0;
+            foreach (ICaptureSite site in _sites.Sites)
+            {
+                if (site.Kind != CaptureSiteKind.Mining) continue;
+                if (_players.IsAllied(_owner.Id, site.Owner) || vision.IsVisible(_owner.Id, site.Center))
+                    _knownMineClaims[site] = site.Owner;
+                if (!_knownMineClaims.TryGetValue(site, out PlayerId known)) continue;
+                if (_players.IsAllied(_owner.Id, known)) allied++;
+                else if (!enemy.IsNone && _players.IsAllied(enemy, known)) hostile++;
+            }
+            return (allied, hostile);
         }
 
         private bool IsThreatened(int index, ICaptureSite site, HostileIntelModel intel, float now)
@@ -101,6 +127,17 @@ namespace EmpireAtWar.Services.Enemy
         {
             return (site.State == CaptureSiteState.Neutral || site.State == CaptureSiteState.Owned) &&
                    !_players.IsAllied(_owner.Id, site.Owner);
+        }
+
+        private bool IsMiningThreatened(ICaptureSite site, HostileIntelModel intel)
+        {
+            float radius = _data.GetSettings(site.Kind).Radius + MINING_THREAT_MARGIN;
+            foreach (HostileSighting sighting in intel.Sightings)
+                if (_players.IsHostile(_owner.Id, sighting.Owner) &&
+                    intel.GetConfidence(sighting, Time.time) > 0f &&
+                    PlanarGeometry.DistanceSquared(ToVector(sighting.Position), site.FacilityPosition) <= radius * radius)
+                    return true;
+            return false;
         }
 
         private bool HasKnownHostileInside(ICaptureSite site, HostileIntelModel intel)

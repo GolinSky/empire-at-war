@@ -34,7 +34,7 @@ namespace EmpireAtWar.Tests.Editor
         public void CriticalStation_OnlyBuysCombatUnitsThatCanArrive(bool canBuildShip, EnemyProductionCategory expected)
         {
             EnemyProductionSnapshot snapshot = Snapshot(
-                mines: 0, ships: 10, shipsOrdered: 100, level: 5, critical: true, canBuildShip: canBuildShip);
+                mines: 5, ships: 10, shipsOrdered: 100, level: 5, critical: true, canBuildShip: canBuildShip);
 
             Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(expected));
         }
@@ -46,21 +46,27 @@ namespace EmpireAtWar.Tests.Editor
             bool critical, EnemyProductionCategory expected)
         {
             EnemyProductionSnapshot snapshot = Snapshot(mines: mines, level: 1, ships: 0, shipsOrdered: 0,
-                canBuildMining: affordable, openingShip: true, critical: critical, opening: true);
+                canBuildMining: affordable, critical: critical);
 
             Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(expected));
         }
 
-        [TestCase(true, true, EnemyProductionCategory.Ship)]
-        [TestCase(false, true, EnemyProductionCategory.Level)]
-        [TestCase(false, false, EnemyProductionCategory.None)]
-        public void OpeningLevel_OneAvailableCorvetteThenEarliestLevelUp(bool openingShip, bool upgradeAffordable,
-            EnemyProductionCategory expected)
+        [TestCase(true, EnemyProductionCategory.Level)]
+        [TestCase(false, EnemyProductionCategory.None)]
+        public void OpeningLevel_ReservesForEarliestLevelUp(bool upgradeAffordable, EnemyProductionCategory expected)
         {
-            EnemyProductionSnapshot snapshot = Snapshot(level: 1, ships: 0, shipsOrdered: openingShip ? 0 : 1,
-                canLevelUp: upgradeAffordable, openingShip: openingShip);
+            EnemyProductionSnapshot snapshot = Snapshot(level: 1, ships: 0, shipsOrdered: 0,
+                canLevelUp: upgradeAffordable);
 
             Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void MiningResearch_TakesPriorityOverMinersAndUnlockedLevel()
+        {
+            EnemyProductionSnapshot snapshot = Snapshot(level: 1, mines: 0, ships: 0, miningResearch: true);
+
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.Research));
         }
 
         [Test]
@@ -207,13 +213,12 @@ namespace EmpireAtWar.Tests.Editor
             bool hasShipOption = true, bool canBuildShip = true, bool canBuildMining = true,
             bool hasLevelOption = true, bool canLevelUp = true, bool canBuildDefense = true,
             bool incomeResearch = false, bool combatResearch = false, bool canOrderShips = true,
-            bool critical = false, bool openingShip = false, bool opening = false) =>
+            bool critical = false, bool miningResearch = false) =>
             new EnemyProductionSnapshot(state, mines, ships, shipsOrdered, platforms, level, 5, 1,
                 hasMiningOption: true, hasShipOption: hasShipOption, canBuildShip: canBuildShip,
                 canBuildMining: canBuildMining, canBuildDefense: canBuildDefense, hasLevelUpOption: hasLevelOption,
                 canLevelUp: canLevelUp, canResearchIncome: incomeResearch, canResearchCombat: combatResearch,
-                canOrderShips: canOrderShips, isStationCritical: critical, canBuyOpeningShip: openingShip,
-                isOpening: opening);
+                canOrderShips: canOrderShips, isStationCritical: critical, canResearchMining: miningResearch);
     }
 
     [Category("EnemyAi")]
@@ -230,7 +235,7 @@ namespace EmpireAtWar.Tests.Editor
         [TestCase(EnemyAiDifficulty.Medium)]
         [TestCase(EnemyAiDifficulty.Hard)]
         [TestCase(EnemyAiDifficulty.UltraHard)]
-        public void Opening_BuysAllMinersThenAtMostOneCorvetteAndStartsLevelTwo(EnemyAiDifficulty difficulty)
+        public void Opening_BuysMinersAndEarlyResearchThenContinuesProductionDuringUpgrade(EnemyAiDifficulty difficulty)
         {
             var reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
             FactionDefinition definition = CopyDefinition(FactionType.Separatist, ShipType.PatrolFrigate, ShipType.C9979);
@@ -238,13 +243,16 @@ namespace EmpireAtWar.Tests.Editor
             {
                 EnemyFactionModel factionModel = CreateFactionModel(definition);
                 var unitLimits = new EnemyUnitLimitModel();
+                var research = new FactionResearchModel(CreateRoster(definition));
+                var entities = new EntityLocator();
+                var catalog = UniformValueCatalog(definition, ShipClass.Corvette);
                 var purchases = new RecordingPurchaseProcessor();
                 SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), MAX_UNIT_CAPACITY);
                 var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
                 scheduler.Initialize();
                 var strategy = new EnemyProductionStrategy(
                     factionModel: factionModel,
-                    research: CreateCompletedResearch(definition),
+                    research: research,
                     purchaseProcessor: purchases,
                     requestFactory: new UnitRequestFactory(),
                     economyModel: new EconomyModelStub(10000f),
@@ -254,8 +262,8 @@ namespace EmpireAtWar.Tests.Editor
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     productionAccess: new OperationalProductionAccess(),
-                    forceBuilder: null,
-                    profileCatalog: UniformValueCatalog(definition, ShipClass.Corvette),
+                    forceBuilder: new ForceCompositionBuilder(entities, catalog, new AiWorldSnapshot(entities)),
+                    profileCatalog: catalog,
                     counterModel: null,
                     intelRegistry: new TeamIntelRegistry(),
                     owner: TestPlayers.CreateDuel(difficulty).Get(TestPlayers.Enemy),
@@ -264,6 +272,12 @@ namespace EmpireAtWar.Tests.Editor
 
                 strategy.Start();
                 Assert.That(strategy.OpeningMiningPending, Is.True);
+                scheduler.Step(10f);
+                Assert.That(purchases.LastRequest, Is.TypeOf<ResearchUnitRequest>());
+                var miningResearch = (ResearchUnitRequest)purchases.LastRequest;
+                Assert.That(miningResearch.Key, Is.EqualTo(ResearchType.IncreasedProduction));
+                Assert.That(miningResearch.Tier, Is.EqualTo(1));
+                research.Complete(ResearchType.IncreasedProduction);
                 int miningLimit = factionModel.MiningFactions.First().Value.MaxCount;
                 for (int i = 0; i < miningLimit; i++)
                 {
@@ -275,22 +289,32 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(strategy.OpeningMiningPending, Is.False);
 
                 scheduler.Step(10f);
-                Assert.That(purchases.LastRequest, Is.TypeOf<ShipUnitRequest>());
-                // A destroyed first corvette still counts as bought for the level-one cap.
-                unitLimits.RecordShipOrder();
-                scheduler.Step(10f);
                 Assert.That(purchases.LastRequest, Is.TypeOf<LevelUnitRequest>());
                 Assert.That(((LevelUnitRequest)purchases.LastRequest).Key, Is.EqualTo(1));
 
                 purchases.IsUpgradingStation = true;
                 strategy.PriorityConstructionPending = true;
-                int purchaseCount = purchases.RequestCount;
-                scheduler.Step(10f);
-                Assert.That(purchases.RequestCount, Is.EqualTo(purchaseCount));
+                for (int i = 0; i < 3; i++)
+                {
+                    scheduler.Step(10f);
+                    Assert.That(purchases.LastRequest, Is.TypeOf<SquadronUnitRequest>());
+                    UnitRequest request = purchases.LastRequest;
+                    unitLimits.Adopt(UnitLimitKey.From(request), request.FactionData.UnitCapacity);
+                }
 
-                strategy.PriorityConstructionPending = false;
                 scheduler.Step(10f);
-                Assert.That(purchases.LastRequest, Is.TypeOf<SquadronUnitRequest>());
+                Assert.That(purchases.LastRequest, Is.TypeOf<ShipUnitRequest>());
+                unitLimits.RecordShipOrder();
+                scheduler.Step(10f);
+                Assert.That(purchases.LastRequest, Is.TypeOf<ShipUnitRequest>());
+                Assert.That(purchases.Purchases.OfType<ShipUnitRequest>().Count(), Is.EqualTo(2));
+
+                purchases.IsUpgradingStation = false;
+                factionModel.CurrentLevel = 2;
+                scheduler.Step(10f);
+                Assert.That(purchases.LastRequest, Is.TypeOf<ResearchUnitRequest>());
+                Assert.That(((ResearchUnitRequest)purchases.LastRequest).Key, Is.EqualTo(ResearchType.IncreasedProduction));
+                Assert.That(((ResearchUnitRequest)purchases.LastRequest).Tier, Is.EqualTo(2));
             }
             finally
             {
@@ -338,6 +362,7 @@ namespace EmpireAtWar.Tests.Editor
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
                 ReserveEconomicFloor(factionModel, unitLimitModel, factionModel.MiningFactions.First().Value.MaxCount);
                 ReserveDefensePlatform(factionModel, unitLimitModel);
+                ReserveCaptureWings(factionModel, unitLimitModel);
 
                 FactionData preferredData =
                     factionModel.ShipFactionData[preferredShip];
@@ -360,7 +385,7 @@ namespace EmpireAtWar.Tests.Editor
                 scheduler.Initialize();
                 EnemyProductionStrategy strategy = new EnemyProductionStrategy(
                     factionModel: factionModel,
-                    research: new FactionResearchModel(CreateRoster(definition)),
+                    research: CreateCompletedResearch(definition),
                     purchaseProcessor: purchaseProcessor,
                     requestFactory: new UnitRequestFactory(),
                     economyModel: new EconomyModelStub(10000f),
@@ -426,6 +451,7 @@ namespace EmpireAtWar.Tests.Editor
                 EnemyUnitLimitModel unitLimitModel = new EnemyUnitLimitModel();
                 ReserveEconomicFloor(factionModel, unitLimitModel, factionModel.MiningFactions.First().Value.MaxCount);
                 ReserveDefensePlatform(factionModel, unitLimitModel);
+                ReserveCaptureWings(factionModel, unitLimitModel);
                 FactionData existingShipData =
                     factionModel.ShipFactionData[ShipType.Munificent];
                 Assert.That(
@@ -628,6 +654,8 @@ namespace EmpireAtWar.Tests.Editor
                 pressure.Update(1, 499f, 1000f, 1f);
                 pressure.Update(1, 490f, 1000f, 4f);
                 Assert.That(pressure.IsStationCritical, Is.True);
+                var limits = new EnemyUnitLimitModel();
+                ReserveEconomicFloor(factionModel, limits, factionModel.MiningFactions.First().Value.MaxCount);
                 var purchases = new RecordingPurchaseProcessor();
                 var entities = new EntityLocator();
                 var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
@@ -640,7 +668,7 @@ namespace EmpireAtWar.Tests.Editor
                     economyModel: new EconomyModelStub(10000f),
                     stateProvider: new StateProviderStub(),
                     decisionModel: new EnemyProductionDecisionModel(),
-                    unitLimitModel: new EnemyUnitLimitModel(),
+                    unitLimitModel: limits,
                     reinforcementData: reinforcementData,
                     enemyStructurePlacementService: new StructurePlacementServiceStub(),
                     productionAccess: new OperationalProductionAccess(),
@@ -720,6 +748,13 @@ namespace EmpireAtWar.Tests.Editor
                         MAX_UNIT_CAPACITY),
                     Is.True);
             }
+        }
+
+        private static void ReserveCaptureWings(EnemyFactionModel model, EnemyUnitLimitModel limits)
+        {
+            var wing = model.SquadronFactionData.First();
+            for (int i = 0; i < 3; i++)
+                limits.Adopt(UnitLimitKey.For<SquadronUnitRequest>(wing.Key.ToString()), wing.Value.UnitCapacity);
         }
 
         private static void ReserveDefensePlatform(

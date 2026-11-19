@@ -661,7 +661,7 @@ namespace EmpireAtWar.Tests.Editor
                 ? facade : throw new InvalidOperationException("Missing test facade.");
         }
 
-        private sealed class MineFacade : IMiningFacilityFacade { }
+        private sealed class MineFacade : IMiningFacilityFacade { public float GrossIncome => 0f; }
         private sealed class StationEvents : IStationLevelFacade
         {
             public event Action<int> LevelUpgraded = delegate { };

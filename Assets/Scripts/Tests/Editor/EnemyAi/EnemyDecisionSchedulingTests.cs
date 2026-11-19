@@ -558,6 +558,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public bool IsUnit { get; set; }
             public bool IsMiningFacility { get; set; }
+            public float GrossIncome { get; set; }
             public bool IsPlayerBase { get; set; }
             public UnitTypeId UnitTypeId { get; set; }
             public CombatModifiers Modifiers { get; } = new CombatModifiers();
@@ -640,6 +641,8 @@ namespace EmpireAtWar.Tests.Editor
         private sealed class TestZoneSource : IReinforcementZoneSource
         {
             public IReadOnlyList<ReinforcementZonePresenter> Zones => Array.Empty<ReinforcementZonePresenter>();
+            public float SquadronCaptureWeight => 0.5f;
+            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) => default;
         }
 
         private sealed class TestZonesSystem : IReinforcementZonesSystem

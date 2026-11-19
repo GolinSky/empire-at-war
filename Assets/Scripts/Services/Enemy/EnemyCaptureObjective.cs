@@ -15,10 +15,11 @@ namespace EmpireAtWar.Services.Enemy
         public float PriorityBonus { get; }
         public long? BlockingFacilityId { get; }
         public bool IsMine { get; }
+        public float HostileStrength { get; }
 
         public EnemyCaptureObjective(string id, EnemyCaptureObjectiveType kind, PlayerId owner,
             Vector3 position, float radius, float progress, bool isThreatened = false, float priorityBonus = 0f,
-            bool isMine = false, long? blockingFacilityId = null)
+            bool isMine = false, long? blockingFacilityId = null, float hostileStrength = 0f)
         {
             Id = id;
             Kind = kind;
@@ -30,6 +31,7 @@ namespace EmpireAtWar.Services.Enemy
             PriorityBonus = priorityBonus;
             IsMine = isMine;
             BlockingFacilityId = blockingFacilityId;
+            HostileStrength = hostileStrength;
         }
     }
 }

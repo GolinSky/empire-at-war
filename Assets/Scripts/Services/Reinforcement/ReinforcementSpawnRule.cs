@@ -37,20 +37,34 @@ namespace EmpireAtWar.Services.Reinforcement
             _hazards = hazards;
         }
 
-        public bool IsOpen(PlayerId team, Vector3 position)
+        public bool IsOpen(PlayerId team, Vector3 position) =>
+            IsVisibleAndInBounds(team, position) && !_areas.IsBlocked(team, position);
+
+        private bool IsVisibleAndInBounds(PlayerId team, Vector3 position)
         {
             Vector2 min = _mapModel.SizeRange.Min;
             Vector2 max = _mapModel.SizeRange.Max;
             return position.x >= min.x && position.x <= max.x &&
                    position.z >= min.y && position.z <= max.y &&
                    _vision.IsVisible(team, position) &&
-                   !_areas.IsBlocked(team, position) &&
                    !_hazards.BlocksReinforcement(position);
         }
 
         public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position) =>
             IsOpen(owner, position) && _shipClearance.IsClear(owner, shipType, position) &&
             _shipReachability.IsReachable(owner, shipType, position);
+
+        public bool CanLaunchStationDefenseShip(PlayerId owner, ShipType shipType, Vector3 position)
+        {
+            if (!IsVisibleAndInBounds(owner, position)) return false;
+
+            var blockers = _areas.Get(BattleAreaLayer.SpawnBlock);
+            for (int i = 0; i < blockers.Count; i++)
+                if (blockers[i].Owner.IsNone && blockers[i].Contains(position, 0f)) return false;
+
+            return _shipClearance.IsClear(owner, shipType, position) &&
+                   _shipReachability.IsReachable(owner, shipType, position);
+        }
 
         public bool IsOpenForStructure(PlayerId owner, Vector3 position) =>
             IsOpen(owner, position) && !_areas.IsStructureExcluded(position, _structureClearance.Radius);

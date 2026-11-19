@@ -24,6 +24,7 @@ namespace EmpireAtWar.Services.ShipSpawning
         private readonly IPlayerRelations _relations;
         private readonly ReinforcementZoneData _data;
         private readonly IEntityLocator _entities;
+        private readonly IShipSpawnClearance _clearance;
         private readonly List<Vector3> _stationPositions = new List<Vector3>();
         private readonly List<(Vector3 Position, float Radius, bool Station)> _targetedAnchors =
             new List<(Vector3, float, bool)>();
@@ -36,9 +37,10 @@ namespace EmpireAtWar.Services.ShipSpawning
             IReinforcementSpawnRule spawnRule,
             IPlayerRelations relations,
             ReinforcementZoneData data,
-            IEntityLocator entities)
+            IEntityLocator entities, IShipSpawnClearance clearance)
         {
             _entities = entities;
+            _clearance = clearance;
             _zoneSource = zoneSource;
             _zones = zones;
             _spawnRule = spawnRule;
@@ -102,8 +104,7 @@ namespace EmpireAtWar.Services.ShipSpawning
             for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
             {
                 Vector2 offset = Random.insideUnitCircle * radius;
-                // Sample behind the station first, then also allow clear positions on its flanks.
-                if (attempt < MAX_RANDOM_SPAWN_ATTEMPTS / 2 && Vector2.Dot(offset, towardThreat) > 0f)
+                if (Vector2.Dot(offset, towardThreat) > 0f)
                     offset = Vector2.Reflect(offset, towardThreat);
                 position = new Vector3(anchor.x + offset.x, 0f, anchor.z + offset.y);
                 if (threats.IsSafe(position.x, position.z, 0f) &&
@@ -137,14 +138,17 @@ namespace EmpireAtWar.Services.ShipSpawning
             float radius = _data.HomeAreaRadius;
             var centroid = threats.GetLocalCentroid(anchor.x, anchor.z, radius);
             var threatCenter = new Vector2(centroid.X, centroid.Z);
+            var fromStation = threatCenter - new Vector2(anchor.x, anchor.z);
             bool found = false;
             float bestDistance = float.NegativeInfinity;
             position = default;
             for (int attempt = 0; attempt < MAX_RANDOM_SPAWN_ATTEMPTS; attempt++)
             {
                 Vector2 offset = Random.insideUnitCircle * radius;
+                if (Vector2.Dot(offset, fromStation) > 0f)
+                    offset = Vector2.Reflect(offset, fromStation.normalized);
                 var candidate = new Vector3(anchor.x + offset.x, 0f, anchor.z + offset.y);
-                if (!_spawnRule.CanSpawnShip(owner, shipType, candidate)) continue;
+                if (!_spawnRule.CanLaunchStationDefenseShip(owner, shipType, candidate)) continue;
                 float distance = (new Vector2(candidate.x, candidate.z) - threatCenter).sqrMagnitude;
                 if (distance <= bestDistance) continue;
                 bestDistance = distance;
@@ -154,6 +158,11 @@ namespace EmpireAtWar.Services.ShipSpawning
 
             return found;
         }
+
+        public void ReserveDefenseLanding(object token, PlayerId owner, ShipType shipType, Vector3 position) =>
+            _clearance.ReserveLanding(token, owner, shipType, position);
+
+        public void ReleaseDefenseLanding(object token) => _clearance.ReleaseLanding(token);
 
         private void CollectStationPositions(PlayerId owner)
         {

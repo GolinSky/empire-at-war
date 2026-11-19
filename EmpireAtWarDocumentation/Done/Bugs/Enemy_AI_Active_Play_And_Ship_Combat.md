@@ -3,10 +3,184 @@ category: Bugs
 status: done
 created: 2026-11-19
 replaces: "[[TODOs/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]]"
+after: "[[Done/Features/Spatial_Pace_Clusters_Plan]]"
 completed: 2026-11-19
 acceptance: pending-user
 ---
 # Enemy AI Active Play And Ship Combat
+
+## Reopened 2026-11-19 (acceptance failed)
+- `a945072cc` (F1–F14) played 2026-11-19 10:45 on UltraHard: human win ≈ 551 s. User: AI slow, comes too late, bad corvette purchases, one-by-one spawns in front of the station, no held reserve, own fleet pushes on its own.
+- [[Done/Features/Spatial_Pace_Clusters_Plan]] landed in `4cc4c5a3e`. The later R-items supersede the original level-1 purchase limits and shared post-kill retargeting.
+- Completion history: F1–F14 implemented in `a945072cc` (outcome section kept below).
+
+## Evidence — battle 2026-11-19 10:45 (UltraHard, code `a945072cc`, dirty)
+Files: `BattleTelemetry/Loading_20261119_104527_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261119_104532_map.csv`, `Battle_20261119_104702.csv`; Editor.log `Difficulty=UltraHard`.
+- Log time 26.8 s = battle 0 s (first human squadron `start` and AI station both at 26.8). Times below are **battle** seconds.
+- Map: Small Coruscant, seed `2004124536`. Human station (−1238, −1311), AI station (1238, 1311), AI home zone 2 (467, 1311), top-left zone 3 (−1585, 1556), centre point 2 (mines 0–3, pads 4–9).
+
+### What worked
+- 5 `CommonMiner` at 0.1–4.1 s, all within ~300 of the station. Level 2 bought 6.1 s. 1 Patrol Frigate + 6 Vultures at level 1.
+- Home site 12: ship 91 arrived 35.6 s → owned 46.3 s → mine started 48.1 s. Top-left: Vultures arrived 75.8 s → pads 15/16 owned 78.6/80.6 s, mine 14 owned 92.7 s → mine started ≈ 96 s. **Captures are fast once units arrive (≈ 3–11 s); the delay is travel and target choice.**
+- Removals confirmed in source: no `TryBuySecondStation`, `UpdatePursuit`/`ObserveHealth`, `forwardStationFallback`. No retreat collapse: decisions EngageLocal 138, CaptureZone 30, DefendBase 23, RebuildFleet 14, Raid 7.
+- Sabotage up: AI → human structures 21.9k hull / 8 kills (01:11: ≈ 10k / 3).
+
+### AI too slow to the centre
+- Human squadrons at the centre from 30 s; human ships spawn at the centre from ≈ 115 s.
+- AI: no ship within 550 of the centre until after 260 s. First AI squadron near the centre at 70 s.
+- Level 2 build = 80 s (6.1 → 86.1 s). During it the AI bought **nothing** (no purchases 15–86 s); money rose to 9,221 at 86 s. Cause: level-1 rules allow 1 corvette + `OPENING_SQUADRON_TARGET = 6` squadrons only, and `canBuyOpeningShip` needs `!IsUpgradingStation` (`EnemyProductionStrategy.cs:190–203`).
+- First AI ship 91: home mine → top-left (3,000 units, 46–98 s); 102.8 s AttackMove to the centre; 111.8 s retargeted to (−1700, 300) and wandered the west side ((−1466, 529) at 126 s).
+- Second AI ship (114) only at ≈ 85 s; main fleet spawns 110–160 s.
+
+### Purchases / corvette bug
+- Start: OK (1 corvette).
+- End (440–518 s, station critical): ~20 squadrons in 23 s (`counter=1`, `critical=True`, one per second); money falls to ≈ 1,100–1,700; then 6 Patrol Frigates + 4 C-9979 at faction level 4 (`Counter=False`, `critical=True`, e.g. `etaSeconds=16.8;timeToLoss=71.6`).
+- Mechanism: `IsStationCritical` → `Evaluate` returns Ship; the critical counter pick buys squadrons until the wallet drains; then the only affordable ship that arrives before `timeToLoss` is a level-1 corvette.
+- Mining ended 3/5: 2 lost miners never rebuilt.
+
+### Research
+- Mining-income research = `IncreasedProduction` (`ResearchStat.Income`): I = ×1.2, 250, level 1; II = ×1.4, 500, level 2.
+- Bought: I at 89 s, II at 99 s (after level 2), `IncreasedStationIncome` at 413 s. **No combat research the whole battle.**
+- Tier I was affordable from 0 s but waited 89 s while 9k sat in the wallet.
+
+### Reinforcements and spawns
+- Reserve = `MINIMUM_REINFORCEMENT_GROUP = 2` or `LONE_REINFORCEMENT_WAIT_SECONDS = 12` (`EnemyFactionController`); `holdReserve` false while `IsStationCritical`. Deployments came in pairs, never as a held armada.
+- UltraHard commits the whole fleet (`committedFleetRatio 1`); nothing is kept back.
+- Station siege 245–480 s: 221 `deploymentBlocked` (all `homeDefense=True`, rally = station), 27 `deploymentForced` → single ships at the home zone (x 230–690, z 1080–1540), 550–1,000 in **front** of the station toward the enemy. They died one by one.
+
+### Human fleet pushes on its own
+- 302.2 s: one player Attack order on AI ship 141 for 8 ships at the centre (z ≈ 270–600).
+- Then 10+ automatic group retargets (306.9, 311.9, 319.6, 334.8, 349.1, 354.9, 360.4, 370.6, 374.7, 377.0 s): `complete → Attack` on a new target, same target for the whole group (`ShipOrderRunner.FindReplacement` → `GroupPace.SharedReplacement` ≤ 3,000, team contacts ≤ 1,500 around the dead target).
+- Each new target was an AI reinforcement spawning farther north; ships moved 300–666 units forward without a player order (138: (−23, 273) → (311, 849); 161: z 477 → 1018).
+
+## Evidence — battle 2026-11-19 11:42 (UltraHard, code `4cc4c5a3e`, Spatial Pace Clusters landed)
+Files: `BattleTelemetry/Loading_20261119_114201_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261119_114204_map.csv`, `Battle_20261119_114333.csv`; Editor.log `Difficulty=UltraHard`.
+- Log time 19.8 s = battle 0 s. Times below are battle seconds. Human win ≈ 578 s.
+- Map: Small Coruscant, seed `-906806385`. AI (Separatist) station (−1265, 1210) top-left; human (Republic) station (1265, −1210) bottom-right. AI home zone 2 (−494, 1210); outer zones 3 (1189, 1609) and 4 (−1189, −1609).
+- User: much better overall; AI survived to level 4 and built Providence/Recusant. All other bugs remain.
+
+### Better
+- No retreat collapse: decisions EngageLocal 109, CaptureZone 66, RebuildFleet 18, Raid 3, Hold 1, DefendBase 1.
+- Levels follow data build times (`StationLevelData`: L2 80 s, L3 120 s, L4 180 s, L5 220 s): L2 bought 6.2 → done 86.2; L3 88.5 → 208.5; L4 212.9 → 392.9; L5 bought 404.1. Recusant from 224 s, Providence 421 s.
+- Captures fast after arrival: home site 12 owned 42.4 s; outer zone 3 pads 15/16 66.8/72.3 s, mine 14 82.9 s.
+
+### Still wrong
+- Opening idle: after 5 miners (0.1–4.2 s), Patrol Frigate 5.2 s, level 2 6.2 s and 6 Vultures (7–15 s), **no purchase until 87.5 s** (level 2 done 86.2 s). Same as 10:45.
+- Mining research late again: `IncreasedProduction` I 90.5 s, II 100.5 s. No combat research all battle; `IncreasedStationIncome` 405 s.
+- Centre: human squadrons there from 20 s (4–6 for the whole battle). AI squadrons from 60 s (8–9 at 100–120 s); AI ships near the centre: one ship at 160 s only. AI centre objectives start 92.9 s.
+- End-game panic again (station critical, 434–504 s): ~20 squadrons one per second (Droid/Hyena), then 6 C-9979 + 6 Patrol Frigates at faction level 4–5 (465–555 s).
+- Spawns: 162 `deploymentBlocked` (minutes 6–9), 19 `deploymentForced` single ships 514–951 from the station (home-zone side, toward the enemy).
+- Player fleet drift remains: 143 automatic replacements ("Attack target destroyed; checking replacement contacts"); ships drifted 496–723 after ≥ 2 auto retargets (117 at 118–180 s, 155 at 291–336 s, 216/218/221 at 539–577 s).
+
+### Build queue (answer)
+- `EnemyBuildQueue` uses the player's per-ID pipelines: up to `PlayerFactionModel.MAX_ACTIVE_PIPELINES = 7` unit types in parallel; copies of the same type build one after another (FIFO). Same as the player. The 6 opening Vultures finished one by one at 20, 31, 31, 47, 47, 114 s.
+- Not a queue bug; the opening gap is the level-1 purchase rules (below).
+
+## Evidence — battle 2026-11-19 11:57 (UltraHard, AI = Republic, code `4cc4c5a3e`)
+Files: `BattleTelemetry/Loading_20261119_115746_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261119_115748_map.csv`, `Battle_20261119_115906.csv`; Editor.log `Difficulty=UltraHard`, `Player1:Republic`.
+- Faction swap (R8): human Separatist (1235, −1016) bottom-right; AI Republic (−1235, 1016) top-left. Log time 13.9 s = battle 0 s. AI station lost ≈ 513 s.
+- Map seed `1318518259`. Outer mining zones: zone 3 (−1439, −1578) = mine 14 + pads 15/16; zone 4 (1439, 1578) = mine 17 + pads 18/19. AI distance: zone 3 ≈ 2,620, zone 4 ≈ 2,750.
+
+### Mining zones (user: AI took one outer zone, left the other)
+- AI took zone 3 with one V19 squadron: pads 15/16 at 50–70 s, satellites 60 s / 84 s, mine started 75 s.
+- AI never sent anything to zone 4. It was empty until human Vultures arrived at 100 s (2–3 squadrons held it all battle). Only AI objective there: site 19 at 298 s, dropped 1 s later (`ownedOrRemoved`).
+- User rule: the AI goes to **every mining zone** except where hostiles are near the mining structures.
+
+### Centre contest (user: one AI squadron vs two human squadrons)
+- Centre pads 8 and 7 taken early by single V19 squadrons (satellites 42 s / 45 s).
+- Single AI squadrons kept contesting pads against stronger human presence: pad 9 at 70 s (AI 1 V19 vs 2 Vultures); pad 8 at 140 s (1 vs 1); pad 9 at 210–220 s (1 ARC-170 vs 2 Belbullab-22); pad 7 at 360–370 s (1 vs 6).
+- The capture system already sums strength per team (`CaptureStrength`: `LeadingPlayer`, `OpposingPlayer`, `Advantage`, `PresentTeamCount`; squadron weight `SquadronCaptureWeight = 0.5`, ship = 1). The AI only sees `ICaptureSitePresence.HasHostileUnits(site, owner)` (bool).
+
+### Opening reserve held the first fleet (R3 regression)
+- Bought: 5 miners 0–4 s, CR70 5 s, level 2 6 s, 6 V19 7–21 s; then nothing until 82 s (level 2 done ≈ 86 s). Same opening idle as the Separatist AI.
+- Only 2 V19 launched early (19 s). The CR70 and 4 V19 sat finished in the reserve until **149 s**, released together with the first Acclamator/Pelta (`HoldFinishedReinforcements = true`, `EnemyUnitCommander.cs:114`).
+- AI had **0 combat ships until 149 s** ("No combat ships are available" 0–147 s).
+- Mining research: `IncreasedProduction` I 107 s, II 117 s (late again).
+
+### Attacks with too few ships; no economy in the strength estimate
+- 162–257 s: 5–8 AI ships vs 4–9 human, `fleetAdvantage` 0.15–0.25, still engaging; 269 s down to 2.
+- 291–317 s: `CaptureZone` with 1–5 ships while 10 human ships are known (`fleetAdvantage` 0.04; local 100 = nothing visible nearby).
+- `fleetAdvantage = CombatMatchup.Advantage(_ownTeamForce, _focusTeamForce)` (`EnemyStrategicContextBuilder.cs:1267`): units seen/remembered only. No economy: owned mining sites, spawned miners, income, research.
+- Human held zone 4 + centre pads + home: more income than the AI, invisible to the AI's estimate.
+
+### Same as the Separatist AI
+- End-game: squadron flood 445–474 s (V19/NTB-630/Y-Wing, one per second), CR70 panic buys 462 / 479 s.
+- No combat research; `IncreasedStationIncome` 409 s.
+- Faction has no visible influence on the faults.
+
+## User decisions 2026-11-19 (after 11:42)
+- **Remove the level-1 production limits completely**: the 1-corvette rule, `OPENING_SQUADRON_TARGET = 6`, `allowShips` at level 1, and the `!IsUpgradingStation` gate on opening ships. Reason: a level-1 bomber rush would kill or cripple the station while the AI waits.
+- **Mining research (`IncreasedProduction`) is one of the first actions**: tier I with the 5 miners (250 credits, level 1); tier II as soon as level 2 completes.
+- Next test battles: user plays Confederation (Separatist), AI plays Republic, to check faction influence.
+
+## User decisions 2026-11-19 (after 11:57)
+- The AI goes to all mining zones, except where hostiles are near the mining structures.
+- The AI needs a capture API that returns the other/hostile side's capture strength at a site.
+- The AI's strength estimate includes economy: mining spots held by each side → money → research and fleet.
+
+## R-items
+
+### R1 — Opening speed (P0)
+- [x] Production never idles during a station upgrade: keep buying squadrons, research and the next ships while level 2 builds.
+- [x] Remove the level-1 production limits completely (user 2026-11-19): 1-corvette rule, `OPENING_SQUADRON_TARGET = 6`, `allowShips` at level 1, `!IsUpgradingStation` gate on opening ships (`EnemyProductionStrategy.cs:186–203`). Normal production rules from 0 s.
+- [x] `IncreasedProduction` I is one of the first actions, bought with the 5 miners (≈ 0–5 s); II as soon as level 2 completes (11:42: 90.5 / 100.5 s; 10:45: 89 / 99 s).
+- [x] First ships/squadrons go to the centre and the neighbour zone first; the far outer zone comes after (ship 91 spent 46–98 s crossing to the top-left).
+- [x] No objective flip away from the centre once ordered (102.8 → 111.8 s retarget to the west).
+
+### R2 — Corvette / critical purchase bug (P0)
+- [x] Station-critical production: no squadron flood (one per second until the wallet is empty); keep money for a real ship.
+- [x] No level-1 corvettes at faction level ≥ 3 as panic buys; use the reserve (R3) instead.
+- [x] Rebuild lost miners while mining < 5, also under pressure (ended 3/5).
+
+### R3 — Real reinforcement reserve (P0)
+- [x] Hold finished units in a reserve; do not commit everything (`committedFleetRatio 1` on UltraHard).
+- [x] Attack with the existing fleet; spawn the reserve as a group to reinforce the attack at the right moment, or keep it to defend if the attack fails.
+- [x] Under station siege: release the reserve as one group, never drip single ships.
+- [x] The reserve never holds opening units: 11:57 kept the CR70 + 4 V19 finished from ≈ 20 s to 149 s; the AI had 0 ships on the map until 149 s.
+
+### R4 — Safe spawn point (P0)
+- [x] Spawn behind the station: the side away from the threat centroid, inside the station's guns. Not the home-zone point in front of the station.
+- [x] Same rule for forced deployments (`deploymentForced`).
+
+### R5 — Research (P1)
+- [x] Mining income first (R1); then combat research at regular points (none bought in 551 s).
+
+### R6 — Player fleet must not walk away (P0, ship orders)
+- [x] Automatic replacement after a kill stays where the player placed the ships: the new target must be within weapon/radar reach of the current position (or a leash to the order position), not a group-shared contact up to 3,000 away.
+- [x] If nothing is in reach, the ships stay; no chain of chases toward new spawns.
+- [x] Re-check against Spatial Pace Clusters before coding (same attack-move code).
+
+### R7 — Raids (P1)
+- [x] Spread raids over targets (all 3 squadron raids hit site 111 in zone 4); include the human home mines and spawned miners.
+
+
+### R8 — Faction swap check (P1)
+- [x] Analyse the next battles with the AI as Republic (user plays Confederation); compare opening, centre arrival, production and end-game panic with the Separatist AI battles above. Done 11:57: same faults (opening idle, late mining research, reserve stall, squadron flood + corvette panic); no faction influence.
+
+### R9 — Every mining zone (P0)
+- [x] Capture targets include every mining zone (outer zones, centre, home) whose mining structures have no hostiles nearby; not just the nearest one.
+- [x] Send units early, while the zone is empty (11:57: zone 4 was empty until 100 s and the AI never went).
+
+### R10 — Capture strength API (P0)
+- [x] Expose per-site capture strength to the AI: own team vs strongest hostile team (from `CaptureStrength` / `CaptureStrengthSampler`), e.g. on `ICaptureSitePresence`.
+- [x] Capture assignment sends more strength than the hostile side already in the circle (ship = 1, squadron = `SquadronCaptureWeight` 0.5); never one squadron into two.
+- [x] Lost or tied contest → reinforce or pick another site; no single-squadron trickle.
+
+### R11 — Economy in the strength estimate (P0)
+- [x] Strength estimate adds economy: mining sites and spawned miners each side holds (seen or remembered), income, research tier.
+- [x] Higher hostile economy → expect a bigger hostile fleet than seen; raise the force needed to attack/capture.
+- [x] No attack/capture with 1–5 ships into a known 10-ship enemy (11:57, 291–317 s).
+
+## Reopened scope outcome
+
+- R1/R2/R5: mining income I with the opening miners and II once level 2 unlocks. Normal combat production continues through upgrades. Critical spending replaces affordable miners, prefers timely ships, caps squadron purchases, and excludes starting-tier corvette panic buys at level 3+.
+- R3/R4: early reinforcements deploy as they finish. Reserve waves support active tasks or station defense. Siege ships reserve clear rear landing slots before any deployment. Forced launches keep rear geometry and still check visibility, neutral blockers, hazards, hull fit and reachability.
+- R6: reviewed `4cc4c5a3e` cluster behavior. Automatic direct-Attack replacements require personal weapons reach, hold position and expire on loss of reach. AttackMove retains its destination. Saved transient replacements restore as idle.
+- R7/R9/R10: surplus raid wings use distinct remembered mines. Capture wings cover centre, neighbour and other safe mining areas. Per-team strength comes from cached circle samples. A tied or losing assignment needs additional wings or redirects.
+- R11: apply observed/remembered mining claims and mine income including the production research multiplier to fleet advantage and route safety. Known 2:1 warship opposition blocks voluntary attacks and contested routes.
+- Verification 2026-11-19: standalone Roslyn compilation of the game and Editor fixture assemblies succeeded against the existing Unity references. Reviewed affected production, reserve, spawn, capture, raid, save and ship-order assertions. Tests, Play Mode and gameplay acceptance were not run.
+- Acceptance → [[TODOs/User_Acceptance_Queue#Enemy AI Active Play and Ship Combat]].
+- Reusable rules → [[Architecture/Enemy_AI_Objectives]], [[GameDesign/Combat#Attack target destroyed]].
 
 ## Goal
 - AI plays actively for the whole battle: expands, holds the centre, takes ≥ 2 mining zones, keeps reinforcing. The human must not win in 9 min against an idle AI.
@@ -22,7 +196,7 @@ acceptance: pending-user
 - Ship hit while idle → no aggro/pursuit. Remove the logic completely.
 - No AI station near the main zone. No second station without money and a mining zone. Remove the logic completely.
 - Ship turning its stern to the target while shooting is a bug. Rework attack movement/facing if the current logic cannot hold the bow on target.
-- Level 1: 1 corvette is enough (corvettes are expensive at level 1); build squadrons for capture and patrol.
+- Level 1 follows normal ship and squadron production limits. The later user decision removes the original one-corvette rule.
 - Hold reinforcements in reserve; spawn a small group or a big armada when a zone must be taken or defended.
 - Sabotage: kill the human's mining structures and push non-central mining zones.
 - Ships in range stay in place and shoot; no moving away to missile/artillery range (Victory).
