@@ -81,7 +81,7 @@ verification: source-and-assets
 | `5` — Boost Weapon Power | `7 / 50 s` | Reload `×0.1`, within-burst interval `×0.1`, speed/shield regeneration `×0.5`; damage unchanged; cancellable |
 | `18` — Lock S-Foils | Toggle / `0 s` | Speed `×1.3`, fire delay `×3`, shield regeneration `×3`; press again to reopen |
 | `11` — Cloak | `80 / 10 s` | Sets cloaked state; cancellable; generic implementation has no recent-damage activation test |
-| `22` — Tractor Beam | `20 / 25 s` | Enemy Corvette/Frigate within `225` units; target speed `×0.25`; cancellable |
+| `22` — Tractor Beam | `20 / 25 s` | Enemy ship of a lower class than the caster (`Corvette` < `Frigate` < `Cruiser` < `HeavyCruiser` < `Capital` < `BattleCruiser` < `Dreadnought`; same class, strikecraft and `Structure` immune) within `500` units; target speed `×0.25`; cancellable |
 
 - Boost Weapon Power timing verified 2026-11-14: activation/cancellation/expiry retimes pending waits. Bursts can overlap older projectiles within a prewarmed cap; one shot per mount per frame remains the limit. Gameplay/profiling acceptance → [[Done/Bugs/Boost_Weapon_Power_Fire_Rate_Fix]].
 - These are shared definition/settings values; not every unit has these abilities.

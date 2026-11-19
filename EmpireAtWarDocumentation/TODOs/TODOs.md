@@ -440,6 +440,8 @@
 
 ### Features
 
+- [x] **Tractor Beam targets every lower ship class (caster class decides), tooltips + tests** → [[Done/Features/Tractor_Beam_Lower_Class_Targeting|Tractor Beam Lower-Class Targeting]]
+  - Completed 2026-11-19, `acceptance: pending-user`. `ShipClass.HullTier()` rule in `TractorBeamSettings`, `targetClasses` removed, tooltips + design doc updated; Unity compile clean; `Abilities` 223/223 and `Core` 169/169 passed. Gates → [[TODOs/User_Acceptance_Queue]].
 - [x] **Shift + left-click a unit → add it to the current selection (toggle off on second Shift + click)** → [[Done/Features/Shift_Click_Add_To_Selection|Shift Click Add To Selection]]
   - Completed 2026-11-19, `acceptance: pending-user`. Rebindable `Battle/AddToSelection` (Shift), `SelectionContext.Add`, `SelectionService.ToggleInSelection`; Unity compile clean; `BattleInput` 433/433 passed. Gates → [[TODOs/User_Acceptance_Queue]].
 - [x] **Planet biome atmosphere: per-biome sun, ambient and colour grade (Tatooine orange, Coruscant warm, Hoth cold)** → [[Done/Features/Planet_Biome_Atmosphere_Plan|Planet Biome Atmosphere Plan]]

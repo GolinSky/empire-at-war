@@ -26,7 +26,6 @@ created: "2026-10-29\r"
 
 ## Map Generation
 
-- [ ] [[Done/Bugs/Map_Enemy_Station_Near_Allies_Fix]] — Run `Map` (quick) then `MapGeneration` (explicit, 3 seeds) EditMode when authorized; Unity compile passed, tests not run. Run on the build that includes the uneven-roster fallback follow-up (`ac7ff075c`), not bare `4ebf74ff4`.
 - [ ] [[Done/Bugs/Map_Enemy_Station_Near_Allies_Fix]] — In game: Medium + Large, 2v2 + 3v3, one Open Field planet (Coruscant) and one Orbital Ring planet (Alderaan/Endor): allies together, enemies clearly farther.
 
 ## Content Removal
@@ -236,8 +235,8 @@ created: "2026-10-29\r"
   - [ ] Run pooling EditMode tests on request (previous run blocked by stale `Assembly-CSharp` domain).
   - [ ] User visual check of respawned squadrons: selection, minimap, fog, audio.
   - [ ] User in-game check: fighter look, explosions (size/fog), loading time with ~100 prewarmed squadrons, hangar spikes.
-- [ ] [[Done/Optimization/Projectile_Visual_Reduction_Plan]] — In a large battle: check bolt look and feel after Phase 2 (point defense 4 bolts, lasers/turbolasers/mass drivers 2, ion 1 faster bolt, fighter lasers slower cadence); rerun `InputBindingServiceTests.TooltipDisplaysFixedCancelBinding`.
 
+- [ ] [[Done/Optimization/Projectile_Visual_Reduction_Plan]] — In a large battle: check bolt look and feel after Phase 2 (point defense 4 bolts, lasers/turbolasers/mass drivers 2, ion 1 faster bolt, fighter lasers slower cadence); rerun `InputBindingServiceTests.TooltipDisplaysFixedCancelBinding`.
 
 ## Space Hazards
 
@@ -311,6 +310,7 @@ created: "2026-10-29\r"
 ## Enemy AI Economy Strategy
 
 - [ ] [[TODOs/Bugs/Enemy_AI_Economy_Strategy]] — Run affected EnemyAi, Capture, Economy, Ships and Core composition fixtures when authorized.
+- [ ] [[TODOs/Bugs/Enemy_AI_Economy_Strategy#Fixes N1–N6 (implemented 2026-11-19 evening; Unity compile 0 errors; tests not run; battle pending)|Enemy AI allocator N1–N6]] — UltraHard Small 1v1: ships gather and go as one force (no lone ships into the centre); no attack on a stronger zone; pull-back happens; wings and ships sabotage mines when behind; wings avoid sites they cannot win.
 - [ ] [[Done/Bugs/Enemy_AI_Economy_Strategy_Regression_Fixes]] — Next UltraHard battle: `deploymentBlocked` with `heldSeconds > 15` = 0 and `heldShips` ≤ 2; ≤ 2 level-1 corvettes bought after level 2; `fleetAdvantage` ≥ 1 at 30–120 s with no hostile ship seen; centre pads owned before 120 s vs squadrons; home + centre + ≥ 1 outer zone by ≈ 240 s when uncontested (`zoneOwner` timeline).
 - [ ] [[Done/Bugs/Enemy_AI_Economy_Strategy_Regression_Fixes]] — Run authored `Ships`, `EnemyAi`, `Capture`, `Economy` EditMode regressions when explicitly authorized (compiled with 0 errors; tests not run under local override).
 
@@ -514,3 +514,7 @@ created: "2026-10-29\r"
 ## Squadron Faction Balance
 
 - [ ] [[Done/Bugs/Squadron_Faction_Balance]] — In battle: X-Wing vs TIE Fighter, TIE Fighter vs Vulture, A-Wing vs TIE Fighter, Rebel station launches X-Wings (2 active, 6 reserve). Run `Balance`, `Squadrons`, `Combat`, `Ships` when explicitly authorized.
+
+## Tractor Beam Lower-Class Targeting
+
+- [ ] [[Done/Features/Tractor_Beam_Lower_Class_Targeting]] — In battle: ISD II beams a heavy cruiser; refuses another capital and a fighter squadron; ability and roster tooltips read correctly.

@@ -86,7 +86,7 @@ Builds on [[Architecture/Map_Archetypes]] and [[Done/Features/Map_Archetypes_Pla
 - User returns with results → failures reopen this plan; all green + in-game OK → `acceptance: passed`.
 
 ## Review 2026-11-19 (source only)
-- Details and Enemy AI impact → [[TODOs/Bugs/Enemy_AI_Economy_Strategy - Review]]. Ring/Orbital/Open Field 2v2 geometry confirmed against source.
+- Details and Enemy AI impact → [[TODOs/Bugs/Enemy_AI_Economy_Strategy#Review 2026-11-19 (merged from the Review note)]]. Ring/Orbital/Open Field 2v2 geometry confirmed against source.
 - M2: `WeightTeamGaps` divides by zero for a one-team roster on an open arc (`boundaryGaps = 0`).
 - M4: uneven rosters lose mirror symmetry on Medium/Large and the second attempt bank no longer changes layout type → confirm with the `MapGeneration` sweep.
 
@@ -103,6 +103,21 @@ Builds on [[Architecture/Map_Archetypes]] and [[Done/Features/Map_Archetypes_Pla
 - Cost: rosters that needed the fallback generate with ratio 1.00 (Large Asteroid Belt 5v3, 6v2, 3v3v2, 7v1, 5v2, 4v2v2). Balanced rosters never enter the fallback.
 - Same commit: one-team roster skips `WeightTeamGaps` (M2); pull loop capped by step count (M5, output bit-identical).
 - Tests reviewed: `MapStationSlotTests`, `MapLayoutGeneratorTests` baselines (2v2 → unaffected by the fallback), `MapArchetypeGenerationTests` uneven sweeps (now expected to pass; they would have caught the regression). No test edits needed. Not run.
+
+## Test Run 2026-11-19 16:04 (user, `Assets/TestResults_20261119_160523.xml`)
+- Standard full EditMode run, explicit excluded: 4197 total, 4158 passed, 35 failed, 4 skipped; 38.5 s. Ran after `ac7ff075c` (15:44).
+- This plan's tests: `MapStationSlotTests` 35/35 passed, including all 13 new cases (`GroupedRingSlots_…` 7, `GroupedCorners_…` 4, `Grouping_LeavesRostersWithoutAlliesUnchanged` 2).
+- Other map fixtures in the run: `MapArchetypeRuleTests` 9 passed / 3 explicit skipped, `MapDecorationTests` 8, `MapSpaceDustTests` 6, `BattleMapLoaderHazardTests` 1, `BattleSaveServiceTests` 43 → all passed.
+- No failure belongs to this plan. No fix needed here.
+- Not covered by this run (explicit): `MapLayoutGeneratorTests` (updated Open Field baselines), `MapArchetypeGenerationTests`, `MapPlanetRosterTests` → `MapGeneration` run still open.
+- 35 failures, all `RealEntityCompositionTests`: `NullReferenceException` at `MapRegistrations.Register` line 29, `builder.RegisterComponent(atmosphereView)`.
+  - Cause: uncommitted planet atmosphere work added `SkirmishScope.atmosphereView` (`BattleAtmosphereView`); the test-built scope leaves it null.
+  - Owner → [[TODOs/Features/Planet_Biome_Atmosphere_Plan]].
+  - Proposed fix: in the three scope setups in `RealEntityCompositionTests.cs` (≈ lines 186, 1207, 1397) assign `authored.FindProperty("atmosphereView")` a `BattleAtmosphereView` (from the Battle scene dependencies or a test GameObject). Do not null-guard `MapRegistrations`.
+
+## Acceptance Status
+- 2026-11-19: user reported the `MapGeneration` test run passed (result file not inspected by an agent). Test gate closed; queue line removed.
+- Remaining gate: in-game check (Medium + Large, 2v2 + 3v3, Open Field + Orbital Ring) → [[TODOs/User_Acceptance_Queue]]. `acceptance` stays `pending-user` until confirmed.
 
 ## Open After Validation
 - Open Field 3v1 (≤4 players): 0.92–0.96, unpulled.
