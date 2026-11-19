@@ -52,6 +52,45 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Pace_ShipDamagedBeforeTheOrderDoesNotSetTheStragglerFloor()
+        {
+            PaceCluster pace = new PaceCluster(orderId: 1);
+            pace.Join(FAST, referenceSpeed: FAST);
+            pace.Join(FAST, referenceSpeed: FAST);
+            float damaged = FAST * PaceClusterTuning.Default.StragglerSpeedRatio * 0.5f;
+            pace.Join(damaged, referenceSpeed: FAST);
+
+            Assert.That(pace.IsBelowStragglerSpeed(damaged), Is.True,
+                "Engine damage at issue must not lower the floor to the damaged ship's speed.");
+            Assert.That(pace.Pace, Is.EqualTo(FAST));
+        }
+
+        [Test]
+        public void TryGetSpeedCap_SlowsLeadersFreesLaggersAndDetachesLongStragglers()
+        {
+            PaceCluster pace = new PaceCluster(orderId: 1);
+            PaceClusterTuning tuning = pace.Tuning;
+            pace.Join(SLOW, remaining: 1000f);
+            pace.Join(FAST, remaining: 1000f);
+            float timer = 0f;
+            float mean = pace.MeanRemaining;
+
+            Assert.That(pace.TryGetSpeedCap(mean, 0.1f, ref timer, out float cap), Is.True);
+            Assert.That(cap, Is.EqualTo(pace.Pace));
+
+            Assert.That(pace.TryGetSpeedCap(mean - tuning.LeadTolerance * 2f, 0.1f, ref timer, out cap), Is.True);
+            Assert.That(cap, Is.LessThan(pace.Pace), "A member ahead of the mean slows down.");
+
+            Assert.That(pace.TryGetSpeedCap(mean + tuning.LeadTolerance * 2f, 0.1f, ref timer, out cap), Is.True);
+            Assert.That(cap, Is.EqualTo(float.PositiveInfinity), "A member behind the mean catches up uncapped.");
+
+            float straggling = mean + tuning.StragglerDistance * 2f + 3f * pace.Radius;
+            Assert.That(pace.TryGetSpeedCap(straggling, tuning.StragglerTime * 0.5f, ref timer, out _), Is.True);
+            Assert.That(pace.TryGetSpeedCap(straggling, tuning.StragglerTime, ref timer, out _), Is.False,
+                "A member trailing past the straggler distance for the straggler time detaches.");
+        }
+
+        [Test]
         public void Pace_IsUncappedWithFewerThanTwoMembers()
         {
             PaceCluster pace = new PaceCluster();

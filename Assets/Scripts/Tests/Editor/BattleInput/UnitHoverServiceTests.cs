@@ -132,6 +132,7 @@ namespace EmpireAtWar.Tests.Editor
             public event Action<Vector2> WorldClicked { add { } remove { } }
             public event Action<Vector2> WorldCommandPressed { add { } remove { } }
             public event Action<Vector2> WorldCommanded { add { } remove { } }
+            public int CommandClickCount => 1;
             public event Action<Vector2> DragStarted;
             public event Action<Vector2> DragChanged { add { } remove { } }
             public event Action<Vector2> DragEnded { add { } remove { } }

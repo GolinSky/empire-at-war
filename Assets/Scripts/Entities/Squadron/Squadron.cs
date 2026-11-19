@@ -386,42 +386,13 @@ namespace EmpireAtWar.Entities.Squadrons
             SamplePaceGeometry(out System.Numerics.Vector2 position, out float remaining,
                 out System.Numerics.Vector2 heading);
             _pace.Report(_paceMember, ownSpeed, remaining, position, heading);
-
-            PaceClusterTuning tuning = _pace.Tuning;
-            float meanRemaining = _pace.MeanRemaining;
-            if (!float.IsNaN(meanRemaining) && !float.IsNaN(remaining))
+            if (!_pace.TryGetSpeedCap(remaining, deltaTime, ref _stragglerTimer, out float cap))
             {
-                float behind = remaining - meanRemaining;
-                float stragglerLimit = Mathf.Max(tuning.StragglerDistance, 3f * _pace.Radius);
-                if (behind > stragglerLimit)
-                {
-                    _stragglerTimer += deltaTime;
-                    if (_stragglerTimer > tuning.StragglerTime)
-                    {
-                        LeavePace();
-                        return;
-                    }
-                }
-                else
-                {
-                    _stragglerTimer = 0f;
-                }
-            }
-
-            float clusterPace = _pace.Pace;
-            if (float.IsPositiveInfinity(clusterPace) || float.IsNaN(meanRemaining) || float.IsNaN(remaining))
-            {
-                _flight.SetSpeedCap(clusterPace);
+                LeavePace();
                 return;
             }
 
-            float lead = meanRemaining - remaining;
-            if (lead > tuning.LeadTolerance)
-                _flight.SetSpeedCap(clusterPace * tuning.AheadSlowdown);
-            else if (lead < -tuning.LeadTolerance)
-                _flight.SetSpeedCap(float.PositiveInfinity);
-            else
-                _flight.SetSpeedCap(clusterPace);
+            _flight.SetSpeedCap(cap);
         }
 
         private static bool IsPacedOrder(UnitOrderType order) =>

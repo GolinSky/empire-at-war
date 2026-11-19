@@ -38,7 +38,7 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public UnitOrderService(IEntityLocator entityLocator,
             IReinforcementZonesSystem zones, UnitOrderSettings settings,
-            IMapObstacleContactProvider obstacles = null, PaceClusterMergeService mergeService = null)
+            IMapObstacleContactProvider obstacles, PaceClusterMergeService mergeService)
         {
             _entityLocator = entityLocator;
             _zones = zones;
@@ -261,18 +261,17 @@ namespace EmpireAtWar.Services.UnitOrders
         private PaceCluster[] BuildClusters()
         {
             if (_paceCandidates.Count < 2) return null;
-            PaceClusterTuning tuning = _settings != null ? _settings.PaceTuning : PaceClusterTuning.Default;
             _obstacleBuffer.Clear();
-            _obstacles?.CopyContacts(_obstacleBuffer);
+            _obstacles.CopyContacts(_obstacleBuffer);
             _createdClusters.Clear();
             int orderId = ++_nextOrderId;
             PaceCluster[] clusters = PaceClusterBuilder.Build(
                 _paceCandidates,
                 orderId,
-                tuning,
+                _settings.PaceTuning,
                 _obstacleBuffer.Count > 0 ? _isSegmentClear : null,
                 _createdClusters);
-            if (_createdClusters.Count > 0) _mergeService?.RegisterRange(_createdClusters);
+            if (_createdClusters.Count > 0) _mergeService.RegisterRange(_createdClusters);
             return clusters;
         }
 

@@ -13,6 +13,8 @@ namespace EmpireAtWar.Components.Ship.Movement
         float CurrentSpeed { get; }
         /// <summary>Own uncapped top speed for group pacing; PositiveInfinity while the ship cannot move.</summary>
         float PaceSpeed { get; }
+        /// <summary>Top speed without engine damage; sets the pace cluster's straggler floor.</summary>
+        float UndamagedPaceSpeed { get; }
 
         void MoveToPosition(Vector3 targetPosition, bool preserveCourse = false);
 

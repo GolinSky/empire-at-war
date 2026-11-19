@@ -91,7 +91,7 @@ completed: 2026-11-19
 - Cluster arriving first fights/holds immediately; no cross-cluster waiting (clusters are independent by construction).
 
 ### 7. Double right-click input + green feedback
-- `PlayerOrderInputHandler.HandleCommand`: plain move branch → `_pointerInput.ClickCount >= 2` → `IssueMove(receivers, point, MovePace.Loose)`.
+- `PlayerOrderInputHandler.HandleCommand`: plain move branch → `IPointerGestures.CommandClickCount >= 2` → `IssueMove(receivers, point, MovePace.Loose)` (review fix; was `IPointerInput.ClickCount`).
 - `IPlayerUnitOrders.IssueMove(..., MovePace)` → `UnitOrderCommand.Pace` → `PlayerCommandSerialization` (network) → `AuthorityCommandSink` → `UnitOrderService`.
 - `UnitOrder.IsLoose` → `OrderFeedbackMessage` (clients) → `UnitOrderFeedbackUiController` → `UnitOrderFeedbackUi.PlayMovement(screen, isLoose, completed)`.
 - `UnitOrderFeedbackUi`: `[SerializeField] Color formationColor` (current blue), `looseColor` (green); tint `movementWave` + `movementEcho` before the sequence.
@@ -160,3 +160,16 @@ completed: 2026-11-19
 - Wired double right-click loose move (`IPointerInput.ClickCount >= 2`) through `PlayerOrderInputHandler` → `IPlayerUnitOrders` → `UnitOrderCommand.Pace` → `PlayerCommandSerialization` → `AuthorityCommandSink` → `UnitOrderService` → `UnitOrder.IsLoose` → `OrderFeedbackMessage.IsLoose` → `UnitOrderFeedbackUiController` → `UnitOrderFeedbackUi` (blue `formationColor` / green `looseColor` saved in `UnitOrderFeedbackUi.prefab`), with tuning defaults saved in `UnitOrderSettings.asset`.
 - Verification: Unity full recompile succeeded (`0` errors across runtime, Editor, and test assemblies). Automated tests reviewed/updated and new cases authored (`PaceClusterTests`, `PaceClusterBuilderTests`, `UnitOrderFeedbackUiTests`, plus additions in `UnitOrderServiceTests`, `ShipPursuitTests`, `PlayerOrderInputHandlerTests`, `NetworkTickReplicationTests`); tests not run under local override.
 - Guidance: no new canonical guidance needed; cluster parameters live in `UnitOrderSettings` and `PaceClusterTuning`.
+
+## Review Fixes (2026-11-19, on `4cc4c5a3e`; uncommitted)
+- Damaged-at-issue gap: builder set the straggler floor from current (damaged) speeds and `Join` lowered it the same way → a ship damaged before the order set the floor and slowed its cluster indefinitely. Fix: floor = `STRAGGLER_SPEED_RATIO × min undamaged speed`; `Join(..., referenceSpeed)`; `ShipMoveModel.UndamagedSpeed` (= data × `SpeedMultiplier`, no engine coefficient) → `IShipMovement.UndamagedPaceSpeed`. Builder no longer passes an issue pace.
+- Double right-click: `IPointerInput.ClickCount` is the device count for any button (left select → quick right-click read as double). Fix: `PointerGestures` counts command clicks only (≤ `0.3 s`, ≤ `16 px`) → `IPointerGestures.CommandClickCount`; handler drops its `IPointerInput` dependency.
+- Stuck false positive: a ship slow at order start (turning/accelerating) counted as stuck and detached after `5 s`. Fix: stuck only after the ship has reached `STUCK_SPEED` once since joining (`_hasPaceMoved`).
+- CPU: `MeanRemaining` recomputed O(n) per member per tick (O(n²)/tick). Fix: running sum/count → O(1). Straggler check reads `Radius` (O(n) when dirty) only past `STRAGGLER_DISTANCE`.
+- Duplication: lag/straggler logic copied in `ShipOrderRunner` and `Squadron` → single `PaceCluster.TryGetSpeedCap(remaining, dt, ref stragglerTimer, out cap)`.
+- Silent nulls (AGENTS rule): `UnitOrderService` optional `obstacles`/`mergeService` + `?.`, `_settings != null ? … : Default` in service and merge service → required dependencies, direct calls.
+- Leftover orphan doc comment (removed `SharedReplacement`) deleted.
+- Known, not changed: post-kill behaviour superseded by [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat#Reopened scope outcome]] (outcome line above about per-cluster `SharedReplacement` is historical). `ShipOrderRunner` is 568 lines (> 200) → refactor candidate, out of scope.
+- Verification: Unity recompile succeeded, 0 errors. Tests not run (local override).
+- Tests updated: `PaceClusterTests` (+ damaged-at-issue floor, `TryGetSpeedCap` lead/lag/straggler), `ShipPursuitTests.MovePace_LagCorrectionStuckReleaseAndDoubleClickDrop` (slow start ≠ stuck), `PlayerOrderInputHandlerTests` (`CommandClickCount`), `UnitOrderServiceTests` / `EnemyUnitCommanderTests` / `UnitHighlightSettingsTests` (constructor), `SelectionInputTests` / `UnitHoverServiceTests` gesture fakes, `NavigateStateTests` / `ShipStopTests` / `ShipPursuitTests` movement fakes; new shared `Tests/Editor/Support/EmptyObstacles.cs`. Categories: `Navigation`, `BattleInput`, `EnemyAi`.
+- Reusable guidance: none extracted (feature-specific).

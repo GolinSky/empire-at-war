@@ -2160,7 +2160,8 @@ namespace EmpireAtWar.Tests.Editor
                 NavigationRetreatFacade retreat = new NavigationRetreatFacade(navigation, range);
                 FakeEntity receiver = new FakeEntity(new FakeHealthModel(view.transform), TestPlayers.Enemy, 1)
                     { RetreatCommand = retreat };
-                UnitOrderService orders = new UnitOrderService(new EntityLocator(), null, settings);
+                UnitOrderService orders = new UnitOrderService(new EntityLocator(), null, settings, obstacles,
+                    new PaceClusterMergeService(settings, obstacles));
 
                 orders.IssueRetreat(new IEntity[] { receiver }, anchor);
 

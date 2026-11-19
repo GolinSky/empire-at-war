@@ -16,6 +16,12 @@ namespace EmpireAtWar.Services.Input
 
         event Action<Vector2> WorldCommanded;
 
+        /// <summary>
+        /// Successive command (right) clicks ending in the current <see cref="WorldCommanded"/>: 2 for a double
+        /// right-click. Counts the command button only, unlike the device click count.
+        /// </summary>
+        int CommandClickCount { get; }
+
         event Action<Vector2> DragStarted;
 
         event Action<Vector2> DragChanged;

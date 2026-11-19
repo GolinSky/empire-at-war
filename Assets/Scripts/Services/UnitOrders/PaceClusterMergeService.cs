@@ -34,7 +34,7 @@ namespace EmpireAtWar.Services.UnitOrders
 
         public void Register(PaceCluster cluster)
         {
-            if (cluster == null || cluster.IsMerged) return;
+            if (cluster.IsMerged) return;
             _clusters.Add(cluster);
         }
 
@@ -53,7 +53,7 @@ namespace EmpireAtWar.Services.UnitOrders
                 return;
             }
 
-            PaceClusterTuning tuning = _settings != null ? _settings.PaceTuning : PaceClusterTuning.Default;
+            PaceClusterTuning tuning = _settings.PaceTuning;
             _timer += deltaTime;
             if (_timer < tuning.MergeInterval) return;
             _timer -= tuning.MergeInterval;
@@ -66,7 +66,7 @@ namespace EmpireAtWar.Services.UnitOrders
             }
 
             _obstacleBuffer.Clear();
-            _obstacles?.CopyContacts(_obstacleBuffer);
+            _obstacles.CopyContacts(_obstacleBuffer);
             bool hasObstacles = _obstacleBuffer.Count > 0;
             float minHeadingDot = Mathf.Cos(tuning.MergeAngleDegrees * Mathf.Deg2Rad);
 

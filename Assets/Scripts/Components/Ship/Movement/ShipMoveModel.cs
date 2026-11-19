@@ -21,6 +21,8 @@ namespace EmpireAtWar.Components.Ship.Movement
 
         /// <summary>Own top speed: data, engine damage and combat modifiers, before any group speed cap.</summary>
         public float BaseSpeed => _shipMoveData.Speed * _speedCoefficient * _modifiers.SpeedMultiplier;
+        /// <summary><see cref="BaseSpeed"/> without engine damage; reference for the pace straggler floor.</summary>
+        public float UndamagedSpeed => _shipMoveData.Speed * _modifiers.SpeedMultiplier;
         public float Speed => Math.Min(BaseSpeed, SpeedCap);
         /// <summary>Group pace limit; <see cref="float.PositiveInfinity"/> when uncapped.</summary>
         public float SpeedCap { get; private set; } = float.PositiveInfinity;

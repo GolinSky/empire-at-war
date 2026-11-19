@@ -234,8 +234,16 @@ namespace EmpireAtWar.Tests.Movement
                 Assert.That(_movement.SpeedCap, Is.EqualTo(float.PositiveInfinity));
                 Assert.That(cluster.MemberCount, Is.EqualTo(1));
 
-                // Rejoin and simulate stuck ship: releases cap immediately and detaches after StuckDetachTime.
+                // Rejoin slow (turning/accelerating at the start of the order): not stuck, keeps the cluster pace.
                 runner.MoveTo(destination, cluster);
+                _movement.CurrentSpeed = 0f;
+                runner.Tick(tuning.StuckDetachTime + 0.1f);
+                Assert.That(_movement.SpeedCap, Is.EqualTo(20f), "A ship that has not started moving is not stuck.");
+                Assert.That(cluster.MemberCount, Is.EqualTo(2));
+
+                // Once moving, stopping again is stuck: releases cap immediately and detaches after StuckDetachTime.
+                _movement.CurrentSpeed = 20f;
+                runner.Tick(0.1f);
                 _movement.CurrentSpeed = 0f;
                 runner.Tick(1f);
                 Assert.That(_movement.SpeedCap, Is.EqualTo(float.PositiveInfinity));
@@ -1331,6 +1339,7 @@ namespace EmpireAtWar.Tests.Movement
             public int MoveCount { get; private set; }
             public float CurrentSpeed { get; set; } = 10f;
             public float PaceSpeed { get; set; } = 10f;
+            public float UndamagedPaceSpeed { get; set; } = 10f;
             public float SpeedCap { get; private set; } = float.PositiveInfinity;
             public void SetSpeedCap(float cap) => SpeedCap = cap;
             public void MoveToPosition(Vector3 position, bool preserveCourse = false)

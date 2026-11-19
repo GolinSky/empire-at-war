@@ -33,7 +33,14 @@ namespace EmpireAtWar.Tests.Editor
             _settings = ScriptableObject.CreateInstance<UnitOrderSettings>();
             _locator = new FakeLocator();
             _zones = new FakeZones();
-            _unitOrderService = new UnitOrderService(_locator, _zones, _settings);
+            _unitOrderService = CreateService();
+        }
+
+        private UnitOrderService CreateService()
+        {
+            EmptyObstacles obstacles = new EmptyObstacles();
+            return new UnitOrderService(_locator, _zones, _settings, obstacles,
+                new PaceClusterMergeService(_settings, obstacles));
         }
 
         [TearDown]
@@ -100,7 +107,7 @@ namespace EmpireAtWar.Tests.Editor
             Issue(action, new IEntity[] { ship }, enemy, friendly);
             ship.Command.CallCount = 0;
 
-            var clientOrders = new UnitOrderService(_locator, _zones, _settings);
+            var clientOrders = CreateService();
             var receiver = new ClientCombatEventReceiver(_locator, null, clientOrders);
             UnitOrder feedback = default;
             int notifications = 0;

@@ -67,7 +67,7 @@ namespace EmpireAtWar.Tests.Editor
                 cameraService: _camera, layerService: null, abilities: _abilities, targeting: _targeting, playerOrders: _orders, superWeapons: new SuperWeaponTargetingModel(),
                 hardPointHover: _hardPointHover,
                 localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), battleAreas: _areas,
-                siteDirectories: Array.Empty<ICaptureSiteDirectory>(), pointerInput: _input);
+                siteDirectories: Array.Empty<ICaptureSiteDirectory>());
             _handler.Initialize();
         }
 
@@ -545,12 +545,12 @@ namespace EmpireAtWar.Tests.Editor
         {
             _query.ReturnEnemy = false;
 
-            _input.ClickCount = 1;
+            _input.CommandClickCount = 1;
             _input.RightClick(new Vector2(10f, 20f));
             Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Move));
             Assert.That(_orders.LastPace, Is.EqualTo(MovePace.Formation));
 
-            _input.ClickCount = 2;
+            _input.CommandClickCount = 2;
             _input.RightClick(new Vector2(10f, 20f));
             Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Move));
             Assert.That(_orders.LastPace, Is.EqualTo(MovePace.Loose));
@@ -559,13 +559,9 @@ namespace EmpireAtWar.Tests.Editor
         private void RegisterSite() =>
             _areas.Register(BattleAreaLayer.OrderSnap, PlayerId.None, _siteView.transform, 5f);
 
-        private sealed class FakeInput : IPointerGestures, IUnitOrderInput, IPointerInput
+        private sealed class FakeInput : IPointerGestures, IUnitOrderInput
         {
-            public event Action<Vector2> PrimaryPressed { add { } remove { } }
-            public event Action<Vector2> PrimaryReleased { add { } remove { } }
-            public Vector2 Position => default;
-            public bool HasPosition => true;
-            public int ClickCount { get; set; } = 1;
+            public int CommandClickCount { get; set; } = 1;
 
             public event Action<Vector2> WorldPressed { add { } remove { } }
 

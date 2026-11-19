@@ -131,6 +131,7 @@ namespace EmpireAtWar.Components.Ship.Movement
         // Arriving, ion-disabled or anchored ships are not moving and must not stop the group.
         public float PaceSpeed => Model.Phase == MovementPhase.Arriving || _modifiers.IsIonDisabled ||
             _modifiers.IsAnchored ? float.PositiveInfinity : Model.BaseSpeed;
+        public float UndamagedPaceSpeed => Model.UndamagedSpeed;
         public bool IsArriving => Model.Phase == MovementPhase.Arriving;
         public float CurrentSpeed => _motion.CurrentSpeed;
         public float NavigationCurrentSpeed => _motion.CurrentSpeed;

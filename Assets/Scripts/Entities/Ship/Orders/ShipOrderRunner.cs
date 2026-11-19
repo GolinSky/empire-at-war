@@ -58,6 +58,8 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private int _paceMember;
         private float _stragglerTimer;
         private float _stuckTimer;
+        // A ship turning or accelerating at the start of its order is slow but not stuck.
+        private bool _hasPaceMoved;
 
         // Online clients show the host's order; ships there never run their own (see ApplyReplicaOrder).
         public UnitOrderType CurrentOrder => _replicaOrder ??
@@ -227,13 +229,15 @@ namespace EmpireAtWar.Entities.Ship.Orders
             SamplePaceGeometry(out System.Numerics.Vector2 position, out float remaining,
                 out System.Numerics.Vector2 heading);
             _pace = pace;
-            _paceMember = pace.Join(_movement.PaceSpeed, remaining, position, _movement.NavigationRadius, heading);
+            _paceMember = pace.Join(_movement.PaceSpeed, remaining, position, _movement.NavigationRadius, heading,
+                _movement.UndamagedPaceSpeed);
         }
 
         private void LeavePace()
         {
             _stragglerTimer = 0f;
             _stuckTimer = 0f;
+            _hasPaceMoved = false;
             if (_pace == null) return;
             _pace.Leave(_paceMember);
             _pace = null;
@@ -262,7 +266,9 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 out System.Numerics.Vector2 heading);
 
             PaceClusterTuning tuning = _pace.Tuning;
-            bool isStuck = _movement.IsMoving && _movement.CurrentSpeed < tuning.StuckSpeed;
+            bool isSlow = _movement.IsMoving && _movement.CurrentSpeed < tuning.StuckSpeed;
+            if (!isSlow) _hasPaceMoved = true;
+            bool isStuck = isSlow && _hasPaceMoved;
             if (isStuck)
             {
                 _stuckTimer += deltaTime;
@@ -278,47 +284,13 @@ namespace EmpireAtWar.Entities.Ship.Orders
             }
 
             _pace.Report(_paceMember, isStuck ? float.PositiveInfinity : ownSpeed, remaining, position, heading);
-
-            float meanRemaining = _pace.MeanRemaining;
-            if (!float.IsNaN(meanRemaining) && !float.IsNaN(remaining))
+            if (!_pace.TryGetSpeedCap(remaining, deltaTime, ref _stragglerTimer, out float cap))
             {
-                float behind = remaining - meanRemaining;
-                float stragglerLimit = Mathf.Max(tuning.StragglerDistance, 3f * _pace.Radius);
-                if (behind > stragglerLimit)
-                {
-                    _stragglerTimer += deltaTime;
-                    if (_stragglerTimer > tuning.StragglerTime)
-                    {
-                        LeavePace();
-                        return;
-                    }
-                }
-                else
-                {
-                    _stragglerTimer = 0f;
-                }
-            }
-
-            if (isStuck)
-            {
-                _movement.SetSpeedCap(float.PositiveInfinity);
+                LeavePace();
                 return;
             }
 
-            float clusterPace = _pace.Pace;
-            if (float.IsPositiveInfinity(clusterPace) || float.IsNaN(meanRemaining) || float.IsNaN(remaining))
-            {
-                _movement.SetSpeedCap(clusterPace);
-                return;
-            }
-
-            float lead = meanRemaining - remaining;
-            if (lead > tuning.LeadTolerance)
-                _movement.SetSpeedCap(clusterPace * tuning.AheadSlowdown);
-            else if (lead < -tuning.LeadTolerance)
-                _movement.SetSpeedCap(float.PositiveInfinity);
-            else
-                _movement.SetSpeedCap(clusterPace);
+            _movement.SetSpeedCap(isStuck ? float.PositiveInfinity : cap);
         }
 
         private static bool IsPacedOrder(UnitOrderType order) =>

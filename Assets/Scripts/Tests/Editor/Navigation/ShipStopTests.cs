@@ -92,6 +92,7 @@ namespace EmpireAtWar.Tests.Editor
             public float NavigationRadius => 1f;
             public float CurrentSpeed => 1f;
             public float PaceSpeed => 1f;
+            public float UndamagedPaceSpeed => 1f;
             public void SetSpeedCap(float cap) { }
             public int StopCount { get; private set; }
 

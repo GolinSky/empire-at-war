@@ -24,12 +24,12 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         private float _issuePace;
         private int _memberCount;
         private float _pace = float.PositiveInfinity;
-        private float _meanRemaining = float.NaN;
+        private float _remainingSum;
+        private int _remainingCount;
         private Vector2 _centroid;
         private float _radius;
         private Vector2 _heading;
         private bool _paceDirty;
-        private bool _remainingDirty;
         private bool _geometryDirty;
 
         public int OrderId { get; }
@@ -39,8 +39,6 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
         public int MemberCount => _mergedInto != null ? _mergedInto.MemberCount : _memberCount;
 
         public float IssuePace => _mergedInto != null ? _mergedInto.IssuePace : _issuePace;
-
-        /// <summary>The target the cluster fights on after its order's target died; the first ship to find one sets it.</summary>
 
         /// <summary>
         /// Slowest member speed meeting the straggler speed floor, or <see cref="float.PositiveInfinity"/> when fewer
@@ -62,8 +60,7 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             get
             {
                 if (_mergedInto != null) return _mergedInto.MeanRemaining;
-                if (_remainingDirty) RecomputeRemaining();
-                return _meanRemaining;
+                return _remainingCount > 0 ? _remainingSum / _remainingCount : float.NaN;
             }
         }
 
@@ -112,12 +109,17 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
                    speed < _issuePace * Tuning.StragglerSpeedRatio;
         }
 
+        /// <param name="referenceSpeed">
+        /// The member's speed without engine damage. The straggler floor derives from the slowest reference, so a
+        /// ship already damaged when the order is given cannot lower the floor and slow its cluster indefinitely.
+        /// NaN uses <paramref name="speed"/>.
+        /// </param>
         public int Join(float speed, float remaining = float.NaN, Vector2 position = default,
-            float radius = 0f, Vector2 heading = default)
+            float radius = 0f, Vector2 heading = default, float referenceSpeed = float.NaN)
         {
             if (_mergedInto != null)
             {
-                int forwarded = _mergedInto.Join(speed, remaining, position, radius, heading);
+                int forwarded = _mergedInto.Join(speed, remaining, position, radius, heading, referenceSpeed);
                 _speeds.Add(float.NaN);
                 _remaining.Add(float.NaN);
                 _positions.Add(default);
@@ -127,8 +129,9 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
                 return _speeds.Count - 1;
             }
 
-            if (!float.IsInfinity(speed) && !float.IsNaN(speed) && speed < _issuePace)
-                _issuePace = speed;
+            float reference = float.IsNaN(referenceSpeed) ? speed : referenceSpeed;
+            if (!float.IsInfinity(reference) && !float.IsNaN(reference) && reference < _issuePace)
+                _issuePace = reference;
 
             _speeds.Add(speed);
             _remaining.Add(remaining);
@@ -136,9 +139,9 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             _radii.Add(radius);
             _headings.Add(heading);
             _forwardedMembers.Add(-1);
+            AddRemaining(remaining, 1);
             _memberCount++;
             _paceDirty = true;
-            _remainingDirty = true;
             _geometryDirty = true;
             return _speeds.Count - 1;
         }
@@ -157,11 +160,11 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             }
 
             if (float.IsNaN(_speeds[member])) return;
+            AddRemaining(_remaining[member], -1);
             _speeds[member] = float.NaN;
             _remaining[member] = float.NaN;
             _memberCount--;
             _paceDirty = true;
-            _remainingDirty = true;
             _geometryDirty = true;
         }
 
@@ -184,8 +187,9 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
 
             if (!AreEqual(_remaining[member], remaining))
             {
+                AddRemaining(_remaining[member], -1);
+                AddRemaining(remaining, 1);
                 _remaining[member] = remaining;
-                _remainingDirty = true;
             }
 
             if (_positions[member] != position || _headings[member] != heading)
@@ -220,7 +224,8 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
                     source._remaining[i],
                     source._positions[i],
                     source._radii[i],
-                    source._headings[i]);
+                    source._headings[i],
+                    source._issuePace);
                 source._forwardedMembers[i] = newIndex;
                 source._speeds[i] = float.NaN;
                 source._remaining[i] = float.NaN;
@@ -228,11 +233,40 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
 
             source._memberCount = 0;
             source._pace = float.PositiveInfinity;
-            source._meanRemaining = float.NaN;
+            source._remainingSum = 0f;
+            source._remainingCount = 0;
             source._paceDirty = false;
-            source._remainingDirty = false;
             source._geometryDirty = false;
             source._mergedInto = destination;
+        }
+
+        /// <summary>
+        /// Lag correction for one member: ahead of the cluster's mean progress by more than the lead tolerance → pace
+        /// × ahead slowdown; behind by more → uncapped to catch up; otherwise the cluster pace. Returns false once the
+        /// member trailed past the straggler distance for longer than the straggler time and should detach.
+        /// </summary>
+        public bool TryGetSpeedCap(float remaining, float deltaTime, ref float stragglerTimer, out float cap)
+        {
+            cap = Pace;
+            float meanRemaining = MeanRemaining;
+            if (float.IsNaN(meanRemaining) || float.IsNaN(remaining)) return true;
+
+            float behind = remaining - meanRemaining;
+            // Radius costs O(n) when dirty, so it is read only for a member already past the fixed distance.
+            if (behind > Tuning.StragglerDistance && behind > 3f * Radius)
+            {
+                stragglerTimer += deltaTime;
+                if (stragglerTimer > Tuning.StragglerTime) return false;
+            }
+            else
+            {
+                stragglerTimer = 0f;
+            }
+
+            if (float.IsPositiveInfinity(cap)) return true;
+            if (-behind > Tuning.LeadTolerance) cap *= Tuning.AheadSlowdown;
+            else if (behind > Tuning.LeadTolerance) cap = float.PositiveInfinity;
+            return true;
         }
 
         public PaceCluster Resolve()
@@ -274,21 +308,12 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             }
         }
 
-        private void RecomputeRemaining()
+        // A running sum keeps MeanRemaining O(1); every member reads it every tick.
+        private void AddRemaining(float remaining, int sign)
         {
-            _remainingDirty = false;
-            float sum = 0f;
-            int count = 0;
-            for (int i = 0; i < _speeds.Count; i++)
-            {
-                if (float.IsNaN(_speeds[i])) continue;
-                float rem = _remaining[i];
-                if (float.IsNaN(rem) || float.IsInfinity(rem)) continue;
-                sum += rem;
-                count++;
-            }
-
-            _meanRemaining = count > 0 ? sum / count : float.NaN;
+            if (float.IsNaN(remaining) || float.IsInfinity(remaining)) return;
+            _remainingSum += sign * remaining;
+            _remainingCount += sign;
         }
 
         private void RecomputeGeometry()

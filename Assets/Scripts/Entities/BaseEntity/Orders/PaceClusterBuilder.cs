@@ -48,17 +48,7 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
             }
 
             int[] sizes = new int[count];
-            float[] issuePaces = new float[count];
-            for (int i = 0; i < count; i++) issuePaces[i] = float.PositiveInfinity;
-
-            for (int i = 0; i < count; i++)
-            {
-                int root = Find(parent, i);
-                sizes[root]++;
-                float speed = candidates[i].Speed;
-                if (!float.IsNaN(speed) && !float.IsInfinity(speed) && speed < issuePaces[root])
-                    issuePaces[root] = speed;
-            }
+            for (int i = 0; i < count; i++) sizes[Find(parent, i)]++;
 
             PaceCluster[] byRoot = new PaceCluster[count];
             for (int i = 0; i < count; i++)
@@ -68,7 +58,8 @@ namespace EmpireAtWar.Entities.BaseEntity.Orders
                 PaceCluster cluster = byRoot[root];
                 if (cluster == null)
                 {
-                    cluster = new PaceCluster(orderId, issuePaces[root], tuning);
+                    // Members set the straggler floor from their undamaged speeds when they join.
+                    cluster = new PaceCluster(orderId, tuning: tuning);
                     byRoot[root] = cluster;
                     createdClusters?.Add(cluster);
                 }

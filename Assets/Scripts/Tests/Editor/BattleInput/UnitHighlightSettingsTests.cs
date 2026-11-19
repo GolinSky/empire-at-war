@@ -38,7 +38,7 @@ namespace EmpireAtWar.Tests.Editor
             float previousWidth = Shader.GetGlobalFloat("_UnitOutlineWidth");
             var entities = new EntityLocator();
             var service = new UnitHighlightService(settings,
-                new UnitOrderService(entities, null, null),
+                new UnitOrderService(entities, null, null, null, null),
                 TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), entities);
             try
             {

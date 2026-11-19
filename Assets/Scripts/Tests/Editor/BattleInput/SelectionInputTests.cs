@@ -568,6 +568,7 @@ namespace EmpireAtWar.Tests.Selection
             public event Action<Vector2> WorldCommandPressed { add { } remove { } }
 
             public event Action<Vector2> WorldCommanded { add { } remove { } }
+            public int CommandClickCount => 1;
 
             public event Action<Vector2> DragStarted { add { } remove { } }
 

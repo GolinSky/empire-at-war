@@ -13,6 +13,10 @@ namespace EmpireAtWar.Services.Input
 {
     public sealed class PointerGestures : IPointerGestures, IInitializable, ITickable, ILateDisposable
     {
+        // Matches the Input System UI module's click speed.
+        private const float DOUBLE_COMMAND_SECONDS = 0.3f;
+        private const float DOUBLE_COMMAND_PIXELS = 16f;
+
         private readonly IPointerInput _pointerInput;
         private readonly IUiHitTest _uiHitTest;
         private readonly IShipAbilityTargeting _abilities;
@@ -26,6 +30,10 @@ namespace EmpireAtWar.Services.Input
         private Vector2 _selectPressPosition;
         private Vector2 _selectReleasePosition;
         private Vector2 _commandPressPosition;
+        private float _lastCommandTime = float.NegativeInfinity;
+        private Vector2 _lastCommandPosition;
+
+        public int CommandClickCount { get; private set; }
 
         public event Action<Vector2> WorldPressed;
 
@@ -111,7 +119,7 @@ namespace EmpireAtWar.Services.Input
                     return;
                 }
                 if (commandWorld)
-                    WorldCommanded?.Invoke(position);
+                    InvokeCommand(position);
                 return;
             }
             if (_battle.Select.WasPressedThisFrame())
@@ -132,8 +140,20 @@ namespace EmpireAtWar.Services.Input
 
             if (commandWorld)
             {
-                WorldCommanded?.Invoke(position);
+                InvokeCommand(position);
             }
+        }
+
+        private void InvokeCommand(Vector2 position)
+        {
+            float now = Time.unscaledTime;
+            bool isRepeat = now - _lastCommandTime <= DOUBLE_COMMAND_SECONDS &&
+                            (position - _lastCommandPosition).sqrMagnitude <=
+                            DOUBLE_COMMAND_PIXELS * DOUBLE_COMMAND_PIXELS;
+            CommandClickCount = isRepeat ? CommandClickCount + 1 : 1;
+            _lastCommandTime = now;
+            _lastCommandPosition = position;
+            WorldCommanded?.Invoke(position);
         }
 
         private void Press(Vector2 position)
