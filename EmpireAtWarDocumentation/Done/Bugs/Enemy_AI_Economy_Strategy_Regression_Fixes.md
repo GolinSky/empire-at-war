@@ -119,6 +119,15 @@ acceptance: pending-user
 - Reusable guidance: no new standalone rule note required (core AI objective rules remain in [[Architecture/Enemy_AI_Objectives]]).
 - User acceptance → [[TODOs/User_Acceptance_Queue#Enemy AI Economy Strategy]].
 
+## Review of `8e2ebefe6` (2026-11-19)
+- Source matches Fixes 1–5: ring rear search + tiers A–D + 15 s cap; partial defense waves; affordable-ship swap removed and saving restored; level-1 corvette cap (C-9979 / Patrol Frigate are `ShipClass.Corvette`; counter picks covered); no unseen penalty before contact/180 s, unseen ≤ 0.5 × own fleet, economy removed from route thresholds; own capture strength counts squadrons; centre requests reinforcement; `zoneOwner` events.
+- Fixed in review (uncommitted):
+  - Emergency tier E spawned at the station centre / rally / map origin without clearance when tier D failed → now keeps the ship queued and retries (`EnemyFactionController.TryFindShipSpawnPosition`).
+  - `zoneOwner` site events logged `site:{PointId}` (all centre sites = one id) → now `site:{index};point={PointId}` matching AI objective ids (`CaptureSitesSystem.HandleStatusChanged`).
+  - Opening detach probe still rejected a contested centre (`HostileStrength > own + 0.5`), so the centre group never formed against early human squadrons → the centre lane may detach and then reinforce (`EnemyStrategicContextBuilder.CanDetachForCapture`). Test `CaptureProbe_OpeningCentreFocusDetachesIntoAContestedCentre` (`EnemyAi`).
+  - `IShipSpawnPoints` default interface bodies silently fell back to the old 270-radius search → removed; fakes in `CheatServiceTests` and `EnemyFactionControllerLifecycleTests` implement `TryGetRearSpawnPosition` / `TryGetWideDefenseSpawnPosition` explicitly with the same mapping.
+- Unity recompile: completed, no errors. Tests not run (local override). Reviewed: `SurroundedStation_CompletedShipDeploysWithinHoldCap` still passes by tier D (fake default zone succeeds); centre/probe tests unaffected (no centre focus set).
+
 ## Verification (next battle, UltraHard)
 - `deploymentBlocked` with `heldSeconds > 15` = 0; `sample.heldShips` ≤ 2.
 - C-9979 + Patrol Frigate purchases after level 2 ≤ 2.

@@ -271,8 +271,10 @@ namespace EmpireAtWar.Services.CaptureSites
         {
             if (change.PreviousOwner != change.Owner)
             {
-                EnemyAiTelemetry.RecordZoneOwner(change.Owner, $"site:{change.Site.PointId}", change.PreviousOwner,
-                    change.Owner, change.Site.Kind.ToString());
+                // Site index matches the AI objective ids (`site:{i}`); the point groups sites of one zone.
+                int index = _sites.FindIndex(site => ReferenceEquals(site, change.Site));
+                EnemyAiTelemetry.RecordZoneOwner(change.Owner, $"site:{index};point={change.Site.PointId}",
+                    change.PreviousOwner, change.Owner, change.Site.Kind.ToString());
             }
             StatusChanged?.Invoke(change);
         }

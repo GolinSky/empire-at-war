@@ -467,7 +467,9 @@ namespace EmpireAtWar.Services.Enemy
                     IsOpeningObjective(objective) && !IsAssignedExpansionObjective(objective) &&
                     !IsNearHostileBase(objective.Position) &&
                     !IsCaptureReserved(objective.Id) &&
-                    objective.HostileStrength <= GetOwnCaptureStrength(origin, objective) + CAPTURE_STRENGTH_MARGIN &&
+                    // The opening centre group forms even when contested; it calls reinforcements instead of waiting.
+                    (OpeningFocus == EnemyOpeningFocus.Centre && IsCentreObjective(objective.Position) ||
+                     objective.HostileStrength <= GetOwnCaptureStrength(origin, objective) + CAPTURE_STRENGTH_MARGIN) &&
                     IsObjectiveSafe(origin, objective.Position, objective.Radius, false, 1f, objective.Id)) return true;
             return false;
         }

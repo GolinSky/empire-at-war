@@ -2322,6 +2322,19 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(builder.CanDetachForCapture(strong), Is.True);
         }
 
+        [Test]
+        public void CaptureProbe_OpeningCentreFocusDetachesIntoAContestedCentre()
+        {
+            var (builder, _, strong, _) = CaptureProbeBuilder(isCentre: true, hostileStrength: 3f);
+            builder.BeginCaptureProbe(new HashSet<string>());
+            Assert.That(builder.CanDetachForCapture(strong), Is.False,
+                "Without the centre lane a lone ship does not detach into a stronger capture circle.");
+
+            Assert.That(builder.SetOpeningFocus(EnemyOpeningFocus.Centre, Vector3.zero), Is.True);
+            Assert.That(builder.CanDetachForCapture(strong), Is.True,
+                "The opening centre group forms and calls reinforcements instead of waiting.");
+        }
+
         [TestCase(EnemyOpeningFocus.Neighbour, 0)]
         [TestCase(EnemyOpeningFocus.Centre, 1)]
         [TestCase(EnemyOpeningFocus.Outer, 2)]
@@ -2366,7 +2379,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         private static (EnemyStrategicContextBuilder Builder, FakeShip Weak, FakeShip Strong, FakeShip Slower)
-            CaptureProbeBuilder(bool withMine = false, bool isCentre = false)
+            CaptureProbeBuilder(bool withMine = false, bool isCentre = false, float hostileStrength = 0f)
         {
             PlayerRoster roster = TestPlayers.CreateDuel();
             var locator = new EntityLocator();
@@ -2390,7 +2403,7 @@ namespace EmpireAtWar.Tests.Editor
                     : Array.Empty<IEnemyCaptureObjectiveSource>(),
                 locator, null, roster, catalog, intel, null,
                 roster.Get(TestPlayers.Enemy), null, new TestHazards(),
-                new ZoneSource(roster, isCentre ? 0 : -1, Vector3.zero),
+                new ZoneSource(roster, isCentre ? 0 : -1, Vector3.zero) { HostileStrength = hostileStrength },
                 null, new EnemyStationPressureTracker(), null);
             return (builder, new FakeShip(Vector3.zero, 1) { NavigationSpeed = 3f },
                 new FakeShip(Vector3.zero, 2) { NavigationSpeed = 2f },

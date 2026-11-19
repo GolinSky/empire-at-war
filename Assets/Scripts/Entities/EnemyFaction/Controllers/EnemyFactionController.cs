@@ -364,9 +364,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 forced = true;
                 emergency = true;
                 if (TryTierDSpawn(home, shipType, out position)) return true;
-                position = useRearAnchor ? anchor : hasRally ? rally : Vector3.zero;
+                // No clear point anywhere on the map: retry next second rather than spawn into a hull or the enemy.
                 tier = "E";
-                return true;
+                forced = false;
+                emergency = false;
+                return false;
             }
 
             // Tier A: full safety filter (rear ring search with IsSafe + CanSpawnShip, or normal rally/default).

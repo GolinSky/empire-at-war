@@ -31,14 +31,10 @@ namespace EmpireAtWar.Services.ShipSpawning
 
         /// <summary>Ring search (1, 1.5, 2, 3x HomeAreaRadius) around anchor: rear half-plane, then sides, then front.</summary>
         bool TryGetRearSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
-            PlacementThreatSnapshot threats, bool requireThreatSafety, out Vector3 position) =>
-            requireThreatSafety
-                ? TryGetDefenseSpawnPosition(owner, shipType, anchor, threats, out position)
-                : TryGetBestDefenseSpawnPosition(owner, shipType, anchor, threats, out position);
+            PlacementThreatSnapshot threats, bool requireThreatSafety, out Vector3 position);
 
         /// <summary>Finds the clear point farthest from threats on rings out to 3x HomeAreaRadius using the station-defense rule.</summary>
         bool TryGetWideDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
-            PlacementThreatSnapshot threats, out Vector3 position) =>
-            TryGetBestDefenseSpawnPosition(owner, shipType, anchor, threats, out position);
+            PlacementThreatSnapshot threats, out Vector3 position);
     }
 }

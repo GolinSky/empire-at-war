@@ -950,6 +950,17 @@ namespace EmpireAtWar.Tests.Editor
                 position = default;
                 return false;
             }
+
+            // Rear rings behave like the station-perimeter searches this fake already records.
+            public bool TryGetRearSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, bool requireThreatSafety, out Vector3 position) =>
+                requireThreatSafety
+                    ? TryGetDefenseSpawnPosition(owner, shipType, anchor, threats, out position)
+                    : TryGetBestDefenseSpawnPosition(owner, shipType, anchor, threats, out position);
+
+            public bool TryGetWideDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, out Vector3 position) =>
+                TryGetBestDefenseSpawnPosition(owner, shipType, anchor, threats, out position);
         }
 
         private sealed class BlockedShipSpawnPoints : IShipSpawnPoints
@@ -982,6 +993,14 @@ namespace EmpireAtWar.Tests.Editor
             public void ReleaseDefenseLanding(object token) { }
 
             public bool TryGetBestDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, out Vector3 position) =>
+                TryGetRandomSpawnPosition(owner, shipType, out position);
+
+            public bool TryGetRearSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+                PlacementThreatSnapshot threats, bool requireThreatSafety, out Vector3 position) =>
+                TryGetRandomSpawnPosition(owner, shipType, out position);
+
+            public bool TryGetWideDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
                 PlacementThreatSnapshot threats, out Vector3 position) =>
                 TryGetRandomSpawnPosition(owner, shipType, out position);
         }
