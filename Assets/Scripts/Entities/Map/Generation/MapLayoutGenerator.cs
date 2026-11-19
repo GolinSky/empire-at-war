@@ -76,11 +76,14 @@ namespace EmpireAtWar.Entities.Map.Generation
             for (int j = i + 1; j < players.Count; j++)
                 hasAllies |= players[i].Team == players[j].Team;
             int attempts = MAX_LAYOUT_ATTEMPTS * (size.IsArchetypeLayout && hasAllies ? 2 : 1);
+            // Small maps keep equal spacing and the team-swap fallback; larger maps group allies on every attempt.
+            bool groupTeams = mapSize != MapSize.Small;
             for (int attempt = 0; attempt < attempts; attempt++)
             {
                 MapStation[] stations = size.IsArchetypeLayout
-                    ? _stationPlacer.PlaceSlots(size, players, random, size.PlanetSeed, attempt >= MAX_LAYOUT_ATTEMPTS)
-                    : _stationPlacer.Place(size, players, random);
+                    ? _stationPlacer.PlaceSlots(size, players, random, size.PlanetSeed, groupTeams,
+                        !groupTeams && attempt >= MAX_LAYOUT_ATTEMPTS)
+                    : _stationPlacer.Place(size, players, random, groupTeams);
                 if (size.IsArchetypeLayout && !_stationPlacer.HasStationClearance(size, stations, players))
                 {
                     stationFailures++;

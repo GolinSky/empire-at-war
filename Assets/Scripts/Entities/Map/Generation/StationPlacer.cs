@@ -14,6 +14,9 @@ namespace EmpireAtWar.Entities.Map.Generation
         private const int DUEL_PLAYER_COUNT = 2;
         private const int OPPOSITE_CORNER_STEP = 2;
         private const float HOME_MARGIN = 30f;
+        private const float TEAM_SEPARATION_RATIO = 1.5f;
+        private const float PULL_STEP = 0.05f;
+        private const float MIN_PULL = 0.3f;
 
         // Corner signs in walking order around the map; neighbours in this list share an edge.
         private static readonly Vector2[] CORNER_SIGNS =
@@ -32,7 +35,9 @@ namespace EmpireAtWar.Entities.Map.Generation
             _radii = radii;
         }
 
-        public MapStation[] Place(MapSizeSettings size, IReadOnlyList<PlayerSlot> players, Random random)
+        /// <param name="groupTeams">Pulls allied corners together along their shared edge.</param>
+        public MapStation[] Place(MapSizeSettings size, IReadOnlyList<PlayerSlot> players, Random random,
+            bool groupTeams = false)
         {
             Vector2 center = (size.Bounds.Min + size.Bounds.Max) * 0.5f;
             Vector2 halfSize = (size.Bounds.Max - size.Bounds.Min) * 0.5f;
@@ -45,7 +50,8 @@ namespace EmpireAtWar.Entities.Map.Generation
                 ? first.Team.Value.CompareTo(second.Team.Value)
                 : first.Id.Index.CompareTo(second.Id.Index));
 
-            MapStation[] stations = new MapStation[teamOrder.Count];
+            Vector2[] positions = new Vector2[teamOrder.Count];
+            int[] corners = new int[teamOrder.Count];
             Vector2[] offsets = new Vector2[teamOrder.Count];
             for (int i = 0; i < teamOrder.Count; i++)
             {
@@ -73,15 +79,77 @@ namespace EmpireAtWar.Entities.Map.Generation
                 Vector2 cornerOffset = opposite >= 0 && opposite < i ? offsets[opposite] :
                     halfSize - Vector2.one * (insetRadius + _settings.StationEdgeDistance) + jitter;
                 offsets[i] = cornerOffset;
-                Vector2 position = center + Vector2.Scale(CORNER_SIGNS[corner], cornerOffset);
-                stations[i] = CreateStation(teamOrder[i], position, radius);
+                corners[i] = corner;
+                positions[i] = center + Vector2.Scale(CORNER_SIGNS[corner], cornerOffset);
             }
 
+            if (groupTeams) PullAlliedCorners(center, corners, teamOrder, positions);
+            MapStation[] stations = new MapStation[teamOrder.Count];
+            for (int i = 0; i < stations.Length; i++)
+                stations[i] = CreateStation(teamOrder[i], positions[i], _settings.GetStationRadius(teamOrder[i].Faction));
             return stations;
         }
 
+        // Allied corners that share an edge slide toward each other until every enemy is clearly farther away.
+        // A station only moves toward the centre along its shared edge, so its outward home-site room is kept.
+        // A station with allies on both of its edges (3v1) keeps the whole layout: no pull keeps the mirrored relay pairs valid.
+        private static void PullAlliedCorners(Vector2 center, int[] corners, IReadOnlyList<PlayerSlot> teamOrder,
+            Vector2[] positions)
+        {
+            Vector2[] pullAxes = new Vector2[positions.Length];
+            bool hasPull = false;
+            for (int i = 0; i < positions.Length; i++)
+            {
+                for (int j = 0; j < positions.Length; j++)
+                {
+                    if (i == j || teamOrder[i].Team != teamOrder[j].Team) continue;
+                    Vector2 signDelta = CORNER_SIGNS[corners[i]] - CORNER_SIGNS[corners[j]];
+                    // Corners sharing an edge differ in exactly one sign; that axis runs along the edge.
+                    if (signDelta.x != 0f && signDelta.y != 0f) continue;
+                    if (signDelta.x != 0f) pullAxes[i].x = 1f;
+                    else pullAxes[i].y = 1f;
+                }
+                if (pullAxes[i].x > 0f && pullAxes[i].y > 0f) return;
+                hasPull |= pullAxes[i] != Vector2.zero;
+            }
+            if (!hasPull) return;
+
+            Vector2[] original = (Vector2[])positions.Clone();
+            for (float pull = 1f; pull > MIN_PULL && !IsTeamSeparated(positions, teamOrder); )
+            {
+                pull -= PULL_STEP;
+                for (int i = 0; i < positions.Length; i++)
+                {
+                    Vector2 offset = original[i] - center;
+                    positions[i] = center + new Vector2(
+                        pullAxes[i].x > 0f ? offset.x * pull : offset.x,
+                        pullAxes[i].y > 0f ? offset.y * pull : offset.y);
+                }
+            }
+        }
+
+        private static bool IsTeamSeparated(Vector2[] positions, IReadOnlyList<PlayerSlot> teamOrder)
+        {
+            for (int i = 0; i < positions.Length; i++)
+            {
+                float ally = float.MaxValue;
+                float enemy = float.MaxValue;
+                for (int j = 0; j < positions.Length; j++)
+                {
+                    if (i == j) continue;
+                    float distance = Vector2.Distance(positions[i], positions[j]);
+                    if (teamOrder[i].Team == teamOrder[j].Team) ally = Mathf.Min(ally, distance);
+                    else enemy = Mathf.Min(enemy, distance);
+                }
+                if (ally < float.MaxValue && enemy < TEAM_SEPARATION_RATIO * ally) return false;
+            }
+            return true;
+        }
+
+        /// <param name="groupTeams">Widens ring gaps across team boundaries so allies sit closer than enemies.</param>
+        /// <param name="separateTeams">Small-map fallback that swaps the slots at the first team boundary.</param>
         public MapStation[] PlaceSlots(MapSizeSettings size, IReadOnlyList<PlayerSlot> players,
-            Random random, int planetSeed, bool separateTeams = false)
+            Random random, int planetSeed, bool groupTeams = false, bool separateTeams = false)
         {
             List<PlayerSlot> teamOrder = new List<PlayerSlot>(players);
             teamOrder.Sort((first, second) => first.Team.Value != second.Team.Value
@@ -104,7 +172,11 @@ namespace EmpireAtWar.Entities.Map.Generation
                 largestRadius = Mathf.Max(largestRadius, _settings.GetStationRadius(player.Faction));
             float homeRadius = Mathf.Max(_radii.MiningSite, _settings.SatelliteFootprintRadius);
             Vector2 available = halfSize - Vector2.one * (largestRadius + homeRadius + HOME_MARGIN);
-            Vector2[] offsets = StationSlotGeometry.Create(size, players.Count, available, random, planetSeed);
+            List<int> teamSizes = new List<int>();
+            for (int i = 0; i < teamOrder.Count; i++)
+                if (groupTeams && i > 0 && teamOrder[i - 1].Team == teamOrder[i].Team) teamSizes[teamSizes.Count - 1]++;
+                else teamSizes.Add(1);
+            Vector2[] offsets = StationSlotGeometry.Create(size, teamSizes, available, random, planetSeed);
             MapStation[] stations = new MapStation[players.Count];
             for (int i = 0; i < stations.Length; i++)
                 stations[i] = CreateStation(teamOrder[i], center + offsets[i],

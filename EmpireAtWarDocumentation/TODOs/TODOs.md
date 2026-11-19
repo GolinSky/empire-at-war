@@ -64,7 +64,6 @@
 
 ### Bugs
 
-- [ ] **Map generation: enemy station too near allied stations (2v2 / 3v3, Medium + Large)** → [[TODOs/Bugs/Map_Enemy_Station_Near_Allies_Fix|Map Enemy Station Near Allies Fix]] — 2026-11-19: plan drafted, cause source-verified; 3 open questions.
 - [ ] **Enemy AI economy strategy** → [[TODOs/Bugs/Enemy_AI_Economy_Strategy]]; follows [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]
   - Status: in progress (2026-11-19), reopened after the 13:52 UltraHard battle (`2fa16bea3`, user: full failure). Regression fixes X1–X5 implemented 2026-11-19 → [[Done/Bugs/Enemy_AI_Economy_Strategy_Regression_Fixes]] (compiled, tests updated/not run; pending next UltraHard battle).
 
@@ -321,6 +320,7 @@
 
 ### Bugs
 
+- [x] **Map generation: enemy station too near allied stations (2v2 / 3v3, Medium + Large)** → [[Done/Bugs/Map_Enemy_Station_Near_Allies_Fix|Map Enemy Station Near Allies Fix]] — Completed 2026-11-19: weighted ring team gaps + legacy Open Field corner pull; Medium/Large nearest enemy ≥ 1.5 × nearest ally (diagnostic eval). Tests authored, not run → [[TODOs/User_Acceptance_Queue]].
 - [x] **Enemy AI active play + ship combat** → [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]
   - Completed 2026-11-19. Reopened R1–R7 and R9–R11 implemented. Standalone C# compilation passed. Battle and EditMode acceptance pending.
   - 12:39 battle (2026-11-19): user — huge improvement; sabotage and centre retake pass. Remaining strategy issues → [[TODOs/Bugs/Enemy_AI_Economy_Strategy]]. EditMode gate still pending.

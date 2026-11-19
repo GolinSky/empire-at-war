@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
 
@@ -9,12 +10,18 @@ namespace EmpireAtWar.Entities.Map.Generation
         private const int SLOT_VARIANTS = 16;
         private const float ORBITAL_EXCLUSION = 60f;
         private const float FLANK_HALF_SPAN = 0.7f;
+        private const float ALLY_GAP_WEIGHT = 1f;
+        private const float TEAM_GAP_WEIGHT = 2f;
 
-        public static Vector2[] Create(MapSizeSettings size, int count, Vector2 available, Random random, int planetSeed)
+        /// <param name="teamSizes">Consecutive slot runs that share a team; all ones keeps equal spacing.</param>
+        public static Vector2[] Create(MapSizeSettings size, IReadOnlyList<int> teamSizes, Vector2 available,
+            Random random, int planetSeed)
         {
+            int count = 0;
+            foreach (int teamSize in teamSizes) count += teamSize;
             Vector2[] offsets = size.Archetype == MapArchetypeKind.TwinPass
                 ? CreateFlanks(size, count, random)
-                : CreateRing(size, count, random, planetSeed);
+                : CreateRing(size, teamSizes, count, random, planetSeed);
             float scale = float.MaxValue;
             foreach (Vector2 offset in offsets)
             {
@@ -26,9 +33,11 @@ namespace EmpireAtWar.Entities.Map.Generation
             return offsets;
         }
 
-        private static Vector2[] CreateRing(MapSizeSettings size, int count, Random random, int planetSeed)
+        private static Vector2[] CreateRing(MapSizeSettings size, IReadOnlyList<int> teamSizes, int count,
+            Random random, int planetSeed)
         {
-            float step = Mathf.PI * 2f / count;
+            float span = Mathf.PI * 2f;
+            bool closed = true;
             float phase = (uint)planetSeed % SLOT_VARIANTS * Mathf.PI * 2f / SLOT_VARIANTS;
             if (size.Archetype == MapArchetypeKind.OrbitalRing)
             {
@@ -37,15 +46,41 @@ namespace EmpireAtWar.Entities.Map.Generation
                 {
                     // Keep the near-main pole free: starts span the remaining arc, with fairness checked on lanes.
                     phase += (90f + ORBITAL_EXCLUSION) * Mathf.Deg2Rad;
-                    step = (360f - 2f * ORBITAL_EXCLUSION) * Mathf.Deg2Rad / (count - 1);
+                    span = (360f - 2f * ORBITAL_EXCLUSION) * Mathf.Deg2Rad;
+                    closed = false;
                 }
             }
             else phase += random.Next(3) * Mathf.PI / SLOT_VARIANTS;
             phase += ((float)random.NextDouble() - 0.5f) * size.StationPhaseJitterRadians;
+            float step = span / (closed ? count : count - 1);
+            float[] angles = new float[count];
+            for (int i = 0; i < count; i++) angles[i] = step * i;
+            if (teamSizes.Count < count) WeightTeamGaps(teamSizes, count, span, closed, angles);
             Vector2[] offsets = new Vector2[count];
             for (int i = 0; i < count; i++)
-                offsets[i] = new Vector2(Mathf.Cos(phase + step * i), Mathf.Sin(phase + step * i));
+                offsets[i] = new Vector2(Mathf.Cos(phase + angles[i]), Mathf.Sin(phase + angles[i]));
             return offsets;
+        }
+
+        // A gap across a team boundary is at least TEAM_GAP_WEIGHT times an allied gap, so every enemy sits farther than any ally.
+        // An open arc's fixed pole gap is also a boundary; it caps the allied gap and the boundaries share the remainder.
+        private static void WeightTeamGaps(IReadOnlyList<int> teamSizes, int count, float span, bool closed, float[] angles)
+        {
+            bool[] allied = new bool[closed ? count : count - 1];
+            int slot = 0;
+            int allyGaps = 0;
+            foreach (int teamSize in teamSizes)
+            for (int member = 0; member < teamSize; member++, slot++)
+            {
+                if (slot >= allied.Length || member == teamSize - 1) continue;
+                allied[slot] = true;
+                allyGaps++;
+            }
+            int boundaryGaps = allied.Length - allyGaps;
+            float allyAngle = span / (allyGaps * ALLY_GAP_WEIGHT + boundaryGaps * TEAM_GAP_WEIGHT) * ALLY_GAP_WEIGHT;
+            if (!closed) allyAngle = Mathf.Min(allyAngle, (Mathf.PI * 2f - span) / TEAM_GAP_WEIGHT);
+            float boundaryAngle = (span - allyGaps * allyAngle) / boundaryGaps;
+            for (int i = 1; i < count; i++) angles[i] = angles[i - 1] + (allied[i - 1] ? allyAngle : boundaryAngle);
         }
 
         private static Vector2[] CreateFlanks(MapSizeSettings size, int count, Random random)

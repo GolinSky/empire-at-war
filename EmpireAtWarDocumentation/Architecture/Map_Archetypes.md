@@ -28,6 +28,10 @@ verification: "Archetypes: Map 83/83, MapGeneration 224/224, MapExhaustive
 - Candidate placement checks central-planet clearance before accepting relays; late rejection alone can exhaust all attempts without trying valid relay orientations.
 - Hazard plug candidates must leave candidate capacity for broader placements; concentrating the entire budget at two gaps cannot satisfy larger hazard counts.
 - Grouped allies get 60 layout attempts before 60 attempts with a nearest-boundary slot exchange; every candidate retains enemy, footprint and fairness checks. Legacy and FFA keep their original attempt budget.
+- Team gap rule (Medium/Large, `groupTeams`): `StationSlotGeometry` ring gap across a team boundary = `TEAM_GAP_WEIGHT` (2.0) × allied gap. Orbital Ring's fixed 120° pole gap caps the allied gap at 60°; boundaries share the rest. Result: nearest enemy ≥ 1.73 × nearest ally (2v2), 1.85–1.93 (3v3/4v4/2v2v2).
+- Medium/Large never use the boundary exchange (second bank re-rolls grouped layouts). Small keeps equal spacing + exchange (`Mandalore` Small4 seed 0 depends on it).
+- Legacy Open Field (≤4 players, Medium/Large): `StationPlacer.PullAlliedCorners` slides allied edge-sharing corners toward each other along the shared edge in 5 % steps until enemy ≥ 1.5 × ally. 3v1 is left unpulled (asymmetric pull breaks mirrored relay pairs). Rosters without allies → identical output.
+- Known gap: Twin Pass uneven rosters (3v1 0.70, 2v2v2 0.37) and Twin Pass 2v2 (1.43) are below 1.5; Small Twin Pass 4-player fails generation on seeds 0–2 (points=120) — pre-existing.
 - Mirrored additional groups require balanced teams and actual opposing reflected station partners. Odd, uneven or asymmetric station layouts use independent groups with the same total relay count.
 - `BattleSaveValidator` computes counts through the same legacy/archetype branch as generation.
 

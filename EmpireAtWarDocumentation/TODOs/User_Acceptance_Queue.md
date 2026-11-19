@@ -20,6 +20,11 @@ created: "2026-10-29\r"
 - [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — In battle, attack with a Venator + its squadrons: confirm the fighters stay with the ships until the attack zone, then fly their own passes.
 - [ ] [[Done/Features/Group_Attack_Speed_Matching_Plan]] — Run `BattleInput` and `Squadrons` EditMode categories (`UnitOrderServiceTests`, `FighterFlightTests`) when authorized; compile passed.
 
+## Map Generation
+
+- [ ] [[Done/Bugs/Map_Enemy_Station_Near_Allies_Fix]] — Run `Map` (quick) then `MapGeneration` (explicit, 3 seeds) EditMode when authorized; Unity compile passed, tests not run.
+- [ ] [[Done/Bugs/Map_Enemy_Station_Near_Allies_Fix]] — In game: Medium + Large, 2v2 + 3v3, one Open Field planet (Coruscant) and one Orbital Ring planet (Alderaan/Endor): allies together, enemies clearly farther.
+
 ## Content Removal
 
 - [ ] [[Done/Refactoring/ISDIII_Thranta_Removal]] — Run `Ships`, `Health`, `Navigation`, `Combat`, `GameFlow`, `Ui`, `Audio` EditMode categories when authorized; source review and Unity compilation passed.
