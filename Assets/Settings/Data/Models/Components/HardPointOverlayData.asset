@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EmpireAtWar.Components.Ship.Health.HardPointOverlay.HardPointOverlayData
   <MaxCameraHeight>k__BackingField: 1000
   entries:
-  - icon: {fileID: 21300000, guid: 2e60ab884151e074caf67bb570ba533b, type: 3}
+  - icon: {fileID: 21300000, guid: 7d23e5d5bf53486889c0436b0c326260, type: 3}
     displayName: Ion Pulse Cannon
     description: Destroying this cannon prevents Ion Pulse from firing from this
       side.
@@ -31,7 +31,7 @@ MonoBehaviour:
     displayName: Shield Generator
     description: Destroying it collapses the ship's shields for good.
     hardPointType: 2
-  - icon: {fileID: 21300000, guid: 5ad1f04dcc37ae540aee98855aadce92, type: 3}
+  - icon: {fileID: 21300000, guid: cfc80631588c45b9b7b51f528752336c, type: 3}
     displayName: Supply Dock
     description: Destroyable supply-dock section. Resupply is not yet implemented.
     hardPointType: 5
@@ -39,7 +39,7 @@ MonoBehaviour:
     displayName: Hangar
     description: Destroying it stops fighter launches.
     hardPointType: 4
-  - icon: {fileID: 21300000, guid: e8a5df89602a9cd458a9a619ba30ab56, type: 3}
+  - icon: {fileID: 21300000, guid: 185a86f448284d48ad561e5cb7619717, type: 3}
     displayName: Tractor Beam Mount
     description: Destroyable tractor-beam mount. Tractor Beam is not yet operational.
     hardPointType: 7
@@ -47,19 +47,19 @@ MonoBehaviour:
     displayName: Hull Section
     description: Structural section of the hull.
     hardPointType: 3
-  - icon: {fileID: 21300000, guid: e85f0391617ebec40a9db56824234617, type: 3}
+  - icon: {fileID: 21300000, guid: e200639896af4c818e577a1ebfdf0666, type: 3}
     displayName: Point Defense
     description: Destroying it removes the ship's anti-fighter screen.
     hardPointType: 8
-  - icon: {fileID: 21300000, guid: e85f0391617ebec40a9db56824234617, type: 3}
+  - icon: {fileID: 21300000, guid: 98bf53c5af9d478d9940b6563204bc6e, type: 3}
     displayName: Missile Defense
     description: Destroying it stops missiles and torpedoes from being shot down.
     hardPointType: 9
-  - icon: {fileID: 21300000, guid: c75079b4b4d09794b8a289fefb0d3b53, type: 3}
+  - icon: {fileID: 21300000, guid: d1de263d3aba4ee6b7dfb76b8707f6e9, type: 3}
     displayName: Sensor Array
     description: Destroying it disables Sensor Jamming.
     hardPointType: 10
-  - icon: {fileID: 21300000, guid: 937b502e2d2d8684ca9920ab2b5d9a0d, type: 3}
+  - icon: {fileID: 21300000, guid: d39422e711d74b21a56ac7724ce1d0ef, type: 3}
     displayName: Command Array
     description: Destroying it disables Fighter Coordination.
     hardPointType: 11
