@@ -145,7 +145,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.3
+    widthMultiplier: 0.5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -221,9 +221,9 @@ MonoBehaviour:
   healthWeight: 1
   <HardPointType>k__BackingField: 9
   <Id>k__BackingField: 8
-  range: 40
-  reload: 0.6
-  interceptChance: 0.5
+  range: 80
+  reload: 0.1
+  interceptChance: 0.2
   laser: {fileID: 6058865388177104334}
 --- !u!1 &991518308136074001
 GameObject:
@@ -1622,7 +1622,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.3
+    widthMultiplier: 0.5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -1698,9 +1698,9 @@ MonoBehaviour:
   healthWeight: 1
   <HardPointType>k__BackingField: 9
   <Id>k__BackingField: 13
-  range: 40
-  reload: 0.6
-  interceptChance: 0.5
+  range: 80
+  reload: 0.1
+  interceptChance: 0.2
   laser: {fileID: 2716531027545119861}
 --- !u!1 &2834875323502563206
 GameObject:
@@ -1903,7 +1903,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.3
+    widthMultiplier: 0.5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -1979,9 +1979,9 @@ MonoBehaviour:
   healthWeight: 1
   <HardPointType>k__BackingField: 9
   <Id>k__BackingField: 11
-  range: 40
-  reload: 0.6
-  interceptChance: 0.5
+  range: 80
+  reload: 0.1
+  interceptChance: 0.2
   laser: {fileID: 2173783476562552988}
 --- !u!1 &3626833474375970416
 GameObject:
@@ -2285,7 +2285,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.3
+    widthMultiplier: 0.5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -2361,9 +2361,9 @@ MonoBehaviour:
   healthWeight: 1
   <HardPointType>k__BackingField: 9
   <Id>k__BackingField: 12
-  range: 40
-  reload: 0.6
-  interceptChance: 0.5
+  range: 80
+  reload: 0.1
+  interceptChance: 0.2
   laser: {fileID: 6006552695018143239}
 --- !u!1 &5214177776219473049
 GameObject:
@@ -2710,7 +2710,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.3
+    widthMultiplier: 0.5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -2786,9 +2786,9 @@ MonoBehaviour:
   healthWeight: 1
   <HardPointType>k__BackingField: 9
   <Id>k__BackingField: 9
-  range: 40
-  reload: 0.6
-  interceptChance: 0.5
+  range: 80
+  reload: 0.1
+  interceptChance: 0.2
   laser: {fileID: 5627162614929766788}
 --- !u!1 &7928498010589841842
 GameObject:
@@ -2877,7 +2877,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.3
+    widthMultiplier: 0.5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -2953,9 +2953,9 @@ MonoBehaviour:
   healthWeight: 1
   <HardPointType>k__BackingField: 9
   <Id>k__BackingField: 10
-  range: 40
-  reload: 0.6
-  interceptChance: 0.5
+  range: 80
+  reload: 0.1
+  interceptChance: 0.2
   laser: {fileID: 5295842921065711952}
 --- !u!1 &7943932477870825674
 GameObject:
@@ -3391,6 +3391,7 @@ MonoBehaviour:
   <SquadronFlight>k__BackingField: {fileID: 0}
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
+  <GravityWellEmitter>k__BackingField: {fileID: 0}
   <Injectables>k__BackingField:
   - {fileID: 334406596647582418}
   - {fileID: 5046764416423127508}

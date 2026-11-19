@@ -197,6 +197,8 @@ namespace EmpireAtWar.Tests.Editor
         // Phase 0 baseline (2f45f1371): the former Long range class gave the Long guns ×1.2 accuracy, now folded into damage.
         // Heavy caliber damage multiplier later raised 2.2 → 2.86 (aae27525d): ×1.3 on heavy guns.
         // Warhead rebalance (8ab5e40f0): heavy rocket baseline damage reduced from 93.75 to 75.
+        // Projectile visual reduction (2026-11-19): missiles fire 1 shot per doubled reload with the salvo's damage,
+        // so the baseline is held as sustained damage per second, not as shots and reload.
         [TestCase(WeaponType.HeavyArtilleryRocket, 75f, 1.2f, HEAVY_CALIBER_RAISE, 4, 10f, 1072.5f)]
         [TestCase(WeaponType.ExecutorHeavyTurbolaser, 37.5f, 1.2f, HEAVY_CALIBER_RAISE, 3, 8f, 877.5f)]
         [TestCase(WeaponType.ExecutorHeavyDualTurbolaser, 75f, 1.2f, HEAVY_CALIBER_RAISE, 3, 8f, 877.5f)]
@@ -211,9 +213,8 @@ namespace EmpireAtWar.Tests.Editor
             WeaponProfile profile = Weapons.GetProfile(type);
             if (definition.Scope == WeaponScope.Unit) Assert.That(definition.Unit, Is.EqualTo(nameof(ShipType.Executor)));
 
-            Assert.That(profile.Damage, Is.EqualTo(baselineDamage * foldedAccuracy * caliberRaise).Within(0.001f));
-            Assert.That(profile.ShotsPerSalvo, Is.EqualTo(shots));
-            Assert.That(profile.Reload, Is.EqualTo(reload).Within(0.001f));
+            float baselineDps = baselineDamage * foldedAccuracy * caliberRaise * shots / reload;
+            Assert.That(profile.DamagePerSecond, Is.EqualTo(baselineDps).Within(baselineDps * 0.001f));
             Assert.That(profile.Range, Is.EqualTo(range).Within(0.01f));
         }
 

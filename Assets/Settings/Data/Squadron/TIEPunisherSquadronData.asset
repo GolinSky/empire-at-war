@@ -38,9 +38,6 @@ MonoBehaviour:
   <LeaderShields>k__BackingField: 0
   <ProtectLeaderUntilEscortsLost>k__BackingField: 0
   <Abilities>k__BackingField: 
-  <SeekerWarheadRange>k__BackingField: 0
-  <SeekerWarheadRecharge>k__BackingField: 10
-  <SeekerWarheadMinimumTravel>k__BackingField: 10
   <Range>k__BackingField: 350
   <Delay>k__BackingField: 0.25
   <VisionRange>k__BackingField: 350

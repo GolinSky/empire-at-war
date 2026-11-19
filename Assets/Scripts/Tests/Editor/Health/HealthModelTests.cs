@@ -84,6 +84,52 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void PointDefense_RollsOncePerMissile()
+        {
+            HealthModel model = CreateModel(SHIELDS, out _, out _, out _);
+            CombatModifiers modifiers = new CombatModifiers();
+            IncomingMissileRegistry missiles = new IncomingMissileRegistry();
+            GameObject mountObject = new GameObject("PointDefense");
+            try
+            {
+                const BindingFlags PRIVATE_INSTANCE = BindingFlags.Instance | BindingFlags.NonPublic;
+                HealthComponent health = mountObject.AddComponent<HealthComponent>();
+                typeof(HealthComponent).GetMethod("Construct", PRIVATE_INSTANCE)
+                    .Invoke(health, new object[] { model, modifiers, mountObject.transform, TestPlayers.Human });
+                IncomingMissile first = missiles.Launch(health, Vector3.forward, 100f);
+                MissileInterceptorHardPoint mount = mountObject.AddComponent<MissileInterceptorHardPoint>();
+                LineRenderer laser = mountObject.AddComponent<LineRenderer>();
+                laser.positionCount = 2;
+                laser.enabled = false;
+                FieldInfo chance = typeof(MissileInterceptorHardPoint).GetField("interceptChance", PRIVATE_INSTANCE);
+                typeof(MissileInterceptorHardPoint).GetField("laser", PRIVATE_INSTANCE).SetValue(mount, laser);
+                chance.SetValue(mount, 0f);
+                typeof(MissileInterceptorHardPoint).GetMethod("Construct", PRIVATE_INSTANCE)
+                    .Invoke(mount, new object[] { missiles, health, modifiers });
+                MethodInfo update = typeof(MissileInterceptorHardPoint).GetMethod("Update", PRIVATE_INSTANCE);
+                object reloadTimer = typeof(MissileInterceptorHardPoint).GetField("_reloadTimer", PRIVATE_INSTANCE).GetValue(mount);
+                FieldInfo timerEnd = reloadTimer.GetType().GetField("_timer", PRIVATE_INSTANCE);
+
+                timerEnd.SetValue(reloadTimer, float.NegativeInfinity);
+                update.Invoke(mount, null);
+                Assert.That(first.IsIntercepted, Is.False);
+
+                chance.SetValue(mount, 1f);
+                timerEnd.SetValue(reloadTimer, float.NegativeInfinity);
+                update.Invoke(mount, null);
+                Assert.That(first.IsIntercepted, Is.False, "A mount must not roll twice on the same missile.");
+
+                IncomingMissile second = missiles.Launch(health, Vector3.forward, 100f);
+                update.Invoke(mount, null);
+                Assert.That(second.IsIntercepted, Is.True, "A new missile still gets its own roll.");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(mountObject);
+            }
+        }
+
+        [Test]
         public void InitializeHardPoints_UsesHealthPerHardPointType()
         {
             HealthModel model = CreateModel(SHIELDS, out HardPointModel weapon, out HardPointModel engine,

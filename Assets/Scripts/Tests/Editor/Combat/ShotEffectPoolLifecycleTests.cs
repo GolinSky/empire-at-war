@@ -335,7 +335,7 @@ namespace EmpireAtWar.Tests.Weapon
         [TestCase(WeaponFamily.Torpedo)]
         [TestCase(WeaponFamily.IonTorpedo)]
         [TestCase(WeaponFamily.FighterTorpedo)]
-        public void LargeTorpedo_KeepsCompactLaunchFlashAndLongTrail(WeaponFamily family)
+        public void LargeTorpedo_KeepsCompactLaunchFlashAndUncappedTrail(WeaponFamily family)
         {
             var weapons = AssetDatabase.LoadAssetAtPath<WeaponsData>(
                 "Assets/Settings/Data/Models/Weapon/WeaponsData.asset");
@@ -357,7 +357,11 @@ namespace EmpireAtWar.Tests.Weapon
 
                 Assert.That(head.main.startSize.constant, Is.EqualTo(9f).Within(0.001f));
                 Assert.That(trail.main.startSize.constant, Is.EqualTo(5.4f).Within(0.001f));
-                Assert.That(trail.main.startLifetime.constant, Is.EqualTo(0.54f).Within(0.001f));
+                // The particle cap must hold a whole trail at flight speed, or the trail is cut short mid-flight.
+                float liveParticles = trail.emission.rateOverDistance.constant * trail.main.startLifetime.constant *
+                                      profile.ProjectileSpeed;
+                Assert.That(trail.main.startLifetime.constant, Is.GreaterThan(0f));
+                Assert.That(trail.main.maxParticles, Is.GreaterThanOrEqualTo(Mathf.CeilToInt(liveParticles)));
                 Assert.That(line.widthMultiplier, Is.EqualTo(3.6f).Within(0.001f));
                 Assert.That(Vector3.Distance(line.GetPosition(0), line.GetPosition(1)),
                     Is.EqualTo(7.2f).Within(0.001f));

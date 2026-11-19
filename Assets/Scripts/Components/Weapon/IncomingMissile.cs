@@ -1,5 +1,5 @@
 using System;
-using EmpireAtWar.Components.AttackComponent;
+using System.Collections.Generic;
 using EmpireAtWar.Models.Health;
 using UnityEngine;
 
@@ -11,28 +11,32 @@ namespace EmpireAtWar.Components.Weapon
     /// </summary>
     public sealed class IncomingMissile
     {
-        private readonly Vector3 _origin;
         private readonly float _impactTime;
+        private List<object> _attemptedBy;
 
         public event Action Intercepted;
 
         public IHealthModelObserver TargetHealth { get; }
-        public DamageType DamageType { get; }
         public Vector3 Position { get; private set; }
         public bool IsIntercepted { get; private set; }
-        public float DistanceTravelled => Vector3.Distance(_origin, Position);
 
-        public IncomingMissile(IHealthModelObserver targetHealth, Vector3 origin, float launchTime, float travelTime,
-            DamageType damageType = DamageType.ConcussionMissile)
+        public IncomingMissile(IHealthModelObserver targetHealth, Vector3 origin, float launchTime, float travelTime)
         {
             TargetHealth = targetHealth;
-            DamageType = damageType;
-            _origin = origin;
             _impactTime = launchTime + travelTime;
             Position = origin;
         }
 
         public bool HasLanded(float now) => now >= _impactTime;
+
+        /// <summary>Each point-defense mount gets one interception roll per missile.</summary>
+        public bool WasAttemptedBy(object interceptor) => _attemptedBy != null && _attemptedBy.Contains(interceptor);
+
+        public void RecordAttempt(object interceptor)
+        {
+            _attemptedBy ??= new List<object>(2);
+            _attemptedBy.Add(interceptor);
+        }
 
         public void ReportPosition(Vector3 position)
         {

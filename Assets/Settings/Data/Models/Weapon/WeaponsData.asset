@@ -117,10 +117,10 @@ MonoBehaviour:
   - family: 4
     platform: 0
     damageType: 5
-    damage: 32
-    shotsPerSalvo: 4
+    damage: 256
+    shotsPerSalvo: 1
     shotInterval: 0.25
-    reload: 5
+    reload: 10
     range: 550
     strikecraftOnly: 0
     preferredTarget: 2
@@ -133,17 +133,17 @@ MonoBehaviour:
     multiBarrelShotPrefab: {fileID: 0}
     quadShotPrefab: {fileID: 0}
     octupleShotPrefab: {fileID: 0}
-    projectileSpeed: 45.5
+    projectileSpeed: 91
     factionColored: 0
     color: {r: 1, g: 0.55, b: 0.1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
   - family: 5
     platform: 0
     damageType: 6
-    damage: 72
-    shotsPerSalvo: 2
+    damage: 288
+    shotsPerSalvo: 1
     shotInterval: 0.4
-    reload: 6
+    reload: 12
     range: 350
     strikecraftOnly: 0
     preferredTarget: 2
@@ -156,17 +156,17 @@ MonoBehaviour:
     multiBarrelShotPrefab: {fileID: 0}
     quadShotPrefab: {fileID: 0}
     octupleShotPrefab: {fileID: 0}
-    projectileSpeed: 32.5
+    projectileSpeed: 65
     factionColored: 0
     color: {r: 0.3, g: 0.6, b: 1, a: 1}
     size: {x: 9, y: 9, z: 9}
   - family: 6
     platform: 0
     damageType: 4
-    damage: 51.2
+    damage: 102.4
     shotsPerSalvo: 1
     shotInterval: 0
-    reload: 7.5
+    reload: 15
     range: 350
     strikecraftOnly: 0
     preferredTarget: 2
@@ -179,7 +179,7 @@ MonoBehaviour:
     multiBarrelShotPrefab: {fileID: 0}
     quadShotPrefab: {fileID: 0}
     octupleShotPrefab: {fileID: 0}
-    projectileSpeed: 32.5
+    projectileSpeed: 65
     factionColored: 0
     color: {r: 0.3, g: 0.7, b: 1, a: 1}
     size: {x: 9, y: 9, z: 9}
@@ -303,7 +303,7 @@ MonoBehaviour:
     multiBarrelShotPrefab: {fileID: 0}
     quadShotPrefab: {fileID: 0}
     octupleShotPrefab: {fileID: 0}
-    projectileSpeed: 45.5
+    projectileSpeed: 91
     factionColored: 0
     color: {r: 1, g: 0.55, b: 0.1, a: 1}
     size: {x: 1.2, y: 1.2, z: 1.2}
@@ -326,7 +326,7 @@ MonoBehaviour:
     multiBarrelShotPrefab: {fileID: 0}
     quadShotPrefab: {fileID: 0}
     octupleShotPrefab: {fileID: 0}
-    projectileSpeed: 32.5
+    projectileSpeed: 65
     factionColored: 0
     color: {r: 0.3, g: 0.6, b: 1, a: 1}
     size: {x: 9, y: 9, z: 9}

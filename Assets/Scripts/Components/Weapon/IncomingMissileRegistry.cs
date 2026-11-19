@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using EmpireAtWar.Components.AttackComponent;
 using EmpireAtWar.Models.Health;
 using EmpireAtWar.Models.Players;
 using UnityEngine;
@@ -14,17 +13,18 @@ namespace EmpireAtWar.Components.Weapon
         private readonly List<IncomingMissile> _missiles = new List<IncomingMissile>();
         public void Clear() => _missiles.Clear();
 
-        public IncomingMissile Launch(IHealthModelObserver targetHealth, Vector3 origin, float travelTime,
-            DamageType damageType = DamageType.ConcussionMissile)
+        public IncomingMissile Launch(IHealthModelObserver targetHealth, Vector3 origin, float travelTime)
         {
-            IncomingMissile missile = new IncomingMissile(targetHealth, origin, Time.time, travelTime, damageType);
+            IncomingMissile missile = new IncomingMissile(targetHealth, origin, Time.time, travelTime);
             _missiles.Add(missile);
             return missile;
         }
 
-        /// <summary>Finds the nearest missile in range that is heading for a ship of <paramref name="owner"/>.</summary>
-        public bool TryFindThreat(PlayerId owner, Vector3 position, float range, out IncomingMissile threat,
-            DamageType? damageType = null, float minimumTravel = 0f)
+        /// <summary>
+        /// Finds the nearest missile in range that is heading for a ship of <paramref name="owner"/>
+        /// and that <paramref name="interceptor"/> has not tried to shoot down yet.
+        /// </summary>
+        public bool TryFindThreat(PlayerId owner, Vector3 position, float range, object interceptor, out IncomingMissile threat)
         {
             float now = Time.time;
             float bestDistance = range * range;
@@ -32,8 +32,7 @@ namespace EmpireAtWar.Components.Weapon
             foreach (IncomingMissile missile in _missiles)
             {
                 if (!IsInFlight(missile, now) || missile.TargetHealth.Owner != owner) continue;
-                if (damageType.HasValue && missile.DamageType != damageType.Value) continue;
-                if (minimumTravel > 0f && missile.DistanceTravelled < minimumTravel) continue;
+                if (missile.WasAttemptedBy(interceptor)) continue;
                 float distance = (missile.Position - position).sqrMagnitude;
                 if (distance > bestDistance) continue;
                 bestDistance = distance;

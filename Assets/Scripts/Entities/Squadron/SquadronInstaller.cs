@@ -51,8 +51,6 @@ namespace EmpireAtWar.Entities.Squadrons
             builder.Register<CombatModifiers>(Lifetime.Singleton);
             builder.Register<CombatModifiersFacade>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SquadronHealthModel>(Lifetime.Singleton);
-            if (Data.SeekerWarheadRange > 0f)
-                builder.Register<SeekerWarheadCountermeasure>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.Register<SquadronFlightModel>(Lifetime.Singleton);
             builder.Register<SFoilsModel>(Lifetime.Singleton);
             if (System.Array.IndexOf(Data.Abilities, ShipAbilityId.LockSFoils) >= 0)

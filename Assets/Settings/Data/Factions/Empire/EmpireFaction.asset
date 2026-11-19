@@ -424,8 +424,8 @@ MonoBehaviour:
         description: Ten TIE Avengers. Each fighter has 64 hull, 12 shields, two
           light repeating lasers and two concussion-missile launchers. Boost Weapon
           Power halves weapon reload and time between shots and halves speed and
-          shield regeneration for 7 s. Recovers in 50 s. Seeker Warhead Countermeasure
-          automatically intercepts incoming missiles. Weapons are not separately
+          shield regeneration for 7 s. Recovers in 50 s.
+          Weapons are not separately
           targetable. Each surviving craft regenerates 0.095 shield HP/s.
         role: Fighter / Fast attack
         iconKey: 3ebf9b17840b8ee4daae27c4f063d4af:21300000

@@ -87,8 +87,9 @@ namespace EmpireAtWar.Editor.Balance
                 : "CruiseSpeed CombatSpeed Acceleration TurnRate MaxBankAngle BankResponse Height FormationSpacing LoiterRadius NavigationRadius GuardRadius BreakDistance ExtendDistance";
             registry.AutoFields(data, "", "", combat, BalanceFieldGroup.Combat, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit });
             registry.AutoFields(data, "", "", movement, BalanceFieldGroup.Movement, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit });
-            string hangar = ship ? "HangarInitialDelay HangarLaunchInterval" : "SeekerWarheadRange SeekerWarheadRecharge SeekerWarheadMinimumTravel";
-            registry.AutoFields(data, "", "", hangar, BalanceFieldGroup.Hangar, unit.Name, BalanceFieldOwner.UnitData, false, new[] { unit });
+            if (ship)
+                registry.AutoFields(data, "", "", "HangarInitialDelay HangarLaunchInterval", BalanceFieldGroup.Hangar, unit.Name,
+                    BalanceFieldOwner.UnitData, false, new[] { unit });
             registry.Add(data, "Abilities", ship ? "abilities" : BalanceRegistration.Auto("Abilities"), BalanceFieldGroup.Advanced, unit.Name,
                 BalanceFieldOwner.UnitData, false, new[] { unit }, typeof(ShipAbilityId));
             if (ship)

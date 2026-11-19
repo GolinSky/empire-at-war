@@ -724,7 +724,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.3
+    widthMultiplier: 0.5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -800,9 +800,9 @@ MonoBehaviour:
   healthWeight: 1
   <HardPointType>k__BackingField: 9
   <Id>k__BackingField: 6
-  range: 40
-  reload: 0.6
-  interceptChance: 0.5
+  range: 80
+  reload: 0.1
+  interceptChance: 0.3
   laser: {fileID: 807200053235814332}
 --- !u!1 &5417478505210667754
 GameObject:
@@ -1282,6 +1282,7 @@ MonoBehaviour:
   <SquadronFlight>k__BackingField: {fileID: 0}
   <SquadronIcon>k__BackingField: {fileID: 0}
   <SFoils>k__BackingField: {fileID: 0}
+  <GravityWellEmitter>k__BackingField: {fileID: 0}
   <Injectables>k__BackingField:
   - {fileID: 637827819061471777}
   - {fileID: 600897578550753641}
@@ -2936,7 +2937,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.3
+    widthMultiplier: 0.5
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -3012,9 +3013,9 @@ MonoBehaviour:
   healthWeight: 1
   <HardPointType>k__BackingField: 9
   <Id>k__BackingField: 8
-  range: 40
-  reload: 0.6
-  interceptChance: 0.5
+  range: 80
+  reload: 0.1
+  interceptChance: 0.3
   laser: {fileID: 5415309836613409965}
 --- !u!1 &8518794534534407677
 GameObject:
