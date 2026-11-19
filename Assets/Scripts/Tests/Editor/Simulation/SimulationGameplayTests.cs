@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
@@ -221,7 +222,7 @@ namespace EmpireAtWar.Tests.Editor
                 Calls++;
                 foreach (IEntity receiver in receivers) Targets.Add(receiver.Id, target.Id);
             }
-            public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point) => throw new NotSupportedException();
+            public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) => throw new NotSupportedException();
             public void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) => throw new NotSupportedException();
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets) => throw new NotSupportedException();
             public void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId) => throw new NotSupportedException();

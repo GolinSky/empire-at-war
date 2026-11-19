@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Map;
 using EmpireAtWar.Entities.Map.Hazards;
 using EmpireAtWar.Entities.Units;
@@ -205,10 +206,11 @@ namespace EmpireAtWar.Tests.Editor
             public Transform Transform { get; }
             public Vector3 WorldPosition => Transform.position;
             public float NavigationRadius => 1f;
+            public float PaceSpeed => 30f;
             public bool IsArriving { get; set; }
             public TestEntity(Transform transform) => Transform = transform;
             public void MoveTo(Vector2 screenPosition) => throw new NotSupportedException();
-            public void MoveTo(Vector3 worldPosition) => Transform.position = worldPosition;
+            public void MoveTo(Vector3 worldPosition, PaceCluster pace = null) => Transform.position = worldPosition;
             public TFacade GetFacade<TFacade>() where TFacade : IEntityFacade =>
                 this is TFacade facade ? facade : throw new InvalidOperationException();
             public bool TryGetFacade<TFacade>(out TFacade facade) where TFacade : IEntityFacade

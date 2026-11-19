@@ -42,6 +42,7 @@ namespace EmpireAtWar.Entities.Ship.StateMachine
         private bool _hasSearched;
 
         public bool IsComplete => _engagementTarget == null && _hasSearched && !_movement.IsMoving;
+        public bool IsEngaging => _engagementTarget != null;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         internal IEntity EngagementTarget => _engagementTarget;

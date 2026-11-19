@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.MiniMap;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
@@ -66,7 +67,7 @@ namespace EmpireAtWar.Tests.Editor
                 cameraService: _camera, layerService: null, abilities: _abilities, targeting: _targeting, playerOrders: _orders, superWeapons: new SuperWeaponTargetingModel(),
                 hardPointHover: _hardPointHover,
                 localPlayer: TestPlayers.CreateLocalPlayer(TestPlayers.CreateDuel()), battleAreas: _areas,
-                siteDirectories: Array.Empty<ICaptureSiteDirectory>());
+                siteDirectories: Array.Empty<ICaptureSiteDirectory>(), pointerInput: _input);
             _handler.Initialize();
         }
 
@@ -539,11 +540,33 @@ namespace EmpireAtWar.Tests.Editor
             public IDisposable AcquireBattle() => throw new NotSupportedException();
         }
 
+        [Test]
+        public void DoubleRightClickMove_IssuesLooseMove_WhileSingleRightClickIssuesFormation()
+        {
+            _query.ReturnEnemy = false;
+
+            _input.ClickCount = 1;
+            _input.RightClick(new Vector2(10f, 20f));
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Move));
+            Assert.That(_orders.LastPace, Is.EqualTo(MovePace.Formation));
+
+            _input.ClickCount = 2;
+            _input.RightClick(new Vector2(10f, 20f));
+            Assert.That(_orders.LastAction, Is.EqualTo(UnitActionId.Move));
+            Assert.That(_orders.LastPace, Is.EqualTo(MovePace.Loose));
+        }
+
         private void RegisterSite() =>
             _areas.Register(BattleAreaLayer.OrderSnap, PlayerId.None, _siteView.transform, 5f);
 
-        private sealed class FakeInput : IPointerGestures, IUnitOrderInput
+        private sealed class FakeInput : IPointerGestures, IUnitOrderInput, IPointerInput
         {
+            public event Action<Vector2> PrimaryPressed { add { } remove { } }
+            public event Action<Vector2> PrimaryReleased { add { } remove { } }
+            public Vector2 Position => default;
+            public bool HasPosition => true;
+            public int ClickCount { get; set; } = 1;
+
             public event Action<Vector2> WorldPressed { add { } remove { } }
 
             public event Action<Vector2> WorldClicked { add { } remove { } }
@@ -698,11 +721,12 @@ namespace EmpireAtWar.Tests.Editor
             public UnitActionId? LastAction { get; set; }
             public IEntity LastTarget { get; private set; }
             public Vector3 LastPoint { get; private set; }
+            public MovePace LastPace { get; private set; }
             public int WaypointCount { get; private set; }
             public int LastHardPointId { get; private set; } = -1;
 
-            public void IssueMove(IReadOnlyList<IEntity> units, Vector3 point)
-            { LastAction = UnitActionId.Move; LastPoint = point; }
+            public void IssueMove(IReadOnlyList<IEntity> units, Vector3 point, MovePace pace = MovePace.Formation)
+            { LastAction = UnitActionId.Move; LastPoint = point; LastPace = pace; }
 
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target)
             { LastAction = UnitActionId.Attack; LastTarget = target; }
@@ -758,10 +782,11 @@ namespace EmpireAtWar.Tests.Editor
             private readonly Transform _transform;
             public Vector3 WorldPosition => _transform.position;
             public float NavigationRadius => 1f;
+            public float PaceSpeed => 10f;
 
             public FakeWaypointCommand(Transform transform) => _transform = transform;
             public void MoveTo(Vector2 screenPosition) { }
-            public void MoveTo(Vector3 worldPosition) { }
+            public void MoveTo(Vector3 worldPosition, PaceCluster pace = null) { }
             public void MoveAlong(IReadOnlyList<Vector3> waypoints) { }
         }
 

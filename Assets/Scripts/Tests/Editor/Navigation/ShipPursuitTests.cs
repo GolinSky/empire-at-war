@@ -164,8 +164,8 @@ namespace EmpireAtWar.Tests.Movement
                 ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
                     new ShipStateMachine(), new IdleState(_movement, _weapon, radar), null, attack, null, null, null,
                     null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
-                GroupPace pace = new GroupPace();
-                float slower = _movement.PaceSpeed * 0.5f;
+                PaceCluster pace = new PaceCluster();
+                float slower = _movement.PaceSpeed * 0.8f;
                 pace.Join(slower);
                 runner.Start();
 
@@ -186,6 +186,62 @@ namespace EmpireAtWar.Tests.Movement
 
                 Assert.That(_movement.SpeedCap, Is.EqualTo(float.PositiveInfinity));
                 Assert.That(pace.Pace, Is.EqualTo(float.PositiveInfinity), "The ship must have left the group.");
+            }
+            finally
+            {
+                abilities.Clear();
+            }
+        }
+
+        [Test]
+        public void MovePace_LagCorrectionStuckReleaseAndDoubleClickDrop()
+        {
+            AbilityCaster caster = new AbilityCaster(_target, _movement, ShipAbilityId.BoostEnginePower);
+            var abilityRelations = TestPlayers.CreateDuel();
+            ShipAbilityService abilities = new ShipAbilityService(new AbilityFactory(new RecordingAbility()),
+                abilityRelations, new VisionService(abilityRelations, fogEnabled: false));
+            try
+            {
+                Radar radar = new Radar();
+                NavigateState navigate = new NavigateState(_movement);
+                ShipOrderRunner runner = new ShipOrderRunner(_movement, _weapon, null, new UnitOrderModel(),
+                    new ShipStateMachine(), new IdleState(_movement, _weapon, radar), navigate, null, null, null, null,
+                    null, abilities, caster, radar, null, new NoTeamContacts(), TestPlayers.Human);
+                PaceClusterTuning tuning = PaceClusterTuning.Default;
+                PaceCluster cluster = new PaceCluster(orderId: 1, issuePace: 20f, tuning: tuning);
+                _movement.PaceSpeed = 30f;
+                _movement.CurrentSpeed = 20f;
+                Vector3 destination = new Vector3(1000f, 0f, 0f);
+                // Partner is far behind so this ship leads by more than LeadTolerance.
+                int partner = cluster.Join(20f, remaining: 1000f);
+                _movement.CurrentPosition = new Vector3(500f, 0f, 0f);
+                runner.Start();
+
+                runner.MoveTo(destination, cluster);
+                runner.Tick(0.1f);
+                Assert.That(_movement.SpeedCap, Is.LessThan(20f), "Ship leading the cluster should slow down.");
+
+                // Partner moves far ahead so this ship is behind and runs uncapped to catch up.
+                cluster.Report(partner, 20f, remaining: 50f);
+                runner.Tick(0.1f);
+                Assert.That(_movement.SpeedCap, Is.EqualTo(float.PositiveInfinity), "Ship lagging behind should run uncapped.");
+
+                // Re-issuing MoveTo the same destination with null pace (double right-click) drops pace immediately.
+                cluster.Report(partner, 20f, remaining: 500f);
+                runner.Tick(0.1f);
+                Assert.That(_movement.SpeedCap, Is.EqualTo(20f));
+                runner.MoveTo(destination, null);
+                Assert.That(_movement.SpeedCap, Is.EqualTo(float.PositiveInfinity));
+                Assert.That(cluster.MemberCount, Is.EqualTo(1));
+
+                // Rejoin and simulate stuck ship: releases cap immediately and detaches after StuckDetachTime.
+                runner.MoveTo(destination, cluster);
+                _movement.CurrentSpeed = 0f;
+                runner.Tick(1f);
+                Assert.That(_movement.SpeedCap, Is.EqualTo(float.PositiveInfinity));
+                Assert.That(cluster.MemberCount, Is.EqualTo(2));
+                runner.Tick(tuning.StuckDetachTime + 0.1f);
+                Assert.That(cluster.MemberCount, Is.EqualTo(1));
             }
             finally
             {
@@ -1268,10 +1324,12 @@ namespace EmpireAtWar.Tests.Movement
             public Vector3 CurrentPosition { get; set; }
             public Vector3 Destination { get; private set; }
             public bool IsMoving { get; private set; }
+            public bool IsArriving { get; set; }
             public bool FailMoves { get; set; }
             public bool LastPreserveCourse { get; private set; }
             public float NavigationRadius { get; set; } = 5f;
             public int MoveCount { get; private set; }
+            public float CurrentSpeed { get; set; } = 10f;
             public float PaceSpeed { get; set; } = 10f;
             public float SpeedCap { get; private set; } = float.PositiveInfinity;
             public void SetSpeedCap(float cap) => SpeedCap = cap;

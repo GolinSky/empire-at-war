@@ -1,4 +1,5 @@
 using System;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.SuperWeapons;
 using EmpireAtWar.Entities.UnitActions;
@@ -91,11 +92,12 @@ namespace EmpireAtWar.Services.Networking.Messages
             writer.WriteLong(command.TargetId);
             writer.WriteInt(command.TargetHardPointId);
             writer.WriteArray(command.Waypoints);
+            writer.WriteByte((byte)command.Pace);
         }
 
         public static UnitOrderCommand ReadUnitOrderCommand(this NetworkReader reader) => new UnitOrderCommand(
             reader.ReadPlayerId(), (UnitActionId)reader.ReadByte(), reader.ReadArray<long>(), reader.ReadVector3(),
-            reader.ReadLong(), reader.ReadInt(), reader.ReadArray<Vector3>());
+            reader.ReadLong(), reader.ReadInt(), reader.ReadArray<Vector3>(), (MovePace)reader.ReadByte());
 
         public static void WritePurchaseUnitCommand(this NetworkWriter writer, PurchaseUnitCommand command)
         {

@@ -10,7 +10,6 @@
 ### Features
 
 - [ ] **Ship UI: icon double-tap camera focus (off-screen only) + tap group entry → select that single unit** → [[TODOs/Features/Ship_Ui_Icon_Focus_And_Entry_Select|Ship UI Icon Focus & Entry Select]] — 2026-11-19: plan drafted; 3 open questions (hero guard, on-screen behavior, collapsed groups).
-- [ ] **Spatial pace clusters: per-cluster formation speed, double right-click loose move (green wave)** → [[TODOs/Features/Spatial_Pace_Clusters_Plan|Spatial Pace Clusters Plan]] — 2026-11-19: plan drafted; decisions confirmed (Move/Attack/AttackMove clusters, AI included, same-order merge, squadrons break away on engagement, lag correction); ready to implement. Replaces whole-selection `GroupPace` (attack-only today).
 - [ ] **Squadron icon clustering rebuild (screen-space matrix grid, smooth, ship-aware, cheap)** → [[TODOs/Features/Squadron_Icon_Clustering_Rebuild|Squadron Icon Clustering Rebuild]] — 2026-11-18: phases 1–6 implemented and compiled (tests not run); remaining: user capture, station hull obstacles, optional mesh batching.
 - [ ] **Squadron bay rotation: ship-wide active squadron cap (Bulwark = 1)** → [[TODOs/Features/Squadron_Bay_Rotation_Plan|Squadron Bay Rotation Plan]]
   - 2026-11-18: Gemini per-bay data edit reverted (`8925de639`); code/data back to pre-Gemini state. Plan: Phase 1 per-ship `HangarMaxActive` code, Phase 2 values (12 ships → 0, 28 → 1), Phase 3 cap-aware AI/preload readers, Phase 4 rotation for all except Venator/VenatorII/Lucrehulk/Secutor/MC80Independence/HomeOne/ImperialVenator/ISDI/ISDII. Bulwark Mk1 = 0 (confirmed).
@@ -64,6 +63,9 @@
 
 
 ### Bugs
+
+- [ ] **Enemy AI active play + ship combat** → [[TODOs/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]; replaces the blocked UltraHard follow-up
+  - Status: blocked (2026-11-19), reopened after the 10:45 UltraHard battle (acceptance failed). Waiting for [[Done/Features/Spatial_Pace_Clusters_Plan]]. Then R1–R7: production idles 80 s during level 2 + late mining research, critical squadron flood then level-1 corvettes, no real reinforcement reserve, spawns in front of the station, player fleet auto-retarget chain walks forward, raids on one site.
 
 
 
@@ -260,7 +262,7 @@
 ## Superseded Plans
 
 - **UltraHard AI follow-up (22:12 battle) + end-game crash + player ships idle after kill** → [[TODOs/Bugs/Enemy_AI_UltraHard_Followup_And_Ship_Idle]]; follows [[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]] (acceptance failed)
-  - Status: blocked (2026-11-19). Superseded by [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] after the 00:49 battle (AI Medium, idle, no top-left capture, second station, stern-first firing).
+  - Status: blocked (2026-11-19). Superseded by [[TODOs/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] after the 00:49 battle (AI Medium, idle, no top-left capture, second station, stern-first firing).
 
 ## Done
 
@@ -325,11 +327,6 @@
 
 ### Bugs
 
-- [x] **Enemy AI active play + ship combat (00:49 battle)** → [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]; replaces the blocked UltraHard follow-up
-  - Completed 2026-11-19. Unity compilation passed. Source implements mining-first openings, grouped deployments, centre defense, mining raids and in-range firing. Battle and test gates → [[TODOs/User_Acceptance_Queue#Enemy AI Active Play and Ship Combat]].
-
-- [x] **UltraHard AI collapse (2026-11-18 battle) + player Attack order lost to auto-power** → [[Done/Bugs/Enemy_AI_UltraHard_Collapse_And_Attack_Order_Loss]]
-  - Completed 2026-11-18. Six fixes implemented, Unity compilation passed and related fixtures updated. In-game acceptance → [[TODOs/User_Acceptance_Queue]]. Parent → [[TODOs/Bugs/Enemy_AI_And_Faction_Balance]].
 - [x] **Ship ability event throws for destroyed caster (online host, 9× per session)** → [[Done/Bugs/Ship_Ability_Event_Destroyed_Caster]]
   - Completed 2026-11-18: events use stable `EntityId`; regression test added, not run.
 - [x] **Fix 63 EditMode failures from the 2026-11-16 full run (31 from one tutorial-anchor `Destroy`, 4 shared-AI, rest content/HUD/input)** → [[Done/Bugs/EditMode_Failures_2026-11-16_Plan|EditMode Failures 2026-11-16]]
@@ -432,6 +429,8 @@
 
 ### Features
 
+- [x] **Spatial pace clusters: per-cluster formation speed, double right-click loose move (green wave)** → [[Done/Features/Spatial_Pace_Clusters_Plan|Spatial Pace Clusters Plan]]
+  - Completed 2026-11-19, `acceptance: pending-user`. Replaced `GroupPace` with `PaceCluster` + `PaceClusterBuilder` + `PaceClusterMergeService` for `Move` (formation), `Attack`, hard-point attack, and `AttackMove`; lag correction, straggler/stuck detach, double right-click `MovePace.Loose` + green wave feedback (incl. network). Unity compile clean (`0` errors); tests not run (local override). Gates → [[TODOs/User_Acceptance_Queue]].
 - [x] **Group attack speed matching (ships move at slowest selected ship's speed)** → [[Done/Features/Group_Attack_Speed_Matching_Plan|Group Attack Speed Matching Plan]]
   - Completed 2026-11-18, `acceptance: pending-user`. `GroupPace` shared per group `Attack`/hard-point attack (ships only, ≥ 2), `ShipMoveModel.SpeedCap`, release at firing range / new order. Unity compile clean; tests not run (local override). Gates → [[TODOs/User_Acceptance_Queue]].
 - [x] **Interdictor Gravity Well follow-up: anchor ship while active (orders rejected, turn + fire allowed), range ring only when selected, dome generator VFX** → [[Done/Features/Interdictor_Gravity_Well_Anchor_And_Vfx_Plan|Gravity Well Anchor & VFX Plan]]

@@ -42,7 +42,7 @@ namespace EmpireAtWar.Services.PlayerCommands
             switch (command.Action)
             {
                 case UnitActionId.Move:
-                    _orders.IssueMove(receivers, command.Point);
+                    _orders.IssueMove(receivers, command.Point, command.Pace);
                     break;
                 case UnitActionId.AttackMove:
                     _orders.IssueAttackMove(receivers, command.Point);

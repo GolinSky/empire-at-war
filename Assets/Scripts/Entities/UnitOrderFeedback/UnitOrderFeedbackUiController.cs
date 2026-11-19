@@ -109,13 +109,13 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
                      order.Action == UnitActionId.AttackMove ||
                      order.Action == UnitActionId.Guard ||
                      order.Action == UnitActionId.Retreat)
-                PlayMovement(order.Point);
+                PlayMovement(order.Point, order.Action == UnitActionId.Move && order.IsLoose);
         }
 
-        private void PlayMovement(Vector3 worldPoint)
+        private void PlayMovement(Vector3 worldPoint, bool isLoose = false)
         {
             _movementPoint = worldPoint;
-            _ui.PlayMovement(_cameraService.WorldToScreenPoint(worldPoint), MovementFeedbackCompleted);
+            _ui.PlayMovement(_cameraService.WorldToScreenPoint(worldPoint), isLoose, MovementFeedbackCompleted);
         }
 
         private void HandleEntityRemoved(IEntity entity)

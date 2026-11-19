@@ -2900,7 +2900,7 @@ namespace EmpireAtWar.Tests.Editor
 
             public List<OrderCall> Calls { get; } = new List<OrderCall>();
 
-            public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point) =>
+            public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) =>
                 Record(UnitActionId.Move, receivers, point);
 
             public void IssueMove(IReadOnlyList<IEntity> receivers,

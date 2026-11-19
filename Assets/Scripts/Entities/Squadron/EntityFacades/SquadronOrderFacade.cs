@@ -21,19 +21,20 @@ namespace EmpireAtWar.Entities.Squadrons.EntityFacades
 
         public Vector3 WorldPosition => _squadron.WorldPosition;
         public float NavigationRadius => _squadron.NavigationRadius;
+        public float PaceSpeed => _squadron.PaceSpeed;
 
         public SquadronOrderFacade(Squadron squadron) => _squadron = squadron;
 
         public void MoveTo(Vector2 screenPosition) => _squadron.MoveTo(screenPosition);
 
-        public void MoveTo(Vector3 worldPosition) => _squadron.MoveTo(worldPosition);
+        public void MoveTo(Vector3 worldPosition, PaceCluster pace = null) => _squadron.MoveTo(worldPosition, pace);
 
-        public void Attack(IEntity target, Vector3 formationOffset, GroupPace pace) =>
+        public void Attack(IEntity target, Vector3 formationOffset, PaceCluster pace = null) =>
             _squadron.Attack(target, formationOffset, pace);
 
         // Fighters swarm whatever their own radar finds, so squadrons do not join the shared engagement.
-        public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement) =>
-            _squadron.AttackMoveTo(worldPosition);
+        public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement, PaceCluster pace = null) =>
+            _squadron.AttackMoveTo(worldPosition, pace);
 
         public void Stop() => _squadron.Stop();
 

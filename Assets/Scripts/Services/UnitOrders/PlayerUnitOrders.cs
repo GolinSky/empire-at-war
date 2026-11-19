@@ -19,8 +19,8 @@ namespace EmpireAtWar.Services.UnitOrders
             _localPlayer = localPlayer;
         }
 
-        public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point) =>
-            Submit(UnitActionId.Move, receivers, point);
+        public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) =>
+            Submit(UnitActionId.Move, receivers, point, pace: pace);
 
         public void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point) =>
             Submit(UnitActionId.AttackMove, receivers, point);
@@ -45,8 +45,8 @@ namespace EmpireAtWar.Services.UnitOrders
 
         private void Submit(UnitActionId action, IReadOnlyList<IEntity> receivers, Vector3 point = default,
             IEntity target = null, int targetHardPointId = UnitOrderModel.NO_HARD_POINT,
-            IReadOnlyList<Vector3> waypoints = null) =>
+            IReadOnlyList<Vector3> waypoints = null, MovePace pace = MovePace.Formation) =>
             _commands.Submit(UnitOrderCommand.Create(_localPlayer.Id, action, receivers, point, target,
-                targetHardPointId, waypoints));
+                targetHardPointId, waypoints, pace));
     }
 }

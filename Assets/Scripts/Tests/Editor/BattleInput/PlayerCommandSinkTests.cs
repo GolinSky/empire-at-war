@@ -5,6 +5,7 @@ using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.UnitActions;
@@ -290,17 +291,20 @@ namespace EmpireAtWar.Tests.Editor
             public List<IEntity> LastReceivers { get; private set; }
             public Vector3 LastPoint { get; private set; }
             public IEntity LastTarget { get; private set; }
+            public MovePace LastPace { get; private set; }
 
             private void Record(UnitActionId action, IReadOnlyList<IEntity> receivers, Vector3 point = default,
-                IEntity target = null)
+                IEntity target = null, MovePace pace = MovePace.Formation)
             {
                 LastAction = action;
                 LastReceivers = new List<IEntity>(receivers);
                 LastPoint = point;
                 LastTarget = target;
+                LastPace = pace;
             }
 
-            public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point) => Record(UnitActionId.Move, receivers, point);
+            public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) =>
+                Record(UnitActionId.Move, receivers, point, pace: pace);
             public void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) => Record(UnitActionId.Move, receivers);
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target) => Record(UnitActionId.Attack, receivers, target: target);
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets) => Record(UnitActionId.Attack, receivers, target: target);

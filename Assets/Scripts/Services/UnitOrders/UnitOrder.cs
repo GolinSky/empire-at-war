@@ -15,10 +15,11 @@ namespace EmpireAtWar.Services.UnitOrders
         public IEntity Target { get; }
         public IReadOnlyList<Vector3> Waypoints { get; }
         public int TargetHardPointId { get; }
+        public bool IsLoose { get; }
 
         public UnitOrder(UnitActionId action, PlayerId issuer, Vector3 point,
             IEntity target = null, IReadOnlyList<Vector3> waypoints = null,
-            int targetHardPointId = UnitOrderModel.NO_HARD_POINT)
+            int targetHardPointId = UnitOrderModel.NO_HARD_POINT, bool isLoose = false)
         {
             Action = action;
             Issuer = issuer;
@@ -26,6 +27,7 @@ namespace EmpireAtWar.Services.UnitOrders
             Target = target;
             Waypoints = waypoints;
             TargetHardPointId = targetHardPointId;
+            IsLoose = isLoose;
         }
     }
 }

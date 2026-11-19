@@ -51,7 +51,7 @@ namespace EmpireAtWar.Services.Networking
             if (message.TargetId != UnitOrderCommand.NO_TARGET &&
                 !_entities.TryGetEntity(message.TargetId, out target)) return;
             _orders.PublishReplicaFeedback(new UnitOrder(message.Action, message.Issuer, message.Point,
-                target, message.Waypoints, message.TargetHardPointId));
+                target, message.Waypoints, message.TargetHardPointId, message.IsLoose));
         }
 
         // An entity the client has not spawned yet (or already removed) is skipped.

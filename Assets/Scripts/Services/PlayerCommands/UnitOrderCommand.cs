@@ -19,9 +19,11 @@ namespace EmpireAtWar.Services.PlayerCommands
         public long TargetId { get; }
         public int TargetHardPointId { get; }
         public Vector3[] Waypoints { get; }
+        public MovePace Pace { get; }
 
         public UnitOrderCommand(PlayerId issuer, UnitActionId action, long[] receiverIds, Vector3 point,
-            long targetId = NO_TARGET, int targetHardPointId = UnitOrderModel.NO_HARD_POINT, Vector3[] waypoints = null)
+            long targetId = NO_TARGET, int targetHardPointId = UnitOrderModel.NO_HARD_POINT, Vector3[] waypoints = null,
+            MovePace pace = MovePace.Formation)
         {
             Issuer = issuer;
             Action = action;
@@ -30,11 +32,12 @@ namespace EmpireAtWar.Services.PlayerCommands
             TargetId = targetId;
             TargetHardPointId = targetHardPointId;
             Waypoints = waypoints;
+            Pace = pace;
         }
 
         public static UnitOrderCommand Create(PlayerId issuer, UnitActionId action, IReadOnlyList<IEntity> receivers,
             Vector3 point = default, IEntity target = null, int targetHardPointId = UnitOrderModel.NO_HARD_POINT,
-            IReadOnlyList<Vector3> waypoints = null)
+            IReadOnlyList<Vector3> waypoints = null, MovePace pace = MovePace.Formation)
         {
             long[] ids = new long[receivers.Count];
             for (int i = 0; i < ids.Length; i++) ids[i] = receivers[i].Id;
@@ -46,7 +49,7 @@ namespace EmpireAtWar.Services.PlayerCommands
             }
 
             return new UnitOrderCommand(issuer, action, ids, point, target == null ? NO_TARGET : target.Id,
-                targetHardPointId, route);
+                targetHardPointId, route, pace);
         }
     }
 }

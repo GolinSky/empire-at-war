@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using EmpireAtWar.Entities.BaseEntity.Orders;
+using UnityEngine;
 
 namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
 {
@@ -6,9 +7,10 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
     {
         Vector3 WorldPosition { get; }
         float NavigationRadius { get; }
+        float PaceSpeed { get; }
 
         void MoveTo(Vector2 screenPosition);
 
-        void MoveTo(Vector3 worldPosition);
+        void MoveTo(Vector3 worldPosition, PaceCluster pace = null);
     }
 }

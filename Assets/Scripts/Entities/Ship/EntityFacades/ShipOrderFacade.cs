@@ -21,6 +21,7 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
 
         public Vector3 WorldPosition => _movement.CurrentPosition;
         public float NavigationRadius => _movement.NavigationRadius;
+        public float PaceSpeed => _movement.PaceSpeed;
         public bool IsArriving => _moveModel.Phase == MovementPhase.Arriving;
         public bool IsAbilityFacing => _orders.IsAbilityFacing;
         public void BeginAbilityFacing() => _orders.BeginAbilityFacing();
@@ -42,16 +43,16 @@ namespace EmpireAtWar.Entities.Ship.EntityFacades
 
         public void MoveTo(Vector2 screenPosition) => _orders.MoveTo(screenPosition);
 
-        public void MoveTo(Vector3 worldPosition) => _orders.MoveTo(worldPosition);
+        public void MoveTo(Vector3 worldPosition, PaceCluster pace = null) => _orders.MoveTo(worldPosition, pace);
 
-        public void Attack(IEntity target, Vector3 formationOffset, GroupPace pace) =>
+        public void Attack(IEntity target, Vector3 formationOffset, PaceCluster pace = null) =>
             _orders.Attack(target, formationOffset, pace);
 
-        public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset, GroupPace pace) =>
+        public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset, PaceCluster pace = null) =>
             _orders.AttackHardPoint(target, hardPointId, formationOffset, pace);
 
-        public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement) =>
-            _orders.AttackMoveTo(worldPosition, engagement);
+        public void AttackMoveTo(Vector3 worldPosition, AttackMoveEngagement engagement, PaceCluster pace = null) =>
+            _orders.AttackMoveTo(worldPosition, engagement, pace);
 
         public void Stop() => _orders.Stop();
 

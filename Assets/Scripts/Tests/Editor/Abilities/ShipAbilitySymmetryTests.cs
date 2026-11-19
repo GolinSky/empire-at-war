@@ -471,7 +471,8 @@ namespace EmpireAtWar.Tests.Editor
                     Slots = new[] { new ShipAbilitySlot(this, definition, abilityId) };
             }
 
-            public void Attack(IEntity target, Vector3 formationOffset, GroupPace pace) { }
+            public float PaceSpeed => 30f;
+            public void Attack(IEntity target, Vector3 formationOffset, PaceCluster pace = null) { }
         }
 
         private sealed class TestEntity : IEntity

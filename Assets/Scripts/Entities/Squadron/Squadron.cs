@@ -70,8 +70,9 @@ namespace EmpireAtWar.Entities.Squadrons
         private CombatModifiers _modifiers;
         private IEntity _engaged;
         // Host-only and not saved, like the ships' pace.
-        private GroupPace _pace;
+        private PaceCluster _pace;
         private int _paceMember;
+        private float _stragglerTimer;
 
         private UnitOrderModel _orders;
         private SquadronPilot _pilot;
@@ -272,7 +273,7 @@ namespace EmpireAtWar.Entities.Squadrons
             using (BattleProfilerMarkers.SquadronPilot.Auto())
 #endif
             _pilot.Tick(deltaTime);
-            UpdatePace();
+            UpdatePace(deltaTime);
             Vector3 previousPosition = _flight.Centroid;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             using (BattleProfilerMarkers.SquadronFlight.Auto())
@@ -304,16 +305,21 @@ namespace EmpireAtWar.Entities.Squadrons
         public void MoveTo(Vector2 screenPosition) =>
             MoveTo(_cameraService.GetWorldPoint(screenPosition, _flight.Centroid));
 
-        public void MoveTo(Vector3 worldPosition)
+        public void MoveTo(Vector3 worldPosition, PaceCluster pace = null)
         {
-            if (_orders.Matches(UnitOrderType.Move, ToPoint(worldPosition))) return;
+            if (_orders.Matches(UnitOrderType.Move, ToPoint(worldPosition)))
+            {
+                JoinPace(pace);
+                return;
+            }
             _orders.Replace(UnitOrderType.Move, ToPoint(worldPosition));
             PlayMoveAudio(worldPosition);
             Disengage();
             _pilot.FlyTo(worldPosition);
+            JoinPace(pace);
         }
 
-        public void Attack(IEntity target, Vector3 formationOffset, GroupPace pace = null)
+        public void Attack(IEntity target, Vector3 formationOffset, PaceCluster pace = null)
         {
             // Fighters swarm the target, so a formation offset has no meaning for squadrons.
             if (!SquadronTargetSelector.IsAlive(target) || target.IsCloaked()) return;
@@ -325,11 +331,11 @@ namespace EmpireAtWar.Entities.Squadrons
                 Engage(target);
             }
 
-            JoinPace(pace);
+            JoinPace(_pilot.IsInAttackZone ? null : pace);
         }
 
-        // Approach speed for the group pace; a squadron that cannot fly never holds the group back.
-        private float PaceSpeed
+        // Approach speed for the pace cluster; a squadron that cannot fly never holds the cluster back.
+        internal float PaceSpeed
         {
             get
             {
@@ -338,58 +344,156 @@ namespace EmpireAtWar.Entities.Squadrons
             }
         }
 
-        // A repeated order joins its new group; the squadron leaves the old one first.
-        private void JoinPace(GroupPace pace)
+        // A repeated order joins its new cluster; the squadron leaves the old one first.
+        private void JoinPace(PaceCluster pace)
         {
             LeavePace();
-            if (pace == null) return;
+            if (pace == null || !IsPacedOrder(_orders.Current)) return;
+            SamplePaceGeometry(out System.Numerics.Vector2 position, out float remaining,
+                out System.Numerics.Vector2 heading);
             _pace = pace;
-            _paceMember = pace.Join(PaceSpeed);
+            _paceMember = pace.Join(PaceSpeed, remaining, position, NavigationRadius, heading);
         }
 
         private void LeavePace()
         {
+            _stragglerTimer = 0f;
             if (_pace == null) return;
             _pace.Leave(_paceMember);
             _pace = null;
             _flight.SetSpeedCap(float.PositiveInfinity);
         }
 
-        // The group approaches together; fighters fly their own passes once in the attack zone.
-        private void UpdatePace()
+        // The cluster approaches together; fighters break away freely once in the attack zone or engaging.
+        private void UpdatePace(float deltaTime)
         {
             if (_pace == null) return;
-            if (_orders.Current != UnitOrderType.Attack || _pilot.IsInAttackZone)
+            if (!IsPacedOrder(_orders.Current) || _pilot.HasArrived ||
+                (_orders.Current == UnitOrderType.Attack && _pilot.IsInAttackZone) ||
+                (_orders.Current == UnitOrderType.AttackMove && _engaged != null))
             {
                 LeavePace();
                 return;
             }
 
-            _pace.Report(_paceMember, PaceSpeed);
-            _flight.SetSpeedCap(_pace.Pace);
+            float ownSpeed = PaceSpeed;
+            if (_pace.IsBelowStragglerSpeed(ownSpeed))
+            {
+                LeavePace();
+                return;
+            }
+
+            SamplePaceGeometry(out System.Numerics.Vector2 position, out float remaining,
+                out System.Numerics.Vector2 heading);
+            _pace.Report(_paceMember, ownSpeed, remaining, position, heading);
+
+            PaceClusterTuning tuning = _pace.Tuning;
+            float meanRemaining = _pace.MeanRemaining;
+            if (!float.IsNaN(meanRemaining) && !float.IsNaN(remaining))
+            {
+                float behind = remaining - meanRemaining;
+                float stragglerLimit = Mathf.Max(tuning.StragglerDistance, 3f * _pace.Radius);
+                if (behind > stragglerLimit)
+                {
+                    _stragglerTimer += deltaTime;
+                    if (_stragglerTimer > tuning.StragglerTime)
+                    {
+                        LeavePace();
+                        return;
+                    }
+                }
+                else
+                {
+                    _stragglerTimer = 0f;
+                }
+            }
+
+            float clusterPace = _pace.Pace;
+            if (float.IsPositiveInfinity(clusterPace) || float.IsNaN(meanRemaining) || float.IsNaN(remaining))
+            {
+                _flight.SetSpeedCap(clusterPace);
+                return;
+            }
+
+            float lead = meanRemaining - remaining;
+            if (lead > tuning.LeadTolerance)
+                _flight.SetSpeedCap(clusterPace * tuning.AheadSlowdown);
+            else if (lead < -tuning.LeadTolerance)
+                _flight.SetSpeedCap(float.PositiveInfinity);
+            else
+                _flight.SetSpeedCap(clusterPace);
+        }
+
+        private static bool IsPacedOrder(UnitOrderType order) =>
+            order == UnitOrderType.Move || order == UnitOrderType.Attack || order == UnitOrderType.AttackMove;
+
+        private void SamplePaceGeometry(out System.Numerics.Vector2 position, out float remaining,
+            out System.Numerics.Vector2 heading)
+        {
+            Vector3 current = _flight.Centroid;
+            position = new System.Numerics.Vector2(current.x, current.z);
+            Vector3 goal;
+            if (_orders.Current == UnitOrderType.Attack)
+            {
+                IEntity target = _orders.Target;
+                if (!SquadronTargetSelector.IsAlive(target))
+                {
+                    remaining = float.NaN;
+                    heading = default;
+                    return;
+                }
+
+                goal = target.GetFacade<IEntityTransformFacade>().Transform.position;
+            }
+            else
+            {
+                goal = ToVector(_orders.Destination);
+            }
+
+            System.Numerics.Vector2 delta = new System.Numerics.Vector2(goal.x - current.x, goal.z - current.z);
+            float distSq = delta.LengthSquared();
+            if (distSq > 1e-6f)
+            {
+                remaining = MathF.Sqrt(distSq);
+                heading = delta / remaining;
+            }
+            else
+            {
+                remaining = 0f;
+                heading = default;
+            }
         }
 
         public void CastAbility(ShipAbilityId id, IEntity target, float range)
         {
+            LeavePace();
             _pendingAbilityId = id;
             _pendingAbilityRange = range;
             _orders.Replace(UnitOrderType.UseAbility, target: target);
             Engage(target);
         }
 
-        public void AttackMoveTo(Vector3 worldPosition)
+        public void AttackMoveTo(Vector3 worldPosition) => AttackMoveTo(worldPosition, null);
+
+        public void AttackMoveTo(Vector3 worldPosition, PaceCluster pace)
         {
-            if (_orders.Matches(UnitOrderType.AttackMove, ToPoint(worldPosition))) return;
+            if (_orders.Matches(UnitOrderType.AttackMove, ToPoint(worldPosition)))
+            {
+                JoinPace(_engaged == null ? pace : null);
+                return;
+            }
             _orders.Replace(UnitOrderType.AttackMove, ToPoint(worldPosition));
             PlayMoveAudio(worldPosition);
             Disengage();
             _pilot.FlyTo(worldPosition);
+            JoinPace(pace);
         }
 
         public void Guard(IEntity friendly, Vector3 offset)
         {
             if (!SquadronTargetSelector.IsAlive(friendly) ||
                 _orders.Matches(UnitOrderType.Guard, target: friendly)) return;
+            LeavePace();
             _orders.Replace(UnitOrderType.Guard, target: friendly);
             Disengage();
             EscortGuarded();
@@ -401,6 +505,7 @@ namespace EmpireAtWar.Entities.Squadrons
             List<FormationPoint> points = new List<FormationPoint>(waypoints.Count);
             foreach (Vector3 waypoint in waypoints) points.Add(ToPoint(waypoint));
             if (_orders.MatchesWaypoints(points)) return;
+            LeavePace();
             _orders.Replace(UnitOrderType.WaypointMove, points[0], waypoints: points);
             PlayMoveAudio(waypoints[0]);
             Disengage();
@@ -410,6 +515,7 @@ namespace EmpireAtWar.Entities.Squadrons
         public void Hunt()
         {
             if (_orders.Current == UnitOrderType.Hunt) return;
+            LeavePace();
             _orders.Replace(UnitOrderType.Hunt);
             _huntRetargetTimer = 0f;
         }
@@ -417,6 +523,7 @@ namespace EmpireAtWar.Entities.Squadrons
         public void Retreat(Vector3 destination)
         {
             if (_orders.Matches(UnitOrderType.Retreat, ToPoint(destination))) return;
+            LeavePace();
             _orders.Replace(UnitOrderType.Retreat, ToPoint(destination));
             PlayMoveAudio(destination);
             Disengage();
@@ -425,6 +532,7 @@ namespace EmpireAtWar.Entities.Squadrons
 
         public void Stop()
         {
+            LeavePace();
             _orders.Clear();
             Disengage();
             _pilot.Loiter(_flight.Centroid);

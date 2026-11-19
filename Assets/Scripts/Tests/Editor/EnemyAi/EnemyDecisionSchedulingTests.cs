@@ -691,7 +691,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             public event Action<UnitOrder> OrderIssued { add { } remove { } }
             public int MoveCalls { get; private set; }
-            public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point) => MoveCalls++;
+            public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) => MoveCalls++;
             public void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) => MoveCalls++;
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target) { }
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target, IReadOnlyList<Vector3> offsets) { }

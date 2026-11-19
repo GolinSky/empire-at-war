@@ -358,6 +358,48 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(_zones.LastSide, Is.EqualTo(TestPlayers.Enemy));
         }
 
+        [Test]
+        public void SpatialPaceClusters_MoveAttackAttackMoveClusterNearbyUnitsAndLooseMoveHasNoPace()
+        {
+            FakeEntity nearA = Entity(1, TestPlayers.Human);
+            FakeEntity nearB = Entity(2, TestPlayers.Human);
+            FakeEntity farC = Entity(3, TestPlayers.Human);
+            FakeEntity enemy = Entity(4, TestPlayers.Enemy);
+            nearA.Command.WorldPosition = new Vector3(0f, 0f, 0f);
+            nearB.Command.WorldPosition = new Vector3(100f, 0f, 0f);
+            farC.Command.WorldPosition = new Vector3(_settings.PaceTuning.LinkDistance * 3f, 0f, 0f);
+            IEntity[] receivers = { nearA, nearB, farC };
+
+            UnitOrder issued = default;
+            _unitOrderService.OrderIssued += order => issued = order;
+
+            // Formation Move: near pair shares one cluster, far unit gets null.
+            _unitOrderService.IssueMove(receivers, new Vector3(500f, 0f, 500f), MovePace.Formation);
+            Assert.That(issued.IsLoose, Is.False);
+            Assert.That(nearA.Command.LastPace, Is.Not.Null);
+            Assert.That(nearA.Command.LastPace, Is.SameAs(nearB.Command.LastPace));
+            Assert.That(farC.Command.LastPace, Is.Null);
+
+            // Loose Move: no unit receives a pace cluster, and feedback flags IsLoose.
+            _unitOrderService.IssueMove(receivers, new Vector3(500f, 0f, 500f), MovePace.Loose);
+            Assert.That(issued.IsLoose, Is.True);
+            Assert.That(nearA.Command.LastPace, Is.Null);
+            Assert.That(nearB.Command.LastPace, Is.Null);
+            Assert.That(farC.Command.LastPace, Is.Null);
+
+            // AttackMove: near pair shares one cluster, far unit gets null.
+            _unitOrderService.IssueAttackMove(receivers, new Vector3(500f, 0f, 500f));
+            Assert.That(nearA.Command.LastPace, Is.Not.Null);
+            Assert.That(nearA.Command.LastPace, Is.SameAs(nearB.Command.LastPace));
+            Assert.That(farC.Command.LastPace, Is.Null);
+
+            // Attack: near pair shares one cluster, far unit gets null.
+            _unitOrderService.IssueAttack(receivers, enemy);
+            Assert.That(nearA.Command.LastPace, Is.Not.Null);
+            Assert.That(nearA.Command.LastPace, Is.SameAs(nearB.Command.LastPace));
+            Assert.That(farC.Command.LastPace, Is.Null);
+        }
+
         private FakeEntity Entity(long id, PlayerId side, Type[] commands = null,
             IEntityFacade role = null)
         {
@@ -439,24 +481,26 @@ namespace EmpireAtWar.Tests.Editor
             public UnitActionId LastAction { get; private set; }
             public Vector3 LastPoint { get; private set; }
             public AttackMoveEngagement LastEngagement { get; private set; }
-            public GroupPace LastPace { get; private set; }
+            public PaceCluster LastPace { get; private set; }
             public Vector3 WorldPosition { get; set; }
             public float NavigationRadius { get; set; } = 5f;
+            public float PaceSpeed { get; set; } = 30f;
 
             public void MoveTo(Vector2 point) => Record(UnitActionId.Move, point);
 
-            public void MoveTo(Vector3 point) => Record(UnitActionId.Move, point);
+            public void MoveTo(Vector3 point, PaceCluster pace = null)
+            { LastPace = pace; Record(UnitActionId.Move, point); }
 
-            public void Attack(IEntity target, Vector3 offset, GroupPace pace)
+            public void Attack(IEntity target, Vector3 offset, PaceCluster pace = null)
             { LastPace = pace; Record(UnitActionId.Attack, offset); }
 
-            public void AttackHardPoint(IEntity target, int hardPointId, Vector3 offset, GroupPace pace)
+            public void AttackHardPoint(IEntity target, int hardPointId, Vector3 offset, PaceCluster pace = null)
             { LastPace = pace; Record(UnitActionId.Attack, offset); }
 
             public void FocusFire(IEntity target) => Record(UnitActionId.Attack);
 
-            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement)
-            { LastEngagement = engagement; Record(UnitActionId.AttackMove, point); }
+            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement, PaceCluster pace = null)
+            { LastEngagement = engagement; LastPace = pace; Record(UnitActionId.AttackMove, point); }
 
             public void Stop() => Record(UnitActionId.Stop);
 

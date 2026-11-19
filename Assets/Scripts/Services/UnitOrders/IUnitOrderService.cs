@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.UnitOrders
@@ -9,7 +10,7 @@ namespace EmpireAtWar.Services.UnitOrders
     {
         event Action<UnitOrder> OrderIssued;
 
-        void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point);
+        void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation);
 
         void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations);
 

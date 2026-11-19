@@ -24,6 +24,8 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         [SerializeField] private Image attackImage;
         [SerializeField] private Image movementWave;
         [SerializeField] private Image movementEcho;
+        [SerializeField] private Color formationColor = new Color(0.21960784f, 0.7411765f, 0.972549f, 1f);
+        [SerializeField] private Color looseColor = new Color(0.2901961f, 0.87058824f, 0.5019608f, 1f);
         private Sequence _attackSequence;
         private Sequence _movementSequence;
 
@@ -70,13 +72,14 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
                 });
         }
 
-        public void PlayMovement(Vector2 screenPosition, Action completed)
+        public void PlayMovement(Vector2 screenPosition, bool isLoose, Action completed)
         {
             StopMovement();
             SetPosition(movementAnchor, screenPosition);
             movementAnchor.gameObject.SetActive(true);
-            SetAlpha(movementWave, 0f);
-            SetAlpha(movementEcho, 0f);
+            Color waveColor = isLoose ? looseColor : formationColor;
+            SetColor(movementWave, waveColor, 0f);
+            SetColor(movementEcho, waveColor, 0f);
             movementWave.rectTransform.localScale = Vector3.one * 0.28f;
             movementEcho.rectTransform.localScale = Vector3.one * 0.28f;
             _movementSequence = DOTween.Sequence();
@@ -146,6 +149,12 @@ namespace EmpireAtWar.Entities.UnitOrderFeedback
         private static void SetAlpha(Image image, float alpha)
         {
             Color color = image.color;
+            color.a = alpha;
+            image.color = color;
+        }
+
+        private static void SetColor(Image image, Color color, float alpha)
+        {
             color.a = alpha;
             image.color = color;
         }

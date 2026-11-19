@@ -17,3 +17,18 @@ MonoBehaviour:
   squadronGuardEngageRadius: 800
   huntRetargetInterval: 1
   stationClearance: 150
+  paceLinkDistance: 600
+  paceLinkRadiusFactor: 4
+  paceLinkSpeedRatio: 2.5
+  paceLeadTolerance: 150
+  paceAheadSlowdown: 0.8
+  paceStragglerSpeedRatio: 0.6
+  paceStragglerDistance: 800
+  paceStragglerTime: 8
+  paceStuckSpeed: 1
+  paceStuckDetachTime: 5
+  paceMergeInterval: 1
+  paceMergeHoldChecks: 2
+  paceMergeFactor: 1
+  paceMergePadding: 100
+  paceMergeAngleDegrees: 30

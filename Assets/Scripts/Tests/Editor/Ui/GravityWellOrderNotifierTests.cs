@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EmpireAtWar.Components.Combat;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Health;
@@ -76,7 +77,7 @@ namespace EmpireAtWar.Tests.Editor
             public void Raise(UnitActionId action, PlayerId issuer) =>
                 OrderIssued?.Invoke(new UnitOrder(action, issuer, Vector3.zero));
 
-            public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point) => throw new NotSupportedException();
+            public void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation) => throw new NotSupportedException();
             public void IssueMove(IReadOnlyList<IEntity> receivers, IReadOnlyList<Vector3> destinations) =>
                 throw new NotSupportedException();
             public void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target) => throw new NotSupportedException();

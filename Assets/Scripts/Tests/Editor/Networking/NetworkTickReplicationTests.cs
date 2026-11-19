@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Hangar;
 using EmpireAtWar.Controllers.Game;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Entities.Ship.EntityFacades.Health;
 using EmpireAtWar.Entities.UnitActions;
 using EmpireAtWar.Entities.Units;
@@ -150,7 +151,7 @@ namespace EmpireAtWar.Tests.Editor
                 Kind = PlayerCommandKind.UnitOrder,
                 LastReceivedTick = 42,
                 UnitOrder = new UnitOrderCommand(TestPlayers.Enemy, UnitActionId.WaypointMove, new long[] { 5, 9 },
-                    Vector3.up, 77, 3, new[] { Vector3.left, Vector3.forward })
+                    Vector3.up, 77, 3, new[] { Vector3.left, Vector3.forward }, MovePace.Loose)
             };
             PlayerCommandMessage deploy = new PlayerCommandMessage
             {
@@ -167,6 +168,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(readOrder.UnitOrder.ReceiverIds, Is.EqualTo(new long[] { 5, 9 }));
             Assert.That(readOrder.UnitOrder.TargetId, Is.EqualTo(77));
             Assert.That(readOrder.UnitOrder.Waypoints, Is.EqualTo(new[] { Vector3.left, Vector3.forward }));
+            Assert.That(readOrder.UnitOrder.Pace, Is.EqualTo(MovePace.Loose));
             Assert.That(readDeploy.DeployReinforcement.Kind, Is.EqualTo(UnitRequestKind.Squadron));
             Assert.That(readDeploy.DeployReinforcement.Slots, Is.EqualTo(new[] { Vector3.one }));
             Assert.That(HostCommandReceiver.IssuerOf(readDeploy), Is.EqualTo(TestPlayers.Human));
@@ -195,7 +197,7 @@ namespace EmpireAtWar.Tests.Editor
             var target = new FakeEntity(77, null);
             var waypoints = new[] { Vector3.left, Vector3.forward };
             var accepted = new UnitOrder(UnitActionId.Attack, TestPlayers.Enemy, new Vector3(15f, 2f, 90f),
-                target, waypoints, 3);
+                target, waypoints, 3, isLoose: true);
             var message = new OrderFeedbackMessage(accepted);
             waypoints[0] = Vector3.zero;
             using NetworkWriterPooled writer = NetworkWriterPool.Get();
@@ -209,6 +211,7 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(decoded.TargetId, Is.EqualTo(77));
             Assert.That(decoded.TargetHardPointId, Is.EqualTo(3));
             Assert.That(decoded.Waypoints, Is.EqualTo(new[] { Vector3.left, Vector3.forward }));
+            Assert.That(decoded.IsLoose, Is.True);
         }
 
         [TestCase(0f)]

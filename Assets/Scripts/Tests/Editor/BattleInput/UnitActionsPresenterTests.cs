@@ -302,7 +302,8 @@ namespace EmpireAtWar.Tests.Editor
 
             public UnitActionId? LastAction { get; private set; }
 
-            public void IssueMove(IReadOnlyList<IEntity> units, Vector3 point) => LastAction = UnitActionId.Move;
+            public void IssueMove(IReadOnlyList<IEntity> units, Vector3 point, MovePace pace = MovePace.Formation) =>
+                LastAction = UnitActionId.Move;
 
             public void IssueAttack(IReadOnlyList<IEntity> units, IEntity target) => LastAction = UnitActionId.Attack;
 
@@ -366,16 +367,17 @@ namespace EmpireAtWar.Tests.Editor
         {
             public Vector3 WorldPosition => Vector3.zero;
             public float NavigationRadius => 5f;
+            public float PaceSpeed => 30f;
 
             public void MoveTo(Vector2 point) { }
 
-            public void MoveTo(Vector3 point) { }
+            public void MoveTo(Vector3 point, PaceCluster pace = null) { }
 
-            public void Attack(IEntity target, Vector3 offset, GroupPace pace) { }
+            public void Attack(IEntity target, Vector3 offset, PaceCluster pace = null) { }
 
             public void FocusFire(IEntity target) { }
 
-            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement) { }
+            public void AttackMoveTo(Vector3 point, AttackMoveEngagement engagement, PaceCluster pace = null) { }
 
             public void Stop() { }
 

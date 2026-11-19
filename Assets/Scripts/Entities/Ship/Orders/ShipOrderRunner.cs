@@ -33,7 +33,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private readonly ITeamContacts _teamContacts;
         private readonly PlayerId _owner;
         private readonly List<IEntity> _teamCandidates = new List<IEntity>();
-        private GroupPace _group;
+        private PaceCluster _group;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         private readonly ShipOrderTelemetrySource _telemetrySource;
 #endif
@@ -55,9 +55,11 @@ namespace EmpireAtWar.Entities.Ship.Orders
         private const float SHARED_REPLACEMENT_RANGE = 3000f;
 
         private UnitOrderType? _replicaOrder;
-        // Host-only and not saved: a loaded attack resumes at the ship's own speed.
-        private GroupPace _pace;
+        // Host-only and not saved: a loaded order resumes at the ship's own speed.
+        private PaceCluster _pace;
         private int _paceMember;
+        private float _stragglerTimer;
+        private float _stuckTimer;
 
         // Online clients show the host's order; ships there never run their own (see ApplyReplicaOrder).
         public UnitOrderType CurrentOrder => _replicaOrder ??
@@ -152,7 +154,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
                     nameof(AttackTargetState), _attackTargetState.AttackDiagnostics);
 #endif
             if (_stateMachine.CurrentState.IsComplete) CompleteOrder();
-            UpdatePace();
+            UpdatePace(deltaTime);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             attacking = _stateMachine.CurrentState == _attackTargetState;
             ShipOrderTelemetry.Sample(_telemetrySource, _abilityCaster, _orders, _movement, _weapon, _radar,
@@ -177,65 +179,199 @@ namespace EmpireAtWar.Entities.Ship.Orders
         public void MoveTo(Vector2 screenPosition) =>
             MoveTo(_cameraService.GetWorldPoint(screenPosition, _movement.CurrentPosition));
 
-        public void MoveTo(Vector3 worldPosition)
+        public void MoveTo(Vector3 worldPosition, PaceCluster pace = null)
         {
             if (RejectWhileAnchored(UnitOrderType.Move)) return;
             FormationPoint destination = ToPoint(worldPosition);
-            if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Move, destination)) return;
+            if (_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Move, destination))
+            {
+                JoinPace(pace);
+                return;
+            }
             Issue(UnitOrderType.Move, destination);
+            JoinPace(pace);
         }
 
-        public void Attack(IEntity target, Vector3 formationOffset, GroupPace pace = null)
+        public void Attack(IEntity target, Vector3 formationOffset, PaceCluster pace = null)
         {
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint offset = ToPoint(formationOffset);
-            if (!(_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Attack, target: target, offset: offset)) &&
-                !TryRefreshAttackSlot(target, offset, UnitOrderModel.NO_HARD_POINT))
+            bool matchedOrRefreshed = (_pendingAbilityTarget == null &&
+                _orders.Matches(UnitOrderType.Attack, target: target, offset: offset)) ||
+                TryRefreshAttackSlot(target, offset, UnitOrderModel.NO_HARD_POINT);
+            if (!matchedOrRefreshed)
                 Issue(UnitOrderType.Attack, target: target, offset: offset);
-            JoinPace(pace);
+            bool alreadyInRange = matchedOrRefreshed &&
+                _stateMachine.CurrentState == _attackTargetState && _attackTargetState.HasReachedRange;
+            JoinPace(alreadyInRange ? null : pace, group: pace);
         }
 
-        public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset, GroupPace pace = null)
+        public void AttackHardPoint(IEntity target, int hardPointId, Vector3 formationOffset, PaceCluster pace = null)
         {
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint offset = ToPoint(formationOffset);
-            if (!(_pendingAbilityTarget == null && _orders.Matches(UnitOrderType.Attack, target: target, offset: offset,
-                    targetHardPointId: hardPointId)) &&
-                !TryRefreshAttackSlot(target, offset, hardPointId))
+            bool matchedOrRefreshed = (_pendingAbilityTarget == null &&
+                _orders.Matches(UnitOrderType.Attack, target: target, offset: offset,
+                    targetHardPointId: hardPointId)) ||
+                TryRefreshAttackSlot(target, offset, hardPointId);
+            if (!matchedOrRefreshed)
                 Issue(UnitOrderType.Attack, target: target, offset: offset, targetHardPointId: hardPointId);
-            JoinPace(pace);
+            bool alreadyInRange = matchedOrRefreshed &&
+                _stateMachine.CurrentState == _attackTargetState && _attackTargetState.HasReachedRange;
+            JoinPace(alreadyInRange ? null : pace, group: pace);
         }
 
-        // A repeated order joins its new group; the ship leaves the old one first.
-        private void JoinPace(GroupPace pace)
+        // A repeated order joins its new cluster; the ship leaves the old one first.
+        private void JoinPace(PaceCluster pace, PaceCluster group = null)
         {
-            _group = pace;
+            _group = group ?? pace;
             LeavePace();
-            if (pace == null || _orders.Current != UnitOrderType.Attack) return;
+            if (pace == null || !IsPacedOrder(_orders.Current)) return;
+            SamplePaceGeometry(out System.Numerics.Vector2 position, out float remaining,
+                out System.Numerics.Vector2 heading);
             _pace = pace;
-            _paceMember = pace.Join(_movement.PaceSpeed);
+            _paceMember = pace.Join(_movement.PaceSpeed, remaining, position, _movement.NavigationRadius, heading);
         }
 
         private void LeavePace()
         {
+            _stragglerTimer = 0f;
+            _stuckTimer = 0f;
             if (_pace == null) return;
             _pace.Leave(_paceMember);
             _pace = null;
             _movement.SetSpeedCap(float.PositiveInfinity);
         }
 
-        // The group approaches at its slowest member's speed; each ship fights at its own speed once in range.
-        private void UpdatePace()
+        // The cluster approaches at its slowest member's speed with light lag correction; each ship detaches once
+        // arriving, engaging, damaged below the speed floor, straggling, or stuck.
+        private void UpdatePace(float deltaTime)
         {
             if (_pace == null) return;
-            if (_stateMachine.CurrentState != _attackTargetState || _attackTargetState.HasReachedRange)
+            if (!IsPacingActive() || _movement.IsArriving)
             {
                 LeavePace();
                 return;
             }
 
-            _pace.Report(_paceMember, _movement.PaceSpeed);
-            _movement.SetSpeedCap(_pace.Pace);
+            float ownSpeed = _movement.PaceSpeed;
+            if (_pace.IsBelowStragglerSpeed(ownSpeed))
+            {
+                LeavePace();
+                return;
+            }
+
+            SamplePaceGeometry(out System.Numerics.Vector2 position, out float remaining,
+                out System.Numerics.Vector2 heading);
+
+            PaceClusterTuning tuning = _pace.Tuning;
+            bool isStuck = _movement.IsMoving && _movement.CurrentSpeed < tuning.StuckSpeed;
+            if (isStuck)
+            {
+                _stuckTimer += deltaTime;
+                if (_stuckTimer > tuning.StuckDetachTime)
+                {
+                    LeavePace();
+                    return;
+                }
+            }
+            else
+            {
+                _stuckTimer = 0f;
+            }
+
+            _pace.Report(_paceMember, isStuck ? float.PositiveInfinity : ownSpeed, remaining, position, heading);
+
+            float meanRemaining = _pace.MeanRemaining;
+            if (!float.IsNaN(meanRemaining) && !float.IsNaN(remaining))
+            {
+                float behind = remaining - meanRemaining;
+                float stragglerLimit = Mathf.Max(tuning.StragglerDistance, 3f * _pace.Radius);
+                if (behind > stragglerLimit)
+                {
+                    _stragglerTimer += deltaTime;
+                    if (_stragglerTimer > tuning.StragglerTime)
+                    {
+                        LeavePace();
+                        return;
+                    }
+                }
+                else
+                {
+                    _stragglerTimer = 0f;
+                }
+            }
+
+            if (isStuck)
+            {
+                _movement.SetSpeedCap(float.PositiveInfinity);
+                return;
+            }
+
+            float clusterPace = _pace.Pace;
+            if (float.IsPositiveInfinity(clusterPace) || float.IsNaN(meanRemaining) || float.IsNaN(remaining))
+            {
+                _movement.SetSpeedCap(clusterPace);
+                return;
+            }
+
+            float lead = meanRemaining - remaining;
+            if (lead > tuning.LeadTolerance)
+                _movement.SetSpeedCap(clusterPace * tuning.AheadSlowdown);
+            else if (lead < -tuning.LeadTolerance)
+                _movement.SetSpeedCap(float.PositiveInfinity);
+            else
+                _movement.SetSpeedCap(clusterPace);
+        }
+
+        private static bool IsPacedOrder(UnitOrderType order) =>
+            order == UnitOrderType.Move || order == UnitOrderType.Attack || order == UnitOrderType.AttackMove;
+
+        private bool IsPacingActive() => _orders.Current switch
+        {
+            UnitOrderType.Move => _stateMachine.CurrentState == _navigateState,
+            UnitOrderType.Attack => _stateMachine.CurrentState == _attackTargetState &&
+                                    !_attackTargetState.HasReachedRange,
+            UnitOrderType.AttackMove => _stateMachine.CurrentState == _attackMoveState &&
+                                        !_attackMoveState.IsEngaging,
+            _ => false
+        };
+
+        private void SamplePaceGeometry(out System.Numerics.Vector2 position, out float remaining,
+            out System.Numerics.Vector2 heading)
+        {
+            Vector3 current = _movement.CurrentPosition;
+            position = new System.Numerics.Vector2(current.x, current.z);
+            Vector3 goal;
+            if (_orders.Current == UnitOrderType.Attack)
+            {
+                IEntity target = _orders.Target;
+                if (target == null || target.HealthModel.IsDestroyed)
+                {
+                    remaining = float.NaN;
+                    heading = default;
+                    return;
+                }
+
+                goal = target.GetFacade<IEntityTransformFacade>().Transform.position + ToVector(_orders.Offset);
+            }
+            else
+            {
+                goal = ToVector(_orders.Destination);
+            }
+
+            System.Numerics.Vector2 delta = new System.Numerics.Vector2(goal.x - current.x, goal.z - current.z);
+            float distSq = delta.LengthSquared();
+            if (distSq > 1e-6f)
+            {
+                remaining = MathF.Sqrt(distSq);
+                heading = delta / remaining;
+            }
+            else
+            {
+                remaining = 0f;
+                heading = default;
+            }
         }
 
         // The same target ordered again only picks a new side: the ship keeps its hold and its current leg.
@@ -251,14 +387,20 @@ namespace EmpireAtWar.Entities.Ship.Orders
             return true;
         }
 
-        public void AttackMoveTo(Vector3 destination, AttackMoveEngagement engagement)
+        public void AttackMoveTo(Vector3 destination, AttackMoveEngagement engagement, PaceCluster pace = null)
         {
             if (RejectWhileAnchored(UnitOrderType.AttackMove)) return;
             _abilities.TryCancel(_abilityCaster, ShipAbilityId.Cloak);
             FormationPoint point = ToPoint(destination);
             if (_pendingAbilityTarget == null && _orders.Engagement == engagement &&
-                _orders.Matches(UnitOrderType.AttackMove, point)) return;
+                _orders.Matches(UnitOrderType.AttackMove, point))
+            {
+                bool engaging = _stateMachine.CurrentState == _attackMoveState && _attackMoveState.IsEngaging;
+                JoinPace(engaging ? null : pace);
+                return;
+            }
             Issue(UnitOrderType.AttackMove, point, engagement: engagement);
+            JoinPace(pace);
         }
 
         public void Guard(IEntity friendly, Vector3 offset)
@@ -397,7 +539,10 @@ namespace EmpireAtWar.Entities.Ship.Orders
             if (own != null && !deadClass.HasValue) return own;
             // The team scan is shared and cached, but it is still only worth asking when nothing of the class is near.
             _teamCandidates.Clear();
-            _teamContacts.FillVisibleHostiles(_owner, _attackTargetState.LastTargetPosition, REPLACEMENT_RADIUS,
+            Vector3 searchOrigin = _group != null && _group.TryGetCentroid(out System.Numerics.Vector2 centroid)
+                ? new Vector3(centroid.X, _attackTargetState.LastTargetPosition.y, centroid.Y)
+                : _attackTargetState.LastTargetPosition;
+            _teamContacts.FillVisibleHostiles(_owner, searchOrigin, REPLACEMENT_RADIUS,
                 _teamCandidates);
             IEntity team = ShipEngagement.FindNearestEnemy(_teamCandidates, _movement, _weapon, deadClass);
             if (team != null && IsSameClass(team, deadClass)) return team;
@@ -450,7 +595,7 @@ namespace EmpireAtWar.Entities.Ship.Orders
                 IEntity nextTarget = FindReplacement();
                 if (nextTarget != null)
                 {
-                    GroupPace group = _group;
+                    PaceCluster group = _group;
                     FormationPoint slot = _orders.Offset;
                     Issue(UnitOrderType.Attack, target: nextTarget, offset: slot);
                     _group = group;

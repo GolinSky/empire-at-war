@@ -8,8 +8,9 @@ namespace EmpireAtWar.Entities.BaseEntity.EntityFacades
     {
         Vector3 WorldPosition { get; }
         float NavigationRadius { get; }
+        float PaceSpeed { get; }
 
-        /// <param name="pace">Shared by the moving ships of one group order; units that do not pace ignore it.</param>
-        void Attack(IEntity target, Vector3 formationOffset, GroupPace pace = null);
+        /// <param name="pace">Shared by the moving units of one spatial cluster; units that do not pace ignore it.</param>
+        void Attack(IEntity target, Vector3 formationOffset, PaceCluster pace = null);
     }
 }

@@ -1371,10 +1371,11 @@ namespace EmpireAtWar.Tests.Editor
             public IHealthModelObserver Health => FakeHealth;
             public float RadarRange => 20f;
             public float NavigationRadius => 0f;
+            public float PaceSpeed => 30f;
             public UnitOrderType CurrentOrder { get; set; }
             public IEntity AttackTarget { get; private set; }
             public int AttackCount { get; private set; }
-            public void Attack(IEntity target, Vector3 formationOffset, GroupPace pace)
+            public void Attack(IEntity target, Vector3 formationOffset, PaceCluster pace = null)
             {
                 AttackCount++;
                 AttackTarget = target;

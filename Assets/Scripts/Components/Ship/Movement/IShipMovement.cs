@@ -8,7 +8,9 @@ namespace EmpireAtWar.Components.Ship.Movement
     {
         Vector3 CurrentPosition { get; }
         bool IsMoving { get; }
+        bool IsArriving { get; }
         float NavigationRadius { get; }
+        float CurrentSpeed { get; }
         /// <summary>Own uncapped top speed for group pacing; PositiveInfinity while the ship cannot move.</summary>
         float PaceSpeed { get; }
 

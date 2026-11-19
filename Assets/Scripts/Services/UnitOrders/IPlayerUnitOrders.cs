@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using EmpireAtWar.Entities.BaseEntity;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using UnityEngine;
 
 namespace EmpireAtWar.Services.UnitOrders
@@ -7,7 +8,7 @@ namespace EmpireAtWar.Services.UnitOrders
     /// <summary>Unit orders from the human at this machine; each becomes a <c>UnitOrderCommand</c>.</summary>
     public interface IPlayerUnitOrders
     {
-        void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point);
+        void IssueMove(IReadOnlyList<IEntity> receivers, Vector3 point, MovePace pace = MovePace.Formation);
         void IssueAttackMove(IReadOnlyList<IEntity> receivers, Vector3 point);
         void IssueAttack(IReadOnlyList<IEntity> receivers, IEntity target);
         void IssueHardPointAttack(IReadOnlyList<IEntity> receivers, IEntity target, int hardPointId);

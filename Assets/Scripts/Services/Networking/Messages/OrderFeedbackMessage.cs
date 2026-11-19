@@ -16,6 +16,7 @@ namespace EmpireAtWar.Services.Networking.Messages
         public long TargetId;
         public int TargetHardPointId;
         public Vector3[] Waypoints;
+        public bool IsLoose;
 
         public OrderFeedbackMessage(UnitOrder order)
         {
@@ -27,6 +28,7 @@ namespace EmpireAtWar.Services.Networking.Messages
             Waypoints = order.Waypoints == null ? null : new Vector3[order.Waypoints.Count];
             if (Waypoints != null)
                 for (int i = 0; i < Waypoints.Length; i++) Waypoints[i] = order.Waypoints[i];
+            IsLoose = order.IsLoose;
         }
     }
 }

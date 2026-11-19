@@ -6,6 +6,7 @@ using EmpireAtWar.Components.Ship.Health.HardPointOverlay;
 using EmpireAtWar.Components.Movement.Formation;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Entities.BaseEntity.Orders;
 using EmpireAtWar.Services.OwnedAreas;
 using EmpireAtWar.Entities.CaptureSites;
 using EmpireAtWar.Services.CaptureSites;
@@ -34,6 +35,7 @@ namespace EmpireAtWar.Services.UnitOrders
             { Vector2.zero, Vector2.left, Vector2.right, Vector2.up, Vector2.down };
         private readonly IReadOnlyList<ICaptureSiteDirectory> _siteDirectories;
         private readonly IPointerGestures _gestures;
+        private readonly IPointerInput _pointerInput;
         private readonly IUnitOrderInput _orderInput;
         private readonly ILocalPlayer _localPlayer;
         private readonly ISelectionService _selectionService;
@@ -60,11 +62,12 @@ namespace EmpireAtWar.Services.UnitOrders
             IHardPointHoverObserver hardPointHover, ILocalPlayer localPlayer,
             UnitActionTargetingModel targeting,
             SuperWeaponTargetingModel superWeapons, IBattleAreaService battleAreas,
-            IReadOnlyList<ICaptureSiteDirectory> siteDirectories)
+            IReadOnlyList<ICaptureSiteDirectory> siteDirectories, IPointerInput pointerInput)
         {
             _siteDirectories = siteDirectories;
             _localPlayer = localPlayer;
             _gestures = gestures;
+            _pointerInput = pointerInput;
             _orderInput = orderInput;
             _selectionService = selectionService;
             _query = query;
@@ -108,7 +111,9 @@ namespace EmpireAtWar.Services.UnitOrders
             _targeting.Cancel();
         }
 
-        public bool TryIssueMove(Vector3 worldPoint)
+        public bool TryIssueMove(Vector3 worldPoint) => TryIssueMove(worldPoint, MovePace.Formation);
+
+        private bool TryIssueMove(Vector3 worldPoint, MovePace pace)
         {
             if (_abilities.IsWaitingForTarget || _superWeapons.Pending != null ||
                 _targeting.Pending == UnitActionId.Attack || _targeting.Pending == UnitActionId.Guard)
@@ -128,7 +133,7 @@ namespace EmpireAtWar.Services.UnitOrders
                 else if (_targeting.Pending == UnitActionId.WaypointMove)
                     _targeting.AddWaypoint(ToPoint(worldPoint));
                 else
-                    _playerOrders.IssueMove(receivers, worldPoint);
+                    _playerOrders.IssueMove(receivers, worldPoint, pace);
                 return true;
             }
             return false;
@@ -238,7 +243,10 @@ namespace EmpireAtWar.Services.UnitOrders
             // Friendly hulls can cover a site without blocking commands to its center.
             if (!hasHardPoint && !IsEnemy(target) && TryGetOrderSnap(screen, out Vector3 snap))
             {
-                TryIssueMove(snap);
+                MovePace snapPace = pending == null && _pointerInput.ClickCount >= 2
+                    ? MovePace.Loose
+                    : MovePace.Formation;
+                TryIssueMove(snap, snapPace);
                 return;
             }
             bool isFriendlyShip = hasUnit && !hasHardPoint && _localPlayer.IsFriendly(target.Owner) &&
@@ -262,8 +270,11 @@ namespace EmpireAtWar.Services.UnitOrders
 
             if (IsEnemy(target)) IssueAttack(receivers, target, hasHardPoint, hardPointId);
             else if ((!hasUnit || isFriendlyShip) && !IsObstacle(screen))
+            {
+                MovePace pace = _pointerInput.ClickCount >= 2 ? MovePace.Loose : MovePace.Formation;
                 _playerOrders.IssueMove(receivers,
-                    _cameraService.GetWorldPoint(screen, ReferencePosition(receivers)));
+                    _cameraService.GetWorldPoint(screen, ReferencePosition(receivers)), pace);
+            }
         }
 
         public bool CanIssueAttackMove(Vector2 screen)
