@@ -373,7 +373,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 997cc1b8ed373fe4fbe4d556a811f3b0, type: 2}
         displayName: Belbullab-22
-        description: Eleven Belbullab-22 interceptors with 44 hull and no shields
+        description: Eleven Belbullab-22 interceptors with 30 hull and no shields
           each. Their interceptor lasers are most effective against bombers.
         role: Interceptor / Anti-bomber
         iconKey: 6475693b4e9a23943aa6f6d43d698437:21300000
@@ -393,7 +393,7 @@ MonoBehaviour:
         description: 'Ten autonomous Trade Federation droid bombers, each with 58
           hull, no shields, 2 laser cannons and 1 proton torpedo launcher. Effective
           against capital ships, frigates and stations; slow and vulnerable to fighters.
-          No hyperdrive. Full squadron torpedo volley: 460.8 damage; 12 s reload.'
+          No hyperdrive. Full squadron torpedo volley: 333 damage; 12 s reload.'
         role: "Bomber squadron \xB7 Anti-capital"
         iconKey: 0148d1e047b1c024494b31fb02e655ed:21300000
         isHero: 0
@@ -410,7 +410,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: 515b7205b7913704094becf24905d815, type: 2}
         displayName: Vulture Droid
         description: Thirteen Vulture-class droid starfighters with four laser cannons
-          each. Swarm fighters with 44 hull per fighter and no shields. Effective
+          each. Swarm fighters with 25 hull per fighter and no shields. Effective
           against bombers and fighters; vulnerable to corvettes and dedicated anti-fighter
           weapons. No hyperdrive.
         role: Fighter / Swarm fighter
@@ -482,7 +482,7 @@ MonoBehaviour:
         displayName: Hyena Bomber
         description: Ten Hyena bombers designed to strike capital ships and stations.
           Each craft carries two laser cannons and one proton torpedo launcher, with
-          70 hull and no shields. Hyena torpedoes hit 20% harder than the Advanced
+          70 hull and no shields. Hyena torpedoes hit 33% harder than the Advanced
           Droid Bomber's.
         role: "Bomber squadron \xB7 Anti-capital"
         iconKey: cbb36475babac7c448e384cde9579370:21300000

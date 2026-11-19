@@ -321,6 +321,8 @@
 
 ### Bugs
 
+- [x] **Squadron faction balance after gun consolidation and bay rotation** → [[Done/Bugs/Squadron_Faction_Balance|Squadron Faction Balance]]
+  - Completed 2026-11-19. Model-tuned stats (DuelSim): strength follows price, X-Wing ≈ 2.66 TIE squadrons in a row; torpedo volleys follow price; Rebel station → X-Wing 2/6; Vader escorts follow TIE. Tests not run; battle check → [[TODOs/User_Acceptance_Queue]].
 - [x] **Map generation: enemy station too near allied stations (2v2 / 3v3, Medium + Large)** → [[Done/Bugs/Map_Enemy_Station_Near_Allies_Fix|Map Enemy Station Near Allies Fix]] — Completed 2026-11-19: weighted ring team gaps + legacy Open Field corner pull; Medium/Large nearest enemy ≥ 1.5 × nearest ally (diagnostic eval). Tests authored, not run → [[TODOs/User_Acceptance_Queue]].
 - [x] **Enemy AI active play + ship combat** → [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]
   - Completed 2026-11-19. Reopened R1–R7 and R9–R11 implemented. Standalone C# compilation passed. Battle and EditMode acceptance pending.

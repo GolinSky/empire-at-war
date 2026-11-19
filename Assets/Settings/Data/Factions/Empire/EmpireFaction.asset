@@ -384,7 +384,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 42b9d7cba8dab804589da64ac8ce570f, type: 2}
         displayName: TIE Fighter
-        description: 'Imperial squadron: ten TIE Fighters, each with 58 hull, no
+        description: 'Imperial squadron: ten TIE Fighters, each with 50 hull, no
           shields and two laser cannons. Screens carriers against fighters and bombers;
           vulnerable to anti-fighter corvettes.'
         role: Fighter / Squadron screen
@@ -421,12 +421,12 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: c5df0907ae25f944fa8027342b0f745c, type: 2}
         displayName: TIE Avenger
-        description: Ten TIE Avengers. Each fighter has 54 hull, 8 shields, two light
-          repeating lasers and two concussion-missile launchers. Boost Weapon Power
-          halves weapon reload and time between shots and halves speed and shield
-          regeneration for 7 s. Recovers in 50 s. Seeker Warhead Countermeasure automatically
-          intercepts incoming missiles. Weapons are not separately targetable. Each
-          surviving craft regenerates 0.095 shield HP/s.
+        description: Ten TIE Avengers. Each fighter has 57 hull, 12 shields, two
+          light repeating lasers and two concussion-missile launchers. Boost Weapon
+          Power halves weapon reload and time between shots and halves speed and
+          shield regeneration for 7 s. Recovers in 50 s. Seeker Warhead Countermeasure
+          automatically intercepts incoming missiles. Weapons are not separately
+          targetable. Each surviving craft regenerates 0.095 shield HP/s.
         role: Fighter / Fast attack
         iconKey: 3ebf9b17840b8ee4daae27c4f063d4af:21300000
         isHero: 0
@@ -442,7 +442,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 606a86b08cc7a5e4eb247e01d41aa404, type: 2}
         displayName: TIE Interceptor
-        description: Eight fast TIE Interceptors, each with 62 hull and four laser
+        description: Eight fast TIE Interceptors, each with 56 hull and four laser
           cannons. Carrier interceptor.
         role: Interceptor / Anti-bomber
         iconKey: 64e95301a26b2ca498bc930f9eae7727:21300000
@@ -459,7 +459,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 90bfd56a75214e249aaf83f0d74b2bfe, type: 2}
         displayName: TIE Brute
-        description: Ten heavy TIE Brutes, each with 64 hull and two heavy laser
+        description: Ten heavy TIE Brutes, each with 75 hull and two heavy laser
           cannons. Advanced-loadout carrier fighter.
         role: Heavy fighter / Squadron screen
         iconKey: 2dc8ad80492076941aae35ba3ce7c2aa:21300000
@@ -479,7 +479,7 @@ MonoBehaviour:
         description: 'Six TIE Punishers, each with 110 hull, 6 shields, one laser
           cannon, two proton-torpedo launchers and two missile launchers. Advanced-loadout
           carrier bomber. Each surviving craft regenerates 0.095 shield HP/s. Full
-          squadron torpedo volley: 537.6 damage; 12 s reload.'
+          squadron torpedo volley: 666.1 damage; 12 s reload.'
         role: Bomber / Anti-ship
         iconKey: fe8c1e85b0bf680479b5946516c3041f:21300000
         isHero: 0

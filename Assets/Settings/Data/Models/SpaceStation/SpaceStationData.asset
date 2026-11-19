@@ -66,8 +66,8 @@ MonoBehaviour:
     keyValue:
     - key: 2
       value:
-        squadronType: 1
-        reserve: 4
+        squadronType: 300
+        reserve: 6
         maxActive: 2
     - key: 3
       value:

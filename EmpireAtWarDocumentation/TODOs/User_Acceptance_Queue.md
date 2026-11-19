@@ -508,3 +508,7 @@ created: "2026-10-29\r"
 
 - [ ] [[Done/Features/Shift_Click_Add_To_Selection]] — In battle: select ship A, Shift + click ship B → both selected, group UI, one move order moves both; Shift + click B again → only A; Shift + click empty space / enemy keeps selection; plain click replaces. Note whether the select cue on toggle-off feels wrong.
 - [ ] [[Done/Features/Shift_Click_Add_To_Selection]] — Settings: `Add To Selection` slot shows `Shift`; rebind → new key + click adds, Shift + click replaces; Reset restores Shift; override persists after restart.
+
+## Squadron Faction Balance
+
+- [ ] [[Done/Bugs/Squadron_Faction_Balance]] — In battle: X-Wing vs TIE Fighter, TIE Fighter vs Vulture, A-Wing vs TIE Fighter, Rebel station launches X-Wings (2 active, 6 reserve). Run `Balance`, `Squadrons`, `Combat`, `Ships` when explicitly authorized.

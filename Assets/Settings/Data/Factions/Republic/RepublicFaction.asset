@@ -389,7 +389,7 @@ MonoBehaviour:
         displayName: ARC-170
         description: 'Eight durable ARC-170 multirole starfighters, each with two
           heavy forward lasers, a rear laser turret and one proton torpedo per attack
-          run. 60 hull and 8 shields per fighter. Effective against fighters, bombers
+          run. 106 hull and 16 shields per fighter. Effective against fighters, bombers
           and light ships; can threaten capital-ship hardpoints. Dedicated bombers
           have greater torpedo output. Each surviving craft regenerates 0.2 shield
           HP/s. Full squadron torpedo volley: 192 damage; 12 s reload.'
@@ -412,7 +412,7 @@ MonoBehaviour:
           lasers and a two-torpedo salvo per attack run. Ion Shot disables a target.
           Effective against large ships and important hardpoints; vulnerable to fighters.
           Each surviving craft regenerates 0.15 shield HP/s. Full squadron torpedo
-          volley: 537.6 damage; 12 s reload.'
+          volley: 721.4 damage; 12 s reload.'
         role: "Heavy bomber \xB7 Anti-capital strikecraft"
         iconKey: 8aec8fa8b8581064dbf2721ad11585bb:21300000
         isHero: 0
@@ -431,7 +431,7 @@ MonoBehaviour:
         description: 'Four naval bombers, each with 125 hull, 8 shields, laser cannons
           and proton torpedoes. Effective against capital ships, stations and important
           hardpoints; vulnerable to fighters and anti-fighter weapons. Each surviving
-          craft regenerates 0.15 shield HP/s. Full squadron torpedo volley: 499.2
+          craft regenerates 0.15 shield HP/s. Full squadron torpedo volley: 610.4
           damage; 12 s reload.'
         role: "Naval bomber \xB7 Anti-capital strikecraft"
         iconKey: 83b847ad5990b534c940f6bcc1abfbf1:21300000
@@ -448,7 +448,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 7b61aabb13894524ebe6a77baaaeba46, type: 2}
         displayName: V-19 Torrent
-        description: Eight V-19 Torrent fighters, each with 58 hull, 8 shields and
+        description: Eight V-19 Torrent fighters, each with 96 hull, 16 shields and
           two laser cannons. Screens Republic capital ships and bombers, intercepting
           hostile fighters and bombers. Vulnerable to corvettes and dedicated anti-fighter
           weapons. Each surviving craft regenerates 0.2 shield HP/s.
@@ -467,8 +467,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 18c01a8cde9f0da4e94f9136167261ab, type: 2}
         displayName: V-Wing
-        description: Six fast V-Wing interceptors, each with 64 hull, 8 shields and
-          four laser cannons. Hunt seeks enemies and favors strikecraft. Screens
+        description: Six fast V-Wing interceptors, each with 88 hull, 16 shields
+          and four laser cannons. Hunt seeks enemies and favors strikecraft. Screens
           the fleet and intercepts hostile fighters and bombers. Vulnerable to corvettes
           and dedicated anti-fighter weapons. Each surviving craft regenerates 0.2
           shield HP/s.

@@ -947,7 +947,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: XWing
-    damageMultiplier: 3.78
+    damageMultiplier: 4.05
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: XWing squadron rebalance damage target. Consolidated
@@ -1301,7 +1301,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: Belbullab22
-    damageMultiplier: 0.46363637
+    damageMultiplier: 0.4166667
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: Belbullab22 squadron rebalance damage target.
@@ -1891,7 +1891,7 @@ MonoBehaviour:
     scope: 2
     faction: 1
     unit: Vulture
-    damageMultiplier: 1.3846154
+    damageMultiplier: 1.35
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: Vulture squadron rebalance damage target. Consolidated
@@ -1911,7 +1911,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEFighter
-    damageMultiplier: 1.89
+    damageMultiplier: 2.1
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: TIEFighter squadron rebalance damage target. Consolidated
@@ -1931,7 +1931,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEBrute
-    damageMultiplier: 0.6923077
+    damageMultiplier: 0.8741259
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: TIEBrute squadron rebalance damage target. Consolidated
@@ -1951,7 +1951,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEAvenger
-    damageMultiplier: 1.845
+    damageMultiplier: 2.55
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: TIEAvenger squadron rebalance damage target. Consolidated
@@ -1991,7 +1991,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: ARC170
-    damageMultiplier: 0.7867133
+    damageMultiplier: 0.8741259
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: ARC170 squadron rebalance damage target. Consolidated
@@ -2049,7 +2049,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: V19Torrent
-    damageMultiplier: 2.3625
+    damageMultiplier: 2.5
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: V19Torrent squadron rebalance damage target. Consolidated
@@ -2109,7 +2109,7 @@ MonoBehaviour:
     scope: 2
     faction: 2
     unit: AWing
-    damageMultiplier: 4.5
+    damageMultiplier: 5.7
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: AWing squadron rebalance damage target. Consolidated
@@ -2149,7 +2149,7 @@ MonoBehaviour:
     scope: 1
     faction: 1
     unit: 
-    damageMultiplier: 0.42666668
+    damageMultiplier: 0.3083
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: DroidBomber squadron rebalance damage target.
@@ -2225,7 +2225,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: TIEPunisher
-    damageMultiplier: 0.8296296
+    damageMultiplier: 1.028
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: TIEPunisher squadron rebalance damage target. Consolidated
@@ -2285,7 +2285,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: YWing
-    damageMultiplier: 1.2444445
+    damageMultiplier: 1.67
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: YWing squadron rebalance damage target.
@@ -2324,7 +2324,7 @@ MonoBehaviour:
     scope: 2
     faction: 0
     unit: NTB630
-    damageMultiplier: 1.1555556
+    damageMultiplier: 1.413
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: NTB630 squadron rebalance damage target.
@@ -2419,7 +2419,7 @@ MonoBehaviour:
     scope: 2
     faction: 2
     unit: YWingBomber
-    damageMultiplier: 1.3168725
+    damageMultiplier: 2.157
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: YWingBomber squadron unit amount damage target. Consolidated
@@ -2625,7 +2625,7 @@ MonoBehaviour:
     scope: 2
     faction: 3
     unit: DarthVaderTIEAdvanced
-    damageMultiplier: 1.89
+    damageMultiplier: 2.1
     reloadMultiplier: 1
     rangeMultiplier: 1
     reason: 'Previous battery: Standard TIE laser tuning with explicit Vader squadron

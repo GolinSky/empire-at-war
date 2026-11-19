@@ -25,7 +25,7 @@ MonoBehaviour:
   <LoiterRadius>k__BackingField: 20
   <BreakDistance>k__BackingField: 6
   <ExtendDistance>k__BackingField: 34
-  <WarheadDamageMultiplier>k__BackingField: 1.2
+  <WarheadDamageMultiplier>k__BackingField: 1.333
   <WarheadReloadMultiplier>k__BackingField: 1
   <ShipClass>k__BackingField: 1
   <MemberHull>k__BackingField: 70

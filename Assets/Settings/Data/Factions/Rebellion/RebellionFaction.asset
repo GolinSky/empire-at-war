@@ -440,7 +440,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 5b8d183986aa6104291623ddd0143550, type: 2}
         displayName: A-Wing
-        description: Four fast A-Wing interceptors with 100 hull and 15 shields each.
+        description: Four fast A-Wing interceptors with 142 hull and 30 shields each.
           Their interceptor lasers are most effective against bombers. Each surviving
           craft regenerates 0.66 shield HP/s.
         role: Interceptor / Anti-bomber
@@ -458,7 +458,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: b16f510db75b93c4ab4d86f98ed96103, type: 2}
         displayName: X-Wing
-        description: 'Five Rebel multirole fighters, each with 95 hull, 15 shields,
+        description: 'Five Rebel multirole fighters, each with 182 hull, 48 shields,
           0.33/s shield regeneration, four laser cannons and one proton torpedo launcher.
           Torpedoes deal 32 damage per fighter with a 10-second reload. Intercept
           bombers, dogfight fighters, escort bombers and scout. Lock S-Foils closes
@@ -484,7 +484,7 @@ MonoBehaviour:
           stunner and two medium proton-torpedo launchers per craft. Ion Shot disables
           the target for 3 s on arrival; 20 s recovery. Weapons are not separately
           targetable. Each surviving craft regenerates 0.22 shield HP/s. Full squadron
-          torpedo volley: 576 damage; 12 s reload.'
+          torpedo volley: 943.5 damage; 12 s reload.'
         role: Bomber / Anti-ship
         iconKey: 793233063a2c3d241ab5dbc0af1a35d4:21300000
         isHero: 0
