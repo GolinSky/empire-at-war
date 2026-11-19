@@ -13,6 +13,7 @@ using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Entities.MiningFacility;
 using EmpireAtWar.Entities.SuperWeapons;
+using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
@@ -610,7 +611,7 @@ namespace EmpireAtWar.Tests.Editor
                     productionAccess: new OperationalProductionAccess(),
                     forceBuilder: new ForceCompositionBuilder(entities,
                         new UnitCombatProfileCatalog(null, null, null, null), new AiWorldSnapshot(entities)),
-                    profileCatalog: new UnitCombatProfileCatalog(null, null, null, null),
+                    profileCatalog: AddSquadronProfiles(new UnitCombatProfileCatalog(null, null, null, null), definition),
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: owner, stationPressure: new EnemyStationPressureTracker(),
@@ -792,6 +793,7 @@ namespace EmpireAtWar.Tests.Editor
                 profiles[UnitTypeId.Ship(ShipType.Munificent)] = new UnitCombatProfile(
                     ShipClass.Frigate, 300f, 0f, rates, new float[ForceComposition.ClassSlots],
                     new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>());
+                AddSquadronProfiles(catalog, definition);
 
                 var purchases = new RecordingPurchaseProcessor();
                 var entities = new EntityLocator();
@@ -966,6 +968,19 @@ namespace EmpireAtWar.Tests.Editor
                     Array.Empty<UnitCombatProfile>()));
             }
 
+            return AddSquadronProfiles(catalog, definition);
+        }
+
+        // Every wing a plain fighter: wing choice reads the class (bombers last, heroes never).
+        private static UnitCombatProfileCatalog AddSquadronProfiles(UnitCombatProfileCatalog catalog,
+            FactionDefinition definition)
+        {
+            var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                .GetField("_profiles", PRIVATE_INSTANCE).GetValue(catalog);
+            foreach (SquadronType squadron in definition.Squadrons.Keys)
+                profiles[UnitTypeId.Squadron(squadron)] = new UnitCombatProfile(ShipClass.Fighter, 100f, 0f,
+                    new float[ForceComposition.ClassSlots], new float[ForceComposition.ClassSlots],
+                    new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>());
             return catalog;
         }
 

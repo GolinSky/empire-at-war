@@ -303,7 +303,8 @@ namespace EmpireAtWar.Services.Enemy
                 canLevelUp,
                 canResearchIncome,
                 canResearchCombat,
-                canOrderShips,
+                // Before the first corvette is allowed, missing capture wings are the opening fleet.
+                canOrderShips || needsCaptureWings && hasSquadronFallback,
                 _stationPressure.IsStationCritical,
                 canResearchPriorityIncome);
             EnemyProductionCategory category = _decisionModel.Evaluate(snapshot);

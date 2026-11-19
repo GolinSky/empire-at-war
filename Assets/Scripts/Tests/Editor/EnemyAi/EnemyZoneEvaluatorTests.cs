@@ -110,7 +110,7 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void Select_BehindOnZones_CentreIsChosenOnlyWhenNothingElseRemains()
+        public void Select_BehindOnZones_DefendedCentreComesLastButAnUndefendedCentreIsTaken()
         {
             EnemyZoneObjective centre = Zone("centre", centre: true, priority: 5000f);
             EnemyZoneObjective outer = Zone("outer", priority: 100f);
@@ -118,9 +118,13 @@ namespace EmpireAtWar.Tests.Editor
             var evaluator = new EnemyZoneEvaluator();
 
             Assert.That(evaluator.Select(new List<EnemyZoneObjective> { centre, outer }, Force(1), COMMIT, true,
+                new List<EnemyZoneAssessment>()), Is.EqualTo(0), "The enemy left the centre: take it.");
+
+            AddShips(centre.Defenders, 8);
+            Assert.That(evaluator.Select(new List<EnemyZoneObjective> { centre, outer }, Force(1), COMMIT, true,
                 new List<EnemyZoneAssessment>()), Is.EqualTo(1));
             Assert.That(evaluator.Select(new List<EnemyZoneObjective> { centre }, Force(1), COMMIT, true,
-                new List<EnemyZoneAssessment>()), Is.EqualTo(0));
+                new List<EnemyZoneAssessment>()), Is.EqualTo(0), "The centre is never excluded.");
         }
 
         private static EnemyZoneObjective Zone(string id, bool centre = false, bool ownSide = false,

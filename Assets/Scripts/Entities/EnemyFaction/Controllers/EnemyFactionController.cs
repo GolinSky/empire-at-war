@@ -59,6 +59,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly IEnemyAiStateProvider _aiState;
         private float _stationTelemetryAt;
         private float _assaultWavePlanUntil;
+        private bool _outerWingCountSent;
         private bool _hadStation;
         private readonly IEnemyStructurePlacementService _enemyStructurePlacementService;
         private readonly IProductionAccess _productionAccess;
@@ -155,7 +156,6 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _economyProvider.AddProvider(this);
             Model.OnLevelUpgraded += RecalculateIncome;
             _playerRegistry.RegisterAiStationCheat(Owner, this);
-            _squadronCommander.SetOuterWingCount(HasCheapFighterWing() ? 2 : 1);
             _isInitialized = true;
         }
 
@@ -247,6 +247,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
 
         public void Tick()
         {
+            if (!_outerWingCountSent)
+            {
+                _squadronCommander.SetOuterWingCount(HasCheapFighterWing() ? 2 : 1);
+                _outerWingCountSent = true;
+            }
             bool hasRally = _aiState.TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
             _squadronCommander.SetStationDefense(hasRally && defendHome ? rally : (Vector3?)null);
             bool hasStation = _productionAccess.TryGetProductionBase(out var station);
