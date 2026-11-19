@@ -57,13 +57,11 @@ MonoBehaviour:
     <Grade>k__BackingField: {fileID: 11400000, guid: 0a9749c6e99e71b4bbfb36e9b8787a1b,
       type: 2}
   - <Biome>k__BackingField: 5
-    <SunColor>k__BackingField: {r: 0.9633333, g: 0.99352944, b: 0.8792157, a: 1}
+    <SunColor>k__BackingField: {r: 0.9770755, g: 0.98159945, b: 0.96530664, a: 1}
     <SunIntensity>k__BackingField: 0.9515
-    <AmbientSky>k__BackingField: {r: 0.67039216, g: 0.7911765, b: 0.6650981, a: 1}
-    <AmbientEquator>k__BackingField: {r: 0.44117647, g: 0.56372553, b: 0.46431372,
-      a: 1}
-    <AmbientGround>k__BackingField: {r: 0.22823529, g: 0.31960785, b: 0.25627452,
-      a: 1}
+    <AmbientSky>k__BackingField: {r: 0.74656385, g: 0.7639297, b: 0.74587643, a: 1}
+    <AmbientEquator>k__BackingField: {r: 0.52120715, g: 0.5384159, b: 0.5241045, a: 1}
+    <AmbientGround>k__BackingField: {r: 0.28923228, g: 0.30179316, b: 0.2926343, a: 1}
     <Grade>k__BackingField: {fileID: 11400000, guid: b0083fcfb546a6b40b014132e7b44662,
       type: 2}
   - <Biome>k__BackingField: 6
