@@ -22,7 +22,7 @@ created: "2026-10-29\r"
 
 ## Map Generation
 
-- [ ] [[Done/Bugs/Map_Enemy_Station_Near_Allies_Fix]] — Run `Map` (quick) then `MapGeneration` (explicit, 3 seeds) EditMode when authorized; Unity compile passed, tests not run. Run on the build that includes the uneven-roster fallback follow-up (uncommitted 2026-11-19), not bare `4ebf74ff4`.
+- [ ] [[Done/Bugs/Map_Enemy_Station_Near_Allies_Fix]] — Run `Map` (quick) then `MapGeneration` (explicit, 3 seeds) EditMode when authorized; Unity compile passed, tests not run. Run on the build that includes the uneven-roster fallback follow-up (`ac7ff075c`), not bare `4ebf74ff4`.
 - [ ] [[Done/Bugs/Map_Enemy_Station_Near_Allies_Fix]] — In game: Medium + Large, 2v2 + 3v3, one Open Field planet (Coruscant) and one Orbital Ring planet (Alderaan/Endor): allies together, enemies clearly farther.
 
 ## Content Removal

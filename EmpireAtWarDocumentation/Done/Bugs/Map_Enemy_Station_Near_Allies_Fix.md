@@ -96,12 +96,12 @@ Builds on [[Architecture/Map_Archetypes]] and [[Done/Features/Map_Archetypes_Pla
 - Regression found in commit `4ebf74ff4`: Large 7–8 player uneven rosters threw `layout failed after 120 attempts` (fairness=120).
   - Asteroid Belt: 5v3 6/6, 4v2v2 6/6, 6v2 4/6, 7v1 3/6, 5v2 2/6, 3v3v2 1/6 seeds. Old behaviour: 0/48.
   - Twin Pass 4v2v2: 4/6 (lost swap fallback). Old behaviour: 0/6.
-- Fix (uncommitted, `MapLayoutGenerator.GenerateLayout`):
+- Fix (`ac7ff075c`, `MapLayoutGenerator.GenerateLayout`):
   - `HasUnevenTeams` → attempts 60–119 drop grouping (equal spacing) for uneven rosters.
   - Uneven Twin Pass → attempts 60–119 use the boundary swap again (flanks ignore grouping, so equal spacing is a no-op there).
 - After fix, same 96-generation subset: 1 failure = Large Twin Pass 7v1 seed 2 (`enemyTeams=2.47`), identical to old behaviour → pre-existing.
 - Cost: rosters that needed the fallback generate with ratio 1.00 (Large Asteroid Belt 5v3, 6v2, 3v3v2, 7v1, 5v2, 4v2v2). Balanced rosters never enter the fallback.
-- Also uncommitted: one-team roster skips `WeightTeamGaps` (M2); pull loop capped by step count (M5, output bit-identical).
+- Same commit: one-team roster skips `WeightTeamGaps` (M2); pull loop capped by step count (M5, output bit-identical).
 - Tests reviewed: `MapStationSlotTests`, `MapLayoutGeneratorTests` baselines (2v2 → unaffected by the fallback), `MapArchetypeGenerationTests` uneven sweeps (now expected to pass; they would have caught the regression). No test edits needed. Not run.
 
 ## Open After Validation
