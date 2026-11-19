@@ -273,6 +273,46 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void Losses_RejoiningClientSortsHostLossesFromItsOwnSide_AndKeepsHigherLocalCounts()
+        {
+            PlayerRoster roster = TestPlayers.CreateTeamGame();
+            var hostEntities = new EntityLocator();
+            var hostState = new SkirmishStateModel();
+            var host = new BattleLossTracker(hostEntities, TestPlayers.CreateLocalPlayer(roster), hostState);
+            host.Initialize();
+            hostState.SetState(BattleState.Running);
+            var venator = new UnitTypeFacade(UnitTypeId.Ship(ShipType.Venator));
+            long id = 1;
+            foreach (PlayerId owner in new[] { TestPlayers.Human, TestPlayers.Ally, TestPlayers.Enemy })
+            {
+                Entity ship = CreateEntity(hostEntities, id++, owner, venator);
+                ship.Initialize();
+                ((Health)ship.HealthModel).Destroy();
+            }
+
+            var clientEntities = new EntityLocator();
+            var clientState = new SkirmishStateModel();
+            var client = new BattleLossTracker(clientEntities,
+                new LocalPlayer(roster, new OnlineSession(false, TestPlayers.SecondEnemy)), clientState);
+            client.Initialize();
+            clientState.SetState(BattleState.Running);
+            // Two enemy-team deaths reached this client before the host's copy did.
+            for (int i = 0; i < 2; i++)
+            {
+                Entity ship = CreateEntity(clientEntities, id++, TestPlayers.Enemy, venator);
+                ship.Initialize();
+                ((Health)ship.HealthModel).Destroy();
+            }
+
+            client.MergeHostLosses(host.GetLossesByOwner());
+
+            Assert.That(client.GetPlayerLosses().Single().Count, Is.EqualTo(2), "Own side keeps the higher local count.");
+            Assert.That(client.GetEnemyLosses().Single().Count, Is.EqualTo(2), "Human and ally are this client's enemies.");
+            host.LateDispose();
+            client.LateDispose();
+        }
+
+        [Test]
         public void Losses_RestoreStructureTypesAndStationLevel_AndAccumulateAfterLoading()
         {
             var entities = new EntityLocator();

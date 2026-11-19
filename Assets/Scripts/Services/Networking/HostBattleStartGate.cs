@@ -24,11 +24,14 @@ namespace EmpireAtWar.Services.Networking
         private readonly HostCombatEventSender _combat;
         private readonly HostShipRouteSender _routes;
         private readonly HostUnitOrderSender _orders;
+        private readonly HostBattleRecordSender _record;
 
         public HostBattleStartGate(OnlineMatchService online, NetworkTickService ticks, HostReplicatedStateSender states,
             HostWeaponTargetSender weaponTargets, HostMatchStateSender matchState, HostCombatEventSender combat,
-            HostShipRouteSender routes, HostUnitOrderSender orders, HostVisionRevealSender visionReveals)
+            HostShipRouteSender routes, HostUnitOrderSender orders, HostVisionRevealSender visionReveals,
+            HostBattleRecordSender record)
         {
+            _record = record;
             _visionReveals = visionReveals;
             _routes = routes;
             _orders = orders;
@@ -66,6 +69,8 @@ namespace EmpireAtWar.Services.Networking
         private void Begin(NetworkConnectionToClient connection)
         {
             if (!_online.IsBattleLoaded(connection)) return;
+            // First: restoring the clock clears clock-keyed state such as tactical markers.
+            _record.SendBaseline(connection);
             _ticks.SendBaseline(connection);
             _visionReveals.SendBaseline(connection);
             _states.SendBaseline(connection);

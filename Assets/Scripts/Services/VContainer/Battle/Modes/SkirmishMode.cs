@@ -1,6 +1,7 @@
 using EmpireAtWar.Entities.Game;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Networking.Online;
+using EmpireAtWar.Services.Networking.States;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.StationFacing;
 using global::VContainer;
@@ -21,6 +22,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<BattleAutosave>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<BattleVictoryModel>(Lifetime.Singleton).As<IBattleOutcomeRule>().AsSelf();
             builder.Register<BattleVictorySaveSource>(Lifetime.Singleton).As<IBattleSaveSource>();
+            builder.Register<BattleVictoryReplicatedState>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<StationFacingService>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
     }

@@ -12,6 +12,8 @@ using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.CaptureSites;
 using EmpireAtWar.Services.Player;
+using EmpireAtWar.Services.Networking;
+using EmpireAtWar.Services.Networking.States;
 using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Ships;
 using UnityEngine;
@@ -23,6 +25,35 @@ namespace EmpireAtWar.Tests.Editor
     {
         private static readonly TeamId HUMAN_TEAM = new TeamId(0);
         private static readonly TeamId ENEMY_TEAM = new TeamId(1);
+
+        [Test]
+        public void RejoinedClient_EndsBattleForStationThatFellBeforeItJoined()
+        {
+            var third = new PlayerId(2);
+            var thirdTeam = new TeamId(2);
+            var host = new BattleVictoryModel();
+            host.RestoreObservedBases(new[] { TestPlayers.Human, TestPlayers.Enemy, third });
+            var client = new BattleVictoryModel();
+            var hostState = new BattleVictoryReplicatedState(new ReplicatedStateRegistry(),
+                new OnlineSession(true, TestPlayers.Enemy), host);
+            var clientState = new BattleVictoryReplicatedState(new ReplicatedStateRegistry(),
+                new OnlineSession(false, TestPlayers.Human), client);
+            // The human rejoined after the third player's station fell; it saw only the other two alive.
+            var players = new List<PlayerBattleState>
+            {
+                new PlayerBattleState(TestPlayers.Human, HUMAN_TEAM, 0, true, false),
+                new PlayerBattleState(TestPlayers.Enemy, ENEMY_TEAM, 0, false, false),
+                new PlayerBattleState(third, thirdTeam, 0, false, false)
+            };
+            client.RestoreObservedBases(new[] { TestPlayers.Human, TestPlayers.Enemy });
+            Assert.That(client.Evaluate(BattleVictoryCondition.DestroyOpponentBase, players, HUMAN_TEAM),
+                Is.EqualTo(BattleOutcome.None), "Precondition: without the host's record the battle never ends.");
+
+            clientState.Apply(hostState.Capture());
+
+            Assert.That(client.Evaluate(BattleVictoryCondition.DestroyOpponentBase, players, HUMAN_TEAM),
+                Is.EqualTo(BattleOutcome.PlayerVictory));
+        }
 
         [Test]
         public void FleetCondition_DoesNotFinishBeforeBaseWasObserved()

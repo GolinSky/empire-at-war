@@ -21,6 +21,9 @@ namespace EmpireAtWar.Services.Battle
         private readonly Dictionary<IEntity, Action> _subscriptions = new();
         private readonly Dictionary<(BattleLossKind Kind, int TypeId, int StationLevel), int> _playerLosses = new();
         private readonly Dictionary<(BattleLossKind Kind, int TypeId, int StationLevel), int> _enemyLosses = new();
+        // By owner for a client that joins mid-battle; empty for losses restored from a save.
+        private readonly Dictionary<(PlayerId Owner, BattleLossKind Kind, int TypeId, int StationLevel), int> _ownerLosses =
+            new();
 
         public BattleLossTracker(IEntityLocator entities, ILocalPlayer localPlayer, SkirmishStateModel state)
         {
@@ -50,10 +53,40 @@ namespace EmpireAtWar.Services.Battle
 
         public BattleUnitLoss[] GetEnemyLosses() => Snapshot(_enemyLosses);
 
+        /// <summary>Host: every loss with its owner, so a joining client can sort them from its own side.</summary>
+        public (PlayerId Owner, BattleUnitLoss Loss)[] GetLossesByOwner() =>
+            _ownerLosses.Select(entry => (entry.Key.Owner,
+                    new BattleUnitLoss(entry.Key.Kind, entry.Key.TypeId, entry.Value, entry.Key.StationLevel)))
+                .ToArray();
+
+        /// <summary>
+        /// Client: the host's losses since the battle began. A count this client already recorded is kept when it
+        /// is higher, since the host's copy can lag the deaths that reached this client.
+        /// </summary>
+        public void MergeHostLosses(IEnumerable<(PlayerId Owner, BattleUnitLoss Loss)> hostLosses)
+        {
+            var totals = new Dictionary<(bool Friendly, BattleLossKind Kind, int TypeId, int StationLevel), int>();
+            foreach ((PlayerId owner, BattleUnitLoss loss) in hostLosses)
+            {
+                var key = (_localPlayer.IsFriendly(owner), loss.Kind, loss.TypeId, loss.StationLevel);
+                totals.TryGetValue(key, out int count);
+                totals[key] = count + loss.Count;
+            }
+
+            foreach (var total in totals)
+            {
+                var losses = total.Key.Friendly ? _playerLosses : _enemyLosses;
+                var key = (total.Key.Kind, total.Key.TypeId, total.Key.StationLevel);
+                losses.TryGetValue(key, out int count);
+                losses[key] = Math.Max(count, total.Value);
+            }
+        }
+
         public void Reset()
         {
             _playerLosses.Clear();
             _enemyLosses.Clear();
+            _ownerLosses.Clear();
         }
 
         public void Capture(BattleSave save)
@@ -120,6 +153,9 @@ namespace EmpireAtWar.Services.Battle
             var key = (kind, typeId, stationLevel);
             losses.TryGetValue(key, out int count);
             losses[key] = count + 1;
+            var ownerKey = (owner, kind, typeId, stationLevel);
+            _ownerLosses.TryGetValue(ownerKey, out int ownerCount);
+            _ownerLosses[ownerKey] = ownerCount + 1;
         }
 
         private static BattleUnitLoss[] Snapshot(

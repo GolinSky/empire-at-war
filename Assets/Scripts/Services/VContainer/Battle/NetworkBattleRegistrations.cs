@@ -47,6 +47,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<HostVisionRevealSender>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HostShipRouteSender>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<HostUnitOrderSender>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<HostBattleRecordSender>(Lifetime.Singleton);
             builder.Register<OnlineHostGameCommand>(Lifetime.Singleton).As<IGameCommand>();
             builder.Register<AbandonedPlayerTakeover>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<OnlineBattleLifetime>(Lifetime.Singleton).AsImplementedInterfaces();
@@ -67,6 +68,7 @@ namespace EmpireAtWar.Services.VContainer
             builder.Register<ClientVisionRevealReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ClientShipRouteReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ClientUnitOrderReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<ClientBattleRecordReceiver>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<ClientBattleStartGate>(Lifetime.Singleton).As<IBattleStartGate>();
             builder.Register<OnlineBattleLifetime>(Lifetime.Singleton).AsImplementedInterfaces();
         }
