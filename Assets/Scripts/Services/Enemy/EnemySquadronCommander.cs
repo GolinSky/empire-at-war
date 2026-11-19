@@ -713,8 +713,9 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// The outer group that still has room: every working group to one capturing wing first, then the group of
-        /// the zone nearest home up to the outer wing count. Null when every group is full.
+        /// The outer group that still has room: every group to one capturing wing first, then the group of the zone
+        /// nearest home up to the outer wing count. A group whose zones are all taken keeps its quota and raids.
+        /// Null when every group is full.
         /// </summary>
         private EnemyWingGroup SelectGroupWithRoom()
         {
@@ -723,7 +724,7 @@ namespace EmpireAtWar.Services.Enemy
                 {
                     EnemyWingGroup group = _outerGroups[i];
                     int quota = i == 0 ? _outerWingCount : 1;
-                    if (group.Zone != null && CountCapturers(group) < Mathf.Min(level, quota)) return group;
+                    if (CountCapturers(group) < Mathf.Min(level, quota)) return group;
                 }
             return null;
         }

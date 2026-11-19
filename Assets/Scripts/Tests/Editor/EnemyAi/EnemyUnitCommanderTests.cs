@@ -3218,6 +3218,11 @@ namespace EmpireAtWar.Tests.Editor
                     entities.AddEntity(wingEntity);
                 }
 
+                // Own wings in the zone fight beside the group, so the catalog rates them too.
+                UnitCombatProfileCatalog catalog = VenatorCatalog();
+                ((Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                    .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog))
+                    .Add(UnitTypeId.Squadron(SquadronType.Vulture), Rated(ShipClass.Fighter, 100f, 10f));
                 var intel = new TeamIntelRegistry();
                 if (knownDefender)
                     intel.Get(roster.Get(TestPlayers.Enemy).Team).Report(new HostileSighting(500,
@@ -3225,7 +3230,7 @@ namespace EmpireAtWar.Tests.Editor
                         Time.time));
                 var builder = CreateContextBuilder(
                     new ShipService(), new WithdrawalZones(), Array.Empty<IEnemyCaptureObjectiveSource>(),
-                    entities, gameData, roster, VenatorCatalog(),
+                    entities, gameData, roster, catalog,
                     intel, new VisionService(roster, fogEnabled: false),
                     roster.Get(TestPlayers.Enemy), new WithdrawalProduction(), hazards, zones,
                     navigation, new EnemyStationPressureTracker(), CreateRecovery(roster, zones));
