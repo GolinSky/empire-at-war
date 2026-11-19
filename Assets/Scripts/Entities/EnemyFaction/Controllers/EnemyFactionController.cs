@@ -1,6 +1,7 @@
 using System;
 using EmpireAtWar.Services.Player;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
+using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Entities.SpaceStation;
 using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Players;
@@ -47,6 +48,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private const int MINIMUM_DEFENSE_WAVE = 2;
         private const int MINIMUM_REINFORCEMENT_WAVE = 3;
         private const float ASSAULT_WAVE_INTERVAL = 30f;
+        /// <summary>A fighter wing at or below this price is cheap: two wings open on the outer zone, otherwise one.</summary>
+        private const float CHEAP_WING_PRICE = 300f;
 
         private readonly IEconomyProvider _economyProvider;
         private readonly IWallet _wallet;
@@ -152,7 +155,19 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             _economyProvider.AddProvider(this);
             Model.OnLevelUpgraded += RecalculateIncome;
             _playerRegistry.RegisterAiStationCheat(Owner, this);
+            _squadronCommander.SetOuterWingCount(HasCheapFighterWing() ? 2 : 1);
             _isInitialized = true;
+        }
+
+        private bool HasCheapFighterWing()
+        {
+            foreach (KeyValuePair<SquadronType, FactionData> option in Model.SquadronFactionData)
+            {
+                ShipClass wingClass = _profiles.Get(UnitTypeId.Squadron(option.Key)).ShipClass;
+                if (wingClass is ShipClass.Fighter or ShipClass.Interceptor && option.Value.Price <= CHEAP_WING_PRICE)
+                    return true;
+            }
+            return false;
         }
 
         public void LateDispose()
@@ -266,7 +281,9 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     (hasHeldReserve || assault && Time.time < _assaultWavePlanUntil);
             }
             bool holdReserve = _productionAccess.CanProduce && (defendHome || _aiState.HoldFinishedReinforcements);
-            bool landingOpeningFleet = !defendHome && _aiState.ActiveShipCount < MINIMUM_REINFORCEMENT_WAVE;
+            // Opening: each ship deploys as soon as it is built, one by one, until the first outer zone is held.
+            bool landingOpeningFleet = !defendHome &&
+                (_aiState.ActiveShipCount < MINIMUM_REINFORCEMENT_WAVE || !_aiState.HoldsOuterZone);
             int minimumGroup = !holdReserve || landingOpeningFleet ? 0 :
                 defendHome ? MINIMUM_DEFENSE_WAVE : MINIMUM_REINFORCEMENT_WAVE;
             bool allowLoneUnit = assault || !defendHome &&

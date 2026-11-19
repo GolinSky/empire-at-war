@@ -46,7 +46,9 @@ namespace EmpireAtWar.Services.Enemy
                 next = new EnemyStrategicDecision(next.Reason, next.State, Ships.Count);
             bool outnumbered = Context.Snapshot.EnemyShipCount >= 3 &&
                                Context.Snapshot.EnemyShipCount >= 2 * Ships.Count;
-            bool canAssemble = !outnumbered && Executor.CanAssemble(next, Context);
+            // A raid is rated against the defenders at its target, so the enemy's total ship count does not block it.
+            bool canAssemble = (!outnumbered || next.State == EnemyStrategicState.RaidStructures) &&
+                Executor.CanAssemble(next, Context);
             next = DecisionModel.Evaluate(Context.Snapshot, IsCaptureDetachment, allowOffense: canAssemble, now: now);
             if (IsMainForce && next.State == EnemyStrategicState.CaptureZone)
                 next = new EnemyStrategicDecision(next.Reason, next.State, Ships.Count);

@@ -230,7 +230,7 @@ All paths below are relative to `Assets/Scripts/Tests/Editor/`.
 - [ShipReinforcementUiPrefabTests.cs](../../Assets/Scripts/Tests/Editor/Economy/ShipReinforcementUiPrefabTests.cs)
 - [UnitSpawnViewTests.cs](../../Assets/Scripts/Tests/Editor/Economy/UnitSpawnViewTests.cs)
 
-### EnemyAi (19)
+### EnemyAi (20)
 
 - [AllyAiMarkerDecisionTests.cs](../../Assets/Scripts/Tests/Editor/EnemyAi/AllyAiMarkerDecisionTests.cs)
 - [AllyAiMarkerObjectiveTests.cs](../../Assets/Scripts/Tests/Editor/EnemyAi/AllyAiMarkerObjectiveTests.cs)
@@ -249,6 +249,7 @@ All paths below are relative to `Assets/Scripts/Tests/Editor/`.
 - [EnemyTaskForceSelectionModelTests.cs](../../Assets/Scripts/Tests/Editor/EnemyAi/EnemyTaskForceSelectionModelTests.cs)
 - [EnemyUnitCommanderTests.cs](../../Assets/Scripts/Tests/Editor/EnemyAi/EnemyUnitCommanderTests.cs)
 - [EnemyUnitLimitModelTests.cs](../../Assets/Scripts/Tests/Editor/EnemyAi/EnemyUnitLimitModelTests.cs)
+- [EnemyZoneAllocatorTests.cs](../../Assets/Scripts/Tests/Editor/EnemyAi/EnemyZoneAllocatorTests.cs)
 - [ForceCompositionBuilderTests.cs](../../Assets/Scripts/Tests/Editor/EnemyAi/ForceCompositionBuilderTests.cs)
 - [HostileIntelModelTests.cs](../../Assets/Scripts/Tests/Editor/EnemyAi/HostileIntelModelTests.cs)
 

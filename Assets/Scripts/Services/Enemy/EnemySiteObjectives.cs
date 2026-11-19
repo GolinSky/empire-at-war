@@ -21,7 +21,6 @@ namespace EmpireAtWar.Services.Enemy
         private const float FACILITY_POSITION_TOLERANCE_SQUARED = 1f;
         // Satellites hold a zone by themselves, so their pads are worth a detour in travel-distance units.
         private const float SATELLITE_PAD_PRIORITY = 600f;
-        private const float MINING_THREAT_MARGIN = 150f;
 
         private readonly Dictionary<int, float> _threatenedUntil = new Dictionary<int, float>();
         private readonly Dictionary<ICaptureSite, PlayerId> _knownMineClaims =
@@ -91,12 +90,11 @@ namespace EmpireAtWar.Services.Enemy
             {
                 var strength = _presence.GetTeamStrengths(site, _owner.Id);
                 bool threatened = site.Owner == _owner.Id && strength.Hostile > 0f;
-                if (!threatened && (!IsCapturable(site) ||
-                    site.Kind == CaptureSiteKind.Mining && IsMiningThreatened(site, intel))) continue;
+                if (!threatened && !IsCapturable(site)) continue;
 
-                int requiredWings = Mathf.FloorToInt(strength.Hostile / _data.SquadronCaptureWeight) + 1;
+                // Whether wings go in is decided by wing power against the defenders, not by this source.
                 assignments.AddTarget(ToVector(ToPoint(site.Center)), threatened,
-                    isSatellitePad: site.Kind == CaptureSiteKind.Satellite, requiredWings: requiredWings);
+                    isSatellitePad: site.Kind == CaptureSiteKind.Satellite, isMine: site.Kind == CaptureSiteKind.Mining);
             }
         }
 
@@ -135,17 +133,6 @@ namespace EmpireAtWar.Services.Enemy
         {
             return (site.State == CaptureSiteState.Neutral || site.State == CaptureSiteState.Owned) &&
                    !_players.IsAllied(_owner.Id, site.Owner);
-        }
-
-        private bool IsMiningThreatened(ICaptureSite site, HostileIntelModel intel)
-        {
-            float radius = _data.GetSettings(site.Kind).Radius + MINING_THREAT_MARGIN;
-            foreach (HostileSighting sighting in intel.Sightings)
-                if (_players.IsHostile(_owner.Id, sighting.Owner) &&
-                    intel.GetConfidence(sighting, Time.time) > 0f &&
-                    PlanarGeometry.DistanceSquared(ToVector(sighting.Position), site.FacilityPosition) <= radius * radius)
-                    return true;
-            return false;
         }
 
         private bool HasKnownHostileInside(ICaptureSite site, HostileIntelModel intel)

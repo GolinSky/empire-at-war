@@ -21,7 +21,7 @@ follows: "[[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]"
 
 ### Open
 - [x] R2 step 4: covered by the rebuild (far reinforcements stay separate while either group fights). Verify in a battle.
-- [ ] Rebuild P1–P7: run `EnemyAi` tests and the 1v1 battle (see "Rebuild — objective selection").
+- [ ] Rebuild P1–P7 + N1–N6 (allocator, 2026-11-19 evening): run `EnemyAi` tests and the 1v1 battle (see "Fixes N1–N6").
 - [ ] Tests for R2 (centre cap, expansion in the same cycle), R3 (unseen income split), R5 (zone reservation), R6 (eligibility, group cap). Planner/builder need heavy fixtures; add with the 2v2 battle evidence. R1 and R4 have tests.
 - [ ] Battle: UltraHard Small 1v1 (X1–X5 + R-fixes acceptance; telemetry: `deployment` tier/heldSeconds, `zoneOwner`, `expansionAssigned`, `sample` teamHeldZones/visibleAdvantage/unseenInvestment).
 - [ ] Battle: 2v2 Medium (AI ally + 2 AI enemies) and 1v1 Large; compare `zoneOwner`, `deployment` tier, `objectiveSwitch`, `expansionAssigned`.
@@ -167,6 +167,121 @@ Files: `BattleTelemetry/Loading_20261119_173121_ai.csv`, `_ai_orders.csv`, `_squ
 ### Open decisions for the user
 - Disengage when outmatched (new engagement rule) — the earlier plan removed retreat because fleets collapsed while fleeing. Proposed: disengage only to the staging point, with the existing 8 s state hold.
 - Scope order: P1–P4 first (one change set), then P5.
+
+## Evidence — battle 2026-11-19 19:05 (UltraHard Small 1v1, code `f2bf1c8f0`, dirty) — first battle on the rebuild `35456a3e6`
+Files: `BattleTelemetry/Loading_20261119_190533_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261119_190536_map.csv`, `Battle_20261119_190646.csv`.
+- Human Empire (−354, 1714) vs AI Rebellion (354, −1714). Dathomir, seed 1412343079, no asteroids. Log time 19.6 s = battle 0 s. Main station dead ≈ 860 s, backup 1,055 s; battle 1,199 s.
+- User: same issues; no sabotage; weak ships attack the centre instead of other zones or gathering. Squadrons were buffed (`32348baca`).
+- Zones: human centre 41 s + 4 centre mines by 106 s + own-side zone 108 s; AI own-side zone 125 s. AI held home + 1 outer zone (2 mines) vs 6 mines from 126 s to 775 s. `fleetAdvantage` 0.2–0.4 from 213 s.
+- Telemetry ids: `zoneEval zone:1` = human-side outer zone (1498, 1264); `zone:2` = AI-side (−1498, −1264).
+
+### Rebuild vs plan (source `35456a3e6`)
+| Step | State |
+|---|---|
+| P1 model | built (`EnemyZoneObjective`, `EnemyZoneAssessment`, `EnemyZoneEvaluator`) |
+| P2 collection | partial: zones are built from capture candidates → a zone whose sites all hold hostile facilities still has no objective (`EnemySiteObjectives.IsCapturable` unchanged) |
+| **P3 allocator** | **not built**: no `EnemyZoneAllocator`; `TryCreateCaptureGroup`, `TryReinforceCentreGroup`, `TryAssignExpansionShip`, `_assignedExpansionZones` remain. Every group rates zones for itself |
+| P4 group decision | partial: zone verdict drives site choice; old gate still used by `FindWithdrawPoint` (`IsRouteSafe(…, escaping: true)`) and retreat anchors |
+| P5 raids / wings | route gate removed from raid targets; raid *decision* rules and wing raid budget unchanged; opening wing spread built |
+| P6 telemetry | `zoneEval` built; `captureBlocked` / `expansionIdle` kept |
+
+### Faults found (log + code)
+- **Z1 No pooling of forces (P3 missing).** `zoneEval assigned=1` on 75 of 113 rows after 100 s; decisions list 3–4 groups ("Main 1–4 ships", "Capture group 4", "Capture group 1", "Combat group 1–2"); `committed` 1–4 of 7–10 ships. `Assemble` only waits 45 s (`ASSEMBLE_RELEASE_SECONDS`) and releases; nothing adds ships until `required` is met. The "far reinforcement gathers separately" rule (`AssembleMainForce`) creates more 1-ship groups.
+- **Z2 Unscouted zone = empty = `Go`.** `zone:1` (human side, 3,190 from the AI station) `Go, defenders=0, advantage=100` × 38, selected for 1–3 ships. `EnemyZoneEvaluator.Assess`: `Defenders.IsEmpty → Go`. Behind-on-zones tiers put an enemy-side `Go` (tier 2) above the centre (tier 4). No route check: the straight path passes 945 from the centre → 37 "fight in place" decisions at the centre. `expansionIdle` for the same zone says `eligible=False` all battle — the old eligibility rule and the new evaluator disagree.
+- **Z3 `Go` at 0.8.** Commit line = `RetreatAdvantage` (0.80), not an attack ratio: `zone:0 Go advantage=0.83 / 0.91 / 0.98 / 1.07` → the group attacks a stronger defender, then is "outmatched" at ≤ 0.80.
+- **Z4 Pull-back almost never allowed.** 129 "fight in place" vs 3 pull-back decisions; 8 `EngageLocal → RetreatValue`, 7 straight back (`standAndFight`). `FindWithdrawPoint` ends with `!IsRouteSafe(origin, best, 0f, true)`: escaping + any known hostile within 1,000 of the route that is not behind → blocked. In a fight that is nearly always true.
+- **Z5 `statics=0` on every row.** Collector reads `_world.RaidStructures` + `IUnitCombatObserverFacade.WeaponRange`. Never matched in 143 rows although the human held 15 sites. Either satellites are intel units (then they are in `defenders`, with real profiles) or they are missed. Check one satellite entity's facades; if they are units, delete the static path and `STATIC_DEFENSE_DPS`.
+- **Z6 No sabotage.** `wingAssignment raids=0` on all 191 rows; `RaidStructures` 2 decisions.
+  - Ships: `EnemyStrategicDecisionModel` raid rules require `!IsCentreGuardGoal` (true for the main force unless it can assault) or a secured centre + 6 ships.
+  - Wings: `AssignRaiders` runs only while `_captureSquadrons.Count > captureWings` (budget 3); `captureWings` was 0–1 on 148 of 191 rows.
+- **Z7 Wings unused.** 30 squadron purchases (16 Y-Wing, 9 X-Wing, 5 CD273). `escorts` 2–5 of 3–7 wings; `captureWings` 0–1. Targets need `floor(hostile strength / weight) + 1` wings by unit count: centre `need 14–34`, never assigned. Contested mines are skipped (`IsMiningThreatened`).
+- **Z8 Opening.** 3 X-Wing purchases at 7–9 s, but `captureWings=1` until 41 s and 2 after: one wing to the centre, one to the own-side zone, none to the human-side zone. Human took the centre at 41 s.
+- **Z9 Guard without a held zone.** `GuardSite` 23 decisions; staging late in the battle at (−1838, 1398), (−878, 2062) (map corner near the human base) with no held zone left — staging falls back to something other than home; check `GetStagingPoint` callers after the main station dies.
+
+### Fixes N1–N6 (implemented 2026-11-19 evening; Unity compile 0 errors; tests not run; battle pending)
+- [x] **N1 Allocator (P3)**. New `Entities/EnemyFaction/Models/Objectives/EnemyZoneAllocator.cs` (pure C#). `EnemyShipTaskGroupPlanner` rewritten around it.
+  - Groups: one **reserve** (= main force, always) + one group per zone (`ContextBuilder.AssignedZoneId`). Proximity groups, opening-focus groups, expansion detachments, `MAIN_FORCE_SHIP_COUNT`, the far-reinforcement split and `EnemyOpeningFocus` are deleted.
+  - Each cycle end (`Allocate`): pool = zone forces + reserve (reserve excluded while `DefendBase` / `AssaultBase`). Zones ranked by tier → score. Nearest free ships are added until the force is `Go`; not enough → nobody goes, zone becomes `GatherZone`.
+  - Sent force keeps its zone at ≥ `0.85 ×` commit; between 0.85 and 1.0 it is topped up when free ships lift it to `Go`; below → the whole force returns.
+  - Reserve never captures. It gathers: held centre → staging point of `GatherZone` → idle point ahead of home. New ships rally to `GatherPoint` (`EnemyUnitCommander.TryGetReinforcementRally`).
+  - Station pressure → no new force (kept or returned only). Critical station → every force recalled (`Reconcile`).
+  - Removed from the builder: `CanDetachForCapture`, `GetRequiredExpansionShips`, `IsShipExpansionEligible`, `SetOpeningFocus`, `NeedsCentreReinforcement`, `CentreGroupAtCap`, `mainForceCentreOnly`, `expansionAssigned/Idle/Released` telemetry.
+- [x] **N2 Zone rating**.
+  - Commit line `EnemyZoneEvaluator.COMMIT_ADVANTAGE = 1.0` (was `RetreatAdvantage` 0.8); retain `RETAIN_SCALE = 0.85`.
+  - Enemy-side zone not visible, no known defenders, after 180 s → defenders = remembered hostile force ÷ hostile-held zones (`AddUnscoutedShare`). Deviation: uses remembered units, not the credit-based unseen estimate.
+  - Enemy-side non-centre zone whose straight route from home passes within `1000 + radius` of a hostile-held zone → `Deny: hostileZoneOnRoute`.
+  - Threatened own zone → tier −1 (served first).
+- [x] **N3 Pull-back**. `FindWithdrawPoint` no longer calls `IsRouteSafe`. Cut off only when a force the group cannot beat (`≤ RetreatAdvantage`) is ≥ 500 ahead along the way back and within 500 of it (`IsCutOff`).
+- [x] **N4 Sabotage**.
+  - Ships: snapshot `RaidWhenBehind` (reserve, behind on zones, no capture target) lifts the `IsCentreGuardGoal` block on both raid rules. The "outnumbered 2:1" offense block no longer applies to `RaidStructures`.
+  - Wings: `AssignRaiders` runs before escorts. Behind on zones → all purchased wings but 1 may raid (max 3); otherwise wings beyond 3.
+- [x] **N5 Squadron power**. `EnemySquadronCaptureAssignments`: `requiredWings` removed. Target defenders = known hostile units within 1000 + visible satellites/platforms within 1000 (`RateTargets`). Wings are added nearest-first until `Advantage ≥ 1`; not reachable → no wing goes. `IsMiningThreatened` skip removed. Deviation from the user wording: hostile **ships** in range count too (wings would otherwise fly into ship flak).
+- [x] **N6**.
+  - Z5 cause confirmed: defend platforms and satellites bind no `IUnitCombatObserverFacade` and no `IUnitTypeFacade` → never counted. Now detected by `IStructureKindFacade.Kind == DefendPlatform` (`EnemyZoneObjectiveCollector.IsArmedHostileStructure`), reach `STATIC_DEFENSE_REACH = 500`, still the flat 60 DPS profile. Raid targets: a covering satellite is a defender, not a blanket skip.
+  - Z9: home = primary station → any own station (backup) → home zone centre → fleet centre. Home staging = 500–1500 ahead of the station toward the target, outside the own deployment zone.
+- Telemetry: new `zoneAlloc` (on change: `pool`, `reserve`, `gather`, `staging`, `behind`, per zone `ships/defenders/statics/deny`). `zoneEval` gains `assignedZone`. `wingAssignment` targets show `defendersN` instead of `needN`.
+- Tests (not run): new `EnemyZoneAllocatorTests` (9); 5 planner tests `Allocation_*` and 2 `TaskGroups_*` replace 11 obsolete ones in `EnemyUnitCommanderTests`; 2 squadron tests rewritten for power; raid test fake is now a defend platform; `Commander_ShipRemovedMidMultiFrameCycle_DoesNotThrow` seeds a zone force. Category `EnemyAi`.
+- [x] Test run 2026-11-19 (agent, user-requested; EditMode, category `EnemyAi`, explicit excluded): 518/527 passed, 9 failed. All 9 were 3 stale fixtures in `EnemyUnitCommanderTests`: `RaidDefense_…` reflected the removed `IsDefended(Vector3, float)` overload; `SquadronScout_…` and `SquadronRaid_…` built the squadron commander without a force builder, and the raid test did not call `AssignRaiders`. Fixtures fixed; rerun of `EnemyUnitCommanderTests` only: 146/146 passed. The other `EnemyAi` fixtures passed in the first run and were not rerun. Other categories not run.
+- Not done:
+  - P2 gap: a **lone** site (outside every zone) holding a hostile satellite is still no objective (`ICaptureSite` exposes no facility entity id). Zones are covered through their relay objective.
+  - Z8 opening wing count (1–2 capture wings until 41 s) not analysed: telemetry file not in the checkout.
+  - Satellite DPS is still the uncalibrated 60 per class.
+- [ ] Battle: UltraHard Small 1v1. Check `zoneAlloc` (forces ≥ required, reserve gathers), `zoneEval statics > 0` at held zones, no `Go` at advantage < 1, `wingAssignment raids > 0` when behind, pull-back count vs "fight in place".
+
+## Evidence — battle 2026-11-19 20:45 (UltraHard Small 1v1, code `da8477dac` dirty = N1–N6) — user: "better, but no centre retake; sabotage weaker than CIS/Republic; siege reinforcements passive"
+Files: `%USERPROFILE%/AppData/LocalLow/GolinSkyCompany/EmpireAtWar/BattleTelemetry/Loading_20261119_204550_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261119_204553_map.csv`, `Battle_20261119_204657.csv`.
+- Human Empire (1126, 1694) vs AI Rebellion (−1126, −1694). Bestine, seed 1474236152, victory `DestroyEnemyFleet`. Log 21.7 s = battle 0 s. AI station dead 918 s; battle 986 s.
+- Human: centre 46 s (wings) → held to the end; 6 mines by 132 s. AI: home mine + own-side zone (123 s) + human-side zone by wings (150–307 s). `fleetAdvantage` 0.6–0.9 most of the battle.
+- Telemetry ids: `zone:1` = own side (1402, −1818); `zone:2` = human side (−1402, 1818).
+
+### Worked
+- Pooling: `zoneAlloc reserve` 7–11 ships at staging (−849, −1278); centre pushes went as 7–12 ships, not single ships.
+- `statics` 1–9 at the centre (satellites counted). No `Go` below 1.0. 11 `RetreatValue` decisions. Deployments 72 × `tier=A`.
+
+### Faults
+- **S1 (P0) Siege defenders chase squadrons.** 600–915 s: 1,960 Attack orders, 1,680 (86 %) at squadrons; each ship re-targeted 20–40 ×/min over 30–46 targets; `inReach` on ≈ half the rows. Ship 206 stood at (−1024, −1946) for 80 s through 27 new approach legs. `localAdvantage` 1.1–2.6 while the station died.
+  - Cause: `BuildBaseThreat` picks one `DefenseTarget` = attacker of the station, else closest to it, ships and squadrons alike, no stickiness. `ExecuteDefense` orders **every** committed ship to `IssueAttack` that one target and re-issues when it changes (`previous != target`). Fighter wings circling the station change it every decision (0.5 s).
+- **S2 (P0) Centre push is abandoned while it is winning.** Four pushes (287, 357, 411, 464 s) of 7–12 ships, each released after 10–60 s. At 363–373 s the force had `localAdvantage` 23–64 at the centre and was recalled, then sent to raid a mine at (−1402, 1818).
+  - Cause 1: the allocator re-rates the zone every 0.5 s against all remembered hostiles within `1000 + 270` of the centre. The human deployment zone (625, 940) is 1,128 from the centre → every human spawn counts as a centre defender. Verdict flipped Go ↔ Assemble 30 times (350–470 s).
+  - Cause 2: commit at 1.0 and release at 0.85 are both zone-level counts; the group's own local fight is ignored.
+  - Cause 3: a released force becomes the reserve, which is behind on zones → `RaidStructures` across the map (N4) instead of staying.
+- **S3 (P1) Reserve bleeds at staging.** 160–290 s: reserve in `EngageLocal` at the staging point, 9 → 4–6 ships before the first push.
+- **S4 (P1) Wing sabotage 0.** `wingAssignment raids=0` on all 159 rows; `escorts` up to 7 of 7. Only 14 wings were bought (10 Y-Wing, 4 X-Wing); the rest are hangar wings (never raid). `EnemyPatrolSafety.IsObjectiveSafe(raiding: true)` rejects any route within reach of a known non-mine structure → every human mine sits beside satellites (4 centre mines, 6 pads). Ship raids: 26 decisions, 2 targets.
+- **S5 (P2) After the station dies every zone is "enemy side".** `IsOwnSide` uses the nearest allied station → none → own home mine and own-side zone `Deny: hostileZoneOnRoute` (918 s+).
+- **S6 (P2) Backup station** bought 750 s, placed at (1917, −1917); not alive at 918 s (`No living production station`). Not analysed.
+- **S7 (P2) `zoneAlloc` churn.** 307 rows; force size changes by one ship per 0.5 s around the commit line.
+
+### Proposed fixes (not implemented)
+- [ ] **T1 (S1)** Defense target = hostile **ship** attacking the station → nearest hostile ship → squadron only when no ship threatens. Keep the target while it stays a threat. Ships that cannot hurt the target hold the defense line (attack-move) instead of chasing.
+- [ ] **T2 (S2)** A sent force is released by its **local** fight (local advantage ≤ retreat line), not by the zone recount. Commit margin above 1.0 (proposal 1.2). Defender reach = zone + weapon range (≈ 770), not + 1000.
+- [ ] **T3 (S2/S3)** Reserve raids only with ships left over after a force is out; a returning force goes back to staging. Staging outside known hostile reach.
+- [ ] **T4 (S4)** Wing raid safety: rate wing power vs satellites at the mine (N5 rule) instead of the blanket structure block; let hangar bombers raid when their carrier is in the reserve.
+- [ ] **T5 (S5)** Own side = nearest allied station or home zone when no station lives.
+
+## Evidence — battle 2026-11-19 21:11 (UltraHard Small 1v1, code `b5b46684e` dirty = N1–N6) — user: "worse; around `529094e87` everything was great except a small detail"
+Files: same folder, `Loading_20261119_211158_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261119_211200_map.csv`, `Battle_20261119_211306.csv`.
+- Human Republic (−1260, 1054) vs AI Separatist (1260, −1054). Coruscant, seed 507681517. Log 18.5 s = battle 0 s. AI station dead 666 s; battle 679 s.
+- Human: centre relay 44 s, both outer zones 70 / 93 s, 6 mines by 94 s (all by wings). AI: home mine + 2–3 centre pads until 188 s. No zone held at any time.
+- Same matchup on `529094e87` (12:39): 1,108 s; AI retook the centre; decisions `CaptureZone` 90 / `EngageLocal` 107. Now: `CaptureZone` 9 / `EngageLocal` 223.
+
+### Findings
+- **U1 (P0) Corvettes mid/late game.** 13 C-9979 + 8 Patrol Frigates at 388–621 s (level 3–4), all `critical=True`, one every ≈ 5 s at money ≈ 1,300 (≈ 27k credits). Cause: station emergency required "affordable now", found nothing, then `TrySelectShip(allowCriticalCorvetteFallback: true)` bought the cheapest hull → money never accumulated.
+- **U2 (P0) Fleet waits instead of capturing.** Reserve stood at the gathering point (877, −733) in `EngageLocal` from 59 s; `gather=zone:0` (centre, 5–15 defenders) all battle. `529094e87` gave every ship a capture target at once.
+- **U3 (P0) Weak fleet aims at the centre.** 261 s: 5 ships sent to the centre vs 10 defenders at `fleetAdvantage` 0.5. Human-side zone `Deny: hostileZoneOnRoute` all battle. From 369 s the own-side zone had 0 defenders and 0 ships: station pressure pauses new forces (N1 rule).
+- **U4 (P1) Own-side zone force destroyed.** 154–206 s: 9 ships at the own-side zone, counted defenders 0–2 + 1 satellite; human deployed there (it was their relay) → 9 → 2 ships, `fleetAdvantage` 3.5 → 0.3. Relay never flipped; objective switched pad ↔ relay 36 times.
+- **U5 (P1) Wings.** 3 Vultures bought 7–9 s arrive 20 / 26 / 32 s (same-type queue is serial). From 50 s `escorts` 7–8 of 8 → no capture wing. N5 rule: centre targets `got0` from 44 s (1 defender).
+- **U6 (P1) Wing raids 0** (112 rows), same cause as S4.
+- Code distance `529094e87` → HEAD in `Services/Enemy` + `Entities/EnemyFaction`: 6 commits, 32 files, +1,977 / −202, plus uncommitted N1–N6.
+
+### Fix 2026-11-19 (U1; compiled 0 errors; tests not run)
+- [x] `EnemyProductionStrategy`: emergency corvette fallback deleted. `IsShipTierAllowed`: level 1 free, level 2 cap 2, level ≥ 3 never. A critical station now picks the best ship that arrives before loss and saves for it (no "affordable now" filter).
+- Test: `Level1CorvetteCap_…` gains a critical-station case.
+
+### Open decision (user)
+- Restore ship objective selection and grouping to `529094e87` (drop P1–P7 and N1–N6), keep deployment tiers, production saving, platforms, satellite fill, telemetry; then add only: weak → own-side small zone before the centre, siege target fix (T1), corvette ban (done). Or keep the allocator and patch U2–U5.
+
+### Faction comparison (user will replay Republic vs CIS)
+- Compare in the new logs: `wingAssignment captureWings` at 20–40 s, first `zoneOwner` times, `zoneEval assigned` distribution, `raids`, purchases per category in the first 240 s.
 
 ## Reopened 2026-11-19 — acceptance failed (user: "full failure")
 - `2fa16bea3` played 2026-11-19 13:52 on UltraHard (Separatist AI, top-right). User: lots of corvettes again, one sabotage, idle instead of acting, no early centre take/retake, unsure it captured even 2 mining spots.

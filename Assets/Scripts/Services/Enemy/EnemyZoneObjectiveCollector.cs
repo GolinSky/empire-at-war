@@ -8,6 +8,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models.Objectives;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Presenters.ReinforcementZones;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.Vision;
 using UnityEngine;
 using static EmpireAtWar.Utils.FormationConversion;
@@ -17,17 +18,27 @@ namespace EmpireAtWar.Services.Enemy
     /// <summary>
     /// Groups capture candidates into zone objectives: one per reinforcement zone holding a candidate, one per lone
     /// site outside every zone. Defenders are the known hostile units around the zone plus its visible armed
-    /// hostile structures, so a fortified zone is a stronger target, never a hidden one.
+    /// hostile structures, so a fortified zone is a stronger target, never a hidden one. The AI's own armed
+    /// structures in the zone are its support. No zone is denied for the route to it: ships path around.
     /// </summary>
     public sealed class EnemyZoneObjectiveCollector
     {
         /// <summary>Hostiles this close to a zone's edge fight for it: twice the common ship weapon range (500).</summary>
         public const float DEFENDER_REACH = 1000f;
         /// <summary>
+        /// Hostiles this close to a zone's edge defend it: one common ship weapon range. A force fighting just
+        /// outside the zone is not counted against it.
+        /// </summary>
+        public const float ZONE_DEFENDER_MARGIN = 500f;
+        /// <summary>
         /// Armed structures have no weapon profile in the AI catalog, so each one counts as this damage per second
         /// against every class. Estimate, not calibrated against satellite or platform loadouts.
         /// </summary>
         public const float STATIC_DEFENSE_DPS = 60f;
+        /// <summary>Weapon reach assumed for every armed structure: the common ship weapon range.</summary>
+        public const float STATIC_DEFENSE_REACH = 500f;
+        /// <summary>Before this battle time a zone nobody has seen is rated empty, so the opening is not stalled.</summary>
+        public const float UNSCOUTED_GRACE_SECONDS = 180f;
 
         private static readonly UnitCombatProfile STATIC_PROFILE = CreateStaticProfile();
 
@@ -48,6 +59,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Dictionary<ReinforcementZonePresenter, int> _zoneArea =
             new Dictionary<ReinforcementZonePresenter, int>();
         private readonly Predicate<HostileSighting> _includeDefender;
+        private readonly Predicate<HostileSighting> _includeHostile;
+        private readonly ForceComposition _knownHostileForce = new ForceComposition();
         private Vector3 _defenderCentre;
         private float _defenderRadiusSquared;
 
@@ -61,6 +74,7 @@ namespace EmpireAtWar.Services.Enemy
             _picture = picture;
             _owner = owner;
             _includeDefender = IncludeDefender;
+            _includeHostile = sighting => _roster.IsHostile(_owner, sighting.Owner);
         }
 
         public IReadOnlyList<EnemyZoneObjective> Objectives => _objectives;
@@ -111,12 +125,32 @@ namespace EmpireAtWar.Services.Enemy
                 Vector3 centre = _centres[area];
                 ReinforcementZonePresenter zone = _areaZones[area];
                 int statics = BuildDefenders(objective.Defenders, centre, _radii[area]);
+                objective.OwnSupport.Clear();
+                AddOwnArmedStructures(objective.OwnSupport, centre, 2f * _radii[area]);
+                bool isCentre = zone != null && zone.IsMain;
+                bool ownSide = IsOwnSide(centre);
                 string deny = !_threatened[area] && isNearHostileBase(centre) ? "hostileBase" : null;
+                if (deny == null && !ownSide && objective.Defenders.IsEmpty) AddUnscoutedShare(objective.Defenders, centre);
                 objective.Reset(zone != null ? $"zone:{IndexOf(zone)}" : $"site:({centre.x:F0} {centre.z:F0})",
-                    zone != null && zone.IsMain, IsOwnSide(centre), _priorities[area],
-                    PlanarDistance(origin, centre) / Mathf.Max(1f, speed), statics, deny);
+                    isCentre, ownSide, _priorities[area],
+                    PlanarDistance(origin, centre) / Mathf.Max(1f, speed), statics, deny, _threatened[area]);
                 _objectives.Add(objective);
             }
+        }
+
+        /// <summary>
+        /// An enemy-side zone the team cannot see is never rated empty: it is assumed to hold an even share of the
+        /// hostile force the team remembers, split over the zones the hostiles hold.
+        /// </summary>
+        private void AddUnscoutedShare(ForceComposition defenders, Vector3 centre)
+        {
+            if (BattleClock.CurrentElapsed < UNSCOUTED_GRACE_SECONDS) return;
+            _picture.BuildKnownFromConfident(_knownHostileForce, _includeHostile);
+            if (_knownHostileForce.IsEmpty || _vision.IsVisible(_owner, centre)) return;
+            int hostileZones = 0;
+            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+                if (!zone.Owner.IsNone && _roster.IsHostile(_owner, zone.Owner)) hostileZones++;
+            defenders.AddShare(_knownHostileForce, 1f / Mathf.Max(1, hostileZones));
         }
 
         /// <summary>
@@ -152,40 +186,61 @@ namespace EmpireAtWar.Services.Enemy
             return false;
         }
 
-        /// <summary>A visible armed hostile structure covers <paramref name="position"/> with its weapons.</summary>
-        public bool HasStaticDefenseNear(Vector3 position)
+        /// <summary>
+        /// Adds every visible armed hostile structure within <paramref name="reach"/> of <paramref name="centre"/> to
+        /// <paramref name="defenders"/> and returns how many. Satellites and defend platforms are not units, so
+        /// intel never lists them.
+        /// </summary>
+        public static int AddArmedStructures(ForceComposition defenders, AiWorldSnapshot world, IPlayerRoster roster,
+            IVisionService vision, PlayerId owner, Vector3 centre, float reach)
+        {
+            int count = 0;
+            IReadOnlyList<AiWorldSnapshot.Entry> structures = world.RaidStructures;
+            for (int i = 0; i < structures.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = structures[i];
+                if (!IsArmedHostileStructure(entry, roster, vision, owner) ||
+                    PlanarDistance(entry.Position, centre) > reach) continue;
+                defenders.Add(STATIC_PROFILE, entry.Entity.HealthModel.Hull, entry.Entity.HealthModel.Shields, 1f);
+                count++;
+            }
+            return count;
+        }
+
+        /// <summary>Adds this AI's living armed structures within <paramref name="reach"/> of the zone centre.</summary>
+        private void AddOwnArmedStructures(ForceComposition support, Vector3 centre, float reach)
         {
             IReadOnlyList<AiWorldSnapshot.Entry> structures = _world.RaidStructures;
             for (int i = 0; i < structures.Count; i++)
             {
                 AiWorldSnapshot.Entry entry = structures[i];
-                if (_roster.IsHostile(_owner, entry.Owner) && !entry.Entity.HealthModel.IsDestroyed &&
-                    entry.Entity.TryGetFacade(out IUnitCombatObserverFacade combat) && combat.WeaponRange > 0f &&
-                    PlanarDistance(entry.Position, position) <= combat.WeaponRange &&
-                    _vision.IsVisible(_owner, entry.Entity)) return true;
+                if (entry.Owner != _owner || entry.Entity.HealthModel.IsDestroyed ||
+                    !entry.Entity.TryGetFacade(out IStructureKindFacade structure) ||
+                    structure.Kind != StructureKind.DefendPlatform ||
+                    PlanarDistance(entry.Position, centre) > reach) continue;
+                support.Add(STATIC_PROFILE, entry.Entity.HealthModel.Hull, entry.Entity.HealthModel.Shields, 1f);
             }
-            return false;
         }
+
+        /// <summary>A living, visible hostile satellite or defend platform.</summary>
+        public static bool IsArmedHostileStructure(AiWorldSnapshot.Entry entry, IPlayerRoster roster,
+            IVisionService vision, PlayerId owner) =>
+            roster.IsHostile(owner, entry.Owner) && !entry.Entity.HealthModel.IsDestroyed &&
+            entry.Entity.TryGetFacade(out IStructureKindFacade structure) &&
+            structure.Kind == StructureKind.DefendPlatform && vision.IsVisible(owner, entry.Entity);
+
+        /// <summary>Adds the visible armed hostile structures whose weapons cover <paramref name="position"/>.</summary>
+        public int AddStaticDefenders(ForceComposition defenders, Vector3 position) =>
+            AddArmedStructures(defenders, _world, _roster, _vision, _owner, position, STATIC_DEFENSE_REACH);
 
         private int BuildDefenders(ForceComposition defenders, Vector3 centre, float radius)
         {
             _defenderCentre = centre;
-            float reach = DEFENDER_REACH + radius;
+            float reach = ZONE_DEFENDER_MARGIN + radius;
             _defenderRadiusSquared = reach * reach;
             _picture.BuildKnownFromConfident(defenders, _includeDefender);
-            int statics = 0;
-            IReadOnlyList<AiWorldSnapshot.Entry> structures = _world.RaidStructures;
-            for (int i = 0; i < structures.Count; i++)
-            {
-                AiWorldSnapshot.Entry entry = structures[i];
-                if (!_roster.IsHostile(_owner, entry.Owner) || entry.Entity.HealthModel.IsDestroyed ||
-                    !entry.Entity.TryGetFacade(out IUnitCombatObserverFacade combat) || combat.WeaponRange <= 0f ||
-                    PlanarDistance(entry.Position, centre) > 2f * radius + combat.WeaponRange ||
-                    !_vision.IsVisible(_owner, entry.Entity)) continue;
-                defenders.Add(STATIC_PROFILE, entry.Entity.HealthModel.Hull, entry.Entity.HealthModel.Shields, 1f);
-                statics++;
-            }
-            return statics;
+            return AddArmedStructures(defenders, _world, _roster, _vision, _owner, centre,
+                2f * radius + STATIC_DEFENSE_REACH);
         }
 
         private bool IncludeDefender(HostileSighting sighting)

@@ -41,8 +41,10 @@ namespace EmpireAtWar.Services.Enemy
         int ActiveShipCount { get; }
         bool HoldFinishedReinforcements => false;
         bool IsStationCritical => false;
-        /// <summary>Mining zones this AI's ships may expand to; 0 for AIs that do not expand.</summary>
+        /// <summary>Outer zones this AI's ships may take; 0 for AIs that do not expand.</summary>
         int EligibleExpansionZoneCount => 0;
+        /// <summary>The team holds an outer zone; until then finished ships deploy one at a time.</summary>
+        bool HoldsOuterZone => true;
         bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
         bool TryGetRearDeploymentThreats(Vector3 station, PlacementThreatSnapshot threats) => false;
         void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
@@ -116,6 +118,7 @@ namespace EmpireAtWar.Services.Enemy
         public int ActiveShipCount => _ships.Count;
         public bool HoldFinishedReinforcements => true;
         public int EligibleExpansionZoneCount => _taskGroups.EligibleExpansionZoneCount;
+        public bool HoldsOuterZone => _contextBuilder.HoldsOuterZone();
         public bool IsStationCritical => _contextBuilder.StationCritical;
 
         public bool TryGetRearDeploymentThreats(Vector3 station, PlacementThreatSnapshot threats) =>
@@ -144,6 +147,12 @@ namespace EmpireAtWar.Services.Enemy
             {
                 if (!group.IsMainForce || group.Context == null) continue;
                 if (TryGetTaskRally(group, out rally)) return true;
+            }
+            // Every force is out at a zone: a new ship gathers for the next force instead of joining a fight alone.
+            if (_taskGroups.GatherPoint is Vector3 gather)
+            {
+                rally = gather;
+                return true;
             }
             foreach (EnemyShipTaskGroup group in _taskGroups.Groups)
                 if (TryGetTaskRally(group, out rally)) return true;
@@ -411,7 +420,8 @@ namespace EmpireAtWar.Services.Enemy
                 snapshot.IsRegrouped, snapshot.HasStationPressure, snapshot.HasSafeRetreat,
                 snapshot.HasEconomyRaidTarget, snapshot.LocalRaw, snapshot.FleetRaw,
                 snapshot.RecoveryMode, snapshot.IsStationCritical, snapshot.HasGuardSite, snapshot.IsCentreGuardGoal,
-                snapshot.CanAssaultBase, snapshot.CanHuntFleet, snapshot.HasSecuredCentre, snapshot.CanDisengage);
+                snapshot.CanAssaultBase, snapshot.CanHuntFleet, snapshot.HasSecuredCentre, snapshot.CanDisengage,
+                snapshot.RaidWhenBehind);
             _recoveryStartedAt = _cyclePrimary.RecoveryStartedAt;
             _actionReason = _cyclePrimary.Executor.ActionReason + _cycleGroupSummary;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -427,7 +437,7 @@ namespace EmpireAtWar.Services.Enemy
 #endif
             {
                 PruneDeadShips(_ships);
-                _taskGroups.TryCreateCaptureGroup(_ships, _reservedCaptureObjectives, _cycleHasPressure);
+                _taskGroups.Allocate(_ships, _reservedCaptureObjectives, _cycleHasPressure, Time.time);
             }
             _contextBuilder.TeamCooperation.PublishReservations(_owner.Id, _reservedCaptureObjectives);
             if (_cyclePatrolShip != null && _entityLocator.TryGetEntity(_cyclePatrolShip.EntityId, out GameEntity patrolEntity) &&

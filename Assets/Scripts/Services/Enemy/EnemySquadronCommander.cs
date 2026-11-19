@@ -23,10 +23,11 @@ using EmpireAtWar.Presenters.ReinforcementZones;
 namespace EmpireAtWar.Services.Enemy
 {
     /// <summary>
-    /// Spreads available AI squadrons across capture objectives, retaining valid assignments;
-    /// squadrons hunt only when nothing is left to capture. While hostile strikecraft
-    /// are in play, the squadrons that destroy them fastest escort the
-    /// own ships those strikecraft hurt the most, only until the escorts match the strikecraft.
+    /// Orders AI wings. Station-launched and bought wings are free and form two groups (<see cref="EnemyWingGroup"/>):
+    /// group A takes and holds the centre, group B the own-side outer zone, then the next outer zone, then raids
+    /// hostile mines. Each group chooses free sites inside its zone and holds inside a pad's circle until it flips.
+    /// Carrier wings stay with their carrier and are the only wings used as escorts against hostile strikecraft.
+    /// Wings without a group zone are spread over all capture targets; they hunt when nothing is left.
     /// </summary>
     public sealed class EnemySquadronCommander : IEnemySquadronCommander, IInitializable, ITickable,
         ILateDisposable, IObserver<BattleState>
@@ -44,7 +45,11 @@ namespace EmpireAtWar.Services.Enemy
         private string _lastWingAssignment;
         private float _nextWingAssignmentReport;
 #endif
-        private const int MAX_RAID_WINGS = 3;
+        /// <summary>
+        /// A capturing wing this close to its site switches from attack-move to move: it stays inside the pad circle
+        /// (radius 60) instead of drifting out while it fights.
+        /// </summary>
+        private const float CAPTURE_HOLD_DISTANCE = 400f;
         // Matches the ship capture rule: sites this close to an allied station are taken last.
         private const float ALLIED_BASE_SITE_RADIUS = 1000f;
 
@@ -74,6 +79,14 @@ namespace EmpireAtWar.Services.Enemy
         private readonly HashSet<ISquadron> _escorts = new HashSet<ISquadron>();
         private readonly List<KeyValuePair<ISquadron, float>> _escortCandidates =
             new List<KeyValuePair<ISquadron, float>>();
+        private readonly EnemyWingGroup _centreGroup = new EnemyWingGroup(EnemyWingRole.Centre);
+        private readonly EnemyWingGroup _outerGroup = new EnemyWingGroup(EnemyWingRole.Outer);
+        private readonly List<ISquadron> _groupWings = new List<ISquadron>();
+        private readonly List<ISquadron> _scoutPool = new List<ISquadron>();
+        private readonly ForceComposition _raidForce = new ForceComposition();
+        private readonly ForceComposition _raidDefenders = new ForceComposition();
+        private readonly Predicate<ISquadron> _leftGroup;
+        private int _outerWingCount = 1;
 
         private readonly IEnemyStructurePlacementService _structurePlacement;
         private readonly HostileIntelModel _intel;
@@ -91,6 +104,8 @@ namespace EmpireAtWar.Services.Enemy
 
         public void SetStationDefense(Vector3? position) => _stationDefense = position;
 
+        public void SetOuterWingCount(int count) => _outerWingCount = count;
+
         private int _nextEscortTarget;
 
         /// <summary>Squadron revealing fog because no build space is visible; null when none is needed.</summary>
@@ -100,6 +115,10 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Dictionary<ISquadron, HostileSighting> _raids =
             new Dictionary<ISquadron, HostileSighting>();
         private readonly HashSet<long> _reservedRaidTargets = new HashSet<long>();
+        private readonly Action<Vector3, ForceComposition> _fillTargetDefenders;
+        private readonly Action<ISquadron, ForceComposition> _addWingForce;
+        private readonly Predicate<HostileSighting> _includeTargetDefender;
+        private Vector3 _ratedTarget;
 
         public EnemySquadronCommander(
             IReadOnlyList<IEnemyCaptureObjectiveSource> captureSources,
@@ -133,6 +152,10 @@ namespace EmpireAtWar.Services.Enemy
             _playerRoster = playerRoster;
             _forceBuilder = forceBuilder;
             _profileCatalog = profileCatalog;
+            _fillTargetDefenders = FillTargetDefenders;
+            _addWingForce = AddWingForce;
+            _includeTargetDefender = IncludeTargetDefender;
+            _leftGroup = wing => !_squadrons.TryGetValue(wing, out CommandedSquadron commanded) || !IsFree(commanded);
         }
 
         public void Initialize()
@@ -173,9 +196,7 @@ namespace EmpireAtWar.Services.Enemy
             using var marker = LaunchDiagnostics.Marker.Auto();
 #endif
 
-            AssessThreats();
-            AssignEscorts();
-            AssignCaptureTargets();
+            Decide();
             foreach (ISquadron wing in _squadrons.Keys)
                 IssueOrder(wing);
         }
@@ -199,9 +220,7 @@ namespace EmpireAtWar.Services.Enemy
 #endif
             _patrol.Sample(Time.time);
             TrackOwnedSquadrons();
-            AssessThreats();
-            AssignEscorts();
-            AssignCaptureTargets();
+            Decide();
             _orderBuffer.Clear();
             _orderBuffer.AddRange(_squadrons.Keys);
             foreach (ISquadron squadron in _orderBuffer)
@@ -210,20 +229,54 @@ namespace EmpireAtWar.Services.Enemy
             }
         }
 
+        private void Decide()
+        {
+            AssessThreats();
+            CollectCaptureTargets();
+            UpdateGroups();
+            AssignRaiders();
+            AssignEscorts();
+            AssignCaptureTargets();
+        }
+
+        /// <summary>
+        /// Wings appearing in the world without a purchase were launched from a hangar. Wings launched beside the own
+        /// station are free from the start; wings launched beside a carrier stay with it.
+        /// </summary>
         private void TrackOwnedSquadrons()
         {
             IReadOnlyList<AiWorldSnapshot.Entry> owned = _worldSnapshot.GetOwnedUnits(_owner.Id);
             for (int i = 0; i < owned.Count; i++)
             {
                 AiWorldSnapshot.Entry entry = owned[i];
-                if (entry.UnitTypeId.IsSquadron &&
-                    entry.Entity.TryGetFacade(out ISquadron squadron) && !_squadrons.ContainsKey(squadron))
-                {
+                if (!entry.UnitTypeId.IsSquadron ||
+                    !entry.Entity.TryGetFacade(out ISquadron squadron) || _squadrons.ContainsKey(squadron)) continue;
+                if (IsBesideOwnStation(entry.Position))
+                    Track(squadron, entry.UnitTypeId.SquadronType);
+                else
                     Track(squadron, entry.UnitTypeId.SquadronType,
                         entry.Entity.GetFacade<IUnitOrderObserverFacade>());
-                }
             }
         }
+
+        /// <summary>An own station is nearer than every own ship: the wing came from the station hangar.</summary>
+        private bool IsBesideOwnStation(Vector3 position)
+        {
+            float station = float.PositiveInfinity;
+            foreach (AiWorldSnapshot.Entry entry in _worldSnapshot.Bases)
+                if (entry.Owner == _owner.Id)
+                    station = Mathf.Min(station, PlanarDistanceSquared(entry.Position, position));
+            if (float.IsPositiveInfinity(station)) return false;
+            IReadOnlyList<AiWorldSnapshot.Entry> owned = _worldSnapshot.GetOwnedUnits(_owner.Id);
+            for (int i = 0; i < owned.Count; i++)
+                if (owned[i].UnitTypeId.IsShip && !owned[i].IsPlayerBase &&
+                    PlanarDistanceSquared(owned[i].Position, position) < station) return false;
+            return true;
+        }
+
+        /// <summary>A wing takes commander orders unless it is a hangar wing still guarding its carrier.</summary>
+        private static bool IsFree(CommandedSquadron commanded) =>
+            !commanded.IsHangarLaunched || commanded.Orders.CurrentOrder != UnitOrderType.Guard;
 
         private void Track(ISquadron squadron, SquadronType squadronType)
         {
@@ -259,16 +312,27 @@ namespace EmpireAtWar.Services.Enemy
         {
             ISquadron previous = _scout;
             _scout = null;
-            // Keep one available squadron capturing; only surplus squadrons scout while objectives remain.
-            if (_captureSquadrons.Count == 0 ||
-                _captureAssignments.HasTargets && _captureSquadrons.Count <= captureWings || _stationDefense.HasValue)
+            // Ungrouped wings scout when they are surplus. Group wings scout only for build space, while group A
+            // keeps at least one wing capturing.
+            _scoutPool.Clear();
+            _scoutPool.AddRange(_captureSquadrons);
+            int keep = captureWings;
+            if (_scoutPool.Count == 0 && !_structurePlacement.TryGetPosition(out _) &&
+                _structurePlacement.TryGetScoutTarget(out _))
+            {
+                foreach (ISquadron wing in _centreGroup.Members)
+                    if (!_raids.ContainsKey(wing)) _scoutPool.Add(wing);
+                keep = 1;
+            }
+            if (_scoutPool.Count == 0 ||
+                _captureAssignments.HasTargets && _scoutPool.Count <= keep || _stationDefense.HasValue)
             {
                 if (previous != null) _patrol.Release($"squadron:{previous.EntityId}");
                 return;
             }
 
             float closest = float.MaxValue;
-            foreach (ISquadron squadron in _captureSquadrons)
+            foreach (ISquadron squadron in _scoutPool)
             {
                 float distance = (squadron.WorldPosition - _scoutTarget).sqrMagnitude;
                 if (!_squadrons[squadron].IsHangarLaunched && distance < closest)
@@ -277,7 +341,7 @@ namespace EmpireAtWar.Services.Enemy
                     _scout = squadron;
                 }
             }
-            if (previous != null && _captureSquadrons.Contains(previous) && !_squadrons[previous].IsHangarLaunched)
+            if (previous != null && _scoutPool.Contains(previous) && !_squadrons[previous].IsHangarLaunched)
                 _scout = previous;
             ISquadron candidate = _scout;
             if (_scout != null && !TryGetScoutTarget(_scout, out _scoutTarget)) _scout = null;
@@ -383,7 +447,12 @@ namespace EmpireAtWar.Services.Enemy
             // Attack-Move re-issued to the same point is ignored by the squadron, so repeats are cheap.
             if (_captureAssignments.TryGetTarget(squadron, out Vector3 target))
             {
-                squadron.AttackMoveTo(target);
+                // The last leg is a move: a wing that stops to fight would drift out of the pad circle.
+                if (_captureAssignments.IsSite(target) &&
+                    PlanarDistanceSquared(squadron.WorldPosition, target) <= CAPTURE_HOLD_DISTANCE * CAPTURE_HOLD_DISTANCE)
+                    _entityLocator.GetEntity(squadron.EntityId).GetFacade<IMoveFacade>().MoveTo(target);
+                else
+                    squadron.AttackMoveTo(target);
             }
             else if (_captureAssignments.HasTargets)
             {
@@ -479,8 +548,8 @@ namespace EmpireAtWar.Services.Enemy
         }
 
         /// <summary>
-        /// Picks the best anti-strikecraft squadrons, in order, until together they match the hostile strikecraft.
-        /// Everyone else keeps capturing, so escorts never absorb the whole wing.
+        /// Picks the best anti-strikecraft carrier wings, in order, until together they match the hostile strikecraft.
+        /// Group wings capture and are never escorts.
         /// </summary>
         private void AssignEscorts()
         {
@@ -493,7 +562,8 @@ namespace EmpireAtWar.Services.Enemy
             _escortCandidates.Clear();
             foreach (KeyValuePair<ISquadron, CommandedSquadron> pair in _squadrons)
             {
-                if (TryRateEscort(pair.Value.Profile, out float timeToClearStrikecraft))
+                if (pair.Value.IsHangarLaunched && !_raids.ContainsKey(pair.Key) && !IsGrouped(pair.Key) &&
+                    TryRateEscort(pair.Value.Profile, out float timeToClearStrikecraft))
                 {
                     _escortCandidates.Add(new KeyValuePair<ISquadron, float>(pair.Key, timeToClearStrikecraft));
                 }
@@ -524,35 +594,90 @@ namespace EmpireAtWar.Services.Enemy
                    timeToClearStrikecraft <= CombatMatchup.TimeToDestroy(_squadronForce, _hostileShips);
         }
 
-        private void AssignCaptureTargets()
+        private void CollectCaptureTargets()
         {
             _captureAssignments.ClearTargets();
             foreach (var zone in _zones.Zones)
             {
                 if (zone.IsCapturable && !_playerRoster.IsAllied(zone.Owner, _owner.Id))
-                {
-                    var strength = _zones.GetTeamStrengths(zone, _owner.Id);
-                    int requiredWings = Mathf.FloorToInt(strength.Hostile / _zones.SquadronCaptureWeight) + 1;
-                    _captureAssignments.AddTarget(ToVector(ToPoint(zone.Center)), requiredWings: requiredWings);
-                }
+                    _captureAssignments.AddTarget(ToVector(ToPoint(zone.Center)));
             }
             foreach (IEnemyCaptureObjectiveSource source in _captureSources)
                 source.AddSquadronTargets(_captureAssignments, _intel);
+            _captureAssignments.RateTargets(_fillTargetDefenders);
             foreach (AiWorldSnapshot.Entry station in _worldSnapshot.Bases)
                 if (station.Owner != _owner.Id && _playerRoster.IsAllied(_owner.Id, station.Owner))
                     _captureAssignments.DeprioritizeNear(station.Position, ALLIED_BASE_SITE_RADIUS);
-            _captureSquadrons.Clear();
+        }
+
+        /// <summary>
+        /// Keeps the two wing groups filled: a new free wing joins group B until it has its opening size (bombers
+        /// always join B, the raid group), every other wing joins group A. A lost wing's replacement fills the gap.
+        /// </summary>
+        private void UpdateGroups()
+        {
+            _centreGroup.Members.RemoveAll(_leftGroup);
+            _outerGroup.Members.RemoveAll(_leftGroup);
+            int outerCapturers = 0;
+            foreach (ISquadron wing in _outerGroup.Members)
+                if (_squadrons[wing].Profile.ShipClass != ShipClass.Bomber) outerCapturers++;
             foreach (KeyValuePair<ISquadron, CommandedSquadron> pair in _squadrons)
             {
-                if (_escorts.Contains(pair.Key) ||
-                    pair.Value.IsHangarLaunched && pair.Value.Orders.CurrentOrder == UnitOrderType.Guard) continue;
-                _captureSquadrons.Add(pair.Key);
+                if (!IsFree(pair.Value) || IsGrouped(pair.Key)) continue;
+                bool bomber = pair.Value.Profile.ShipClass == ShipClass.Bomber;
+                if (bomber || outerCapturers < _outerWingCount)
+                {
+                    _outerGroup.Members.Add(pair.Key);
+                    if (!bomber) outerCapturers++;
+                }
+                else _centreGroup.Members.Add(pair.Key);
             }
+            Vector3 home = GetHome();
+            _centreGroup.Zone = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
+            _outerGroup.Zone = SelectOuterZone(home);
+        }
+
+        private bool IsGrouped(ISquadron wing) =>
+            _centreGroup.Members.Contains(wing) || _outerGroup.Members.Contains(wing);
+
+        /// <summary>The outer zone nearest home that still has a site to take; null when none is left.</summary>
+        private ReinforcementZonePresenter SelectOuterZone(Vector3 home)
+        {
+            ReinforcementZonePresenter best = null;
+            float bestDistance = float.PositiveInfinity;
+            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            {
+                if (!zone.IsCapturable || zone.IsMain ||
+                    !_captureAssignments.HasTargetIn(ToVector(ToPoint(zone.Center)), 2f * zone.Radius)) continue;
+                float distance = PlanarDistanceSquared(zone.Center, home);
+                if (distance >= bestDistance) continue;
+                best = zone;
+                bestDistance = distance;
+            }
+            return best;
+        }
+
+        private Vector3 GetHome()
+        {
+            Vector3 fallback = default;
+            foreach (ISquadron wing in _squadrons.Keys)
+            {
+                fallback = wing.WorldPosition;
+                break;
+            }
+            return EnemyShipTaskGroupPlanner.GetOpeningHome(_worldSnapshot, _owner.Id, fallback);
+        }
+
+        private void AssignCaptureTargets()
+        {
+            _captureAssignments.BeginAssignment();
+            _captureSquadrons.Clear();
+            Vector3 home = GetHome();
+            AssignGroup(_centreGroup, home, relayBeforeMines: false);
+            AssignGroup(_outerGroup, home, relayBeforeMines: true);
             ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
             if (_captureSquadrons.Count > 0)
             {
-                Vector3 home = EnemyShipTaskGroupPlanner.GetOpeningHome(_worldSnapshot, _owner.Id,
-                    _captureSquadrons[0].WorldPosition);
                 ReinforcementZonePresenter neighbour = EnemyShipTaskGroupPlanner.GetNeighbour(_zones.Zones, home);
                 PrioritizeZone(centre);
                 PrioritizeZone(neighbour);
@@ -561,14 +686,13 @@ namespace EmpireAtWar.Services.Enemy
             }
             int captureWings = Mathf.Max(centre != null ? OPENING_CAPTURE_WINGS : 1,
                 _captureAssignments.GetOpeningWingBudget(_captureSquadrons.Count));
-            AssignRaiders(_captureAssignments.HasTargets ? captureWings : 1);
             AssignScout(captureWings);
             if (_scout != null) _captureSquadrons.Remove(_scout);
-            _captureAssignments.Assign(_captureSquadrons);
+            _captureAssignments.AssignRemaining(_captureSquadrons, _addWingForce);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             // Which wings go where: the opening race for zones is decided here, before any ship exists.
             string assignment = FormattableString.Invariant(
-                $"wings={_squadrons.Count};captureWings={_captureSquadrons.Count};openingBudget={captureWings};escorts={_escorts.Count};raids={_raids.Count};scout={(_scout != null)};targets=") +
+                $"wings={_squadrons.Count};groupA={_centreGroup.Members.Count};groupB={_outerGroup.Members.Count};groupBZone={(_outerGroup.Zone != null ? $"({_outerGroup.Zone.Center.x:F0} {_outerGroup.Zone.Center.z:F0})" : "none")};captureWings={_captureSquadrons.Count};openingBudget={captureWings};escorts={_escorts.Count};raids={_raids.Count};scout={(_scout != null)};targets=") +
                 _captureAssignments.Describe();
             if (assignment != _lastWingAssignment && Time.time >= _nextWingAssignmentReport)
             {
@@ -579,26 +703,53 @@ namespace EmpireAtWar.Services.Enemy
 #endif
         }
 
+        /// <summary>
+        /// Assigns a group's wings inside its zone. Without a zone they join the ungrouped wings spread over every
+        /// target. Raiding wings and escorts are left out.
+        /// </summary>
+        private void AssignGroup(EnemyWingGroup group, Vector3 home, bool relayBeforeMines)
+        {
+            _groupWings.Clear();
+            foreach (ISquadron wing in group.Members)
+                if (!_raids.ContainsKey(wing) && !_escorts.Contains(wing)) _groupWings.Add(wing);
+            if (group.Zone == null)
+            {
+                _captureSquadrons.AddRange(_groupWings);
+                return;
+            }
+            Vector3 centre = ToVector(ToPoint(group.Zone.Center));
+            Vector3 toHome = home - centre;
+            toHome.y = 0f;
+            Vector3 bait = toHome.sqrMagnitude > 1f ? centre + toHome.normalized * group.Zone.Radius : centre;
+            _captureAssignments.AssignInZone(_groupWings, centre, 2f * group.Zone.Radius, home, relayBeforeMines, bait);
+        }
+
         private void PrioritizeZone(ReinforcementZonePresenter zone)
         {
             if (zone != null) _captureAssignments.PrioritizeArea(ToVector(ToPoint(zone.Center)), 2f * zone.Radius);
         }
 
-        private void AssignRaiders(int captureWings)
+        /// <summary>
+        /// Group B raids known hostile mines: all of it once no outer zone is left to take, its bombers at any time.
+        /// A wing raids a mine only when it at least matches the units and armed structures there (the power rule);
+        /// no blanket structure-near-route block applies. One wing per mine, best damage per distance first.
+        /// </summary>
+        private void AssignRaiders()
         {
             _raids.Clear();
             _reservedRaidTargets.Clear();
             if (_stationDefense.HasValue || _intel.Mines.Count == 0) return;
 
-            while (_raids.Count < MAX_RAID_WINGS && _captureSquadrons.Count > captureWings)
+            while (true)
             {
                 ISquadron bestWing = null;
                 HostileSighting bestMine = default;
                 float bestScore = 0f;
-                foreach (ISquadron candidate in _captureSquadrons)
+                foreach (ISquadron candidate in _outerGroup.Members)
                 {
                     CommandedSquadron commanded = _squadrons[candidate];
-                    if (commanded.IsHangarLaunched) continue;
+                    if (_raids.ContainsKey(candidate) ||
+                        _outerGroup.Zone != null && commanded.Profile.ShipClass != ShipClass.Bomber) continue;
                     float damage = commanded.Profile.HullDps(ShipClass.Structure) +
                                    commanded.Profile.PiercingDps(ShipClass.Structure);
                     if (damage <= 0f) continue;
@@ -611,8 +762,7 @@ namespace EmpireAtWar.Services.Enemy
                         Vector3 position = ToVector(mine.Position);
                         float distance = Mathf.Sqrt(PlanarDistanceSquared(candidate.WorldPosition, position));
                         float score = damage / Mathf.Max(1f, distance);
-                        if (score <= bestScore || !_patrolSafety.IsObjectiveSafe(
-                            candidate.EntityId, candidate.WorldPosition, position, 0f, false, raiding: true)) continue;
+                        if (score <= bestScore || !WinsRaid(candidate, position)) continue;
                         bestWing = candidate;
                         bestMine = mine;
                         bestScore = score;
@@ -622,15 +772,47 @@ namespace EmpireAtWar.Services.Enemy
                 if (bestWing == null) break;
                 _raids.Add(bestWing, bestMine);
                 _reservedRaidTargets.Add(bestMine.EntityId);
-                _captureSquadrons.Remove(bestWing);
             }
         }
+
+        private bool WinsRaid(ISquadron wing, Vector3 mine)
+        {
+            _raidDefenders.Clear();
+            FillTargetDefenders(mine, _raidDefenders);
+            if (_raidDefenders.IsEmpty) return true;
+            _raidForce.Clear();
+            AddWingForce(wing, _raidForce);
+            return CombatMatchup.Advantage(_raidForce, _raidDefenders) >= EVEN_FIGHT;
+        }
+
+        /// <summary>
+        /// Hostile force at a capture target: known hostile units in reach plus visible armed structures (satellites,
+        /// defend platforms). Wings go in only when they are at least an even match for it.
+        /// </summary>
+        private void FillTargetDefenders(Vector3 target, ForceComposition defenders)
+        {
+            _ratedTarget = target;
+            _forceBuilder.BuildKnown(defenders, _intel, Time.time, _includeTargetDefender);
+            EnemyZoneObjectiveCollector.AddArmedStructures(defenders, _worldSnapshot, _playerRoster, _vision,
+                _owner.Id, target, EnemyZoneObjectiveCollector.DEFENDER_REACH);
+        }
+
+        private bool IncludeTargetDefender(HostileSighting sighting) =>
+            _playerRoster.IsHostile(_owner.Id, sighting.Owner) &&
+            PlanarDistanceSquared(ToVector(sighting.Position), _ratedTarget) <=
+            EnemyZoneObjectiveCollector.DEFENDER_REACH * EnemyZoneObjectiveCollector.DEFENDER_REACH;
+
+        // A wing counts at its current strength: type profile, surviving craft and remaining hull.
+        private void AddWingForce(ISquadron squadron, ForceComposition force) =>
+            _forceBuilder.AddUnit(force, _entityLocator.GetEntity(squadron.EntityId));
 
         private void Release(ISquadron squadron)
         {
             squadron.Released -= _squadrons[squadron].ReleaseHandler;
             _squadrons.Remove(squadron);
             _escorts.Remove(squadron);
+            _centreGroup.Members.Remove(squadron);
+            _outerGroup.Members.Remove(squadron);
             _captureAssignments.Release(squadron);
             _raids.Remove(squadron);
             if (_scout == squadron)

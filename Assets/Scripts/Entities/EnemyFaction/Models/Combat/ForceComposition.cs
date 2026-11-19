@@ -90,6 +90,23 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Combat
             UnitCount += other.UnitCount;
         }
 
+        /// <summary>Adds <paramref name="share"/> (0..1) of <paramref name="other"/>: an estimate of a part of a force.</summary>
+        public void AddShare(ForceComposition other, float share)
+        {
+            for (int i = 0; i < ClassSlots; i++)
+            {
+                _hull[i] += other._hull[i] * share;
+                _shields[i] += other._shields[i] * share;
+                _hullDps[i] += other._hullDps[i] * share;
+                _shieldDps[i] += other._shieldDps[i] * share;
+                _piercingDps[i] += other._piercingDps[i] * share;
+            }
+            _siegeBonusHullDps += other._siegeBonusHullDps * share;
+            _siegeBonusShieldDps += other._siegeBonusShieldDps * share;
+            _siegeBonusPiercingDps += other._siegeBonusPiercingDps * share;
+            UnitCount += other.UnitCount;
+        }
+
         public void CopyFrom(ForceComposition other)
         {
             Array.Copy(other._hull, _hull, ClassSlots);

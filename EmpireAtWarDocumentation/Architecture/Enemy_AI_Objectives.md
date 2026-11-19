@@ -20,6 +20,34 @@ verification: Reviewed affected source and regression fixtures. Unity 6000.4.7f1
 
 ## Implementation
 
+### Opening and wing groups (2026-11-19, A1–A7) — current
+
+- Supersedes in the allocator section below: retain-line release (`0.85 ×`), idle reserve / waiting fleet, `hostileZoneOnRoute`, pause on any station pressure, wing raid counts (surplus beyond 3 / behind → all but 1).
+- Allocator: sent force keeps its zone until its own local fight is lost; no idle ship (leftovers join the nearest force; none out → all attack `WeakTarget`); centre force led by the most durable ship. New forces pause only while the station is critical.
+- Weak loop: a zone group in `RetreatValue` marks its zone 90 s; `WeakTarget` = best outer zone by pool advantage, never the centre or the marked zone; reinforcements gather at its staging point.
+- Centre never excluded: behind + Assemble → tier 4, or 3 with an outer zone + own mine; behind + Go → 2. Own satellites/platforms (`EnemyZoneObjective.OwnSupport`) fight beside the force in `Assess`.
+- Zone defenders: units within radius + 500. Allocator-sent group commits to its zone regardless of verdict.
+- Wings: station-hangar wings are free; carrier wings stay on Guard and are the only escorts. Group A → centre, group B (1–2 wings + bombers) → nearest outer zone with a target, then raids (power rule at the mine). In-zone: free site, pads first, base-side first; contested → next free site; none → bait at the edge. Last 400 → move order (hold inside the pad circle).
+- Production: level-1 corvette only at level 1, from 30 s, max 2. Ships wait while a mandatory satellite or mine is pending. Wings: fighter/interceptor types alternate; bombers once a hostile mine is known. Ships deploy singly until an outer zone is held.
+- Station defence target: ship attacking the station → nearest threatening ship → wing; kept while it threatens.
+- Owner and open items → [[TODOs/Bugs/Enemy_AI_Opening_And_Task_Groups]].
+
+### Ship allocator (2026-11-19, N1–N6)
+
+- Supersedes below: group formation by proximity, `MAIN_FORCE_SHIP_COUNT`, opening-focus and expansion detachments, the 45 s assemble release, commit at `RetreatAdvantage`, `STATIC` detection through `IUnitCombatObserverFacade`, wing `requiredWings` counts.
+- `EnemyShipTaskGroupPlanner`: one reserve (main force, always) + one group per zone (`AssignedZoneId`). `Reconcile` → new ships join the reserve. `Allocate` (cycle end) → `EnemyZoneAllocator`.
+- `EnemyZoneAllocator` (pure): keep a sent force at ≥ `0.85 ×` commit → top up to `Go` when possible → rank unserved zones (tier, score) → add nearest free ships until `Go`; not enough → no ship goes, first such zone = `GatherZone`.
+- Commit = `EnemyZoneEvaluator.COMMIT_ADVANTAGE` 1.0 (even fight). Tiers: threatened own zone −1; behind on zones: own-side Go 0 / Assemble 1, other Go 2 / Assemble 3, centre 4; else Go 0 / Assemble 1.
+- Reserve never captures. Guard point: held centre → staging of `GatherZone` (nearest safe team-held zone, else 500–1500 ahead of home toward it) → idle point ahead of home. New ships rally to `planner.GatherPoint`.
+- Reserve excluded from the pool while `DefendBase` / `AssaultBase`. Station pressure → no new force. Critical station → all forces recalled.
+- Zone rating additions: enemy-side unseen zone with no known defenders after 180 s → remembered hostile force ÷ hostile-held zones; enemy-side non-centre zone with a hostile-held zone within `1000 + radius` of the straight route from home → `Deny: hostileZoneOnRoute`.
+- Armed structures = `IStructureKindFacade.Kind == DefendPlatform` (satellites, platforms), visible only, reach 500, flat 60 DPS profile. They bind no unit or combat-observer facade → never in intel.
+- Pull-back cut-off: only a force the group cannot beat, ≥ 500 ahead on the way back and within 500 of it.
+- Raids: `RaidWhenBehind` (reserve, behind on zones, no capture target) lifts the centre-guard block; the 2:1 ship-count block does not apply to raids; a covering satellite counts as a defender.
+- Wings: raiders are picked before escorts (behind → all purchased wings but 1, max 3; else beyond 3). Capture targets: defenders = known hostile units + armed structures within 1000; wings go only when together `Advantage ≥ 1`, else none.
+- Telemetry: `zoneAlloc` (on change), `zoneEval assignedZone`, `wingAssignment … defendersN`.
+- Owner and evidence → [[TODOs/Bugs/Enemy_AI_Economy_Strategy]].
+
 ### Zone objectives (2026-11-19, rebuild P1–P7)
 
 - Supersedes the per-site yes/no safety gate. Older bullets below that mention route safety for capture/raids, the `2:1` ship-count rule or "hostile capture strength + one ship" sizing are historical.

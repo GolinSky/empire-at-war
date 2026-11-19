@@ -33,7 +33,9 @@ namespace EmpireAtWar.Services.Enemy
         private const float DEFENSE_BUILD_INTERVAL = 20f;
         private const float SECOND_STATION_LATE_SECONDS = 480f;
         private const float STATION_PLACEMENT_RETRY_SECONDS = 10f;
-        private const int MAX_LEVEL1_CORVETTES_AT_LEVEL2 = 2;
+        private const int MAX_LEVEL1_CORVETTES = 2;
+        /// <summary>Wings capture the opening; the first corvette may be bought from this battle time.</summary>
+        public const float OPENING_NO_CORVETTE_SECONDS = 30f;
         private const float NON_COMPETING_RESEARCH_SHARE = 0.25f;
 
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
@@ -193,9 +195,9 @@ namespace EmpireAtWar.Services.Enemy
             KeyValuePair<ShipType, FactionData> ship = default;
             bool critical = _stationPressure.IsStationCritical;
             bool canOrderShips = CanOrderAnyShip();
-            bool hasDefenseShip = critical && canOrderShips &&
-                (TrySelectShip(shipCount, out ship) ||
-                 TrySelectShip(shipCount, out ship, allowCriticalCorvetteFallback: true));
+            // A threatened station saves for the best ship that still arrives in time. It never falls back to
+            // level-1 corvettes: buying the cheapest hull every few seconds leaves no money for a ship that matters.
+            bool hasDefenseShip = critical && canOrderShips && TrySelectShip(shipCount, out ship);
             bool hasSquadronRoom = HasSquadronRoom(shipCount);
             bool needsCaptureWings = !critical && CountReservedSquadrons() + CountHangarSquadrons() <
                 GetCaptureWingTarget();
@@ -334,6 +336,10 @@ namespace EmpireAtWar.Services.Enemy
                                    !_factionModel.IsAssaultCapital(combatChoice.ShipType, _profileCatalog.Get(combatChoice).ShipClass)) &&
                                   TrySelectSquadron(shipCount, false, out squadron) &&
                                   IsAffordable(squadron.Value));
+            // Satellites and mines on captured sites are paid before any ship; wings keep capturing meanwhile.
+            if (!critical && PriorityConstructionPending && category == EnemyProductionCategory.Ship &&
+                !buildSquadron && !(hasCounter && !counterId.IsShip))
+                return;
             UnitRequest request = category switch
             {
                 EnemyProductionCategory.Ship when hasCounter && counterId.IsShip =>
@@ -584,8 +590,7 @@ namespace EmpireAtWar.Services.Enemy
             int shipCount,
             out KeyValuePair<ShipType, FactionData> selected,
             bool requireAffordable = false,
-            bool capitalOnly = false,
-            bool allowCriticalCorvetteFallback = false)
+            bool capitalOnly = false)
         {
             selected = default;
             bool found = false;
@@ -596,7 +601,7 @@ namespace EmpireAtWar.Services.Enemy
                 // Affordability is checked after selection so the AI saves for higher-tier ships.
                 UnitTypeId unitType = UnitTypeId.Ship(option.Key);
                 if (!IsAvailable(option.Value) || !IsShipClassAllowed(unitType) ||
-                    !IsShipTierAllowed(option.Value, unitType, allowCriticalCorvetteFallback) ||
+                    !IsShipTierAllowed(option.Value, unitType) ||
                     !CanReserve<ShipUnitRequest>(
                         option.Key.ToString(),
                         option.Value, true))
@@ -604,8 +609,8 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 }
 
-                if ((_stationPressure.IsStationCritical || requireAffordable) &&
-                    (!IsAffordable(option.Value) || !FitsRemainingCapacity(option.Value))) continue;
+                if (requireAffordable && (!IsAffordable(option.Value) || !FitsRemainingCapacity(option.Value)))
+                    continue;
                 if (capitalOnly && !_factionModel.IsAssaultCapital(option.Key, _profileCatalog.Get(unitType).ShipClass))
                     continue;
 
@@ -695,12 +700,16 @@ namespace EmpireAtWar.Services.Enemy
             return count;
         }
 
-        private bool IsShipTierAllowed(FactionData data, UnitTypeId id, bool allowCriticalCorvetteFallback = false)
+        /// <summary>
+        /// Level-1 corvettes answer enemy wings in the opening: none in the first
+        /// <see cref="OPENING_NO_CORVETTE_SECONDS"/>, at most <see cref="MAX_LEVEL1_CORVETTES"/>, and never once
+        /// level 2 is reached, station emergency included.
+        /// </summary>
+        private bool IsShipTierAllowed(FactionData data, UnitTypeId id)
         {
-            if (!IsLevel1Corvette(data, id) || _factionModel.CurrentLevel <= 1) return true;
-            if (_factionModel.CurrentLevel == 2)
-                return CountReservedLevel1Corvettes() < MAX_LEVEL1_CORVETTES_AT_LEVEL2;
-            return allowCriticalCorvetteFallback;
+            if (!IsLevel1Corvette(data, id)) return true;
+            return _factionModel.CurrentLevel == 1 && BattleClock.CurrentElapsed >= OPENING_NO_CORVETTE_SECONDS &&
+                CountReservedLevel1Corvettes() < MAX_LEVEL1_CORVETTES;
         }
 
         /// <summary>Live wings, usable carrier reserves and initial wings of ships still awaiting deployment.</summary>
@@ -740,7 +749,9 @@ namespace EmpireAtWar.Services.Enemy
         {
             foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
             {
-                if (IsAvailable(option.Value) && IsShipClassAllowed(UnitTypeId.Ship(option.Key)) &&
+                UnitTypeId unitType = UnitTypeId.Ship(option.Key);
+                if (IsAvailable(option.Value) && IsShipClassAllowed(unitType) &&
+                    IsShipTierAllowed(option.Value, unitType) &&
                     CanReserve<ShipUnitRequest>(option.Key.ToString(), option.Value, true))
                 {
                     return true;
@@ -774,7 +785,11 @@ namespace EmpireAtWar.Services.Enemy
             return true;
         }
 
-        /// <summary>Picks the cheapest available squadron while <see cref="HasSquadronRoom"/>, or regardless of the ship ratio.</summary>
+        /// <summary>
+        /// Picks a wing while <see cref="HasSquadronRoom"/>, or regardless of the ship ratio: fighters and interceptors
+        /// first, the type with the fewest copies so two types build side by side, then the cheapest. Bombers only once
+        /// a hostile mine is known to raid, or when no other type is available. Hero wings are never picked here.
+        /// </summary>
         private bool TrySelectSquadron(
             int shipCount,
             bool ignoreShipRatio,
@@ -787,6 +802,9 @@ namespace EmpireAtWar.Services.Enemy
             }
 
             bool found = false;
+            bool selectedIsBomber = false;
+            int selectedCount = 0;
+            bool bombersWanted = _intel.Mines.Count > 0;
             foreach (KeyValuePair<SquadronType, FactionData> option
                      in _factionModel.SquadronFactionData)
             {
@@ -798,11 +816,21 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 }
 
-                if (!found || option.Value.Price < selected.Value.Price)
+                ShipClass wingClass = _profileCatalog.Get(UnitTypeId.Squadron(option.Key)).ShipClass;
+                if (wingClass == ShipClass.HeroStrikecraft) continue;
+                bool isBomber = wingClass == ShipClass.Bomber && !bombersWanted;
+                int count = _unitLimitModel.GetReservedCount<SquadronUnitRequest>(option.Key.ToString());
+                if (found && (isBomber && !selectedIsBomber ||
+                              isBomber == selectedIsBomber && (count > selectedCount ||
+                                  count == selectedCount && option.Value.Price >= selected.Value.Price)))
                 {
-                    selected = option;
-                    found = true;
+                    continue;
                 }
+
+                selected = option;
+                selectedIsBomber = isBomber;
+                selectedCount = count;
+                found = true;
             }
 
             return found;

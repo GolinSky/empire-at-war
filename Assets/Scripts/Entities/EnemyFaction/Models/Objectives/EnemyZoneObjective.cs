@@ -10,6 +10,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
     {
         /// <summary>Known hostile units and armed structures that fight for the zone; reused between collections.</summary>
         public ForceComposition Defenders { get; } = new ForceComposition();
+        /// <summary>
+        /// This AI's own armed structures (satellites, platforms) in the zone. They fight beside any force sent, so a
+        /// small force can hold a zone around them.
+        /// </summary>
+        public ForceComposition OwnSupport { get; } = new ForceComposition();
 
         public string Id { get; private set; }
         public bool IsCentre { get; private set; }
@@ -23,9 +28,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
         public int StaticDefenders { get; private set; }
         public string DenyReason { get; private set; }
         public bool IsDenied => DenyReason != null;
+        /// <summary>Hostiles are inside a site this AI owns in the zone: defending it comes before any new zone.</summary>
+        public bool IsThreatened { get; private set; }
 
         public void Reset(string id, bool isCentre, bool isOwnSide, float priority, float travelSeconds,
-            int staticDefenders, string denyReason)
+            int staticDefenders, string denyReason, bool isThreatened = false)
         {
             Id = id;
             IsCentre = isCentre;
@@ -34,6 +41,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models.Objectives
             TravelSeconds = travelSeconds;
             StaticDefenders = staticDefenders;
             DenyReason = denyReason;
+            IsThreatened = isThreatened;
         }
     }
 }

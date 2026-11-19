@@ -17,6 +17,7 @@ using EmpireAtWar.Models.Economy;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Reinforcement;
 using EmpireAtWar.Services.Enemy;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Entities.BaseEntity;
 using EmpireAtWar.Services.Stations;
 using EmpireAtWar.Utils;
@@ -251,6 +252,7 @@ namespace EmpireAtWar.Tests.Editor
         {
             var reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
             FactionDefinition definition = CopyDefinition(FactionType.Separatist, ShipType.PatrolFrigate, ShipType.C9979);
+            var clock = new BattleClock(null);
             try
             {
                 EnemyFactionModel factionModel = CreateFactionModel(definition);
@@ -314,6 +316,15 @@ namespace EmpireAtWar.Tests.Editor
                     unitLimits.Adopt(UnitLimitKey.From(request), request.FactionData.UnitCapacity);
                 }
 
+                // Wings capture the opening: no corvette in the first 30 s.
+                scheduler.Step(10f);
+                Assert.That(purchases.Purchases.OfType<ShipUnitRequest>(), Is.Empty);
+                // Satellites and mines on captured sites are paid before any ship.
+                clock.Restore(EnemyProductionStrategy.OPENING_NO_CORVETTE_SECONDS);
+                scheduler.Step(10f);
+                Assert.That(purchases.Purchases.OfType<ShipUnitRequest>(), Is.Empty);
+
+                strategy.PriorityConstructionPending = false;
                 scheduler.Step(10f);
                 Assert.That(purchases.LastRequest, Is.TypeOf<ShipUnitRequest>());
                 unitLimits.RecordShipOrder();
@@ -330,6 +341,7 @@ namespace EmpireAtWar.Tests.Editor
             }
             finally
             {
+                clock.Restore(0f);
                 UnityEngine.Object.DestroyImmediate(reinforcementData);
                 UnityEngine.Object.DestroyImmediate(definition);
             }
@@ -742,10 +754,12 @@ namespace EmpireAtWar.Tests.Editor
             }
         }
 
+        [TestCase(2, 0, false)]
         [TestCase(2, 2, false)]
         [TestCase(3, 0, false)]
-        public void Level1CorvetteCap_BlocksCorvetteAtCapOrLevelThreeAndSavesForHigherTier(
-            int level, int reservedCorvettes, bool expectedCorvette)
+        [TestCase(3, 0, true)]
+        public void Level1Corvette_IsNeverBoughtFromLevelTwoAndSavesForHigherTier(
+            int level, int reservedCorvettes, bool stationCritical)
         {
             var reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
             FactionDefinition definition = CopyDefinition(FactionType.Separatist, ShipType.C9979, ShipType.Munificent);
@@ -783,6 +797,13 @@ namespace EmpireAtWar.Tests.Editor
                 var entities = new EntityLocator();
                 var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
                 scheduler.Initialize();
+                var pressure = new EnemyStationPressureTracker();
+                if (stationCritical)
+                {
+                    pressure.Update(1, 1000f, 1000f, 0f);
+                    pressure.Update(1, 499f, 1000f, 1f);
+                    pressure.Update(1, 490f, 1000f, 4f);
+                }
                 // Enough for C-9979 (1200), not enough for Munificent (3000): must save rather than buy C-9979.
                 var strategy = new EnemyProductionStrategy(
                     factionModel: factionModel,
@@ -801,15 +822,16 @@ namespace EmpireAtWar.Tests.Editor
                     counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
                     intelRegistry: new TeamIntelRegistry(),
                     owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
-                    stationPressure: new EnemyStationPressureTracker(),
+                    stationPressure: pressure,
                     scheduler: scheduler);
 
                 strategy.Start();
                 strategy.Tick(0f);
                 scheduler.Step(0f);
 
-                Assert.That(expectedCorvette, Is.False);
-                Assert.That(purchases.LastRequest, Is.Null, "Must save for Munificent instead of buying a capped level-1 corvette.");
+                Assert.That(pressure.IsStationCritical, Is.EqualTo(stationCritical));
+                Assert.That(purchases.LastRequest, Is.Null,
+                    "Must save for Munificent instead of buying a level-1 corvette, a station emergency included.");
             }
             finally
             {

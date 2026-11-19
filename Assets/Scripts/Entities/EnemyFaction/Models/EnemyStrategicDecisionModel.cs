@@ -67,6 +67,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// </summary>
         public bool CanDisengage { get; }
 
+        /// <summary>
+        /// The team holds fewer zones than an enemy and this force has no zone it can take: it sabotages known
+        /// hostile income instead of waiting at its gathering point.
+        /// </summary>
+        public bool RaidWhenBehind { get; }
+
         /// <summary>The station is losing hull fast enough that the whole fleet must defend it.</summary>
         public bool IsStationCritical { get; }
 
@@ -92,9 +98,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             float localRaw = float.NaN, float fleetRaw = float.NaN, bool recoveryMode = false,
             bool isStationCritical = false, bool hasGuardSite = false, bool isCentreGuardGoal = false,
             bool canAssaultBase = false, bool canHuntFleet = false, bool hasSecuredCentre = false,
-            bool canDisengage = false)
+            bool canDisengage = false, bool raidWhenBehind = false)
         {
             CanDisengage = canDisengage;
+            RaidWhenBehind = raidWhenBehind;
             IsStationCritical = isStationCritical;
             VictoryCondition = victoryCondition;
             Difficulty = difficulty;
@@ -191,7 +198,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 (s, p) => ResponseCurve.When(s.HasThreatenedSite)),
             new EnemyStrategicRule(EnemyStrategicState.RaidStructures, 0.66f,
                 "Destroy exposed hostile income before expanding to another objective.",
-                (s, p) => ResponseCurve.When(s.HasRaidTarget && s.HasEconomyRaidTarget && !s.HasThreatenedSite && !s.IsCentreGuardGoal)),
+                (s, p) => ResponseCurve.When(s.HasRaidTarget && s.HasEconomyRaidTarget && !s.HasThreatenedSite &&
+                    (!s.IsCentreGuardGoal || s.RaidWhenBehind))),
             new EnemyStrategicRule(EnemyStrategicState.CaptureZone, 0.6f,
                 "Expanding map control to the next closest relay or site.",
                 (s, p) => ResponseCurve.When(s.HasCaptureTarget)),
@@ -221,7 +229,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             // Too weak to hunt and nothing to capture: hit structures the enemy left undefended.
             new EnemyStrategicRule(EnemyStrategicState.RaidStructures, 0.1f,
                 "The enemy fleet is too strong, so the fleet raids an undefended structure.",
-                (s, p) => ResponseCurve.When(s.HasRaidTarget && (!s.IsCentreGuardGoal ||
+                (s, p) => ResponseCurve.When(s.HasRaidTarget && (!s.IsCentreGuardGoal || s.RaidWhenBehind ||
                     s.HasSecuredCentre && s.HasEconomyRaidTarget && s.OwnShipCount >= 6))),
             new EnemyStrategicRule(EnemyStrategicState.GuardSite, 0.08f,
                 "Guard the centre or nearby allied mining site.",

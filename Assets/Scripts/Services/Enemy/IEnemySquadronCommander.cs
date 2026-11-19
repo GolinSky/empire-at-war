@@ -8,5 +8,8 @@ namespace EmpireAtWar.Services.Enemy
         void SetStationDefense(UnityEngine.Vector3? position);
 
         void Command(ISquadron squadron, SquadronType squadronType);
+
+        /// <summary>Wings sent to the own-side outer zone at the opening: 2 when fighter wings are cheap, else 1.</summary>
+        void SetOuterWingCount(int count);
     }
 }

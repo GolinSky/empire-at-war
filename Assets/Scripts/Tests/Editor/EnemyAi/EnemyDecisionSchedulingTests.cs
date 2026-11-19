@@ -466,6 +466,13 @@ namespace EmpireAtWar.Tests.Editor
             shipService.Add(ship2);
             shipService.Add(ship3);
             shipService.Add(ship4);
+            // A force already sent to a zone gives the cycle a second group, so it spans more than one frame.
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+            var planner = (EnemyShipTaskGroupPlanner)typeof(EnemyUnitCommander).GetField("_taskGroups", flags)
+                .GetValue(commander);
+            var force = (EnemyShipTaskGroup)typeof(EnemyShipTaskGroupPlanner)
+                .GetMethod("GetOrCreateZoneGroup", flags).Invoke(planner, new object[] { "zone:test" });
+            force.Ships.AddRange(new IShipEntity[] { ship2, ship3, ship4 });
 
             scheduler.Initialize();
             snapshot.Initialize();
