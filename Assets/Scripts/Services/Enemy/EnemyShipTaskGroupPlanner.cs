@@ -13,6 +13,11 @@ namespace EmpireAtWar.Services.Enemy
     {
         private const int MAIN_FORCE_SHIP_COUNT = 6;
         private const float DETACHMENT_GRACE_SECONDS = 10f;
+        // The centre group may grow to about half the ships outside expansion detachments, never below two.
+        private const float CENTRE_GROUP_SHARE = 0.5f;
+        private const int MIN_CENTRE_GROUP = 2;
+        // At most one expansion detachment per two ships.
+        private const int SHIPS_PER_EXPANSION_GROUP = 2;
         private static readonly EnemyOpeningFocus[] OPENING_FOCUSES =
             { EnemyOpeningFocus.Centre, EnemyOpeningFocus.Neighbour, EnemyOpeningFocus.Outer };
         private readonly EnemyStrategicContextBuilder _contextBuilder;
@@ -27,6 +32,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly EnemyStrategicContextBuilder _captureProbe;
 
         public IReadOnlyList<EnemyShipTaskGroup> Groups => _groups;
+        /// <summary>Mining zones ships may expand to this cycle; production sizes capture wings from it.</summary>
+        public int EligibleExpansionZoneCount { get; private set; }
 
         public EnemyShipTaskGroupPlanner(EnemyStrategicContextBuilder contextBuilder,
             EnemyStrategicDecisionModel decisionModel, EnemyTaskForceExecutor executor,
@@ -148,11 +155,16 @@ namespace EmpireAtWar.Services.Enemy
                     _unassigned.Add(ship);
             _unassigned.Sort((a, b) => b.NavigationSpeed.CompareTo(a.NavigationSpeed));
             _captureProbe.BeginCaptureProbe(reservedObjectives);
+            // Allied AIs see whole expansion zones as taken, not only their individual sites.
+            foreach (ReinforcementZonePresenter zone in _assignedExpansionZones)
+                reservedObjectives.Add(_captureProbe.GetExpansionReservationId(zone));
             if (_assignedExpansionZones.Count > 0 &&
                 !_captureGroups.Exists(group => group.ContextBuilder.OpeningFocus == EnemyOpeningFocus.Centre) &&
                 TryDetachForCapture(EnemyOpeningFocus.Centre, ships.Count)) return;
-            if (TryReinforceCentreGroup()) return;
-            if (TryAssignExpansionShip()) return;
+            // A centre reinforcement and an expansion ship can both be assigned in one cycle.
+            bool reinforced = TryReinforceCentreGroup(ships.Count);
+            if (TryAssignExpansionShip(ships.Count)) return;
+            if (reinforced) return;
             if (_mainGroup != null && _captureGroups.Count >= OPENING_FOCUSES.Length) return;
             foreach (EnemyOpeningFocus focus in OPENING_FOCUSES)
             {
@@ -163,11 +175,18 @@ namespace EmpireAtWar.Services.Enemy
             if (_captureGroups.Count == 0) TryDetachForCapture(EnemyOpeningFocus.None, ships.Count);
         }
 
-        private bool TryReinforceCentreGroup()
+        private bool TryReinforceCentreGroup(int shipCount)
         {
             EnemyShipTaskGroup centreGroup = _captureGroups.Find(group =>
                 group.ContextBuilder.OpeningFocus == EnemyOpeningFocus.Centre);
-            if (centreGroup == null || !centreGroup.ContextBuilder.NeedsCentreReinforcement)
+            if (centreGroup == null) return false;
+            int expansionShips = 0;
+            foreach (EnemyShipTaskGroup group in _captureGroups)
+                if (group.ContextBuilder.ExpansionZone != null) expansionShips += group.Ships.Count;
+            int cap = Mathf.Max(MIN_CENTRE_GROUP, Mathf.CeilToInt(CENTRE_GROUP_SHARE * (shipCount - expansionShips)));
+            // At the cap a stronger centre is not fed ship by ship: the group waits for the main force.
+            centreGroup.ContextBuilder.CentreGroupAtCap = centreGroup.Ships.Count >= cap;
+            if (centreGroup.ContextBuilder.CentreGroupAtCap || !centreGroup.ContextBuilder.NeedsCentreReinforcement)
                 return false;
             foreach (IShipEntity ship in _unassigned)
             {
@@ -175,22 +194,33 @@ namespace EmpireAtWar.Services.Enemy
                     continue;
                 foreach (EnemyShipTaskGroup group in _groups) group.Ships.Remove(ship);
                 centreGroup.Ships.Add(ship);
+                _unassigned.Remove(ship);
                 return true;
             }
             return false;
         }
 
-        private bool TryAssignExpansionShip()
+        private bool TryAssignExpansionShip(int shipCount)
         {
             ReinforcementZonePresenter bestZone = null;
             EnemyShipTaskGroup bestGroup = null;
             IShipEntity bestShip = null;
             float bestEta = float.PositiveInfinity;
+            int expansionGroups = 0;
+            foreach (EnemyShipTaskGroup group in _captureGroups)
+                if (group.ContextBuilder.ExpansionZone != null) expansionGroups++;
+            bool canOpenGroup = expansionGroups < Mathf.CeilToInt(shipCount / (float)SHIPS_PER_EXPANSION_GROUP);
+            EligibleExpansionZoneCount = 0;
             foreach (ReinforcementZonePresenter zone in _captureProbe.ExpansionZones)
             {
                 if (zone.IsMain || !zone.IsCapturable || !_captureProbe.HasMiningSites(zone) ||
                     !_captureProbe.HasExpansionObjective(zone)) continue;
+                // Enemy-side zones are raided by wings until the team holds the centre.
+                if (!_captureProbe.IsShipExpansionEligible(zone)) continue;
                 EnemyShipTaskGroup group = _captureGroups.Find(candidate => candidate.ContextBuilder.ExpansionZone == zone);
+                if (group == null && _captureProbe.IsExpansionZoneReservedByAlly(zone)) continue;
+                EligibleExpansionZoneCount++;
+                if (group == null && !canOpenGroup) continue;
                 foreach (IShipEntity ship in _unassigned)
                 {
                     int required = _captureProbe.GetRequiredExpansionShips(zone, ship, out float eta);
@@ -216,6 +246,7 @@ namespace EmpireAtWar.Services.Enemy
             }
             foreach (EnemyShipTaskGroup group in _groups) group.Ships.Remove(bestShip);
             bestGroup.Ships.Add(bestShip);
+            _captureProbe.RecordExpansionAssigned(bestZone, bestShip, bestEta);
             return true;
         }
 

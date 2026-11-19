@@ -201,7 +201,7 @@ namespace EmpireAtWar.Services.Enemy
                  TrySelectShip(shipCount, out ship, allowCriticalCorvetteFallback: true));
             bool hasSquadronRoom = HasSquadronRoom(shipCount);
             bool needsCaptureWings = !critical && CountReservedSquadrons() + CountHangarSquadrons() <
-                MINIMUM_CAPTURE_WINGS;
+                GetCaptureWingTarget();
             UnitTypeId counterId = default;
             FactionData counterData = null;
             bool hasCounter = !hasDefenseShip && !needsCaptureWings && TrySelectCounterUnit(
@@ -661,9 +661,13 @@ namespace EmpireAtWar.Services.Enemy
         private bool HasSquadronRoom(int shipCount)
         {
             int cap = _stationPressure.IsStationCritical ? MINIMUM_CAPTURE_WINGS :
-                Math.Max(MINIMUM_CAPTURE_WINGS, shipCount / SHIPS_PER_SQUADRON);
+                Math.Max(GetCaptureWingTarget(), shipCount / SHIPS_PER_SQUADRON);
             return CountReservedSquadrons() + CountHangarSquadrons() < cap;
         }
+
+        // Big maps have more expansion zones than early ships: one capture wing per eligible zone plus one.
+        private int GetCaptureWingTarget() =>
+            Math.Max(MINIMUM_CAPTURE_WINGS, _stateProvider.EligibleExpansionZoneCount + 1);
 
         private void TrackSaving(string unit)
         {

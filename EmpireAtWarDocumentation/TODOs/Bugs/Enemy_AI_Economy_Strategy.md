@@ -6,6 +6,11 @@ follows: "[[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]"
 ---
 # Enemy AI Economy Strategy
 
+## Review 2026-11-19
+- Source review (no tests, no playtest) → [[TODOs/Bugs/Enemy_AI_Economy_Strategy - Review]]. X1–X5 and E1–E7 match source for 1v1 Small.
+- Open before team games / Medium / Large: R1 (assault gate counts own zones only), R2 (uncapped centre reinforcement blocks expansion), R6 (expansion has no distance/count limit). Fix proposals for R1–R9 are in the review; none implemented.
+- User decision 2026-11-19: income is shared across allies → an allied AI may take mines beside a teammate's base, but those mines get lower priority (R4).
+
 ## Reopened 2026-11-19 — acceptance failed (user: "full failure")
 - `2fa16bea3` played 2026-11-19 13:52 on UltraHard (Separatist AI, top-right). User: lots of corvettes again, one sabotage, idle instead of acting, no early centre take/retake, unsure it captured even 2 mining spots.
 - Implementation history (E1–E7 in `2fa16bea3`) kept below. Fix the regressions first (X1–X5), then re-check E1–E7.

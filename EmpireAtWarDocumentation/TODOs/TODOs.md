@@ -65,7 +65,8 @@
 ### Bugs
 
 - [ ] **Enemy AI economy strategy** → [[TODOs/Bugs/Enemy_AI_Economy_Strategy]]; follows [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]
-  - Status: in progress (2026-11-19), reopened after the 13:52 UltraHard battle (`2fa16bea3`, user: full failure). Regression fixes X1–X5 implemented 2026-11-19 → [[Done/Bugs/Enemy_AI_Economy_Strategy_Regression_Fixes]] (compiled, tests updated/not run; pending next UltraHard battle).
+  - Status: in progress (2026-11-19). Regression fixes X1–X5 done; review fixes R1–R9 implemented 2026-11-19 → [[TODOs/Bugs/Enemy_AI_Economy_Strategy - Review]] (EnemyAi 503/503, Capture/Map pass; not committed). Next: UltraHard Small 1v1 battle, then 2v2 Medium + 1v1 Large battles.
+  - Review 2026-11-19 → [[TODOs/Bugs/Enemy_AI_Economy_Strategy - Review]]: 1v1 Small matches source; team games and Medium/Large have open findings R1, R2, R6; map-fix findings M2, M4. Fix proposals recorded (not implemented); decided: mines near an allied base get lower priority (R4).
 
 - [ ] **Capital attack movement + class rework fixes** → [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes]]
   - Status: in progress (2026-11-17). Done: map seed/layout log (`BattleMapTelemetry` → `_map.csv`). ISD I spawn fixed and user-confirmed 2026-11-17 (a station-centred origin tied between the main region and a corner pocket; the larger region now wins). Next: Phase 1/2 movement issues and the uncommitted class-rework edits. Then the Titan/Allegiance freeze, Executor holding out of reach, Tector stern-first retreat at stations, and class-rework review defects.

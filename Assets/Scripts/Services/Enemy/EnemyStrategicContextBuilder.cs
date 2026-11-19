@@ -68,6 +68,7 @@ namespace EmpireAtWar.Services.Enemy
         public float UnseenInvestment { get; }
         public float EconomyPressure { get; }
         public int HeldShips { get; }
+        public int TeamHeldZones { get; }
 
         public EnemyStrategicContext(
             IReadOnlyList<IShipEntity> ships,
@@ -94,7 +95,8 @@ namespace EmpireAtWar.Services.Enemy
             float visibleAdvantage = 0f,
             float unseenInvestment = 0f,
             float economyPressure = 1f,
-            int heldShips = 0)
+            int heldShips = 0,
+            int teamHeldZones = 0)
         {
             Snapshot = snapshot;
             Ships = ships;
@@ -121,6 +123,7 @@ namespace EmpireAtWar.Services.Enemy
             UnseenInvestment = unseenInvestment;
             EconomyPressure = economyPressure;
             HeldShips = heldShips;
+            TeamHeldZones = teamHeldZones;
         }
     }
 
@@ -161,8 +164,15 @@ namespace EmpireAtWar.Services.Enemy
         private const float MAX_UNSEEN_INVESTMENT_SHARE = 0.5f;
         private const float UNSCOUTED_FLEET_INVESTMENT = 1200f;
         private const float CAPTURE_STRENGTH_MARGIN = 0.5f;
+        // Travel-distance units, on the SATELLITE_PAD_PRIORITY scale.
+        private const float ALLY_BASE_MINE_PENALTY = 600f;
         private const float BASE_EXCLUSION_MARGIN = 900f;
         private float _hostileEconomyPressure = 1f;
+        private readonly Dictionary<TeamId, int> _enemyTeamZones = new Dictionary<TeamId, int>();
+        private readonly HashSet<TeamId> _rosterTeams = new HashSet<TeamId>();
+        private readonly HashSet<PlayerId> _livingAllies = new HashSet<PlayerId>();
+        private readonly Dictionary<long, float> _hostileShipSpeeds = new Dictionary<long, float>();
+        private bool _hostileShipSightingsReady;
         private int _routeHostileShipCount;
         private readonly IReinforcementZonesSystem _reinforcementZonesSystem;
         private readonly IReadOnlyList<IEnemyCaptureObjectiveSource> _captureSources;
@@ -206,6 +216,8 @@ namespace EmpireAtWar.Services.Enemy
         private string _objectiveSafetyReason;
         public bool CaptureReservedByOtherGroup { get; private set; }
         public bool NeedsCentreReinforcement { get; private set; }
+        /// <summary>Set by the planner when the centre group reached its size cap; a stronger centre is then dropped.</summary>
+        public bool CentreGroupAtCap { get; set; }
         public bool RecoveryActive => _recovery.IsActive;
         public bool StationCritical => _stationPressure.IsStationCritical;
 
@@ -368,6 +380,40 @@ namespace EmpireAtWar.Services.Enemy
             CollectCaptureObjectives();
         }
 
+        public string GetExpansionReservationId(ReinforcementZonePresenter zone)
+        {
+            for (int i = 0; i < _zones.Zones.Count; i++)
+                if (_zones.Zones[i] == zone) return $"expansion:{i}";
+            throw new ArgumentException("The zone is not part of this battle.", nameof(zone));
+        }
+
+        public bool IsExpansionZoneReservedByAlly(ReinforcementZonePresenter zone) =>
+            _teamPicture.Cooperation.IsReservedByAlly(_owner.Id, GetExpansionReservationId(zone));
+
+        /// <summary>
+        /// Ships expand to a zone whose nearest station is allied (not farther than the nearest hostile one), or to
+        /// any zone once the team holds the centre uncontested.
+        /// </summary>
+        public bool IsShipExpansionEligible(ReinforcementZonePresenter zone)
+        {
+            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
+            if (centre != null && !centre.IsContested && _playerRoster.IsAllied(_owner.Id, centre.Owner)) return true;
+            float allied = float.PositiveInfinity;
+            float hostile = float.PositiveInfinity;
+            foreach (AiWorldSnapshot.Entry station in _worldSnapshot.Bases)
+            {
+                float distance = PlanarDistance(zone.Center, station.Position);
+                if (_playerRoster.IsAllied(_owner.Id, station.Owner)) allied = Mathf.Min(allied, distance);
+                else if (_playerRoster.IsHostile(_owner.Id, station.Owner)) hostile = Mathf.Min(hostile, distance);
+            }
+            return allied <= hostile;
+        }
+
+        public void RecordExpansionAssigned(ReinforcementZonePresenter zone, IShipEntity ship, float eta) =>
+            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "expansionAssigned",
+                FormattableString.Invariant(
+                    $"zone={GetExpansionReservationId(zone)};ship={ship.EntityId};eta={eta:F1};battleTime={BattleClock.CurrentElapsed:F1}"));
+
         public bool SetOpeningFocus(EnemyOpeningFocus focus, Vector3 origin)
         {
             OpeningFocus = focus;
@@ -428,6 +474,7 @@ namespace EmpireAtWar.Services.Enemy
                 if (!objective.IsMine || !IsExpansionObjective(zone, objective) || IsCaptureReserved(objective.Id))
                     continue;
                 float arrival = GetTravelCost(ship.WorldPosition, objective.Position) / ship.NavigationSpeed;
+                if (IsLowPriorityAllyMine(objective)) arrival += ALLY_BASE_MINE_PENALTY / ship.NavigationSpeed;
                 if (objective.HostileStrength == 0f && HostileReachesFirst(ship.WorldPosition, objective.Position,
                         Time.time, ship.NavigationSpeed))
                     arrival += LOST_CAPTURE_RACE_PENALTY;
@@ -674,15 +721,7 @@ namespace EmpireAtWar.Services.Enemy
                 fleetRaw = Mathf.Max(fleetRaw, visibleAdvantage * MAX_UNSEEN_INVESTMENT_SHARE);
             }
 
-            int capturableZones = 0;
-            int heldZones = 0;
-            foreach (ReinforcementZonePresenter zone in _zones.Zones)
-            {
-                if (!zone.IsCapturable) continue;
-                capturableZones++;
-                if (zone.Owner == self && !zone.IsContested) heldZones++;
-            }
-            bool hasZoneMajority = 2 * heldZones > capturableZones;
+            int teamHeldZones = CountTeamHeldZones(self, out bool hasZoneMajority);
             bool hasDecisiveSurplus = _faction.HasAssaultSurplus && fleetRaw >= 2f &&
                 assaultInvestment >= 2f * unseenInvestment;
             bool canAssault = preferStrategicObjectives && (centre == null || securedCentre) &&
@@ -779,7 +818,8 @@ namespace EmpireAtWar.Services.Enemy
                 visibleAdvantage: visibleAdvantage,
                 unseenInvestment: unseenInvestment,
                 economyPressure: _hostileEconomyPressure,
-                heldShips: _faction.HeldShips);
+                heldShips: _faction.HeldShips,
+                teamHeldZones: teamHeldZones);
         }
 
         /// <summary>
@@ -965,10 +1005,9 @@ namespace EmpireAtWar.Services.Enemy
                 if (ownSpeed > 0f)
                 {
                     if (!sighting.UnitTypeId.IsShip) continue;
-                    foreach (IShipEntity hostile in _shipService.Ships)
-                        if (hostile.EntityId == sighting.EntityId &&
-                            distance / Mathf.Max(1f, hostile.NavigationSpeed) < ownDistance / ownSpeed)
-                            return true;
+                    if (GetHostileShipSpeeds().TryGetValue(sighting.EntityId, out float hostileSpeed) &&
+                        distance / Mathf.Max(1f, hostileSpeed) < ownDistance / ownSpeed)
+                        return true;
                 }
                 else if (distance < ownDistance) return true;
             }
@@ -1104,6 +1143,7 @@ namespace EmpireAtWar.Services.Enemy
 
         private void CollectCaptureObjectives()
         {
+            _hostileShipSightingsReady = false;
             _captureCandidates.Clear();
             IReadOnlyList<EnemyCaptureObjective> cachedZones = _teamPicture.BaseCaptureObjectives;
             for (int i = 0; i < cachedZones.Count; i++)
@@ -1172,7 +1212,14 @@ namespace EmpireAtWar.Services.Enemy
                     if (centre)
                     {
                         if (candidate.HostileStrength > ownStrength)
-                            NeedsCentreReinforcement = true;
+                        {
+                            if (CentreGroupAtCap)
+                            {
+                                _objectiveSafetyReason = "hostile: centre strength exceeds the capped centre group; wait for the main force.";
+                                safe = false;
+                            }
+                            else NeedsCentreReinforcement = true;
+                        }
                     }
                     else if (_checkingExpansion)
                     {
@@ -1310,6 +1357,8 @@ namespace EmpireAtWar.Services.Enemy
                 : candidate.IsMine ? 300f : 0f;
             if (IsHomeMineOnOpeningRoute(candidate))
                 value += CENTRE_PRIORITY;
+            if (IsLowPriorityAllyMine(candidate))
+                value -= ALLY_BASE_MINE_PENALTY;
             return GetTravelCost(origin, candidate.Position) - value - candidate.PriorityBonus;
         }
 
@@ -1542,7 +1591,8 @@ namespace EmpireAtWar.Services.Enemy
                 hostileIncome += claims.Hostile * UNDEVELOPED_MINE_VALUE;
             }
 
-            _hostileIncome = hostileIncome;
+            // Each allied AI faces its share of the enemy team's unseen fleet; the pressure ratio stays team-wide.
+            _hostileIncome = hostileIncome / Mathf.Max(1, CountLivingAlliedPlayers());
             return Mathf.Clamp(hostileIncome / alliedIncome, 1f, 2f);
         }
 
@@ -1568,6 +1618,74 @@ namespace EmpireAtWar.Services.Enemy
             if (ownFleetInvestment > 0f)
                 unseen = Mathf.Min(unseen, ownFleetInvestment * MAX_UNSEEN_INVESTMENT_SHARE);
             return unseen;
+        }
+
+        /// <summary>
+        /// Uncontested capturable zones held by this AI's team (allies included). Two teams: a majority means more
+        /// than half. Three or more: more than every enemy team and at least an even share.
+        /// </summary>
+        private int CountTeamHeldZones(PlayerId self, out bool hasZoneMajority)
+        {
+            _enemyTeamZones.Clear();
+            _rosterTeams.Clear();
+            foreach (PlayerSlot player in _playerRoster.Players) _rosterTeams.Add(player.Team);
+            int capturableZones = 0;
+            int teamHeld = 0;
+            foreach (ReinforcementZonePresenter zone in _zones.Zones)
+            {
+                if (!zone.IsCapturable) continue;
+                capturableZones++;
+                if (zone.IsContested || zone.Owner.IsNone) continue;
+                if (_playerRoster.IsAllied(self, zone.Owner))
+                {
+                    teamHeld++;
+                    continue;
+                }
+                TeamId team = _playerRoster.Get(zone.Owner).Team;
+                _enemyTeamZones.TryGetValue(team, out int held);
+                _enemyTeamZones[team] = held + 1;
+            }
+            if (_rosterTeams.Count <= 2)
+            {
+                hasZoneMajority = 2 * teamHeld > capturableZones;
+                return teamHeld;
+            }
+            int strongestEnemy = 0;
+            foreach (int held in _enemyTeamZones.Values) strongestEnemy = Mathf.Max(strongestEnemy, held);
+            hasZoneMajority = teamHeld > strongestEnemy && teamHeld * _rosterTeams.Count >= capturableZones;
+            return teamHeld;
+        }
+
+        // Income is shared with allies, so a free mine beside an ally's station is taken after other free mines.
+        private bool IsLowPriorityAllyMine(EnemyCaptureObjective candidate)
+        {
+            if (!candidate.IsMine || candidate.IsThreatened || candidate.BlockingFacilityId.HasValue) return false;
+            foreach (AiWorldSnapshot.Entry station in _worldSnapshot.Bases)
+                if (station.Owner != _owner.Id && _playerRoster.IsAllied(_owner.Id, station.Owner) &&
+                    PlanarDistance(candidate.Position, station.Position) <= LOCAL_ENGAGEMENT_RADIUS)
+                    return true;
+            return false;
+        }
+
+        // One pass over ships per capture probe; expansion ETA checks run per zone and per candidate ship.
+        private Dictionary<long, float> GetHostileShipSpeeds()
+        {
+            if (_hostileShipSightingsReady) return _hostileShipSpeeds;
+            _hostileShipSpeeds.Clear();
+            foreach (IShipEntity ship in _shipService.Ships)
+                if (_playerRoster.IsHostile(_owner.Id, ship.Owner))
+                    _hostileShipSpeeds[ship.EntityId] = ship.NavigationSpeed;
+            _hostileShipSightingsReady = true;
+            return _hostileShipSpeeds;
+        }
+
+        private int CountLivingAlliedPlayers()
+        {
+            _livingAllies.Clear();
+            foreach (AiWorldSnapshot.Entry station in _worldSnapshot.Bases)
+                if (_playerRoster.IsAllied(_owner.Id, station.Owner) && !station.Entity.HealthModel.IsDestroyed)
+                    _livingAllies.Add(station.Owner);
+            return _livingAllies.Count;
         }
 
         private bool IsNearHostileBase(Vector3 position)

@@ -2336,6 +2336,55 @@ namespace EmpireAtWar.Tests.Editor
                 "The opening centre group forms and calls reinforcements instead of waiting.");
         }
 
+        [Test]
+        public void AssaultGate_CountsZonesHeldByTheWholeTeam()
+        {
+            PlayerRoster roster = TestPlayers.CreateTeamGame();
+            PlayerId[] owners =
+            {
+                TestPlayers.Enemy, TestPlayers.Enemy, TestPlayers.SecondEnemy, TestPlayers.Human, TestPlayers.Human
+            };
+            var zones = new ZoneSource(roster, owners, Vector3.right * 100f, Vector3.right * 200f,
+                Vector3.right * 300f, Vector3.right * 400f, Vector3.right * 500f);
+            var builder = CreateContextBuilder(new ShipService(), null, Array.Empty<IEnemyCaptureObjectiveSource>(),
+                new EntityLocator(), null, roster, null, new TeamIntelRegistry(), null,
+                roster.Get(TestPlayers.Enemy), null, new TestHazards(), zones, null,
+                new EnemyStationPressureTracker(), null);
+            object[] arguments = { TestPlayers.Enemy, false };
+
+            int teamHeld = (int)typeof(EnemyStrategicContextBuilder)
+                .GetMethod("CountTeamHeldZones", BindingFlags.Instance | BindingFlags.NonPublic)
+                .Invoke(builder, arguments);
+
+            Assert.That(teamHeld, Is.EqualTo(3), "Zones of an allied AI count toward the gate.");
+            Assert.That((bool)arguments[1], Is.True, "Three of five zones held by the team is a majority.");
+        }
+
+        [Test]
+        public void SquadronCapture_SiteBesideAnAlliedBaseIsTakenAfterOtherFreeSites()
+        {
+            Vector3 besideAlly = new Vector3(100f, 0f, 0f);
+            Vector3 free = new Vector3(-100f, 0f, 0f);
+            var wing = new FakeSquadron(1, TestPlayers.Enemy);
+            var assignments = new EnemySquadronCaptureAssignments();
+            assignments.AddTarget(besideAlly);
+            assignments.AddTarget(free);
+            assignments.DeprioritizeNear(new Vector3(150f, 0f, 0f), 100f);
+
+            assignments.Assign(new ISquadron[] { wing });
+
+            Assert.That(assignments.TryGetTarget(wing, out Vector3 target), Is.True);
+            Assert.That(target, Is.EqualTo(free));
+
+            var onlyBesideAlly = new EnemySquadronCaptureAssignments();
+            onlyBesideAlly.AddTarget(besideAlly);
+            onlyBesideAlly.DeprioritizeNear(new Vector3(150f, 0f, 0f), 100f);
+            onlyBesideAlly.Assign(new ISquadron[] { wing });
+
+            Assert.That(onlyBesideAlly.TryGetTarget(wing, out target), Is.True, "It is still taken when nothing else is free.");
+            Assert.That(target, Is.EqualTo(besideAlly));
+        }
+
         [TestCase(EnemyOpeningFocus.Neighbour, 0)]
         [TestCase(EnemyOpeningFocus.Centre, 1)]
         [TestCase(EnemyOpeningFocus.Outer, 2)]
@@ -2399,7 +2448,8 @@ namespace EmpireAtWar.Tests.Editor
             intel.Get(roster.Get(TestPlayers.Enemy).Team).Report(new HostileSighting(4, type, TestPlayers.Human,
                 new FormationPoint(0f, 0f), 100f, 0f, 1f, Time.time));
             // Candidates are already inside the zone; no navigation, station, raid or retreat query is needed.
-            var builder = CreateContextBuilder(null, null, withMine
+            // An empty ship service: expansion ETA checks scan hostile ships.
+            var builder = CreateContextBuilder(new ShipService(), null, withMine
                     ? SiteObjectives(new SiteSource(new CaptureSiteStub(Vector3.zero)), roster)
                     : Array.Empty<IEnemyCaptureObjectiveSource>(),
                 locator, null, roster, catalog, intel, null,
@@ -2722,7 +2772,7 @@ namespace EmpireAtWar.Tests.Editor
                 var zones = new ZoneSource(roster);
                 var builder = CreateContextBuilder(
                     new ShipService(), new WithdrawalZones(), Array.Empty<IEnemyCaptureObjectiveSource>(),
-                    entities, gameData, roster, null,
+                    entities, gameData, roster, VenatorCatalog(),
                     new TeamIntelRegistry(), new VisionService(roster, fogEnabled: false),
                     roster.Get(TestPlayers.Enemy), new WithdrawalProduction(), hazards, zones,
                     navigation, new EnemyStationPressureTracker(), CreateRecovery(roster, zones));
@@ -2775,7 +2825,7 @@ namespace EmpireAtWar.Tests.Editor
                 var zones = new ZoneSource(roster);
                 var builder = CreateContextBuilder(
                     new ShipService(), new WithdrawalZones(), Array.Empty<IEnemyCaptureObjectiveSource>(),
-                    entities, gameData, roster, null,
+                    entities, gameData, roster, VenatorCatalog(),
                     intelRegistry, new VisionService(roster, fogEnabled: false),
                     roster.Get(TestPlayers.Enemy), new WithdrawalProduction(), hazards, zones,
                     navigation, new EnemyStationPressureTracker(), CreateRecovery(roster, zones));
@@ -2894,6 +2944,19 @@ namespace EmpireAtWar.Tests.Editor
                 navigation, pressure, recovery, snapshot, new TeamAiPictureRegistry(intel, roster, zones, catalog, snapshot), new EnemyFactionModel(null, null));
         }
 
+        // Profiles the default FakeEntity ship type so Build() does not load ship assets.
+        private static UnitCombatProfileCatalog VenatorCatalog()
+        {
+            var catalog = new UnitCombatProfileCatalog(null, null, null, null);
+            var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                .GetField("_profiles", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
+            var damage = new float[ForceComposition.ClassSlots];
+            damage[(int)ShipClass.Capital] = 10f;
+            profiles.Add(UnitTypeId.Ship(ShipType.Venator), new UnitCombatProfile(ShipClass.Capital, 100f, 0f, damage,
+                damage, new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>()));
+            return catalog;
+        }
+
         private static EnemyRecoveryAnchor CreateRecovery(PlayerRoster roster, ZoneSource zones = null)
         {
             var locator = new EntityLocator();
@@ -2989,6 +3052,17 @@ namespace EmpireAtWar.Tests.Editor
                 (0f, HostileStrength);
 
             public ZoneSource(PlayerRoster roster, params Vector3[] centers) : this(roster, -1, centers) { }
+
+            /// <summary>Capturable zones that start owned by <paramref name="owners"/>, one per centre.</summary>
+            public ZoneSource(PlayerRoster roster, PlayerId[] owners, params Vector3[] centers)
+            {
+                List<ReinforcementZonePresenter> zones = new List<ReinforcementZonePresenter>();
+                for (int i = 0; i < centers.Length; i++)
+                    zones.Add(new ReinforcementZonePresenter(new ZoneView(centers[i]),
+                        TestPlayers.CreateLocalPlayer(roster),
+                        new ReinforcementZoneModel(roster, owners[i], 10f, 1f, true), isMain: false));
+                Zones = zones;
+            }
 
             public ZoneSource(PlayerRoster roster, int mainIndex, params Vector3[] centers)
             {

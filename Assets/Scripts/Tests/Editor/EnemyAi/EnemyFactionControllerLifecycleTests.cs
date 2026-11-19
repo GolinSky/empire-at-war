@@ -1091,8 +1091,12 @@ namespace EmpireAtWar.Tests.Editor
             public bool? HasHostBaseOverride { get; set; }
             public bool HasHostBase => HasHostBaseOverride ?? CanProduce;
 
-            public bool TryGetProductionBase(out IEntity station) =>
-                throw new NotImplementedException();
+            // No station entity in these fixtures: ship deployment skips the rear-of-station search.
+            public bool TryGetProductionBase(out IEntity station)
+            {
+                station = null;
+                return false;
+            }
         }
 
         private sealed class TrackingEconomyProvider : IEconomyProvider

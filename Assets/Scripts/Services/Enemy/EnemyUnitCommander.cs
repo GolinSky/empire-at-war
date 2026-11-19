@@ -41,6 +41,8 @@ namespace EmpireAtWar.Services.Enemy
         int ActiveShipCount { get; }
         bool HoldFinishedReinforcements => false;
         bool IsStationCritical => false;
+        /// <summary>Mining zones this AI's ships may expand to; 0 for AIs that do not expand.</summary>
+        int EligibleExpansionZoneCount => 0;
         bool TryGetReinforcementRally(out Vector3 rally, out bool defendHome);
         bool TryGetRearDeploymentThreats(Vector3 station, PlacementThreatSnapshot threats) => false;
         void FillDefenseDeploymentThreats(PlacementThreatSnapshot threats) =>
@@ -113,6 +115,7 @@ namespace EmpireAtWar.Services.Enemy
             _hasDecision ? LastDecision.State : EnemyStrategicState.RebuildFleet;
         public int ActiveShipCount => _ships.Count;
         public bool HoldFinishedReinforcements => true;
+        public int EligibleExpansionZoneCount => _taskGroups.EligibleExpansionZoneCount;
         public bool IsStationCritical => _contextBuilder.StationCritical;
 
         public bool TryGetRearDeploymentThreats(Vector3 station, PlacementThreatSnapshot threats) =>

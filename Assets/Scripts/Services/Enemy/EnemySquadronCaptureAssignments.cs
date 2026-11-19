@@ -10,6 +10,8 @@ namespace EmpireAtWar.Services.Enemy
         private readonly Dictionary<Vector3, int> _requiredWings = new Dictionary<Vector3, int>();
         private readonly HashSet<Vector3> _threatened = new HashSet<Vector3>();
         private readonly HashSet<Vector3> _satellitePads = new HashSet<Vector3>();
+        // Free sites beside an allied base: income is shared, so they are taken only after other free sites.
+        private readonly HashSet<Vector3> _lowPriority = new HashSet<Vector3>();
         private readonly List<Vector3> _contestedTargets = new List<Vector3>();
         private readonly List<Vector3> _openingTargets = new List<Vector3>();
         private readonly Dictionary<ISquadron, Vector3> _assignments = new Dictionary<ISquadron, Vector3>();
@@ -35,6 +37,7 @@ namespace EmpireAtWar.Services.Enemy
             _requiredWings.Clear();
             _threatened.Clear();
             _satellitePads.Clear();
+            _lowPriority.Clear();
             _openingTargets.Clear();
         }
 
@@ -45,6 +48,15 @@ namespace EmpireAtWar.Services.Enemy
             _requiredWings[target] = requiredWings;
             if (threatened) _threatened.Add(target);
             if (isSatellitePad) _satellitePads.Add(target);
+        }
+
+        /// <summary>Marks unthreatened non-pad targets within <paramref name="radius"/> of an allied base as last choices.</summary>
+        public void DeprioritizeNear(Vector3 position, float radius)
+        {
+            foreach (Vector3 target in _targets.Keys)
+                if (!_threatened.Contains(target) && !_satellitePads.Contains(target) &&
+                    (target - position).sqrMagnitude <= radius * radius)
+                    _lowPriority.Add(target);
         }
 
         public void PrioritizeArea(Vector3 centre, float radius)
@@ -109,8 +121,11 @@ namespace EmpireAtWar.Services.Enemy
                     float distance = (candidate.Key - squadron.WorldPosition).sqrMagnitude;
                     bool threatened = _threatened.Contains(candidate.Key);
                     bool bestThreatened = _threatened.Contains(best);
+                    bool low = _lowPriority.Contains(candidate.Key);
+                    bool bestLow = found && _lowPriority.Contains(best);
                     if (!found || candidate.Value < fewest || candidate.Value == fewest &&
-                        (threatened && !bestThreatened || threatened == bestThreatened && distance < closest))
+                        (bestLow && !low || bestLow == low &&
+                         (threatened && !bestThreatened || threatened == bestThreatened && distance < closest)))
                     {
                         found = true;
                         best = candidate.Key;

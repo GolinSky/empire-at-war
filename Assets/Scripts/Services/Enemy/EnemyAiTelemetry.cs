@@ -116,14 +116,14 @@ namespace EmpireAtWar.Services.Enemy
                     "destination=({3:F1} {4:F1} {5:F1}); progress={6:F3}; regrouped={7}; recoverySeconds={8:F1}; " +
                     "stationPressure={9}; defenseTarget={10}; target={11}; action={12}; selection={13}; pressureSource={14}; " +
                     "orderDestination=({3:F1} {4:F1} {5:F1}); defensePointReason={15}; heldShips={16}; " +
-                    "visibleAdvantage={17:F2}; unseenInvestment={18:F0}; economyPressure={19:F2}",
+                    "visibleAdvantage={17:F2}; unseenInvestment={18:F0}; economyPressure={19:F2}; teamHeldZones={20}",
                     objective == null ? "none" : objective.Id, objective == null ? "none" : objective.Kind.ToString(),
                     objective == null ? "none" : objective.Owner.ToString(), destination.x, destination.y, destination.z,
                     objective == null ? 0f : objective.Progress, snapshot.IsRegrouped, recoverySeconds,
                     snapshot.HasStationPressure, context.DefenseTarget == null ? 0 : context.DefenseTarget.Id,
                     target == null ? 0 : target.Id, actionReason, context.RecoveryReason, context.StationPressureReason,
                     context.DefensePointReason, context.HeldShips, context.VisibleAdvantage,
-                    context.UnseenInvestment, context.EconomyPressure);
+                    context.UnseenInvestment, context.EconomyPressure, context.TeamHeldZones);
                 StringBuilder assignments = new StringBuilder(details);
                 foreach (var ship in context.Ships)
                 {

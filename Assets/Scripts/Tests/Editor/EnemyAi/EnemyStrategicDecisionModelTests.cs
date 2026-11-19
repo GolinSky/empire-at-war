@@ -1,3 +1,4 @@
+using System;
 using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.EnemyFaction.Models.Combat;
 using EmpireAtWar.Entities.Game;
@@ -223,7 +224,10 @@ namespace EmpireAtWar.Tests.Editor
                     hasLocalThreat: true, localAdvantage: 1.5f));
 
             Assert.That(decision.State, Is.EqualTo(EnemyStrategicState.EngageLocal));
-            Assert.That(decision.CommittedShipCount, Is.EqualTo(20));
+            // A winnable local fight commits the difficulty's share; the rest stays as reserve.
+            float share = EnemyAiDifficultyProfile.Get(EnemyAiDifficulty.UltraHard).CommittedFleetRatio;
+            Assert.That(decision.CommittedShipCount, Is.EqualTo((int)Math.Ceiling(20 * (decimal)share)));
+            Assert.That(decision.CommittedShipCount, Is.InRange(1, 20));
         }
 
         [Test]
@@ -574,7 +578,9 @@ namespace EmpireAtWar.Tests.Editor
             Assert.That(model.Evaluate(CreateSnapshot(BattleVictoryCondition.DestroyOpponentBase,
                 EnemyAiDifficulty.UltraHard, 3, 3, 1, fleetAdvantage,
                 hasRaidTarget: true, hasEconomyRaidTarget: true, hasStationPressure: stationPressure,
-                hasThreatenedSite: threatenedSite, localAdvantage: localAdvantage)).State, Is.EqualTo(expected));
+                // A low local advantage only means something when hostiles are actually near the fleet.
+                hasThreatenedSite: threatenedSite, localAdvantage: localAdvantage,
+                hasLocalThreat: localAdvantage < 1f)).State, Is.EqualTo(expected));
         }
 
         [Test]

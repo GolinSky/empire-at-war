@@ -40,6 +40,8 @@ namespace EmpireAtWar.Services.Enemy
         private const float ESCORT_THREAT_RADIUS = 2000f;
         private const int OPENING_CAPTURE_WINGS = 3;
         private const int MAX_RAID_WINGS = 3;
+        // Matches the ship capture rule: sites this close to an allied station are taken last.
+        private const float ALLIED_BASE_SITE_RADIUS = 1000f;
 
         private readonly IReadOnlyList<IEnemyCaptureObjectiveSource> _captureSources;
         private readonly IReinforcementZoneSource _zones;
@@ -531,6 +533,9 @@ namespace EmpireAtWar.Services.Enemy
             }
             foreach (IEnemyCaptureObjectiveSource source in _captureSources)
                 source.AddSquadronTargets(_captureAssignments, _intel);
+            foreach (AiWorldSnapshot.Entry station in _worldSnapshot.Bases)
+                if (station.Owner != _owner.Id && _playerRoster.IsAllied(_owner.Id, station.Owner))
+                    _captureAssignments.DeprioritizeNear(station.Position, ALLIED_BASE_SITE_RADIUS);
             _captureSquadrons.Clear();
             foreach (KeyValuePair<ISquadron, CommandedSquadron> pair in _squadrons)
             {
