@@ -33,6 +33,8 @@ namespace EmpireAtWar.Services.Enemy
         private const float DEFENSE_BUILD_INTERVAL = 20f;
         private const float SECOND_STATION_LATE_SECONDS = 480f;
         private const float STATION_PLACEMENT_RETRY_SECONDS = 10f;
+        private const int MAX_LEVEL1_CORVETTES_AT_LEVEL2 = 2;
+        private const float NON_COMPETING_RESEARCH_SHARE = 0.25f;
 
         private readonly IEnemyPurchaseProcessor _purchaseProcessor;
         private readonly IUnitRequestFactory _requestFactory;
@@ -67,6 +69,8 @@ namespace EmpireAtWar.Services.Enemy
         private float _nextCombatResearchTime;
         private float _nextDefenseBuildTime;
         private float _nextStationPlacementCheck;
+        private string _savingUnit = "";
+        private float _savingSince = -1f;
 
         public float DefenseReserve { get; private set; }
         public bool PriorityConstructionPending
@@ -192,7 +196,9 @@ namespace EmpireAtWar.Services.Enemy
             KeyValuePair<ShipType, FactionData> ship = default;
             bool critical = _stationPressure.IsStationCritical;
             bool canOrderShips = CanOrderAnyShip();
-            bool hasDefenseShip = critical && canOrderShips && TrySelectShip(shipCount, out ship);
+            bool hasDefenseShip = critical && canOrderShips &&
+                (TrySelectShip(shipCount, out ship) ||
+                 TrySelectShip(shipCount, out ship, allowCriticalCorvetteFallback: true));
             bool hasSquadronRoom = HasSquadronRoom(shipCount);
             bool needsCaptureWings = !critical && CountReservedSquadrons() + CountHangarSquadrons() <
                 MINIMUM_CAPTURE_WINGS;
@@ -210,17 +216,6 @@ namespace EmpireAtWar.Services.Enemy
             FactionData shipChoice = hasCounter ? counterData : hasShip ? ship.Value : squadron.Value;
             DefenseReserve = hasShipOption ? shipChoice.Price : 0f;
             bool canBuildShip = hasShipOption && IsAffordable(shipChoice) && FitsRemainingCapacity(shipChoice);
-            if (!canBuildShip && !critical && (!hasShipOption || !IsAffordable(shipChoice)) &&
-                TrySelectShip(shipCount, out var affordableShip, requireAffordable: true))
-            {
-                ship = affordableShip;
-                hasShip = true;
-                hasShipOption = true;
-                shipChoice = ship.Value;
-                hasCounter = false;
-                hasSquadronFallback = false;
-                canBuildShip = true;
-            }
             UnitTypeId combatChoice = hasCounter ? counterId : hasShip
                 ? UnitTypeId.Ship(ship.Key) : UnitTypeId.Squadron(squadron.Key);
             if (_stationPressure.IsStationCritical && !hasShipOption)
@@ -229,10 +224,15 @@ namespace EmpireAtWar.Services.Enemy
                     FormattableString.Invariant($"critical=True;etaSeconds=Infinity;timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};") +
                     "reason=no affordable combat unit can arrive before station loss");
             }
+            bool savingForShip = !critical && hasShipOption && !canBuildShip;
+            if (savingForShip)
+                TrackSaving(combatChoice.ToString());
+            float savingForSeconds = GetSavingForSeconds();
             if (hasShipOption && !canBuildShip)
             {
+                string waitReason = !IsAffordable(shipChoice) ? "saving" : "capacity";
                 EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "production-wait",
-                    FormattableString.Invariant($"unit={combatChoice};capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money:F1};critical={_stationPressure.IsStationCritical};etaSeconds={GetArrivalSeconds(combatChoice, shipChoice):F1};timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1}"));
+                    FormattableString.Invariant($"unit={combatChoice};capacity={_unitLimitModel.CurrentUnitCapacity}/{_reinforcementData.MaxUnitCapacity};required={shipChoice.UnitCapacity};cost={shipChoice.Price};money={_economyModel.Money:F1};critical={_stationPressure.IsStationCritical};etaSeconds={GetArrivalSeconds(combatChoice, shipChoice):F1};timeToLoss={_stationPressure.EstimatedTimeToLossSeconds:F1};saving={_savingUnit};savingFor={savingForSeconds:F1};reason={waitReason}"));
             }
             FactionData levelData = CanUpgradeStation ? _factionModel.GetCurrentLevelFactionData() : null;
             if (levelData != null &&
@@ -251,6 +251,14 @@ namespace EmpireAtWar.Services.Enemy
                                          out ResearchTierData combatTier) &&
                                      IsAffordable(combatTier.FactionData) &&
                                      BattleClock.CurrentElapsed >= _nextCombatResearchTime;
+            if (savingForShip)
+            {
+                float nonCompetingCap = shipChoice.Price * NON_COMPETING_RESEARCH_SHARE;
+                if (canResearchIncome && !canResearchPriorityIncome && incomeTier.FactionData.Price > nonCompetingCap)
+                    canResearchIncome = false;
+                if (canResearchCombat && combatTier.FactionData.Price > nonCompetingCap)
+                    canResearchCombat = false;
+            }
             int miningFacilityTarget = GetMiningFacilityTarget();
 
             float cheapestCapital = float.PositiveInfinity;
@@ -301,7 +309,10 @@ namespace EmpireAtWar.Services.Enemy
                  incomeTier != null && !canResearchIncome))
                 return;
             if (category == EnemyProductionCategory.None && _decisionModel.IsLevelDue(snapshot))
+            {
                 DefenseReserve = levelData.Price;
+                TrackSaving($"Level{_factionModel.CurrentLevel + 1}");
+            }
             if (category == EnemyProductionCategory.Ship && _factionModel.CurrentLevel >= 4 &&
                 _stateProvider.CurrentState is (EnemyStrategicState.Consolidate or EnemyStrategicState.AssaultBase or
                     EnemyStrategicState.RaidStructures) &&
@@ -365,7 +376,13 @@ namespace EmpireAtWar.Services.Enemy
                 category == EnemyProductionCategory.Ship ? GetArrivalSeconds(
                     buildSquadron ? UnitTypeId.Squadron(squadron.Key) : combatChoice,
                     request.FactionData) : 0f,
-                _stationPressure.EstimatedTimeToLossSeconds);
+                _stationPressure.EstimatedTimeToLossSeconds,
+                _savingUnit, GetSavingForSeconds());
+            if (category is EnemyProductionCategory.Ship or EnemyProductionCategory.Level)
+            {
+                _savingUnit = "";
+                _savingSince = -1f;
+            }
             _purchaseProcessor.Purchase(request);
             if (category == EnemyProductionCategory.Defense)
                 _nextDefenseBuildTime = BattleClock.CurrentElapsed + DEFENSE_BUILD_INTERVAL;
@@ -563,7 +580,10 @@ namespace EmpireAtWar.Services.Enemy
 
         private bool TrySelectShip(
             int shipCount,
-            out KeyValuePair<ShipType, FactionData> selected, bool requireAffordable = false, bool capitalOnly = false)
+            out KeyValuePair<ShipType, FactionData> selected,
+            bool requireAffordable = false,
+            bool capitalOnly = false,
+            bool allowCriticalCorvetteFallback = false)
         {
             selected = default;
             bool found = false;
@@ -574,7 +594,7 @@ namespace EmpireAtWar.Services.Enemy
                 // Affordability is checked after selection so the AI saves for higher-tier ships.
                 UnitTypeId unitType = UnitTypeId.Ship(option.Key);
                 if (!IsAvailable(option.Value) || !IsShipClassAllowed(unitType) ||
-                    !IsShipTierAllowed(option.Value, unitType) ||
+                    !IsShipTierAllowed(option.Value, unitType, allowCriticalCorvetteFallback) ||
                     !CanReserve<ShipUnitRequest>(
                         option.Key.ToString(),
                         option.Value, true))
@@ -645,9 +665,37 @@ namespace EmpireAtWar.Services.Enemy
             return CountReservedSquadrons() + CountHangarSquadrons() < cap;
         }
 
-        private bool IsShipTierAllowed(FactionData data, UnitTypeId id) =>
-            _factionModel.CurrentLevel < 3 ||
-            data.AvailableLevel > 1 || _profileCatalog.Get(id).ShipClass != ShipClass.Corvette;
+        private void TrackSaving(string unit)
+        {
+            if (_savingUnit == unit) return;
+            _savingUnit = unit;
+            _savingSince = BattleClock.CurrentElapsed;
+        }
+
+        private float GetSavingForSeconds() =>
+            _savingSince >= 0f ? Mathf.Max(0f, BattleClock.CurrentElapsed - _savingSince) : 0f;
+
+        private bool IsLevel1Corvette(FactionData data, UnitTypeId id) =>
+            data.AvailableLevel <= 1 && _profileCatalog.Get(id).ShipClass == ShipClass.Corvette;
+
+        private int CountReservedLevel1Corvettes()
+        {
+            int count = 0;
+            foreach (KeyValuePair<ShipType, FactionData> option in _factionModel.ShipFactionData)
+            {
+                if (IsLevel1Corvette(option.Value, UnitTypeId.Ship(option.Key)))
+                    count += _unitLimitModel.GetReservedCount<ShipUnitRequest>(option.Key.ToString());
+            }
+            return count;
+        }
+
+        private bool IsShipTierAllowed(FactionData data, UnitTypeId id, bool allowCriticalCorvetteFallback = false)
+        {
+            if (!IsLevel1Corvette(data, id) || _factionModel.CurrentLevel <= 1) return true;
+            if (_factionModel.CurrentLevel == 2)
+                return CountReservedLevel1Corvettes() < MAX_LEVEL1_CORVETTES_AT_LEVEL2;
+            return allowCriticalCorvetteFallback;
+        }
 
         /// <summary>Live wings, usable carrier reserves and initial wings of ships still awaiting deployment.</summary>
         private int CountHangarSquadrons()

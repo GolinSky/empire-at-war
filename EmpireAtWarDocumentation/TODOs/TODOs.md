@@ -64,6 +64,10 @@
 
 ### Bugs
 
+- [ ] **Map generation: enemy station too near allied stations (2v2 / 3v3, Medium + Large)** → [[TODOs/Bugs/Map_Enemy_Station_Near_Allies_Fix|Map Enemy Station Near Allies Fix]] — 2026-11-19: plan drafted, cause source-verified; 3 open questions.
+- [ ] **Enemy AI economy strategy** → [[TODOs/Bugs/Enemy_AI_Economy_Strategy]]; follows [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]
+  - Status: in progress (2026-11-19), reopened after the 13:52 UltraHard battle (`2fa16bea3`, user: full failure). Regression fixes X1–X5 implemented 2026-11-19 → [[Done/Bugs/Enemy_AI_Economy_Strategy_Regression_Fixes]] (compiled, tests updated/not run; pending next UltraHard battle).
+
 - [ ] **Capital attack movement + class rework fixes** → [[TODOs/Bugs/Capital_Movement_And_Class_Rework_Fixes]]
   - Status: in progress (2026-11-17). Done: map seed/layout log (`BattleMapTelemetry` → `_map.csv`). ISD I spawn fixed and user-confirmed 2026-11-17 (a station-centred origin tied between the main region and a corner pocket; the larger region now wins). Next: Phase 1/2 movement issues and the uncommitted class-rework edits. Then the Titan/Allegiance freeze, Executor holding out of reach, Tector stern-first retreat at stations, and class-rework review defects.
 - [ ] **[AGY] Weapon Fire Rate Degradation and Ability Sync Crash at Low FPS** → [[TODOs/Bugs/Weapon_Fire_Rate_And_Network_Sync_Low_FPS_AGY|Plan]]
@@ -317,12 +321,9 @@
 
 ### Bugs
 
-- [x] **Enemy AI economy strategy** → [[Done/Bugs/Enemy_AI_Economy_Strategy]]; follows [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]
-  - Completed 2026-11-19. E1–E7 implemented and runtime/Editor C# compilation passed. Battle and EditMode acceptance pending.
-
 - [x] **Enemy AI active play + ship combat** → [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]
   - Completed 2026-11-19. Reopened R1–R7 and R9–R11 implemented. Standalone C# compilation passed. Battle and EditMode acceptance pending.
-  - 12:39 battle (2026-11-19): user — huge improvement; sabotage and centre retake pass. Remaining strategy issues → [[Done/Bugs/Enemy_AI_Economy_Strategy]]. EditMode gate still pending.
+  - 12:39 battle (2026-11-19): user — huge improvement; sabotage and centre retake pass. Remaining strategy issues → [[TODOs/Bugs/Enemy_AI_Economy_Strategy]]. EditMode gate still pending.
 
 - [x] **Ship ability event throws for destroyed caster (online host, 9× per session)** → [[Done/Bugs/Ship_Ability_Event_Destroyed_Caster]]
   - Completed 2026-11-18: events use stable `EntityId`; regression test added, not run.

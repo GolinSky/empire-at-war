@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -6,6 +7,7 @@ using EmpireAtWar.Entities.EnemyFaction.Models;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
+using EmpireAtWar.Services.Saves;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -113,13 +115,15 @@ namespace EmpireAtWar.Services.Enemy
                     "; clock=Unity.Time.time scaled seconds since play (not save battleTime); objective={0}; type={1}; owner={2}; " +
                     "destination=({3:F1} {4:F1} {5:F1}); progress={6:F3}; regrouped={7}; recoverySeconds={8:F1}; " +
                     "stationPressure={9}; defenseTarget={10}; target={11}; action={12}; selection={13}; pressureSource={14}; " +
-                    "orderDestination=({3:F1} {4:F1} {5:F1}); defensePointReason={15}",
+                    "orderDestination=({3:F1} {4:F1} {5:F1}); defensePointReason={15}; heldShips={16}; " +
+                    "visibleAdvantage={17:F2}; unseenInvestment={18:F0}; economyPressure={19:F2}",
                     objective == null ? "none" : objective.Id, objective == null ? "none" : objective.Kind.ToString(),
                     objective == null ? "none" : objective.Owner.ToString(), destination.x, destination.y, destination.z,
                     objective == null ? 0f : objective.Progress, snapshot.IsRegrouped, recoverySeconds,
                     snapshot.HasStationPressure, context.DefenseTarget == null ? 0 : context.DefenseTarget.Id,
                     target == null ? 0 : target.Id, actionReason, context.RecoveryReason, context.StationPressureReason,
-                    context.DefensePointReason);
+                    context.DefensePointReason, context.HeldShips, context.VisibleAdvantage,
+                    context.UnseenInvestment, context.EconomyPressure);
                 StringBuilder assignments = new StringBuilder(details);
                 foreach (var ship in context.Ships)
                 {
@@ -157,15 +161,26 @@ namespace EmpireAtWar.Services.Enemy
 
         public static void RecordPurchase(PlayerId player, FactionType faction, EnemyStrategicState state,
             EnemyProductionCategory category, bool counter, string unit, int price, float money,
-            bool critical = false, float etaSeconds = 0f, float timeToLoss = float.PositiveInfinity)
+            bool critical = false, float etaSeconds = 0f, float timeToLoss = float.PositiveInfinity,
+            string savingUnit = "", float savingFor = 0f)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!Application.isPlaying) return;
             _lines.AppendLine(string.Format(CultureInfo.InvariantCulture,
-                "{0:F1},purchase,{1},{2},{3},,,,,,,,,,{4},{5},{6},{7},{8:F0},critical={9};etaSeconds={10:F1};timeToLoss={11:F1}",
+                "{0:F1},purchase,{1},{2},{3},,,,,,,,,,{4},{5},{6},{7},{8:F0},critical={9};etaSeconds={10:F1};timeToLoss={11:F1};saving={12};savingFor={13:F1}",
                 Time.time, player, faction, state, category, counter ? 1 : 0, unit, price, money,
-                critical, etaSeconds, timeToLoss));
+                critical, etaSeconds, timeToLoss, savingUnit, savingFor));
             FlushIfDue();
+#endif
+        }
+
+        public static void RecordZoneOwner(PlayerId player, string id, PlayerId previousOwner, PlayerId owner,
+            string kind)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            RecordEvent(player, default, "zoneOwner",
+                FormattableString.Invariant(
+                    $"id={id};kind={kind};from={previousOwner};owner={owner};battleTime={BattleClock.CurrentElapsed:F1}"));
 #endif
         }
 

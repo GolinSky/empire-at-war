@@ -240,6 +240,93 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void SurroundedStation_CompletedShipDeploysWithinHoldCap()
+        {
+            var data = ScriptableObject.CreateInstance<ReinforcementData>();
+            var shipObject = new GameObject("Emergency ship");
+            try
+            {
+                SetBackingField(data, nameof(ReinforcementData.MaxUnitCapacity), 10);
+                var faction = new FactionData();
+                SetBackingField(faction, nameof(FactionData.MaxCount), 2);
+                SetBackingField(faction, nameof(FactionData.BuildTime), 1);
+                SetBackingField(faction, nameof(FactionData.UnitCapacity), 1);
+                Vector3 rally = new Vector3(100f, 0f, -500f);
+                var ai = new RallyAiState { Rally = rally };
+                var spawnPoints = new RallyShipSpawnPoints { IsAvailable = false };
+                var factory = new TrackingShipFactory(shipObject.AddComponent<ShipEntity>());
+                var model = new EnemyFactionModel(null, null);
+                var controller = new EnemyFactionController(aiState: ai, model: model,
+                    shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null,
+                    research: null, economyProvider: new TrackingEconomyProvider(), wallet: new TrackingWallet(),
+                    shipSpawnPoints: spawnPoints, unitLimitModel: new EnemyUnitLimitModel(),
+                    reinforcementData: data, enemyStructurePlacementService: new UnavailableStructurePlacement(),
+                    productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
+                    squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+
+                controller.Purchase(new ShipUnitRequest(faction, ShipType.Venator));
+                controller.Purchase(new ShipUnitRequest(faction, ShipType.Recusant));
+                controller.Advance(1f);
+                Assert.That(factory.Created, Is.Empty);
+                Assert.That(model.HeldShips, Is.EqualTo(2));
+
+                for (int second = 0; second < 15; second++)
+                    controller.Advance(1f);
+
+                Assert.That(factory.Created, Is.EquivalentTo(new[] { ShipType.Venator, ShipType.Recusant }));
+                Assert.That(controller.PendingBuilds, Is.Empty);
+                Assert.That(model.HeldShips, Is.Zero);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(shipObject);
+                UnityEngine.Object.DestroyImmediate(data);
+            }
+        }
+
+        [Test]
+        public void DefenseWave_OneBlockedShip_DeploysOpenShipAfterHoldLimit()
+        {
+            var data = ScriptableObject.CreateInstance<ReinforcementData>();
+            var shipObject = new GameObject("Partial wave ship");
+            try
+            {
+                SetBackingField(data, nameof(ReinforcementData.MaxUnitCapacity), 10);
+                var faction = new FactionData();
+                SetBackingField(faction, nameof(FactionData.MaxCount), 2);
+                SetBackingField(faction, nameof(FactionData.BuildTime), 1);
+                SetBackingField(faction, nameof(FactionData.UnitCapacity), 1);
+                var ai = new RallyAiState { Rally = new Vector3(40f, 0f, -900f) };
+                var spawnPoints = new BlockedShipSpawnPoints { IsBlocked = true };
+                var factory = new TrackingShipFactory(shipObject.AddComponent<ShipEntity>());
+                var controller = new EnemyFactionController(aiState: ai, model: new EnemyFactionModel(null, null),
+                    shipFactory: factory, miningFacilityFactory: null, defendPlatformFactory: null,
+                    research: null, economyProvider: new TrackingEconomyProvider(), wallet: new TrackingWallet(),
+                    shipSpawnPoints: spawnPoints, unitLimitModel: new EnemyUnitLimitModel(),
+                    reinforcementData: data, enemyStructurePlacementService: new UnavailableStructurePlacement(),
+                    productionAccess: new OperationalProductionAccess(), squadronLauncher: null,
+                    squadronCommander: null, owner: TestPlayers.CreateDuel().Get(TestPlayers.Enemy),
+                    playerRegistry: new PlayerRegistry(), stationFactory: null, profiles: null);
+
+                controller.Purchase(new ShipUnitRequest(faction, ShipType.Venator));
+                controller.Purchase(new ShipUnitRequest(faction, ShipType.Recusant));
+                controller.Advance(1f);
+                Assert.That(factory.Created, Is.Empty);
+
+                for (int second = 0; second < 8; second++)
+                    controller.Advance(1f);
+
+                Assert.That(factory.Created, Does.Contain(ShipType.Recusant));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(shipObject);
+                UnityEngine.Object.DestroyImmediate(data);
+            }
+        }
+
+        [Test]
         public void LateDispose_CancelsPendingBuildAndIsIdempotent()
         {
             EnemyFactionModel model =

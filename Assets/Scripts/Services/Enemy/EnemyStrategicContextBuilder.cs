@@ -64,6 +64,10 @@ namespace EmpireAtWar.Services.Enemy
         public IReadOnlyDictionary<IShipEntity, GameEntity> Receivers { get; }
         public IReadOnlyDictionary<IShipEntity, ForceComposition> ShipForces { get; }
         public IReadOnlyDictionary<GameEntity, ForceComposition> TargetForces { get; }
+        public float VisibleAdvantage { get; }
+        public float UnseenInvestment { get; }
+        public float EconomyPressure { get; }
+        public int HeldShips { get; }
 
         public EnemyStrategicContext(
             IReadOnlyList<IShipEntity> ships,
@@ -85,7 +89,12 @@ namespace EmpireAtWar.Services.Enemy
             EnemyStationPressureTracker stationPressure = null,
             Func<Vector3, float, bool> isDefensePointClear = null,
             GameEntity captureBlockingFacility = null,
-            Vector3? guardPosition = null, IReadOnlyList<IShipEntity> assaultCapitals = null)
+            Vector3? guardPosition = null,
+            IReadOnlyList<IShipEntity> assaultCapitals = null,
+            float visibleAdvantage = 0f,
+            float unseenInvestment = 0f,
+            float economyPressure = 1f,
+            int heldShips = 0)
         {
             Snapshot = snapshot;
             Ships = ships;
@@ -108,6 +117,10 @@ namespace EmpireAtWar.Services.Enemy
             RecoveryReason = recoveryReason;
             StationPressure = stationPressure;
             IsDefensePointClear = isDefensePointClear;
+            VisibleAdvantage = visibleAdvantage;
+            UnseenInvestment = unseenInvestment;
+            EconomyPressure = economyPressure;
+            HeldShips = heldShips;
         }
     }
 
@@ -144,6 +157,10 @@ namespace EmpireAtWar.Services.Enemy
         private const float LOST_CAPTURE_RACE_PENALTY = 90f;
         private const float HOSTILE_INCOME_TO_FLEET_SHARE = 0.5f;
         private const float UNSEEN_FLEET_WINDOW = 90f;
+        private const float OPENING_UNSEEN_GRACE_SECONDS = 180f;
+        private const float MAX_UNSEEN_INVESTMENT_SHARE = 0.5f;
+        private const float UNSCOUTED_FLEET_INVESTMENT = 1200f;
+        private const float CAPTURE_STRENGTH_MARGIN = 0.5f;
         private const float BASE_EXCLUSION_MARGIN = 900f;
         private float _hostileEconomyPressure = 1f;
         private int _routeHostileShipCount;
@@ -188,6 +205,7 @@ namespace EmpireAtWar.Services.Enemy
         private string _captureReason;
         private string _objectiveSafetyReason;
         public bool CaptureReservedByOtherGroup { get; private set; }
+        public bool NeedsCentreReinforcement { get; private set; }
         public bool RecoveryActive => _recovery.IsActive;
         public bool StationCritical => _stationPressure.IsStationCritical;
 
@@ -387,6 +405,15 @@ namespace EmpireAtWar.Services.Enemy
             return false;
         }
 
+        public bool HasCentreObjective()
+        {
+            ReinforcementZonePresenter centre = EnemyShipTaskGroupPlanner.GetCentre(_zones.Zones);
+            if (centre == null) return false;
+            foreach (EnemyCaptureObjective objective in _captureCandidates)
+                if (EnemyShipTaskGroupPlanner.IsInZone(centre, objective.Position)) return true;
+            return false;
+        }
+
         private bool IsExpansionObjective(ReinforcementZonePresenter zone, EnemyCaptureObjective objective) =>
             !objective.IsThreatened && EnemyShipTaskGroupPlanner.IsInZone(zone, objective.Position) &&
             !IsNearHostileBase(objective.Position) && !IsInsideStaticDefense(objective.Position, objective.Position, objective.Radius);
@@ -439,7 +466,8 @@ namespace EmpireAtWar.Services.Enemy
                 if ((!mineOnly || objective.IsMine && !objective.BlockingFacilityId.HasValue) &&
                     IsOpeningObjective(objective) && !IsAssignedExpansionObjective(objective) &&
                     !IsNearHostileBase(objective.Position) &&
-                    !IsCaptureReserved(objective.Id) && objective.HostileStrength < 1f &&
+                    !IsCaptureReserved(objective.Id) &&
+                    objective.HostileStrength <= GetOwnCaptureStrength(origin, objective) + CAPTURE_STRENGTH_MARGIN &&
                     IsObjectiveSafe(origin, objective.Position, objective.Radius, false, 1f, objective.Id)) return true;
             return false;
         }
@@ -634,13 +662,14 @@ namespace EmpireAtWar.Services.Enemy
                 _teamPicture.Cooperation.AddAlliedStrikeStrength(_combinedStrikeForce, self, focusEnemy, now);
                 strikeForce = _combinedStrikeForce;
             }
-            float unseenInvestment = EstimateUnseenFleetInvestment(focusEnemy, now);
-            float fleetRaw = CombatMatchup.Advantage(ships == null ? _ownTeamForce : strikeForce, _focusTeamForce) /
-                _hostileEconomyPressure;
+            float visibleAdvantage = CombatMatchup.Advantage(ships == null ? _ownTeamForce : strikeForce, _focusTeamForce);
+            float unseenInvestment = EstimateUnseenFleetInvestment(focusEnemy, now, fleetInvestment);
+            float fleetRaw = visibleAdvantage / _hostileEconomyPressure;
             if (unseenInvestment > 0f && fleetInvestment > 0f)
             {
                 float unseenRatio = unseenInvestment / fleetInvestment;
                 fleetRaw = 1f / (1f / Mathf.Max(0.01f, fleetRaw) + unseenRatio);
+                fleetRaw = Mathf.Max(fleetRaw, visibleAdvantage * MAX_UNSEEN_INVESTMENT_SHARE);
             }
 
             int capturableZones = 0;
@@ -744,7 +773,11 @@ namespace EmpireAtWar.Services.Enemy
                 retreatAnchor: retreatAnchor,
                 recoveryReason: recoveryReason + " " + _captureReason,
                 stationPressure: _stationPressure,
-                isDefensePointClear: (point, radius) => _navigation.IsPositionClear(point, radius, includeReservations: false));
+                isDefensePointClear: (point, radius) => _navigation.IsPositionClear(point, radius, includeReservations: false),
+                visibleAdvantage: visibleAdvantage,
+                unseenInvestment: unseenInvestment,
+                economyPressure: _hostileEconomyPressure,
+                heldShips: _faction.HeldShips);
         }
 
         /// <summary>
@@ -1084,6 +1117,7 @@ namespace EmpireAtWar.Services.Enemy
         {
             _teamPicture.EnsureRefreshed(now);
             CaptureReservedByOtherGroup = false;
+            NeedsCentreReinforcement = false;
             _captureReason = "Ranking viable capture objectives.";
             CollectCaptureObjectives();
 
@@ -1130,13 +1164,27 @@ namespace EmpireAtWar.Services.Enemy
                 bool safe = candidate.BlockingFacilityId.HasValue
                     ? IsRouteSafe(origin, candidate.Position, candidate.Radius, false, safetyScale)
                     : IsObjectiveSafe(origin, candidate.Position, candidate.Radius, false, safetyScale, candidate.Id);
-                float requiredStrength = _checkingExpansion && candidate.HostileStrength > 0f
-                    ? candidate.HostileStrength + 1f : candidate.HostileStrength;
-                if (safe && requiredStrength > 0f &&
-                    (_checkingExpansion ? _ownShips.Count < requiredStrength : _ownShips.Count <= requiredStrength))
+                float ownStrength = GetOwnCaptureStrength(origin, candidate);
+                if (safe && candidate.HostileStrength > 0f)
                 {
-                    _objectiveSafetyReason = "hostile: capture strength meets or exceeds the assigned ships.";
-                    safe = false;
+                    if (centre)
+                    {
+                        if (candidate.HostileStrength > ownStrength)
+                            NeedsCentreReinforcement = true;
+                    }
+                    else if (_checkingExpansion)
+                    {
+                        if (ownStrength < candidate.HostileStrength + 1f)
+                        {
+                            _objectiveSafetyReason = "hostile: expansion capture strength exceeds the assigned force.";
+                            safe = false;
+                        }
+                    }
+                    else if (candidate.HostileStrength > ownStrength + CAPTURE_STRENGTH_MARGIN)
+                    {
+                        _objectiveSafetyReason = "hostile: capture strength exceeds the assigned force.";
+                        safe = false;
+                    }
                 }
                 if (!safe)
                 {
@@ -1181,7 +1229,7 @@ namespace EmpireAtWar.Services.Enemy
             }
             _checkingExpansion = false;
             bool defensePreemptsCapture = best != null && best.IsThreatened &&
-                retained != null && !retained.IsThreatened;
+                retained != null && !retained.IsThreatened && OpeningFocus != EnemyOpeningFocus.Centre;
             if (defensePreemptsCapture) invalidReason = "threatenedSite";
             if (retained != null && !defensePreemptsCapture && IsCentreObjective(retained.Position))
             {
@@ -1418,10 +1466,30 @@ namespace EmpireAtWar.Services.Enemy
             if (threat.IsEmpty) return true;
             float advantage = CombatMatchup.Advantage(_groupScoped ? _ownForce : _localOwnForce, threat);
             float threshold = EnemyAiDifficultyProfile.Get(_owner.Difficulty).RetreatAdvantage * safetyScale;
-            if (!escaping && !_checkingExpansion) threshold *= _hostileEconomyPressure;
             if (advantage > threshold) return true;
             _objectiveSafetyReason = $"hostile: known route/local force advantage {advantage:F2} <= safety threshold {threshold:F2}.";
             return false;
+        }
+
+        private float GetOwnCaptureStrength(Vector3 origin, EnemyCaptureObjective candidate)
+        {
+            float strength = _ownShips.Count;
+            float weight = _zones.SquadronCaptureWeight;
+            if (weight <= 0f) return strength;
+            float candidateRange = candidate.Radius + LOCAL_ENGAGEMENT_RADIUS;
+            IReadOnlyList<AiWorldSnapshot.Entry> units = _worldSnapshot.LivingUnits;
+            for (int i = 0; i < units.Count; i++)
+            {
+                AiWorldSnapshot.Entry entry = units[i];
+                if (!entry.HasUnitType || entry.UnitTypeId.IsShip ||
+                    !_playerRoster.IsAllied(_owner.Id, entry.Owner) ||
+                    entry.Entity.HealthModel.IsDestroyed || !entry.Entity.HealthModel.HasUnits)
+                    continue;
+                if (PlanarDistance(entry.Position, candidate.Position) <= candidateRange ||
+                    PlanarDistance(entry.Position, origin) <= LOCAL_ENGAGEMENT_RADIUS)
+                    strength += weight;
+            }
+            return strength;
         }
 
         private bool IncludeRouteThreat(HostileSighting sighting)
@@ -1476,17 +1544,28 @@ namespace EmpireAtWar.Services.Enemy
             return Mathf.Clamp(hostileIncome / alliedIncome, 1f, 2f);
         }
 
-        private float EstimateUnseenFleetInvestment(PlayerId enemy, float now)
+        private float EstimateUnseenFleetInvestment(PlayerId enemy, float now, float ownFleetInvestment)
         {
             if (enemy.IsNone || BattleClock.CurrentElapsed <= 0f) return 0f;
+            bool hasSeenHostileShip = false;
             float lastSeen = now - BattleClock.CurrentElapsed;
             foreach (HostileSighting sighting in _intel.Sightings)
+            {
                 if (sighting.UnitTypeId.IsShip && _playerRoster.IsAllied(enemy, sighting.Owner))
+                {
+                    hasSeenHostileShip = true;
                     lastSeen = Mathf.Max(lastSeen, sighting.SeenAt);
+                }
+            }
+            if (!hasSeenHostileShip && BattleClock.CurrentElapsed < OPENING_UNSEEN_GRACE_SECONDS)
+                return 0f;
             // Mine sightings carry effective income, including the last observed production modifiers.
-            const float UNSCOUTED_FLEET_INVESTMENT = 1200f;
-            return _hostileIncome * Mathf.Clamp(now - lastSeen, 0f, UNSEEN_FLEET_WINDOW) * HOSTILE_INCOME_TO_FLEET_SHARE +
-                (_focusTeamForce.IsEmpty ? UNSCOUTED_FLEET_INVESTMENT : 0f);
+            float unseen = _hostileIncome * Mathf.Clamp(now - lastSeen, 0f, UNSEEN_FLEET_WINDOW) *
+                           HOSTILE_INCOME_TO_FLEET_SHARE +
+                           (_focusTeamForce.IsEmpty ? UNSCOUTED_FLEET_INVESTMENT : 0f);
+            if (ownFleetInvestment > 0f)
+                unseen = Mathf.Min(unseen, ownFleetInvestment * MAX_UNSEEN_INVESTMENT_SHARE);
+            return unseen;
         }
 
         private bool IsNearHostileBase(Vector3 position)

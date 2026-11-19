@@ -18,6 +18,7 @@ using UnityEngine.Serialization;
 using EmpireAtWar.Services.Vision;
 using VContainer;
 using EmpireAtWar.Lifecycle;
+using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Ships;
 
 namespace EmpireAtWar.Services.ReinforcementZones
@@ -176,6 +177,8 @@ namespace EmpireAtWar.Services.ReinforcementZones
                 if (!_followsHost && zone.Tick(deltaTime, _strengthSampler[i]))
                 {
                     RegisterRelay(_zoneViews[i], zone.Owner);
+                    EnemyAiTelemetry.RecordZoneOwner(zone.Owner, $"zone:{i}", previousOwner, zone.Owner,
+                        zone.IsMain ? "Centre" : "Relay");
                     OwnershipChanged?.Invoke();
                     if (zone.IsCapturable)
                         RelayOwnershipChanged?.Invoke(new RelayOwnershipChange(zone, previousOwner));

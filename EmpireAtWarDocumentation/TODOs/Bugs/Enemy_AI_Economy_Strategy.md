@@ -1,12 +1,56 @@
 ---
 category: Bugs
-status: done
+status: in-progress
 created: 2026-11-19
 follows: "[[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]]"
-completed: 2026-11-19
-acceptance: pending-user
 ---
 # Enemy AI Economy Strategy
+
+## Reopened 2026-11-19 — acceptance failed (user: "full failure")
+- `2fa16bea3` played 2026-11-19 13:52 on UltraHard (Separatist AI, top-right). User: lots of corvettes again, one sabotage, idle instead of acting, no early centre take/retake, unsure it captured even 2 mining spots.
+- Implementation history (E1–E7 in `2fa16bea3`) kept below. Fix the regressions first (X1–X5), then re-check E1–E7.
+
+## Evidence — battle 2026-11-19 13:52 (UltraHard, code `2fa16bea3`, dirty)
+Files: `BattleTelemetry/Loading_20261119_135239_ai.csv`, `_ai_orders.csv`, `_squadrons.csv`, `Battle_20261119_135243_map.csv`, `Battle_20261119_135406.csv`; Editor.log `Difficulty=UltraHard`.
+- Log time 20.4 s = battle 0 s. AI station (1118, 1087) top-right; human Republic (−1118, −1087). Outer zones: 3 (−1545, 1453) top-left, 4 (1545, −1453) bottom-right.
+- Main station died ≈ 580–600 s (hull 46,969 at 570 s). Backup station placed 606 s at (−1667, 1000) by patrol; dead by 776 s. Battle ≈ 810 s.
+- Decisions: EngageLocal 74, RebuildFleet 56, CaptureZone 20, DefendBase 10, Raid 6, Hold 5, GuardSite 4. Top reasons: "Hostiles near the fleet outmatch it" 58, "No combat ships are available" 56.
+
+### X1 — Finished ships never deployed (P0, regression)
+- 7,262 `deploymentBlocked` (minutes 4–9: 354, 767, 1163, 1576, 1962, 1419); only 1 `deploymentForced`.
+- AI combat ships on the map: **0 from 296 s to 634 s** while purchases continued.
+- Human squadrons reached 246–304 from the AI station at minutes 3–4; human ships 324–551 at minutes 7–9.
+- Cause (source): new rear deployment in `EnemyFactionController` — `hasRear` → `TryGetDefenseSpawnPosition` / `TryGetBestDefenseSpawnPosition(stationAnchor, _defenseDeploymentThreats)` rejects every point near known threats; the bounded-hold forced spawn (8 s) is not reached on this path.
+- Effect: at 609–614 s, after the backup station appeared, 3 Providence + 3 Recusant + squadrons deployed at once — the held queue.
+
+### X2 — Corvette spam (P0, regression)
+- 32 C-9979 (22–209 s, ≈ 38k credits) + 6 Patrol Frigates; still C-9979 after level 2 (108 s) until 209 s; then Diamond chains (236–348 s, 609–746 s).
+- Each bought the moment money reached the price (money at purchase 1,200–1,460; `counter=0`, `critical=False`).
+- Cause: E5 "build queue never idles while money ≥ the cheapest useful item" → the cheapest ship wins every tick; the AI never saves for better ships.
+
+### X3 — Unseen-enemy estimate makes the AI passive (P0, regression)
+- `fleetAdvantage` 0.69 at 31 s with 1 own ship vs 0 seen; 0.06 at 142 s with 0 seen; ≤ 0.15 all battle.
+- Cause: `EstimateUnseenFleetInvestment` (`EnemyStrategicContextBuilder.cs:1479`): before any hostile ship is seen, `lastSeen` = battle start → hostile income × min(elapsed, 90 s) × 0.5 + `UNSCOUTED_FLEET_INVESTMENT 1200`; plus `fleetRaw /= _hostileEconomyPressure`.
+- Effect: "Hostiles near the fleet outmatch it" ×58, Hold/EngageLocal instead of capture.
+
+### X4 — No centre (P0)
+- Centre objectives: pad 8 at 62.6 s (groups 3/4) → `invalid:blockedApproach` 71.8 / 75.4 s → Hold; site 0 at 112.6 s → `blockedApproach` 137.7 s.
+- `blockedApproach` = the centre form of `unsafe` (`EnemyStrategicContextBuilder.cs:1149`), driven by X3.
+- No AI satellite at the centre the whole battle (satellites: home pad 13 at 9 s, top-left pads 16 / 15 at 75 / 132 s).
+
+### X5 — Expansion and sabotage thin (P1)
+- Mining: home site 12 mine 57 s; top-left pads 16/15 (71/82 s), mine 14 later dropped `unsafe` (151.8 s); bottom-right sites 19/17 targeted 86–104 s. Second site mine started 90 s. No centre mines.
+- Sabotage: RaidStructures 6 decisions ("raids an undefended structure" ×3).
+
+## Fixes (reopened)
+- Detailed fix plan → [[Done/Bugs/Enemy_AI_Economy_Strategy_Regression_Fixes]] (causes with source lines, changes, tests, verification; implemented 2026-11-19, pending next UltraHard battle).
+- [x] **X1** Rear deployment must always resolve: try rear → station sides → home zone → forced spawn after the bounded hold (8 s) on every path; never keep finished ships in the queue for minutes. Add a test: threats around the station still deploy within the hold limit.
+- [x] **X2** Replace "never idle" with "never idle **after** saving for the chosen unit": pick the best affordable-soon ship for the level/role and save for it; cheapest-ship buys only for the opening corvette and real emergencies. Cap level-1 corvettes (C-9979, Patrol Frigate) to ≤ 1–2 alive at faction level ≥ 2.
+- [x] **X3** Unseen estimate: no unscouted penalty in the opening (before the first hostile contact use 0, or only scouted mines); cap the unseen share (e.g. ≤ the AI's own fleet value); do not divide by economy pressure twice. Opening captures/centre never blocked by an estimate alone.
+- [x] **X4** Centre is the opening priority: `blockedApproach` only for seen hostile ships/defenses stronger than the group (R10 strength), not for the unseen estimate.
+- [x] **X5** Re-check E1 (every safe mining zone) and sabotage after X1–X4; record per-zone ownership timeline in the next battle.
+- [x] Tests: deployment under station threat (X1), production saving (X2), unseen estimate in the opening (X3), centre not blocked by estimate (X4). Categories `EnemyAi`, `Ships`, `Economy`.
+
 
 ## Goal
 - AI plays the economy game: owns the centre plus every safe mining zone, keeps building (mines, satellites, defenses, levels, research, ships) and only assaults the human base when it is decisive.

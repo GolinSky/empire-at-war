@@ -17,6 +17,7 @@ using EmpireAtWar.Services.SpawnBlocking;
 using VContainer;
 using EmpireAtWar.Lifecycle;
 using EmpireAtWar.Services.PlayerCommands;
+using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Ships;
 using Unity.Profiling;
 using EmpireAtWar.Utils;
@@ -266,7 +267,15 @@ namespace EmpireAtWar.Services.CaptureSites
 
         private void HandleSiteLost(PlayerId owner, SiteFacilityType type) => SiteLost?.Invoke(owner, type);
 
-        private void HandleStatusChanged(CaptureSiteStatusChange change) => StatusChanged?.Invoke(change);
+        private void HandleStatusChanged(CaptureSiteStatusChange change)
+        {
+            if (change.PreviousOwner != change.Owner)
+            {
+                EnemyAiTelemetry.RecordZoneOwner(change.Owner, $"site:{change.Site.PointId}", change.PreviousOwner,
+                    change.Owner, change.Site.Kind.ToString());
+            }
+            StatusChanged?.Invoke(change);
+        }
 
         private void HandleConstructionCompleted(PlayerId owner, SiteFacilityType type) =>
             ConstructionCompleted?.Invoke(owner, type);

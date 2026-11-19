@@ -185,6 +185,22 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
+        public void RearSpawn_CrowdedInnerCircleAndFrontThreat_FindsOuterRearRing()
+        {
+            ShipSpawnPoints spawnPoints = CreateSpawnPoints(TestPlayers.Ally,
+                new BlockedNear(HOME, _data.HomeAreaRadius));
+            var threats = new PlacementThreatSnapshot();
+            threats.Add(HOME.x + _data.HomeAreaRadius * 0.5f, HOME.z, _data.HomeAreaRadius * 1.25f);
+
+            Assert.That(spawnPoints.TryGetRearSpawnPosition(TestPlayers.Human, ShipType.Arquitens,
+                HOME, threats, requireThreatSafety: true, out Vector3 position), Is.True);
+            float distance = PlanarDistance(position, HOME);
+            Assert.That(distance, Is.GreaterThan(_data.HomeAreaRadius));
+            Assert.That(distance, Is.LessThanOrEqualTo(_data.HomeAreaRadius * 3f + 0.01f));
+            Assert.That(position.x, Is.LessThanOrEqualTo(HOME.x));
+        }
+
+        [Test]
         public void Home_LightsItsWholeSpawnAreaForTheOwnerTeamOnly()
         {
             CreateSpawnPoints(TestPlayers.Human, new OpenEverywhere());
@@ -312,6 +328,24 @@ namespace EmpireAtWar.Tests.Editor
 
             public bool IsOpenForStructure(PlayerId owner, Vector3 position) => IsOpen(owner, position);
 
+            public bool CanSpawnStructure(PlayerId owner, Vector3 position) => IsOpen(owner, position);
+        }
+
+        private sealed class BlockedNear : IReinforcementSpawnRule
+        {
+            private readonly Vector3 _center;
+            private readonly float _blockedRadius;
+
+            public BlockedNear(Vector3 center, float blockedRadius)
+            {
+                _center = center;
+                _blockedRadius = blockedRadius;
+            }
+
+            public bool IsOpen(PlayerId team, Vector3 position) => PlanarDistance(position, _center) > _blockedRadius;
+            public bool CanSpawnShip(PlayerId owner, ShipType shipType, Vector3 position) => IsOpen(owner, position);
+            public bool CanLaunchStationDefenseShip(PlayerId owner, ShipType shipType, Vector3 position) => IsOpen(owner, position);
+            public bool IsOpenForStructure(PlayerId owner, Vector3 position) => IsOpen(owner, position);
             public bool CanSpawnStructure(PlayerId owner, Vector3 position) => IsOpen(owner, position);
         }
     }

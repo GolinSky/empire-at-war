@@ -55,6 +55,9 @@ namespace EmpireAtWar.Services.Enemy
                     if (_captureProbe.HasExpansionObjective(zone)) continue;
                     _assignedExpansionZones.Remove(zone);
                 }
+                else if (captureGroup.ContextBuilder.OpeningFocus == EnemyOpeningFocus.Centre &&
+                    !stationPressure && captureGroup.Ships.Count != 0 &&
+                    _captureProbe.HasCentreObjective()) continue;
                 else if (!stationPressure && captureGroup.Ships.Count != 0 &&
                     !(captureGroup.NoViableCaptureSince >= 0f &&
                       Time.time - captureGroup.NoViableCaptureSince >= DETACHMENT_GRACE_SECONDS)) continue;
@@ -148,6 +151,7 @@ namespace EmpireAtWar.Services.Enemy
             if (_assignedExpansionZones.Count > 0 &&
                 !_captureGroups.Exists(group => group.ContextBuilder.OpeningFocus == EnemyOpeningFocus.Centre) &&
                 TryDetachForCapture(EnemyOpeningFocus.Centre, ships.Count)) return;
+            if (TryReinforceCentreGroup()) return;
             if (TryAssignExpansionShip()) return;
             if (_mainGroup != null && _captureGroups.Count >= OPENING_FOCUSES.Length) return;
             foreach (EnemyOpeningFocus focus in OPENING_FOCUSES)
@@ -157,6 +161,23 @@ namespace EmpireAtWar.Services.Enemy
                 if (TryDetachForCapture(focus, ships.Count)) return;
             }
             if (_captureGroups.Count == 0) TryDetachForCapture(EnemyOpeningFocus.None, ships.Count);
+        }
+
+        private bool TryReinforceCentreGroup()
+        {
+            EnemyShipTaskGroup centreGroup = _captureGroups.Find(group =>
+                group.ContextBuilder.OpeningFocus == EnemyOpeningFocus.Centre);
+            if (centreGroup == null || !centreGroup.ContextBuilder.NeedsCentreReinforcement)
+                return false;
+            foreach (IShipEntity ship in _unassigned)
+            {
+                if (_mainGroup != null && _mainGroup.Ships.Contains(ship) && _mainGroup.Ships.Count <= 3)
+                    continue;
+                foreach (EnemyShipTaskGroup group in _groups) group.Ships.Remove(ship);
+                centreGroup.Ships.Add(ship);
+                return true;
+            }
+            return false;
         }
 
         private bool TryAssignExpansionShip()

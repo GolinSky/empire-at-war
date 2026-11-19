@@ -295,17 +295,13 @@ created: "2026-10-29\r"
 
 ## Enemy AI Active Play and Ship Combat
 
-- [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Replay the UltraHard Republic and Separatist openings. Check mining research I within the opening, II at level 2, continued ship/wing production during the upgrade, early centre arrival, at least two safe expansion mining zones by about 4 min, and combat research after the minimum fleet.
-- [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Under siege verify no squadron purchase flood or level-1 corvette panic at level 3+, miner replacement when space and money permit, and grouped rear launches including forced launches.
-- [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Confirm viable squadron groups contest occupied circles, spare wings raid distinct mines, and outnumbered combat groups avoid hostile routes. Direct Attack holds when killed targets have no replacement within reach.
 - [ ] [[Done/Bugs/Enemy_AI_Active_Play_And_Ship_Combat]] — Run affected EditMode fixtures when explicitly authorized (EnemyAi, Capture, Ships, Navigation, BattleInput, Economy, GameFlow and dependent fixture bindings).
 
 ## Enemy AI Economy Strategy
 
-- [ ] [[Done/Bugs/Enemy_AI_Economy_Strategy]] — Replay the uncontested Small-map opening. Check home, centre and both safe outer mining zones by about 4 min, with detachments retaining their assignment through light opposition.
-- [ ] [[Done/Bugs/Enemy_AI_Economy_Strategy]] — Verify centre consolidation, mine and satellite rebuilding, mixed staggered platforms, station income research, purchases and rear launches. Check the backup station's emergency and late-surplus placement.
-- [ ] [[Done/Bugs/Enemy_AI_Economy_Strategy]] — Verify the level-4 capital assault gate, sustained reinforcement waves, and cancellation when zone control or the reinforcement plan is lost.
-- [ ] [[Done/Bugs/Enemy_AI_Economy_Strategy]] — Run affected EnemyAi, Capture, Economy, Ships and Core composition fixtures when authorized.
+- [ ] [[TODOs/Bugs/Enemy_AI_Economy_Strategy]] — Run affected EnemyAi, Capture, Economy, Ships and Core composition fixtures when authorized.
+- [ ] [[Done/Bugs/Enemy_AI_Economy_Strategy_Regression_Fixes]] — Next UltraHard battle: `deploymentBlocked` with `heldSeconds > 15` = 0 and `heldShips` ≤ 2; ≤ 2 level-1 corvettes bought after level 2; `fleetAdvantage` ≥ 1 at 30–120 s with no hostile ship seen; centre pads owned before 120 s vs squadrons; home + centre + ≥ 1 outer zone by ≈ 240 s when uncontested (`zoneOwner` timeline).
+- [ ] [[Done/Bugs/Enemy_AI_Economy_Strategy_Regression_Fixes]] — Run authored `Ships`, `EnemyAi`, `Capture`, `Economy` EditMode regressions when explicitly authorized (compiled with 0 errors; tests not run under local override).
 
 ## Enemy AI Endgame Defense and Capture
 

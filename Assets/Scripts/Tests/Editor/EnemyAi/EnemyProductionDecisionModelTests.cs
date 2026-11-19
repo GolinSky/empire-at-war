@@ -41,8 +41,8 @@ namespace EmpireAtWar.Tests.Editor
 
         [TestCase(0, true, false, EnemyProductionCategory.Mining)]
         [TestCase(4, true, true, EnemyProductionCategory.Mining)]
-        [TestCase(4, false, false, EnemyProductionCategory.Level)]
-        public void BelowMiningTarget_BuysAffordableMinersBeforeOtherWork(int mines, bool affordable,
+        [TestCase(4, false, false, EnemyProductionCategory.None)]
+        public void BelowMiningTarget_BuysOrSavesForMinersBeforeOtherWork(int mines, bool affordable,
             bool critical, EnemyProductionCategory expected)
         {
             EnemyProductionSnapshot snapshot = Snapshot(mines: mines, level: 1, ships: 0, shipsOrdered: 0,
@@ -52,8 +52,8 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [TestCase(true, EnemyProductionCategory.Level)]
-        [TestCase(false, EnemyProductionCategory.Ship)]
-        public void OpeningLevel_BuysUpgradeOrKeepsProducingShips(bool upgradeAffordable, EnemyProductionCategory expected)
+        [TestCase(false, EnemyProductionCategory.None)]
+        public void OpeningLevel_BuysOrSavesForUpgrade(bool upgradeAffordable, EnemyProductionCategory expected)
         {
             EnemyProductionSnapshot snapshot = Snapshot(level: 1, ships: 0, shipsOrdered: 0,
                 canLevelUp: upgradeAffordable);
@@ -95,29 +95,41 @@ namespace EmpireAtWar.Tests.Editor
         }
 
         [Test]
-        public void DepletedFleet_BuysIncomeResearchWhenStationIsStable()
+        public void DepletedFleet_RebuildsWhenEconomicFloorIsMetAndNoUpgradeDue()
         {
             EnemyProductionSnapshot snapshot = Snapshot(ships: 2, shipsOrdered: 2,
                 state: EnemyStrategicState.DefendBase, incomeResearch: true, platforms: 0);
 
-            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.Research));
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.Ship));
         }
 
         [Test]
-        public void UnaffordableShip_DoesNotBlockIncomeResearch()
+        public void DepletedFleet_SavesForSelectedShip()
         {
             EnemyProductionSnapshot snapshot = Snapshot(ships: 1, canBuildShip: false, platforms: 0,
                 incomeResearch: true);
 
-            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.Research));
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(EnemyProductionCategory.None));
         }
 
         [TestCase(true, EnemyProductionCategory.Level)]
-        [TestCase(false, EnemyProductionCategory.Defense)]
-        public void DueLevel_IsBoughtBeforeOptionalWorkWhenAffordable(bool canLevelUp, EnemyProductionCategory expected)
+        [TestCase(false, EnemyProductionCategory.None)]
+        public void DueLevel_IsBoughtOrSavedForBeforeOptionalUnits(bool canLevelUp, EnemyProductionCategory expected)
         {
             EnemyProductionSnapshot snapshot = Snapshot(shipsOrdered: 2, canLevelUp: canLevelUp,
-                combatResearch: true, platforms: 0);
+                incomeResearch: true, combatResearch: true, platforms: 0);
+
+            Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(expected));
+        }
+
+        [TestCase(false, false, EnemyProductionCategory.None)]
+        [TestCase(true, true, EnemyProductionCategory.Ship)]
+        public void ChosenShipUnaffordable_WaitsUnlessCriticalAndAffordable(bool critical, bool canBuildShip,
+            EnemyProductionCategory expected)
+        {
+            EnemyProductionSnapshot snapshot = Snapshot(ships: 4, shipsOrdered: 1, level: 2,
+                hasLevelOption: false, canLevelUp: false, canBuildDefense: false,
+                hasShipOption: true, canBuildShip: canBuildShip, critical: critical);
 
             Assert.That(new EnemyProductionDecisionModel().Evaluate(snapshot), Is.EqualTo(expected));
         }
@@ -722,6 +734,82 @@ namespace EmpireAtWar.Tests.Editor
                 scheduler.Step(0f);
 
                 Assert.That(purchases.RequestCount, Is.Zero);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(reinforcementData);
+                UnityEngine.Object.DestroyImmediate(definition);
+            }
+        }
+
+        [TestCase(2, 2, false)]
+        [TestCase(3, 0, false)]
+        public void Level1CorvetteCap_BlocksCorvetteAtCapOrLevelThreeAndSavesForHigherTier(
+            int level, int reservedCorvettes, bool expectedCorvette)
+        {
+            var reinforcementData = ScriptableObject.CreateInstance<ReinforcementData>();
+            FactionDefinition definition = CopyDefinition(FactionType.Separatist, ShipType.C9979, ShipType.Munificent);
+            try
+            {
+                SetBackingField(definition.Ships[ShipType.C9979], nameof(FactionData.AvailableLevel), 1);
+                SetBackingField(definition.Ships[ShipType.C9979], nameof(FactionData.Price), 1200);
+                SetBackingField(definition.Ships[ShipType.Munificent], nameof(FactionData.AvailableLevel), 2);
+                SetBackingField(definition.Ships[ShipType.Munificent], nameof(FactionData.Price), 3000);
+                SetBackingField(reinforcementData, nameof(ReinforcementData.MaxUnitCapacity), MAX_UNIT_CAPACITY);
+
+                EnemyFactionModel factionModel = CreateFactionModel(definition);
+                factionModel.CurrentLevel = level;
+                var limits = new EnemyUnitLimitModel();
+                ReserveEconomicFloor(factionModel, limits, factionModel.MiningFactions.First().Value.MaxCount);
+                ReserveDefensePlatform(factionModel, limits);
+                ReserveCaptureWings(factionModel, limits);
+                FactionData c9979 = factionModel.ShipFactionData[ShipType.C9979];
+                for (int i = 0; i < reservedCorvettes; i++)
+                    limits.Adopt(GetUnitId<ShipUnitRequest>(ShipType.C9979.ToString()), c9979.UnitCapacity);
+
+                var catalog = new UnitCombatProfileCatalog(null, null, null, null);
+                var profiles = (Dictionary<UnitTypeId, UnitCombatProfile>)typeof(UnitCombatProfileCatalog)
+                    .GetField("_profiles", PRIVATE_INSTANCE).GetValue(catalog);
+                float[] rates = new float[ForceComposition.ClassSlots];
+                rates[(int)ShipClass.Frigate] = 10f;
+                profiles[UnitTypeId.Ship(ShipType.C9979)] = new UnitCombatProfile(
+                    ShipClass.Corvette, 100f, 0f, rates, new float[ForceComposition.ClassSlots],
+                    new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>());
+                profiles[UnitTypeId.Ship(ShipType.Munificent)] = new UnitCombatProfile(
+                    ShipClass.Frigate, 300f, 0f, rates, new float[ForceComposition.ClassSlots],
+                    new float[ForceComposition.ClassSlots], Array.Empty<UnitCombatProfile>());
+
+                var purchases = new RecordingPurchaseProcessor();
+                var entities = new EntityLocator();
+                var scheduler = new EnemyAiScheduler(new ReplayNotifier<BattleState>(BattleState.Running));
+                scheduler.Initialize();
+                // Enough for C-9979 (1200), not enough for Munificent (3000): must save rather than buy C-9979.
+                var strategy = new EnemyProductionStrategy(
+                    factionModel: factionModel,
+                    research: CreateCompletedResearch(definition),
+                    purchaseProcessor: purchases,
+                    requestFactory: new UnitRequestFactory(),
+                    economyModel: new EconomyModelStub(1500f),
+                    stateProvider: new StateProviderStub(),
+                    decisionModel: new EnemyProductionDecisionModel(),
+                    unitLimitModel: limits,
+                    reinforcementData: reinforcementData,
+                    enemyStructurePlacementService: new StructurePlacementServiceStub(),
+                    productionAccess: new OperationalProductionAccess(),
+                    forceBuilder: new ForceCompositionBuilder(entities, catalog, new AiWorldSnapshot(entities)),
+                    profileCatalog: catalog,
+                    counterModel: new EnemyCounterProductionModel(new NeutralShipClassMatchups()),
+                    intelRegistry: new TeamIntelRegistry(),
+                    owner: TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard).Get(TestPlayers.Enemy),
+                    stationPressure: new EnemyStationPressureTracker(),
+                    scheduler: scheduler);
+
+                strategy.Start();
+                strategy.Tick(0f);
+                scheduler.Step(0f);
+
+                Assert.That(expectedCorvette, Is.False);
+                Assert.That(purchases.LastRequest, Is.Null, "Must save for Munificent instead of buying a capped level-1 corvette.");
             }
             finally
             {

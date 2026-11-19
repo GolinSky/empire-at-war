@@ -17,6 +17,8 @@ namespace EmpireAtWar.Services.ShipSpawning
     public sealed class ShipSpawnPoints : IShipSpawnPoints
     {
         private const int MAX_RANDOM_SPAWN_ATTEMPTS = 100;
+        private const int REAR_SECTOR_ATTEMPTS = 36;
+        private static readonly float[] REAR_RING_SCALES = { 1f, 1.5f, 2f, 3f };
 
         private readonly IReinforcementZoneSource _zoneSource;
         private readonly IReinforcementZonesSystem _zones;
@@ -157,6 +159,108 @@ namespace EmpireAtWar.Services.ShipSpawning
             }
 
             return found;
+        }
+
+        public bool TryGetRearSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+            PlacementThreatSnapshot threats, bool requireThreatSafety, out Vector3 position)
+        {
+            float baseRadius = _data.HomeAreaRadius;
+            float maxRadius = baseRadius * REAR_RING_SCALES[REAR_RING_SCALES.Length - 1];
+            var centroid = threats.GetLocalCentroid(anchor.x, anchor.z, maxRadius);
+            Vector2 towardThreat = new Vector2(centroid.X - anchor.x, centroid.Z - anchor.z);
+            float threatAngle = towardThreat.sqrMagnitude > 1e-6f
+                ? Mathf.Atan2(towardThreat.y, towardThreat.x)
+                : 0f;
+            float rearAngle = threatAngle + Mathf.PI;
+
+            for (int sector = 0; sector < 3; sector++)
+            {
+                for (int ring = 0; ring < REAR_RING_SCALES.Length; ring++)
+                {
+                    float inner = ring == 0 ? 0f : REAR_RING_SCALES[ring - 1] * baseRadius;
+                    float outer = REAR_RING_SCALES[ring] * baseRadius;
+                    float innerSq = inner * inner;
+                    float outerSq = outer * outer;
+                    for (int attempt = 0; attempt < REAR_SECTOR_ATTEMPTS; attempt++)
+                    {
+                        float distance = Mathf.Sqrt(Random.Range(innerSq, outerSq));
+                        float angle = SampleSectorAngle(sector, rearAngle, threatAngle);
+                        position = new Vector3(
+                            anchor.x + Mathf.Cos(angle) * distance,
+                            0f,
+                            anchor.z + Mathf.Sin(angle) * distance);
+                        if ((!requireThreatSafety || threats.IsSafe(position.x, position.z, 0f)) &&
+                            _spawnRule.CanSpawnShip(owner, shipType, position))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            position = default;
+            return false;
+        }
+
+        public bool TryGetWideDefenseSpawnPosition(PlayerId owner, ShipType shipType, Vector3 anchor,
+            PlacementThreatSnapshot threats, out Vector3 position)
+        {
+            float baseRadius = _data.HomeAreaRadius;
+            float maxRadius = baseRadius * REAR_RING_SCALES[REAR_RING_SCALES.Length - 1];
+            var centroid = threats.GetLocalCentroid(anchor.x, anchor.z, maxRadius);
+            var threatCenter = new Vector2(centroid.X, centroid.Z);
+            Vector2 towardThreat = threatCenter - new Vector2(anchor.x, anchor.z);
+            float threatAngle = towardThreat.sqrMagnitude > 1e-6f
+                ? Mathf.Atan2(towardThreat.y, towardThreat.x)
+                : 0f;
+            float rearAngle = threatAngle + Mathf.PI;
+
+            bool found = false;
+            float bestDistance = float.NegativeInfinity;
+            position = default;
+            for (int sector = 0; sector < 3; sector++)
+            {
+                for (int ring = REAR_RING_SCALES.Length - 1; ring >= 0; ring--)
+                {
+                    float inner = ring == 0 ? 0f : REAR_RING_SCALES[ring - 1] * baseRadius;
+                    float outer = REAR_RING_SCALES[ring] * baseRadius;
+                    float innerSq = inner * inner;
+                    float outerSq = outer * outer;
+                    for (int attempt = 0; attempt < REAR_SECTOR_ATTEMPTS; attempt++)
+                    {
+                        float distance = Mathf.Sqrt(Random.Range(innerSq, outerSq));
+                        float angle = SampleSectorAngle(sector, rearAngle, threatAngle);
+                        var candidate = new Vector3(
+                            anchor.x + Mathf.Cos(angle) * distance,
+                            0f,
+                            anchor.z + Mathf.Sin(angle) * distance);
+                        if (!_spawnRule.CanLaunchStationDefenseShip(owner, shipType, candidate)) continue;
+                        float threatDistance = (new Vector2(candidate.x, candidate.z) - threatCenter).sqrMagnitude;
+                        if (threatDistance <= bestDistance) continue;
+                        bestDistance = threatDistance;
+                        position = candidate;
+                        found = true;
+                    }
+                }
+
+                if (found) return true;
+            }
+
+            return false;
+        }
+
+        private static float SampleSectorAngle(int sector, float rearAngle, float threatAngle)
+        {
+            switch (sector)
+            {
+                case 0:
+                    return rearAngle + Random.Range(-Mathf.PI * 0.5f, Mathf.PI * 0.5f);
+                case 1:
+                    float side = Random.value < 0.5f ? -1f : 1f;
+                    return rearAngle + side * Random.Range(Mathf.PI * 0.5f, Mathf.PI * 0.75f);
+                default:
+                    return threatAngle + Random.Range(-Mathf.PI * 0.25f, Mathf.PI * 0.25f);
+            }
         }
 
         public void ReserveDefenseLanding(object token, PlayerId owner, ShipType shipType, Vector3 position) =>

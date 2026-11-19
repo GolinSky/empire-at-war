@@ -53,6 +53,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
 
         public void ClearDeploymentBlock(ShipUnitRequest request) => _blockedSeconds.Remove(request);
 
+        public int CountHeldShips()
+        {
+            int count = 0;
+            for (int i = 0; i < _builds.Count; i++)
+            {
+                if (_builds[i].TimeLeft <= 0f && _builds[i].Request is ShipUnitRequest)
+                    count++;
+            }
+            return count;
+        }
+
         public float GetRemainingTime(string requestId)
         {
             float remaining = 0f;
@@ -68,7 +79,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         /// <summary>Builds each ID in FIFO order; different IDs advance in parallel.</summary>
         public void Advance(float deltaTime, Action<UnitRequest> complete, int minimumReadyCombatUnits = 0,
             float deploymentWaitLimit = float.PositiveInfinity, bool batchDeploymentRetries = false,
-            Action<IReadOnlyList<UnitRequest>> deployWave = null)
+            Action<IReadOnlyList<UnitRequest>> deployWave = null,
+            float maxBlockedHoldSeconds = float.PositiveInfinity)
         {
             if (deltaTime < 0f) throw new ArgumentOutOfRangeException(nameof(deltaTime));
 
@@ -127,7 +139,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
                 {
                     build.WaitForDeployment(remaining);
                     readyCombatUnits++;
-                    releaseReadyCombat |= build.DeploymentWait >= deploymentWaitLimit;
+                    releaseReadyCombat |= build.DeploymentWait >= deploymentWaitLimit ||
+                        build.Request is ShipUnitRequest blockedShip &&
+                        _blockedSeconds.TryGetValue(blockedShip, out float blockedSeconds) &&
+                        blockedSeconds >= maxBlockedHoldSeconds;
                     i++;
                     continue;
                 }

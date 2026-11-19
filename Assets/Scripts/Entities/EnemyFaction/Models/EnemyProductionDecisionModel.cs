@@ -138,20 +138,20 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             if (snapshot.CanResearchPriorityIncome && !snapshot.IsStationCritical)
                 return EnemyProductionCategory.Research;
 
-            if (snapshot.CanBuildMining && needsMining)
-                return EnemyProductionCategory.Mining;
+            if (needsMining && (snapshot.CanBuildMining || !snapshot.IsStationCritical))
+                return snapshot.CanBuildMining ? EnemyProductionCategory.Mining : EnemyProductionCategory.None;
 
             if (snapshot.IsStationCritical)
                 return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
 
+            if (IsLevelDue(snapshot))
+                return snapshot.CanLevelUp ? EnemyProductionCategory.Level : EnemyProductionCategory.None;
+
+            if (NeedsMinimumFleet(snapshot.ShipCount) && snapshot.CanOrderShips && snapshot.HasShipOption)
+                return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
+
             if (snapshot.CanResearchIncome)
                 return EnemyProductionCategory.Research;
-
-            if (IsLevelDue(snapshot) && snapshot.CanLevelUp)
-                return EnemyProductionCategory.Level;
-
-            if (NeedsMinimumFleet(snapshot.ShipCount) && snapshot.CanOrderShips && snapshot.CanBuildShip)
-                return EnemyProductionCategory.Ship;
 
             if (snapshot.DefensePlatformCount < snapshot.DefensePlatformTarget && snapshot.CanBuildDefense)
                 return EnemyProductionCategory.Defense;
@@ -159,8 +159,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             if (snapshot.CanResearchCombat)
                 return EnemyProductionCategory.Research;
 
-            if (snapshot.CanBuildShip)
-                return EnemyProductionCategory.Ship;
+            if (snapshot.HasShipOption)
+                return snapshot.CanBuildShip ? EnemyProductionCategory.Ship : EnemyProductionCategory.None;
 
             if (snapshot.CanBuildDefense)
                 return EnemyProductionCategory.Defense;
@@ -168,7 +168,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
             if (snapshot.CanLevelUp)
                 return EnemyProductionCategory.Level;
 
-            return snapshot.CanResearchCombat ? EnemyProductionCategory.Research : EnemyProductionCategory.None;
+            return EnemyProductionCategory.None;
         }
 
         public bool IsLevelDue(EnemyProductionSnapshot snapshot) =>

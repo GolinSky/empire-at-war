@@ -39,7 +39,10 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
     {
         private const float DEFAULT_INCOME = 15f;
         private const float DEPLOYMENT_RETRY_INTERVAL = 1f;
+        private const float DEPLOYMENT_TIER_B_SECONDS = 4f;
         private const float MAX_DEPLOYMENT_HOLD_SECONDS = 8f;
+        private const float DEPLOYMENT_TIER_D_SECONDS = 12f;
+        private const float DEPLOYMENT_EMERGENCY_SECONDS = 15f;
         private const float LONE_REINFORCEMENT_WAIT_SECONDS = 12f;
         private const int MINIMUM_DEFENSE_WAVE = 2;
         private const int MINIMUM_REINFORCEMENT_WAVE = 3;
@@ -66,8 +69,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
         private readonly PlayerSlot _owner;
         private readonly EnemyBuildQueue _builds = new EnemyBuildQueue();
         private readonly PlacementThreatSnapshot _defenseDeploymentThreats = new PlacementThreatSnapshot();
-        private readonly Dictionary<ShipUnitRequest, (Vector3 Position, bool Forced)> _defenseLandings =
-            new Dictionary<ShipUnitRequest, (Vector3, bool)>();
+        private readonly Dictionary<ShipUnitRequest, (Vector3 Position, string Tier, bool Forced, bool Emergency)> _defenseLandings =
+            new Dictionary<ShipUnitRequest, (Vector3, string, bool, bool)>();
         private readonly HashSet<long> _builtSquadrons = new HashSet<long>();
         private readonly MiningFacilityFactory _miningFacilityFactory;
         private readonly DefendPlatformFactory _defendPlatformFactory;
@@ -269,9 +272,11 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             bool allowLoneUnit = assault || !defendHome &&
                                  _unitLimitModel.CurrentUnitCapacity >= _reinforcementData.MaxUnitCapacity;
             _builds.Advance(deltaTime, ExecuteBuild, minimumGroup,
-                allowLoneUnit ? LONE_REINFORCEMENT_WAIT_SECONDS : float.PositiveInfinity,
+                allowLoneUnit ? LONE_REINFORCEMENT_WAIT_SECONDS : DEPLOYMENT_EMERGENCY_SECONDS,
                 batchDeploymentRetries: defendHome,
-                deployWave: defendHome && holdReserve ? DeployDefenseWave : null);
+                deployWave: defendHome && holdReserve ? DeployDefenseWave : null,
+                maxBlockedHoldSeconds: MAX_DEPLOYMENT_HOLD_SECONDS);
+            Model.HeldShips = _builds.CountHeldShips();
         }
 
         private void DeployDefenseWave(IReadOnlyList<UnitRequest> wave)
@@ -286,6 +291,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
             PlayerId home = GetDeploymentHost();
             _aiState.FillDefenseDeploymentThreats(_defenseDeploymentThreats);
             int squadronCount = 0;
+            bool anyPastHoldLimit = false;
             try
             {
                 foreach (UnitRequest request in wave)
@@ -296,24 +302,25 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         continue;
                     }
 
-                    bool found = _shipSpawnPoints.TryGetDefenseSpawnPosition(home, ship.Key, rally,
-                        _defenseDeploymentThreats, out Vector3 position);
-                    bool forced = !found && _builds.GetDeploymentBlockedSeconds(ship) >= MAX_DEPLOYMENT_HOLD_SECONDS;
-                    if (forced)
-                        found = _shipSpawnPoints.TryGetBestDefenseSpawnPosition(home, ship.Key, rally,
-                            _defenseDeploymentThreats, out position);
+                    float heldSeconds = _builds.GetDeploymentBlockedSeconds(ship);
+                    anyPastHoldLimit |= heldSeconds >= MAX_DEPLOYMENT_HOLD_SECONDS;
+                    bool found = TryFindShipSpawnPosition(home, ship.Key, hasRally: true, defendHome: true, rally,
+                        hasRear: false, default, heldSeconds, out Vector3 position, out string tier,
+                        out bool forced, out bool emergency);
                     if (!found)
                     {
                         EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deploymentBlocked",
-                            $"unit={ship.Id};homeDefense=True;rally={rally}");
+                            FormattableString.Invariant(
+                                $"unit={ship.Id};homeDefense=True;rally={rally};tier={tier};heldSeconds={heldSeconds:F1}"));
                         continue;
                     }
 
                     _shipSpawnPoints.ReserveDefenseLanding(ship, home, ship.Key, position);
-                    _defenseLandings.Add(ship, (position, forced));
+                    _defenseLandings.Add(ship, (position, tier, forced, emergency));
                 }
 
-                bool canDeploy = _defenseLandings.Count + squadronCount >= MINIMUM_DEFENSE_WAVE;
+                bool canDeploy = _defenseLandings.Count + squadronCount >= MINIMUM_DEFENSE_WAVE ||
+                    anyPastHoldLimit && (_defenseLandings.Count > 0 || squadronCount > 0);
                 foreach (UnitRequest request in wave)
                 {
                     if (request is ShipUnitRequest ship && (!canDeploy || !_defenseLandings.ContainsKey(ship)))
@@ -331,6 +338,86 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                 _defenseLandings.Clear();
             }
         }
+
+        private bool TryFindShipSpawnPosition(
+            PlayerId home,
+            ShipType shipType,
+            bool hasRally,
+            bool defendHome,
+            Vector3 rally,
+            bool hasRear,
+            Vector3 stationAnchor,
+            float heldSeconds,
+            out Vector3 position,
+            out string tier,
+            out bool forced,
+            out bool emergency)
+        {
+            bool useRearAnchor = hasRally && defendHome || hasRear;
+            Vector3 anchor = hasRear ? stationAnchor : rally;
+            forced = false;
+            emergency = false;
+
+            if (heldSeconds >= DEPLOYMENT_EMERGENCY_SECONDS && _productionAccess.CanProduce)
+            {
+                tier = "D";
+                forced = true;
+                emergency = true;
+                if (TryTierDSpawn(home, shipType, out position)) return true;
+                position = useRearAnchor ? anchor : hasRally ? rally : Vector3.zero;
+                tier = "E";
+                return true;
+            }
+
+            // Tier A: full safety filter (rear ring search with IsSafe + CanSpawnShip, or normal rally/default).
+            tier = "A";
+            bool found = useRearAnchor
+                ? _shipSpawnPoints.TryGetRearSpawnPosition(home, shipType, anchor, _defenseDeploymentThreats,
+                    requireThreatSafety: true, out position)
+                : hasRally
+                    ? _shipSpawnPoints.TryGetSpawnPositionNear(home, shipType, rally, out position)
+                    : TryTierDSpawn(home, shipType, out position);
+            if (found) return true;
+
+            // Tier B (after 4 s): ignore remembered threats, keep CanSpawnShip clearance on rear rings.
+            if (heldSeconds >= DEPLOYMENT_TIER_B_SECONDS && useRearAnchor)
+            {
+                tier = "B";
+                if (_shipSpawnPoints.TryGetRearSpawnPosition(home, shipType, anchor, _defenseDeploymentThreats,
+                        requireThreatSafety: false, out position))
+                    return true;
+            }
+
+            // Tier C (after 8 s): station-defense rule on the widest ring (or rally/default fallback).
+            if (heldSeconds >= MAX_DEPLOYMENT_HOLD_SECONDS && _productionAccess.CanProduce)
+            {
+                tier = "C";
+                forced = true;
+                found = useRearAnchor
+                    ? _shipSpawnPoints.TryGetWideDefenseSpawnPosition(home, shipType, anchor,
+                        _defenseDeploymentThreats, out position)
+                    : hasRally && _shipSpawnPoints.TryGetSpawnPositionNear(home, shipType, rally, out position) ||
+                      TryTierDSpawn(home, shipType, out position);
+                if (found) return true;
+            }
+
+            // Tier D (after 12 s): station -> home zone -> any held zone -> random fallback.
+            if (heldSeconds >= DEPLOYMENT_TIER_D_SECONDS && _productionAccess.CanProduce)
+            {
+                tier = "D";
+                forced = true;
+                if (TryTierDSpawn(home, shipType, out position)) return true;
+            }
+
+            position = default;
+            forced = false;
+            return false;
+        }
+
+        private bool TryTierDSpawn(PlayerId home, ShipType shipType, out Vector3 position) =>
+            _shipSpawnPoints.TryGetStationSpawnPosition(home, shipType, out position) ||
+            _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(home, shipType, out position) ||
+            _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipType, out position);
 
         private PlayerId GetDeploymentHost() =>
             !_productionAccess.HasHostBase && _productionAccess.TryGetProductionBase(out var productionBase)
@@ -395,8 +482,12 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     }
                     // Ships arrive at the home of whichever team base builds them, borrowed from an ally or not.
                     PlayerId home = GetDeploymentHost();
+                    float heldSeconds = _builds.GetDeploymentBlockedSeconds(shipUnitRequest);
                     Vector3 position;
                     bool foundPosition;
+                    string tier;
+                    bool forced;
+                    bool emergency;
                     Vector3 stationAnchor = default;
                     bool hasRear = !defendHome && _productionAccess.TryGetProductionBase(out var baseEntity) &&
                         _aiState.TryGetRearDeploymentThreats(stationAnchor =
@@ -405,44 +496,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                     {
                         _shipSpawnPoints.ReleaseDefenseLanding(shipUnitRequest);
                         position = landing.Position;
+                        tier = landing.Tier;
+                        forced = landing.Forced;
+                        emergency = landing.Emergency;
                         foundPosition = true;
-                        if (landing.Forced)
-                            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deploymentForced",
-                                $"unit={shipUnitRequest.Id};rally={rally};spawn={position}");
-                    }
-                    else if (hasRally && defendHome)
-                    {
-                        _aiState.FillDefenseDeploymentThreats(_defenseDeploymentThreats);
-                        foundPosition = _shipSpawnPoints.TryGetDefenseSpawnPosition(home, shipUnitRequest.Key,
-                            rally, _defenseDeploymentThreats, out position);
-                    }
-                    else if (hasRear)
-                    {
-                        foundPosition = _shipSpawnPoints.TryGetDefenseSpawnPosition(home, shipUnitRequest.Key,
-                            stationAnchor, _defenseDeploymentThreats, out position);
                     }
                     else
                     {
-                        foundPosition = hasRally
-                            ? _shipSpawnPoints.TryGetSpawnPositionNear(home, shipUnitRequest.Key, rally, out position)
-                            : _shipSpawnPoints.TryGetStationSpawnPosition(home, shipUnitRequest.Key, out position) ||
-                              _shipSpawnPoints.TryGetDefaultZoneSpawnPosition(home, shipUnitRequest.Key, out position) ||
-                              _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipUnitRequest.Key, out position);
-                    }
-                    bool forced = !foundPosition && _productionAccess.CanProduce &&
-                                  _builds.GetDeploymentBlockedSeconds(shipUnitRequest) >= MAX_DEPLOYMENT_HOLD_SECONDS;
-                    if (forced)
-                    {
-                        foundPosition = hasRally && defendHome || hasRear
-                            ? _shipSpawnPoints.TryGetBestDefenseSpawnPosition(home, shipUnitRequest.Key,
-                                hasRear ? stationAnchor : rally,
-                                _defenseDeploymentThreats, out position)
-                            : hasRally && _shipSpawnPoints.TryGetSpawnPositionNear(home, shipUnitRequest.Key, rally, out position) ||
-                              _shipSpawnPoints.TryGetStationSpawnPosition(home, shipUnitRequest.Key, out position) ||
-                              _shipSpawnPoints.TryGetRandomSpawnPosition(home, shipUnitRequest.Key, out position);
-                        if (foundPosition)
-                            EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deploymentForced",
-                                $"unit={shipUnitRequest.Id};rally={rally};spawn={position}");
+                        if (hasRally && defendHome)
+                            _aiState.FillDefenseDeploymentThreats(_defenseDeploymentThreats);
+                        foundPosition = TryFindShipSpawnPosition(home, shipUnitRequest.Key, hasRally, defendHome, rally,
+                            hasRear, stationAnchor, heldSeconds, out position, out tier, out forced, out emergency);
                     }
                     if (!foundPosition)
                     {
@@ -450,7 +514,8 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                         {
                             // Keep the completed ship paid and reserved while its arrival area is blocked.
                             EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deploymentBlocked",
-                                $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally}");
+                                FormattableString.Invariant(
+                                    $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally};tier={tier};heldSeconds={heldSeconds:F1}"));
                             _builds.RetryShipDeployment(shipUnitRequest, DEPLOYMENT_RETRY_INTERVAL);
                             return;
                         }
@@ -460,8 +525,17 @@ namespace EmpireAtWar.Entities.EnemyFaction.Controllers
                             $"No open enemy spawn position is available near a held relay or home for {shipUnitRequest.Key}.");
                     }
 
+                    if (emergency)
+                        EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deploymentEmergency",
+                            FormattableString.Invariant(
+                                $"unit={shipUnitRequest.Id};rally={rally};spawn={position};tier={tier};heldSeconds={heldSeconds:F1}"));
+                    else if (forced)
+                        EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deploymentForced",
+                            FormattableString.Invariant(
+                                $"unit={shipUnitRequest.Id};rally={rally};spawn={position};tier={tier};heldSeconds={heldSeconds:F1}"));
                     EnemyAiTelemetry.RecordEvent(_owner.Id, _owner.Faction, "deployment",
-                        $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally};spawn={position}");
+                        FormattableString.Invariant(
+                            $"unit={shipUnitRequest.Id};homeDefense={defendHome};rally={rally};spawn={position};tier={tier};heldSeconds={heldSeconds:F1}"));
                     _builds.ClearDeploymentBlock(shipUnitRequest);
                     Track(_shipFactory.Create(Owner, shipUnitRequest.Key, position), shipUnitRequest);
                     break;

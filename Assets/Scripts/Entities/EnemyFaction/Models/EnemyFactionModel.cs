@@ -25,6 +25,7 @@ namespace EmpireAtWar.Entities.EnemyFaction.Models
         public int AdditionalStationsBuilt { get; set; }
         public bool HasAssaultSurplus { get; set; }
         public bool HasAssaultReinforcementPlan { get; set; }
+        public int HeldShips { get; set; }
 
         public FactionData SecondStationData => _stationLevels.GetSecondStationFactionData(_roster.FactionType);
 

@@ -15,6 +15,7 @@ using EmpireAtWar.Models.Health;
 using EmpireAtWar.Services.Enemy;
 using EmpireAtWar.Services.Hazards;
 using EmpireAtWar.Services.ReinforcementZones;
+using EmpireAtWar.Services.Saves;
 using EmpireAtWar.Services.UnitOrders;
 using EmpireAtWar.Ship;
 using NUnit.Framework;
@@ -2679,6 +2680,171 @@ namespace EmpireAtWar.Tests.Editor
             finally { navigation.Dispose(); }
         }
 
+        [Test]
+        public void UnseenEstimate_OpeningWithoutHostileContact_AppliesNoUnscoutedPenalty()
+        {
+            var clock = new BattleClock(null);
+            var ownShipObject = new GameObject("Own ship");
+            var enemyBaseObject = new GameObject("Enemy base");
+            var gameData = ScriptableObject.CreateInstance<GameData>();
+            var hazards = new TestHazards();
+            var navigation = new ShipNavigationService(new RetreatObstacleProvider(), hazards,
+                new OfflineSession(PlayerId.None));
+            try
+            {
+                clock.Restore(30f);
+                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+                var entities = new EntityLocator();
+                var ownShipEntity = new FakeEntity(new FakeHealthModel(ownShipObject.transform), TestPlayers.Enemy, 1);
+                var enemyBase = new FakeEntity(new FakeHealthModel(enemyBaseObject.transform), TestPlayers.Human, 2)
+                {
+                    IsUnit = false,
+                    IsBase = true
+                };
+                entities.AddEntity(ownShipEntity);
+                entities.AddEntity(enemyBase);
+
+                var ship = new FakeShip(Vector3.zero, ownShipEntity.Id);
+                var zones = new ZoneSource(roster);
+                var builder = CreateContextBuilder(
+                    new ShipService(), new WithdrawalZones(), Array.Empty<IEnemyCaptureObjectiveSource>(),
+                    entities, gameData, roster, null,
+                    new TeamIntelRegistry(), new VisionService(roster, fogEnabled: false),
+                    roster.Get(TestPlayers.Enemy), new WithdrawalProduction(), hazards, zones,
+                    navigation, new EnemyStationPressureTracker(), CreateRecovery(roster, zones));
+
+                EnemyStrategicContext context = builder.Build(new IShipEntity[] { ship });
+
+                Assert.That(context.UnseenInvestment, Is.Zero);
+                Assert.That(context.Snapshot.FleetRaw, Is.EqualTo(context.VisibleAdvantage).Within(0.001f));
+            }
+            finally
+            {
+                clock.Restore(0f);
+                navigation.Dispose();
+                UnityEngine.Object.DestroyImmediate(gameData);
+                UnityEngine.Object.DestroyImmediate(ownShipObject);
+                UnityEngine.Object.DestroyImmediate(enemyBaseObject);
+            }
+        }
+
+        [Test]
+        public void UnseenEstimate_LargeHostileIncomeNoShipsSeen_NeverDropsBelowHalfVisibleAdvantage()
+        {
+            var clock = new BattleClock(null);
+            var ownShipObject = new GameObject("Own ship");
+            var enemyBaseObject = new GameObject("Enemy base");
+            var gameData = ScriptableObject.CreateInstance<GameData>();
+            var hazards = new TestHazards();
+            var navigation = new ShipNavigationService(new RetreatObstacleProvider(), hazards,
+                new OfflineSession(PlayerId.None));
+            try
+            {
+                clock.Restore(200f);
+                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+                var entities = new EntityLocator();
+                var ownShipEntity = new FakeEntity(new FakeHealthModel(ownShipObject.transform), TestPlayers.Enemy, 1);
+                var enemyBase = new FakeEntity(new FakeHealthModel(enemyBaseObject.transform), TestPlayers.Human, 2)
+                {
+                    IsUnit = false,
+                    IsBase = true
+                };
+                entities.AddEntity(ownShipEntity);
+                entities.AddEntity(enemyBase);
+
+                var intelRegistry = new TeamIntelRegistry();
+                HostileIntelModel intel = intelRegistry.Get(roster.Get(TestPlayers.Enemy).Team);
+                intel.ReportMine(new HostileSighting(99, default, TestPlayers.Human,
+                    new FormationPoint(100f, 100f), 100f, 0f, 1f, 100f, income: 500f));
+
+                var ship = new FakeShip(Vector3.zero, ownShipEntity.Id);
+                var zones = new ZoneSource(roster);
+                var builder = CreateContextBuilder(
+                    new ShipService(), new WithdrawalZones(), Array.Empty<IEnemyCaptureObjectiveSource>(),
+                    entities, gameData, roster, null,
+                    intelRegistry, new VisionService(roster, fogEnabled: false),
+                    roster.Get(TestPlayers.Enemy), new WithdrawalProduction(), hazards, zones,
+                    navigation, new EnemyStationPressureTracker(), CreateRecovery(roster, zones));
+
+                EnemyStrategicContext context = builder.Build(new IShipEntity[] { ship });
+
+                Assert.That(context.UnseenInvestment, Is.LessThanOrEqualTo(500f));
+                Assert.That(context.Snapshot.FleetRaw, Is.GreaterThanOrEqualTo(context.VisibleAdvantage * 0.5f - 0.001f));
+            }
+            finally
+            {
+                clock.Restore(0f);
+                navigation.Dispose();
+                UnityEngine.Object.DestroyImmediate(gameData);
+                UnityEngine.Object.DestroyImmediate(ownShipObject);
+                UnityEngine.Object.DestroyImmediate(enemyBaseObject);
+            }
+        }
+
+        [TestCase(2, 0, 1.0f, false)]
+        [TestCase(1, 2, 1.0f, false)]
+        [TestCase(1, 0, 1.5f, true)]
+        public void CentreCapture_UsesShipsAndSquadronsAndReinforcesWhenShort(
+            int ownShipsCount, int ownSquadronsCount, float hostileStrength, bool expectReinforce)
+        {
+            var objects = new List<GameObject>();
+            var gameData = ScriptableObject.CreateInstance<GameData>();
+            var hazards = new TestHazards();
+            var navigation = new ShipNavigationService(new RetreatObstacleProvider(), hazards,
+                new OfflineSession(PlayerId.None));
+            try
+            {
+                PlayerRoster roster = TestPlayers.CreateDuel(EnemyAiDifficulty.UltraHard);
+                var entities = new EntityLocator();
+                Vector3 centre = new Vector3(0f, 0f, 0f);
+                var zones = new ZoneSource(roster, mainIndex: 0, centre) { HostileStrength = hostileStrength };
+                var ships = new List<IShipEntity>();
+                for (int i = 0; i < ownShipsCount; i++)
+                {
+                    var shipObj = new GameObject($"AI Ship {i}");
+                    shipObj.transform.position = centre;
+                    objects.Add(shipObj);
+                    var shipEntity = new FakeEntity(new FakeHealthModel(shipObj.transform), TestPlayers.Enemy, i + 1);
+                    entities.AddEntity(shipEntity);
+                    ships.Add(new FakeShip(centre, shipEntity.Id));
+                }
+                for (int i = 0; i < ownSquadronsCount; i++)
+                {
+                    var wingObj = new GameObject($"AI Wing {i}");
+                    wingObj.transform.position = centre;
+                    objects.Add(wingObj);
+                    var wingEntity = new FakeEntity(new FakeHealthModel(wingObj.transform) { ShipClass = ShipClass.Fighter },
+                        TestPlayers.Enemy, 100 + i)
+                    {
+                        UnitTypeId = UnitTypeId.Squadron(SquadronType.Vulture)
+                    };
+                    entities.AddEntity(wingEntity);
+                }
+
+                var builder = CreateContextBuilder(
+                    new ShipService(), new WithdrawalZones(), Array.Empty<IEnemyCaptureObjectiveSource>(),
+                    entities, gameData, roster, null,
+                    new TeamIntelRegistry(), new VisionService(roster, fogEnabled: false),
+                    roster.Get(TestPlayers.Enemy), new WithdrawalProduction(), hazards, zones,
+                    navigation, new EnemyStationPressureTracker(), CreateRecovery(roster, zones));
+                builder.SetOpeningFocus(EnemyOpeningFocus.Centre, centre);
+                var ownShipsField = (List<IShipEntity>)typeof(EnemyStrategicContextBuilder)
+                    .GetField("_ownShips", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(builder);
+                ownShipsField.AddRange(ships);
+
+                EnemyCaptureObjective selected = SelectCapture(builder);
+
+                Assert.That(selected, Is.Not.Null, "Centre objective must be kept, never dropped as blockedApproach.");
+                Assert.That(builder.NeedsCentreReinforcement, Is.EqualTo(expectReinforce));
+            }
+            finally
+            {
+                navigation.Dispose();
+                UnityEngine.Object.DestroyImmediate(gameData);
+                foreach (GameObject obj in objects) UnityEngine.Object.DestroyImmediate(obj);
+            }
+        }
+
         private static EnemyStrategicContextBuilder CaptureBuilder(PlayerRoster roster,
             ZoneSource zones, SiteSource sites, TestHazards hazards, IShipNavigationService navigation = null,
             IEnemyCaptureObjectiveSource[] sources = null)
@@ -2804,7 +2970,9 @@ namespace EmpireAtWar.Tests.Editor
         {
             public IReadOnlyList<ReinforcementZonePresenter> Zones { get; }
             public float SquadronCaptureWeight => 0.5f;
-            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) => default;
+            public float HostileStrength { get; set; }
+            public (float Friendly, float Hostile) GetTeamStrengths(ReinforcementZonePresenter zone, PlayerId owner) =>
+                (0f, HostileStrength);
 
             public ZoneSource(PlayerRoster roster, params Vector3[] centers) : this(roster, -1, centers) { }
 
