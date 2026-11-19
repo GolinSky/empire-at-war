@@ -67,7 +67,7 @@ MonoBehaviour:
         displayName: Victory II
         description: 10,400 hull; 7,150 shields; speed 35. Four medium dual turbo-ion
           cannons and two medium turbo-ion cannons. Targetable shield generator,
-          two engines and tractor beam. Six medium 3-burst turbolasers, six heavy
+          two engines and tractor beam. Six medium 2-burst turbolasers, six heavy
           laser cannons are not separately targetable. Boost Weapon Power halves
           weapon reload and time between shots and halves speed and shield regeneration
           for 7 s. Recovers in 50 s. Tractor Beam restricts enemy movement. No hangar
@@ -130,7 +130,7 @@ MonoBehaviour:
         displayName: Executor
         description: '150,000 hull; 150,000 shields; speed 16. Targetable: ten heavy
           2-burst long-range turbolasers, 23 heavy 2-burst dual turbolasers, eight
-          heavy 2-burst long-range dual turbo-ions, ten heavy single-shot artillery-rocket
+          heavy single-shot long-range dual turbo-ions, ten heavy single-shot artillery-rocket
           launchers, four shield generators, two engines and two hangars. Integrated:
           69 medium 2-burst dual long-range turbolasers, 40 heavy lasers and 14 repeating
           point-defense mounts. Laser Beam and Tractor Beam. Deploys 2 fighter squadrons,
@@ -152,7 +152,7 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: da45b1d1432550f47a485d67cb1fb21f, type: 2}
         displayName: Raider
         description: 600 hull; 600 shields; speed 50. Four 2-burst laser cannons,
-          two dual repeating point-defense mounts and two heavy 2-burst ion blasters.
+          two dual repeating point-defense mounts and two heavy single-shot ion blasters.
           Targetable engine and
           shield-generator hardpoints; no hangar or fighter complement. Pursuit increases
           speed by 12.5% and halves weapon reload and time between shots for 15 s.
@@ -172,7 +172,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: ce8195d5a87d2a34fa7374c25d89d352, type: 2}
         displayName: Acclamator
-        description: 5,000 hull; 2,000 shields; speed 40. Two targetable 4-burst
+        description: 5,000 hull; 2,000 shields; speed 40. Two targetable single-shot
           assault-missile launchers, shield generator and engine. Four non-targetable
           heavy lasers and six non-targetable missile-defense mounts. Boost Weapon
           Power halves weapon reload and time between shots and halves speed and
@@ -196,7 +196,7 @@ MonoBehaviour:
         displayName: Tector
         description: 17,250 hull; 11,000 shields; speed 20. Eight targetable heavy
           octuple turbolasers, two heavy long-range dual turbolasers, two shield
-          generators, three engines and tractor beam. Seven heavy 3-burst turbolasers,
+          generators, three engines and tractor beam. Seven heavy 2-burst turbolasers,
           four heavy turbolasers and four heavy laser cannons are not separately
           targetable. Boost Weapon Power halves weapon reload and time between shots
           and halves speed and shield regeneration for 7 s. Recovers in 50 s. Tractor

@@ -236,6 +236,8 @@ created: "2026-10-29\r"
   - [ ] Run pooling EditMode tests on request (previous run blocked by stale `Assembly-CSharp` domain).
   - [ ] User visual check of respawned squadrons: selection, minimap, fog, audio.
   - [ ] User in-game check: fighter look, explosions (size/fog), loading time with ~100 prewarmed squadrons, hangar spikes.
+- [ ] [[Done/Optimization/Projectile_Visual_Reduction_Plan]] — In a large battle: check bolt look and feel after Phase 2 (point defense 4 bolts, lasers/turbolasers/mass drivers 2, ion 1 faster bolt, fighter lasers slower cadence); rerun `InputBindingServiceTests.TooltipDisplaysFixedCancelBinding`.
+
 
 ## Space Hazards
 

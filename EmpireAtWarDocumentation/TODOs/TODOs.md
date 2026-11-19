@@ -111,9 +111,6 @@
 
 
 
-- [ ] **Projectile visual reduction: missiles/torpedoes 1 shot, reload ×2, speed ×2, short trails; milder bolt pass** → [[TODOs/Optimization/Projectile_Visual_Reduction_Plan|Projectile Visual Reduction Plan]] — 2026-11-19: plan drafted from source values; decided: missile and torpedo salvo = 1, fighter warheads speed + trail only, torpedo size unchanged; missile defense stays with a 50–75% stop target (Phase 1b); TIE Avenger seeker countermeasure to be removed (Phase 1c, only squadron with missile defense); ship defense = one roll per mount per missile (Phase 1b); all questions decided.
-  - 2026-11-19: Phases 1, 1b, 1c implemented and compiled (family data, trails, one-roll-per-mount defense, 8 mount values, seeker removed). DPS identical for all units; simulator TTK −8…−20% from speed ×2 alone (salvo change alone ±1.5%) → user decision. Tests not run. Next: user in-game check, accept/adjust speed, Phase 2 needs per-family projectile counters, then a battle capture.
-  - 2026-11-19: missile "N-burst" descriptions fixed; unrelated failing test `TooltipDisplaysFixedCancelBinding` fixed in `InputBindingService` (key names from binding path); rerun pending.
 - [ ] **Online battle low FPS (3 humans vs 4 AI, 10–20 FPS) + release-build telemetry** → [[TODOs/Optimization/Online_Battle_Low_FPS]]
   - 2026-11-18: logs archived and split per battle; release `Player.log` has no timing data. Decided: keep `Maximum Allowed Timestep` 0.333 (no slow motion above 3 FPS); move radar scans from fixed steps to one batched pass per frame. Next: Phase 0 release telemetry, Phase 1 Development capture.
 - [ ] **[AGY] Online Battle 10-20 FPS Host and Client Performance Optimization** → [[TODOs/Optimization/Online_Battle_Low_FPS_Host_And_Client_AGY|Plan]]
@@ -263,6 +260,11 @@
 ## Done
 
 ### Optimization
+
+- [x] **Projectile visual reduction: missiles/torpedoes 1 shot, reload ×2, speed ×2, short trails; milder bolt pass** → [[Done/Optimization/Projectile_Visual_Reduction_Plan|Projectile Visual Reduction Plan]] — 2026-11-19: plan drafted from source values; decided: missile and torpedo salvo = 1, fighter warheads speed + trail only, torpedo size unchanged; missile defense stays with a 50–75% stop target (Phase 1b); TIE Avenger seeker countermeasure to be removed (Phase 1c, only squadron with missile defense); ship defense = one roll per mount per missile (Phase 1b); all questions decided.
+  - 2026-11-19: Phases 1, 1b, 1c implemented and compiled (family data, trails, one-roll-per-mount defense, 8 mount values, seeker removed). DPS identical for all units; simulator TTK −8…−20% from speed ×2 alone (salvo change alone ±1.5%) → user decision. Tests not run. Next: user in-game check, accept/adjust speed, Phase 2 needs per-family projectile counters, then a battle capture.
+  - 2026-11-19: missile "N-burst" descriptions fixed; unrelated failing test `TooltipDisplaysFixedCancelBinding` fixed in `InputBindingService` (key names from binding path); rerun pending.
+  - 2026-11-19: Phase 2 bolt cuts applied (DPS identical for all units); missiles accepted in game. Done with acceptance pending: bolt look in battle → [[TODOs/User_Acceptance_Queue]].
 
 - [x] **Live battle CPU and pool demand** → [[Done/Optimization/Live_Battle_CPU_And_Pool_Demand]] — implemented/tested; heavy-capital/Boost live verification complete; moving-target cost and admission-latency limitations recorded.
 

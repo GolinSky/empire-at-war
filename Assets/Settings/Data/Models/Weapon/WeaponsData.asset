@@ -16,8 +16,8 @@ MonoBehaviour:
   - family: 0
     platform: 0
     damageType: 0
-    damage: 6
-    shotsPerSalvo: 3
+    damage: 9
+    shotsPerSalvo: 2
     shotInterval: 0.1
     reload: 2
     range: 300
@@ -42,8 +42,8 @@ MonoBehaviour:
   - family: 1
     platform: 0
     damageType: 2
-    damage: 16
-    shotsPerSalvo: 3
+    damage: 24
+    shotsPerSalvo: 2
     shotInterval: 0.2
     reload: 4
     range: 450
@@ -68,8 +68,8 @@ MonoBehaviour:
   - family: 2
     platform: 0
     damageType: 4
-    damage: 30
-    shotsPerSalvo: 2
+    damage: 60
+    shotsPerSalvo: 1
     shotInterval: 0.2
     reload: 6
     range: 500
@@ -87,15 +87,15 @@ MonoBehaviour:
       type: 3}
     octupleShotPrefab: {fileID: 4723455029226909166, guid: bb4021ab222bd2946a6f49cb77df03d1,
       type: 3}
-    projectileSpeed: 71.5
+    projectileSpeed: 107
     factionColored: 0
     color: {r: 0.4, g: 0.87, b: 0.99, a: 1}
     size: {x: 0.35, y: 1, z: 1}
   - family: 3
     platform: 0
     damageType: 11
-    damage: 35
-    shotsPerSalvo: 3
+    damage: 52.5
+    shotsPerSalvo: 2
     shotInterval: 0.5
     reload: 5
     range: 450
@@ -186,9 +186,9 @@ MonoBehaviour:
   - family: 7
     platform: 0
     damageType: 1
-    damage: 4
-    shotsPerSalvo: 8
-    shotInterval: 0.08
+    damage: 8
+    shotsPerSalvo: 4
+    shotInterval: 0.16
     reload: 2
     range: 200
     strikecraftOnly: 1
@@ -235,10 +235,10 @@ MonoBehaviour:
   - family: 20
     platform: 1
     damageType: 13
-    damage: 5
+    damage: 7.5
     shotsPerSalvo: 2
     shotInterval: 0.08
-    reload: 0.9
+    reload: 1.35
     range: 70
     strikecraftOnly: 0
     preferredTarget: 0
@@ -333,10 +333,10 @@ MonoBehaviour:
   - family: 24
     platform: 1
     damageType: 14
-    damage: 5
+    damage: 7.5
     shotsPerSalvo: 2
     shotInterval: 0.08
-    reload: 0.9
+    reload: 1.35
     range: 70
     strikecraftOnly: 0
     preferredTarget: 0
@@ -359,10 +359,10 @@ MonoBehaviour:
   - family: 25
     platform: 1
     damageType: 15
-    damage: 5
+    damage: 7.5
     shotsPerSalvo: 2
     shotInterval: 0.08
-    reload: 0.9
+    reload: 1.35
     range: 70
     strikecraftOnly: 0
     preferredTarget: 0

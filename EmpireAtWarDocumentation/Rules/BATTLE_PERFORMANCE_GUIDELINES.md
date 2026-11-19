@@ -273,6 +273,18 @@ tags:
 - Diagnostic observers must cache immutable entity IDs/owner metadata before destruction; export must not resolve a dead caster. Use checkpoints and clean callbacks before reloading.
 - Evidence/remaining decisions → [[Done/Optimization/Live_Battle_CPU_And_Pool_Demand]]. Editor branch attribution is not a matched whole-battle FPS result.
 
+### Projectile volume reduction · 2026-11-19
+
+- Cut projectile count in `WeaponsData.asset` family rules, never per weapon: hold `damage × shotsPerSalvo / reload` constant → sustained DPS unchanged. Verify with `BalanceDpsEstimator` over all units (before/after diff).
+- Per-weapon overrides are multipliers on the family (`damageMultiplier`, `reloadMultiplier`) → they follow automatically; only `overrideVisual` speed is absolute.
+- Current salvos: Missile/Torpedo/IonTorpedo/Ion 1 shot; Laser/Turbolaser/MassDriver 2; PointDefense 4 (interval 0.16 s); fighter lasers 2 per 1.35 s.
+- Missile trails: particle cap must hold `rateOverDistance × startLifetime × speed`; current concussion 1.5 / 0.3 s / 64, proton 3 / 0.25 s / 64.
+- Faster projectiles shorten time-to-kill in `BattleSimulator` (it fights at max range): speed ×2 → −8…−20%; salvo change alone ±1.5%.
+- Unit descriptions in `*Faction.asset` hand-write "N-burst" counts → update them with any `shotsPerSalvo` change.
+- `AttackSequenceDiagnostics` has battle-wide totals only; per-family ranking needs new counters.
+- Editor eval (`unity command eval_file`) has a 5 s main-thread limit → run `BattleSimulation` ≤10 seeds per call.
+- Plan → [[Done/Optimization/Projectile_Visual_Reduction_Plan]].
+
 ### Squadron budgets and model flashes · 2026-11-18
 
 - `SquadronRegistry` counts registered living entities; pooled `start` telemetry rows are not live population. `Tools/BattleAudit/squadron_summary.py` reports distinct sampled entities per minute, not an instantaneous concurrent peak.

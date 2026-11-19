@@ -1,8 +1,10 @@
 ---
 category: Optimization
-status: in-progress
+status: done
 created: 2026-11-19
 updated: 2026-11-19
+completed: 2026-11-19
+acceptance: pending-user
 ---
 # Projectile Visual Reduction Plan
 
@@ -75,7 +77,7 @@ Trail (`Trail` particle system, world emission by distance):
 5. [x] Missile defense → Phase 1b.
 6. [x] Rerun step 1 matchups. → verify: TTK within ±5%; Overkill not above baseline by more than 10%. **Gate missed because of speed ×2** (see Results).
 7. [x] Review tests (Combat, Abilities, Balance, Audio). Replace pinned numbers with relationships where touched.
-8. [ ] User in-game check: missile/torpedo look, trail length, launch SFX density, 256/288 impact size, Full Salvo / Torpedo Salvo feel.
+8. [x] User in-game check: missile/torpedo look, trail length, launch SFX density, 256/288 impact size, Full Salvo / Torpedo Salvo feel. User 2026-11-19: "all okay with missiles"; speed ×2 accepted.
 
 ### Results (2026-11-19, Editor-side simulator, not Play Mode)
 
@@ -125,11 +127,12 @@ Trail (`Trail` particle system, world emission by distance):
 | FighterIon (21) | 1.3 × 2, reload 4.91 s | 0.4 | keep | 0 |
 | Beam (8) | 640, reload 30 s | — | keep | 0 |
 
-0. [ ] Gap (2026-11-19): `AttackSequenceDiagnostics` counts are battle-wide totals (`EmittedShots`, `PoolActive`, `PoolActiveHighWater`); no per-family split. Add per-`WeaponFamily` emitted / active / peak counters before the capture, or the capture cannot rank families.
-1. [ ] Measure first (needs a user Play Mode capture; agents do not run battles): active effects per family in one large battle (`AttackSequenceDiagnostics`, `Battle.Projectile.*` markers). Tune only families that dominate.
-2. [ ] Apply accepted rows; hold `damage × shots / reload` constant.
-3. [ ] Rerun `BattleSimulator` matchups; check PointDefense vs strikecraft overkill (8 dmg per bolt against fighter health).
-4. [ ] Test review + user in-game check.
+0. [x] Gap noted: `AttackSequenceDiagnostics` counts are battle-wide totals; no per-family split. Cancelled by user 2026-11-19 (no counters, no capture).
+1. [x] Measure first → cancelled by user 2026-11-19: apply all proposed rows; user checks in game.
+2. [x] Applied all rows 2026-11-19 (PointDefense, Laser, Turbolaser, MassDriver, Ion incl. speed 107, FighterLaser / InterceptorLaser / HeroLaser reload 1.35). FighterIon and Beam unchanged. `BalanceDpsEstimator`: DPS identical for all 105 units.
+3. [x] Simulator rerun skipped by user decision 2026-11-19.
+4. [x] Test review: bolt tests use synthetic profiles or relationships; `WeaponTaxonomyTests.Executor_WeaponProfilesMatchBaseline` asserts DPS, still holds. No edits. In-game check → `TODOs/User_Acceptance_Queue.md`.
+5. [x] Descriptions: "3-burst turbolasers" → "2-burst" (Empire ×2, Republic ×1); Executor turbo-ions and Raider ion blasters → "single-shot"; Acclamator assault missiles and Corellian BC barrage rockets → "single-shot".
 
 - Bolts already fly through `BoltFlightBatch` → cost per bolt is lower than per missile. Phase 2 is mostly a screen-noise change.
 - `BoltShot.Play` overwrites prefab culling, space, color, size and lifetime per shot → Inspector edits to those are ineffective.
@@ -194,7 +197,7 @@ Trail (`Trail` particle system, world emission by distance):
 3. [x] Apply values on 8 mounts: range 80, reload 0.1 s; chance 0.3 on `MunificentShipView.prefab` × 2, 0.2 on `AcclamatorAssaultShipView.prefab` × 6. Read back via Unity API.
 4. [x] Visibility: `LASER_FLASH_DURATION` 0.08 → 0.15 s, `LineRenderer.widthMultiplier` 0.3 → 0.5 on the 8 mounts (user confirms look).
 5. [ ] Squadron missile defense removal → Phase 1c (replaces the 60 s recharge decision).
-6. [ ] User in-game check: count launched vs shot down on Munificent and Acclamator.
+6. [x] User in-game check: count launched vs shot down on Munificent and Acclamator. Accepted 2026-11-19 with the missile check.
 
 ## Missile Defense Inventory (2026-11-19)
 
@@ -204,6 +207,13 @@ Trail (`Trail` particle system, world emission by distance):
 - TIE Avenger has two unrelated things: (1) offensive weapons `Light Fighter Laser Cannon` (type 133) + `Light Fighter Missile Launcher` (type 134, family FighterMissile, ×10) on normal `WeaponHardPoint`s; (2) the seeker countermeasure = squadron-level class, no hardpoint, no prefab mount, not shared with ships. Enabled by `SquadronData.SeekerWarheadRange > 0` in `SquadronInstaller`.
 - Seeker has no own visual: missile just plays its `interceptExplosion`. 10 fighters, separate recharge each → squadron stops up to 10 concussion missiles per recharge period. Torpedoes are ignored.
 - Full removal touches: 8 prefab mounts + their `ShipData` hardpoint entries, `MissileInterceptorHardPoint`, `SeekerWarheadCountermeasure`, `IncomingMissileRegistry`, `interceptable` flags, `MissileShot.interceptExplosion`, `BalancePrefabBindings`, `HealthModelTests`, tooltips.
+
+## Outcome
+
+- 2026-11-19: all phases implemented. Commits `8b810e999` (Phases 1/1b/1c), `6d8a8fe47` (descriptions + tooltip test fix), Phase 2 commit follows.
+- Verified: Unity compile clean; `BalanceDpsEstimator` DPS identical for all units after each phase. Missile/defense in-game check passed (user).
+- Open gate: bolt look in battle (user). Tests: user full EditMode run before Phase 2 had 1 unrelated failure, fixed; rerun not done.
+- Guidance extracted → [[Rules/BATTLE_PERFORMANCE_GUIDELINES#Projectile volume reduction · 2026-11-19]].
 
 ## Files
 

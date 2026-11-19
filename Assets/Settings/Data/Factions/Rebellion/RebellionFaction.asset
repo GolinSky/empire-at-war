@@ -148,7 +148,7 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: cfffd4866130fe34faafe00094f56ef4, type: 2}
         displayName: Corellian BC
-        description: Corellian Battlecruiser armed with four heavy two-burst barrage
+        description: Corellian Battlecruiser armed with four heavy single-shot barrage
           rocket launchers, eight medium turbolasers and five laser cannons. Boost
           Shield Power quadruples shield regeneration for 15 seconds. Deploys 1 fighter
           squadron, 1 interceptor squadron, 1 bomber squadron at once. Carries 6
