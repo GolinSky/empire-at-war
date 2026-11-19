@@ -110,7 +110,7 @@ MonoBehaviour:
   purchaseButton: {fileID: 651671216248046380}
   cardBackground: {fileID: 2058160215538798344}
   tutorialHighlight: {fileID: 8162747345852354025}
-  queuedHighlight: {fileID: 7015856029000383180}
+  queuedHighlight: {fileID: 6174386581154026845}
 --- !u!222 &9037979142701862360
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -860,7 +860,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: MPUIKit::MPUIKIT.MPImage
   m_Material: {fileID: 0}
-  m_Color: {r: 0.41568628, g: 0.8666667, b: 0.5568628, a: 1}
+  m_Color: {r: 0.9372549, g: 0.30588236, b: 0.2627451, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

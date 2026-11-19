@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using EmpireAtWar.Components.Ship.Health;
 using EmpireAtWar.Components.Ui;
 using EmpireAtWar.Components.Ui.Tooltip;
@@ -14,6 +15,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
     public class FactionUnitUi : MonoBehaviour
     {
         private const float CLASS_FRAME_WIDTH = 2f;
+        private const float QUEUE_PULSE_DURATION = 0.7f;
+        private static readonly Color32 QUEUE_PULSE_ORANGE = new(255, 156, 66, 255);
 
         private FactionUi _factionView;
 
@@ -25,7 +28,8 @@ namespace EmpireAtWar.Entities.Faction.Ui
         [SerializeField] private Button purchaseButton;
         [SerializeField] private MPImage cardBackground;
         [SerializeField] private UiHighlight tutorialHighlight;
-        [SerializeField] private GameObject queuedHighlight;
+        [SerializeField] private Graphic queuedHighlight;
+        private Tween _queuePulse;
         private UnitRequest _unitRequest;
         private (bool unlocked, bool affordable, bool queued, bool ended, bool atLimit)? _availability;
 
@@ -64,7 +68,9 @@ namespace EmpireAtWar.Entities.Faction.Ui
             purchaseButton.interactable = unlocked && !battleEnded && !atLimit;
             unitIconImage.color = new Color(1f, 1f, 1f, unlocked ? 1f : 0.25f);
             unitPriceText.color = affordable ? new Color32(242, 240, 230, 255) : new Color32(232, 110, 108, 255);
-            queuedHighlight.SetActive(queued);
+            queuedHighlight.gameObject.SetActive(queued);
+            if (queued) StartQueuePulse();
+            else StopQueuePulse();
         }
 
         public void SetData(FactionData factionData, FactionUi factionView, UnitRequest unitRequest)
@@ -78,6 +84,30 @@ namespace EmpireAtWar.Entities.Faction.Ui
             _factionView = factionView;
             _unitRequest = unitRequest;
             tooltipTrigger.SetKey(unitRequest);
+        }
+
+        private void OnEnable() => StartQueuePulse();
+
+        private void OnDisable() => StopQueuePulse();
+
+        private void StartQueuePulse()
+        {
+            if (!Application.isPlaying || _queuePulse != null || !isActiveAndEnabled ||
+                !queuedHighlight.gameObject.activeInHierarchy) return;
+
+            _queuePulse = queuedHighlight.DOColor(QUEUE_PULSE_ORANGE, QUEUE_PULSE_DURATION)
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetUpdate(true);
+        }
+
+        private void StopQueuePulse()
+        {
+            if (_queuePulse == null) return;
+
+            _queuePulse.Rewind();
+            _queuePulse.Kill();
+            _queuePulse = null;
         }
 
         private void OnDestroy()

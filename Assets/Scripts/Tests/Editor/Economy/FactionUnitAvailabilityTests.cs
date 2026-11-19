@@ -123,15 +123,15 @@ namespace EmpireAtWar.Tests.Editor
                     Assert.That((Color32)background.OutlineColor, Is.EqualTo(color), card.RequestId);
 
                     var serializedCard = new SerializedObject(card);
-                    var marker = (GameObject)serializedCard.FindProperty("queuedHighlight").objectReferenceValue;
-                    var dot = marker.GetComponent<MPImage>();
-                    Assert.That(marker.activeSelf, Is.False, card.RequestId);
+                    var dot = (MPImage)serializedCard.FindProperty("queuedHighlight").objectReferenceValue;
+                    Assert.That(dot.gameObject.activeSelf, Is.False, card.RequestId);
                     Assert.That(dot.rectTransform.parent, Is.EqualTo(card.transform), card.RequestId);
                     Assert.That(dot.rectTransform.anchorMin, Is.EqualTo(Vector2.up), card.RequestId);
                     Assert.That(dot.rectTransform.anchorMax, Is.EqualTo(Vector2.up), card.RequestId);
                     Assert.That(dot.rectTransform.anchoredPosition, Is.EqualTo(new Vector2(6f, -6f)), card.RequestId);
                     Assert.That(dot.DrawShape, Is.EqualTo(DrawShape.Circle), card.RequestId);
                     Assert.That(dot.raycastTarget, Is.False, card.RequestId);
+                    Assert.That((Color32)dot.color, Is.EqualTo(new Color32(239, 78, 67, 255)), card.RequestId);
                 }
 
                 view.RefreshAvailability(10000f, false);
@@ -204,7 +204,6 @@ namespace EmpireAtWar.Tests.Editor
                 FieldInfo cardsField = typeof(FactionUi).GetField("_factionUnitsUi",
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 ((List<FactionUnitUi>)cardsField.GetValue(view)).Add(card);
-                view.SetModel(new PlayerFactionModel(null, null));
                 typeof(FactionUi).GetField("_presenter", BindingFlags.Instance | BindingFlags.NonPublic)
                     .SetValue(view, new UnlockedPresenter(CreatePresenter(null)));
                 typeof(FactionUi).GetField("_isRouteActive", BindingFlags.Instance | BindingFlags.NonPublic)
@@ -323,7 +322,7 @@ namespace EmpireAtWar.Tests.Editor
             FactionUnitUi card = Object.Instantiate(prefab, root.transform);
             var serializedCard = new SerializedObject(card);
             var button = (Button)serializedCard.FindProperty("purchaseButton").objectReferenceValue;
-            var marker = (GameObject)serializedCard.FindProperty("queuedHighlight").objectReferenceValue;
+            var marker = ((Graphic)serializedCard.FindProperty("queuedHighlight").objectReferenceValue).gameObject;
 
             try
             {
@@ -342,8 +341,11 @@ namespace EmpireAtWar.Tests.Editor
                 Assert.That(presenter.IsUnitLimitReached(request), Is.True);
                 Assert.That(model.CanQueueUnit(request), Is.False);
                 view.RefreshAvailability(0f, false);
-                Assert.That(card.gameObject.activeSelf, Is.True, "Queued cards stay visible at their limit.");
-                Assert.That(marker.activeSelf, Is.True, "Queued cards show their marker.");
+                bool hidesAtLimit = kind is not ("Ship" or "Squadron");
+                Assert.That(card.gameObject.activeSelf, Is.EqualTo(!hidesAtLimit),
+                    "Research, upgrades, heroes and structures hide at their limit.");
+                Assert.That(marker.activeInHierarchy, Is.EqualTo(!hidesAtLimit),
+                    "The queue marker appears on cards that remain visible.");
                 Assert.That(button.interactable, Is.False, "Reaching the purchase limit must disable the card.");
 
                 Assert.That(model.TryCancelCurrentUnit(request.Id, out _), Is.True);

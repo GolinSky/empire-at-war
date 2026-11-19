@@ -185,7 +185,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
                 bool unlocked = _presenter.IsUnitAvailable(unit.FactionData);
                 bool atLimit = _presenter.IsUnitLimitReached(unit.Request);
                 unit.SetActive(IsInProductionMenu(unit.Request, _model.SelectionType) &&
-                               (queued || (unlocked && !(atLimit && HidesAtLimit(unit)))));
+                               unlocked && !(atLimit && HidesAtLimit(unit)));
                 unit.RenderAvailability(unlocked,
                     credits >= unit.FactionData.Price, queued, battleEnded, atLimit);
             }
@@ -315,7 +315,7 @@ namespace EmpireAtWar.Entities.Faction.Ui
             return false;
         }
 
-        // Unqueued heroes, structures, station upgrades and research tiers hide at their limit.
+        // Heroes, structure population caps, station upgrades and research tiers hide at their limit.
         // Ship and squadron queue limits only block the card: it becomes buyable again as the queue drains.
         private static bool HidesAtLimit(FactionUnitUi unit) =>
             unit.FactionData.IsHero || unit.Request is MiningFacilityUnitRequest or DefendPlatformUnitRequest
@@ -347,7 +347,6 @@ namespace EmpireAtWar.Entities.Faction.Ui
             FactionUnitUi firstShip = null, firstScout = null, level = null;
             FactionUnitUi economyResearch = null, fleetResearch = null, newShip = null, miningFacility = null;
             bool isNewShipCarrier = false;
-            var queues = _model.GetProductionQueueSnapshots();
             foreach (FactionUnitUi unitUi in _factionUnitsUi
                          .OrderBy(unit => _presenter.GetUnitSortOrder(unit.Request))
                          .ThenBy(unit => unit.Request is ShipUnitRequest or SquadronUnitRequest
@@ -355,11 +354,11 @@ namespace EmpireAtWar.Entities.Faction.Ui
                          .ThenByDescending(unit => _presenter.IsUnitAvailable(unit.FactionData)))
             {
                 unitUi.transform.SetAsLastSibling();
-                bool inMenu = IsInProductionMenu(unitUi.Request, selectionType);
-                bool normallyVisible = _presenter.IsUnitAvailable(unitUi.FactionData) &&
-                                       !(HidesAtLimit(unitUi) && _presenter.IsUnitLimitReached(unitUi.Request));
-                unitUi.SetActive(inMenu && (normallyVisible || IsQueued(unitUi, queues)));
-                if (!inMenu || !normallyVisible) continue;
+                bool isShown = _presenter.IsUnitAvailable(unitUi.FactionData) &&
+                               !(HidesAtLimit(unitUi) && _presenter.IsUnitLimitReached(unitUi.Request)) &&
+                               IsInProductionMenu(unitUi.Request, selectionType);
+                unitUi.SetActive(isShown);
+                if (!isShown) continue;
                 switch (unitUi.Request)
                 {
                     case ShipUnitRequest:
