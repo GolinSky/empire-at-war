@@ -85,9 +85,21 @@ namespace EmpireAtWar.Services.Input
             BindingsChanged?.Invoke();
         }
 
-        public string GetActionBindingDisplayString(string map, string action) =>
-            _asset.FindAction($"{map}/{action}", throwIfNotFound: true)
-                .GetBindingDisplayString(InputBinding.DisplayStringOptions.DontUseShortDisplayNames);
+        // Names come from the binding path, not the connected keyboard (which reports "Esc" instead of "Escape").
+        public string GetActionBindingDisplayString(string map, string action)
+        {
+            InputAction inputAction = _asset.FindAction($"{map}/{action}", throwIfNotFound: true);
+            var labels = new List<string>();
+            foreach (InputBinding binding in inputAction.bindings)
+            {
+                if (binding.isComposite || binding.isPartOfComposite || string.IsNullOrEmpty(binding.effectivePath)) continue;
+                string label = InputControlPath.ToHumanReadableString(binding.effectivePath,
+                    InputControlPath.HumanReadableStringOptions.OmitDevice);
+                if (!labels.Contains(label)) labels.Add(label);
+            }
+
+            return string.Join(" / ", labels);
+        }
 
         public string GetBindingDisplayString(BindingSlot slot)
         {

@@ -19,8 +19,8 @@ MonoBehaviour:
       value:
         matchups: {fileID: 11400000, guid: 6887148f139f280438d9d67f651593e6, type: 2}
         displayName: Victory I
-        description: 7,800 hull; 5,200 shields; speed 30. Four heavy 4-burst artillery-rocket
-          launchers and two 6-burst barrage-rocket launchers. Targetable shield generator,
+        description: 7,800 hull; 5,200 shields; speed 30. Four heavy single-shot artillery-rocket
+          launchers and two single-shot barrage-rocket launchers. Targetable shield generator,
           two engines and tractor beam. Six light dual turbolasers, four heavy laser
           cannons are not separately targetable. Full Salvo accelerates rockets and
           slows other weapons. Tractor Beam restricts enemy movement. No hangar or
@@ -130,7 +130,7 @@ MonoBehaviour:
         displayName: Executor
         description: '150,000 hull; 150,000 shields; speed 16. Targetable: ten heavy
           2-burst long-range turbolasers, 23 heavy 2-burst dual turbolasers, eight
-          heavy 2-burst long-range dual turbo-ions, ten heavy 8-burst artillery-rocket
+          heavy 2-burst long-range dual turbo-ions, ten heavy single-shot artillery-rocket
           launchers, four shield generators, two engines and two hangars. Integrated:
           69 medium 2-burst dual long-range turbolasers, 40 heavy lasers and 14 repeating
           point-defense mounts. Laser Beam and Tractor Beam. Deploys 2 fighter squadrons,
@@ -152,8 +152,8 @@ MonoBehaviour:
         matchups: {fileID: 11400000, guid: da45b1d1432550f47a485d67cb1fb21f, type: 2}
         displayName: Raider
         description: 600 hull; 600 shields; speed 50. Four 2-burst laser cannons,
-          two dual repeating point-defense mounts, two heavy 2-burst ion blasters
-          and two heavy 5-burst concussion-missile launchers. Targetable engine and
+          two dual repeating point-defense mounts and two heavy 2-burst ion blasters.
+          Targetable engine and
           shield-generator hardpoints; no hangar or fighter complement. Pursuit increases
           speed by 12.5% and halves weapon reload and time between shots for 15 s.
           Shield regeneration stops during the effect. Recovers in 60 s.

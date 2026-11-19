@@ -93,7 +93,8 @@ Trail (`Trail` particle system, world emission by distance):
 - Salvo/reload change alone holds TTK within ±1.5% and lowers overkill.
 - Whole TTK drop comes from speed ×2: simulator fights at max range, so every missile/torpedo lands ≈6 s earlier (fighter torpedoes ≈1 s earlier per run). Overkill per run stays ≤0.15% of damage dealt.
 - Decision needed: accept faster first hits, or keep speed ×2 only for visuals and raise reload slightly. Not changed (speed ×2 was a user decision).
-- Stale text: unit descriptions still say "4-burst" / "8-burst" / "5-burst" for missile launchers (`EmpireFaction.asset` lines ≈22, 133, 156). Not edited.
+- Stale text fixed 2026-11-19: Victory I and Executor launchers now "single-shot"; Raider text no longer lists missile launchers (its prefab has none: 6 lasers, 2 point defense, 2 ion). Still stale, not missile-related: Executor turbolasers say "2-burst" (data: 3), Raider says "Four" lasers (prefab: 6).
+- Full EditMode run (user, `TestResults_20261119_202845.xml`): 4,245 total, 1 failed → `InputBindingServiceTests.TooltipDisplaysFixedCancelBinding` ("Esc" vs "Escape"), unrelated to this plan. Cause: `InputBindingService.GetActionBindingDisplayString` asked the connected keyboard for names. Fixed: names now come from the binding path (`InputControlPath.ToHumanReadableString`, `OmitDevice`). Editor eval returns "Escape"; rerun of the test pending.
 
 ## Phase 1c — Remove squadron missile defense
 
@@ -124,6 +125,7 @@ Trail (`Trail` particle system, world emission by distance):
 | FighterIon (21) | 1.3 × 2, reload 4.91 s | 0.4 | keep | 0 |
 | Beam (8) | 640, reload 30 s | — | keep | 0 |
 
+0. [ ] Gap (2026-11-19): `AttackSequenceDiagnostics` counts are battle-wide totals (`EmittedShots`, `PoolActive`, `PoolActiveHighWater`); no per-family split. Add per-`WeaponFamily` emitted / active / peak counters before the capture, or the capture cannot rank families.
 1. [ ] Measure first (needs a user Play Mode capture; agents do not run battles): active effects per family in one large battle (`AttackSequenceDiagnostics`, `Battle.Projectile.*` markers). Tune only families that dominate.
 2. [ ] Apply accepted rows; hold `damage × shots / reload` constant.
 3. [ ] Rerun `BattleSimulator` matchups; check PointDefense vs strikecraft overkill (8 dmg per bolt against fighter health).
