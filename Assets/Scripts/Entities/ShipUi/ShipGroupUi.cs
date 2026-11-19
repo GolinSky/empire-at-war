@@ -84,7 +84,7 @@ namespace EmpireAtWar.Entities.ShipUi
         {
             ShipSelectionGroupUi group = GetGroup();
             group.Configure(shipType, _icons.GetShipIcon(shipType), displayName, ships, _model,
-                _presenter.SelectShipGroup, pressAbility, autoPower, toggleAutoPower, _openDestroy);
+                _presenter.SelectShipGroup, _presenter.SelectShip, pressAbility, autoPower, toggleAutoPower, _openDestroy);
             group.gameObject.SetActive(true);
             _layoutDirty = true;
         }
@@ -94,7 +94,7 @@ namespace EmpireAtWar.Entities.ShipUi
         {
             ShipSelectionGroupUi group = GetGroup();
             group.Configure(squadronType, _icons.GetSquadronIcon(squadronType), displayName, squadrons, _model,
-                _presenter.SelectSquadronGroup, pressAbility, autoPower, toggleAutoPower);
+                _presenter.SelectSquadronGroup, _presenter.SelectShip, pressAbility, autoPower, toggleAutoPower);
             group.gameObject.SetActive(true);
             _layoutDirty = true;
         }

@@ -8,7 +8,7 @@ namespace EmpireAtWar.Entities.Tooltip
 {
     public static class EntityTooltipContent
     {
-        public static TooltipContent Build(IEntity entity, string ownerName)
+        public static TooltipContent Build(IEntity entity, string ownerName, string hint = null)
         {
             IHealthModelObserver health = entity.HealthModel;
             var stats = new List<TooltipStat>();
@@ -29,7 +29,7 @@ namespace EmpireAtWar.Entities.Tooltip
                 if (modifiers.IsDamageTakenModified()) stats.Add(new TooltipStat(label: "Damage taken", current: modifiers.DamageTakenMultiplier, format: "0.##'×'"));
             }
 
-            return entity.GetFacade<IEntityTooltipFacade>().Build(stats, status);
+            return entity.GetFacade<IEntityTooltipFacade>().Build(stats, hint == null ? status : status + "\n" + hint);
         }
     }
 }

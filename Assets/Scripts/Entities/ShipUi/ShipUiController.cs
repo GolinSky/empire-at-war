@@ -5,6 +5,7 @@ using EmpireAtWar.Entities.Ship.Abilities;
 using EmpireAtWar.Entities.Squadrons;
 using EmpireAtWar.Entities.Units;
 using System;
+using UnityEngine;
 using EmpireAtWar.Services.ShipAbilities;
 using EmpireAtWar.Entities.BaseEntity.EntityFacades;
 using EmpireAtWar.Entities.BaseEntity;
@@ -53,6 +54,8 @@ namespace EmpireAtWar.Entities.ShipUi
         private readonly FactionCatalog _factions;
         private TooltipHoverSubscription _shipTooltipHover;
         private TooltipHoverSubscription _groupTooltipHover;
+
+        private readonly ShipUiTapTracker _tapTracker = new ShipUiTapTracker();
 
         private bool _isRouteActive;
 
@@ -159,10 +162,37 @@ namespace EmpireAtWar.Entities.ShipUi
             }
         }
 
-        public void FocusSelection() => FocusEntity(_playerSelectionContext.Entity);
+        public void TapSelectedShipIcon()
+        {
+            if (_playerSelectionContext == null || _playerSelectionContext.Count != 1) return;
+            IEntity entity = _playerSelectionContext.Entity;
+            if (entity.HealthModel.IsDestroyed)
+            {
+                _tapTracker.Clear();
+                return;
+            }
 
-        private void FocusEntity(IEntity entity) =>
-            _cameraService.MoveTo(entity.GetFacade<IMoveFacade>().WorldPosition);
+            if (_tapTracker.RegisterTap(entity.Id)) FocusEntityIfOffScreen(entity);
+        }
+
+        public void SelectShip(long entityId)
+        {
+            foreach (IEntity entity in _playerSelectionContext.Entities)
+            {
+                if (entity.Id != entityId) continue;
+                _selectionService.SelectEntity(entity);
+                _tapTracker.Record(entityId);
+                return;
+            }
+        }
+
+        private void FocusEntityIfOffScreen(IEntity entity)
+        {
+            if (entity.HealthModel.IsDestroyed || !entity.TryGetFacade(out IMoveFacade move)) return;
+            Vector3 position = move.WorldPosition;
+            if (_cameraService.IsOnScreen(position)) return;
+            _cameraService.MoveTo(position);
+        }
 
         public void SelectShipGroup(ShipType shipType)
         {
@@ -321,8 +351,7 @@ namespace EmpireAtWar.Entities.ShipUi
                 {
                     IReadOnlyList<ShipAbilitySlot> slots = entity.TryGetFacade(out IShipAbilityFacade command)
                         ? command.Slots : Array.Empty<ShipAbilitySlot>();
-                    entries.Add(new ShipUiEntry(abilitySlots: slots, health: entity.HealthModel,
-                        focus: () => FocusEntity(entity), entity: entity));
+                    entries.Add(new ShipUiEntry(abilitySlots: slots, health: entity.HealthModel, entity: entity));
                 }
                 List<IEntity> casters = group.Value;
                 addGroup(group.Key, getDisplayName(group.Key), entries, id => _shipAbilityService.Press(casters, id, allowCancel: false),
@@ -390,13 +419,14 @@ namespace EmpireAtWar.Entities.ShipUi
             if (key is ShipAutoPowerUiState autoPower)
                 return new TooltipContent(title: "Automatic power abilities", description: autoPower.Description);
             if (key is string action && action == "Focus")
-                return new TooltipContent(title: "Focus selected ship", description: "Click to move the camera to the selected ship.");
+                return new TooltipContent(title: "Focus selected ship", description: "Double-click to move the camera to the selected ship.");
             if (key is string selection && selection == "Selection")
                 return new TooltipContent(title: "Clear selection", description: "Click to deselect the current ship.");
             if (key is IReadOnlyList<ShipAbilitySlot> slots)
                 return ShipAbilityTooltipContent.Build(slots, _bindings, _tooltipIcons);
             if (key is ShipUiEntry entry)
-                return EntityTooltipContent.Build(entry.Entity, OWN_OWNER_LABEL);
+                return EntityTooltipContent.Build(entry.Entity, OWN_OWNER_LABEL,
+                    "Click to select this ship. Double-click to focus.");
             if (key is ShipType || key is SquadronType)
             {
                 UnitTypeId unitTypeId = key is ShipType shipType

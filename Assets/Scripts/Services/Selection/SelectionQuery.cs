@@ -317,12 +317,7 @@ namespace EmpireAtWar.Services.Battle
                 return false;
             }
 
-            Vector3 viewportPoint = _cameraService.WorldToViewportPoint(positionProvider.WorldPosition);
-            return viewportPoint.z > 0f &&
-                viewportPoint.x >= 0f &&
-                viewportPoint.x <= 1f &&
-                viewportPoint.y >= 0f &&
-                viewportPoint.y <= 1f;
+            return _cameraService.IsOnScreen(positionProvider.WorldPosition);
         }
 
         public void CollectInside(MarqueeRectangle rectangle, ICollection<SelectionEntry> results)

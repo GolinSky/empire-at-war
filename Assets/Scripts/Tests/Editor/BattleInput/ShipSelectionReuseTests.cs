@@ -41,17 +41,17 @@ namespace EmpireAtWar.Tests.Editor
             {
                 group.SetTooltipHover(hoverObject.GetComponent<TooltipHoverView>());
                 ShipUiModel model = new ShipUiModel();
-                group.Configure(default(ShipType), null, "Venator I", Entries(oldHealth, 4), model, _ => clicks++, _ => { }, default, () => { });
+                group.Configure(default(ShipType), null, "Venator I", Entries(oldHealth, 4), model, _ => { }, _ => clicks++, _ => { }, default, () => { });
                 group.gameObject.SetActive(true);
                 ShipUi[] initial = group.GetComponentsInChildren<ShipUi>(true);
                 Assert.That(initial.Length, Is.EqualTo(4));
                 Assert.That(oldHealth.Subscribers, Is.EqualTo(4));
 
-                group.Configure(default(ShipType), null, "Venator I", Entries(newHealth, 5), model, _ => clicks++, _ => { }, default, () => { });
+                group.Configure(default(ShipType), null, "Venator I", Entries(newHealth, 5), model, _ => { }, _ => clicks++, _ => { }, default, () => { });
                 Assert.That(oldHealth.Subscribers, Is.Zero);
                 Assert.That(newHealth.Subscribers, Is.EqualTo(5));
 
-                group.Configure(default(ShipType), null, "Venator I", Entries(oldHealth, 2), model, _ => clicks++, _ => { }, default, () => { });
+                group.Configure(default(ShipType), null, "Venator I", Entries(oldHealth, 2), model, _ => { }, _ => clicks++, _ => { }, default, () => { });
                 Assert.That(newHealth.Subscribers, Is.Zero);
                 Assert.That(oldHealth.Subscribers, Is.EqualTo(2));
                 CollectionAssert.AreEquivalent(initial, group.GetComponentsInChildren<ShipUi>(true));
@@ -142,7 +142,7 @@ namespace EmpireAtWar.Tests.Editor
             }
 
             void Configure(int count, int firstId, string name) => group.Configure(default(ShipType), null, name,
-                Entries(health, count, firstId), model, _ => selections++, _ => { }, default, () => { },
+                Entries(health, count, firstId), model, _ => { }, _ => selections++, _ => { }, default, () => { },
                 (id, displayName, position) => requests.Add((id, displayName, position)));
 
             void Click(ShipCardContextInput input)
@@ -157,7 +157,7 @@ namespace EmpireAtWar.Tests.Editor
         private static ShipUiEntry[] Entries(HealthStub health, int count, int firstId = 0) => Enumerable.Range(firstId, count)
             .Select(id => new ShipUiEntry(Array.Empty<ShipAbilitySlot>(), health,
                 new Entity(health, null, Array.Empty<IEntityFacade>(), health.Owner, id,
-                    Array.Empty<IPooledEntityEvents>(), Array.Empty<IHangarLaunchEvents>()), () => { })).ToArray();
+                    Array.Empty<IPooledEntityEvents>(), Array.Empty<IHangarLaunchEvents>()))).ToArray();
 
         private sealed class HealthStub : IHealthModelObserver
         {

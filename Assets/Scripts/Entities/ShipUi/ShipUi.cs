@@ -55,7 +55,8 @@ namespace EmpireAtWar.Entities.ShipUi
             _model.OnSelectionChanged += UpdateVisibility;
             abilityBar.SetModel(_model);
             disableSelectionButton.enabled = false;
-            focusButton.enabled = false;
+            _onFocused = _presenter.TapSelectedShipIcon;
+            focusButton.onClick.AddListener(HandleFocus);
             _isInitialized = true;
             UpdateVisibility();
         }
@@ -125,7 +126,7 @@ namespace EmpireAtWar.Entities.ShipUi
             Dispose();
             _isEntry = true;
             _onSelected = onSelected;
-            _onFocused = entry.Focus;
+            _onFocused = onSelected;
             unitNameText.gameObject.SetActive(false);
             shipIconImage.sprite = icon;
             shipIconImage.enabled = icon != null;

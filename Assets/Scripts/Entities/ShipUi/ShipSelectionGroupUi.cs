@@ -86,24 +86,24 @@ namespace EmpireAtWar.Entities.ShipUi
         }
 
         public void Configure(ShipType shipType, Sprite icon, string displayName, IReadOnlyList<ShipUiEntry> ships,
-            IShipUiModelObserver model, Action<ShipType> onClicked, Action<ShipAbilityId> pressAbility,
+            IShipUiModelObserver model, Action<ShipType> onClicked, Action<long> onShipSelected, Action<ShipAbilityId> pressAbility,
             ShipAutoPowerUiState autoPower, Action toggleAutoPower, Action<long, string, Vector2> openDestroy = null)
         {
-            Configure(icon, displayName, ships, model, () => onClicked(shipType), pressAbility, autoPower,
+            Configure(icon, displayName, ships, model, () => onClicked(shipType), onShipSelected, pressAbility, autoPower,
                 toggleAutoPower, openDestroy);
             tooltipTrigger.SetKey(shipType);
         }
 
         public void Configure(SquadronType squadronType, Sprite icon, string displayName, IReadOnlyList<ShipUiEntry> squadrons,
-            IShipUiModelObserver model, Action<SquadronType> onClicked, Action<ShipAbilityId> pressAbility,
+            IShipUiModelObserver model, Action<SquadronType> onClicked, Action<long> onShipSelected, Action<ShipAbilityId> pressAbility,
             ShipAutoPowerUiState autoPower, Action toggleAutoPower)
         {
-            Configure(icon, displayName, squadrons, model, () => onClicked(squadronType), pressAbility, autoPower, toggleAutoPower);
+            Configure(icon, displayName, squadrons, model, () => onClicked(squadronType), onShipSelected, pressAbility, autoPower, toggleAutoPower);
             tooltipTrigger.SetKey(squadronType);
         }
 
         private void Configure(Sprite icon, string displayName, IReadOnlyList<ShipUiEntry> ships,
-            IShipUiModelObserver model, Action onClicked, Action<ShipAbilityId> pressAbility,
+            IShipUiModelObserver model, Action onClicked, Action<long> onShipSelected, Action<ShipAbilityId> pressAbility,
             ShipAutoPowerUiState autoPower, Action toggleAutoPower, Action<long, string, Vector2> openDestroy = null)
         {
             Clear();
@@ -129,7 +129,7 @@ namespace EmpireAtWar.Entities.ShipUi
                     if (entryIndex == _entries.Count)
                         _entries.Add(Instantiate(entryPrefab, entriesLayout.transform));
                     ShipUi entry = _entries[entryIndex++];
-                    entry.ConfigureEntry(icon, ship, HandleClick);
+                    entry.ConfigureEntry(icon, ship, () => onShipSelected(ship.Entity.Id));
                     entry.SetDestroyTarget(ship.Entity.Id, displayName, openDestroy);
                     entry.TooltipHover.ForwardTo(_tooltipHover, ship);
                     entry.gameObject.SetActive(true);

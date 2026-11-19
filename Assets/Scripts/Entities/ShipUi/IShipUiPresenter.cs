@@ -9,7 +9,9 @@ namespace EmpireAtWar.Entities.ShipUi
     {
         void CloseSelection();
 
-        void FocusSelection();
+        void TapSelectedShipIcon();
+
+        void SelectShip(long entityId);
 
         void SelectShipGroup(ShipType shipType);
 

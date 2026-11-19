@@ -7,6 +7,7 @@ using EmpireAtWar.Entities.Units;
 using EmpireAtWar.Models.Factions;
 using EmpireAtWar.Models.Players;
 using EmpireAtWar.Services.Camera;
+using UnityEngine;
 using EmpireAtWar.Services.Battle;
 using EmpireAtWar.Services.Vision;
 using EmpireAtWar.Ui.Base;
@@ -90,7 +91,9 @@ namespace EmpireAtWar.Entities.Heroes
                 !_heroes.Contains(hero) || hero.HealthModel.IsDestroyed || !CanFocus(hero))
                 return;
 
-            _camera.MoveTo(hero.GetFacade<IEntityTransformFacade>().Transform.position);
+            Vector3 position = hero.GetFacade<IEntityTransformFacade>().Transform.position;
+            if (_camera.IsOnScreen(position)) return;
+            _camera.MoveTo(position);
         }
 
         private void AddHero(IEntity entity)
